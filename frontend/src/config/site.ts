@@ -44,14 +44,32 @@ export const siteConfig = {
 export const platformFeatures = [
   {
     title: "Voice Agents",
+    icon: "VA",
     body: "Launch AI assistants that answer calls, qualify leads, and route urgent requests.",
   },
   {
     title: "Speech Analytics",
+    icon: "SA",
     body: "Detect sentiment, key topics, and action items from every voice conversation.",
   },
   {
     title: "Business Ready",
+    icon: "BR",
     body: "Manage teams, workflows, integrations, and privacy controls from one workspace.",
+  },
+  {
+    title: "Voice Cloning",
+    icon: "VC",
+    body: "Create consistent branded voices for campaigns, training, and global product content.",
+  },
+  {
+    title: "Multilingual",
+    icon: "ML",
+    body: "Localize scripts across 140+ languages while preserving pace, emotion, and clarity.",
+  },
+  {
+    title: "Realtime TTS",
+    icon: "RT",
+    body: "Preview, tune, and regenerate speech quickly with low-latency text-to-speech tools.",
   },
 ];
