@@ -13,45 +13,91 @@ const evolutionCards = [
   },
 ];
 
+const industryTags = [
+  "Real estate",
+  "Education",
+  "Healthcare",
+  "Finance",
+  "E-commerce",
+  "Restaurants",
+];
+
+const platformSignals = [
+  { label: "Always-on", value: "24/7" },
+  { label: "Voice workflows", value: "CRM" },
+  { label: "Human handoff", value: "Live" },
+];
+
+const workflowPills = ["Answer", "Understand", "Book", "Follow up"];
+
 export function WhoWeAreSection() {
   return (
     <section className="who-section services-showcase" id="company">
       <div className="services-main">
-        <div className="who-block">
-          <div className="who-heading">
-            <p className="section-kicker">Company</p>
-            <h2>Who We Are</h2>
+        <div className="who-story-grid">
+          <div className="who-block who-block--identity">
+            <div className="who-heading">
+              <p className="section-kicker">Company</p>
+              <h2>Who We Are</h2>
+            </div>
+
+            <div className="who-content">
+              <span className="who-card-glow" aria-hidden="true" />
+              <p>
+                We are an AI Voice Platform company helping businesses turn
+                every customer call into a faster, warmer, and more intelligent
+                conversation.
+              </p>
+              <div className="who-industries" aria-label="Industries we serve">
+                {industryTags.map((tag) => (
+                  <span key={tag}>{tag}</span>
+                ))}
+              </div>
+            </div>
           </div>
 
-          <div className="who-content">
-            <p>
-              We are an AI Voice Platform company helping businesses automate
-              and enhance customer communication through intelligent voice AI
-              agents.
-            </p>
-            <div className="who-industries" aria-label="Industries we serve">
-              <span>Real estate</span>
-              <span>Education</span>
-              <span>Healthcare</span>
-              <span>Finance</span>
-              <span>E-commerce</span>
-              <span>Restaurants</span>
+          <div className="who-block who-block--platform">
+            <div className="who-heading">
+              <p className="section-kicker">Platform</p>
+              <h2>What We Do</h2>
+            </div>
+
+            <div className="who-content">
+              <span className="who-card-glow" aria-hidden="true" />
+              <p>
+                We provide AI-powered voice agents that answer calls, manage
+                bookings, support customers, and follow up automatically while
+                your team stays focused on the moments that need a human touch.
+              </p>
+              <div className="who-signal-grid" aria-label="Platform strengths">
+                {platformSignals.map((signal) => (
+                  <span key={signal.label}>
+                    <strong>{signal.value}</strong>
+                    {signal.label}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="who-block">
-          <div className="who-heading">
-            <p className="section-kicker">Platform</p>
-            <h2>What We Do</h2>
+        <div className="who-flow-panel" aria-label="AI voice workflow">
+          <div className="who-flow-copy">
+            <p className="section-kicker">Call flow</p>
+            <h3>From first ring to completed action.</h3>
           </div>
-
-          <div className="who-content">
-            <p>
-              We provide AI-powered voice agents that handle calls, bookings,
-              support queries, follow-ups, and customer interactions 24/7,
-              replacing manual, repetitive phone work with smart automation.
-            </p>
+          <div className="who-flow-steps">
+            {workflowPills.map((step, index) => (
+              <span key={step}>
+                <strong>{String(index + 1).padStart(2, "0")}</strong>
+                {step}
+              </span>
+            ))}
+          </div>
+          <div className="who-flow-wave" aria-hidden="true">
+            {Array.from({ length: 22 }).map((_, index) => (
+              <span key={index} />
+            ))}
           </div>
         </div>
 
