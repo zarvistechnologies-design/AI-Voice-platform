@@ -122,7 +122,7 @@ export function WhoWeAreSection() {
               // className="evolution-preview-image"
               src="/images/ai_voice2.gif"
               className="w-[600px] scale-230 -translate-y-18 mix-blend-lighten"
-              // className="w-[400px]"
+              // className="w-[400px]"git push
               alt="AI voice platform preview"
             />
             {/* <div className="evolution-wave" aria-hidden="true">
