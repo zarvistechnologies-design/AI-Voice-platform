@@ -119,15 +119,17 @@ export function WhoWeAreSection() {
 
           <div className="evolution-visual" aria-label="Evolution of AI voice technology">
             <img
-              className="evolution-preview-image"
-              src="/images/ai_voice.png"
+              // className="evolution-preview-image"
+              src="/images/ai_voice2.gif"
+              className="w-[600px] scale-230 -translate-y-18 mix-blend-lighten"
+              // className="w-[400px]"
               alt="AI voice platform preview"
             />
-            <div className="evolution-wave" aria-hidden="true">
+            {/* <div className="evolution-wave" aria-hidden="true">
               {Array.from({ length: 18 }).map((_, index) => (
                 <span key={index} />
               ))}
-            </div>
+            </div> */}
             <div className="evolution-timeline">
               <span>Manual calls</span>
               <span>Rigid IVR</span>
