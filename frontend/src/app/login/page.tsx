@@ -10,7 +10,7 @@ export default function LoginPage() {
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4">
         <BrandLogo />
         <Link
-          className="inline-flex min-h-10 items-center justify-center rounded-lg border border-[#ded6f2] bg-white/80 px-3.5 text-sm font-extrabold"
+          className="app-button-text inline-flex min-h-10 items-center justify-center rounded-lg border border-[#ded6f2] bg-white/80 px-3.5"
           href="/"
         >
           Back home
@@ -19,13 +19,13 @@ export default function LoginPage() {
 
       <section className="mx-auto grid min-h-[calc(100vh-80px)] w-full max-w-6xl items-center gap-10 py-10 lg:grid-cols-[minmax(0,1fr)_minmax(360px,440px)] lg:gap-20">
         <div className="grid max-w-2xl gap-5">
-          <span className="text-xs font-black uppercase text-[#6b35e8]">
+          <span className="app-label text-[var(--app-color-purple)]">
             AI Voice Platform
           </span>
-          <h2 className="m-0 text-[clamp(2.65rem,6vw,5.1rem)] leading-[0.98] font-black">
+          <h2 className="app-display-title m-0">
             Manage calls, agents, and workflows from one clean workspace.
           </h2>
-          <p className="m-0 leading-7 text-[#6d647d]">
+          <p className="app-body m-0">
             Your account is now saved in MongoDB and protected with a backend
             login endpoint.
           </p>

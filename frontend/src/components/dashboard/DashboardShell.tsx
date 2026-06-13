@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useSyncExternalStore } from "react";
-import Link from "next/link";
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 
-import { BrandLogo } from "@/components/ui/BrandLogo";
+import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import {
   clearSession,
   getServerSession,
@@ -13,13 +12,292 @@ import {
   validateStoredSession,
 } from "@/lib/auth";
 
-const navItems = ["Dashboard", "Agents", "Calls", "Workflows", "Knowledge", "Settings"];
+type AgentStatus = "Live" | "Draft" | "Paused";
+type AgentTab = "builder" | "behavior" | "tools" | "calls" | "widget";
 
-const metrics = [
-  { label: "Total calls", value: "1,248", detail: "+12% this week" },
-  { label: "Active agents", value: "8", detail: "3 live now" },
-  { label: "Avg response", value: "620ms", detail: "Stable" },
+type VoiceAgent = {
+  id: string;
+  name: string;
+  team: string;
+  status: AgentStatus;
+  phone: string;
+  language: string;
+  voice: string;
+  model: string;
+  stt: string;
+  latency: string;
+  calls: number;
+  success: string;
+  prompt: string;
+  firstMessage: string;
+};
+
+const agents: VoiceAgent[] = [
+  {
+    id: "maya",
+    name: "Maya",
+    team: "Sales team",
+    status: "Live",
+    phone: "+1 415 555 0198",
+    language: "Multilingual",
+    voice: "Clear female",
+    model: "gpt-4o realtime",
+    stt: "deepgram/nova-3",
+    latency: "620ms",
+    calls: 248,
+    success: "91%",
+    prompt:
+      "Qualify leads, understand their timeline and budget, answer pricing questions at a high level, and book a follow-up when the caller is ready.",
+    firstMessage: "Hi, this is Maya from Growth Desk. How can I help today?",
+  },
+  {
+    id: "ava",
+    name: "Ava",
+    team: "Human support",
+    status: "Draft",
+    phone: "+1 212 555 0144",
+    language: "English",
+    voice: "Warm support",
+    model: "Millis low latency",
+    stt: "multilingual",
+    latency: "710ms",
+    calls: 86,
+    success: "84%",
+    prompt:
+      "Help customers with account questions, collect issue details, check knowledge base answers, and transfer urgent billing or security problems.",
+    firstMessage: "Thanks for calling support. Tell me what is going on.",
+  },
+  {
+    id: "noah",
+    name: "Noah",
+    team: "Front desk",
+    status: "Paused",
+    phone: "+44 20 7946 0182",
+    language: "English UK",
+    voice: "Calm male",
+    model: "custom websocket",
+    stt: "deepgram/nova-3",
+    latency: "840ms",
+    calls: 54,
+    success: "79%",
+    prompt:
+      "Greet callers, collect appointment needs, verify phone number, and route complex requests to a human receptionist.",
+    firstMessage: "Hello, you have reached the front desk. How may I help?",
+  },
 ];
+
+const tabs: { id: AgentTab; label: string }[] = [
+  { id: "builder", label: "Builder" },
+  { id: "behavior", label: "Behavior" },
+  { id: "tools", label: "Tools" },
+  { id: "calls", label: "Calls" },
+  { id: "widget", label: "Widget" },
+];
+
+const runtimeItems = [
+  { label: "Dispatch", value: "Ready", tone: "text-[#059669]" },
+  { label: "Model", value: "Balanced", tone: "text-[#2563eb]" },
+  { label: "Region", value: "US West", tone: "text-[#111827]" },
+];
+
+const flowSettings = [
+  {
+    title: "Interruptions",
+    detail: "Allow callers to interrupt and keep the interruption message.",
+    enabled: true,
+  },
+  {
+    title: "User starts first",
+    detail: "Wait for caller speech before the agent opens.",
+    enabled: false,
+  },
+  {
+    title: "Auto fill responses",
+    detail: "Send short filler phrases when response generation is slow.",
+    enabled: true,
+  },
+  {
+    title: "Agent terminate call",
+    detail: "Let the agent end a call after completion or repeated silence.",
+    enabled: true,
+  },
+  {
+    title: "Voicemail handling",
+    detail: "Leave a configured voicemail and continue on voice activity.",
+    enabled: true,
+  },
+  {
+    title: "DTMF dial",
+    detail: "Allow keypad dialing instructions for IVR navigation.",
+    enabled: false,
+  },
+];
+
+const tools = [
+  {
+    name: "lookup_customer",
+    type: "Webhook",
+    detail: "Find CRM profile by {FromPhone}",
+    method: "GET",
+  },
+  {
+    name: "book_demo",
+    type: "Webhook",
+    detail: "Create a calendar hold after qualification",
+    method: "POST",
+  },
+  {
+    name: "open_email_form",
+    type: "Web form",
+    detail: "Collect email when voice spelling is unclear",
+    method: "FORM",
+  },
+];
+
+const knowledgeFiles = [
+  "pricing-faq.pdf",
+  "sales-playbook.md",
+  "security-responses.docx",
+];
+
+const variables = ["{FromPhone}", "{ToPhone}", "{userName}", "{customerID}", "{appointmentTime}"];
+
+const widgetMetadata = ["userName", "userType", "page", "customerID"];
+
+const recentCalls = [
+  { caller: "+1 415 555 7788", result: "Booked demo", duration: "4m 18s" },
+  { caller: "+1 650 555 1290", result: "Transferred", duration: "2m 44s" },
+  { caller: "+1 408 555 7721", result: "Answered FAQ", duration: "3m 02s" },
+];
+
+const deployChecklist = [
+  "Prompt and first message ready",
+  "Voice, STT, and LLM selected",
+  "Tools have params and webhook URLs",
+  "Knowledge files attached",
+  "Phone route assigned",
+  "Privacy and recording reviewed",
+];
+
+type IconName =
+  | "agent"
+  | "plus"
+  | "save"
+  | "phone"
+  | "play"
+  | "route"
+  | "tool"
+  | "book"
+  | "shield"
+  | "code"
+  | "copy"
+  | "widget";
+
+function Icon({ icon }: { icon: IconName }) {
+  const iconClass = "size-4 fill-none stroke-current stroke-2";
+
+  if (icon === "plus") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 5v14M5 12h14" />
+      </svg>
+    );
+  }
+
+  if (icon === "save") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 3h12l2 2v16H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" />
+        <path d="M8 3v6h8V3M8 21v-7h8v7" />
+      </svg>
+    );
+  }
+
+  if (icon === "phone") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6.6 4.8 9 7.2a2 2 0 0 1 .4 2.2l-.8 1.7a12 12 0 0 0 5.3 5.3l1.7-.8a2 2 0 0 1 2.2.4l2.4 2.4a1.8 1.8 0 0 1-.2 2.7c-1 .7-2.2 1-3.6.8C9.4 20.7 3.3 14.6 2.1 7.6 1.9 6.2 2.2 5 2.9 4a1.8 1.8 0 0 1 2.7-.2Z" />
+      </svg>
+    );
+  }
+
+  if (icon === "play") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path d="m8 5 11 7L8 19V5Z" />
+      </svg>
+    );
+  }
+
+  if (icon === "route") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6 5a3 3 0 1 0 0 6h12a3 3 0 1 1 0 6H8" />
+        <path d="M8 15 5 18l3 3" />
+      </svg>
+    );
+  }
+
+  if (icon === "tool") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M14.7 6.3a4 4 0 0 0-5 5L4 17v3h3l5.7-5.7a4 4 0 0 0 5-5l-2.5 2.5-3-3 2.5-2.5Z" />
+      </svg>
+    );
+  }
+
+  if (icon === "book") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 4h11a3 3 0 0 1 3 3v13H7a3 3 0 0 1-3-3V5a1 1 0 0 1 1-1Z" />
+        <path d="M7 17h12M8 8h7M8 12h5" />
+      </svg>
+    );
+  }
+
+  if (icon === "shield") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 3 5 6v5c0 4.4 2.8 8.4 7 10 4.2-1.6 7-5.6 7-10V6l-7-3Z" />
+        <path d="m9 12 2 2 4-5" />
+      </svg>
+    );
+  }
+
+  if (icon === "code") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path d="m8 9-4 3 4 3M16 9l4 3-4 3M14 5l-4 14" />
+      </svg>
+    );
+  }
+
+  if (icon === "copy") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M8 8h10v12H8z" />
+        <path d="M6 16H4V4h12v2" />
+      </svg>
+    );
+  }
+
+  if (icon === "widget") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 5h14v10H5z" />
+        <path d="M8 19h8M12 15v4" />
+        <path d="M9 10h.01M12 10h.01M15 10h.01" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M7 10h10a3 3 0 0 1 3 3v4a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-4a3 3 0 0 1 3-3Z" />
+      <path d="M12 10V6M9 6h6M8.5 15h.01M15.5 15h.01" />
+    </svg>
+  );
+}
 
 function getInitials(name: string) {
   return name
@@ -30,6 +308,99 @@ function getInitials(name: string) {
     .toUpperCase();
 }
 
+function getStatusTone(status: AgentStatus) {
+  if (status === "Live") {
+    return {
+      dot: "bg-[#059669]",
+      badge: "bg-[#ecfdf5] text-[#047857]",
+      text: "text-[#059669]",
+    };
+  }
+
+  if (status === "Draft") {
+    return {
+      dot: "bg-[#d97706]",
+      badge: "bg-[#fff7ed] text-[#c2410c]",
+      text: "text-[#d97706]",
+    };
+  }
+
+  return {
+    dot: "bg-[#64748b]",
+    badge: "bg-[#f1f5f9] text-[#475569]",
+    text: "text-[#64748b]",
+  };
+}
+
+function ToggleRow({
+  title,
+  detail,
+  enabled,
+}: {
+  title: string;
+  detail: string;
+  enabled: boolean;
+}) {
+  return (
+    <label className="flex items-start justify-between gap-3 rounded-lg border border-[#e5e7eb] bg-white p-3">
+      <span>
+        <span className="app-strong block">{title}</span>
+        <span className="app-caption block">{detail}</span>
+      </span>
+      <input
+        className="mt-1 size-4 accent-[#2563eb]"
+        type="checkbox"
+        defaultChecked={enabled}
+      />
+    </label>
+  );
+}
+
+function SelectField({
+  label,
+  defaultValue,
+  options,
+}: {
+  label: string;
+  defaultValue: string;
+  options: string[];
+}) {
+  return (
+    <label className="app-label grid gap-2">
+      <span>{label}</span>
+      <select
+        className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10"
+        defaultValue={defaultValue}
+      >
+        {options.map((option) => (
+          <option key={option}>{option}</option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function InputField({
+  label,
+  defaultValue,
+  placeholder,
+}: {
+  label: string;
+  defaultValue?: string;
+  placeholder?: string;
+}) {
+  return (
+    <label className="app-label grid gap-2">
+      <span>{label}</span>
+      <input
+        className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10"
+        defaultValue={defaultValue}
+        placeholder={placeholder}
+      />
+    </label>
+  );
+}
+
 export function DashboardShell() {
   const router = useRouter();
   const session = useSyncExternalStore(
@@ -37,6 +408,26 @@ export function DashboardShell() {
     getSession,
     getServerSession,
   );
+  const [selectedAgentId, setSelectedAgentId] = useState(agents[0].id);
+  const [activeTab, setActiveTab] = useState<AgentTab>("builder");
+  const [notice, setNotice] = useState("");
+
+  const selectedAgent = useMemo(
+    () => agents.find((agent) => agent.id === selectedAgentId) ?? agents[0],
+    [selectedAgentId],
+  );
+  const selectedTone = getStatusTone(selectedAgent.status);
+  const widgetUrl = `https://app.your-voice-platform.com/agents/embedded?id=${selectedAgent.id}&k=pk_live_demo&userName=John&page=pricing`;
+  const widgetEmbedCode = `<div id="voice-agent-widget"></div>
+<script
+  src="https://app.your-voice-platform.com/widget.js"
+  data-agent-id="${selectedAgent.id}"
+  data-public-key="pk_live_demo"
+  data-theme="light"
+  data-position="bottom-right"
+  data-accent="#1438f5"
+  data-metadata="userName,userType,page,customerID"
+></script>`;
 
   useEffect(() => {
     if (!session) {
@@ -52,137 +443,578 @@ export function DashboardShell() {
     router.replace("/login");
   }
 
+  async function handleCopyWidgetCode() {
+    try {
+      await navigator.clipboard.writeText(widgetEmbedCode);
+      setNotice("Widget embed code copied.");
+    } catch {
+      setNotice("Could not copy automatically. Select the code and copy it manually.");
+    }
+  }
+
   if (!session) {
     return (
-      <main className="grid min-h-screen place-items-center gap-3 bg-[#f8f6ff] font-black text-[#342d42]">
+      <main className="app-strong grid min-h-screen place-items-center gap-3 bg-[#f8f6ff]">
         <span className="size-9 animate-spin rounded-full border-3 border-[#ded6f2] border-t-[#6b35e8]" />
-        Loading dashboard
+        Loading voice agents
       </main>
     );
   }
 
   return (
-    <main className="grid min-h-screen bg-[#f8f6ff] text-[#171321] lg:grid-cols-[276px_minmax(0,1fr)]">
-      <aside className="grid gap-7 border-b border-[#ded6f2] bg-white/85 p-4 backdrop-blur-lg lg:sticky lg:top-0 lg:h-screen lg:grid-rows-[auto_1fr_auto] lg:border-r lg:border-b-0 lg:p-5">
-        <div className="flex items-center">
-          <BrandLogo />
-        </div>
+    <main className="grid min-h-screen bg-[#f7f8fb] text-[#111827] lg:grid-cols-[64px_minmax(0,1fr)]">
+      <DashboardSidebar
+        activeLabel="Voice Agents"
+        userInitials={getInitials(session.name)}
+        onLogout={handleLogout}
+      />
 
-        <nav
-          className="flex gap-2 overflow-x-auto pb-1 lg:grid lg:content-start lg:overflow-visible"
-          aria-label="Dashboard navigation"
-        >
-          {navItems.map((item) => (
-            <Link
-              className={`flex min-h-11 min-w-max items-center gap-2.5 rounded-lg border px-3 font-extrabold transition ${
-                item === "Dashboard"
-                  ? "border-[#ded6f2] bg-[#f1edff] text-[#43208f]"
-                  : "border-transparent text-[#6d647d] hover:border-[#ded6f2] hover:bg-[#f1edff] hover:text-[#43208f]"
-              }`}
-              href="/dashboard"
-              key={item}
-            >
-              <span
-                className="grid size-7 place-items-center rounded-lg bg-[#f1edff] text-xs font-black text-[#6b35e8]"
-                aria-hidden="true"
-              >
-                {item.slice(0, 1)}
-              </span>
-              {item}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="grid gap-1.5 rounded-lg border border-[#ded6f2] bg-white p-4">
-          <span className="text-xs font-black uppercase text-[#6d647d]">Workspace</span>
-          <strong className="text-[#171321]">Demo environment</strong>
-        </div>
-      </aside>
-
-      <section className="grid content-start gap-5 p-4 sm:p-6">
-        <header className="flex flex-col items-stretch justify-between gap-5 lg:flex-row lg:items-center">
+      <section className="grid content-start gap-4 p-3 sm:p-4">
+        <header className="-mx-3 -mt-3 flex flex-col items-stretch justify-between gap-4 border-b border-[#e5e7eb] bg-white px-4 py-4 sm:-mx-4 sm:-mt-4 sm:px-6 lg:flex-row lg:items-center">
           <div>
-            <span className="text-xs font-black uppercase text-[#6b35e8]">Overview</span>
-            <h1 className="mt-1 mb-0 text-[clamp(2.2rem,4vw,3.6rem)] leading-none font-black">
-              Dashboard
-            </h1>
+            <span className="app-kicker">Voice Platform</span>
+            <h1 className="app-page-title mt-1 mb-0">Voice Agents</h1>
           </div>
 
-          <div className="flex w-full min-w-0 flex-wrap items-center gap-2.5 rounded-lg border border-[#ded6f2] bg-white p-2 shadow-[0_12px_38px_rgba(69,37,143,0.08)] lg:w-auto lg:min-w-[360px] lg:flex-nowrap">
-            <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#171321] text-xs font-black text-white">
-              {getInitials(session.name)}
-            </span>
-            <div className="min-w-0 flex-1">
-              <strong className="block truncate">{session.name}</strong>
-              <small className="block truncate text-[#6d647d]">{session.email}</small>
-            </div>
+          <div className="flex flex-wrap items-center gap-2">
             <button
-              className="inline-flex min-h-10 w-full items-center justify-center rounded-lg border-0 bg-[#6b35e8] px-3 font-black text-white sm:w-auto"
+              className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#111827] shadow-sm"
               type="button"
-              onClick={handleLogout}
+              onClick={() => setNotice("Draft saved locally. Backend save will connect later.")}
             >
-              Logout
+              <Icon icon="save" />
+              Save
+            </button>
+            <button
+              className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#dbeafe] bg-[#eff6ff] px-3 text-[#2563eb] shadow-sm"
+              type="button"
+              onClick={() => setNotice("Test call panel is ready for backend calling.")}
+            >
+              <Icon icon="phone" />
+              Test call
+            </button>
+            <button
+              className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border-0 bg-[#1438f5] px-3 text-white shadow-sm"
+              type="button"
+              onClick={() => setNotice("Publish flow is ready for API integration.")}
+            >
+              <Icon icon="play" />
+              Publish
             </button>
           </div>
         </header>
 
-        <section
-          className="grid grid-cols-1 gap-3.5 md:grid-cols-3"
-          aria-label="Workspace metrics"
-        >
-          {metrics.map((metric) => (
-            <article
-              className="grid min-h-32 gap-2 rounded-lg border border-[#ded6f2] bg-white/90 p-4.5 shadow-[0_16px_50px_rgba(69,37,143,0.08)]"
-              key={metric.label}
-            >
-              <span className="font-extrabold text-[#6d647d]">{metric.label}</span>
-              <strong className="text-[clamp(1.8rem,3vw,2.6rem)] leading-none font-black">
-                {metric.value}
-              </strong>
-              <small className="self-end font-extrabold text-[#1d9b6c]">{metric.detail}</small>
+        {notice ? (
+          <p className="app-control-text m-0 rounded-lg border border-[#bfdbfe] bg-[#eff6ff] px-3 py-2 text-[#1d4ed8]">
+            {notice}
+          </p>
+        ) : null}
+
+        <section className="grid gap-4 xl:grid-cols-[300px_minmax(0,1fr)_320px]">
+          <aside className="overflow-hidden rounded-lg border border-[#dfe3ea] bg-white">
+            <div className="flex min-h-[58px] items-center justify-between border-b border-[#e5e7eb] px-4">
+              <div>
+                <h2 className="app-section-title m-0">Agents</h2>
+                <span className="app-caption">Build, test, and deploy</span>
+              </div>
+              <button
+                className="grid size-8 place-items-center rounded-lg bg-[#eff6ff] text-[#2563eb]"
+                type="button"
+                aria-label="Create agent"
+                title="Create agent"
+                onClick={() => setNotice("Create-agent flow is ready for backend data.")}
+              >
+                <Icon icon="plus" />
+              </button>
+            </div>
+
+            <div className="grid gap-1.5 p-2">
+              {agents.map((agent) => {
+                const isActive = agent.id === selectedAgent.id;
+                const tone = getStatusTone(agent.status);
+
+                return (
+                  <button
+                    className={`grid w-full grid-cols-[36px_minmax(0,1fr)_auto] items-center gap-3 rounded-lg p-2.5 text-left transition ${
+                      isActive ? "bg-[#eef4ff]" : "hover:bg-[#f8fafc]"
+                    }`}
+                    key={agent.id}
+                    type="button"
+                    onClick={() => setSelectedAgentId(agent.id)}
+                  >
+                    <span className="grid size-9 place-items-center rounded-lg bg-white text-[#2563eb] shadow-sm">
+                      <Icon icon="agent" />
+                    </span>
+                    <span className="min-w-0">
+                      <strong className="app-strong block truncate">{agent.name}</strong>
+                      <span className="app-caption block truncate">{agent.team}</span>
+                    </span>
+                    <span className={`size-2.5 rounded-full ${tone.dot}`} />
+                  </button>
+                );
+              })}
+            </div>
+          </aside>
+
+          <section className="grid content-start gap-4">
+            <article className="overflow-hidden rounded-lg border border-[#dfe3ea] bg-white">
+              <div className="flex flex-col gap-3 border-b border-[#e5e7eb] px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                  <h2 className="app-section-title m-0">Agent builder</h2>
+                  <span className="app-caption">
+                    {selectedAgent.name} / {selectedAgent.team}
+                  </span>
+                </div>
+                <div className="flex gap-1 rounded-lg border border-[#dfe3ea] bg-[#f8fafc] p-1">
+                  {tabs.map((tab) => (
+                    <button
+                      className={`app-button-text rounded-md px-3 py-1.5 transition ${
+                        activeTab === tab.id
+                          ? "bg-[#111827] text-white"
+                          : "text-[#64748b] hover:bg-white hover:text-[#111827]"
+                      }`}
+                      key={tab.id}
+                      type="button"
+                      onClick={() => setActiveTab(tab.id)}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-4">
+                {activeTab === "builder" ? (
+                  <div className="grid gap-4">
+                    <div className="grid gap-3 lg:grid-cols-2">
+                      <InputField label="Agent name" defaultValue={selectedAgent.name} />
+                      <InputField label="Business / team" defaultValue={selectedAgent.team} />
+                    </div>
+
+                    <label className="app-label grid gap-2">
+                      <span>Opening message</span>
+                      <input
+                        className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10"
+                        defaultValue={selectedAgent.firstMessage}
+                      />
+                    </label>
+
+                    <label className="app-label grid gap-2">
+                      <span>Instructions / prompt</span>
+                      <textarea
+                        className="app-control-text min-h-[132px] resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10"
+                        defaultValue={selectedAgent.prompt}
+                      />
+                    </label>
+
+                    <div className="grid gap-3 lg:grid-cols-3">
+                      <SelectField
+                        label="Language"
+                        defaultValue={selectedAgent.language}
+                        options={["Multilingual", "English", "English UK", "Hindi", "Spanish", "French"]}
+                      />
+                      <SelectField
+                        label="Voice"
+                        defaultValue={selectedAgent.voice}
+                        options={["Clear female", "Warm support", "Calm male", "Bright neutral"]}
+                      />
+                      <SelectField
+                        label="Speech to text"
+                        defaultValue={selectedAgent.stt}
+                        options={["deepgram/nova-3", "multilingual", "assemblyai/universal"]}
+                      />
+                    </div>
+
+                    <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_220px]">
+                      <SelectField
+                        label="LLM model"
+                        defaultValue={selectedAgent.model}
+                        options={["Millis low latency", "gpt-4o realtime", "gpt-4o", "llama-3-70b", "custom websocket"]}
+                      />
+                      <label className="app-label grid gap-2">
+                        <span>Creativity</span>
+                        <input
+                          className="accent-[#2563eb]"
+                          type="range"
+                          min="0"
+                          max="1"
+                          step="0.05"
+                          defaultValue="0.35"
+                        />
+                      </label>
+                    </div>
+
+                    <InputField
+                      label="Custom LLM websocket"
+                      placeholder="wss://your-llm.example.com/agent"
+                    />
+                  </div>
+                ) : null}
+
+                {activeTab === "behavior" ? (
+                  <div className="grid gap-4">
+                    <div className="grid gap-3 lg:grid-cols-2">
+                      {flowSettings.map((setting) => (
+                        <ToggleRow
+                          key={setting.title}
+                          title={setting.title}
+                          detail={setting.detail}
+                          enabled={setting.enabled}
+                        />
+                      ))}
+                    </div>
+
+                    <div className="grid gap-3 lg:grid-cols-3">
+                      <InputField label="Response delay" defaultValue="350ms" />
+                      <InputField label="Max call duration" defaultValue="20 min" />
+                      <InputField label="Max idle time" defaultValue="18 sec" />
+                    </div>
+
+                    <div className="grid gap-3 lg:grid-cols-2">
+                      <InputField label="Transfer phone" defaultValue="+1 415 555 0123" />
+                      <InputField label="Timezone" defaultValue="America/Los_Angeles" />
+                    </div>
+
+                    <label className="app-label grid gap-2">
+                      <span>Voicemail message</span>
+                      <textarea
+                        className="app-control-text min-h-20 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10"
+                        defaultValue="Sorry we missed you. Please call us back or leave a message after the tone."
+                      />
+                    </label>
+                  </div>
+                ) : null}
+
+                {activeTab === "tools" ? (
+                  <div className="grid gap-4">
+                    <div className="grid gap-2">
+                      {tools.map((tool) => (
+                        <article
+                          className="grid gap-3 rounded-lg border border-[#e5e7eb] bg-white p-3 md:grid-cols-[36px_minmax(0,1fr)_80px]"
+                          key={tool.name}
+                        >
+                          <span className="grid size-9 place-items-center rounded-lg bg-[#eff6ff] text-[#2563eb]">
+                            <Icon icon={tool.type === "Web form" ? "code" : "tool"} />
+                          </span>
+                          <span className="min-w-0">
+                            <strong className="app-strong block truncate">{tool.name}</strong>
+                            <span className="app-caption block truncate">{tool.detail}</span>
+                          </span>
+                          <span className="app-label self-center rounded-full bg-[#f8fafc] px-2 py-1 text-center">
+                            {tool.method}
+                          </span>
+                        </article>
+                      ))}
+                    </div>
+
+                    <div className="grid gap-3 lg:grid-cols-2">
+                      <InputField label="Function name" defaultValue="check_availability" />
+                      <InputField label="Webhook URL" defaultValue="https://api.company.com/availability" />
+                      <SelectField label="Method" defaultValue="POST" options={["GET", "POST", "PUT", "PATCH"]} />
+                      <InputField label="Timeout" defaultValue="8 seconds" />
+                    </div>
+
+                    <div className="grid gap-3 lg:grid-cols-2">
+                      <InputField label="Prefetch data webhook" placeholder="https://api.company.com/prefetch" />
+                      <InputField label="End-of-call webhook" placeholder="https://api.company.com/calls/end" />
+                    </div>
+
+                    <div className="grid gap-3 rounded-lg border border-[#e5e7eb] bg-[#f8fafc] p-3">
+                      <span className="app-strong">Dynamic variables</span>
+                      <div className="flex flex-wrap gap-2">
+                        {variables.map((variable) => (
+                          <span
+                            className="app-label rounded-full border border-[#dbeafe] bg-white px-2.5 py-1 text-[#2563eb]"
+                            key={variable}
+                          >
+                            {variable}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
+
+                {activeTab === "calls" ? (
+                  <div className="grid gap-4">
+                    <div className="grid gap-3 lg:grid-cols-3">
+                      <InputField label="Assigned phone" defaultValue={selectedAgent.phone} />
+                      <SelectField label="Route mode" defaultValue="Inbound and outbound" options={["Inbound and outbound", "Inbound only", "Outbound only"]} />
+                      <InputField label="Test destination" placeholder="+14155550123" />
+                    </div>
+
+                    <div className="grid gap-3 lg:grid-cols-2">
+                      <ToggleRow
+                        title="Enable recording"
+                        detail="Store recording URL in end-of-call webhook payload."
+                        enabled={false}
+                      />
+                      <ToggleRow
+                        title="Do-not-call detection"
+                        detail="Detect opt-out intent and mark session metadata."
+                        enabled={true}
+                      />
+                      <ToggleRow
+                        title="Session continuation"
+                        detail="Continue conversations by session or caller identifier."
+                        enabled={true}
+                      />
+                      <ToggleRow
+                        title="Memory"
+                        detail="Use a caller identifier key for repeat interactions."
+                        enabled={true}
+                      />
+                    </div>
+
+                    <div className="grid gap-2">
+                      {recentCalls.map((call) => (
+                        <article
+                          className="grid gap-3 rounded-lg border border-[#e5e7eb] bg-white p-3 md:grid-cols-[minmax(0,1fr)_120px_90px]"
+                          key={`${call.caller}-${call.duration}`}
+                        >
+                          <strong className="app-strong truncate">{call.caller}</strong>
+                          <span className="app-caption">{call.result}</span>
+                          <span className="app-caption md:text-right">{call.duration}</span>
+                        </article>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+
+                {activeTab === "widget" ? (
+                  <div className="grid gap-4">
+                    <div className="grid gap-3 lg:grid-cols-2">
+                      <InputField label="Public widget key" defaultValue="pk_live_demo" />
+                      <InputField label="Allowed domain" defaultValue="https://example.com" />
+                    </div>
+
+                    <div className="grid gap-3 lg:grid-cols-3">
+                      <SelectField
+                        label="Widget theme"
+                        defaultValue="Light"
+                        options={["Light", "Dark", "Auto"]}
+                      />
+                      <SelectField
+                        label="Position"
+                        defaultValue="Bottom right"
+                        options={["Bottom right", "Bottom left", "Inline"]}
+                      />
+                      <InputField label="Button text" defaultValue="Talk to us" />
+                    </div>
+
+                    <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_260px]">
+                      <article className="rounded-lg border border-[#e5e7eb] bg-[#f8fafc] p-3">
+                        <div className="mb-3 flex items-center justify-between gap-3">
+                          <div>
+                            <h3 className="app-section-title m-0">Embed code</h3>
+                            <span className="app-caption">
+                              Paste this before the closing body tag on another website.
+                            </span>
+                          </div>
+                          <button
+                            className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#111827]"
+                            type="button"
+                            onClick={handleCopyWidgetCode}
+                          >
+                            <Icon icon="copy" />
+                            Copy
+                          </button>
+                        </div>
+
+                        <pre className="m-0 max-h-[220px] overflow-auto rounded-lg bg-[#111827] p-3 text-xs leading-5 text-[#cbd5e1]">
+                          {widgetEmbedCode}
+                        </pre>
+                      </article>
+
+                      <article className="rounded-lg border border-[#e5e7eb] bg-white p-3">
+                        <div className="mb-4 flex items-center justify-between gap-3">
+                          <div>
+                            <h3 className="app-section-title m-0">Preview</h3>
+                            <span className="app-caption">Public site widget</span>
+                          </div>
+                          <span className="grid size-8 place-items-center rounded-lg bg-[#eff6ff] text-[#2563eb]">
+                            <Icon icon="widget" />
+                          </span>
+                        </div>
+
+                        <div className="grid min-h-[170px] content-end rounded-lg border border-[#e5e7eb] bg-[#f8fafc] p-3">
+                          <div className="justify-self-end rounded-lg border border-[#dbeafe] bg-white p-3 shadow-sm">
+                            <div className="mb-3 flex items-center gap-2">
+                              <span className="grid size-8 place-items-center rounded-full bg-[#1438f5] text-white">
+                                <Icon icon="phone" />
+                              </span>
+                              <span>
+                                <strong className="app-strong block">{selectedAgent.name}</strong>
+                                <span className="app-caption">Voice assistant</span>
+                              </span>
+                            </div>
+                            <button
+                              className="app-button-text inline-flex min-h-9 w-full items-center justify-center gap-2 rounded-lg bg-[#1438f5] px-3 text-white"
+                              type="button"
+                            >
+                              <Icon icon="phone" />
+                              Talk to us
+                            </button>
+                          </div>
+                        </div>
+                      </article>
+                    </div>
+
+                    <div className="grid gap-3 rounded-lg border border-[#e5e7eb] bg-white p-3">
+                      <div>
+                        <h3 className="app-section-title m-0">Metadata parameters</h3>
+                        <span className="app-caption">
+                          These query values can become session metadata for prompt variables and webhooks.
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {widgetMetadata.map((item) => (
+                          <span
+                            className="app-label rounded-full border border-[#dbeafe] bg-[#eff6ff] px-2.5 py-1 text-[#2563eb]"
+                            key={item}
+                          >
+                            {item}
+                          </span>
+                        ))}
+                      </div>
+                      <code className="app-caption block rounded-lg bg-[#f8fafc] p-3 text-[#334155]">
+                        {widgetUrl}
+                      </code>
+                    </div>
+                  </div>
+                ) : null}
+              </div>
             </article>
-          ))}
-        </section>
 
-        <section className="grid items-stretch gap-4.5 xl:grid-cols-[minmax(0,1.45fr)_minmax(280px,0.75fr)]">
-          <article className="grid min-h-[340px] content-start items-center gap-5.5 rounded-lg border border-[#ded6f2] bg-white/90 p-5.5 shadow-[0_16px_50px_rgba(69,37,143,0.08)] md:grid-cols-[minmax(0,0.95fr)_minmax(260px,0.78fr)]">
-            <div>
-              <span className="text-xs font-black uppercase text-[#6b35e8]">Voice Agent</span>
-              <h2 className="mt-1 mb-2.5 text-[clamp(1.45rem,2.4vw,2.1rem)] leading-tight font-black">
-                Starter workspace
-              </h2>
-              <p className="m-0 leading-7 text-[#6d647d]">
-                Your dashboard shell is ready. Add agent lists, call logs, billing,
-                analytics, and settings pages from the sidebar when you are ready.
-              </p>
-            </div>
-
-            <div className="grid min-h-[230px] gap-4.5 rounded-lg border border-[#ded6f2] bg-gradient-to-br from-[#f1edff] to-white p-4.5">
-              <div className="grid grid-cols-[12px_minmax(0,1fr)_auto] items-center gap-2.5">
-                <span className="size-2.5 rounded-full bg-[#1d9b6c] ring-4 ring-[#1d9b6c]/15" />
-                <strong>Sales Assistant</strong>
-                <small className="inline-flex min-h-7 items-center rounded-full bg-emerald-50 px-2.5 font-black text-[#1d9b6c]">
-                  Live
-                </small>
+            <article className="rounded-lg border border-[#dfe3ea] bg-white p-4">
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <div>
+                  <h2 className="app-section-title m-0">Knowledge base</h2>
+                  <span className="app-caption">Files used for grounded answers</span>
+                </div>
+                <span className="grid size-9 place-items-center rounded-lg bg-[#eff6ff] text-[#2563eb]">
+                  <Icon icon="book" />
+                </span>
               </div>
-              <div className="grid content-center gap-3">
-                <span className="block h-11 rounded-lg bg-[#f1edff]" />
-                <span className="block h-11 w-4/5 rounded-lg bg-[#f1edff]" />
-                <span className="block h-11 w-3/5 rounded-lg bg-[#f1edff]" />
+              <div className="grid gap-2">
+                {knowledgeFiles.map((file) => (
+                  <div
+                    className="flex items-center justify-between gap-3 rounded-lg border border-[#e5e7eb] px-3 py-2"
+                    key={file}
+                  >
+                    <span className="app-strong truncate">{file}</span>
+                    <span className="app-caption">Indexed</span>
+                  </div>
+                ))}
               </div>
-            </div>
-          </article>
+            </article>
+          </section>
 
-          <article className="grid content-start gap-4.5 rounded-lg border border-[#ded6f2] bg-white/90 p-5.5 shadow-[0_16px_50px_rgba(69,37,143,0.08)]">
-            <span className="text-xs font-black uppercase text-[#6b35e8]">Next step</span>
-            <h2 className="m-0 text-[clamp(1.45rem,2.4vw,2.1rem)] leading-tight font-black">
-              Build pages later
-            </h2>
-            <p className="m-0 leading-7 text-[#6d647d]">
-              For now this page stays intentionally simple: sidebar, account state,
-              metrics, and one clean content area.
-            </p>
-          </article>
+          <aside className="grid content-start gap-4">
+            <article className="rounded-lg border border-[#dfe3ea] bg-white">
+              <div className="flex min-h-[58px] items-center justify-between border-b border-[#e5e7eb] px-4">
+                <div>
+                  <h2 className="app-section-title m-0">Runtime</h2>
+                  <span className="app-caption">{selectedAgent.name} status</span>
+                </div>
+                <span className={`app-label rounded-full px-2.5 py-1 ${selectedTone.badge}`}>
+                  {selectedAgent.status}
+                </span>
+              </div>
+
+              <div className="grid gap-4 p-4">
+                <div className="grid grid-cols-3 gap-3">
+                  {runtimeItems.map((item) => (
+                    <span key={item.label}>
+                      <span className="app-label block">{item.label}</span>
+                      <strong className={`app-strong ${item.tone}`}>{item.value}</strong>
+                    </span>
+                  ))}
+                </div>
+
+                <div className="grid gap-2">
+                  <span className="flex justify-between gap-3">
+                    <span className="app-caption">Worker</span>
+                    <strong className="app-strong truncate">{selectedAgent.id}-agent</strong>
+                  </span>
+                  <span className="flex justify-between gap-3">
+                    <span className="app-caption">STT</span>
+                    <strong className="app-strong truncate">{selectedAgent.stt}</strong>
+                  </span>
+                  <span className="flex justify-between gap-3">
+                    <span className="app-caption">Latency</span>
+                    <strong className={`app-strong ${selectedTone.text}`}>{selectedAgent.latency}</strong>
+                  </span>
+                </div>
+              </div>
+            </article>
+
+            <article className="rounded-lg border border-[#dfe3ea] bg-white p-4">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <div>
+                  <h2 className="app-section-title m-0">Phone route</h2>
+                  <span className="app-caption">Inbound and outbound line</span>
+                </div>
+                <span className="grid size-8 place-items-center rounded-lg bg-[#eff6ff] text-[#2563eb]">
+                  <Icon icon="route" />
+                </span>
+              </div>
+
+              <div className="grid gap-3">
+                <div>
+                  <span className="app-label block">Number</span>
+                  <strong className="app-value block">{selectedAgent.phone}</strong>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <span>
+                    <span className="app-label block">Calls</span>
+                    <strong className="app-strong">{selectedAgent.calls}</strong>
+                  </span>
+                  <span>
+                    <span className="app-label block">Success</span>
+                    <strong className="app-strong text-[#059669]">{selectedAgent.success}</strong>
+                  </span>
+                </div>
+              </div>
+            </article>
+
+            <article className="rounded-lg border border-[#dfe3ea] bg-white p-4">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <div>
+                  <h2 className="app-section-title m-0">Deploy checklist</h2>
+                  <span className="app-caption">Required before live traffic</span>
+                </div>
+                <span className="grid size-8 place-items-center rounded-lg bg-[#ecfdf5] text-[#059669]">
+                  <Icon icon="shield" />
+                </span>
+              </div>
+
+              <div className="grid gap-3">
+                {deployChecklist.map((item) => (
+                  <div className="flex items-center gap-3" key={item}>
+                    <span className="size-2 rounded-full bg-[#059669]" />
+                    <span className="app-body">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </article>
+
+            <article className="rounded-lg border border-[#dfe3ea] bg-[#111827] p-4 text-white">
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <h2 className="app-section-title m-0 text-white">Config preview</h2>
+                <Icon icon="code" />
+              </div>
+              <pre className="m-0 overflow-hidden text-xs leading-5 text-[#cbd5e1]">
+{`{
+  "language": "${selectedAgent.language}",
+  "voice": "${selectedAgent.voice}",
+  "model": "${selectedAgent.model}",
+  "tools": ${tools.length},
+  "knowledge_base": ${knowledgeFiles.length}
+}`}
+              </pre>
+            </article>
+          </aside>
         </section>
       </section>
     </main>

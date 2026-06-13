@@ -85,13 +85,13 @@ export function LoginForm() {
       onSubmit={handleSubmit}
     >
       <div className="grid gap-2">
-        <span className="text-xs font-black uppercase text-[#6b35e8]">
+        <span className="app-label text-[var(--app-color-purple)]">
           {mode === "login" ? "Login" : "Create account"}
         </span>
-        <h1 className="m-0 text-[clamp(2rem,4vw,2.75rem)] leading-none font-black text-[#171321]">
+        <h1 className="app-page-title m-0">
           {mode === "login" ? "Access your workspace" : "Create your workspace"}
         </h1>
-        <p className="m-0 leading-7 text-[#6d647d]">
+        <p className="app-body m-0">
           {mode === "login"
             ? "Sign in with an account saved in MongoDB."
             : "Create the first account in MongoDB, then continue to the dashboard."}
@@ -99,10 +99,10 @@ export function LoginForm() {
       </div>
 
       {mode === "register" ? (
-        <label className="grid gap-2 text-sm font-extrabold text-[#342d42]">
+        <label className="app-label grid gap-2">
           <span>Name</span>
           <input
-            className="min-h-12 w-full rounded-lg border border-[#d8ceef] bg-white px-3.5 text-[#171321] outline-none transition focus:border-[#6b35e8] focus:ring-4 focus:ring-[#6b35e8]/15"
+            className="app-control-text min-h-12 w-full rounded-lg border border-[#d8ceef] bg-white px-3.5 text-[#171321] outline-none transition focus:border-[#6b35e8] focus:ring-4 focus:ring-[#6b35e8]/15"
             autoComplete="name"
             onChange={(event) => setName(event.target.value)}
             placeholder="Your name"
@@ -112,10 +112,10 @@ export function LoginForm() {
         </label>
       ) : null}
 
-      <label className="grid gap-2 text-sm font-extrabold text-[#342d42]">
+      <label className="app-label grid gap-2">
         <span>Email</span>
         <input
-          className="min-h-12 w-full rounded-lg border border-[#d8ceef] bg-white px-3.5 text-[#171321] outline-none transition focus:border-[#6b35e8] focus:ring-4 focus:ring-[#6b35e8]/15"
+          className="app-control-text min-h-12 w-full rounded-lg border border-[#d8ceef] bg-white px-3.5 text-[#171321] outline-none transition focus:border-[#6b35e8] focus:ring-4 focus:ring-[#6b35e8]/15"
           autoComplete="email"
           onChange={(event) => setEmail(event.target.value)}
           placeholder="you@company.com"
@@ -124,10 +124,10 @@ export function LoginForm() {
         />
       </label>
 
-      <label className="grid gap-2 text-sm font-extrabold text-[#342d42]">
+      <label className="app-label grid gap-2">
         <span>Password</span>
         <input
-          className="min-h-12 w-full rounded-lg border border-[#d8ceef] bg-white px-3.5 text-[#171321] outline-none transition focus:border-[#6b35e8] focus:ring-4 focus:ring-[#6b35e8]/15"
+          className="app-control-text min-h-12 w-full rounded-lg border border-[#d8ceef] bg-white px-3.5 text-[#171321] outline-none transition focus:border-[#6b35e8] focus:ring-4 focus:ring-[#6b35e8]/15"
           autoComplete="current-password"
           onChange={(event) => setPassword(event.target.value)}
           placeholder="Minimum 6 characters"
@@ -137,13 +137,13 @@ export function LoginForm() {
       </label>
 
       {error ? (
-        <p className="m-0 rounded-lg border border-rose-600/20 bg-rose-50 px-3.5 py-3 font-extrabold text-rose-700">
+        <p className="app-control-text m-0 rounded-lg border border-rose-600/20 bg-rose-50 px-3.5 py-3 text-rose-700">
           {error}
         </p>
       ) : null}
 
       <button
-        className="inline-flex min-h-12 items-center justify-center rounded-lg border-0 bg-[#6b35e8] font-black text-white shadow-[0_16px_34px_rgba(107,53,232,0.24)] transition hover:bg-[#43208f] disabled:cursor-wait disabled:opacity-70"
+        className="app-button-text inline-flex min-h-12 items-center justify-center rounded-lg border-0 bg-[#6b35e8] text-white shadow-[0_16px_34px_rgba(107,53,232,0.24)] transition hover:bg-[#43208f] disabled:cursor-wait disabled:opacity-70"
         disabled={isSubmitting}
         type="submit"
       >
@@ -155,7 +155,7 @@ export function LoginForm() {
       </button>
 
       <button
-        className="inline-flex min-h-10 items-center justify-center border-0 bg-transparent font-extrabold text-[#6b35e8] disabled:cursor-wait disabled:opacity-70"
+        className="app-button-text inline-flex min-h-10 items-center justify-center border-0 bg-transparent text-[#6b35e8] disabled:cursor-wait disabled:opacity-70"
         disabled={isSubmitting}
         onClick={() => {
           setError("");
