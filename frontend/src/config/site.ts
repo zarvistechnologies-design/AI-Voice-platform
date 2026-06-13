@@ -10,7 +10,7 @@ export const siteConfig = {
     { href: "/#company", label: "Company", hasMenu: true },
   ],
   headerActions: [
-    { href: "/#login", label: "Login", variant: "ghost" },
+    { href: "/login", label: "Login", variant: "ghost" },
     { href: "/#contact", label: "Contact Sales", variant: "secondary" },
   ],
   productMenu: {
