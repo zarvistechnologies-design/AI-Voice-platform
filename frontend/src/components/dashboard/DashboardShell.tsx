@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
+import { TestCallPanel } from "@/components/dashboard/TestCallPanel";
 import {
   clearSession,
   getServerSession,
@@ -11,6 +12,15 @@ import {
   subscribeToSession,
   validateStoredSession,
 } from "@/lib/auth";
+import {
+  voiceApi,
+  type BackendAgent,
+  type ModelCatalog,
+  type PipelineMode,
+  type PipelineProvider,
+  type RealtimeProvider,
+  type SttProvider,
+} from "@/lib/voice";
 
 type AgentStatus = "Live" | "Draft" | "Paused";
 type AgentTab = "builder" | "behavior" | "tools" | "calls" | "widget";
@@ -23,8 +33,16 @@ type VoiceAgent = {
   phone: string;
   language: string;
   voice: string;
-  model: string;
-  stt: string;
+  pipelineMode: PipelineMode;
+  realtimeProvider: RealtimeProvider;
+  realtimeModel: string;
+  llmProvider: PipelineProvider;
+  llmModel: string;
+  sttProvider: SttProvider;
+  sttModel: string;
+  ttsProvider: PipelineProvider;
+  ttsModel: string;
+  temperature: number;
   latency: string;
   calls: number;
   success: string;
@@ -41,8 +59,16 @@ const agents: VoiceAgent[] = [
     phone: "+1 415 555 0198",
     language: "Multilingual",
     voice: "Clear female",
-    model: "gpt-4o realtime",
-    stt: "deepgram/nova-3",
+    pipelineMode: "realtime",
+    realtimeProvider: "openai",
+    realtimeModel: "gpt-realtime",
+    llmProvider: "openai",
+    llmModel: "gpt-4.1-mini",
+    sttProvider: "openai",
+    sttModel: "gpt-4o-mini-transcribe",
+    ttsProvider: "openai",
+    ttsModel: "gpt-4o-mini-tts",
+    temperature: 0.35,
     latency: "620ms",
     calls: 248,
     success: "91%",
@@ -58,8 +84,16 @@ const agents: VoiceAgent[] = [
     phone: "+1 212 555 0144",
     language: "English",
     voice: "Warm support",
-    model: "Millis low latency",
-    stt: "multilingual",
+    pipelineMode: "pipeline",
+    realtimeProvider: "openai",
+    realtimeModel: "gpt-realtime",
+    llmProvider: "gemini",
+    llmModel: "gemini-2.5-flash",
+    sttProvider: "sarvam",
+    sttModel: "saaras:v3",
+    ttsProvider: "sarvam",
+    ttsModel: "bulbul:v3",
+    temperature: 0.35,
     latency: "710ms",
     calls: 86,
     success: "84%",
@@ -75,8 +109,16 @@ const agents: VoiceAgent[] = [
     phone: "+44 20 7946 0182",
     language: "English UK",
     voice: "Calm male",
-    model: "custom websocket",
-    stt: "deepgram/nova-3",
+    pipelineMode: "pipeline",
+    realtimeProvider: "gemini",
+    realtimeModel: "gemini-live-2.5-flash-native-audio",
+    llmProvider: "sarvam",
+    llmModel: "sarvam-30b",
+    sttProvider: "sarvam",
+    sttModel: "saaras:v3",
+    ttsProvider: "sarvam",
+    ttsModel: "bulbul:v3",
+    temperature: 0.35,
     latency: "840ms",
     calls: 54,
     success: "79%",
@@ -85,6 +127,41 @@ const agents: VoiceAgent[] = [
     firstMessage: "Hello, you have reached the front desk. How may I help?",
   },
 ];
+
+const fallbackCatalog: ModelCatalog = {
+  realtime: [
+    { provider: "openai", label: "OpenAI Realtime", configured: true, models: ["gpt-realtime"], voices: ["alloy"] },
+    { provider: "gemini", label: "Gemini Live", configured: true, models: ["gemini-live-2.5-flash-native-audio"], voices: ["Aoede"] },
+  ],
+  llm: [
+    { provider: "openai", label: "OpenAI", configured: true, models: ["gpt-4.1-mini"] },
+    { provider: "gemini", label: "Gemini", configured: true, models: ["gemini-2.5-flash"] },
+    { provider: "sarvam", label: "Sarvam", configured: true, models: ["sarvam-30b"] },
+  ],
+  stt: [
+    { provider: "openai", label: "OpenAI", configured: true, models: ["gpt-4o-mini-transcribe"] },
+    { provider: "sarvam", label: "Sarvam", configured: true, models: ["saaras:v3"] },
+  ],
+  tts: [
+    { provider: "openai", label: "OpenAI", configured: true, models: ["gpt-4o-mini-tts"], voices: ["alloy"] },
+    { provider: "gemini", label: "Gemini", configured: true, models: ["gemini-2.5-flash-tts"], voices: ["Aoede"] },
+    { provider: "sarvam", label: "Sarvam", configured: true, models: ["bulbul:v3"], voices: ["shubh"] },
+  ],
+};
+
+function getProvider(catalog: ModelCatalog, layer: keyof ModelCatalog, provider: string) {
+  return catalog[layer].find((item) => item.provider === provider) ?? catalog[layer][0];
+}
+
+function getVoices(
+  catalog: ModelCatalog,
+  layer: "realtime" | "tts",
+  provider: string,
+  model: string,
+) {
+  const item = getProvider(catalog, layer, provider);
+  return item.voicesByModel?.[model] ?? item.voices ?? [];
+}
 
 const tabs: { id: AgentTab; label: string }[] = [
   { id: "builder", label: "Builder" },
@@ -360,17 +437,22 @@ function SelectField({
   label,
   defaultValue,
   options,
+  value,
+  onChange,
 }: {
   label: string;
   defaultValue: string;
   options: string[];
+  value?: string;
+  onChange?: (value: string) => void;
 }) {
   return (
     <label className="app-label grid gap-2">
       <span>{label}</span>
       <select
         className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10"
-        defaultValue={defaultValue}
+        {...(value === undefined ? { defaultValue } : { value })}
+        onChange={onChange ? (event) => onChange(event.target.value) : undefined}
       >
         {options.map((option) => (
           <option key={option}>{option}</option>
@@ -384,18 +466,23 @@ function InputField({
   label,
   defaultValue,
   placeholder,
+  value,
+  onChange,
 }: {
   label: string;
   defaultValue?: string;
   placeholder?: string;
+  value?: string;
+  onChange?: (value: string) => void;
 }) {
   return (
     <label className="app-label grid gap-2">
       <span>{label}</span>
       <input
         className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10"
-        defaultValue={defaultValue}
+        {...(value === undefined ? { defaultValue } : { value })}
         placeholder={placeholder}
+        onChange={onChange ? (event) => onChange(event.target.value) : undefined}
       />
     </label>
   );
@@ -408,13 +495,16 @@ export function DashboardShell() {
     getSession,
     getServerSession,
   );
+  const [agentList, setAgentList] = useState(agents);
   const [selectedAgentId, setSelectedAgentId] = useState(agents[0].id);
   const [activeTab, setActiveTab] = useState<AgentTab>("builder");
   const [notice, setNotice] = useState("");
+  const [showTestCall, setShowTestCall] = useState(false);
+  const [modelCatalog, setModelCatalog] = useState<ModelCatalog>(fallbackCatalog);
 
   const selectedAgent = useMemo(
-    () => agents.find((agent) => agent.id === selectedAgentId) ?? agents[0],
-    [selectedAgentId],
+    () => agentList.find((agent) => agent.id === selectedAgentId) ?? agentList[0] ?? agents[0],
+    [agentList, selectedAgentId],
   );
   const selectedTone = getStatusTone(selectedAgent.status);
   const widgetUrl = `https://app.your-voice-platform.com/agents/embedded?id=${selectedAgent.id}&k=pk_live_demo&userName=John&page=pricing`;
@@ -436,7 +526,68 @@ export function DashboardShell() {
     }
 
     void validateStoredSession();
+    void Promise.all([voiceApi.agents(), voiceApi.config()])
+      .then(([{ agents: backendAgents }, config]) => {
+        const mapped = backendAgents.map(mapBackendAgent);
+        setAgentList(mapped);
+        setModelCatalog(config.modelCatalog);
+        setSelectedAgentId((current) =>
+          mapped.some((agent) => agent.id === current) ? current : mapped[0]?.id ?? current,
+        );
+      })
+      .catch((error) => setNotice(error instanceof Error ? error.message : "Could not load agents."));
   }, [router, session]);
+
+  async function handleSave(changes: Partial<BackendAgent> = {}) {
+    try {
+      const { agent } = await voiceApi.saveAgent(selectedAgent.id, {
+        name: selectedAgent.name,
+        team: selectedAgent.team,
+        status: selectedAgent.status,
+        phone: selectedAgent.phone,
+        language: selectedAgent.language,
+        voice: selectedAgent.voice,
+        pipelineMode: selectedAgent.pipelineMode,
+        realtimeProvider: selectedAgent.realtimeProvider,
+        realtimeModel: selectedAgent.realtimeModel,
+        llmProvider: selectedAgent.llmProvider,
+        llmModel: selectedAgent.llmModel,
+        sttProvider: selectedAgent.sttProvider,
+        sttModel: selectedAgent.sttModel,
+        ttsProvider: selectedAgent.ttsProvider,
+        ttsModel: selectedAgent.ttsModel,
+        temperature: selectedAgent.temperature,
+        prompt: selectedAgent.prompt,
+        firstMessage: selectedAgent.firstMessage,
+        ...changes,
+      });
+      const mapped = mapBackendAgent(agent);
+      setAgentList((current) => current.map((item) => (item.id === mapped.id ? mapped : item)));
+      setNotice("Agent saved to the backend.");
+      return true;
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Could not save agent.");
+      return false;
+    }
+  }
+
+  async function handleCreateAgent() {
+    try {
+      const { agent } = await voiceApi.createAgent();
+      const mapped = mapBackendAgent(agent);
+      setAgentList((current) => [...current, mapped]);
+      setSelectedAgentId(mapped.id);
+      setNotice("New backend agent created.");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Could not create agent.");
+    }
+  }
+
+  function updateSelectedAgent(changes: Partial<VoiceAgent>) {
+    setAgentList((current) =>
+      current.map((agent) => (agent.id === selectedAgent.id ? { ...agent, ...changes } : agent)),
+    );
+  }
 
   function handleLogout() {
     clearSession();
@@ -480,7 +631,7 @@ export function DashboardShell() {
             <button
               className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#111827] shadow-sm"
               type="button"
-              onClick={() => setNotice("Draft saved locally. Backend save will connect later.")}
+              onClick={() => void handleSave()}
             >
               <Icon icon="save" />
               Save
@@ -488,7 +639,11 @@ export function DashboardShell() {
             <button
               className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#dbeafe] bg-[#eff6ff] px-3 text-[#2563eb] shadow-sm"
               type="button"
-              onClick={() => setNotice("Test call panel is ready for backend calling.")}
+              onClick={() => {
+                void handleSave().then((saved) => {
+                  if (saved) setShowTestCall(true);
+                });
+              }}
             >
               <Icon icon="phone" />
               Test call
@@ -496,7 +651,10 @@ export function DashboardShell() {
             <button
               className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border-0 bg-[#1438f5] px-3 text-white shadow-sm"
               type="button"
-              onClick={() => setNotice("Publish flow is ready for API integration.")}
+              onClick={() => {
+                updateSelectedAgent({ status: "Live" });
+                void handleSave({ status: "Live" });
+              }}
             >
               <Icon icon="play" />
               Publish
@@ -522,14 +680,14 @@ export function DashboardShell() {
                 type="button"
                 aria-label="Create agent"
                 title="Create agent"
-                onClick={() => setNotice("Create-agent flow is ready for backend data.")}
+                onClick={() => void handleCreateAgent()}
               >
                 <Icon icon="plus" />
               </button>
             </div>
 
             <div className="grid gap-1.5 p-2">
-              {agents.map((agent) => {
+              {agentList.map((agent) => {
                 const isActive = agent.id === selectedAgent.id;
                 const tone = getStatusTone(agent.status);
 
@@ -587,15 +745,24 @@ export function DashboardShell() {
                 {activeTab === "builder" ? (
                   <div className="grid gap-4">
                     <div className="grid gap-3 lg:grid-cols-2">
-                      <InputField label="Agent name" defaultValue={selectedAgent.name} />
-                      <InputField label="Business / team" defaultValue={selectedAgent.team} />
+                      <InputField
+                        label="Agent name"
+                        value={selectedAgent.name}
+                        onChange={(name) => updateSelectedAgent({ name })}
+                      />
+                      <InputField
+                        label="Business / team"
+                        value={selectedAgent.team}
+                        onChange={(team) => updateSelectedAgent({ team })}
+                      />
                     </div>
 
                     <label className="app-label grid gap-2">
                       <span>Opening message</span>
                       <input
                         className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10"
-                        defaultValue={selectedAgent.firstMessage}
+                        value={selectedAgent.firstMessage}
+                        onChange={(event) => updateSelectedAgent({ firstMessage: event.target.value })}
                       />
                     </label>
 
@@ -603,51 +770,183 @@ export function DashboardShell() {
                       <span>Instructions / prompt</span>
                       <textarea
                         className="app-control-text min-h-[132px] resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10"
-                        defaultValue={selectedAgent.prompt}
+                        value={selectedAgent.prompt}
+                        onChange={(event) => updateSelectedAgent({ prompt: event.target.value })}
                       />
                     </label>
 
-                    <div className="grid gap-3 lg:grid-cols-3">
+                    <div className="grid gap-3 lg:grid-cols-2">
                       <SelectField
                         label="Language"
                         defaultValue={selectedAgent.language}
+                        value={selectedAgent.language}
+                        onChange={(language) => updateSelectedAgent({ language })}
                         options={["Multilingual", "English", "English UK", "Hindi", "Spanish", "French"]}
                       />
                       <SelectField
-                        label="Voice"
-                        defaultValue={selectedAgent.voice}
-                        options={["Clear female", "Warm support", "Calm male", "Bright neutral"]}
-                      />
-                      <SelectField
-                        label="Speech to text"
-                        defaultValue={selectedAgent.stt}
-                        options={["deepgram/nova-3", "multilingual", "assemblyai/universal"]}
+                        label="Voice architecture"
+                        defaultValue={selectedAgent.pipelineMode}
+                        value={selectedAgent.pipelineMode}
+                        onChange={(pipelineMode) =>
+                          updateSelectedAgent({ pipelineMode: pipelineMode as PipelineMode })
+                        }
+                        options={["realtime", "pipeline"]}
                       />
                     </div>
 
+                    {selectedAgent.pipelineMode === "realtime" ? (
+                      <section className="grid gap-3 rounded-xl border border-[#dbeafe] bg-[#f8fbff] p-4">
+                        <div>
+                          <h3 className="app-section-title m-0">Native realtime speech-to-speech</h3>
+                          <span className="app-caption">Lowest latency. The selected model handles listening, reasoning, and speaking.</span>
+                        </div>
+                        <div className="grid gap-3 lg:grid-cols-3">
+                          <SelectField
+                            label="Realtime provider"
+                            defaultValue={selectedAgent.realtimeProvider}
+                            value={selectedAgent.realtimeProvider}
+                            onChange={(provider) => {
+                              const next = getProvider(modelCatalog, "realtime", provider);
+                              updateSelectedAgent({
+                                realtimeProvider: provider as RealtimeProvider,
+                                realtimeModel: next.models[0],
+                                voice: getVoices(modelCatalog, "realtime", provider, next.models[0])[0] ?? selectedAgent.voice,
+                              });
+                            }}
+                            options={modelCatalog.realtime.map((item) => item.provider)}
+                          />
+                          <SelectField
+                            label="Realtime model"
+                            defaultValue={selectedAgent.realtimeModel}
+                            value={selectedAgent.realtimeModel}
+                            onChange={(realtimeModel) => updateSelectedAgent({ realtimeModel })}
+                            options={[...getProvider(modelCatalog, "realtime", selectedAgent.realtimeProvider).models]}
+                          />
+                          <SelectField
+                            label="Realtime voice"
+                            defaultValue={selectedAgent.voice}
+                            value={selectedAgent.voice}
+                            onChange={(voice) => updateSelectedAgent({ voice })}
+                            options={[...getVoices(modelCatalog, "realtime", selectedAgent.realtimeProvider, selectedAgent.realtimeModel)]}
+                          />
+                        </div>
+                      </section>
+                    ) : (
+                      <section className="grid gap-4 rounded-xl border border-[#e5e7eb] bg-[#f8fafc] p-4">
+                        <div>
+                          <h3 className="app-section-title m-0">Custom voice pipeline</h3>
+                          <span className="app-caption">Mix providers independently, like Vapi: STT → LLM → TTS.</span>
+                        </div>
+
+                        <div className="grid gap-3 lg:grid-cols-2">
+                          <SelectField
+                            label="LLM provider"
+                            defaultValue={selectedAgent.llmProvider}
+                            value={selectedAgent.llmProvider}
+                            onChange={(provider) => {
+                              const next = getProvider(modelCatalog, "llm", provider);
+                              updateSelectedAgent({
+                                llmProvider: provider as PipelineProvider,
+                                llmModel: next.models[0],
+                              });
+                            }}
+                            options={modelCatalog.llm.map((item) => item.provider)}
+                          />
+                          <SelectField
+                            label="LLM model"
+                            defaultValue={selectedAgent.llmModel}
+                            value={selectedAgent.llmModel}
+                            onChange={(llmModel) => updateSelectedAgent({ llmModel })}
+                            options={[...getProvider(modelCatalog, "llm", selectedAgent.llmProvider).models]}
+                          />
+                        </div>
+
+                        <div className="grid gap-3 lg:grid-cols-2">
+                          <SelectField
+                            label="Speech-to-text provider"
+                            defaultValue={selectedAgent.sttProvider}
+                            value={selectedAgent.sttProvider}
+                            onChange={(provider) => {
+                              const next = getProvider(modelCatalog, "stt", provider);
+                              updateSelectedAgent({
+                                sttProvider: provider as SttProvider,
+                                sttModel: next.models[0],
+                              });
+                            }}
+                            options={modelCatalog.stt.map((item) => item.provider)}
+                          />
+                          <SelectField
+                            label="Speech-to-text model"
+                            defaultValue={selectedAgent.sttModel}
+                            value={selectedAgent.sttModel}
+                            onChange={(sttModel) => updateSelectedAgent({ sttModel })}
+                            options={[...getProvider(modelCatalog, "stt", selectedAgent.sttProvider).models]}
+                          />
+                        </div>
+
+                        <div className="grid gap-3 lg:grid-cols-3">
+                          <SelectField
+                            label="Text-to-speech provider"
+                            defaultValue={selectedAgent.ttsProvider}
+                            value={selectedAgent.ttsProvider}
+                            onChange={(provider) => {
+                              const next = getProvider(modelCatalog, "tts", provider);
+                              updateSelectedAgent({
+                                ttsProvider: provider as PipelineProvider,
+                                ttsModel: next.models[0],
+                                voice: getVoices(modelCatalog, "tts", provider, next.models[0])[0] ?? selectedAgent.voice,
+                              });
+                            }}
+                            options={modelCatalog.tts.map((item) => item.provider)}
+                          />
+                          <SelectField
+                            label="Text-to-speech model"
+                            defaultValue={selectedAgent.ttsModel}
+                            value={selectedAgent.ttsModel}
+                            onChange={(ttsModel) => {
+                              const voices = getVoices(modelCatalog, "tts", selectedAgent.ttsProvider, ttsModel);
+                              updateSelectedAgent({
+                                ttsModel,
+                                voice: voices.includes(selectedAgent.voice) ? selectedAgent.voice : voices[0],
+                              });
+                            }}
+                            options={[...getProvider(modelCatalog, "tts", selectedAgent.ttsProvider).models]}
+                          />
+                          <SelectField
+                            label="Voice / speaker"
+                            defaultValue={selectedAgent.voice}
+                            value={selectedAgent.voice}
+                            onChange={(voice) => updateSelectedAgent({ voice })}
+                            options={[...getVoices(modelCatalog, "tts", selectedAgent.ttsProvider, selectedAgent.ttsModel)]}
+                          />
+                        </div>
+                      </section>
+                    )}
+
                     <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_220px]">
-                      <SelectField
-                        label="LLM model"
-                        defaultValue={selectedAgent.model}
-                        options={["Millis low latency", "gpt-4o realtime", "gpt-4o", "llama-3-70b", "custom websocket"]}
-                      />
+                      <div className="rounded-lg border border-[#e5e7eb] bg-white p-3">
+                        <span className="app-label block">Active runtime</span>
+                        <strong className="app-strong">
+                          {selectedAgent.pipelineMode === "realtime"
+                            ? `${selectedAgent.realtimeProvider} / ${selectedAgent.realtimeModel}`
+                            : `${selectedAgent.sttProvider} → ${selectedAgent.llmProvider} → ${selectedAgent.ttsProvider}`}
+                        </strong>
+                      </div>
                       <label className="app-label grid gap-2">
                         <span>Creativity</span>
                         <input
                           className="accent-[#2563eb]"
                           type="range"
                           min="0"
-                          max="1"
+                          max="2"
                           step="0.05"
-                          defaultValue="0.35"
+                          value={selectedAgent.temperature}
+                          onChange={(event) =>
+                            updateSelectedAgent({ temperature: Number(event.target.value) })
+                          }
                         />
                       </label>
                     </div>
-
-                    <InputField
-                      label="Custom LLM websocket"
-                      placeholder="wss://your-llm.example.com/agent"
-                    />
                   </div>
                 ) : null}
 
@@ -939,7 +1238,11 @@ export function DashboardShell() {
                   </span>
                   <span className="flex justify-between gap-3">
                     <span className="app-caption">STT</span>
-                    <strong className="app-strong truncate">{selectedAgent.stt}</strong>
+                    <strong className="app-strong truncate">
+                      {selectedAgent.pipelineMode === "realtime"
+                        ? "Native realtime"
+                        : `${selectedAgent.sttProvider}/${selectedAgent.sttModel}`}
+                    </strong>
                   </span>
                   <span className="flex justify-between gap-3">
                     <span className="app-caption">Latency</span>
@@ -1006,9 +1309,13 @@ export function DashboardShell() {
               </div>
               <pre className="m-0 overflow-hidden text-xs leading-5 text-[#cbd5e1]">
 {`{
+  "architecture": "${selectedAgent.pipelineMode}",
   "language": "${selectedAgent.language}",
   "voice": "${selectedAgent.voice}",
-  "model": "${selectedAgent.model}",
+  "realtime": "${selectedAgent.realtimeProvider}/${selectedAgent.realtimeModel}",
+  "stt": "${selectedAgent.sttProvider}/${selectedAgent.sttModel}",
+  "llm": "${selectedAgent.llmProvider}/${selectedAgent.llmModel}",
+  "tts": "${selectedAgent.ttsProvider}/${selectedAgent.ttsModel}",
   "tools": ${tools.length},
   "knowledge_base": ${knowledgeFiles.length}
 }`}
@@ -1017,6 +1324,40 @@ export function DashboardShell() {
           </aside>
         </section>
       </section>
+      {showTestCall ? (
+        <TestCallPanel
+          agentId={selectedAgent.id}
+          agentName={selectedAgent.name}
+          onClose={() => setShowTestCall(false)}
+        />
+      ) : null}
     </main>
   );
+}
+
+function mapBackendAgent(agent: BackendAgent): VoiceAgent {
+  return {
+    id: agent._id,
+    name: agent.name,
+    team: agent.team,
+    status: agent.status,
+    phone: agent.phone || "Not assigned",
+    language: agent.language,
+    voice: agent.voice,
+    pipelineMode: agent.pipelineMode ?? "realtime",
+    realtimeProvider: agent.realtimeProvider ?? "openai",
+    realtimeModel: agent.realtimeModel ?? "gpt-realtime",
+    llmProvider: agent.llmProvider ?? "openai",
+    llmModel: agent.llmModel ?? "gpt-4.1-mini",
+    sttProvider: agent.sttProvider ?? "openai",
+    sttModel: agent.sttModel ?? "gpt-4o-mini-transcribe",
+    ttsProvider: agent.ttsProvider ?? "openai",
+    ttsModel: agent.ttsModel ?? "gpt-4o-mini-tts",
+    temperature: agent.temperature ?? 0.35,
+    latency: agent.pipelineMode === "pipeline" ? "~650ms" : "~450ms",
+    calls: 0,
+    success: "-",
+    prompt: agent.prompt,
+    firstMessage: agent.firstMessage,
+  };
 }
