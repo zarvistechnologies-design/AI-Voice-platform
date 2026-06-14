@@ -234,6 +234,8 @@ export default defineAgent({
     proc.userData.vad = await silero.VAD.load();
   },
   entry: async (ctx: JobContext<ProcessData>) => {
+    await ctx.connect();
+
     const runtime = parseRuntime(ctx);
     const session =
       runtime.pipelineMode === "pipeline"
@@ -244,7 +246,6 @@ export default defineAgent({
       agent: new Assistant(runtime.prompt, runtime.firstMessage),
       room: ctx.room,
     });
-    await ctx.connect();
   },
 });
 

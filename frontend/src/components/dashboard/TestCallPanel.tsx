@@ -69,11 +69,11 @@ export function TestCallPanel({ agentId, agentName, onClose }: Props) {
 
   async function startPhoneCall() {
     setBusy(true);
-    setStatus("Starting outbound call...");
+    setStatus("Dialing phone. Answer the incoming call to connect...");
     try {
       const call = await voiceApi.outboundCall(agentId, phoneNumber.trim());
       setActive(true);
-      setStatus(`Phone is ringing. Room: ${call.roomName}`);
+      setStatus(`Phone call connected. Room: ${call.roomName}`);
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "Could not start the phone call.");
     } finally {

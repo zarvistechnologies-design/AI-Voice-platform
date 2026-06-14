@@ -369,6 +369,9 @@ function NumberActionPanel(props: {
   onSearch: () => void;
 }) {
   const isBuy = props.action === "buy";
+  const selectedAlreadyConnected = props.candidate
+    ? props.connectedSet.has(props.candidate.e164)
+    : false;
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-[#0f172a]/45 p-3 backdrop-blur-sm" role="dialog" aria-modal="true">
       <section className="grid max-h-[calc(100vh-24px)] w-full max-w-4xl grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden rounded-2xl border border-white/60 bg-white shadow-2xl">
@@ -403,7 +406,7 @@ function NumberActionPanel(props: {
                 {props.candidates.map((item) => {
                   const selected = props.candidate?.id === item.id;
                   const alreadyConnected = props.connectedSet.has(item.e164);
-                  return <button className={`mb-1 grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-lg border p-3 text-left transition ${selected ? "border-[#2563eb] bg-[#eff6ff]" : "border-transparent hover:bg-[#f8fafc]"}`} disabled={alreadyConnected} key={item.id} onClick={() => props.onCandidateChange(item)} type="button"><span><strong className="app-strong block">{item.e164}</strong><span className="app-caption">{[item.region, item.country].filter(Boolean).join(", ")} / {item.status}</span></span><span className="text-right">{alreadyConnected ? <span className="app-label text-[#059669]">Connected</span> : isBuy ? <><strong className="app-strong block">{money(item.monthly_fee, item.currency)}</strong><span className="app-caption">per month</span></> : <span className={`grid size-6 place-items-center rounded-full ${selected ? "bg-[#2563eb] text-white" : "border border-[#cbd5e1]"}`}>{selected ? <Icon icon="check" /> : null}</span>}</span></button>;
+                  return <button className={`mb-1 grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-lg border p-3 text-left transition ${selected ? "border-[#2563eb] bg-[#eff6ff]" : "border-transparent hover:bg-[#f8fafc]"}`} disabled={isBuy && alreadyConnected} key={item.id} onClick={() => props.onCandidateChange(item)} type="button"><span><strong className="app-strong block">{item.e164}</strong><span className="app-caption">{[item.region, item.country].filter(Boolean).join(", ")} / {item.status}</span></span><span className="text-right">{alreadyConnected ? <span className="app-label text-[#059669]">{isBuy ? "Connected" : selected ? "Updating" : "Connected"}</span> : isBuy ? <><strong className="app-strong block">{money(item.monthly_fee, item.currency)}</strong><span className="app-caption">per month</span></> : <span className={`grid size-6 place-items-center rounded-full ${selected ? "bg-[#2563eb] text-white" : "border border-[#cbd5e1]"}`}>{selected ? <Icon icon="check" /> : null}</span>}</span></button>;
                 })}
                 {!props.candidates.length && !props.busy ? <p className="app-caption m-0 p-5 text-center">No Vobiz numbers found.</p> : null}
               </div>
@@ -422,7 +425,7 @@ function NumberActionPanel(props: {
 
         <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-[#e5e7eb] px-4 py-3">
           <span className="app-caption">{props.message}</span>
-          <button className={`${buttonClass} border-0 bg-[#1438f5] px-4 text-white shadow-sm`} disabled={!props.vobizConfigured || !props.candidate || !props.agentId || props.busy} onClick={props.onConnect} type="button">{props.busy ? "Working..." : isBuy ? "Buy and connect" : "Connect to agent"}<Icon icon="route" /></button>
+          <button className={`${buttonClass} border-0 bg-[#1438f5] px-4 text-white shadow-sm`} disabled={!props.vobizConfigured || !props.candidate || !props.agentId || props.busy} onClick={props.onConnect} type="button">{props.busy ? "Working..." : isBuy ? "Buy and connect" : selectedAlreadyConnected ? "Update route" : "Connect to agent"}<Icon icon="route" /></button>
         </footer>
       </section>
     </div>

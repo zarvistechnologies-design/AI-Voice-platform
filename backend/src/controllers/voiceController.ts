@@ -3,7 +3,12 @@ import type { Response } from "express";
 import { env } from "../config/env.js";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { PhoneNumberModel } from "../models/PhoneNumber.js";
-import { providerModels, VoiceAgentModel, type VoiceAgentDocument } from "../models/VoiceAgent.js";
+import {
+  providerModels,
+  voiceAgentLimits,
+  VoiceAgentModel,
+  type VoiceAgentDocument,
+} from "../models/VoiceAgent.js";
 import {
   createInboundRoute,
   createWebCallToken,
@@ -39,13 +44,24 @@ function cleanText(value: unknown, fallback = "") {
 function requireE164(value: unknown) {
   const number = cleanText(value);
   if (!/^\+[1-9]\d{7,14}$/.test(number)) {
-    throw new HttpError(400, "Phone number must use E.164 format, for example +12526514669.");
+    throw new HttpError(400, "Phone number must use E.164 format, for example +919876543210.");
   }
   return number;
 }
 
 function phoneDirection(value: unknown): "Inbound" | "Outbound" | "Both" {
   return value === "Inbound" || value === "Outbound" || value === "Both" ? value : "Both";
+}
+
+function validateAgentText(field: "prompt" | "firstMessage", value: string) {
+  const limit = voiceAgentLimits[field];
+  if (value.length > limit) {
+    throw new HttpError(
+      400,
+      `${field === "prompt" ? "Prompt" : "First message"} must be ${limit.toLocaleString("en-US")} characters or fewer.`,
+    );
+  }
+  return value;
 }
 
 async function findAgent(request: AuthenticatedRequest) {
@@ -70,7 +86,7 @@ async function ensureStarterAgent(userId: string) {
     name: "Maya",
     team: "Growth Desk",
     status: "Live",
-    phone: env.livekitSipCallerId,
+    phone: "",
     language: "English",
     voice: "alloy",
     providerModel: "openai-realtime",
@@ -95,7 +111,7 @@ export async function getVoiceConfig(_request: AuthenticatedRequest, response: R
   response.json({
     ...livekitConfiguration(),
     vobiz: {
-      configured: Boolean(vobiz),
+      configured: vobiz?.status === "connected",
       accountId: vobiz?.accountId ?? "",
       status: vobiz?.status ?? "disconnected",
       ownedNumberCount: vobiz?.metadata?.ownedNumberCount ?? 0,
@@ -162,7 +178,13 @@ export async function updateAgent(request: AuthenticatedRequest, response: Respo
   ] as const;
   for (const field of fields) {
     if (typeof request.body[field] === "string") {
-      agent.set(field, request.body[field].trim());
+      const value = request.body[field].trim();
+      agent.set(
+        field,
+        field === "prompt" || field === "firstMessage"
+          ? validateAgentText(field, value)
+          : value,
+      );
     }
   }
   if (providerModels.includes(request.body.providerModel)) {
@@ -181,9 +203,26 @@ export async function createWebToken(request: AuthenticatedRequest, response: Re
 }
 
 export async function createOutboundCall(request: AuthenticatedRequest, response: Response) {
+  const userId = ownerId(request);
   const agent = await findAgent(request);
   const destination = requireE164(request.body.phoneNumber);
-  response.status(202).json(await startOutboundCall(agent, ownerId(request), destination));
+  const sourceNumber = await PhoneNumberModel.findOne({
+    ownerId: userId,
+    agentId: agent._id,
+    direction: { $in: ["Outbound", "Both"] },
+    status: "Ready",
+  }).sort({ updatedAt: -1 });
+
+  if (!sourceNumber) {
+    throw new HttpError(
+      409,
+      "Import or buy a Vobiz number with Outbound or Both direction before starting outbound calls.",
+    );
+  }
+
+  response
+    .status(202)
+    .json(await startOutboundCall(agent, userId, destination, sourceNumber.number));
 }
 
 export async function listPhoneNumbers(request: AuthenticatedRequest, response: Response) {
@@ -206,7 +245,7 @@ async function saveVobizRoute(input: {
     dispatchRuleId = rule.sipDispatchRuleId;
   }
 
-  return PhoneNumberModel.findOneAndUpdate(
+  const phone = await PhoneNumberModel.findOneAndUpdate(
     { ownerId: input.userId, number: input.number.e164 },
     {
       ownerId: input.userId,
@@ -226,6 +265,11 @@ async function saveVobizRoute(input: {
     },
     { new: true, upsert: true, runValidators: true },
   ).populate<{ agentId: VoiceAgentDocument }>("agentId");
+
+  input.agent.phone = input.number.e164;
+  await input.agent.save();
+
+  return phone;
 }
 
 export async function listVobizAccountNumbers(request: AuthenticatedRequest, response: Response) {
@@ -295,7 +339,7 @@ export async function syncPhoneNumbers(request: AuthenticatedRequest, response: 
 export async function getVobizConnection(request: AuthenticatedRequest, response: Response) {
   const integration = await getVobizIntegration(ownerId(request));
   response.json({
-    connected: Boolean(integration),
+    connected: integration?.status === "connected",
     accountId: integration?.accountId ?? "",
     status: integration?.status ?? "disconnected",
     ownedNumberCount: integration?.metadata?.ownedNumberCount ?? 0,

@@ -1,4 +1,12 @@
-import { RoomAgentDispatch, RoomConfiguration } from "@livekit/protocol";
+import {
+  CreateSIPDispatchRuleRequest,
+  ListUpdate,
+  RoomAgentDispatch,
+  RoomConfiguration,
+  SIPDispatchRule,
+  SIPDispatchRuleIndividual,
+  SIPDispatchRuleInfo,
+} from "@livekit/protocol";
 import { AccessToken, RoomServiceClient, SipClient } from "livekit-server-sdk";
 
 import { env } from "../config/env.js";
@@ -71,6 +79,83 @@ function roomName(prefix: string, ownerId: string) {
   return `${prefix}-${safeOwner}-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`;
 }
 
+function inboundRoomPrefix(number: string) {
+  return `inbound-${number.replace(/\D/g, "")}-`;
+}
+
+function inboundRouteInfo(agent: VoiceAgentDocument, number: string) {
+  return new SIPDispatchRuleInfo({
+    rule: new SIPDispatchRule({
+      rule: {
+        case: "dispatchRuleIndividual",
+        value: new SIPDispatchRuleIndividual({ roomPrefix: inboundRoomPrefix(number) }),
+      },
+    }),
+    name: `${agent.name} - ${number}`,
+    trunkIds: [env.livekitSipInboundTrunkId],
+    numbers: [number],
+    metadata: metadataForAgent(agent),
+    roomConfig: new RoomConfiguration({
+      agents: [dispatchForAgent(agent)],
+      departureTimeout: 30,
+    }),
+  });
+}
+
+function routeRoomPrefix(route: SIPDispatchRuleInfo) {
+  const rule = route.rule?.rule;
+  return rule?.case === "dispatchRuleIndividual" ? rule.value.roomPrefix : "";
+}
+
+function routeMatchesNumber(route: SIPDispatchRuleInfo, number: string) {
+  const roomPrefix = inboundRoomPrefix(number);
+  const scopedToNumber = route.numbers.includes(number);
+  const oldWildcardForNumber = route.numbers.length === 0 && routeRoomPrefix(route) === roomPrefix;
+  return scopedToNumber || oldWildcardForNumber;
+}
+
+type SipClientInternals = {
+  rpc: {
+    request(
+      service: string,
+      method: string,
+      data: ReturnType<CreateSIPDispatchRuleRequest["toJson"]>,
+      headers: Record<string, string>,
+    ): Promise<Parameters<typeof SIPDispatchRuleInfo.fromJson>[0]>;
+  };
+  authHeader(
+    grant: Record<string, never>,
+    sip: { admin: true },
+  ): Promise<Record<string, string>>;
+};
+
+async function createNumberScopedDispatchRule(sip: SipClient, route: SIPDispatchRuleInfo) {
+  const client = sip as unknown as SipClientInternals;
+  const data = await client.rpc.request(
+    "SIP",
+    "CreateSIPDispatchRule",
+    new CreateSIPDispatchRuleRequest({ dispatchRule: route }).toJson(),
+    await client.authHeader({}, { admin: true }),
+  );
+  return SIPDispatchRuleInfo.fromJson(data, { ignoreUnknownFields: true });
+}
+
+async function ensureOutboundCallerId(sip: SipClient, fromNumber: string) {
+  const [trunk] = await sip.listSipOutboundTrunk({
+    trunkIds: [env.livekitSipOutboundTrunkId],
+  });
+  if (!trunk) {
+    throw new HttpError(503, "Configured outbound SIP trunk was not found in LiveKit.");
+  }
+  if (trunk.numbers.length === 0 || trunk.numbers.includes("*") || trunk.numbers.includes(fromNumber)) {
+    return;
+  }
+
+  await sip.updateSipOutboundTrunkFields(env.livekitSipOutboundTrunkId, {
+    numbers: new ListUpdate({ add: [fromNumber] }),
+  });
+}
+
 export function livekitConfiguration() {
   return {
     configured: Boolean(env.livekitUrl && env.livekitApiKey && env.livekitApiSecret),
@@ -78,8 +163,8 @@ export function livekitConfiguration() {
     agentName: env.livekitAgentName,
     sip: {
       inboundConfigured: Boolean(env.livekitSipInboundTrunkId),
-      outboundConfigured: Boolean(env.livekitSipOutboundTrunkId && env.livekitSipCallerId),
-      callerId: env.livekitSipCallerId,
+      outboundConfigured: Boolean(env.livekitSipOutboundTrunkId),
+      callerId: "",
     },
     providers: providerCatalog,
     modelCatalog,
@@ -121,16 +206,18 @@ export async function startOutboundCall(
   agent: VoiceAgentDocument,
   ownerId: string,
   destination: string,
+  fromNumber: string,
 ) {
   requireLiveKit();
-  if (!env.livekitSipOutboundTrunkId || !env.livekitSipCallerId) {
-    throw new HttpError(503, "Outbound phone routing and caller ID are not configured.");
+  if (!env.livekitSipOutboundTrunkId) {
+    throw new HttpError(503, "Outbound phone routing is not configured.");
   }
 
   const name = roomName("outbound-call", ownerId);
   const metadata = metadataForAgent(agent);
   const rooms = new RoomServiceClient(apiUrl(), env.livekitApiKey, env.livekitApiSecret);
   const sip = new SipClient(apiUrl(), env.livekitApiKey, env.livekitApiSecret);
+  await ensureOutboundCallerId(sip, fromNumber);
 
   await rooms.createRoom({
     name,
@@ -145,13 +232,14 @@ export async function startOutboundCall(
     destination,
     name,
     {
-      fromNumber: env.livekitSipCallerId,
+      fromNumber,
       participantIdentity: `phone-${destination.replace(/\D/g, "")}-${Date.now()}`,
       participantName: destination,
       participantMetadata: metadata,
-      waitUntilAnswered: false,
+      waitUntilAnswered: true,
       playDialtone: true,
       krispEnabled: true,
+      ringingTimeout: 30,
       maxCallDuration: 1800,
     },
   );
@@ -169,18 +257,17 @@ export async function createInboundRoute(agent: VoiceAgentDocument, number: stri
   }
 
   const sip = new SipClient(apiUrl(), env.livekitApiKey, env.livekitApiSecret);
-  return sip.createSipDispatchRule(
-    { type: "individual", roomPrefix: `inbound-${number.replace(/\D/g, "")}-` },
-    {
-      name: `${agent.name} - ${number}`,
-      trunkIds: [env.livekitSipInboundTrunkId],
-      metadata: metadataForAgent(agent),
-      roomConfig: new RoomConfiguration({
-        agents: [dispatchForAgent(agent)],
-        departureTimeout: 30,
-      }),
-    },
-  );
+  const route = inboundRouteInfo(agent, number);
+  const existing = (await sip.listSipDispatchRule({
+    trunkIds: [env.livekitSipInboundTrunkId],
+  })).find((item) => routeMatchesNumber(item, number));
+
+  if (existing) {
+    route.sipDispatchRuleId = existing.sipDispatchRuleId;
+    return sip.updateSipDispatchRule(existing.sipDispatchRuleId, route);
+  }
+
+  return createNumberScopedDispatchRule(sip, route);
 }
 
 export async function listLiveKitTrunks() {

@@ -6,6 +6,11 @@ export const providerModels = [
   "sarvam-gemini",
 ] as const;
 
+export const voiceAgentLimits = {
+  prompt: 30000,
+  firstMessage: 2000,
+} as const;
+
 const voiceAgentSchema = new Schema(
   {
     ownerId: { type: String, required: true, index: true },
@@ -54,8 +59,8 @@ const voiceAgentSchema = new Schema(
       enum: providerModels,
       default: "openai-realtime",
     },
-    prompt: { type: String, required: true, maxlength: 12000 },
-    firstMessage: { type: String, required: true, maxlength: 1000 },
+    prompt: { type: String, required: true, maxlength: voiceAgentLimits.prompt },
+    firstMessage: { type: String, required: true, maxlength: voiceAgentLimits.firstMessage },
   },
   { timestamps: true },
 );

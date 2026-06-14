@@ -15,9 +15,22 @@ export async function getVobizCredentials(ownerId: string): Promise<VobizCredent
   if (!integration) {
     throw new HttpError(409, "Connect your Vobiz account before managing phone numbers.");
   }
+  let authToken = "";
+  try {
+    authToken = decryptSecret(integration.secretEncrypted);
+  } catch {
+    await ProviderIntegrationModel.updateOne(
+      { _id: integration._id },
+      { status: "error" },
+    );
+    throw new HttpError(
+      409,
+      "Your saved Vobiz credentials can no longer be decrypted. Restore the original INTEGRATION_ENCRYPTION_KEY or disconnect and reconnect your Vobiz account.",
+    );
+  }
   return {
     authId: integration.accountId,
-    authToken: decryptSecret(integration.secretEncrypted),
+    authToken,
   };
 }
 
