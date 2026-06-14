@@ -73,7 +73,7 @@ class Assistant extends voice.Agent {
   }
 
   override async onEnter() {
-    this.session.generateReply({
+    await this.session.generateReply({
       instructions: `Greet the caller now using this exact opening message: ${this.firstMessage}`,
     });
   }
@@ -237,6 +237,21 @@ export default defineAgent({
     await ctx.connect();
 
     const runtime = parseRuntime(ctx);
+    console.log(
+      JSON.stringify({
+        event: "voice-agent-job-started",
+        room: ctx.room.name,
+        agentName: env.livekitAgentName,
+        pipelineMode: runtime.pipelineMode,
+        realtimeProvider: runtime.realtimeProvider,
+        realtimeModel: runtime.realtimeModel,
+        llmProvider: runtime.llmProvider,
+        sttProvider: runtime.sttProvider,
+        ttsProvider: runtime.ttsProvider,
+        voice: runtime.voice,
+        language: runtime.language,
+      }),
+    );
     const session =
       runtime.pipelineMode === "pipeline"
         ? createPipelineSession(runtime, ctx.proc.userData.vad ?? (await silero.VAD.load()))
