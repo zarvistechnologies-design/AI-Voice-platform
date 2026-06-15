@@ -6,15 +6,24 @@ import { useRouter } from "next/navigation";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { TestCallPanel } from "@/components/dashboard/TestCallPanel";
 import {
-  clearSession,
   getServerSession,
   getSession,
+  logoutSession,
   subscribeToSession,
   validateStoredSession,
 } from "@/lib/auth";
 import {
   voiceApi,
   type BackendAgent,
+  type CallRecord,
+  type AgentBehavior,
+  type AgentBusinessHours,
+  type AgentCallSettings,
+  type AgentTemplate,
+  type AgentTool,
+  type AgentWidget,
+  type BusinessHoursDay,
+  type KnowledgeDocument,
   type ModelCatalog,
   type PipelineMode,
   type PipelineProvider,
@@ -43,90 +52,126 @@ type VoiceAgent = {
   ttsProvider: PipelineProvider;
   ttsModel: string;
   temperature: number;
+  maxConcurrentCalls: number;
+  voiceSpeed: number;
+  voicePitch: number;
+  interruptionSensitivity: BackendAgent["interruptionSensitivity"];
+  backgroundNoise: BackendAgent["backgroundNoise"];
+  callbackEmail: string;
+  businessHoursEnabled: boolean;
+  businessHours: AgentBusinessHours;
   latency: string;
   calls: number;
   success: string;
   prompt: string;
   firstMessage: string;
+  behavior: AgentBehavior;
+  callSettings: AgentCallSettings;
+  tools: AgentTool[];
+  knowledgeDocuments: KnowledgeDocument[];
+  dynamicVariables: string[];
+  prefetchWebhook: string;
+  endOfCallWebhook: string;
+  widget: AgentWidget;
+  version: number;
 };
 
-const agents: VoiceAgent[] = [
-  {
-    id: "maya",
-    name: "Maya",
-    team: "Sales team",
-    status: "Live",
-    phone: "+1 415 555 0198",
-    language: "Multilingual",
-    voice: "Clear female",
-    pipelineMode: "realtime",
-    realtimeProvider: "openai",
-    realtimeModel: "gpt-realtime",
-    llmProvider: "openai",
-    llmModel: "gpt-4.1-mini",
-    sttProvider: "openai",
-    sttModel: "gpt-4o-mini-transcribe",
-    ttsProvider: "openai",
-    ttsModel: "gpt-4o-mini-tts",
-    temperature: 0.35,
-    latency: "No data",
-    calls: 248,
-    success: "91%",
-    prompt:
-      "Qualify leads, understand their timeline and budget, answer pricing questions at a high level, and book a follow-up when the caller is ready.",
-    firstMessage: "Hi, this is Maya from Growth Desk. How can I help today?",
-  },
-  {
-    id: "ava",
-    name: "Ava",
-    team: "Human support",
-    status: "Draft",
-    phone: "+1 212 555 0144",
-    language: "English",
-    voice: "Warm support",
-    pipelineMode: "pipeline",
-    realtimeProvider: "openai",
-    realtimeModel: "gpt-realtime",
-    llmProvider: "gemini",
-    llmModel: "gemini-2.5-flash",
-    sttProvider: "sarvam",
-    sttModel: "saaras:v3",
-    ttsProvider: "sarvam",
-    ttsModel: "bulbul:v3",
-    temperature: 0.35,
-    latency: "No data",
-    calls: 86,
-    success: "84%",
-    prompt:
-      "Help customers with account questions, collect issue details, check knowledge base answers, and transfer urgent billing or security problems.",
-    firstMessage: "Thanks for calling support. Tell me what is going on.",
-  },
-  {
-    id: "noah",
-    name: "Noah",
-    team: "Front desk",
-    status: "Paused",
-    phone: "+44 20 7946 0182",
-    language: "English UK",
-    voice: "Calm male",
-    pipelineMode: "pipeline",
-    realtimeProvider: "gemini",
-    realtimeModel: "gemini-live-2.5-flash-native-audio",
-    llmProvider: "sarvam",
-    llmModel: "sarvam-30b",
-    sttProvider: "sarvam",
-    sttModel: "saaras:v3",
-    ttsProvider: "sarvam",
-    ttsModel: "bulbul:v3",
-    temperature: 0.35,
-    latency: "No data",
-    calls: 54,
-    success: "79%",
-    prompt:
-      "Greet callers, collect appointment needs, verify phone number, and route complex requests to a human receptionist.",
-    firstMessage: "Hello, you have reached the front desk. How may I help?",
-  },
-];
+const defaultBehavior: AgentBehavior = {
+  interruptions: true,
+  userStartsFirst: false,
+  autoFillResponses: true,
+  agentCanTerminate: true,
+  voicemailHandling: true,
+  dtmfDial: false,
+  responseDelayMs: 350,
+  maxCallDurationSeconds: 1200,
+  maxIdleSeconds: 18,
+  transferPhone: "",
+  timezone: "UTC",
+  voicemailMessage: "Sorry we missed you. Please leave a message after the tone.",
+};
+
+const defaultCallSettings: AgentCallSettings = {
+  recordingEnabled: false,
+  doNotCallDetection: true,
+  sessionContinuation: true,
+  memoryEnabled: true,
+};
+
+const defaultWidget: AgentWidget = {
+  enabled: false,
+  publicKey: "",
+  allowedDomains: [],
+  theme: "auto",
+  position: "bottom-right",
+  buttonText: "Talk to us",
+  accentColor: "#1438f5",
+};
+
+const defaultBusinessHours: AgentBusinessHours = {
+  timezone: "UTC",
+  schedule: [
+    { day: "sun", enabled: false, start: "09:00", end: "17:00" },
+    { day: "mon", enabled: true, start: "09:00", end: "17:00" },
+    { day: "tue", enabled: true, start: "09:00", end: "17:00" },
+    { day: "wed", enabled: true, start: "09:00", end: "17:00" },
+    { day: "thu", enabled: true, start: "09:00", end: "17:00" },
+    { day: "fri", enabled: true, start: "09:00", end: "17:00" },
+    { day: "sat", enabled: false, start: "09:00", end: "17:00" },
+  ],
+};
+
+const businessDayLabels: Record<BusinessHoursDay["day"], string> = {
+  sun: "Sun",
+  mon: "Mon",
+  tue: "Tue",
+  wed: "Wed",
+  thu: "Thu",
+  fri: "Fri",
+  sat: "Sat",
+};
+
+const agents: VoiceAgent[] = [{
+  id: "loading",
+  name: "Loading agent",
+  team: "Voice team",
+  status: "Draft",
+  phone: "Not assigned",
+  language: "English",
+  voice: "alloy",
+  pipelineMode: "realtime",
+  realtimeProvider: "openai",
+  realtimeModel: "gpt-realtime",
+  llmProvider: "openai",
+  llmModel: "gpt-4.1-mini",
+  sttProvider: "openai",
+  sttModel: "gpt-4o-mini-transcribe",
+  ttsProvider: "openai",
+  ttsModel: "gpt-4o-mini-tts",
+  temperature: 0.35,
+  maxConcurrentCalls: 5,
+  voiceSpeed: 1,
+  voicePitch: 0,
+  interruptionSensitivity: "medium",
+  backgroundNoise: "none",
+  callbackEmail: "",
+  businessHoursEnabled: false,
+  businessHours: defaultBusinessHours,
+  latency: "No data",
+  calls: 0,
+  success: "-",
+  prompt: "",
+  firstMessage: "",
+  behavior: defaultBehavior,
+  callSettings: defaultCallSettings,
+  tools: [],
+  knowledgeDocuments: [],
+  dynamicVariables: ["FromPhone", "ToPhone"],
+  prefetchWebhook: "",
+  endOfCallWebhook: "",
+  widget: defaultWidget,
+  version: 1,
+}];
 
 const fallbackCatalog: ModelCatalog = {
   realtime: [
@@ -179,73 +224,36 @@ const runtimeItems = [
 
 const flowSettings = [
   {
+    field: "interruptions",
     title: "Interruptions",
     detail: "Allow callers to interrupt and keep the interruption message.",
-    enabled: true,
   },
   {
+    field: "userStartsFirst",
     title: "User starts first",
     detail: "Wait for caller speech before the agent opens.",
-    enabled: false,
   },
   {
+    field: "autoFillResponses",
     title: "Auto fill responses",
     detail: "Send short filler phrases when response generation is slow.",
-    enabled: true,
   },
   {
+    field: "agentCanTerminate",
     title: "Agent terminate call",
     detail: "Let the agent end a call after completion or repeated silence.",
-    enabled: true,
   },
   {
+    field: "voicemailHandling",
     title: "Voicemail handling",
     detail: "Leave a configured voicemail and continue on voice activity.",
-    enabled: true,
   },
   {
+    field: "dtmfDial",
     title: "DTMF dial",
     detail: "Allow keypad dialing instructions for IVR navigation.",
-    enabled: false,
   },
-];
-
-const tools = [
-  {
-    name: "lookup_customer",
-    type: "Webhook",
-    detail: "Find CRM profile by {FromPhone}",
-    method: "GET",
-  },
-  {
-    name: "book_demo",
-    type: "Webhook",
-    detail: "Create a calendar hold after qualification",
-    method: "POST",
-  },
-  {
-    name: "open_email_form",
-    type: "Web form",
-    detail: "Collect email when voice spelling is unclear",
-    method: "FORM",
-  },
-];
-
-const knowledgeFiles = [
-  "pricing-faq.pdf",
-  "sales-playbook.md",
-  "security-responses.docx",
-];
-
-const variables = ["{FromPhone}", "{ToPhone}", "{userName}", "{customerID}", "{appointmentTime}"];
-
-const widgetMetadata = ["userName", "userType", "page", "customerID"];
-
-const recentCalls = [
-  { caller: "+1 415 555 7788", result: "Booked demo", duration: "4m 18s" },
-  { caller: "+1 650 555 1290", result: "Transferred", duration: "2m 44s" },
-  { caller: "+1 408 555 7721", result: "Answered FAQ", duration: "3m 02s" },
-];
+] satisfies { field: keyof AgentBehavior; title: string; detail: string }[];
 
 const deployChecklist = [
   "Prompt and first message ready",
@@ -421,10 +429,12 @@ function ToggleRow({
   title,
   detail,
   enabled,
+  onChange,
 }: {
   title: string;
   detail: string;
   enabled: boolean;
+  onChange?: (enabled: boolean) => void;
 }) {
   return (
     <label className="flex items-start justify-between gap-3 rounded-lg border border-[#e5e7eb] bg-white p-3">
@@ -435,7 +445,8 @@ function ToggleRow({
       <input
         className="mt-1 size-4 accent-[#2563eb]"
         type="checkbox"
-        defaultChecked={enabled}
+        checked={enabled}
+        onChange={onChange ? (event) => onChange(event.target.checked) : undefined}
       />
     </label>
   );
@@ -509,22 +520,38 @@ export function DashboardShell() {
   const [notice, setNotice] = useState("");
   const [showTestCall, setShowTestCall] = useState(false);
   const [modelCatalog, setModelCatalog] = useState<ModelCatalog>(fallbackCatalog);
+  const [agentTemplates, setAgentTemplates] = useState<AgentTemplate[]>([]);
+  const [recentCalls, setRecentCalls] = useState<CallRecord[]>([]);
+  const [toolDraft, setToolDraft] = useState<AgentTool>({
+    name: "",
+    description: "",
+    method: "POST",
+    url: "",
+    timeoutSeconds: 8,
+    enabled: true,
+  });
+  const [knowledgeName, setKnowledgeName] = useState("");
+  const [knowledgeContent, setKnowledgeContent] = useState("");
+  const [variableDraft, setVariableDraft] = useState("");
 
   const selectedAgent = useMemo(
     () => agentList.find((agent) => agent.id === selectedAgentId) ?? agentList[0] ?? agents[0],
     [agentList, selectedAgentId],
   );
+  const selectedSchedule = selectedAgent.businessHours.schedule.length
+    ? selectedAgent.businessHours.schedule
+    : defaultBusinessHours.schedule;
   const selectedTone = getStatusTone(selectedAgent.status);
-  const widgetUrl = `https://app.your-voice-platform.com/agents/embedded?id=${selectedAgent.id}&k=pk_live_demo&userName=John&page=pricing`;
+  const widgetUrl = `https://app.your-voice-platform.com/agents/embedded?id=${selectedAgent.id}&k=${selectedAgent.widget.publicKey || "not-configured"}`;
   const widgetEmbedCode = `<div id="voice-agent-widget"></div>
 <script
   src="https://app.your-voice-platform.com/widget.js"
   data-agent-id="${selectedAgent.id}"
-  data-public-key="pk_live_demo"
-  data-theme="light"
-  data-position="bottom-right"
-  data-accent="#1438f5"
-  data-metadata="userName,userType,page,customerID"
+   data-public-key="${selectedAgent.widget.publicKey}"
+   data-theme="${selectedAgent.widget.theme}"
+   data-position="${selectedAgent.widget.position}"
+   data-accent="${selectedAgent.widget.accentColor}"
+   data-metadata="${selectedAgent.dynamicVariables.join(",")}"
 ></script>`;
 
   useEffect(() => {
@@ -547,10 +574,11 @@ export function DashboardShell() {
     };
 
     void validateStoredSession();
-    void Promise.all([voiceApi.agents(), voiceApi.config()])
-      .then(([{ agents: backendAgents }, config]) => {
+    void Promise.all([voiceApi.agents(), voiceApi.config(), voiceApi.agentTemplates()])
+      .then(([{ agents: backendAgents }, config, templateResult]) => {
         applyBackendAgents(backendAgents);
         setModelCatalog(config.modelCatalog);
+        setAgentTemplates(templateResult.templates);
       })
       .catch((error) => setNotice(error instanceof Error ? error.message : "Could not load agents."));
 
@@ -560,6 +588,14 @@ export function DashboardShell() {
 
     return () => window.clearInterval(refreshTimer);
   }, [router, session]);
+
+  useEffect(() => {
+    if (!session || !selectedAgentId || selectedAgentId === "maya") return;
+    void voiceApi
+      .calls({ agentId: selectedAgentId, limit: 5 })
+      .then((result) => setRecentCalls(result.calls))
+      .catch(() => setRecentCalls([]));
+  }, [selectedAgentId, session]);
 
   async function handleSave(changes: Partial<BackendAgent> = {}) {
     try {
@@ -580,8 +616,24 @@ export function DashboardShell() {
         ttsProvider: selectedAgent.ttsProvider,
         ttsModel: selectedAgent.ttsModel,
         temperature: selectedAgent.temperature,
+        maxConcurrentCalls: selectedAgent.maxConcurrentCalls,
+        voiceSpeed: selectedAgent.voiceSpeed,
+        voicePitch: selectedAgent.voicePitch,
+        interruptionSensitivity: selectedAgent.interruptionSensitivity,
+        backgroundNoise: selectedAgent.backgroundNoise,
+        callbackEmail: selectedAgent.callbackEmail,
+        businessHoursEnabled: selectedAgent.businessHoursEnabled,
+        businessHours: selectedAgent.businessHours,
         prompt: selectedAgent.prompt,
         firstMessage: selectedAgent.firstMessage,
+        behavior: selectedAgent.behavior,
+        callSettings: selectedAgent.callSettings,
+        tools: selectedAgent.tools,
+        knowledgeDocuments: selectedAgent.knowledgeDocuments,
+        dynamicVariables: selectedAgent.dynamicVariables,
+        prefetchWebhook: selectedAgent.prefetchWebhook,
+        endOfCallWebhook: selectedAgent.endOfCallWebhook,
+        widget: selectedAgent.widget,
         ...changes,
       });
       const mapped = mapBackendAgent(agent);
@@ -606,15 +658,101 @@ export function DashboardShell() {
     }
   }
 
+  async function handleCreateFromTemplate(templateId: string) {
+    try {
+      const { agent } = await voiceApi.createAgentFromTemplate(templateId);
+      const mapped = mapBackendAgent(agent);
+      setAgentList((current) => [...current, mapped]);
+      setSelectedAgentId(mapped.id);
+      setNotice("Template agent created as a draft.");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Could not create template agent.");
+    }
+  }
+
   function updateSelectedAgent(changes: Partial<VoiceAgent>) {
     setAgentList((current) =>
       current.map((agent) => (agent.id === selectedAgent.id ? { ...agent, ...changes } : agent)),
     );
   }
 
-  function handleLogout() {
-    clearSession();
+  function updateBusinessHours(changes: Partial<AgentBusinessHours>) {
+    updateSelectedAgent({
+      businessHours: {
+        ...selectedAgent.businessHours,
+        schedule: selectedSchedule,
+        ...changes,
+      },
+    });
+  }
+
+  function updateBusinessDay(day: BusinessHoursDay["day"], changes: Partial<BusinessHoursDay>) {
+    updateBusinessHours({
+      schedule: selectedSchedule.map((item) => (item.day === day ? { ...item, ...changes } : item)),
+    });
+  }
+
+  async function handleLogout() {
+    await logoutSession();
     router.replace("/login");
+  }
+
+  async function handleCloneAgent() {
+    try {
+      const { agent } = await voiceApi.cloneAgent(selectedAgent.id);
+      const mapped = mapBackendAgent(agent);
+      setAgentList((current) => [...current, mapped]);
+      setSelectedAgentId(mapped.id);
+      setNotice("Agent cloned as a new draft.");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Could not clone agent.");
+    }
+  }
+
+  async function handleDeleteAgent() {
+    if (!window.confirm(`Delete ${selectedAgent.name}? This cannot be undone.`)) return;
+    try {
+      await voiceApi.deleteAgent(selectedAgent.id);
+      setAgentList((current) => {
+        const next = current.filter((agent) => agent.id !== selectedAgent.id);
+        setSelectedAgentId(next[0]?.id ?? "");
+        return next;
+      });
+      setNotice("Agent deleted.");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Could not delete agent.");
+    }
+  }
+
+  function addTool() {
+    if (!toolDraft.name.trim() || !toolDraft.url.trim()) {
+      setNotice("Enter a function name and webhook URL.");
+      return;
+    }
+    updateSelectedAgent({ tools: [...selectedAgent.tools, { ...toolDraft, name: toolDraft.name.trim(), url: toolDraft.url.trim() }] });
+    setToolDraft({ name: "", description: "", method: "POST", url: "", timeoutSeconds: 8, enabled: true });
+  }
+
+  function addKnowledgeDocument() {
+    if (!knowledgeName.trim() || !knowledgeContent.trim()) {
+      setNotice("Enter a knowledge document name and content.");
+      return;
+    }
+    updateSelectedAgent({
+      knowledgeDocuments: [
+        ...selectedAgent.knowledgeDocuments,
+        { name: knowledgeName.trim(), content: knowledgeContent.trim(), status: "ready" },
+      ],
+    });
+    setKnowledgeName("");
+    setKnowledgeContent("");
+  }
+
+  function addVariable() {
+    const value = variableDraft.trim().replace(/[{}]/g, "");
+    if (!value || selectedAgent.dynamicVariables.includes(value)) return;
+    updateSelectedAgent({ dynamicVariables: [...selectedAgent.dynamicVariables, value] });
+    setVariableDraft("");
   }
 
   async function handleCopyWidgetCode() {
@@ -651,6 +789,20 @@ export function DashboardShell() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
+            <button
+              className="app-button-text inline-flex min-h-9 items-center justify-center rounded-lg border border-[#d5d8df] bg-white px-3 text-[#475569]"
+              type="button"
+              onClick={() => void handleCloneAgent()}
+            >
+              Clone
+            </button>
+            <button
+              className="app-button-text inline-flex min-h-9 items-center justify-center rounded-lg border border-rose-200 bg-white px-3 text-rose-600"
+              type="button"
+              onClick={() => void handleDeleteAgent()}
+            >
+              Delete
+            </button>
             <button
               className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#111827] shadow-sm"
               type="button"
@@ -734,6 +886,25 @@ export function DashboardShell() {
                   </button>
                 );
               })}
+            </div>
+
+            <div className="grid gap-2 border-t border-[#e5e7eb] bg-[#f8fafc] p-3">
+              <div>
+                <strong className="app-strong block">Start from template</strong>
+                <span className="app-caption">Support, scheduling, sales, and FAQ presets</span>
+              </div>
+              {agentTemplates.map((template) => (
+                <button
+                  className="app-button-text flex min-h-9 items-center justify-between gap-2 rounded-lg border border-[#d5d8df] bg-white px-3 text-left text-[#111827]"
+                  key={template.id}
+                  type="button"
+                  onClick={() => void handleCreateFromTemplate(template.id)}
+                >
+                  <span className="truncate">{template.name}</span>
+                  <Icon icon="plus" />
+                </button>
+              ))}
+              {!agentTemplates.length ? <span className="app-caption">Templates loading...</span> : null}
             </div>
           </aside>
 
@@ -970,6 +1141,50 @@ export function DashboardShell() {
                         />
                       </label>
                     </div>
+
+                    <section className="grid gap-3 rounded-xl border border-[#e5e7eb] bg-[#f8fafc] p-4">
+                      <div>
+                        <h3 className="app-section-title m-0">Voice tuning</h3>
+                        <span className="app-caption">Control how quickly, clearly, and aggressively the live agent responds.</span>
+                      </div>
+                      <div className="grid gap-3 lg:grid-cols-3">
+                        <InputField
+                          label="Voice speed"
+                          value={String(selectedAgent.voiceSpeed)}
+                          onChange={(value) => updateSelectedAgent({ voiceSpeed: Number(value) || 1 })}
+                        />
+                        <InputField
+                          label="Voice pitch"
+                          value={String(selectedAgent.voicePitch)}
+                          onChange={(value) => updateSelectedAgent({ voicePitch: Number(value) || 0 })}
+                        />
+                        <InputField
+                          label="Concurrent calls"
+                          value={String(selectedAgent.maxConcurrentCalls)}
+                          onChange={(value) => updateSelectedAgent({ maxConcurrentCalls: Number(value) || 1 })}
+                        />
+                        <SelectField
+                          label="Interruption sensitivity"
+                          defaultValue="medium"
+                          value={selectedAgent.interruptionSensitivity}
+                          options={["low", "medium", "high"]}
+                          onChange={(value) => updateSelectedAgent({ interruptionSensitivity: value as BackendAgent["interruptionSensitivity"] })}
+                        />
+                        <SelectField
+                          label="Background profile"
+                          defaultValue="none"
+                          value={selectedAgent.backgroundNoise}
+                          options={["none", "office", "cafe", "street"]}
+                          onChange={(value) => updateSelectedAgent({ backgroundNoise: value as BackendAgent["backgroundNoise"] })}
+                        />
+                        <InputField
+                          label="Callback email"
+                          value={selectedAgent.callbackEmail}
+                          placeholder="ops@example.com"
+                          onChange={(callbackEmail) => updateSelectedAgent({ callbackEmail })}
+                        />
+                      </div>
+                    </section>
                   </div>
                 ) : null}
 
@@ -981,27 +1196,97 @@ export function DashboardShell() {
                           key={setting.title}
                           title={setting.title}
                           detail={setting.detail}
-                          enabled={setting.enabled}
+                          enabled={Boolean(selectedAgent.behavior[setting.field])}
+                          onChange={(enabled) =>
+                            updateSelectedAgent({
+                              behavior: { ...selectedAgent.behavior, [setting.field]: enabled },
+                            })
+                          }
                         />
                       ))}
                     </div>
 
                     <div className="grid gap-3 lg:grid-cols-3">
-                      <InputField label="Response delay" defaultValue="350ms" />
-                      <InputField label="Max call duration" defaultValue="20 min" />
-                      <InputField label="Max idle time" defaultValue="18 sec" />
+                      <InputField
+                        label="Response delay (ms)"
+                        value={String(selectedAgent.behavior.responseDelayMs)}
+                        onChange={(value) => updateSelectedAgent({ behavior: { ...selectedAgent.behavior, responseDelayMs: Number(value) || 0 } })}
+                      />
+                      <InputField
+                        label="Max call duration (seconds)"
+                        value={String(selectedAgent.behavior.maxCallDurationSeconds)}
+                        onChange={(value) => updateSelectedAgent({ behavior: { ...selectedAgent.behavior, maxCallDurationSeconds: Number(value) || 30 } })}
+                      />
+                      <InputField
+                        label="Max idle time (seconds)"
+                        value={String(selectedAgent.behavior.maxIdleSeconds)}
+                        onChange={(value) => updateSelectedAgent({ behavior: { ...selectedAgent.behavior, maxIdleSeconds: Number(value) || 5 } })}
+                      />
                     </div>
 
                     <div className="grid gap-3 lg:grid-cols-2">
-                      <InputField label="Transfer phone" defaultValue="+1 415 555 0123" />
-                      <InputField label="Timezone" defaultValue="America/Los_Angeles" />
+                      <InputField label="Transfer phone" value={selectedAgent.behavior.transferPhone} placeholder="+14155550123" onChange={(value) => updateSelectedAgent({ behavior: { ...selectedAgent.behavior, transferPhone: value } })} />
+                      <InputField label="Timezone" value={selectedAgent.behavior.timezone} onChange={(value) => updateSelectedAgent({ behavior: { ...selectedAgent.behavior, timezone: value } })} />
                     </div>
+
+                    <section className="grid gap-3 rounded-xl border border-[#e5e7eb] bg-[#f8fafc] p-4">
+                      <ToggleRow
+                        title="Business hours guard"
+                        detail="Block browser and phone calls outside the schedule below."
+                        enabled={selectedAgent.businessHoursEnabled}
+                        onChange={(businessHoursEnabled) => updateSelectedAgent({ businessHoursEnabled })}
+                      />
+                      <InputField
+                        label="Business-hours timezone"
+                        value={selectedAgent.businessHours.timezone}
+                        placeholder="Asia/Kolkata"
+                        onChange={(timezone) => updateBusinessHours({ timezone })}
+                      />
+                      <div className="grid gap-2">
+                        {selectedSchedule.map((item) => (
+                          <div
+                            className="grid gap-2 rounded-lg border border-[#e5e7eb] bg-white p-3 sm:grid-cols-[64px_88px_1fr_1fr]"
+                            key={item.day}
+                          >
+                            <span className="app-strong self-center">{businessDayLabels[item.day]}</span>
+                            <label className="app-label flex items-center gap-2">
+                              <input
+                                className="size-4 accent-[#2563eb]"
+                                type="checkbox"
+                                checked={item.enabled}
+                                onChange={(event) => updateBusinessDay(item.day, { enabled: event.target.checked })}
+                              />
+                              Open
+                            </label>
+                            <label className="app-label grid gap-1">
+                              <span>Start</span>
+                              <input
+                                className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10"
+                                type="time"
+                                value={item.start}
+                                onChange={(event) => updateBusinessDay(item.day, { start: event.target.value })}
+                              />
+                            </label>
+                            <label className="app-label grid gap-1">
+                              <span>End</span>
+                              <input
+                                className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10"
+                                type="time"
+                                value={item.end}
+                                onChange={(event) => updateBusinessDay(item.day, { end: event.target.value })}
+                              />
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    </section>
 
                     <label className="app-label grid gap-2">
                       <span>Voicemail message</span>
                       <textarea
                         className="app-control-text min-h-20 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10"
-                        defaultValue="Sorry we missed you. Please call us back or leave a message after the tone."
+                        value={selectedAgent.behavior.voicemailMessage}
+                        onChange={(event) => updateSelectedAgent({ behavior: { ...selectedAgent.behavior, voicemailMessage: event.target.value } })}
                       />
                     </label>
                   </div>
@@ -1010,48 +1295,59 @@ export function DashboardShell() {
                 {activeTab === "tools" ? (
                   <div className="grid gap-4">
                     <div className="grid gap-2">
-                      {tools.map((tool) => (
+                      {selectedAgent.tools.map((tool, index) => (
                         <article
-                          className="grid gap-3 rounded-lg border border-[#e5e7eb] bg-white p-3 md:grid-cols-[36px_minmax(0,1fr)_80px]"
-                          key={tool.name}
+                          className="grid gap-3 rounded-lg border border-[#e5e7eb] bg-white p-3 md:grid-cols-[36px_minmax(0,1fr)_80px_70px]"
+                          key={tool._id ?? `${tool.name}-${index}`}
                         >
                           <span className="grid size-9 place-items-center rounded-lg bg-[#eff6ff] text-[#2563eb]">
-                            <Icon icon={tool.type === "Web form" ? "code" : "tool"} />
+                            <Icon icon="tool" />
                           </span>
                           <span className="min-w-0">
                             <strong className="app-strong block truncate">{tool.name}</strong>
-                            <span className="app-caption block truncate">{tool.detail}</span>
+                            <span className="app-caption block truncate">{tool.url}</span>
                           </span>
                           <span className="app-label self-center rounded-full bg-[#f8fafc] px-2 py-1 text-center">
                             {tool.method}
                           </span>
+                          <button className="app-label text-rose-600" type="button" onClick={() => updateSelectedAgent({ tools: selectedAgent.tools.filter((_, toolIndex) => toolIndex !== index) })}>Remove</button>
                         </article>
                       ))}
+                      {!selectedAgent.tools.length ? <span className="app-caption rounded-lg border border-dashed border-[#d5d8df] p-4 text-center">No webhook tools configured.</span> : null}
                     </div>
 
                     <div className="grid gap-3 lg:grid-cols-2">
-                      <InputField label="Function name" defaultValue="check_availability" />
-                      <InputField label="Webhook URL" defaultValue="https://api.company.com/availability" />
-                      <SelectField label="Method" defaultValue="POST" options={["GET", "POST", "PUT", "PATCH"]} />
-                      <InputField label="Timeout" defaultValue="8 seconds" />
+                      <InputField label="Function name" value={toolDraft.name} placeholder="check_availability" onChange={(value) => setToolDraft((current) => ({ ...current, name: value }))} />
+                      <InputField label="Webhook URL" value={toolDraft.url} placeholder="https://api.company.com/availability" onChange={(value) => setToolDraft((current) => ({ ...current, url: value }))} />
+                      <SelectField label="Method" defaultValue="POST" value={toolDraft.method} options={["GET", "POST", "PUT", "PATCH", "DELETE"]} onChange={(value) => setToolDraft((current) => ({ ...current, method: value as AgentTool["method"] }))} />
+                      <InputField label="Timeout (seconds)" value={String(toolDraft.timeoutSeconds)} onChange={(value) => setToolDraft((current) => ({ ...current, timeoutSeconds: Number(value) || 8 }))} />
+                      <InputField label="Description" value={toolDraft.description} placeholder="What the agent should use this tool for" onChange={(value) => setToolDraft((current) => ({ ...current, description: value }))} />
+                      <button className="app-button-text min-h-10 self-end rounded-lg bg-[#1438f5] px-3 text-white" type="button" onClick={addTool}>Add webhook tool</button>
                     </div>
 
                     <div className="grid gap-3 lg:grid-cols-2">
-                      <InputField label="Prefetch data webhook" placeholder="https://api.company.com/prefetch" />
-                      <InputField label="End-of-call webhook" placeholder="https://api.company.com/calls/end" />
+                      <InputField label="Prefetch data webhook" value={selectedAgent.prefetchWebhook} placeholder="https://api.company.com/prefetch" onChange={(value) => updateSelectedAgent({ prefetchWebhook: value })} />
+                      <InputField label="End-of-call webhook" value={selectedAgent.endOfCallWebhook} placeholder="https://api.company.com/calls/end" onChange={(value) => updateSelectedAgent({ endOfCallWebhook: value })} />
                     </div>
 
                     <div className="grid gap-3 rounded-lg border border-[#e5e7eb] bg-[#f8fafc] p-3">
                       <span className="app-strong">Dynamic variables</span>
                       <div className="flex flex-wrap gap-2">
-                        {variables.map((variable) => (
-                          <span
+                        {selectedAgent.dynamicVariables.map((variable) => (
+                          <button
                             className="app-label rounded-full border border-[#dbeafe] bg-white px-2.5 py-1 text-[#2563eb]"
                             key={variable}
+                            type="button"
+                            title="Remove variable"
+                            onClick={() => updateSelectedAgent({ dynamicVariables: selectedAgent.dynamicVariables.filter((item) => item !== variable) })}
                           >
-                            {variable}
-                          </span>
+                            {`{${variable}}`} x
+                          </button>
                         ))}
+                      </div>
+                      <div className="flex gap-2">
+                        <input className="app-control-text min-h-10 flex-1 rounded-lg border border-[#dfe3ea] bg-white px-3 outline-none" value={variableDraft} placeholder="customerID" onChange={(event) => setVariableDraft(event.target.value)} />
+                        <button className="app-button-text rounded-lg border border-[#d5d8df] bg-white px-3" type="button" onClick={addVariable}>Add</button>
                       </div>
                     </div>
                   </div>
@@ -1069,22 +1365,26 @@ export function DashboardShell() {
                       <ToggleRow
                         title="Enable recording"
                         detail="Store recording URL in end-of-call webhook payload."
-                        enabled={false}
+                        enabled={selectedAgent.callSettings.recordingEnabled}
+                        onChange={(enabled) => updateSelectedAgent({ callSettings: { ...selectedAgent.callSettings, recordingEnabled: enabled } })}
                       />
                       <ToggleRow
                         title="Do-not-call detection"
                         detail="Detect opt-out intent and mark session metadata."
-                        enabled={true}
+                        enabled={selectedAgent.callSettings.doNotCallDetection}
+                        onChange={(enabled) => updateSelectedAgent({ callSettings: { ...selectedAgent.callSettings, doNotCallDetection: enabled } })}
                       />
                       <ToggleRow
                         title="Session continuation"
                         detail="Continue conversations by session or caller identifier."
-                        enabled={true}
+                        enabled={selectedAgent.callSettings.sessionContinuation}
+                        onChange={(enabled) => updateSelectedAgent({ callSettings: { ...selectedAgent.callSettings, sessionContinuation: enabled } })}
                       />
                       <ToggleRow
                         title="Memory"
                         detail="Use a caller identifier key for repeat interactions."
-                        enabled={true}
+                        enabled={selectedAgent.callSettings.memoryEnabled}
+                        onChange={(enabled) => updateSelectedAgent({ callSettings: { ...selectedAgent.callSettings, memoryEnabled: enabled } })}
                       />
                     </div>
 
@@ -1092,36 +1392,62 @@ export function DashboardShell() {
                       {recentCalls.map((call) => (
                         <article
                           className="grid gap-3 rounded-lg border border-[#e5e7eb] bg-white p-3 md:grid-cols-[minmax(0,1fr)_120px_90px]"
-                          key={`${call.caller}-${call.duration}`}
+                          key={call._id}
                         >
-                          <strong className="app-strong truncate">{call.caller}</strong>
-                          <span className="app-caption">{call.result}</span>
-                          <span className="app-caption md:text-right">{call.duration}</span>
+                          <strong className="app-strong truncate">
+                            {call.callerNumber || call.calledNumber || "Browser caller"}
+                          </strong>
+                          <span className="app-caption capitalize">{call.status}</span>
+                          <span className="app-caption md:text-right">
+                            {Math.floor(call.durationSeconds / 60)}:{String(call.durationSeconds % 60).padStart(2, "0")}
+                          </span>
                         </article>
                       ))}
+                      {!recentCalls.length ? (
+                        <div className="rounded-lg border border-dashed border-[#d5d8df] bg-[#f8fafc] p-5 text-center">
+                          <span className="app-caption">No real calls recorded for this agent yet.</span>
+                        </div>
+                      ) : null}
+                      <button
+                        className="app-button-text min-h-10 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#2563eb]"
+                        type="button"
+                        onClick={() => router.push("/dashboard/calls")}
+                      >
+                        Open all call logs
+                      </button>
                     </div>
                   </div>
                 ) : null}
 
                 {activeTab === "widget" ? (
                   <div className="grid gap-4">
+                    <ToggleRow
+                      title="Enable public widget"
+                      detail="Allow the configured domains to start browser voice sessions."
+                      enabled={selectedAgent.widget.enabled}
+                      onChange={(enabled) => updateSelectedAgent({ widget: { ...selectedAgent.widget, enabled } })}
+                    />
                     <div className="grid gap-3 lg:grid-cols-2">
-                      <InputField label="Public widget key" defaultValue="pk_live_demo" />
-                      <InputField label="Allowed domain" defaultValue="https://example.com" />
+                      <InputField label="Public widget key" value={selectedAgent.widget.publicKey} onChange={(value) => updateSelectedAgent({ widget: { ...selectedAgent.widget, publicKey: value } })} />
+                      <InputField label="Allowed domains (comma separated)" value={selectedAgent.widget.allowedDomains.join(", ")} onChange={(value) => updateSelectedAgent({ widget: { ...selectedAgent.widget, allowedDomains: value.split(",").map((item) => item.trim()).filter(Boolean) } })} />
                     </div>
 
                     <div className="grid gap-3 lg:grid-cols-3">
                       <SelectField
                         label="Widget theme"
-                        defaultValue="Light"
-                        options={["Light", "Dark", "Auto"]}
+                        defaultValue="auto"
+                        value={selectedAgent.widget.theme}
+                        options={["light", "dark", "auto"]}
+                        onChange={(value) => updateSelectedAgent({ widget: { ...selectedAgent.widget, theme: value as AgentWidget["theme"] } })}
                       />
                       <SelectField
                         label="Position"
-                        defaultValue="Bottom right"
-                        options={["Bottom right", "Bottom left", "Inline"]}
+                        defaultValue="bottom-right"
+                        value={selectedAgent.widget.position}
+                        options={["bottom-right", "bottom-left", "inline"]}
+                        onChange={(value) => updateSelectedAgent({ widget: { ...selectedAgent.widget, position: value as AgentWidget["position"] } })}
                       />
-                      <InputField label="Button text" defaultValue="Talk to us" />
+                      <InputField label="Button text" value={selectedAgent.widget.buttonText} onChange={(value) => updateSelectedAgent({ widget: { ...selectedAgent.widget, buttonText: value } })} />
                     </div>
 
                     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_260px]">
@@ -1175,7 +1501,7 @@ export function DashboardShell() {
                               type="button"
                             >
                               <Icon icon="phone" />
-                              Talk to us
+                              {selectedAgent.widget.buttonText}
                             </button>
                           </div>
                         </div>
@@ -1190,7 +1516,7 @@ export function DashboardShell() {
                         </span>
                       </div>
                       <div className="flex flex-wrap gap-2">
-                        {widgetMetadata.map((item) => (
+                        {selectedAgent.dynamicVariables.map((item) => (
                           <span
                             className="app-label rounded-full border border-[#dbeafe] bg-[#eff6ff] px-2.5 py-1 text-[#2563eb]"
                             key={item}
@@ -1212,22 +1538,32 @@ export function DashboardShell() {
               <div className="mb-3 flex items-center justify-between gap-3">
                 <div>
                   <h2 className="app-section-title m-0">Knowledge base</h2>
-                  <span className="app-caption">Files used for grounded answers</span>
+                  <span className="app-caption">Persisted context injected into live conversations</span>
                 </div>
                 <span className="grid size-9 place-items-center rounded-lg bg-[#eff6ff] text-[#2563eb]">
                   <Icon icon="book" />
                 </span>
               </div>
               <div className="grid gap-2">
-                {knowledgeFiles.map((file) => (
+                {selectedAgent.knowledgeDocuments.map((document, index) => (
                   <div
                     className="flex items-center justify-between gap-3 rounded-lg border border-[#e5e7eb] px-3 py-2"
-                    key={file}
+                    key={document._id ?? `${document.name}-${index}`}
                   >
-                    <span className="app-strong truncate">{file}</span>
-                    <span className="app-caption">Indexed</span>
+                    <span className="min-w-0">
+                      <span className="app-strong block truncate">{document.name}</span>
+                      <span className="app-caption block truncate">{document.content}</span>
+                    </span>
+                    <button className="app-label text-rose-600" type="button" onClick={() => updateSelectedAgent({ knowledgeDocuments: selectedAgent.knowledgeDocuments.filter((_, documentIndex) => documentIndex !== index) })}>Remove</button>
                   </div>
                 ))}
+                {!selectedAgent.knowledgeDocuments.length ? <span className="app-caption rounded-lg border border-dashed border-[#d5d8df] p-4 text-center">No knowledge documents added.</span> : null}
+                <InputField label="Document name" value={knowledgeName} placeholder="pricing-faq" onChange={setKnowledgeName} />
+                <label className="app-label grid gap-2">
+                  <span>Knowledge content</span>
+                  <textarea className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none focus:border-[#2563eb]" value={knowledgeContent} onChange={(event) => setKnowledgeContent(event.target.value)} placeholder="Paste approved facts, policies, FAQs, or procedures." />
+                </label>
+                <button className="app-button-text min-h-10 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#2563eb]" type="button" onClick={addKnowledgeDocument}>Add knowledge document</button>
               </div>
             </article>
           </section>
@@ -1270,6 +1606,14 @@ export function DashboardShell() {
                   <span className="flex justify-between gap-3">
                     <span className="app-caption">Latency</span>
                     <strong className={`app-strong ${selectedTone.text}`}>{selectedAgent.latency}</strong>
+                  </span>
+                  <span className="flex justify-between gap-3">
+                    <span className="app-caption">Concurrency</span>
+                    <strong className="app-strong">{selectedAgent.maxConcurrentCalls} calls</strong>
+                  </span>
+                  <span className="flex justify-between gap-3">
+                    <span className="app-caption">Hours guard</span>
+                    <strong className="app-strong">{selectedAgent.businessHoursEnabled ? "Enabled" : "Off"}</strong>
                   </span>
                 </div>
               </div>
@@ -1339,8 +1683,13 @@ export function DashboardShell() {
   "stt": "${selectedAgent.sttProvider}/${selectedAgent.sttModel}",
   "llm": "${selectedAgent.llmProvider}/${selectedAgent.llmModel}",
   "tts": "${selectedAgent.ttsProvider}/${selectedAgent.ttsModel}",
-  "tools": ${tools.length},
-  "knowledge_base": ${knowledgeFiles.length}
+  "voice_speed": ${selectedAgent.voiceSpeed},
+  "voice_pitch": ${selectedAgent.voicePitch},
+  "concurrent_calls": ${selectedAgent.maxConcurrentCalls},
+  "business_hours": ${selectedAgent.businessHoursEnabled},
+  "tools": ${selectedAgent.tools.length},
+  "knowledge_base": ${selectedAgent.knowledgeDocuments.length},
+  "version": ${selectedAgent.version}
 }`}
               </pre>
             </article>
@@ -1377,10 +1726,31 @@ function mapBackendAgent(agent: BackendAgent): VoiceAgent {
     ttsProvider: agent.ttsProvider ?? "openai",
     ttsModel: agent.ttsModel ?? "gpt-4o-mini-tts",
     temperature: agent.temperature ?? 0.35,
+    maxConcurrentCalls: agent.maxConcurrentCalls ?? 5,
+    voiceSpeed: agent.voiceSpeed ?? 1,
+    voicePitch: agent.voicePitch ?? 0,
+    interruptionSensitivity: agent.interruptionSensitivity ?? "medium",
+    backgroundNoise: agent.backgroundNoise ?? "none",
+    callbackEmail: agent.callbackEmail ?? "",
+    businessHoursEnabled: agent.businessHoursEnabled ?? false,
+    businessHours: {
+      ...defaultBusinessHours,
+      ...agent.businessHours,
+      schedule: agent.businessHours?.schedule?.length ? agent.businessHours.schedule : defaultBusinessHours.schedule,
+    },
     latency: formatLatency(agent.latencyMetrics),
     calls: 0,
     success: "-",
     prompt: agent.prompt,
     firstMessage: agent.firstMessage,
+    behavior: { ...defaultBehavior, ...agent.behavior },
+    callSettings: { ...defaultCallSettings, ...agent.callSettings },
+    tools: agent.tools ?? [],
+    knowledgeDocuments: agent.knowledgeDocuments ?? [],
+    dynamicVariables: agent.dynamicVariables ?? ["FromPhone", "ToPhone"],
+    prefetchWebhook: agent.prefetchWebhook ?? "",
+    endOfCallWebhook: agent.endOfCallWebhook ?? "",
+    widget: { ...defaultWidget, ...agent.widget },
+    version: agent.version ?? 1,
   };
 }

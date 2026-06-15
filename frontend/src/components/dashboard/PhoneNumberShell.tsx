@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import {
-  clearSession,
   getServerSession,
   getSession,
+  logoutSession,
   subscribeToSession,
   validateStoredSession,
 } from "@/lib/auth";
@@ -227,7 +227,7 @@ export function PhoneNumberShell() {
 
   return (
     <main className="grid min-h-screen bg-[#f7f8fb] text-[#111827] lg:h-screen lg:grid-cols-[64px_minmax(0,1fr)] lg:overflow-hidden">
-      <DashboardSidebar activeLabel="Phone Number" userInitials={initials(session.name)} onLogout={() => { clearSession(); router.replace("/login"); }} />
+      <DashboardSidebar activeLabel="Phone Number" userInitials={initials(session.name)} onLogout={() => { void logoutSession().then(() => router.replace("/login")); }} />
 
       <section className="grid min-h-0 grid-rows-[auto_minmax(0,1fr)]">
         <header className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e5e7eb] bg-white px-4 py-3 sm:px-5">

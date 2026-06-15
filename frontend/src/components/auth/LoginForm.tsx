@@ -28,6 +28,8 @@ export function LoginForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [twoFactorCode, setTwoFactorCode] = useState("");
+  const [needsTwoFactor, setNeedsTwoFactor] = useState(false);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -54,8 +56,8 @@ export function LoginForm() {
       return;
     }
 
-    if (password.trim().length < 6) {
-      setError("Password must be at least 6 characters.");
+    if (password.trim().length < 8) {
+      setError("Password must be at least 8 characters.");
       return;
     }
 
@@ -65,7 +67,7 @@ export function LoginForm() {
       if (mode === "register") {
         await registerWithPassword(normalizedName, normalizedEmail, password);
       } else {
-        await loginWithPassword(normalizedEmail, password);
+        await loginWithPassword(normalizedEmail, password, twoFactorCode);
       }
 
       router.push(nextPath);
@@ -75,6 +77,7 @@ export function LoginForm() {
           ? authError.message
           : "Could not authenticate. Try again.",
       );
+      if (authError instanceof Error && authError.message.includes("Two-factor code required")) setNeedsTwoFactor(true);
       setIsSubmitting(false);
     }
   }
@@ -94,7 +97,7 @@ export function LoginForm() {
         <p className="app-body m-0">
           {mode === "login"
             ? "Sign in with an account saved in MongoDB."
-            : "Create the first account in MongoDB, then continue to the dashboard."}
+            : "Create your secure workspace, then verify your email from Profile."}
         </p>
       </div>
 
@@ -130,11 +133,26 @@ export function LoginForm() {
           className="app-control-text min-h-12 w-full rounded-lg border border-[#d8ceef] bg-white px-3.5 text-[#171321] outline-none transition focus:border-[#6b35e8] focus:ring-4 focus:ring-[#6b35e8]/15"
           autoComplete="current-password"
           onChange={(event) => setPassword(event.target.value)}
-          placeholder="Minimum 6 characters"
+          placeholder="Minimum 8 characters"
           type="password"
           value={password}
         />
       </label>
+
+      {mode === "login" && needsTwoFactor ? (
+        <label className="app-label grid gap-2">
+          <span>Authenticator code</span>
+          <input
+            className="app-control-text min-h-12 w-full rounded-lg border border-[#d8ceef] bg-white px-3.5 text-[#171321] outline-none transition focus:border-[#6b35e8] focus:ring-4 focus:ring-[#6b35e8]/15"
+            autoComplete="one-time-code"
+            inputMode="numeric"
+            maxLength={6}
+            onChange={(event) => setTwoFactorCode(event.target.value)}
+            placeholder="6-digit code"
+            value={twoFactorCode}
+          />
+        </label>
+      ) : null}
 
       {error ? (
         <p className="app-control-text m-0 rounded-lg border border-rose-600/20 bg-rose-50 px-3.5 py-3 text-rose-700">
@@ -153,6 +171,8 @@ export function LoginForm() {
             ? "Sign in"
             : "Create account"}
       </button>
+
+      {mode === "login" ? <a className="app-button-text text-center text-[#6b35e8]" href="/forgot-password">Forgot password?</a> : null}
 
       <button
         className="app-button-text inline-flex min-h-10 items-center justify-center border-0 bg-transparent text-[#6b35e8] disabled:cursor-wait disabled:opacity-70"

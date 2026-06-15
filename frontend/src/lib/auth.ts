@@ -2,16 +2,18 @@ export type AuthSession = {
   id: string;
   email: string;
   name: string;
-  token: string;
   signedInAt: string;
+  emailVerified: boolean;
+  twoFactorEnabled: boolean;
 };
 
 type AuthResponse = {
-  token: string;
   user: {
     id: string;
     name: string;
     email: string;
+    emailVerified: boolean;
+    twoFactorEnabled: boolean;
     createdAt: string;
   };
 };
@@ -32,14 +34,16 @@ function createSession(authResponse: AuthResponse): AuthSession {
     id: authResponse.user.id,
     email: authResponse.user.email,
     name: authResponse.user.name,
-    token: authResponse.token,
     signedInAt: new Date().toISOString(),
+    emailVerified: authResponse.user.emailVerified,
+    twoFactorEnabled: authResponse.user.twoFactorEnabled,
   };
 }
 
 async function requestAuth(path: string, init: RequestInit) {
   const response = await fetch(`${API_URL}${path}`, {
     ...init,
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
       ...init.headers,
@@ -54,7 +58,7 @@ async function requestAuth(path: string, init: RequestInit) {
     throw new Error(data?.message ?? "Authentication failed.");
   }
 
-  if (!data?.token || !data.user) {
+  if (!data?.user) {
     throw new Error("Invalid response from authentication server.");
   }
 
@@ -71,10 +75,10 @@ function saveSession(session: AuthSession) {
   notifySessionChange();
 }
 
-export async function loginWithPassword(email: string, password: string) {
+export async function loginWithPassword(email: string, password: string, twoFactorCode = "") {
   const session = await requestAuth("/api/auth/login", {
     method: "POST",
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email, password, twoFactorCode }),
   });
 
   saveSession(session);
@@ -114,7 +118,19 @@ export function getSession(): AuthSession | null {
   }
 
   try {
-    cachedSession = JSON.parse(rawSession) as AuthSession;
+    const parsed = JSON.parse(rawSession) as AuthSession & { token?: string };
+    cachedSession = {
+      id: parsed.id,
+      email: parsed.email,
+      name: parsed.name,
+      signedInAt: parsed.signedInAt,
+      emailVerified: parsed.emailVerified ?? false,
+      twoFactorEnabled: parsed.twoFactorEnabled ?? false,
+    };
+    if (parsed.token) {
+      window.localStorage.setItem(SESSION_KEY, JSON.stringify(cachedSession));
+      cachedRawSession = JSON.stringify(cachedSession);
+    }
     return cachedSession;
   } catch {
     window.localStorage.removeItem(SESSION_KEY);
@@ -136,14 +152,18 @@ export async function validateStoredSession() {
   }
 
   const response = await fetch(`${API_URL}/api/auth/me`, {
-    headers: {
-      Authorization: `Bearer ${session.token}`,
-    },
+    credentials: "include",
   });
 
   if (!response.ok) {
-    clearSession();
-    return null;
+    try {
+      const refreshed = await requestAuth("/api/auth/refresh", { method: "POST" });
+      saveSession(refreshed);
+      return refreshed;
+    } catch {
+      clearSession();
+      return null;
+    }
   }
 
   const data = (await response.json()) as {
@@ -151,6 +171,8 @@ export async function validateStoredSession() {
       id: string;
       name: string;
       email: string;
+      emailVerified: boolean;
+      twoFactorEnabled: boolean;
       createdAt: string;
     };
   };
@@ -164,6 +186,8 @@ export async function validateStoredSession() {
     session.id === data.user.id &&
     session.name === data.user.name &&
     session.email === data.user.email
+    && session.emailVerified === data.user.emailVerified
+    && session.twoFactorEnabled === data.user.twoFactorEnabled
   ) {
     return session;
   }
@@ -173,6 +197,8 @@ export async function validateStoredSession() {
     id: data.user.id,
     name: data.user.name,
     email: data.user.email,
+    emailVerified: data.user.emailVerified,
+    twoFactorEnabled: data.user.twoFactorEnabled,
   };
 
   saveSession(updatedSession);
@@ -215,3 +241,43 @@ export function clearSession() {
   cachedSession = null;
   notifySessionChange();
 }
+
+export async function logoutSession() {
+  try {
+    await fetch(`${API_URL}/api/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+    });
+  } finally {
+    clearSession();
+  }
+}
+
+async function accountRequest<T>(path: string, init: RequestInit = {}) {
+  const response = await fetch(`${API_URL}/api/auth${path}`, {
+    ...init,
+    credentials: "include",
+    headers: { "Content-Type": "application/json", ...init.headers },
+  });
+  const data = (await response.json().catch(() => null)) as (T & { message?: string }) | null;
+  if (!response.ok) throw new Error(data?.message ?? "Account request failed.");
+  return (data ?? {}) as T;
+}
+
+export const accountApi = {
+  forgotPassword: (email: string) =>
+    accountRequest<{ sent: boolean; resetUrl?: string }>("/forgot-password", { method: "POST", body: JSON.stringify({ email }) }),
+  resetPassword: (token: string, password: string) =>
+    accountRequest<Record<string, never>>("/reset-password", { method: "POST", body: JSON.stringify({ token, password }) }),
+  verifyEmail: (token: string) =>
+    accountRequest<Record<string, never>>("/verify-email", { method: "POST", body: JSON.stringify({ token }) }),
+  resendVerification: () => accountRequest<{ sent: boolean; verificationUrl?: string }>("/resend-verification", { method: "POST" }),
+  refresh: () => accountRequest<AuthResponse>("/refresh", { method: "POST" }),
+  changePassword: (currentPassword: string, password: string) =>
+    accountRequest<Record<string, never>>("/change-password", { method: "POST", body: JSON.stringify({ currentPassword, password }) }),
+  sessions: () => accountRequest<{ sessions: { _id: string; device: string; ip: string; lastSeenAt: string; expiresAt: string; current: boolean }[] }>("/sessions"),
+  revokeSession: (id: string) => accountRequest<Record<string, never>>(`/sessions/${id}`, { method: "DELETE" }),
+  setupTwoFactor: () => accountRequest<{ secret: string; otpauthUrl: string }>("/2fa/setup", { method: "POST" }),
+  verifyTwoFactor: (code: string) => accountRequest<Record<string, never>>("/2fa/verify", { method: "POST", body: JSON.stringify({ code }) }),
+  disableTwoFactor: (code: string) => accountRequest<Record<string, never>>("/2fa/disable", { method: "POST", body: JSON.stringify({ code }) }),
+};

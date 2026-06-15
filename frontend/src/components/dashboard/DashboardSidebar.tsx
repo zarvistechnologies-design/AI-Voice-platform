@@ -5,16 +5,20 @@ import Link from "next/link";
 type SidebarItem = {
   label: string;
   href: string;
-  icon: "agent" | "phone" | "campaign" | "knowledge" | "logs" | "settings";
+  icon: "agent" | "phone" | "analytics" | "campaign" | "knowledge" | "logs" | "billing" | "integrations" | "developer" | "profile" | "settings";
 };
 
 const sidebarItems: SidebarItem[] = [
   { label: "Voice Agents", href: "/dashboard", icon: "agent" },
   { label: "Phone Number", href: "/dashboard/phone-number", icon: "phone" },
-  { label: "Campaigns", href: "/dashboard", icon: "campaign" },
+  { label: "Analytics", href: "/dashboard/analytics", icon: "analytics" },
   { label: "Agent Knowledge", href: "/dashboard", icon: "knowledge" },
-  { label: "Call Logs", href: "/dashboard", icon: "logs" },
-  { label: "Settings", href: "/dashboard", icon: "settings" },
+  { label: "Call Logs", href: "/dashboard/calls", icon: "logs" },
+  { label: "Billing", href: "/dashboard/billing", icon: "billing" },
+  { label: "Integrations", href: "/dashboard/integrations", icon: "integrations" },
+  { label: "Developer", href: "/dashboard/developer", icon: "developer" },
+  { label: "Profile", href: "/dashboard/profile", icon: "profile" },
+  { label: "Settings", href: "/dashboard/settings", icon: "settings" },
 ];
 
 function SidebarIcon({ icon }: { icon: SidebarItem["icon"] | "mic" }) {
@@ -55,6 +59,15 @@ function SidebarIcon({ icon }: { icon: SidebarItem["icon"] | "mic" }) {
     );
   }
 
+  if (icon === "analytics") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 20V10M12 20V4M19 20v-7" />
+        <path d="M3 20h18" />
+      </svg>
+    );
+  }
+
   if (icon === "knowledge") {
     return (
       <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
@@ -69,6 +82,41 @@ function SidebarIcon({ icon }: { icon: SidebarItem["icon"] | "mic" }) {
       <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
         <path d="M7 6h11M7 12h11M7 18h7" />
         <path d="M4 6h.01M4 12h.01M4 18h.01" />
+      </svg>
+    );
+  }
+
+  if (icon === "billing") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="3" y="5" width="18" height="14" rx="3" />
+        <path d="M3 10h18M7 15h4" />
+      </svg>
+    );
+  }
+
+  if (icon === "developer") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 4l-4 16" />
+      </svg>
+    );
+  }
+
+  if (icon === "integrations") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M8 12h8M7 8V5M17 8V5M7 19v-3M17 19v-3" />
+        <rect x="4" y="8" width="16" height="8" rx="3" />
+      </svg>
+    );
+  }
+
+  if (icon === "profile") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="8" r="4" />
+        <path d="M4 21a8 8 0 0 1 16 0" />
       </svg>
     );
   }
