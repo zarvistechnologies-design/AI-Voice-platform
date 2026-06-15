@@ -69,7 +69,7 @@ const agents: VoiceAgent[] = [
     ttsProvider: "openai",
     ttsModel: "gpt-4o-mini-tts",
     temperature: 0.35,
-    latency: "620ms",
+    latency: "No data",
     calls: 248,
     success: "91%",
     prompt:
@@ -94,7 +94,7 @@ const agents: VoiceAgent[] = [
     ttsProvider: "sarvam",
     ttsModel: "bulbul:v3",
     temperature: 0.35,
-    latency: "710ms",
+    latency: "No data",
     calls: 86,
     success: "84%",
     prompt:
@@ -119,7 +119,7 @@ const agents: VoiceAgent[] = [
     ttsProvider: "sarvam",
     ttsModel: "bulbul:v3",
     temperature: 0.35,
-    latency: "840ms",
+    latency: "No data",
     calls: 54,
     success: "79%",
     prompt:
@@ -409,6 +409,14 @@ function getStatusTone(status: AgentStatus) {
   };
 }
 
+function formatLatency(metrics: BackendAgent["latencyMetrics"]) {
+  const latestMs = metrics?.latestMs;
+  if (typeof latestMs !== "number" || !Number.isFinite(latestMs)) {
+    return "No data";
+  }
+  return `${Math.round(latestMs)}ms`;
+}
+
 function ToggleRow({
   title,
   detail,
@@ -525,17 +533,32 @@ export function DashboardShell() {
       return;
     }
 
+    const applyBackendAgents = (backendAgents: BackendAgent[]) => {
+      const mapped = backendAgents.map(mapBackendAgent);
+      setAgentList(mapped);
+      setSelectedAgentId((current) =>
+        mapped.some((agent) => agent.id === current) ? current : mapped[0]?.id ?? current,
+      );
+    };
+
+    const refreshAgents = async () => {
+      const { agents: backendAgents } = await voiceApi.agents();
+      applyBackendAgents(backendAgents);
+    };
+
     void validateStoredSession();
     void Promise.all([voiceApi.agents(), voiceApi.config()])
       .then(([{ agents: backendAgents }, config]) => {
-        const mapped = backendAgents.map(mapBackendAgent);
-        setAgentList(mapped);
+        applyBackendAgents(backendAgents);
         setModelCatalog(config.modelCatalog);
-        setSelectedAgentId((current) =>
-          mapped.some((agent) => agent.id === current) ? current : mapped[0]?.id ?? current,
-        );
       })
       .catch((error) => setNotice(error instanceof Error ? error.message : "Could not load agents."));
+
+    const refreshTimer = window.setInterval(() => {
+      void refreshAgents().catch(() => undefined);
+    }, 15000);
+
+    return () => window.clearInterval(refreshTimer);
   }, [router, session]);
 
   async function handleSave(changes: Partial<BackendAgent> = {}) {
@@ -1354,7 +1377,7 @@ function mapBackendAgent(agent: BackendAgent): VoiceAgent {
     ttsProvider: agent.ttsProvider ?? "openai",
     ttsModel: agent.ttsModel ?? "gpt-4o-mini-tts",
     temperature: agent.temperature ?? 0.35,
-    latency: agent.pipelineMode === "pipeline" ? "~650ms" : "~450ms",
+    latency: formatLatency(agent.latencyMetrics),
     calls: 0,
     success: "-",
     prompt: agent.prompt,

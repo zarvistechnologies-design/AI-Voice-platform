@@ -45,6 +45,12 @@ export type BackendAgent = {
   temperature: number;
   prompt: string;
   firstMessage: string;
+  latencyMetrics?: {
+    latestMs?: number;
+    averageMs?: number;
+    sampleCount?: number;
+    lastMeasuredAt?: string;
+  };
 };
 
 export type BackendPhoneNumber = {
