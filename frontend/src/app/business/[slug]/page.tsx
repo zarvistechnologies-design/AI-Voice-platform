@@ -9,15 +9,17 @@ type BusinessPageProps = {
   }>;
 };
 
+const useCasePages = businessPages.filter((business) => business.kicker === "Use Cases");
+
 export function generateStaticParams() {
-  return businessPages.map((business) => ({
+  return useCasePages.map((business) => ({
     slug: business.slug,
   }));
 }
 
 export async function generateMetadata({ params }: BusinessPageProps) {
   const { slug } = await params;
-  const business = businessPages.find((item) => item.slug === slug);
+  const business = useCasePages.find((item) => item.slug === slug);
 
   if (!business) {
     return {
@@ -33,7 +35,7 @@ export async function generateMetadata({ params }: BusinessPageProps) {
 
 export default async function BusinessPage({ params }: BusinessPageProps) {
   const { slug } = await params;
-  const business = businessPages.find((item) => item.slug === slug);
+  const business = useCasePages.find((item) => item.slug === slug);
 
   if (!business) {
     notFound();
