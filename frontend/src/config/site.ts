@@ -58,14 +58,14 @@ export const siteConfig = {
       {
         title: "Industries",
         links: [
-          { href: "/business/healthcare", label: "Healthcare" },
-          { href: "/business/financial-services", label: "Financial Services" },
-          { href: "/business/insurance", label: "Insurance" },
-          { href: "/business/logistics", label: "Logistics" },
-          { href: "/business/home-services", label: "Home Services" },
-          { href: "/business/retail-consumer", label: "Retail & Consumer" },
-          { href: "/business/travel-hospitality", label: "Travel & Hospitality" },
-          { href: "/business/debt-collection", label: "Debt Collection" },
+          { href: "/business/industries/healthcare", label: "Healthcare" },
+          { href: "/business/industries/financial-services", label: "Financial Services" },
+          { href: "/business/industries/insurance", label: "Insurance" },
+          { href: "/business/industries/logistics", label: "Logistics" },
+          { href: "/business/industries/home-services", label: "Home Services" },
+          { href: "/business/industries/retail-consumer", label: "Retail & Consumer" },
+          { href: "/business/industries/travel-hospitality", label: "Travel & Hospitality" },
+          { href: "/business/industries/debt-collection", label: "Debt Collection" },
         ],
       },
       {
