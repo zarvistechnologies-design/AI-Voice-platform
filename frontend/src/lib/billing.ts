@@ -16,8 +16,58 @@ export type BillingPlan = {
   };
 };
 
+export type CreditWallet = {
+  _id: string;
+  orgId: string;
+  balanceCredits: number;
+  lifetimePurchasedCredits: number;
+  currency: string;
+  autoReloadEnabled: boolean;
+  reloadThresholdCredits: number;
+  reloadAmountCredits: number;
+  paymentProvider: "" | "internal" | "stripe";
+  stripeCustomerId: string;
+  stripePaymentMethodId: string;
+  lastPaymentStatus: "none" | "pending" | "success" | "failed";
+  lastPaymentAmountCredits: number;
+  lastPaymentAt?: string;
+  lastCheckedAt?: string;
+  updatedAt: string;
+};
+
+export type BillingTransaction = {
+  _id: string;
+  orgId: string;
+  type: "topup" | "deduction" | "refund" | "auto_reload";
+  category: "payment" | "call" | "adjustment" | "auto_reload";
+  amountCredits: number;
+  currency: string;
+  description: string;
+  callId: string;
+  stripeSessionId?: string;
+  stripePaymentIntentId: string;
+  balanceAfterCredits: number;
+  breakdown: {
+    llm: number;
+    stt: number;
+    tts: number;
+    telephony: number;
+    providerCost: number;
+    markupMultiplier: number;
+    total: number;
+  };
+  createdAt: string;
+};
+
 export type BillingSummary = {
   configured: boolean;
+  wallet: CreditWallet;
+  creditSettings: {
+    currency: string;
+    initialCredits: number;
+    minimumCallStartCredits: number;
+    markupMultiplier: number;
+  };
   subscription: {
     plan: PlanId;
     provider: "internal" | "stripe";
@@ -35,6 +85,7 @@ export type BillingSummary = {
     calls: number;
     minutes: number;
     providerCost: number;
+    chargedCredits: number;
     llmTokens: number;
     sttSeconds: number;
     ttsCharacters: number;
@@ -49,6 +100,7 @@ export type BillingSummary = {
     invoicePdf: string;
     createdAt: string;
   }[];
+  transactions: BillingTransaction[];
 };
 
 async function request<T>(path: string, init: RequestInit = {}) {
@@ -68,6 +120,17 @@ async function request<T>(path: string, init: RequestInit = {}) {
 
 export const billingApi = {
   summary: () => request<BillingSummary>("/summary"),
+  transactions: (limit = 50) => request<{ transactions: BillingTransaction[] }>(`/transactions?limit=${limit}`),
+  topUp: (amountCredits: number) =>
+    request<{ url: string }>("/top-up", {
+      method: "POST",
+      body: JSON.stringify({ amountCredits }),
+    }),
+  updateAutoReload: (input: { enabled: boolean; thresholdCredits: number; reloadAmountCredits: number }) =>
+    request<{ wallet: CreditWallet }>("/auto-reload", {
+      method: "PUT",
+      body: JSON.stringify(input),
+    }),
   checkout: (plan: Exclude<PlanId, "free">) =>
     request<{ url: string }>("/checkout", {
       method: "POST",

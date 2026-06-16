@@ -5,6 +5,12 @@ export type AuthSession = {
   signedInAt: string;
   emailVerified: boolean;
   twoFactorEnabled: boolean;
+  organization?: {
+    id: string;
+    name: string;
+    slug: string;
+    role: string;
+  };
 };
 
 type AuthResponse = {
@@ -15,6 +21,12 @@ type AuthResponse = {
     emailVerified: boolean;
     twoFactorEnabled: boolean;
     createdAt: string;
+  };
+  organization?: {
+    id: string;
+    name: string;
+    slug: string;
+    role: string;
   };
 };
 
@@ -37,6 +49,7 @@ function createSession(authResponse: AuthResponse): AuthSession {
     signedInAt: new Date().toISOString(),
     emailVerified: authResponse.user.emailVerified,
     twoFactorEnabled: authResponse.user.twoFactorEnabled,
+    organization: authResponse.organization,
   };
 }
 
@@ -126,6 +139,7 @@ export function getSession(): AuthSession | null {
       signedInAt: parsed.signedInAt,
       emailVerified: parsed.emailVerified ?? false,
       twoFactorEnabled: parsed.twoFactorEnabled ?? false,
+      organization: parsed.organization,
     };
     if (parsed.token) {
       window.localStorage.setItem(SESSION_KEY, JSON.stringify(cachedSession));
@@ -175,6 +189,7 @@ export async function validateStoredSession() {
       twoFactorEnabled: boolean;
       createdAt: string;
     };
+    organization?: AuthSession["organization"];
   };
 
   if (!data.user) {
@@ -188,6 +203,10 @@ export async function validateStoredSession() {
     session.email === data.user.email
     && session.emailVerified === data.user.emailVerified
     && session.twoFactorEnabled === data.user.twoFactorEnabled
+    && session.organization?.id === data.organization?.id
+    && session.organization?.name === data.organization?.name
+    && session.organization?.slug === data.organization?.slug
+    && session.organization?.role === data.organization?.role
   ) {
     return session;
   }
@@ -199,6 +218,7 @@ export async function validateStoredSession() {
     email: data.user.email,
     emailVerified: data.user.emailVerified,
     twoFactorEnabled: data.user.twoFactorEnabled,
+    organization: data.organization,
   };
 
   saveSession(updatedSession);

@@ -19,6 +19,8 @@ export function TestCallPanel({ agentId, agentName, onClose }: Props) {
   const [status, setStatus] = useState("Ready to connect");
   const [active, setActive] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [remoteCount, setRemoteCount] = useState(0);
+  const [audioCount, setAudioCount] = useState(0);
 
   function disconnect() {
     roomRef.current?.disconnect();
@@ -26,6 +28,8 @@ export function TestCallPanel({ agentId, agentName, onClose }: Props) {
     audioElementsRef.current.forEach((element) => element.remove());
     audioElementsRef.current = [];
     setActive(false);
+    setRemoteCount(0);
+    setAudioCount(0);
     setStatus("Call ended");
   }
 
@@ -33,23 +37,44 @@ export function TestCallPanel({ agentId, agentName, onClose }: Props) {
 
   async function startWebCall() {
     setBusy(true);
-    setStatus("Connecting realtime voice session...");
+    setStatus("Creating browser voice room...");
     try {
       const credentials = await voiceApi.webCallToken(agentId);
       const room = new Room({ adaptiveStream: true, dynacast: true });
+      let subscribedAudioTracks = 0;
+      const refreshParticipants = () => setRemoteCount(room.remoteParticipants.size);
       roomRef.current = room;
+
       room.on(RoomEvent.TrackSubscribed, (track) => {
-        if (track.kind === Track.Kind.Audio) {
-          const element = track.attach();
-          element.autoplay = true;
-          document.body.appendChild(element);
-          audioElementsRef.current.push(element);
-        }
+        if (track.kind !== Track.Kind.Audio) return;
+        const element = track.attach();
+        element.autoplay = true;
+        document.body.appendChild(element);
+        audioElementsRef.current.push(element);
+        subscribedAudioTracks += 1;
+        setAudioCount(subscribedAudioTracks);
+        setStatus(`Receiving audio from ${agentName}`);
+      });
+      room.on(RoomEvent.TrackUnsubscribed, (track) => {
+        if (track.kind !== Track.Kind.Audio) return;
+        subscribedAudioTracks = Math.max(0, subscribedAudioTracks - 1);
+        setAudioCount(subscribedAudioTracks);
+      });
+      room.on(RoomEvent.ParticipantConnected, (participant) => {
+        refreshParticipants();
+        setStatus(`${participant.name || "AI agent"} joined. Waiting for audio...`);
+      });
+      room.on(RoomEvent.ParticipantDisconnected, () => {
+        refreshParticipants();
+        setStatus("AI participant left the room");
       });
       room.on(RoomEvent.Disconnected, () => {
         setActive(false);
+        setRemoteCount(0);
+        setAudioCount(0);
         setStatus("Call ended");
       });
+
       await room.connect(credentials.serverUrl, credentials.participantToken);
       await room.localParticipant.setMicrophoneEnabled(true, {
         echoCancellation: true,
@@ -58,7 +83,13 @@ export function TestCallPanel({ agentId, agentName, onClose }: Props) {
       });
       await room.startAudio();
       setActive(true);
-      setStatus(`Connected to ${agentName}`);
+      refreshParticipants();
+      setStatus(room.remoteParticipants.size ? `Connected to ${agentName}` : `Connected. Waiting for ${agentName} to join...`);
+      window.setTimeout(() => {
+        if (roomRef.current === room && room.remoteParticipants.size === 0) {
+          setStatus("Still waiting for the AI agent. Check the backend agent worker logs.");
+        }
+      }, 8000);
     } catch (error) {
       disconnect();
       setStatus(error instanceof Error ? error.message : "Could not start the web call.");
@@ -109,22 +140,26 @@ export function TestCallPanel({ agentId, agentName, onClose }: Props) {
             ))}
           </div>
 
-          <div className="grid min-h-44 place-items-center rounded-2xl bg-gradient-to-br from-[#111827] via-[#312e81] to-[#6d28d9] p-5 text-white">
+          <div className="grid min-h-44 place-items-center rounded-2xl bg-gradient-to-br from-[#111827] via-[#1d4ed8] to-[#0f766e] p-5 text-white">
             <div className="grid place-items-center gap-4 text-center">
               <div className={`relative grid size-20 place-items-center rounded-full bg-white/15 ${active ? "ring-8 ring-white/10" : ""}`}>
-                {active ? <span className="absolute inset-0 animate-ping rounded-full bg-fuchsia-300/20" /> : null}
-                <span className="text-3xl">♪</span>
+                {active ? <span className="absolute inset-0 animate-ping rounded-full bg-cyan-200/20" /> : null}
+                <span className="text-xl font-bold">AI</span>
               </div>
               <div className="flex h-8 items-center gap-1" aria-label={active ? "Call audio active" : "Call audio inactive"}>
                 {[16, 28, 20, 32, 24, 30, 18].map((height, index) => (
                   <span
-                    className={`w-1.5 rounded-full bg-fuchsia-200 ${active ? "animate-pulse" : "opacity-40"}`}
+                    className={`w-1.5 rounded-full bg-cyan-100 ${active ? "animate-pulse" : "opacity-40"}`}
                     key={`${height}-${index}`}
                     style={{ height, animationDelay: `${index * 90}ms` }}
                   />
                 ))}
               </div>
               <p className="m-0 text-sm text-white/85">{status}</p>
+              <div className="flex flex-wrap justify-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-white/70">
+                <span>{remoteCount} remote participant{remoteCount === 1 ? "" : "s"}</span>
+                <span>{audioCount} audio track{audioCount === 1 ? "" : "s"}</span>
+              </div>
             </div>
           </div>
 

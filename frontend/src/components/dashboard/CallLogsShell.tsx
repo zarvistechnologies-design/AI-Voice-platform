@@ -48,6 +48,15 @@ function formatDate(value?: string) {
   }).format(new Date(value));
 }
 
+function money(value: number, currency = "USD") {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency,
+    minimumFractionDigits: Math.abs(value) < 1 ? 4 : 2,
+    maximumFractionDigits: Math.abs(value) < 1 ? 4 : 2,
+  }).format(value);
+}
+
 function statusTone(status: CallRecord["status"]) {
   if (status === "completed") return "bg-emerald-50 text-emerald-700 ring-emerald-200";
   if (status === "failed" || status === "cancelled") return "bg-rose-50 text-rose-700 ring-rose-200";
@@ -56,6 +65,16 @@ function statusTone(status: CallRecord["status"]) {
 }
 
 function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }) {
+  const billing = call.billing;
+  const charged = billing?.chargedCredits || billing?.estimatedChargeCredits || 0;
+  const cost = call.costBreakdown;
+  const costItems = [
+    ["LLM", call.llmProvider || "-", call.llmTokens ? `${call.llmTokens.toLocaleString("en-US")} tokens` : "0 tokens", cost?.llm ?? 0, billing?.breakdown.chargedLlm ?? 0],
+    ["STT", call.sttProvider || "-", call.sttSeconds ? `${Math.round(call.sttSeconds)} sec` : "0 sec", cost?.stt ?? 0, billing?.breakdown.chargedStt ?? 0],
+    ["TTS", call.ttsProvider || "-", call.ttsCharacters ? `${call.ttsCharacters.toLocaleString("en-US")} chars` : "0 chars", cost?.tts ?? 0, billing?.breakdown.chargedTts ?? 0],
+    ["Carrier", call.direction, `${Math.ceil(call.durationSeconds / 60)} min`, cost?.telephony ?? 0, billing?.breakdown.chargedTelephony ?? 0],
+  ] as const;
+
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-slate-950/35 backdrop-blur-sm" onClick={onClose}>
       <aside
@@ -84,7 +103,7 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
               ["Duration", formatDuration(call.durationSeconds)],
               ["Latency", call.avgResponseLatencyMs ? `${call.avgResponseLatencyMs} ms` : "-"],
               ["Sentiment", call.sentimentLabel ? titleCase(call.sentimentLabel) : "-"],
-              ["Cost", `$${(call.costBreakdown?.total ?? 0).toFixed(4)}`],
+              ["Charged", money(charged, billing?.currency)],
             ].map(([label, value]) => (
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-3" key={label}>
                 <span className="block text-xs font-medium text-slate-500">{label}</span>
@@ -105,6 +124,37 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
             <div><span className="block text-xs font-medium text-slate-500">Usage</span><strong className="mt-1 block text-sm">{call.llmTokens ?? 0} tokens / {Math.round(call.sttSeconds ?? 0)}s STT / {call.ttsCharacters ?? 0} TTS chars</strong></div>
             <div><span className="block text-xs font-medium text-slate-500">Providers</span><strong className="mt-1 block text-sm">{call.llmProvider || "-"} / {call.sttProvider || "-"} / {call.ttsProvider || "-"}</strong></div>
             <div><span className="block text-xs font-medium text-slate-500">Tags</span><strong className="mt-1 block text-sm">{call.tags.length ? call.tags.join(", ") : "No tags"}</strong></div>
+          </section>
+
+          <section className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+            <div className="flex flex-col gap-2 border-b border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h3 className="m-0 text-sm font-semibold text-slate-950">Cost and charge breakdown</h3>
+                <p className="mt-1 text-xs text-slate-500">Provider cost is raw vendor spend. Charged is customer wallet debit.</p>
+              </div>
+              <div className="grid gap-1 text-right text-xs">
+                <span className="text-slate-500">Provider total: <strong className="text-slate-950">{money(cost?.total ?? 0, cost?.currency)}</strong></span>
+                <span className="text-slate-500">Charged total: <strong className="text-emerald-700">{money(charged, billing?.currency)}</strong></span>
+              </div>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[560px] text-left text-sm">
+                <thead className="bg-white text-xs uppercase tracking-wider text-slate-500">
+                  <tr>{["Component", "Provider", "Usage", "Provider cost", "Charged"].map((item) => <th className="px-4 py-3" key={item}>{item}</th>)}</tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {costItems.map(([label, provider, usage, providerCost, chargedCost]) => (
+                    <tr key={label}>
+                      <td className="px-4 py-3 font-semibold text-slate-950">{label}</td>
+                      <td className="px-4 py-3 text-slate-600">{provider}</td>
+                      <td className="px-4 py-3 text-slate-600">{usage}</td>
+                      <td className="px-4 py-3 text-slate-700">{money(providerCost, cost?.currency)}</td>
+                      <td className="px-4 py-3 font-semibold text-slate-950">{money(chargedCost, billing?.currency)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </section>
 
           <section>
@@ -195,10 +245,11 @@ export function CallLogsShell() {
   const metrics = useMemo(() => {
     const completed = calls.filter((call) => call.status === "completed").length;
     const active = calls.filter((call) => call.status === "active").length;
+    const charged = calls.reduce((sum, call) => sum + (call.billing?.chargedCredits || call.billing?.estimatedChargeCredits || 0), 0);
     const averageDuration = calls.length
       ? Math.round(calls.reduce((sum, call) => sum + call.durationSeconds, 0) / calls.length)
       : 0;
-    return { completed, active, averageDuration };
+    return { completed, active, averageDuration, charged };
   }, [calls]);
 
   async function openCall(callId: string) {
@@ -253,12 +304,13 @@ export function CallLogsShell() {
             </div>
           </header>
 
-          <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
             {[
               ["Total calls", total, "All persisted call records"],
               ["Completed", metrics.completed, "On this page"],
               ["Active now", metrics.active, "Live conversations"],
               ["Avg duration", formatDuration(metrics.averageDuration), "On this page"],
+              ["Charged", money(metrics.charged), "Visible page total"],
             ].map(([label, value, detail]) => (
               <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm" key={label}>
                 <span className="text-xs font-medium text-slate-500">{label}</span>
@@ -291,10 +343,10 @@ export function CallLogsShell() {
             {notice ? <div className="border-b border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">{notice}</div> : null}
 
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[850px] border-collapse text-left">
+              <table className="w-full min-w-[1050px] border-collapse text-left">
                 <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500">
                   <tr>
-                    {["Agent", "Direction", "Contact", "Started", "Duration", "Latency", "Status"].map((heading) => <th className="px-4 py-3" key={heading}>{heading}</th>)}
+                    {["Agent", "Direction", "Contact", "Started", "Duration", "Provider cost", "Charged", "Status"].map((heading) => <th className="px-4 py-3" key={heading}>{heading}</th>)}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -305,7 +357,8 @@ export function CallLogsShell() {
                       <td className="px-4 py-4 text-sm text-slate-700">{call.callerNumber || call.calledNumber || "Browser caller"}</td>
                       <td className="px-4 py-4 text-sm text-slate-600">{formatDate(call.startedAt ?? call.createdAt)}</td>
                       <td className="px-4 py-4 text-sm font-medium text-slate-700">{formatDuration(call.durationSeconds)}</td>
-                      <td className="px-4 py-4 text-sm text-slate-600">{call.avgResponseLatencyMs ? `${call.avgResponseLatencyMs} ms` : "-"}</td>
+                      <td className="px-4 py-4 text-sm text-slate-600">{money(call.costBreakdown?.total ?? 0, call.costBreakdown?.currency)}</td>
+                      <td className="px-4 py-4 text-sm font-semibold text-slate-950">{money(call.billing?.chargedCredits || call.billing?.estimatedChargeCredits || 0, call.billing?.currency)}</td>
                       <td className="px-4 py-4"><span className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${statusTone(call.status)}`}>{titleCase(call.status)}</span></td>
                     </tr>
                   ))}

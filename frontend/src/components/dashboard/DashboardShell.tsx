@@ -29,6 +29,7 @@ import {
   type PipelineProvider,
   type RealtimeProvider,
   type SttProvider,
+  type VoiceLanguageOption,
 } from "@/lib/voice";
 
 type AgentStatus = "Live" | "Draft" | "Paused";
@@ -173,9 +174,39 @@ const agents: VoiceAgent[] = [{
   version: 1,
 }];
 
+const fallbackLanguageCatalog: VoiceLanguageOption[] = [
+  { value: "Multilingual", label: "Auto detect", code: "unknown", sarvamStt: true, sarvamTts: false },
+  { value: "English", label: "English (India)", code: "en-IN", sarvamStt: true, sarvamTts: true },
+  { value: "English UK", label: "English (UK)", code: "en-GB", sarvamStt: false, sarvamTts: false },
+  { value: "Hindi", label: "Hindi", code: "hi-IN", sarvamStt: true, sarvamTts: true },
+  { value: "Bengali", label: "Bengali", code: "bn-IN", sarvamStt: true, sarvamTts: true },
+  { value: "Tamil", label: "Tamil", code: "ta-IN", sarvamStt: true, sarvamTts: true },
+  { value: "Telugu", label: "Telugu", code: "te-IN", sarvamStt: true, sarvamTts: true },
+  { value: "Kannada", label: "Kannada", code: "kn-IN", sarvamStt: true, sarvamTts: true },
+  { value: "Malayalam", label: "Malayalam", code: "ml-IN", sarvamStt: true, sarvamTts: true },
+  { value: "Marathi", label: "Marathi", code: "mr-IN", sarvamStt: true, sarvamTts: true },
+  { value: "Gujarati", label: "Gujarati", code: "gu-IN", sarvamStt: true, sarvamTts: true },
+  { value: "Punjabi", label: "Punjabi", code: "pa-IN", sarvamStt: true, sarvamTts: true },
+  { value: "Odia", label: "Odia", code: "od-IN", sarvamStt: true, sarvamTts: true },
+  { value: "Assamese", label: "Assamese", code: "as-IN", sarvamStt: true, sarvamTts: false },
+  { value: "Urdu", label: "Urdu", code: "ur-IN", sarvamStt: true, sarvamTts: false },
+  { value: "Nepali", label: "Nepali", code: "ne-IN", sarvamStt: true, sarvamTts: false },
+  { value: "Konkani", label: "Konkani", code: "kok-IN", sarvamStt: true, sarvamTts: false },
+  { value: "Kashmiri", label: "Kashmiri", code: "ks-IN", sarvamStt: true, sarvamTts: false },
+  { value: "Sindhi", label: "Sindhi", code: "sd-IN", sarvamStt: true, sarvamTts: false },
+  { value: "Sanskrit", label: "Sanskrit", code: "sa-IN", sarvamStt: true, sarvamTts: false },
+  { value: "Santali", label: "Santali", code: "sat-IN", sarvamStt: true, sarvamTts: false },
+  { value: "Manipuri", label: "Manipuri", code: "mni-IN", sarvamStt: true, sarvamTts: false },
+  { value: "Bodo", label: "Bodo", code: "brx-IN", sarvamStt: true, sarvamTts: false },
+  { value: "Maithili", label: "Maithili", code: "mai-IN", sarvamStt: true, sarvamTts: false },
+  { value: "Dogri", label: "Dogri", code: "doi-IN", sarvamStt: true, sarvamTts: false },
+  { value: "Spanish", label: "Spanish", code: "es-ES", sarvamStt: false, sarvamTts: false },
+  { value: "French", label: "French", code: "fr-FR", sarvamStt: false, sarvamTts: false },
+];
+
 const fallbackCatalog: ModelCatalog = {
   realtime: [
-    { provider: "openai", label: "OpenAI Realtime", configured: true, models: ["gpt-realtime"], voices: ["alloy"] },
+    { provider: "openai", label: "OpenAI Realtime", configured: true, models: ["gpt-realtime"], voices: ["alloy", "ash", "ballad", "coral", "echo", "sage", "shimmer", "verse", "marin", "cedar"] },
     { provider: "gemini", label: "Gemini Live", configured: true, models: ["gemini-live-2.5-flash-native-audio"], voices: ["Aoede"] },
   ],
   llm: [
@@ -185,12 +216,25 @@ const fallbackCatalog: ModelCatalog = {
   ],
   stt: [
     { provider: "openai", label: "OpenAI", configured: true, models: ["gpt-4o-mini-transcribe"] },
-    { provider: "sarvam", label: "Sarvam", configured: true, models: ["saaras:v3"] },
+    {
+      provider: "sarvam",
+      label: "Sarvam",
+      configured: true,
+      models: ["saaras:v3"],
+      languages: fallbackLanguageCatalog.filter((language) => language.sarvamStt),
+    },
   ],
   tts: [
     { provider: "openai", label: "OpenAI", configured: true, models: ["gpt-4o-mini-tts"], voices: ["alloy"] },
     { provider: "gemini", label: "Gemini", configured: true, models: ["gemini-2.5-flash-tts"], voices: ["Aoede"] },
-    { provider: "sarvam", label: "Sarvam", configured: true, models: ["bulbul:v3"], voices: ["shubh"] },
+    {
+      provider: "sarvam",
+      label: "Sarvam",
+      configured: true,
+      models: ["bulbul:v3"],
+      voices: ["shubh"],
+      languages: fallbackLanguageCatalog.filter((language) => language.sarvamTts),
+    },
   ],
 };
 
@@ -206,6 +250,63 @@ function getVoices(
 ) {
   const item = getProvider(catalog, layer, provider);
   return item.voicesByModel?.[model] ?? item.voices ?? [];
+}
+
+type SelectOption = string | { value: string; label: string };
+
+function getSelectOptionValue(option: SelectOption) {
+  return typeof option === "string" ? option : option.value;
+}
+
+function getSelectOptionLabel(option: SelectOption) {
+  return typeof option === "string" ? option : option.label;
+}
+
+function getProviderLanguages(
+  catalog: ModelCatalog,
+  layer: "stt" | "tts",
+  provider: string,
+  languageCatalog: VoiceLanguageOption[],
+) {
+  const providerLanguages = getProvider(catalog, layer, provider).languages;
+  if (providerLanguages?.length) return [...providerLanguages];
+  if (provider === "sarvam") {
+    return languageCatalog.filter((language) => (layer === "tts" ? language.sarvamTts : language.sarvamStt));
+  }
+  return languageCatalog.filter((language) => !language.value.includes("Auto"));
+}
+
+function coerceLanguage(
+  language: string,
+  options: readonly VoiceLanguageOption[],
+  fallback = "English",
+) {
+  return options.some((option) => option.value === language) ? language : options[0]?.value ?? fallback;
+}
+
+function coerceVoice(voice: string, options: readonly string[], fallback = "alloy") {
+  return options.includes(voice) ? voice : options[0] ?? fallback;
+}
+
+function getLanguageOptions(
+  catalog: ModelCatalog,
+  agent: VoiceAgent,
+  languageCatalog: VoiceLanguageOption[],
+): SelectOption[] {
+  let options = languageCatalog;
+  if (agent.pipelineMode === "pipeline" && agent.ttsProvider === "sarvam") {
+    options = getProviderLanguages(catalog, "tts", "sarvam", languageCatalog);
+  } else if (agent.pipelineMode === "pipeline" && agent.sttProvider === "sarvam") {
+    options = getProviderLanguages(catalog, "stt", "sarvam", languageCatalog);
+  }
+
+  const mapped = options.map((language) => ({
+    value: language.value,
+    label: language.code === "unknown" ? language.label : `${language.label} (${language.code})`,
+  }));
+  return mapped.some((option) => option.value === agent.language)
+    ? mapped
+    : [{ value: agent.language, label: agent.language }, ...mapped];
 }
 
 const tabs: { id: AgentTab; label: string }[] = [
@@ -461,7 +562,7 @@ function SelectField({
 }: {
   label: string;
   defaultValue: string;
-  options: string[];
+  options: SelectOption[];
   value?: string;
   onChange?: (value: string) => void;
 }) {
@@ -474,7 +575,9 @@ function SelectField({
         onChange={onChange ? (event) => onChange(event.target.value) : undefined}
       >
         {options.map((option) => (
-          <option key={option}>{option}</option>
+          <option key={getSelectOptionValue(option)} value={getSelectOptionValue(option)}>
+            {getSelectOptionLabel(option)}
+          </option>
         ))}
       </select>
     </label>
@@ -520,6 +623,7 @@ export function DashboardShell() {
   const [notice, setNotice] = useState("");
   const [showTestCall, setShowTestCall] = useState(false);
   const [modelCatalog, setModelCatalog] = useState<ModelCatalog>(fallbackCatalog);
+  const [languageCatalog, setLanguageCatalog] = useState<VoiceLanguageOption[]>(fallbackLanguageCatalog);
   const [agentTemplates, setAgentTemplates] = useState<AgentTemplate[]>([]);
   const [recentCalls, setRecentCalls] = useState<CallRecord[]>([]);
   const [toolDraft, setToolDraft] = useState<AgentTool>({
@@ -538,6 +642,7 @@ export function DashboardShell() {
     () => agentList.find((agent) => agent.id === selectedAgentId) ?? agentList[0] ?? agents[0],
     [agentList, selectedAgentId],
   );
+  const languageOptions = getLanguageOptions(modelCatalog, selectedAgent, languageCatalog);
   const selectedSchedule = selectedAgent.businessHours.schedule.length
     ? selectedAgent.businessHours.schedule
     : defaultBusinessHours.schedule;
@@ -573,20 +678,45 @@ export function DashboardShell() {
       applyBackendAgents(backendAgents);
     };
 
-    void validateStoredSession();
-    void Promise.all([voiceApi.agents(), voiceApi.config(), voiceApi.agentTemplates()])
-      .then(([{ agents: backendAgents }, config, templateResult]) => {
-        applyBackendAgents(backendAgents);
-        setModelCatalog(config.modelCatalog);
-        setAgentTemplates(templateResult.templates);
-      })
-      .catch((error) => setNotice(error instanceof Error ? error.message : "Could not load agents."));
+    let cancelled = false;
+
+    void (async () => {
+      const validatedSession = await validateStoredSession();
+      if (!validatedSession) {
+        if (!cancelled) router.replace("/login?next=/dashboard");
+        return;
+      }
+      if (
+        validatedSession.id !== session.id ||
+        validatedSession.organization?.id !== session.organization?.id
+      ) {
+        return;
+      }
+
+      const [{ agents: backendAgents }, config, templateResult] = await Promise.all([
+        voiceApi.agents(),
+        voiceApi.config(),
+        voiceApi.agentTemplates(),
+      ]);
+      if (cancelled) return;
+      applyBackendAgents(backendAgents);
+      setModelCatalog(config.modelCatalog);
+      setLanguageCatalog(config.languageCatalog ?? fallbackLanguageCatalog);
+      setAgentTemplates(templateResult.templates);
+    })()
+      .catch((error) => {
+        if (cancelled) return;
+        setNotice(error instanceof Error ? error.message : "Could not load agents.");
+      });
 
     const refreshTimer = window.setInterval(() => {
       void refreshAgents().catch(() => undefined);
     }, 15000);
 
-    return () => window.clearInterval(refreshTimer);
+    return () => {
+      cancelled = true;
+      window.clearInterval(refreshTimer);
+    };
   }, [router, session]);
 
   useEffect(() => {
@@ -786,6 +916,9 @@ export function DashboardShell() {
           <div>
             <span className="app-kicker">Voice Platform</span>
             <h1 className="app-page-title mt-1 mb-0">Voice Agents</h1>
+            <p className="app-caption mt-1 mb-0">
+              {session.organization?.name ?? "Workspace"} / {session.email}
+            </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
@@ -975,15 +1108,31 @@ export function DashboardShell() {
                         defaultValue={selectedAgent.language}
                         value={selectedAgent.language}
                         onChange={(language) => updateSelectedAgent({ language })}
-                        options={["Multilingual", "English", "English UK", "Hindi", "Spanish", "French"]}
+                        options={languageOptions}
                       />
                       <SelectField
                         label="Voice architecture"
                         defaultValue={selectedAgent.pipelineMode}
                         value={selectedAgent.pipelineMode}
-                        onChange={(pipelineMode) =>
-                          updateSelectedAgent({ pipelineMode: pipelineMode as PipelineMode })
-                        }
+                        onChange={(pipelineMode) => {
+                          const nextMode = pipelineMode as PipelineMode;
+                          const nextVoices =
+                            nextMode === "realtime"
+                              ? getVoices(modelCatalog, "realtime", selectedAgent.realtimeProvider, selectedAgent.realtimeModel)
+                              : getVoices(modelCatalog, "tts", selectedAgent.ttsProvider, selectedAgent.ttsModel);
+                          const nextLanguage =
+                            nextMode === "pipeline" && selectedAgent.ttsProvider === "sarvam"
+                              ? coerceLanguage(
+                                  selectedAgent.language,
+                                  getProviderLanguages(modelCatalog, "tts", "sarvam", languageCatalog),
+                                )
+                              : selectedAgent.language;
+                          updateSelectedAgent({
+                            pipelineMode: nextMode,
+                            language: nextLanguage,
+                            voice: coerceVoice(selectedAgent.voice, nextVoices, selectedAgent.voice),
+                          });
+                        }}
                         options={["realtime", "pipeline"]}
                       />
                     </div>
@@ -1062,9 +1211,17 @@ export function DashboardShell() {
                             value={selectedAgent.sttProvider}
                             onChange={(provider) => {
                               const next = getProvider(modelCatalog, "stt", provider);
+                              const nextLanguage =
+                                provider === "sarvam" && selectedAgent.ttsProvider !== "sarvam"
+                                  ? coerceLanguage(
+                                      selectedAgent.language,
+                                      getProviderLanguages(modelCatalog, "stt", provider, languageCatalog),
+                                    )
+                                  : selectedAgent.language;
                               updateSelectedAgent({
                                 sttProvider: provider as SttProvider,
                                 sttModel: next.models[0],
+                                language: nextLanguage,
                               });
                             }}
                             options={modelCatalog.stt.map((item) => item.provider)}
@@ -1085,9 +1242,17 @@ export function DashboardShell() {
                             value={selectedAgent.ttsProvider}
                             onChange={(provider) => {
                               const next = getProvider(modelCatalog, "tts", provider);
+                              const nextLanguage =
+                                provider === "sarvam"
+                                  ? coerceLanguage(
+                                      selectedAgent.language,
+                                      getProviderLanguages(modelCatalog, "tts", provider, languageCatalog),
+                                    )
+                                  : selectedAgent.language;
                               updateSelectedAgent({
                                 ttsProvider: provider as PipelineProvider,
                                 ttsModel: next.models[0],
+                                language: nextLanguage,
                                 voice: getVoices(modelCatalog, "tts", provider, next.models[0])[0] ?? selectedAgent.voice,
                               });
                             }}

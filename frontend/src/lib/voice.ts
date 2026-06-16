@@ -84,6 +84,7 @@ export type ModelProvider = {
   models: readonly string[];
   voices?: readonly string[];
   voicesByModel?: Readonly<Record<string, readonly string[]>>;
+  languages?: readonly VoiceLanguageOption[];
 };
 
 export type ModelCatalog = {
@@ -91,6 +92,14 @@ export type ModelCatalog = {
   llm: readonly ModelProvider[];
   stt: readonly ModelProvider[];
   tts: readonly ModelProvider[];
+};
+
+export type VoiceLanguageOption = {
+  value: string;
+  label: string;
+  code: string;
+  sarvamStt: boolean;
+  sarvamTts: boolean;
 };
 
 export type BackendAgent = {
@@ -218,6 +227,24 @@ export type CallRecord = {
   ttsProvider: string;
   ttsCharacters: number;
   costBreakdown: { llm: number; stt: number; tts: number; telephony: number; total: number; currency: string };
+  billing?: {
+    chargedCredits: number;
+    estimatedChargeCredits: number;
+    providerCost: number;
+    currency: string;
+    balanceAfterCredits: number | null;
+    breakdown: {
+      llm: number;
+      stt: number;
+      tts: number;
+      telephony: number;
+      total: number;
+      chargedLlm: number;
+      chargedStt: number;
+      chargedTts: number;
+      chargedTelephony: number;
+    };
+  };
   sentimentScore?: number;
   sentimentLabel: "positive" | "neutral" | "negative" | "";
   endReason: string;
@@ -303,6 +330,7 @@ export const voiceApi = {
       configured: boolean;
       agentName: string;
       providers: { id: string; label: string; detail: string; configured: boolean }[];
+      languageCatalog: VoiceLanguageOption[];
       modelCatalog: ModelCatalog;
       sip: { inboundConfigured: boolean; outboundConfigured: boolean; callerId: string };
       vobiz: {
