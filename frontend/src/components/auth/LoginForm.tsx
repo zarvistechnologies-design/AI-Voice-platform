@@ -7,6 +7,7 @@ import {
   getSession,
   loginWithPassword,
   registerWithPassword,
+  validateStoredSession,
 } from "@/lib/auth";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -34,9 +35,17 @@ export function LoginForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (getSession()) {
-      router.replace(nextPath);
-    }
+    let cancelled = false;
+
+    void (async () => {
+      if (!getSession()) return;
+      const session = await validateStoredSession();
+      if (!cancelled && session) router.replace(nextPath);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [nextPath, router]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -68,6 +77,13 @@ export function LoginForm() {
         await registerWithPassword(normalizedName, normalizedEmail, password);
       } else {
         await loginWithPassword(normalizedEmail, password, twoFactorCode);
+      }
+
+      const session = await validateStoredSession();
+      if (!session) {
+        setError("Signed in, but the browser did not keep the session cookie. Please try again.");
+        setIsSubmitting(false);
+        return;
       }
 
       router.push(nextPath);
