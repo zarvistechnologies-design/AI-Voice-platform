@@ -720,7 +720,7 @@ export function DashboardShell() {
   }, [router, session]);
 
   useEffect(() => {
-    if (!session || !selectedAgentId || selectedAgentId === "maya") return;
+    if (!session || !selectedAgentId || selectedAgentId === "loading" || selectedAgentId === "maya") return;
     void voiceApi
       .calls({ agentId: selectedAgentId, limit: 5 })
       .then((result) => setRecentCalls(result.calls))
