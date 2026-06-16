@@ -1,4 +1,4 @@
-import { getSession } from "@/lib/auth";
+import { getAuthHeaders, getSession } from "@/lib/auth";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
 
@@ -305,6 +305,7 @@ async function request<T>(path: string, init: RequestInit = {}) {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
+      ...getAuthHeaders(),
       ...init.headers,
     },
   });
@@ -444,6 +445,7 @@ export const voiceApi = {
     if (!getSession()) throw new Error("Sign in before exporting calls.");
     const response = await fetch(`${API_URL}/api/voice/calls/export.csv`, {
       credentials: "include",
+      headers: getAuthHeaders(),
     });
     if (!response.ok) throw new Error("Could not export call records.");
     return response.blob();

@@ -81,7 +81,7 @@ export function LoginForm() {
 
       const session = await validateStoredSession();
       if (!session) {
-        setError("Signed in, but the browser did not keep the session cookie. Please try again.");
+        setError("Signed in, but the session could not be verified. Please refresh and try again.");
         setIsSubmitting(false);
         return;
       }

@@ -1,4 +1,4 @@
-import { getSession } from "@/lib/auth";
+import { getAuthHeaders, getSession } from "@/lib/auth";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
 
@@ -63,6 +63,7 @@ async function request<T>(path: string, init: RequestInit = {}) {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
+      ...getAuthHeaders(),
       ...init.headers,
     },
   });

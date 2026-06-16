@@ -5,6 +5,7 @@ export type AuthSession = {
   signedInAt: string;
   emailVerified: boolean;
   twoFactorEnabled: boolean;
+  token?: string;
   organization?: {
     id: string;
     name: string;
@@ -28,6 +29,7 @@ type AuthResponse = {
     slug: string;
     role: string;
   };
+  token?: string;
 };
 
 const SESSION_KEY = "ai_voice_platform_session";
@@ -49,6 +51,7 @@ function createSession(authResponse: AuthResponse): AuthSession {
     signedInAt: new Date().toISOString(),
     emailVerified: authResponse.user.emailVerified,
     twoFactorEnabled: authResponse.user.twoFactorEnabled,
+    token: authResponse.token,
     organization: authResponse.organization,
   };
 }
@@ -139,12 +142,9 @@ export function getSession(): AuthSession | null {
       signedInAt: parsed.signedInAt,
       emailVerified: parsed.emailVerified ?? false,
       twoFactorEnabled: parsed.twoFactorEnabled ?? false,
+      token: parsed.token,
       organization: parsed.organization,
     };
-    if (parsed.token) {
-      window.localStorage.setItem(SESSION_KEY, JSON.stringify(cachedSession));
-      cachedRawSession = JSON.stringify(cachedSession);
-    }
     return cachedSession;
   } catch {
     window.localStorage.removeItem(SESSION_KEY);
@@ -158,6 +158,11 @@ export function getServerSession(): AuthSession | null {
   return null;
 }
 
+export function getAuthHeaders(): Record<string, string> {
+  const session = getSession();
+  return session?.token ? { Authorization: `Bearer ${session.token}` } : {};
+}
+
 export async function validateStoredSession() {
   const session = getSession();
 
@@ -167,6 +172,7 @@ export async function validateStoredSession() {
 
   const response = await fetch(`${API_URL}/api/auth/me`, {
     credentials: "include",
+    headers: getAuthHeaders(),
   });
 
   if (!response.ok) {
@@ -267,6 +273,7 @@ export async function logoutSession() {
     await fetch(`${API_URL}/api/auth/logout`, {
       method: "POST",
       credentials: "include",
+      headers: getAuthHeaders(),
     });
   } finally {
     clearSession();
@@ -277,7 +284,7 @@ async function accountRequest<T>(path: string, init: RequestInit = {}) {
   const response = await fetch(`${API_URL}/api/auth${path}`, {
     ...init,
     credentials: "include",
-    headers: { "Content-Type": "application/json", ...init.headers },
+    headers: { "Content-Type": "application/json", ...getAuthHeaders(), ...init.headers },
   });
   const data = (await response.json().catch(() => null)) as (T & { message?: string }) | null;
   if (!response.ok) throw new Error(data?.message ?? "Account request failed.");

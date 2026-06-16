@@ -1,4 +1,4 @@
-import { getSession } from "@/lib/auth";
+import { getAuthHeaders, getSession } from "@/lib/auth";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
 
@@ -16,7 +16,7 @@ async function request<T>(path: string, init: RequestInit = {}) {
   const response = await fetch(`${API_URL}/api/integrations${path}`, {
     ...init,
     credentials: "include",
-    headers: { "Content-Type": "application/json", ...init.headers },
+    headers: { "Content-Type": "application/json", ...getAuthHeaders(), ...init.headers },
   });
   const data = (await response.json().catch(() => null)) as (T & { message?: string }) | null;
   if (!response.ok) throw new Error(data?.message ?? "Integration request failed.");
