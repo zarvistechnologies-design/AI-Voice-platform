@@ -84,7 +84,7 @@ const defaultBehavior: AgentBehavior = {
   agentCanTerminate: true,
   voicemailHandling: true,
   dtmfDial: false,
-  responseDelayMs: 350,
+  responseDelayMs: 180,
   maxCallDurationSeconds: 1200,
   maxIdleSeconds: 18,
   transferPhone: "",
