@@ -102,6 +102,16 @@ export type VoiceLanguageOption = {
   sarvamTts: boolean;
 };
 
+export type VoicePreviewRequest = {
+  mode: PipelineMode;
+  provider: RealtimeProvider | PipelineProvider;
+  model: string;
+  voice: string;
+  language: string;
+  text?: string;
+  voiceSpeed?: number;
+};
+
 export type BackendAgent = {
   _id: string;
   name: string;
@@ -359,6 +369,23 @@ export const voiceApi = {
     request<{ agent: BackendAgent }>(`/agents/${agentId}/clone`, { method: "POST" }),
   deleteAgent: (agentId: string) =>
     request<Record<string, never>>(`/agents/${agentId}`, { method: "DELETE" }),
+  voicePreview: async (input: VoicePreviewRequest) => {
+    if (!getSession()) throw new Error("Sign in before previewing voices.");
+    const response = await fetch(`${API_URL}/api/voice/voice-preview`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeaders(),
+      },
+      body: JSON.stringify(input),
+    });
+    if (!response.ok) {
+      const data = (await response.json().catch(() => null)) as { message?: string } | null;
+      throw new Error(data?.message ?? "Could not play this voice preview.");
+    }
+    return response.blob();
+  },
   webCallToken: (agentId: string) =>
     request<{ callId: string; roomName: string; serverUrl: string; participantToken: string }>(
       "/web-call-token",

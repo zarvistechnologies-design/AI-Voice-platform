@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
@@ -29,6 +29,7 @@ import {
   type PipelineProvider,
   type RealtimeProvider,
   type SttProvider,
+  type VoicePreviewRequest,
   type VoiceLanguageOption,
 } from "@/lib/voice";
 
@@ -584,6 +585,51 @@ function SelectField({
   );
 }
 
+function VoiceSelectField({
+  label,
+  options,
+  value,
+  onChange,
+  onPreview,
+  previewing,
+}: {
+  label: string;
+  options: SelectOption[];
+  value: string;
+  onChange: (value: string) => void;
+  onPreview: () => void;
+  previewing: boolean;
+}) {
+  return (
+    <label className="app-label grid gap-2">
+      <span>{label}</span>
+      <span className="grid grid-cols-[minmax(0,1fr)_40px] gap-2">
+        <select
+          className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10"
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+        >
+          {options.map((option) => (
+            <option key={getSelectOptionValue(option)} value={getSelectOptionValue(option)}>
+              {getSelectOptionLabel(option)}
+            </option>
+          ))}
+        </select>
+        <button
+          aria-label={`Preview ${value} voice`}
+          className="grid size-10 place-items-center rounded-lg border border-[#c7d2fe] bg-white text-[#2563eb] transition hover:bg-[#eef2ff] disabled:cursor-not-allowed disabled:opacity-50"
+          disabled={previewing || options.length === 0}
+          title={previewing ? "Loading voice preview" : "Preview voice"}
+          type="button"
+          onClick={onPreview}
+        >
+          <Icon icon="play" />
+        </button>
+      </span>
+    </label>
+  );
+}
+
 function InputField({
   label,
   defaultValue,
@@ -637,6 +683,9 @@ export function DashboardShell() {
   const [knowledgeName, setKnowledgeName] = useState("");
   const [knowledgeContent, setKnowledgeContent] = useState("");
   const [variableDraft, setVariableDraft] = useState("");
+  const [previewingVoice, setPreviewingVoice] = useState("");
+  const previewAudioRef = useRef<HTMLAudioElement | null>(null);
+  const previewUrlRef = useRef("");
 
   const selectedAgent = useMemo(
     () => agentList.find((agent) => agent.id === selectedAgentId) ?? agentList[0] ?? agents[0],
@@ -658,6 +707,15 @@ export function DashboardShell() {
    data-accent="${selectedAgent.widget.accentColor}"
    data-metadata="${selectedAgent.dynamicVariables.join(",")}"
 ></script>`;
+
+  useEffect(() => {
+    return () => {
+      previewAudioRef.current?.pause();
+      if (previewUrlRef.current) {
+        URL.revokeObjectURL(previewUrlRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!session) {
@@ -773,6 +831,55 @@ export function DashboardShell() {
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not save agent.");
       return false;
+    }
+  }
+
+  async function handlePreviewVoice(input: Pick<VoicePreviewRequest, "mode" | "provider" | "model">) {
+    const request: VoicePreviewRequest = {
+      ...input,
+      voice: selectedAgent.voice,
+      language: selectedAgent.language,
+      text: selectedAgent.firstMessage,
+      voiceSpeed: selectedAgent.voiceSpeed,
+    };
+    const key = [
+      selectedAgent.id,
+      request.mode,
+      request.provider,
+      request.model,
+      request.voice,
+      request.language,
+      request.voiceSpeed,
+    ].join(":");
+    setPreviewingVoice(key);
+    setNotice("");
+    try {
+      const blob = await voiceApi.voicePreview(request);
+      previewAudioRef.current?.pause();
+      if (previewUrlRef.current) {
+        URL.revokeObjectURL(previewUrlRef.current);
+      }
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      previewUrlRef.current = url;
+      previewAudioRef.current = audio;
+      audio.addEventListener("ended", () => {
+        if (previewUrlRef.current === url) {
+          URL.revokeObjectURL(url);
+          previewUrlRef.current = "";
+        }
+      }, { once: true });
+      audio.addEventListener("error", () => {
+        if (previewUrlRef.current === url) {
+          URL.revokeObjectURL(url);
+          previewUrlRef.current = "";
+        }
+      }, { once: true });
+      await audio.play();
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Could not play this voice preview.");
+    } finally {
+      setPreviewingVoice("");
     }
   }
 
@@ -1165,11 +1272,24 @@ export function DashboardShell() {
                             onChange={(realtimeModel) => updateSelectedAgent({ realtimeModel })}
                             options={[...getProvider(modelCatalog, "realtime", selectedAgent.realtimeProvider).models]}
                           />
-                          <SelectField
+                          <VoiceSelectField
                             label="Realtime voice"
-                            defaultValue={selectedAgent.voice}
                             value={selectedAgent.voice}
                             onChange={(voice) => updateSelectedAgent({ voice })}
+                            onPreview={() => void handlePreviewVoice({
+                              mode: "realtime",
+                              provider: selectedAgent.realtimeProvider,
+                              model: selectedAgent.realtimeModel,
+                            })}
+                            previewing={previewingVoice === [
+                              selectedAgent.id,
+                              "realtime",
+                              selectedAgent.realtimeProvider,
+                              selectedAgent.realtimeModel,
+                              selectedAgent.voice,
+                              selectedAgent.language,
+                              selectedAgent.voiceSpeed,
+                            ].join(":")}
                             options={[...getVoices(modelCatalog, "realtime", selectedAgent.realtimeProvider, selectedAgent.realtimeModel)]}
                           />
                         </div>
@@ -1271,11 +1391,24 @@ export function DashboardShell() {
                             }}
                             options={[...getProvider(modelCatalog, "tts", selectedAgent.ttsProvider).models]}
                           />
-                          <SelectField
+                          <VoiceSelectField
                             label="Voice / speaker"
-                            defaultValue={selectedAgent.voice}
                             value={selectedAgent.voice}
                             onChange={(voice) => updateSelectedAgent({ voice })}
+                            onPreview={() => void handlePreviewVoice({
+                              mode: "pipeline",
+                              provider: selectedAgent.ttsProvider,
+                              model: selectedAgent.ttsModel,
+                            })}
+                            previewing={previewingVoice === [
+                              selectedAgent.id,
+                              "pipeline",
+                              selectedAgent.ttsProvider,
+                              selectedAgent.ttsModel,
+                              selectedAgent.voice,
+                              selectedAgent.language,
+                              selectedAgent.voiceSpeed,
+                            ].join(":")}
                             options={[...getVoices(modelCatalog, "tts", selectedAgent.ttsProvider, selectedAgent.ttsModel)]}
                           />
                         </div>
