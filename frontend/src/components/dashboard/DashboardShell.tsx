@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
-import { TestCallPanel } from "@/components/dashboard/TestCallPanel";
 import {
   getServerSession,
   getSession,
@@ -35,6 +35,11 @@ import {
 
 type AgentStatus = "Live" | "Draft" | "Paused";
 type AgentTab = "builder" | "behavior" | "tools" | "calls" | "widget";
+
+const TestCallPanel = dynamic(
+  () => import("@/components/dashboard/TestCallPanel").then((module) => module.TestCallPanel),
+  { ssr: false },
+);
 
 type VoiceAgent = {
   id: string;
@@ -686,6 +691,7 @@ export function DashboardShell() {
   const [previewingVoice, setPreviewingVoice] = useState("");
   const previewAudioRef = useRef<HTMLAudioElement | null>(null);
   const previewUrlRef = useRef("");
+  const unsavedChangesRef = useRef(false);
 
   const selectedAgent = useMemo(
     () => agentList.find((agent) => agent.id === selectedAgentId) ?? agentList[0] ?? agents[0],
@@ -732,7 +738,15 @@ export function DashboardShell() {
     };
 
     const refreshAgents = async () => {
+      if (
+        cancelled ||
+        unsavedChangesRef.current ||
+        document.visibilityState !== "visible"
+      ) {
+        return;
+      }
       const { agents: backendAgents } = await voiceApi.agents();
+      if (cancelled || unsavedChangesRef.current) return;
       applyBackendAgents(backendAgents);
     };
 
@@ -769,7 +783,7 @@ export function DashboardShell() {
 
     const refreshTimer = window.setInterval(() => {
       void refreshAgents().catch(() => undefined);
-    }, 15000);
+    }, 60000);
 
     return () => {
       cancelled = true;
@@ -778,12 +792,12 @@ export function DashboardShell() {
   }, [router, session]);
 
   useEffect(() => {
-    if (!session || !selectedAgentId || selectedAgentId === "loading" || selectedAgentId === "maya") return;
+    if (!session || activeTab !== "calls" || !selectedAgentId || selectedAgentId === "loading" || selectedAgentId === "maya") return;
     void voiceApi
       .calls({ agentId: selectedAgentId, limit: 5 })
       .then((result) => setRecentCalls(result.calls))
       .catch(() => setRecentCalls([]));
-  }, [selectedAgentId, session]);
+  }, [activeTab, selectedAgentId, session]);
 
   async function handleSave(changes: Partial<BackendAgent> = {}) {
     try {
@@ -826,6 +840,7 @@ export function DashboardShell() {
       });
       const mapped = mapBackendAgent(agent);
       setAgentList((current) => current.map((item) => (item.id === mapped.id ? mapped : item)));
+      unsavedChangesRef.current = false;
       setNotice("Agent saved to the backend.");
       return true;
     } catch (error) {
@@ -887,6 +902,7 @@ export function DashboardShell() {
     try {
       const { agent } = await voiceApi.createAgent();
       const mapped = mapBackendAgent(agent);
+      unsavedChangesRef.current = false;
       setAgentList((current) => [...current, mapped]);
       setSelectedAgentId(mapped.id);
       setNotice("New backend agent created.");
@@ -899,6 +915,7 @@ export function DashboardShell() {
     try {
       const { agent } = await voiceApi.createAgentFromTemplate(templateId);
       const mapped = mapBackendAgent(agent);
+      unsavedChangesRef.current = false;
       setAgentList((current) => [...current, mapped]);
       setSelectedAgentId(mapped.id);
       setNotice("Template agent created as a draft.");
@@ -908,6 +925,7 @@ export function DashboardShell() {
   }
 
   function updateSelectedAgent(changes: Partial<VoiceAgent>) {
+    unsavedChangesRef.current = true;
     setAgentList((current) =>
       current.map((agent) => (agent.id === selectedAgent.id ? { ...agent, ...changes } : agent)),
     );
@@ -938,6 +956,7 @@ export function DashboardShell() {
     try {
       const { agent } = await voiceApi.cloneAgent(selectedAgent.id);
       const mapped = mapBackendAgent(agent);
+      unsavedChangesRef.current = false;
       setAgentList((current) => [...current, mapped]);
       setSelectedAgentId(mapped.id);
       setNotice("Agent cloned as a new draft.");
@@ -950,6 +969,7 @@ export function DashboardShell() {
     if (!window.confirm(`Delete ${selectedAgent.name}? This cannot be undone.`)) return;
     try {
       await voiceApi.deleteAgent(selectedAgent.id);
+      unsavedChangesRef.current = false;
       setAgentList((current) => {
         const next = current.filter((agent) => agent.id !== selectedAgent.id);
         setSelectedAgentId(next[0]?.id ?? "");
