@@ -537,7 +537,7 @@ export const voiceApi = {
       body: JSON.stringify(input),
     }),
   purchasePhoneNumber: (input: {
-    agentId: string;
+    agentId?: string;
     phoneNumber: string;
     label: string;
     direction: BackendPhoneNumber["direction"];

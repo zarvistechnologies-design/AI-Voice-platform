@@ -28,6 +28,17 @@ services:
     ports:
       - "5000:5000"
 
+  agent:
+    build: ./backend
+    restart: unless-stopped
+    command: ["node", "dist/agent.js", "start"]
+    env_file:
+      - ./backend/.env
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/ai-voice-platform
+    depends_on:
+      - mongo
+
   frontend:
     build:
       context: ./frontend

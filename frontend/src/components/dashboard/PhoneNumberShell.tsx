@@ -17,6 +17,7 @@ import {
   type BackendPhoneNumber,
   type PhoneNumberImportInput,
   type TelephonyProvider,
+  type VobizNumber,
 } from "@/lib/voice";
 
 type IconName =
@@ -26,6 +27,7 @@ type IconName =
   | "import"
   | "link"
   | "phone"
+  | "plus"
   | "search"
   | "unlink"
   | "user";
@@ -53,6 +55,7 @@ function Icon({ icon, className = "size-4" }: { icon: IconName; className?: stri
   if (icon === "import") return <svg {...props}><path d="M12 3v12m0 0 4-4m-4 4-4-4" /><path d="M4 17v3h16v-3" /></svg>;
   if (icon === "link") return <svg {...props}><path d="m10 13 4-4" /><path d="M7.5 15.5 5 18a3.5 3.5 0 0 1-5-5l3-3a3.5 3.5 0 0 1 5 0" /><path d="m16.5 8.5 2.5-2.5a3.5 3.5 0 0 1 5 5l-3 3a3.5 3.5 0 0 1-5 0" /></svg>;
   if (icon === "phone") return <svg {...props}><path d="M6.6 4.8 9 7.2a2 2 0 0 1 .4 2.2l-.8 1.7a12 12 0 0 0 5.3 5.3l1.7-.8a2 2 0 0 1 2.2.4l2.4 2.4a1.8 1.8 0 0 1-.2 2.7c-1 .7-2.2 1-3.6.8C9.4 20.7 3.3 14.6 2.1 7.6 1.9 6.2 2.2 5 2.9 4a1.8 1.8 0 0 1 2.7-.2Z" /></svg>;
+  if (icon === "plus") return <svg {...props}><path d="M12 5v14M5 12h14" /></svg>;
   if (icon === "search") return <svg {...props}><circle cx="11" cy="11" r="7" /><path d="m20 20-4-4" /></svg>;
   if (icon === "unlink") return <svg {...props}><path d="m9 15-2 2a3.5 3.5 0 0 1-5-5l3-3" /><path d="m15 9 2-2a3.5 3.5 0 0 1 5 5l-3 3" /><path d="m3 3 18 18" /></svg>;
   return <svg {...props}><circle cx="12" cy="8" r="4" /><path d="M4 21a8 8 0 0 1 16 0" /></svg>;
@@ -77,6 +80,15 @@ function providerTone(provider: string) {
   return "border-[#d1fae5] bg-[#ecfdf5] text-[#047857]";
 }
 
+function formatMoney(value: number | undefined, currency = "INR") {
+  if (typeof value !== "number") return "Not listed";
+  try {
+    return new Intl.NumberFormat("en-IN", { style: "currency", currency }).format(value);
+  } catch {
+    return `${currency} ${value.toFixed(2)}`;
+  }
+}
+
 export function PhoneNumberShell() {
   const router = useRouter();
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
@@ -87,6 +99,7 @@ export function PhoneNumberShell() {
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const [showImport, setShowImport] = useState(false);
+  const [showBuy, setShowBuy] = useState(false);
   const [assignmentNumber, setAssignmentNumber] = useState<BackendPhoneNumber | null>(null);
 
   useEffect(() => {
@@ -145,6 +158,27 @@ export function PhoneNumberShell() {
     }
   }
 
+  async function purchaseNumber(number: VobizNumber, label: string) {
+    setBusy(true);
+    showMessage("");
+    try {
+      const result = await voiceApi.purchasePhoneNumber({
+        phoneNumber: number.e164,
+        label: label.trim(),
+        direction: "Both",
+        currency: number.currency,
+      });
+      setNumbers((current) => [result.number, ...current]);
+      setShowBuy(false);
+      setAssignmentNumber(result.number);
+      showMessage(`${result.number.number} purchased. You can now link any agent.`);
+    } catch (caught) {
+      showMessage(errorMessage(caught), true);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   if (!session) {
     return <main className="app-strong grid min-h-screen place-items-center bg-[#f7f8fb]">Loading phone numbers</main>;
   }
@@ -162,16 +196,26 @@ export function PhoneNumberShell() {
           <div className="mx-auto flex w-full max-w-[1440px] flex-wrap items-center justify-between gap-4">
             <div>
               <h1 className="app-page-title m-0">Phone numbers</h1>
-              <p className="app-caption mt-1 mb-0">Import telephony numbers and connect them to your voice agents.</p>
+              <p className="app-caption mt-1 mb-0">Import or buy telephony numbers, then link them to any voice agent.</p>
             </div>
-            <button
-              className={`${buttonClass} border-0 bg-[#1438f5] text-white shadow-sm hover:bg-[#102fcf]`}
-              onClick={() => { setShowImport(true); showMessage(""); }}
-              type="button"
-            >
-              <Icon icon="import" />
-              Import number
-            </button>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                className={`${buttonClass} border border-[#c7d2fe] bg-white text-[#1438f5] hover:bg-[#eef2ff]`}
+                onClick={() => { setShowImport(true); showMessage(""); }}
+                type="button"
+              >
+                <Icon icon="import" />
+                Import number
+              </button>
+              <button
+                className={`${buttonClass} border-0 bg-[#1438f5] text-white shadow-sm hover:bg-[#102fcf]`}
+                onClick={() => { setShowBuy(true); showMessage(""); }}
+                type="button"
+              >
+                <Icon icon="plus" />
+                Buy number
+              </button>
+            </div>
           </div>
         </header>
 
@@ -183,7 +227,7 @@ export function PhoneNumberShell() {
             <div className="flex items-center justify-between gap-4 border-b border-[#e5e7eb] px-4 py-4 sm:px-5">
               <div>
                 <h2 className="app-section-title m-0">Your numbers</h2>
-                <span className="app-caption">{numbers.length} {numbers.length === 1 ? "number" : "numbers"} imported</span>
+                <span className="app-caption">{numbers.length} {numbers.length === 1 ? "number" : "numbers"} in inventory</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="size-2 rounded-full bg-[#10b981]" />
@@ -226,17 +270,22 @@ export function PhoneNumberShell() {
                     <Icon icon="phone" className="size-5" />
                   </span>
                   <h3 className="app-section-title m-0">No phone numbers yet</h3>
-                  <p className="app-caption mt-1 mb-4">Import a number from Twilio, Exotel, or Vobiz to get started.</p>
-                  <button className={`${buttonClass} bg-[#1438f5] text-white`} onClick={() => setShowImport(true)} type="button">
-                    <Icon icon="import" /> Import your first number
-                  </button>
+                  <p className="app-caption mt-1 mb-4">Import from Twilio, Exotel, or Vobiz—or buy a new Vobiz number.</p>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    <button className={`${buttonClass} border border-[#c7d2fe] bg-white text-[#1438f5]`} onClick={() => setShowImport(true)} type="button">
+                      <Icon icon="import" /> Import number
+                    </button>
+                    <button className={`${buttonClass} bg-[#1438f5] text-white`} onClick={() => setShowBuy(true)} type="button">
+                      <Icon icon="plus" /> Buy number
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
           </section>
 
           <p className="app-caption m-0 px-1">
-            Numbers must already belong to your provider. Link an agent here, then make sure the provider forwards inbound calls to your configured SIP endpoint.
+            Numbers stay in your inventory independently of agents. Link, switch, or unlink an agent whenever you need.
           </p>
         </div>
       </section>
@@ -246,6 +295,15 @@ export function PhoneNumberShell() {
           busy={busy}
           onClose={() => setShowImport(false)}
           onImport={(input) => void importNumber(input)}
+        />
+      ) : null}
+
+      {showBuy ? (
+        <BuyNumberModal
+          busy={busy}
+          requestError={error}
+          onClose={() => setShowBuy(false)}
+          onPurchase={(number, label) => void purchaseNumber(number, label)}
         />
       ) : null}
 
@@ -492,6 +550,141 @@ function ImportNumberModal({ busy, onClose, onImport }: {
           </button>
         </footer>
       </form>
+    </ModalFrame>
+  );
+}
+
+function BuyNumberModal({ busy, requestError, onClose, onPurchase }: {
+  busy: boolean;
+  requestError: string;
+  onClose: () => void;
+  onPurchase: (number: VobizNumber, label: string) => void;
+}) {
+  const [country, setCountry] = useState("IN");
+  const [query, setQuery] = useState("");
+  const [label, setLabel] = useState("");
+  const [numbers, setNumbers] = useState<VobizNumber[]>([]);
+  const [searching, setSearching] = useState(true);
+  const [searched, setSearched] = useState(false);
+  const [inventoryError, setInventoryError] = useState("");
+  const [selected, setSelected] = useState<VobizNumber | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    void voiceApi.vobizInventory({ country: "IN" })
+      .then((result) => {
+        if (!active) return;
+        setNumbers(result.items);
+        setSearched(true);
+      })
+      .catch((caught: unknown) => {
+        if (!active) return;
+        setInventoryError(errorMessage(caught));
+        setSearched(true);
+      })
+      .finally(() => {
+        if (active) setSearching(false);
+      });
+    return () => { active = false; };
+  }, []);
+
+  async function searchInventory() {
+    setSearching(true);
+    setInventoryError("");
+    setSelected(null);
+    try {
+      const result = await voiceApi.vobizInventory({ country, search: query.trim() });
+      setNumbers(result.items);
+      setSearched(true);
+    } catch (caught) {
+      setNumbers([]);
+      setSearched(true);
+      setInventoryError(errorMessage(caught));
+    } finally {
+      setSearching(false);
+    }
+  }
+
+  return (
+    <ModalFrame title="Buy phone number" subtitle="Purchase from your connected Vobiz account and add it to inventory." onClose={onClose} width="max-w-3xl">
+      <div className="grid min-h-0 grid-rows-[auto_minmax(0,1fr)_auto]">
+        <form
+          className="grid gap-3 border-b border-[#e5e7eb] px-5 py-4 sm:grid-cols-[150px_minmax(0,1fr)_auto] sm:px-6"
+          onSubmit={(event) => { event.preventDefault(); void searchInventory(); }}
+        >
+          <label className="app-label grid gap-2">
+            Country
+            <select className={controlClass} value={country} onChange={(event) => setCountry(event.target.value)}>
+              <option value="IN">India</option>
+              <option value="US">United States</option>
+              <option value="GB">United Kingdom</option>
+              <option value="CA">Canada</option>
+              <option value="AU">Australia</option>
+            </select>
+          </label>
+          <label className="app-label grid gap-2">
+            Area code or digits <span className="font-normal text-[#94a3b8]">(optional)</span>
+            <input className={controlClass} inputMode="tel" placeholder="For example 80 or 650" value={query} onChange={(event) => setQuery(event.target.value)} />
+          </label>
+          <button className={`${buttonClass} self-end border border-[#c7d2fe] bg-white text-[#1438f5] hover:bg-[#eef2ff]`} disabled={searching || busy} type="submit">
+            <Icon icon="search" /> {searching ? "Searching…" : "Search"}
+          </button>
+        </form>
+
+        <div className="min-h-[280px] max-h-[min(460px,52vh)] overflow-y-auto px-5 py-4 sm:px-6">
+          {inventoryError ? (
+            <div className="rounded-lg border border-[#fecaca] bg-[#fff1f2] p-3 text-[#b91c1c]">
+              <p className="app-body m-0">{inventoryError}</p>
+              <p className="app-caption mt-1 mb-0 text-[#b91c1c]">Connect Vobiz by importing an owned Vobiz number first, then search again.</p>
+            </div>
+          ) : null}
+          {requestError ? <div className="mb-3 rounded-lg border border-[#fecaca] bg-[#fff1f2] p-3 app-body text-[#b91c1c]">{requestError}</div> : null}
+          {searching ? (
+            <div className="grid min-h-[240px] place-items-center"><span className="app-caption">Loading available numbers…</span></div>
+          ) : numbers.length ? (
+            <div className="grid gap-2">
+              {numbers.map((number) => {
+                const active = selected?.id === number.id;
+                const voiceAvailable = number.voice_enabled !== false && number.capabilities?.voice !== false;
+                return (
+                  <button
+                    className={`grid w-full gap-3 rounded-xl border p-3 text-left transition sm:grid-cols-[minmax(0,1fr)_145px_145px_auto] sm:items-center ${active ? "border-[#1438f5] bg-[#eef2ff] ring-2 ring-[#1438f5]/10" : "border-[#e5e7eb] bg-white hover:border-[#c7d2fe] hover:bg-[#fbfcff]"}`}
+                    disabled={!voiceAvailable || busy}
+                    key={number.id || number.e164}
+                    onClick={() => setSelected(number)}
+                    type="button"
+                  >
+                    <span>
+                      <strong className="app-strong block">{number.e164}</strong>
+                      <span className="app-caption">{[number.region, number.country].filter(Boolean).join(", ") || "Global"}</span>
+                    </span>
+                    <span><span className="app-caption block">Setup</span><strong className="app-body text-[#334155]">{formatMoney(number.setup_fee, number.currency)}</strong></span>
+                    <span><span className="app-caption block">Monthly</span><strong className="app-body text-[#334155]">{formatMoney(number.monthly_fee, number.currency)}</strong></span>
+                    <span className={`app-label justify-self-start rounded-full px-2.5 py-1 sm:justify-self-end ${voiceAvailable ? "bg-[#ecfdf5] text-[#047857]" : "bg-[#f1f5f9] text-[#64748b]"}`}>{voiceAvailable ? (active ? "Selected" : "Available") : "No voice"}</span>
+                  </button>
+                );
+              })}
+            </div>
+          ) : searched && !inventoryError ? (
+            <div className="grid min-h-[240px] place-items-center text-center">
+              <div><Icon icon="search" className="mx-auto mb-3 size-6 text-[#94a3b8]" /><p className="app-body m-0 text-[#475569]">No available numbers matched this search.</p></div>
+            </div>
+          ) : null}
+        </div>
+
+        <footer className="flex flex-wrap items-end justify-between gap-3 border-t border-[#e5e7eb] px-5 py-4 sm:px-6">
+          <label className="app-label grid min-w-[240px] flex-1 gap-2 sm:max-w-sm">
+            Label <span className="font-normal text-[#94a3b8]">(optional)</span>
+            <input className={controlClass} maxLength={120} placeholder="Sales main line" value={label} onChange={(event) => setLabel(event.target.value)} />
+          </label>
+          <div className="flex gap-2">
+            <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button>
+            <button className={`${buttonClass} bg-[#1438f5] text-white hover:bg-[#102fcf]`} disabled={busy || !selected} onClick={() => { if (selected) onPurchase(selected, label); }} type="button">
+              <Icon icon="plus" /> {busy ? "Purchasing…" : "Purchase number"}
+            </button>
+          </div>
+        </footer>
+      </div>
     </ModalFrame>
   );
 }
