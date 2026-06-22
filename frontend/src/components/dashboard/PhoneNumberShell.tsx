@@ -28,6 +28,7 @@ type IconName =
   | "link"
   | "phone"
   | "plus"
+  | "refresh"
   | "search"
   | "unlink"
   | "user";
@@ -56,6 +57,7 @@ function Icon({ icon, className = "size-4" }: { icon: IconName; className?: stri
   if (icon === "link") return <svg {...props}><path d="m10 13 4-4" /><path d="M7.5 15.5 5 18a3.5 3.5 0 0 1-5-5l3-3a3.5 3.5 0 0 1 5 0" /><path d="m16.5 8.5 2.5-2.5a3.5 3.5 0 0 1 5 5l-3 3a3.5 3.5 0 0 1-5 0" /></svg>;
   if (icon === "phone") return <svg {...props}><path d="M6.6 4.8 9 7.2a2 2 0 0 1 .4 2.2l-.8 1.7a12 12 0 0 0 5.3 5.3l1.7-.8a2 2 0 0 1 2.2.4l2.4 2.4a1.8 1.8 0 0 1-.2 2.7c-1 .7-2.2 1-3.6.8C9.4 20.7 3.3 14.6 2.1 7.6 1.9 6.2 2.2 5 2.9 4a1.8 1.8 0 0 1 2.7-.2Z" /></svg>;
   if (icon === "plus") return <svg {...props}><path d="M12 5v14M5 12h14" /></svg>;
+  if (icon === "refresh") return <svg {...props}><path d="M20 11a8 8 0 0 0-14.5-4.5L4 8" /><path d="M4 4v4h4" /><path d="M4 13a8 8 0 0 0 14.5 4.5L20 16" /><path d="M20 20v-4h-4" /></svg>;
   if (icon === "search") return <svg {...props}><circle cx="11" cy="11" r="7" /><path d="m20 20-4-4" /></svg>;
   if (icon === "unlink") return <svg {...props}><path d="m9 15-2 2a3.5 3.5 0 0 1-5-5l3-3" /><path d="m15 9 2-2a3.5 3.5 0 0 1 5 5l-3 3" /><path d="m3 3 18 18" /></svg>;
   return <svg {...props}><circle cx="12" cy="8" r="4" /><path d="M4 21a8 8 0 0 1 16 0" /></svg>;
@@ -179,6 +181,28 @@ export function PhoneNumberShell() {
     }
   }
 
+  async function repairRoutes() {
+    setBusy(true);
+    showMessage("");
+    try {
+      const result = await voiceApi.syncPhoneNumbers();
+      const [numberResponse, agentResponse] = await Promise.all([voiceApi.phoneNumbers(), voiceApi.agents()]);
+      setNumbers(numberResponse.numbers);
+      setAgents(agentResponse.agents);
+      const suffix = result.routes.errors.length
+        ? ` First issue: ${result.routes.errors[0].number} — ${result.routes.errors[0].message}`
+        : "";
+      showMessage(
+        `Route sync complete: checked ${result.routes.total}, repaired ${result.routes.repaired}, needs setup ${result.routes.needsSetup}.${suffix}`,
+        result.routes.needsSetup > 0,
+      );
+    } catch (caught) {
+      showMessage(errorMessage(caught), true);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   if (!session) {
     return <main className="app-strong grid min-h-screen place-items-center bg-[#f7f8fb]">Loading phone numbers</main>;
   }
@@ -199,6 +223,15 @@ export function PhoneNumberShell() {
               <p className="app-caption mt-1 mb-0">Import or buy telephony numbers, then link them to any voice agent.</p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
+              <button
+                className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`}
+                disabled={busy || loading}
+                onClick={() => void repairRoutes()}
+                type="button"
+              >
+                <Icon icon="refresh" />
+                Repair routes
+              </button>
               <button
                 className={`${buttonClass} border border-[#c7d2fe] bg-white text-[#1438f5] hover:bg-[#eef2ff]`}
                 onClick={() => { setShowImport(true); showMessage(""); }}

@@ -937,8 +937,6 @@ export function DashboardShell() {
     timeoutSeconds: 8,
     enabled: true,
   });
-  const [knowledgeName, setKnowledgeName] = useState("");
-  const [knowledgeContent, setKnowledgeContent] = useState("");
   const [variableDraft, setVariableDraft] = useState("");
   const [previewingVoice, setPreviewingVoice] = useState("");
   const previewAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -1317,21 +1315,6 @@ export function DashboardShell() {
     }
     updateSelectedAgent({ tools: [...selectedAgent.tools, { ...toolDraft, name: toolDraft.name.trim(), url: toolDraft.url.trim() }] });
     setToolDraft({ name: "", description: "", method: "POST", url: "", timeoutSeconds: 8, enabled: true });
-  }
-
-  function addKnowledgeDocument() {
-    if (!knowledgeName.trim() || !knowledgeContent.trim()) {
-      setNotice("Enter a knowledge document name and content.");
-      return;
-    }
-    updateSelectedAgent({
-      knowledgeDocuments: [
-        ...selectedAgent.knowledgeDocuments,
-        { name: knowledgeName.trim(), content: knowledgeContent.trim(), status: "ready" },
-      ],
-    });
-    setKnowledgeName("");
-    setKnowledgeContent("");
   }
 
   function addVariable() {
@@ -2391,38 +2374,6 @@ export function DashboardShell() {
               </div>
             </article>
 
-            <article className="rounded-lg border border-[#dfe3ea] bg-white p-4">
-              <div className="mb-3 flex items-center justify-between gap-3">
-                <div>
-                  <h2 className="app-section-title m-0">Knowledge base</h2>
-                  <span className="app-caption">Persisted context injected into live conversations</span>
-                </div>
-                <span className="grid size-9 place-items-center rounded-lg bg-[#eff6ff] text-[#2563eb]">
-                  <Icon icon="book" />
-                </span>
-              </div>
-              <div className="grid gap-2">
-                {selectedAgent.knowledgeDocuments.map((document, index) => (
-                  <div
-                    className="flex items-center justify-between gap-3 rounded-lg border border-[#e5e7eb] px-3 py-2"
-                    key={document._id ?? `${document.name}-${index}`}
-                  >
-                    <span className="min-w-0">
-                      <span className="app-strong block truncate">{document.name}</span>
-                      <span className="app-caption block truncate">{document.content}</span>
-                    </span>
-                    <button className="app-label text-rose-600" type="button" onClick={() => updateSelectedAgent({ knowledgeDocuments: selectedAgent.knowledgeDocuments.filter((_, documentIndex) => documentIndex !== index) })}>Remove</button>
-                  </div>
-                ))}
-                {!selectedAgent.knowledgeDocuments.length ? <span className="app-caption rounded-lg border border-dashed border-[#d5d8df] p-4 text-center">No knowledge documents added.</span> : null}
-                <InputField label="Document name" value={knowledgeName} placeholder="pricing-faq" onChange={setKnowledgeName} />
-                <label className="app-label grid gap-2">
-                  <span>Knowledge content</span>
-                  <textarea className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none focus:border-[#2563eb]" value={knowledgeContent} onChange={(event) => setKnowledgeContent(event.target.value)} placeholder="Paste approved facts, policies, FAQs, or procedures." />
-                </label>
-                <button className="app-button-text min-h-10 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#2563eb]" type="button" onClick={addKnowledgeDocument}>Add knowledge document</button>
-              </div>
-            </article>
           </section>
 
           <aside className="grid content-start gap-4">

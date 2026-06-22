@@ -11,8 +11,8 @@ type SidebarItem = {
 const sidebarItems: SidebarItem[] = [
   { label: "Voice Agents", href: "/dashboard", icon: "agent" },
   { label: "Phone Number", href: "/dashboard/phone-number", icon: "phone" },
-  { label: "Analytics", href: "/dashboard/analytics", icon: "analytics" },
-  { label: "Agent Knowledge", href: "/dashboard", icon: "knowledge" },
+  { label: "Campaigns", href: "/dashboard/campaign", icon: "campaign" },
+  { label: "Knowledge Base", href: "/dashboard/knowledge", icon: "knowledge" },
   { label: "Call Logs", href: "/dashboard/calls", icon: "logs" },
   { label: "Billing", href: "/dashboard/billing", icon: "billing" },
   { label: "Integrations", href: "/dashboard/integrations", icon: "integrations" },
