@@ -99,6 +99,23 @@ export type ModelCatalog = {
   tts: readonly ModelProvider[];
 };
 
+export type PricingGuide = {
+  currency: string;
+  llmPerMillionTokens: number;
+  sttPerMinute: number;
+  ttsPerMillionCharacters: number;
+  telephonyPerMinute: number;
+  markupMultiplier: number;
+};
+
+export type LatencyGuide = {
+  realtime: Partial<Record<RealtimeProvider, number>>;
+  llm: Partial<Record<PipelineProvider, number>>;
+  stt: Partial<Record<SttProvider, number>>;
+  tts: Partial<Record<PipelineProvider, number>>;
+  telephony: number;
+};
+
 export type VoiceLanguageOption = {
   value: string;
   label: string;
@@ -179,8 +196,41 @@ export type BackendPhoneNumber = {
   monthlyFee: number;
   currency: string;
   updatedAt: string;
-  agentId: BackendAgent;
+  agentId: BackendAgent | null;
+  createdAt: string;
 };
+
+export type TelephonyProvider = "Twilio" | "Exotel" | "Vobiz";
+
+export type PhoneNumberImportInput =
+  | {
+      provider: "Twilio";
+      phoneNumber: string;
+      label: string;
+      direction?: BackendPhoneNumber["direction"];
+      accountSid: string;
+      apiKeySid: string;
+      apiKeySecret: string;
+      apiRegion: "us1" | "au1" | "ie1";
+    }
+  | {
+      provider: "Exotel";
+      phoneNumber: string;
+      label: string;
+      direction?: BackendPhoneNumber["direction"];
+      accountSid: string;
+      apiKey: string;
+      apiToken: string;
+      dataCenter: "mumbai" | "singapore";
+    }
+  | {
+      provider: "Vobiz";
+      phoneNumber: string;
+      label: string;
+      direction?: BackendPhoneNumber["direction"];
+      authId: string;
+      authToken: string;
+    };
 
 export type VobizNumber = {
   id: string;
@@ -365,7 +415,14 @@ export const voiceApi = {
       providers: { id: string; label: string; detail: string; configured: boolean }[];
       languageCatalog: VoiceLanguageOption[];
       modelCatalog: ModelCatalog;
-      sip: { inboundConfigured: boolean; outboundConfigured: boolean; callerId: string };
+      pricing: PricingGuide;
+      latencyGuide: LatencyGuide;
+      sip: {
+        inboundConfigured: boolean;
+        outboundConfigured: boolean;
+        inboundDestinationConfigured: boolean;
+        callerId: string;
+      };
       vobiz: {
         configured: boolean;
         accountId: string;
@@ -440,6 +497,19 @@ export const voiceApi = {
       body: JSON.stringify({ agentId, phoneNumber }),
     }),
   phoneNumbers: () => request<{ numbers: BackendPhoneNumber[] }>("/phone-numbers"),
+  createPhoneNumber: (input: PhoneNumberImportInput) =>
+    request<{ number: BackendPhoneNumber }>("/phone-numbers", {
+      method: "POST",
+      body: JSON.stringify(input),
+    }),
+  assignPhoneNumberAgent: (phoneNumberId: string, agentId: string | null) =>
+    request<{ number: BackendPhoneNumber; routingWarning: string }>(
+      `/phone-numbers/${phoneNumberId}/agent`,
+      {
+        method: "PUT",
+        body: JSON.stringify({ agentId }),
+      },
+    ),
   vobizNumbers: () => request<VobizNumberList>("/vobiz/numbers"),
   vobizIntegration: () => request<VobizIntegration>("/integrations/vobiz"),
   connectVobiz: (authId: string, authToken: string) =>
@@ -480,7 +550,12 @@ export const voiceApi = {
   syncPhoneNumbers: () =>
     request<{
       vobiz: VobizNumberList;
-      routes: { total: number };
+      routes: {
+        total: number;
+        repaired: number;
+        needsSetup: number;
+        errors: { number: string; message: string }[];
+      };
     }>("/phone-numbers/sync", { method: "POST" }),
   calls: (
     input: {

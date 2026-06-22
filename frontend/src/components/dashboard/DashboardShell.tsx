@@ -85,6 +85,23 @@ type VoiceAgent = {
   version: number;
 };
 
+type DashboardVoiceConfig = {
+  configured: boolean;
+  agentName: string;
+  sip: {
+    inboundConfigured: boolean;
+    outboundConfigured: boolean;
+    inboundDestinationConfigured: boolean;
+    callerId: string;
+  };
+  vobiz: {
+    configured: boolean;
+    accountId: string;
+    status: string;
+    ownedNumberCount: number;
+  };
+};
+
 const defaultBehavior: AgentBehavior = {
   interruptions: true,
   userStartsFirst: false,
@@ -909,6 +926,7 @@ export function DashboardShell() {
   const [showTestCall, setShowTestCall] = useState(false);
   const [modelCatalog, setModelCatalog] = useState<ModelCatalog>(fallbackCatalog);
   const [languageCatalog, setLanguageCatalog] = useState<VoiceLanguageOption[]>(fallbackLanguageCatalog);
+  const [voiceConfig, setVoiceConfig] = useState<DashboardVoiceConfig | null>(null);
   const [agentTemplates, setAgentTemplates] = useState<AgentTemplate[]>([]);
   const [recentCalls, setRecentCalls] = useState<CallRecord[]>([]);
   const [toolDraft, setToolDraft] = useState<AgentTool>({
@@ -1028,6 +1046,7 @@ export function DashboardShell() {
       ]);
       if (cancelled) return;
       applyBackendAgents(backendAgents);
+      setVoiceConfig(config);
       setModelCatalog(config.modelCatalog);
       setLanguageCatalog(config.languageCatalog ?? fallbackLanguageCatalog);
       setAgentTemplates(templateResult.templates);
@@ -1054,6 +1073,24 @@ export function DashboardShell() {
       .then((result) => setRecentCalls(result.calls))
       .catch(() => setRecentCalls([]));
   }, [activeTab, selectedAgentId, session]);
+
+  async function handleSyncPhoneRoutes() {
+    try {
+      setNotice("Syncing phone routes...");
+      const response = await voiceApi.syncPhoneNumbers();
+      const [{ agents: backendAgents }, config] = await Promise.all([
+        voiceApi.agents(),
+        voiceApi.config(),
+      ]);
+      setAgentList(backendAgents.map(mapBackendAgent));
+      setVoiceConfig(config);
+      setNotice(
+        `Synced ${response.vobiz.total} Vobiz numbers, checked ${response.routes.total} routes, repaired ${response.routes.repaired}, needs setup ${response.routes.needsSetup}.`,
+      );
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Could not sync phone routes.");
+    }
+  }
 
   async function handleSave(changes: Partial<BackendAgent> = {}) {
     try {
@@ -2127,10 +2164,58 @@ export function DashboardShell() {
 
                 {activeTab === "calls" ? (
                   <div className="grid gap-4">
-                    <div className="grid gap-3 lg:grid-cols-3">
-                      <InputField label="Assigned phone" defaultValue={selectedAgent.phone} />
-                      <SelectField label="Route mode" defaultValue="Inbound and outbound" options={["Inbound and outbound", "Inbound only", "Outbound only"]} />
-                      <InputField label="Test destination" placeholder="+14155550123" />
+                    <div className="grid gap-3 lg:grid-cols-4">
+                      <div className="rounded-lg border border-[#e5e7eb] bg-white p-3">
+                        <span className="app-label block">Assigned phone</span>
+                        <strong className="app-strong block truncate">{selectedAgent.phone}</strong>
+                      </div>
+                      <div className="rounded-lg border border-[#e5e7eb] bg-white p-3">
+                        <span className="app-label block">LiveKit inbound trunk</span>
+                        <strong className={`app-strong ${voiceConfig?.sip.inboundConfigured ? "text-[#059669]" : "text-[#dc2626]"}`}>
+                          {voiceConfig?.sip.inboundConfigured ? "Configured" : "Missing"}
+                        </strong>
+                      </div>
+                      <div className="rounded-lg border border-[#e5e7eb] bg-white p-3">
+                        <span className="app-label block">LiveKit agent</span>
+                        <strong className={`app-strong ${voiceConfig?.agentName ? "text-[#059669]" : "text-[#dc2626]"}`}>
+                          {voiceConfig?.agentName || "Missing"}
+                        </strong>
+                      </div>
+                      <div className="rounded-lg border border-[#e5e7eb] bg-white p-3">
+                        <span className="app-label block">Vobiz connection</span>
+                        <strong className={`app-strong ${voiceConfig?.vobiz.configured ? "text-[#059669]" : "text-[#dc2626]"}`}>
+                          {voiceConfig?.vobiz.configured ? "Connected" : "Missing"}
+                        </strong>
+                      </div>
+                    </div>
+
+                    {!voiceConfig?.sip.inboundConfigured ? (
+                      <p className="app-caption m-0 rounded-lg border border-[#fecaca] bg-[#fef2f2] p-3 text-[#b91c1c]">
+                        LIVEKIT_SIP_INBOUND_TRUNK_ID is missing. Set your LiveKit inbound trunk, then sync phone routes.
+                      </p>
+                    ) : null}
+
+                    {!voiceConfig?.sip.inboundDestinationConfigured ? (
+                      <p className="app-caption m-0 rounded-lg border border-[#fecaca] bg-[#fef2f2] p-3 text-[#b91c1c]">
+                        LIVEKIT_SIP_URI is missing. Set it to your LiveKit SIP host, then sync phone routes so Vobiz can hand inbound calls to LiveKit.
+                      </p>
+                    ) : null}
+
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        className="app-button-text min-h-10 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#2563eb]"
+                        type="button"
+                        onClick={() => void handleSyncPhoneRoutes()}
+                      >
+                        Sync phone routes
+                      </button>
+                      <button
+                        className="app-button-text min-h-10 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#111827]"
+                        type="button"
+                        onClick={() => router.push("/dashboard/phone-number")}
+                      >
+                        Manage numbers
+                      </button>
                     </div>
 
                     <div className="grid gap-3 lg:grid-cols-2">
