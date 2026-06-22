@@ -22,7 +22,7 @@ export function VoicePreview() {
 
   return (
     <div
-      className="grid min-h-[440px] gap-6 rounded-lg border border-white/20 bg-[#10071d]/90 p-5 shadow-[0_30px_90px_rgba(0,0,0,0.4)] backdrop-blur-xl sm:p-7"
+      className="grid min-h-[440px] gap-6 rounded-lg border border-[#374151] bg-[#111827]/90 p-5 shadow-[0_30px_90px_rgba(0,0,0,0.4)] backdrop-blur-xl sm:p-7"
       aria-label="Voice platform preview"
     >
       <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3 text-sm text-[#dcc6f2]">

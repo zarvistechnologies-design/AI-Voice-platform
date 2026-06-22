@@ -1,16 +1,40 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Script from "next/script";
 
 import {
   getSession,
+  loginWithGoogle,
   loginWithPassword,
   registerWithPassword,
   validateStoredSession,
 } from "@/lib/auth";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
+
+type GoogleCredentialResponse = { credential?: string };
+
+declare global {
+  interface Window {
+    google?: {
+      accounts: {
+        id: {
+          initialize: (options: {
+            client_id: string;
+            callback: (response: GoogleCredentialResponse) => void;
+          }) => void;
+          renderButton: (
+            parent: HTMLElement,
+            options: Record<string, string | number>,
+          ) => void;
+        };
+      };
+    };
+  }
+}
 
 function getNextPath(path: string | null) {
   if (!path || !path.startsWith("/") || path.startsWith("//")) {
@@ -33,6 +57,7 @@ export function LoginForm() {
   const [needsTwoFactor, setNeedsTwoFactor] = useState(false);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const googleButtonRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -47,6 +72,45 @@ export function LoginForm() {
       cancelled = true;
     };
   }, [nextPath, router]);
+
+  const handleGoogleCredential = useCallback(async (response: GoogleCredentialResponse) => {
+    if (!response.credential) {
+      setError("Google did not return a sign-in credential.");
+      return;
+    }
+    setError("");
+    setIsSubmitting(true);
+    try {
+      await loginWithGoogle(response.credential);
+      const session = await validateStoredSession();
+      if (!session) throw new Error("Google sign-in completed, but the session could not be verified.");
+      router.push(nextPath);
+    } catch (authError) {
+      setError(authError instanceof Error ? authError.message : "Google sign-in failed.");
+      setIsSubmitting(false);
+    }
+  }, [nextPath, router]);
+
+  const renderGoogleButton = useCallback(() => {
+    if (!googleClientId || !window.google || !googleButtonRef.current) return;
+    googleButtonRef.current.replaceChildren();
+    window.google.accounts.id.initialize({
+      client_id: googleClientId,
+      callback: (response) => void handleGoogleCredential(response),
+    });
+    window.google.accounts.id.renderButton(googleButtonRef.current, {
+      type: "standard",
+      theme: "outline",
+      size: "large",
+      text: mode === "login" ? "signin_with" : "signup_with",
+      shape: "rectangular",
+      width: Math.max(240, Math.floor(googleButtonRef.current.clientWidth)),
+    });
+  }, [handleGoogleCredential, mode]);
+
+  useEffect(() => {
+    renderGoogleButton();
+  }, [renderGoogleButton]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -115,6 +179,25 @@ export function LoginForm() {
             ? "Sign in with an account saved in MongoDB."
             : "Create your secure workspace, then verify your email from Profile."}
         </p>
+      </div>
+
+      <Script
+        onLoad={renderGoogleButton}
+        src="https://accounts.google.com/gsi/client"
+        strategy="afterInteractive"
+      />
+      {googleClientId ? (
+        <div className={isSubmitting ? "pointer-events-none opacity-70" : ""} ref={googleButtonRef} />
+      ) : (
+        <p className="app-control-text m-0 rounded-lg border border-amber-600/20 bg-amber-50 px-3.5 py-3 text-amber-800">
+          Google sign-in needs NEXT_PUBLIC_GOOGLE_CLIENT_ID.
+        </p>
+      )}
+
+      <div className="flex items-center gap-3" aria-hidden="true">
+        <span className="h-px flex-1 bg-[#ded6f2]" />
+        <span className="app-control-text text-[#716a7d]">or</span>
+        <span className="h-px flex-1 bg-[#ded6f2]" />
       </div>
 
       {mode === "register" ? (

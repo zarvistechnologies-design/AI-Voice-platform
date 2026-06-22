@@ -59,13 +59,13 @@ export function WhoWeAreSection() {
   ];
 
   return (
-    <section className="mx-auto w-full max-w-[1280px] px-5 py-20 sm:px-8 lg:px-12" id="company">
-      <div className="grid gap-12">
+    <section className="mx-auto w-full max-w-[1360px] px-4 pt-8 pb-16 sm:px-6 lg:px-8" id="company">
+      <div className="grid gap-8">
         <div className="grid gap-4 lg:grid-cols-2">
           <div className="grid gap-8 rounded-lg border border-white/15 bg-white/5 p-5 sm:p-8">
             <div>
               <p className="m-0 text-xs font-black uppercase text-fuchsia-300">Company</p>
-              <h2 className="mt-3 mb-0 text-[clamp(2.4rem,5vw,4.5rem)] leading-none font-black">
+              <h2 className="mt-3 mb-0 text-[clamp(1.85rem,3.5vw,3rem)] leading-tight font-black">
                 Who We Are
               </h2>
             </div>
@@ -89,10 +89,10 @@ export function WhoWeAreSection() {
             </div>
           </div>
 
-          <div className="grid gap-8 rounded-lg border border-white/15 bg-[#10071d]/65 p-5 sm:p-8">
+          <div className="grid gap-8 rounded-lg border border-white/15 bg-white/5 p-5 sm:p-8">
             <div>
               <p className="m-0 text-xs font-black uppercase text-fuchsia-300">Platform</p>
-              <h2 className="mt-3 mb-0 text-[clamp(2.4rem,5vw,4.5rem)] leading-none font-black">
+              <h2 className="mt-3 mb-0 text-[clamp(1.85rem,3.5vw,3rem)] leading-tight font-black">
                 What We Do
               </h2>
             </div>
@@ -124,7 +124,7 @@ export function WhoWeAreSection() {
         >
           <div>
             <p className="m-0 text-xs font-black uppercase text-fuchsia-300">Call flow</p>
-            <h3 className="mt-3 mb-0 text-3xl leading-tight font-black">
+            <h3 className="mt-3 mb-0 text-2xl leading-tight font-black">
               From first ring to completed action.
             </h3>
           </div>
@@ -154,10 +154,10 @@ export function WhoWeAreSection() {
           </div>
         </div>
 
-        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(380px,1.1fr)]">
+        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(430px,1.15fr)]">
           <div>
-            <p className="m-0 text-xs font-black uppercase text-fuchsia-300">Evolution</p>
-            <h2 className="mt-3 mb-8 text-[clamp(2.3rem,5vw,4.5rem)] leading-none font-black">
+            <p className="m-0 text-xs font-black uppercase text-[#00ADB5]">Evolution</p>
+            <h2 className="mt-3 mb-6 text-[clamp(1.65rem,3vw,2.5rem)] leading-tight font-black">
               AI Voice Technology changed how businesses handle calls.
             </h2>
 
@@ -167,18 +167,18 @@ export function WhoWeAreSection() {
                   className="grid grid-cols-[42px_1fr] gap-x-3 rounded-lg border border-white/15 bg-white/5 p-4"
                   key={card.title}
                 >
-                  <span className="row-span-2 text-sm font-black text-fuchsia-300">
+                  <span className="row-span-2 bg-gradient-to-r from-[#00ADB5] to-cyan-300 bg-clip-text text-sm font-black text-transparent">
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   <h3 className="m-0 text-lg font-black">{card.title}</h3>
-                  <p className="m-0 mt-1 leading-6 text-[#dcc6f2]">{card.copy}</p>
+                  <p className="m-0 mt-1 leading-6 text-slate-300">{card.copy}</p>
                 </article>
               ))}
             </div>
           </div>
 
           <div
-            className="relative grid min-h-[500px] content-end overflow-hidden rounded-lg border border-white/15 bg-black/30 p-5 sm:p-8"
+            className="relative grid min-h-[540px] content-end overflow-hidden rounded-lg border border-white/15 bg-black/30 p-5 sm:p-8"
             aria-label="Evolution of AI voice technology"
           >
             <Image
@@ -189,15 +189,15 @@ export function WhoWeAreSection() {
               height={600}
               unoptimized
             />
-            <div className="relative z-10 mb-4 grid grid-cols-3 gap-2 text-center text-xs font-bold text-[#dcc6f2]">
+            <div className="relative z-10 mb-4 grid grid-cols-3 gap-2 text-center text-xs font-bold text-slate-300">
               <span className="rounded-full bg-black/40 px-2 py-2">Manual calls</span>
               <span className="rounded-full bg-black/40 px-2 py-2">Rigid IVR</span>
-              <span className="rounded-full bg-fuchsia-500/20 px-2 py-2 text-white">
+              <span className="rounded-full border border-[#00ADB5]/30 bg-[#00ADB5]/15 px-2 py-2 text-white">
                 AI voice agents
               </span>
             </div>
             <strong className="relative z-10 text-2xl font-black">Voice AI Evolution</strong>
-            <p className="relative z-10 mt-2 mb-0 leading-7 text-[#dcc6f2]">
+            <p className="relative z-10 mt-2 mb-0 leading-7 text-slate-300">
               From missed calls and manual updates to always-on intelligent conversations.
             </p>
           </div>
