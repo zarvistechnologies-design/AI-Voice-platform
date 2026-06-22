@@ -56,15 +56,24 @@ function createSession(authResponse: AuthResponse): AuthSession {
   };
 }
 
+function authServerUnavailableError() {
+  return new Error("Could not reach the backend API. Make sure the backend is running on http://localhost:5000.");
+}
+
 async function requestAuth(path: string, init: RequestInit) {
-  const response = await fetch(`${API_URL}${path}`, {
-    ...init,
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      ...init.headers,
-    },
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${API_URL}${path}`, {
+      ...init,
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        ...init.headers,
+      },
+    });
+  } catch {
+    throw authServerUnavailableError();
+  }
 
   const data = (await response.json().catch(() => null)) as
     | (AuthResponse & { message?: string })
@@ -170,10 +179,15 @@ export async function validateStoredSession() {
     return null;
   }
 
-  const response = await fetch(`${API_URL}/api/auth/me`, {
-    credentials: "include",
-    headers: getAuthHeaders(),
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${API_URL}/api/auth/me`, {
+      credentials: "include",
+      headers: getAuthHeaders(),
+    });
+  } catch {
+    return null;
+  }
 
   if (!response.ok) {
     try {

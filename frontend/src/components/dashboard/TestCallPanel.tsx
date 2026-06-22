@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Room, RoomEvent, Track } from "livekit-client";
 
 import { voiceApi } from "@/lib/voice";
@@ -14,6 +14,7 @@ type Props = {
 export function TestCallPanel({ agentId, agentName, onClose }: Props) {
   const roomRef = useRef<Room | null>(null);
   const audioElementsRef = useRef<HTMLMediaElement[]>([]);
+  const dispatchTimerRef = useRef<number | null>(null);
   const [mode, setMode] = useState<"web" | "phone">("web");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [status, setStatus] = useState("Ready to connect");
@@ -22,7 +23,15 @@ export function TestCallPanel({ agentId, agentName, onClose }: Props) {
   const [remoteCount, setRemoteCount] = useState(0);
   const [audioCount, setAudioCount] = useState(0);
 
-  function disconnect() {
+  const stopDispatchPolling = useCallback(() => {
+    if (dispatchTimerRef.current) {
+      window.clearInterval(dispatchTimerRef.current);
+      dispatchTimerRef.current = null;
+    }
+  }, []);
+
+  const disconnect = useCallback(() => {
+    stopDispatchPolling();
     roomRef.current?.disconnect();
     roomRef.current = null;
     audioElementsRef.current.forEach((element) => element.remove());
@@ -31,15 +40,52 @@ export function TestCallPanel({ agentId, agentName, onClose }: Props) {
     setRemoteCount(0);
     setAudioCount(0);
     setStatus("Call ended");
-  }
+  }, [stopDispatchPolling]);
 
-  useEffect(() => disconnect, []);
+  useEffect(() => disconnect, [disconnect]);
+
+  function startDispatchPolling(roomName: string, dispatchId = "") {
+    stopDispatchPolling();
+    let checks = 0;
+    const check = async () => {
+      checks += 1;
+      try {
+        const health = await voiceApi.agentDispatchStatus({ roomName, dispatchId });
+        if (!roomRef.current && mode === "web") {
+          stopDispatchPolling();
+          return;
+        }
+        if (health.state === "failed") {
+          setStatus(health.message);
+          stopDispatchPolling();
+          return;
+        }
+        if (health.state === "running") {
+          setStatus((current) =>
+            current.includes("Receiving audio") ? current : "AI worker accepted the call. Waiting for audio...",
+          );
+        } else if (health.state === "pending" || health.state === "waiting") {
+          setStatus(health.message);
+        } else if (health.state === "missing" && checks > 2) {
+          setStatus(health.message);
+        }
+        if (checks >= 20) stopDispatchPolling();
+      } catch {
+        if (checks >= 3) stopDispatchPolling();
+      }
+    };
+
+    void check();
+    dispatchTimerRef.current = window.setInterval(() => void check(), 2500);
+  }
 
   async function startWebCall() {
     setBusy(true);
     setStatus("Creating browser voice room...");
     try {
       const credentials = await voiceApi.webCallToken(agentId);
+      setStatus(credentials.dispatch.message);
+      startDispatchPolling(credentials.roomName, credentials.dispatchId);
       const room = new Room({ adaptiveStream: true, dynacast: true });
       let subscribedAudioTracks = 0;
       const refreshParticipants = () => setRemoteCount(room.remoteParticipants.size);
@@ -53,6 +99,7 @@ export function TestCallPanel({ agentId, agentName, onClose }: Props) {
         audioElementsRef.current.push(element);
         subscribedAudioTracks += 1;
         setAudioCount(subscribedAudioTracks);
+        stopDispatchPolling();
         setStatus(`Receiving audio from ${agentName}`);
       });
       room.on(RoomEvent.TrackUnsubscribed, (track) => {
@@ -104,7 +151,8 @@ export function TestCallPanel({ agentId, agentName, onClose }: Props) {
     try {
       const call = await voiceApi.outboundCall(agentId, phoneNumber.trim());
       setActive(true);
-      setStatus(`Phone call connected. Room: ${call.roomName}`);
+      setStatus(call.dispatch.message || `Phone call connected. Room: ${call.roomName}`);
+      startDispatchPolling(call.roomName, call.dispatchId);
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "Could not start the phone call.");
     } finally {

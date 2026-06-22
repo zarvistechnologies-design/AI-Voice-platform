@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { type ReactNode, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 
@@ -23,6 +23,7 @@ import {
   type AgentTool,
   type AgentWidget,
   type BusinessHoursDay,
+  type FirstMessageMode,
   type KnowledgeDocument,
   type ModelCatalog,
   type PipelineMode,
@@ -72,6 +73,7 @@ type VoiceAgent = {
   success: string;
   prompt: string;
   firstMessage: string;
+  firstMessageMode: FirstMessageMode;
   behavior: AgentBehavior;
   callSettings: AgentCallSettings;
   tools: AgentTool[];
@@ -89,7 +91,10 @@ const defaultBehavior: AgentBehavior = {
   autoFillResponses: true,
   agentCanTerminate: true,
   voicemailHandling: true,
+  voicemailAction: "leave-message",
   dtmfDial: false,
+  dtmfSequence: "",
+  endpointingMode: "balanced",
   responseDelayMs: 180,
   maxCallDurationSeconds: 1200,
   maxIdleSeconds: 18,
@@ -169,6 +174,7 @@ const agents: VoiceAgent[] = [{
   success: "-",
   prompt: "",
   firstMessage: "",
+  firstMessageMode: "assistant-speaks-first",
   behavior: defaultBehavior,
   callSettings: defaultCallSettings,
   tools: [],
@@ -210,10 +216,86 @@ const fallbackLanguageCatalog: VoiceLanguageOption[] = [
   { value: "French", label: "French", code: "fr-FR", sarvamStt: false, sarvamTts: false },
 ];
 
+const fallbackSarvamV3Voices = [
+  "shubh",
+  "aditya",
+  "ritu",
+  "priya",
+  "neha",
+  "rahul",
+  "pooja",
+  "rohan",
+  "simran",
+  "kavya",
+  "amit",
+  "dev",
+  "ishita",
+  "shreya",
+  "ratan",
+  "varun",
+  "manan",
+  "sumit",
+  "roopa",
+  "kabir",
+  "aayan",
+  "ashutosh",
+  "advait",
+  "amelia",
+  "sophia",
+  "anand",
+  "tanya",
+  "tarun",
+  "sunny",
+  "mani",
+  "gokul",
+  "vijay",
+  "shruti",
+  "suhani",
+  "mohit",
+  "kavitha",
+  "rehan",
+  "soham",
+  "rupali",
+];
+
+const fallbackSarvamV2Voices = [
+  "anushka",
+  "manisha",
+  "vidya",
+  "arya",
+  "abhilash",
+  "karun",
+  "hitesh",
+];
+
+const fallbackSarvamVoices = [...fallbackSarvamV3Voices, ...fallbackSarvamV2Voices];
+const fallbackElevenLabsVoices = [
+  "bIHbv24MWmeRgasZH58o",
+];
+const defaultGeminiRealtimeModel = "gemini-2.5-flash-native-audio-preview-12-2025";
+
+function normalizeRealtimeModel(provider: RealtimeProvider, model: string) {
+  if (provider !== "gemini") return model;
+  return model === defaultGeminiRealtimeModel ? model : defaultGeminiRealtimeModel;
+}
+
+function voicesByLanguage(
+  languages: readonly VoiceLanguageOption[],
+  voices: readonly string[],
+) {
+  return Object.fromEntries(
+    languages.flatMap((language) => [
+      [language.value, voices],
+      [language.label, voices],
+      [language.code, voices],
+    ]),
+  );
+}
+
 const fallbackCatalog: ModelCatalog = {
   realtime: [
     { provider: "openai", label: "OpenAI Realtime", configured: true, models: ["gpt-realtime"], voices: ["alloy", "ash", "ballad", "coral", "echo", "sage", "shimmer", "verse", "marin", "cedar"] },
-    { provider: "gemini", label: "Gemini Live", configured: true, models: ["gemini-live-2.5-flash-native-audio"], voices: ["Aoede"] },
+    { provider: "gemini", label: "Gemini Live", configured: true, models: [defaultGeminiRealtimeModel], voices: ["Aoede"] },
   ],
   llm: [
     { provider: "openai", label: "OpenAI", configured: true, models: ["gpt-4.1-mini"] },
@@ -229,6 +311,13 @@ const fallbackCatalog: ModelCatalog = {
       models: ["saaras:v3"],
       languages: fallbackLanguageCatalog.filter((language) => language.sarvamStt),
     },
+    {
+      provider: "elevenlabs",
+      label: "ElevenLabs",
+      configured: true,
+      models: ["scribe_v2_realtime", "scribe_v2", "scribe_v1"],
+      languages: fallbackLanguageCatalog,
+    },
   ],
   tts: [
     { provider: "openai", label: "OpenAI", configured: true, models: ["gpt-4o-mini-tts"], voices: ["alloy"] },
@@ -238,8 +327,28 @@ const fallbackCatalog: ModelCatalog = {
       label: "Sarvam",
       configured: true,
       models: ["bulbul:v3"],
-      voices: ["shubh"],
+      voices: fallbackSarvamVoices,
       languages: fallbackLanguageCatalog.filter((language) => language.sarvamTts),
+      voicesByLanguage: voicesByLanguage(
+        fallbackLanguageCatalog.filter((language) => language.sarvamTts),
+        fallbackSarvamVoices,
+      ),
+      voicesByModel: {
+        "bulbul:v3": fallbackSarvamV3Voices,
+        "bulbul:v2": fallbackSarvamV2Voices,
+      },
+    },
+    {
+      provider: "elevenlabs",
+      label: "ElevenLabs",
+      configured: true,
+      models: ["eleven_multilingual_v2", "eleven_flash_v2_5", "eleven_turbo_v2_5"],
+      voices: fallbackElevenLabsVoices,
+      languages: fallbackLanguageCatalog.filter((language) => language.code !== "unknown"),
+      voicesByLanguage: voicesByLanguage(
+        fallbackLanguageCatalog.filter((language) => language.code !== "unknown"),
+        fallbackElevenLabsVoices,
+      ),
     },
   ],
 };
@@ -248,14 +357,37 @@ function getProvider(catalog: ModelCatalog, layer: keyof ModelCatalog, provider:
   return catalog[layer].find((item) => item.provider === provider) ?? catalog[layer][0];
 }
 
+function languageKeys(language: string, languageCatalog: readonly VoiceLanguageOption[]) {
+  const normalized = language.trim().toLowerCase();
+  const matched = languageCatalog.find((item) =>
+    [item.value, item.label, item.code].some((candidate) => candidate.toLowerCase() === normalized),
+  );
+  return [...new Set([language, matched?.value, matched?.label, matched?.code].filter(Boolean) as string[])];
+}
+
 function getVoices(
   catalog: ModelCatalog,
   layer: "realtime" | "tts",
   provider: string,
   model: string,
+  language = "",
+  languageCatalog: readonly VoiceLanguageOption[] = [],
 ) {
   const item = getProvider(catalog, layer, provider);
-  return item.voicesByModel?.[model] ?? item.voices ?? [];
+  const modelVoices = item.voicesByModel?.[model] ?? item.voices ?? [];
+  const languageVoices = language
+    ? languageKeys(language, languageCatalog)
+        .map((key) => item.voicesByLanguage?.[key])
+        .find((voices) => voices && voices.length)
+    : undefined;
+
+  if (languageVoices?.length && modelVoices.length) {
+    const allowed = new Set(languageVoices);
+    const filtered = modelVoices.filter((voice) => allowed.has(voice));
+    return filtered.length ? filtered : [...languageVoices];
+  }
+
+  return languageVoices ? [...languageVoices] : [...modelVoices];
 }
 
 type SelectOption = string | { value: string; label: string };
@@ -268,18 +400,32 @@ function getSelectOptionLabel(option: SelectOption) {
   return typeof option === "string" ? option : option.label;
 }
 
-function getProviderLanguages(
-  catalog: ModelCatalog,
-  layer: "stt" | "tts",
-  provider: string,
-  languageCatalog: VoiceLanguageOption[],
-) {
-  const providerLanguages = getProvider(catalog, layer, provider).languages;
-  if (providerLanguages?.length) return [...providerLanguages];
-  if (provider === "sarvam") {
-    return languageCatalog.filter((language) => (layer === "tts" ? language.sarvamTts : language.sarvamStt));
-  }
-  return languageCatalog.filter((language) => !language.value.includes("Auto"));
+function getOptionLabel(options: SelectOption[], value: string) {
+  return getSelectOptionLabel(options.find((option) => getSelectOptionValue(option) === value) ?? value);
+}
+
+function formatCompactDuration(seconds: number) {
+  if (!Number.isFinite(seconds) || seconds <= 0) return "0s";
+  if (seconds < 60) return `${Math.round(seconds)}s`;
+  const minutes = seconds / 60;
+  return `${minutes % 1 === 0 ? minutes.toFixed(0) : minutes.toFixed(1)}m`;
+}
+
+const voiceLabels: Record<string, string> = {
+  bIHbv24MWmeRgasZH58o: "Will - ElevenLabs default",
+  "21m00Tcm4TlvDq8ikWAM": "Rachel - female",
+  EXAVITQu4vr4xnSDxMaL: "Bella - female",
+  MF3mGyEYCl7XYWbV9V6O: "Elli - female",
+  pNInz6obpgDQGcFmaJgB: "Adam - male",
+  ErXwobaYiN019PkySvjV: "Antoni - male",
+  TxGEqnHWrfWFTfGW9XjX: "Josh - male",
+};
+
+function voiceSelectOptions(voices: readonly string[]): SelectOption[] {
+  return voices.map((voice) => ({
+    value: voice,
+    label: voiceLabels[voice] ? `${voiceLabels[voice]} (${voice})` : voice,
+  }));
 }
 
 function coerceLanguage(
@@ -300,10 +446,14 @@ function getLanguageOptions(
   languageCatalog: VoiceLanguageOption[],
 ): SelectOption[] {
   let options = languageCatalog;
-  if (agent.pipelineMode === "pipeline" && agent.ttsProvider === "sarvam") {
-    options = getProviderLanguages(catalog, "tts", "sarvam", languageCatalog);
-  } else if (agent.pipelineMode === "pipeline" && agent.sttProvider === "sarvam") {
-    options = getProviderLanguages(catalog, "stt", "sarvam", languageCatalog);
+  if (agent.pipelineMode === "pipeline") {
+    const ttsLanguages = getProvider(catalog, "tts", agent.ttsProvider).languages;
+    const sttLanguages = getProvider(catalog, "stt", agent.sttProvider).languages;
+    if (ttsLanguages?.length) {
+      options = [...ttsLanguages];
+    } else if (sttLanguages?.length) {
+      options = [...sttLanguages];
+    }
   }
 
   const mapped = options.map((language) => ({
@@ -361,6 +511,23 @@ const flowSettings = [
     detail: "Allow keypad dialing instructions for IVR navigation.",
   },
 ] satisfies { field: keyof AgentBehavior; title: string; detail: string }[];
+
+const firstMessageModeOptions: SelectOption[] = [
+  { value: "assistant-speaks-first", label: "Assistant speaks first" },
+  { value: "user-speaks-first", label: "User speaks first" },
+  { value: "model-generated", label: "Model generated" },
+];
+
+const endpointingModeOptions: SelectOption[] = [
+  { value: "fast", label: "Fast" },
+  { value: "balanced", label: "Balanced" },
+  { value: "patient", label: "Patient" },
+];
+
+const voicemailActionOptions: SelectOption[] = [
+  { value: "leave-message", label: "Leave message" },
+  { value: "hangup", label: "Hang up" },
+];
 
 const deployChecklist = [
   "Prompt and first message ready",
@@ -544,18 +711,81 @@ function ToggleRow({
   onChange?: (enabled: boolean) => void;
 }) {
   return (
-    <label className="flex items-start justify-between gap-3 rounded-lg border border-[#e5e7eb] bg-white p-3">
-      <span>
+    <label className="group grid cursor-pointer grid-cols-[minmax(0,1fr)_44px] items-start gap-3 rounded-lg border border-[#e5e7eb] bg-white p-3 transition hover:border-[#c7d2fe] hover:bg-[#f8fbff]">
+      <span className="min-w-0">
         <span className="app-strong block">{title}</span>
         <span className="app-caption block">{detail}</span>
       </span>
       <input
-        className="mt-1 size-4 accent-[#2563eb]"
+        className="sr-only"
         type="checkbox"
         checked={enabled}
         onChange={onChange ? (event) => onChange(event.target.checked) : undefined}
       />
+      <span
+        aria-hidden="true"
+        className={`relative mt-0.5 h-6 w-11 rounded-full transition ${
+          enabled ? "bg-[#2563eb]" : "bg-[#cbd5e1]"
+        }`}
+      >
+        <span
+          className={`absolute top-1 size-4 rounded-full bg-white shadow-sm transition ${
+            enabled ? "left-6" : "left-1"
+          }`}
+        />
+      </span>
     </label>
+  );
+}
+
+function BehaviorPanel({
+  title,
+  detail,
+  icon,
+  children,
+}: {
+  title: string;
+  detail: string;
+  icon: IconName;
+  children: ReactNode;
+}) {
+  return (
+    <section className="overflow-hidden rounded-xl border border-[#dfe3ea] bg-white">
+      <div className="flex items-start justify-between gap-3 border-b border-[#edf0f5] bg-[#f8fafc] px-4 py-3">
+        <div className="min-w-0">
+          <h3 className="app-section-title m-0">{title}</h3>
+          <span className="app-caption">{detail}</span>
+        </div>
+        <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-white text-[#2563eb] shadow-sm">
+          <Icon icon={icon} />
+        </span>
+      </div>
+      <div className="grid gap-4 p-4">{children}</div>
+    </section>
+  );
+}
+
+function BehaviorMetric({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: string;
+  tone: "blue" | "green" | "amber" | "slate";
+}) {
+  const toneClass = {
+    blue: "border-[#bfdbfe] bg-[#eff6ff] text-[#1d4ed8]",
+    green: "border-[#bbf7d0] bg-[#ecfdf5] text-[#047857]",
+    amber: "border-[#fde68a] bg-[#fffbeb] text-[#b45309]",
+    slate: "border-[#e2e8f0] bg-[#f8fafc] text-[#334155]",
+  }[tone];
+
+  return (
+    <div className={`rounded-lg border px-3 py-2.5 ${toneClass}`}>
+      <span className="app-label block opacity-80">{label}</span>
+      <strong className="app-strong mt-0.5 block truncate text-current">{value}</strong>
+    </div>
   );
 }
 
@@ -605,6 +835,10 @@ function VoiceSelectField({
   onPreview: () => void;
   previewing: boolean;
 }) {
+  const displayedOptions = options.some((option) => getSelectOptionValue(option) === value)
+    ? options
+    : [value, ...options].filter(Boolean);
+
   return (
     <label className="app-label grid gap-2">
       <span>{label}</span>
@@ -614,7 +848,7 @@ function VoiceSelectField({
           value={value}
           onChange={(event) => onChange(event.target.value)}
         >
-          {options.map((option) => (
+          {displayedOptions.map((option) => (
             <option key={getSelectOptionValue(option)} value={getSelectOptionValue(option)}>
               {getSelectOptionLabel(option)}
             </option>
@@ -702,6 +936,28 @@ export function DashboardShell() {
     ? selectedAgent.businessHours.schedule
     : defaultBusinessHours.schedule;
   const selectedTone = getStatusTone(selectedAgent.status);
+  const behaviorMetrics = [
+    {
+      label: "Opening",
+      value: getOptionLabel(firstMessageModeOptions, selectedAgent.firstMessageMode),
+      tone: "blue" as const,
+    },
+    {
+      label: "Endpointing",
+      value: getOptionLabel(endpointingModeOptions, selectedAgent.behavior.endpointingMode),
+      tone: "green" as const,
+    },
+    {
+      label: "Idle limit",
+      value: formatCompactDuration(selectedAgent.behavior.maxIdleSeconds),
+      tone: "amber" as const,
+    },
+    {
+      label: "Call cap",
+      value: formatCompactDuration(selectedAgent.behavior.maxCallDurationSeconds),
+      tone: "slate" as const,
+    },
+  ];
   const widgetUrl = `https://app.your-voice-platform.com/agents/embedded?id=${selectedAgent.id}&k=${selectedAgent.widget.publicKey || "not-configured"}`;
   const widgetEmbedCode = `<div id="voice-agent-widget"></div>
 <script
@@ -828,6 +1084,7 @@ export function DashboardShell() {
         businessHours: selectedAgent.businessHours,
         prompt: selectedAgent.prompt,
         firstMessage: selectedAgent.firstMessage,
+        firstMessageMode: selectedAgent.firstMessageMode,
         behavior: selectedAgent.behavior,
         callSettings: selectedAgent.callSettings,
         tools: selectedAgent.tools,
@@ -928,6 +1185,41 @@ export function DashboardShell() {
     unsavedChangesRef.current = true;
     setAgentList((current) =>
       current.map((agent) => (agent.id === selectedAgent.id ? { ...agent, ...changes } : agent)),
+    );
+  }
+
+  function updateBehavior(changes: Partial<AgentBehavior>, agentChanges: Partial<VoiceAgent> = {}) {
+    updateSelectedAgent({
+      ...agentChanges,
+      behavior: { ...selectedAgent.behavior, ...changes },
+    });
+  }
+
+  function updateFirstMessageMode(firstMessageMode: FirstMessageMode) {
+    updateBehavior(
+      { userStartsFirst: firstMessageMode === "user-speaks-first" },
+      { firstMessageMode },
+    );
+  }
+
+  function renderBehaviorToggle(setting: (typeof flowSettings)[number]) {
+    return (
+      <ToggleRow
+        key={setting.title}
+        title={setting.title}
+        detail={setting.detail}
+        enabled={Boolean(selectedAgent.behavior[setting.field])}
+        onChange={(enabled) => {
+          if (setting.field === "userStartsFirst") {
+            updateBehavior(
+              { userStartsFirst: enabled },
+              { firstMessageMode: enabled ? "user-speaks-first" : "assistant-speaks-first" },
+            );
+            return;
+          }
+          updateBehavior({ [setting.field]: enabled } as Partial<AgentBehavior>);
+        }}
+      />
     );
   }
 
@@ -1234,7 +1526,30 @@ export function DashboardShell() {
                         label="Language"
                         defaultValue={selectedAgent.language}
                         value={selectedAgent.language}
-                        onChange={(language) => updateSelectedAgent({ language })}
+                        onChange={(language) => {
+                          const voices =
+                            selectedAgent.pipelineMode === "realtime"
+                              ? getVoices(
+                                  modelCatalog,
+                                  "realtime",
+                                  selectedAgent.realtimeProvider,
+                                  selectedAgent.realtimeModel,
+                                  language,
+                                  languageCatalog,
+                                )
+                              : getVoices(
+                                  modelCatalog,
+                                  "tts",
+                                  selectedAgent.ttsProvider,
+                                  selectedAgent.ttsModel,
+                                  language,
+                                  languageCatalog,
+                                );
+                          updateSelectedAgent({
+                            language,
+                            voice: coerceVoice(selectedAgent.voice, voices, selectedAgent.voice),
+                          });
+                        }}
                         options={languageOptions}
                       />
                       <SelectField
@@ -1243,17 +1558,32 @@ export function DashboardShell() {
                         value={selectedAgent.pipelineMode}
                         onChange={(pipelineMode) => {
                           const nextMode = pipelineMode as PipelineMode;
-                          const nextVoices =
-                            nextMode === "realtime"
-                              ? getVoices(modelCatalog, "realtime", selectedAgent.realtimeProvider, selectedAgent.realtimeModel)
-                              : getVoices(modelCatalog, "tts", selectedAgent.ttsProvider, selectedAgent.ttsModel);
+                          const ttsLanguages = getProvider(modelCatalog, "tts", selectedAgent.ttsProvider).languages;
                           const nextLanguage =
-                            nextMode === "pipeline" && selectedAgent.ttsProvider === "sarvam"
+                            nextMode === "pipeline" && ttsLanguages?.length
                               ? coerceLanguage(
                                   selectedAgent.language,
-                                  getProviderLanguages(modelCatalog, "tts", "sarvam", languageCatalog),
+                                  [...ttsLanguages],
                                 )
                               : selectedAgent.language;
+                          const nextVoices =
+                            nextMode === "realtime"
+                              ? getVoices(
+                                  modelCatalog,
+                                  "realtime",
+                                  selectedAgent.realtimeProvider,
+                                  selectedAgent.realtimeModel,
+                                  nextLanguage,
+                                  languageCatalog,
+                                )
+                              : getVoices(
+                                  modelCatalog,
+                                  "tts",
+                                  selectedAgent.ttsProvider,
+                                  selectedAgent.ttsModel,
+                                  nextLanguage,
+                                  languageCatalog,
+                                );
                           updateSelectedAgent({
                             pipelineMode: nextMode,
                             language: nextLanguage,
@@ -1277,10 +1607,18 @@ export function DashboardShell() {
                             value={selectedAgent.realtimeProvider}
                             onChange={(provider) => {
                               const next = getProvider(modelCatalog, "realtime", provider);
+                              const voices = getVoices(
+                                modelCatalog,
+                                "realtime",
+                                provider,
+                                next.models[0],
+                                selectedAgent.language,
+                                languageCatalog,
+                              );
                               updateSelectedAgent({
                                 realtimeProvider: provider as RealtimeProvider,
                                 realtimeModel: next.models[0],
-                                voice: getVoices(modelCatalog, "realtime", provider, next.models[0])[0] ?? selectedAgent.voice,
+                                voice: voices[0] ?? selectedAgent.voice,
                               });
                             }}
                             options={modelCatalog.realtime.map((item) => item.provider)}
@@ -1310,7 +1648,16 @@ export function DashboardShell() {
                               selectedAgent.language,
                               selectedAgent.voiceSpeed,
                             ].join(":")}
-                            options={[...getVoices(modelCatalog, "realtime", selectedAgent.realtimeProvider, selectedAgent.realtimeModel)]}
+                            options={voiceSelectOptions(
+                              getVoices(
+                                modelCatalog,
+                                "realtime",
+                                selectedAgent.realtimeProvider,
+                                selectedAgent.realtimeModel,
+                                selectedAgent.language,
+                                languageCatalog,
+                              ),
+                            )}
                           />
                         </div>
                       </section>
@@ -1351,11 +1698,12 @@ export function DashboardShell() {
                             value={selectedAgent.sttProvider}
                             onChange={(provider) => {
                               const next = getProvider(modelCatalog, "stt", provider);
+                              const ttsLanguages = getProvider(modelCatalog, "tts", selectedAgent.ttsProvider).languages;
                               const nextLanguage =
-                                provider === "sarvam" && selectedAgent.ttsProvider !== "sarvam"
+                                next.languages?.length && !ttsLanguages?.length
                                   ? coerceLanguage(
                                       selectedAgent.language,
-                                      getProviderLanguages(modelCatalog, "stt", provider, languageCatalog),
+                                      [...next.languages],
                                     )
                                   : selectedAgent.language;
                               updateSelectedAgent({
@@ -1383,17 +1731,25 @@ export function DashboardShell() {
                             onChange={(provider) => {
                               const next = getProvider(modelCatalog, "tts", provider);
                               const nextLanguage =
-                                provider === "sarvam"
+                                next.languages?.length
                                   ? coerceLanguage(
                                       selectedAgent.language,
-                                      getProviderLanguages(modelCatalog, "tts", provider, languageCatalog),
+                                      [...next.languages],
                                     )
                                   : selectedAgent.language;
+                              const voices = getVoices(
+                                modelCatalog,
+                                "tts",
+                                provider,
+                                next.models[0],
+                                nextLanguage,
+                                languageCatalog,
+                              );
                               updateSelectedAgent({
                                 ttsProvider: provider as PipelineProvider,
                                 ttsModel: next.models[0],
                                 language: nextLanguage,
-                                voice: getVoices(modelCatalog, "tts", provider, next.models[0])[0] ?? selectedAgent.voice,
+                                voice: voices[0] ?? selectedAgent.voice,
                               });
                             }}
                             options={modelCatalog.tts.map((item) => item.provider)}
@@ -1403,7 +1759,14 @@ export function DashboardShell() {
                             defaultValue={selectedAgent.ttsModel}
                             value={selectedAgent.ttsModel}
                             onChange={(ttsModel) => {
-                              const voices = getVoices(modelCatalog, "tts", selectedAgent.ttsProvider, ttsModel);
+                              const voices = getVoices(
+                                modelCatalog,
+                                "tts",
+                                selectedAgent.ttsProvider,
+                                ttsModel,
+                                selectedAgent.language,
+                                languageCatalog,
+                              );
                               updateSelectedAgent({
                                 ttsModel,
                                 voice: voices.includes(selectedAgent.voice) ? selectedAgent.voice : voices[0],
@@ -1429,7 +1792,16 @@ export function DashboardShell() {
                               selectedAgent.language,
                               selectedAgent.voiceSpeed,
                             ].join(":")}
-                            options={[...getVoices(modelCatalog, "tts", selectedAgent.ttsProvider, selectedAgent.ttsModel)]}
+                            options={voiceSelectOptions(
+                              getVoices(
+                                modelCatalog,
+                                "tts",
+                                selectedAgent.ttsProvider,
+                                selectedAgent.ttsModel,
+                                selectedAgent.language,
+                                languageCatalog,
+                              ),
+                            )}
                           />
                         </div>
                       </section>
@@ -1508,62 +1880,125 @@ export function DashboardShell() {
 
                 {activeTab === "behavior" ? (
                   <div className="grid gap-4">
-                    <div className="grid gap-3 lg:grid-cols-2">
-                      {flowSettings.map((setting) => (
-                        <ToggleRow
-                          key={setting.title}
-                          title={setting.title}
-                          detail={setting.detail}
-                          enabled={Boolean(selectedAgent.behavior[setting.field])}
-                          onChange={(enabled) =>
-                            updateSelectedAgent({
-                              behavior: { ...selectedAgent.behavior, [setting.field]: enabled },
-                            })
-                          }
+                    <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                      {behaviorMetrics.map((metric) => (
+                        <BehaviorMetric
+                          key={metric.label}
+                          label={metric.label}
+                          value={metric.value}
+                          tone={metric.tone}
                         />
                       ))}
                     </div>
 
-                    <div className="grid gap-3 lg:grid-cols-3">
-                      <InputField
-                        label="Response delay (ms)"
-                        value={String(selectedAgent.behavior.responseDelayMs)}
-                        onChange={(value) => updateSelectedAgent({ behavior: { ...selectedAgent.behavior, responseDelayMs: Number(value) || 0 } })}
-                      />
-                      <InputField
-                        label="Max call duration (seconds)"
-                        value={String(selectedAgent.behavior.maxCallDurationSeconds)}
-                        onChange={(value) => updateSelectedAgent({ behavior: { ...selectedAgent.behavior, maxCallDurationSeconds: Number(value) || 30 } })}
-                      />
-                      <InputField
-                        label="Max idle time (seconds)"
-                        value={String(selectedAgent.behavior.maxIdleSeconds)}
-                        onChange={(value) => updateSelectedAgent({ behavior: { ...selectedAgent.behavior, maxIdleSeconds: Number(value) || 5 } })}
-                      />
+                    <BehaviorPanel
+                      title="Conversation Flow"
+                      detail="Opening behavior, turn taking, and caller control"
+                      icon="agent"
+                    >
+                      <div className="grid gap-3 lg:grid-cols-2">
+                        <SelectField
+                          label="Opening mode"
+                          defaultValue="assistant-speaks-first"
+                          value={selectedAgent.firstMessageMode}
+                          options={firstMessageModeOptions}
+                          onChange={(value) => updateFirstMessageMode(value as FirstMessageMode)}
+                        />
+                        <SelectField
+                          label="Endpointing mode"
+                          defaultValue="balanced"
+                          value={selectedAgent.behavior.endpointingMode}
+                          options={endpointingModeOptions}
+                          onChange={(value) => updateBehavior({ endpointingMode: value as AgentBehavior["endpointingMode"] })}
+                        />
+                      </div>
+
+                      <div className="grid gap-3 lg:grid-cols-2">
+                        {flowSettings
+                          .filter((setting) =>
+                            setting.field === "interruptions" ||
+                            setting.field === "userStartsFirst" ||
+                            setting.field === "autoFillResponses" ||
+                            setting.field === "agentCanTerminate"
+                          )
+                          .map(renderBehaviorToggle)}
+                      </div>
+                    </BehaviorPanel>
+
+                    <div className="grid gap-4 xl:grid-cols-2">
+                      <BehaviorPanel
+                        title="Timing Limits"
+                        detail="Response delay, silence handling, and call duration"
+                        icon="code"
+                      >
+                        <div className="grid gap-3">
+                          <InputField
+                            label="Response delay (ms)"
+                            value={String(selectedAgent.behavior.responseDelayMs)}
+                            onChange={(value) => updateBehavior({ responseDelayMs: Number(value) || 0 })}
+                          />
+                          <InputField
+                            label="Max idle time (seconds)"
+                            value={String(selectedAgent.behavior.maxIdleSeconds)}
+                            onChange={(value) => updateBehavior({ maxIdleSeconds: Number(value) || 5 })}
+                          />
+                          <InputField
+                            label="Max call duration (seconds)"
+                            value={String(selectedAgent.behavior.maxCallDurationSeconds)}
+                            onChange={(value) => updateBehavior({ maxCallDurationSeconds: Number(value) || 30 })}
+                          />
+                        </div>
+                      </BehaviorPanel>
+
+                      <BehaviorPanel
+                        title="Handoff And Keypad"
+                        detail="Human transfer target and IVR keypad sequence"
+                        icon="route"
+                      >
+                        <div className="grid gap-3">
+                          {flowSettings
+                            .filter((setting) => setting.field === "dtmfDial")
+                            .map(renderBehaviorToggle)}
+                          <InputField
+                            label="Transfer phone"
+                            value={selectedAgent.behavior.transferPhone}
+                            placeholder="+14155550123"
+                            onChange={(value) => updateBehavior({ transferPhone: value })}
+                          />
+                          <InputField
+                            label="DTMF sequence"
+                            value={selectedAgent.behavior.dtmfSequence}
+                            placeholder="1234,w,#"
+                            onChange={(value) => updateBehavior({ dtmfSequence: value })}
+                          />
+                        </div>
+                      </BehaviorPanel>
                     </div>
 
-                    <div className="grid gap-3 lg:grid-cols-2">
-                      <InputField label="Transfer phone" value={selectedAgent.behavior.transferPhone} placeholder="+14155550123" onChange={(value) => updateSelectedAgent({ behavior: { ...selectedAgent.behavior, transferPhone: value } })} />
-                      <InputField label="Timezone" value={selectedAgent.behavior.timezone} onChange={(value) => updateSelectedAgent({ behavior: { ...selectedAgent.behavior, timezone: value } })} />
-                    </div>
+                    <BehaviorPanel
+                      title="Availability"
+                      detail="Timezone and daily call window"
+                      icon="shield"
+                    >
+                      <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_260px]">
+                        <ToggleRow
+                          title="Business hours guard"
+                          detail="Block browser and phone calls outside the schedule below."
+                          enabled={selectedAgent.businessHoursEnabled}
+                          onChange={(businessHoursEnabled) => updateSelectedAgent({ businessHoursEnabled })}
+                        />
+                        <InputField
+                          label="Business-hours timezone"
+                          value={selectedAgent.businessHours.timezone}
+                          placeholder="Asia/Kolkata"
+                          onChange={(timezone) => updateBusinessHours({ timezone })}
+                        />
+                      </div>
 
-                    <section className="grid gap-3 rounded-xl border border-[#e5e7eb] bg-[#f8fafc] p-4">
-                      <ToggleRow
-                        title="Business hours guard"
-                        detail="Block browser and phone calls outside the schedule below."
-                        enabled={selectedAgent.businessHoursEnabled}
-                        onChange={(businessHoursEnabled) => updateSelectedAgent({ businessHoursEnabled })}
-                      />
-                      <InputField
-                        label="Business-hours timezone"
-                        value={selectedAgent.businessHours.timezone}
-                        placeholder="Asia/Kolkata"
-                        onChange={(timezone) => updateBusinessHours({ timezone })}
-                      />
-                      <div className="grid gap-2">
+                      <div className="overflow-hidden rounded-lg border border-[#e5e7eb]">
                         {selectedSchedule.map((item) => (
                           <div
-                            className="grid gap-2 rounded-lg border border-[#e5e7eb] bg-white p-3 sm:grid-cols-[64px_88px_1fr_1fr]"
+                            className="grid gap-2 border-b border-[#edf0f5] bg-white p-3 last:border-b-0 sm:grid-cols-[64px_92px_minmax(0,1fr)_minmax(0,1fr)]"
                             key={item.day}
                           >
                             <span className="app-strong self-center">{businessDayLabels[item.day]}</span>
@@ -1597,16 +2032,35 @@ export function DashboardShell() {
                           </div>
                         ))}
                       </div>
-                    </section>
+                    </BehaviorPanel>
 
-                    <label className="app-label grid gap-2">
-                      <span>Voicemail message</span>
-                      <textarea
-                        className="app-control-text min-h-20 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10"
-                        value={selectedAgent.behavior.voicemailMessage}
-                        onChange={(event) => updateSelectedAgent({ behavior: { ...selectedAgent.behavior, voicemailMessage: event.target.value } })}
-                      />
-                    </label>
+                    <BehaviorPanel
+                      title="Voicemail"
+                      detail="Detection policy and message"
+                      icon="phone"
+                    >
+                      <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_260px]">
+                        {flowSettings
+                          .filter((setting) => setting.field === "voicemailHandling")
+                          .map(renderBehaviorToggle)}
+                        <SelectField
+                          label="Voicemail action"
+                          defaultValue="leave-message"
+                          value={selectedAgent.behavior.voicemailAction}
+                          options={voicemailActionOptions}
+                          onChange={(value) => updateBehavior({ voicemailAction: value as AgentBehavior["voicemailAction"] })}
+                        />
+                      </div>
+
+                      <label className="app-label grid gap-2">
+                        <span>Voicemail message</span>
+                        <textarea
+                          className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10"
+                          value={selectedAgent.behavior.voicemailMessage}
+                          onChange={(event) => updateBehavior({ voicemailMessage: event.target.value })}
+                        />
+                      </label>
+                    </BehaviorPanel>
                   </div>
                 ) : null}
 
@@ -2001,6 +2455,8 @@ export function DashboardShell() {
   "stt": "${selectedAgent.sttProvider}/${selectedAgent.sttModel}",
   "llm": "${selectedAgent.llmProvider}/${selectedAgent.llmModel}",
   "tts": "${selectedAgent.ttsProvider}/${selectedAgent.ttsModel}",
+  "opening_mode": "${selectedAgent.firstMessageMode}",
+  "endpointing": "${selectedAgent.behavior.endpointingMode}",
   "voice_speed": ${selectedAgent.voiceSpeed},
   "voice_pitch": ${selectedAgent.voicePitch},
   "concurrent_calls": ${selectedAgent.maxConcurrentCalls},
@@ -2026,6 +2482,11 @@ export function DashboardShell() {
 }
 
 function mapBackendAgent(agent: BackendAgent): VoiceAgent {
+  const firstMessageMode: FirstMessageMode = agent.behavior?.userStartsFirst
+    ? "user-speaks-first"
+    : agent.firstMessageMode ?? "assistant-speaks-first";
+  const realtimeProvider = agent.realtimeProvider ?? "openai";
+
   return {
     id: agent._id,
     name: agent.name,
@@ -2035,8 +2496,8 @@ function mapBackendAgent(agent: BackendAgent): VoiceAgent {
     language: agent.language,
     voice: agent.voice,
     pipelineMode: agent.pipelineMode ?? "realtime",
-    realtimeProvider: agent.realtimeProvider ?? "openai",
-    realtimeModel: agent.realtimeModel ?? "gpt-realtime",
+    realtimeProvider,
+    realtimeModel: normalizeRealtimeModel(realtimeProvider, agent.realtimeModel ?? "gpt-realtime"),
     llmProvider: agent.llmProvider ?? "openai",
     llmModel: agent.llmModel ?? "gpt-4.1-mini",
     sttProvider: agent.sttProvider ?? "openai",
@@ -2061,7 +2522,12 @@ function mapBackendAgent(agent: BackendAgent): VoiceAgent {
     success: "-",
     prompt: agent.prompt,
     firstMessage: agent.firstMessage,
-    behavior: { ...defaultBehavior, ...agent.behavior },
+    firstMessageMode,
+    behavior: {
+      ...defaultBehavior,
+      ...agent.behavior,
+      userStartsFirst: firstMessageMode === "user-speaks-first",
+    },
     callSettings: { ...defaultCallSettings, ...agent.callSettings },
     tools: agent.tools ?? [],
     knowledgeDocuments: agent.knowledgeDocuments ?? [],

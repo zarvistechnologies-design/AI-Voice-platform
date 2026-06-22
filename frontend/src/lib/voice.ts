@@ -5,8 +5,9 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
 export type ProviderModel = "openai-realtime" | "gemini-live" | "sarvam-gemini";
 export type PipelineMode = "realtime" | "pipeline";
 export type RealtimeProvider = "openai" | "gemini";
-export type PipelineProvider = "openai" | "gemini" | "sarvam";
-export type SttProvider = "openai" | "sarvam";
+export type PipelineProvider = "openai" | "gemini" | "sarvam" | "elevenlabs";
+export type SttProvider = "openai" | "sarvam" | "elevenlabs";
+export type FirstMessageMode = "assistant-speaks-first" | "user-speaks-first" | "model-generated";
 
 export type AgentBehavior = {
   interruptions: boolean;
@@ -14,7 +15,10 @@ export type AgentBehavior = {
   autoFillResponses: boolean;
   agentCanTerminate: boolean;
   voicemailHandling: boolean;
+  voicemailAction: "leave-message" | "hangup";
   dtmfDial: boolean;
+  dtmfSequence: string;
+  endpointingMode: "fast" | "balanced" | "patient";
   responseDelayMs: number;
   maxCallDurationSeconds: number;
   maxIdleSeconds: number;
@@ -84,6 +88,7 @@ export type ModelProvider = {
   models: readonly string[];
   voices?: readonly string[];
   voicesByModel?: Readonly<Record<string, readonly string[]>>;
+  voicesByLanguage?: Readonly<Record<string, readonly string[]>>;
   languages?: readonly VoiceLanguageOption[];
 };
 
@@ -141,6 +146,7 @@ export type BackendAgent = {
   businessHours: AgentBusinessHours;
   prompt: string;
   firstMessage: string;
+  firstMessageMode?: FirstMessageMode;
   behavior: AgentBehavior;
   callSettings: AgentCallSettings;
   tools: AgentTool[];
@@ -268,6 +274,22 @@ export type CallsResponse = {
   pagination: { page: number; limit: number; total: number; pages: number };
 };
 
+export type AgentDispatchHealth = {
+  configured: boolean;
+  roomName: string;
+  dispatchId: string;
+  agentName: string;
+  state: "missing" | "waiting" | "pending" | "running" | "completed" | "failed" | "unknown";
+  message: string;
+  jobs: {
+    id: string;
+    status: "pending" | "running" | "success" | "failed" | "unknown";
+    error: string;
+    workerId: string;
+    participantIdentity: string;
+  }[];
+};
+
 export type AnalyticsOverview = {
   range: { from: string; to: string };
   summary: {
@@ -387,15 +409,33 @@ export const voiceApi = {
     return response.blob();
   },
   webCallToken: (agentId: string) =>
-    request<{ callId: string; roomName: string; serverUrl: string; participantToken: string }>(
+    request<{
+      callId: string;
+      roomName: string;
+      dispatchId: string;
+      dispatch: AgentDispatchHealth;
+      serverUrl: string;
+      participantToken: string;
+    }>(
       "/web-call-token",
       {
         method: "POST",
         body: JSON.stringify({ agentId }),
       },
     ),
+  agentDispatchStatus: (input: { roomName: string; dispatchId?: string }) => {
+    const query = new URLSearchParams({ roomName: input.roomName });
+    if (input.dispatchId) query.set("dispatchId", input.dispatchId);
+    return request<AgentDispatchHealth>(`/agent-dispatch-status?${query.toString()}`);
+  },
   outboundCall: (agentId: string, phoneNumber: string) =>
-    request<{ callId: string; roomName: string; participantId: string }>("/outbound-calls", {
+    request<{
+      callId: string;
+      roomName: string;
+      dispatchId: string;
+      dispatch: AgentDispatchHealth;
+      participantId: string;
+    }>("/outbound-calls", {
       method: "POST",
       body: JSON.stringify({ agentId, phoneNumber }),
     }),
