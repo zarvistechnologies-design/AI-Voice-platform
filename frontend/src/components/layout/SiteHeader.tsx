@@ -112,9 +112,9 @@ export function SiteHeader() {
       ref={headerRef}
     >
       <div
-        className={`pointer-events-auto relative mx-auto grid w-full grid-cols-[minmax(150px,0.9fr)_auto_minmax(170px,0.9fr)] items-center gap-2.5 rounded-full border border-[#71349b]/80 bg-[#26063b]/85 py-[7px] pr-2 pl-3.5 shadow-[0_14px_38px_rgba(4,1,10,0.34)] backdrop-blur-2xl transition-all duration-200 max-[1180px]:grid-cols-[minmax(0,1fr)_auto_auto] max-[1180px]:min-h-[54px] max-[1180px]:max-w-[1040px] max-[560px]:min-h-[52px] max-[560px]:gap-[7px] max-[560px]:p-[7px] ${
+        className={`pointer-events-auto relative mx-auto grid w-full grid-cols-[minmax(150px,0.9fr)_auto_minmax(170px,0.9fr)] items-center gap-2.5 py-[7px] pr-2 pl-3.5 transition-all duration-200 max-[1180px]:grid-cols-[minmax(0,1fr)_auto_auto] max-[1180px]:min-h-[54px] max-[1180px]:max-w-[1040px] max-[560px]:min-h-[52px] max-[560px]:gap-[7px] max-[560px]:p-[7px] ${
           isScrolled
-            ? "min-h-[50px] max-w-[1180px] border-[#71349b]/90 bg-[#26063b]/95 shadow-[0_18px_55px_rgba(4,1,10,0.5)]"
+            ? "min-h-[50px] max-w-[1180px]"
             : "min-h-14 max-w-[1280px]"
         }`}
       >
@@ -123,7 +123,7 @@ export function SiteHeader() {
         </div>
 
         <nav
-          className={`flex items-center justify-center gap-0.5 whitespace-nowrap rounded-full border border-[#71349b]/70 bg-[#3a0a5a]/65 p-1 text-[0.78rem] font-bold text-[#f6f1ff] max-[1180px]:absolute max-[1180px]:top-[calc(100%+8px)] max-[1180px]:right-0 max-[1180px]:left-0 max-[1180px]:flex-col max-[1180px]:items-stretch max-[1180px]:justify-start max-[1180px]:gap-[3px] max-[1180px]:whitespace-normal max-[1180px]:rounded-[22px] max-[1180px]:border-[#71349b]/80 max-[1180px]:bg-[#26063b]/95 max-[1180px]:p-2 max-[1180px]:shadow-[0_22px_60px_rgba(4,1,10,0.5)] max-[1180px]:backdrop-blur-2xl ${
+          className={`flex items-center justify-center gap-0.5 whitespace-nowrap text-[0.78rem] font-bold text-[#f6f1ff] max-[1180px]:absolute max-[1180px]:top-[calc(100%+8px)] max-[1180px]:right-0 max-[1180px]:left-0 max-[1180px]:flex-col max-[1180px]:items-stretch max-[1180px]:justify-start max-[1180px]:gap-[3px] max-[1180px]:whitespace-normal max-[1180px]:rounded-[22px] max-[1180px]:border max-[1180px]:border-[#71349b]/80 max-[1180px]:bg-[linear-gradient(180deg,#111827_0%,#1f2937_48%,#111827_100%)] max-[1180px]:p-2 max-[1180px]:shadow-[0_22px_60px_rgba(4,1,10,0.5)] max-[1180px]:backdrop-blur-2xl ${
             isMenuOpen ? "max-[1180px]:flex" : "max-[1180px]:hidden"
           }`}
           aria-label="Main navigation"
@@ -226,7 +226,7 @@ export function SiteHeader() {
 
         return (
           <div
-            className={`absolute top-[calc(100%+12px)] right-[clamp(14px,3vw,36px)] left-[clamp(14px,3vw,36px)] mx-auto grid min-h-[284px] grid-cols-[minmax(190px,0.3fr)_minmax(0,1fr)] gap-[clamp(16px,2.4vw,28px)] rounded-lg border border-[#71349b]/70 bg-[#0b0414]/96 p-1.5 shadow-[0_26px_80px_rgba(0,0,0,0.48)] backdrop-blur-2xl transition-all duration-200 max-[1180px]:top-[calc(100%+262px)] max-[1180px]:right-0 max-[1180px]:left-0 max-[1180px]:hidden max-[1180px]:min-h-0 max-[1180px]:w-[min(100%,1040px)] max-[1180px]:grid-cols-1 max-[1180px]:gap-3.5 max-[1180px]:rounded-[22px] max-[1180px]:p-2 ${
+            className={`absolute top-[calc(100%+12px)] right-[clamp(14px,3vw,36px)] left-[clamp(14px,3vw,36px)] mx-auto grid min-h-[284px] grid-cols-[minmax(190px,0.3fr)_minmax(0,1fr)] gap-[clamp(16px,2.4vw,28px)] rounded-lg border border-[#71349b]/70 bg-[linear-gradient(180deg,#111827_0%,#1f2937_48%,#111827_100%)] p-1.5 shadow-[0_26px_80px_rgba(0,0,0,0.48)] backdrop-blur-2xl transition-all duration-200 max-[1180px]:top-[calc(100%+262px)] max-[1180px]:right-0 max-[1180px]:left-0 max-[1180px]:hidden max-[1180px]:min-h-0 max-[1180px]:w-[min(100%,1040px)] max-[1180px]:grid-cols-1 max-[1180px]:gap-3.5 max-[1180px]:rounded-[22px] max-[1180px]:p-2 ${
               isCompanyMenu
                 ? "w-[min(calc(100%-clamp(28px,6vw,72px)),720px)] min-[1181px]:min-h-[328px] min-[1181px]:grid-cols-2"
                 : isWideMenu

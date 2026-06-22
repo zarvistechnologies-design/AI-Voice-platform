@@ -110,6 +110,16 @@ export async function loginWithPassword(email: string, password: string, twoFact
   return session;
 }
 
+export async function loginWithGoogle(credential: string) {
+  const session = await requestAuth("/api/auth/google", {
+    method: "POST",
+    body: JSON.stringify({ credential }),
+  });
+
+  saveSession(session);
+  return session;
+}
+
 export async function registerWithPassword(
   name: string,
   email: string,

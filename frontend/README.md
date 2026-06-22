@@ -12,6 +12,18 @@ npm run lint
 
 The local development server runs at `http://localhost:3000` by default.
 
+## Google sign-in
+
+Create `.env.local` and add the Google OAuth Web client ID:
+
+```env
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+```
+
+Use the same value for `GOOGLE_CLIENT_ID` in the backend `.env`. In Google
+Cloud Console, add `http://localhost:3000` as an authorized JavaScript origin.
+The Google client secret must not be added to the frontend.
+
 ## Folder Structure
 
 ```text
