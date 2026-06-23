@@ -117,6 +117,7 @@ export function KnowledgeBaseShell() {
       .filter(({ document }) => !search || `${document.name} ${document.content}`.toLowerCase().includes(search));
   }, [documents, query]);
   const readyCount = documents.filter((document) => document.status === "ready").length;
+  const knowledgeLimitReached = documents.length >= maxKnowledgeFiles;
   const selectedAgentName = selectedAgent?.name ?? "Selected agent";
 
   function clearEditor() {
@@ -218,6 +219,13 @@ export function KnowledgeBaseShell() {
     }
   }
 
+  async function openUploadEditor(file: File | undefined) {
+    if (!file) return;
+    clearEditor();
+    setEditorOpen(true);
+    await handleFile(file);
+  }
+
   function removeDocument(index: number) {
     const document = documents[index];
     if (!document) return;
@@ -250,14 +258,14 @@ export function KnowledgeBaseShell() {
 
       <section className="min-w-0 overflow-y-auto">
         <header className="border-b border-[#e5e7eb] bg-white px-4 py-4 sm:px-6 lg:px-8">
-          <div className="mx-auto flex w-full max-w-[1180px] flex-wrap items-end justify-between gap-4">
+          <div className="mx-auto flex w-full max-w-[1240px] flex-wrap items-center justify-between gap-4">
             <div>
               <h1 className="app-page-title m-0">Knowledge base</h1>
-              <p className="app-caption mt-1 mb-0">Add the facts, FAQs, prices, rules, or policies your agent should use in calls.</p>
+              <p className="app-caption mt-1 mb-0">Give each agent the facts it should answer from: FAQs, pricing, rules, policies, and offers.</p>
             </div>
             <button
               className={`${buttonClass} bg-[#1438f5] text-white shadow-sm hover:bg-[#102fcf]`}
-              disabled={!selectedAgent || loading}
+              disabled={!selectedAgent || loading || knowledgeLimitReached}
               onClick={openNewDocument}
               type="button"
             >
@@ -267,11 +275,189 @@ export function KnowledgeBaseShell() {
           </div>
         </header>
 
-        <div className="mx-auto grid w-full max-w-[1180px] gap-4 p-4 sm:p-6 lg:p-8">
+        <div className="mx-auto grid w-full max-w-[1240px] gap-4 p-4 sm:p-6 lg:p-8">
           {notice ? <Notice tone="success" message={notice} onClose={() => setNotice("")} /> : null}
           {error ? <Notice tone="error" message={error} onClose={() => setError("")} /> : null}
 
-          <section className="rounded-xl border border-[#dfe3ea] bg-white shadow-sm">
+          <section className="overflow-hidden rounded-2xl border border-[#dfe3ea] bg-white shadow-sm">
+            <div className="grid gap-4 border-b border-[#e5e7eb] p-4 sm:p-5">
+              <div className="grid gap-3 lg:grid-cols-[minmax(220px,320px)_minmax(240px,1fr)]">
+                <label className="app-label grid gap-2">
+                  Agent
+                  <select
+                    className={controlClass}
+                    disabled={loading || saving}
+                    value={selectedAgentId}
+                    onChange={(event) => {
+                      setSelectedAgentId(event.target.value);
+                      setQuery("");
+                    }}
+                  >
+                    {agents.map((agent) => (
+                      <option key={agent._id} value={agent._id}>
+                        {agent.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="app-label grid gap-2">
+                  Search
+                  <span className="relative">
+                    <span className="absolute inset-y-0 left-3 grid place-items-center text-[#94a3b8]"><Icon icon="search" /></span>
+                    <input
+                      className={`${controlClass} pl-10`}
+                      placeholder="Search title or text"
+                      value={query}
+                      onChange={(event) => setQuery(event.target.value)}
+                    />
+                  </span>
+                </label>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <span className="app-caption rounded-full bg-[#f8fafc] px-3 py-1.5 text-[#475569]">
+                  {selectedAgentName}: {documents.length}/{maxKnowledgeFiles} items · {readyCount} active
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`}
+                    disabled={!selectedAgent || loading || saving || knowledgeLimitReached}
+                    onClick={openNewDocument}
+                    type="button"
+                  >
+                    <Icon icon="plus" />
+                    Add text
+                  </button>
+                  <label className={`${buttonClass} relative cursor-pointer border border-[#c7d2fe] bg-[#eef2ff] text-[#1438f5] hover:bg-[#e0e7ff] ${!selectedAgent || loading || saving || knowledgeLimitReached ? "pointer-events-none opacity-50" : ""}`}>
+                    <input
+                      className="absolute inset-0 cursor-pointer opacity-0"
+                      type="file"
+                      accept=".txt,.md,.csv,.json,text/plain,text/markdown,text/csv,application/json"
+                      disabled={!selectedAgent || loading || saving || knowledgeLimitReached}
+                      onChange={(event) => {
+                        const file = event.target.files?.[0];
+                        event.target.value = "";
+                        void openUploadEditor(file);
+                      }}
+                    />
+                    <Icon icon="upload" />
+                    Upload file
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {loading ? (
+              <div className="grid min-h-40 place-items-center px-5 py-10">
+                <span className="app-caption">Loading knowledge...</span>
+              </div>
+            ) : documents.length === 0 ? (
+              <div className="mx-auto grid max-w-xl place-items-center gap-4 px-5 py-12 text-center">
+                <span className="grid size-12 place-items-center rounded-2xl bg-[#eef2ff] text-[#4f46e5]">
+                  <Icon icon="file" className="size-5" />
+                </span>
+                <div>
+                  <strong className="app-strong block">No knowledge added yet</strong>
+                  <p className="app-caption mt-1 mb-0">
+                    Add short, approved facts your agent can use during calls: prices, FAQs, opening hours, refund rules, and common answers.
+                  </p>
+                </div>
+                <div className="flex flex-wrap justify-center gap-2">
+                  <button
+                    className={`${buttonClass} bg-[#1438f5] text-white hover:bg-[#102fcf]`}
+                    disabled={!selectedAgent || saving}
+                    onClick={openNewDocument}
+                    type="button"
+                  >
+                    <Icon icon="plus" />
+                    Add text
+                  </button>
+                  <label className={`${buttonClass} relative cursor-pointer border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`}>
+                    <input
+                      className="absolute inset-0 cursor-pointer opacity-0"
+                      type="file"
+                      accept=".txt,.md,.csv,.json,text/plain,text/markdown,text/csv,application/json"
+                      disabled={!selectedAgent || saving}
+                      onChange={(event) => {
+                        const file = event.target.files?.[0];
+                        event.target.value = "";
+                        void openUploadEditor(file);
+                      }}
+                    />
+                    <Icon icon="upload" />
+                    Upload file
+                  </label>
+                </div>
+              </div>
+            ) : filteredDocuments.length === 0 ? (
+              <div className="grid min-h-40 place-items-center px-5 py-10 text-center">
+                <div>
+                  <strong className="app-strong block">No matching knowledge found</strong>
+                  <span className="app-caption mt-1 block">Try searching a different word or clear the search.</span>
+                </div>
+              </div>
+            ) : (
+              <ul className="divide-y divide-[#edf0f4]">
+                {filteredDocuments.map(({ document, index }) => (
+                  <li className="grid gap-3 p-4 transition hover:bg-[#fbfcfe] sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:p-5" key={document._id ?? `${document.name}-${index}`}>
+                    <div className="flex min-w-0 gap-3">
+                      <span className="mt-0.5 grid size-10 shrink-0 place-items-center rounded-xl bg-[#eef2ff] text-[#4f46e5]">
+                        <Icon icon="file" />
+                      </span>
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <strong className="app-strong truncate">{document.name}</strong>
+                          <span className={`app-label rounded-full px-2.5 py-1 ${document.status === "ready" ? "bg-[#ecfdf5] text-[#047857]" : "bg-[#f1f5f9] text-[#64748b]"}`}>
+                            {document.status === "ready" ? "Used in calls" : "Off"}
+                          </span>
+                        </div>
+                        <p className="app-caption mt-1 mb-0 max-h-10 max-w-4xl overflow-hidden text-[#64748b]">
+                          {previewText(document.content)}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 sm:justify-end">
+                      <button
+                        className={`app-label min-h-9 rounded-lg px-3 transition ${
+                          document.status === "ready"
+                            ? "bg-[#ecfdf5] text-[#047857] hover:bg-[#d1fae5]"
+                            : "bg-[#f1f5f9] text-[#64748b] hover:bg-[#e2e8f0]"
+                        }`}
+                        disabled={saving}
+                        onClick={() => toggleDocument(index)}
+                        type="button"
+                      >
+                        {document.status === "ready" ? "Turn off" : "Turn on"}
+                      </button>
+                      <button
+                        className="grid size-9 place-items-center rounded-lg border border-[#d5d8df] bg-white text-[#475569] transition hover:bg-[#f8fafc] hover:text-[#111827]"
+                        disabled={saving}
+                        onClick={() => openEditDocument(index)}
+                        type="button"
+                        aria-label={`Edit ${document.name}`}
+                      >
+                        <Icon icon="edit" />
+                      </button>
+                      <button
+                        className="grid size-9 place-items-center rounded-lg border border-[#fecaca] bg-white text-[#dc2626] transition hover:bg-[#fff1f2]"
+                        disabled={saving}
+                        onClick={() => removeDocument(index)}
+                        type="button"
+                        aria-label={`Remove ${document.name}`}
+                      >
+                        <Icon icon="trash" />
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
+          {false ? (
+            <section className="hidden">
             <div className="grid gap-3 border-b border-[#e5e7eb] p-4 lg:grid-cols-[minmax(220px,320px)_minmax(220px,1fr)_auto] lg:items-end">
               <label className="app-label grid gap-2">
                 Agent
@@ -394,7 +580,8 @@ export function KnowledgeBaseShell() {
                 </tbody>
               </table>
             </div>
-          </section>
+            </section>
+          ) : null}
         </div>
       </section>
 
@@ -402,6 +589,7 @@ export function KnowledgeBaseShell() {
         <EditorModal
           busy={saving}
           content={documentContent}
+          error={error}
           fileName={uploadedFileName}
           isEditing={editingIndex !== null}
           name={documentName}
@@ -419,6 +607,7 @@ export function KnowledgeBaseShell() {
 function EditorModal({
   busy,
   content,
+  error,
   fileName,
   isEditing,
   name,
@@ -430,6 +619,7 @@ function EditorModal({
 }: {
   busy: boolean;
   content: string;
+  error: string;
   fileName: string;
   isEditing: boolean;
   name: string;
@@ -461,6 +651,12 @@ function EditorModal({
         </header>
 
         <div className="grid gap-4 overflow-y-auto px-5 py-5 sm:px-6">
+          {error ? (
+            <div className="app-body rounded-lg border border-[#fecaca] bg-[#fff1f2] px-3 py-2 text-[#b91c1c]">
+              {error}
+            </div>
+          ) : null}
+
           <label className="app-label grid gap-2">
             Title
             <input className={controlClass} maxLength={80} placeholder="Pricing FAQ" value={name} onChange={(event) => onNameChange(event.target.value)} />
@@ -474,7 +670,11 @@ function EditorModal({
                   className="absolute inset-0 cursor-pointer opacity-0"
                   type="file"
                   accept=".txt,.md,.csv,.json,text/plain,text/markdown,text/csv,application/json"
-                  onChange={(event) => void onFile(event.target.files?.[0])}
+                  onChange={(event) => {
+                    const file = event.target.files?.[0];
+                    event.target.value = "";
+                    void onFile(file);
+                  }}
                 />
                 <span className={`${buttonClass} border border-[#c7d2fe] bg-white text-[#1438f5] hover:bg-[#eef2ff]`}>
                   <Icon icon="upload" />
