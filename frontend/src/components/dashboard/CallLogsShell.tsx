@@ -11,7 +11,7 @@ import {
   subscribeToSession,
   validateStoredSession,
 } from "@/lib/auth";
-import { voiceApi, type CallRecord } from "@/lib/voice";
+import { voiceApi, type BackendAgent, type CallRecord } from "@/lib/voice";
 
 const statusOptions = ["", "initiated", "ringing", "active", "completed", "failed", "cancelled"] as const;
 const directionOptions = ["", "web", "inbound", "outbound"] as const;
@@ -57,6 +57,12 @@ function money(value: number, currency = "USD") {
   }).format(value);
 }
 
+function queryDate(value: string) {
+  if (!value) return "";
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? "" : date.toISOString();
+}
+
 function statusTone(status: CallRecord["status"]) {
   if (status === "completed") return "bg-emerald-50 text-emerald-700 ring-emerald-200";
   if (status === "failed" || status === "cancelled") return "bg-rose-50 text-rose-700 ring-rose-200";
@@ -64,16 +70,44 @@ function statusTone(status: CallRecord["status"]) {
   return "bg-amber-50 text-amber-700 ring-amber-200";
 }
 
+const filterInputClass =
+  "rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium outline-none focus:border-blue-500";
+
 function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }) {
   const billing = call.billing;
   const charged = billing?.chargedCredits || billing?.estimatedChargeCredits || 0;
   const cost = call.costBreakdown;
+  const [recordingObjectUrl, setRecordingObjectUrl] = useState({ callId: "", url: "" });
+  const transcript = [...call.transcript].sort(
+    (left, right) => new Date(left.timestamp).getTime() - new Date(right.timestamp).getTime(),
+  );
+  const recordingHref = call.recordingUrl || (call.recordingKey.startsWith("http") ? call.recordingKey : "");
+  const recordingPlayerHref = recordingObjectUrl.callId === call._id ? recordingObjectUrl.url || recordingHref : recordingHref;
   const costItems = [
     ["LLM", call.llmProvider || "-", call.llmTokens ? `${call.llmTokens.toLocaleString("en-US")} tokens` : "0 tokens", cost?.llm ?? 0, billing?.breakdown.chargedLlm ?? 0],
     ["STT", call.sttProvider || "-", call.sttSeconds ? `${Math.round(call.sttSeconds)} sec` : "0 sec", cost?.stt ?? 0, billing?.breakdown.chargedStt ?? 0],
     ["TTS", call.ttsProvider || "-", call.ttsCharacters ? `${call.ttsCharacters.toLocaleString("en-US")} chars` : "0 chars", cost?.tts ?? 0, billing?.breakdown.chargedTts ?? 0],
     ["Carrier", call.direction, `${Math.ceil(call.durationSeconds / 60)} min`, cost?.telephony ?? 0, billing?.breakdown.chargedTelephony ?? 0],
   ] as const;
+
+  useEffect(() => {
+    let active = true;
+    let objectUrl = "";
+    if (!call.recordingKey.startsWith("web/")) return undefined;
+
+    void voiceApi.callRecordingBlob(call._id)
+      .then((blob) => {
+        if (!active) return;
+        objectUrl = URL.createObjectURL(blob);
+        setRecordingObjectUrl({ callId: call._id, url: objectUrl });
+      })
+      .catch(() => undefined);
+
+    return () => {
+      active = false;
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [call._id, call.recordingKey]);
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-slate-950/35 backdrop-blur-sm" onClick={onClose}>
@@ -126,6 +160,28 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
             <div><span className="block text-xs font-medium text-slate-500">Tags</span><strong className="mt-1 block text-sm">{call.tags.length ? call.tags.join(", ") : "No tags"}</strong></div>
           </section>
 
+          <section className="rounded-xl border border-slate-200 bg-white p-4">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <div>
+                <h3 className="m-0 text-sm font-semibold text-slate-950">Recording</h3>
+                <p className="mt-1 text-xs text-slate-500">{call.recordingStatus ? titleCase(call.recordingStatus) : "Not recorded"}</p>
+              </div>
+              {call.recordingDuration ? <span className="text-xs font-semibold text-slate-500">{formatDuration(call.recordingDuration)}</span> : null}
+            </div>
+            {recordingPlayerHref ? (
+              <div className="grid gap-3">
+                <audio className="w-full" controls src={recordingPlayerHref} />
+                <a className="text-sm font-semibold text-blue-700 hover:text-blue-900" href={recordingPlayerHref} target="_blank" rel="noreferrer">
+                  Open recording
+                </a>
+              </div>
+            ) : (
+              <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-500">
+                {call.recordingError || (call.recordingKey ? `Recording saved as ${call.recordingKey}, but no public URL is available.` : "No recording is available for this call.")}
+              </div>
+            )}
+          </section>
+
           <section className="overflow-hidden rounded-xl border border-slate-200 bg-white">
             <div className="flex flex-col gap-2 border-b border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
@@ -161,13 +217,13 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
             <div className="mb-3 flex items-center justify-between gap-3">
               <div>
                 <h3 className="m-0 text-sm font-semibold text-slate-950">Conversation transcript</h3>
-                <p className="mt-1 text-xs text-slate-500">{call.transcript.length} captured messages</p>
+                <p className="mt-1 text-xs text-slate-500">{transcript.length} captured messages</p>
               </div>
-              <span className="rounded-lg bg-slate-100 px-2.5 py-1 font-mono text-xs text-slate-600">{call.livekitRoomName}</span>
+              <span className="max-w-[220px] truncate rounded-lg bg-slate-100 px-2.5 py-1 font-mono text-xs text-slate-600">{call.livekitRoomName}</span>
             </div>
             <div className="grid gap-3">
-              {call.transcript.length ? (
-                call.transcript.map((item) => (
+              {transcript.length ? (
+                transcript.map((item) => (
                   <article
                     className={`max-w-[88%] rounded-2xl px-4 py-3 ${
                       item.role === "assistant"
@@ -201,11 +257,16 @@ export function CallLogsShell() {
   const router = useRouter();
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
   const [calls, setCalls] = useState<CallRecord[]>([]);
+  const [agents, setAgents] = useState<BackendAgent[]>([]);
   const [selectedCall, setSelectedCall] = useState<CallRecord | null>(null);
+  const [agentId, setAgentId] = useState("");
   const [status, setStatus] = useState<(typeof statusOptions)[number]>("");
   const [direction, setDirection] = useState<(typeof directionOptions)[number]>("");
   const [sentiment, setSentiment] = useState<(typeof sentimentOptions)[number]>("");
   const [search, setSearch] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [minDuration, setMinDuration] = useState(0);
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
@@ -216,7 +277,19 @@ export function CallLogsShell() {
   const loadCalls = useCallback(async () => {
     setLoading(true);
     try {
-      const result = await voiceApi.calls({ status, direction, sentiment, search, minDuration, page, limit: 20 });
+      const result = await voiceApi.calls({
+        agentId,
+        status,
+        direction,
+        sentiment,
+        search,
+        phoneNumber,
+        from: queryDate(startTime),
+        to: queryDate(endTime),
+        minDuration,
+        page,
+        limit: 20,
+      });
       setCalls(result.calls);
       setPages(Math.max(1, result.pagination.pages));
       setTotal(result.pagination.total);
@@ -226,7 +299,7 @@ export function CallLogsShell() {
     } finally {
       setLoading(false);
     }
-  }, [direction, minDuration, page, search, sentiment, status]);
+  }, [agentId, direction, endTime, minDuration, page, phoneNumber, search, sentiment, startTime, status]);
 
   useEffect(() => {
     if (!session) {
@@ -234,13 +307,18 @@ export function CallLogsShell() {
       return;
     }
     void validateStoredSession();
+    void voiceApi.agents().then((result) => setAgents(result.agents)).catch(() => setAgents([]));
+  }, [router, session]);
+
+  useEffect(() => {
+    if (!session) return;
     const initialLoad = window.setTimeout(() => void loadCalls(), 0);
     const timer = window.setInterval(() => void loadCalls(), 10000);
     return () => {
       window.clearTimeout(initialLoad);
       window.clearInterval(timer);
     };
-  }, [loadCalls, router, session]);
+  }, [loadCalls, session]);
 
   const metrics = useMemo(() => {
     const completed = calls.filter((call) => call.status === "completed").length;
@@ -273,6 +351,19 @@ export function CallLogsShell() {
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not export calls.");
     }
+  }
+
+  function resetFilters() {
+    setAgentId("");
+    setStatus("");
+    setDirection("");
+    setSentiment("");
+    setSearch("");
+    setPhoneNumber("");
+    setStartTime("");
+    setEndTime("");
+    setMinDuration(0);
+    setPage(1);
   }
 
   if (!session) {
@@ -321,23 +412,35 @@ export function CallLogsShell() {
           </section>
 
           <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-            <div className="flex flex-col gap-3 border-b border-slate-200 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="grid gap-3 border-b border-slate-200 p-4">
               <div className="flex flex-wrap gap-2">
-                <input className="min-w-56 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500" placeholder="Search transcript, phone, or tag" value={search} onChange={(event) => { setSearch(event.target.value); setPage(1); }} />
-                <select className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium outline-none focus:border-blue-500" value={status} onChange={(event) => { setStatus(event.target.value as typeof status); setPage(1); }}>
+                <input className="min-w-56 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500" placeholder="Search transcript or tag" value={search} onChange={(event) => { setSearch(event.target.value); setPage(1); }} />
+                <select className={filterInputClass} value={agentId} onChange={(event) => { setAgentId(event.target.value); setPage(1); }}>
+                  <option value="">All agents</option>
+                  {agents.map((agent) => <option key={agent._id} value={agent._id}>{agent.name}</option>)}
+                </select>
+                <select className={filterInputClass} value={status} onChange={(event) => { setStatus(event.target.value as typeof status); setPage(1); }}>
                   {statusOptions.map((item) => <option key={item || "all"} value={item}>{item ? titleCase(item) : "All statuses"}</option>)}
                 </select>
-                <select className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium outline-none focus:border-blue-500" value={direction} onChange={(event) => { setDirection(event.target.value as typeof direction); setPage(1); }}>
+                <select className={filterInputClass} value={direction} onChange={(event) => { setDirection(event.target.value as typeof direction); setPage(1); }}>
                   {directionOptions.map((item) => <option key={item || "all"} value={item}>{item ? titleCase(item) : "All directions"}</option>)}
                 </select>
-                <select className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium outline-none focus:border-blue-500" value={sentiment} onChange={(event) => { setSentiment(event.target.value as typeof sentiment); setPage(1); }}>
+                <select className={filterInputClass} value={sentiment} onChange={(event) => { setSentiment(event.target.value as typeof sentiment); setPage(1); }}>
                   {sentimentOptions.map((item) => <option key={item || "all"} value={item}>{item ? titleCase(item) : "All sentiment"}</option>)}
                 </select>
-                <select className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium outline-none focus:border-blue-500" value={minDuration} onChange={(event) => { setMinDuration(Number(event.target.value)); setPage(1); }}>
+                <select className={filterInputClass} value={minDuration} onChange={(event) => { setMinDuration(Number(event.target.value)); setPage(1); }}>
                   <option value={0}>Any duration</option><option value={30}>30+ seconds</option><option value={60}>1+ minute</option><option value={300}>5+ minutes</option>
                 </select>
+                <input className={filterInputClass} placeholder="Phone number" value={phoneNumber} onChange={(event) => { setPhoneNumber(event.target.value); setPage(1); }} />
+                <input className={filterInputClass} aria-label="Start time" type="datetime-local" value={startTime} onChange={(event) => { setStartTime(event.target.value); setPage(1); }} />
+                <input className={filterInputClass} aria-label="End time" type="datetime-local" value={endTime} onChange={(event) => { setEndTime(event.target.value); setPage(1); }} />
               </div>
-              <span className="text-xs font-medium text-slate-500">{loading ? "Updating..." : `${total} records`}</span>
+              <div className="flex items-center justify-between gap-3">
+                <button className="text-sm font-semibold text-slate-500 hover:text-slate-950" type="button" onClick={resetFilters}>
+                  Clear filters
+                </button>
+                <span className="text-xs font-medium text-slate-500">{loading ? "Updating..." : `${total} records`}</span>
+              </div>
             </div>
 
             {notice ? <div className="border-b border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">{notice}</div> : null}

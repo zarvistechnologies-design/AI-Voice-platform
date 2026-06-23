@@ -30,6 +30,7 @@ type IconName =
   | "plus"
   | "refresh"
   | "search"
+  | "trash"
   | "unlink"
   | "user";
 
@@ -59,6 +60,7 @@ function Icon({ icon, className = "size-4" }: { icon: IconName; className?: stri
   if (icon === "plus") return <svg {...props}><path d="M12 5v14M5 12h14" /></svg>;
   if (icon === "refresh") return <svg {...props}><path d="M20 11a8 8 0 0 0-14.5-4.5L4 8" /><path d="M4 4v4h4" /><path d="M4 13a8 8 0 0 0 14.5 4.5L20 16" /><path d="M20 20v-4h-4" /></svg>;
   if (icon === "search") return <svg {...props}><circle cx="11" cy="11" r="7" /><path d="m20 20-4-4" /></svg>;
+  if (icon === "trash") return <svg {...props}><path d="M4 7h16M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7V4h6v3" /></svg>;
   if (icon === "unlink") return <svg {...props}><path d="m9 15-2 2a3.5 3.5 0 0 1-5-5l3-3" /><path d="m15 9 2-2a3.5 3.5 0 0 1 5 5l-3 3" /><path d="m3 3 18 18" /></svg>;
   return <svg {...props}><circle cx="12" cy="8" r="4" /><path d="M4 21a8 8 0 0 1 16 0" /></svg>;
 }
@@ -203,6 +205,31 @@ export function PhoneNumberShell() {
     }
   }
 
+  async function deleteNumber(number: BackendPhoneNumber) {
+    const confirmed = window.confirm(
+      `Delete ${number.number}?\n\nThis will unlink the agent, remove LiveKit routing, remove Vobiz trunk assignment when applicable, and delete it from this workspace inventory.`,
+    );
+    if (!confirmed) return;
+
+    setBusy(true);
+    showMessage("");
+    try {
+      const result = await voiceApi.deletePhoneNumber(number._id);
+      setNumbers((current) => current.filter((item) => item._id !== number._id));
+      setAgents((current) => current.map((agent) => agent.phone === number.number ? { ...agent, phone: "" } : agent));
+      if (assignmentNumber?._id === number._id) setAssignmentNumber(null);
+      showMessage(
+        result.routingWarning
+          ? `${number.number} deleted. Cleanup warning: ${result.routingWarning}`
+          : `${number.number} deleted everywhere in this workspace.`,
+      );
+    } catch (caught) {
+      showMessage(errorMessage(caught), true);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   if (!session) {
     return <main className="app-strong grid min-h-screen place-items-center bg-[#f7f8fb]">Loading phone numbers</main>;
   }
@@ -289,7 +316,9 @@ export function PhoneNumberShell() {
                     {numbers.map((number) => (
                       <PhoneNumberRow
                         key={number._id}
+                        busy={busy}
                         number={number}
+                        onDelete={() => void deleteNumber(number)}
                         onManage={() => { setAssignmentNumber(number); showMessage(""); }}
                       />
                     ))}
@@ -353,7 +382,17 @@ export function PhoneNumberShell() {
   );
 }
 
-function PhoneNumberRow({ number, onManage }: { number: BackendPhoneNumber; onManage: () => void }) {
+function PhoneNumberRow({
+  busy,
+  number,
+  onDelete,
+  onManage,
+}: {
+  busy: boolean;
+  number: BackendPhoneNumber;
+  onDelete: () => void;
+  onManage: () => void;
+}) {
   const agent = number.agentId;
   return (
     <tr className="border-t border-[#edf0f4] transition hover:bg-[#fbfcfe]">
@@ -392,9 +431,14 @@ function PhoneNumberRow({ number, onManage }: { number: BackendPhoneNumber; onMa
         <span className={`app-caption ${number.status === "Ready" ? "text-[#059669]" : "text-[#d97706]"}`}>{number.status}</span>
       </td>
       <td className="px-4 py-4">
-        <button className="grid size-9 place-items-center rounded-lg text-[#64748b] transition hover:bg-[#eef2ff] hover:text-[#4f46e5]" onClick={onManage} type="button" aria-label={`Manage ${number.number}`}>
-          <Icon icon="edit" />
-        </button>
+        <div className="flex items-center justify-end gap-1">
+          <button className="grid size-9 place-items-center rounded-lg text-[#64748b] transition hover:bg-[#eef2ff] hover:text-[#4f46e5]" disabled={busy} onClick={onManage} type="button" aria-label={`Manage ${number.number}`}>
+            <Icon icon="edit" />
+          </button>
+          <button className="grid size-9 place-items-center rounded-lg text-[#dc2626] transition hover:bg-[#fff1f2]" disabled={busy} onClick={onDelete} type="button" aria-label={`Delete ${number.number}`}>
+            <Icon icon="trash" />
+          </button>
+        </div>
       </td>
     </tr>
   );

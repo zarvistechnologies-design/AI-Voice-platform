@@ -285,6 +285,12 @@ export type CallRecord = {
   endedAt?: string;
   durationSeconds: number;
   transcript: CallTranscriptItem[];
+  recordingKey: string;
+  recordingUrl: string;
+  recordingEgressId: string;
+  recordingStatus: "" | "starting" | "active" | "completed" | "failed";
+  recordingError: string;
+  recordingDuration: number;
   avgResponseLatencyMs: number;
   llmProvider: string;
   llmTokens: number;
@@ -559,6 +565,11 @@ export const voiceApi = {
         body: JSON.stringify({ agentId }),
       },
     ),
+  deletePhoneNumber: (phoneNumberId: string) =>
+    request<{ deleted: boolean; routingWarning: string }>(
+      `/phone-numbers/${phoneNumberId}`,
+      { method: "DELETE" },
+    ),
   vobizNumbers: () => request<VobizNumberList>("/vobiz/numbers"),
   vobizIntegration: () => request<VobizIntegration>("/integrations/vobiz"),
   connectVobiz: (authId: string, authToken: string) =>
@@ -613,6 +624,9 @@ export const voiceApi = {
       direction?: CallRecord["direction"] | "";
       sentiment?: CallRecord["sentimentLabel"];
       search?: string;
+      phoneNumber?: string;
+      from?: string;
+      to?: string;
       minDuration?: number;
       maxDuration?: number;
       page?: number;
@@ -625,6 +639,9 @@ export const voiceApi = {
     if (input.direction) query.set("direction", input.direction);
     if (input.sentiment) query.set("sentiment", input.sentiment);
     if (input.search) query.set("search", input.search);
+    if (input.phoneNumber) query.set("phoneNumber", input.phoneNumber);
+    if (input.from) query.set("from", input.from);
+    if (input.to) query.set("to", input.to);
     if (input.minDuration) query.set("minDuration", String(input.minDuration));
     if (input.maxDuration) query.set("maxDuration", String(input.maxDuration));
     query.set("page", String(input.page ?? 1));
@@ -632,6 +649,35 @@ export const voiceApi = {
     return request<CallsResponse>(`/calls?${query.toString()}`);
   },
   call: (callId: string) => request<{ call: CallRecord }>(`/calls/${callId}`),
+  callRecordingBlob: async (callId: string) => {
+    if (!getSession()) throw new Error("Sign in before playing call recordings.");
+    const response = await fetch(`${API_URL}/api/voice/calls/${encodeURIComponent(callId)}/recording-file`, {
+      credentials: "include",
+      headers: getAuthHeaders(),
+    });
+    if (!response.ok) {
+      const data = (await response.json().catch(() => null)) as { message?: string } | null;
+      throw new Error(data?.message ?? "Could not load the call recording.");
+    }
+    return response.blob();
+  },
+  uploadWebCallRecording: async (callId: string, recording: Blob, durationMs: number) => {
+    if (!getSession()) throw new Error("Sign in before uploading call recordings.");
+    const response = await fetch(`${API_URL}/api/voice/calls/${encodeURIComponent(callId)}/recording`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        ...getAuthHeaders(),
+        "Content-Type": recording.type || "application/octet-stream",
+        "X-Recording-Duration-Ms": String(Math.max(0, Math.round(durationMs))),
+      },
+      body: recording,
+    });
+    const data = (await response.json().catch(() => null)) as ({ call: CallRecord; message?: string }) | null;
+    if (!response.ok) throw new Error(data?.message ?? "Could not upload the web call recording.");
+    if (!data?.call) throw new Error("Voice service returned an empty recording response.");
+    return data;
+  },
   exportCallsCsv: async () => {
     if (!getSession()) throw new Error("Sign in before exporting calls.");
     const response = await fetch(`${API_URL}/api/voice/calls/export.csv`, {
