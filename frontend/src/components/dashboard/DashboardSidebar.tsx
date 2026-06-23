@@ -141,56 +141,59 @@ export function DashboardSidebar({
   onLogout,
 }: DashboardSidebarProps) {
   return (
-    <aside className="flex gap-1.5 border-b border-[#e5e7eb] bg-white px-2 py-1.5 lg:sticky lg:top-0 lg:h-screen lg:flex-col lg:items-center lg:border-r lg:border-b-0 lg:px-0 lg:py-2.5">
-      <Link
-        className="grid size-9 shrink-0 place-items-center rounded-lg bg-[#0f172a] text-white shadow-[0_10px_22px_rgba(15,23,42,0.16)] transition hover:-translate-y-0.5"
-        href="/dashboard"
-        prefetch={false}
-        title="Voice Platform"
-        aria-label="Voice Platform"
-      >
-        <SidebarIcon icon="mic" />
-      </Link>
+    <>
+      <aside className="z-40 flex gap-1.5 border-b border-[#e5e7eb] bg-white px-2 py-1.5 lg:fixed lg:inset-y-0 lg:left-0 lg:h-dvh lg:w-16 lg:flex-col lg:items-center lg:border-r lg:border-b-0 lg:px-0 lg:py-2.5">
+        <Link
+          className="grid size-9 shrink-0 place-items-center rounded-lg bg-[#0f172a] text-white shadow-[0_10px_22px_rgba(15,23,42,0.16)] transition hover:-translate-y-0.5"
+          href="/dashboard"
+          prefetch={false}
+          title="Voice Platform"
+          aria-label="Voice Platform"
+        >
+          <SidebarIcon icon="mic" />
+        </Link>
 
-      <nav
-        className="flex flex-1 gap-1.5 overflow-x-auto lg:mt-3 lg:flex-col lg:items-center lg:overflow-visible"
-        aria-label="Dashboard navigation"
-      >
-        {sidebarItems.map((item) => {
-          const isActive = item.label === activeLabel;
+        <nav
+          className="flex flex-1 gap-1.5 overflow-x-auto lg:mt-3 lg:flex-col lg:items-center lg:overflow-visible"
+          aria-label="Dashboard navigation"
+        >
+          {sidebarItems.map((item) => {
+            const isActive = item.label === activeLabel;
 
-          return (
-            <Link
-              className={`group relative grid size-9 shrink-0 place-items-center rounded-lg transition ${
-                isActive
-                  ? "bg-[#e9efff] text-[#2563eb]"
-                  : "text-[#747b88] hover:bg-[#f1f5f9] hover:text-[#111827]"
-              }`}
-              href={item.href}
-              prefetch={false}
-              key={item.label}
-              title={item.label}
-              aria-label={item.label}
-              aria-current={isActive ? "page" : undefined}
-            >
-              <SidebarIcon icon={item.icon} />
-              <span className="app-label pointer-events-none absolute left-[calc(100%+10px)] z-20 hidden min-w-max rounded-md bg-[#111827] px-2 py-1 text-white opacity-0 shadow-xl transition group-hover:opacity-100 lg:block">
-                {item.label}
-              </span>
-            </Link>
-          );
-        })}
-      </nav>
+            return (
+              <Link
+                className={`group relative grid size-9 shrink-0 place-items-center rounded-lg transition ${
+                  isActive
+                    ? "bg-[#e9efff] text-[#2563eb]"
+                    : "text-[#747b88] hover:bg-[#f1f5f9] hover:text-[#111827]"
+                }`}
+                href={item.href}
+                prefetch={false}
+                key={item.label}
+                title={item.label}
+                aria-label={item.label}
+                aria-current={isActive ? "page" : undefined}
+              >
+                <SidebarIcon icon={item.icon} />
+                <span className="app-label pointer-events-none absolute left-[calc(100%+10px)] z-20 hidden min-w-max rounded-md bg-[#111827] px-2 py-1 text-white opacity-0 shadow-xl transition group-hover:opacity-100 lg:block">
+                  {item.label}
+                </span>
+              </Link>
+            );
+          })}
+        </nav>
 
-      <button
-        className="app-label ml-auto grid size-9 shrink-0 place-items-center rounded-full border border-[#c8cbd2] bg-[#2d2f34] text-white shadow-[inset_0_0_0_2px_rgba(255,255,255,0.16)] transition hover:-translate-y-0.5 lg:mt-auto lg:ml-0"
-        type="button"
-        title="Logout"
-        aria-label="Logout"
-        onClick={onLogout}
-      >
-        {userInitials}
-      </button>
-    </aside>
+        <button
+          className="app-label ml-auto grid size-9 shrink-0 place-items-center rounded-full border border-[#c8cbd2] bg-[#2d2f34] text-white shadow-[inset_0_0_0_2px_rgba(255,255,255,0.16)] transition hover:-translate-y-0.5 lg:mt-auto lg:ml-0"
+          type="button"
+          title="Logout"
+          aria-label="Logout"
+          onClick={onLogout}
+        >
+          {userInitials}
+        </button>
+      </aside>
+      <div className="hidden lg:block lg:h-dvh lg:w-16" aria-hidden="true" />
+    </>
   );
 }
