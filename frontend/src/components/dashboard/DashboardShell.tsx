@@ -19,6 +19,7 @@ import {
   type AgentBehavior,
   type AgentBusinessHours,
   type AgentCallSettings,
+  type AgentRuntimeSnapshot,
   type AgentTemplate,
   type AgentTool,
   type AgentWidget,
@@ -490,11 +491,33 @@ const tabs: { id: AgentTab; label: string }[] = [
   { id: "widget", label: "Widget" },
 ];
 
-const runtimeItems = [
-  { label: "Dispatch", value: "Ready", tone: "text-[#059669]" },
-  { label: "Model", value: "Balanced", tone: "text-[#2563eb]" },
-  { label: "Region", value: "US West", tone: "text-[#111827]" },
-];
+function dispatchLabel(state: AgentRuntimeSnapshot["dispatch"]["state"] | undefined) {
+  if (!state) return "Connecting";
+  return state.charAt(0).toUpperCase() + state.slice(1);
+}
+
+function dispatchTone(state: AgentRuntimeSnapshot["dispatch"]["state"] | undefined) {
+  if (state === "running") return "text-[#059669]";
+  if (state === "failed" || state === "missing") return "text-[#dc2626]";
+  if (state === "pending" || state === "waiting") return "text-[#d97706]";
+  return "text-[#64748b]";
+}
+
+function dispatchBadge(state: AgentRuntimeSnapshot["dispatch"]["state"] | undefined) {
+  if (state === "running") return "bg-[#dcfce7] text-[#047857]";
+  if (state === "failed" || state === "missing") return "bg-[#fee2e2] text-[#b91c1c]";
+  if (state === "pending" || state === "waiting") return "bg-[#fef3c7] text-[#b45309]";
+  return "bg-[#e2e8f0] text-[#475569]";
+}
+
+function formatLiveKitRegion(region: string) {
+  if (!region) return "Connect to detect";
+  return region
+    .split(/[-_\s]+/)
+    .filter(Boolean)
+    .map((part) => part.length <= 3 ? part.toUpperCase() : `${part[0].toUpperCase()}${part.slice(1)}`)
+    .join(" ");
+}
 
 const flowSettings = [
   {
@@ -939,6 +962,9 @@ export function DashboardShell() {
   });
   const [variableDraft, setVariableDraft] = useState("");
   const [previewingVoice, setPreviewingVoice] = useState("");
+  const [runtimeRegions, setRuntimeRegions] = useState<Record<string, string>>({});
+  const [runtimeSnapshot, setRuntimeSnapshot] = useState<AgentRuntimeSnapshot | null>(null);
+  const [runtimeStreamState, setRuntimeStreamState] = useState<"connecting" | "live" | "reconnecting">("connecting");
   const previewAudioRef = useRef<HTMLAudioElement | null>(null);
   const previewUrlRef = useRef("");
   const unsavedChangesRef = useRef(false);
@@ -952,6 +978,28 @@ export function DashboardShell() {
     ? selectedAgent.businessHours.schedule
     : defaultBusinessHours.schedule;
   const selectedTone = getStatusTone(selectedAgent.status);
+  const selectedRuntimeSnapshot = runtimeSnapshot?.agentId === selectedAgent.id ? runtimeSnapshot : null;
+  const selectedRuntimeStreamState = selectedRuntimeSnapshot ? runtimeStreamState : "connecting";
+  const selectedRuntimeRegion = selectedRuntimeSnapshot?.region || runtimeRegions[selectedAgent.id] || "";
+  const selectedRuntimeItems = [
+    {
+      label: "Dispatch",
+      value: dispatchLabel(selectedRuntimeSnapshot?.dispatch.state),
+      tone: dispatchTone(selectedRuntimeSnapshot?.dispatch.state),
+    },
+    {
+      label: "Model",
+      value: selectedRuntimeSnapshot?.pipeline.label ?? (selectedAgent.pipelineMode === "realtime"
+        ? `${selectedAgent.realtimeProvider}/${selectedAgent.realtimeModel}`
+        : `${selectedAgent.sttProvider} → ${selectedAgent.llmProvider} → ${selectedAgent.ttsProvider}`),
+      tone: "text-[#2563eb]",
+    },
+    {
+      label: "Region",
+      value: selectedRuntimeRegion ? formatLiveKitRegion(selectedRuntimeRegion) : "No active room",
+      tone: selectedRuntimeRegion ? "text-[#111827]" : "text-[#64748b]",
+    },
+  ];
   const behaviorMetrics = [
     {
       label: "Opening",
@@ -1063,6 +1111,36 @@ export function DashboardShell() {
       window.clearInterval(refreshTimer);
     };
   }, [router, session]);
+
+  useEffect(() => {
+    if (!session || !selectedAgentId || selectedAgentId === "loading" || selectedAgentId === "maya") {
+      return;
+    }
+
+    const stream = voiceApi.agentRuntimeStream(selectedAgentId);
+
+    const handleRuntime = (event: Event) => {
+      try {
+        const snapshot = JSON.parse((event as MessageEvent<string>).data) as AgentRuntimeSnapshot;
+        setRuntimeSnapshot(snapshot);
+        setRuntimeStreamState("live");
+        if (snapshot.region) {
+          setRuntimeRegions((current) => ({ ...current, [snapshot.agentId]: snapshot.region }));
+        }
+      } catch {
+        setRuntimeStreamState("reconnecting");
+      }
+    };
+
+    stream.addEventListener("runtime", handleRuntime);
+    stream.onopen = () => setRuntimeStreamState("live");
+    stream.onerror = () => setRuntimeStreamState("reconnecting");
+
+    return () => {
+      stream.removeEventListener("runtime", handleRuntime);
+      stream.close();
+    };
+  }, [selectedAgentId, session]);
 
   useEffect(() => {
     if (!session || activeTab !== "calls" || !selectedAgentId || selectedAgentId === "loading" || selectedAgentId === "maya") return;
@@ -1343,14 +1421,14 @@ export function DashboardShell() {
   }
 
   return (
-    <main className="grid min-h-screen bg-[#f7f8fb] text-[#111827] lg:grid-cols-[64px_minmax(0,1fr)]">
+    <main className="grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#f7f8fb] text-[#111827] lg:grid-cols-[64px_minmax(0,1fr)]">
       <DashboardSidebar
         activeLabel="Voice Agents"
         userInitials={getInitials(session.name)}
         onLogout={handleLogout}
       />
 
-      <section className="grid content-start gap-4 p-3 sm:p-4">
+      <section className="grid min-w-0 content-start gap-4 p-3 sm:p-4">
         <header className="-mx-3 -mt-3 flex flex-col items-stretch justify-between gap-4 border-b border-[#e5e7eb] bg-white px-4 py-4 sm:-mx-4 sm:-mt-4 sm:px-6 lg:flex-row lg:items-center">
           <div>
             <span className="app-kicker">Voice Platform</span>
@@ -1415,8 +1493,8 @@ export function DashboardShell() {
           </p>
         ) : null}
 
-        <section className="grid gap-4 xl:grid-cols-[300px_minmax(0,1fr)_320px]">
-          <aside className="overflow-hidden rounded-lg border border-[#dfe3ea] bg-white">
+        <section className="grid min-w-0 gap-4 xl:grid-cols-[280px_minmax(0,1fr)] 2xl:grid-cols-[280px_minmax(0,1fr)_300px]">
+          <aside className="min-w-0 overflow-hidden rounded-lg border border-[#dfe3ea] bg-white">
             <div className="flex min-h-[58px] items-center justify-between border-b border-[#e5e7eb] px-4">
               <div>
                 <h2 className="app-section-title m-0">Agents</h2>
@@ -1480,8 +1558,8 @@ export function DashboardShell() {
             </div>
           </aside>
 
-          <section className="grid content-start gap-4">
-            <article className="overflow-hidden rounded-lg border border-[#dfe3ea] bg-white">
+          <section className="grid min-w-0 content-start gap-4">
+            <article className="min-w-0 overflow-hidden rounded-lg border border-[#dfe3ea] bg-white">
               <div className="flex flex-col gap-3 border-b border-[#e5e7eb] px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                   <h2 className="app-section-title m-0">Agent builder</h2>
@@ -1489,7 +1567,7 @@ export function DashboardShell() {
                     {selectedAgent.name} / {selectedAgent.team}
                   </span>
                 </div>
-                <div className="flex gap-1 rounded-lg border border-[#dfe3ea] bg-[#f8fafc] p-1">
+                <div className="flex max-w-full gap-1 overflow-x-auto rounded-lg border border-[#dfe3ea] bg-[#f8fafc] p-1">
                   {tabs.map((tab) => (
                     <button
                       className={`app-button-text rounded-md px-3 py-1.5 transition ${
@@ -1827,10 +1905,10 @@ export function DashboardShell() {
                       </section>
                     )}
 
-                    <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_220px]">
-                      <div className="rounded-lg border border-[#e5e7eb] bg-white p-3">
+                    <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,1fr)_220px]">
+                      <div className="min-w-0 rounded-lg border border-[#e5e7eb] bg-white p-3">
                         <span className="app-label block">Active runtime</span>
-                        <strong className="app-strong">
+                        <strong className="app-strong block break-words">
                           {selectedAgent.pipelineMode === "realtime"
                             ? `${selectedAgent.realtimeProvider} / ${selectedAgent.realtimeModel}`
                             : `${selectedAgent.sttProvider} → ${selectedAgent.llmProvider} → ${selectedAgent.ttsProvider}`}
@@ -2376,52 +2454,74 @@ export function DashboardShell() {
 
           </section>
 
-          <aside className="grid content-start gap-4">
-            <article className="rounded-lg border border-[#dfe3ea] bg-white">
-              <div className="flex min-h-[58px] items-center justify-between border-b border-[#e5e7eb] px-4">
-                <div>
-                  <h2 className="app-section-title m-0">Runtime</h2>
-                  <span className="app-caption">{selectedAgent.name} status</span>
+          <aside className="grid min-w-0 content-start gap-4 xl:col-span-2 xl:grid-cols-2 2xl:col-span-1 2xl:grid-cols-1">
+            <article className="min-w-0 overflow-hidden rounded-xl border border-[#dbe4f0] bg-white shadow-[0_8px_30px_rgba(15,23,42,0.06)]">
+              <div className="flex min-h-[68px] items-center justify-between gap-3 border-b border-[#dbeafe] bg-gradient-to-r from-[#eff6ff] via-white to-[#ecfeff] px-4">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="relative flex size-2.5 shrink-0">
+                      {selectedRuntimeStreamState === "live" ? <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-50" /> : null}
+                      <span className={`relative inline-flex size-2.5 rounded-full ${selectedRuntimeStreamState === "live" ? "bg-emerald-500" : "bg-amber-400"}`} />
+                    </span>
+                    <h2 className="app-section-title m-0">Runtime health</h2>
+                  </div>
+                  <span className="app-caption block truncate">
+                    {selectedRuntimeStreamState === "live"
+                      ? `Live stream${selectedRuntimeSnapshot?.observedAt ? ` · ${new Date(selectedRuntimeSnapshot.observedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}` : ""}`
+                      : selectedRuntimeStreamState === "connecting" ? "Connecting live stream…" : "Reconnecting live stream…"}
+                  </span>
                 </div>
-                <span className={`app-label rounded-full px-2.5 py-1 ${selectedTone.badge}`}>
-                  {selectedAgent.status}
+                <span className={`app-label shrink-0 rounded-full px-2.5 py-1 ${dispatchBadge(selectedRuntimeSnapshot?.dispatch.state)}`} title={selectedRuntimeSnapshot?.dispatch.message}>
+                  {dispatchLabel(selectedRuntimeSnapshot?.dispatch.state)}
                 </span>
               </div>
 
               <div className="grid gap-4 p-4">
-                <div className="grid grid-cols-3 gap-3">
-                  {runtimeItems.map((item) => (
-                    <span key={item.label}>
-                      <span className="app-label block">{item.label}</span>
-                      <strong className={`app-strong ${item.tone}`}>{item.value}</strong>
+                <div className="grid grid-cols-3 gap-2">
+                  {selectedRuntimeItems.map((item) => (
+                    <span className="min-w-0 rounded-lg border border-[#edf2f7] bg-[#f8fafc] p-2.5" key={item.label} title={item.label === "Region" && selectedRuntimeRegion ? selectedRuntimeRegion : undefined}>
+                      <span className="app-label block truncate">{item.label}</span>
+                      <strong className={`app-strong block truncate ${item.tone}`}>{item.value}</strong>
                     </span>
                   ))}
                 </div>
 
-                <div className="grid gap-2">
-                  <span className="flex justify-between gap-3">
-                    <span className="app-caption">Worker</span>
-                    <strong className="app-strong truncate">{selectedAgent.id}-agent</strong>
-                  </span>
-                  <span className="flex justify-between gap-3">
-                    <span className="app-caption">STT</span>
-                    <strong className="app-strong truncate">
-                      {selectedAgent.pipelineMode === "realtime"
-                        ? "Native realtime"
-                        : `${selectedAgent.sttProvider}/${selectedAgent.sttModel}`}
+                <div className="grid min-w-0 divide-y divide-[#eef2f7] rounded-lg border border-[#edf2f7] px-3">
+                  <span className="flex min-w-0 items-center justify-between gap-3 py-2.5">
+                    <span className="app-caption shrink-0">Worker</span>
+                    <strong className="app-strong min-w-0 truncate text-right" title={selectedRuntimeSnapshot?.dispatch.workerId || "No active worker"}>
+                      {selectedRuntimeSnapshot?.dispatch.workerId || "No active worker"}
                     </strong>
                   </span>
-                  <span className="flex justify-between gap-3">
+                  <span className="flex min-w-0 items-center justify-between gap-3 py-2.5">
+                    <span className="app-caption shrink-0">STT</span>
+                    <strong className="app-strong min-w-0 truncate text-right" title={selectedRuntimeSnapshot?.pipeline.stt}>
+                      {selectedRuntimeSnapshot?.pipeline.stt ?? (selectedAgent.pipelineMode === "realtime" ? "Native realtime" : `${selectedAgent.sttProvider}/${selectedAgent.sttModel}`)}
+                    </strong>
+                  </span>
+                  <span className="flex items-center justify-between gap-3 py-2.5">
                     <span className="app-caption">Latency</span>
-                    <strong className={`app-strong ${selectedTone.text}`}>{selectedAgent.latency}</strong>
+                    <strong className={`app-strong ${selectedRuntimeSnapshot?.latency.latestMs !== null && selectedRuntimeSnapshot?.latency.latestMs !== undefined ? selectedTone.text : "text-[#64748b]"}`}>
+                      {selectedRuntimeSnapshot?.latency.latestMs !== null && selectedRuntimeSnapshot?.latency.latestMs !== undefined
+                        ? `${selectedRuntimeSnapshot.latency.latestMs} ms`
+                        : "No samples"}
+                    </strong>
                   </span>
-                  <span className="flex justify-between gap-3">
+                  <span className="flex items-center justify-between gap-3 py-2.5">
                     <span className="app-caption">Concurrency</span>
-                    <strong className="app-strong">{selectedAgent.maxConcurrentCalls} calls</strong>
+                    <strong className="app-strong">
+                      {selectedRuntimeSnapshot ? `${selectedRuntimeSnapshot.activeCalls} / ${selectedRuntimeSnapshot.maxConcurrentCalls} active` : "Connecting…"}
+                    </strong>
                   </span>
-                  <span className="flex justify-between gap-3">
+                  <span className="flex items-center justify-between gap-3 py-2.5">
                     <span className="app-caption">Hours guard</span>
-                    <strong className="app-strong">{selectedAgent.businessHoursEnabled ? "Enabled" : "Off"}</strong>
+                    <strong className="app-strong" title={selectedRuntimeSnapshot?.businessHours.timezone}>
+                      {!selectedRuntimeSnapshot
+                        ? "Connecting…"
+                        : !selectedRuntimeSnapshot.businessHours.enabled
+                          ? "Off"
+                          : selectedRuntimeSnapshot.businessHours.open ? "Open" : "Closed"}
+                    </strong>
                   </span>
                 </div>
               </div>
@@ -2429,30 +2529,58 @@ export function DashboardShell() {
 
             <article className="rounded-lg border border-[#dfe3ea] bg-white p-4">
               <div className="mb-4 flex items-center justify-between gap-3">
-                <div>
+                <div className="min-w-0">
                   <h2 className="app-section-title m-0">Phone route</h2>
-                  <span className="app-caption">Inbound and outbound line</span>
+                  <span className="app-caption block truncate">
+                    {selectedRuntimeSnapshot
+                      ? [selectedRuntimeSnapshot.phoneRoute.provider, selectedRuntimeSnapshot.phoneRoute.direction].filter(Boolean).join(" · ") || "No route assigned"
+                      : "Connecting live stream…"}
+                  </span>
                 </div>
-                <span className="grid size-8 place-items-center rounded-lg bg-[#eff6ff] text-[#2563eb]">
+                <span className={`grid size-8 shrink-0 place-items-center rounded-lg ${selectedRuntimeSnapshot?.phoneRoute.status === "Ready" ? "bg-[#ecfdf5] text-[#059669]" : "bg-[#fff7ed] text-[#d97706]"}`}>
                   <Icon icon="route" />
                 </span>
               </div>
 
               <div className="grid gap-3">
-                <div>
+                <div className="min-w-0">
                   <span className="app-label block">Number</span>
-                  <strong className="app-value block">{selectedAgent.phone}</strong>
+                  <strong className="app-value block truncate" title={selectedRuntimeSnapshot?.phoneRoute.number || selectedAgent.phone}>
+                    {selectedRuntimeSnapshot?.phoneRoute.number || selectedAgent.phone || "Not assigned"}
+                  </strong>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <span>
                     <span className="app-label block">Calls</span>
-                    <strong className="app-strong">{selectedAgent.calls}</strong>
+                    <strong className="app-strong block">{selectedRuntimeSnapshot?.phoneRoute.totalCalls ?? "—"}</strong>
+                    <span className="app-caption">{selectedRuntimeSnapshot ? `${selectedRuntimeSnapshot.phoneRoute.activeCalls} active` : "Connecting…"}</span>
                   </span>
                   <span>
-                    <span className="app-label block">Success</span>
-                    <strong className="app-strong text-[#059669]">{selectedAgent.success}</strong>
+                    <span className="app-label block">Completion</span>
+                    <strong className="app-strong text-[#059669]">
+                      {selectedRuntimeSnapshot?.phoneRoute.completionRate === null || selectedRuntimeSnapshot?.phoneRoute.completionRate === undefined
+                        ? "—"
+                        : `${selectedRuntimeSnapshot.phoneRoute.completionRate}%`}
+                    </strong>
                   </span>
                 </div>
+                {selectedRuntimeSnapshot ? (
+                  <div className="flex flex-wrap gap-2 border-t border-[#eef2f7] pt-3">
+                    {selectedRuntimeSnapshot.phoneRoute.direction !== "Outbound" && selectedRuntimeSnapshot.phoneRoute.direction ? (
+                      <span className={`app-label rounded-full px-2.5 py-1 ${selectedRuntimeSnapshot.phoneRoute.inboundReady ? "bg-[#dcfce7] text-[#047857]" : "bg-[#fee2e2] text-[#b91c1c]"}`}>
+                        Inbound {selectedRuntimeSnapshot.phoneRoute.inboundReady ? "ready" : "not ready"}
+                      </span>
+                    ) : null}
+                    {selectedRuntimeSnapshot.phoneRoute.direction !== "Inbound" && selectedRuntimeSnapshot.phoneRoute.direction ? (
+                      <span className={`app-label rounded-full px-2.5 py-1 ${selectedRuntimeSnapshot.phoneRoute.outboundReady ? "bg-[#dcfce7] text-[#047857]" : "bg-[#fee2e2] text-[#b91c1c]"}`}>
+                        Outbound {selectedRuntimeSnapshot.phoneRoute.outboundReady ? "ready" : "not ready"}
+                      </span>
+                    ) : null}
+                    {!selectedRuntimeSnapshot.phoneRoute.direction ? (
+                      <span className="app-label rounded-full bg-[#f1f5f9] px-2.5 py-1 text-[#64748b]">Unassigned</span>
+                    ) : null}
+                  </div>
+                ) : null}
               </div>
             </article>
 
@@ -2510,6 +2638,7 @@ export function DashboardShell() {
         <TestCallPanel
           agentId={selectedAgent.id}
           agentName={selectedAgent.name}
+          onRegionChange={(region) => setRuntimeRegions((current) => ({ ...current, [selectedAgent.id]: region }))}
           onClose={() => setShowTestCall(false)}
         />
       ) : null}

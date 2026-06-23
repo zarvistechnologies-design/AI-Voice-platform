@@ -329,6 +329,7 @@ export type AgentDispatchHealth = {
   roomName: string;
   dispatchId: string;
   agentName: string;
+  region: string;
   state: "missing" | "waiting" | "pending" | "running" | "completed" | "failed" | "unknown";
   message: string;
   jobs: {
@@ -338,6 +339,49 @@ export type AgentDispatchHealth = {
     workerId: string;
     participantIdentity: string;
   }[];
+};
+
+export type AgentRuntimeSnapshot = {
+  agentId: string;
+  agentStatus: "Live" | "Draft" | "Paused";
+  observedAt: string;
+  dispatch: {
+    state: AgentDispatchHealth["state"] | "idle";
+    message: string;
+    roomName: string;
+    dispatchId: string;
+    workerId: string;
+  };
+  region: string;
+  activeCalls: number;
+  maxConcurrentCalls: number;
+  pipeline: {
+    mode: PipelineMode;
+    label: string;
+    stt: string;
+  };
+  latency: {
+    latestMs: number | null;
+    averageMs: number | null;
+    sampleCount: number;
+    measuredAt: string;
+  };
+  businessHours: {
+    enabled: boolean;
+    open: boolean;
+    timezone: string;
+  };
+  phoneRoute: {
+    number: string;
+    provider: string;
+    direction: "Inbound" | "Outbound" | "Both" | "";
+    status: "Ready" | "Pending" | "Needs setup" | "Unassigned";
+    inboundReady: boolean;
+    outboundReady: boolean;
+    totalCalls: number;
+    activeCalls: number;
+    completionRate: number | null;
+  };
 };
 
 export type AnalyticsOverview = {
@@ -485,6 +529,11 @@ export const voiceApi = {
     if (input.dispatchId) query.set("dispatchId", input.dispatchId);
     return request<AgentDispatchHealth>(`/agent-dispatch-status?${query.toString()}`);
   },
+  agentRuntimeStream: (agentId: string) =>
+    new EventSource(
+      `${API_URL}/api/voice/agents/${encodeURIComponent(agentId)}/runtime/stream`,
+      { withCredentials: true },
+    ),
   outboundCall: (agentId: string, phoneNumber: string) =>
     request<{
       callId: string;

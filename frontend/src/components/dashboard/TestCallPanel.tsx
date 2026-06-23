@@ -9,9 +9,10 @@ type Props = {
   agentId: string;
   agentName: string;
   onClose: () => void;
+  onRegionChange: (region: string) => void;
 };
 
-export function TestCallPanel({ agentId, agentName, onClose }: Props) {
+export function TestCallPanel({ agentId, agentName, onClose, onRegionChange }: Props) {
   const roomRef = useRef<Room | null>(null);
   const audioElementsRef = useRef<HTMLMediaElement[]>([]);
   const dispatchTimerRef = useRef<number | null>(null);
@@ -51,6 +52,7 @@ export function TestCallPanel({ agentId, agentName, onClose }: Props) {
       checks += 1;
       try {
         const health = await voiceApi.agentDispatchStatus({ roomName, dispatchId });
+        if (health.region) onRegionChange(health.region);
         if (!roomRef.current && mode === "web") {
           stopDispatchPolling();
           return;
@@ -123,6 +125,7 @@ export function TestCallPanel({ agentId, agentName, onClose }: Props) {
       });
 
       await room.connect(credentials.serverUrl, credentials.participantToken);
+      if (room.serverInfo?.region) onRegionChange(room.serverInfo.region);
       await room.localParticipant.setMicrophoneEnabled(true, {
         echoCancellation: true,
         noiseSuppression: true,
@@ -151,6 +154,7 @@ export function TestCallPanel({ agentId, agentName, onClose }: Props) {
     try {
       const call = await voiceApi.outboundCall(agentId, phoneNumber.trim());
       setActive(true);
+      if (call.dispatch.region) onRegionChange(call.dispatch.region);
       setStatus(call.dispatch.message || `Phone call connected. Room: ${call.roomName}`);
       startDispatchPolling(call.roomName, call.dispatchId);
     } catch (error) {
@@ -161,20 +165,20 @@ export function TestCallPanel({ agentId, agentName, onClose }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-[#0f172a]/55 p-4 backdrop-blur-sm">
-      <section className="w-full max-w-lg overflow-hidden rounded-2xl border border-white/20 bg-white shadow-2xl">
-        <header className="flex items-center justify-between border-b border-[#e5e7eb] p-4">
-          <div>
-            <h2 className="app-section-title m-0">Test {agentName}</h2>
+    <div className="fixed inset-0 z-50 grid overflow-y-auto bg-[#0f172a]/60 p-3 backdrop-blur-sm sm:place-items-center sm:p-4">
+      <section className="my-auto max-h-[calc(100dvh-1.5rem)] w-full min-w-0 max-w-lg overflow-y-auto rounded-2xl border border-white/20 bg-white shadow-[0_24px_80px_rgba(15,23,42,0.35)] sm:max-h-[calc(100dvh-2rem)]">
+        <header className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-[#dbeafe] bg-white/95 p-4 backdrop-blur">
+          <div className="min-w-0">
+            <h2 className="app-section-title m-0 truncate" title={`Test ${agentName}`}>Test {agentName}</h2>
             <span className="app-caption">AI Voice Platform realtime session</span>
           </div>
-          <button className="app-button-text rounded-lg border border-[#d5d8df] px-3 py-2" type="button" onClick={onClose}>
+          <button className="app-button-text shrink-0 rounded-lg border border-[#d5d8df] bg-white px-3 py-2 transition hover:bg-[#f8fafc]" type="button" onClick={onClose}>
             Close
           </button>
         </header>
 
-        <div className="grid gap-5 p-5">
-          <div className="flex gap-1 rounded-lg bg-[#f1f5f9] p-1">
+        <div className="grid min-w-0 gap-4 p-4 sm:gap-5 sm:p-5">
+          <div className="grid grid-cols-2 gap-1 rounded-xl bg-[#f1f5f9] p-1">
             {(["web", "phone"] as const).map((item) => (
               <button
                 className={`app-button-text flex-1 rounded-md px-3 py-2 ${mode === item ? "bg-white text-[#1438f5] shadow-sm" : "text-[#64748b]"}`}
@@ -188,8 +192,10 @@ export function TestCallPanel({ agentId, agentName, onClose }: Props) {
             ))}
           </div>
 
-          <div className="grid min-h-44 place-items-center rounded-2xl bg-gradient-to-br from-[#111827] via-[#1d4ed8] to-[#0f766e] p-5 text-white">
-            <div className="grid place-items-center gap-4 text-center">
+          <div className="relative grid min-h-44 min-w-0 place-items-center overflow-hidden rounded-2xl bg-gradient-to-br from-[#111827] via-[#1d4ed8] to-[#0f766e] p-4 text-white shadow-inner sm:p-5">
+            <span className="pointer-events-none absolute -top-16 -right-10 size-44 rounded-full bg-cyan-300/15 blur-2xl" />
+            <span className="pointer-events-none absolute -bottom-20 -left-10 size-48 rounded-full bg-blue-300/15 blur-2xl" />
+            <div className="relative grid min-w-0 max-w-full place-items-center gap-4 text-center">
               <div className={`relative grid size-20 place-items-center rounded-full bg-white/15 ${active ? "ring-8 ring-white/10" : ""}`}>
                 {active ? <span className="absolute inset-0 animate-ping rounded-full bg-cyan-200/20" /> : null}
                 <span className="text-xl font-bold">AI</span>
@@ -203,7 +209,7 @@ export function TestCallPanel({ agentId, agentName, onClose }: Props) {
                   />
                 ))}
               </div>
-              <p className="m-0 text-sm text-white/85">{status}</p>
+              <p className="m-0 max-w-full break-words text-sm leading-5 text-white/85">{status}</p>
               <div className="flex flex-wrap justify-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-white/70">
                 <span>{remoteCount} remote participant{remoteCount === 1 ? "" : "s"}</span>
                 <span>{audioCount} audio track{audioCount === 1 ? "" : "s"}</span>
