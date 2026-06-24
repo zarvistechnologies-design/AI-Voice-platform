@@ -679,6 +679,13 @@ function normalizeTool(tool: AgentTool): AgentTool {
   };
 }
 
+function createWidgetPublicKey() {
+  const random = typeof crypto !== "undefined" && "randomUUID" in crypto
+    ? crypto.randomUUID().replace(/-/g, "")
+    : Array.from({ length: 32 }, () => Math.floor(Math.random() * 16).toString(16)).join("");
+  return `wpk_${random}`;
+}
+
 type IconName =
   | "agent"
   | "plus"
@@ -1132,6 +1139,7 @@ export function DashboardShell() {
   const [runtimeRegions, setRuntimeRegions] = useState<Record<string, string>>({});
   const [runtimeSnapshot, setRuntimeSnapshot] = useState<AgentRuntimeSnapshot | null>(null);
   const [runtimeStreamState, setRuntimeStreamState] = useState<"connecting" | "live" | "reconnecting">("connecting");
+  const [appOrigin, setAppOrigin] = useState("http://localhost:3000");
   const previewAudioRef = useRef<HTMLAudioElement | null>(null);
   const previewUrlRef = useRef("");
   const unsavedChangesRef = useRef(false);
@@ -1228,17 +1236,21 @@ export function DashboardShell() {
       tone: "slate" as const,
     },
   ];
-  const widgetUrl = `https://app.your-voice-platform.com/agents/embedded?id=${selectedAgent.id}&k=${selectedAgent.widget.publicKey || "not-configured"}`;
+  const widgetUrl = `${appOrigin}/agents/embedded?id=${selectedAgent.id}&k=${selectedAgent.widget.publicKey || "not-configured"}&position=inline`;
   const widgetEmbedCode = `<div id="voice-agent-widget"></div>
 <script
-  src="https://app.your-voice-platform.com/widget.js"
+  src="${appOrigin}/widget.js"
   data-agent-id="${selectedAgent.id}"
-   data-public-key="${selectedAgent.widget.publicKey}"
-   data-theme="${selectedAgent.widget.theme}"
-   data-position="${selectedAgent.widget.position}"
-   data-accent="${selectedAgent.widget.accentColor}"
-   data-metadata="${selectedAgent.dynamicVariables.join(",")}"
+  data-public-key="${selectedAgent.widget.publicKey}"
+  data-theme="${selectedAgent.widget.theme}"
+  data-position="${selectedAgent.widget.position}"
+  data-accent="${selectedAgent.widget.accentColor}"
+  data-metadata="${selectedAgent.dynamicVariables.join(",")}"
 ></script>`;
+
+  useEffect(() => {
+    setAppOrigin(window.location.origin);
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -1815,6 +1827,17 @@ export function DashboardShell() {
     } catch {
       setNotice("Could not copy automatically. Select the code and copy it manually.");
     }
+  }
+
+  function handleGenerateWidgetKey() {
+    updateSelectedAgent({
+      widget: {
+        ...selectedAgent.widget,
+        enabled: true,
+        publicKey: createWidgetPublicKey(),
+      },
+    });
+    setNotice("Widget key generated. Save the agent before using the embed code.");
   }
 
   if (!session) {
@@ -3052,16 +3075,30 @@ export function DashboardShell() {
                   <div className="grid gap-4">
                     <ToggleRow
                       title="Enable public widget"
-                      detail="Allow the configured domains to start browser voice sessions."
+                      detail="Allow website visitors to start browser voice sessions."
                       enabled={selectedAgent.widget.enabled}
                       onChange={(enabled) => updateSelectedAgent({ widget: { ...selectedAgent.widget, enabled } })}
                     />
-                    <div className="grid gap-3 lg:grid-cols-2">
-                      <InputField label="Public widget key" value={selectedAgent.widget.publicKey} onChange={(value) => updateSelectedAgent({ widget: { ...selectedAgent.widget, publicKey: value } })} />
-                      <InputField label="Allowed domains (comma separated)" value={selectedAgent.widget.allowedDomains.join(", ")} onChange={(value) => updateSelectedAgent({ widget: { ...selectedAgent.widget, allowedDomains: value.split(",").map((item) => item.trim()).filter(Boolean) } })} />
+                    <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+                      <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_120px]">
+                        <InputField label="Public widget key" value={selectedAgent.widget.publicKey} onChange={(value) => updateSelectedAgent({ widget: { ...selectedAgent.widget, publicKey: value } })} />
+                        <button
+                          className="app-button-text min-h-10 self-end rounded-lg border border-[#d5d8df] bg-white px-3 text-[#2563eb]"
+                          type="button"
+                          onClick={handleGenerateWidgetKey}
+                        >
+                          Generate
+                        </button>
+                      </div>
+                      <InputField
+                        label="Allowed domains (comma separated)"
+                        value={selectedAgent.widget.allowedDomains.join(", ")}
+                        placeholder="example.com, app.example.com"
+                        onChange={(value) => updateSelectedAgent({ widget: { ...selectedAgent.widget, allowedDomains: value.split(",").map((item) => item.trim()).filter(Boolean) } })}
+                      />
                     </div>
 
-                    <div className="grid gap-3 lg:grid-cols-3">
+                    <div className="grid gap-3 lg:grid-cols-4">
                       <SelectField
                         label="Widget theme"
                         defaultValue="auto"
@@ -3077,7 +3114,30 @@ export function DashboardShell() {
                         onChange={(value) => updateSelectedAgent({ widget: { ...selectedAgent.widget, position: value as AgentWidget["position"] } })}
                       />
                       <InputField label="Button text" value={selectedAgent.widget.buttonText} onChange={(value) => updateSelectedAgent({ widget: { ...selectedAgent.widget, buttonText: value } })} />
+                      <label className="app-label grid gap-2">
+                        <span>Accent color</span>
+                        <span className="grid grid-cols-[44px_minmax(0,1fr)] gap-2">
+                          <input
+                            aria-label="Widget accent color"
+                            className="h-10 w-11 rounded-lg border border-[#dfe3ea] bg-white p-1"
+                            type="color"
+                            value={selectedAgent.widget.accentColor}
+                            onChange={(event) => updateSelectedAgent({ widget: { ...selectedAgent.widget, accentColor: event.target.value } })}
+                          />
+                          <input
+                            className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10"
+                            value={selectedAgent.widget.accentColor}
+                            onChange={(event) => updateSelectedAgent({ widget: { ...selectedAgent.widget, accentColor: event.target.value } })}
+                          />
+                        </span>
+                      </label>
                     </div>
+
+                    {selectedAgent.status !== "Live" || !selectedAgent.widget.publicKey ? (
+                      <p className="app-caption m-0 rounded-lg border border-[#fde68a] bg-[#fffbeb] p-3 text-[#92400e]">
+                        Public widgets require a Live agent and a saved widget key.
+                      </p>
+                    ) : null}
 
                     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_260px]">
                       <article className="rounded-lg border border-[#e5e7eb] bg-[#f8fafc] p-3">
@@ -3117,7 +3177,10 @@ export function DashboardShell() {
                         <div className="grid min-h-[170px] content-end rounded-lg border border-[#e5e7eb] bg-[#f8fafc] p-3">
                           <div className="justify-self-end rounded-lg border border-[#dbeafe] bg-white p-3 shadow-sm">
                             <div className="mb-3 flex items-center gap-2">
-                              <span className="grid size-8 place-items-center rounded-full bg-[#1438f5] text-white">
+                              <span
+                                className="grid size-8 place-items-center rounded-full text-white"
+                                style={{ backgroundColor: selectedAgent.widget.accentColor }}
+                              >
                                 <Icon icon="phone" />
                               </span>
                               <span>
@@ -3126,7 +3189,8 @@ export function DashboardShell() {
                               </span>
                             </div>
                             <button
-                              className="app-button-text inline-flex min-h-9 w-full items-center justify-center gap-2 rounded-lg bg-[#1438f5] px-3 text-white"
+                              className="app-button-text inline-flex min-h-9 w-full items-center justify-center gap-2 rounded-lg px-3 text-white"
+                              style={{ backgroundColor: selectedAgent.widget.accentColor }}
                               type="button"
                             >
                               <Icon icon="phone" />
@@ -3134,6 +3198,14 @@ export function DashboardShell() {
                             </button>
                           </div>
                         </div>
+                        <button
+                          className="app-button-text mt-3 min-h-9 w-full rounded-lg border border-[#d5d8df] bg-white px-3 text-[#2563eb] disabled:cursor-not-allowed disabled:opacity-60"
+                          type="button"
+                          disabled={!selectedAgent.widget.publicKey}
+                          onClick={() => window.open(widgetUrl, "_blank", "noopener,noreferrer")}
+                        >
+                          Open widget page
+                        </button>
                       </article>
                     </div>
 
