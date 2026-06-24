@@ -102,7 +102,7 @@ export function EmbeddedVoiceWidget() {
       parentOrigin,
       origin: parentOrigin,
     });
-    fetch(`${API_URL}/api/voice/widget/agents/${encodeURIComponent(agentId)}?${query.toString()}`)
+    fetch(`${API_URL}/api/widget/agents/${encodeURIComponent(agentId)}?${query.toString()}`)
       .then(async (response) => {
         const data = (await response.json().catch(() => null)) as { agent?: WidgetAgent; message?: string } | null;
         if (!response.ok) throw new Error(data?.message ?? "Widget is unavailable");
@@ -128,7 +128,7 @@ export function EmbeddedVoiceWidget() {
     setStatus("Connecting");
     setExpanded(true);
     try {
-      const response = await fetch(`${API_URL}/api/voice/widget/call-token`, {
+      const response = await fetch(`${API_URL}/api/widget/call-token`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
