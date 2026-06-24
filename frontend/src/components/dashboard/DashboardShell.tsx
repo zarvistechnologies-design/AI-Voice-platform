@@ -1167,6 +1167,45 @@ export function DashboardShell() {
       tone: selectedRuntimeRegion ? "text-[#111827]" : "text-[#64748b]",
     },
   ];
+  const phoneAssigned = Boolean(selectedAgent.phone && selectedAgent.phone !== "Not assigned");
+  const liveCallsEnabled = selectedAgent.status === "Live";
+  const testCallsEnabled = selectedAgent.status !== "Paused" && selectedAgent.id !== "loading";
+  const inboundReady = Boolean(
+    selectedRuntimeSnapshot?.phoneRoute.inboundReady
+      ?? (phoneAssigned && voiceConfig?.sip.inboundConfigured && voiceConfig?.sip.inboundDestinationConfigured),
+  );
+  const outboundReady = Boolean(
+    selectedRuntimeSnapshot?.phoneRoute.outboundReady
+      ?? (phoneAssigned && voiceConfig?.sip.outboundConfigured && voiceConfig?.vobiz.configured),
+  );
+  const browserTestReady = testCallsEnabled && Boolean(voiceConfig?.agentName);
+  const hoursGuardLabel = !selectedAgent.businessHoursEnabled
+    ? "Off"
+    : selectedRuntimeSnapshot
+      ? selectedRuntimeSnapshot.businessHours.open ? "Open" : "Closed"
+      : "Checking";
+  const callReadiness = [
+    {
+      label: "Browser test",
+      ready: browserTestReady,
+      value: browserTestReady ? "Ready" : selectedAgent.status === "Paused" ? "Paused" : "Needs agent",
+    },
+    {
+      label: "Inbound calls",
+      ready: liveCallsEnabled && inboundReady,
+      value: !liveCallsEnabled ? "Disabled" : inboundReady ? "Ready" : "Needs route",
+    },
+    {
+      label: "Outbound calls",
+      ready: liveCallsEnabled && outboundReady,
+      value: !liveCallsEnabled ? "Disabled" : outboundReady ? "Ready" : "Needs route",
+    },
+    {
+      label: "Hours guard",
+      ready: !selectedAgent.businessHoursEnabled || hoursGuardLabel === "Open",
+      value: hoursGuardLabel,
+    },
+  ];
   const behaviorMetrics = [
     {
       label: "Opening",
@@ -1715,6 +1754,21 @@ export function DashboardShell() {
     });
   }
 
+  async function handleStartTestCall() {
+    if (!testCallsEnabled) {
+      setNotice("Paused agents cannot start test calls. Enable calls or switch the agent back to Draft/Live first.");
+      return;
+    }
+    const saved = await handleSave();
+    if (saved) setShowTestCall(true);
+  }
+
+  function handleSetLiveCalls(enabled: boolean) {
+    const status: AgentStatus = enabled ? "Live" : "Paused";
+    updateSelectedAgent({ status });
+    void handleSave({ status });
+  }
+
   function addDraftHeader() {
     setToolDraft((current) => ({ ...current, headers: { ...(current.headers ?? {}), "": "" } }));
   }
@@ -1816,11 +1870,9 @@ export function DashboardShell() {
             <button
               className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#dbeafe] bg-[#eff6ff] px-3 text-[#2563eb] shadow-sm"
               type="button"
-              onClick={() => {
-                void handleSave().then((saved) => {
-                  if (saved) setShowTestCall(true);
-                });
-              }}
+              disabled={!testCallsEnabled}
+              title={testCallsEnabled ? "Start browser test call" : "Paused agents cannot start test calls"}
+              onClick={() => void handleStartTestCall()}
             >
               <Icon icon="phone" />
               Test call
@@ -2834,6 +2886,56 @@ export function DashboardShell() {
 
                 {activeTab === "calls" ? (
                   <div className="grid gap-4">
+                    <section className="grid gap-3 rounded-xl border border-[#dbeafe] bg-[#f8fbff] p-4">
+                      <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                        <div>
+                          <h3 className="app-section-title m-0">Call enablement</h3>
+                          <span className="app-caption">
+                            Live phone traffic requires a Live agent and ready phone route. Dashboard test calls work for Draft agents.
+                          </span>
+                        </div>
+                        <button
+                          className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#dbeafe] bg-white px-3 text-[#2563eb] disabled:cursor-not-allowed disabled:opacity-60"
+                          type="button"
+                          disabled={!testCallsEnabled}
+                          onClick={() => void handleStartTestCall()}
+                        >
+                          <Icon icon="phone" />
+                          Test call
+                        </button>
+                      </div>
+
+                      <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_240px]">
+                        <ToggleRow
+                          title="Enable live phone calls"
+                          detail="Allow inbound and outbound phone calls for this agent."
+                          enabled={liveCallsEnabled}
+                          onChange={handleSetLiveCalls}
+                        />
+                        <div className="rounded-lg border border-[#dbeafe] bg-white p-3">
+                          <span className="app-label block">Agent status</span>
+                          <strong className={`app-strong block ${selectedTone.text}`}>{selectedAgent.status}</strong>
+                          <span className="app-caption">Save happens automatically when toggled.</span>
+                        </div>
+                      </div>
+
+                      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                        {callReadiness.map((item) => (
+                          <div
+                            className={`rounded-lg border p-3 ${
+                              item.ready
+                                ? "border-[#bbf7d0] bg-[#ecfdf5] text-[#047857]"
+                                : "border-[#fde68a] bg-[#fffbeb] text-[#b45309]"
+                            }`}
+                            key={item.label}
+                          >
+                            <span className="app-label block opacity-80">{item.label}</span>
+                            <strong className="app-strong block text-current">{item.value}</strong>
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+
                     <div className="grid gap-3 lg:grid-cols-4">
                       <div className="rounded-lg border border-[#e5e7eb] bg-white p-3">
                         <span className="app-label block">Assigned phone</span>
