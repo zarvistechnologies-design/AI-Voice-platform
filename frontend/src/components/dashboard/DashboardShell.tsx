@@ -579,6 +579,61 @@ const deployChecklist = [
   "Privacy and recording reviewed",
 ];
 
+const commonTimezoneOptions: SelectOption[] = [
+  { value: "UTC", label: "UTC" },
+  { value: "Asia/Kolkata", label: "IST - India (Asia/Kolkata)" },
+  { value: "America/New_York", label: "Eastern Time (America/New_York)" },
+  { value: "America/Chicago", label: "Central Time (America/Chicago)" },
+  { value: "America/Denver", label: "Mountain Time (America/Denver)" },
+  { value: "America/Los_Angeles", label: "Pacific Time (America/Los_Angeles)" },
+  { value: "Europe/London", label: "UK (Europe/London)" },
+  { value: "Europe/Berlin", label: "Central Europe (Europe/Berlin)" },
+  { value: "Asia/Dubai", label: "Gulf (Asia/Dubai)" },
+  { value: "Asia/Singapore", label: "Singapore (Asia/Singapore)" },
+  { value: "Australia/Sydney", label: "Sydney (Australia/Sydney)" },
+];
+
+const systemDynamicVariables = [
+  "FromPhone",
+  "ToPhone",
+  "CallId",
+  "SessionId",
+  "AgentName",
+  "CallDirection",
+  "CurrentDate",
+  "CurrentISODate",
+  "CurrentTime",
+  "CurrentHour",
+  "CurrentDay",
+  "CurrentMonth",
+  "CurrentYear",
+  "CurrentDateTime",
+  "Timezone",
+  "now",
+  "date",
+  "iso_date",
+  "time",
+  "current_hour",
+  "day",
+  "month",
+  "year",
+  "timezone",
+  "current_time",
+  "current_calendar",
+];
+
+const dateTimeVariableExamples = [
+  "{{date}}",
+  "{{time}}",
+  "{{now}}",
+  "{{current_time}}",
+  "{{current_hour}}",
+  "{{current_calendar}}",
+  "{{current_time_Asia/Kolkata}}",
+  "{{current_calendar_America/Los_Angeles}}",
+  "{CurrentTime_Asia_Kolkata}",
+];
+
 const toolMethodOptions: AgentTool["method"][] = ["GET", "POST", "PUT", "PATCH", "DELETE"];
 const toolParameterTypeOptions: AgentToolParameter["type"][] = ["string", "number", "boolean", "object"];
 const toolNamePattern = /^[a-zA-Z][a-zA-Z0-9_]{1,79}$/;
@@ -684,6 +739,13 @@ function createWidgetPublicKey() {
     ? crypto.randomUUID().replace(/-/g, "")
     : Array.from({ length: 32 }, () => Math.floor(Math.random() * 16).toString(16)).join("");
   return `wpk_${random}`;
+}
+
+function getTimezoneOptions(timezone: string): SelectOption[] {
+  const selected = timezone || "UTC";
+  return commonTimezoneOptions.some((option) => getSelectOptionValue(option) === selected)
+    ? commonTimezoneOptions
+    : [{ value: selected, label: `Custom (${selected})` }, ...commonTimezoneOptions];
 }
 
 type IconName =
@@ -1820,6 +1882,21 @@ export function DashboardShell() {
     setVariableDraft("");
   }
 
+  function copyVariableSnippet(snippet: string) {
+    if (!navigator.clipboard) {
+      setVariableDraft(snippet.replace(/[{}]/g, ""));
+      setNotice(`Added ${snippet} to the variable box.`);
+      return;
+    }
+    void navigator.clipboard.writeText(snippet).then(
+      () => setNotice(`Copied ${snippet}.`),
+      () => {
+        setVariableDraft(snippet.replace(/[{}]/g, ""));
+        setNotice(`Added ${snippet} to the variable box.`);
+      },
+    );
+  }
+
   async function handleCopyWidgetCode() {
     try {
       await navigator.clipboard.writeText(widgetEmbedCode);
@@ -2506,10 +2583,11 @@ export function DashboardShell() {
                           enabled={selectedAgent.businessHoursEnabled}
                           onChange={(businessHoursEnabled) => updateSelectedAgent({ businessHoursEnabled })}
                         />
-                        <InputField
-                          label="Business-hours timezone"
-                          value={selectedAgent.businessHours.timezone}
-                          placeholder="Asia/Kolkata"
+                        <SelectField
+                          label="Agent timezone"
+                          defaultValue="UTC"
+                          value={selectedAgent.businessHours.timezone || "UTC"}
+                          options={getTimezoneOptions(selectedAgent.businessHours.timezone)}
                           onChange={(timezone) => updateBusinessHours({ timezone })}
                         />
                       </div>
@@ -2885,6 +2963,36 @@ export function DashboardShell() {
                       <div>
                         <h3 className="app-section-title m-0">Dynamic variables</h3>
                         <span className="app-caption">Reusable values for prompts, widgets, and webhooks.</span>
+                      </div>
+                      <div className="grid gap-2 rounded-lg border border-[#e5e7eb] bg-[#f8fafc] p-3">
+                        <strong className="app-strong block">System variables</strong>
+                        <div className="flex flex-wrap gap-2">
+                          {systemDynamicVariables.map((variable) => (
+                            <button
+                              className="app-label rounded-full border border-[#dbeafe] bg-white px-2.5 py-1 text-[#2563eb] transition hover:border-[#bfdbfe] hover:bg-[#eff6ff]"
+                              key={variable}
+                              type="button"
+                              title="Copy variable"
+                              onClick={() => copyVariableSnippet(`{${variable}}`)}
+                            >
+                              {`{${variable}}`}
+                            </button>
+                          ))}
+                        </div>
+                        <strong className="app-strong block pt-2">Vapi / Retell date-time aliases</strong>
+                        <div className="flex flex-wrap gap-2">
+                          {dateTimeVariableExamples.map((snippet) => (
+                            <button
+                              className="app-label rounded-full border border-[#dcfce7] bg-white px-2.5 py-1 text-[#047857] transition hover:border-[#bbf7d0] hover:bg-[#ecfdf5]"
+                              key={snippet}
+                              type="button"
+                              title="Copy variable"
+                              onClick={() => copyVariableSnippet(snippet)}
+                            >
+                              {snippet}
+                            </button>
+                          ))}
+                        </div>
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {selectedAgent.dynamicVariables.map((variable) => (
@@ -3404,6 +3512,7 @@ export function DashboardShell() {
   "tts": "${selectedAgent.ttsProvider}/${selectedAgent.ttsModel}",
   "opening_mode": "${selectedAgent.firstMessageMode}",
   "endpointing": "${selectedAgent.behavior.endpointingMode}",
+  "timezone": "${selectedAgent.businessHours.timezone}",
   "voice_speed": ${selectedAgent.voiceSpeed},
   "voice_pitch": ${selectedAgent.voicePitch},
   "concurrent_calls": ${selectedAgent.maxConcurrentCalls},
