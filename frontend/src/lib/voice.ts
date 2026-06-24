@@ -34,14 +34,35 @@ export type AgentCallSettings = {
   memoryEnabled: boolean;
 };
 
+export type AgentToolParameter = {
+  _id?: string;
+  name: string;
+  type: "string" | "number" | "boolean" | "object";
+  description: string;
+  required: boolean;
+};
+
 export type AgentTool = {
   _id?: string;
   name: string;
   description: string;
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   url: string;
+  headers?: Record<string, string>;
   timeoutSeconds: number;
   enabled: boolean;
+  parameters?: AgentToolParameter[];
+  runAfterCall?: boolean;
+  executeAfterMessage?: boolean;
+  excludeSessionId?: boolean;
+  messages?: string[];
+};
+
+export type AgentToolRunResult = {
+  ok: boolean;
+  status: number;
+  elapsedMs: number;
+  responseText: string;
 };
 
 export type KnowledgeDocument = {
@@ -498,6 +519,17 @@ export const voiceApi = {
     request<{ agent: BackendAgent }>(`/agents/${agentId}/clone`, { method: "POST" }),
   deleteAgent: (agentId: string) =>
     request<Record<string, never>>(`/agents/${agentId}`, { method: "DELETE" }),
+  testAgentTool: (
+    agentId: string,
+    input: { toolId?: string; tool?: AgentTool; args?: Record<string, unknown> },
+  ) =>
+    request<{
+      tool: { name: string; method: AgentTool["method"]; url: string };
+      result: AgentToolRunResult;
+    }>(`/agents/${agentId}/tools/test`, {
+      method: "POST",
+      body: JSON.stringify(input),
+    }),
   voicePreview: async (input: VoicePreviewRequest) => {
     if (!getSession()) throw new Error("Sign in before previewing voices.");
     const response = await fetch(`${API_URL}/api/voice/voice-preview`, {

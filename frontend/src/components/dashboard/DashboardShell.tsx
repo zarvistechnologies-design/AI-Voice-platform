@@ -22,6 +22,7 @@ import {
   type AgentRuntimeSnapshot,
   type AgentTemplate,
   type AgentTool,
+  type AgentToolParameter,
   type AgentWidget,
   type BusinessHoursDay,
   type FirstMessageMode,
@@ -578,6 +579,106 @@ const deployChecklist = [
   "Privacy and recording reviewed",
 ];
 
+const toolMethodOptions: AgentTool["method"][] = ["GET", "POST", "PUT", "PATCH", "DELETE"];
+const toolParameterTypeOptions: AgentToolParameter["type"][] = ["string", "number", "boolean", "object"];
+const toolNamePattern = /^[a-zA-Z][a-zA-Z0-9_]{1,79}$/;
+const keyNamePattern = /^[a-zA-Z][a-zA-Z0-9_]{0,79}$/;
+const headerNamePattern = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
+
+type HeaderDraft = { name: string; value: string };
+
+function createEmptyToolDraft(): AgentTool {
+  return {
+    name: "",
+    description: "",
+    method: "POST",
+    url: "",
+    headers: {},
+    timeoutSeconds: 8,
+    enabled: true,
+    parameters: [],
+    runAfterCall: false,
+    executeAfterMessage: false,
+    excludeSessionId: true,
+    messages: ["Let me check that for you."],
+  };
+}
+
+function createEmptyToolParameter(name = "param_1"): AgentToolParameter {
+  return {
+    name,
+    type: "string",
+    description: "",
+    required: true,
+  };
+}
+
+function nextParameterName(parameters: readonly AgentToolParameter[] = []) {
+  let index = parameters.length + 1;
+  while (parameters.some((parameter) => parameter.name === `param_${index}`)) {
+    index += 1;
+  }
+  return `param_${index}`;
+}
+
+function headersToDrafts(headers: Record<string, string> = {}): HeaderDraft[] {
+  return Object.entries(headers).map(([name, value]) => ({ name, value }));
+}
+
+function draftsToHeaders(drafts: readonly HeaderDraft[], keepIncomplete = false) {
+  return Object.fromEntries(
+    drafts
+      .map((header) => [header.name.trim(), header.value.trim()] as const)
+      .filter(([name, value]) => keepIncomplete ? name || value : name && value),
+  );
+}
+
+function isHttpUrl(value: string) {
+  try {
+    return ["http:", "https:"].includes(new URL(value).protocol);
+  } catch {
+    return false;
+  }
+}
+
+function sampleValueForParameter(parameter: AgentToolParameter) {
+  if (parameter.type === "number") return 123;
+  if (parameter.type === "boolean") return true;
+  if (parameter.type === "object") return { sample: true };
+  return `sample_${parameter.name || "value"}`;
+}
+
+function sampleArgsForTool(tool: AgentTool) {
+  return Object.fromEntries(
+    (tool.parameters ?? [])
+      .filter((parameter) => keyNamePattern.test(parameter.name))
+      .map((parameter) => [parameter.name, sampleValueForParameter(parameter)]),
+  );
+}
+
+function normalizeTool(tool: AgentTool): AgentTool {
+  return {
+    ...tool,
+    name: tool.name.trim(),
+    description: tool.description.trim(),
+    url: tool.url.trim(),
+    headers: draftsToHeaders(headersToDrafts(tool.headers)),
+    timeoutSeconds: Math.min(30, Math.max(1, Number(tool.timeoutSeconds) || 8)),
+    enabled: tool.enabled !== false,
+    parameters: (tool.parameters ?? []).map((parameter) => ({
+      ...parameter,
+      name: parameter.name.trim(),
+      description: parameter.description.trim(),
+      type: toolParameterTypeOptions.includes(parameter.type) ? parameter.type : "string",
+      required: parameter.required === true,
+    })),
+    runAfterCall: tool.runAfterCall === true,
+    executeAfterMessage: tool.executeAfterMessage === true,
+    excludeSessionId: tool.excludeSessionId !== false,
+    messages: (tool.messages ?? []).map((message) => message.trim()).filter(Boolean).slice(0, 5),
+  };
+}
+
 type IconName =
   | "agent"
   | "plus"
@@ -935,6 +1036,78 @@ function InputField({
   );
 }
 
+function ToolParameterEditor({
+  parameter,
+  onChange,
+  onRemove,
+}: {
+  parameter: AgentToolParameter;
+  onChange: (changes: Partial<AgentToolParameter>) => void;
+  onRemove: () => void;
+}) {
+  return (
+    <article className="grid gap-3 rounded-lg border border-[#e5e7eb] bg-white p-3 lg:grid-cols-[minmax(0,1fr)_150px_118px_88px]">
+      <InputField label="Name" value={parameter.name} placeholder="email" onChange={(name) => onChange({ name })} />
+      <SelectField
+        label="Type"
+        defaultValue="string"
+        value={parameter.type}
+        options={toolParameterTypeOptions}
+        onChange={(type) => onChange({ type: type as AgentToolParameter["type"] })}
+      />
+      <label className="app-label flex min-h-10 items-center gap-2 self-end rounded-lg border border-[#e5e7eb] bg-[#f8fafc] px-3">
+        <input
+          className="size-4 accent-[#2563eb]"
+          type="checkbox"
+          checked={parameter.required}
+          onChange={(event) => onChange({ required: event.target.checked })}
+        />
+        Required
+      </label>
+      <button
+        className="app-button-text min-h-10 self-end rounded-lg border border-rose-200 bg-white px-3 text-rose-600 transition hover:bg-rose-50"
+        type="button"
+        onClick={onRemove}
+      >
+        Remove
+      </button>
+      <label className="app-label grid gap-2 lg:col-span-4">
+        <span>Description</span>
+        <input
+          className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10"
+          value={parameter.description}
+          placeholder="What value should the agent collect before calling this tool?"
+          onChange={(event) => onChange({ description: event.target.value })}
+        />
+      </label>
+    </article>
+  );
+}
+
+function HeaderEditor({
+  header,
+  onChange,
+  onRemove,
+}: {
+  header: HeaderDraft;
+  onChange: (changes: Partial<HeaderDraft>) => void;
+  onRemove: () => void;
+}) {
+  return (
+    <article className="grid gap-3 rounded-lg border border-[#e5e7eb] bg-white p-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_88px]">
+      <InputField label="Header" value={header.name} placeholder="Authorization" onChange={(name) => onChange({ name })} />
+      <InputField label="Value" value={header.value} placeholder="Bearer token" onChange={(value) => onChange({ value })} />
+      <button
+        className="app-button-text min-h-10 self-end rounded-lg border border-rose-200 bg-white px-3 text-rose-600 transition hover:bg-rose-50"
+        type="button"
+        onClick={onRemove}
+      >
+        Remove
+      </button>
+    </article>
+  );
+}
+
 export function DashboardShell() {
   const router = useRouter();
   const session = useSyncExternalStore(
@@ -952,16 +1125,10 @@ export function DashboardShell() {
   const [voiceConfig, setVoiceConfig] = useState<DashboardVoiceConfig | null>(null);
   const [agentTemplates, setAgentTemplates] = useState<AgentTemplate[]>([]);
   const [recentCalls, setRecentCalls] = useState<CallRecord[]>([]);
-  const [toolDraft, setToolDraft] = useState<AgentTool>({
-    name: "",
-    description: "",
-    method: "POST",
-    url: "",
-    timeoutSeconds: 8,
-    enabled: true,
-  });
+  const [toolDraft, setToolDraft] = useState<AgentTool>(() => createEmptyToolDraft());
   const [variableDraft, setVariableDraft] = useState("");
   const [previewingVoice, setPreviewingVoice] = useState("");
+  const [testingToolKey, setTestingToolKey] = useState("");
   const [runtimeRegions, setRuntimeRegions] = useState<Record<string, string>>({});
   const [runtimeSnapshot, setRuntimeSnapshot] = useState<AgentRuntimeSnapshot | null>(null);
   const [runtimeStreamState, setRuntimeStreamState] = useState<"connecting" | "live" | "reconnecting">("connecting");
@@ -1200,7 +1367,7 @@ export function DashboardShell() {
         firstMessageMode: selectedAgent.firstMessageMode,
         behavior: selectedAgent.behavior,
         callSettings: selectedAgent.callSettings,
-        tools: selectedAgent.tools,
+        tools: selectedAgent.tools.map(normalizeTool),
         knowledgeDocuments: selectedAgent.knowledgeDocuments,
         dynamicVariables: selectedAgent.dynamicVariables,
         prefetchWebhook: selectedAgent.prefetchWebhook,
@@ -1386,13 +1553,198 @@ export function DashboardShell() {
     }
   }
 
+  function validateTool(tool: AgentTool) {
+    const normalized = normalizeTool(tool);
+    if (!toolNamePattern.test(normalized.name)) {
+      setNotice("Tool names must start with a letter and use letters, numbers, or underscores.");
+      return null;
+    }
+    if (!isHttpUrl(normalized.url)) {
+      setNotice("Webhook URL must start with http:// or https://.");
+      return null;
+    }
+    const parameters = normalized.parameters ?? [];
+    if (parameters.some((parameter) => !keyNamePattern.test(parameter.name))) {
+      setNotice("Parameter names must start with a letter and use letters, numbers, or underscores.");
+      return null;
+    }
+    const duplicateParameter = parameters.find((parameter, index) =>
+      parameters.findIndex((item) => item.name === parameter.name) !== index,
+    );
+    if (duplicateParameter) {
+      setNotice(`Parameter "${duplicateParameter.name}" is duplicated.`);
+      return null;
+    }
+    if (Object.keys(normalized.headers ?? {}).some((name) => !headerNamePattern.test(name))) {
+      setNotice("Header names must be valid HTTP header names.");
+      return null;
+    }
+    return normalized;
+  }
+
   function addTool() {
-    if (!toolDraft.name.trim() || !toolDraft.url.trim()) {
-      setNotice("Enter a function name and webhook URL.");
+    if (selectedAgent.tools.length >= 20) {
+      setNotice("An agent can have at most 20 tools.");
       return;
     }
-    updateSelectedAgent({ tools: [...selectedAgent.tools, { ...toolDraft, name: toolDraft.name.trim(), url: toolDraft.url.trim() }] });
-    setToolDraft({ name: "", description: "", method: "POST", url: "", timeoutSeconds: 8, enabled: true });
+    const tool = validateTool(toolDraft);
+    if (!tool) return;
+    updateSelectedAgent({ tools: [...selectedAgent.tools, tool] });
+    setToolDraft(createEmptyToolDraft());
+    setNotice("Webhook tool added. Save to deploy it.");
+  }
+
+  function updateTool(index: number, changes: Partial<AgentTool>) {
+    updateSelectedAgent({
+      tools: selectedAgent.tools.map((tool, toolIndex) =>
+        toolIndex === index ? { ...tool, ...changes } : tool,
+      ),
+    });
+  }
+
+  function removeTool(index: number) {
+    updateSelectedAgent({ tools: selectedAgent.tools.filter((_, toolIndex) => toolIndex !== index) });
+  }
+
+  function duplicateTool(index: number) {
+    const source = selectedAgent.tools[index];
+    if (!source || selectedAgent.tools.length >= 20) {
+      setNotice("An agent can have at most 20 tools.");
+      return;
+    }
+    updateSelectedAgent({
+      tools: [
+        ...selectedAgent.tools,
+        normalizeTool({
+          ...source,
+          _id: undefined,
+          name: `${source.name}_copy`.slice(0, 80),
+          enabled: false,
+          parameters: (source.parameters ?? []).map((parameter) => ({ ...parameter, _id: undefined })),
+        }),
+      ],
+    });
+    setNotice("Tool duplicated as disabled. Review it before saving.");
+  }
+
+  function addToolParameter(index: number) {
+    const tool = selectedAgent.tools[index];
+    if (!tool) return;
+    const parameters = tool.parameters ?? [];
+    if (parameters.length >= 20) {
+      setNotice("A tool can have at most 20 parameters.");
+      return;
+    }
+    updateTool(index, { parameters: [...parameters, createEmptyToolParameter(nextParameterName(parameters))] });
+  }
+
+  function updateToolParameter(toolIndex: number, parameterIndex: number, changes: Partial<AgentToolParameter>) {
+    const tool = selectedAgent.tools[toolIndex];
+    if (!tool) return;
+    updateTool(toolIndex, {
+      parameters: (tool.parameters ?? []).map((parameter, index) =>
+        index === parameterIndex ? { ...parameter, ...changes } : parameter,
+      ),
+    });
+  }
+
+  function removeToolParameter(toolIndex: number, parameterIndex: number) {
+    const tool = selectedAgent.tools[toolIndex];
+    if (!tool) return;
+    updateTool(toolIndex, { parameters: (tool.parameters ?? []).filter((_, index) => index !== parameterIndex) });
+  }
+
+  function updateToolHeader(toolIndex: number, headerIndex: number, changes: Partial<HeaderDraft>) {
+    const tool = selectedAgent.tools[toolIndex];
+    if (!tool) return;
+    const drafts = headersToDrafts(tool.headers);
+    updateTool(toolIndex, {
+      headers: draftsToHeaders(drafts.map((header, index) => index === headerIndex ? { ...header, ...changes } : header), true),
+    });
+  }
+
+  function addToolHeader(index: number) {
+    const tool = selectedAgent.tools[index];
+    if (!tool) return;
+    updateTool(index, { headers: { ...(tool.headers ?? {}), "": "" } });
+  }
+
+  function removeToolHeader(toolIndex: number, headerIndex: number) {
+    const tool = selectedAgent.tools[toolIndex];
+    if (!tool) return;
+    updateTool(toolIndex, {
+      headers: draftsToHeaders(headersToDrafts(tool.headers).filter((_, index) => index !== headerIndex)),
+    });
+  }
+
+  function addDraftParameter() {
+    const parameters = toolDraft.parameters ?? [];
+    if (parameters.length >= 20) {
+      setNotice("A tool can have at most 20 parameters.");
+      return;
+    }
+    setToolDraft((current) => ({
+      ...current,
+      parameters: [...(current.parameters ?? []), createEmptyToolParameter(nextParameterName(current.parameters ?? []))],
+    }));
+  }
+
+  function updateDraftParameter(index: number, changes: Partial<AgentToolParameter>) {
+    setToolDraft((current) => ({
+      ...current,
+      parameters: (current.parameters ?? []).map((parameter, parameterIndex) =>
+        parameterIndex === index ? { ...parameter, ...changes } : parameter,
+      ),
+    }));
+  }
+
+  function removeDraftParameter(index: number) {
+    setToolDraft((current) => ({
+      ...current,
+      parameters: (current.parameters ?? []).filter((_, parameterIndex) => parameterIndex !== index),
+    }));
+  }
+
+  function updateDraftHeader(headerIndex: number, changes: Partial<HeaderDraft>) {
+    setToolDraft((current) => {
+      const drafts = headersToDrafts(current.headers);
+      return {
+        ...current,
+        headers: draftsToHeaders(drafts.map((header, index) => index === headerIndex ? { ...header, ...changes } : header), true),
+      };
+    });
+  }
+
+  function addDraftHeader() {
+    setToolDraft((current) => ({ ...current, headers: { ...(current.headers ?? {}), "": "" } }));
+  }
+
+  function removeDraftHeader(headerIndex: number) {
+    setToolDraft((current) => ({
+      ...current,
+      headers: draftsToHeaders(headersToDrafts(current.headers).filter((_, index) => index !== headerIndex)),
+    }));
+  }
+
+  async function handleTestTool(index: number) {
+    const tool = selectedAgent.tools[index];
+    if (!tool) return;
+    const normalized = validateTool(tool);
+    if (!normalized) return;
+    const key = normalized._id ?? `${normalized.name}-${index}`;
+    setTestingToolKey(key);
+    setNotice(`Testing ${normalized.name}...`);
+    try {
+      const { result } = await voiceApi.testAgentTool(selectedAgent.id, {
+        tool: normalized,
+        args: sampleArgsForTool(normalized),
+      });
+      setNotice(`Tool ${normalized.name} returned HTTP ${result.status} in ${result.elapsedMs}ms.`);
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Tool test failed.");
+    } finally {
+      setTestingToolKey("");
+    }
   }
 
   function addVariable() {
@@ -1486,12 +1838,6 @@ export function DashboardShell() {
             </button>
           </div>
         </header>
-
-        {notice ? (
-          <p className="app-control-text m-0 rounded-lg border border-[#bfdbfe] bg-[#eff6ff] px-3 py-2 text-[#1d4ed8]">
-            {notice}
-          </p>
-        ) : null}
 
         <section className="grid min-w-0 gap-4 xl:grid-cols-[280px_minmax(0,1fr)] 2xl:grid-cols-[280px_minmax(0,1fr)_300px]">
           <aside className="min-w-0 overflow-hidden rounded-lg border border-[#dfe3ea] bg-white">
@@ -2164,48 +2510,311 @@ export function DashboardShell() {
 
                 {activeTab === "tools" ? (
                   <div className="grid gap-4">
-                    <div className="grid gap-2">
-                      {selectedAgent.tools.map((tool, index) => (
-                        <article
-                          className="grid gap-3 rounded-lg border border-[#e5e7eb] bg-white p-3 md:grid-cols-[36px_minmax(0,1fr)_80px_70px]"
-                          key={tool._id ?? `${tool.name}-${index}`}
-                        >
-                          <span className="grid size-9 place-items-center rounded-lg bg-[#eff6ff] text-[#2563eb]">
-                            <Icon icon="tool" />
+                    <section className="grid gap-3">
+                      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                        <div>
+                          <h3 className="app-section-title m-0">Webhook tools</h3>
+                          <span className="app-caption">
+                            Millis-style functions with webhook URL, headers, params, method, timeout, and execution options.
                           </span>
-                          <span className="min-w-0">
-                            <strong className="app-strong block truncate">{tool.name}</strong>
-                            <span className="app-caption block truncate">{tool.url}</span>
-                          </span>
-                          <span className="app-label self-center rounded-full bg-[#f8fafc] px-2 py-1 text-center">
-                            {tool.method}
-                          </span>
-                          <button className="app-label text-rose-600" type="button" onClick={() => updateSelectedAgent({ tools: selectedAgent.tools.filter((_, toolIndex) => toolIndex !== index) })}>Remove</button>
-                        </article>
-                      ))}
-                      {!selectedAgent.tools.length ? <span className="app-caption rounded-lg border border-dashed border-[#d5d8df] p-4 text-center">No webhook tools configured.</span> : null}
-                    </div>
+                        </div>
+                        <span className="app-label w-fit rounded-full border border-[#dbeafe] bg-[#eff6ff] px-2.5 py-1 text-[#2563eb]">
+                          {selectedAgent.tools.length} / 20 configured
+                        </span>
+                      </div>
 
-                    <div className="grid gap-3 lg:grid-cols-2">
-                      <InputField label="Function name" value={toolDraft.name} placeholder="check_availability" onChange={(value) => setToolDraft((current) => ({ ...current, name: value }))} />
-                      <InputField label="Webhook URL" value={toolDraft.url} placeholder="https://api.company.com/availability" onChange={(value) => setToolDraft((current) => ({ ...current, url: value }))} />
-                      <SelectField label="Method" defaultValue="POST" value={toolDraft.method} options={["GET", "POST", "PUT", "PATCH", "DELETE"]} onChange={(value) => setToolDraft((current) => ({ ...current, method: value as AgentTool["method"] }))} />
-                      <InputField label="Timeout (seconds)" value={String(toolDraft.timeoutSeconds)} onChange={(value) => setToolDraft((current) => ({ ...current, timeoutSeconds: Number(value) || 8 }))} />
-                      <InputField label="Description" value={toolDraft.description} placeholder="What the agent should use this tool for" onChange={(value) => setToolDraft((current) => ({ ...current, description: value }))} />
-                      <button className="app-button-text min-h-10 self-end rounded-lg bg-[#1438f5] px-3 text-white" type="button" onClick={addTool}>Add webhook tool</button>
-                    </div>
+                      {selectedAgent.tools.map((tool, index) => {
+                        const parameters = tool.parameters ?? [];
+                        const headers = headersToDrafts(tool.headers);
+                        const toolKey = tool._id ?? `${tool.name}-${index}`;
+                        const isTesting = testingToolKey === toolKey;
 
-                    <div className="grid gap-3 lg:grid-cols-2">
-                      <InputField label="Prefetch data webhook" value={selectedAgent.prefetchWebhook} placeholder="https://api.company.com/prefetch" onChange={(value) => updateSelectedAgent({ prefetchWebhook: value })} />
-                      <InputField label="End-of-call webhook" value={selectedAgent.endOfCallWebhook} placeholder="https://api.company.com/calls/end" onChange={(value) => updateSelectedAgent({ endOfCallWebhook: value })} />
-                    </div>
+                        return (
+                          <article
+                            className="overflow-hidden rounded-xl border border-[#dfe3ea] bg-white shadow-[0_10px_26px_rgba(15,23,42,0.05)]"
+                            key={toolKey}
+                          >
+                            <div className="flex flex-col gap-3 border-b border-[#edf0f5] bg-[#f8fafc] px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
+                              <div className="flex min-w-0 items-center gap-3">
+                                <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#eff6ff] text-[#2563eb]">
+                                  <Icon icon="tool" />
+                                </span>
+                                <div className="min-w-0">
+                                  <strong className="app-strong block truncate">{tool.name || `Tool ${index + 1}`}</strong>
+                                  <span className="app-caption block truncate">{tool.url || "Webhook URL required"}</span>
+                                </div>
+                              </div>
 
-                    <div className="grid gap-3 rounded-lg border border-[#e5e7eb] bg-[#f8fafc] p-3">
-                      <span className="app-strong">Dynamic variables</span>
+                              <div className="flex flex-wrap items-center gap-2">
+                                <label className="app-label flex min-h-9 items-center gap-2 rounded-lg border border-[#dfe3ea] bg-white px-3">
+                                  <input
+                                    className="size-4 accent-[#2563eb]"
+                                    type="checkbox"
+                                    checked={tool.enabled !== false}
+                                    onChange={(event) => updateTool(index, { enabled: event.target.checked })}
+                                  />
+                                  Enabled
+                                </label>
+                                <button
+                                  className="app-button-text min-h-9 rounded-lg border border-[#dbeafe] bg-white px-3 text-[#2563eb] transition hover:bg-[#eff6ff] disabled:cursor-not-allowed disabled:opacity-60"
+                                  type="button"
+                                  disabled={isTesting}
+                                  onClick={() => void handleTestTool(index)}
+                                >
+                                  {isTesting ? "Testing..." : "Test"}
+                                </button>
+                                <button
+                                  className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#475569] transition hover:bg-[#f8fafc]"
+                                  type="button"
+                                  onClick={() => duplicateTool(index)}
+                                >
+                                  Duplicate
+                                </button>
+                                <button
+                                  className="app-button-text min-h-9 rounded-lg border border-rose-200 bg-white px-3 text-rose-600 transition hover:bg-rose-50"
+                                  type="button"
+                                  onClick={() => removeTool(index)}
+                                >
+                                  Remove
+                                </button>
+                              </div>
+                            </div>
+
+                            <div className="grid gap-4 p-4">
+                              <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_150px_160px]">
+                                <InputField label="Function name" value={tool.name} placeholder="getUserInfo" onChange={(name) => updateTool(index, { name })} />
+                                <SelectField label="Method" defaultValue="POST" value={tool.method} options={toolMethodOptions} onChange={(method) => updateTool(index, { method: method as AgentTool["method"] })} />
+                                <InputField label="Timeout seconds" value={String(tool.timeoutSeconds)} onChange={(timeoutSeconds) => updateTool(index, { timeoutSeconds: Number(timeoutSeconds) || 8 })} />
+                              </div>
+
+                              <InputField label="Webhook URL" value={tool.url} placeholder="https://api.company.com/user" onChange={(url) => updateTool(index, { url })} />
+
+                              <label className="app-label grid gap-2">
+                                <span>Description</span>
+                                <textarea
+                                  className="app-control-text min-h-20 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10"
+                                  value={tool.description}
+                                  placeholder="Tell the agent exactly when to use this function."
+                                  onChange={(event) => updateTool(index, { description: event.target.value })}
+                                />
+                              </label>
+
+                              <div className="grid gap-3 rounded-xl border border-[#e5e7eb] bg-[#f8fafc] p-3">
+                                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                  <div>
+                                    <strong className="app-strong block">Headers</strong>
+                                    <span className="app-caption">Authorization, API keys, content type overrides, or tenant headers.</span>
+                                  </div>
+                                  <button className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#2563eb]" type="button" onClick={() => addToolHeader(index)}>
+                                    Add header
+                                  </button>
+                                </div>
+                                {headers.length ? (
+                                  <div className="grid gap-2">
+                                    {headers.map((header, headerIndex) => (
+                                      <HeaderEditor
+                                        key={`${toolKey}-header-${headerIndex}`}
+                                        header={header}
+                                        onChange={(changes) => updateToolHeader(index, headerIndex, changes)}
+                                        onRemove={() => removeToolHeader(index, headerIndex)}
+                                      />
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <span className="app-caption rounded-lg border border-dashed border-[#cbd5e1] bg-white p-3 text-center">No custom headers.</span>
+                                )}
+                              </div>
+
+                              <div className="grid gap-3 rounded-xl border border-[#e5e7eb] bg-[#f8fafc] p-3">
+                                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                  <div>
+                                    <strong className="app-strong block">Parameters</strong>
+                                    <span className="app-caption">These become the JSON fields the agent sends to your webhook.</span>
+                                  </div>
+                                  <button className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#2563eb]" type="button" onClick={() => addToolParameter(index)}>
+                                    Add parameter
+                                  </button>
+                                </div>
+                                {parameters.length ? (
+                                  <div className="grid gap-2">
+                                    {parameters.map((parameter, parameterIndex) => (
+                                      <ToolParameterEditor
+                                        key={parameter._id ?? `${toolKey}-parameter-${parameterIndex}`}
+                                        parameter={parameter}
+                                        onChange={(changes) => updateToolParameter(index, parameterIndex, changes)}
+                                        onRemove={() => removeToolParameter(index, parameterIndex)}
+                                      />
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <span className="app-caption rounded-lg border border-dashed border-[#cbd5e1] bg-white p-3 text-center">No parameters yet.</span>
+                                )}
+                              </div>
+
+                              <div className="grid gap-3 rounded-xl border border-[#e5e7eb] bg-white p-3">
+                                <strong className="app-strong block">Execution and filler</strong>
+                                <div className="grid gap-3 lg:grid-cols-3">
+                                  <ToggleRow
+                                    title="Run after call"
+                                    detail="Execute this webhook after the session closes."
+                                    enabled={tool.runAfterCall === true}
+                                    onChange={(runAfterCall) => updateTool(index, { runAfterCall })}
+                                  />
+                                  <ToggleRow
+                                    title="Wait for filler"
+                                    detail="Speak filler first, then call the webhook."
+                                    enabled={tool.executeAfterMessage === true}
+                                    onChange={(executeAfterMessage) => updateTool(index, { executeAfterMessage })}
+                                  />
+                                  <ToggleRow
+                                    title="Exclude session id"
+                                    detail="Do not add call/session metadata to webhook args."
+                                    enabled={tool.excludeSessionId !== false}
+                                    onChange={(excludeSessionId) => updateTool(index, { excludeSessionId })}
+                                  />
+                                </div>
+                                <label className="app-label grid gap-2">
+                                  <span>Filler messages while calling tool</span>
+                                  <textarea
+                                    className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10"
+                                    value={(tool.messages ?? []).join("\n")}
+                                    placeholder={"Let me check that for you.\nOne moment while I look that up."}
+                                    onChange={(event) => updateTool(index, {
+                                      messages: event.target.value.split("\n").map((item) => item.trim()).filter(Boolean),
+                                    })}
+                                  />
+                                  <span className="app-caption">
+                                    One line is picked at random. If wait is off, the webhook starts while the agent says it.
+                                  </span>
+                                </label>
+                              </div>
+                            </div>
+                          </article>
+                        );
+                      })}
+
+                      {!selectedAgent.tools.length ? (
+                        <span className="app-caption rounded-xl border border-dashed border-[#cbd5e1] bg-white p-5 text-center">No webhook tools configured yet.</span>
+                      ) : null}
+                    </section>
+
+                    <section className="grid gap-4 rounded-xl border border-[#bfdbfe] bg-[#f8fbff] p-4">
+                      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                        <div>
+                          <h3 className="app-section-title m-0">Add webhook tool</h3>
+                          <span className="app-caption">Same shape as Millis: name, description, webhook, header, params, method, timeout.</span>
+                        </div>
+                        <button className="app-button-text min-h-10 rounded-lg bg-[#1438f5] px-4 text-white shadow-sm" type="button" onClick={addTool}>
+                          Add tool
+                        </button>
+                      </div>
+
+                      <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_150px_160px]">
+                        <InputField label="Function name" value={toolDraft.name} placeholder="getUserInfo" onChange={(name) => setToolDraft((current) => ({ ...current, name }))} />
+                        <SelectField label="Method" defaultValue="POST" value={toolDraft.method} options={toolMethodOptions} onChange={(method) => setToolDraft((current) => ({ ...current, method: method as AgentTool["method"] }))} />
+                        <InputField label="Timeout seconds" value={String(toolDraft.timeoutSeconds)} onChange={(timeoutSeconds) => setToolDraft((current) => ({ ...current, timeoutSeconds: Number(timeoutSeconds) || 8 }))} />
+                      </div>
+                      <InputField label="Webhook URL" value={toolDraft.url} placeholder="https://api.company.com/user" onChange={(url) => setToolDraft((current) => ({ ...current, url }))} />
+                      <InputField label="Description" value={toolDraft.description} placeholder="Retrieves user information using their email." onChange={(description) => setToolDraft((current) => ({ ...current, description }))} />
+
+                      <div className="grid gap-3 rounded-xl border border-[#dbeafe] bg-white p-3">
+                        <div>
+                          <strong className="app-strong block">Filler while tool runs</strong>
+                          <span className="app-caption">Millis-style messages the agent can say while calling this webhook.</span>
+                        </div>
+                        <ToggleRow
+                          title="Wait for filler"
+                          detail="Speak filler first, then call the webhook."
+                          enabled={toolDraft.executeAfterMessage === true}
+                          onChange={(executeAfterMessage) => setToolDraft((current) => ({ ...current, executeAfterMessage }))}
+                        />
+                        <label className="app-label grid gap-2">
+                          <span>Filler messages</span>
+                          <textarea
+                            className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10"
+                            value={(toolDraft.messages ?? []).join("\n")}
+                            placeholder={"Let me check that for you.\nOne moment while I look that up."}
+                            onChange={(event) => setToolDraft((current) => ({
+                              ...current,
+                              messages: event.target.value.split("\n").map((item) => item.trim()).filter(Boolean),
+                            }))}
+                          />
+                        </label>
+                      </div>
+
+                      <div className="grid gap-3 rounded-xl border border-[#dbeafe] bg-white p-3">
+                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                          <div>
+                            <strong className="app-strong block">Headers</strong>
+                            <span className="app-caption">Example: Authorization: Bearer token.</span>
+                          </div>
+                          <button className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#2563eb]" type="button" onClick={addDraftHeader}>
+                            Add header
+                          </button>
+                        </div>
+                        {headersToDrafts(toolDraft.headers).length ? (
+                          <div className="grid gap-2">
+                            {headersToDrafts(toolDraft.headers).map((header, headerIndex) => (
+                              <HeaderEditor
+                                key={`draft-header-${headerIndex}`}
+                                header={header}
+                                onChange={(changes) => updateDraftHeader(headerIndex, changes)}
+                                onRemove={() => removeDraftHeader(headerIndex)}
+                              />
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="app-caption rounded-lg border border-dashed border-[#cbd5e1] bg-[#f8fafc] p-3 text-center">No custom headers.</span>
+                        )}
+                      </div>
+
+                      <div className="grid gap-3 rounded-xl border border-[#dbeafe] bg-white p-3">
+                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                          <div>
+                            <strong className="app-strong block">Parameters</strong>
+                            <span className="app-caption">Fields the agent should collect and send.</span>
+                          </div>
+                          <button className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#2563eb]" type="button" onClick={addDraftParameter}>
+                            Add parameter
+                          </button>
+                        </div>
+                        {(toolDraft.parameters ?? []).length ? (
+                          <div className="grid gap-2">
+                            {(toolDraft.parameters ?? []).map((parameter, parameterIndex) => (
+                              <ToolParameterEditor
+                                key={`draft-parameter-${parameterIndex}`}
+                                parameter={parameter}
+                                onChange={(changes) => updateDraftParameter(parameterIndex, changes)}
+                                onRemove={() => removeDraftParameter(parameterIndex)}
+                              />
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="app-caption rounded-lg border border-dashed border-[#cbd5e1] bg-[#f8fafc] p-3 text-center">No parameters added.</span>
+                        )}
+                      </div>
+                    </section>
+
+                    <section className="grid gap-3 rounded-xl border border-[#e5e7eb] bg-white p-4">
+                      <div>
+                        <h3 className="app-section-title m-0">Lifecycle webhooks</h3>
+                        <span className="app-caption">Send context before a call or receive call results after completion.</span>
+                      </div>
+                      <div className="grid gap-3 lg:grid-cols-2">
+                        <InputField label="Prefetch data webhook" value={selectedAgent.prefetchWebhook} placeholder="https://api.company.com/prefetch" onChange={(value) => updateSelectedAgent({ prefetchWebhook: value })} />
+                        <InputField label="End-of-call webhook" value={selectedAgent.endOfCallWebhook} placeholder="https://api.company.com/calls/end" onChange={(value) => updateSelectedAgent({ endOfCallWebhook: value })} />
+                      </div>
+                    </section>
+
+                    <section className="grid gap-3 rounded-xl border border-[#e5e7eb] bg-white p-4">
+                      <div>
+                        <h3 className="app-section-title m-0">Dynamic variables</h3>
+                        <span className="app-caption">Reusable values for prompts, widgets, and webhooks.</span>
+                      </div>
                       <div className="flex flex-wrap gap-2">
                         {selectedAgent.dynamicVariables.map((variable) => (
                           <button
-                            className="app-label rounded-full border border-[#dbeafe] bg-white px-2.5 py-1 text-[#2563eb]"
+                            className="app-label rounded-full border border-[#dbeafe] bg-[#eff6ff] px-2.5 py-1 text-[#2563eb] transition hover:border-[#bfdbfe] hover:bg-white"
                             key={variable}
                             type="button"
                             title="Remove variable"
@@ -2215,11 +2824,11 @@ export function DashboardShell() {
                           </button>
                         ))}
                       </div>
-                      <div className="flex gap-2">
-                        <input className="app-control-text min-h-10 flex-1 rounded-lg border border-[#dfe3ea] bg-white px-3 outline-none" value={variableDraft} placeholder="customerID" onChange={(event) => setVariableDraft(event.target.value)} />
-                        <button className="app-button-text rounded-lg border border-[#d5d8df] bg-white px-3" type="button" onClick={addVariable}>Add</button>
+                      <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_84px]">
+                        <input className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10" value={variableDraft} placeholder="customerID" onChange={(event) => setVariableDraft(event.target.value)} />
+                        <button className="app-button-text rounded-lg border border-[#d5d8df] bg-white px-3 text-[#2563eb]" type="button" onClick={addVariable}>Add</button>
                       </div>
-                    </div>
+                    </section>
                   </div>
                 ) : null}
 
@@ -2642,6 +3251,20 @@ export function DashboardShell() {
           onClose={() => setShowTestCall(false)}
         />
       ) : null}
+      {notice ? (
+        <div className="fixed right-4 top-4 z-50 flex w-[min(380px,calc(100vw-32px))] items-start gap-3 rounded-xl border border-[#dbeafe] bg-white p-4 text-[#111827] shadow-[0_18px_48px_rgba(15,23,42,0.18)]">
+          <span className="mt-1 size-2.5 shrink-0 rounded-full bg-[#2563eb]" />
+          <p className="app-control-text m-0 min-w-0 flex-1 text-[#334155]">{notice}</p>
+          <button
+            aria-label="Dismiss notification"
+            className="grid size-7 shrink-0 place-items-center rounded-lg text-[#64748b] transition hover:bg-[#f1f5f9] hover:text-[#111827]"
+            type="button"
+            onClick={() => setNotice("")}
+          >
+            x
+          </button>
+        </div>
+      ) : null}
     </main>
   );
 }
@@ -2694,7 +3317,7 @@ function mapBackendAgent(agent: BackendAgent): VoiceAgent {
       userStartsFirst: firstMessageMode === "user-speaks-first",
     },
     callSettings: { ...defaultCallSettings, ...agent.callSettings },
-    tools: agent.tools ?? [],
+    tools: (agent.tools ?? []).map(normalizeTool),
     knowledgeDocuments: agent.knowledgeDocuments ?? [],
     dynamicVariables: agent.dynamicVariables ?? ["FromPhone", "ToPhone"],
     prefetchWebhook: agent.prefetchWebhook ?? "",
