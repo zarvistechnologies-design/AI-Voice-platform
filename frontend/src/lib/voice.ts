@@ -149,8 +149,11 @@ export type VoiceLanguageOption = {
 export type VoiceProfile = {
   value: string;
   label: string;
-  gender: "male" | "female";
-  model: string;
+  gender?: "male" | "female";
+  model?: string;
+  languages?: readonly string[];
+  languageCodes?: readonly string[];
+  languageLabels?: readonly string[];
 };
 
 export type VoicePreviewRequest = {
