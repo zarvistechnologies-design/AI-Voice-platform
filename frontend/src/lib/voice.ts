@@ -108,6 +108,7 @@ export type ModelProvider = {
   configured: boolean;
   models: readonly string[];
   voices?: readonly string[];
+  voiceProfiles?: readonly VoiceProfile[];
   voicesByModel?: Readonly<Record<string, readonly string[]>>;
   voicesByLanguage?: Readonly<Record<string, readonly string[]>>;
   languages?: readonly VoiceLanguageOption[];
@@ -143,6 +144,13 @@ export type VoiceLanguageOption = {
   code: string;
   sarvamStt: boolean;
   sarvamTts: boolean;
+};
+
+export type VoiceProfile = {
+  value: string;
+  label: string;
+  gender: "male" | "female";
+  model: string;
 };
 
 export type VoicePreviewRequest = {

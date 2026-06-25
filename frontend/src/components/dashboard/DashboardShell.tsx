@@ -38,6 +38,7 @@ import {
 
 type AgentStatus = "Live" | "Draft" | "Paused";
 type AgentTab = "builder" | "behavior" | "tools" | "calls" | "widget";
+type StackConfig = "llm" | "stt" | "voice";
 
 const TestCallPanel = dynamic(
   () => import("@/components/dashboard/TestCallPanel").then((module) => module.TestCallPanel),
@@ -1189,6 +1190,7 @@ export function DashboardShell() {
   const [activeTab, setActiveTab] = useState<AgentTab>("builder");
   const [notice, setNotice] = useState("");
   const [showTestCall, setShowTestCall] = useState(false);
+  const [openStackConfig, setOpenStackConfig] = useState<StackConfig | null>(null);
   const [modelCatalog, setModelCatalog] = useState<ModelCatalog>(fallbackCatalog);
   const [languageCatalog, setLanguageCatalog] = useState<VoiceLanguageOption[]>(fallbackLanguageCatalog);
   const [voiceConfig, setVoiceConfig] = useState<DashboardVoiceConfig | null>(null);
@@ -1581,6 +1583,67 @@ export function DashboardShell() {
     );
   }
 
+  function updateAgentLanguage(language: string) {
+    const voices =
+      selectedAgent.pipelineMode === "realtime"
+        ? getVoices(
+            modelCatalog,
+            "realtime",
+            selectedAgent.realtimeProvider,
+            selectedAgent.realtimeModel,
+            language,
+            languageCatalog,
+          )
+        : getVoices(
+            modelCatalog,
+            "tts",
+            selectedAgent.ttsProvider,
+            selectedAgent.ttsModel,
+            language,
+            languageCatalog,
+          );
+    updateSelectedAgent({
+      language,
+      voice: coerceVoice(selectedAgent.voice, voices, selectedAgent.voice),
+    });
+  }
+
+  function updatePipelineMode(pipelineMode: PipelineMode) {
+    const ttsLanguages = getProvider(modelCatalog, "tts", selectedAgent.ttsProvider).languages;
+    const nextLanguage =
+      pipelineMode === "pipeline" && ttsLanguages?.length
+        ? coerceLanguage(selectedAgent.language, [...ttsLanguages])
+        : selectedAgent.language;
+    const nextVoices =
+      pipelineMode === "realtime"
+        ? getVoices(
+            modelCatalog,
+            "realtime",
+            selectedAgent.realtimeProvider,
+            selectedAgent.realtimeModel,
+            nextLanguage,
+            languageCatalog,
+          )
+        : getVoices(
+            modelCatalog,
+            "tts",
+            selectedAgent.ttsProvider,
+            selectedAgent.ttsModel,
+            nextLanguage,
+            languageCatalog,
+          );
+    updateSelectedAgent({
+      pipelineMode,
+      language: nextLanguage,
+      voice: coerceVoice(selectedAgent.voice, nextVoices, selectedAgent.voice),
+    });
+  }
+
+  async function saveStackConfig() {
+    const saved = await handleSave();
+    if (saved) setOpenStackConfig(null);
+  }
+
   function updateBehavior(changes: Partial<AgentBehavior>, agentChanges: Partial<VoiceAgent> = {}) {
     updateSelectedAgent({
       ...agentChanges,
@@ -1936,13 +1999,7 @@ export function DashboardShell() {
 
       <section className="grid min-w-0 content-start gap-4 p-3 sm:p-4">
         <header className="-mx-3 -mt-3 flex flex-col items-stretch justify-between gap-4 border-b border-[#e5e7eb] bg-white px-4 py-4 sm:-mx-4 sm:-mt-4 sm:px-6 lg:flex-row lg:items-center">
-          <div>
-            <span className="app-kicker">Voice Platform</span>
-            <h1 className="app-page-title mt-1 mb-0">Voice Agents</h1>
-            <p className="app-caption mt-1 mb-0">
-              {session.organization?.name ?? "Workspace"} / {session.email}
-            </p>
-          </div>
+          <h1 className="app-page-title m-0 text-xl">{session.organization?.name ?? "Workspace"}</h1>
 
           <div className="flex flex-wrap items-center gap-2">
             <button
@@ -2086,7 +2143,7 @@ export function DashboardShell() {
               <div className="p-4">
                 {activeTab === "builder" ? (
                   <div className="grid gap-4">
-                    <div className="grid gap-3 lg:grid-cols-2">
+                    <div className="hidden gap-3 lg:grid-cols-2">
                       <InputField
                         label="Agent name"
                         value={selectedAgent.name}
@@ -2098,6 +2155,68 @@ export function DashboardShell() {
                         onChange={(team) => updateSelectedAgent({ team })}
                       />
                     </div>
+
+                    <section className="grid gap-3 rounded-lg border border-[#dfe3ea] bg-[#f8fbff] p-4">
+                      <div className="flex flex-col gap-1">
+                        <h3 className="app-section-title m-0">Voice stack</h3>
+                        <span className="app-caption">
+                          Click LLM, STT, or Voice to configure only that part of the stack.
+                        </span>
+                      </div>
+                      <div className="grid gap-3 lg:grid-cols-3">
+                        <button
+                          className={`grid gap-2 rounded-lg border p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
+                            openStackConfig === "llm"
+                              ? "border-[#7c3aed] bg-[#ede9fe] ring-2 ring-[#c4b5fd]"
+                              : "border-[#ddd6fe] bg-[#f5f3ff]"
+                          }`}
+                          type="button"
+                          onClick={() => setOpenStackConfig("llm")}
+                        >
+                          <span className="app-label block text-[#6d28d9]">LLM</span>
+                          <strong className="app-strong block text-[#3b0764]">
+                            {selectedAgent.pipelineMode === "realtime" ? `${selectedAgent.realtimeProvider} realtime` : `${selectedAgent.llmProvider} LLM`}
+                          </strong>
+                          <span className="app-caption block truncate text-[#6b21a8]">
+                            {selectedAgent.pipelineMode === "realtime" ? selectedAgent.realtimeModel : selectedAgent.llmModel}
+                          </span>
+                        </button>
+                        <button
+                          className={`grid gap-2 rounded-lg border p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
+                            openStackConfig === "stt"
+                              ? "border-[#0284c7] bg-[#e0f2fe] ring-2 ring-[#7dd3fc]"
+                              : "border-[#bae6fd] bg-[#f0f9ff]"
+                          }`}
+                          type="button"
+                          onClick={() => setOpenStackConfig("stt")}
+                        >
+                          <span className="app-label block text-[#0369a1]">STT</span>
+                          <strong className="app-strong block text-[#0c4a6e]">
+                            {selectedAgent.pipelineMode === "realtime" ? "Native realtime" : `${selectedAgent.sttProvider} STT`}
+                          </strong>
+                          <span className="app-caption block truncate text-[#0369a1]">
+                            {selectedAgent.pipelineMode === "realtime" ? selectedAgent.realtimeModel : selectedAgent.sttModel}
+                          </span>
+                        </button>
+                        <button
+                          className={`grid gap-2 rounded-lg border p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
+                            openStackConfig === "voice"
+                              ? "border-[#059669] bg-[#d1fae5] ring-2 ring-[#6ee7b7]"
+                              : "border-[#bbf7d0] bg-[#ecfdf5]"
+                          }`}
+                          type="button"
+                          onClick={() => setOpenStackConfig("voice")}
+                        >
+                          <span className="app-label block text-[#047857]">Voice</span>
+                          <strong className="app-strong block text-[#064e3b]">
+                            {selectedAgent.pipelineMode === "realtime" ? "Realtime voice" : `${selectedAgent.ttsProvider} TTS`}
+                          </strong>
+                          <span className="app-caption block truncate text-[#047857]">
+                            {selectedAgent.voice} {selectedAgent.pipelineMode === "pipeline" ? `· ${selectedAgent.ttsModel}` : ""}
+                          </span>
+                        </button>
+                      </div>
+                    </section>
 
                     <label className="app-label grid gap-2">
                       <span>Opening message</span>
@@ -2111,92 +2230,61 @@ export function DashboardShell() {
                     <label className="app-label grid gap-2">
                       <span>Instructions / prompt</span>
                       <textarea
-                        className="app-control-text min-h-[132px] resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10"
+                        className="app-control-text min-h-[320px] resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10"
                         value={selectedAgent.prompt}
                         onChange={(event) => updateSelectedAgent({ prompt: event.target.value })}
                       />
                     </label>
 
-                    <div className="grid gap-3 lg:grid-cols-2">
-                      <SelectField
-                        label="Language"
-                        defaultValue={selectedAgent.language}
-                        value={selectedAgent.language}
-                        onChange={(language) => {
-                          const voices =
-                            selectedAgent.pipelineMode === "realtime"
-                              ? getVoices(
-                                  modelCatalog,
-                                  "realtime",
-                                  selectedAgent.realtimeProvider,
-                                  selectedAgent.realtimeModel,
-                                  language,
-                                  languageCatalog,
-                                )
-                              : getVoices(
-                                  modelCatalog,
-                                  "tts",
-                                  selectedAgent.ttsProvider,
-                                  selectedAgent.ttsModel,
-                                  language,
-                                  languageCatalog,
-                                );
-                          updateSelectedAgent({
-                            language,
-                            voice: coerceVoice(selectedAgent.voice, voices, selectedAgent.voice),
-                          });
-                        }}
-                        options={languageOptions}
-                      />
-                      <SelectField
-                        label="Voice architecture"
-                        defaultValue={selectedAgent.pipelineMode}
-                        value={selectedAgent.pipelineMode}
-                        onChange={(pipelineMode) => {
-                          const nextMode = pipelineMode as PipelineMode;
-                          const ttsLanguages = getProvider(modelCatalog, "tts", selectedAgent.ttsProvider).languages;
-                          const nextLanguage =
-                            nextMode === "pipeline" && ttsLanguages?.length
-                              ? coerceLanguage(
-                                  selectedAgent.language,
-                                  [...ttsLanguages],
-                                )
-                              : selectedAgent.language;
-                          const nextVoices =
-                            nextMode === "realtime"
-                              ? getVoices(
-                                  modelCatalog,
-                                  "realtime",
-                                  selectedAgent.realtimeProvider,
-                                  selectedAgent.realtimeModel,
-                                  nextLanguage,
-                                  languageCatalog,
-                                )
-                              : getVoices(
-                                  modelCatalog,
-                                  "tts",
-                                  selectedAgent.ttsProvider,
-                                  selectedAgent.ttsModel,
-                                  nextLanguage,
-                                  languageCatalog,
-                                );
-                          updateSelectedAgent({
-                            pipelineMode: nextMode,
-                            language: nextLanguage,
-                            voice: coerceVoice(selectedAgent.voice, nextVoices, selectedAgent.voice),
-                          });
-                        }}
-                        options={["realtime", "pipeline"]}
-                      />
-                    </div>
-
-                    {selectedAgent.pipelineMode === "realtime" ? (
-                      <section className="grid gap-3 rounded-xl border border-[#dbeafe] bg-[#f8fbff] p-4">
-                        <div>
-                          <h3 className="app-section-title m-0">Native realtime speech-to-speech</h3>
-                          <span className="app-caption">Lowest latency. The selected model handles listening, reasoning, and speaking.</span>
+                    {openStackConfig ? (
+                      <div
+                        className="fixed inset-0 z-[80] grid place-items-center bg-[#0f172a]/35 p-4 backdrop-blur-sm"
+                        role="dialog"
+                        aria-modal="true"
+                        onClick={() => setOpenStackConfig(null)}
+                      >
+                        {selectedAgent.pipelineMode === "realtime" ? (
+                      <section
+                        className="grid max-h-[calc(100vh-72px)] w-full max-w-3xl gap-4 overflow-y-auto rounded-lg border border-[#dbeafe] bg-white p-5 shadow-[0_24px_80px_rgba(15,23,42,0.28)]"
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
+                          <div>
+                            <h3 className="app-section-title m-0">
+                              {openStackConfig === "voice" ? "Realtime voice configuration" : openStackConfig === "stt" ? "Realtime STT configuration" : "Realtime LLM configuration"}
+                            </h3>
+                            <span className="app-caption">Lowest latency. The selected model handles listening, reasoning, and speaking.</span>
+                          </div>
+                          <button
+                            className="app-button-text rounded-lg border border-[#dfe3ea] bg-white px-3 py-2 text-[#475569] transition hover:bg-[#f8fafc]"
+                            type="button"
+                            onClick={() => setOpenStackConfig(null)}
+                          >
+                            Close
+                          </button>
                         </div>
-                        <div className="grid gap-3 lg:grid-cols-3">
+                        <div className="grid gap-4">
+                          {openStackConfig === "llm" ? (
+                            <>
+                          <div className="grid gap-2 sm:grid-cols-2">
+                            <button
+                              className="rounded-lg border border-[#2563eb] bg-[#eff6ff] px-4 py-3 text-left text-[#1d4ed8] ring-2 ring-[#bfdbfe] transition"
+                              type="button"
+                              onClick={() => updatePipelineMode("realtime")}
+                            >
+                              <span className="app-label block text-current">Realtime</span>
+                              <strong className="app-strong mt-1 block text-current">One model for listen, think, speak</strong>
+                            </button>
+                            <button
+                              className="rounded-lg border border-[#dfe3ea] bg-white px-4 py-3 text-left text-[#475569] transition hover:bg-[#f8fafc]"
+                              type="button"
+                              onClick={() => updatePipelineMode("pipeline")}
+                            >
+                              <span className="app-label block text-current">Pipeline</span>
+                              <strong className="app-strong mt-1 block text-current">Separate STT, LLM, and Voice</strong>
+                            </button>
+                          </div>
+                          <div className="grid gap-3 lg:grid-cols-2">
                           <SelectField
                             label="Realtime provider"
                             defaultValue={selectedAgent.realtimeProvider}
@@ -2225,6 +2313,36 @@ export function DashboardShell() {
                             value={selectedAgent.realtimeModel}
                             onChange={(realtimeModel) => updateSelectedAgent({ realtimeModel })}
                             options={[...getProvider(modelCatalog, "realtime", selectedAgent.realtimeProvider).models]}
+                          />
+                          </div>
+                            </>
+                          ) : null}
+                          {openStackConfig === "stt" ? (
+                            <div className="grid gap-3 rounded-lg border border-[#bae6fd] bg-[#f0f9ff] p-4">
+                              <span className="app-label text-[#0369a1]">Native realtime STT</span>
+                              <strong className="app-strong text-[#0c4a6e]">
+                                {selectedAgent.realtimeProvider} / {selectedAgent.realtimeModel}
+                              </strong>
+                              <p className="app-caption m-0 text-[#0369a1]">
+                                In realtime mode, speech-to-text is handled by the selected realtime model. Change that model from LLM.
+                              </p>
+                              <button
+                                className="app-button-text w-fit rounded-lg border border-[#bae6fd] bg-white px-3 py-2 text-[#0369a1] transition hover:bg-[#e0f2fe]"
+                                type="button"
+                                onClick={() => setOpenStackConfig("llm")}
+                              >
+                                Open LLM config
+                              </button>
+                            </div>
+                          ) : null}
+                          {openStackConfig === "voice" ? (
+                            <div className="grid gap-3 lg:grid-cols-2">
+                          <SelectField
+                            label="Language"
+                            defaultValue={selectedAgent.language}
+                            value={selectedAgent.language}
+                            onChange={updateAgentLanguage}
+                            options={languageOptions}
                           />
                           <VoiceSelectField
                             label="Realtime voice"
@@ -2255,16 +2373,68 @@ export function DashboardShell() {
                               ),
                             )}
                           />
+                            </div>
+                          ) : null}
+                        </div>
+                        <div className="flex flex-col-reverse gap-2 border-t border-[#e5e7eb] pt-4 sm:flex-row sm:justify-end">
+                          <button
+                            className="app-button-text rounded-lg border border-[#dfe3ea] bg-white px-4 py-2.5 text-[#475569] transition hover:bg-[#f8fafc]"
+                            type="button"
+                            onClick={() => setOpenStackConfig(null)}
+                          >
+                            Close
+                          </button>
+                          <button
+                            className="app-button-text rounded-lg bg-[#1438f5] px-4 py-2.5 text-white shadow-sm transition hover:bg-[#0f2fd0]"
+                            type="button"
+                            onClick={() => void saveStackConfig()}
+                          >
+                            Save
+                          </button>
                         </div>
                       </section>
                     ) : (
-                      <section className="grid gap-4 rounded-xl border border-[#e5e7eb] bg-[#f8fafc] p-4">
-                        <div>
-                          <h3 className="app-section-title m-0">Custom voice pipeline</h3>
+                      <section
+                        className="grid max-h-[calc(100vh-72px)] w-full max-w-3xl gap-4 overflow-y-auto rounded-lg border border-[#e5e7eb] bg-white p-5 shadow-[0_24px_80px_rgba(15,23,42,0.28)]"
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
+                          <div>
+                            <h3 className="app-section-title m-0">
+                              {openStackConfig === "voice" ? "Voice configuration" : openStackConfig === "stt" ? "STT configuration" : "LLM configuration"}
+                            </h3>
                           <span className="app-caption">Mix providers independently, like Vapi: STT → LLM → TTS.</span>
+                          </div>
+                          <button
+                            className="app-button-text rounded-lg border border-[#dfe3ea] bg-white px-3 py-2 text-[#475569] transition hover:bg-[#f8fafc]"
+                            type="button"
+                            onClick={() => setOpenStackConfig(null)}
+                          >
+                            Close
+                          </button>
                         </div>
 
-                        <div className="grid gap-3 lg:grid-cols-2">
+                        {openStackConfig === "llm" ? (
+                        <div className="grid gap-4">
+                          <div className="grid gap-2 sm:grid-cols-2">
+                            <button
+                              className="rounded-lg border border-[#dfe3ea] bg-white px-4 py-3 text-left text-[#475569] transition hover:bg-[#f8fafc]"
+                              type="button"
+                              onClick={() => updatePipelineMode("realtime")}
+                            >
+                              <span className="app-label block text-current">Realtime</span>
+                              <strong className="app-strong mt-1 block text-current">One model for listen, think, speak</strong>
+                            </button>
+                            <button
+                              className="rounded-lg border border-[#7c3aed] bg-[#f5f3ff] px-4 py-3 text-left text-[#6d28d9] ring-2 ring-[#ddd6fe] transition"
+                              type="button"
+                              onClick={() => updatePipelineMode("pipeline")}
+                            >
+                              <span className="app-label block text-current">Pipeline</span>
+                              <strong className="app-strong mt-1 block text-current">Separate STT, LLM, and Voice</strong>
+                            </button>
+                          </div>
+                          <div className="grid gap-3 lg:grid-cols-2">
                           <SelectField
                             label="LLM provider"
                             defaultValue={selectedAgent.llmProvider}
@@ -2285,8 +2455,11 @@ export function DashboardShell() {
                             onChange={(llmModel) => updateSelectedAgent({ llmModel })}
                             options={[...getProvider(modelCatalog, "llm", selectedAgent.llmProvider).models]}
                           />
+                          </div>
                         </div>
+                        ) : null}
 
+                        {openStackConfig === "stt" ? (
                         <div className="grid gap-3 lg:grid-cols-2">
                           <SelectField
                             label="Speech-to-text provider"
@@ -2318,8 +2491,17 @@ export function DashboardShell() {
                             options={[...getProvider(modelCatalog, "stt", selectedAgent.sttProvider).models]}
                           />
                         </div>
+                        ) : null}
 
+                        {openStackConfig === "voice" ? (
                         <div className="grid gap-3 lg:grid-cols-3">
+                          <SelectField
+                            label="Language"
+                            defaultValue={selectedAgent.language}
+                            value={selectedAgent.language}
+                            onChange={updateAgentLanguage}
+                            options={languageOptions}
+                          />
                           <SelectField
                             label="Text-to-speech provider"
                             defaultValue={selectedAgent.ttsProvider}
@@ -2400,8 +2582,27 @@ export function DashboardShell() {
                             )}
                           />
                         </div>
+                        ) : null}
+                        <div className="flex flex-col-reverse gap-2 border-t border-[#e5e7eb] pt-4 sm:flex-row sm:justify-end">
+                          <button
+                            className="app-button-text rounded-lg border border-[#dfe3ea] bg-white px-4 py-2.5 text-[#475569] transition hover:bg-[#f8fafc]"
+                            type="button"
+                            onClick={() => setOpenStackConfig(null)}
+                          >
+                            Close
+                          </button>
+                          <button
+                            className="app-button-text rounded-lg bg-[#1438f5] px-4 py-2.5 text-white shadow-sm transition hover:bg-[#0f2fd0]"
+                            type="button"
+                            onClick={() => void saveStackConfig()}
+                          >
+                            Save
+                          </button>
+                        </div>
                       </section>
-                    )}
+                        )}
+                      </div>
+                    ) : null}
 
                     <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,1fr)_220px]">
                       <div className="min-w-0 rounded-lg border border-[#e5e7eb] bg-white p-3">
