@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useState, useSyncExternalStore } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { accountApi, getServerSession, getSession, logoutSession, subscribeToSession, validateStoredSession } from "@/lib/auth";
@@ -13,7 +13,6 @@ function initials(name: string) {
 export function ProfileShell() {
   const router = useRouter();
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
-  const searchParams = useSearchParams();
   const [currentPassword, setCurrentPassword] = useState("");
   const [password, setPassword] = useState("");
   const [totpSecret, setTotpSecret] = useState("");
@@ -22,17 +21,23 @@ export function ProfileShell() {
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
   const [showUserSidebar, setShowUserSidebar] = useState(() => {
+    if (typeof window === "undefined") {
+      return false;
+    }
+
     try {
       return localStorage.getItem("showUserSidebar") === "1";
     } catch {
-      return searchParams.get("showUserSidebar") === "1";
+      return false;
     }
   });
 
   useEffect(() => {
     try {
       localStorage.setItem("showUserSidebar", showUserSidebar ? "1" : "0");
-    } catch {}
+    } catch {
+      // ignore
+    }
   }, [showUserSidebar]);
 
   const load = useCallback(async () => {

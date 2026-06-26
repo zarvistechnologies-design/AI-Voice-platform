@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import {
@@ -46,7 +46,6 @@ function auditTarget(entry: AuditLogEntry) {
 
 export function OrganizationSettingsShell() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [activeId, setActiveId] = useState("");
@@ -64,17 +63,23 @@ export function OrganizationSettingsShell() {
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
   const [showUserSidebar, setShowUserSidebar] = useState(() => {
+    if (typeof window === "undefined") {
+      return false;
+    }
+
     try {
       return localStorage.getItem("showUserSidebar") === "1";
     } catch {
-      return searchParams.get("showUserSidebar") === "1";
+      return false;
     }
   });
 
   useEffect(() => {
     try {
       localStorage.setItem("showUserSidebar", showUserSidebar ? "1" : "0");
-    } catch {}
+    } catch {
+      // ignore
+    }
   }, [showUserSidebar]);
 
   const active = useMemo(
