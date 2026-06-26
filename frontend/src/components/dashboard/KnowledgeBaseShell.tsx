@@ -81,6 +81,7 @@ export function KnowledgeBaseShell() {
   const [editorOpen, setEditorOpen] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [documentName, setDocumentName] = useState("");
+  const [showUserSidebar, setShowUserSidebar] = useState(false);
   const [documentContent, setDocumentContent] = useState("");
   const [uploadedFileName, setUploadedFileName] = useState("");
 
@@ -271,16 +272,22 @@ export function KnowledgeBaseShell() {
   }
 
   return (
-    <main className="grid min-h-screen bg-[#f6f8fc] text-[#111827] lg:h-screen lg:grid-cols-[64px_minmax(0,1fr)] lg:overflow-hidden">
+    <main className={`grid min-h-screen bg-[#f6f8fc] text-[#111827] lg:h-screen lg:overflow-hidden ${
+      showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
+    }`}>
       <DashboardSidebar
         activeLabel="Knowledge Base"
         userInitials={initials(session.name)}
+        userName={session.name}
+        userEmail={session.email}
         onLogout={() => { void logoutSession().then(() => router.replace("/login")); }}
+        showUserSidebar={showUserSidebar}
+        setShowUserSidebar={setShowUserSidebar}
       />
 
       <section className="min-w-0 overflow-y-auto">
         <header className="border-b border-[#bae6fd] bg-white px-4 py-4 sm:px-6 lg:px-8">
-          <div className="mx-auto flex w-full max-w-[1500px] flex-wrap items-center justify-between gap-4">
+          <div className="mx-auto flex w-full max-w-1500px flex-wrap items-center justify-between gap-4">
             <div>
               <span className="app-label text-[#0284c7]">Knowledge Base</span>
               <h1 className="m-0 text-xl font-semibold leading-7 text-[#0f172a]">Knowledge studio</h1>
@@ -297,7 +304,7 @@ export function KnowledgeBaseShell() {
           </div>
         </header>
 
-        <div className="mx-auto grid w-full max-w-[1500px] gap-5 p-4 sm:p-6 lg:grid-cols-[340px_minmax(0,1fr)] lg:p-8">
+        <div className="mx-auto grid w-full max-w-1500px gap-5 p-4 sm:p-6 lg:grid-cols-[340px_minmax(0,1fr)] lg:p-8">
           <div className="grid gap-3 lg:col-span-2">
             {notice ? <Notice tone="success" message={notice} onClose={() => setNotice("")} /> : null}
             {error && !editorOpen ? <Notice tone="error" message={error} onClose={() => setError("")} /> : null}

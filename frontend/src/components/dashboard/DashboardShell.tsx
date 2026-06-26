@@ -1648,6 +1648,7 @@ export function DashboardShell() {
     getSession,
     getServerSession,
   );
+  const [showUserSidebar, setShowUserSidebar] = useState(false);
   const [agentList, setAgentList] = useState(agents);
   const [selectedAgentId, setSelectedAgentId] = useState(agents[0].id);
   const [activeTab, setActiveTab] = useState<AgentTab>("builder");
@@ -2478,12 +2479,16 @@ export function DashboardShell() {
       <DashboardSidebar
         activeLabel="Voice Agents"
         userInitials={getInitials(session.name)}
+        userName={session.name}
+        userEmail={session.email}
         onLogout={handleLogout}
+        showUserSidebar={showUserSidebar}
+        setShowUserSidebar={setShowUserSidebar}
       />
 
       <section className="grid min-w-0 content-start gap-5">
         <header className="border-b border-[#bae6fd] bg-white px-4 py-4 sm:px-6 lg:px-8">
-          <div className="mx-auto grid w-full max-w-[1500px] gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+          <div className="mx-auto grid w-full max-w-1500px gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
             <div className="min-w-0">
               <span className="app-label text-[#0284c7]">{session.organization?.name ?? "Workspace"}</span>
               <h1 className="m-0 mt-1 text-xl font-semibold leading-7 text-[#0f172a] sm:text-2xl">{selectedAgent.name}</h1>
@@ -2538,7 +2543,7 @@ export function DashboardShell() {
             </button>
             </div>
           </div>
-          <div className="mx-auto grid w-full max-w-[1500px] gap-2 pt-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mx-auto grid w-full max-w-1500px gap-2 pt-3 sm:grid-cols-2 lg:grid-cols-4">
             {agentHeroStats.map((item) => (
               <div className={`rounded-lg border px-3 py-2 ${item.tone}`} key={item.label}>
                 <span className="app-caption block text-current">{item.label}</span>
@@ -2548,9 +2553,9 @@ export function DashboardShell() {
           </div>
         </header>
 
-        <section className="mx-auto grid w-full max-w-[1500px] min-w-0 gap-4 px-4 pb-5 sm:px-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:px-8 2xl:grid-cols-[280px_minmax(0,1fr)_300px]">
+        <section className="mx-auto grid w-full max-w-1500px min-w-0 gap-4 px-4 pb-5 sm:px-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:px-8 2xl:grid-cols-[280px_minmax(0,1fr)_300px]">
           <aside className="min-w-0 overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm">
-            <div className="flex min-h-[64px] items-center justify-between border-b border-[#e5e7eb] bg-[#fbfdff] px-4">
+            <div className="flex min-h-64px items-center justify-between border-b border-[#e5e7eb] bg-[#fbfdff] px-4">
               <div>
                 <h2 className="app-section-title m-0">Agents</h2>
                 <span className="app-caption">{liveAgentCount} live / {agentList.length} total</span>
@@ -2736,7 +2741,7 @@ export function DashboardShell() {
                     <label className="app-label grid gap-2">
                       <span>Instructions / prompt</span>
                       <textarea
-                        className="app-control-text min-h-[320px] resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10"
+                        className="app-control-text min-h-320px resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10"
                         value={selectedAgent.prompt}
                         onChange={(event) => updateSelectedAgent({ prompt: event.target.value })}
                       />
@@ -2744,7 +2749,7 @@ export function DashboardShell() {
 
                     {openStackConfig ? (
                       <div
-                        className="fixed inset-0 z-[80] grid place-items-center bg-[#0f172a]/35 p-4 backdrop-blur-sm"
+                        className="fixed inset-0 z-80 grid place-items-center bg-[#0f172a]/35 p-4 backdrop-blur-sm"
                         role="dialog"
                         aria-modal="true"
                         onClick={() => setOpenStackConfig(null)}
@@ -3143,7 +3148,7 @@ export function DashboardShell() {
                     <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,1fr)_220px]">
                       <div className="min-w-0 rounded-lg border border-[#e5e7eb] bg-white p-3">
                         <span className="app-label block">Active runtime</span>
-                        <strong className="app-strong block break-words">
+                        <strong className="app-strong block wrap-break-word">
                           {selectedAgent.pipelineMode === "realtime"
                             ? `${selectedAgent.realtimeProvider} / ${selectedAgent.realtimeModel}`
                             : `${selectedAgent.sttProvider} -> ${selectedAgent.llmProvider} -> ${selectedAgent.ttsProvider}`}
@@ -4003,7 +4008,7 @@ export function DashboardShell() {
                           </button>
                         </div>
 
-                        <pre className="m-0 max-h-[220px] overflow-auto rounded-lg bg-[#111827] p-3 text-xs leading-5 text-[#cbd5e1]">
+                        <pre className="m-0 max-h-220px overflow-auto rounded-lg bg-[#111827] p-3 text-xs leading-5 text-[#cbd5e1]">
                           {widgetEmbedCode}
                         </pre>
                       </article>
@@ -4019,7 +4024,7 @@ export function DashboardShell() {
                           </span>
                         </div>
 
-                        <div className="grid min-h-[170px] content-end rounded-lg border border-[#e5e7eb] bg-[#f8fafc] p-3">
+                        <div className="grid min-h-170px content-end rounded-lg border border-[#e5e7eb] bg-[#f8fafc] p-3">
                           <div className="justify-self-end rounded-lg border border-[#bae6fd] bg-white p-3 shadow-sm">
                             <div className="mb-3 flex items-center gap-2">
                               <span
@@ -4084,7 +4089,7 @@ export function DashboardShell() {
 
           <aside className="grid min-w-0 content-start gap-4 xl:col-span-2 xl:grid-cols-2 2xl:col-span-1 2xl:grid-cols-1">
             <article className="min-w-0 overflow-hidden rounded-lg border border-[#dbe4f0] bg-white shadow-sm">
-              <div className="flex min-h-[68px] items-center justify-between gap-3 border-b border-[#bae6fd] bg-gradient-to-r from-[#f0f9ff] via-white to-[#ecfeff] px-4">
+              <div className="flex min-h-68px items-center justify-between gap-3 border-b border-[#bae6fd] bg-linear-to-r from-[#f0f9ff] via-white to-[#ecfeff] px-4">
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="relative flex size-2.5 shrink-0">

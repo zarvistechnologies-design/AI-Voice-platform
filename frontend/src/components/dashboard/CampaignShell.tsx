@@ -192,6 +192,7 @@ export function CampaignShell() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [launching, setLaunching] = useState(false);
+  const [showUserSidebar, setShowUserSidebar] = useState(false);
 
   useEffect(() => {
     if (!session) {
@@ -392,16 +393,22 @@ export function CampaignShell() {
   }
 
   return (
-    <main className="grid min-h-screen bg-[#f6f8fc] text-[#111827] lg:h-screen lg:grid-cols-[64px_minmax(0,1fr)] lg:overflow-hidden">
+    <main className={`grid min-h-screen bg-[#f6f8fc] text-[#111827] lg:h-screen lg:overflow-hidden ${
+      showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
+    }`}>
       <DashboardSidebar
         activeLabel="Campaigns"
         userInitials={initials(session.name)}
+        userName={session.name}
+        userEmail={session.email}
         onLogout={() => { void logoutSession().then(() => router.replace("/login")); }}
+        showUserSidebar={showUserSidebar}
+        setShowUserSidebar={setShowUserSidebar}
       />
 
       <section className="min-w-0 overflow-y-auto">
         <header className="border-b border-[#bae6fd] bg-white px-4 py-4 sm:px-6 lg:px-8">
-          <div className="mx-auto flex w-full max-w-[1500px] flex-wrap items-center justify-between gap-4">
+          <div className="mx-auto flex w-full max-w-1500px flex-wrap items-center justify-between gap-4">
             <div>
               <span className="app-label text-[#0284c7]">Campaigns</span>
               <h1 className="m-0 text-xl font-semibold leading-7 text-[#0f172a]">Outbound launchpad</h1>
@@ -418,7 +425,7 @@ export function CampaignShell() {
           </div>
         </header>
 
-        <form className="mx-auto grid w-full max-w-[1500px] gap-5 p-4 sm:p-6 lg:grid-cols-[minmax(0,1fr)_340px] lg:p-8" onSubmit={prepareCampaign}>
+        <form className="mx-auto grid w-full max-w-1500px gap-5 p-4 sm:p-6 lg:grid-cols-[minmax(0,1fr)_340px] lg:p-8" onSubmit={prepareCampaign}>
           <section className="grid min-w-0 content-start gap-4">
             {notice ? <Notice tone="success" message={notice} onClose={() => setNotice("")} /> : null}
             {error ? <Notice tone="error" message={error} onClose={() => setError("")} /> : null}
@@ -499,7 +506,7 @@ export function CampaignShell() {
                 </div>
 
                 <label
-                  className="grid min-h-[170px] cursor-pointer place-items-center rounded-lg border border-dashed border-[#7dd3fc] bg-white p-6 text-center shadow-sm transition hover:border-[#38bdf8] hover:bg-[#f0f9ff]"
+                  className="grid min-h-170px cursor-pointer place-items-center rounded-lg border border-dashed border-[#7dd3fc] bg-white p-6 text-center shadow-sm transition hover:border-[#38bdf8] hover:bg-[#f0f9ff]"
                   onDragOver={(event) => event.preventDefault()}
                   onDrop={handleDrop}
                 >
@@ -534,7 +541,7 @@ export function CampaignShell() {
                       </span>
                     </div>
                     <div className="overflow-x-auto">
-                      <table className="w-full min-w-[720px] text-left">
+                      <table className="w-full min-w-720px text-left">
                         <thead className="bg-white text-[#64748b]">
                           <tr className="app-label">
                             <th className="px-4 py-3 font-medium">Row</th>
@@ -728,7 +735,7 @@ export function CampaignShell() {
                   ].map(([label, value]) => (
                     <div className="flex justify-between gap-3" key={label}>
                       <dt className="app-caption">{label}</dt>
-                      <dd className="app-strong m-0 max-w-[180px] truncate text-right">{value}</dd>
+                      <dd className="app-strong m-0 max-w-180px truncate text-right">{value}</dd>
                     </div>
                   ))}
                 </dl>

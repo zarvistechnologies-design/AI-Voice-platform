@@ -105,6 +105,7 @@ export function PhoneNumberShell() {
   const [showImport, setShowImport] = useState(false);
   const [showBuy, setShowBuy] = useState(false);
   const [assignmentNumber, setAssignmentNumber] = useState<BackendPhoneNumber | null>(null);
+  const [showUserSidebar, setShowUserSidebar] = useState(false);
 
   useEffect(() => {
     if (!session) {
@@ -235,16 +236,21 @@ export function PhoneNumberShell() {
   }
 
   return (
-    <main className="grid min-h-screen bg-[#f7f8fb] text-[#111827] lg:h-screen lg:grid-cols-[64px_minmax(0,1fr)] lg:overflow-hidden">
+    <main className={`grid min-h-screen bg-[#f7f8fb] text-[#111827] lg:h-screen lg:overflow-hidden ${
+      showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
+    }`}>
       <DashboardSidebar
         activeLabel="Phone Number"
         userInitials={initials(session.name)}
-        onLogout={() => { void logoutSession().then(() => router.replace("/login")); }}
+        userName={session.name}
+        userEmail={session.email}
+        onLogout={() => void logoutSession().then(() => router.replace("/login"))}
+        showUserSidebar={showUserSidebar}
+        setShowUserSidebar={setShowUserSidebar}
       />
-
       <section className="min-w-0 overflow-y-auto">
         <header className="border-b border-[#bae6fd] bg-white px-4 py-4 sm:px-6 lg:px-8">
-          <div className="mx-auto flex w-full max-w-[1500px] flex-wrap items-center justify-between gap-4">
+          <div className="mx-auto flex w-full max-w-1500px flex-wrap items-center justify-between gap-4">
             <div>
               <span className="app-label text-[#0284c7]">Telephony</span>
               <h1 className="m-0 mt-1 text-xl font-semibold leading-7 text-[#0f172a] sm:text-2xl">Phone numbers</h1>
@@ -280,7 +286,7 @@ export function PhoneNumberShell() {
           </div>
         </header>
 
-        <div className="mx-auto grid w-full max-w-[1500px] gap-4 p-4 sm:p-6 lg:p-8">
+        <div className="mx-auto grid w-full max-w-1500px gap-4 p-4 sm:p-6 lg:p-8">
           {notice ? <Notice tone="success" message={notice} onClose={() => setNotice("")} /> : null}
           {error ? <Notice tone="error" message={error} onClose={() => setError("")} /> : null}
 
@@ -297,12 +303,12 @@ export function PhoneNumberShell() {
             </div>
 
             {loading ? (
-              <div className="grid min-h-[360px] place-items-center">
+              <div className="grid min-h-360px place-items-center">
                 <span className="app-caption">Loading phone numbers...</span>
               </div>
             ) : numbers.length ? (
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[860px] border-collapse text-left">
+                <table className="w-full min-w-860px border-collapse text-left">
                   <thead className="bg-[#f8fafc]">
                     <tr className="app-label text-[#64748b]">
                       <th className="px-5 py-3 font-medium">Phone number</th>
@@ -327,7 +333,7 @@ export function PhoneNumberShell() {
                 </table>
               </div>
             ) : (
-              <div className="grid min-h-[360px] place-items-center p-6 text-center">
+              <div className="grid min-h-360px place-items-center p-6 text-center">
                 <div className="max-w-sm">
                   <span className="mx-auto mb-4 grid size-12 place-items-center rounded-xl bg-[#f0f9ff] text-[#0284c7]">
                     <Icon icon="phone" className="size-5" />
@@ -404,7 +410,7 @@ function PhoneNumberRow({
           </span>
           <span className="min-w-0">
             <strong className="app-strong block whitespace-nowrap">{number.number}</strong>
-            <span className="app-caption block max-w-[240px] truncate">{number.label}</span>
+            <span className="app-caption block max-w-240px truncate">{number.label}</span>
           </span>
         </div>
       </td>
@@ -415,7 +421,7 @@ function PhoneNumberRow({
       </td>
       <td className="px-4 py-4">
         <button
-          className={`group inline-flex max-w-[240px] items-center gap-2 rounded-lg border px-2.5 py-2 text-left transition ${agent ? "border-[#e5e7eb] bg-[#f8fafc] hover:border-[#bae6fd] hover:bg-[#f0f9ff]" : "border-dashed border-[#cbd5e1] bg-white text-[#475569] hover:border-[#0284c7] hover:text-[#0284c7]"}`}
+          className={`group inline-flex max-w-240px items-center gap-2 rounded-lg border px-2.5 py-2 text-left transition ${agent ? "border-[#e5e7eb] bg-[#f8fafc] hover:border-[#bae6fd] hover:bg-[#f0f9ff]" : "border-dashed border-[#cbd5e1] bg-white text-[#475569] hover:border-[#0284c7] hover:text-[#0284c7]"}`}
           onClick={onManage}
           type="button"
         >
@@ -709,7 +715,7 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase }: {
           </button>
         </form>
 
-        <div className="min-h-[280px] max-h-[min(460px,52vh)] overflow-y-auto px-5 py-4 sm:px-6">
+        <div className="min-h-280px max-h-[min(460px,52vh)] overflow-y-auto px-5 py-4 sm:px-6">
           {inventoryError ? (
             <div className="rounded-lg border border-[#fecaca] bg-[#fff1f2] p-3 text-[#b91c1c]">
               <p className="app-body m-0">{inventoryError}</p>
@@ -718,7 +724,7 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase }: {
           ) : null}
           {requestError ? <div className="mb-3 rounded-lg border border-[#fecaca] bg-[#fff1f2] p-3 app-body text-[#b91c1c]">{requestError}</div> : null}
           {searching ? (
-            <div className="grid min-h-[240px] place-items-center"><span className="app-caption">Loading available numbers...</span></div>
+            <div className="grid min-h-240px place-items-center"><span className="app-caption">Loading available numbers...</span></div>
           ) : numbers.length ? (
             <div className="grid gap-2">
               {numbers.map((number) => {
@@ -744,14 +750,14 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase }: {
               })}
             </div>
           ) : searched && !inventoryError ? (
-            <div className="grid min-h-[240px] place-items-center text-center">
+            <div className="grid min-h-240px place-items-center text-center">
               <div><Icon icon="search" className="mx-auto mb-3 size-6 text-[#94a3b8]" /><p className="app-body m-0 text-[#475569]">No available numbers matched this search.</p></div>
             </div>
           ) : null}
         </div>
 
         <footer className="flex flex-wrap items-end justify-between gap-3 border-t border-[#e5e7eb] px-5 py-4 sm:px-6">
-          <label className="app-label grid min-w-[240px] flex-1 gap-2 sm:max-w-sm">
+          <label className="app-label grid min-w-240px flex-1 gap-2 sm:max-w-sm">
             Label <span className="font-normal text-[#94a3b8]">(optional)</span>
             <input className={controlClass} maxLength={120} placeholder="Sales main line" value={label} onChange={(event) => setLabel(event.target.value)} />
           </label>
@@ -791,7 +797,7 @@ function AgentModal({ agents, busy, number, onAssign, onClose }: {
           </label>
         </div>
 
-        <div className="min-h-[220px] max-h-[min(430px,52vh)] overflow-y-auto p-2 sm:p-3">
+        <div className="min-h-220px max-h-[min(430px,52vh)] overflow-y-auto p-2 sm:p-3">
           {filteredAgents.map((agent) => {
             const selected = selectedId === agent._id;
             return (

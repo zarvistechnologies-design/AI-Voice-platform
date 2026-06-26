@@ -47,6 +47,7 @@ export function IntegrationsShell() {
   const [credential, setCredential] = useState("");
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
+  const [showUserSidebar, setShowUserSidebar] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -99,10 +100,20 @@ export function IntegrationsShell() {
   if (!session) return <main className="grid min-h-screen place-items-center bg-slate-50 text-sm font-semibold">Loading integrations</main>;
 
   return (
-    <main className="grid min-h-screen bg-[#f4f7fb] text-slate-950 lg:grid-cols-[64px_minmax(0,1fr)]">
-      <DashboardSidebar activeLabel="Integrations" userInitials={initials(session.name)} onLogout={() => void logoutSession().then(() => router.replace("/login"))} />
+    <main className={`grid min-h-screen bg-[#f4f7fb] text-slate-950 ${
+      showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
+    }`}>
+      <DashboardSidebar
+        activeLabel="Integrations"
+        userInitials={initials(session.name)}
+        userName={session.name}
+        userEmail={session.email}
+        onLogout={() => void logoutSession().then(() => router.replace("/login"))}
+        showUserSidebar={showUserSidebar}
+        setShowUserSidebar={setShowUserSidebar}
+      />
       <section className="min-w-0 p-4">
-        <div className="mx-auto grid max-w-[1500px] gap-6">
+        <div className="mx-auto grid max-w-1500px gap-6">
           <header className="border-b border-[#bae6fd] bg-white pb-4">
             <div>
               <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0284c7]">Native connections</span>

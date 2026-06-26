@@ -194,7 +194,7 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
               </div>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[560px] text-left text-sm">
+              <table className="w-full min-w-560px text-left text-sm">
                 <thead className="bg-white text-xs uppercase tracking-wider text-slate-500">
                   <tr>{["Component", "Provider", "Usage", "Provider cost", "Charged"].map((item) => <th className="px-4 py-3" key={item}>{item}</th>)}</tr>
                 </thead>
@@ -219,7 +219,7 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
                 <h3 className="m-0 text-sm font-semibold text-slate-950">Conversation transcript</h3>
                 <p className="mt-1 text-xs text-slate-500">{transcript.length} captured messages</p>
               </div>
-              <span className="max-w-[220px] truncate rounded-lg bg-slate-100 px-2.5 py-1 font-mono text-xs text-slate-600">{call.livekitRoomName}</span>
+              <span className="max-w-220px truncate rounded-lg bg-slate-100 px-2.5 py-1 font-mono text-xs text-slate-600">{call.livekitRoomName}</span>
             </div>
             <div className="grid gap-3">
               {transcript.length ? (
@@ -273,6 +273,7 @@ export function CallLogsShell() {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [notice, setNotice] = useState("");
+  const [showUserSidebar, setShowUserSidebar] = useState(false);
 
   const loadCalls = useCallback(async () => {
     setLoading(true);
@@ -371,14 +372,20 @@ export function CallLogsShell() {
   }
 
   return (
-    <main className="grid min-h-screen bg-[#f4f7fb] text-slate-950 lg:grid-cols-[64px_minmax(0,1fr)]">
+    <main className={`grid min-h-screen bg-[#f4f7fb] text-slate-950 ${
+      showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
+    }`}>
       <DashboardSidebar
         activeLabel="Call Logs"
         userInitials={initials(session.name)}
+        userName={session.name}
+        userEmail={session.email}
         onLogout={() => void logoutSession().then(() => router.replace("/login"))}
+        showUserSidebar={showUserSidebar}
+        setShowUserSidebar={setShowUserSidebar}
       />
       <section className="min-w-0 p-4">
-        <div className="mx-auto grid max-w-[1500px] gap-6">
+        <div className="mx-auto grid max-w-1500px gap-6">
           <header className="border-b border-[#bae6fd] bg-white pb-4">
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
               <div>
@@ -448,7 +455,7 @@ export function CallLogsShell() {
             {notice ? <div className="border-b border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">{notice}</div> : null}
 
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[1050px] border-collapse text-left">
+              <table className="w-full min-w-1050px border-collapse text-left">
                 <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500">
                   <tr>
                     {["Agent", "Direction", "Contact", "Started", "Duration", "Provider cost", "Charged", "Status"].map((heading) => <th className="px-4 py-3" key={heading}>{heading}</th>)}
