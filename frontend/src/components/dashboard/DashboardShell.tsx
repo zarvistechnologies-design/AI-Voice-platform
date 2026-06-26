@@ -572,24 +572,27 @@ const fallbackSarvamVoiceProfiles: VoiceProfile[] = [
 const fallbackElevenLabsVoices = [
   "bIHbv24MWmeRgasZH58o",
 ];
+
+const fallbackElevenLabsVoiceProfiles: VoiceProfile[] = [
+  {
+    value: "bIHbv24MWmeRgasZH58o",
+    label: "Will",
+    gender: "male",
+    model: "eleven_multilingual_v2",
+    useCase: "Customer support",
+    tone: "friendly and natural",
+    accent: "American",
+    category: "premade",
+    languageCodes: ["en-US"],
+    languageLabels: ["English (US)"],
+  },
+];
+
 const defaultGeminiRealtimeModel = "gemini-2.5-flash-native-audio-preview-12-2025";
 
 function normalizeRealtimeModel(provider: RealtimeProvider, model: string) {
   if (provider !== "gemini") return model;
   return model === defaultGeminiRealtimeModel ? model : defaultGeminiRealtimeModel;
-}
-
-function voicesByLanguage(
-  languages: readonly VoiceLanguageOption[],
-  voices: readonly string[],
-) {
-  return Object.fromEntries(
-    languages.flatMap((language) => [
-      [language.value, voices],
-      [language.label, voices],
-      [language.code, voices],
-    ]),
-  );
 }
 
 const fallbackSarvamRecommendedVoicesByLanguageCode: Record<string, readonly string[]> = {
@@ -617,6 +620,27 @@ function voicesByLanguageFromRecommendations(
     const keys = [code, language?.value, language?.label].filter(Boolean) as string[];
     for (const key of keys) {
       voicesByLanguage.set(key, [...recommendedVoices]);
+    }
+  }
+
+  return Object.fromEntries(voicesByLanguage);
+}
+
+function voicesByLanguageFromProfiles(
+  profiles: readonly VoiceProfile[],
+  languages: readonly VoiceLanguageOption[],
+) {
+  const voicesByLanguage = new Map<string, string[]>();
+
+  for (const profile of profiles) {
+    for (const code of profile.languageCodes ?? []) {
+      const language = languages.find((item) => item.code === code);
+      const keys = [code, language?.value, language?.label].filter(Boolean) as string[];
+      for (const key of keys) {
+        const voices = voicesByLanguage.get(key) ?? [];
+        if (!voices.includes(profile.value)) voices.push(profile.value);
+        voicesByLanguage.set(key, voices);
+      }
     }
   }
 
@@ -665,6 +689,7 @@ const fallbackCatalog: ModelCatalog = {
         fallbackSarvamRecommendedVoicesByLanguageCode,
         fallbackLanguageCatalog,
       ),
+      showAllVoicesWithLanguageOrder: true,
       voicesByModel: {
         "bulbul:v3": fallbackSarvamV3Voices,
         "bulbul:v2": fallbackSarvamV2Voices,
@@ -676,11 +701,13 @@ const fallbackCatalog: ModelCatalog = {
       configured: true,
       models: ["eleven_multilingual_v2", "eleven_flash_v2_5", "eleven_turbo_v2_5"],
       voices: fallbackElevenLabsVoices,
+      voiceProfiles: fallbackElevenLabsVoiceProfiles,
       languages: fallbackLanguageCatalog.filter((language) => language.code !== "unknown"),
-      voicesByLanguage: voicesByLanguage(
-        fallbackLanguageCatalog.filter((language) => language.code !== "unknown"),
-        fallbackElevenLabsVoices,
+      voicesByLanguage: voicesByLanguageFromProfiles(
+        fallbackElevenLabsVoiceProfiles,
+        fallbackLanguageCatalog,
       ),
+      showAllVoicesWithLanguageOrder: true,
     },
   ],
 };
@@ -716,6 +743,9 @@ function getVoices(
   if (languageVoices?.length && modelVoices.length) {
     const allowed = new Set(languageVoices);
     const filtered = modelVoices.filter((voice) => allowed.has(voice));
+    if (item.showAllVoicesWithLanguageOrder && filtered.length) {
+      return [...filtered, ...modelVoices.filter((voice) => !allowed.has(voice))];
+    }
     return filtered.length ? filtered : [...modelVoices];
   }
 
