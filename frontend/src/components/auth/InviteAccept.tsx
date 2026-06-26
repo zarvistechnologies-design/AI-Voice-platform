@@ -19,7 +19,7 @@ export function InviteAccept({ token }: { token: string }) {
       .acceptInvitation(token)
       .then(() => {
         setMessage("Invitation accepted. Opening your new workspace...");
-        router.replace("/dashboard/settings");
+        router.replace("/dashboard");
       })
       .catch((error) => setMessage(error instanceof Error ? error.message : "Could not accept invitation."));
   }, [router, token]);

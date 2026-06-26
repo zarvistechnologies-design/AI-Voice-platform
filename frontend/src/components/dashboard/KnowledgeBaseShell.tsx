@@ -22,6 +22,13 @@ const buttonClass =
   "app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 transition disabled:cursor-not-allowed disabled:opacity-50";
 const controlClass =
   "app-control-text min-h-11 w-full rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10";
+const documentTones = [
+  "border-[#a5f3fc] bg-[#ecfeff] text-[#0891b2]",
+  "border-[#bbf7d0] bg-[#f0fdf4] text-[#16a34a]",
+  "border-[#fed7aa] bg-[#fff7ed] text-[#c2410c]",
+  "border-[#ddd6fe] bg-[#f5f3ff] text-[#7c3aed]",
+  "border-[#fecdd3] bg-[#fff1f2] text-[#e11d48]",
+];
 
 function Icon({ icon, className = "size-4" }: { icon: IconName; className?: string }) {
   const props = {
@@ -50,11 +57,15 @@ function errorMessage(error: unknown) {
 
 function previewText(content: string) {
   const clean = content.replace(/\s+/g, " ").trim();
-  return clean.length > 150 ? `${clean.slice(0, 150)}...` : clean;
+  return clean.length > 160 ? `${clean.slice(0, 160)}...` : clean;
 }
 
 function fileNameToTitle(fileName: string) {
   return fileName.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim();
+}
+
+function characterCount(content: string) {
+  return content.trim().length.toLocaleString("en-IN");
 }
 
 export function KnowledgeBaseShell() {
@@ -117,8 +128,16 @@ export function KnowledgeBaseShell() {
       .filter(({ document }) => !search || `${document.name} ${document.content}`.toLowerCase().includes(search));
   }, [documents, query]);
   const readyCount = documents.filter((document) => document.status === "ready").length;
+  const disabledCount = Math.max(0, documents.length - readyCount);
+  const totalCharacters = documents.reduce((total, document) => total + document.content.trim().length, 0);
   const knowledgeLimitReached = documents.length >= maxKnowledgeFiles;
   const selectedAgentName = selectedAgent?.name ?? "Selected agent";
+  const libraryStats = [
+    { label: "Items", value: `${documents.length}/${maxKnowledgeFiles}`, tone: "border-[#67e8f9] bg-[#ecfeff] text-[#0e7490]" },
+    { label: "Active", value: readyCount.toLocaleString("en-IN"), tone: "border-[#86efac] bg-[#f0fdf4] text-[#15803d]" },
+    { label: "Off", value: disabledCount.toLocaleString("en-IN"), tone: "border-[#fdba74] bg-[#fff7ed] text-[#c2410c]" },
+    { label: "Characters", value: totalCharacters.toLocaleString("en-IN"), tone: "border-[#c4b5fd] bg-[#f5f3ff] text-[#6d28d9]" },
+  ];
 
   function clearEditor() {
     setDocumentName("");
@@ -152,7 +171,7 @@ export function KnowledgeBaseShell() {
   }
 
   async function saveDocuments(nextDocuments: KnowledgeDocument[], message: string) {
-    if (!selectedAgent) return;
+    if (!selectedAgent) return false;
     setSaving(true);
     setNotice("");
     setError("");
@@ -160,8 +179,10 @@ export function KnowledgeBaseShell() {
       const { agent } = await voiceApi.saveAgent(selectedAgent._id, { knowledgeDocuments: nextDocuments });
       setAgents((current) => current.map((item) => (item._id === agent._id ? agent : item)));
       setNotice(message);
+      return true;
     } catch (caught) {
       setError(errorMessage(caught));
+      return false;
     } finally {
       setSaving(false);
     }
@@ -189,8 +210,8 @@ export function KnowledgeBaseShell() {
       editingIndex === null
         ? [...documents, nextDocument]
         : documents.map((document, index) => (index === editingIndex ? nextDocument : document));
-    await saveDocuments(nextDocuments, editingIndex === null ? "Knowledge added." : "Knowledge updated.");
-    closeEditor();
+    const saved = await saveDocuments(nextDocuments, editingIndex === null ? "Knowledge added." : "Knowledge updated.");
+    if (saved) closeEditor();
   }
 
   async function handleFile(file: File | undefined) {
@@ -245,11 +266,11 @@ export function KnowledgeBaseShell() {
   }
 
   if (!session) {
-    return <main className="app-strong grid min-h-screen place-items-center bg-[#f7f8fb]">Loading knowledge base</main>;
+    return <main className="app-strong grid min-h-screen place-items-center bg-[#f6f8fc]">Loading knowledge base</main>;
   }
 
   return (
-    <main className="grid min-h-screen bg-[#f7f8fb] text-[#111827] lg:h-screen lg:grid-cols-[64px_minmax(0,1fr)] lg:overflow-hidden">
+    <main className="grid min-h-screen bg-[#f6f8fc] text-[#111827] lg:h-screen lg:grid-cols-[64px_minmax(0,1fr)] lg:overflow-hidden">
       <DashboardSidebar
         activeLabel="Knowledge Base"
         userInitials={initials(session.name)}
@@ -257,31 +278,51 @@ export function KnowledgeBaseShell() {
       />
 
       <section className="min-w-0 overflow-y-auto">
-        <header className="border-b border-[#e5e7eb] bg-white px-4 py-4 sm:px-6 lg:px-8">
-          <div className="mx-auto flex w-full max-w-[1240px] flex-wrap items-center justify-between gap-4">
+        <header className="mx-4 mt-4 overflow-hidden rounded-2xl border border-[#0f172a] bg-[#111827] text-white shadow-[0_14px_36px_rgba(15,23,42,0.12)] sm:mx-6 lg:mx-8">
+          <div className="grid h-1 grid-cols-5" aria-hidden="true">
+            <span className="bg-[#38bdf8]" />
+            <span className="bg-[#22c55e]" />
+            <span className="bg-[#f59e0b]" />
+            <span className="bg-[#ef4444]" />
+            <span className="bg-[#8b5cf6]" />
+          </div>
+          <div className="mx-auto flex w-full max-w-[1500px] flex-wrap items-center justify-between gap-5 px-4 py-5 sm:px-6 lg:px-8">
             <div>
-              <h1 className="app-page-title m-0">Knowledge base</h1>
-              <p className="app-caption mt-1 mb-0">Give each agent the facts it should answer from: FAQs, pricing, rules, policies, and offers.</p>
+              <span className="app-label text-[#93c5fd]">Knowledge Base</span>
+              <h1 className="m-0 text-xl font-semibold leading-7 text-white">Knowledge studio</h1>
+              <p className="app-caption mt-1 mb-0 text-[#cbd5e1]">Agent facts, files, and searchable answers.</p>
             </div>
-            <button
-              className={`${buttonClass} bg-[#1438f5] text-white shadow-sm hover:bg-[#102fcf]`}
-              disabled={!selectedAgent || loading || knowledgeLimitReached}
-              onClick={openNewDocument}
-              type="button"
-            >
-              <Icon icon="plus" />
-              Add knowledge
-            </button>
+            <div className="grid w-full gap-2 sm:w-auto sm:grid-cols-4">
+              {libraryStats.map((stat) => (
+                <div className={`rounded-lg border px-3 py-2 ${stat.tone}`} key={stat.label}>
+                  <span className="app-caption block text-current">{stat.label}</span>
+                  <strong className="block text-sm font-semibold leading-5">{stat.value}</strong>
+                </div>
+              ))}
+            </div>
           </div>
         </header>
 
-        <div className="mx-auto grid w-full max-w-[1240px] gap-4 p-4 sm:p-6 lg:p-8">
-          {notice ? <Notice tone="success" message={notice} onClose={() => setNotice("")} /> : null}
-          {error ? <Notice tone="error" message={error} onClose={() => setError("")} /> : null}
+        <div className="mx-auto grid w-full max-w-[1500px] gap-5 p-4 sm:p-6 lg:grid-cols-[340px_minmax(0,1fr)] lg:p-8">
+          <div className="grid gap-3 lg:col-span-2">
+            {notice ? <Notice tone="success" message={notice} onClose={() => setNotice("")} /> : null}
+            {error && !editorOpen ? <Notice tone="error" message={error} onClose={() => setError("")} /> : null}
+          </div>
 
-          <section className="overflow-hidden rounded-2xl border border-[#dfe3ea] bg-white shadow-sm">
-            <div className="grid gap-4 border-b border-[#e5e7eb] p-4 sm:p-5">
-              <div className="grid gap-3 lg:grid-cols-[minmax(220px,320px)_minmax(240px,1fr)]">
+          <aside className="min-w-0">
+            <section className="overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm lg:sticky lg:top-6">
+              <div className="grid h-1 grid-cols-4" aria-hidden="true">
+                <span className="bg-[#38bdf8]" />
+                <span className="bg-[#22c55e]" />
+                <span className="bg-[#f59e0b]" />
+                <span className="bg-[#8b5cf6]" />
+              </div>
+              <div className="border-b border-[#edf0f4] bg-[#fbfdff] p-4">
+                <h2 className="app-section-title m-0">Agent source</h2>
+                <p className="app-caption mt-1 mb-0">Choose the assistant memory to edit.</p>
+              </div>
+
+              <div className="grid gap-4 border-b border-[#edf0f4] p-4">
                 <label className="app-label grid gap-2">
                   Agent
                   <select
@@ -301,66 +342,85 @@ export function KnowledgeBaseShell() {
                   </select>
                 </label>
 
-                <label className="app-label grid gap-2">
-                  Search
-                  <span className="relative">
-                    <span className="absolute inset-y-0 left-3 grid place-items-center text-[#94a3b8]"><Icon icon="search" /></span>
-                    <input
-                      className={`${controlClass} pl-10`}
-                      placeholder="Search title or text"
-                      value={query}
-                      onChange={(event) => setQuery(event.target.value)}
+                <div className="grid gap-2">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="app-caption">Capacity</span>
+                    <span className="app-strong">{documents.length}/{maxKnowledgeFiles}</span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-[#e5e7eb]">
+                    <div
+                      className="h-full rounded-full bg-[#1438f5]"
+                      style={{ width: `${Math.min(100, (documents.length / maxKnowledgeFiles) * 100)}%` }}
                     />
-                  </span>
-                </label>
-              </div>
-
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <span className="app-caption rounded-full bg-[#f8fafc] px-3 py-1.5 text-[#475569]">
-                  {selectedAgentName}: {documents.length}/{maxKnowledgeFiles} items · {readyCount} active
-                </span>
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`}
-                    disabled={!selectedAgent || loading || saving || knowledgeLimitReached}
-                    onClick={openNewDocument}
-                    type="button"
-                  >
-                    <Icon icon="plus" />
-                    Add text
-                  </button>
-                  <label className={`${buttonClass} relative cursor-pointer border border-[#c7d2fe] bg-[#eef2ff] text-[#1438f5] hover:bg-[#e0e7ff] ${!selectedAgent || loading || saving || knowledgeLimitReached ? "pointer-events-none opacity-50" : ""}`}>
-                    <input
-                      className="absolute inset-0 cursor-pointer opacity-0"
-                      type="file"
-                      accept=".txt,.md,.csv,.json,text/plain,text/markdown,text/csv,application/json"
-                      disabled={!selectedAgent || loading || saving || knowledgeLimitReached}
-                      onChange={(event) => {
-                        const file = event.target.files?.[0];
-                        event.target.value = "";
-                        void openUploadEditor(file);
-                      }}
-                    />
-                    <Icon icon="upload" />
-                    Upload file
-                  </label>
+                  </div>
                 </div>
               </div>
+
+              <div className="grid gap-3 p-4">
+                <button
+                  className={`${buttonClass} bg-[#1438f5] text-white shadow-sm hover:bg-[#102fcf]`}
+                  disabled={!selectedAgent || loading || saving || knowledgeLimitReached}
+                  onClick={openNewDocument}
+                  type="button"
+                >
+                  <Icon icon="plus" />
+                  Add text
+                </button>
+                <label className={`${buttonClass} relative cursor-pointer border border-[#c7d2fe] bg-[#eef2ff] text-[#1438f5] hover:bg-[#e0e7ff] ${!selectedAgent || loading || saving || knowledgeLimitReached ? "pointer-events-none opacity-50" : ""}`}>
+                  <input
+                    className="absolute inset-0 cursor-pointer opacity-0"
+                    type="file"
+                    accept=".txt,.md,.csv,.json,text/plain,text/markdown,text/csv,application/json"
+                    disabled={!selectedAgent || loading || saving || knowledgeLimitReached}
+                    onChange={(event) => {
+                      const file = event.target.files?.[0];
+                      event.target.value = "";
+                      void openUploadEditor(file);
+                    }}
+                  />
+                  <Icon icon="upload" />
+                  Upload file
+                </label>
+                <p className="app-caption m-0 rounded-lg bg-[#f8fafc] px-3 py-2 text-[#475569]">
+                  .txt, .md, .csv, .json under 300KB.
+                </p>
+              </div>
+            </section>
+          </aside>
+
+          <section className="min-w-0 overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm">
+            <div className="grid gap-4 border-b border-[#edf0f4] p-4 sm:p-5 lg:grid-cols-[minmax(0,1fr)_minmax(240px,360px)] lg:items-end">
+              <div>
+                <h2 className="app-section-title m-0">{selectedAgentName}</h2>
+                <p className="app-caption mt-1 mb-0">{filteredDocuments.length.toLocaleString("en-IN")} shown / {documents.length.toLocaleString("en-IN")} total</p>
+              </div>
+              <label className="app-label grid gap-2">
+                Search
+                <span className="relative">
+                  <span className="absolute inset-y-0 left-3 grid place-items-center text-[#94a3b8]"><Icon icon="search" /></span>
+                  <input
+                    className={`${controlClass} pl-10`}
+                    placeholder="Search title or text"
+                    value={query}
+                    onChange={(event) => setQuery(event.target.value)}
+                  />
+                </span>
+              </label>
             </div>
 
             {loading ? (
-              <div className="grid min-h-40 place-items-center px-5 py-10">
+              <div className="grid min-h-52 place-items-center px-5 py-10">
                 <span className="app-caption">Loading knowledge...</span>
               </div>
             ) : documents.length === 0 ? (
-              <div className="mx-auto grid max-w-xl place-items-center gap-4 px-5 py-12 text-center">
-                <span className="grid size-12 place-items-center rounded-2xl bg-[#eef2ff] text-[#4f46e5]">
+              <div className="mx-auto grid max-w-xl place-items-center gap-4 px-5 py-14 text-center">
+                <span className="grid size-12 place-items-center rounded-lg bg-[#eef2ff] text-[#4f46e5]">
                   <Icon icon="file" className="size-5" />
                 </span>
                 <div>
                   <strong className="app-strong block">No knowledge added yet</strong>
                   <p className="app-caption mt-1 mb-0">
-                    Add short, approved facts your agent can use during calls: prices, FAQs, opening hours, refund rules, and common answers.
+                    Add approved facts, policies, pricing, FAQs, and call answers for this assistant.
                   </p>
                 </div>
                 <div className="flex flex-wrap justify-center gap-2">
@@ -391,197 +451,76 @@ export function KnowledgeBaseShell() {
                 </div>
               </div>
             ) : filteredDocuments.length === 0 ? (
-              <div className="grid min-h-40 place-items-center px-5 py-10 text-center">
+              <div className="grid min-h-52 place-items-center px-5 py-10 text-center">
                 <div>
                   <strong className="app-strong block">No matching knowledge found</strong>
-                  <span className="app-caption mt-1 block">Try searching a different word or clear the search.</span>
+                  <span className="app-caption mt-1 block">Try a different search.</span>
                 </div>
               </div>
             ) : (
               <ul className="divide-y divide-[#edf0f4]">
-                {filteredDocuments.map(({ document, index }) => (
-                  <li className="grid gap-3 p-4 transition hover:bg-[#fbfcfe] sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:p-5" key={document._id ?? `${document.name}-${index}`}>
-                    <div className="flex min-w-0 gap-3">
-                      <span className="mt-0.5 grid size-10 shrink-0 place-items-center rounded-xl bg-[#eef2ff] text-[#4f46e5]">
-                        <Icon icon="file" />
-                      </span>
-                      <div className="min-w-0">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <strong className="app-strong truncate">{document.name}</strong>
-                          <span className={`app-label rounded-full px-2.5 py-1 ${document.status === "ready" ? "bg-[#ecfdf5] text-[#047857]" : "bg-[#f1f5f9] text-[#64748b]"}`}>
-                            {document.status === "ready" ? "Used in calls" : "Off"}
-                          </span>
+                {filteredDocuments.map(({ document, index }) => {
+                  const tone = documentTones[index % documentTones.length];
+                  return (
+                    <li className="grid gap-3 p-4 transition hover:bg-[#fbfdff] sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:p-5" key={document._id ?? `${document.name}-${index}`}>
+                      <div className="flex min-w-0 gap-3">
+                        <span className={`mt-0.5 grid size-10 shrink-0 place-items-center rounded-lg border ${tone}`}>
+                          <Icon icon="file" />
+                        </span>
+                        <div className="min-w-0">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <strong className="app-strong truncate">{document.name}</strong>
+                            <span className={`app-label rounded-lg px-2.5 py-1 ${document.status === "ready" ? "bg-[#ecfdf5] text-[#047857]" : "bg-[#f1f5f9] text-[#64748b]"}`}>
+                              {document.status === "ready" ? "Used in calls" : "Off"}
+                            </span>
+                            <span className="app-label rounded-lg bg-[#f8fafc] px-2.5 py-1 text-[#64748b]">
+                              {characterCount(document.content)} chars
+                            </span>
+                          </div>
+                          <p className="app-caption mt-1 mb-0 max-w-4xl text-[#64748b]">
+                            {previewText(document.content)}
+                          </p>
                         </div>
-                        <p className="app-caption mt-1 mb-0 max-h-10 max-w-4xl overflow-hidden text-[#64748b]">
-                          {previewText(document.content)}
-                        </p>
                       </div>
-                    </div>
 
-                    <div className="flex flex-wrap gap-2 sm:justify-end">
-                      <button
-                        className={`app-label min-h-9 rounded-lg px-3 transition ${
-                          document.status === "ready"
-                            ? "bg-[#ecfdf5] text-[#047857] hover:bg-[#d1fae5]"
-                            : "bg-[#f1f5f9] text-[#64748b] hover:bg-[#e2e8f0]"
-                        }`}
-                        disabled={saving}
-                        onClick={() => toggleDocument(index)}
-                        type="button"
-                      >
-                        {document.status === "ready" ? "Turn off" : "Turn on"}
-                      </button>
-                      <button
-                        className="grid size-9 place-items-center rounded-lg border border-[#d5d8df] bg-white text-[#475569] transition hover:bg-[#f8fafc] hover:text-[#111827]"
-                        disabled={saving}
-                        onClick={() => openEditDocument(index)}
-                        type="button"
-                        aria-label={`Edit ${document.name}`}
-                      >
-                        <Icon icon="edit" />
-                      </button>
-                      <button
-                        className="grid size-9 place-items-center rounded-lg border border-[#fecaca] bg-white text-[#dc2626] transition hover:bg-[#fff1f2]"
-                        disabled={saving}
-                        onClick={() => removeDocument(index)}
-                        type="button"
-                        aria-label={`Remove ${document.name}`}
-                      >
-                        <Icon icon="trash" />
-                      </button>
-                    </div>
-                  </li>
-                ))}
+                      <div className="flex flex-wrap gap-2 sm:justify-end">
+                        <button
+                          className={`app-label min-h-9 rounded-lg px-3 transition ${
+                            document.status === "ready"
+                              ? "bg-[#ecfdf5] text-[#047857] hover:bg-[#d1fae5]"
+                              : "bg-[#f1f5f9] text-[#64748b] hover:bg-[#e2e8f0]"
+                          }`}
+                          disabled={saving}
+                          onClick={() => toggleDocument(index)}
+                          type="button"
+                        >
+                          {document.status === "ready" ? "Turn off" : "Turn on"}
+                        </button>
+                        <button
+                          className="grid size-9 place-items-center rounded-lg border border-[#d5d8df] bg-white text-[#475569] transition hover:bg-[#f8fafc] hover:text-[#111827]"
+                          disabled={saving}
+                          onClick={() => openEditDocument(index)}
+                          type="button"
+                          aria-label={`Edit ${document.name}`}
+                        >
+                          <Icon icon="edit" />
+                        </button>
+                        <button
+                          className="grid size-9 place-items-center rounded-lg border border-[#fecaca] bg-white text-[#dc2626] transition hover:bg-[#fff1f2]"
+                          disabled={saving}
+                          onClick={() => removeDocument(index)}
+                          type="button"
+                          aria-label={`Remove ${document.name}`}
+                        >
+                          <Icon icon="trash" />
+                        </button>
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </section>
-
-          {false ? (
-            <section className="hidden">
-            <div className="grid gap-3 border-b border-[#e5e7eb] p-4 lg:grid-cols-[minmax(220px,320px)_minmax(220px,1fr)_auto] lg:items-end">
-              <label className="app-label grid gap-2">
-                Agent
-                <select
-                  className={controlClass}
-                  disabled={loading || saving}
-                  value={selectedAgentId}
-                  onChange={(event) => {
-                    setSelectedAgentId(event.target.value);
-                    setQuery("");
-                  }}
-                >
-                  {agents.map((agent) => (
-                    <option key={agent._id} value={agent._id}>
-                      {agent.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <label className="app-label grid gap-2">
-                Search
-                <span className="relative">
-                  <span className="absolute inset-y-0 left-3 grid place-items-center text-[#94a3b8]"><Icon icon="search" /></span>
-                  <input
-                    className={`${controlClass} pl-10`}
-                    placeholder="Search saved knowledge"
-                    value={query}
-                    onChange={(event) => setQuery(event.target.value)}
-                  />
-                </span>
-              </label>
-
-              <div className="app-caption rounded-lg bg-[#f8fafc] px-3 py-2 text-[#475569]">
-                {documents.length}/{maxKnowledgeFiles} items · {readyCount} on
-              </div>
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[760px] text-left">
-                <thead className="bg-[#f8fafc]">
-                  <tr className="app-label text-[#64748b]">
-                    <th className="px-4 py-3 font-medium">Knowledge</th>
-                    <th className="w-28 px-4 py-3 font-medium">Use in calls</th>
-                    <th className="w-44 px-4 py-3 font-medium">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#edf0f4]">
-                  {loading ? (
-                    <tr>
-                      <td className="app-caption px-4 py-12 text-center" colSpan={3}>Loading knowledge...</td>
-                    </tr>
-                  ) : filteredDocuments.length ? (
-                    filteredDocuments.map(({ document, index }) => (
-                      <tr className="align-top transition hover:bg-[#fbfcfe]" key={document._id ?? `${document.name}-${index}`}>
-                        <td className="px-4 py-4">
-                          <div className="flex gap-3">
-                            <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg bg-[#eef2ff] text-[#4f46e5]">
-                              <Icon icon="file" />
-                            </span>
-                            <span className="min-w-0">
-                              <strong className="app-strong block">{document.name}</strong>
-                              <span className="app-caption mt-1 block max-w-3xl whitespace-normal text-[#64748b]">
-                                {previewText(document.content)}
-                              </span>
-                            </span>
-                          </div>
-                        </td>
-                        <td className="px-4 py-4">
-                          <button
-                            className={`app-label min-h-9 rounded-full px-3 transition ${
-                              document.status === "ready"
-                                ? "bg-[#ecfdf5] text-[#047857] hover:bg-[#d1fae5]"
-                                : "bg-[#f1f5f9] text-[#64748b] hover:bg-[#e2e8f0]"
-                            }`}
-                            disabled={saving}
-                            onClick={() => toggleDocument(index)}
-                            type="button"
-                          >
-                            {document.status === "ready" ? "On" : "Off"}
-                          </button>
-                        </td>
-                        <td className="px-4 py-4">
-                          <div className="flex gap-2">
-                            <button
-                              className="grid size-9 place-items-center rounded-lg border border-[#d5d8df] bg-white text-[#475569] transition hover:bg-[#f8fafc] hover:text-[#111827]"
-                              disabled={saving}
-                              onClick={() => openEditDocument(index)}
-                              type="button"
-                              aria-label={`Edit ${document.name}`}
-                            >
-                              <Icon icon="edit" />
-                            </button>
-                            <button
-                              className="grid size-9 place-items-center rounded-lg border border-[#fecaca] bg-white text-[#dc2626] transition hover:bg-[#fff1f2]"
-                              disabled={saving}
-                              onClick={() => removeDocument(index)}
-                              type="button"
-                              aria-label={`Remove ${document.name}`}
-                            >
-                              <Icon icon="trash" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td className="px-4 py-14 text-center" colSpan={3}>
-                        <span className="mx-auto mb-3 grid size-11 place-items-center rounded-lg bg-[#eef2ff] text-[#4f46e5]">
-                          <Icon icon="file" />
-                        </span>
-                        <strong className="app-strong block">{query ? "No matching knowledge found" : "No knowledge added yet"}</strong>
-                        <span className="app-caption mt-1 block">
-                          {query ? "Try a different search." : "Click Add knowledge to add text or upload a small text file."}
-                        </span>
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-            </section>
-          ) : null}
         </div>
       </section>
 
@@ -639,11 +578,17 @@ function EditorModal({
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <section className="grid max-h-[calc(100vh-24px)] w-full max-w-2xl grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden rounded-2xl border border-white/70 bg-white shadow-2xl">
+      <section className="grid max-h-[calc(100vh-24px)] w-full max-w-2xl grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden rounded-lg border border-white/70 bg-white shadow-2xl">
+        <div className="grid h-1 grid-cols-4" aria-hidden="true">
+          <span className="bg-[#38bdf8]" />
+          <span className="bg-[#22c55e]" />
+          <span className="bg-[#f59e0b]" />
+          <span className="bg-[#8b5cf6]" />
+        </div>
         <header className="flex items-start justify-between gap-4 border-b border-[#e5e7eb] px-5 py-4 sm:px-6">
           <div>
             <h2 className="app-page-title m-0">{isEditing ? "Edit knowledge" : "Add knowledge"}</h2>
-            <p className="app-caption mt-1 mb-0">Paste text, or upload a small text file. Keep it clear and approved.</p>
+            <p className="app-caption mt-1 mb-0">Paste text or upload a small file.</p>
           </div>
           <button className="grid size-9 shrink-0 place-items-center rounded-lg border border-[#e5e7eb] bg-white text-[#64748b] transition hover:bg-[#f8fafc] hover:text-[#111827]" onClick={onClose} type="button" aria-label="Close">
             <Icon icon="close" />
@@ -681,7 +626,7 @@ function EditorModal({
                   Choose file
                 </span>
               </span>
-              {fileName ? <span className="app-caption rounded-full bg-[#f1f5f9] px-2.5 py-1 text-[#475569]">{fileName}</span> : null}
+              {fileName ? <span className="app-caption rounded-lg bg-[#f1f5f9] px-2.5 py-1 text-[#475569]">{fileName}</span> : null}
             </span>
           </label>
 

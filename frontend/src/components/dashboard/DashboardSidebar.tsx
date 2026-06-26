@@ -5,20 +5,18 @@ import Link from "next/link";
 type SidebarItem = {
   label: string;
   href: string;
-  icon: "agent" | "phone" | "analytics" | "campaign" | "knowledge" | "logs" | "billing" | "integrations" | "developer" | "profile" | "settings";
+  icon: "agent" | "phone" | "campaign" | "knowledge" | "logs" | "billing" | "integrations";
+  tone: string;
 };
 
 const sidebarItems: SidebarItem[] = [
-  { label: "Voice Agents", href: "/dashboard", icon: "agent" },
-  { label: "Phone Number", href: "/dashboard/phone-number", icon: "phone" },
-  { label: "Campaigns", href: "/dashboard/campaign", icon: "campaign" },
-  { label: "Knowledge Base", href: "/dashboard/knowledge", icon: "knowledge" },
-  { label: "Call Logs", href: "/dashboard/calls", icon: "logs" },
-  { label: "Billing", href: "/dashboard/billing", icon: "billing" },
-  { label: "Integrations", href: "/dashboard/integrations", icon: "integrations" },
-  { label: "Developer", href: "/dashboard/developer", icon: "developer" },
-  { label: "Profile", href: "/dashboard/profile", icon: "profile" },
-  { label: "Settings", href: "/dashboard/settings", icon: "settings" },
+  { label: "Voice Agents", href: "/dashboard", icon: "agent", tone: "from-[#38bdf8] to-[#2563eb]" },
+  { label: "Phone Number", href: "/dashboard/phone-number", icon: "phone", tone: "from-[#22c55e] to-[#059669]" },
+  { label: "Campaigns", href: "/dashboard/campaign", icon: "campaign", tone: "from-[#f59e0b] to-[#ef4444]" },
+  { label: "Knowledge Base", href: "/dashboard/knowledge", icon: "knowledge", tone: "from-[#8b5cf6] to-[#ec4899]" },
+  { label: "Call Logs", href: "/dashboard/calls", icon: "logs", tone: "from-[#06b6d4] to-[#14b8a6]" },
+  { label: "Billing", href: "/dashboard/billing", icon: "billing", tone: "from-[#f97316] to-[#eab308]" },
+  { label: "Integrations", href: "/dashboard/integrations", icon: "integrations", tone: "from-[#6366f1] to-[#7c3aed]" },
 ];
 
 function SidebarIcon({ icon }: { icon: SidebarItem["icon"] | "mic" }) {
@@ -59,15 +57,6 @@ function SidebarIcon({ icon }: { icon: SidebarItem["icon"] | "mic" }) {
     );
   }
 
-  if (icon === "analytics") {
-    return (
-      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M5 20V10M12 20V4M19 20v-7" />
-        <path d="M3 20h18" />
-      </svg>
-    );
-  }
-
   if (icon === "knowledge") {
     return (
       <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
@@ -95,14 +84,6 @@ function SidebarIcon({ icon }: { icon: SidebarItem["icon"] | "mic" }) {
     );
   }
 
-  if (icon === "developer") {
-    return (
-      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
-        <path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 4l-4 16" />
-      </svg>
-    );
-  }
-
   if (icon === "integrations") {
     return (
       <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
@@ -112,21 +93,7 @@ function SidebarIcon({ icon }: { icon: SidebarItem["icon"] | "mic" }) {
     );
   }
 
-  if (icon === "profile") {
-    return (
-      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
-        <circle cx="12" cy="8" r="4" />
-        <path d="M4 21a8 8 0 0 1 16 0" />
-      </svg>
-    );
-  }
-
-  return (
-    <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" />
-      <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 0 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1A2 2 0 0 1 4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.3 7A2 2 0 0 1 7.1 4.2l.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.6V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1A2 2 0 0 1 19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1a2 2 0 0 1 0 4H21a1.7 1.7 0 0 0-1.6 1Z" />
-    </svg>
-  );
+  return null;
 }
 
 type DashboardSidebarProps = {
@@ -142,9 +109,9 @@ export function DashboardSidebar({
 }: DashboardSidebarProps) {
   return (
     <>
-      <aside className="z-40 flex gap-1.5 border-b border-[#e5e7eb] bg-white px-2 py-1.5 lg:fixed lg:inset-y-0 lg:left-0 lg:h-dvh lg:w-16 lg:flex-col lg:items-center lg:border-r lg:border-b-0 lg:px-0 lg:py-2.5">
+      <aside className="z-40 flex gap-1.5 border-b border-[#e5e7eb] bg-white/95 px-2 py-1.5 shadow-sm backdrop-blur lg:fixed lg:inset-y-0 lg:left-0 lg:h-dvh lg:w-16 lg:flex-col lg:items-center lg:border-r lg:border-b-0 lg:px-0 lg:py-2.5">
         <Link
-          className="grid size-9 shrink-0 place-items-center rounded-lg bg-[#0f172a] text-white shadow-[0_10px_22px_rgba(15,23,42,0.16)] transition hover:-translate-y-0.5"
+          className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#0f172a] text-white shadow-[0_10px_22px_rgba(15,23,42,0.18)] ring-1 ring-white/10 transition hover:-translate-y-0.5"
           href="/dashboard"
           prefetch={false}
           title="Voice Platform"
@@ -162,10 +129,10 @@ export function DashboardSidebar({
 
             return (
               <Link
-                className={`group relative grid size-9 shrink-0 place-items-center rounded-lg transition ${
+                className={`group relative grid size-10 shrink-0 place-items-center rounded-lg transition ${
                   isActive
-                    ? "bg-[#e9efff] text-[#2563eb]"
-                    : "text-[#747b88] hover:bg-[#f1f5f9] hover:text-[#111827]"
+                    ? `bg-gradient-to-br ${item.tone} text-white shadow-[0_10px_24px_rgba(15,23,42,0.18)]`
+                    : "text-[#747b88] hover:bg-[#f8fafc] hover:text-[#111827]"
                 }`}
                 href={item.href}
                 prefetch={false}
@@ -184,7 +151,7 @@ export function DashboardSidebar({
         </nav>
 
         <button
-          className="app-label ml-auto grid size-9 shrink-0 place-items-center rounded-full border border-[#c8cbd2] bg-[#2d2f34] text-white shadow-[inset_0_0_0_2px_rgba(255,255,255,0.16)] transition hover:-translate-y-0.5 lg:mt-auto lg:ml-0"
+          className="app-label ml-auto grid size-10 shrink-0 place-items-center rounded-full border border-[#c8cbd2] bg-[#2d2f34] text-white shadow-[inset_0_0_0_2px_rgba(255,255,255,0.16)] transition hover:-translate-y-0.5 lg:mt-auto lg:ml-0"
           type="button"
           title="Logout"
           aria-label="Logout"

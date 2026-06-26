@@ -70,7 +70,7 @@ function initials(name: string) {
 }
 
 function formatDate(value: string) {
-  if (!value) return "—";
+  if (!value) return "-";
   return new Intl.DateTimeFormat("en-IN", {
     day: "2-digit",
     month: "short",
@@ -192,7 +192,7 @@ export function PhoneNumberShell() {
       setNumbers(numberResponse.numbers);
       setAgents(agentResponse.agents);
       const suffix = result.routes.errors.length
-        ? ` First issue: ${result.routes.errors[0].number} — ${result.routes.errors[0].message}`
+        ? ` First issue: ${result.routes.errors[0].number} - ${result.routes.errors[0].message}`
         : "";
       showMessage(
         `Route sync complete: checked ${result.routes.total}, repaired ${result.routes.repaired}, needs setup ${result.routes.needsSetup}.${suffix}`,
@@ -243,15 +243,23 @@ export function PhoneNumberShell() {
       />
 
       <section className="min-w-0 overflow-y-auto">
-        <header className="border-b border-[#e5e7eb] bg-white px-4 py-4 sm:px-6 lg:px-8">
-          <div className="mx-auto flex w-full max-w-[1440px] flex-wrap items-center justify-between gap-4">
+        <header className="mx-4 mt-4 overflow-hidden rounded-2xl border border-[#0f172a] bg-[#111827] text-white shadow-[0_14px_36px_rgba(15,23,42,0.12)] sm:mx-6 lg:mx-8">
+          <div className="grid h-1 grid-cols-5" aria-hidden="true">
+            <span className="bg-[#22c55e]" />
+            <span className="bg-[#38bdf8]" />
+            <span className="bg-[#f59e0b]" />
+            <span className="bg-[#ef4444]" />
+            <span className="bg-[#8b5cf6]" />
+          </div>
+          <div className="mx-auto flex w-full max-w-[1500px] flex-wrap items-center justify-between gap-4 px-4 py-5 sm:px-6 lg:px-8">
             <div>
-              <h1 className="app-page-title m-0">Phone numbers</h1>
-              <p className="app-caption mt-1 mb-0">Import or buy telephony numbers, then link them to any voice agent.</p>
+              <span className="app-label text-[#86efac]">Telephony</span>
+              <h1 className="m-0 mt-1 text-xl font-semibold leading-7 text-white sm:text-2xl">Phone numbers</h1>
+              <p className="app-caption mt-1 mb-0 text-[#cbd5e1]">Import or buy telephony numbers, then link them to any voice agent.</p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <button
-                className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`}
+                className={`${buttonClass} border border-white/15 bg-white/10 text-white hover:bg-white/15`}
                 disabled={busy || loading}
                 onClick={() => void repairRoutes()}
                 type="button"
@@ -260,7 +268,7 @@ export function PhoneNumberShell() {
                 Repair routes
               </button>
               <button
-                className={`${buttonClass} border border-[#c7d2fe] bg-white text-[#1438f5] hover:bg-[#eef2ff]`}
+                className={`${buttonClass} border border-[#bbf7d0] bg-[#f0fdf4] text-[#15803d] hover:bg-[#dcfce7]`}
                 onClick={() => { setShowImport(true); showMessage(""); }}
                 type="button"
               >
@@ -268,7 +276,7 @@ export function PhoneNumberShell() {
                 Import number
               </button>
               <button
-                className={`${buttonClass} border-0 bg-[#1438f5] text-white shadow-sm hover:bg-[#102fcf]`}
+                className={`${buttonClass} border-0 bg-[#1438f5] text-white shadow-[0_12px_28px_rgba(20,56,245,0.28)] hover:bg-[#102fcf]`}
                 onClick={() => { setShowBuy(true); showMessage(""); }}
                 type="button"
               >
@@ -279,7 +287,7 @@ export function PhoneNumberShell() {
           </div>
         </header>
 
-        <div className="mx-auto grid w-full max-w-[1440px] gap-4 p-4 sm:p-6 lg:p-8">
+        <div className="mx-auto grid w-full max-w-[1500px] gap-4 p-4 sm:p-6 lg:p-8">
           {notice ? <Notice tone="success" message={notice} onClose={() => setNotice("")} /> : null}
           {error ? <Notice tone="error" message={error} onClose={() => setError("")} /> : null}
 
@@ -297,7 +305,7 @@ export function PhoneNumberShell() {
 
             {loading ? (
               <div className="grid min-h-[360px] place-items-center">
-                <span className="app-caption">Loading phone numbers…</span>
+                <span className="app-caption">Loading phone numbers...</span>
               </div>
             ) : numbers.length ? (
               <div className="overflow-x-auto">
@@ -332,7 +340,7 @@ export function PhoneNumberShell() {
                     <Icon icon="phone" className="size-5" />
                   </span>
                   <h3 className="app-section-title m-0">No phone numbers yet</h3>
-                  <p className="app-caption mt-1 mb-4">Import from Twilio, Exotel, or Vobiz—or buy a new Vobiz number.</p>
+                  <p className="app-caption mt-1 mb-4">Import from Twilio, Exotel, or Vobiz-or buy a new Vobiz number.</p>
                   <div className="flex flex-wrap justify-center gap-2">
                     <button className={`${buttonClass} border border-[#c7d2fe] bg-white text-[#1438f5]`} onClick={() => setShowImport(true)} type="button">
                       <Icon icon="import" /> Import number
@@ -552,12 +560,12 @@ function ImportNumberModal({ busy, onClose, onImport }: {
                 </label>
                 <label className="app-label grid gap-2">
                   Account SID
-                  <input className={controlClass} autoComplete="off" placeholder="AC…" value={accountSid} onChange={(event) => setAccountSid(event.target.value)} />
+                  <input className={controlClass} autoComplete="off" placeholder="AC..." value={accountSid} onChange={(event) => setAccountSid(event.target.value)} />
                 </label>
               </div>
               <label className="app-label grid gap-2">
                 API Key SID
-                <input className={controlClass} autoComplete="off" placeholder="SK…" value={apiKeySid} onChange={(event) => setApiKeySid(event.target.value)} />
+                <input className={controlClass} autoComplete="off" placeholder="SK..." value={apiKeySid} onChange={(event) => setApiKeySid(event.target.value)} />
               </label>
               <label className="app-label grid gap-2">
                 API Key Secret
@@ -596,7 +604,7 @@ function ImportNumberModal({ busy, onClose, onImport }: {
             <div className="grid gap-4 rounded-xl border border-[#e5e7eb] bg-[#f8fafc] p-4">
               <label className="app-label grid gap-2">
                 Auth ID
-                <input className={controlClass} autoComplete="off" placeholder="MA_… or SA_…" value={authId} onChange={(event) => setAuthId(event.target.value)} />
+                <input className={controlClass} autoComplete="off" placeholder="MA_... or SA_..." value={authId} onChange={(event) => setAuthId(event.target.value)} />
               </label>
               <label className="app-label grid gap-2">
                 Auth Token
@@ -623,7 +631,7 @@ function ImportNumberModal({ busy, onClose, onImport }: {
         <footer className="flex items-center justify-end gap-2 border-t border-[#e5e7eb] px-5 py-4 sm:px-6">
           <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button>
           <button className={`${buttonClass} bg-[#1438f5] text-white hover:bg-[#102fcf]`} disabled={busy || !valid} type="submit">
-            <Icon icon="import" /> {busy ? "Importing…" : "Import number"}
+            <Icon icon="import" /> {busy ? "Importing..." : "Import number"}
           </button>
         </footer>
       </form>
@@ -704,7 +712,7 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase }: {
             <input className={controlClass} inputMode="tel" placeholder="For example 80 or 650" value={query} onChange={(event) => setQuery(event.target.value)} />
           </label>
           <button className={`${buttonClass} self-end border border-[#c7d2fe] bg-white text-[#1438f5] hover:bg-[#eef2ff]`} disabled={searching || busy} type="submit">
-            <Icon icon="search" /> {searching ? "Searching…" : "Search"}
+            <Icon icon="search" /> {searching ? "Searching..." : "Search"}
           </button>
         </form>
 
@@ -717,7 +725,7 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase }: {
           ) : null}
           {requestError ? <div className="mb-3 rounded-lg border border-[#fecaca] bg-[#fff1f2] p-3 app-body text-[#b91c1c]">{requestError}</div> : null}
           {searching ? (
-            <div className="grid min-h-[240px] place-items-center"><span className="app-caption">Loading available numbers…</span></div>
+            <div className="grid min-h-[240px] place-items-center"><span className="app-caption">Loading available numbers...</span></div>
           ) : numbers.length ? (
             <div className="grid gap-2">
               {numbers.map((number) => {
@@ -757,7 +765,7 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase }: {
           <div className="flex gap-2">
             <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button>
             <button className={`${buttonClass} bg-[#1438f5] text-white hover:bg-[#102fcf]`} disabled={busy || !selected} onClick={() => { if (selected) onPurchase(selected, label); }} type="button">
-              <Icon icon="plus" /> {busy ? "Purchasing…" : "Purchase number"}
+              <Icon icon="plus" /> {busy ? "Purchasing..." : "Purchase number"}
             </button>
           </div>
         </footer>
@@ -781,7 +789,7 @@ function AgentModal({ agents, busy, number, onAssign, onClose }: {
   }, [agents, query]);
 
   return (
-    <ModalFrame title="Link an agent" subtitle={`${number.number} · ${number.provider}`} onClose={onClose} width="max-w-xl">
+    <ModalFrame title="Link an agent" subtitle={`${number.number} / ${number.provider}`} onClose={onClose} width="max-w-xl">
       <div className="grid min-h-0 grid-rows-[auto_minmax(0,1fr)_auto]">
         <div className="border-b border-[#e5e7eb] px-5 py-4 sm:px-6">
           <label className="relative block">
@@ -824,7 +832,7 @@ function AgentModal({ agents, busy, number, onAssign, onClose }: {
           <div className="flex gap-2">
             <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button>
             <button className={`${buttonClass} bg-[#1438f5] text-white hover:bg-[#102fcf]`} disabled={busy || !selectedId} onClick={() => onAssign(selectedId)} type="button">
-              <Icon icon="link" /> {busy ? "Saving…" : "Set agent"}
+              <Icon icon="link" /> {busy ? "Saving..." : "Set agent"}
             </button>
           </div>
         </footer>

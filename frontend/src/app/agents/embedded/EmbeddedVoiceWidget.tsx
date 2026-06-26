@@ -56,6 +56,7 @@ export function EmbeddedVoiceWidget() {
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("Loading");
   const [muted, setMuted] = useState(false);
+  const displayStatus = !agentId || !publicKey ? "Widget key missing" : status;
 
   const theme = agent?.theme ?? queryTheme ?? "auto";
   const isDark = theme === "dark" || (theme === "auto" && typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches);
@@ -93,7 +94,6 @@ export function EmbeddedVoiceWidget() {
   useEffect(() => {
     let cancelled = false;
     if (!agentId || !publicKey) {
-      setStatus("Widget key missing");
       return;
     }
 
@@ -233,7 +233,7 @@ export function EmbeddedVoiceWidget() {
       <header className="flex items-center justify-between gap-3 border-b border-current/10 p-4">
         <span className="min-w-0">
           <strong className="block truncate text-sm font-semibold">{agent?.name ?? "Voice assistant"}</strong>
-          <span className="block truncate text-xs opacity-70">{status}</span>
+          <span className="block truncate text-xs opacity-70">{displayStatus}</span>
         </span>
         {!inline ? (
           <button
@@ -291,7 +291,7 @@ export function EmbeddedVoiceWidget() {
               {busy ? "Connecting..." : buttonText}
             </button>
           )}
-          <span className="min-h-5 text-center text-xs opacity-60">{active ? "Microphone is live while connected." : status}</span>
+          <span className="min-h-5 text-center text-xs opacity-60">{active ? "Microphone is live while connected." : displayStatus}</span>
         </div>
       </section>
     </main>

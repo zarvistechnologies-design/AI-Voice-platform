@@ -101,9 +101,22 @@ export function IntegrationsShell() {
   return (
     <main className="grid min-h-screen bg-[#f4f7fb] text-slate-950 lg:grid-cols-[64px_minmax(0,1fr)]">
       <DashboardSidebar activeLabel="Integrations" userInitials={initials(session.name)} onLogout={() => void logoutSession().then(() => router.replace("/login"))} />
-      <section className="min-w-0 p-4 sm:p-6 lg:p-8">
-        <div className="mx-auto grid max-w-7xl gap-6">
-          <header><span className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">Native connections</span><h1 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">Integrations</h1><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Connect telephony, CRM, scheduling, and notification providers. Credentials are encrypted and never displayed again.</p></header>
+      <section className="min-w-0 p-4">
+        <div className="mx-auto grid max-w-[1500px] gap-6">
+          <header className="overflow-hidden rounded-2xl border border-[#0f172a] bg-[#111827] text-white shadow-[0_14px_36px_rgba(15,23,42,0.12)]">
+            <div className="grid h-1 grid-cols-5" aria-hidden="true">
+              <span className="bg-indigo-400" />
+              <span className="bg-violet-400" />
+              <span className="bg-sky-400" />
+              <span className="bg-emerald-400" />
+              <span className="bg-amber-400" />
+            </div>
+            <div className="p-5">
+              <span className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-300">Native connections</span>
+              <h1 className="mt-2 text-2xl font-semibold tracking-tight text-white sm:text-3xl">Integrations</h1>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">Connect telephony, CRM, scheduling, and notification providers. Credentials are encrypted and never displayed again.</p>
+            </div>
+          </header>
           {notice ? <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">{notice}</div> : null}
           <section className="grid gap-4 md:grid-cols-2">
             {providers.map((provider) => {

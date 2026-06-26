@@ -34,6 +34,7 @@ import {
   type SttProvider,
   type VoicePreviewRequest,
   type VoiceLanguageOption,
+  type VoiceProfile,
 } from "@/lib/voice";
 
 type AgentStatus = "Live" | "Draft" | "Paused";
@@ -114,8 +115,8 @@ const defaultBehavior: AgentBehavior = {
   voicemailAction: "leave-message",
   dtmfDial: false,
   dtmfSequence: "",
-  endpointingMode: "balanced",
-  responseDelayMs: 180,
+  endpointingMode: "fast",
+  responseDelayMs: 80,
   maxCallDurationSeconds: 1200,
   maxIdleSeconds: 18,
   transferPhone: "",
@@ -209,7 +210,9 @@ const agents: VoiceAgent[] = [{
 const fallbackLanguageCatalog: VoiceLanguageOption[] = [
   { value: "Multilingual", label: "Auto detect", code: "unknown", sarvamStt: true, sarvamTts: false },
   { value: "English", label: "English (India)", code: "en-IN", sarvamStt: true, sarvamTts: true },
+  { value: "English US", label: "English (US)", code: "en-US", sarvamStt: false, sarvamTts: false },
   { value: "English UK", label: "English (UK)", code: "en-GB", sarvamStt: false, sarvamTts: false },
+  { value: "English Australia", label: "English (Australia)", code: "en-AU", sarvamStt: false, sarvamTts: false },
   { value: "Hindi", label: "Hindi", code: "hi-IN", sarvamStt: true, sarvamTts: true },
   { value: "Bengali", label: "Bengali", code: "bn-IN", sarvamStt: true, sarvamTts: true },
   { value: "Tamil", label: "Tamil", code: "ta-IN", sarvamStt: true, sarvamTts: true },
@@ -234,6 +237,34 @@ const fallbackLanguageCatalog: VoiceLanguageOption[] = [
   { value: "Dogri", label: "Dogri", code: "doi-IN", sarvamStt: true, sarvamTts: false },
   { value: "Spanish", label: "Spanish", code: "es-ES", sarvamStt: false, sarvamTts: false },
   { value: "French", label: "French", code: "fr-FR", sarvamStt: false, sarvamTts: false },
+  { value: "German", label: "German", code: "de-DE", sarvamStt: false, sarvamTts: false },
+  { value: "Italian", label: "Italian", code: "it-IT", sarvamStt: false, sarvamTts: false },
+  { value: "Portuguese Brazil", label: "Portuguese (Brazil)", code: "pt-BR", sarvamStt: false, sarvamTts: false },
+  { value: "Portuguese Portugal", label: "Portuguese (Portugal)", code: "pt-PT", sarvamStt: false, sarvamTts: false },
+  { value: "Dutch", label: "Dutch", code: "nl-NL", sarvamStt: false, sarvamTts: false },
+  { value: "Arabic", label: "Arabic", code: "ar-SA", sarvamStt: false, sarvamTts: false },
+  { value: "Chinese Mandarin", label: "Chinese (Mandarin)", code: "zh-CN", sarvamStt: false, sarvamTts: false },
+  { value: "Japanese", label: "Japanese", code: "ja-JP", sarvamStt: false, sarvamTts: false },
+  { value: "Korean", label: "Korean", code: "ko-KR", sarvamStt: false, sarvamTts: false },
+  { value: "Russian", label: "Russian", code: "ru-RU", sarvamStt: false, sarvamTts: false },
+  { value: "Turkish", label: "Turkish", code: "tr-TR", sarvamStt: false, sarvamTts: false },
+  { value: "Indonesian", label: "Indonesian", code: "id-ID", sarvamStt: false, sarvamTts: false },
+  { value: "Malay", label: "Malay", code: "ms-MY", sarvamStt: false, sarvamTts: false },
+  { value: "Thai", label: "Thai", code: "th-TH", sarvamStt: false, sarvamTts: false },
+  { value: "Vietnamese", label: "Vietnamese", code: "vi-VN", sarvamStt: false, sarvamTts: false },
+  { value: "Filipino", label: "Filipino", code: "fil-PH", sarvamStt: false, sarvamTts: false },
+  { value: "Polish", label: "Polish", code: "pl-PL", sarvamStt: false, sarvamTts: false },
+  { value: "Ukrainian", label: "Ukrainian", code: "uk-UA", sarvamStt: false, sarvamTts: false },
+  { value: "Romanian", label: "Romanian", code: "ro-RO", sarvamStt: false, sarvamTts: false },
+  { value: "Greek", label: "Greek", code: "el-GR", sarvamStt: false, sarvamTts: false },
+  { value: "Hebrew", label: "Hebrew", code: "he-IL", sarvamStt: false, sarvamTts: false },
+  { value: "Swedish", label: "Swedish", code: "sv-SE", sarvamStt: false, sarvamTts: false },
+  { value: "Norwegian", label: "Norwegian", code: "nb-NO", sarvamStt: false, sarvamTts: false },
+  { value: "Danish", label: "Danish", code: "da-DK", sarvamStt: false, sarvamTts: false },
+  { value: "Finnish", label: "Finnish", code: "fi-FI", sarvamStt: false, sarvamTts: false },
+  { value: "Czech", label: "Czech", code: "cs-CZ", sarvamStt: false, sarvamTts: false },
+  { value: "Hungarian", label: "Hungarian", code: "hu-HU", sarvamStt: false, sarvamTts: false },
+  { value: "Swahili", label: "Swahili", code: "sw-KE", sarvamStt: false, sarvamTts: false },
 ];
 
 const fallbackSarvamV3Voices = [
@@ -260,8 +291,6 @@ const fallbackSarvamV3Voices = [
   "aayan",
   "ashutosh",
   "advait",
-  "amelia",
-  "sophia",
   "anand",
   "tanya",
   "tarun",
@@ -432,6 +461,50 @@ function formatCompactDuration(seconds: number) {
 }
 
 const voiceLabels: Record<string, string> = {
+  shubh: "Shubh - Indian English support",
+  aditya: "Aditya - confident sales",
+  ritu: "Ritu - warm Hindi support",
+  priya: "Priya - Hindi customer support",
+  neha: "Neha - calm helpdesk",
+  rahul: "Rahul - clear service desk",
+  pooja: "Pooja - appointment desk",
+  rohan: "Rohan - professional support",
+  simran: "Simran - friendly care",
+  kavya: "Kavya - polished assistant",
+  amit: "Amit - business support",
+  dev: "Dev - concise operator",
+  ishita: "Ishita - soft support",
+  shreya: "Shreya - energetic support",
+  ratan: "Ratan - steady advisor",
+  varun: "Varun - sales outreach",
+  manan: "Manan - formal assistant",
+  sumit: "Sumit - Hindi operations",
+  roopa: "Roopa - care coordinator",
+  kabir: "Kabir - calm sales",
+  aayan: "Aayan - young support",
+  ashutosh: "Ashutosh - senior advisor",
+  advait: "Advait - neutral assistant",
+  anand: "Anand - service desk",
+  tanya: "Tanya - customer care",
+  tarun: "Tarun - quick support",
+  sunny: "Sunny - upbeat sales",
+  mani: "Mani - regional support",
+  gokul: "Gokul - regional care",
+  vijay: "Vijay - authoritative desk",
+  shruti: "Shruti - clear customer care",
+  suhani: "Suhani - friendly receptionist",
+  mohit: "Mohit - technical support",
+  kavitha: "Kavitha - South India support",
+  rehan: "Rehan - calm operator",
+  soham: "Soham - formal support",
+  rupali: "Rupali - patient helpdesk",
+  anushka: "Anushka - classic support",
+  manisha: "Manisha - classic helpdesk",
+  vidya: "Vidya - classic assistant",
+  arya: "Arya - classic desk",
+  abhilash: "Abhilash - classic support",
+  karun: "Karun - classic operator",
+  hitesh: "Hitesh - classic advisor",
   bIHbv24MWmeRgasZH58o: "Will - ElevenLabs default",
   "21m00Tcm4TlvDq8ikWAM": "Rachel - female",
   EXAVITQu4vr4xnSDxMaL: "Bella - female",
@@ -441,10 +514,16 @@ const voiceLabels: Record<string, string> = {
   TxGEqnHWrfWFTfGW9XjX: "Josh - male",
 };
 
-function voiceSelectOptions(voices: readonly string[]): SelectOption[] {
+function voiceSelectOptions(
+  voices: readonly string[],
+  profiles: readonly VoiceProfile[] = [],
+): SelectOption[] {
+  const profilesByValue = new Map(profiles.map((profile) => [profile.value, profile]));
   return voices.map((voice) => ({
     value: voice,
-    label: voiceLabels[voice] ? `${voiceLabels[voice]} (${voice})` : voice,
+    label: (profilesByValue.get(voice)?.label ?? voiceLabels[voice])
+      ? `${profilesByValue.get(voice)?.label ?? voiceLabels[voice]} (${voice})`
+      : voice,
   }));
 }
 
@@ -1203,7 +1282,9 @@ export function DashboardShell() {
   const [runtimeRegions, setRuntimeRegions] = useState<Record<string, string>>({});
   const [runtimeSnapshot, setRuntimeSnapshot] = useState<AgentRuntimeSnapshot | null>(null);
   const [runtimeStreamState, setRuntimeStreamState] = useState<"connecting" | "live" | "reconnecting">("connecting");
-  const [appOrigin, setAppOrigin] = useState("http://localhost:3000");
+  const [appOrigin] = useState(() =>
+    typeof window === "undefined" ? "http://localhost:3000" : window.location.origin,
+  );
   const previewAudioRef = useRef<HTMLAudioElement | null>(null);
   const previewUrlRef = useRef("");
   const unsavedChangesRef = useRef(false);
@@ -1230,13 +1311,36 @@ export function DashboardShell() {
       label: "Model",
       value: selectedRuntimeSnapshot?.pipeline.label ?? (selectedAgent.pipelineMode === "realtime"
         ? `${selectedAgent.realtimeProvider}/${selectedAgent.realtimeModel}`
-        : `${selectedAgent.sttProvider} → ${selectedAgent.llmProvider} → ${selectedAgent.ttsProvider}`),
+        : `${selectedAgent.sttProvider} -> ${selectedAgent.llmProvider} -> ${selectedAgent.ttsProvider}`),
       tone: "text-[#2563eb]",
     },
     {
       label: "Region",
       value: selectedRuntimeRegion ? formatLiveKitRegion(selectedRuntimeRegion) : "No active room",
       tone: selectedRuntimeRegion ? "text-[#111827]" : "text-[#64748b]",
+    },
+  ];
+  const liveAgentCount = agentList.filter((agent) => agent.status === "Live").length;
+  const agentHeroStats = [
+    {
+      label: "Status",
+      value: selectedAgent.status,
+      tone: selectedAgent.status === "Live" ? "border-[#86efac] bg-[#f0fdf4] text-[#15803d]" : selectedAgent.status === "Draft" ? "border-[#fdba74] bg-[#fff7ed] text-[#c2410c]" : "border-[#cbd5e1] bg-[#f8fafc] text-[#475569]",
+    },
+    {
+      label: "Mode",
+      value: selectedAgent.pipelineMode === "realtime" ? "Realtime" : "Pipeline",
+      tone: "border-[#67e8f9] bg-[#ecfeff] text-[#0e7490]",
+    },
+    {
+      label: "Tools",
+      value: selectedAgent.tools.length.toLocaleString("en-IN"),
+      tone: "border-[#c4b5fd] bg-[#f5f3ff] text-[#6d28d9]",
+    },
+    {
+      label: "Knowledge",
+      value: selectedAgent.knowledgeDocuments.length.toLocaleString("en-IN"),
+      tone: "border-[#f9a8d4] bg-[#fdf2f8] text-[#be185d]",
     },
   ];
   const phoneAssigned = Boolean(selectedAgent.phone && selectedAgent.phone !== "Not assigned");
@@ -1311,10 +1415,6 @@ export function DashboardShell() {
   data-accent="${selectedAgent.widget.accentColor}"
   data-metadata="${selectedAgent.dynamicVariables.join(",")}"
 ></script>`;
-
-  useEffect(() => {
-    setAppOrigin(window.location.origin);
-  }, []);
 
   useEffect(() => {
     return () => {
@@ -1506,7 +1606,6 @@ export function DashboardShell() {
       ...input,
       voice: selectedAgent.voice,
       language: selectedAgent.language,
-      text: selectedAgent.firstMessage,
       voiceSpeed: selectedAgent.voiceSpeed,
     };
     const key = [
@@ -1990,34 +2089,48 @@ export function DashboardShell() {
   }
 
   return (
-    <main className="grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#f7f8fb] text-[#111827] lg:grid-cols-[64px_minmax(0,1fr)]">
+    <main className="grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#f6f8fc] text-[#111827] lg:grid-cols-[64px_minmax(0,1fr)]">
       <DashboardSidebar
         activeLabel="Voice Agents"
         userInitials={getInitials(session.name)}
         onLogout={handleLogout}
       />
 
-      <section className="grid min-w-0 content-start gap-4 p-3 sm:p-4">
-        <header className="-mx-3 -mt-3 flex flex-col items-stretch justify-between gap-4 border-b border-[#e5e7eb] bg-white px-4 py-4 sm:-mx-4 sm:-mt-4 sm:px-6 lg:flex-row lg:items-center">
-          <h1 className="app-page-title m-0 text-xl">{session.organization?.name ?? "Workspace"}</h1>
+      <section className="grid min-w-0 content-start gap-5">
+        <header className="mx-4 mt-4 overflow-hidden rounded-2xl border border-[#0f172a] bg-[#111827] text-white shadow-[0_14px_36px_rgba(15,23,42,0.12)] sm:mx-6 lg:mx-8">
+          <div className="grid h-1 grid-cols-5" aria-hidden="true">
+            <span className="bg-[#38bdf8]" />
+            <span className="bg-[#22c55e]" />
+            <span className="bg-[#f59e0b]" />
+            <span className="bg-[#ef4444]" />
+            <span className="bg-[#8b5cf6]" />
+          </div>
+          <div className="mx-auto grid w-full max-w-[1500px] gap-5 px-4 py-5 sm:px-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:px-8">
+            <div className="min-w-0">
+              <span className="app-label text-[#93c5fd]">{session.organization?.name ?? "Workspace"}</span>
+              <h1 className="m-0 mt-1 text-xl font-semibold leading-7 text-white sm:text-2xl">{selectedAgent.name}</h1>
+              <p className="app-caption mt-1 mb-0 max-w-3xl text-[#cbd5e1]">
+                Build, test, publish, and monitor your voice agent from one command center.
+              </p>
+            </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
             <button
-              className="app-button-text inline-flex min-h-9 items-center justify-center rounded-lg border border-[#d5d8df] bg-white px-3 text-[#475569]"
+              className="app-button-text inline-flex min-h-9 items-center justify-center rounded-lg border border-white/15 bg-white/10 px-3 text-white transition hover:bg-white/15"
               type="button"
               onClick={() => void handleCloneAgent()}
             >
               Clone
             </button>
             <button
-              className="app-button-text inline-flex min-h-9 items-center justify-center rounded-lg border border-rose-200 bg-white px-3 text-rose-600"
+              className="app-button-text inline-flex min-h-9 items-center justify-center rounded-lg border border-[#fecdd3] bg-[#fff1f2] px-3 text-[#be123c]"
               type="button"
               onClick={() => void handleDeleteAgent()}
             >
               Delete
             </button>
             <button
-              className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#111827] shadow-sm"
+              className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#bae6fd] bg-[#ecfeff] px-3 text-[#0e7490] shadow-sm"
               type="button"
               onClick={() => void handleSave()}
             >
@@ -2025,7 +2138,7 @@ export function DashboardShell() {
               Save
             </button>
             <button
-              className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#dbeafe] bg-[#eff6ff] px-3 text-[#2563eb] shadow-sm"
+              className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#bbf7d0] bg-[#f0fdf4] px-3 text-[#15803d] shadow-sm"
               type="button"
               disabled={!testCallsEnabled}
               title={testCallsEnabled ? "Start browser test call" : "Paused agents cannot start test calls"}
@@ -2035,7 +2148,7 @@ export function DashboardShell() {
               Test call
             </button>
             <button
-              className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border-0 bg-[#1438f5] px-3 text-white shadow-sm"
+              className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border-0 bg-[#1438f5] px-3 text-white shadow-[0_12px_28px_rgba(20,56,245,0.28)] transition hover:bg-[#102fcf]"
               type="button"
               onClick={() => {
                 updateSelectedAgent({ status: "Live" });
@@ -2045,18 +2158,33 @@ export function DashboardShell() {
               <Icon icon="play" />
               Publish
             </button>
+            </div>
+          </div>
+          <div className="mx-auto grid w-full max-w-[1500px] gap-2 px-4 pb-5 sm:px-6 sm:grid-cols-2 lg:grid-cols-4 lg:px-8">
+            {agentHeroStats.map((item) => (
+              <div className={`rounded-lg border px-3 py-2 ${item.tone}`} key={item.label}>
+                <span className="app-caption block text-current">{item.label}</span>
+                <strong className="block text-sm font-semibold leading-5">{item.value}</strong>
+              </div>
+            ))}
           </div>
         </header>
 
-        <section className="grid min-w-0 gap-4 xl:grid-cols-[280px_minmax(0,1fr)] 2xl:grid-cols-[280px_minmax(0,1fr)_300px]">
-          <aside className="min-w-0 overflow-hidden rounded-lg border border-[#dfe3ea] bg-white">
-            <div className="flex min-h-[58px] items-center justify-between border-b border-[#e5e7eb] px-4">
+        <section className="mx-auto grid w-full max-w-[1500px] min-w-0 gap-4 px-4 pb-5 sm:px-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:px-8 2xl:grid-cols-[280px_minmax(0,1fr)_300px]">
+          <aside className="min-w-0 overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm">
+            <div className="grid h-1 grid-cols-4" aria-hidden="true">
+              <span className="bg-[#38bdf8]" />
+              <span className="bg-[#22c55e]" />
+              <span className="bg-[#f59e0b]" />
+              <span className="bg-[#8b5cf6]" />
+            </div>
+            <div className="flex min-h-[64px] items-center justify-between border-b border-[#e5e7eb] bg-[#fbfdff] px-4">
               <div>
                 <h2 className="app-section-title m-0">Agents</h2>
-                <span className="app-caption">Build, test, and deploy</span>
+                <span className="app-caption">{liveAgentCount} live / {agentList.length} total</span>
               </div>
               <button
-                className="grid size-8 place-items-center rounded-lg bg-[#eff6ff] text-[#2563eb]"
+                className="grid size-9 place-items-center rounded-lg bg-[#eff6ff] text-[#2563eb] shadow-sm"
                 type="button"
                 aria-label="Create agent"
                 title="Create agent"
@@ -2074,13 +2202,13 @@ export function DashboardShell() {
                 return (
                   <button
                     className={`grid w-full grid-cols-[36px_minmax(0,1fr)_auto] items-center gap-3 rounded-lg p-2.5 text-left transition ${
-                      isActive ? "bg-[#eef4ff]" : "hover:bg-[#f8fafc]"
+                      isActive ? "bg-[#eef4ff] shadow-sm ring-1 ring-[#bfdbfe]" : "hover:bg-[#f8fafc]"
                     }`}
                     key={agent.id}
                     type="button"
                     onClick={() => setSelectedAgentId(agent.id)}
                   >
-                    <span className="grid size-9 place-items-center rounded-lg bg-white text-[#2563eb] shadow-sm">
+                    <span className={`grid size-9 place-items-center rounded-lg shadow-sm ${isActive ? "bg-[#1438f5] text-white" : "bg-white text-[#2563eb]"}`}>
                       <Icon icon="agent" />
                     </span>
                     <span className="min-w-0">
@@ -2098,9 +2226,15 @@ export function DashboardShell() {
                 <strong className="app-strong block">Start from template</strong>
                 <span className="app-caption">Support, scheduling, sales, and FAQ presets</span>
               </div>
-              {agentTemplates.map((template) => (
+              {agentTemplates.map((template, index) => (
                 <button
-                  className="app-button-text flex min-h-9 items-center justify-between gap-2 rounded-lg border border-[#d5d8df] bg-white px-3 text-left text-[#111827]"
+                  className={`app-button-text flex min-h-9 items-center justify-between gap-2 rounded-lg border px-3 text-left transition hover:-translate-y-0.5 ${
+                    index % 3 === 0
+                      ? "border-[#bae6fd] bg-[#f0f9ff] text-[#0369a1]"
+                      : index % 3 === 1
+                        ? "border-[#bbf7d0] bg-[#f0fdf4] text-[#15803d]"
+                        : "border-[#ddd6fe] bg-[#f5f3ff] text-[#6d28d9]"
+                  }`}
                   key={template.id}
                   type="button"
                   onClick={() => void handleCreateFromTemplate(template.id)}
@@ -2114,20 +2248,35 @@ export function DashboardShell() {
           </aside>
 
           <section className="grid min-w-0 content-start gap-4">
-            <article className="min-w-0 overflow-hidden rounded-lg border border-[#dfe3ea] bg-white">
-              <div className="flex flex-col gap-3 border-b border-[#e5e7eb] px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
+            <article className="min-w-0 overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm">
+              <div className="grid h-1 grid-cols-5" aria-hidden="true">
+                <span className="bg-[#38bdf8]" />
+                <span className="bg-[#22c55e]" />
+                <span className="bg-[#f59e0b]" />
+                <span className="bg-[#ef4444]" />
+                <span className="bg-[#8b5cf6]" />
+              </div>
+              <div className="flex flex-col gap-3 border-b border-[#e5e7eb] bg-[#fbfdff] px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                   <h2 className="app-section-title m-0">Agent builder</h2>
                   <span className="app-caption">
                     {selectedAgent.name} / {selectedAgent.team}
                   </span>
                 </div>
-                <div className="flex max-w-full gap-1 overflow-x-auto rounded-lg border border-[#dfe3ea] bg-[#f8fafc] p-1">
-                  {tabs.map((tab) => (
+                <div className="flex max-w-full gap-1 overflow-x-auto rounded-lg border border-[#dfe3ea] bg-white p-1">
+                  {tabs.map((tab, index) => (
                     <button
                       className={`app-button-text rounded-md px-3 py-1.5 transition ${
                         activeTab === tab.id
-                          ? "bg-[#111827] text-white"
+                          ? index === 0
+                            ? "bg-[#1438f5] text-white"
+                            : index === 1
+                              ? "bg-[#059669] text-white"
+                              : index === 2
+                                ? "bg-[#7c3aed] text-white"
+                                : index === 3
+                                  ? "bg-[#d97706] text-white"
+                                  : "bg-[#e11d48] text-white"
                           : "text-[#64748b] hover:bg-white hover:text-[#111827]"
                       }`}
                       key={tab.id}
@@ -2140,7 +2289,7 @@ export function DashboardShell() {
                 </div>
               </div>
 
-              <div className="p-4">
+              <div className="bg-[#fbfdff] p-4">
                 {activeTab === "builder" ? (
                   <div className="grid gap-4">
                     <div className="hidden gap-3 lg:grid-cols-2">
@@ -2156,7 +2305,7 @@ export function DashboardShell() {
                       />
                     </div>
 
-                    <section className="grid gap-3 rounded-lg border border-[#dfe3ea] bg-[#f8fbff] p-4">
+                    <section className="grid gap-3 rounded-lg border border-[#dbeafe] bg-white p-4 shadow-sm">
                       <div className="flex flex-col gap-1">
                         <h3 className="app-section-title m-0">Voice stack</h3>
                         <span className="app-caption">
@@ -2212,7 +2361,7 @@ export function DashboardShell() {
                             {selectedAgent.pipelineMode === "realtime" ? "Realtime voice" : `${selectedAgent.ttsProvider} TTS`}
                           </strong>
                           <span className="app-caption block truncate text-[#047857]">
-                            {selectedAgent.voice} {selectedAgent.pipelineMode === "pipeline" ? `· ${selectedAgent.ttsModel}` : ""}
+                            {selectedAgent.voice} {selectedAgent.pipelineMode === "pipeline" ? `/ ${selectedAgent.ttsModel}` : ""}
                           </span>
                         </button>
                       </div>
@@ -2305,7 +2454,10 @@ export function DashboardShell() {
                                 voice: voices[0] ?? selectedAgent.voice,
                               });
                             }}
-                            options={modelCatalog.realtime.map((item) => item.provider)}
+                            options={modelCatalog.realtime.map((item) => ({
+                              value: item.provider,
+                              label: item.label,
+                            }))}
                           />
                           <SelectField
                             label="Realtime model"
@@ -2371,6 +2523,7 @@ export function DashboardShell() {
                                 selectedAgent.language,
                                 languageCatalog,
                               ),
+                              getProvider(modelCatalog, "realtime", selectedAgent.realtimeProvider).voiceProfiles,
                             )}
                           />
                             </div>
@@ -2403,7 +2556,7 @@ export function DashboardShell() {
                             <h3 className="app-section-title m-0">
                               {openStackConfig === "voice" ? "Voice configuration" : openStackConfig === "stt" ? "STT configuration" : "LLM configuration"}
                             </h3>
-                          <span className="app-caption">Mix providers independently, like Vapi: STT → LLM → TTS.</span>
+                          <span className="app-caption">Mix providers independently, like Vapi: STT to LLM to TTS.</span>
                           </div>
                           <button
                             className="app-button-text rounded-lg border border-[#dfe3ea] bg-white px-3 py-2 text-[#475569] transition hover:bg-[#f8fafc]"
@@ -2446,7 +2599,10 @@ export function DashboardShell() {
                                 llmModel: next.models[0],
                               });
                             }}
-                            options={modelCatalog.llm.map((item) => item.provider)}
+                            options={modelCatalog.llm.map((item) => ({
+                              value: item.provider,
+                              label: item.label,
+                            }))}
                           />
                           <SelectField
                             label="LLM model"
@@ -2481,7 +2637,10 @@ export function DashboardShell() {
                                 language: nextLanguage,
                               });
                             }}
-                            options={modelCatalog.stt.map((item) => item.provider)}
+                            options={modelCatalog.stt.map((item) => ({
+                              value: item.provider,
+                              label: item.label,
+                            }))}
                           />
                           <SelectField
                             label="Speech-to-text model"
@@ -2530,7 +2689,10 @@ export function DashboardShell() {
                                 voice: voices[0] ?? selectedAgent.voice,
                               });
                             }}
-                            options={modelCatalog.tts.map((item) => item.provider)}
+                            options={modelCatalog.tts.map((item) => ({
+                              value: item.provider,
+                              label: item.label,
+                            }))}
                           />
                           <SelectField
                             label="Text-to-speech model"
@@ -2579,6 +2741,7 @@ export function DashboardShell() {
                                 selectedAgent.language,
                                 languageCatalog,
                               ),
+                              getProvider(modelCatalog, "tts", selectedAgent.ttsProvider).voiceProfiles,
                             )}
                           />
                         </div>
@@ -2610,7 +2773,7 @@ export function DashboardShell() {
                         <strong className="app-strong block break-words">
                           {selectedAgent.pipelineMode === "realtime"
                             ? `${selectedAgent.realtimeProvider} / ${selectedAgent.realtimeModel}`
-                            : `${selectedAgent.sttProvider} → ${selectedAgent.llmProvider} → ${selectedAgent.ttsProvider}`}
+                            : `${selectedAgent.sttProvider} -> ${selectedAgent.llmProvider} -> ${selectedAgent.ttsProvider}`}
                         </strong>
                       </div>
                       <label className="app-label grid gap-2">
@@ -2703,7 +2866,7 @@ export function DashboardShell() {
                         />
                         <SelectField
                           label="Endpointing mode"
-                          defaultValue="balanced"
+                          defaultValue="fast"
                           value={selectedAgent.behavior.endpointingMode}
                           options={endpointingModeOptions}
                           onChange={(value) => updateBehavior({ endpointingMode: value as AgentBehavior["endpointingMode"] })}
@@ -3547,7 +3710,12 @@ export function DashboardShell() {
           </section>
 
           <aside className="grid min-w-0 content-start gap-4 xl:col-span-2 xl:grid-cols-2 2xl:col-span-1 2xl:grid-cols-1">
-            <article className="min-w-0 overflow-hidden rounded-xl border border-[#dbe4f0] bg-white shadow-[0_8px_30px_rgba(15,23,42,0.06)]">
+            <article className="min-w-0 overflow-hidden rounded-lg border border-[#dbe4f0] bg-white shadow-sm">
+              <div className="grid h-1 grid-cols-3" aria-hidden="true">
+                <span className="bg-[#22c55e]" />
+                <span className="bg-[#38bdf8]" />
+                <span className="bg-[#8b5cf6]" />
+              </div>
               <div className="flex min-h-[68px] items-center justify-between gap-3 border-b border-[#dbeafe] bg-gradient-to-r from-[#eff6ff] via-white to-[#ecfeff] px-4">
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
@@ -3559,8 +3727,8 @@ export function DashboardShell() {
                   </div>
                   <span className="app-caption block truncate">
                     {selectedRuntimeStreamState === "live"
-                      ? `Live stream${selectedRuntimeSnapshot?.observedAt ? ` · ${new Date(selectedRuntimeSnapshot.observedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}` : ""}`
-                      : selectedRuntimeStreamState === "connecting" ? "Connecting live stream…" : "Reconnecting live stream…"}
+                      ? `Live stream${selectedRuntimeSnapshot?.observedAt ? ` / ${new Date(selectedRuntimeSnapshot.observedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}` : ""}`
+                      : selectedRuntimeStreamState === "connecting" ? "Connecting live stream..." : "Reconnecting live stream..."}
                   </span>
                 </div>
                 <span className={`app-label shrink-0 rounded-full px-2.5 py-1 ${dispatchBadge(selectedRuntimeSnapshot?.dispatch.state)}`} title={selectedRuntimeSnapshot?.dispatch.message}>
@@ -3570,8 +3738,18 @@ export function DashboardShell() {
 
               <div className="grid gap-4 p-4">
                 <div className="grid grid-cols-3 gap-2">
-                  {selectedRuntimeItems.map((item) => (
-                    <span className="min-w-0 rounded-lg border border-[#edf2f7] bg-[#f8fafc] p-2.5" key={item.label} title={item.label === "Region" && selectedRuntimeRegion ? selectedRuntimeRegion : undefined}>
+                  {selectedRuntimeItems.map((item, index) => (
+                    <span
+                      className={`min-w-0 rounded-lg border p-2.5 ${
+                        index === 0
+                          ? "border-[#bbf7d0] bg-[#f0fdf4]"
+                          : index === 1
+                            ? "border-[#bae6fd] bg-[#f0f9ff]"
+                            : "border-[#ddd6fe] bg-[#f5f3ff]"
+                      }`}
+                      key={item.label}
+                      title={item.label === "Region" && selectedRuntimeRegion ? selectedRuntimeRegion : undefined}
+                    >
                       <span className="app-label block truncate">{item.label}</span>
                       <strong className={`app-strong block truncate ${item.tone}`}>{item.value}</strong>
                     </span>
@@ -3602,14 +3780,14 @@ export function DashboardShell() {
                   <span className="flex items-center justify-between gap-3 py-2.5">
                     <span className="app-caption">Concurrency</span>
                     <strong className="app-strong">
-                      {selectedRuntimeSnapshot ? `${selectedRuntimeSnapshot.activeCalls} / ${selectedRuntimeSnapshot.maxConcurrentCalls} active` : "Connecting…"}
+                      {selectedRuntimeSnapshot ? `${selectedRuntimeSnapshot.activeCalls} / ${selectedRuntimeSnapshot.maxConcurrentCalls} active` : "Connecting..."}
                     </strong>
                   </span>
                   <span className="flex items-center justify-between gap-3 py-2.5">
                     <span className="app-caption">Hours guard</span>
                     <strong className="app-strong" title={selectedRuntimeSnapshot?.businessHours.timezone}>
                       {!selectedRuntimeSnapshot
-                        ? "Connecting…"
+                        ? "Connecting..."
                         : !selectedRuntimeSnapshot.businessHours.enabled
                           ? "Off"
                           : selectedRuntimeSnapshot.businessHours.open ? "Open" : "Closed"}
@@ -3619,14 +3797,16 @@ export function DashboardShell() {
               </div>
             </article>
 
-            <article className="rounded-lg border border-[#dfe3ea] bg-white p-4">
+            <article className="overflow-hidden rounded-lg border border-[#dfe3ea] bg-white shadow-sm">
+              <div className="h-1 bg-[#22c55e]" aria-hidden="true" />
+              <div className="p-4">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div className="min-w-0">
                   <h2 className="app-section-title m-0">Phone route</h2>
                   <span className="app-caption block truncate">
                     {selectedRuntimeSnapshot
-                      ? [selectedRuntimeSnapshot.phoneRoute.provider, selectedRuntimeSnapshot.phoneRoute.direction].filter(Boolean).join(" · ") || "No route assigned"
-                      : "Connecting live stream…"}
+                      ? [selectedRuntimeSnapshot.phoneRoute.provider, selectedRuntimeSnapshot.phoneRoute.direction].filter(Boolean).join(" / ") || "No route assigned"
+                      : "Connecting live stream..."}
                   </span>
                 </div>
                 <span className={`grid size-8 shrink-0 place-items-center rounded-lg ${selectedRuntimeSnapshot?.phoneRoute.status === "Ready" ? "bg-[#ecfdf5] text-[#059669]" : "bg-[#fff7ed] text-[#d97706]"}`}>
@@ -3644,14 +3824,14 @@ export function DashboardShell() {
                 <div className="grid grid-cols-2 gap-3">
                   <span>
                     <span className="app-label block">Calls</span>
-                    <strong className="app-strong block">{selectedRuntimeSnapshot?.phoneRoute.totalCalls ?? "—"}</strong>
-                    <span className="app-caption">{selectedRuntimeSnapshot ? `${selectedRuntimeSnapshot.phoneRoute.activeCalls} active` : "Connecting…"}</span>
+                    <strong className="app-strong block">{selectedRuntimeSnapshot?.phoneRoute.totalCalls ?? "-"}</strong>
+                    <span className="app-caption">{selectedRuntimeSnapshot ? `${selectedRuntimeSnapshot.phoneRoute.activeCalls} active` : "Connecting..."}</span>
                   </span>
                   <span>
                     <span className="app-label block">Completion</span>
                     <strong className="app-strong text-[#059669]">
                       {selectedRuntimeSnapshot?.phoneRoute.completionRate === null || selectedRuntimeSnapshot?.phoneRoute.completionRate === undefined
-                        ? "—"
+                        ? "-"
                         : `${selectedRuntimeSnapshot.phoneRoute.completionRate}%`}
                     </strong>
                   </span>
@@ -3674,9 +3854,12 @@ export function DashboardShell() {
                   </div>
                 ) : null}
               </div>
+              </div>
             </article>
 
-            <article className="rounded-lg border border-[#dfe3ea] bg-white p-4">
+            <article className="overflow-hidden rounded-lg border border-[#dfe3ea] bg-white shadow-sm">
+              <div className="h-1 bg-[#f59e0b]" aria-hidden="true" />
+              <div className="p-4">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
                   <h2 className="app-section-title m-0">Deploy checklist</h2>
@@ -3695,9 +3878,17 @@ export function DashboardShell() {
                   </div>
                 ))}
               </div>
+              </div>
             </article>
 
-            <article className="rounded-lg border border-[#dfe3ea] bg-[#111827] p-4 text-white">
+            <article className="overflow-hidden rounded-lg border border-[#1f2937] bg-[#111827] text-white shadow-sm">
+              <div className="grid h-1 grid-cols-4" aria-hidden="true">
+                <span className="bg-[#38bdf8]" />
+                <span className="bg-[#22c55e]" />
+                <span className="bg-[#f59e0b]" />
+                <span className="bg-[#8b5cf6]" />
+              </div>
+              <div className="p-4">
               <div className="mb-3 flex items-center justify-between gap-3">
                 <h2 className="app-section-title m-0 text-white">Config preview</h2>
                 <Icon icon="code" />
@@ -3723,6 +3914,7 @@ export function DashboardShell() {
   "version": ${selectedAgent.version}
 }`}
               </pre>
+              </div>
             </article>
           </aside>
         </section>

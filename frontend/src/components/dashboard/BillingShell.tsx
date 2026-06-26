@@ -172,21 +172,30 @@ export function BillingShell() {
   return (
     <main className="grid min-h-screen bg-[#f4f7fb] text-slate-950 lg:grid-cols-[64px_minmax(0,1fr)]">
       <DashboardSidebar activeLabel="Billing" userInitials={initials(session.name)} onLogout={() => void logoutSession().then(() => router.replace("/login"))} />
-      <section className="min-w-0 p-4 sm:p-6 lg:p-8">
-        <div className="mx-auto grid max-w-7xl gap-6">
-          <header className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-            <div>
-              <span className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">Pay per use</span>
-              <h1 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">Credit command center</h1>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Top up once, run calls, and see every provider charge broken down by LLM, STT, TTS, and carrier usage.</p>
+      <section className="min-w-0 p-4">
+        <div className="mx-auto grid max-w-[1500px] gap-6">
+          <header className="overflow-hidden rounded-2xl border border-[#0f172a] bg-[#111827] text-white shadow-[0_14px_36px_rgba(15,23,42,0.12)]">
+            <div className="grid h-1 grid-cols-5" aria-hidden="true">
+              <span className="bg-sky-400" />
+              <span className="bg-emerald-400" />
+              <span className="bg-amber-400" />
+              <span className="bg-rose-400" />
+              <span className="bg-violet-400" />
             </div>
-            <div className="flex gap-2">
-              <button className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50" type="button" onClick={() => void load()} disabled={Boolean(busy)}>
+            <div className="flex flex-col justify-between gap-4 p-5 sm:flex-row sm:items-end">
+              <div>
+                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-300">Pay per use</span>
+                <h1 className="mt-2 text-2xl font-semibold tracking-tight text-white sm:text-3xl">Credit command center</h1>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">Top up once, run calls, and see every provider charge broken down by LLM, STT, TTS, and carrier usage.</p>
+              </div>
+              <div className="flex gap-2">
+              <button className="rounded-xl border border-white/15 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-white/15" type="button" onClick={() => void load()} disabled={Boolean(busy)}>
                 Refresh
               </button>
-              <button className="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-slate-950/15 hover:bg-blue-700" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup"}>
+              <button className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 hover:bg-blue-700" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup"}>
                 Buy ${selectedTopUp}
               </button>
+              </div>
             </div>
           </header>
 
