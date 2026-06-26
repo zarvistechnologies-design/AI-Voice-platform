@@ -21,7 +21,7 @@ const maxUploadBytes = 300 * 1024;
 const buttonClass =
   "app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 transition disabled:cursor-not-allowed disabled:opacity-50";
 const controlClass =
-  "app-control-text min-h-11 w-full rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10";
+  "app-control-text min-h-11 w-full rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10";
 const documentTones = [
   "border-[#a5f3fc] bg-[#ecfeff] text-[#0891b2]",
   "border-[#bae6fd] bg-[#f0f9ff] text-[#0369a1]",
@@ -279,7 +279,7 @@ export function KnowledgeBaseShell() {
       />
 
       <section className="min-w-0 overflow-y-auto">
-        <header className="border-b border-[#dbeafe] bg-white px-4 py-4 sm:px-6 lg:px-8">
+        <header className="border-b border-[#bae6fd] bg-white px-4 py-4 sm:px-6 lg:px-8">
           <div className="mx-auto flex w-full max-w-[1500px] flex-wrap items-center justify-between gap-4">
             <div>
               <span className="app-label text-[#0284c7]">Knowledge Base</span>
@@ -337,7 +337,7 @@ export function KnowledgeBaseShell() {
                   </div>
                   <div className="h-2 overflow-hidden rounded-full bg-[#e5e7eb]">
                     <div
-                      className="h-full rounded-full bg-[#1438f5]"
+                      className="h-full rounded-full bg-[#0284c7]"
                       style={{ width: `${Math.min(100, (documents.length / maxKnowledgeFiles) * 100)}%` }}
                     />
                   </div>
@@ -346,7 +346,7 @@ export function KnowledgeBaseShell() {
 
               <div className="grid gap-3 p-4">
                 <button
-                  className={`${buttonClass} bg-[#1438f5] text-white shadow-sm hover:bg-[#102fcf]`}
+                  className={`${buttonClass} bg-[#0284c7] text-white shadow-sm hover:bg-[#0369a1]`}
                   disabled={!selectedAgent || loading || saving || knowledgeLimitReached}
                   onClick={openNewDocument}
                   type="button"
@@ -354,7 +354,7 @@ export function KnowledgeBaseShell() {
                   <Icon icon="plus" />
                   Add text
                 </button>
-                <label className={`${buttonClass} relative cursor-pointer border border-[#c7d2fe] bg-[#eef2ff] text-[#1438f5] hover:bg-[#e0e7ff] ${!selectedAgent || loading || saving || knowledgeLimitReached ? "pointer-events-none opacity-50" : ""}`}>
+                <label className={`${buttonClass} relative cursor-pointer border border-[#bae6fd] bg-[#f0f9ff] text-[#0284c7] hover:bg-[#e0f2fe] ${!selectedAgent || loading || saving || knowledgeLimitReached ? "pointer-events-none opacity-50" : ""}`}>
                   <input
                     className="absolute inset-0 cursor-pointer opacity-0"
                     type="file"
@@ -402,7 +402,7 @@ export function KnowledgeBaseShell() {
               </div>
             ) : documents.length === 0 ? (
               <div className="mx-auto grid max-w-xl place-items-center gap-4 px-5 py-14 text-center">
-                <span className="grid size-12 place-items-center rounded-lg bg-[#eef2ff] text-[#4f46e5]">
+                <span className="grid size-12 place-items-center rounded-lg bg-[#f0f9ff] text-[#0284c7]">
                   <Icon icon="file" className="size-5" />
                 </span>
                 <div>
@@ -413,7 +413,7 @@ export function KnowledgeBaseShell() {
                 </div>
                 <div className="flex flex-wrap justify-center gap-2">
                   <button
-                    className={`${buttonClass} bg-[#1438f5] text-white hover:bg-[#102fcf]`}
+                    className={`${buttonClass} bg-[#0284c7] text-white hover:bg-[#0369a1]`}
                     disabled={!selectedAgent || saving}
                     onClick={openNewDocument}
                     type="button"
@@ -603,7 +603,7 @@ function EditorModal({
                     void onFile(file);
                   }}
                 />
-                <span className={`${buttonClass} border border-[#c7d2fe] bg-white text-[#1438f5] hover:bg-[#eef2ff]`}>
+                <span className={`${buttonClass} border border-[#bae6fd] bg-white text-[#0284c7] hover:bg-[#f0f9ff]`}>
                   <Icon icon="upload" />
                   Choose file
                 </span>
@@ -615,7 +615,7 @@ function EditorModal({
           <label className="app-label grid gap-2">
             Knowledge text
             <textarea
-              className="app-control-text min-h-64 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10"
+              className="app-control-text min-h-64 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10"
               placeholder="Example: We are open Monday to Saturday, 10 AM to 6 PM. Refunds are available within 7 days..."
               value={content}
               onChange={(event) => onContentChange(event.target.value)}
@@ -627,7 +627,7 @@ function EditorModal({
           <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">
             Cancel
           </button>
-          <button className={`${buttonClass} bg-[#1438f5] text-white hover:bg-[#102fcf]`} disabled={busy || !name.trim() || !content.trim()} onClick={onSave} type="button">
+          <button className={`${buttonClass} bg-[#0284c7] text-white hover:bg-[#0369a1]`} disabled={busy || !name.trim() || !content.trim()} onClick={onSave} type="button">
             <Icon icon="check" />
             {busy ? "Saving..." : "Save"}
           </button>

@@ -66,12 +66,12 @@ function queryDate(value: string) {
 function statusTone(status: CallRecord["status"]) {
   if (status === "completed") return "bg-emerald-50 text-emerald-700 ring-emerald-200";
   if (status === "failed" || status === "cancelled") return "bg-rose-50 text-rose-700 ring-rose-200";
-  if (status === "active") return "bg-blue-50 text-blue-700 ring-blue-200";
+  if (status === "active") return "bg-sky-50 text-sky-700 ring-sky-200";
   return "bg-amber-50 text-amber-700 ring-amber-200";
 }
 
 const filterInputClass =
-  "rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium outline-none focus:border-blue-500";
+  "rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium outline-none focus:border-sky-500";
 
 function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }) {
   const billing = call.billing;
@@ -171,7 +171,7 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
             {recordingPlayerHref ? (
               <div className="grid gap-3">
                 <audio className="w-full" controls src={recordingPlayerHref} />
-                <a className="text-sm font-semibold text-blue-700 hover:text-blue-900" href={recordingPlayerHref} target="_blank" rel="noreferrer">
+                <a className="text-sm font-semibold text-sky-700 hover:text-sky-900" href={recordingPlayerHref} target="_blank" rel="noreferrer">
                   Open recording
                 </a>
               </div>
@@ -227,7 +227,7 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
                   <article
                     className={`max-w-[88%] rounded-2xl px-4 py-3 ${
                       item.role === "assistant"
-                        ? "justify-self-start rounded-bl-md bg-blue-50 text-blue-950"
+                        ? "justify-self-start rounded-bl-md bg-sky-50 text-sky-950"
                         : item.role === "user"
                           ? "justify-self-end rounded-br-md bg-slate-900 text-white"
                           : "justify-self-center bg-amber-50 text-amber-900"
@@ -379,7 +379,7 @@ export function CallLogsShell() {
       />
       <section className="min-w-0 p-4">
         <div className="mx-auto grid max-w-[1500px] gap-6">
-          <header className="border-b border-[#dbeafe] bg-white pb-4">
+          <header className="border-b border-[#bae6fd] bg-white pb-4">
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
               <div>
                 <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0284c7]">Conversation operations</span>
@@ -416,7 +416,7 @@ export function CallLogsShell() {
           <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
             <div className="grid gap-3 border-b border-slate-200 p-4">
               <div className="flex flex-wrap gap-2">
-                <input className="min-w-56 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500" placeholder="Search transcript or tag" value={search} onChange={(event) => { setSearch(event.target.value); setPage(1); }} />
+                <input className="min-w-56 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-sky-500" placeholder="Search transcript or tag" value={search} onChange={(event) => { setSearch(event.target.value); setPage(1); }} />
                 <select className={filterInputClass} value={agentId} onChange={(event) => { setAgentId(event.target.value); setPage(1); }}>
                   <option value="">All agents</option>
                   {agents.map((agent) => <option key={agent._id} value={agent._id}>{agent.name}</option>)}
@@ -456,7 +456,7 @@ export function CallLogsShell() {
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {calls.map((call) => (
-                    <tr className="cursor-pointer transition hover:bg-blue-50/60" key={call._id} onClick={() => void openCall(call._id)}>
+                    <tr className="cursor-pointer transition hover:bg-sky-50/60" key={call._id} onClick={() => void openCall(call._id)}>
                       <td className="px-4 py-4"><strong className="block text-sm text-slate-950">{agentName(call)}</strong><span className="text-xs text-slate-500">{call.livekitRoomName}</span></td>
                       <td className="px-4 py-4 text-sm font-medium capitalize text-slate-700">{call.direction}</td>
                       <td className="px-4 py-4 text-sm text-slate-700">{call.callerNumber || call.calledNumber || "Browser caller"}</td>

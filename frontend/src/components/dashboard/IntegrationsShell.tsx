@@ -103,14 +103,14 @@ export function IntegrationsShell() {
       <DashboardSidebar activeLabel="Integrations" userInitials={initials(session.name)} onLogout={() => void logoutSession().then(() => router.replace("/login"))} />
       <section className="min-w-0 p-4">
         <div className="mx-auto grid max-w-[1500px] gap-6">
-          <header className="border-b border-[#dbeafe] bg-white pb-4">
+          <header className="border-b border-[#bae6fd] bg-white pb-4">
             <div>
               <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0284c7]">Native connections</span>
               <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">Integrations</h1>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Connect telephony, CRM, scheduling, and notification providers. Credentials are encrypted and never displayed again.</p>
             </div>
           </header>
-          {notice ? <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">{notice}</div> : null}
+          {notice ? <div className="rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-800">{notice}</div> : null}
           <section className="grid gap-4 md:grid-cols-2">
             {providers.map((provider) => {
               const item = catalog[provider.id];
@@ -129,7 +129,7 @@ export function IntegrationsShell() {
         </div>
       </section>
 
-      {selected ? <div className="fixed inset-0 z-50 grid place-items-center bg-slate-950/50 p-4" onMouseDown={() => !busy && setSelected(null)}><div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl" onMouseDown={(event) => event.stopPropagation()}><div className="flex items-start justify-between gap-4"><div><span className="text-xs font-semibold uppercase tracking-wider text-blue-600">{catalog[selected].category}</span><h2 className="mt-2 text-xl font-semibold">Connect {catalog[selected].name}</h2></div><button className="rounded-lg px-2 py-1 text-slate-500" type="button" disabled={busy} onClick={() => setSelected(null)}>Close</button></div><p className="mt-3 text-sm leading-6 text-slate-600">{selected === "slack" ? "Create an incoming webhook in Slack and paste its URL. A verification message will be sent immediately." : selected === "hubspot" ? "Create a HubSpot private app with CRM contacts and notes permissions, then paste its access token." : "Create a Calendly personal access token and paste it here."}</p><label className="mt-5 grid gap-2 text-xs font-semibold text-slate-600">{selected === "slack" ? "Incoming webhook URL" : "Access token"}<input className="rounded-xl border border-slate-200 px-3 py-3 text-sm font-normal text-slate-950" autoComplete="new-password" type="password" value={credential} onChange={(event) => setCredential(event.target.value)} placeholder={selected === "slack" ? "https://hooks.slack.com/services/..." : "Paste provider token"} /></label><button className="mt-5 w-full rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white disabled:opacity-50" type="button" disabled={busy || !credential.trim()} onClick={() => void connect()}>{busy ? "Verifying..." : "Connect and verify"}</button></div></div> : null}
+      {selected ? <div className="fixed inset-0 z-50 grid place-items-center bg-slate-950/50 p-4" onMouseDown={() => !busy && setSelected(null)}><div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl" onMouseDown={(event) => event.stopPropagation()}><div className="flex items-start justify-between gap-4"><div><span className="text-xs font-semibold uppercase tracking-wider text-sky-600">{catalog[selected].category}</span><h2 className="mt-2 text-xl font-semibold">Connect {catalog[selected].name}</h2></div><button className="rounded-lg px-2 py-1 text-slate-500" type="button" disabled={busy} onClick={() => setSelected(null)}>Close</button></div><p className="mt-3 text-sm leading-6 text-slate-600">{selected === "slack" ? "Create an incoming webhook in Slack and paste its URL. A verification message will be sent immediately." : selected === "hubspot" ? "Create a HubSpot private app with CRM contacts and notes permissions, then paste its access token." : "Create a Calendly personal access token and paste it here."}</p><label className="mt-5 grid gap-2 text-xs font-semibold text-slate-600">{selected === "slack" ? "Incoming webhook URL" : "Access token"}<input className="rounded-xl border border-slate-200 px-3 py-3 text-sm font-normal text-slate-950" autoComplete="new-password" type="password" value={credential} onChange={(event) => setCredential(event.target.value)} placeholder={selected === "slack" ? "https://hooks.slack.com/services/..." : "Paste provider token"} /></label><button className="mt-5 w-full rounded-xl bg-sky-600 px-4 py-3 text-sm font-semibold text-white disabled:opacity-50" type="button" disabled={busy || !credential.trim()} onClick={() => void connect()}>{busy ? "Verifying..." : "Connect and verify"}</button></div></div> : null}
     </main>
   );
 }

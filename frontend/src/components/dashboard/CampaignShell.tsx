@@ -28,7 +28,7 @@ const maxCsvSize = 5 * 1024 * 1024;
 const buttonClass =
   "app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 transition disabled:cursor-not-allowed disabled:opacity-50";
 const controlClass =
-  "app-control-text min-h-11 w-full rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10";
+  "app-control-text min-h-11 w-full rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10";
 
 function Icon({ icon, className = "size-4" }: { icon: IconName; className?: string }) {
   const props = {
@@ -400,7 +400,7 @@ export function CampaignShell() {
       />
 
       <section className="min-w-0 overflow-y-auto">
-        <header className="border-b border-[#dbeafe] bg-white px-4 py-4 sm:px-6 lg:px-8">
+        <header className="border-b border-[#bae6fd] bg-white px-4 py-4 sm:px-6 lg:px-8">
           <div className="mx-auto flex w-full max-w-[1500px] flex-wrap items-center justify-between gap-4">
             <div>
               <span className="app-label text-[#0284c7]">Campaigns</span>
@@ -439,7 +439,7 @@ export function CampaignShell() {
                 ))}
               </div>
 
-              <section className="grid gap-5 border-b border-[#dbeafe] bg-[#f0f9ff] p-4 sm:p-5">
+              <section className="grid gap-5 border-b border-[#bae6fd] bg-[#f0f9ff] p-4 sm:p-5">
                 <div className="flex items-start gap-3">
                   <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg bg-[#ecfeff] text-[#0891b2]">
                     <Icon icon="spark" />
@@ -574,12 +574,12 @@ export function CampaignShell() {
 
                 <div className="grid gap-3 lg:grid-cols-2">
                   <button
-                    className={`rounded-lg border p-4 text-left transition ${sendMode === "now" ? "border-[#2563eb] bg-[#eff6ff] ring-2 ring-[#2563eb]/10" : "border-[#e5e7eb] bg-white hover:border-[#93c5fd]"}`}
+                    className={`rounded-lg border p-4 text-left transition ${sendMode === "now" ? "border-[#0284c7] bg-[#f0f9ff] ring-2 ring-[#0284c7]/10" : "border-[#e5e7eb] bg-white hover:border-[#7dd3fc]"}`}
                     onClick={() => setSendMode("now")}
                     type="button"
                   >
                     <span className="flex items-center gap-3">
-                      <span className="grid size-10 place-items-center rounded-lg bg-white text-[#2563eb]"><Icon icon="play" /></span>
+                      <span className="grid size-10 place-items-center rounded-lg bg-white text-[#0284c7]"><Icon icon="play" /></span>
                       <span><strong className="app-strong block">Send now</strong><span className="app-caption">Launch immediately</span></span>
                     </span>
                   </button>
@@ -666,7 +666,7 @@ export function CampaignShell() {
                   <div className="mt-4 grid gap-4">
                     <label className="app-label grid gap-2">
                       Goal
-                      <textarea className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-[#111827] outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10" placeholder="Confirm appointment interest and capture preferred callback time." value={campaignGoal} onChange={(event) => setCampaignGoal(event.target.value)} />
+                      <textarea className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-[#111827] outline-none focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10" placeholder="Confirm appointment interest and capture preferred callback time." value={campaignGoal} onChange={(event) => setCampaignGoal(event.target.value)} />
                     </label>
                     <label className="app-label grid gap-2">
                       Success criteria
@@ -732,7 +732,7 @@ export function CampaignShell() {
                     </div>
                   ))}
                 </dl>
-                <button className={`${buttonClass} mt-5 w-full bg-[#1438f5] text-white shadow-sm hover:bg-[#102fcf]`} disabled={loading || launching || !canPrepare} type="submit">
+                <button className={`${buttonClass} mt-5 w-full bg-[#0284c7] text-white shadow-sm hover:bg-[#0369a1]`} disabled={loading || launching || !canPrepare} type="submit">
                   <Icon icon="play" /> {launching ? "Launching..." : sendMode === "now" ? "Start calls now" : "Create scheduled draft"}
                 </button>
                 <p className="app-caption mt-3 mb-0 text-center">
@@ -763,7 +763,7 @@ function ToggleRow({ detail, enabled, onChange, title }: {
         <strong className="app-strong block">{title}</strong>
         <span className="app-caption block">{detail}</span>
       </span>
-      <span className={`relative h-6 w-11 rounded-full transition ${enabled ? "bg-[#1438f5]" : "bg-[#cbd5e1]"}`}>
+      <span className={`relative h-6 w-11 rounded-full transition ${enabled ? "bg-[#0284c7]" : "bg-[#cbd5e1]"}`}>
         <span className={`absolute top-1 size-4 rounded-full bg-white shadow transition ${enabled ? "left-6" : "left-1"}`} />
       </span>
     </button>
