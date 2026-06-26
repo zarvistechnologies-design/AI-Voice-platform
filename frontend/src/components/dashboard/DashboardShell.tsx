@@ -318,6 +318,257 @@ const fallbackSarvamV2Voices = [
 ];
 
 const fallbackSarvamVoices = [...fallbackSarvamV3Voices, ...fallbackSarvamV2Voices];
+
+function fallbackSarvamVoiceProfile(
+  value: string,
+  label: string,
+  gender: "male" | "female",
+  model: "bulbul:v2" | "bulbul:v3",
+  meta: {
+    languageCodes?: readonly string[];
+    useCase: string;
+    tone: string;
+    qualityTier?: string;
+    note?: string;
+  },
+): VoiceProfile {
+  const languageCodes = meta.languageCodes ?? [];
+  return {
+    value,
+    label,
+    gender,
+    model,
+    useCase: meta.useCase,
+    tone: meta.tone,
+    qualityTier: meta.qualityTier,
+    note: meta.note,
+    ...(languageCodes.length
+      ? {
+          languageCodes,
+          languageLabels: languageCodes.map(
+            (code) => fallbackLanguageCatalog.find((language) => language.code === code)?.label ?? code,
+          ),
+        }
+      : {}),
+  };
+}
+
+const fallbackSarvamVoiceProfiles: VoiceProfile[] = [
+  fallbackSarvamVoiceProfile("shubh", "Shubh", "male", "bulbul:v3", {
+    languageCodes: ["hi-IN", "te-IN", "kn-IN", "od-IN", "ml-IN"],
+    useCase: "Customer support",
+    tone: "neutral and reliable",
+    qualityTier: "Tier 2 - Good",
+  }),
+  fallbackSarvamVoiceProfile("aditya", "Aditya", "male", "bulbul:v3", {
+    useCase: "Sales outreach",
+    tone: "confident and direct",
+    qualityTier: "Tier 3 - Moderate",
+  }),
+  fallbackSarvamVoiceProfile("ritu", "Ritu", "female", "bulbul:v3", {
+    languageCodes: ["ta-IN", "od-IN", "mr-IN", "gu-IN"],
+    useCase: "Customer care",
+    tone: "warm and reassuring",
+    qualityTier: "Tier 3 - Moderate",
+  }),
+  fallbackSarvamVoiceProfile("priya", "Priya", "female", "bulbul:v3", {
+    languageCodes: ["hi-IN", "te-IN", "mr-IN", "gu-IN"],
+    useCase: "Customer support",
+    tone: "clear and warm",
+    qualityTier: "Tier 1 - Excellent",
+  }),
+  fallbackSarvamVoiceProfile("neha", "Neha", "female", "bulbul:v3", {
+    languageCodes: ["te-IN", "kn-IN"],
+    useCase: "Helpdesk",
+    tone: "calm and patient",
+    qualityTier: "Tier 3 - Moderate",
+  }),
+  fallbackSarvamVoiceProfile("rahul", "Rahul", "male", "bulbul:v3", {
+    useCase: "Service desk",
+    tone: "clear and practical",
+    qualityTier: "Tier 2 - Good",
+  }),
+  fallbackSarvamVoiceProfile("pooja", "Pooja", "female", "bulbul:v3", {
+    languageCodes: ["od-IN", "ml-IN"],
+    useCase: "Appointment desk",
+    tone: "polite and helpful",
+    qualityTier: "Tier 2 - Good",
+  }),
+  fallbackSarvamVoiceProfile("rohan", "Rohan", "male", "bulbul:v3", {
+    languageCodes: ["ta-IN"],
+    useCase: "Business support",
+    tone: "professional and steady",
+  }),
+  fallbackSarvamVoiceProfile("simran", "Simran", "female", "bulbul:v3", {
+    useCase: "Care desk",
+    tone: "friendly and expressive",
+    qualityTier: "Tier 3 - Moderate",
+  }),
+  fallbackSarvamVoiceProfile("kavya", "Kavya", "female", "bulbul:v3", {
+    useCase: "Virtual assistant",
+    tone: "polished and composed",
+  }),
+  fallbackSarvamVoiceProfile("amit", "Amit", "male", "bulbul:v3", {
+    useCase: "Business support",
+    tone: "crisp and formal",
+    qualityTier: "Tier 2 - Good",
+  }),
+  fallbackSarvamVoiceProfile("dev", "Dev", "male", "bulbul:v3", {
+    useCase: "Operator",
+    tone: "concise and neutral",
+    qualityTier: "Tier 3 - Moderate",
+  }),
+  fallbackSarvamVoiceProfile("ishita", "Ishita", "female", "bulbul:v3", {
+    languageCodes: ["en-IN", "kn-IN", "ta-IN"],
+    useCase: "Appointment booking",
+    tone: "soft and clear",
+    qualityTier: "Tier 1 - Excellent",
+  }),
+  fallbackSarvamVoiceProfile("shreya", "Shreya", "female", "bulbul:v3", {
+    useCase: "Customer support",
+    tone: "energetic and bright",
+    qualityTier: "Tier 3 - Moderate",
+  }),
+  fallbackSarvamVoiceProfile("ratan", "Ratan", "male", "bulbul:v3", {
+    languageCodes: ["en-IN", "te-IN", "kn-IN", "ta-IN", "mr-IN", "gu-IN"],
+    useCase: "Customer support",
+    tone: "steady and dependable",
+    qualityTier: "Tier 2 - Good",
+  }),
+  fallbackSarvamVoiceProfile("varun", "Varun", "male", "bulbul:v3", {
+    useCase: "Drama or suspense",
+    tone: "deep and dramatic",
+    qualityTier: "Tier 1 - Special use",
+    note: "Not a neutral customer-support default.",
+  }),
+  fallbackSarvamVoiceProfile("manan", "Manan", "male", "bulbul:v3", {
+    useCase: "Formal assistant",
+    tone: "measured and official",
+    qualityTier: "Tier 3 - Moderate",
+  }),
+  fallbackSarvamVoiceProfile("sumit", "Sumit", "male", "bulbul:v3", {
+    useCase: "Operations desk",
+    tone: "practical and direct",
+  }),
+  fallbackSarvamVoiceProfile("roopa", "Roopa", "female", "bulbul:v3", {
+    languageCodes: ["bn-IN", "pa-IN"],
+    useCase: "Care coordinator",
+    tone: "warm and patient",
+    qualityTier: "Tier 2 - Good",
+  }),
+  fallbackSarvamVoiceProfile("kabir", "Kabir", "male", "bulbul:v3", {
+    useCase: "Sales qualification",
+    tone: "calm and persuasive",
+  }),
+  fallbackSarvamVoiceProfile("aayan", "Aayan", "male", "bulbul:v3", {
+    useCase: "Young support",
+    tone: "fresh and approachable",
+  }),
+  fallbackSarvamVoiceProfile("ashutosh", "Ashutosh", "male", "bulbul:v3", {
+    languageCodes: ["hi-IN"],
+    useCase: "Senior advisory",
+    tone: "calm and mature",
+    qualityTier: "Tier 2 - Good",
+  }),
+  fallbackSarvamVoiceProfile("advait", "Advait", "male", "bulbul:v3", {
+    useCase: "Neutral assistant",
+    tone: "balanced and simple",
+  }),
+  fallbackSarvamVoiceProfile("anand", "Anand", "male", "bulbul:v3", {
+    useCase: "Service desk",
+    tone: "friendly and grounded",
+    qualityTier: "Tier 3 - Moderate",
+  }),
+  fallbackSarvamVoiceProfile("tanya", "Tanya", "female", "bulbul:v3", {
+    useCase: "Customer care",
+    tone: "kind and conversational",
+  }),
+  fallbackSarvamVoiceProfile("tarun", "Tarun", "male", "bulbul:v3", {
+    useCase: "Quick support",
+    tone: "fast and clear",
+  }),
+  fallbackSarvamVoiceProfile("sunny", "Sunny", "male", "bulbul:v3", {
+    useCase: "Sales outreach",
+    tone: "upbeat and energetic",
+    qualityTier: "Tier 2 - Good",
+  }),
+  fallbackSarvamVoiceProfile("mani", "Mani", "male", "bulbul:v3", {
+    languageCodes: ["pa-IN"],
+    useCase: "Customer support",
+    tone: "natural and reliable",
+    qualityTier: "Tier 1 - Excellent",
+  }),
+  fallbackSarvamVoiceProfile("gokul", "Gokul", "male", "bulbul:v3", {
+    useCase: "Regional care",
+    tone: "grounded and patient",
+  }),
+  fallbackSarvamVoiceProfile("vijay", "Vijay", "male", "bulbul:v3", {
+    useCase: "Authority desk",
+    tone: "firm and confident",
+  }),
+  fallbackSarvamVoiceProfile("shruti", "Shruti", "female", "bulbul:v3", {
+    useCase: "Customer care",
+    tone: "clear and friendly",
+  }),
+  fallbackSarvamVoiceProfile("suhani", "Suhani", "female", "bulbul:v3", {
+    languageCodes: ["hi-IN", "bn-IN", "pa-IN"],
+    useCase: "Reception and appointments",
+    tone: "sweet and friendly",
+    qualityTier: "Tier 3 - Moderate",
+  }),
+  fallbackSarvamVoiceProfile("mohit", "Mohit", "male", "bulbul:v3", {
+    useCase: "Technical support",
+    tone: "focused and precise",
+  }),
+  fallbackSarvamVoiceProfile("kavitha", "Kavitha", "female", "bulbul:v3", {
+    useCase: "Regional support",
+    tone: "clear and local",
+  }),
+  fallbackSarvamVoiceProfile("rehan", "Rehan", "male", "bulbul:v3", {
+    languageCodes: ["bn-IN"],
+    useCase: "Support desk",
+    tone: "calm and grounded",
+    qualityTier: "Tier 2 - Good",
+  }),
+  fallbackSarvamVoiceProfile("soham", "Soham", "male", "bulbul:v3", {
+    useCase: "Formal support",
+    tone: "steady and professional",
+  }),
+  fallbackSarvamVoiceProfile("rupali", "Rupali", "female", "bulbul:v3", {
+    useCase: "Patient helpdesk",
+    tone: "gentle and attentive",
+    qualityTier: "Tier 3 - Moderate",
+  }),
+  fallbackSarvamVoiceProfile("anushka", "Anushka", "female", "bulbul:v2", {
+    useCase: "Classic support",
+    tone: "clear and professional",
+  }),
+  fallbackSarvamVoiceProfile("manisha", "Manisha", "female", "bulbul:v2", {
+    useCase: "Classic helpdesk",
+    tone: "warm and friendly",
+  }),
+  fallbackSarvamVoiceProfile("vidya", "Vidya", "female", "bulbul:v2", {
+    useCase: "Classic assistant",
+    tone: "articulate and precise",
+  }),
+  fallbackSarvamVoiceProfile("arya", "Arya", "female", "bulbul:v2", {
+    useCase: "Classic desk",
+    tone: "young and energetic",
+  }),
+  fallbackSarvamVoiceProfile("abhilash", "Abhilash", "male", "bulbul:v2", {
+    useCase: "Classic support",
+    tone: "deep and authoritative",
+  }),
+  fallbackSarvamVoiceProfile("karun", "Karun", "male", "bulbul:v2", {
+    useCase: "Classic operator",
+    tone: "natural and conversational",
+  }),
+  fallbackSarvamVoiceProfile("hitesh", "Hitesh", "male", "bulbul:v2", {
+    useCase: "Classic advisor",
+    tone: "professional and engaging",
+  }),
+];
+
 const fallbackElevenLabsVoices = [
   "bIHbv24MWmeRgasZH58o",
 ];
@@ -339,6 +590,37 @@ function voicesByLanguage(
       [language.code, voices],
     ]),
   );
+}
+
+const fallbackSarvamRecommendedVoicesByLanguageCode: Record<string, readonly string[]> = {
+  "en-IN": ["ratan", "ishita"],
+  "hi-IN": ["shubh", "ashutosh", "priya", "suhani"],
+  "te-IN": ["shubh", "ratan", "neha", "priya"],
+  "kn-IN": ["shubh", "ratan", "neha", "ishita"],
+  "bn-IN": ["rehan", "roopa", "suhani"],
+  "ta-IN": ["ratan", "rohan", "ishita", "ritu"],
+  "od-IN": ["shubh", "ritu", "pooja"],
+  "ml-IN": ["shubh", "pooja"],
+  "mr-IN": ["ratan", "priya", "ritu"],
+  "pa-IN": ["mani", "roopa", "suhani"],
+  "gu-IN": ["ratan", "priya", "ritu"],
+};
+
+function voicesByLanguageFromRecommendations(
+  recommendations: Record<string, readonly string[]>,
+  languages: readonly VoiceLanguageOption[],
+) {
+  const voicesByLanguage = new Map<string, string[]>();
+
+  for (const [code, recommendedVoices] of Object.entries(recommendations)) {
+    const language = languages.find((item) => item.code === code);
+    const keys = [code, language?.value, language?.label].filter(Boolean) as string[];
+    for (const key of keys) {
+      voicesByLanguage.set(key, [...recommendedVoices]);
+    }
+  }
+
+  return Object.fromEntries(voicesByLanguage);
 }
 
 const fallbackCatalog: ModelCatalog = {
@@ -377,10 +659,11 @@ const fallbackCatalog: ModelCatalog = {
       configured: true,
       models: ["bulbul:v3"],
       voices: fallbackSarvamVoices,
+      voiceProfiles: fallbackSarvamVoiceProfiles,
       languages: fallbackLanguageCatalog.filter((language) => language.sarvamTts),
-      voicesByLanguage: voicesByLanguage(
-        fallbackLanguageCatalog.filter((language) => language.sarvamTts),
-        fallbackSarvamVoices,
+      voicesByLanguage: voicesByLanguageFromRecommendations(
+        fallbackSarvamRecommendedVoicesByLanguageCode,
+        fallbackLanguageCatalog,
       ),
       voicesByModel: {
         "bulbul:v3": fallbackSarvamV3Voices,
@@ -433,7 +716,7 @@ function getVoices(
   if (languageVoices?.length && modelVoices.length) {
     const allowed = new Set(languageVoices);
     const filtered = modelVoices.filter((voice) => allowed.has(voice));
-    return filtered.length ? filtered : [...languageVoices];
+    return filtered.length ? filtered : [...modelVoices];
   }
 
   return languageVoices ? [...languageVoices] : [...modelVoices];
@@ -514,17 +797,81 @@ const voiceLabels: Record<string, string> = {
   TxGEqnHWrfWFTfGW9XjX: "Josh - male",
 };
 
+function languageDisplayName(language: string, languageCatalog: readonly VoiceLanguageOption[]) {
+  const normalized = language.trim().toLowerCase();
+  const matched = languageCatalog.find((item) =>
+    [item.value, item.label, item.code].some((candidate) => candidate.toLowerCase() === normalized),
+  );
+  return matched?.label ?? language;
+}
+
+function voiceMatchesLanguage(
+  profile: VoiceProfile | undefined,
+  language: string,
+  languageCatalog: readonly VoiceLanguageOption[],
+) {
+  if (!profile || !language) return false;
+  const keys = new Set(languageKeys(language, languageCatalog).map((key) => key.toLowerCase()));
+  return [
+    ...(profile.languageCodes ?? []),
+    ...(profile.languageLabels ?? []),
+    ...(profile.languages ?? []),
+  ].some((candidate) => keys.has(candidate.toLowerCase()));
+}
+
+function voiceProfileDetails(
+  profile: VoiceProfile | undefined,
+  language: string,
+  languageCatalog: readonly VoiceLanguageOption[],
+) {
+  if (!profile) return [];
+  const languageLabel = language ? languageDisplayName(language, languageCatalog) : "";
+  const languagePart = voiceMatchesLanguage(profile, language, languageCatalog)
+    ? languageLabel
+    : profile.languageLabels?.join(", ");
+  return [languagePart, profile.useCase, profile.tone].filter(Boolean) as string[];
+}
+
 function voiceSelectOptions(
   voices: readonly string[],
   profiles: readonly VoiceProfile[] = [],
+  language = "",
+  languageCatalog: readonly VoiceLanguageOption[] = [],
 ): SelectOption[] {
   const profilesByValue = new Map(profiles.map((profile) => [profile.value, profile]));
   return voices.map((voice) => ({
     value: voice,
-    label: (profilesByValue.get(voice)?.label ?? voiceLabels[voice])
-      ? `${profilesByValue.get(voice)?.label ?? voiceLabels[voice]} (${voice})`
-      : voice,
+    label: (() => {
+      const profile = profilesByValue.get(voice);
+      const name = profile?.label ?? voiceLabels[voice] ?? voice;
+      const details = voiceProfileDetails(profile, language, languageCatalog);
+      return details.length ? `${name} - ${details.join(" | ")} (${voice})` : `${name} (${voice})`;
+    })(),
   }));
+}
+
+function voiceProfileSummary(
+  voice: string,
+  profiles: readonly VoiceProfile[] = [],
+  language = "",
+  languageCatalog: readonly VoiceLanguageOption[] = [],
+) {
+  const profile = profiles.find((item) => item.value === voice);
+  if (!profile) return undefined;
+
+  const languageLabel = language ? languageDisplayName(language, languageCatalog) : "";
+  const languageFit = voiceMatchesLanguage(profile, language, languageCatalog)
+    ? `Best for ${languageLabel}`
+    : profile.languageLabels?.length
+      ? `Recommended for ${profile.languageLabels.join(", ")}`
+      : undefined;
+  return [
+    languageFit,
+    profile.useCase ? `Use: ${profile.useCase}` : undefined,
+    profile.tone ? `Tone: ${profile.tone}` : undefined,
+    profile.qualityTier,
+    profile.note,
+  ].filter(Boolean).join(" | ");
 }
 
 function coerceLanguage(
@@ -1114,6 +1461,7 @@ function VoiceSelectField({
   label,
   options,
   value,
+  description,
   onChange,
   onPreview,
   previewing,
@@ -1121,6 +1469,7 @@ function VoiceSelectField({
   label: string;
   options: SelectOption[];
   value: string;
+  description?: string;
   onChange: (value: string) => void;
   onPreview: () => void;
   previewing: boolean;
@@ -1155,6 +1504,11 @@ function VoiceSelectField({
           <Icon icon="play" />
         </button>
       </span>
+      {description ? (
+        <span className="app-caption rounded-lg border border-[#bae6fd] bg-[#f0f9ff] px-3 py-2 text-[#0369a1]">
+          {description}
+        </span>
+      ) : null}
     </label>
   );
 }
@@ -2472,6 +2826,12 @@ export function DashboardShell() {
                           <VoiceSelectField
                             label="Realtime voice"
                             value={selectedAgent.voice}
+                            description={voiceProfileSummary(
+                              selectedAgent.voice,
+                              getProvider(modelCatalog, "realtime", selectedAgent.realtimeProvider).voiceProfiles,
+                              selectedAgent.language,
+                              languageCatalog,
+                            )}
                             onChange={(voice) => updateSelectedAgent({ voice })}
                             onPreview={() => void handlePreviewVoice({
                               mode: "realtime",
@@ -2497,6 +2857,8 @@ export function DashboardShell() {
                                 languageCatalog,
                               ),
                               getProvider(modelCatalog, "realtime", selectedAgent.realtimeProvider).voiceProfiles,
+                              selectedAgent.language,
+                              languageCatalog,
                             )}
                           />
                             </div>
@@ -2690,6 +3052,12 @@ export function DashboardShell() {
                           <VoiceSelectField
                             label="Voice / speaker"
                             value={selectedAgent.voice}
+                            description={voiceProfileSummary(
+                              selectedAgent.voice,
+                              getProvider(modelCatalog, "tts", selectedAgent.ttsProvider).voiceProfiles,
+                              selectedAgent.language,
+                              languageCatalog,
+                            )}
                             onChange={(voice) => updateSelectedAgent({ voice })}
                             onPreview={() => void handlePreviewVoice({
                               mode: "pipeline",
@@ -2715,6 +3083,8 @@ export function DashboardShell() {
                                 languageCatalog,
                               ),
                               getProvider(modelCatalog, "tts", selectedAgent.ttsProvider).voiceProfiles,
+                              selectedAgent.language,
+                              languageCatalog,
                             )}
                           />
                         </div>

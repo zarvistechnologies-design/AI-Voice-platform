@@ -151,6 +151,10 @@ export type VoiceProfile = {
   label: string;
   gender?: "male" | "female";
   model?: string;
+  useCase?: string;
+  tone?: string;
+  qualityTier?: string;
+  note?: string;
   languages?: readonly string[];
   languageCodes?: readonly string[];
   languageLabels?: readonly string[];
