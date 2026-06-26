@@ -257,11 +257,12 @@ export function CampaignShell() {
   const completedReadyChecks = readyChecks.filter((check) => check.ready).length;
   const estimatedBatches = Math.max(1, Math.ceil(leads.length / normalizedDailyLimit));
   const previewLeads = leads.slice(0, 8);
+  const campaignMetricTone = "border-[#bae6fd] bg-[#f0f9ff] text-[#0369a1]";
   const campaignMetrics = [
-    { label: "Audience", value: leads.length.toLocaleString("en-IN"), tone: "border-[#67e8f9] bg-[#ecfeff] text-[#0e7490]" },
-    { label: "Ready checks", value: `${completedReadyChecks}/${readyChecks.length}`, tone: "border-[#86efac] bg-[#f0fdf4] text-[#15803d]" },
-    { label: "Concurrency", value: normalizedConcurrency.toLocaleString("en-IN"), tone: "border-[#c4b5fd] bg-[#f5f3ff] text-[#6d28d9]" },
-    { label: "Daily limit", value: normalizedDailyLimit.toLocaleString("en-IN"), tone: "border-[#fdba74] bg-[#fff7ed] text-[#c2410c]" },
+    { label: "Audience", value: leads.length.toLocaleString("en-IN"), tone: campaignMetricTone },
+    { label: "Ready checks", value: `${completedReadyChecks}/${readyChecks.length}`, tone: campaignMetricTone },
+    { label: "Concurrency", value: normalizedConcurrency.toLocaleString("en-IN"), tone: campaignMetricTone },
+    { label: "Daily limit", value: normalizedDailyLimit.toLocaleString("en-IN"), tone: campaignMetricTone },
   ];
 
   async function handleCsv(file: File | undefined) {
@@ -399,19 +400,13 @@ export function CampaignShell() {
       />
 
       <section className="min-w-0 overflow-y-auto">
-        <header className="mx-4 mt-4 overflow-hidden rounded-2xl border border-[#0f172a] bg-[#111827] text-white shadow-[0_14px_36px_rgba(15,23,42,0.12)] sm:mx-6 lg:mx-8">
-          <div className="grid h-1 grid-cols-5" aria-hidden="true">
-            <span className="bg-[#38bdf8]" />
-            <span className="bg-[#22c55e]" />
-            <span className="bg-[#f59e0b]" />
-            <span className="bg-[#ef4444]" />
-            <span className="bg-[#8b5cf6]" />
-          </div>
-          <div className="mx-auto flex w-full max-w-[1500px] flex-wrap items-center justify-between gap-5 px-4 py-5 sm:px-6 lg:px-8">
+        <header className="border-b border-[#dbeafe] bg-white px-4 py-4 sm:px-6 lg:px-8">
+          <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
+          <div className="mx-auto flex w-full max-w-[1500px] flex-wrap items-center justify-between gap-4">
             <div>
-              <span className="app-label text-[#93c5fd]">Campaigns</span>
-              <h1 className="m-0 text-xl font-semibold leading-7 text-white">Outbound launchpad</h1>
-              <p className="app-caption mt-1 mb-0 text-[#cbd5e1]">Audience, routing, pacing, launch.</p>
+              <span className="app-label text-[#0284c7]">Campaigns</span>
+              <h1 className="m-0 text-xl font-semibold leading-7 text-[#0f172a]">Outbound launchpad</h1>
+              <p className="app-caption mt-1 mb-0 text-[#475569]">Audience, routing, pacing, launch.</p>
             </div>
             <div className="grid w-full gap-2 sm:w-auto sm:grid-cols-4">
               {campaignMetrics.map((metric) => (
@@ -433,10 +428,10 @@ export function CampaignShell() {
               <div className="grid border-b border-[#e5e7eb] bg-[#fbfdff] sm:grid-cols-5">
                 {[
                   ["Details", "bg-[#38bdf8]"],
-                  ["Audience", "bg-[#22c55e]"],
-                  ["Timing", "bg-[#f59e0b]"],
-                  ["Strategy", "bg-[#8b5cf6]"],
-                  ["Review", "bg-[#ef4444]"],
+                  ["Audience", "bg-[#38bdf8]"],
+                  ["Timing", "bg-[#38bdf8]"],
+                  ["Strategy", "bg-[#38bdf8]"],
+                  ["Review", "bg-[#38bdf8]"],
                 ].map(([label, color]) => (
                   <div className="flex items-center gap-2 border-b border-[#e5e7eb] px-4 py-3 last:border-b-0 sm:border-r sm:border-b-0 sm:last:border-r-0" key={label}>
                     <span className={`size-2 rounded-full ${color}`} />
@@ -490,10 +485,10 @@ export function CampaignShell() {
                 </div>
               </section>
 
-              <section className="grid gap-5 border-b border-[#bbf7d0] bg-[#f0fdf4] p-4 sm:p-5">
+              <section className="grid gap-5 border-b border-[#bae6fd] bg-[#f0f9ff] p-4 sm:p-5">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="flex items-start gap-3">
-                    <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg bg-[#f0fdf4] text-[#16a34a]">
+                    <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg bg-[#f0f9ff] text-[#0284c7]">
                       <Icon icon="upload" />
                     </span>
                     <div>
@@ -505,23 +500,23 @@ export function CampaignShell() {
                 </div>
 
                 <label
-                  className="grid min-h-[170px] cursor-pointer place-items-center rounded-lg border border-dashed border-[#86efac] bg-white p-6 text-center shadow-sm transition hover:border-[#22c55e] hover:bg-[#ecfdf5]"
+                  className="grid min-h-[170px] cursor-pointer place-items-center rounded-lg border border-dashed border-[#7dd3fc] bg-white p-6 text-center shadow-sm transition hover:border-[#38bdf8] hover:bg-[#f0f9ff]"
                   onDragOver={(event) => event.preventDefault()}
                   onDrop={handleDrop}
                 >
                   <input className="sr-only" type="file" accept=".csv,text/csv" onChange={(event) => void handleCsv(event.target.files?.[0])} />
                   <span>
-                    <span className="mx-auto mb-3 grid size-11 place-items-center rounded-lg bg-white text-[#16a34a] shadow-sm"><Icon icon="file" /></span>
+                    <span className="mx-auto mb-3 grid size-11 place-items-center rounded-lg bg-white text-[#0284c7] shadow-sm"><Icon icon="file" /></span>
                     <strong className="app-strong block">Drop CSV or choose file</strong>
                     <span className="app-caption mt-1 block">Up to 5MB. Optional columns: name, email, company, custom fields.</span>
                   </span>
                 </label>
 
-                <div className="rounded-lg border border-[#fed7aa] bg-[#fff7ed] px-3 py-3">
+                <div className="rounded-lg border border-[#bae6fd] bg-[#f0f9ff] px-3 py-3">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <p className="app-caption m-0 text-[#9a3412]">Pace calls, use trusted caller IDs, respect opt-outs, and call inside local business hours.</p>
                     <a
-                      className="app-label inline-flex min-h-9 items-center rounded-lg bg-white px-3 text-[#c2410c] ring-1 ring-[#fdba74] transition hover:bg-[#fffbeb]"
+                      className="app-label inline-flex min-h-9 items-center rounded-lg bg-white px-3 text-[#0369a1] ring-1 ring-[#7dd3fc] transition hover:bg-[#fffbeb]"
                       href="https://docs.vapi.ai/calls/outbound-calling#trusted-calling-and-caller-id"
                       rel="noreferrer"
                       target="_blank"
@@ -567,7 +562,7 @@ export function CampaignShell() {
                 ) : null}
               </section>
 
-              <section className="grid gap-5 border-b border-[#fed7aa] bg-[#fff7ed] p-4 sm:p-5">
+              <section className="grid gap-5 border-b border-[#bae6fd] bg-[#f0f9ff] p-4 sm:p-5">
                 <div className="flex items-start gap-3">
                   <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg bg-[#fffbeb] text-[#d97706]">
                     <Icon icon="calendar" />
@@ -590,7 +585,7 @@ export function CampaignShell() {
                     </span>
                   </button>
                   <button
-                    className={`rounded-lg border p-4 text-left transition ${sendMode === "schedule" ? "border-[#8b5cf6] bg-[#f5f3ff] ring-2 ring-[#8b5cf6]/10" : "border-[#e5e7eb] bg-white hover:border-[#c4b5fd]"}`}
+                    className={`rounded-lg border p-4 text-left transition ${sendMode === "schedule" ? "border-[#38bdf8] bg-[#f0f9ff] ring-2 ring-[#38bdf8]/10" : "border-[#e5e7eb] bg-white hover:border-[#bae6fd]"}`}
                     onClick={() => setSendMode("schedule")}
                     type="button"
                   >
@@ -628,10 +623,10 @@ export function CampaignShell() {
                 ) : null}
               </section>
 
-              <section className="grid gap-5 bg-[#fbf7ff] p-4 sm:p-5 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+              <section className="grid gap-5 bg-[#f8fcff] p-4 sm:p-5 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
                 <div>
                   <div className="flex items-start gap-3">
-                    <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg bg-[#f5f3ff] text-[#7c3aed]">
+                    <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg bg-[#f0f9ff] text-[#0284c7]">
                       <Icon icon="phone" />
                     </span>
                     <div>
@@ -686,12 +681,7 @@ export function CampaignShell() {
 
           <aside className="min-w-0">
             <section className="overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm lg:sticky lg:top-6">
-              <div className="grid h-1 grid-cols-4" aria-hidden="true">
-                <span className="bg-[#38bdf8]" />
-                <span className="bg-[#22c55e]" />
-                <span className="bg-[#f59e0b]" />
-                <span className="bg-[#ef4444]" />
-              </div>
+              <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
               <div className="border-b border-[#edf0f4] bg-[#fbfdff] p-4">
                 <div className="flex items-center justify-between gap-3">
                   <div>

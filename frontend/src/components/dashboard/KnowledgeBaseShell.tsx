@@ -24,10 +24,10 @@ const controlClass =
   "app-control-text min-h-11 w-full rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10";
 const documentTones = [
   "border-[#a5f3fc] bg-[#ecfeff] text-[#0891b2]",
-  "border-[#bbf7d0] bg-[#f0fdf4] text-[#16a34a]",
-  "border-[#fed7aa] bg-[#fff7ed] text-[#c2410c]",
-  "border-[#ddd6fe] bg-[#f5f3ff] text-[#7c3aed]",
-  "border-[#fecdd3] bg-[#fff1f2] text-[#e11d48]",
+  "border-[#bae6fd] bg-[#f0f9ff] text-[#0369a1]",
+  "border-[#bae6fd] bg-[#f0f9ff] text-[#0369a1]",
+  "border-[#bae6fd] bg-[#f0f9ff] text-[#0369a1]",
+  "border-[#bae6fd] bg-[#f0f9ff] text-[#0369a1]",
 ];
 
 function Icon({ icon, className = "size-4" }: { icon: IconName; className?: string }) {
@@ -132,11 +132,12 @@ export function KnowledgeBaseShell() {
   const totalCharacters = documents.reduce((total, document) => total + document.content.trim().length, 0);
   const knowledgeLimitReached = documents.length >= maxKnowledgeFiles;
   const selectedAgentName = selectedAgent?.name ?? "Selected agent";
+  const libraryStatTone = "border-[#bae6fd] bg-[#f0f9ff] text-[#0369a1]";
   const libraryStats = [
-    { label: "Items", value: `${documents.length}/${maxKnowledgeFiles}`, tone: "border-[#67e8f9] bg-[#ecfeff] text-[#0e7490]" },
-    { label: "Active", value: readyCount.toLocaleString("en-IN"), tone: "border-[#86efac] bg-[#f0fdf4] text-[#15803d]" },
-    { label: "Off", value: disabledCount.toLocaleString("en-IN"), tone: "border-[#fdba74] bg-[#fff7ed] text-[#c2410c]" },
-    { label: "Characters", value: totalCharacters.toLocaleString("en-IN"), tone: "border-[#c4b5fd] bg-[#f5f3ff] text-[#6d28d9]" },
+    { label: "Items", value: `${documents.length}/${maxKnowledgeFiles}`, tone: libraryStatTone },
+    { label: "Active", value: readyCount.toLocaleString("en-IN"), tone: libraryStatTone },
+    { label: "Off", value: disabledCount.toLocaleString("en-IN"), tone: libraryStatTone },
+    { label: "Characters", value: totalCharacters.toLocaleString("en-IN"), tone: libraryStatTone },
   ];
 
   function clearEditor() {
@@ -278,19 +279,13 @@ export function KnowledgeBaseShell() {
       />
 
       <section className="min-w-0 overflow-y-auto">
-        <header className="mx-4 mt-4 overflow-hidden rounded-2xl border border-[#0f172a] bg-[#111827] text-white shadow-[0_14px_36px_rgba(15,23,42,0.12)] sm:mx-6 lg:mx-8">
-          <div className="grid h-1 grid-cols-5" aria-hidden="true">
-            <span className="bg-[#38bdf8]" />
-            <span className="bg-[#22c55e]" />
-            <span className="bg-[#f59e0b]" />
-            <span className="bg-[#ef4444]" />
-            <span className="bg-[#8b5cf6]" />
-          </div>
-          <div className="mx-auto flex w-full max-w-[1500px] flex-wrap items-center justify-between gap-5 px-4 py-5 sm:px-6 lg:px-8">
+        <header className="border-b border-[#dbeafe] bg-white px-4 py-4 sm:px-6 lg:px-8">
+          <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
+          <div className="mx-auto flex w-full max-w-[1500px] flex-wrap items-center justify-between gap-4">
             <div>
-              <span className="app-label text-[#93c5fd]">Knowledge Base</span>
-              <h1 className="m-0 text-xl font-semibold leading-7 text-white">Knowledge studio</h1>
-              <p className="app-caption mt-1 mb-0 text-[#cbd5e1]">Agent facts, files, and searchable answers.</p>
+              <span className="app-label text-[#0284c7]">Knowledge Base</span>
+              <h1 className="m-0 text-xl font-semibold leading-7 text-[#0f172a]">Knowledge studio</h1>
+              <p className="app-caption mt-1 mb-0 text-[#475569]">Agent facts, files, and searchable answers.</p>
             </div>
             <div className="grid w-full gap-2 sm:w-auto sm:grid-cols-4">
               {libraryStats.map((stat) => (
@@ -311,12 +306,7 @@ export function KnowledgeBaseShell() {
 
           <aside className="min-w-0">
             <section className="overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm lg:sticky lg:top-6">
-              <div className="grid h-1 grid-cols-4" aria-hidden="true">
-                <span className="bg-[#38bdf8]" />
-                <span className="bg-[#22c55e]" />
-                <span className="bg-[#f59e0b]" />
-                <span className="bg-[#8b5cf6]" />
-              </div>
+              <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
               <div className="border-b border-[#edf0f4] bg-[#fbfdff] p-4">
                 <h2 className="app-section-title m-0">Agent source</h2>
                 <p className="app-caption mt-1 mb-0">Choose the assistant memory to edit.</p>
@@ -579,12 +569,7 @@ function EditorModal({
       }}
     >
       <section className="grid max-h-[calc(100vh-24px)] w-full max-w-2xl grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden rounded-lg border border-white/70 bg-white shadow-2xl">
-        <div className="grid h-1 grid-cols-4" aria-hidden="true">
-          <span className="bg-[#38bdf8]" />
-          <span className="bg-[#22c55e]" />
-          <span className="bg-[#f59e0b]" />
-          <span className="bg-[#8b5cf6]" />
-        </div>
+        <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
         <header className="flex items-start justify-between gap-4 border-b border-[#e5e7eb] px-5 py-4 sm:px-6">
           <div>
             <h2 className="app-page-title m-0">{isEditing ? "Edit knowledge" : "Add knowledge"}</h2>

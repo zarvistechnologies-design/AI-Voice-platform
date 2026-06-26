@@ -243,23 +243,17 @@ export function PhoneNumberShell() {
       />
 
       <section className="min-w-0 overflow-y-auto">
-        <header className="mx-4 mt-4 overflow-hidden rounded-2xl border border-[#0f172a] bg-[#111827] text-white shadow-[0_14px_36px_rgba(15,23,42,0.12)] sm:mx-6 lg:mx-8">
-          <div className="grid h-1 grid-cols-5" aria-hidden="true">
-            <span className="bg-[#22c55e]" />
-            <span className="bg-[#38bdf8]" />
-            <span className="bg-[#f59e0b]" />
-            <span className="bg-[#ef4444]" />
-            <span className="bg-[#8b5cf6]" />
-          </div>
-          <div className="mx-auto flex w-full max-w-[1500px] flex-wrap items-center justify-between gap-4 px-4 py-5 sm:px-6 lg:px-8">
+        <header className="border-b border-[#dbeafe] bg-white px-4 py-4 sm:px-6 lg:px-8">
+          <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
+          <div className="mx-auto flex w-full max-w-[1500px] flex-wrap items-center justify-between gap-4">
             <div>
-              <span className="app-label text-[#86efac]">Telephony</span>
-              <h1 className="m-0 mt-1 text-xl font-semibold leading-7 text-white sm:text-2xl">Phone numbers</h1>
-              <p className="app-caption mt-1 mb-0 text-[#cbd5e1]">Import or buy telephony numbers, then link them to any voice agent.</p>
+              <span className="app-label text-[#0284c7]">Telephony</span>
+              <h1 className="m-0 mt-1 text-xl font-semibold leading-7 text-[#0f172a] sm:text-2xl">Phone numbers</h1>
+              <p className="app-caption mt-1 mb-0 text-[#475569]">Import or buy telephony numbers, then link them to any voice agent.</p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <button
-                className={`${buttonClass} border border-white/15 bg-white/10 text-white hover:bg-white/15`}
+                className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`}
                 disabled={busy || loading}
                 onClick={() => void repairRoutes()}
                 type="button"
@@ -268,7 +262,7 @@ export function PhoneNumberShell() {
                 Repair routes
               </button>
               <button
-                className={`${buttonClass} border border-[#bbf7d0] bg-[#f0fdf4] text-[#15803d] hover:bg-[#dcfce7]`}
+                className={`${buttonClass} border border-[#bae6fd] bg-[#f0f9ff] text-[#0369a1] hover:bg-[#e0f2fe]`}
                 onClick={() => { setShowImport(true); showMessage(""); }}
                 type="button"
               >

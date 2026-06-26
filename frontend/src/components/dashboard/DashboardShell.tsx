@@ -1321,26 +1321,27 @@ export function DashboardShell() {
     },
   ];
   const liveAgentCount = agentList.filter((agent) => agent.status === "Live").length;
+  const agentStatTone = "border-[#bae6fd] bg-[#f0f9ff] text-[#0369a1]";
   const agentHeroStats = [
     {
       label: "Status",
       value: selectedAgent.status,
-      tone: selectedAgent.status === "Live" ? "border-[#86efac] bg-[#f0fdf4] text-[#15803d]" : selectedAgent.status === "Draft" ? "border-[#fdba74] bg-[#fff7ed] text-[#c2410c]" : "border-[#cbd5e1] bg-[#f8fafc] text-[#475569]",
+      tone: agentStatTone,
     },
     {
       label: "Mode",
       value: selectedAgent.pipelineMode === "realtime" ? "Realtime" : "Pipeline",
-      tone: "border-[#67e8f9] bg-[#ecfeff] text-[#0e7490]",
+      tone: agentStatTone,
     },
     {
       label: "Tools",
       value: selectedAgent.tools.length.toLocaleString("en-IN"),
-      tone: "border-[#c4b5fd] bg-[#f5f3ff] text-[#6d28d9]",
+      tone: agentStatTone,
     },
     {
       label: "Knowledge",
       value: selectedAgent.knowledgeDocuments.length.toLocaleString("en-IN"),
-      tone: "border-[#f9a8d4] bg-[#fdf2f8] text-[#be185d]",
+      tone: agentStatTone,
     },
   ];
   const phoneAssigned = Boolean(selectedAgent.phone && selectedAgent.phone !== "Not assigned");
@@ -2097,26 +2098,20 @@ export function DashboardShell() {
       />
 
       <section className="grid min-w-0 content-start gap-5">
-        <header className="mx-4 mt-4 overflow-hidden rounded-2xl border border-[#0f172a] bg-[#111827] text-white shadow-[0_14px_36px_rgba(15,23,42,0.12)] sm:mx-6 lg:mx-8">
-          <div className="grid h-1 grid-cols-5" aria-hidden="true">
-            <span className="bg-[#38bdf8]" />
-            <span className="bg-[#22c55e]" />
-            <span className="bg-[#f59e0b]" />
-            <span className="bg-[#ef4444]" />
-            <span className="bg-[#8b5cf6]" />
-          </div>
-          <div className="mx-auto grid w-full max-w-[1500px] gap-5 px-4 py-5 sm:px-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:px-8">
+        <header className="border-b border-[#dbeafe] bg-white px-4 py-4 sm:px-6 lg:px-8">
+          <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
+          <div className="mx-auto grid w-full max-w-[1500px] gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
             <div className="min-w-0">
-              <span className="app-label text-[#93c5fd]">{session.organization?.name ?? "Workspace"}</span>
-              <h1 className="m-0 mt-1 text-xl font-semibold leading-7 text-white sm:text-2xl">{selectedAgent.name}</h1>
-              <p className="app-caption mt-1 mb-0 max-w-3xl text-[#cbd5e1]">
+              <span className="app-label text-[#0284c7]">{session.organization?.name ?? "Workspace"}</span>
+              <h1 className="m-0 mt-1 text-xl font-semibold leading-7 text-[#0f172a] sm:text-2xl">{selectedAgent.name}</h1>
+              <p className="app-caption mt-1 mb-0 max-w-3xl text-[#475569]">
                 Build, test, publish, and monitor your voice agent from one command center.
               </p>
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
             <button
-              className="app-button-text inline-flex min-h-9 items-center justify-center rounded-lg border border-white/15 bg-white/10 px-3 text-white transition hover:bg-white/15"
+              className="app-button-text inline-flex min-h-9 items-center justify-center rounded-lg border border-[#d5d8df] bg-white px-3 text-[#334155] transition hover:bg-[#f8fafc]"
               type="button"
               onClick={() => void handleCloneAgent()}
             >
@@ -2160,7 +2155,7 @@ export function DashboardShell() {
             </button>
             </div>
           </div>
-          <div className="mx-auto grid w-full max-w-[1500px] gap-2 px-4 pb-5 sm:px-6 sm:grid-cols-2 lg:grid-cols-4 lg:px-8">
+          <div className="mx-auto grid w-full max-w-[1500px] gap-2 pt-3 sm:grid-cols-2 lg:grid-cols-4">
             {agentHeroStats.map((item) => (
               <div className={`rounded-lg border px-3 py-2 ${item.tone}`} key={item.label}>
                 <span className="app-caption block text-current">{item.label}</span>
@@ -2172,12 +2167,7 @@ export function DashboardShell() {
 
         <section className="mx-auto grid w-full max-w-[1500px] min-w-0 gap-4 px-4 pb-5 sm:px-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:px-8 2xl:grid-cols-[280px_minmax(0,1fr)_300px]">
           <aside className="min-w-0 overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm">
-            <div className="grid h-1 grid-cols-4" aria-hidden="true">
-              <span className="bg-[#38bdf8]" />
-              <span className="bg-[#22c55e]" />
-              <span className="bg-[#f59e0b]" />
-              <span className="bg-[#8b5cf6]" />
-            </div>
+            <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
             <div className="flex min-h-[64px] items-center justify-between border-b border-[#e5e7eb] bg-[#fbfdff] px-4">
               <div>
                 <h2 className="app-section-title m-0">Agents</h2>
@@ -2249,13 +2239,7 @@ export function DashboardShell() {
 
           <section className="grid min-w-0 content-start gap-4">
             <article className="min-w-0 overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm">
-              <div className="grid h-1 grid-cols-5" aria-hidden="true">
-                <span className="bg-[#38bdf8]" />
-                <span className="bg-[#22c55e]" />
-                <span className="bg-[#f59e0b]" />
-                <span className="bg-[#ef4444]" />
-                <span className="bg-[#8b5cf6]" />
-              </div>
+              <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
               <div className="flex flex-col gap-3 border-b border-[#e5e7eb] bg-[#fbfdff] px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                   <h2 className="app-section-title m-0">Agent builder</h2>
@@ -2264,19 +2248,11 @@ export function DashboardShell() {
                   </span>
                 </div>
                 <div className="flex max-w-full gap-1 overflow-x-auto rounded-lg border border-[#dfe3ea] bg-white p-1">
-                  {tabs.map((tab, index) => (
+                  {tabs.map((tab) => (
                     <button
                       className={`app-button-text rounded-md px-3 py-1.5 transition ${
                         activeTab === tab.id
-                          ? index === 0
-                            ? "bg-[#1438f5] text-white"
-                            : index === 1
-                              ? "bg-[#059669] text-white"
-                              : index === 2
-                                ? "bg-[#7c3aed] text-white"
-                                : index === 3
-                                  ? "bg-[#d97706] text-white"
-                                  : "bg-[#e11d48] text-white"
+                          ? "bg-[#0284c7] text-white"
                           : "text-[#64748b] hover:bg-white hover:text-[#111827]"
                       }`}
                       key={tab.id}
@@ -3711,11 +3687,7 @@ export function DashboardShell() {
 
           <aside className="grid min-w-0 content-start gap-4 xl:col-span-2 xl:grid-cols-2 2xl:col-span-1 2xl:grid-cols-1">
             <article className="min-w-0 overflow-hidden rounded-lg border border-[#dbe4f0] bg-white shadow-sm">
-              <div className="grid h-1 grid-cols-3" aria-hidden="true">
-                <span className="bg-[#22c55e]" />
-                <span className="bg-[#38bdf8]" />
-                <span className="bg-[#8b5cf6]" />
-              </div>
+              <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
               <div className="flex min-h-[68px] items-center justify-between gap-3 border-b border-[#dbeafe] bg-gradient-to-r from-[#eff6ff] via-white to-[#ecfeff] px-4">
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
@@ -3738,15 +3710,9 @@ export function DashboardShell() {
 
               <div className="grid gap-4 p-4">
                 <div className="grid grid-cols-3 gap-2">
-                  {selectedRuntimeItems.map((item, index) => (
+                  {selectedRuntimeItems.map((item) => (
                     <span
-                      className={`min-w-0 rounded-lg border p-2.5 ${
-                        index === 0
-                          ? "border-[#bbf7d0] bg-[#f0fdf4]"
-                          : index === 1
-                            ? "border-[#bae6fd] bg-[#f0f9ff]"
-                            : "border-[#ddd6fe] bg-[#f5f3ff]"
-                      }`}
+                      className="min-w-0 rounded-lg border border-[#bae6fd] bg-[#f0f9ff] p-2.5"
                       key={item.label}
                       title={item.label === "Region" && selectedRuntimeRegion ? selectedRuntimeRegion : undefined}
                     >
@@ -3798,7 +3764,7 @@ export function DashboardShell() {
             </article>
 
             <article className="overflow-hidden rounded-lg border border-[#dfe3ea] bg-white shadow-sm">
-              <div className="h-1 bg-[#22c55e]" aria-hidden="true" />
+              <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
               <div className="p-4">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div className="min-w-0">
@@ -3858,7 +3824,7 @@ export function DashboardShell() {
             </article>
 
             <article className="overflow-hidden rounded-lg border border-[#dfe3ea] bg-white shadow-sm">
-              <div className="h-1 bg-[#f59e0b]" aria-hidden="true" />
+              <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
               <div className="p-4">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
@@ -3881,19 +3847,14 @@ export function DashboardShell() {
               </div>
             </article>
 
-            <article className="overflow-hidden rounded-lg border border-[#1f2937] bg-[#111827] text-white shadow-sm">
-              <div className="grid h-1 grid-cols-4" aria-hidden="true">
-                <span className="bg-[#38bdf8]" />
-                <span className="bg-[#22c55e]" />
-                <span className="bg-[#f59e0b]" />
-                <span className="bg-[#8b5cf6]" />
-              </div>
+            <article className="overflow-hidden rounded-lg border border-[#dbe2ea] bg-white text-[#111827] shadow-sm">
+              <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
               <div className="p-4">
               <div className="mb-3 flex items-center justify-between gap-3">
-                <h2 className="app-section-title m-0 text-white">Config preview</h2>
+                <h2 className="app-section-title m-0">Config preview</h2>
                 <Icon icon="code" />
               </div>
-              <pre className="m-0 overflow-hidden text-xs leading-5 text-[#cbd5e1]">
+              <pre className="m-0 overflow-hidden rounded-lg bg-[#f8fafc] p-3 text-xs leading-5 text-[#334155]">
 {`{
   "architecture": "${selectedAgent.pipelineMode}",
   "language": "${selectedAgent.language}",

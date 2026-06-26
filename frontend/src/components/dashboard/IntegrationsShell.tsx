@@ -13,25 +13,25 @@ const catalog = {
     name: "Vobiz",
     category: "Telephony",
     description: "Buy, import, and route phone numbers to your voice agents.",
-    color: "from-blue-600 to-cyan-500",
+    color: "from-sky-500 to-sky-400",
   },
   hubspot: {
     name: "HubSpot",
     category: "CRM",
     description: "Create callers as contacts and log completed calls as CRM notes.",
-    color: "from-orange-500 to-amber-400",
+    color: "from-sky-500 to-sky-400",
   },
   calendly: {
     name: "Calendly",
     category: "Scheduling",
     description: "Let agents discover event types and create one-time booking links during calls.",
-    color: "from-blue-700 to-indigo-500",
+    color: "from-sky-500 to-sky-400",
   },
   slack: {
     name: "Slack",
     category: "Notifications",
     description: "Send automatic call completion notifications to a Slack channel.",
-    color: "from-violet-600 to-fuchsia-500",
+    color: "from-sky-500 to-sky-400",
   },
 } as const;
 
@@ -103,18 +103,12 @@ export function IntegrationsShell() {
       <DashboardSidebar activeLabel="Integrations" userInitials={initials(session.name)} onLogout={() => void logoutSession().then(() => router.replace("/login"))} />
       <section className="min-w-0 p-4">
         <div className="mx-auto grid max-w-[1500px] gap-6">
-          <header className="overflow-hidden rounded-2xl border border-[#0f172a] bg-[#111827] text-white shadow-[0_14px_36px_rgba(15,23,42,0.12)]">
-            <div className="grid h-1 grid-cols-5" aria-hidden="true">
-              <span className="bg-indigo-400" />
-              <span className="bg-violet-400" />
-              <span className="bg-sky-400" />
-              <span className="bg-emerald-400" />
-              <span className="bg-amber-400" />
-            </div>
-            <div className="p-5">
-              <span className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-300">Native connections</span>
-              <h1 className="mt-2 text-2xl font-semibold tracking-tight text-white sm:text-3xl">Integrations</h1>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">Connect telephony, CRM, scheduling, and notification providers. Credentials are encrypted and never displayed again.</p>
+          <header className="border-b border-[#dbeafe] bg-white pb-4">
+            <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
+            <div>
+              <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0284c7]">Native connections</span>
+              <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">Integrations</h1>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Connect telephony, CRM, scheduling, and notification providers. Credentials are encrypted and never displayed again.</p>
             </div>
           </header>
           {notice ? <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">{notice}</div> : null}
@@ -128,7 +122,7 @@ export function IntegrationsShell() {
                     <div className="flex items-start justify-between gap-4"><div><span className="text-xs font-semibold uppercase tracking-wider text-slate-500">{item.category}</span><h2 className="mt-2 text-xl font-semibold">{item.name}</h2></div><span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase ${provider.connected ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-600"}`}>{provider.connected ? "Connected" : "Available"}</span></div>
                     <p className="mt-3 min-h-12 text-sm leading-6 text-slate-600">{item.description}</p>
                     {provider.connected ? <div className="mt-4 rounded-xl bg-slate-50 p-3"><strong className="block text-sm">{provider.accountId}</strong><span className="mt-1 block text-xs text-slate-500">Verified {provider.lastVerifiedAt ? new Date(provider.lastVerifiedAt).toLocaleString() : "recently"}</span></div> : null}
-                    <div className="mt-5 flex gap-2">{provider.id === "vobiz" ? <Link className="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white" href="/dashboard/phone-number">Manage Vobiz</Link> : provider.connected ? <button className="rounded-xl border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-700" disabled={busy} type="button" onClick={() => void disconnect(provider.id as Exclude<IntegrationProvider["id"], "vobiz">)}>Disconnect</button> : <button className="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white" type="button" onClick={() => { setSelected(provider.id as Exclude<IntegrationProvider["id"], "vobiz">); setCredential(""); }}>Connect {item.name}</button>}</div>
+                    <div className="mt-5 flex gap-2">{provider.id === "vobiz" ? <Link className="rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white" href="/dashboard/phone-number">Manage Vobiz</Link> : provider.connected ? <button className="rounded-xl border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-700" disabled={busy} type="button" onClick={() => void disconnect(provider.id as Exclude<IntegrationProvider["id"], "vobiz">)}>Disconnect</button> : <button className="rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white" type="button" onClick={() => { setSelected(provider.id as Exclude<IntegrationProvider["id"], "vobiz">); setCredential(""); }}>Connect {item.name}</button>}</div>
                   </div>
                 </article>
               );

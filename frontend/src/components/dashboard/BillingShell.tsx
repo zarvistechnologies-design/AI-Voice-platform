@@ -174,25 +174,19 @@ export function BillingShell() {
       <DashboardSidebar activeLabel="Billing" userInitials={initials(session.name)} onLogout={() => void logoutSession().then(() => router.replace("/login"))} />
       <section className="min-w-0 p-4">
         <div className="mx-auto grid max-w-[1500px] gap-6">
-          <header className="overflow-hidden rounded-2xl border border-[#0f172a] bg-[#111827] text-white shadow-[0_14px_36px_rgba(15,23,42,0.12)]">
-            <div className="grid h-1 grid-cols-5" aria-hidden="true">
-              <span className="bg-sky-400" />
-              <span className="bg-emerald-400" />
-              <span className="bg-amber-400" />
-              <span className="bg-rose-400" />
-              <span className="bg-violet-400" />
-            </div>
-            <div className="flex flex-col justify-between gap-4 p-5 sm:flex-row sm:items-end">
+          <header className="border-b border-[#dbeafe] bg-white pb-4">
+            <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
+            <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
               <div>
-                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-300">Pay per use</span>
-                <h1 className="mt-2 text-2xl font-semibold tracking-tight text-white sm:text-3xl">Credit command center</h1>
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">Top up once, run calls, and see every provider charge broken down by LLM, STT, TTS, and carrier usage.</p>
+                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0284c7]">Pay per use</span>
+                <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">Credit command center</h1>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Top up once, run calls, and see every provider charge broken down by LLM, STT, TTS, and carrier usage.</p>
               </div>
               <div className="flex gap-2">
-              <button className="rounded-xl border border-white/15 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-white/15" type="button" onClick={() => void load()} disabled={Boolean(busy)}>
+              <button className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50" type="button" onClick={() => void load()} disabled={Boolean(busy)}>
                 Refresh
               </button>
-              <button className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 hover:bg-blue-700" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup"}>
+              <button className="rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-sky-600/20 hover:bg-sky-700" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup"}>
                 Buy ${selectedTopUp}
               </button>
               </div>
@@ -204,7 +198,7 @@ export function BillingShell() {
 
           <section className="grid gap-4 xl:grid-cols-[1.25fr_0.75fr]">
             <Card className="overflow-hidden">
-              <div className="grid gap-6 bg-gradient-to-br from-white via-blue-50 to-emerald-50 p-5 md:grid-cols-[minmax(0,1fr)_320px] md:p-6">
+              <div className="grid gap-6 bg-gradient-to-br from-white via-sky-50 to-blue-50 p-5 md:grid-cols-[minmax(0,1fr)_320px] md:p-6">
                 <div className="grid content-between gap-6">
                   <div>
                     <span className="inline-flex rounded-full bg-white px-3 py-1 text-xs font-semibold text-blue-700 shadow-sm ring-1 ring-blue-100">Wallet balance</span>
@@ -297,7 +291,7 @@ export function BillingShell() {
             </Card>
 
             <div className="grid gap-4">
-              <Card className="p-5">
+              <Card className="">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <h2 className="m-0 text-lg font-semibold">Payment status</h2>
@@ -318,7 +312,7 @@ export function BillingShell() {
               <Card className="overflow-hidden">
                 <div className="bg-slate-950 p-5 text-white">
                   <h2 className="m-0 text-lg font-semibold">Enterprise credits</h2>
-                  <p className="mt-2 text-sm leading-6 text-slate-300">$500/month credit, priority support, and higher call concurrency.</p>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">$500/month credit, priority support, and higher call concurrency.</p>
                   <button className="mt-5 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-950 hover:bg-blue-50 disabled:opacity-60" type="button" onClick={() => void upgradeEnterprise()} disabled={busy === "enterprise"}>
                     Upgrade
                   </button>

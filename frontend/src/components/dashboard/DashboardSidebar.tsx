@@ -6,17 +6,16 @@ type SidebarItem = {
   label: string;
   href: string;
   icon: "agent" | "phone" | "campaign" | "knowledge" | "logs" | "billing" | "integrations";
-  tone: string;
 };
 
 const sidebarItems: SidebarItem[] = [
-  { label: "Voice Agents", href: "/dashboard", icon: "agent", tone: "from-[#38bdf8] to-[#2563eb]" },
-  { label: "Phone Number", href: "/dashboard/phone-number", icon: "phone", tone: "from-[#22c55e] to-[#059669]" },
-  { label: "Campaigns", href: "/dashboard/campaign", icon: "campaign", tone: "from-[#f59e0b] to-[#ef4444]" },
-  { label: "Knowledge Base", href: "/dashboard/knowledge", icon: "knowledge", tone: "from-[#8b5cf6] to-[#ec4899]" },
-  { label: "Call Logs", href: "/dashboard/calls", icon: "logs", tone: "from-[#06b6d4] to-[#14b8a6]" },
-  { label: "Billing", href: "/dashboard/billing", icon: "billing", tone: "from-[#f97316] to-[#eab308]" },
-  { label: "Integrations", href: "/dashboard/integrations", icon: "integrations", tone: "from-[#6366f1] to-[#7c3aed]" },
+  { label: "Voice Agents", href: "/dashboard", icon: "agent" },
+  { label: "Phone Number", href: "/dashboard/phone-number", icon: "phone" },
+  { label: "Campaigns", href: "/dashboard/campaign", icon: "campaign" },
+  { label: "Knowledge Base", href: "/dashboard/knowledge", icon: "knowledge" },
+  { label: "Call Logs", href: "/dashboard/calls", icon: "logs" },
+  { label: "Billing", href: "/dashboard/billing", icon: "billing" },
+  { label: "Integrations", href: "/dashboard/integrations", icon: "integrations" },
 ];
 
 function SidebarIcon({ icon }: { icon: SidebarItem["icon"] | "mic" }) {
@@ -111,7 +110,7 @@ export function DashboardSidebar({
     <>
       <aside className="z-40 flex gap-1.5 border-b border-[#e5e7eb] bg-white/95 px-2 py-1.5 shadow-sm backdrop-blur lg:fixed lg:inset-y-0 lg:left-0 lg:h-dvh lg:w-16 lg:flex-col lg:items-center lg:border-r lg:border-b-0 lg:px-0 lg:py-2.5">
         <Link
-          className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#0f172a] text-white shadow-[0_10px_22px_rgba(15,23,42,0.18)] ring-1 ring-white/10 transition hover:-translate-y-0.5"
+          className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#0ea5e9] text-white shadow-[0_10px_22px_rgba(14,165,233,0.22)] ring-1 ring-white/10 transition hover:-translate-y-0.5"
           href="/dashboard"
           prefetch={false}
           title="Voice Platform"
@@ -131,8 +130,8 @@ export function DashboardSidebar({
               <Link
                 className={`group relative grid size-10 shrink-0 place-items-center rounded-lg transition ${
                   isActive
-                    ? `bg-gradient-to-br ${item.tone} text-white shadow-[0_10px_24px_rgba(15,23,42,0.18)]`
-                    : "text-[#747b88] hover:bg-[#f8fafc] hover:text-[#111827]"
+                    ? "bg-[#0ea5e9] text-white shadow-[0_10px_24px_rgba(14,165,233,0.22)]"
+                    : "text-[#747b88] hover:bg-[#f0f9ff] hover:text-[#0369a1]"
                 }`}
                 href={item.href}
                 prefetch={false}

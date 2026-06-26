@@ -234,7 +234,7 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
                     }`}
                     key={item.itemId}
                   >
-                    <span className={`mb-1 block text-[11px] font-semibold uppercase tracking-wider ${item.role === "user" ? "text-slate-300" : "opacity-60"}`}>
+                    <span className={`mb-1 block text-[11px] font-semibold uppercase tracking-wider ${item.role === "user" ? "text-slate-600" : "opacity-60"}`}>
                       {item.role === "assistant" ? agentName(call) : titleCase(item.role)}
                     </span>
                     <p className="m-0 text-sm leading-6">{item.text}</p>
@@ -379,25 +379,19 @@ export function CallLogsShell() {
       />
       <section className="min-w-0 p-4">
         <div className="mx-auto grid max-w-[1500px] gap-6">
-          <header className="overflow-hidden rounded-2xl border border-[#0f172a] bg-[#111827] text-white shadow-[0_14px_36px_rgba(15,23,42,0.12)]">
-            <div className="grid h-1 grid-cols-5" aria-hidden="true">
-              <span className="bg-cyan-400" />
-              <span className="bg-emerald-400" />
-              <span className="bg-amber-400" />
-              <span className="bg-blue-500" />
-              <span className="bg-violet-400" />
-            </div>
-            <div className="flex flex-col justify-between gap-4 p-5 sm:flex-row sm:items-end">
+          <header className="border-b border-[#dbeafe] bg-white pb-4">
+            <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
+            <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
               <div>
-                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-300">Conversation operations</span>
-                <h1 className="mt-2 text-2xl font-semibold tracking-tight text-white sm:text-3xl">Call logs</h1>
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">Every browser, inbound, and outbound call is captured here with its status, timing, latency, and transcript.</p>
+                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0284c7]">Conversation operations</span>
+                <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">Call logs</h1>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Every browser, inbound, and outbound call is captured here with its status, timing, latency, and transcript.</p>
               </div>
               <div className="flex gap-2">
-              <button className="rounded-xl border border-white/15 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-white/15" type="button" onClick={() => void loadCalls()}>
+              <button className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50" type="button" onClick={() => void loadCalls()}>
                 Refresh
               </button>
-              <button className="rounded-xl bg-cyan-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-cyan-600/20 hover:bg-cyan-700" type="button" onClick={() => void exportCsv()}>
+              <button className="rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-sky-600/20 hover:bg-sky-700" type="button" onClick={() => void exportCsv()}>
                 Export CSV
               </button>
               </div>
