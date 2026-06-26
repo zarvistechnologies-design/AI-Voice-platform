@@ -104,7 +104,6 @@ export function IntegrationsShell() {
       <section className="min-w-0 p-4">
         <div className="mx-auto grid max-w-[1500px] gap-6">
           <header className="border-b border-[#dbeafe] bg-white pb-4">
-            <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
             <div>
               <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0284c7]">Native connections</span>
               <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">Integrations</h1>
@@ -117,7 +116,6 @@ export function IntegrationsShell() {
               const item = catalog[provider.id];
               return (
                 <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm" key={provider.id}>
-                  <div className={`h-2 bg-gradient-to-r ${item.color}`} />
                   <div className="p-5">
                     <div className="flex items-start justify-between gap-4"><div><span className="text-xs font-semibold uppercase tracking-wider text-slate-500">{item.category}</span><h2 className="mt-2 text-xl font-semibold">{item.name}</h2></div><span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase ${provider.connected ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-600"}`}>{provider.connected ? "Connected" : "Available"}</span></div>
                     <p className="mt-3 min-h-12 text-sm leading-6 text-slate-600">{item.description}</p>

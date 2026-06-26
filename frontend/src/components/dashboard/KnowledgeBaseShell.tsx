@@ -280,7 +280,6 @@ export function KnowledgeBaseShell() {
 
       <section className="min-w-0 overflow-y-auto">
         <header className="border-b border-[#dbeafe] bg-white px-4 py-4 sm:px-6 lg:px-8">
-          <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
           <div className="mx-auto flex w-full max-w-[1500px] flex-wrap items-center justify-between gap-4">
             <div>
               <span className="app-label text-[#0284c7]">Knowledge Base</span>
@@ -306,7 +305,6 @@ export function KnowledgeBaseShell() {
 
           <aside className="min-w-0">
             <section className="overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm lg:sticky lg:top-6">
-              <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
               <div className="border-b border-[#edf0f4] bg-[#fbfdff] p-4">
                 <h2 className="app-section-title m-0">Agent source</h2>
                 <p className="app-caption mt-1 mb-0">Choose the assistant memory to edit.</p>
@@ -569,7 +567,6 @@ function EditorModal({
       }}
     >
       <section className="grid max-h-[calc(100vh-24px)] w-full max-w-2xl grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden rounded-lg border border-white/70 bg-white shadow-2xl">
-        <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
         <header className="flex items-start justify-between gap-4 border-b border-[#e5e7eb] px-5 py-4 sm:px-6">
           <div>
             <h2 className="app-page-title m-0">{isEditing ? "Edit knowledge" : "Add knowledge"}</h2>

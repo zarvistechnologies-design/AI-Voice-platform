@@ -2099,7 +2099,6 @@ export function DashboardShell() {
 
       <section className="grid min-w-0 content-start gap-5">
         <header className="border-b border-[#dbeafe] bg-white px-4 py-4 sm:px-6 lg:px-8">
-          <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
           <div className="mx-auto grid w-full max-w-[1500px] gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
             <div className="min-w-0">
               <span className="app-label text-[#0284c7]">{session.organization?.name ?? "Workspace"}</span>
@@ -2167,7 +2166,6 @@ export function DashboardShell() {
 
         <section className="mx-auto grid w-full max-w-[1500px] min-w-0 gap-4 px-4 pb-5 sm:px-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:px-8 2xl:grid-cols-[280px_minmax(0,1fr)_300px]">
           <aside className="min-w-0 overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm">
-            <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
             <div className="flex min-h-[64px] items-center justify-between border-b border-[#e5e7eb] bg-[#fbfdff] px-4">
               <div>
                 <h2 className="app-section-title m-0">Agents</h2>
@@ -2239,7 +2237,6 @@ export function DashboardShell() {
 
           <section className="grid min-w-0 content-start gap-4">
             <article className="min-w-0 overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm">
-              <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
               <div className="flex flex-col gap-3 border-b border-[#e5e7eb] bg-[#fbfdff] px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                   <h2 className="app-section-title m-0">Agent builder</h2>
@@ -3687,7 +3684,6 @@ export function DashboardShell() {
 
           <aside className="grid min-w-0 content-start gap-4 xl:col-span-2 xl:grid-cols-2 2xl:col-span-1 2xl:grid-cols-1">
             <article className="min-w-0 overflow-hidden rounded-lg border border-[#dbe4f0] bg-white shadow-sm">
-              <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
               <div className="flex min-h-[68px] items-center justify-between gap-3 border-b border-[#dbeafe] bg-gradient-to-r from-[#eff6ff] via-white to-[#ecfeff] px-4">
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
@@ -3764,7 +3760,6 @@ export function DashboardShell() {
             </article>
 
             <article className="overflow-hidden rounded-lg border border-[#dfe3ea] bg-white shadow-sm">
-              <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
               <div className="p-4">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div className="min-w-0">
@@ -3824,7 +3819,6 @@ export function DashboardShell() {
             </article>
 
             <article className="overflow-hidden rounded-lg border border-[#dfe3ea] bg-white shadow-sm">
-              <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
               <div className="p-4">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
@@ -3848,7 +3842,6 @@ export function DashboardShell() {
             </article>
 
             <article className="overflow-hidden rounded-lg border border-[#dbe2ea] bg-white text-[#111827] shadow-sm">
-              <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
               <div className="p-4">
               <div className="mb-3 flex items-center justify-between gap-3">
                 <h2 className="app-section-title m-0">Config preview</h2>

@@ -244,7 +244,6 @@ export function PhoneNumberShell() {
 
       <section className="min-w-0 overflow-y-auto">
         <header className="border-b border-[#dbeafe] bg-white px-4 py-4 sm:px-6 lg:px-8">
-          <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
           <div className="mx-auto flex w-full max-w-[1500px] flex-wrap items-center justify-between gap-4">
             <div>
               <span className="app-label text-[#0284c7]">Telephony</span>

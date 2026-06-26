@@ -380,7 +380,6 @@ export function CallLogsShell() {
       <section className="min-w-0 p-4">
         <div className="mx-auto grid max-w-[1500px] gap-6">
           <header className="border-b border-[#dbeafe] bg-white pb-4">
-            <div className="h-1 bg-[#38bdf8]" aria-hidden="true" />
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
               <div>
                 <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0284c7]">Conversation operations</span>
