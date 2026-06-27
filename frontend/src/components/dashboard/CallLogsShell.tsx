@@ -65,6 +65,47 @@ function configuredTtsStack(call: CallRecord) {
   return [configuredStack(call.ttsProvider, call.ttsModel), call.ttsVoice].filter((item) => item && item !== "-").join(" / ") || "-";
 }
 
+function inboundNumberFromRoom(roomName: string) {
+  const match = /^inbound-(\d{7,15})-/.exec(roomName);
+  if (!match) return "";
+  const digits = match[1] ?? "";
+  return digits.length >= 11 ? `+${digits}` : digits;
+}
+
+function callRoute(call: CallRecord) {
+  const inferredInboundNumber = call.direction === "inbound" ? inboundNumberFromRoom(call.livekitRoomName) : "";
+  return {
+    from: call.callerNumber || (call.direction === "web" ? "Browser caller" : ""),
+    fromMissing: call.direction === "inbound" && !call.callerNumber,
+    to: call.calledNumber || inferredInboundNumber || (call.direction === "web" ? "Voice agent" : call.direction === "outbound" ? "Dialed number" : "Assigned number"),
+  };
+}
+
+function CallRoute({ call, compact = false }: { call: CallRecord; compact?: boolean }) {
+  const route = callRoute(call);
+  const numberClass = compact
+    ? "max-w-44 truncate rounded-lg border border-slate-200 bg-white px-2.5 py-1 font-mono text-xs font-semibold text-slate-900"
+    : "min-w-0 truncate rounded-lg border border-slate-200 bg-white px-3 py-1.5 font-mono text-sm font-semibold text-slate-950";
+  return (
+    <div className={`grid gap-1.5 ${compact ? "min-w-56" : ""}`}>
+      <div className="grid min-w-0 grid-cols-[44px_minmax(0,1fr)] items-center gap-2">
+        <span className="rounded-md bg-cyan-50 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-cyan-700">From</span>
+        {route.fromMissing ? (
+          <span className="rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">
+            Caller ID not sent
+          </span>
+        ) : (
+          <span className={numberClass} title={route.from}>{route.from}</span>
+        )}
+      </div>
+      <div className="grid min-w-0 grid-cols-[44px_minmax(0,1fr)] items-center gap-2">
+        <span className="rounded-md bg-slate-100 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-slate-600">To</span>
+        <span className={numberClass} title={route.to}>{route.to}</span>
+      </div>
+    </div>
+  );
+}
+
 function isRealtimeAudioCall(call: CallRecord) {
   const stack = [call.llmProvider, call.llmModel].filter(Boolean).join(" ").toLowerCase();
   return stack.includes("realtime") || stack.includes("live");
@@ -237,7 +278,7 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
           ) : null}
 
           <section className="grid gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2">
-            <div><span className="block text-xs font-medium text-slate-500">Caller / Called</span><strong className="mt-1 block text-sm">{call.callerNumber || "Browser"} / {call.calledNumber || "Agent"}</strong></div>
+            <div><span className="mb-2 block text-xs font-medium text-slate-500">From / To</span><CallRoute call={call} /></div>
             <div><span className="block text-xs font-medium text-slate-500">Usage</span><strong className="mt-1 block text-sm">{llmUsage} / {sttSecondsLabel} STT / {ttsUsage}</strong></div>
             <div><span className="block text-xs font-medium text-slate-500">Configured stack</span><strong className="mt-1 block text-sm">{configuredStack(call.llmProvider, call.llmModel)} / {configuredStack(call.sttProvider, call.sttModel)} / {configuredTtsStack(call)}</strong></div>
             <div><span className="block text-xs font-medium text-slate-500">Tags</span><strong className="mt-1 block text-sm">{call.tags.length ? call.tags.join(", ") : "No tags"}</strong></div>
@@ -542,7 +583,7 @@ export function CallLogsShell() {
               <table className="w-full min-w-1050px border-collapse text-left">
                 <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500">
                   <tr>
-                    {["Agent", "Direction", "Contact", "Started", "Duration", "Provider cost", "Charged", "Status"].map((heading) => <th className="px-4 py-3" key={heading}>{heading}</th>)}
+                    {["Agent", "Direction", "From / To", "Started", "Duration", "Provider cost", "Charged", "Status"].map((heading) => <th className="px-4 py-3" key={heading}>{heading}</th>)}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -550,7 +591,7 @@ export function CallLogsShell() {
                     <tr className="cursor-pointer transition hover:bg-sky-50/60" key={call._id} onClick={() => void openCall(call._id)}>
                       <td className="px-4 py-4"><strong className="block text-sm text-slate-950">{agentName(call)}</strong><span className="text-xs text-slate-500">{call.livekitRoomName}</span></td>
                       <td className="px-4 py-4 text-sm font-medium capitalize text-slate-700">{call.direction}</td>
-                      <td className="px-4 py-4 text-sm text-slate-700">{call.callerNumber || call.calledNumber || "Browser caller"}</td>
+                      <td className="px-4 py-4 text-sm text-slate-700"><CallRoute call={call} compact /></td>
                       <td className="px-4 py-4 text-sm text-slate-600">{formatDate(call.startedAt ?? call.createdAt)}</td>
                       <td className="px-4 py-4 text-sm font-medium text-slate-700">{formatDuration(call.durationSeconds)}</td>
                       <td className="px-4 py-4 text-sm text-slate-600">{money(call.costBreakdown?.total ?? 0, call.costBreakdown?.currency)}</td>
