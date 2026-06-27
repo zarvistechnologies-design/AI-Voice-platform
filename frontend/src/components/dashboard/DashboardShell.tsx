@@ -766,6 +766,14 @@ function getOptionLabel(options: SelectOption[], value: string) {
   return getSelectOptionLabel(options.find((option) => getSelectOptionValue(option) === value) ?? value);
 }
 
+function splitVoiceOptionLabel(label: string) {
+  const [name, ...details] = label.split(/\s+-\s+/);
+  return {
+    name: name?.trim() || label,
+    detail: details.join(" - ").trim(),
+  };
+}
+
 function formatCompactDuration(seconds: number) {
   if (!Number.isFinite(seconds) || seconds <= 0) return "0s";
   if (seconds < 60) return `${Math.round(seconds)}s`;
@@ -1509,25 +1517,99 @@ function VoiceSelectField({
   onPreview: () => void;
   previewing: boolean;
 }) {
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const displayedOptions = options.some((option) => getSelectOptionValue(option) === value)
     ? options
     : [value, ...options].filter(Boolean);
+  const selectedOption =
+    displayedOptions.find((option) => getSelectOptionValue(option) === value) ?? displayedOptions[0];
+  const selectedLabel = selectedOption ? getSelectOptionLabel(selectedOption) : "No voices available";
+  const selectedParts = splitVoiceOptionLabel(selectedLabel);
+
+  useEffect(() => {
+    if (!open) return undefined;
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (event.target instanceof Node && !containerRef.current?.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+
+    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open]);
 
   return (
-    <label className="app-label grid gap-2">
+    <div className="app-label grid gap-2" ref={containerRef}>
       <span>{label}</span>
       <span className="grid grid-cols-[minmax(0,1fr)_40px] gap-2">
-        <select
-          className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10"
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-        >
-          {displayedOptions.map((option) => (
-            <option key={getSelectOptionValue(option)} value={getSelectOptionValue(option)}>
-              {getSelectOptionLabel(option)}
-            </option>
-          ))}
-        </select>
+        <span className="relative min-w-0">
+          <button
+            aria-expanded={open}
+            aria-haspopup="listbox"
+            className="app-control-text flex min-h-10 w-full items-center justify-between gap-3 rounded-lg border border-[#dfe3ea] bg-white px-3 text-left text-black outline-none transition hover:border-[#bae6fd] focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10 disabled:cursor-not-allowed disabled:bg-[#f8fafc] disabled:text-[#94a3b8]"
+            disabled={displayedOptions.length === 0}
+            type="button"
+            onClick={() => setOpen((current) => !current)}
+          >
+            <span className="min-w-0">
+              <span className="block truncate font-semibold">{selectedParts.name}</span>
+              {selectedParts.detail ? (
+                <span className="block truncate text-xs font-medium normal-case text-[#64748b]">
+                  {selectedParts.detail}
+                </span>
+              ) : null}
+            </span>
+            <svg className="size-4 shrink-0 text-[#64748b]" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+          {open ? (
+            <div
+              className="absolute left-0 right-0 top-full z-[80] mt-2 max-h-72 overflow-auto rounded-lg border border-[#bae6fd] bg-white p-1.5 shadow-xl shadow-[#0f172a]/15"
+              role="listbox"
+            >
+              {displayedOptions.map((option) => {
+                const optionValue = getSelectOptionValue(option);
+                const optionLabel = getSelectOptionLabel(option);
+                const parts = splitVoiceOptionLabel(optionLabel);
+                const selected = optionValue === value;
+                return (
+                  <button
+                    key={optionValue}
+                    className={`grid w-full gap-0.5 rounded-md px-3 py-2 text-left transition ${
+                      selected
+                        ? "bg-[#e0f2fe] text-[#075985]"
+                        : "text-[#0f172a] hover:bg-[#f0f9ff]"
+                    }`}
+                    role="option"
+                    aria-selected={selected}
+                    type="button"
+                    onClick={() => {
+                      onChange(optionValue);
+                      setOpen(false);
+                    }}
+                  >
+                    <span className="truncate text-sm font-semibold">{parts.name}</span>
+                    {parts.detail ? (
+                      <span className="truncate text-xs font-medium normal-case text-[#64748b]">
+                        {parts.detail}
+                      </span>
+                    ) : null}
+                  </button>
+                );
+              })}
+            </div>
+          ) : null}
+        </span>
         <button
           aria-label={`Preview ${value} voice`}
           className="grid size-10 place-items-center rounded-lg border border-[#bae6fd] bg-white text-[#0284c7] transition hover:bg-[#f0f9ff] disabled:cursor-not-allowed disabled:opacity-50"
@@ -1544,7 +1626,7 @@ function VoiceSelectField({
           {description}
         </span>
       ) : null}
-    </label>
+    </div>
   );
 }
 
