@@ -1452,7 +1452,7 @@ export function DashboardShell() {
 
   async function handleSave(changes: Partial<BackendAgent> = {}) {
     try {
-      const { agent } = await voiceApi.saveAgent(selectedAgent.id, {
+      const { agent, routingWarning } = await voiceApi.saveAgent(selectedAgent.id, {
         name: selectedAgent.name,
         team: selectedAgent.team,
         status: selectedAgent.status,
@@ -1493,7 +1493,11 @@ export function DashboardShell() {
       const mapped = mapBackendAgent(agent);
       setAgentList((current) => current.map((item) => (item.id === mapped.id ? mapped : item)));
       unsavedChangesRef.current = false;
-      setNotice("Agent saved to the backend.");
+      setNotice(
+        routingWarning
+          ? `Agent saved, but inbound routing could not refresh: ${routingWarning}`
+          : "Agent saved and inbound routing refreshed.",
+      );
       return true;
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not save agent.");

@@ -522,7 +522,7 @@ export const voiceApi = {
   createAgentFromTemplate: (templateId: string) =>
     request<{ agent: BackendAgent }>(`/agent-templates/${templateId}`, { method: "POST" }),
   saveAgent: (agentId: string, changes: Partial<BackendAgent>) =>
-    request<{ agent: BackendAgent }>(`/agents/${agentId}`, {
+    request<{ agent: BackendAgent; routingWarning: string }>(`/agents/${agentId}`, {
       method: "PUT",
       body: JSON.stringify(changes),
     }),
