@@ -1,12 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 
 type SidebarItem = {
   label: string;
   href: string;
-  icon: "agent" | "phone" | "analytics" | "campaign" | "knowledge" | "logs" | "billing" | "integrations" | "developer" | "profile" | "settings";
+  icon: "agent" | "phone" | "campaign" | "knowledge" | "logs" | "billing" | "integrations";
 };
+
+type SidebarIconName = SidebarItem["icon"] | "mic" | "profile" | "settings";
 
 const sidebarItems: SidebarItem[] = [
   { label: "Voice Agents", href: "/dashboard", icon: "agent" },
@@ -16,12 +19,9 @@ const sidebarItems: SidebarItem[] = [
   { label: "Call Logs", href: "/dashboard/calls", icon: "logs" },
   { label: "Billing", href: "/dashboard/billing", icon: "billing" },
   { label: "Integrations", href: "/dashboard/integrations", icon: "integrations" },
-  { label: "Developer", href: "/dashboard/developer", icon: "developer" },
-  { label: "Profile", href: "/dashboard/profile", icon: "profile" },
-  { label: "Settings", href: "/dashboard/settings", icon: "settings" },
 ];
 
-function SidebarIcon({ icon }: { icon: SidebarItem["icon"] | "mic" }) {
+function SidebarIcon({ icon }: { icon: SidebarIconName }) {
   const iconClass = "size-5 fill-none stroke-current stroke-[2.1]";
 
   if (icon === "mic") {
@@ -59,15 +59,6 @@ function SidebarIcon({ icon }: { icon: SidebarItem["icon"] | "mic" }) {
     );
   }
 
-  if (icon === "analytics") {
-    return (
-      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M5 20V10M12 20V4M19 20v-7" />
-        <path d="M3 20h18" />
-      </svg>
-    );
-  }
-
   if (icon === "knowledge") {
     return (
       <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
@@ -95,14 +86,6 @@ function SidebarIcon({ icon }: { icon: SidebarItem["icon"] | "mic" }) {
     );
   }
 
-  if (icon === "developer") {
-    return (
-      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
-        <path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 4l-4 16" />
-      </svg>
-    );
-  }
-
   if (icon === "integrations") {
     return (
       <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
@@ -121,6 +104,15 @@ function SidebarIcon({ icon }: { icon: SidebarItem["icon"] | "mic" }) {
     );
   }
 
+  if (icon === "settings") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" />
+        <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 0 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1A2 2 0 0 1 4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.3 7A2 2 0 0 1 7.1 4.2l.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.6V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1A2 2 0 0 1 19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1a2 2 0 0 1 0 4H21a1.7 1.7 0 0 0-1.6 1Z" />
+      </svg>
+    );
+  }
+
   return (
     <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
       <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" />
@@ -132,19 +124,32 @@ function SidebarIcon({ icon }: { icon: SidebarItem["icon"] | "mic" }) {
 type DashboardSidebarProps = {
   activeLabel?: string;
   userInitials: string;
+  userName: string;
+  userEmail: string;
   onLogout: () => void;
+  showUserSidebar: boolean;
+  setShowUserSidebar: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export function DashboardSidebar({
   activeLabel = "Voice Agents",
   userInitials,
+  userName,
+  userEmail,
   onLogout,
+  showUserSidebar,
+  setShowUserSidebar,
 }: DashboardSidebarProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const isProfileActive = pathname?.startsWith("/dashboard/profile");
+  const isSettingsActive = pathname?.startsWith("/dashboard/settings");
+
   return (
     <>
-      <aside className="z-40 flex gap-1.5 border-b border-[#e5e7eb] bg-white px-2 py-1.5 lg:fixed lg:inset-y-0 lg:left-0 lg:h-dvh lg:w-16 lg:flex-col lg:items-center lg:border-r lg:border-b-0 lg:px-0 lg:py-2.5">
+      <aside className="z-40 flex gap-1.5 border-b border-[#e5e7eb] bg-white/95 px-2 py-1.5 shadow-sm backdrop-blur lg:fixed lg:inset-y-0 lg:left-0 lg:h-dvh lg:w-16 lg:flex-col lg:items-center lg:border-r lg:border-b-0 lg:px-0 lg:py-2.5">
         <Link
-          className="grid size-9 shrink-0 place-items-center rounded-lg bg-[#0f172a] text-white shadow-[0_10px_22px_rgba(15,23,42,0.16)] transition hover:-translate-y-0.5"
+          className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#0ea5e9] text-white shadow-[0_10px_22px_rgba(14,165,233,0.22)] ring-1 ring-white/10 transition hover:-translate-y-0.5"
           href="/dashboard"
           prefetch={false}
           title="Voice Platform"
@@ -162,15 +167,23 @@ export function DashboardSidebar({
 
             return (
               <Link
-                className={`group relative grid size-9 shrink-0 place-items-center rounded-lg transition ${
+                className={`group relative grid size-10 shrink-0 place-items-center rounded-lg transition ${
                   isActive
-                    ? "bg-[#e9efff] text-[#2563eb]"
-                    : "text-[#747b88] hover:bg-[#f1f5f9] hover:text-[#111827]"
+                    ? "bg-[#0ea5e9] text-white shadow-[0_10px_24px_rgba(14,165,233,0.22)]"
+                    : "text-[#747b88] hover:bg-[#f0f9ff] hover:text-[#0369a1]"
                 }`}
                 href={item.href}
                 prefetch={false}
                 key={item.label}
                 title={item.label}
+                onClick={() => {
+                  try {
+                    localStorage.setItem("showUserSidebar", "0");
+                  } catch {
+                    /* ignore */
+                  }
+                  setShowUserSidebar(false);
+                }}
                 aria-label={item.label}
                 aria-current={isActive ? "page" : undefined}
               >
@@ -186,14 +199,92 @@ export function DashboardSidebar({
         <button
           className="app-label ml-auto grid size-9 shrink-0 place-items-center rounded-full border border-[#c8cbd2] bg-[#2d2f34] text-white shadow-[inset_0_0_0_2px_rgba(255,255,255,0.16)] transition hover:-translate-y-0.5 lg:mt-auto lg:ml-0"
           type="button"
-          title="Logout"
-          aria-label="Logout"
-          onClick={onLogout}
+          title="Account"
+          aria-label="Account"
+          onClick={() => {
+            try {
+              localStorage.setItem("showUserSidebar", "1");
+            } catch {
+              /* ignore */
+            }
+            setShowUserSidebar(true);
+            router.push("/dashboard/profile");
+          }}
         >
           {userInitials}
         </button>
       </aside>
-      <div className="hidden lg:block lg:h-dvh lg:w-16" aria-hidden="true" />
+
+      {showUserSidebar && (
+      <aside className="hidden lg:flex fixed left-16 top-0 h-dvh w-52 flex-col border-r border-[#e5e7eb] bg-white shadow-sm z-30">
+        
+        <div className="p-4 border-b">
+          <div className="font-medium">{userName}</div>
+          <div className="text-xs text-gray-500">
+            {userEmail}
+          </div>
+        </div>
+
+        <nav className="flex flex-col p-2 gap-1">
+          <Link
+            href="/dashboard/profile"
+            onClick={() => {
+              try {
+                localStorage.setItem("showUserSidebar", "1");
+              } catch {
+                /* ignore */
+              }
+              setShowUserSidebar(true);
+            }}
+            className={`flex items-center gap-3 rounded-lg px-3 py-2 transition ${
+              isProfileActive
+                ? "bg-[#0ea5e9] text-white"
+                : "hover:bg-slate-100"
+            }`}
+            aria-current={isProfileActive ? "page" : undefined}
+          >
+            <SidebarIcon icon="profile" />
+            <span>Profile</span>
+          </Link>
+
+          <Link
+            href="/dashboard/settings"
+            onClick={() => {
+              try {
+                localStorage.setItem("showUserSidebar", "1");
+              } catch {
+                /* ignore */
+              }
+              setShowUserSidebar(true);
+            }}
+            className={`flex items-center gap-3 rounded-lg px-3 py-2 transition ${
+              isSettingsActive
+                ? "bg-[#0ea5e9] text-white"
+                : "hover:bg-slate-100"
+            }`}
+            aria-current={isSettingsActive ? "page" : undefined}
+          >
+            <SidebarIcon icon="settings" />
+            <span>Settings</span>
+          </Link>
+        </nav>
+
+        <button
+          onClick={onLogout}
+          className="mt-auto m-2 rounded-lg border px-3 py-2 text-left hover:bg-red-50"
+        >
+          Logout
+        </button>
+
+      </aside>
+      )}
+
+      <div
+        className={`hidden lg:block lg:h-dvh ${
+          showUserSidebar ? "lg:w-272px" : "lg:w-16"
+        }`}
+        aria-hidden="true"
+      />
     </>
   );
 }

@@ -28,7 +28,7 @@ const maxCsvSize = 5 * 1024 * 1024;
 const buttonClass =
   "app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 transition disabled:cursor-not-allowed disabled:opacity-50";
 const controlClass =
-  "app-control-text min-h-11 w-full rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10";
+  "app-control-text min-h-11 w-full rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10";
 
 function Icon({ icon, className = "size-4" }: { icon: IconName; className?: string }) {
   const props = {
@@ -137,13 +137,31 @@ function parseCampaignCsv(text: string): CampaignLead[] {
 }
 
 function isDialable(phone: string) {
-  return /^\+?[1-9]\d{7,14}$/.test(phone);
+  return /^\+[1-9]\d{7,14}$/.test(phone);
 }
 
 function formatFileSize(size: number) {
   if (size < 1024) return `${size} B`;
   if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
   return `${(size / 1024 / 1024).toFixed(1)} MB`;
+}
+
+function phoneAgentId(number: BackendPhoneNumber | null) {
+  return number?.agentId && typeof number.agentId === "object" ? number.agentId._id : "";
+}
+
+function metadataKey(value: string) {
+  const key = value.trim().replace(/[^a-zA-Z0-9_]+/g, "_").replace(/^_+|_+$/g, "").slice(0, 70);
+  if (!key) return "";
+  return /^[a-zA-Z]/.test(key) ? key : `Field_${key}`;
+}
+
+function metadataValue(value: string) {
+  return value.trim().slice(0, 500);
+}
+
+function plural(count: number, singular: string, pluralName = `${singular}s`) {
+  return `${count} ${count === 1 ? singular : pluralName}`;
 }
 
 export function CampaignShell() {
@@ -173,6 +191,8 @@ export function CampaignShell() {
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [launching, setLaunching] = useState(false);
+  const [showUserSidebar, setShowUserSidebar] = useState(false);
 
   useEffect(() => {
     if (!session) {
@@ -192,10 +212,15 @@ export function CampaignShell() {
         voiceApi.phoneNumbers(),
       ]);
       if (cancelled) return;
+      const firstAgentId = agentResult.agents[0]?._id || "";
+      const firstReadyCallerId = numberResult.numbers.find(
+        (number) => number.direction !== "Inbound" && number.status === "Ready" && phoneAgentId(number) === firstAgentId,
+      );
+      const firstCallerId = firstReadyCallerId ?? numberResult.numbers.find((number) => number.direction !== "Inbound");
       setAgents(agentResult.agents);
       setNumbers(numberResult.numbers);
-      setSelectedAgentId((current) => current || agentResult.agents[0]?._id || "");
-      setSelectedPhoneId((current) => current || numberResult.numbers.find((number) => number.direction !== "Inbound")?._id || "");
+      setSelectedAgentId((current) => current || firstAgentId);
+      setSelectedPhoneId((current) => current || firstCallerId?._id || "");
       setError("");
     })()
       .catch((caught) => {
@@ -211,19 +236,35 @@ export function CampaignShell() {
   const selectedAgent = useMemo(() => agents.find((agent) => agent._id === selectedAgentId) ?? null, [agents, selectedAgentId]);
   const selectedPhone = useMemo(() => numbers.find((number) => number._id === selectedPhoneId) ?? null, [numbers, selectedPhoneId]);
   const callableNumbers = numbers.filter((number) => number.direction !== "Inbound");
+  const selectedPhoneReady = Boolean(
+    selectedPhone
+      && selectedPhone.status === "Ready"
+      && selectedPhone.direction !== "Inbound"
+      && phoneAgentId(selectedPhone) === selectedAgentId,
+  );
+  const normalizedDailyLimit = Math.max(1, Number.isFinite(dailyLimit) ? Math.floor(dailyLimit) : 1);
+  const normalizedConcurrency = Math.max(1, Math.min(20, Number.isFinite(concurrency) ? Math.floor(concurrency) : 1));
   const invalidLeadCount = leads.filter((lead) => !isDialable(lead.phone)).length;
   const readyChecks = [
     { label: "Campaign name", ready: Boolean(campaignName.trim()) },
-    { label: "Caller ID selected", ready: Boolean(selectedPhone) },
-    { label: "Assistant selected", ready: Boolean(selectedAgent) },
+    { label: "Ready caller ID assigned", ready: selectedPhoneReady },
+    { label: "Assistant is Live", ready: selectedAgent?.status === "Live" },
     { label: "CSV contacts uploaded", ready: leads.length > 0 },
-    { label: "All phone numbers dialable", ready: leads.length > 0 && invalidLeadCount === 0 },
+    { label: "All phone numbers E.164", ready: leads.length > 0 && invalidLeadCount === 0 },
     { label: "Compliance guardrails on", ready: respectDnc && requireConsentLine },
     { label: "Schedule selected", ready: sendMode === "now" || Boolean(scheduledAt) },
   ];
   const canPrepare = readyChecks.every((check) => check.ready);
-  const estimatedBatches = Math.max(1, Math.ceil(leads.length / Math.max(1, dailyLimit)));
+  const completedReadyChecks = readyChecks.filter((check) => check.ready).length;
+  const estimatedBatches = Math.max(1, Math.ceil(leads.length / normalizedDailyLimit));
   const previewLeads = leads.slice(0, 8);
+  const campaignMetricTone = "border-[#bae6fd] bg-[#f0f9ff] text-[#0369a1]";
+  const campaignMetrics = [
+    { label: "Audience", value: leads.length.toLocaleString("en-IN"), tone: campaignMetricTone },
+    { label: "Ready checks", value: `${completedReadyChecks}/${readyChecks.length}`, tone: campaignMetricTone },
+    { label: "Concurrency", value: normalizedConcurrency.toLocaleString("en-IN"), tone: campaignMetricTone },
+    { label: "Daily limit", value: normalizedDailyLimit.toLocaleString("en-IN"), tone: campaignMetricTone },
+  ];
 
   async function handleCsv(file: File | undefined) {
     if (!file) return;
@@ -255,7 +296,59 @@ export function CampaignShell() {
     void handleCsv(event.dataTransfer.files[0]);
   }
 
-  function prepareCampaign(event: FormEvent<HTMLFormElement>) {
+  function metadataForLead(lead: CampaignLead) {
+    const metadata: Record<string, string | number | boolean> = {
+      CampaignName: campaignName.trim(),
+      LeadRow: lead.row,
+      LeadPhone: lead.phone,
+    };
+    const goal = metadataValue(campaignGoal);
+    const criteria = metadataValue(successCriteria);
+    const leadName = metadataValue(lead.name);
+    const email = metadataValue(lead.email);
+    const company = metadataValue(lead.company);
+    if (goal) metadata.CampaignGoal = goal;
+    if (criteria) metadata.SuccessCriteria = criteria;
+    if (leadName) metadata.LeadName = leadName;
+    if (email) metadata.LeadEmail = email;
+    if (company) metadata.LeadCompany = company;
+
+    for (const [rawKey, rawValue] of Object.entries(lead.customFields)) {
+      const key = metadataKey(rawKey);
+      const value = metadataValue(rawValue);
+      if (key && value && !(key in metadata)) metadata[key] = value;
+    }
+    return metadata;
+  }
+
+  async function launchSendNowCampaign(contacts: CampaignLead[]) {
+    let nextIndex = 0;
+    const launched: { lead: CampaignLead; callId: string; roomName: string }[] = [];
+    const failed: { lead: CampaignLead; message: string }[] = [];
+
+    async function worker() {
+      while (nextIndex < contacts.length) {
+        const lead = contacts[nextIndex];
+        nextIndex += 1;
+        try {
+          const call = await voiceApi.outboundCall(selectedAgentId, lead.phone, {
+            phoneNumberId: selectedPhoneId,
+            metadata: metadataForLead(lead),
+          });
+          launched.push({ lead, callId: call.callId, roomName: call.roomName });
+        } catch (caught) {
+          failed.push({ lead, message: errorMessage(caught) });
+        }
+      }
+    }
+
+    await Promise.all(
+      Array.from({ length: Math.min(normalizedConcurrency, contacts.length) }, () => worker()),
+    );
+    return { launched, failed };
+  }
+
+  async function prepareCampaign(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setNotice("");
     setError("");
@@ -263,299 +356,396 @@ export function CampaignShell() {
       setError("Complete the campaign readiness checks before preparing this campaign.");
       return;
     }
-    setNotice(
-      `${campaignName.trim()} is ready as a ${sendMode === "now" ? "send-now" : "scheduled"} campaign draft for ${leads.length} contacts. Backend campaign queue is not connected yet, so no calls were placed.`,
-    );
+    if (sendMode === "schedule") {
+      setNotice(
+        `${campaignName.trim()} is ready as a scheduled campaign draft for ${plural(leads.length, "contact")}. Scheduled campaign queue is not connected yet, so no calls were placed.`,
+      );
+      return;
+    }
+
+    const contactsToLaunch = leads.slice(0, normalizedDailyLimit);
+    const skippedCount = Math.max(0, leads.length - contactsToLaunch.length);
+    setLaunching(true);
+    setNotice(`Starting ${plural(contactsToLaunch.length, "call")} for ${campaignName.trim()}...`);
+    try {
+      const { launched, failed } = await launchSendNowCampaign(contactsToLaunch);
+      const skippedText = skippedCount
+        ? ` ${plural(skippedCount, "contact")} remain because the daily limit is ${normalizedDailyLimit.toLocaleString("en-IN")}.`
+        : "";
+      setNotice(
+        launched.length
+          ? `${campaignName.trim()} launched ${plural(launched.length, "call")}.${skippedText} Track results in Call Logs.`
+          : "",
+      );
+      if (failed.length) {
+        const firstFailure = failed[0];
+        setError(
+          `${plural(failed.length, "contact")} could not be called. First failure: row ${firstFailure.lead.row} (${firstFailure.lead.phone}) - ${firstFailure.message}`,
+        );
+      }
+    } finally {
+      setLaunching(false);
+    }
   }
 
   if (!session) {
-    return <main className="app-strong grid min-h-screen place-items-center bg-[#f7f8fb]">Loading campaigns</main>;
+    return <main className="app-strong grid min-h-screen place-items-center bg-[#f6f8fc]">Loading campaigns</main>;
   }
 
   return (
-    <main className="grid min-h-screen bg-[#f7f8fb] text-[#111827] lg:h-screen lg:grid-cols-[64px_minmax(0,1fr)] lg:overflow-hidden">
+    <main className={`grid min-h-screen bg-[#f6f8fc] text-[#111827] lg:h-screen lg:overflow-hidden ${
+      showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
+    }`}>
       <DashboardSidebar
         activeLabel="Campaigns"
         userInitials={initials(session.name)}
+        userName={session.name}
+        userEmail={session.email}
         onLogout={() => { void logoutSession().then(() => router.replace("/login")); }}
+        showUserSidebar={showUserSidebar}
+        setShowUserSidebar={setShowUserSidebar}
       />
 
       <section className="min-w-0 overflow-y-auto">
-        <header className="border-b border-[#e5e7eb] bg-white px-4 py-4 sm:px-6 lg:px-8">
-          <div className="mx-auto flex w-full max-w-[1440px] flex-wrap items-center justify-between gap-4">
+        <header className="border-b border-[#bae6fd] bg-white px-4 py-4 sm:px-6 lg:px-8">
+          <div className="mx-auto flex w-full max-w-1500px flex-wrap items-center justify-between gap-4">
             <div>
-              <h1 className="app-page-title m-0">New campaign</h1>
-              <p className="app-caption mt-1 mb-0">Upload a lead CSV, choose a caller ID and assistant, then prepare an outbound campaign safely.</p>
+              <span className="app-label text-[#0284c7]">Campaigns</span>
+              <h1 className="m-0 text-xl font-semibold leading-7 text-[#0f172a]">Outbound launchpad</h1>
+              <p className="app-caption mt-1 mb-0 text-[#475569]">Audience, routing, pacing, launch.</p>
             </div>
-            <div className="flex items-center gap-2 rounded-full border border-[#dbeafe] bg-[#eff6ff] px-3 py-2 text-[#2563eb]">
-              <Icon icon="shield" />
-              <span className="app-label text-[#1d4ed8]">Preflight mode</span>
+            <div className="grid w-full gap-2 sm:w-auto sm:grid-cols-4">
+              {campaignMetrics.map((metric) => (
+                <div className={`rounded-lg border px-3 py-2 ${metric.tone}`} key={metric.label}>
+                  <span className="app-caption block text-current">{metric.label}</span>
+                  <strong className="block text-sm font-semibold leading-5">{metric.value}</strong>
+                </div>
+              ))}
             </div>
           </div>
         </header>
 
-        <form className="mx-auto grid w-full max-w-[1440px] gap-4 p-4 sm:p-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:p-8" onSubmit={prepareCampaign}>
-          <section className="grid content-start gap-4">
+        <form className="mx-auto grid w-full max-w-1500px gap-5 p-4 sm:p-6 lg:grid-cols-[minmax(0,1fr)_340px] lg:p-8" onSubmit={prepareCampaign}>
+          <section className="grid min-w-0 content-start gap-4">
             {notice ? <Notice tone="success" message={notice} onClose={() => setNotice("")} /> : null}
             {error ? <Notice tone="error" message={error} onClose={() => setError("")} /> : null}
 
-            <section className="rounded-xl border border-[#dfe3ea] bg-white p-4 shadow-sm sm:p-5">
-              <div className="mb-4 flex items-start justify-between gap-3">
-                <div>
-                  <h2 className="app-section-title m-0">Campaign details</h2>
-                  <p className="app-caption mt-1 mb-0">Name the campaign and pick the exact voice stack that will make the calls.</p>
-                </div>
-                <span className="grid size-10 place-items-center rounded-lg bg-[#eff6ff] text-[#2563eb]"><Icon icon="spark" /></span>
-              </div>
-
-              <div className="grid gap-4 lg:grid-cols-2">
-                <label className="app-label grid gap-2 lg:col-span-2">
-                  Campaign Name
-                  <input className={controlClass} placeholder="June renewal follow-up" value={campaignName} onChange={(event) => setCampaignName(event.target.value)} />
-                </label>
-                <label className="app-label grid gap-2">
-                  Phone Number
-                  <select className={controlClass} value={selectedPhoneId} onChange={(event) => setSelectedPhoneId(event.target.value)}>
-                    <option value="">Select</option>
-                    {callableNumbers.map((number) => (
-                      <option key={number._id} value={number._id}>
-                        {number.number} · {number.provider} · {number.status}
-                      </option>
-                    ))}
-                  </select>
-                  {selectedPhone?.status === "Needs setup" ? (
-                    <span className="app-caption font-normal text-[#d97706]">This number still needs inbound routing setup. Outbound campaign caller ID may need provider verification.</span>
-                  ) : null}
-                </label>
-                <label className="app-label grid gap-2">
-                  Assistant
-                  <select className={controlClass} value={selectedAgentId} onChange={(event) => setSelectedAgentId(event.target.value)}>
-                    <option value="">Select</option>
-                    {agents.map((agent) => (
-                      <option key={agent._id} value={agent._id}>
-                        {agent.name} · {agent.status}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-            </section>
-
-            <section className="rounded-xl border border-[#dbeafe] bg-[#eff6ff] p-4">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <h2 className="app-section-title m-0 text-[#1e40af]">Best Practices</h2>
-                  <p className="app-caption mt-1 mb-0 text-[#1e40af]">Avoid spam flagging by pacing calls, using trusted caller IDs, respecting opt-outs, and calling during local business hours.</p>
-                </div>
-                <a
-                  className={`${buttonClass} border border-[#bfdbfe] bg-white px-3 text-[#2563eb] hover:bg-[#f8fbff]`}
-                  href="https://docs.vapi.ai/calls/outbound-calling#trusted-calling-and-caller-id"
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  Spam flagging best practices
-                </a>
-              </div>
-            </section>
-
-            <section className="rounded-xl border border-[#dfe3ea] bg-white p-4 shadow-sm sm:p-5">
-              <div className="mb-4 flex items-start justify-between gap-3">
-                <div>
-                  <h2 className="app-section-title m-0">Upload CSV</h2>
-                  <p className="app-caption mt-1 mb-0">Required column: phone or phone_number. Optional: name, email, company, and custom fields.</p>
-                </div>
-                <span className="app-caption rounded-full bg-[#f1f5f9] px-2.5 py-1">{csvFile ? `${csvFile.name} · ${formatFileSize(csvFile.size)}` : "No file chosen"}</span>
-              </div>
-
-              <label
-                className="grid min-h-[190px] cursor-pointer place-items-center rounded-xl border border-dashed border-[#cbd5e1] bg-[#f8fafc] p-6 text-center transition hover:border-[#93c5fd] hover:bg-[#eff6ff]"
-                onDragOver={(event) => event.preventDefault()}
-                onDrop={handleDrop}
-              >
-                <input className="sr-only" type="file" accept=".csv,text/csv" onChange={(event) => void handleCsv(event.target.files?.[0])} />
-                <span>
-                  <span className="mx-auto mb-3 grid size-12 place-items-center rounded-xl bg-white text-[#2563eb] shadow-sm"><Icon icon="upload" className="size-5" /></span>
-                  <strong className="app-strong block">Drag and drop a CSV file here or click to select file locally</strong>
-                  <span className="app-caption mt-1 block">Maximum file size: 5MB</span>
-                </span>
-              </label>
-
-              {leads.length ? (
-                <div className="mt-4 overflow-hidden rounded-xl border border-[#e5e7eb]">
-                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e5e7eb] bg-[#f8fafc] px-4 py-3">
-                    <span className="app-section-title">{leads.length} contacts loaded</span>
-                    <span className={`app-label rounded-full px-2.5 py-1 ${invalidLeadCount ? "bg-[#fff7ed] text-[#d97706]" : "bg-[#ecfdf5] text-[#047857]"}`}>
-                      {invalidLeadCount ? `${invalidLeadCount} invalid phones` : "All numbers look dialable"}
-                    </span>
+            <section className="overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm">
+              <div className="grid border-b border-[#e5e7eb] bg-[#fbfdff] sm:grid-cols-5">
+                {[
+                  ["Details", "bg-[#38bdf8]"],
+                  ["Audience", "bg-[#38bdf8]"],
+                  ["Timing", "bg-[#38bdf8]"],
+                  ["Strategy", "bg-[#38bdf8]"],
+                  ["Review", "bg-[#38bdf8]"],
+                ].map(([label, color]) => (
+                  <div className="flex items-center gap-2 border-b border-[#e5e7eb] px-4 py-3 last:border-b-0 sm:border-r sm:border-b-0 sm:last:border-r-0" key={label}>
+                    <span className={`size-2 rounded-full ${color}`} />
+                    <span className="app-label text-[#334155]">{label}</span>
                   </div>
-                  <div className="overflow-x-auto">
-                    <table className="w-full min-w-[720px] text-left">
-                      <thead className="bg-white text-[#64748b]">
-                        <tr className="app-label">
-                          <th className="px-4 py-3 font-medium">Row</th>
-                          <th className="px-4 py-3 font-medium">Phone</th>
-                          <th className="px-4 py-3 font-medium">Name</th>
-                          <th className="px-4 py-3 font-medium">Company</th>
-                          <th className="px-4 py-3 font-medium">Custom fields</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-[#edf0f4]">
-                        {previewLeads.map((lead) => (
-                          <tr key={`${lead.row}-${lead.phone}`}>
-                            <td className="app-body px-4 py-3 text-[#64748b]">{lead.row}</td>
-                            <td className={`app-strong px-4 py-3 ${isDialable(lead.phone) ? "" : "text-[#dc2626]"}`}>{lead.phone}</td>
-                            <td className="app-body px-4 py-3 text-[#475569]">{lead.name || "—"}</td>
-                            <td className="app-body px-4 py-3 text-[#475569]">{lead.company || "—"}</td>
-                            <td className="app-caption px-4 py-3">{Object.keys(lead.customFields).length}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                ))}
+              </div>
+
+              <section className="grid gap-5 border-b border-[#bae6fd] bg-[#f0f9ff] p-4 sm:p-5">
+                <div className="flex items-start gap-3">
+                  <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg bg-[#ecfeff] text-[#0891b2]">
+                    <Icon icon="spark" />
+                  </span>
+                  <div>
+                    <h2 className="app-section-title m-0">Campaign details</h2>
+                    <p className="app-caption mt-1 mb-0">Name, caller ID, and assistant.</p>
                   </div>
                 </div>
-              ) : null}
-            </section>
 
-            <section className="rounded-xl border border-[#dfe3ea] bg-white p-4 shadow-sm sm:p-5">
-              <div className="mb-4">
-                <h2 className="app-section-title m-0">Choose when to send</h2>
-                <p className="app-caption mt-1 mb-0">Schedule timing and pacing before campaign launch.</p>
-              </div>
-
-              <div className="grid gap-3 lg:grid-cols-2">
-                <button
-                  className={`rounded-xl border p-4 text-left transition ${sendMode === "now" ? "border-[#1438f5] bg-[#eef2ff] ring-2 ring-[#1438f5]/10" : "border-[#e5e7eb] bg-white hover:border-[#c7d2fe]"}`}
-                  onClick={() => setSendMode("now")}
-                  type="button"
-                >
-                  <span className="flex items-center gap-3">
-                    <span className="grid size-10 place-items-center rounded-lg bg-white text-[#2563eb]"><Icon icon="play" /></span>
-                    <span><strong className="app-strong block">Send Now</strong><span className="app-caption">Prepare campaign for immediate launch</span></span>
-                  </span>
-                </button>
-                <button
-                  className={`rounded-xl border p-4 text-left transition ${sendMode === "schedule" ? "border-[#1438f5] bg-[#eef2ff] ring-2 ring-[#1438f5]/10" : "border-[#e5e7eb] bg-white hover:border-[#c7d2fe]"}`}
-                  onClick={() => setSendMode("schedule")}
-                  type="button"
-                >
-                  <span className="flex items-center gap-3">
-                    <span className="grid size-10 place-items-center rounded-lg bg-white text-[#2563eb]"><Icon icon="calendar" /></span>
-                    <span><strong className="app-strong block">Schedule for later</strong><span className="app-caption">Pick date, timezone, and call window</span></span>
-                  </span>
-                </button>
-              </div>
-
-              {sendMode === "schedule" ? (
-                <div className="mt-4 grid gap-4 lg:grid-cols-3">
-                  <label className="app-label grid gap-2">
-                    Start time
-                    <input className={controlClass} type="datetime-local" value={scheduledAt} onChange={(event) => setScheduledAt(event.target.value)} />
+                <div className="grid gap-4 lg:grid-cols-2">
+                  <label className="app-label grid gap-2 lg:col-span-2">
+                    Campaign name
+                    <input className={controlClass} placeholder="June renewal follow-up" value={campaignName} onChange={(event) => setCampaignName(event.target.value)} />
                   </label>
                   <label className="app-label grid gap-2">
-                    Timezone
-                    <select className={controlClass} value={timezone} onChange={(event) => setTimezone(event.target.value)}>
-                      <option value="Asia/Kolkata">Asia/Kolkata</option>
-                      <option value="America/New_York">America/New_York</option>
-                      <option value="America/Los_Angeles">America/Los_Angeles</option>
-                      <option value="Europe/London">Europe/London</option>
-                      <option value="UTC">UTC</option>
+                    Phone number
+                    <select className={controlClass} value={selectedPhoneId} onChange={(event) => setSelectedPhoneId(event.target.value)}>
+                      <option value="">Select</option>
+                      {callableNumbers.map((number) => (
+                        <option key={number._id} value={number._id}>
+                          {number.number} - {number.provider} - {number.status}
+                          {phoneAgentId(number) === selectedAgentId ? "" : " - different assistant"}
+                        </option>
+                      ))}
                     </select>
+                    {selectedPhone && !selectedPhoneReady ? (
+                      <span className="app-caption font-normal text-[#d97706]">Choose a Ready outbound caller ID assigned to this assistant.</span>
+                    ) : null}
                   </label>
                   <label className="app-label grid gap-2">
-                    Local call window
-                    <span className="grid grid-cols-2 gap-2">
-                      <input className={controlClass} type="time" value={windowStart} onChange={(event) => setWindowStart(event.target.value)} />
-                      <input className={controlClass} type="time" value={windowEnd} onChange={(event) => setWindowEnd(event.target.value)} />
-                    </span>
-                  </label>
-                </div>
-              ) : null}
-            </section>
-
-            <section className="grid gap-4 xl:grid-cols-2">
-              <section className="rounded-xl border border-[#dfe3ea] bg-white p-4 shadow-sm sm:p-5">
-                <h2 className="app-section-title m-0">Calling strategy</h2>
-                <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                  <label className="app-label grid gap-2">
-                    Daily limit
-                    <input className={controlClass} min={1} max={10000} type="number" value={dailyLimit} onChange={(event) => setDailyLimit(Number(event.target.value))} />
-                  </label>
-                  <label className="app-label grid gap-2">
-                    Concurrent calls
-                    <input className={controlClass} min={1} max={20} type="number" value={concurrency} onChange={(event) => setConcurrency(Number(event.target.value))} />
-                  </label>
-                  <label className="app-label grid gap-2">
-                    Max attempts
-                    <input className={controlClass} min={1} max={5} type="number" value={maxAttempts} onChange={(event) => setMaxAttempts(Number(event.target.value))} />
-                  </label>
-                  <label className="app-label grid gap-2">
-                    Retry gap hours
-                    <input className={controlClass} min={1} max={168} type="number" value={retryGapHours} onChange={(event) => setRetryGapHours(Number(event.target.value))} />
+                    Assistant
+                    <select className={controlClass} value={selectedAgentId} onChange={(event) => setSelectedAgentId(event.target.value)}>
+                      <option value="">Select</option>
+                      {agents.map((agent) => (
+                        <option key={agent._id} value={agent._id}>
+                          {agent.name} - {agent.status}
+                        </option>
+                      ))}
+                    </select>
                   </label>
                 </div>
               </section>
 
-              <section className="rounded-xl border border-[#dfe3ea] bg-white p-4 shadow-sm sm:p-5">
-                <h2 className="app-section-title m-0">Campaign instructions</h2>
-                <div className="mt-4 grid gap-4">
-                  <label className="app-label grid gap-2">
-                    Goal
-                    <textarea className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-[#111827] outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10" placeholder="Example: confirm appointment interest and capture preferred callback time." value={campaignGoal} onChange={(event) => setCampaignGoal(event.target.value)} />
-                  </label>
-                  <label className="app-label grid gap-2">
-                    Success criteria
-                    <input className={controlClass} placeholder="Booked demo, qualified lead, payment reminder accepted..." value={successCriteria} onChange={(event) => setSuccessCriteria(event.target.value)} />
-                  </label>
+              <section className="grid gap-5 border-b border-[#bae6fd] bg-[#f0f9ff] p-4 sm:p-5">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="flex items-start gap-3">
+                    <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg bg-[#f0f9ff] text-[#0284c7]">
+                      <Icon icon="upload" />
+                    </span>
+                    <div>
+                      <h2 className="app-section-title m-0">Audience CSV</h2>
+                      <p className="app-caption mt-1 mb-0">Required: phone or phone_number in E.164 format.</p>
+                    </div>
+                  </div>
+                  <span className="app-caption rounded-lg bg-[#f1f5f9] px-2.5 py-1">{csvFile ? `${csvFile.name} - ${formatFileSize(csvFile.size)}` : "No file chosen"}</span>
+                </div>
+
+                <label
+                  className="grid min-h-170px cursor-pointer place-items-center rounded-lg border border-dashed border-[#7dd3fc] bg-white p-6 text-center shadow-sm transition hover:border-[#38bdf8] hover:bg-[#f0f9ff]"
+                  onDragOver={(event) => event.preventDefault()}
+                  onDrop={handleDrop}
+                >
+                  <input className="sr-only" type="file" accept=".csv,text/csv" onChange={(event) => void handleCsv(event.target.files?.[0])} />
+                  <span>
+                    <span className="mx-auto mb-3 grid size-11 place-items-center rounded-lg bg-white text-[#0284c7] shadow-sm"><Icon icon="file" /></span>
+                    <strong className="app-strong block">Drop CSV or choose file</strong>
+                    <span className="app-caption mt-1 block">Up to 5MB. Optional columns: name, email, company, custom fields.</span>
+                  </span>
+                </label>
+
+                <div className="rounded-lg border border-[#bae6fd] bg-[#f0f9ff] px-3 py-3">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <p className="app-caption m-0 text-[#9a3412]">Pace calls, use trusted caller IDs, respect opt-outs, and call inside local business hours.</p>
+                    <a
+                      className="app-label inline-flex min-h-9 items-center rounded-lg bg-white px-3 text-[#0369a1] ring-1 ring-[#7dd3fc] transition hover:bg-[#fffbeb]"
+                      href="https://docs.vapi.ai/calls/outbound-calling#trusted-calling-and-caller-id"
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      Spam guidance
+                    </a>
+                  </div>
+                </div>
+
+                {leads.length ? (
+                  <div className="overflow-hidden rounded-lg border border-[#e5e7eb]">
+                    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e5e7eb] bg-[#fbfdff] px-4 py-3">
+                      <span className="app-section-title">{leads.length} contacts loaded</span>
+                      <span className={`app-label rounded-lg px-2.5 py-1 ${invalidLeadCount ? "bg-[#fff7ed] text-[#d97706]" : "bg-[#ecfdf5] text-[#047857]"}`}>
+                        {invalidLeadCount ? `${invalidLeadCount} invalid phones` : "All numbers are E.164"}
+                      </span>
+                    </div>
+                    <div className="overflow-x-auto">
+                      <table className="w-full min-w-720px text-left">
+                        <thead className="bg-white text-[#64748b]">
+                          <tr className="app-label">
+                            <th className="px-4 py-3 font-medium">Row</th>
+                            <th className="px-4 py-3 font-medium">Phone</th>
+                            <th className="px-4 py-3 font-medium">Name</th>
+                            <th className="px-4 py-3 font-medium">Company</th>
+                            <th className="px-4 py-3 font-medium">Custom fields</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#edf0f4]">
+                          {previewLeads.map((lead) => (
+                            <tr className="hover:bg-[#fbfdff]" key={`${lead.row}-${lead.phone}`}>
+                              <td className="app-body px-4 py-3 text-[#64748b]">{lead.row}</td>
+                              <td className={`app-strong px-4 py-3 ${isDialable(lead.phone) ? "" : "text-[#dc2626]"}`}>{lead.phone}</td>
+                              <td className="app-body px-4 py-3 text-[#475569]">{lead.name || "-"}</td>
+                              <td className="app-body px-4 py-3 text-[#475569]">{lead.company || "-"}</td>
+                              <td className="app-caption px-4 py-3">{Object.keys(lead.customFields).length}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                ) : null}
+              </section>
+
+              <section className="grid gap-5 border-b border-[#bae6fd] bg-[#f0f9ff] p-4 sm:p-5">
+                <div className="flex items-start gap-3">
+                  <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg bg-[#fffbeb] text-[#d97706]">
+                    <Icon icon="calendar" />
+                  </span>
+                  <div>
+                    <h2 className="app-section-title m-0">Timing</h2>
+                    <p className="app-caption mt-1 mb-0">Launch mode and local calling window.</p>
+                  </div>
+                </div>
+
+                <div className="grid gap-3 lg:grid-cols-2">
+                  <button
+                    className={`rounded-lg border p-4 text-left transition ${sendMode === "now" ? "border-[#0284c7] bg-[#f0f9ff] ring-2 ring-[#0284c7]/10" : "border-[#e5e7eb] bg-white hover:border-[#7dd3fc]"}`}
+                    onClick={() => setSendMode("now")}
+                    type="button"
+                  >
+                    <span className="flex items-center gap-3">
+                      <span className="grid size-10 place-items-center rounded-lg bg-white text-[#0284c7]"><Icon icon="play" /></span>
+                      <span><strong className="app-strong block">Send now</strong><span className="app-caption">Launch immediately</span></span>
+                    </span>
+                  </button>
+                  <button
+                    className={`rounded-lg border p-4 text-left transition ${sendMode === "schedule" ? "border-[#38bdf8] bg-[#f0f9ff] ring-2 ring-[#38bdf8]/10" : "border-[#e5e7eb] bg-white hover:border-[#bae6fd]"}`}
+                    onClick={() => setSendMode("schedule")}
+                    type="button"
+                  >
+                    <span className="flex items-center gap-3">
+                      <span className="grid size-10 place-items-center rounded-lg bg-white text-[#7c3aed]"><Icon icon="calendar" /></span>
+                      <span><strong className="app-strong block">Schedule</strong><span className="app-caption">Create draft</span></span>
+                    </span>
+                  </button>
+                </div>
+
+                {sendMode === "schedule" ? (
+                  <div className="grid gap-4 lg:grid-cols-3">
+                    <label className="app-label grid gap-2">
+                      Start time
+                      <input className={controlClass} type="datetime-local" value={scheduledAt} onChange={(event) => setScheduledAt(event.target.value)} />
+                    </label>
+                    <label className="app-label grid gap-2">
+                      Timezone
+                      <select className={controlClass} value={timezone} onChange={(event) => setTimezone(event.target.value)}>
+                        <option value="Asia/Kolkata">Asia/Kolkata</option>
+                        <option value="America/New_York">America/New_York</option>
+                        <option value="America/Los_Angeles">America/Los_Angeles</option>
+                        <option value="Europe/London">Europe/London</option>
+                        <option value="UTC">UTC</option>
+                      </select>
+                    </label>
+                    <label className="app-label grid gap-2">
+                      Local call window
+                      <span className="grid grid-cols-2 gap-2">
+                        <input className={controlClass} type="time" value={windowStart} onChange={(event) => setWindowStart(event.target.value)} />
+                        <input className={controlClass} type="time" value={windowEnd} onChange={(event) => setWindowEnd(event.target.value)} />
+                      </span>
+                    </label>
+                  </div>
+                ) : null}
+              </section>
+
+              <section className="grid gap-5 bg-[#f8fcff] p-4 sm:p-5 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+                <div>
+                  <div className="flex items-start gap-3">
+                    <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg bg-[#f0f9ff] text-[#0284c7]">
+                      <Icon icon="phone" />
+                    </span>
+                    <div>
+                      <h2 className="app-section-title m-0">Calling strategy</h2>
+                      <p className="app-caption mt-1 mb-0">Volume, retries, and concurrency.</p>
+                    </div>
+                  </div>
+                  <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                    <label className="app-label grid gap-2">
+                      Daily limit
+                      <input className={controlClass} min={1} max={10000} type="number" value={dailyLimit} onChange={(event) => setDailyLimit(Number(event.target.value))} />
+                    </label>
+                    <label className="app-label grid gap-2">
+                      Concurrent calls
+                      <input className={controlClass} min={1} max={20} type="number" value={concurrency} onChange={(event) => setConcurrency(Number(event.target.value))} />
+                    </label>
+                    <label className="app-label grid gap-2">
+                      Max attempts
+                      <input className={controlClass} min={1} max={5} type="number" value={maxAttempts} onChange={(event) => setMaxAttempts(Number(event.target.value))} />
+                    </label>
+                    <label className="app-label grid gap-2">
+                      Retry gap hours
+                      <input className={controlClass} min={1} max={168} type="number" value={retryGapHours} onChange={(event) => setRetryGapHours(Number(event.target.value))} />
+                    </label>
+                  </div>
+                </div>
+
+                <div className="border-t border-[#edf0f4] pt-5 xl:border-t-0 xl:border-l xl:pl-5 xl:pt-0">
+                  <div className="flex items-start gap-3">
+                    <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg bg-[#fff1f2] text-[#e11d48]">
+                      <Icon icon="info" />
+                    </span>
+                    <div>
+                      <h2 className="app-section-title m-0">Campaign instructions</h2>
+                      <p className="app-caption mt-1 mb-0">Goal and success signal.</p>
+                    </div>
+                  </div>
+                  <div className="mt-4 grid gap-4">
+                    <label className="app-label grid gap-2">
+                      Goal
+                      <textarea className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-[#111827] outline-none focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10" placeholder="Confirm appointment interest and capture preferred callback time." value={campaignGoal} onChange={(event) => setCampaignGoal(event.target.value)} />
+                    </label>
+                    <label className="app-label grid gap-2">
+                      Success criteria
+                      <input className={controlClass} placeholder="Booked demo, qualified lead, reminder accepted..." value={successCriteria} onChange={(event) => setSuccessCriteria(event.target.value)} />
+                    </label>
+                  </div>
                 </div>
               </section>
             </section>
           </section>
 
-          <aside className="grid content-start gap-4">
-            <section className="rounded-xl border border-[#dfe3ea] bg-white p-4 shadow-sm">
-              <h2 className="app-section-title m-0">Readiness checks</h2>
-              <div className="mt-4 grid gap-3">
-                {readyChecks.map((check) => (
-                  <div className="flex items-center justify-between gap-3 rounded-lg border border-[#e5e7eb] px-3 py-2" key={check.label}>
-                    <span className="app-body text-[#475569]">{check.label}</span>
-                    <span className={`grid size-6 place-items-center rounded-full ${check.ready ? "bg-[#dcfce7] text-[#059669]" : "bg-[#fef3c7] text-[#d97706]"}`}>
-                      <Icon icon={check.ready ? "check" : "info"} className="size-3.5" />
-                    </span>
+          <aside className="min-w-0">
+            <section className="overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm lg:sticky lg:top-6">
+              <div className="border-b border-[#edf0f4] bg-[#fbfdff] p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <h2 className="app-section-title m-0">Launch console</h2>
+                    <p className="app-caption mt-1 mb-0">{canPrepare ? "Ready to launch." : "Complete preflight."}</p>
                   </div>
-                ))}
+                  <span className={`grid size-10 place-items-center rounded-lg ${canPrepare ? "bg-[#dcfce7] text-[#059669]" : "bg-[#fef3c7] text-[#d97706]"}`}>
+                    <Icon icon={canPrepare ? "check" : "shield"} />
+                  </span>
+                </div>
               </div>
-            </section>
 
-            <section className="rounded-xl border border-[#dfe3ea] bg-white p-4 shadow-sm">
-              <h2 className="app-section-title m-0">Guardrails</h2>
-              <div className="mt-4 grid gap-3">
-                <ToggleRow title="Respect DNC / opt-out list" detail="Required before launch." enabled={respectDnc} onChange={setRespectDnc} />
-                <ToggleRow title="Voicemail detection" detail="Skip or mark voicemail outcomes." enabled={detectVoicemail} onChange={setDetectVoicemail} />
-                <ToggleRow title="Consent opening line" detail="Assistant identifies itself and the purpose of the call." enabled={requireConsentLine} onChange={setRequireConsentLine} />
+              <div className="border-b border-[#edf0f4] p-4">
+                <h3 className="app-section-title m-0">Readiness</h3>
+                <div className="mt-4 grid gap-2.5">
+                  {readyChecks.map((check) => (
+                    <div className="flex items-center justify-between gap-3" key={check.label}>
+                      <span className="app-body text-[#475569]">{check.label}</span>
+                      <span className={`grid size-6 place-items-center rounded-full ${check.ready ? "bg-[#dcfce7] text-[#059669]" : "bg-[#fef3c7] text-[#d97706]"}`}>
+                        <Icon icon={check.ready ? "check" : "info"} className="size-3.5" />
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </section>
 
-            <section className="rounded-xl border border-[#dfe3ea] bg-white p-4 shadow-sm">
-              <h2 className="app-section-title m-0">Launch summary</h2>
-              <dl className="mt-4 grid gap-3">
-                {[
-                  ["Contacts", leads.length.toLocaleString("en-IN")],
-                  ["Invalid phones", invalidLeadCount.toLocaleString("en-IN")],
-                  ["Estimated batches", estimatedBatches.toLocaleString("en-IN")],
-                  ["Caller ID", selectedPhone?.number ?? "Not selected"],
-                  ["Assistant", selectedAgent?.name ?? "Not selected"],
-                  ["Mode", sendMode === "now" ? "Send now" : "Scheduled"],
-                ].map(([label, value]) => (
-                  <div className="flex justify-between gap-3" key={label}>
-                    <dt className="app-caption">{label}</dt>
-                    <dd className="app-strong m-0 max-w-[190px] truncate text-right">{value}</dd>
-                  </div>
-                ))}
-              </dl>
-              <button className={`${buttonClass} mt-5 w-full bg-[#1438f5] text-white shadow-sm hover:bg-[#102fcf]`} disabled={loading || !canPrepare} type="submit">
-                <Icon icon="play" /> Create campaign draft
-              </button>
-              <p className="app-caption mt-3 mb-0 text-center">No calls are placed from this screen yet.</p>
+              <div className="border-b border-[#edf0f4] p-4">
+                <h3 className="app-section-title m-0">Guardrails</h3>
+                <div className="mt-4 grid gap-3">
+                  <ToggleRow title="Respect opt-outs" detail="Required" enabled={respectDnc} onChange={setRespectDnc} />
+                  <ToggleRow title="Voicemail detection" detail="Outcome tagging" enabled={detectVoicemail} onChange={setDetectVoicemail} />
+                  <ToggleRow title="Consent opening" detail="Identity and purpose" enabled={requireConsentLine} onChange={setRequireConsentLine} />
+                </div>
+              </div>
+
+              <div className="p-4">
+                <h3 className="app-section-title m-0">Summary</h3>
+                <dl className="mt-4 grid gap-3">
+                  {[
+                    ["Contacts", leads.length.toLocaleString("en-IN")],
+                    ["Invalid phones", invalidLeadCount.toLocaleString("en-IN")],
+                    ["Batches", estimatedBatches.toLocaleString("en-IN")],
+                    ["Caller ID", selectedPhone?.number ?? "Not selected"],
+                    ["Assistant", selectedAgent?.name ?? "Not selected"],
+                    ["Mode", sendMode === "now" ? "Send now" : "Scheduled"],
+                  ].map(([label, value]) => (
+                    <div className="flex justify-between gap-3" key={label}>
+                      <dt className="app-caption">{label}</dt>
+                      <dd className="app-strong m-0 max-w-180px truncate text-right">{value}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <button className={`${buttonClass} mt-5 w-full bg-[#0284c7] text-white shadow-sm hover:bg-[#0369a1]`} disabled={loading || launching || !canPrepare} type="submit">
+                  <Icon icon="play" /> {launching ? "Launching..." : sendMode === "now" ? "Start calls now" : "Create scheduled draft"}
+                </button>
+                <p className="app-caption mt-3 mb-0 text-center">
+                  {sendMode === "now" ? "Outbound route starts immediately." : "Scheduled drafts wait for the queue."}
+                </p>
+              </div>
             </section>
           </aside>
         </form>
@@ -580,7 +770,7 @@ function ToggleRow({ detail, enabled, onChange, title }: {
         <strong className="app-strong block">{title}</strong>
         <span className="app-caption block">{detail}</span>
       </span>
-      <span className={`relative h-6 w-11 rounded-full transition ${enabled ? "bg-[#1438f5]" : "bg-[#cbd5e1]"}`}>
+      <span className={`relative h-6 w-11 rounded-full transition ${enabled ? "bg-[#0284c7]" : "bg-[#cbd5e1]"}`}>
         <span className={`absolute top-1 size-4 rounded-full bg-white shadow transition ${enabled ? "left-6" : "left-1"}`} />
       </span>
     </button>

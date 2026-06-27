@@ -112,6 +112,7 @@ export type ModelProvider = {
   voicesByModel?: Readonly<Record<string, readonly string[]>>;
   voicesByLanguage?: Readonly<Record<string, readonly string[]>>;
   languages?: readonly VoiceLanguageOption[];
+  showAllVoicesWithLanguageOrder?: boolean;
 };
 
 export type ModelCatalog = {
@@ -151,6 +152,12 @@ export type VoiceProfile = {
   label: string;
   gender?: "male" | "female";
   model?: string;
+  useCase?: string;
+  tone?: string;
+  qualityTier?: string;
+  note?: string;
+  accent?: string;
+  category?: string;
   languages?: readonly string[];
   languageCodes?: readonly string[];
   languageLabels?: readonly string[];
@@ -583,7 +590,11 @@ export const voiceApi = {
       `${API_URL}/api/voice/agents/${encodeURIComponent(agentId)}/runtime/stream`,
       { withCredentials: true },
     ),
-  outboundCall: (agentId: string, phoneNumber: string) =>
+  outboundCall: (
+    agentId: string,
+    phoneNumber: string,
+    options: { phoneNumberId?: string; metadata?: Record<string, string | number | boolean> } = {},
+  ) =>
     request<{
       callId: string;
       roomName: string;
@@ -592,7 +603,12 @@ export const voiceApi = {
       participantId: string;
     }>("/outbound-calls", {
       method: "POST",
-      body: JSON.stringify({ agentId, phoneNumber }),
+      body: JSON.stringify({
+        agentId,
+        phoneNumber,
+        ...(options.phoneNumberId ? { phoneNumberId: options.phoneNumberId } : {}),
+        ...(options.metadata ? { metadata: options.metadata } : {}),
+      }),
     }),
   phoneNumbers: () => request<{ numbers: BackendPhoneNumber[] }>("/phone-numbers"),
   createPhoneNumber: (input: PhoneNumberImportInput) =>

@@ -43,7 +43,7 @@ const providers: { id: TelephonyProvider; description: string; docs: string }[] 
 const buttonClass =
   "app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 transition disabled:cursor-not-allowed disabled:opacity-50";
 const controlClass =
-  "app-control-text min-h-11 w-full rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10";
+  "app-control-text min-h-11 w-full rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10";
 
 function Icon({ icon, className = "size-4" }: { icon: IconName; className?: string }) {
   const props = {
@@ -70,7 +70,7 @@ function initials(name: string) {
 }
 
 function formatDate(value: string) {
-  if (!value) return "—";
+  if (!value) return "-";
   return new Intl.DateTimeFormat("en-IN", {
     day: "2-digit",
     month: "short",
@@ -80,7 +80,7 @@ function formatDate(value: string) {
 
 function providerTone(provider: string) {
   if (provider === "Twilio") return "border-[#fee2e2] bg-[#fff1f2] text-[#be123c]";
-  if (provider === "Exotel") return "border-[#dbeafe] bg-[#eff6ff] text-[#1d4ed8]";
+  if (provider === "Exotel") return "border-[#bae6fd] bg-[#f0f9ff] text-[#0369a1]";
   return "border-[#d1fae5] bg-[#ecfdf5] text-[#047857]";
 }
 
@@ -105,6 +105,7 @@ export function PhoneNumberShell() {
   const [showImport, setShowImport] = useState(false);
   const [showBuy, setShowBuy] = useState(false);
   const [assignmentNumber, setAssignmentNumber] = useState<BackendPhoneNumber | null>(null);
+  const [showUserSidebar, setShowUserSidebar] = useState(false);
 
   useEffect(() => {
     if (!session) {
@@ -192,7 +193,7 @@ export function PhoneNumberShell() {
       setNumbers(numberResponse.numbers);
       setAgents(agentResponse.agents);
       const suffix = result.routes.errors.length
-        ? ` First issue: ${result.routes.errors[0].number} — ${result.routes.errors[0].message}`
+        ? ` First issue: ${result.routes.errors[0].number} - ${result.routes.errors[0].message}`
         : "";
       showMessage(
         `Route sync complete: checked ${result.routes.total}, repaired ${result.routes.repaired}, needs setup ${result.routes.needsSetup}.${suffix}`,
@@ -235,19 +236,25 @@ export function PhoneNumberShell() {
   }
 
   return (
-    <main className="grid min-h-screen bg-[#f7f8fb] text-[#111827] lg:h-screen lg:grid-cols-[64px_minmax(0,1fr)] lg:overflow-hidden">
+    <main className={`grid min-h-screen bg-[#f7f8fb] text-[#111827] lg:h-screen lg:overflow-hidden ${
+      showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
+    }`}>
       <DashboardSidebar
         activeLabel="Phone Number"
         userInitials={initials(session.name)}
-        onLogout={() => { void logoutSession().then(() => router.replace("/login")); }}
+        userName={session.name}
+        userEmail={session.email}
+        onLogout={() => void logoutSession().then(() => router.replace("/login"))}
+        showUserSidebar={showUserSidebar}
+        setShowUserSidebar={setShowUserSidebar}
       />
-
       <section className="min-w-0 overflow-y-auto">
-        <header className="border-b border-[#e5e7eb] bg-white px-4 py-4 sm:px-6 lg:px-8">
-          <div className="mx-auto flex w-full max-w-[1440px] flex-wrap items-center justify-between gap-4">
+        <header className="border-b border-[#bae6fd] bg-white px-4 py-4 sm:px-6 lg:px-8">
+          <div className="mx-auto flex w-full max-w-1500px flex-wrap items-center justify-between gap-4">
             <div>
-              <h1 className="app-page-title m-0">Phone numbers</h1>
-              <p className="app-caption mt-1 mb-0">Import or buy telephony numbers, then link them to any voice agent.</p>
+              <span className="app-label text-[#0284c7]">Telephony</span>
+              <h1 className="m-0 mt-1 text-xl font-semibold leading-7 text-[#0f172a] sm:text-2xl">Phone numbers</h1>
+              <p className="app-caption mt-1 mb-0 text-[#475569]">Import or buy telephony numbers, then link them to any voice agent.</p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <button
@@ -260,7 +267,7 @@ export function PhoneNumberShell() {
                 Repair routes
               </button>
               <button
-                className={`${buttonClass} border border-[#c7d2fe] bg-white text-[#1438f5] hover:bg-[#eef2ff]`}
+                className={`${buttonClass} border border-[#bae6fd] bg-[#f0f9ff] text-[#0369a1] hover:bg-[#e0f2fe]`}
                 onClick={() => { setShowImport(true); showMessage(""); }}
                 type="button"
               >
@@ -268,7 +275,7 @@ export function PhoneNumberShell() {
                 Import number
               </button>
               <button
-                className={`${buttonClass} border-0 bg-[#1438f5] text-white shadow-sm hover:bg-[#102fcf]`}
+                className={`${buttonClass} border-0 bg-[#0284c7] text-white shadow-[0_12px_28px_rgba(20,56,245,0.28)] hover:bg-[#0369a1]`}
                 onClick={() => { setShowBuy(true); showMessage(""); }}
                 type="button"
               >
@@ -279,7 +286,7 @@ export function PhoneNumberShell() {
           </div>
         </header>
 
-        <div className="mx-auto grid w-full max-w-[1440px] gap-4 p-4 sm:p-6 lg:p-8">
+        <div className="mx-auto grid w-full max-w-1500px gap-4 p-4 sm:p-6 lg:p-8">
           {notice ? <Notice tone="success" message={notice} onClose={() => setNotice("")} /> : null}
           {error ? <Notice tone="error" message={error} onClose={() => setError("")} /> : null}
 
@@ -296,12 +303,12 @@ export function PhoneNumberShell() {
             </div>
 
             {loading ? (
-              <div className="grid min-h-[360px] place-items-center">
-                <span className="app-caption">Loading phone numbers…</span>
+              <div className="grid min-h-360px place-items-center">
+                <span className="app-caption">Loading phone numbers...</span>
               </div>
             ) : numbers.length ? (
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[860px] border-collapse text-left">
+                <table className="w-full min-w-860px border-collapse text-left">
                   <thead className="bg-[#f8fafc]">
                     <tr className="app-label text-[#64748b]">
                       <th className="px-5 py-3 font-medium">Phone number</th>
@@ -326,18 +333,18 @@ export function PhoneNumberShell() {
                 </table>
               </div>
             ) : (
-              <div className="grid min-h-[360px] place-items-center p-6 text-center">
+              <div className="grid min-h-360px place-items-center p-6 text-center">
                 <div className="max-w-sm">
-                  <span className="mx-auto mb-4 grid size-12 place-items-center rounded-xl bg-[#eef2ff] text-[#1438f5]">
+                  <span className="mx-auto mb-4 grid size-12 place-items-center rounded-xl bg-[#f0f9ff] text-[#0284c7]">
                     <Icon icon="phone" className="size-5" />
                   </span>
                   <h3 className="app-section-title m-0">No phone numbers yet</h3>
-                  <p className="app-caption mt-1 mb-4">Import from Twilio, Exotel, or Vobiz—or buy a new Vobiz number.</p>
+                  <p className="app-caption mt-1 mb-4">Import from Twilio, Exotel, or Vobiz-or buy a new Vobiz number.</p>
                   <div className="flex flex-wrap justify-center gap-2">
-                    <button className={`${buttonClass} border border-[#c7d2fe] bg-white text-[#1438f5]`} onClick={() => setShowImport(true)} type="button">
+                    <button className={`${buttonClass} border border-[#bae6fd] bg-white text-[#0284c7]`} onClick={() => setShowImport(true)} type="button">
                       <Icon icon="import" /> Import number
                     </button>
-                    <button className={`${buttonClass} bg-[#1438f5] text-white`} onClick={() => setShowBuy(true)} type="button">
+                    <button className={`${buttonClass} bg-[#0284c7] text-white`} onClick={() => setShowBuy(true)} type="button">
                       <Icon icon="plus" /> Buy number
                     </button>
                   </div>
@@ -398,12 +405,12 @@ function PhoneNumberRow({
     <tr className="border-t border-[#edf0f4] transition hover:bg-[#fbfcfe]">
       <td className="px-5 py-4">
         <div className="flex items-center gap-3">
-          <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#eef2ff] text-[#4f46e5]">
+          <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#f0f9ff] text-[#0284c7]">
             <Icon icon="phone" />
           </span>
           <span className="min-w-0">
             <strong className="app-strong block whitespace-nowrap">{number.number}</strong>
-            <span className="app-caption block max-w-[240px] truncate">{number.label}</span>
+            <span className="app-caption block max-w-240px truncate">{number.label}</span>
           </span>
         </div>
       </td>
@@ -414,15 +421,15 @@ function PhoneNumberRow({
       </td>
       <td className="px-4 py-4">
         <button
-          className={`group inline-flex max-w-[240px] items-center gap-2 rounded-lg border px-2.5 py-2 text-left transition ${agent ? "border-[#e5e7eb] bg-[#f8fafc] hover:border-[#c7d2fe] hover:bg-[#eef2ff]" : "border-dashed border-[#cbd5e1] bg-white text-[#475569] hover:border-[#2563eb] hover:text-[#2563eb]"}`}
+          className={`group inline-flex max-w-240px items-center gap-2 rounded-lg border px-2.5 py-2 text-left transition ${agent ? "border-[#e5e7eb] bg-[#f8fafc] hover:border-[#bae6fd] hover:bg-[#f0f9ff]" : "border-dashed border-[#cbd5e1] bg-white text-[#475569] hover:border-[#0284c7] hover:text-[#0284c7]"}`}
           onClick={onManage}
           type="button"
         >
-          <span className={`grid size-7 shrink-0 place-items-center rounded-md ${agent ? "bg-white text-[#64748b]" : "bg-[#eef2ff] text-[#4f46e5]"}`}>
+          <span className={`grid size-7 shrink-0 place-items-center rounded-md ${agent ? "bg-white text-[#64748b]" : "bg-[#f0f9ff] text-[#0284c7]"}`}>
             <Icon icon={agent ? "user" : "link"} className="size-3.5" />
           </span>
           <span className="app-strong truncate">{agent?.name ?? "Link agent"}</span>
-          {agent ? <Icon icon="edit" className="size-3.5 text-[#94a3b8] group-hover:text-[#4f46e5]" /> : null}
+          {agent ? <Icon icon="edit" className="size-3.5 text-[#94a3b8] group-hover:text-[#0284c7]" /> : null}
         </button>
       </td>
       <td className="app-body whitespace-nowrap px-4 py-4 text-[#475569]">{number.region || "Global"}</td>
@@ -432,7 +439,7 @@ function PhoneNumberRow({
       </td>
       <td className="px-4 py-4">
         <div className="flex items-center justify-end gap-1">
-          <button className="grid size-9 place-items-center rounded-lg text-[#64748b] transition hover:bg-[#eef2ff] hover:text-[#4f46e5]" disabled={busy} onClick={onManage} type="button" aria-label={`Manage ${number.number}`}>
+          <button className="grid size-9 place-items-center rounded-lg text-[#64748b] transition hover:bg-[#f0f9ff] hover:text-[#0284c7]" disabled={busy} onClick={onManage} type="button" aria-label={`Manage ${number.number}`}>
             <Icon icon="edit" />
           </button>
           <button className="grid size-9 place-items-center rounded-lg text-[#dc2626] transition hover:bg-[#fff1f2]" disabled={busy} onClick={onDelete} type="button" aria-label={`Delete ${number.number}`}>
@@ -508,22 +515,22 @@ function ImportNumberModal({ busy, onClose, onImport }: {
         <div className="grid grid-cols-3 border-b border-[#e5e7eb] px-5 sm:px-6">
           {providers.map((item) => (
             <button
-              className={`relative min-h-14 border-0 bg-transparent px-2 text-center transition ${provider === item.id ? "text-[#1438f5]" : "text-[#64748b] hover:text-[#334155]"}`}
+              className={`relative min-h-14 border-0 bg-transparent px-2 text-center transition ${provider === item.id ? "text-[#0284c7]" : "text-[#64748b] hover:text-[#334155]"}`}
               key={item.id}
               onClick={() => setProvider(item.id)}
               type="button"
             >
               <span className="app-strong">{item.id}</span>
-              {provider === item.id ? <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-[#1438f5]" /> : null}
+              {provider === item.id ? <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-[#0284c7]" /> : null}
             </button>
           ))}
         </div>
 
         <div className="grid gap-5 overflow-y-auto px-5 py-5 sm:px-6">
-          <div className="rounded-lg border border-[#dbeafe] bg-[#eff6ff] px-3 py-2.5">
+          <div className="rounded-lg border border-[#bae6fd] bg-[#f0f9ff] px-3 py-2.5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <span className="app-body text-[#1e40af]">{providers.find((item) => item.id === provider)?.description}</span>
-              <a className="app-label text-[#2563eb] underline underline-offset-2" href={providers.find((item) => item.id === provider)?.docs} rel="noreferrer" target="_blank">Provider docs</a>
+              <a className="app-label text-[#0284c7] underline underline-offset-2" href={providers.find((item) => item.id === provider)?.docs} rel="noreferrer" target="_blank">Provider docs</a>
             </div>
           </div>
 
@@ -552,12 +559,12 @@ function ImportNumberModal({ busy, onClose, onImport }: {
                 </label>
                 <label className="app-label grid gap-2">
                   Account SID
-                  <input className={controlClass} autoComplete="off" placeholder="AC…" value={accountSid} onChange={(event) => setAccountSid(event.target.value)} />
+                  <input className={controlClass} autoComplete="off" placeholder="AC..." value={accountSid} onChange={(event) => setAccountSid(event.target.value)} />
                 </label>
               </div>
               <label className="app-label grid gap-2">
                 API Key SID
-                <input className={controlClass} autoComplete="off" placeholder="SK…" value={apiKeySid} onChange={(event) => setApiKeySid(event.target.value)} />
+                <input className={controlClass} autoComplete="off" placeholder="SK..." value={apiKeySid} onChange={(event) => setApiKeySid(event.target.value)} />
               </label>
               <label className="app-label grid gap-2">
                 API Key Secret
@@ -596,7 +603,7 @@ function ImportNumberModal({ busy, onClose, onImport }: {
             <div className="grid gap-4 rounded-xl border border-[#e5e7eb] bg-[#f8fafc] p-4">
               <label className="app-label grid gap-2">
                 Auth ID
-                <input className={controlClass} autoComplete="off" placeholder="MA_… or SA_…" value={authId} onChange={(event) => setAuthId(event.target.value)} />
+                <input className={controlClass} autoComplete="off" placeholder="MA_... or SA_..." value={authId} onChange={(event) => setAuthId(event.target.value)} />
               </label>
               <label className="app-label grid gap-2">
                 Auth Token
@@ -622,8 +629,8 @@ function ImportNumberModal({ busy, onClose, onImport }: {
 
         <footer className="flex items-center justify-end gap-2 border-t border-[#e5e7eb] px-5 py-4 sm:px-6">
           <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button>
-          <button className={`${buttonClass} bg-[#1438f5] text-white hover:bg-[#102fcf]`} disabled={busy || !valid} type="submit">
-            <Icon icon="import" /> {busy ? "Importing…" : "Import number"}
+          <button className={`${buttonClass} bg-[#0284c7] text-white hover:bg-[#0369a1]`} disabled={busy || !valid} type="submit">
+            <Icon icon="import" /> {busy ? "Importing..." : "Import number"}
           </button>
         </footer>
       </form>
@@ -703,12 +710,12 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase }: {
             Area code or digits <span className="font-normal text-[#94a3b8]">(optional)</span>
             <input className={controlClass} inputMode="tel" placeholder="For example 80 or 650" value={query} onChange={(event) => setQuery(event.target.value)} />
           </label>
-          <button className={`${buttonClass} self-end border border-[#c7d2fe] bg-white text-[#1438f5] hover:bg-[#eef2ff]`} disabled={searching || busy} type="submit">
-            <Icon icon="search" /> {searching ? "Searching…" : "Search"}
+          <button className={`${buttonClass} self-end border border-[#bae6fd] bg-white text-[#0284c7] hover:bg-[#f0f9ff]`} disabled={searching || busy} type="submit">
+            <Icon icon="search" /> {searching ? "Searching..." : "Search"}
           </button>
         </form>
 
-        <div className="min-h-[280px] max-h-[min(460px,52vh)] overflow-y-auto px-5 py-4 sm:px-6">
+        <div className="min-h-280px max-h-[min(460px,52vh)] overflow-y-auto px-5 py-4 sm:px-6">
           {inventoryError ? (
             <div className="rounded-lg border border-[#fecaca] bg-[#fff1f2] p-3 text-[#b91c1c]">
               <p className="app-body m-0">{inventoryError}</p>
@@ -717,7 +724,7 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase }: {
           ) : null}
           {requestError ? <div className="mb-3 rounded-lg border border-[#fecaca] bg-[#fff1f2] p-3 app-body text-[#b91c1c]">{requestError}</div> : null}
           {searching ? (
-            <div className="grid min-h-[240px] place-items-center"><span className="app-caption">Loading available numbers…</span></div>
+            <div className="grid min-h-240px place-items-center"><span className="app-caption">Loading available numbers...</span></div>
           ) : numbers.length ? (
             <div className="grid gap-2">
               {numbers.map((number) => {
@@ -725,7 +732,7 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase }: {
                 const voiceAvailable = number.voice_enabled !== false && number.capabilities?.voice !== false;
                 return (
                   <button
-                    className={`grid w-full gap-3 rounded-xl border p-3 text-left transition sm:grid-cols-[minmax(0,1fr)_145px_145px_auto] sm:items-center ${active ? "border-[#1438f5] bg-[#eef2ff] ring-2 ring-[#1438f5]/10" : "border-[#e5e7eb] bg-white hover:border-[#c7d2fe] hover:bg-[#fbfcff]"}`}
+                    className={`grid w-full gap-3 rounded-xl border p-3 text-left transition sm:grid-cols-[minmax(0,1fr)_145px_145px_auto] sm:items-center ${active ? "border-[#0284c7] bg-[#f0f9ff] ring-2 ring-[#0284c7]/10" : "border-[#e5e7eb] bg-white hover:border-[#bae6fd] hover:bg-[#fbfcff]"}`}
                     disabled={!voiceAvailable || busy}
                     key={number.id || number.e164}
                     onClick={() => setSelected(number)}
@@ -743,21 +750,21 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase }: {
               })}
             </div>
           ) : searched && !inventoryError ? (
-            <div className="grid min-h-[240px] place-items-center text-center">
+            <div className="grid min-h-240px place-items-center text-center">
               <div><Icon icon="search" className="mx-auto mb-3 size-6 text-[#94a3b8]" /><p className="app-body m-0 text-[#475569]">No available numbers matched this search.</p></div>
             </div>
           ) : null}
         </div>
 
         <footer className="flex flex-wrap items-end justify-between gap-3 border-t border-[#e5e7eb] px-5 py-4 sm:px-6">
-          <label className="app-label grid min-w-[240px] flex-1 gap-2 sm:max-w-sm">
+          <label className="app-label grid min-w-240px flex-1 gap-2 sm:max-w-sm">
             Label <span className="font-normal text-[#94a3b8]">(optional)</span>
             <input className={controlClass} maxLength={120} placeholder="Sales main line" value={label} onChange={(event) => setLabel(event.target.value)} />
           </label>
           <div className="flex gap-2">
             <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button>
-            <button className={`${buttonClass} bg-[#1438f5] text-white hover:bg-[#102fcf]`} disabled={busy || !selected} onClick={() => { if (selected) onPurchase(selected, label); }} type="button">
-              <Icon icon="plus" /> {busy ? "Purchasing…" : "Purchase number"}
+            <button className={`${buttonClass} bg-[#0284c7] text-white hover:bg-[#0369a1]`} disabled={busy || !selected} onClick={() => { if (selected) onPurchase(selected, label); }} type="button">
+              <Icon icon="plus" /> {busy ? "Purchasing..." : "Purchase number"}
             </button>
           </div>
         </footer>
@@ -781,7 +788,7 @@ function AgentModal({ agents, busy, number, onAssign, onClose }: {
   }, [agents, query]);
 
   return (
-    <ModalFrame title="Link an agent" subtitle={`${number.number} · ${number.provider}`} onClose={onClose} width="max-w-xl">
+    <ModalFrame title="Link an agent" subtitle={`${number.number} / ${number.provider}`} onClose={onClose} width="max-w-xl">
       <div className="grid min-h-0 grid-rows-[auto_minmax(0,1fr)_auto]">
         <div className="border-b border-[#e5e7eb] px-5 py-4 sm:px-6">
           <label className="relative block">
@@ -790,23 +797,23 @@ function AgentModal({ agents, busy, number, onAssign, onClose }: {
           </label>
         </div>
 
-        <div className="min-h-[220px] max-h-[min(430px,52vh)] overflow-y-auto p-2 sm:p-3">
+        <div className="min-h-220px max-h-[min(430px,52vh)] overflow-y-auto p-2 sm:p-3">
           {filteredAgents.map((agent) => {
             const selected = selectedId === agent._id;
             return (
               <button
-                className={`mb-1 flex w-full items-center gap-3 rounded-lg border p-3 text-left transition ${selected ? "border-[#c7d2fe] bg-[#eef2ff]" : "border-transparent hover:bg-[#f8fafc]"}`}
+                className={`mb-1 flex w-full items-center gap-3 rounded-lg border p-3 text-left transition ${selected ? "border-[#bae6fd] bg-[#f0f9ff]" : "border-transparent hover:bg-[#f8fafc]"}`}
                 key={agent._id}
                 onClick={() => setSelectedId(agent._id)}
                 type="button"
               >
-                <span className={`grid size-10 shrink-0 place-items-center rounded-lg ${selected ? "bg-[#1438f5] text-white" : "bg-[#eef2ff] text-[#4f46e5]"}`}><Icon icon="user" /></span>
+                <span className={`grid size-10 shrink-0 place-items-center rounded-lg ${selected ? "bg-[#0284c7] text-white" : "bg-[#f0f9ff] text-[#0284c7]"}`}><Icon icon="user" /></span>
                 <span className="min-w-0 flex-1">
                   <strong className="app-strong block truncate">{agent.name}</strong>
                   <span className="app-caption block truncate">{agent.team || "Voice agent"}</span>
                 </span>
                 <span className={`app-label rounded-full px-2 py-1 ${agent.status === "Live" ? "bg-[#ecfdf5] text-[#047857]" : "bg-[#f1f5f9] text-[#64748b]"}`}>{agent.status}</span>
-                <span className={`grid size-5 place-items-center rounded-full border ${selected ? "border-[#1438f5] bg-[#1438f5] text-white" : "border-[#cbd5e1]"}`}>{selected ? <Icon icon="check" className="size-3" /> : null}</span>
+                <span className={`grid size-5 place-items-center rounded-full border ${selected ? "border-[#0284c7] bg-[#0284c7] text-white" : "border-[#cbd5e1]"}`}>{selected ? <Icon icon="check" className="size-3" /> : null}</span>
               </button>
             );
           })}
@@ -823,8 +830,8 @@ function AgentModal({ agents, busy, number, onAssign, onClose }: {
           </div>
           <div className="flex gap-2">
             <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button>
-            <button className={`${buttonClass} bg-[#1438f5] text-white hover:bg-[#102fcf]`} disabled={busy || !selectedId} onClick={() => onAssign(selectedId)} type="button">
-              <Icon icon="link" /> {busy ? "Saving…" : "Set agent"}
+            <button className={`${buttonClass} bg-[#0284c7] text-white hover:bg-[#0369a1]`} disabled={busy || !selectedId} onClick={() => onAssign(selectedId)} type="button">
+              <Icon icon="link" /> {busy ? "Saving..." : "Set agent"}
             </button>
           </div>
         </footer>

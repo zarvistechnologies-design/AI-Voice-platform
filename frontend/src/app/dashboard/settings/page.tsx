@@ -1,5 +1,5 @@
 import { OrganizationSettingsShell } from "@/components/dashboard/OrganizationSettingsShell";
 
-export default function OrganizationSettingsPage() {
+export default function SettingsPage() {
   return <OrganizationSettingsShell />;
 }

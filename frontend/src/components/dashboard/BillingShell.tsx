@@ -48,9 +48,9 @@ function Card({ children, className = "" }: { children: ReactNode; className?: s
   return <article className={`rounded-2xl border border-slate-200 bg-white shadow-sm ${className}`}>{children}</article>;
 }
 
-function Metric({ label, value, detail, tone = "blue" }: { label: string; value: string; detail: string; tone?: "blue" | "emerald" | "amber" | "slate" }) {
+function Metric({ label, value, detail, tone = "sky" }: { label: string; value: string; detail: string; tone?: "sky" | "emerald" | "amber" | "slate" }) {
   const tones = {
-    blue: "bg-blue-50 text-blue-700",
+    sky: "bg-sky-50 text-sky-700",
     emerald: "bg-emerald-50 text-emerald-700",
     amber: "bg-amber-50 text-amber-700",
     slate: "bg-slate-100 text-slate-700",
@@ -73,6 +73,7 @@ export function BillingShell() {
   const [selectedTopUp, setSelectedTopUp] = useState(10);
   const [threshold, setThreshold] = useState("5");
   const [reloadAmount, setReloadAmount] = useState(10);
+  const [showUserSidebar, setShowUserSidebar] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -170,35 +171,47 @@ export function BillingShell() {
   if (!session) return <main className="grid min-h-screen place-items-center bg-slate-50 text-sm font-semibold">Loading billing</main>;
 
   return (
-    <main className="grid min-h-screen bg-[#f4f7fb] text-slate-950 lg:grid-cols-[64px_minmax(0,1fr)]">
-      <DashboardSidebar activeLabel="Billing" userInitials={initials(session.name)} onLogout={() => void logoutSession().then(() => router.replace("/login"))} />
-      <section className="min-w-0 p-4 sm:p-6 lg:p-8">
-        <div className="mx-auto grid max-w-7xl gap-6">
-          <header className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-            <div>
-              <span className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">Pay per use</span>
-              <h1 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">Credit command center</h1>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Top up once, run calls, and see every provider charge broken down by LLM, STT, TTS, and carrier usage.</p>
-            </div>
-            <div className="flex gap-2">
+    <main className={`grid min-h-screen bg-[#f4f7fb] text-slate-950 ${
+      showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
+    }`}>
+      <DashboardSidebar
+        activeLabel="Billing"
+        userInitials={initials(session.name)}
+        userName={session.name}
+        userEmail={session.email}
+        onLogout={() => void logoutSession().then(() => router.replace("/login"))}
+        showUserSidebar={showUserSidebar}
+        setShowUserSidebar={setShowUserSidebar}
+      />
+      <section className="min-w-0 p-4">
+        <div className="mx-auto grid max-w-[1500px] gap-6">
+          <header className="border-b border-[#bae6fd] bg-white pb-4">
+            <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+              <div>
+                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0284c7]">Pay per use</span>
+                <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">Credit command center</h1>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Top up once, run calls, and see every provider charge broken down by LLM, STT, TTS, and carrier usage.</p>
+              </div>
+              <div className="flex gap-2">
               <button className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50" type="button" onClick={() => void load()} disabled={Boolean(busy)}>
                 Refresh
               </button>
-              <button className="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-slate-950/15 hover:bg-blue-700" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup"}>
+              <button className="rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-sky-600/20 hover:bg-sky-700" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup"}>
                 Buy ${selectedTopUp}
               </button>
+              </div>
             </div>
           </header>
 
-          {notice ? <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-800">{notice}</div> : null}
+          {notice ? <div className="rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm font-semibold text-sky-800">{notice}</div> : null}
           {!data?.configured ? <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">Stripe is not configured yet. Credits can be granted internally, but checkout needs Stripe keys and webhook secret.</div> : null}
 
           <section className="grid gap-4 xl:grid-cols-[1.25fr_0.75fr]">
             <Card className="overflow-hidden">
-              <div className="grid gap-6 bg-gradient-to-br from-white via-blue-50 to-emerald-50 p-5 md:grid-cols-[minmax(0,1fr)_320px] md:p-6">
+              <div className="grid gap-6 bg-gradient-to-br from-white via-sky-50 to-sky-50 p-5 md:grid-cols-[minmax(0,1fr)_320px] md:p-6">
                 <div className="grid content-between gap-6">
                   <div>
-                    <span className="inline-flex rounded-full bg-white px-3 py-1 text-xs font-semibold text-blue-700 shadow-sm ring-1 ring-blue-100">Wallet balance</span>
+                    <span className="inline-flex rounded-full bg-white px-3 py-1 text-xs font-semibold text-sky-700 shadow-sm ring-1 ring-sky-100">Wallet balance</span>
                     <h2 className="mt-5 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">{money(balance, currency)}</h2>
                     <p className="mt-3 max-w-xl text-sm leading-6 text-slate-600">Calls start only when the wallet has the minimum required balance. Each completed call writes a ledger debit with provider-level detail.</p>
                   </div>
@@ -208,7 +221,7 @@ export function BillingShell() {
                       <span>{money(lifetime, currency)} lifetime credits</span>
                     </div>
                     <div className="h-3 overflow-hidden rounded-full bg-white shadow-inner ring-1 ring-slate-200">
-                      <div className="h-full rounded-full bg-gradient-to-r from-blue-600 via-cyan-500 to-emerald-500" style={{ width: `${progress}%` }} />
+                      <div className="h-full rounded-full bg-gradient-to-r from-sky-600 via-sky-500 to-sky-400" style={{ width: `${progress}%` }} />
                     </div>
                   </div>
                 </div>
@@ -218,7 +231,7 @@ export function BillingShell() {
                   <div className="grid grid-cols-2 gap-2">
                     {topUpOptions.map((amount) => (
                       <button
-                        className={`min-h-12 rounded-xl border px-3 text-sm font-semibold transition ${selectedTopUp === amount ? "border-blue-500 bg-blue-600 text-white shadow-lg shadow-blue-600/20" : "border-slate-200 bg-white text-slate-700 hover:border-blue-300 hover:bg-blue-50"}`}
+                        className={`min-h-12 rounded-xl border px-3 text-sm font-semibold transition ${selectedTopUp === amount ? "border-sky-500 bg-sky-600 text-white shadow-lg shadow-sky-600/20" : "border-slate-200 bg-white text-slate-700 hover:border-sky-300 hover:bg-sky-50"}`}
                         key={amount}
                         type="button"
                         onClick={() => setSelectedTopUp(amount)}
@@ -236,14 +249,14 @@ export function BillingShell() {
 
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
               <Metric label="This month charged" value={money(data?.usage.chargedCredits ?? 0, currency)} detail="Total wallet debit from calls" tone="emerald" />
-              <Metric label="Provider spend" value={money(data?.usage.providerCost ?? 0, currency)} detail="Raw LLM/STT/TTS/carrier cost" tone="blue" />
+              <Metric label="Provider spend" value={money(data?.usage.providerCost ?? 0, currency)} detail="Raw LLM/STT/TTS/carrier cost" tone="sky" />
             </div>
           </section>
 
           <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <Metric label="Minimum to call" value={money(data?.creditSettings.minimumCallStartCredits ?? 0, currency)} detail="Pre-call wallet guard" tone="amber" />
             <Metric label="Markup" value={`${data?.creditSettings.markupMultiplier ?? 2.5}x`} detail="Applied to provider cost" tone="slate" />
-            <Metric label="Top-ups" value={String(totals.topUps)} detail={`${money(totals.net, currency)} net ledger movement`} tone="blue" />
+            <Metric label="Top-ups" value={String(totals.topUps)} detail={`${money(totals.net, currency)} net ledger movement`} tone="sky" />
             <Metric label="Call debits" value={String(totals.debits)} detail="Recent call charge rows" tone="emerald" />
           </section>
 
@@ -288,7 +301,7 @@ export function BillingShell() {
             </Card>
 
             <div className="grid gap-4">
-              <Card className="p-5">
+              <Card className="">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <h2 className="m-0 text-lg font-semibold">Payment status</h2>
@@ -309,8 +322,8 @@ export function BillingShell() {
               <Card className="overflow-hidden">
                 <div className="bg-slate-950 p-5 text-white">
                   <h2 className="m-0 text-lg font-semibold">Enterprise credits</h2>
-                  <p className="mt-2 text-sm leading-6 text-slate-300">$500/month credit, priority support, and higher call concurrency.</p>
-                  <button className="mt-5 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-950 hover:bg-blue-50 disabled:opacity-60" type="button" onClick={() => void upgradeEnterprise()} disabled={busy === "enterprise"}>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">$500/month credit, priority support, and higher call concurrency.</p>
+                  <button className="mt-5 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-950 hover:bg-sky-50 disabled:opacity-60" type="button" onClick={() => void upgradeEnterprise()} disabled={busy === "enterprise"}>
                     Upgrade
                   </button>
                 </div>
@@ -333,7 +346,7 @@ export function BillingShell() {
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {data?.transactions.length ? data.transactions.map((transaction) => (
-                    <tr className="hover:bg-blue-50/50" key={transaction._id}>
+                    <tr className="hover:bg-sky-50/50" key={transaction._id}>
                       <td className="max-w-[180px] truncate px-5 py-4 font-mono text-xs text-slate-500">{transaction._id}</td>
                       <td className="px-5 py-4 font-semibold text-slate-950">{txLabel(transaction)}</td>
                       <td className="px-5 py-4"><span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700">{transaction.category}</span></td>

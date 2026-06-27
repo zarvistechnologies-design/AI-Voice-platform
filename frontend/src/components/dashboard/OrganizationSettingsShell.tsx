@@ -62,11 +62,31 @@ export function OrganizationSettingsShell() {
   const [lastInviteUrl, setLastInviteUrl] = useState("");
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
+  const [showUserSidebar, setShowUserSidebar] = useState(() => {
+    if (typeof window === "undefined") {
+      return false;
+    }
+
+    try {
+      return localStorage.getItem("showUserSidebar") === "1";
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("showUserSidebar", showUserSidebar ? "1" : "0");
+    } catch {
+      // ignore
+    }
+  }, [showUserSidebar]);
 
   const active = useMemo(
     () => organizations.find((organization) => organization._id === activeId),
     [activeId, organizations],
   );
+
   const canManage = active?.role === "owner" || active?.role === "admin";
 
   const load = useCallback(async () => {
@@ -208,11 +228,22 @@ export function OrganizationSettingsShell() {
   }
 
   return (
-    <main className="grid min-h-screen bg-[#f4f7fb] text-slate-950 lg:grid-cols-[64px_minmax(0,1fr)]">
+    <main
+      className={`grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#f7f8fb] text-[#111827]
+      ${
+        showUserSidebar
+          ? "lg:grid-cols-[272px_minmax(0,1fr)]"
+          : "lg:grid-cols-[64px_minmax(0,1fr)]"
+      }`}
+    >
       <DashboardSidebar
         activeLabel="Settings"
         userInitials={initials(session.name)}
+        userName={session.name}
+        userEmail={session.email}
         onLogout={() => void logoutSession().then(() => router.replace("/login"))}
+        showUserSidebar={showUserSidebar}
+        setShowUserSidebar={setShowUserSidebar}
       />
       <section className="min-w-0 p-4 sm:p-6 lg:p-8">
         <div className="mx-auto grid max-w-7xl gap-6">
@@ -262,20 +293,43 @@ export function OrganizationSettingsShell() {
                   {active ? <span className={`rounded-full px-3 py-1.5 text-xs font-semibold ring-1 ${roleTone(active.role)}`}>{active.role} access</span> : null}
                 </div>
                 {canManage ? (
-                  <form className="mt-5 grid gap-3 border-t border-slate-100 pt-5 md:grid-cols-[minmax(0,1fr)_180px_150px_auto]" onSubmit={saveOrganizationSettings}>
+                  <form
+                    className="mt-5 grid gap-3 border-t border-slate-100 pt-5 grid-cols-1 md:grid-cols-2"
+                    onSubmit={saveOrganizationSettings}
+                  >
                     <label className="grid gap-2 text-xs font-semibold text-slate-600">
                       <span>Organization name</span>
-                      <input className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-normal text-slate-950 outline-none focus:border-blue-500" onChange={(event) => setOrganizationName(event.target.value)} value={organizationName} />
+                      <input
+                        className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-normal text-slate-950 outline-none focus:border-blue-500"
+                        onChange={(event) => setOrganizationName(event.target.value)}
+                        value={organizationName}
+                      />
                     </label>
                     <label className="grid gap-2 text-xs font-semibold text-slate-600">
                       <span>Timezone</span>
-                      <input className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-normal text-slate-950 outline-none focus:border-blue-500" onChange={(event) => setOrganizationTimezone(event.target.value)} placeholder="Asia/Kolkata" value={organizationTimezone} />
+                      <input
+                        className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-normal text-slate-950 outline-none focus:border-blue-500"
+                        onChange={(event) => setOrganizationTimezone(event.target.value)}
+                        placeholder="Asia/Kolkata"
+                        value={organizationTimezone}
+                      />
                     </label>
                     <label className="grid gap-2 text-xs font-semibold text-slate-600">
                       <span>Retention days</span>
-                      <input className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-normal text-slate-950 outline-none focus:border-blue-500" onChange={(event) => setDataRetentionDays(event.target.value)} type="number" value={dataRetentionDays} />
+                      <input
+                        className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-normal text-slate-950 outline-none focus:border-blue-500"
+                        onChange={(event) => setDataRetentionDays(event.target.value)}
+                        type="number"
+                        value={dataRetentionDays}
+                      />
                     </label>
-                    <button className="min-h-11 self-end rounded-xl bg-slate-950 px-4 text-sm font-semibold text-white disabled:opacity-50" disabled={busy || organizationName.trim().length < 2} type="submit">Save</button>
+                    <button
+                      className="min-h-11 self-end rounded-xl bg-slate-950 px-4 text-sm font-semibold text-white disabled:opacity-50 md:justify-self-end"
+                      disabled={busy || organizationName.trim().length < 2}
+                      type="submit"
+                    >
+                      Save
+                    </button>
                   </form>
                 ) : null}
               </article>

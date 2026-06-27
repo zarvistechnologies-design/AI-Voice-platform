@@ -66,12 +66,12 @@ function queryDate(value: string) {
 function statusTone(status: CallRecord["status"]) {
   if (status === "completed") return "bg-emerald-50 text-emerald-700 ring-emerald-200";
   if (status === "failed" || status === "cancelled") return "bg-rose-50 text-rose-700 ring-rose-200";
-  if (status === "active") return "bg-blue-50 text-blue-700 ring-blue-200";
+  if (status === "active") return "bg-sky-50 text-sky-700 ring-sky-200";
   return "bg-amber-50 text-amber-700 ring-amber-200";
 }
 
 const filterInputClass =
-  "rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium outline-none focus:border-blue-500";
+  "rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium outline-none focus:border-sky-500";
 
 function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }) {
   const billing = call.billing;
@@ -171,7 +171,7 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
             {recordingPlayerHref ? (
               <div className="grid gap-3">
                 <audio className="w-full" controls src={recordingPlayerHref} />
-                <a className="text-sm font-semibold text-blue-700 hover:text-blue-900" href={recordingPlayerHref} target="_blank" rel="noreferrer">
+                <a className="text-sm font-semibold text-sky-700 hover:text-sky-900" href={recordingPlayerHref} target="_blank" rel="noreferrer">
                   Open recording
                 </a>
               </div>
@@ -194,7 +194,7 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
               </div>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[560px] text-left text-sm">
+              <table className="w-full min-w-560px text-left text-sm">
                 <thead className="bg-white text-xs uppercase tracking-wider text-slate-500">
                   <tr>{["Component", "Provider", "Usage", "Provider cost", "Charged"].map((item) => <th className="px-4 py-3" key={item}>{item}</th>)}</tr>
                 </thead>
@@ -219,7 +219,7 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
                 <h3 className="m-0 text-sm font-semibold text-slate-950">Conversation transcript</h3>
                 <p className="mt-1 text-xs text-slate-500">{transcript.length} captured messages</p>
               </div>
-              <span className="max-w-[220px] truncate rounded-lg bg-slate-100 px-2.5 py-1 font-mono text-xs text-slate-600">{call.livekitRoomName}</span>
+              <span className="max-w-220px truncate rounded-lg bg-slate-100 px-2.5 py-1 font-mono text-xs text-slate-600">{call.livekitRoomName}</span>
             </div>
             <div className="grid gap-3">
               {transcript.length ? (
@@ -227,14 +227,14 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
                   <article
                     className={`max-w-[88%] rounded-2xl px-4 py-3 ${
                       item.role === "assistant"
-                        ? "justify-self-start rounded-bl-md bg-blue-50 text-blue-950"
+                        ? "justify-self-start rounded-bl-md bg-sky-50 text-sky-950"
                         : item.role === "user"
                           ? "justify-self-end rounded-br-md bg-slate-900 text-white"
                           : "justify-self-center bg-amber-50 text-amber-900"
                     }`}
                     key={item.itemId}
                   >
-                    <span className={`mb-1 block text-[11px] font-semibold uppercase tracking-wider ${item.role === "user" ? "text-slate-300" : "opacity-60"}`}>
+                    <span className={`mb-1 block text-[11px] font-semibold uppercase tracking-wider ${item.role === "user" ? "text-slate-600" : "opacity-60"}`}>
                       {item.role === "assistant" ? agentName(call) : titleCase(item.role)}
                     </span>
                     <p className="m-0 text-sm leading-6">{item.text}</p>
@@ -273,6 +273,7 @@ export function CallLogsShell() {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [notice, setNotice] = useState("");
+  const [showUserSidebar, setShowUserSidebar] = useState(false);
 
   const loadCalls = useCallback(async () => {
     setLoading(true);
@@ -371,27 +372,35 @@ export function CallLogsShell() {
   }
 
   return (
-    <main className="grid min-h-screen bg-[#f4f7fb] text-slate-950 lg:grid-cols-[64px_minmax(0,1fr)]">
+    <main className={`grid min-h-screen bg-[#f4f7fb] text-slate-950 ${
+      showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
+    }`}>
       <DashboardSidebar
         activeLabel="Call Logs"
         userInitials={initials(session.name)}
+        userName={session.name}
+        userEmail={session.email}
         onLogout={() => void logoutSession().then(() => router.replace("/login"))}
+        showUserSidebar={showUserSidebar}
+        setShowUserSidebar={setShowUserSidebar}
       />
-      <section className="min-w-0 p-4 sm:p-6 lg:p-8">
-        <div className="mx-auto grid max-w-7xl gap-6">
-          <header className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-            <div>
-              <span className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">Conversation operations</span>
-              <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">Call logs</h1>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Every browser, inbound, and outbound call is captured here with its status, timing, latency, and transcript.</p>
-            </div>
-            <div className="flex gap-2">
+      <section className="min-w-0 p-4">
+        <div className="mx-auto grid max-w-1500px gap-6">
+          <header className="border-b border-[#bae6fd] bg-white pb-4">
+            <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+              <div>
+                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0284c7]">Conversation operations</span>
+                <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">Call logs</h1>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Every browser, inbound, and outbound call is captured here with its status, timing, latency, and transcript.</p>
+              </div>
+              <div className="flex gap-2">
               <button className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50" type="button" onClick={() => void loadCalls()}>
                 Refresh
               </button>
-              <button className="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-slate-950/15 hover:bg-blue-700" type="button" onClick={() => void exportCsv()}>
+              <button className="rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-sky-600/20 hover:bg-sky-700" type="button" onClick={() => void exportCsv()}>
                 Export CSV
               </button>
+              </div>
             </div>
           </header>
 
@@ -414,7 +423,7 @@ export function CallLogsShell() {
           <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
             <div className="grid gap-3 border-b border-slate-200 p-4">
               <div className="flex flex-wrap gap-2">
-                <input className="min-w-56 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500" placeholder="Search transcript or tag" value={search} onChange={(event) => { setSearch(event.target.value); setPage(1); }} />
+                <input className="min-w-56 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-sky-500" placeholder="Search transcript or tag" value={search} onChange={(event) => { setSearch(event.target.value); setPage(1); }} />
                 <select className={filterInputClass} value={agentId} onChange={(event) => { setAgentId(event.target.value); setPage(1); }}>
                   <option value="">All agents</option>
                   {agents.map((agent) => <option key={agent._id} value={agent._id}>{agent.name}</option>)}
@@ -446,7 +455,7 @@ export function CallLogsShell() {
             {notice ? <div className="border-b border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">{notice}</div> : null}
 
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[1050px] border-collapse text-left">
+              <table className="w-full min-w-1050px border-collapse text-left">
                 <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500">
                   <tr>
                     {["Agent", "Direction", "Contact", "Started", "Duration", "Provider cost", "Charged", "Status"].map((heading) => <th className="px-4 py-3" key={heading}>{heading}</th>)}
@@ -454,7 +463,7 @@ export function CallLogsShell() {
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {calls.map((call) => (
-                    <tr className="cursor-pointer transition hover:bg-blue-50/60" key={call._id} onClick={() => void openCall(call._id)}>
+                    <tr className="cursor-pointer transition hover:bg-sky-50/60" key={call._id} onClick={() => void openCall(call._id)}>
                       <td className="px-4 py-4"><strong className="block text-sm text-slate-950">{agentName(call)}</strong><span className="text-xs text-slate-500">{call.livekitRoomName}</span></td>
                       <td className="px-4 py-4 text-sm font-medium capitalize text-slate-700">{call.direction}</td>
                       <td className="px-4 py-4 text-sm text-slate-700">{call.callerNumber || call.calledNumber || "Browser caller"}</td>
