@@ -28,6 +28,7 @@ import {
   type FirstMessageMode,
   type KnowledgeDocument,
   type ModelCatalog,
+  type ModelProvider,
   type PipelineMode,
   type PipelineProvider,
   type RealtimeProvider,
@@ -693,6 +694,7 @@ const fallbackCatalog: ModelCatalog = {
         "bulbul:v3": fallbackSarvamV3Voices,
         "bulbul:v2": fallbackSarvamV2Voices,
       },
+      requireLanguageMatch: true,
     },
     {
       provider: "elevenlabs",
@@ -706,13 +708,20 @@ const fallbackCatalog: ModelCatalog = {
         fallbackElevenLabsVoiceProfiles,
         fallbackLanguageCatalog,
       ),
-      showAllVoicesWithLanguageOrder: true,
+      requireLanguageMatch: true,
     },
   ],
 };
 
 function getProvider(catalog: ModelCatalog, layer: keyof ModelCatalog, provider: string) {
   return catalog[layer].find((item) => item.provider === provider) ?? catalog[layer][0];
+}
+
+function replaceTtsProvider(catalog: ModelCatalog, provider: ModelProvider): ModelCatalog {
+  return {
+    ...catalog,
+    tts: catalog.tts.map((item) => (item.provider === provider.provider ? provider : item)),
+  };
 }
 
 function languageKeys(language: string, languageCatalog: readonly VoiceLanguageOption[]) {
@@ -739,13 +748,17 @@ function getVoices(
         .find((voices) => voices && voices.length)
     : undefined;
 
+  if (language && item.requireLanguageMatch && !languageVoices?.length) {
+    return [];
+  }
+
   if (languageVoices?.length && modelVoices.length) {
     const allowed = new Set(languageVoices);
     const filtered = modelVoices.filter((voice) => allowed.has(voice));
     if (item.showAllVoicesWithLanguageOrder && filtered.length) {
       return [...filtered, ...modelVoices.filter((voice) => !allowed.has(voice))];
     }
-    return filtered.length ? filtered : [...modelVoices];
+    return filtered.length ? filtered : item.requireLanguageMatch ? [] : [...modelVoices];
   }
 
   return languageVoices ? [...languageVoices] : [...modelVoices];
@@ -1508,9 +1521,15 @@ function VoiceSelectField({
   onPreview: () => void;
   previewing: boolean;
 }) {
-  const displayedOptions = options.some((option) => getSelectOptionValue(option) === value)
-    ? options
-    : [value, ...options].filter(Boolean);
+  const displayedOptions =
+    options.length === 0
+      ? [{ value: "", label: "No verified voices for selected language" }]
+      : options.some((option) => getSelectOptionValue(option) === value)
+        ? options
+        : [value, ...options].filter(Boolean);
+  const displayedValue = displayedOptions.some((option) => getSelectOptionValue(option) === value)
+    ? value
+    : getSelectOptionValue(displayedOptions[0]);
 
   return (
     <label className="app-label grid gap-2">
@@ -1518,7 +1537,8 @@ function VoiceSelectField({
       <span className="grid grid-cols-[minmax(0,1fr)_40px] gap-2">
         <select
           className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10"
-          value={value}
+          disabled={options.length === 0}
+          value={displayedValue}
           onChange={(event) => onChange(event.target.value)}
         >
           {displayedOptions.map((option) => (
@@ -1668,6 +1688,7 @@ export function DashboardShell() {
   const [variableDraft, setVariableDraft] = useState("");
   const [previewingVoice, setPreviewingVoice] = useState("");
   const [testingToolKey, setTestingToolKey] = useState("");
+  const [elevenLabsVoiceLoading, setElevenLabsVoiceLoading] = useState(false);
   const [runtimeRegions, setRuntimeRegions] = useState<Record<string, string>>({});
   const [runtimeSnapshot, setRuntimeSnapshot] = useState<AgentRuntimeSnapshot | null>(null);
   const [runtimeStreamState, setRuntimeStreamState] = useState<"connecting" | "live" | "reconnecting">("connecting");
@@ -1677,12 +1698,45 @@ export function DashboardShell() {
   const previewAudioRef = useRef<HTMLAudioElement | null>(null);
   const previewUrlRef = useRef("");
   const unsavedChangesRef = useRef(false);
+  const elevenLabsLanguageRequestsRef = useRef(new Set<string>());
 
   const selectedAgent = useMemo(
     () => agentList.find((agent) => agent.id === selectedAgentId) ?? agentList[0] ?? agents[0],
     [agentList, selectedAgentId],
   );
   const languageOptions = getLanguageOptions(modelCatalog, selectedAgent, languageCatalog);
+  const selectedTtsVoices = useMemo(
+    () =>
+      selectedAgent.pipelineMode === "pipeline"
+        ? getVoices(
+            modelCatalog,
+            "tts",
+            selectedAgent.ttsProvider,
+            selectedAgent.ttsModel,
+            selectedAgent.language,
+            languageCatalog,
+          )
+        : [],
+    [
+      languageCatalog,
+      modelCatalog,
+      selectedAgent.language,
+      selectedAgent.pipelineMode,
+      selectedAgent.ttsModel,
+      selectedAgent.ttsProvider,
+    ],
+  );
+  const selectedTtsVoiceDescription =
+    selectedAgent.ttsProvider === "elevenlabs" && elevenLabsVoiceLoading
+      ? "Loading verified ElevenLabs voices for this language..."
+      : selectedAgent.ttsProvider === "elevenlabs" && selectedTtsVoices.length === 0
+        ? `No verified ElevenLabs voices found for ${languageDisplayName(selectedAgent.language, languageCatalog)}.`
+        : voiceProfileSummary(
+            selectedAgent.voice,
+            getProvider(modelCatalog, "tts", selectedAgent.ttsProvider).voiceProfiles,
+            selectedAgent.language,
+            languageCatalog,
+          );
   const selectedSchedule = selectedAgent.businessHours.schedule.length
     ? selectedAgent.businessHours.schedule
     : defaultBusinessHours.schedule;
@@ -1883,6 +1937,70 @@ export function DashboardShell() {
       window.clearInterval(refreshTimer);
     };
   }, [router, session]);
+
+  useEffect(() => {
+    if (
+      !session ||
+      selectedAgent.pipelineMode !== "pipeline" ||
+      selectedAgent.ttsProvider !== "elevenlabs" ||
+      !selectedAgent.language ||
+      selectedAgent.language === "Multilingual"
+    ) {
+      return;
+    }
+
+    const requestKey = selectedAgent.language;
+    if (elevenLabsLanguageRequestsRef.current.has(requestKey)) return;
+    elevenLabsLanguageRequestsRef.current.add(requestKey);
+
+    let cancelled = false;
+    setElevenLabsVoiceLoading(true);
+    void voiceApi.elevenLabsVoices(selectedAgent.language)
+      .then(({ provider }) => {
+        if (cancelled || !provider) return;
+        const nextCatalog = replaceTtsProvider(modelCatalog, provider);
+        setModelCatalog((current) => replaceTtsProvider(current, provider));
+        const voices = getVoices(
+          nextCatalog,
+          "tts",
+          "elevenlabs",
+          selectedAgent.ttsModel,
+          selectedAgent.language,
+          languageCatalog,
+        );
+        if (!voices.includes(selectedAgent.voice)) {
+          unsavedChangesRef.current = true;
+          setAgentList((current) =>
+            current.map((agent) =>
+              agent.id === selectedAgent.id ? { ...agent, voice: voices[0] ?? "" } : agent,
+            ),
+          );
+        }
+      })
+      .catch((error) => {
+        if (!cancelled) {
+          setNotice(error instanceof Error ? error.message : "Could not load ElevenLabs voices.");
+          elevenLabsLanguageRequestsRef.current.delete(requestKey);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setElevenLabsVoiceLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    languageCatalog,
+    modelCatalog,
+    selectedAgent.id,
+    selectedAgent.language,
+    selectedAgent.pipelineMode,
+    selectedAgent.ttsModel,
+    selectedAgent.ttsProvider,
+    selectedAgent.voice,
+    session,
+  ]);
 
   useEffect(() => {
     if (!session || !selectedAgentId || selectedAgentId === "loading" || selectedAgentId === "maya") {
@@ -2097,7 +2215,7 @@ export function DashboardShell() {
           );
     updateSelectedAgent({
       language,
-      voice: coerceVoice(selectedAgent.voice, voices, selectedAgent.voice),
+      voice: coerceVoice(selectedAgent.voice, voices, voices[0] ?? ""),
     });
   }
 
@@ -2128,7 +2246,7 @@ export function DashboardShell() {
     updateSelectedAgent({
       pipelineMode,
       language: nextLanguage,
-      voice: coerceVoice(selectedAgent.voice, nextVoices, selectedAgent.voice),
+      voice: coerceVoice(selectedAgent.voice, nextVoices, nextVoices[0] ?? ""),
     });
   }
 
@@ -2821,7 +2939,7 @@ export function DashboardShell() {
                               updateSelectedAgent({
                                 realtimeProvider: provider as RealtimeProvider,
                                 realtimeModel: next.models[0],
-                                voice: voices[0] ?? selectedAgent.voice,
+                                voice: voices[0] ?? "",
                               });
                             }}
                             options={modelCatalog.realtime.map((item) => ({
@@ -3064,7 +3182,7 @@ export function DashboardShell() {
                                 ttsProvider: provider as PipelineProvider,
                                 ttsModel: next.models[0],
                                 language: nextLanguage,
-                                voice: voices[0] ?? selectedAgent.voice,
+                                voice: voices[0] ?? "",
                               });
                             }}
                             options={modelCatalog.tts.map((item) => ({
@@ -3087,7 +3205,7 @@ export function DashboardShell() {
                               );
                               updateSelectedAgent({
                                 ttsModel,
-                                voice: voices.includes(selectedAgent.voice) ? selectedAgent.voice : voices[0],
+                                voice: voices.includes(selectedAgent.voice) ? selectedAgent.voice : voices[0] ?? "",
                               });
                             }}
                             options={[...getProvider(modelCatalog, "tts", selectedAgent.ttsProvider).models]}
@@ -3095,12 +3213,7 @@ export function DashboardShell() {
                           <VoiceSelectField
                             label="Voice / speaker"
                             value={selectedAgent.voice}
-                            description={voiceProfileSummary(
-                              selectedAgent.voice,
-                              getProvider(modelCatalog, "tts", selectedAgent.ttsProvider).voiceProfiles,
-                              selectedAgent.language,
-                              languageCatalog,
-                            )}
+                            description={selectedTtsVoiceDescription}
                             onChange={(voice) => updateSelectedAgent({ voice })}
                             onPreview={() => void handlePreviewVoice({
                               mode: "pipeline",
@@ -3117,14 +3230,7 @@ export function DashboardShell() {
                               selectedAgent.voiceSpeed,
                             ].join(":")}
                             options={voiceSelectOptions(
-                              getVoices(
-                                modelCatalog,
-                                "tts",
-                                selectedAgent.ttsProvider,
-                                selectedAgent.ttsModel,
-                                selectedAgent.language,
-                                languageCatalog,
-                              ),
+                              selectedTtsVoices,
                               getProvider(modelCatalog, "tts", selectedAgent.ttsProvider).voiceProfiles,
                               selectedAgent.language,
                               languageCatalog,
