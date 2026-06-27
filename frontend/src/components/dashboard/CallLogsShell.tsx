@@ -65,19 +65,38 @@ function configuredTtsStack(call: CallRecord) {
   return [configuredStack(call.ttsProvider, call.ttsModel), call.ttsVoice].filter((item) => item && item !== "-").join(" / ") || "-";
 }
 
-function inboundNumberFromRoom(roomName: string) {
-  const match = /^inbound-(\d{7,15})-/.exec(roomName);
-  if (!match) return "";
-  const digits = match[1] ?? "";
+function formatRoomPhone(digits: string, destinationDigits = "") {
+  if (!digits) return "";
+  if (destinationDigits.startsWith("91") && digits.length === 11 && digits.startsWith("0")) {
+    return `+91${digits.slice(1)}`;
+  }
+  if (destinationDigits.startsWith("91") && digits.length === 10) {
+    return `+91${digits}`;
+  }
   return digits.length >= 11 ? `+${digits}` : digits;
 }
 
-function callRoute(call: CallRecord) {
-  const inferredInboundNumber = call.direction === "inbound" ? inboundNumberFromRoom(call.livekitRoomName) : "";
+function inboundRoomNumbers(roomName: string) {
+  const match = /^inbound-(\d{7,15})-(.*)$/.exec(roomName);
+  if (!match) return { callerNumber: "", calledNumber: "" };
+  const destinationDigits = match[1] ?? "";
+  const suffix = match[2] ?? "";
+  const callerDigits = [...suffix.matchAll(/\d{7,15}/g)]
+    .map((item) => item[0])
+    .find((digits) => digits !== destinationDigits) ?? "";
   return {
-    from: call.callerNumber || (call.direction === "web" ? "Browser caller" : ""),
-    fromMissing: call.direction === "inbound" && !call.callerNumber,
-    to: call.calledNumber || inferredInboundNumber || (call.direction === "web" ? "Voice agent" : call.direction === "outbound" ? "Dialed number" : "Assigned number"),
+    callerNumber: formatRoomPhone(callerDigits, destinationDigits),
+    calledNumber: formatRoomPhone(destinationDigits),
+  };
+}
+
+function callRoute(call: CallRecord) {
+  const inferredInboundNumbers = call.direction === "inbound" ? inboundRoomNumbers(call.livekitRoomName) : { callerNumber: "", calledNumber: "" };
+  const from = call.callerNumber || inferredInboundNumbers.callerNumber || (call.direction === "web" ? "Browser caller" : "");
+  return {
+    from,
+    fromMissing: call.direction === "inbound" && !from,
+    to: call.calledNumber || inferredInboundNumbers.calledNumber || (call.direction === "web" ? "Voice agent" : call.direction === "outbound" ? "Dialed number" : "Assigned number"),
   };
 }
 
