@@ -11,7 +11,7 @@ import {
   subscribeToSession,
   validateStoredSession,
 } from "@/lib/auth";
-import { voiceApi, type BackendAgent, type CallRecord } from "@/lib/voice";
+import { voiceApi, type BackendAgent, type CallRecord, type CostPricingDetail } from "@/lib/voice";
 
 const statusOptions = ["", "initiated", "ringing", "active", "completed", "failed", "cancelled"] as const;
 const directionOptions = ["", "web", "inbound", "outbound"] as const;
@@ -57,6 +57,69 @@ function money(value: number, currency = "USD") {
   }).format(value);
 }
 
+function configuredStack(provider: string, model: string) {
+  return [provider, model].filter(Boolean).join(" / ") || "-";
+}
+
+function configuredTtsStack(call: CallRecord) {
+  return [configuredStack(call.ttsProvider, call.ttsModel), call.ttsVoice].filter((item) => item && item !== "-").join(" / ") || "-";
+}
+
+function isRealtimeAudioCall(call: CallRecord) {
+  const stack = [call.llmProvider, call.llmModel].filter(Boolean).join(" ").toLowerCase();
+  return stack.includes("realtime") || stack.includes("live");
+}
+
+function displaySttSeconds(call: CallRecord) {
+  if (call.sttSeconds > 0) return { seconds: call.sttSeconds, estimated: Boolean(call.costBreakdown?.pricing?.stt?.estimated) };
+  if (
+    (call.status === "completed" || call.status === "failed") &&
+    call.durationSeconds > 0 &&
+    call.sttProvider &&
+    call.sttModel &&
+    !isRealtimeAudioCall(call)
+  ) {
+    return { seconds: call.durationSeconds, estimated: true };
+  }
+  return { seconds: 0, estimated: false };
+}
+
+function sourceLabel(source?: CostPricingDetail["source"]) {
+  if (source === "override") return "Override";
+  if (source === "account") return "Account";
+  if (source === "fallback") return "Fallback";
+  if (source === "mixed") return "Mixed";
+  return "Catalog";
+}
+
+function rate(value: number, suffix: string) {
+  return `$${value.toLocaleString("en-US", { maximumFractionDigits: 4 })}${suffix}`;
+}
+
+function rateLabel(detail?: CostPricingDetail) {
+  if (!detail) return "-";
+  if (detail.models?.length) return `${sourceLabel(detail.source)}: ${detail.models.length} model rates`;
+  const parts = [
+    detail.inputPerMillionTokens !== undefined ? rate(detail.inputPerMillionTokens, "/M in") : "",
+    detail.cachedInputPerMillionTokens !== undefined ? rate(detail.cachedInputPerMillionTokens, "/M cached") : "",
+    detail.outputPerMillionTokens !== undefined ? rate(detail.outputPerMillionTokens, "/M out") : "",
+    detail.inputAudioPerMillionTokens !== undefined ? rate(detail.inputAudioPerMillionTokens, "/M audio in") : "",
+    detail.outputAudioPerMillionTokens !== undefined ? rate(detail.outputAudioPerMillionTokens, "/M audio out") : "",
+    detail.perMinute !== undefined ? rate(detail.perMinute, "/min") : "",
+    detail.perMillionCharacters !== undefined ? rate(detail.perMillionCharacters, "/M chars") : "",
+    detail.perMillionAudioTokens !== undefined ? rate(detail.perMillionAudioTokens, "/M audio tokens") : "",
+  ].filter(Boolean);
+  const multiplier = detail.voiceMultiplier ? ` x${detail.voiceMultiplier}` : "";
+  const estimated = detail.estimated ? " est." : "";
+  return `${sourceLabel(detail.source)}: ${parts.join(", ") || detail.unit || detail.key || "-"}${multiplier}${estimated}`;
+}
+
+function rateTitle(detail?: CostPricingDetail) {
+  if (!detail) return "";
+  const models = detail.models?.map((item) => `${item.provider || ""}/${item.model || ""} ${rateLabel(item)}`).join("\n");
+  return [detail.key, detail.note, models].filter(Boolean).join("\n");
+}
+
 function queryDate(value: string) {
   if (!value) return "";
   const date = new Date(value);
@@ -83,11 +146,31 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
   );
   const recordingHref = call.recordingUrl || (call.recordingKey.startsWith("http") ? call.recordingKey : "");
   const recordingPlayerHref = recordingObjectUrl.callId === call._id ? recordingObjectUrl.url || recordingHref : recordingHref;
+  const llmUsage = call.llmInputTokens || call.llmOutputTokens
+    ? `${call.llmInputTokens.toLocaleString("en-US")} in / ${call.llmOutputTokens.toLocaleString("en-US")} out`
+    : call.llmTokens ? `${call.llmTokens.toLocaleString("en-US")} tokens` : "0 tokens";
+  const sttDisplay = displaySttSeconds(call);
+  const sttSecondsLabel = sttDisplay.seconds
+    ? `${Math.round(sttDisplay.seconds)} sec${sttDisplay.estimated ? " est." : ""}`
+    : "0 sec";
+  const sttUsage = [
+    sttSecondsLabel,
+    call.sttInputTokens || call.sttOutputTokens
+      ? `${call.sttInputTokens.toLocaleString("en-US")} in / ${call.sttOutputTokens.toLocaleString("en-US")} out`
+      : "",
+  ].filter(Boolean).join(" / ");
+  const ttsUsage = [
+    call.ttsCharacters ? `${call.ttsCharacters.toLocaleString("en-US")} chars` : "0 chars",
+    call.ttsInputTokens || call.ttsOutputTokens
+      ? `${call.ttsInputTokens.toLocaleString("en-US")} in / ${call.ttsOutputTokens.toLocaleString("en-US")} out`
+      : "",
+    call.ttsAudioSeconds ? `${Math.round(call.ttsAudioSeconds)} sec audio` : "",
+  ].filter(Boolean).join(" / ");
   const costItems = [
-    ["LLM", call.llmProvider || "-", call.llmTokens ? `${call.llmTokens.toLocaleString("en-US")} tokens` : "0 tokens", cost?.llm ?? 0, billing?.breakdown.chargedLlm ?? 0],
-    ["STT", call.sttProvider || "-", call.sttSeconds ? `${Math.round(call.sttSeconds)} sec` : "0 sec", cost?.stt ?? 0, billing?.breakdown.chargedStt ?? 0],
-    ["TTS", call.ttsProvider || "-", call.ttsCharacters ? `${call.ttsCharacters.toLocaleString("en-US")} chars` : "0 chars", cost?.tts ?? 0, billing?.breakdown.chargedTts ?? 0],
-    ["Carrier", call.direction, `${Math.ceil(call.durationSeconds / 60)} min`, cost?.telephony ?? 0, billing?.breakdown.chargedTelephony ?? 0],
+    ["LLM", configuredStack(call.llmProvider, call.llmModel), llmUsage, cost?.pricing?.llm, cost?.llm ?? 0, billing?.breakdown.chargedLlm ?? 0],
+    ["STT", configuredStack(call.sttProvider, call.sttModel), sttUsage, cost?.pricing?.stt, cost?.stt ?? 0, billing?.breakdown.chargedStt ?? 0],
+    ["TTS", configuredTtsStack(call), ttsUsage, cost?.pricing?.tts, cost?.tts ?? 0, billing?.breakdown.chargedTts ?? 0],
+    ["Carrier", call.direction, `${Math.ceil(call.durationSeconds / 60)} min`, cost?.pricing?.telephony, cost?.telephony ?? 0, billing?.breakdown.chargedTelephony ?? 0],
   ] as const;
 
   useEffect(() => {
@@ -155,8 +238,8 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
 
           <section className="grid gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2">
             <div><span className="block text-xs font-medium text-slate-500">Caller / Called</span><strong className="mt-1 block text-sm">{call.callerNumber || "Browser"} / {call.calledNumber || "Agent"}</strong></div>
-            <div><span className="block text-xs font-medium text-slate-500">Usage</span><strong className="mt-1 block text-sm">{call.llmTokens ?? 0} tokens / {Math.round(call.sttSeconds ?? 0)}s STT / {call.ttsCharacters ?? 0} TTS chars</strong></div>
-            <div><span className="block text-xs font-medium text-slate-500">Providers</span><strong className="mt-1 block text-sm">{call.llmProvider || "-"} / {call.sttProvider || "-"} / {call.ttsProvider || "-"}</strong></div>
+            <div><span className="block text-xs font-medium text-slate-500">Usage</span><strong className="mt-1 block text-sm">{llmUsage} / {sttSecondsLabel} STT / {ttsUsage}</strong></div>
+            <div><span className="block text-xs font-medium text-slate-500">Configured stack</span><strong className="mt-1 block text-sm">{configuredStack(call.llmProvider, call.llmModel)} / {configuredStack(call.sttProvider, call.sttModel)} / {configuredTtsStack(call)}</strong></div>
             <div><span className="block text-xs font-medium text-slate-500">Tags</span><strong className="mt-1 block text-sm">{call.tags.length ? call.tags.join(", ") : "No tags"}</strong></div>
           </section>
 
@@ -194,16 +277,17 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
               </div>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full min-w-560px text-left text-sm">
+              <table className="w-full min-w-760px text-left text-sm">
                 <thead className="bg-white text-xs uppercase tracking-wider text-slate-500">
-                  <tr>{["Component", "Provider", "Usage", "Provider cost", "Charged"].map((item) => <th className="px-4 py-3" key={item}>{item}</th>)}</tr>
+                <tr>{["Component", "Configured provider / model", "Usage", "Rate used", "Provider cost", "Charged"].map((item) => <th className="px-4 py-3" key={item}>{item}</th>)}</tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {costItems.map(([label, provider, usage, providerCost, chargedCost]) => (
+                  {costItems.map(([label, provider, usage, pricing, providerCost, chargedCost]) => (
                     <tr key={label}>
                       <td className="px-4 py-3 font-semibold text-slate-950">{label}</td>
                       <td className="px-4 py-3 text-slate-600">{provider}</td>
                       <td className="px-4 py-3 text-slate-600">{usage}</td>
+                      <td className="px-4 py-3 text-xs font-semibold text-slate-600" title={rateTitle(pricing)}>{rateLabel(pricing)}</td>
                       <td className="px-4 py-3 text-slate-700">{money(providerCost, cost?.currency)}</td>
                       <td className="px-4 py-3 font-semibold text-slate-950">{money(chargedCost, billing?.currency)}</td>
                     </tr>

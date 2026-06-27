@@ -312,6 +312,30 @@ export type CallTranscriptItem = {
   interrupted: boolean;
 };
 
+export type CostPricingDetail = {
+  source?: "catalog" | "override" | "account" | "fallback" | "mixed";
+  key?: string;
+  unit?: string;
+  provider?: string;
+  model?: string;
+  inputPerMillionTokens?: number;
+  cachedInputPerMillionTokens?: number;
+  outputPerMillionTokens?: number;
+  inputAudioPerMillionTokens?: number;
+  cachedInputAudioPerMillionTokens?: number;
+  outputAudioPerMillionTokens?: number;
+  inputImagePerMillionTokens?: number;
+  cachedInputImagePerMillionTokens?: number;
+  perMinute?: number;
+  perMillionCharacters?: number;
+  perMillionAudioTokens?: number;
+  audioTokensPerSecond?: number;
+  voiceMultiplier?: number;
+  estimated?: boolean;
+  note?: string;
+  models?: CostPricingDetail[];
+};
+
 export type CallRecord = {
   _id: string;
   agentId: BackendAgent | { _id: string; name: string; team?: string };
@@ -332,12 +356,36 @@ export type CallRecord = {
   recordingDuration: number;
   avgResponseLatencyMs: number;
   llmProvider: string;
+  llmModel: string;
+  llmInputTokens: number;
+  llmOutputTokens: number;
   llmTokens: number;
   sttProvider: string;
+  sttModel: string;
+  sttInputTokens: number;
+  sttOutputTokens: number;
   sttSeconds: number;
   ttsProvider: string;
+  ttsModel: string;
+  ttsVoice: string;
+  ttsInputTokens: number;
+  ttsOutputTokens: number;
+  ttsAudioSeconds: number;
   ttsCharacters: number;
-  costBreakdown: { llm: number; stt: number; tts: number; telephony: number; total: number; currency: string };
+  costBreakdown: {
+    llm: number;
+    stt: number;
+    tts: number;
+    telephony: number;
+    total: number;
+    currency: string;
+    pricing?: {
+      llm?: CostPricingDetail;
+      stt?: CostPricingDetail;
+      tts?: CostPricingDetail;
+      telephony?: CostPricingDetail;
+    };
+  };
   billing?: {
     chargedCredits: number;
     estimatedChargeCredits: number;
