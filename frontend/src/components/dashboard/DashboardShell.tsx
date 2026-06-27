@@ -853,17 +853,6 @@ function voiceRecommendedForLanguage(
   ].some((candidate) => keys.has(candidate.toLowerCase()));
 }
 
-function voiceSupportsLanguage(
-  profile: VoiceProfile | undefined,
-  language: string,
-  languageCatalog: readonly VoiceLanguageOption[],
-) {
-  if (!profile || !language) return false;
-  if (voiceRecommendedForLanguage(profile, language, languageCatalog)) return true;
-  const selectedLanguage = findLanguageOption(language, languageCatalog);
-  return Boolean(profile.model?.startsWith("bulbul:") && selectedLanguage?.sarvamTts);
-}
-
 function shortVoiceName(name: string, voice: string) {
   if (name === voice) return voice;
   return name.split(/\s+-\s+/)[0]?.trim() || name;
@@ -875,7 +864,7 @@ function compactLanguageTag(
   languageCatalog: readonly VoiceLanguageOption[],
 ) {
   if (!profile) return "";
-  if (language && voiceSupportsLanguage(profile, language, languageCatalog)) {
+  if (language && voiceRecommendedForLanguage(profile, language, languageCatalog)) {
     return languageDisplayName(language, languageCatalog);
   }
   const labels = profile.languageLabels?.filter(Boolean) ?? [];
@@ -916,9 +905,8 @@ function voiceProfileSummary(
   if (voiceRecommendedForLanguage(profile, language, languageCatalog)) {
     return `Recommended for ${languageLabel}`;
   }
-  if (voiceSupportsLanguage(profile, language, languageCatalog)) return `Supports ${languageLabel}`;
   const languageTag = compactLanguageTag(profile, language, languageCatalog);
-  return languageTag ? `Language: ${languageTag}` : undefined;
+  return languageTag ? `Voice languages: ${languageTag}` : undefined;
 }
 
 function coerceLanguage(
