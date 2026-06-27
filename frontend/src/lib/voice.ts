@@ -113,7 +113,6 @@ export type ModelProvider = {
   voicesByLanguage?: Readonly<Record<string, readonly string[]>>;
   languages?: readonly VoiceLanguageOption[];
   showAllVoicesWithLanguageOrder?: boolean;
-  requireLanguageMatch?: boolean;
 };
 
 export type ModelCatalog = {
@@ -520,12 +519,6 @@ export const voiceApi = {
         ownedNumberCount: number;
       };
     }>("/config"),
-  elevenLabsVoices: (language: string) => {
-    const query = new URLSearchParams({ language });
-    return request<{ language: string; provider: ModelProvider | null }>(
-      `/elevenlabs-voices?${query.toString()}`,
-    );
-  },
   agents: () => request<{ agents: BackendAgent[] }>("/agents"),
   agentTemplates: () => request<{ templates: AgentTemplate[] }>("/agent-templates"),
   createAgent: () =>
