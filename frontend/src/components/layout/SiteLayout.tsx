@@ -16,10 +16,10 @@ export function SiteLayout({ children }: SiteLayoutProps) {
 
   return (
     <div
-      className={`min-h-screen overflow-x-hidden text-[#f6f1ff] transition-colors ${
+      className={`min-h-screen overflow-x-hidden transition-colors ${
         resolvedTheme === "dark"
-          ? "bg-[linear-gradient(180deg,#000_0%,#10071d_35%,#26063b_100%)]"
-          : "bg-[linear-gradient(180deg,#000_0%,#170020_30%,#6a00a8_100%)]"
+          ? "bg-[linear-gradient(180deg,#000_0%,#10071d_35%,#26063b_100%)] text-[#f6f1ff]"
+          : "bg-[#f8fafc] text-slate-950"
       }`}
     >
       <SiteHeader />
