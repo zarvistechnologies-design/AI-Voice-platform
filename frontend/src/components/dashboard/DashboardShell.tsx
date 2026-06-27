@@ -827,15 +827,19 @@ const voiceLabels: Record<string, string> = {
   TxGEqnHWrfWFTfGW9XjX: "Josh - male",
 };
 
-function languageDisplayName(language: string, languageCatalog: readonly VoiceLanguageOption[]) {
+function findLanguageOption(language: string, languageCatalog: readonly VoiceLanguageOption[]) {
   const normalized = language.trim().toLowerCase();
-  const matched = languageCatalog.find((item) =>
+  return languageCatalog.find((item) =>
     [item.value, item.label, item.code].some((candidate) => candidate.toLowerCase() === normalized),
   );
+}
+
+function languageDisplayName(language: string, languageCatalog: readonly VoiceLanguageOption[]) {
+  const matched = findLanguageOption(language, languageCatalog);
   return matched?.label ?? language;
 }
 
-function voiceMatchesLanguage(
+function voiceRecommendedForLanguage(
   profile: VoiceProfile | undefined,
   language: string,
   languageCatalog: readonly VoiceLanguageOption[],
@@ -849,6 +853,17 @@ function voiceMatchesLanguage(
   ].some((candidate) => keys.has(candidate.toLowerCase()));
 }
 
+function voiceSupportsLanguage(
+  profile: VoiceProfile | undefined,
+  language: string,
+  languageCatalog: readonly VoiceLanguageOption[],
+) {
+  if (!profile || !language) return false;
+  if (voiceRecommendedForLanguage(profile, language, languageCatalog)) return true;
+  const selectedLanguage = findLanguageOption(language, languageCatalog);
+  return Boolean(profile.model?.startsWith("bulbul:") && selectedLanguage?.sarvamTts);
+}
+
 function shortVoiceName(name: string, voice: string) {
   if (name === voice) return voice;
   return name.split(/\s+-\s+/)[0]?.trim() || name;
@@ -860,7 +875,7 @@ function compactLanguageTag(
   languageCatalog: readonly VoiceLanguageOption[],
 ) {
   if (!profile) return "";
-  if (language && voiceMatchesLanguage(profile, language, languageCatalog)) {
+  if (language && voiceSupportsLanguage(profile, language, languageCatalog)) {
     return languageDisplayName(language, languageCatalog);
   }
   const labels = profile.languageLabels?.filter(Boolean) ?? [];
@@ -898,7 +913,10 @@ function voiceProfileSummary(
   if (!profile) return undefined;
 
   const languageLabel = language ? languageDisplayName(language, languageCatalog) : "";
-  if (voiceMatchesLanguage(profile, language, languageCatalog)) return `Best for ${languageLabel}`;
+  if (voiceRecommendedForLanguage(profile, language, languageCatalog)) {
+    return `Recommended for ${languageLabel}`;
+  }
+  if (voiceSupportsLanguage(profile, language, languageCatalog)) return `Supports ${languageLabel}`;
   const languageTag = compactLanguageTag(profile, language, languageCatalog);
   return languageTag ? `Language: ${languageTag}` : undefined;
 }
