@@ -827,15 +827,19 @@ const voiceLabels: Record<string, string> = {
   TxGEqnHWrfWFTfGW9XjX: "Josh - male",
 };
 
-function languageDisplayName(language: string, languageCatalog: readonly VoiceLanguageOption[]) {
+function findLanguageOption(language: string, languageCatalog: readonly VoiceLanguageOption[]) {
   const normalized = language.trim().toLowerCase();
-  const matched = languageCatalog.find((item) =>
+  return languageCatalog.find((item) =>
     [item.value, item.label, item.code].some((candidate) => candidate.toLowerCase() === normalized),
   );
+}
+
+function languageDisplayName(language: string, languageCatalog: readonly VoiceLanguageOption[]) {
+  const matched = findLanguageOption(language, languageCatalog);
   return matched?.label ?? language;
 }
 
-function voiceMatchesLanguage(
+function voiceRecommendedForLanguage(
   profile: VoiceProfile | undefined,
   language: string,
   languageCatalog: readonly VoiceLanguageOption[],
@@ -849,17 +853,34 @@ function voiceMatchesLanguage(
   ].some((candidate) => keys.has(candidate.toLowerCase()));
 }
 
-function voiceProfileDetails(
+function voiceSupportsLanguage(
   profile: VoiceProfile | undefined,
   language: string,
   languageCatalog: readonly VoiceLanguageOption[],
 ) {
-  if (!profile) return [];
-  const languageLabel = language ? languageDisplayName(language, languageCatalog) : "";
-  const languagePart = voiceMatchesLanguage(profile, language, languageCatalog)
-    ? languageLabel
-    : profile.languageLabels?.join(", ");
-  return [languagePart, profile.useCase, profile.tone].filter(Boolean) as string[];
+  if (!profile || !language) return false;
+  if (voiceRecommendedForLanguage(profile, language, languageCatalog)) return true;
+  const selectedLanguage = findLanguageOption(language, languageCatalog);
+  return Boolean(profile.model?.startsWith("bulbul:") && selectedLanguage?.sarvamTts);
+}
+
+function shortVoiceName(name: string, voice: string) {
+  if (name === voice) return voice;
+  return name.split(/\s+-\s+/)[0]?.trim() || name;
+}
+
+function compactLanguageTag(
+  profile: VoiceProfile | undefined,
+  language: string,
+  languageCatalog: readonly VoiceLanguageOption[],
+) {
+  if (!profile) return "";
+  if (language && voiceSupportsLanguage(profile, language, languageCatalog)) {
+    return languageDisplayName(language, languageCatalog);
+  }
+  const labels = profile.languageLabels?.filter(Boolean) ?? [];
+  if (labels.length === 0) return "";
+  return labels.length === 1 ? labels[0] : `${labels[0]} +${labels.length - 1}`;
 }
 
 function voiceSelectOptions(
@@ -873,9 +894,11 @@ function voiceSelectOptions(
     value: voice,
     label: (() => {
       const profile = profilesByValue.get(voice);
-      const name = profile?.label ?? voiceLabels[voice] ?? voice;
-      const details = voiceProfileDetails(profile, language, languageCatalog);
-      return details.length ? `${name} - ${details.join(" | ")} (${voice})` : `${name} (${voice})`;
+      const fallbackLabel = voiceLabels[voice];
+      const name = shortVoiceName(profile?.label ?? fallbackLabel ?? voice, voice);
+      const languageTag = compactLanguageTag(profile, language, languageCatalog);
+      if (languageTag) return `${name} - ${languageTag}`;
+      return fallbackLabel ? name : voice;
     })(),
   }));
 }
@@ -890,18 +913,12 @@ function voiceProfileSummary(
   if (!profile) return undefined;
 
   const languageLabel = language ? languageDisplayName(language, languageCatalog) : "";
-  const languageFit = voiceMatchesLanguage(profile, language, languageCatalog)
-    ? `Best for ${languageLabel}`
-    : profile.languageLabels?.length
-      ? `Recommended for ${profile.languageLabels.join(", ")}`
-      : undefined;
-  return [
-    languageFit,
-    profile.useCase ? `Use: ${profile.useCase}` : undefined,
-    profile.tone ? `Tone: ${profile.tone}` : undefined,
-    profile.qualityTier,
-    profile.note,
-  ].filter(Boolean).join(" | ");
+  if (voiceRecommendedForLanguage(profile, language, languageCatalog)) {
+    return `Recommended for ${languageLabel}`;
+  }
+  if (voiceSupportsLanguage(profile, language, languageCatalog)) return `Supports ${languageLabel}`;
+  const languageTag = compactLanguageTag(profile, language, languageCatalog);
+  return languageTag ? `Language: ${languageTag}` : undefined;
 }
 
 function coerceLanguage(

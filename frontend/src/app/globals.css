@@ -151,6 +151,20 @@
 }
 
 @layer components {
+  .home-page-background {
+    background:
+      radial-gradient(circle at 82% 9%, rgba(0, 255, 255, 0.22) 0, transparent 28%),
+      radial-gradient(circle at 8% 30%, rgba(0, 255, 255, 0.14) 0, transparent 24%),
+      linear-gradient(180deg, #ffffff 0%, #f2ffff 28%, #ffffff 68%, #ffffff 100%);
+  }
+
+  .dark .home-page-background {
+    background:
+      radial-gradient(circle at 82% 9%, rgba(0, 255, 255, 0.22) 0, transparent 28%),
+      radial-gradient(circle at 8% 30%, rgba(0, 255, 255, 0.14) 0, transparent 24%),
+      linear-gradient(180deg, #ffffff 0%, #f2ffff 28%, #ffffff 68%, #ffffff 100%);
+  }
+
   .app-display-title {
     color: var(--app-color-heading);
     font-size: clamp(2rem, 5vw, var(--app-text-display));

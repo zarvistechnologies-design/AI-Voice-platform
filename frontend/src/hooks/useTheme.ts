@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useSyncExternalStore } from "react";
 
 export type ThemePreference = "light" | "dark" | "system";
 export type ResolvedTheme = "light" | "dark";
@@ -81,6 +81,11 @@ export function useTheme() {
     window.localStorage.setItem(storageKey, nextPreference);
     window.dispatchEvent(new Event(themeChangeEvent));
   }, []);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", resolvedTheme === "dark");
+    document.documentElement.dataset.theme = resolvedTheme;
+  }, [resolvedTheme]);
 
   return {
     preference,

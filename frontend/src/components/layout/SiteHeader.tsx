@@ -112,7 +112,7 @@ export function SiteHeader() {
       ref={headerRef}
     >
       <div
-        className={`pointer-events-auto relative mx-auto grid w-full grid-cols-[minmax(150px,0.9fr)_auto_minmax(170px,0.9fr)] items-center gap-2.5 py-[7px] pr-2 pl-3.5 transition-all duration-200 max-[1180px]:grid-cols-[minmax(0,1fr)_auto_auto] max-[1180px]:min-h-[54px] max-[1180px]:max-w-[1040px] max-[560px]:min-h-[52px] max-[560px]:gap-[7px] max-[560px]:p-[7px] ${
+        className={`pointer-events-auto relative mx-auto grid w-full grid-cols-[minmax(150px,0.9fr)_auto_minmax(170px,0.9fr)] items-center gap-2.5 rounded-full border border-slate-200/80 bg-white/82 py-[7px] pr-2 pl-3.5 text-slate-950 shadow-[0_18px_50px_rgba(15,23,42,0.10)] backdrop-blur-2xl transition-all duration-200 max-[1180px]:grid-cols-[minmax(0,1fr)_auto_auto] max-[1180px]:min-h-[54px] max-[1180px]:max-w-[1040px] max-[560px]:min-h-[52px] max-[560px]:gap-[7px] max-[560px]:p-[7px] dark:border-[#71349b]/55 dark:bg-[#080112]/70 dark:text-[#f6f1ff] dark:shadow-[0_18px_55px_rgba(4,1,10,0.46)] ${
           isScrolled
             ? "min-h-[50px] max-w-[1180px]"
             : "min-h-14 max-w-[1280px]"
@@ -123,7 +123,7 @@ export function SiteHeader() {
         </div>
 
         <nav
-          className={`flex items-center justify-center gap-0.5 whitespace-nowrap text-[0.78rem] font-bold text-[#f6f1ff] max-[1180px]:absolute max-[1180px]:top-[calc(100%+8px)] max-[1180px]:right-0 max-[1180px]:left-0 max-[1180px]:flex-col max-[1180px]:items-stretch max-[1180px]:justify-start max-[1180px]:gap-[3px] max-[1180px]:whitespace-normal max-[1180px]:rounded-[22px] max-[1180px]:border max-[1180px]:border-[#71349b]/80 max-[1180px]:bg-[linear-gradient(180deg,#111827_0%,#1f2937_48%,#111827_100%)] max-[1180px]:p-2 max-[1180px]:shadow-[0_22px_60px_rgba(4,1,10,0.5)] max-[1180px]:backdrop-blur-2xl ${
+          className={`flex items-center justify-center gap-0.5 whitespace-nowrap text-[0.78rem] font-bold text-slate-700 max-[1180px]:absolute max-[1180px]:top-[calc(100%+8px)] max-[1180px]:right-0 max-[1180px]:left-0 max-[1180px]:flex-col max-[1180px]:items-stretch max-[1180px]:justify-start max-[1180px]:gap-[3px] max-[1180px]:whitespace-normal max-[1180px]:rounded-[22px] max-[1180px]:border max-[1180px]:border-slate-200 max-[1180px]:bg-white/95 max-[1180px]:p-2 max-[1180px]:shadow-[0_22px_60px_rgba(15,23,42,0.16)] max-[1180px]:backdrop-blur-2xl dark:text-[#f6f1ff] dark:max-[1180px]:border-[#71349b]/80 dark:max-[1180px]:bg-[linear-gradient(180deg,#111827_0%,#1f2937_48%,#111827_100%)] dark:max-[1180px]:shadow-[0_22px_60px_rgba(4,1,10,0.5)] ${
             isMenuOpen ? "max-[1180px]:flex" : "max-[1180px]:hidden"
           }`}
           aria-label="Main navigation"
@@ -136,8 +136,8 @@ export function SiteHeader() {
                 <button
                   className={`inline-flex min-h-8 items-center gap-[5px] rounded-full border-0 bg-transparent px-[9px] text-left font-inherit text-inherit transition max-[1180px]:min-h-10 max-[1180px]:w-full max-[1180px]:justify-between max-[1180px]:px-3 ${
                     activeMegaMenu === menuKey
-                      ? "!bg-[#26063b] !text-[#b34cff]"
-                      : "hover:bg-[#26063b] hover:text-[#b34cff]"
+                      ? "!bg-teal-50 !text-[#0f766e] dark:!bg-[#26063b] dark:!text-[#b34cff]"
+                      : "hover:bg-teal-50 hover:text-[#0f766e] dark:hover:bg-[#26063b] dark:hover:text-[#b34cff]"
                   }`}
                   type="button"
                   aria-expanded={activeMegaMenu === menuKey}
@@ -155,7 +155,7 @@ export function SiteHeader() {
               </div>
             ) : (
               <a
-                className="inline-flex min-h-8 items-center gap-[5px] rounded-full px-[9px] text-[#f6f1ff] transition hover:bg-[#26063b] hover:text-[#b34cff] max-[1180px]:min-h-10 max-[1180px]:w-full max-[1180px]:justify-between max-[1180px]:px-3"
+                className="inline-flex min-h-8 items-center gap-[5px] rounded-full px-[9px] text-slate-700 transition hover:bg-teal-50 hover:text-[#0f766e] max-[1180px]:min-h-10 max-[1180px]:w-full max-[1180px]:justify-between max-[1180px]:px-3 dark:text-[#f6f1ff] dark:hover:bg-[#26063b] dark:hover:text-[#b34cff]"
                 key={link.href}
                 href={link.href}
                 onClick={closeMenus}
@@ -171,8 +171,8 @@ export function SiteHeader() {
             <a
               className={`inline-flex min-h-[34px] items-center justify-center whitespace-nowrap rounded-full px-3 text-[0.8rem] font-extrabold transition hover:-translate-y-px ${
                 action.variant === "secondary"
-                  ? "border border-[#71349b] bg-gradient-to-br from-[#6a00a8] to-[#6a00a8] text-white max-[560px]:hidden"
-                  : "text-[#f6f1ff] max-[1180px]:hidden"
+                  ? "border border-[#00ADB5]/40 bg-[#00ADB5] text-slate-950 shadow-[0_12px_26px_rgba(0,173,181,0.22)] max-[560px]:hidden dark:border-[#71349b] dark:bg-gradient-to-br dark:from-[#6a00a8] dark:to-[#6a00a8] dark:text-white"
+                  : "text-slate-700 max-[1180px]:hidden hover:text-[#0f766e] dark:text-[#f6f1ff] dark:hover:text-[#b34cff]"
               }`}
               href={action.href}
               key={action.label}
@@ -183,7 +183,7 @@ export function SiteHeader() {
         </div>
 
         <button
-          className="hidden size-[38px] place-items-center rounded-full border border-[#71349b] bg-[#26063b] text-[#f6f1ff] max-[1180px]:grid"
+          className="hidden size-[38px] place-items-center rounded-full border border-slate-200 bg-slate-100 text-slate-800 max-[1180px]:grid dark:border-[#71349b] dark:bg-[#26063b] dark:text-[#f6f1ff]"
           type="button"
           aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
           aria-expanded={isMenuOpen}
@@ -226,7 +226,7 @@ export function SiteHeader() {
 
         return (
           <div
-            className={`absolute top-[calc(100%+12px)] right-[clamp(14px,3vw,36px)] left-[clamp(14px,3vw,36px)] mx-auto grid min-h-[284px] grid-cols-[minmax(190px,0.3fr)_minmax(0,1fr)] gap-[clamp(16px,2.4vw,28px)] rounded-lg border border-[#71349b]/70 bg-[linear-gradient(180deg,#111827_0%,#1f2937_48%,#111827_100%)] p-1.5 shadow-[0_26px_80px_rgba(0,0,0,0.48)] backdrop-blur-2xl transition-all duration-200 max-[1180px]:top-[calc(100%+262px)] max-[1180px]:right-0 max-[1180px]:left-0 max-[1180px]:hidden max-[1180px]:min-h-0 max-[1180px]:w-[min(100%,1040px)] max-[1180px]:grid-cols-1 max-[1180px]:gap-3.5 max-[1180px]:rounded-[22px] max-[1180px]:p-2 ${
+            className={`absolute top-[calc(100%+12px)] right-[clamp(14px,3vw,36px)] left-[clamp(14px,3vw,36px)] mx-auto grid min-h-[284px] grid-cols-[minmax(190px,0.3fr)_minmax(0,1fr)] gap-[clamp(16px,2.4vw,28px)] rounded-lg border border-slate-200 bg-white/95 p-1.5 shadow-[0_26px_80px_rgba(15,23,42,0.18)] backdrop-blur-2xl transition-all duration-200 max-[1180px]:top-[calc(100%+262px)] max-[1180px]:right-0 max-[1180px]:left-0 max-[1180px]:hidden max-[1180px]:min-h-0 max-[1180px]:w-[min(100%,1040px)] max-[1180px]:grid-cols-1 max-[1180px]:gap-3.5 max-[1180px]:rounded-[22px] max-[1180px]:p-2 dark:border-[#71349b]/70 dark:bg-[linear-gradient(180deg,#111827_0%,#1f2937_48%,#111827_100%)] dark:shadow-[0_26px_80px_rgba(0,0,0,0.48)] ${
               isCompanyMenu
                 ? "w-[min(calc(100%-clamp(28px,6vw,72px)),720px)] min-[1181px]:min-h-[328px] min-[1181px]:grid-cols-2"
                 : isWideMenu
@@ -266,15 +266,15 @@ export function SiteHeader() {
             >
               {menu.groups.map((group) => (
                 <div
-                  className="border-t border-[#71349b]/70 p-2.5 min-[1181px]:border-0 min-[1181px]:p-0"
+                  className="border-t border-slate-200 p-2.5 min-[1181px]:border-0 min-[1181px]:p-0 dark:border-[#71349b]/70"
                   key={group.title}
                 >
-                  <h2 className="m-0 mb-2 text-[0.78rem] font-bold text-[#b34cff] min-[1181px]:mb-[22px]">
+                  <h2 className="m-0 mb-2 text-[0.78rem] font-bold text-[#0f766e] min-[1181px]:mb-[22px] dark:text-[#b34cff]">
                     {group.title}
                   </h2>
                   {group.links.map((item) => (
                     <a
-                      className={`mt-2 flex items-center gap-3.5 text-[0.9rem] leading-[1.2] font-medium text-[#f6f1ff] transition hover:translate-x-[3px] hover:text-[#b34cff] min-[1181px]:mt-[13px] min-[1181px]:text-[clamp(0.9rem,1.3vw,1.08rem)] ${
+                      className={`mt-2 flex items-center gap-3.5 text-[0.9rem] leading-[1.2] font-medium text-slate-700 transition hover:translate-x-[3px] hover:text-[#0f766e] min-[1181px]:mt-[13px] min-[1181px]:text-[clamp(0.9rem,1.3vw,1.08rem)] dark:text-[#f6f1ff] dark:hover:text-[#b34cff] ${
                         "icon" in item ? "" : "block"
                       }`}
                       href={item.href}
@@ -283,7 +283,7 @@ export function SiteHeader() {
                     >
                       {"icon" in item ? (
                         <span
-                          className="grid size-7 min-w-7 place-items-center text-[0.9rem] font-bold text-[#f6f1ff]"
+                          className="grid size-7 min-w-7 place-items-center text-[0.9rem] font-bold text-[#0f766e] dark:text-[#f6f1ff]"
                           aria-hidden="true"
                         >
                           {item.icon}
@@ -297,14 +297,14 @@ export function SiteHeader() {
 
               {"story" in menu ? (
                 <a
-                  className="block border-t border-[#71349b]/70 p-2.5 text-[#f6f1ff] min-[1181px]:border-0 min-[1181px]:p-0"
+                  className="block border-t border-slate-200 p-2.5 text-slate-950 min-[1181px]:border-0 min-[1181px]:p-0 dark:border-[#71349b]/70 dark:text-[#f6f1ff]"
                   href={menu.story.href}
                   onClick={closeMenus}
                 >
                   <span className="mb-2 block text-[0.95rem] leading-[1.15] font-medium min-[1181px]:mb-7 min-[1181px]:text-[clamp(1rem,1.8vw,1.35rem)]">
                     {menu.story.title}
                   </span>
-                  <p className="m-0 max-w-[280px] text-[0.78rem] leading-[1.28] font-medium text-[#b9a8d6] min-[1181px]:text-[0.9rem]">
+                  <p className="m-0 max-w-[280px] text-[0.78rem] leading-[1.28] font-medium text-slate-500 min-[1181px]:text-[0.9rem] dark:text-[#b9a8d6]">
                     {menu.story.body}
                   </p>
                 </a>
