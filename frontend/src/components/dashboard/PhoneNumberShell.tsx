@@ -43,7 +43,7 @@ const providers: { id: TelephonyProvider; description: string; docs: string }[] 
 const buttonClass =
   "app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 transition disabled:cursor-not-allowed disabled:opacity-50";
 const controlClass =
-  "app-control-text min-h-11 w-full rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10";
+  "app-control-text min-h-11 w-full rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10";
 
 function Icon({ icon, className = "size-4" }: { icon: IconName; className?: string }) {
   const props = {
@@ -80,7 +80,7 @@ function formatDate(value: string) {
 
 function providerTone(provider: string) {
   if (provider === "Twilio") return "border-[#fee2e2] bg-[#fff1f2] text-[#be123c]";
-  if (provider === "Exotel") return "border-[#bae6fd] bg-[#f0f9ff] text-[#0369a1]";
+  if (provider === "Exotel") return "border-[#99f6e8] bg-[#ecfeff] text-[#008996]";
   return "border-[#d1fae5] bg-[#ecfdf5] text-[#047857]";
 }
 
@@ -249,10 +249,10 @@ export function PhoneNumberShell() {
         setShowUserSidebar={setShowUserSidebar}
       />
       <section className="min-w-0 overflow-y-auto">
-        <header className="border-b border-[#bae6fd] bg-white px-4 py-4 sm:px-6 lg:px-8">
+        <header className="border-b border-[#99f6e8] bg-white px-4 py-4 sm:px-6 lg:px-8">
           <div className="mx-auto flex w-full max-w-1500px flex-wrap items-center justify-between gap-4">
             <div>
-              <span className="app-label text-[#0284c7]">Telephony</span>
+              <span className="app-label text-[#00b8c4]">Telephony</span>
               <h1 className="m-0 mt-1 text-xl font-semibold leading-7 text-[#0f172a] sm:text-2xl">Phone numbers</h1>
               <p className="app-caption mt-1 mb-0 text-[#475569]">Import or buy telephony numbers, then link them to any voice agent.</p>
             </div>
@@ -267,7 +267,7 @@ export function PhoneNumberShell() {
                 Repair routes
               </button>
               <button
-                className={`${buttonClass} border border-[#bae6fd] bg-[#f0f9ff] text-[#0369a1] hover:bg-[#e0f2fe]`}
+                className={`${buttonClass} border border-[#99f6e8] bg-[#ecfeff] text-[#008996] hover:bg-[#ccfbf1]`}
                 onClick={() => { setShowImport(true); showMessage(""); }}
                 type="button"
               >
@@ -275,7 +275,7 @@ export function PhoneNumberShell() {
                 Import number
               </button>
               <button
-                className={`${buttonClass} border-0 bg-[#0284c7] text-white shadow-[0_12px_28px_rgba(20,56,245,0.28)] hover:bg-[#0369a1]`}
+                className={`${buttonClass} border-0 bg-[#00b8c4] text-white shadow-[0_12px_28px_rgba(0,184,196,0.28)] hover:bg-[#008996]`}
                 onClick={() => { setShowBuy(true); showMessage(""); }}
                 type="button"
               >
@@ -335,16 +335,16 @@ export function PhoneNumberShell() {
             ) : (
               <div className="grid min-h-360px place-items-center p-6 text-center">
                 <div className="max-w-sm">
-                  <span className="mx-auto mb-4 grid size-12 place-items-center rounded-xl bg-[#f0f9ff] text-[#0284c7]">
+                  <span className="mx-auto mb-4 grid size-12 place-items-center rounded-xl bg-[#ecfeff] text-[#00b8c4]">
                     <Icon icon="phone" className="size-5" />
                   </span>
                   <h3 className="app-section-title m-0">No phone numbers yet</h3>
                   <p className="app-caption mt-1 mb-4">Import from Twilio, Exotel, or Vobiz-or buy a new Vobiz number.</p>
                   <div className="flex flex-wrap justify-center gap-2">
-                    <button className={`${buttonClass} border border-[#bae6fd] bg-white text-[#0284c7]`} onClick={() => setShowImport(true)} type="button">
+                    <button className={`${buttonClass} border border-[#99f6e8] bg-white text-[#00b8c4]`} onClick={() => setShowImport(true)} type="button">
                       <Icon icon="import" /> Import number
                     </button>
-                    <button className={`${buttonClass} bg-[#0284c7] text-white`} onClick={() => setShowBuy(true)} type="button">
+                    <button className={`${buttonClass} bg-[#00b8c4] text-white`} onClick={() => setShowBuy(true)} type="button">
                       <Icon icon="plus" /> Buy number
                     </button>
                   </div>
@@ -405,7 +405,7 @@ function PhoneNumberRow({
     <tr className="border-t border-[#edf0f4] transition hover:bg-[#fbfcfe]">
       <td className="px-5 py-4">
         <div className="flex items-center gap-3">
-          <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#f0f9ff] text-[#0284c7]">
+          <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#ecfeff] text-[#00b8c4]">
             <Icon icon="phone" />
           </span>
           <span className="min-w-0">
@@ -421,15 +421,15 @@ function PhoneNumberRow({
       </td>
       <td className="px-4 py-4">
         <button
-          className={`group inline-flex max-w-240px items-center gap-2 rounded-lg border px-2.5 py-2 text-left transition ${agent ? "border-[#e5e7eb] bg-[#f8fafc] hover:border-[#bae6fd] hover:bg-[#f0f9ff]" : "border-dashed border-[#cbd5e1] bg-white text-[#475569] hover:border-[#0284c7] hover:text-[#0284c7]"}`}
+          className={`group inline-flex max-w-240px items-center gap-2 rounded-lg border px-2.5 py-2 text-left transition ${agent ? "border-[#e5e7eb] bg-[#f8fafc] hover:border-[#99f6e8] hover:bg-[#ecfeff]" : "border-dashed border-[#cbd5e1] bg-white text-[#475569] hover:border-[#00b8c4] hover:text-[#00b8c4]"}`}
           onClick={onManage}
           type="button"
         >
-          <span className={`grid size-7 shrink-0 place-items-center rounded-md ${agent ? "bg-white text-[#64748b]" : "bg-[#f0f9ff] text-[#0284c7]"}`}>
+          <span className={`grid size-7 shrink-0 place-items-center rounded-md ${agent ? "bg-white text-[#64748b]" : "bg-[#ecfeff] text-[#00b8c4]"}`}>
             <Icon icon={agent ? "user" : "link"} className="size-3.5" />
           </span>
           <span className="app-strong truncate">{agent?.name ?? "Link agent"}</span>
-          {agent ? <Icon icon="edit" className="size-3.5 text-[#94a3b8] group-hover:text-[#0284c7]" /> : null}
+          {agent ? <Icon icon="edit" className="size-3.5 text-[#94a3b8] group-hover:text-[#00b8c4]" /> : null}
         </button>
       </td>
       <td className="app-body whitespace-nowrap px-4 py-4 text-[#475569]">{number.region || "Global"}</td>
@@ -439,7 +439,7 @@ function PhoneNumberRow({
       </td>
       <td className="px-4 py-4">
         <div className="flex items-center justify-end gap-1">
-          <button className="grid size-9 place-items-center rounded-lg text-[#64748b] transition hover:bg-[#f0f9ff] hover:text-[#0284c7]" disabled={busy} onClick={onManage} type="button" aria-label={`Manage ${number.number}`}>
+          <button className="grid size-9 place-items-center rounded-lg text-[#64748b] transition hover:bg-[#ecfeff] hover:text-[#00b8c4]" disabled={busy} onClick={onManage} type="button" aria-label={`Manage ${number.number}`}>
             <Icon icon="edit" />
           </button>
           <button className="grid size-9 place-items-center rounded-lg text-[#dc2626] transition hover:bg-[#fff1f2]" disabled={busy} onClick={onDelete} type="button" aria-label={`Delete ${number.number}`}>
@@ -515,22 +515,22 @@ function ImportNumberModal({ busy, onClose, onImport }: {
         <div className="grid grid-cols-3 border-b border-[#e5e7eb] px-5 sm:px-6">
           {providers.map((item) => (
             <button
-              className={`relative min-h-14 border-0 bg-transparent px-2 text-center transition ${provider === item.id ? "text-[#0284c7]" : "text-[#64748b] hover:text-[#334155]"}`}
+              className={`relative min-h-14 border-0 bg-transparent px-2 text-center transition ${provider === item.id ? "text-[#00b8c4]" : "text-[#64748b] hover:text-[#334155]"}`}
               key={item.id}
               onClick={() => setProvider(item.id)}
               type="button"
             >
               <span className="app-strong">{item.id}</span>
-              {provider === item.id ? <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-[#0284c7]" /> : null}
+              {provider === item.id ? <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-[#00b8c4]" /> : null}
             </button>
           ))}
         </div>
 
         <div className="grid gap-5 overflow-y-auto px-5 py-5 sm:px-6">
-          <div className="rounded-lg border border-[#bae6fd] bg-[#f0f9ff] px-3 py-2.5">
+          <div className="rounded-lg border border-[#99f6e8] bg-[#ecfeff] px-3 py-2.5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <span className="app-body text-[#1e40af]">{providers.find((item) => item.id === provider)?.description}</span>
-              <a className="app-label text-[#0284c7] underline underline-offset-2" href={providers.find((item) => item.id === provider)?.docs} rel="noreferrer" target="_blank">Provider docs</a>
+              <a className="app-label text-[#00b8c4] underline underline-offset-2" href={providers.find((item) => item.id === provider)?.docs} rel="noreferrer" target="_blank">Provider docs</a>
             </div>
           </div>
 
@@ -629,7 +629,7 @@ function ImportNumberModal({ busy, onClose, onImport }: {
 
         <footer className="flex items-center justify-end gap-2 border-t border-[#e5e7eb] px-5 py-4 sm:px-6">
           <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button>
-          <button className={`${buttonClass} bg-[#0284c7] text-white hover:bg-[#0369a1]`} disabled={busy || !valid} type="submit">
+          <button className={`${buttonClass} bg-[#00b8c4] text-white hover:bg-[#008996]`} disabled={busy || !valid} type="submit">
             <Icon icon="import" /> {busy ? "Importing..." : "Import number"}
           </button>
         </footer>
@@ -710,7 +710,7 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase }: {
             Area code or digits <span className="font-normal text-[#94a3b8]">(optional)</span>
             <input className={controlClass} inputMode="tel" placeholder="For example 80 or 650" value={query} onChange={(event) => setQuery(event.target.value)} />
           </label>
-          <button className={`${buttonClass} self-end border border-[#bae6fd] bg-white text-[#0284c7] hover:bg-[#f0f9ff]`} disabled={searching || busy} type="submit">
+          <button className={`${buttonClass} self-end border border-[#99f6e8] bg-white text-[#00b8c4] hover:bg-[#ecfeff]`} disabled={searching || busy} type="submit">
             <Icon icon="search" /> {searching ? "Searching..." : "Search"}
           </button>
         </form>
@@ -732,7 +732,7 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase }: {
                 const voiceAvailable = number.voice_enabled !== false && number.capabilities?.voice !== false;
                 return (
                   <button
-                    className={`grid w-full gap-3 rounded-xl border p-3 text-left transition sm:grid-cols-[minmax(0,1fr)_145px_145px_auto] sm:items-center ${active ? "border-[#0284c7] bg-[#f0f9ff] ring-2 ring-[#0284c7]/10" : "border-[#e5e7eb] bg-white hover:border-[#bae6fd] hover:bg-[#fbfcff]"}`}
+                    className={`grid w-full gap-3 rounded-xl border p-3 text-left transition sm:grid-cols-[minmax(0,1fr)_145px_145px_auto] sm:items-center ${active ? "border-[#00b8c4] bg-[#ecfeff] ring-2 ring-[#00b8c4]/10" : "border-[#e5e7eb] bg-white hover:border-[#99f6e8] hover:bg-[#fbfcff]"}`}
                     disabled={!voiceAvailable || busy}
                     key={number.id || number.e164}
                     onClick={() => setSelected(number)}
@@ -763,7 +763,7 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase }: {
           </label>
           <div className="flex gap-2">
             <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button>
-            <button className={`${buttonClass} bg-[#0284c7] text-white hover:bg-[#0369a1]`} disabled={busy || !selected} onClick={() => { if (selected) onPurchase(selected, label); }} type="button">
+            <button className={`${buttonClass} bg-[#00b8c4] text-white hover:bg-[#008996]`} disabled={busy || !selected} onClick={() => { if (selected) onPurchase(selected, label); }} type="button">
               <Icon icon="plus" /> {busy ? "Purchasing..." : "Purchase number"}
             </button>
           </div>
@@ -802,18 +802,18 @@ function AgentModal({ agents, busy, number, onAssign, onClose }: {
             const selected = selectedId === agent._id;
             return (
               <button
-                className={`mb-1 flex w-full items-center gap-3 rounded-lg border p-3 text-left transition ${selected ? "border-[#bae6fd] bg-[#f0f9ff]" : "border-transparent hover:bg-[#f8fafc]"}`}
+                className={`mb-1 flex w-full items-center gap-3 rounded-lg border p-3 text-left transition ${selected ? "border-[#99f6e8] bg-[#ecfeff]" : "border-transparent hover:bg-[#f8fafc]"}`}
                 key={agent._id}
                 onClick={() => setSelectedId(agent._id)}
                 type="button"
               >
-                <span className={`grid size-10 shrink-0 place-items-center rounded-lg ${selected ? "bg-[#0284c7] text-white" : "bg-[#f0f9ff] text-[#0284c7]"}`}><Icon icon="user" /></span>
+                <span className={`grid size-10 shrink-0 place-items-center rounded-lg ${selected ? "bg-[#00b8c4] text-white" : "bg-[#ecfeff] text-[#00b8c4]"}`}><Icon icon="user" /></span>
                 <span className="min-w-0 flex-1">
                   <strong className="app-strong block truncate">{agent.name}</strong>
                   <span className="app-caption block truncate">{agent.team || "Voice agent"}</span>
                 </span>
                 <span className={`app-label rounded-full px-2 py-1 ${agent.status === "Live" ? "bg-[#ecfdf5] text-[#047857]" : "bg-[#f1f5f9] text-[#64748b]"}`}>{agent.status}</span>
-                <span className={`grid size-5 place-items-center rounded-full border ${selected ? "border-[#0284c7] bg-[#0284c7] text-white" : "border-[#cbd5e1]"}`}>{selected ? <Icon icon="check" className="size-3" /> : null}</span>
+                <span className={`grid size-5 place-items-center rounded-full border ${selected ? "border-[#00b8c4] bg-[#00b8c4] text-white" : "border-[#cbd5e1]"}`}>{selected ? <Icon icon="check" className="size-3" /> : null}</span>
               </button>
             );
           })}
@@ -830,7 +830,7 @@ function AgentModal({ agents, busy, number, onAssign, onClose }: {
           </div>
           <div className="flex gap-2">
             <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button>
-            <button className={`${buttonClass} bg-[#0284c7] text-white hover:bg-[#0369a1]`} disabled={busy || !selectedId} onClick={() => onAssign(selectedId)} type="button">
+            <button className={`${buttonClass} bg-[#00b8c4] text-white hover:bg-[#008996]`} disabled={busy || !selectedId} onClick={() => onAssign(selectedId)} type="button">
               <Icon icon="link" /> {busy ? "Saving..." : "Set agent"}
             </button>
           </div>

@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
 
 type SidebarItem = {
   label: string;
@@ -9,7 +8,7 @@ type SidebarItem = {
   icon: "agent" | "phone" | "campaign" | "knowledge" | "logs" | "billing" | "integrations";
 };
 
-type SidebarIconName = SidebarItem["icon"] | "mic" | "profile" | "settings";
+type SidebarIconName = SidebarItem["icon"] | "mic";
 
 const sidebarItems: SidebarItem[] = [
   { label: "Voice Agents", href: "/dashboard", icon: "agent" },
@@ -95,24 +94,6 @@ function SidebarIcon({ icon }: { icon: SidebarIconName }) {
     );
   }
 
-  if (icon === "profile") {
-    return (
-      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
-        <circle cx="12" cy="8" r="4" />
-        <path d="M4 21a8 8 0 0 1 16 0" />
-      </svg>
-    );
-  }
-
-  if (icon === "settings") {
-    return (
-      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" />
-        <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 0 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1A2 2 0 0 1 4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.3 7A2 2 0 0 1 7.1 4.2l.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.6V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1A2 2 0 0 1 19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1a2 2 0 0 1 0 4H21a1.7 1.7 0 0 0-1.6 1Z" />
-      </svg>
-    );
-  }
-
   return (
     <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
       <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" />
@@ -140,16 +121,11 @@ export function DashboardSidebar({
   showUserSidebar,
   setShowUserSidebar,
 }: DashboardSidebarProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const isProfileActive = pathname?.startsWith("/dashboard/profile");
-  const isSettingsActive = pathname?.startsWith("/dashboard/settings");
-
   return (
     <>
       <aside className="z-40 flex gap-1.5 border-b border-[#e5e7eb] bg-white/95 px-2 py-1.5 shadow-sm backdrop-blur lg:fixed lg:inset-y-0 lg:left-0 lg:h-dvh lg:w-16 lg:flex-col lg:items-center lg:border-r lg:border-b-0 lg:px-0 lg:py-2.5">
         <Link
-          className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#0ea5e9] text-white shadow-[0_10px_22px_rgba(14,165,233,0.22)] ring-1 ring-white/10 transition hover:-translate-y-0.5"
+          className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#06b6c8] text-white shadow-[0_10px_22px_rgba(14,165,233,0.22)] ring-1 ring-white/10 transition hover:-translate-y-0.5"
           href="/dashboard"
           prefetch={false}
           title="Voice Platform"
@@ -169,8 +145,8 @@ export function DashboardSidebar({
               <Link
                 className={`group relative grid size-10 shrink-0 place-items-center rounded-lg transition ${
                   isActive
-                    ? "bg-[#0ea5e9] text-white shadow-[0_10px_24px_rgba(14,165,233,0.22)]"
-                    : "text-[#747b88] hover:bg-[#f0f9ff] hover:text-[#0369a1]"
+                    ? "bg-[#06b6c8] text-white shadow-[0_10px_24px_rgba(14,165,233,0.22)]"
+                    : "text-[#747b88] hover:bg-[#ecfeff] hover:text-[#008996]"
                 }`}
                 href={item.href}
                 prefetch={false}
@@ -202,13 +178,15 @@ export function DashboardSidebar({
           title="Account"
           aria-label="Account"
           onClick={() => {
-            try {
-              localStorage.setItem("showUserSidebar", "1");
-            } catch {
-              /* ignore */
-            }
-            setShowUserSidebar(true);
-            router.push("/dashboard/profile");
+            setShowUserSidebar((current) => {
+              const next = !current;
+              try {
+                localStorage.setItem("showUserSidebar", next ? "1" : "0");
+              } catch {
+                /* ignore */
+              }
+              return next;
+            });
           }}
         >
           {userInitials}
@@ -224,50 +202,6 @@ export function DashboardSidebar({
             {userEmail}
           </div>
         </div>
-
-        <nav className="flex flex-col p-2 gap-1">
-          <Link
-            href="/dashboard/profile"
-            onClick={() => {
-              try {
-                localStorage.setItem("showUserSidebar", "1");
-              } catch {
-                /* ignore */
-              }
-              setShowUserSidebar(true);
-            }}
-            className={`flex items-center gap-3 rounded-lg px-3 py-2 transition ${
-              isProfileActive
-                ? "bg-[#0ea5e9] text-white"
-                : "hover:bg-slate-100"
-            }`}
-            aria-current={isProfileActive ? "page" : undefined}
-          >
-            <SidebarIcon icon="profile" />
-            <span>Profile</span>
-          </Link>
-
-          <Link
-            href="/dashboard/settings"
-            onClick={() => {
-              try {
-                localStorage.setItem("showUserSidebar", "1");
-              } catch {
-                /* ignore */
-              }
-              setShowUserSidebar(true);
-            }}
-            className={`flex items-center gap-3 rounded-lg px-3 py-2 transition ${
-              isSettingsActive
-                ? "bg-[#0ea5e9] text-white"
-                : "hover:bg-slate-100"
-            }`}
-            aria-current={isSettingsActive ? "page" : undefined}
-          >
-            <SidebarIcon icon="settings" />
-            <span>Settings</span>
-          </Link>
-        </nav>
 
         <button
           onClick={onLogout}

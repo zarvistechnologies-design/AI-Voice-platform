@@ -138,7 +138,7 @@ const defaultWidget: AgentWidget = {
   theme: "auto",
   position: "bottom-right",
   buttonText: "Talk to us",
-  accentColor: "#0284c7",
+  accentColor: "#00b8c4",
 };
 
 const defaultBusinessHours: AgentBusinessHours = {
@@ -1391,7 +1391,7 @@ function ToggleRow({
   onChange?: (enabled: boolean) => void;
 }) {
   return (
-    <label className="group grid cursor-pointer grid-cols-[minmax(0,1fr)_44px] items-start gap-3 rounded-lg border border-[#e5e7eb] bg-white p-3 transition hover:border-[#bae6fd] hover:bg-[#f8fbff]">
+    <label className="group grid cursor-pointer grid-cols-[minmax(0,1fr)_44px] items-start gap-3 rounded-lg border border-[#e5e7eb] bg-white p-3 transition hover:border-[#99f6e8] hover:bg-[#f8fbff]">
       <span className="min-w-0">
         <span className="app-strong block">{title}</span>
         <span className="app-caption block">{detail}</span>
@@ -1405,7 +1405,7 @@ function ToggleRow({
       <span
         aria-hidden="true"
         className={`relative mt-0.5 h-6 w-11 rounded-full transition ${
-          enabled ? "bg-[#0284c7]" : "bg-[#cbd5e1]"
+          enabled ? "bg-[#00b8c4]" : "bg-[#cbd5e1]"
         }`}
       >
         <span
@@ -1436,7 +1436,7 @@ function BehaviorPanel({
           <h3 className="app-section-title m-0">{title}</h3>
           <span className="app-caption">{detail}</span>
         </div>
-        <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-white text-[#0284c7] shadow-sm">
+        <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-white text-[#00b8c4] shadow-sm">
           <Icon icon={icon} />
         </span>
       </div>
@@ -1455,7 +1455,7 @@ function BehaviorMetric({
   tone: "sky" | "green" | "amber" | "slate";
 }) {
   const toneClass = {
-    sky: "border-[#bae6fd] bg-[#f0f9ff] text-[#0369a1]",
+    sky: "border-[#99f6e8] bg-[#ecfeff] text-[#008996]",
     green: "border-[#bbf7d0] bg-[#ecfdf5] text-[#047857]",
     amber: "border-[#fde68a] bg-[#fffbeb] text-[#b45309]",
     slate: "border-[#e2e8f0] bg-[#f8fafc] text-[#334155]",
@@ -1486,7 +1486,7 @@ function SelectField({
     <label className="app-label grid gap-2">
       <span>{label}</span>
       <select
-        className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10"
+        className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10"
         {...(value === undefined ? { defaultValue } : { value })}
         onChange={onChange ? (event) => onChange(event.target.value) : undefined}
       >
@@ -1555,7 +1555,7 @@ function VoiceSelectField({
           <button
             aria-expanded={open}
             aria-haspopup="listbox"
-            className="app-control-text flex min-h-10 w-full items-center justify-between gap-3 rounded-lg border border-[#dfe3ea] bg-white px-3 text-left text-black outline-none transition hover:border-[#bae6fd] focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10 disabled:cursor-not-allowed disabled:bg-[#f8fafc] disabled:text-[#94a3b8]"
+            className="app-control-text flex min-h-10 w-full items-center justify-between gap-3 rounded-lg border border-[#dfe3ea] bg-white px-3 text-left text-black outline-none transition hover:border-[#99f6e8] focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10 disabled:cursor-not-allowed disabled:bg-[#f8fafc] disabled:text-[#94a3b8]"
             disabled={displayedOptions.length === 0}
             type="button"
             onClick={() => setOpen((current) => !current)}
@@ -1574,7 +1574,7 @@ function VoiceSelectField({
           </button>
           {open ? (
             <div
-              className="absolute left-0 right-0 top-full z-[80] mt-2 max-h-72 overflow-auto rounded-lg border border-[#bae6fd] bg-white p-1.5 shadow-xl shadow-[#0f172a]/15"
+              className="absolute left-0 right-0 top-full z-[80] mt-2 max-h-72 overflow-auto rounded-lg border border-[#99f6e8] bg-white p-1.5 shadow-xl shadow-[#0f172a]/15"
               role="listbox"
             >
               {displayedOptions.map((option) => {
@@ -1587,8 +1587,8 @@ function VoiceSelectField({
                     key={optionValue}
                     className={`grid w-full gap-0.5 rounded-md px-3 py-2 text-left transition ${
                       selected
-                        ? "bg-[#e0f2fe] text-[#075985]"
-                        : "text-[#0f172a] hover:bg-[#f0f9ff]"
+                        ? "bg-[#ccfbf1] text-[#006f78]"
+                        : "text-[#0f172a] hover:bg-[#ecfeff]"
                     }`}
                     role="option"
                     aria-selected={selected}
@@ -1612,7 +1612,7 @@ function VoiceSelectField({
         </span>
         <button
           aria-label={`Preview ${value} voice`}
-          className="grid size-10 place-items-center rounded-lg border border-[#bae6fd] bg-white text-[#0284c7] transition hover:bg-[#f0f9ff] disabled:cursor-not-allowed disabled:opacity-50"
+          className="grid size-10 place-items-center rounded-lg border border-[#99f6e8] bg-white text-[#00b8c4] transition hover:bg-[#ecfeff] disabled:cursor-not-allowed disabled:opacity-50"
           disabled={previewing || options.length === 0}
           title={previewing ? "Loading voice preview" : "Preview voice"}
           type="button"
@@ -1622,7 +1622,7 @@ function VoiceSelectField({
         </button>
       </span>
       {description ? (
-        <span className="app-caption rounded-lg border border-[#bae6fd] bg-[#f0f9ff] px-3 py-2 text-[#0369a1]">
+        <span className="app-caption rounded-lg border border-[#99f6e8] bg-[#ecfeff] px-3 py-2 text-[#008996]">
           {description}
         </span>
       ) : null}
@@ -1647,7 +1647,7 @@ function InputField({
     <label className="app-label grid gap-2">
       <span>{label}</span>
       <input
-        className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10"
+        className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10"
         {...(value === undefined ? { defaultValue } : { value })}
         placeholder={placeholder}
         onChange={onChange ? (event) => onChange(event.target.value) : undefined}
@@ -1677,7 +1677,7 @@ function ToolParameterEditor({
       />
       <label className="app-label flex min-h-10 items-center gap-2 self-end rounded-lg border border-[#e5e7eb] bg-[#f8fafc] px-3">
         <input
-          className="size-4 accent-[#0284c7]"
+          className="size-4 accent-[#00b8c4]"
           type="checkbox"
           checked={parameter.required}
           onChange={(event) => onChange({ required: event.target.checked })}
@@ -1694,7 +1694,7 @@ function ToolParameterEditor({
       <label className="app-label grid gap-2 lg:col-span-4">
         <span>Description</span>
         <input
-          className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10"
+          className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10"
           value={parameter.description}
           placeholder="What value should the agent collect before calling this tool?"
           onChange={(event) => onChange({ description: event.target.value })}
@@ -1773,6 +1773,12 @@ export function DashboardShell() {
   const selectedRuntimeSnapshot = runtimeSnapshot?.agentId === selectedAgent.id ? runtimeSnapshot : null;
   const selectedRuntimeStreamState = selectedRuntimeSnapshot ? runtimeStreamState : "connecting";
   const selectedRuntimeRegion = selectedRuntimeSnapshot?.region || runtimeRegions[selectedAgent.id] || "";
+  const selectedRuntimeWorkerLabel = selectedRuntimeSnapshot?.dispatch.workerId
+    || (selectedRuntimeSnapshot?.dispatch.state === "pending" || selectedRuntimeSnapshot?.dispatch.state === "waiting"
+      ? "Connecting worker"
+      : selectedRuntimeSnapshot?.dispatch.state === "running"
+        ? "Worker active"
+        : "Idle until call");
   const selectedRuntimeItems = [
     {
       label: "Dispatch",
@@ -1784,7 +1790,7 @@ export function DashboardShell() {
       value: selectedRuntimeSnapshot?.pipeline.label ?? (selectedAgent.pipelineMode === "realtime"
         ? `${selectedAgent.realtimeProvider}/${selectedAgent.realtimeModel}`
         : `${selectedAgent.sttProvider} -> ${selectedAgent.llmProvider} -> ${selectedAgent.ttsProvider}`),
-      tone: "text-[#0284c7]",
+      tone: "text-[#00b8c4]",
     },
     {
       label: "Region",
@@ -1793,7 +1799,7 @@ export function DashboardShell() {
     },
   ];
   const liveAgentCount = agentList.filter((agent) => agent.status === "Live").length;
-  const agentStatTone = "border-[#bae6fd] bg-[#f0f9ff] text-[#0369a1]";
+  const agentStatTone = "border-[#99f6e8] bg-[#ecfeff] text-[#008996]";
   const agentHeroStats = [
     {
       label: "Status",
@@ -2578,10 +2584,10 @@ export function DashboardShell() {
       />
 
       <section className="grid min-w-0 content-start gap-5">
-        <header className="border-b border-[#bae6fd] bg-white px-4 py-4 sm:px-6 lg:px-8">
+        <header className="border-b border-[#99f6e8] bg-white px-4 py-4 sm:px-6 lg:px-8">
           <div className="mx-auto grid w-full max-w-1500px gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
             <div className="min-w-0">
-              <span className="app-label text-[#0284c7]">{session.organization?.name ?? "Workspace"}</span>
+              <span className="app-label text-[#00b8c4]">{session.organization?.name ?? "Workspace"}</span>
               <h1 className="m-0 mt-1 text-xl font-semibold leading-7 text-[#0f172a] sm:text-2xl">{selectedAgent.name}</h1>
               <p className="app-caption mt-1 mb-0 max-w-3xl text-[#475569]">
                 Build, test, publish, and monitor your voice agent from one command center.
@@ -2604,7 +2610,7 @@ export function DashboardShell() {
               Delete
             </button>
             <button
-              className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#bae6fd] bg-[#ecfeff] px-3 text-[#0e7490] shadow-sm"
+              className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#99f6e8] bg-[#ecfeff] px-3 text-[#0e7490] shadow-sm"
               type="button"
               onClick={() => void handleSave()}
             >
@@ -2622,7 +2628,7 @@ export function DashboardShell() {
               Test call
             </button>
             <button
-              className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border-0 bg-[#0284c7] px-3 text-white shadow-[0_12px_28px_rgba(20,56,245,0.28)] transition hover:bg-[#0369a1]"
+              className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border-0 bg-[#00b8c4] px-3 text-white shadow-[0_12px_28px_rgba(0,184,196,0.28)] transition hover:bg-[#008996]"
               type="button"
               onClick={() => {
                 updateSelectedAgent({ status: "Live" });
@@ -2652,7 +2658,7 @@ export function DashboardShell() {
                 <span className="app-caption">{liveAgentCount} live / {agentList.length} total</span>
               </div>
               <button
-                className="grid size-9 place-items-center rounded-lg bg-[#f0f9ff] text-[#0284c7] shadow-sm"
+                className="grid size-9 place-items-center rounded-lg bg-[#ecfeff] text-[#00b8c4] shadow-sm"
                 type="button"
                 aria-label="Create agent"
                 title="Create agent"
@@ -2670,13 +2676,13 @@ export function DashboardShell() {
                 return (
                   <button
                     className={`grid w-full grid-cols-[36px_minmax(0,1fr)_auto] items-center gap-3 rounded-lg p-2.5 text-left transition ${
-                      isActive ? "bg-[#eef4ff] shadow-sm ring-1 ring-[#bae6fd]" : "hover:bg-[#f8fafc]"
+                      isActive ? "bg-[#eef4ff] shadow-sm ring-1 ring-[#99f6e8]" : "hover:bg-[#f8fafc]"
                     }`}
                     key={agent.id}
                     type="button"
                     onClick={() => setSelectedAgentId(agent.id)}
                   >
-                    <span className={`grid size-9 place-items-center rounded-lg shadow-sm ${isActive ? "bg-[#0284c7] text-white" : "bg-white text-[#0284c7]"}`}>
+                    <span className={`grid size-9 place-items-center rounded-lg shadow-sm ${isActive ? "bg-[#00b8c4] text-white" : "bg-white text-[#00b8c4]"}`}>
                       <Icon icon="agent" />
                     </span>
                     <span className="min-w-0">
@@ -2698,7 +2704,7 @@ export function DashboardShell() {
                 <button
                   className={`app-button-text flex min-h-9 items-center justify-between gap-2 rounded-lg border px-3 text-left transition hover:-translate-y-0.5 ${
                     index % 3 === 0
-                      ? "border-[#bae6fd] bg-[#f0f9ff] text-[#0369a1]"
+                      ? "border-[#99f6e8] bg-[#ecfeff] text-[#008996]"
                       : index % 3 === 1
                         ? "border-[#bbf7d0] bg-[#f0fdf4] text-[#15803d]"
                         : "border-[#ddd6fe] bg-[#f5f3ff] text-[#6d28d9]"
@@ -2729,7 +2735,7 @@ export function DashboardShell() {
                     <button
                       className={`app-button-text rounded-md px-3 py-1.5 transition ${
                         activeTab === tab.id
-                          ? "bg-[#0284c7] text-white"
+                          ? "bg-[#00b8c4] text-white"
                           : "text-[#64748b] hover:bg-white hover:text-[#111827]"
                       }`}
                       key={tab.id}
@@ -2758,7 +2764,7 @@ export function DashboardShell() {
                       />
                     </div>
 
-                    <section className="grid gap-3 rounded-lg border border-[#bae6fd] bg-white p-4 shadow-sm">
+                    <section className="grid gap-3 rounded-lg border border-[#99f6e8] bg-white p-4 shadow-sm">
                       <div className="flex flex-col gap-1">
                         <h3 className="app-section-title m-0">Voice stack</h3>
                         <span className="app-caption">
@@ -2786,17 +2792,17 @@ export function DashboardShell() {
                         <button
                           className={`grid gap-2 rounded-lg border p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
                             openStackConfig === "stt"
-                              ? "border-[#0284c7] bg-[#e0f2fe] ring-2 ring-[#7dd3fc]"
-                              : "border-[#bae6fd] bg-[#f0f9ff]"
+                              ? "border-[#00b8c4] bg-[#ccfbf1] ring-2 ring-[#5eead4]"
+                              : "border-[#99f6e8] bg-[#ecfeff]"
                           }`}
                           type="button"
                           onClick={() => setOpenStackConfig("stt")}
                         >
-                          <span className="app-label block text-[#0369a1]">STT</span>
+                          <span className="app-label block text-[#008996]">STT</span>
                           <strong className="app-strong block text-[#0c4a6e]">
                             {selectedAgent.pipelineMode === "realtime" ? "Native realtime" : `${selectedAgent.sttProvider} STT`}
                           </strong>
-                          <span className="app-caption block truncate text-[#0369a1]">
+                          <span className="app-caption block truncate text-[#008996]">
                             {selectedAgent.pipelineMode === "realtime" ? selectedAgent.realtimeModel : selectedAgent.sttModel}
                           </span>
                         </button>
@@ -2823,7 +2829,7 @@ export function DashboardShell() {
                     <label className="app-label grid gap-2">
                       <span>Opening message</span>
                       <input
-                        className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10"
+                        className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10"
                         value={selectedAgent.firstMessage}
                         onChange={(event) => updateSelectedAgent({ firstMessage: event.target.value })}
                       />
@@ -2832,7 +2838,7 @@ export function DashboardShell() {
                     <label className="app-label grid gap-2">
                       <span>Instructions / prompt</span>
                       <textarea
-                        className="app-control-text min-h-320px resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10"
+                        className="app-control-text min-h-320px resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10"
                         value={selectedAgent.prompt}
                         onChange={(event) => updateSelectedAgent({ prompt: event.target.value })}
                       />
@@ -2847,7 +2853,7 @@ export function DashboardShell() {
                       >
                         {selectedAgent.pipelineMode === "realtime" ? (
                       <section
-                        className="grid max-h-[calc(100vh-72px)] w-full max-w-3xl gap-4 overflow-y-auto rounded-lg border border-[#bae6fd] bg-white p-5 shadow-[0_24px_80px_rgba(15,23,42,0.28)]"
+                        className="grid max-h-[calc(100vh-72px)] w-full max-w-3xl gap-4 overflow-y-auto rounded-lg border border-[#99f6e8] bg-white p-5 shadow-[0_24px_80px_rgba(15,23,42,0.28)]"
                         onClick={(event) => event.stopPropagation()}
                       >
                         <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
@@ -2870,7 +2876,7 @@ export function DashboardShell() {
                             <>
                           <div className="grid gap-2 sm:grid-cols-2">
                             <button
-                              className="rounded-lg border border-[#0284c7] bg-[#f0f9ff] px-4 py-3 text-left text-[#0369a1] ring-2 ring-[#bae6fd] transition"
+                              className="rounded-lg border border-[#00b8c4] bg-[#ecfeff] px-4 py-3 text-left text-[#008996] ring-2 ring-[#99f6e8] transition"
                               type="button"
                               onClick={() => updatePipelineMode("realtime")}
                             >
@@ -2923,16 +2929,16 @@ export function DashboardShell() {
                             </>
                           ) : null}
                           {openStackConfig === "stt" ? (
-                            <div className="grid gap-3 rounded-lg border border-[#bae6fd] bg-[#f0f9ff] p-4">
-                              <span className="app-label text-[#0369a1]">Native realtime STT</span>
+                            <div className="grid gap-3 rounded-lg border border-[#99f6e8] bg-[#ecfeff] p-4">
+                              <span className="app-label text-[#008996]">Native realtime STT</span>
                               <strong className="app-strong text-[#0c4a6e]">
                                 {selectedAgent.realtimeProvider} / {selectedAgent.realtimeModel}
                               </strong>
-                              <p className="app-caption m-0 text-[#0369a1]">
+                              <p className="app-caption m-0 text-[#008996]">
                                 In realtime mode, speech-to-text is handled by the selected realtime model. Change that model from LLM.
                               </p>
                               <button
-                                className="app-button-text w-fit rounded-lg border border-[#bae6fd] bg-white px-3 py-2 text-[#0369a1] transition hover:bg-[#e0f2fe]"
+                                className="app-button-text w-fit rounded-lg border border-[#99f6e8] bg-white px-3 py-2 text-[#008996] transition hover:bg-[#ccfbf1]"
                                 type="button"
                                 onClick={() => setOpenStackConfig("llm")}
                               >
@@ -2999,7 +3005,7 @@ export function DashboardShell() {
                             Close
                           </button>
                           <button
-                            className="app-button-text rounded-lg bg-[#0284c7] px-4 py-2.5 text-white shadow-sm transition hover:bg-[#0369a1]"
+                            className="app-button-text rounded-lg bg-[#00b8c4] px-4 py-2.5 text-white shadow-sm transition hover:bg-[#008996]"
                             type="button"
                             onClick={() => void saveStackConfig()}
                           >
@@ -3224,7 +3230,7 @@ export function DashboardShell() {
                             Close
                           </button>
                           <button
-                            className="app-button-text rounded-lg bg-[#0284c7] px-4 py-2.5 text-white shadow-sm transition hover:bg-[#0369a1]"
+                            className="app-button-text rounded-lg bg-[#00b8c4] px-4 py-2.5 text-white shadow-sm transition hover:bg-[#008996]"
                             type="button"
                             onClick={() => void saveStackConfig()}
                           >
@@ -3248,7 +3254,7 @@ export function DashboardShell() {
                       <label className="app-label grid gap-2">
                         <span>Creativity</span>
                         <input
-                          className="accent-[#0284c7]"
+                          className="accent-[#00b8c4]"
                           type="range"
                           min="0"
                           max="2"
@@ -3434,7 +3440,7 @@ export function DashboardShell() {
                             <span className="app-strong self-center">{businessDayLabels[item.day]}</span>
                             <label className="app-label flex items-center gap-2">
                               <input
-                                className="size-4 accent-[#0284c7]"
+                                className="size-4 accent-[#00b8c4]"
                                 type="checkbox"
                                 checked={item.enabled}
                                 onChange={(event) => updateBusinessDay(item.day, { enabled: event.target.checked })}
@@ -3444,7 +3450,7 @@ export function DashboardShell() {
                             <label className="app-label grid gap-1">
                               <span>Start</span>
                               <input
-                                className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10"
+                                className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10"
                                 type="time"
                                 value={item.start}
                                 onChange={(event) => updateBusinessDay(item.day, { start: event.target.value })}
@@ -3453,7 +3459,7 @@ export function DashboardShell() {
                             <label className="app-label grid gap-1">
                               <span>End</span>
                               <input
-                                className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10"
+                                className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10"
                                 type="time"
                                 value={item.end}
                                 onChange={(event) => updateBusinessDay(item.day, { end: event.target.value })}
@@ -3485,7 +3491,7 @@ export function DashboardShell() {
                       <label className="app-label grid gap-2">
                         <span>Voicemail message</span>
                         <textarea
-                          className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10"
+                          className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10"
                           value={selectedAgent.behavior.voicemailMessage}
                           onChange={(event) => updateBehavior({ voicemailMessage: event.target.value })}
                         />
@@ -3504,7 +3510,7 @@ export function DashboardShell() {
                             Millis-style functions with webhook URL, headers, params, method, timeout, and execution options.
                           </span>
                         </div>
-                        <span className="app-label w-fit rounded-full border border-[#bae6fd] bg-[#f0f9ff] px-2.5 py-1 text-[#0284c7]">
+                        <span className="app-label w-fit rounded-full border border-[#99f6e8] bg-[#ecfeff] px-2.5 py-1 text-[#00b8c4]">
                           {selectedAgent.tools.length} / 20 configured
                         </span>
                       </div>
@@ -3522,7 +3528,7 @@ export function DashboardShell() {
                           >
                             <div className="flex flex-col gap-3 border-b border-[#edf0f5] bg-[#f8fafc] px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
                               <div className="flex min-w-0 items-center gap-3">
-                                <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#f0f9ff] text-[#0284c7]">
+                                <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#ecfeff] text-[#00b8c4]">
                                   <Icon icon="tool" />
                                 </span>
                                 <div className="min-w-0">
@@ -3534,7 +3540,7 @@ export function DashboardShell() {
                               <div className="flex flex-wrap items-center gap-2">
                                 <label className="app-label flex min-h-9 items-center gap-2 rounded-lg border border-[#dfe3ea] bg-white px-3">
                                   <input
-                                    className="size-4 accent-[#0284c7]"
+                                    className="size-4 accent-[#00b8c4]"
                                     type="checkbox"
                                     checked={tool.enabled !== false}
                                     onChange={(event) => updateTool(index, { enabled: event.target.checked })}
@@ -3542,7 +3548,7 @@ export function DashboardShell() {
                                   Enabled
                                 </label>
                                 <button
-                                  className="app-button-text min-h-9 rounded-lg border border-[#bae6fd] bg-white px-3 text-[#0284c7] transition hover:bg-[#f0f9ff] disabled:cursor-not-allowed disabled:opacity-60"
+                                  className="app-button-text min-h-9 rounded-lg border border-[#99f6e8] bg-white px-3 text-[#00b8c4] transition hover:bg-[#ecfeff] disabled:cursor-not-allowed disabled:opacity-60"
                                   type="button"
                                   disabled={isTesting}
                                   onClick={() => void handleTestTool(index)}
@@ -3578,7 +3584,7 @@ export function DashboardShell() {
                               <label className="app-label grid gap-2">
                                 <span>Description</span>
                                 <textarea
-                                  className="app-control-text min-h-20 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10"
+                                  className="app-control-text min-h-20 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10"
                                   value={tool.description}
                                   placeholder="Tell the agent exactly when to use this function."
                                   onChange={(event) => updateTool(index, { description: event.target.value })}
@@ -3591,7 +3597,7 @@ export function DashboardShell() {
                                     <strong className="app-strong block">Headers</strong>
                                     <span className="app-caption">Authorization, API keys, content type overrides, or tenant headers.</span>
                                   </div>
-                                  <button className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#0284c7]" type="button" onClick={() => addToolHeader(index)}>
+                                  <button className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#00b8c4]" type="button" onClick={() => addToolHeader(index)}>
                                     Add header
                                   </button>
                                 </div>
@@ -3617,7 +3623,7 @@ export function DashboardShell() {
                                     <strong className="app-strong block">Parameters</strong>
                                     <span className="app-caption">These become the JSON fields the agent sends to your webhook.</span>
                                   </div>
-                                  <button className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#0284c7]" type="button" onClick={() => addToolParameter(index)}>
+                                  <button className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#00b8c4]" type="button" onClick={() => addToolParameter(index)}>
                                     Add parameter
                                   </button>
                                 </div>
@@ -3662,7 +3668,7 @@ export function DashboardShell() {
                                 <label className="app-label grid gap-2">
                                   <span>Filler messages while calling tool</span>
                                   <textarea
-                                    className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10"
+                                    className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10"
                                     value={(tool.messages ?? []).join("\n")}
                                     placeholder={"Let me check that for you.\nOne moment while I look that up."}
                                     onChange={(event) => updateTool(index, {
@@ -3684,13 +3690,13 @@ export function DashboardShell() {
                       ) : null}
                     </section>
 
-                    <section className="grid gap-4 rounded-xl border border-[#bae6fd] bg-[#f8fbff] p-4">
+                    <section className="grid gap-4 rounded-xl border border-[#99f6e8] bg-[#f8fbff] p-4">
                       <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                         <div>
                           <h3 className="app-section-title m-0">Add webhook tool</h3>
                           <span className="app-caption">Same shape as Millis: name, description, webhook, header, params, method, timeout.</span>
                         </div>
-                        <button className="app-button-text min-h-10 rounded-lg bg-[#0284c7] px-4 text-white shadow-sm" type="button" onClick={addTool}>
+                        <button className="app-button-text min-h-10 rounded-lg bg-[#00b8c4] px-4 text-white shadow-sm" type="button" onClick={addTool}>
                           Add tool
                         </button>
                       </div>
@@ -3703,7 +3709,7 @@ export function DashboardShell() {
                       <InputField label="Webhook URL" value={toolDraft.url} placeholder="https://api.company.com/user" onChange={(url) => setToolDraft((current) => ({ ...current, url }))} />
                       <InputField label="Description" value={toolDraft.description} placeholder="Retrieves user information using their email." onChange={(description) => setToolDraft((current) => ({ ...current, description }))} />
 
-                      <div className="grid gap-3 rounded-xl border border-[#bae6fd] bg-white p-3">
+                      <div className="grid gap-3 rounded-xl border border-[#99f6e8] bg-white p-3">
                         <div>
                           <strong className="app-strong block">Filler while tool runs</strong>
                           <span className="app-caption">Millis-style messages the agent can say while calling this webhook.</span>
@@ -3717,7 +3723,7 @@ export function DashboardShell() {
                         <label className="app-label grid gap-2">
                           <span>Filler messages</span>
                           <textarea
-                            className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10"
+                            className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10"
                             value={(toolDraft.messages ?? []).join("\n")}
                             placeholder={"Let me check that for you.\nOne moment while I look that up."}
                             onChange={(event) => setToolDraft((current) => ({
@@ -3728,13 +3734,13 @@ export function DashboardShell() {
                         </label>
                       </div>
 
-                      <div className="grid gap-3 rounded-xl border border-[#bae6fd] bg-white p-3">
+                      <div className="grid gap-3 rounded-xl border border-[#99f6e8] bg-white p-3">
                         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                           <div>
                             <strong className="app-strong block">Headers</strong>
                             <span className="app-caption">Example: Authorization: Bearer token.</span>
                           </div>
-                          <button className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#0284c7]" type="button" onClick={addDraftHeader}>
+                          <button className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#00b8c4]" type="button" onClick={addDraftHeader}>
                             Add header
                           </button>
                         </div>
@@ -3754,13 +3760,13 @@ export function DashboardShell() {
                         )}
                       </div>
 
-                      <div className="grid gap-3 rounded-xl border border-[#bae6fd] bg-white p-3">
+                      <div className="grid gap-3 rounded-xl border border-[#99f6e8] bg-white p-3">
                         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                           <div>
                             <strong className="app-strong block">Parameters</strong>
                             <span className="app-caption">Fields the agent should collect and send.</span>
                           </div>
-                          <button className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#0284c7]" type="button" onClick={addDraftParameter}>
+                          <button className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#00b8c4]" type="button" onClick={addDraftParameter}>
                             Add parameter
                           </button>
                         </div>
@@ -3802,7 +3808,7 @@ export function DashboardShell() {
                         <div className="flex flex-wrap gap-2">
                           {systemDynamicVariables.map((variable) => (
                             <button
-                              className="app-label rounded-full border border-[#bae6fd] bg-white px-2.5 py-1 text-[#0284c7] transition hover:border-[#bae6fd] hover:bg-[#f0f9ff]"
+                              className="app-label rounded-full border border-[#99f6e8] bg-white px-2.5 py-1 text-[#00b8c4] transition hover:border-[#99f6e8] hover:bg-[#ecfeff]"
                               key={variable}
                               type="button"
                               title="Copy variable"
@@ -3830,7 +3836,7 @@ export function DashboardShell() {
                       <div className="flex flex-wrap gap-2">
                         {selectedAgent.dynamicVariables.map((variable) => (
                           <button
-                            className="app-label rounded-full border border-[#bae6fd] bg-[#f0f9ff] px-2.5 py-1 text-[#0284c7] transition hover:border-[#bae6fd] hover:bg-white"
+                            className="app-label rounded-full border border-[#99f6e8] bg-[#ecfeff] px-2.5 py-1 text-[#00b8c4] transition hover:border-[#99f6e8] hover:bg-white"
                             key={variable}
                             type="button"
                             title="Remove variable"
@@ -3841,8 +3847,8 @@ export function DashboardShell() {
                         ))}
                       </div>
                       <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_84px]">
-                        <input className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 outline-none transition focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10" value={variableDraft} placeholder="customerID" onChange={(event) => setVariableDraft(event.target.value)} />
-                        <button className="app-button-text rounded-lg border border-[#d5d8df] bg-white px-3 text-[#0284c7]" type="button" onClick={addVariable}>Add</button>
+                        <input className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10" value={variableDraft} placeholder="customerID" onChange={(event) => setVariableDraft(event.target.value)} />
+                        <button className="app-button-text rounded-lg border border-[#d5d8df] bg-white px-3 text-[#00b8c4]" type="button" onClick={addVariable}>Add</button>
                       </div>
                     </section>
                   </div>
@@ -3850,7 +3856,7 @@ export function DashboardShell() {
 
                 {activeTab === "calls" ? (
                   <div className="grid gap-4">
-                    <section className="grid gap-3 rounded-xl border border-[#bae6fd] bg-[#f8fbff] p-4">
+                    <section className="grid gap-3 rounded-xl border border-[#99f6e8] bg-[#f8fbff] p-4">
                       <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                         <div>
                           <h3 className="app-section-title m-0">Call enablement</h3>
@@ -3859,7 +3865,7 @@ export function DashboardShell() {
                           </span>
                         </div>
                         <button
-                          className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#bae6fd] bg-white px-3 text-[#0284c7] disabled:cursor-not-allowed disabled:opacity-60"
+                          className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#99f6e8] bg-white px-3 text-[#00b8c4] disabled:cursor-not-allowed disabled:opacity-60"
                           type="button"
                           disabled={!testCallsEnabled}
                           onClick={() => void handleStartTestCall()}
@@ -3876,7 +3882,7 @@ export function DashboardShell() {
                           enabled={liveCallsEnabled}
                           onChange={handleSetLiveCalls}
                         />
-                        <div className="rounded-lg border border-[#bae6fd] bg-white p-3">
+                        <div className="rounded-lg border border-[#99f6e8] bg-white p-3">
                           <span className="app-label block">Agent status</span>
                           <strong className={`app-strong block ${selectedTone.text}`}>{selectedAgent.status}</strong>
                           <span className="app-caption">Save happens automatically when toggled.</span>
@@ -3939,7 +3945,7 @@ export function DashboardShell() {
 
                     <div className="flex flex-wrap gap-2">
                       <button
-                        className="app-button-text min-h-10 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#0284c7]"
+                        className="app-button-text min-h-10 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#00b8c4]"
                         type="button"
                         onClick={() => void handleSyncPhoneRoutes()}
                       >
@@ -4002,7 +4008,7 @@ export function DashboardShell() {
                         </div>
                       ) : null}
                       <button
-                        className="app-button-text min-h-10 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#0284c7]"
+                        className="app-button-text min-h-10 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#00b8c4]"
                         type="button"
                         onClick={() => router.push("/dashboard/calls")}
                       >
@@ -4024,7 +4030,7 @@ export function DashboardShell() {
                       <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_120px]">
                         <InputField label="Public widget key" value={selectedAgent.widget.publicKey} onChange={(value) => updateSelectedAgent({ widget: { ...selectedAgent.widget, publicKey: value } })} />
                         <button
-                          className="app-button-text min-h-10 self-end rounded-lg border border-[#d5d8df] bg-white px-3 text-[#0284c7]"
+                          className="app-button-text min-h-10 self-end rounded-lg border border-[#d5d8df] bg-white px-3 text-[#00b8c4]"
                           type="button"
                           onClick={handleGenerateWidgetKey}
                         >
@@ -4066,7 +4072,7 @@ export function DashboardShell() {
                             onChange={(event) => updateSelectedAgent({ widget: { ...selectedAgent.widget, accentColor: event.target.value } })}
                           />
                           <input
-                            className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10"
+                            className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10"
                             value={selectedAgent.widget.accentColor}
                             onChange={(event) => updateSelectedAgent({ widget: { ...selectedAgent.widget, accentColor: event.target.value } })}
                           />
@@ -4110,13 +4116,13 @@ export function DashboardShell() {
                             <h3 className="app-section-title m-0">Preview</h3>
                             <span className="app-caption">Public site widget</span>
                           </div>
-                          <span className="grid size-8 place-items-center rounded-lg bg-[#f0f9ff] text-[#0284c7]">
+                          <span className="grid size-8 place-items-center rounded-lg bg-[#ecfeff] text-[#00b8c4]">
                             <Icon icon="widget" />
                           </span>
                         </div>
 
                         <div className="grid min-h-170px content-end rounded-lg border border-[#e5e7eb] bg-[#f8fafc] p-3">
-                          <div className="justify-self-end rounded-lg border border-[#bae6fd] bg-white p-3 shadow-sm">
+                          <div className="justify-self-end rounded-lg border border-[#99f6e8] bg-white p-3 shadow-sm">
                             <div className="mb-3 flex items-center gap-2">
                               <span
                                 className="grid size-8 place-items-center rounded-full text-white"
@@ -4140,7 +4146,7 @@ export function DashboardShell() {
                           </div>
                         </div>
                         <button
-                          className="app-button-text mt-3 min-h-9 w-full rounded-lg border border-[#d5d8df] bg-white px-3 text-[#0284c7] disabled:cursor-not-allowed disabled:opacity-60"
+                          className="app-button-text mt-3 min-h-9 w-full rounded-lg border border-[#d5d8df] bg-white px-3 text-[#00b8c4] disabled:cursor-not-allowed disabled:opacity-60"
                           type="button"
                           disabled={!selectedAgent.widget.publicKey}
                           onClick={() => window.open(widgetUrl, "_blank", "noopener,noreferrer")}
@@ -4160,7 +4166,7 @@ export function DashboardShell() {
                       <div className="flex flex-wrap gap-2">
                         {selectedAgent.dynamicVariables.map((item) => (
                           <span
-                            className="app-label rounded-full border border-[#bae6fd] bg-[#f0f9ff] px-2.5 py-1 text-[#0284c7]"
+                            className="app-label rounded-full border border-[#99f6e8] bg-[#ecfeff] px-2.5 py-1 text-[#00b8c4]"
                             key={item}
                           >
                             {item}
@@ -4180,7 +4186,7 @@ export function DashboardShell() {
 
           <aside className="grid min-w-0 content-start gap-4 xl:col-span-2 xl:grid-cols-2 2xl:col-span-1 2xl:grid-cols-1">
             <article className="min-w-0 overflow-hidden rounded-lg border border-[#dbe4f0] bg-white shadow-sm">
-              <div className="flex min-h-68px items-center justify-between gap-3 border-b border-[#bae6fd] bg-linear-to-r from-[#f0f9ff] via-white to-[#ecfeff] px-4">
+              <div className="flex min-h-68px items-center justify-between gap-3 border-b border-[#99f6e8] bg-linear-to-r from-[#ecfeff] via-white to-[#ecfeff] px-4">
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="relative flex size-2.5 shrink-0">
@@ -4204,7 +4210,7 @@ export function DashboardShell() {
                 <div className="grid grid-cols-3 gap-2">
                   {selectedRuntimeItems.map((item) => (
                     <span
-                      className="min-w-0 rounded-lg border border-[#bae6fd] bg-[#f0f9ff] p-2.5"
+                      className="min-w-0 rounded-lg border border-[#99f6e8] bg-[#ecfeff] p-2.5"
                       key={item.label}
                       title={item.label === "Region" && selectedRuntimeRegion ? selectedRuntimeRegion : undefined}
                     >
@@ -4217,8 +4223,8 @@ export function DashboardShell() {
                 <div className="grid min-w-0 divide-y divide-[#eef2f7] rounded-lg border border-[#edf2f7] px-3">
                   <span className="flex min-w-0 items-center justify-between gap-3 py-2.5">
                     <span className="app-caption shrink-0">Worker</span>
-                    <strong className="app-strong min-w-0 truncate text-right" title={selectedRuntimeSnapshot?.dispatch.workerId || "No active worker"}>
-                      {selectedRuntimeSnapshot?.dispatch.workerId || "No active worker"}
+                    <strong className="app-strong min-w-0 truncate text-right" title={selectedRuntimeSnapshot?.dispatch.workerId || selectedRuntimeSnapshot?.dispatch.message || selectedRuntimeWorkerLabel}>
+                      {selectedRuntimeWorkerLabel}
                     </strong>
                   </span>
                   <span className="flex min-w-0 items-center justify-between gap-3 py-2.5">
@@ -4373,13 +4379,14 @@ export function DashboardShell() {
         <TestCallPanel
           agentId={selectedAgent.id}
           agentName={selectedAgent.name}
+          knowledgeCount={selectedAgent.knowledgeDocuments.length}
           onRegionChange={(region) => setRuntimeRegions((current) => ({ ...current, [selectedAgent.id]: region }))}
           onClose={() => setShowTestCall(false)}
         />
       ) : null}
       {notice ? (
-        <div className="fixed right-4 top-4 z-50 flex w-[min(380px,calc(100vw-32px))] items-start gap-3 rounded-xl border border-[#bae6fd] bg-white p-4 text-[#111827] shadow-[0_18px_48px_rgba(15,23,42,0.18)]">
-          <span className="mt-1 size-2.5 shrink-0 rounded-full bg-[#0284c7]" />
+        <div className="fixed right-4 top-4 z-50 flex w-[min(380px,calc(100vw-32px))] items-start gap-3 rounded-xl border border-[#99f6e8] bg-white p-4 text-[#111827] shadow-[0_18px_48px_rgba(15,23,42,0.18)]">
+          <span className="mt-1 size-2.5 shrink-0 rounded-full bg-[#00b8c4]" />
           <p className="app-control-text m-0 min-w-0 flex-1 text-[#334155]">{notice}</p>
           <button
             aria-label="Dismiss notification"

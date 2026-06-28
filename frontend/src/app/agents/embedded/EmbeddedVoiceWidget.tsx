@@ -183,7 +183,7 @@ export function EmbeddedVoiceWidget() {
       setStatus(room.remoteParticipants.size ? "Connected. Speak now." : "Connected. Waiting for assistant.");
       waitingTimerRef.current = window.setTimeout(() => {
         if (roomRef.current === room && room.remoteParticipants.size === 0) {
-          setStatus("Still waiting for assistant. Check that the agent worker is running.");
+          setStatus("Still connecting assistant. Keep the agent worker running for voice and knowledge.");
         } else if (roomRef.current === room && audioElementsRef.current.length === 0) {
           setStatus("Assistant is ready. Speak now.");
         }
