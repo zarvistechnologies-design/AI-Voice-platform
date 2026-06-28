@@ -488,6 +488,7 @@ export function KnowledgeBaseShell() {
                           disabled={saving}
                           onClick={() => toggleDocument(index)}
                           type="button"
+                          aria-pressed={document.status === "ready"}
                         >
                           {document.status === "ready" ? "Turn off" : "Turn on"}
                         </button>

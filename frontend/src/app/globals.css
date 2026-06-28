@@ -250,4 +250,35 @@
     letter-spacing: 0;
     line-height: 1.25rem;
   }
+
+  :where(button, [role="button"], a[href], label.cursor-pointer) {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    user-select: none;
+  }
+
+  :where(button, [role="button"], a[href], label.cursor-pointer):where(:not(:disabled), :not([aria-disabled="true"])) {
+    cursor: pointer;
+    transition-duration: 120ms;
+    transition-property: background-color, border-color, box-shadow, color, filter, opacity, transform;
+    transition-timing-function: cubic-bezier(0.2, 0, 0.2, 1);
+  }
+
+  :where(button, [role="button"], a[href], label.cursor-pointer):where(:not(:disabled), :not([aria-disabled="true"])):active {
+    filter: brightness(0.96);
+    transform: translateY(1px) scale(0.985);
+  }
+
+  :where(button, [role="button"], a[href], input, select, textarea):focus-visible {
+    outline: 2px solid var(--app-color-accent);
+    outline-offset: 2px;
+  }
+
+  :where(button, [role="button"])[aria-pressed="true"],
+  :where(button, [role="button"])[aria-selected="true"],
+  :where(button, [role="option"])[aria-selected="true"] {
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--app-color-accent) 35%, transparent),
+      0 6px 16px rgba(0, 184, 196, 0.16);
+  }
 }

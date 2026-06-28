@@ -519,6 +519,7 @@ function ImportNumberModal({ busy, onClose, onImport }: {
               key={item.id}
               onClick={() => setProvider(item.id)}
               type="button"
+              aria-pressed={provider === item.id}
             >
               <span className="app-strong">{item.id}</span>
               {provider === item.id ? <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-[#00b8c4]" /> : null}
@@ -737,6 +738,7 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase }: {
                     key={number.id || number.e164}
                     onClick={() => setSelected(number)}
                     type="button"
+                    aria-pressed={active}
                   >
                     <span>
                       <strong className="app-strong block">{number.e164}</strong>
@@ -806,6 +808,7 @@ function AgentModal({ agents, busy, number, onAssign, onClose }: {
                 key={agent._id}
                 onClick={() => setSelectedId(agent._id)}
                 type="button"
+                aria-pressed={selected}
               >
                 <span className={`grid size-10 shrink-0 place-items-center rounded-lg ${selected ? "bg-[#00b8c4] text-white" : "bg-[#ecfeff] text-[#00b8c4]"}`}><Icon icon="user" /></span>
                 <span className="min-w-0 flex-1">

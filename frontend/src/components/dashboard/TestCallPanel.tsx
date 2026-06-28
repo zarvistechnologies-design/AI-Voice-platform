@@ -350,6 +350,7 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, onClose, onR
                 className={`app-button-text flex-1 rounded-md px-3 py-2 ${mode === item ? "bg-white text-[#00b8c4] shadow-sm" : "text-[#64748b]"}`}
                 key={item}
                 type="button"
+                aria-pressed={mode === item}
                 onClick={() => setMode(item)}
                 disabled={active}
               >

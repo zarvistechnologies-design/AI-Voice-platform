@@ -205,6 +205,7 @@ export function DashboardSidebar({
 
         <button
           onClick={onLogout}
+          type="button"
           className="mt-auto m-2 rounded-lg border px-3 py-2 text-left hover:bg-red-50"
         >
           Logout

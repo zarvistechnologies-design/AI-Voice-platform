@@ -234,6 +234,7 @@ export function BillingShell() {
                         className={`min-h-12 rounded-xl border px-3 text-sm font-semibold transition ${selectedTopUp === amount ? "border-cyan-500 bg-cyan-500 text-white shadow-lg shadow-cyan-500/20" : "border-slate-200 bg-white text-slate-700 hover:border-cyan-300 hover:bg-cyan-50"}`}
                         key={amount}
                         type="button"
+                        aria-pressed={selectedTopUp === amount}
                         onClick={() => setSelectedTopUp(amount)}
                       >
                         ${amount}
@@ -278,7 +279,7 @@ export function BillingShell() {
                   <span>Refill amount</span>
                   <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
                     {refillOptions.map((amount) => (
-                      <button className={`h-11 rounded-xl border text-sm font-semibold ${reloadAmount === amount ? "border-emerald-500 bg-emerald-50 text-emerald-700" : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"}`} key={amount} type="button" onClick={() => setReloadAmount(amount)}>
+                      <button className={`h-11 rounded-xl border text-sm font-semibold ${reloadAmount === amount ? "border-emerald-500 bg-emerald-50 text-emerald-700" : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"}`} key={amount} type="button" aria-pressed={reloadAmount === amount} onClick={() => setReloadAmount(amount)}>
                         ${amount}
                       </button>
                     ))}

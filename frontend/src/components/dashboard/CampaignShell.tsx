@@ -584,6 +584,7 @@ export function CampaignShell() {
                     className={`rounded-lg border p-4 text-left transition ${sendMode === "now" ? "border-[#00b8c4] bg-[#ecfeff] ring-2 ring-[#00b8c4]/10" : "border-[#e5e7eb] bg-white hover:border-[#5eead4]"}`}
                     onClick={() => setSendMode("now")}
                     type="button"
+                    aria-pressed={sendMode === "now"}
                   >
                     <span className="flex items-center gap-3">
                       <span className="grid size-10 place-items-center rounded-lg bg-white text-[#00b8c4]"><Icon icon="play" /></span>
@@ -594,6 +595,7 @@ export function CampaignShell() {
                     className={`rounded-lg border p-4 text-left transition ${sendMode === "schedule" ? "border-[#22d3c8] bg-[#ecfeff] ring-2 ring-[#22d3c8]/10" : "border-[#e5e7eb] bg-white hover:border-[#99f6e8]"}`}
                     onClick={() => setSendMode("schedule")}
                     type="button"
+                    aria-pressed={sendMode === "schedule"}
                   >
                     <span className="flex items-center gap-3">
                       <span className="grid size-10 place-items-center rounded-lg bg-white text-[#7c3aed]"><Icon icon="calendar" /></span>
@@ -765,6 +767,7 @@ function ToggleRow({ detail, enabled, onChange, title }: {
       className="flex items-center justify-between gap-4 rounded-lg border border-[#e5e7eb] bg-white px-3 py-3 text-left transition hover:bg-[#f8fafc]"
       onClick={() => onChange(!enabled)}
       type="button"
+      aria-pressed={enabled}
     >
       <span>
         <strong className="app-strong block">{title}</strong>

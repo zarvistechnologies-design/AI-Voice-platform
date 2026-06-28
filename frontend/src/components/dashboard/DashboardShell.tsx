@@ -2680,6 +2680,7 @@ export function DashboardShell() {
                     }`}
                     key={agent.id}
                     type="button"
+                    aria-pressed={isActive}
                     onClick={() => setSelectedAgentId(agent.id)}
                   >
                     <span className={`grid size-9 place-items-center rounded-lg shadow-sm ${isActive ? "bg-[#00b8c4] text-white" : "bg-white text-[#00b8c4]"}`}>
@@ -2740,6 +2741,7 @@ export function DashboardShell() {
                       }`}
                       key={tab.id}
                       type="button"
+                      aria-pressed={activeTab === tab.id}
                       onClick={() => setActiveTab(tab.id)}
                     >
                       {tab.label}
@@ -2779,6 +2781,7 @@ export function DashboardShell() {
                               : "border-[#ddd6fe] bg-[#f5f3ff]"
                           }`}
                           type="button"
+                          aria-pressed={openStackConfig === "llm"}
                           onClick={() => setOpenStackConfig("llm")}
                         >
                           <span className="app-label block text-[#6d28d9]">LLM</span>
@@ -2796,6 +2799,7 @@ export function DashboardShell() {
                               : "border-[#99f6e8] bg-[#ecfeff]"
                           }`}
                           type="button"
+                          aria-pressed={openStackConfig === "stt"}
                           onClick={() => setOpenStackConfig("stt")}
                         >
                           <span className="app-label block text-[#008996]">STT</span>
@@ -2813,6 +2817,7 @@ export function DashboardShell() {
                               : "border-[#bbf7d0] bg-[#ecfdf5]"
                           }`}
                           type="button"
+                          aria-pressed={openStackConfig === "voice"}
                           onClick={() => setOpenStackConfig("voice")}
                         >
                           <span className="app-label block text-[#047857]">Voice</span>
@@ -2878,6 +2883,7 @@ export function DashboardShell() {
                             <button
                               className="rounded-lg border border-[#00b8c4] bg-[#ecfeff] px-4 py-3 text-left text-[#008996] ring-2 ring-[#99f6e8] transition"
                               type="button"
+                              aria-pressed={true}
                               onClick={() => updatePipelineMode("realtime")}
                             >
                               <span className="app-label block text-current">Realtime</span>
@@ -2886,6 +2892,7 @@ export function DashboardShell() {
                             <button
                               className="rounded-lg border border-[#dfe3ea] bg-white px-4 py-3 text-left text-[#475569] transition hover:bg-[#f8fafc]"
                               type="button"
+                              aria-pressed={false}
                               onClick={() => updatePipelineMode("pipeline")}
                             >
                               <span className="app-label block text-current">Pipeline</span>
@@ -3040,6 +3047,7 @@ export function DashboardShell() {
                             <button
                               className="rounded-lg border border-[#dfe3ea] bg-white px-4 py-3 text-left text-[#475569] transition hover:bg-[#f8fafc]"
                               type="button"
+                              aria-pressed={false}
                               onClick={() => updatePipelineMode("realtime")}
                             >
                               <span className="app-label block text-current">Realtime</span>
@@ -3048,6 +3056,7 @@ export function DashboardShell() {
                             <button
                               className="rounded-lg border border-[#7c3aed] bg-[#f5f3ff] px-4 py-3 text-left text-[#6d28d9] ring-2 ring-[#ddd6fe] transition"
                               type="button"
+                              aria-pressed={true}
                               onClick={() => updatePipelineMode("pipeline")}
                             >
                               <span className="app-label block text-current">Pipeline</span>
