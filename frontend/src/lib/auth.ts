@@ -1,3 +1,5 @@
+import { API_URL } from "@/lib/apiBase";
+
 export type AuthSession = {
   id: string;
   email: string;
@@ -34,7 +36,6 @@ type AuthResponse = {
 
 const SESSION_KEY = "ai_voice_platform_session";
 const SESSION_EVENT = "ai-voice-platform-session";
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
 const SESSION_VALIDATION_TTL_MS = 30_000;
 
 let cachedRawSession: string | null = null;

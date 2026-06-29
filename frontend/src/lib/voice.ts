@@ -1,6 +1,5 @@
 import { getAuthHeaders, getSession } from "@/lib/auth";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+import { API_URL } from "@/lib/apiBase";
 
 export type ProviderModel = "openai-realtime" | "gemini-live" | "sarvam-gemini";
 export type PipelineMode = "realtime" | "pipeline";
