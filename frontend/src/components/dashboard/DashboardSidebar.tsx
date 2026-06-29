@@ -1,6 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+import { announceDashboardNavigation } from "@/components/dashboard/DashboardNavigationFeedback";
 
 type SidebarItem = {
   label: string;
@@ -121,15 +124,21 @@ export function DashboardSidebar({
   showUserSidebar,
   setShowUserSidebar,
 }: DashboardSidebarProps) {
+  const pathname = usePathname();
+
+  function beginNavigation(href: string) {
+    if (href !== pathname) announceDashboardNavigation(href, pathname);
+  }
+
   return (
     <>
       <aside className="z-40 flex gap-1.5 border-b border-[#e5e7eb] bg-white/95 px-2 py-1.5 shadow-sm backdrop-blur lg:fixed lg:inset-y-0 lg:left-0 lg:h-dvh lg:w-16 lg:flex-col lg:items-center lg:border-r lg:border-b-0 lg:px-0 lg:py-2.5">
         <Link
           className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#06b6c8] text-white shadow-[0_10px_22px_rgba(14,165,233,0.22)] ring-1 ring-white/10 transition hover:-translate-y-0.5"
           href="/dashboard"
-          prefetch={false}
           title="Voice Platform"
           aria-label="Voice Platform"
+          onClick={() => beginNavigation("/dashboard")}
         >
           <SidebarIcon icon="mic" />
         </Link>
@@ -149,10 +158,10 @@ export function DashboardSidebar({
                     : "text-[#747b88] hover:bg-[#ecfeff] hover:text-[#008996]"
                 }`}
                 href={item.href}
-                prefetch={false}
                 key={item.label}
                 title={item.label}
                 onClick={() => {
+                  beginNavigation(item.href);
                   try {
                     localStorage.setItem("showUserSidebar", "0");
                   } catch {

@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
+import { announceDashboardNavigation } from "@/components/dashboard/DashboardNavigationFeedback";
 import {
   getServerSession,
   getSession,
@@ -1740,6 +1741,7 @@ export function DashboardShell() {
   const [selectedAgentId, setSelectedAgentId] = useState(agents[0].id);
   const [activeTab, setActiveTab] = useState<AgentTab>("builder");
   const [notice, setNotice] = useState("");
+  const [saving, setSaving] = useState(false);
   const [showTestCall, setShowTestCall] = useState(false);
   const [openStackConfig, setOpenStackConfig] = useState<StackConfig | null>(null);
   const [modelCatalog, setModelCatalog] = useState<ModelCatalog>(fallbackCatalog);
@@ -1760,6 +1762,7 @@ export function DashboardShell() {
   const previewAudioRef = useRef<HTMLAudioElement | null>(null);
   const previewUrlRef = useRef("");
   const unsavedChangesRef = useRef(false);
+  const savePromiseRef = useRef<Promise<boolean> | null>(null);
 
   const selectedAgent = useMemo(
     () => agentList.find((agent) => agent.id === selectedAgentId) ?? agentList[0] ?? agents[0],
@@ -1934,7 +1937,14 @@ export function DashboardShell() {
     let cancelled = false;
 
     void (async () => {
-      const validatedSession = await validateStoredSession();
+      const bootstrapPromise = voiceApi.bootstrap().then(
+        (value) => ({ value, error: null }),
+        (error: unknown) => ({ value: null, error }),
+      );
+      const [validatedSession, bootstrapResult] = await Promise.all([
+        validateStoredSession(),
+        bootstrapPromise,
+      ]);
       if (!validatedSession) {
         if (!cancelled) router.replace("/login?next=/dashboard");
         return;
@@ -1946,17 +1956,16 @@ export function DashboardShell() {
         return;
       }
 
-      const [{ agents: backendAgents }, config, templateResult] = await Promise.all([
-        voiceApi.agents(),
-        voiceApi.config(),
-        voiceApi.agentTemplates(),
-      ]);
+      if (!bootstrapResult.value) {
+        throw bootstrapResult.error ?? new Error("Could not load dashboard data.");
+      }
+      const { agents: backendAgents, config, templates } = bootstrapResult.value;
       if (cancelled) return;
       applyBackendAgents(backendAgents);
       setVoiceConfig(config);
       setModelCatalog(config.modelCatalog);
       setLanguageCatalog(config.languageCatalog ?? fallbackLanguageCatalog);
-      setAgentTemplates(templateResult.templates);
+      setAgentTemplates(templates);
     })()
       .catch((error) => {
         if (cancelled) return;
@@ -2029,9 +2038,14 @@ export function DashboardShell() {
     }
   }
 
-  async function handleSave(changes: Partial<BackendAgent> = {}) {
-    try {
-      const { agent, routingWarning } = await voiceApi.saveAgent(selectedAgent.id, {
+  function handleSave(changes: Partial<BackendAgent> = {}) {
+    if (savePromiseRef.current) return savePromiseRef.current;
+
+    const savePromise = (async () => {
+      setSaving(true);
+      setNotice("Saving agent...");
+      try {
+        const { agent, routingWarning } = await voiceApi.saveAgent(selectedAgent.id, {
         name: selectedAgent.name,
         team: selectedAgent.team,
         status: selectedAgent.status,
@@ -2069,19 +2083,24 @@ export function DashboardShell() {
         widget: selectedAgent.widget,
         ...changes,
       });
-      const mapped = mapBackendAgent(agent);
-      setAgentList((current) => current.map((item) => (item.id === mapped.id ? mapped : item)));
-      unsavedChangesRef.current = false;
-      setNotice(
-        routingWarning
-          ? `Agent saved, but inbound routing could not refresh: ${routingWarning}`
-          : "Agent saved and inbound routing refreshed.",
-      );
-      return true;
-    } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Could not save agent.");
-      return false;
-    }
+        const mapped = mapBackendAgent(agent);
+        setAgentList((current) => current.map((item) => (item.id === mapped.id ? mapped : item)));
+        unsavedChangesRef.current = false;
+        setNotice(routingWarning ? `Agent saved with a routing warning: ${routingWarning}` : "Agent saved.");
+        return true;
+      } catch (error) {
+        setNotice(error instanceof Error ? error.message : "Could not save agent.");
+        return false;
+      } finally {
+        setSaving(false);
+      }
+    })();
+
+    savePromiseRef.current = savePromise;
+    void savePromise.finally(() => {
+      if (savePromiseRef.current === savePromise) savePromiseRef.current = null;
+    });
+    return savePromise;
   }
 
   async function handlePreviewVoice(input: Pick<VoicePreviewRequest, "mode" | "provider" | "model">) {
@@ -2280,6 +2299,11 @@ export function DashboardShell() {
   async function handleLogout() {
     await logoutSession();
     router.replace("/login");
+  }
+
+  function navigateToDashboardPage(href: string) {
+    announceDashboardNavigation(href, window.location.pathname);
+    router.push(href);
   }
 
   async function handleCloneAgent() {
@@ -2483,6 +2507,10 @@ export function DashboardShell() {
   }
 
   function handleSetLiveCalls(enabled: boolean) {
+    if (savePromiseRef.current) {
+      setNotice("Please wait for the current save to finish.");
+      return;
+    }
     const status: AgentStatus = enabled ? "Live" : "Paused";
     updateSelectedAgent({ status });
     void handleSave({ status });
@@ -2612,15 +2640,16 @@ export function DashboardShell() {
             <button
               className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#99f6e8] bg-[#ecfeff] px-3 text-[#0e7490] shadow-sm"
               type="button"
+              disabled={saving}
               onClick={() => void handleSave()}
             >
               <Icon icon="save" />
-              Save
+              {saving ? "Saving..." : "Save"}
             </button>
             <button
               className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#bbf7d0] bg-[#f0fdf4] px-3 text-[#15803d] shadow-sm"
               type="button"
-              disabled={!testCallsEnabled}
+              disabled={!testCallsEnabled || saving}
               title={testCallsEnabled ? "Start browser test call" : "Paused agents cannot start test calls"}
               onClick={() => void handleStartTestCall()}
             >
@@ -2630,13 +2659,14 @@ export function DashboardShell() {
             <button
               className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border-0 bg-[#00b8c4] px-3 text-white shadow-[0_12px_28px_rgba(0,184,196,0.28)] transition hover:bg-[#008996]"
               type="button"
+              disabled={saving}
               onClick={() => {
                 updateSelectedAgent({ status: "Live" });
                 void handleSave({ status: "Live" });
               }}
             >
               <Icon icon="play" />
-              Publish
+              {saving ? "Saving..." : "Publish"}
             </button>
             </div>
           </div>
@@ -3014,9 +3044,10 @@ export function DashboardShell() {
                           <button
                             className="app-button-text rounded-lg bg-[#00b8c4] px-4 py-2.5 text-white shadow-sm transition hover:bg-[#008996]"
                             type="button"
+                            disabled={saving}
                             onClick={() => void saveStackConfig()}
                           >
-                            Save
+                            {saving ? "Saving..." : "Save"}
                           </button>
                         </div>
                       </section>
@@ -3241,9 +3272,10 @@ export function DashboardShell() {
                           <button
                             className="app-button-text rounded-lg bg-[#00b8c4] px-4 py-2.5 text-white shadow-sm transition hover:bg-[#008996]"
                             type="button"
+                            disabled={saving}
                             onClick={() => void saveStackConfig()}
                           >
-                            Save
+                            {saving ? "Saving..." : "Save"}
                           </button>
                         </div>
                       </section>
@@ -3963,7 +3995,7 @@ export function DashboardShell() {
                       <button
                         className="app-button-text min-h-10 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#111827]"
                         type="button"
-                        onClick={() => router.push("/dashboard/phone-number")}
+                        onClick={() => navigateToDashboardPage("/dashboard/phone-number")}
                       >
                         Manage numbers
                       </button>
@@ -4019,7 +4051,7 @@ export function DashboardShell() {
                       <button
                         className="app-button-text min-h-10 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#00b8c4]"
                         type="button"
-                        onClick={() => router.push("/dashboard/calls")}
+                        onClick={() => navigateToDashboardPage("/dashboard/calls")}
                       >
                         Open all call logs
                       </button>

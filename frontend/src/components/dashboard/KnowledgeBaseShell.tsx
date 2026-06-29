@@ -93,12 +93,22 @@ export function KnowledgeBaseShell() {
 
     let cancelled = false;
     void (async () => {
-      const validatedSession = await validateStoredSession();
+      const agentsPromise = voiceApi.agents().then(
+        (value) => ({ value, error: null }),
+        (error: unknown) => ({ value: null, error }),
+      );
+      const [validatedSession, agentsResult] = await Promise.all([
+        validateStoredSession(),
+        agentsPromise,
+      ]);
       if (!validatedSession) {
         if (!cancelled) router.replace("/login?next=/dashboard/knowledge");
         return;
       }
-      const result = await voiceApi.agents();
+      if (!agentsResult.value) {
+        throw agentsResult.error ?? new Error("Could not load voice agents.");
+      }
+      const result = agentsResult.value;
       if (cancelled) return;
       setAgents(result.agents);
       setSelectedAgentId((current) => current || result.agents[0]?._id || "");

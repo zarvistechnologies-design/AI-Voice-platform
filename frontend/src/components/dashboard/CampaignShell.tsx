@@ -11,7 +11,7 @@ import {
   subscribeToSession,
   validateStoredSession,
 } from "@/lib/auth";
-import { voiceApi, type BackendAgent, type BackendPhoneNumber } from "@/lib/voice";
+import { voiceApi, type AgentSummary, type BackendPhoneNumber } from "@/lib/voice";
 
 type IconName = "calendar" | "check" | "close" | "file" | "info" | "phone" | "play" | "shield" | "spark" | "upload" | "user";
 type CampaignLead = {
@@ -167,7 +167,7 @@ function plural(count: number, singular: string, pluralName = `${singular}s`) {
 export function CampaignShell() {
   const router = useRouter();
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
-  const [agents, setAgents] = useState<BackendAgent[]>([]);
+  const [agents, setAgents] = useState<AgentSummary[]>([]);
   const [numbers, setNumbers] = useState<BackendPhoneNumber[]>([]);
   const [campaignName, setCampaignName] = useState("");
   const [selectedPhoneId, setSelectedPhoneId] = useState("");
@@ -202,15 +202,25 @@ export function CampaignShell() {
 
     let cancelled = false;
     void (async () => {
-      const validatedSession = await validateStoredSession();
+      const dataPromise = Promise.all([
+        voiceApi.agentSummaries(),
+        voiceApi.phoneNumbers(),
+      ]).then(
+        (value) => ({ value, error: null }),
+        (error: unknown) => ({ value: null, error }),
+      );
+      const [validatedSession, dataResult] = await Promise.all([
+        validateStoredSession(),
+        dataPromise,
+      ]);
       if (!validatedSession) {
         if (!cancelled) router.replace("/login?next=/dashboard/campaign");
         return;
       }
-      const [agentResult, numberResult] = await Promise.all([
-        voiceApi.agents(),
-        voiceApi.phoneNumbers(),
-      ]);
+      if (!dataResult.value) {
+        throw dataResult.error ?? new Error("Could not load campaign data.");
+      }
+      const [agentResult, numberResult] = dataResult.value;
       if (cancelled) return;
       const firstAgentId = agentResult.agents[0]?._id || "";
       const firstReadyCallerId = numberResult.numbers.find(

@@ -13,7 +13,7 @@ import {
 } from "@/lib/auth";
 import {
   voiceApi,
-  type BackendAgent,
+  type AgentSummary,
   type BackendPhoneNumber,
   type PhoneNumberImportInput,
   type TelephonyProvider,
@@ -97,7 +97,7 @@ export function PhoneNumberShell() {
   const router = useRouter();
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
   const [numbers, setNumbers] = useState<BackendPhoneNumber[]>([]);
-  const [agents, setAgents] = useState<BackendAgent[]>([]);
+  const [agents, setAgents] = useState<AgentSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
@@ -113,7 +113,7 @@ export function PhoneNumberShell() {
       return;
     }
     void validateStoredSession();
-    void Promise.all([voiceApi.phoneNumbers(), voiceApi.agents()])
+    void Promise.all([voiceApi.phoneNumbers(), voiceApi.agentSummaries()])
       .then(([numberResponse, agentResponse]) => {
         setNumbers(numberResponse.numbers);
         setAgents(agentResponse.agents);
@@ -189,7 +189,7 @@ export function PhoneNumberShell() {
     showMessage("");
     try {
       const result = await voiceApi.syncPhoneNumbers();
-      const [numberResponse, agentResponse] = await Promise.all([voiceApi.phoneNumbers(), voiceApi.agents()]);
+      const [numberResponse, agentResponse] = await Promise.all([voiceApi.phoneNumbers(), voiceApi.agentSummaries()]);
       setNumbers(numberResponse.numbers);
       setAgents(agentResponse.agents);
       const suffix = result.routes.errors.length
@@ -776,7 +776,7 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase }: {
 }
 
 function AgentModal({ agents, busy, number, onAssign, onClose }: {
-  agents: BackendAgent[];
+  agents: AgentSummary[];
   busy: boolean;
   number: BackendPhoneNumber;
   onAssign: (agentId: string | null) => void;

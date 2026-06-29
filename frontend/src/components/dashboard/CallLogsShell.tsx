@@ -11,7 +11,7 @@ import {
   subscribeToSession,
   validateStoredSession,
 } from "@/lib/auth";
-import { voiceApi, type BackendAgent, type CallRecord, type CostPricingDetail } from "@/lib/voice";
+import { voiceApi, type AgentSummary, type CallRecord, type CostPricingDetail } from "@/lib/voice";
 
 const statusOptions = ["", "initiated", "ringing", "active", "completed", "failed", "cancelled"] as const;
 const directionOptions = ["", "web", "inbound", "outbound"] as const;
@@ -401,7 +401,7 @@ export function CallLogsShell() {
   const router = useRouter();
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
   const [calls, setCalls] = useState<CallRecord[]>([]);
-  const [agents, setAgents] = useState<BackendAgent[]>([]);
+  const [agents, setAgents] = useState<AgentSummary[]>([]);
   const [selectedCall, setSelectedCall] = useState<CallRecord | null>(null);
   const [agentId, setAgentId] = useState("");
   const [status, setStatus] = useState<(typeof statusOptions)[number]>("");
@@ -452,16 +452,21 @@ export function CallLogsShell() {
       return;
     }
     void validateStoredSession();
-    void voiceApi.agents().then((result) => setAgents(result.agents)).catch(() => setAgents([]));
+    void voiceApi.agentSummaries().then((result) => setAgents(result.agents)).catch(() => setAgents([]));
   }, [router, session]);
 
   useEffect(() => {
     if (!session) return;
-    const initialLoad = window.setTimeout(() => void loadCalls(), 0);
-    const timer = window.setInterval(() => void loadCalls(), 10000);
+    const refreshVisibleCalls = () => {
+      if (document.visibilityState === "visible") void loadCalls();
+    };
+    const initialLoad = window.setTimeout(refreshVisibleCalls, 0);
+    const timer = window.setInterval(refreshVisibleCalls, 10000);
+    window.addEventListener("focus", refreshVisibleCalls);
     return () => {
       window.clearTimeout(initialLoad);
       window.clearInterval(timer);
+      window.removeEventListener("focus", refreshVisibleCalls);
     };
   }, [loadCalls, session]);
 
