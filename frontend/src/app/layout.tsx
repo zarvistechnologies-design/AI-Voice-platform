@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Public_Sans } from "next/font/google";
+import { Geist_Mono, Roboto } from "next/font/google";
 import "./globals.css";
 
-const publicSans = Public_Sans({
-  variable: "--font-public-sans",
+const roboto = Roboto({
+  variable: "--font-site-sans",
+  weight: ["400", "500", "700", "900"],
   subsets: ["latin"],
 });
 
@@ -25,7 +26,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${publicSans.variable} ${geistMono.variable} h-full scroll-smooth antialiased`}
+      className={`${roboto.variable} ${geistMono.variable} h-full scroll-smooth antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background text-foreground">
         {children}

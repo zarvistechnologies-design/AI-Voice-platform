@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { IndianLanguageVoiceSection } from "./IndianLanguageVoiceSection";
 
 const agentUseCases = [
   "Lead Qualification Calls",
@@ -378,6 +379,7 @@ export function HomePlatformSections() {
     <div className="bg-white">
       <AutomateAgents />
       <ChannelAccess />
+      <IndianLanguageVoiceSection />
       <PlatformCards />
       <GlobalProof />
       <RoleSection />
