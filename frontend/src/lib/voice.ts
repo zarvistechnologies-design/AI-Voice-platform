@@ -342,7 +342,9 @@ export type CallRecord = {
   direction: "web" | "inbound" | "outbound";
   status: "initiated" | "ringing" | "active" | "completed" | "failed" | "cancelled";
   callerNumber: string;
+  callerNumberSource?: "recorded" | "room_name" | "missing";
   calledNumber: string;
+  calledNumberSource?: "recorded" | "room_name" | "missing";
   livekitRoomName: string;
   startedAt?: string;
   endedAt?: string;

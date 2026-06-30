@@ -93,10 +93,14 @@ function inboundRoomNumbers(roomName: string) {
 function callRoute(call: CallRecord) {
   const inferredInboundNumbers = call.direction === "inbound" ? inboundRoomNumbers(call.livekitRoomName) : { callerNumber: "", calledNumber: "" };
   const from = call.callerNumber || inferredInboundNumbers.callerNumber || (call.direction === "web" ? "Browser caller" : "");
+  const fromSource = call.callerNumberSource || (!call.callerNumber && inferredInboundNumbers.callerNumber ? "room_name" : "recorded");
+  const toSource = call.calledNumberSource || (!call.calledNumber && inferredInboundNumbers.calledNumber ? "room_name" : "recorded");
   return {
     from,
+    fromSource,
     fromMissing: call.direction === "inbound" && !from,
     to: call.calledNumber || inferredInboundNumbers.calledNumber || (call.direction === "web" ? "Voice agent" : call.direction === "outbound" ? "Dialed number" : "Assigned number"),
+    toSource,
   };
 }
 
@@ -114,12 +118,16 @@ function CallRoute({ call, compact = false }: { call: CallRecord; compact?: bool
             Caller ID not sent
           </span>
         ) : (
-          <span className={numberClass} title={route.from}>{route.from}</span>
+          <span className={numberClass} title={route.from}>
+            {route.from}{route.fromSource === "room_name" ? <span className="ml-1 font-sans text-[10px] font-bold uppercase text-amber-600">inferred</span> : null}
+          </span>
         )}
       </div>
       <div className="grid min-w-0 grid-cols-[44px_minmax(0,1fr)] items-center gap-2">
         <span className="rounded-md bg-slate-100 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-slate-600">To</span>
-        <span className={numberClass} title={route.to}>{route.to}</span>
+        <span className={numberClass} title={route.to}>
+          {route.to}{route.toSource === "room_name" ? <span className="ml-1 font-sans text-[10px] font-bold uppercase text-amber-600">inferred</span> : null}
+        </span>
       </div>
     </div>
   );
