@@ -5,7 +5,7 @@ export type ProviderModel = "openai-realtime" | "gemini-live" | "sarvam-gemini";
 export type PipelineMode = "realtime" | "pipeline";
 export type RealtimeProvider = "openai" | "gemini";
 export type PipelineProvider = "openai" | "gemini" | "sarvam" | "elevenlabs";
-export type SttProvider = "openai" | "sarvam" | "elevenlabs";
+export type SttProvider = "openai" | "sarvam" | "elevenlabs" | "deepgram";
 export type FirstMessageMode = "assistant-speaks-first" | "user-speaks-first" | "model-generated";
 
 export type AgentBehavior = {
