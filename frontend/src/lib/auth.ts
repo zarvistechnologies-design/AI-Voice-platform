@@ -1,3 +1,5 @@
+import { API_URL } from "@/lib/apiBase";
+
 export type AuthSession = {
   id: string;
   email: string;
@@ -34,10 +36,25 @@ type AuthResponse = {
 
 const SESSION_KEY = "ai_voice_platform_session";
 const SESSION_EVENT = "ai-voice-platform-session";
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+const SESSION_VALIDATION_TTL_MS = 30_000;
 
 let cachedRawSession: string | null = null;
 let cachedSession: AuthSession | null = null;
+let validatedSessionKey = "";
+let validatedSessionAt = 0;
+let sessionValidationPromise: Promise<AuthSession | null> | null = null;
+let sessionValidationPromiseKey = "";
+
+function validationKey(session: AuthSession) {
+  return `${session.id}:${session.organization?.id ?? ""}:${session.token ?? "cookie"}`;
+}
+
+function resetSessionValidation() {
+  validatedSessionKey = "";
+  validatedSessionAt = 0;
+  sessionValidationPromise = null;
+  sessionValidationPromiseKey = "";
+}
 
 function notifySessionChange() {
   window.dispatchEvent(new Event(SESSION_EVENT));
@@ -97,6 +114,7 @@ function saveSession(session: AuthSession) {
 
   window.localStorage.setItem(SESSION_KEY, JSON.stringify(session));
   cachedRawSession = null;
+  resetSessionValidation();
   notifySessionChange();
 }
 
@@ -182,13 +200,7 @@ export function getAuthHeaders(): Record<string, string> {
   return session?.token ? { Authorization: `Bearer ${session.token}` } : {};
 }
 
-export async function validateStoredSession() {
-  const session = getSession();
-
-  if (!session) {
-    return null;
-  }
-
+async function validateSessionWithServer(session: AuthSession) {
   let response: Response;
   try {
     response = await fetch(`${API_URL}/api/auth/me`, {
@@ -255,6 +267,40 @@ export async function validateStoredSession() {
   return updatedSession;
 }
 
+export function validateStoredSession(options: { force?: boolean } = {}) {
+  const session = getSession();
+  if (!session) return Promise.resolve(null);
+
+  const key = validationKey(session);
+  if (
+    !options.force
+    && key === validatedSessionKey
+    && Date.now() - validatedSessionAt < SESSION_VALIDATION_TTL_MS
+  ) {
+    return Promise.resolve(session);
+  }
+  if (!options.force && sessionValidationPromise && sessionValidationPromiseKey === key) {
+    return sessionValidationPromise;
+  }
+
+  sessionValidationPromiseKey = key;
+  sessionValidationPromise = validateSessionWithServer(session)
+    .then((validated) => {
+      if (validated) {
+        validatedSessionKey = validationKey(validated);
+        validatedSessionAt = Date.now();
+      }
+      return validated;
+    })
+    .finally(() => {
+      if (sessionValidationPromiseKey === key) {
+        sessionValidationPromise = null;
+        sessionValidationPromiseKey = "";
+      }
+    });
+  return sessionValidationPromise;
+}
+
 export function subscribeToSession(onStoreChange: () => void) {
   if (typeof window === "undefined") {
     return () => {};
@@ -263,12 +309,14 @@ export function subscribeToSession(onStoreChange: () => void) {
   function handleStorage(event: StorageEvent) {
     if (event.key === SESSION_KEY) {
       cachedRawSession = null;
+      resetSessionValidation();
       onStoreChange();
     }
   }
 
   function handleSessionEvent() {
     cachedRawSession = null;
+    resetSessionValidation();
     onStoreChange();
   }
 
@@ -289,6 +337,7 @@ export function clearSession() {
   window.localStorage.removeItem(SESSION_KEY);
   cachedRawSession = null;
   cachedSession = null;
+  resetSessionValidation();
   notifySessionChange();
 }
 

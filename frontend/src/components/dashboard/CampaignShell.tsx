@@ -11,7 +11,7 @@ import {
   subscribeToSession,
   validateStoredSession,
 } from "@/lib/auth";
-import { voiceApi, type BackendAgent, type BackendPhoneNumber } from "@/lib/voice";
+import { voiceApi, type AgentSummary, type BackendPhoneNumber } from "@/lib/voice";
 
 type IconName = "calendar" | "check" | "close" | "file" | "info" | "phone" | "play" | "shield" | "spark" | "upload" | "user";
 type CampaignLead = {
@@ -28,7 +28,7 @@ const maxCsvSize = 5 * 1024 * 1024;
 const buttonClass =
   "app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 transition disabled:cursor-not-allowed disabled:opacity-50";
 const controlClass =
-  "app-control-text min-h-11 w-full rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10";
+  "app-control-text min-h-11 w-full rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10";
 
 function Icon({ icon, className = "size-4" }: { icon: IconName; className?: string }) {
   const props = {
@@ -167,7 +167,7 @@ function plural(count: number, singular: string, pluralName = `${singular}s`) {
 export function CampaignShell() {
   const router = useRouter();
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
-  const [agents, setAgents] = useState<BackendAgent[]>([]);
+  const [agents, setAgents] = useState<AgentSummary[]>([]);
   const [numbers, setNumbers] = useState<BackendPhoneNumber[]>([]);
   const [campaignName, setCampaignName] = useState("");
   const [selectedPhoneId, setSelectedPhoneId] = useState("");
@@ -202,15 +202,25 @@ export function CampaignShell() {
 
     let cancelled = false;
     void (async () => {
-      const validatedSession = await validateStoredSession();
+      const dataPromise = Promise.all([
+        voiceApi.agentSummaries(),
+        voiceApi.phoneNumbers(),
+      ]).then(
+        (value) => ({ value, error: null }),
+        (error: unknown) => ({ value: null, error }),
+      );
+      const [validatedSession, dataResult] = await Promise.all([
+        validateStoredSession(),
+        dataPromise,
+      ]);
       if (!validatedSession) {
         if (!cancelled) router.replace("/login?next=/dashboard/campaign");
         return;
       }
-      const [agentResult, numberResult] = await Promise.all([
-        voiceApi.agents(),
-        voiceApi.phoneNumbers(),
-      ]);
+      if (!dataResult.value) {
+        throw dataResult.error ?? new Error("Could not load campaign data.");
+      }
+      const [agentResult, numberResult] = dataResult.value;
       if (cancelled) return;
       const firstAgentId = agentResult.agents[0]?._id || "";
       const firstReadyCallerId = numberResult.numbers.find(
@@ -258,7 +268,7 @@ export function CampaignShell() {
   const completedReadyChecks = readyChecks.filter((check) => check.ready).length;
   const estimatedBatches = Math.max(1, Math.ceil(leads.length / normalizedDailyLimit));
   const previewLeads = leads.slice(0, 8);
-  const campaignMetricTone = "border-[#bae6fd] bg-[#f0f9ff] text-[#0369a1]";
+  const campaignMetricTone = "border-[#99f6e8] bg-[#ecfeff] text-[#008996]";
   const campaignMetrics = [
     { label: "Audience", value: leads.length.toLocaleString("en-IN"), tone: campaignMetricTone },
     { label: "Ready checks", value: `${completedReadyChecks}/${readyChecks.length}`, tone: campaignMetricTone },
@@ -407,10 +417,10 @@ export function CampaignShell() {
       />
 
       <section className="min-w-0 overflow-y-auto">
-        <header className="border-b border-[#bae6fd] bg-white px-4 py-4 sm:px-6 lg:px-8">
+        <header className="border-b border-[#99f6e8] bg-white px-4 py-4 sm:px-6 lg:px-8">
           <div className="mx-auto flex w-full max-w-1500px flex-wrap items-center justify-between gap-4">
             <div>
-              <span className="app-label text-[#0284c7]">Campaigns</span>
+              <span className="app-label text-[#00b8c4]">Campaigns</span>
               <h1 className="m-0 text-xl font-semibold leading-7 text-[#0f172a]">Outbound launchpad</h1>
               <p className="app-caption mt-1 mb-0 text-[#475569]">Audience, routing, pacing, launch.</p>
             </div>
@@ -433,11 +443,11 @@ export function CampaignShell() {
             <section className="overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm">
               <div className="grid border-b border-[#e5e7eb] bg-[#fbfdff] sm:grid-cols-5">
                 {[
-                  ["Details", "bg-[#38bdf8]"],
-                  ["Audience", "bg-[#38bdf8]"],
-                  ["Timing", "bg-[#38bdf8]"],
-                  ["Strategy", "bg-[#38bdf8]"],
-                  ["Review", "bg-[#38bdf8]"],
+                  ["Details", "bg-[#22d3c8]"],
+                  ["Audience", "bg-[#22d3c8]"],
+                  ["Timing", "bg-[#22d3c8]"],
+                  ["Strategy", "bg-[#22d3c8]"],
+                  ["Review", "bg-[#22d3c8]"],
                 ].map(([label, color]) => (
                   <div className="flex items-center gap-2 border-b border-[#e5e7eb] px-4 py-3 last:border-b-0 sm:border-r sm:border-b-0 sm:last:border-r-0" key={label}>
                     <span className={`size-2 rounded-full ${color}`} />
@@ -446,7 +456,7 @@ export function CampaignShell() {
                 ))}
               </div>
 
-              <section className="grid gap-5 border-b border-[#bae6fd] bg-[#f0f9ff] p-4 sm:p-5">
+              <section className="grid gap-5 border-b border-[#99f6e8] bg-[#ecfeff] p-4 sm:p-5">
                 <div className="flex items-start gap-3">
                   <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg bg-[#ecfeff] text-[#0891b2]">
                     <Icon icon="spark" />
@@ -491,10 +501,10 @@ export function CampaignShell() {
                 </div>
               </section>
 
-              <section className="grid gap-5 border-b border-[#bae6fd] bg-[#f0f9ff] p-4 sm:p-5">
+              <section className="grid gap-5 border-b border-[#99f6e8] bg-[#ecfeff] p-4 sm:p-5">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="flex items-start gap-3">
-                    <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg bg-[#f0f9ff] text-[#0284c7]">
+                    <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg bg-[#ecfeff] text-[#00b8c4]">
                       <Icon icon="upload" />
                     </span>
                     <div>
@@ -506,23 +516,23 @@ export function CampaignShell() {
                 </div>
 
                 <label
-                  className="grid min-h-170px cursor-pointer place-items-center rounded-lg border border-dashed border-[#7dd3fc] bg-white p-6 text-center shadow-sm transition hover:border-[#38bdf8] hover:bg-[#f0f9ff]"
+                  className="grid min-h-170px cursor-pointer place-items-center rounded-lg border border-dashed border-[#5eead4] bg-white p-6 text-center shadow-sm transition hover:border-[#22d3c8] hover:bg-[#ecfeff]"
                   onDragOver={(event) => event.preventDefault()}
                   onDrop={handleDrop}
                 >
                   <input className="sr-only" type="file" accept=".csv,text/csv" onChange={(event) => void handleCsv(event.target.files?.[0])} />
                   <span>
-                    <span className="mx-auto mb-3 grid size-11 place-items-center rounded-lg bg-white text-[#0284c7] shadow-sm"><Icon icon="file" /></span>
+                    <span className="mx-auto mb-3 grid size-11 place-items-center rounded-lg bg-white text-[#00b8c4] shadow-sm"><Icon icon="file" /></span>
                     <strong className="app-strong block">Drop CSV or choose file</strong>
                     <span className="app-caption mt-1 block">Up to 5MB. Optional columns: name, email, company, custom fields.</span>
                   </span>
                 </label>
 
-                <div className="rounded-lg border border-[#bae6fd] bg-[#f0f9ff] px-3 py-3">
+                <div className="rounded-lg border border-[#99f6e8] bg-[#ecfeff] px-3 py-3">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <p className="app-caption m-0 text-[#9a3412]">Pace calls, use trusted caller IDs, respect opt-outs, and call inside local business hours.</p>
                     <a
-                      className="app-label inline-flex min-h-9 items-center rounded-lg bg-white px-3 text-[#0369a1] ring-1 ring-[#7dd3fc] transition hover:bg-[#fffbeb]"
+                      className="app-label inline-flex min-h-9 items-center rounded-lg bg-white px-3 text-[#008996] ring-1 ring-[#5eead4] transition hover:bg-[#fffbeb]"
                       href="https://docs.vapi.ai/calls/outbound-calling#trusted-calling-and-caller-id"
                       rel="noreferrer"
                       target="_blank"
@@ -568,7 +578,7 @@ export function CampaignShell() {
                 ) : null}
               </section>
 
-              <section className="grid gap-5 border-b border-[#bae6fd] bg-[#f0f9ff] p-4 sm:p-5">
+              <section className="grid gap-5 border-b border-[#99f6e8] bg-[#ecfeff] p-4 sm:p-5">
                 <div className="flex items-start gap-3">
                   <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg bg-[#fffbeb] text-[#d97706]">
                     <Icon icon="calendar" />
@@ -581,19 +591,21 @@ export function CampaignShell() {
 
                 <div className="grid gap-3 lg:grid-cols-2">
                   <button
-                    className={`rounded-lg border p-4 text-left transition ${sendMode === "now" ? "border-[#0284c7] bg-[#f0f9ff] ring-2 ring-[#0284c7]/10" : "border-[#e5e7eb] bg-white hover:border-[#7dd3fc]"}`}
+                    className={`rounded-lg border p-4 text-left transition ${sendMode === "now" ? "border-[#00b8c4] bg-[#ecfeff] ring-2 ring-[#00b8c4]/10" : "border-[#e5e7eb] bg-white hover:border-[#5eead4]"}`}
                     onClick={() => setSendMode("now")}
                     type="button"
+                    aria-pressed={sendMode === "now"}
                   >
                     <span className="flex items-center gap-3">
-                      <span className="grid size-10 place-items-center rounded-lg bg-white text-[#0284c7]"><Icon icon="play" /></span>
+                      <span className="grid size-10 place-items-center rounded-lg bg-white text-[#00b8c4]"><Icon icon="play" /></span>
                       <span><strong className="app-strong block">Send now</strong><span className="app-caption">Launch immediately</span></span>
                     </span>
                   </button>
                   <button
-                    className={`rounded-lg border p-4 text-left transition ${sendMode === "schedule" ? "border-[#38bdf8] bg-[#f0f9ff] ring-2 ring-[#38bdf8]/10" : "border-[#e5e7eb] bg-white hover:border-[#bae6fd]"}`}
+                    className={`rounded-lg border p-4 text-left transition ${sendMode === "schedule" ? "border-[#22d3c8] bg-[#ecfeff] ring-2 ring-[#22d3c8]/10" : "border-[#e5e7eb] bg-white hover:border-[#99f6e8]"}`}
                     onClick={() => setSendMode("schedule")}
                     type="button"
+                    aria-pressed={sendMode === "schedule"}
                   >
                     <span className="flex items-center gap-3">
                       <span className="grid size-10 place-items-center rounded-lg bg-white text-[#7c3aed]"><Icon icon="calendar" /></span>
@@ -632,7 +644,7 @@ export function CampaignShell() {
               <section className="grid gap-5 bg-[#f8fcff] p-4 sm:p-5 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
                 <div>
                   <div className="flex items-start gap-3">
-                    <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg bg-[#f0f9ff] text-[#0284c7]">
+                    <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg bg-[#ecfeff] text-[#00b8c4]">
                       <Icon icon="phone" />
                     </span>
                     <div>
@@ -673,7 +685,7 @@ export function CampaignShell() {
                   <div className="mt-4 grid gap-4">
                     <label className="app-label grid gap-2">
                       Goal
-                      <textarea className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-[#111827] outline-none focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10" placeholder="Confirm appointment interest and capture preferred callback time." value={campaignGoal} onChange={(event) => setCampaignGoal(event.target.value)} />
+                      <textarea className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-[#111827] outline-none focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10" placeholder="Confirm appointment interest and capture preferred callback time." value={campaignGoal} onChange={(event) => setCampaignGoal(event.target.value)} />
                     </label>
                     <label className="app-label grid gap-2">
                       Success criteria
@@ -739,7 +751,7 @@ export function CampaignShell() {
                     </div>
                   ))}
                 </dl>
-                <button className={`${buttonClass} mt-5 w-full bg-[#0284c7] text-white shadow-sm hover:bg-[#0369a1]`} disabled={loading || launching || !canPrepare} type="submit">
+                <button className={`${buttonClass} mt-5 w-full bg-[#00b8c4] text-white shadow-sm hover:bg-[#008996]`} disabled={loading || launching || !canPrepare} type="submit">
                   <Icon icon="play" /> {launching ? "Launching..." : sendMode === "now" ? "Start calls now" : "Create scheduled draft"}
                 </button>
                 <p className="app-caption mt-3 mb-0 text-center">
@@ -765,12 +777,13 @@ function ToggleRow({ detail, enabled, onChange, title }: {
       className="flex items-center justify-between gap-4 rounded-lg border border-[#e5e7eb] bg-white px-3 py-3 text-left transition hover:bg-[#f8fafc]"
       onClick={() => onChange(!enabled)}
       type="button"
+      aria-pressed={enabled}
     >
       <span>
         <strong className="app-strong block">{title}</strong>
         <span className="app-caption block">{detail}</span>
       </span>
-      <span className={`relative h-6 w-11 rounded-full transition ${enabled ? "bg-[#0284c7]" : "bg-[#cbd5e1]"}`}>
+      <span className={`relative h-6 w-11 rounded-full transition ${enabled ? "bg-[#00b8c4]" : "bg-[#cbd5e1]"}`}>
         <span className={`absolute top-1 size-4 rounded-full bg-white shadow transition ${enabled ? "left-6" : "left-1"}`} />
       </span>
     </button>

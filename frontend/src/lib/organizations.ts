@@ -1,6 +1,6 @@
 import { getAuthHeaders, getSession } from "@/lib/auth";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+import { cachedApiRequest, invalidateApiCache } from "@/lib/apiCache";
+import { API_URL } from "@/lib/apiBase";
 
 export type OrganizationRole = "owner" | "admin" | "member" | "billing";
 
@@ -74,40 +74,62 @@ async function request<T>(path: string, init: RequestInit = {}) {
 
 export const organizationApi = {
   list: () =>
-    request<{ activeOrganizationId: string; organizations: Organization[] }>("/"),
-  create: (name: string) =>
-    request<{ organization: Organization }>("/", {
+    cachedApiRequest("organizations", "/", 30_000, () => request<{ activeOrganizationId: string; organizations: Organization[] }>("/")),
+  create: async (name: string) => {
+    const result = await request<{ organization: Organization }>("/", {
       method: "POST",
       body: JSON.stringify({ name }),
-    }),
-  updateCurrent: (input: { name?: string; timezone?: string; dataRetentionDays?: number }) =>
-    request<{ organization: Organization }>("/current", {
+    });
+    invalidateApiCache("organizations");
+    return result;
+  },
+  updateCurrent: async (input: { name?: string; timezone?: string; dataRetentionDays?: number }) => {
+    const result = await request<{ organization: Organization }>("/current", {
       method: "PUT",
       body: JSON.stringify(input),
-    }),
-  switch: (orgId: string) =>
-    request<Record<string, never>>(`/${orgId}/switch`, { method: "POST" }),
+    });
+    invalidateApiCache("organizations");
+    return result;
+  },
+  switch: async (orgId: string) => {
+    const result = await request<Record<string, never>>(`/${orgId}/switch`, { method: "POST" });
+    invalidateApiCache("organizations");
+    return result;
+  },
   members: () =>
-    request<{ members: OrganizationMember[]; invitations: OrganizationInvitation[] }>(
-      "/current/members",
-    ),
-  invite: (email: string, role: Exclude<OrganizationRole, "owner">) =>
-    request<{ invitation: OrganizationInvitation }>("/current/invitations", {
+    cachedApiRequest("organizations", "/current/members", 15_000, () =>
+      request<{ members: OrganizationMember[]; invitations: OrganizationInvitation[] }>(
+        "/current/members",
+      )),
+  invite: async (email: string, role: Exclude<OrganizationRole, "owner">) => {
+    const result = await request<{ invitation: OrganizationInvitation }>("/current/invitations", {
       method: "POST",
       body: JSON.stringify({ email, role }),
-    }),
-  acceptInvitation: (token: string) =>
-    request<Record<string, never>>("/invitations/accept", {
+    });
+    invalidateApiCache("organizations", "/current/members");
+    return result;
+  },
+  acceptInvitation: async (token: string) => {
+    const result = await request<Record<string, never>>("/invitations/accept", {
       method: "POST",
       body: JSON.stringify({ token }),
-    }),
-  updateMember: (memberId: string, role: Exclude<OrganizationRole, "owner">) =>
-    request<{ member: OrganizationMember }>(`/current/members/${memberId}`, {
+    });
+    invalidateApiCache("organizations");
+    return result;
+  },
+  updateMember: async (memberId: string, role: Exclude<OrganizationRole, "owner">) => {
+    const result = await request<{ member: OrganizationMember }>(`/current/members/${memberId}`, {
       method: "PATCH",
       body: JSON.stringify({ role }),
-    }),
-  removeMember: (memberId: string) =>
-    request<Record<string, never>>(`/current/members/${memberId}`, { method: "DELETE" }),
+    });
+    invalidateApiCache("organizations", "/current/members");
+    return result;
+  },
+  removeMember: async (memberId: string) => {
+    const result = await request<Record<string, never>>(`/current/members/${memberId}`, { method: "DELETE" });
+    invalidateApiCache("organizations", "/current/members");
+    return result;
+  },
   auditLog: (input: { search?: string; resource?: string; page?: number; limit?: number } = {}) => {
     const query = new URLSearchParams();
     if (input.search) query.set("search", input.search);

@@ -39,7 +39,7 @@
   --app-color-body: #374151;
   --app-color-muted: #697180;
   --app-color-label: #5f6675;
-  --app-color-accent: #0284c7;
+  --app-color-accent: #00b8c4;
   --app-color-purple: #6b35e8;
   --app-text-caption: 0.75rem;
   --app-text-body: 0.875rem;
@@ -92,7 +92,7 @@
 
 @theme inline {
   --font-sans:
-    var(--font-public-sans), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    var(--font-site-sans), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-mono:
     var(--font-commit-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
@@ -144,7 +144,7 @@
   body {
     background: var(--background);
     color: var(--foreground);
-    font-family: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-site-sans), ui-sans-serif, system-ui, sans-serif;
     font-size: var(--app-text-body);
     letter-spacing: 0;
   }
@@ -152,17 +152,11 @@
 
 @layer components {
   .home-page-background {
-    background:
-      radial-gradient(circle at 82% 9%, rgba(0, 255, 255, 0.22) 0, transparent 28%),
-      radial-gradient(circle at 8% 30%, rgba(0, 255, 255, 0.14) 0, transparent 24%),
-      linear-gradient(180deg, #ffffff 0%, #f2ffff 28%, #ffffff 68%, #ffffff 100%);
+    background: #ffffff;
   }
 
   .dark .home-page-background {
-    background:
-      radial-gradient(circle at 82% 9%, rgba(0, 255, 255, 0.22) 0, transparent 28%),
-      radial-gradient(circle at 8% 30%, rgba(0, 255, 255, 0.14) 0, transparent 24%),
-      linear-gradient(180deg, #ffffff 0%, #f2ffff 28%, #ffffff 68%, #ffffff 100%);
+    background: #ffffff;
   }
 
   .app-display-title {
@@ -249,5 +243,36 @@
     font-weight: var(--app-weight-semibold);
     letter-spacing: 0;
     line-height: 1.25rem;
+  }
+
+  :where(button, [role="button"], a[href], label.cursor-pointer) {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    user-select: none;
+  }
+
+  :where(button, [role="button"], a[href], label.cursor-pointer):where(:not(:disabled), :not([aria-disabled="true"])) {
+    cursor: pointer;
+    transition-duration: 120ms;
+    transition-property: background-color, border-color, box-shadow, color, filter, opacity, transform;
+    transition-timing-function: cubic-bezier(0.2, 0, 0.2, 1);
+  }
+
+  :where(button, [role="button"], a[href], label.cursor-pointer):where(:not(:disabled), :not([aria-disabled="true"])):active {
+    filter: brightness(0.96);
+    transform: translateY(1px) scale(0.985);
+  }
+
+  :where(button, [role="button"], a[href], input, select, textarea):focus-visible {
+    outline: 2px solid var(--app-color-accent);
+    outline-offset: 2px;
+  }
+
+  :where(button, [role="button"])[aria-pressed="true"],
+  :where(button, [role="button"])[aria-selected="true"],
+  :where(button, [role="option"])[aria-selected="true"] {
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--app-color-accent) 35%, transparent),
+      0 6px 16px rgba(0, 184, 196, 0.16);
   }
 }

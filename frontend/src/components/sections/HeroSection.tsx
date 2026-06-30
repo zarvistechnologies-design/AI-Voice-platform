@@ -1,7 +1,3 @@
-"use client";
-
-import { useState } from "react";
-
 const companyNames = [
   "CAPSULE",
   "doxy.me",
@@ -15,30 +11,6 @@ const companyNames = [
   "CollectIQ",
 ];
 
-const carouselSlides = [
-  {
-    kicker: "Introducing Super Agents",
-    title: "Build AI voice agents that answer, qualify, and act.",
-    body: "Launch production-ready voice agents for sales, support, scheduling, dispatch, reminders, and customer follow-ups.",
-    cta: "Explore agents",
-    theme: "cyan",
-  },
-  {
-    kicker: "Shopify + WhatsApp",
-    title: "Grow your Shopify store with WhatsApp and AI voice follow-ups.",
-    body: "Recover carts, confirm orders, answer questions, and route high-intent shoppers from WhatsApp chats into helpful voice workflows.",
-    cta: "Connect workflows",
-    theme: "cyan",
-  },
-  {
-    kicker: "Drive Business Growth",
-    title: "Turn every customer conversation into a next step.",
-    body: "Use autonomous agents to qualify leads, summarize calls, detect sentiment, update your CRM, and hand off urgent conversations.",
-    cta: "Start growing",
-    theme: "lime",
-  },
-];
-
 const metrics = [
   ["24/7", "agent coverage"],
   ["140+", "languages"],
@@ -46,233 +18,115 @@ const metrics = [
   ["100%", "call summaries"],
 ];
 
-function VoicePanel() {
-  const bars = [26, 42, 58, 74, 52, 84, 64, 92, 72, 54, 66, 48, 34];
+const waveDots = Array.from({ length: 220 }, (_, index) => {
+  const columns = 44;
+  const column = index % columns;
+  const row = Math.floor(index / columns);
+  const wave = Math.sin(column * 0.34 + row * 0.72);
+  const drift = Math.cos(column * 0.16 + row * 0.5);
+  const size = 2 + ((index * 7) % 5);
 
+  return {
+    left: `${(column / (columns - 1)) * 100 + drift * 1.2}%`,
+    top: `${18 + row * 12 + wave * 8}%`,
+    width: `${size}px`,
+    height: `${size}px`,
+    opacity: `${0.32 + ((index * 11) % 45) / 100}`,
+    animationDelay: `${-((index * 0.11) % 3.5)}s`,
+    animationDuration: `${4.8 + ((index * 13) % 28) / 10}s`,
+  };
+});
+
+const orbitDots = Array.from({ length: 28 }, (_, index) => ({
+  left: `${8 + ((index * 17) % 84)}%`,
+  top: `${8 + ((index * 23) % 78)}%`,
+  width: `${4 + ((index * 5) % 8)}px`,
+  height: `${4 + ((index * 5) % 8)}px`,
+  animationDelay: `${-((index * 0.21) % 5)}s`,
+  animationDuration: `${7 + ((index * 3) % 6)}s`,
+}));
+
+function FloatingDotHero() {
   return (
-    <div className="relative mx-auto w-full max-w-[430px] rounded-lg border border-white/15 bg-black/25 p-5 text-left shadow-[0_24px_70px_rgba(0,0,0,0.28)] backdrop-blur">
-      <div className="mb-5 flex items-center justify-between">
-        <span className="inline-flex items-center gap-2 text-sm font-bold text-white/85">
-          <span className="size-2 rounded-full bg-emerald-400" />
-          Live voice session
-        </span>
-        <span className="text-sm font-black text-white">00:42</span>
-      </div>
-      <div className="grid h-32 place-items-center rounded-lg border border-white/10 bg-black/20">
-        <div className="flex h-24 items-center gap-1.5">
-          {bars.map((height, index) => (
+    <div className="relative min-h-[460px] overflow-hidden rounded-[32px] border border-cyan-100 bg-white shadow-[0_24px_80px_rgba(0,184,196,0.14)]">
+      <div className="absolute inset-0">
+        <div className="absolute inset-x-[-8%] top-[4%] h-[78%]">
+          {waveDots.map((dot, index) => (
             <span
-              className="w-2 rounded-full bg-gradient-to-t from-cyan-300 to-fuchsia-300"
-              key={index}
-              style={{ height }}
+              className="home-wave-dot absolute rounded-full bg-cyan-400 shadow-[0_0_16px_rgba(0,184,196,0.38)]"
+              key={`wave-${index}`}
+              style={dot}
             />
           ))}
         </div>
-      </div>
-      <div className="mt-5 flex flex-wrap gap-2">
-        {["Aria - Warm", "English", "1.0x"].map((label) => (
-          <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-white/80" key={label}>
-            {label}
-          </span>
-        ))}
-      </div>
-      <div className="mt-5 grid gap-3 text-sm leading-5">
-        <p className="m-0 rounded-md bg-white/10 px-4 py-3 text-white/85">
-          <strong>Customer:</strong> Can I reschedule my appointment?
-        </p>
-        <p className="m-0 rounded-md bg-cyan-300/20 px-4 py-3 text-white">
-          <strong>AI Agent:</strong> Absolutely, I found three open times for you today.
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function ShopifyPanel() {
-  return (
-    <div className="mx-auto grid w-full max-w-[500px] gap-4 rounded-[28px] border-[12px] border-white bg-white p-4 text-left shadow-[0_28px_70px_rgba(15,23,42,0.20)]">
-      <div className="rounded-2xl bg-emerald-600 px-4 py-3 font-black text-white">Shopify Store</div>
-      <div className="grid gap-4 rounded-2xl bg-cyan-50 p-5">
-        <div className="h-24 rounded-lg bg-[linear-gradient(135deg,#111827,#00FFFF)]" />
-        <p className="m-0 text-base leading-7 text-slate-700">
-          Hi Rahul, your cart is ready. Want help choosing the right size?
-        </p>
-        <div className="grid grid-cols-2 gap-3">
-          <button className="rounded-md bg-slate-950 px-4 py-3 font-black text-white" type="button">
-            Pay Now
-          </button>
-          <button className="rounded-md border border-cyan-200 bg-white px-4 py-3 font-black text-cyan-800" type="button">
-            Talk to agent
-          </button>
-        </div>
-      </div>
-      <div className="grid gap-2 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-cyan-100">
-        {["Cart recovered", "WhatsApp reply sent", "Voice follow-up ready"].map((item) => (
-          <span className="rounded-lg bg-cyan-50 px-4 py-3 text-sm font-bold text-slate-700" key={item}>
-            OK {item}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function GrowthPanel() {
-  return (
-    <div className="mx-auto grid w-full max-w-[520px] gap-5 text-left">
-      <div className="rounded-[24px] bg-white p-5 shadow-[0_24px_64px_rgba(15,23,42,0.16)] ring-1 ring-cyan-100">
-        <div className="mb-4 text-sm font-black text-cyan-700">Pre-built AI Agent</div>
-        <div className="grid gap-3 rounded-xl bg-cyan-50 p-5">
-          <strong className="text-xl text-slate-950">Voice Growth Agent</strong>
-          <span className="rounded-md bg-white px-3 py-2 text-sm text-slate-600">Objective: qualify and route callers</span>
-          <span className="rounded-md bg-white px-3 py-2 text-sm text-slate-600">Action: create CRM summary</span>
-          <span className="rounded-md bg-white px-3 py-2 text-sm text-slate-600">Tone: warm and professional</span>
-        </div>
-      </div>
-      <div className="grid grid-cols-3 gap-3">
-        {["Leads", "Sales", "Support"].map((label) => (
-          <span className="rounded-xl bg-white/80 px-4 py-4 text-center text-sm font-black text-slate-800 shadow-sm" key={label}>
-            {label}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function SuperAgentsSlide() {
-  return (
-    <article className="grid min-w-full content-center justify-items-center bg-white px-6 py-16 text-center sm:px-10 lg:min-h-[570px] lg:px-16 xl:px-20">
-      <span className="text-sm font-black uppercase text-cyan-700">
-        Introducing Super Agents
-      </span>
-      <h1 className="mt-6 mb-0 max-w-6xl text-[clamp(1.95rem,3.7vw,3.35rem)] leading-[1.1] font-black text-slate-950">
-        Put your customer engagement on autopilot
-        <br />
-        With Conversational AI Agents
-      </h1>
-      <p className="mt-5 mb-0 max-w-4xl text-sm leading-6 text-slate-700 sm:text-base">
-        Deliver seamless, real-time customer interactions with speed, relevance, and precision
-      </p>
-      <div className="mt-8 flex flex-wrap items-center gap-3">
-        <a
-          className="rounded-full bg-slate-950 px-6 py-3 text-sm font-black text-white shadow-lg"
-          href="#platform"
-        >
-          Explore agents
-        </a>
-        <a
-          className="rounded-full border border-cyan-300 px-6 py-3 text-sm font-black text-cyan-800"
-          href="#contact"
-        >
-          Contact sales
-        </a>
-      </div>
-    </article>
-  );
-}
-
-function SlideVisual({ index }: { index: number }) {
-  if (index === 1) {
-    return <ShopifyPanel />;
-  }
-
-  if (index === 2) {
-    return <GrowthPanel />;
-  }
-
-  return <VoicePanel />;
-}
-
-function LandingCarousel() {
-  const [activeSlide, setActiveSlide] = useState(0);
-
-  const goToSlide = (direction: "previous" | "next") => {
-    setActiveSlide((current) =>
-      direction === "next"
-        ? (current + 1) % carouselSlides.length
-        : (current - 1 + carouselSlides.length) % carouselSlides.length,
-    );
-  };
-
-  return (
-    <div className="relative overflow-hidden rounded-[26px] shadow-[0_28px_90px_rgba(15,23,42,0.20)] ring-1 ring-cyan-100">
-      <div
-        className="flex transition-transform duration-500 ease-out"
-        style={{ transform: `translateX(-${activeSlide * 100}%)` }}
-      >
-        {carouselSlides.map((slide, index) => (
-          index === 0 ? (
-            <SuperAgentsSlide key={slide.title} />
-          ) : (
-            <article
-              className={`grid min-w-full items-center gap-10 px-6 py-12 sm:px-10 lg:min-h-[570px] lg:grid-cols-[minmax(0,1fr)_minmax(420px,0.95fr)] lg:px-16 xl:px-20 ${
-                slide.theme === "cyan"
-                  ? "bg-[linear-gradient(135deg,#ffffff_0%,#eaffff_40%,#00FFFF_100%)] text-slate-950"
-                  : "bg-[linear-gradient(135deg,#ffffff_0%,#ecfccb_42%,#67e8f9_100%)] text-slate-950"
-              }`}
-              key={slide.title}
-            >
-              <div className="max-w-2xl">
-                <p className="m-0 text-sm font-black uppercase text-cyan-700">
-                  {slide.kicker}
-                </p>
-                <h1 className="mt-5 mb-0 text-[clamp(1.95rem,4vw,3.6rem)] leading-[1.05] font-black">
-                  {slide.title}
-                </h1>
-                <p className="mt-5 mb-0 max-w-xl text-sm leading-6 text-slate-700 sm:text-base">
-                  {slide.body}
-                </p>
-                <div className="mt-8 flex flex-wrap items-center gap-3">
-                  <a
-                    className="rounded-full bg-slate-950 px-6 py-3 text-sm font-black text-white shadow-lg"
-                    href="#platform"
-                  >
-                    {slide.cta}
-                  </a>
-                  <a
-                    className="rounded-full border border-cyan-300 px-6 py-3 text-sm font-black text-cyan-800"
-                    href="#contact"
-                  >
-                    Contact sales
-                  </a>
-                </div>
-              </div>
-              <SlideVisual index={index} />
-            </article>
-          )
-        ))}
-      </div>
-
-      <div className="pointer-events-none absolute inset-y-0 left-0 right-0 flex items-center justify-between px-4">
-        <button
-          aria-label="Show previous landing topic"
-          className="pointer-events-auto grid size-9 place-items-center rounded-full bg-white/95 text-lg font-medium text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,0.14)] ring-1 ring-slate-200/70 transition hover:-translate-x-0.5 hover:bg-cyan-50 hover:text-slate-950"
-          onClick={() => goToSlide("previous")}
-          type="button"
-        >
-          {"<"}
-        </button>
-        <button
-          aria-label="Show next landing topic"
-          className="pointer-events-auto grid size-9 place-items-center rounded-full bg-white/95 text-lg font-medium text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,0.14)] ring-1 ring-slate-200/70 transition hover:translate-x-0.5 hover:bg-cyan-50 hover:text-slate-950"
-          onClick={() => goToSlide("next")}
-          type="button"
-        >
-          {">"}
-        </button>
-      </div>
-
-      <div className="absolute bottom-5 left-0 right-0 flex justify-center gap-2">
-        {carouselSlides.map((slide, index) => (
-          <button
-            aria-label={`Show ${slide.kicker}`}
-            className={`h-2.5 rounded-full transition-all ${index === activeSlide ? "w-10 bg-cyan-400" : "w-2.5 bg-white/65"}`}
-            key={slide.kicker}
-            onClick={() => setActiveSlide(index)}
-            type="button"
+        {orbitDots.map((dot, index) => (
+          <span
+            className="home-orbit-dot absolute rounded-full bg-white shadow-[0_0_0_1px_rgba(0,184,196,0.18),0_0_24px_rgba(0,184,196,0.28)]"
+            key={`orbit-${index}`}
+            style={dot}
           />
         ))}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(255,255,255,0.92)_0%,rgba(255,255,255,0.72)_30%,rgba(255,255,255,0.18)_60%,rgba(255,255,255,0)_100%)]" />
+      </div>
+
+      <div className="relative z-10 grid min-h-[460px] content-center justify-items-center px-5 py-12 text-center sm:px-8">
+        <div className="inline-flex items-center gap-3 rounded-full border border-cyan-100 bg-white/90 px-4 py-2 shadow-[0_12px_32px_rgba(0,184,196,0.10)]">
+          <span className="grid size-10 place-items-center rounded-full bg-cyan-400 text-sm font-black text-white shadow-[0_10px_28px_rgba(0,184,196,0.24)]">
+            AI
+          </span>
+          <span className="text-sm font-black tracking-[0.18em] text-cyan-700">AI VOICE PLATFORM</span>
+        </div>
+
+        <div className="relative mt-10 w-full max-w-[780px]">
+          <div className="absolute left-1/2 top-6 h-40 w-[72%] -translate-x-1/2 rounded-full bg-cyan-200/35 blur-3xl" />
+          <div className="relative mx-auto grid max-w-[620px] gap-4 rounded-[26px] border border-cyan-100 bg-white/88 p-5 text-left shadow-[0_24px_70px_rgba(15,23,42,0.10)] backdrop-blur sm:p-6">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-[0.16em] text-cyan-700">Live agent builder</span>
+                <h2 className="m-0 mt-2 text-xl font-black text-slate-950">Customer Support Agent</h2>
+              </div>
+              <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">Live</span>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-3">
+              {["Listen", "Understand", "Action"].map((item, index) => (
+                <div className="rounded-2xl border border-cyan-100 bg-cyan-50/80 p-4" key={item}>
+                  <span className="grid size-9 place-items-center rounded-xl bg-white text-sm font-black text-cyan-700 shadow-sm">
+                    {index + 1}
+                  </span>
+                  <strong className="mt-4 block text-sm font-black text-slate-900">{item}</strong>
+                  <span className="mt-1 block text-xs leading-5 text-slate-500">
+                    {index === 0 ? "Realtime voice" : index === 1 ? "Intent and context" : "CRM and handoff"}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div className="rounded-2xl border border-cyan-100 bg-white p-4">
+              <div className="flex h-20 items-center justify-center gap-1.5">
+                {[30, 46, 62, 78, 54, 88, 68, 50, 72, 42, 58, 36].map((height, index) => (
+                  <span
+                    className="home-audio-bar w-2 rounded-full bg-cyan-400"
+                    key={`${height}-${index}`}
+                    style={{ height, animationDelay: `${index * 90}ms` }}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="pointer-events-none absolute -right-2 top-20 hidden w-44 rounded-2xl border border-cyan-100 bg-white/92 p-4 text-left shadow-[0_18px_50px_rgba(15,23,42,0.12)] sm:block">
+            <span className="text-xs font-bold uppercase tracking-wider text-cyan-700">Next action</span>
+            <strong className="mt-2 block text-sm text-slate-900">Book appointment</strong>
+            <span className="mt-2 block text-xs leading-5 text-slate-500">Calendar slot found</span>
+          </div>
+
+          <div className="pointer-events-none absolute -left-2 bottom-8 hidden w-44 rounded-2xl border border-cyan-100 bg-white/92 p-4 text-left shadow-[0_18px_50px_rgba(15,23,42,0.12)] sm:block">
+            <span className="text-xs font-bold uppercase tracking-wider text-cyan-700">Call summary</span>
+            <strong className="mt-2 block text-sm text-slate-900">Ready in CRM</strong>
+            <span className="mt-2 block text-xs leading-5 text-slate-500">Transcript attached</span>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -293,21 +147,19 @@ function MetricsStrip() {
 
 function CompanyStrip() {
   return (
-    <section className="overflow-hidden py-10 text-center" aria-label="Companies using AI Voice Platform">
+    <section className="py-10 text-center" aria-label="Companies using AI Voice Platform">
       <h2 className="m-0 text-2xl font-black text-slate-950">
         Trusted by teams building better customer conversations
       </h2>
-      <div className="mt-8 overflow-hidden">
-        <div className="home-company-marquee flex w-max items-center gap-4">
-          {[...companyNames, ...companyNames].map((company, index) => (
-            <span
-              className="inline-flex min-h-12 min-w-max items-center rounded-full border border-cyan-100 bg-white px-6 text-sm font-black uppercase text-slate-700 shadow-sm"
-              key={`${company}-${index}`}
-            >
-              {company}
-            </span>
-          ))}
-        </div>
+      <div className="mx-auto mt-8 flex max-w-5xl flex-wrap justify-center gap-3">
+        {companyNames.map((company) => (
+          <span
+            className="inline-flex min-h-11 min-w-max items-center rounded-full border border-cyan-100 bg-white px-5 text-xs font-black uppercase text-slate-700 shadow-sm"
+            key={company}
+          >
+            {company}
+          </span>
+        ))}
       </div>
     </section>
   );
@@ -315,21 +167,70 @@ function CompanyStrip() {
 
 export function HeroSection() {
   return (
-    <section id="product" className="mx-auto grid w-full max-w-[1540px] gap-8 px-4 pt-28 sm:px-6 lg:px-8">
-      <div className="mx-auto grid w-full max-w-[1320px] gap-8">
-        <LandingCarousel />
+    <section id="product" className="relative mx-auto grid w-full max-w-[1540px] gap-8 overflow-hidden px-4 pt-28 sm:px-6 lg:px-8">
+      <div className="pointer-events-none absolute left-1/2 top-20 h-72 w-72 -translate-x-1/2 rounded-full bg-cyan-200/30 blur-3xl" />
+      <div className="relative mx-auto grid w-full max-w-[1320px] gap-8">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(520px,1.15fr)] lg:items-center">
+          <div className="max-w-2xl">
+            <span className="inline-flex rounded-full border border-cyan-100 bg-white px-4 py-2 text-sm font-black uppercase tracking-[0.16em] text-cyan-700 shadow-sm">
+              Voice AI for every call
+            </span>
+            <h1 className="mt-6 mb-0 text-[clamp(2.45rem,5.8vw,5.8rem)] leading-[0.98] font-black text-slate-950">
+              AI voice agents that answer, understand, and act.
+            </h1>
+            <p className="mt-6 mb-0 max-w-xl text-base leading-8 text-slate-600 sm:text-lg">
+              Build multilingual agents for support, sales, scheduling, reminders, and customer follow-ups from one clean workspace.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <a
+                className="rounded-full bg-cyan-400 px-7 py-4 text-sm font-black text-white shadow-[0_16px_36px_rgba(0,184,196,0.26)] hover:bg-cyan-500"
+                href="/dashboard"
+              >
+                Build an agent
+              </a>
+              <a
+                className="rounded-full border border-cyan-200 bg-white px-7 py-4 text-sm font-black text-cyan-800 shadow-sm hover:bg-cyan-50"
+                href="#platform"
+              >
+                Explore platform
+              </a>
+            </div>
+          </div>
+
+          <FloatingDotHero />
+        </div>
+
         <MetricsStrip />
         <CompanyStrip />
       </div>
 
       <style>{`
-        @keyframes home-company-marquee {
-          from { transform: translateX(0); }
-          to { transform: translateX(-50%); }
+        @keyframes home-wave-float {
+          0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+          50% { transform: translate3d(0, -14px, 0) scale(1.35); }
         }
 
-        .home-company-marquee {
-          animation: home-company-marquee 30s linear infinite;
+        @keyframes home-orbit-float {
+          0%, 100% { transform: translate3d(0, 0, 0); opacity: 0.65; }
+          50% { transform: translate3d(10px, -18px, 0); opacity: 1; }
+        }
+
+        @keyframes home-audio-pulse {
+          0%, 100% { transform: scaleY(0.58); opacity: 0.55; }
+          50% { transform: scaleY(1); opacity: 1; }
+        }
+
+        .home-wave-dot {
+          animation: home-wave-float var(--duration, 6s) ease-in-out infinite;
+        }
+
+        .home-orbit-dot {
+          animation: home-orbit-float var(--duration, 8s) ease-in-out infinite;
+        }
+
+        .home-audio-bar {
+          animation: home-audio-pulse 1.2s ease-in-out infinite;
+          transform-origin: center;
         }
       `}</style>
     </section>

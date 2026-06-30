@@ -1,6 +1,5 @@
 import { getAuthHeaders, getSession } from "@/lib/auth";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+import { API_URL } from "@/lib/apiBase";
 
 export type ProviderModel = "openai-realtime" | "gemini-live" | "sarvam-gemini";
 export type PipelineMode = "realtime" | "pipeline";
@@ -137,6 +136,28 @@ export type LatencyGuide = {
   stt: Partial<Record<SttProvider, number>>;
   tts: Partial<Record<PipelineProvider, number>>;
   telephony: number;
+};
+
+export type VoiceConfigResponse = {
+  configured: boolean;
+  agentName: string;
+  providers: { id: string; label: string; detail: string; configured: boolean }[];
+  languageCatalog: VoiceLanguageOption[];
+  modelCatalog: ModelCatalog;
+  pricing: PricingGuide;
+  latencyGuide: LatencyGuide;
+  sip: {
+    inboundConfigured: boolean;
+    outboundConfigured: boolean;
+    inboundDestinationConfigured: boolean;
+    callerId: string;
+  };
+  vobiz: {
+    configured: boolean;
+    accountId: string;
+    status: string;
+    ownedNumberCount: number;
+  };
 };
 
 export type VoiceLanguageOption = {
@@ -546,47 +567,103 @@ async function request<T>(path: string, init: RequestInit = {}) {
   return data;
 }
 
+type VoiceRequestCacheEntry = {
+  path: string;
+  expiresAt: number;
+  promise: Promise<unknown>;
+};
+
+export type AgentSummary = Pick<BackendAgent, "_id" | "name" | "team" | "status" | "phone">;
+
+const voiceRequestCache = new Map<string, VoiceRequestCacheEntry>();
+
+function voiceCacheKey(path: string) {
+  const session = getSession();
+  return session ? `${session.id}:${session.organization?.id ?? ""}:${path}` : "";
+}
+
+function seedVoiceCache<T>(path: string, value: T, ttlMs: number) {
+  const key = voiceCacheKey(path);
+  if (!key) return;
+  voiceRequestCache.set(key, {
+    path,
+    expiresAt: Date.now() + ttlMs,
+    promise: Promise.resolve(value),
+  });
+}
+
+function cachedRequest<T>(path: string, ttlMs: number) {
+  const key = voiceCacheKey(path);
+  if (!key) return request<T>(path);
+  const existing = voiceRequestCache.get(key);
+  if (existing && existing.expiresAt > Date.now()) {
+    return existing.promise as Promise<T>;
+  }
+
+  const promise = request<T>(path).catch((error) => {
+    voiceRequestCache.delete(key);
+    throw error;
+  });
+  voiceRequestCache.set(key, { path, expiresAt: Date.now() + ttlMs, promise });
+  return promise;
+}
+
+function invalidateVoiceCache(...pathPrefixes: string[]) {
+  for (const [key, entry] of voiceRequestCache) {
+    if (pathPrefixes.some((prefix) => entry.path.startsWith(prefix))) {
+      voiceRequestCache.delete(key);
+    }
+  }
+}
+
+async function mutation<T>(
+  path: string,
+  init: RequestInit,
+  invalidates: string[] = [],
+) {
+  const result = await request<T>(path, init);
+  if (invalidates.length) invalidateVoiceCache(...invalidates);
+  return result;
+}
+
 export const voiceApi = {
   config: () =>
-    request<{
-      configured: boolean;
-      agentName: string;
-      providers: { id: string; label: string; detail: string; configured: boolean }[];
-      languageCatalog: VoiceLanguageOption[];
-      modelCatalog: ModelCatalog;
-      pricing: PricingGuide;
-      latencyGuide: LatencyGuide;
-      sip: {
-        inboundConfigured: boolean;
-        outboundConfigured: boolean;
-        inboundDestinationConfigured: boolean;
-        callerId: string;
-      };
-      vobiz: {
-        configured: boolean;
-        accountId: string;
-        status: string;
-        ownedNumberCount: number;
-      };
-    }>("/config"),
-  agents: () => request<{ agents: BackendAgent[] }>("/agents"),
-  agentTemplates: () => request<{ templates: AgentTemplate[] }>("/agent-templates"),
+    cachedRequest<VoiceConfigResponse>("/config", 5 * 60_000),
+  bootstrap: () =>
+    cachedRequest<{
+      agents: BackendAgent[];
+      config: VoiceConfigResponse;
+      templates: AgentTemplate[];
+    }>("/bootstrap", 15_000).then((result) => {
+      seedVoiceCache("/agents", { agents: result.agents }, 15_000);
+      seedVoiceCache(
+        "/agents?view=summary",
+        { agents: result.agents.map(({ _id, name, team, status, phone }) => ({ _id, name, team, status, phone })) },
+        15_000,
+      );
+      seedVoiceCache("/config", result.config, 5 * 60_000);
+      seedVoiceCache("/agent-templates", { templates: result.templates }, 60 * 60_000);
+      return result;
+    }),
+  agents: () => cachedRequest<{ agents: BackendAgent[] }>("/agents", 15_000),
+  agentSummaries: () => cachedRequest<{ agents: AgentSummary[] }>("/agents?view=summary", 15_000),
+  agentTemplates: () => cachedRequest<{ templates: AgentTemplate[] }>("/agent-templates", 60 * 60_000),
   createAgent: () =>
-    request<{ agent: BackendAgent }>("/agents", {
+    mutation<{ agent: BackendAgent }>("/agents", {
       method: "POST",
       body: JSON.stringify({}),
-    }),
+    }, ["/agents"]),
   createAgentFromTemplate: (templateId: string) =>
-    request<{ agent: BackendAgent }>(`/agent-templates/${templateId}`, { method: "POST" }),
+    mutation<{ agent: BackendAgent }>(`/agent-templates/${templateId}`, { method: "POST" }, ["/agents"]),
   saveAgent: (agentId: string, changes: Partial<BackendAgent>) =>
-    request<{ agent: BackendAgent; routingWarning: string }>(`/agents/${agentId}`, {
+    mutation<{ agent: BackendAgent; routingWarning: string }>(`/agents/${agentId}`, {
       method: "PUT",
       body: JSON.stringify(changes),
-    }),
+    }, ["/agents"]),
   cloneAgent: (agentId: string) =>
-    request<{ agent: BackendAgent }>(`/agents/${agentId}/clone`, { method: "POST" }),
+    mutation<{ agent: BackendAgent }>(`/agents/${agentId}/clone`, { method: "POST" }, ["/agents"]),
   deleteAgent: (agentId: string) =>
-    request<Record<string, never>>(`/agents/${agentId}`, { method: "DELETE" }),
+    mutation<Record<string, never>>(`/agents/${agentId}`, { method: "DELETE" }, ["/agents", "/phone-numbers"]),
   testAgentTool: (
     agentId: string,
     input: { toolId?: string; tool?: AgentTool; args?: Record<string, unknown> },
@@ -660,34 +737,36 @@ export const voiceApi = {
         ...(options.metadata ? { metadata: options.metadata } : {}),
       }),
     }),
-  phoneNumbers: () => request<{ numbers: BackendPhoneNumber[] }>("/phone-numbers"),
+  phoneNumbers: () => cachedRequest<{ numbers: BackendPhoneNumber[] }>("/phone-numbers", 15_000),
   createPhoneNumber: (input: PhoneNumberImportInput) =>
-    request<{ number: BackendPhoneNumber }>("/phone-numbers", {
+    mutation<{ number: BackendPhoneNumber }>("/phone-numbers", {
       method: "POST",
       body: JSON.stringify(input),
-    }),
+    }, ["/phone-numbers", "/agents"]),
   assignPhoneNumberAgent: (phoneNumberId: string, agentId: string | null) =>
-    request<{ number: BackendPhoneNumber; routingWarning: string }>(
+    mutation<{ number: BackendPhoneNumber; routingWarning: string }>(
       `/phone-numbers/${phoneNumberId}/agent`,
       {
         method: "PUT",
         body: JSON.stringify({ agentId }),
       },
+      ["/phone-numbers", "/agents"],
     ),
   deletePhoneNumber: (phoneNumberId: string) =>
-    request<{ deleted: boolean; routingWarning: string }>(
+    mutation<{ deleted: boolean; routingWarning: string }>(
       `/phone-numbers/${phoneNumberId}`,
       { method: "DELETE" },
+      ["/phone-numbers", "/agents"],
     ),
   vobizNumbers: () => request<VobizNumberList>("/vobiz/numbers"),
   vobizIntegration: () => request<VobizIntegration>("/integrations/vobiz"),
   connectVobiz: (authId: string, authToken: string) =>
-    request<VobizIntegration>("/integrations/vobiz", {
+    mutation<VobizIntegration>("/integrations/vobiz", {
       method: "PUT",
       body: JSON.stringify({ authId, authToken }),
-    }),
+    }, ["/config"]),
   disconnectVobiz: () =>
-    request<Record<string, never>>("/integrations/vobiz", { method: "DELETE" }),
+    mutation<Record<string, never>>("/integrations/vobiz", { method: "DELETE" }, ["/config"]),
   vobizInventory: (input: { country?: string; search?: string } = {}) => {
     const query = new URLSearchParams();
     if (input.country) query.set("country", input.country);
@@ -701,10 +780,10 @@ export const voiceApi = {
     direction: BackendPhoneNumber["direction"];
     region: string;
   }) =>
-    request<{ number: BackendPhoneNumber }>("/phone-numbers/import", {
+    mutation<{ number: BackendPhoneNumber }>("/phone-numbers/import", {
       method: "POST",
       body: JSON.stringify(input),
-    }),
+    }, ["/phone-numbers", "/agents"]),
   purchasePhoneNumber: (input: {
     agentId?: string;
     phoneNumber: string;
@@ -712,12 +791,12 @@ export const voiceApi = {
     direction: BackendPhoneNumber["direction"];
     currency?: string;
   }) =>
-    request<{ number: BackendPhoneNumber }>("/phone-numbers/purchase", {
+    mutation<{ number: BackendPhoneNumber }>("/phone-numbers/purchase", {
       method: "POST",
       body: JSON.stringify(input),
-    }),
+    }, ["/phone-numbers", "/agents"]),
   syncPhoneNumbers: () =>
-    request<{
+    mutation<{
       vobiz: VobizNumberList;
       routes: {
         total: number;
@@ -725,7 +804,7 @@ export const voiceApi = {
         needsSetup: number;
         errors: { number: string; message: string }[];
       };
-    }>("/phone-numbers/sync", { method: "POST" }),
+    }>("/phone-numbers/sync", { method: "POST" }, ["/phone-numbers", "/agents", "/config"]),
   calls: (
     input: {
       agentId?: string;

@@ -1,6 +1,6 @@
 import { getAuthHeaders, getSession } from "@/lib/auth";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+import { cachedApiRequest, invalidateApiCache } from "@/lib/apiCache";
+import { API_URL } from "@/lib/apiBase";
 
 export type IntegrationProvider = {
   id: "vobiz" | "hubspot" | "calendly" | "slack";
@@ -24,9 +24,15 @@ async function request<T>(path: string, init: RequestInit = {}) {
 }
 
 export const integrationsApi = {
-  list: () => request<{ providers: IntegrationProvider[] }>("/"),
-  connect: (provider: Exclude<IntegrationProvider["id"], "vobiz">, credential: string) =>
-    request<IntegrationProvider>(`/${provider}`, { method: "PUT", body: JSON.stringify({ credential }) }),
-  disconnect: (provider: Exclude<IntegrationProvider["id"], "vobiz">) =>
-    request<Record<string, never>>(`/${provider}`, { method: "DELETE" }),
+  list: () => cachedApiRequest("integrations", "/", 15_000, () => request<{ providers: IntegrationProvider[] }>("/")),
+  connect: async (provider: Exclude<IntegrationProvider["id"], "vobiz">, credential: string) => {
+    const result = await request<IntegrationProvider>(`/${provider}`, { method: "PUT", body: JSON.stringify({ credential }) });
+    invalidateApiCache("integrations");
+    return result;
+  },
+  disconnect: async (provider: Exclude<IntegrationProvider["id"], "vobiz">) => {
+    const result = await request<Record<string, never>>(`/${provider}`, { method: "DELETE" });
+    invalidateApiCache("integrations");
+    return result;
+  },
 };

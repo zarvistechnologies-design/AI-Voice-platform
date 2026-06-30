@@ -21,13 +21,13 @@ const maxUploadBytes = 300 * 1024;
 const buttonClass =
   "app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 transition disabled:cursor-not-allowed disabled:opacity-50";
 const controlClass =
-  "app-control-text min-h-11 w-full rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10";
+  "app-control-text min-h-11 w-full rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10";
 const documentTones = [
   "border-[#a5f3fc] bg-[#ecfeff] text-[#0891b2]",
-  "border-[#bae6fd] bg-[#f0f9ff] text-[#0369a1]",
-  "border-[#bae6fd] bg-[#f0f9ff] text-[#0369a1]",
-  "border-[#bae6fd] bg-[#f0f9ff] text-[#0369a1]",
-  "border-[#bae6fd] bg-[#f0f9ff] text-[#0369a1]",
+  "border-[#99f6e8] bg-[#ecfeff] text-[#008996]",
+  "border-[#99f6e8] bg-[#ecfeff] text-[#008996]",
+  "border-[#99f6e8] bg-[#ecfeff] text-[#008996]",
+  "border-[#99f6e8] bg-[#ecfeff] text-[#008996]",
 ];
 
 function Icon({ icon, className = "size-4" }: { icon: IconName; className?: string }) {
@@ -93,12 +93,22 @@ export function KnowledgeBaseShell() {
 
     let cancelled = false;
     void (async () => {
-      const validatedSession = await validateStoredSession();
+      const agentsPromise = voiceApi.agents().then(
+        (value) => ({ value, error: null }),
+        (error: unknown) => ({ value: null, error }),
+      );
+      const [validatedSession, agentsResult] = await Promise.all([
+        validateStoredSession(),
+        agentsPromise,
+      ]);
       if (!validatedSession) {
         if (!cancelled) router.replace("/login?next=/dashboard/knowledge");
         return;
       }
-      const result = await voiceApi.agents();
+      if (!agentsResult.value) {
+        throw agentsResult.error ?? new Error("Could not load voice agents.");
+      }
+      const result = agentsResult.value;
       if (cancelled) return;
       setAgents(result.agents);
       setSelectedAgentId((current) => current || result.agents[0]?._id || "");
@@ -133,7 +143,7 @@ export function KnowledgeBaseShell() {
   const totalCharacters = documents.reduce((total, document) => total + document.content.trim().length, 0);
   const knowledgeLimitReached = documents.length >= maxKnowledgeFiles;
   const selectedAgentName = selectedAgent?.name ?? "Selected agent";
-  const libraryStatTone = "border-[#bae6fd] bg-[#f0f9ff] text-[#0369a1]";
+  const libraryStatTone = "border-[#99f6e8] bg-[#ecfeff] text-[#008996]";
   const libraryStats = [
     { label: "Items", value: `${documents.length}/${maxKnowledgeFiles}`, tone: libraryStatTone },
     { label: "Active", value: readyCount.toLocaleString("en-IN"), tone: libraryStatTone },
@@ -286,10 +296,10 @@ export function KnowledgeBaseShell() {
       />
 
       <section className="min-w-0 overflow-y-auto">
-        <header className="border-b border-[#bae6fd] bg-white px-4 py-4 sm:px-6 lg:px-8">
+        <header className="border-b border-[#99f6e8] bg-white px-4 py-4 sm:px-6 lg:px-8">
           <div className="mx-auto flex w-full max-w-1500px flex-wrap items-center justify-between gap-4">
             <div>
-              <span className="app-label text-[#0284c7]">Knowledge Base</span>
+              <span className="app-label text-[#00b8c4]">Knowledge Base</span>
               <h1 className="m-0 text-xl font-semibold leading-7 text-[#0f172a]">Knowledge studio</h1>
               <p className="app-caption mt-1 mb-0 text-[#475569]">Agent facts, files, and searchable answers.</p>
             </div>
@@ -344,7 +354,7 @@ export function KnowledgeBaseShell() {
                   </div>
                   <div className="h-2 overflow-hidden rounded-full bg-[#e5e7eb]">
                     <div
-                      className="h-full rounded-full bg-[#0284c7]"
+                      className="h-full rounded-full bg-[#00b8c4]"
                       style={{ width: `${Math.min(100, (documents.length / maxKnowledgeFiles) * 100)}%` }}
                     />
                   </div>
@@ -353,7 +363,7 @@ export function KnowledgeBaseShell() {
 
               <div className="grid gap-3 p-4">
                 <button
-                  className={`${buttonClass} bg-[#0284c7] text-white shadow-sm hover:bg-[#0369a1]`}
+                  className={`${buttonClass} bg-[#00b8c4] text-white shadow-sm hover:bg-[#008996]`}
                   disabled={!selectedAgent || loading || saving || knowledgeLimitReached}
                   onClick={openNewDocument}
                   type="button"
@@ -361,7 +371,7 @@ export function KnowledgeBaseShell() {
                   <Icon icon="plus" />
                   Add text
                 </button>
-                <label className={`${buttonClass} relative cursor-pointer border border-[#bae6fd] bg-[#f0f9ff] text-[#0284c7] hover:bg-[#e0f2fe] ${!selectedAgent || loading || saving || knowledgeLimitReached ? "pointer-events-none opacity-50" : ""}`}>
+                <label className={`${buttonClass} relative cursor-pointer border border-[#99f6e8] bg-[#ecfeff] text-[#00b8c4] hover:bg-[#ccfbf1] ${!selectedAgent || loading || saving || knowledgeLimitReached ? "pointer-events-none opacity-50" : ""}`}>
                   <input
                     className="absolute inset-0 cursor-pointer opacity-0"
                     type="file"
@@ -409,7 +419,7 @@ export function KnowledgeBaseShell() {
               </div>
             ) : documents.length === 0 ? (
               <div className="mx-auto grid max-w-xl place-items-center gap-4 px-5 py-14 text-center">
-                <span className="grid size-12 place-items-center rounded-lg bg-[#f0f9ff] text-[#0284c7]">
+                <span className="grid size-12 place-items-center rounded-lg bg-[#ecfeff] text-[#00b8c4]">
                   <Icon icon="file" className="size-5" />
                 </span>
                 <div>
@@ -420,7 +430,7 @@ export function KnowledgeBaseShell() {
                 </div>
                 <div className="flex flex-wrap justify-center gap-2">
                   <button
-                    className={`${buttonClass} bg-[#0284c7] text-white hover:bg-[#0369a1]`}
+                    className={`${buttonClass} bg-[#00b8c4] text-white hover:bg-[#008996]`}
                     disabled={!selectedAgent || saving}
                     onClick={openNewDocument}
                     type="button"
@@ -488,6 +498,7 @@ export function KnowledgeBaseShell() {
                           disabled={saving}
                           onClick={() => toggleDocument(index)}
                           type="button"
+                          aria-pressed={document.status === "ready"}
                         >
                           {document.status === "ready" ? "Turn off" : "Turn on"}
                         </button>
@@ -610,7 +621,7 @@ function EditorModal({
                     void onFile(file);
                   }}
                 />
-                <span className={`${buttonClass} border border-[#bae6fd] bg-white text-[#0284c7] hover:bg-[#f0f9ff]`}>
+                <span className={`${buttonClass} border border-[#99f6e8] bg-white text-[#00b8c4] hover:bg-[#ecfeff]`}>
                   <Icon icon="upload" />
                   Choose file
                 </span>
@@ -622,7 +633,7 @@ function EditorModal({
           <label className="app-label grid gap-2">
             Knowledge text
             <textarea
-              className="app-control-text min-h-64 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10"
+              className="app-control-text min-h-64 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10"
               placeholder="Example: We are open Monday to Saturday, 10 AM to 6 PM. Refunds are available within 7 days..."
               value={content}
               onChange={(event) => onContentChange(event.target.value)}
@@ -634,7 +645,7 @@ function EditorModal({
           <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">
             Cancel
           </button>
-          <button className={`${buttonClass} bg-[#0284c7] text-white hover:bg-[#0369a1]`} disabled={busy || !name.trim() || !content.trim()} onClick={onSave} type="button">
+          <button className={`${buttonClass} bg-[#00b8c4] text-white hover:bg-[#008996]`} disabled={busy || !name.trim() || !content.trim()} onClick={onSave} type="button">
             <Icon icon="check" />
             {busy ? "Saving..." : "Save"}
           </button>

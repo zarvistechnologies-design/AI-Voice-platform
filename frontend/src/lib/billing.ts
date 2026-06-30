@@ -1,6 +1,6 @@
 import { getAuthHeaders, getSession } from "@/lib/auth";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+import { cachedApiRequest, invalidateApiCache } from "@/lib/apiCache";
+import { API_URL } from "@/lib/apiBase";
 
 export type PlanId = "free" | "starter" | "growth" | "enterprise";
 
@@ -120,18 +120,21 @@ async function request<T>(path: string, init: RequestInit = {}) {
 }
 
 export const billingApi = {
-  summary: () => request<BillingSummary>("/summary"),
+  summary: () => cachedApiRequest("billing", "/summary", 15_000, () => request<BillingSummary>("/summary")),
   transactions: (limit = 50) => request<{ transactions: BillingTransaction[] }>(`/transactions?limit=${limit}`),
   topUp: (amountCredits: number) =>
     request<{ url: string }>("/top-up", {
       method: "POST",
       body: JSON.stringify({ amountCredits }),
     }),
-  updateAutoReload: (input: { enabled: boolean; thresholdCredits: number; reloadAmountCredits: number }) =>
-    request<{ wallet: CreditWallet }>("/auto-reload", {
+  updateAutoReload: async (input: { enabled: boolean; thresholdCredits: number; reloadAmountCredits: number }) => {
+    const result = await request<{ wallet: CreditWallet }>("/auto-reload", {
       method: "PUT",
       body: JSON.stringify(input),
-    }),
+    });
+    invalidateApiCache("billing");
+    return result;
+  },
   checkout: (plan: Exclude<PlanId, "free">) =>
     request<{ url: string }>("/checkout", {
       method: "POST",

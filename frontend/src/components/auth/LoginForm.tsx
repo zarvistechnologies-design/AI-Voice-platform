@@ -177,7 +177,7 @@ export function LoginForm() {
         <p className="app-body m-0">
           {mode === "login"
             ? "Sign in with an account saved in MongoDB."
-            : "Create your secure workspace, then verify your email from Profile."}
+            : "Create your secure workspace, then verify your email."}
         </p>
       </div>
 

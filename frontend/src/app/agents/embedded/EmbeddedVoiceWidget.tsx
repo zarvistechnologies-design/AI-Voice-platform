@@ -3,8 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Room, RoomEvent, Track } from "livekit-client";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+import { API_URL } from "@/lib/apiBase";
 
 type WidgetAgent = {
   id: string;
@@ -183,7 +182,7 @@ export function EmbeddedVoiceWidget() {
       setStatus(room.remoteParticipants.size ? "Connected. Speak now." : "Connected. Waiting for assistant.");
       waitingTimerRef.current = window.setTimeout(() => {
         if (roomRef.current === room && room.remoteParticipants.size === 0) {
-          setStatus("Still waiting for assistant. Check that the agent worker is running.");
+          setStatus("Still connecting assistant. Keep the agent worker running for voice and knowledge.");
         } else if (roomRef.current === room && audioElementsRef.current.length === 0) {
           setStatus("Assistant is ready. Speak now.");
         }

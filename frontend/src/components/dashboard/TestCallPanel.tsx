@@ -8,6 +8,7 @@ import { voiceApi } from "@/lib/voice";
 type Props = {
   agentId: string;
   agentName: string;
+  knowledgeCount: number;
   onClose: () => void;
   onRegionChange: (region: string) => void;
 };
@@ -27,7 +28,11 @@ function preferredRecordingMimeType() {
   ].find((mimeType) => MediaRecorder.isTypeSupported(mimeType)) ?? "";
 }
 
-export function TestCallPanel({ agentId, agentName, onClose, onRegionChange }: Props) {
+function knowledgeStatus(count: number) {
+  return count > 0 ? `${count} knowledge ${count === 1 ? "file" : "files"} attached` : "No knowledge files attached";
+}
+
+export function TestCallPanel({ agentId, agentName, knowledgeCount, onClose, onRegionChange }: Props) {
   const roomRef = useRef<Room | null>(null);
   const audioElementsRef = useRef<HTMLMediaElement[]>([]);
   const dispatchTimerRef = useRef<number | null>(null);
@@ -221,12 +226,12 @@ export function TestCallPanel({ agentId, agentName, onClose, onRegionChange }: P
         }
         if (health.state === "running") {
           setStatus((current) =>
-            current.includes("Receiving audio") ? current : "AI worker accepted the call. Waiting for audio...",
+            current.includes("Receiving audio") ? current : `AI worker joined. ${knowledgeStatus(knowledgeCount)}. Waiting for audio...`,
           );
         } else if (health.state === "pending" || health.state === "waiting") {
-          setStatus(health.message);
+          setStatus(checks <= 2 ? "Connecting the AI worker for this call..." : health.message);
         } else if (health.state === "missing" && checks > 2) {
-          setStatus(health.message);
+          setStatus("AI worker has not joined yet. The knowledge files are saved, but the worker must be running before the call can use them.");
         }
         if (checks >= 20) stopDispatchPolling();
       } catch {
@@ -270,7 +275,7 @@ export function TestCallPanel({ agentId, agentName, onClose, onRegionChange }: P
       });
       room.on(RoomEvent.ParticipantConnected, (participant) => {
         refreshParticipants();
-        setStatus(`${participant.name || "AI agent"} joined. Waiting for audio...`);
+        setStatus(`${participant.name || "AI agent"} joined. ${knowledgeStatus(knowledgeCount)}.`);
       });
       room.on(RoomEvent.ParticipantDisconnected, () => {
         refreshParticipants();
@@ -298,7 +303,7 @@ export function TestCallPanel({ agentId, agentName, onClose, onRegionChange }: P
       setStatus(room.remoteParticipants.size ? `Connected to ${agentName}` : `Connected. Waiting for ${agentName} to join...`);
       window.setTimeout(() => {
         if (roomRef.current === room && room.remoteParticipants.size === 0) {
-          setStatus("Still waiting for the AI agent. Check the backend agent worker logs.");
+          setStatus("Still connecting the AI worker. Keep the worker running so the call can use voice and knowledge.");
         }
       }, 8000);
     } catch (error) {
@@ -328,7 +333,7 @@ export function TestCallPanel({ agentId, agentName, onClose, onRegionChange }: P
   return (
     <div className="fixed inset-0 z-50 grid overflow-y-auto bg-[#0f172a]/60 p-3 backdrop-blur-sm sm:place-items-center sm:p-4">
       <section className="my-auto max-h-[calc(100dvh-1.5rem)] w-full min-w-0 max-w-lg overflow-y-auto rounded-2xl border border-white/20 bg-white shadow-[0_24px_80px_rgba(15,23,42,0.35)] sm:max-h-[calc(100dvh-2rem)]">
-        <header className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-[#bae6fd] bg-white/95 p-4 backdrop-blur">
+        <header className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-[#99f6e8] bg-white/95 p-4 backdrop-blur">
           <div className="min-w-0">
             <h2 className="app-section-title m-0 truncate" title={`Test ${agentName}`}>Test {agentName}</h2>
             <span className="app-caption">AI Voice Platform realtime session</span>
@@ -342,9 +347,10 @@ export function TestCallPanel({ agentId, agentName, onClose, onRegionChange }: P
           <div className="grid grid-cols-2 gap-1 rounded-xl bg-[#f1f5f9] p-1">
             {(["web", "phone"] as const).map((item) => (
               <button
-                className={`app-button-text flex-1 rounded-md px-3 py-2 ${mode === item ? "bg-white text-[#0284c7] shadow-sm" : "text-[#64748b]"}`}
+                className={`app-button-text flex-1 rounded-md px-3 py-2 ${mode === item ? "bg-white text-[#00b8c4] shadow-sm" : "text-[#64748b]"}`}
                 key={item}
                 type="button"
+                aria-pressed={mode === item}
                 onClick={() => setMode(item)}
                 disabled={active}
               >
@@ -353,9 +359,9 @@ export function TestCallPanel({ agentId, agentName, onClose, onRegionChange }: P
             ))}
           </div>
 
-          <div className="relative grid min-h-44 min-w-0 place-items-center overflow-hidden rounded-2xl bg-gradient-to-br from-[#082f49] via-[#0284c7] to-[#0ea5e9] p-4 text-white shadow-inner sm:p-5">
+          <div className="relative grid min-h-44 min-w-0 place-items-center overflow-hidden rounded-2xl bg-gradient-to-br from-[#083344] via-[#00b8c4] to-[#06b6c8] p-4 text-white shadow-inner sm:p-5">
             <span className="pointer-events-none absolute -top-16 -right-10 size-44 rounded-full bg-cyan-300/15 blur-2xl" />
-            <span className="pointer-events-none absolute -bottom-20 -left-10 size-48 rounded-full bg-sky-300/15 blur-2xl" />
+            <span className="pointer-events-none absolute -bottom-20 -left-10 size-48 rounded-full bg-cyan-300/15 blur-2xl" />
             <div className="relative grid min-w-0 max-w-full place-items-center gap-4 text-center">
               <div className={`relative grid size-20 place-items-center rounded-full bg-white/15 ${active ? "ring-8 ring-white/10" : ""}`}>
                 {active ? <span className="absolute inset-0 animate-ping rounded-full bg-cyan-200/20" /> : null}
@@ -374,6 +380,7 @@ export function TestCallPanel({ agentId, agentName, onClose, onRegionChange }: P
               <div className="flex flex-wrap justify-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-white/70">
                 <span>{remoteCount} remote participant{remoteCount === 1 ? "" : "s"}</span>
                 <span>{audioCount} audio track{audioCount === 1 ? "" : "s"}</span>
+                <span>{knowledgeStatus(knowledgeCount)}</span>
               </div>
             </div>
           </div>
@@ -382,7 +389,7 @@ export function TestCallPanel({ agentId, agentName, onClose, onRegionChange }: P
             <label className="app-label grid gap-2">
               <span>Destination number</span>
               <input
-                className="app-control-text min-h-11 rounded-lg border border-[#dfe3ea] px-3 text-black outline-none focus:border-[#0284c7]"
+                className="app-control-text min-h-11 rounded-lg border border-[#dfe3ea] px-3 text-black outline-none focus:border-[#00b8c4]"
                 placeholder="+12525550123"
                 inputMode="tel"
                 value={phoneNumber}
@@ -392,7 +399,7 @@ export function TestCallPanel({ agentId, agentName, onClose, onRegionChange }: P
           ) : null}
 
           <button
-            className={`app-button-text min-h-11 rounded-lg px-4 text-white ${active ? "bg-[#dc2626]" : "bg-[#0284c7]"}`}
+            className={`app-button-text min-h-11 rounded-lg px-4 text-white ${active ? "bg-[#dc2626]" : "bg-[#00b8c4]"}`}
             type="button"
             disabled={busy}
             onClick={active ? disconnect : mode === "web" ? startWebCall : startPhoneCall}
