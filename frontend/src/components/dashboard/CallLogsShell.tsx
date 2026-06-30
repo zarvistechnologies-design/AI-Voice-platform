@@ -209,11 +209,15 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
   const charged = billing?.chargedCredits || billing?.estimatedChargeCredits || 0;
   const cost = call.costBreakdown;
   const [recordingObjectUrl, setRecordingObjectUrl] = useState({ callId: "", url: "" });
+  const [recordingLoadState, setRecordingLoadState] = useState({ callId: "", loading: false, error: "" });
   const transcript = [...call.transcript].sort(
     (left, right) => new Date(left.timestamp).getTime() - new Date(right.timestamp).getTime(),
   );
   const recordingHref = call.recordingUrl.startsWith("http") ? call.recordingUrl : call.recordingKey.startsWith("http") ? call.recordingKey : "";
+  const privateRecording = Boolean(call.recordingKey && !call.recordingKey.startsWith("http") && !recordingHref);
   const recordingPlayerHref = recordingObjectUrl.callId === call._id ? recordingObjectUrl.url || recordingHref : recordingHref;
+  const recordingLoading = recordingLoadState.callId === call._id && recordingLoadState.loading;
+  const recordingLoadError = recordingLoadState.callId === call._id ? recordingLoadState.error : "";
   const llmUsage = call.llmInputTokens || call.llmOutputTokens
     ? `${call.llmInputTokens.toLocaleString("en-US")} in / ${call.llmOutputTokens.toLocaleString("en-US")} out`
     : call.llmTokens ? `${call.llmTokens.toLocaleString("en-US")} tokens` : "0 tokens";
@@ -244,21 +248,39 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
   useEffect(() => {
     let active = true;
     let objectUrl = "";
-    if (!call.recordingKey || call.recordingKey.startsWith("http") || recordingHref) return undefined;
+    if (!privateRecording) {
+      setRecordingLoadState({ callId: call._id, loading: false, error: "" });
+      return undefined;
+    }
 
-    void voiceApi.callRecordingBlob(call._id)
-      .then((blob) => {
+    setRecordingObjectUrl({ callId: "", url: "" });
+    setRecordingLoadState({ callId: call._id, loading: true, error: "" });
+
+    void (async () => {
+      let lastError = "";
+      const retryDelaysMs = [0, 1500, 3500, 7000];
+      for (const delayMs of retryDelaysMs) {
+        if (delayMs) await new Promise((resolve) => setTimeout(resolve, delayMs));
         if (!active) return;
-        objectUrl = URL.createObjectURL(blob);
-        setRecordingObjectUrl({ callId: call._id, url: objectUrl });
-      })
-      .catch(() => undefined);
+        try {
+          const blob = await voiceApi.callRecordingBlob(call._id);
+          if (!active) return;
+          objectUrl = URL.createObjectURL(blob);
+          setRecordingObjectUrl({ callId: call._id, url: objectUrl });
+          setRecordingLoadState({ callId: call._id, loading: false, error: "" });
+          return;
+        } catch (error) {
+          lastError = error instanceof Error ? error.message : "Could not load the call recording.";
+        }
+      }
+      if (active) setRecordingLoadState({ callId: call._id, loading: false, error: lastError });
+    })();
 
     return () => {
       active = false;
       if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
-  }, [call._id, call.recordingKey, recordingHref]);
+  }, [call._id, privateRecording]);
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-slate-950/35 backdrop-blur-sm" onClick={onClose}>
@@ -325,6 +347,14 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
                 <a className="text-sm font-semibold text-cyan-700 hover:text-cyan-900" href={recordingPlayerHref} target="_blank" rel="noreferrer">
                   Open recording
                 </a>
+              </div>
+            ) : recordingLoading ? (
+              <div className="rounded-xl border border-dashed border-cyan-200 bg-cyan-50 p-4 text-sm text-cyan-700">
+                Loading private S3 recording...
+              </div>
+            ) : recordingLoadError ? (
+              <div className="rounded-xl border border-dashed border-amber-300 bg-amber-50 p-4 text-sm text-amber-800">
+                Recording is saved as {call.recordingKey}, but the backend could not load it from S3 yet. {recordingLoadError}
               </div>
             ) : (
               <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-500">
