@@ -1247,7 +1247,6 @@ type IconName =
   | "shield"
   | "code"
   | "copy"
-  | "edit"
   | "widget";
 
 function Icon({ icon }: { icon: IconName }) {
@@ -1334,15 +1333,6 @@ function Icon({ icon }: { icon: IconName }) {
       <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
         <path d="M8 8h10v12H8z" />
         <path d="M6 16H4V4h12v2" />
-      </svg>
-    );
-  }
-
-  if (icon === "edit") {
-    return (
-      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M12 20h9" />
-        <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
       </svg>
     );
   }
@@ -1827,8 +1817,6 @@ export function DashboardShell() {
   const [showUserSidebar, setShowUserSidebar] = useState(false);
   const [agentList, setAgentList] = useState(agents);
   const [selectedAgentId, setSelectedAgentId] = useState(agents[0].id);
-  const [renamingAgentId, setRenamingAgentId] = useState("");
-  const [renamingAgentName, setRenamingAgentName] = useState("");
   const [activeTab, setActiveTab] = useState<AgentTab>("builder");
   const [notice, setNotice] = useState("");
   const [saving, setSaving] = useState(false);
@@ -2275,32 +2263,6 @@ export function DashboardShell() {
     setAgentList((current) =>
       current.map((agent) => (agent.id === selectedAgent.id ? { ...agent, ...changes } : agent)),
     );
-  }
-
-  function beginRenameAgent(agent: VoiceAgent) {
-    setSelectedAgentId(agent.id);
-    setRenamingAgentId(agent.id);
-    setRenamingAgentName(agent.name);
-  }
-
-  function cancelRenameAgent() {
-    setRenamingAgentId("");
-    setRenamingAgentName("");
-  }
-
-  function commitRenameAgent(agentId: string) {
-    const nextName = renamingAgentName.trim();
-    if (!nextName) {
-      setNotice("Agent name cannot be empty.");
-      return;
-    }
-
-    unsavedChangesRef.current = true;
-    setAgentList((current) =>
-      current.map((agent) => (agent.id === agentId ? { ...agent, name: nextName } : agent)),
-    );
-    cancelRenameAgent();
-    setNotice("Agent renamed. Click Save to keep this change.");
   }
 
   function updateAgentLanguage(language: string) {
@@ -2820,68 +2782,27 @@ export function DashboardShell() {
             <div className="grid gap-1.5 p-2">
               {agentList.map((agent) => {
                 const isActive = agent.id === selectedAgent.id;
-                const isRenaming = renamingAgentId === agent.id;
                 const tone = getStatusTone(agent.status);
 
                 return (
-                  <div
-                    className={`grid w-full grid-cols-[36px_minmax(0,1fr)_32px_auto] items-center gap-2 rounded-lg p-2.5 text-left transition ${
+                  <button
+                    className={`grid w-full grid-cols-[36px_minmax(0,1fr)_auto] items-center gap-3 rounded-lg p-2.5 text-left transition ${
                       isActive ? "bg-[#eef4ff] shadow-sm ring-1 ring-[#99f6e8]" : "hover:bg-[#f8fafc]"
                     }`}
                     key={agent.id}
+                    type="button"
+                    aria-pressed={isActive}
+                    onClick={() => setSelectedAgentId(agent.id)}
                   >
-                    <button
-                      className={`grid size-9 place-items-center rounded-lg shadow-sm ${isActive ? "bg-[#00b8c4] text-white" : "bg-white text-[#00b8c4]"}`}
-                      type="button"
-                      aria-label={`Select ${agent.name}`}
-                      aria-pressed={isActive}
-                      onClick={() => setSelectedAgentId(agent.id)}
-                    >
+                    <span className={`grid size-9 place-items-center rounded-lg shadow-sm ${isActive ? "bg-[#00b8c4] text-white" : "bg-white text-[#00b8c4]"}`}>
                       <Icon icon="agent" />
-                    </button>
-                    {isRenaming ? (
-                      <input
-                        aria-label="Edit agent name"
-                        autoFocus
-                        className="app-control-text min-h-9 min-w-0 rounded-lg border border-[#99f6e8] bg-white px-2.5 text-[#0f172a] outline-none ring-4 ring-[#00b8c4]/10"
-                        value={renamingAgentName}
-                        onBlur={() => commitRenameAgent(agent.id)}
-                        onChange={(event) => setRenamingAgentName(event.target.value)}
-                        onFocus={(event) => event.currentTarget.select()}
-                        onKeyDown={(event) => {
-                          if (event.key === "Enter") {
-                            event.preventDefault();
-                            commitRenameAgent(agent.id);
-                          }
-                          if (event.key === "Escape") {
-                            event.preventDefault();
-                            cancelRenameAgent();
-                          }
-                        }}
-                      />
-                    ) : (
-                      <button
-                        className="min-w-0 text-left"
-                        type="button"
-                        aria-label={`Select ${agent.name}`}
-                        aria-pressed={isActive}
-                        onClick={() => setSelectedAgentId(agent.id)}
-                      >
-                        <strong className="app-strong block truncate">{agent.name}</strong>
-                        <span className="app-caption block truncate">{agent.team}</span>
-                      </button>
-                    )}
-                    <button
-                      className="grid size-8 place-items-center rounded-lg border border-[#dfe3ea] bg-white text-[#64748b] transition hover:border-[#99f6e8] hover:bg-[#ecfeff] hover:text-[#00b8c4]"
-                      type="button"
-                      aria-label={`Rename ${agent.name}`}
-                      title="Rename agent"
-                      onClick={() => beginRenameAgent(agent)}
-                    >
-                      <Icon icon="edit" />
-                    </button>
+                    </span>
+                    <span className="min-w-0">
+                      <strong className="app-strong block truncate">{agent.name}</strong>
+                      <span className="app-caption block truncate">{agent.team}</span>
+                    </span>
                     <span className={`size-2.5 rounded-full ${tone.dot}`} />
-                  </div>
+                  </button>
                 );
               })}
             </div>
