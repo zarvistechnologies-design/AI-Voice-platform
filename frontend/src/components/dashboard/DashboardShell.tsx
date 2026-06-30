@@ -767,7 +767,7 @@ const fallbackCatalog: ModelCatalog = {
       models: ["eleven_multilingual_v2", "eleven_flash_v2_5", "eleven_turbo_v2_5"],
       voices: fallbackElevenLabsVoices,
       voiceProfiles: fallbackElevenLabsVoiceProfiles,
-      languages: fallbackLanguageCatalog.filter((language) => language.code !== "unknown"),
+      languages: fallbackLanguageCatalog,
       voicesByLanguage: voicesByLanguageFromProfiles(
         fallbackElevenLabsVoiceProfiles,
         fallbackLanguageCatalog,
@@ -2105,6 +2105,7 @@ function StackConfigurationModal({
   const noElevenLabsLanguageVoice =
     stack === "voice" &&
     provider.provider === "elevenlabs" &&
+    agent.language !== "Multilingual" &&
     languageSpecificVoices.length === 0 &&
     !agent.language.toLowerCase().startsWith("english");
   const selectLanguage = (language: string) => {
@@ -2135,7 +2136,9 @@ function StackConfigurationModal({
             <h3 className="m-0 text-xl font-bold text-[#0f172a] sm:text-2xl">{title}</h3>
             <p className="mt-1 mb-0 text-sm font-medium text-[#64748b]">
               {stack === "voice"
-                ? `Showing voices for ${languageName}. Language-specific choices appear first.`
+                ? agent.language === "Multilingual"
+                  ? "Showing voices for auto language mode. Use a multilingual voice for mixed-language calls."
+                  : `Showing voices for ${languageName}. Language-specific choices appear first.`
                 : stack === "stt"
                   ? `Configure speech recognition for ${languageName}.`
                   : "Choose the provider and model used for agent reasoning."}
