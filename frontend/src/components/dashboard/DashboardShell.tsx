@@ -29,6 +29,7 @@ import {
   type FirstMessageMode,
   type KnowledgeDocument,
   type ModelCatalog,
+  type ModelProvider,
   type PipelineMode,
   type PipelineProvider,
   type RealtimeProvider,
@@ -571,6 +572,13 @@ const fallbackSarvamVoiceProfiles: VoiceProfile[] = [
 ];
 
 const fallbackElevenLabsVoices = [
+  "Xb7hH8MSUJpSbSDYk0k2",
+  "pNInz6obpgDQGcFmaJgB",
+  "ErXwobaYiN019PkySvjV",
+  "VR6AewLTigWG4xSOukaG",
+  "pqHfZKP75CvOlQylNhV4",
+  "9BWtsMINqrJLrRacOk9x",
+  "EXAVITQu4vr4xnSDxMaL",
   "bIHbv24MWmeRgasZH58o",
 ];
 
@@ -602,6 +610,43 @@ function clampNumericInput(
   if (!Number.isFinite(next)) return fallback;
   return Math.min(max, Math.max(min, next));
 }
+
+const fallbackDeepgramSttModels = [
+  "flux-general-en",
+  "flux-general-multi",
+  "nova-3",
+  "nova-3-general",
+  "nova-3-medical",
+  "nova-2-general",
+  "nova-2-meeting",
+  "nova-2-phonecall",
+  "nova-2-finance",
+  "nova-2-conversationalai",
+  "nova-2-voicemail",
+  "nova-2-video",
+  "nova-2-medical",
+  "nova-2-drivethru",
+  "nova-2-automotive",
+  "nova-general",
+  "nova-phonecall",
+  "nova-meeting",
+  "enhanced-general",
+  "enhanced-meeting",
+  "enhanced-phonecall",
+  "enhanced-finance",
+  "base",
+  "meeting",
+  "phonecall",
+  "finance",
+  "conversationalai",
+  "voicemail",
+  "video",
+  "whisper-tiny",
+  "whisper-base",
+  "whisper-small",
+  "whisper-medium",
+  "whisper-large",
+];
 
 function normalizeRealtimeModel(provider: RealtimeProvider, model: string) {
   if (provider !== "gemini") return model;
@@ -686,6 +731,13 @@ const fallbackCatalog: ModelCatalog = {
       models: ["scribe_v2_realtime", "scribe_v2", "scribe_v1"],
       languages: fallbackLanguageCatalog,
     },
+    {
+      provider: "deepgram",
+      label: "Deepgram",
+      configured: true,
+      models: fallbackDeepgramSttModels,
+      languages: fallbackLanguageCatalog,
+    },
   ],
   tts: [
     { provider: "openai", label: "OpenAI", configured: true, models: ["gpt-4o-mini-tts"], voices: ["alloy"] },
@@ -725,6 +777,37 @@ const fallbackCatalog: ModelCatalog = {
   ],
 };
 
+function enrichProvider(provider: ModelProvider, fallback?: ModelProvider): ModelProvider {
+  if (!fallback) return provider;
+  return {
+    ...provider,
+    voices: provider.voices?.length ? provider.voices : fallback.voices,
+    voiceProfiles: provider.voiceProfiles?.length ? provider.voiceProfiles : fallback.voiceProfiles,
+    voicesByModel: provider.voicesByModel ?? fallback.voicesByModel,
+    voicesByLanguage: provider.voicesByLanguage ?? fallback.voicesByLanguage,
+    showAllVoicesWithLanguageOrder:
+      provider.showAllVoicesWithLanguageOrder ?? fallback.showAllVoicesWithLanguageOrder,
+    languages: provider.languages?.length ? provider.languages : fallback.languages,
+  };
+}
+
+function enrichModelCatalog(catalog: ModelCatalog): ModelCatalog {
+  const enrichLayer = (layer: keyof ModelCatalog) =>
+    catalog[layer].map((provider) =>
+      enrichProvider(
+        provider,
+        fallbackCatalog[layer].find((fallback) => fallback.provider === provider.provider),
+      ),
+    );
+
+  return {
+    realtime: enrichLayer("realtime"),
+    llm: enrichLayer("llm"),
+    stt: enrichLayer("stt"),
+    tts: enrichLayer("tts"),
+  };
+}
+
 function getProvider(catalog: ModelCatalog, layer: keyof ModelCatalog, provider: string) {
   return catalog[layer].find((item) => item.provider === provider) ?? catalog[layer][0];
 }
@@ -763,6 +846,50 @@ function getVoices(
   }
 
   return languageVoices ? [...languageVoices] : [...modelVoices];
+}
+
+function getDisplayedVoices(
+  catalog: ModelCatalog,
+  layer: "realtime" | "tts",
+  provider: string,
+  model: string,
+  language = "",
+  languageCatalog: readonly VoiceLanguageOption[] = [],
+) {
+  const item = getProvider(catalog, layer, provider);
+  if (!item.showAllVoicesWithLanguageOrder) {
+    return getVoices(catalog, layer, provider, model, language, languageCatalog);
+  }
+
+  const allVoices = item.voices?.length
+    ? [...item.voices]
+    : [...new Set(Object.values(item.voicesByModel ?? {}).flat())];
+  const languageVoices = language
+    ? languageKeys(language, languageCatalog)
+        .map((key) => item.voicesByLanguage?.[key])
+        .find((voices) => voices && voices.length)
+    : undefined;
+
+  if (!languageVoices?.length) return allVoices;
+  const recommended = new Set(languageVoices);
+  return [
+    ...allVoices.filter((voice) => recommended.has(voice)),
+    ...allVoices.filter((voice) => !recommended.has(voice)),
+  ];
+}
+
+function getLanguageSpecificVoices(
+  catalog: ModelCatalog,
+  layer: "realtime" | "tts",
+  provider: string,
+  language = "",
+  languageCatalog: readonly VoiceLanguageOption[] = [],
+) {
+  if (!language) return [];
+  const item = getProvider(catalog, layer, provider);
+  return languageKeys(language, languageCatalog)
+    .map((key) => item.voicesByLanguage?.[key])
+    .find((voices) => voices && voices.length) ?? [];
 }
 
 type SelectOption = string | { value: string; label: string };
@@ -839,13 +966,17 @@ const voiceLabels: Record<string, string> = {
   abhilash: "Abhilash - classic support",
   karun: "Karun - classic operator",
   hitesh: "Hitesh - classic advisor",
+  Xb7hH8MSUJpSbSDYk0k2: "Alice - ElevenLabs",
+  VR6AewLTigWG4xSOukaG: "Arnold - ElevenLabs",
+  pqHfZKP75CvOlQylNhV4: "Bill - ElevenLabs",
+  "9BWtsMINqrJLrRacOk9x": "Aria - ElevenLabs",
   bIHbv24MWmeRgasZH58o: "Will - ElevenLabs default",
   "21m00Tcm4TlvDq8ikWAM": "Rachel - female",
-  EXAVITQu4vr4xnSDxMaL: "Bella - female",
+  EXAVITQu4vr4xnSDxMaL: "Sarah - ElevenLabs",
   MF3mGyEYCl7XYWbV9V6O: "Elli - female",
-  pNInz6obpgDQGcFmaJgB: "Adam - male",
-  ErXwobaYiN019PkySvjV: "Antoni - male",
-  TxGEqnHWrfWFTfGW9XjX: "Josh - male",
+  pNInz6obpgDQGcFmaJgB: "Adam - ElevenLabs",
+  ErXwobaYiN019PkySvjV: "Antoni - ElevenLabs",
+  TxGEqnHWrfWFTfGW9XjX: "Josh - ElevenLabs",
 };
 
 function findLanguageOption(language: string, languageCatalog: readonly VoiceLanguageOption[]) {
@@ -898,36 +1029,24 @@ function voiceSelectOptions(
   profiles: readonly VoiceProfile[] = [],
   language = "",
   languageCatalog: readonly VoiceLanguageOption[] = [],
+  languageSpecificVoices: readonly string[] = [],
 ): SelectOption[] {
   const profilesByValue = new Map(profiles.map((profile) => [profile.value, profile]));
+  const specific = new Set(languageSpecificVoices);
   return voices.map((voice) => ({
     value: voice,
     label: (() => {
       const profile = profilesByValue.get(voice);
       const fallbackLabel = voiceLabels[voice];
       const name = shortVoiceName(profile?.label ?? fallbackLabel ?? voice, voice);
+      if (specific.has(voice) && language) {
+        return `${name} - ${languageDisplayName(language, languageCatalog)} specific`;
+      }
       const languageTag = compactLanguageTag(profile, language, languageCatalog);
       if (languageTag) return `${name} - ${languageTag}`;
       return fallbackLabel ? name : voice;
     })(),
   }));
-}
-
-function voiceProfileSummary(
-  voice: string,
-  profiles: readonly VoiceProfile[] = [],
-  language = "",
-  languageCatalog: readonly VoiceLanguageOption[] = [],
-) {
-  const profile = profiles.find((item) => item.value === voice);
-  if (!profile) return undefined;
-
-  const languageLabel = language ? languageDisplayName(language, languageCatalog) : "";
-  if (voiceRecommendedForLanguage(profile, language, languageCatalog)) {
-    return `Recommended for ${languageLabel}`;
-  }
-  const languageTag = compactLanguageTag(profile, language, languageCatalog);
-  return languageTag ? `Voice languages: ${languageTag}` : undefined;
 }
 
 function coerceLanguage(
@@ -944,6 +1063,64 @@ function coerceVoice(voice: string, options: readonly string[], fallback = "allo
 
 function supportsVoicePitch(agent: VoiceAgent) {
   return agent.pipelineMode === "pipeline" && agent.ttsProvider === "sarvam" && agent.ttsModel === "bulbul:v2";
+}
+
+const deepgramMultilingualSafeModels = new Set([
+  "flux-general-multi",
+  "nova-3",
+  "nova-2-general",
+  "nova-general",
+  "base",
+  "whisper-tiny",
+  "whisper-base",
+  "whisper-small",
+  "whisper-medium",
+  "whisper-large",
+]);
+
+function deepgramLanguageCodeForUi(language: string, languageCatalog: readonly VoiceLanguageOption[]) {
+  const matched = findLanguageOption(language, languageCatalog);
+  const code = matched?.code ?? language;
+  const value = matched?.value ?? language;
+  const aliases: Record<string, string> = {
+    Multilingual: "multi",
+    unknown: "multi",
+    "hi-IN": "hi",
+    "ta-IN": "ta",
+    "es-ES": "es",
+    "fr-FR": "fr",
+    "de-DE": "de",
+    "it-IT": "it",
+    "pt-PT": "pt",
+    "nl-NL": "nl",
+    "ja-JP": "ja",
+    "ko-KR": "ko",
+    "ru-RU": "ru",
+    "tr-TR": "tr",
+    "id-ID": "id",
+    "th-TH": "th",
+    "pl-PL": "pl",
+    "uk-UA": "uk",
+    "sv-SE": "sv",
+    "nb-NO": "no",
+    "da-DK": "da",
+    Hindi: "hi",
+    Tamil: "ta",
+  };
+  return aliases[code] ?? aliases[value] ?? code.split("-")[0] ?? "multi";
+}
+
+function normalizeSttModelForLanguage(
+  provider: string,
+  model: string,
+  language: string,
+  languageCatalog: readonly VoiceLanguageOption[],
+) {
+  if (provider !== "deepgram") return model;
+  const code = deepgramLanguageCodeForUi(language, languageCatalog);
+  if (code === "multi") return model === "flux-general-en" ? "flux-general-multi" : model;
+  if (code.split("-")[0] === "en") return model;
+  return deepgramMultilingualSafeModels.has(model) ? model : "nova-3";
 }
 
 function getLanguageOptions(
@@ -1517,132 +1694,500 @@ function SelectField({
   );
 }
 
-function VoiceSelectField({
-  label,
-  options,
+function ProviderRail({
+  providers,
+  selected,
+  onSelect,
+}: {
+  providers: readonly ModelProvider[];
+  selected: string;
+  onSelect: (provider: string) => void;
+}) {
+  return (
+    <nav className="min-w-0 border-b border-[#e5e7eb] bg-[#fbfdff] p-2 sm:border-r sm:border-b-0 sm:p-3">
+      <div className="flex gap-1 overflow-x-auto sm:grid sm:overflow-visible">
+        {providers.map((provider) => {
+          const active = provider.provider === selected;
+          return (
+            <button
+              key={provider.provider}
+              className={`min-w-40 border-l-2 px-3 py-3 text-left transition sm:min-w-0 ${
+                active
+                  ? "border-[#00b8c4] bg-[#ecfeff] text-[#006f78]"
+                  : "border-transparent text-[#64748b] hover:bg-white hover:text-[#0f172a]"
+              } ${provider.configured ? "" : "opacity-60"}`}
+              type="button"
+              aria-pressed={active}
+              onClick={() => onSelect(provider.provider)}
+            >
+              <span className="block text-sm font-semibold">{provider.label}</span>
+              <span className={`mt-1 block text-xs font-medium ${provider.configured ? "text-[#059669]" : "text-[#b45309]"}`}>
+                {provider.configured ? "Connected" : "Not connected"}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </nav>
+  );
+}
+
+function ModelChoiceList({
+  models,
   value,
-  description,
+  onChange,
+}: {
+  models: readonly string[];
+  value: string;
+  onChange: (model: string) => void;
+}) {
+  return (
+    <div className="max-h-[420px] overflow-y-auto border-y border-[#e5e7eb]">
+      {models.map((model) => {
+        const active = model === value;
+        return (
+          <button
+            key={model}
+            className={`grid min-h-14 w-full grid-cols-[36px_minmax(0,1fr)_20px] items-center gap-3 border-b border-[#eef2f7] px-3 text-left transition last:border-b-0 ${
+              active ? "bg-[#ecfeff]" : "bg-white hover:bg-[#f8fafc]"
+            }`}
+            type="button"
+            aria-pressed={active}
+            onClick={() => onChange(model)}
+          >
+            <span className={`grid size-9 place-items-center rounded-lg text-xs font-bold ${active ? "bg-[#00b8c4] text-white" : "bg-[#eef2f7] text-[#64748b]"}`}>
+              AI
+            </span>
+            <span className="min-w-0 truncate text-sm font-semibold text-[#0f172a]">{model}</span>
+            <span className={`size-4 rounded-full border-2 ${active ? "border-[#00b8c4] bg-[#00b8c4] shadow-[inset_0_0_0_3px_white]" : "border-[#cbd5e1]"}`} />
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function VoiceChoiceList({
+  options,
+  profiles,
+  value,
+  previewingVoice,
+  previewKey,
   onChange,
   onPreview,
-  previewing,
 }: {
-  label: string;
   options: SelectOption[];
+  profiles: readonly VoiceProfile[];
   value: string;
-  description?: string;
-  onChange: (value: string) => void;
-  onPreview: () => void;
-  previewing: boolean;
+  previewingVoice: string;
+  previewKey: (voice: string) => string;
+  onChange: (voice: string) => void;
+  onPreview: (voice: string) => void;
 }) {
-  const [open, setOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const displayedOptions = options.some((option) => getSelectOptionValue(option) === value)
-    ? options
-    : [value, ...options].filter(Boolean);
-  const selectedOption =
-    displayedOptions.find((option) => getSelectOptionValue(option) === value) ?? displayedOptions[0];
-  const selectedLabel = selectedOption ? getSelectOptionLabel(selectedOption) : "No voices available";
-  const selectedParts = splitVoiceOptionLabel(selectedLabel);
-
-  useEffect(() => {
-    if (!open) return undefined;
-
-    const handlePointerDown = (event: MouseEvent) => {
-      if (event.target instanceof Node && !containerRef.current?.contains(event.target)) {
-        setOpen(false);
-      }
-    };
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
-    };
-
-    document.addEventListener("mousedown", handlePointerDown);
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("mousedown", handlePointerDown);
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [open]);
+  const profilesByValue = new Map(profiles.map((profile) => [profile.value, profile]));
 
   return (
-    <div className="app-label grid gap-2" ref={containerRef}>
-      <span>{label}</span>
-      <span className="grid grid-cols-[minmax(0,1fr)_40px] gap-2">
-        <span className="relative min-w-0">
-          <button
-            aria-expanded={open}
-            aria-haspopup="listbox"
-            className="app-control-text flex min-h-10 w-full items-center justify-between gap-3 rounded-lg border border-[#dfe3ea] bg-white px-3 text-left text-black outline-none transition hover:border-[#99f6e8] focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10 disabled:cursor-not-allowed disabled:bg-[#f8fafc] disabled:text-[#94a3b8]"
-            disabled={displayedOptions.length === 0}
-            type="button"
-            onClick={() => setOpen((current) => !current)}
+    <div className="max-h-[440px] overflow-y-auto border-y border-[#e5e7eb]">
+      {options.map((option) => {
+        const voice = getSelectOptionValue(option);
+        const parts = splitVoiceOptionLabel(getSelectOptionLabel(option));
+        const profile = profilesByValue.get(voice);
+        const active = voice === value;
+        const isPreviewing = previewingVoice === previewKey(voice);
+        const detail = [
+          parts.detail,
+          profile?.model,
+          profile?.qualityTier,
+          profile?.gender,
+          profile?.accent,
+          profile?.tone,
+        ].filter(Boolean).join(" / ");
+        return (
+          <div
+            key={voice}
+            className={`grid min-h-16 grid-cols-[minmax(0,1fr)_44px] items-center border-b border-[#eef2f7] last:border-b-0 ${
+              active ? "bg-[#ecfeff]" : "bg-white"
+            }`}
           >
-            <span className="min-w-0">
-              <span className="block truncate font-semibold">{selectedParts.name}</span>
-              {selectedParts.detail ? (
-                <span className="block truncate text-xs font-medium normal-case text-[#64748b]">
-                  {selectedParts.detail}
-                </span>
-              ) : null}
-            </span>
-            <svg className="size-4 shrink-0 text-[#64748b]" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
-          {open ? (
-            <div
-              className="absolute left-0 right-0 top-full z-[80] mt-2 max-h-72 overflow-auto rounded-lg border border-[#99f6e8] bg-white p-1.5 shadow-xl shadow-[#0f172a]/15"
-              role="listbox"
+            <button
+              className="grid min-w-0 grid-cols-[40px_minmax(0,1fr)] items-center gap-3 px-3 py-2 text-left transition hover:bg-[#f8fafc]"
+              type="button"
+              aria-pressed={active}
+              onClick={() => onChange(voice)}
             >
-              {displayedOptions.map((option) => {
-                const optionValue = getSelectOptionValue(option);
-                const optionLabel = getSelectOptionLabel(option);
-                const parts = splitVoiceOptionLabel(optionLabel);
-                const selected = optionValue === value;
-                return (
-                  <button
-                    key={optionValue}
-                    className={`grid w-full gap-0.5 rounded-md px-3 py-2 text-left transition ${
-                      selected
-                        ? "bg-[#ccfbf1] text-[#006f78]"
-                        : "text-[#0f172a] hover:bg-[#ecfeff]"
-                    }`}
-                    role="option"
-                    aria-selected={selected}
-                    type="button"
-                    onClick={() => {
-                      onChange(optionValue);
-                      setOpen(false);
+              <span className={`grid size-10 place-items-center rounded-lg text-sm font-bold ${active ? "bg-[#00b8c4] text-white" : "bg-[#eef2f7] text-[#64748b]"}`}>
+                {(parts.name || voice).slice(0, 1).toUpperCase()}
+              </span>
+              <span className="min-w-0">
+                <span className="block truncate text-sm font-semibold text-[#0f172a]">{parts.name}</span>
+                <span className="block truncate text-xs font-medium text-[#64748b]">
+                  {detail || profile?.category || "Available voice"}
+                </span>
+              </span>
+            </button>
+            <button
+              className="grid size-9 place-items-center rounded-lg text-[#00b8c4] transition hover:bg-white disabled:cursor-wait disabled:opacity-50"
+              type="button"
+              aria-label={`Preview ${parts.name}`}
+              title={isPreviewing ? "Loading preview" : "Preview voice"}
+              disabled={isPreviewing}
+              onClick={() => onPreview(voice)}
+            >
+              <Icon icon="play" />
+            </button>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function StackConfigurationModal({
+  stack,
+  agent,
+  catalog,
+  languageCatalog,
+  languageOptions,
+  previewingVoice,
+  saving,
+  onChange,
+  onLanguageChange,
+  onPipelineModeChange,
+  onPreview,
+  onClose,
+  onSave,
+}: {
+  stack: StackConfig;
+  agent: VoiceAgent;
+  catalog: ModelCatalog;
+  languageCatalog: VoiceLanguageOption[];
+  languageOptions: SelectOption[];
+  previewingVoice: string;
+  saving: boolean;
+  onChange: (changes: Partial<VoiceAgent>) => void;
+  onLanguageChange: (language: string) => void;
+  onPipelineModeChange: (mode: PipelineMode) => void;
+  onPreview: (
+    input: Pick<VoicePreviewRequest, "mode" | "provider" | "model"> & { voice?: string },
+  ) => void;
+  onClose: () => void;
+  onSave: () => void;
+}) {
+  const realtime = agent.pipelineMode === "realtime";
+  const layer: keyof ModelCatalog = realtime ? "realtime" : stack === "llm" ? "llm" : stack === "stt" ? "stt" : "tts";
+  const providers = catalog[layer];
+  const providerId = realtime
+    ? agent.realtimeProvider
+    : stack === "llm"
+      ? agent.llmProvider
+      : stack === "stt"
+        ? agent.sttProvider
+        : agent.ttsProvider;
+  const provider = getProvider(catalog, layer, providerId);
+  const selectedModel = realtime
+    ? agent.realtimeModel
+    : stack === "llm"
+      ? agent.llmModel
+      : stack === "stt"
+        ? agent.sttModel
+        : agent.ttsModel;
+  const title = stack === "llm" ? "Agent LLM" : stack === "stt" ? "Agent STT" : "Agent Voice";
+  const languageName = languageDisplayName(agent.language, languageCatalog);
+
+  const selectProvider = (nextProviderId: string) => {
+    const next = getProvider(catalog, layer, nextProviderId);
+    if (realtime) {
+      const voices = getVoices(
+        catalog,
+        "realtime",
+        nextProviderId,
+        next.models[0],
+        agent.language,
+        languageCatalog,
+      );
+      onChange({
+        realtimeProvider: nextProviderId as RealtimeProvider,
+        realtimeModel: next.models[0],
+        voice: voices.includes(agent.voice) ? agent.voice : voices[0] ?? agent.voice,
+      });
+      return;
+    }
+    if (stack === "llm") {
+      onChange({
+        llmProvider: nextProviderId as PipelineProvider,
+        llmModel: next.models[0],
+      });
+      return;
+    }
+    if (stack === "stt") {
+      const nextLanguage = next.languages?.length
+        ? coerceLanguage(agent.language, [...next.languages])
+        : agent.language;
+      const nextModel = normalizeSttModelForLanguage(
+        nextProviderId,
+        next.models[0],
+        nextLanguage,
+        languageCatalog,
+      );
+      onChange({
+        sttProvider: nextProviderId as SttProvider,
+        sttModel: nextModel,
+        language: nextLanguage,
+      });
+      return;
+    }
+
+    const nextLanguage = next.languages?.length
+      ? coerceLanguage(agent.language, [...next.languages])
+      : agent.language;
+    const voices = getVoices(
+      catalog,
+      "tts",
+      nextProviderId,
+      next.models[0],
+      nextLanguage,
+      languageCatalog,
+    );
+    onChange({
+      ttsProvider: nextProviderId as PipelineProvider,
+      ttsModel: next.models[0],
+      language: nextLanguage,
+      voice: voices.includes(agent.voice) ? agent.voice : voices[0] ?? agent.voice,
+    });
+  };
+
+  const selectModel = (model: string) => {
+    if (realtime) {
+      const voices = getVoices(
+        catalog,
+        "realtime",
+        agent.realtimeProvider,
+        model,
+        agent.language,
+        languageCatalog,
+      );
+      onChange({
+        realtimeModel: model,
+        voice: voices.includes(agent.voice) ? agent.voice : voices[0] ?? agent.voice,
+      });
+    } else if (stack === "llm") {
+      onChange({ llmModel: model });
+    } else if (stack === "stt") {
+      onChange({
+        sttModel: normalizeSttModelForLanguage(provider.provider, model, agent.language, languageCatalog),
+      });
+    } else {
+      const voices = getVoices(
+        catalog,
+        "tts",
+        agent.ttsProvider,
+        model,
+        agent.language,
+        languageCatalog,
+      );
+      onChange({
+        ttsModel: model,
+        voice: voices.includes(agent.voice) ? agent.voice : voices[0] ?? agent.voice,
+      });
+    }
+  };
+
+  const voiceLayer = realtime ? "realtime" : "tts";
+  const voiceProviderId = realtime ? agent.realtimeProvider : agent.ttsProvider;
+  const voiceModel = realtime ? agent.realtimeModel : agent.ttsModel;
+  const voices = stack === "voice"
+    ? getDisplayedVoices(catalog, voiceLayer, voiceProviderId, voiceModel, agent.language, languageCatalog)
+    : [];
+  const languageSpecificVoices = stack === "voice"
+    ? getLanguageSpecificVoices(catalog, voiceLayer, voiceProviderId, agent.language, languageCatalog)
+    : [];
+  const profiles = stack === "voice" ? provider.voiceProfiles ?? [] : [];
+  const voiceOptions = stack === "voice"
+    ? voiceSelectOptions(voices, profiles, agent.language, languageCatalog, languageSpecificVoices)
+    : [];
+  const previewMode: PipelineMode = realtime ? "realtime" : "pipeline";
+  const previewProvider = voiceProviderId as RealtimeProvider | PipelineProvider;
+  const modelForVoice = (voice: string) => {
+    const profileModel = profiles.find((profile) => profile.value === voice)?.model;
+    return profileModel && provider.models.includes(profileModel) ? profileModel : voiceModel;
+  };
+  const previewKey = (voice: string) => [
+    agent.id,
+    previewMode,
+    previewProvider,
+    modelForVoice(voice),
+    voice,
+    agent.language,
+    agent.voiceSpeed,
+  ].join(":");
+  const noElevenLabsLanguageVoice =
+    stack === "voice" &&
+    provider.provider === "elevenlabs" &&
+    languageSpecificVoices.length === 0 &&
+    !agent.language.toLowerCase().startsWith("english");
+  const selectLanguage = (language: string) => {
+    if (stack === "stt") {
+      onChange({
+        language,
+        sttModel: normalizeSttModelForLanguage(provider.provider, selectedModel, language, languageCatalog),
+      });
+      return;
+    }
+    onLanguageChange(language);
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-80 grid place-items-center bg-[#0f172a]/35 p-3 backdrop-blur-sm sm:p-5"
+      role="dialog"
+      aria-modal="true"
+      aria-label={title}
+      onClick={onClose}
+    >
+      <section
+        className="grid max-h-[calc(100vh-32px)] w-full max-w-6xl grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-[0_24px_80px_rgba(15,23,42,0.28)]"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <header className="flex flex-col gap-4 border-b border-[#e5e7eb] px-5 py-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0">
+            <h3 className="m-0 text-xl font-bold text-[#0f172a] sm:text-2xl">{title}</h3>
+            <p className="mt-1 mb-0 text-sm font-medium text-[#64748b]">
+              {stack === "voice"
+                ? `Showing voices for ${languageName}. Language-specific choices appear first.`
+                : stack === "stt"
+                  ? `Configure speech recognition for ${languageName}.`
+                  : "Choose the provider and model used for agent reasoning."}
+            </p>
+          </div>
+          <div className="flex shrink-0 rounded-lg border border-[#dfe3ea] bg-[#f8fafc] p-1">
+            {(["pipeline", "realtime"] as const).map((mode) => (
+              <button
+                key={mode}
+                className={`min-h-8 rounded-md px-3 text-xs font-semibold capitalize transition ${
+                  agent.pipelineMode === mode
+                    ? "bg-[#00b8c4] text-white shadow-sm"
+                    : "text-[#64748b] hover:bg-white hover:text-[#0f172a]"
+                }`}
+                type="button"
+                aria-pressed={agent.pipelineMode === mode}
+                onClick={() => onPipelineModeChange(mode)}
+              >
+                {mode}
+              </button>
+            ))}
+          </div>
+        </header>
+
+        <div className="grid min-h-0 sm:grid-cols-[230px_minmax(0,1fr)]">
+          <ProviderRail providers={providers} selected={providerId} onSelect={selectProvider} />
+          <main className="min-h-0 overflow-y-auto p-4 sm:p-5">
+            <div className="grid gap-4">
+              <SelectField
+                label={stack === "voice" ? "Voice model" : stack === "stt" ? "Speech recognition model" : "Language model"}
+                defaultValue={selectedModel}
+                value={selectedModel}
+                onChange={selectModel}
+                options={[...provider.models]}
+              />
+
+              {stack !== "llm" ? (
+                <SelectField
+                  label="Language"
+                  defaultValue={agent.language}
+                  value={agent.language}
+                  onChange={selectLanguage}
+                  options={
+                    provider.languages?.length
+                      ? provider.languages.map((language) => ({
+                          value: language.value,
+                          label: `${language.label} (${language.code})`,
+                        }))
+                      : languageOptions
+                  }
+                />
+              ) : null}
+
+              {stack === "llm" ? (
+                <div>
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <span className="app-label">Available models</span>
+                    <span className="app-caption">{provider.models.length} models</span>
+                  </div>
+                  <ModelChoiceList models={provider.models} value={selectedModel} onChange={selectModel} />
+                </div>
+              ) : null}
+
+              {stack === "stt" ? (
+                <div>
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <span className="app-label">Recognition models</span>
+                    <span className="app-caption">{provider.models.length} models</span>
+                  </div>
+                  <ModelChoiceList models={provider.models} value={selectedModel} onChange={selectModel} />
+                </div>
+              ) : null}
+
+              {noElevenLabsLanguageVoice ? (
+                <div className="rounded-lg border border-[#fde68a] bg-[#fffbeb] px-3 py-2 text-sm font-medium text-[#92400e]">
+                  No {languageName}-specific or Indian-accent voice is installed in this ElevenLabs account. The multilingual model can speak {languageName}, but the accent follows the selected account voice.
+                </div>
+              ) : null}
+
+              {stack === "voice" ? (
+                <div>
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <span className="app-label">
+                      {provider.provider === "elevenlabs" ? "Account voices" : "Available voices"}
+                    </span>
+                    <span className="app-caption">
+                      {languageSpecificVoices.length
+                        ? `${languageSpecificVoices.length} ${languageName}-specific / ${voices.length} total`
+                        : `${voices.length} voices`}
+                    </span>
+                  </div>
+                  <VoiceChoiceList
+                    options={voiceOptions}
+                    profiles={profiles}
+                    value={agent.voice}
+                    previewingVoice={previewingVoice}
+                    previewKey={previewKey}
+                    onChange={(voice) => {
+                      const model = modelForVoice(voice);
+                      onChange(realtime ? { voice, realtimeModel: model } : { voice, ttsModel: model });
                     }}
-                  >
-                    <span className="truncate text-sm font-semibold">{parts.name}</span>
-                    {parts.detail ? (
-                      <span className="truncate text-xs font-medium normal-case text-[#64748b]">
-                        {parts.detail}
-                      </span>
-                    ) : null}
-                  </button>
-                );
-              })}
+                    onPreview={(voice) =>
+                      onPreview({
+                        mode: previewMode,
+                        provider: previewProvider,
+                        model: modelForVoice(voice),
+                        voice,
+                      })
+                    }
+                  />
+                </div>
+              ) : null}
             </div>
-          ) : null}
-        </span>
-        <button
-          aria-label={`Preview ${value} voice`}
-          className="grid size-10 place-items-center rounded-lg border border-[#99f6e8] bg-white text-[#00b8c4] transition hover:bg-[#ecfeff] disabled:cursor-not-allowed disabled:opacity-50"
-          disabled={previewing || options.length === 0}
-          title={previewing ? "Loading voice preview" : "Preview voice"}
-          type="button"
-          onClick={onPreview}
-        >
-          <Icon icon="play" />
-        </button>
-      </span>
-      {description ? (
-        <span className="app-caption rounded-lg border border-[#99f6e8] bg-[#ecfeff] px-3 py-2 text-[#008996]">
-          {description}
-        </span>
-      ) : null}
+          </main>
+        </div>
+
+        <footer className="flex flex-col-reverse gap-2 border-t border-[#e5e7eb] bg-[#fbfdff] px-5 py-4 sm:flex-row sm:justify-end">
+          <button
+            className="app-button-text rounded-lg border border-[#dfe3ea] bg-white px-4 py-2.5 text-[#475569] transition hover:bg-[#f8fafc]"
+            type="button"
+            onClick={onClose}
+          >
+            Cancel
+          </button>
+          <button
+            className="app-button-text rounded-lg bg-[#00b8c4] px-4 py-2.5 text-white shadow-sm transition hover:bg-[#008996] disabled:cursor-wait disabled:opacity-60"
+            type="button"
+            disabled={saving}
+            onClick={onSave}
+          >
+            {saving ? "Saving..." : "Save changes"}
+          </button>
+        </footer>
+      </section>
     </div>
   );
 }
@@ -2042,7 +2587,7 @@ export function DashboardShell() {
       if (cancelled) return;
       applyBackendAgents(backendAgents);
       setVoiceConfig(config);
-      setModelCatalog(config.modelCatalog);
+      setModelCatalog(enrichModelCatalog(config.modelCatalog));
       setLanguageCatalog(config.languageCatalog ?? fallbackLanguageCatalog);
       setAgentTemplates(templates);
     })()
@@ -2182,10 +2727,12 @@ export function DashboardShell() {
     return savePromise;
   }
 
-  async function handlePreviewVoice(input: Pick<VoicePreviewRequest, "mode" | "provider" | "model">) {
+  async function handlePreviewVoice(
+    input: Pick<VoicePreviewRequest, "mode" | "provider" | "model"> & { voice?: string },
+  ) {
     const request: VoicePreviewRequest = {
       ...input,
-      voice: selectedAgent.voice,
+      voice: input.voice ?? selectedAgent.voice,
       language: selectedAgent.language,
       voiceSpeed: selectedAgent.voiceSpeed,
       voicePitch: selectedAgent.voicePitch,
@@ -2287,6 +2834,12 @@ export function DashboardShell() {
     updateSelectedAgent({
       language,
       voice: coerceVoice(selectedAgent.voice, voices, selectedAgent.voice),
+      sttModel: normalizeSttModelForLanguage(
+        selectedAgent.sttProvider,
+        selectedAgent.sttModel,
+        language,
+        languageCatalog,
+      ),
     });
   }
 
@@ -2318,6 +2871,12 @@ export function DashboardShell() {
       pipelineMode,
       language: nextLanguage,
       voice: coerceVoice(selectedAgent.voice, nextVoices, selectedAgent.voice),
+      sttModel: normalizeSttModelForLanguage(
+        selectedAgent.sttProvider,
+        selectedAgent.sttModel,
+        nextLanguage,
+        languageCatalog,
+      ),
     });
   }
 
@@ -2961,409 +3520,21 @@ export function DashboardShell() {
                     </label>
 
                     {openStackConfig ? (
-                      <div
-                        className="fixed inset-0 z-80 grid place-items-center bg-[#0f172a]/35 p-4 backdrop-blur-sm"
-                        role="dialog"
-                        aria-modal="true"
-                        onClick={() => setOpenStackConfig(null)}
-                      >
-                        {selectedAgent.pipelineMode === "realtime" ? (
-                      <section
-                        className="grid max-h-[calc(100vh-72px)] w-full max-w-3xl gap-4 overflow-y-auto rounded-lg border border-[#99f6e8] bg-white p-5 shadow-[0_24px_80px_rgba(15,23,42,0.28)]"
-                        onClick={(event) => event.stopPropagation()}
-                      >
-                        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
-                          <div>
-                            <h3 className="app-section-title m-0">
-                              {openStackConfig === "voice" ? "Realtime voice configuration" : openStackConfig === "stt" ? "Realtime STT configuration" : "Realtime LLM configuration"}
-                            </h3>
-                            <span className="app-caption">Lowest latency. The selected model handles listening, reasoning, and speaking.</span>
-                          </div>
-                          <button
-                            className="app-button-text rounded-lg border border-[#dfe3ea] bg-white px-3 py-2 text-[#475569] transition hover:bg-[#f8fafc]"
-                            type="button"
-                            onClick={() => setOpenStackConfig(null)}
-                          >
-                            Close
-                          </button>
-                        </div>
-                        <div className="grid gap-4">
-                          {openStackConfig === "llm" ? (
-                            <>
-                          <div className="grid gap-2 sm:grid-cols-2">
-                            <button
-                              className="rounded-lg border border-[#00b8c4] bg-[#ecfeff] px-4 py-3 text-left text-[#008996] ring-2 ring-[#99f6e8] transition"
-                              type="button"
-                              aria-pressed={true}
-                              onClick={() => updatePipelineMode("realtime")}
-                            >
-                              <span className="app-label block text-current">Realtime</span>
-                              <strong className="app-strong mt-1 block text-current">One model for listen, think, speak</strong>
-                            </button>
-                            <button
-                              className="rounded-lg border border-[#dfe3ea] bg-white px-4 py-3 text-left text-[#475569] transition hover:bg-[#f8fafc]"
-                              type="button"
-                              aria-pressed={false}
-                              onClick={() => updatePipelineMode("pipeline")}
-                            >
-                              <span className="app-label block text-current">Pipeline</span>
-                              <strong className="app-strong mt-1 block text-current">Separate STT, LLM, and Voice</strong>
-                            </button>
-                          </div>
-                          <div className="grid gap-3 lg:grid-cols-2">
-                          <SelectField
-                            label="Realtime provider"
-                            defaultValue={selectedAgent.realtimeProvider}
-                            value={selectedAgent.realtimeProvider}
-                            onChange={(provider) => {
-                              const next = getProvider(modelCatalog, "realtime", provider);
-                              const voices = getVoices(
-                                modelCatalog,
-                                "realtime",
-                                provider,
-                                next.models[0],
-                                selectedAgent.language,
-                                languageCatalog,
-                              );
-                              updateSelectedAgent({
-                                realtimeProvider: provider as RealtimeProvider,
-                                realtimeModel: next.models[0],
-                                voice: voices[0] ?? selectedAgent.voice,
-                              });
-                            }}
-                            options={modelCatalog.realtime.map((item) => ({
-                              value: item.provider,
-                              label: item.label,
-                            }))}
-                          />
-                          <SelectField
-                            label="Realtime model"
-                            defaultValue={selectedAgent.realtimeModel}
-                            value={selectedAgent.realtimeModel}
-                            onChange={(realtimeModel) => updateSelectedAgent({ realtimeModel })}
-                            options={[...getProvider(modelCatalog, "realtime", selectedAgent.realtimeProvider).models]}
-                          />
-                          </div>
-                            </>
-                          ) : null}
-                          {openStackConfig === "stt" ? (
-                            <div className="grid gap-3 rounded-lg border border-[#99f6e8] bg-[#ecfeff] p-4">
-                              <span className="app-label text-[#008996]">Native realtime STT</span>
-                              <strong className="app-strong text-[#0c4a6e]">
-                                {selectedAgent.realtimeProvider} / {selectedAgent.realtimeModel}
-                              </strong>
-                              <p className="app-caption m-0 text-[#008996]">
-                                In realtime mode, speech-to-text is handled by the selected realtime model. Change that model from LLM.
-                              </p>
-                              <button
-                                className="app-button-text w-fit rounded-lg border border-[#99f6e8] bg-white px-3 py-2 text-[#008996] transition hover:bg-[#ccfbf1]"
-                                type="button"
-                                onClick={() => setOpenStackConfig("llm")}
-                              >
-                                Open LLM config
-                              </button>
-                            </div>
-                          ) : null}
-                          {openStackConfig === "voice" ? (
-                            <div className="grid gap-3 lg:grid-cols-2">
-                          <SelectField
-                            label="Language"
-                            defaultValue={selectedAgent.language}
-                            value={selectedAgent.language}
-                            onChange={updateAgentLanguage}
-                            options={languageOptions}
-                          />
-                          <VoiceSelectField
-                            label="Realtime voice"
-                            value={selectedAgent.voice}
-                            description={voiceProfileSummary(
-                              selectedAgent.voice,
-                              getProvider(modelCatalog, "realtime", selectedAgent.realtimeProvider).voiceProfiles,
-                              selectedAgent.language,
-                              languageCatalog,
-                            )}
-                            onChange={(voice) => updateSelectedAgent({ voice })}
-                            onPreview={() => void handlePreviewVoice({
-                              mode: "realtime",
-                              provider: selectedAgent.realtimeProvider,
-                              model: selectedAgent.realtimeModel,
-                            })}
-                            previewing={previewingVoice === [
-                              selectedAgent.id,
-                              "realtime",
-                              selectedAgent.realtimeProvider,
-                              selectedAgent.realtimeModel,
-                              selectedAgent.voice,
-                              selectedAgent.language,
-                              selectedAgent.voiceSpeed,
-                              selectedAgent.voicePitch,
-                            ].join(":")}
-                            options={voiceSelectOptions(
-                              getVoices(
-                                modelCatalog,
-                                "realtime",
-                                selectedAgent.realtimeProvider,
-                                selectedAgent.realtimeModel,
-                                selectedAgent.language,
-                                languageCatalog,
-                              ),
-                              getProvider(modelCatalog, "realtime", selectedAgent.realtimeProvider).voiceProfiles,
-                              selectedAgent.language,
-                              languageCatalog,
-                            )}
-                          />
-                            </div>
-                          ) : null}
-                        </div>
-                        <div className="flex flex-col-reverse gap-2 border-t border-[#e5e7eb] pt-4 sm:flex-row sm:justify-end">
-                          <button
-                            className="app-button-text rounded-lg border border-[#dfe3ea] bg-white px-4 py-2.5 text-[#475569] transition hover:bg-[#f8fafc]"
-                            type="button"
-                            onClick={() => setOpenStackConfig(null)}
-                          >
-                            Close
-                          </button>
-                          <button
-                            className="app-button-text rounded-lg bg-[#00b8c4] px-4 py-2.5 text-white shadow-sm transition hover:bg-[#008996]"
-                            type="button"
-                            disabled={saving}
-                            onClick={() => void saveStackConfig()}
-                          >
-                            {saving ? "Saving..." : "Save"}
-                          </button>
-                        </div>
-                      </section>
-                    ) : (
-                      <section
-                        className="grid max-h-[calc(100vh-72px)] w-full max-w-3xl gap-4 overflow-y-auto rounded-lg border border-[#e5e7eb] bg-white p-5 shadow-[0_24px_80px_rgba(15,23,42,0.28)]"
-                        onClick={(event) => event.stopPropagation()}
-                      >
-                        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
-                          <div>
-                            <h3 className="app-section-title m-0">
-                              {openStackConfig === "voice" ? "Voice configuration" : openStackConfig === "stt" ? "STT configuration" : "LLM configuration"}
-                            </h3>
-                          <span className="app-caption">Mix providers independently, like Vapi: STT to LLM to TTS.</span>
-                          </div>
-                          <button
-                            className="app-button-text rounded-lg border border-[#dfe3ea] bg-white px-3 py-2 text-[#475569] transition hover:bg-[#f8fafc]"
-                            type="button"
-                            onClick={() => setOpenStackConfig(null)}
-                          >
-                            Close
-                          </button>
-                        </div>
-
-                        {openStackConfig === "llm" ? (
-                        <div className="grid gap-4">
-                          <div className="grid gap-2 sm:grid-cols-2">
-                            <button
-                              className="rounded-lg border border-[#dfe3ea] bg-white px-4 py-3 text-left text-[#475569] transition hover:bg-[#f8fafc]"
-                              type="button"
-                              aria-pressed={false}
-                              onClick={() => updatePipelineMode("realtime")}
-                            >
-                              <span className="app-label block text-current">Realtime</span>
-                              <strong className="app-strong mt-1 block text-current">One model for listen, think, speak</strong>
-                            </button>
-                            <button
-                              className="rounded-lg border border-[#7c3aed] bg-[#f5f3ff] px-4 py-3 text-left text-[#6d28d9] ring-2 ring-[#ddd6fe] transition"
-                              type="button"
-                              aria-pressed={true}
-                              onClick={() => updatePipelineMode("pipeline")}
-                            >
-                              <span className="app-label block text-current">Pipeline</span>
-                              <strong className="app-strong mt-1 block text-current">Separate STT, LLM, and Voice</strong>
-                            </button>
-                          </div>
-                          <div className="grid gap-3 lg:grid-cols-2">
-                          <SelectField
-                            label="LLM provider"
-                            defaultValue={selectedAgent.llmProvider}
-                            value={selectedAgent.llmProvider}
-                            onChange={(provider) => {
-                              const next = getProvider(modelCatalog, "llm", provider);
-                              updateSelectedAgent({
-                                llmProvider: provider as PipelineProvider,
-                                llmModel: next.models[0],
-                              });
-                            }}
-                            options={modelCatalog.llm.map((item) => ({
-                              value: item.provider,
-                              label: item.label,
-                            }))}
-                          />
-                          <SelectField
-                            label="LLM model"
-                            defaultValue={selectedAgent.llmModel}
-                            value={selectedAgent.llmModel}
-                            onChange={(llmModel) => updateSelectedAgent({ llmModel })}
-                            options={[...getProvider(modelCatalog, "llm", selectedAgent.llmProvider).models]}
-                          />
-                          </div>
-                        </div>
-                        ) : null}
-
-                        {openStackConfig === "stt" ? (
-                        <div className="grid gap-3 lg:grid-cols-2">
-                          <SelectField
-                            label="Speech-to-text provider"
-                            defaultValue={selectedAgent.sttProvider}
-                            value={selectedAgent.sttProvider}
-                            onChange={(provider) => {
-                              const next = getProvider(modelCatalog, "stt", provider);
-                              const ttsLanguages = getProvider(modelCatalog, "tts", selectedAgent.ttsProvider).languages;
-                              const nextLanguage =
-                                next.languages?.length && !ttsLanguages?.length
-                                  ? coerceLanguage(
-                                      selectedAgent.language,
-                                      [...next.languages],
-                                    )
-                                  : selectedAgent.language;
-                              updateSelectedAgent({
-                                sttProvider: provider as SttProvider,
-                                sttModel: next.models[0],
-                                language: nextLanguage,
-                              });
-                            }}
-                            options={modelCatalog.stt.map((item) => ({
-                              value: item.provider,
-                              label: item.label,
-                            }))}
-                          />
-                          <SelectField
-                            label="Speech-to-text model"
-                            defaultValue={selectedAgent.sttModel}
-                            value={selectedAgent.sttModel}
-                            onChange={(sttModel) => updateSelectedAgent({ sttModel })}
-                            options={[...getProvider(modelCatalog, "stt", selectedAgent.sttProvider).models]}
-                          />
-                        </div>
-                        ) : null}
-
-                        {openStackConfig === "voice" ? (
-                        <div className="grid gap-3 lg:grid-cols-3">
-                          <SelectField
-                            label="Language"
-                            defaultValue={selectedAgent.language}
-                            value={selectedAgent.language}
-                            onChange={updateAgentLanguage}
-                            options={languageOptions}
-                          />
-                          <SelectField
-                            label="Text-to-speech provider"
-                            defaultValue={selectedAgent.ttsProvider}
-                            value={selectedAgent.ttsProvider}
-                            onChange={(provider) => {
-                              const next = getProvider(modelCatalog, "tts", provider);
-                              const nextLanguage =
-                                next.languages?.length
-                                  ? coerceLanguage(
-                                      selectedAgent.language,
-                                      [...next.languages],
-                                    )
-                                  : selectedAgent.language;
-                              const voices = getVoices(
-                                modelCatalog,
-                                "tts",
-                                provider,
-                                next.models[0],
-                                nextLanguage,
-                                languageCatalog,
-                              );
-                              updateSelectedAgent({
-                                ttsProvider: provider as PipelineProvider,
-                                ttsModel: next.models[0],
-                                language: nextLanguage,
-                                voice: voices[0] ?? selectedAgent.voice,
-                              });
-                            }}
-                            options={modelCatalog.tts.map((item) => ({
-                              value: item.provider,
-                              label: item.label,
-                            }))}
-                          />
-                          <SelectField
-                            label="Text-to-speech model"
-                            defaultValue={selectedAgent.ttsModel}
-                            value={selectedAgent.ttsModel}
-                            onChange={(ttsModel) => {
-                              const voices = getVoices(
-                                modelCatalog,
-                                "tts",
-                                selectedAgent.ttsProvider,
-                                ttsModel,
-                                selectedAgent.language,
-                                languageCatalog,
-                              );
-                              updateSelectedAgent({
-                                ttsModel,
-                                voice: voices.includes(selectedAgent.voice) ? selectedAgent.voice : voices[0],
-                              });
-                            }}
-                            options={[...getProvider(modelCatalog, "tts", selectedAgent.ttsProvider).models]}
-                          />
-                          <VoiceSelectField
-                            label="Voice / speaker"
-                            value={selectedAgent.voice}
-                            description={voiceProfileSummary(
-                              selectedAgent.voice,
-                              getProvider(modelCatalog, "tts", selectedAgent.ttsProvider).voiceProfiles,
-                              selectedAgent.language,
-                              languageCatalog,
-                            )}
-                            onChange={(voice) => updateSelectedAgent({ voice })}
-                            onPreview={() => void handlePreviewVoice({
-                              mode: "pipeline",
-                              provider: selectedAgent.ttsProvider,
-                              model: selectedAgent.ttsModel,
-                            })}
-                            previewing={previewingVoice === [
-                              selectedAgent.id,
-                              "pipeline",
-                              selectedAgent.ttsProvider,
-                              selectedAgent.ttsModel,
-                              selectedAgent.voice,
-                              selectedAgent.language,
-                              selectedAgent.voiceSpeed,
-                              selectedAgent.voicePitch,
-                            ].join(":")}
-                            options={voiceSelectOptions(
-                              getVoices(
-                                modelCatalog,
-                                "tts",
-                                selectedAgent.ttsProvider,
-                                selectedAgent.ttsModel,
-                                selectedAgent.language,
-                                languageCatalog,
-                              ),
-                              getProvider(modelCatalog, "tts", selectedAgent.ttsProvider).voiceProfiles,
-                              selectedAgent.language,
-                              languageCatalog,
-                            )}
-                          />
-                        </div>
-                        ) : null}
-                        <div className="flex flex-col-reverse gap-2 border-t border-[#e5e7eb] pt-4 sm:flex-row sm:justify-end">
-                          <button
-                            className="app-button-text rounded-lg border border-[#dfe3ea] bg-white px-4 py-2.5 text-[#475569] transition hover:bg-[#f8fafc]"
-                            type="button"
-                            onClick={() => setOpenStackConfig(null)}
-                          >
-                            Close
-                          </button>
-                          <button
-                            className="app-button-text rounded-lg bg-[#00b8c4] px-4 py-2.5 text-white shadow-sm transition hover:bg-[#008996]"
-                            type="button"
-                            disabled={saving}
-                            onClick={() => void saveStackConfig()}
-                          >
-                            {saving ? "Saving..." : "Save"}
-                          </button>
-                        </div>
-                      </section>
-                        )}
-                      </div>
+                      <StackConfigurationModal
+                        stack={openStackConfig}
+                        agent={selectedAgent}
+                        catalog={modelCatalog}
+                        languageCatalog={languageCatalog}
+                        languageOptions={languageOptions}
+                        previewingVoice={previewingVoice}
+                        saving={saving}
+                        onChange={updateSelectedAgent}
+                        onLanguageChange={updateAgentLanguage}
+                        onPipelineModeChange={updatePipelineMode}
+                        onPreview={(input) => void handlePreviewVoice(input)}
+                        onClose={() => setOpenStackConfig(null)}
+                        onSave={() => void saveStackConfig()}
+                      />
                     ) : null}
 
                     <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,1fr)_220px]">
