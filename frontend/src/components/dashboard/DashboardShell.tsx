@@ -1068,14 +1068,46 @@ function supportsVoicePitch(agent: VoiceAgent) {
 const deepgramMultilingualSafeModels = new Set([
   "flux-general-multi",
   "nova-3",
+  "nova-3-general",
   "nova-2-general",
   "nova-general",
+  "enhanced-general",
   "base",
   "whisper-tiny",
   "whisper-base",
   "whisper-small",
   "whisper-medium",
   "whisper-large",
+]);
+
+const deepgramFluxMultiLanguages = new Set(["en", "es", "fr", "de", "hi", "ru", "pt", "ja", "it", "nl"]);
+const deepgramNova3Languages = new Set(["en", "es", "fr", "de", "it", "ja", "ko", "nl", "pt", "ru", "tr", "zh", "hi", "bn", "gu", "kn", "mr", "ta", "te", "ur", "id"]);
+const deepgramNova2GeneralLanguages = new Set(["en", "es", "fr", "de", "it", "ja", "ko", "nl", "pt", "ru", "tr", "zh", "hi", "id", "th", "pl", "uk", "sv", "no", "da"]);
+const deepgramEnhancedGeneralLanguages = new Set(["en", "es", "fr", "de", "it", "ja", "ko", "nl", "pt", "ru", "zh", "hi", "ta"]);
+const deepgramBaseLanguages = new Set(["en", "es", "fr", "de", "it", "ja", "ko", "nl", "pt", "ru", "zh", "hi"]);
+const deepgramWhisperModels = new Set(["whisper-tiny", "whisper-base", "whisper-small", "whisper-medium", "whisper-large"]);
+const deepgramEnglishOnlyModels = new Set([
+  "flux-general-en",
+  "nova-2-meeting",
+  "nova-2-phonecall",
+  "nova-2-finance",
+  "nova-2-conversationalai",
+  "nova-2-voicemail",
+  "nova-2-video",
+  "nova-2-medical",
+  "nova-2-drivethru",
+  "nova-2-automotive",
+  "nova-phonecall",
+  "nova-meeting",
+  "enhanced-meeting",
+  "enhanced-phonecall",
+  "enhanced-finance",
+  "meeting",
+  "phonecall",
+  "finance",
+  "conversationalai",
+  "voicemail",
+  "video",
 ]);
 
 function deepgramLanguageCodeForUi(language: string, languageCatalog: readonly VoiceLanguageOption[]) {
@@ -1086,7 +1118,13 @@ function deepgramLanguageCodeForUi(language: string, languageCatalog: readonly V
     Multilingual: "multi",
     unknown: "multi",
     "hi-IN": "hi",
+    "bn-IN": "bn",
+    "gu-IN": "gu",
+    "kn-IN": "kn",
+    "mr-IN": "mr",
     "ta-IN": "ta",
+    "te-IN": "te",
+    "ur-IN": "ur",
     "es-ES": "es",
     "fr-FR": "fr",
     "de-DE": "de",
@@ -1105,9 +1143,38 @@ function deepgramLanguageCodeForUi(language: string, languageCatalog: readonly V
     "nb-NO": "no",
     "da-DK": "da",
     Hindi: "hi",
+    Bengali: "bn",
+    Gujarati: "gu",
+    Kannada: "kn",
+    Marathi: "mr",
     Tamil: "ta",
+    Telugu: "te",
+    Urdu: "ur",
   };
   return aliases[code] ?? aliases[value] ?? code.split("-")[0] ?? "multi";
+}
+
+function deepgramModelsForLanguage(
+  models: readonly string[],
+  language: string,
+  languageCatalog: readonly VoiceLanguageOption[],
+) {
+  const code = deepgramLanguageCodeForUi(language, languageCatalog);
+  const baseCode = code.split("-")[0];
+  if (code === "multi") {
+    return models.filter((model) => model === "flux-general-multi" || deepgramMultilingualSafeModels.has(model));
+  }
+  if (baseCode === "en") return [...models];
+
+  return models.filter((model) => {
+    if (model === "flux-general-multi") return deepgramFluxMultiLanguages.has(baseCode);
+    if (model === "nova-3" || model === "nova-3-general") return deepgramNova3Languages.has(baseCode);
+    if (model === "nova-2-general" || model === "nova-general") return deepgramNova2GeneralLanguages.has(baseCode);
+    if (model === "enhanced-general") return deepgramEnhancedGeneralLanguages.has(baseCode);
+    if (model === "base") return deepgramBaseLanguages.has(baseCode);
+    if (deepgramWhisperModels.has(model)) return true;
+    return !deepgramEnglishOnlyModels.has(model);
+  });
 }
 
 function normalizeSttModelForLanguage(
@@ -1117,10 +1184,9 @@ function normalizeSttModelForLanguage(
   languageCatalog: readonly VoiceLanguageOption[],
 ) {
   if (provider !== "deepgram") return model;
-  const code = deepgramLanguageCodeForUi(language, languageCatalog);
-  if (code === "multi") return model === "flux-general-en" ? "flux-general-multi" : model;
-  if (code.split("-")[0] === "en") return model;
-  return deepgramMultilingualSafeModels.has(model) ? model : "nova-3";
+  const models = deepgramModelsForLanguage(fallbackDeepgramSttModels, language, languageCatalog);
+  if (models.includes(model)) return model;
+  return models[0] ?? "nova-3";
 }
 
 function getLanguageOptions(
@@ -1891,8 +1957,24 @@ function StackConfigurationModal({
       : stack === "stt"
         ? agent.sttModel
         : agent.ttsModel;
+  const modelOptions = useMemo(
+    () =>
+      stack === "stt" && provider.provider === "deepgram"
+        ? deepgramModelsForLanguage(provider.models, agent.language, languageCatalog)
+        : [...provider.models],
+    [agent.language, languageCatalog, provider.models, provider.provider, stack],
+  );
+  const selectedModelValue = modelOptions.includes(selectedModel)
+    ? selectedModel
+    : modelOptions[0] ?? selectedModel;
   const title = stack === "llm" ? "Agent LLM" : stack === "stt" ? "Agent STT" : "Agent Voice";
   const languageName = languageDisplayName(agent.language, languageCatalog);
+
+  useEffect(() => {
+    if (stack === "stt" && selectedModelValue !== selectedModel) {
+      onChange({ sttModel: selectedModelValue });
+    }
+  }, [onChange, selectedModel, selectedModelValue, stack]);
 
   const selectProvider = (nextProviderId: string) => {
     const next = getProvider(catalog, layer, nextProviderId);
@@ -2084,10 +2166,10 @@ function StackConfigurationModal({
             <div className="grid gap-4">
               <SelectField
                 label={stack === "voice" ? "Voice model" : stack === "stt" ? "Speech recognition model" : "Language model"}
-                defaultValue={selectedModel}
-                value={selectedModel}
+                defaultValue={selectedModelValue}
+                value={selectedModelValue}
                 onChange={selectModel}
-                options={[...provider.models]}
+                options={modelOptions}
               />
 
               {stack !== "llm" ? (
@@ -2111,9 +2193,9 @@ function StackConfigurationModal({
                 <div>
                   <div className="mb-2 flex items-center justify-between gap-3">
                     <span className="app-label">Available models</span>
-                    <span className="app-caption">{provider.models.length} models</span>
+                    <span className="app-caption">{modelOptions.length} models</span>
                   </div>
-                  <ModelChoiceList models={provider.models} value={selectedModel} onChange={selectModel} />
+                  <ModelChoiceList models={modelOptions} value={selectedModelValue} onChange={selectModel} />
                 </div>
               ) : null}
 
@@ -2121,9 +2203,9 @@ function StackConfigurationModal({
                 <div>
                   <div className="mb-2 flex items-center justify-between gap-3">
                     <span className="app-label">Recognition models</span>
-                    <span className="app-caption">{provider.models.length} models</span>
+                    <span className="app-caption">{modelOptions.length} models</span>
                   </div>
-                  <ModelChoiceList models={provider.models} value={selectedModel} onChange={selectModel} />
+                  <ModelChoiceList models={modelOptions} value={selectedModelValue} onChange={selectModel} />
                 </div>
               ) : null}
 
