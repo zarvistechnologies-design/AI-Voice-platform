@@ -192,6 +192,7 @@ export type VoicePreviewRequest = {
   language: string;
   text?: string;
   voiceSpeed?: number;
+  voicePitch?: number;
 };
 
 export type BackendAgent = {

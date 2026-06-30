@@ -590,6 +590,18 @@ const fallbackElevenLabsVoiceProfiles: VoiceProfile[] = [
 ];
 
 const defaultGeminiRealtimeModel = "gemini-2.5-flash-native-audio-preview-12-2025";
+const voiceSpeedRange = { min: 0.5, max: 2, step: 0.05, fallback: 1 };
+const voicePitchRange = { min: -10, max: 10, step: 1, fallback: 0 };
+const concurrentCallsRange = { min: 1, max: 100, step: 1, fallback: 1 };
+
+function clampNumericInput(
+  value: string,
+  { min, max, fallback }: { min: number; max: number; fallback: number },
+) {
+  const next = Number(value);
+  if (!Number.isFinite(next)) return fallback;
+  return Math.min(max, Math.max(min, next));
+}
 
 function normalizeRealtimeModel(provider: RealtimeProvider, model: string) {
   if (provider !== "gemini") return model;
@@ -928,6 +940,10 @@ function coerceLanguage(
 
 function coerceVoice(voice: string, options: readonly string[], fallback = "alloy") {
   return options.includes(voice) ? voice : options[0] ?? fallback;
+}
+
+function supportsVoicePitch(agent: VoiceAgent) {
+  return agent.pipelineMode === "pipeline" && agent.ttsProvider === "sarvam" && agent.ttsModel === "bulbul:v2";
 }
 
 function getLanguageOptions(
@@ -1631,26 +1647,88 @@ function VoiceSelectField({
   );
 }
 
+function SliderField({
+  label,
+  value,
+  min,
+  max,
+  step,
+  valueText,
+  disabled,
+  title,
+  onChange,
+}: {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+  valueText?: string;
+  disabled?: boolean;
+  title?: string;
+  onChange: (value: number) => void;
+}) {
+  return (
+    <label className="app-label grid gap-2 rounded-lg border border-[#e5e7eb] bg-white p-3" title={title}>
+      <span className="flex min-w-0 items-center justify-between gap-3">
+        <span className="truncate">{label}</span>
+        <strong className="app-strong shrink-0 rounded-md bg-[#ecfeff] px-2 py-1 text-[#008996]">
+          {valueText ?? value}
+        </strong>
+      </span>
+      <input
+        className="h-2 w-full cursor-pointer accent-[#00b8c4] disabled:cursor-not-allowed disabled:opacity-50"
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        disabled={disabled}
+        title={title}
+        onChange={(event) => onChange(clampNumericInput(event.target.value, { min, max, fallback: value }))}
+      />
+    </label>
+  );
+}
+
 function InputField({
   label,
   defaultValue,
   placeholder,
+  type = "text",
+  min,
+  max,
+  step,
+  disabled,
+  title,
   value,
   onChange,
 }: {
   label: string;
   defaultValue?: string;
   placeholder?: string;
+  type?: string;
+  min?: number | string;
+  max?: number | string;
+  step?: number | string;
+  disabled?: boolean;
+  title?: string;
   value?: string;
   onChange?: (value: string) => void;
 }) {
   return (
-    <label className="app-label grid gap-2">
+    <label className="app-label grid gap-2" title={title}>
       <span>{label}</span>
       <input
-        className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10"
+        className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10 disabled:cursor-not-allowed disabled:bg-[#f8fafc] disabled:text-[#94a3b8]"
         {...(value === undefined ? { defaultValue } : { value })}
         placeholder={placeholder}
+        type={type}
+        min={min}
+        max={max}
+        step={step}
+        disabled={disabled}
+        title={title}
         onChange={onChange ? (event) => onChange(event.target.value) : undefined}
       />
     </label>
@@ -1768,6 +1846,7 @@ export function DashboardShell() {
     () => agentList.find((agent) => agent.id === selectedAgentId) ?? agentList[0] ?? agents[0],
     [agentList, selectedAgentId],
   );
+  const voicePitchSupported = supportsVoicePitch(selectedAgent);
   const languageOptions = getLanguageOptions(modelCatalog, selectedAgent, languageCatalog);
   const selectedSchedule = selectedAgent.businessHours.schedule.length
     ? selectedAgent.businessHours.schedule
@@ -2109,6 +2188,7 @@ export function DashboardShell() {
       voice: selectedAgent.voice,
       language: selectedAgent.language,
       voiceSpeed: selectedAgent.voiceSpeed,
+      voicePitch: selectedAgent.voicePitch,
     };
     const key = [
       selectedAgent.id,
@@ -2118,6 +2198,7 @@ export function DashboardShell() {
       request.voice,
       request.language,
       request.voiceSpeed,
+      request.voicePitch,
     ].join(":");
     setPreviewingVoice(key);
     setNotice("");
@@ -3015,6 +3096,7 @@ export function DashboardShell() {
                               selectedAgent.voice,
                               selectedAgent.language,
                               selectedAgent.voiceSpeed,
+                              selectedAgent.voicePitch,
                             ].join(":")}
                             options={voiceSelectOptions(
                               getVoices(
@@ -3244,6 +3326,7 @@ export function DashboardShell() {
                               selectedAgent.voice,
                               selectedAgent.language,
                               selectedAgent.voiceSpeed,
+                              selectedAgent.voicePitch,
                             ].join(":")}
                             options={voiceSelectOptions(
                               getVoices(
@@ -3314,20 +3397,38 @@ export function DashboardShell() {
                         <span className="app-caption">Control how quickly, clearly, and aggressively the live agent responds.</span>
                       </div>
                       <div className="grid gap-3 lg:grid-cols-3">
-                        <InputField
+                        <SliderField
                           label="Voice speed"
-                          value={String(selectedAgent.voiceSpeed)}
-                          onChange={(value) => updateSelectedAgent({ voiceSpeed: Number(value) || 1 })}
+                          value={selectedAgent.voiceSpeed}
+                          min={voiceSpeedRange.min}
+                          max={voiceSpeedRange.max}
+                          step={voiceSpeedRange.step}
+                          valueText={`${selectedAgent.voiceSpeed.toFixed(2)}x`}
+                          onChange={(value) => updateSelectedAgent({ voiceSpeed: value })}
                         />
-                        <InputField
+                        <SliderField
                           label="Voice pitch"
-                          value={String(selectedAgent.voicePitch)}
-                          onChange={(value) => updateSelectedAgent({ voicePitch: Number(value) || 0 })}
+                          value={selectedAgent.voicePitch}
+                          min={voicePitchRange.min}
+                          max={voicePitchRange.max}
+                          step={voicePitchRange.step}
+                          valueText={selectedAgent.voicePitch > 0 ? `+${selectedAgent.voicePitch}` : String(selectedAgent.voicePitch)}
+                          disabled={!voicePitchSupported}
+                          title={
+                            voicePitchSupported
+                              ? "Pitch applies to Sarvam bulbul:v2."
+                              : "Pitch is available only for Sarvam bulbul:v2."
+                          }
+                          onChange={(value) => updateSelectedAgent({ voicePitch: value })}
                         />
-                        <InputField
+                        <SliderField
                           label="Concurrent calls"
-                          value={String(selectedAgent.maxConcurrentCalls)}
-                          onChange={(value) => updateSelectedAgent({ maxConcurrentCalls: Number(value) || 1 })}
+                          value={selectedAgent.maxConcurrentCalls}
+                          min={concurrentCallsRange.min}
+                          max={concurrentCallsRange.max}
+                          step={concurrentCallsRange.step}
+                          valueText={String(selectedAgent.maxConcurrentCalls)}
+                          onChange={(value) => updateSelectedAgent({ maxConcurrentCalls: value })}
                         />
                         <SelectField
                           label="Interruption sensitivity"
