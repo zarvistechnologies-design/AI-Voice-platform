@@ -212,7 +212,7 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
   const transcript = [...call.transcript].sort(
     (left, right) => new Date(left.timestamp).getTime() - new Date(right.timestamp).getTime(),
   );
-  const recordingHref = call.recordingUrl || (call.recordingKey.startsWith("http") ? call.recordingKey : "");
+  const recordingHref = call.recordingUrl.startsWith("http") ? call.recordingUrl : call.recordingKey.startsWith("http") ? call.recordingKey : "";
   const recordingPlayerHref = recordingObjectUrl.callId === call._id ? recordingObjectUrl.url || recordingHref : recordingHref;
   const llmUsage = call.llmInputTokens || call.llmOutputTokens
     ? `${call.llmInputTokens.toLocaleString("en-US")} in / ${call.llmOutputTokens.toLocaleString("en-US")} out`
@@ -244,7 +244,7 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
   useEffect(() => {
     let active = true;
     let objectUrl = "";
-    if (!call.recordingKey.startsWith("web/")) return undefined;
+    if (!call.recordingKey || call.recordingKey.startsWith("http") || recordingHref) return undefined;
 
     void voiceApi.callRecordingBlob(call._id)
       .then((blob) => {
@@ -258,7 +258,7 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
       active = false;
       if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
-  }, [call._id, call.recordingKey]);
+  }, [call._id, call.recordingKey, recordingHref]);
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-slate-950/35 backdrop-blur-sm" onClick={onClose}>

@@ -9,6 +9,7 @@ type Props = {
   agentId: string;
   agentName: string;
   knowledgeCount: number;
+  recordingEnabled: boolean;
   onClose: () => void;
   onRegionChange: (region: string) => void;
 };
@@ -32,12 +33,17 @@ function knowledgeStatus(count: number) {
   return count > 0 ? `${count} knowledge ${count === 1 ? "file" : "files"} attached` : "No knowledge files attached";
 }
 
-export function TestCallPanel({ agentId, agentName, knowledgeCount, onClose, onRegionChange }: Props) {
+function recordingTrackId(track: MediaStreamTrack) {
+  return track.id || `${track.kind}:${track.label}`;
+}
+
+export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEnabled, onClose, onRegionChange }: Props) {
   const roomRef = useRef<Room | null>(null);
   const audioElementsRef = useRef<HTMLMediaElement[]>([]);
   const dispatchTimerRef = useRef<number | null>(null);
   const webCallIdRef = useRef("");
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const recordingFinishPromiseRef = useRef<Promise<void> | null>(null);
   const recordingChunksRef = useRef<Blob[]>([]);
   const recordingStartedAtRef = useRef(0);
   const recordingUploadStartedRef = useRef(false);
@@ -45,6 +51,7 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, onClose, onR
   const recordingDestinationRef = useRef<MediaStreamAudioDestinationNode | null>(null);
   const recordingSourcesRef = useRef<MediaStreamAudioSourceNode[]>([]);
   const recordingTrackClonesRef = useRef<MediaStreamTrack[]>([]);
+  const recordingTrackIdsRef = useRef<Set<string>>(new Set());
   const [mode, setMode] = useState<"web" | "phone">("web");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [status, setStatus] = useState("Ready to connect");
@@ -65,6 +72,7 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, onClose, onR
     recordingSourcesRef.current = [];
     recordingTrackClonesRef.current.forEach((track) => track.stop());
     recordingTrackClonesRef.current = [];
+    recordingTrackIdsRef.current.clear();
     recordingDestinationRef.current?.stream.getTracks().forEach((track) => track.stop());
     recordingDestinationRef.current = null;
     const audioContext = audioContextRef.current;
@@ -80,6 +88,9 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, onClose, onR
     if (!audioContext || !destination || !mediaStreamTrack || mediaStreamTrack.readyState === "ended") return;
 
     try {
+      const trackId = recordingTrackId(mediaStreamTrack);
+      if (recordingTrackIdsRef.current.has(trackId)) return;
+      recordingTrackIdsRef.current.add(trackId);
       const trackClone = mediaStreamTrack.clone();
       recordingTrackClonesRef.current.push(trackClone);
       const source = audioContext.createMediaStreamSource(new MediaStream([trackClone]));
@@ -92,6 +103,15 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, onClose, onR
   }, []);
 
   const startBrowserRecording = useCallback(async (room: Room, callId: string) => {
+    if (!recordingEnabled) {
+      cleanupBrowserRecordingGraph();
+      mediaRecorderRef.current = null;
+      recordingChunksRef.current = [];
+      recordingStartedAtRef.current = 0;
+      recordingUploadStartedRef.current = false;
+      return;
+    }
+
     if (typeof MediaRecorder === "undefined") {
       setStatus("Connected. Browser recording is not supported in this browser.");
       return;
@@ -140,55 +160,68 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, onClose, onR
       cleanupBrowserRecordingGraph();
       setStatus("Connected. Browser recording could not start.");
     }
-  }, [addTrackToBrowserRecording, cleanupBrowserRecordingGraph]);
+  }, [addTrackToBrowserRecording, cleanupBrowserRecordingGraph, recordingEnabled]);
 
-  const finishBrowserRecording = useCallback(async () => {
-    const recorder = mediaRecorderRef.current;
-    const callId = webCallIdRef.current;
+  const finishBrowserRecording = useCallback(() => {
+    if (recordingFinishPromiseRef.current) return recordingFinishPromiseRef.current;
 
-    if (!recorder) {
-      webCallIdRef.current = "";
-      recordingChunksRef.current = [];
-      recordingStartedAtRef.current = 0;
-      cleanupBrowserRecordingGraph();
-      return;
-    }
-    if (recordingUploadStartedRef.current) return;
+    const finishPromise = (async () => {
+      const recorder = mediaRecorderRef.current;
+      const callId = webCallIdRef.current;
 
-    recordingUploadStartedRef.current = true;
-    const startedAt = recordingStartedAtRef.current || Date.now();
-    const mimeType = recorder.mimeType || preferredRecordingMimeType() || "audio/webm";
-
-    try {
-      if (recorder.state !== "inactive") {
-        await new Promise<void>((resolve) => {
-          recorder.onstop = () => resolve();
-          recorder.onerror = () => resolve();
-          try {
-            recorder.stop();
-          } catch {
-            resolve();
-          }
-        });
+      if (!recorder) {
+        webCallIdRef.current = "";
+        recordingChunksRef.current = [];
+        recordingStartedAtRef.current = 0;
+        cleanupBrowserRecordingGraph();
+        return;
       }
+      if (recordingUploadStartedRef.current) return;
 
-      const chunks = recordingChunksRef.current;
-      const blob = chunks.length ? new Blob(chunks, { type: mimeType }) : null;
-      if (callId && blob?.size) {
-        await voiceApi.uploadWebCallRecording(callId, blob, Date.now() - startedAt);
-        setStatus("Call ended. Recording saved.");
-      } else {
-        setStatus("Call ended");
+      recordingUploadStartedRef.current = true;
+      const startedAt = recordingStartedAtRef.current || Date.now();
+      const mimeType = recorder.mimeType || preferredRecordingMimeType() || "audio/webm";
+
+      try {
+        if (recorder.state !== "inactive") {
+          await new Promise<void>((resolve) => {
+            recorder.onstop = () => resolve();
+            recorder.onerror = () => resolve();
+            try {
+              if (recorder.state === "recording") recorder.requestData();
+              recorder.stop();
+            } catch {
+              resolve();
+            }
+          });
+        }
+
+        const chunks = recordingChunksRef.current;
+        const blob = chunks.length ? new Blob(chunks, { type: mimeType }) : null;
+        if (callId && blob?.size) {
+          await voiceApi.uploadWebCallRecording(callId, blob, Date.now() - startedAt);
+          setStatus("Call ended. Recording saved.");
+        } else {
+          setStatus("Call ended");
+        }
+      } catch (error) {
+        setStatus(error instanceof Error ? `Call ended. Recording upload failed: ${error.message}` : "Call ended. Recording upload failed.");
+      } finally {
+        mediaRecorderRef.current = null;
+        webCallIdRef.current = "";
+        recordingChunksRef.current = [];
+        recordingStartedAtRef.current = 0;
+        cleanupBrowserRecordingGraph();
       }
-    } catch (error) {
-      setStatus(error instanceof Error ? `Call ended. Recording upload failed: ${error.message}` : "Call ended. Recording upload failed.");
-    } finally {
-      mediaRecorderRef.current = null;
-      webCallIdRef.current = "";
-      recordingChunksRef.current = [];
-      recordingStartedAtRef.current = 0;
-      cleanupBrowserRecordingGraph();
-    }
+    })();
+
+    recordingFinishPromiseRef.current = finishPromise;
+    void finishPromise.finally(() => {
+      if (recordingFinishPromiseRef.current === finishPromise) {
+        recordingFinishPromiseRef.current = null;
+      }
+    });
+    return finishPromise;
   }, [cleanupBrowserRecordingGraph]);
 
   const disconnect = useCallback(() => {
@@ -270,6 +303,10 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, onClose, onR
       });
       room.on(RoomEvent.TrackUnsubscribed, (track) => {
         if (track.kind !== Track.Kind.Audio) return;
+        track.detach().forEach((element) => {
+          element.remove();
+          audioElementsRef.current = audioElementsRef.current.filter((item) => item !== element);
+        });
         subscribedAudioTracks = Math.max(0, subscribedAudioTracks - 1);
         setAudioCount(subscribedAudioTracks);
       });

@@ -4522,6 +4522,7 @@ export function DashboardShell() {
           agentId={selectedAgent.id}
           agentName={selectedAgent.name}
           knowledgeCount={selectedAgent.knowledgeDocuments.length}
+          recordingEnabled={selectedAgent.callSettings.recordingEnabled}
           onRegionChange={(region) => setRuntimeRegions((current) => ({ ...current, [selectedAgent.id]: region }))}
           onClose={() => setShowTestCall(false)}
         />
