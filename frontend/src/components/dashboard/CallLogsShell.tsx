@@ -249,14 +249,15 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
     let active = true;
     let objectUrl = "";
     if (!privateRecording) {
-      setRecordingLoadState({ callId: call._id, loading: false, error: "" });
       return undefined;
     }
 
-    setRecordingObjectUrl({ callId: "", url: "" });
-    setRecordingLoadState({ callId: call._id, loading: true, error: "" });
-
     void (async () => {
+      await Promise.resolve();
+      if (!active) return;
+      setRecordingObjectUrl({ callId: "", url: "" });
+      setRecordingLoadState({ callId: call._id, loading: true, error: "" });
+
       let lastError = "";
       const retryDelaysMs = [0, 1500, 3500, 7000];
       for (const delayMs of retryDelaysMs) {
