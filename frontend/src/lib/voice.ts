@@ -202,6 +202,9 @@ export type BackendAgent = {
   status: "Live" | "Draft" | "Paused";
   phone: string;
   language: string;
+  multilingualEnabled?: boolean;
+  languageSwitchingEnabled?: boolean;
+  supportedLanguages?: string[];
   voice: string;
   providerModel: ProviderModel;
   pipelineMode: PipelineMode;
