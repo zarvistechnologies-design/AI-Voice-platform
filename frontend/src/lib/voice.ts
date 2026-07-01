@@ -363,7 +363,7 @@ export type CostPricingDetail = {
 
 export type CallRecord = {
   _id: string;
-  agentId: BackendAgent | { _id: string; name: string; team?: string };
+  agentId: BackendAgent | { _id: string; name: string; team?: string } | string | null;
   direction: "web" | "inbound" | "outbound";
   status: "initiated" | "ringing" | "active" | "completed" | "failed" | "cancelled";
   callerNumber: string;

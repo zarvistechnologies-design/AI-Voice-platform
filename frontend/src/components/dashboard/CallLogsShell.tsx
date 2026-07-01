@@ -27,7 +27,9 @@ function initials(name: string) {
 }
 
 function agentName(call: CallRecord) {
-  return typeof call.agentId === "object" ? call.agentId.name : "Voice agent";
+  return call.agentId && typeof call.agentId === "object" && call.agentId.name
+    ? call.agentId.name
+    : "Voice agent";
 }
 
 function titleCase(value: string) {
