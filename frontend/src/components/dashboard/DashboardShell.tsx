@@ -1478,6 +1478,47 @@ function getTimezoneOptions(timezone: string): SelectOption[] {
     : [{ value: selected, label: `Custom (${selected})` }, ...commonTimezoneOptions];
 }
 
+function noticeToast(value: string) {
+  const normalized = value.toLowerCase();
+  const isError = /could not|failed|invalid|must|cannot|can't|expired|error/.test(normalized);
+  const isWarning = /warning|paused|missing|needs|requires|wait/.test(normalized);
+  const isBusy = /saving|syncing|testing|loading/.test(normalized);
+  if (isError) {
+    return {
+      title: "Needs attention",
+      dot: "bg-[#dc2626]",
+      panel: "border-[#fecdd3] bg-[#fff1f2] text-[#991b1b]",
+      body: "text-[#7f1d1d]",
+      button: "text-[#991b1b] hover:bg-[#ffe4e6]",
+    };
+  }
+  if (isWarning) {
+    return {
+      title: "Check this",
+      dot: "bg-[#d97706]",
+      panel: "border-[#fde68a] bg-[#fffbeb] text-[#92400e]",
+      body: "text-[#78350f]",
+      button: "text-[#92400e] hover:bg-[#fef3c7]",
+    };
+  }
+  if (isBusy) {
+    return {
+      title: "Working",
+      dot: "bg-[#00b8c4]",
+      panel: "border-[#99f6e8] bg-[#ecfeff] text-[#0e7490]",
+      body: "text-[#155e75]",
+      button: "text-[#0e7490] hover:bg-[#cffafe]",
+    };
+  }
+  return {
+    title: "Done",
+    dot: "bg-[#059669]",
+    panel: "border-[#bbf7d0] bg-[#ecfdf5] text-[#047857]",
+    body: "text-[#064e3b]",
+    button: "text-[#047857] hover:bg-[#dcfce7]",
+  };
+}
+
 type IconName =
   | "agent"
   | "plus"
@@ -2606,6 +2647,7 @@ export function DashboardShell() {
   data-accent="${selectedAgent.widget.accentColor}"
   data-metadata="${selectedAgent.dynamicVariables.join(",")}"
 ></script>`;
+  const toast = notice ? noticeToast(notice) : null;
 
   useEffect(() => {
     return () => {
@@ -2615,6 +2657,12 @@ export function DashboardShell() {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (!notice) return undefined;
+    const timeout = window.setTimeout(() => setNotice(""), 3000);
+    return () => window.clearTimeout(timeout);
+  }, [notice]);
 
   useEffect(() => {
     if (!session) {
@@ -4783,13 +4831,22 @@ export function DashboardShell() {
           onClose={() => setShowTestCall(false)}
         />
       ) : null}
-      {notice ? (
-        <div className="fixed right-4 top-4 z-50 flex w-[min(380px,calc(100vw-32px))] items-start gap-3 rounded-xl border border-[#99f6e8] bg-white p-4 text-[#111827] shadow-[0_18px_48px_rgba(15,23,42,0.18)]">
-          <span className="mt-1 size-2.5 shrink-0 rounded-full bg-[#00b8c4]" />
-          <p className="app-control-text m-0 min-w-0 flex-1 text-[#334155]">{notice}</p>
+      {notice && toast ? (
+        <div
+          className={`fixed right-4 bottom-4 z-50 grid w-[min(420px,calc(100vw-32px))] grid-cols-[36px_minmax(0,1fr)_28px] items-start gap-3 rounded-lg border p-3 shadow-[0_20px_56px_rgba(15,23,42,0.22)] ${toast.panel}`}
+          role="status"
+          aria-live="polite"
+        >
+          <span className={`mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg bg-white/80 shadow-sm`}>
+            <span className={`size-2.5 rounded-full ${toast.dot}`} />
+          </span>
+          <div className="min-w-0">
+            <strong className="app-strong block text-current">{toast.title}</strong>
+            <p className={`app-caption m-0 mt-0.5 min-w-0 wrap-break-word ${toast.body}`}>{notice}</p>
+          </div>
           <button
             aria-label="Dismiss notification"
-            className="grid size-7 shrink-0 place-items-center rounded-lg text-[#64748b] transition hover:bg-[#f1f5f9] hover:text-[#111827]"
+            className={`grid size-7 shrink-0 place-items-center rounded-md transition ${toast.button}`}
             type="button"
             onClick={() => setNotice("")}
           >
