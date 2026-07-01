@@ -55,6 +55,9 @@ type VoiceAgent = {
   status: AgentStatus;
   phone: string;
   language: string;
+  multilingualEnabled: boolean;
+  languageSwitchingEnabled: boolean;
+  supportedLanguages: string[];
   voice: string;
   pipelineMode: PipelineMode;
   realtimeProvider: RealtimeProvider;
@@ -173,6 +176,9 @@ const agents: VoiceAgent[] = [{
   status: "Draft",
   phone: "Not assigned",
   language: "English",
+  multilingualEnabled: false,
+  languageSwitchingEnabled: false,
+  supportedLanguages: ["English"],
   voice: "alloy",
   pipelineMode: "realtime",
   realtimeProvider: "openai",
@@ -1684,15 +1690,19 @@ function ToggleRow({
   title,
   detail,
   enabled,
+  disabled = false,
   onChange,
 }: {
   title: string;
   detail: string;
   enabled: boolean;
+  disabled?: boolean;
   onChange?: (enabled: boolean) => void;
 }) {
   return (
-    <label className="group grid cursor-pointer grid-cols-[minmax(0,1fr)_44px] items-start gap-3 rounded-lg border border-[#e5e7eb] bg-white p-3 transition hover:border-[#99f6e8] hover:bg-[#f8fbff]">
+    <label className={`group grid grid-cols-[minmax(0,1fr)_44px] items-start gap-3 rounded-lg border border-[#e5e7eb] bg-white p-3 transition ${
+      disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer hover:border-[#99f6e8] hover:bg-[#f8fbff]"
+    }`}>
       <span className="min-w-0">
         <span className="app-strong block">{title}</span>
         <span className="app-caption block">{detail}</span>
@@ -1701,6 +1711,7 @@ function ToggleRow({
         className="sr-only"
         type="checkbox"
         checked={enabled}
+        disabled={disabled}
         onChange={onChange ? (event) => onChange(event.target.checked) : undefined}
       />
       <span
@@ -1998,18 +2009,31 @@ function StackConfigurationModal({
       : stack === "stt"
         ? agent.sttModel
         : agent.ttsModel;
+  const effectiveLanguage = agent.multilingualEnabled ? "Multilingual" : agent.language;
   const modelOptions = useMemo(
     () =>
       stack === "stt" && provider.provider === "deepgram"
-        ? deepgramModelsForLanguage(provider.models, agent.language, languageCatalog)
+        ? deepgramModelsForLanguage(provider.models, effectiveLanguage, languageCatalog)
         : [...provider.models],
-    [agent.language, languageCatalog, provider.models, provider.provider, stack],
+    [effectiveLanguage, languageCatalog, provider.models, provider.provider, stack],
   );
   const selectedModelValue = modelOptions.includes(selectedModel)
     ? selectedModel
     : modelOptions[0] ?? selectedModel;
   const title = stack === "llm" ? "Agent LLM" : stack === "stt" ? "Agent STT" : "Agent Voice";
   const languageName = languageDisplayName(agent.language, languageCatalog);
+  const normalizedLanguageOptions = languageOptions.map((option) =>
+    typeof option === "string" ? { value: option, label: option } : option,
+  );
+  const primaryLanguageOptions = (
+    stack !== "llm" && provider.languages?.length
+      ? provider.languages.map((language) => ({
+          value: language.value,
+          label: language.code === "unknown" ? language.label : `${language.label} (${language.code})`,
+        }))
+      : normalizedLanguageOptions
+  ).filter((option) => option.value !== "Multilingual");
+  const allowedLanguageOptions = normalizedLanguageOptions.filter((option) => option.value !== "Multilingual");
 
   useEffect(() => {
     if (stack === "stt" && selectedModelValue !== selectedModel) {
@@ -2025,7 +2049,7 @@ function StackConfigurationModal({
         "realtime",
         nextProviderId,
         next.models[0],
-        agent.language,
+        effectiveLanguage,
         languageCatalog,
       );
       onChange({
@@ -2044,12 +2068,12 @@ function StackConfigurationModal({
     }
     if (stack === "stt") {
       const nextLanguage = next.languages?.length
-        ? coerceLanguage(agent.language, [...next.languages])
+        ? coerceLanguage(agent.language, next.languages.filter((language) => language.value !== "Multilingual"))
         : agent.language;
       const nextModel = normalizeSttModelForLanguage(
         nextProviderId,
         next.models[0],
-        nextLanguage,
+        agent.multilingualEnabled ? "Multilingual" : nextLanguage,
         languageCatalog,
       );
       onChange({
@@ -2061,14 +2085,14 @@ function StackConfigurationModal({
     }
 
     const nextLanguage = next.languages?.length
-      ? coerceLanguage(agent.language, [...next.languages])
+      ? coerceLanguage(agent.language, next.languages.filter((language) => language.value !== "Multilingual"))
       : agent.language;
     const voices = getVoices(
       catalog,
       "tts",
       nextProviderId,
       next.models[0],
-      nextLanguage,
+      agent.multilingualEnabled ? "Multilingual" : nextLanguage,
       languageCatalog,
     );
     onChange({
@@ -2086,7 +2110,7 @@ function StackConfigurationModal({
         "realtime",
         agent.realtimeProvider,
         model,
-        agent.language,
+        effectiveLanguage,
         languageCatalog,
       );
       onChange({
@@ -2097,7 +2121,7 @@ function StackConfigurationModal({
       onChange({ llmModel: model });
     } else if (stack === "stt") {
       onChange({
-        sttModel: normalizeSttModelForLanguage(provider.provider, model, agent.language, languageCatalog),
+        sttModel: normalizeSttModelForLanguage(provider.provider, model, effectiveLanguage, languageCatalog),
       });
     } else {
       const voices = getVoices(
@@ -2105,7 +2129,7 @@ function StackConfigurationModal({
         "tts",
         agent.ttsProvider,
         model,
-        agent.language,
+        effectiveLanguage,
         languageCatalog,
       );
       onChange({
@@ -2119,14 +2143,14 @@ function StackConfigurationModal({
   const voiceProviderId = realtime ? agent.realtimeProvider : agent.ttsProvider;
   const voiceModel = realtime ? agent.realtimeModel : agent.ttsModel;
   const voices = stack === "voice"
-    ? getDisplayedVoices(catalog, voiceLayer, voiceProviderId, voiceModel, agent.language, languageCatalog)
+    ? getDisplayedVoices(catalog, voiceLayer, voiceProviderId, voiceModel, effectiveLanguage, languageCatalog)
     : [];
   const languageSpecificVoices = stack === "voice"
-    ? getLanguageSpecificVoices(catalog, voiceLayer, voiceProviderId, agent.language, languageCatalog)
+    ? getLanguageSpecificVoices(catalog, voiceLayer, voiceProviderId, effectiveLanguage, languageCatalog)
     : [];
   const profiles = stack === "voice" ? provider.voiceProfiles ?? [] : [];
   const voiceOptions = stack === "voice"
-    ? voiceSelectOptions(voices, profiles, agent.language, languageCatalog, languageSpecificVoices)
+    ? voiceSelectOptions(voices, profiles, effectiveLanguage, languageCatalog, languageSpecificVoices)
     : [];
   const previewMode: PipelineMode = realtime ? "realtime" : "pipeline";
   const previewProvider = voiceProviderId as RealtimeProvider | PipelineProvider;
@@ -2146,18 +2170,31 @@ function StackConfigurationModal({
   const noElevenLabsLanguageVoice =
     stack === "voice" &&
     provider.provider === "elevenlabs" &&
-    agent.language !== "Multilingual" &&
+    !agent.multilingualEnabled &&
     languageSpecificVoices.length === 0 &&
     !agent.language.toLowerCase().startsWith("english");
   const selectLanguage = (language: string) => {
-    if (stack === "stt") {
-      onChange({
-        language,
-        sttModel: normalizeSttModelForLanguage(provider.provider, selectedModel, language, languageCatalog),
-      });
-      return;
-    }
     onLanguageChange(language);
+  };
+  const setMultilingualEnabled = (enabled: boolean) => {
+    const nextLanguage = enabled ? "Multilingual" : agent.language;
+    onChange({
+      multilingualEnabled: enabled,
+      languageSwitchingEnabled: enabled ? agent.languageSwitchingEnabled : false,
+      supportedLanguages: [...new Set([agent.language, ...agent.supportedLanguages])],
+      sttModel: normalizeSttModelForLanguage(
+        agent.sttProvider,
+        agent.sttModel,
+        nextLanguage,
+        languageCatalog,
+      ),
+    });
+  };
+  const toggleAllowedLanguage = (language: string, enabled: boolean) => {
+    const nextLanguages = enabled
+      ? [...new Set([...agent.supportedLanguages, language])]
+      : agent.supportedLanguages.filter((item) => item !== language);
+    onChange({ supportedLanguages: [...new Set([agent.language, ...nextLanguages])] });
   };
 
   return (
@@ -2177,8 +2214,8 @@ function StackConfigurationModal({
             <h3 className="m-0 text-xl font-bold text-[#0f172a] sm:text-2xl">{title}</h3>
             <p className="mt-1 mb-0 text-sm font-medium text-[#64748b]">
               {stack === "voice"
-                ? agent.language === "Multilingual"
-                  ? "Showing voices for auto language mode. Use a multilingual voice for mixed-language calls."
+                ? agent.multilingualEnabled
+                  ? "Showing multilingual voices for the selected allowed languages."
                   : `Showing voices for ${languageName}. Language-specific choices appear first.`
                 : stack === "stt"
                   ? `Configure speech recognition for ${languageName}.`
@@ -2216,22 +2253,63 @@ function StackConfigurationModal({
                 options={modelOptions}
               />
 
-              {stack !== "llm" ? (
+              <div className="grid gap-3 rounded-lg border border-[#dfe3ea] bg-[#f8fafc] p-3">
                 <SelectField
-                  label="Language"
+                  label="Primary language"
                   defaultValue={agent.language}
                   value={agent.language}
                   onChange={selectLanguage}
-                  options={
-                    provider.languages?.length
-                      ? provider.languages.map((language) => ({
-                          value: language.value,
-                          label: `${language.label} (${language.code})`,
-                        }))
-                      : languageOptions
-                  }
+                  options={primaryLanguageOptions}
                 />
-              ) : null}
+                <div className="grid gap-3 lg:grid-cols-2">
+                  <ToggleRow
+                    title="Multilingual"
+                    detail="Understand and speak only the languages selected below."
+                    enabled={agent.multilingualEnabled}
+                    onChange={setMultilingualEnabled}
+                  />
+                  <ToggleRow
+                    title="Automatic language switching"
+                    detail="Follow the caller when they change to another allowed language."
+                    enabled={agent.languageSwitchingEnabled}
+                    disabled={!agent.multilingualEnabled}
+                    onChange={(languageSwitchingEnabled) => onChange({ languageSwitchingEnabled })}
+                  />
+                </div>
+                {agent.multilingualEnabled ? (
+                  <div>
+                    <div className="mb-2 flex items-center justify-between gap-3">
+                      <span className="app-label">Allowed languages</span>
+                      <span className="app-caption">{agent.supportedLanguages.length} selected</span>
+                    </div>
+                    <div className="grid max-h-44 gap-2 overflow-y-auto rounded-lg border border-[#dfe3ea] bg-white p-2 sm:grid-cols-2 lg:grid-cols-3">
+                      {allowedLanguageOptions.map((option) => {
+                        const required = option.value === agent.language;
+                        const checked = required || agent.supportedLanguages.includes(option.value);
+                        return (
+                          <label
+                            className={`flex min-h-10 items-center gap-2 rounded-md border px-3 text-sm font-semibold transition ${
+                              checked
+                                ? "border-[#67e8f9] bg-[#ecfeff] text-[#0e7490]"
+                                : "border-[#e5e7eb] bg-white text-[#475569] hover:border-[#a5f3fc]"
+                            } ${required ? "cursor-not-allowed" : "cursor-pointer"}`}
+                            key={option.value}
+                          >
+                            <input
+                              className="size-4 accent-[#00b8c4]"
+                              type="checkbox"
+                              checked={checked}
+                              disabled={required}
+                              onChange={(event) => toggleAllowedLanguage(option.value, event.target.checked)}
+                            />
+                            <span className="min-w-0 truncate">{option.label}</span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
 
               {stack === "llm" ? (
                 <div>
@@ -2808,6 +2886,9 @@ export function DashboardShell() {
         status: selectedAgent.status,
         phone: selectedAgent.phone,
         language: selectedAgent.language,
+        multilingualEnabled: selectedAgent.multilingualEnabled,
+        languageSwitchingEnabled: selectedAgent.languageSwitchingEnabled,
+        supportedLanguages: selectedAgent.supportedLanguages,
         voice: selectedAgent.voice,
         pipelineMode: selectedAgent.pipelineMode,
         realtimeProvider: selectedAgent.realtimeProvider,
@@ -2946,6 +3027,7 @@ export function DashboardShell() {
   }
 
   function updateAgentLanguage(language: string) {
+    const effectiveLanguage = selectedAgent.multilingualEnabled ? "Multilingual" : language;
     const voices =
       selectedAgent.pipelineMode === "realtime"
         ? getVoices(
@@ -2953,7 +3035,7 @@ export function DashboardShell() {
             "realtime",
             selectedAgent.realtimeProvider,
             selectedAgent.realtimeModel,
-            language,
+            effectiveLanguage,
             languageCatalog,
           )
         : getVoices(
@@ -2961,16 +3043,17 @@ export function DashboardShell() {
             "tts",
             selectedAgent.ttsProvider,
             selectedAgent.ttsModel,
-            language,
+            effectiveLanguage,
             languageCatalog,
           );
     updateSelectedAgent({
       language,
+      supportedLanguages: [...new Set([language, ...selectedAgent.supportedLanguages])],
       voice: coerceVoice(selectedAgent.voice, voices, selectedAgent.voice),
       sttModel: normalizeSttModelForLanguage(
         selectedAgent.sttProvider,
         selectedAgent.sttModel,
-        language,
+        effectiveLanguage,
         languageCatalog,
       ),
     });
@@ -2980,8 +3063,12 @@ export function DashboardShell() {
     const ttsLanguages = getProvider(modelCatalog, "tts", selectedAgent.ttsProvider).languages;
     const nextLanguage =
       pipelineMode === "pipeline" && ttsLanguages?.length
-        ? coerceLanguage(selectedAgent.language, [...ttsLanguages])
+        ? coerceLanguage(
+            selectedAgent.language,
+            ttsLanguages.filter((language) => language.value !== "Multilingual"),
+          )
         : selectedAgent.language;
+    const effectiveLanguage = selectedAgent.multilingualEnabled ? "Multilingual" : nextLanguage;
     const nextVoices =
       pipelineMode === "realtime"
         ? getVoices(
@@ -2989,7 +3076,7 @@ export function DashboardShell() {
             "realtime",
             selectedAgent.realtimeProvider,
             selectedAgent.realtimeModel,
-            nextLanguage,
+            effectiveLanguage,
             languageCatalog,
           )
         : getVoices(
@@ -2997,7 +3084,7 @@ export function DashboardShell() {
             "tts",
             selectedAgent.ttsProvider,
             selectedAgent.ttsModel,
-            nextLanguage,
+            effectiveLanguage,
             languageCatalog,
           );
     updateSelectedAgent({
@@ -3007,7 +3094,7 @@ export function DashboardShell() {
       sttModel: normalizeSttModelForLanguage(
         selectedAgent.sttProvider,
         selectedAgent.sttModel,
-        nextLanguage,
+        effectiveLanguage,
         languageCatalog,
       ),
     });
@@ -4799,6 +4886,9 @@ export function DashboardShell() {
 {`{
   "architecture": "${selectedAgent.pipelineMode}",
   "language": "${selectedAgent.language}",
+  "multilingual": ${selectedAgent.multilingualEnabled},
+  "language_switching": ${selectedAgent.languageSwitchingEnabled},
+  "allowed_languages": ${JSON.stringify(selectedAgent.supportedLanguages)},
   "voice": "${selectedAgent.voice}",
   "realtime": "${selectedAgent.realtimeProvider}/${selectedAgent.realtimeModel}",
   "stt": "${selectedAgent.sttProvider}/${selectedAgent.sttModel}",
@@ -4863,6 +4953,12 @@ function mapBackendAgent(agent: BackendAgent): VoiceAgent {
     ? "user-speaks-first"
     : agent.firstMessageMode ?? "assistant-speaks-first";
   const realtimeProvider = agent.realtimeProvider ?? "openai";
+  const legacyMultilingual = agent.language === "Multilingual";
+  const primaryLanguage = legacyMultilingual ? "English" : agent.language;
+  const supportedLanguages = [...new Set([
+    primaryLanguage,
+    ...(agent.supportedLanguages ?? []),
+  ])].filter((language) => language && language !== "Multilingual");
 
   return {
     id: agent._id,
@@ -4870,7 +4966,12 @@ function mapBackendAgent(agent: BackendAgent): VoiceAgent {
     team: agent.team,
     status: agent.status,
     phone: agent.phone || "Not assigned",
-    language: agent.language,
+    language: primaryLanguage,
+    multilingualEnabled: agent.multilingualEnabled ?? legacyMultilingual,
+    languageSwitchingEnabled:
+      (agent.multilingualEnabled ?? legacyMultilingual) &&
+      (agent.languageSwitchingEnabled ?? legacyMultilingual),
+    supportedLanguages,
     voice: agent.voice,
     pipelineMode: agent.pipelineMode ?? "realtime",
     realtimeProvider,
