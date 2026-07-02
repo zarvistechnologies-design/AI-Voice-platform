@@ -225,8 +225,14 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
   const transcript = [...call.transcript].sort(
     (left, right) => new Date(left.timestamp).getTime() - new Date(right.timestamp).getTime(),
   );
-  const recordingHref = call.recordingUrl.startsWith("http") ? call.recordingUrl : call.recordingKey.startsWith("http") ? call.recordingKey : "";
-  const privateRecording = Boolean(call.recordingKey && !call.recordingKey.startsWith("http") && !recordingHref);
+  const privateRecording = Boolean(call.recordingKey && !call.recordingKey.startsWith("http"));
+  const recordingHref = privateRecording
+    ? ""
+    : call.recordingUrl.startsWith("http")
+      ? call.recordingUrl
+      : call.recordingKey.startsWith("http")
+        ? call.recordingKey
+        : "";
   const recordingPlayerHref = recordingObjectUrl.callId === call._id ? recordingObjectUrl.url || recordingHref : recordingHref;
   const recordingLoading = recordingLoadState.callId === call._id && recordingLoadState.loading;
   const recordingLoadError = recordingLoadState.callId === call._id ? recordingLoadState.error : "";
