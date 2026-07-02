@@ -93,15 +93,25 @@ function inboundRoomNumbers(roomName: string) {
 }
 
 function callRoute(call: CallRecord) {
+  if (call.direction === "web") {
+    return {
+      from: "Browser caller",
+      fromSource: "recorded",
+      fromMissing: false,
+      to: "Voice agent",
+      toSource: "recorded",
+    };
+  }
+
   const inferredInboundNumbers = call.direction === "inbound" ? inboundRoomNumbers(call.livekitRoomName) : { callerNumber: "", calledNumber: "" };
-  const from = call.callerNumber || inferredInboundNumbers.callerNumber || (call.direction === "web" ? "Browser caller" : "");
+  const from = call.callerNumber || inferredInboundNumbers.callerNumber;
   const fromSource = call.callerNumberSource || (!call.callerNumber && inferredInboundNumbers.callerNumber ? "room_name" : "recorded");
   const toSource = call.calledNumberSource || (!call.calledNumber && inferredInboundNumbers.calledNumber ? "room_name" : "recorded");
   return {
     from,
     fromSource,
     fromMissing: call.direction === "inbound" && !from,
-    to: call.calledNumber || inferredInboundNumbers.calledNumber || (call.direction === "web" ? "Voice agent" : call.direction === "outbound" ? "Dialed number" : "Assigned number"),
+    to: call.calledNumber || inferredInboundNumbers.calledNumber || (call.direction === "outbound" ? "Dialed number" : "Assigned number"),
     toSource,
   };
 }

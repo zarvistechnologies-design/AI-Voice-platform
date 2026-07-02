@@ -1,9 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Room, RoomEvent, Track } from "livekit-client";
+import { Room, RoomEvent, Track, setLogLevel } from "livekit-client";
 
 import { voiceApi } from "@/lib/voice";
+
+setLogLevel("silent");
 
 type Props = {
   agentId: string;

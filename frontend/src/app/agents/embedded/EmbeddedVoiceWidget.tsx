@@ -2,8 +2,10 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Room, RoomEvent, Track } from "livekit-client";
+import { Room, RoomEvent, Track, setLogLevel } from "livekit-client";
 import { API_URL } from "@/lib/apiBase";
+
+setLogLevel("silent");
 
 type WidgetAgent = {
   id: string;
