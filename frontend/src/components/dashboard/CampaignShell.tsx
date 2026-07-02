@@ -529,16 +529,8 @@ export function CampaignShell() {
                 </label>
 
                 <div className="rounded-lg border border-[#99f6e8] bg-[#ecfeff] px-3 py-3">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex flex-wrap items-center gap-3">
                     <p className="app-caption m-0 text-[#9a3412]">Pace calls, use trusted caller IDs, respect opt-outs, and call inside local business hours.</p>
-                    <a
-                      className="app-label inline-flex min-h-9 items-center rounded-lg bg-white px-3 text-[#008996] ring-1 ring-[#5eead4] transition hover:bg-[#fffbeb]"
-                      href="https://docs.vapi.ai/calls/outbound-calling#trusted-calling-and-caller-id"
-                      rel="noreferrer"
-                      target="_blank"
-                    >
-                      Spam guidance
-                    </a>
                   </div>
                 </div>
 

@@ -1358,18 +1358,6 @@ const systemDynamicVariables = [
   "current_calendar",
 ];
 
-const dateTimeVariableExamples = [
-  "{{date}}",
-  "{{time}}",
-  "{{now}}",
-  "{{current_time}}",
-  "{{current_hour}}",
-  "{{current_calendar}}",
-  "{{current_time_Asia/Kolkata}}",
-  "{{current_calendar_America/Los_Angeles}}",
-  "{CurrentTime_Asia_Kolkata}",
-];
-
 const toolMethodOptions: AgentTool["method"][] = ["GET", "POST", "PUT", "PATCH", "DELETE"];
 const toolParameterTypeOptions: AgentToolParameter["type"][] = ["string", "number", "boolean", "object"];
 const toolNamePattern = /^[a-zA-Z][a-zA-Z0-9_]{1,79}$/;
@@ -4195,7 +4183,7 @@ export function DashboardShell() {
                         <div>
                           <h3 className="app-section-title m-0">Webhook tools</h3>
                           <span className="app-caption">
-                            Millis-style functions with webhook URL, headers, params, method, timeout, and execution options.
+                            Configure functions with a webhook URL, headers, parameters, method, timeout, and execution options.
                           </span>
                         </div>
                         <span className="app-label w-fit rounded-full border border-[#99f6e8] bg-[#ecfeff] px-2.5 py-1 text-[#00b8c4]">
@@ -4382,7 +4370,7 @@ export function DashboardShell() {
                       <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                         <div>
                           <h3 className="app-section-title m-0">Add webhook tool</h3>
-                          <span className="app-caption">Same shape as Millis: name, description, webhook, header, params, method, timeout.</span>
+                          <span className="app-caption">Set the name, description, webhook, headers, parameters, method, and timeout.</span>
                         </div>
                         <button className="app-button-text min-h-10 rounded-lg bg-[#00b8c4] px-4 text-white shadow-sm" type="button" onClick={addTool}>
                           Add tool
@@ -4400,7 +4388,7 @@ export function DashboardShell() {
                       <div className="grid gap-3 rounded-xl border border-[#99f6e8] bg-white p-3">
                         <div>
                           <strong className="app-strong block">Filler while tool runs</strong>
-                          <span className="app-caption">Millis-style messages the agent can say while calling this webhook.</span>
+                          <span className="app-caption">Messages the agent can say while calling this webhook.</span>
                         </div>
                         <ToggleRow
                           title="Wait for filler"
@@ -4503,20 +4491,6 @@ export function DashboardShell() {
                               onClick={() => copyVariableSnippet(`{${variable}}`)}
                             >
                               {`{${variable}}`}
-                            </button>
-                          ))}
-                        </div>
-                        <strong className="app-strong block pt-2">Vapi / Retell date-time aliases</strong>
-                        <div className="flex flex-wrap gap-2">
-                          {dateTimeVariableExamples.map((snippet) => (
-                            <button
-                              className="app-label rounded-full border border-[#dcfce7] bg-white px-2.5 py-1 text-[#047857] transition hover:border-[#bbf7d0] hover:bg-[#ecfdf5]"
-                              key={snippet}
-                              type="button"
-                              title="Copy variable"
-                              onClick={() => copyVariableSnippet(snippet)}
-                            >
-                              {snippet}
                             </button>
                           ))}
                         </div>

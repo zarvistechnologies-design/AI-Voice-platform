@@ -139,10 +139,10 @@ const integrations = [
 
 const faqs = [
   "What is a Voice AI Agent, and how does it improve healthcare call management?",
-  "How does Retell AI compare to traditional IVR systems in healthcare?",
-  "Is Retell AI HIPAA-compliant for handling patient data?",
+  "How do voice AI agents compare to traditional IVR systems in healthcare?",
+  "Can voice AI agents support HIPAA-conscious patient workflows?",
   "Can AI-powered voice agents handle patient appointment scheduling and follow-ups?",
-  "How does Retell AI integrate with EHR systems like Epic and OpenDental?",
+  "How do voice AI agents integrate with EHR systems like Epic and OpenDental?",
 ];
 
 function CheckIcon() {
@@ -442,7 +442,7 @@ export default function HealthcarePage() {
             <article className="flex aspect-square h-full flex-col justify-between rounded-lg bg-[#00ADB5] p-8 text-slate-950 lg:p-9">
               <p className="text-xl font-medium leading-8 md:text-[1.35rem] md:leading-9">
                 &quot;Our numbers show that 45-50% of calls are completely resolved by
-                Retell AI without ever touching a human.&quot;
+                the voice agent without ever touching a human.&quot;
               </p>
               <div className="border-t border-slate-950/20 pt-6">
                 <h3 className="text-xl font-bold md:text-2xl">Dr. Maya Patel</h3>
@@ -451,7 +451,7 @@ export default function HealthcarePage() {
             </article>
             <article className="flex aspect-square h-full flex-col justify-between rounded-lg border border-dashed border-[#374151] bg-[#111827] p-8 lg:p-9">
               <p className="text-xl font-medium leading-8 md:text-[1.35rem] md:leading-9">
-                &quot;Retell AI became our first point of contact for free users,
+                &quot;The voice agent became our first point of contact for free users,
                 significantly relieving our customer service workload.&quot;
               </p>
               <div className="border-t border-[#374151] pt-6">
