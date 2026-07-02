@@ -1527,6 +1527,9 @@ function noticeToast(value: string) {
 
 type IconName =
   | "agent"
+  | "check"
+  | "close"
+  | "edit"
   | "plus"
   | "save"
   | "phone"
@@ -1541,6 +1544,31 @@ type IconName =
 
 function Icon({ icon }: { icon: IconName }) {
   const iconClass = "size-4 fill-none stroke-current stroke-2";
+
+  if (icon === "check") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path d="m5 12 4 4L19 6" />
+      </svg>
+    );
+  }
+
+  if (icon === "close") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6 6 18 18M18 6 6 18" />
+      </svg>
+    );
+  }
+
+  if (icon === "edit") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 20h9" />
+        <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z" />
+      </svg>
+    );
+  }
 
   if (icon === "plus") {
     return (
@@ -2566,6 +2594,9 @@ export function DashboardShell() {
   const [showUserSidebar, setShowUserSidebar] = useState(false);
   const [agentList, setAgentList] = useState(agents);
   const [selectedAgentId, setSelectedAgentId] = useState(agents[0].id);
+  const [renamingAgentId, setRenamingAgentId] = useState("");
+  const [agentNameDraft, setAgentNameDraft] = useState("");
+  const [renamingAgentSaving, setRenamingAgentSaving] = useState(false);
   const [activeTab, setActiveTab] = useState<AgentTab>("builder");
   const [notice, setNotice] = useState("");
   const [saving, setSaving] = useState(false);
@@ -3024,6 +3055,47 @@ export function DashboardShell() {
     setAgentList((current) =>
       current.map((agent) => (agent.id === selectedAgent.id ? { ...agent, ...changes } : agent)),
     );
+  }
+
+  function beginAgentRename(agent: VoiceAgent) {
+    if (renamingAgentSaving) return;
+    setSelectedAgentId(agent.id);
+    setRenamingAgentId(agent.id);
+    setAgentNameDraft(agent.name);
+  }
+
+  function cancelAgentRename() {
+    if (renamingAgentSaving) return;
+    setRenamingAgentId("");
+    setAgentNameDraft("");
+  }
+
+  async function saveAgentName(agent: VoiceAgent) {
+    const name = agentNameDraft.trim();
+    if (!name) {
+      setNotice("Agent name cannot be empty.");
+      return;
+    }
+    if (name === agent.name) {
+      cancelAgentRename();
+      return;
+    }
+
+    setRenamingAgentSaving(true);
+    setNotice("Renaming agent...");
+    try {
+      const { agent: savedAgent, routingWarning } = await voiceApi.saveAgent(agent.id, { name });
+      setAgentList((current) =>
+        current.map((item) => (item.id === agent.id ? { ...item, name: savedAgent.name } : item)),
+      );
+      setRenamingAgentId("");
+      setAgentNameDraft("");
+      setNotice(routingWarning ? `Agent renamed with a routing warning: ${routingWarning}` : "Agent renamed.");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Could not rename agent.");
+    } finally {
+      setRenamingAgentSaving(false);
+    }
   }
 
   function updateAgentLanguage(language: string) {
@@ -3561,27 +3633,110 @@ export function DashboardShell() {
             <div className="grid gap-1.5 p-2">
               {agentList.map((agent) => {
                 const isActive = agent.id === selectedAgent.id;
+                const isRenaming = agent.id === renamingAgentId;
                 const tone = getStatusTone(agent.status);
 
                 return (
-                  <button
-                    className={`grid w-full grid-cols-[36px_minmax(0,1fr)_auto] items-center gap-3 rounded-lg p-2.5 text-left transition ${
+                  <div
+                    className={`group grid w-full grid-cols-[36px_minmax(0,1fr)_auto] items-center gap-3 rounded-lg p-2.5 text-left transition ${
                       isActive ? "bg-[#eef4ff] shadow-sm ring-1 ring-[#99f6e8]" : "hover:bg-[#f8fafc]"
                     }`}
                     key={agent.id}
-                    type="button"
-                    aria-pressed={isActive}
-                    onClick={() => setSelectedAgentId(agent.id)}
+                    role={isRenaming ? undefined : "button"}
+                    tabIndex={isRenaming ? -1 : 0}
+                    aria-pressed={isRenaming ? undefined : isActive}
+                    onClick={() => {
+                      if (!isRenaming) setSelectedAgentId(agent.id);
+                    }}
+                    onKeyDown={(event) => {
+                      if (isRenaming || event.target !== event.currentTarget) return;
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        setSelectedAgentId(agent.id);
+                      }
+                    }}
                   >
                     <span className={`grid size-9 place-items-center rounded-lg shadow-sm ${isActive ? "bg-[#00b8c4] text-white" : "bg-white text-[#00b8c4]"}`}>
                       <Icon icon="agent" />
                     </span>
-                    <span className="min-w-0">
-                      <strong className="app-strong block truncate">{agent.name}</strong>
-                      <span className="app-caption block truncate">{agent.team}</span>
+                    {isRenaming ? (
+                      <div className="min-w-0" onClick={(event) => event.stopPropagation()}>
+                        <label className="sr-only" htmlFor={`agent-name-${agent.id}`}>Agent name</label>
+                        <input
+                          autoFocus
+                          className="app-control-text h-9 w-full rounded-md border border-[#67e8f9] bg-white px-2 text-[#0f172a] outline-none ring-3 ring-[#00b8c4]/10"
+                          id={`agent-name-${agent.id}`}
+                          maxLength={80}
+                          value={agentNameDraft}
+                          disabled={renamingAgentSaving}
+                          onChange={(event) => setAgentNameDraft(event.target.value)}
+                          onKeyDown={(event) => {
+                            event.stopPropagation();
+                            if (event.key === "Enter") {
+                              event.preventDefault();
+                              void saveAgentName(agent);
+                            } else if (event.key === "Escape") {
+                              event.preventDefault();
+                              cancelAgentRename();
+                            }
+                          }}
+                        />
+                        <span className="app-caption mt-0.5 block truncate">{agent.team}</span>
+                      </div>
+                    ) : (
+                      <span className="min-w-0">
+                        <strong className="app-strong block truncate">{agent.name}</strong>
+                        <span className="app-caption block truncate">{agent.team}</span>
+                      </span>
+                    )}
+                    <span className="flex items-center gap-1">
+                      {isRenaming ? (
+                        <>
+                          <button
+                            className="grid size-7 place-items-center rounded-md text-emerald-600 transition hover:bg-emerald-50 disabled:opacity-50"
+                            type="button"
+                            aria-label={`Save name for ${agent.name}`}
+                            title="Save name"
+                            disabled={renamingAgentSaving}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              void saveAgentName(agent);
+                            }}
+                          >
+                            <Icon icon="check" />
+                          </button>
+                          <button
+                            className="grid size-7 place-items-center rounded-md text-[#64748b] transition hover:bg-white disabled:opacity-50"
+                            type="button"
+                            aria-label="Cancel rename"
+                            title="Cancel"
+                            disabled={renamingAgentSaving}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              cancelAgentRename();
+                            }}
+                          >
+                            <Icon icon="close" />
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          className="grid size-7 place-items-center rounded-md text-[#64748b] opacity-60 transition hover:bg-white hover:text-[#00b8c4] hover:opacity-100 focus:opacity-100"
+                          type="button"
+                          aria-label={`Rename ${agent.name}`}
+                          title="Rename agent"
+                          disabled={saving || renamingAgentSaving}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            beginAgentRename(agent);
+                          }}
+                        >
+                          <Icon icon="edit" />
+                        </button>
+                      )}
+                      <span className={`size-2.5 rounded-full ${tone.dot}`} />
                     </span>
-                    <span className={`size-2.5 rounded-full ${tone.dot}`} />
-                  </button>
+                  </div>
                 );
               })}
             </div>
