@@ -204,8 +204,8 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
         } else {
           setStatus("Call ended");
         }
-      } catch (error) {
-        setStatus(error instanceof Error ? `Call ended. Recording upload failed: ${error.message}` : "Call ended. Recording upload failed.");
+      } catch {
+        setStatus("Call ended. Recording upload failed. Please try again.");
       } finally {
         mediaRecorderRef.current = null;
         webCallIdRef.current = "";
@@ -253,18 +253,18 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
           return;
         }
         if (health.state === "failed") {
-          setStatus(health.message);
+          setStatus("The AI agent could not join this call.");
           stopDispatchPolling();
           return;
         }
         if (health.state === "running") {
           setStatus((current) =>
-            current.includes("Receiving audio") ? current : `AI worker joined. ${knowledgeStatus(knowledgeCount)}. Waiting for audio...`,
+            current.includes("Receiving audio") ? current : `AI agent connected. ${knowledgeStatus(knowledgeCount)}. Waiting for audio...`,
           );
         } else if (health.state === "pending" || health.state === "waiting") {
-          setStatus(checks <= 2 ? "Connecting the AI worker for this call..." : health.message);
+          setStatus(checks <= 2 ? "Connecting the AI agent for this call..." : "The AI agent is still connecting.");
         } else if (health.state === "missing" && checks > 2) {
-          setStatus("AI worker has not joined yet. The knowledge files are saved, but the worker must be running before the call can use them.");
+          setStatus("The AI agent has not joined yet. Voice and knowledge will be available when it connects.");
         }
         if (checks >= 20) stopDispatchPolling();
       } catch {
@@ -278,11 +278,11 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
 
   async function startWebCall() {
     setBusy(true);
-    setStatus("Creating browser voice room...");
+    setStatus("Starting browser voice call...");
     try {
       const credentials = await voiceApi.webCallToken(agentId);
       webCallIdRef.current = credentials.callId;
-      setStatus(credentials.dispatch.message);
+      setStatus("Connecting the AI agent for this call...");
       startDispatchPolling(credentials.roomName, credentials.dispatchId);
       const room = new Room({ adaptiveStream: true, dynacast: true });
       let subscribedAudioTracks = 0;
@@ -316,7 +316,7 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
       });
       room.on(RoomEvent.ParticipantDisconnected, () => {
         refreshParticipants();
-        setStatus("AI participant left the room");
+        setStatus("AI agent left the call");
       });
       room.on(RoomEvent.Disconnected, () => {
         setActive(false);
@@ -340,12 +340,12 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
       setStatus(room.remoteParticipants.size ? `Connected to ${agentName}` : `Connected. Waiting for ${agentName} to join...`);
       window.setTimeout(() => {
         if (roomRef.current === room && room.remoteParticipants.size === 0) {
-          setStatus("Still connecting the AI worker. Keep the worker running so the call can use voice and knowledge.");
+          setStatus("The AI agent is still connecting. Voice and knowledge will be available when it joins.");
         }
       }, 8000);
-    } catch (error) {
+    } catch {
       disconnect();
-      setStatus(error instanceof Error ? error.message : "Could not start the web call.");
+      setStatus("Could not start the web call.");
     } finally {
       setBusy(false);
     }
@@ -358,10 +358,10 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
       const call = await voiceApi.outboundCall(agentId, phoneNumber.trim());
       setActive(true);
       if (call.dispatch.region) onRegionChange(call.dispatch.region);
-      setStatus(call.dispatch.message || `Phone call connected. Room: ${call.roomName}`);
+      setStatus("Phone call is connecting to the agent.");
       startDispatchPolling(call.roomName, call.dispatchId);
-    } catch (error) {
-      setStatus(error instanceof Error ? error.message : "Could not start the phone call.");
+    } catch {
+      setStatus("Could not start the phone call.");
     } finally {
       setBusy(false);
     }

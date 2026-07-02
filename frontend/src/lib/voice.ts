@@ -1,6 +1,13 @@
 import { getAuthHeaders, getSession } from "@/lib/auth";
 import { API_URL } from "@/lib/apiBase";
 
+const privateVoiceInfrastructurePattern = /(?:livekit|vapi|retell|millis(?:\.ai|ai)?|vobiz|(?:wss?|sips?):(?:\/\/)?|(?:room|dispatch|worker|participant|trunk)[ _-]?(?:name|id|sid)\b)/i;
+
+export function publicVoiceMessage(value: unknown, fallback = "Voice service request failed.") {
+  const message = value instanceof Error ? value.message : typeof value === "string" ? value : "";
+  return message && !privateVoiceInfrastructurePattern.test(message) ? message : fallback;
+}
+
 export type ProviderModel = "openai-realtime" | "gemini-live" | "sarvam-gemini";
 export type PipelineMode = "realtime" | "pipeline";
 export type RealtimeProvider = "openai" | "gemini";
@@ -560,7 +567,7 @@ async function request<T>(path: string, init: RequestInit = {}) {
     | null;
 
   if (!response.ok) {
-    throw new Error(data?.message ?? "Voice service request failed.");
+    throw new Error(publicVoiceMessage(data?.message));
   }
   if (response.status === 204) {
     return {} as T;
@@ -692,7 +699,7 @@ export const voiceApi = {
     });
     if (!response.ok) {
       const data = (await response.json().catch(() => null)) as { message?: string } | null;
-      throw new Error(data?.message ?? "Could not play this voice preview.");
+      throw new Error(publicVoiceMessage(data?.message, "Could not play this voice preview."));
     }
     return response.blob();
   },
@@ -849,7 +856,7 @@ export const voiceApi = {
     });
     if (!response.ok) {
       const data = (await response.json().catch(() => null)) as { message?: string } | null;
-      throw new Error(data?.message ?? "Could not load the call recording.");
+      throw new Error(publicVoiceMessage(data?.message, "Could not load the call recording."));
     }
     return response.blob();
   },
@@ -866,7 +873,7 @@ export const voiceApi = {
       body: recording,
     });
     const data = (await response.json().catch(() => null)) as ({ call: CallRecord; message?: string }) | null;
-    if (!response.ok) throw new Error(data?.message ?? "Could not upload the web call recording.");
+    if (!response.ok) throw new Error(publicVoiceMessage(data?.message, "Could not upload the web call recording."));
     if (!data?.call) throw new Error("Voice service returned an empty recording response.");
     return data;
   },

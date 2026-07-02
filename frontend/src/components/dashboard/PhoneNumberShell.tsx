@@ -12,6 +12,7 @@ import {
   validateStoredSession,
 } from "@/lib/auth";
 import {
+  publicVoiceMessage,
   voiceApi,
   type AgentSummary,
   type BackendPhoneNumber,
@@ -152,7 +153,7 @@ export function PhoneNumberShell() {
       setNumbers((current) => current.map((item) => item._id === result.number._id ? result.number : item));
       setAssignmentNumber(null);
       if (result.routingWarning) {
-        showMessage(`Agent linked, but phone routing still needs setup: ${result.routingWarning}`, true);
+        showMessage(publicVoiceMessage(result.routingWarning, "Agent linked, but phone routing still needs setup."), true);
       } else {
         showMessage(agentId ? "Agent linked successfully." : "Agent unlinked successfully.");
       }
@@ -193,7 +194,7 @@ export function PhoneNumberShell() {
       setNumbers(numberResponse.numbers);
       setAgents(agentResponse.agents);
       const suffix = result.routes.errors.length
-        ? ` First issue: ${result.routes.errors[0].number} - ${result.routes.errors[0].message}`
+        ? ` First issue: ${result.routes.errors[0].number} - ${publicVoiceMessage(result.routes.errors[0].message, "Phone routing needs setup.")}`
         : "";
       showMessage(
         `Route sync complete: checked ${result.routes.total}, repaired ${result.routes.repaired}, needs setup ${result.routes.needsSetup}.${suffix}`,
@@ -208,7 +209,7 @@ export function PhoneNumberShell() {
 
   async function deleteNumber(number: BackendPhoneNumber) {
     const confirmed = window.confirm(
-      `Delete ${number.number}?\n\nThis will unlink the agent, remove LiveKit routing, remove Vobiz trunk assignment when applicable, and delete it from this workspace inventory.`,
+      `Delete ${number.number}?\n\nThis will unlink the agent, remove call routing and phone-provider assignments, and delete it from this workspace inventory.`,
     );
     if (!confirmed) return;
 
@@ -221,7 +222,7 @@ export function PhoneNumberShell() {
       if (assignmentNumber?._id === number._id) setAssignmentNumber(null);
       showMessage(
         result.routingWarning
-          ? `${number.number} deleted. Cleanup warning: ${result.routingWarning}`
+          ? `${number.number} deleted. ${publicVoiceMessage(result.routingWarning, "Some phone routing cleanup still needs attention.")}`
           : `${number.number} deleted everywhere in this workspace.`,
       );
     } catch (caught) {
@@ -879,5 +880,5 @@ function Notice({ message, onClose, tone }: { message: string; onClose: () => vo
 }
 
 function errorMessage(error: unknown) {
-  return error instanceof Error ? error.message : "The request could not be completed.";
+  return publicVoiceMessage(error, "The request could not be completed.");
 }

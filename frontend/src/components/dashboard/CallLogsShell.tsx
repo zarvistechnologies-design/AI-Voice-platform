@@ -11,7 +11,7 @@ import {
   subscribeToSession,
   validateStoredSession,
 } from "@/lib/auth";
-import { voiceApi, type AgentSummary, type CallRecord, type CostPricingDetail } from "@/lib/voice";
+import { publicVoiceMessage, voiceApi, type AgentSummary, type CallRecord, type CostPricingDetail } from "@/lib/voice";
 
 const statusOptions = ["", "initiated", "ringing", "active", "completed", "failed", "cancelled"] as const;
 const directionOptions = ["", "web", "inbound", "outbound"] as const;
@@ -273,7 +273,7 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
           setRecordingLoadState({ callId: call._id, loading: false, error: "" });
           return;
         } catch (error) {
-          lastError = error instanceof Error ? error.message : "Could not load the call recording.";
+          lastError = publicVoiceMessage(error, "Could not load the call recording.");
         }
       }
       if (active) setRecordingLoadState({ callId: call._id, loading: false, error: lastError });
@@ -353,15 +353,19 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
               </div>
             ) : recordingLoading ? (
               <div className="rounded-xl border border-dashed border-cyan-200 bg-cyan-50 p-4 text-sm text-cyan-700">
-                Loading private S3 recording...
+                Loading recording...
               </div>
             ) : recordingLoadError ? (
               <div className="rounded-xl border border-dashed border-amber-300 bg-amber-50 p-4 text-sm text-amber-800">
-                Recording is saved as {call.recordingKey}, but the backend could not load it from S3 yet. {recordingLoadError}
+                The recording is saved but temporarily unavailable. {recordingLoadError}
               </div>
             ) : (
               <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-500">
-                {call.recordingError || (call.recordingKey ? `Recording saved as ${call.recordingKey}, but no public URL is available.` : "No recording is available for this call.")}
+                {call.recordingStatus === "failed"
+                  ? "Recording could not be created for this call."
+                  : call.recordingKey
+                    ? "The recording is saved but temporarily unavailable."
+                    : "No recording is available for this call."}
               </div>
             )}
           </section>
@@ -404,7 +408,6 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
                 <h3 className="m-0 text-sm font-semibold text-slate-950">Conversation transcript</h3>
                 <p className="mt-1 text-xs text-slate-500">{transcript.length} captured messages</p>
               </div>
-              <span className="max-w-220px truncate rounded-lg bg-slate-100 px-2.5 py-1 font-mono text-xs text-slate-600">{call.livekitRoomName}</span>
             </div>
             <div className="grid gap-3">
               {transcript.length ? (
@@ -481,7 +484,7 @@ export function CallLogsShell() {
       setTotal(result.pagination.total);
       setNotice("");
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Could not load call records.");
+      setNotice(publicVoiceMessage(error, "Could not load call records."));
     } finally {
       setLoading(false);
     }
@@ -526,7 +529,7 @@ export function CallLogsShell() {
       const result = await voiceApi.call(callId);
       setSelectedCall(result.call);
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Could not load the call.");
+      setNotice(publicVoiceMessage(error, "Could not load the call."));
     }
   }
 
@@ -540,7 +543,7 @@ export function CallLogsShell() {
       anchor.click();
       URL.revokeObjectURL(url);
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Could not export calls.");
+      setNotice(publicVoiceMessage(error, "Could not export calls."));
     }
   }
 
@@ -654,7 +657,7 @@ export function CallLogsShell() {
                 <tbody className="divide-y divide-slate-100">
                   {calls.map((call) => (
                     <tr className="cursor-pointer transition hover:bg-cyan-50/60" key={call._id} onClick={() => void openCall(call._id)}>
-                      <td className="px-4 py-4"><strong className="block text-sm text-slate-950">{agentName(call)}</strong><span className="text-xs text-slate-500">{call.livekitRoomName}</span></td>
+                      <td className="px-4 py-4"><strong className="block text-sm text-slate-950">{agentName(call)}</strong></td>
                       <td className="px-4 py-4 text-sm font-medium capitalize text-slate-700">{call.direction}</td>
                       <td className="px-4 py-4 text-sm text-slate-700"><CallRoute call={call} compact /></td>
                       <td className="px-4 py-4 text-sm text-slate-600">{formatDate(call.startedAt ?? call.createdAt)}</td>

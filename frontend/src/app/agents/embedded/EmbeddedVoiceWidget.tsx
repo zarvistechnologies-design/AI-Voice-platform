@@ -32,7 +32,8 @@ function safeJson(value: string) {
 }
 
 function readableError(error: unknown, fallback: string) {
-  return error instanceof Error ? error.message : fallback;
+  void error;
+  return fallback;
 }
 
 export function EmbeddedVoiceWidget() {
@@ -182,7 +183,7 @@ export function EmbeddedVoiceWidget() {
       setStatus(room.remoteParticipants.size ? "Connected. Speak now." : "Connected. Waiting for assistant.");
       waitingTimerRef.current = window.setTimeout(() => {
         if (roomRef.current === room && room.remoteParticipants.size === 0) {
-          setStatus("Still connecting assistant. Keep the agent worker running for voice and knowledge.");
+          setStatus("The assistant is still connecting. Voice and knowledge will be available when ready.");
         } else if (roomRef.current === room && audioElementsRef.current.length === 0) {
           setStatus("Assistant is ready. Speak now.");
         }

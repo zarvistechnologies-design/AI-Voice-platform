@@ -14,6 +14,7 @@ import {
   validateStoredSession,
 } from "@/lib/auth";
 import {
+  publicVoiceMessage,
   voiceApi,
   type BackendAgent,
   type CallRecord,
@@ -1247,9 +1248,8 @@ function dispatchBadge(state: AgentRuntimeSnapshot["dispatch"]["state"] | undefi
   return "bg-[#e2e8f0] text-[#475569]";
 }
 
-function formatLiveKitRegion(region: string) {
-  if (!region) return "Connect to detect";
-  return region
+function formatVoiceRegion(region: string) {
+  return publicVoiceMessage(region, "Active region")
     .split(/[-_\s]+/)
     .filter(Boolean)
     .map((part) => part.length <= 3 ? part.toUpperCase() : `${part[0].toUpperCase()}${part.slice(1)}`)
@@ -2623,15 +2623,14 @@ export function DashboardShell() {
   const selectedRuntimeSnapshot = runtimeSnapshot?.agentId === selectedAgent.id ? runtimeSnapshot : null;
   const selectedRuntimeStreamState = selectedRuntimeSnapshot ? runtimeStreamState : "connecting";
   const selectedRuntimeRegion = selectedRuntimeSnapshot?.region || runtimeRegions[selectedAgent.id] || "";
-  const selectedRuntimeWorkerLabel = selectedRuntimeSnapshot?.dispatch.workerId
-    || (selectedRuntimeSnapshot?.dispatch.state === "pending" || selectedRuntimeSnapshot?.dispatch.state === "waiting"
-      ? "Connecting worker"
-      : selectedRuntimeSnapshot?.dispatch.state === "running"
-        ? "Worker active"
-        : "Idle until call");
+  const selectedRuntimeWorkerLabel = selectedRuntimeSnapshot?.dispatch.state === "pending" || selectedRuntimeSnapshot?.dispatch.state === "waiting"
+    ? "Connecting"
+    : selectedRuntimeSnapshot?.dispatch.state === "running"
+      ? "Active"
+      : "Idle until call";
   const selectedRuntimeItems = [
     {
-      label: "Dispatch",
+      label: "Call status",
       value: dispatchLabel(selectedRuntimeSnapshot?.dispatch.state),
       tone: dispatchTone(selectedRuntimeSnapshot?.dispatch.state),
     },
@@ -2644,7 +2643,7 @@ export function DashboardShell() {
     },
     {
       label: "Region",
-      value: selectedRuntimeRegion ? formatLiveKitRegion(selectedRuntimeRegion) : "No active room",
+      value: selectedRuntimeRegion ? formatVoiceRegion(selectedRuntimeRegion) : "No active call",
       tone: selectedRuntimeRegion ? "text-[#111827]" : "text-[#64748b]",
     },
   ];
@@ -2885,10 +2884,10 @@ export function DashboardShell() {
       setAgentList(backendAgents.map(mapBackendAgent));
       setVoiceConfig(config);
       setNotice(
-        `Synced ${response.vobiz.total} Vobiz numbers, checked ${response.routes.total} routes, repaired ${response.routes.repaired}, needs setup ${response.routes.needsSetup}.`,
+        `Synced ${response.vobiz.total} phone numbers, checked ${response.routes.total} routes, repaired ${response.routes.repaired}, needs setup ${response.routes.needsSetup}.`,
       );
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Could not sync phone routes.");
+      setNotice(publicVoiceMessage(error, "Could not sync phone routes."));
     }
   }
 
@@ -2943,7 +2942,7 @@ export function DashboardShell() {
         const mapped = mapBackendAgent(agent);
         setAgentList((current) => current.map((item) => (item.id === mapped.id ? mapped : item)));
         unsavedChangesRef.current = false;
-        setNotice(routingWarning ? `Agent saved with a routing warning: ${routingWarning}` : "Agent saved.");
+        setNotice(routingWarning ? publicVoiceMessage(routingWarning, "Agent saved, but phone routing still needs setup.") : "Agent saved.");
         return true;
       } catch (error) {
         setNotice(error instanceof Error ? error.message : "Could not save agent.");
@@ -3078,7 +3077,7 @@ export function DashboardShell() {
       );
       setRenamingAgentId("");
       setAgentNameDraft("");
-      setNotice(routingWarning ? `Agent renamed with a routing warning: ${routingWarning}` : "Agent renamed.");
+      setNotice(routingWarning ? publicVoiceMessage(routingWarning, "Agent renamed, but phone routing still needs setup.") : "Agent renamed.");
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not rename agent.");
     } finally {
@@ -4574,19 +4573,19 @@ export function DashboardShell() {
                         <strong className="app-strong block truncate">{selectedAgent.phone}</strong>
                       </div>
                       <div className="rounded-lg border border-[#e5e7eb] bg-white p-3">
-                        <span className="app-label block">LiveKit inbound trunk</span>
+                        <span className="app-label block">Incoming call routing</span>
                         <strong className={`app-strong ${voiceConfig?.sip.inboundConfigured ? "text-[#059669]" : "text-[#dc2626]"}`}>
                           {voiceConfig?.sip.inboundConfigured ? "Configured" : "Missing"}
                         </strong>
                       </div>
                       <div className="rounded-lg border border-[#e5e7eb] bg-white p-3">
-                        <span className="app-label block">LiveKit agent</span>
+                        <span className="app-label block">Voice service</span>
                         <strong className={`app-strong ${voiceConfig?.agentName ? "text-[#059669]" : "text-[#dc2626]"}`}>
-                          {voiceConfig?.agentName || "Missing"}
+                          {voiceConfig?.agentName ? "Available" : "Missing"}
                         </strong>
                       </div>
                       <div className="rounded-lg border border-[#e5e7eb] bg-white p-3">
-                        <span className="app-label block">Vobiz connection</span>
+                        <span className="app-label block">Phone provider</span>
                         <strong className={`app-strong ${voiceConfig?.vobiz.configured ? "text-[#059669]" : "text-[#dc2626]"}`}>
                           {voiceConfig?.vobiz.configured ? "Connected" : "Missing"}
                         </strong>
@@ -4595,13 +4594,13 @@ export function DashboardShell() {
 
                     {!voiceConfig?.sip.inboundConfigured ? (
                       <p className="app-caption m-0 rounded-lg border border-[#fecaca] bg-[#fef2f2] p-3 text-[#b91c1c]">
-                        LIVEKIT_SIP_INBOUND_TRUNK_ID is missing. Set your LiveKit inbound trunk, then sync phone routes.
+                        Incoming call routing is not configured. Contact your administrator, then sync phone routes.
                       </p>
                     ) : null}
 
                     {!voiceConfig?.sip.inboundDestinationConfigured ? (
                       <p className="app-caption m-0 rounded-lg border border-[#fecaca] bg-[#fef2f2] p-3 text-[#b91c1c]">
-                        LIVEKIT_SIP_URI is missing. Set it to your LiveKit SIP host, then sync phone routes so Vobiz can hand inbound calls to LiveKit.
+                        The incoming call destination is not configured. Contact your administrator, then sync phone routes.
                       </p>
                     ) : null}
 
@@ -4863,7 +4862,7 @@ export function DashboardShell() {
                       : selectedRuntimeStreamState === "connecting" ? "Connecting live stream..." : "Reconnecting live stream..."}
                   </span>
                 </div>
-                <span className={`app-label shrink-0 rounded-full px-2.5 py-1 ${dispatchBadge(selectedRuntimeSnapshot?.dispatch.state)}`} title={selectedRuntimeSnapshot?.dispatch.message}>
+                <span className={`app-label shrink-0 rounded-full px-2.5 py-1 ${dispatchBadge(selectedRuntimeSnapshot?.dispatch.state)}`} title="Voice service status">
                   {dispatchLabel(selectedRuntimeSnapshot?.dispatch.state)}
                 </span>
               </div>
@@ -4874,7 +4873,7 @@ export function DashboardShell() {
                     <span
                       className="min-w-0 rounded-lg border border-[#99f6e8] bg-[#ecfeff] p-2.5"
                       key={item.label}
-                      title={item.label === "Region" && selectedRuntimeRegion ? selectedRuntimeRegion : undefined}
+                      title={item.label === "Region" && selectedRuntimeRegion ? formatVoiceRegion(selectedRuntimeRegion) : undefined}
                     >
                       <span className="app-label block truncate">{item.label}</span>
                       <strong className={`app-strong block truncate ${item.tone}`}>{item.value}</strong>
@@ -4884,8 +4883,8 @@ export function DashboardShell() {
 
                 <div className="grid min-w-0 divide-y divide-[#eef2f7] rounded-lg border border-[#edf2f7] px-3">
                   <span className="flex min-w-0 items-center justify-between gap-3 py-2.5">
-                    <span className="app-caption shrink-0">Worker</span>
-                    <strong className="app-strong min-w-0 truncate text-right" title={selectedRuntimeSnapshot?.dispatch.workerId || selectedRuntimeSnapshot?.dispatch.message || selectedRuntimeWorkerLabel}>
+                    <span className="app-caption shrink-0">AI service</span>
+                    <strong className="app-strong min-w-0 truncate text-right" title={selectedRuntimeWorkerLabel}>
                       {selectedRuntimeWorkerLabel}
                     </strong>
                   </span>
