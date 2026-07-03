@@ -547,6 +547,69 @@ export type AnalyticsOverview = {
   }[];
 };
 
+export type CampaignLeadInput = {
+  row: number;
+  phone: string;
+  name?: string;
+  email?: string;
+  company?: string;
+  customFields?: Record<string, string>;
+  doNotCall?: boolean;
+};
+
+export type CampaignStats = Record<
+  "queued" | "leased" | "active" | "completed" | "retry_wait" | "failed" | "suppressed" | "cancelled",
+  number
+> & {
+  total: number;
+  processed: number;
+  progressPercent: number;
+};
+
+export type BackendCampaign = {
+  _id: string;
+  name: string;
+  agentId: string;
+  phoneNumberId: string;
+  status: "draft" | "scheduled" | "running" | "paused" | "completed" | "cancelled" | "failed";
+  scheduledAt: string | null;
+  startedAt: string | null;
+  completedAt: string | null;
+  timezone: string;
+  windowStart: string;
+  windowEnd: string;
+  dailyLimit: number;
+  concurrency: number;
+  maxAttempts: number;
+  retryGapSeconds: number;
+  goal: string;
+  successCriteria: string;
+  totalLeads: number;
+  lastWorkerError: string;
+  stats: CampaignStats;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CreateCampaignInput = {
+  idempotencyKey: string;
+  name: string;
+  agentId: string;
+  phoneNumberId: string;
+  timezone: string;
+  windowStart: string;
+  windowEnd: string;
+  dailyLimit: number;
+  concurrency: number;
+  maxAttempts: number;
+  retryGapSeconds: number;
+  goal: string;
+  successCriteria: string;
+  respectDnc: boolean;
+  requireConsentLine: boolean;
+  detectVoicemail: boolean;
+};
+
 async function request<T>(path: string, init: RequestInit = {}) {
   const session = getSession();
   if (!session) {
@@ -748,6 +811,30 @@ export const voiceApi = {
         ...(options.metadata ? { metadata: options.metadata } : {}),
       }),
     }),
+  campaigns: () => request<{ campaigns: BackendCampaign[] }>("/campaigns"),
+  campaign: (campaignId: string) => request<{ campaign: BackendCampaign }>(`/campaigns/${campaignId}`),
+  createCampaign: (input: CreateCampaignInput) =>
+    mutation<{ campaign: BackendCampaign }>("/campaigns", {
+      method: "POST",
+      headers: { "Idempotency-Key": input.idempotencyKey },
+      body: JSON.stringify(input),
+    }, ["/campaigns"]),
+  addCampaignLeads: (campaignId: string, leads: CampaignLeadInput[]) =>
+    request<{ inserted: number; duplicates: number; total: number; suppressed: number }>(`/campaigns/${campaignId}/leads`, {
+      method: "POST",
+      body: JSON.stringify({ leads }),
+    }),
+  launchCampaign: (campaignId: string, input: { mode: "now" | "schedule"; scheduledAt?: string }) =>
+    mutation<{ campaign: BackendCampaign }>(`/campaigns/${campaignId}/launch`, {
+      method: "POST",
+      body: JSON.stringify(input),
+    }, ["/campaigns"]),
+  pauseCampaign: (campaignId: string) =>
+    mutation<{ campaign: BackendCampaign }>(`/campaigns/${campaignId}/pause`, { method: "POST" }, ["/campaigns"]),
+  resumeCampaign: (campaignId: string) =>
+    mutation<{ campaign: BackendCampaign }>(`/campaigns/${campaignId}/resume`, { method: "POST" }, ["/campaigns"]),
+  cancelCampaign: (campaignId: string) =>
+    mutation<{ campaign: BackendCampaign }>(`/campaigns/${campaignId}/cancel`, { method: "POST" }, ["/campaigns"]),
   phoneNumbers: () => cachedRequest<{ numbers: BackendPhoneNumber[] }>("/phone-numbers", 15_000),
   createPhoneNumber: (input: PhoneNumberImportInput) =>
     mutation<{ number: BackendPhoneNumber }>("/phone-numbers", {

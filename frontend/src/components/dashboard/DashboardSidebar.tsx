@@ -234,7 +234,7 @@ export function DashboardSidebar({
 
       <div
         className={`hidden lg:block lg:h-dvh ${
-          showUserSidebar ? "lg:w-272px" : "lg:w-16"
+          showUserSidebar ? "lg:w-[272px]" : "lg:w-16"
         }`}
         aria-hidden="true"
       />
