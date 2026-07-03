@@ -1,4 +1,4 @@
-import { getAuthHeaders, getSession } from "@/lib/auth";
+import { clearSession, getAuthHeaders, getSession } from "@/lib/auth";
 import { API_URL } from "@/lib/apiBase";
 
 const privateVoiceInfrastructurePattern = /(?:livekit|vapi|retell|millis(?:\.ai|ai)?|vobiz|(?:wss?|sips?):(?:\/\/)?|(?:room|dispatch|worker|participant|trunk)[ _-]?(?:name|id|sid)\b)/i;
@@ -678,6 +678,7 @@ async function request<T>(path: string, init: RequestInit = {}) {
     | null;
 
   if (!response.ok) {
+    if (response.status === 401) clearSession();
     throw new Error(publicVoiceMessage(data?.message));
   }
   if (response.status === 204) {
@@ -769,11 +770,22 @@ export const voiceApi = {
     }),
   agents: () => cachedRequest<{ agents: BackendAgent[] }>("/agents", 15_000),
   agentSummaries: () => cachedRequest<{ agents: AgentSummary[] }>("/agents?view=summary", 15_000),
+  agent: (agentId: string) =>
+    cachedRequest<{ agent: BackendAgent }>(`/agents/${encodeURIComponent(agentId)}`, 15_000),
+  agentDashboard: (agentId: string) =>
+    cachedRequest<{ agent: BackendAgent; config: VoiceConfigResponse }>(
+      `/agents/${encodeURIComponent(agentId)}/dashboard`,
+      15_000,
+    ).then((result) => {
+      seedVoiceCache(`/agents/${encodeURIComponent(agentId)}`, { agent: result.agent }, 15_000);
+      seedVoiceCache("/config", result.config, 5 * 60_000);
+      return result;
+    }),
   agentTemplates: () => cachedRequest<{ templates: AgentTemplate[] }>("/agent-templates", 60 * 60_000),
-  createAgent: () =>
+  createAgent: (input: Partial<Pick<BackendAgent, "name" | "team" | "language">> = {}) =>
     mutation<{ agent: BackendAgent }>("/agents", {
       method: "POST",
-      body: JSON.stringify({}),
+      body: JSON.stringify(input),
     }, ["/agents"]),
   createAgentFromTemplate: (templateId: string) =>
     mutation<{ agent: BackendAgent }>(`/agent-templates/${templateId}`, { method: "POST" }, ["/agents"]),

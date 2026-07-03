@@ -11,7 +11,6 @@ import {
   getSession,
   logoutSession,
   subscribeToSession,
-  validateStoredSession,
 } from "@/lib/auth";
 import {
   publicVoiceMessage,
@@ -2574,7 +2573,16 @@ function HeaderEditor({
   );
 }
 
-export function DashboardShell() {
+type DashboardShellProps = {
+  initialAgentId?: string;
+  showTemplateSection?: boolean;
+};
+
+function getAgentDashboardHref(agentId: string) {
+  return `/dashboard/agents/${encodeURIComponent(agentId)}`;
+}
+
+export function DashboardShell({ initialAgentId, showTemplateSection = true }: DashboardShellProps = {}) {
   const router = useRouter();
   const session = useSyncExternalStore(
     subscribeToSession,
@@ -2583,10 +2591,11 @@ export function DashboardShell() {
   );
   const [showUserSidebar, setShowUserSidebar] = useState(false);
   const [agentList, setAgentList] = useState(agents);
-  const [selectedAgentId, setSelectedAgentId] = useState(agents[0].id);
+  const [selectedAgentId, setSelectedAgentId] = useState(initialAgentId ?? agents[0].id);
   const [renamingAgentId, setRenamingAgentId] = useState("");
   const [agentNameDraft, setAgentNameDraft] = useState("");
   const [renamingAgentSaving, setRenamingAgentSaving] = useState(false);
+  const [showAgentNameEditor, setShowAgentNameEditor] = useState(false);
   const [activeTab, setActiveTab] = useState<AgentTab>("builder");
   const [notice, setNotice] = useState("");
   const [saving, setSaving] = useState(false);
@@ -2614,6 +2623,10 @@ export function DashboardShell() {
 
   const selectedAgent = useMemo(
     () => agentList.find((agent) => agent.id === selectedAgentId) ?? agentList[0] ?? agents[0],
+    [agentList, selectedAgentId],
+  );
+  const selectedAgentLoaded = useMemo(
+    () => agentList.some((agent) => agent.id === selectedAgentId),
     [agentList, selectedAgentId],
   );
   const voicePitchSupported = supportsVoicePitch(selectedAgent);
@@ -2746,6 +2759,12 @@ export function DashboardShell() {
   data-metadata="${selectedAgent.dynamicVariables.join(",")}"
 ></script>`;
   const toast = notice ? noticeToast(notice) : null;
+  const contentGridClass = showTemplateSection
+    ? "mx-auto grid w-full max-w-1500px min-w-0 gap-4 px-4 pb-5 sm:px-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:px-8 2xl:grid-cols-[280px_minmax(0,1fr)_300px]"
+    : "mx-auto grid w-full max-w-1500px min-w-0 gap-4 px-4 pb-5 sm:px-6 lg:grid-cols-[minmax(0,1fr)] lg:px-8 2xl:grid-cols-[minmax(0,1fr)_300px]";
+  const runtimeAsideClass = showTemplateSection
+    ? "grid min-w-0 content-start gap-4 xl:col-span-2 xl:grid-cols-2 2xl:col-span-1 2xl:grid-cols-1"
+    : "grid min-w-0 content-start gap-4 xl:grid-cols-2 2xl:grid-cols-1";
 
   useEffect(() => {
     return () => {
@@ -2784,7 +2803,9 @@ export function DashboardShell() {
       ) {
         return;
       }
-      const { agents: backendAgents } = await voiceApi.agents();
+      const backendAgents = !showTemplateSection && initialAgentId
+        ? [(await voiceApi.agent(initialAgentId)).agent]
+        : (await voiceApi.agents()).agents;
       if (cancelled || unsavedChangesRef.current) return;
       applyBackendAgents(backendAgents);
     };
@@ -2792,29 +2813,14 @@ export function DashboardShell() {
     let cancelled = false;
 
     void (async () => {
-      const bootstrapPromise = voiceApi.bootstrap().then(
-        (value) => ({ value, error: null }),
-        (error: unknown) => ({ value: null, error }),
-      );
-      const [validatedSession, bootstrapResult] = await Promise.all([
-        validateStoredSession(),
-        bootstrapPromise,
-      ]);
-      if (!validatedSession) {
-        if (!cancelled) router.replace("/login?next=/dashboard");
-        return;
-      }
-      if (
-        validatedSession.id !== session.id ||
-        validatedSession.organization?.id !== session.organization?.id
-      ) {
-        return;
-      }
-
-      if (!bootstrapResult.value) {
-        throw bootstrapResult.error ?? new Error("Could not load dashboard data.");
-      }
-      const { agents: backendAgents, config, templates } = bootstrapResult.value;
+      const dashboardData = !showTemplateSection && initialAgentId
+        ? await voiceApi.agentDashboard(initialAgentId).then(({ agent, config }) => ({
+            agents: [agent],
+            config,
+            templates: [] as AgentTemplate[],
+          }))
+        : await voiceApi.bootstrap();
+      const { agents: backendAgents, config, templates } = dashboardData;
       if (cancelled) return;
       applyBackendAgents(backendAgents);
       setVoiceConfig(config);
@@ -2835,10 +2841,10 @@ export function DashboardShell() {
       cancelled = true;
       window.clearInterval(refreshTimer);
     };
-  }, [router, session]);
+  }, [initialAgentId, router, session, showTemplateSection]);
 
   useEffect(() => {
-    if (!session || !selectedAgentId || selectedAgentId === "loading" || selectedAgentId === "maya") {
+    if (!session || !selectedAgentLoaded || !selectedAgentId || selectedAgentId === "loading" || selectedAgentId === "maya") {
       return;
     }
 
@@ -2865,7 +2871,7 @@ export function DashboardShell() {
       stream.removeEventListener("runtime", handleRuntime);
       stream.close();
     };
-  }, [selectedAgentId, session]);
+  }, [selectedAgentId, selectedAgentLoaded, session]);
 
   useEffect(() => {
     if (!session || activeTab !== "calls" || !selectedAgentId || selectedAgentId === "loading" || selectedAgentId === "maya") return;
@@ -3020,6 +3026,7 @@ export function DashboardShell() {
       unsavedChangesRef.current = false;
       setAgentList((current) => [...current, mapped]);
       setSelectedAgentId(mapped.id);
+      navigateToAgent(mapped.id);
       setNotice("New backend agent created.");
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not create agent.");
@@ -3033,6 +3040,7 @@ export function DashboardShell() {
       unsavedChangesRef.current = false;
       setAgentList((current) => [...current, mapped]);
       setSelectedAgentId(mapped.id);
+      navigateToAgent(mapped.id);
       setNotice("Template agent created as a draft.");
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not create template agent.");
@@ -3049,14 +3057,23 @@ export function DashboardShell() {
   function beginAgentRename(agent: VoiceAgent) {
     if (renamingAgentSaving) return;
     setSelectedAgentId(agent.id);
+    navigateToAgent(agent.id);
     setRenamingAgentId(agent.id);
     setAgentNameDraft(agent.name);
+  }
+
+  function beginSelectedAgentRename() {
+    if (renamingAgentSaving) return;
+    setRenamingAgentId(selectedAgent.id);
+    setAgentNameDraft(selectedAgent.name);
+    setShowAgentNameEditor(true);
   }
 
   function cancelAgentRename() {
     if (renamingAgentSaving) return;
     setRenamingAgentId("");
     setAgentNameDraft("");
+    setShowAgentNameEditor(false);
   }
 
   async function saveAgentName(agent: VoiceAgent) {
@@ -3079,6 +3096,7 @@ export function DashboardShell() {
       );
       setRenamingAgentId("");
       setAgentNameDraft("");
+      setShowAgentNameEditor(false);
       setNotice(routingWarning ? publicVoiceMessage(routingWarning, "Agent renamed, but phone routing still needs setup.") : "Agent renamed.");
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not rename agent.");
@@ -3223,8 +3241,26 @@ export function DashboardShell() {
   }
 
   function navigateToDashboardPage(href: string) {
-    announceDashboardNavigation(href, window.location.pathname);
+    if (href !== window.location.pathname) {
+      announceDashboardNavigation(href, window.location.pathname);
+    }
     router.push(href);
+  }
+
+  function navigateToAgent(agentId: string, options: { replace?: boolean } = {}) {
+    const href = getAgentDashboardHref(agentId);
+    if (href === window.location.pathname) return;
+    announceDashboardNavigation(href, window.location.pathname);
+    if (options.replace) {
+      router.replace(href);
+      return;
+    }
+    router.push(href);
+  }
+
+  function selectAgent(agentId: string) {
+    setSelectedAgentId(agentId);
+    navigateToAgent(agentId);
   }
 
   async function handleCloneAgent() {
@@ -3234,6 +3270,7 @@ export function DashboardShell() {
       unsavedChangesRef.current = false;
       setAgentList((current) => [...current, mapped]);
       setSelectedAgentId(mapped.id);
+      navigateToAgent(mapped.id);
       setNotice("Agent cloned as a new draft.");
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not clone agent.");
@@ -3245,11 +3282,19 @@ export function DashboardShell() {
     try {
       await voiceApi.deleteAgent(selectedAgent.id);
       unsavedChangesRef.current = false;
-      setAgentList((current) => {
-        const next = current.filter((agent) => agent.id !== selectedAgent.id);
-        setSelectedAgentId(next[0]?.id ?? "");
-        return next;
-      });
+      const nextAgents = agentList.filter((agent) => agent.id !== selectedAgent.id);
+      const nextAgentId = nextAgents[0]?.id ?? "";
+      setAgentList(nextAgents);
+      if (!showTemplateSection) {
+        setSelectedAgentId("");
+        navigateToDashboardPage("/dashboard/agents");
+      } else if (nextAgentId) {
+        setSelectedAgentId(nextAgentId);
+        navigateToAgent(nextAgentId, { replace: true });
+      } else {
+        setSelectedAgentId("");
+        navigateToDashboardPage("/dashboard/agents");
+      }
       setNotice("Agent deleted.");
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not delete agent.");
@@ -3537,13 +3582,34 @@ export function DashboardShell() {
           <div className="mx-auto grid w-full max-w-1500px gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
             <div className="min-w-0">
               <span className="app-label text-[#00b8c4]">{session.organization?.name ?? "Workspace"}</span>
-              <h1 className="m-0 mt-1 text-xl font-semibold leading-7 text-[#0f172a] sm:text-2xl">{selectedAgent.name}</h1>
+              <div className="mt-1 flex min-w-0 items-center gap-2">
+                <h1 className="m-0 min-w-0 truncate text-xl font-semibold leading-7 text-[#0f172a] sm:text-2xl">{selectedAgent.name}</h1>
+                <button
+                  className="grid size-8 shrink-0 place-items-center rounded-lg border border-[#d5d8df] bg-white text-[#64748b] transition hover:border-[#99f6e8] hover:bg-[#ecfeff] hover:text-[#008996]"
+                  type="button"
+                  aria-label={`Edit ${selectedAgent.name} name`}
+                  title="Edit name"
+                  disabled={renamingAgentSaving}
+                  onClick={beginSelectedAgentRename}
+                >
+                  <Icon icon="edit" />
+                </button>
+              </div>
               <p className="app-caption mt-1 mb-0 max-w-3xl text-[#475569]">
                 Build, test, publish, and monitor your voice agent from one command center.
               </p>
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
+            {!showTemplateSection ? (
+              <button
+                className="app-button-text inline-flex min-h-9 items-center justify-center rounded-lg border border-[#d5d8df] bg-white px-3 text-[#334155] transition hover:bg-[#f8fafc]"
+                type="button"
+                onClick={() => navigateToDashboardPage("/dashboard/agents")}
+              >
+                Back to agents
+              </button>
+            ) : null}
             <button
               className="app-button-text inline-flex min-h-9 items-center justify-center rounded-lg border border-[#d5d8df] bg-white px-3 text-[#334155] transition hover:bg-[#f8fafc]"
               type="button"
@@ -3601,7 +3667,8 @@ export function DashboardShell() {
           </div>
         </header>
 
-        <section className="mx-auto grid w-full max-w-1500px min-w-0 gap-4 px-4 pb-5 sm:px-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:px-8 2xl:grid-cols-[280px_minmax(0,1fr)_300px]">
+        <section className={contentGridClass}>
+          {showTemplateSection ? (
           <aside className="min-w-0 overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm">
             <div className="flex min-h-64px items-center justify-between border-b border-[#e5e7eb] bg-[#fbfdff] px-4">
               <div>
@@ -3635,13 +3702,13 @@ export function DashboardShell() {
                     tabIndex={isRenaming ? -1 : 0}
                     aria-pressed={isRenaming ? undefined : isActive}
                     onClick={() => {
-                      if (!isRenaming) setSelectedAgentId(agent.id);
+                      if (!isRenaming) selectAgent(agent.id);
                     }}
                     onKeyDown={(event) => {
                       if (isRenaming || event.target !== event.currentTarget) return;
                       if (event.key === "Enter" || event.key === " ") {
                         event.preventDefault();
-                        setSelectedAgentId(agent.id);
+                        selectAgent(agent.id);
                       }
                     }}
                   >
@@ -3755,6 +3822,7 @@ export function DashboardShell() {
               {!agentTemplates.length ? <span className="app-caption">Templates loading...</span> : null}
             </div>
           </aside>
+          ) : null}
 
           <section className="grid min-w-0 content-start gap-4">
             <article className="min-w-0 overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm">
@@ -4847,7 +4915,7 @@ export function DashboardShell() {
 
           </section>
 
-          <aside className="grid min-w-0 content-start gap-4 xl:col-span-2 xl:grid-cols-2 2xl:col-span-1 2xl:grid-cols-1">
+          <aside className={runtimeAsideClass}>
             <article className="min-w-0 overflow-hidden rounded-lg border border-[#dbe4f0] bg-white shadow-sm">
               <div className="flex min-h-68px items-center justify-between gap-3 border-b border-[#99f6e8] bg-linear-to-r from-[#ecfeff] via-white to-[#ecfeff] px-4">
                 <div className="min-w-0">
@@ -5041,6 +5109,50 @@ export function DashboardShell() {
           </aside>
         </section>
       </section>
+      {showAgentNameEditor ? (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-slate-950/30 px-4" role="dialog" aria-modal="true" aria-labelledby="edit-agent-name-title">
+          <form
+            className="grid w-full max-w-md gap-4 rounded-lg border border-[#dbe2ea] bg-white p-5 shadow-xl"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void saveAgentName(selectedAgent);
+            }}
+          >
+            <div>
+              <h2 className="app-section-title m-0" id="edit-agent-name-title">Edit agent name</h2>
+              <p className="app-caption mt-1 mb-0 text-[#475569]">Update the name shown across the dashboard.</p>
+            </div>
+            <label className="grid gap-1.5">
+              <span className="app-label text-[#475569]">Agent name</span>
+              <input
+                autoFocus
+                className="app-control-text min-h-11 rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10"
+                value={agentNameDraft}
+                maxLength={80}
+                onChange={(event) => setAgentNameDraft(event.target.value)}
+              />
+            </label>
+            <div className="flex justify-end gap-2">
+              <button
+                className="app-button-text min-h-10 rounded-lg border border-[#d5d8df] bg-white px-4 text-[#334155]"
+                type="button"
+                disabled={renamingAgentSaving}
+                onClick={cancelAgentRename}
+              >
+                Cancel
+              </button>
+              <button
+                className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#99f6e8] bg-[#ecfeff] px-4 text-[#0e7490] shadow-sm disabled:opacity-60"
+                type="submit"
+                disabled={renamingAgentSaving}
+              >
+                <Icon icon="save" />
+                {renamingAgentSaving ? "Saving..." : "Save name"}
+              </button>
+            </div>
+          </form>
+        </div>
+      ) : null}
       {showTestCall ? (
         <TestCallPanel
           agentId={selectedAgent.id}
