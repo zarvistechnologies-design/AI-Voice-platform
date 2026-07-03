@@ -88,6 +88,7 @@ type VoiceAgent = {
   callSettings: AgentCallSettings;
   tools: AgentTool[];
   knowledgeDocuments: KnowledgeDocument[];
+  knowledgeSourceCount: number;
   dynamicVariables: string[];
   prefetchWebhook: string;
   endOfCallWebhook: string;
@@ -209,6 +210,7 @@ const agents: VoiceAgent[] = [{
   callSettings: defaultCallSettings,
   tools: [],
   knowledgeDocuments: [],
+  knowledgeSourceCount: 0,
   dynamicVariables: ["FromPhone", "ToPhone"],
   prefetchWebhook: "",
   endOfCallWebhook: "",
@@ -2667,7 +2669,7 @@ export function DashboardShell() {
     },
     {
       label: "Knowledge",
-      value: selectedAgent.knowledgeDocuments.length.toLocaleString("en-IN"),
+      value: (selectedAgent.knowledgeSourceCount ?? selectedAgent.knowledgeDocuments.length).toLocaleString("en-IN"),
       tone: agentStatTone,
     },
   ];
@@ -5030,7 +5032,7 @@ export function DashboardShell() {
   "concurrent_calls": ${selectedAgent.maxConcurrentCalls},
   "business_hours": ${selectedAgent.businessHoursEnabled},
   "tools": ${selectedAgent.tools.length},
-  "knowledge_base": ${selectedAgent.knowledgeDocuments.length},
+  "knowledge_base": ${selectedAgent.knowledgeSourceCount ?? selectedAgent.knowledgeDocuments.length},
   "version": ${selectedAgent.version}
 }`}
               </pre>
@@ -5043,7 +5045,7 @@ export function DashboardShell() {
         <TestCallPanel
           agentId={selectedAgent.id}
           agentName={selectedAgent.name}
-          knowledgeCount={selectedAgent.knowledgeDocuments.length}
+          knowledgeCount={selectedAgent.knowledgeSourceCount ?? selectedAgent.knowledgeDocuments.length}
           recordingEnabled={selectedAgent.callSettings.recordingEnabled}
           onRegionChange={(region) => setRuntimeRegions((current) => ({ ...current, [selectedAgent.id]: region }))}
           onClose={() => setShowTestCall(false)}
@@ -5137,6 +5139,7 @@ function mapBackendAgent(agent: BackendAgent): VoiceAgent {
     callSettings: { ...defaultCallSettings, ...agent.callSettings },
     tools: (agent.tools ?? []).map(normalizeTool),
     knowledgeDocuments: agent.knowledgeDocuments ?? [],
+    knowledgeSourceCount: agent.knowledgeSourceCount ?? agent.knowledgeDocuments?.length ?? 0,
     dynamicVariables: agent.dynamicVariables ?? ["FromPhone", "ToPhone"],
     prefetchWebhook: agent.prefetchWebhook ?? "",
     endOfCallWebhook: agent.endOfCallWebhook ?? "",

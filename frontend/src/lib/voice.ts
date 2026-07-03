@@ -78,6 +78,31 @@ export type KnowledgeDocument = {
   status: "ready" | "disabled";
 };
 
+export type KnowledgeSource = {
+  _id: string;
+  name: string;
+  sourceType: "text" | "file" | "url" | "legacy";
+  status: "processing" | "ready" | "failed" | "disabled";
+  originalFileName: string;
+  mimeType: string;
+  url: string;
+  characterCount: number;
+  chunkCount: number;
+  embeddingModel: string;
+  error: string;
+  preview: string;
+  content?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type KnowledgeSearchResult = {
+  sourceId: string;
+  sourceName: string;
+  content: string;
+  score: number;
+};
+
 export type AgentWidget = {
   enabled: boolean;
   publicKey: string;
@@ -239,6 +264,7 @@ export type BackendAgent = {
   callSettings: AgentCallSettings;
   tools: AgentTool[];
   knowledgeDocuments: KnowledgeDocument[];
+  knowledgeSourceCount?: number;
   dynamicVariables: string[];
   prefetchWebhook: string;
   endOfCallWebhook: string;
@@ -616,14 +642,14 @@ async function request<T>(path: string, init: RequestInit = {}) {
     throw new Error("Sign in before using voice services.");
   }
 
+  const headers = new Headers(init.headers);
+  for (const [name, value] of Object.entries(getAuthHeaders())) headers.set(name, value);
+  const isFormData = typeof FormData !== "undefined" && init.body instanceof FormData;
+  if (init.body && !isFormData && !headers.has("Content-Type")) headers.set("Content-Type", "application/json");
   const response = await fetch(`${API_URL}/api/voice${path}`, {
     ...init,
     credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      ...getAuthHeaders(),
-      ...init.headers,
-    },
+    headers,
   });
   const data = (await response.json().catch(() => null)) as
     | (T & { message?: string })
@@ -734,6 +760,47 @@ export const voiceApi = {
       method: "PUT",
       body: JSON.stringify(changes),
     }, ["/agents"]),
+  knowledgeSources: (agentId: string) =>
+    request<{ sources: KnowledgeSource[]; maximumSources: number }>(`/agents/${agentId}/knowledge`),
+  knowledgeSource: (agentId: string, sourceId: string) =>
+    request<{ source: KnowledgeSource }>(`/agents/${agentId}/knowledge/${sourceId}`),
+  addKnowledgeText: (agentId: string, input: { name: string; content: string }) =>
+    mutation<{ source: KnowledgeSource }>(`/agents/${agentId}/knowledge/text`, {
+      method: "POST",
+      body: JSON.stringify(input),
+    }, ["/agents"]),
+  addKnowledgeUrl: (agentId: string, input: { name?: string; url: string }) =>
+    mutation<{ source: KnowledgeSource }>(`/agents/${agentId}/knowledge/url`, {
+      method: "POST",
+      body: JSON.stringify(input),
+    }, ["/agents"]),
+  addKnowledgeFile: (agentId: string, file: File, name = "") => {
+    const body = new FormData();
+    body.set("file", file);
+    if (name.trim()) body.set("name", name.trim());
+    return mutation<{ source: KnowledgeSource }>(`/agents/${agentId}/knowledge/file`, {
+      method: "POST",
+      body,
+    }, ["/agents"]);
+  },
+  updateKnowledgeSource: (agentId: string, sourceId: string, input: { name?: string; content?: string; status?: "ready" | "disabled" }) =>
+    mutation<{ source: KnowledgeSource }>(`/agents/${agentId}/knowledge/${sourceId}`, {
+      method: "PUT",
+      body: JSON.stringify(input),
+    }, ["/agents"]),
+  reindexKnowledgeSource: (agentId: string, sourceId: string) =>
+    mutation<{ source: KnowledgeSource }>(`/agents/${agentId}/knowledge/${sourceId}/reindex`, {
+      method: "POST",
+    }, ["/agents"]),
+  deleteKnowledgeSource: (agentId: string, sourceId: string) =>
+    mutation<Record<string, never>>(`/agents/${agentId}/knowledge/${sourceId}`, {
+      method: "DELETE",
+    }, ["/agents"]),
+  testKnowledgeSearch: (agentId: string, query: string) =>
+    request<{ query: string; results: KnowledgeSearchResult[]; context: string }>(`/agents/${agentId}/knowledge/search`, {
+      method: "POST",
+      body: JSON.stringify({ query }),
+    }),
   cloneAgent: (agentId: string) =>
     mutation<{ agent: BackendAgent }>(`/agents/${agentId}/clone`, { method: "POST" }, ["/agents"]),
   deleteAgent: (agentId: string) =>
