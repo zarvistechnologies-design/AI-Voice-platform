@@ -822,12 +822,12 @@ export function CampaignShell() {
                       Success criteria
                       <input className={controlClass} placeholder="Booked demo, qualified lead, reminder accepted..." value={successCriteria} onChange={(event) => setSuccessCriteria(event.target.value)} />
                     </label>
-                    <div className="rounded-3xl border border-violet-200 bg-violet-50/80 p-4">
-                      <span className="inline-flex size-10 items-center justify-center rounded-2xl bg-white text-violet-700 shadow-sm">
+                    <div className="rounded-3xl border border-cyan-200 bg-cyan-50/80 p-4">
+                      <span className="inline-flex size-10 items-center justify-center rounded-2xl bg-white text-cyan-700 shadow-sm">
                         <Icon icon="target" />
                       </span>
-                      <p className="mt-3 mb-0 text-sm font-semibold text-violet-950">These instructions are applied to every call in this campaign.</p>
-                      <p className="app-caption mt-1 mb-0 text-violet-800">That keeps the base assistant reusable while each campaign carries its own mission.</p>
+                      <p className="mt-3 mb-0 text-sm font-semibold text-cyan-950">These instructions are applied to every call in this campaign.</p>
+                      <p className="app-caption mt-1 mb-0 text-cyan-800">That keeps the base assistant reusable while each campaign carries its own mission.</p>
                     </div>
                   </div>
                 </div>
