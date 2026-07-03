@@ -122,7 +122,7 @@ const defaultBehavior: AgentBehavior = {
   dtmfDial: false,
   dtmfSequence: "",
   endpointingMode: "fast",
-  responseDelayMs: 80,
+  responseDelayMs: 0,
   maxCallDurationSeconds: 1200,
   maxIdleSeconds: 18,
   transferPhone: "",
