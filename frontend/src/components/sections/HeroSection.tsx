@@ -1,235 +1,162 @@
-const companyNames = [
-  "CAPSULE",
-  "doxy.me",
-  "gifthealth",
-  "PINE PARK HEALTH",
-  "waymark",
-  "NOVA BANK",
-  "RoutePeak",
-  "PolicyWorks",
-  "STAY",
-  "CollectIQ",
+const customerNames = [
+  "FixFlow",
+  "Prime HVAC",
+  "RooterOne",
+  "SparkPro",
+  "CleanNest",
+  "Roofline",
+  "LocalCrew",
+  "Pipewise",
+  "HomeOps",
 ];
 
-const metrics = [
-  ["24/7", "agent coverage"],
+const heroSignals = [
+  ["5/5", "G2 rating"],
+  ["24/7", "call coverage"],
   ["140+", "languages"],
-  ["<2s", "handoff"],
-  ["100%", "call summaries"],
+  ["<500ms", "voice latency"],
 ];
 
-const waveDots = Array.from({ length: 220 }, (_, index) => {
-  const columns = 44;
-  const column = index % columns;
-  const row = Math.floor(index / columns);
-  const wave = Math.sin(column * 0.34 + row * 0.72);
-  const drift = Math.cos(column * 0.16 + row * 0.5);
-  const size = 2 + ((index * 7) % 5);
+const liveCallRows = [
+  { caller: "Maya Patel", intent: "Book service visit", status: "Qualified", time: "00:48" },
+  { caller: "Sam Rivera", intent: "After-hours repair", status: "Escalated", time: "01:12" },
+  { caller: "Nora Kim", intent: "Pricing question", status: "Follow-up", time: "02:04" },
+];
 
-  return {
-    left: `${(column / (columns - 1)) * 100 + drift * 1.2}%`,
-    top: `${18 + row * 12 + wave * 8}%`,
-    width: `${size}px`,
-    height: `${size}px`,
-    opacity: `${0.32 + ((index * 11) % 45) / 100}`,
-    animationDelay: `${-((index * 0.11) % 3.5)}s`,
-    animationDuration: `${4.8 + ((index * 13) % 28) / 10}s`,
-  };
-});
-
-const orbitDots = Array.from({ length: 28 }, (_, index) => ({
-  left: `${8 + ((index * 17) % 84)}%`,
-  top: `${8 + ((index * 23) % 78)}%`,
-  width: `${4 + ((index * 5) % 8)}px`,
-  height: `${4 + ((index * 5) % 8)}px`,
-  animationDelay: `${-((index * 0.21) % 5)}s`,
-  animationDuration: `${7 + ((index * 3) % 6)}s`,
-}));
-
-function FloatingDotHero() {
+function AudioBars() {
   return (
-    <div className="relative min-h-[460px] overflow-hidden rounded-[32px] border border-cyan-100 bg-white shadow-[0_24px_80px_rgba(0,184,196,0.14)]">
-      <div className="absolute inset-0">
-        <div className="absolute inset-x-[-8%] top-[4%] h-[78%]">
-          {waveDots.map((dot, index) => (
-            <span
-              className="home-wave-dot absolute rounded-full bg-cyan-400 shadow-[0_0_16px_rgba(0,184,196,0.38)]"
-              key={`wave-${index}`}
-              style={dot}
-            />
+    <span className="flex h-6 items-center gap-1" aria-hidden="true">
+      {[10, 18, 24, 14, 21, 12, 19].map((height, index) => (
+        <span
+          className="hero-audio-bar w-1 rounded-full bg-cyan-300"
+          key={`${height}-${index}`}
+          style={{ height, animationDelay: `${index * 80}ms` }}
+        />
+      ))}
+    </span>
+  );
+}
+
+function HeroConsole() {
+  return (
+    <div className="relative hidden min-h-[440px] lg:block" aria-label="Live voice agent operations preview">
+      <div className="absolute inset-x-0 top-6 grid grid-cols-3 gap-x-10 gap-y-14">
+        {customerNames.map((name) => (
+          <span className="text-center text-2xl font-extrabold text-slate-500/75" key={name}>
+            {name}
+          </span>
+        ))}
+      </div>
+
+      <div className="absolute right-4 bottom-2 w-[420px] rounded-lg border border-white/12 bg-[#0a1020]/80 p-4 shadow-[0_24px_90px_rgba(0,0,0,0.34)] backdrop-blur-xl">
+        <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-3">
+          <div>
+            <p className="m-0 text-sm font-semibold text-white">Live call queue</p>
+            <p className="m-0 mt-1 text-xs text-slate-400">Agent is handling customer calls now</p>
+          </div>
+          <span className="inline-flex items-center gap-2 rounded-full border border-emerald-300/25 bg-emerald-300/10 px-3 py-1 text-xs font-bold text-emerald-200">
+            <span className="size-2 rounded-full bg-emerald-300" />
+            Online
+          </span>
+        </div>
+
+        <div className="mt-4 grid gap-3">
+          {liveCallRows.map((row) => (
+            <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 rounded-md border border-white/8 bg-white/[0.04] p-3" key={row.caller}>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <AudioBars />
+                  <strong className="truncate text-sm font-semibold text-white">{row.caller}</strong>
+                </div>
+                <p className="m-0 mt-2 truncate text-xs text-slate-400">{row.intent}</p>
+              </div>
+              <div className="text-right">
+                <span className="rounded-full bg-cyan-300/12 px-2.5 py-1 text-xs font-semibold text-cyan-200">
+                  {row.status}
+                </span>
+                <p className="m-0 mt-2 text-xs text-slate-500">{row.time}</p>
+              </div>
+            </div>
           ))}
         </div>
-        {orbitDots.map((dot, index) => (
-          <span
-            className="home-orbit-dot absolute rounded-full bg-white shadow-[0_0_0_1px_rgba(0,184,196,0.18),0_0_24px_rgba(0,184,196,0.28)]"
-            key={`orbit-${index}`}
-            style={dot}
-          />
-        ))}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(255,255,255,0.92)_0%,rgba(255,255,255,0.72)_30%,rgba(255,255,255,0.18)_60%,rgba(255,255,255,0)_100%)]" />
-      </div>
-
-      <div className="relative z-10 grid min-h-[460px] content-center justify-items-center px-5 py-12 text-center sm:px-8">
-        <div className="inline-flex items-center gap-3 rounded-full border border-cyan-100 bg-white/90 px-4 py-2 shadow-[0_12px_32px_rgba(0,184,196,0.10)]">
-          <span className="grid size-10 place-items-center rounded-full bg-cyan-400 text-sm font-black text-white shadow-[0_10px_28px_rgba(0,184,196,0.24)]">
-            AI
-          </span>
-          <span className="text-sm font-black tracking-[0.18em] text-cyan-700">AI VOICE PLATFORM</span>
-        </div>
-
-        <div className="relative mt-10 w-full max-w-[780px]">
-          <div className="absolute left-1/2 top-6 h-40 w-[72%] -translate-x-1/2 rounded-full bg-cyan-200/35 blur-3xl" />
-          <div className="relative mx-auto grid max-w-[620px] gap-4 rounded-[26px] border border-cyan-100 bg-white/88 p-5 text-left shadow-[0_24px_70px_rgba(15,23,42,0.10)] backdrop-blur sm:p-6">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <span className="text-xs font-bold uppercase tracking-[0.16em] text-cyan-700">Live agent builder</span>
-                <h2 className="m-0 mt-2 text-xl font-black text-slate-950">Customer Support Agent</h2>
-              </div>
-              <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">Live</span>
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-3">
-              {["Listen", "Understand", "Action"].map((item, index) => (
-                <div className="rounded-2xl border border-cyan-100 bg-cyan-50/80 p-4" key={item}>
-                  <span className="grid size-9 place-items-center rounded-xl bg-white text-sm font-black text-cyan-700 shadow-sm">
-                    {index + 1}
-                  </span>
-                  <strong className="mt-4 block text-sm font-black text-slate-900">{item}</strong>
-                  <span className="mt-1 block text-xs leading-5 text-slate-500">
-                    {index === 0 ? "Realtime voice" : index === 1 ? "Intent and context" : "CRM and handoff"}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            <div className="rounded-2xl border border-cyan-100 bg-white p-4">
-              <div className="flex h-20 items-center justify-center gap-1.5">
-                {[30, 46, 62, 78, 54, 88, 68, 50, 72, 42, 58, 36].map((height, index) => (
-                  <span
-                    className="home-audio-bar w-2 rounded-full bg-cyan-400"
-                    key={`${height}-${index}`}
-                    style={{ height, animationDelay: `${index * 90}ms` }}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="pointer-events-none absolute -right-2 top-20 hidden w-44 rounded-2xl border border-cyan-100 bg-white/92 p-4 text-left shadow-[0_18px_50px_rgba(15,23,42,0.12)] sm:block">
-            <span className="text-xs font-bold uppercase tracking-wider text-cyan-700">Next action</span>
-            <strong className="mt-2 block text-sm text-slate-900">Book appointment</strong>
-            <span className="mt-2 block text-xs leading-5 text-slate-500">Calendar slot found</span>
-          </div>
-
-          <div className="pointer-events-none absolute -left-2 bottom-8 hidden w-44 rounded-2xl border border-cyan-100 bg-white/92 p-4 text-left shadow-[0_18px_50px_rgba(15,23,42,0.12)] sm:block">
-            <span className="text-xs font-bold uppercase tracking-wider text-cyan-700">Call summary</span>
-            <strong className="mt-2 block text-sm text-slate-900">Ready in CRM</strong>
-            <span className="mt-2 block text-xs leading-5 text-slate-500">Transcript attached</span>
-          </div>
-        </div>
       </div>
     </div>
-  );
-}
-
-function MetricsStrip() {
-  return (
-    <div className="grid overflow-hidden rounded-lg border border-cyan-100 bg-white shadow-[0_14px_36px_rgba(15,23,42,0.08)] sm:grid-cols-4">
-      {metrics.map(([value, label]) => (
-        <div className="border-b border-cyan-100 px-5 py-5 last:border-b-0 sm:border-r sm:border-b-0 sm:last:border-r-0" key={label}>
-          <strong className="block text-2xl font-black text-slate-950">{value}</strong>
-          <span className="text-sm font-bold text-slate-500">{label}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function CompanyStrip() {
-  return (
-    <section className="py-10 text-center" aria-label="Companies using AI Voice Platform">
-      <h2 className="m-0 text-2xl font-black text-slate-950">
-        Trusted by teams building better customer conversations
-      </h2>
-      <div className="mx-auto mt-8 flex max-w-5xl flex-wrap justify-center gap-3">
-        {companyNames.map((company) => (
-          <span
-            className="inline-flex min-h-11 min-w-max items-center rounded-full border border-cyan-100 bg-white px-5 text-xs font-black uppercase text-slate-700 shadow-sm"
-            key={company}
-          >
-            {company}
-          </span>
-        ))}
-      </div>
-    </section>
   );
 }
 
 export function HeroSection() {
   return (
-    <section id="product" className="relative mx-auto grid w-full max-w-[1540px] gap-8 overflow-hidden px-4 pt-28 sm:px-6 lg:px-8">
-      <div className="pointer-events-none absolute left-1/2 top-20 h-72 w-72 -translate-x-1/2 rounded-full bg-cyan-200/30 blur-3xl" />
-      <div className="relative mx-auto grid w-full max-w-[1320px] gap-8">
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(520px,1.15fr)] lg:items-center">
-          <div className="max-w-2xl">
-            <span className="inline-flex rounded-full border border-cyan-100 bg-white px-4 py-2 text-sm font-black uppercase tracking-[0.16em] text-cyan-700 shadow-sm">
-              Voice AI for every call
-            </span>
-            <h1 className="mt-6 mb-0 text-[clamp(2.45rem,5.8vw,5.8rem)] leading-[0.98] font-black text-slate-950">
-              AI voice agents that answer, understand, and act.
-            </h1>
-            <p className="mt-6 mb-0 max-w-xl text-base leading-8 text-slate-600 sm:text-lg">
-              Build multilingual agents for support, sales, scheduling, reminders, and customer follow-ups from one clean workspace.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <a
-                className="rounded-full bg-cyan-400 px-7 py-4 text-sm font-black text-white shadow-[0_16px_36px_rgba(0,184,196,0.26)] hover:bg-cyan-500"
-                href="/dashboard"
-              >
-                Build an agent
-              </a>
-              <a
-                className="rounded-full border border-cyan-200 bg-white px-7 py-4 text-sm font-black text-cyan-800 shadow-sm hover:bg-cyan-50"
-                href="#platform"
-              >
-                Explore platform
-              </a>
-            </div>
+    <section
+      id="product"
+      className="relative overflow-hidden bg-[#111827] px-4 pb-14 pt-32 text-white sm:px-6 lg:px-8 lg:pb-20 lg:pt-40"
+    >
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/50 to-transparent" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,13,27,0.30)_0%,rgba(17,24,39,0.00)_55%,rgba(17,24,39,1)_100%)]" />
+      <div className="absolute inset-0 opacity-[0.16] [background-image:linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] [background-size:64px_64px]" />
+
+      <div className="relative mx-auto grid w-full min-w-0 max-w-[1500px] gap-12 lg:grid-cols-[minmax(0,0.95fr)_minmax(520px,1.05fr)] lg:items-center">
+        <div className="min-w-0 max-w-3xl">
+          <div className="flex flex-wrap items-center gap-3 text-sm font-bold text-slate-300">
+            <span>5/5 in G2</span>
+            <span className="text-cyan-300" aria-hidden="true">*****</span>
           </div>
 
-          <FloatingDotHero />
+          <h1 className="m-0 mt-10 max-w-full text-4xl font-semibold leading-tight text-white sm:text-6xl sm:leading-none 2xl:text-7xl">
+            AI Phone Agents for
+            <span className="mt-3 block bg-gradient-to-r from-cyan-300 via-teal-200 to-sky-400 bg-clip-text text-transparent">
+              <span className="block sm:inline">Every Customer</span>
+              <span className="block sm:inline"> Call</span>
+            </span>
+          </h1>
+
+          <p className="m-0 mt-8 max-w-2xl text-lg leading-8 text-slate-200 sm:text-xl">
+            Book appointments, qualify leads, answer after-hours calls, route urgent requests, and sync call outcomes into your workflow without missing valuable conversations.
+          </p>
+
+          <div className="mt-10 flex flex-wrap gap-4">
+            <a
+              className="inline-flex min-h-14 items-center justify-center rounded-lg bg-[#08b8c8] px-8 text-base font-extrabold text-slate-950 shadow-[0_18px_48px_rgba(8,184,200,0.24)] hover:bg-cyan-300"
+              href="/dashboard"
+            >
+              Try for free
+            </a>
+            <a
+              className="inline-flex min-h-14 items-center justify-center rounded-lg border border-white/16 bg-white/5 px-8 text-base font-extrabold text-white hover:bg-white/10"
+              href="#contact"
+            >
+              Contact sales
+            </a>
+          </div>
+
+          <div className="mt-12 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4">
+            {heroSignals.map(([value, label]) => (
+              <div className="rounded-lg border border-white/10 bg-white/[0.04] p-4" key={label}>
+                <strong className="block text-2xl font-extrabold text-white">{value}</strong>
+                <span className="mt-1 block text-xs font-semibold text-slate-400">{label}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <MetricsStrip />
-        <CompanyStrip />
+        <HeroConsole />
+      </div>
+
+      <div className="relative mx-auto mt-14 grid max-w-[1500px] gap-3 border-t border-white/10 pt-5 sm:grid-cols-2 lg:hidden">
+        {customerNames.slice(0, 6).map((name) => (
+          <span className="rounded-lg border border-white/10 bg-white/[0.04] px-4 py-3 text-center text-lg font-extrabold text-slate-400" key={name}>
+            {name}
+          </span>
+        ))}
       </div>
 
       <style>{`
-        @keyframes home-wave-float {
-          0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-          50% { transform: translate3d(0, -14px, 0) scale(1.35); }
-        }
-
-        @keyframes home-orbit-float {
-          0%, 100% { transform: translate3d(0, 0, 0); opacity: 0.65; }
-          50% { transform: translate3d(10px, -18px, 0); opacity: 1; }
-        }
-
-        @keyframes home-audio-pulse {
-          0%, 100% { transform: scaleY(0.58); opacity: 0.55; }
+        @keyframes hero-audio-pulse {
+          0%, 100% { transform: scaleY(0.55); opacity: 0.45; }
           50% { transform: scaleY(1); opacity: 1; }
         }
 
-        .home-wave-dot {
-          animation: home-wave-float var(--duration, 6s) ease-in-out infinite;
-        }
-
-        .home-orbit-dot {
-          animation: home-orbit-float var(--duration, 8s) ease-in-out infinite;
-        }
-
-        .home-audio-bar {
-          animation: home-audio-pulse 1.2s ease-in-out infinite;
+        .hero-audio-bar {
+          animation: hero-audio-pulse 1.1s ease-in-out infinite;
           transform-origin: center;
         }
       `}</style>
