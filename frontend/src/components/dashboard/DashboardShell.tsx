@@ -3512,7 +3512,7 @@ export function DashboardShell() {
   if (!session) {
     return (
       <main className="app-strong grid min-h-screen place-items-center gap-3 bg-[#f8f6ff]">
-        <span className="size-9 animate-spin rounded-full border-3 border-[#d5edf0] border-t-[#0891b2]" />
+        <span className="size-9 animate-spin rounded-full border-3 border-[#ded6f2] border-t-[#6b35e8]" />
         Loading voice agents
       </main>
     );

@@ -2,10 +2,11 @@ export const siteConfig = {
   name: "AI Voice Platform",
   description: "Realtime speech intelligence for AI voice experiences.",
   headerLinks: [
-    { href: "/", label: "Home" },
     { href: "/#product", label: "Product", hasMenu: true },
     { href: "/#pricing", label: "Pricing" },
     { href: "/#business", label: "For Business", hasMenu: true },
+    { href: "/#developers", label: "For Developers", hasMenu: true },
+    { href: "/#resources", label: "Resources", hasMenu: true },
     { href: "/#company", label: "Company", hasMenu: true },
   ],
   headerActions: [
@@ -14,9 +15,9 @@ export const siteConfig = {
   ],
   productMenu: {
     featured: {
-      href: "/product",
-      title: "Explore Product",
-      body: "Build, deploy, and improve production voice agents from one connected workspace.",
+      href: "/#pricing",
+      title: "See Pricing",
+      body: "See how AI Voice Platform helps support and sales teams automate calls at scale without losing quality.",
     },
     groups: [
       {
@@ -49,9 +50,9 @@ export const siteConfig = {
   },
   businessMenu: {
     featured: {
-      href: "/business",
-      title: "For Business",
-      body: "Explore proven voice workflows for revenue, support, scheduling, and operations teams.",
+      href: "/#contact",
+      title: "Certified Partner",
+      body: "See how AI Voice Platform helps support and sales teams automate calls at scale without losing quality.",
     },
     columns: [
       {
@@ -78,11 +79,11 @@ export const siteConfig = {
       },
     ],
     story: {
-      href: "/#contact",
-      title: "Plan your rollout",
-      body: "Map your highest-volume calls, integrations, and human handoff rules with our team.",
+      href: "/#resources",
+      title: "Customer Stories",
+      body: "See how leading teams use AI Voice Platform to transform customer calls and drive real results.",
     },
-    cta: { href: "/#contact", label: "Contact Sales" },
+    cta: { href: "/#contact", label: "Certified Partner" },
   },
   developersMenu: {
     featured: {
@@ -146,7 +147,7 @@ export const siteConfig = {
   },
   companyMenu: {
     featured: {
-      href: "/about",
+      href: "/#company",
       title: "About Us",
       body: "See how leading teams use AI Voice Platform to transform customer calls and drive real results.",
     },
@@ -169,16 +170,16 @@ export const siteConfig = {
     {
       title: "Company",
       links: [
-        { href: "/business", label: "For Business" },
-        { href: "/about", label: "About" },
-        { href: "/career", label: "Careers" },
+        { href: "/#business", label: "For Business" },
+        { href: "/#company", label: "About" },
+        { href: "/#resources", label: "Resources" },
       ],
     },
     {
       title: "Support",
       links: [
         { href: "mailto:hello@aivoiceplatform.com", label: "Contact" },
-        { href: "/#platform", label: "Platform" },
+        { href: "/#resources", label: "Documentation" },
         { href: "/#company", label: "Privacy" },
       ],
     },

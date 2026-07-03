@@ -24,7 +24,7 @@ const featureStackCards = [
     title: "Lead Qualification",
     tag: "Revenue conversations",
     copy: "Ask the right questions, detect buying intent, capture requirements, and route hot prospects to sales instantly.",
-    accent: "#0891b2",
+    accent: "#8b5cf6",
     visual: "lead",
     imageUrl:
       "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=900&q=80",
@@ -78,7 +78,7 @@ const featureStackCards = [
     title: "Agent Control Tower",
     tag: "Operations hub",
     copy: "Manage call flows, routing, escalation rules, agent behavior, and connected workflows from one command center.",
-    accent: "#06b6d4",
+    accent: "#d08cff",
     visual: "control",
     imageUrl:
       "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80",
@@ -105,7 +105,7 @@ const voiceAgentUseCards = [
     copy: "Agents handle interruptions, ask follow-up questions, and respond with the right tone for support, sales, and scheduling calls.",
     stat: "Human",
     label: "style",
-    accent: "#0e7490",
+    accent: "#8b5cf6",
     layout: "xl:col-span-2",
     visual: "conversation",
     chips: ["Understands context", "Speaks naturally", "Confirms details"],

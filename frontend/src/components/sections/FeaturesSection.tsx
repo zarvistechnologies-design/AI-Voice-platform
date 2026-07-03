@@ -58,7 +58,7 @@ export function FeaturesSection() {
         aria-label="Live voice demo"
       >
         <div>
-          <p className="m-0 text-xs font-black uppercase text-cyan-300">Live voice demo</p>
+          <p className="m-0 text-xs font-black uppercase text-fuchsia-300">Live voice demo</p>
           <h2 className="mt-3 mb-0 text-[clamp(2rem,5vw,4rem)] leading-none font-black">
             Turn any script into polished audio before you ship.
           </h2>
@@ -67,7 +67,7 @@ export function FeaturesSection() {
           <div className="grid gap-2">
             <label className="text-sm font-black" htmlFor="demo-text">Script</label>
             <input
-              className="min-h-12 rounded-lg border border-white/15 bg-black/20 px-3.5 text-white outline-none placeholder:text-white/40 focus:border-cyan-300"
+              className="min-h-12 rounded-lg border border-white/15 bg-black/20 px-3.5 text-white outline-none placeholder:text-white/40 focus:border-fuchsia-300"
               id="demo-text"
               type="text"
               placeholder="Type any text here..."
@@ -83,7 +83,7 @@ export function FeaturesSection() {
           <div className="flex h-10 items-center justify-center gap-1" aria-hidden="true">
             {Array.from({ length: 12 }).map((_, index) => (
               <span
-                className={`block w-1 rounded-full bg-cyan-300 ${miniWaveHeights[index]}`}
+                className={`block w-1 rounded-full bg-fuchsia-300 ${miniWaveHeights[index]}`}
                 key={index}
               />
             ))}
@@ -93,7 +93,7 @@ export function FeaturesSection() {
 
       <section className="grid gap-8" id="features">
         <div className="max-w-3xl">
-          <p className="m-0 text-xs font-black uppercase text-cyan-300">Features</p>
+          <p className="m-0 text-xs font-black uppercase text-fuchsia-300">Features</p>
           <h2 className="mt-3 mb-0 text-[clamp(2rem,5vw,4rem)] leading-none font-black">
             Everything needed to build clear, natural voice experiences.
           </h2>
@@ -109,7 +109,7 @@ export function FeaturesSection() {
               key={feature.title}
             >
               <span
-                className="grid size-10 place-items-center rounded-lg bg-cyan-300 font-black text-slate-950"
+                className="grid size-10 place-items-center rounded-lg bg-fuchsia-300 font-black text-[#26063b]"
                 aria-hidden="true"
               >
                 {feature.icon}
@@ -123,7 +123,7 @@ export function FeaturesSection() {
 
       <section className="grid gap-8" aria-label="How it works">
         <div className="max-w-3xl">
-          <p className="m-0 text-xs font-black uppercase text-cyan-300">How it works</p>
+          <p className="m-0 text-xs font-black uppercase text-fuchsia-300">How it works</p>
           <h2 className="mt-3 mb-0 text-[clamp(2rem,5vw,4rem)] leading-none font-black">
             From text to finished voice in four simple moves.
           </h2>
@@ -132,7 +132,7 @@ export function FeaturesSection() {
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {workflowSteps.map((step, index) => (
             <article className="border-t border-white/20 py-5" key={step.title}>
-              <strong className="text-sm text-cyan-300">
+              <strong className="text-sm text-fuchsia-300">
                 {String(index + 1).padStart(2, "0")}
               </strong>
               <h3 className="my-3 text-xl font-black">{step.title}</h3>
@@ -147,7 +147,7 @@ export function FeaturesSection() {
         id="business"
       >
         <div className="max-w-3xl">
-          <p className="m-0 text-xs font-black uppercase text-cyan-700">Built for teams</p>
+          <p className="m-0 text-xs font-black uppercase text-purple-700">Built for teams</p>
           <h2 className="mt-3 mb-0 text-[clamp(2rem,5vw,4rem)] leading-none font-black">
             One voice layer for every workflow that needs to speak.
           </h2>
@@ -167,7 +167,7 @@ export function FeaturesSection() {
         id="developers"
       >
         <div>
-          <p className="m-0 text-xs font-black uppercase text-cyan-300">API access</p>
+          <p className="m-0 text-xs font-black uppercase text-fuchsia-300">API access</p>
           <h2 className="mt-3 mb-4 text-[clamp(2rem,5vw,4rem)] leading-none font-black">
             Ship voice into your product with controls your team can trust.
           </h2>
@@ -180,7 +180,7 @@ export function FeaturesSection() {
           className="grid gap-4 overflow-x-auto rounded-lg border border-white/15 bg-black/40 p-5 font-mono text-sm"
           aria-label="API example"
         >
-          <span className="font-black text-cyan-300">POST /v1/audio/speech</span>
+          <span className="font-black text-fuchsia-300">POST /v1/audio/speech</span>
           <code className="text-[#dcc6f2]">{`{ voice: "aria", language: "en", speed: 1.0 }`}</code>
         </div>
       </section>

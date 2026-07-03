@@ -37,7 +37,7 @@ export function VoicePreview() {
       >
         {Array.from({ length: 18 }).map((_, index) => (
           <span
-            className={`block w-1.5 rounded-full bg-gradient-to-t from-cyan-700 to-cyan-300 ${waveHeights[index]}`}
+            className={`block w-1.5 rounded-full bg-gradient-to-t from-purple-700 to-fuchsia-300 ${waveHeights[index]}`}
             key={index}
           />
         ))}
@@ -58,7 +58,7 @@ export function VoicePreview() {
         <p className="m-0 rounded-lg bg-white/5 p-3.5 leading-6 text-[#dcc6f2]">
           <strong className="text-white">Customer:</strong> Can I reschedule my appointment?
         </p>
-        <p className="m-0 rounded-lg bg-cyan-600/15 p-3.5 leading-6 text-cyan-50">
+        <p className="m-0 rounded-lg bg-purple-600/15 p-3.5 leading-6 text-[#dcc6f2]">
           <strong className="text-white">AI Agent:</strong> Absolutely. I found three open times for
           you today.
         </p>
