@@ -68,7 +68,7 @@ export function ThemeSwitcher({
         <button
           className={`grid size-9 place-items-center rounded-md border-0 transition ${
             preference === option.value
-              ? "bg-purple-600 text-white"
+              ? "bg-cyan-600 text-white"
               : "bg-transparent text-white/60 hover:bg-white/10 hover:text-white"
           }`}
           type="button"

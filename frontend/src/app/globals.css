@@ -40,7 +40,6 @@
   --app-color-muted: #697180;
   --app-color-label: #5f6675;
   --app-color-accent: #00b8c4;
-  --app-color-purple: #6b35e8;
   --app-text-caption: 0.75rem;
   --app-text-body: 0.875rem;
   --app-text-title: 1.25rem;
@@ -152,11 +151,11 @@
 
 @layer components {
   .home-page-background {
-    background: #ffffff;
+    background: #111827;
   }
 
   .dark .home-page-background {
-    background: #ffffff;
+    background: #111827;
   }
 
   .app-display-title {
