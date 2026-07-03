@@ -2,6 +2,7 @@ import { getAuthHeaders, getSession } from "@/lib/auth";
 import { API_URL } from "@/lib/apiBase";
 
 const privateVoiceInfrastructurePattern = /(?:livekit|vapi|retell|millis(?:\.ai|ai)?|vobiz|(?:wss?|sips?):(?:\/\/)?|(?:room|dispatch|worker|participant|trunk)[ _-]?(?:name|id|sid)\b)/i;
+const genericCallFailureMessage = "Call ended before the agent could finish.";
 
 export function publicVoiceMessage(value: unknown, fallback = "Voice service request failed.") {
   const message = value instanceof Error ? value.message : typeof value === "string" ? value : "";
@@ -476,6 +477,27 @@ export type CallsResponse = {
   calls: CallRecord[];
   pagination: { page: number; limit: number; total: number; pages: number };
 };
+
+function publicCallEndReason(value: string) {
+  if (!value) return "";
+  if (value === "call_ended_unexpectedly") return genericCallFailureMessage;
+  return publicVoiceMessage(value, genericCallFailureMessage);
+}
+
+function sanitizeCallRecord(call: CallRecord): CallRecord {
+  return {
+    ...call,
+    endReason: publicCallEndReason(call.endReason),
+    errorMessage: call.errorMessage ? publicVoiceMessage(call.errorMessage, genericCallFailureMessage) : "",
+  };
+}
+
+function sanitizeCallsResponse(response: CallsResponse): CallsResponse {
+  return {
+    ...response,
+    calls: response.calls.map(sanitizeCallRecord),
+  };
+}
 
 export type AgentDispatchHealth = {
   configured: boolean;
@@ -999,9 +1021,13 @@ export const voiceApi = {
     if (input.maxDuration) query.set("maxDuration", String(input.maxDuration));
     query.set("page", String(input.page ?? 1));
     query.set("limit", String(input.limit ?? 20));
-    return request<CallsResponse>(`/calls?${query.toString()}`);
+    return request<CallsResponse>(`/calls?${query.toString()}`).then(sanitizeCallsResponse);
   },
-  call: (callId: string) => request<{ call: CallRecord }>(`/calls/${callId}`),
+  call: (callId: string) =>
+    request<{ call: CallRecord }>(`/calls/${callId}`).then((data) => ({
+      ...data,
+      call: sanitizeCallRecord(data.call),
+    })),
   callRecordingBlob: async (callId: string) => {
     if (!getSession()) throw new Error("Sign in before playing call recordings.");
     const response = await fetch(`${API_URL}/api/voice/calls/${encodeURIComponent(callId)}/recording-file`, {
@@ -1029,7 +1055,7 @@ export const voiceApi = {
     const data = (await response.json().catch(() => null)) as ({ call: CallRecord; message?: string }) | null;
     if (!response.ok) throw new Error(publicVoiceMessage(data?.message, "Could not upload the web call recording."));
     if (!data?.call) throw new Error("Voice service returned an empty recording response.");
-    return data;
+    return { ...data, call: sanitizeCallRecord(data.call) };
   },
   exportCallsCsv: async () => {
     if (!getSession()) throw new Error("Sign in before exporting calls.");

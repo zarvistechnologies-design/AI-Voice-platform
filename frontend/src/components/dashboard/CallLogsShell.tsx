@@ -256,6 +256,9 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
       : "",
     call.ttsAudioSeconds ? `${Math.round(call.ttsAudioSeconds)} sec audio` : "",
   ].filter(Boolean).join(" / ");
+  const callErrorMessage = call.errorMessage
+    ? publicVoiceMessage(call.errorMessage, "Call ended before the agent could finish.")
+    : "";
   const costItems = [
     ["LLM", configuredStack(call.llmProvider, call.llmModel), llmUsage, cost?.pricing?.llm, cost?.llm ?? 0, billing?.breakdown.chargedLlm ?? 0],
     ["STT", configuredStack(call.sttProvider, call.sttModel), sttUsage, cost?.pricing?.stt, cost?.stt ?? 0, billing?.breakdown.chargedStt ?? 0],
@@ -338,10 +341,10 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
             ))}
           </section>
 
-          {call.errorMessage ? (
+          {callErrorMessage ? (
             <section className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
               <strong className="block">Call error</strong>
-              {call.errorMessage}
+              {callErrorMessage}
             </section>
           ) : null}
 
