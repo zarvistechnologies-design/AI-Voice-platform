@@ -138,6 +138,7 @@ export type ModelProvider = {
   provider: string;
   label: string;
   configured: boolean;
+  configurationError?: string;
   models: readonly string[];
   voices?: readonly string[];
   voiceProfiles?: readonly VoiceProfile[];

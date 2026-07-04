@@ -1843,6 +1843,8 @@ function ProviderRail({
       <div className="flex gap-1 overflow-x-auto sm:grid sm:overflow-visible">
         {providers.map((provider) => {
           const active = provider.provider === selected;
+          const disabled = !provider.configured;
+          const statusText = provider.configurationError ?? (provider.configured ? "Connected" : "Not connected");
           return (
             <button
               key={provider.provider}
@@ -1850,14 +1852,18 @@ function ProviderRail({
                 active
                   ? "border-[#00b8c4] bg-[#ecfeff] text-[#006f78]"
                   : "border-transparent text-[#64748b] hover:bg-white hover:text-[#0f172a]"
-              } ${provider.configured ? "" : "opacity-60"}`}
+              } ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
               type="button"
               aria-pressed={active}
-              onClick={() => onSelect(provider.provider)}
+              disabled={disabled}
+              title={statusText}
+              onClick={() => {
+                if (!disabled) onSelect(provider.provider);
+              }}
             >
               <span className="block text-sm font-semibold">{provider.label}</span>
-              <span className={`mt-1 block text-xs font-medium ${provider.configured ? "text-[#059669]" : "text-[#b45309]"}`}>
-                {provider.configured ? "Connected" : "Not connected"}
+              <span className={`mt-1 block truncate text-xs font-medium ${provider.configured ? "text-[#059669]" : "text-[#b45309]"}`}>
+                {statusText}
               </span>
             </button>
           );
