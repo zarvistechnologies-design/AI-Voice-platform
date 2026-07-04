@@ -3572,7 +3572,7 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
   }
 
   return (
-    <main className="grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#f6f8fc] text-[#111827] lg:grid-cols-[64px_minmax(0,1fr)]">
+    <main className="agent-vapi-theme grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#f6f8fc] text-[#111827] lg:grid-cols-[64px_minmax(0,1fr)]">
       <DashboardSidebar
         activeLabel="Voice Agents"
         userInitials={getInitials(session.name)}
