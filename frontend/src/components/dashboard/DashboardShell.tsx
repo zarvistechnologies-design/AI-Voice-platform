@@ -3951,7 +3951,7 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
                     <label className="app-label grid gap-2">
                       <span>Instructions / prompt</span>
                       <textarea
-                        className="app-control-text min-h-320px resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10"
+                        className="app-control-text h-[420px] min-h-80 max-h-[70vh] resize-y overflow-y-auto rounded-lg border border-[#dfe3ea] bg-white p-3 leading-6 text-black outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10 lg:h-[520px]"
                         value={selectedAgent.prompt}
                         onChange={(event) => updateSelectedAgent({ prompt: event.target.value })}
                       />
