@@ -2669,7 +2669,7 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
     },
   ];
   const liveAgentCount = agentList.filter((agent) => agent.status === "Live").length;
-  const agentStatTone = "border-[#99f6e8] bg-[#ecfeff] text-[#008996]";
+  const agentStatTone = "border-[#dce8f2] bg-white text-[#0f766e] shadow-[0_10px_28px_rgba(15,23,42,0.05)]";
   const agentHeroStats = [
     {
       label: "Status",
@@ -2766,11 +2766,11 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
 ></script>`;
   const toast = notice ? noticeToast(notice) : null;
   const contentGridClass = showTemplateSection
-    ? "mx-auto grid w-full max-w-1500px min-w-0 gap-4 px-4 pb-5 sm:px-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:px-8 2xl:grid-cols-[280px_minmax(0,1fr)_300px]"
-    : "mx-auto grid w-full max-w-1500px min-w-0 gap-4 px-4 pb-5 sm:px-6 lg:grid-cols-[minmax(0,1fr)] lg:px-8 2xl:grid-cols-[minmax(0,1fr)_300px]";
+    ? "mx-auto grid w-full max-w-[1520px] min-w-0 gap-6 px-4 pb-8 sm:px-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:px-8 2xl:grid-cols-[280px_minmax(0,1fr)_340px]"
+    : "mx-auto grid w-full max-w-[1520px] min-w-0 gap-6 px-4 pb-8 sm:px-6 lg:grid-cols-[minmax(0,1fr)] lg:px-8 2xl:grid-cols-[minmax(0,1fr)_360px]";
   const runtimeAsideClass = showTemplateSection
-    ? "grid min-w-0 content-start gap-4 xl:col-span-2 xl:grid-cols-2 2xl:col-span-1 2xl:grid-cols-1"
-    : "grid min-w-0 content-start gap-4 xl:grid-cols-2 2xl:grid-cols-1";
+    ? "grid min-w-0 content-start gap-5 xl:col-span-2 xl:grid-cols-2 2xl:col-span-1 2xl:grid-cols-1"
+    : "grid min-w-0 content-start gap-5 xl:grid-cols-2 2xl:grid-cols-1";
 
   useEffect(() => {
     return () => {
@@ -3583,9 +3583,9 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
         setShowUserSidebar={setShowUserSidebar}
       />
 
-      <section className="grid min-w-0 content-start gap-5">
-        <header className="border-b border-[#99f6e8] bg-white px-4 py-4 sm:px-6 lg:px-8">
-          <div className="mx-auto grid w-full max-w-1500px gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+      <section className="grid min-w-0 content-start gap-6">
+        <header className="border-b border-[#e6edf5] bg-white px-4 py-5 shadow-[0_1px_0_rgba(15,23,42,0.02)] sm:px-6 lg:px-8">
+          <div className="mx-auto grid w-full max-w-[1520px] gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
             <div className="min-w-0">
               <span className="app-label text-[#00b8c4]">{session.organization?.name ?? "Workspace"}</span>
               <div className="mt-1 flex min-w-0 items-center gap-2">
@@ -3663,11 +3663,11 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
             </button>
             </div>
           </div>
-          <div className="mx-auto grid w-full max-w-1500px gap-2 pt-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mx-auto grid w-full max-w-[1520px] gap-3 pt-5 sm:grid-cols-2 lg:grid-cols-4">
             {agentHeroStats.map((item) => (
-              <div className={`rounded-lg border px-3 py-2 ${item.tone}`} key={item.label}>
-                <span className="app-caption block text-current">{item.label}</span>
-                <strong className="block text-sm font-semibold leading-5">{item.value}</strong>
+              <div className={`rounded-lg border px-4 py-3 ${item.tone}`} key={item.label}>
+                <span className="app-caption block text-[#64748b]">{item.label}</span>
+                <strong className="block text-base font-semibold leading-6 text-[#0f172a]">{item.value}</strong>
               </div>
             ))}
           </div>
@@ -3675,8 +3675,8 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
 
         <section className={contentGridClass}>
           {showTemplateSection ? (
-          <aside className="min-w-0 overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm">
-            <div className="flex min-h-64px items-center justify-between border-b border-[#e5e7eb] bg-[#fbfdff] px-4">
+          <aside className="min-w-0 overflow-hidden rounded-lg border border-[#e4ebf3] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]">
+            <div className="flex min-h-16 items-center justify-between border-b border-[#edf2f7] bg-white px-4">
               <div>
                 <h2 className="app-section-title m-0">Agents</h2>
                 <span className="app-caption">{liveAgentCount} live / {agentList.length} total</span>
@@ -3692,7 +3692,7 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
               </button>
             </div>
 
-            <div className="grid gap-1.5 p-2">
+            <div className="grid gap-2 p-2.5">
               {agentList.map((agent) => {
                 const isActive = agent.id === selectedAgent.id;
                 const isRenaming = agent.id === renamingAgentId;
@@ -3701,7 +3701,7 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
                 return (
                   <div
                     className={`group grid w-full grid-cols-[36px_minmax(0,1fr)_auto] items-center gap-3 rounded-lg p-2.5 text-left transition ${
-                      isActive ? "bg-[#eef4ff] shadow-sm ring-1 ring-[#99f6e8]" : "hover:bg-[#f8fafc]"
+                      isActive ? "bg-[#f0fbfc] ring-1 ring-[#99f6e8]" : "hover:bg-[#f8fafc]"
                     }`}
                     key={agent.id}
                     role={isRenaming ? undefined : "button"}
@@ -3803,7 +3803,7 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
               })}
             </div>
 
-            <div className="grid gap-2 border-t border-[#e5e7eb] bg-[#f8fafc] p-3">
+            <div className="grid gap-2 border-t border-[#edf2f7] bg-[#f8fafc] p-3">
               <div>
                 <strong className="app-strong block">Start from template</strong>
                 <span className="app-caption">Support, scheduling, sales, and FAQ presets</span>
@@ -3830,22 +3830,22 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
           </aside>
           ) : null}
 
-          <section className="grid min-w-0 content-start gap-4">
-            <article className="min-w-0 overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm">
-              <div className="flex flex-col gap-3 border-b border-[#e5e7eb] bg-[#fbfdff] px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
+          <section className="grid min-w-0 content-start gap-5">
+            <article className="min-w-0 overflow-hidden rounded-lg border border-[#e4ebf3] bg-white shadow-[0_18px_46px_rgba(15,23,42,0.06)]">
+              <div className="flex flex-col gap-4 border-b border-[#edf2f7] bg-white px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                   <h2 className="app-section-title m-0">Agent builder</h2>
                   <span className="app-caption">
                     {selectedAgent.name} / {selectedAgent.team}
                   </span>
                 </div>
-                <div className="flex max-w-full gap-1 overflow-x-auto rounded-lg border border-[#dfe3ea] bg-white p-1">
+                <div className="flex max-w-full gap-1 overflow-x-auto rounded-lg border border-[#dfe7ef] bg-[#f6f8fb] p-1">
                   {tabs.map((tab) => (
                     <button
                       className={`app-button-text rounded-md px-3 py-1.5 transition ${
                         activeTab === tab.id
-                          ? "bg-[#00b8c4] text-white"
-                          : "text-[#64748b] hover:bg-white hover:text-[#111827]"
+                          ? "bg-white text-[#008996] shadow-sm"
+                          : "text-[#64748b] hover:bg-white/80 hover:text-[#111827]"
                       }`}
                       key={tab.id}
                       type="button"
@@ -3858,9 +3858,9 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
                 </div>
               </div>
 
-              <div className="bg-[#fbfdff] p-4">
+              <div className="bg-white p-5 sm:p-6">
                 {activeTab === "builder" ? (
-                  <div className="grid gap-4">
+                  <div className="grid gap-6">
                     <div className="hidden gap-3 lg:grid-cols-2">
                       <InputField
                         label="Agent name"
@@ -3874,19 +3874,19 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
                       />
                     </div>
 
-                    <section className="grid gap-3 rounded-lg border border-[#99f6e8] bg-white p-4 shadow-sm">
+                    <section className="grid gap-4 rounded-lg border border-[#e4ebf3] bg-[#f8fbff] p-4 sm:p-5">
                       <div className="flex flex-col gap-1">
                         <h3 className="app-section-title m-0">Voice stack</h3>
                         <span className="app-caption">
                           Click LLM, STT, or Voice to configure only that part of the stack.
                         </span>
                       </div>
-                      <div className="grid gap-3 lg:grid-cols-3">
+                      <div className="grid overflow-hidden rounded-lg border border-[#dfe7ef] bg-white lg:grid-cols-3">
                         <button
-                          className={`grid gap-2 rounded-lg border p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
+                          className={`grid min-h-28 gap-2 border-b border-[#e6edf5] p-5 text-left transition hover:bg-[#fafbff] lg:border-r lg:border-b-0 ${
                             openStackConfig === "llm"
-                              ? "border-[#7c3aed] bg-[#ede9fe] ring-2 ring-[#c4b5fd]"
-                              : "border-[#ddd6fe] bg-[#f5f3ff]"
+                              ? "bg-[#f6f3ff] shadow-[inset_3px_0_0_#7c3aed]"
+                              : "bg-white"
                           }`}
                           type="button"
                           aria-pressed={openStackConfig === "llm"}
@@ -3901,10 +3901,10 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
                           </span>
                         </button>
                         <button
-                          className={`grid gap-2 rounded-lg border p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
+                          className={`grid min-h-28 gap-2 border-b border-[#e6edf5] p-5 text-left transition hover:bg-[#f6feff] lg:border-r lg:border-b-0 ${
                             openStackConfig === "stt"
-                              ? "border-[#00b8c4] bg-[#ccfbf1] ring-2 ring-[#5eead4]"
-                              : "border-[#99f6e8] bg-[#ecfeff]"
+                              ? "bg-[#ecfeff] shadow-[inset_3px_0_0_#00b8c4]"
+                              : "bg-white"
                           }`}
                           type="button"
                           aria-pressed={openStackConfig === "stt"}
@@ -3919,10 +3919,10 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
                           </span>
                         </button>
                         <button
-                          className={`grid gap-2 rounded-lg border p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
+                          className={`grid min-h-28 gap-2 p-5 text-left transition hover:bg-[#f6fef9] ${
                             openStackConfig === "voice"
-                              ? "border-[#059669] bg-[#d1fae5] ring-2 ring-[#6ee7b7]"
-                              : "border-[#bbf7d0] bg-[#ecfdf5]"
+                              ? "bg-[#ecfdf5] shadow-[inset_3px_0_0_#059669]"
+                              : "bg-white"
                           }`}
                           type="button"
                           aria-pressed={openStackConfig === "voice"}
@@ -3942,7 +3942,7 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
                     <label className="app-label grid gap-2">
                       <span>Opening message</span>
                       <input
-                        className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10"
+                        className="app-control-text min-h-12 rounded-lg border border-[#d9e2ec] bg-white px-4 text-black shadow-[0_1px_2px_rgba(15,23,42,0.04)] outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10"
                         value={selectedAgent.firstMessage}
                         onChange={(event) => updateSelectedAgent({ firstMessage: event.target.value })}
                       />
@@ -3951,7 +3951,7 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
                     <label className="app-label grid gap-2">
                       <span>Instructions / prompt</span>
                       <textarea
-                        className="app-control-text h-[420px] min-h-80 max-h-[70vh] resize-y overflow-y-auto rounded-lg border border-[#dfe3ea] bg-white p-3 leading-6 text-black outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10 lg:h-[520px]"
+                        className="app-control-text h-[420px] min-h-80 max-h-[70vh] resize-y overflow-y-auto rounded-lg border border-[#d9e2ec] bg-white p-4 leading-6 text-black shadow-[0_1px_2px_rgba(15,23,42,0.04)] outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10 lg:h-[520px]"
                         value={selectedAgent.prompt}
                         onChange={(event) => updateSelectedAgent({ prompt: event.target.value })}
                       />
@@ -3975,8 +3975,8 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
                       />
                     ) : null}
 
-                    <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,1fr)_220px]">
-                      <div className="min-w-0 rounded-lg border border-[#e5e7eb] bg-white p-3">
+                    <div className="grid min-w-0 gap-4 lg:grid-cols-[minmax(0,1fr)_240px]">
+                      <div className="min-w-0 rounded-lg bg-[#f8fafc] px-4 py-3">
                         <span className="app-label block">Active runtime</span>
                         <strong className="app-strong block wrap-break-word">
                           {selectedAgent.pipelineMode === "realtime"
@@ -3984,7 +3984,7 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
                             : `${selectedAgent.sttProvider} -> ${selectedAgent.llmProvider} -> ${selectedAgent.ttsProvider}`}
                         </strong>
                       </div>
-                      <label className="app-label grid gap-2">
+                      <label className="app-label grid gap-2 rounded-lg bg-[#f8fafc] px-4 py-3">
                         <span>Creativity</span>
                         <input
                           className="accent-[#00b8c4]"
@@ -4842,7 +4842,7 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
                           </button>
                         </div>
 
-                        <pre className="m-0 max-h-220px overflow-auto rounded-lg bg-[#111827] p-3 text-xs leading-5 text-[#cbd5e1]">
+                        <pre className="m-0 max-h-[220px] overflow-auto rounded-lg bg-[#111827] p-3 text-xs leading-5 text-[#cbd5e1]">
                           {widgetEmbedCode}
                         </pre>
                       </article>
@@ -4858,7 +4858,7 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
                           </span>
                         </div>
 
-                        <div className="grid min-h-170px content-end rounded-lg border border-[#e5e7eb] bg-[#f8fafc] p-3">
+                        <div className="grid min-h-[170px] content-end rounded-lg border border-[#e5e7eb] bg-[#f8fafc] p-3">
                           <div className="justify-self-end rounded-lg border border-[#99f6e8] bg-white p-3 shadow-sm">
                             <div className="mb-3 flex items-center gap-2">
                               <span
@@ -4922,8 +4922,8 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
           </section>
 
           <aside className={runtimeAsideClass}>
-            <article className="min-w-0 overflow-hidden rounded-lg border border-[#dbe4f0] bg-white shadow-sm">
-              <div className="flex min-h-68px items-center justify-between gap-3 border-b border-[#99f6e8] bg-linear-to-r from-[#ecfeff] via-white to-[#ecfeff] px-4">
+            <article className="min-w-0 overflow-hidden rounded-lg border border-[#e4ebf3] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]">
+              <div className="flex min-h-[68px] items-center justify-between gap-3 border-b border-[#edf2f7] bg-white px-4">
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="relative flex size-2.5 shrink-0">
@@ -4944,20 +4944,20 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
               </div>
 
               <div className="grid gap-4 p-4">
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid gap-2">
                   {selectedRuntimeItems.map((item) => (
                     <span
-                      className="min-w-0 rounded-lg border border-[#99f6e8] bg-[#ecfeff] p-2.5"
+                      className="flex min-w-0 items-center justify-between gap-3 rounded-lg bg-[#f8fafc] px-3 py-2.5"
                       key={item.label}
                       title={item.label === "Region" && selectedRuntimeRegion ? formatVoiceRegion(selectedRuntimeRegion) : undefined}
                     >
-                      <span className="app-label block truncate">{item.label}</span>
-                      <strong className={`app-strong block truncate ${item.tone}`}>{item.value}</strong>
+                      <span className="app-label shrink-0 truncate">{item.label}</span>
+                      <strong className={`app-strong min-w-0 truncate text-right ${item.tone}`}>{item.value}</strong>
                     </span>
                   ))}
                 </div>
 
-                <div className="grid min-w-0 divide-y divide-[#eef2f7] rounded-lg border border-[#edf2f7] px-3">
+                <div className="grid min-w-0 divide-y divide-[#eef2f7] border-y border-[#eef2f7] px-1">
                   <span className="flex min-w-0 items-center justify-between gap-3 py-2.5">
                     <span className="app-caption shrink-0">AI service</span>
                     <strong className="app-strong min-w-0 truncate text-right" title={selectedRuntimeWorkerLabel}>
@@ -4998,7 +4998,7 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
               </div>
             </article>
 
-            <article className="overflow-hidden rounded-lg border border-[#dfe3ea] bg-white shadow-sm">
+            <article className="overflow-hidden rounded-lg border border-[#e4ebf3] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]">
               <div className="p-4">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div className="min-w-0">
@@ -5057,7 +5057,7 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
               </div>
             </article>
 
-            <article className="overflow-hidden rounded-lg border border-[#dfe3ea] bg-white shadow-sm">
+            <article className="overflow-hidden rounded-lg border border-[#e4ebf3] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]">
               <div className="p-4">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
