@@ -2692,6 +2692,44 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
       tone: agentStatTone,
     },
   ];
+  const voiceStackLatencyMs =
+    selectedRuntimeSnapshot?.latency.averageMs ?? selectedRuntimeSnapshot?.latency.latestMs;
+  const voiceStackLatencyValue =
+    typeof voiceStackLatencyMs === "number" && Number.isFinite(voiceStackLatencyMs)
+      ? Math.round(voiceStackLatencyMs).toLocaleString("en-IN")
+      : "1,250";
+  const voiceStackCards = [
+    {
+      id: "stt" as const,
+      label: "TRANSCRIBER",
+      dot: "bg-[#f97316]",
+      title: selectedAgent.pipelineMode === "realtime" ? "Native realtime" : `${selectedAgent.sttProvider} STT`,
+      provider: selectedAgent.pipelineMode === "realtime" ? selectedAgent.realtimeModel : selectedAgent.sttModel,
+      cost: selectedAgent.pipelineMode === "realtime" ? "Included" : "$0.02/min",
+      latency: "250ms",
+      accent: "text-[#008996]",
+    },
+    {
+      id: "llm" as const,
+      label: "MODEL",
+      dot: "bg-[#3b82f6]",
+      title: selectedAgent.pipelineMode === "realtime" ? `${selectedAgent.realtimeProvider} realtime` : `${selectedAgent.llmProvider} LLM`,
+      provider: selectedAgent.pipelineMode === "realtime" ? selectedAgent.realtimeModel : selectedAgent.llmModel,
+      cost: "$0.02/min",
+      latency: "600ms",
+      accent: "text-[#d97706]",
+    },
+    {
+      id: "voice" as const,
+      label: "VOICE",
+      dot: "bg-[#c026d3]",
+      title: selectedAgent.pipelineMode === "realtime" ? "Realtime voice" : `${selectedAgent.ttsProvider} TTS`,
+      provider: `${selectedAgent.voice}${selectedAgent.pipelineMode === "pipeline" ? ` / ${selectedAgent.ttsModel}` : ""}`,
+      cost: selectedAgent.pipelineMode === "realtime" ? "Included" : "$0.04/min",
+      latency: "400ms",
+      accent: "text-[#008996]",
+    },
+  ];
   const phoneAssigned = Boolean(selectedAgent.phone && selectedAgent.phone !== "Not assigned");
   const liveCallsEnabled = selectedAgent.status === "Live";
   const testCallsEnabled = selectedAgent.status !== "Paused" && selectedAgent.id !== "loading";
@@ -3874,68 +3912,64 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
                       />
                     </div>
 
-                    <section className="grid gap-4 rounded-lg border border-[#e4ebf3] bg-[#f8fbff] p-4 sm:p-5">
-                      <div className="flex flex-col gap-1">
-                        <h3 className="app-section-title m-0">Voice stack</h3>
-                        <span className="app-caption">
-                          Click LLM, STT, or Voice to configure only that part of the stack.
-                        </span>
+                    <section className="grid gap-5 rounded-lg border border-[#e2e8f0] bg-white p-5 shadow-[0_16px_36px_rgba(15,23,42,0.06)]">
+                      <div className="grid gap-5 xl:grid-cols-2">
+                        <div className="grid gap-2">
+                          <span className="app-label uppercase text-[#64748b]">Average cost</span>
+                          <div className="flex min-w-0 items-center gap-4">
+                            <strong className="text-2xl font-semibold leading-7 text-[#111827]">~$0.08<span className="text-base font-medium text-[#64748b]"> /min</span></strong>
+                            <span className="grid h-2 min-w-32 flex-1 grid-cols-[1.8fr_0.45fr_0.6fr_1fr] overflow-hidden rounded-full bg-[#eef2f7]">
+                              <span className="bg-[#14b8a6]" />
+                              <span className="bg-[#f97316]" />
+                              <span className="bg-[#3b82f6]" />
+                              <span className="bg-[#c026d3]" />
+                            </span>
+                          </div>
+                        </div>
+                        <div className="grid gap-2">
+                          <span className="app-label uppercase text-[#64748b]">Average latency</span>
+                          <div className="flex min-w-0 items-center gap-4">
+                            <strong className="text-2xl font-semibold leading-7 text-[#d97706]">~{voiceStackLatencyValue}<span className="text-base font-medium text-[#64748b]"> ms</span></strong>
+                            <span className="grid h-2 min-w-32 flex-1 grid-cols-[0.6fr_1.6fr_1.4fr_0.25fr] overflow-hidden rounded-full bg-[#eef2f7]">
+                              <span className="bg-[#f97316]" />
+                              <span className="bg-[#3b82f6]" />
+                              <span className="bg-[#c026d3]" />
+                              <span className="bg-[#22c55e]" />
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                      <div className="grid overflow-hidden rounded-lg border border-[#dfe7ef] bg-white lg:grid-cols-3">
-                        <button
-                          className={`grid min-h-28 gap-2 border-b border-[#e6edf5] p-5 text-left transition hover:bg-[#fafbff] lg:border-r lg:border-b-0 ${
-                            openStackConfig === "llm"
-                              ? "bg-[#f6f3ff] shadow-[inset_3px_0_0_#7c3aed]"
-                              : "bg-white"
-                          }`}
-                          type="button"
-                          aria-pressed={openStackConfig === "llm"}
-                          onClick={() => setOpenStackConfig("llm")}
-                        >
-                          <span className="app-label block text-[#6d28d9]">LLM</span>
-                          <strong className="app-strong block text-[#3b0764]">
-                            {selectedAgent.pipelineMode === "realtime" ? `${selectedAgent.realtimeProvider} realtime` : `${selectedAgent.llmProvider} LLM`}
-                          </strong>
-                          <span className="app-caption block truncate text-[#6b21a8]">
-                            {selectedAgent.pipelineMode === "realtime" ? selectedAgent.realtimeModel : selectedAgent.llmModel}
-                          </span>
-                        </button>
-                        <button
-                          className={`grid min-h-28 gap-2 border-b border-[#e6edf5] p-5 text-left transition hover:bg-[#f6feff] lg:border-r lg:border-b-0 ${
-                            openStackConfig === "stt"
-                              ? "bg-[#ecfeff] shadow-[inset_3px_0_0_#00b8c4]"
-                              : "bg-white"
-                          }`}
-                          type="button"
-                          aria-pressed={openStackConfig === "stt"}
-                          onClick={() => setOpenStackConfig("stt")}
-                        >
-                          <span className="app-label block text-[#008996]">STT</span>
-                          <strong className="app-strong block text-[#0c4a6e]">
-                            {selectedAgent.pipelineMode === "realtime" ? "Native realtime" : `${selectedAgent.sttProvider} STT`}
-                          </strong>
-                          <span className="app-caption block truncate text-[#008996]">
-                            {selectedAgent.pipelineMode === "realtime" ? selectedAgent.realtimeModel : selectedAgent.sttModel}
-                          </span>
-                        </button>
-                        <button
-                          className={`grid min-h-28 gap-2 p-5 text-left transition hover:bg-[#f6fef9] ${
-                            openStackConfig === "voice"
-                              ? "bg-[#ecfdf5] shadow-[inset_3px_0_0_#059669]"
-                              : "bg-white"
-                          }`}
-                          type="button"
-                          aria-pressed={openStackConfig === "voice"}
-                          onClick={() => setOpenStackConfig("voice")}
-                        >
-                          <span className="app-label block text-[#047857]">Voice</span>
-                          <strong className="app-strong block text-[#064e3b]">
-                            {selectedAgent.pipelineMode === "realtime" ? "Realtime voice" : `${selectedAgent.ttsProvider} TTS`}
-                          </strong>
-                          <span className="app-caption block truncate text-[#047857]">
-                            {selectedAgent.voice} {selectedAgent.pipelineMode === "pipeline" ? `/ ${selectedAgent.ttsModel}` : ""}
-                          </span>
-                        </button>
+
+                      <div className="grid gap-4 lg:grid-cols-3">
+                        {voiceStackCards.map((card) => (
+                          <button
+                            className={`grid min-h-40 gap-4 rounded-lg border border-[#e2e8f0] bg-[#f8fafc] p-4 text-left transition hover:-translate-y-0.5 hover:border-[#cbd5e1] hover:bg-white hover:shadow-[0_16px_34px_rgba(15,23,42,0.09)] ${
+                              openStackConfig === card.id ? "bg-white shadow-[inset_0_0_0_1px_#99f6e8,0_16px_34px_rgba(15,23,42,0.09)]" : ""
+                            }`}
+                            key={card.id}
+                            type="button"
+                            aria-pressed={openStackConfig === card.id}
+                            onClick={() => setOpenStackConfig(card.id)}
+                          >
+                            <span className="flex items-center justify-between gap-3">
+                              <span className="flex min-w-0 items-center gap-2">
+                                <span className={`size-2.5 shrink-0 rounded-full ${card.dot}`} />
+                                <span className="app-label truncate uppercase text-[#64748b]">{card.label}</span>
+                              </span>
+                              <span className="grid size-8 shrink-0 place-items-center rounded-md border border-[#dbe2ea] bg-white text-[#64748b]">
+                                <Icon icon="edit" />
+                              </span>
+                            </span>
+                            <span className="grid min-w-0 gap-1">
+                              <strong className="app-strong block truncate text-[#111827]">{card.title}</strong>
+                              <span className="app-caption block truncate text-[#64748b]">{card.provider}</span>
+                            </span>
+                            <span className="flex items-center gap-4">
+                              <span className="app-strong text-[#111827]">{card.cost}</span>
+                              <span className={`app-strong ${card.accent}`}>{card.latency}</span>
+                            </span>
+                          </button>
+                        ))}
                       </div>
                     </section>
 
