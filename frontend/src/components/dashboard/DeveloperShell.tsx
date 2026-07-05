@@ -140,10 +140,10 @@ function sampleCallResponse() {
       "to": "+918047280782",
       "direction": "inbound"
     },
-    "recording_url": "https://your-domain.com/api/v1/calls/call_id/recording",
+    "recording_url": "https://www.vozon.ai/api/v1/calls/call_id/recording",
     "recording": {
       "key": "recordings/inbound-...mp3",
-      "url": "https://your-domain.com/api/v1/calls/call_id/recording",
+      "url": "https://www.vozon.ai/api/v1/calls/call_id/recording",
       "status": "completed"
     },
     "chat": [
@@ -191,7 +191,7 @@ function sampleWebhookPayload() {
       "to": "+918047280782",
       "direction": "inbound"
     },
-    "recording_url": "https://your-domain.com/api/v1/calls/call_id/recording",
+    "recording_url": "https://www.vozon.ai/api/v1/calls/call_id/recording",
     "chat": [],
     "transcription_text": "Customer: Hello\\nAgent: Hi, how can I help?",
     "providers": {
