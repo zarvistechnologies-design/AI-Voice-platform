@@ -11,7 +11,6 @@ import {
   getSession,
   logoutSession,
   subscribeToSession,
-  validateStoredSession,
 } from "@/lib/auth";
 import {
   publicVoiceMessage,
@@ -606,7 +605,25 @@ const fallbackElevenLabsVoiceProfiles: VoiceProfile[] = [
   },
 ];
 
-const defaultGeminiRealtimeModel = "gemini-2.5-flash-native-audio-preview-12-2025";
+const defaultGeminiRealtimeModel = "gemini-2.5-flash-native-audio-latest";
+const geminiRealtimeModels = [defaultGeminiRealtimeModel];
+const defaultGeminiLlmModel = "gemini-2.5-flash";
+const geminiLlmModels = [
+  "gemini-3.5-flash",
+  "gemini-3.1-pro-preview",
+  "gemini-3.1-flash-lite",
+  "gemini-3-flash-preview",
+  "gemini-2.5-flash",
+  "gemini-2.5-pro",
+  "gemini-2.5-flash-lite",
+  "gemini-2.0-flash",
+];
+const defaultGeminiTtsModel = "gemini-2.5-flash-preview-tts";
+const geminiTtsModels = [
+  "gemini-2.5-flash-preview-tts",
+  "gemini-3.1-flash-tts-preview",
+  "gemini-2.5-pro-preview-tts",
+];
 const voiceSpeedRange = { min: 0.5, max: 2, step: 0.05, fallback: 1 };
 const voicePitchRange = { min: -10, max: 10, step: 1, fallback: 0 };
 const concurrentCallsRange = { min: 1, max: 100, step: 1, fallback: 1 };
@@ -659,7 +676,17 @@ const fallbackDeepgramSttModels = [
 
 function normalizeRealtimeModel(provider: RealtimeProvider, model: string) {
   if (provider !== "gemini") return model;
-  return model === defaultGeminiRealtimeModel ? model : defaultGeminiRealtimeModel;
+  return geminiRealtimeModels.includes(model) ? model : defaultGeminiRealtimeModel;
+}
+
+function normalizeGeminiLlmModel(provider: PipelineProvider, model: string) {
+  if (provider !== "gemini") return model;
+  return geminiLlmModels.includes(model) ? model : defaultGeminiLlmModel;
+}
+
+function normalizeGeminiTtsModel(provider: PipelineProvider, model: string) {
+  if (provider !== "gemini") return model;
+  return geminiTtsModels.includes(model) ? model : defaultGeminiTtsModel;
 }
 
 const fallbackSarvamRecommendedVoicesByLanguageCode: Record<string, readonly string[]> = {
@@ -717,11 +744,11 @@ function voicesByLanguageFromProfiles(
 const fallbackCatalog: ModelCatalog = {
   realtime: [
     { provider: "openai", label: "OpenAI Realtime", configured: true, models: ["gpt-realtime"], voices: ["alloy", "ash", "ballad", "coral", "echo", "sage", "shimmer", "verse", "marin", "cedar"] },
-    { provider: "gemini", label: "Gemini Live", configured: true, models: [defaultGeminiRealtimeModel], voices: ["Aoede"] },
+    { provider: "gemini", label: "Gemini Live", configured: true, models: geminiRealtimeModels, voices: ["Aoede"] },
   ],
   llm: [
     { provider: "openai", label: "OpenAI", configured: true, models: ["gpt-4.1-mini"] },
-    { provider: "gemini", label: "Gemini", configured: true, models: ["gemini-2.5-flash"] },
+    { provider: "gemini", label: "Gemini", configured: true, models: geminiLlmModels },
     { provider: "sarvam", label: "Sarvam", configured: true, models: ["sarvam-30b"] },
   ],
   stt: [
@@ -750,7 +777,7 @@ const fallbackCatalog: ModelCatalog = {
   ],
   tts: [
     { provider: "openai", label: "OpenAI", configured: true, models: ["gpt-4o-mini-tts"], voices: ["alloy"] },
-    { provider: "gemini", label: "Gemini", configured: true, models: ["gemini-2.5-flash-tts"], voices: ["Aoede"] },
+    { provider: "gemini", label: "Gemini", configured: true, models: geminiTtsModels, voices: ["Aoede"] },
     {
       provider: "sarvam",
       label: "Sarvam",
@@ -1844,6 +1871,8 @@ function ProviderRail({
       <div className="flex gap-1 overflow-x-auto sm:grid sm:overflow-visible">
         {providers.map((provider) => {
           const active = provider.provider === selected;
+          const disabled = !provider.configured;
+          const statusText = provider.configurationError ?? (provider.configured ? "Connected" : "Not connected");
           return (
             <button
               key={provider.provider}
@@ -1851,14 +1880,18 @@ function ProviderRail({
                 active
                   ? "border-[#00b8c4] bg-[#ecfeff] text-[#006f78]"
                   : "border-transparent text-[#64748b] hover:bg-white hover:text-[#0f172a]"
-              } ${provider.configured ? "" : "opacity-60"}`}
+              } ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
               type="button"
               aria-pressed={active}
-              onClick={() => onSelect(provider.provider)}
+              disabled={disabled}
+              title={statusText}
+              onClick={() => {
+                if (!disabled) onSelect(provider.provider);
+              }}
             >
               <span className="block text-sm font-semibold">{provider.label}</span>
-              <span className={`mt-1 block text-xs font-medium ${provider.configured ? "text-[#059669]" : "text-[#b45309]"}`}>
-                {provider.configured ? "Connected" : "Not connected"}
+              <span className={`mt-1 block truncate text-xs font-medium ${provider.configured ? "text-[#059669]" : "text-[#b45309]"}`}>
+                {statusText}
               </span>
             </button>
           );
@@ -2574,7 +2607,16 @@ function HeaderEditor({
   );
 }
 
-export function DashboardShell() {
+type DashboardShellProps = {
+  initialAgentId?: string;
+  showTemplateSection?: boolean;
+};
+
+function getAgentDashboardHref(agentId: string) {
+  return `/dashboard/agents/${encodeURIComponent(agentId)}`;
+}
+
+export function DashboardShell({ initialAgentId, showTemplateSection = true }: DashboardShellProps = {}) {
   const router = useRouter();
   const session = useSyncExternalStore(
     subscribeToSession,
@@ -2583,10 +2625,11 @@ export function DashboardShell() {
   );
   const [showUserSidebar, setShowUserSidebar] = useState(false);
   const [agentList, setAgentList] = useState(agents);
-  const [selectedAgentId, setSelectedAgentId] = useState(agents[0].id);
+  const [selectedAgentId, setSelectedAgentId] = useState(initialAgentId ?? agents[0].id);
   const [renamingAgentId, setRenamingAgentId] = useState("");
   const [agentNameDraft, setAgentNameDraft] = useState("");
   const [renamingAgentSaving, setRenamingAgentSaving] = useState(false);
+  const [showAgentNameEditor, setShowAgentNameEditor] = useState(false);
   const [activeTab, setActiveTab] = useState<AgentTab>("builder");
   const [notice, setNotice] = useState("");
   const [saving, setSaving] = useState(false);
@@ -2614,6 +2657,10 @@ export function DashboardShell() {
 
   const selectedAgent = useMemo(
     () => agentList.find((agent) => agent.id === selectedAgentId) ?? agentList[0] ?? agents[0],
+    [agentList, selectedAgentId],
+  );
+  const selectedAgentLoaded = useMemo(
+    () => agentList.some((agent) => agent.id === selectedAgentId),
     [agentList, selectedAgentId],
   );
   const voicePitchSupported = supportsVoicePitch(selectedAgent);
@@ -2650,7 +2697,7 @@ export function DashboardShell() {
     },
   ];
   const liveAgentCount = agentList.filter((agent) => agent.status === "Live").length;
-  const agentStatTone = "border-[#99f6e8] bg-[#ecfeff] text-[#008996]";
+  const agentStatTone = "border-[#dce8f2] bg-white text-[#0f766e] shadow-[0_10px_28px_rgba(15,23,42,0.05)]";
   const agentHeroStats = [
     {
       label: "Status",
@@ -2671,6 +2718,44 @@ export function DashboardShell() {
       label: "Knowledge",
       value: (selectedAgent.knowledgeSourceCount ?? selectedAgent.knowledgeDocuments.length).toLocaleString("en-IN"),
       tone: agentStatTone,
+    },
+  ];
+  const voiceStackLatencyMs =
+    selectedRuntimeSnapshot?.latency.averageMs ?? selectedRuntimeSnapshot?.latency.latestMs;
+  const voiceStackLatencyValue =
+    typeof voiceStackLatencyMs === "number" && Number.isFinite(voiceStackLatencyMs)
+      ? Math.round(voiceStackLatencyMs).toLocaleString("en-IN")
+      : "1,250";
+  const voiceStackCards = [
+    {
+      id: "stt" as const,
+      label: "TRANSCRIBER",
+      dot: "bg-[#f97316]",
+      title: selectedAgent.pipelineMode === "realtime" ? "Native realtime" : `${selectedAgent.sttProvider} STT`,
+      provider: selectedAgent.pipelineMode === "realtime" ? selectedAgent.realtimeModel : selectedAgent.sttModel,
+      cost: selectedAgent.pipelineMode === "realtime" ? "Included" : "$0.02/min",
+      latency: "250ms",
+      accent: "text-[#008996]",
+    },
+    {
+      id: "llm" as const,
+      label: "MODEL",
+      dot: "bg-[#3b82f6]",
+      title: selectedAgent.pipelineMode === "realtime" ? `${selectedAgent.realtimeProvider} realtime` : `${selectedAgent.llmProvider} LLM`,
+      provider: selectedAgent.pipelineMode === "realtime" ? selectedAgent.realtimeModel : selectedAgent.llmModel,
+      cost: "$0.02/min",
+      latency: "600ms",
+      accent: "text-[#d97706]",
+    },
+    {
+      id: "voice" as const,
+      label: "VOICE",
+      dot: "bg-[#c026d3]",
+      title: selectedAgent.pipelineMode === "realtime" ? "Realtime voice" : `${selectedAgent.ttsProvider} TTS`,
+      provider: `${selectedAgent.voice}${selectedAgent.pipelineMode === "pipeline" ? ` / ${selectedAgent.ttsModel}` : ""}`,
+      cost: selectedAgent.pipelineMode === "realtime" ? "Included" : "$0.04/min",
+      latency: "400ms",
+      accent: "text-[#008996]",
     },
   ];
   const phoneAssigned = Boolean(selectedAgent.phone && selectedAgent.phone !== "Not assigned");
@@ -2746,6 +2831,12 @@ export function DashboardShell() {
   data-metadata="${selectedAgent.dynamicVariables.join(",")}"
 ></script>`;
   const toast = notice ? noticeToast(notice) : null;
+  const contentGridClass = showTemplateSection
+    ? "mx-auto grid w-full max-w-[1520px] min-w-0 gap-6 px-4 pb-8 sm:px-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:px-8 2xl:grid-cols-[280px_minmax(0,1fr)_340px]"
+    : "mx-auto grid w-full max-w-[1520px] min-w-0 gap-6 px-4 pb-8 sm:px-6 lg:grid-cols-[minmax(0,1fr)] lg:px-8 2xl:grid-cols-[minmax(0,1fr)_360px]";
+  const runtimeAsideClass = showTemplateSection
+    ? "grid min-w-0 content-start gap-5 xl:col-span-2 xl:grid-cols-2 2xl:col-span-1 2xl:grid-cols-1"
+    : "grid min-w-0 content-start gap-5 xl:grid-cols-2 2xl:grid-cols-1";
 
   useEffect(() => {
     return () => {
@@ -2784,7 +2875,9 @@ export function DashboardShell() {
       ) {
         return;
       }
-      const { agents: backendAgents } = await voiceApi.agents();
+      const backendAgents = !showTemplateSection && initialAgentId
+        ? [(await voiceApi.agent(initialAgentId)).agent]
+        : (await voiceApi.agents()).agents;
       if (cancelled || unsavedChangesRef.current) return;
       applyBackendAgents(backendAgents);
     };
@@ -2792,29 +2885,14 @@ export function DashboardShell() {
     let cancelled = false;
 
     void (async () => {
-      const bootstrapPromise = voiceApi.bootstrap().then(
-        (value) => ({ value, error: null }),
-        (error: unknown) => ({ value: null, error }),
-      );
-      const [validatedSession, bootstrapResult] = await Promise.all([
-        validateStoredSession(),
-        bootstrapPromise,
-      ]);
-      if (!validatedSession) {
-        if (!cancelled) router.replace("/login?next=/dashboard");
-        return;
-      }
-      if (
-        validatedSession.id !== session.id ||
-        validatedSession.organization?.id !== session.organization?.id
-      ) {
-        return;
-      }
-
-      if (!bootstrapResult.value) {
-        throw bootstrapResult.error ?? new Error("Could not load dashboard data.");
-      }
-      const { agents: backendAgents, config, templates } = bootstrapResult.value;
+      const dashboardData = !showTemplateSection && initialAgentId
+        ? await voiceApi.agentDashboard(initialAgentId).then(({ agent, config }) => ({
+            agents: [agent],
+            config,
+            templates: [] as AgentTemplate[],
+          }))
+        : await voiceApi.bootstrap();
+      const { agents: backendAgents, config, templates } = dashboardData;
       if (cancelled) return;
       applyBackendAgents(backendAgents);
       setVoiceConfig(config);
@@ -2835,10 +2913,10 @@ export function DashboardShell() {
       cancelled = true;
       window.clearInterval(refreshTimer);
     };
-  }, [router, session]);
+  }, [initialAgentId, router, session, showTemplateSection]);
 
   useEffect(() => {
-    if (!session || !selectedAgentId || selectedAgentId === "loading" || selectedAgentId === "maya") {
+    if (!session || !selectedAgentLoaded || !selectedAgentId || selectedAgentId === "loading" || selectedAgentId === "maya") {
       return;
     }
 
@@ -2865,7 +2943,7 @@ export function DashboardShell() {
       stream.removeEventListener("runtime", handleRuntime);
       stream.close();
     };
-  }, [selectedAgentId, session]);
+  }, [selectedAgentId, selectedAgentLoaded, session]);
 
   useEffect(() => {
     if (!session || activeTab !== "calls" || !selectedAgentId || selectedAgentId === "loading" || selectedAgentId === "maya") return;
@@ -3020,6 +3098,7 @@ export function DashboardShell() {
       unsavedChangesRef.current = false;
       setAgentList((current) => [...current, mapped]);
       setSelectedAgentId(mapped.id);
+      navigateToAgent(mapped.id);
       setNotice("New backend agent created.");
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not create agent.");
@@ -3033,6 +3112,7 @@ export function DashboardShell() {
       unsavedChangesRef.current = false;
       setAgentList((current) => [...current, mapped]);
       setSelectedAgentId(mapped.id);
+      navigateToAgent(mapped.id);
       setNotice("Template agent created as a draft.");
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not create template agent.");
@@ -3049,14 +3129,23 @@ export function DashboardShell() {
   function beginAgentRename(agent: VoiceAgent) {
     if (renamingAgentSaving) return;
     setSelectedAgentId(agent.id);
+    navigateToAgent(agent.id);
     setRenamingAgentId(agent.id);
     setAgentNameDraft(agent.name);
+  }
+
+  function beginSelectedAgentRename() {
+    if (renamingAgentSaving) return;
+    setRenamingAgentId(selectedAgent.id);
+    setAgentNameDraft(selectedAgent.name);
+    setShowAgentNameEditor(true);
   }
 
   function cancelAgentRename() {
     if (renamingAgentSaving) return;
     setRenamingAgentId("");
     setAgentNameDraft("");
+    setShowAgentNameEditor(false);
   }
 
   async function saveAgentName(agent: VoiceAgent) {
@@ -3079,6 +3168,7 @@ export function DashboardShell() {
       );
       setRenamingAgentId("");
       setAgentNameDraft("");
+      setShowAgentNameEditor(false);
       setNotice(routingWarning ? publicVoiceMessage(routingWarning, "Agent renamed, but phone routing still needs setup.") : "Agent renamed.");
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not rename agent.");
@@ -3223,8 +3313,26 @@ export function DashboardShell() {
   }
 
   function navigateToDashboardPage(href: string) {
-    announceDashboardNavigation(href, window.location.pathname);
+    if (href !== window.location.pathname) {
+      announceDashboardNavigation(href, window.location.pathname);
+    }
     router.push(href);
+  }
+
+  function navigateToAgent(agentId: string, options: { replace?: boolean } = {}) {
+    const href = getAgentDashboardHref(agentId);
+    if (href === window.location.pathname) return;
+    announceDashboardNavigation(href, window.location.pathname);
+    if (options.replace) {
+      router.replace(href);
+      return;
+    }
+    router.push(href);
+  }
+
+  function selectAgent(agentId: string) {
+    setSelectedAgentId(agentId);
+    navigateToAgent(agentId);
   }
 
   async function handleCloneAgent() {
@@ -3234,6 +3342,7 @@ export function DashboardShell() {
       unsavedChangesRef.current = false;
       setAgentList((current) => [...current, mapped]);
       setSelectedAgentId(mapped.id);
+      navigateToAgent(mapped.id);
       setNotice("Agent cloned as a new draft.");
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not clone agent.");
@@ -3245,11 +3354,19 @@ export function DashboardShell() {
     try {
       await voiceApi.deleteAgent(selectedAgent.id);
       unsavedChangesRef.current = false;
-      setAgentList((current) => {
-        const next = current.filter((agent) => agent.id !== selectedAgent.id);
-        setSelectedAgentId(next[0]?.id ?? "");
-        return next;
-      });
+      const nextAgents = agentList.filter((agent) => agent.id !== selectedAgent.id);
+      const nextAgentId = nextAgents[0]?.id ?? "";
+      setAgentList(nextAgents);
+      if (!showTemplateSection) {
+        setSelectedAgentId("");
+        navigateToDashboardPage("/dashboard/agents");
+      } else if (nextAgentId) {
+        setSelectedAgentId(nextAgentId);
+        navigateToAgent(nextAgentId, { replace: true });
+      } else {
+        setSelectedAgentId("");
+        navigateToDashboardPage("/dashboard/agents");
+      }
       setNotice("Agent deleted.");
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not delete agent.");
@@ -3532,18 +3649,39 @@ export function DashboardShell() {
         setShowUserSidebar={setShowUserSidebar}
       />
 
-      <section className="grid min-w-0 content-start gap-5">
-        <header className="border-b border-[#99f6e8] bg-white px-4 py-4 sm:px-6 lg:px-8">
-          <div className="mx-auto grid w-full max-w-1500px gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+      <section className="grid min-w-0 content-start gap-6">
+        <header className="border-b border-[#e6edf5] bg-white px-4 py-5 shadow-[0_1px_0_rgba(15,23,42,0.02)] sm:px-6 lg:px-8">
+          <div className="mx-auto grid w-full max-w-[1520px] gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
             <div className="min-w-0">
               <span className="app-label text-[#00b8c4]">{session.organization?.name ?? "Workspace"}</span>
-              <h1 className="m-0 mt-1 text-xl font-semibold leading-7 text-[#0f172a] sm:text-2xl">{selectedAgent.name}</h1>
+              <div className="mt-1 flex min-w-0 items-center gap-2">
+                <h1 className="m-0 min-w-0 truncate text-xl font-semibold leading-7 text-[#0f172a] sm:text-2xl">{selectedAgent.name}</h1>
+                <button
+                  className="grid size-8 shrink-0 place-items-center rounded-lg border border-[#d5d8df] bg-white text-[#64748b] transition hover:border-[#99f6e8] hover:bg-[#ecfeff] hover:text-[#008996]"
+                  type="button"
+                  aria-label={`Edit ${selectedAgent.name} name`}
+                  title="Edit name"
+                  disabled={renamingAgentSaving}
+                  onClick={beginSelectedAgentRename}
+                >
+                  <Icon icon="edit" />
+                </button>
+              </div>
               <p className="app-caption mt-1 mb-0 max-w-3xl text-[#475569]">
                 Build, test, publish, and monitor your voice agent from one command center.
               </p>
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
+            {!showTemplateSection ? (
+              <button
+                className="app-button-text inline-flex min-h-9 items-center justify-center rounded-lg border border-[#d5d8df] bg-white px-3 text-[#334155] transition hover:bg-[#f8fafc]"
+                type="button"
+                onClick={() => navigateToDashboardPage("/dashboard/agents")}
+              >
+                Back to agents
+              </button>
+            ) : null}
             <button
               className="app-button-text inline-flex min-h-9 items-center justify-center rounded-lg border border-[#d5d8df] bg-white px-3 text-[#334155] transition hover:bg-[#f8fafc]"
               type="button"
@@ -3591,19 +3729,20 @@ export function DashboardShell() {
             </button>
             </div>
           </div>
-          <div className="mx-auto grid w-full max-w-1500px gap-2 pt-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mx-auto grid w-full max-w-[1520px] gap-3 pt-5 sm:grid-cols-2 lg:grid-cols-4">
             {agentHeroStats.map((item) => (
-              <div className={`rounded-lg border px-3 py-2 ${item.tone}`} key={item.label}>
-                <span className="app-caption block text-current">{item.label}</span>
-                <strong className="block text-sm font-semibold leading-5">{item.value}</strong>
+              <div className={`rounded-lg border px-4 py-3 ${item.tone}`} key={item.label}>
+                <span className="app-caption block text-[#64748b]">{item.label}</span>
+                <strong className="block text-base font-semibold leading-6 text-[#0f172a]">{item.value}</strong>
               </div>
             ))}
           </div>
         </header>
 
-        <section className="mx-auto grid w-full max-w-1500px min-w-0 gap-4 px-4 pb-5 sm:px-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:px-8 2xl:grid-cols-[280px_minmax(0,1fr)_300px]">
-          <aside className="min-w-0 overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm">
-            <div className="flex min-h-64px items-center justify-between border-b border-[#e5e7eb] bg-[#fbfdff] px-4">
+        <section className={contentGridClass}>
+          {showTemplateSection ? (
+          <aside className="min-w-0 overflow-hidden rounded-lg border border-[#e4ebf3] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]">
+            <div className="flex min-h-16 items-center justify-between border-b border-[#edf2f7] bg-white px-4">
               <div>
                 <h2 className="app-section-title m-0">Agents</h2>
                 <span className="app-caption">{liveAgentCount} live / {agentList.length} total</span>
@@ -3619,7 +3758,7 @@ export function DashboardShell() {
               </button>
             </div>
 
-            <div className="grid gap-1.5 p-2">
+            <div className="grid gap-2 p-2.5">
               {agentList.map((agent) => {
                 const isActive = agent.id === selectedAgent.id;
                 const isRenaming = agent.id === renamingAgentId;
@@ -3628,20 +3767,20 @@ export function DashboardShell() {
                 return (
                   <div
                     className={`group grid w-full grid-cols-[36px_minmax(0,1fr)_auto] items-center gap-3 rounded-lg p-2.5 text-left transition ${
-                      isActive ? "bg-[#eef4ff] shadow-sm ring-1 ring-[#99f6e8]" : "hover:bg-[#f8fafc]"
+                      isActive ? "bg-[#f0fbfc] ring-1 ring-[#99f6e8]" : "hover:bg-[#f8fafc]"
                     }`}
                     key={agent.id}
                     role={isRenaming ? undefined : "button"}
                     tabIndex={isRenaming ? -1 : 0}
                     aria-pressed={isRenaming ? undefined : isActive}
                     onClick={() => {
-                      if (!isRenaming) setSelectedAgentId(agent.id);
+                      if (!isRenaming) selectAgent(agent.id);
                     }}
                     onKeyDown={(event) => {
                       if (isRenaming || event.target !== event.currentTarget) return;
                       if (event.key === "Enter" || event.key === " ") {
                         event.preventDefault();
-                        setSelectedAgentId(agent.id);
+                        selectAgent(agent.id);
                       }
                     }}
                   >
@@ -3730,7 +3869,7 @@ export function DashboardShell() {
               })}
             </div>
 
-            <div className="grid gap-2 border-t border-[#e5e7eb] bg-[#f8fafc] p-3">
+            <div className="grid gap-2 border-t border-[#edf2f7] bg-[#f8fafc] p-3">
               <div>
                 <strong className="app-strong block">Start from template</strong>
                 <span className="app-caption">Support, scheduling, sales, and FAQ presets</span>
@@ -3755,23 +3894,24 @@ export function DashboardShell() {
               {!agentTemplates.length ? <span className="app-caption">Templates loading...</span> : null}
             </div>
           </aside>
+          ) : null}
 
-          <section className="grid min-w-0 content-start gap-4">
-            <article className="min-w-0 overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm">
-              <div className="flex flex-col gap-3 border-b border-[#e5e7eb] bg-[#fbfdff] px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
+          <section className="grid min-w-0 content-start gap-5">
+            <article className="min-w-0 overflow-hidden rounded-lg border border-[#e4ebf3] bg-white shadow-[0_18px_46px_rgba(15,23,42,0.06)]">
+              <div className="flex flex-col gap-4 border-b border-[#edf2f7] bg-white px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                   <h2 className="app-section-title m-0">Agent builder</h2>
                   <span className="app-caption">
                     {selectedAgent.name} / {selectedAgent.team}
                   </span>
                 </div>
-                <div className="flex max-w-full gap-1 overflow-x-auto rounded-lg border border-[#dfe3ea] bg-white p-1">
+                <div className="flex max-w-full gap-1 overflow-x-auto rounded-lg border border-[#dfe7ef] bg-[#f6f8fb] p-1">
                   {tabs.map((tab) => (
                     <button
                       className={`app-button-text rounded-md px-3 py-1.5 transition ${
                         activeTab === tab.id
-                          ? "bg-[#00b8c4] text-white"
-                          : "text-[#64748b] hover:bg-white hover:text-[#111827]"
+                          ? "bg-white text-[#008996] shadow-sm"
+                          : "text-[#64748b] hover:bg-white/80 hover:text-[#111827]"
                       }`}
                       key={tab.id}
                       type="button"
@@ -3784,9 +3924,9 @@ export function DashboardShell() {
                 </div>
               </div>
 
-              <div className="bg-[#fbfdff] p-4">
+              <div className="bg-white p-5 sm:p-6">
                 {activeTab === "builder" ? (
-                  <div className="grid gap-4">
+                  <div className="grid gap-6">
                     <div className="hidden gap-3 lg:grid-cols-2">
                       <InputField
                         label="Agent name"
@@ -3800,75 +3940,71 @@ export function DashboardShell() {
                       />
                     </div>
 
-                    <section className="grid gap-3 rounded-lg border border-[#99f6e8] bg-white p-4 shadow-sm">
-                      <div className="flex flex-col gap-1">
-                        <h3 className="app-section-title m-0">Voice stack</h3>
-                        <span className="app-caption">
-                          Click LLM, STT, or Voice to configure only that part of the stack.
-                        </span>
+                    <section className="grid gap-5 rounded-lg border border-[#e2e8f0] bg-white p-5 shadow-[0_16px_36px_rgba(15,23,42,0.06)]">
+                      <div className="grid gap-5 xl:grid-cols-2">
+                        <div className="grid gap-2">
+                          <span className="app-label uppercase text-[#64748b]">Average cost</span>
+                          <div className="flex min-w-0 items-center gap-4">
+                            <strong className="text-2xl font-semibold leading-7 text-[#111827]">~$0.08<span className="text-base font-medium text-[#64748b]"> /min</span></strong>
+                            <span className="grid h-2 min-w-32 flex-1 grid-cols-[1.8fr_0.45fr_0.6fr_1fr] overflow-hidden rounded-full bg-[#eef2f7]">
+                              <span className="bg-[#14b8a6]" />
+                              <span className="bg-[#f97316]" />
+                              <span className="bg-[#3b82f6]" />
+                              <span className="bg-[#c026d3]" />
+                            </span>
+                          </div>
+                        </div>
+                        <div className="grid gap-2">
+                          <span className="app-label uppercase text-[#64748b]">Average latency</span>
+                          <div className="flex min-w-0 items-center gap-4">
+                            <strong className="text-2xl font-semibold leading-7 text-[#d97706]">~{voiceStackLatencyValue}<span className="text-base font-medium text-[#64748b]"> ms</span></strong>
+                            <span className="grid h-2 min-w-32 flex-1 grid-cols-[0.6fr_1.6fr_1.4fr_0.25fr] overflow-hidden rounded-full bg-[#eef2f7]">
+                              <span className="bg-[#f97316]" />
+                              <span className="bg-[#3b82f6]" />
+                              <span className="bg-[#c026d3]" />
+                              <span className="bg-[#22c55e]" />
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                      <div className="grid gap-3 lg:grid-cols-3">
-                        <button
-                          className={`grid gap-2 rounded-lg border p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
-                            openStackConfig === "llm"
-                              ? "border-[#7c3aed] bg-[#ede9fe] ring-2 ring-[#c4b5fd]"
-                              : "border-[#ddd6fe] bg-[#f5f3ff]"
-                          }`}
-                          type="button"
-                          aria-pressed={openStackConfig === "llm"}
-                          onClick={() => setOpenStackConfig("llm")}
-                        >
-                          <span className="app-label block text-[#6d28d9]">LLM</span>
-                          <strong className="app-strong block text-[#3b0764]">
-                            {selectedAgent.pipelineMode === "realtime" ? `${selectedAgent.realtimeProvider} realtime` : `${selectedAgent.llmProvider} LLM`}
-                          </strong>
-                          <span className="app-caption block truncate text-[#6b21a8]">
-                            {selectedAgent.pipelineMode === "realtime" ? selectedAgent.realtimeModel : selectedAgent.llmModel}
-                          </span>
-                        </button>
-                        <button
-                          className={`grid gap-2 rounded-lg border p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
-                            openStackConfig === "stt"
-                              ? "border-[#00b8c4] bg-[#ccfbf1] ring-2 ring-[#5eead4]"
-                              : "border-[#99f6e8] bg-[#ecfeff]"
-                          }`}
-                          type="button"
-                          aria-pressed={openStackConfig === "stt"}
-                          onClick={() => setOpenStackConfig("stt")}
-                        >
-                          <span className="app-label block text-[#008996]">STT</span>
-                          <strong className="app-strong block text-[#0c4a6e]">
-                            {selectedAgent.pipelineMode === "realtime" ? "Native realtime" : `${selectedAgent.sttProvider} STT`}
-                          </strong>
-                          <span className="app-caption block truncate text-[#008996]">
-                            {selectedAgent.pipelineMode === "realtime" ? selectedAgent.realtimeModel : selectedAgent.sttModel}
-                          </span>
-                        </button>
-                        <button
-                          className={`grid gap-2 rounded-lg border p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
-                            openStackConfig === "voice"
-                              ? "border-[#059669] bg-[#d1fae5] ring-2 ring-[#6ee7b7]"
-                              : "border-[#bbf7d0] bg-[#ecfdf5]"
-                          }`}
-                          type="button"
-                          aria-pressed={openStackConfig === "voice"}
-                          onClick={() => setOpenStackConfig("voice")}
-                        >
-                          <span className="app-label block text-[#047857]">Voice</span>
-                          <strong className="app-strong block text-[#064e3b]">
-                            {selectedAgent.pipelineMode === "realtime" ? "Realtime voice" : `${selectedAgent.ttsProvider} TTS`}
-                          </strong>
-                          <span className="app-caption block truncate text-[#047857]">
-                            {selectedAgent.voice} {selectedAgent.pipelineMode === "pipeline" ? `/ ${selectedAgent.ttsModel}` : ""}
-                          </span>
-                        </button>
+
+                      <div className="grid gap-4 lg:grid-cols-3">
+                        {voiceStackCards.map((card) => (
+                          <button
+                            className={`grid min-h-40 gap-4 rounded-lg border border-[#e2e8f0] bg-[#f8fafc] p-4 text-left transition hover:-translate-y-0.5 hover:border-[#cbd5e1] hover:bg-white hover:shadow-[0_16px_34px_rgba(15,23,42,0.09)] ${
+                              openStackConfig === card.id ? "bg-white shadow-[inset_0_0_0_1px_#99f6e8,0_16px_34px_rgba(15,23,42,0.09)]" : ""
+                            }`}
+                            key={card.id}
+                            type="button"
+                            aria-pressed={openStackConfig === card.id}
+                            onClick={() => setOpenStackConfig(card.id)}
+                          >
+                            <span className="flex items-center justify-between gap-3">
+                              <span className="flex min-w-0 items-center gap-2">
+                                <span className={`size-2.5 shrink-0 rounded-full ${card.dot}`} />
+                                <span className="app-label truncate uppercase text-[#64748b]">{card.label}</span>
+                              </span>
+                              <span className="grid size-8 shrink-0 place-items-center rounded-md border border-[#dbe2ea] bg-white text-[#64748b]">
+                                <Icon icon="edit" />
+                              </span>
+                            </span>
+                            <span className="grid min-w-0 gap-1">
+                              <strong className="app-strong block truncate text-[#111827]">{card.title}</strong>
+                              <span className="app-caption block truncate text-[#64748b]">{card.provider}</span>
+                            </span>
+                            <span className="flex items-center gap-4">
+                              <span className="app-strong text-[#111827]">{card.cost}</span>
+                              <span className={`app-strong ${card.accent}`}>{card.latency}</span>
+                            </span>
+                          </button>
+                        ))}
                       </div>
                     </section>
 
                     <label className="app-label grid gap-2">
                       <span>Opening message</span>
                       <input
-                        className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10"
+                        className="app-control-text min-h-12 rounded-lg border border-[#d9e2ec] bg-white px-4 text-black shadow-[0_1px_2px_rgba(15,23,42,0.04)] outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10"
                         value={selectedAgent.firstMessage}
                         onChange={(event) => updateSelectedAgent({ firstMessage: event.target.value })}
                       />
@@ -3877,7 +4013,7 @@ export function DashboardShell() {
                     <label className="app-label grid gap-2">
                       <span>Instructions / prompt</span>
                       <textarea
-                        className="app-control-text min-h-320px resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10"
+                        className="app-control-text h-[420px] min-h-80 max-h-[70vh] resize-y overflow-y-auto rounded-lg border border-[#d9e2ec] bg-white p-4 leading-6 text-black shadow-[0_1px_2px_rgba(15,23,42,0.04)] outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10 lg:h-[520px]"
                         value={selectedAgent.prompt}
                         onChange={(event) => updateSelectedAgent({ prompt: event.target.value })}
                       />
@@ -3901,8 +4037,8 @@ export function DashboardShell() {
                       />
                     ) : null}
 
-                    <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,1fr)_220px]">
-                      <div className="min-w-0 rounded-lg border border-[#e5e7eb] bg-white p-3">
+                    <div className="grid min-w-0 gap-4 lg:grid-cols-[minmax(0,1fr)_240px]">
+                      <div className="min-w-0 rounded-lg bg-[#f8fafc] px-4 py-3">
                         <span className="app-label block">Active runtime</span>
                         <strong className="app-strong block wrap-break-word">
                           {selectedAgent.pipelineMode === "realtime"
@@ -3910,7 +4046,7 @@ export function DashboardShell() {
                             : `${selectedAgent.sttProvider} -> ${selectedAgent.llmProvider} -> ${selectedAgent.ttsProvider}`}
                         </strong>
                       </div>
-                      <label className="app-label grid gap-2">
+                      <label className="app-label grid gap-2 rounded-lg bg-[#f8fafc] px-4 py-3">
                         <span>Creativity</span>
                         <input
                           className="accent-[#00b8c4]"
@@ -4768,7 +4904,7 @@ export function DashboardShell() {
                           </button>
                         </div>
 
-                        <pre className="m-0 max-h-220px overflow-auto rounded-lg bg-[#111827] p-3 text-xs leading-5 text-[#cbd5e1]">
+                        <pre className="m-0 max-h-[220px] overflow-auto rounded-lg bg-[#111827] p-3 text-xs leading-5 text-[#cbd5e1]">
                           {widgetEmbedCode}
                         </pre>
                       </article>
@@ -4784,7 +4920,7 @@ export function DashboardShell() {
                           </span>
                         </div>
 
-                        <div className="grid min-h-170px content-end rounded-lg border border-[#e5e7eb] bg-[#f8fafc] p-3">
+                        <div className="grid min-h-[170px] content-end rounded-lg border border-[#e5e7eb] bg-[#f8fafc] p-3">
                           <div className="justify-self-end rounded-lg border border-[#99f6e8] bg-white p-3 shadow-sm">
                             <div className="mb-3 flex items-center gap-2">
                               <span
@@ -4847,9 +4983,9 @@ export function DashboardShell() {
 
           </section>
 
-          <aside className="grid min-w-0 content-start gap-4 xl:col-span-2 xl:grid-cols-2 2xl:col-span-1 2xl:grid-cols-1">
-            <article className="min-w-0 overflow-hidden rounded-lg border border-[#dbe4f0] bg-white shadow-sm">
-              <div className="flex min-h-68px items-center justify-between gap-3 border-b border-[#99f6e8] bg-linear-to-r from-[#ecfeff] via-white to-[#ecfeff] px-4">
+          <aside className={runtimeAsideClass}>
+            <article className="min-w-0 overflow-hidden rounded-lg border border-[#e4ebf3] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]">
+              <div className="flex min-h-[68px] items-center justify-between gap-3 border-b border-[#edf2f7] bg-white px-4">
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="relative flex size-2.5 shrink-0">
@@ -4870,20 +5006,20 @@ export function DashboardShell() {
               </div>
 
               <div className="grid gap-4 p-4">
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid gap-2">
                   {selectedRuntimeItems.map((item) => (
                     <span
-                      className="min-w-0 rounded-lg border border-[#99f6e8] bg-[#ecfeff] p-2.5"
+                      className="flex min-w-0 items-center justify-between gap-3 rounded-lg bg-[#f8fafc] px-3 py-2.5"
                       key={item.label}
                       title={item.label === "Region" && selectedRuntimeRegion ? formatVoiceRegion(selectedRuntimeRegion) : undefined}
                     >
-                      <span className="app-label block truncate">{item.label}</span>
-                      <strong className={`app-strong block truncate ${item.tone}`}>{item.value}</strong>
+                      <span className="app-label shrink-0 truncate">{item.label}</span>
+                      <strong className={`app-strong min-w-0 truncate text-right ${item.tone}`}>{item.value}</strong>
                     </span>
                   ))}
                 </div>
 
-                <div className="grid min-w-0 divide-y divide-[#eef2f7] rounded-lg border border-[#edf2f7] px-3">
+                <div className="grid min-w-0 divide-y divide-[#eef2f7] border-y border-[#eef2f7] px-1">
                   <span className="flex min-w-0 items-center justify-between gap-3 py-2.5">
                     <span className="app-caption shrink-0">AI service</span>
                     <strong className="app-strong min-w-0 truncate text-right" title={selectedRuntimeWorkerLabel}>
@@ -4924,7 +5060,7 @@ export function DashboardShell() {
               </div>
             </article>
 
-            <article className="overflow-hidden rounded-lg border border-[#dfe3ea] bg-white shadow-sm">
+            <article className="overflow-hidden rounded-lg border border-[#e4ebf3] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]">
               <div className="p-4">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div className="min-w-0">
@@ -4983,7 +5119,7 @@ export function DashboardShell() {
               </div>
             </article>
 
-            <article className="overflow-hidden rounded-lg border border-[#dfe3ea] bg-white shadow-sm">
+            <article className="overflow-hidden rounded-lg border border-[#e4ebf3] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]">
               <div className="p-4">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
@@ -5041,6 +5177,50 @@ export function DashboardShell() {
           </aside>
         </section>
       </section>
+      {showAgentNameEditor ? (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-slate-950/30 px-4" role="dialog" aria-modal="true" aria-labelledby="edit-agent-name-title">
+          <form
+            className="grid w-full max-w-md gap-4 rounded-lg border border-[#dbe2ea] bg-white p-5 shadow-xl"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void saveAgentName(selectedAgent);
+            }}
+          >
+            <div>
+              <h2 className="app-section-title m-0" id="edit-agent-name-title">Edit agent name</h2>
+              <p className="app-caption mt-1 mb-0 text-[#475569]">Update the name shown across the dashboard.</p>
+            </div>
+            <label className="grid gap-1.5">
+              <span className="app-label text-[#475569]">Agent name</span>
+              <input
+                autoFocus
+                className="app-control-text min-h-11 rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10"
+                value={agentNameDraft}
+                maxLength={80}
+                onChange={(event) => setAgentNameDraft(event.target.value)}
+              />
+            </label>
+            <div className="flex justify-end gap-2">
+              <button
+                className="app-button-text min-h-10 rounded-lg border border-[#d5d8df] bg-white px-4 text-[#334155]"
+                type="button"
+                disabled={renamingAgentSaving}
+                onClick={cancelAgentRename}
+              >
+                Cancel
+              </button>
+              <button
+                className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#99f6e8] bg-[#ecfeff] px-4 text-[#0e7490] shadow-sm disabled:opacity-60"
+                type="submit"
+                disabled={renamingAgentSaving}
+              >
+                <Icon icon="save" />
+                {renamingAgentSaving ? "Saving..." : "Save name"}
+              </button>
+            </div>
+          </form>
+        </div>
+      ) : null}
       {showTestCall ? (
         <TestCallPanel
           agentId={selectedAgent.id}
@@ -5089,6 +5269,8 @@ function mapBackendAgent(agent: BackendAgent): VoiceAgent {
     primaryLanguage,
     ...(agent.supportedLanguages ?? []),
   ])].filter((language) => language && language !== "Multilingual");
+  const llmProvider = agent.llmProvider ?? "openai";
+  const ttsProvider = agent.ttsProvider ?? "openai";
 
   return {
     id: agent._id,
@@ -5106,12 +5288,12 @@ function mapBackendAgent(agent: BackendAgent): VoiceAgent {
     pipelineMode: agent.pipelineMode ?? "realtime",
     realtimeProvider,
     realtimeModel: normalizeRealtimeModel(realtimeProvider, agent.realtimeModel ?? "gpt-realtime"),
-    llmProvider: agent.llmProvider ?? "openai",
-    llmModel: agent.llmModel ?? "gpt-4.1-mini",
+    llmProvider,
+    llmModel: normalizeGeminiLlmModel(llmProvider, agent.llmModel ?? "gpt-4.1-mini"),
     sttProvider: agent.sttProvider ?? "openai",
     sttModel: agent.sttModel ?? "gpt-4o-mini-transcribe",
-    ttsProvider: agent.ttsProvider ?? "openai",
-    ttsModel: agent.ttsModel ?? "gpt-4o-mini-tts",
+    ttsProvider,
+    ttsModel: normalizeGeminiTtsModel(ttsProvider, agent.ttsModel ?? "gpt-4o-mini-tts"),
     temperature: agent.temperature ?? 0.35,
     maxConcurrentCalls: agent.maxConcurrentCalls ?? 5,
     voiceSpeed: agent.voiceSpeed ?? 1,

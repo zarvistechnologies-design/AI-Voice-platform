@@ -14,7 +14,7 @@ type SidebarItem = {
 type SidebarIconName = SidebarItem["icon"] | "mic";
 
 const sidebarItems: SidebarItem[] = [
-  { label: "Voice Agents", href: "/dashboard", icon: "agent" },
+  { label: "Voice Agents", href: "/dashboard/agents", icon: "agent" },
   { label: "Phone Number", href: "/dashboard/phone-number", icon: "phone" },
   { label: "Campaigns", href: "/dashboard/campaign", icon: "campaign" },
   { label: "Knowledge Base", href: "/dashboard/knowledge", icon: "knowledge" },
@@ -144,10 +144,10 @@ export function DashboardSidebar({
       <aside className="z-40 flex gap-1.5 border-b border-[#e5e7eb] bg-white/95 px-2 py-1.5 shadow-sm backdrop-blur lg:fixed lg:inset-y-0 lg:left-0 lg:h-dvh lg:w-16 lg:flex-col lg:items-center lg:border-r lg:border-b-0 lg:px-0 lg:py-2.5">
         <Link
           className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#06b6c8] text-white shadow-[0_10px_22px_rgba(14,165,233,0.22)] ring-1 ring-white/10 transition hover:-translate-y-0.5"
-          href="/dashboard"
+          href="/dashboard/agents"
           title="Voice Platform"
           aria-label="Voice Platform"
-          onClick={() => beginNavigation("/dashboard")}
+          onClick={() => beginNavigation("/dashboard/agents")}
         >
           <SidebarIcon icon="mic" />
         </Link>
