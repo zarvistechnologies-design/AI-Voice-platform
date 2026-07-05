@@ -605,7 +605,25 @@ const fallbackElevenLabsVoiceProfiles: VoiceProfile[] = [
   },
 ];
 
-const defaultGeminiRealtimeModel = "gemini-2.5-flash-native-audio-preview-12-2025";
+const defaultGeminiRealtimeModel = "gemini-2.5-flash-native-audio-latest";
+const geminiRealtimeModels = [defaultGeminiRealtimeModel];
+const defaultGeminiLlmModel = "gemini-2.5-flash";
+const geminiLlmModels = [
+  "gemini-3.5-flash",
+  "gemini-3.1-pro-preview",
+  "gemini-3.1-flash-lite",
+  "gemini-3-flash-preview",
+  "gemini-2.5-flash",
+  "gemini-2.5-pro",
+  "gemini-2.5-flash-lite",
+  "gemini-2.0-flash",
+];
+const defaultGeminiTtsModel = "gemini-2.5-flash-preview-tts";
+const geminiTtsModels = [
+  "gemini-2.5-flash-preview-tts",
+  "gemini-3.1-flash-tts-preview",
+  "gemini-2.5-pro-preview-tts",
+];
 const voiceSpeedRange = { min: 0.5, max: 2, step: 0.05, fallback: 1 };
 const voicePitchRange = { min: -10, max: 10, step: 1, fallback: 0 };
 const concurrentCallsRange = { min: 1, max: 100, step: 1, fallback: 1 };
@@ -658,7 +676,17 @@ const fallbackDeepgramSttModels = [
 
 function normalizeRealtimeModel(provider: RealtimeProvider, model: string) {
   if (provider !== "gemini") return model;
-  return model === defaultGeminiRealtimeModel ? model : defaultGeminiRealtimeModel;
+  return geminiRealtimeModels.includes(model) ? model : defaultGeminiRealtimeModel;
+}
+
+function normalizeGeminiLlmModel(provider: PipelineProvider, model: string) {
+  if (provider !== "gemini") return model;
+  return geminiLlmModels.includes(model) ? model : defaultGeminiLlmModel;
+}
+
+function normalizeGeminiTtsModel(provider: PipelineProvider, model: string) {
+  if (provider !== "gemini") return model;
+  return geminiTtsModels.includes(model) ? model : defaultGeminiTtsModel;
 }
 
 const fallbackSarvamRecommendedVoicesByLanguageCode: Record<string, readonly string[]> = {
@@ -716,11 +744,11 @@ function voicesByLanguageFromProfiles(
 const fallbackCatalog: ModelCatalog = {
   realtime: [
     { provider: "openai", label: "OpenAI Realtime", configured: true, models: ["gpt-realtime"], voices: ["alloy", "ash", "ballad", "coral", "echo", "sage", "shimmer", "verse", "marin", "cedar"] },
-    { provider: "gemini", label: "Gemini Live", configured: true, models: [defaultGeminiRealtimeModel], voices: ["Aoede"] },
+    { provider: "gemini", label: "Gemini Live", configured: true, models: geminiRealtimeModels, voices: ["Aoede"] },
   ],
   llm: [
     { provider: "openai", label: "OpenAI", configured: true, models: ["gpt-4.1-mini"] },
-    { provider: "gemini", label: "Gemini", configured: true, models: ["gemini-2.5-flash"] },
+    { provider: "gemini", label: "Gemini", configured: true, models: geminiLlmModels },
     { provider: "sarvam", label: "Sarvam", configured: true, models: ["sarvam-30b"] },
   ],
   stt: [
@@ -749,7 +777,7 @@ const fallbackCatalog: ModelCatalog = {
   ],
   tts: [
     { provider: "openai", label: "OpenAI", configured: true, models: ["gpt-4o-mini-tts"], voices: ["alloy"] },
-    { provider: "gemini", label: "Gemini", configured: true, models: ["gemini-2.5-flash-tts"], voices: ["Aoede"] },
+    { provider: "gemini", label: "Gemini", configured: true, models: geminiTtsModels, voices: ["Aoede"] },
     {
       provider: "sarvam",
       label: "Sarvam",
@@ -5241,6 +5269,8 @@ function mapBackendAgent(agent: BackendAgent): VoiceAgent {
     primaryLanguage,
     ...(agent.supportedLanguages ?? []),
   ])].filter((language) => language && language !== "Multilingual");
+  const llmProvider = agent.llmProvider ?? "openai";
+  const ttsProvider = agent.ttsProvider ?? "openai";
 
   return {
     id: agent._id,
@@ -5258,12 +5288,12 @@ function mapBackendAgent(agent: BackendAgent): VoiceAgent {
     pipelineMode: agent.pipelineMode ?? "realtime",
     realtimeProvider,
     realtimeModel: normalizeRealtimeModel(realtimeProvider, agent.realtimeModel ?? "gpt-realtime"),
-    llmProvider: agent.llmProvider ?? "openai",
-    llmModel: agent.llmModel ?? "gpt-4.1-mini",
+    llmProvider,
+    llmModel: normalizeGeminiLlmModel(llmProvider, agent.llmModel ?? "gpt-4.1-mini"),
     sttProvider: agent.sttProvider ?? "openai",
     sttModel: agent.sttModel ?? "gpt-4o-mini-transcribe",
-    ttsProvider: agent.ttsProvider ?? "openai",
-    ttsModel: agent.ttsModel ?? "gpt-4o-mini-tts",
+    ttsProvider,
+    ttsModel: normalizeGeminiTtsModel(ttsProvider, agent.ttsModel ?? "gpt-4o-mini-tts"),
     temperature: agent.temperature ?? 0.35,
     maxConcurrentCalls: agent.maxConcurrentCalls ?? 5,
     voiceSpeed: agent.voiceSpeed ?? 1,
