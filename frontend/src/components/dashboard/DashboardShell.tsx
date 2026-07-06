@@ -2224,10 +2224,6 @@ function StackConfigurationModal({
     !agent.multilingualEnabled &&
     languageSpecificVoices.length === 0 &&
     !agent.language.toLowerCase().startsWith("english");
-  const realtimeStackNotice =
-    realtime
-      ? "Realtime active: one native model handles listening, reasoning, and speech. Switch to Pipeline to use separate STT, LLM, and TTS providers."
-      : "";
   const selectLanguage = (language: string) => {
     onLanguageChange(language);
   };
@@ -2300,12 +2296,6 @@ function StackConfigurationModal({
           <ProviderRail providers={providers} selected={providerId} onSelect={selectProvider} />
           <main className="min-h-0 overflow-y-auto p-4 sm:p-5">
             <div className="grid gap-4">
-              {realtimeStackNotice ? (
-                <div className="rounded-lg border border-[#fde68a] bg-[#fffbeb] px-3 py-2 text-sm font-semibold text-[#92400e]">
-                  {realtimeStackNotice}
-                </div>
-              ) : null}
-
               <SelectField
                 label={stack === "voice" ? "Voice model" : stack === "stt" ? "Speech recognition model" : "Language model"}
                 defaultValue={selectedModelValue}
@@ -2780,19 +2770,6 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
       ?? (phoneAssigned && voiceConfig?.sip.outboundConfigured && voiceConfig?.vobiz.configured),
   );
   const browserTestReady = testCallsEnabled && Boolean(voiceConfig?.agentName);
-  const realtimeUsesSeparateProviders =
-    selectedAgent.pipelineMode === "realtime" &&
-    (selectedAgent.sttProvider !== "openai" ||
-      selectedAgent.llmProvider !== "openai" ||
-      selectedAgent.ttsProvider !== "openai");
-  const realtimeRegionalLanguage =
-    selectedAgent.pipelineMode === "realtime" &&
-    !selectedAgent.language.toLowerCase().startsWith("english");
-  const runtimeModeNotice = realtimeUsesSeparateProviders
-    ? "This agent has separate pipeline providers selected while Realtime is active. Saving will switch it to Pipeline so those providers are used on calls."
-    : realtimeRegionalLanguage
-      ? "Regional-language calls usually sound clearer in Pipeline with Sarvam speech providers."
-      : "";
   const hoursGuardLabel = !selectedAgent.businessHoursEnabled
     ? "Off"
     : selectedRuntimeSnapshot
@@ -3045,7 +3022,7 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
         const mapped = mapBackendAgent(agent);
         setAgentList((current) => current.map((item) => (item.id === mapped.id ? mapped : item)));
         unsavedChangesRef.current = false;
-        setNotice(routingWarning ? `Agent saved. ${publicVoiceMessage(routingWarning, "Some runtime settings were adjusted.")}` : "Agent saved.");
+        setNotice(routingWarning ? publicVoiceMessage(routingWarning, "Agent saved, but phone routing still needs setup.") : "Agent saved.");
         return true;
       } catch (error) {
         setNotice(error instanceof Error ? error.message : "Could not save agent.");
@@ -4058,12 +4035,6 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
                         onClose={() => setOpenStackConfig(null)}
                         onSave={() => void saveStackConfig()}
                       />
-                    ) : null}
-
-                    {runtimeModeNotice ? (
-                      <div className="rounded-lg border border-[#fde68a] bg-[#fffbeb] px-4 py-3 text-sm font-semibold text-[#92400e]">
-                        {runtimeModeNotice}
-                      </div>
                     ) : null}
 
                     <div className="grid min-w-0 gap-4 lg:grid-cols-[minmax(0,1fr)_240px]">
