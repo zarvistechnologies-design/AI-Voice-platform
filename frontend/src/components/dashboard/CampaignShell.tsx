@@ -11,7 +11,18 @@ import {
   subscribeToSession,
   validateStoredSession,
 } from "@/lib/auth";
-import { voiceApi, type AgentSummary, type BackendCampaign, type BackendPhoneNumber } from "@/lib/voice";
+import {
+  voiceApi,
+  type AgentSummary,
+  type BackendCampaign,
+  type BackendCampaignLead,
+  type BackendPhoneNumber,
+  type CampaignAuditLogEntry,
+  type CampaignLeadStatus,
+  type CampaignOperationsHealth,
+  type CampaignPagination,
+  type PricingGuide,
+} from "@/lib/voice";
 
 type IconName = "activity" | "bolt" | "calendar" | "check" | "clock" | "close" | "file" | "info" | "phone" | "play" | "shield" | "spark" | "target" | "upload" | "user" | "users" | "warning";
 type CampaignLead = {
@@ -20,16 +31,31 @@ type CampaignLead = {
   name: string;
   email: string;
   company: string;
+  doNotCall: boolean;
   customFields: Record<string, string>;
 };
 type SendMode = "now" | "schedule";
 type CampaignAction = "pause" | "resume" | "cancel";
+type CsvMapping = Record<"phone" | "name" | "email" | "company" | "doNotCall", string>;
+type ComplianceCertification = {
+  consentBasis: boolean;
+  optOutSuppression: boolean;
+  callerIdentity: boolean;
+  quietHours: boolean;
+};
 
 const maxCsvSize = 25 * 1024 * 1024;
+const emptyCsvMapping: CsvMapping = { phone: "", name: "", email: "", company: "", doNotCall: "" };
+const emptyPagination: CampaignPagination = { page: 1, limit: 25, total: 0, pages: 1 };
+const leadStatuses: Array<CampaignLeadStatus | ""> = ["", "queued", "leased", "active", "retry_wait", "completed", "failed", "suppressed", "cancelled"];
 const buttonClass =
   "app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 transition disabled:cursor-not-allowed disabled:opacity-50";
 const controlClass =
   "app-control-text min-h-11 w-full rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10";
+
+function createIdempotencyKey() {
+  return globalThis.crypto?.randomUUID?.() ?? `${new Date().getTime()}-${Math.random().toString(36).slice(2)}`;
+}
 
 function Icon({ icon, className = "size-4" }: { icon: IconName; className?: string }) {
   const props = {
@@ -111,36 +137,87 @@ function parseCsvRows(text: string) {
   return rows;
 }
 
-function parseCampaignCsv(text: string): CampaignLead[] {
-  const rows = parseCsvRows(text);
-  if (rows.length < 2) throw new Error("CSV needs a header row and at least one contact.");
+function inferCsvMapping(headers: string[]): CsvMapping {
+  const normalized = headers.map(normalizeHeader);
+  const find = (names: string[]) => {
+    const index = normalized.findIndex((header) => names.includes(header));
+    return index >= 0 ? String(index) : "";
+  };
+  return {
+    phone: find(["phone", "phonenumber", "mobile", "mobilenumber", "number", "contact"]),
+    name: find(["name", "fullname", "customername", "leadname"]),
+    email: find(["email", "emailaddress"]),
+    company: find(["company", "business", "organization"]),
+    doNotCall: find(["dnc", "donotcall", "optout", "optedout", "unsubscribed"]),
+  };
+}
 
-  const rawHeaders = rows[0];
-  const headers = rawHeaders.map(normalizeHeader);
-  const phoneIndex = headers.findIndex((header) => ["phone", "phonenumber", "mobile", "mobilenumber", "number", "contact"].includes(header));
-  if (phoneIndex < 0) throw new Error("CSV must include a phone or phone_number column.");
+function truthyCell(value: string) {
+  return ["1", "true", "yes", "y", "optout", "optedout", "do not call", "dnc", "unsubscribed"].includes(value.trim().toLowerCase());
+}
 
-  const nameIndex = headers.findIndex((header) => ["name", "fullname", "customername", "leadname"].includes(header));
-  const emailIndex = headers.findIndex((header) => ["email", "emailaddress"].includes(header));
-  const companyIndex = headers.findIndex((header) => ["company", "business", "organization"].includes(header));
+function csvLeadsFromMapping(headers: string[], rows: string[][], mapping: CsvMapping): CampaignLead[] {
+  const phoneIndex = Number(mapping.phone);
+  if (!Number.isInteger(phoneIndex) || phoneIndex < 0) return [];
+  const mappedIndices = new Set(
+    Object.values(mapping)
+      .map((value) => Number(value))
+      .filter((value) => Number.isInteger(value) && value >= 0),
+  );
+  const indexValue = (row: string[], value: string) => {
+    const index = Number(value);
+    return Number.isInteger(index) && index >= 0 ? row[index]?.trim() ?? "" : "";
+  };
 
-  return rows.slice(1).map((row, index) => {
+  return rows.map((row, index) => {
     const customFields: Record<string, string> = {};
-    rawHeaders.forEach((header, headerIndex) => {
-      if ([phoneIndex, nameIndex, emailIndex, companyIndex].includes(headerIndex)) return;
+    headers.forEach((header, headerIndex) => {
+      if (mappedIndices.has(headerIndex)) return;
       const value = row[headerIndex]?.trim();
-      if (header && value) customFields[header.trim()] = value;
+      if (value) customFields[header?.trim() || `Column ${headerIndex + 1}`] = value;
     });
-
     return {
       row: index + 2,
-      phone: (row[phoneIndex] ?? "").replace(/[^\d+]/g, ""),
-      name: nameIndex >= 0 ? row[nameIndex] ?? "" : "",
-      email: emailIndex >= 0 ? row[emailIndex] ?? "" : "",
-      company: companyIndex >= 0 ? row[companyIndex] ?? "" : "",
+      phone: indexValue(row, mapping.phone).replace(/[^\d+]/g, ""),
+      name: indexValue(row, mapping.name),
+      email: indexValue(row, mapping.email),
+      company: indexValue(row, mapping.company),
+      doNotCall: truthyCell(indexValue(row, mapping.doNotCall)),
       customFields,
     };
   }).filter((lead) => lead.phone);
+}
+
+function estimateCampaignCredits(input: {
+  leads: number;
+  maxAttempts: number;
+  averageMinutes: number;
+  pricing: PricingGuide | null;
+}) {
+  const pricing = input.pricing ?? {
+    currency: "USD",
+    llmPerMillionTokens: 0.4,
+    sttPerMinute: 0.006,
+    ttsPerMillionCharacters: 15,
+    telephonyPerMinute: 0.012,
+    markupMultiplier: 2.5,
+  };
+  const llmCostPerMinute = (pricing.llmPerMillionTokens * 1_200) / 1_000_000;
+  const ttsCostPerMinute = (pricing.ttsPerMillionCharacters * 900) / 1_000_000;
+  const providerPerMinute = pricing.telephonyPerMinute + pricing.sttPerMinute + llmCostPerMinute + ttsCostPerMinute;
+  const attempts = Math.max(1, Math.floor(input.maxAttempts));
+  const minutes = Math.max(0.25, input.averageMinutes);
+  return Math.round(input.leads * attempts * minutes * providerPerMinute * pricing.markupMultiplier * 100) / 100;
+}
+
+function defaultSpendLimitCredits(input: {
+  leads: number;
+  maxAttempts: number;
+  averageMinutes: number;
+  pricing: PricingGuide | null;
+}) {
+  const estimate = estimateCampaignCredits(input);
+  return estimate ? Math.ceil(estimate * 1.2 * 100) / 100 : 0;
 }
 
 function isDialable(phone: string) {
@@ -211,12 +288,36 @@ function statusTheme(status: BackendCampaign["status"]) {
   return "border-slate-200 bg-white text-slate-600";
 }
 
+function leadStatusCopy(status: CampaignLeadStatus | "") {
+  return status ? status.charAt(0).toUpperCase() + status.slice(1).replace("_", " ") : "All";
+}
+
+function leadStatusTheme(status: CampaignLeadStatus) {
+  if (status === "completed") return "border-emerald-200 bg-emerald-50 text-emerald-700";
+  if (status === "active" || status === "leased") return "border-sky-200 bg-sky-50 text-sky-700";
+  if (status === "retry_wait") return "border-amber-200 bg-amber-50 text-amber-700";
+  if (status === "failed" || status === "cancelled") return "border-red-200 bg-red-50 text-red-700";
+  if (status === "suppressed") return "border-orange-200 bg-orange-50 text-orange-700";
+  return "border-slate-200 bg-white text-slate-600";
+}
+
 function progressValue(value: number) {
   return Math.max(0, Math.min(100, Number.isFinite(value) ? value : 0));
 }
 
 function numberFormat(value: number) {
   return value.toLocaleString("en-IN");
+}
+
+function moneyFormat(value: number) {
+  return `$${value.toFixed(2)}`;
+}
+
+function formatDuration(seconds: number) {
+  if (!seconds) return "0s";
+  const minutes = Math.floor(seconds / 60);
+  const rest = Math.round(seconds % 60);
+  return minutes ? `${minutes}m ${rest}s` : `${rest}s`;
 }
 
 function schedulePreview(value: string, timezone: string) {
@@ -267,16 +368,25 @@ export function CampaignShell() {
   const [agents, setAgents] = useState<AgentSummary[]>([]);
   const [numbers, setNumbers] = useState<BackendPhoneNumber[]>([]);
   const [campaigns, setCampaigns] = useState<BackendCampaign[]>([]);
+  const [campaignPagination, setCampaignPagination] = useState<CampaignPagination>(emptyPagination);
+  const [campaignPage, setCampaignPage] = useState(1);
+  const [campaignSearch, setCampaignSearch] = useState("");
+  const [campaignStatus, setCampaignStatus] = useState<BackendCampaign["status"] | "">("");
+  const [operationsHealth, setOperationsHealth] = useState<CampaignOperationsHealth | null>(null);
   const [campaignName, setCampaignName] = useState("");
   const [selectedPhoneId, setSelectedPhoneId] = useState("");
   const [selectedAgentId, setSelectedAgentId] = useState("");
   const [sendMode, setSendMode] = useState<SendMode>("now");
   const [scheduledAt, setScheduledAt] = useState("");
   const [timezone, setTimezone] = useState("Asia/Kolkata");
+  const [pricingGuide, setPricingGuide] = useState<PricingGuide | null>(null);
   const [dailyLimit, setDailyLimit] = useState(250);
   const [concurrency, setConcurrency] = useState(3);
   const [maxAttempts, setMaxAttempts] = useState(1);
   const [retryGapHours, setRetryGapHours] = useState(24);
+  const [averageCallMinutes, setAverageCallMinutes] = useState(3);
+  const [spendLimitCredits, setSpendLimitCredits] = useState(0);
+  const [spendLimitTouched, setSpendLimitTouched] = useState(false);
   const [windowStart, setWindowStart] = useState("10:00");
   const [windowEnd, setWindowEnd] = useState("18:00");
   const [campaignGoal, setCampaignGoal] = useState("");
@@ -284,15 +394,34 @@ export function CampaignShell() {
   const [respectDnc, setRespectDnc] = useState(true);
   const [detectVoicemail, setDetectVoicemail] = useState(true);
   const [requireConsentLine, setRequireConsentLine] = useState(true);
+  const [certification, setCertification] = useState<ComplianceCertification>({
+    consentBasis: false,
+    optOutSuppression: false,
+    callerIdentity: false,
+    quietHours: false,
+  });
   const [csvFile, setCsvFile] = useState<File | null>(null);
+  const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
+  const [csvRows, setCsvRows] = useState<string[][]>([]);
+  const [csvMapping, setCsvMapping] = useState<CsvMapping>(emptyCsvMapping);
   const [leads, setLeads] = useState<CampaignLead[]>([]);
+  const [selectedCampaignId, setSelectedCampaignId] = useState("");
+  const [leadRows, setLeadRows] = useState<BackendCampaignLead[]>([]);
+  const [leadPagination, setLeadPagination] = useState<CampaignPagination>({ ...emptyPagination, limit: 50 });
+  const [leadPage, setLeadPage] = useState(1);
+  const [leadStatus, setLeadStatus] = useState<CampaignLeadStatus | "">("");
+  const [leadSearch, setLeadSearch] = useState("");
+  const [auditLogs, setAuditLogs] = useState<CampaignAuditLogEntry[]>([]);
+  const [leadLoading, setLeadLoading] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [launching, setLaunching] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const [showUserSidebar, setShowUserSidebar] = useState(false);
   const [now, setNow] = useState(() => new Date());
-  const [idempotencyKey, setIdempotencyKey] = useState(() => globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`);
+  const [idempotencyKey, setIdempotencyKey] = useState(createIdempotencyKey);
 
   useEffect(() => {
     if (!session) {
@@ -305,7 +434,9 @@ export function CampaignShell() {
       const dataPromise = Promise.all([
         voiceApi.agentSummaries(),
         voiceApi.phoneNumbers(),
-        voiceApi.campaigns(),
+        voiceApi.campaigns({ page: campaignPage, status: campaignStatus, search: campaignSearch }),
+        voiceApi.campaignOperationsHealth(),
+        voiceApi.config(),
       ]).then(
         (value) => ({ value, error: null }),
         (caught: unknown) => ({ value: null, error: caught }),
@@ -321,7 +452,7 @@ export function CampaignShell() {
       if (!dataResult.value) {
         throw dataResult.error ?? new Error("Could not load campaign data.");
       }
-      const [agentResult, numberResult, campaignResult] = dataResult.value;
+      const [agentResult, numberResult, campaignResult, healthResult, configResult] = dataResult.value;
       if (cancelled) return;
       const firstAgentId = agentResult.agents[0]?._id || "";
       const firstReadyCallerId = numberResult.numbers.find(
@@ -331,6 +462,14 @@ export function CampaignShell() {
       setAgents(agentResult.agents);
       setNumbers(numberResult.numbers);
       setCampaigns(campaignResult.campaigns);
+      setCampaignPagination(campaignResult.pagination);
+      setOperationsHealth(healthResult);
+      setPricingGuide(configResult.pricing);
+      setSelectedCampaignId((current) => (
+        campaignResult.campaigns.some((campaign) => campaign._id === current)
+          ? current
+          : campaignResult.campaigns[0]?._id || ""
+      ));
       setSelectedAgentId((current) => current || firstAgentId);
       setSelectedPhoneId((current) => current || firstCallerId?._id || "");
       setError("");
@@ -343,14 +482,26 @@ export function CampaignShell() {
       });
 
     return () => { cancelled = true; };
-  }, [router, session]);
+  }, [campaignPage, campaignSearch, campaignStatus, router, session]);
 
   useEffect(() => {
     if (!session) return;
     let cancelled = false;
     const refresh = () => {
-      void voiceApi.campaigns().then((result) => {
-        if (!cancelled) setCampaigns(result.campaigns);
+      void Promise.all([
+        voiceApi.campaigns({ page: campaignPage, status: campaignStatus, search: campaignSearch }),
+        voiceApi.campaignOperationsHealth(),
+      ]).then(([campaignResult, healthResult]) => {
+        if (!cancelled) {
+          setCampaigns(campaignResult.campaigns);
+          setCampaignPagination(campaignResult.pagination);
+          setOperationsHealth(healthResult);
+          setSelectedCampaignId((current) => (
+            campaignResult.campaigns.some((campaign) => campaign._id === current)
+              ? current
+              : campaignResult.campaigns[0]?._id || ""
+          ));
+        }
       }).catch(() => undefined);
     };
     const timer = window.setInterval(refresh, 5000);
@@ -358,15 +509,37 @@ export function CampaignShell() {
       cancelled = true;
       window.clearInterval(timer);
     };
-  }, [session]);
+  }, [campaignPage, campaignSearch, campaignStatus, session]);
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 60_000);
     return () => window.clearInterval(timer);
   }, []);
 
+  useEffect(() => {
+    if (!session || !selectedCampaignId) {
+      return;
+    }
+    let cancelled = false;
+    void Promise.all([
+      voiceApi.campaignLeads(selectedCampaignId, { page: leadPage, status: leadStatus, search: leadSearch }),
+      voiceApi.campaignAuditLog(selectedCampaignId, { page: 1, limit: 8 }),
+    ]).then(([leadResult, auditResult]) => {
+      if (cancelled) return;
+      setLeadRows(leadResult.leads);
+      setLeadPagination(leadResult.pagination);
+      setAuditLogs(auditResult.auditLogs);
+    }).catch((caught) => {
+      if (!cancelled) setError(errorMessage(caught));
+    }).finally(() => {
+      if (!cancelled) setLeadLoading(false);
+    });
+    return () => { cancelled = true; };
+  }, [leadPage, leadSearch, leadStatus, selectedCampaignId, session]);
+
   const selectedAgent = useMemo(() => agents.find((agent) => agent._id === selectedAgentId) ?? null, [agents, selectedAgentId]);
   const selectedPhone = useMemo(() => numbers.find((number) => number._id === selectedPhoneId) ?? null, [numbers, selectedPhoneId]);
+  const selectedCampaign = useMemo(() => campaigns.find((campaign) => campaign._id === selectedCampaignId) ?? null, [campaigns, selectedCampaignId]);
   const callableNumbers = numbers.filter((number) => number.direction !== "Inbound");
   const selectedPhoneReady = Boolean(
     selectedPhone
@@ -376,14 +549,29 @@ export function CampaignShell() {
   );
   const normalizedDailyLimit = Math.max(1, Number.isFinite(dailyLimit) ? Math.floor(dailyLimit) : 1);
   const normalizedConcurrency = Math.max(1, Math.min(100, Number.isFinite(concurrency) ? Math.floor(concurrency) : 1));
+  const normalizedMaxAttempts = Math.max(1, Math.min(10, Number.isFinite(maxAttempts) ? Math.floor(maxAttempts) : 1));
+  const normalizedAverageCallMinutes = Math.max(0.25, Math.min(120, Number.isFinite(averageCallMinutes) ? averageCallMinutes : 3));
   const invalidLeadCount = leads.filter((lead) => !isDialable(lead.phone)).length;
+  const optedOutImportCount = leads.filter((lead) => lead.doNotCall).length;
+  const phoneColumnMapped = csvMapping.phone !== "";
+  const certificationComplete = Object.values(certification).every(Boolean);
+  const estimatedCostCredits = estimateCampaignCredits({
+    leads: leads.length,
+    maxAttempts: normalizedMaxAttempts,
+    averageMinutes: normalizedAverageCallMinutes,
+    pricing: pricingGuide,
+  });
+  const normalizedSpendLimitCredits = Math.max(0, Number.isFinite(spendLimitCredits) ? Math.round(spendLimitCredits * 100) / 100 : 0);
   const readyChecks = [
     { label: "Campaign name", ready: Boolean(campaignName.trim()) },
     { label: "Ready caller ID assigned", ready: selectedPhoneReady },
     { label: "Assistant is Live", ready: selectedAgent?.status === "Live" },
     { label: "CSV contacts uploaded", ready: leads.length > 0 },
+    { label: "Phone column mapped", ready: phoneColumnMapped },
     { label: "All phone numbers E.164", ready: leads.length > 0 && invalidLeadCount === 0 },
     { label: "Compliance guardrails on", ready: respectDnc && requireConsentLine },
+    { label: "Compliance certification", ready: certificationComplete },
+    { label: "Spending limit set", ready: normalizedSpendLimitCredits > 0 },
     { label: "Schedule selected", ready: sendMode === "now" || Boolean(scheduledAt) },
   ];
   const canPrepare = readyChecks.every((check) => check.ready);
@@ -419,15 +607,51 @@ export function CampaignShell() {
       return;
     }
     try {
-      const parsed = parseCampaignCsv(await file.text());
-      if (!parsed.length) throw new Error("No contacts found in the CSV.");
+      const rows = parseCsvRows(await file.text());
+      if (rows.length < 2) throw new Error("CSV needs a header row and at least one contact.");
+      const headers = rows[0];
+      const bodyRows = rows.slice(1);
+      const mapping = inferCsvMapping(headers);
+      const parsed = csvLeadsFromMapping(headers, bodyRows, mapping);
       setCsvFile(file);
+      setCsvHeaders(headers);
+      setCsvRows(bodyRows);
+      setCsvMapping(mapping);
       setLeads(parsed);
-      setNotice(`${parsed.length} contacts loaded from ${file.name}.`);
+      setSpendLimitTouched(false);
+      setSpendLimitCredits(defaultSpendLimitCredits({
+        leads: parsed.length,
+        maxAttempts: normalizedMaxAttempts,
+        averageMinutes: normalizedAverageCallMinutes,
+        pricing: pricingGuide,
+      }));
+      setNotice(
+        mapping.phone
+          ? `${parsed.length} contacts loaded from ${file.name}. Review the column mapping before launch.`
+          : `${file.name} is loaded. Map the phone column before launch.`,
+      );
     } catch (caught) {
       setCsvFile(null);
+      setCsvHeaders([]);
+      setCsvRows([]);
+      setCsvMapping(emptyCsvMapping);
       setLeads([]);
       setError(errorMessage(caught));
+    }
+  }
+
+  function updateCsvMapping(key: keyof CsvMapping, value: string) {
+    const next = { ...csvMapping, [key]: value };
+    const parsed = csvLeadsFromMapping(csvHeaders, csvRows, next);
+    setCsvMapping(next);
+    setLeads(parsed);
+    if (!spendLimitTouched) {
+      setSpendLimitCredits(defaultSpendLimitCredits({
+        leads: parsed.length,
+        maxAttempts: normalizedMaxAttempts,
+        averageMinutes: normalizedAverageCallMinutes,
+        pricing: pricingGuide,
+      }));
     }
   }
 
@@ -444,6 +668,11 @@ export function CampaignShell() {
       setError("Complete the campaign readiness checks before preparing this campaign.");
       return;
     }
+    setConfirmOpen(true);
+  }
+
+  async function executeCampaignLaunch() {
+    setConfirmOpen(false);
     setLaunching(true);
     setNotice(`Preparing campaign for ${plural(leads.length, "contact")}...`);
     try {
@@ -457,13 +686,16 @@ export function CampaignShell() {
         windowEnd,
         dailyLimit: normalizedDailyLimit,
         concurrency: normalizedConcurrency,
-        maxAttempts: Math.max(1, Math.min(10, Math.floor(maxAttempts))),
+        maxAttempts: normalizedMaxAttempts,
         retryGapSeconds: Math.max(60, Math.floor(retryGapHours * 3600)),
         goal: campaignGoal.trim(),
         successCriteria: successCriteria.trim(),
         respectDnc,
         requireConsentLine,
         detectVoicemail,
+        estimatedCostCredits,
+        spendLimitCredits: normalizedSpendLimitCredits,
+        estimatedCallSeconds: Math.round(normalizedAverageCallMinutes * 60),
       });
       const batchSize = 500;
       for (let index = 0; index < leads.length; index += batchSize) {
@@ -473,18 +705,48 @@ export function CampaignShell() {
       const launched = await voiceApi.launchCampaign(created.campaign._id, {
         mode: sendMode,
         ...(sendMode === "schedule" ? { scheduledAt: zonedLocalDateTimeToIso(scheduledAt, timezone) } : {}),
+        confirmLaunch: true,
+        complianceCertification: {
+          consentBasis: true,
+          optOutSuppression: true,
+          callerIdentity: true,
+          quietHours: true,
+        },
       });
       setCampaigns((current) => [launched.campaign, ...current.filter((item) => item._id !== launched.campaign._id)]);
+      setSelectedCampaignId(launched.campaign._id);
       setNotice(
         sendMode === "schedule"
           ? `${campaignName.trim()} is scheduled. Calls will run automatically, even if you close this page.`
           : `${campaignName.trim()} is live. Calls will continue automatically, even if you close this page.`,
       );
-      setIdempotencyKey(globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`);
+      setIdempotencyKey(createIdempotencyKey());
     } catch (caught) {
       setError(errorMessage(caught));
     } finally {
       setLaunching(false);
+    }
+  }
+
+  async function exportSelectedLeads() {
+    if (!selectedCampaignId) return;
+    setExporting(true);
+    setError("");
+    try {
+      const blob = await voiceApi.exportCampaignLeadsCsv(selectedCampaignId, { status: leadStatus, search: leadSearch });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      const campaign = campaigns.find((item) => item._id === selectedCampaignId);
+      link.href = url;
+      link.download = `${campaign?.name?.replace(/[^a-z0-9_-]+/gi, "_") || "campaign"}-leads.csv`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch (caught) {
+      setError(errorMessage(caught));
+    } finally {
+      setExporting(false);
     }
   }
 
@@ -640,6 +902,32 @@ export function CampaignShell() {
                   </span>
                 </label>
 
+                {csvHeaders.length ? (
+                  <div className="mt-5 rounded-[1.5rem] border border-[#dbe2ea] bg-white p-4 shadow-sm">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div>
+                        <span className="app-label text-[#008996]">Column mapping</span>
+                        <p className="app-caption mt-1 mb-0">Map CSV columns before upload. Unmapped columns are kept as custom fields.</p>
+                      </div>
+                      <span className={`rounded-full px-3 py-1 text-xs font-semibold ${phoneColumnMapped ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-800"}`}>
+                        {phoneColumnMapped ? "Phone mapped" : "Phone required"}
+                      </span>
+                    </div>
+                    <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+                      <MappingSelect headers={csvHeaders} label="Phone" required value={csvMapping.phone} onChange={(value) => updateCsvMapping("phone", value)} />
+                      <MappingSelect headers={csvHeaders} label="Name" value={csvMapping.name} onChange={(value) => updateCsvMapping("name", value)} />
+                      <MappingSelect headers={csvHeaders} label="Email" value={csvMapping.email} onChange={(value) => updateCsvMapping("email", value)} />
+                      <MappingSelect headers={csvHeaders} label="Company" value={csvMapping.company} onChange={(value) => updateCsvMapping("company", value)} />
+                      <MappingSelect headers={csvHeaders} label="Opt-out" value={csvMapping.doNotCall} onChange={(value) => updateCsvMapping("doNotCall", value)} />
+                    </div>
+                    <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                      <MiniStat label="Rows parsed" value={numberFormat(leads.length)} />
+                      <MiniStat label="Invalid phones" value={numberFormat(invalidLeadCount)} />
+                      <MiniStat label="Import opt-outs" value={numberFormat(optedOutImportCount)} />
+                    </div>
+                  </div>
+                ) : null}
+
                 <div className={`mt-5 grid gap-3 rounded-3xl border p-4 sm:grid-cols-[auto_minmax(0,1fr)] ${
                   callWindowOpen ? "border-emerald-200 bg-emerald-50/80" : "border-amber-200 bg-amber-50/80"
                 }`}>
@@ -686,6 +974,7 @@ export function CampaignShell() {
                             <th className="px-4 py-3">Phone</th>
                             <th className="px-4 py-3">Name</th>
                             <th className="px-4 py-3">Company</th>
+                            <th className="px-4 py-3">Opt-out</th>
                             <th className="px-4 py-3">Custom fields</th>
                           </tr>
                         </thead>
@@ -696,6 +985,11 @@ export function CampaignShell() {
                               <td className={`px-4 py-3 text-sm font-semibold ${isDialable(lead.phone) ? "text-slate-950" : "text-red-600"}`}>{lead.phone}</td>
                               <td className="app-body px-4 py-3 text-[#475569]">{lead.name || "-"}</td>
                               <td className="app-body px-4 py-3 text-[#475569]">{lead.company || "-"}</td>
+                              <td className="px-4 py-3">
+                                <span className={`rounded-full px-2 py-1 text-xs font-semibold ${lead.doNotCall ? "bg-amber-100 text-amber-800" : "bg-emerald-100 text-emerald-700"}`}>
+                                  {lead.doNotCall ? "Yes" : "No"}
+                                </span>
+                              </td>
                               <td className="app-caption px-4 py-3">{Object.keys(lead.customFields).length}</td>
                             </tr>
                           ))}
@@ -790,11 +1084,76 @@ export function CampaignShell() {
                   </label>
                   <label className="app-label grid gap-2">
                     Max attempts
-                    <input className={controlClass} min={1} max={5} type="number" value={maxAttempts} onChange={(event) => setMaxAttempts(Number(event.target.value))} />
+                    <input
+                      className={controlClass}
+                      min={1}
+                      max={5}
+                      type="number"
+                      value={maxAttempts}
+                      onChange={(event) => {
+                        const next = Number(event.target.value);
+                        setMaxAttempts(next);
+                        if (!spendLimitTouched) {
+                          setSpendLimitCredits(defaultSpendLimitCredits({
+                            leads: leads.length,
+                            maxAttempts: next,
+                            averageMinutes: normalizedAverageCallMinutes,
+                            pricing: pricingGuide,
+                          }));
+                        }
+                      }}
+                    />
                   </label>
                   <label className="app-label grid gap-2">
                     Retry gap hours
                     <input className={controlClass} min={1} max={168} type="number" value={retryGapHours} onChange={(event) => setRetryGapHours(Number(event.target.value))} />
+                  </label>
+                </div>
+
+                <div className="mt-5 grid gap-4 rounded-[1.75rem] border border-[#dff7fb] bg-[#f4fdff] p-4 lg:grid-cols-[minmax(0,1fr)_220px_220px]">
+                  <div>
+                    <span className="app-label text-[#008996]">Cost guardrail</span>
+                    <p className="mt-1 mb-0 text-sm font-semibold text-slate-950">
+                      Estimated ${estimatedCostCredits.toFixed(2)} for {numberFormat(leads.length)} leads
+                    </p>
+                    <p className="app-caption mt-1 mb-0">The backend enforces the hard limit and pauses the campaign before leasing more calls.</p>
+                  </div>
+                  <label className="app-label grid gap-2">
+                    Avg call minutes
+                    <input
+                      className={controlClass}
+                      min={0.25}
+                      max={120}
+                      step={0.25}
+                      type="number"
+                      value={averageCallMinutes}
+                      onChange={(event) => {
+                        const next = Number(event.target.value);
+                        setAverageCallMinutes(next);
+                        if (!spendLimitTouched) {
+                          setSpendLimitCredits(defaultSpendLimitCredits({
+                            leads: leads.length,
+                            maxAttempts: normalizedMaxAttempts,
+                            averageMinutes: next,
+                            pricing: pricingGuide,
+                          }));
+                        }
+                      }}
+                    />
+                  </label>
+                  <label className="app-label grid gap-2">
+                    Hard spend limit
+                    <input
+                      className={controlClass}
+                      min={1}
+                      step={0.01}
+                      type="number"
+                      value={spendLimitCredits}
+                      onChange={(event) => {
+                        setSpendLimitTouched(true);
+                        setSpendLimitCredits(Number(event.target.value));
+                      }}
+                    />
                   </label>
                 </div>
               </Panel>
@@ -871,6 +1230,28 @@ export function CampaignShell() {
                       <ToggleRow title="Voicemail detection" detail="Outcome tagging" enabled={detectVoicemail} onChange={setDetectVoicemail} />
                       <ToggleRow title="Consent opening" detail="Identity and purpose" enabled={requireConsentLine} onChange={setRequireConsentLine} />
                     </div>
+                    <div className="mt-4 grid gap-2.5 rounded-2xl border border-slate-200 bg-white p-3">
+                      <CertificationCheck
+                        checked={certification.consentBasis}
+                        label="Consent or lawful basis verified"
+                        onChange={(checked) => setCertification((current) => ({ ...current, consentBasis: checked }))}
+                      />
+                      <CertificationCheck
+                        checked={certification.optOutSuppression}
+                        label="Opt-out and DNC sources reviewed"
+                        onChange={(checked) => setCertification((current) => ({ ...current, optOutSuppression: checked }))}
+                      />
+                      <CertificationCheck
+                        checked={certification.callerIdentity}
+                        label="Opening identifies business and purpose"
+                        onChange={(checked) => setCertification((current) => ({ ...current, callerIdentity: checked }))}
+                      />
+                      <CertificationCheck
+                        checked={certification.quietHours}
+                        label="Calling window follows local rules"
+                        onChange={(checked) => setCertification((current) => ({ ...current, quietHours: checked }))}
+                      />
+                    </div>
                   </div>
 
                   <div className="mt-5 border-t border-slate-200 pt-5">
@@ -878,13 +1259,16 @@ export function CampaignShell() {
                     <dl className="mt-4 grid gap-3">
                       <SummaryRow label="Contacts" value={numberFormat(leads.length)} />
                       <SummaryRow label="Invalid phones" value={numberFormat(invalidLeadCount)} warn={invalidLeadCount > 0} />
+                      <SummaryRow label="Import opt-outs" value={numberFormat(optedOutImportCount)} />
                       <SummaryRow label="Batches" value={numberFormat(estimatedBatches)} />
+                      <SummaryRow label="Estimated cost" value={`$${estimatedCostCredits.toFixed(2)}`} />
+                      <SummaryRow label="Spend limit" value={`$${normalizedSpendLimitCredits.toFixed(2)}`} warn={normalizedSpendLimitCredits < estimatedCostCredits} />
                       <SummaryRow label="Caller ID" value={selectedPhone?.number ?? "Not selected"} />
                       <SummaryRow label="Assistant" value={selectedAgent?.name ?? "Not selected"} />
                       <SummaryRow label="Launch" value={launchModeSummary} />
                     </dl>
                     <button className={`${buttonClass} mt-5 w-full bg-[#00b8c4] text-white shadow-sm hover:bg-[#008996]`} disabled={loading || launching || !canPrepare} type="submit">
-                      <Icon icon="play" /> {launching ? "Launching..." : sendMode === "now" ? callWindowOpen ? "Start calls now" : "Queue until call window" : "Schedule campaign"}
+                      <Icon icon="play" /> {launching ? "Launching..." : "Review and confirm"}
                     </button>
                     <p className="app-caption mt-3 mb-0 text-center">
                       {sendMode === "now"
@@ -897,9 +1281,74 @@ export function CampaignShell() {
               </div>
             </aside>
           </form>
-          <CampaignOperationsSection campaigns={campaigns} onControl={controlCampaign} />
+          <CampaignOperationsSection
+            campaignPage={campaignPage}
+            campaignPagination={campaignPagination}
+            campaignSearch={campaignSearch}
+            campaignStatus={campaignStatus}
+            campaigns={campaigns}
+            health={operationsHealth}
+            selectedCampaignId={selectedCampaignId}
+            onCampaignPageChange={setCampaignPage}
+            onCampaignSearchChange={(value) => {
+              setCampaignPage(1);
+              setCampaignSearch(value);
+            }}
+            onCampaignStatusChange={(value) => {
+              setCampaignPage(1);
+              setCampaignStatus(value);
+            }}
+            onControl={controlCampaign}
+            onInspect={(campaign) => {
+              setLeadLoading(true);
+              setSelectedCampaignId(campaign._id);
+              setLeadPage(1);
+            }}
+          />
+          <CampaignLeadOperationsPanel
+            auditLogs={auditLogs}
+            campaign={selectedCampaign}
+            exporting={exporting}
+            leadLoading={leadLoading}
+            leadPage={leadPage}
+            leadPagination={leadPagination}
+            leadRows={leadRows}
+            leadSearch={leadSearch}
+            leadStatus={leadStatus}
+            onExport={() => void exportSelectedLeads()}
+            onLeadPageChange={(page) => {
+              setLeadLoading(true);
+              setLeadPage(page);
+            }}
+            onLeadSearchChange={(value) => {
+              setLeadLoading(true);
+              setLeadPage(1);
+              setLeadSearch(value);
+            }}
+            onLeadStatusChange={(value) => {
+              setLeadLoading(true);
+              setLeadPage(1);
+              setLeadStatus(value);
+            }}
+          />
         </div>
       </section>
+
+      {confirmOpen ? (
+        <LaunchConfirmModal
+          averageCallMinutes={normalizedAverageCallMinutes}
+          campaignName={campaignName.trim()}
+          contacts={leads.length}
+          estimatedCostCredits={estimatedCostCredits}
+          invalidLeadCount={invalidLeadCount}
+          launchModeSummary={launchModeSummary}
+          optedOutImportCount={optedOutImportCount}
+          routeSummary={routeSummary}
+          spendLimitCredits={normalizedSpendLimitCredits}
+          onCancel={() => setConfirmOpen(false)}
+          onConfirm={() => void executeCampaignLaunch()}
+        />
+      ) : null}
     </main>
   );
 }
@@ -1017,12 +1466,117 @@ function SummaryRow({ label, value, warn = false }: { label: string; value: stri
   );
 }
 
-function CampaignOperationsSection({
-  campaigns,
-  onControl,
+function MappingSelect({
+  headers,
+  label,
+  onChange,
+  required = false,
+  value,
 }: {
+  headers: string[];
+  label: string;
+  onChange: (value: string) => void;
+  required?: boolean;
+  value: string;
+}) {
+  return (
+    <label className="app-label grid gap-2">
+      {label}{required ? " *" : ""}
+      <select className={controlClass} value={value} onChange={(event) => onChange(event.target.value)}>
+        <option value="">Do not map</option>
+        {headers.map((header, index) => (
+          <option key={`${header}-${index}`} value={String(index)}>
+            {header || `Column ${index + 1}`}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function CertificationCheck({ checked, label, onChange }: { checked: boolean; label: string; onChange: (checked: boolean) => void }) {
+  return (
+    <label className="flex cursor-pointer items-start gap-3 text-sm font-medium text-slate-700">
+      <input className="mt-1 size-4 rounded border-slate-300 accent-[#00b8c4]" type="checkbox" checked={checked} onChange={(event) => onChange(event.target.checked)} />
+      <span>{label}</span>
+    </label>
+  );
+}
+
+function HealthStat({ detail, label, tone, value }: { detail: string; label: string; tone: "danger" | "neutral" | "warning"; value: string }) {
+  const toneClass = tone === "danger"
+    ? "border-red-200 bg-red-50 text-red-800"
+    : tone === "warning"
+      ? "border-amber-200 bg-amber-50 text-amber-900"
+      : "border-slate-200 bg-slate-50 text-slate-800";
+  return (
+    <div className={`rounded-lg border px-3 py-2 ${toneClass}`}>
+      <span className="block text-[11px] font-semibold uppercase tracking-[0.12em] opacity-70">{label}</span>
+      <strong className="mt-1 block text-sm font-semibold">{value}</strong>
+      <span className="mt-1 block truncate text-xs opacity-80">{detail}</span>
+    </div>
+  );
+}
+
+function PaginationBar({
+  className = "",
+  onPageChange,
+  page,
+  pagination,
+}: {
+  className?: string;
+  onPageChange: (page: number) => void;
+  page: number;
+  pagination: CampaignPagination;
+}) {
+  const start = pagination.total ? (pagination.page - 1) * pagination.limit + 1 : 0;
+  const end = Math.min(pagination.total, pagination.page * pagination.limit);
+  return (
+    <div className={`flex flex-wrap items-center justify-between gap-3 ${className}`}>
+      <span className="app-caption">
+        Showing {numberFormat(start)}-{numberFormat(end)} of {numberFormat(pagination.total)}
+      </span>
+      <div className="flex items-center gap-2">
+        <button className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 disabled:opacity-40" disabled={page <= 1} type="button" onClick={() => onPageChange(Math.max(1, page - 1))}>
+          Previous
+        </button>
+        <span className="rounded-lg bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-700">
+          {numberFormat(pagination.page)} / {numberFormat(pagination.pages)}
+        </span>
+        <button className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 disabled:opacity-40" disabled={page >= pagination.pages} type="button" onClick={() => onPageChange(Math.min(pagination.pages, page + 1))}>
+          Next
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function CampaignOperationsSection({
+  campaignPage,
+  campaignPagination,
+  campaignSearch,
+  campaignStatus,
+  campaigns,
+  health,
+  selectedCampaignId,
+  onCampaignPageChange,
+  onCampaignSearchChange,
+  onCampaignStatusChange,
+  onControl,
+  onInspect,
+}: {
+  campaignPage: number;
+  campaignPagination: CampaignPagination;
+  campaignSearch: string;
+  campaignStatus: BackendCampaign["status"] | "";
   campaigns: BackendCampaign[];
+  health: CampaignOperationsHealth | null;
+  selectedCampaignId: string;
+  onCampaignPageChange: (page: number) => void;
+  onCampaignSearchChange: (value: string) => void;
+  onCampaignStatusChange: (value: BackendCampaign["status"] | "") => void;
   onControl: (campaign: BackendCampaign, action: CampaignAction) => void | Promise<void>;
+  onInspect: (campaign: BackendCampaign) => void;
 }) {
   return (
     <section className="mt-5 overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm">
@@ -1037,10 +1591,38 @@ function CampaignOperationsSection({
         </span>
       </div>
 
+      <div className="grid gap-3 border-b border-[#edf0f4] bg-white px-4 py-4 sm:px-5 xl:grid-cols-[minmax(0,1fr)_minmax(360px,0.8fr)]">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <HealthStat label="Worker" value={health?.worker.running ? "Running" : "Idle"} detail={health?.worker.lastCompletedAt ? `Last ${formatDateTime(health.worker.lastCompletedAt)}` : "No run yet"} tone={health?.worker.lastError ? "danger" : "neutral"} />
+          <HealthStat label="Failed 24h" value={numberFormat(health?.failedCalls24h ?? 0)} detail={`${numberFormat(health?.providerErrors24h ?? 0)} provider errors`} tone={(health?.failedCalls24h ?? 0) > 0 ? "warning" : "neutral"} />
+          <HealthStat label="Retry wait" value={numberFormat(health?.leads.retry_wait ?? 0)} detail={`${numberFormat(health?.staleLeases ?? 0)} stale leases`} tone={(health?.staleLeases ?? 0) > 0 ? "warning" : "neutral"} />
+          <HealthStat label="Queued" value={numberFormat(health?.leads.queued ?? 0)} detail={`${numberFormat(health?.leads.active ?? 0)} active calls`} tone="neutral" />
+        </div>
+        <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_170px]">
+          <label className="app-label grid gap-2">
+            Search campaigns
+            <input className={controlClass} placeholder="Campaign name" value={campaignSearch} onChange={(event) => onCampaignSearchChange(event.target.value)} />
+          </label>
+          <label className="app-label grid gap-2">
+            Status
+            <select className={controlClass} value={campaignStatus} onChange={(event) => onCampaignStatusChange(event.target.value as BackendCampaign["status"] | "")}>
+              <option value="">All</option>
+              <option value="draft">Draft</option>
+              <option value="scheduled">Scheduled</option>
+              <option value="running">Running</option>
+              <option value="paused">Paused</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+              <option value="failed">Failed</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
       {campaigns.length ? (
         <>
           <div className="hidden overflow-x-auto lg:block">
-            <table className="w-full min-w-[1100px] text-left">
+            <table className="w-full min-w-[1220px] text-left">
               <thead className="bg-white text-[#64748b]">
                 <tr className="text-xs font-semibold uppercase tracking-[0.12em]">
                   <th className="px-4 py-3">Campaign</th>
@@ -1049,14 +1631,15 @@ function CampaignOperationsSection({
                   <th className="px-4 py-3">Leads</th>
                   <th className="px-4 py-3">Results</th>
                   <th className="px-4 py-3">Pacing</th>
+                  <th className="px-4 py-3">Budget</th>
                   <th className="px-4 py-3">Schedule</th>
                   <th className="px-4 py-3">Updated</th>
                   <th className="px-4 py-3 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#edf0f4]">
-                {campaigns.slice(0, 10).map((campaign) => (
-                  <tr className="align-top transition hover:bg-[#fbfdff]" key={campaign._id}>
+                {campaigns.map((campaign) => (
+                  <tr className={`align-top transition hover:bg-[#fbfdff] ${selectedCampaignId === campaign._id ? "bg-[#f0fdff]" : ""}`} key={campaign._id}>
                     <td className="px-4 py-4">
                       <strong className="block max-w-[220px] truncate text-sm font-semibold text-[#0f172a]">{campaign.name}</strong>
                       <span className="app-caption mt-1 block">Created {formatDateTime(campaign.createdAt, campaign.timezone)}</span>
@@ -1087,6 +1670,10 @@ function CampaignOperationsSection({
                       <span className="app-caption">{numberFormat(campaign.dailyLimit)} per day</span>
                     </td>
                     <td className="px-4 py-4">
+                      <span className="block text-sm font-semibold text-[#0f172a]">${campaign.cost.spentCredits.toFixed(2)}</span>
+                      <span className="app-caption">limit ${campaign.cost.spendLimitCredits.toFixed(2)}</span>
+                    </td>
+                    <td className="px-4 py-4">
                       <span className="block text-sm font-semibold text-[#0f172a]">{campaign.windowStart}-{campaign.windowEnd}</span>
                       <span className="app-caption">{campaign.scheduledAt ? formatDateTime(campaign.scheduledAt, campaign.timezone) : campaign.timezone}</span>
                     </td>
@@ -1095,7 +1682,12 @@ function CampaignOperationsSection({
                       {campaign.lastWorkerError ? <p className="mt-2 max-w-[220px] rounded-lg bg-[#fff1f2] px-2 py-1 text-xs font-medium text-[#dc2626]">{campaign.lastWorkerError}</p> : null}
                     </td>
                     <td className="px-4 py-4">
-                      <CampaignActions campaign={campaign} onControl={(action) => onControl(campaign, action)} align="end" />
+                      <div className="grid justify-items-end gap-2">
+                        <button className="rounded-full border border-cyan-200 bg-cyan-50 px-3 py-1.5 text-xs font-semibold text-cyan-800 transition hover:bg-cyan-100" type="button" onClick={() => onInspect(campaign)}>
+                          View leads
+                        </button>
+                        <CampaignActions campaign={campaign} onControl={(action) => onControl(campaign, action)} align="end" />
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -1104,10 +1696,17 @@ function CampaignOperationsSection({
           </div>
 
           <div className="grid gap-3 p-4 lg:hidden">
-            {campaigns.slice(0, 10).map((campaign) => (
-              <CampaignCard campaign={campaign} key={campaign._id} onControl={(action) => onControl(campaign, action)} />
+            {campaigns.map((campaign) => (
+              <CampaignCard campaign={campaign} key={campaign._id} selected={selectedCampaignId === campaign._id} onInspect={() => onInspect(campaign)} onControl={(action) => onControl(campaign, action)} />
             ))}
           </div>
+
+          <PaginationBar
+            className="border-t border-[#edf0f4] px-4 py-3 sm:px-5"
+            page={campaignPage}
+            pagination={campaignPagination}
+            onPageChange={onCampaignPageChange}
+          />
         </>
       ) : (
         <div className="p-4">
@@ -1119,6 +1718,292 @@ function CampaignOperationsSection({
         </div>
       )}
     </section>
+  );
+}
+
+function CampaignLeadOperationsPanel({
+  auditLogs,
+  campaign,
+  exporting,
+  leadLoading,
+  leadPage,
+  leadPagination,
+  leadRows,
+  leadSearch,
+  leadStatus,
+  onExport,
+  onLeadPageChange,
+  onLeadSearchChange,
+  onLeadStatusChange,
+}: {
+  auditLogs: CampaignAuditLogEntry[];
+  campaign: BackendCampaign | null;
+  exporting: boolean;
+  leadLoading: boolean;
+  leadPage: number;
+  leadPagination: CampaignPagination;
+  leadRows: BackendCampaignLead[];
+  leadSearch: string;
+  leadStatus: CampaignLeadStatus | "";
+  onExport: () => void;
+  onLeadPageChange: (page: number) => void;
+  onLeadSearchChange: (value: string) => void;
+  onLeadStatusChange: (status: CampaignLeadStatus | "") => void;
+}) {
+  return (
+    <section className="mt-5 overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#edf0f4] bg-[#fbfdff] px-4 py-4 sm:px-5">
+        <div className="min-w-0">
+          <span className="app-label text-[#00b8c4]">Lead operations</span>
+          <h2 className="app-section-title mt-1 mb-0 truncate">{campaign ? campaign.name : "Select a campaign"}</h2>
+          <p className="app-caption mt-1 mb-0">Search leads, inspect retry state, export filtered rows, and review call outcomes.</p>
+        </div>
+        <button className={`${buttonClass} border border-cyan-200 bg-cyan-50 text-cyan-800 hover:bg-cyan-100`} disabled={!campaign || exporting} type="button" onClick={onExport}>
+          <Icon icon="file" /> {exporting ? "Exporting..." : "Export CSV"}
+        </button>
+      </div>
+
+      {campaign ? (
+        <>
+          <div className="grid gap-3 border-b border-[#edf0f4] px-4 py-4 sm:grid-cols-[minmax(0,1fr)_180px] sm:px-5">
+            <label className="app-label grid gap-2">
+              Search leads
+              <input className={controlClass} placeholder="Phone, name, email, company, error" value={leadSearch} onChange={(event) => onLeadSearchChange(event.target.value)} />
+            </label>
+            <label className="app-label grid gap-2">
+              Lead status
+              <select className={controlClass} value={leadStatus} onChange={(event) => onLeadStatusChange(event.target.value as CampaignLeadStatus | "")}>
+                {leadStatuses.map((status) => (
+                  <option key={status || "all"} value={status}>{leadStatusCopy(status)}</option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          {leadLoading ? (
+            <div className="p-5">
+              <EmptyState icon="clock" title="Loading leads" description="Refreshing lead rows, retry state, and call history." />
+            </div>
+          ) : leadRows.length ? (
+            <>
+              <div className="hidden overflow-x-auto xl:block">
+                <table className="w-full min-w-[1180px] text-left">
+                  <thead className="bg-white text-[#64748b]">
+                    <tr className="text-xs font-semibold uppercase tracking-[0.12em]">
+                      <th className="px-4 py-3">Lead</th>
+                      <th className="px-4 py-3">Status</th>
+                      <th className="px-4 py-3">Attempts</th>
+                      <th className="px-4 py-3">Retry</th>
+                      <th className="px-4 py-3">Latest call</th>
+                      <th className="px-4 py-3">Outcome history</th>
+                      <th className="px-4 py-3">Error</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#edf0f4]">
+                    {leadRows.map((lead) => (
+                      <LeadTableRow lead={lead} key={lead._id} timezone={campaign.timezone} />
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="grid gap-3 p-4 xl:hidden">
+                {leadRows.map((lead) => (
+                  <LeadCard lead={lead} key={lead._id} timezone={campaign.timezone} />
+                ))}
+              </div>
+
+              <PaginationBar
+                className="border-t border-[#edf0f4] px-4 py-3 sm:px-5"
+                page={leadPage}
+                pagination={leadPagination}
+                onPageChange={onLeadPageChange}
+              />
+            </>
+          ) : (
+            <div className="p-5">
+              <EmptyState icon="users" title="No leads found" description="Adjust search or status filters to find campaign leads." />
+            </div>
+          )}
+
+          <div className="border-t border-[#edf0f4] bg-[#fbfdff] px-4 py-4 sm:px-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <span className="app-label text-[#00b8c4]">Audit trail</span>
+                <h3 className="app-section-title mt-1 mb-0">Recent campaign events</h3>
+              </div>
+              <span className="rounded-lg bg-white px-3 py-2 text-xs font-semibold text-slate-600">{numberFormat(auditLogs.length)} shown</span>
+            </div>
+            <div className="mt-3 grid gap-2">
+              {auditLogs.length ? auditLogs.map((entry) => (
+                <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2" key={entry._id}>
+                  <span>
+                    <strong className="block text-sm font-semibold text-slate-900">{entry.action.replace("campaign.", "").replace("_", " ")}</strong>
+                    <span className="app-caption">{entry.actorEmail || "System"} - {formatDateTime(entry.createdAt, campaign.timezone)}</span>
+                  </span>
+                  {entry.after ? <span className="max-w-[420px] truncate text-xs font-medium text-slate-500">{JSON.stringify(entry.after)}</span> : null}
+                </div>
+              )) : (
+                <p className="app-caption mb-0 rounded-lg border border-dashed border-slate-300 bg-white p-3">No campaign audit events yet.</p>
+              )}
+            </div>
+          </div>
+        </>
+      ) : (
+        <div className="p-5">
+          <EmptyState icon="users" title="No campaign selected" description="Choose View leads from a campaign row to inspect lead-level operations." />
+        </div>
+      )}
+    </section>
+  );
+}
+
+function LeadTableRow({ lead, timezone }: { lead: BackendCampaignLead; timezone: string }) {
+  const latestCall = lead.callHistory[0];
+  return (
+    <tr className="align-top transition hover:bg-[#fbfdff]">
+      <td className="px-4 py-4">
+        <strong className="block text-sm font-semibold text-slate-950">{lead.name || lead.phone}</strong>
+        <span className="app-caption mt-1 block">{lead.phone}</span>
+        {lead.email ? <span className="app-caption block">{lead.email}</span> : null}
+      </td>
+      <td className="px-4 py-4"><LeadStatusPill status={lead.status} /></td>
+      <td className="px-4 py-4">
+        <span className="text-sm font-semibold text-slate-950">{numberFormat(lead.attemptCount)}</span>
+        <span className="app-caption block">Row {numberFormat(lead.row)}</span>
+      </td>
+      <td className="px-4 py-4">
+        <span className="app-caption">{lead.nextAttemptAt ? formatDateTime(lead.nextAttemptAt, timezone) : "Not scheduled"}</span>
+      </td>
+      <td className="px-4 py-4">
+        {latestCall ? (
+          <span>
+            <strong className="block text-sm font-semibold text-slate-950">{latestCall.status}</strong>
+            <span className="app-caption block">{formatDuration(latestCall.durationSeconds)} - {moneyFormat(latestCall.costCredits)}</span>
+            <span className="app-caption block">{latestCall.startedAt ? formatDateTime(latestCall.startedAt, timezone) : "No start time"}</span>
+          </span>
+        ) : <span className="app-caption">No call yet</span>}
+      </td>
+      <td className="px-4 py-4">
+        <div className="grid max-w-[280px] gap-1">
+          {lead.callHistory.length ? lead.callHistory.map((call) => (
+            <span className="truncate text-xs font-medium text-slate-600" key={call._id}>
+              {call.status}: {call.endReason || call.errorMessage || "No outcome"}
+            </span>
+          )) : <span className="app-caption">Waiting for first attempt</span>}
+        </div>
+      </td>
+      <td className="px-4 py-4">
+        {lead.lastError || lead.suppressionReason ? (
+          <p className="m-0 max-w-[260px] rounded-lg bg-red-50 px-2 py-1 text-xs font-medium text-red-700">{lead.lastError || lead.suppressionReason}</p>
+        ) : <span className="app-caption">None</span>}
+      </td>
+    </tr>
+  );
+}
+
+function LeadCard({ lead, timezone }: { lead: BackendCampaignLead; timezone: string }) {
+  const latestCall = lead.callHistory[0];
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white p-3.5 shadow-sm">
+      <div className="flex items-start justify-between gap-3">
+        <span className="min-w-0">
+          <strong className="block truncate text-sm font-semibold text-slate-950">{lead.name || lead.phone}</strong>
+          <span className="app-caption mt-1 block">{lead.phone}</span>
+        </span>
+        <LeadStatusPill status={lead.status} />
+      </div>
+      <div className="mt-3 grid grid-cols-3 gap-2 text-center">
+        <MiniStat label="Attempts" value={numberFormat(lead.attemptCount)} />
+        <MiniStat label="Calls" value={numberFormat(lead.callHistory.length)} />
+        <MiniStat label="Row" value={numberFormat(lead.row)} />
+      </div>
+      {latestCall ? (
+        <p className="app-caption mt-3 mb-0">
+          Latest {latestCall.status}, {formatDuration(latestCall.durationSeconds)}, {latestCall.startedAt ? formatDateTime(latestCall.startedAt, timezone) : "no start time"}
+        </p>
+      ) : null}
+      {lead.nextAttemptAt ? <p className="app-caption mt-2 mb-0">Next retry: {formatDateTime(lead.nextAttemptAt, timezone)}</p> : null}
+      {lead.lastError || lead.suppressionReason ? (
+        <p className="mt-3 mb-0 rounded-lg bg-red-50 px-3 py-2 text-xs font-medium text-red-700">{lead.lastError || lead.suppressionReason}</p>
+      ) : null}
+    </div>
+  );
+}
+
+function LeadStatusPill({ status }: { status: CampaignLeadStatus }) {
+  return (
+    <span className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${leadStatusTheme(status)}`}>
+      {leadStatusCopy(status)}
+    </span>
+  );
+}
+
+function LaunchConfirmModal({
+  averageCallMinutes,
+  campaignName,
+  contacts,
+  estimatedCostCredits,
+  invalidLeadCount,
+  launchModeSummary,
+  optedOutImportCount,
+  onCancel,
+  onConfirm,
+  routeSummary,
+  spendLimitCredits,
+}: {
+  averageCallMinutes: number;
+  campaignName: string;
+  contacts: number;
+  estimatedCostCredits: number;
+  invalidLeadCount: number;
+  launchModeSummary: string;
+  optedOutImportCount: number;
+  onCancel: () => void;
+  onConfirm: () => void;
+  routeSummary: string;
+  spendLimitCredits: number;
+}) {
+  const limitBelowEstimate = spendLimitCredits < estimatedCostCredits;
+  return (
+    <div className="fixed inset-0 z-50 grid place-items-center bg-slate-950/45 px-4 py-6">
+      <div className="w-full max-w-2xl overflow-hidden rounded-lg border border-slate-200 bg-white shadow-2xl">
+        <div className="border-b border-slate-200 bg-[#fbfdff] px-5 py-4">
+          <span className="app-label text-[#00b8c4]">Final confirmation</span>
+          <h2 className="mt-1 mb-0 text-xl font-semibold text-slate-950">Launch {campaignName}</h2>
+          <p className="app-caption mt-1 mb-0">This creates the campaign, imports leads, records compliance certification, and starts or schedules calls.</p>
+        </div>
+        <div className="grid gap-4 p-5 sm:grid-cols-2">
+          <SummaryTile label="Contacts" value={numberFormat(contacts)} detail={`${numberFormat(optedOutImportCount)} import opt-outs suppressed`} />
+          <SummaryTile label="Route" value={routeSummary} detail={launchModeSummary} />
+          <SummaryTile label="Estimated cost" value={moneyFormat(estimatedCostCredits)} detail={`${averageCallMinutes} minute average call assumption`} />
+          <SummaryTile label="Hard spend limit" value={moneyFormat(spendLimitCredits)} detail={limitBelowEstimate ? "Limit is below estimate; campaign may pause early." : "Worker pauses at this cap."} warn={limitBelowEstimate} />
+        </div>
+        {invalidLeadCount ? (
+          <div className="mx-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+            {numberFormat(invalidLeadCount)} invalid phone numbers must be fixed before launch.
+          </div>
+        ) : null}
+        <div className="flex flex-wrap justify-end gap-3 border-t border-slate-200 px-5 py-4">
+          <button className={`${buttonClass} border border-slate-200 bg-white text-slate-700 hover:bg-slate-50`} type="button" onClick={onCancel}>
+            Cancel
+          </button>
+          <button className={`${buttonClass} bg-[#00b8c4] text-white hover:bg-[#008996]`} disabled={invalidLeadCount > 0} type="button" onClick={onConfirm}>
+            <Icon icon="play" /> Confirm launch
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SummaryTile({ detail, label, value, warn = false }: { detail: string; label: string; value: string; warn?: boolean }) {
+  return (
+    <div className={`rounded-lg border p-4 ${warn ? "border-amber-200 bg-amber-50" : "border-slate-200 bg-slate-50"}`}>
+      <span className="app-caption block">{label}</span>
+      <strong className={`mt-2 block text-sm font-semibold ${warn ? "text-amber-900" : "text-slate-950"}`}>{value}</strong>
+      <p className={`app-caption mt-1 mb-0 ${warn ? "text-amber-800" : ""}`}>{detail}</p>
+    </div>
   );
 }
 
@@ -1155,13 +2040,23 @@ function CampaignActions({
   );
 }
 
-function CampaignCard({ campaign, onControl }: { campaign: BackendCampaign; onControl: (action: CampaignAction) => void }) {
+function CampaignCard({
+  campaign,
+  onControl,
+  onInspect,
+  selected,
+}: {
+  campaign: BackendCampaign;
+  onControl: (action: CampaignAction) => void;
+  onInspect: () => void;
+  selected: boolean;
+}) {
   const canPause = campaign.status === "running" || campaign.status === "scheduled";
   const canResume = campaign.status === "paused";
   const canCancel = ["running", "scheduled", "paused"].includes(campaign.status);
 
   return (
-    <div className="rounded-[1.35rem] border border-slate-200 bg-white p-3.5 shadow-sm">
+    <div className={`rounded-[1.35rem] border p-3.5 shadow-sm ${selected ? "border-cyan-300 bg-cyan-50/70" : "border-slate-200 bg-white"}`}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <strong className="block truncate text-sm font-semibold text-slate-950">{campaign.name}</strong>
@@ -1177,12 +2072,19 @@ function CampaignCard({ campaign, onControl }: { campaign: BackendCampaign; onCo
         <MiniStat label="Failed" value={numberFormat(campaign.stats.failed)} />
         <MiniStat label="DNC" value={numberFormat(campaign.stats.suppressed)} />
       </div>
+      <div className="mt-3 grid grid-cols-2 gap-2 text-center">
+        <MiniStat label="Spent" value={`$${campaign.cost.spentCredits.toFixed(2)}`} />
+        <MiniStat label="Limit" value={`$${campaign.cost.spendLimitCredits.toFixed(2)}`} />
+      </div>
       {campaign.scheduledAt ? (
         <p className="app-caption mt-3 mb-0">Scheduled: {formatDateTime(campaign.scheduledAt, campaign.timezone)}</p>
       ) : null}
       {campaign.lastWorkerError ? (
         <p className="mt-3 mb-0 rounded-2xl bg-red-50 px-3 py-2 text-xs font-medium text-red-700">{campaign.lastWorkerError}</p>
       ) : null}
+      <div className="mt-3">
+        <CampaignActionButton tone="neutral" onClick={onInspect}>View leads</CampaignActionButton>
+      </div>
       {canPause || canResume || canCancel ? (
         <div className="mt-3 flex flex-wrap gap-2">
           {canPause ? <CampaignActionButton tone="neutral" onClick={() => onControl("pause")}>Pause</CampaignActionButton> : null}

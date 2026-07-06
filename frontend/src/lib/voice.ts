@@ -606,8 +606,47 @@ export type CampaignLeadInput = {
   doNotCall?: boolean;
 };
 
+export type CampaignLeadStatus = "queued" | "leased" | "active" | "completed" | "retry_wait" | "failed" | "suppressed" | "cancelled";
+
+export type CampaignLeadCallHistory = {
+  _id: string;
+  status: CallRecord["status"];
+  startedAt: string | null;
+  endedAt: string | null;
+  durationSeconds: number;
+  endReason: string;
+  errorMessage: string;
+  tags: string[];
+  sentimentLabel: CallRecord["sentimentLabel"];
+  voicemailDetected: boolean;
+  structuredOutput: Record<string, unknown>;
+  costCredits: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type BackendCampaignLead = {
+  _id: string;
+  row: number;
+  phone: string;
+  name: string;
+  email: string;
+  company: string;
+  customFields: Record<string, string>;
+  status: CampaignLeadStatus;
+  attemptCount: number;
+  nextAttemptAt: string | null;
+  lastAttemptAt: string | null;
+  callId: string | null;
+  lastError: string;
+  suppressionReason: string;
+  callHistory: CampaignLeadCallHistory[];
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type CampaignStats = Record<
-  "queued" | "leased" | "active" | "completed" | "retry_wait" | "failed" | "suppressed" | "cancelled",
+  CampaignLeadStatus,
   number
 > & {
   total: number;
@@ -635,7 +674,26 @@ export type BackendCampaign = {
   successCriteria: string;
   totalLeads: number;
   lastWorkerError: string;
+  estimatedCostCredits: number;
+  spendLimitCredits: number;
+  estimatedCallSeconds: number;
+  complianceCertification?: {
+    consentBasis: boolean;
+    optOutSuppression: boolean;
+    callerIdentity: boolean;
+    quietHours: boolean;
+    certifiedAt: string | null;
+    certifiedBy: string;
+  };
   stats: CampaignStats;
+  cost: {
+    estimatedCredits: number;
+    spendLimitCredits: number;
+    providerCost: number;
+    spentCredits: number;
+    remainingCredits: number | null;
+    currency: string;
+  };
   createdAt: string;
   updatedAt: string;
 };
@@ -657,6 +715,45 @@ export type CreateCampaignInput = {
   respectDnc: boolean;
   requireConsentLine: boolean;
   detectVoicemail: boolean;
+  estimatedCostCredits: number;
+  spendLimitCredits: number;
+  estimatedCallSeconds: number;
+};
+
+export type CampaignPagination = { page: number; limit: number; total: number; pages: number };
+
+export type CampaignAuditLogEntry = {
+  _id: string;
+  action: string;
+  resource: string;
+  resourceId: string;
+  actorEmail: string;
+  before?: Record<string, unknown>;
+  after?: Record<string, unknown>;
+  createdAt: string;
+  userId?: { _id: string; name: string; email: string };
+};
+
+export type CampaignOperationsHealth = {
+  worker: {
+    running: boolean;
+    lastRunAt: string | null;
+    lastCompletedAt: string | null;
+    lastDurationMs: number;
+    lastError: string;
+  };
+  campaigns: Record<BackendCampaign["status"], number>;
+  leads: Record<CampaignLeadStatus, number>;
+  staleLeases: number;
+  failedCalls24h: number;
+  providerErrors24h: number;
+  workerErrors: {
+    campaignId: string;
+    name: string;
+    status: BackendCampaign["status"];
+    lastWorkerError: string;
+    updatedAt: string;
+  }[];
 };
 
 async function request<T>(path: string, init: RequestInit = {}) {
@@ -913,8 +1010,52 @@ export const voiceApi = {
         ...(options.metadata ? { metadata: options.metadata } : {}),
       }),
     }),
-  campaigns: () => request<{ campaigns: BackendCampaign[] }>("/campaigns"),
+  campaigns: (
+    input: {
+      status?: BackendCampaign["status"] | "";
+      search?: string;
+      page?: number;
+      limit?: number;
+    } = {},
+  ) => {
+    const query = new URLSearchParams();
+    if (input.status) query.set("status", input.status);
+    if (input.search) query.set("search", input.search);
+    query.set("page", String(input.page ?? 1));
+    query.set("limit", String(input.limit ?? 25));
+    return request<{ campaigns: BackendCampaign[]; pagination: CampaignPagination }>(`/campaigns?${query.toString()}`);
+  },
+  campaignOperationsHealth: () =>
+    request<CampaignOperationsHealth>("/campaigns/operations/health"),
   campaign: (campaignId: string) => request<{ campaign: BackendCampaign }>(`/campaigns/${campaignId}`),
+  campaignLeads: (
+    campaignId: string,
+    input: {
+      status?: CampaignLeadStatus | "";
+      search?: string;
+      page?: number;
+      limit?: number;
+    } = {},
+  ) => {
+    const query = new URLSearchParams();
+    if (input.status) query.set("status", input.status);
+    if (input.search) query.set("search", input.search);
+    query.set("page", String(input.page ?? 1));
+    query.set("limit", String(input.limit ?? 50));
+    return request<{
+      leads: BackendCampaignLead[];
+      filters: { status: CampaignLeadStatus | ""; search: string };
+      pagination: CampaignPagination;
+    }>(`/campaigns/${encodeURIComponent(campaignId)}/leads?${query.toString()}`);
+  },
+  campaignAuditLog: (campaignId: string, input: { page?: number; limit?: number } = {}) => {
+    const query = new URLSearchParams();
+    query.set("page", String(input.page ?? 1));
+    query.set("limit", String(input.limit ?? 10));
+    return request<{ auditLogs: CampaignAuditLogEntry[]; pagination: CampaignPagination }>(
+      `/campaigns/${encodeURIComponent(campaignId)}/audit-log?${query.toString()}`,
+    );
+  },
   createCampaign: (input: CreateCampaignInput) =>
     mutation<{ campaign: BackendCampaign }>("/campaigns", {
       method: "POST",
@@ -926,11 +1067,39 @@ export const voiceApi = {
       method: "POST",
       body: JSON.stringify({ leads }),
     }),
-  launchCampaign: (campaignId: string, input: { mode: "now" | "schedule"; scheduledAt?: string }) =>
+  launchCampaign: (campaignId: string, input: {
+    mode: "now" | "schedule";
+    scheduledAt?: string;
+    confirmLaunch: true;
+    complianceCertification: {
+      consentBasis: true;
+      optOutSuppression: true;
+      callerIdentity: true;
+      quietHours: true;
+    };
+  }) =>
     mutation<{ campaign: BackendCampaign }>(`/campaigns/${campaignId}/launch`, {
       method: "POST",
       body: JSON.stringify(input),
     }, ["/campaigns"]),
+  exportCampaignLeadsCsv: async (
+    campaignId: string,
+    input: { status?: CampaignLeadStatus | ""; search?: string } = {},
+  ) => {
+    if (!getSession()) throw new Error("Sign in before exporting campaign leads.");
+    const query = new URLSearchParams();
+    if (input.status) query.set("status", input.status);
+    if (input.search) query.set("search", input.search);
+    const response = await fetch(
+      `${API_URL}/api/voice/campaigns/${encodeURIComponent(campaignId)}/leads/export.csv?${query.toString()}`,
+      {
+        credentials: "include",
+        headers: getAuthHeaders(),
+      },
+    );
+    if (!response.ok) throw new Error("Could not export campaign leads.");
+    return response.blob();
+  },
   pauseCampaign: (campaignId: string) =>
     mutation<{ campaign: BackendCampaign }>(`/campaigns/${campaignId}/pause`, { method: "POST" }, ["/campaigns"]),
   resumeCampaign: (campaignId: string) =>
