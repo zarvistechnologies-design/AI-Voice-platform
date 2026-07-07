@@ -606,7 +606,12 @@ const fallbackElevenLabsVoiceProfiles: VoiceProfile[] = [
 ];
 
 const defaultGeminiRealtimeModel = "gemini-2.5-flash-native-audio-latest";
-const geminiRealtimeModels = [defaultGeminiRealtimeModel];
+const geminiRealtimeModels = [
+  defaultGeminiRealtimeModel,
+  "gemini-3.1-flash-live-preview",
+  "gemini-2.5-flash-native-audio-preview-12-2025",
+];
+const betaGeminiRealtimeModels = new Set(["gemini-3.1-flash-live-preview"]);
 const defaultGeminiLlmModel = "gemini-2.5-flash";
 const geminiLlmModels = [
   "gemini-3.5-flash",
@@ -677,6 +682,17 @@ const fallbackDeepgramSttModels = [
 function normalizeRealtimeModel(provider: RealtimeProvider, model: string) {
   if (provider !== "gemini") return model;
   return geminiRealtimeModels.includes(model) ? model : defaultGeminiRealtimeModel;
+}
+
+function isBetaGeminiRealtimeModel(model: string) {
+  return betaGeminiRealtimeModels.has(model);
+}
+
+function modelSelectOptions(models: readonly string[]) {
+  return models.map((model) => ({
+    value: model,
+    label: isBetaGeminiRealtimeModel(model) ? `${model} (Beta)` : model,
+  }));
 }
 
 function normalizeGeminiLlmModel(provider: PipelineProvider, model: string) {
@@ -1914,10 +1930,11 @@ function ModelChoiceList({
     <div className="max-h-[420px] overflow-y-auto border-y border-[#e5e7eb]">
       {models.map((model) => {
         const active = model === value;
+        const beta = isBetaGeminiRealtimeModel(model);
         return (
           <button
             key={model}
-            className={`grid min-h-14 w-full grid-cols-[36px_minmax(0,1fr)_20px] items-center gap-3 border-b border-[#eef2f7] px-3 text-left transition last:border-b-0 ${
+            className={`grid min-h-14 w-full grid-cols-[36px_minmax(0,1fr)_20px] items-center gap-3 border-b border-[#eef2f7] px-3 py-2 text-left transition last:border-b-0 ${
               active ? "bg-[#ecfeff]" : "bg-white hover:bg-[#f8fafc]"
             }`}
             type="button"
@@ -1927,7 +1944,21 @@ function ModelChoiceList({
             <span className={`grid size-9 place-items-center rounded-lg text-xs font-bold ${active ? "bg-[#00b8c4] text-white" : "bg-[#eef2f7] text-[#64748b]"}`}>
               AI
             </span>
-            <span className="min-w-0 truncate text-sm font-semibold text-[#0f172a]">{model}</span>
+            <span className="min-w-0">
+              <span className="flex min-w-0 items-center gap-2">
+                <span className="truncate text-sm font-semibold text-[#0f172a]">{model}</span>
+                {beta ? (
+                  <span className="shrink-0 rounded-full bg-[#fff7ed] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#c2410c]">
+                    Beta
+                  </span>
+                ) : null}
+              </span>
+              {beta ? (
+                <span className="mt-0.5 block truncate text-xs font-medium text-[#b45309]">
+                  Experimental LiveKit support
+                </span>
+              ) : null}
+            </span>
             <span className={`size-4 rounded-full border-2 ${active ? "border-[#00b8c4] bg-[#00b8c4] shadow-[inset_0_0_0_3px_white]" : "border-[#cbd5e1]"}`} />
           </button>
         );
@@ -2071,6 +2102,7 @@ function StackConfigurationModal({
   const selectedModelValue = modelOptions.includes(selectedModel)
     ? selectedModel
     : modelOptions[0] ?? selectedModel;
+  const selectedModelIsBeta = realtime && provider.provider === "gemini" && isBetaGeminiRealtimeModel(selectedModelValue);
   const title = stack === "llm" ? "Agent LLM" : stack === "stt" ? "Agent STT" : "Agent Voice";
   const languageName = languageDisplayName(agent.language, languageCatalog);
   const normalizedLanguageOptions = languageOptions.map((option) =>
@@ -2301,8 +2333,13 @@ function StackConfigurationModal({
                 defaultValue={selectedModelValue}
                 value={selectedModelValue}
                 onChange={selectModel}
-                options={modelOptions}
+                options={modelSelectOptions(modelOptions)}
               />
+              {selectedModelIsBeta ? (
+                <div className="rounded-lg border border-[#fed7aa] bg-[#fff7ed] px-3 py-2 text-sm font-medium text-[#9a3412]">
+                  Beta model: LiveKit supports this as realtime, but server-triggered replies such as generated greetings may not be fully compatible yet.
+                </div>
+              ) : null}
 
               <div className="grid gap-3 rounded-lg border border-[#dfe3ea] bg-[#f8fafc] p-3">
                 <SelectField
