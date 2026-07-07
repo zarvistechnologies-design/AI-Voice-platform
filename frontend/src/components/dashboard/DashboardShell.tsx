@@ -605,8 +605,11 @@ const fallbackElevenLabsVoiceProfiles: VoiceProfile[] = [
   },
 ];
 
-const defaultGeminiRealtimeModel = "gemini-2.5-flash-native-audio-latest";
-const geminiRealtimeModels = [defaultGeminiRealtimeModel];
+const defaultGeminiRealtimeModel = "gemini-2.5-flash-native-audio-preview-12-2025";
+const geminiRealtimeModels = [
+  defaultGeminiRealtimeModel,
+  "gemini-3.1-flash-live-preview",
+];
 const defaultGeminiLlmModel = "gemini-2.5-flash";
 const geminiLlmModels = [
   "gemini-3.5-flash",
