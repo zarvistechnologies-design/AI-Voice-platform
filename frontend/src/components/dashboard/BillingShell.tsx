@@ -256,7 +256,7 @@ export function BillingShell() {
 
           <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <Metric label="Minimum to call" value={money(data?.creditSettings.minimumCallStartCredits ?? 0, currency)} detail="Pre-call wallet guard" tone="amber" />
-            <Metric label="Markup" value={`${data?.creditSettings.markupMultiplier ?? 2.5}x`} detail="Applied to provider cost" tone="slate" />
+            <Metric label="Platform fee" value={`₹${data?.creditSettings.platformFeeInrPerMinute ?? 1}/min`} detail="Added to exact provider cost" tone="slate" />
             <Metric label="Top-ups" value={String(totals.topUps)} detail={`${money(totals.net, currency)} net ledger movement`} tone="sky" />
             <Metric label="Call debits" value={String(totals.debits)} detail="Recent call charge rows" tone="emerald" />
           </section>

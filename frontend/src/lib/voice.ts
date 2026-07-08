@@ -157,10 +157,9 @@ export type ModelCatalog = {
 
 export type PricingGuide = {
   currency: string;
-  llmPerMillionTokens: number;
-  sttPerMinute: number;
-  ttsPerMillionCharacters: number;
   telephonyPerMinute: number;
+  inrPerUsd: number;
+  platformFeeInrPerMinute: number;
   markupMultiplier: number;
 };
 
@@ -373,7 +372,7 @@ export type CallTranscriptItem = {
 };
 
 export type CostPricingDetail = {
-  source?: "catalog" | "override" | "account" | "fallback" | "mixed";
+  source?: "catalog" | "override" | "account" | "not_applicable" | "unpriced" | "mixed";
   key?: string;
   unit?: string;
   provider?: string;
@@ -417,6 +416,7 @@ export type CallRecord = {
   recordingError: string;
   recordingDuration: number;
   avgResponseLatencyMs: number;
+  pipelineMode?: "pipeline" | "realtime";
   llmProvider: string;
   llmModel: string;
   llmInputTokens: number;
@@ -435,10 +435,23 @@ export type CallRecord = {
   ttsAudioSeconds: number;
   ttsCharacters: number;
   costBreakdown: {
+    calculationVersion?: string;
+    pricingStatus?: "exact" | "estimated" | "unpriced";
+    missingPricing?: {
+      component: "llm" | "stt" | "tts";
+      provider: string;
+      model: string;
+      key: string;
+      reason: string;
+    }[];
     llm: number;
     stt: number;
     tts: number;
     telephony: number;
+    providerCost: number;
+    platformFee: number;
+    platformFeeInrPerMinute: number;
+    customerCost: number;
     total: number;
     currency: string;
     pricing?: {
@@ -446,12 +459,15 @@ export type CallRecord = {
       stt?: CostPricingDetail;
       tts?: CostPricingDetail;
       telephony?: CostPricingDetail;
+      platformFee?: CostPricingDetail;
     };
   };
   billing?: {
     chargedCredits: number;
     estimatedChargeCredits: number;
     providerCost: number;
+    platformFee: number;
+    customerCost: number;
     currency: string;
     balanceAfterCredits: number | null;
     breakdown: {
@@ -459,11 +475,15 @@ export type CallRecord = {
       stt: number;
       tts: number;
       telephony: number;
+      platformFee: number;
+      providerCost: number;
+      customerCost: number;
       total: number;
       chargedLlm: number;
       chargedStt: number;
       chargedTts: number;
       chargedTelephony: number;
+      chargedPlatformFee: number;
     };
   };
   sentimentScore?: number;

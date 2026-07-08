@@ -53,6 +53,8 @@ export type BillingTransaction = {
     tts: number;
     telephony: number;
     providerCost: number;
+    platformFee: number;
+    customerCost: number;
     markupMultiplier: number;
     total: number;
   };
@@ -67,6 +69,7 @@ export type BillingSummary = {
     initialCredits: number;
     minimumCallStartCredits: number;
     markupMultiplier: number;
+    platformFeeInrPerMinute: number;
   };
   subscription: {
     plan: PlanId;
@@ -85,6 +88,7 @@ export type BillingSummary = {
     calls: number;
     minutes: number;
     providerCost: number;
+    customerCost: number;
     chargedCredits: number;
     llmTokens: number;
     sttSeconds: number;

@@ -67,6 +67,13 @@ function configuredTtsStack(call: CallRecord) {
   return [configuredStack(call.ttsProvider, call.ttsModel), call.ttsVoice].filter((item) => item && item !== "-").join(" / ") || "-";
 }
 
+function configuredCallStack(call: CallRecord) {
+  if (call.pipelineMode === "realtime" || isRealtimeAudioCall(call)) {
+    return `Realtime: ${configuredStack(call.llmProvider, call.llmModel)}`;
+  }
+  return `${configuredStack(call.llmProvider, call.llmModel)} / ${configuredStack(call.sttProvider, call.sttModel)} / ${configuredTtsStack(call)}`;
+}
+
 function formatRoomPhone(digits: string, destinationDigits = "") {
   if (!digits) return "";
   if (destinationDigits.startsWith("91") && digits.length === 11 && digits.startsWith("0")) {
@@ -167,7 +174,8 @@ function displaySttSeconds(call: CallRecord) {
 function sourceLabel(source?: CostPricingDetail["source"]) {
   if (source === "override") return "Override";
   if (source === "account") return "Account";
-  if (source === "fallback") return "Fallback";
+  if (source === "unpriced") return "Unpriced";
+  if (source === "not_applicable") return "N/A";
   if (source === "mixed") return "Mixed";
   return "Catalog";
 }
@@ -259,12 +267,28 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
   const callErrorMessage = call.errorMessage
     ? publicVoiceMessage(call.errorMessage, "Call ended before the agent could finish.")
     : "";
+  const providerCostItems = (call.pipelineMode === "realtime" || isRealtimeAudioCall(call)
+    ? [
+        ["Realtime", configuredStack(call.llmProvider, call.llmModel), llmUsage, cost?.pricing?.llm, cost?.llm ?? 0, billing?.breakdown.chargedLlm ?? 0],
+        ["Carrier", call.direction, `${Math.ceil(call.durationSeconds / 60)} min`, cost?.pricing?.telephony, cost?.telephony ?? 0, billing?.breakdown.chargedTelephony ?? 0],
+      ]
+    : [
+        ["LLM", configuredStack(call.llmProvider, call.llmModel), llmUsage, cost?.pricing?.llm, cost?.llm ?? 0, billing?.breakdown.chargedLlm ?? 0],
+        ["STT", configuredStack(call.sttProvider, call.sttModel), sttUsage, cost?.pricing?.stt, cost?.stt ?? 0, billing?.breakdown.chargedStt ?? 0],
+        ["TTS", configuredTtsStack(call), ttsUsage, cost?.pricing?.tts, cost?.tts ?? 0, billing?.breakdown.chargedTts ?? 0],
+        ["Carrier", call.direction, `${Math.ceil(call.durationSeconds / 60)} min`, cost?.pricing?.telephony, cost?.telephony ?? 0, billing?.breakdown.chargedTelephony ?? 0],
+      ]) as readonly (readonly [string, string, string, CostPricingDetail | undefined, number, number])[];
   const costItems = [
-    ["LLM", configuredStack(call.llmProvider, call.llmModel), llmUsage, cost?.pricing?.llm, cost?.llm ?? 0, billing?.breakdown.chargedLlm ?? 0],
-    ["STT", configuredStack(call.sttProvider, call.sttModel), sttUsage, cost?.pricing?.stt, cost?.stt ?? 0, billing?.breakdown.chargedStt ?? 0],
-    ["TTS", configuredTtsStack(call), ttsUsage, cost?.pricing?.tts, cost?.tts ?? 0, billing?.breakdown.chargedTts ?? 0],
-    ["Carrier", call.direction, `${Math.ceil(call.durationSeconds / 60)} min`, cost?.pricing?.telephony, cost?.telephony ?? 0, billing?.breakdown.chargedTelephony ?? 0],
-  ] as const;
+    ...providerCostItems,
+    [
+      "Platform fee",
+      "AI Voice Platform",
+      `₹${cost?.platformFeeInrPerMinute ?? 1}/min × ${(call.durationSeconds / 60).toFixed(2)} min`,
+      cost?.pricing?.platformFee,
+      0,
+      billing?.breakdown.chargedPlatformFee ?? cost?.platformFee ?? 0,
+    ],
+  ] as readonly (readonly [string, string, string, CostPricingDetail | undefined, number, number])[];
 
   useEffect(() => {
     let active = true;
@@ -348,10 +372,17 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
             </section>
           ) : null}
 
+          {cost?.pricingStatus === "unpriced" ? (
+            <section className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
+              <strong className="block">Billing paused: exact pricing unavailable</strong>
+              {(cost.missingPricing ?? []).map((item) => `${item.provider}/${item.model}`).join(", ") || "A provider/model rate is missing."}
+            </section>
+          ) : null}
+
           <section className="grid gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2">
             <div><span className="mb-2 block text-xs font-medium text-slate-500">From / To</span><CallRoute call={call} /></div>
             <div><span className="block text-xs font-medium text-slate-500">Usage</span><strong className="mt-1 block text-sm">{llmUsage} / {sttSecondsLabel} STT / {ttsUsage}</strong></div>
-            <div><span className="block text-xs font-medium text-slate-500">Configured stack</span><strong className="mt-1 block text-sm">{configuredStack(call.llmProvider, call.llmModel)} / {configuredStack(call.sttProvider, call.sttModel)} / {configuredTtsStack(call)}</strong></div>
+            <div><span className="block text-xs font-medium text-slate-500">Configured stack</span><strong className="mt-1 block text-sm">{configuredCallStack(call)}</strong></div>
             <div><span className="block text-xs font-medium text-slate-500">Tags</span><strong className="mt-1 block text-sm">{call.tags.length ? call.tags.join(", ") : "No tags"}</strong></div>
           </section>
 
@@ -393,17 +424,18 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
             <div className="flex flex-col gap-2 border-b border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h3 className="m-0 text-sm font-semibold text-slate-950">Cost and charge breakdown</h3>
-                <p className="mt-1 text-xs text-slate-500">Provider cost is raw vendor spend. Charged is customer wallet debit.</p>
+                <p className="mt-1 text-xs text-slate-500">Customer charge = exact provider cost + prorated ₹1/min platform fee.</p>
               </div>
               <div className="grid gap-1 text-right text-xs">
-                <span className="text-slate-500">Provider total: <strong className="text-slate-950">{money(cost?.total ?? 0, cost?.currency)}</strong></span>
-                <span className="text-slate-500">Charged total: <strong className="text-emerald-700">{money(charged, billing?.currency)}</strong></span>
+                <span className="text-slate-500">Real provider cost: <strong className="text-slate-950">{money(cost?.providerCost ?? billing?.providerCost ?? 0, cost?.currency)}</strong></span>
+                <span className="text-slate-500">Platform fee: <strong className="text-slate-950">{money(cost?.platformFee ?? billing?.platformFee ?? 0, cost?.currency)}</strong></span>
+                <span className="text-slate-500">Customer total: <strong className="text-emerald-700">{money(charged || cost?.customerCost || 0, billing?.currency || cost?.currency)}</strong></span>
               </div>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full min-w-760px text-left text-sm">
                 <thead className="bg-white text-xs uppercase tracking-wider text-slate-500">
-                <tr>{["Component", "Configured provider / model", "Usage", "Rate used", "Provider cost", "Charged"].map((item) => <th className="px-4 py-3" key={item}>{item}</th>)}</tr>
+                <tr>{["Component", "Configured provider / model", "Usage", "Rate used", "Provider cost", "Customer charge"].map((item) => <th className="px-4 py-3" key={item}>{item}</th>)}</tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {costItems.map(([label, provider, usage, pricing, providerCost, chargedCost]) => (
@@ -670,7 +702,7 @@ export function CallLogsShell() {
               <table className="w-full min-w-1050px border-collapse text-left">
                 <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500">
                   <tr>
-                    {["Agent", "Direction", "From / To", "Started", "Duration", "Provider cost", "Charged", "Status"].map((heading) => <th className="px-4 py-3" key={heading}>{heading}</th>)}
+                    {["Agent", "Direction", "From / To", "Started", "Duration", "Real provider cost", "Customer cost", "Status"].map((heading) => <th className="px-4 py-3" key={heading}>{heading}</th>)}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -681,7 +713,7 @@ export function CallLogsShell() {
                       <td className="px-4 py-4 text-sm text-slate-700"><CallRoute call={call} compact /></td>
                       <td className="px-4 py-4 text-sm text-slate-600">{formatDate(call.startedAt ?? call.createdAt)}</td>
                       <td className="px-4 py-4 text-sm font-medium text-slate-700">{formatDuration(call.durationSeconds)}</td>
-                      <td className="px-4 py-4 text-sm text-slate-600">{money(call.costBreakdown?.total ?? 0, call.costBreakdown?.currency)}</td>
+                      <td className="px-4 py-4 text-sm text-slate-600">{money(call.costBreakdown?.providerCost ?? call.billing?.providerCost ?? 0, call.costBreakdown?.currency)}</td>
                       <td className="px-4 py-4 text-sm font-semibold text-slate-950">{money(call.billing?.chargedCredits || call.billing?.estimatedChargeCredits || 0, call.billing?.currency)}</td>
                       <td className="px-4 py-4"><span className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${statusTone(call.status)}`}>{titleCase(call.status)}</span></td>
                     </tr>
