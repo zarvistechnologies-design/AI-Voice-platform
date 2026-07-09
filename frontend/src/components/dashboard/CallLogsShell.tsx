@@ -67,13 +67,9 @@ function configuredTtsStack(call: CallRecord) {
   return [configuredStack(call.ttsProvider, call.ttsModel), call.ttsVoice].filter((item) => item && item !== "-").join(" / ") || "-";
 }
 
-function configuredRealtimeStack(call: CallRecord) {
-  return configuredStack(call.realtimeProvider || call.llmProvider, call.realtimeModel || call.llmModel);
-}
-
 function configuredCallStack(call: CallRecord) {
   if (call.pipelineMode === "realtime" || isRealtimeAudioCall(call)) {
-    return `Realtime: ${configuredRealtimeStack(call)}`;
+    return `Realtime: ${configuredStack(call.llmProvider, call.llmModel)}`;
   }
   return `${configuredStack(call.llmProvider, call.llmModel)} / ${configuredStack(call.sttProvider, call.sttModel)} / ${configuredTtsStack(call)}`;
 }
@@ -157,7 +153,7 @@ function CallRoute({ call, compact = false }: { call: CallRecord; compact?: bool
 }
 
 function isRealtimeAudioCall(call: CallRecord) {
-  const stack = [call.realtimeProvider, call.realtimeModel, call.llmProvider, call.llmModel].filter(Boolean).join(" ").toLowerCase();
+  const stack = [call.llmProvider, call.llmModel].filter(Boolean).join(" ").toLowerCase();
   return stack.includes("realtime") || stack.includes("live");
 }
 
@@ -273,7 +269,7 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
     : "";
   const providerCostItems = (call.pipelineMode === "realtime" || isRealtimeAudioCall(call)
     ? [
-        ["Realtime", configuredRealtimeStack(call), llmUsage, cost?.pricing?.llm, cost?.llm ?? 0, billing?.breakdown.chargedLlm ?? 0],
+        ["Realtime", configuredStack(call.llmProvider, call.llmModel), llmUsage, cost?.pricing?.llm, cost?.llm ?? 0, billing?.breakdown.chargedLlm ?? 0],
         ["Carrier", call.direction, `${Math.ceil(call.durationSeconds / 60)} min`, cost?.pricing?.telephony, cost?.telephony ?? 0, billing?.breakdown.chargedTelephony ?? 0],
       ]
     : [
@@ -706,7 +702,7 @@ export function CallLogsShell() {
               <table className="w-full min-w-1050px border-collapse text-left">
                 <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500">
                   <tr>
-                    {["Agent", "Direction", "Model", "From / To", "Started", "Duration", "Real provider cost", "Customer cost", "Status"].map((heading) => <th className="px-4 py-3" key={heading}>{heading}</th>)}
+                    {["Agent", "Direction", "From / To", "Started", "Duration", "Real provider cost", "Customer cost", "Status"].map((heading) => <th className="px-4 py-3" key={heading}>{heading}</th>)}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -714,9 +710,6 @@ export function CallLogsShell() {
                     <tr className="cursor-pointer transition hover:bg-cyan-50/60" key={call._id} onClick={() => void openCall(call._id)}>
                       <td className="px-4 py-4"><strong className="block text-sm text-slate-950">{agentName(call)}</strong></td>
                       <td className="px-4 py-4 text-sm font-medium capitalize text-slate-700">{call.direction}</td>
-                      <td className="max-w-64 px-4 py-4 text-sm font-semibold text-slate-700" title={configuredCallStack(call)}>
-                        <span className="block truncate">{configuredCallStack(call)}</span>
-                      </td>
                       <td className="px-4 py-4 text-sm text-slate-700"><CallRoute call={call} compact /></td>
                       <td className="px-4 py-4 text-sm text-slate-600">{formatDate(call.startedAt ?? call.createdAt)}</td>
                       <td className="px-4 py-4 text-sm font-medium text-slate-700">{formatDuration(call.durationSeconds)}</td>
