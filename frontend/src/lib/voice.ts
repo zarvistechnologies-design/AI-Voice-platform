@@ -417,6 +417,8 @@ export type CallRecord = {
   recordingDuration: number;
   avgResponseLatencyMs: number;
   pipelineMode?: "pipeline" | "realtime";
+  realtimeProvider: string;
+  realtimeModel: string;
   llmProvider: string;
   llmModel: string;
   llmInputTokens: number;
