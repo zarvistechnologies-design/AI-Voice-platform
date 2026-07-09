@@ -1,6 +1,6 @@
 export const siteConfig = {
-  name: "AI Voice Platform",
-  description: "Realtime speech intelligence for AI voice experiences.",
+  name: "vozon.ai",
+  description: "AI voice agents for sales, support, scheduling, and customer follow-up.",
   headerLinks: [
     { href: "/", label: "Home" },
     { href: "/#product", label: "Product", hasMenu: true },
@@ -88,7 +88,7 @@ export const siteConfig = {
     featured: {
       href: "/#developers",
       title: "Documentation",
-      body: "See what makes AI Voice Platform unique from how it works to what it can do for your team.",
+      body: "See what makes vozon.ai unique from how it works to what it can do for your team.",
     },
     columns: [
       {
@@ -106,7 +106,7 @@ export const siteConfig = {
     story: {
       href: "/#resources",
       title: "Status Page",
-      body: "See how leading teams use AI Voice Platform to transform customer calls and drive real results.",
+      body: "See how leading teams use vozon.ai to transform customer calls and drive real results.",
     },
     cta: { href: "/#developers", label: "App Partners" },
   },
@@ -114,7 +114,7 @@ export const siteConfig = {
     featured: {
       href: "/resources/comparison-overview",
       title: "Comparison Overview",
-      body: "See how AI Voice Platform helps support and sales teams automate calls at scale without losing quality.",
+      body: "See how vozon.ai helps support and sales teams automate calls at scale without losing quality.",
     },
     columns: [
       {
@@ -140,7 +140,7 @@ export const siteConfig = {
     story: {
       href: "/resources/events",
       title: "Events",
-      body: "Meet us at upcoming conferences and live demos to explore the power of AI Voice Platform in action.",
+      body: "Meet us at upcoming conferences and live demos to explore the power of vozon.ai in action.",
     },
     cta: { href: "/resources/blog", label: "Visit Our Blog" },
   },
@@ -148,7 +148,7 @@ export const siteConfig = {
     featured: {
       href: "/about",
       title: "About Us",
-      body: "See how leading teams use AI Voice Platform to transform customer calls and drive real results.",
+      body: "See how leading teams use vozon.ai to transform customer calls and drive real results.",
     },
     columns: [],
     story: {
@@ -177,8 +177,8 @@ export const siteConfig = {
     {
       title: "Support",
       links: [
-        { href: "mailto:hello@aivoiceplatform.com", label: "Contact" },
-        { href: "/#platform", label: "Platform" },
+        { href: "mailto:hello@vozon.ai", label: "Contact" },
+        { href: "/#resources", label: "Documentation" },
         { href: "/#company", label: "Privacy" },
       ],
     },
@@ -443,7 +443,7 @@ export const resourcePages = [
     title: "Comparison Overview",
     kicker: "Resources",
     summary:
-      "Compare AI Voice Platform with traditional call automation, IVR tools, and voice AI workflows so your team can choose with clarity.",
+      "Compare vozon.ai with traditional call automation, IVR tools, and voice AI workflows so your team can choose with clarity.",
     highlights: ["Platform comparison", "Buying criteria", "Team readiness"],
     sections: [
       {
@@ -497,7 +497,7 @@ export const resourcePages = [
     title: "Trust Center",
     kicker: "Quick Links",
     summary:
-      "Review the security, privacy, reliability, and governance practices behind AI Voice Platform.",
+      "Review the security, privacy, reliability, and governance practices behind vozon.ai.",
     highlights: ["Security posture", "Privacy controls", "Reliability practices"],
     sections: [
       {
@@ -533,7 +533,7 @@ export const resourcePages = [
     title: "Logos",
     kicker: "Quick Links",
     summary:
-      "Access brand marks, usage guidance, and partner-ready assets for AI Voice Platform.",
+      "Access brand marks, usage guidance, and partner-ready assets for vozon.ai.",
     highlights: ["Brand assets", "Usage guidance", "Partner materials"],
     sections: [
       {
@@ -551,7 +551,7 @@ export const resourcePages = [
     title: "Solution Partner Program",
     kicker: "Partners",
     summary:
-      "Partner with AI Voice Platform to design, launch, and manage voice automation solutions for customers.",
+      "Partner with vozon.ai to design, launch, and manage voice automation solutions for customers.",
     highlights: ["Implementation partners", "Customer delivery", "Enablement"],
     sections: [
       {
@@ -605,7 +605,7 @@ export const resourcePages = [
     title: "App Partner Directory",
     kicker: "Partners",
     summary:
-      "Discover apps and integration partners that connect AI Voice Platform with the tools your team already uses.",
+      "Discover apps and integration partners that connect vozon.ai with the tools your team already uses.",
     highlights: ["Integration partners", "Connected workflows", "App ecosystem"],
     sections: [
       {
@@ -623,7 +623,7 @@ export const resourcePages = [
     title: "Events",
     kicker: "Resources",
     summary:
-      "Meet the AI Voice Platform team at demos, webinars, conferences, and live sessions about the future of voice automation.",
+      "Meet the vozon.ai team at demos, webinars, conferences, and live sessions about the future of voice automation.",
     highlights: ["Live demos", "Webinars", "Conference sessions"],
     sections: [
       {

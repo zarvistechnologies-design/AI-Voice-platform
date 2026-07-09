@@ -3,7 +3,7 @@ import Link from "next/link";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 
 export const metadata = {
-  title: "AI Phone Agents for Healthcare | AI Voice Platform",
+  title: "AI Phone Agents for Healthcare | vozon.ai",
   description:
     "AI phone agents for healthcare calls, routing, IVR navigation, appointment booking, EHR integrations, pricing, and FAQs.",
 };
@@ -636,7 +636,7 @@ export default function HealthcarePage() {
                   <span className="text-[#00ADB5] transition group-open:rotate-180">&#8964;</span>
                 </summary>
                 <p className="mt-4 leading-7 text-slate-300">
-                  AI Voice Platform can automate routine healthcare calls, collect
+                  vozon.ai can automate routine healthcare calls, collect
                   context, and hand off complex requests to your team with clear
                   summaries and routing rules.
                 </p>

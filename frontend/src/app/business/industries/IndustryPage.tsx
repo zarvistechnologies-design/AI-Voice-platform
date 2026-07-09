@@ -55,7 +55,7 @@ export function generateIndustryMetadata(slug: string) {
   }
 
   return {
-    title: `${industry.title} | AI Voice Platform`,
+    title: `${industry.title} | vozon.ai`,
     description: industry.summary,
   };
 }
@@ -1245,7 +1245,7 @@ export function IndustryPage({ slug }: { slug: string }) {
                     </span>
                   </summary>
                   <p className="mt-4 leading-7 text-slate-300">
-                    AI Voice Platform can automate routine {industry.title.toLowerCase()} calls, collect context,
+                    vozon.ai can automate routine {industry.title.toLowerCase()} calls, collect context,
                     and hand off complex requests to your team with clear summaries and routing rules.
                   </p>
                 </details>

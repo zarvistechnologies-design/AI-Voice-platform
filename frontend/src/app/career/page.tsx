@@ -1,8 +1,8 @@
 import { DetailPage } from "@/components/layout/DetailPage";
 
 export const metadata = {
-  title: "Careers | AI Voice Platform",
-  description: "Join AI Voice Platform and help build the future of voice AI.",
+  title: "Careers | vozon.ai",
+  description: "Join vozon.ai and help build the future of voice AI.",
 };
 
 const careerValues = [

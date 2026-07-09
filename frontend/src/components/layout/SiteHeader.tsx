@@ -86,13 +86,15 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`pointer-events-none fixed top-0 right-0 left-0 z-50 bg-[#111827] px-3 transition-all duration-200 sm:px-6 ${
-        isScrolled ? "shadow-[0_12px_30px_rgba(2,6,23,0.22)]" : ""
+      className={`vozon-site-header pointer-events-none fixed right-0 left-0 z-50 transition-all duration-200 max-[1180px]:top-2 max-[1180px]:px-[clamp(12px,4vw,28px)] max-[560px]:px-2.5 ${
+        isScrolled
+          ? "top-2 px-[clamp(16px,5vw,72px)]"
+          : "top-3.5 px-[clamp(14px,3vw,36px)]"
       }`}
       ref={headerRef}
     >
       <div
-        className={`pointer-events-auto relative mx-auto flex w-full items-center justify-between gap-2 bg-[#111827] py-3 text-white transition-all duration-200 xl:grid xl:grid-cols-[minmax(170px,0.9fr)_auto_minmax(190px,0.9fr)] xl:gap-2.5 ${
+        className={`pointer-events-auto relative mx-auto flex w-full items-center justify-between gap-2 rounded-full border border-[#2dffdb]/16 bg-[#111827] px-4 py-3 text-white transition-all duration-200 max-[560px]:rounded-[22px] max-[560px]:px-3 xl:grid xl:grid-cols-[minmax(170px,0.9fr)_auto_minmax(190px,0.9fr)] xl:gap-2.5 ${
           isScrolled
             ? "min-h-[58px] max-w-[1220px]"
             : "min-h-[72px] max-w-[1280px]"
@@ -292,6 +294,62 @@ export function SiteHeader() {
           </div>
         );
       })}
+      <style>{`
+        .vozon-site-header > div:first-of-type {
+          border-color: rgba(45, 255, 219, 0.16) !important;
+          background: rgba(6, 14, 12, 0.68) !important;
+          color: rgba(238, 255, 251, 0.95) !important;
+          box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03), 0 18px 54px rgba(0,0,0,0.34) !important;
+        }
+
+        .vozon-site-header nav {
+          border-color: rgba(45, 255, 219, 0.14) !important;
+          background: rgba(255,255,255,0.05) !important;
+          color: rgba(238, 255, 251, 0.76) !important;
+        }
+
+        .vozon-site-header a,
+        .vozon-site-header button {
+          color: inherit !important;
+        }
+
+        .vozon-site-header nav a:hover,
+        .vozon-site-header nav button:hover {
+          background: rgba(31,244,208,0.10) !important;
+          color: #61fff0 !important;
+        }
+
+        .vozon-site-header a[href="/#contact"] {
+          border-color: rgba(31,244,208,0.35) !important;
+          background: linear-gradient(135deg, rgba(12,119,139,0.72), rgba(31,244,208,0.22), rgba(57,219,141,0.72)) !important;
+          color: #dffff8 !important;
+          box-shadow: 0 10px 28px rgba(31,244,208,0.14) !important;
+        }
+
+        .vozon-site-header > div[id$="-menu"] {
+          border-color: rgba(31,244,208,0.18) !important;
+          background: rgba(2, 18, 15, 0.94) !important;
+          color: rgba(238, 255, 251, 0.94) !important;
+          box-shadow: 0 28px 90px rgba(0,0,0,0.5) !important;
+        }
+
+        .vozon-site-header > div[id$="-menu"] > a:first-child {
+          background: linear-gradient(135deg, rgba(4,32,27,0.96), rgba(18,137,116,0.5)) !important;
+        }
+
+        .vozon-site-header > div[id$="-menu"] p,
+        .vozon-site-header > div[id$="-menu"] a {
+          color: rgba(238, 255, 251, 0.72) !important;
+        }
+
+        .vozon-site-header > div[id$="-menu"] h2 {
+          color: #61fff0 !important;
+        }
+
+        .vozon-site-header > div[id$="-menu"] a:hover {
+          color: #61fff0 !important;
+        }
+      `}</style>
     </header>
   );
 }
