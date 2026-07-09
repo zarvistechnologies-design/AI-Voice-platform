@@ -375,7 +375,7 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
         <header className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-[#99f6e8] bg-white/95 p-4 backdrop-blur">
           <div className="min-w-0">
             <h2 className="app-section-title m-0 truncate" title={`Test ${agentName}`}>Test {agentName}</h2>
-            <span className="app-caption">AI Voice Platform realtime session</span>
+            <span className="app-caption">vozon.ai realtime session</span>
           </div>
           <button className="app-button-text shrink-0 rounded-lg border border-[#d5d8df] bg-white px-3 py-2 transition hover:bg-[#f8fafc]" type="button" onClick={onClose}>
             Close

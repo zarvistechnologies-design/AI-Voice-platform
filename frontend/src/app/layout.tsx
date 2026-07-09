@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Voice Platform",
-  description: "Realtime speech intelligence for AI voice experiences.",
+  title: "vozon.ai",
+  description: "AI voice agents for sales, support, scheduling, and customer follow-up.",
 };
 
 export default function RootLayout({

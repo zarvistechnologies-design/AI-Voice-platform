@@ -14,11 +14,13 @@ export default function LoginPage() {
         </Link>
       </header>
 
-      <section className="mx-auto grid min-h-[calc(100vh-72px)] w-full max-w-[1180px] items-center gap-12 py-12 lg:grid-cols-[minmax(0,1fr)_minmax(380px,460px)] lg:gap-24">
-        <div className="max-w-2xl">
-          <p className="m-0 text-sm font-bold text-cyan-300">AI Voice Platform workspace</p>
-          <h2 className="mt-6 mb-0 text-5xl leading-[1.05] font-semibold sm:text-6xl">
-            Your voice operation, all in one place.
+      <section className="mx-auto grid min-h-[calc(100vh-80px)] w-full max-w-6xl items-center gap-10 py-10 lg:grid-cols-[minmax(0,1fr)_minmax(360px,440px)] lg:gap-20">
+        <div className="grid max-w-2xl gap-5">
+          <span className="app-label text-[var(--app-color-purple)]">
+            vozon.ai
+          </span>
+          <h2 className="app-display-title m-0">
+            Manage calls, agents, and workflows from one clean workspace.
           </h2>
           <p className="mt-6 mb-0 max-w-xl text-lg leading-8 text-slate-300">
             Build agents, monitor live calls, review outcomes, and improve every customer conversation from one secure workspace.

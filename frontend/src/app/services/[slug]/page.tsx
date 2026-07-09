@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: ServicePageProps) {
   }
 
   return {
-    title: `${service.title} | AI Voice Platform`,
+    title: `${service.title} | vozon.ai`,
     description: service.summary,
   };
 }
