@@ -605,11 +605,20 @@ const fallbackElevenLabsVoiceProfiles: VoiceProfile[] = [
   },
 ];
 
-const defaultGeminiRealtimeModel = "gemini-2.5-flash-native-audio-preview-12-2025";
+const defaultGeminiRealtimeModel = "gemini-3.1-flash-live-preview";
 const geminiRealtimeModels = [
   defaultGeminiRealtimeModel,
-  "gemini-2.0-flash-live-001",
 ];
+const geminiRealtimeModelAliases: Record<string, string> = {
+  "gemini-2.5-flash-native-audio-preview-12-2025": defaultGeminiRealtimeModel,
+  "gemini-2.5-flash-native-audio-latest": defaultGeminiRealtimeModel,
+  "gemini-2.5-flash-native-audio-preview-09-2025": defaultGeminiRealtimeModel,
+  "gemini-2.5-flash-preview-native-audio-dialog": defaultGeminiRealtimeModel,
+  "gemini-2.5-flash-exp-native-audio-thinking-dialog": defaultGeminiRealtimeModel,
+  "gemini-live-2.5-flash-preview": defaultGeminiRealtimeModel,
+  "gemini-live-2.5-flash-native-audio": defaultGeminiRealtimeModel,
+  "gemini-2.0-flash-live-001": defaultGeminiRealtimeModel,
+};
 const defaultGeminiLlmModel = "gemini-2.5-flash";
 const geminiLlmModels = [
   "gemini-2.5-flash",
@@ -691,7 +700,8 @@ const openaiRealtimeModels = ["gpt-realtime-2.1", "gpt-realtime-2.1-mini"];
 
 function normalizeRealtimeModel(provider: RealtimeProvider, model: string) {
   if (provider === "gemini") {
-    return geminiRealtimeModels.includes(model) ? model : defaultGeminiRealtimeModel;
+    const resolved = geminiRealtimeModelAliases[model] ?? model;
+    return geminiRealtimeModels.includes(resolved) ? resolved : defaultGeminiRealtimeModel;
   }
   // OpenAI: resolve legacy aliases first, then validate against known models
   const resolved = openaiRealtimeModelAliases[model] ?? model;
