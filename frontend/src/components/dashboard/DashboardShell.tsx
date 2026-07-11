@@ -183,7 +183,7 @@ const agents: VoiceAgent[] = [{
   voice: "alloy",
   pipelineMode: "realtime",
   realtimeProvider: "openai",
-  realtimeModel: "gpt-realtime",
+  realtimeModel: "gpt-realtime-2.1",
   llmProvider: "openai",
   llmModel: "gpt-4.1-mini",
   sttProvider: "openai",
@@ -677,13 +677,17 @@ const fallbackDeepgramSttModels = [
 ];
 
 const openaiRealtimeModelAliases: Record<string, string> = {
-  "gpt-realtime": "gpt-4o-realtime-preview",
-  "gpt-4o-realtime": "gpt-4o-realtime-preview",
-  "gpt-4o-mini-realtime": "gpt-4o-mini-realtime-preview",
+  "gpt-realtime": "gpt-realtime-2.1",
+  "gpt-realtime-2": "gpt-realtime-2.1",
+  "gpt-realtime-mini": "gpt-realtime-2.1-mini",
+  "gpt-4o-realtime": "gpt-realtime-2.1",
+  "gpt-4o-realtime-preview": "gpt-realtime-2.1",
+  "gpt-4o-mini-realtime": "gpt-realtime-2.1-mini",
+  "gpt-4o-mini-realtime-preview": "gpt-realtime-2.1-mini",
 };
 
-const defaultOpenAIRealtimeModel = "gpt-4o-realtime-preview";
-const openaiRealtimeModels = ["gpt-4o-realtime-preview", "gpt-4o-mini-realtime-preview"];
+const defaultOpenAIRealtimeModel = "gpt-realtime-2.1";
+const openaiRealtimeModels = ["gpt-realtime-2.1", "gpt-realtime-2.1-mini"];
 
 function normalizeRealtimeModel(provider: RealtimeProvider, model: string) {
   if (provider === "gemini") {
@@ -758,7 +762,7 @@ function voicesByLanguageFromProfiles(
 
 const fallbackCatalog: ModelCatalog = {
   realtime: [
-    { provider: "openai", label: "OpenAI Realtime", configured: true, models: ["gpt-4o-realtime-preview", "gpt-4o-mini-realtime-preview"], voices: ["alloy", "ash", "ballad", "coral", "echo", "sage", "shimmer", "verse", "marin", "cedar"] },
+    { provider: "openai", label: "OpenAI Realtime", configured: true, models: openaiRealtimeModels, voices: ["alloy", "ash", "ballad", "coral", "echo", "sage", "shimmer", "verse", "marin", "cedar"] },
     { provider: "gemini", label: "Gemini Live", configured: true, models: geminiRealtimeModels, voices: ["Aoede"] },
   ],
   llm: [
@@ -2748,7 +2752,7 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
       dot: "bg-[#f97316]",
       title: selectedAgent.pipelineMode === "realtime" ? "Native realtime" : `${selectedAgent.sttProvider} STT`,
       provider: selectedAgent.pipelineMode === "realtime" ? selectedAgent.realtimeModel : selectedAgent.sttModel,
-      cost: selectedAgent.pipelineMode === "realtime" ? "Included in realtime" : "Pay per use",
+      cost: selectedAgent.pipelineMode === "realtime" ? "No separate STT" : "Provider cost only",
       latency: "250ms",
       accent: "text-[#008996]",
     },
@@ -2758,7 +2762,7 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
       dot: "bg-[#3b82f6]",
       title: selectedAgent.pipelineMode === "realtime" ? `${selectedAgent.realtimeProvider} realtime` : `${selectedAgent.llmProvider} LLM`,
       provider: selectedAgent.pipelineMode === "realtime" ? selectedAgent.realtimeModel : selectedAgent.llmModel,
-      cost: "Pay per use",
+      cost: "Provider cost only",
       latency: "600ms",
       accent: "text-[#d97706]",
     },
@@ -2768,7 +2772,7 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
       dot: "bg-[#c026d3]",
       title: selectedAgent.pipelineMode === "realtime" ? "Realtime voice" : `${selectedAgent.ttsProvider} TTS`,
       provider: `${selectedAgent.voice}${selectedAgent.pipelineMode === "pipeline" ? ` / ${selectedAgent.ttsModel}` : ""}`,
-      cost: selectedAgent.pipelineMode === "realtime" ? "Included in realtime" : "Pay per use",
+      cost: selectedAgent.pipelineMode === "realtime" ? "No separate TTS" : "Provider cost only",
       latency: "400ms",
       accent: "text-[#008996]",
     },
@@ -3958,9 +3962,9 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
                     <section className="grid gap-5 rounded-lg border border-[#e2e8f0] bg-white p-5 shadow-[0_16px_36px_rgba(15,23,42,0.06)]">
                       <div className="grid gap-5 xl:grid-cols-2">
                         <div className="grid gap-2">
-                          <span className="app-label uppercase text-[#64748b]">Average cost</span>
+                          <span className="app-label uppercase text-[#64748b]">Pricing basis</span>
                           <div className="flex min-w-0 items-center gap-4">
-                            <strong className="text-2xl font-semibold leading-7 text-[#111827]">~$0.08<span className="text-base font-medium text-[#64748b]"> /min</span></strong>
+                            <strong className="text-2xl font-semibold leading-7 text-[#111827]">Provider<span className="text-base font-medium text-[#64748b]"> cost only</span></strong>
                             <span className="grid h-2 min-w-32 flex-1 grid-cols-[1.8fr_0.45fr_0.6fr_1fr] overflow-hidden rounded-full bg-[#eef2f7]">
                               <span className="bg-[#14b8a6]" />
                               <span className="bg-[#f97316]" />
@@ -5302,7 +5306,7 @@ function mapBackendAgent(agent: BackendAgent): VoiceAgent {
     voice: agent.voice,
     pipelineMode: agent.pipelineMode ?? "realtime",
     realtimeProvider,
-    realtimeModel: normalizeRealtimeModel(realtimeProvider, agent.realtimeModel ?? "gpt-realtime"),
+    realtimeModel: normalizeRealtimeModel(realtimeProvider, agent.realtimeModel ?? defaultOpenAIRealtimeModel),
     llmProvider,
     llmModel: normalizeGeminiLlmModel(llmProvider, agent.llmModel ?? "gpt-4.1-mini"),
     sttProvider: agent.sttProvider ?? "openai",

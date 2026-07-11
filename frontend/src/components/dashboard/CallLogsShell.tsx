@@ -231,7 +231,7 @@ const filterInputClass =
 
 function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }) {
   const billing = call.billing;
-  const charged = billing?.chargedCredits || billing?.estimatedChargeCredits || 0;
+  const charged = billing?.estimatedChargeCredits ?? billing?.chargedCredits ?? 0;
   const cost = call.costBreakdown;  const hasStructuredOutput = call.structuredOutput && Object.keys(call.structuredOutput).length > 0;  const [recordingObjectUrl, setRecordingObjectUrl] = useState({ callId: "", url: "" });
   const [recordingLoadState, setRecordingLoadState] = useState({ callId: "", loading: false, error: "" });
   const transcript = [...call.transcript].sort(
@@ -273,26 +273,14 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
     : "";
   const providerCostItems = (call.pipelineMode === "realtime" || isRealtimeAudioCall(call)
     ? [
-        ["Realtime", configuredStack(call.llmProvider, call.llmModel), llmUsage, cost?.pricing?.llm, cost?.llm ?? 0, billing?.breakdown.chargedLlm ?? 0],
-        ["Carrier", call.direction, `${Math.ceil(call.durationSeconds / 60)} min`, cost?.pricing?.telephony, cost?.telephony ?? 0, billing?.breakdown.chargedTelephony ?? 0],
+        ["Realtime", configuredStack(call.llmProvider, call.llmModel), llmUsage, cost?.pricing?.llm, cost?.llm ?? 0],
       ]
     : [
-        ["LLM", configuredStack(call.llmProvider, call.llmModel), llmUsage, cost?.pricing?.llm, cost?.llm ?? 0, billing?.breakdown.chargedLlm ?? 0],
-        ["STT", configuredStack(call.sttProvider, call.sttModel), sttUsage, cost?.pricing?.stt, cost?.stt ?? 0, billing?.breakdown.chargedStt ?? 0],
-        ["TTS", configuredTtsStack(call), ttsUsage, cost?.pricing?.tts, cost?.tts ?? 0, billing?.breakdown.chargedTts ?? 0],
-        ["Carrier", call.direction, `${Math.ceil(call.durationSeconds / 60)} min`, cost?.pricing?.telephony, cost?.telephony ?? 0, billing?.breakdown.chargedTelephony ?? 0],
-      ]) as readonly (readonly [string, string, string, CostPricingDetail | undefined, number, number])[];
-  const costItems = [
-    ...providerCostItems,
-    [
-      "Platform fee",
-      "AI Voice Platform",
-      "1 call",
-      cost?.pricing?.platformFee,
-      0,
-      billing?.breakdown.chargedPlatformFee ?? cost?.platformFee ?? 0,
-    ],
-  ] as readonly (readonly [string, string, string, CostPricingDetail | undefined, number, number])[];
+        ["LLM", configuredStack(call.llmProvider, call.llmModel), llmUsage, cost?.pricing?.llm, cost?.llm ?? 0],
+        ["STT", configuredStack(call.sttProvider, call.sttModel), sttUsage, cost?.pricing?.stt, cost?.stt ?? 0],
+        ["TTS", configuredTtsStack(call), ttsUsage, cost?.pricing?.tts, cost?.tts ?? 0],
+      ]) as readonly (readonly [string, string, string, CostPricingDetail | undefined, number])[];
+  const costItems = providerCostItems;
 
   useEffect(() => {
     let active = true;
@@ -364,7 +352,7 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
               ["Latency", call.avgResponseLatencyMs ? `${call.avgResponseLatencyMs} ms` : "—"],
               ["Sentiment", call.sentimentLabel ? titleCase(call.sentimentLabel) : "—"],
               ["Language", call.language || "—"],
-              ["Charged", money(charged, billing?.currency)],
+              ["Provider cost", money(charged, billing?.currency)],
               ["Balance after", billing?.balanceAfterCredits != null ? money(billing.balanceAfterCredits, billing.currency) : "—"],
             ].map(([label, value]) => (
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-3" key={label}>
@@ -439,31 +427,28 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
           <section className="overflow-hidden rounded-xl border border-slate-200 bg-white">
             <div className="flex flex-col gap-2 border-b border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h3 className="m-0 text-sm font-semibold text-slate-950">Cost and charge breakdown</h3>
-                <p className="mt-1 text-xs text-slate-500">Customer charge = real provider cost (LLM + STT + TTS) + platform fee. Telephony is not billed.</p>
+                <h3 className="m-0 text-sm font-semibold text-slate-950">Provider cost breakdown</h3>
+                <p className="mt-1 text-xs text-slate-500">Total equals the selected provider/model cost only.</p>
               </div>
               <div className="grid gap-1 text-right text-xs">
-                <span className="text-slate-500">Real provider cost: <strong className="text-slate-950">{money(cost?.providerCost ?? billing?.providerCost ?? 0, cost?.currency)}</strong></span>
-                <span className="text-slate-500">Platform fee: <strong className="text-slate-950">{money(cost?.platformFee ?? billing?.platformFee ?? 0, cost?.currency)}</strong></span>
-                <span className="text-slate-500">Customer total: <strong className="text-emerald-700">{money(billing?.estimatedChargeCredits ?? cost?.customerCost ?? charged ?? 0, billing?.currency || cost?.currency)}</strong></span>
+                <span className="text-slate-500">Provider total: <strong className="text-emerald-700">{money(cost?.providerCost ?? billing?.providerCost ?? charged ?? 0, billing?.currency || cost?.currency)}</strong></span>
               </div>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full min-w-760px text-left text-sm">
                 <thead className="bg-white text-xs uppercase tracking-wider text-slate-500">
                   <tr>
-                    {["Component", "Provider / Model", "Usage", "Rate used", "Provider cost", "Charged"].map((item) => <th className="px-4 py-3" key={item}>{item}</th>)}
+                    {["Component", "Provider / Model", "Usage", "Rate used", "Cost"].map((item) => <th className="px-4 py-3" key={item}>{item}</th>)}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {costItems.map(([label, provider, usage, pricing, providerCost, chargedCost]) => (
+                  {costItems.map(([label, provider, usage, pricing, providerCost]) => (
                     <tr key={label}>
                       <td className="px-4 py-3 font-semibold text-slate-950">{label}</td>
                       <td className="px-4 py-3 text-slate-600">{provider}</td>
                       <td className="px-4 py-3 text-slate-600">{usage}</td>
                       <td className="px-4 py-3 text-xs font-semibold text-slate-600" title={rateTitle(pricing)}>{rateLabel(pricing)}</td>
                       <td className="px-4 py-3 text-slate-700">{money(providerCost, cost?.currency)}</td>
-                      <td className="px-4 py-3 font-semibold text-slate-950">{money(chargedCost, billing?.currency)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -689,7 +674,7 @@ export function CallLogsShell() {
               ["Completed", metrics.completed, "On this page"],
               ["Active now", metrics.active, "Live conversations"],
               ["Avg duration", formatDuration(metrics.averageDuration), "On this page"],
-              ["Charged", money(metrics.charged), "Visible page total"],
+              ["Provider cost", money(metrics.charged), "Visible page total"],
             ].map(([label, value, detail]) => (
               <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm" key={label}>
                 <span className="text-xs font-medium text-slate-500">{label}</span>
