@@ -94,7 +94,7 @@ export function SiteHeader() {
       ref={headerRef}
     >
       <div
-        className={`pointer-events-auto relative mx-auto flex w-full items-center justify-between gap-2 rounded-full border border-[#2dffdb]/16 bg-[#111827] px-4 py-3 text-white transition-all duration-200 max-[560px]:rounded-[22px] max-[560px]:px-3 xl:grid xl:grid-cols-[minmax(170px,0.9fr)_auto_minmax(190px,0.9fr)] xl:gap-2.5 ${
+        className={`pointer-events-auto relative mx-auto flex w-full items-center justify-between gap-2 px-4 py-3 text-white transition-all duration-200 max-[560px]:px-3 xl:grid xl:grid-cols-[minmax(170px,0.9fr)_auto_minmax(190px,0.9fr)] xl:gap-2.5 ${
           isScrolled
             ? "min-h-[58px] max-w-[1220px]"
             : "min-h-[72px] max-w-[1280px]"
@@ -296,10 +296,10 @@ export function SiteHeader() {
       })}
       <style>{`
         .vozon-site-header > div:first-of-type {
-          border-color: rgba(45, 255, 219, 0.16) !important;
-          background: rgba(6, 14, 12, 0.68) !important;
+          border-color: transparent !important;
+          background: transparent !important;
           color: rgba(238, 255, 251, 0.95) !important;
-          box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03), 0 18px 54px rgba(0,0,0,0.34) !important;
+          box-shadow: none !important;
         }
 
         .vozon-site-header nav {
