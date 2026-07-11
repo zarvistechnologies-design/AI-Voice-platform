@@ -281,53 +281,58 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
   async function startWebCall() {
     setBusy(true);
     setStatus("Starting browser voice call...");
+    const room = new Room({ adaptiveStream: true, dynacast: true });
+    let subscribedAudioTracks = 0;
+    const refreshParticipants = () => setRemoteCount(room.remoteParticipants.size);
+    roomRef.current = room;
+
+    room.on(RoomEvent.TrackSubscribed, (track) => {
+      if (track.kind !== Track.Kind.Audio) return;
+      addTrackToBrowserRecording(track.mediaStreamTrack);
+      const element = track.attach();
+      element.autoplay = true;
+      document.body.appendChild(element);
+      audioElementsRef.current.push(element);
+      void element.play().catch(() => {
+        setStatus("Browser audio playback was blocked. End the call and start it again, then allow sound.");
+      });
+      subscribedAudioTracks += 1;
+      setAudioCount(subscribedAudioTracks);
+      stopDispatchPolling();
+      setStatus(`Receiving audio from ${agentName}`);
+    });
+    room.on(RoomEvent.TrackUnsubscribed, (track) => {
+      if (track.kind !== Track.Kind.Audio) return;
+      track.detach().forEach((element) => {
+        element.remove();
+        audioElementsRef.current = audioElementsRef.current.filter((item) => item !== element);
+      });
+      subscribedAudioTracks = Math.max(0, subscribedAudioTracks - 1);
+      setAudioCount(subscribedAudioTracks);
+    });
+    room.on(RoomEvent.ParticipantConnected, (participant) => {
+      refreshParticipants();
+      setStatus(`${participant.name || "AI agent"} joined. ${knowledgeStatus(knowledgeCount)}.`);
+    });
+    room.on(RoomEvent.ParticipantDisconnected, () => {
+      refreshParticipants();
+      setStatus("AI agent left the call");
+    });
+    room.on(RoomEvent.Disconnected, () => {
+      setActive(false);
+      setRemoteCount(0);
+      setAudioCount(0);
+      setStatus(mediaRecorderRef.current ? "Call ended. Saving recording..." : "Call ended");
+      void finishBrowserRecording();
+    });
+
     try {
+      // Browser audio permission must be unlocked during the button click, before network awaits.
+      await room.startAudio();
       const credentials = await voiceApi.webCallToken(agentId);
       webCallIdRef.current = credentials.callId;
       setStatus("Connecting the AI agent for this call...");
       startDispatchPolling(credentials.roomName, credentials.dispatchId);
-      const room = new Room({ adaptiveStream: true, dynacast: true });
-      let subscribedAudioTracks = 0;
-      const refreshParticipants = () => setRemoteCount(room.remoteParticipants.size);
-      roomRef.current = room;
-
-      room.on(RoomEvent.TrackSubscribed, (track) => {
-        if (track.kind !== Track.Kind.Audio) return;
-        addTrackToBrowserRecording(track.mediaStreamTrack);
-        const element = track.attach();
-        element.autoplay = true;
-        document.body.appendChild(element);
-        audioElementsRef.current.push(element);
-        subscribedAudioTracks += 1;
-        setAudioCount(subscribedAudioTracks);
-        stopDispatchPolling();
-        setStatus(`Receiving audio from ${agentName}`);
-      });
-      room.on(RoomEvent.TrackUnsubscribed, (track) => {
-        if (track.kind !== Track.Kind.Audio) return;
-        track.detach().forEach((element) => {
-          element.remove();
-          audioElementsRef.current = audioElementsRef.current.filter((item) => item !== element);
-        });
-        subscribedAudioTracks = Math.max(0, subscribedAudioTracks - 1);
-        setAudioCount(subscribedAudioTracks);
-      });
-      room.on(RoomEvent.ParticipantConnected, (participant) => {
-        refreshParticipants();
-        setStatus(`${participant.name || "AI agent"} joined. ${knowledgeStatus(knowledgeCount)}.`);
-      });
-      room.on(RoomEvent.ParticipantDisconnected, () => {
-        refreshParticipants();
-        setStatus("AI agent left the call");
-      });
-      room.on(RoomEvent.Disconnected, () => {
-        setActive(false);
-        setRemoteCount(0);
-        setAudioCount(0);
-        setStatus(mediaRecorderRef.current ? "Call ended. Saving recording..." : "Call ended");
-        void finishBrowserRecording();
-      });
-
       await room.connect(credentials.serverUrl, credentials.participantToken);
       if (room.serverInfo?.region) onRegionChange(room.serverInfo.region);
       await room.localParticipant.setMicrophoneEnabled(true, {
@@ -335,7 +340,6 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
         noiseSuppression: true,
         autoGainControl: true,
       });
-      await room.startAudio();
       await startBrowserRecording(room, credentials.callId);
       setActive(true);
       refreshParticipants();

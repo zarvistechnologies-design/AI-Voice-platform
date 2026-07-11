@@ -34,8 +34,7 @@ function safeJson(value: string) {
 }
 
 function readableError(error: unknown, fallback: string) {
-  void error;
-  return fallback;
+  return error instanceof Error && error.message ? error.message : fallback;
 }
 
 export function EmbeddedVoiceWidget() {
@@ -129,7 +128,35 @@ export function EmbeddedVoiceWidget() {
     setBusy(true);
     setStatus("Connecting");
     setExpanded(true);
+    const room = new Room({ adaptiveStream: true, dynacast: true });
+    roomRef.current = room;
+    room.on(RoomEvent.TrackSubscribed, (track) => {
+      if (track.kind !== Track.Kind.Audio) return;
+      if (waitingTimerRef.current) {
+        window.clearTimeout(waitingTimerRef.current);
+        waitingTimerRef.current = null;
+      }
+      const element = track.attach();
+      element.autoplay = true;
+      element.style.display = "none";
+      document.body.appendChild(element);
+      audioElementsRef.current.push(element);
+      void element.play().catch(() => {
+        setStatus("Browser audio playback was blocked. End the call and start it again, then allow sound.");
+      });
+      setStatus(`Connected to ${agent?.name ?? "assistant"}`);
+    });
+    room.on(RoomEvent.ParticipantConnected, (participant) => {
+      setStatus(`${participant.name || "Assistant"} joined. Speak now.`);
+    });
+    room.on(RoomEvent.Disconnected, () => {
+      setActive(false);
+      setStatus("Call ended");
+    });
+
     try {
+      // Unlock audio during the user gesture so agent audio can play after the room connects.
+      await room.startAudio();
       const response = await fetch(`${API_URL}/api/widget/call-token`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -146,29 +173,6 @@ export function EmbeddedVoiceWidget() {
         throw new Error(token?.message ?? "Could not start the voice session");
       }
 
-      const room = new Room({ adaptiveStream: true, dynacast: true });
-      roomRef.current = room;
-      room.on(RoomEvent.TrackSubscribed, (track) => {
-        if (track.kind !== Track.Kind.Audio) return;
-        if (waitingTimerRef.current) {
-          window.clearTimeout(waitingTimerRef.current);
-          waitingTimerRef.current = null;
-        }
-        const element = track.attach();
-        element.autoplay = true;
-        element.style.display = "none";
-        document.body.appendChild(element);
-        audioElementsRef.current.push(element);
-        setStatus(`Connected to ${agent?.name ?? "assistant"}`);
-      });
-      room.on(RoomEvent.ParticipantConnected, (participant) => {
-        setStatus(`${participant.name || "Assistant"} joined. Speak now.`);
-      });
-      room.on(RoomEvent.Disconnected, () => {
-        setActive(false);
-        setStatus("Call ended");
-      });
-
       await room.connect(token.serverUrl, token.participantToken);
       try {
         await room.localParticipant.setMicrophoneEnabled(true, {
@@ -179,7 +183,6 @@ export function EmbeddedVoiceWidget() {
       } catch {
         throw new Error("Microphone permission is required. Allow microphone access and try again.");
       }
-      await room.startAudio().catch(() => undefined);
       setActive(true);
       setMuted(false);
       setStatus(room.remoteParticipants.size ? "Connected. Speak now." : "Connected. Waiting for assistant.");
