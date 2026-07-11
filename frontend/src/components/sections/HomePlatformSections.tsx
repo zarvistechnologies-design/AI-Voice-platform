@@ -3,17 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
-const voiceCapabilities = [
-  "Lead Qualification",
-  "AI Receptionist",
-  "Appointment Booking",
-  "Inbound Support",
-  "Outbound Follow-ups",
-  "CRM Updates",
-  "Payment Reminders",
-  "Call Summaries",
-];
-
 const languageOptions = [
   {
     code: "EN",
@@ -423,15 +412,15 @@ export function HomePlatformSections() {
   };
 
   return (
-    <div className="vozon-home relative isolate overflow-hidden bg-[#000503] text-white">
+    <div className="vozon-home relative isolate overflow-hidden bg-black text-white">
       <section id="product" className="relative mx-auto min-h-screen max-w-[1280px] px-5 pb-10 pt-28 text-center sm:px-8 lg:pt-32">
         <div className="mx-auto mb-7 inline-flex items-center gap-2 rounded-full border border-white/16 bg-white/8 px-4 py-2 text-xs font-semibold text-white/80 shadow-[inset_0_0_22px_rgba(255,255,255,0.04)] backdrop-blur">
           <span className="size-2 rounded-full bg-[#22f4d2] shadow-[0_0_14px_#22f4d2]" />
           Voice Agents Live Now
         </div>
-        <h1 className="mx-auto m-0 max-w-5xl text-[clamp(2.45rem,7vw,5.7rem)] font-black leading-[0.98] tracking-[-0.03em] text-[#dbfff8]">
+        <h1 className="mx-auto m-0 max-w-5xl text-[clamp(2.45rem,7vw,5.7rem)] font-black leading-[0.98] tracking-[-0.03em] text-white">
           Launch enterprise-ready{" "}
-          <span className="vozon-gradient-text">AI voice agents</span>
+          <span>AI voice agents</span>
         </h1>
         <p className="mx-auto mt-6 max-w-3xl text-sm leading-7 text-white/56 sm:text-base">
           vozon.ai helps teams answer every call, qualify every lead, book every next step, and turn conversations into clean workflows for sales, support, and operations.
@@ -440,21 +429,11 @@ export function HomePlatformSections() {
           <GlowButton href="/dashboard">Deploy Now</GlowButton>
         </div>
         <CircuitHero />
-        <div className="mx-auto -mt-8 flex max-w-5xl flex-wrap justify-center gap-3 max-sm:mt-3">
-          {voiceCapabilities.map((capability) => (
-            <span
-              className="rounded-full border border-[#1beac7]/25 bg-white/[0.06] px-4 py-2 text-xs font-bold text-white/70 backdrop-blur"
-              key={capability}
-            >
-              {capability}
-            </span>
-          ))}
-        </div>
       </section>
 
-      <section className="vozon-company-marquee-section relative overflow-hidden py-10 sm:py-12">
+      <section className="vozon-company-marquee-section relative mt-8 overflow-hidden py-10 sm:mt-12 sm:py-12">
         <div className="relative z-10 mx-auto mb-9 max-w-4xl px-5 text-center sm:px-8">
-          <h4 className="vozon-company-heading m-0 whitespace-nowrap text-[#f3fffc]">
+          <h4 className="vozon-company-heading m-0 whitespace-nowrap text-white">
             Trusted by Developers &amp; Businesses Worldwide
           </h4>
         </div>
@@ -484,15 +463,15 @@ export function HomePlatformSections() {
         </div>
       </section>
 
-      <section className="vozon-language-section relative mx-auto max-w-[1280px] px-5 pb-16 pt-4 sm:px-8">
+      <section className="vozon-language-section relative mx-auto mt-8 max-w-[1280px] px-5 pb-16 pt-4 sm:mt-12 sm:px-8">
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 inline-flex w-fit items-center gap-2 rounded-full border border-[#f28d45]/38 bg-[#f28d45]/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.08em] text-[#ff9e49]">
             <span className="size-1.5 rounded-full bg-[#ff9e49]" />
             Multilingual Voice AI
           </div>
 
-          <h2 className="vozon-section-heading mx-auto m-0 max-w-5xl text-[#f4fff9] lg:whitespace-nowrap">
-            Sounds like home <span className="vozon-language-gradient-text">wherever home is.</span>
+          <h2 className="vozon-section-heading mx-auto m-0 max-w-5xl text-white lg:whitespace-nowrap">
+            Sounds like home <span>wherever home is.</span>
           </h2>
         </div>
 
@@ -668,9 +647,9 @@ export function HomePlatformSections() {
               Integrations
             </div>
 
-            <h2 className="m-0 max-w-3xl text-[1.8rem] font-black leading-[1.1] text-[#f4fffb] sm:text-[2.3rem] lg:text-[2.9rem]">
+            <h2 className="m-0 max-w-3xl text-[1.8rem] font-black leading-[1.1] text-white sm:text-[2.3rem] lg:text-[2.9rem]">
               From script to spoken word,{" "}
-              <span className="vozon-integration-gradient-text">wired end to end.</span>
+              <span>wired end to end.</span>
             </h2>
 
             <p className="mt-6 max-w-2xl text-sm leading-7 text-white/58 sm:text-base">
@@ -725,9 +704,9 @@ export function HomePlatformSections() {
             <div className="mb-5 text-[11px] font-black uppercase tracking-[0.22em] text-[#45ddce]">
               Where Vozon Fits
             </div>
-            <h2 className="mx-auto m-0 max-w-3xl text-[2rem] font-black leading-[1.12] text-[#f4fffb] sm:text-[2.55rem] lg:text-[3.15rem]">
+            <h2 className="mx-auto m-0 max-w-3xl text-[2rem] font-black leading-[1.12] text-white sm:text-[2.55rem] lg:text-[3.15rem]">
               One voice agent, every industry
-              <span className="vozon-fit-gradient-text block">that answers a phone</span>
+              <span className="block">that answers a phone</span>
             </h2>
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/56 sm:text-base">
               Support, virtual assistants, or voice-enabled hardware. The same agent adapts to how your business actually talks to people.
@@ -755,7 +734,7 @@ export function HomePlatformSections() {
               {selectedFit.columns.map((column) => (
                 <article className="vozon-fit-content min-h-[250px] border-white/10 px-8 py-8 lg:border-r lg:last:border-r-0" key={column.title}>
                   <span className="vozon-fit-dot mb-5 block size-2 rounded-full bg-[#45ddce]" />
-                  <h3 className="m-0 text-xl font-black leading-tight text-[#62fff0]">{column.title}</h3>
+                  <h3 className="m-0 text-xl font-black leading-tight text-white">{column.title}</h3>
                   <p className="mt-5 mb-0 text-base leading-7 text-white/58">{column.body}</p>
                 </article>
               ))}
@@ -768,20 +747,7 @@ export function HomePlatformSections() {
       <style>{`
         .vozon-home {
           font-family: var(--font-site-sans), ui-sans-serif, system-ui, sans-serif;
-          background:
-            radial-gradient(ellipse 78% 15% at 50% 0%, rgba(36,255,207,0.22), transparent 72%),
-            radial-gradient(ellipse 48% 22% at 0% 24%, rgba(24,216,184,0.11), transparent 76%),
-            radial-gradient(ellipse 52% 24% at 100% 48%, rgba(0,117,109,0.13), transparent 78%),
-            radial-gradient(ellipse 60% 20% at 15% 76%, rgba(72,219,139,0.08), transparent 78%),
-            linear-gradient(180deg, #000503 0%, #020b09 32%, #03100d 62%, #010806 100%);
-        }
-
-        .vozon-gradient-text {
-          background: linear-gradient(90deg, #eafffb 0%, #62fff0 45%, #1de8b9 100%);
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
-          text-shadow: 0 0 38px rgba(38, 244, 210, 0.16);
+          background: #000;
         }
 
         .vozon-section-heading {
@@ -835,22 +801,6 @@ export function HomePlatformSections() {
 
         .vozon-integrations-section {
           background: transparent;
-        }
-
-        .vozon-integration-gradient-text {
-          background: linear-gradient(90deg, #eafffb 0%, #62fff0 46%, #48db8b 100%);
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
-          text-shadow: 0 0 34px rgba(32,244,208,0.13);
-        }
-
-        .vozon-language-gradient-text {
-          background: linear-gradient(90deg, #eafffb 0%, #62fff0 46%, #48db8b 100%);
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
-          text-shadow: 0 0 34px rgba(32,244,208,0.13);
         }
 
         .vozon-integration-flow {
@@ -921,14 +871,6 @@ export function HomePlatformSections() {
 
         .vozon-fit-section {
           background: transparent;
-        }
-
-        .vozon-fit-gradient-text {
-          background: linear-gradient(90deg, #eafffb 0%, #62fff0 48%, #48db8b 100%);
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
-          text-shadow: 0 0 34px rgba(32,244,208,0.12);
         }
 
         .vozon-fit-panel {
@@ -1121,9 +1063,7 @@ export function HomePlatformSections() {
         }
 
         .vozon-language-section {
-          background:
-            radial-gradient(circle at 82% 52%, rgba(69,221,206,0.1), transparent 34%),
-            radial-gradient(circle at 12% 20%, rgba(72,219,139,0.08), transparent 28%);
+          background: transparent;
         }
 
         .vozon-language-pill:hover {

@@ -101,7 +101,7 @@ export function SiteHeader() {
         }`}
       >
         <div className="flex min-w-0 items-center">
-          <BrandLogo />
+          <BrandLogo showWebsiteLogo />
         </div>
 
         <nav
