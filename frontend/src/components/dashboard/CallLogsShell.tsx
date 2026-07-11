@@ -1,15 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import {
-  getServerSession,
-  getSession,
-  logoutSession,
-  subscribeToSession,
-  validateStoredSession,
+    getServerSession,
+    getSession,
+    logoutSession,
+    subscribeToSession,
+    validateStoredSession,
 } from "@/lib/auth";
 import { publicVoiceMessage, voiceApi, type AgentSummary, type CallRecord, type CostPricingDetail } from "@/lib/voice";
 
@@ -43,11 +43,16 @@ function formatDuration(seconds: number) {
 }
 
 function formatDate(value?: string) {
-  if (!value) return "Waiting to start";
+  if (!value) return "—";
   return new Intl.DateTimeFormat("en-US", {
     dateStyle: "medium",
     timeStyle: "short",
   }).format(new Date(value));
+}
+
+function formatTime(value?: string) {
+  if (!value) return "";
+  return new Intl.DateTimeFormat("en-US", { timeStyle: "medium" }).format(new Date(value));
 }
 
 function money(value: number, currency = "USD") {
@@ -227,8 +232,7 @@ const filterInputClass =
 function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }) {
   const billing = call.billing;
   const charged = billing?.chargedCredits || billing?.estimatedChargeCredits || 0;
-  const cost = call.costBreakdown;
-  const [recordingObjectUrl, setRecordingObjectUrl] = useState({ callId: "", url: "" });
+  const cost = call.costBreakdown;  const hasStructuredOutput = call.structuredOutput && Object.keys(call.structuredOutput).length > 0;  const [recordingObjectUrl, setRecordingObjectUrl] = useState({ callId: "", url: "" });
   const [recordingLoadState, setRecordingLoadState] = useState({ callId: "", loading: false, error: "" });
   const transcript = [...call.transcript].sort(
     (left, right) => new Date(left.timestamp).getTime() - new Date(right.timestamp).getTime(),
@@ -283,7 +287,7 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
     [
       "Platform fee",
       "AI Voice Platform",
-      `₹${cost?.platformFeeInrPerMinute ?? 1}/min × ${(call.durationSeconds / 60).toFixed(2)} min`,
+      "1 call",
       cost?.pricing?.platformFee,
       0,
       billing?.breakdown.chargedPlatformFee ?? cost?.platformFee ?? 0,
@@ -343,7 +347,10 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
               <span className="text-xs font-medium uppercase tracking-wider text-slate-500">{call.direction}</span>
             </div>
             <h2 className="m-0 text-xl font-semibold text-slate-950">{agentName(call)}</h2>
-            <p className="mt-1 text-sm text-slate-500">{formatDate(call.startedAt ?? call.createdAt)}</p>
+            <p className="mt-1 text-sm text-slate-500">
+              Started {formatDate(call.startedAt ?? call.createdAt)}
+              {call.endedAt ? <> &middot; Ended {formatDate(call.endedAt)}</> : null}
+            </p>
           </div>
           <button className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50" type="button" onClick={onClose}>
             Close
@@ -351,12 +358,14 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
         </header>
 
         <div className="grid gap-6 p-6">
-          <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <section className="grid grid-cols-3 gap-2 sm:grid-cols-6">
             {[
               ["Duration", formatDuration(call.durationSeconds)],
-              ["Latency", call.avgResponseLatencyMs ? `${call.avgResponseLatencyMs} ms` : "-"],
-              ["Sentiment", call.sentimentLabel ? titleCase(call.sentimentLabel) : "-"],
+              ["Latency", call.avgResponseLatencyMs ? `${call.avgResponseLatencyMs} ms` : "—"],
+              ["Sentiment", call.sentimentLabel ? titleCase(call.sentimentLabel) : "—"],
+              ["Language", call.language || "—"],
               ["Charged", money(charged, billing?.currency)],
+              ["Balance after", billing?.balanceAfterCredits != null ? money(billing.balanceAfterCredits, billing.currency) : "—"],
             ].map(([label, value]) => (
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-3" key={label}>
                 <span className="block text-xs font-medium text-slate-500">{label}</span>
@@ -384,6 +393,8 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
             <div><span className="block text-xs font-medium text-slate-500">Usage</span><strong className="mt-1 block text-sm">{llmUsage} / {sttSecondsLabel} STT / {ttsUsage}</strong></div>
             <div><span className="block text-xs font-medium text-slate-500">Configured stack</span><strong className="mt-1 block text-sm">{configuredCallStack(call)}</strong></div>
             <div><span className="block text-xs font-medium text-slate-500">Tags</span><strong className="mt-1 block text-sm">{call.tags.length ? call.tags.join(", ") : "No tags"}</strong></div>
+            <div><span className="block text-xs font-medium text-slate-500">End reason</span><strong className="mt-1 block text-sm">{call.endReason || "—"}</strong></div>
+            {call.voicemailDetected ? <div className="col-span-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2"><strong className="block text-xs font-semibold text-amber-700">Voicemail detected</strong><span className="mt-0.5 block text-xs text-amber-600">The agent left a voicemail message and ended the call.</span></div> : null}
           </section>
 
           <section className="rounded-xl border border-slate-200 bg-white p-4">
@@ -396,10 +407,15 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
             </div>
             {recordingPlayerHref ? (
               <div className="grid gap-3">
-                <audio className="w-full" controls src={recordingPlayerHref} />
-                <a className="text-sm font-semibold text-cyan-700 hover:text-cyan-900" href={recordingPlayerHref} target="_blank" rel="noreferrer">
-                  Open recording
-                </a>
+                <audio className="w-full rounded-lg" controls src={recordingPlayerHref} />
+                <div className="flex gap-3">
+                  <a className="text-sm font-semibold text-cyan-700 hover:text-cyan-900" href={recordingPlayerHref} target="_blank" rel="noreferrer">
+                    Open in new tab
+                  </a>
+                  <a className="text-sm font-semibold text-slate-600 hover:text-slate-950" href={recordingPlayerHref} download>
+                    ↓ Download
+                  </a>
+                </div>
               </div>
             ) : recordingLoading ? (
               <div className="rounded-xl border border-dashed border-cyan-200 bg-cyan-50 p-4 text-sm text-cyan-700">
@@ -424,18 +440,20 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
             <div className="flex flex-col gap-2 border-b border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h3 className="m-0 text-sm font-semibold text-slate-950">Cost and charge breakdown</h3>
-                <p className="mt-1 text-xs text-slate-500">Customer charge = exact provider cost + prorated ₹1/min platform fee.</p>
+                <p className="mt-1 text-xs text-slate-500">Customer charge = real provider cost (LLM + STT + TTS) + platform fee. Telephony is not billed.</p>
               </div>
               <div className="grid gap-1 text-right text-xs">
                 <span className="text-slate-500">Real provider cost: <strong className="text-slate-950">{money(cost?.providerCost ?? billing?.providerCost ?? 0, cost?.currency)}</strong></span>
                 <span className="text-slate-500">Platform fee: <strong className="text-slate-950">{money(cost?.platformFee ?? billing?.platformFee ?? 0, cost?.currency)}</strong></span>
-                <span className="text-slate-500">Customer total: <strong className="text-emerald-700">{money(charged || cost?.customerCost || 0, billing?.currency || cost?.currency)}</strong></span>
+                <span className="text-slate-500">Customer total: <strong className="text-emerald-700">{money(billing?.estimatedChargeCredits ?? cost?.customerCost ?? charged ?? 0, billing?.currency || cost?.currency)}</strong></span>
               </div>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full min-w-760px text-left text-sm">
                 <thead className="bg-white text-xs uppercase tracking-wider text-slate-500">
-                <tr>{["Component", "Configured provider / model", "Usage", "Rate used", "Provider cost", "Customer charge"].map((item) => <th className="px-4 py-3" key={item}>{item}</th>)}</tr>
+                  <tr>
+                    {["Component", "Provider / Model", "Usage", "Rate used", "Provider cost", "Charged"].map((item) => <th className="px-4 py-3" key={item}>{item}</th>)}
+                  </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {costItems.map(([label, provider, usage, pricing, providerCost, chargedCost]) => (
@@ -452,6 +470,22 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
               </table>
             </div>
           </section>
+
+          {hasStructuredOutput ? (
+            <section className="rounded-xl border border-slate-200 bg-white p-4">
+              <h3 className="m-0 mb-3 text-sm font-semibold text-slate-950">Extracted data</h3>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {Object.entries(call.structuredOutput!).map(([key, value]) => (
+                  <div key={key} className="rounded-lg border border-slate-100 bg-slate-50 px-3 py-2">
+                    <span className="block text-[10px] font-semibold uppercase tracking-wider text-slate-500">{key.replace(/_/g, " ")}</span>
+                    <strong className="mt-0.5 block truncate text-sm text-slate-950">
+                      {value === null || value === undefined ? "—" : typeof value === "object" ? JSON.stringify(value) : String(value)}
+                    </strong>
+                  </div>
+                ))}
+              </div>
+            </section>
+          ) : null}
 
           <section>
             <div className="mb-3 flex items-center justify-between gap-3">
@@ -473,8 +507,9 @@ function CallDetail({ call, onClose }: { call: CallRecord; onClose: () => void }
                     }`}
                     key={item.itemId}
                   >
-                    <span className={`mb-1 block text-[11px] font-semibold uppercase tracking-wider ${item.role === "user" ? "text-slate-600" : "opacity-60"}`}>
-                      {item.role === "assistant" ? agentName(call) : titleCase(item.role)}
+                    <span className={`mb-1 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider ${item.role === "user" ? "text-slate-400" : "opacity-60"}`}>
+                      <span>{item.role === "assistant" ? agentName(call) : titleCase(item.role)}</span>
+                      {item.timestamp ? <span className="font-normal normal-case opacity-70">{formatTime(item.timestamp)}</span> : null}
                     </span>
                     <p className="m-0 text-sm leading-6">{item.text}</p>
                   </article>
@@ -568,7 +603,7 @@ export function CallLogsShell() {
   const metrics = useMemo(() => {
     const completed = calls.filter((call) => call.status === "completed").length;
     const active = calls.filter((call) => call.status === "active").length;
-    const charged = calls.reduce((sum, call) => sum + (call.billing?.chargedCredits || call.billing?.estimatedChargeCredits || 0), 0);
+    const charged = calls.reduce((sum, call) => sum + (call.billing?.estimatedChargeCredits ?? call.billing?.chargedCredits ?? 0), 0);
     const averageDuration = calls.length
       ? Math.round(calls.reduce((sum, call) => sum + call.durationSeconds, 0) / calls.length)
       : 0;
@@ -702,7 +737,7 @@ export function CallLogsShell() {
               <table className="w-full min-w-1050px border-collapse text-left">
                 <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500">
                   <tr>
-                    {["Agent", "Direction", "From / To", "Started", "Duration", "Real provider cost", "Customer cost", "Status"].map((heading) => <th className="px-4 py-3" key={heading}>{heading}</th>)}
+                    {["Agent", "Direction", "From / To", "Started", "Ended", "Duration", "Cost", "Status"].map((heading) => <th className="px-4 py-3" key={heading}>{heading}</th>)}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -712,10 +747,19 @@ export function CallLogsShell() {
                       <td className="px-4 py-4 text-sm font-medium capitalize text-slate-700">{call.direction}</td>
                       <td className="px-4 py-4 text-sm text-slate-700"><CallRoute call={call} compact /></td>
                       <td className="px-4 py-4 text-sm text-slate-600">{formatDate(call.startedAt ?? call.createdAt)}</td>
-                      <td className="px-4 py-4 text-sm font-medium text-slate-700">{formatDuration(call.durationSeconds)}</td>
-                      <td className="px-4 py-4 text-sm text-slate-600">{money(call.costBreakdown?.providerCost ?? call.billing?.providerCost ?? 0, call.costBreakdown?.currency)}</td>
-                      <td className="px-4 py-4 text-sm font-semibold text-slate-950">{money(call.billing?.chargedCredits || call.billing?.estimatedChargeCredits || 0, call.billing?.currency)}</td>
-                      <td className="px-4 py-4"><span className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${statusTone(call.status)}`}>{titleCase(call.status)}</span></td>
+                      <td className="px-4 py-4 text-sm text-slate-600">
+                        {call.endedAt
+                          ? formatDate(call.endedAt)
+                          : call.status === "active"
+                            ? <span className="font-semibold text-cyan-600">Live</span>
+                            : "—"}
+                      </td>
+                      <td className="px-4 py-4 font-mono text-sm font-medium text-slate-700">{formatDuration(call.durationSeconds)}</td>
+                      <td className="px-4 py-4 text-sm font-semibold text-slate-950">{money(call.billing?.estimatedChargeCredits ?? call.billing?.chargedCredits ?? 0, call.billing?.currency)}</td>
+                      <td className="px-4 py-4">
+                        <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${statusTone(call.status)}`}>{titleCase(call.status)}</span>
+                        {call.endReason ? <span className="mt-1 block max-w-[130px] truncate text-[11px] text-slate-500">{call.endReason}</span> : null}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

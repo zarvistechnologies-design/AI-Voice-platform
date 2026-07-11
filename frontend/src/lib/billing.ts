@@ -1,6 +1,6 @@
-import { getAuthHeaders, getSession } from "@/lib/auth";
-import { cachedApiRequest, invalidateApiCache } from "@/lib/apiCache";
 import { API_URL } from "@/lib/apiBase";
+import { cachedApiRequest, invalidateApiCache } from "@/lib/apiCache";
+import { getAuthHeaders, getSession } from "@/lib/auth";
 
 export type PlanId = "free" | "starter" | "growth" | "enterprise";
 
@@ -69,7 +69,7 @@ export type BillingSummary = {
     initialCredits: number;
     minimumCallStartCredits: number;
     markupMultiplier: number;
-    platformFeeInrPerMinute: number;
+    platformFeeInrPerCall: number;
   };
   subscription: {
     plan: PlanId;

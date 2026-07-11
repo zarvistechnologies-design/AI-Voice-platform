@@ -1,42 +1,42 @@
 "use client";
 
-import { type ReactNode, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 
-import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { announceDashboardNavigation } from "@/components/dashboard/DashboardNavigationFeedback";
+import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import {
-  getServerSession,
-  getSession,
-  logoutSession,
-  subscribeToSession,
+    getServerSession,
+    getSession,
+    logoutSession,
+    subscribeToSession,
 } from "@/lib/auth";
 import {
-  publicVoiceMessage,
-  voiceApi,
-  type BackendAgent,
-  type CallRecord,
-  type AgentBehavior,
-  type AgentBusinessHours,
-  type AgentCallSettings,
-  type AgentRuntimeSnapshot,
-  type AgentTemplate,
-  type AgentTool,
-  type AgentToolParameter,
-  type AgentWidget,
-  type BusinessHoursDay,
-  type FirstMessageMode,
-  type KnowledgeDocument,
-  type ModelCatalog,
-  type ModelProvider,
-  type PipelineMode,
-  type PipelineProvider,
-  type RealtimeProvider,
-  type SttProvider,
-  type VoicePreviewRequest,
-  type VoiceLanguageOption,
-  type VoiceProfile,
+    publicVoiceMessage,
+    voiceApi,
+    type AgentBehavior,
+    type AgentBusinessHours,
+    type AgentCallSettings,
+    type AgentRuntimeSnapshot,
+    type AgentTemplate,
+    type AgentTool,
+    type AgentToolParameter,
+    type AgentWidget,
+    type BackendAgent,
+    type BusinessHoursDay,
+    type CallRecord,
+    type FirstMessageMode,
+    type KnowledgeDocument,
+    type ModelCatalog,
+    type ModelProvider,
+    type PipelineMode,
+    type PipelineProvider,
+    type RealtimeProvider,
+    type SttProvider,
+    type VoiceLanguageOption,
+    type VoicePreviewRequest,
+    type VoiceProfile,
 } from "@/lib/voice";
 
 type AgentStatus = "Live" | "Draft" | "Paused";
@@ -608,18 +608,17 @@ const fallbackElevenLabsVoiceProfiles: VoiceProfile[] = [
 const defaultGeminiRealtimeModel = "gemini-2.5-flash-native-audio-preview-12-2025";
 const geminiRealtimeModels = [
   defaultGeminiRealtimeModel,
-  "gemini-3.1-flash-live-preview",
+  "gemini-2.0-flash-live-001",
 ];
 const defaultGeminiLlmModel = "gemini-2.5-flash";
 const geminiLlmModels = [
-  "gemini-3.5-flash",
-  "gemini-3.1-pro-preview",
-  "gemini-3.1-flash-lite",
-  "gemini-3-flash-preview",
   "gemini-2.5-flash",
   "gemini-2.5-pro",
   "gemini-2.5-flash-lite",
   "gemini-2.0-flash",
+  "gemini-2.0-flash-lite",
+  "gemini-1.5-flash",
+  "gemini-1.5-pro",
 ];
 const defaultGeminiTtsModel = "gemini-2.5-flash-preview-tts";
 const geminiTtsModels = [
@@ -677,9 +676,22 @@ const fallbackDeepgramSttModels = [
   "whisper-large",
 ];
 
+const openaiRealtimeModelAliases: Record<string, string> = {
+  "gpt-realtime": "gpt-4o-realtime-preview",
+  "gpt-4o-realtime": "gpt-4o-realtime-preview",
+  "gpt-4o-mini-realtime": "gpt-4o-mini-realtime-preview",
+};
+
+const defaultOpenAIRealtimeModel = "gpt-4o-realtime-preview";
+const openaiRealtimeModels = ["gpt-4o-realtime-preview", "gpt-4o-mini-realtime-preview"];
+
 function normalizeRealtimeModel(provider: RealtimeProvider, model: string) {
-  if (provider !== "gemini") return model;
-  return geminiRealtimeModels.includes(model) ? model : defaultGeminiRealtimeModel;
+  if (provider === "gemini") {
+    return geminiRealtimeModels.includes(model) ? model : defaultGeminiRealtimeModel;
+  }
+  // OpenAI: resolve legacy aliases first, then validate against known models
+  const resolved = openaiRealtimeModelAliases[model] ?? model;
+  return openaiRealtimeModels.includes(resolved) ? resolved : defaultOpenAIRealtimeModel;
 }
 
 function normalizeGeminiLlmModel(provider: PipelineProvider, model: string) {
@@ -746,7 +758,7 @@ function voicesByLanguageFromProfiles(
 
 const fallbackCatalog: ModelCatalog = {
   realtime: [
-    { provider: "openai", label: "OpenAI Realtime", configured: true, models: ["gpt-realtime"], voices: ["alloy", "ash", "ballad", "coral", "echo", "sage", "shimmer", "verse", "marin", "cedar"] },
+    { provider: "openai", label: "OpenAI Realtime", configured: true, models: ["gpt-4o-realtime-preview", "gpt-4o-mini-realtime-preview"], voices: ["alloy", "ash", "ballad", "coral", "echo", "sage", "shimmer", "verse", "marin", "cedar"] },
     { provider: "gemini", label: "Gemini Live", configured: true, models: geminiRealtimeModels, voices: ["Aoede"] },
   ],
   llm: [
@@ -2736,7 +2748,7 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
       dot: "bg-[#f97316]",
       title: selectedAgent.pipelineMode === "realtime" ? "Native realtime" : `${selectedAgent.sttProvider} STT`,
       provider: selectedAgent.pipelineMode === "realtime" ? selectedAgent.realtimeModel : selectedAgent.sttModel,
-      cost: selectedAgent.pipelineMode === "realtime" ? "Included" : "$0.02/min",
+      cost: selectedAgent.pipelineMode === "realtime" ? "Included in realtime" : "Pay per use",
       latency: "250ms",
       accent: "text-[#008996]",
     },
@@ -2746,7 +2758,7 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
       dot: "bg-[#3b82f6]",
       title: selectedAgent.pipelineMode === "realtime" ? `${selectedAgent.realtimeProvider} realtime` : `${selectedAgent.llmProvider} LLM`,
       provider: selectedAgent.pipelineMode === "realtime" ? selectedAgent.realtimeModel : selectedAgent.llmModel,
-      cost: "$0.02/min",
+      cost: "Pay per use",
       latency: "600ms",
       accent: "text-[#d97706]",
     },
@@ -2756,7 +2768,7 @@ export function DashboardShell({ initialAgentId, showTemplateSection = true }: D
       dot: "bg-[#c026d3]",
       title: selectedAgent.pipelineMode === "realtime" ? "Realtime voice" : `${selectedAgent.ttsProvider} TTS`,
       provider: `${selectedAgent.voice}${selectedAgent.pipelineMode === "pipeline" ? ` / ${selectedAgent.ttsModel}` : ""}`,
-      cost: selectedAgent.pipelineMode === "realtime" ? "Included" : "$0.04/min",
+      cost: selectedAgent.pipelineMode === "realtime" ? "Included in realtime" : "Pay per use",
       latency: "400ms",
       accent: "text-[#008996]",
     },

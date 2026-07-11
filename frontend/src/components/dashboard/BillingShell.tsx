@@ -1,15 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import {
-  getServerSession,
-  getSession,
-  logoutSession,
-  subscribeToSession,
-  validateStoredSession,
+    getServerSession,
+    getSession,
+    logoutSession,
+    subscribeToSession,
+    validateStoredSession,
 } from "@/lib/auth";
 import { billingApi, type BillingSummary, type BillingTransaction } from "@/lib/billing";
 
@@ -250,13 +250,13 @@ export function BillingShell() {
 
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
               <Metric label="This month charged" value={money(data?.usage.chargedCredits ?? 0, currency)} detail="Total wallet debit from calls" tone="emerald" />
-              <Metric label="Provider spend" value={money(data?.usage.providerCost ?? 0, currency)} detail="Raw LLM/STT/TTS/carrier cost" tone="sky" />
+              <Metric label="Provider spend" value={money(data?.usage.providerCost ?? 0, currency)} detail="Raw LLM/STT/TTS cost" tone="sky" />
             </div>
           </section>
 
           <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <Metric label="Minimum to call" value={money(data?.creditSettings.minimumCallStartCredits ?? 0, currency)} detail="Pre-call wallet guard" tone="amber" />
-            <Metric label="Platform fee" value={`₹${data?.creditSettings.platformFeeInrPerMinute ?? 1}/min`} detail="Added to exact provider cost" tone="slate" />
+            <Metric label="Platform fee" value={`₹${data?.creditSettings.platformFeeInrPerCall ?? 1}/call`} detail="Flat add-on on exact provider cost" tone="slate" />
             <Metric label="Top-ups" value={String(totals.topUps)} detail={`${money(totals.net, currency)} net ledger movement`} tone="sky" />
             <Metric label="Call debits" value={String(totals.debits)} detail="Recent call charge rows" tone="emerald" />
           </section>

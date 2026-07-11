@@ -1,5 +1,5 @@
-import { clearSession, getAuthHeaders, getSession } from "@/lib/auth";
 import { API_URL } from "@/lib/apiBase";
+import { clearSession, getAuthHeaders, getSession } from "@/lib/auth";
 
 const privateVoiceInfrastructurePattern = /(?:livekit|vapi|retell|millis(?:\.ai|ai)?|vobiz|(?:wss?|sips?):(?:\/\/)?|(?:room|dispatch|worker|participant|trunk)[ _-]?(?:name|id|sid)\b)/i;
 const genericCallFailureMessage = "Call ended before the agent could finish.";
@@ -159,7 +159,7 @@ export type PricingGuide = {
   currency: string;
   telephonyPerMinute: number;
   inrPerUsd: number;
-  platformFeeInrPerMinute: number;
+  platformFeeInrPerCall: number;
   markupMultiplier: number;
 };
 
@@ -450,7 +450,7 @@ export type CallRecord = {
     telephony: number;
     providerCost: number;
     platformFee: number;
-    platformFeeInrPerMinute: number;
+    platformFeeInrPerCall: number;
     customerCost: number;
     total: number;
     currency: string;
@@ -488,6 +488,10 @@ export type CallRecord = {
   };
   sentimentScore?: number;
   sentimentLabel: "positive" | "neutral" | "negative" | "";
+  language?: string;
+  voicemailDetected?: boolean;
+  structuredOutput?: Record<string, unknown>;
+  structuredOutputStatus?: "" | "pending" | "completed" | "skipped" | "failed";
   endReason: string;
   errorMessage: string;
   tags: string[];
