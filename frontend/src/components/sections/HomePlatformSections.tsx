@@ -418,7 +418,7 @@ export function HomePlatformSections() {
           <span className="size-2 rounded-full bg-[#22f4d2] shadow-[0_0_14px_#22f4d2]" />
           Voice Agents Live Now
         </div>
-        <h1 className="mx-auto m-0 max-w-5xl text-[clamp(2.45rem,7vw,5.7rem)] font-black leading-[0.98] tracking-[-0.03em] text-white">
+        <h1 className="mx-auto m-0 max-w-5xl text-[clamp(2.1rem,5.6vw,4.7rem)] font-black leading-[0.98] tracking-[-0.03em] text-white">
           Launch enterprise-ready{" "}
           <span>AI voice agents</span>
         </h1>
@@ -470,7 +470,7 @@ export function HomePlatformSections() {
             Multilingual Voice AI
           </div>
 
-          <h2 className="vozon-section-heading mx-auto m-0 max-w-5xl text-white lg:whitespace-nowrap">
+          <h2 className="vozon-platform-heading mx-auto m-0 max-w-5xl text-white lg:whitespace-nowrap">
             Sounds like home <span>wherever home is.</span>
           </h2>
         </div>
@@ -647,7 +647,7 @@ export function HomePlatformSections() {
               Integrations
             </div>
 
-            <h2 className="m-0 max-w-3xl text-[1.8rem] font-black leading-[1.1] text-white sm:text-[2.3rem] lg:text-[2.9rem]">
+            <h2 className="vozon-platform-heading m-0 max-w-3xl text-white">
               From script to spoken word,{" "}
               <span>wired end to end.</span>
             </h2>
@@ -750,13 +750,6 @@ export function HomePlatformSections() {
           background: #000;
         }
 
-        .vozon-section-heading {
-          font-size: 2.15rem;
-          font-weight: 900;
-          line-height: 1.1;
-          letter-spacing: 0;
-        }
-
         .vozon-company-heading {
           font-size: 0.95rem;
           font-weight: 900;
@@ -772,10 +765,6 @@ export function HomePlatformSections() {
         }
 
         @media (min-width: 640px) {
-          .vozon-section-heading {
-            font-size: 2.55rem;
-          }
-
           .vozon-company-heading {
             font-size: 1.25rem;
           }
@@ -786,10 +775,6 @@ export function HomePlatformSections() {
         }
 
         @media (min-width: 1024px) {
-          .vozon-section-heading {
-            font-size: 3rem;
-          }
-
           .vozon-company-heading {
             font-size: 1.5rem;
           }
