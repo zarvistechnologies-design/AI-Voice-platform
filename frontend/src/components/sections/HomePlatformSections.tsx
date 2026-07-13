@@ -259,6 +259,45 @@ const fitSections = [
   },
 ];
 
+const voiceOperationSteps = [
+  {
+    number: "01",
+    title: "Shape voice agents",
+    icon: "agent",
+    body: "Create each assistant's personality, voice, opening message, language, and conversation rules.",
+  },
+  {
+    number: "02",
+    title: "Ground every reply",
+    icon: "knowledge",
+    body: "Give assistants trusted access to your product information, policies, FAQs, and internal resources.",
+  },
+  {
+    number: "03",
+    title: "Automate call actions",
+    icon: "tools",
+    body: "Let conversations update records, book appointments, route callers, and activate business workflows.",
+  },
+  {
+    number: "04",
+    title: "Go live at scale",
+    icon: "launch",
+    body: "Handle inbound demand or run outbound programs with flexible timing, retries, and capacity controls.",
+  },
+  {
+    number: "05",
+    title: "Learn from conversations",
+    icon: "outcomes",
+    body: "Turn transcripts, summaries, sentiment, and call results into practical performance insights.",
+  },
+  {
+    number: "06",
+    title: "Keep systems updated",
+    icon: "sync",
+    body: "Move clean conversation data into the CRMs, calendars, support tools, and apps your team relies on.",
+  },
+];
+
 function IntegrationIcon({ icon }: { icon: string }) {
   if (icon === "chip") {
     return (
@@ -289,6 +328,62 @@ function IntegrationIcon({ icon }: { icon: string }) {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M8 7h8M8 12h8M8 17h5" />
+    </svg>
+  );
+}
+
+function VoiceOperationIcon({ icon }: { icon: string }) {
+  if (icon === "agent") {
+    return (
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M10 13a6 6 0 0 1 12 0v5a6 6 0 0 1-12 0v-5Z" />
+        <path d="M7 17v1a9 9 0 0 0 18 0v-1M16 27v3M12 30h8M13 14h.01M19 14h.01M13.5 19a4 4 0 0 0 5 0" />
+      </svg>
+    );
+  }
+
+  if (icon === "knowledge") {
+    return (
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M5 7.5A3.5 3.5 0 0 1 8.5 4H15v22H8.5A3.5 3.5 0 0 0 5 29.5v-22ZM27 7.5A3.5 3.5 0 0 0 23.5 4H17v22h6.5a3.5 3.5 0 0 1 3.5 3.5v-22Z" />
+        <path d="M8.5 9H12M20 9h3.5M8.5 14H12M20 14h3.5" />
+      </svg>
+    );
+  }
+
+  if (icon === "tools") {
+    return (
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <path d="m18.5 9.5 4-4a6 6 0 0 0-7.7 7.7L5.5 22.5a2.8 2.8 0 1 0 4 4l9.3-9.3a6 6 0 0 0 7.7-7.7l-4 4-4-1-1-4Z" />
+        <circle cx="7.5" cy="24.5" r=".8" fill="currentColor" stroke="none" />
+      </svg>
+    );
+  }
+
+  if (icon === "launch") {
+    return (
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M19 5c4.5-2 8-1 8-1s1 3.5-1 8l-6.5 6.5-6-6L19 5Z" />
+        <path d="m14 13-5.5 1.5-3 3 6.5 1M19 18l-1 6.5 6.5-6.5-1.5-4.5M10.5 23.5C8 23 5 24 4 28c4 0 7-1 6.5-4.5Z" />
+        <circle cx="22" cy="9" r="2" />
+      </svg>
+    );
+  }
+
+  if (icon === "outcomes") {
+    return (
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M5 27V16M12 27V10M19 27V18M26 27V5" />
+        <path d="m5 11 7-5 7 5 7-7M22 4h4v4" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M25.5 11A11 11 0 0 0 7 7.5L4 11M6.5 21A11 11 0 0 0 25 24.5l3-3.5" />
+      <path d="M4 5v6h6M28 27v-6h-6" />
+      <path d="M11 13h10M11 17h10M11 21h6" />
     </svg>
   );
 }
@@ -614,7 +709,7 @@ export function HomePlatformSections() {
         </div>
       </section>
 
-      <section className="relative mx-auto max-w-[1240px] px-5 pb-12 pt-2 sm:px-8">
+      <section className="relative mx-auto max-w-[1240px] px-5 pb-4 pt-2 sm:px-8 sm:pb-5 lg:pb-6">
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 inline-flex rounded-full border border-white/12 bg-white/[0.06] px-4 py-2 text-[11px] font-black uppercase tracking-[0.1em] text-[#75fff0]">
             One Platform
@@ -636,6 +731,244 @@ export function HomePlatformSections() {
             src="/images/one_platform.png"
             width={1400}
           />
+        </div>
+      </section>
+
+      <section className="vozon-operations-section relative overflow-hidden px-5 py-4 sm:px-8 sm:py-5 lg:py-6">
+        <div className="relative z-10 mx-auto max-w-[1240px]">
+          <div className="mx-auto max-w-4xl text-center">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#45ddce]/24 bg-[#45ddce]/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#75fff0]">
+              <span className="size-1.5 rounded-full bg-[#45ddce] shadow-[0_0_12px_#45ddce]" />
+              Voice Operations
+            </div>
+            <h2 className="vozon-platform-heading m-0 text-white">
+              Build, launch, and improve every conversation.
+            </h2>
+            <p className="mx-auto mt-5 max-w-3xl text-sm leading-7 text-white/56 sm:text-base">
+              Vozon gives your team the building blocks to create agents, connect business knowledge, launch calls, monitor outcomes, and move conversation data into the systems you already use.
+            </p>
+          </div>
+
+          <div className="vozon-operations-viewport mt-10 overflow-x-auto pb-4 sm:mt-14" role="region" aria-label="AI voice operations workflow" tabIndex={0}>
+            <div className="vozon-operations-map relative mx-auto min-w-[1080px]">
+              <svg className="vozon-operations-connector absolute inset-x-0 top-0 h-[180px] w-full" viewBox="0 0 1200 180" preserveAspectRatio="none" aria-hidden="true">
+                <defs>
+                  <linearGradient id="vozonOperationsLine" x1="0" x2="1200" y1="0" y2="0" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#1acfff" stopOpacity="0.18" />
+                    <stop offset="0.22" stopColor="#2be3e1" stopOpacity="0.78" />
+                    <stop offset="0.52" stopColor="#75fff0" stopOpacity="0.9" />
+                    <stop offset="0.8" stopColor="#48db8b" stopOpacity="0.78" />
+                    <stop offset="1" stopColor="#48db8b" stopOpacity="0.18" />
+                  </linearGradient>
+                </defs>
+                <path d="M100 78 L300 118 L500 78 L700 118 L900 78 L1100 118" fill="none" stroke="url(#vozonOperationsLine)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+              </svg>
+
+              <div className="relative grid grid-cols-6">
+                {voiceOperationSteps.map((step, index) => (
+                  <article
+                    className={`vozon-operation-step relative flex min-w-0 flex-col items-center px-3 text-center ${index % 2 === 1 ? "vozon-operation-step-lower" : ""}`}
+                    key={step.number}
+                  >
+                    <div className="vozon-operation-hex relative grid h-[108px] w-[116px] place-items-center" aria-hidden="true">
+                      <div className="vozon-operation-hex-inner absolute inset-[3px]" />
+                      <VoiceOperationIcon icon={step.icon} />
+                      <span className="vozon-operation-number absolute -right-2 -top-1 grid size-7 place-items-center rounded-full border border-[#75fff0]/30 bg-[#061b18] text-[9px] font-black text-[#8afff2]">
+                        {step.number}
+                      </span>
+                    </div>
+
+                    <span className="vozon-operation-stem block h-8 w-px" aria-hidden="true" />
+                    <span className="vozon-operation-dot block size-3 rounded-full bg-[#45ddce]" aria-hidden="true" />
+                    <h3 className="mb-0 mt-5 text-base font-black leading-tight text-white">{step.title}</h3>
+                    <p className="mb-0 mt-3 max-w-[180px] text-xs leading-5 text-white/48">{step.body}</p>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <p className="vozon-operations-scroll-hint mb-0 mt-1 text-center text-[10px] font-bold uppercase tracking-[0.14em] text-white/25">
+            Scroll to explore the workflow
+          </p>
+        </div>
+      </section>
+
+      <section className="vozon-dashboard-showcase relative overflow-hidden px-5 pb-16 pt-4 sm:px-8 sm:pt-5 lg:pb-24 lg:pt-6">
+        <div className="relative z-10 mx-auto max-w-[1240px]">
+          <div className="mx-auto max-w-3xl text-center">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#45ddce]/24 bg-[#45ddce]/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#75fff0]">
+              <span className="size-1.5 rounded-full bg-[#45ddce] shadow-[0_0_12px_#45ddce]" />
+              Command Center
+            </div>
+            <h2 className="vozon-platform-heading m-0 text-white">
+              See every conversation.
+              <span className="block text-white/42">Control every outcome.</span>
+            </h2>
+            <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/56 sm:text-base">
+              Launch agents, monitor live calls, and turn every interaction into clear business insight from one focused workspace.
+            </p>
+          </div>
+
+          <div className="vozon-dashboard-stage relative mt-12 lg:mt-16">
+            <div className="vozon-dashboard-window overflow-hidden rounded-[22px] border border-white/12 bg-[#07110f] shadow-[0_42px_120px_rgba(0,0,0,0.72)]">
+              <div className="flex h-11 items-center justify-between border-b border-white/[0.07] bg-white/[0.025] px-4 sm:px-5">
+                <div className="flex items-center gap-2">
+                  <span className="size-2.5 rounded-full bg-[#ff6b61]" />
+                  <span className="size-2.5 rounded-full bg-[#f3c34e]" />
+                  <span className="size-2.5 rounded-full bg-[#48d597]" />
+                </div>
+                <div className="flex h-6 w-40 items-center justify-center rounded-md border border-white/[0.06] bg-black/25 text-[8px] font-bold tracking-[0.08em] text-white/25 sm:w-64">
+                  app.vozon.ai/dashboard
+                </div>
+                <span className="w-[38px] text-right text-[9px] font-black text-[#45ddce]">LIVE</span>
+              </div>
+
+              <div className="grid min-h-[550px] grid-cols-1 sm:grid-cols-[170px_minmax(0,1fr)] lg:grid-cols-[210px_minmax(0,1fr)]">
+                <aside className="hidden border-r border-white/[0.07] bg-black/20 px-4 py-5 sm:flex sm:flex-col">
+                  <div className="mb-7 flex items-center gap-2.5 px-2">
+                    <div className="grid size-8 place-items-center rounded-lg bg-[#45ddce] text-xs font-black text-[#03110e]">V</div>
+                    <span className="text-sm font-black tracking-tight text-white">vozon.ai</span>
+                  </div>
+                  <p className="px-2 text-[8px] font-black uppercase tracking-[0.18em] text-white/24">Workspace</p>
+                  <nav className="mt-3 space-y-1.5" aria-label="Dashboard preview navigation">
+                    {[
+                      ["Overview", "⌂"],
+                      ["AI Agents", "✦"],
+                      ["Campaigns", "◫"],
+                      ["Call History", "↗"],
+                      ["Knowledge", "◇"],
+                      ["Integrations", "+"],
+                    ].map(([label, icon], index) => (
+                      <div
+                        className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-[11px] font-bold ${index === 0 ? "bg-[#45ddce]/10 text-[#82fff2]" : "text-white/38"}`}
+                        key={label}
+                      >
+                        <span className="grid size-5 place-items-center text-xs">{icon}</span>
+                        {label}
+                      </div>
+                    ))}
+                  </nav>
+                  <div className="mt-auto rounded-xl border border-[#45ddce]/14 bg-[#45ddce]/[0.05] p-3">
+                    <div className="flex items-center gap-2 text-[10px] font-black text-white/72">
+                      <span className="size-2 rounded-full bg-[#45ddce] shadow-[0_0_8px_#45ddce]" /> System healthy
+                    </div>
+                    <p className="mb-0 mt-2 text-[9px] leading-4 text-white/28">All voice services operational</p>
+                  </div>
+                </aside>
+
+                <div className="min-w-0 bg-[radial-gradient(circle_at_75%_0%,rgba(69,221,206,0.06),transparent_30%)] p-4 sm:p-5 lg:p-7">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="m-0 text-[9px] font-bold uppercase tracking-[0.13em] text-white/28">Sunday, 12 July</p>
+                      <h3 className="mb-0 mt-1 text-xl font-black text-white sm:text-2xl">Welcome back</h3>
+                    </div>
+                    <a className="rounded-lg bg-[#45ddce] px-3 py-2 text-[9px] font-black text-[#041310] shadow-[0_10px_28px_rgba(69,221,206,0.18)] sm:px-4 sm:text-[10px]" href="/dashboard">
+                      + Create agent
+                    </a>
+                  </div>
+
+                  <div className="mt-6 grid grid-cols-2 gap-2.5 lg:grid-cols-4">
+                    {[
+                      ["Total calls", "2,846", "+18.4%"],
+                      ["Avg. duration", "03:42", "+6.2%"],
+                      ["Success rate", "91.8%", "+4.7%"],
+                      ["Active agents", "12", "8 online"],
+                    ].map(([label, value, trend]) => (
+                      <article className="vozon-dashboard-stat rounded-xl border border-white/[0.07] p-3.5 lg:p-4" key={label}>
+                        <p className="m-0 text-[9px] font-bold text-white/32">{label}</p>
+                        <div className="mt-3 flex items-end justify-between gap-2">
+                          <strong className="text-lg font-black tracking-tight text-white lg:text-xl">{value}</strong>
+                          <span className="mb-0.5 text-[8px] font-black text-[#54e8c7]">{trend}</span>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+
+                  <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(0,1.65fr)_minmax(220px,0.8fr)]">
+                    <article className="rounded-xl border border-white/[0.07] bg-black/20 p-4 sm:p-5">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="m-0 text-xs font-black text-white">Call activity</h4>
+                          <p className="mb-0 mt-1 text-[9px] text-white/28">Performance over the last 7 days</p>
+                        </div>
+                        <span className="rounded-md border border-white/[0.07] px-2 py-1 text-[8px] font-bold text-white/36">This week⌄</span>
+                      </div>
+                      <div className="vozon-dashboard-chart relative mt-6 h-36 overflow-hidden">
+                        <div className="absolute inset-0 grid grid-rows-4">
+                          {[0, 1, 2, 3].map((line) => <span className="border-t border-white/[0.045]" key={line} />)}
+                        </div>
+                        <svg aria-label="Rising call activity chart" className="absolute inset-0 size-full overflow-visible" preserveAspectRatio="none" role="img" viewBox="0 0 600 150">
+                          <defs>
+                            <linearGradient id="dashboardChartFill" x1="0" x2="0" y1="0" y2="1">
+                              <stop offset="0%" stopColor="#45ddce" stopOpacity=".28" />
+                              <stop offset="100%" stopColor="#45ddce" stopOpacity="0" />
+                            </linearGradient>
+                          </defs>
+                          <path d="M0 125 C45 116 70 92 112 104 S175 120 220 81 S285 71 325 85 S395 96 432 55 S510 72 600 24 L600 150 L0 150 Z" fill="url(#dashboardChartFill)" />
+                          <path d="M0 125 C45 116 70 92 112 104 S175 120 220 81 S285 71 325 85 S395 96 432 55 S510 72 600 24" fill="none" stroke="#45ddce" strokeLinecap="round" strokeWidth="3" vectorEffect="non-scaling-stroke" />
+                        </svg>
+                        <div className="absolute bottom-0 left-0 right-0 flex justify-between text-[7px] font-bold text-white/20">
+                          {['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'].map((day) => <span key={day}>{day}</span>)}
+                        </div>
+                      </div>
+                    </article>
+
+                    <article className="rounded-xl border border-white/[0.07] bg-black/20 p-4 sm:p-5">
+                      <div className="flex items-center justify-between">
+                        <h4 className="m-0 text-xs font-black text-white">Live agents</h4>
+                        <span className="text-[8px] font-black text-[#45ddce]">VIEW ALL</span>
+                      </div>
+                      <div className="mt-4 space-y-3">
+                        {[
+                          ["Maya", "Sales assistant", "01:24"],
+                          ["Arjun", "Customer care", "04:08"],
+                          ["Nora", "Booking agent", "00:47"],
+                          ["Leo", "Lead qualifier", "02:16"],
+                        ].map(([name, role, time], index) => (
+                          <div className="flex items-center gap-3" key={name}>
+                            <div className="relative grid size-8 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#45ddce]/25 to-[#568dff]/20 text-[9px] font-black text-white/80">
+                              {name.slice(0, 1)}
+                              <span className="absolute bottom-0 right-0 size-2 rounded-full border border-[#07110f] bg-[#45ddce]" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="m-0 truncate text-[10px] font-black text-white/78">{name}</p>
+                              <p className="mb-0 mt-0.5 truncate text-[8px] text-white/26">{role}</p>
+                            </div>
+                            <div className="flex items-center gap-0.5">
+                              {[0, 1, 2, 3].map((bar) => <span className="vozon-dashboard-wave w-0.5 rounded-full bg-[#45ddce]" key={bar} style={{ animationDelay: `${index * 90 + bar * 70}ms` }} />)}
+                            </div>
+                            <span className="text-[8px] font-bold text-white/30">{time}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </article>
+                  </div>
+
+                  <div className="mt-3 hidden rounded-xl border border-white/[0.07] bg-black/20 p-4 md:block">
+                    <div className="mb-3 flex items-center justify-between">
+                      <h4 className="m-0 text-xs font-black text-white">Recent conversations</h4>
+                      <span className="text-[8px] font-bold text-white/28">Updated just now</span>
+                    </div>
+                    <div className="grid grid-cols-[1.1fr_1fr_.65fr_.55fr] border-b border-white/[0.05] pb-2 text-[7px] font-black uppercase tracking-wider text-white/20">
+                      <span>Contact</span><span>Agent</span><span>Duration</span><span>Status</span>
+                    </div>
+                    {[["Priya Sharma", "Maya · Sales", "03:18"], ["Daniel Kim", "Arjun · Support", "05:42"]].map(([contact, agent, duration]) => (
+                      <div className="grid grid-cols-[1.1fr_1fr_.65fr_.55fr] items-center border-b border-white/[0.035] py-2.5 text-[8px] text-white/45 last:border-0" key={contact}>
+                        <strong className="font-bold text-white/70">{contact}</strong><span>{agent}</span><span>{duration}</span><span className="w-fit rounded-full bg-[#45ddce]/10 px-2 py-1 font-black text-[#60e8d7]">Resolved</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="vozon-dashboard-glow absolute -bottom-16 left-1/2 -z-10 h-40 w-3/4 -translate-x-1/2 rounded-full bg-[#45ddce]/20 blur-[90px]" />
+          </div>
+
+          <div className="mt-10 flex flex-col items-center justify-center gap-4 text-center sm:flex-row">
+            <a className="vozon-glow-button inline-flex min-h-11 items-center justify-center rounded-full px-6 text-xs font-black text-[#03110e]" href="/dashboard">Explore the dashboard <span className="ml-2">↗</span></a>
+            <p className="m-0 text-xs text-white/34">Built for clarity. Ready for scale.</p>
+          </div>
         </div>
       </section>
 
@@ -1074,6 +1407,247 @@ export function HomePlatformSections() {
 
         .vozon-platform-map img {
           filter: none;
+        }
+
+        .vozon-operations-section {
+          background:
+            radial-gradient(circle at 50% 34%, rgba(26,207,255,0.09), transparent 24%),
+            radial-gradient(circle at 64% 58%, rgba(72,219,139,0.07), transparent 30%),
+            linear-gradient(180deg, #000 0%, #020b09 52%, #000 100%);
+        }
+
+        .vozon-operations-section::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          background-image:
+            linear-gradient(rgba(69,221,206,0.022) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(69,221,206,0.022) 1px, transparent 1px);
+          background-size: 48px 48px;
+          mask-image: radial-gradient(ellipse at 50% 48%, black, transparent 72%);
+        }
+
+        .vozon-operations-viewport {
+          scrollbar-width: none;
+          mask-image: linear-gradient(90deg, transparent 0, black 2.5%, black 97.5%, transparent 100%);
+        }
+
+        .vozon-operations-viewport::-webkit-scrollbar {
+          display: none;
+        }
+
+        .vozon-operations-map {
+          padding: 24px 0 18px;
+        }
+
+        .vozon-operations-connector {
+          filter: drop-shadow(0 0 8px rgba(69,221,206,0.32));
+        }
+
+        .vozon-operation-step {
+          --operation-angle: 135deg;
+          --operation-primary: #1acfff;
+          --operation-secondary: #4f7cff;
+          --operation-ink: #d8f8ff;
+          --operation-glow: rgba(26,207,255,0.34);
+          --operation-surface: rgba(26,207,255,0.24);
+          --operation-surface-soft: rgba(79,124,255,0.18);
+          z-index: 1;
+          scroll-snap-align: center;
+        }
+
+        .vozon-operation-step:nth-child(2) {
+          --operation-angle: 165deg;
+          --operation-primary: #8f83e8;
+          --operation-secondary: #c46cff;
+          --operation-ink: #f0eaff;
+          --operation-glow: rgba(143,131,232,0.36);
+          --operation-surface: rgba(143,131,232,0.25);
+          --operation-surface-soft: rgba(196,108,255,0.17);
+        }
+
+        .vozon-operation-step:nth-child(3) {
+          --operation-angle: 205deg;
+          --operation-primary: #f2d24b;
+          --operation-secondary: #f28d45;
+          --operation-ink: #fff6c7;
+          --operation-glow: rgba(242,180,69,0.35);
+          --operation-surface: rgba(242,210,75,0.23);
+          --operation-surface-soft: rgba(242,141,69,0.17);
+        }
+
+        .vozon-operation-step:nth-child(4) {
+          --operation-angle: 315deg;
+          --operation-primary: #ec6f8b;
+          --operation-secondary: #d958bd;
+          --operation-ink: #ffe1ec;
+          --operation-glow: rgba(236,111,139,0.35);
+          --operation-surface: rgba(236,111,139,0.24);
+          --operation-surface-soft: rgba(217,88,189,0.17);
+        }
+
+        .vozon-operation-step:nth-child(5) {
+          --operation-angle: 35deg;
+          --operation-primary: #48db8b;
+          --operation-secondary: #9be15d;
+          --operation-ink: #dcffe9;
+          --operation-glow: rgba(72,219,139,0.34);
+          --operation-surface: rgba(72,219,139,0.23);
+          --operation-surface-soft: rgba(155,225,93,0.16);
+        }
+
+        .vozon-operation-step:nth-child(6) {
+          --operation-angle: 105deg;
+          --operation-primary: #2be3e1;
+          --operation-secondary: #45bde8;
+          --operation-ink: #d5ffff;
+          --operation-glow: rgba(43,227,225,0.34);
+          --operation-surface: rgba(43,227,225,0.23);
+          --operation-surface-soft: rgba(69,189,232,0.17);
+        }
+
+        .vozon-operation-step-lower {
+          padding-top: 40px;
+        }
+
+        .vozon-operation-hex {
+          clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0 50%);
+          background: linear-gradient(
+            var(--operation-angle),
+            var(--operation-primary),
+            var(--operation-secondary)
+          );
+          filter: drop-shadow(0 0 17px var(--operation-glow));
+          transition: filter 180ms ease, transform 180ms ease;
+        }
+
+        .vozon-operation-hex::before {
+          content: "";
+          position: absolute;
+          inset: 7px;
+          z-index: 1;
+          clip-path: inherit;
+          border: 1px solid color-mix(in srgb, var(--operation-primary) 40%, transparent);
+          background: transparent;
+        }
+
+        .vozon-operation-hex-inner {
+          clip-path: inherit;
+          background:
+            radial-gradient(circle at 18% 18%, var(--operation-surface), transparent 46%),
+            radial-gradient(circle at 84% 82%, var(--operation-surface-soft), transparent 48%),
+            linear-gradient(145deg, rgba(10,20,25,0.98), rgba(2,8,12,0.99));
+        }
+
+        .vozon-operation-hex svg {
+          position: relative;
+          z-index: 2;
+          width: 39px;
+          height: 39px;
+          fill: none;
+          stroke: var(--operation-ink);
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          stroke-width: 1.7;
+          filter: drop-shadow(0 0 7px var(--operation-glow));
+        }
+
+        .vozon-operation-number {
+          z-index: 3;
+          border-color: color-mix(in srgb, var(--operation-primary) 52%, transparent);
+          background: color-mix(in srgb, var(--operation-primary) 14%, #061017);
+          color: var(--operation-ink);
+          box-shadow: 0 0 16px var(--operation-glow);
+        }
+
+        .vozon-operation-stem {
+          background: linear-gradient(to bottom, var(--operation-primary), transparent);
+        }
+
+        .vozon-operation-dot {
+          background: var(--operation-primary);
+          box-shadow:
+            0 0 0 4px color-mix(in srgb, var(--operation-primary) 12%, transparent),
+            0 0 18px var(--operation-glow);
+        }
+
+        .vozon-operation-step:hover .vozon-operation-hex {
+          transform: translateY(-4px);
+          filter: drop-shadow(0 0 22px var(--operation-glow));
+        }
+
+        @media (min-width: 1200px) {
+          .vozon-operations-scroll-hint {
+            display: none;
+          }
+        }
+
+        .vozon-dashboard-showcase {
+          background:
+            radial-gradient(circle at 50% 26%, rgba(69,221,206,0.09), transparent 31%),
+            linear-gradient(180deg, #000 0%, #020806 50%, #000 100%);
+        }
+
+        .vozon-dashboard-showcase::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          background-image:
+            linear-gradient(rgba(69,221,206,0.025) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(69,221,206,0.025) 1px, transparent 1px);
+          background-size: 52px 52px;
+          mask-image: radial-gradient(circle at 50% 45%, black, transparent 72%);
+        }
+
+        .vozon-dashboard-stage {
+          perspective: 1600px;
+        }
+
+        .vozon-dashboard-window {
+          transform: rotateX(1.5deg);
+          transform-origin: center bottom;
+          box-shadow:
+            0 0 0 1px rgba(69,221,206,0.04),
+            0 42px 120px rgba(0,0,0,0.72),
+            0 0 90px rgba(69,221,206,0.055);
+        }
+
+        .vozon-dashboard-stat {
+          background:
+            linear-gradient(145deg, rgba(255,255,255,0.035), transparent),
+            rgba(0,0,0,0.22);
+          transition: border-color 180ms ease, transform 180ms ease, background 180ms ease;
+        }
+
+        .vozon-dashboard-stat:hover {
+          transform: translateY(-2px);
+          border-color: rgba(69,221,206,0.2);
+          background: rgba(69,221,206,0.045);
+        }
+
+        .vozon-dashboard-chart::after {
+          content: "";
+          position: absolute;
+          right: 0;
+          top: 13px;
+          width: 7px;
+          height: 7px;
+          border-radius: 999px;
+          background: #75fff0;
+          box-shadow: 0 0 0 4px rgba(69,221,206,0.12), 0 0 18px rgba(69,221,206,0.8);
+        }
+
+        .vozon-dashboard-wave {
+          height: 10px;
+          animation: vozonDashboardWave 820ms ease-in-out infinite alternate;
+          transform-origin: center;
+        }
+
+        @keyframes vozonDashboardWave {
+          from { transform: scaleY(0.35); opacity: 0.4; }
+          to { transform: scaleY(1); opacity: 1; }
         }
 
         .vozon-infinite-panel {
