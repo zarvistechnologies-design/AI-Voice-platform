@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { announceDashboardNavigation } from "@/components/dashboard/DashboardNavigationFeedback";
 
@@ -23,6 +23,8 @@ const sidebarItems: SidebarItem[] = [
   { label: "Integrations", href: "/dashboard/integrations", icon: "integrations" },
   { label: "Developers", href: "/dashboard/developers", icon: "developers" },
 ];
+
+const prefetchedDashboardRoutes = new Set<string>();
 
 function SidebarIcon({ icon }: { icon: SidebarIconName }) {
   const iconClass = "size-5 fill-none stroke-current stroke-[2.1]";
@@ -134,9 +136,16 @@ export function DashboardSidebar({
   setShowUserSidebar,
 }: DashboardSidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
 
   function beginNavigation(href: string) {
     if (href !== pathname) announceDashboardNavigation(href, pathname);
+  }
+
+  function prefetchDashboardRoute(href: string) {
+    if (prefetchedDashboardRoutes.has(href)) return;
+    prefetchedDashboardRoutes.add(href);
+    router.prefetch(href);
   }
 
   return (
@@ -145,9 +154,13 @@ export function DashboardSidebar({
         <Link
           className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#06b6c8] text-white shadow-[0_10px_22px_rgba(14,165,233,0.22)] ring-1 ring-white/10 transition hover:-translate-y-0.5"
           href="/dashboard/agents"
+          prefetch={false}
           title="Voice Platform"
           aria-label="Voice Platform"
           onClick={() => beginNavigation("/dashboard/agents")}
+          onFocus={() => prefetchDashboardRoute("/dashboard/agents")}
+          onMouseEnter={() => prefetchDashboardRoute("/dashboard/agents")}
+          onPointerDown={() => prefetchDashboardRoute("/dashboard/agents")}
         >
           <SidebarIcon icon="mic" />
         </Link>
@@ -167,8 +180,12 @@ export function DashboardSidebar({
                     : "text-[#747b88] hover:bg-[#ecfeff] hover:text-[#008996]"
                 }`}
                 href={item.href}
+                prefetch={false}
                 key={item.label}
                 title={item.label}
+                onFocus={() => prefetchDashboardRoute(item.href)}
+                onMouseEnter={() => prefetchDashboardRoute(item.href)}
+                onPointerDown={() => prefetchDashboardRoute(item.href)}
                 onClick={() => {
                   beginNavigation(item.href);
                   try {

@@ -22,6 +22,9 @@ type CampaignLead = {
   company: string;
   customFields: Record<string, string>;
 };
+type CampaignCsvWorkerResponse =
+  | { ok: true; leads: CampaignLead[] }
+  | { ok: false; message: string };
 type SendMode = "now" | "schedule";
 type CampaignAction = "pause" | "resume" | "cancel";
 
@@ -64,83 +67,42 @@ function errorMessage(error: unknown) {
   return error instanceof Error ? error.message : "The request could not be completed.";
 }
 
-function normalizeHeader(value: string) {
-  return value.trim().toLowerCase().replace(/[\s_-]+/g, "");
-}
+function parseCampaignCsvInWorker(text: string) {
+  return new Promise<CampaignLead[]>((resolve, reject) => {
+    const worker = new Worker(new URL("./CampaignCsv.worker.ts", import.meta.url), { type: "module" });
+    let settled = false;
 
-function parseCsvRows(text: string) {
-  const rows: string[][] = [];
-  let row: string[] = [];
-  let cell = "";
-  let quoted = false;
-
-  for (let index = 0; index < text.length; index += 1) {
-    const char = text[index];
-    const next = text[index + 1];
-
-    if (char === "\"") {
-      if (quoted && next === "\"") {
-        cell += "\"";
-        index += 1;
-      } else {
-        quoted = !quoted;
-      }
-      continue;
-    }
-
-    if (char === "," && !quoted) {
-      row.push(cell.trim());
-      cell = "";
-      continue;
-    }
-
-    if ((char === "\n" || char === "\r") && !quoted) {
-      if (char === "\r" && next === "\n") index += 1;
-      row.push(cell.trim());
-      if (row.some(Boolean)) rows.push(row);
-      row = [];
-      cell = "";
-      continue;
-    }
-
-    cell += char;
-  }
-
-  row.push(cell.trim());
-  if (row.some(Boolean)) rows.push(row);
-  return rows;
-}
-
-function parseCampaignCsv(text: string): CampaignLead[] {
-  const rows = parseCsvRows(text);
-  if (rows.length < 2) throw new Error("CSV needs a header row and at least one contact.");
-
-  const rawHeaders = rows[0];
-  const headers = rawHeaders.map(normalizeHeader);
-  const phoneIndex = headers.findIndex((header) => ["phone", "phonenumber", "mobile", "mobilenumber", "number", "contact"].includes(header));
-  if (phoneIndex < 0) throw new Error("CSV must include a phone or phone_number column.");
-
-  const nameIndex = headers.findIndex((header) => ["name", "fullname", "customername", "leadname"].includes(header));
-  const emailIndex = headers.findIndex((header) => ["email", "emailaddress"].includes(header));
-  const companyIndex = headers.findIndex((header) => ["company", "business", "organization"].includes(header));
-
-  return rows.slice(1).map((row, index) => {
-    const customFields: Record<string, string> = {};
-    rawHeaders.forEach((header, headerIndex) => {
-      if ([phoneIndex, nameIndex, emailIndex, companyIndex].includes(headerIndex)) return;
-      const value = row[headerIndex]?.trim();
-      if (header && value) customFields[header.trim()] = value;
-    });
-
-    return {
-      row: index + 2,
-      phone: (row[phoneIndex] ?? "").replace(/[^\d+]/g, ""),
-      name: nameIndex >= 0 ? row[nameIndex] ?? "" : "",
-      email: emailIndex >= 0 ? row[emailIndex] ?? "" : "",
-      company: companyIndex >= 0 ? row[companyIndex] ?? "" : "",
-      customFields,
+    const rejectAndTerminate = (error: Error) => {
+      if (settled) return;
+      settled = true;
+      worker.terminate();
+      reject(error);
     };
-  }).filter((lead) => lead.phone);
+
+    worker.onmessage = (event: MessageEvent<CampaignCsvWorkerResponse>) => {
+      if (settled) return;
+      settled = true;
+      worker.terminate();
+      if (event.data.ok) {
+        resolve(event.data.leads);
+      } else {
+        reject(new Error(event.data.message));
+      }
+    };
+    worker.onerror = (event) => {
+      event.preventDefault();
+      rejectAndTerminate(new Error(event.message || "The request could not be completed."));
+    };
+    worker.onmessageerror = () => {
+      rejectAndTerminate(new Error("The request could not be completed."));
+    };
+
+    try {
+      worker.postMessage({ text });
+    } catch (error) {
+      rejectAndTerminate(error instanceof Error ? error : new Error("The request could not be completed."));
+    }
+  });
 }
 
 function isDialable(phone: string) {
@@ -348,15 +310,30 @@ export function CampaignShell() {
   useEffect(() => {
     if (!session) return;
     let cancelled = false;
+    let refreshing = false;
     const refresh = () => {
-      void voiceApi.campaigns().then((result) => {
-        if (!cancelled) setCampaigns(result.campaigns);
-      }).catch(() => undefined);
+      if (cancelled || refreshing || document.visibilityState !== "visible") return;
+      refreshing = true;
+      void voiceApi.campaigns()
+        .then((result) => {
+          if (!cancelled) setCampaigns(result.campaigns);
+        })
+        .catch(() => undefined)
+        .finally(() => {
+          refreshing = false;
+        });
+    };
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === "visible") refresh();
     };
     const timer = window.setInterval(refresh, 5000);
+    window.addEventListener("focus", refreshWhenVisible);
+    document.addEventListener("visibilitychange", refreshWhenVisible);
     return () => {
       cancelled = true;
       window.clearInterval(timer);
+      window.removeEventListener("focus", refreshWhenVisible);
+      document.removeEventListener("visibilitychange", refreshWhenVisible);
     };
   }, [session]);
 
@@ -419,7 +396,7 @@ export function CampaignShell() {
       return;
     }
     try {
-      const parsed = parseCampaignCsv(await file.text());
+      const parsed = await parseCampaignCsvInWorker(await file.text());
       if (!parsed.length) throw new Error("No contacts found in the CSV.");
       setCsvFile(file);
       setLeads(parsed);

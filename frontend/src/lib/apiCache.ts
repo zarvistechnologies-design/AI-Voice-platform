@@ -1,18 +1,58 @@
 import { getSession } from "@/lib/auth";
+import { getDashboardQueryClient } from "@/lib/dashboardQueryClient";
 
-type ApiCacheEntry = {
-  namespace: string;
-  resource: string;
-  expiresAt: number;
-  promise: Promise<unknown>;
+const DASHBOARD_API_QUERY_SCOPE = "dashboard-api";
+
+type ApiCacheGenerationScope = {
+  sessionKey: string;
+  namespaces: Map<string, Map<string, number>>;
 };
 
-const apiCache = new Map<string, ApiCacheEntry>();
+let apiCacheGenerationScope: ApiCacheGenerationScope | null = null;
+
+function sessionKey(session: NonNullable<ReturnType<typeof getSession>>) {
+  return `${session.id}:${session.organization?.id ?? ""}:${session.signedInAt}`;
+}
+
+function generationScope(session: NonNullable<ReturnType<typeof getSession>>) {
+  const currentSessionKey = sessionKey(session);
+  if (apiCacheGenerationScope?.sessionKey !== currentSessionKey) {
+    apiCacheGenerationScope = {
+      sessionKey: currentSessionKey,
+      namespaces: new Map(),
+    };
+  }
+  return apiCacheGenerationScope;
+}
+
+function resourceGeneration(
+  session: NonNullable<ReturnType<typeof getSession>>,
+  namespace: string,
+  resource: string,
+) {
+  const scope = generationScope(session);
+  let resources = scope.namespaces.get(namespace);
+  if (!resources) {
+    resources = new Map();
+    scope.namespaces.set(namespace, resources);
+  }
+  const generation = resources.get(resource) ?? 0;
+  resources.set(resource, generation);
+  return generation;
+}
 
 function scopedKey(namespace: string, resource: string) {
   const session = getSession();
-  if (!session) return "";
-  return `${session.id}:${session.organization?.id ?? ""}:${namespace}:${resource}`;
+  if (!session) return null;
+  return [
+    DASHBOARD_API_QUERY_SCOPE,
+    session.id,
+    session.organization?.id ?? "",
+    session.signedInAt,
+    namespace,
+    resource,
+    resourceGeneration(session, namespace, resource),
+  ] as const;
 }
 
 export function cachedApiRequest<T>(
@@ -21,23 +61,39 @@ export function cachedApiRequest<T>(
   ttlMs: number,
   loader: () => Promise<T>,
 ) {
-  const key = scopedKey(namespace, resource);
-  if (!key) return loader();
-  const existing = apiCache.get(key);
-  if (existing && existing.expiresAt > Date.now()) return existing.promise as Promise<T>;
-
-  const promise = loader().catch((error) => {
-    apiCache.delete(key);
-    throw error;
+  const queryKey = scopedKey(namespace, resource);
+  if (!queryKey) return loader();
+  return getDashboardQueryClient().fetchQuery({
+    queryKey,
+    queryFn: loader,
+    staleTime: ttlMs,
   });
-  apiCache.set(key, { namespace, resource, expiresAt: Date.now() + ttlMs, promise });
-  return promise;
 }
 
 export function invalidateApiCache(namespace: string, resourcePrefix = "") {
-  for (const [key, entry] of apiCache) {
-    if (entry.namespace === namespace && entry.resource.startsWith(resourcePrefix)) {
-      apiCache.delete(key);
+  const session = getSession();
+  if (!session) return;
+
+  const scope = generationScope(session);
+  const resources = scope.namespaces.get(namespace);
+  if (resources) {
+    for (const [resource, generation] of resources) {
+      if (resource.startsWith(resourcePrefix)) {
+        resources.set(resource, generation + 1);
+      }
     }
   }
+
+  void getDashboardQueryClient().invalidateQueries({
+    predicate: ({ queryKey }) => (
+      queryKey[0] === DASHBOARD_API_QUERY_SCOPE
+      && queryKey[1] === session.id
+      && queryKey[2] === (session.organization?.id ?? "")
+      && queryKey[3] === session.signedInAt
+      && queryKey[4] === namespace
+      && typeof queryKey[5] === "string"
+      && queryKey[5].startsWith(resourcePrefix)
+    ),
+    refetchType: "none",
+  });
 }

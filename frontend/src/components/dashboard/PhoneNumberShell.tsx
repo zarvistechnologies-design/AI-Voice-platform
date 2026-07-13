@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
@@ -17,9 +18,18 @@ import {
   type AgentSummary,
   type BackendPhoneNumber,
   type PhoneNumberImportInput,
-  type TelephonyProvider,
   type VobizNumber,
 } from "@/lib/voice";
+
+const loadPhoneNumberModals = () => import("@/components/dashboard/PhoneNumberModals");
+const PhoneNumberModals = dynamic(
+  () => loadPhoneNumberModals().then((module) => module.PhoneNumberModals),
+  { ssr: false },
+);
+
+function preloadPhoneNumberModals() {
+  void loadPhoneNumberModals().catch(() => undefined);
+}
 
 type IconName =
   | "check"
@@ -35,16 +45,8 @@ type IconName =
   | "unlink"
   | "user";
 
-const providers: { id: TelephonyProvider; description: string; docs: string }[] = [
-  { id: "Twilio", description: "Verify an owned number with an Account SID and production API key.", docs: "https://www.twilio.com/docs/phone-numbers/api/incomingphonenumber-resource" },
-  { id: "Exotel", description: "Verify an ExoPhone with its account credentials and regional data center.", docs: "https://developer.exotel.com/docs/exophones/api-reference/list-numbers" },
-  { id: "Vobiz", description: "Verify an owned number using your Vobiz Auth ID and Auth Token.", docs: "https://docs.vobiz.ai/account-phone-number/list-account-phone-numbers" },
-];
-
 const buttonClass =
   "app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 transition disabled:cursor-not-allowed disabled:opacity-50";
-const controlClass =
-  "app-control-text min-h-11 w-full rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10";
 
 function Icon({ icon, className = "size-4" }: { icon: IconName; className?: string }) {
   const props = {
@@ -85,13 +87,8 @@ function providerTone(provider: string) {
   return "border-[#d1fae5] bg-[#ecfdf5] text-[#047857]";
 }
 
-function formatMoney(value: number | undefined, currency = "INR") {
-  if (typeof value !== "number") return "Not listed";
-  try {
-    return new Intl.NumberFormat("en-IN", { style: "currency", currency }).format(value);
-  } catch {
-    return `${currency} ${value.toFixed(2)}`;
-  }
+function searchVobizInventory(input: { country: string; search?: string }) {
+  return voiceApi.vobizInventory(input);
 }
 
 export function PhoneNumberShell() {
@@ -270,6 +267,9 @@ export function PhoneNumberShell() {
               <button
                 className={`${buttonClass} border border-[#99f6e8] bg-[#ecfeff] text-[#008996] hover:bg-[#ccfbf1]`}
                 onClick={() => { setShowImport(true); showMessage(""); }}
+                onFocus={preloadPhoneNumberModals}
+                onPointerDown={preloadPhoneNumberModals}
+                onPointerEnter={preloadPhoneNumberModals}
                 type="button"
               >
                 <Icon icon="import" />
@@ -278,6 +278,9 @@ export function PhoneNumberShell() {
               <button
                 className={`${buttonClass} border-0 bg-[#00b8c4] text-white shadow-[0_12px_28px_rgba(0,184,196,0.28)] hover:bg-[#008996]`}
                 onClick={() => { setShowBuy(true); showMessage(""); }}
+                onFocus={preloadPhoneNumberModals}
+                onPointerDown={preloadPhoneNumberModals}
+                onPointerEnter={preloadPhoneNumberModals}
                 type="button"
               >
                 <Icon icon="plus" />
@@ -342,10 +345,10 @@ export function PhoneNumberShell() {
                   <h3 className="app-section-title m-0">No phone numbers yet</h3>
                   <p className="app-caption mt-1 mb-4">Import from Twilio, Exotel, or Vobiz-or buy a new Vobiz number.</p>
                   <div className="flex flex-wrap justify-center gap-2">
-                    <button className={`${buttonClass} border border-[#99f6e8] bg-white text-[#00b8c4]`} onClick={() => setShowImport(true)} type="button">
+                    <button className={`${buttonClass} border border-[#99f6e8] bg-white text-[#00b8c4]`} onClick={() => setShowImport(true)} onFocus={preloadPhoneNumberModals} onPointerDown={preloadPhoneNumberModals} onPointerEnter={preloadPhoneNumberModals} type="button">
                       <Icon icon="import" /> Import number
                     </button>
-                    <button className={`${buttonClass} bg-[#00b8c4] text-white`} onClick={() => setShowBuy(true)} type="button">
+                    <button className={`${buttonClass} bg-[#00b8c4] text-white`} onClick={() => setShowBuy(true)} onFocus={preloadPhoneNumberModals} onPointerDown={preloadPhoneNumberModals} onPointerEnter={preloadPhoneNumberModals} type="button">
                       <Icon icon="plus" /> Buy number
                     </button>
                   </div>
@@ -360,30 +363,21 @@ export function PhoneNumberShell() {
         </div>
       </section>
 
-      {showImport ? (
-        <ImportNumberModal
-          busy={busy}
-          onClose={() => setShowImport(false)}
-          onImport={(input) => void importNumber(input)}
-        />
-      ) : null}
-
-      {showBuy ? (
-        <BuyNumberModal
+      {showImport || showBuy || assignmentNumber ? (
+        <PhoneNumberModals
+          agents={agents}
+          assignmentNumber={assignmentNumber}
           busy={busy}
           requestError={error}
-          onClose={() => setShowBuy(false)}
-          onPurchase={(number, label) => void purchaseNumber(number, label)}
-        />
-      ) : null}
-
-      {assignmentNumber ? (
-        <AgentModal
-          agents={agents}
-          busy={busy}
-          number={assignmentNumber}
+          showBuy={showBuy}
+          showImport={showImport}
           onAssign={(agentId) => void assignAgent(agentId)}
-          onClose={() => setAssignmentNumber(null)}
+          onCloseAgent={() => setAssignmentNumber(null)}
+          onCloseBuy={() => setShowBuy(false)}
+          onCloseImport={() => setShowImport(false)}
+          onImport={(input) => void importNumber(input)}
+          onPurchase={(number, label) => void purchaseNumber(number, label)}
+          onSearchInventory={searchVobizInventory}
         />
       ) : null}
     </main>
@@ -424,6 +418,9 @@ function PhoneNumberRow({
         <button
           className={`group inline-flex max-w-240px items-center gap-2 rounded-lg border px-2.5 py-2 text-left transition ${agent ? "border-[#e5e7eb] bg-[#f8fafc] hover:border-[#99f6e8] hover:bg-[#ecfeff]" : "border-dashed border-[#cbd5e1] bg-white text-[#475569] hover:border-[#00b8c4] hover:text-[#00b8c4]"}`}
           onClick={onManage}
+          onFocus={preloadPhoneNumberModals}
+          onPointerDown={preloadPhoneNumberModals}
+          onPointerEnter={preloadPhoneNumberModals}
           type="button"
         >
           <span className={`grid size-7 shrink-0 place-items-center rounded-md ${agent ? "bg-white text-[#64748b]" : "bg-[#ecfeff] text-[#00b8c4]"}`}>
@@ -440,7 +437,7 @@ function PhoneNumberRow({
       </td>
       <td className="px-4 py-4">
         <div className="flex items-center justify-end gap-1">
-          <button className="grid size-9 place-items-center rounded-lg text-[#64748b] transition hover:bg-[#ecfeff] hover:text-[#00b8c4]" disabled={busy} onClick={onManage} type="button" aria-label={`Manage ${number.number}`}>
+          <button className="grid size-9 place-items-center rounded-lg text-[#64748b] transition hover:bg-[#ecfeff] hover:text-[#00b8c4]" disabled={busy} onClick={onManage} onFocus={preloadPhoneNumberModals} onPointerDown={preloadPhoneNumberModals} onPointerEnter={preloadPhoneNumberModals} type="button" aria-label={`Manage ${number.number}`}>
             <Icon icon="edit" />
           </button>
           <button className="grid size-9 place-items-center rounded-lg text-[#dc2626] transition hover:bg-[#fff1f2]" disabled={busy} onClick={onDelete} type="button" aria-label={`Delete ${number.number}`}>
@@ -449,423 +446,6 @@ function PhoneNumberRow({
         </div>
       </td>
     </tr>
-  );
-}
-
-function ImportNumberModal({ busy, onClose, onImport }: {
-  busy: boolean;
-  onClose: () => void;
-  onImport: (input: PhoneNumberImportInput) => void;
-}) {
-  const [provider, setProvider] = useState<TelephonyProvider>("Twilio");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [label, setLabel] = useState("");
-  const [accountSid, setAccountSid] = useState("");
-  const [apiKeySid, setApiKeySid] = useState("");
-  const [apiKeySecret, setApiKeySecret] = useState("");
-  const [apiRegion, setApiRegion] = useState<"us1" | "au1" | "ie1">("us1");
-  const [exotelApiKey, setExotelApiKey] = useState("");
-  const [exotelApiToken, setExotelApiToken] = useState("");
-  const [dataCenter, setDataCenter] = useState<"mumbai" | "singapore">("mumbai");
-  const [authId, setAuthId] = useState("");
-  const [authToken, setAuthToken] = useState("");
-  const validPhone = /^\+[1-9]\d{7,14}$/.test(phoneNumber.trim());
-  const valid = validPhone && (
-    provider === "Twilio"
-      ? /^AC[0-9a-fA-F]{32}$/.test(accountSid.trim()) && /^SK[0-9a-fA-F]{32}$/.test(apiKeySid.trim()) && Boolean(apiKeySecret)
-      : provider === "Exotel"
-        ? Boolean(accountSid.trim() && exotelApiKey.trim() && exotelApiToken)
-        : /^(MA|SA)_[A-Za-z0-9]+$/.test(authId.trim()) && authToken.length >= 20
-  );
-
-  function submit() {
-    const common = { phoneNumber: phoneNumber.trim(), label: label.trim(), direction: "Both" as const };
-    if (provider === "Twilio") {
-      onImport({
-        ...common,
-        provider,
-        accountSid: accountSid.trim(),
-        apiKeySid: apiKeySid.trim(),
-        apiKeySecret,
-        apiRegion,
-      });
-    } else if (provider === "Exotel") {
-      onImport({
-        ...common,
-        provider,
-        accountSid: accountSid.trim(),
-        apiKey: exotelApiKey.trim(),
-        apiToken: exotelApiToken,
-        dataCenter,
-      });
-    } else {
-      onImport({ ...common, provider, authId: authId.trim(), authToken });
-    }
-  }
-
-  return (
-    <ModalFrame title="Import phone number" subtitle="Add a number from your telephony provider." onClose={onClose}>
-      <form
-        className="grid min-h-0 grid-rows-[auto_minmax(0,1fr)_auto]"
-        onSubmit={(event) => {
-          event.preventDefault();
-          if (!valid) return;
-          submit();
-        }}
-      >
-        <div className="grid grid-cols-3 border-b border-[#e5e7eb] px-5 sm:px-6">
-          {providers.map((item) => (
-            <button
-              className={`relative min-h-14 border-0 bg-transparent px-2 text-center transition ${provider === item.id ? "text-[#00b8c4]" : "text-[#64748b] hover:text-[#334155]"}`}
-              key={item.id}
-              onClick={() => setProvider(item.id)}
-              type="button"
-              aria-pressed={provider === item.id}
-            >
-              <span className="app-strong">{item.id}</span>
-              {provider === item.id ? <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-[#00b8c4]" /> : null}
-            </button>
-          ))}
-        </div>
-
-        <div className="grid gap-5 overflow-y-auto px-5 py-5 sm:px-6">
-          <div className="rounded-lg border border-[#99f6e8] bg-[#ecfeff] px-3 py-2.5">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <span className="app-body text-[#1e40af]">{providers.find((item) => item.id === provider)?.description}</span>
-              <a className="app-label text-[#00b8c4] underline underline-offset-2" href={providers.find((item) => item.id === provider)?.docs} rel="noreferrer" target="_blank">Provider docs</a>
-            </div>
-          </div>
-
-          <label className="app-label grid gap-2">
-            Phone number
-            <input
-              className={controlClass}
-              inputMode="tel"
-              placeholder="+919876543210"
-              value={phoneNumber}
-              onChange={(event) => setPhoneNumber(event.target.value)}
-            />
-            <span className="app-caption font-normal">Use E.164 format with country code, for example +919876543210.</span>
-          </label>
-
-          {provider === "Twilio" ? (
-            <div className="grid gap-4 rounded-xl border border-[#e5e7eb] bg-[#f8fafc] p-4">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <label className="app-label grid gap-2">
-                  Twilio API region
-                  <select className={controlClass} value={apiRegion} onChange={(event) => setApiRegion(event.target.value as typeof apiRegion)}>
-                    <option value="us1">US1 (default)</option>
-                    <option value="au1">AU1 (Australia)</option>
-                    <option value="ie1">IE1 (Ireland)</option>
-                  </select>
-                </label>
-                <label className="app-label grid gap-2">
-                  Account SID
-                  <input className={controlClass} autoComplete="off" placeholder="AC..." value={accountSid} onChange={(event) => setAccountSid(event.target.value)} />
-                </label>
-              </div>
-              <label className="app-label grid gap-2">
-                API Key SID
-                <input className={controlClass} autoComplete="off" placeholder="SK..." value={apiKeySid} onChange={(event) => setApiKeySid(event.target.value)} />
-              </label>
-              <label className="app-label grid gap-2">
-                API Key Secret
-                <input className={controlClass} autoComplete="new-password" placeholder="Twilio API Key Secret" type="password" value={apiKeySecret} onChange={(event) => setApiKeySecret(event.target.value)} />
-              </label>
-            </div>
-          ) : null}
-
-          {provider === "Exotel" ? (
-            <div className="grid gap-4 rounded-xl border border-[#e5e7eb] bg-[#f8fafc] p-4">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <label className="app-label grid gap-2">
-                  Exotel data center
-                  <select className={controlClass} value={dataCenter} onChange={(event) => setDataCenter(event.target.value as typeof dataCenter)}>
-                    <option value="mumbai">Mumbai / India</option>
-                    <option value="singapore">Singapore</option>
-                  </select>
-                </label>
-                <label className="app-label grid gap-2">
-                  Account SID
-                  <input className={controlClass} autoComplete="off" placeholder="Exotel Account SID" value={accountSid} onChange={(event) => setAccountSid(event.target.value)} />
-                </label>
-              </div>
-              <label className="app-label grid gap-2">
-                API Key
-                <input className={controlClass} autoComplete="off" placeholder="Exotel API Key" value={exotelApiKey} onChange={(event) => setExotelApiKey(event.target.value)} />
-              </label>
-              <label className="app-label grid gap-2">
-                API Token
-                <input className={controlClass} autoComplete="new-password" placeholder="Exotel API Token" type="password" value={exotelApiToken} onChange={(event) => setExotelApiToken(event.target.value)} />
-              </label>
-            </div>
-          ) : null}
-
-          {provider === "Vobiz" ? (
-            <div className="grid gap-4 rounded-xl border border-[#e5e7eb] bg-[#f8fafc] p-4">
-              <label className="app-label grid gap-2">
-                Auth ID
-                <input className={controlClass} autoComplete="off" placeholder="MA_... or SA_..." value={authId} onChange={(event) => setAuthId(event.target.value)} />
-              </label>
-              <label className="app-label grid gap-2">
-                Auth Token
-                <input className={controlClass} autoComplete="new-password" placeholder="Vobiz Auth Token" type="password" value={authToken} onChange={(event) => setAuthToken(event.target.value)} />
-              </label>
-            </div>
-          ) : null}
-
-          <label className="app-label grid gap-2">
-            Label <span className="font-normal text-[#94a3b8]">(optional)</span>
-            <input className={controlClass} maxLength={120} placeholder="Support main line" value={label} onChange={(event) => setLabel(event.target.value)} />
-          </label>
-
-          <div className="flex items-start gap-3 rounded-lg border border-[#e5e7eb] bg-[#f8fafc] p-3">
-            <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-[#dcfce7] text-[#059669]"><Icon icon="check" className="size-3.5" /></span>
-            <p className="app-caption m-0">
-              {provider === "Vobiz"
-                ? "Vobiz credentials are encrypted and retained because they are required to configure inbound SIP routing."
-                : `${provider} credentials are used server-side to verify that the number belongs to your account and are not stored.`}
-            </p>
-          </div>
-        </div>
-
-        <footer className="flex items-center justify-end gap-2 border-t border-[#e5e7eb] px-5 py-4 sm:px-6">
-          <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button>
-          <button className={`${buttonClass} bg-[#00b8c4] text-white hover:bg-[#008996]`} disabled={busy || !valid} type="submit">
-            <Icon icon="import" /> {busy ? "Importing..." : "Import number"}
-          </button>
-        </footer>
-      </form>
-    </ModalFrame>
-  );
-}
-
-function BuyNumberModal({ busy, requestError, onClose, onPurchase }: {
-  busy: boolean;
-  requestError: string;
-  onClose: () => void;
-  onPurchase: (number: VobizNumber, label: string) => void;
-}) {
-  const [country, setCountry] = useState("IN");
-  const [query, setQuery] = useState("");
-  const [label, setLabel] = useState("");
-  const [numbers, setNumbers] = useState<VobizNumber[]>([]);
-  const [searching, setSearching] = useState(true);
-  const [searched, setSearched] = useState(false);
-  const [inventoryError, setInventoryError] = useState("");
-  const [selected, setSelected] = useState<VobizNumber | null>(null);
-
-  useEffect(() => {
-    let active = true;
-    void voiceApi.vobizInventory({ country: "IN" })
-      .then((result) => {
-        if (!active) return;
-        setNumbers(result.items);
-        setSearched(true);
-      })
-      .catch((caught: unknown) => {
-        if (!active) return;
-        setInventoryError(errorMessage(caught));
-        setSearched(true);
-      })
-      .finally(() => {
-        if (active) setSearching(false);
-      });
-    return () => { active = false; };
-  }, []);
-
-  async function searchInventory() {
-    setSearching(true);
-    setInventoryError("");
-    setSelected(null);
-    try {
-      const result = await voiceApi.vobizInventory({ country, search: query.trim() });
-      setNumbers(result.items);
-      setSearched(true);
-    } catch (caught) {
-      setNumbers([]);
-      setSearched(true);
-      setInventoryError(errorMessage(caught));
-    } finally {
-      setSearching(false);
-    }
-  }
-
-  return (
-    <ModalFrame title="Buy phone number" subtitle="Purchase from your connected Vobiz account and add it to inventory." onClose={onClose} width="max-w-3xl">
-      <div className="grid min-h-0 grid-rows-[auto_minmax(0,1fr)_auto]">
-        <form
-          className="grid gap-3 border-b border-[#e5e7eb] px-5 py-4 sm:grid-cols-[150px_minmax(0,1fr)_auto] sm:px-6"
-          onSubmit={(event) => { event.preventDefault(); void searchInventory(); }}
-        >
-          <label className="app-label grid gap-2">
-            Country
-            <select className={controlClass} value={country} onChange={(event) => setCountry(event.target.value)}>
-              <option value="IN">India</option>
-              <option value="US">United States</option>
-              <option value="GB">United Kingdom</option>
-              <option value="CA">Canada</option>
-              <option value="AU">Australia</option>
-            </select>
-          </label>
-          <label className="app-label grid gap-2">
-            Area code or digits <span className="font-normal text-[#94a3b8]">(optional)</span>
-            <input className={controlClass} inputMode="tel" placeholder="For example 80 or 650" value={query} onChange={(event) => setQuery(event.target.value)} />
-          </label>
-          <button className={`${buttonClass} self-end border border-[#99f6e8] bg-white text-[#00b8c4] hover:bg-[#ecfeff]`} disabled={searching || busy} type="submit">
-            <Icon icon="search" /> {searching ? "Searching..." : "Search"}
-          </button>
-        </form>
-
-        <div className="min-h-280px max-h-[min(460px,52vh)] overflow-y-auto px-5 py-4 sm:px-6">
-          {inventoryError ? (
-            <div className="rounded-lg border border-[#fecaca] bg-[#fff1f2] p-3 text-[#b91c1c]">
-              <p className="app-body m-0">{inventoryError}</p>
-              <p className="app-caption mt-1 mb-0 text-[#b91c1c]">Connect Vobiz by importing an owned Vobiz number first, then search again.</p>
-            </div>
-          ) : null}
-          {requestError ? <div className="mb-3 rounded-lg border border-[#fecaca] bg-[#fff1f2] p-3 app-body text-[#b91c1c]">{requestError}</div> : null}
-          {searching ? (
-            <div className="grid min-h-240px place-items-center"><span className="app-caption">Loading available numbers...</span></div>
-          ) : numbers.length ? (
-            <div className="grid gap-2">
-              {numbers.map((number) => {
-                const active = selected?.id === number.id;
-                const voiceAvailable = number.voice_enabled !== false && number.capabilities?.voice !== false;
-                return (
-                  <button
-                    className={`grid w-full gap-3 rounded-xl border p-3 text-left transition sm:grid-cols-[minmax(0,1fr)_145px_145px_auto] sm:items-center ${active ? "border-[#00b8c4] bg-[#ecfeff] ring-2 ring-[#00b8c4]/10" : "border-[#e5e7eb] bg-white hover:border-[#99f6e8] hover:bg-[#fbfcff]"}`}
-                    disabled={!voiceAvailable || busy}
-                    key={number.id || number.e164}
-                    onClick={() => setSelected(number)}
-                    type="button"
-                    aria-pressed={active}
-                  >
-                    <span>
-                      <strong className="app-strong block">{number.e164}</strong>
-                      <span className="app-caption">{[number.region, number.country].filter(Boolean).join(", ") || "Global"}</span>
-                    </span>
-                    <span><span className="app-caption block">Setup</span><strong className="app-body text-[#334155]">{formatMoney(number.setup_fee, number.currency)}</strong></span>
-                    <span><span className="app-caption block">Monthly</span><strong className="app-body text-[#334155]">{formatMoney(number.monthly_fee, number.currency)}</strong></span>
-                    <span className={`app-label justify-self-start rounded-full px-2.5 py-1 sm:justify-self-end ${voiceAvailable ? "bg-[#ecfdf5] text-[#047857]" : "bg-[#f1f5f9] text-[#64748b]"}`}>{voiceAvailable ? (active ? "Selected" : "Available") : "No voice"}</span>
-                  </button>
-                );
-              })}
-            </div>
-          ) : searched && !inventoryError ? (
-            <div className="grid min-h-240px place-items-center text-center">
-              <div><Icon icon="search" className="mx-auto mb-3 size-6 text-[#94a3b8]" /><p className="app-body m-0 text-[#475569]">No available numbers matched this search.</p></div>
-            </div>
-          ) : null}
-        </div>
-
-        <footer className="flex flex-wrap items-end justify-between gap-3 border-t border-[#e5e7eb] px-5 py-4 sm:px-6">
-          <label className="app-label grid min-w-240px flex-1 gap-2 sm:max-w-sm">
-            Label <span className="font-normal text-[#94a3b8]">(optional)</span>
-            <input className={controlClass} maxLength={120} placeholder="Sales main line" value={label} onChange={(event) => setLabel(event.target.value)} />
-          </label>
-          <div className="flex gap-2">
-            <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button>
-            <button className={`${buttonClass} bg-[#00b8c4] text-white hover:bg-[#008996]`} disabled={busy || !selected} onClick={() => { if (selected) onPurchase(selected, label); }} type="button">
-              <Icon icon="plus" /> {busy ? "Purchasing..." : "Purchase number"}
-            </button>
-          </div>
-        </footer>
-      </div>
-    </ModalFrame>
-  );
-}
-
-function AgentModal({ agents, busy, number, onAssign, onClose }: {
-  agents: AgentSummary[];
-  busy: boolean;
-  number: BackendPhoneNumber;
-  onAssign: (agentId: string | null) => void;
-  onClose: () => void;
-}) {
-  const [query, setQuery] = useState("");
-  const [selectedId, setSelectedId] = useState(number.agentId?._id ?? "");
-  const filteredAgents = useMemo(() => {
-    const search = query.trim().toLowerCase();
-    return search ? agents.filter((agent) => `${agent.name} ${agent.team}`.toLowerCase().includes(search)) : agents;
-  }, [agents, query]);
-
-  return (
-    <ModalFrame title="Link an agent" subtitle={`${number.number} / ${number.provider}`} onClose={onClose} width="max-w-xl">
-      <div className="grid min-h-0 grid-rows-[auto_minmax(0,1fr)_auto]">
-        <div className="border-b border-[#e5e7eb] px-5 py-4 sm:px-6">
-          <label className="relative block">
-            <span className="absolute inset-y-0 left-3 grid place-items-center text-[#94a3b8]"><Icon icon="search" /></span>
-            <input className={`${controlClass} pl-10`} placeholder="Search agents" value={query} onChange={(event) => setQuery(event.target.value)} />
-          </label>
-        </div>
-
-        <div className="min-h-220px max-h-[min(430px,52vh)] overflow-y-auto p-2 sm:p-3">
-          {filteredAgents.map((agent) => {
-            const selected = selectedId === agent._id;
-            return (
-              <button
-                className={`mb-1 flex w-full items-center gap-3 rounded-lg border p-3 text-left transition ${selected ? "border-[#99f6e8] bg-[#ecfeff]" : "border-transparent hover:bg-[#f8fafc]"}`}
-                key={agent._id}
-                onClick={() => setSelectedId(agent._id)}
-                type="button"
-                aria-pressed={selected}
-              >
-                <span className={`grid size-10 shrink-0 place-items-center rounded-lg ${selected ? "bg-[#00b8c4] text-white" : "bg-[#ecfeff] text-[#00b8c4]"}`}><Icon icon="user" /></span>
-                <span className="min-w-0 flex-1">
-                  <strong className="app-strong block truncate">{agent.name}</strong>
-                  <span className="app-caption block truncate">{agent.team || "Voice agent"}</span>
-                </span>
-                <span className={`app-label rounded-full px-2 py-1 ${agent.status === "Live" ? "bg-[#ecfdf5] text-[#047857]" : "bg-[#f1f5f9] text-[#64748b]"}`}>{agent.status}</span>
-                <span className={`grid size-5 place-items-center rounded-full border ${selected ? "border-[#00b8c4] bg-[#00b8c4] text-white" : "border-[#cbd5e1]"}`}>{selected ? <Icon icon="check" className="size-3" /> : null}</span>
-              </button>
-            );
-          })}
-          {!filteredAgents.length ? <p className="app-caption m-0 p-8 text-center">No agents found.</p> : null}
-        </div>
-
-        <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-[#e5e7eb] px-5 py-4 sm:px-6">
-          <div>
-            {number.agentId ? (
-              <button className={`${buttonClass} border border-[#fecaca] bg-white text-[#dc2626] hover:bg-[#fff1f2]`} disabled={busy} onClick={() => onAssign(null)} type="button">
-                <Icon icon="unlink" /> Unlink agent
-              </button>
-            ) : <span className="app-caption">Select one agent for this number.</span>}
-          </div>
-          <div className="flex gap-2">
-            <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button>
-            <button className={`${buttonClass} bg-[#00b8c4] text-white hover:bg-[#008996]`} disabled={busy || !selectedId} onClick={() => onAssign(selectedId)} type="button">
-              <Icon icon="link" /> {busy ? "Saving..." : "Set agent"}
-            </button>
-          </div>
-        </footer>
-      </div>
-    </ModalFrame>
-  );
-}
-
-function ModalFrame({ children, onClose, subtitle, title, width = "max-w-2xl" }: {
-  children: React.ReactNode;
-  onClose: () => void;
-  subtitle: string;
-  title: string;
-  width?: string;
-}) {
-  return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-[#0f172a]/45 p-3 backdrop-blur-[2px]" role="dialog" aria-modal="true" aria-label={title} onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
-      <section className={`grid max-h-[calc(100vh-24px)] w-full ${width} grid-rows-[auto_minmax(0,1fr)] overflow-hidden rounded-2xl border border-white/70 bg-white shadow-2xl`}>
-        <header className="flex items-start justify-between gap-4 border-b border-[#e5e7eb] px-5 py-4 sm:px-6 sm:py-5">
-          <div>
-            <h2 className="app-page-title m-0">{title}</h2>
-            <p className="app-caption mt-1 mb-0">{subtitle}</p>
-          </div>
-          <button className="grid size-9 shrink-0 place-items-center rounded-lg border border-[#e5e7eb] bg-white text-[#64748b] transition hover:bg-[#f8fafc] hover:text-[#111827]" onClick={onClose} type="button" aria-label="Close">
-            <Icon icon="close" />
-          </button>
-        </header>
-        {children}
-      </section>
-    </div>
   );
 }
 

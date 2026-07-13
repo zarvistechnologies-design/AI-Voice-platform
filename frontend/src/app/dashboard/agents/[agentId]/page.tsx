@@ -9,5 +9,5 @@ type AgentPageProps = {
 export default async function AgentPage({ params }: AgentPageProps) {
   const { agentId } = await params;
 
-  return <DashboardShell key={agentId} initialAgentId={agentId} showTemplateSection={false} />;
+  return <DashboardShell key={agentId} initialAgentId={agentId} />;
 }

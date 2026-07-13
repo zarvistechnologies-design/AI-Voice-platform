@@ -15,6 +15,9 @@ import { voiceApi, type AgentSummary } from "@/lib/voice";
 
 type IconName = "agent" | "edit" | "plus" | "search" | "trash";
 
+const prefetchedAgentRoutes = new Set<string>();
+const MAX_PREFETCHED_AGENT_ROUTES = 250;
+
 function getInitials(name: string) {
   return name.split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
 }
@@ -57,6 +60,19 @@ export function AgentsListShell() {
   const [editingAgent, setEditingAgent] = useState<AgentSummary | null>(null);
   const [editAgentName, setEditAgentName] = useState("");
   const [showUserSidebar, setShowUserSidebar] = useState(false);
+
+  function prefetchAgentRoute(agentId: string) {
+    const href = `/dashboard/agents/${encodeURIComponent(agentId)}`;
+    const prefetchKey = `${session?.id ?? ""}:${session?.signedInAt ?? ""}:${session?.organization?.id ?? ""}:${href}`;
+    if (!prefetchedAgentRoutes.has(prefetchKey)) {
+      if (prefetchedAgentRoutes.size >= MAX_PREFETCHED_AGENT_ROUTES) {
+        prefetchedAgentRoutes.clear();
+      }
+      prefetchedAgentRoutes.add(prefetchKey);
+      router.prefetch(href);
+    }
+    void voiceApi.agentDashboard(agentId).catch(() => undefined);
+  }
 
   useEffect(() => {
     if (!session) {
@@ -220,6 +236,10 @@ export function AgentsListShell() {
                 <Link
                   className="min-w-0 text-left"
                   href={`/dashboard/agents/${encodeURIComponent(agent._id)}`}
+                  prefetch={false}
+                  onFocus={() => prefetchAgentRoute(agent._id)}
+                  onMouseEnter={() => prefetchAgentRoute(agent._id)}
+                  onPointerDown={() => prefetchAgentRoute(agent._id)}
                 >
                   <strong className="app-strong block truncate text-base">{agent.name}</strong>
                   <span className="app-caption block truncate">{agent.team || "Voice team"}</span>
