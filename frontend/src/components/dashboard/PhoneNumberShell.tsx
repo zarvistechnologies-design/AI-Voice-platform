@@ -24,7 +24,10 @@ import {
 const loadPhoneNumberModals = () => import("@/components/dashboard/PhoneNumberModals");
 const PhoneNumberModals = dynamic(
   () => loadPhoneNumberModals().then((module) => module.PhoneNumberModals),
-  { ssr: false },
+  {
+    ssr: false,
+    loading: () => <div className="fixed inset-0 z-50 grid place-items-center bg-slate-950/30 text-sm font-semibold text-white">Loading phone controls...</div>,
+  },
 );
 
 function preloadPhoneNumberModals() {

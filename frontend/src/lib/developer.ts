@@ -1,4 +1,5 @@
 import { getAuthHeaders, getSession } from "@/lib/auth";
+import { cachedApiRequest, invalidateApiCache } from "@/lib/apiCache";
 import { API_URL } from "@/lib/apiBase";
 
 export type WebhookEvent = "call.started" | "call.ended" | "call.failed" | "transcript.ready";
@@ -49,15 +50,38 @@ async function request<T>(path: string, init: RequestInit = {}) {
 }
 
 export const developerApi = {
-  webhooks: () => request<{ webhooks: WebhookEndpoint[]; deliveries: WebhookDelivery[]; eventCatalog: WebhookEvent[] }>("/webhooks"),
-  createWebhook: (input: { name: string; url: string; events: WebhookEvent[] }) =>
-    request<{ webhook: WebhookEndpoint; secret: string }>("/webhooks", { method: "POST", body: JSON.stringify(input) }),
-  updateWebhook: (id: string, input: Partial<Pick<WebhookEndpoint, "name" | "url" | "events" | "enabled">>) =>
-    request<{ webhook: WebhookEndpoint }>(`/webhooks/${id}`, { method: "PATCH", body: JSON.stringify(input) }),
-  deleteWebhook: (id: string) => request<Record<string, never>>(`/webhooks/${id}`, { method: "DELETE" }),
-  testWebhook: (id: string) => request<{ delivery: WebhookDelivery }>(`/webhooks/${id}/test`, { method: "POST" }),
-  apiKeys: () => request<{ apiKeys: ApiKeyRecord[]; scopeCatalog: ApiKeyScope[] }>("/api-keys"),
-  createApiKey: (input: { name: string; scopes: ApiKeyScope[]; expiresAt?: string }) =>
-    request<{ apiKey: ApiKeyRecord; key: string }>("/api-keys", { method: "POST", body: JSON.stringify(input) }),
-  revokeApiKey: (id: string) => request<Record<string, never>>(`/api-keys/${id}`, { method: "DELETE" }),
+  webhooks: () => cachedApiRequest("developer", "/webhooks", 10_000, () =>
+    request<{ webhooks: WebhookEndpoint[]; deliveries: WebhookDelivery[]; eventCatalog: WebhookEvent[] }>("/webhooks")),
+  createWebhook: async (input: { name: string; url: string; events: WebhookEvent[] }) => {
+    const result = await request<{ webhook: WebhookEndpoint; secret: string }>("/webhooks", { method: "POST", body: JSON.stringify(input) });
+    invalidateApiCache("developer", "/webhooks");
+    return result;
+  },
+  updateWebhook: async (id: string, input: Partial<Pick<WebhookEndpoint, "name" | "url" | "events" | "enabled">>) => {
+    const result = await request<{ webhook: WebhookEndpoint }>(`/webhooks/${id}`, { method: "PATCH", body: JSON.stringify(input) });
+    invalidateApiCache("developer", "/webhooks");
+    return result;
+  },
+  deleteWebhook: async (id: string) => {
+    const result = await request<Record<string, never>>(`/webhooks/${id}`, { method: "DELETE" });
+    invalidateApiCache("developer", "/webhooks");
+    return result;
+  },
+  testWebhook: async (id: string) => {
+    const result = await request<{ delivery: WebhookDelivery }>(`/webhooks/${id}/test`, { method: "POST" });
+    invalidateApiCache("developer", "/webhooks");
+    return result;
+  },
+  apiKeys: () => cachedApiRequest("developer", "/api-keys", 10_000, () =>
+    request<{ apiKeys: ApiKeyRecord[]; scopeCatalog: ApiKeyScope[] }>("/api-keys")),
+  createApiKey: async (input: { name: string; scopes: ApiKeyScope[]; expiresAt?: string }) => {
+    const result = await request<{ apiKey: ApiKeyRecord; key: string }>("/api-keys", { method: "POST", body: JSON.stringify(input) });
+    invalidateApiCache("developer", "/api-keys");
+    return result;
+  },
+  revokeApiKey: async (id: string) => {
+    const result = await request<Record<string, never>>(`/api-keys/${id}`, { method: "DELETE" });
+    invalidateApiCache("developer", "/api-keys");
+    return result;
+  },
 };

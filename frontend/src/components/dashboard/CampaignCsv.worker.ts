@@ -8,7 +8,7 @@ type CampaignLead = {
 };
 
 type CampaignCsvWorkerRequest = {
-  text: string;
+  buffer: ArrayBuffer;
 };
 
 type CampaignCsvWorkerResponse =
@@ -19,6 +19,8 @@ type CampaignCsvWorkerScope = {
   onmessage: ((event: MessageEvent<CampaignCsvWorkerRequest>) => void) | null;
   postMessage: (message: CampaignCsvWorkerResponse) => void;
 };
+
+const maxCampaignLeads = 100_000;
 
 function normalizeHeader(value: string) {
   return value.trim().toLowerCase().replace(/[\s_-]+/g, "");
@@ -53,7 +55,12 @@ function parseCsvRows(text: string) {
     if ((char === "\n" || char === "\r") && !quoted) {
       if (char === "\r" && next === "\n") index += 1;
       row.push(cell.trim());
-      if (row.some(Boolean)) rows.push(row);
+      if (row.some(Boolean)) {
+        rows.push(row);
+        if (rows.length > maxCampaignLeads + 1) {
+          throw new Error(`CSV can contain at most ${maxCampaignLeads.toLocaleString("en-IN")} contacts.`);
+        }
+      }
       row = [];
       cell = "";
       continue;
@@ -63,7 +70,12 @@ function parseCsvRows(text: string) {
   }
 
   row.push(cell.trim());
-  if (row.some(Boolean)) rows.push(row);
+  if (row.some(Boolean)) {
+    rows.push(row);
+    if (rows.length > maxCampaignLeads + 1) {
+      throw new Error(`CSV can contain at most ${maxCampaignLeads.toLocaleString("en-IN")} contacts.`);
+    }
+  }
   return rows;
 }
 
@@ -103,7 +115,8 @@ const workerScope = globalThis as unknown as CampaignCsvWorkerScope;
 
 workerScope.onmessage = (event) => {
   try {
-    workerScope.postMessage({ ok: true, leads: parseCampaignCsv(event.data.text) });
+    const text = new TextDecoder().decode(event.data.buffer);
+    workerScope.postMessage({ ok: true, leads: parseCampaignCsv(text) });
   } catch (error) {
     workerScope.postMessage({
       ok: false,

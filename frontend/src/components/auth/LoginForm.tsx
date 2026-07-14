@@ -38,10 +38,9 @@ declare global {
 
 function getNextPath(path: string | null) {
   if (!path || !path.startsWith("/") || path.startsWith("//")) {
-    return "/dashboard";
+    return "/dashboard/agents";
   }
-
-  return path;
+  return path === "/dashboard" ? "/dashboard/agents" : path;
 }
 
 export function LoginForm() {
@@ -60,6 +59,7 @@ export function LoginForm() {
   const googleButtonRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    router.prefetch(nextPath);
     let cancelled = false;
 
     void (async () => {
@@ -84,6 +84,11 @@ export function LoginForm() {
       await loginWithGoogle(response.credential);
       const session = await validateStoredSession();
       if (!session) throw new Error("Google sign-in completed, but the session could not be verified.");
+      if (nextPath === "/dashboard" || nextPath === "/dashboard/agents") {
+        void import("@/lib/voice")
+          .then(({ voiceApi }) => voiceApi.agentSummaries())
+          .catch(() => undefined);
+      }
       router.push(nextPath);
     } catch (authError) {
       setError(authError instanceof Error ? authError.message : "Google sign-in failed.");
@@ -150,6 +155,11 @@ export function LoginForm() {
         return;
       }
 
+      if (nextPath === "/dashboard" || nextPath === "/dashboard/agents") {
+        void import("@/lib/voice")
+          .then(({ voiceApi }) => voiceApi.agentSummaries())
+          .catch(() => undefined);
+      }
       router.push(nextPath);
     } catch (authError) {
       setError(

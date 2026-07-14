@@ -11,6 +11,7 @@ const roboto = Roboto({
 const geistMono = Geist_Mono({
   variable: "--font-commit-mono",
   subsets: ["latin"],
+  preload: false,
 });
 
 export const metadata: Metadata = {

@@ -14,12 +14,14 @@ services:
       - "6379:6379"
 
   backend:
-    build: ./backend
+    build: ../AI-Voice-backend
     restart: unless-stopped
     env_file:
-      - ./backend/.env
+      - ../AI-Voice-backend/.env
     environment:
       MONGODB_URI: mongodb://mongo:27017/ai-voice-platform
+      REDIS_URL: redis://redis:6379
+      REDIS_KEY_PREFIX: vozon:local
       CLIENT_URL: http://localhost:3000
       ALLOWED_ORIGINS: http://localhost:3000
     depends_on:
@@ -29,11 +31,11 @@ services:
       - "5000:5000"
 
   agent:
-    build: ./backend
+    build: ../AI-Voice-backend
     restart: unless-stopped
     command: ["node", "dist/agent.js", "start"]
     env_file:
-      - ./backend/.env
+      - ../AI-Voice-backend/.env
     environment:
       MONGODB_URI: mongodb://mongo:27017/ai-voice-platform
     depends_on:
@@ -43,7 +45,9 @@ services:
     build:
       context: ./frontend
       args:
-        NEXT_PUBLIC_API_URL: http://localhost:5000
+        BACKEND_URL: http://backend:5000
+        NEXT_PUBLIC_API_PROXY_MODE: "on"
+        NEXT_PUBLIC_API_URL: ""
     restart: unless-stopped
     depends_on:
       - backend

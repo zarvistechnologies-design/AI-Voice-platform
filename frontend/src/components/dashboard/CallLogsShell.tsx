@@ -17,7 +17,10 @@ import { publicVoiceMessage, voiceApi, type AgentSummary, type CallRecord } from
 const loadCallDetailDrawer = () => import("@/components/dashboard/CallDetailDrawer");
 const CallDetailDrawer = dynamic(
   () => loadCallDetailDrawer().then((module) => module.CallDetailDrawer),
-  { ssr: false },
+  {
+    ssr: false,
+    loading: () => <div className="fixed inset-0 z-50 grid place-items-center bg-slate-950/30 text-sm font-semibold text-white">Loading call details...</div>,
+  },
 );
 
 function preloadCallDetailDrawer() {

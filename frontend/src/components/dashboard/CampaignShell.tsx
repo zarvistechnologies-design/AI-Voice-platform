@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { type DragEvent, type FormEvent, type ReactNode, useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { type DragEvent, type FormEvent, type ReactNode, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
@@ -29,6 +29,7 @@ type SendMode = "now" | "schedule";
 type CampaignAction = "pause" | "resume" | "cancel";
 
 const maxCsvSize = 25 * 1024 * 1024;
+const maxCampaignLeads = 100_000;
 const buttonClass =
   "app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 transition disabled:cursor-not-allowed disabled:opacity-50";
 const controlClass =
@@ -67,22 +68,34 @@ function errorMessage(error: unknown) {
   return error instanceof Error ? error.message : "The request could not be completed.";
 }
 
-function parseCampaignCsvInWorker(text: string) {
+function parseCampaignCsvInWorker(buffer: ArrayBuffer, signal: AbortSignal) {
   return new Promise<CampaignLead[]>((resolve, reject) => {
     const worker = new Worker(new URL("./CampaignCsv.worker.ts", import.meta.url), { type: "module" });
     let settled = false;
 
+    const cleanup = () => {
+      signal.removeEventListener("abort", abort);
+      worker.terminate();
+    };
+
     const rejectAndTerminate = (error: Error) => {
       if (settled) return;
       settled = true;
-      worker.terminate();
+      cleanup();
       reject(error);
     };
+
+    const abort = () => rejectAndTerminate(new DOMException("CSV parsing was replaced.", "AbortError"));
+    signal.addEventListener("abort", abort, { once: true });
+    if (signal.aborted) {
+      abort();
+      return;
+    }
 
     worker.onmessage = (event: MessageEvent<CampaignCsvWorkerResponse>) => {
       if (settled) return;
       settled = true;
-      worker.terminate();
+      cleanup();
       if (event.data.ok) {
         resolve(event.data.leads);
       } else {
@@ -98,7 +111,7 @@ function parseCampaignCsvInWorker(text: string) {
     };
 
     try {
-      worker.postMessage({ text });
+      worker.postMessage({ buffer }, [buffer]);
     } catch (error) {
       rejectAndTerminate(error instanceof Error ? error : new Error("The request could not be completed."));
     }
@@ -255,6 +268,10 @@ export function CampaignShell() {
   const [showUserSidebar, setShowUserSidebar] = useState(false);
   const [now, setNow] = useState(() => new Date());
   const [idempotencyKey, setIdempotencyKey] = useState(() => globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`);
+  const csvParseAbortRef = useRef<AbortController | null>(null);
+  const csvParseSequenceRef = useRef(0);
+
+  useEffect(() => () => csvParseAbortRef.current?.abort(), []);
 
   useEffect(() => {
     if (!session) {
@@ -385,6 +402,11 @@ export function CampaignShell() {
 
   async function handleCsv(file: File | undefined) {
     if (!file) return;
+    const sequence = ++csvParseSequenceRef.current;
+    csvParseAbortRef.current?.abort();
+    csvParseAbortRef.current = null;
+    setCsvFile(null);
+    setLeads([]);
     setNotice("");
     setError("");
     if (file.size > maxCsvSize) {
@@ -395,16 +417,22 @@ export function CampaignShell() {
       setError("Upload a CSV file.");
       return;
     }
+    const controller = new AbortController();
+    csvParseAbortRef.current = controller;
     try {
-      const parsed = await parseCampaignCsvInWorker(await file.text());
+      const parsed = await parseCampaignCsvInWorker(await file.arrayBuffer(), controller.signal);
+      if (sequence !== csvParseSequenceRef.current || controller.signal.aborted) return;
       if (!parsed.length) throw new Error("No contacts found in the CSV.");
       setCsvFile(file);
       setLeads(parsed);
       setNotice(`${parsed.length} contacts loaded from ${file.name}.`);
     } catch (caught) {
+      if (sequence !== csvParseSequenceRef.current || controller.signal.aborted) return;
       setCsvFile(null);
       setLeads([]);
       setError(errorMessage(caught));
+    } finally {
+      if (sequence === csvParseSequenceRef.current) csvParseAbortRef.current = null;
     }
   }
 
@@ -613,7 +641,7 @@ export function CampaignShell() {
                       <Icon icon="file" className="size-6" />
                     </span>
                     <strong className="block text-base font-semibold text-slate-950">Drop CSV or choose file</strong>
-                    <span className="mt-2 block text-sm leading-6 text-slate-500">Up to 25MB. Required column: phone or phone_number. Optional: name, email, company, and custom fields.</span>
+                    <span className="mt-2 block text-sm leading-6 text-slate-500">Up to 25MB and {maxCampaignLeads.toLocaleString("en-IN")} contacts. Required column: phone or phone_number. Optional: name, email, company, and custom fields.</span>
                   </span>
                 </label>
 

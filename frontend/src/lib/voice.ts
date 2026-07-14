@@ -175,6 +175,7 @@ export type LatencyGuide = {
 export type VoiceConfigResponse = {
   configured: boolean;
   agentName: string;
+  modelCatalogReady: boolean;
   providers: { id: string; label: string; detail: string; configured: boolean }[];
   languageCatalog: VoiceLanguageOption[];
   modelCatalog: ModelCatalog;
@@ -721,6 +722,13 @@ export type AgentSummary = Pick<BackendAgent, "_id" | "name" | "team" | "status"
 const VOICE_QUERY_SCOPE = "voice";
 const voiceCacheGenerations = new Map<string, number>();
 
+function voiceSessionScope() {
+  const session = getSession();
+  return session
+    ? `${session.id}:${session.signedInAt}:${session.organization?.id ?? ""}`
+    : "";
+}
+
 function voiceCacheGeneration(dependencies: readonly string[]) {
   const generations: string[] = [];
   for (const [prefix, generation] of voiceCacheGenerations) {
@@ -776,6 +784,17 @@ function invalidateVoiceCache(...pathPrefixes: string[]) {
   });
 }
 
+async function loadVoiceConfig() {
+  const config = await cachedRequest<VoiceConfigResponse>("/config", 5 * 60_000);
+  if (config.modelCatalogReady !== true) {
+    // A cold provider fallback is useful for immediate rendering but must not
+    // become the five-minute client cache entry. The next bounded retry will
+    // make a fresh request.
+    invalidateVoiceCache("/config");
+  }
+  return config;
+}
+
 async function mutation<T>(
   path: string,
   init: RequestInit,
@@ -787,23 +806,27 @@ async function mutation<T>(
 }
 
 export const voiceApi = {
-  config: () =>
-    cachedRequest<VoiceConfigResponse>("/config", 5 * 60_000),
+  config: loadVoiceConfig,
   bootstrap: () => {
     const dependencies = ["/agents", "/config", "/agent-templates"] as const;
     const generation = voiceCacheGeneration(dependencies);
+    const sessionScope = voiceSessionScope();
     return cachedRequest<{
       agents: BackendAgent[];
       config: VoiceConfigResponse;
       templates: AgentTemplate[];
     }>("/bootstrap", 15_000, dependencies).then((result) => {
-      if (generation === voiceCacheGeneration(dependencies)) {
+      if (sessionScope && sessionScope === voiceSessionScope() && generation === voiceCacheGeneration(dependencies)) {
         seedVoiceCache("/agents", { agents: result.agents });
         seedVoiceCache(
           "/agents?view=summary",
           { agents: result.agents.map(({ _id, name, team, status, phone }) => ({ _id, name, team, status, phone })) },
         );
-        seedVoiceCache("/config", result.config);
+        if (result.config.modelCatalogReady === true) {
+          seedVoiceCache("/config", result.config);
+        } else {
+          invalidateVoiceCache("/config");
+        }
         seedVoiceCache("/agent-templates", { templates: result.templates });
       }
       return result;
@@ -817,14 +840,19 @@ export const voiceApi = {
     const path = `/agents/${encodeURIComponent(agentId)}/dashboard`;
     const dependencies = [path, "/config"] as const;
     const generation = voiceCacheGeneration(dependencies);
+    const sessionScope = voiceSessionScope();
     return cachedRequest<{ agent: BackendAgent; config: VoiceConfigResponse }>(
       path,
       15_000,
       dependencies,
     ).then((result) => {
-      if (generation === voiceCacheGeneration(dependencies)) {
+      if (sessionScope && sessionScope === voiceSessionScope() && generation === voiceCacheGeneration(dependencies)) {
         seedVoiceCache(`/agents/${encodeURIComponent(agentId)}`, { agent: result.agent });
-        seedVoiceCache("/config", result.config);
+        if (result.config.modelCatalogReady === true) {
+          seedVoiceCache("/config", result.config);
+        } else {
+          invalidateVoiceCache("/config");
+        }
       }
       return result;
     });
@@ -842,8 +870,10 @@ export const voiceApi = {
       method: "PUT",
       body: JSON.stringify(changes),
     }, ["/agents"]),
-  knowledgeSources: (agentId: string) =>
-    request<{ sources: KnowledgeSource[]; maximumSources: number }>(`/agents/${agentId}/knowledge`),
+  knowledgeSources: (agentId: string) => {
+    const path = `/agents/${agentId}/knowledge`;
+    return cachedRequest<{ sources: KnowledgeSource[]; maximumSources: number }>(path, 10_000);
+  },
   knowledgeSource: (agentId: string, sourceId: string) =>
     request<{ source: KnowledgeSource }>(`/agents/${agentId}/knowledge/${sourceId}`),
   addKnowledgeText: (agentId: string, input: { name: string; content: string }) =>
@@ -960,7 +990,7 @@ export const voiceApi = {
         ...(options.metadata ? { metadata: options.metadata } : {}),
       }),
     }),
-  campaigns: () => request<{ campaigns: BackendCampaign[] }>("/campaigns"),
+  campaigns: () => cachedRequest<{ campaigns: BackendCampaign[] }>("/campaigns", 3_000),
   campaign: (campaignId: string) => request<{ campaign: BackendCampaign }>(`/campaigns/${campaignId}`),
   createCampaign: (input: CreateCampaignInput) =>
     mutation<{ campaign: BackendCampaign }>("/campaigns", {
@@ -1066,6 +1096,7 @@ export const voiceApi = {
       maxDuration?: number;
       page?: number;
       limit?: number;
+      recent?: boolean;
     } = {},
   ) => {
     const query = new URLSearchParams();
@@ -1081,7 +1112,9 @@ export const voiceApi = {
     if (input.maxDuration) query.set("maxDuration", String(input.maxDuration));
     query.set("page", String(input.page ?? 1));
     query.set("limit", String(input.limit ?? 20));
-    return request<CallsResponse>(`/calls?${query.toString()}`).then(sanitizeCallsResponse);
+    if (input.recent) query.set("view", "recent");
+    const path = `/calls?${query.toString()}`;
+    return cachedRequest<CallsResponse>(path, 3_000).then(sanitizeCallsResponse);
   },
   call: (callId: string) =>
     request<{ call: CallRecord }>(`/calls/${callId}`).then((data) => ({

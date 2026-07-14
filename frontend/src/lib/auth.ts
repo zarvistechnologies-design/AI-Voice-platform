@@ -116,6 +116,10 @@ function saveSession(session: AuthSession) {
   cachedRawSession = null;
   resetSessionValidation();
   notifySessionChange();
+  // Login/register/refresh responses have just issued or verified this exact
+  // session. Avoid an immediate duplicate /auth/me request on navigation.
+  validatedSessionKey = validationKey(session);
+  validatedSessionAt = Date.now();
 }
 
 export async function loginWithPassword(email: string, password: string, twoFactorCode = "") {

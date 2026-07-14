@@ -143,9 +143,13 @@ export function DashboardSidebar({
   }
 
   function prefetchDashboardRoute(href: string) {
-    if (prefetchedDashboardRoutes.has(href)) return;
-    prefetchedDashboardRoutes.add(href);
-    router.prefetch(href);
+    if (!prefetchedDashboardRoutes.has(href)) {
+      prefetchedDashboardRoutes.add(href);
+      router.prefetch(href);
+    }
+    void import("@/lib/dashboardDataPrefetch")
+      .then(({ prefetchDashboardData }) => prefetchDashboardData(href))
+      .catch(() => undefined);
   }
 
   return (
@@ -154,7 +158,6 @@ export function DashboardSidebar({
         <Link
           className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#06b6c8] text-white shadow-[0_10px_22px_rgba(14,165,233,0.22)] ring-1 ring-white/10 transition hover:-translate-y-0.5"
           href="/dashboard/agents"
-          prefetch={false}
           title="Voice Platform"
           aria-label="Voice Platform"
           onClick={() => beginNavigation("/dashboard/agents")}
@@ -180,7 +183,6 @@ export function DashboardSidebar({
                     : "text-[#747b88] hover:bg-[#ecfeff] hover:text-[#008996]"
                 }`}
                 href={item.href}
-                prefetch={false}
                 key={item.label}
                 title={item.label}
                 onFocus={() => prefetchDashboardRoute(item.href)}

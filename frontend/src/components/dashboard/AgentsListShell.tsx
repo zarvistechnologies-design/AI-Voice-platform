@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -60,8 +60,9 @@ export function AgentsListShell() {
   const [editingAgent, setEditingAgent] = useState<AgentSummary | null>(null);
   const [editAgentName, setEditAgentName] = useState("");
   const [showUserSidebar, setShowUserSidebar] = useState(false);
+  const agentDataPrefetchTimersRef = useRef(new Map<string, number>());
 
-  function prefetchAgentRoute(agentId: string) {
+  function prefetchAgentRoute(agentId: string, includeData = true) {
     const href = `/dashboard/agents/${encodeURIComponent(agentId)}`;
     const prefetchKey = `${session?.id ?? ""}:${session?.signedInAt ?? ""}:${session?.organization?.id ?? ""}:${href}`;
     if (!prefetchedAgentRoutes.has(prefetchKey)) {
@@ -71,8 +72,29 @@ export function AgentsListShell() {
       prefetchedAgentRoutes.add(prefetchKey);
       router.prefetch(href);
     }
-    void voiceApi.agentDashboard(agentId).catch(() => undefined);
+    if (includeData) void voiceApi.agentDashboard(agentId).catch(() => undefined);
   }
+
+  function cancelAgentDataPrefetch(agentId: string) {
+    const timer = agentDataPrefetchTimersRef.current.get(agentId);
+    if (timer !== undefined) window.clearTimeout(timer);
+    agentDataPrefetchTimersRef.current.delete(agentId);
+  }
+
+  function scheduleAgentDataPrefetch(agentId: string) {
+    prefetchAgentRoute(agentId, false);
+    cancelAgentDataPrefetch(agentId);
+    const timer = window.setTimeout(() => {
+      agentDataPrefetchTimersRef.current.delete(agentId);
+      prefetchAgentRoute(agentId);
+    }, 120);
+    agentDataPrefetchTimersRef.current.set(agentId, timer);
+  }
+
+  useEffect(() => () => {
+    for (const timer of agentDataPrefetchTimersRef.current.values()) window.clearTimeout(timer);
+    agentDataPrefetchTimersRef.current.clear();
+  }, []);
 
   useEffect(() => {
     if (!session) {
@@ -238,8 +260,12 @@ export function AgentsListShell() {
                   href={`/dashboard/agents/${encodeURIComponent(agent._id)}`}
                   prefetch={false}
                   onFocus={() => prefetchAgentRoute(agent._id)}
-                  onMouseEnter={() => prefetchAgentRoute(agent._id)}
-                  onPointerDown={() => prefetchAgentRoute(agent._id)}
+                  onMouseEnter={() => scheduleAgentDataPrefetch(agent._id)}
+                  onMouseLeave={() => cancelAgentDataPrefetch(agent._id)}
+                  onPointerDown={() => {
+                    cancelAgentDataPrefetch(agent._id);
+                    prefetchAgentRoute(agent._id);
+                  }}
                 >
                   <strong className="app-strong block truncate text-base">{agent.name}</strong>
                   <span className="app-caption block truncate">{agent.team || "Voice team"}</span>

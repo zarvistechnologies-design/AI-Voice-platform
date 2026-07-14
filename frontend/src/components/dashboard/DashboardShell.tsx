@@ -97,6 +97,7 @@ type VoiceAgent = {
 type DashboardVoiceConfig = {
   configured: boolean;
   agentName: string;
+  modelCatalogReady: boolean;
   sip: {
     inboundConfigured: boolean;
     outboundConfigured: boolean;
@@ -2664,6 +2665,8 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   const [modelCatalog, setModelCatalog] = useState<ModelCatalog>(fallbackCatalog);
   const [languageCatalog, setLanguageCatalog] = useState<VoiceLanguageOption[]>(fallbackLanguageCatalog);
   const [voiceConfig, setVoiceConfig] = useState<DashboardVoiceConfig | null>(null);
+  const voiceConfigLoaded = voiceConfig !== null;
+  const modelCatalogReady = voiceConfig?.modelCatalogReady;
   const [recentCalls, setRecentCalls] = useState<CallRecord[]>([]);
   const [toolDraft, setToolDraft] = useState<AgentTool>(() => createEmptyToolDraft());
   const [variableDraft, setVariableDraft] = useState("");
@@ -2926,6 +2929,42 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   }, [initialAgentId, router, session]);
 
   useEffect(() => {
+    if (!session || !voiceConfigLoaded || modelCatalogReady === true) return;
+
+    let cancelled = false;
+    let retryTimer: number | undefined;
+    let attempt = 0;
+    const retryDelays = [1_500, 3_000, 6_000, 12_000, 30_000] as const;
+
+    const scheduleRetry = () => {
+      const delay = retryDelays[attempt++];
+      if (delay === undefined || cancelled) return;
+      retryTimer = window.setTimeout(() => {
+        void refreshCatalog();
+      }, delay);
+    };
+
+    const refreshCatalog = async () => {
+      try {
+        const config = await voiceApi.config();
+        if (cancelled) return;
+        setVoiceConfig(config);
+        setModelCatalog(enrichModelCatalog(config.modelCatalog));
+        setLanguageCatalog(config.languageCatalog ?? fallbackLanguageCatalog);
+        if (config.modelCatalogReady !== true) scheduleRetry();
+      } catch {
+        scheduleRetry();
+      }
+    };
+
+    scheduleRetry();
+    return () => {
+      cancelled = true;
+      if (retryTimer !== undefined) window.clearTimeout(retryTimer);
+    };
+  }, [initialAgentId, modelCatalogReady, session, voiceConfigLoaded]);
+
+  useEffect(() => {
     if (!session || !selectedAgentLoaded || !selectedAgentId || selectedAgentId === "loading" || selectedAgentId === "maya") {
       return;
     }
@@ -2958,7 +2997,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   useEffect(() => {
     if (!session || activeTab !== "calls" || !selectedAgentId || selectedAgentId === "loading" || selectedAgentId === "maya") return;
     void voiceApi
-      .calls({ agentId: selectedAgentId, limit: 5 })
+      .calls({ agentId: selectedAgentId, limit: 5, recent: true })
       .then((result) => setRecentCalls(result.calls))
       .catch(() => setRecentCalls([]));
   }, [activeTab, selectedAgentId, session]);
