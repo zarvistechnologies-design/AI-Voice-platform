@@ -122,6 +122,7 @@ type DashboardSidebarProps = {
   userName: string;
   userEmail: string;
   onLogout: () => void;
+  onBeforeNavigate?: (href: string) => boolean;
   showUserSidebar: boolean;
   setShowUserSidebar: React.Dispatch<React.SetStateAction<boolean>>;
 };
@@ -132,6 +133,7 @@ export function DashboardSidebar({
   userName,
   userEmail,
   onLogout,
+  onBeforeNavigate,
   showUserSidebar,
   setShowUserSidebar,
 }: DashboardSidebarProps) {
@@ -139,7 +141,9 @@ export function DashboardSidebar({
   const router = useRouter();
 
   function beginNavigation(href: string) {
+    if (href !== pathname && onBeforeNavigate && !onBeforeNavigate(href)) return false;
     if (href !== pathname) announceDashboardNavigation(href, pathname);
+    return true;
   }
 
   function prefetchDashboardRoute(href: string) {
@@ -160,7 +164,10 @@ export function DashboardSidebar({
           href="/dashboard/agents"
           title="Voice Platform"
           aria-label="Voice Platform"
-          onClick={() => beginNavigation("/dashboard/agents")}
+          onClick={(event) => {
+            if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+            if (!beginNavigation("/dashboard/agents")) event.preventDefault();
+          }}
           onFocus={() => prefetchDashboardRoute("/dashboard/agents")}
           onMouseEnter={() => prefetchDashboardRoute("/dashboard/agents")}
           onPointerDown={() => prefetchDashboardRoute("/dashboard/agents")}
@@ -188,8 +195,12 @@ export function DashboardSidebar({
                 onFocus={() => prefetchDashboardRoute(item.href)}
                 onMouseEnter={() => prefetchDashboardRoute(item.href)}
                 onPointerDown={() => prefetchDashboardRoute(item.href)}
-                onClick={() => {
-                  beginNavigation(item.href);
+                onClick={(event) => {
+                  if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+                  if (!beginNavigation(item.href)) {
+                    event.preventDefault();
+                    return;
+                  }
                   try {
                     localStorage.setItem("showUserSidebar", "0");
                   } catch {

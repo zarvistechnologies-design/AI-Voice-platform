@@ -75,7 +75,7 @@ export function PhoneNumberModals({
   return (
     <>
       {showImport ? (
-        <ImportNumberModal busy={busy} onClose={onCloseImport} onImport={onImport} />
+        <ImportNumberModal busy={busy} requestError={requestError} onClose={onCloseImport} onImport={onImport} />
       ) : null}
 
       {showBuy ? (
@@ -93,6 +93,7 @@ export function PhoneNumberModals({
           agents={agents}
           busy={busy}
           number={assignmentNumber}
+          requestError={requestError}
           onAssign={onAssign}
           onClose={onCloseAgent}
         />
@@ -126,8 +127,18 @@ function formatMoney(value: number | undefined, currency = "INR") {
   }
 }
 
-function ImportNumberModal({ busy, onClose, onImport }: {
+function RequestError({ message, className = "" }: { message: string; className?: string }) {
+  if (!message) return null;
+  return (
+    <div className={`rounded-lg border border-[#fecaca] bg-[#fff1f2] p-3 text-[#b91c1c] ${className}`} role="alert" aria-live="assertive">
+      <p className="app-body m-0 text-current">{message}</p>
+    </div>
+  );
+}
+
+function ImportNumberModal({ busy, requestError, onClose, onImport }: {
   busy: boolean;
+  requestError: string;
   onClose: () => void;
   onImport: (input: PhoneNumberImportInput) => void;
 }) {
@@ -143,14 +154,32 @@ function ImportNumberModal({ busy, onClose, onImport }: {
   const [dataCenter, setDataCenter] = useState<"mumbai" | "singapore">("mumbai");
   const [authId, setAuthId] = useState("");
   const [authToken, setAuthToken] = useState("");
-  const validPhone = /^\+[1-9]\d{7,14}$/.test(phoneNumber.trim());
-  const valid = validPhone && (
-    provider === "Twilio"
-      ? /^AC[0-9a-fA-F]{32}$/.test(accountSid.trim()) && /^SK[0-9a-fA-F]{32}$/.test(apiKeySid.trim()) && Boolean(apiKeySecret)
-      : provider === "Exotel"
-        ? Boolean(accountSid.trim() && exotelApiKey.trim() && exotelApiToken)
-        : /^(MA|SA)_[A-Za-z0-9]+$/.test(authId.trim()) && authToken.length >= 20
-  );
+  const normalizedPhoneNumber = phoneNumber.trim();
+  const normalizedApiKeySecret = apiKeySecret.trim();
+  const normalizedExotelApiToken = exotelApiToken.trim();
+  const normalizedAuthToken = authToken.trim();
+  const validationReason = (() => {
+    if (!normalizedPhoneNumber) return "Enter the phone number you own.";
+    if (!/^\+[1-9]\d{7,14}$/.test(normalizedPhoneNumber)) {
+      return "Use E.164 format: + followed by the country code and 7 to 15 digits.";
+    }
+    if (provider === "Twilio") {
+      if (!/^AC[0-9a-fA-F]{32}$/.test(accountSid.trim())) return "Enter a valid Twilio Account SID beginning with AC.";
+      if (!/^SK[0-9a-fA-F]{32}$/.test(apiKeySid.trim())) return "Enter a valid Twilio API Key SID beginning with SK.";
+      if (!normalizedApiKeySecret) return "Enter the Twilio API Key Secret.";
+      return "";
+    }
+    if (provider === "Exotel") {
+      if (!accountSid.trim()) return "Enter the Exotel Account SID.";
+      if (!exotelApiKey.trim()) return "Enter the Exotel API Key.";
+      if (!normalizedExotelApiToken) return "Enter the Exotel API Token.";
+      return "";
+    }
+    if (!/^(MA|SA)_[A-Za-z0-9]+$/.test(authId.trim())) return "Enter a valid Vobiz Auth ID beginning with MA_ or SA_.";
+    if (normalizedAuthToken.length < 20) return "Enter the Vobiz Auth Token (at least 20 characters).";
+    return "";
+  })();
+  const valid = !validationReason;
 
   function submit() {
     const common = { phoneNumber: phoneNumber.trim(), label: label.trim(), direction: "Both" as const };
@@ -160,7 +189,7 @@ function ImportNumberModal({ busy, onClose, onImport }: {
         provider,
         accountSid: accountSid.trim(),
         apiKeySid: apiKeySid.trim(),
-        apiKeySecret,
+        apiKeySecret: normalizedApiKeySecret,
         apiRegion,
       });
     } else if (provider === "Exotel") {
@@ -169,18 +198,19 @@ function ImportNumberModal({ busy, onClose, onImport }: {
         provider,
         accountSid: accountSid.trim(),
         apiKey: exotelApiKey.trim(),
-        apiToken: exotelApiToken,
+        apiToken: normalizedExotelApiToken,
         dataCenter,
       });
     } else {
-      onImport({ ...common, provider, authId: authId.trim(), authToken });
+      onImport({ ...common, provider, authId: authId.trim(), authToken: normalizedAuthToken });
     }
   }
 
   return (
-    <ModalFrame title="Import phone number" subtitle="Add a number from your telephony provider." onClose={onClose}>
+    <ModalFrame busy={busy} title="Import phone number" subtitle="Add a number from your telephony provider." onClose={onClose}>
       <form
         className="grid min-h-0 grid-rows-[auto_minmax(0,1fr)_auto]"
+        aria-busy={busy}
         onSubmit={(event) => {
           event.preventDefault();
           if (!valid) return;
@@ -191,6 +221,7 @@ function ImportNumberModal({ busy, onClose, onImport }: {
           {providers.map((item) => (
             <button
               className={`relative min-h-14 border-0 bg-transparent px-2 text-center transition ${provider === item.id ? "text-[#00b8c4]" : "text-[#64748b] hover:text-[#334155]"}`}
+              disabled={busy}
               key={item.id}
               onClick={() => setProvider(item.id)}
               type="button"
@@ -203,6 +234,7 @@ function ImportNumberModal({ busy, onClose, onImport }: {
         </div>
 
         <div className="grid gap-5 overflow-y-auto px-5 py-5 sm:px-6">
+          <RequestError message={requestError} />
           <div className="rounded-lg border border-[#99f6e8] bg-[#ecfeff] px-3 py-2.5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <span className="app-body text-[#1e40af]">{providers.find((item) => item.id === provider)?.description}</span>
@@ -214,6 +246,7 @@ function ImportNumberModal({ busy, onClose, onImport }: {
             Phone number
             <input
               className={controlClass}
+              disabled={busy}
               inputMode="tel"
               placeholder="+919876543210"
               value={phoneNumber}
@@ -227,7 +260,7 @@ function ImportNumberModal({ busy, onClose, onImport }: {
               <div className="grid gap-4 sm:grid-cols-2">
                 <label className="app-label grid gap-2">
                   Twilio API region
-                  <select className={controlClass} value={apiRegion} onChange={(event) => setApiRegion(event.target.value as typeof apiRegion)}>
+                  <select className={controlClass} disabled={busy} value={apiRegion} onChange={(event) => setApiRegion(event.target.value as typeof apiRegion)}>
                     <option value="us1">US1 (default)</option>
                     <option value="au1">AU1 (Australia)</option>
                     <option value="ie1">IE1 (Ireland)</option>
@@ -235,16 +268,16 @@ function ImportNumberModal({ busy, onClose, onImport }: {
                 </label>
                 <label className="app-label grid gap-2">
                   Account SID
-                  <input className={controlClass} autoComplete="off" placeholder="AC..." value={accountSid} onChange={(event) => setAccountSid(event.target.value)} />
+                  <input className={controlClass} autoComplete="off" disabled={busy} placeholder="AC..." value={accountSid} onChange={(event) => setAccountSid(event.target.value)} />
                 </label>
               </div>
               <label className="app-label grid gap-2">
                 API Key SID
-                <input className={controlClass} autoComplete="off" placeholder="SK..." value={apiKeySid} onChange={(event) => setApiKeySid(event.target.value)} />
+                <input className={controlClass} autoComplete="off" disabled={busy} placeholder="SK..." value={apiKeySid} onChange={(event) => setApiKeySid(event.target.value)} />
               </label>
               <label className="app-label grid gap-2">
                 API Key Secret
-                <input className={controlClass} autoComplete="new-password" placeholder="Twilio API Key Secret" type="password" value={apiKeySecret} onChange={(event) => setApiKeySecret(event.target.value)} />
+                <input className={controlClass} autoComplete="new-password" disabled={busy} placeholder="Twilio API Key Secret" type="password" value={apiKeySecret} onChange={(event) => setApiKeySecret(event.target.value)} />
               </label>
             </div>
           ) : null}
@@ -254,23 +287,23 @@ function ImportNumberModal({ busy, onClose, onImport }: {
               <div className="grid gap-4 sm:grid-cols-2">
                 <label className="app-label grid gap-2">
                   Exotel data center
-                  <select className={controlClass} value={dataCenter} onChange={(event) => setDataCenter(event.target.value as typeof dataCenter)}>
+                  <select className={controlClass} disabled={busy} value={dataCenter} onChange={(event) => setDataCenter(event.target.value as typeof dataCenter)}>
                     <option value="mumbai">Mumbai / India</option>
                     <option value="singapore">Singapore</option>
                   </select>
                 </label>
                 <label className="app-label grid gap-2">
                   Account SID
-                  <input className={controlClass} autoComplete="off" placeholder="Exotel Account SID" value={accountSid} onChange={(event) => setAccountSid(event.target.value)} />
+                  <input className={controlClass} autoComplete="off" disabled={busy} placeholder="Exotel Account SID" value={accountSid} onChange={(event) => setAccountSid(event.target.value)} />
                 </label>
               </div>
               <label className="app-label grid gap-2">
                 API Key
-                <input className={controlClass} autoComplete="off" placeholder="Exotel API Key" value={exotelApiKey} onChange={(event) => setExotelApiKey(event.target.value)} />
+                <input className={controlClass} autoComplete="off" disabled={busy} placeholder="Exotel API Key" value={exotelApiKey} onChange={(event) => setExotelApiKey(event.target.value)} />
               </label>
               <label className="app-label grid gap-2">
                 API Token
-                <input className={controlClass} autoComplete="new-password" placeholder="Exotel API Token" type="password" value={exotelApiToken} onChange={(event) => setExotelApiToken(event.target.value)} />
+                <input className={controlClass} autoComplete="new-password" disabled={busy} placeholder="Exotel API Token" type="password" value={exotelApiToken} onChange={(event) => setExotelApiToken(event.target.value)} />
               </label>
             </div>
           ) : null}
@@ -279,18 +312,18 @@ function ImportNumberModal({ busy, onClose, onImport }: {
             <div className="grid gap-4 rounded-xl border border-[#e5e7eb] bg-[#f8fafc] p-4">
               <label className="app-label grid gap-2">
                 Auth ID
-                <input className={controlClass} autoComplete="off" placeholder="MA_... or SA_..." value={authId} onChange={(event) => setAuthId(event.target.value)} />
+                <input className={controlClass} autoComplete="off" disabled={busy} placeholder="MA_... or SA_..." value={authId} onChange={(event) => setAuthId(event.target.value)} />
               </label>
               <label className="app-label grid gap-2">
                 Auth Token
-                <input className={controlClass} autoComplete="new-password" placeholder="Vobiz Auth Token" type="password" value={authToken} onChange={(event) => setAuthToken(event.target.value)} />
+                <input className={controlClass} autoComplete="new-password" disabled={busy} placeholder="Vobiz Auth Token" type="password" value={authToken} onChange={(event) => setAuthToken(event.target.value)} />
               </label>
             </div>
           ) : null}
 
           <label className="app-label grid gap-2">
             Label <span className="font-normal text-[#94a3b8]">(optional)</span>
-            <input className={controlClass} maxLength={120} placeholder="Support main line" value={label} onChange={(event) => setLabel(event.target.value)} />
+            <input className={controlClass} disabled={busy} maxLength={120} placeholder="Support main line" value={label} onChange={(event) => setLabel(event.target.value)} />
           </label>
 
           <div className="flex items-start gap-3 rounded-lg border border-[#e5e7eb] bg-[#f8fafc] p-3">
@@ -301,11 +334,21 @@ function ImportNumberModal({ busy, onClose, onImport }: {
                 : `${provider} credentials are used server-side to verify that the number belongs to your account and are not stored.`}
             </p>
           </div>
+
+          {validationReason ? (
+            <div className="rounded-lg border border-[#fde68a] bg-[#fffbeb] px-3 py-2.5 text-[#92400e]" id="phone-import-validation" role="status" aria-live="polite">
+              <p className="app-caption m-0 text-current">{validationReason}</p>
+            </div>
+          ) : (
+            <div className="rounded-lg border border-[#bbf7d0] bg-[#f0fdf4] px-3 py-2.5 text-[#166534]" id="phone-import-validation" role="status" aria-live="polite">
+              <p className="app-caption m-0 text-current">Details are ready to verify with {provider}.</p>
+            </div>
+          )}
         </div>
 
         <footer className="flex items-center justify-end gap-2 border-t border-[#e5e7eb] px-5 py-4 sm:px-6">
           <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button>
-          <button className={`${buttonClass} bg-[#00b8c4] text-white hover:bg-[#008996]`} disabled={busy || !valid} type="submit">
+          <button className={`${buttonClass} bg-[#00b8c4] text-white hover:bg-[#008996]`} aria-describedby="phone-import-validation" disabled={busy || !valid} type="submit">
             <Icon icon="import" /> {busy ? "Importing..." : "Import number"}
           </button>
         </footer>
@@ -367,7 +410,7 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase, onSearchInven
   }
 
   return (
-    <ModalFrame title="Buy phone number" subtitle="Purchase from your connected Vobiz account and add it to inventory." onClose={onClose} width="max-w-3xl">
+    <ModalFrame busy={busy} title="Buy phone number" subtitle="Purchase from your connected Vobiz account and add it to inventory." onClose={onClose} width="max-w-3xl">
       <div className="grid min-h-0 grid-rows-[auto_minmax(0,1fr)_auto]">
         <form
           className="grid gap-3 border-b border-[#e5e7eb] px-5 py-4 sm:grid-cols-[150px_minmax(0,1fr)_auto] sm:px-6"
@@ -451,10 +494,11 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase, onSearchInven
   );
 }
 
-function AgentModal({ agents, busy, number, onAssign, onClose }: {
+function AgentModal({ agents, busy, number, requestError, onAssign, onClose }: {
   agents: AgentSummary[];
   busy: boolean;
   number: BackendPhoneNumber;
+  requestError: string;
   onAssign: (agentId: string | null) => void;
   onClose: () => void;
 }) {
@@ -466,12 +510,13 @@ function AgentModal({ agents, busy, number, onAssign, onClose }: {
   }, [agents, query]);
 
   return (
-    <ModalFrame title="Link an agent" subtitle={`${number.number} / ${number.provider}`} onClose={onClose} width="max-w-xl">
+    <ModalFrame busy={busy} title="Link an agent" subtitle={`${number.number} / ${number.provider}`} onClose={onClose} width="max-w-xl">
       <div className="grid min-h-0 grid-rows-[auto_minmax(0,1fr)_auto]">
-        <div className="border-b border-[#e5e7eb] px-5 py-4 sm:px-6">
+        <div className="grid gap-3 border-b border-[#e5e7eb] px-5 py-4 sm:px-6">
+          <RequestError message={requestError} />
           <label className="relative block">
             <span className="absolute inset-y-0 left-3 grid place-items-center text-[#94a3b8]"><Icon icon="search" /></span>
-            <input className={`${controlClass} pl-10`} placeholder="Search agents" value={query} onChange={(event) => setQuery(event.target.value)} />
+            <input className={`${controlClass} pl-10`} disabled={busy} placeholder="Search agents" value={query} onChange={(event) => setQuery(event.target.value)} />
           </label>
         </div>
 
@@ -481,6 +526,7 @@ function AgentModal({ agents, busy, number, onAssign, onClose }: {
             return (
               <button
                 className={`mb-1 flex w-full items-center gap-3 rounded-lg border p-3 text-left transition ${selected ? "border-[#99f6e8] bg-[#ecfeff]" : "border-transparent hover:bg-[#f8fafc]"}`}
+                disabled={busy}
                 key={agent._id}
                 onClick={() => setSelectedId(agent._id)}
                 type="button"
@@ -519,7 +565,8 @@ function AgentModal({ agents, busy, number, onAssign, onClose }: {
   );
 }
 
-function ModalFrame({ children, onClose, subtitle, title, width = "max-w-2xl" }: {
+function ModalFrame({ busy = false, children, onClose, subtitle, title, width = "max-w-2xl" }: {
+  busy?: boolean;
   children: ReactNode;
   onClose: () => void;
   subtitle: string;
@@ -527,14 +574,14 @@ function ModalFrame({ children, onClose, subtitle, title, width = "max-w-2xl" }:
   width?: string;
 }) {
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-[#0f172a]/45 p-3 backdrop-blur-[2px]" role="dialog" aria-modal="true" aria-label={title} onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
+    <div className="fixed inset-0 z-50 grid place-items-center bg-[#0f172a]/45 p-3 backdrop-blur-[2px]" role="dialog" aria-modal="true" aria-label={title} aria-busy={busy} onMouseDown={(event) => { if (!busy && event.target === event.currentTarget) onClose(); }}>
       <section className={`grid max-h-[calc(100vh-24px)] w-full ${width} grid-rows-[auto_minmax(0,1fr)] overflow-hidden rounded-2xl border border-white/70 bg-white shadow-2xl`}>
         <header className="flex items-start justify-between gap-4 border-b border-[#e5e7eb] px-5 py-4 sm:px-6 sm:py-5">
           <div>
             <h2 className="app-page-title m-0">{title}</h2>
             <p className="app-caption mt-1 mb-0">{subtitle}</p>
           </div>
-          <button className="grid size-9 shrink-0 place-items-center rounded-lg border border-[#e5e7eb] bg-white text-[#64748b] transition hover:bg-[#f8fafc] hover:text-[#111827]" onClick={onClose} type="button" aria-label="Close">
+          <button className="grid size-9 shrink-0 place-items-center rounded-lg border border-[#e5e7eb] bg-white text-[#64748b] transition hover:bg-[#f8fafc] hover:text-[#111827] disabled:cursor-wait disabled:opacity-50" disabled={busy} onClick={onClose} type="button" aria-label={busy ? "Please wait for the current request to finish" : "Close"}>
             <Icon icon="close" />
           </button>
         </header>

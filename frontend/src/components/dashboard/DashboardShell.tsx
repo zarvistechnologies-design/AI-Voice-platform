@@ -2048,6 +2048,7 @@ function StackConfigurationModal({
   languageOptions,
   previewingVoice,
   saving,
+  dirty,
   onChange,
   onLanguageChange,
   onPipelineModeChange,
@@ -2062,6 +2063,7 @@ function StackConfigurationModal({
   languageOptions: SelectOption[];
   previewingVoice: string;
   saving: boolean;
+  dirty: boolean;
   onChange: (changes: Partial<VoiceAgent>) => void;
   onLanguageChange: (language: string) => void;
   onPipelineModeChange: (mode: PipelineMode) => void;
@@ -2463,12 +2465,12 @@ function StackConfigurationModal({
             Cancel
           </button>
           <button
-            className="app-button-text rounded-lg bg-[#00b8c4] px-4 py-2.5 text-white shadow-sm transition hover:bg-[#008996] disabled:cursor-wait disabled:opacity-60"
+            className="app-button-text rounded-lg bg-[#00b8c4] px-4 py-2.5 text-white shadow-sm transition hover:bg-[#008996] disabled:cursor-not-allowed disabled:opacity-60"
             type="button"
-            disabled={saving}
+            disabled={saving || !dirty}
             onClick={onSave}
           >
-            {saving ? "Saving..." : "Save changes"}
+            {saving ? "Saving..." : dirty ? "Save changes" : "Saved"}
           </button>
         </footer>
       </section>
@@ -2660,6 +2662,10 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   const [activeTab, setActiveTab] = useState<AgentTab>("builder");
   const [notice, setNotice] = useState("");
   const [saving, setSaving] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [agentLoading, setAgentLoading] = useState(true);
+  const [agentLoadError, setAgentLoadError] = useState("");
+  const [agentMutation, setAgentMutation] = useState<"" | "syncing" | "cloning" | "deleting">("");
   const [showTestCall, setShowTestCall] = useState(false);
   const [openStackConfig, setOpenStackConfig] = useState<StackConfig | null>(null);
   const [modelCatalog, setModelCatalog] = useState<ModelCatalog>(fallbackCatalog);
@@ -2681,7 +2687,10 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   const previewAudioRef = useRef<HTMLAudioElement | null>(null);
   const previewUrlRef = useRef("");
   const unsavedChangesRef = useRef(false);
+  const editRevisionRef = useRef(0);
   const savePromiseRef = useRef<Promise<boolean> | null>(null);
+  const agentMutationRef = useRef(false);
+  const renamingAgentSavingRef = useRef(false);
 
   const selectedAgent = useMemo(
     () => agentList.find((agent) => agent.id === selectedAgentId) ?? agentList[0] ?? agents[0],
@@ -2691,6 +2700,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     () => agentList.some((agent) => agent.id === selectedAgentId),
     [agentList, selectedAgentId],
   );
+  const agentMutationBusy = saving || renamingAgentSaving || Boolean(agentMutation);
   const voicePitchSupported = supportsVoicePitch(selectedAgent);
   const languageOptions = getLanguageOptions(modelCatalog, selectedAgent, languageCatalog);
   const selectedSchedule = selectedAgent.businessHours.schedule.length
@@ -2871,6 +2881,206 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   }, []);
 
   useEffect(() => {
+    const warnBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (
+        !unsavedChangesRef.current
+        && !savePromiseRef.current
+        && !agentMutationRef.current
+        && !renamingAgentSavingRef.current
+      ) return;
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", warnBeforeUnload);
+    return () => window.removeEventListener("beforeunload", warnBeforeUnload);
+  }, []);
+
+  useEffect(() => {
+    const browserNavigation = (window as unknown as {
+      navigation?: { currentEntry?: { index?: number } };
+    }).navigation;
+    const editorEntryIndex = browserNavigation?.currentEntry?.index;
+    const editorEntryStateKey = "__voiceAgentEditorEntry";
+    const forwardEntryStateKey = "__voiceAgentEditorForwardFrom";
+    type EditorHistoryState = Record<string, unknown> & {
+      [editorEntryStateKey]?: string;
+      [forwardEntryStateKey]?: string;
+    };
+    const currentState = (
+      window.history.state
+      && typeof window.history.state === "object"
+      ? window.history.state
+      : {}
+    ) as EditorHistoryState;
+    const editorEntryKey = currentState[editorEntryStateKey] ?? (
+      typeof window.crypto.randomUUID === "function"
+        ? window.crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(36).slice(2)}`
+    );
+    const editorEntryState = { ...currentState };
+    delete editorEntryState[forwardEntryStateKey];
+    window.history.replaceState(
+      { ...editorEntryState, [editorEntryStateKey]: editorEntryKey },
+      "",
+      window.location.href,
+    );
+
+    // Keep a single lineage tracker installed for this browser document. It
+    // propagates the editor key through every later pushed descendant, even
+    // after this component unmounts, so multi-entry Forward traversals remain
+    // distinguishable on browsers without the Navigation API.
+    type TrackedHistory = History & { __voiceAgentPushTracker?: History["pushState"] };
+    const trackedHistory = window.history as TrackedHistory;
+    if (trackedHistory.__voiceAgentPushTracker !== trackedHistory.pushState) {
+      const originalPushState = trackedHistory.pushState;
+      const pushTracker: History["pushState"] = function trackAgentEditorLineage(
+        data,
+        unused,
+        url,
+      ) {
+        const nextState = data && typeof data === "object" ? data as EditorHistoryState : {};
+        const activeState = (
+          trackedHistory.state && typeof trackedHistory.state === "object"
+            ? trackedHistory.state
+            : {}
+        ) as EditorHistoryState;
+        const lineage = nextState[forwardEntryStateKey]
+          ?? activeState[editorEntryStateKey]
+          ?? activeState[forwardEntryStateKey];
+        return originalPushState.call(
+          trackedHistory,
+          lineage ? { ...nextState, [forwardEntryStateKey]: lineage } : nextState,
+          unused,
+          url,
+        );
+      };
+      trackedHistory.pushState = pushTracker;
+      trackedHistory.__voiceAgentPushTracker = pushTracker;
+    }
+
+    const originalReplaceState = window.history.replaceState;
+    const taggedReplaceState: History["replaceState"] = function taggedAgentEditorReplaceState(
+      data,
+      unused,
+      url,
+    ) {
+      const nextState = (
+        data && typeof data === "object" ? data : {}
+      ) as EditorHistoryState;
+      const cleanEditorState = { ...nextState };
+      delete cleanEditorState[forwardEntryStateKey];
+      return originalReplaceState.call(
+        window.history,
+        { ...cleanEditorState, [editorEntryStateKey]: editorEntryKey },
+        unused,
+        url,
+      );
+    };
+    window.history.replaceState = taggedReplaceState;
+    let restoringStep: -1 | 0 | 1 = 0;
+    let restoringTimeout: number | undefined;
+    let walkingRestoration = false;
+
+    const clearRestoration = () => {
+      restoringStep = 0;
+      if (restoringTimeout !== undefined) window.clearTimeout(restoringTimeout);
+      restoringTimeout = undefined;
+    };
+    const armRestorationTimeout = () => {
+      if (restoringTimeout !== undefined) window.clearTimeout(restoringTimeout);
+      restoringTimeout = window.setTimeout(clearRestoration, 2_000);
+    };
+    const walkHistoryToEditor = (step: -1 | 1) => {
+      walkingRestoration = true;
+      let walkTimeout: number | undefined;
+      const cleanupWalk = () => {
+        walkingRestoration = false;
+        if (walkTimeout !== undefined) window.clearTimeout(walkTimeout);
+        window.removeEventListener("popstate", continueWalk);
+      };
+      const armWalkTimeout = () => {
+        if (walkTimeout !== undefined) window.clearTimeout(walkTimeout);
+        walkTimeout = window.setTimeout(cleanupWalk, 2_000);
+      };
+      const continueWalk = (walkEvent: PopStateEvent) => {
+        const walkState = (
+          walkEvent.state && typeof walkEvent.state === "object" ? walkEvent.state : {}
+        ) as EditorHistoryState;
+        if (walkState[editorEntryStateKey] === editorEntryKey) {
+          cleanupWalk();
+          return;
+        }
+        armWalkTimeout();
+        window.history.go(step);
+      };
+      window.addEventListener("popstate", continueWalk);
+      armWalkTimeout();
+      window.history.go(step);
+    };
+
+    const guardBrowserBack = (event: PopStateEvent) => {
+      const traversedState = (
+        event.state && typeof event.state === "object" ? event.state : {}
+      ) as EditorHistoryState;
+      const traversedEntryIndex = browserNavigation?.currentEntry?.index;
+      const reachedEditorEntry = traversedState[editorEntryStateKey] === editorEntryKey
+        || (
+          typeof editorEntryIndex === "number"
+          && typeof traversedEntryIndex === "number"
+          && editorEntryIndex === traversedEntryIndex
+        );
+      if (restoringStep) {
+        if (reachedEditorEntry) {
+          clearRestoration();
+        } else {
+          armRestorationTimeout();
+          window.history.go(restoringStep);
+        }
+        return;
+      }
+      if (walkingRestoration) return;
+      const updateInProgress = Boolean(
+        savePromiseRef.current
+        || agentMutationRef.current
+        || renamingAgentSavingRef.current,
+      );
+      if (updateInProgress) {
+        setNotice("Please wait for the current agent update to finish.");
+      }
+      const canLeave = !updateInProgress && (
+        !unsavedChangesRef.current
+        || window.confirm("Discard the unsaved agent changes and leave this page?")
+      );
+      if (!canLeave) {
+        if (
+          typeof editorEntryIndex === "number"
+          && typeof traversedEntryIndex === "number"
+        ) {
+          const restoreDelta = editorEntryIndex - traversedEntryIndex;
+          if (restoreDelta === 0) return;
+          restoringStep = restoreDelta < 0 ? -1 : 1;
+          armRestorationTimeout();
+          window.history.go(restoreDelta);
+        } else {
+          walkHistoryToEditor(
+            traversedState[forwardEntryStateKey] === editorEntryKey ? -1 : 1,
+          );
+        }
+        return;
+      }
+    };
+
+    window.addEventListener("popstate", guardBrowserBack);
+    return () => {
+      window.removeEventListener("popstate", guardBrowserBack);
+      clearRestoration();
+      if (window.history.replaceState === taggedReplaceState) {
+        window.history.replaceState = originalReplaceState;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     if (!notice) return undefined;
     const timeout = window.setTimeout(() => setNotice(""), 3000);
     return () => window.clearTimeout(timeout);
@@ -2881,7 +3091,6 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
       router.replace("/login?next=/dashboard");
       return;
     }
-
     const applyBackendAgents = (backendAgents: BackendAgent[]) => {
       const mapped = backendAgents.map(mapBackendAgent);
       setAgentList(mapped);
@@ -2912,10 +3121,12 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
       setVoiceConfig(config);
       setModelCatalog(enrichModelCatalog(config.modelCatalog));
       setLanguageCatalog(config.languageCatalog ?? fallbackLanguageCatalog);
+      setAgentLoading(false);
     })()
       .catch((error) => {
         if (cancelled) return;
-        setNotice(error instanceof Error ? error.message : "Could not load agents.");
+        setAgentLoadError(error instanceof Error ? error.message : "Could not load the agent.");
+        setAgentLoading(false);
       });
 
     const refreshTimer = window.setInterval(() => {
@@ -3002,7 +3213,28 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
       .catch(() => setRecentCalls([]));
   }, [activeTab, selectedAgentId, session]);
 
+  function beginAgentMutation(kind: "syncing" | "cloning" | "deleting") {
+    if (agentMutationRef.current || savePromiseRef.current || renamingAgentSavingRef.current) {
+      setNotice("Please wait for the current agent update to finish.");
+      return false;
+    }
+    agentMutationRef.current = true;
+    setAgentMutation(kind);
+    return true;
+  }
+
+  function finishAgentMutation() {
+    agentMutationRef.current = false;
+    setAgentMutation("");
+  }
+
   async function handleSyncPhoneRoutes() {
+    if (agentMutationRef.current || savePromiseRef.current || renamingAgentSavingRef.current) {
+      setNotice("Please wait for the current agent update to finish.");
+      return;
+    }
+    if (unsavedChangesRef.current && !(await handleSave())) return;
+    if (!beginAgentMutation("syncing")) return;
     try {
       setNotice("Syncing phone routes...");
       const response = await voiceApi.syncPhoneNumbers();
@@ -3010,67 +3242,99 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
         voiceApi.agents(),
         voiceApi.config(),
       ]);
-      setAgentList(backendAgents.map(mapBackendAgent));
+      const mappedAgents = backendAgents.map(mapBackendAgent);
+      setAgentList((current) => mappedAgents.map((serverAgent) => {
+        if (!unsavedChangesRef.current || serverAgent.id !== selectedAgent.id) return serverAgent;
+        return current.find((item) => item.id === serverAgent.id) ?? serverAgent;
+      }));
       setVoiceConfig(config);
       setNotice(
         `Synced ${response.vobiz.total} phone numbers, checked ${response.routes.total} routes, repaired ${response.routes.repaired}, needs setup ${response.routes.needsSetup}.`,
       );
     } catch (error) {
       setNotice(publicVoiceMessage(error, "Could not sync phone routes."));
+    } finally {
+      finishAgentMutation();
     }
   }
 
   function handleSave(changes: Partial<BackendAgent> = {}) {
+    if (agentMutationRef.current || renamingAgentSavingRef.current) {
+      setNotice("Please wait for the current agent update to finish.");
+      return Promise.resolve(false);
+    }
+    const hasExplicitChanges = Object.keys(changes).length > 0;
+    if (!unsavedChangesRef.current && !hasExplicitChanges) {
+      return Promise.resolve(true);
+    }
     if (savePromiseRef.current) return savePromiseRef.current;
+
+    const saveRevision = editRevisionRef.current;
+    const savingAgent = selectedAgent;
 
     const savePromise = (async () => {
       setSaving(true);
       setNotice("Saving agent...");
       try {
-        const { agent, routingWarning } = await voiceApi.saveAgent(selectedAgent.id, {
-        name: selectedAgent.name,
-        team: selectedAgent.team,
-        status: selectedAgent.status,
-        phone: selectedAgent.phone,
-        language: selectedAgent.language,
-        multilingualEnabled: selectedAgent.multilingualEnabled,
-        languageSwitchingEnabled: selectedAgent.languageSwitchingEnabled,
-        supportedLanguages: selectedAgent.supportedLanguages,
-        voice: selectedAgent.voice,
-        pipelineMode: selectedAgent.pipelineMode,
-        realtimeProvider: selectedAgent.realtimeProvider,
-        realtimeModel: selectedAgent.realtimeModel,
-        llmProvider: selectedAgent.llmProvider,
-        llmModel: selectedAgent.llmModel,
-        sttProvider: selectedAgent.sttProvider,
-        sttModel: selectedAgent.sttModel,
-        ttsProvider: selectedAgent.ttsProvider,
-        ttsModel: selectedAgent.ttsModel,
-        temperature: selectedAgent.temperature,
-        maxConcurrentCalls: selectedAgent.maxConcurrentCalls,
-        voiceSpeed: selectedAgent.voiceSpeed,
-        voicePitch: selectedAgent.voicePitch,
-        interruptionSensitivity: selectedAgent.interruptionSensitivity,
-        backgroundNoise: selectedAgent.backgroundNoise,
-        callbackEmail: selectedAgent.callbackEmail,
-        businessHoursEnabled: selectedAgent.businessHoursEnabled,
-        businessHours: selectedAgent.businessHours,
-        prompt: selectedAgent.prompt,
-        firstMessage: selectedAgent.firstMessage,
-        firstMessageMode: selectedAgent.firstMessageMode,
-        behavior: selectedAgent.behavior,
-        callSettings: selectedAgent.callSettings,
-        tools: selectedAgent.tools.map(normalizeTool),
-        knowledgeDocuments: selectedAgent.knowledgeDocuments,
-        dynamicVariables: selectedAgent.dynamicVariables,
-        prefetchWebhook: selectedAgent.prefetchWebhook,
-        endOfCallWebhook: selectedAgent.endOfCallWebhook,
-        widget: selectedAgent.widget,
-        ...changes,
-      });
+        const { agent, routingWarning } = await voiceApi.saveAgent(savingAgent.id, {
+          version: savingAgent.version,
+          name: savingAgent.name,
+          team: savingAgent.team,
+          status: savingAgent.status,
+          language: savingAgent.language,
+          multilingualEnabled: savingAgent.multilingualEnabled,
+          languageSwitchingEnabled: savingAgent.languageSwitchingEnabled,
+          supportedLanguages: savingAgent.supportedLanguages,
+          voice: savingAgent.voice,
+          pipelineMode: savingAgent.pipelineMode,
+          realtimeProvider: savingAgent.realtimeProvider,
+          realtimeModel: savingAgent.realtimeModel,
+          llmProvider: savingAgent.llmProvider,
+          llmModel: savingAgent.llmModel,
+          sttProvider: savingAgent.sttProvider,
+          sttModel: savingAgent.sttModel,
+          ttsProvider: savingAgent.ttsProvider,
+          ttsModel: savingAgent.ttsModel,
+          temperature: savingAgent.temperature,
+          maxConcurrentCalls: savingAgent.maxConcurrentCalls,
+          voiceSpeed: savingAgent.voiceSpeed,
+          voicePitch: savingAgent.voicePitch,
+          interruptionSensitivity: savingAgent.interruptionSensitivity,
+          backgroundNoise: savingAgent.backgroundNoise,
+          callbackEmail: savingAgent.callbackEmail,
+          businessHoursEnabled: savingAgent.businessHoursEnabled,
+          businessHours: savingAgent.businessHours,
+          prompt: savingAgent.prompt,
+          firstMessage: savingAgent.firstMessage,
+          firstMessageMode: savingAgent.firstMessageMode,
+          behavior: savingAgent.behavior,
+          callSettings: savingAgent.callSettings,
+          tools: savingAgent.tools.map(normalizeTool),
+          dynamicVariables: savingAgent.dynamicVariables,
+          prefetchWebhook: savingAgent.prefetchWebhook,
+          endOfCallWebhook: savingAgent.endOfCallWebhook,
+          widget: savingAgent.widget,
+          ...changes,
+        });
+
+        if (editRevisionRef.current !== saveRevision) {
+          // Preserve the user's newer local edits, but advance the server
+          // revision so the next save can pass optimistic concurrency.
+          setAgentList((current) => current.map((item) => (
+            item.id === agent._id ? { ...item, version: agent.version } : item
+          )));
+          setNotice(
+            routingWarning
+              ? `${publicVoiceMessage(routingWarning, "Agent saved, but phone routing still needs setup.")} Newer changes still need saving.`
+              : "Agent saved, but newer changes still need saving.",
+          );
+          return false;
+        }
+
         const mapped = mapBackendAgent(agent);
         setAgentList((current) => current.map((item) => (item.id === mapped.id ? mapped : item)));
         unsavedChangesRef.current = false;
+        setHasUnsavedChanges(false);
         setNotice(routingWarning ? publicVoiceMessage(routingWarning, "Agent saved, but phone routing still needs setup.") : "Agent saved.");
         return true;
       } catch (error) {
@@ -3141,25 +3405,35 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   }
 
   function updateSelectedAgent(changes: Partial<VoiceAgent>) {
+    if (agentMutationRef.current) {
+      setNotice("Please wait for the current agent update to finish.");
+      return;
+    }
+    editRevisionRef.current += 1;
     unsavedChangesRef.current = true;
+    setHasUnsavedChanges(true);
     setAgentList((current) =>
       current.map((agent) => (agent.id === selectedAgent.id ? { ...agent, ...changes } : agent)),
     );
   }
 
   function beginSelectedAgentRename() {
-    if (renamingAgentSaving) return;
+    if (renamingAgentSavingRef.current || savePromiseRef.current || agentMutationRef.current) return;
     setAgentNameDraft(selectedAgent.name);
     setShowAgentNameEditor(true);
   }
 
   function cancelAgentRename() {
-    if (renamingAgentSaving) return;
+    if (renamingAgentSavingRef.current) return;
     setAgentNameDraft("");
     setShowAgentNameEditor(false);
   }
 
   async function saveAgentName(agent: VoiceAgent) {
+    if (renamingAgentSavingRef.current || savePromiseRef.current || agentMutationRef.current) {
+      setNotice("Please wait for the current agent update to finish.");
+      return;
+    }
     const name = agentNameDraft.trim();
     if (!name) {
       setNotice("Agent name cannot be empty.");
@@ -3170,12 +3444,20 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
       return;
     }
 
+    renamingAgentSavingRef.current = true;
     setRenamingAgentSaving(true);
     setNotice("Renaming agent...");
     try {
-      const { agent: savedAgent, routingWarning } = await voiceApi.saveAgent(agent.id, { name });
+      const { agent: savedAgent, routingWarning } = await voiceApi.saveAgent(agent.id, {
+        name,
+        version: agent.version,
+      });
       setAgentList((current) =>
-        current.map((item) => (item.id === agent.id ? { ...item, name: savedAgent.name } : item)),
+        current.map((item) => (
+          item.id === agent.id
+            ? { ...item, name: savedAgent.name, version: savedAgent.version }
+            : item
+        )),
       );
       setAgentNameDraft("");
       setShowAgentNameEditor(false);
@@ -3183,6 +3465,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not rename agent.");
     } finally {
+      renamingAgentSavingRef.current = false;
       setRenamingAgentSaving(false);
     }
   }
@@ -3317,51 +3600,92 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     });
   }
 
+  function clearUnsavedChanges() {
+    editRevisionRef.current += 1;
+    unsavedChangesRef.current = false;
+    setHasUnsavedChanges(false);
+  }
+
+  function confirmLeaveAgentEditor() {
+    if (savePromiseRef.current || agentMutationRef.current || renamingAgentSavingRef.current) {
+      setNotice("Please wait for the current agent update to finish.");
+      return false;
+    }
+    if (!unsavedChangesRef.current) return true;
+    if (!window.confirm("Discard the unsaved agent changes and leave this page?")) return false;
+    return true;
+  }
+
   async function handleLogout() {
+    if (!confirmLeaveAgentEditor()) return;
     await logoutSession();
     router.replace("/login");
   }
 
-  function navigateToDashboardPage(href: string) {
+  function navigateToDashboardPage(href: string, force = false) {
+    if (!force && !confirmLeaveAgentEditor()) return;
     if (href !== window.location.pathname) {
       announceDashboardNavigation(href, window.location.pathname);
     }
     router.push(href);
   }
 
-  function navigateToAgent(agentId: string) {
+  function navigateToAgent(agentId: string, force = false) {
     const href = getAgentDashboardHref(agentId);
     if (href === window.location.pathname) return;
+    if (!force && !confirmLeaveAgentEditor()) return;
     announceDashboardNavigation(href, window.location.pathname);
     router.push(href);
   }
 
   async function handleCloneAgent() {
+    if (agentMutationRef.current || savePromiseRef.current || renamingAgentSavingRef.current) {
+      setNotice("Please wait for the current agent update to finish.");
+      return;
+    }
+    if (unsavedChangesRef.current && !(await handleSave())) return;
+    if (!beginAgentMutation("cloning")) return;
+    const cloneRevision = editRevisionRef.current;
     try {
       const { agent } = await voiceApi.cloneAgent(selectedAgent.id);
       const mapped = mapBackendAgent(agent);
-      unsavedChangesRef.current = false;
+      if (editRevisionRef.current !== cloneRevision) {
+        setAgentList((current) => [...current, mapped]);
+        setNotice("Agent cloned, but newer edits remain on this agent and still need saving.");
+        return;
+      }
+      clearUnsavedChanges();
       setAgentList((current) => [...current, mapped]);
       setSelectedAgentId(mapped.id);
-      navigateToAgent(mapped.id);
+      navigateToAgent(mapped.id, true);
       setNotice("Agent cloned as a new draft.");
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not clone agent.");
+    } finally {
+      finishAgentMutation();
     }
   }
 
   async function handleDeleteAgent() {
-    if (!window.confirm(`Delete ${selectedAgent.name}? This cannot be undone.`)) return;
+    if (agentMutationRef.current || savePromiseRef.current || renamingAgentSavingRef.current) {
+      setNotice("Please wait for the current agent update to finish.");
+      return;
+    }
+    const unsavedWarning = unsavedChangesRef.current ? " Unsaved changes will also be discarded." : "";
+    if (!window.confirm(`Delete ${selectedAgent.name}? This cannot be undone.${unsavedWarning}`)) return;
+    if (!beginAgentMutation("deleting")) return;
     try {
       await voiceApi.deleteAgent(selectedAgent.id);
-      unsavedChangesRef.current = false;
+      clearUnsavedChanges();
       const nextAgents = agentList.filter((agent) => agent.id !== selectedAgent.id);
       setAgentList(nextAgents);
       setSelectedAgentId("");
-      navigateToDashboardPage("/dashboard/agents");
+      navigateToDashboardPage("/dashboard/agents", true);
       setNotice("Agent deleted.");
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not delete agent.");
+    } finally {
+      finishAgentMutation();
     }
   }
 
@@ -3532,8 +3856,21 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
       setNotice("Paused agents cannot start test calls. Enable calls or switch the agent back to Draft/Live first.");
       return;
     }
+
+    if (!unsavedChangesRef.current) {
+      setShowTestCall(true);
+      return;
+    }
+
+    const testRevision = editRevisionRef.current;
     const saved = await handleSave();
-    if (saved) setShowTestCall(true);
+    if (
+      saved
+      && !unsavedChangesRef.current
+      && editRevisionRef.current === testRevision
+    ) {
+      setShowTestCall(true);
+    }
   }
 
   function handleSetLiveCalls(enabled: boolean) {
@@ -3620,11 +3957,29 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     setNotice("Widget key generated. Save the agent before using the embed code.");
   }
 
-  if (!session) {
+  if (!session || agentLoading) {
     return (
       <main className="app-strong grid min-h-screen place-items-center gap-3 bg-[#f8f6ff]">
         <span className="size-9 animate-spin rounded-full border-3 border-[#d5edf0] border-t-[#0891b2]" />
-        Loading voice agents
+        Loading voice agent
+      </main>
+    );
+  }
+
+  if (agentLoadError || !selectedAgentLoaded) {
+    return (
+      <main className="grid min-h-screen place-items-center bg-[#f8f6ff] px-4 text-center">
+        <section className="grid max-w-lg gap-4 rounded-xl border border-[#fecaca] bg-white p-6 shadow-sm">
+          <h1 className="app-page-title m-0">Could not load this agent</h1>
+          <p className="app-body m-0 text-[#b91c1c]">{agentLoadError || "The requested agent was not found."}</p>
+          <button
+            className="app-button-text mx-auto min-h-10 rounded-lg bg-[#00b8c4] px-4 text-white"
+            type="button"
+            onClick={() => window.location.reload()}
+          >
+            Try again
+          </button>
+        </section>
       </main>
     );
   }
@@ -3637,11 +3992,16 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
         userName={session.name}
         userEmail={session.email}
         onLogout={handleLogout}
+        onBeforeNavigate={() => confirmLeaveAgentEditor()}
         showUserSidebar={showUserSidebar}
         setShowUserSidebar={setShowUserSidebar}
       />
 
-      <section className="grid min-w-0 content-start gap-6">
+      <section
+        className="grid min-w-0 content-start gap-6"
+        aria-busy={Boolean(agentMutation)}
+        inert={agentMutation ? true : undefined}
+      >
         <header className="border-b border-[#e6edf5] bg-white px-4 py-5 shadow-[0_1px_0_rgba(15,23,42,0.02)] sm:px-6 lg:px-8">
           <div className="mx-auto grid w-full max-w-[1520px] gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
             <div className="min-w-0">
@@ -3653,7 +4013,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                   type="button"
                   aria-label={`Edit ${selectedAgent.name} name`}
                   title="Edit name"
-                  disabled={renamingAgentSaving}
+                  disabled={agentMutationBusy}
                   onClick={beginSelectedAgentRename}
                 >
                   <Icon icon="edit" />
@@ -3668,6 +4028,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
             <button
               className="app-button-text inline-flex min-h-9 items-center justify-center rounded-lg border border-[#d5d8df] bg-white px-3 text-[#334155] transition hover:bg-[#f8fafc]"
               type="button"
+              disabled={agentMutationBusy}
               onClick={() => navigateToDashboardPage("/dashboard/agents")}
             >
               Back to agents
@@ -3675,6 +4036,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
             <button
               className="app-button-text inline-flex min-h-9 items-center justify-center rounded-lg border border-[#d5d8df] bg-white px-3 text-[#334155] transition hover:bg-[#f8fafc]"
               type="button"
+              disabled={agentMutationBusy}
               onClick={() => void handleCloneAgent()}
             >
               Clone
@@ -3682,6 +4044,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
             <button
               className="app-button-text inline-flex min-h-9 items-center justify-center rounded-lg border border-[#fecdd3] bg-[#fff1f2] px-3 text-[#be123c]"
               type="button"
+              disabled={agentMutationBusy}
               onClick={() => void handleDeleteAgent()}
             >
               Delete
@@ -3689,16 +4052,17 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
             <button
               className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#99f6e8] bg-[#ecfeff] px-3 text-[#0e7490] shadow-sm"
               type="button"
-              disabled={saving}
+              disabled={agentMutationBusy || !hasUnsavedChanges}
+              title={hasUnsavedChanges ? "Save agent changes" : "Agent is already saved"}
               onClick={() => void handleSave()}
             >
               <Icon icon="save" />
-              {saving ? "Saving..." : "Save"}
+              {saving ? "Saving..." : hasUnsavedChanges ? "Save" : "Saved"}
             </button>
             <button
               className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#bbf7d0] bg-[#f0fdf4] px-3 text-[#15803d] shadow-sm"
               type="button"
-              disabled={!testCallsEnabled || saving}
+              disabled={!testCallsEnabled || agentMutationBusy}
               title={testCallsEnabled ? "Start browser test call" : "Paused agents cannot start test calls"}
               onClick={() => void handleStartTestCall()}
             >
@@ -3708,7 +4072,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
             <button
               className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border-0 bg-[#00b8c4] px-3 text-white shadow-[0_12px_28px_rgba(0,184,196,0.28)] transition hover:bg-[#008996]"
               type="button"
-              disabled={saving}
+              disabled={agentMutationBusy}
               onClick={() => {
                 updateSelectedAgent({ status: "Live" });
                 void handleSave({ status: "Live" });
@@ -3861,7 +4225,8 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                         languageCatalog={languageCatalog}
                         languageOptions={languageOptions}
                         previewingVoice={previewingVoice}
-                        saving={saving}
+                        saving={agentMutationBusy}
+                        dirty={hasUnsavedChanges}
                         onChange={updateSelectedAgent}
                         onLanguageChange={updateAgentLanguage}
                         onPipelineModeChange={updatePipelineMode}
@@ -4500,7 +4865,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                         <button
                           className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#99f6e8] bg-white px-3 text-[#00b8c4] disabled:cursor-not-allowed disabled:opacity-60"
                           type="button"
-                          disabled={!testCallsEnabled}
+                          disabled={!testCallsEnabled || agentMutationBusy}
                           onClick={() => void handleStartTestCall()}
                         >
                           <Icon icon="phone" />
@@ -4580,6 +4945,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                       <button
                         className="app-button-text min-h-10 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#00b8c4]"
                         type="button"
+                        disabled={agentMutationBusy}
                         onClick={() => void handleSyncPhoneRoutes()}
                       >
                         Sync phone routes
@@ -4587,6 +4953,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                       <button
                         className="app-button-text min-h-10 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#111827]"
                         type="button"
+                        disabled={agentMutationBusy}
                         onClick={() => navigateToDashboardPage("/dashboard/phone-number")}
                       >
                         Manage numbers

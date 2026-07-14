@@ -2,7 +2,7 @@ import { API_URL } from "@/lib/apiBase";
 import { clearSession, getAuthHeaders, getSession } from "@/lib/auth";
 import { getDashboardQueryClient } from "@/lib/dashboardQueryClient";
 
-const privateVoiceInfrastructurePattern = /(?:livekit|vapi|retell|millis(?:\.ai|ai)?|vobiz|(?:wss?|sips?):(?:\/\/)?|(?:room|dispatch|worker|participant|trunk)[ _-]?(?:name|id|sid)\b)/i;
+const privateVoiceInfrastructurePattern = /(?:livekit|vapi|retell|millis(?:\.ai|ai)?|(?:wss?|sips?):(?:\/\/)?|(?:room|dispatch|worker|participant|trunk)[ _-]?(?:name|id|sid)\b)/i;
 const genericCallFailureMessage = "Call ended before the agent could finish.";
 
 export function publicVoiceMessage(value: unknown, fallback = "Voice service request failed.") {
@@ -288,6 +288,7 @@ export type BackendPhoneNumber = {
   direction: "Inbound" | "Outbound" | "Both";
   region: string;
   status: "Ready" | "Pending" | "Needs setup";
+  lifecycle?: "active" | "deleting";
   inboundTrunkId: string;
   outboundTrunkId: string;
   dispatchRuleId: string;
@@ -717,7 +718,7 @@ async function request<T>(path: string, init: RequestInit = {}) {
   return data;
 }
 
-export type AgentSummary = Pick<BackendAgent, "_id" | "name" | "team" | "status" | "phone">;
+export type AgentSummary = Pick<BackendAgent, "_id" | "name" | "team" | "status" | "phone" | "version">;
 
 const VOICE_QUERY_SCOPE = "voice";
 const voiceCacheGenerations = new Map<string, number>();
@@ -820,7 +821,16 @@ export const voiceApi = {
         seedVoiceCache("/agents", { agents: result.agents });
         seedVoiceCache(
           "/agents?view=summary",
-          { agents: result.agents.map(({ _id, name, team, status, phone }) => ({ _id, name, team, status, phone })) },
+          {
+            agents: result.agents.map(({ _id, name, team, status, phone, version }) => ({
+              _id,
+              name,
+              team,
+              status,
+              phone,
+              version,
+            })),
+          },
         );
         if (result.config.modelCatalogReady === true) {
           seedVoiceCache("/config", result.config);

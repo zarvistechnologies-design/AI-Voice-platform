@@ -156,8 +156,15 @@ export function AgentsListShell() {
     setBusy(true);
     setNotice("");
     try {
-      const { agent } = await voiceApi.saveAgent(editingAgent._id, { name });
-      setAgents((current) => current.map((item) => (item._id === editingAgent._id ? { ...item, name: agent.name } : item)));
+      const { agent } = await voiceApi.saveAgent(editingAgent._id, {
+        name,
+        version: editingAgent.version,
+      });
+      setAgents((current) => current.map((item) => (
+        item._id === editingAgent._id
+          ? { ...item, name: agent.name, version: agent.version }
+          : item
+      )));
       setEditingAgent(null);
       setEditAgentName("");
       setNotice("Agent renamed.");

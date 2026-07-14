@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 
@@ -107,6 +107,35 @@ export function PhoneNumberShell() {
   const [showBuy, setShowBuy] = useState(false);
   const [assignmentNumber, setAssignmentNumber] = useState<BackendPhoneNumber | null>(null);
   const [showUserSidebar, setShowUserSidebar] = useState(false);
+  const busyRef = useRef(false);
+
+  function beginRequest() {
+    if (busyRef.current) return false;
+    busyRef.current = true;
+    setBusy(true);
+    return true;
+  }
+
+  function finishRequest() {
+    busyRef.current = false;
+    setBusy(false);
+  }
+
+  useEffect(() => {
+    if (!session) return undefined;
+
+    const idleCallbacks = window as unknown as {
+      requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+    if (idleCallbacks.requestIdleCallback) {
+      const idleId = idleCallbacks.requestIdleCallback(preloadPhoneNumberModals, { timeout: 1_000 });
+      return () => idleCallbacks.cancelIdleCallback?.(idleId);
+    }
+
+    const timer = window.setTimeout(preloadPhoneNumberModals, 0);
+    return () => window.clearTimeout(timer);
+  }, [session]);
 
   useEffect(() => {
     if (!session) {
@@ -129,7 +158,7 @@ export function PhoneNumberShell() {
   }
 
   async function importNumber(input: PhoneNumberImportInput) {
-    setBusy(true);
+    if (!beginRequest()) return;
     showMessage("");
     try {
       const result = await voiceApi.createPhoneNumber({ ...input, direction: "Both" });
@@ -140,13 +169,12 @@ export function PhoneNumberShell() {
     } catch (caught) {
       showMessage(errorMessage(caught), true);
     } finally {
-      setBusy(false);
+      finishRequest();
     }
   }
 
   async function assignAgent(agentId: string | null) {
-    if (!assignmentNumber) return;
-    setBusy(true);
+    if (!assignmentNumber || !beginRequest()) return;
     showMessage("");
     try {
       const result = await voiceApi.assignPhoneNumberAgent(assignmentNumber._id, agentId);
@@ -160,12 +188,12 @@ export function PhoneNumberShell() {
     } catch (caught) {
       showMessage(errorMessage(caught), true);
     } finally {
-      setBusy(false);
+      finishRequest();
     }
   }
 
   async function purchaseNumber(number: VobizNumber, label: string) {
-    setBusy(true);
+    if (!beginRequest()) return;
     showMessage("");
     try {
       const result = await voiceApi.purchasePhoneNumber({
@@ -181,12 +209,12 @@ export function PhoneNumberShell() {
     } catch (caught) {
       showMessage(errorMessage(caught), true);
     } finally {
-      setBusy(false);
+      finishRequest();
     }
   }
 
   async function repairRoutes() {
-    setBusy(true);
+    if (!beginRequest()) return;
     showMessage("");
     try {
       const result = await voiceApi.syncPhoneNumbers();
@@ -203,17 +231,20 @@ export function PhoneNumberShell() {
     } catch (caught) {
       showMessage(errorMessage(caught), true);
     } finally {
-      setBusy(false);
+      finishRequest();
     }
   }
 
   async function deleteNumber(number: BackendPhoneNumber) {
+    const deletionPending = number.lifecycle === "deleting";
     const confirmed = window.confirm(
-      `Delete ${number.number}?\n\nThis will unlink the agent, remove call routing and phone-provider assignments, and delete it from this workspace inventory.`,
+      deletionPending
+        ? `Retry deletion of ${number.number}?\n\nThe previous cleanup did not finish. This will safely resume it.`
+        : `Delete ${number.number}?\n\nThis will unlink the agent, remove call routing and phone-provider assignments, and delete it from this workspace inventory.`,
     );
     if (!confirmed) return;
 
-    setBusy(true);
+    if (!beginRequest()) return;
     showMessage("");
     try {
       const result = await voiceApi.deletePhoneNumber(number._id);
@@ -228,7 +259,7 @@ export function PhoneNumberShell() {
     } catch (caught) {
       showMessage(errorMessage(caught), true);
     } finally {
-      setBusy(false);
+      finishRequest();
     }
   }
 
@@ -269,6 +300,7 @@ export function PhoneNumberShell() {
               </button>
               <button
                 className={`${buttonClass} border border-[#99f6e8] bg-[#ecfeff] text-[#008996] hover:bg-[#ccfbf1]`}
+                disabled={busy || loading}
                 onClick={() => { setShowImport(true); showMessage(""); }}
                 onFocus={preloadPhoneNumberModals}
                 onPointerDown={preloadPhoneNumberModals}
@@ -280,6 +312,7 @@ export function PhoneNumberShell() {
               </button>
               <button
                 className={`${buttonClass} border-0 bg-[#00b8c4] text-white shadow-[0_12px_28px_rgba(0,184,196,0.28)] hover:bg-[#008996]`}
+                disabled={busy || loading}
                 onClick={() => { setShowBuy(true); showMessage(""); }}
                 onFocus={preloadPhoneNumberModals}
                 onPointerDown={preloadPhoneNumberModals}
@@ -348,10 +381,10 @@ export function PhoneNumberShell() {
                   <h3 className="app-section-title m-0">No phone numbers yet</h3>
                   <p className="app-caption mt-1 mb-4">Import from Twilio, Exotel, or Vobiz-or buy a new Vobiz number.</p>
                   <div className="flex flex-wrap justify-center gap-2">
-                    <button className={`${buttonClass} border border-[#99f6e8] bg-white text-[#00b8c4]`} onClick={() => setShowImport(true)} onFocus={preloadPhoneNumberModals} onPointerDown={preloadPhoneNumberModals} onPointerEnter={preloadPhoneNumberModals} type="button">
+                    <button className={`${buttonClass} border border-[#99f6e8] bg-white text-[#00b8c4]`} disabled={busy || loading} onClick={() => { setShowImport(true); showMessage(""); }} onFocus={preloadPhoneNumberModals} onPointerDown={preloadPhoneNumberModals} onPointerEnter={preloadPhoneNumberModals} type="button">
                       <Icon icon="import" /> Import number
                     </button>
-                    <button className={`${buttonClass} bg-[#00b8c4] text-white`} onClick={() => setShowBuy(true)} onFocus={preloadPhoneNumberModals} onPointerDown={preloadPhoneNumberModals} onPointerEnter={preloadPhoneNumberModals} type="button">
+                    <button className={`${buttonClass} bg-[#00b8c4] text-white`} disabled={busy || loading} onClick={() => { setShowBuy(true); showMessage(""); }} onFocus={preloadPhoneNumberModals} onPointerDown={preloadPhoneNumberModals} onPointerEnter={preloadPhoneNumberModals} type="button">
                       <Icon icon="plus" /> Buy number
                     </button>
                   </div>
@@ -375,9 +408,9 @@ export function PhoneNumberShell() {
           showBuy={showBuy}
           showImport={showImport}
           onAssign={(agentId) => void assignAgent(agentId)}
-          onCloseAgent={() => setAssignmentNumber(null)}
-          onCloseBuy={() => setShowBuy(false)}
-          onCloseImport={() => setShowImport(false)}
+          onCloseAgent={() => { if (!busyRef.current) setAssignmentNumber(null); }}
+          onCloseBuy={() => { if (!busyRef.current) setShowBuy(false); }}
+          onCloseImport={() => { if (!busyRef.current) setShowImport(false); }}
           onImport={(input) => void importNumber(input)}
           onPurchase={(number, label) => void purchaseNumber(number, label)}
           onSearchInventory={searchVobizInventory}
@@ -399,6 +432,7 @@ function PhoneNumberRow({
   onManage: () => void;
 }) {
   const agent = number.agentId;
+  const deletionPending = number.lifecycle === "deleting";
   return (
     <tr className="border-t border-[#edf0f4] transition hover:bg-[#fbfcfe]">
       <td className="px-5 py-4">
@@ -420,6 +454,7 @@ function PhoneNumberRow({
       <td className="px-4 py-4">
         <button
           className={`group inline-flex max-w-240px items-center gap-2 rounded-lg border px-2.5 py-2 text-left transition ${agent ? "border-[#e5e7eb] bg-[#f8fafc] hover:border-[#99f6e8] hover:bg-[#ecfeff]" : "border-dashed border-[#cbd5e1] bg-white text-[#475569] hover:border-[#00b8c4] hover:text-[#00b8c4]"}`}
+          disabled={busy || deletionPending}
           onClick={onManage}
           onFocus={preloadPhoneNumberModals}
           onPointerDown={preloadPhoneNumberModals}
@@ -429,21 +464,23 @@ function PhoneNumberRow({
           <span className={`grid size-7 shrink-0 place-items-center rounded-md ${agent ? "bg-white text-[#64748b]" : "bg-[#ecfeff] text-[#00b8c4]"}`}>
             <Icon icon={agent ? "user" : "link"} className="size-3.5" />
           </span>
-          <span className="app-strong truncate">{agent?.name ?? "Link agent"}</span>
+          <span className="app-strong truncate">{deletionPending ? "Deletion pending" : agent?.name ?? "Link agent"}</span>
           {agent ? <Icon icon="edit" className="size-3.5 text-[#94a3b8] group-hover:text-[#00b8c4]" /> : null}
         </button>
       </td>
       <td className="app-body whitespace-nowrap px-4 py-4 text-[#475569]">{number.region || "Global"}</td>
       <td className="px-4 py-4">
         <span className="app-body block whitespace-nowrap text-[#334155]">{formatDate(number.createdAt)}</span>
-        <span className={`app-caption ${number.status === "Ready" ? "text-[#059669]" : "text-[#d97706]"}`}>{number.status}</span>
+        <span className={`app-caption ${!deletionPending && number.status === "Ready" ? "text-[#059669]" : "text-[#d97706]"}`}>
+          {deletionPending ? "Deletion pending - retry" : number.status}
+        </span>
       </td>
       <td className="px-4 py-4">
         <div className="flex items-center justify-end gap-1">
-          <button className="grid size-9 place-items-center rounded-lg text-[#64748b] transition hover:bg-[#ecfeff] hover:text-[#00b8c4]" disabled={busy} onClick={onManage} onFocus={preloadPhoneNumberModals} onPointerDown={preloadPhoneNumberModals} onPointerEnter={preloadPhoneNumberModals} type="button" aria-label={`Manage ${number.number}`}>
+          <button className="grid size-9 place-items-center rounded-lg text-[#64748b] transition hover:bg-[#ecfeff] hover:text-[#00b8c4] disabled:cursor-not-allowed disabled:opacity-40" disabled={busy || deletionPending} onClick={onManage} onFocus={preloadPhoneNumberModals} onPointerDown={preloadPhoneNumberModals} onPointerEnter={preloadPhoneNumberModals} type="button" aria-label={`Manage ${number.number}`}>
             <Icon icon="edit" />
           </button>
-          <button className="grid size-9 place-items-center rounded-lg text-[#dc2626] transition hover:bg-[#fff1f2]" disabled={busy} onClick={onDelete} type="button" aria-label={`Delete ${number.number}`}>
+          <button className="grid size-9 place-items-center rounded-lg text-[#dc2626] transition hover:bg-[#fff1f2]" disabled={busy} onClick={onDelete} type="button" aria-label={`${deletionPending ? "Retry deletion of" : "Delete"} ${number.number}`}>
             <Icon icon="trash" />
           </button>
         </div>
