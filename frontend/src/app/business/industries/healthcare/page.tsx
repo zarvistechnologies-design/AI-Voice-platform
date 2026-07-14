@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 
 import { SiteLayout } from "@/components/layout/SiteLayout";
@@ -8,62 +9,65 @@ export const metadata = {
     "AI phone agents for healthcare calls, routing, IVR navigation, appointment booking, EHR integrations, pricing, and FAQs.",
 };
 
-const logos = [
-  "CAPSULE",
-  "doxy.me",
-  "rely.",
-  "gifthealth",
-  "vivian",
-  "ANALYTE HEALTH",
-  "PINE PARK HEALTH",
-  "sword",
-  "waymark",
-];
-
 const photoCards = [
   {
     title: "Healthcare Frontdesk",
-    image:
-      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=900&q=80",
+    image: "/images/healthcare/marquee-frontdesk.jpg",
   },
   {
     title: "Healthcare Back Office",
-    image:
-      "https://images.unsplash.com/photo-1581056771107-24ca5f033842?auto=format&fit=crop&w=900&q=80",
+    image: "/images/healthcare/marquee-back-office.jpg",
   },
   {
     title: "Patient Management",
-    image:
-      "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=900&q=80",
+    image: "/images/healthcare/marquee-patient-management.jpg",
   },
   {
     title: "Appointment Support",
-    image:
-      "https://images.unsplash.com/photo-1580281657527-47f249e8f4df?auto=format&fit=crop&w=900&q=80",
+    image: "/images/healthcare/marquee-appointment.jpg",
   },
 ];
 
-const reviewBenefits = [
+const healthcareCompanies = [
+  { name: "Epic", color: "#35fbe0" },
+  { name: "Cerner", color: "#9b8cff" },
+  { name: "Athenahealth", color: "#ff9f5a" },
+  { name: "DrChrono", color: "#58a6ff" },
+  { name: "Dentrix", color: "#ff6f91" },
+  { name: "Jane App", color: "#b8f65b" },
+];
+
+const reviews = [
   {
-    title: "Faster Patient Front Desk",
-    body: "Patients can ask appointment, intake, and follow-up questions without waiting through rigid phone menus.",
+    quote:
+      "Routine appointment questions are handled immediately, so our front desk can give in-person patients their full attention.",
+    name: "Aarav Mehta",
+    role: "Clinic Operations Lead",
+    metric: "Less call waiting",
   },
   {
-    title: "HIPAA-Conscious Call Handling",
-    body: "Healthcare calls stay focused on approved workflows, secure summaries, and careful routing for sensitive patient details.",
+    quote:
+      "The call summary gives our coordinators the context they need without asking patients to repeat the entire conversation.",
+    name: "Nina Thomas",
+    role: "Patient Experience Manager",
+    metric: "Clearer handoffs",
   },
   {
-    title: "Care Team Handoffs",
-    body: "Complex requests move to clinic staff with patient context, appointment notes, and the next step already organized.",
+    quote:
+      "After-hours callers still receive a calm, consistent response, and urgent requests reach the right on-call workflow.",
+    name: "Daniel Brooks",
+    role: "Healthcare Network Director",
+    metric: "24/7 coverage",
   },
 ];
 
 const workflowSections = [
   {
     eyebrow: "Call Routing",
-    title: "Seamless Routing To The Right Department",
-    button: "Check Call Transfer Feature",
+    title: "Route every call to the right department",
+    button: "Explore call routing",
     visual: "routing",
+    image: "/images/healthcare/feature-call-routing.png",
     points: [
       {
         title: "Dynamic Routing To Different Departments",
@@ -81,9 +85,10 @@ const workflowSections = [
   },
   {
     eyebrow: "Handle IVR",
-    title: "AI Agent Navigates IVR To Retrieve Clinic Information",
-    button: "Check Navigate IVR Feature",
+    title: "Navigate IVR systems and retrieve clinic information",
+    button: "Explore IVR navigation",
     visual: "ivr",
+    image: "/images/healthcare/feature-ivr-navigation.png",
     reverse: true,
     points: [
       {
@@ -98,10 +103,10 @@ const workflowSections = [
   },
   {
     eyebrow: "Patient Management",
-    title:
-      "Reliable And Efficient AI Agent For Patient Support - Including HIPAA-Compliant For Appointment Reminders",
-    button: "Check Appointment Booking Feature",
+    title: "Support patients with reliable appointment workflows",
+    button: "Explore appointment support",
     visual: "calendar",
+    image: "/images/healthcare/feature-appointment-support.png",
     points: [
       {
         title: "Seamless Appointment Booking",
@@ -137,17 +142,61 @@ const integrations = [
   "TheraNest",
 ];
 
+const integrationHighlights = [
+  {
+    label: "Scheduling",
+    title: "Keep appointments in sync",
+    body: "Check availability, create bookings, and return clear confirmation details during the call.",
+    accent: "text-[#75fff0] bg-[#35fbe0]/10 border-[#35fbe0]/20",
+    icon: "01",
+  },
+  {
+    label: "Patient systems",
+    title: "Share useful call outcomes",
+    body: "Send structured summaries and next steps into the tools your care team already checks.",
+    accent: "text-[#c5bdff] bg-[#8f83e8]/10 border-[#8f83e8]/20",
+    icon: "02",
+  },
+  {
+    label: "Custom workflows",
+    title: "Connect through APIs",
+    body: "Use supported integrations and webhooks to fit existing operational and routing processes.",
+    accent: "text-[#ffb17e] bg-[#ff9655]/10 border-[#ff9655]/20",
+    icon: "03",
+  },
+];
+
 const faqs = [
-  "What is a Voice AI Agent, and how does it improve healthcare call management?",
-  "How do voice AI agents compare to traditional IVR systems in healthcare?",
-  "Can voice AI agents support HIPAA-conscious patient workflows?",
-  "Can AI-powered voice agents handle patient appointment scheduling and follow-ups?",
-  "How do voice AI agents integrate with EHR systems like Epic and OpenDental?",
+  {
+    question: "Which healthcare calls can an AI voice agent handle?",
+    answer:
+      "It can manage common requests such as appointment booking, office information, reminders, basic FAQs, call routing, and after-hours intake while escalating sensitive cases to your team.",
+  },
+  {
+    question: "Can patients schedule, reschedule, or cancel appointments by phone?",
+    answer:
+      "Yes. The agent can check connected calendar availability, confirm patient preferences, update the booking, and send the outcome to the appropriate workflow.",
+  },
+  {
+    question: "What happens when a call is urgent or needs a staff member?",
+    answer:
+      "You can define routing and escalation rules so urgent, complex, or sensitive conversations are transferred to the correct department with a concise call summary.",
+  },
+  {
+    question: "How can patient information be handled securely?",
+    answer:
+      "Workflows can be configured to collect only necessary information, control access, and limit what appears in summaries. Your team should review each setup against its privacy and compliance requirements.",
+  },
+  {
+    question: "Will it work with our current EHR and phone tools?",
+    answer:
+      "The voice agent can connect with supported EHR, scheduling, CRM, and telephony tools through available integrations or APIs. Compatibility depends on your existing system and workflow needs.",
+  },
 ];
 
 function CheckIcon() {
   return (
-    <span className="grid size-9 shrink-0 place-items-center rounded-full border border-dashed border-[#00ADB5] bg-[#00ADB5]/10 text-sm font-bold text-[#00ADB5]">
+    <span className="grid size-8 shrink-0 place-items-center rounded-full border border-[#35fbe0]/25 bg-[#35fbe0]/10 text-xs font-bold text-[#75fff0]">
       &#10003;
     </span>
   );
@@ -155,19 +204,68 @@ function CheckIcon() {
 
 function Pill({ children }: { children: string }) {
   return (
-    <span className="inline-flex rounded-full border border-[#00ADB5]/30 bg-[#00ADB5]/10 px-4 py-2 text-sm font-medium text-[#00ADB5] shadow-sm">
+    <span className="inline-flex rounded-full border border-[#35fbe0]/25 bg-[#35fbe0]/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.08em] text-[#75fff0]">
       {children}
     </span>
   );
 }
 
-function WorkflowVisual({ type }: { type: string }) {
+function WorkflowVisual({ type, image }: { type: string; image?: string }) {
+  if (image) {
+    const callout =
+      type === "routing"
+        ? ["Smart routing", "Connected to Cardiology"]
+        : type === "ivr"
+          ? ["IVR navigation", "Clinic information retrieved"]
+          : ["Appointment support", "Visit confirmed for Tuesday"];
+    const accent =
+      type === "routing"
+        ? {
+            border: "border-[#35fbe0]/30",
+            label: "text-[#75fff0]",
+            badge: "bg-[#35fbe0] text-[#031310]",
+          }
+        : type === "ivr"
+          ? {
+              border: "border-[#ff9655]/35",
+              label: "text-[#ffb17e]",
+              badge: "bg-[#ff9655] text-[#241006]",
+            }
+          : {
+              border: "border-[#8f83e8]/35",
+              label: "text-[#c5bdff]",
+              badge: "bg-[#8f83e8] text-white",
+            };
+
+    return (
+      <div className={`group relative overflow-hidden rounded-2xl border bg-[#07100d] shadow-sm ${accent.border}`}>
+        <img
+          alt={`${callout[0]} healthcare workflow`}
+          className="block h-[390px] w-full object-cover transition duration-700 group-hover:scale-[1.025] sm:h-[410px]"
+          decoding="sync"
+          loading="lazy"
+          src={image}
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_45%,rgba(0,0,0,0.68)_100%)]" />
+        <div className="absolute inset-x-5 bottom-5 rounded-xl border border-white/10 bg-black/85 p-4 backdrop-blur-md sm:inset-x-6 sm:bottom-6">
+          <div className="flex items-center justify-between gap-5">
+            <div>
+              <p className={`text-xs font-bold uppercase tracking-[0.14em] ${accent.label}`}>{callout[0]}</p>
+              <p className="mt-2 text-base font-semibold text-white sm:text-lg">{callout[1]}</p>
+            </div>
+            <span className={`grid size-9 shrink-0 place-items-center rounded-full text-base font-bold ${accent.badge}`}>&#10003;</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const visualBackground =
     type === "routing"
-      ? "bg-[radial-gradient(circle_at_22%_18%,#ccfbf1_0,#5eead4_24%,transparent_42%),radial-gradient(circle_at_82%_26%,#00ADB5_0,#0f766e_32%,transparent_56%),linear-gradient(135deg,#111827,#1f2937_45%,#00ADB5)]"
+      ? "bg-[radial-gradient(circle_at_22%_18%,#ccfbf1_0,#5eead4_24%,transparent_42%),radial-gradient(circle_at_82%_26%,#35fbe0_0,#0f766e_32%,transparent_56%),linear-gradient(135deg,#000,#07100d_45%,#35fbe0)]"
       : type === "ivr"
-        ? "bg-[radial-gradient(circle_at_22%_18%,#ccfbf1_0,#5eead4_24%,transparent_42%),radial-gradient(circle_at_82%_26%,#00ADB5_0,#0f766e_32%,transparent_56%),linear-gradient(135deg,#111827,#1f2937_45%,#00ADB5)]"
-        : "bg-[radial-gradient(circle_at_22%_18%,#ccfbf1_0,#5eead4_24%,transparent_42%),radial-gradient(circle_at_82%_26%,#00ADB5_0,#0f766e_32%,transparent_56%),linear-gradient(135deg,#111827,#1f2937_45%,#00ADB5)]";
+        ? "bg-[radial-gradient(circle_at_22%_18%,#ccfbf1_0,#5eead4_24%,transparent_42%),radial-gradient(circle_at_82%_26%,#35fbe0_0,#0f766e_32%,transparent_56%),linear-gradient(135deg,#000,#07100d_45%,#35fbe0)]"
+        : "bg-[radial-gradient(circle_at_22%_18%,#ccfbf1_0,#5eead4_24%,transparent_42%),radial-gradient(circle_at_82%_26%,#35fbe0_0,#0f766e_32%,transparent_56%),linear-gradient(135deg,#000,#07100d_45%,#35fbe0)]";
 
   return (
     <div className={`relative min-h-[500px] overflow-hidden rounded-[24px] ${visualBackground} p-6 shadow-sm sm:p-10`}>
@@ -209,7 +307,7 @@ function WorkflowVisual({ type }: { type: string }) {
             </div>
           </div>
           <div className="absolute right-0 top-[288px] z-10 flex w-[250px] items-center gap-3 rounded-lg bg-white p-4 shadow-xl sm:right-[1%]">
-            <span className="grid size-10 shrink-0 place-items-center rounded-md bg-cyan-100 text-lg font-bold text-[#00ADB5]">
+            <span className="grid size-10 shrink-0 place-items-center rounded-md bg-cyan-100 text-lg font-bold text-[#0f766e]">
               &#9742;
             </span>
             <div>
@@ -354,60 +452,98 @@ function WorkflowVisual({ type }: { type: string }) {
 export default function HealthcarePage() {
   return (
     <SiteLayout>
-      <div className="min-h-screen bg-[linear-gradient(180deg,#111827_0%,#1f2937_48%,#111827_100%)] text-slate-50">
-        <section className="relative mx-auto grid min-h-screen max-w-7xl items-center gap-16 px-6 pb-20 pt-32 lg:grid-cols-[0.95fr_1fr] lg:px-8">
+      <div className="healthcare-page min-h-screen bg-black text-slate-50">
+        <section className="healthcare-hero-grid relative mx-auto min-h-[82vh] max-w-7xl items-center gap-12 px-6 pb-14 pt-32 lg:px-8">
           <div>
-            <div className="mb-7 text-sm font-medium text-slate-400">
-              5/5 in G2 <span className="ml-2 text-[#00ADB5]">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+            <div className="mb-7 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-slate-400">
+              <span className="size-2 rounded-full bg-[#35fbe0] shadow-[0_0_12px_rgba(53,251,224,0.8)]" />
+              Built for modern healthcare teams
             </div>
-            <h1 className="max-w-3xl text-5xl font-light leading-tight tracking-normal text-white md:text-6xl">
-              AI Phone Agents for{" "}
-              <span className="bg-gradient-to-r from-[#00ADB5] via-cyan-300 to-sky-400 bg-clip-text text-transparent">
+            <h1 className="healthcare-hero-heading max-w-3xl font-semibold text-white">
+              AI Voice Agents for{" "}
+              <span className="healthcare-heading-accent block">
                 Healthcare
               </span>
             </h1>
-            <p className="mt-8 max-w-xl text-lg leading-8 text-slate-300">
-              Streamline customer calls with fast, context-rich, and personalized
-              AI-powered call transfer options built with HIPAA compliant AI to
-              ensure patient data security.
+            <p className="mt-7 max-w-xl text-base leading-7 text-slate-300 md:text-lg md:leading-8">
+              Give patients a fast, natural way to schedule visits, get routine
+              answers, and reach the right care team—without adding more pressure
+              to your front desk.
             </p>
             <div className="mt-10 flex flex-wrap gap-3">
               <Link
-                className="inline-flex min-h-12 items-center rounded-lg bg-[#00ADB5] px-6 text-sm font-bold text-slate-950 shadow-sm transition hover:-translate-y-0.5 hover:bg-cyan-300"
+                className="healthcare-demo-button inline-flex min-h-12 items-center rounded-lg border px-7 text-sm font-black transition hover:-translate-y-0.5"
                 href="/#demo"
               >
-                TRY FOR FREE
+                BOOK A FREE DEMO
               </Link>
               <Link
-                className="inline-flex min-h-12 items-center rounded-lg border border-[#374151] bg-[#1f2937] px-6 text-sm font-bold text-slate-50 shadow-sm transition hover:-translate-y-0.5 hover:bg-[#374151]"
+                className="inline-flex min-h-12 items-center rounded-lg border border-white/15 bg-white/[0.05] px-6 text-sm font-bold text-slate-50 shadow-sm transition hover:-translate-y-0.5 hover:bg-white/10"
                 href="/#contact"
               >
                 CONTACT SALES
               </Link>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-x-8 gap-y-12 text-center text-2xl font-bold text-slate-400 lg:pl-10">
-            {logos.map((logo) => (
-              <span className="opacity-80" key={logo}>
-                {logo}
-              </span>
-            ))}
+          <div className="healthcare-hero-card relative overflow-hidden rounded-2xl border border-white/10 bg-[#07100d] shadow-[0_24px_70px_rgba(0,0,0,0.4)]">
+            <div className="relative">
+              <img
+                alt="Healthcare voice agent assisting a patient call"
+                className="healthcare-hero-image block w-full object-cover object-center"
+                decoding="sync"
+                loading="eager"
+                src="/images/healthcare/voice-agent-hero.png"
+              />
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_48%,rgba(17,24,39,0.9)_100%)]" />
+              <div className="absolute left-5 top-5 flex items-center gap-3 rounded-full border border-white/20 bg-black/80 px-4 py-2.5 backdrop-blur-md">
+                <span className="size-2.5 rounded-full bg-[#35fbe0] shadow-[0_0_12px_#35fbe0]" />
+                <span className="text-xs font-bold uppercase tracking-[0.12em]">Voice agent active</span>
+              </div>
+            </div>
           </div>
         </section>
 
-        <section className="overflow-hidden bg-[#111827] pb-28" aria-label="Healthcare use cases">
-          <div className="healthcare-marquee flex w-max gap-8">
+        <section
+          className="border-y border-white/[0.07] bg-black py-8"
+          aria-label="Healthcare platforms"
+        >
+          <div className="mx-auto flex max-w-7xl flex-col items-center gap-6 px-6 lg:px-8">
+            <p className="text-center text-xs font-bold uppercase tracking-[0.22em] text-slate-500">
+              Seamless connections across leading healthcare platforms
+            </p>
+            <div className="w-full overflow-hidden">
+              <div className="healthcare-company-marquee flex w-max items-center gap-14 py-1">
+                {[...healthcareCompanies, ...healthcareCompanies].map((company, index) => (
+                  <span
+                    aria-hidden={index >= healthcareCompanies.length}
+                    className="shrink-0 text-xl font-bold tracking-[-0.02em] md:text-2xl"
+                    key={`${company.name}-${index}`}
+                    style={{ color: company.color }}
+                  >
+                    {company.name}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="overflow-hidden bg-black py-14" aria-label="Healthcare use cases">
+          <div className="healthcare-marquee flex w-max gap-5">
             {[...photoCards, ...photoCards].map((card, index) => (
               <article
-                className="relative h-72 w-[560px] overflow-hidden rounded-lg bg-slate-200"
+                aria-hidden={index >= photoCards.length}
+                className="relative h-52 w-[380px] overflow-hidden rounded-xl border border-white/10 bg-slate-900 sm:h-56 sm:w-[430px]"
                 key={`${card.title}-${index}`}
               >
-                <div
-                  className="absolute inset-0 bg-cover bg-center"
-                  style={{ backgroundImage: `url(${card.image})` }}
+                <img
+                  alt={card.title}
+                  className="absolute inset-0 size-full object-cover object-center"
+                  loading="lazy"
+                  src={card.image}
                 />
-                <div className="absolute inset-0 bg-blue-950/10" />
-                <h2 className="absolute bottom-10 left-10 text-5xl font-light text-white">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+                <h2 className="absolute bottom-5 left-5 text-xl font-semibold tracking-[-0.02em] text-white sm:text-2xl">
                   {card.title}
                 </h2>
               </article>
@@ -415,83 +551,88 @@ export default function HealthcarePage() {
           </div>
         </section>
 
-        <section className="bg-[#1f2937]">
-          <div className="mx-auto grid max-w-7xl items-stretch gap-10 px-6 py-24 lg:grid-cols-[minmax(0,0.78fr)_minmax(0,1.22fr)] lg:px-8">
-          <div>
+        <section className="border-t border-white/[0.06] bg-black">
+          <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
             <Pill>Reviews</Pill>
-            <h2 className="mt-6 max-w-[11ch] text-5xl font-light leading-tight md:text-6xl">
-              See What Customers
-              <br />
-              Say About Us
-            </h2>
-            <div className="mt-16 grid gap-9">
-              {reviewBenefits.map((benefit) => (
-                <div className="flex gap-6" key={benefit.title}>
-                  <CheckIcon />
+            <div className="mt-6 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+              <h2 className="max-w-xl text-3xl font-semibold leading-tight tracking-[-0.02em] md:text-4xl">
+                Better conversations for patients and care teams
+              </h2>
+              <p className="max-w-lg text-base leading-7 text-slate-300">
+                Designed to make routine calls easier while keeping your staff in
+                control of sensitive and complex conversations.
+              </p>
+            </div>
+            <div className="mt-10 grid gap-4 lg:grid-cols-3">
+              {reviews.map((review, index) => (
+                <article
+                  className={`flex min-h-[275px] flex-col justify-between rounded-xl border p-6 transition duration-300 hover:-translate-y-1 ${
+                    index === 0
+                      ? "border-[#35fbe0]/25 bg-[#35fbe0]/[0.045]"
+                      : index === 1
+                        ? "border-[#8f83e8]/25 bg-[#8f83e8]/[0.045]"
+                        : "border-[#ff9655]/25 bg-[#ff9655]/[0.045]"
+                  }`}
+                  key={review.name}
+                >
                   <div>
-                    <h3 className="text-2xl font-bold">{benefit.title}</h3>
-                    <p className="mt-4 max-w-xl text-lg leading-8 text-slate-300">
-                      {benefit.body}
-                    </p>
+                    <span className="inline-flex rounded-full bg-white/[0.07] px-3 py-1.5 text-xs font-bold text-white/75">{review.metric}</span>
+                    <p className="mt-6 text-base font-medium leading-7 text-slate-100">&quot;{review.quote}&quot;</p>
                   </div>
-                </div>
+                  <div className="mt-7 border-t border-white/10 pt-4">
+                    <h3 className="font-bold text-white">{review.name}</h3>
+                    <p className="mt-1 text-sm text-slate-400">{review.role}</p>
+                  </div>
+                </article>
               ))}
             </div>
           </div>
-          <div className="grid w-full max-w-[760px] auto-rows-fr gap-7 self-center justify-self-end sm:grid-cols-2">
-            <article className="flex aspect-square h-full flex-col justify-between rounded-lg bg-[#00ADB5] p-8 text-slate-950 lg:p-9">
-              <p className="text-xl font-medium leading-8 md:text-[1.35rem] md:leading-9">
-                &quot;Our numbers show that 45-50% of calls are completely resolved by
-                the voice agent without ever touching a human.&quot;
-              </p>
-              <div className="border-t border-slate-950/20 pt-6">
-                <h3 className="text-xl font-bold md:text-2xl">Dr. Maya Patel</h3>
-                <p className="mt-1 text-slate-800">Senior Engineer, GiftHealth</p>
-              </div>
-            </article>
-            <article className="flex aspect-square h-full flex-col justify-between rounded-lg border border-dashed border-[#374151] bg-[#111827] p-8 lg:p-9">
-              <p className="text-xl font-medium leading-8 md:text-[1.35rem] md:leading-9">
-                &quot;The voice agent became our first point of contact for free users,
-                significantly relieving our customer service workload.&quot;
-              </p>
-              <div className="border-t border-[#374151] pt-6">
-                <h3 className="text-xl font-bold md:text-2xl">Sofia Reynolds</h3>
-                <p className="mt-1 text-slate-300">Product Manager at Doxy.me</p>
-              </div>
-            </article>
-          </div>
-          </div>
         </section>
 
-        <section className="bg-[#111827]">
-          <div className="mx-auto max-w-7xl px-6 py-24 lg:px-8">
-          <h2 className="max-w-5xl text-5xl font-light leading-tight md:text-6xl">
-            Enhance Patient Service And Offload Tasks With AI Phone Agents.
+        <section className="healthcare-features relative border-t border-white/[0.06] bg-black">
+          <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
+          <Pill>Healthcare features</Pill>
+          <h2 className="mt-6 max-w-3xl text-3xl font-semibold leading-tight tracking-[-0.02em] md:text-4xl">
+            Support every patient call with a clear next step
           </h2>
-          <div className="mt-20 grid gap-24">
-            {workflowSections.map((section) => (
+          <p className="mt-5 max-w-2xl text-base leading-7 text-slate-300">
+            Keep the same proven healthcare workflows, presented in a simpler and
+            more visual way for patients, front desks, and care coordinators.
+          </p>
+          <div className="mt-12 grid gap-12">
+            {workflowSections.map((section, index) => (
               <div
-                className={`grid items-center gap-14 lg:grid-cols-2 ${
-                  section.reverse ? "lg:[&>*:first-child]:order-2" : ""
+                className={`healthcare-feature-row items-center gap-10 lg:gap-14 ${
+                  index % 2 === 0 ? "feature-content-left" : "feature-image-left"
                 }`}
                 key={section.title}
               >
-                <WorkflowVisual type={section.visual} />
+                <WorkflowVisual image={section.image} type={section.visual} />
                 <div>
-                  <p className="text-sm font-bold text-[#00ADB5]">{section.eyebrow}</p>
-                  <h3 className="mt-4 max-w-xl text-3xl font-medium leading-snug">
+                  <p
+                    className={`text-xs font-bold uppercase tracking-[0.14em] ${
+                      section.visual === "routing"
+                        ? "text-[#75fff0]"
+                        : section.visual === "ivr"
+                          ? "text-[#ffb17e]"
+                          : "text-[#c5bdff]"
+                    }`}
+                  >
+                    {section.eyebrow}
+                  </p>
+                  <h3 className="mt-4 max-w-xl text-2xl font-semibold leading-snug md:text-3xl">
                     {section.title}
                   </h3>
-                  <div className="mt-8 border-t border-[#374151] pt-8">
-                    <div className="grid gap-9">
+                  <div className="mt-7 border-t border-white/10 pt-7">
+                    <div className="grid gap-6">
                       {section.points.map((point) => (
-                        <div className="flex gap-6" key={point.title}>
+                        <div className="flex gap-4" key={point.title}>
                           <CheckIcon />
                           <div>
-                            <h4 className="text-2xl font-bold leading-snug">
+                            <h4 className="text-base font-bold leading-snug">
                               {point.title}
                             </h4>
-                            <p className="mt-4 max-w-xl text-lg leading-8 text-slate-300">
+                            <p className="mt-1.5 max-w-xl text-sm leading-6 text-slate-300">
                               {point.body}
                             </p>
                           </div>
@@ -500,7 +641,13 @@ export default function HealthcarePage() {
                     </div>
                   </div>
                   <Link
-                    className="mt-10 inline-flex min-h-12 w-full items-center justify-center rounded-lg border border-[#374151] bg-[#1f2937] px-6 text-sm font-bold text-[#00ADB5] shadow-sm hover:bg-[#374151]"
+                    className={`mt-8 inline-flex min-h-11 items-center justify-center rounded-lg border px-6 text-sm font-bold transition ${
+                      section.visual === "routing"
+                        ? "border-[#35fbe0]/25 bg-[#35fbe0]/[0.06] text-[#75fff0] hover:bg-[#35fbe0]/10"
+                        : section.visual === "ivr"
+                          ? "border-[#ff9655]/25 bg-[#ff9655]/[0.06] text-[#ffb17e] hover:bg-[#ff9655]/10"
+                          : "border-[#8f83e8]/25 bg-[#8f83e8]/[0.06] text-[#c5bdff] hover:bg-[#8f83e8]/10"
+                    }`}
                     href="/#demo"
                   >
                     {section.button}
@@ -512,139 +659,181 @@ export default function HealthcarePage() {
           </div>
         </section>
 
-        <section className="bg-[#1f2937]">
-          <div className="mx-auto max-w-7xl px-6 py-24 lg:px-8">
-          <Pill>Integrations</Pill>
-          <h2 className="mt-6 text-5xl font-light leading-tight md:text-6xl">Integrate With Your EHR</h2>
-          <p className="mt-6 max-w-6xl text-lg leading-8 text-slate-300">
-            Seamless AI automation for patient scheduling, management, and provider
-            coordination powered by HIPAA compliant AI to protect sensitive data
-            across every interaction.
-          </p>
-          <div className="mt-16 overflow-hidden">
-            <div className="healthcare-integration-marquee flex w-max gap-5">
-              {[...integrations, ...integrations].map((integration, index) => (
-                <div
-                  className="flex min-h-24 w-72 shrink-0 items-center gap-4 rounded-xl border border-[#374151] bg-[#111827] px-6 shadow-sm"
-                  key={`${integration}-${index}`}
+        <section className="healthcare-integrations overflow-hidden border-t border-white/[0.06] bg-black">
+          <div className="relative mx-auto max-w-7xl px-6 pb-8 pt-20 lg:px-8">
+            <div className="grid gap-7 md:grid-cols-[minmax(0,1fr)_minmax(280px,0.65fr)] md:items-end">
+              <div>
+                <Pill>Integrations</Pill>
+                <h2 className="mt-6 text-3xl font-semibold leading-tight tracking-[-0.02em] md:text-4xl">
+                  Your healthcare stack, connected
+                </h2>
+              </div>
+              <p className="text-base leading-7 text-slate-300 md:pb-1">
+                Link scheduling, patient management, and provider coordination tools
+                while keeping every voice workflow secure and organized.
+              </p>
+            </div>
+
+            <div className="mt-9 grid gap-3 md:grid-cols-3">
+              {integrationHighlights.map((highlight) => (
+                <article
+                  className="rounded-xl border border-white/10 bg-white/[0.025] p-5"
+                  key={highlight.title}
                 >
-                  <span className="grid size-12 shrink-0 place-items-center rounded-lg bg-[#1f2937] text-sm font-bold text-[#00ADB5] shadow-sm">
-                    {integration.slice(0, 2)}
-                  </span>
-                  <strong className="text-2xl leading-tight">{integration}</strong>
-                </div>
+                  <div className="flex items-center gap-3">
+                    <span className={`grid size-9 place-items-center rounded-lg border text-[11px] font-extrabold ${highlight.accent}`}>
+                      {highlight.icon}
+                    </span>
+                    <span className="text-xs font-bold uppercase tracking-[0.1em] text-slate-400">
+                      {highlight.label}
+                    </span>
+                  </div>
+                  <h3 className="mt-4 text-base font-semibold text-white">{highlight.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-400">{highlight.body}</p>
+                </article>
               ))}
             </div>
-          </div>
-          <div className="mt-20 rounded-2xl border border-[#374151] bg-[#111827] p-10">
-            <h3 className="max-w-xl text-3xl font-bold leading-tight">
-              Don&apos;t have developer resources? Find a certified partner to help.
-            </h3>
-            <Link
-              className="mt-8 inline-flex min-h-14 items-center rounded-lg bg-[#00ADB5] px-8 text-sm font-bold tracking-[0.2em] text-slate-950 hover:bg-cyan-300"
-              href="/#contact"
-            >
-              FIND A PARTNER
-            </Link>
-          </div>
-          </div>
-        </section>
 
-        <section className="bg-[#111827]">
-          <div className="mx-auto max-w-7xl px-6 py-24 lg:px-8">
-          <Pill>Pricing</Pill>
-          <h2 className="mt-6 text-5xl font-light leading-tight md:text-6xl">
-            Cut Costs By 90% With AI Phone Agents
-          </h2>
-          <p className="mt-6 max-w-5xl text-base leading-7 text-slate-300">
-            Scalable AI phone agents at a fraction of the cost, without compromising
-            quality. Freeing your medical staff for higher-value tasks, while
-            replacing outdated workflows with modern HIPAA compliant AI tools.
-          </p>
-          <div className="mt-28 grid gap-8 rounded-[28px] border border-[#374151] bg-[#1f2937] p-8 lg:grid-cols-2">
-            <article className="p-8">
-              <h3 className="mt-10 text-2xl font-bold">Pay as you go</h3>
-              <p className="mt-4 text-slate-300">$0 to start.</p>
-              <ul className="mt-12 grid gap-6 text-lg">
-                {[
-                  "$0.07-$0.12 per minute - Pay only for what you use.",
-                  "60 mins of free access.",
-                  "20 concurrent calls.",
-                  "10 Free Knowledge Bases.",
-                ].map((item) => (
-                  <li className="flex gap-4" key={item}>
-                    <span className="grid size-5 place-items-center rounded-full bg-[#00ADB5] text-xs text-slate-950">
-                      &#10003;
+            <div className="healthcare-marquee-fade mt-9 overflow-hidden py-1">
+              <div className="healthcare-integration-marquee flex w-max gap-4">
+                {[...integrations, ...integrations].map((integration, index) => (
+                  <div
+                    aria-hidden={index >= integrations.length}
+                    className="healthcare-integration-card flex h-20 w-60 shrink-0 items-center gap-3 rounded-xl border border-[#35fbe0]/20 bg-black/80 px-4 shadow-[0_12px_35px_rgba(0,0,0,0.18)] backdrop-blur-sm"
+                    key={`${integration}-${index}`}
+                  >
+                    <span className="healthcare-integration-icon grid size-10 shrink-0 place-items-center rounded-lg bg-[#35fbe0]/10 text-xs font-extrabold uppercase text-[#75fff0]">
+                      {integration.slice(0, 2)}
                     </span>
-                    {item}
-                  </li>
+                    <strong className="text-base leading-tight text-slate-100">{integration}</strong>
+                  </div>
                 ))}
-              </ul>
-              <Link
-                className="mt-12 inline-flex min-h-12 w-full items-center justify-center rounded-lg border border-[#374151] bg-[#111827] text-sm font-bold text-[#00ADB5] hover:bg-[#374151]"
-                href="/#demo"
-              >
-                Get Started
-              </Link>
-            </article>
-            <article className="rounded-xl bg-[#00ADB5] p-10 text-slate-950">
-              <div className="grid size-12 place-items-center rounded-lg bg-slate-950 text-[#00ADB5]">
-                $
               </div>
-              <h3 className="mt-8 text-2xl font-medium">Enterprise Plan</h3>
-              <p className="mt-3 max-w-md leading-7 text-slate-800">
-                For companies with large volumes, data or deployment requirements,
-                or support needs.
-              </p>
-              <ul className="mt-10 grid gap-7 font-medium leading-7">
-                {[
-                  "White glove service for your use case.",
-                  "Premium support with dedicated solution engineer teams.",
-                  "Custom pricing and concurrent calls based on your needs",
-                ].map((item) => (
-                  <li className="flex gap-4" key={item}>
-                    <span className="grid size-5 place-items-center rounded-full bg-slate-950 text-xs text-[#00ADB5]">
-                      &#10003;
-                    </span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
+            </div>
+
+            <div className="mt-11 grid items-center gap-6 overflow-hidden rounded-2xl border border-white/10 bg-[linear-gradient(115deg,rgba(53,251,224,0.12),rgba(143,131,232,0.08)_55%,rgba(255,150,85,0.09))] p-6 sm:p-8 md:grid-cols-[auto_1fr_auto]">
+              <span className="grid size-12 place-items-center rounded-xl border border-[#35fbe0]/25 bg-black text-xl text-[#75fff0] shadow-[0_0_30px_rgba(53,251,224,0.12)]">
+                &#8644;
+              </span>
+              <div>
+                <h3 className="text-xl font-semibold leading-tight text-white">
+                  Need help connecting your systems?
+                </h3>
+                <p className="mt-2 text-sm leading-6 text-slate-300">
+                  Work with a certified partner for setup, migration, and workflow design.
+                </p>
+              </div>
               <Link
-                className="mt-12 inline-flex min-h-12 w-full items-center justify-center rounded-lg bg-slate-950 text-sm font-bold text-white"
+                className="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#35fbe0] px-6 text-sm font-extrabold text-[#031310] transition hover:-translate-y-0.5 hover:bg-[#75fff0]"
                 href="/#contact"
               >
-                Talk To Sales
+                Find a partner <span className="ml-2">&#8594;</span>
               </Link>
-            </article>
-          </div>
+            </div>
           </div>
         </section>
 
-        <section className="bg-[#1f2937]">
-          <div className="mx-auto grid max-w-7xl gap-16 px-6 py-28 lg:grid-cols-[0.8fr_1fr] lg:px-8">
-          <div>
-            <Pill>F.A.Q</Pill>
-            <h2 className="mt-6 text-5xl font-light leading-tight md:text-6xl">Questions & Answers</h2>
-            <p className="mt-6 text-slate-300">All account has a 60-minutes ($10) free trial.</p>
+        <section className="border-t border-white/[0.06] bg-black">
+          <div className="mx-auto max-w-6xl px-6 pb-0 pt-8 lg:px-8">
+            <div className="mx-auto max-w-3xl text-center">
+              <Pill>Pricing</Pill>
+              <h2 className="mt-6 text-3xl font-semibold leading-tight tracking-[-0.02em] md:text-4xl">
+                Simple plans that scale with your calls
+              </h2>
+              <p className="mt-4 text-base leading-7 text-slate-300">
+                Start with usage-based pricing, then move to a tailored plan as your
+                care team, call volume, and deployment needs grow.
+              </p>
+            </div>
+
+            <div className="mt-10 grid gap-4 lg:grid-cols-2">
+              <article className="relative overflow-hidden rounded-2xl border border-[#35fbe0]/25 bg-[#07100d] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.22)] sm:p-7">
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#35fbe0] to-transparent" />
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <span className="text-xs font-bold uppercase tracking-[0.14em] text-[#75fff0]">Start small</span>
+                    <h3 className="mt-2 text-xl font-bold">Pay as you go</h3>
+                  </div>
+                  <span className="rounded-full border border-[#35fbe0]/20 bg-[#35fbe0]/10 px-3 py-1.5 text-xs font-bold text-[#75fff0]">
+                    No setup fee
+                  </span>
+                </div>
+                <div className="mt-5 flex items-end gap-2 border-b border-white/10 pb-5">
+                  <strong className="text-3xl font-semibold tracking-[-0.04em] text-white">$0.07–$0.12</strong>
+                  <span className="pb-1 text-sm text-slate-400">per minute</span>
+                </div>
+                <ul className="mt-5 grid gap-3 text-sm leading-6 text-slate-200">
+                  {["$0 to start and pay only for usage.", "60 minutes of free access.", "20 concurrent calls.", "10 free Knowledge Bases."].map((item) => (
+                    <li className="flex items-start gap-3" key={item}>
+                      <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-[#35fbe0]/15 text-xs text-[#75fff0]">&#10003;</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  className="mt-7 inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-[#35fbe0]/30 bg-[#35fbe0]/10 text-sm font-bold text-[#75fff0] transition hover:bg-[#35fbe0]/15"
+                  href="/#demo"
+                >
+                  Get started
+                </Link>
+              </article>
+
+              <article className="relative overflow-hidden rounded-2xl border border-[#8f83e8]/30 bg-[radial-gradient(circle_at_95%_0%,rgba(143,131,232,0.22),transparent_42%),#0a0b0d] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.22)] sm:p-7">
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#8f83e8] to-transparent" />
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <span className="text-xs font-bold uppercase tracking-[0.14em] text-[#c5bdff]">For growing teams</span>
+                    <h3 className="mt-2 text-xl font-bold">Enterprise</h3>
+                  </div>
+                  <span className="rounded-full border border-[#ff9655]/25 bg-[#ff9655]/10 px-3 py-1.5 text-xs font-bold text-[#ffb17e]">
+                    Custom plan
+                  </span>
+                </div>
+                <div className="mt-5 border-b border-white/10 pb-5">
+                  <strong className="text-3xl font-semibold tracking-[-0.04em] text-white">Let&apos;s talk</strong>
+                  <p className="mt-1 text-sm text-slate-400">Built around your volume and deployment.</p>
+                </div>
+                <ul className="mt-5 grid gap-3 text-sm leading-6 text-slate-200">
+                  {["White-glove setup for your use case.", "Dedicated solutions and premium support.", "Custom concurrency, pricing, and workflows.", "Deployment guidance for larger care teams."].map((item) => (
+                    <li className="flex items-start gap-3" key={item}>
+                      <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-[#8f83e8]/15 text-xs text-[#c5bdff]">&#10003;</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  className="mt-7 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-[linear-gradient(90deg,#35fbe0,#8f83e8)] text-sm font-extrabold text-[#031310] transition hover:brightness-110"
+                  href="/#contact"
+                >
+                  Talk to sales
+                </Link>
+              </article>
+            </div>
           </div>
-          <div className="grid gap-2">
+        </section>
+
+        <section className="border-t border-white/[0.06] bg-black">
+          <div className="mx-auto max-w-4xl px-6 pb-20 pt-8 text-center lg:px-8">
+          <div className="mx-auto max-w-2xl">
+            <Pill>F.A.Q</Pill>
+            <h2 className="mt-6 text-3xl font-semibold leading-tight tracking-[-0.02em] md:text-4xl">Questions &amp; answers</h2>
+            <p className="mt-3 text-slate-300">Practical answers for planning your healthcare voice agent.</p>
+          </div>
+          <div className="mt-7 grid gap-2 text-left">
             {faqs.map((faq) => (
-              <details className="group rounded-xl border border-[#374151] bg-[#111827] p-6" key={faq}>
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-lg font-medium">
-                  {faq}
-                  <span className="text-[#00ADB5] transition group-open:rotate-180">&#8964;</span>
+              <details className="group rounded-xl border border-white/10 bg-black px-5 py-4 transition hover:bg-white/[0.02] open:border-[#35fbe0]/25 open:bg-[#35fbe0]/[0.025]" key={faq.question}>
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-medium">
+                  {faq.question}
+                  <span className="text-[#75fff0] transition group-open:rotate-180">&#8964;</span>
                 </summary>
-                <p className="mt-4 leading-7 text-slate-300">
-                  vozon.ai can automate routine healthcare calls, collect
-                  context, and hand off complex requests to your team with clear
-                  summaries and routing rules.
+                <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300">
+                  {faq.answer}
                 </p>
               </details>
             ))}
-            <p className="mt-5 text-sm text-slate-300">
+            <p className="mt-5 text-center text-sm text-slate-300">
               More questions? Visit our{" "}
-              <Link className="rounded-md bg-[#111827] px-2 py-1 font-bold text-[#00ADB5]" href="/#resources">
+              <Link className="rounded-md bg-black px-2 py-1 font-bold text-[#75fff0]" href="/#resources">
                 docs
               </Link>
             </p>
@@ -652,8 +841,132 @@ export default function HealthcarePage() {
           </div>
         </section>
 
+        <section className="bg-black px-6 pb-16 pt-4 lg:px-8">
+          <div className="healthcare-contact mx-auto flex max-w-6xl flex-col items-center justify-between gap-7 overflow-hidden rounded-[24px] border border-[#35fbe0]/35 bg-[#07100d] p-8 text-center shadow-[0_24px_70px_rgba(53,251,224,0.08)] sm:p-10 md:flex-row md:text-left">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#75fff0]">Ready to get started?</p>
+              <h2 className="mt-3 text-2xl font-semibold tracking-[-0.02em] md:text-3xl">Let&apos;s improve every patient call.</h2>
+            </div>
+            <Link
+              className="inline-flex min-h-12 shrink-0 items-center rounded-lg bg-[#35fbe0] px-7 text-sm font-bold text-[#031310] transition hover:-translate-y-0.5 hover:bg-[#75fff0]"
+              href="/#contact"
+            >
+              CONTACT US <span className="ml-3">&rarr;</span>
+            </Link>
+          </div>
+        </section>
+
       </div>
       <style>{`
+        .healthcare-page {
+          background: #000;
+        }
+
+        .healthcare-hero-grid,
+        .healthcare-feature-row {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr);
+        }
+
+        .healthcare-hero-heading {
+          font-size: clamp(3.25rem, 5.6vw, 5.2rem);
+          line-height: 0.98;
+          letter-spacing: -0.05em;
+        }
+
+        .healthcare-heading-accent {
+          color: #35fbe0;
+        }
+
+        .healthcare-demo-button {
+          border-color: rgba(117, 255, 240, 0.5);
+          background: #35fbe0;
+          color: #031310;
+          box-shadow: 0 14px 35px rgba(53, 251, 224, 0.2);
+        }
+
+        .healthcare-demo-button:hover {
+          background: #75fff0;
+        }
+
+        .healthcare-hero-card {
+          width: min(100%, 560px);
+          justify-self: center;
+          box-shadow:
+            0 24px 70px rgba(0, 0, 0, 0.45),
+            0 0 0 1px rgba(53, 251, 224, 0.08),
+            22px -18px 80px rgba(143, 131, 232, 0.1);
+        }
+
+        .healthcare-hero-image {
+          height: clamp(360px, 44vw, 440px);
+        }
+
+        .healthcare-features::before {
+          content: none;
+        }
+
+        .healthcare-features > div {
+          position: relative;
+          z-index: 1;
+        }
+
+        .healthcare-integrations {
+          background: #000;
+        }
+
+        .healthcare-marquee-fade {
+          -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+          mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+        }
+
+        @media (min-width: 1024px) {
+          .healthcare-hero-grid {
+            grid-template-columns: minmax(0, 1fr) minmax(380px, 0.82fr);
+          }
+
+          .healthcare-hero-card {
+            justify-self: end;
+          }
+
+          .healthcare-feature-row {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+
+          .healthcare-feature-row.feature-content-left > :first-child {
+            order: 2;
+          }
+
+          .healthcare-feature-row.feature-content-left > :nth-child(2) {
+            order: 1;
+          }
+        }
+
+        .healthcare-integration-card:nth-child(3n + 2) {
+          border-color: rgba(143, 131, 232, 0.3);
+        }
+
+        .healthcare-integration-card:nth-child(3n + 2) .healthcare-integration-icon {
+          background: rgba(143, 131, 232, 0.12);
+          color: #c5bdff;
+        }
+
+        .healthcare-integration-card:nth-child(3n) {
+          border-color: rgba(255, 150, 85, 0.28);
+        }
+
+        .healthcare-integration-card:nth-child(3n) .healthcare-integration-icon {
+          background: rgba(255, 150, 85, 0.11);
+          color: #ffb17e;
+        }
+
+        .healthcare-contact {
+          background:
+            radial-gradient(circle at 8% 0%, rgba(53, 251, 224, 0.22), transparent 38%),
+            radial-gradient(circle at 92% 100%, rgba(72, 219, 139, 0.16), transparent 38%),
+            #07100d;
+        }
+
         @keyframes healthcare-marquee {
           from {
             transform: translateX(0);
@@ -664,11 +977,30 @@ export default function HealthcarePage() {
         }
 
         .healthcare-marquee {
-          animation: healthcare-marquee 30s linear infinite;
+          animation: healthcare-marquee 26s linear infinite;
+          will-change: transform;
+        }
+
+        .healthcare-company-marquee {
+          animation: healthcare-marquee 22s linear infinite;
         }
 
         .healthcare-integration-marquee {
           animation: healthcare-marquee 38s linear infinite;
+        }
+
+        .healthcare-marquee:hover,
+        .healthcare-company-marquee:hover,
+        .healthcare-integration-marquee:hover {
+          animation-play-state: paused;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .healthcare-marquee,
+          .healthcare-company-marquee,
+          .healthcare-integration-marquee {
+            animation: none;
+          }
         }
       `}</style>
     </SiteLayout>
