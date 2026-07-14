@@ -794,6 +794,65 @@ export function HomePlatformSections() {
         </div>
       </section>
 
+      <section className="vozon-fit-section relative overflow-hidden px-5 py-16 sm:px-8 lg:py-20">
+        <div className="relative z-10 mx-auto max-w-[1240px]">
+          <div className="mx-auto max-w-4xl text-center">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#45ddce]/24 bg-[#45ddce]/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#75fff0]">
+              <span className="size-1.5 rounded-full bg-[#45ddce] shadow-[0_0_12px_#45ddce]" />
+              Where Vozon Fits
+            </div>
+            <h2 className="mx-auto m-0 max-w-3xl text-[2rem] font-black leading-[1.12] text-white sm:text-[2.55rem] lg:text-[3.15rem]">
+              One voice agent, every industry
+              <span className="block text-white/42">that answers a phone</span>
+            </h2>
+            <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/56 sm:text-base">
+              Support, virtual assistants, or voice-enabled hardware. The same agent adapts to how your business actually talks to people.
+            </p>
+          </div>
+
+          <div className="vozon-fit-panel mt-12">
+            <div aria-label="Vozon use cases" className="vozon-fit-tabs" role="tablist">
+              {fitSections.map((section, index) => (
+                <button
+                  aria-controls={`vozon-fit-panel-${section.key}`}
+                  aria-selected={selectedFit.key === section.key}
+                  className={`vozon-fit-tab min-w-0 px-4 py-4 text-left font-bold transition ${
+                    selectedFit.key === section.key ? "vozon-fit-tab-active text-white" : "text-white/55 hover:text-white/78"
+                  }`}
+                  id={`vozon-fit-tab-${section.key}`}
+                  key={section.key}
+                  onClick={() => setSelectedFitKey(section.key)}
+                  role="tab"
+                  type="button"
+                >
+                  <span className="vozon-fit-tab-number" aria-hidden="true">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="vozon-fit-tab-label">{section.label}</span>
+                </button>
+              ))}
+            </div>
+
+            <div
+              aria-labelledby={`vozon-fit-tab-${selectedFit.key}`}
+              className="vozon-fit-content-grid grid lg:grid-cols-3"
+              id={`vozon-fit-panel-${selectedFit.key}`}
+              role="tabpanel"
+            >
+              {selectedFit.columns.map((column, index) => (
+                <article className="vozon-fit-content min-h-[250px] px-7 py-8 sm:px-8 sm:py-9" key={column.title}>
+                  <span className="vozon-fit-index mb-7 grid size-10 place-items-center rounded-lg text-xs font-black">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <h3 className="m-0 text-xl font-black leading-tight text-white">{column.title}</h3>
+                  <p className="mt-4 mb-0 text-sm leading-7 text-white/58 sm:text-base">{column.body}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="vozon-dashboard-showcase relative overflow-hidden px-5 pb-16 pt-4 sm:px-8 sm:pt-5 lg:pb-24 lg:pt-6">
         <div className="relative z-10 mx-auto max-w-[1240px]">
           <div className="mx-auto max-w-3xl text-center">
@@ -1031,52 +1090,6 @@ export function HomePlatformSections() {
         </div>
       </section>
 
-      <section className="vozon-fit-section relative overflow-hidden px-5 py-16 sm:px-8 lg:py-20">
-        <div className="relative z-10 mx-auto max-w-[1240px]">
-          <div className="mx-auto max-w-4xl text-center">
-            <div className="mb-5 text-[11px] font-black uppercase tracking-[0.22em] text-[#45ddce]">
-              Where Vozon Fits
-            </div>
-            <h2 className="mx-auto m-0 max-w-3xl text-[2rem] font-black leading-[1.12] text-white sm:text-[2.55rem] lg:text-[3.15rem]">
-              One voice agent, every industry
-              <span className="block">that answers a phone</span>
-            </h2>
-            <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/56 sm:text-base">
-              Support, virtual assistants, or voice-enabled hardware. The same agent adapts to how your business actually talks to people.
-            </p>
-          </div>
-
-          <div className="vozon-fit-panel mt-12 grid lg:grid-cols-[285px_minmax(0,1fr)]">
-            <div className="vozon-fit-tabs border-white/10 lg:border-r">
-              {fitSections.map((section) => (
-                <button
-                  aria-pressed={selectedFit.key === section.key}
-                  className={`vozon-fit-tab w-full px-7 py-6 text-left text-lg font-bold transition ${
-                    selectedFit.key === section.key ? "vozon-fit-tab-active text-white" : "text-white/55 hover:text-white/78"
-                  }`}
-                  key={section.key}
-                  onClick={() => setSelectedFitKey(section.key)}
-                  type="button"
-                >
-                  {section.label}
-                </button>
-              ))}
-            </div>
-
-            <div className="vozon-fit-content-grid grid lg:grid-cols-3">
-              {selectedFit.columns.map((column) => (
-                <article className="vozon-fit-content min-h-[250px] border-white/10 px-8 py-8 lg:border-r lg:last:border-r-0" key={column.title}>
-                  <span className="vozon-fit-dot mb-5 block size-2 rounded-full bg-[#45ddce]" />
-                  <h3 className="m-0 text-xl font-black leading-tight text-white">{column.title}</h3>
-                  <p className="mt-5 mb-0 text-base leading-7 text-white/58">{column.body}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-
       <style>{`
         .vozon-home {
           font-family: var(--font-site-sans), ui-sans-serif, system-ui, sans-serif;
@@ -1194,20 +1207,25 @@ export function HomePlatformSections() {
         .vozon-fit-panel {
           position: relative;
           overflow: hidden;
-          border: 1px solid rgba(69,221,206,0.18);
-          border-radius: 26px;
+          border: 1px solid rgba(69,221,206,0.2);
+          border-radius: 18px;
           background:
-            radial-gradient(circle at 0% 0%, rgba(69,221,206,0.12), transparent 28%),
-            linear-gradient(135deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012)),
-            rgba(2,12,10,0.72);
+            linear-gradient(145deg, rgba(69,221,206,0.07), transparent 36%),
+            rgba(2,12,10,0.82);
           box-shadow:
             inset 0 0 0 1px rgba(255,255,255,0.025),
-            0 24px 80px rgba(0,0,0,0.22);
+            0 26px 90px rgba(0,0,0,0.28);
           backdrop-filter: blur(10px);
         }
 
         .vozon-fit-panel::before {
-          content: none;
+          content: "";
+          position: absolute;
+          top: 0;
+          right: 8%;
+          left: 8%;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, rgba(117,255,240,0.7), transparent);
         }
 
         .vozon-fit-tabs,
@@ -1218,69 +1236,88 @@ export function HomePlatformSections() {
 
         .vozon-fit-tabs {
           display: grid;
-          grid-template-rows: repeat(3, minmax(0, 1fr));
-          background: rgba(0,5,3,0.22);
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 0.5rem;
+          padding: 0.5rem;
+          border-bottom: 1px solid rgba(255,255,255,0.08);
+          background: rgba(0,5,3,0.35);
         }
 
         .vozon-fit-tab {
           position: relative;
-          min-height: 78px;
+          display: flex;
+          min-height: 66px;
+          align-items: center;
+          gap: 0.85rem;
           overflow: hidden;
+          border: 1px solid transparent;
+          border-radius: 10px;
           background: transparent;
         }
 
-        .vozon-fit-tab::before {
-          content: "";
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          height: 1px;
-          background: rgba(255,255,255,0.08);
+        .vozon-fit-tab-number {
+          display: grid;
+          width: 2rem;
+          height: 2rem;
+          flex: 0 0 auto;
+          place-items: center;
+          border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 8px;
+          background: rgba(255,255,255,0.035);
+          color: rgba(255,255,255,0.38);
+          font-size: 0.65rem;
+          transition: border-color 180ms ease, background 180ms ease, color 180ms ease;
+        }
+
+        .vozon-fit-tab-label {
+          min-width: 0;
+          font-size: 0.92rem;
+          line-height: 1.3;
         }
 
         .vozon-fit-tab-active {
           background:
-            radial-gradient(circle at 0% 50%, rgba(69,221,206,0.22), transparent 45%),
-            linear-gradient(90deg, rgba(69,221,206,0.16), rgba(72,219,139,0.07)),
+            linear-gradient(110deg, rgba(69,221,206,0.16), rgba(72,219,139,0.06)),
             rgba(255,255,255,0.035);
-          box-shadow:
-            inset 4px 0 0 #45ddce,
-            inset 0 0 34px rgba(69,221,206,0.06);
+          border-color: rgba(69,221,206,0.26);
+          box-shadow: inset 0 0 32px rgba(69,221,206,0.05);
         }
 
-        .vozon-fit-tab-active::after {
-          content: "";
-          position: absolute;
-          inset: 0;
-          pointer-events: none;
-          background: linear-gradient(90deg, rgba(69,221,206,0.1), transparent 62%);
+        .vozon-fit-tab-active .vozon-fit-tab-number {
+          border-color: rgba(117,255,240,0.38);
+          background: #45ddce;
+          color: #02110d;
+          box-shadow: 0 0 20px rgba(69,221,206,0.18);
         }
 
         .vozon-fit-content {
+          border-right: 1px solid rgba(255,255,255,0.08);
           background:
-            radial-gradient(circle at 18% 0%, rgba(69,221,206,0.1), transparent 36%),
-            linear-gradient(145deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01)),
-            rgba(2,12,10,0.38);
-          transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
+            linear-gradient(150deg, rgba(255,255,255,0.035), rgba(255,255,255,0.008)),
+            rgba(2,12,10,0.34);
+          transition: background 180ms ease, box-shadow 180ms ease;
         }
 
         .vozon-fit-content-grid {
-          gap: 1px;
-          background: rgba(117,255,240,0.1);
+          background: rgba(0,5,3,0.12);
+        }
+
+        .vozon-fit-content:last-child {
+          border-right: 0;
         }
 
         .vozon-fit-content:hover {
-          transform: translateY(-2px);
           background:
-            radial-gradient(circle at 18% 0%, rgba(69,221,206,0.16), transparent 40%),
-            linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.016)),
-            rgba(2,12,10,0.5);
-          box-shadow: inset 0 0 30px rgba(69,221,206,0.035);
+            linear-gradient(150deg, rgba(69,221,206,0.08), rgba(255,255,255,0.012)),
+            rgba(2,12,10,0.48);
+          box-shadow: inset 0 1px 0 rgba(117,255,240,0.12);
         }
 
-        .vozon-fit-dot {
-          box-shadow: 0 0 18px rgba(69,221,206,0.78);
+        .vozon-fit-index {
+          border: 1px solid rgba(69,221,206,0.25);
+          background: rgba(69,221,206,0.08);
+          color: #75fff0;
+          box-shadow: inset 0 0 18px rgba(69,221,206,0.04);
         }
 
         .vozon-company-marquee-section {
@@ -2522,23 +2559,22 @@ export function HomePlatformSections() {
           }
 
           .vozon-fit-tabs {
-            display: grid;
             grid-template-columns: 1fr;
+            gap: 0.35rem;
           }
 
           .vozon-fit-tab {
-            min-height: 58px;
-            padding: 1rem 1.25rem;
+            min-height: 54px;
+            padding: 0.65rem 0.8rem;
           }
 
           .vozon-fit-tab-active {
-            box-shadow:
-              inset 0 3px 0 #45ddce,
-              inset 0 0 28px rgba(69,221,206,0.06);
+            box-shadow: inset 0 0 28px rgba(69,221,206,0.06);
           }
 
           .vozon-fit-content {
             min-height: auto;
+            border-right: 0;
             border-top: 1px solid rgba(255,255,255,0.08);
             padding: 1.4rem 1.25rem;
           }
