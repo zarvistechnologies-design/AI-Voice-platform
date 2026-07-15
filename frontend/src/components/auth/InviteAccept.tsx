@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { getSession } from "@/lib/auth";
+import { getSession, refreshStoredSession } from "@/lib/auth";
 import { organizationApi } from "@/lib/organizations";
 
 export function InviteAccept({ token }: { token: string }) {
@@ -17,7 +17,8 @@ export function InviteAccept({ token }: { token: string }) {
     }
     void organizationApi
       .acceptInvitation(token)
-      .then(() => {
+      .then(async () => {
+        await refreshStoredSession();
         setMessage("Invitation accepted. Opening your new workspace...");
         router.replace("/dashboard");
       })

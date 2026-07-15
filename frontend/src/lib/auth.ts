@@ -357,6 +357,12 @@ export async function logoutSession() {
   }
 }
 
+export async function refreshStoredSession() {
+  const session = await requestAuth("/api/auth/refresh", { method: "POST" });
+  saveSession(session);
+  return session;
+}
+
 async function accountRequest<T>(path: string, init: RequestInit = {}) {
   const response = await fetch(`${API_URL}/api/auth${path}`, {
     ...init,
@@ -376,7 +382,7 @@ export const accountApi = {
   verifyEmail: (token: string) =>
     accountRequest<Record<string, never>>("/verify-email", { method: "POST", body: JSON.stringify({ token }) }),
   resendVerification: () => accountRequest<{ sent: boolean; verificationUrl?: string }>("/resend-verification", { method: "POST" }),
-  refresh: () => accountRequest<AuthResponse>("/refresh", { method: "POST" }),
+  refresh: refreshStoredSession,
   changePassword: (currentPassword: string, password: string) =>
     accountRequest<Record<string, never>>("/change-password", { method: "POST", body: JSON.stringify({ currentPassword, password }) }),
   sessions: () => accountRequest<{ sessions: { _id: string; device: string; ip: string; lastSeenAt: string; expiresAt: string; current: boolean }[] }>("/sessions"),

@@ -102,7 +102,10 @@ export const organizationApi = {
         "/current/members",
       )),
   invite: async (email: string, role: Exclude<OrganizationRole, "owner">) => {
-    const result = await request<{ invitation: OrganizationInvitation }>("/current/invitations", {
+    const result = await request<{
+      invitation: OrganizationInvitation;
+      emailDeliveryStatus: "sent" | "preview" | "failed";
+    }>("/current/invitations", {
       method: "POST",
       body: JSON.stringify({ email, role }),
     });

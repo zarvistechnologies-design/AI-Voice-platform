@@ -45,7 +45,7 @@ function txLabel(transaction: BillingTransaction) {
 }
 
 function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <article className={`rounded-2xl border border-slate-200 bg-white shadow-sm ${className}`}>{children}</article>;
+  return <article className={`rounded-2xl border border-white/10 bg-[#07110f] shadow-[0_16px_38px_rgba(0,0,0,0.28)] ${className}`}>{children}</article>;
 }
 
 function Metric({ label, value, detail, tone = "sky" }: { label: string; value: string; detail: string; tone?: "sky" | "emerald" | "amber" | "slate" }) {
@@ -168,10 +168,10 @@ export function BillingShell() {
     }
   }
 
-  if (!session) return <main className="grid min-h-screen place-items-center bg-slate-50 text-sm font-semibold">Loading billing</main>;
+  if (!session) return <main className="grid min-h-screen place-items-center bg-black text-sm font-semibold text-white/60">Loading billing</main>;
 
   return (
-    <main className={`grid min-h-screen bg-[#f4f7fb] text-slate-950 ${
+    <main className={`dashboard-home-theme grid min-h-screen bg-black text-white ${
       showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
     }`}>
       <DashboardSidebar
@@ -185,7 +185,7 @@ export function BillingShell() {
       />
       <section className="min-w-0 p-4">
         <div className="mx-auto grid max-w-[1500px] gap-6">
-          <header className="border-b border-[#99f6e8] bg-white pb-4">
+          <header className="border-b border-[#45ddce]/24 bg-[#07110f] pb-4">
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
               <div>
                 <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#00b8c4]">Pay per use</span>
@@ -193,10 +193,10 @@ export function BillingShell() {
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Top up once, run calls, and see every provider charge broken down by LLM, STT, TTS, and carrier usage.</p>
               </div>
               <div className="flex gap-2">
-              <button className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50" type="button" onClick={() => void load()} disabled={Boolean(busy)}>
+              <button className="rounded-xl border border-white/10 bg-[#061b18] px-4 py-2.5 text-sm font-semibold text-white/70 shadow-sm hover:bg-white/[0.08] hover:text-white" type="button" onClick={() => void load()} disabled={Boolean(busy)}>
                 Refresh
               </button>
-              <button className="rounded-xl bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-cyan-500/20 hover:bg-cyan-600" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup"}>
+              <button className="rounded-xl bg-[#45ddce] px-4 py-2.5 text-sm font-semibold text-[#02110d] shadow-[0_12px_28px_rgba(69,221,206,0.20)] hover:bg-[#75fff0]" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup"}>
                 Buy ${selectedTopUp}
               </button>
               </div>
@@ -208,10 +208,10 @@ export function BillingShell() {
 
           <section className="grid gap-4 xl:grid-cols-[1.25fr_0.75fr]">
             <Card className="overflow-hidden">
-              <div className="grid gap-6 bg-gradient-to-br from-white via-cyan-50 to-cyan-50 p-5 md:grid-cols-[minmax(0,1fr)_320px] md:p-6">
+              <div className="grid gap-6 bg-[radial-gradient(circle_at_8%_0%,rgba(69,221,206,0.11),transparent_40%),linear-gradient(135deg,#07110f_0%,#061b18_100%)] p-5 md:grid-cols-[minmax(0,1fr)_320px] md:p-6">
                 <div className="grid content-between gap-6">
                   <div>
-                    <span className="inline-flex rounded-full bg-white px-3 py-1 text-xs font-semibold text-cyan-700 shadow-sm ring-1 ring-cyan-100">Wallet balance</span>
+                    <span className="inline-flex rounded-full bg-[#45ddce]/10 px-3 py-1 text-xs font-semibold text-[#75fff0] shadow-sm ring-1 ring-[#45ddce]/24">Wallet balance</span>
                     <h2 className="mt-5 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">{money(balance, currency)}</h2>
                     <p className="mt-3 max-w-xl text-sm leading-6 text-slate-600">Calls start only when the wallet has the minimum required balance. Each completed call writes a ledger debit with provider-level detail.</p>
                   </div>
@@ -220,18 +220,18 @@ export function BillingShell() {
                       <span>{money(balance, currency)} available</span>
                       <span>{money(lifetime, currency)} lifetime credits</span>
                     </div>
-                    <div className="h-3 overflow-hidden rounded-full bg-white shadow-inner ring-1 ring-slate-200">
+                    <div className="h-3 overflow-hidden rounded-full bg-white/10 shadow-inner ring-1 ring-white/10">
                       <div className="h-full rounded-full bg-gradient-to-r from-cyan-500 via-cyan-500 to-cyan-400" style={{ width: `${progress}%` }} />
                     </div>
                   </div>
                 </div>
 
-                <div className="grid gap-3 rounded-2xl border border-white/70 bg-white/80 p-4 shadow-sm backdrop-blur">
+                <div className="grid gap-3 rounded-2xl border border-white/10 bg-black/20 p-4 shadow-sm backdrop-blur">
                   <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">Quick top-up</span>
                   <div className="grid grid-cols-2 gap-2">
                     {topUpOptions.map((amount) => (
                       <button
-                        className={`min-h-12 rounded-xl border px-3 text-sm font-semibold transition ${selectedTopUp === amount ? "border-cyan-500 bg-cyan-500 text-white shadow-lg shadow-cyan-500/20" : "border-slate-200 bg-white text-slate-700 hover:border-cyan-300 hover:bg-cyan-50"}`}
+                        className={`min-h-12 rounded-xl border px-3 text-sm font-semibold transition ${selectedTopUp === amount ? "border-[#45ddce]/35 bg-[#45ddce] text-[#02110d] shadow-[0_10px_24px_rgba(69,221,206,0.18)]" : "border-white/10 bg-[#07110f] text-white/70 hover:border-[#45ddce]/35 hover:bg-[#45ddce]/10 hover:text-white"}`}
                         key={amount}
                         type="button"
                         aria-pressed={selectedTopUp === amount}
@@ -269,7 +269,7 @@ export function BillingShell() {
               <div className="grid gap-5 p-5">
                 <label className="grid gap-2 text-sm font-semibold text-slate-700 md:grid-cols-[140px_minmax(0,1fr)] md:items-center">
                   <span>Threshold</span>
-                  <span className="flex h-12 items-center rounded-xl border border-slate-200 bg-white px-4">
+                  <span className="flex h-12 items-center rounded-xl border border-white/10 bg-[#061b18] px-4">
                     <span className="mr-3 text-slate-500">$</span>
                     <input className="w-full bg-transparent text-slate-950 outline-none" inputMode="decimal" value={threshold} onChange={(event) => setThreshold(event.target.value)} />
                   </span>
@@ -278,7 +278,7 @@ export function BillingShell() {
                   <span>Refill amount</span>
                   <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
                     {refillOptions.map((amount) => (
-                      <button className={`h-11 rounded-xl border text-sm font-semibold ${reloadAmount === amount ? "border-emerald-500 bg-emerald-50 text-emerald-700" : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"}`} key={amount} type="button" aria-pressed={reloadAmount === amount} onClick={() => setReloadAmount(amount)}>
+                      <button className={`h-11 rounded-xl border text-sm font-semibold ${reloadAmount === amount ? "border-emerald-300/30 bg-emerald-400/10 text-emerald-200" : "border-white/10 bg-[#07110f] text-white/70 hover:bg-white/[0.08] hover:text-white"}`} key={amount} type="button" aria-pressed={reloadAmount === amount} onClick={() => setReloadAmount(amount)}>
                         ${amount}
                       </button>
                     ))}
@@ -314,7 +314,7 @@ export function BillingShell() {
                   <div className="flex justify-between gap-4"><span className="text-slate-500">Last payment</span><strong className="text-slate-950">{latestPayment ? money(latestPayment.amountCredits, currency) : money(wallet?.lastPaymentAmountCredits ?? 0, currency)}</strong></div>
                   <div className="flex justify-between gap-4"><span className="text-slate-500">Last checked</span><strong className="text-right text-slate-950">{dateTime(wallet?.lastCheckedAt)}</strong></div>
                 </div>
-                <button className="mt-5 min-h-11 w-full rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-60" type="button" onClick={() => void openPortal()} disabled={busy === "portal"}>
+                <button className="mt-5 min-h-11 w-full rounded-xl border border-white/10 bg-[#061b18] text-sm font-semibold text-white/70 hover:bg-white/[0.08] hover:text-white disabled:opacity-60" type="button" onClick={() => void openPortal()} disabled={busy === "portal"}>
                   Open invoices
                 </button>
               </Card>
@@ -323,7 +323,7 @@ export function BillingShell() {
                 <div className="bg-slate-950 p-5 text-white">
                   <h2 className="m-0 text-lg font-semibold">Enterprise credits</h2>
                   <p className="mt-2 text-sm leading-6 text-slate-600">$500/month credit, priority support, and higher call concurrency.</p>
-                  <button className="mt-5 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-950 hover:bg-cyan-50 disabled:opacity-60" type="button" onClick={() => void upgradeEnterprise()} disabled={busy === "enterprise"}>
+                  <button className="mt-5 rounded-xl bg-[#45ddce] px-4 py-2.5 text-sm font-semibold text-[#02110d] hover:bg-[#75fff0] disabled:opacity-60" type="button" onClick={() => void upgradeEnterprise()} disabled={busy === "enterprise"}>
                     Upgrade
                   </button>
                 </div>
@@ -341,7 +341,7 @@ export function BillingShell() {
             </div>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[900px] text-left text-sm">
-                <thead className="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+                <thead className="bg-[#061b18] text-xs uppercase tracking-wider text-white/50">
                   <tr>{["ID", "Transaction", "Category", "Amount", "Type", "Timestamp"].map((heading) => <th className="px-5 py-3" key={heading}>{heading}</th>)}</tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">

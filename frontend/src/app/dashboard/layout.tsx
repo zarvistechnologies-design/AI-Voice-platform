@@ -6,8 +6,10 @@ import { DashboardQueryProvider } from "@/components/dashboard/DashboardQueryPro
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <DashboardQueryProvider>
-      <DashboardNavigationFeedback />
-      {children}
+      <div className="dashboard-home-theme min-h-screen bg-black text-white">
+        <DashboardNavigationFeedback />
+        {children}
+      </div>
     </DashboardQueryProvider>
   );
 }

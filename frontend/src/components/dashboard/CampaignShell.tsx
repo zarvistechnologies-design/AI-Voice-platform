@@ -33,7 +33,7 @@ const maxCampaignLeads = 100_000;
 const buttonClass =
   "app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 transition disabled:cursor-not-allowed disabled:opacity-50";
 const controlClass =
-  "app-control-text min-h-11 w-full rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10";
+  "app-control-text min-h-11 w-full rounded-lg border border-white/10 bg-[#061b18] px-3 text-white outline-none transition placeholder:text-white/45 focus:border-[#45ddce] focus:ring-4 focus:ring-[#45ddce]/10";
 
 function Icon({ icon, className = "size-4" }: { icon: IconName; className?: string }) {
   const props = {
@@ -183,7 +183,7 @@ function statusTheme(status: BackendCampaign["status"]) {
   if (status === "completed") return "border-slate-200 bg-slate-100 text-slate-700";
   if (status === "cancelled") return "border-rose-200 bg-rose-50 text-rose-700";
   if (status === "failed") return "border-red-200 bg-red-50 text-red-700";
-  return "border-slate-200 bg-white text-slate-600";
+  return "border-white/10 bg-[#07110f] text-white/60";
 }
 
 function progressValue(value: number) {
@@ -509,8 +509,8 @@ export function CampaignShell() {
 
   if (!session) {
     return (
-      <main className="app-strong grid min-h-screen place-items-center bg-[#f6f8fc] px-6">
-        <div className="rounded-lg border border-[#dbe2ea] bg-white px-6 py-5 text-center shadow-sm">
+      <main className="app-strong grid min-h-screen place-items-center bg-black px-6 text-white/70">
+        <div className="rounded-lg border border-white/10 bg-[#07110f] px-6 py-5 text-center shadow-sm">
           <span className="mx-auto mb-3 grid size-10 place-items-center rounded-lg bg-[#ecfeff] text-[#008996]">
             <Icon icon="spark" />
           </span>
@@ -522,7 +522,7 @@ export function CampaignShell() {
   }
 
   return (
-    <main className={`grid min-h-screen bg-[#f6f8fc] text-[#111827] lg:h-screen lg:overflow-hidden ${
+    <main className={`dashboard-home-theme grid min-h-screen bg-black text-white lg:h-screen lg:overflow-hidden ${
       showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
     }`}>
       <DashboardSidebar
@@ -537,7 +537,7 @@ export function CampaignShell() {
 
       <section className="min-w-0 overflow-y-auto">
         <div className="mx-auto w-full max-w-[1500px] px-4 py-5 sm:px-6 lg:px-8">
-          <header className="flex flex-wrap items-center justify-between gap-4 border-b border-[#dbe2ea] bg-white px-4 py-4 shadow-sm sm:px-5">
+          <header className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 bg-[#07110f] px-4 py-4 shadow-sm sm:px-5">
             <div>
               <span className="app-label text-[#00b8c4]">Campaigns</span>
               <h1 className="m-0 text-xl font-semibold leading-7 text-[#0f172a]">Outbound campaigns</h1>
@@ -631,13 +631,13 @@ export function CampaignShell() {
                 </div>
 
                 <label
-                  className="mt-6 grid min-h-[220px] cursor-pointer place-items-center rounded-[1.75rem] border border-dashed border-[#7dd3fc] bg-gradient-to-br from-white to-[#ecfeff] p-6 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.95)] transition hover:-translate-y-0.5 hover:border-[#00b8c4] hover:shadow-[0_20px_50px_rgba(14,165,233,0.12)]"
+                  className="mt-6 grid min-h-[220px] cursor-pointer place-items-center rounded-[1.75rem] border border-dashed border-[#45ddce]/35 bg-[radial-gradient(circle_at_50%_0%,rgba(69,221,206,0.10),transparent_52%),linear-gradient(135deg,#07110f_0%,#061b18_100%)] p-6 text-center shadow-[inset_0_1px_0_rgba(69,221,206,0.10)] transition hover:-translate-y-0.5 hover:border-[#45ddce]/55 hover:shadow-[0_20px_50px_rgba(69,221,206,0.10)]"
                   onDragOver={(event) => event.preventDefault()}
                   onDrop={handleDrop}
                 >
                   <input className="sr-only" type="file" accept=".csv,text/csv" onChange={(event) => void handleCsv(event.target.files?.[0])} />
                   <span className="max-w-md">
-                    <span className="mx-auto mb-4 grid size-14 place-items-center rounded-2xl bg-white text-[#00a6b4] shadow-[0_14px_30px_rgba(14,165,233,0.16)]">
+                    <span className="mx-auto mb-4 grid size-14 place-items-center rounded-2xl bg-[#45ddce]/10 text-[#75fff0] shadow-[0_14px_30px_rgba(69,221,206,0.12)]">
                       <Icon icon="file" className="size-6" />
                     </span>
                     <strong className="block text-base font-semibold text-slate-950">Drop CSV or choose file</strong>
@@ -648,7 +648,7 @@ export function CampaignShell() {
                 <div className={`mt-5 grid gap-3 rounded-3xl border p-4 sm:grid-cols-[auto_minmax(0,1fr)] ${
                   callWindowOpen ? "border-emerald-200 bg-emerald-50/80" : "border-amber-200 bg-amber-50/80"
                 }`}>
-                  <span className={`grid size-10 place-items-center rounded-2xl bg-white shadow-sm ${callWindowOpen ? "text-emerald-600" : "text-amber-600"}`}>
+                  <span className={`grid size-10 place-items-center rounded-2xl bg-[#061b18] shadow-sm ${callWindowOpen ? "text-emerald-300" : "text-amber-300"}`}>
                     <Icon icon={callWindowOpen ? "check" : "warning"} />
                   </span>
                   <div className={callWindowOpen ? "text-emerald-900" : "text-amber-900"}>
@@ -659,7 +659,7 @@ export function CampaignShell() {
                     </p>
                     {!callWindowOpen ? (
                       <button
-                        className="mt-3 rounded-full border border-amber-300 bg-white px-3 py-1.5 text-xs font-semibold text-amber-800 transition hover:-translate-y-0.5 hover:bg-amber-100"
+                        className="mt-3 rounded-full border border-amber-300/25 bg-amber-400/10 px-3 py-1.5 text-xs font-semibold text-amber-200 transition hover:-translate-y-0.5 hover:bg-amber-400/15"
                         type="button"
                         onClick={() => {
                           setWindowStart("00:00");
@@ -673,7 +673,7 @@ export function CampaignShell() {
                 </div>
 
                 {leads.length ? (
-                  <div className="mt-5 overflow-hidden rounded-[1.5rem] border border-[#e2e8f0] bg-white shadow-sm">
+                  <div className="mt-5 overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#07110f] shadow-sm">
                     <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e2e8f0] bg-slate-50/80 px-4 py-3">
                       <div>
                         <span className="text-sm font-semibold text-slate-950">{numberFormat(leads.length)} contacts loaded</span>
@@ -685,7 +685,7 @@ export function CampaignShell() {
                     </div>
                     <div className="overflow-x-auto">
                       <table className="w-full min-w-[760px] text-left">
-                        <thead className="bg-white text-[#64748b]">
+                        <thead className="bg-[#061b18] text-white/50">
                           <tr className="text-xs font-semibold uppercase tracking-[0.12em]">
                             <th className="px-4 py-3">Row</th>
                             <th className="px-4 py-3">Phone</th>
@@ -755,7 +755,7 @@ export function CampaignShell() {
                       </label>
                     </>
                   ) : (
-                    <div className="rounded-3xl border border-[#dff7fb] bg-[#f4fdff] p-4 lg:col-span-2">
+                    <div className="rounded-3xl border border-[#45ddce]/20 bg-[#45ddce]/[0.06] p-4 lg:col-span-2">
                       <span className="app-label text-[#008996]">Launch mode</span>
                       <p className="mt-1 mb-0 text-sm font-semibold text-slate-950">
                         {callWindowOpen ? "Immediate launch after campaign creation" : "Launch now, call when the window opens"}
@@ -763,7 +763,7 @@ export function CampaignShell() {
                       <p className="app-caption mt-1 mb-0">Calls still respect business hours, concurrency, daily caps, and suppression rules.</p>
                       {!callWindowOpen ? (
                         <button
-                          className="mt-3 rounded-full border border-[#67e8f9] bg-white px-3 py-1.5 text-xs font-semibold text-[#008996] transition hover:-translate-y-0.5 hover:bg-[#ecfeff]"
+                          className="mt-3 rounded-full border border-[#45ddce]/30 bg-[#061b18] px-3 py-1.5 text-xs font-semibold text-[#75fff0] transition hover:-translate-y-0.5 hover:bg-[#45ddce]/10"
                           type="button"
                           onClick={() => {
                             setWindowStart("00:00");
@@ -816,7 +816,7 @@ export function CampaignShell() {
                   <label className="app-label grid gap-2">
                     Goal
                     <textarea
-                      className="app-control-text min-h-36 resize-y rounded-2xl border border-[#d8e0eb] bg-white/95 p-4 text-[#0f172a] shadow-[0_1px_0_rgba(15,23,42,0.02)] outline-none transition placeholder:text-[#94a3b8] hover:border-[#b7c4d7] focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10"
+                      className="app-control-text min-h-36 resize-y rounded-2xl border border-white/10 bg-[#061b18] p-4 text-white shadow-[0_1px_0_rgba(0,0,0,0.18)] outline-none transition placeholder:text-white/45 hover:border-white/20 focus:border-[#45ddce] focus:ring-4 focus:ring-[#45ddce]/10"
                       placeholder="Confirm appointment interest and capture preferred callback time."
                       value={campaignGoal}
                       onChange={(event) => setCampaignGoal(event.target.value)}
@@ -828,7 +828,7 @@ export function CampaignShell() {
                       <input className={controlClass} placeholder="Booked demo, qualified lead, reminder accepted..." value={successCriteria} onChange={(event) => setSuccessCriteria(event.target.value)} />
                     </label>
                     <div className="rounded-3xl border border-cyan-200 bg-cyan-50/80 p-4">
-                      <span className="inline-flex size-10 items-center justify-center rounded-2xl bg-white text-cyan-700 shadow-sm">
+                      <span className="inline-flex size-10 items-center justify-center rounded-2xl bg-[#45ddce]/10 text-[#75fff0] shadow-sm">
                         <Icon icon="target" />
                       </span>
                       <p className="mt-3 mb-0 text-sm font-semibold text-cyan-950">These instructions are applied to every call in this campaign.</p>
@@ -911,7 +911,7 @@ export function CampaignShell() {
 
 function Panel({ children, compact = false }: { children: ReactNode; compact?: boolean }) {
   return (
-    <section className={`overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm ${compact ? "p-4 sm:p-5" : "p-5 sm:p-6"}`}>
+    <section className={`overflow-hidden rounded-lg border border-white/10 bg-[#07110f] shadow-sm ${compact ? "p-4 sm:p-5" : "p-5 sm:p-6"}`}>
       {children}
     </section>
   );
@@ -934,7 +934,7 @@ function SectionHeader({ description, eyebrow, icon, title }: { description: str
 
 function MetricCard({ detail, icon, label, value }: { detail: string; icon: IconName; label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-[#dbe2ea] bg-white p-4 shadow-sm">
+    <div className="rounded-lg border border-white/10 bg-[#07110f] p-4 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div>
           <span className="app-caption block">{label}</span>
@@ -951,7 +951,7 @@ function MetricCard({ detail, icon, label, value }: { detail: string; icon: Icon
 
 function InfoPill({ icon, label, value }: { icon: IconName; label: string; value: string }) {
   return (
-    <div className="flex items-center gap-3 rounded-2xl bg-white p-3 shadow-sm">
+    <div className="flex items-center gap-3 rounded-2xl bg-[#07110f] p-3 shadow-sm">
       <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#ecfeff] text-[#008996]">
         <Icon icon={icon} className="size-4" />
       </span>
@@ -975,14 +975,14 @@ function ModeCard({ active, description, icon, onClick, title }: {
       className={`rounded-[1.5rem] border p-4 text-left transition hover:-translate-y-0.5 ${
         active
           ? "border-[#00b8c4] bg-[#ecfeff] shadow-[0_18px_42px_rgba(0,184,196,0.13)] ring-4 ring-[#00b8c4]/10"
-          : "border-slate-200 bg-white hover:border-[#7dd3fc] hover:shadow-[0_14px_34px_rgba(15,23,42,0.08)]"
+          : "border-white/10 bg-[#07110f] hover:border-[#45ddce]/35 hover:shadow-[0_14px_34px_rgba(69,221,206,0.08)]"
       }`}
       onClick={onClick}
       type="button"
       aria-pressed={active}
     >
       <span className="flex items-center gap-3">
-        <span className={`grid size-11 place-items-center rounded-2xl ${active ? "bg-white text-[#008996]" : "bg-slate-100 text-slate-500"}`}>
+        <span className={`grid size-11 place-items-center rounded-2xl ${active ? "bg-[#061b18] text-[#75fff0]" : "bg-white/[0.06] text-white/50"}`}>
           <Icon icon={icon} />
         </span>
         <span>
@@ -1004,7 +1004,7 @@ function ProgressBar({ className = "", value }: { className?: string; value: num
 
 function ReadinessRow({ label, ready }: { label: string; ready: boolean }) {
   return (
-    <div className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2.5">
+    <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-[#07110f] px-3 py-2.5">
       <span className="text-sm font-medium text-slate-600">{label}</span>
       <span className={`grid size-7 shrink-0 place-items-center rounded-full ${ready ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
         <Icon icon={ready ? "check" : "info"} className="size-3.5" />
@@ -1030,7 +1030,7 @@ function CampaignOperationsSection({
   onControl: (campaign: BackendCampaign, action: CampaignAction) => void | Promise<void>;
 }) {
   return (
-    <section className="mt-5 overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm">
+    <section className="mt-5 overflow-hidden rounded-lg border border-white/10 bg-[#07110f] shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#edf0f4] bg-[#fbfdff] px-4 py-4 sm:px-5">
         <div>
           <span className="app-label text-[#00b8c4]">Live operations</span>
@@ -1046,7 +1046,7 @@ function CampaignOperationsSection({
         <>
           <div className="hidden overflow-x-auto lg:block">
             <table className="w-full min-w-[1100px] text-left">
-              <thead className="bg-white text-[#64748b]">
+              <thead className="bg-[#061b18] text-white/50">
                 <tr className="text-xs font-semibold uppercase tracking-[0.12em]">
                   <th className="px-4 py-3">Campaign</th>
                   <th className="px-4 py-3">Status</th>
@@ -1166,7 +1166,7 @@ function CampaignCard({ campaign, onControl }: { campaign: BackendCampaign; onCo
   const canCancel = ["running", "scheduled", "paused"].includes(campaign.status);
 
   return (
-    <div className="rounded-[1.35rem] border border-slate-200 bg-white p-3.5 shadow-sm">
+    <div className="rounded-[1.35rem] border border-white/10 bg-[#07110f] p-3.5 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <strong className="block truncate text-sm font-semibold text-slate-950">{campaign.name}</strong>
@@ -1224,7 +1224,7 @@ function CampaignActionButton({ children, onClick, tone }: { children: ReactNode
 function EmptyState({ description, icon, title }: { description: string; icon: IconName; title: string }) {
   return (
     <div className="rounded-[1.35rem] border border-dashed border-slate-300 bg-slate-50 p-5 text-center">
-      <span className="mx-auto grid size-11 place-items-center rounded-2xl bg-white text-slate-500 shadow-sm">
+      <span className="mx-auto grid size-11 place-items-center rounded-2xl bg-[#061b18] text-white/50 shadow-sm">
         <Icon icon={icon} />
       </span>
       <strong className="mt-3 block text-sm font-semibold text-slate-950">{title}</strong>
@@ -1241,7 +1241,7 @@ function ToggleRow({ detail, enabled, onChange, title }: {
 }) {
   return (
     <button
-      className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white px-3 py-3 text-left transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-sm"
+      className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-[#07110f] px-3 py-3 text-left transition hover:-translate-y-0.5 hover:border-[#45ddce]/30 hover:shadow-sm"
       onClick={() => onChange(!enabled)}
       type="button"
       aria-pressed={enabled}
@@ -1250,8 +1250,8 @@ function ToggleRow({ detail, enabled, onChange, title }: {
         <strong className="block text-sm font-semibold text-slate-950">{title}</strong>
         <span className="app-caption mt-1 block">{detail}</span>
       </span>
-      <span className={`relative h-6 w-11 rounded-full transition ${enabled ? "bg-[#00b8c4]" : "bg-slate-300"}`}>
-        <span className={`absolute top-1 size-4 rounded-full bg-white shadow transition ${enabled ? "left-6" : "left-1"}`} />
+      <span className={`relative h-6 w-11 rounded-full transition ${enabled ? "bg-[#45ddce]" : "bg-white/20"}`}>
+        <span className={`absolute top-1 size-4 rounded-full bg-[#ffffff] shadow transition ${enabled ? "left-6" : "left-1"}`} />
       </span>
     </button>
   );

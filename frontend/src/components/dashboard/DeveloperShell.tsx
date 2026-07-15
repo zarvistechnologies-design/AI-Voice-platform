@@ -447,10 +447,10 @@ export function DeveloperShell() {
 
                 <div className="grid border-b border-[#dce3ea] sm:grid-cols-4">
                   {[
-                    ["01", "Authenticate", `${activeKeys} active keys`, "#087f8c"],
-                    ["02", "Create call", "POST outbound", "#7c3aed"],
-                    ["03", "Receive event", `${enabledWebhooks} webhooks`, "#e05252"],
-                    ["04", "Fetch result", "Recording + transcript", "#15803d"],
+                    ["01", "Authenticate", `${activeKeys} active keys`, "#75fff0"],
+                    ["02", "Create call", "POST outbound", "#c4b5fd"],
+                    ["03", "Receive event", `${enabledWebhooks} webhooks`, "#fda4af"],
+                    ["04", "Fetch result", "Recording + transcript", "#6ee7b7"],
                   ].map(([number, label, detail, color], index) => (
                     <div className={`relative min-h-32 px-4 py-5 ${index ? "border-t border-[#e4e9ef] sm:border-l sm:border-t-0" : ""}`} key={label}>
                       <span className="text-[10px] font-black" style={{ color }}>{number}</span>
@@ -610,7 +610,7 @@ export function DeveloperShell() {
             </div>
             <div className="grid grid-cols-3 border-b border-white/10 bg-[#0b1220] p-1.5">
               {(["request", "response", "webhook"] as const).map((view) => (
-                <button className={`h-8 rounded text-xs font-semibold capitalize transition ${inspectorView === view ? "bg-white text-[#101827]" : "text-[#9facbd] hover:text-white"}`} key={view} type="button" onClick={() => setInspectorView(view)}>{view}</button>
+                <button className={`h-8 rounded text-xs font-semibold capitalize transition ${inspectorView === view ? "bg-[#45ddce] text-[#04231f]" : "text-[#9facbd] hover:text-white"}`} key={view} type="button" onClick={() => setInspectorView(view)}>{view}</button>
               ))}
             </div>
             <pre className="max-h-[520px] min-h-80 overflow-auto p-4 text-xs leading-5 text-[#d7e2ef]">{inspectorContent}</pre>

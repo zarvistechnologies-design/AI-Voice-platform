@@ -574,14 +574,14 @@ function ModalFrame({ busy = false, children, onClose, subtitle, title, width = 
   width?: string;
 }) {
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-[#0f172a]/45 p-3 backdrop-blur-[2px]" role="dialog" aria-modal="true" aria-label={title} aria-busy={busy} onMouseDown={(event) => { if (!busy && event.target === event.currentTarget) onClose(); }}>
-      <section className={`grid max-h-[calc(100vh-24px)] w-full ${width} grid-rows-[auto_minmax(0,1fr)] overflow-hidden rounded-2xl border border-white/70 bg-white shadow-2xl`}>
-        <header className="flex items-start justify-between gap-4 border-b border-[#e5e7eb] px-5 py-4 sm:px-6 sm:py-5">
+    <div className="dashboard-home-theme fixed inset-0 z-50 grid place-items-center bg-black/80 p-3 backdrop-blur-[2px]" role="dialog" aria-modal="true" aria-label={title} aria-busy={busy} onMouseDown={(event) => { if (!busy && event.target === event.currentTarget) onClose(); }}>
+      <section className={`grid max-h-[calc(100vh-24px)] w-full ${width} grid-rows-[auto_minmax(0,1fr)] overflow-hidden rounded-2xl border border-white/10 bg-[#07110f] shadow-2xl`}>
+        <header className="flex items-start justify-between gap-4 border-b border-white/10 bg-[#061b18] px-5 py-4 sm:px-6 sm:py-5">
           <div>
             <h2 className="app-page-title m-0">{title}</h2>
             <p className="app-caption mt-1 mb-0">{subtitle}</p>
           </div>
-          <button className="grid size-9 shrink-0 place-items-center rounded-lg border border-[#e5e7eb] bg-white text-[#64748b] transition hover:bg-[#f8fafc] hover:text-[#111827] disabled:cursor-wait disabled:opacity-50" disabled={busy} onClick={onClose} type="button" aria-label={busy ? "Please wait for the current request to finish" : "Close"}>
+          <button className="grid size-9 shrink-0 place-items-center rounded-lg border border-white/10 bg-[#061b18] text-white/60 transition hover:bg-white/[0.08] hover:text-white disabled:cursor-wait disabled:opacity-50" disabled={busy} onClick={onClose} type="button" aria-label={busy ? "Please wait for the current request to finish" : "Close"}>
             <Icon icon="close" />
           </button>
         </header>

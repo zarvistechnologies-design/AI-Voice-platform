@@ -1782,7 +1782,7 @@ function ToggleRow({
         <span className="app-caption block">{detail}</span>
       </span>
       <input
-        className="sr-only"
+        className="peer sr-only"
         type="checkbox"
         checked={enabled}
         disabled={disabled}
@@ -1790,12 +1790,12 @@ function ToggleRow({
       />
       <span
         aria-hidden="true"
-        className={`relative mt-0.5 h-6 w-11 rounded-full transition ${
+        className={`relative mt-0.5 h-6 w-11 rounded-full transition peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[#75fff0] ${
           enabled ? "bg-[#00b8c4]" : "bg-[#cbd5e1]"
         }`}
       >
         <span
-          className={`absolute top-1 size-4 rounded-full bg-white shadow-sm transition ${
+          className={`absolute top-1 size-4 rounded-full bg-[#ffffff] shadow-sm transition ${
             enabled ? "left-6" : "left-1"
           }`}
         />
@@ -2868,7 +2868,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   data-metadata="${selectedAgent.dynamicVariables.join(",")}"
 ></script>`;
   const toast = notice ? noticeToast(notice) : null;
-  const contentGridClass = "mx-auto grid w-full max-w-[1520px] min-w-0 gap-6 px-4 pb-8 sm:px-6 lg:grid-cols-[minmax(0,1fr)] lg:px-8 2xl:grid-cols-[minmax(0,1fr)_360px]";
+  const contentGridClass = "voice-agent-workspace mx-auto grid w-full max-w-[1520px] min-w-0 gap-6 px-4 pb-8 sm:px-6 lg:grid-cols-[minmax(0,1fr)] lg:px-8 2xl:grid-cols-[minmax(0,1fr)_360px]";
   const runtimeAsideClass = "grid min-w-0 content-start gap-5 xl:grid-cols-2 2xl:grid-cols-1";
 
   useEffect(() => {
@@ -3420,6 +3420,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   function beginSelectedAgentRename() {
     if (renamingAgentSavingRef.current || savePromiseRef.current || agentMutationRef.current) return;
     setAgentNameDraft(selectedAgent.name);
+    setNotice("");
     setShowAgentNameEditor(true);
   }
 
@@ -3959,8 +3960,8 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
 
   if (!session || agentLoading) {
     return (
-      <main className="app-strong grid min-h-screen place-items-center gap-3 bg-[#f8f6ff]">
-        <span className="size-9 animate-spin rounded-full border-3 border-[#d5edf0] border-t-[#0891b2]" />
+      <main className="app-strong grid min-h-screen place-items-center gap-3 bg-black text-white/70" role="status">
+        <span className="size-9 animate-spin rounded-full border-3 border-white/10 border-t-[#45ddce] motion-reduce:animate-none" aria-hidden="true" />
         Loading voice agent
       </main>
     );
@@ -3968,12 +3969,12 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
 
   if (agentLoadError || !selectedAgentLoaded) {
     return (
-      <main className="grid min-h-screen place-items-center bg-[#f8f6ff] px-4 text-center">
-        <section className="grid max-w-lg gap-4 rounded-xl border border-[#fecaca] bg-white p-6 shadow-sm">
-          <h1 className="app-page-title m-0">Could not load this agent</h1>
-          <p className="app-body m-0 text-[#b91c1c]">{agentLoadError || "The requested agent was not found."}</p>
+      <main className="agents-home-palette grid min-h-screen place-items-center bg-black px-4 text-center">
+        <section className="grid max-w-lg gap-4 rounded-2xl border border-rose-300/20 bg-[#07110f] p-6 shadow-[0_18px_46px_rgba(0,0,0,0.32)]">
+          <h1 className="app-page-title m-0 text-white">Could not load this agent</h1>
+          <p className="app-body m-0 text-rose-200">{agentLoadError || "The requested agent was not found."}</p>
           <button
-            className="app-button-text mx-auto min-h-10 rounded-lg bg-[#00b8c4] px-4 text-white"
+            className="app-button-text mx-auto min-h-10 rounded-xl bg-[#45ddce] px-4 text-[#02110d] transition hover:bg-[#75fff0]"
             type="button"
             onClick={() => window.location.reload()}
           >
@@ -3985,7 +3986,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   }
 
   return (
-    <main className="grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#f6f8fc] text-[#111827] lg:grid-cols-[64px_minmax(0,1fr)]">
+    <main className={`voice-agent-theme grid min-h-screen w-full min-w-0 overflow-x-hidden bg-black text-white ${
+      showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
+    }`}>
       <DashboardSidebar
         activeLabel="Voice Agents"
         userInitials={getInitials(session.name)}
@@ -3999,17 +4002,20 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
 
       <section
         className="grid min-w-0 content-start gap-6"
-        aria-busy={Boolean(agentMutation)}
+        aria-busy={agentMutationBusy}
         inert={agentMutation ? true : undefined}
       >
-        <header className="border-b border-[#e6edf5] bg-white px-4 py-5 shadow-[0_1px_0_rgba(15,23,42,0.02)] sm:px-6 lg:px-8">
-          <div className="mx-auto grid w-full max-w-[1520px] gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+        <header className="relative overflow-hidden border-b border-white/10 bg-[radial-gradient(circle_at_12%_0%,rgba(69,221,206,0.14),transparent_34%),linear-gradient(135deg,#000_0%,#061b18_58%,#07110f_100%)] px-4 py-4 text-white shadow-[0_16px_42px_rgba(0,0,0,0.32)] sm:px-6 lg:px-8">
+          <div className="pointer-events-none absolute -right-20 -top-32 size-80 rounded-full border border-white/[0.06]" />
+          <div className="mx-auto grid w-full max-w-[1520px] gap-4 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-center">
             <div className="min-w-0">
-              <span className="app-label text-[#00b8c4]">{session.organization?.name ?? "Workspace"}</span>
-              <div className="mt-1 flex min-w-0 items-center gap-2">
-                <h1 className="m-0 min-w-0 truncate text-xl font-semibold leading-7 text-[#0f172a] sm:text-2xl">{selectedAgent.name}</h1>
+              <span className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#82fff2]/70">{session.organization?.name ?? "Workspace"} / Voice agent</span>
+              <div className="mt-1.5 flex min-w-0 flex-wrap items-center gap-2.5">
+                <h1 className="m-0 min-w-0 truncate text-xl font-bold leading-7 tracking-[-0.02em] text-white sm:text-2xl" title={selectedAgent.name}>{selectedAgent.name}</h1>
+                <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[9px] font-extrabold uppercase tracking-wider ${selectedAgent.status === "Live" ? "bg-[#45ddce]/15 text-[#82fff2] ring-1 ring-[#45ddce]/25" : selectedAgent.status === "Paused" ? "bg-amber-400/15 text-amber-200 ring-1 ring-amber-300/20" : "bg-white/[0.08] text-white/55 ring-1 ring-white/10"}`}><span className={`size-1.5 rounded-full ${selectedAgent.status === "Live" ? "bg-[#45ddce]" : selectedAgent.status === "Paused" ? "bg-amber-300" : "bg-white/35"}`} />{selectedAgent.status}</span>
+                <span className={`rounded-full px-2.5 py-1 text-[9px] font-extrabold uppercase tracking-wider ${hasUnsavedChanges ? "bg-amber-400/15 text-amber-200 ring-1 ring-amber-300/20" : "bg-white/[0.06] text-white/55 ring-1 ring-white/[0.08]"}`}>{hasUnsavedChanges ? "Unsaved changes" : "Up to date"}</span>
                 <button
-                  className="grid size-8 shrink-0 place-items-center rounded-lg border border-[#d5d8df] bg-white text-[#64748b] transition hover:border-[#99f6e8] hover:bg-[#ecfeff] hover:text-[#008996]"
+                  className="grid size-8 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/[0.06] text-white/55 transition hover:border-[#45ddce]/30 hover:bg-[#45ddce]/10 hover:text-[#82fff2] disabled:opacity-45"
                   type="button"
                   aria-label={`Edit ${selectedAgent.name} name`}
                   title="Edit name"
@@ -4019,14 +4025,14 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                   <Icon icon="edit" />
                 </button>
               </div>
-              <p className="app-caption mt-1 mb-0 max-w-3xl text-[#475569]">
+              <p className="mt-1.5 mb-0 max-w-3xl text-xs leading-5 text-white/60">
                 Build, test, publish, and monitor your voice agent from one command center.
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2 xl:justify-end">
             <button
-              className="app-button-text inline-flex min-h-9 items-center justify-center rounded-lg border border-[#d5d8df] bg-white px-3 text-[#334155] transition hover:bg-[#f8fafc]"
+              className="app-button-text inline-flex min-h-10 items-center justify-center rounded-lg border border-white/10 bg-white/[0.06] px-3 text-white/65 transition hover:bg-white/[0.10] hover:text-white active:translate-y-px disabled:opacity-45 sm:min-h-9"
               type="button"
               disabled={agentMutationBusy}
               onClick={() => navigateToDashboardPage("/dashboard/agents")}
@@ -4034,7 +4040,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
               Back to agents
             </button>
             <button
-              className="app-button-text inline-flex min-h-9 items-center justify-center rounded-lg border border-[#d5d8df] bg-white px-3 text-[#334155] transition hover:bg-[#f8fafc]"
+              className="app-button-text inline-flex min-h-10 items-center justify-center rounded-lg border border-white/10 bg-white/[0.06] px-3 text-white/65 transition hover:bg-white/[0.10] hover:text-white active:translate-y-px disabled:opacity-45 sm:min-h-9"
               type="button"
               disabled={agentMutationBusy}
               onClick={() => void handleCloneAgent()}
@@ -4042,7 +4048,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
               Clone
             </button>
             <button
-              className="app-button-text inline-flex min-h-9 items-center justify-center rounded-lg border border-[#fecdd3] bg-[#fff1f2] px-3 text-[#be123c]"
+              className="app-button-text inline-flex min-h-10 items-center justify-center rounded-lg border border-rose-300/20 bg-rose-400/10 px-3 text-rose-200 transition hover:bg-rose-400/15 active:translate-y-px disabled:opacity-45 sm:min-h-9"
               type="button"
               disabled={agentMutationBusy}
               onClick={() => void handleDeleteAgent()}
@@ -4050,7 +4056,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
               Delete
             </button>
             <button
-              className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#99f6e8] bg-[#ecfeff] px-3 text-[#0e7490] shadow-sm"
+              className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#45ddce]/25 bg-[#45ddce]/10 px-3 text-[#82fff2] shadow-sm transition hover:bg-[#45ddce]/15 active:translate-y-px disabled:opacity-45 sm:min-h-9"
               type="button"
               disabled={agentMutationBusy || !hasUnsavedChanges}
               title={hasUnsavedChanges ? "Save agent changes" : "Agent is already saved"}
@@ -4060,7 +4066,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
               {saving ? "Saving..." : hasUnsavedChanges ? "Save" : "Saved"}
             </button>
             <button
-              className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#bbf7d0] bg-[#f0fdf4] px-3 text-[#15803d] shadow-sm"
+              className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-emerald-300/20 bg-emerald-400/10 px-3 text-emerald-200 shadow-sm transition hover:bg-emerald-400/15 active:translate-y-px disabled:opacity-45 sm:min-h-9"
               type="button"
               disabled={!testCallsEnabled || agentMutationBusy}
               title={testCallsEnabled ? "Start browser test call" : "Paused agents cannot start test calls"}
@@ -4070,7 +4076,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
               Test call
             </button>
             <button
-              className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border-0 bg-[#00b8c4] px-3 text-white shadow-[0_12px_28px_rgba(0,184,196,0.28)] transition hover:bg-[#008996]"
+              className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border-0 bg-[#45ddce] px-3.5 text-[#02110d] shadow-[0_12px_28px_rgba(69,221,206,0.20)] transition hover:bg-[#75fff0] active:translate-y-px disabled:opacity-45 sm:min-h-9"
               type="button"
               disabled={agentMutationBusy}
               onClick={() => {
@@ -4083,11 +4089,11 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
             </button>
             </div>
           </div>
-          <div className="mx-auto grid w-full max-w-[1520px] gap-3 pt-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="relative mx-auto flex w-full max-w-[1520px] gap-2 overflow-x-auto pt-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {agentHeroStats.map((item) => (
-              <div className={`rounded-lg border px-4 py-3 ${item.tone}`} key={item.label}>
-                <span className="app-caption block text-[#64748b]">{item.label}</span>
-                <strong className="block text-base font-semibold leading-6 text-[#0f172a]">{item.value}</strong>
+              <div className="inline-flex min-w-max items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.055] px-2.5 py-1.5 backdrop-blur-sm" key={item.label}>
+                <span className="text-[9px] font-extrabold uppercase tracking-wider text-white/55">{item.label}</span>
+                <strong className="max-w-48 truncate text-[11px] font-bold text-white" title={String(item.value)}>{item.value}</strong>
               </div>
             ))}
           </div>
@@ -4095,21 +4101,21 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
 
         <section className={contentGridClass}>
           <section className="grid min-w-0 content-start gap-5">
-            <article className="min-w-0 overflow-hidden rounded-lg border border-[#e4ebf3] bg-white shadow-[0_18px_46px_rgba(15,23,42,0.06)]">
-              <div className="flex flex-col gap-4 border-b border-[#edf2f7] bg-white px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
+            <article className="min-w-0 overflow-hidden rounded-2xl border border-white/[0.08] bg-[#07110f] shadow-[0_16px_38px_rgba(0,0,0,0.30)]">
+              <div className="flex flex-col gap-4 border-b border-white/[0.08] bg-[radial-gradient(circle_at_10%_0%,rgba(69,221,206,0.08),transparent_38%),#07110f] px-5 py-4 text-white lg:flex-row lg:items-center lg:justify-between">
                 <div>
-                  <h2 className="app-section-title m-0">Agent builder</h2>
-                  <span className="app-caption">
+                  <h2 className="m-0 text-sm font-bold tracking-[-0.01em] text-white">Agent builder</h2>
+                  <span className="mt-1 block text-[11px] text-white/58">
                     {selectedAgent.name} / {selectedAgent.team}
                   </span>
                 </div>
-                <div className="flex max-w-full gap-1 overflow-x-auto rounded-lg border border-[#dfe7ef] bg-[#f6f8fb] p-1">
+                <div className="flex max-w-full gap-1 overflow-x-auto rounded-xl border border-white/[0.07] bg-black/20 p-1" role="group" aria-label="Agent editor sections">
                   {tabs.map((tab) => (
                     <button
-                      className={`app-button-text rounded-md px-3 py-1.5 transition ${
+                      className={`app-button-text min-h-8 rounded-lg px-3 py-1.5 transition focus-visible:ring-2 focus-visible:ring-[#82fff2]/60 ${
                         activeTab === tab.id
-                          ? "bg-white text-[#008996] shadow-sm"
-                          : "text-[#64748b] hover:bg-white/80 hover:text-[#111827]"
+                          ? "bg-[#45ddce]/10 text-[#82fff2] shadow-[inset_0_0_0_1px_rgba(69,221,206,0.18)]"
+                          : "text-white/58 hover:bg-white/[0.055] hover:text-white"
                       }`}
                       key={tab.id}
                       type="button"
@@ -4122,7 +4128,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                 </div>
               </div>
 
-              <div className="bg-white p-5 sm:p-6">
+              <div className="bg-[#020806] p-5 sm:p-6">
                 {activeTab === "builder" ? (
                   <div className="grid gap-6">
                     <div className="hidden gap-3 lg:grid-cols-2">
@@ -4142,9 +4148,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                       <div className="grid gap-5 xl:grid-cols-2">
                         <div className="grid gap-2">
                           <span className="app-label uppercase text-[#64748b]">Pricing basis</span>
-                          <div className="flex min-w-0 items-center gap-4">
+                          <div className="flex min-w-0 flex-wrap items-center gap-4 sm:flex-nowrap">
                             <strong className="text-2xl font-semibold leading-7 text-[#111827]">Provider<span className="text-base font-medium text-[#64748b]"> cost only</span></strong>
-                            <span className="grid h-2 min-w-32 flex-1 grid-cols-[1.8fr_0.45fr_0.6fr_1fr] overflow-hidden rounded-full bg-[#eef2f7]">
+                            <span className="grid h-2 w-full min-w-32 flex-1 grid-cols-[1.8fr_0.45fr_0.6fr_1fr] overflow-hidden rounded-full bg-[#eef2f7] sm:w-auto">
                               <span className="bg-[#14b8a6]" />
                               <span className="bg-[#f97316]" />
                               <span className="bg-[#3b82f6]" />
@@ -4154,9 +4160,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                         </div>
                         <div className="grid gap-2">
                           <span className="app-label uppercase text-[#64748b]">Average latency</span>
-                          <div className="flex min-w-0 items-center gap-4">
+                          <div className="flex min-w-0 flex-wrap items-center gap-4 sm:flex-nowrap">
                             <strong className="text-2xl font-semibold leading-7 text-[#d97706]">~{voiceStackLatencyValue}<span className="text-base font-medium text-[#64748b]"> ms</span></strong>
-                            <span className="grid h-2 min-w-32 flex-1 grid-cols-[0.6fr_1.6fr_1.4fr_0.25fr] overflow-hidden rounded-full bg-[#eef2f7]">
+                            <span className="grid h-2 w-full min-w-32 flex-1 grid-cols-[0.6fr_1.6fr_1.4fr_0.25fr] overflow-hidden rounded-full bg-[#eef2f7] sm:w-auto">
                               <span className="bg-[#f97316]" />
                               <span className="bg-[#3b82f6]" />
                               <span className="bg-[#c026d3]" />
@@ -4824,6 +4830,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                               key={variable}
                               type="button"
                               title="Copy variable"
+                              aria-label={`Copy ${variable} variable`}
                               onClick={() => copyVariableSnippet(`{${variable}}`)}
                             >
                               {`{${variable}}`}
@@ -4838,6 +4845,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                             key={variable}
                             type="button"
                             title="Remove variable"
+                            aria-label={`Remove ${variable} variable`}
                             onClick={() => updateSelectedAgent({ dynamicVariables: selectedAgent.dynamicVariables.filter((item) => item !== variable) })}
                           >
                             {`{${variable}}`} x
@@ -4845,7 +4853,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                         ))}
                       </div>
                       <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_84px]">
-                        <input className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10" value={variableDraft} placeholder="customerID" onChange={(event) => setVariableDraft(event.target.value)} />
+                        <input className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10" aria-label="New dynamic variable name" value={variableDraft} placeholder="customerID" onChange={(event) => setVariableDraft(event.target.value)} />
                         <button className="app-button-text rounded-lg border border-[#d5d8df] bg-white px-3 text-[#00b8c4]" type="button" onClick={addVariable}>Add</button>
                       </div>
                     </section>
@@ -5073,6 +5081,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                           />
                           <input
                             className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10"
+                            aria-label="Widget accent color hex value"
                             value={selectedAgent.widget.accentColor}
                             onChange={(event) => updateSelectedAgent({ widget: { ...selectedAgent.widget, accentColor: event.target.value } })}
                           />
@@ -5135,14 +5144,14 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                                 <span className="app-caption">Voice assistant</span>
                               </span>
                             </div>
-                            <button
+                            <div
+                              aria-hidden="true"
                               className="app-button-text inline-flex min-h-9 w-full items-center justify-center gap-2 rounded-lg px-3 text-white"
                               style={{ backgroundColor: selectedAgent.widget.accentColor }}
-                              type="button"
                             >
                               <Icon icon="phone" />
                               {selectedAgent.widget.buttonText}
-                            </button>
+                            </div>
                           </div>
                         </div>
                         <button
@@ -5173,7 +5182,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                           </span>
                         ))}
                       </div>
-                      <code className="app-caption block rounded-lg bg-[#f8fafc] p-3 text-[#334155]">
+                      <code className="app-caption block max-w-full overflow-x-auto break-all rounded-lg bg-[#f8fafc] p-3 text-[#334155]">
                         {widgetUrl}
                       </code>
                     </div>
@@ -5185,17 +5194,17 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
           </section>
 
           <aside className={runtimeAsideClass}>
-            <article className="min-w-0 overflow-hidden rounded-lg border border-[#e4ebf3] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]">
-              <div className="flex min-h-[68px] items-center justify-between gap-3 border-b border-[#edf2f7] bg-white px-4">
+            <article className="min-w-0 overflow-hidden rounded-2xl border border-white/[0.08] bg-[#07110f] shadow-[0_16px_38px_rgba(0,0,0,0.30)]">
+              <div className="flex min-h-[68px] items-center justify-between gap-3 border-b border-white/[0.08] bg-[radial-gradient(circle_at_10%_0%,rgba(69,221,206,0.08),transparent_42%),#07110f] px-4 text-white">
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="relative flex size-2.5 shrink-0">
-                      {selectedRuntimeStreamState === "live" ? <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-50" /> : null}
+                      {selectedRuntimeStreamState === "live" ? <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-50 motion-reduce:animate-none" /> : null}
                       <span className={`relative inline-flex size-2.5 rounded-full ${selectedRuntimeStreamState === "live" ? "bg-emerald-500" : "bg-amber-400"}`} />
                     </span>
-                    <h2 className="app-section-title m-0">Runtime health</h2>
+                    <h2 className="m-0 text-sm font-bold text-white">Runtime health</h2>
                   </div>
-                  <span className="app-caption block truncate">
+                  <span className="mt-1 block truncate text-[10px] text-white/58">
                     {selectedRuntimeStreamState === "live"
                       ? `Live stream${selectedRuntimeSnapshot?.observedAt ? ` / ${new Date(selectedRuntimeSnapshot.observedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}` : ""}`
                       : selectedRuntimeStreamState === "connecting" ? "Connecting live stream..." : "Reconnecting live stream..."}
@@ -5261,7 +5270,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
               </div>
             </article>
 
-            <article className="overflow-hidden rounded-lg border border-[#e4ebf3] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]">
+            <article className="overflow-hidden rounded-2xl border border-[#e4ebf3] bg-white shadow-[0_16px_38px_rgba(0,0,0,0.30)]">
               <div className="p-4">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div className="min-w-0">
@@ -5320,7 +5329,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
               </div>
             </article>
 
-            <article className="overflow-hidden rounded-lg border border-[#e4ebf3] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]">
+            <article className="overflow-hidden rounded-2xl border border-[#e4ebf3] bg-white shadow-[0_16px_38px_rgba(0,0,0,0.30)]">
               <div className="p-4">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
@@ -5343,13 +5352,13 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
               </div>
             </article>
 
-            <article className="overflow-hidden rounded-lg border border-[#dbe2ea] bg-white text-[#111827] shadow-sm">
+            <article className="overflow-hidden rounded-2xl border border-[#dbe2ea] bg-white text-[#111827] shadow-[0_16px_38px_rgba(0,0,0,0.30)]">
               <div className="p-4">
               <div className="mb-3 flex items-center justify-between gap-3">
                 <h2 className="app-section-title m-0">Config preview</h2>
                 <Icon icon="code" />
               </div>
-              <pre className="m-0 overflow-hidden rounded-lg bg-[#f8fafc] p-3 text-xs leading-5 text-[#334155]">
+              <pre className="m-0 max-h-72 overflow-auto rounded-xl bg-[#061b18] p-3 text-xs leading-5 text-[#d9fff9]">
 {`{
   "architecture": "${selectedAgent.pipelineMode}",
   "language": "${selectedAgent.language}",
@@ -5379,9 +5388,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
         </section>
       </section>
       {showAgentNameEditor ? (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-slate-950/30 px-4" role="dialog" aria-modal="true" aria-labelledby="edit-agent-name-title">
+        <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-black/80 px-4 py-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="edit-agent-name-title" aria-describedby="edit-agent-name-description" aria-busy={renamingAgentSaving}>
           <form
-            className="grid w-full max-w-md gap-4 rounded-lg border border-[#dbe2ea] bg-white p-5 shadow-xl"
+            className="grid max-h-[calc(100dvh-2rem)] w-full max-w-md gap-4 overflow-y-auto rounded-xl border border-white/12 bg-[#07110f] p-5 shadow-[0_28px_80px_rgba(0,0,0,0.52)]"
             onSubmit={(event) => {
               event.preventDefault();
               void saveAgentName(selectedAgent);
@@ -5389,13 +5398,15 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
           >
             <div>
               <h2 className="app-section-title m-0" id="edit-agent-name-title">Edit agent name</h2>
-              <p className="app-caption mt-1 mb-0 text-[#475569]">Update the name shown across the dashboard.</p>
+              <p className="app-caption mt-1 mb-0 text-white/56" id="edit-agent-name-description">Update the name shown across the dashboard.</p>
             </div>
+            {notice ? <div className="rounded-lg border border-amber-300/20 bg-amber-400/10 px-3 py-2 text-xs font-semibold text-amber-200" role="status" aria-live="polite">{notice}</div> : null}
             <label className="grid gap-1.5">
-              <span className="app-label text-[#475569]">Agent name</span>
+              <span className="app-label text-[#75fff0]">Agent name</span>
               <input
                 autoFocus
-                className="app-control-text min-h-11 rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10"
+                required
+                className="app-control-text min-h-11 rounded-lg border border-white/10 bg-[#061b18] px-3 text-white outline-none transition focus:border-[#45ddce] focus:ring-4 focus:ring-[#45ddce]/10"
                 value={agentNameDraft}
                 maxLength={80}
                 onChange={(event) => setAgentNameDraft(event.target.value)}
@@ -5403,7 +5414,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
             </label>
             <div className="flex justify-end gap-2">
               <button
-                className="app-button-text min-h-10 rounded-lg border border-[#d5d8df] bg-white px-4 text-[#334155]"
+                className="app-button-text min-h-10 rounded-lg border border-white/10 bg-[#061b18] px-4 text-white/78 transition hover:bg-white/[0.08] active:translate-y-px disabled:opacity-50"
                 type="button"
                 disabled={renamingAgentSaving}
                 onClick={cancelAgentRename}
@@ -5411,7 +5422,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                 Cancel
               </button>
               <button
-                className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#99f6e8] bg-[#ecfeff] px-4 text-[#0e7490] shadow-sm disabled:opacity-60"
+                className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#45ddce]/24 bg-[#45ddce]/[0.07] px-4 text-[#75fff0] shadow-sm transition hover:border-[#45ddce]/40 hover:bg-[#45ddce]/12 active:translate-y-px disabled:opacity-50"
                 type="submit"
                 disabled={renamingAgentSaving}
               >
@@ -5432,9 +5443,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
           onClose={() => setShowTestCall(false)}
         />
       ) : null}
-      {notice && toast ? (
+      {notice && toast && !showAgentNameEditor ? (
         <div
-          className={`fixed right-4 bottom-4 z-50 grid w-[min(420px,calc(100vw-32px))] grid-cols-[36px_minmax(0,1fr)_28px] items-start gap-3 rounded-lg border p-3 shadow-[0_20px_56px_rgba(15,23,42,0.22)] ${toast.panel}`}
+          className={`fixed right-4 bottom-4 z-[90] grid w-[min(420px,calc(100vw-32px))] grid-cols-[36px_minmax(0,1fr)_28px] items-start gap-3 rounded-lg border p-3 shadow-[0_20px_56px_rgba(15,23,42,0.22)] ${toast.panel}`}
           role="status"
           aria-live="polite"
         >
