@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { businessPages } from "@/config/site";
+import { IndustryExperiencePage } from "./IndustryExperiencePage";
 
 type IndustrySlug =
   | "financial-services"
@@ -23,6 +24,7 @@ type IndustryPreset = {
     title: string;
     button: string;
     visual: "routing" | "ivr" | "calendar";
+    image?: string;
     reverse?: boolean;
     points: Array<{ title: string; body: string }>;
   }>;
@@ -44,7 +46,6 @@ function getIndustry(slug: string) {
     (business) => business.kicker === "Industries" && business.slug === slug,
   );
 }
-
 export function generateIndustryMetadata(slug: string) {
   const industry = getIndustry(slug);
 
@@ -79,7 +80,7 @@ const presets: Record<IndustrySlug, IndustryPreset> = {
       {
         title: "Verification Calls",
         image:
-          "https://images.unsplash.com/photo-1554224154-26032fced8bd?auto=format&fit=crop&w=900&q=80",
+          "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=900&q=80",
       },
       {
         title: "Escalation Support",
@@ -109,6 +110,8 @@ const presets: Record<IndustrySlug, IndustryPreset> = {
         title: "Protect sensitive workflows with clear escalation rules",
         button: "Check Escalation Feature",
         visual: "ivr",
+        image:
+          "https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=900&q=80",
         reverse: true,
         points: [
           {
@@ -946,6 +949,21 @@ function WorkflowVisual({
 }
 
 export function IndustryPage({ slug }: { slug: string }) {
+  const industry = getIndustry(slug);
+
+  if (!industry) {
+    notFound();
+  }
+
+  const preset = presets[industry.slug as IndustrySlug];
+
+  if (!preset) {
+    notFound();
+  }
+  return <IndustryExperiencePage industry={industry} preset={preset} />;
+}
+
+export function LegacyIndustryPage({ slug }: { slug: string }) {
   const industry = getIndustry(slug);
 
   if (!industry) {
