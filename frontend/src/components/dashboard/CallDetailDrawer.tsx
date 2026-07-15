@@ -161,8 +161,13 @@ function sourceLabel(source?: CostPricingDetail["source"]) {
   return "Catalog";
 }
 
-function rate(value: number, suffix: string) {
+function rate(value: number | null | undefined, suffix: string) {
+  if (typeof value !== "number" || !Number.isFinite(value)) return "";
   return `$${value.toLocaleString("en-US", { maximumFractionDigits: 4 })}${suffix}`;
+}
+
+function localizedCount(value: number | null | undefined) {
+  return (value ?? 0).toLocaleString("en-US");
 }
 
 function rateLabel(detail?: CostPricingDetail) {
@@ -218,8 +223,8 @@ export function CallDetailDrawer({ call, onClose }: { call: CallRecord; onClose:
   const recordingLoading = recordingLoadState.callId === call._id && recordingLoadState.loading;
   const recordingLoadError = recordingLoadState.callId === call._id ? recordingLoadState.error : "";
   const llmUsage = call.llmInputTokens || call.llmOutputTokens
-    ? `${call.llmInputTokens.toLocaleString("en-US")} in / ${call.llmOutputTokens.toLocaleString("en-US")} out`
-    : call.llmTokens ? `${call.llmTokens.toLocaleString("en-US")} tokens` : "0 tokens";
+    ? `${localizedCount(call.llmInputTokens)} in / ${localizedCount(call.llmOutputTokens)} out`
+    : call.llmTokens ? `${localizedCount(call.llmTokens)} tokens` : "0 tokens";
   const sttDisplay = displaySttSeconds(call);
   const sttSecondsLabel = sttDisplay.seconds
     ? `${Math.round(sttDisplay.seconds)} sec${sttDisplay.estimated ? " est." : ""}`
@@ -227,13 +232,13 @@ export function CallDetailDrawer({ call, onClose }: { call: CallRecord; onClose:
   const sttUsage = [
     sttSecondsLabel,
     call.sttInputTokens || call.sttOutputTokens
-      ? `${call.sttInputTokens.toLocaleString("en-US")} in / ${call.sttOutputTokens.toLocaleString("en-US")} out`
+      ? `${localizedCount(call.sttInputTokens)} in / ${localizedCount(call.sttOutputTokens)} out`
       : "",
   ].filter(Boolean).join(" / ");
   const ttsUsage = [
-    call.ttsCharacters ? `${call.ttsCharacters.toLocaleString("en-US")} chars` : "0 chars",
+    call.ttsCharacters ? `${localizedCount(call.ttsCharacters)} chars` : "0 chars",
     call.ttsInputTokens || call.ttsOutputTokens
-      ? `${call.ttsInputTokens.toLocaleString("en-US")} in / ${call.ttsOutputTokens.toLocaleString("en-US")} out`
+      ? `${localizedCount(call.ttsInputTokens)} in / ${localizedCount(call.ttsOutputTokens)} out`
       : "",
     call.ttsAudioSeconds ? `${Math.round(call.ttsAudioSeconds)} sec audio` : "",
   ].filter(Boolean).join(" / ");
