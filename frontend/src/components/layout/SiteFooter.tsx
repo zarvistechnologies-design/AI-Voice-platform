@@ -5,6 +5,7 @@ import { siteConfig } from "@/config/site";
 
 const primaryLinks = [
   { href: "/product", label: "Product" },
+  { href: "/pricing", label: "Pricing" },
   { href: "/business", label: "For Business" },
   { href: "/about", label: "About" },
   { href: "/career", label: "Careers" },

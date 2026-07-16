@@ -4,7 +4,7 @@ export const siteConfig = {
   headerLinks: [
     { href: "/", label: "Home" },
     { href: "/#product", label: "Product", hasMenu: true },
-    { href: "/#pricing", label: "Pricing" },
+    { href: "/pricing", label: "Pricing" },
     { href: "/#business", label: "For Business", hasMenu: true },
     { href: "/#company", label: "Company", hasMenu: true },
   ],
@@ -45,7 +45,7 @@ export const siteConfig = {
         ],
       },
     ],
-    cta: { href: "/#pricing", label: "See Pricing" },
+    cta: { href: "/pricing", label: "See Pricing" },
   },
   businessMenu: {
     featured: {
@@ -148,7 +148,7 @@ export const siteConfig = {
     featured: {
       href: "/about",
       title: "About Us",
-      body: "See how leading teams use vozon.ai to transform customer calls and drive real results.",
+      body: "Learn why vozon.ai is building practical, transparent voice automation for conversations that matter.",
     },
     columns: [],
     story: {
@@ -163,7 +163,7 @@ export const siteConfig = {
       links: [
         { href: "/services/voice-agents", label: "Voice Agents" },
         { href: "/services/speech-analytics", label: "Speech Analytics" },
-        { href: "/#pricing", label: "Pricing" },
+        { href: "/pricing", label: "Pricing" },
       ],
     },
     {
