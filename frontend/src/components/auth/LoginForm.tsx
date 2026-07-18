@@ -1,41 +1,17 @@
 "use client";
 
-import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Script from "next/script";
 
 import {
+  accountApi,
   getSession,
-  loginWithGoogle,
   loginWithPassword,
   registerWithPassword,
   validateStoredSession,
 } from "@/lib/auth";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
-
-type GoogleCredentialResponse = { credential?: string };
-
-declare global {
-  interface Window {
-    google?: {
-      accounts: {
-        id: {
-          initialize: (options: {
-            client_id: string;
-            callback: (response: GoogleCredentialResponse) => void;
-          }) => void;
-          renderButton: (
-            parent: HTMLElement,
-            options: Record<string, string | number>,
-          ) => void;
-        };
-      };
-    };
-  }
-}
-
 function getNextPath(path: string | null) {
   if (!path || !path.startsWith("/") || path.startsWith("//")) {
     return "/dashboard/agents";
@@ -48,15 +24,18 @@ export function LoginForm() {
   const searchParams = useSearchParams();
   const nextPath = getNextPath(searchParams.get("next"));
 
-  const [mode, setMode] = useState<"login" | "register">("login");
+  const [mode, setMode] = useState<"login" | "register" | "forgot">("login");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const [twoFactorCode, setTwoFactorCode] = useState("");
   const [needsTwoFactor, setNeedsTwoFactor] = useState(false);
   const [error, setError] = useState("");
+  const [recoveryNotice, setRecoveryNotice] = useState("");
+  const [developmentResetUrl, setDevelopmentResetUrl] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const googleButtonRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     router.prefetch(nextPath);
@@ -73,53 +52,11 @@ export function LoginForm() {
     };
   }, [nextPath, router]);
 
-  const handleGoogleCredential = useCallback(async (response: GoogleCredentialResponse) => {
-    if (!response.credential) {
-      setError("Google did not return a sign-in credential.");
-      return;
-    }
-    setError("");
-    setIsSubmitting(true);
-    try {
-      await loginWithGoogle(response.credential);
-      const session = await validateStoredSession();
-      if (!session) throw new Error("Google sign-in completed, but the session could not be verified.");
-      if (nextPath === "/dashboard" || nextPath === "/dashboard/agents") {
-        void import("@/lib/voice")
-          .then(({ voiceApi }) => voiceApi.agentSummaries())
-          .catch(() => undefined);
-      }
-      router.push(nextPath);
-    } catch (authError) {
-      setError(authError instanceof Error ? authError.message : "Google sign-in failed.");
-      setIsSubmitting(false);
-    }
-  }, [nextPath, router]);
-
-  const renderGoogleButton = useCallback(() => {
-    if (!googleClientId || !window.google || !googleButtonRef.current) return;
-    googleButtonRef.current.replaceChildren();
-    window.google.accounts.id.initialize({
-      client_id: googleClientId,
-      callback: (response) => void handleGoogleCredential(response),
-    });
-    window.google.accounts.id.renderButton(googleButtonRef.current, {
-      type: "standard",
-      theme: "outline",
-      size: "large",
-      text: mode === "login" ? "signin_with" : "signup_with",
-      shape: "rectangular",
-      width: Math.max(240, Math.floor(googleButtonRef.current.clientWidth)),
-    });
-  }, [handleGoogleCredential, mode]);
-
-  useEffect(() => {
-    renderGoogleButton();
-  }, [renderGoogleButton]);
-
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
+    setRecoveryNotice("");
+    setDevelopmentResetUrl("");
 
     const normalizedName = name.trim();
     const normalizedEmail = email.trim().toLowerCase();
@@ -134,7 +71,7 @@ export function LoginForm() {
       return;
     }
 
-    if (password.trim().length < 8) {
+    if (mode !== "forgot" && password.trim().length < 8) {
       setError("Password must be at least 8 characters.");
       return;
     }
@@ -142,6 +79,14 @@ export function LoginForm() {
     setIsSubmitting(true);
 
     try {
+      if (mode === "forgot") {
+        const result = await accountApi.forgotPassword(normalizedEmail);
+        setRecoveryNotice("If an account exists for this email, password reset instructions have been sent.");
+        setDevelopmentResetUrl(result.resetUrl ?? "");
+        setIsSubmitting(false);
+        return;
+      }
+
       if (mode === "register") {
         await registerWithPassword(normalizedName, normalizedEmail, password);
       } else {
@@ -174,83 +119,89 @@ export function LoginForm() {
 
   return (
     <form
-      className="grid w-full gap-5 rounded-lg border border-white/10 bg-[#0b1120] p-[clamp(24px,4vw,34px)] text-white shadow-[0_26px_90px_rgba(0,0,0,0.32)]"
+      className={`login-auth-form relative z-[1] grid w-full max-w-[420px] gap-4 text-white ${mode === "register" ? "is-register" : ""}`}
       onSubmit={handleSubmit}
     >
-      <div className="grid gap-2">
-        <span className="text-xs font-bold text-cyan-200">
-          {mode === "login" ? "Login" : "Create account"}
-        </span>
-        <h1 className="m-0 text-3xl font-semibold text-white">
-          {mode === "login" ? "Access your workspace" : "Create your workspace"}
+      <div className="auth-heading mb-2 grid gap-2 text-center">
+        <div className="mx-auto mb-2 grid size-11 place-items-center rounded-xl border border-[#45ddce]/25 bg-[#45ddce]/10 shadow-[0_0_28px_rgba(69,221,206,0.11)]" aria-hidden="true">
+          <span className="flex h-5 items-center gap-[3px]">
+            {[9, 18, 13, 6, 11].map((height) => (
+              <span className="w-[3px] rounded-full bg-[#75fff0]" key={height} style={{ height }} />
+            ))}
+          </span>
+        </div>
+        <h1 className="m-0 text-[clamp(1.9rem,4vw,2.5rem)] font-black leading-none tracking-[-0.04em] text-white">
+          {mode === "login" ? "Welcome back" : mode === "register" ? "Create your account" : "Reset your password"}
         </h1>
-        <p className="m-0 text-sm leading-6 text-slate-400">
+        <p className="auth-description m-0 text-sm leading-5 text-white/42">
           {mode === "login"
-            ? "Sign in to manage agents, calls, campaigns, and outcomes."
-            : "Create your workspace and launch your first voice agent."}
+            ? "Sign in to continue to your voice workspace."
+            : mode === "register"
+              ? "Start building your first AI voice agent today."
+              : "Enter your email and we'll send you a secure reset link."}
         </p>
       </div>
 
-      <Script
-        onLoad={renderGoogleButton}
-        src="https://accounts.google.com/gsi/client"
-        strategy="afterInteractive"
-      />
-      {googleClientId ? (
-        <div className={isSubmitting ? "pointer-events-none opacity-70" : ""} ref={googleButtonRef} />
-      ) : null}
-
-      {googleClientId ? (
-        <div className="flex items-center gap-3" aria-hidden="true">
-          <span className="h-px flex-1 bg-white/10" />
-          <span className="text-sm text-slate-500">or</span>
-          <span className="h-px flex-1 bg-white/10" />
-        </div>
-      ) : null}
-
       {mode === "register" ? (
-        <label className="grid gap-2 text-xs font-semibold text-slate-300">
+        <label className="auth-field grid gap-2 text-xs font-bold text-white/65">
           <span>Name</span>
-          <input
-            className="min-h-12 w-full rounded-lg border border-white/12 bg-white/[0.05] px-3.5 text-sm font-medium text-white outline-none placeholder:text-slate-600 focus:border-cyan-300 focus:ring-4 focus:ring-cyan-300/10"
-            autoComplete="name"
-            onChange={(event) => setName(event.target.value)}
-            placeholder="Your name"
-            type="text"
-            value={name}
-          />
+          <span className="relative block">
+            <svg aria-hidden="true" className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-white/28" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.7" /><path d="M4.5 21a7.5 7.5 0 0115 0" stroke="currentColor" strokeLinecap="round" strokeWidth="1.7" /></svg>
+            <input
+              className="auth-input min-h-12 w-full rounded-xl border border-white/10 bg-white/[0.035] px-4 pl-11 text-sm font-medium text-white outline-none transition placeholder:text-white/22 hover:border-white/20 focus:border-[#45ddce]/55 focus:bg-[#45ddce]/[0.035] focus:ring-4 focus:ring-[#45ddce]/10"
+              autoComplete="name"
+              onChange={(event) => setName(event.target.value)}
+              placeholder="Your full name"
+              type="text"
+              value={name}
+            />
+          </span>
         </label>
       ) : null}
 
-      <label className="grid gap-2 text-xs font-semibold text-slate-300">
-        <span>Email</span>
-        <input
-          className="min-h-12 w-full rounded-lg border border-white/12 bg-white/[0.05] px-3.5 text-sm font-medium text-white outline-none placeholder:text-slate-600 focus:border-cyan-300 focus:ring-4 focus:ring-cyan-300/10"
-          autoComplete="email"
-          onChange={(event) => setEmail(event.target.value)}
-          placeholder="you@company.com"
-          type="email"
-          value={email}
-        />
+      <label className="auth-field grid gap-2 text-xs font-bold text-white/65">
+        <span>Email address</span>
+        <span className="relative block">
+          <svg aria-hidden="true" className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-white/28" fill="none" viewBox="0 0 24 24"><rect height="15" rx="2.5" stroke="currentColor" strokeWidth="1.7" width="19" x="2.5" y="4.5" /><path d="M4 7l8 6 8-6" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" /></svg>
+          <input
+            className="auth-input min-h-12 w-full rounded-xl border border-white/10 bg-white/[0.035] px-4 pl-11 text-sm font-medium text-white outline-none transition placeholder:text-white/22 hover:border-white/20 focus:border-[#45ddce]/55 focus:bg-[#45ddce]/[0.035] focus:ring-4 focus:ring-[#45ddce]/10"
+            autoComplete="email"
+            onChange={(event) => setEmail(event.target.value)}
+            placeholder="name@company.com"
+            type="email"
+            value={email}
+          />
+        </span>
       </label>
 
-      <label className="grid gap-2 text-xs font-semibold text-slate-300">
+      {mode !== "forgot" ? <label className="auth-field grid gap-2 text-xs font-bold text-white/65">
         <span>Password</span>
-        <input
-          className="min-h-12 w-full rounded-lg border border-white/12 bg-white/[0.05] px-3.5 text-sm font-medium text-white outline-none placeholder:text-slate-600 focus:border-cyan-300 focus:ring-4 focus:ring-cyan-300/10"
-          autoComplete="current-password"
-          onChange={(event) => setPassword(event.target.value)}
-          placeholder="Minimum 8 characters"
-          type="password"
-          value={password}
-        />
-      </label>
+        <span className="relative block">
+          <svg aria-hidden="true" className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-white/28" fill="none" viewBox="0 0 24 24"><rect height="12" rx="2.5" stroke="currentColor" strokeWidth="1.7" width="17" x="3.5" y="9" /><path d="M7.5 9V6.5a4.5 4.5 0 019 0V9" stroke="currentColor" strokeLinecap="round" strokeWidth="1.7" /></svg>
+          <input
+            className="auth-input min-h-12 w-full rounded-xl border border-white/10 bg-white/[0.035] px-11 pr-12 text-sm font-medium text-white outline-none transition placeholder:text-white/22 hover:border-white/20 focus:border-[#45ddce]/55 focus:bg-[#45ddce]/[0.035] focus:ring-4 focus:ring-[#45ddce]/10"
+            autoComplete={mode === "login" ? "current-password" : "new-password"}
+            onChange={(event) => setPassword(event.target.value)}
+            placeholder="Enter your password"
+            type={showPassword ? "text" : "password"}
+            value={password}
+          />
+          <button
+            aria-label={showPassword ? "Hide password" : "Show password"}
+            className="absolute inset-y-0 right-0 grid w-12 place-items-center border-0 bg-transparent text-white/28 transition hover:text-[#75fff0]"
+            onClick={() => setShowPassword((current) => !current)}
+            type="button"
+          >
+            <svg aria-hidden="true" className="size-[17px]" fill="none" viewBox="0 0 24 24"><path d="M3 12c0-2.2 3.5-8 9-8s9 5.8 9 8-3.5 8-9 8-9-5.8-9-8z" stroke="currentColor" strokeWidth="1.7" /><circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.7" />{showPassword ? <path d="M4 4l16 16" stroke="currentColor" strokeLinecap="round" strokeWidth="1.7" /> : null}</svg>
+          </button>
+        </span>
+      </label> : null}
 
       {mode === "login" && needsTwoFactor ? (
-        <label className="grid gap-2 text-xs font-semibold text-slate-300">
+        <label className="auth-field grid gap-2 text-xs font-bold text-white/65">
           <span>Authenticator code</span>
           <input
-            className="min-h-12 w-full rounded-lg border border-white/12 bg-white/[0.05] px-3.5 text-sm font-medium text-white outline-none placeholder:text-slate-600 focus:border-cyan-300 focus:ring-4 focus:ring-cyan-300/10"
+            className="auth-input min-h-12 w-full rounded-xl border border-white/10 bg-white/[0.035] px-4 text-sm font-medium text-white outline-none transition placeholder:text-white/22 focus:border-[#45ddce]/55 focus:ring-4 focus:ring-[#45ddce]/10"
             autoComplete="one-time-code"
             inputMode="numeric"
             maxLength={6}
@@ -262,37 +213,70 @@ export function LoginForm() {
       ) : null}
 
       {error ? (
-        <p className="m-0 rounded-lg border border-rose-300/20 bg-rose-300/10 px-3.5 py-3 text-sm font-medium text-rose-200">
+        <p className="m-0 rounded-xl border border-rose-300/20 bg-rose-300/10 px-3.5 py-3 text-sm font-semibold text-rose-200">
           {error}
         </p>
       ) : null}
 
+      {recoveryNotice ? (
+        <div className="rounded-xl border border-[#45ddce]/20 bg-[#45ddce]/10 px-3.5 py-3 text-sm leading-5 text-[#a8fff5]">
+          <p className="m-0">{recoveryNotice}</p>
+          {developmentResetUrl ? <a className="mt-2 block break-all font-bold text-[#75fff0] underline underline-offset-2 hover:text-white" href={developmentResetUrl}>Open development reset link</a> : null}
+        </div>
+      ) : null}
+
+      {mode === "login" ? (
+        <div className="flex items-center justify-between gap-4 text-xs">
+          <label className="flex cursor-pointer items-center gap-2 text-white/48">
+            <input className="size-3.5 accent-[#45ddce]" checked={rememberMe} onChange={(event) => setRememberMe(event.target.checked)} type="checkbox" />
+            Remember me
+          </label>
+          <button
+            className="border-0 bg-transparent p-0 font-bold text-[#75fff0] transition hover:text-white"
+            onClick={() => {
+              setError("");
+              setRecoveryNotice("");
+              setMode("forgot");
+            }}
+            type="button"
+          >
+            Forgot password?
+          </button>
+        </div>
+      ) : null}
+
       <button
-        className="inline-flex min-h-12 items-center justify-center rounded-lg border-0 bg-[#08b8c8] text-sm font-extrabold text-slate-950 shadow-[0_16px_34px_rgba(8,184,200,0.22)] hover:bg-cyan-300 disabled:cursor-wait disabled:opacity-70"
+        className="auth-submit inline-flex min-h-12 items-center justify-center rounded-xl border-0 bg-[#45ddce] text-sm font-black text-[#02110d] shadow-[0_14px_32px_rgba(69,221,206,0.2)] transition hover:-translate-y-0.5 hover:bg-[#75fff0] disabled:cursor-wait disabled:opacity-70"
         disabled={isSubmitting}
         type="submit"
       >
         {isSubmitting
-          ? "Opening..."
+          ? mode === "forgot" ? "Sending..." : "Opening..."
           : mode === "login"
             ? "Sign in"
-            : "Create account"}
+            : mode === "register"
+              ? "Create account"
+              : recoveryNotice ? "Send again" : "Send reset link"}
       </button>
 
-      {mode === "login" ? <a className="text-center text-sm font-semibold text-cyan-200 hover:text-cyan-100" href="/forgot-password">Forgot password?</a> : null}
-
       <button
-        className="inline-flex min-h-10 items-center justify-center border-0 bg-transparent text-sm font-semibold text-cyan-200 hover:text-cyan-100 disabled:cursor-wait disabled:opacity-70"
+        className="inline-flex min-h-9 items-center justify-center border-0 bg-transparent text-xs font-semibold text-white/40 disabled:cursor-wait disabled:opacity-70"
         disabled={isSubmitting}
         onClick={() => {
           setError("");
+          setRecoveryNotice("");
+          setDevelopmentResetUrl("");
           setMode((current) => (current === "login" ? "register" : "login"));
         }}
         type="button"
       >
-        {mode === "login"
-          ? "Need an account? Create one"
-          : "Already have an account? Sign in"}
+        {mode === "login" ? (
+          <span>Don&apos;t have an account? <strong className="ml-1 text-[#75fff0] hover:text-white">Sign up</strong></span>
+        ) : mode === "register" ? (
+          <span>Already have an account? <strong className="ml-1 text-[#75fff0] hover:text-white">Sign in</strong></span>
+        ) : (
+          <span>Remembered your password? <strong className="ml-1 text-[#75fff0] hover:text-white">Back to sign in</strong></span>
+        )}
       </button>
     </form>
   );

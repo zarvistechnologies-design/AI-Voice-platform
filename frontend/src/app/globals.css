@@ -1,5 +1,36 @@
 @import "tailwindcss";
 
+@media (max-height: 700px) {
+  .login-auth-form {
+    gap: 0.65rem;
+  }
+
+  .login-auth-form .auth-heading {
+    gap: 0.35rem;
+    margin-bottom: 0;
+  }
+
+  .login-auth-form .auth-field {
+    gap: 0.35rem;
+  }
+
+  .login-auth-form .auth-input,
+  .login-auth-form .auth-submit {
+    min-height: 2.65rem;
+  }
+}
+
+@media (max-height: 590px) {
+  .login-auth-form .auth-description,
+  .login-auth-form .auth-heading > div {
+    display: none;
+  }
+
+  .login-capability-tags {
+    margin-top: 0.75rem;
+  }
+}
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
