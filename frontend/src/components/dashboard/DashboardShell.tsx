@@ -124,7 +124,7 @@ const defaultBehavior: AgentBehavior = {
   endpointingMode: "fast",
   responseDelayMs: 0,
   maxCallDurationSeconds: 1200,
-  maxIdleSeconds: 18,
+  maxIdleSeconds: 15,
   transferPhone: "",
   timezone: "UTC",
   voicemailMessage: "Sorry we missed you. Please leave a message after the tone.",
