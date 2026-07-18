@@ -1,5 +1,23 @@
 @import "tailwindcss";
 
+.login-auth-form input:-webkit-autofill,
+.login-auth-form input:-webkit-autofill:hover,
+.login-auth-form input:-webkit-autofill:focus,
+.login-auth-form input:-webkit-autofill:active {
+  -webkit-text-fill-color: #ffffff !important;
+  caret-color: #ffffff;
+  box-shadow: 0 0 0 1000px #08110f inset !important;
+  -webkit-box-shadow: 0 0 0 1000px #08110f inset !important;
+  border-color: rgb(69 221 206 / 0.55) !important;
+  transition: background-color 9999s ease-out 0s;
+}
+
+.login-auth-form input:autofill {
+  color: #ffffff !important;
+  background: #08110f !important;
+  border-color: rgb(69 221 206 / 0.55) !important;
+}
+
 @media (max-height: 700px) {
   .login-auth-form {
     gap: 0.65rem;
