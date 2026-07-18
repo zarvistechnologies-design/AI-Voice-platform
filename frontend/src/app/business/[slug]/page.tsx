@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 
-import { DetailPage } from "@/components/layout/DetailPage";
+import { UseCaseExperiencePage } from "@/components/layout/UseCaseExperiencePage";
 import { businessPages } from "@/config/site";
+import { useCaseExperiences } from "@/config/useCaseExperiences";
 
 type BusinessPageProps = {
   params: Promise<{
@@ -36,20 +37,11 @@ export async function generateMetadata({ params }: BusinessPageProps) {
 export default async function BusinessPage({ params }: BusinessPageProps) {
   const { slug } = await params;
   const business = useCasePages.find((item) => item.slug === slug);
+  const experience = useCaseExperiences[slug];
 
-  if (!business) {
+  if (!business || !experience) {
     notFound();
   }
 
-  return (
-    <DetailPage
-      kicker={business.kicker}
-      title={business.title}
-      summary={business.summary}
-      highlights={business.highlights}
-      sections={business.sections}
-      primaryAction={{ href: "/#contact", label: "Contact Sales" }}
-      secondaryAction={{ href: "/#demo", label: "Try Demo" }}
-    />
-  );
+  return <UseCaseExperiencePage business={business} experience={experience} />;
 }

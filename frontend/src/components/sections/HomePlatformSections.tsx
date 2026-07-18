@@ -136,13 +136,6 @@ const languageStats = [
   ["0.8s", "Avg. reply time"],
 ];
 
-const circuitNodes = [
-  ["Conversation AI", "left-[5%] top-[16%]"],
-  ["CRM Intelligence", "left-[7%] bottom-[15%]"],
-  ["Voice Operations", "right-[5%] top-[16%]"],
-  ["Workflow Engine", "right-[7%] bottom-[15%]"],
-];
-
 const companyLogos = [
   { name: "Google", src: "/images/company-logos/google.svg" },
   { name: "HubSpot", src: "/images/company-logos/hubspot.svg" },
@@ -208,7 +201,7 @@ const fitSections = [
     label: "Customer support & sales",
     columns: [
       {
-        title: "24/7 support automation",
+        title: "Customer support",
         body: "Handle routine questions around the clock and free your human agents for the conversations that need judgment.",
       },
       {
@@ -226,7 +219,7 @@ const fitSections = [
     label: "Virtual assistants",
     columns: [
       {
-        title: "Appointment handling",
+        title: "Appointment scheduling",
         body: "Schedule, reschedule, and confirm meetings with natural conversations connected to your calendar.",
       },
       {
@@ -254,6 +247,42 @@ const fitSections = [
       {
         title: "Cross-channel memory",
         body: "Let customers continue from device to phone or web while preserving the same conversation context.",
+      },
+    ],
+  },
+  {
+    key: "healthcare",
+    label: "Healthcare appointments",
+    columns: [
+      {
+        title: "Patient appointment booking",
+        body: "Schedule, reschedule, or cancel patient visits against live availability without keeping callers on hold.",
+      },
+      {
+        title: "Reminders and follow-ups",
+        body: "Confirm upcoming visits, share preparation guidance, and follow up after appointments automatically.",
+      },
+      {
+        title: "After-hours patient routing",
+        body: "Capture patient needs after hours and route urgent or sensitive requests to the right care team.",
+      },
+    ],
+  },
+  {
+    key: "hospitality",
+    label: "Travel & hospitality",
+    columns: [
+      {
+        title: "Reservation support",
+        body: "Handle booking questions, confirm reservations, and help guests make changes through natural phone conversations.",
+      },
+      {
+        title: "Guest assistance",
+        body: "Answer common stay and travel questions while routing urgent or high-touch requests to the right team.",
+      },
+      {
+        title: "Multilingual service",
+        body: "Support travelers across languages and time zones with consistent information and clear human handoffs.",
       },
     ],
   },
@@ -399,60 +428,159 @@ function GlowButton({ children, href }: { children: string; href: string }) {
   );
 }
 
-function CircuitHero() {
-  return (
-    <div className="vozon-circuit relative mx-auto mt-14 h-[380px] w-full max-w-[1040px] overflow-hidden max-lg:h-[330px] max-sm:h-[270px]">
-      <div className="vozon-dust absolute left-1/2 top-1/2 size-[360px] -translate-x-1/2 -translate-y-1/2 rounded-full max-sm:size-[250px]" />
-      <svg
-        className="absolute inset-x-0 top-1/2 z-10 mx-auto h-[250px] w-full max-w-[980px] -translate-y-1/2 overflow-visible max-sm:h-[190px]"
-        fill="none"
-        viewBox="0 0 980 250"
-        aria-hidden="true"
-      >
-        <defs>
-          <linearGradient id="vozonCircuitLine" x1="110" x2="870" y1="0" y2="0" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#0d4743" stopOpacity="0" />
-            <stop offset="0.24" stopColor="#22f4d2" stopOpacity="0.74" />
-            <stop offset="0.5" stopColor="#59fff0" stopOpacity="0.48" />
-            <stop offset="0.76" stopColor="#22f4d2" stopOpacity="0.74" />
-            <stop offset="1" stopColor="#0d4743" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        <g stroke="url(#vozonCircuitLine)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6">
-          <path d="M120 58H250L318 104H414" />
-          <path d="M120 192H250L318 146H414" />
-          <path d="M860 58H730L662 104H566" />
-          <path d="M860 192H730L662 146H566" />
-          <path d="M304 125H414" opacity="0.72" />
-          <path d="M566 125H676" opacity="0.72" />
-        </g>
-        <g fill="#22f4d2">
-          {[318, 414, 566, 662].map((cx, index) => (
-            <circle className="vozon-circuit-dot" cx={cx} cy={index % 2 === 0 ? 104 : 146} key={index} r="3.5" />
-          ))}
-        </g>
+function JourneyOutcomeIcon({ icon }: { icon: "calendar" | "database" | "message" }) {
+  if (icon === "calendar") {
+    return (
+      <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" viewBox="0 0 24 24" aria-hidden="true">
+        <rect height="17" rx="3" width="18" x="3" y="4" />
+        <path d="M8 2v4M16 2v4M3 9h18M8 14h3M8 17h6" />
       </svg>
+    );
+  }
 
-      <div className="absolute left-1/2 top-1/2 z-20 grid size-56 -translate-x-1/2 -translate-y-1/2 place-items-center overflow-hidden rounded-full border border-[#1df7cf]/45 bg-[radial-gradient(circle_at_50%_38%,rgba(46,255,224,0.22),rgba(2,17,14,0.88)_54%,rgba(0,0,0,0.72)_100%)] shadow-[0_0_90px_rgba(26,244,205,0.2)] max-sm:size-40">
-        <div className="vozon-orbit absolute left-1/2 top-1/2 size-[calc(100%_-_20px)] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#27f4d2]/20" />
-        <div className="vozon-orbit vozon-orbit-reverse absolute left-1/2 top-1/2 size-[66%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#8afff2]/16" />
-        <div className="absolute inset-4 rounded-full border border-[#1fcfb4]/28" />
-        <div className="absolute inset-10 rounded-full border border-[#25e6cb]/36 max-sm:inset-7" />
-        <div className="absolute inset-16 rounded-full border border-[#25e6cb]/30 max-sm:inset-11" />
-        <div className="relative z-10 grid min-h-24 w-28 place-items-center rounded-[24px] border border-[#22e7ca]/60 bg-[#061b18]/92 px-3 text-center shadow-[0_0_38px_rgba(33,244,207,0.32)] max-sm:min-h-16 max-sm:w-20 max-sm:rounded-[18px]">
-          <span className="text-[11px] font-semibold uppercase text-white/50 max-sm:text-[8px]">Vozon</span>
-          <span className="text-lg font-black leading-tight text-[#69fff0] max-sm:text-xs">Core Hub</span>
+  if (icon === "database") {
+    return (
+      <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" viewBox="0 0 24 24" aria-hidden="true">
+        <ellipse cx="12" cy="5" rx="8" ry="3" />
+        <path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 5.5h16v11H9l-5 4v-15Z" />
+      <path d="m8 11 2.2 2.2L16 8.5" />
+    </svg>
+  );
+}
+
+
+
+
+function HeroBenefitIcon({ icon }: { icon: "clock" | "bolt" | "globe" }) {
+  if (icon === "clock") {
+    return (
+      <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 7v5l3 2" />
+      </svg>
+    );
+  }
+
+  if (icon === "bolt") {
+    return (
+      <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="m13.5 2-8 12h6l-1 8 8-12h-6l1-8Z" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M3.5 9h17M3.5 15h17M12 3c2.4 2.5 3.6 5.5 3.6 9S14.4 18.5 12 21M12 3C9.6 5.5 8.4 8.5 8.4 12s1.2 6.5 3.6 9" />
+    </svg>
+  );
+}
+
+function CircuitHero() {
+  const outcomes = [
+    { icon: "calendar" as const, label: "Appointment booked", detail: "Tomorrow · 4:00 PM" },
+    { icon: "database" as const, label: "CRM updated", detail: "Contact and summary saved" },
+    { icon: "message" as const, label: "Follow-up sent", detail: "Confirmation delivered" },
+  ];
+  const benefits = [
+    { icon: "clock" as const, value: "24/7", label: "Always available" },
+    { icon: "bolt" as const, value: "0.8s", label: "Average response" },
+    { icon: "globe" as const, value: "40+", label: "Languages supported" },
+  ];
+
+  return (
+    <div
+      aria-label="A customer request enters Vozon as a phone call. The AI voice agent responds and automatically books an appointment, updates the CRM, and sends a follow-up."
+      className="vozon-circuit vozon-orbit-flow relative mx-auto mt-20 w-full max-w-[1180px] px-1 pb-2 text-left sm:mt-12 sm:px-4"
+      role="group"
+    >
+      <div className="vozon-orbit-stage relative min-h-[450px]">
+        <svg className="vozon-orbit-paths absolute inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 1120 450" aria-hidden="true">
+          <defs>
+            <linearGradient id="vozonVoiceInput" x1="80" x2="430" y1="225" y2="225" gradientUnits="userSpaceOnUse">
+              <stop stopColor="#45ddce" stopOpacity="0.14" />
+              <stop offset="1" stopColor="#86fff3" stopOpacity="0.9" />
+            </linearGradient>
+            <linearGradient id="vozonActionOutput" x1="690" x2="930" y1="225" y2="225" gradientUnits="userSpaceOnUse">
+              <stop stopColor="#86fff3" stopOpacity="0.86" />
+              <stop offset="1" stopColor="#45ddce" stopOpacity="0.18" />
+            </linearGradient>
+          </defs>
+          <path className="vozon-orbit-input-glow" d="M58 225H135c12 0 16-18 24-18s11 42 20 42 12-70 22-70 12 84 23 84 12-58 22-58 12 42 22 42 11-22 22-22h126" stroke="#45ddce" strokeLinecap="round" strokeWidth="10" />
+          <path className="vozon-orbit-input" d="M58 225H135c12 0 16-18 24-18s11 42 20 42 12-70 22-70 12 84 23 84 12-58 22-58 12 42 22 42 11-22 22-22h126" stroke="url(#vozonVoiceInput)" strokeLinecap="round" strokeWidth="2" />
+          <path className="vozon-orbit-output" d="M704 225C775 225 782 137 900 137M704 225H900M704 225C775 225 782 313 900 313" stroke="url(#vozonActionOutput)" strokeLinecap="round" strokeWidth="2" />
+          <path className="vozon-orbit-pulse" d="M58 225H416" pathLength="1" stroke="#c0fff9" strokeLinecap="round" strokeWidth="4" />
+          <path className="vozon-orbit-pulse vozon-orbit-pulse-out" d="M704 225C775 225 782 137 900 137M704 225H900M704 225C775 225 782 313 900 313" pathLength="1" stroke="#c0fff9" strokeLinecap="round" strokeWidth="4" />
+        </svg>
+
+        <article className="vozon-orbit-caller z-20 text-center">
+          <div className="vozon-orbit-phone relative mx-auto grid size-[76px] place-items-center rounded-full border border-[#45ddce]/34 bg-[#45ddce]/10 text-[#9bfff5]">
+            <svg className="size-8" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.9" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6.6 3.8 9 7.9 7.4 9.6c1.4 3 3.8 5.4 6.8 6.8l1.7-1.6 4.2 2.4-.7 3.2c-.2.8-.9 1.3-1.7 1.3C9.2 21.7 2.3 14.8 2.3 6.3c0-.8.5-1.5 1.3-1.7l3-.8Z" />
+            </svg>
+          </div>
+          <span className="mt-3 block text-[10px] font-black uppercase tracking-[0.16em] text-[#83fff2]">Customer calls your business</span>
+          <div className="vozon-orbit-speech mt-4 rounded-2xl rounded-tl-sm border border-white/20 bg-white/[0.1] px-5 py-4 text-[13px] font-extrabold leading-5 text-white/95 backdrop-blur">
+            “Can I book an appointment for tomorrow afternoon?”
+          </div>
+        </article>
+
+        <div className="vozon-orbit-core z-30 size-[290px]">
+          <span className="vozon-orbit-ring vozon-orbit-ring-one absolute inset-[-22px] rounded-full border border-[#45ddce]/16" aria-hidden="true" />
+          <span className="vozon-orbit-ring vozon-orbit-ring-two absolute inset-[-44px] rounded-full border border-[#45ddce]/10" aria-hidden="true" />
+          <div className="vozon-orbit-core-inner absolute inset-0 grid place-items-center rounded-full border border-[#45ddce]/44 text-center">
+            <div>
+              <span className="vozon-orbit-live mx-auto mb-3 flex w-fit items-center gap-1.5 text-[7px] font-black uppercase tracking-[0.16em] text-white/42">
+                <span className="size-1.5 rounded-full bg-[#45ddce]" /> Live voice conversation
+              </span>
+              <span className="text-2xl font-black tracking-[0.18em] text-[#8efff4] drop-shadow-[0_0_16px_rgba(69,221,206,0.34)]">VOZON</span>
+              <strong className="mt-1.5 block text-[11px] font-black uppercase tracking-[0.22em] text-white/78">AI Voice Agent</strong>
+              <div className="mt-5 flex h-9 items-center justify-center gap-1.5" aria-label="AI voice agent responding">
+                {[11, 22, 15, 31, 20, 34, 17, 27, 12].map((height, index) => (
+                  <span className="vozon-orbit-wave w-1 rounded-full bg-[#64eddd]" key={index} style={{ height, animationDelay: `${index * 70}ms` }} />
+                ))}
+              </div>
+              <span className="vozon-orbit-intent mx-auto mt-4 flex w-fit items-center gap-1.5 rounded-full border border-[#45ddce]/18 bg-[#45ddce]/[0.07] px-3 py-1.5 text-[8px] font-black text-[#83f7ea]">
+                <span className="size-1.5 rounded-full bg-[#45ddce]" /> Understood: book appointment
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="vozon-orbit-outcomes relative z-20 space-y-4">
+          <span className="vozon-orbit-outcomes-title absolute -top-8 left-0 right-0 block text-center text-[9px] font-black uppercase tracking-[0.16em] text-[#83fff2]">Work completed automatically</span>
+          {outcomes.map((outcome) => (
+            <article className="vozon-orbit-outcome flex items-center gap-3 rounded-2xl border border-[#45ddce]/30 bg-[#08251f]/95 px-4 py-4 backdrop-blur" key={outcome.label}>
+              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#45ddce]/15 p-2.5 text-[#94fff4]"><JourneyOutcomeIcon icon={outcome.icon} /></span>
+              <div className="min-w-0 flex-1">
+                <strong className="block truncate text-[13px] font-black text-white/94">{outcome.label}</strong>
+                <span className="mt-1 block truncate text-[9px] font-semibold text-white/50">{outcome.detail}</span>
+              </div>
+              <span className="vozon-orbit-check grid size-6 shrink-0 place-items-center rounded-full border border-[#45ddce]/40 bg-[#45ddce]/18 text-[10px] font-black text-[#a0fff6]">✓</span>
+            </article>
+          ))}
         </div>
       </div>
 
-      {circuitNodes.map(([label, position]) => (
-        <div
-          className={`vozon-node-chip absolute z-30 grid min-h-16 w-[168px] place-items-center rounded-2xl border border-[#1cf4c8]/38 bg-[#06201c]/88 px-4 text-center text-sm font-black leading-tight text-[#d9fff9] shadow-[0_0_26px_rgba(30,245,207,0.16)] backdrop-blur max-lg:w-[150px] max-sm:min-h-11 max-sm:w-[104px] max-sm:rounded-xl max-sm:px-2 max-sm:text-[10px] ${position}`}
-          key={label}
-        >
-          {label}
-        </div>
-      ))}
+      <div className="vozon-orbit-benefits mx-auto mt-4 grid max-w-[880px] gap-5 sm:grid-cols-3 sm:gap-4">
+        {benefits.map((benefit) => (
+          <div className="vozon-orbit-benefit flex items-center justify-center gap-4 px-4 py-3" key={benefit.label}>
+            <span className="grid size-12 shrink-0 place-items-center rounded-full p-3 text-[#83f7ea]"><HeroBenefitIcon icon={benefit.icon} /></span>
+            <div>
+              <strong className="block text-xl font-black text-white">{benefit.value}</strong>
+              <span className="mt-0.5 block text-[10px] font-bold uppercase tracking-[0.11em] text-white/56">{benefit.label}</span>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -466,6 +594,7 @@ export function HomePlatformSections() {
   const selectedLanguage =
     languageOptions.find((language) => language.code === selectedLanguageCode) ?? languageOptions[0];
   const selectedFit = fitSections.find((section) => section.key === selectedFitKey) ?? fitSections[0];
+  const selectedFitIndex = Math.max(0, fitSections.findIndex((section) => section.key === selectedFit.key));
 
   useEffect(() => {
     return () => {
@@ -513,7 +642,7 @@ export function HomePlatformSections() {
           <span className="size-2 rounded-full bg-[#22f4d2] shadow-[0_0_14px_#22f4d2]" />
           Voice Agents Live Now
         </div>
-        <h1 className="mx-auto m-0 max-w-5xl text-[clamp(2.1rem,5.6vw,4.7rem)] font-black leading-[0.98] tracking-[-0.03em] text-white">
+        <h1 className="mx-auto m-0 max-w-5xl text-[clamp(1.75rem,8vw,2.1rem)] font-black leading-[1.02] tracking-[-0.025em] text-white [overflow-wrap:anywhere] sm:text-[clamp(2.1rem,5.6vw,4.7rem)] sm:leading-[0.98] sm:tracking-[-0.03em]">
           Launch enterprise-ready{" "}
           <span>AI voice agents</span>
         </h1>
@@ -816,7 +945,7 @@ export function HomePlatformSections() {
                 <button
                   aria-controls={`vozon-fit-panel-${section.key}`}
                   aria-selected={selectedFit.key === section.key}
-                  className={`vozon-fit-tab min-w-0 px-4 py-4 text-left font-bold transition ${
+                  className={`vozon-fit-tab vozon-fit-tab-tone-${index + 1} min-w-0 px-4 py-4 text-left font-bold transition ${
                     selectedFit.key === section.key ? "vozon-fit-tab-active text-white" : "text-white/55 hover:text-white/78"
                   }`}
                   id={`vozon-fit-tab-${section.key}`}
@@ -835,198 +964,28 @@ export function HomePlatformSections() {
 
             <div
               aria-labelledby={`vozon-fit-tab-${selectedFit.key}`}
-              className="vozon-fit-content-grid grid lg:grid-cols-3"
+              className={`vozon-fit-content-grid vozon-fit-theme-${selectedFitIndex + 1} grid lg:grid-cols-3`}
               id={`vozon-fit-panel-${selectedFit.key}`}
               role="tabpanel"
             >
               {selectedFit.columns.map((column, index) => (
-                <article className="vozon-fit-content min-h-[250px] px-7 py-8 sm:px-8 sm:py-9" key={column.title}>
-                  <span className="vozon-fit-index mb-7 grid size-10 place-items-center rounded-lg text-xs font-black">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
+                <article
+                  className="vozon-fit-content min-h-[250px] px-7 py-8 sm:px-8 sm:py-9"
+                  key={column.title}
+                >
+                  <div className="vozon-fit-card-meta mb-7 flex items-center gap-3">
+                    <span className="vozon-fit-index grid size-10 place-items-center rounded-lg text-xs font-black">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span className="vozon-fit-kicker text-[10px] font-black uppercase tracking-[0.18em]">
+                      Use case
+                    </span>
+                  </div>
                   <h3 className="m-0 text-xl font-black leading-tight text-white">{column.title}</h3>
                   <p className="mt-4 mb-0 text-sm leading-7 text-white/58 sm:text-base">{column.body}</p>
                 </article>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="vozon-dashboard-showcase relative overflow-hidden px-5 pb-16 pt-4 sm:px-8 sm:pt-5 lg:pb-24 lg:pt-6">
-        <div className="relative z-10 mx-auto max-w-[1240px]">
-          <div className="mx-auto max-w-3xl text-center">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#45ddce]/24 bg-[#45ddce]/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#75fff0]">
-              <span className="size-1.5 rounded-full bg-[#45ddce] shadow-[0_0_12px_#45ddce]" />
-              Command Center
-            </div>
-            <h2 className="vozon-platform-heading m-0 text-white">
-              See every conversation.
-              <span className="block text-white/42">Control every outcome.</span>
-            </h2>
-            <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/56 sm:text-base">
-              Launch agents, monitor live calls, and turn every interaction into clear business insight from one focused workspace.
-            </p>
-          </div>
-
-          <div className="vozon-dashboard-stage relative mt-12 lg:mt-16">
-            <div className="vozon-dashboard-window overflow-hidden rounded-[22px] border border-white/12 bg-[#07110f] shadow-[0_42px_120px_rgba(0,0,0,0.72)]">
-              <div className="flex h-11 items-center justify-between border-b border-white/[0.07] bg-white/[0.025] px-4 sm:px-5">
-                <div className="flex items-center gap-2">
-                  <span className="size-2.5 rounded-full bg-[#ff6b61]" />
-                  <span className="size-2.5 rounded-full bg-[#f3c34e]" />
-                  <span className="size-2.5 rounded-full bg-[#48d597]" />
-                </div>
-                <div className="flex h-6 w-40 items-center justify-center rounded-md border border-white/[0.06] bg-black/25 text-[8px] font-bold tracking-[0.08em] text-white/25 sm:w-64">
-                  app.vozon.ai/dashboard
-                </div>
-                <span className="w-[38px] text-right text-[9px] font-black text-[#45ddce]">LIVE</span>
-              </div>
-
-              <div className="grid min-h-[550px] grid-cols-1 sm:grid-cols-[170px_minmax(0,1fr)] lg:grid-cols-[210px_minmax(0,1fr)]">
-                <aside className="hidden border-r border-white/[0.07] bg-black/20 px-4 py-5 sm:flex sm:flex-col">
-                  <div className="mb-7 flex items-center gap-2.5 px-2">
-                    <div className="grid size-8 place-items-center rounded-lg bg-[#45ddce] text-xs font-black text-[#03110e]">V</div>
-                    <span className="text-sm font-black tracking-tight text-white">vozon.ai</span>
-                  </div>
-                  <p className="px-2 text-[8px] font-black uppercase tracking-[0.18em] text-white/24">Workspace</p>
-                  <nav className="mt-3 space-y-1.5" aria-label="Dashboard preview navigation">
-                    {[
-                      ["Overview", "⌂"],
-                      ["AI Agents", "✦"],
-                      ["Campaigns", "◫"],
-                      ["Call History", "↗"],
-                      ["Knowledge", "◇"],
-                      ["Integrations", "+"],
-                    ].map(([label, icon], index) => (
-                      <div
-                        className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-[11px] font-bold ${index === 0 ? "bg-[#45ddce]/10 text-[#82fff2]" : "text-white/38"}`}
-                        key={label}
-                      >
-                        <span className="grid size-5 place-items-center text-xs">{icon}</span>
-                        {label}
-                      </div>
-                    ))}
-                  </nav>
-                  <div className="mt-auto rounded-xl border border-[#45ddce]/14 bg-[#45ddce]/[0.05] p-3">
-                    <div className="flex items-center gap-2 text-[10px] font-black text-white/72">
-                      <span className="size-2 rounded-full bg-[#45ddce] shadow-[0_0_8px_#45ddce]" /> System healthy
-                    </div>
-                    <p className="mb-0 mt-2 text-[9px] leading-4 text-white/28">All voice services operational</p>
-                  </div>
-                </aside>
-
-                <div className="min-w-0 bg-[radial-gradient(circle_at_75%_0%,rgba(69,221,206,0.06),transparent_30%)] p-4 sm:p-5 lg:p-7">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="m-0 text-[9px] font-bold uppercase tracking-[0.13em] text-white/28">Sunday, 12 July</p>
-                      <h3 className="mb-0 mt-1 text-xl font-black text-white sm:text-2xl">Welcome back</h3>
-                    </div>
-                    <a className="rounded-lg bg-[#45ddce] px-3 py-2 text-[9px] font-black text-[#041310] shadow-[0_10px_28px_rgba(69,221,206,0.18)] sm:px-4 sm:text-[10px]" href="/dashboard">
-                      + Create agent
-                    </a>
-                  </div>
-
-                  <div className="mt-6 grid grid-cols-2 gap-2.5 lg:grid-cols-4">
-                    {[
-                      ["Total calls", "2,846", "+18.4%"],
-                      ["Avg. duration", "03:42", "+6.2%"],
-                      ["Success rate", "91.8%", "+4.7%"],
-                      ["Active agents", "12", "8 online"],
-                    ].map(([label, value, trend]) => (
-                      <article className="vozon-dashboard-stat rounded-xl border border-white/[0.07] p-3.5 lg:p-4" key={label}>
-                        <p className="m-0 text-[9px] font-bold text-white/32">{label}</p>
-                        <div className="mt-3 flex items-end justify-between gap-2">
-                          <strong className="text-lg font-black tracking-tight text-white lg:text-xl">{value}</strong>
-                          <span className="mb-0.5 text-[8px] font-black text-[#54e8c7]">{trend}</span>
-                        </div>
-                      </article>
-                    ))}
-                  </div>
-
-                  <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(0,1.65fr)_minmax(220px,0.8fr)]">
-                    <article className="rounded-xl border border-white/[0.07] bg-black/20 p-4 sm:p-5">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h4 className="m-0 text-xs font-black text-white">Call activity</h4>
-                          <p className="mb-0 mt-1 text-[9px] text-white/28">Performance over the last 7 days</p>
-                        </div>
-                        <span className="rounded-md border border-white/[0.07] px-2 py-1 text-[8px] font-bold text-white/36">This week⌄</span>
-                      </div>
-                      <div className="vozon-dashboard-chart relative mt-6 h-36 overflow-hidden">
-                        <div className="absolute inset-0 grid grid-rows-4">
-                          {[0, 1, 2, 3].map((line) => <span className="border-t border-white/[0.045]" key={line} />)}
-                        </div>
-                        <svg aria-label="Rising call activity chart" className="absolute inset-0 size-full overflow-visible" preserveAspectRatio="none" role="img" viewBox="0 0 600 150">
-                          <defs>
-                            <linearGradient id="dashboardChartFill" x1="0" x2="0" y1="0" y2="1">
-                              <stop offset="0%" stopColor="#45ddce" stopOpacity=".28" />
-                              <stop offset="100%" stopColor="#45ddce" stopOpacity="0" />
-                            </linearGradient>
-                          </defs>
-                          <path d="M0 125 C45 116 70 92 112 104 S175 120 220 81 S285 71 325 85 S395 96 432 55 S510 72 600 24 L600 150 L0 150 Z" fill="url(#dashboardChartFill)" />
-                          <path d="M0 125 C45 116 70 92 112 104 S175 120 220 81 S285 71 325 85 S395 96 432 55 S510 72 600 24" fill="none" stroke="#45ddce" strokeLinecap="round" strokeWidth="3" vectorEffect="non-scaling-stroke" />
-                        </svg>
-                        <div className="absolute bottom-0 left-0 right-0 flex justify-between text-[7px] font-bold text-white/20">
-                          {['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'].map((day) => <span key={day}>{day}</span>)}
-                        </div>
-                      </div>
-                    </article>
-
-                    <article className="rounded-xl border border-white/[0.07] bg-black/20 p-4 sm:p-5">
-                      <div className="flex items-center justify-between">
-                        <h4 className="m-0 text-xs font-black text-white">Live agents</h4>
-                        <span className="text-[8px] font-black text-[#45ddce]">VIEW ALL</span>
-                      </div>
-                      <div className="mt-4 space-y-3">
-                        {[
-                          ["Maya", "Sales assistant", "01:24"],
-                          ["Arjun", "Customer care", "04:08"],
-                          ["Nora", "Booking agent", "00:47"],
-                          ["Leo", "Lead qualifier", "02:16"],
-                        ].map(([name, role, time], index) => (
-                          <div className="flex items-center gap-3" key={name}>
-                            <div className="relative grid size-8 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#45ddce]/25 to-[#568dff]/20 text-[9px] font-black text-white/80">
-                              {name.slice(0, 1)}
-                              <span className="absolute bottom-0 right-0 size-2 rounded-full border border-[#07110f] bg-[#45ddce]" />
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <p className="m-0 truncate text-[10px] font-black text-white/78">{name}</p>
-                              <p className="mb-0 mt-0.5 truncate text-[8px] text-white/26">{role}</p>
-                            </div>
-                            <div className="flex items-center gap-0.5">
-                              {[0, 1, 2, 3].map((bar) => <span className="vozon-dashboard-wave w-0.5 rounded-full bg-[#45ddce]" key={bar} style={{ animationDelay: `${index * 90 + bar * 70}ms` }} />)}
-                            </div>
-                            <span className="text-[8px] font-bold text-white/30">{time}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </article>
-                  </div>
-
-                  <div className="mt-3 hidden rounded-xl border border-white/[0.07] bg-black/20 p-4 md:block">
-                    <div className="mb-3 flex items-center justify-between">
-                      <h4 className="m-0 text-xs font-black text-white">Recent conversations</h4>
-                      <span className="text-[8px] font-bold text-white/28">Updated just now</span>
-                    </div>
-                    <div className="grid grid-cols-[1.1fr_1fr_.65fr_.55fr] border-b border-white/[0.05] pb-2 text-[7px] font-black uppercase tracking-wider text-white/20">
-                      <span>Contact</span><span>Agent</span><span>Duration</span><span>Status</span>
-                    </div>
-                    {[["Priya Sharma", "Maya · Sales", "03:18"], ["Daniel Kim", "Arjun · Support", "05:42"]].map(([contact, agent, duration]) => (
-                      <div className="grid grid-cols-[1.1fr_1fr_.65fr_.55fr] items-center border-b border-white/[0.035] py-2.5 text-[8px] text-white/45 last:border-0" key={contact}>
-                        <strong className="font-bold text-white/70">{contact}</strong><span>{agent}</span><span>{duration}</span><span className="w-fit rounded-full bg-[#45ddce]/10 px-2 py-1 font-black text-[#60e8d7]">Resolved</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="vozon-dashboard-glow absolute -bottom-16 left-1/2 -z-10 h-40 w-3/4 -translate-x-1/2 rounded-full bg-[#45ddce]/20 blur-[90px]" />
-          </div>
-
-          <div className="mt-10 flex flex-col items-center justify-center gap-4 text-center sm:flex-row">
-            <a className="vozon-glow-button inline-flex min-h-11 items-center justify-center rounded-full px-6 text-xs font-black text-[#03110e]" href="/dashboard">Explore the dashboard <span className="ml-2">↗</span></a>
-            <p className="m-0 text-xs text-white/34">Built for clarity. Ready for scale.</p>
           </div>
         </div>
       </section>
@@ -1236,23 +1195,47 @@ export function HomePlatformSections() {
 
         .vozon-fit-tabs {
           display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-          gap: 0.5rem;
+          grid-template-columns: repeat(5, minmax(0, 1fr));
+          gap: 0.45rem;
           padding: 0.5rem;
           border-bottom: 1px solid rgba(255,255,255,0.08);
           background: rgba(0,5,3,0.35);
         }
 
         .vozon-fit-tab {
+          --vozon-fit-tab-accent: 69, 221, 206;
           position: relative;
           display: flex;
           min-height: 66px;
           align-items: center;
           gap: 0.85rem;
           overflow: hidden;
-          border: 1px solid transparent;
+          border: 1px solid rgba(var(--vozon-fit-tab-accent), 0.16);
           border-radius: 10px;
-          background: transparent;
+          background: rgba(var(--vozon-fit-tab-accent), 0.025);
+        }
+
+        .vozon-fit-tab-tone-2 { --vozon-fit-tab-accent: 143, 131, 232; }
+        .vozon-fit-tab-tone-3 { --vozon-fit-tab-accent: 71, 170, 255; }
+        .vozon-fit-tab-tone-4 { --vozon-fit-tab-accent: 242, 141, 69; }
+        .vozon-fit-tab-tone-5 { --vozon-fit-tab-accent: 242, 210, 75; }
+
+        .vozon-fit-tab::after {
+          content: "";
+          position: absolute;
+          right: 0.75rem;
+          bottom: 0;
+          left: 0.75rem;
+          height: 2px;
+          border-radius: 999px;
+          background: rgb(var(--vozon-fit-tab-accent));
+          opacity: 0.3;
+          transition: opacity 180ms ease, box-shadow 180ms ease;
+        }
+
+        .vozon-fit-tab:hover {
+          border-color: rgba(var(--vozon-fit-tab-accent), 0.34);
+          background: rgba(var(--vozon-fit-tab-accent), 0.055);
         }
 
         .vozon-fit-tab-number {
@@ -1263,8 +1246,8 @@ export function HomePlatformSections() {
           place-items: center;
           border: 1px solid rgba(255,255,255,0.1);
           border-radius: 8px;
-          background: rgba(255,255,255,0.035);
-          color: rgba(255,255,255,0.38);
+          background: rgba(var(--vozon-fit-tab-accent), 0.07);
+          color: rgba(var(--vozon-fit-tab-accent), 0.76);
           font-size: 0.65rem;
           transition: border-color 180ms ease, background 180ms ease, color 180ms ease;
         }
@@ -1277,30 +1260,43 @@ export function HomePlatformSections() {
 
         .vozon-fit-tab-active {
           background:
-            linear-gradient(110deg, rgba(69,221,206,0.16), rgba(72,219,139,0.06)),
+            linear-gradient(110deg, rgba(var(--vozon-fit-tab-accent), 0.16), rgba(var(--vozon-fit-tab-accent), 0.055)),
             rgba(255,255,255,0.035);
-          border-color: rgba(69,221,206,0.26);
-          box-shadow: inset 0 0 32px rgba(69,221,206,0.05);
+          border-color: rgba(var(--vozon-fit-tab-accent), 0.3);
+          box-shadow: inset 0 0 32px rgba(var(--vozon-fit-tab-accent), 0.055);
+        }
+
+        .vozon-fit-tab-active::after {
+          opacity: 1;
+          box-shadow: 0 0 12px rgba(var(--vozon-fit-tab-accent), 0.52);
         }
 
         .vozon-fit-tab-active .vozon-fit-tab-number {
-          border-color: rgba(117,255,240,0.38);
-          background: #45ddce;
+          border-color: rgba(var(--vozon-fit-tab-accent), 0.44);
+          background: rgb(var(--vozon-fit-tab-accent));
           color: #02110d;
-          box-shadow: 0 0 20px rgba(69,221,206,0.18);
+          box-shadow: 0 0 20px rgba(var(--vozon-fit-tab-accent), 0.2);
         }
 
         .vozon-fit-content {
           border-right: 1px solid rgba(255,255,255,0.08);
+          border-top: 2px solid rgba(var(--vozon-fit-accent), 0.68);
           background:
+            radial-gradient(circle at 12% 0%, rgba(var(--vozon-fit-accent), 0.1), transparent 34%),
             linear-gradient(150deg, rgba(255,255,255,0.035), rgba(255,255,255,0.008)),
             rgba(2,12,10,0.34);
           transition: background 180ms ease, box-shadow 180ms ease;
         }
 
         .vozon-fit-content-grid {
+          --vozon-fit-accent: 69, 221, 206;
           background: rgba(0,5,3,0.12);
         }
+
+        .vozon-fit-theme-2 { --vozon-fit-accent: 143, 131, 232; }
+        .vozon-fit-theme-3 { --vozon-fit-accent: 71, 170, 255; }
+        .vozon-fit-theme-4 { --vozon-fit-accent: 242, 141, 69; }
+        .vozon-fit-theme-5 { --vozon-fit-accent: 242, 210, 75; }
 
         .vozon-fit-content:last-child {
           border-right: 0;
@@ -1308,16 +1304,21 @@ export function HomePlatformSections() {
 
         .vozon-fit-content:hover {
           background:
-            linear-gradient(150deg, rgba(69,221,206,0.08), rgba(255,255,255,0.012)),
+            radial-gradient(circle at 12% 0%, rgba(var(--vozon-fit-accent), 0.16), transparent 38%),
+            linear-gradient(150deg, rgba(var(--vozon-fit-accent), 0.07), rgba(255,255,255,0.012)),
             rgba(2,12,10,0.48);
-          box-shadow: inset 0 1px 0 rgba(117,255,240,0.12);
+          box-shadow: inset 0 1px 0 rgba(var(--vozon-fit-accent), 0.18);
         }
 
         .vozon-fit-index {
-          border: 1px solid rgba(69,221,206,0.25);
-          background: rgba(69,221,206,0.08);
-          color: #75fff0;
-          box-shadow: inset 0 0 18px rgba(69,221,206,0.04);
+          border: 1px solid rgba(var(--vozon-fit-accent), 0.34);
+          background: rgba(var(--vozon-fit-accent), 0.1);
+          color: rgb(var(--vozon-fit-accent));
+          box-shadow: inset 0 0 18px rgba(var(--vozon-fit-accent), 0.05);
+        }
+
+        .vozon-fit-kicker {
+          color: rgba(var(--vozon-fit-accent), 0.82);
         }
 
         .vozon-company-marquee-section {
@@ -1618,73 +1619,6 @@ export function HomePlatformSections() {
           .vozon-operations-scroll-hint {
             display: none;
           }
-        }
-
-        .vozon-dashboard-showcase {
-          background:
-            radial-gradient(circle at 50% 26%, rgba(69,221,206,0.09), transparent 31%),
-            linear-gradient(180deg, #000 0%, #020806 50%, #000 100%);
-        }
-
-        .vozon-dashboard-showcase::before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          pointer-events: none;
-          background-image:
-            linear-gradient(rgba(69,221,206,0.025) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(69,221,206,0.025) 1px, transparent 1px);
-          background-size: 52px 52px;
-          mask-image: radial-gradient(circle at 50% 45%, black, transparent 72%);
-        }
-
-        .vozon-dashboard-stage {
-          perspective: 1600px;
-        }
-
-        .vozon-dashboard-window {
-          transform: rotateX(1.5deg);
-          transform-origin: center bottom;
-          box-shadow:
-            0 0 0 1px rgba(69,221,206,0.04),
-            0 42px 120px rgba(0,0,0,0.72),
-            0 0 90px rgba(69,221,206,0.055);
-        }
-
-        .vozon-dashboard-stat {
-          background:
-            linear-gradient(145deg, rgba(255,255,255,0.035), transparent),
-            rgba(0,0,0,0.22);
-          transition: border-color 180ms ease, transform 180ms ease, background 180ms ease;
-        }
-
-        .vozon-dashboard-stat:hover {
-          transform: translateY(-2px);
-          border-color: rgba(69,221,206,0.2);
-          background: rgba(69,221,206,0.045);
-        }
-
-        .vozon-dashboard-chart::after {
-          content: "";
-          position: absolute;
-          right: 0;
-          top: 13px;
-          width: 7px;
-          height: 7px;
-          border-radius: 999px;
-          background: #75fff0;
-          box-shadow: 0 0 0 4px rgba(69,221,206,0.12), 0 0 18px rgba(69,221,206,0.8);
-        }
-
-        .vozon-dashboard-wave {
-          height: 10px;
-          animation: vozonDashboardWave 820ms ease-in-out infinite alternate;
-          transform-origin: center;
-        }
-
-        @keyframes vozonDashboardWave {
-          from { transform: scaleY(0.35); opacity: 0.4; }
-          to { transform: scaleY(1); opacity: 1; }
         }
 
         .vozon-infinite-panel {
@@ -2321,71 +2255,254 @@ export function HomePlatformSections() {
           transform-origin: bottom;
         }
 
-        .vozon-dust {
-          background:
-            radial-gradient(circle at 50% 50%, rgba(240,255,252,0.2), transparent 18%),
-            radial-gradient(circle, rgba(47,255,224,0.2), transparent 66%);
-          box-shadow: 0 0 115px rgba(47,255,224,0.14);
-        }
 
-        .vozon-orbit {
-          overflow: hidden;
-          animation: vozonOrbit 18s linear infinite;
-          box-shadow: inset 0 0 42px rgba(37,244,210,0.08);
-        }
 
-        .vozon-orbit-reverse {
-          animation-direction: reverse;
-          animation-duration: 24s;
-        }
 
-        .vozon-orbit::before,
-        .vozon-orbit::after {
+        .vozon-orbit-flow::before {
           content: "";
           position: absolute;
-          width: 7px;
-          height: 7px;
-          border-radius: 999px;
-          background: #77fff1;
-          box-shadow: 0 0 12px rgba(119,255,241,0.86);
-        }
-
-        .vozon-orbit::before {
-          left: 50%;
-          top: 12px;
-          transform: translateX(-50%);
-        }
-
-        .vozon-orbit::after {
-          bottom: 12px;
-          left: 28%;
-          transform: translateX(-50%);
-          opacity: 0.72;
-        }
-
-        .vozon-node-chip {
-          background:
-            linear-gradient(135deg, rgba(255,255,255,0.09), transparent 34%),
-            rgba(6,32,28,0.88);
-        }
-
-        .vozon-node-chip::before {
-          content: "";
-          position: absolute;
-          inset: 6px;
-          border-radius: 12px;
-          border: 1px solid rgba(117,255,240,0.08);
+          z-index: -1;
+          inset: 5% 8% 10%;
           pointer-events: none;
+          border-radius: 50%;
+          background:
+            radial-gradient(circle at 50% 48%, rgba(69,221,206,0.23), transparent 39%),
+            radial-gradient(circle at 73% 48%, rgba(29,207,255,0.07), transparent 26%);
+          filter: blur(28px);
         }
 
-        .vozon-circuit-dot {
-          filter: drop-shadow(0 0 9px rgba(34,244,210,0.88));
+        .vozon-orbit-input-glow {
+          opacity: 0.13;
+          filter: blur(7px);
+          animation: vozonOrbitInputGlow 2.2s ease-in-out infinite;
         }
 
-        @keyframes vozonOrbit {
-          to {
-            transform: translate(-50%, -50%) rotate(360deg);
-          }
+        .vozon-orbit-input {
+          stroke-dasharray: 7 7;
+          filter: drop-shadow(0 0 5px rgba(126,255,239,0.7));
+          animation: vozonOrbitInput 4.5s linear infinite;
+        }
+
+        .vozon-orbit-output {
+          filter: drop-shadow(0 0 5px rgba(69,221,206,0.42));
+        }
+
+        .vozon-orbit-pulse {
+          fill: none;
+          stroke-dasharray: 0.035 0.965;
+          stroke-dashoffset: 1;
+          filter: drop-shadow(0 0 7px rgba(192,255,249,0.96));
+          animation: vozonOrbitPulse 3.2s linear infinite;
+        }
+
+        .vozon-orbit-pulse-out {
+          animation-delay: 1.35s;
+        }
+
+        .vozon-orbit-caller {
+          position: absolute;
+          top: 50%;
+          left: 1%;
+          width: 235px;
+          transform: translateY(-50%);
+        }
+
+        .vozon-orbit-core {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
+
+        .vozon-orbit-outcomes {
+          position: absolute;
+          top: 50%;
+          right: 1%;
+          width: 290px;
+          transform: translateY(-50%);
+        }
+
+        .vozon-orbit-phone {
+          box-shadow: inset 0 0 24px rgba(69,221,206,0.08), 0 0 30px rgba(69,221,206,0.1);
+        }
+
+        .vozon-orbit-phone::before,
+        .vozon-orbit-phone::after {
+          content: "";
+          position: absolute;
+          inset: -1px;
+          border: 1px solid rgba(69,221,206,0.34);
+          border-radius: inherit;
+          animation: vozonOrbitPhone 2.5s ease-out infinite;
+        }
+
+        .vozon-orbit-phone::after {
+          animation-delay: 1.25s;
+        }
+
+        .vozon-orbit-speech {
+          background: linear-gradient(145deg, rgba(255,255,255,0.12), rgba(69,221,206,0.055));
+          box-shadow: inset 0 1px rgba(255,255,255,0.07), 0 16px 38px rgba(0,0,0,0.2), 0 0 24px rgba(69,221,206,0.055);
+          animation: vozonOrbitSpeech 6s ease-in-out infinite;
+        }
+
+        .vozon-orbit-core-inner {
+          background:
+            radial-gradient(circle at 50% 40%, rgba(69,221,206,0.3), transparent 36%),
+            radial-gradient(circle at 70% 65%, rgba(29,207,255,0.08), transparent 32%),
+            radial-gradient(circle, rgba(5,34,28,0.98), rgba(1,12,10,0.99) 72%);
+          box-shadow: inset 0 0 60px rgba(69,221,206,0.12), 0 0 76px rgba(69,221,206,0.2);
+          animation: vozonOrbitCore 3.8s ease-in-out infinite;
+        }
+
+        .vozon-orbit-core-inner::before {
+          content: "";
+          position: absolute;
+          inset: 12px;
+          border-radius: inherit;
+          background: conic-gradient(from 20deg, transparent 0 78%, rgba(126,255,239,0.22) 85%, transparent 92%);
+          mask: radial-gradient(farthest-side, transparent calc(100% - 2px), black calc(100% - 1px));
+          animation: vozonOrbitRotate 7s linear infinite;
+        }
+
+        .vozon-orbit-ring {
+          animation: vozonOrbitRotate 16s linear infinite;
+        }
+
+        .vozon-orbit-ring-two {
+          animation-direction: reverse;
+          animation-duration: 22s;
+        }
+
+        .vozon-orbit-ring::before {
+          content: "";
+          position: absolute;
+          top: -3px;
+          left: 50%;
+          width: 6px;
+          height: 6px;
+          border-radius: 999px;
+          background: #86fff3;
+          box-shadow: 0 0 12px rgba(134,255,243,0.9);
+        }
+
+        .vozon-orbit-wave {
+          transform-origin: center;
+          animation: vozonOrbitWave 0.88s ease-in-out infinite alternate;
+        }
+
+        .vozon-orbit-live span {
+          box-shadow: 0 0 10px rgba(69,221,206,0.9);
+          animation: vozonOrbitLive 1.8s ease-out infinite;
+        }
+
+        .vozon-orbit-intent {
+          box-shadow: inset 0 0 18px rgba(69,221,206,0.05), 0 0 20px rgba(69,221,206,0.05);
+          animation: vozonOrbitIntent 2.8s ease-in-out infinite;
+        }
+
+        .vozon-orbit-outcome {
+          opacity: 0;
+          background: linear-gradient(100deg, rgba(9,43,36,0.98), rgba(3,24,20,0.96));
+          box-shadow: inset 0 0 30px rgba(69,221,206,0.055), 0 16px 40px rgba(0,0,0,0.25), 0 0 22px rgba(69,221,206,0.045);
+          animation-duration: 8s;
+          animation-timing-function: ease-in-out;
+          animation-iteration-count: infinite;
+          animation-fill-mode: both;
+        }
+
+        .vozon-orbit-outcome:nth-of-type(1) {
+          animation-name: vozonOrbitOutcomeOne;
+        }
+
+        .vozon-orbit-outcome:nth-of-type(2) {
+          animation-name: vozonOrbitOutcomeTwo;
+        }
+
+        .vozon-orbit-outcome:nth-of-type(3) {
+          animation-name: vozonOrbitOutcomeThree;
+        }
+
+        .vozon-orbit-outcomes-title {
+          text-shadow: 0 0 14px rgba(69,221,206,0.28);
+        }
+
+        .vozon-orbit-check {
+          box-shadow: 0 0 14px rgba(69,221,206,0.08);
+        }
+
+        .vozon-orbit-benefit span:first-child {
+          background: transparent;
+          filter: drop-shadow(0 0 10px rgba(69,221,206,0.28));
+        }
+
+        @keyframes vozonOrbitInputGlow {
+          0%, 100% { opacity: 0.1; stroke-width: 8px; }
+          50% { opacity: 0.22; stroke-width: 13px; }
+        }
+
+        @keyframes vozonOrbitInput {
+          to { stroke-dashoffset: -84; }
+        }
+
+        @keyframes vozonOrbitPulse {
+          to { stroke-dashoffset: 0; }
+        }
+
+        @keyframes vozonOrbitPhone {
+          0% { opacity: 0.65; transform: scale(1); }
+          76%, 100% { opacity: 0; transform: scale(1.55); }
+        }
+
+        @keyframes vozonOrbitSpeech {
+          0%, 100% { border-color: rgba(255,255,255,0.1); transform: translateY(0); }
+          16%, 40% { border-color: rgba(69,221,206,0.26); transform: translateY(-2px); }
+        }
+
+        @keyframes vozonOrbitCore {
+          0%, 100% { box-shadow: inset 0 0 58px rgba(69,221,206,0.11), 0 0 62px rgba(69,221,206,0.16); }
+          50% { box-shadow: inset 0 0 66px rgba(69,221,206,0.16), 0 0 92px rgba(69,221,206,0.27); }
+        }
+
+        @keyframes vozonOrbitRotate {
+          to { transform: rotate(360deg); }
+        }
+
+        @keyframes vozonOrbitWave {
+          from { opacity: 0.4; transform: scaleY(0.4); }
+          to { opacity: 1; transform: scaleY(1); }
+        }
+
+        @keyframes vozonOrbitLive {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(69,221,206,0.28), 0 0 10px rgba(69,221,206,0.9); }
+          50% { box-shadow: 0 0 0 5px rgba(69,221,206,0), 0 0 14px rgba(69,221,206,1); }
+        }
+
+        @keyframes vozonOrbitIntent {
+          0%, 100% { border-color: rgba(69,221,206,0.18); filter: brightness(0.9); }
+          50% { border-color: rgba(69,221,206,0.42); filter: brightness(1.12); }
+        }
+
+        @keyframes vozonOrbitOutcomeOne {
+          0%, 4% { opacity: 0; border-color: rgba(69,221,206,0.18); transform: translateX(-14px) scale(0.98); }
+          11%, 88% { opacity: 1; border-color: rgba(126,255,239,0.5); transform: translateX(0) scale(1); }
+          96%, 100% { opacity: 0; border-color: rgba(69,221,206,0.18); transform: translateX(4px) scale(0.99); }
+        }
+
+        @keyframes vozonOrbitOutcomeTwo {
+          0%, 23% { opacity: 0; border-color: rgba(69,221,206,0.18); transform: translateX(-14px) scale(0.98); }
+          31%, 88% { opacity: 1; border-color: rgba(126,255,239,0.5); transform: translateX(0) scale(1); }
+          96%, 100% { opacity: 0; border-color: rgba(69,221,206,0.18); transform: translateX(4px) scale(0.99); }
+        }
+
+        @keyframes vozonOrbitOutcomeThree {
+          0%, 42% { opacity: 0; border-color: rgba(69,221,206,0.18); transform: translateX(-14px) scale(0.98); }
+          50%, 88% { opacity: 1; border-color: rgba(126,255,239,0.5); transform: translateX(0) scale(1); }
+          96%, 100% { opacity: 0; border-color: rgba(69,221,206,0.18); transform: translateX(4px) scale(0.99); }
+        }
+
+        @keyframes vozonOrbitMobileFlow {
+          to { background-position: 0 -120%; }
         }
 
         @keyframes vozonCompanyMarquee {
@@ -2553,6 +2670,100 @@ export function HomePlatformSections() {
           }
         }
 
+
+        @media (max-width: 960px) {
+          .vozon-orbit-stage {
+            display: flex;
+            min-height: 0;
+            flex-direction: column;
+            align-items: center;
+            gap: 4.75rem;
+            padding-block: 1rem;
+          }
+
+          .vozon-orbit-stage::before {
+            content: "";
+            position: absolute;
+            z-index: 0;
+            top: 5%;
+            bottom: 5%;
+            left: 50%;
+            width: 1px;
+            background: linear-gradient(transparent, rgba(69,221,206,0.14), #83fff2, rgba(69,221,206,0.14), transparent);
+            background-position: 0 100%;
+            background-size: 100% 220%;
+            box-shadow: 0 0 8px rgba(69,221,206,0.28);
+            animation: vozonOrbitMobileFlow 3.4s linear infinite;
+          }
+
+          .vozon-orbit-paths {
+            display: none;
+          }
+
+          .vozon-orbit-caller,
+          .vozon-orbit-core,
+          .vozon-orbit-outcomes {
+            position: relative;
+            top: auto;
+            right: auto;
+            left: auto;
+            transform: none;
+          }
+
+          .vozon-orbit-caller {
+            width: min(100%, 300px);
+          }
+
+          .vozon-orbit-core {
+            flex: 0 0 auto;
+          }
+
+          .vozon-orbit-outcomes {
+            width: min(100%, 360px);
+          }
+
+        }
+
+        @media (max-width: 480px) {
+          .vozon-orbit-stage {
+            gap: 4.25rem;
+            padding-top: 0.5rem;
+          }
+
+          .vozon-orbit-caller,
+          .vozon-orbit-outcomes {
+            width: 100%;
+          }
+
+          .vozon-orbit-core {
+            width: 13.75rem;
+            height: 13.75rem;
+          }
+
+          .vozon-orbit-ring-one {
+            inset: -0.8rem;
+          }
+
+          .vozon-orbit-ring-two {
+            inset: -1.55rem;
+          }
+
+          .vozon-orbit-speech {
+            padding: 0.85rem 1rem;
+            font-size: 0.7rem;
+          }
+
+          .vozon-orbit-benefits {
+            gap: 0.2rem;
+          }
+        }
+
+        @media (min-width: 721px) and (max-width: 1024px) {
+          .vozon-fit-tabs {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+          }
+        }
+
         @media (max-width: 720px) {
           .vozon-circuit {
             margin-top: 2rem;
@@ -2594,10 +2805,33 @@ export function HomePlatformSections() {
           }
         }
 
+
         @media (prefers-reduced-motion: reduce) {
           .vozon-company-track {
             animation-duration: 80s;
           }
+
+          .vozon-orbit-input-glow,
+          .vozon-orbit-input,
+          .vozon-orbit-pulse,
+          .vozon-orbit-phone::before,
+          .vozon-orbit-phone::after,
+          .vozon-orbit-speech,
+          .vozon-orbit-core-inner,
+          .vozon-orbit-core-inner::before,
+          .vozon-orbit-ring,
+          .vozon-orbit-wave,
+          .vozon-orbit-live span,
+          .vozon-orbit-intent,
+          .vozon-orbit-outcome,
+          .vozon-orbit-stage::before {
+            animation: none;
+          }
+
+          .vozon-orbit-outcome {
+            opacity: 1;
+          }
+
         }
       `}</style>
     </div>
