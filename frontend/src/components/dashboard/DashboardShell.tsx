@@ -2430,11 +2430,17 @@ function StackConfigurationModal({
                 </div>
               ) : null}
 
+              {stack === 'voice' && provider.provider === 'elevenlabs' && languageSpecificVoices.length > 0 ? (
+                <div className="rounded-lg border border-[#a5f3fc] bg-[#ecfeff] px-3 py-2 text-sm font-medium text-[#0e7490]">
+                  Indian-accent and {languageName}-specific voices from your account and the ElevenLabs Voice Library are shown first. A library voice is added to your ElevenLabs account when you save the agent.
+                </div>
+              ) : null}
+
               {stack === "voice" ? (
                 <div>
                   <div className="mb-2 flex items-center justify-between gap-3">
                     <span className="app-label">
-                      {provider.provider === "elevenlabs" ? "Account voices" : "Available voices"}
+                      {provider.provider === "elevenlabs" ? "Your voices + Indian Voice Library" : "Available voices"}
                     </span>
                     <span className="app-caption">
                       {languageSpecificVoices.length
