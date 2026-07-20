@@ -2255,6 +2255,12 @@ function StackConfigurationModal({
     !agent.multilingualEnabled &&
     languageSpecificVoices.length === 0 &&
     !agent.language.toLowerCase().startsWith("english");
+  const sarvamDynamicLanguageTts =
+    agent.pipelineMode === "pipeline" &&
+    agent.ttsProvider === "sarvam" &&
+    agent.multilingualEnabled &&
+    agent.languageSwitchingEnabled &&
+    new Set(agent.supportedLanguages.filter((language) => language && language !== "Multilingual")).size > 1;
   const selectLanguage = (language: string) => {
     onLanguageChange(language);
   };
@@ -2358,6 +2364,11 @@ function StackConfigurationModal({
                     onChange={(languageSwitchingEnabled) => onChange({ languageSwitchingEnabled })}
                   />
                 </div>
+                {sarvamDynamicLanguageTts ? (
+                  <p className="m-0 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-medium text-amber-900">
+                    Sarvam TTS remains selected. The worker sends its supported language code for each reply, so choose a voice that supports every allowed language.
+                  </p>
+                ) : null}
                 {agent.multilingualEnabled ? (
                   <div>
                     <div className="mb-2 flex items-center justify-between gap-3">
