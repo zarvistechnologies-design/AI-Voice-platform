@@ -217,6 +217,8 @@ export type VoiceProfile = {
   languages?: readonly string[];
   languageCodes?: readonly string[];
   languageLabels?: readonly string[];
+  verifiedLanguageCodes?: readonly string[];
+  verifiedLanguageLabels?: readonly string[];
 };
 
 export type VoicePreviewRequest = {

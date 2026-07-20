@@ -1086,7 +1086,7 @@ function compactLanguageTag(
   }
   const labels = profile.languageLabels?.filter(Boolean) ?? [];
   if (labels.length === 0) return "";
-  return labels.length === 1 ? labels[0] : `${labels[0]} +${labels.length - 1}`;
+  return `Best for ${labels[0]}`;
 }
 
 function voiceSelectOptions(
@@ -1105,7 +1105,7 @@ function voiceSelectOptions(
       const fallbackLabel = voiceLabels[voice];
       const name = shortVoiceName(profile?.label ?? fallbackLabel ?? voice, voice);
       if (specific.has(voice) && language) {
-        return `${name} - ${languageDisplayName(language, languageCatalog)} specific`;
+        return `${name} - Best for ${languageDisplayName(language, languageCatalog)}`;
       }
       const languageTag = compactLanguageTag(profile, language, languageCatalog);
       if (languageTag) return `${name} - ${languageTag}`;
@@ -1992,8 +1992,12 @@ function VoiceChoiceList({
         const profile = profilesByValue.get(voice);
         const active = voice === value;
         const isPreviewing = previewingVoice === previewKey(voice);
+        const primaryLanguages = new Set(profile?.languageLabels ?? []);
+        const additionallyVerified = (profile?.verifiedLanguageLabels ?? [])
+          .filter((language) => !primaryLanguages.has(language));
         const detail = [
           parts.detail,
+          additionallyVerified.length ? `Also verified: ${additionallyVerified.join(', ')}` : '',
           profile?.model,
           profile?.qualityTier,
           profile?.gender,
@@ -2018,7 +2022,7 @@ function VoiceChoiceList({
               </span>
               <span className="min-w-0">
                 <span className="block truncate text-sm font-semibold text-[#0f172a]">{parts.name}</span>
-                <span className="block truncate text-xs font-medium text-[#64748b]">
+                <span className="block text-xs font-medium leading-5 text-[#64748b]">
                   {detail || profile?.category || "Available voice"}
                 </span>
               </span>
@@ -2426,13 +2430,13 @@ function StackConfigurationModal({
 
               {noElevenLabsLanguageVoice ? (
                 <div className="rounded-lg border border-[#fde68a] bg-[#fffbeb] px-3 py-2 text-sm font-medium text-[#92400e]">
-                  No {languageName}-specific or Indian-accent voice is installed in this ElevenLabs account. The multilingual model can speak {languageName}, but the accent follows the selected account voice.
+                  No voice is tagged as primarily trained for {languageName}. A multilingual voice may still speak it, but pronunciation and accent quality can be worse.
                 </div>
               ) : null}
 
               {stack === 'voice' && provider.provider === 'elevenlabs' && languageSpecificVoices.length > 0 ? (
                 <div className="rounded-lg border border-[#a5f3fc] bg-[#ecfeff] px-3 py-2 text-sm font-medium text-[#0e7490]">
-                  Indian-accent and {languageName}-specific voices from your account and the ElevenLabs Voice Library are shown first. A library voice is added to your ElevenLabs account when you save the agent.
+                  “Best for” is the primary/native training language. “Also verified” names every other language ElevenLabs reports for that voice, but those may not have a native accent. Match “Best for” to the agent language for better pronunciation. A library voice is added when you save.
                 </div>
               ) : null}
 
@@ -2444,7 +2448,7 @@ function StackConfigurationModal({
                     </span>
                     <span className="app-caption">
                       {languageSpecificVoices.length
-                        ? `${languageSpecificVoices.length} ${languageName}-specific / ${voices.length} total`
+                        ? `${languageSpecificVoices.length} best for ${languageName} / ${voices.length} total`
                         : `${voices.length} voices`}
                     </span>
                   </div>
