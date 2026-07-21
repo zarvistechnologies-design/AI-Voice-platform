@@ -31,6 +31,7 @@ import {
     type ModelProvider,
     type PipelineMode,
     type PipelineProvider,
+    type PricingGuide,
     type RealtimeProvider,
     type SttProvider,
     type VoiceLanguageOption,
@@ -97,6 +98,7 @@ type VoiceAgent = {
 type DashboardVoiceConfig = {
   configured: boolean;
   agentName: string;
+  pricing: PricingGuide;
   modelCatalogReady: boolean;
   sip: {
     inboundConfigured: boolean;
@@ -1997,6 +1999,28 @@ function modelDisplayLabel(model: string) {
   return modelPresentation[model]?.label ?? model;
 }
 
+function ttsPricingLabel(
+  pricing: PricingGuide | undefined,
+  provider: string,
+  model: string,
+  voiceRateMultiplier = 1,
+) {
+  const key = `${provider.trim().toLowerCase()}:${model.trim().toLowerCase().replace(/^models\//, "")}`;
+  const rate = pricing?.ttsModels?.[key];
+  const multiplier = Number.isFinite(voiceRateMultiplier) && voiceRateMultiplier > 0
+    ? voiceRateMultiplier
+    : 1;
+  if (rate?.perThousandCharacters !== undefined) {
+    const price = rate.perThousandCharacters * multiplier;
+    const customRate = multiplier === 1 ? "" : ` · ${Number(multiplier.toFixed(2))}× voice rate`;
+    return `$${price.toFixed(price < 0.01 ? 4 : 2)} / 1K chars${customRate}`;
+  }
+  if (rate?.perMinute !== undefined) {
+    return `$${(rate.perMinute * multiplier).toFixed(4)} / minute`;
+  }
+  return "Pricing unavailable";
+}
+
 function ModelChoiceList({
   models,
   value,
@@ -2887,6 +2911,15 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     typeof voiceStackLatencyMs === "number" && Number.isFinite(voiceStackLatencyMs)
       ? Math.round(voiceStackLatencyMs).toLocaleString("en-IN")
       : "1,250";
+  const selectedTtsProvider = getProvider(modelCatalog, "tts", selectedAgent.ttsProvider);
+  const selectedVoiceRateMultiplier = selectedTtsProvider.voiceProfiles
+    ?.find((profile) => profile.value === selectedAgent.voice)?.rateMultiplier ?? 1;
+  const selectedTtsPricing = ttsPricingLabel(
+    voiceConfig?.pricing,
+    selectedAgent.ttsProvider,
+    selectedAgent.ttsModel,
+    selectedVoiceRateMultiplier,
+  );
   const voiceStackCards = [
     {
       id: "stt" as const,
@@ -2914,7 +2947,11 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
       dot: "bg-[#c026d3]",
       title: selectedAgent.pipelineMode === "realtime" ? "Realtime voice" : `${selectedAgent.ttsProvider} TTS`,
       provider: `${selectedAgent.voice}${selectedAgent.pipelineMode === "pipeline" ? ` / ${selectedAgent.ttsModel}` : ""}`,
-      cost: selectedAgent.pipelineMode === "realtime" ? "No separate TTS" : "Provider cost only",
+      cost: selectedAgent.pipelineMode === "realtime"
+        ? "No separate TTS"
+        : selectedAgent.ttsProvider === "elevenlabs"
+          ? selectedTtsPricing
+          : "Provider cost only",
       latency: "400ms",
       accent: "text-[#008996]",
     },
