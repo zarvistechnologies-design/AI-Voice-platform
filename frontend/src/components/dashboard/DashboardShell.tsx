@@ -277,6 +277,21 @@ const fallbackLanguageCatalog: VoiceLanguageOption[] = [
   { value: "Swahili", label: "Swahili", code: "sw-KE", sarvamStt: false, sarvamTts: false },
 ];
 
+const elevenLabsV25LanguageCodes = new Set(["en", "hi", "ta", "es", "fr"]);
+const elevenLabsV3LanguageCodes = new Set([
+  "en", "as", "bn", "gu", "hi", "kn", "ml", "mr", "ne", "pa", "sd", "ta", "te", "ur", "es", "fr",
+]);
+const fallbackElevenLabsV25Languages = fallbackLanguageCatalog.filter((language) =>
+  elevenLabsV25LanguageCodes.has(language.code.split("-")[0]?.toLowerCase()));
+const fallbackElevenLabsV3Languages = fallbackLanguageCatalog.filter((language) =>
+  elevenLabsV3LanguageCodes.has(language.code.split("-")[0]?.toLowerCase()));
+const fallbackElevenLabsLanguagesByModel = {
+  eleven_flash_v2_5: fallbackElevenLabsV25Languages,
+  eleven_turbo_v2_5: fallbackElevenLabsV25Languages,
+  eleven_multilingual_v2: fallbackElevenLabsV25Languages,
+  eleven_v3: fallbackElevenLabsV3Languages,
+};
+
 const fallbackSarvamV3Voices = [
   "shubh",
   "aditya",
@@ -829,10 +844,11 @@ const fallbackCatalog: ModelCatalog = {
       provider: "elevenlabs",
       label: "ElevenLabs",
       configured: true,
-      models: ["eleven_multilingual_v2", "eleven_flash_v2_5", "eleven_turbo_v2_5"],
+      models: ["eleven_flash_v2_5", "eleven_turbo_v2_5", "eleven_multilingual_v2", "eleven_v3"],
       voices: fallbackElevenLabsVoices,
       voiceProfiles: fallbackElevenLabsVoiceProfiles,
-      languages: fallbackLanguageCatalog,
+      languages: fallbackElevenLabsV3Languages,
+      languagesByModel: fallbackElevenLabsLanguagesByModel,
       voicesByLanguage: voicesByLanguageFromProfiles(
         fallbackElevenLabsVoiceProfiles,
         fallbackLanguageCatalog,
@@ -850,6 +866,7 @@ function enrichProvider(provider: ModelProvider, fallback?: ModelProvider): Mode
     voiceProfiles: provider.voiceProfiles?.length ? provider.voiceProfiles : fallback.voiceProfiles,
     voicesByModel: provider.voicesByModel ?? fallback.voicesByModel,
     voicesByLanguage: provider.voicesByLanguage ?? fallback.voicesByLanguage,
+    languagesByModel: provider.languagesByModel ?? fallback.languagesByModel,
     showAllVoicesWithLanguageOrder:
       provider.showAllVoicesWithLanguageOrder ?? fallback.showAllVoicesWithLanguageOrder,
     languages: provider.languages?.length ? provider.languages : fallback.languages,
@@ -875,6 +892,32 @@ function enrichModelCatalog(catalog: ModelCatalog): ModelCatalog {
 
 function getProvider(catalog: ModelCatalog, layer: keyof ModelCatalog, provider: string) {
   return catalog[layer].find((item) => item.provider === provider) ?? catalog[layer][0];
+}
+
+function providerLanguagesForModel(provider: ModelProvider, model: string) {
+  return provider.languagesByModel?.[model] ?? provider.languages ?? [];
+}
+
+function modelSupportsLanguage(
+  provider: ModelProvider,
+  model: string,
+  language: string,
+  languageCatalog: readonly VoiceLanguageOption[],
+) {
+  const supported = providerLanguagesForModel(provider, model);
+  if (!supported.length || !language) return true;
+  const keys = new Set(languageKeys(language, languageCatalog).map((key) => key.toLowerCase()));
+  return supported.some((option) =>
+    [option.value, option.label, option.code].some((candidate) => keys.has(candidate.toLowerCase())));
+}
+
+function modelForLanguage(
+  provider: ModelProvider,
+  language: string,
+  languageCatalog: readonly VoiceLanguageOption[],
+) {
+  return provider.models.find((model) => modelSupportsLanguage(provider, model, language, languageCatalog))
+    ?? provider.models[0];
 }
 
 function languageKeys(language: string, languageCatalog: readonly VoiceLanguageOption[]) {
@@ -1261,7 +1304,8 @@ function getLanguageOptions(
 ): SelectOption[] {
   let options = languageCatalog;
   if (agent.pipelineMode === "pipeline") {
-    const ttsLanguages = getProvider(catalog, "tts", agent.ttsProvider).languages;
+    const ttsProvider = getProvider(catalog, "tts", agent.ttsProvider);
+    const ttsLanguages = providerLanguagesForModel(ttsProvider, agent.ttsModel);
     const sttLanguages = getProvider(catalog, "stt", agent.sttProvider).languages;
     if (ttsLanguages?.length) {
       options = [...ttsLanguages];
@@ -1930,6 +1974,29 @@ function ProviderRail({
   );
 }
 
+const modelPresentation: Record<string, { label: string; detail: string }> = {
+  eleven_flash_v2_5: {
+    label: "Eleven Flash v2.5",
+    detail: "Lowest latency · Hindi and Tamil · No Kannada support",
+  },
+  eleven_turbo_v2_5: {
+    label: "Eleven Turbo v2.5",
+    detail: "Low latency · Hindi and Tamil · No Kannada support",
+  },
+  eleven_multilingual_v2: {
+    label: "Eleven Multilingual v2",
+    detail: "Higher voice quality · Hindi and Tamil · No Kannada support",
+  },
+  eleven_v3: {
+    label: "Eleven v3",
+    detail: "Kannada and 70+ languages · Higher conversational latency",
+  },
+};
+
+function modelDisplayLabel(model: string) {
+  return modelPresentation[model]?.label ?? model;
+}
+
 function ModelChoiceList({
   models,
   value,
@@ -1956,7 +2023,12 @@ function ModelChoiceList({
             <span className={`grid size-9 place-items-center rounded-lg text-xs font-bold ${active ? "bg-[#00b8c4] text-white" : "bg-[#eef2f7] text-[#64748b]"}`}>
               AI
             </span>
-            <span className="min-w-0 truncate text-sm font-semibold text-[#0f172a]">{model}</span>
+            <span className="min-w-0">
+              <span className="block truncate text-sm font-semibold text-[#0f172a]">{modelDisplayLabel(model)}</span>
+              {modelPresentation[model]?.detail ? (
+                <span className="mt-0.5 block text-xs font-medium text-[#64748b]">{modelPresentation[model].detail}</span>
+              ) : null}
+            </span>
             <span className={`size-4 rounded-full border-2 ${active ? "border-[#00b8c4] bg-[#00b8c4] shadow-[inset_0_0_0_3px_white]" : "border-[#cbd5e1]"}`} />
           </button>
         );
@@ -1999,6 +2071,7 @@ function VoiceChoiceList({
           parts.detail,
           additionallyVerified.length ? `Also verified: ${additionallyVerified.join(', ')}` : '',
           profile?.model,
+          profile?.source,
           profile?.qualityTier,
           profile?.gender,
           profile?.accent,
@@ -2111,9 +2184,10 @@ function StackConfigurationModal({
   const normalizedLanguageOptions = languageOptions.map((option) =>
     typeof option === "string" ? { value: option, label: option } : option,
   );
+  const selectedModelLanguages = providerLanguagesForModel(provider, selectedModelValue);
   const primaryLanguageOptions = (
-    stack !== "llm" && provider.languages?.length
-      ? provider.languages.map((language) => ({
+    stack !== "llm" && selectedModelLanguages.length
+      ? selectedModelLanguages.map((language) => ({
           value: language.value,
           label: language.code === "unknown" ? language.label : `${language.label} (${language.code})`,
         }))
@@ -2126,6 +2200,18 @@ function StackConfigurationModal({
       onChange({ sttModel: selectedModelValue });
     }
   }, [onChange, selectedModel, selectedModelValue, stack]);
+
+  useEffect(() => {
+    if (
+      stack !== "voice"
+      || realtime
+      || modelSupportsLanguage(provider, selectedModelValue, agent.language, languageCatalog)
+    ) return;
+    const compatibleModel = modelForLanguage(provider, agent.language, languageCatalog);
+    if (compatibleModel && compatibleModel !== selectedModelValue) {
+      onChange({ ttsModel: compatibleModel });
+    }
+  }, [agent.language, languageCatalog, onChange, provider, realtime, selectedModelValue, stack]);
 
   const selectProvider = (nextProviderId: string) => {
     const next = getProvider(catalog, layer, nextProviderId);
@@ -2170,20 +2256,22 @@ function StackConfigurationModal({
       return;
     }
 
-    const nextLanguage = next.languages?.length
-      ? coerceLanguage(agent.language, next.languages.filter((language) => language.value !== "Multilingual"))
+    const nextModel = modelForLanguage(next, agent.language, languageCatalog);
+    const nextLanguages = providerLanguagesForModel(next, nextModel);
+    const nextLanguage = nextLanguages.length
+      ? coerceLanguage(agent.language, nextLanguages.filter((language) => language.value !== "Multilingual"))
       : agent.language;
     const voices = getVoices(
       catalog,
       "tts",
       nextProviderId,
-      next.models[0],
+      nextModel,
       agent.multilingualEnabled ? "Multilingual" : nextLanguage,
       languageCatalog,
     );
     onChange({
       ttsProvider: nextProviderId as PipelineProvider,
-      ttsModel: next.models[0],
+      ttsModel: nextModel,
       language: nextLanguage,
       voice: voices.includes(agent.voice) ? agent.voice : voices[0] ?? agent.voice,
     });
@@ -2210,16 +2298,21 @@ function StackConfigurationModal({
         sttModel: normalizeSttModelForLanguage(provider.provider, model, effectiveLanguage, languageCatalog),
       });
     } else {
+      const modelLanguages = providerLanguagesForModel(provider, model);
+      const nextLanguage = modelLanguages.length
+        ? coerceLanguage(agent.language, modelLanguages.filter((language) => language.value !== "Multilingual"))
+        : agent.language;
       const voices = getVoices(
         catalog,
         "tts",
         agent.ttsProvider,
         model,
-        effectiveLanguage,
+        agent.multilingualEnabled ? "Multilingual" : nextLanguage,
         languageCatalog,
       );
       onChange({
         ttsModel: model,
+        language: nextLanguage,
         voice: voices.includes(agent.voice) ? agent.voice : voices[0] ?? agent.voice,
       });
     }
@@ -2342,8 +2435,18 @@ function StackConfigurationModal({
                 defaultValue={selectedModelValue}
                 value={selectedModelValue}
                 onChange={selectModel}
-                options={modelOptions}
+                options={modelOptions.map((model) => ({ value: model, label: modelDisplayLabel(model) }))}
               />
+
+              {stack === "voice" && provider.provider === "elevenlabs" ? (
+                <div>
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <span className="app-label">ElevenLabs TTS model</span>
+                    <span className="app-caption">Choose by language and latency</span>
+                  </div>
+                  <ModelChoiceList models={modelOptions} value={selectedModelValue} onChange={selectModel} />
+                </div>
+              ) : null}
 
               <div className="grid gap-3 rounded-lg border border-[#dfe3ea] bg-[#f8fafc] p-3">
                 <SelectField

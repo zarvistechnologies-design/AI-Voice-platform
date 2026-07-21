@@ -146,6 +146,7 @@ export type ModelProvider = {
   voicesByModel?: Readonly<Record<string, readonly string[]>>;
   voicesByLanguage?: Readonly<Record<string, readonly string[]>>;
   languages?: readonly VoiceLanguageOption[];
+  languagesByModel?: Readonly<Record<string, readonly VoiceLanguageOption[]>>;
   showAllVoicesWithLanguageOrder?: boolean;
 };
 
@@ -219,6 +220,7 @@ export type VoiceProfile = {
   languageLabels?: readonly string[];
   verifiedLanguageCodes?: readonly string[];
   verifiedLanguageLabels?: readonly string[];
+  source?: string;
 };
 
 export type VoicePreviewRequest = {
