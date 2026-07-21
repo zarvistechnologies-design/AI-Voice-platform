@@ -147,6 +147,7 @@ export type ModelProvider = {
   voicesByModel?: Readonly<Record<string, readonly string[]>>;
   voicesByLanguage?: Readonly<Record<string, readonly string[]>>;
   languages?: readonly VoiceLanguageOption[];
+  languagesByModel?: Readonly<Record<string, readonly VoiceLanguageOption[]>>;
   showAllVoicesWithLanguageOrder?: boolean;
 };
 
@@ -163,6 +164,19 @@ export type PricingGuide = {
   inrPerUsd: number;
   platformFeeInrPerCall: number;
   markupMultiplier: number;
+  ttsModels?: Readonly<Record<string, {
+    currency: string;
+    source: "catalog" | "override";
+    key: string;
+    provider: string;
+    model: string;
+    unit: "per 1M characters" | "per minute" | "per 1M tokens";
+    perMillionCharacters?: number;
+    perThousandCharacters?: number;
+    perMinute?: number;
+    inputPerMillionTokens?: number;
+    outputPerMillionTokens?: number;
+  }>>;
 };
 
 export type LatencyGuide = {
@@ -218,6 +232,10 @@ export type VoiceProfile = {
   languages?: readonly string[];
   languageCodes?: readonly string[];
   languageLabels?: readonly string[];
+  verifiedLanguageCodes?: readonly string[];
+  verifiedLanguageLabels?: readonly string[];
+  source?: string;
+  rateMultiplier?: number;
 };
 
 export type VoicePreviewRequest = {
