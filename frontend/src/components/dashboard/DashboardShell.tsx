@@ -126,6 +126,7 @@ const defaultBehavior: AgentBehavior = {
   maxCallDurationSeconds: 1200,
   maxIdleSeconds: 15,
   transferPhone: "",
+  transferMessage: "Please hold while I transfer your call.",
   timezone: "UTC",
   voicemailMessage: "Sorry we missed you. Please leave a message after the tone.",
 };
@@ -4428,6 +4429,12 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                             value={selectedAgent.behavior.transferPhone}
                             placeholder="+14155550123"
                             onChange={(value) => updateBehavior({ transferPhone: value })}
+                          />
+                          <InputField
+                            label="Transfer message"
+                            value={selectedAgent.behavior.transferMessage}
+                            placeholder="Please hold while I transfer your call."
+                            onChange={(value) => updateBehavior({ transferMessage: value })}
                           />
                           <InputField
                             label="DTMF sequence"

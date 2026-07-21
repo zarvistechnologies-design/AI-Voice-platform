@@ -31,6 +31,7 @@ export type AgentBehavior = {
   maxCallDurationSeconds: number;
   maxIdleSeconds: number;
   transferPhone: string;
+  transferMessage: string;
   timezone: string;
   voicemailMessage: string;
 };
