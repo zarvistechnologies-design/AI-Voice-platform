@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import Image from "next/image";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { API_URL } from "@/lib/apiBase";
 import styles from "./EnquiryChatbot.module.css";
 
@@ -45,6 +45,11 @@ export function EnquiryChatbot() {
   const [phone, setPhone] = useState("");
   const [caseNumber, setCaseNumber] = useState("");
   const [error, setError] = useState("");
+  const chatRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    chatRef.current?.scrollTo({ top: chatRef.current.scrollHeight, behavior: "smooth" });
+  }, [step]);
 
   function selectService(value: string) {
     setService(value);
@@ -91,7 +96,7 @@ export function EnquiryChatbot() {
   return <div className={styles.root}>
     {open ? <section className={styles.card} aria-label="Chat with Arya from Vozon">
       <header><div className={styles.identity}><span className={styles.avatar}><Image src="/images/support-agent.png" alt="Arya, Vozon AI assistant" fill sizes="48px" /></span><span><strong>Arya</strong><small><i /> Online · Vozon AI Assistant</small></span></div><button className={styles.close} onClick={() => setOpen(false)} aria-label="Close chat">×</button></header>
-      <div className={styles.chat}>
+      <div className={styles.chat} ref={chatRef}>
         <AryaMessage>Hi there! 👋 I&apos;m Arya, your AI assistant at Vozon. I help businesses automate customer conversations with AI.<br /><br />What Vozon service are you interested in?</AryaMessage>
         {service ? <UserMessage>{service}</UserMessage> : null}
         {step !== "service" ? <AryaMessage>{serviceReplies[service]} 🚀<br /><br />Let me connect you with our team. Could you share your name?</AryaMessage> : null}
@@ -112,5 +117,6 @@ export function EnquiryChatbot() {
     <button className={styles.launcher} onClick={() => setOpen(value => !value)} aria-expanded={open} aria-label="Chat with Arya"><span className={styles.launchAvatar}><Image src="/images/support-agent.png" alt="" fill sizes="54px" /></span>{!open ? <span className={styles.launchText}><small>Need help?</small><strong>Chat with Arya</strong></span> : <span className={styles.launchText}><strong>Close chat</strong></span>}<i className={styles.online} /></button>
   </div>;
 }
+
 
 
