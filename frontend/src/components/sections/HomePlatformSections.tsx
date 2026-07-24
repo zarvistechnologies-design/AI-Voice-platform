@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { AudioWaveHero } from "./AudioWaveHero";
+import { GreenVoiceOrb } from "./GreenVoiceOrb";
 
 const languageOptions = [
   {
@@ -428,163 +430,6 @@ function GlowButton({ children, href }: { children: string; href: string }) {
   );
 }
 
-function JourneyOutcomeIcon({ icon }: { icon: "calendar" | "database" | "message" }) {
-  if (icon === "calendar") {
-    return (
-      <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" viewBox="0 0 24 24" aria-hidden="true">
-        <rect height="17" rx="3" width="18" x="3" y="4" />
-        <path d="M8 2v4M16 2v4M3 9h18M8 14h3M8 17h6" />
-      </svg>
-    );
-  }
-
-  if (icon === "database") {
-    return (
-      <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" viewBox="0 0 24 24" aria-hidden="true">
-        <ellipse cx="12" cy="5" rx="8" ry="3" />
-        <path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6" />
-      </svg>
-    );
-  }
-
-  return (
-    <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M4 5.5h16v11H9l-5 4v-15Z" />
-      <path d="m8 11 2.2 2.2L16 8.5" />
-    </svg>
-  );
-}
-
-
-
-
-function HeroBenefitIcon({ icon }: { icon: "clock" | "bolt" | "globe" }) {
-  if (icon === "clock") {
-    return (
-      <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 24 24" aria-hidden="true">
-        <circle cx="12" cy="12" r="9" />
-        <path d="M12 7v5l3 2" />
-      </svg>
-    );
-  }
-
-  if (icon === "bolt") {
-    return (
-      <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="m13.5 2-8 12h6l-1 8 8-12h-6l1-8Z" />
-      </svg>
-    );
-  }
-
-  return (
-    <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 24 24" aria-hidden="true">
-      <circle cx="12" cy="12" r="9" />
-      <path d="M3.5 9h17M3.5 15h17M12 3c2.4 2.5 3.6 5.5 3.6 9S14.4 18.5 12 21M12 3C9.6 5.5 8.4 8.5 8.4 12s1.2 6.5 3.6 9" />
-    </svg>
-  );
-}
-
-function CircuitHero() {
-  const outcomes = [
-    { icon: "calendar" as const, label: "Appointment booked", detail: "Tomorrow · 4:00 PM" },
-    { icon: "database" as const, label: "CRM updated", detail: "Contact and summary saved" },
-    { icon: "message" as const, label: "Follow-up sent", detail: "Confirmation delivered" },
-  ];
-  const benefits = [
-    { icon: "clock" as const, value: "24/7", label: "Always available" },
-    { icon: "bolt" as const, value: "0.8s", label: "Average response" },
-    { icon: "globe" as const, value: "40+", label: "Languages supported" },
-  ];
-
-  return (
-    <div
-      aria-label="A customer request enters Vozon as a phone call. The AI voice agent responds and automatically books an appointment, updates the CRM, and sends a follow-up."
-      className="vozon-circuit vozon-orbit-flow relative mx-auto mt-20 w-full max-w-[1180px] px-1 pb-2 text-left sm:mt-12 sm:px-4"
-      role="group"
-    >
-      <div className="vozon-orbit-stage relative min-h-[450px]">
-        <svg className="vozon-orbit-paths absolute inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 1120 450" aria-hidden="true">
-          <defs>
-            <linearGradient id="vozonVoiceInput" x1="80" x2="430" y1="225" y2="225" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#45ddce" stopOpacity="0.14" />
-              <stop offset="1" stopColor="#86fff3" stopOpacity="0.9" />
-            </linearGradient>
-            <linearGradient id="vozonActionOutput" x1="690" x2="930" y1="225" y2="225" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#86fff3" stopOpacity="0.86" />
-              <stop offset="1" stopColor="#45ddce" stopOpacity="0.18" />
-            </linearGradient>
-          </defs>
-          <path className="vozon-orbit-input-glow" d="M58 225H135c12 0 16-18 24-18s11 42 20 42 12-70 22-70 12 84 23 84 12-58 22-58 12 42 22 42 11-22 22-22h126" stroke="#45ddce" strokeLinecap="round" strokeWidth="10" />
-          <path className="vozon-orbit-input" d="M58 225H135c12 0 16-18 24-18s11 42 20 42 12-70 22-70 12 84 23 84 12-58 22-58 12 42 22 42 11-22 22-22h126" stroke="url(#vozonVoiceInput)" strokeLinecap="round" strokeWidth="2" />
-          <path className="vozon-orbit-output" d="M704 225C775 225 782 137 900 137M704 225H900M704 225C775 225 782 313 900 313" stroke="url(#vozonActionOutput)" strokeLinecap="round" strokeWidth="2" />
-          <path className="vozon-orbit-pulse" d="M58 225H416" pathLength="1" stroke="#c0fff9" strokeLinecap="round" strokeWidth="4" />
-          <path className="vozon-orbit-pulse vozon-orbit-pulse-out" d="M704 225C775 225 782 137 900 137M704 225H900M704 225C775 225 782 313 900 313" pathLength="1" stroke="#c0fff9" strokeLinecap="round" strokeWidth="4" />
-        </svg>
-
-        <article className="vozon-orbit-caller z-20 text-center">
-          <div className="vozon-orbit-phone relative mx-auto grid size-[76px] place-items-center rounded-full border border-[#45ddce]/34 bg-[#45ddce]/10 text-[#9bfff5]">
-            <svg className="size-8" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.9" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M6.6 3.8 9 7.9 7.4 9.6c1.4 3 3.8 5.4 6.8 6.8l1.7-1.6 4.2 2.4-.7 3.2c-.2.8-.9 1.3-1.7 1.3C9.2 21.7 2.3 14.8 2.3 6.3c0-.8.5-1.5 1.3-1.7l3-.8Z" />
-            </svg>
-          </div>
-          <span className="mt-3 block text-[10px] font-black uppercase tracking-[0.16em] text-[#83fff2]">Customer calls your business</span>
-          <div className="vozon-orbit-speech mt-4 rounded-2xl rounded-tl-sm border border-white/20 bg-white/[0.1] px-5 py-4 text-[13px] font-extrabold leading-5 text-white/95 backdrop-blur">
-            “Can I book an appointment for tomorrow afternoon?”
-          </div>
-        </article>
-
-        <div className="vozon-orbit-core z-30 size-[290px]">
-          <span className="vozon-orbit-ring vozon-orbit-ring-one absolute inset-[-22px] rounded-full border border-[#45ddce]/16" aria-hidden="true" />
-          <span className="vozon-orbit-ring vozon-orbit-ring-two absolute inset-[-44px] rounded-full border border-[#45ddce]/10" aria-hidden="true" />
-          <div className="vozon-orbit-core-inner absolute inset-0 grid place-items-center rounded-full border border-[#45ddce]/44 text-center">
-            <div>
-              <span className="vozon-orbit-live mx-auto mb-3 flex w-fit items-center gap-1.5 text-[7px] font-black uppercase tracking-[0.16em] text-white/42">
-                <span className="size-1.5 rounded-full bg-[#45ddce]" /> Live voice conversation
-              </span>
-              <span className="text-2xl font-black tracking-[0.18em] text-[#8efff4] drop-shadow-[0_0_16px_rgba(69,221,206,0.34)]">VOZON</span>
-              <strong className="mt-1.5 block text-[11px] font-black uppercase tracking-[0.22em] text-white/78">AI Voice Agent</strong>
-              <div className="mt-5 flex h-9 items-center justify-center gap-1.5" aria-label="AI voice agent responding">
-                {[11, 22, 15, 31, 20, 34, 17, 27, 12].map((height, index) => (
-                  <span className="vozon-orbit-wave w-1 rounded-full bg-[#64eddd]" key={index} style={{ height, animationDelay: `${index * 70}ms` }} />
-                ))}
-              </div>
-              <span className="vozon-orbit-intent mx-auto mt-4 flex w-fit items-center gap-1.5 rounded-full border border-[#45ddce]/18 bg-[#45ddce]/[0.07] px-3 py-1.5 text-[8px] font-black text-[#83f7ea]">
-                <span className="size-1.5 rounded-full bg-[#45ddce]" /> Understood: book appointment
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div className="vozon-orbit-outcomes relative z-20 space-y-4">
-          <span className="vozon-orbit-outcomes-title absolute -top-8 left-0 right-0 block text-center text-[9px] font-black uppercase tracking-[0.16em] text-[#83fff2]">Work completed automatically</span>
-          {outcomes.map((outcome) => (
-            <article className="vozon-orbit-outcome flex items-center gap-3 rounded-2xl border border-[#45ddce]/30 bg-[#08251f]/95 px-4 py-4 backdrop-blur" key={outcome.label}>
-              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#45ddce]/15 p-2.5 text-[#94fff4]"><JourneyOutcomeIcon icon={outcome.icon} /></span>
-              <div className="min-w-0 flex-1">
-                <strong className="block truncate text-[13px] font-black text-white/94">{outcome.label}</strong>
-                <span className="mt-1 block truncate text-[9px] font-semibold text-white/50">{outcome.detail}</span>
-              </div>
-              <span className="vozon-orbit-check grid size-6 shrink-0 place-items-center rounded-full border border-[#45ddce]/40 bg-[#45ddce]/18 text-[10px] font-black text-[#a0fff6]">✓</span>
-            </article>
-          ))}
-        </div>
-      </div>
-
-      <div className="vozon-orbit-benefits mx-auto mt-4 grid max-w-[880px] gap-5 sm:grid-cols-3 sm:gap-4">
-        {benefits.map((benefit) => (
-          <div className="vozon-orbit-benefit flex items-center justify-center gap-4 px-4 py-3" key={benefit.label}>
-            <span className="grid size-12 shrink-0 place-items-center rounded-full p-3 text-[#83f7ea]"><HeroBenefitIcon icon={benefit.icon} /></span>
-            <div>
-              <strong className="block text-xl font-black text-white">{benefit.value}</strong>
-              <span className="mt-0.5 block text-[10px] font-bold uppercase tracking-[0.11em] text-white/56">{benefit.label}</span>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 export function HomePlatformSections() {
   const [selectedLanguageCode, setSelectedLanguageCode] = useState("EN");
   const [selectedFitKey, setSelectedFitKey] = useState("support");
@@ -637,8 +482,11 @@ export function HomePlatformSections() {
 
   return (
     <div className="vozon-home relative isolate overflow-hidden bg-black text-white">
-      <section id="product" className="relative mx-auto min-h-screen max-w-[1280px] px-5 pb-10 pt-28 text-center sm:px-8 lg:pt-32">
-        <div className="mx-auto mb-7 inline-flex items-center gap-2 rounded-full border border-white/16 bg-white/8 px-4 py-2 text-xs font-semibold text-white/80 shadow-[inset_0_0_22px_rgba(255,255,255,0.04)] backdrop-blur">
+      <section id="product" className="relative mx-auto flex min-h-screen max-w-[1600px] items-center justify-center overflow-hidden px-5 pb-20 pt-28 text-center sm:px-8 lg:pt-32">
+        <AudioWaveHero />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_15%,rgba(0,0,0,.16)_60%,rgba(0,0,0,.86)_100%)]" />
+        <div className="relative z-10 mx-auto w-full max-w-[1280px]">
+        <div className="mx-auto mb-7 inline-flex items-center gap-2 rounded-full border border-white/16 bg-black/30 px-4 py-2 text-xs font-semibold text-white/80 shadow-[inset_0_0_22px_rgba(255,255,255,0.04)] backdrop-blur">
           <span className="size-2 rounded-full bg-[#22f4d2] shadow-[0_0_14px_#22f4d2]" />
           Voice Agents Live Now
         </div>
@@ -652,7 +500,7 @@ export function HomePlatformSections() {
         <div className="mt-8 flex justify-center">
           <GlowButton href="/dashboard">Deploy Now</GlowButton>
         </div>
-        <CircuitHero />
+        </div>
       </section>
 
       <section className="vozon-company-marquee-section relative mt-8 overflow-hidden py-10 sm:mt-12 sm:py-12">
@@ -752,86 +600,40 @@ export function HomePlatformSections() {
           </div>
         </div>
 
-        <div className="relative flex min-h-[620px] items-start justify-center max-lg:min-h-[620px]">
-          <div className="vozon-iphone relative flex h-[600px] w-full max-w-[410px] flex-col overflow-hidden rounded-[52px] border-[12px] border-[#202a26] bg-[#020806] shadow-[0_34px_120px_rgba(0,0,0,0.58),0_0_80px_rgba(69,221,206,0.09)]">
-            <div className="absolute left-1/2 top-4 z-30 h-10 w-32 -translate-x-1/2 rounded-full bg-black" />
-            <div className="absolute left-8 right-8 top-7 z-30 flex items-center justify-between text-xs font-black text-white">
-              <span>9:41</span>
-              <span className="flex items-center gap-1.5">
-                <span className="h-3 w-5 rounded-[4px] border border-white/90" />
-                <span className="h-2 w-1 rounded-full bg-white/90" />
-              </span>
-            </div>
+        <div className="relative flex w-full items-center justify-center lg:justify-end">
+          <div className="relative flex min-h-[500px] w-full max-w-[430px] flex-col sm:min-h-[540px]">
+            <div className="relative z-10 flex min-h-0 flex-1 flex-col items-center px-2 pb-2 pt-2 text-center sm:px-6">
+              <GreenVoiceOrb isSpeaking={isSpeaking} language={selectedLanguage.name} />
 
-            <div className="relative z-10 flex items-center gap-3 border-b border-white/8 px-7 pb-3 pt-12">
-              <div className="grid size-12 place-items-center rounded-full bg-[#45ddce] shadow-[0_0_0_4px_rgba(69,221,206,0.18)]">
-                <div className="vozon-mini-avatar relative size-9 overflow-hidden rounded-full bg-[#ffd3a2]" />
-              </div>
-              <div>
-                <h3 className="m-0 text-lg font-black text-white">Vozon Clinic</h3>
-                <p aria-live="polite" className="mt-1 text-xs font-bold text-[#45ddce]">
-                  {isSpeaking ? "Speaking" : "Active now"}{" "}
-                  <span className="text-white/55">- {selectedLanguage.name}</span>
-                </p>
-              </div>
-            </div>
-
-            <div className="relative z-10 flex min-h-0 flex-1 flex-col items-center px-8 py-4 text-center">
-              <p className="mb-2 text-[11px] font-black uppercase tracking-[0.14em] text-white/42">Patient said</p>
-              <p className="m-0 line-clamp-2 text-sm font-black leading-6 text-white/90">&quot;{selectedLanguage.patient}&quot;</p>
-
-              <div className="vozon-call-orbit relative mt-3 grid size-40 shrink-0 place-items-center rounded-full">
-                <span className="absolute inset-0 rounded-full border border-[#45ddce]/13" />
-                <span className="absolute inset-5 rounded-full border border-[#45ddce]/20" />
-                <span className="absolute inset-10 rounded-full border border-[#45ddce]/36" />
-                <div
-                  aria-label={`Vozon voice agent${isSpeaking ? ` speaking ${selectedLanguage.name}` : ""}`}
-                  className={`vozon-agent-avatar relative z-10 size-24 overflow-hidden rounded-full ${isSpeaking ? "is-speaking" : ""}`}
-                  role="img"
-                >
-                  <Image
-                    src="/images/avatar.png"
-                    alt=""
-                    className="object-cover"
-                    fill
-                    sizes="96px"
-                  />
-                  {isSpeaking && <span aria-hidden="true" className="vozon-avatar-mouth" />}
-                </div>
-                <span className="absolute bottom-6 right-6 z-20 grid size-8 place-items-center rounded-full bg-[#20d7c4] text-sm font-black text-[#02110d] shadow-[0_0_24px_rgba(32,215,196,0.4)]">m</span>
-              </div>
-
-              <div className="mt-1 flex h-5 items-center gap-1">
-                {Array.from({ length: 30 }).map((_, index) => (
-                  <span
-                    className={`vozon-call-wave block w-1 rounded-full bg-[#45ddce] ${isSpeaking ? "is-speaking" : ""}`}
-                    key={index}
-                    style={{ height: `${4 + (index % 5) * 2}px`, animationDelay: `${index * 35}ms` }}
-                  />
-                ))}
-              </div>
-
-              <p className="mt-3 mb-0 line-clamp-2 max-w-xs text-sm font-black leading-6 text-white/88">
-                {selectedLanguage.reply}
+              <p aria-live="polite" className="mt-7 mb-0 text-sm font-medium text-white/48">
+                {isSpeaking ? `Speaking in ${selectedLanguage.name}` : `Hello, I'm Vozon`}
               </p>
-              <p className="mt-1 text-xs italic text-white/38">{selectedLanguage.translated}</p>
-            </div>
+              <h3 className="mt-3 mb-0 max-w-[310px] text-[2rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white">
+                {isSpeaking ? "Here’s what I found for you." : "How can I help you today?"}
+              </h3>
 
-            <div className="relative z-10 grid grid-cols-4 gap-3 border-t border-white/8 px-10 py-4">
-              {["mic", "play", "vol", "call"].map((control) => (
+              <div className="mt-auto w-full">
                 <button
-                  aria-label={control}
-                  className={`grid size-11 place-items-center rounded-full border text-xs font-black ${
-                    control === "call"
-                      ? "border-[#ff5b4f] bg-[#ff5b4f] text-white"
-                      : "border-white/10 bg-white/[0.06] text-white"
-                  }`}
-                  key={control}
+                  aria-label={`Speak with Vozon in ${selectedLanguage.name}`}
+                  className={`vozon-voice-input flex min-h-[68px] w-full items-center justify-between rounded-full border px-7 text-left text-sm font-semibold transition ${isSpeaking ? "is-speaking" : ""}`}
+                  onClick={() => speakLanguageReply(selectedLanguage)}
                   type="button"
                 >
-                  {control === "mic" ? "m" : control === "play" ? ">" : control === "vol" ? "<" : "~"}
+                  <span>{isSpeaking ? "Speaking now…" : "Start voice demo"}</span>
+                  <span className="flex h-7 items-center gap-[3px]" aria-hidden="true">
+                    {[9, 16, 23, 13, 19].map((height, index) => (
+                      <span
+                        className="vozon-orb-voice-bar block w-[2px] rounded-full"
+                        key={height}
+                        style={{ height, animationDelay: `${index * 85}ms` }}
+                      />
+                    ))}
+                  </span>
                 </button>
-              ))}
+                <p className="mt-4 text-[11px] font-medium text-white/32">
+                  {selectedLanguage.translated}
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -2018,6 +1820,109 @@ export function HomePlatformSections() {
           filter: drop-shadow(0 0 12px rgba(102,255,240,0.36));
         }
 
+        .vozon-spectrum-panel {
+          border-color: rgba(101,139,255,0.2);
+          background:
+            linear-gradient(150deg, rgba(7,18,30,0.94), rgba(11,6,27,0.96) 58%, rgba(25,3,24,0.94)),
+            #05050a;
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.07),
+            -22px 10px 80px rgba(0,197,255,0.08),
+            24px 18px 90px rgba(240,0,126,0.08),
+            0 30px 90px rgba(0,0,0,0.48);
+        }
+
+        .vozon-spectrum-panel::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background-image:
+            linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+          background-size: 28px 28px;
+          mask-image: linear-gradient(to bottom, transparent, black 25%, black 75%, transparent);
+        }
+
+        .vozon-spectrum-ambient {
+          background:
+            radial-gradient(circle at 14% 45%, rgba(0,216,255,0.15), transparent 35%),
+            radial-gradient(circle at 84% 54%, rgba(255,0,132,0.16), transparent 38%),
+            radial-gradient(circle at 52% 56%, rgba(99,52,255,0.14), transparent 44%);
+          animation: vozonSpectrumAmbient 7s ease-in-out infinite alternate;
+        }
+
+        .vozon-spectrum-status {
+          background: #46ebff;
+          box-shadow: 0 0 14px rgba(70,235,255,0.8);
+          animation: vozonSpectrumStatus 2.4s ease-in-out infinite;
+        }
+
+        .vozon-spectrum-status.is-speaking {
+          background: #ff4aa5;
+          box-shadow: 0 0 18px rgba(255,74,165,0.9);
+          animation-duration: 0.72s;
+        }
+
+        .vozon-spectrum-stage::before,
+        .vozon-spectrum-stage::after {
+          content: "";
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 50%;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, rgba(99,225,255,0.18), rgba(194,66,255,0.2), transparent);
+        }
+
+        .vozon-spectrum-stage::after {
+          transform: translateY(24px);
+          opacity: 0.55;
+        }
+
+        .vozon-spectrum-glow {
+          background: linear-gradient(90deg, rgba(0,210,255,0.22), rgba(100,47,255,0.2), rgba(255,0,132,0.22));
+          filter: blur(30px);
+          animation: vozonSpectrumGlow 3.6s ease-in-out infinite;
+        }
+
+        .vozon-spectrum-bar {
+          background: linear-gradient(to top, #00cce8 0%, #5d63ff 52%, #f20a95 100%);
+          box-shadow: 0 0 10px rgba(60,174,255,0.16);
+          opacity: 0.56;
+          transform-origin: center;
+          animation: vozonSpectrumIdle ease-in-out infinite alternate;
+        }
+
+        .vozon-spectrum-panel.is-speaking .vozon-spectrum-bar {
+          opacity: 0.94;
+          animation-name: vozonSpectrumSpeak;
+          animation-duration: 0.52s !important;
+          box-shadow: 0 0 12px rgba(100,109,255,0.32);
+        }
+
+        .vozon-spectrum-action {
+          border-color: rgba(101,166,255,0.25);
+          background:
+            linear-gradient(100deg, rgba(0,190,222,0.18), rgba(91,49,211,0.25) 52%, rgba(227,0,121,0.2)),
+            rgba(255,255,255,0.025);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.07);
+        }
+
+        .vozon-spectrum-action:hover {
+          border-color: rgba(111,224,255,0.52);
+          transform: translateY(-2px);
+          box-shadow: -8px 0 24px rgba(0,205,255,0.1), 8px 0 28px rgba(255,0,145,0.1);
+        }
+
+        .vozon-spectrum-mic {
+          background: linear-gradient(135deg, #13d8e8, #6e55ed 55%, #ef248f);
+          box-shadow: 0 0 18px rgba(92,86,239,0.35);
+          animation: vozonSpectrumMic 2s ease-in-out infinite;
+        }
+
+        .vozon-spectrum-panel.is-speaking .vozon-spectrum-mic {
+          animation-duration: 0.68s;
+        }
         .vozon-iphone::before,
         .vozon-iphone::after {
           content: "";
@@ -2041,15 +1946,154 @@ export function HomePlatformSections() {
           height: 82px;
         }
 
-        .vozon-mini-avatar::before {
-          content: "";
-          position: absolute;
-          inset: 7px 5px auto;
-          height: 15px;
-          border-radius: 999px 999px 12px 12px;
-          background: #573016;
+        .vozon-voice-orb {
+          isolation: isolate;
+          filter: drop-shadow(0 24px 42px rgba(23,255,144,0.12));
+          transition: filter 350ms ease, transform 350ms ease;
         }
 
+        .vozon-orb-halo {
+          background:
+            radial-gradient(circle at 50% 48%, rgba(54,255,164,0.2) 0 27%, rgba(15,174,104,0.13) 48%, transparent 69%);
+          box-shadow:
+            inset 0 0 38px rgba(70,255,176,0.14),
+            0 0 45px rgba(21,221,128,0.14);
+          opacity: 0.78;
+          transition: opacity 300ms ease;
+        }
+
+        .vozon-orb-shell {
+          background:
+            radial-gradient(circle at 34% 27%, rgba(200,255,226,0.88), transparent 8%),
+            radial-gradient(circle at 46% 38%, #47f0a6 0%, #10a966 35%, #063e2a 68%, #01150e 100%);
+          border: 1px solid rgba(151,255,208,0.54);
+          box-shadow:
+            inset -18px -24px 38px rgba(0,19,12,0.8),
+            inset 12px 12px 28px rgba(157,255,212,0.19),
+            0 0 28px rgba(36,243,147,0.28);
+          transform: translateZ(0);
+        }
+
+        .vozon-orb-shell::before {
+          content: "";
+          position: absolute;
+          inset: 16%;
+          z-index: 1;
+          border-radius: 38% 62% 58% 42% / 48% 38% 62% 52%;
+          border: 5px solid rgba(128,255,190,0.48);
+          background:
+            linear-gradient(135deg, rgba(128,255,190,0.18), transparent 44%, rgba(19,175,102,0.26)),
+            radial-gradient(circle at 34% 28%, rgba(196,255,223,0.3), transparent 34%);
+          box-shadow:
+            inset 8px -7px 18px rgba(0,54,31,0.5),
+            0 0 16px rgba(66,255,159,0.34);
+          filter: blur(0.4px);
+          animation: vozonOrbMembrane 4.8s ease-in-out infinite alternate;
+        }
+
+        .vozon-orb-shell::after {
+          content: "";
+          position: absolute;
+          inset: 5%;
+          border-radius: 999px;
+          background: linear-gradient(140deg, rgba(255,255,255,0.2), transparent 28%, transparent 65%, rgba(0,0,0,0.28));
+          mix-blend-mode: screen;
+        }
+
+        .vozon-orb-band {
+          left: -20%;
+          width: 140%;
+          height: 42%;
+          border: 8px solid rgba(156,255,211,0.48);
+          border-left-color: rgba(23,126,82,0.42);
+          border-bottom-color: rgba(2,52,33,0.68);
+          border-radius: 50%;
+          filter: drop-shadow(0 0 7px rgba(80,255,170,0.45));
+        }
+
+        .vozon-orb-band-one {
+          top: 11%;
+          transform: rotate(-30deg);
+        }
+
+        .vozon-orb-band-two {
+          bottom: 11%;
+          transform: rotate(28deg) scaleX(0.92);
+          border-color: rgba(73,232,151,0.52);
+          border-top-color: rgba(188,255,219,0.74);
+        }
+
+        .vozon-orb-band-three {
+          left: 17%;
+          top: -16%;
+          width: 64%;
+          height: 132%;
+          transform: rotate(22deg);
+          border-width: 5px;
+          border-color: rgba(8,74,46,0.68);
+          border-right-color: rgba(135,255,196,0.58);
+        }
+
+        .vozon-orb-shine {
+          left: 29%;
+          top: 19%;
+          width: 16%;
+          height: 7%;
+          background: rgba(224,255,239,0.8);
+          filter: blur(3px);
+          transform: rotate(-24deg);
+        }
+
+        .vozon-voice-orb.is-speaking {
+          filter: drop-shadow(0 24px 50px rgba(23,255,144,0.28));
+          animation: vozonOrbBreathe 1.2s ease-in-out infinite;
+        }
+
+        .vozon-voice-orb.is-speaking .vozon-orb-halo {
+          opacity: 1;
+          animation: vozonOrbHalo 1.2s ease-in-out infinite;
+        }
+
+        .vozon-voice-orb.is-speaking .vozon-orb-shell {
+          animation: vozonOrbTurn 3.8s linear infinite;
+        }
+
+        .vozon-voice-orb.is-speaking .vozon-orb-band-one {
+          animation-duration: 1.55s;
+        }
+
+        .vozon-voice-orb.is-speaking .vozon-orb-band-two {
+          animation-duration: 1.3s;
+        }
+
+        .vozon-voice-orb.is-speaking .vozon-orb-band-three,
+        .vozon-voice-orb.is-speaking .vozon-orb-shell::before {
+          animation-duration: 1.55s;
+        }
+
+        .vozon-voice-input {
+          border-color: rgba(125,255,196,0.24);
+          color: rgba(255,255,255,0.7);
+          background: linear-gradient(100deg, rgba(20,93,62,0.52), rgba(13,48,34,0.72));
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 14px 38px rgba(0,0,0,0.28);
+          backdrop-filter: blur(18px);
+        }
+
+        .vozon-voice-input:hover,
+        .vozon-voice-input.is-speaking {
+          border-color: rgba(111,255,185,0.52);
+          background: linear-gradient(100deg, rgba(28,124,81,0.62), rgba(13,66,43,0.82));
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 0 30px rgba(29,218,128,0.13);
+        }
+
+        .vozon-orb-voice-bar {
+          background: #8dffd0;
+          transform-origin: center;
+        }
+
+        .vozon-voice-input.is-speaking .vozon-orb-voice-bar {
+          animation: vozonOrbVoiceBar 0.72s ease-in-out infinite alternate;
+        }
         .vozon-mini-avatar::after {
           content: "";
           position: absolute;
@@ -2619,6 +2663,124 @@ export function HomePlatformSections() {
           }
         }
 
+        @keyframes vozonSpectrumAmbient {
+          from { transform: translate3d(-2%, -1%, 0) scale(1); }
+          to { transform: translate3d(2%, 2%, 0) scale(1.08); }
+        }
+
+        @keyframes vozonSpectrumStatus {
+          0%, 100% { transform: scale(0.82); opacity: 0.58; }
+          50% { transform: scale(1.12); opacity: 1; }
+        }
+
+        @keyframes vozonSpectrumGlow {
+          0%, 100% { transform: scaleX(0.82); opacity: 0.55; }
+          50% { transform: scaleX(1.08); opacity: 0.92; }
+        }
+
+        @keyframes vozonSpectrumIdle {
+          from { transform: scaleY(0.22); opacity: 0.34; }
+          to { transform: scaleY(0.54); opacity: 0.66; }
+        }
+
+        @keyframes vozonSpectrumSpeak {
+          0%, 100% { transform: scaleY(0.3); }
+          45% { transform: scaleY(1); }
+          72% { transform: scaleY(0.62); }
+        }
+
+        @keyframes vozonSpectrumMic {
+          0%, 100% { transform: scale(0.92); }
+          50% { transform: scale(1.06); }
+        }
+        @keyframes vozonBloomFloat {
+          0%, 100% { transform: translateY(0) rotate(-1deg); }
+          50% { transform: translateY(-7px) rotate(1.5deg); }
+        }
+
+        @keyframes vozonBloomHalo {
+          0%, 100% { transform: scale(0.9) rotate(0deg); opacity: 0.58; }
+          50% { transform: scale(1.08) rotate(90deg); opacity: 1; }
+          100% { transform: scale(0.9) rotate(180deg); opacity: 0.58; }
+        }
+
+        @keyframes vozonBloomCore {
+          to { transform: rotate(360deg); }
+        }
+
+        @keyframes vozonBloomMorph {
+          0% { border-radius: 42% 58% 54% 46%; transform: scale(0.82) rotate(-8deg); }
+          50% { border-radius: 58% 42% 45% 55%; transform: scale(1.03) rotate(6deg); }
+          100% { border-radius: 48% 52% 62% 38%; transform: scale(0.88) rotate(14deg); }
+        }
+
+        @keyframes vozonBloomBandOne {
+          from { transform: rotate(-31deg) translateY(-3px) scaleX(0.92); }
+          to { transform: rotate(-17deg) translateY(7px) scaleX(1.06); }
+        }
+
+        @keyframes vozonBloomBandTwo {
+          from { transform: rotate(27deg) translateY(3px) scaleX(0.9); }
+          to { transform: rotate(42deg) translateY(-7px) scaleX(1.04); }
+        }
+
+        @keyframes vozonBloomBandThree {
+          from { transform: rotate(17deg) scaleY(0.92); }
+          to { transform: rotate(34deg) scaleY(1.06); }
+        }
+
+        @keyframes vozonBloomSpeak {
+          0%, 100% { transform: translateY(-2px) scale(1); }
+          45% { transform: translateY(-7px) scale(1.07); }
+          70% { transform: translateY(-4px) scale(1.025); }
+        }
+        @keyframes vozonOrbBreathe {
+          0%, 100% { transform: translateY(0) scale(1); }
+          50% { transform: translateY(-4px) scale(1.035); }
+        }
+
+        @keyframes vozonOrbHalo {
+          0%, 100% { transform: scale(0.92); opacity: 0.68; }
+          50% { transform: scale(1.12); opacity: 1; }
+        }
+
+        @keyframes vozonOrbTurn {
+          to { transform: rotate(360deg); }
+        }
+
+        @keyframes vozonOrbBandOne {
+          from { transform: rotate(-30deg) translateY(-3px) scaleX(0.94); }
+          to { transform: rotate(-18deg) translateY(6px) scaleX(1.05); }
+        }
+
+        @keyframes vozonOrbBandTwo {
+          from { transform: rotate(28deg) translateY(3px) scaleX(0.9); }
+          to { transform: rotate(38deg) translateY(-5px) scaleX(1.03); }
+        }
+
+        @keyframes vozonOrbMembrane {
+          0% {
+            border-radius: 38% 62% 58% 42% / 48% 38% 62% 52%;
+            transform: rotate(-18deg) scale(0.82) skewX(-7deg);
+          }
+          50% {
+            border-radius: 61% 39% 43% 57% / 36% 58% 42% 64%;
+            transform: rotate(22deg) scale(1.08) skewY(8deg);
+          }
+          100% {
+            border-radius: 47% 53% 65% 35% / 61% 43% 57% 39%;
+            transform: rotate(58deg) scale(0.9) skewX(6deg);
+          }
+        }
+
+        @keyframes vozonOrbBandThree {
+          from { transform: rotate(15deg) scaleY(0.86) translateX(-4px); }
+          to { transform: rotate(38deg) scaleY(1.08) translateX(5px); }
+        }
+        @keyframes vozonOrbVoiceBar {
+          from { transform: scaleY(0.42); opacity: 0.55; }
+          to { transform: scaleY(1.12); opacity: 1; }
+        }
         @keyframes vozonCallWave {
           0%, 100% {
             transform: scaleY(0.58);
