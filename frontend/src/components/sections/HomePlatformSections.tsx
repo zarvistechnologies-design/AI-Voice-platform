@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
@@ -21,8 +21,8 @@ const languageOptions = [
     name: "Spanish",
     locale: "es-ES",
     tone: "#f28d45",
-    patient: "¿Puedo reservar una cita con el doctor?",
-    reply: "Sí. El Dr. Patel tiene un espacio mañana a las 4 p. m. ¿Lo reservo?",
+    patient: "Â¿Puedo reservar una cita con el doctor?",
+    reply: "SÃ­. El Dr. Patel tiene un espacio maÃ±ana a las 4 p. m. Â¿Lo reservo?",
     translated: "translated live - Spanish",
     cta: "Try Vozon in Spanish",
   },
@@ -32,7 +32,7 @@ const languageOptions = [
     locale: "fr-FR",
     tone: "#f28d45",
     patient: "Puis-je prendre rendez-vous avec le docteur ?",
-    reply: "Oui. Le Dr Patel est disponible demain à 16 h. Je réserve ?",
+    reply: "Oui. Le Dr Patel est disponible demain Ã  16 h. Je rÃ©serve ?",
     translated: "translated live - French",
     cta: "Try Vozon in French",
   },
@@ -51,8 +51,8 @@ const languageOptions = [
     name: "Portuguese",
     locale: "pt-PT",
     tone: "#f2d24b",
-    patient: "Posso marcar uma consulta com o médico?",
-    reply: "Sim. O Dr. Patel tem horário amanhã às 16h. Posso marcar?",
+    patient: "Posso marcar uma consulta com o mÃ©dico?",
+    reply: "Sim. O Dr. Patel tem horÃ¡rio amanhÃ£ Ã s 16h. Posso marcar?",
     translated: "translated live - Portuguese",
     cta: "Try Vozon in Portuguese",
   },
@@ -61,8 +61,8 @@ const languageOptions = [
     name: "Hindi",
     locale: "hi-IN",
     tone: "#f28d45",
-    patient: "क्या मैं डॉक्टर से अपॉइंटमेंट बुक कर सकती हूँ?",
-    reply: "हाँ। डॉ. पटेल के पास कल शाम 4 बजे समय है। क्या मैं बुक कर दूँ?",
+    patient: "à¤•à¥à¤¯à¤¾ à¤®à¥ˆà¤‚ à¤¡à¥‰à¤•à¥à¤Ÿà¤° à¤¸à¥‡ à¤…à¤ªà¥‰à¤‡à¤‚à¤Ÿà¤®à¥‡à¤‚à¤Ÿ à¤¬à¥à¤• à¤•à¤° à¤¸à¤•à¤¤à¥€ à¤¹à¥‚à¤?",
+    reply: "à¤¹à¤¾à¤à¥¤ à¤¡à¥‰. à¤ªà¤Ÿà¥‡à¤² à¤•à¥‡ à¤ªà¤¾à¤¸ à¤•à¤² à¤¶à¤¾à¤® 4 à¤¬à¤œà¥‡ à¤¸à¤®à¤¯ à¤¹à¥ˆà¥¤ à¤•à¥à¤¯à¤¾ à¤®à¥ˆà¤‚ à¤¬à¥à¤• à¤•à¤° à¤¦à¥‚à¤?",
     translated: "translated live - Hindi",
     cta: "Try Vozon in Hindi",
   },
@@ -71,8 +71,8 @@ const languageOptions = [
     name: "Arabic",
     locale: "ar-SA",
     tone: "#8bc5ec",
-    patient: "هل يمكنني حجز موعد مع الطبيب؟",
-    reply: "نعم. لدى الدكتور باتيل موعد غدًا الساعة 4 مساءً. هل أحجزه؟",
+    patient: "Ù‡Ù„ ÙŠÙ…ÙƒÙ†Ù†ÙŠ Ø­Ø¬Ø² Ù…ÙˆØ¹Ø¯ Ù…Ø¹ Ø§Ù„Ø·Ø¨ÙŠØ¨ØŸ",
+    reply: "Ù†Ø¹Ù…. Ù„Ø¯Ù‰ Ø§Ù„Ø¯ÙƒØªÙˆØ± Ø¨Ø§ØªÙŠÙ„ Ù…ÙˆØ¹Ø¯ ØºØ¯Ù‹Ø§ Ø§Ù„Ø³Ø§Ø¹Ø© 4 Ù…Ø³Ø§Ø¡Ù‹. Ù‡Ù„ Ø£Ø­Ø¬Ø²Ù‡ØŸ",
     translated: "translated live - Arabic",
     cta: "Try Vozon in Arabic",
   },
@@ -81,8 +81,8 @@ const languageOptions = [
     name: "Mandarin",
     locale: "zh-CN",
     tone: "#45ddce",
-    patient: "我可以预约医生吗？",
-    reply: "可以。帕特尔医生明天下午4点有空。要我帮您预约吗？",
+    patient: "æˆ‘å¯ä»¥é¢„çº¦åŒ»ç”Ÿå—ï¼Ÿ",
+    reply: "å¯ä»¥ã€‚å¸•ç‰¹å°”åŒ»ç”Ÿæ˜Žå¤©ä¸‹åˆ4ç‚¹æœ‰ç©ºã€‚è¦æˆ‘å¸®æ‚¨é¢„çº¦å—ï¼Ÿ",
     translated: "translated live - Mandarin",
     cta: "Try Vozon in Mandarin",
   },
@@ -142,7 +142,6 @@ const companyLogos = [
   { name: "Google", src: "/images/company-logos/google.svg" },
   { name: "HubSpot", src: "/images/company-logos/hubspot.svg" },
   { name: "Shopify", src: "/images/company-logos/shopify.svg" },
-  { name: "Stripe", src: "/images/company-logos/stripe.svg" },
   { name: "Zendesk", src: "/images/company-logos/zendesk.svg" },
   { name: "Notion", src: "/images/company-logos/notion.svg" },
   { name: "Intercom", src: "/images/company-logos/intercom.svg" },
@@ -609,7 +608,7 @@ export function HomePlatformSections() {
                 {isSpeaking ? `Speaking in ${selectedLanguage.name}` : `Hello, I'm Vozon`}
               </p>
               <h3 className="mt-3 mb-0 max-w-[310px] text-[2rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white">
-                {isSpeaking ? "Here’s what I found for you." : "How can I help you today?"}
+                {isSpeaking ? "Hereâ€™s what I found for you." : "How can I help you today?"}
               </h3>
 
               <div className="mt-auto w-full">
@@ -619,7 +618,7 @@ export function HomePlatformSections() {
                   onClick={() => speakLanguageReply(selectedLanguage)}
                   type="button"
                 >
-                  <span>{isSpeaking ? "Speaking now…" : "Start voice demo"}</span>
+                  <span>{isSpeaking ? "Speaking nowâ€¦" : "Start voice demo"}</span>
                   <span className="flex h-7 items-center gap-[3px]" aria-hidden="true">
                     {[9, 16, 23, 13, 19].map((height, index) => (
                       <span
@@ -2999,3 +2998,4 @@ export function HomePlatformSections() {
     </div>
   );
 }
+
