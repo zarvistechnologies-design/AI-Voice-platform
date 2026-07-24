@@ -59,8 +59,7 @@ export function EnquiryChatbot() {
   }
   async function submitPhone(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const digits = phone.replace(/\D/g, "");
-    if (digits.length < 7) return setError("Please enter a valid phone number.");
+    if (!phone.trim()) return setError("Please enter your phone number.");
     setError("");
     setStep("sending");
     try {
@@ -113,3 +112,5 @@ export function EnquiryChatbot() {
     <button className={styles.launcher} onClick={() => setOpen(value => !value)} aria-expanded={open} aria-label="Chat with Arya"><span className={styles.launchAvatar}><Image src="/images/support-agent.png" alt="" fill sizes="54px" /></span>{!open ? <span className={styles.launchText}><small>Need help?</small><strong>Chat with Arya</strong></span> : <span className={styles.launchText}><strong>Close chat</strong></span>}<i className={styles.online} /></button>
   </div>;
 }
+
+
