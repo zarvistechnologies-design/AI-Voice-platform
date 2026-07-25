@@ -13,6 +13,9 @@ import {
 
 const MINUTE_RATE_MIN = 0.07;
 const MINUTE_RATE_MAX = 0.12;
+const visibleModelPricingCategories = modelPricingCategories.filter(
+  (category) => category.id !== "llm" && category.id !== "realtime",
+);
 
 const proofPoints = [
   { value: "No plans", label: "One simple pricing model", accent: "#45ddce" },
@@ -108,10 +111,10 @@ function formatUsd(value: number) {
 export function PricingExperience() {
   const [calls, setCalls] = useState(500);
   const [minutes, setMinutes] = useState(3);
-  const [activePricingCategory, setActivePricingCategory] = useState<ModelPriceCategory["id"]>("llm");
+  const [activePricingCategory, setActivePricingCategory] = useState<ModelPriceCategory["id"]>("stt");
 
   const activeModelPricing =
-    modelPricingCategories.find((category) => category.id === activePricingCategory) ?? modelPricingCategories[0];
+    visibleModelPricingCategories.find((category) => category.id === activePricingCategory) ?? visibleModelPricingCategories[0];
 
   const estimate = useMemo(() => {
     const safeCalls = Math.max(0, Math.min(1_000_000, Number.isFinite(calls) ? calls : 0));
@@ -204,8 +207,8 @@ export function PricingExperience() {
             </div>
 
             <div className="overflow-x-auto pb-1" role="tablist" aria-label="Model pricing categories">
-              <div className="grid min-w-[600px] grid-cols-4 gap-1 rounded-2xl border border-white/10 bg-white/[0.035] p-1.5">
-                {modelPricingCategories.map((category) => {
+              <div className="grid min-w-[320px] grid-cols-2 gap-1 rounded-2xl border border-white/10 bg-white/[0.035] p-1.5">
+                {visibleModelPricingCategories.map((category) => {
                   const active = activePricingCategory === category.id;
                   const modelCount = category.providers.reduce((total, provider) => total + provider.models.length, 0);
 

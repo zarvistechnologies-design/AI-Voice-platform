@@ -1,7 +1,13 @@
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 
+import { ProductServiceHeroPhoto } from "@/components/layout/ProductServiceHeroPhoto";
 import { SiteLayout } from "@/components/layout/SiteLayout";
+import {
+  VoiceAgentConfigExplorer,
+  type ProductConfigurationItem,
+} from "@/components/layout/VoiceAgentConfigExplorer";
+import { productPageDesigns } from "@/config/productPageDesigns";
 import type { ProductServiceExperience } from "@/config/productServiceExperiences";
 
 type ServiceOverview = {
@@ -18,6 +24,7 @@ type ProductServicePageProps = {
 };
 
 const waveform = [16, 26, 42, 22, 54, 34, 66, 28, 48, 72, 38, 58, 24, 46, 30, 62, 36, 20, 44, 28];
+const serviceMarks: Record<string, string> = {};
 
 const pageThemes = {
   Build: {
@@ -49,18 +56,56 @@ const pageThemes = {
   },
 } as const;
 
-const serviceMarks: Record<string, string> = {
-};
+const agentBuildingLayers = [
+  {
+    number: "01",
+    name: "Identity",
+    title: "How it sounds and speaks",
+    body: "Its name, voice, personality, and greeting. This is what a caller experiences in the first few seconds.",
+    className: "agent-layer-identity",
+  },
+  {
+    number: "02",
+    name: "Knowledge",
+    title: "What it's allowed to say",
+    body: "FAQs, pricing, policies, and business details. The agent only answers from what you've given it — nothing invented.",
+    className: "agent-layer-knowledge",
+  },
+  {
+    number: "03",
+    name: "Actions",
+    title: "What it can actually do",
+    body: "Calendar bookings, CRM updates, call transfers. This is what turns a conversation into a completed task.",
+    className: "agent-layer-actions",
+  },
+] as const;
 
-const capabilityMarks = ["✦", "⌁", "↗"];
-
-function CheckIcon() {
-  return (
-    <span className="service-check mt-0.5 grid size-6 shrink-0 place-items-center rounded-full text-xs font-black">
-      &#10003;
-    </span>
-  );
-}
+const voiceAgentBuildSteps = [
+  {
+    title: "Define the agent",
+    body: "Set its name, voice, tone, and opening message.",
+  },
+  {
+    title: "Add its knowledge",
+    body: "Upload FAQs, pricing, and policies it should answer from.",
+  },
+  {
+    title: "Connect its actions",
+    body: "Link your calendar, CRM, or other tools it should use.",
+  },
+  {
+    title: "Test it yourself",
+    body: "Preview real conversations and adjust before anyone else calls in.",
+  },
+  {
+    title: "Deploy it",
+    body: "Publish to your phone number, website widget, or app.",
+  },
+  {
+    title: "Monitor and refine",
+    body: "Review transcripts and outcomes, and adjust the agent as needed.",
+  },
+] as const;
 
 function Pill({ children }: { children: ReactNode }) {
   return (
@@ -70,13 +115,71 @@ function Pill({ children }: { children: ReactNode }) {
   );
 }
 
+function BuildProcessIcon({ index }: { index: number }) {
+  const common = "fill-none stroke-current";
+
+  if (index === 0) {
+    return (
+      <svg aria-hidden="true" className="size-8" viewBox="0 0 24 24">
+        <circle className={common} cx="12" cy="8" r="3.25" strokeWidth="1.5" />
+        <path className={common} d="M5.5 19c.8-3.3 3-5 6.5-5s5.7 1.7 6.5 5" strokeLinecap="round" strokeWidth="1.5" />
+      </svg>
+    );
+  }
+
+  if (index === 1) {
+    return (
+      <svg aria-hidden="true" className="size-8" viewBox="0 0 24 24">
+        <path className={common} d="M7 3.75h7l3 3V20.25H7zM14 3.75v3h3M9.5 11h5M9.5 14.5h5" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+      </svg>
+    );
+  }
+
+  if (index === 2) {
+    return (
+      <svg aria-hidden="true" className="size-8" viewBox="0 0 24 24">
+        <path className={common} d="M9.2 14.8 7.5 16.5a3.54 3.54 0 0 1-5-5l3-3a3.54 3.54 0 0 1 5 0M14.8 9.2l1.7-1.7a3.54 3.54 0 0 1 5 5l-3 3a3.54 3.54 0 0 1-5 0M8.5 15.5l7-7" strokeLinecap="round" strokeWidth="1.5" />
+      </svg>
+    );
+  }
+
+  if (index === 3) {
+    return (
+      <svg aria-hidden="true" className="size-8" viewBox="0 0 24 24">
+        <path className={common} d="M4 12h2.2l1.4-4 2.4 8 2.2-7 1.8 5 1.5-2H20" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+        <circle className={common} cx="12" cy="12" r="9" strokeWidth="1.25" />
+      </svg>
+    );
+  }
+
+  if (index === 4) {
+    return (
+      <svg aria-hidden="true" className="size-8" viewBox="0 0 24 24">
+        <path className={common} d="M12 16V4M7.5 8.5 12 4l4.5 4.5M5 14v5h14v-5" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg aria-hidden="true" className="size-8" viewBox="0 0 24 24">
+      <path className={common} d="M5 19V9M10 19V5M15 19v-7M20 19V3M3.5 19.5h18" strokeLinecap="round" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
+// Kept temporarily for the existing service-console styles below.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function ProductDemo({ experience, service }: { experience: ProductServiceExperience; service: ServiceOverview }) {
   const mark = serviceMarks[service.slug] ?? "AI";
 
   return (
     <div className="product-service-visual relative mx-auto w-full max-w-[600px] py-5 sm:px-6 sm:py-8">
-      <div className="product-orbit product-orbit-one absolute left-1/2 top-1/2 size-[108%] -translate-x-1/2 -translate-y-1/2 rounded-full" />
-      <div className="product-orbit product-orbit-two absolute left-1/2 top-1/2 size-[82%] -translate-x-1/2 -translate-y-1/2 rounded-full" />
+      {service.slug !== "voice-agents" && (
+        <>
+          <div className="product-orbit product-orbit-one absolute left-1/2 top-1/2 size-[108%] -translate-x-1/2 -translate-y-1/2 rounded-full" />
+          <div className="product-orbit product-orbit-two absolute left-1/2 top-1/2 size-[82%] -translate-x-1/2 -translate-y-1/2 rounded-full" />
+        </>
+      )}
       <div className="service-float-chip service-float-chip-one absolute -left-2 top-0 z-20 hidden items-center gap-2 rounded-full px-3 py-2 text-[10px] font-black uppercase tracking-[0.12em] sm:flex">
         <span className="service-live-dot size-1.5 rounded-full" /> Listen
       </div>
@@ -138,27 +241,58 @@ function ProductDemo({ experience, service }: { experience: ProductServiceExperi
 }
 
 export function ProductServicePage({ service, experience }: ProductServicePageProps) {
-  const theme = pageThemes[service.kicker as keyof typeof pageThemes] ?? pageThemes.Build;
+  const design = productPageDesigns[service.slug];
+  const isVoiceAgents = service.slug === "voice-agents";
+  const buildingLayers = isVoiceAgents
+    ? agentBuildingLayers
+    : experience.capabilities.map((capability, index) => ({
+        number: String(index + 1).padStart(2, "0"),
+        name: capability.eyebrow,
+        title: capability.title,
+        body: capability.body,
+        className: ["agent-layer-identity", "agent-layer-knowledge", "agent-layer-actions"][index % 3],
+      }));
+  const buildSteps = isVoiceAgents ? voiceAgentBuildSteps : experience.workflow;
+  const configurationExplorerItems: readonly ProductConfigurationItem[] | undefined = isVoiceAgents
+    ? undefined
+    : experience.capabilities.map((capability) => ({
+        title: capability.title,
+        shortTitle: capability.eyebrow,
+        microcopy: capability.points.slice(0, 2).join(" · "),
+        description: capability.body,
+        options: capability.points,
+      }));
+  const theme = design
+    ? {
+        "--service-accent": design.accent,
+        "--service-accent-soft": design.accentSoft,
+        "--service-accent-rgb": design.accentRgb,
+        "--service-secondary": design.secondary,
+        "--service-secondary-rgb": design.secondaryRgb,
+        "--service-tertiary": design.tertiary,
+        "--service-tertiary-rgb": design.tertiaryRgb,
+      }
+    : pageThemes[service.kicker as keyof typeof pageThemes] ?? pageThemes.Build;
 
   return (
     <SiteLayout>
-      <div className="product-service-page bg-black text-white" style={theme as CSSProperties}>
-        <section className="product-service-hero relative overflow-hidden border-b border-white/[0.06] px-5 pb-16 pt-32 sm:px-8 sm:pb-20 sm:pt-36 lg:pt-40">
-          <div className="product-service-grid absolute inset-0 opacity-50" />
-          <div className="service-ambient service-ambient-one absolute left-[-12rem] top-12 size-[30rem] rounded-full blur-[120px]" />
-          <div className="service-ambient service-ambient-two absolute right-[-9rem] top-24 size-[28rem] rounded-full blur-[120px]" />
-          <span className="pointer-events-none absolute -bottom-8 left-1/2 hidden -translate-x-1/2 select-none text-[10rem] font-black uppercase leading-none tracking-[-0.08em] text-white/[0.018] lg:block">
-            {service.kicker}
-          </span>
+      <div className={`product-service-page product-page-${service.slug} voice-agent-page bg-black text-white`} style={theme as CSSProperties}>
+        <section className="product-service-hero relative overflow-hidden px-5 pb-8 pt-32 sm:px-8 sm:pb-10 sm:pt-36 lg:pt-40">
 
-          <div className="relative mx-auto grid max-w-[1240px] gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(420px,0.88fr)] lg:items-center">
-            <div className="max-w-3xl">
+          <div className={`voice-agent-container relative mx-auto grid w-full min-w-0 max-w-[1240px] gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(420px,0.88fr)] lg:items-center ${service.slug === "voice-agents" ? "voice-agent-hero-container" : ""}`}>
+            <div className="min-w-0 max-w-3xl">
               <Pill>{service.kicker} / {experience.label}</Pill>
-              <h1 className="mt-7 text-[clamp(3rem,6vw,5.2rem)] font-semibold leading-[0.98] tracking-[-0.055em]">
-                {experience.heroTitle}{" "}
-                <span className="product-service-heading-accent">{experience.heroAccent}</span>
+              <h1 className="voice-agents-hero-heading mt-7 font-semibold leading-[0.98] tracking-[-0.055em]">
+                <span className="block">
+                  {experience.heroTitle}
+                </span>{" "}
+                <span className="product-service-heading-accent block">
+                  {experience.heroAccent}
+                </span>
               </h1>
-              <p className="mt-7 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">{service.summary}</p>
+              <p className="mt-7 max-w-2xl text-[0.95rem] leading-7 text-slate-300 sm:text-[1.05rem] sm:leading-8">
+                {service.summary}
+              </p>
 
               <div className="mt-9 flex flex-wrap gap-3">
                 <Link
@@ -169,7 +303,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
                 </Link>
                 <Link
                   className="service-secondary-button inline-flex min-h-12 items-center rounded-lg border border-white/15 bg-white/[0.04] px-6 text-sm font-extrabold text-white transition"
-                  href="/#contact"
+                  href="/contact"
                 >
                   Contact sales
                 </Link>
@@ -185,152 +319,123 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
               </div>
             </div>
 
-            <ProductDemo experience={experience} service={service} />
+            <ProductServiceHeroPhoto slug={service.slug} title={service.title} />
           </div>
         </section>
 
-        <section className="border-b border-white/[0.06] bg-black px-5 sm:px-8">
-          <div className="mx-auto grid max-w-[1240px] sm:grid-cols-3">
-            {experience.proof.map((item, index) => (
-              <div
-                className="service-proof-item border-b border-white/[0.08] py-7 last:border-b-0 sm:border-b-0 sm:border-r sm:px-7 sm:last:border-r-0 sm:first:pl-0"
-                key={item.label}
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <strong className="service-accent-text block text-2xl font-semibold tracking-[-0.03em]">{item.value}</strong>
-                  <span className="text-4xl font-black leading-none text-white/[0.035]">0{index + 1}</span>
-                </div>
-                <span className="mt-1 block text-sm text-slate-400">{item.label}</span>
-                <span className="sr-only">Item {index + 1}</span>
+        <section className="agent-anatomy-section relative overflow-hidden border-b border-white/[0.06] bg-black px-5 py-20 sm:px-8 sm:py-24">
+            <div className="voice-agent-container relative mx-auto max-w-[1240px]">
+              <div className="mx-auto max-w-3xl text-center">
+                <Pill>{design?.blueprintLabel ?? "What you're building"}</Pill>
+                <h2 className="mt-6 text-3xl font-semibold leading-tight tracking-[-0.035em] sm:text-5xl">
+                  {design?.blueprintTitle ?? "Every agent is made of three things."}
+                </h2>
+                <p className="agent-anatomy-intro voice-section-copy mx-auto mt-6 max-w-2xl">
+                  {design?.blueprintIntro ?? "Together, they define how your agent represents the business, what it knows, and what it can do. Update each one independently as your needs evolve."}
+                </p>
               </div>
-            ))}
-          </div>
+
+              <ol className="agent-anatomy-list relative mt-12">
+                {buildingLayers.map((layer) => (
+                  <li
+                    className={`agent-anatomy-layer ${layer.className} relative`}
+                    key={layer.name}
+                    tabIndex={0}
+                  >
+                    <div className="agent-layer-side agent-layer-label">
+                      <span className="agent-layer-number font-mono text-[11px] font-semibold tracking-[0.12em]">
+                        {layer.number}
+                      </span>
+                      <h3 className="agent-layer-name text-[clamp(1.9rem,2.5vw,2.5rem)] font-semibold leading-none tracking-[-0.04em]">
+                        {layer.name}
+                      </h3>
+                    </div>
+
+                    <div className="agent-layer-side agent-layer-copy">
+                      <p className="agent-layer-title text-lg font-medium leading-7 text-white/85 sm:text-xl">
+                        {layer.title}
+                      </p>
+                      <p className="agent-layer-body mt-4 max-w-xl text-base leading-7 text-slate-400 sm:text-lg sm:leading-8">
+                        {layer.body}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </div>
         </section>
 
-        <section className="px-5 py-20 sm:px-8 sm:py-24">
-          <div className="mx-auto max-w-[1240px]">
-            <div className="max-w-3xl">
-              <Pill>What you can do</Pill>
-              <h2 className="mt-6 text-3xl font-semibold leading-tight tracking-[-0.035em] sm:text-5xl">
-                Built for the full workflow, not a single feature.
-              </h2>
-              <p className="mt-5 max-w-2xl text-base leading-7 text-slate-400 sm:text-lg">
-                Configure {service.title.toLowerCase()} around the way your team already works, with clear boundaries and useful outcomes at every stage.
-              </p>
-            </div>
+        <>
+            <section className="voice-build-process relative overflow-hidden bg-black px-5 py-20 sm:px-8 sm:py-24">
+              <div className="voice-agent-container relative mx-auto max-w-[1360px]">
+                <div className="max-w-3xl">
+                  <Pill>{design?.workflowLabel ?? "How you build it"}</Pill>
+                  <h2 className="voice-build-heading mt-6 font-semibold leading-tight tracking-[-0.035em] text-white">
+                    {design?.workflowTitle ?? "A guided process, from first setup to going live."}
+                  </h2>
+                  <p className="voice-section-copy mt-6 max-w-3xl">
+                    {design?.workflowIntro ?? "Move through each stage in order, or return to any step whenever your workflow changes. The builder keeps every decision clear and easy to refine."}
+                  </p>
+                </div>
 
-            <div className="mt-12 grid gap-4 lg:grid-cols-3">
-              {experience.capabilities.map((capability, index) => (
-                <article
-                  className="product-service-capability group relative overflow-hidden rounded-2xl border border-white/10 bg-black p-6 transition hover:-translate-y-1 sm:p-7"
-                  key={capability.title}
-                >
-                  <div className="service-card-line absolute inset-x-0 top-0 h-px opacity-0 transition group-hover:opacity-100" />
-                  <div className="flex items-center justify-between gap-5">
-                    <span className="service-accent-text text-xs font-black uppercase tracking-[0.13em]">{capability.eyebrow}</span>
-                    <span className="service-capability-mark grid size-11 place-items-center rounded-xl text-lg" aria-hidden="true">{capabilityMarks[index]}</span>
-                  </div>
-                  <h3 className="mt-8 text-2xl font-semibold leading-tight tracking-[-0.025em]">{capability.title}</h3>
-                  <p className="mt-4 text-sm leading-6 text-slate-400">{capability.body}</p>
-                  <ul className="mt-7 grid gap-3 border-t border-white/[0.08] pt-6">
-                    {capability.points.map((point) => (
-                      <li className="flex items-start gap-3 text-sm font-medium text-slate-200" key={point}>
-                        <CheckIcon />
-                        <span className="pt-0.5">{point}</span>
+                <div className="voice-build-orbit-viewport mt-14 overflow-x-auto pb-4 pt-3" role="region" aria-label={`${service.title} build process`} tabIndex={0}>
+                  <ol className={`voice-build-orbit-list ${isVoiceAgents ? "" : "voice-build-orbit-list-compact"}`}>
+                    {buildSteps.map((step, index) => (
+                      <li className={`voice-build-orbit-step voice-build-tone-${index + 1}`} key={step.title} tabIndex={0}>
+                        <div className="voice-build-orbit-node" aria-hidden="true">
+                          <span className="voice-build-orbit-ring" />
+                          <BuildProcessIcon index={index} />
+                          <span className="voice-build-orbit-number">
+                            {String(index + 1).padStart(2, "0")}
+                          </span>
+                        </div>
+                        <div className="voice-build-orbit-copy">
+                          <span className="voice-build-orbit-label">Stage {String(index + 1).padStart(2, "0")}</span>
+                          <h3 className="mt-2 text-xl font-semibold leading-tight tracking-[-0.025em] text-white">
+                            {step.title}
+                          </h3>
+                          <p className="mt-3 text-base leading-7 text-slate-400">
+                            {step.body}
+                          </p>
+                        </div>
                       </li>
                     ))}
-                  </ul>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="border-y border-white/[0.06] bg-black px-5 py-20 sm:px-8 sm:py-24">
-          <div className="mx-auto grid max-w-[1240px] gap-12 lg:grid-cols-[0.72fr_1.28fr] lg:gap-20">
-            <div className="lg:sticky lg:top-32 lg:self-start">
-              <Pill>How it works</Pill>
-              <h2 className="mt-6 text-3xl font-semibold leading-tight tracking-[-0.035em] sm:text-5xl">
-                A clear path from setup to improvement.
-              </h2>
-              <p className="mt-5 text-base leading-7 text-slate-400">
-                Start with the outcome, connect only what the workflow needs, and keep your team involved as it evolves.
-              </p>
-              <Link className="service-accent-text mt-7 inline-flex items-center text-sm font-extrabold" href="/#contact">
-                Plan your workflow <span className="ml-2">&rarr;</span>
-              </Link>
-            </div>
-
-            <ol className="product-workflow-list grid gap-3">
-              {experience.workflow.map((step, index) => (
-                <li className="service-workflow-step group relative grid grid-cols-[48px_1fr] gap-4 rounded-2xl border border-white/[0.08] bg-black p-5 transition sm:grid-cols-[64px_1fr] sm:gap-6 sm:p-7" key={step.title}>
-                  <span className="service-step-number grid size-12 place-items-center rounded-xl text-sm font-black transition sm:size-14">
-                    0{index + 1}
-                  </span>
-                  <div>
-                    <h3 className="text-xl font-semibold tracking-[-0.02em] sm:text-2xl">{step.title}</h3>
-                    <p className="mt-2 text-sm leading-6 text-slate-400 sm:text-base sm:leading-7">{step.body}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </section>
-
-        <section className="px-5 py-20 sm:px-8 sm:py-24">
-          <div className="mx-auto max-w-[1240px]">
-            <div className="mx-auto max-w-3xl text-center">
-              <Pill>Use cases</Pill>
-              <h2 className="mt-6 text-3xl font-semibold leading-tight tracking-[-0.035em] sm:text-5xl">
-                Useful across the moments that matter.
-              </h2>
-            </div>
-
-            <div className="mt-12 grid gap-4 md:grid-cols-3">
-              {experience.useCases.map((useCase, index) => (
-                <article className="service-use-case group relative overflow-hidden rounded-2xl border border-white/10 p-6 transition hover:-translate-y-1 sm:p-7" key={useCase.title}>
-                  <div className="service-use-case-orb absolute -right-14 -top-14 size-36 rounded-full blur-[2px] transition duration-500 group-hover:scale-125" />
-                  <span className="service-capability-mark relative grid size-10 place-items-center rounded-lg text-sm font-black">0{index + 1}</span>
-                  <h3 className="mt-7 text-2xl font-semibold tracking-[-0.025em]">{useCase.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-slate-400">{useCase.body}</p>
-                  <div className="mt-7 border-t border-white/[0.08] pt-5">
-                    <span className="text-[10px] font-black uppercase tracking-[0.13em] text-slate-500">Designed outcome</span>
-                    <strong className="service-accent-text mt-2 block text-sm">{useCase.outcome}</strong>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="border-y border-white/[0.06] bg-black px-5 py-20 sm:px-8">
-          <div className="mx-auto max-w-[1100px] text-center">
-            <Pill>Connect your stack</Pill>
-            <h2 className="mx-auto mt-6 max-w-3xl text-3xl font-semibold leading-tight tracking-[-0.035em] sm:text-4xl">
-              Designed to fit the systems around your conversations.
-            </h2>
-            <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-              {experience.integrations.map((integration, index) => (
-                <div className="service-integration-card group rounded-xl border border-white/[0.09] bg-black p-4 text-left transition" key={integration}>
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="service-accent-text text-[10px] font-black opacity-60">0{index + 1}</span>
-                    <span className="service-integration-dot size-2 rounded-[2px] transition group-hover:rotate-45 group-hover:scale-125" />
-                  </div>
-                  <strong className="mt-7 block text-sm font-semibold text-slate-200 group-hover:text-white">{integration}</strong>
+                  </ol>
                 </div>
-              ))}
-            </div>
-            <p className="mx-auto mt-7 max-w-2xl text-xs leading-5 text-slate-500">
-              Available connections depend on your plan, selected providers, and the access permitted by each external system.
-            </p>
-          </div>
-        </section>
+              </div>
+            </section>
 
-        <section className="px-5 py-20 sm:px-8 sm:py-24">
+            <section className="voice-config-section relative overflow-hidden bg-black px-5 py-16 sm:px-8 sm:py-20">
+              <div className="voice-config-wash pointer-events-none absolute inset-0" aria-hidden="true" />
+
+              <div className="voice-agent-container relative mx-auto max-w-[1240px]">
+                <div className="voice-config-intro mx-auto max-w-4xl text-center">
+                  <Pill>{design?.visualLabel ?? "What you can configure"}</Pill>
+                    <h2 className="voice-config-heading mt-6 font-semibold leading-tight tracking-[-0.04em] text-white">
+                      {isVoiceAgents ? "Comprehensive Control Over Agent Behavior." : design.visualTitle}
+                    </h2>
+                    <p className="voice-section-copy mx-auto mt-6 max-w-4xl">
+                      {isVoiceAgents
+                        ? "Fine-tune every detail that shapes a conversation—from voice and knowledge to handoff rules and deployment. Every control stays visible, reviewable, and easy to update."
+                        : design.integrationsTitle}
+                    </p>
+                </div>
+
+                <VoiceAgentConfigExplorer
+                  items={configurationExplorerItems}
+                  label={`${service.title} configuration explorer`}
+                />
+              </div>
+            </section>
+        </>
+
+        <section className="voice-faq-section px-5 py-20 sm:px-8 sm:py-24">
           <div className="mx-auto max-w-4xl">
             <div className="text-center">
               <Pill>F.A.Q.</Pill>
-              <h2 className="mt-6 text-3xl font-semibold tracking-[-0.035em] sm:text-5xl">Questions, answered clearly.</h2>
+              <h2 className="mt-6 text-3xl font-semibold tracking-[-0.035em] sm:text-5xl">
+                {design.faqTitle}
+              </h2>
             </div>
             <div className="mt-10 grid gap-2">
               {experience.faqs.map((faq) => (
@@ -346,19 +451,23 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
           </div>
         </section>
 
-        <section className="px-5 pb-20 sm:px-8 sm:pb-24">
-          <div className="product-service-cta relative mx-auto flex max-w-[1160px] flex-col items-center justify-between gap-8 overflow-hidden rounded-3xl p-8 text-center sm:p-10 md:flex-row md:text-left lg:p-12">
-            <div className="service-ambient service-ambient-one absolute -left-20 -top-24 size-64 rounded-full blur-[80px]" />
-            <div className="service-ambient service-ambient-two absolute -bottom-24 right-0 size-64 rounded-full blur-[80px]" />
-            <div className="product-cta-rings pointer-events-none absolute right-[18%] top-1/2 hidden size-56 -translate-y-1/2 rounded-full lg:block" />
-            <div className="relative max-w-2xl">
-              <p className="service-accent-text text-xs font-black uppercase tracking-[0.14em]">Ready to get started?</p>
-              <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-[-0.035em] sm:text-4xl">
-                Put {service.title.toLowerCase()} to work on one real customer workflow.
+        <section className="voice-agent-contact-section bg-black px-6 pb-16 pt-4 lg:px-8">
+          <div className="relative mx-auto flex max-w-6xl flex-col items-center justify-between gap-7 overflow-hidden rounded-[24px] border border-[rgba(var(--service-accent-rgb),0.35)] bg-[#07100d] p-8 text-center shadow-[0_24px_70px_rgba(var(--service-accent-rgb),0.08)] sm:p-10 md:flex-row md:text-left">
+            <div
+              className="pointer-events-none absolute right-[18%] top-1/2 hidden size-56 -translate-y-1/2 rounded-full border border-[rgba(var(--service-accent-rgb),0.15)] shadow-[0_0_0_24px_rgba(var(--service-accent-rgb),0.025),0_0_0_54px_rgba(var(--service-secondary-rgb),0.025)] lg:block"
+              aria-hidden="true"
+            />
+            <div className="relative">
+              <p className="service-accent-text text-xs font-bold uppercase tracking-[0.14em]">Ready to get started?</p>
+              <h2 className="mt-3 text-[1.375rem] font-semibold tracking-[-0.02em] md:text-[1.75rem]">
+                {design.ctaTitle}
               </h2>
             </div>
-            <Link className="service-primary-button relative inline-flex min-h-12 shrink-0 items-center rounded-lg px-7 text-sm font-extrabold transition hover:-translate-y-0.5" href="/#contact">
-              Contact us <span className="ml-3">&rarr;</span>
+            <Link
+              className="service-primary-button relative inline-flex min-h-12 shrink-0 items-center rounded-lg px-7 text-sm font-bold transition hover:-translate-y-0.5"
+              href="/contact"
+            >
+              CONTACT US <span className="ml-3">&rarr;</span>
             </Link>
           </div>
         </section>
@@ -384,6 +493,54 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
           --service-tertiary-rgb: 255, 173, 115;
         }
 
+        .product-story-page {
+          width: 100%;
+          max-width: 100vw;
+          overflow-x: clip;
+          background:
+            radial-gradient(circle at 84% 8%, rgba(var(--service-accent-rgb), 0.055), transparent 23rem),
+            #050608;
+        }
+
+        .product-story-page .product-service-hero .voice-agent-container,
+        .product-story-page .product-service-hero .voice-agent-container > * {
+          min-width: 0;
+          max-width: 100%;
+        }
+
+        .product-story-page .product-service-hero {
+          background:
+            radial-gradient(circle at 78% 38%, rgba(var(--service-accent-rgb), 0.075), transparent 28rem),
+            radial-gradient(circle at 12% 72%, rgba(var(--service-secondary-rgb), 0.045), transparent 24rem),
+            #050608;
+        }
+
+        .product-blueprint-section {
+          background:
+            linear-gradient(120deg, rgba(var(--service-accent-rgb), 0.028), transparent 34%),
+            linear-gradient(300deg, rgba(var(--service-secondary-rgb), 0.025), transparent 34%),
+            #07090d;
+        }
+
+        .product-blueprint-glow {
+          background: rgba(var(--service-accent-rgb), 0.055);
+        }
+
+        .product-blueprint-card {
+          transition: background-color 220ms ease;
+        }
+
+        .product-blueprint-card:hover {
+          background: linear-gradient(180deg, rgba(var(--service-accent-rgb), 0.045), transparent 72%);
+        }
+
+        .product-blueprint-icon {
+          border-color: rgba(var(--service-accent-rgb), 0.22);
+          background: rgba(var(--service-accent-rgb), 0.075);
+          color: var(--service-accent-soft);
+          box-shadow: inset 0 0 18px rgba(var(--service-accent-rgb), 0.035);
+        }
+
         .service-accent-text {
           color: var(--service-accent-soft);
         }
@@ -393,6 +550,2044 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
+        }
+
+        .voice-agents-hero-heading {
+          font-size: clamp(3.5rem, 7vw, 6rem);
+        }
+
+        .voice-agent-hero-art {
+          position: relative;
+          isolation: isolate;
+          width: 100%;
+          max-width: 45rem;
+          margin: 0 auto;
+        }
+
+        .voice-agent-hero-art::before {
+          position: absolute;
+          z-index: -1;
+          inset: 10% 5%;
+          border-radius: 50%;
+          background: linear-gradient(120deg, rgba(54, 90, 255, 0.2), rgba(176, 73, 255, 0.14));
+          content: "";
+          filter: blur(4rem);
+        }
+
+        .voice-agent-hero-art-image {
+          display: block;
+          width: 100%;
+          height: auto;
+          border-radius: 1.25rem;
+          box-shadow: 0 28px 80px rgba(0, 0, 0, 0.42);
+        }
+
+        .agent-anatomy-section {
+          background:
+            linear-gradient(90deg, rgba(53, 251, 224, 0.025), transparent 28%),
+            linear-gradient(270deg, rgba(169, 156, 255, 0.025), transparent 30%),
+            #000;
+        }
+
+        .agent-anatomy-list {
+          display: grid;
+          gap: 1.25rem;
+        }
+
+        .agent-anatomy-layer {
+          --layer-color: #35fbe0;
+          --layer-rgb: 53, 251, 224;
+          isolation: isolate;
+          padding: 1.5rem 0;
+          outline: none;
+          transition: transform 240ms ease;
+        }
+
+        .agent-layer-knowledge {
+          --layer-color: #a99cff;
+          --layer-rgb: 169, 156, 255;
+        }
+
+        .agent-layer-actions {
+          --layer-color: #ffad73;
+          --layer-rgb: 255, 173, 115;
+        }
+
+        .agent-anatomy-layer::before {
+          position: absolute;
+          z-index: 0;
+          inset: -1rem;
+          background: radial-gradient(circle at 24% 38%, rgba(var(--layer-rgb), 0.13), transparent 64%);
+          content: "";
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 240ms ease;
+        }
+
+        .agent-layer-number {
+          color: rgba(var(--layer-rgb), 0.72);
+          transition: color 240ms ease, text-shadow 240ms ease;
+        }
+
+        .agent-layer-name {
+          color: var(--layer-color);
+          text-shadow: 0 0 18px rgba(var(--layer-rgb), 0.2);
+          transition: text-shadow 240ms ease;
+        }
+
+        .agent-layer-side {
+          position: relative;
+          z-index: 1;
+        }
+
+        .agent-layer-label {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1.75rem;
+        }
+
+        .agent-layer-copy {
+          margin-top: 1rem;
+        }
+
+        .agent-layer-title,
+        .agent-layer-body {
+          transition: color 240ms ease;
+        }
+
+        .agent-anatomy-layer:is(:hover, :focus) {
+          transform: translateY(-4px);
+        }
+
+        .agent-anatomy-layer:is(:hover, :focus)::before {
+          opacity: 1;
+        }
+
+        .agent-anatomy-layer:is(:hover, :focus) .agent-layer-number {
+          color: var(--layer-color);
+          text-shadow: 0 0 16px rgba(var(--layer-rgb), 0.48);
+        }
+
+        .agent-anatomy-layer:is(:hover, :focus) .agent-layer-name {
+          text-shadow: 0 0 28px rgba(var(--layer-rgb), 0.5);
+        }
+
+        .agent-anatomy-layer:is(:hover, :focus) .agent-layer-title {
+          color: var(--layer-color);
+        }
+
+        .agent-anatomy-layer:is(:hover, :focus) .agent-layer-body {
+          color: rgba(var(--layer-rgb), 0.76);
+        }
+
+        @media (min-width: 768px) {
+          .agent-anatomy-list {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            column-gap: clamp(2rem, 5vw, 5rem);
+          }
+
+          .agent-anatomy-layer {
+            min-height: 22rem;
+            padding: 2.5rem 0;
+          }
+        }
+
+        .voice-build-process {
+          background:
+            linear-gradient(125deg, rgba(53, 251, 224, 0.035), transparent 28%),
+            linear-gradient(305deg, rgba(169, 156, 255, 0.04), transparent 32%),
+            #000;
+        }
+
+        .voice-build-process-word {
+          color: rgba(255, 255, 255, 0.018);
+          font-size: clamp(8rem, 20vw, 18rem);
+          letter-spacing: -0.09em;
+        }
+
+        .voice-section-eyebrow {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          font-size: 0.7rem;
+          font-weight: 900;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+        }
+
+        .voice-section-eyebrow > span {
+          font-size: 0.62rem;
+          letter-spacing: 0.05em;
+          opacity: 0.52;
+        }
+
+        .voice-process-eyebrow {
+          color: #75fff0;
+        }
+
+        .voice-process-heading-accent {
+          background: linear-gradient(100deg, #75fff0, #8dd7ff 48%, #a99cff);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+        }
+
+        .voice-build-flow {
+          display: grid;
+          gap: 2.25rem 3rem;
+        }
+
+        .voice-build-step {
+          --step-color: #35fbe0;
+          --step-rgb: 53, 251, 224;
+          min-height: 155px;
+          padding: 1.25rem 0 1.5rem 4.4rem;
+          isolation: isolate;
+        }
+
+        .voice-build-step:nth-child(2) {
+          --step-color: #75baff;
+          --step-rgb: 117, 186, 255;
+        }
+
+        .voice-build-step:nth-child(3) {
+          --step-color: #a99cff;
+          --step-rgb: 169, 156, 255;
+        }
+
+        .voice-build-step:nth-child(4) {
+          --step-color: #f58bd6;
+          --step-rgb: 245, 139, 214;
+        }
+
+        .voice-build-step:nth-child(5) {
+          --step-color: #ffad73;
+          --step-rgb: 255, 173, 115;
+        }
+
+        .voice-build-step:nth-child(6) {
+          --step-color: #8fe388;
+          --step-rgb: 143, 227, 136;
+        }
+
+        .voice-build-step::after {
+          content: "";
+          position: absolute;
+          left: 4.4rem;
+          right: 0;
+          bottom: 0;
+          height: 1px;
+          background: linear-gradient(90deg, rgba(var(--step-rgb), 0.72), rgba(var(--step-rgb), 0));
+          transform-origin: left;
+          transition:
+            opacity 260ms ease,
+            transform 260ms ease;
+          opacity: 0.48;
+          transform: scaleX(0.72);
+        }
+
+        .voice-build-step-number {
+          position: absolute;
+          left: 0;
+          top: 0.55rem;
+          z-index: -1;
+          color: rgba(var(--step-rgb), 0.14);
+          font-size: 4.25rem;
+          font-weight: 800;
+          line-height: 1;
+          letter-spacing: -0.08em;
+          transition:
+            color 260ms ease,
+            transform 260ms ease;
+        }
+
+        .voice-build-stage-label {
+          color: var(--step-color);
+          font-size: 0.65rem;
+          font-weight: 900;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+        }
+
+        .voice-build-step-copy {
+          transition: transform 260ms ease;
+        }
+
+        .voice-build-step:hover::after {
+          opacity: 0.9;
+          transform: scaleX(1);
+        }
+
+        .voice-build-step:hover .voice-build-step-number {
+          color: rgba(var(--step-rgb), 0.28);
+          transform: translateY(-5px);
+        }
+
+        .voice-build-step:hover .voice-build-step-copy {
+          transform: translateY(-6px);
+        }
+
+        .voice-build-step:hover h3 {
+          color: var(--step-color);
+        }
+
+        .voice-build-step h3 {
+          transition: color 260ms ease;
+        }
+
+        @media (min-width: 640px) {
+          .voice-build-flow {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .voice-build-flow {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            row-gap: 2.75rem;
+          }
+
+          .voice-build-step:nth-child(2),
+          .voice-build-step:nth-child(5) {
+            transform: translateY(1.75rem);
+          }
+        }
+
+        .voice-config-wash {
+          background:
+            linear-gradient(110deg, rgba(245, 139, 214, 0.035), transparent 34%),
+            linear-gradient(290deg, rgba(255, 173, 115, 0.04), transparent 32%);
+        }
+
+        .voice-config-eyebrow {
+          color: #f0a0dc;
+        }
+
+        .voice-config-heading-accent {
+          background: linear-gradient(100deg, #f58bd6, #a99cff 48%, #75fff0);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+        }
+
+        .voice-config-list {
+          display: grid;
+          gap: 0.25rem 4rem;
+        }
+
+        .voice-config-item {
+          --config-color: #35fbe0;
+          --config-rgb: 53, 251, 224;
+          display: grid;
+          grid-template-columns: 2.5rem minmax(0, 1fr) 12px;
+          align-items: center;
+          gap: 1rem;
+          min-height: 72px;
+          padding: 0.75rem 0;
+          isolation: isolate;
+          transition:
+            padding 260ms ease,
+            transform 260ms ease;
+        }
+
+        .voice-config-item:nth-child(2) {
+          --config-color: #75baff;
+          --config-rgb: 117, 186, 255;
+        }
+
+        .voice-config-item:nth-child(3) {
+          --config-color: #a99cff;
+          --config-rgb: 169, 156, 255;
+        }
+
+        .voice-config-item:nth-child(4) {
+          --config-color: #f58bd6;
+          --config-rgb: 245, 139, 214;
+        }
+
+        .voice-config-item:nth-child(5) {
+          --config-color: #ffad73;
+          --config-rgb: 255, 173, 115;
+        }
+
+        .voice-config-item:nth-child(6) {
+          --config-color: #8fe388;
+          --config-rgb: 143, 227, 136;
+        }
+
+        .voice-config-item:nth-child(7) {
+          --config-color: #75fff0;
+          --config-rgb: 117, 255, 240;
+        }
+
+        .voice-config-item:nth-child(8) {
+          --config-color: #c4baff;
+          --config-rgb: 196, 186, 255;
+        }
+
+        .voice-config-number {
+          color: rgba(var(--config-rgb), 0.42);
+          font-size: 0.72rem;
+          font-weight: 900;
+          letter-spacing: 0.08em;
+          transition: color 260ms ease;
+        }
+
+        .voice-config-label {
+          color: #cbd5e1;
+          font-size: 0.95rem;
+          font-weight: 600;
+          line-height: 1.5;
+          transition: color 260ms ease;
+        }
+
+        .voice-config-pulse {
+          width: 8px;
+          height: 8px;
+          border-radius: 999px;
+          background: var(--config-color);
+          box-shadow: 0 0 16px rgba(var(--config-rgb), 0.48);
+          transition:
+            box-shadow 260ms ease,
+            transform 260ms ease;
+        }
+
+        .voice-config-item::before {
+          content: "";
+          position: absolute;
+          inset: 0 -1.25rem;
+          z-index: -1;
+          background: linear-gradient(90deg, rgba(var(--config-rgb), 0.075), transparent 72%);
+          opacity: 0;
+          transform: scaleX(0.82);
+          transform-origin: left;
+          transition:
+            opacity 260ms ease,
+            transform 260ms ease;
+        }
+
+        .voice-config-item:hover {
+          padding-left: 0.45rem;
+        }
+
+        .voice-config-item:hover::before {
+          opacity: 1;
+          transform: scaleX(1);
+        }
+
+        .voice-config-item:hover .voice-config-number,
+        .voice-config-item:hover .voice-config-label {
+          color: var(--config-color);
+        }
+
+        .voice-config-item:hover .voice-config-pulse {
+          transform: scale(1.35);
+          box-shadow: 0 0 26px rgba(var(--config-rgb), 0.8);
+        }
+
+        @media (min-width: 768px) {
+          .voice-config-list {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+
+          .voice-config-item:nth-child(even) {
+            margin-left: 1.5rem;
+            transform: translateY(1.1rem);
+          }
+
+          .voice-config-item:nth-child(odd) {
+            margin-right: 1.5rem;
+          }
+
+          .voice-config-item:nth-child(even):hover {
+            transform: translate(0.45rem, 1.1rem);
+          }
+
+          .voice-config-item:nth-child(odd):hover {
+            transform: translateX(0.45rem);
+          }
+        }
+
+        .voice-build-flow {
+          position: relative;
+          display: grid;
+          grid-template-columns: none;
+          grid-auto-flow: column;
+          grid-auto-columns: minmax(230px, 1fr);
+          gap: 0;
+          overflow-x: auto;
+          padding-bottom: 0.75rem;
+          overscroll-behavior-inline: contain;
+          scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+          scrollbar-width: thin;
+        }
+
+        .voice-build-flow::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 50%;
+          height: 1px;
+          background: linear-gradient(90deg, #35fbe0, #75baff 20%, #a99cff 40%, #f58bd6 60%, #ffad73 80%, #8fe388);
+          opacity: 0.48;
+        }
+
+        .voice-build-step {
+          display: grid;
+          grid-template-rows: minmax(150px, 1fr) 54px minmax(150px, 1fr);
+          min-height: 370px;
+          padding: 0 1rem;
+          isolation: isolate;
+          transform: none;
+        }
+
+        .voice-build-step::after {
+          display: none;
+        }
+
+        .voice-build-step-number {
+          position: relative;
+          left: auto;
+          top: auto;
+          z-index: 2;
+          grid-row: 2;
+          align-self: center;
+          justify-self: center;
+          display: grid;
+          width: 44px;
+          height: 44px;
+          place-items: center;
+          border: 1px solid rgba(var(--step-rgb), 0.7);
+          border-radius: 999px;
+          background: #000;
+          color: var(--step-color);
+          font-size: 0.72rem;
+          font-weight: 900;
+          line-height: 1;
+          letter-spacing: 0.08em;
+          box-shadow:
+            0 0 0 6px #000,
+            0 0 24px rgba(var(--step-rgb), 0.28);
+        }
+
+        .voice-build-step-copy {
+          grid-row: 1;
+          align-self: end;
+          padding-bottom: 1.5rem;
+          text-align: center;
+        }
+
+        .voice-build-step:nth-child(even) .voice-build-step-copy {
+          grid-row: 3;
+          align-self: start;
+          padding-top: 1.5rem;
+          padding-bottom: 0;
+        }
+
+        .voice-build-step:hover .voice-build-step-number {
+          color: #000;
+          background: var(--step-color);
+          transform: scale(1.12);
+          box-shadow:
+            0 0 0 6px #000,
+            0 0 34px rgba(var(--step-rgb), 0.72);
+        }
+
+        .voice-build-step:hover .voice-build-step-copy {
+          transform: translateY(-5px);
+        }
+
+        .voice-build-step:nth-child(even):hover .voice-build-step-copy {
+          transform: translateY(5px);
+        }
+
+        @media (min-width: 1180px) {
+          .voice-build-flow {
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            grid-auto-columns: auto;
+            overflow-x: visible;
+          }
+
+          .voice-build-step:nth-child(2),
+          .voice-build-step:nth-child(5) {
+            transform: none;
+          }
+        }
+
+        .voice-config-list {
+          position: relative;
+          gap: 0.35rem;
+        }
+
+        .voice-config-item {
+          min-height: 76px;
+          padding: 0.8rem 0;
+          background: transparent;
+        }
+
+        .voice-config-item::before {
+          display: none;
+        }
+
+        .voice-config-item:hover {
+          padding-left: 0;
+        }
+
+        @media (min-width: 768px) {
+          .voice-config-list {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            column-gap: clamp(5rem, 10vw, 9rem);
+          }
+
+          .voice-config-list::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: linear-gradient(to bottom, #35fbe0, #a99cff 45%, #f58bd6 68%, #ffad73);
+            opacity: 0.45;
+          }
+
+          .voice-config-item:nth-child(odd),
+          .voice-config-item:nth-child(even) {
+            margin: 0;
+            transform: none;
+          }
+
+          .voice-config-item:nth-child(odd) {
+            grid-template-columns: minmax(0, 1fr) 2.5rem 12px;
+            text-align: right;
+          }
+
+          .voice-config-item:nth-child(even) {
+            grid-template-columns: 12px 2.5rem minmax(0, 1fr);
+            text-align: left;
+          }
+
+          .voice-config-item:nth-child(odd) .voice-config-label {
+            grid-column: 1;
+            grid-row: 1;
+          }
+
+          .voice-config-item:nth-child(odd) .voice-config-number {
+            grid-column: 2;
+            grid-row: 1;
+          }
+
+          .voice-config-item:nth-child(odd) .voice-config-pulse {
+            grid-column: 3;
+            grid-row: 1;
+          }
+
+          .voice-config-item:nth-child(even) .voice-config-pulse {
+            grid-column: 1;
+            grid-row: 1;
+          }
+
+          .voice-config-item:nth-child(even) .voice-config-number {
+            grid-column: 2;
+            grid-row: 1;
+          }
+
+          .voice-config-item:nth-child(even) .voice-config-label {
+            grid-column: 3;
+            grid-row: 1;
+          }
+
+          .voice-config-item:nth-child(odd)::after,
+          .voice-config-item:nth-child(even)::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: calc(clamp(5rem, 10vw, 9rem) / 2);
+            height: 1px;
+            background: linear-gradient(90deg, rgba(var(--config-rgb), 0.65), rgba(var(--config-rgb), 0.05));
+            opacity: 0.4;
+            transition:
+              opacity 260ms ease,
+              transform 260ms ease;
+          }
+
+          .voice-config-item:nth-child(odd)::after {
+            left: 100%;
+            transform-origin: left;
+          }
+
+          .voice-config-item:nth-child(even)::after {
+            right: 100%;
+            background: linear-gradient(90deg, rgba(var(--config-rgb), 0.05), rgba(var(--config-rgb), 0.65));
+            transform-origin: right;
+          }
+
+          .voice-config-item:nth-child(odd):hover {
+            transform: translateX(0.5rem);
+          }
+
+          .voice-config-item:nth-child(even):hover {
+            transform: translateX(-0.5rem);
+          }
+
+          .voice-config-item:hover::after {
+            opacity: 0.9;
+            transform: scaleX(1.08);
+          }
+        }
+
+        .voice-build-process {
+          background: linear-gradient(90deg, rgba(53, 251, 224, 0.025), transparent 38%), #000;
+        }
+
+        .voice-build-flow {
+          display: block;
+          overflow: visible;
+          padding: 0;
+        }
+
+        .voice-build-flow::before {
+          display: none;
+        }
+
+        .voice-build-step {
+          display: grid;
+          grid-template-columns: 3.5rem minmax(0, 1fr) 1.75rem;
+          grid-template-rows: auto;
+          align-items: start;
+          min-height: 0;
+          padding: 1.65rem 0;
+          border-top: 1px solid rgba(255, 255, 255, 0.09);
+          transform: none;
+          transition: background 260ms ease;
+        }
+
+        .voice-build-step:last-child {
+          border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+        }
+
+        .voice-build-step::after {
+          display: none;
+        }
+
+        .voice-build-step-number {
+          position: static;
+          grid-column: 1;
+          grid-row: 1;
+          align-self: start;
+          justify-self: start;
+          display: block;
+          width: auto;
+          height: auto;
+          margin-top: 0.2rem;
+          border: 0;
+          border-radius: 0;
+          background: transparent;
+          color: var(--step-color);
+          font-size: 0.68rem;
+          line-height: 1.5;
+          box-shadow: none;
+        }
+
+        .voice-build-step-copy,
+        .voice-build-step:nth-child(even) .voice-build-step-copy {
+          grid-column: 2;
+          grid-row: 1;
+          align-self: start;
+          padding: 0;
+          text-align: left;
+          transform: none;
+        }
+
+        .voice-build-stage-label {
+          display: none;
+        }
+
+        .voice-build-step-copy h3 {
+          margin-top: 0;
+        }
+
+        .voice-build-step-arrow {
+          grid-column: 3;
+          grid-row: 1;
+          color: var(--step-color);
+          font-size: 1.1rem;
+          opacity: 0.38;
+          transition:
+            opacity 260ms ease,
+            transform 260ms ease;
+        }
+
+        .voice-build-step:hover {
+          background: linear-gradient(90deg, rgba(var(--step-rgb), 0.065), transparent 82%);
+        }
+
+        .voice-build-step:hover .voice-build-step-number {
+          background: transparent;
+          color: var(--step-color);
+          box-shadow: none;
+          transform: translateX(0.35rem);
+        }
+
+        .voice-build-step:hover .voice-build-step-copy,
+        .voice-build-step:nth-child(even):hover .voice-build-step-copy {
+          transform: translateX(0.3rem);
+        }
+
+        .voice-build-step:hover .voice-build-step-arrow {
+          opacity: 1;
+          transform: translateX(0.35rem);
+        }
+
+        @media (min-width: 1180px) {
+          .voice-build-flow {
+            display: block;
+            grid-template-columns: none;
+          }
+
+          .voice-build-step:nth-child(2),
+          .voice-build-step:nth-child(5) {
+            transform: none;
+          }
+        }
+
+        .voice-config-wash {
+          background: linear-gradient(270deg, rgba(169, 156, 255, 0.035), transparent 42%);
+        }
+
+        .voice-config-list {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr);
+          gap: 0;
+        }
+
+        .voice-config-list::before {
+          display: none;
+        }
+
+        .voice-config-item,
+        .voice-config-item:nth-child(odd),
+        .voice-config-item:nth-child(even) {
+          display: grid;
+          grid-template-columns: 2.5rem minmax(0, 1fr) 12px;
+          align-items: center;
+          min-height: 76px;
+          margin: 0;
+          padding: 1rem 0;
+          border-top: 1px solid rgba(255, 255, 255, 0.09);
+          text-align: left;
+          transform: none;
+        }
+
+        .voice-config-item:last-child {
+          border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+        }
+
+        .voice-config-item:nth-child(odd) .voice-config-number,
+        .voice-config-item:nth-child(even) .voice-config-number {
+          grid-column: 1;
+          grid-row: 1;
+        }
+
+        .voice-config-item:nth-child(odd) .voice-config-label,
+        .voice-config-item:nth-child(even) .voice-config-label {
+          grid-column: 2;
+          grid-row: 1;
+        }
+
+        .voice-config-item:nth-child(odd) .voice-config-pulse,
+        .voice-config-item:nth-child(even) .voice-config-pulse {
+          grid-column: 3;
+          grid-row: 1;
+        }
+
+        .voice-config-item:nth-child(odd)::after,
+        .voice-config-item:nth-child(even)::after {
+          display: none;
+        }
+
+        .voice-config-item:nth-child(odd):hover,
+        .voice-config-item:nth-child(even):hover {
+          padding-left: 0.45rem;
+          transform: none;
+          background: linear-gradient(90deg, rgba(var(--config-rgb), 0.055), transparent 82%);
+        }
+
+        @media (min-width: 768px) {
+          .voice-config-list {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            column-gap: 3rem;
+          }
+        }
+
+        .voice-build-process {
+          background:
+            linear-gradient(135deg, rgba(53, 251, 224, 0.028), transparent 30%),
+            linear-gradient(315deg, rgba(169, 156, 255, 0.032), transparent 34%),
+            #000;
+        }
+
+        .voice-build-flow {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr);
+          grid-auto-flow: row;
+          grid-auto-columns: auto;
+          gap: 0.55rem;
+          overflow: visible;
+          padding: 0;
+        }
+
+        .voice-build-flow::before {
+          display: none;
+        }
+
+        .voice-build-step {
+          display: grid;
+          grid-template-columns: 2.75rem minmax(0, 1fr) 1.5rem;
+          grid-template-rows: auto;
+          align-items: center;
+          min-height: 92px;
+          width: 100%;
+          padding: 1.15rem 1.75rem 1.15rem 1.4rem;
+          border: 0;
+          background: linear-gradient(90deg, rgba(var(--step-rgb), 0.115), rgba(var(--step-rgb), 0.025) 58%, rgba(255, 255, 255, 0.012));
+          clip-path: polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%);
+          transform: none;
+          transition:
+            background 260ms ease,
+            transform 260ms ease;
+        }
+
+        .voice-build-step:last-child {
+          border: 0;
+        }
+
+        .voice-build-step::before {
+          content: "";
+          position: absolute;
+          left: 5px;
+          top: 18%;
+          bottom: 18%;
+          width: 2px;
+          background: var(--step-color);
+          box-shadow: 0 0 16px rgba(var(--step-rgb), 0.48);
+          opacity: 0.72;
+        }
+
+        .voice-build-step-number {
+          grid-column: 1;
+          grid-row: 1;
+          margin: 0;
+          color: var(--step-color);
+          font-size: 0.68rem;
+          font-weight: 900;
+          letter-spacing: 0.08em;
+        }
+
+        .voice-build-step-copy,
+        .voice-build-step:nth-child(even) .voice-build-step-copy {
+          display: grid;
+          grid-column: 2;
+          grid-row: 1;
+          grid-template-columns: minmax(150px, 0.42fr) minmax(0, 1fr);
+          align-items: center;
+          gap: 0 2rem;
+          padding: 0;
+          text-align: left;
+          transform: none;
+        }
+
+        .voice-build-stage-label {
+          display: block;
+          grid-column: 1;
+          grid-row: 1;
+        }
+
+        .voice-build-step-copy h3 {
+          grid-column: 1;
+          grid-row: 2;
+          margin-top: 0.3rem;
+        }
+
+        .voice-build-step-copy p {
+          grid-column: 2;
+          grid-row: 1 / span 2;
+          max-width: none;
+          margin-top: 0;
+        }
+
+        .voice-build-step-arrow {
+          grid-column: 3;
+          grid-row: 1;
+          align-self: center;
+          color: var(--step-color);
+          opacity: 0.46;
+        }
+
+        .voice-build-step:hover {
+          background: linear-gradient(90deg, rgba(var(--step-rgb), 0.18), rgba(var(--step-rgb), 0.045) 62%, rgba(255, 255, 255, 0.018));
+          transform: translateX(0.45rem);
+        }
+
+        .voice-build-step:hover .voice-build-step-number,
+        .voice-build-step:hover .voice-build-step-copy,
+        .voice-build-step:nth-child(even):hover .voice-build-step-copy {
+          background: transparent;
+          box-shadow: none;
+          transform: none;
+        }
+
+        .voice-build-step:hover .voice-build-step-arrow {
+          opacity: 1;
+          transform: translateX(0.3rem);
+        }
+
+        @media (max-width: 639px) {
+          .voice-build-step-copy,
+          .voice-build-step:nth-child(even) .voice-build-step-copy {
+            display: block;
+          }
+
+          .voice-build-step-copy p {
+            margin-top: 0.65rem;
+          }
+        }
+
+        @media (min-width: 900px) {
+          .voice-build-step:nth-child(1),
+          .voice-build-step:nth-child(6) {
+            width: 92%;
+            margin-left: 0;
+          }
+
+          .voice-build-step:nth-child(2),
+          .voice-build-step:nth-child(5) {
+            width: 92%;
+            margin-left: 4%;
+            transform: none;
+          }
+
+          .voice-build-step:nth-child(3),
+          .voice-build-step:nth-child(4) {
+            width: 92%;
+            margin-left: 8%;
+          }
+
+          .voice-build-step:nth-child(1):hover,
+          .voice-build-step:nth-child(6):hover {
+            transform: translateX(0.45rem);
+          }
+
+          .voice-build-step:nth-child(2):hover,
+          .voice-build-step:nth-child(5):hover {
+            transform: translateX(0.45rem);
+          }
+        }
+
+        @media (min-width: 1180px) {
+          .voice-build-flow {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+          }
+
+          .voice-build-step:nth-child(2),
+          .voice-build-step:nth-child(5) {
+            transform: none;
+          }
+        }
+
+        .voice-build-clean-grid {
+          display: grid;
+          gap: 0.5rem 2.5rem;
+        }
+
+        .voice-build-clean-step {
+          --clean-step-color: #35fbe0;
+          --clean-step-rgb: 53, 251, 224;
+          display: grid;
+          grid-template-columns: 4.25rem minmax(0, 1fr) 1.5rem;
+          align-items: start;
+          min-height: 190px;
+          padding: 2.1rem 0;
+          isolation: isolate;
+        }
+
+        .voice-build-clean-step:nth-child(2) {
+          --clean-step-color: #75baff;
+          --clean-step-rgb: 117, 186, 255;
+        }
+
+        .voice-build-clean-step:nth-child(3) {
+          --clean-step-color: #a99cff;
+          --clean-step-rgb: 169, 156, 255;
+        }
+
+        .voice-build-clean-step:nth-child(4) {
+          --clean-step-color: #f58bd6;
+          --clean-step-rgb: 245, 139, 214;
+        }
+
+        .voice-build-clean-step:nth-child(5) {
+          --clean-step-color: #ffad73;
+          --clean-step-rgb: 255, 173, 115;
+        }
+
+        .voice-build-clean-step:nth-child(6) {
+          --clean-step-color: #8fe388;
+          --clean-step-rgb: 143, 227, 136;
+        }
+
+        .voice-build-clean-step::before {
+          content: "";
+          position: absolute;
+          left: 4.25rem;
+          top: 1.2rem;
+          width: 2.5rem;
+          height: 2px;
+          background: var(--clean-step-color);
+          box-shadow: 0 0 14px rgba(var(--clean-step-rgb), 0.38);
+          transform-origin: left;
+          transition: transform 260ms ease;
+        }
+
+        .voice-build-clean-step::after {
+          content: "";
+          position: absolute;
+          inset: 0 -1.25rem;
+          z-index: -1;
+          background: linear-gradient(110deg, rgba(var(--clean-step-rgb), 0.07), transparent 62%);
+          opacity: 0;
+          transition: opacity 260ms ease;
+        }
+
+        .voice-build-clean-number {
+          color: rgba(var(--clean-step-rgb), 0.18);
+          font-size: 3.4rem;
+          font-weight: 700;
+          line-height: 0.9;
+          letter-spacing: -0.08em;
+          transition:
+            color 260ms ease,
+            transform 260ms ease;
+        }
+
+        .voice-build-clean-copy {
+          padding-top: 0.9rem;
+          transition: transform 260ms ease;
+        }
+
+        .voice-build-clean-stage {
+          color: var(--clean-step-color);
+          font-size: 0.65rem;
+          font-weight: 900;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+        }
+
+        .voice-build-clean-copy h3 {
+          transition: color 260ms ease;
+        }
+
+        .voice-build-clean-arrow {
+          margin-top: 1rem;
+          color: var(--clean-step-color);
+          opacity: 0;
+          transition:
+            opacity 260ms ease,
+            transform 260ms ease;
+        }
+
+        .voice-build-clean-step:hover::before {
+          transform: scaleX(1.75);
+        }
+
+        .voice-build-clean-step:hover::after {
+          opacity: 1;
+        }
+
+        .voice-build-clean-step:hover .voice-build-clean-number {
+          color: rgba(var(--clean-step-rgb), 0.42);
+          transform: translateY(-4px);
+        }
+
+        .voice-build-clean-step:hover .voice-build-clean-copy {
+          transform: translateY(-4px);
+        }
+
+        .voice-build-clean-step:hover .voice-build-clean-copy h3 {
+          color: var(--clean-step-color);
+        }
+
+        .voice-build-clean-step:hover .voice-build-clean-arrow {
+          opacity: 0.9;
+          transform: translateX(0.35rem);
+        }
+
+        @media (min-width: 700px) {
+          .voice-build-clean-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+        }
+
+        @media (min-width: 1100px) {
+          .voice-build-clean-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            column-gap: 3.5rem;
+          }
+        }
+
+        .voice-build-process {
+          background: #020504;
+        }
+
+        .voice-build-process::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          background-image:
+            linear-gradient(rgba(69, 221, 206, 0.022) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(69, 221, 206, 0.022) 1px, transparent 1px);
+          background-size: 48px 48px;
+          mask-image: radial-gradient(ellipse at 50% 55%, black, transparent 72%);
+        }
+
+        .voice-build-orbit-viewport {
+          scrollbar-color: rgba(117, 255, 240, 0.24) transparent;
+          scrollbar-width: thin;
+        }
+
+        .voice-build-orbit-list {
+          --orbit-size: 82px;
+          position: relative;
+          display: grid;
+          grid-template-columns: repeat(6, minmax(160px, 1fr));
+          min-width: 1000px;
+        }
+
+        .voice-build-orbit-list::before {
+          position: absolute;
+          top: calc(var(--orbit-size) / 2);
+          right: 8.333%;
+          left: 8.333%;
+          height: 1px;
+          background: linear-gradient(
+            to right,
+            rgba(53, 251, 224, 0.75),
+            rgba(169, 156, 255, 0.7) 42%,
+            rgba(255, 173, 115, 0.72) 78%,
+            rgba(143, 227, 136, 0.5)
+          );
+          box-shadow: 0 0 12px rgba(117, 255, 240, 0.18);
+          content: "";
+        }
+
+        .voice-build-orbit-list-compact {
+          width: min(100%, 920px);
+          min-width: 720px;
+          grid-template-columns: repeat(4, minmax(160px, 1fr));
+          margin-inline: auto;
+        }
+
+        .voice-build-orbit-list-compact::before {
+          right: 12.5%;
+          left: 12.5%;
+        }
+
+        .voice-build-orbit-step {
+          --build-primary: #35fbe0;
+          --build-rgb: 53, 251, 224;
+          --build-ink: #cffff8;
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 0 1rem;
+          text-align: center;
+          cursor: pointer;
+          outline: none;
+        }
+
+        .voice-build-tone-2 {
+          --build-primary: #75baff;
+          --build-rgb: 117, 186, 255;
+          --build-ink: #d9ecff;
+        }
+
+        .voice-build-tone-3 {
+          --build-primary: #a99cff;
+          --build-rgb: 169, 156, 255;
+          --build-ink: #eeeaff;
+        }
+
+        .voice-build-tone-4 {
+          --build-primary: #f58bd6;
+          --build-rgb: 245, 139, 214;
+          --build-ink: #ffe4f7;
+        }
+
+        .voice-build-tone-5 {
+          --build-primary: #ffad73;
+          --build-rgb: 255, 173, 115;
+          --build-ink: #ffe8d8;
+        }
+
+        .voice-build-tone-6 {
+          --build-primary: #8fe388;
+          --build-rgb: 143, 227, 136;
+          --build-ink: #e3ffdf;
+        }
+
+        .voice-build-orbit-node {
+          position: relative;
+          z-index: 1;
+          display: grid;
+          width: var(--orbit-size);
+          height: var(--orbit-size);
+          place-items: center;
+          border: 1px solid rgba(var(--build-rgb), 0.48);
+          border-radius: 999px;
+          background:
+            radial-gradient(circle at 32% 24%, rgba(var(--build-rgb), 0.18), transparent 48%),
+            #050b0c;
+          color: var(--build-ink);
+          box-shadow:
+            0 0 0 7px #020504,
+            0 0 30px rgba(var(--build-rgb), 0.12);
+          transition:
+            border-color 240ms ease,
+            box-shadow 240ms ease,
+            transform 240ms ease;
+        }
+
+        .voice-build-orbit-ring {
+          position: absolute;
+          inset: 8px;
+          border: 1px dashed rgba(var(--build-rgb), 0.28);
+          border-radius: inherit;
+          transition: transform 500ms ease;
+        }
+
+        .voice-build-orbit-node svg {
+          position: relative;
+          z-index: 1;
+          width: 30px;
+          height: 30px;
+          stroke: currentColor;
+        }
+
+        .voice-build-orbit-number {
+          position: absolute;
+          top: -4px;
+          right: -4px;
+          display: grid;
+          width: 26px;
+          height: 26px;
+          place-items: center;
+          border: 1px solid rgba(var(--build-rgb), 0.5);
+          border-radius: 999px;
+          background: #07100f;
+          color: var(--build-primary);
+          font-size: 0.58rem;
+          font-weight: 900;
+          box-shadow: 0 0 15px rgba(var(--build-rgb), 0.25);
+        }
+
+        .voice-build-orbit-copy {
+          display: flex;
+          width: 100%;
+          flex-direction: column;
+          align-items: flex-start;
+          margin-top: 2rem;
+          text-align: left;
+          transition: transform 240ms ease;
+        }
+
+        .voice-build-orbit-copy h3 {
+          display: flex;
+          width: 100%;
+          min-height: 3.25rem;
+          align-items: flex-start;
+        }
+
+        .voice-build-orbit-copy p {
+          width: 100%;
+          max-width: none;
+          hyphens: auto;
+          text-align: justify;
+          text-align-last: left;
+          text-wrap: pretty;
+        }
+
+        .voice-build-orbit-label {
+          color: var(--build-primary);
+          font-size: 0.68rem;
+          font-weight: 900;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+        }
+
+        .voice-build-orbit-step h3,
+        .voice-build-orbit-step p {
+          transition: color 240ms ease;
+        }
+
+        .voice-build-orbit-step:is(:hover, :focus) .voice-build-orbit-node {
+          border-color: var(--build-primary);
+          box-shadow:
+            0 0 0 7px #020504,
+            0 0 34px rgba(var(--build-rgb), 0.32);
+          transform: scale(1.06);
+        }
+
+        .voice-build-orbit-step:is(:hover, :focus) .voice-build-orbit-ring {
+          transform: rotate(35deg);
+        }
+
+        .voice-build-orbit-step:is(:hover, :focus) .voice-build-orbit-copy {
+          transform: translateY(-3px);
+        }
+
+        .voice-build-orbit-step:is(:hover, :focus) h3 {
+          color: var(--build-ink);
+        }
+
+        .voice-build-orbit-step:is(:hover, :focus) p {
+          color: rgba(var(--build-rgb), 0.76);
+        }
+
+        .voice-build-orbit-step:active h3,
+        .voice-build-orbit-step:focus-visible h3 {
+          animation: voice-build-name-bounce 420ms cubic-bezier(0.22, 0.8, 0.3, 1);
+        }
+
+        .voice-build-orbit-step:active .voice-build-orbit-node {
+          transform: scale(0.98);
+        }
+
+        @keyframes voice-build-name-bounce {
+          0%,
+          100% {
+            transform: translateY(0);
+          }
+          38% {
+            transform: translateY(-7px);
+          }
+          68% {
+            transform: translateY(2px);
+          }
+        }
+
+        @media (min-width: 640px) {
+          .voice-build-orbit-list {
+            --orbit-size: 96px;
+            grid-template-columns: repeat(6, minmax(180px, 1fr));
+            min-width: 1120px;
+          }
+
+          .voice-build-orbit-list-compact {
+            width: min(100%, 920px);
+            min-width: 800px;
+            grid-template-columns: repeat(4, minmax(180px, 1fr));
+          }
+
+          .voice-build-orbit-node svg {
+            width: 36px;
+            height: 36px;
+          }
+        }
+
+        .voice-config-section {
+          background:
+            radial-gradient(circle at 8% 18%, rgba(169, 156, 255, 0.07), transparent 30%),
+            radial-gradient(circle at 92% 84%, rgba(53, 251, 224, 0.055), transparent 28%),
+            #020403;
+        }
+
+        .voice-config-wash {
+          background-image:
+            linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+          background-size: 56px 56px;
+          mask-image: radial-gradient(ellipse at 68% 50%, black, transparent 70%);
+        }
+
+        .voice-config-console {
+          position: relative;
+          overflow: hidden;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 1.5rem;
+          background: rgba(5, 10, 12, 0.78);
+          box-shadow:
+            0 30px 80px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.04);
+          backdrop-filter: blur(14px);
+        }
+
+        .voice-config-console::before {
+          position: absolute;
+          top: 0;
+          right: 0;
+          left: 0;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, #35fbe0, #a99cff 52%, #ffad73, transparent);
+          content: "";
+          opacity: 0.75;
+        }
+
+        .voice-config-console-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 1rem;
+          padding: 1.1rem 1.5rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          background: rgba(255, 255, 255, 0.018);
+        }
+
+        .voice-config-console-title,
+        .voice-config-console-count {
+          font-size: 0.67rem;
+          font-weight: 900;
+          letter-spacing: 0.13em;
+          text-transform: uppercase;
+        }
+
+        .voice-config-console-title {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.65rem;
+          color: rgba(255, 255, 255, 0.74);
+        }
+
+        .voice-config-console-count {
+          color: rgba(255, 255, 255, 0.3);
+        }
+
+        .voice-config-console-signal {
+          width: 7px;
+          height: 7px;
+          border-radius: 999px;
+          background: #35fbe0;
+          box-shadow: 0 0 14px rgba(53, 251, 224, 0.68);
+        }
+
+        .voice-config-list {
+          position: relative;
+          display: block;
+          grid-template-columns: none;
+          gap: 0;
+        }
+
+        .voice-config-list::before {
+          display: none;
+        }
+
+        .voice-config-item,
+        .voice-config-item:nth-child(odd),
+        .voice-config-item:nth-child(even) {
+          position: relative;
+          isolation: isolate;
+          display: grid;
+          grid-template-columns: 2.75rem minmax(0, 1fr);
+          align-items: center;
+          min-height: 104px;
+          margin: 0;
+          padding: 1.4rem 1.25rem;
+          border-top: 1px solid rgba(255, 255, 255, 0.07);
+          border-bottom: 0;
+          background: transparent;
+          text-align: left;
+          transform: none;
+          outline: none;
+          transition:
+            background 240ms ease,
+            padding 240ms ease,
+            transform 240ms ease;
+        }
+
+        .voice-config-item:first-child {
+          border-top: 0;
+        }
+
+        .voice-config-item:last-child {
+          border-bottom: 0;
+        }
+
+        .voice-config-item::before {
+          position: absolute;
+          z-index: -1;
+          inset: 0;
+          display: block;
+          background: linear-gradient(90deg, rgba(var(--config-rgb), 0.1), transparent 72%);
+          content: "";
+          opacity: 0;
+          transform: scaleX(0.78);
+          transform-origin: left;
+          transition:
+            opacity 240ms ease,
+            transform 240ms ease;
+        }
+
+        .voice-config-item:nth-child(odd)::after,
+        .voice-config-item:nth-child(even)::after {
+          display: none;
+        }
+
+        .voice-config-number,
+        .voice-config-item:nth-child(odd) .voice-config-number,
+        .voice-config-item:nth-child(even) .voice-config-number {
+          grid-column: 1;
+          grid-row: 1;
+          align-self: start;
+          padding-top: 0.2rem;
+          color: rgba(var(--config-rgb), 0.56);
+          font-family: monospace;
+          font-size: 0.76rem;
+          font-weight: 800;
+          letter-spacing: 0.1em;
+        }
+
+        .voice-config-content {
+          grid-column: 2;
+          grid-row: 1;
+          display: block;
+          min-width: 0;
+        }
+
+        .voice-config-label,
+        .voice-config-item:nth-child(odd) .voice-config-label,
+        .voice-config-item:nth-child(even) .voice-config-label {
+          display: block;
+          color: rgba(255, 255, 255, 0.86);
+          font-size: 1.08rem;
+          font-weight: 600;
+          line-height: 1.45;
+          letter-spacing: -0.015em;
+          transition: color 240ms ease;
+        }
+
+        .voice-config-meter {
+          display: block;
+          width: 100%;
+          height: 2px;
+          margin-top: 1rem;
+          overflow: hidden;
+          background: rgba(255, 255, 255, 0.07);
+        }
+
+        .voice-config-meter > span {
+          display: block;
+          width: 68%;
+          height: 100%;
+          background: linear-gradient(90deg, var(--config-color), rgba(var(--config-rgb), 0.15));
+          box-shadow: 0 0 12px rgba(var(--config-rgb), 0.35);
+          transition: width 320ms ease;
+        }
+
+        .voice-config-item:nth-child(2) .voice-config-meter > span { width: 84%; }
+        .voice-config-item:nth-child(3) .voice-config-meter > span { width: 74%; }
+        .voice-config-item:nth-child(4) .voice-config-meter > span { width: 92%; }
+        .voice-config-item:nth-child(5) .voice-config-meter > span { width: 79%; }
+        .voice-config-item:nth-child(6) .voice-config-meter > span { width: 87%; }
+        .voice-config-item:nth-child(7) .voice-config-meter > span { width: 71%; }
+        .voice-config-item:nth-child(8) .voice-config-meter > span { width: 82%; }
+
+        .voice-config-state {
+          grid-column: 2;
+          grid-row: 2;
+          display: inline-flex;
+          width: fit-content;
+          align-items: center;
+          gap: 0.45rem;
+          margin-top: 0.8rem;
+          color: rgba(var(--config-rgb), 0.62);
+          font-size: 0.62rem;
+          font-weight: 900;
+          letter-spacing: 0.11em;
+          text-transform: uppercase;
+        }
+
+        .voice-config-state .voice-config-pulse {
+          display: block;
+          width: 6px;
+          height: 6px;
+          border-radius: 999px;
+          background: var(--config-color);
+          box-shadow: 0 0 12px rgba(var(--config-rgb), 0.5);
+        }
+
+        .voice-config-item:is(:hover, :focus),
+        .voice-config-item:nth-child(odd):is(:hover, :focus),
+        .voice-config-item:nth-child(even):is(:hover, :focus) {
+          padding-left: 1.6rem;
+          background: rgba(var(--config-rgb), 0.025);
+          transform: none;
+        }
+
+        .voice-config-item:is(:hover, :focus)::before {
+          opacity: 1;
+          transform: scaleX(1);
+        }
+
+        .voice-config-item:is(:hover, :focus) .voice-config-label,
+        .voice-config-item:is(:hover, :focus) .voice-config-number {
+          color: var(--config-color);
+        }
+
+        .voice-config-item:is(:hover, :focus) .voice-config-meter > span {
+          width: 100%;
+        }
+
+        .voice-config-item:is(:hover, :focus) .voice-config-pulse {
+          transform: scale(1.35);
+          box-shadow: 0 0 22px rgba(var(--config-rgb), 0.82);
+        }
+
+        @media (min-width: 640px) {
+          .voice-config-item,
+          .voice-config-item:nth-child(odd),
+          .voice-config-item:nth-child(even) {
+            grid-template-columns: 3rem minmax(0, 1fr) auto;
+            min-height: 112px;
+            padding: 1.5rem 1.75rem;
+          }
+
+          .voice-config-label,
+          .voice-config-item:nth-child(odd) .voice-config-label,
+          .voice-config-item:nth-child(even) .voice-config-label {
+            font-size: 1.22rem;
+          }
+
+          .voice-config-state {
+            grid-column: 3;
+            grid-row: 1;
+            margin-top: 0;
+            margin-left: 1.5rem;
+          }
+
+          .voice-config-item:is(:hover, :focus),
+          .voice-config-item:nth-child(odd):is(:hover, :focus),
+          .voice-config-item:nth-child(even):is(:hover, :focus) {
+            padding-left: 2.1rem;
+          }
+        }
+
+        .voice-config-list-viewport {
+          overflow-x: auto;
+          scrollbar-color: rgba(169, 156, 255, 0.28) transparent;
+          scrollbar-width: thin;
+        }
+
+        .voice-config-list {
+          display: grid;
+          width: max-content;
+          grid-template-columns: none;
+          grid-auto-flow: column;
+          grid-auto-columns: 220px;
+        }
+
+        .voice-config-item,
+        .voice-config-item:nth-child(odd),
+        .voice-config-item:nth-child(even) {
+          display: grid;
+          width: 220px;
+          min-height: 190px;
+          grid-template-columns: minmax(0, 1fr) auto;
+          grid-template-rows: auto minmax(0, 1fr);
+          align-items: start;
+          padding: 1.3rem;
+          border-top: 0;
+          border-left: 1px solid rgba(255, 255, 255, 0.075);
+          scroll-snap-align: start;
+        }
+
+        .voice-config-item:first-child {
+          border-left: 0;
+        }
+
+        .voice-config-number,
+        .voice-config-item:nth-child(odd) .voice-config-number,
+        .voice-config-item:nth-child(even) .voice-config-number {
+          grid-column: 1;
+          grid-row: 1;
+          align-self: center;
+          padding-top: 0;
+        }
+
+        .voice-config-state {
+          grid-column: 2;
+          grid-row: 1;
+          align-self: center;
+          margin: 0 0 0 0.75rem;
+        }
+
+        .voice-config-content {
+          grid-column: 1 / -1;
+          grid-row: 2;
+          display: flex;
+          height: 100%;
+          flex-direction: column;
+          justify-content: flex-end;
+          padding-top: 1.25rem;
+        }
+
+        .voice-config-label,
+        .voice-config-item:nth-child(odd) .voice-config-label,
+        .voice-config-item:nth-child(even) .voice-config-label {
+          min-height: 4.8rem;
+          font-size: 1.08rem;
+          line-height: 1.42;
+        }
+
+        .voice-config-item:is(:hover, :focus),
+        .voice-config-item:nth-child(odd):is(:hover, :focus),
+        .voice-config-item:nth-child(even):is(:hover, :focus) {
+          padding: 1.3rem;
+          transform: translateY(-3px);
+        }
+
+        @media (min-width: 1024px) {
+          .voice-config-list-viewport {
+            overflow: visible;
+          }
+
+          .voice-config-list {
+            width: 100%;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            grid-template-rows: repeat(2, minmax(0, 1fr));
+            grid-auto-flow: row;
+            grid-auto-columns: auto;
+          }
+
+          .voice-config-item,
+          .voice-config-item:nth-child(odd),
+          .voice-config-item:nth-child(even) {
+            width: auto;
+            min-height: 188px;
+          }
+
+          .voice-config-item:nth-child(-n + 4) {
+            border-top: 0;
+          }
+
+          .voice-config-item:nth-child(n + 5) {
+            border-top: 1px solid rgba(255, 255, 255, 0.075);
+          }
+
+          .voice-config-item:nth-child(4n + 1) {
+            border-left: 0;
+          }
+
+          .voice-config-label,
+          .voice-config-item:nth-child(odd) .voice-config-label,
+          .voice-config-item:nth-child(even) .voice-config-label {
+            min-height: 5.4rem;
+            font-size: 1.12rem;
+          }
+        }
+
+        .voice-config-wash {
+          background:
+            radial-gradient(circle at 72% 20%, rgba(169, 156, 255, 0.065), transparent 34%),
+            radial-gradient(circle at 88% 78%, rgba(53, 251, 224, 0.045), transparent 30%);
+          mask-image: none;
+        }
+
+        .voice-config-console {
+          border: 0;
+          background:
+            radial-gradient(circle at 18% 0%, rgba(169, 156, 255, 0.05), transparent 34%),
+            rgba(5, 10, 12, 0.58);
+          box-shadow: 0 28px 72px rgba(0, 0, 0, 0.22);
+        }
+
+        .voice-config-console::before {
+          display: none;
+        }
+
+        .voice-config-console-header {
+          padding-bottom: 0.8rem;
+          border-bottom: 0;
+          background: transparent;
+        }
+
+        .voice-config-list-viewport {
+          padding: 0 0.5rem 0.75rem;
+        }
+
+        .voice-config-item,
+        .voice-config-item:nth-child(odd),
+        .voice-config-item:nth-child(even),
+        .voice-config-item:nth-child(-n + 4),
+        .voice-config-item:nth-child(n + 5),
+        .voice-config-item:nth-child(4n + 1) {
+          border: 0;
+        }
+
+        .voice-config-item::before {
+          inset: 0.35rem;
+          border-radius: 1rem;
+          background: radial-gradient(circle at 20% 35%, rgba(var(--config-rgb), 0.105), transparent 72%);
+        }
+
+        .voice-config-meter {
+          width: 44px;
+          height: 5px;
+          border-radius: 999px;
+          background: rgba(255, 255, 255, 0.055);
+        }
+
+        .voice-config-meter > span {
+          border-radius: inherit;
+        }
+
+        @media (min-width: 1024px) {
+          .voice-config-list {
+            gap: 0.35rem 0.75rem;
+          }
+        }
+
+        .voice-config-list-viewport {
+          overflow-x: auto;
+          padding: 0 0 0.75rem;
+          background: transparent;
+          scrollbar-color: rgba(117, 255, 240, 0.22) transparent;
+          scrollbar-width: thin;
+        }
+
+        .voice-config-list {
+          display: grid;
+          width: max-content;
+          grid-template-columns: none;
+          grid-auto-flow: column;
+          grid-auto-columns: 260px;
+          gap: 1rem;
+        }
+
+        .voice-config-item,
+        .voice-config-item:nth-child(odd),
+        .voice-config-item:nth-child(even),
+        .voice-config-item:nth-child(-n + 4),
+        .voice-config-item:nth-child(n + 5),
+        .voice-config-item:nth-child(4n + 1) {
+          display: grid;
+          width: 260px;
+          min-height: 132px;
+          grid-template-columns: 3.5rem minmax(0, 1fr);
+          grid-template-rows: auto;
+          align-items: center;
+          gap: 1rem;
+          margin: 0;
+          padding: 1rem 0.75rem;
+          border: 0;
+          background: transparent;
+          text-align: left;
+          transform: none;
+          scroll-snap-align: start;
+        }
+
+        .voice-config-item::before {
+          inset: 0;
+          border-radius: 1.15rem;
+          background: radial-gradient(circle at 18% 50%, rgba(var(--config-rgb), 0.1), transparent 70%);
+          opacity: 0;
+        }
+
+        .voice-config-number,
+        .voice-config-item:nth-child(odd) .voice-config-number,
+        .voice-config-item:nth-child(even) .voice-config-number {
+          grid-column: 1;
+          grid-row: 1;
+          display: grid;
+          width: 3rem;
+          height: 3rem;
+          place-items: center;
+          align-self: center;
+          padding: 0;
+          border: 1px solid rgba(var(--config-rgb), 0.28);
+          border-radius: 999px;
+          background: rgba(var(--config-rgb), 0.07);
+          color: var(--config-color);
+          box-shadow: 0 0 22px rgba(var(--config-rgb), 0.08);
+          transition:
+            box-shadow 240ms ease,
+            transform 240ms ease;
+        }
+
+        .voice-config-content {
+          grid-column: 2;
+          grid-row: 1;
+          display: block;
+          height: auto;
+          padding: 0;
+        }
+
+        .voice-config-label,
+        .voice-config-item:nth-child(odd) .voice-config-label,
+        .voice-config-item:nth-child(even) .voice-config-label {
+          min-height: 0;
+          color: rgba(255, 255, 255, 0.88);
+          font-size: 1.08rem;
+          font-weight: 600;
+          line-height: 1.42;
+        }
+
+        .voice-config-state {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.45rem;
+          margin: 0.75rem 0 0;
+          color: rgba(var(--config-rgb), 0.58);
+          font-size: 0.6rem;
+        }
+
+        .voice-config-item:is(:hover, :focus),
+        .voice-config-item:nth-child(odd):is(:hover, :focus),
+        .voice-config-item:nth-child(even):is(:hover, :focus) {
+          padding: 1rem 0.75rem;
+          background: transparent;
+          transform: translateY(-4px);
+        }
+
+        .voice-config-item:is(:hover, :focus) .voice-config-number {
+          box-shadow: 0 0 28px rgba(var(--config-rgb), 0.3);
+          transform: scale(1.08);
+        }
+
+        @media (min-width: 768px) {
+          .voice-config-list-viewport {
+            overflow: visible;
+          }
+
+          .voice-config-list {
+            width: 100%;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-auto-flow: row;
+            grid-auto-columns: auto;
+            gap: 1.25rem 2rem;
+          }
+
+          .voice-config-item,
+          .voice-config-item:nth-child(odd),
+          .voice-config-item:nth-child(even) {
+            width: auto;
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .voice-config-list {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            grid-template-rows: repeat(2, minmax(0, 1fr));
+            gap: 1.5rem 2rem;
+          }
+
+          .voice-config-label,
+          .voice-config-item:nth-child(odd) .voice-config-label,
+          .voice-config-item:nth-child(even) .voice-config-label {
+            font-size: 1.12rem;
+          }
         }
 
         .service-pill,
@@ -653,6 +2848,880 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
           box-shadow:
             0 0 0 24px rgba(var(--service-accent-rgb), 0.025),
             0 0 0 54px rgba(var(--service-secondary-rgb), 0.025);
+        }
+
+        .voice-agent-page {
+          background: #000;
+          overflow-x: clip;
+        }
+
+        .voice-agent-page > section {
+          width: 100%;
+          padding-right: clamp(1rem, 2.5vw, 2rem);
+          padding-left: clamp(1rem, 2.5vw, 2rem);
+        }
+
+        .voice-agent-page .voice-agent-container {
+          width: 100%;
+          max-width: 82.5rem;
+          min-width: 0;
+        }
+
+        .voice-agent-page .voice-agent-container > * {
+          min-width: 0;
+        }
+
+        .voice-agent-page h1,
+        .voice-agent-page h2 {
+          text-wrap: balance;
+        }
+
+        .voice-agent-page > section:not(.product-service-hero) {
+          padding-top: 2.5rem;
+          padding-bottom: 2.5rem;
+          border-color: transparent;
+          background: #000;
+        }
+
+        .voice-agent-page .product-service-hero {
+          padding-top: 6.5rem;
+        }
+
+        .voice-agent-page .agent-anatomy-section,
+        .voice-agent-page .voice-build-process,
+        .voice-agent-page .voice-config-section {
+          background: #000;
+        }
+
+        .voice-agent-page .voice-build-process::before,
+        .voice-agent-page .voice-config-wash {
+          display: none;
+        }
+
+        .voice-agent-page .agent-anatomy-layer {
+          min-height: 0;
+          padding-top: 1.75rem;
+          padding-bottom: 1.75rem;
+        }
+
+        .voice-agent-page .agent-anatomy-intro,
+        .voice-agent-page .agent-layer-body {
+          hyphens: auto;
+          text-align: justify;
+          text-align-last: left;
+          text-wrap: pretty;
+        }
+
+        .voice-agent-page .voice-section-copy {
+          color: #94a3b8;
+          font-size: 0.925rem;
+          font-weight: 400;
+          line-height: 1.65rem;
+        }
+
+        .voice-agent-page .voice-config-section .voice-section-copy {
+          font-size: 0.975rem;
+          line-height: 1.72rem;
+        }
+
+        .voice-agent-page .voice-agents-hero-heading {
+          font-size: clamp(2.55rem, 5.3vw, 4.6rem);
+          line-height: 0.98;
+        }
+
+        .voice-agent-page .voice-agents-hero-heading > span {
+          white-space: nowrap;
+        }
+
+        .voice-agent-page > section:not(.product-service-hero):not(.voice-agent-contact-section) h2 {
+          font-size: clamp(1.75rem, 3.6vw, 2.7rem);
+        }
+
+        .voice-agent-page > section.voice-config-section h2.voice-config-heading {
+          max-width: none;
+          font-size: clamp(1rem, 3.6vw, 2.7rem);
+          white-space: nowrap;
+        }
+
+        .voice-agent-page .voice-config-intro-grid {
+          display: grid;
+          gap: 1.5rem;
+        }
+
+        .voice-agent-page .voice-config-intro-grid .voice-config-heading {
+          max-width: 38rem;
+          white-space: normal;
+        }
+
+        .voice-agent-page > section.voice-build-process h2.voice-build-heading {
+          max-width: none;
+          font-size: clamp(0.875rem, 3.2vw, 2.7rem);
+          white-space: nowrap;
+        }
+
+        .voice-agent-page .agent-anatomy-list {
+          gap: 1rem;
+          margin-top: 2.25rem;
+        }
+
+        .voice-agent-page .agent-anatomy-layer {
+          overflow: visible;
+          min-height: 0;
+          padding: 1.4rem 0;
+          border: 0;
+          border-radius: 0;
+          background: transparent;
+          box-shadow: none;
+          transition: transform 240ms ease;
+        }
+
+        .voice-agent-page > section:not(.product-service-hero):not(.voice-agent-contact-section) {
+          padding-top: 2.25rem;
+          padding-bottom: 2.25rem;
+        }
+
+        .voice-agent-page .agent-anatomy-layer::before {
+          inset: -0.75rem;
+          border-radius: 1rem;
+          background: radial-gradient(circle at 20% 22%, rgba(var(--layer-rgb), 0.16), transparent 60%);
+        }
+
+        .voice-agent-page .agent-layer-label {
+          gap: 1rem;
+        }
+
+        .voice-agent-page .agent-layer-copy {
+          margin-top: 1.5rem;
+        }
+
+        .voice-agent-page .agent-anatomy-intro,
+        .voice-agent-page .agent-layer-body,
+        .voice-agent-page .voice-build-orbit-copy p,
+        .voice-agent-page .voice-section-copy {
+          hyphens: none;
+          text-align: left;
+          text-align-last: auto;
+          text-wrap: pretty;
+        }
+
+        .voice-agent-page .agent-layer-body,
+        .voice-agent-page .voice-build-orbit-copy p {
+          font-size: 0.925rem;
+          line-height: 1.65rem;
+        }
+
+        .voice-agent-page .agent-layer-number,
+        .voice-agent-page .voice-build-orbit-label {
+          font-size: 0.72rem;
+        }
+
+        .voice-agent-page .voice-build-orbit-number {
+          width: 28px;
+          height: 28px;
+          font-size: 0.65rem;
+        }
+
+        .voice-agent-page .voice-build-orbit-viewport {
+          margin-top: 2.75rem;
+          overscroll-behavior-inline: contain;
+          scroll-padding-inline: 1rem;
+          scroll-snap-type: x proximity;
+          touch-action: pan-x;
+        }
+
+        .voice-agent-page .voice-build-orbit-step {
+          scroll-snap-align: start;
+        }
+
+        .voice-agent-page .voice-config-list-viewport {
+          margin-top: 2.5rem;
+        }
+
+        .voice-agent-page .voice-config-list {
+          scroll-snap-type: x proximity;
+        }
+
+        .voice-agent-page .voice-config-item,
+        .voice-agent-page .voice-config-item:nth-child(odd),
+        .voice-agent-page .voice-config-item:nth-child(even) {
+          min-height: 118px;
+          padding: 1rem;
+          border: 1px solid rgba(var(--config-rgb), 0.14);
+          border-radius: 1rem;
+          background:
+            radial-gradient(circle at 8% 8%, rgba(var(--config-rgb), 0.09), transparent 52%),
+            rgba(4, 10, 11, 0.7);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+          scroll-snap-align: start;
+          transition:
+            border-color 220ms ease,
+            box-shadow 220ms ease,
+            transform 220ms ease;
+        }
+
+        .voice-agent-page .voice-config-item:nth-child(1),
+        .voice-agent-page .voice-config-item:nth-child(2) {
+          --config-color: #35fbe0;
+          --config-rgb: 53, 251, 224;
+        }
+
+        .voice-agent-page .voice-config-item:nth-child(3),
+        .voice-agent-page .voice-config-item:nth-child(4) {
+          --config-color: #75baff;
+          --config-rgb: 117, 186, 255;
+        }
+
+        .voice-agent-page .voice-config-item:nth-child(5),
+        .voice-agent-page .voice-config-item:nth-child(6) {
+          --config-color: #a99cff;
+          --config-rgb: 169, 156, 255;
+        }
+
+        .voice-agent-page .voice-config-item:nth-child(7),
+        .voice-agent-page .voice-config-item:nth-child(8) {
+          --config-color: #ffad73;
+          --config-rgb: 255, 173, 115;
+        }
+
+        .voice-agent-page .voice-config-item::before {
+          inset: 0;
+          border-radius: inherit;
+        }
+
+        .voice-agent-page .voice-config-item:is(:hover, :focus) {
+          padding: 1rem;
+          border-color: rgba(var(--config-rgb), 0.36);
+          background:
+            radial-gradient(circle at 8% 8%, rgba(var(--config-rgb), 0.14), transparent 55%),
+            rgba(4, 10, 11, 0.88);
+          box-shadow: 0 18px 46px rgba(var(--config-rgb), 0.07);
+          transform: translateY(-3px);
+        }
+
+        .voice-agent-page .voice-config-label,
+        .voice-agent-page .voice-config-item:nth-child(odd) .voice-config-label,
+        .voice-agent-page .voice-config-item:nth-child(even) .voice-config-label {
+          font-size: 0.95rem;
+        }
+
+        .voice-agent-page .voice-faq-section {
+          position: relative;
+          background:
+            radial-gradient(circle at 50% 0%, rgba(53, 251, 224, 0.055), transparent 34%),
+            #000;
+        }
+
+        .voice-agent-page .service-faq {
+          transition:
+            border-color 220ms ease,
+            background-color 220ms ease,
+            transform 220ms ease;
+        }
+
+        .voice-agent-page .service-faq:hover {
+          border-color: rgba(53, 251, 224, 0.2);
+          background: rgba(53, 251, 224, 0.018);
+          transform: translateY(-1px);
+        }
+
+        .voice-agent-page :is(
+          a,
+          summary,
+          .agent-anatomy-layer,
+          .voice-build-orbit-step,
+          .voice-config-item
+        ):focus-visible {
+          outline: 2px solid rgba(117, 255, 240, 0.92);
+          outline-offset: 4px;
+        }
+
+        @media (max-width: 639px) {
+          .voice-agent-page > section:not(.product-service-hero) {
+            padding-top: 2.25rem;
+            padding-bottom: 2.25rem;
+          }
+
+          .voice-agent-page > section.voice-build-process h2.voice-build-heading,
+          .voice-agent-page > section.voice-config-section h2.voice-config-heading {
+            font-size: clamp(1.7rem, 8vw, 2.2rem);
+            white-space: normal;
+          }
+
+          .voice-agent-page .voice-build-orbit-viewport {
+            padding-right: 1.5rem;
+            mask-image: linear-gradient(to right, black 0%, black 88%, transparent 100%);
+          }
+
+          .voice-agent-page .voice-config-list-viewport {
+            padding-right: 1.5rem;
+            mask-image: linear-gradient(to right, black 0%, black 88%, transparent 100%);
+          }
+        }
+
+        @media (min-width: 640px) {
+          .voice-agent-page .product-service-hero {
+            padding-top: 7rem;
+          }
+
+          .voice-agent-page .voice-section-copy {
+            font-size: 1.025rem;
+            line-height: 1.8rem;
+          }
+
+          .voice-agent-page .voice-config-section .voice-section-copy {
+            font-size: 1.075rem;
+            line-height: 1.85rem;
+          }
+
+          .voice-agent-page .agent-layer-body,
+          .voice-agent-page .voice-build-orbit-copy p {
+            font-size: 1rem;
+            line-height: 1.75rem;
+          }
+
+          .voice-agent-page .voice-config-label,
+          .voice-agent-page .voice-config-item:nth-child(odd) .voice-config-label,
+          .voice-agent-page .voice-config-item:nth-child(even) .voice-config-label {
+            font-size: 1rem;
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .voice-agent-page .product-service-hero {
+            padding-top: 7.5rem;
+          }
+
+          .voice-agent-page .voice-agent-hero-container {
+            grid-template-columns: minmax(0, 0.9fr) minmax(540px, 1.1fr);
+            gap: 3rem;
+          }
+
+          .voice-agent-page .voice-agent-hero-art {
+            justify-self: end;
+          }
+
+          .voice-agent-page .voice-config-list {
+            grid-auto-flow: column;
+            gap: 0.7rem 1.25rem;
+          }
+        }
+
+        .voice-agent-page .voice-config-stage {
+          position: relative;
+          isolation: isolate;
+          margin-top: 2.75rem;
+        }
+
+        .voice-agent-page .voice-config-stage::before {
+          content: "";
+          position: absolute;
+          z-index: -2;
+          top: 50%;
+          left: 50%;
+          width: min(82vw, 760px);
+          height: 72%;
+          border-radius: 999px;
+          background: rgba(53, 251, 224, 0.075);
+          filter: blur(90px);
+          transform: translate(-50%, -50%);
+        }
+
+        .voice-agent-page .voice-config-radar {
+          position: absolute;
+          z-index: -1;
+          top: 50%;
+          left: 50%;
+          width: min(74vw, 570px);
+          aspect-ratio: 1;
+          border: 1px solid rgba(117, 255, 240, 0.14);
+          border-radius: 50%;
+          background:
+            linear-gradient(90deg, transparent 49.85%, rgba(117, 255, 240, 0.1) 50%, transparent 50.15%),
+            linear-gradient(transparent 49.85%, rgba(117, 255, 240, 0.1) 50%, transparent 50.15%),
+            radial-gradient(circle, rgba(53, 251, 224, 0.08) 0 2px, transparent 3px),
+            radial-gradient(circle, rgba(169, 156, 255, 0.075), transparent 67%);
+          box-shadow:
+            inset 0 0 80px rgba(53, 251, 224, 0.035),
+            0 0 90px rgba(53, 251, 224, 0.03);
+          opacity: 0.9;
+          transform: translate(-50%, -50%);
+        }
+
+        .voice-agent-page .voice-config-radar::before,
+        .voice-agent-page .voice-config-radar::after,
+        .voice-agent-page .voice-config-radar > span {
+          content: "";
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 50%;
+          transform: translate(-50%, -50%);
+        }
+
+        .voice-agent-page .voice-config-radar::before {
+          width: 72%;
+          height: 72%;
+        }
+
+        .voice-agent-page .voice-config-radar::after {
+          width: 42%;
+          height: 42%;
+          border-color: rgba(169, 156, 255, 0.18);
+          box-shadow: 0 0 45px rgba(169, 156, 255, 0.08);
+        }
+
+        .voice-agent-page .voice-config-radar > span:nth-child(1) {
+          width: 8px;
+          height: 8px;
+          border: 0;
+          background: #75fff0;
+          box-shadow:
+            0 0 18px rgba(117, 255, 240, 0.92),
+            0 0 42px rgba(117, 255, 240, 0.45);
+        }
+
+        .voice-agent-page .voice-config-radar > span:nth-child(2) {
+          width: 57%;
+          height: 57%;
+          border-color: rgba(117, 186, 255, 0.11);
+        }
+
+        .voice-agent-page .voice-config-radar > span:nth-child(3) {
+          width: 87%;
+          height: 87%;
+          border-style: dashed;
+          border-color: rgba(169, 156, 255, 0.1);
+        }
+
+        .voice-agent-page .voice-config-list-viewport {
+          position: relative;
+          z-index: 2;
+          margin-top: 0;
+          margin-inline: -1rem;
+          overflow-x: auto;
+          padding: 1rem 1rem 2rem;
+          mask-image: linear-gradient(to right, transparent, black 1rem, black calc(100% - 2.5rem), transparent);
+          overscroll-behavior-inline: contain;
+          scroll-padding-inline: 1rem;
+          scrollbar-width: thin;
+        }
+
+        .voice-agent-page .voice-config-list {
+          display: grid;
+          width: max-content;
+          grid-template-columns: none;
+          grid-template-rows: none;
+          grid-auto-flow: column;
+          grid-auto-columns: minmax(235px, 78vw);
+          gap: 0.8rem;
+          padding: 0.5rem 0 1rem;
+          scroll-snap-type: x proximity;
+        }
+
+        .voice-agent-page .voice-config-item,
+        .voice-agent-page .voice-config-item:nth-child(odd),
+        .voice-agent-page .voice-config-item:nth-child(even),
+        .voice-agent-page .voice-config-item:nth-child(-n + 4),
+        .voice-agent-page .voice-config-item:nth-child(n + 5),
+        .voice-agent-page .voice-config-item:nth-child(4n + 1) {
+          position: relative;
+          isolation: isolate;
+          display: grid;
+          width: auto;
+          min-height: 145px;
+          grid-template-columns: 42px minmax(0, 1fr);
+          grid-template-rows: 1fr;
+          align-items: start;
+          gap: 1rem;
+          margin: 0;
+          padding: 1.1rem;
+          overflow: hidden;
+          border: 1px solid rgba(var(--config-rgb), 0.2);
+          border-radius: 1.15rem;
+          background:
+            linear-gradient(145deg, rgba(var(--config-rgb), 0.105), rgba(6, 12, 14, 0.92) 42%),
+            rgba(3, 8, 9, 0.92);
+          box-shadow:
+            0 24px 60px rgba(0, 0, 0, 0.36),
+            inset 0 1px 0 rgba(255, 255, 255, 0.07);
+          transform: none;
+          backdrop-filter: blur(18px);
+          scroll-snap-align: start;
+          transition:
+            border-color 240ms ease,
+            box-shadow 240ms ease,
+            transform 240ms ease;
+        }
+
+        .voice-agent-page .voice-config-item::before {
+          content: "";
+          position: absolute;
+          z-index: -1;
+          inset: 0;
+          border-radius: inherit;
+          background:
+            radial-gradient(circle at 0 0, rgba(var(--config-rgb), 0.16), transparent 48%),
+            linear-gradient(110deg, transparent 42%, rgba(255, 255, 255, 0.035), transparent 58%);
+          opacity: 0.72;
+          transform: none;
+        }
+
+        .voice-agent-page .voice-config-number,
+        .voice-agent-page .voice-config-item:nth-child(odd) .voice-config-number,
+        .voice-agent-page .voice-config-item:nth-child(even) .voice-config-number {
+          grid-column: 1;
+          grid-row: 1;
+          display: grid;
+          width: 42px;
+          height: 42px;
+          place-items: center;
+          align-self: start;
+          padding: 0;
+          border: 1px solid rgba(var(--config-rgb), 0.28);
+          border-radius: 0.8rem;
+          background: rgba(var(--config-rgb), 0.1);
+          color: var(--config-color);
+          font-size: 0.65rem;
+          letter-spacing: 0.08em;
+          box-shadow: 0 0 22px rgba(var(--config-rgb), 0.08);
+        }
+
+        .voice-agent-page .voice-config-content {
+          grid-column: 2;
+          grid-row: 1;
+          display: flex;
+          min-width: 0;
+          height: 100%;
+          flex-direction: column;
+          justify-content: space-between;
+          gap: 1.4rem;
+          padding: 0.1rem 0 0;
+        }
+
+        .voice-agent-page .voice-config-label,
+        .voice-agent-page .voice-config-item:nth-child(odd) .voice-config-label,
+        .voice-agent-page .voice-config-item:nth-child(even) .voice-config-label {
+          min-height: 0;
+          color: rgba(255, 255, 255, 0.91);
+          font-size: 0.9rem;
+          font-weight: 600;
+          line-height: 1.42;
+          text-align: left;
+        }
+
+        .voice-agent-page .voice-config-chart {
+          display: flex;
+          height: 24px;
+          align-items: end;
+          gap: 4px;
+        }
+
+        .voice-agent-page .voice-config-chart > span {
+          width: 4px;
+          height: 38%;
+          border-radius: 999px;
+          background: var(--config-color);
+          box-shadow: 0 0 10px rgba(var(--config-rgb), 0.3);
+          opacity: 0.34;
+          transition:
+            height 260ms ease,
+            opacity 260ms ease;
+        }
+
+        .voice-agent-page .voice-config-chart > span:nth-child(2) { height: 68%; }
+        .voice-agent-page .voice-config-chart > span:nth-child(3) { height: 100%; }
+        .voice-agent-page .voice-config-chart > span:nth-child(4) { height: 54%; }
+        .voice-agent-page .voice-config-chart > span:nth-child(5) { height: 82%; }
+
+        .voice-agent-page .voice-config-item:nth-child(even) .voice-config-chart > span:nth-child(1) { height: 72%; }
+        .voice-agent-page .voice-config-item:nth-child(even) .voice-config-chart > span:nth-child(2) { height: 44%; }
+        .voice-agent-page .voice-config-item:nth-child(even) .voice-config-chart > span:nth-child(4) { height: 88%; }
+
+        .voice-agent-page .voice-config-item:is(:hover, :focus),
+        .voice-agent-page .voice-config-item:nth-child(odd):is(:hover, :focus),
+        .voice-agent-page .voice-config-item:nth-child(even):is(:hover, :focus) {
+          z-index: 8;
+          padding: 1.1rem;
+          border-color: rgba(var(--config-rgb), 0.52);
+          background:
+            linear-gradient(145deg, rgba(var(--config-rgb), 0.16), rgba(6, 12, 14, 0.95) 46%),
+            rgba(3, 8, 9, 0.96);
+          box-shadow:
+            0 30px 75px rgba(0, 0, 0, 0.5),
+            0 0 38px rgba(var(--config-rgb), 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+          transform: translateY(-7px) rotate(0deg) scale(1.015);
+        }
+
+        .voice-agent-page .voice-config-item:is(:hover, :focus) .voice-config-chart > span {
+          opacity: 0.9;
+        }
+
+        @media (min-width: 768px) {
+          .voice-agent-page .voice-config-stage {
+            margin-top: 3.25rem;
+          }
+
+          .voice-agent-page .voice-config-list-viewport {
+            margin-inline: 0;
+            overflow: visible;
+            padding: 1.5rem 0 2rem;
+            mask-image: none;
+          }
+
+          .voice-agent-page .voice-config-list {
+            width: 100%;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-rows: none;
+            grid-auto-flow: row;
+            grid-auto-columns: auto;
+            gap: 0.6rem;
+          }
+
+          .voice-agent-page .voice-config-item,
+          .voice-agent-page .voice-config-item:nth-child(odd),
+          .voice-agent-page .voice-config-item:nth-child(even) {
+            min-height: 138px;
+          }
+
+          .voice-agent-page .voice-config-item:nth-child(4n + 1) {
+            transform: translate(8px, 7px) rotate(-0.7deg);
+          }
+
+          .voice-agent-page .voice-config-item:nth-child(4n + 2) {
+            transform: translate(-8px, -5px) rotate(0.7deg);
+          }
+
+          .voice-agent-page .voice-config-item:nth-child(4n + 3) {
+            transform: translate(4px, -5px) rotate(0.55deg);
+          }
+
+          .voice-agent-page .voice-config-item:nth-child(4n + 4) {
+            transform: translate(-4px, 7px) rotate(-0.55deg);
+          }
+
+          .voice-agent-page .voice-config-label,
+          .voice-agent-page .voice-config-item:nth-child(odd) .voice-config-label,
+          .voice-agent-page .voice-config-item:nth-child(even) .voice-config-label {
+            font-size: 0.94rem;
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .voice-agent-page .voice-config-list {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            grid-template-rows: repeat(2, minmax(0, 1fr));
+            gap: 0;
+          }
+
+          .voice-agent-page .voice-config-item,
+          .voice-agent-page .voice-config-item:nth-child(odd),
+          .voice-agent-page .voice-config-item:nth-child(even) {
+            min-height: 150px;
+          }
+
+          .voice-agent-page .voice-config-item:nth-child(1) {
+            z-index: 2;
+            transform: translate(14px, 16px) rotate(-1.5deg);
+          }
+
+          .voice-agent-page .voice-config-item:nth-child(2) {
+            z-index: 4;
+            transform: translate(5px, -3px) rotate(0.8deg);
+          }
+
+          .voice-agent-page .voice-config-item:nth-child(3) {
+            z-index: 3;
+            transform: translate(-5px, 5px) rotate(-0.6deg);
+          }
+
+          .voice-agent-page .voice-config-item:nth-child(4) {
+            z-index: 2;
+            transform: translate(-14px, 18px) rotate(1.4deg);
+          }
+
+          .voice-agent-page .voice-config-item:nth-child(5) {
+            z-index: 3;
+            transform: translate(18px, -12px) rotate(1deg);
+          }
+
+          .voice-agent-page .voice-config-item:nth-child(6) {
+            z-index: 5;
+            transform: translate(7px, 8px) rotate(-0.9deg);
+          }
+
+          .voice-agent-page .voice-config-item:nth-child(7) {
+            z-index: 4;
+            transform: translate(-7px, 2px) rotate(0.7deg);
+          }
+
+          .voice-agent-page .voice-config-item:nth-child(8) {
+            z-index: 3;
+            transform: translate(-18px, -12px) rotate(-1.2deg);
+          }
+
+          .voice-agent-page .voice-config-label,
+          .voice-agent-page .voice-config-item:nth-child(odd) .voice-config-label,
+          .voice-agent-page .voice-config-item:nth-child(even) .voice-config-label {
+            font-size: 0.96rem;
+          }
+        }
+
+        .voice-agent-page .voice-config-list-viewport {
+          position: relative;
+          z-index: auto;
+          margin-top: 2.5rem;
+          margin-inline: 0;
+          overflow-x: auto;
+          padding: 0 0 0.75rem;
+          mask-image: none;
+          scroll-padding-inline: 0;
+        }
+
+        .voice-agent-page .voice-config-list {
+          display: grid;
+          width: max-content;
+          grid-template-columns: none;
+          grid-template-rows: none;
+          grid-auto-flow: column;
+          grid-auto-columns: 260px;
+          gap: 1rem;
+          padding: 0;
+          scroll-snap-type: x proximity;
+        }
+
+        .voice-agent-page .voice-config-list .voice-config-item {
+          z-index: auto;
+          display: grid;
+          width: 260px;
+          min-height: 118px;
+          grid-template-columns: 3.5rem minmax(0, 1fr);
+          grid-template-rows: auto;
+          align-items: center;
+          gap: 1rem;
+          margin: 0;
+          padding: 1rem;
+          overflow: visible;
+          border: 1px solid rgba(var(--config-rgb), 0.14);
+          border-radius: 1rem;
+          background:
+            radial-gradient(circle at 8% 8%, rgba(var(--config-rgb), 0.09), transparent 52%),
+            rgba(4, 10, 11, 0.7);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+          text-align: left;
+          transform: none;
+          backdrop-filter: none;
+          scroll-snap-align: start;
+          transition:
+            border-color 220ms ease,
+            box-shadow 220ms ease,
+            transform 220ms ease;
+        }
+
+        .voice-agent-page .voice-config-item::before {
+          inset: 0;
+          border-radius: inherit;
+          background: radial-gradient(circle at 18% 50%, rgba(var(--config-rgb), 0.1), transparent 70%);
+          opacity: 0;
+        }
+
+        .voice-agent-page .voice-config-number,
+        .voice-agent-page .voice-config-item:nth-child(odd) .voice-config-number,
+        .voice-agent-page .voice-config-item:nth-child(even) .voice-config-number {
+          grid-column: 1;
+          grid-row: 1;
+          display: grid;
+          width: 3rem;
+          height: 3rem;
+          place-items: center;
+          align-self: center;
+          padding: 0;
+          border: 1px solid rgba(var(--config-rgb), 0.28);
+          border-radius: 999px;
+          background: rgba(var(--config-rgb), 0.07);
+          color: var(--config-color);
+          font-size: 0.68rem;
+          letter-spacing: 0.08em;
+          box-shadow: 0 0 22px rgba(var(--config-rgb), 0.08);
+        }
+
+        .voice-agent-page .voice-config-content {
+          grid-column: 2;
+          grid-row: 1;
+          display: block;
+          min-width: 0;
+          height: auto;
+          padding: 0;
+        }
+
+        .voice-agent-page .voice-config-label,
+        .voice-agent-page .voice-config-item:nth-child(odd) .voice-config-label,
+        .voice-agent-page .voice-config-item:nth-child(even) .voice-config-label {
+          min-height: 0;
+          color: rgba(255, 255, 255, 0.88);
+          font-size: 0.95rem;
+          font-weight: 600;
+          line-height: 1.42;
+          text-align: left;
+        }
+
+        .voice-agent-page .voice-config-list .voice-config-item:is(:hover, :focus) {
+          z-index: 2;
+          padding: 1rem;
+          border-color: rgba(var(--config-rgb), 0.36);
+          background:
+            radial-gradient(circle at 8% 8%, rgba(var(--config-rgb), 0.14), transparent 55%),
+            rgba(4, 10, 11, 0.88);
+          box-shadow: 0 18px 46px rgba(var(--config-rgb), 0.07);
+          transform: translateY(-3px);
+        }
+
+        @media (min-width: 640px) {
+          .voice-agent-page .voice-config-label,
+          .voice-agent-page .voice-config-item:nth-child(odd) .voice-config-label,
+          .voice-agent-page .voice-config-item:nth-child(even) .voice-config-label {
+            font-size: 1rem;
+          }
+        }
+
+        @media (min-width: 768px) {
+          .voice-agent-page .voice-config-intro-grid {
+            grid-template-columns: minmax(0, 1fr) minmax(320px, 0.82fr);
+            align-items: end;
+            gap: clamp(2.5rem, 7vw, 7rem);
+          }
+
+          .voice-agent-page .voice-config-list-viewport {
+            overflow: visible;
+          }
+
+          .voice-agent-page .voice-config-list {
+            width: 100%;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-rows: none;
+            grid-auto-flow: row;
+            grid-auto-columns: auto;
+            gap: 1.25rem 2rem;
+          }
+
+          .voice-agent-page .voice-config-list .voice-config-item {
+            width: auto;
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .voice-agent-page .voice-config-list {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            grid-template-rows: repeat(2, minmax(0, 1fr));
+            grid-auto-flow: column;
+            gap: 0.7rem 1.25rem;
+          }
+        }
+
+        .voice-agent-page > section.voice-agent-contact-section {
+          padding-top: 1rem;
+          padding-bottom: 4rem;
         }
 
         @keyframes service-orbit {

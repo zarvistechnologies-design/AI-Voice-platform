@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { ProductServiceHeroPhoto } from "@/components/layout/ProductServiceHeroPhoto";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { servicePages } from "@/config/site";
 
@@ -80,6 +81,8 @@ function ProductGlyph({ type }: { type: "voice" | "workflow" | "signal" }) {
   );
 }
 
+// Kept temporarily for the existing console styling below.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function HeroConsole() {
   return (
     <div className="relative mx-auto w-full max-w-[720px]">
@@ -277,7 +280,7 @@ export function ProductOverviewPage() {
               </p>
               <div className="mt-9 flex flex-wrap gap-3">
                 <Link className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[#45ddce] px-6 text-sm font-black text-[#03110e] shadow-[0_18px_48px_rgba(69,221,206,0.2)] transition hover:-translate-y-0.5 hover:bg-[#75fff0]" href="/dashboard">Start building <ArrowIcon /></Link>
-                <Link className="inline-flex min-h-12 items-center rounded-full border border-white/14 bg-white/[0.045] px-6 text-sm font-black text-white transition hover:border-[#45ddce]/35 hover:bg-[#45ddce]/[0.07]" href="/#contact">Talk to our team</Link>
+                <Link className="inline-flex min-h-12 items-center rounded-full border border-white/14 bg-white/[0.045] px-6 text-sm font-black text-white transition hover:border-[#45ddce]/35 hover:bg-[#45ddce]/[0.07]" href="/contact">Talk to our team</Link>
               </div>
               <div className="mt-10 flex flex-wrap gap-x-8 gap-y-3 text-[11px] font-bold text-white/38">
                 {["Natural real-time voice", "Business tool actions", "Human handoff controls"].map((item) => (
@@ -285,7 +288,7 @@ export function ProductOverviewPage() {
                 ))}
               </div>
             </div>
-            <HeroConsole />
+            <ProductServiceHeroPhoto slug="product-overview" title="Voice agent platform" />
           </div>
         </section>
 
@@ -360,7 +363,7 @@ export function ProductOverviewPage() {
             <p className="m-0 text-[10px] font-black uppercase tracking-[0.18em] text-[#75fff0]">Ready when your callers are</p>
             <h2 className="mx-auto m-0 mt-5 max-w-3xl text-3xl font-black leading-tight sm:text-5xl">Launch your first production voice workflow.</h2>
             <p className="mx-auto mb-0 mt-5 max-w-2xl text-sm leading-7 text-white/52 sm:text-base">Start with one high-value call journey, connect the actions it needs, and expand from real results.</p>
-            <div className="mt-8 flex flex-wrap justify-center gap-3"><Link className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[#45ddce] px-6 text-sm font-black text-[#03110e]" href="/dashboard">Start building <ArrowIcon /></Link><Link className="inline-flex min-h-12 items-center rounded-full border border-white/14 bg-black/20 px-6 text-sm font-black text-white" href="/#contact">Contact sales</Link></div>
+            <div className="mt-8 flex flex-wrap justify-center gap-3"><Link className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[#45ddce] px-6 text-sm font-black text-[#03110e]" href="/dashboard">Start building <ArrowIcon /></Link><Link className="inline-flex min-h-12 items-center rounded-full border border-white/14 bg-black/20 px-6 text-sm font-black text-white" href="/contact">Contact sales</Link></div>
           </div>
         </section>
       </div>

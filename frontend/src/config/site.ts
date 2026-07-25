@@ -10,7 +10,7 @@ export const siteConfig = {
   ],
   headerActions: [
     { href: "/login", label: "Login", variant: "ghost" },
-    { href: "/#contact", label: "Contact Sales", variant: "secondary" },
+    { href: "/contact", label: "Contact Sales", variant: "secondary" },
   ],
   productMenu: {
     featured: {
@@ -78,11 +78,11 @@ export const siteConfig = {
       },
     ],
     story: {
-      href: "/#contact",
+      href: "/contact",
       title: "Plan your rollout",
       body: "Map your highest-volume calls, integrations, and human handoff rules with our team.",
     },
-    cta: { href: "/#contact", label: "Contact Sales" },
+    cta: { href: "/contact", label: "Contact Sales" },
   },
   developersMenu: {
     featured: {
@@ -644,7 +644,7 @@ export const servicePages = [
     title: "Voice Agents",
     kicker: "Build",
     summary:
-      "Launch natural AI callers that answer, qualify, route, and follow up without making customers feel trapped in a script.",
+      "Deploy AI-powered voice agents that understand natural conversation, resolve customer needs in real time, and scale effortlessly across every call.",
     highlights: ["24/7 call handling", "Lead qualification", "Human handoff rules"],
     sections: [
       {
