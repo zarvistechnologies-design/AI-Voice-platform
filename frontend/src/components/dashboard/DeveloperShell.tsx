@@ -38,7 +38,7 @@ const eventLabels: Record<WebhookEvent, string> = {
   "transcript.ready": "Transcript ready",
 };
 
-type DeveloperView = "overview" | "docs" | "keys" | "webhooks" | "activity";
+type DeveloperView = "overview" | "keys" | "webhooks" | "activity";
 type InspectorView = "request" | "response" | "webhook";
 
 const panelClass = "border border-[#dce3ea] bg-white shadow-[0_10px_30px_rgba(15,23,42,0.045)]";
@@ -131,8 +131,7 @@ function sampleCallResponse() {
   return `{
   "call": {
     "id": "call_id",
-    "session_id": "call_id",
-    "vozonSessionId": "call_id",
+    "session_id": "inbound-918071578947-_07300655336",
     "call_status": "completed",
     "direction": "inbound",
     "duration": 90,
@@ -170,7 +169,7 @@ function sampleCallResponse() {
     },
     "structuredOutput": {},
     "metadata": {
-      "source": "vozon",
+      "source": "ai_voice_platform",
       "apiVersion": "v1"
     }
   }
@@ -184,8 +183,7 @@ function sampleWebhookPayload() {
   "createdAt": "2026-07-01T12:00:00.000Z",
   "data": {
     "id": "call_id",
-    "session_id": "call_id",
-    "vozonSessionId": "call_id",
+    "session_id": "inbound-918071578947-_07300655336",
     "direction": "inbound",
     "call_status": "completed",
     "voip": {
@@ -412,7 +410,6 @@ export function DeveloperShell() {
           <nav className="flex overflow-x-auto border border-[#dce3ea] bg-white p-1.5 xl:block xl:self-start xl:p-2" aria-label="Developer workspace sections">
             {([
               ["overview", "Overview", "API health"],
-              ["docs", "API docs", "Integration guide"],
               ["keys", "API keys", `${activeKeys} active`],
               ["webhooks", "Webhooks", `${enabledWebhooks} enabled`],
               ["activity", "Event activity", `${deliveries.length} recent`],
@@ -501,38 +498,6 @@ export function DeveloperShell() {
                     </div>
                     <button className="mt-5 text-sm font-semibold text-[#087f8c] hover:text-[#065f68]" type="button" onClick={() => setInspectorView("response")}>Inspect response</button>
                   </div>
-                </div>
-              </section>
-            ) : null}
-
-            {activeView === "docs" ? (
-              <section className={`${panelClass} min-h-[720px]`}>
-                <div className="border-b border-[#dce3ea] bg-[#101827] px-6 py-8 text-white">
-                  <span className="text-xs font-black uppercase tracking-[0.18em] text-[#70d1d8]">Vozon API v1</span>
-                  <h2 className="mt-3 text-3xl font-black">Developer documentation</h2>
-                  <p className="mt-3 max-w-2xl text-sm leading-7 text-[#b7c6d8]">Launch telephone calls, retrieve complete call data, run campaigns, and process signed lifecycle events from your backend.</p>
-                </div>
-                <div className="grid lg:grid-cols-2">
-                  {[
-                    ["Authentication", "Send Authorization: Bearer avp_your_api_key. Keep production keys server-side and grant only the required scopes."],
-                    ["Scopes", "read accesses call data; calls:trigger starts calls and campaigns; agents:write manages agents and knowledge; full-access enables everything."],
-                    ["Outbound calls", "POST /api/v1/calls/outbound with agentId and an E.164 phoneNumber. The response contains callId, vozonSessionId, and status."],
-                    ["Call data", "GET /api/v1/calls or /calls/{callId} for status, routing, timestamps, transcript, recording, usage, billing, sentiment, and structured output."],
-                    ["Campaigns", "Create a campaign, add leads in batches, launch or schedule it, then pause, resume, cancel, and manage suppressions."],
-                    ["Webhooks", "Subscribe to call.started, call.ended, call.failed, and transcript.ready. Verify X-AI-Voice-Signature with HMAC-SHA256."],
-                    ["Reliability", "Use idempotency keys, exponential backoff for temporary failures, and webhook event IDs to prevent duplicate processing."],
-                    ["Errors", "400 invalid input; 401 invalid key; 403 missing scope; 404 missing resource; 409 conflict; 429 limit reached; 5xx temporary failure."],
-                  ].map(([title, body], index) => (
-                    <article className={`border-b border-[#e4e9ef] p-6 ${index % 2 ? "lg:border-l" : ""}`} key={title}>
-                      <span className="text-[10px] font-black text-[#087f8c]">{String(index + 1).padStart(2, "0")}</span>
-                      <h3 className="mt-3 text-lg font-black text-[#172033]">{title}</h3>
-                      <p className="mt-2 text-sm leading-7 text-[#64748b]">{body}</p>
-                    </article>
-                  ))}
-                </div>
-                <div className="grid gap-5 bg-[#f8fafc] p-6 lg:grid-cols-2">
-                  <div><h3 className="text-sm font-black text-[#172033]">Production checklist</h3><ul className="mt-3 grid gap-2 text-sm text-[#64748b]"><li>✓ Separate staging and production keys</li><li>✓ Minimum required scopes</li><li>✓ E.164 phone-number formatting</li><li>✓ Webhook signature verification</li><li>✓ Retry and monitoring strategy</li></ul></div>
-                  <div><h3 className="text-sm font-black text-[#172033]">Quick example</h3><pre className="mt-3 overflow-x-auto rounded bg-[#101827] p-4 text-[11px] leading-5 text-[#d7e2ef]">{sampleOutboundCurl(baseUrl)}</pre></div>
                 </div>
               </section>
             ) : null}
