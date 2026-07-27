@@ -180,6 +180,7 @@ export const siteConfig = {
         { href: "mailto:hello@vozon.ai", label: "Contact" },
         { href: "/#resources", label: "Documentation" },
         { href: "/privacy", label: "Privacy" },
+        { href: "/terms", label: "Terms" },
       ],
     },
   ],
