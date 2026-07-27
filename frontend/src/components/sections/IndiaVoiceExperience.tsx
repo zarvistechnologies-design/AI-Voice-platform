@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { API_URL } from "@/lib/apiBase";
 
@@ -46,49 +45,52 @@ function RotatingGlobe() {
       <span className="india-globe-orbit india-globe-orbit-two"><i /></span>
       <span className="india-globe-orbit india-globe-orbit-three"><i /></span>
       <div className="india-globe">
-        <span className="india-globe-grid" />
         <span className="india-globe-shine" />
         <svg className="india-globe-map" viewBox="0 0 420 420" aria-hidden="true">
           <defs>
-            <clipPath id="indiaGlobeClip"><circle cx="210" cy="210" r="188" /></clipPath>
+            <clipPath id="indiaGlobeClip"><circle cx="210" cy="210" r="196" /></clipPath>
             <filter id="indiaMapGlow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feGaussianBlur stdDeviation="2.2" result="blur" />
               <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
             </filter>
             <pattern id="indiaMapDots" width="5" height="5" patternUnits="userSpaceOnUse">
-              <circle cx="1.3" cy="1.3" r="0.9" fill="#75fff0" opacity=".8" />
+              <circle cx="1.3" cy="1.3" r="0.85" fill="#75fff0" opacity=".72" />
             </pattern>
+            <radialGradient id="indiaFocusGlow">
+              <stop stopColor="#b6ff76" stopOpacity=".65" />
+              <stop offset="1" stopColor="#45ddce" stopOpacity="0" />
+            </radialGradient>
           </defs>
           <g clipPath="url(#indiaGlobeClip)">
+            <g className="india-globe-graticule">
+              <ellipse cx="210" cy="210" rx="72" ry="194" />
+              <ellipse cx="210" cy="210" rx="139" ry="194" />
+              <ellipse cx="210" cy="210" rx="194" ry="58" />
+              <ellipse cx="210" cy="210" rx="194" ry="119" />
+              <path d="M16 210h388" />
+              <path d="M210 16v388" />
+            </g>
             <g className="india-globe-land">
-              <path d="M29 121 64 85l53-11 35 19 19 28-8 27-38 9-21 27-43-7-29-24Z" />
-              <path d="m119 202 33-21 31 18 17 42-17 68-31 45-21-27 5-52-25-39Z" />
-              <path d="m214 97 53-29 74 14 52 45-18 37-47 6-24 29-31-8-20 26-38-8-25-39-35-12 8-36Z" />
-              <path d="m318 225 31-23 38 13 19 35-16 27-43 3-25-22Z" />
-              <path d="M382 106 431 83l47 29-9 42-45 13-35-25Z" />
-              <path d="m451 205 42-20 44 24-6 42-50 19-32-27Z" />
-              <path d="m512 95 54-27 68 18 37 43-25 36-52 3-27 29-43-15-28-45Z" />
+              <path d="M45 91 72 63l40-18 30 5 22 19 5 19-17 15-28 1-13 15-25-4-14 13-22-12Z" />
+              <path d="m109 133 24-10 28 13 20 32-6 38 13 29-12 44-18 45-23 32-16-24-2-39-19-37-4-43 14-30-8-27Z" />
+              <path d="m142 88 18-23 39-18 41-6 42 10 30-4 42 20 27 31-5 24-28 7-18 20-27 3-18 21-23-9-22 12-22-13-15 9-19-17-22-3-5-20-29-11 7-18-8-12Z" />
+              <path d="m286 180 17-17 20 4 8 20 16 12-7 18-19-4-9-18-17-2Z" />
+              <path d="m325 219 13-6 10 13-7 17-9-7Z" />
+              <path d="m340 255 27-18 30 6 18 25-8 34-25 25-37-6-16-26Z" />
+              <path d="m306 202 6-4 7 8-3 12-7-5Z" />
+            </g>
+            <circle className="india-globe-focus-pulse" cx="210" cy="210" r="112" />
+            <image className="india-globe-focus" href="/images/india-outline.svg" x="140" y="128" width="140" height="164" preserveAspectRatio="xMidYMid meet" />
+            <g className="india-globe-routes">
+              <path d="M207 183Q172 153 137 148" />
+              <path d="M220 190Q282 151 337 169" />
+              <path d="M213 223Q270 258 320 302" />
+              <circle cx="137" cy="148" r="3" />
+              <circle cx="337" cy="169" r="3" />
+              <circle cx="320" cy="302" r="3" />
             </g>
           </g>
         </svg>
-        <span className="india-globe-india" aria-hidden="true">
-          <span className="india-globe-india-pulse" />
-          <Image
-            alt=""
-            height={777}
-            src="/images/india-outline.svg"
-            unoptimized
-            width={667}
-          />
-          <svg className="india-globe-india-routes" viewBox="0 0 100 117">
-            <path d="M38 23C48 38 56 48 58 64S49 88 43 102" />
-            <path d="M26 48C39 51 51 56 64 70" />
-            <circle cx="38" cy="23" r="2" />
-            <circle cx="26" cy="48" r="2" />
-            <circle cx="58" cy="64" r="2" />
-            <circle cx="43" cy="102" r="2" />
-          </svg>
-        </span>
       </div>
     </div>
   );
@@ -252,13 +254,11 @@ export function IndiaVoiceExperience() {
         .india-agent-reply{max-width:360px;margin:1.15rem auto 0;padding:.8rem 1rem;border:1px solid rgba(69,221,206,.12);border-radius:14px;background:rgba(69,221,206,.025);opacity:.68;transition:border-color .2s,background .2s,opacity .2s,transform .2s}.india-agent-reply.is-speaking{border-color:rgba(69,221,206,.38);background:rgba(69,221,206,.07);box-shadow:0 0 24px rgba(69,221,206,.08);opacity:1;transform:translateY(-2px)}.india-agent-reply span{display:block;color:var(--iv-bright);font-size:.57rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}.india-agent-reply p{margin:.4rem 0 0;color:rgba(255,255,255,.68);font-size:.7rem;line-height:1.5}
         .india-world{display:flex;flex-direction:column;align-items:center}.india-globe-wrap{position:relative;width:min(100%,340px);aspect-ratio:1;display:grid;place-items:center}.india-globe-aura{position:absolute;inset:12%;border-radius:50%;background:var(--iv-accent);filter:blur(44px);opacity:.12}
         .india-globe{position:relative;width:78%;height:78%;overflow:hidden;border:1px solid rgba(117,255,240,.58);border-radius:50%;background:radial-gradient(circle at 34% 28%,#123b37 0,#061714 48%,#010403 73%);box-shadow:0 0 22px rgba(69,221,206,.38),inset -25px -18px 42px #000,inset 8px 4px 24px rgba(117,255,240,.17)}
-        .india-globe-grid{position:absolute;inset:0;border-radius:50%;background:repeating-radial-gradient(ellipse at center,transparent 0 27px,rgba(117,255,240,.12) 28px 29px),repeating-linear-gradient(90deg,transparent 0 38px,rgba(117,255,240,.11) 39px 40px);animation:iv-grid 10s linear infinite}
         .india-globe-shine{position:absolute;z-index:4;inset:0;border-radius:50%;background:linear-gradient(115deg,rgba(161,255,245,.13),transparent 34%,transparent 70%,rgba(0,0,0,.58));pointer-events:none}
-        .india-globe-map{position:absolute;z-index:2;inset:0;width:100%;height:100%}.india-globe-land{fill:url(#indiaMapDots);stroke:var(--iv-accent);stroke-width:1.4;opacity:.8;filter:url(#indiaMapGlow);animation:iv-land 18s linear infinite}
-        .india-globe-india{position:absolute;z-index:5;left:50%;top:50%;width:34%;aspect-ratio:667/777;transform:translate(-50%,-48%);filter:drop-shadow(0 0 2px rgba(117,255,240,.42))}.india-globe-india>img{position:absolute;z-index:2;inset:0;width:100%;height:100%;object-fit:contain}.india-globe-india-pulse{position:absolute;z-index:1;inset:18% 8%;border-radius:50%;background:rgba(69,221,206,.14);filter:blur(14px);animation:iv-india-pulse 2.8s ease-in-out infinite}.india-globe-india-routes{position:absolute;z-index:3;inset:0;width:100%;height:100%;overflow:visible;opacity:.6}.india-globe-india-routes path{fill:none;stroke:rgba(117,255,240,.62);stroke-width:.65;stroke-linecap:round;stroke-dasharray:2.5 2.5}.india-globe-india-routes circle{fill:var(--iv-bright);stroke:none;filter:drop-shadow(0 0 2px var(--iv-accent))}
+        .india-globe-map{position:absolute;z-index:2;inset:0;width:100%;height:100%}.india-globe-graticule{fill:none;stroke:rgba(117,255,240,.15);stroke-width:1}.india-globe-land{fill:url(#indiaMapDots);stroke:var(--iv-accent);stroke-width:1.35;stroke-linejoin:round;opacity:.72;filter:url(#indiaMapGlow)}.india-globe-focus-pulse{fill:url(#indiaFocusGlow);transform-box:fill-box;transform-origin:center;animation:iv-india-pulse 2.8s ease-in-out infinite}.india-globe-focus{filter:drop-shadow(0 0 5px rgba(182,255,118,.85))}.india-globe-routes{fill:none;stroke:rgba(117,255,240,.58);stroke-width:1.15;stroke-linecap:round;stroke-dasharray:4 5}.india-globe-routes circle{fill:var(--iv-bright);stroke:none;filter:drop-shadow(0 0 3px var(--iv-accent))}
         .india-globe-orbit{position:absolute;z-index:6;width:98%;height:35%;border:1px solid rgba(69,221,206,.32);border-radius:50%;transform:rotate(-17deg);animation:iv-orbit 9s linear infinite}.india-globe-orbit-two{width:105%;height:28%;transform:rotate(30deg);animation-duration:13s;animation-direction:reverse}.india-globe-orbit-three{width:90%;height:50%;transform:rotate(72deg);animation-duration:17s}.india-globe-orbit i{position:absolute;left:20%;top:-4px;width:7px;height:7px;border-radius:50%;background:var(--iv-bright);box-shadow:0 0 12px var(--iv-bright)}
         .india-world-features{width:100%;margin-top:.25rem;padding-left:1.1rem;border-left:1px solid rgba(69,221,206,.12)}.india-world-features>div{display:flex;align-items:center;gap:.9rem;padding:.55rem 0}.india-world-features svg{width:27px;fill:none;stroke:var(--iv-accent);stroke-width:2}.india-world-features span{display:flex;flex-direction:column;gap:.2rem}.india-world-features strong{font-size:.76rem}.india-world-features small{color:rgba(255,255,255,.38);font-size:.64rem}
-        @keyframes iv-wave{from{transform:scaleY(.5);opacity:.45}to{transform:scaleY(1.12);opacity:1}}@keyframes iv-spin{to{transform:rotate(360deg)}}@keyframes iv-pulse{50%{transform:scale(1.08);box-shadow:0 0 35px rgba(69,221,206,.3)}}@keyframes iv-india-pulse{50%{transform:scale(1.13);opacity:.55}}@keyframes iv-grid{to{transform:translateX(40px)}}@keyframes iv-land{0%{transform:translateX(-90px) scaleX(1.03)}50%{transform:translateX(22px) scaleX(.92)}100%{transform:translateX(-90px) scaleX(1.03)}}@keyframes iv-orbit{to{rotate:360deg}}
+        @keyframes iv-wave{from{transform:scaleY(.5);opacity:.45}to{transform:scaleY(1.12);opacity:1}}@keyframes iv-spin{to{transform:rotate(360deg)}}@keyframes iv-pulse{50%{transform:scale(1.08);box-shadow:0 0 35px rgba(69,221,206,.3)}}@keyframes iv-india-pulse{50%{transform:scale(1.18);opacity:.5}}@keyframes iv-orbit{to{rotate:360deg}}
         @media(max-width:1050px){.india-voice-experience{width:calc(100% - 3rem);padding-inline:.5rem}.india-voice-layout{grid-template-columns:1fr 1fr}.india-world{grid-column:1/-1;display:grid;grid-template-columns:minmax(280px,400px) 280px;justify-content:center}.india-globe-wrap{width:340px}.india-world-features{margin:0;align-self:center}}
         @media(max-width:720px){.india-voice-experience{width:calc(100% - 2rem);margin-top:1.5rem;padding:3.5rem 0 4rem}.india-voice-layout{grid-template-columns:minmax(0,1fr);gap:3.25rem}.india-voice-copy{text-align:center}.india-voice-copy>p{margin-inline:auto}.india-voice-eyebrow{justify-content:center}.india-language-list{text-align:left}.india-agent{padding-top:.5rem}.india-world{grid-column:auto;display:flex}.india-globe-wrap{width:min(100%,340px)}.india-world-features{max-width:300px}.india-mic-stage{height:300px}}
         @media(max-width:540px){.india-voice-copy{width:100%;min-width:0;max-width:100%;overflow:hidden}.india-language-list{box-sizing:border-box;width:100%;max-width:100%;grid-template-columns:minmax(0,1fr)}.india-language-list button{box-sizing:border-box;width:100%;max-width:100%;grid-template-columns:36px minmax(0,1fr);overflow:hidden}.india-language-native{overflow:hidden;text-overflow:ellipsis}.india-voice-copy h2{font-size:2.15rem;overflow-wrap:anywhere}.india-mic-wave{right:-8%;left:-8%}}
