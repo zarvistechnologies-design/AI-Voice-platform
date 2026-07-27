@@ -1,146 +1,14 @@
-"use client";
+﻿"use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
-
-const languageOptions = [
-  {
-    code: "EN",
-    name: "English",
-    locale: "en-US",
-    tone: "#45ddce",
-    patient: "Can I book an appointment with the doctor?",
-    reply: "Yes! Dr. Patel has an opening tomorrow at 4 PM. Shall I book it?",
-    translated: "translated live - English",
-    cta: "Try Vozon in English",
-  },
-  {
-    code: "ES",
-    name: "Spanish",
-    locale: "es-ES",
-    tone: "#f28d45",
-    patient: "¿Puedo reservar una cita con el doctor?",
-    reply: "Sí. El Dr. Patel tiene un espacio mañana a las 4 p. m. ¿Lo reservo?",
-    translated: "translated live - Spanish",
-    cta: "Try Vozon in Spanish",
-  },
-  {
-    code: "FR",
-    name: "French",
-    locale: "fr-FR",
-    tone: "#f28d45",
-    patient: "Puis-je prendre rendez-vous avec le docteur ?",
-    reply: "Oui. Le Dr Patel est disponible demain à 16 h. Je réserve ?",
-    translated: "translated live - French",
-    cta: "Try Vozon in French",
-  },
-  {
-    code: "DE",
-    name: "German",
-    locale: "de-DE",
-    tone: "#8f83e8",
-    patient: "Kann ich einen Termin beim Arzt buchen?",
-    reply: "Ja. Dr. Patel hat morgen um 16 Uhr Zeit. Soll ich buchen?",
-    translated: "translated live - German",
-    cta: "Try Vozon in German",
-  },
-  {
-    code: "PT",
-    name: "Portuguese",
-    locale: "pt-PT",
-    tone: "#f2d24b",
-    patient: "Posso marcar uma consulta com o médico?",
-    reply: "Sim. O Dr. Patel tem horário amanhã às 16h. Posso marcar?",
-    translated: "translated live - Portuguese",
-    cta: "Try Vozon in Portuguese",
-  },
-  {
-    code: "HI",
-    name: "Hindi",
-    locale: "hi-IN",
-    tone: "#f28d45",
-    patient: "क्या मैं डॉक्टर से अपॉइंटमेंट बुक कर सकती हूँ?",
-    reply: "हाँ। डॉ. पटेल के पास कल शाम 4 बजे समय है। क्या मैं बुक कर दूँ?",
-    translated: "translated live - Hindi",
-    cta: "Try Vozon in Hindi",
-  },
-  {
-    code: "AR",
-    name: "Arabic",
-    locale: "ar-SA",
-    tone: "#8bc5ec",
-    patient: "هل يمكنني حجز موعد مع الطبيب؟",
-    reply: "نعم. لدى الدكتور باتيل موعد غدًا الساعة 4 مساءً. هل أحجزه؟",
-    translated: "translated live - Arabic",
-    cta: "Try Vozon in Arabic",
-  },
-  {
-    code: "ZH",
-    name: "Mandarin",
-    locale: "zh-CN",
-    tone: "#45ddce",
-    patient: "我可以预约医生吗？",
-    reply: "可以。帕特尔医生明天下午4点有空。要我帮您预约吗？",
-    translated: "translated live - Mandarin",
-    cta: "Try Vozon in Mandarin",
-  },
-];
-
-const femaleVoiceHints: Record<string, string[]> = {
-  en: ["aria", "ava", "fiona", "hazel", "jenny", "karen", "moira", "samantha", "susan", "tessa", "victoria", "zira"],
-  es: ["conchita", "dalia", "elvira", "helena", "luciana", "monica", "paloma", "paulina", "sabina"],
-  fr: ["amelie", "audrey", "celine", "denise", "hortense", "julie"],
-  de: ["anna", "heda", "hedda", "katja", "petra", "vicki"],
-  pt: ["fernanda", "francisca", "helia", "joana", "luciana", "maria"],
-  hi: ["heera", "kalpana", "lekha", "swara", "veena"],
-  ar: ["hoda", "laila", "salma", "zeina"],
-  zh: ["huihui", "mei-jia", "sin-ji", "tingting", "xiaoxiao", "xiaoyi", "yaoyao"],
-};
-
-const maleVoiceHints = [
-  "david",
-  "daniel",
-  "george",
-  "guy",
-  "hemant",
-  "kangkang",
-  "mark",
-  "naayf",
-  "pablo",
-  "paul",
-  "stefan",
-  "thomas",
-];
-
-function findFemaleVoice(voices: SpeechSynthesisVoice[], locale: string) {
-  const languagePrefix = locale.split("-")[0].toLowerCase();
-  const matchingVoices = voices.filter((voice) => voice.lang.toLowerCase().startsWith(languagePrefix));
-  const hints = femaleVoiceHints[languagePrefix] ?? [];
-
-  return (
-    matchingVoices.find((voice) => {
-      const voiceName = `${voice.name} ${voice.voiceURI}`.toLowerCase();
-      return voiceName.includes("female") || hints.some((hint) => voiceName.includes(hint));
-    }) ??
-    matchingVoices.find((voice) => {
-      const voiceName = `${voice.name} ${voice.voiceURI}`.toLowerCase();
-      return !maleVoiceHints.some((hint) => voiceName.includes(hint));
-    }) ??
-    null
-  );
-}
-
-const languageStats = [
-  ["8+", "Languages"],
-  ["95%", "Sounds native"],
-  ["0.8s", "Avg. reply time"],
-];
+import { AudioWaveHero } from "./AudioWaveHero";
+import { IndiaVoiceExperience } from "./IndiaVoiceExperience";
 
 const companyLogos = [
   { name: "Google", src: "/images/company-logos/google.svg" },
   { name: "HubSpot", src: "/images/company-logos/hubspot.svg" },
   { name: "Shopify", src: "/images/company-logos/shopify.svg" },
-  { name: "Stripe", src: "/images/company-logos/stripe.svg" },
   { name: "Zendesk", src: "/images/company-logos/zendesk.svg" },
   { name: "Notion", src: "/images/company-logos/notion.svg" },
   { name: "Intercom", src: "/images/company-logos/intercom.svg" },
@@ -428,217 +296,18 @@ function GlowButton({ children, href }: { children: string; href: string }) {
   );
 }
 
-function JourneyOutcomeIcon({ icon }: { icon: "calendar" | "database" | "message" }) {
-  if (icon === "calendar") {
-    return (
-      <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" viewBox="0 0 24 24" aria-hidden="true">
-        <rect height="17" rx="3" width="18" x="3" y="4" />
-        <path d="M8 2v4M16 2v4M3 9h18M8 14h3M8 17h6" />
-      </svg>
-    );
-  }
-
-  if (icon === "database") {
-    return (
-      <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" viewBox="0 0 24 24" aria-hidden="true">
-        <ellipse cx="12" cy="5" rx="8" ry="3" />
-        <path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6" />
-      </svg>
-    );
-  }
-
-  return (
-    <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M4 5.5h16v11H9l-5 4v-15Z" />
-      <path d="m8 11 2.2 2.2L16 8.5" />
-    </svg>
-  );
-}
-
-
-
-
-function HeroBenefitIcon({ icon }: { icon: "clock" | "bolt" | "globe" }) {
-  if (icon === "clock") {
-    return (
-      <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 24 24" aria-hidden="true">
-        <circle cx="12" cy="12" r="9" />
-        <path d="M12 7v5l3 2" />
-      </svg>
-    );
-  }
-
-  if (icon === "bolt") {
-    return (
-      <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="m13.5 2-8 12h6l-1 8 8-12h-6l1-8Z" />
-      </svg>
-    );
-  }
-
-  return (
-    <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 24 24" aria-hidden="true">
-      <circle cx="12" cy="12" r="9" />
-      <path d="M3.5 9h17M3.5 15h17M12 3c2.4 2.5 3.6 5.5 3.6 9S14.4 18.5 12 21M12 3C9.6 5.5 8.4 8.5 8.4 12s1.2 6.5 3.6 9" />
-    </svg>
-  );
-}
-
-function CircuitHero() {
-  const outcomes = [
-    { icon: "calendar" as const, label: "Appointment booked", detail: "Tomorrow · 4:00 PM" },
-    { icon: "database" as const, label: "CRM updated", detail: "Contact and summary saved" },
-    { icon: "message" as const, label: "Follow-up sent", detail: "Confirmation delivered" },
-  ];
-  const benefits = [
-    { icon: "clock" as const, value: "24/7", label: "Always available" },
-    { icon: "bolt" as const, value: "0.8s", label: "Average response" },
-    { icon: "globe" as const, value: "40+", label: "Languages supported" },
-  ];
-
-  return (
-    <div
-      aria-label="A customer request enters Vozon as a phone call. The AI voice agent responds and automatically books an appointment, updates the CRM, and sends a follow-up."
-      className="vozon-circuit vozon-orbit-flow relative mx-auto mt-20 w-full max-w-[1180px] px-1 pb-2 text-left sm:mt-12 sm:px-4"
-      role="group"
-    >
-      <div className="vozon-orbit-stage relative min-h-[450px]">
-        <svg className="vozon-orbit-paths absolute inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 1120 450" aria-hidden="true">
-          <defs>
-            <linearGradient id="vozonVoiceInput" x1="80" x2="430" y1="225" y2="225" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#45ddce" stopOpacity="0.14" />
-              <stop offset="1" stopColor="#86fff3" stopOpacity="0.9" />
-            </linearGradient>
-            <linearGradient id="vozonActionOutput" x1="690" x2="930" y1="225" y2="225" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#86fff3" stopOpacity="0.86" />
-              <stop offset="1" stopColor="#45ddce" stopOpacity="0.18" />
-            </linearGradient>
-          </defs>
-          <path className="vozon-orbit-input-glow" d="M58 225H135c12 0 16-18 24-18s11 42 20 42 12-70 22-70 12 84 23 84 12-58 22-58 12 42 22 42 11-22 22-22h126" stroke="#45ddce" strokeLinecap="round" strokeWidth="10" />
-          <path className="vozon-orbit-input" d="M58 225H135c12 0 16-18 24-18s11 42 20 42 12-70 22-70 12 84 23 84 12-58 22-58 12 42 22 42 11-22 22-22h126" stroke="url(#vozonVoiceInput)" strokeLinecap="round" strokeWidth="2" />
-          <path className="vozon-orbit-output" d="M704 225C775 225 782 137 900 137M704 225H900M704 225C775 225 782 313 900 313" stroke="url(#vozonActionOutput)" strokeLinecap="round" strokeWidth="2" />
-          <path className="vozon-orbit-pulse" d="M58 225H416" pathLength="1" stroke="#c0fff9" strokeLinecap="round" strokeWidth="4" />
-          <path className="vozon-orbit-pulse vozon-orbit-pulse-out" d="M704 225C775 225 782 137 900 137M704 225H900M704 225C775 225 782 313 900 313" pathLength="1" stroke="#c0fff9" strokeLinecap="round" strokeWidth="4" />
-        </svg>
-
-        <article className="vozon-orbit-caller z-20 text-center">
-          <div className="vozon-orbit-phone relative mx-auto grid size-[76px] place-items-center rounded-full border border-[#45ddce]/34 bg-[#45ddce]/10 text-[#9bfff5]">
-            <svg className="size-8" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.9" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M6.6 3.8 9 7.9 7.4 9.6c1.4 3 3.8 5.4 6.8 6.8l1.7-1.6 4.2 2.4-.7 3.2c-.2.8-.9 1.3-1.7 1.3C9.2 21.7 2.3 14.8 2.3 6.3c0-.8.5-1.5 1.3-1.7l3-.8Z" />
-            </svg>
-          </div>
-          <span className="mt-3 block text-[10px] font-black uppercase tracking-[0.16em] text-[#83fff2]">Customer calls your business</span>
-          <div className="vozon-orbit-speech mt-4 rounded-2xl rounded-tl-sm border border-white/20 bg-white/[0.1] px-5 py-4 text-[13px] font-extrabold leading-5 text-white/95 backdrop-blur">
-            “Can I book an appointment for tomorrow afternoon?”
-          </div>
-        </article>
-
-        <div className="vozon-orbit-core z-30 size-[290px]">
-          <span className="vozon-orbit-ring vozon-orbit-ring-one absolute inset-[-22px] rounded-full border border-[#45ddce]/16" aria-hidden="true" />
-          <span className="vozon-orbit-ring vozon-orbit-ring-two absolute inset-[-44px] rounded-full border border-[#45ddce]/10" aria-hidden="true" />
-          <div className="vozon-orbit-core-inner absolute inset-0 grid place-items-center rounded-full border border-[#45ddce]/44 text-center">
-            <div>
-              <span className="vozon-orbit-live mx-auto mb-3 flex w-fit items-center gap-1.5 text-[7px] font-black uppercase tracking-[0.16em] text-white/42">
-                <span className="size-1.5 rounded-full bg-[#45ddce]" /> Live voice conversation
-              </span>
-              <span className="text-2xl font-black tracking-[0.18em] text-[#8efff4] drop-shadow-[0_0_16px_rgba(69,221,206,0.34)]">VOZON</span>
-              <strong className="mt-1.5 block text-[11px] font-black uppercase tracking-[0.22em] text-white/78">AI Voice Agent</strong>
-              <div className="mt-5 flex h-9 items-center justify-center gap-1.5" aria-label="AI voice agent responding">
-                {[11, 22, 15, 31, 20, 34, 17, 27, 12].map((height, index) => (
-                  <span className="vozon-orbit-wave w-1 rounded-full bg-[#64eddd]" key={index} style={{ height, animationDelay: `${index * 70}ms` }} />
-                ))}
-              </div>
-              <span className="vozon-orbit-intent mx-auto mt-4 flex w-fit items-center gap-1.5 rounded-full border border-[#45ddce]/18 bg-[#45ddce]/[0.07] px-3 py-1.5 text-[8px] font-black text-[#83f7ea]">
-                <span className="size-1.5 rounded-full bg-[#45ddce]" /> Understood: book appointment
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div className="vozon-orbit-outcomes relative z-20 space-y-4">
-          <span className="vozon-orbit-outcomes-title absolute -top-8 left-0 right-0 block text-center text-[9px] font-black uppercase tracking-[0.16em] text-[#83fff2]">Work completed automatically</span>
-          {outcomes.map((outcome) => (
-            <article className="vozon-orbit-outcome flex items-center gap-3 rounded-2xl border border-[#45ddce]/30 bg-[#08251f]/95 px-4 py-4 backdrop-blur" key={outcome.label}>
-              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#45ddce]/15 p-2.5 text-[#94fff4]"><JourneyOutcomeIcon icon={outcome.icon} /></span>
-              <div className="min-w-0 flex-1">
-                <strong className="block truncate text-[13px] font-black text-white/94">{outcome.label}</strong>
-                <span className="mt-1 block truncate text-[9px] font-semibold text-white/50">{outcome.detail}</span>
-              </div>
-              <span className="vozon-orbit-check grid size-6 shrink-0 place-items-center rounded-full border border-[#45ddce]/40 bg-[#45ddce]/18 text-[10px] font-black text-[#a0fff6]">✓</span>
-            </article>
-          ))}
-        </div>
-      </div>
-
-      <div className="vozon-orbit-benefits mx-auto mt-4 grid max-w-[880px] gap-5 sm:grid-cols-3 sm:gap-4">
-        {benefits.map((benefit) => (
-          <div className="vozon-orbit-benefit flex items-center justify-center gap-4 px-4 py-3" key={benefit.label}>
-            <span className="grid size-12 shrink-0 place-items-center rounded-full p-3 text-[#83f7ea]"><HeroBenefitIcon icon={benefit.icon} /></span>
-            <div>
-              <strong className="block text-xl font-black text-white">{benefit.value}</strong>
-              <span className="mt-0.5 block text-[10px] font-bold uppercase tracking-[0.11em] text-white/56">{benefit.label}</span>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 export function HomePlatformSections() {
-  const [selectedLanguageCode, setSelectedLanguageCode] = useState("EN");
   const [selectedFitKey, setSelectedFitKey] = useState("support");
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const speechRunRef = useRef(0);
-  const speechFallbackRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const selectedLanguage =
-    languageOptions.find((language) => language.code === selectedLanguageCode) ?? languageOptions[0];
   const selectedFit = fitSections.find((section) => section.key === selectedFitKey) ?? fitSections[0];
   const selectedFitIndex = Math.max(0, fitSections.findIndex((section) => section.key === selectedFit.key));
 
-  useEffect(() => {
-    return () => {
-      speechRunRef.current += 1;
-      if (speechFallbackRef.current) clearTimeout(speechFallbackRef.current);
-      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
-    };
-  }, []);
-
-  const speakLanguageReply = (language: (typeof languageOptions)[number]) => {
-    setSelectedLanguageCode(language.code);
-    speechRunRef.current += 1;
-    const speechRun = speechRunRef.current;
-
-    if (speechFallbackRef.current) clearTimeout(speechFallbackRef.current);
-    setIsSpeaking(true);
-
-    const finishSpeaking = () => {
-      if (speechRun === speechRunRef.current) setIsSpeaking(false);
-    };
-
-    if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") {
-      speechFallbackRef.current = setTimeout(finishSpeaking, 4000);
-      return;
-    }
-
-    window.speechSynthesis.cancel();
-
-    const utterance = new SpeechSynthesisUtterance(language.reply);
-    utterance.lang = language.locale;
-    utterance.rate = 0.94;
-    utterance.pitch = 1.08;
-    utterance.voice = findFemaleVoice(window.speechSynthesis.getVoices(), language.locale);
-    utterance.onend = finishSpeaking;
-    utterance.onerror = finishSpeaking;
-    window.speechSynthesis.speak(utterance);
-
-    speechFallbackRef.current = setTimeout(finishSpeaking, 15000);
-  };
-
   return (
     <div className="vozon-home relative isolate overflow-hidden bg-black text-white">
-      <section id="product" className="relative mx-auto min-h-screen max-w-[1280px] px-5 pb-10 pt-28 text-center sm:px-8 lg:pt-32">
-        <div className="mx-auto mb-7 inline-flex items-center gap-2 rounded-full border border-white/16 bg-white/8 px-4 py-2 text-xs font-semibold text-white/80 shadow-[inset_0_0_22px_rgba(255,255,255,0.04)] backdrop-blur">
+      <section id="product" className="relative mx-auto flex min-h-screen max-w-[1600px] items-center justify-center overflow-hidden px-5 pb-20 pt-28 text-center sm:px-8 lg:pt-32">
+        <AudioWaveHero />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_15%,rgba(0,0,0,.16)_60%,rgba(0,0,0,.86)_100%)]" />
+        <div className="relative z-10 mx-auto w-full max-w-[1280px]">
+        <div className="mx-auto mb-7 inline-flex items-center gap-2 rounded-full border border-white/16 bg-black/30 px-4 py-2 text-xs font-semibold text-white/80 shadow-[inset_0_0_22px_rgba(255,255,255,0.04)] backdrop-blur">
           <span className="size-2 rounded-full bg-[#22f4d2] shadow-[0_0_14px_#22f4d2]" />
           Voice Agents Live Now
         </div>
@@ -652,7 +321,7 @@ export function HomePlatformSections() {
         <div className="mt-8 flex justify-center">
           <GlowButton href="/dashboard">Deploy Now</GlowButton>
         </div>
-        <CircuitHero />
+        </div>
       </section>
 
       <section className="vozon-company-marquee-section relative mt-8 overflow-hidden py-10 sm:mt-12 sm:py-12">
@@ -687,156 +356,7 @@ export function HomePlatformSections() {
         </div>
       </section>
 
-      <section className="vozon-language-section relative mx-auto mt-8 max-w-[1280px] px-5 pb-16 pt-4 sm:mt-12 sm:px-8">
-        <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 inline-flex w-fit items-center gap-2 rounded-full border border-[#f28d45]/38 bg-[#f28d45]/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.08em] text-[#ff9e49]">
-            <span className="size-1.5 rounded-full bg-[#ff9e49]" />
-            Multilingual Voice AI
-          </div>
-
-          <h2 className="vozon-platform-heading mx-auto m-0 max-w-5xl text-white lg:whitespace-nowrap">
-            Sounds like home <span>wherever home is.</span>
-          </h2>
-        </div>
-
-        <div className="grid items-stretch gap-12 lg:grid-cols-[minmax(0,1fr)_430px] lg:gap-16">
-        <div className="relative flex flex-col py-5">
-          <p className="m-0 max-w-[600px] text-base leading-7 text-[#c9fff7]/84">
-            Vozon picks up in whatever language your customer is already speaking, with natural replies, live translation, and human handoff when it matters.
-          </p>
-
-          <div className="mt-9 flex max-w-[720px] flex-wrap gap-3">
-            {languageOptions.map((language) => (
-              <button
-                aria-pressed={selectedLanguage.code === language.code}
-                className={`vozon-language-pill inline-flex min-h-11 items-center gap-3 rounded-full border px-4 pr-5 text-[13px] font-black text-white transition ${
-                  selectedLanguage.code === language.code
-                    ? "border-[#45ddce] bg-[#45ddce]/12 shadow-[0_0_24px_rgba(69,221,206,0.2)]"
-                    : "border-white/10 bg-white/[0.045]"
-                }`}
-                key={language.code}
-                onClick={() => speakLanguageReply(language)}
-                type="button"
-              >
-                <span
-                  className="grid size-7 place-items-center rounded-full text-[10px] font-black text-[#02110d]"
-                  style={{ backgroundColor: language.tone }}
-                >
-                  {language.code}
-                </span>
-                {language.name}
-              </button>
-            ))}
-          </div>
-
-          <div className="mt-10 grid max-w-xl grid-cols-3 gap-6">
-            {languageStats.map(([value, label]) => (
-              <div key={label}>
-                <strong className="block text-[1.7rem] font-black text-[#22f4d2]">{value}</strong>
-                <span className="mt-2 block text-[11px] font-black uppercase tracking-[0.12em] text-white/42">{label}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-8 flex w-fit items-center gap-3 rounded-full border border-white/10 bg-black/20 px-5 py-3 text-[13px] text-white/78">
-            <span className="font-black tracking-[0.16em] text-[#ffb234]">*****</span>
-            <span>4.9 from 12,000+ people who have talked to Vozon</span>
-          </div>
-
-          <div className="mt-10 flex flex-wrap items-center gap-5">
-            <a className="vozon-language-cta inline-flex min-h-14 min-w-[260px] items-center justify-center rounded-full px-7 text-[15px] font-black text-[#02110d]" href="#platform">
-              {selectedLanguage.cta}
-              <span className="ml-3" aria-hidden="true">-&gt;</span>
-            </a>
-            <span className="text-sm text-white/42">No card needed</span>
-          </div>
-        </div>
-
-        <div className="relative flex min-h-[620px] items-start justify-center max-lg:min-h-[620px]">
-          <div className="vozon-iphone relative flex h-[600px] w-full max-w-[410px] flex-col overflow-hidden rounded-[52px] border-[12px] border-[#202a26] bg-[#020806] shadow-[0_34px_120px_rgba(0,0,0,0.58),0_0_80px_rgba(69,221,206,0.09)]">
-            <div className="absolute left-1/2 top-4 z-30 h-10 w-32 -translate-x-1/2 rounded-full bg-black" />
-            <div className="absolute left-8 right-8 top-7 z-30 flex items-center justify-between text-xs font-black text-white">
-              <span>9:41</span>
-              <span className="flex items-center gap-1.5">
-                <span className="h-3 w-5 rounded-[4px] border border-white/90" />
-                <span className="h-2 w-1 rounded-full bg-white/90" />
-              </span>
-            </div>
-
-            <div className="relative z-10 flex items-center gap-3 border-b border-white/8 px-7 pb-3 pt-12">
-              <div className="grid size-12 place-items-center rounded-full bg-[#45ddce] shadow-[0_0_0_4px_rgba(69,221,206,0.18)]">
-                <div className="vozon-mini-avatar relative size-9 overflow-hidden rounded-full bg-[#ffd3a2]" />
-              </div>
-              <div>
-                <h3 className="m-0 text-lg font-black text-white">Vozon Clinic</h3>
-                <p aria-live="polite" className="mt-1 text-xs font-bold text-[#45ddce]">
-                  {isSpeaking ? "Speaking" : "Active now"}{" "}
-                  <span className="text-white/55">- {selectedLanguage.name}</span>
-                </p>
-              </div>
-            </div>
-
-            <div className="relative z-10 flex min-h-0 flex-1 flex-col items-center px-8 py-4 text-center">
-              <p className="mb-2 text-[11px] font-black uppercase tracking-[0.14em] text-white/42">Patient said</p>
-              <p className="m-0 line-clamp-2 text-sm font-black leading-6 text-white/90">&quot;{selectedLanguage.patient}&quot;</p>
-
-              <div className="vozon-call-orbit relative mt-3 grid size-40 shrink-0 place-items-center rounded-full">
-                <span className="absolute inset-0 rounded-full border border-[#45ddce]/13" />
-                <span className="absolute inset-5 rounded-full border border-[#45ddce]/20" />
-                <span className="absolute inset-10 rounded-full border border-[#45ddce]/36" />
-                <div
-                  aria-label={`Vozon voice agent${isSpeaking ? ` speaking ${selectedLanguage.name}` : ""}`}
-                  className={`vozon-agent-avatar relative z-10 size-24 overflow-hidden rounded-full ${isSpeaking ? "is-speaking" : ""}`}
-                  role="img"
-                >
-                  <Image
-                    src="/images/avatar.png"
-                    alt=""
-                    className="object-cover"
-                    fill
-                    sizes="96px"
-                  />
-                  {isSpeaking && <span aria-hidden="true" className="vozon-avatar-mouth" />}
-                </div>
-                <span className="absolute bottom-6 right-6 z-20 grid size-8 place-items-center rounded-full bg-[#20d7c4] text-sm font-black text-[#02110d] shadow-[0_0_24px_rgba(32,215,196,0.4)]">m</span>
-              </div>
-
-              <div className="mt-1 flex h-5 items-center gap-1">
-                {Array.from({ length: 30 }).map((_, index) => (
-                  <span
-                    className={`vozon-call-wave block w-1 rounded-full bg-[#45ddce] ${isSpeaking ? "is-speaking" : ""}`}
-                    key={index}
-                    style={{ height: `${4 + (index % 5) * 2}px`, animationDelay: `${index * 35}ms` }}
-                  />
-                ))}
-              </div>
-
-              <p className="mt-3 mb-0 line-clamp-2 max-w-xs text-sm font-black leading-6 text-white/88">
-                {selectedLanguage.reply}
-              </p>
-              <p className="mt-1 text-xs italic text-white/38">{selectedLanguage.translated}</p>
-            </div>
-
-            <div className="relative z-10 grid grid-cols-4 gap-3 border-t border-white/8 px-10 py-4">
-              {["mic", "play", "vol", "call"].map((control) => (
-                <button
-                  aria-label={control}
-                  className={`grid size-11 place-items-center rounded-full border text-xs font-black ${
-                    control === "call"
-                      ? "border-[#ff5b4f] bg-[#ff5b4f] text-white"
-                      : "border-white/10 bg-white/[0.06] text-white"
-                  }`}
-                  key={control}
-                  type="button"
-                >
-                  {control === "mic" ? "m" : control === "play" ? ">" : control === "vol" ? "<" : "~"}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-        </div>
-      </section>
+      <IndiaVoiceExperience />
 
       <section className="relative mx-auto max-w-[1240px] px-5 pb-4 pt-2 sm:px-8 sm:pb-5 lg:pb-6">
         <div className="mb-8 text-center">
@@ -1420,12 +940,905 @@ export function HomePlatformSections() {
 
         .vozon-language-section {
           background: transparent;
+          opacity: 0;
+          transform: translateY(28px);
+          transition: opacity 700ms cubic-bezier(.22,1,.36,1), transform 700ms cubic-bezier(.22,1,.36,1);
+        }
+
+        .vozon-language-section.is-visible {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        .vozon-india-voice-grid {
+          background: transparent;
+        }
+
+        .vozon-india-voice-grid::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          opacity: 0.34;
+          background-image:
+            radial-gradient(circle, rgba(54,246,134,0.7) 0 1px, transparent 1.5px),
+            radial-gradient(circle, rgba(41,203,255,0.58) 0 1px, transparent 1.4px);
+          background-position: 20% 63%, 45% 54%;
+          background-size: 79px 73px, 113px 97px;
+          mask-image: linear-gradient(90deg, transparent, black 16%, black 66%, transparent 78%);
+          animation: vozonIndiaParticles 18s linear infinite;
+        }
+
+        .vozon-india-showcase {
+          background: radial-gradient(ellipse at 36% 52%, rgba(27,238,114,0.055), transparent 52%);
+        }
+
+        .vozon-language-center-title {
+          white-space: nowrap;
+          font-size: clamp(0.85rem, 3.5vw, 2.8rem);
+          font-weight: 850;
+          line-height: 1.04;
+          letter-spacing: -0.055em;
+          color: #ffffff;
+        }
+
+        .vozon-language-center-title span {
+          color: inherit;
+        }
+
+        .vozon-language-poster img {
+          filter: saturate(0.92) contrast(1.03);
+          mask-image: radial-gradient(ellipse at center, black 44%, transparent 83%);
+        }
+
+        .vozon-language-poster::after {
+          content: "";
+          position: absolute;
+          inset: 15% 8%;
+          pointer-events: none;
+          border-radius: 50%;
+          box-shadow: 0 0 90px rgba(30,235,128,0.075);
+        }
+
+        .vozon-live-language-demo::before {
+          content: "";
+          position: absolute;
+          inset: 6% 0;
+          pointer-events: none;
+          background:
+            radial-gradient(circle at 22% 50%, rgba(46,235,128,0.1), transparent 28%),
+            radial-gradient(circle at 72% 50%, rgba(31,210,201,0.055), transparent 34%);
+          filter: blur(12px);
+        }
+
+        .vozon-story-rail {
+          padding: 0.75rem 1rem;
+          border: 1px solid rgba(255,255,255,0.055);
+          border-radius: 16px;
+          background: rgba(255,255,255,0.018);
+          box-shadow: inset 0 1px rgba(255,255,255,0.025);
+        }
+
+        .vozon-overview-button {
+          border-color: rgba(255,255,255,0.08);
+          background: rgba(255,255,255,0.025);
+          color: rgba(255,255,255,0.38);
+          transition: border-color 180ms ease, background 180ms ease, color 180ms ease, transform 180ms ease;
+        }
+
+        .vozon-overview-button:hover {
+          border-color: rgba(95,246,165,0.24);
+          background: rgba(55,225,135,0.055);
+          color: rgba(126,255,190,0.78);
+          transform: translateX(-2px);
+        }
+
+        .vozon-story-step {
+          display: flex;
+          min-width: 0;
+          align-items: center;
+          gap: 0.55rem;
+        }
+
+        .vozon-story-step span {
+          display: grid;
+          width: 1.55rem;
+          height: 1.55rem;
+          flex: 0 0 auto;
+          place-items: center;
+          border: 1px solid rgba(255,255,255,0.08);
+          border-radius: 50%;
+          color: rgba(255,255,255,0.3);
+          font-size: 8px;
+          font-weight: 900;
+        }
+
+        .vozon-story-step strong {
+          overflow: hidden;
+          color: rgba(255,255,255,0.44);
+          font-size: 9px;
+          font-weight: 800;
+          letter-spacing: 0.08em;
+          text-overflow: ellipsis;
+          text-transform: uppercase;
+          white-space: nowrap;
+        }
+
+        .vozon-story-step.is-active span {
+          border-color: rgba(83,246,157,0.3);
+          color: #78f7ae;
+          background: rgba(52,226,134,0.07);
+          box-shadow: 0 0 14px rgba(52,236,139,0.09);
+        }
+
+        .vozon-story-step.is-active strong {
+          color: rgba(124,255,192,0.76);
+        }
+
+        .vozon-story-arrow {
+          color: rgba(92,248,166,0.24);
+          font-size: 12px;
+          font-style: normal;
+        }
+
+        .vozon-microphone-stage {
+          color: #78ffc0;
+          outline: none;
+        }
+
+        .vozon-mic-pulse {
+          border: 1px solid rgba(82,246,156,0.12);
+          background: radial-gradient(circle, rgba(43,221,125,0.075), transparent 66%);
+          box-shadow: inset 0 0 38px rgba(42,236,132,0.025);
+        }
+
+        .vozon-mic-pulse-two {
+          border-style: dashed;
+          animation: vozonBotRadar 18s linear infinite;
+        }
+
+        .vozon-mic-orbit-label {
+          z-index: 3;
+          padding: 0.28rem 0.48rem;
+          border: 1px solid rgba(105,255,184,0.16);
+          border-radius: 999px;
+          background: rgba(3,25,15,0.84);
+          color: rgba(125,255,191,0.58);
+          font-size: 7px;
+          font-weight: 900;
+          letter-spacing: 0.12em;
+          line-height: 1;
+          text-transform: uppercase;
+          box-shadow: 0 0 14px rgba(65,238,143,0.055);
+          backdrop-filter: blur(8px);
+        }
+
+        .vozon-mic-label-top {
+          top: 6px;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+
+        .vozon-mic-label-right {
+          top: 50%;
+          right: -2px;
+          transform: translateY(-50%);
+        }
+
+        .vozon-mic-label-left {
+          top: 50%;
+          left: 5px;
+          transform: translateY(-50%);
+        }
+
+        .vozon-mic-core {
+          border-color: rgba(104,255,183,0.46);
+          background:
+            radial-gradient(circle at 38% 28%, rgba(133,255,202,0.16), transparent 28%),
+            linear-gradient(145deg, rgba(11,81,48,0.92), rgba(2,25,16,0.98));
+          box-shadow:
+            inset 0 0 30px rgba(91,255,174,0.08),
+            0 0 30px rgba(51,235,134,0.18),
+            0 18px 40px rgba(0,0,0,0.42);
+          transition: transform 200ms ease, box-shadow 200ms ease;
+        }
+
+        .vozon-mic-core svg {
+          stroke: currentColor;
+          stroke-width: 2.6;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          filter: drop-shadow(0 0 7px rgba(94,255,175,0.52));
+        }
+
+        .vozon-mic-detail {
+          opacity: 0.4;
+          stroke-width: 1.4;
+        }
+
+        .vozon-mic-energy {
+          padding-inline: 0.55rem;
+          border: 1px solid rgba(107,255,185,0.2);
+          border-radius: 999px;
+          background: rgba(2,24,14,0.92);
+          box-shadow: 0 0 16px rgba(62,238,143,0.11);
+        }
+
+        .vozon-mic-energy i,
+        .vozon-voice-signature i {
+          display: block;
+          width: 2px;
+          border-radius: 99px;
+          background: linear-gradient(180deg, #8affca, #36dc86);
+          opacity: 0.62;
+          transform-origin: center;
+        }
+
+        .vozon-microphone-stage.is-speaking .vozon-mic-energy i,
+        .vozon-live-language-demo.is-speaking .vozon-voice-signature i {
+          animation: vozonIndiaWave 0.66s ease-in-out infinite alternate;
+        }
+
+        .vozon-mic-caption {
+          color: rgba(114,255,184,0.56);
+        }
+
+        .vozon-microphone-stage:hover .vozon-mic-core {
+          transform: scale(1.045);
+          box-shadow: inset 0 0 34px rgba(91,255,174,0.11), 0 0 42px rgba(51,235,134,0.25), 0 20px 44px rgba(0,0,0,0.46);
+        }
+
+        .vozon-microphone-stage.is-speaking .vozon-mic-pulse-one {
+          animation: vozonMicPulse 1.7s ease-out infinite;
+        }
+
+        .vozon-microphone-stage.is-speaking .vozon-mic-core {
+          animation: vozonMicCore 1.05s ease-in-out infinite;
+        }
+
+        .vozon-hero-wave-bridge {
+          pointer-events: none;
+          opacity: 0.72;
+          mask-image: linear-gradient(90deg, transparent 0, black 8%, black 87%, transparent 100%);
+        }
+
+        .vozon-hero-wave-bridge svg {
+          width: 100%;
+          height: 100%;
+          overflow: visible;
+        }
+
+        .vozon-hero-wave-bridge path {
+          fill: none;
+          vector-effect: non-scaling-stroke;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+        }
+
+        .vozon-hero-wave-soft {
+          stroke: url(#vozonHeroSignal);
+          stroke-width: 1;
+          opacity: 0.2;
+        }
+
+        .vozon-hero-wave-main {
+          stroke: url(#vozonHeroSignal);
+          stroke-width: 2;
+          opacity: 0.88;
+          filter: url(#vozonHeroGlow);
+          stroke-dasharray: 10 6;
+        }
+
+        .vozon-live-language-demo.is-speaking .vozon-hero-wave-main {
+          animation: vozonHeroSignalFlow 2.3s linear infinite;
+        }
+
+        .vozon-live-conversation-card {
+          border-color: rgba(107,255,187,0.12);
+          background:
+            radial-gradient(circle at 100% 100%, rgba(36,219,124,0.065), transparent 34%),
+            linear-gradient(145deg, rgba(8,28,21,0.9), rgba(2,10,8,0.94));
+          box-shadow: inset 0 1px rgba(255,255,255,0.045), 0 28px 68px rgba(0,0,0,0.42), 0 0 46px rgba(41,229,132,0.035);
+          backdrop-filter: blur(20px);
+        }
+
+        .vozon-conversation-row {
+          background: rgba(255,255,255,0.012);
+        }
+
+        .vozon-ai-response-row {
+          background: linear-gradient(90deg, rgba(50,221,129,0.055), rgba(50,221,129,0.012));
+        }
+
+        .vozon-processing-strip {
+          background: rgba(48,221,128,0.025);
+        }
+
+        .vozon-voice-signature {
+          opacity: 0.72;
+        }
+
+        .vozon-processing-wave i {
+          display: block;
+          width: 2px;
+          border-radius: 99px;
+          background: linear-gradient(180deg, #78ffc0, #31dc82);
+          opacity: 0.48;
+          transform: scaleY(0.5);
+          transform-origin: center;
+        }
+
+        .vozon-live-language-demo.is-speaking .vozon-processing-wave i {
+          animation: vozonIndiaWave 0.68s ease-in-out infinite alternate;
+        }
+
+        .vozon-intent-chip {
+          border: 1px solid rgba(94,247,167,0.12);
+          background: rgba(52,224,134,0.05);
+          color: rgba(120,255,184,0.52);
+        }
+
+        .vozon-response-meta {
+          display: inline-flex;
+          align-items: center;
+          min-height: 1.35rem;
+          padding-inline: 0.48rem;
+          border: 1px solid rgba(112,255,187,0.1);
+          border-radius: 999px;
+          background: rgba(70,238,148,0.035);
+          color: rgba(128,255,195,0.42);
+          font-size: 7px;
+          font-weight: 800;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+        }
+
+        .vozon-avatar-kicker {
+          border-color: rgba(117,255,208,0.18);
+          background: rgba(54,238,129,0.045);
+          color: rgba(131,255,213,0.72);
+          box-shadow: inset 0 1px rgba(255,255,255,0.035);
+        }
+
+        .vozon-avatar-stage {
+          filter: drop-shadow(0 20px 34px rgba(0,0,0,0.42));
+        }
+
+        .vozon-avatar-orbit {
+          border: 1px solid rgba(93,255,171,0.12);
+          background: radial-gradient(circle, rgba(55,235,125,0.07), transparent 62%);
+          box-shadow: inset 0 0 38px rgba(50,238,119,0.025);
+        }
+
+        .vozon-avatar-orbit::before,
+        .vozon-avatar-orbit::after {
+          content: "";
+          position: absolute;
+          border-radius: 50%;
+          background: #72ffc0;
+          box-shadow: 0 0 12px #55f59f;
+        }
+
+        .vozon-avatar-orbit::before {
+          top: 20%;
+          right: 8%;
+          width: 4px;
+          height: 4px;
+        }
+
+        .vozon-avatar-orbit::after {
+          bottom: 13%;
+          left: 17%;
+          width: 3px;
+          height: 3px;
+          opacity: 0.55;
+        }
+
+        .vozon-avatar-orbit-inner {
+          border-style: dashed;
+          animation: vozonBotRadar 22s linear infinite;
+        }
+
+        .vozon-conversation-flow {
+          overflow: hidden;
+          padding: 1.25rem;
+          border: 1px solid rgba(255,255,255,0.065);
+          border-radius: 24px;
+          background:
+            radial-gradient(circle at 92% 82%, rgba(43,232,143,0.065), transparent 26%),
+            linear-gradient(145deg, rgba(8,24,19,0.62), rgba(2,8,7,0.38));
+          box-shadow: inset 0 1px rgba(255,255,255,0.04), 0 24px 58px rgba(0,0,0,0.28);
+          backdrop-filter: blur(16px);
+        }
+
+        .vozon-conversation-flow::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 12%;
+          width: 76%;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, rgba(104,255,192,0.48), transparent);
+          box-shadow: 0 0 14px rgba(83,245,168,0.34);
+        }
+
+        .vozon-conversation-flow::after {
+          content: "";
+          position: absolute;
+          top: -55px;
+          right: -55px;
+          width: 120px;
+          height: 120px;
+          pointer-events: none;
+          border: 1px solid rgba(96,255,184,0.06);
+          border-radius: 50%;
+          box-shadow: 0 0 0 18px rgba(96,255,184,0.018), 0 0 0 38px rgba(96,255,184,0.01);
+        }
+
+        .vozon-conversation-live {
+          border-color: rgba(99,255,184,0.16);
+          background: rgba(55,232,139,0.055);
+          color: rgba(126,255,199,0.58);
+        }
+
+        .vozon-conversation-live i {
+          background: #59f5a3;
+          box-shadow: 0 0 8px #59f5a3;
+          animation: vozonBotStatus 1.3s ease-in-out infinite;
+        }
+
+        .vozon-dialogue-card {
+          transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+        }
+
+        .vozon-dialogue-card:hover {
+          transform: translateY(-2px);
+        }
+
+        .vozon-turn-number {
+          border: 1px solid rgba(255,255,255,0.1);
+          background: #0b1512;
+          color: rgba(255,255,255,0.38);
+          box-shadow: 0 0 0 4px #020706;
+        }
+
+        .vozon-turn-number-ai {
+          border-color: rgba(93,250,171,0.24);
+          background: #062015;
+          color: #74f7b0;
+        }
+
+        .vozon-signal-node {
+          border: 1px solid rgba(76,244,150,0.18);
+          background: rgba(50,219,127,0.065);
+          box-shadow: 0 0 16px rgba(52,236,139,0.09);
+        }
+
+        .vozon-signal-node i {
+          box-shadow: 0 0 9px #4af59a;
+        }
+
+        .vozon-mini-flow-wave i {
+          display: block;
+          width: 2px;
+          border-radius: 99px;
+          background: linear-gradient(180deg, #61ffc1, #31dca2);
+          opacity: 0.5;
+          transform: scaleY(0.45);
+          transform-origin: center;
+        }
+
+        .vozon-live-language-demo.is-speaking .vozon-mini-flow-wave i {
+          animation: vozonIndiaWave 0.7s ease-in-out infinite alternate;
+        }
+
+        .vozon-live-language-demo.is-speaking .vozon-india-reply {
+          border-color: rgba(93,250,171,0.38);
+          box-shadow: inset 0 1px rgba(130,255,204,0.065), 0 18px 46px rgba(0,0,0,0.34), 0 0 34px rgba(50,238,119,0.075);
+        }
+
+        .vozon-live-language-demo.is-speaking .vozon-india-reply > div:last-child i {
+          animation: vozonIndiaWave 0.62s ease-in-out infinite alternate;
+          transform-origin: center;
+        }
+
+        .vozon-india-title {
+          display: grid;
+          gap: 0.1em;
+          font-size: clamp(2.15rem, 3.65vw, 3.55rem);
+          font-weight: 850;
+          line-height: 1.05;
+          letter-spacing: -0.055em;
+        }
+
+        .vozon-india-title span:last-child {
+          background: linear-gradient(90deg, #40f583, #25d2a6 72%);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+          filter: drop-shadow(0 0 18px rgba(51,238,120,0.12));
+        }
+
+        .vozon-brand-wave i {
+          display: block;
+          width: 2px;
+          border-radius: 99px;
+          background: #32ee77;
+          box-shadow: 0 0 6px rgba(50,238,119,0.65);
+          animation: vozonBrandWave 0.82s ease-in-out infinite alternate;
+        }
+
+        .vozon-india-bot {
+          position: relative;
+          z-index: 2;
+          border-color: rgba(66,246,132,0.5);
+          background: radial-gradient(circle, rgba(34,172,91,0.23), rgba(2,18,11,0.96) 67%);
+          box-shadow:
+            inset 0 0 30px rgba(50,238,119,0.1),
+            0 0 28px rgba(50,238,119,0.2),
+            0 0 90px rgba(50,238,119,0.11);
+        }
+
+        .vozon-india-bot::before,
+        .vozon-india-bot::after {
+          content: "";
+          position: absolute;
+          border: 1px solid rgba(50,238,119,0.12);
+          border-radius: 50%;
+          pointer-events: none;
+        }
+
+        .vozon-india-bot::before { inset: -23px; }
+        .vozon-india-bot::after {
+          inset: -48px;
+          border-style: dashed;
+          animation: vozonBotRadar 24s linear infinite;
+        }
+
+        .vozon-india-wave-line::before {
+          content: "";
+          position: absolute;
+          right: 0;
+          left: 0;
+          height: 1px;
+          background: linear-gradient(90deg, #35f17b, #3dffd4 55%, rgba(27,189,255,0.08));
+          box-shadow: 0 0 12px rgba(54,246,145,0.7);
+        }
+
+        .vozon-india-wave-line span {
+          z-index: 1;
+          display: block;
+          width: 2px;
+          max-height: 70px;
+          border-radius: 99px;
+          background: linear-gradient(180deg, #23dfff, #4aff91 55%, #28e873);
+          box-shadow: 0 0 7px rgba(50,238,119,0.65);
+          transform: scaleY(0.35);
+          transform-origin: center;
+          opacity: 0.68;
+        }
+
+        .vozon-india-voice-stage.is-speaking .vozon-india-wave-line span,
+        .vozon-live-language-demo.is-speaking .vozon-india-wave-line span {
+          animation: vozonIndiaWave 0.7s ease-in-out infinite alternate;
+        }
+
+        .vozon-smooth-wave svg {
+          width: 100%;
+          height: 100%;
+          overflow: visible;
+        }
+
+        .vozon-smooth-wave path {
+          fill: none;
+          vector-effect: non-scaling-stroke;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+        }
+
+        .vozon-wave-ambient {
+          stroke: url(#vozonWaveGradient);
+          stroke-width: 1;
+          opacity: 0.2;
+        }
+
+        .vozon-wave-main {
+          stroke: url(#vozonWaveGradient);
+          stroke-width: 2;
+          opacity: 0.82;
+          filter: url(#vozonWaveGlow);
+          stroke-dasharray: 12 5;
+        }
+
+        .vozon-wave-detail {
+          stroke: url(#vozonWaveGradient);
+          stroke-width: 1.15;
+          opacity: 0.48;
+          stroke-dasharray: 4 5;
+        }
+
+        .vozon-live-language-demo.is-speaking .vozon-wave-main {
+          animation: vozonSmoothWave 2.8s linear infinite;
+        }
+
+        .vozon-live-language-demo.is-speaking .vozon-wave-detail {
+          animation: vozonSmoothWaveReverse 2.1s linear infinite;
+        }
+
+        .vozon-india-reply {
+          z-index: 3;
+          border-color: rgba(73,245,142,0.22);
+          background: linear-gradient(135deg, rgba(40,215,126,0.115), rgba(2,20,14,0.76));
+          box-shadow: inset 0 1px rgba(130,255,204,0.05), 0 16px 42px rgba(0,0,0,0.3), 0 0 30px rgba(50,238,119,0.045);
+          backdrop-filter: blur(14px);
+        }
+
+        .vozon-india-voice-stage.is-speaking .vozon-bot-eye,
+        .vozon-live-language-demo.is-speaking .vozon-bot-eye {
+          animation: vozonBotEyes 2.6s ease-in-out infinite;
+        }
+
+        .vozon-india-voice-stage.is-speaking .vozon-bot-mouth,
+        .vozon-live-language-demo.is-speaking .vozon-bot-mouth {
+          animation: vozonBotTalk 0.48s ease-in-out infinite alternate;
+        }
+
+        .vozon-customer-dialogue {
+          z-index: 3;
+          border-color: rgba(255,255,255,0.09);
+          background: linear-gradient(135deg, rgba(255,255,255,0.065), rgba(255,255,255,0.025));
+          box-shadow: inset 0 1px rgba(255,255,255,0.045), 0 18px 48px rgba(0,0,0,0.4);
+          backdrop-filter: blur(18px);
+        }
+
+        .vozon-india-talk {
+          border-color: rgba(50,238,119,0.72);
+          background: rgba(3,26,14,0.78);
+          box-shadow: inset 0 0 24px rgba(50,238,119,0.06), 0 0 24px rgba(50,238,119,0.12);
+          transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
+        }
+
+        .vozon-india-talk:hover,
+        .vozon-india-talk.is-speaking {
+          transform: translateY(-2px);
+          background: rgba(8,55,29,0.88);
+          box-shadow: inset 0 0 28px rgba(50,238,119,0.1), 0 0 34px rgba(50,238,119,0.2);
+        }
+
+        .vozon-india-stats > div + div {
+          border-left: 1px solid rgba(255,255,255,0.09);
+        }
+
+        .vozon-language-library {
+          background: transparent;
+        }
+
+        .vozon-language-row {
+          --language-tone: #32ee77;
+          border-color: color-mix(in srgb, var(--language-tone) 19%, rgba(255,255,255,0.07));
+          background: linear-gradient(100deg, color-mix(in srgb, var(--language-tone) 3%, transparent), rgba(255,255,255,0.012));
+          box-shadow: inset 0 1px rgba(255,255,255,0.02);
+        }
+
+        .vozon-language-row::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          opacity: 0;
+          background: linear-gradient(90deg, color-mix(in srgb, var(--language-tone) 14%, transparent), transparent 70%);
+          transition: opacity 180ms ease;
+        }
+
+        .vozon-language-row:hover,
+        .vozon-language-row.is-active {
+          z-index: 2;
+          border-color: color-mix(in srgb, var(--language-tone) 65%, white 5%);
+          transform: translateX(-3px) scale(1.018);
+          box-shadow: 0 12px 30px rgba(0,0,0,0.28), 0 0 28px color-mix(in srgb, var(--language-tone) 14%, transparent);
+        }
+
+        .vozon-language-row:hover::before,
+        .vozon-language-row.is-active::before {
+          opacity: 1;
+        }
+
+        .vozon-language-glyph {
+          position: relative;
+          z-index: 1;
+          color: var(--language-tone);
+          background: color-mix(in srgb, var(--language-tone) 9%, #020706);
+          border: 1px solid var(--language-tone);
+          border-radius: 38% 62% 58% 42% / 48% 38% 62% 52%;
+          box-shadow: inset 0 0 18px color-mix(in srgb, var(--language-tone) 10%, transparent), 0 0 13px color-mix(in srgb, var(--language-tone) 10%, transparent);
+          transition: transform 220ms ease;
+        }
+
+        .vozon-language-row:hover .vozon-language-glyph,
+        .vozon-language-row.is-active .vozon-language-glyph {
+          transform: rotate(-4deg) scale(1.04);
+        }
+
+        .vozon-row-wave i {
+          display: block;
+          width: 2px;
+          border-radius: 99px;
+          background: var(--language-tone);
+          box-shadow: 0 0 5px color-mix(in srgb, var(--language-tone) 40%, transparent);
+          opacity: 0.66;
+          transform-origin: center;
+        }
+
+        .vozon-row-wave.is-speaking i {
+          animation: vozonIndiaWave 0.64s ease-in-out infinite alternate;
+        }
+
+        .vozon-row-play {
+          position: relative;
+          z-index: 1;
+          border-color: color-mix(in srgb, var(--language-tone) 30%, rgba(255,255,255,0.08));
+          background: color-mix(in srgb, var(--language-tone) 7%, transparent);
+          color: var(--language-tone);
+          transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
+        }
+
+        .vozon-language-row:hover .vozon-row-play,
+        .vozon-language-row.is-active .vozon-row-play {
+          transform: scale(1.06);
+          background: color-mix(in srgb, var(--language-tone) 15%, transparent);
+          box-shadow: 0 0 16px color-mix(in srgb, var(--language-tone) 18%, transparent);
+        }
+
+        .vozon-row-play i {
+          display: block;
+          width: 2px;
+          border-radius: 99px;
+          background: currentColor;
+          transform-origin: center;
+          animation: vozonIndiaWave 0.58s ease-in-out infinite alternate;
         }
 
         .vozon-language-pill:hover {
           border-color: rgba(69,221,206,0.7);
           background: rgba(69,221,206,0.1);
           transform: translateY(-2px);
+        }
+
+        .vozon-bot-conversation {
+          border-color: rgba(131,255,242,0.18);
+          background:
+            radial-gradient(circle at 50% 30%, rgba(51,235,167,0.13), transparent 30%),
+            linear-gradient(145deg, rgba(5,25,20,0.94), rgba(1,8,7,0.98) 58%, rgba(3,20,16,0.96));
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.06),
+            0 28px 80px rgba(0,0,0,0.48),
+            0 0 70px rgba(69,221,206,0.06);
+          transition: border-color 220ms ease, box-shadow 220ms ease;
+        }
+
+        .vozon-bot-conversation::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          opacity: 0.34;
+          background-image:
+            linear-gradient(rgba(131,255,242,0.035) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(131,255,242,0.035) 1px, transparent 1px);
+          background-size: 32px 32px;
+          mask-image: radial-gradient(circle at 50% 32%, black, transparent 68%);
+        }
+
+        .vozon-bot-conversation.is-speaking {
+          border-color: rgba(131,255,242,0.44);
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.08),
+            0 28px 80px rgba(0,0,0,0.54),
+            0 0 90px rgba(69,221,206,0.13);
+        }
+
+        .vozon-bot-status {
+          box-shadow: 0 0 12px #75ffd0;
+          animation: vozonBotStatus 1.5s ease-in-out infinite;
+        }
+
+        .vozon-bot-radar {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 210px;
+          height: 210px;
+          transform: translate(-50%, -50%);
+        }
+
+        .vozon-bot-radar span {
+          position: absolute;
+          inset: 0;
+          border: 1px solid rgba(117,255,208,0.12);
+          border-radius: 50%;
+        }
+
+        .vozon-bot-radar span:nth-child(2) {
+          inset: 18px;
+          border-style: dashed;
+          animation: vozonBotRadar 18s linear infinite;
+        }
+
+        .vozon-bot-radar span:nth-child(3) {
+          inset: 38px;
+          border-color: rgba(117,255,208,0.2);
+        }
+
+        .vozon-bot-avatar-glow {
+          background: radial-gradient(circle, rgba(75,255,177,0.24), rgba(13,130,85,0.08) 48%, transparent 70%);
+          filter: blur(5px);
+          animation: vozonBotGlow 3s ease-in-out infinite;
+        }
+
+        .vozon-bot-avatar {
+          border-color: rgba(131,255,213,0.44);
+          background:
+            radial-gradient(circle at 42% 30%, rgba(131,255,213,0.18), transparent 34%),
+            linear-gradient(145deg, rgba(13,77,53,0.86), rgba(3,28,21,0.96));
+          color: #83ffd5;
+          box-shadow:
+            inset 0 0 30px rgba(85,255,182,0.09),
+            0 0 32px rgba(69,221,206,0.18);
+        }
+
+        .vozon-bot-avatar svg {
+          overflow: visible;
+          stroke: currentColor;
+          stroke-width: 2.4;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          filter: drop-shadow(0 0 7px rgba(117,255,208,0.45));
+        }
+
+        .vozon-bot-eye {
+          fill: currentColor;
+          stroke: none;
+          transform-origin: center;
+        }
+
+        .vozon-bot-conversation.is-speaking .vozon-bot-eye {
+          animation: vozonBotEyes 2.6s ease-in-out infinite;
+        }
+
+        .vozon-bot-mouth {
+          transform-origin: 48px 59px;
+        }
+
+        .vozon-bot-conversation.is-speaking .vozon-bot-mouth {
+          animation: vozonBotTalk 0.48s ease-in-out infinite alternate;
+        }
+
+        .vozon-conversation-wave span {
+          display: block;
+          width: 3px;
+          max-height: 42px;
+          border-radius: 99px;
+          background: linear-gradient(180deg, rgba(131,255,242,0.28), #83fff2 50%, rgba(69,221,206,0.22));
+          opacity: 0.42;
+          transform: scaleY(0.34);
+          transform-origin: center;
+          box-shadow: 0 0 7px rgba(69,221,206,0.28);
+        }
+
+        .vozon-conversation-wave.is-speaking span {
+          opacity: 1;
+          animation: vozonConversationWave 0.76s ease-in-out infinite alternate;
+        }
+
+        .vozon-customer-message {
+          border-color: rgba(255,255,255,0.08);
+          background: rgba(255,255,255,0.04);
+        }
+
+        .vozon-bot-message {
+          border-color: rgba(131,255,213,0.2);
+          background: linear-gradient(115deg, rgba(69,221,206,0.12), rgba(69,221,206,0.045));
+          box-shadow: 0 12px 30px rgba(0,0,0,0.16);
         }
 
         .vozon-language-cta {
@@ -2018,6 +2431,109 @@ export function HomePlatformSections() {
           filter: drop-shadow(0 0 12px rgba(102,255,240,0.36));
         }
 
+        .vozon-spectrum-panel {
+          border-color: rgba(101,139,255,0.2);
+          background:
+            linear-gradient(150deg, rgba(7,18,30,0.94), rgba(11,6,27,0.96) 58%, rgba(25,3,24,0.94)),
+            #05050a;
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.07),
+            -22px 10px 80px rgba(0,197,255,0.08),
+            24px 18px 90px rgba(240,0,126,0.08),
+            0 30px 90px rgba(0,0,0,0.48);
+        }
+
+        .vozon-spectrum-panel::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background-image:
+            linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+          background-size: 28px 28px;
+          mask-image: linear-gradient(to bottom, transparent, black 25%, black 75%, transparent);
+        }
+
+        .vozon-spectrum-ambient {
+          background:
+            radial-gradient(circle at 14% 45%, rgba(0,216,255,0.15), transparent 35%),
+            radial-gradient(circle at 84% 54%, rgba(255,0,132,0.16), transparent 38%),
+            radial-gradient(circle at 52% 56%, rgba(99,52,255,0.14), transparent 44%);
+          animation: vozonSpectrumAmbient 7s ease-in-out infinite alternate;
+        }
+
+        .vozon-spectrum-status {
+          background: #46ebff;
+          box-shadow: 0 0 14px rgba(70,235,255,0.8);
+          animation: vozonSpectrumStatus 2.4s ease-in-out infinite;
+        }
+
+        .vozon-spectrum-status.is-speaking {
+          background: #ff4aa5;
+          box-shadow: 0 0 18px rgba(255,74,165,0.9);
+          animation-duration: 0.72s;
+        }
+
+        .vozon-spectrum-stage::before,
+        .vozon-spectrum-stage::after {
+          content: "";
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 50%;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, rgba(99,225,255,0.18), rgba(194,66,255,0.2), transparent);
+        }
+
+        .vozon-spectrum-stage::after {
+          transform: translateY(24px);
+          opacity: 0.55;
+        }
+
+        .vozon-spectrum-glow {
+          background: linear-gradient(90deg, rgba(0,210,255,0.22), rgba(100,47,255,0.2), rgba(255,0,132,0.22));
+          filter: blur(30px);
+          animation: vozonSpectrumGlow 3.6s ease-in-out infinite;
+        }
+
+        .vozon-spectrum-bar {
+          background: linear-gradient(to top, #00cce8 0%, #5d63ff 52%, #f20a95 100%);
+          box-shadow: 0 0 10px rgba(60,174,255,0.16);
+          opacity: 0.56;
+          transform-origin: center;
+          animation: vozonSpectrumIdle ease-in-out infinite alternate;
+        }
+
+        .vozon-spectrum-panel.is-speaking .vozon-spectrum-bar {
+          opacity: 0.94;
+          animation-name: vozonSpectrumSpeak;
+          animation-duration: 0.52s !important;
+          box-shadow: 0 0 12px rgba(100,109,255,0.32);
+        }
+
+        .vozon-spectrum-action {
+          border-color: rgba(101,166,255,0.25);
+          background:
+            linear-gradient(100deg, rgba(0,190,222,0.18), rgba(91,49,211,0.25) 52%, rgba(227,0,121,0.2)),
+            rgba(255,255,255,0.025);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.07);
+        }
+
+        .vozon-spectrum-action:hover {
+          border-color: rgba(111,224,255,0.52);
+          transform: translateY(-2px);
+          box-shadow: -8px 0 24px rgba(0,205,255,0.1), 8px 0 28px rgba(255,0,145,0.1);
+        }
+
+        .vozon-spectrum-mic {
+          background: linear-gradient(135deg, #13d8e8, #6e55ed 55%, #ef248f);
+          box-shadow: 0 0 18px rgba(92,86,239,0.35);
+          animation: vozonSpectrumMic 2s ease-in-out infinite;
+        }
+
+        .vozon-spectrum-panel.is-speaking .vozon-spectrum-mic {
+          animation-duration: 0.68s;
+        }
         .vozon-iphone::before,
         .vozon-iphone::after {
           content: "";
@@ -2041,15 +2557,154 @@ export function HomePlatformSections() {
           height: 82px;
         }
 
-        .vozon-mini-avatar::before {
-          content: "";
-          position: absolute;
-          inset: 7px 5px auto;
-          height: 15px;
-          border-radius: 999px 999px 12px 12px;
-          background: #573016;
+        .vozon-voice-orb {
+          isolation: isolate;
+          filter: drop-shadow(0 24px 42px rgba(23,255,144,0.12));
+          transition: filter 350ms ease, transform 350ms ease;
         }
 
+        .vozon-orb-halo {
+          background:
+            radial-gradient(circle at 50% 48%, rgba(54,255,164,0.2) 0 27%, rgba(15,174,104,0.13) 48%, transparent 69%);
+          box-shadow:
+            inset 0 0 38px rgba(70,255,176,0.14),
+            0 0 45px rgba(21,221,128,0.14);
+          opacity: 0.78;
+          transition: opacity 300ms ease;
+        }
+
+        .vozon-orb-shell {
+          background:
+            radial-gradient(circle at 34% 27%, rgba(200,255,226,0.88), transparent 8%),
+            radial-gradient(circle at 46% 38%, #47f0a6 0%, #10a966 35%, #063e2a 68%, #01150e 100%);
+          border: 1px solid rgba(151,255,208,0.54);
+          box-shadow:
+            inset -18px -24px 38px rgba(0,19,12,0.8),
+            inset 12px 12px 28px rgba(157,255,212,0.19),
+            0 0 28px rgba(36,243,147,0.28);
+          transform: translateZ(0);
+        }
+
+        .vozon-orb-shell::before {
+          content: "";
+          position: absolute;
+          inset: 16%;
+          z-index: 1;
+          border-radius: 38% 62% 58% 42% / 48% 38% 62% 52%;
+          border: 5px solid rgba(128,255,190,0.48);
+          background:
+            linear-gradient(135deg, rgba(128,255,190,0.18), transparent 44%, rgba(19,175,102,0.26)),
+            radial-gradient(circle at 34% 28%, rgba(196,255,223,0.3), transparent 34%);
+          box-shadow:
+            inset 8px -7px 18px rgba(0,54,31,0.5),
+            0 0 16px rgba(66,255,159,0.34);
+          filter: blur(0.4px);
+          animation: vozonOrbMembrane 4.8s ease-in-out infinite alternate;
+        }
+
+        .vozon-orb-shell::after {
+          content: "";
+          position: absolute;
+          inset: 5%;
+          border-radius: 999px;
+          background: linear-gradient(140deg, rgba(255,255,255,0.2), transparent 28%, transparent 65%, rgba(0,0,0,0.28));
+          mix-blend-mode: screen;
+        }
+
+        .vozon-orb-band {
+          left: -20%;
+          width: 140%;
+          height: 42%;
+          border: 8px solid rgba(156,255,211,0.48);
+          border-left-color: rgba(23,126,82,0.42);
+          border-bottom-color: rgba(2,52,33,0.68);
+          border-radius: 50%;
+          filter: drop-shadow(0 0 7px rgba(80,255,170,0.45));
+        }
+
+        .vozon-orb-band-one {
+          top: 11%;
+          transform: rotate(-30deg);
+        }
+
+        .vozon-orb-band-two {
+          bottom: 11%;
+          transform: rotate(28deg) scaleX(0.92);
+          border-color: rgba(73,232,151,0.52);
+          border-top-color: rgba(188,255,219,0.74);
+        }
+
+        .vozon-orb-band-three {
+          left: 17%;
+          top: -16%;
+          width: 64%;
+          height: 132%;
+          transform: rotate(22deg);
+          border-width: 5px;
+          border-color: rgba(8,74,46,0.68);
+          border-right-color: rgba(135,255,196,0.58);
+        }
+
+        .vozon-orb-shine {
+          left: 29%;
+          top: 19%;
+          width: 16%;
+          height: 7%;
+          background: rgba(224,255,239,0.8);
+          filter: blur(3px);
+          transform: rotate(-24deg);
+        }
+
+        .vozon-voice-orb.is-speaking {
+          filter: drop-shadow(0 24px 50px rgba(23,255,144,0.28));
+          animation: vozonOrbBreathe 1.2s ease-in-out infinite;
+        }
+
+        .vozon-voice-orb.is-speaking .vozon-orb-halo {
+          opacity: 1;
+          animation: vozonOrbHalo 1.2s ease-in-out infinite;
+        }
+
+        .vozon-voice-orb.is-speaking .vozon-orb-shell {
+          animation: vozonOrbTurn 3.8s linear infinite;
+        }
+
+        .vozon-voice-orb.is-speaking .vozon-orb-band-one {
+          animation-duration: 1.55s;
+        }
+
+        .vozon-voice-orb.is-speaking .vozon-orb-band-two {
+          animation-duration: 1.3s;
+        }
+
+        .vozon-voice-orb.is-speaking .vozon-orb-band-three,
+        .vozon-voice-orb.is-speaking .vozon-orb-shell::before {
+          animation-duration: 1.55s;
+        }
+
+        .vozon-voice-input {
+          border-color: rgba(125,255,196,0.24);
+          color: rgba(255,255,255,0.7);
+          background: linear-gradient(100deg, rgba(20,93,62,0.52), rgba(13,48,34,0.72));
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 14px 38px rgba(0,0,0,0.28);
+          backdrop-filter: blur(18px);
+        }
+
+        .vozon-voice-input:hover,
+        .vozon-voice-input.is-speaking {
+          border-color: rgba(111,255,185,0.52);
+          background: linear-gradient(100deg, rgba(28,124,81,0.62), rgba(13,66,43,0.82));
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 0 30px rgba(29,218,128,0.13);
+        }
+
+        .vozon-orb-voice-bar {
+          background: #8dffd0;
+          transform-origin: center;
+        }
+
+        .vozon-voice-input.is-speaking .vozon-orb-voice-bar {
+          animation: vozonOrbVoiceBar 0.72s ease-in-out infinite alternate;
+        }
         .vozon-mini-avatar::after {
           content: "";
           position: absolute;
@@ -2619,6 +3274,190 @@ export function HomePlatformSections() {
           }
         }
 
+        @keyframes vozonSpectrumAmbient {
+          from { transform: translate3d(-2%, -1%, 0) scale(1); }
+          to { transform: translate3d(2%, 2%, 0) scale(1.08); }
+        }
+
+        @keyframes vozonSpectrumStatus {
+          0%, 100% { transform: scale(0.82); opacity: 0.58; }
+          50% { transform: scale(1.12); opacity: 1; }
+        }
+
+        @keyframes vozonSpectrumGlow {
+          0%, 100% { transform: scaleX(0.82); opacity: 0.55; }
+          50% { transform: scaleX(1.08); opacity: 0.92; }
+        }
+
+        @keyframes vozonSpectrumIdle {
+          from { transform: scaleY(0.22); opacity: 0.34; }
+          to { transform: scaleY(0.54); opacity: 0.66; }
+        }
+
+        @keyframes vozonSpectrumSpeak {
+          0%, 100% { transform: scaleY(0.3); }
+          45% { transform: scaleY(1); }
+          72% { transform: scaleY(0.62); }
+        }
+
+        @keyframes vozonSpectrumMic {
+          0%, 100% { transform: scale(0.92); }
+          50% { transform: scale(1.06); }
+        }
+        @keyframes vozonBloomFloat {
+          0%, 100% { transform: translateY(0) rotate(-1deg); }
+          50% { transform: translateY(-7px) rotate(1.5deg); }
+        }
+
+        @keyframes vozonBloomHalo {
+          0%, 100% { transform: scale(0.9) rotate(0deg); opacity: 0.58; }
+          50% { transform: scale(1.08) rotate(90deg); opacity: 1; }
+          100% { transform: scale(0.9) rotate(180deg); opacity: 0.58; }
+        }
+
+        @keyframes vozonBloomCore {
+          to { transform: rotate(360deg); }
+        }
+
+        @keyframes vozonBloomMorph {
+          0% { border-radius: 42% 58% 54% 46%; transform: scale(0.82) rotate(-8deg); }
+          50% { border-radius: 58% 42% 45% 55%; transform: scale(1.03) rotate(6deg); }
+          100% { border-radius: 48% 52% 62% 38%; transform: scale(0.88) rotate(14deg); }
+        }
+
+        @keyframes vozonBloomBandOne {
+          from { transform: rotate(-31deg) translateY(-3px) scaleX(0.92); }
+          to { transform: rotate(-17deg) translateY(7px) scaleX(1.06); }
+        }
+
+        @keyframes vozonBloomBandTwo {
+          from { transform: rotate(27deg) translateY(3px) scaleX(0.9); }
+          to { transform: rotate(42deg) translateY(-7px) scaleX(1.04); }
+        }
+
+        @keyframes vozonBloomBandThree {
+          from { transform: rotate(17deg) scaleY(0.92); }
+          to { transform: rotate(34deg) scaleY(1.06); }
+        }
+
+        @keyframes vozonBloomSpeak {
+          0%, 100% { transform: translateY(-2px) scale(1); }
+          45% { transform: translateY(-7px) scale(1.07); }
+          70% { transform: translateY(-4px) scale(1.025); }
+        }
+        @keyframes vozonOrbBreathe {
+          0%, 100% { transform: translateY(0) scale(1); }
+          50% { transform: translateY(-4px) scale(1.035); }
+        }
+
+        @keyframes vozonOrbHalo {
+          0%, 100% { transform: scale(0.92); opacity: 0.68; }
+          50% { transform: scale(1.12); opacity: 1; }
+        }
+
+        @keyframes vozonOrbTurn {
+          to { transform: rotate(360deg); }
+        }
+
+        @keyframes vozonOrbBandOne {
+          from { transform: rotate(-30deg) translateY(-3px) scaleX(0.94); }
+          to { transform: rotate(-18deg) translateY(6px) scaleX(1.05); }
+        }
+
+        @keyframes vozonOrbBandTwo {
+          from { transform: rotate(28deg) translateY(3px) scaleX(0.9); }
+          to { transform: rotate(38deg) translateY(-5px) scaleX(1.03); }
+        }
+
+        @keyframes vozonOrbMembrane {
+          0% {
+            border-radius: 38% 62% 58% 42% / 48% 38% 62% 52%;
+            transform: rotate(-18deg) scale(0.82) skewX(-7deg);
+          }
+          50% {
+            border-radius: 61% 39% 43% 57% / 36% 58% 42% 64%;
+            transform: rotate(22deg) scale(1.08) skewY(8deg);
+          }
+          100% {
+            border-radius: 47% 53% 65% 35% / 61% 43% 57% 39%;
+            transform: rotate(58deg) scale(0.9) skewX(6deg);
+          }
+        }
+
+        @keyframes vozonOrbBandThree {
+          from { transform: rotate(15deg) scaleY(0.86) translateX(-4px); }
+          to { transform: rotate(38deg) scaleY(1.08) translateX(5px); }
+        }
+        @keyframes vozonOrbVoiceBar {
+          from { transform: scaleY(0.42); opacity: 0.55; }
+          to { transform: scaleY(1.12); opacity: 1; }
+        }
+        @keyframes vozonBotStatus {
+          0%, 100% { opacity: 0.5; transform: scale(0.85); }
+          50% { opacity: 1; transform: scale(1.14); }
+        }
+
+        @keyframes vozonIndiaParticles {
+          to { background-position: 99px 136px, -113px 194px; }
+        }
+
+        @keyframes vozonBrandWave {
+          from { transform: scaleY(0.4); opacity: 0.55; }
+          to { transform: scaleY(1.08); opacity: 1; }
+        }
+
+        @keyframes vozonIndiaWave {
+          0% { transform: scaleY(0.22); opacity: 0.36; }
+          46% { transform: scaleY(1); opacity: 1; }
+          100% { transform: scaleY(0.48); opacity: 0.64; }
+        }
+
+        @keyframes vozonMicPulse {
+          0% { transform: scale(0.88); opacity: 0.72; }
+          75%, 100% { transform: scale(1.18); opacity: 0; }
+        }
+
+        @keyframes vozonMicCore {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.035); }
+        }
+
+        @keyframes vozonHeroSignalFlow {
+          to { stroke-dashoffset: -64; }
+        }
+
+        @keyframes vozonSmoothWave {
+          to { stroke-dashoffset: -68; }
+        }
+
+        @keyframes vozonSmoothWaveReverse {
+          to { stroke-dashoffset: 54; }
+        }
+
+        @keyframes vozonBotRadar {
+          to { transform: rotate(360deg); }
+        }
+
+        @keyframes vozonBotGlow {
+          0%, 100% { opacity: 0.6; transform: scale(0.92); }
+          50% { opacity: 1; transform: scale(1.08); }
+        }
+
+        @keyframes vozonBotEyes {
+          0%, 44%, 52%, 100% { transform: scaleY(1); }
+          48% { transform: scaleY(0.12); }
+        }
+
+        @keyframes vozonBotTalk {
+          from { transform: scaleY(0.7) translateY(-1px); }
+          to { transform: scaleY(1.3) translateY(1px); }
+        }
+
+        @keyframes vozonConversationWave {
+          0% { transform: scaleY(0.28); opacity: 0.4; }
+          48% { transform: scaleY(1); opacity: 1; }
+          100% { transform: scaleY(0.56); opacity: 0.7; }
+        }
         @keyframes vozonCallWave {
           0%, 100% {
             transform: scaleY(0.58);
@@ -2670,6 +3509,111 @@ export function HomePlatformSections() {
           }
         }
 
+
+        @media (max-width: 720px) {
+          .vozon-india-showcase {
+            min-height: 520px;
+          }
+
+          .vozon-language-center-title {
+            font-size: clamp(0.85rem, 3.5vw, 1.55rem);
+          }
+
+          .vozon-language-poster {
+            min-height: 540px;
+          }
+
+          .vozon-language-poster img {
+            min-height: 490px;
+          }
+
+          .vozon-live-language-demo {
+            min-height: 720px;
+          }
+
+          .vozon-live-demo-grid {
+            min-height: 0;
+            gap: 2rem;
+            padding-block: 1rem;
+          }
+
+          .vozon-avatar-column {
+            padding-top: 0.5rem;
+          }
+
+          .vozon-conversation-flow {
+            padding: 1rem;
+            border-radius: 20px;
+          }
+
+          .vozon-story-rail {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+          }
+
+          .vozon-story-arrow {
+            display: none;
+          }
+
+          .vozon-story-step {
+            flex-direction: column;
+            justify-content: center;
+            gap: 0.4rem;
+            text-align: center;
+          }
+
+          .vozon-story-step strong {
+            font-size: 7px;
+          }
+
+          .vozon-signal-experience {
+            min-height: 635px;
+          }
+
+          .vozon-microphone-stage {
+            top: 130px;
+            left: 50%;
+            width: 164px;
+            height: 164px;
+          }
+
+          .vozon-mic-core {
+            width: 106px;
+            height: 106px;
+          }
+
+          .vozon-hero-wave-bridge {
+            top: 235px;
+            right: -5%;
+            left: -5%;
+            height: 120px;
+          }
+
+          .vozon-live-conversation-card {
+            top: 320px;
+            right: 0;
+            width: 100%;
+            transform: none;
+          }
+
+          .vozon-conversation-row {
+            grid-template-columns: 78px 1fr;
+          }
+
+          .vozon-language-row {
+            grid-template-columns: 46px minmax(60px, 1fr) 86px 30px;
+            min-height: 60px;
+            padding-inline: 0.65rem;
+          }
+
+          .vozon-language-glyph {
+            width: 2.75rem;
+            height: 2.75rem;
+          }
+
+          .vozon-row-wave {
+            gap: 1px;
+          }
+        }
 
         @media (max-width: 960px) {
           .vozon-orbit-stage {
@@ -2725,6 +3669,28 @@ export function HomePlatformSections() {
         }
 
         @media (max-width: 480px) {
+          .vozon-india-showcase {
+            min-height: 500px;
+          }
+
+          .vozon-language-center-title {
+            font-size: clamp(0.82rem, 3.45vw, 1.05rem);
+          }
+
+          .vozon-language-row {
+            grid-template-columns: 44px minmax(50px, 1fr) 74px 30px;
+            gap: 0.5rem;
+            min-height: 58px;
+          }
+
+          .vozon-language-row strong {
+            font-size: 0.85rem;
+          }
+
+          .vozon-language-row .vozon-row-wave i:nth-child(n + 9) {
+            display: none;
+          }
+
           .vozon-orbit-stage {
             gap: 4.25rem;
             padding-top: 0.5rem;
@@ -2807,6 +3773,43 @@ export function HomePlatformSections() {
 
 
         @media (prefers-reduced-motion: reduce) {
+          .vozon-language-section {
+            opacity: 1;
+            transform: none;
+            transition: none;
+          }
+
+          .vozon-india-voice-grid::before,
+          .vozon-brand-wave i,
+          .vozon-india-bot::after,
+          .vozon-india-voice-stage.is-speaking .vozon-india-wave-line span,
+          .vozon-live-language-demo.is-speaking .vozon-india-wave-line span,
+          .vozon-live-language-demo.is-speaking .vozon-wave-main,
+          .vozon-live-language-demo.is-speaking .vozon-wave-detail,
+          .vozon-avatar-orbit-inner,
+          .vozon-live-language-demo.is-speaking .vozon-mini-flow-wave i,
+          .vozon-conversation-live i,
+          .vozon-live-language-demo.is-speaking .vozon-india-reply > div:last-child i,
+          .vozon-mic-pulse-two,
+          .vozon-microphone-stage.is-speaking .vozon-mic-pulse-one,
+          .vozon-microphone-stage.is-speaking .vozon-mic-core,
+          .vozon-microphone-stage.is-speaking .vozon-mic-energy i,
+          .vozon-live-language-demo.is-speaking .vozon-voice-signature i,
+          .vozon-live-language-demo.is-speaking .vozon-hero-wave-main,
+          .vozon-live-language-demo.is-speaking .vozon-processing-wave i,
+          .vozon-row-wave.is-speaking i {
+            animation: none;
+          }
+
+          .vozon-bot-status,
+          .vozon-bot-radar span,
+          .vozon-bot-avatar-glow,
+          .vozon-bot-eye,
+          .vozon-bot-mouth,
+          .vozon-conversation-wave.is-speaking span {
+            animation: none;
+          }
+
           .vozon-company-track {
             animation-duration: 80s;
           }
@@ -2837,3 +3840,4 @@ export function HomePlatformSections() {
     </div>
   );
 }
+

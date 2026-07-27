@@ -319,7 +319,7 @@ export function SiteHeader() {
           color: #61fff0 !important;
         }
 
-        .vozon-site-header a[href="/#contact"] {
+        .vozon-site-header a[href="/contact"] {
           border-color: rgba(31,244,208,0.35) !important;
           background: linear-gradient(135deg, rgba(12,119,139,0.72), rgba(31,244,208,0.22), rgba(57,219,141,0.72)) !important;
           color: #dffff8 !important;

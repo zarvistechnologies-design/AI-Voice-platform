@@ -136,7 +136,7 @@ export function IndustryExperiencePage({
   return (
     <SiteLayout>
       <div className="industry-experience min-h-screen bg-black text-slate-50" style={style}>
-        <section className="industry-hero-grid relative mx-auto min-h-[82vh] max-w-7xl items-center gap-12 px-6 pb-14 pt-32 lg:px-8">
+        <section className="industry-hero-grid relative mx-auto min-h-[82vh] max-w-[1360px] items-center gap-12 px-5 pb-14 pt-32 sm:px-8">
           <div>
             <div className="mb-7 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-slate-400">
               <span className="size-2 rounded-full bg-[var(--industry-accent)] shadow-[0_0_12px_var(--industry-accent)]" />
@@ -168,7 +168,7 @@ export function IndustryExperiencePage({
               </Link>
               <Link
                 className="inline-flex min-h-12 items-center rounded-lg border border-white/15 bg-white/[0.05] px-6 text-sm font-bold text-slate-50 transition hover:-translate-y-0.5 hover:bg-white/10"
-                href="/#contact"
+                href="/contact"
               >
                 CONTACT SALES
               </Link>
@@ -192,7 +192,7 @@ export function IndustryExperiencePage({
         </section>
 
         <section className="border-y border-white/[0.07] bg-black py-8" aria-label={`${industry.title} platforms`}>
-          <div className="mx-auto flex max-w-7xl flex-col items-center gap-6 px-6 lg:px-8">
+          <div className="mx-auto flex max-w-[1360px] flex-col items-center gap-6 px-5 sm:px-8">
             <p className="text-center text-xs font-bold uppercase tracking-[0.22em] text-slate-500">
               Connect with the tools powering leading {industry.title.toLowerCase()} teams
             </p>
@@ -232,7 +232,7 @@ export function IndustryExperiencePage({
         </section>
 
         <section className="border-t border-white/[0.06] bg-black">
-          <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
+          <div className="mx-auto max-w-[1360px] px-5 py-20 sm:px-8">
             <Pill>Reviews</Pill>
             <div className="mt-6 flex flex-col justify-between gap-5 md:flex-row md:items-end">
               <h2 className="max-w-xl text-3xl font-semibold leading-tight tracking-[-0.02em] md:text-4xl">
@@ -285,7 +285,7 @@ export function IndustryExperiencePage({
         </section>
 
         <section className="relative border-t border-white/[0.06] bg-black">
-          <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
+          <div className="mx-auto max-w-[1360px] px-5 py-20 sm:px-8">
             <Pill>{industry.title} features</Pill>
             <h2 className="mt-6 max-w-3xl text-3xl font-semibold leading-tight tracking-[-0.02em] md:text-4xl">
               Support every {industry.title.toLowerCase()} call with a clear next step
@@ -368,7 +368,7 @@ export function IndustryExperiencePage({
         </section>
 
         <section className="overflow-hidden border-t border-white/[0.06] bg-black">
-          <div className="relative mx-auto max-w-7xl px-6 pb-8 pt-20 lg:px-8">
+          <div className="relative mx-auto max-w-[1360px] px-5 pb-8 pt-20 sm:px-8">
             <div className="grid gap-7 md:grid-cols-[minmax(0,1fr)_minmax(280px,0.65fr)] md:items-end">
               <div>
                 <Pill>Integrations</Pill>
@@ -431,7 +431,7 @@ export function IndustryExperiencePage({
               </div>
               <Link
                 className="inline-flex min-h-11 items-center justify-center rounded-lg bg-[var(--industry-accent)] px-6 text-sm font-extrabold text-[#031310] transition hover:-translate-y-0.5 hover:brightness-110"
-                href="/#contact"
+                href="/contact"
               >
                 Find a partner <span className="ml-2">&#8594;</span>
               </Link>
@@ -480,7 +480,7 @@ export function IndustryExperiencePage({
                     <li className="flex items-start gap-3" key={item}><CheckIcon tone="purple" />{item}</li>
                   ))}
                 </ul>
-                <Link className="mt-7 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-[linear-gradient(90deg,var(--industry-accent),#8f83e8)] text-sm font-extrabold text-[#031310] transition hover:brightness-110" href="/#contact">Talk to sales</Link>
+                <Link className="mt-7 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-[linear-gradient(90deg,var(--industry-accent),#8f83e8)] text-sm font-extrabold text-[#031310] transition hover:brightness-110" href="/contact">Talk to sales</Link>
               </article>
             </div>
           </div>
@@ -511,7 +511,7 @@ export function IndustryExperiencePage({
               <p className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--industry-accent-soft)]">Ready to get started?</p>
               <h2 className="mt-3 text-2xl font-semibold tracking-[-0.02em] md:text-3xl">Let&apos;s improve every {industry.title.toLowerCase()} call.</h2>
             </div>
-            <Link className="inline-flex min-h-12 shrink-0 items-center rounded-lg bg-[var(--industry-accent)] px-7 text-sm font-bold text-[#031310] transition hover:-translate-y-0.5 hover:brightness-110" href="/#contact">CONTACT US <span className="ml-3">&rarr;</span></Link>
+            <Link className="inline-flex min-h-12 shrink-0 items-center rounded-lg bg-[var(--industry-accent)] px-7 text-sm font-bold text-[#031310] transition hover:-translate-y-0.5 hover:brightness-110" href="/contact">CONTACT US <span className="ml-3">&rarr;</span></Link>
           </div>
         </section>
       </div>
@@ -524,7 +524,7 @@ export function IndustryExperiencePage({
         }
 
         .industry-hero-heading {
-          font-size: clamp(3.25rem, 5.6vw, 5.2rem);
+          font-size: clamp(2.8rem, 5vw, 4.7rem);
           line-height: 0.98;
           letter-spacing: -0.05em;
         }

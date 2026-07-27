@@ -453,7 +453,7 @@ export default function HealthcarePage() {
   return (
     <SiteLayout>
       <div className="healthcare-page min-h-screen bg-black text-slate-50">
-        <section className="healthcare-hero-grid relative mx-auto min-h-[82vh] max-w-7xl items-center gap-12 px-6 pb-14 pt-32 lg:px-8">
+        <section className="healthcare-hero-grid relative mx-auto min-h-[82vh] max-w-[1360px] items-center gap-12 px-5 pb-14 pt-32 sm:px-8">
           <div>
             <div className="mb-7 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-slate-400">
               <span className="size-2 rounded-full bg-[#35fbe0] shadow-[0_0_12px_rgba(53,251,224,0.8)]" />
@@ -479,7 +479,7 @@ export default function HealthcarePage() {
               </Link>
               <Link
                 className="inline-flex min-h-12 items-center rounded-lg border border-white/15 bg-white/[0.05] px-6 text-sm font-bold text-slate-50 shadow-sm transition hover:-translate-y-0.5 hover:bg-white/10"
-                href="/#contact"
+                href="/contact"
               >
                 CONTACT SALES
               </Link>
@@ -507,7 +507,7 @@ export default function HealthcarePage() {
           className="border-y border-white/[0.07] bg-black py-8"
           aria-label="Healthcare platforms"
         >
-          <div className="mx-auto flex max-w-7xl flex-col items-center gap-6 px-6 lg:px-8">
+          <div className="mx-auto flex max-w-[1360px] flex-col items-center gap-6 px-5 sm:px-8">
             <p className="text-center text-xs font-bold uppercase tracking-[0.22em] text-slate-500">
               Seamless connections across leading healthcare platforms
             </p>
@@ -552,7 +552,7 @@ export default function HealthcarePage() {
         </section>
 
         <section className="border-t border-white/[0.06] bg-black">
-          <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
+          <div className="mx-auto max-w-[1360px] px-5 py-20 sm:px-8">
             <Pill>Reviews</Pill>
             <div className="mt-6 flex flex-col justify-between gap-5 md:flex-row md:items-end">
               <h2 className="max-w-xl text-3xl font-semibold leading-tight tracking-[-0.02em] md:text-4xl">
@@ -590,7 +590,7 @@ export default function HealthcarePage() {
         </section>
 
         <section className="healthcare-features relative border-t border-white/[0.06] bg-black">
-          <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
+          <div className="mx-auto max-w-[1360px] px-5 py-20 sm:px-8">
           <Pill>Healthcare features</Pill>
           <h2 className="mt-6 max-w-3xl text-3xl font-semibold leading-tight tracking-[-0.02em] md:text-4xl">
             Support every patient call with a clear next step
@@ -660,7 +660,7 @@ export default function HealthcarePage() {
         </section>
 
         <section className="healthcare-integrations overflow-hidden border-t border-white/[0.06] bg-black">
-          <div className="relative mx-auto max-w-7xl px-6 pb-8 pt-20 lg:px-8">
+          <div className="relative mx-auto max-w-[1360px] px-5 pb-8 pt-20 sm:px-8">
             <div className="grid gap-7 md:grid-cols-[minmax(0,1fr)_minmax(280px,0.65fr)] md:items-end">
               <div>
                 <Pill>Integrations</Pill>
@@ -725,7 +725,7 @@ export default function HealthcarePage() {
               </div>
               <Link
                 className="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#35fbe0] px-6 text-sm font-extrabold text-[#031310] transition hover:-translate-y-0.5 hover:bg-[#75fff0]"
-                href="/#contact"
+                href="/contact"
               >
                 Find a partner <span className="ml-2">&#8594;</span>
               </Link>
@@ -803,7 +803,7 @@ export default function HealthcarePage() {
                 </ul>
                 <Link
                   className="mt-7 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-[linear-gradient(90deg,#35fbe0,#8f83e8)] text-sm font-extrabold text-[#031310] transition hover:brightness-110"
-                  href="/#contact"
+                  href="/contact"
                 >
                   Talk to sales
                 </Link>
@@ -849,7 +849,7 @@ export default function HealthcarePage() {
             </div>
             <Link
               className="inline-flex min-h-12 shrink-0 items-center rounded-lg bg-[#35fbe0] px-7 text-sm font-bold text-[#031310] transition hover:-translate-y-0.5 hover:bg-[#75fff0]"
-              href="/#contact"
+              href="/contact"
             >
               CONTACT US <span className="ml-3">&rarr;</span>
             </Link>
@@ -869,7 +869,7 @@ export default function HealthcarePage() {
         }
 
         .healthcare-hero-heading {
-          font-size: clamp(3.25rem, 5.6vw, 5.2rem);
+          font-size: clamp(2.8rem, 5vw, 4.7rem);
           line-height: 0.98;
           letter-spacing: -0.05em;
         }
