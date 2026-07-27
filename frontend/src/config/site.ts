@@ -179,7 +179,7 @@ export const siteConfig = {
       links: [
         { href: "mailto:hello@vozon.ai", label: "Contact" },
         { href: "/#resources", label: "Documentation" },
-        { href: "/#company", label: "Privacy" },
+        { href: "/privacy", label: "Privacy" },
       ],
     },
   ],
