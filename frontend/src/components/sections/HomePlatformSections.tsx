@@ -30,6 +30,7 @@ const integrationSteps = [
       { before: "Sync knowledge from your ", strong: "CRM, calendar, and docs", after: "." },
     ],
     tags: ["Flow builder", "Knowledge base"],
+    src: "/images/st1.png"
   },
   {
     number: "02",
@@ -40,6 +41,7 @@ const integrationSteps = [
       { before: "Bring your own fine-tuned or ", strong: "self-hosted LLM", after: "." },
     ],
     tags: ["Bring your own model"],
+    src: "/images/st2.png"
   },
   {
     number: "03",
@@ -50,6 +52,7 @@ const integrationSteps = [
       { before: "Clone your own voice for a ", strong: "consistent brand sound", after: "." },
     ],
     tags: ["Voice cloning", "Multilingual"],
+     src: "/images/st3.png"
   },
   {
     number: "04",
@@ -60,6 +63,7 @@ const integrationSteps = [
       { before: "Ship to web, mobile, and desktop with ", strong: "one SDK", after: "." },
     ],
     tags: ["Phone", "SDK", "Widget"],
+     src: "/images/st4.png"
   },
 ];
 
@@ -81,6 +85,7 @@ const fitSections = [
         body: "Run outbound surveys and collect structured feedback without adding more manual calling work.",
       },
     ],
+    src: "/images/customer.png"
   },
   {
     key: "assistants",
@@ -99,6 +104,7 @@ const fitSections = [
         body: "Escalate sensitive or complex calls with context, transcript, and caller intent already captured.",
       },
     ],
+     src: "/images/virtualAssistance.png"
   },
   {
     key: "devices",
@@ -117,6 +123,7 @@ const fitSections = [
         body: "Let customers continue from device to phone or web while preserving the same conversation context.",
       },
     ],
+     src: "/images/voice.png"
   },
   {
     key: "healthcare",
@@ -135,6 +142,8 @@ const fitSections = [
         body: "Capture patient needs after hours and route urgent or sensitive requests to the right care team.",
       },
     ],
+     src: "/images/healthcare.png"
+   
   },
   {
     key: "hospitality",
@@ -153,6 +162,7 @@ const fitSections = [
         body: "Support travelers across languages and time zones with consistent information and clear human handoffs.",
       },
     ],
+      src: "/images/travel.png"
   },
 ];
 
@@ -303,24 +313,28 @@ export function HomePlatformSections() {
 
   return (
     <div className="vozon-home relative isolate overflow-hidden bg-black text-white">
-      <section id="product" className="relative mx-auto flex min-h-screen max-w-[1600px] items-center justify-center overflow-hidden px-5 pb-20 pt-28 text-center sm:px-8 lg:pt-32">
+      <section
+        id="product"
+        className="relative mx-auto flex min-h-screen max-w-[1600px] items-center justify-center overflow-hidden px-5 pb-20 pt-28 text-center sm:px-8 lg:pt-32"
+      >
         <AudioWaveHero />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_15%,rgba(0,0,0,.16)_60%,rgba(0,0,0,.86)_100%)]" />
         <div className="relative z-10 mx-auto w-full max-w-[1280px]">
-        <div className="mx-auto mb-7 inline-flex items-center gap-2 rounded-full border border-white/16 bg-black/30 px-4 py-2 text-xs font-semibold text-white/80 shadow-[inset_0_0_22px_rgba(255,255,255,0.04)] backdrop-blur">
-          <span className="size-2 rounded-full bg-[#22f4d2] shadow-[0_0_14px_#22f4d2]" />
-          Voice Agents Live Now
-        </div>
-        <h1 className="mx-auto m-0 max-w-5xl text-[clamp(1.75rem,8vw,2.1rem)] font-black leading-[1.02] tracking-[-0.025em] text-white [overflow-wrap:anywhere] sm:text-[clamp(2.1rem,5.6vw,4.7rem)] sm:leading-[0.98] sm:tracking-[-0.03em]">
-          Launch enterprise-ready{" "}
-          <span>AI voice agents</span>
-        </h1>
-        <p className="mx-auto mt-6 max-w-3xl text-sm leading-7 text-white/56 sm:text-base">
-          vozon.ai helps teams answer every call, qualify every lead, book every next step, and turn conversations into clean workflows for sales, support, and operations.
-        </p>
-        <div className="mt-8 flex justify-center">
-          <GlowButton href="/dashboard">Deploy Now</GlowButton>
-        </div>
+          <div className="mx-auto mb-7 inline-flex items-center gap-2 rounded-full border border-white/16 bg-black/30 px-4 py-2 text-xs font-semibold text-white/80 shadow-[inset_0_0_22px_rgba(255,255,255,0.04)] backdrop-blur">
+            <span className="size-2 rounded-full bg-[#22f4d2] shadow-[0_0_14px_#22f4d2]" />
+            Voice Agents Live Now
+          </div>
+          <h1 className="mx-auto m-0 max-w-5xl text-[clamp(1.75rem,8vw,2.1rem)] font-black leading-[1.02] tracking-[-0.025em] text-white [overflow-wrap:anywhere] sm:text-[clamp(2.1rem,5.6vw,4.7rem)] sm:leading-[0.98] sm:tracking-[-0.03em]">
+            Launch enterprise-ready <span>AI voice agents</span>
+          </h1>
+          <p className="mx-auto mt-6 max-w-3xl text-sm leading-7 text-white/56 sm:text-base">
+            vozon.ai helps teams answer every call, qualify every lead, book
+            every next step, and turn conversations into clean workflows for
+            sales, support, and operations.
+          </p>
+          <div className="mt-8 flex justify-center">
+            <GlowButton href="/dashboard">Deploy Now</GlowButton>
+          </div>
         </div>
       </section>
 
@@ -333,7 +347,10 @@ export function HomePlatformSections() {
 
         <div className="vozon-company-marquee relative z-10 flex overflow-hidden py-3">
           {[0, 1].map((track) => (
-            <div className="vozon-company-track flex min-w-full shrink-0 items-center gap-16 px-8" key={track}>
+            <div
+              className="vozon-company-track flex min-w-full shrink-0 items-center gap-16 px-8"
+              key={track}
+            >
               {companyLogos.map((company) => (
                 <div
                   className="vozon-company-logo inline-flex min-w-[180px] items-center justify-center gap-3"
@@ -367,7 +384,8 @@ export function HomePlatformSections() {
             Every AI voice layer connected in one place
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-white/54">
-            LLMs, speech, realtime, vision, and external tools stay coordinated through the Vozon agent layer.
+            LLMs, speech, realtime, vision, and external tools stay coordinated
+            through the Vozon agent layer.
           </p>
         </div>
 
@@ -394,23 +412,53 @@ export function HomePlatformSections() {
               Build, launch, and improve every conversation.
             </h2>
             <p className="mx-auto mt-5 max-w-3xl text-sm leading-7 text-white/56 sm:text-base">
-              Vozon gives your team the building blocks to create agents, connect business knowledge, launch calls, monitor outcomes, and move conversation data into the systems you already use.
+              Vozon gives your team the building blocks to create agents,
+              connect business knowledge, launch calls, monitor outcomes, and
+              move conversation data into the systems you already use.
             </p>
           </div>
 
-          <div className="vozon-operations-viewport mt-10 overflow-x-auto pb-4 sm:mt-14" role="region" aria-label="AI voice operations workflow" tabIndex={0}>
+          <div
+            className="vozon-operations-viewport mt-10 overflow-x-auto pb-4 sm:mt-14"
+            role="region"
+            aria-label="AI voice operations workflow"
+            tabIndex={0}
+          >
             <div className="vozon-operations-map relative mx-auto min-w-[1080px]">
-              <svg className="vozon-operations-connector absolute inset-x-0 top-0 h-[180px] w-full" viewBox="0 0 1200 180" preserveAspectRatio="none" aria-hidden="true">
+              <svg
+                className="vozon-operations-connector absolute inset-x-0 top-0 h-[180px] w-full"
+                viewBox="0 0 1200 180"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
                 <defs>
-                  <linearGradient id="vozonOperationsLine" x1="0" x2="1200" y1="0" y2="0" gradientUnits="userSpaceOnUse">
+                  <linearGradient
+                    id="vozonOperationsLine"
+                    x1="0"
+                    x2="1200"
+                    y1="0"
+                    y2="0"
+                    gradientUnits="userSpaceOnUse"
+                  >
                     <stop stopColor="#1acfff" stopOpacity="0.18" />
-                    <stop offset="0.22" stopColor="#2be3e1" stopOpacity="0.78" />
+                    <stop
+                      offset="0.22"
+                      stopColor="#2be3e1"
+                      stopOpacity="0.78"
+                    />
                     <stop offset="0.52" stopColor="#75fff0" stopOpacity="0.9" />
                     <stop offset="0.8" stopColor="#48db8b" stopOpacity="0.78" />
                     <stop offset="1" stopColor="#48db8b" stopOpacity="0.18" />
                   </linearGradient>
                 </defs>
-                <path d="M100 78 L300 118 L500 78 L700 118 L900 78 L1100 118" fill="none" stroke="url(#vozonOperationsLine)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+                <path
+                  d="M100 78 L300 118 L500 78 L700 118 L900 78 L1100 118"
+                  fill="none"
+                  stroke="url(#vozonOperationsLine)"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                />
               </svg>
 
               <div className="relative grid grid-cols-6">
@@ -419,7 +467,10 @@ export function HomePlatformSections() {
                     className={`vozon-operation-step relative flex min-w-0 flex-col items-center px-3 text-center ${index % 2 === 1 ? "vozon-operation-step-lower" : ""}`}
                     key={step.number}
                   >
-                    <div className="vozon-operation-hex relative grid h-[108px] w-[116px] place-items-center" aria-hidden="true">
+                    <div
+                      className="vozon-operation-hex relative grid h-[108px] w-[116px] place-items-center"
+                      aria-hidden="true"
+                    >
                       <div className="vozon-operation-hex-inner absolute inset-[3px]" />
                       <VoiceOperationIcon icon={step.icon} />
                       <span className="vozon-operation-number absolute -right-2 -top-1 grid size-7 place-items-center rounded-full border border-[#75fff0]/30 bg-[#061b18] text-[9px] font-black text-[#8afff2]">
@@ -427,10 +478,20 @@ export function HomePlatformSections() {
                       </span>
                     </div>
 
-                    <span className="vozon-operation-stem block h-8 w-px" aria-hidden="true" />
-                    <span className="vozon-operation-dot block size-3 rounded-full bg-[#45ddce]" aria-hidden="true" />
-                    <h3 className="mb-0 mt-5 text-base font-black leading-tight text-white">{step.title}</h3>
-                    <p className="mb-0 mt-3 max-w-[180px] text-xs leading-5 text-white/48">{step.body}</p>
+                    <span
+                      className="vozon-operation-stem block h-8 w-px"
+                      aria-hidden="true"
+                    />
+                    <span
+                      className="vozon-operation-dot block size-3 rounded-full bg-[#45ddce]"
+                      aria-hidden="true"
+                    />
+                    <h3 className="mb-0 mt-5 text-base font-black leading-tight text-white">
+                      {step.title}
+                    </h3>
+                    <p className="mb-0 mt-3 max-w-[180px] text-xs leading-5 text-white/48">
+                      {step.body}
+                    </p>
                   </article>
                 ))}
               </div>
@@ -444,45 +505,67 @@ export function HomePlatformSections() {
       </section>
 
       <section className="vozon-fit-section relative overflow-hidden px-5 py-16 sm:px-8 lg:py-20">
+        {/* <div className="relative z-10 mx-auto max-w-[1240px]"> */}
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#45ddce]/24 bg-[#45ddce]/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#75fff0]">
+            <span className="size-1.5 rounded-full bg-[#45ddce] shadow-[0_0_12px_#45ddce]" />
+            Where Vozon Fits
+          </div>
+          <h2 className="vozon-platform-heading m-0 max-w-3xl text-white">
+            One voice agent, every industry
+            <span className="block text-white/42">that answers a phone</span>
+          </h2>
+          <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-white/58 sm:text-base">
+            Support, virtual assistants, or voice-enabled hardware. The same
+            agent adapts to how your business actually talks to people.
+          </p>
+        </div>
+
         <div className="relative z-10 mx-auto max-w-[1240px]">
-          <div className="mx-auto max-w-4xl text-center">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#45ddce]/24 bg-[#45ddce]/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#75fff0]">
-              <span className="size-1.5 rounded-full bg-[#45ddce] shadow-[0_0_12px_#45ddce]" />
-              Where Vozon Fits
-            </div>
-            <h2 className="mx-auto m-0 max-w-3xl text-[2rem] font-black leading-[1.12] text-white sm:text-[2.55rem] lg:text-[3.15rem]">
-              One voice agent, every industry
-              <span className="block text-white/42">that answers a phone</span>
-            </h2>
-            <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/56 sm:text-base">
-              Support, virtual assistants, or voice-enabled hardware. The same agent adapts to how your business actually talks to people.
-            </p>
+          <div className="vozon-fit-rows space-y-6 lg:space-y-8">
+            {fitSections.map((section, index) => (
+              <article
+                className="vozon-fit-row grid overflow-hidden lg:grid-cols-2"
+                key={section.key}
+              >
+                <div
+                  className={`vozon-fit-image relative order-2 min-h-[260px] overflow-hidden sm:min-h-[320px] ${index % 2 === 0 ? "lg:order-2" : "lg:order-1"}`}
+                >
+                  <Image
+                    src={section.src}
+                    alt={section.label}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 150px) 150vw, 30vw"
+                  />
+                </div>
+                <div
+                  className={`order-1 flex flex-col justify-center px-6 py-10 sm:px-10 lg:px-14 lg:py-14 ${index % 2 === 0 ? "lg:order-1" : "lg:order-2"}`}
+                >
+                  <p className="m-0 text-[11px] font-black uppercase tracking-[0.22em] text-[#75fff0]">
+                    Industry {String(index + 1).padStart(2, "0")}
+                  </p>
+                  <h3 className="mt-4 mb-0 text-2xl font-black leading-tight text-white sm:text-3xl">
+                    {section.label}
+                  </h3>
+                  <div className="mt-7 space-y-4">
+                    {section.columns.map((column) => (
+                      <div className="vozon-fit-detail" key={column.title}>
+                        <h4 className="m-0 text-sm font-black text-white/88 sm:text-base">
+                          {column.title}
+                        </h4>
+                        <p className="mt-2 mb-0 text-sm leading-6 text-white/54">
+                          {column.body}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </article>
+            ))}
           </div>
 
-          <div className="vozon-fit-panel mt-12">
-            <div aria-label="Vozon use cases" className="vozon-fit-tabs" role="tablist">
-              {fitSections.map((section, index) => (
-                <button
-                  aria-controls={`vozon-fit-panel-${section.key}`}
-                  aria-selected={selectedFit.key === section.key}
-                  className={`vozon-fit-tab vozon-fit-tab-tone-${index + 1} min-w-0 px-4 py-4 text-left font-bold transition ${
-                    selectedFit.key === section.key ? "vozon-fit-tab-active text-white" : "text-white/55 hover:text-white/78"
-                  }`}
-                  id={`vozon-fit-tab-${section.key}`}
-                  key={section.key}
-                  onClick={() => setSelectedFitKey(section.key)}
-                  role="tab"
-                  type="button"
-                >
-                  <span className="vozon-fit-tab-number" aria-hidden="true">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <span className="vozon-fit-tab-label">{section.label}</span>
-                </button>
-              ))}
-            </div>
-
-            <div
+          {/* <div
               aria-labelledby={`vozon-fit-tab-${selectedFit.key}`}
               className={`vozon-fit-content-grid vozon-fit-theme-${selectedFitIndex + 1} grid lg:grid-cols-3`}
               id={`vozon-fit-panel-${selectedFit.key}`}
@@ -505,62 +588,102 @@ export function HomePlatformSections() {
                   <p className="mt-4 mb-0 text-sm leading-7 text-white/58 sm:text-base">{column.body}</p>
                 </article>
               ))}
-            </div>
-          </div>
+            </div> */}
         </div>
+        {/* </div> */}
       </section>
 
-      <section id="integrations" className="vozon-integrations-section relative overflow-hidden px-5 py-14 sm:px-8 lg:py-[72px]">
+      <section
+        id="integrations"
+        className="vozon-integrations-section relative overflow-hidden px-5 py-14 sm:px-8 lg:py-[72px]"
+      >
         <div className="relative z-10 mx-auto max-w-[1240px]">
-          <div className="max-w-3xl">
-            <div className="mb-5 flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.22em] text-[#45ddce]">
-              <span className="h-px w-8 bg-[#45ddce]" />
+          <div className="mx-auto max-w-3xl text-center">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#45ddce]/24 bg-[#45ddce]/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#75fff0]">
+              <span className="size-1.5 rounded-full bg-[#45ddce] shadow-[0_0_12px_#45ddce]" />
               Integrations
             </div>
 
             <h2 className="vozon-platform-heading m-0 max-w-3xl text-white">
-              From script to spoken word,{" "}
-              <span>wired end to end.</span>
+              From script to spoken word, <span>wired end to end.</span>
             </h2>
 
-            <p className="mt-6 max-w-2xl text-sm leading-7 text-white/58 sm:text-base">
-              Vozon routes every call through one continuous signal path - configure, connect, voice, deploy - so your agent goes live without stitching tools together yourself.
+            <p className="mt-6 mx-auto  max-w-2xl text-sm leading-7 text-white/58 sm:text-base">
+              Vozon routes every call through one continuous signal path -
+              configure, connect, voice, deploy - so your agent goes live
+              without stitching tools together yourself.
             </p>
           </div>
 
           <div className="vozon-integration-flow relative mt-12">
-            <div className="vozon-integration-rail relative z-10 grid auto-cols-[minmax(268px,1fr)] grid-flow-col items-stretch gap-4 overflow-x-auto pb-4 lg:grid-flow-row lg:grid-cols-4 lg:overflow-visible lg:pb-0">
-              {integrationSteps.map((step) => (
-                <article className="vozon-integration-card relative flex min-h-[332px] flex-col p-6" key={step.number}>
-                  <span className="vozon-integration-step-number text-[2.35rem] font-black leading-none text-white/[0.13]">
+            <div className="vozon-integration-rail relative z-10 space-y-6 lg:space-y-8">
+              {integrationSteps.map((step, index) => (
+                <article
+                  className="vozon-integration-card relative grid overflow-hidden lg:grid-cols-[0.9fr_1.1fr]"
+                  key={step.number}
+                >
+                  <div
+                    className={`vozon-integration-copy relative flex flex-col justify-center px-6 py-8 sm:px-9 lg:px-12 lg:py-10 ${
+                      index % 2 !== 0 ? "lg:order-2" : "lg:order-1"
+                    }`}
+                  >
+                  {/* <span className="vozon-integration-step-number text-[2.35rem] font-black leading-none text-white/[0.13]">
                     {step.number}
-                  </span>
+                  </span> */}
+
+                  <div className="mb-5 flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-[#75fff0]">
+                    <span className="h-px w-7 bg-[#45ddce]" />
+                    Step {step.number}
+                  </div>
+
+                  {/* <div className="vozon-integration-icon grid size-[52px] place-items-center rounded-[15px] border border-[#45ddce]/28 bg-[#45ddce]/10 text-[#9dfff4]">
+                    <IntegrationIcon icon={step.icon} />
+                  </div> */}
 
                   <div className="vozon-integration-icon grid size-[52px] place-items-center rounded-[15px] border border-[#45ddce]/28 bg-[#45ddce]/10 text-[#9dfff4]">
                     <IntegrationIcon icon={step.icon} />
                   </div>
 
-                  <h3 className="mt-7 mb-0 text-xl font-black leading-tight text-white">{step.title}</h3>
-
-                  <ul className="mt-5 space-y-3.5 p-0 text-sm leading-6 text-white/55">
+                  <ul className="mt-5 space-y-3.5 p-0 text-sm leading-6 text-white/55 sm:text-base">
                     {step.bullets.map((bullet) => (
-                      <li className="flex gap-3" key={`${step.number}-${bullet.strong}`}>
+                      <li
+                        className="flex gap-3"
+                        key={`${step.number}-${bullet.strong}`}
+                      >
                         <span className="mt-2 size-1.5 shrink-0 rounded-full bg-[#45ddce]" />
                         <span>
                           {bullet.before}
-                          <strong className="font-black text-white/88">{bullet.strong}</strong>
+                          <strong className="font-black text-white/88">
+                            {bullet.strong}
+                          </strong>
                           {bullet.after}
                         </span>
                       </li>
                     ))}
                   </ul>
 
-                  <div className="mt-auto flex flex-wrap gap-2 pt-6">
-                    {step.tags.map((tag) => (
-                      <span className="rounded-full border border-white/12 px-3 py-1 text-xs font-bold text-white/42" key={tag}>
-                        {tag}
-                      </span>
-                    ))}
+
+                   <div className="mt-8 flex flex-wrap gap-2">
+                      {step.tags.map((tag) => (
+                        <span className="rounded-full border border-white/12 px-3 py-1 text-xs font-bold text-white/42" key={tag}>
+                          {tag}
+                        </span>
+                      ))}
+                     </div>
+                    </div>
+
+                  <div className={`vozon-integration-image relative min-h-[260px] sm:min-h-[320px] lg:min-h-[360px] ${
+                    index % 2 !== 0 ? "vozon-integration-image-left lg:order-1" : "vozon-integration-image-right lg:order-2"
+                  }`}>
+                    <div className="vozon-integration-image-placeholder absolute inset-0 grid place-items-center">
+                      <Image
+                        src={step.src}
+                        alt={`Step ${step.number}`}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 1024px) 100vw, 50vw"
+                      />
+                    </div>
                   </div>
                 </article>
               ))}
@@ -618,47 +741,75 @@ export function HomePlatformSections() {
         }
 
         .vozon-integration-rail {
-          scrollbar-width: none;
+         min-width: 0;
+        position: relative;
         }
 
-        .vozon-integration-rail::-webkit-scrollbar {
-          display: none;
+       .vozon-integration-rail::before {
+          content: "";
+          position: absolute;
+          top: 4rem;
+          bottom: 4rem;
+          left: 45%;
+          width: 1px;
+          background: linear-gradient(to bottom, transparent, rgba(69,221,206,0.34) 8%, rgba(69,221,206,0.34) 92%, transparent);
+          transform: translateX(-50%);
         }
 
         .vozon-integration-card {
-          overflow: visible;
-          border-left: 1px solid rgba(117,255,240,0.12);
-          background: transparent;
-          box-shadow: none;
-          transition: transform 200ms ease, background 200ms ease;
+           border: 1px solid rgba(117,255,240,0.14);
+          border-radius: 22px;
+          background: linear-gradient(135deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012));
+          box-shadow: inset 0 0 0 1px rgba(255,255,255,0.018), 0 18px 45px rgba(0,0,0,0.12);
+          transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
         }
 
-        .vozon-integration-card::before {
+       .vozon-integration-card:hover {
+          border-color: rgba(117,255,240,0.3);
+          transform: translateY(-3px);
+          box-shadow: inset 0 0 0 1px rgba(117,255,240,0.05), 0 24px 54px rgba(0,0,0,0.2);
+        }
+        
+         .vozon-integration-image {
+          border-bottom: 1px solid rgba(117,255,240,0.14);
+          background:
+            radial-gradient(circle at 22% 18%, rgba(69,221,206,0.13), transparent 35%),
+            linear-gradient(135deg, rgba(13,36,38,0.92), rgba(5,14,19,0.96));
+        }
+
+        .vozon-integration-image-placeholder::after {
+          margin: 1rem;
+          overflow: hidden;
+          border: 1px solid rgba(117,255,240,0.16);
+          border-radius: 15px;
+           background: radial-gradient(circle at 18% 0%, rgba(117,255,240,0.1), transparent 38%);
+          opacity: 0.68;
+          // background: #071512;
+        }
+
+        .vozon-integration-copy::after {
           content: "";
           position: absolute;
-          inset: 0;
-          pointer-events: none;
-          background: radial-gradient(circle at 18% 0%, rgba(117,255,240,0.1), transparent 38%);
-          opacity: 0.68;
-        }
-
-        .vozon-integration-card > :not(.vozon-integration-step-number) {
-          position: relative;
-          z-index: 1;
+          top: 50%;
+          width: 12px;
+          height: 12px;
+          border: 2px solid #071512;
+          border-radius: 999px;
+          background: #45ddce;
+          box-shadow: 0 0 0 5px rgba(69,221,206,0.12), 0 0 20px rgba(69,221,206,0.45);
+          transform: translateY(-50%);
         }
 
         .vozon-integration-step-number {
-          position: absolute;
-          right: 1.25rem;
-          top: 1.25rem;
-          z-index: 2;
+          right: 2rem;
+          top: 1.7rem;
           pointer-events: none;
         }
 
-        .vozon-integration-card:hover {
-          transform: translateY(-4px);
-          background: radial-gradient(circle at 18% 0%, rgba(117,255,240,0.07), transparent 60%);
-        }
+        // .vozon-integration-card:hover {
+        //   transform: translateY(-4px);
+        //   background: radial-gradient(circle at 18% 0%, rgba(117,255,240,0.07), transparent 60%);
+        // }
 
         .vozon-integration-icon {
           background:
@@ -667,6 +818,36 @@ export function HomePlatformSections() {
           box-shadow:
             inset 0 0 18px rgba(117,255,240,0.07),
             0 0 28px rgba(32,244,208,0.12);
+        }
+
+          @media (min-width: 1024px) {
+          .vozon-integration-image-right {
+            border-right: 1px solid rgba(117,255,240,0.14);
+            border-bottom: 0;
+          }
+
+          .vozon-integration-image-left {
+            border-right: 0;
+            border-bottom: 0;
+            border-left: 1px solid rgba(117,255,240,0.14);
+          }
+
+          .vozon-integration-copy::after {
+            right: -6px;
+            z-index: 2;
+          }
+
+          .vozon-integration-card:nth-child(even) .vozon-integration-copy::after {
+            right: auto;
+            left: -6px;
+          }
+        }
+
+          @media (max-width: 1023px) {
+          .vozon-integration-rail::before,
+          .vozon-integration-copy::after {
+            display: none;
+          }
         }
 
         .vozon-integration-icon svg {
@@ -686,53 +867,50 @@ export function HomePlatformSections() {
         .vozon-fit-panel {
           position: relative;
           overflow: hidden;
-          border: 1px solid rgba(69,221,206,0.2);
-          border-radius: 18px;
+            border: 1px solid rgba(69,221,206,0.18);
+          border-radius: 20px;
           background:
-            linear-gradient(145deg, rgba(69,221,206,0.07), transparent 36%),
-            rgba(2,12,10,0.82);
+            radial-gradient(circle at 85% 88%, rgba(242,141,69,0.2), transparent 30%),
+            linear-gradient(145deg, rgba(69,221,206,0.08), transparent 42%),
+            #071512;
           box-shadow:
             inset 0 0 0 1px rgba(255,255,255,0.025),
             0 26px 90px rgba(0,0,0,0.28);
-          backdrop-filter: blur(10px);
         }
 
-        .vozon-fit-panel::before {
-          content: "";
-          position: absolute;
-          top: 0;
-          right: 8%;
-          left: 8%;
-          height: 1px;
-          background: linear-gradient(90deg, transparent, rgba(117,255,240,0.7), transparent);
-        }
+        // .vozon-fit-panel::before {
+        //   content: "";
+        //   position: absolute;
+        //   top: 0;
+        //   right: 8%;
+        //   left: 8%;
+        //   height: 1px;
+        //   background: linear-gradient(90deg, transparent, rgba(117,255,240,0.7), transparent);
+        // }
 
-        .vozon-fit-tabs,
-        .vozon-fit-content {
-          position: relative;
-          z-index: 1;
-        }
+        // .vozon-fit-tabs,
+        // .vozon-fit-content {
+        //   position: relative;
+        //   z-index: 1;
+        // }
 
-        .vozon-fit-tabs {
-          display: grid;
-          grid-template-columns: repeat(5, minmax(0, 1fr));
-          gap: 0.45rem;
-          padding: 0.5rem;
-          border-bottom: 1px solid rgba(255,255,255,0.08);
-          background: rgba(0,5,3,0.35);
-        }
+        // .vozon-fit-tabs {
+        //   display: grid;
+        //   grid-template-columns: repeat(5, minmax(0, 1fr));
+        //   gap: 0.45rem;
+        //   padding: 0.5rem;
+        //   border-bottom: 1px solid rgba(255,255,255,0.08);
+        //   background: rgba(0,5,3,0.35);
+        // }
 
         .vozon-fit-tab {
-          --vozon-fit-tab-accent: 69, 221, 206;
           position: relative;
-          display: flex;
-          min-height: 66px;
-          align-items: center;
-          gap: 0.85rem;
-          overflow: hidden;
-          border: 1px solid rgba(var(--vozon-fit-tab-accent), 0.16);
-          border-radius: 10px;
-          background: rgba(var(--vozon-fit-tab-accent), 0.025);
+          min-height: 7.75rem;
+          padding: 0.85rem 0.9rem 0.85rem 4rem;
+          border: 1px solid transparent;
+          border-radius: 0.9rem;
+          color: rgba(255,255,255,0.62);
+          transition: border-color 180ms ease, background 180ms ease, color 180ms ease;
         }
 
         .vozon-fit-tab-tone-2 { --vozon-fit-tab-accent: 143, 131, 232; }
@@ -753,59 +931,68 @@ export function HomePlatformSections() {
           transition: opacity 180ms ease, box-shadow 180ms ease;
         }
 
-        .vozon-fit-tab:hover {
-          border-color: rgba(var(--vozon-fit-tab-accent), 0.34);
-          background: rgba(var(--vozon-fit-tab-accent), 0.055);
-        }
-
-        .vozon-fit-tab-number {
-          display: grid;
-          width: 2rem;
-          height: 2rem;
-          flex: 0 0 auto;
-          place-items: center;
-          border: 1px solid rgba(255,255,255,0.1);
-          border-radius: 8px;
-          background: rgba(var(--vozon-fit-tab-accent), 0.07);
-          color: rgba(var(--vozon-fit-tab-accent), 0.76);
-          font-size: 0.65rem;
-          transition: border-color 180ms ease, background 180ms ease, color 180ms ease;
-        }
-
-        .vozon-fit-tab-label {
-          min-width: 0;
-          font-size: 0.92rem;
-          line-height: 1.3;
-        }
-
+        .vozon-fit-tab:hover , 
         .vozon-fit-tab-active {
-          background:
-            linear-gradient(110deg, rgba(var(--vozon-fit-tab-accent), 0.16), rgba(var(--vozon-fit-tab-accent), 0.055)),
-            rgba(255,255,255,0.035);
-          border-color: rgba(var(--vozon-fit-tab-accent), 0.3);
-          box-shadow: inset 0 0 32px rgba(var(--vozon-fit-tab-accent), 0.055);
+          color: #fff;
+          border-color: rgba(69,221,206,0.38);
+          background: rgba(69,221,206,0.055);
+          box-shadow: inset 0 0 0 5px rgba(69,221,206,0.025);
         }
 
-        .vozon-fit-tab-active::after {
-          opacity: 1;
-          box-shadow: 0 0 12px rgba(var(--vozon-fit-tab-accent), 0.52);
-        }
-
-        .vozon-fit-tab-active .vozon-fit-tab-number {
-          border-color: rgba(var(--vozon-fit-tab-accent), 0.44);
-          background: rgb(var(--vozon-fit-tab-accent));
-          color: #02110d;
-          box-shadow: 0 0 20px rgba(var(--vozon-fit-tab-accent), 0.2);
-        }
-
-        .vozon-fit-content {
-          border-right: 1px solid rgba(255,255,255,0.08);
-          border-top: 2px solid rgba(var(--vozon-fit-accent), 0.68);
-          background:
-            radial-gradient(circle at 12% 0%, rgba(var(--vozon-fit-accent), 0.1), transparent 34%),
-            linear-gradient(150deg, rgba(255,255,255,0.035), rgba(255,255,255,0.008)),
-            rgba(2,12,10,0.34);
+        .vozon-fit-tab-icon {
+          position: absolute;
+          top: 0.85rem;
+          left: 0.9rem;
+          width: 2.2rem;
+          height: 2.2rem;
+          place-items: center;
+          border: 1px solid rgba(69,221,206,0.38);
+          border-radius: 0.7rem;
+          background: rgba(69,221,206,0.08);
+          color: #75fff0;
+          font-size: 0.65rem;
+            font-weight: 900;
           transition: background 180ms ease, box-shadow 180ms ease;
+        }
+
+        // .vozon-fit-tab-label {
+        //   min-width: 0;
+        //   font-size: 0.92rem;
+        //   line-height: 1.3;
+        // }
+
+        // .vozon-fit-tab-active {
+        //   background:
+        //     linear-gradient(110deg, rgba(var(--vozon-fit-tab-accent), 0.16), rgba(var(--vozon-fit-tab-accent), 0.055)),
+        //     rgba(255,255,255,0.035);
+        //   border-color: rgba(var(--vozon-fit-tab-accent), 0.3);
+        //   box-shadow: inset 0 0 32px rgba(var(--vozon-fit-tab-accent), 0.055);
+        // }
+
+        // .vozon-fit-tab-active::after {
+        //   opacity: 1;
+        //   box-shadow: 0 0 12px rgba(var(--vozon-fit-tab-accent), 0.52);
+        // }
+
+       .vozon-fit-tab-active .vozon-fit-tab-icon {
+          background: #45ddce;
+          color: #02110d;
+          box-shadow: 0 0 22px rgba(69,221,206,0.22);
+        }
+
+        // .vozon-fit-content {
+        //   border-right: 1px solid rgba(255,255,255,0.08);
+        //   border-top: 2px solid rgba(var(--vozon-fit-accent), 0.68);
+        //   background:
+        //     radial-gradient(circle at 12% 0%, rgba(var(--vozon-fit-accent), 0.1), transparent 34%),
+        //     linear-gradient(150deg, rgba(255,255,255,0.035), rgba(255,255,255,0.008)),
+        //     rgba(2,12,10,0.34);
+        //   transition: background 180ms ease, box-shadow 180ms ease;
+        // }
+
+         .vozon-fit-tab-label,
+        .vozon-fit-tab-description {
+          display: block;
         }
 
         .vozon-fit-content-grid {
@@ -813,33 +1000,55 @@ export function HomePlatformSections() {
           background: rgba(0,5,3,0.12);
         }
 
-        .vozon-fit-theme-2 { --vozon-fit-accent: 143, 131, 232; }
-        .vozon-fit-theme-3 { --vozon-fit-accent: 71, 170, 255; }
-        .vozon-fit-theme-4 { --vozon-fit-accent: 242, 141, 69; }
-        .vozon-fit-theme-5 { --vozon-fit-accent: 242, 210, 75; }
+        // .vozon-fit-theme-2 { --vozon-fit-accent: 143, 131, 232; }
+        // .vozon-fit-theme-3 { --vozon-fit-accent: 71, 170, 255; }
+        // .vozon-fit-theme-4 { --vozon-fit-accent: 242, 141, 69; }
+        // .vozon-fit-theme-5 { --vozon-fit-accent: 242, 210, 75; }
 
-        .vozon-fit-content:last-child {
-          border-right: 0;
+        // .vozon-fit-content:last-child {
+        //   border-right: 0;
+        // }
+
+        // .vozon-fit-content:hover {
+        //   background:
+        //     radial-gradient(circle at 12% 0%, rgba(var(--vozon-fit-accent), 0.16), transparent 38%),
+        //     linear-gradient(150deg, rgba(var(--vozon-fit-accent), 0.07), rgba(255,255,255,0.012)),
+        //     rgba(2,12,10,0.48);
+        //   box-shadow: inset 0 1px 0 rgba(var(--vozon-fit-accent), 0.18);
+        // }
+
+        .vozon-fit-panel-top {
+          background: linear-gradient(110deg, #45ddce, #27ab9f);
+          color: #031411;
         }
 
-        .vozon-fit-content:hover {
-          background:
-            radial-gradient(circle at 12% 0%, rgba(var(--vozon-fit-accent), 0.16), transparent 38%),
-            linear-gradient(150deg, rgba(var(--vozon-fit-accent), 0.07), rgba(255,255,255,0.012)),
-            rgba(2,12,10,0.48);
-          box-shadow: inset 0 1px 0 rgba(var(--vozon-fit-accent), 0.18);
+          .vozon-fit-tab-description {
+          margin-top: 0.6rem;
+          color: rgba(255,255,255,0.5);
+          font-size: 0.87rem;
+          line-height: 1.65;
         }
 
-        .vozon-fit-index {
-          border: 1px solid rgba(var(--vozon-fit-accent), 0.34);
-          background: rgba(var(--vozon-fit-accent), 0.1);
-          color: rgb(var(--vozon-fit-accent));
-          box-shadow: inset 0 0 18px rgba(var(--vozon-fit-accent), 0.05);
+        // .vozon-fit-index {
+        //   border: 1px solid rgba(var(--vozon-fit-accent), 0.34);
+        //   background: rgba(var(--vozon-fit-accent), 0.1);
+        //   color: rgb(var(--vozon-fit-accent));
+        //   box-shadow: inset 0 0 18px rgba(var(--vozon-fit-accent), 0.05);
+        // }
+
+        .vozon-fit-panel-body {
+          background: rgba(5,20,18,0.88);
         }
 
-        .vozon-fit-kicker {
-          color: rgba(var(--vozon-fit-accent), 0.82);
+        .vozon-fit-workflow-row {
+          border: 1px solid rgba(117,255,240,0.13);
+          border-radius: 0.55rem;
+          background: rgba(255,255,255,0.025);
         }
+
+        // .vozon-fit-kicker {
+        //   color: rgba(var(--vozon-fit-accent), 0.82);
+        // }
 
         .vozon-company-marquee-section {
           background: transparent;
@@ -851,6 +1060,12 @@ export function HomePlatformSections() {
 
         .vozon-company-marquee::before {
           content: none;
+        }
+
+        @media (min-width: 721px) and (max-width: 1024px) {
+          .vozon-fit-tabs {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+          }
         }
 
         .vozon-platform-map {
@@ -3735,25 +3950,60 @@ export function HomePlatformSections() {
             margin-top: 2rem;
           }
 
+            .vozon-fit-section {
+            padding-top: 3.5rem;
+            padding-bottom: 3.5rem;
+          }
+
           .vozon-fit-tabs {
             grid-template-columns: 1fr;
-            gap: 0.35rem;
+            gap: 0.75rem;
           }
 
           .vozon-fit-tab {
-            min-height: 54px;
-            padding: 0.65rem 0.8rem;
+             min-height: 7.1rem;
+            padding: 0.8rem 0.9rem 0.8rem 4rem;
+            border-color: rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.018);
+          }
+
+          .vozon-fit-tab-icon {
+            top: 0.8rem;
+            left: 0.9rem;
           }
 
           .vozon-fit-tab-active {
-            box-shadow: inset 0 0 28px rgba(69,221,206,0.06);
+            border-color: rgba(69,221,206,0.42);
+            box-shadow: inset 0 0 0 4px rgba(69,221,206,0.03);          }
+
+          // .vozon-fit-content {
+          //   min-height: auto;
+          //   border-right: 0;
+          //   border-top: 1px solid rgba(255,255,255,0.08);
+          //   padding: 1.4rem 1.25rem;
+          // }
+
+
+           .vozon-fit-tab-description {
+            margin-top: 0.4rem;
+            font-size: 0.8rem;
+            line-height: 1.5;
           }
 
-          .vozon-fit-content {
-            min-height: auto;
-            border-right: 0;
-            border-top: 1px solid rgba(255,255,255,0.08);
-            padding: 1.4rem 1.25rem;
+          .vozon-fit-panel {
+            border-radius: 16px;
+          }
+
+          .vozon-fit-panel-top {
+            padding: 1rem 1.1rem;
+          }
+
+          .vozon-fit-panel-body {
+            padding: 1.25rem 1.1rem;
+          }
+
+          .vozon-fit-workflow-row {
+            padding: 0.75rem;
           }
 
           .vozon-company-logo {
