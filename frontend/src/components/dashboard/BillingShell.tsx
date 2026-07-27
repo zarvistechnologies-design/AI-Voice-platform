@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
@@ -12,9 +12,9 @@ import {
     validateStoredSession,
 } from "@/lib/auth";
 import { billingApi, type BillingSummary, type BillingTransaction } from "@/lib/billing";
+import { openRazorpayCheckout } from "@/lib/razorpayCheckout";
 
 const topUpOptions = [5, 10, 50, 100];
-const refillOptions = [5, 10, 50, 100, 500, 1000];
 
 function initials(name: string) {
   return name.split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
@@ -69,18 +69,14 @@ export function BillingShell() {
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
   const [data, setData] = useState<BillingSummary | null>(null);
   const [notice, setNotice] = useState("");
-  const [busy, setBusy] = useState<"" | "topup" | "reload" | "portal" | "enterprise">("");
+  const [busy, setBusy] = useState<"" | "topup" | "cancel" | "enterprise">("");
   const [selectedTopUp, setSelectedTopUp] = useState(10);
-  const [threshold, setThreshold] = useState("5");
-  const [reloadAmount, setReloadAmount] = useState(10);
   const [showUserSidebar, setShowUserSidebar] = useState(false);
 
   const load = useCallback(async () => {
     try {
       const summary = await billingApi.summary();
       setData(summary);
-      setThreshold(String(summary.wallet.reloadThresholdCredits));
-      setReloadAmount(summary.wallet.reloadAmountCredits);
       setNotice("");
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not load billing.");
@@ -96,7 +92,7 @@ export function BillingShell() {
     const credits = new URLSearchParams(window.location.search).get("credits");
     const timer = window.setTimeout(async () => {
       await load();
-      if (credits === "success") setNotice("Payment received. Credits appear after Stripe webhook confirmation.");
+      if (credits === "success") setNotice("Payment received. Credits appear after payment confirmation.");
       if (credits === "cancelled") setNotice("Credit purchase was cancelled.");
     }, 0);
     return () => window.clearTimeout(timer);
@@ -121,49 +117,42 @@ export function BillingShell() {
   async function purchaseCredits() {
     setBusy("topup");
     try {
-      const result = await billingApi.topUp(selectedTopUp);
-      window.location.assign(result.url);
+      const checkout = await billingApi.topUp(selectedTopUp);
+      const payment = await openRazorpayCheckout(checkout);
+      const verified = await billingApi.verifyTopUp(payment);
+      await load();
+      setNotice("$" + verified.credits.toFixed(2) + " in USD credits was added successfully.");
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Could not start credit purchase.");
-      setBusy("");
-    }
-  }
-
-  async function saveReload(enabled: boolean) {
-    setBusy("reload");
-    try {
-      const result = await billingApi.updateAutoReload({
-        enabled,
-        thresholdCredits: Number(threshold) || 0,
-        reloadAmountCredits: reloadAmount,
-      });
-      setData((current) => current ? { ...current, wallet: result.wallet } : current);
-      setNotice(enabled ? "Auto-refill settings saved." : "Auto-refill removed.");
-    } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Could not save auto-refill.");
+      setNotice(error instanceof Error ? error.message : "Could not complete credit purchase.");
     } finally {
       setBusy("");
     }
   }
 
-  async function openPortal() {
-    setBusy("portal");
+  async function cancelAutopay() {
+    if (!window.confirm("Cancel monthly Autopay at the end of the current billing cycle?")) return;
+    setBusy("cancel");
     try {
-      const result = await billingApi.portal();
-      window.location.assign(result.url);
+      await billingApi.cancelSubscription(false);
+      await load();
+      setNotice("Monthly Autopay will cancel at the end of the current billing cycle.");
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Could not open billing portal.");
+      setNotice(error instanceof Error ? error.message : "Could not cancel Autopay.");
+    } finally {
       setBusy("");
     }
   }
-
   async function upgradeEnterprise() {
     setBusy("enterprise");
     try {
-      const result = await billingApi.checkout("enterprise");
-      window.location.assign(result.url);
+      const checkout = await billingApi.checkout("enterprise");
+      const payment = await openRazorpayCheckout(checkout);
+      await billingApi.verifySubscription(payment);
+      await load();
+      setNotice(`Your $${checkout.amount / 100} USD monthly Razorpay subscription is active.`);
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Could not start enterprise checkout.");
+      setNotice(error instanceof Error ? error.message : "Could not complete enterprise checkout.");
+    } finally {
       setBusy("");
     }
   }
@@ -204,7 +193,7 @@ export function BillingShell() {
           </header>
 
           {notice ? <div className="rounded-xl border border-cyan-200 bg-cyan-50 px-4 py-3 text-sm font-semibold text-cyan-800">{notice}</div> : null}
-          {!data?.configured ? <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">Stripe is not configured yet. Credits can be granted internally, but checkout needs Stripe keys and webhook secret.</div> : null}
+          {!data?.configured ? <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">Razorpay is not configured yet. Add Razorpay credentials to enable checkout.</div> : null}
 
           <section className="grid gap-4 xl:grid-cols-[1.25fr_0.75fr]">
             <Card className="overflow-hidden">
@@ -263,40 +252,22 @@ export function BillingShell() {
           <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.8fr)]">
             <Card>
               <div className="border-b border-slate-200 p-5">
-                <h2 className="m-0 text-lg font-semibold">Auto-refill</h2>
-                <p className="mt-1 text-sm leading-6 text-slate-500">Keep browser and phone calls from stopping because the wallet gets too low.</p>
+                <h2 className="m-0 text-lg font-semibold">Monthly Autopay</h2>
+                <p className="mt-1 text-sm leading-6 text-slate-500">Your card mandate and recurring Enterprise billing status.</p>
               </div>
               <div className="grid gap-5 p-5">
-                <label className="grid gap-2 text-sm font-semibold text-slate-700 md:grid-cols-[140px_minmax(0,1fr)] md:items-center">
-                  <span>Threshold</span>
-                  <span className="flex h-12 items-center rounded-xl border border-white/10 bg-[#061b18] px-4">
-                    <span className="mr-3 text-slate-500">$</span>
-                    <input className="w-full bg-transparent text-slate-950 outline-none" inputMode="decimal" value={threshold} onChange={(event) => setThreshold(event.target.value)} />
-                  </span>
-                </label>
-                <div className="grid gap-3 text-sm font-semibold text-slate-700 md:grid-cols-[140px_minmax(0,1fr)] md:items-center">
-                  <span>Refill amount</span>
-                  <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
-                    {refillOptions.map((amount) => (
-                      <button className={`h-11 rounded-xl border text-sm font-semibold ${reloadAmount === amount ? "border-emerald-300/30 bg-emerald-400/10 text-emerald-200" : "border-white/10 bg-[#07110f] text-white/70 hover:bg-white/[0.08] hover:text-white"}`} key={amount} type="button" aria-pressed={reloadAmount === amount} onClick={() => setReloadAmount(amount)}>
-                        ${amount}
-                      </button>
-                    ))}
-                  </div>
+                <div className="grid gap-3 text-sm">
+                  <div className="flex justify-between gap-4"><span className="text-slate-500">Plan</span><strong className="capitalize text-slate-950">{data?.subscription.plan ?? "free"}</strong></div>
+                  <div className="flex justify-between gap-4"><span className="text-slate-500">Status</span><strong className="capitalize text-slate-950">{data?.subscription.status?.replace("_", " ") ?? "inactive"}</strong></div>
+                  <div className="flex justify-between gap-4"><span className="text-slate-500">Monthly charge</span><strong className="text-slate-950">{money(data?.enterpriseMonthlyUsd ?? 500, "USD")}</strong></div>
+                  <div className="flex justify-between gap-4"><span className="text-slate-500">Next renewal</span><strong className="text-right text-slate-950">{dateTime(data?.subscription.currentPeriodEnd)}</strong></div>
                 </div>
-                <div className="grid gap-2 text-sm font-semibold md:grid-cols-[140px_minmax(0,1fr)]">
-                  <span className="text-slate-700">Status</span>
-                  <span className={wallet?.autoReloadEnabled ? "text-emerald-700" : "text-slate-500"}>
-                    <span className={`mr-2 inline-block size-2 rounded-full ${wallet?.autoReloadEnabled ? "bg-emerald-500" : "bg-slate-400"}`} />
-                    {wallet?.autoReloadEnabled ? "Active" : "Inactive"}
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-3 md:pl-[140px]">
-                  <button className="rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-600/20 hover:bg-emerald-700 disabled:opacity-60" type="button" onClick={() => void saveReload(true)} disabled={busy === "reload"}>
-                    Activate auto-refill
+                {data?.subscription.provider === "razorpay" && !data.subscription.cancelAtPeriodEnd && data.subscription.status !== "cancelled" ? (
+                  <button className="w-fit rounded-xl border border-rose-400/30 px-4 py-2.5 text-sm font-semibold text-rose-300 hover:bg-rose-400/10 disabled:opacity-60" type="button" onClick={() => void cancelAutopay()} disabled={busy === "cancel"}>
+                    {busy === "cancel" ? "Cancelling..." : "Cancel at period end"}
                   </button>
-                  {wallet?.autoReloadEnabled ? <button className="rounded-xl px-4 py-3 text-sm font-semibold text-rose-600 hover:bg-rose-50" type="button" onClick={() => void saveReload(false)} disabled={busy === "reload"}>Remove</button> : null}
-                </div>
+                ) : null}
+                {data?.subscription.cancelAtPeriodEnd ? <p className="m-0 text-sm font-semibold text-amber-300">Cancellation is scheduled for the end of this billing cycle.</p> : null}
               </div>
             </Card>
 
@@ -310,22 +281,22 @@ export function BillingShell() {
                   <span className={`rounded-full px-3 py-1 text-xs font-semibold capitalize ${wallet?.lastPaymentStatus === "success" ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-600"}`}>{wallet?.lastPaymentStatus ?? "none"}</span>
                 </div>
                 <div className="mt-5 grid gap-3 text-sm">
-                  <div className="flex justify-between gap-4"><span className="text-slate-500">Provider</span><strong className="text-slate-950">{wallet?.paymentProvider === "stripe" ? "Stripe" : "Internal / not linked"}</strong></div>
+                  <div className="flex justify-between gap-4"><span className="text-slate-500">Provider</span><strong className="text-slate-950">{wallet?.paymentProvider === "razorpay" ? "Razorpay" : "Internal / not linked"}</strong></div>
                   <div className="flex justify-between gap-4"><span className="text-slate-500">Last payment</span><strong className="text-slate-950">{latestPayment ? money(latestPayment.amountCredits, currency) : money(wallet?.lastPaymentAmountCredits ?? 0, currency)}</strong></div>
                   <div className="flex justify-between gap-4"><span className="text-slate-500">Last checked</span><strong className="text-right text-slate-950">{dateTime(wallet?.lastCheckedAt)}</strong></div>
                 </div>
-                <button className="mt-5 min-h-11 w-full rounded-xl border border-white/10 bg-[#061b18] text-sm font-semibold text-white/70 hover:bg-white/[0.08] hover:text-white disabled:opacity-60" type="button" onClick={() => void openPortal()} disabled={busy === "portal"}>
-                  Open invoices
-                </button>
               </Card>
 
               <Card className="overflow-hidden">
                 <div className="bg-slate-950 p-5 text-white">
                   <h2 className="m-0 text-lg font-semibold">Enterprise credits</h2>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">$500/month credit, priority support, and higher call concurrency.</p>
-                  <button className="mt-5 rounded-xl bg-[#45ddce] px-4 py-2.5 text-sm font-semibold text-[#02110d] hover:bg-[#75fff0] disabled:opacity-60" type="button" onClick={() => void upgradeEnterprise()} disabled={busy === "enterprise"}>
-                    Upgrade
-                  </button>
+                  <p className="mt-2 text-sm leading-6 text-white/65">${data?.enterpriseMonthlyUsd ?? 500}/month credit, priority support, and higher call concurrency.</p>
+                  <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-semibold text-[#9ff8ee]">
+                    <span className="rounded-full border border-[#45ddce]/30 bg-[#45ddce]/10 px-2.5 py-1">Monthly Autopay</span>
+                    <span className="rounded-full border border-[#45ddce]/30 bg-[#45ddce]/10 px-2.5 py-1">Indian cards</span>
+                    <span className="rounded-full border border-[#45ddce]/30 bg-[#45ddce]/10 px-2.5 py-1">International cards</span>
+                  </div>
+                  {data?.subscription.provider !== "razorpay" || data.subscription.status === "cancelled" ? <button className="mt-5 rounded-xl bg-[#45ddce] px-4 py-2.5 text-sm font-semibold text-[#02110d] hover:bg-[#75fff0] disabled:opacity-60" type="button" onClick={() => void upgradeEnterprise()} disabled={busy === "enterprise"}>Start monthly Autopay</button> : null}
                 </div>
               </Card>
             </div>
@@ -366,3 +337,6 @@ export function BillingShell() {
     </main>
   );
 }
+
+
+

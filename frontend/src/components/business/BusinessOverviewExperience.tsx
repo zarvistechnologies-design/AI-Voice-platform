@@ -151,17 +151,18 @@ export function BusinessOverviewExperience() {
   return (
     <SiteLayout>
       <div className="overflow-hidden bg-[#020504] text-white">
-        <section className="relative px-5 pb-20 pt-36 sm:px-8 sm:pt-40 lg:pb-28 lg:pt-44">
+        <section className="relative px-3 pb-20 pt-36 sm:px-5 sm:pt-40 lg:pb-28 lg:pt-44">
           <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(69,221,206,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(69,221,206,0.055)_1px,transparent_1px)] [background-size:54px_54px] [mask-image:linear-gradient(to_bottom,black,transparent_88%)]" aria-hidden="true" />
           <div className="absolute left-1/2 top-0 h-[520px] w-[940px] -translate-x-1/2 rounded-full bg-[#45ddce]/[0.07] blur-[135px]" aria-hidden="true" />
 
-          <div className="relative mx-auto grid max-w-[1280px] items-center gap-14 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="relative mx-auto grid max-w-[1380px] items-center gap-14 lg:grid-cols-[0.9fr_1.1fr]">
             <div className="max-w-2xl">
               <div className="inline-flex items-center gap-2 rounded-full border border-[#45ddce]/22 bg-[#45ddce]/[0.07] px-4 py-2 text-[10px] font-black uppercase tracking-[0.17em] text-[#75fff0]">
                 <span className="size-1.5 rounded-full bg-[#45ddce] shadow-[0_0_10px_#45ddce]" /> AI voice for business
               </div>
-              <h1 className="mt-7 text-[clamp(2.7rem,5.7vw,5.4rem)] leading-[0.96] font-black tracking-[-0.05em]">
-                Every customer call, <span className="text-[#75fff0]">handled with purpose.</span>
+              <h1 className="mt-7 text-[clamp(1.65rem,4.8vw,4.25rem)] leading-[0.98] font-black tracking-[-0.05em]">
+                <span className="block whitespace-nowrap">Every customer call,</span>
+                <span className="block whitespace-nowrap text-[#75fff0]">handled with purpose.</span>
               </h1>
               <p className="mt-7 max-w-xl text-base leading-8 text-white/56 sm:text-lg">
                 Give sales, support, and operations teams AI phone agents that answer naturally, complete real work, and know exactly when to involve a person.

@@ -37,7 +37,7 @@ export function MarketingOverviewPage({ eyebrow, title, summary, groups, proof }
                 <Link className="inline-flex min-h-14 items-center justify-center rounded-lg bg-[#08b8c8] px-8 font-extrabold text-slate-950 shadow-[0_18px_48px_rgba(8,184,200,0.24)] hover:bg-cyan-300" href="/dashboard">
                   Try for free
                 </Link>
-                <Link className="inline-flex min-h-14 items-center justify-center rounded-lg border border-white/16 bg-white/5 px-8 font-extrabold text-white hover:bg-white/10" href="/#contact">
+                <Link className="inline-flex min-h-14 items-center justify-center rounded-lg border border-white/16 bg-white/5 px-8 font-extrabold text-white hover:bg-white/10" href="/contact">
                   Contact sales
                 </Link>
               </div>
@@ -135,7 +135,7 @@ export function MarketingOverviewPage({ eyebrow, title, summary, groups, proof }
             <p className="m-0 mx-auto mt-5 max-w-2xl leading-7 text-slate-800">Start with one focused workflow, then scale across teams, locations, and customer journeys.</p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link className="inline-flex min-h-12 items-center rounded-lg bg-[#111827] px-7 font-extrabold text-white" href="/dashboard">Try for free</Link>
-              <Link className="inline-flex min-h-12 items-center rounded-lg border border-slate-900/20 bg-white px-7 font-extrabold" href="/#contact">Contact sales</Link>
+              <Link className="inline-flex min-h-12 items-center rounded-lg border border-slate-900/20 bg-white px-7 font-extrabold" href="/contact">Contact sales</Link>
             </div>
           </div>
         </section>

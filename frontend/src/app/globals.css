@@ -105,6 +105,46 @@
 }
 
 @layer components {
+  .about-vozon-card {
+    background-color: #050706;
+  }
+
+  .about-vozon-card--teal {
+    border-color: rgb(69 221 206 / 0.35);
+    background-image: linear-gradient(145deg, rgb(69 221 206 / 0.22), rgb(5 31 28 / 0.82) 54%, rgb(0 0 0 / 0.96));
+  }
+
+  .about-vozon-card--teal:hover {
+    border-color: rgb(69 221 206 / 0.7);
+    box-shadow: 0 24px 80px rgb(69 221 206 / 0.22);
+  }
+
+  .about-vozon-card--purple {
+    border-color: rgb(167 139 250 / 0.35);
+    background-image: linear-gradient(145deg, rgb(167 139 250 / 0.24), rgb(27 20 57 / 0.84) 54%, rgb(0 0 0 / 0.96));
+  }
+
+  .about-vozon-card--purple:hover {
+    border-color: rgb(167 139 250 / 0.7);
+    box-shadow: 0 24px 80px rgb(167 139 250 / 0.24);
+  }
+
+  .about-vozon-card--amber {
+    border-color: rgb(246 199 110 / 0.35);
+    background-image: linear-gradient(145deg, rgb(246 199 110 / 0.22), rgb(52 35 13 / 0.82) 54%, rgb(0 0 0 / 0.96));
+  }
+
+  .about-vozon-card--amber:hover {
+    border-color: rgb(246 199 110 / 0.7);
+    box-shadow: 0 24px 80px rgb(246 199 110 / 0.22);
+  }
+
+  @media (min-width: 64rem) {
+    .platform-chevron + .platform-chevron {
+      margin-left: -22px;
+    }
+  }
+
   .agents-home-palette {
     --app-color-heading: #ffffff;
     --app-color-body: rgb(255 255 255 / 0.78);

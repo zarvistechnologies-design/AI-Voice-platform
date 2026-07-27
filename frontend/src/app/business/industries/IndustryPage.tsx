@@ -1009,7 +1009,7 @@ export function LegacyIndustryPage({ slug }: { slug: string }) {
               </Link>
               <Link
                 className="inline-flex min-h-12 items-center rounded-lg border border-[#374151] bg-[#1f2937] px-6 text-sm font-bold text-slate-50 shadow-sm transition hover:-translate-y-0.5 hover:bg-[#374151]"
-                href="/#contact"
+                href="/contact"
               >
                 CONTACT SALES
               </Link>
@@ -1167,7 +1167,7 @@ export function LegacyIndustryPage({ slug }: { slug: string }) {
               </h3>
               <Link
                 className="mt-8 inline-flex min-h-14 items-center rounded-lg px-8 text-sm font-bold tracking-[0.2em] text-slate-950"
-                href="/#contact"
+                href="/contact"
                 style={{ backgroundColor: preset.accent }}
               >
                 FIND A PARTNER
@@ -1237,7 +1237,7 @@ export function LegacyIndustryPage({ slug }: { slug: string }) {
                 </ul>
                 <Link
                   className="mt-12 inline-flex min-h-12 w-full items-center justify-center rounded-lg bg-slate-950 text-sm font-bold text-white"
-                  href="/#contact"
+                  href="/contact"
                 >
                   Talk To Sales
                 </Link>

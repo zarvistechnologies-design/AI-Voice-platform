@@ -46,7 +46,7 @@ export default async function ResourcePage({ params }: ResourcePageProps) {
       summary={resource.summary}
       highlights={resource.highlights}
       sections={resource.sections}
-      primaryAction={{ href: "/#contact", label: "Contact Sales" }}
+      primaryAction={{ href: "/contact", label: "Contact Sales" }}
       secondaryAction={{ href: "/resources/blog", label: "Visit Blog" }}
     />
   );

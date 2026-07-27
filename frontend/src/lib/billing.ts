@@ -1,4 +1,4 @@
-import { API_URL } from "@/lib/apiBase";
+﻿import { API_URL } from "@/lib/apiBase";
 import { cachedApiRequest, invalidateApiCache } from "@/lib/apiCache";
 import { getAuthHeaders, getSession } from "@/lib/auth";
 
@@ -25,9 +25,7 @@ export type CreditWallet = {
   autoReloadEnabled: boolean;
   reloadThresholdCredits: number;
   reloadAmountCredits: number;
-  paymentProvider: "" | "internal" | "stripe";
-  stripeCustomerId: string;
-  stripePaymentMethodId: string;
+  paymentProvider: "" | "internal" | "razorpay";
   lastPaymentStatus: "none" | "pending" | "success" | "failed";
   lastPaymentAmountCredits: number;
   lastPaymentAt?: string;
@@ -44,8 +42,6 @@ export type BillingTransaction = {
   currency: string;
   description: string;
   callId: string;
-  stripeSessionId?: string;
-  stripePaymentIntentId: string;
   balanceAfterCredits: number;
   breakdown: {
     llm: number;
@@ -63,6 +59,7 @@ export type BillingTransaction = {
 
 export type BillingSummary = {
   configured: boolean;
+  enterpriseMonthlyUsd: number;
   wallet: CreditWallet;
   creditSettings: {
     currency: string;
@@ -73,9 +70,8 @@ export type BillingSummary = {
   };
   subscription: {
     plan: PlanId;
-    provider: "internal" | "stripe";
+    provider: "internal" | "razorpay";
     status: "active" | "trialing" | "past_due" | "cancelled" | "incomplete";
-    stripeCustomerId: string;
     currentPeriodEnd?: string;
     cancelAtPeriodEnd: boolean;
   };
@@ -107,6 +103,19 @@ export type BillingSummary = {
   transactions: BillingTransaction[];
 };
 
+export type RazorpayCheckoutPayload = {
+  provider: "razorpay";
+  kind: "order" | "subscription";
+  keyId: string;
+  orderId?: string;
+  subscriptionId?: string;
+  amount: number;
+  currency: "USD";
+  credits?: number;
+  name: string;
+  description: string;
+  prefill: { name?: string; email?: string };
+};
 async function request<T>(path: string, init: RequestInit = {}) {
   if (!getSession()) throw new Error("Sign in before managing billing.");
   const response = await fetch(`${API_URL}/api/billing${path}`, {
@@ -125,11 +134,16 @@ async function request<T>(path: string, init: RequestInit = {}) {
 
 export const billingApi = {
   summary: () => cachedApiRequest("billing", "/summary", 15_000, () => request<BillingSummary>("/summary")),
-  transactions: (limit = 50) => request<{ transactions: BillingTransaction[] }>(`/transactions?limit=${limit}`),
+  transactions: (limit = 50) => request<{ transactions: BillingTransaction[] }>("/transactions?limit=" + limit),
   topUp: (amountCredits: number) =>
-    request<{ url: string }>("/top-up", {
+    request<RazorpayCheckoutPayload>("/top-up", {
       method: "POST",
       body: JSON.stringify({ amountCredits }),
+    }),
+  verifyTopUp: (result: { razorpay_order_id?: string; razorpay_payment_id: string; razorpay_signature: string }) =>
+    request<{ success: boolean; credits: number; invoiceId: string }>("/razorpay/verify", {
+      method: "POST",
+      body: JSON.stringify(result),
     }),
   updateAutoReload: async (input: { enabled: boolean; thresholdCredits: number; reloadAmountCredits: number }) => {
     const result = await request<{ wallet: CreditWallet }>("/auto-reload", {
@@ -140,9 +154,18 @@ export const billingApi = {
     return result;
   },
   checkout: (plan: Exclude<PlanId, "free">) =>
-    request<{ url: string }>("/checkout", {
+    request<RazorpayCheckoutPayload>("/checkout", {
       method: "POST",
       body: JSON.stringify({ plan }),
     }),
-  portal: () => request<{ url: string }>("/portal", { method: "POST" }),
+  verifySubscription: (result: { razorpay_subscription_id?: string; razorpay_payment_id: string; razorpay_signature: string }) =>
+    request<{ success: boolean; status: string }>("/razorpay/subscription/verify", {
+      method: "POST",
+      body: JSON.stringify(result),
+    }),
+  cancelSubscription: (immediate = false) =>
+    request<{ subscription: { status: string } }>("/razorpay/subscription/cancel", {
+      method: "POST",
+      body: JSON.stringify({ immediate }),
+    }),
 };

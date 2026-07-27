@@ -23,8 +23,8 @@ export type ProductServiceExperience = {
 export const productServiceExperiences: Record<string, ProductServiceExperience> = {
   "voice-agents": {
     label: "Conversational AI",
-    heroTitle: "AI voice agents that handle the call,",
-    heroAccent: "not just the greeting.",
+    heroTitle: "Build Intelligent",
+    heroAccent: "Voice Agents",
     proof: [
       { value: "24/7", label: "inbound and outbound coverage" },
       { value: "Live", label: "tool use during conversations" },
@@ -77,8 +77,8 @@ export const productServiceExperiences: Record<string, ProductServiceExperience>
   },
   "voice-cloning": {
     label: "Voice creation",
-    heroTitle: "Create a recognizable voice,",
-    heroAccent: "then keep it under control.",
+    heroTitle: "Create a Voice",
+    heroAccent: "Keep It Yours",
     proof: [
       { value: "One", label: "consistent voice identity" },
       { value: "Fast", label: "script-to-speech iteration" },
@@ -131,8 +131,8 @@ export const productServiceExperiences: Record<string, ProductServiceExperience>
   },
   "realtime-tts": {
     label: "Text to speech",
-    heroTitle: "Turn text into responsive speech,",
-    heroAccent: "as the conversation happens.",
+    heroTitle: "Text to Speech",
+    heroAccent: "In Real Time",
     proof: [
       { value: "Stream", label: "audio as text is generated" },
       { value: "Tune", label: "voice, pace, and pronunciation" },
@@ -185,8 +185,8 @@ export const productServiceExperiences: Record<string, ProductServiceExperience>
   },
   "multilingual-speech": {
     label: "Global speech",
-    heroTitle: "Speak across markets,",
-    heroAccent: "without losing the meaning.",
+    heroTitle: "Speak Worldwide",
+    heroAccent: "Keep Every Nuance",
     proof: [
       { value: "Global", label: "language-ready workflows" },
       { value: "Local", label: "terms and pronunciation" },
@@ -239,8 +239,8 @@ export const productServiceExperiences: Record<string, ProductServiceExperience>
   },
   "api-access": {
     label: "Developer platform",
-    heroTitle: "Put voice workflows inside",
-    heroAccent: "the products you already build.",
+    heroTitle: "Embed Voice AI",
+    heroAccent: "In Your Product",
     proof: [
       { value: "API", label: "agent and speech primitives" },
       { value: "Events", label: "webhooks for workflow state" },
@@ -293,8 +293,8 @@ export const productServiceExperiences: Record<string, ProductServiceExperience>
   },
   "team-workflows": {
     label: "Voice operations",
-    heroTitle: "Give every team one place",
-    heroAccent: "to build and govern agents.",
+    heroTitle: "Unite Every Team",
+    heroAccent: "Govern Agents",
     proof: [
       { value: "Shared", label: "templates and knowledge" },
       { value: "Clear", label: "review and publishing roles" },
@@ -347,8 +347,8 @@ export const productServiceExperiences: Record<string, ProductServiceExperience>
   },
   "speech-analytics": {
     label: "Call intelligence",
-    heroTitle: "Turn every conversation",
-    heroAccent: "into structured, useful data.",
+    heroTitle: "Read Every Call",
+    heroAccent: "Use Every Insight",
     proof: [
       { value: "Search", label: "transcripts and call topics" },
       { value: "Track", label: "outcomes and action items" },
@@ -401,8 +401,8 @@ export const productServiceExperiences: Record<string, ProductServiceExperience>
   },
   "sentiment-detection": {
     label: "Conversation signals",
-    heroTitle: "Know when a call",
-    heroAccent: "needs more care.",
+    heroTitle: "Hear the Emotion",
+    heroAccent: "Respond With Care",
     proof: [
       { value: "Live", label: "conversation signals" },
       { value: "Flag", label: "calls for focused review" },
@@ -455,8 +455,8 @@ export const productServiceExperiences: Record<string, ProductServiceExperience>
   },
   "conversation-insights": {
     label: "Customer intelligence",
-    heroTitle: "Find the themes hiding",
-    heroAccent: "across every customer call.",
+    heroTitle: "Find Call Themes",
+    heroAccent: "Across Every Call",
     proof: [
       { value: "Group", label: "calls by intent and theme" },
       { value: "Compare", label: "segments and workflows" },
@@ -509,8 +509,8 @@ export const productServiceExperiences: Record<string, ProductServiceExperience>
   },
   "quality-controls": {
     label: "AI governance",
-    heroTitle: "Keep every voice workflow",
-    heroAccent: "inside the boundaries you approve.",
+    heroTitle: "Control Calls",
+    heroAccent: "Stay Within Limits",
     proof: [
       { value: "Test", label: "critical paths before launch" },
       { value: "Limit", label: "answers, actions, and access" },
