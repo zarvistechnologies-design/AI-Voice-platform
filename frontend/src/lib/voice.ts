@@ -290,6 +290,19 @@ export type BackendAgent = {
   dynamicVariables: string[];
   prefetchWebhook: string;
   endOfCallWebhook: string;
+  googleCalendar: {
+    enabled: boolean;
+    calendarId: string;
+    calendarName: string;
+    timezone: string;
+    appointmentDurationMinutes: number;
+  };
+  googleSheets: {
+    enabled: boolean;
+    spreadsheetId: string;
+    spreadsheetName: string;
+    sheetName: string;
+  };
   widget: AgentWidget;
   version: number;
   latencyMetrics?: {

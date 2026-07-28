@@ -91,6 +91,8 @@ type VoiceAgent = {
   dynamicVariables: string[];
   prefetchWebhook: string;
   endOfCallWebhook: string;
+  googleCalendar: BackendAgent["googleCalendar"];
+  googleSheets: BackendAgent["googleSheets"];
   widget: AgentWidget;
   version: number;
 };
@@ -216,6 +218,8 @@ const agents: VoiceAgent[] = [{
   dynamicVariables: ["FromPhone", "ToPhone"],
   prefetchWebhook: "",
   endOfCallWebhook: "",
+  googleCalendar: { enabled: false, calendarId: "", calendarName: "", timezone: "Asia/Kolkata", appointmentDurationMinutes: 30 },
+  googleSheets: { enabled: false, spreadsheetId: "", spreadsheetName: "", sheetName: "Sheet1" },
   widget: defaultWidget,
   version: 1,
 }];
@@ -3475,6 +3479,8 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
           dynamicVariables: savingAgent.dynamicVariables,
           prefetchWebhook: savingAgent.prefetchWebhook,
           endOfCallWebhook: savingAgent.endOfCallWebhook,
+          googleCalendar: savingAgent.googleCalendar,
+          googleSheets: savingAgent.googleSheets,
           widget: savingAgent.widget,
           ...changes,
         });
@@ -4688,6 +4694,40 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
 
                 {activeTab === "tools" ? (
                   <div className="grid gap-4">
+                    <section className="grid gap-4 rounded-xl border border-[#99f6e8] bg-[#ecfeff] p-4">
+                      <div>
+                        <h3 className="app-section-title m-0">Native Google tools</h3>
+                        <span className="app-caption">Assign the Google resources this agent may access. Connect Google first on Dashboard → Integrations.</span>
+                      </div>
+                      <div className="grid gap-4 lg:grid-cols-2">
+                        <article className="grid gap-3 rounded-xl border border-[#bae6fd] bg-white p-4">
+                          <ToggleRow
+                            title="Google Calendar"
+                            detail="Check availability and create confirmed appointments during calls."
+                            enabled={selectedAgent.googleCalendar.enabled}
+                            onChange={(enabled) => updateSelectedAgent({ googleCalendar: { ...selectedAgent.googleCalendar, enabled } })}
+                          />
+                          <InputField label="Calendar ID" value={selectedAgent.googleCalendar.calendarId} placeholder="primary or calendar email" onChange={(calendarId) => updateSelectedAgent({ googleCalendar: { ...selectedAgent.googleCalendar, calendarId } })} />
+                          <InputField label="Calendar name" value={selectedAgent.googleCalendar.calendarName} placeholder="Sales appointments" onChange={(calendarName) => updateSelectedAgent({ googleCalendar: { ...selectedAgent.googleCalendar, calendarName } })} />
+                          <div className="grid gap-3 sm:grid-cols-2">
+                            <InputField label="Timezone" value={selectedAgent.googleCalendar.timezone} placeholder="Asia/Kolkata" onChange={(timezone) => updateSelectedAgent({ googleCalendar: { ...selectedAgent.googleCalendar, timezone } })} />
+                            <InputField label="Duration (minutes)" value={String(selectedAgent.googleCalendar.appointmentDurationMinutes)} onChange={(value) => updateSelectedAgent({ googleCalendar: { ...selectedAgent.googleCalendar, appointmentDurationMinutes: Number(value) || 30 } })} />
+                          </div>
+                        </article>
+                        <article className="grid gap-3 rounded-xl border border-[#bbf7d0] bg-white p-4">
+                          <ToggleRow
+                            title="Google Sheets"
+                            detail="Let the agent append qualified leads and outcomes to a selected sheet."
+                            enabled={selectedAgent.googleSheets.enabled}
+                            onChange={(enabled) => updateSelectedAgent({ googleSheets: { ...selectedAgent.googleSheets, enabled } })}
+                          />
+                          <InputField label="Spreadsheet ID" value={selectedAgent.googleSheets.spreadsheetId} placeholder="Google spreadsheet ID" onChange={(spreadsheetId) => updateSelectedAgent({ googleSheets: { ...selectedAgent.googleSheets, spreadsheetId } })} />
+                          <InputField label="Spreadsheet name" value={selectedAgent.googleSheets.spreadsheetName} placeholder="Inbound leads" onChange={(spreadsheetName) => updateSelectedAgent({ googleSheets: { ...selectedAgent.googleSheets, spreadsheetName } })} />
+                          <InputField label="Sheet tab" value={selectedAgent.googleSheets.sheetName} placeholder="Sheet1" onChange={(sheetName) => updateSelectedAgent({ googleSheets: { ...selectedAgent.googleSheets, sheetName } })} />
+                          <span className="app-caption">Rows: timestamp, customer, phone, email, outcome, notes, call ID.</span>
+                        </article>
+                      </div>
+                    </section>
                     <section className="grid gap-3">
                       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                         <div>
@@ -5705,6 +5745,8 @@ function mapBackendAgent(agent: BackendAgent): VoiceAgent {
     dynamicVariables: agent.dynamicVariables ?? ["FromPhone", "ToPhone"],
     prefetchWebhook: agent.prefetchWebhook ?? "",
     endOfCallWebhook: agent.endOfCallWebhook ?? "",
+    googleCalendar: agent.googleCalendar ?? { enabled: false, calendarId: "", calendarName: "", timezone: "Asia/Kolkata", appointmentDurationMinutes: 30 },
+    googleSheets: agent.googleSheets ?? { enabled: false, spreadsheetId: "", spreadsheetName: "", sheetName: "Sheet1" },
     widget: { ...defaultWidget, ...agent.widget },
     version: agent.version ?? 1,
   };
