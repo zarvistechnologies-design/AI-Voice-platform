@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { API_URL } from "@/lib/apiBase";
 import { loginWithGoogle, validateStoredSession } from "@/lib/auth";
 
 type GoogleCredentialResponse = {
@@ -30,6 +29,9 @@ declare global {
 }
 
 const googleScriptId = "google-identity-services";
+const googleClientId =
+  process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID?.trim()
+  || "754509312565-iu2catjmjqrncv1vtogguavcsrfrp907.apps.googleusercontent.com";
 
 function loadGoogleIdentityScript() {
   return new Promise<void>((resolve, reject) => {
@@ -72,19 +74,11 @@ export function GoogleSignInButton({
 
     void (async () => {
       try {
-        const response = await fetch(`${API_URL}/api/auth/google/config`, {
-          credentials: "include",
-          cache: "no-store",
-        });
-        const data = await response.json().catch(() => null) as { clientId?: string; message?: string } | null;
-        if (!response.ok || !data?.clientId) {
-          throw new Error(data?.message ?? "Google sign-in is not available.");
-        }
         await loadGoogleIdentityScript();
         if (cancelled || !containerRef.current || !window.google?.accounts.id) return;
 
         window.google.accounts.id.initialize({
-          client_id: data.clientId,
+          client_id: googleClientId,
           cancel_on_tap_outside: true,
           callback: async ({ credential }) => {
             if (!credential) {
