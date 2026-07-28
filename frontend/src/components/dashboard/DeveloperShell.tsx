@@ -140,10 +140,12 @@ function sampleCallResponse() {
       "to": "+918047280782",
       "direction": "inbound"
     },
-    "recording_url": "https://www.vozon.ai/api/v1/calls/call_id/recording",
+    "recording_url": "https://www.vozon.ai/api/v1/calls/call_id/recording/play?expires=1785432000&token=signed_token",
     "recording": {
       "key": "recordings/inbound-...mp3",
-      "url": "https://www.vozon.ai/api/v1/calls/call_id/recording",
+      "url": "https://www.vozon.ai/api/v1/calls/call_id/recording/play?expires=1785432000&token=signed_token",
+      "apiUrl": "https://www.vozon.ai/api/v1/calls/call_id/recording",
+      "urlExpiresAt": "2026-08-27T12:00:00.000Z",
       "status": "completed"
     },
     "chat": [
@@ -191,7 +193,7 @@ function sampleWebhookPayload() {
       "to": "+918047280782",
       "direction": "inbound"
     },
-    "recording_url": "https://www.vozon.ai/api/v1/calls/call_id/recording",
+    "recording_url": "https://www.vozon.ai/api/v1/calls/call_id/recording/play?expires=1785432000&token=signed_token",
     "chat": [],
     "transcription_text": "Customer: Hello\\nAgent: Hi, how can I help?",
     "providers": {
