@@ -30,7 +30,7 @@ const integrationSteps = [
       { before: "Sync knowledge from your ", strong: "CRM, calendar, and docs", after: "." },
     ],
     tags: ["Flow builder", "Knowledge base"],
-    src: "/images/st1.png"
+    src: "/images/stt1.png"
   },
   {
     number: "02",
@@ -85,7 +85,7 @@ const fitSections = [
         body: "Run outbound surveys and collect structured feedback without adding more manual calling work.",
       },
     ],
-    src: "/images/customer.png"
+    src: "/images/voice_healthcare_3.avif"
   },
   {
     key: "assistants",
@@ -104,7 +104,7 @@ const fitSections = [
         body: "Escalate sensitive or complex calls with context, transcript, and caller intent already captured.",
       },
     ],
-     src: "/images/virtualAssistance.png"
+     src: "/images/virtualAssistance1.png"
   },
   {
     key: "devices",
@@ -123,7 +123,7 @@ const fitSections = [
         body: "Let customers continue from device to phone or web while preserving the same conversation context.",
       },
     ],
-     src: "/images/voice.png"
+     src: "/images/voice_healthcare.avif"
   },
   {
     key: "healthcare",
@@ -142,7 +142,7 @@ const fitSections = [
         body: "Capture patient needs after hours and route urgent or sensitive requests to the right care team.",
       },
     ],
-     src: "/images/healthcare.png"
+     src: "/images/healthcare.avif"
    
   },
   {
@@ -162,7 +162,7 @@ const fitSections = [
         body: "Support travelers across languages and time zones with consistent information and clear human handoffs.",
       },
     ],
-      src: "/images/travel.png"
+      src: "/images/travelAndHos.png"
   },
 ];
 
@@ -309,7 +309,6 @@ function GlowButton({ children, href }: { children: string; href: string }) {
 export function HomePlatformSections() {
   const [selectedFitKey, setSelectedFitKey] = useState("support");
   const selectedFit = fitSections.find((section) => section.key === selectedFitKey) ?? fitSections[0];
-  const selectedFitIndex = Math.max(0, fitSections.findIndex((section) => section.key === selectedFit.key));
 
   return (
     <div className="vozon-home relative isolate overflow-hidden bg-black text-white">
@@ -522,73 +521,64 @@ export function HomePlatformSections() {
         </div>
 
         <div className="relative z-10 mx-auto max-w-[1240px]">
-          <div className="vozon-fit-rows space-y-6 lg:space-y-8">
+          <div className="mt-10 space-y-6 lg:hidden">
             {fitSections.map((section, index) => (
-              <article
-                className="vozon-fit-row grid overflow-hidden lg:grid-cols-2"
-                key={section.key}
-              >
-                <div
-                  className={`vozon-fit-image relative order-2 min-h-[260px] overflow-hidden sm:min-h-[320px] ${index % 2 === 0 ? "lg:order-2" : "lg:order-1"}`}
-                >
+              <article className="vozon-fit-mobile-item overflow-hidden" key={section.key}>
+                <div className="flex items-center gap-3 px-5 py-4">
+                  <span className="vozon-fit-compact-number">{String(index + 1).padStart(2, "0")}</span>
+                  <h3 className="m-0 text-base font-black text-white">{section.label}</h3>
+                </div>
+                <div className="relative min-h-[250px]">
                   <Image
                     src={section.src}
                     alt={section.label}
                     fill
-                    className="object-cover"
-                    sizes="(max-width: 150px) 150vw, 30vw"
+                    className="object-cover object-top"
+                    sizes="100vw"
                   />
-                </div>
-                <div
-                  className={`order-1 flex flex-col justify-center px-6 py-10 sm:px-10 lg:px-14 lg:py-14 ${index % 2 === 0 ? "lg:order-1" : "lg:order-2"}`}
-                >
-                  <p className="m-0 text-[11px] font-black uppercase tracking-[0.22em] text-[#75fff0]">
-                    Industry {String(index + 1).padStart(2, "0")}
-                  </p>
-                  <h3 className="mt-4 mb-0 text-2xl font-black leading-tight text-white sm:text-3xl">
-                    {section.label}
-                  </h3>
-                  <div className="mt-7 space-y-4">
-                    {section.columns.map((column) => (
-                      <div className="vozon-fit-detail" key={column.title}>
-                        <h4 className="m-0 text-sm font-black text-white/88 sm:text-base">
-                          {column.title}
-                        </h4>
-                        <p className="mt-2 mb-0 text-sm leading-6 text-white/54">
-                          {column.body}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
                 </div>
               </article>
             ))}
           </div>
 
-          {/* <div
+          <div className="vozon-fit-compact mt-10 hidden gap-6 lg:grid lg:grid-cols-[minmax(280px,0.72fr)_minmax(0,1.28fr)] lg:gap-10">
+            <div aria-label="Vozon industry use cases" className="order-2 space-y-2 lg:order-1" role="tablist">
+              {fitSections.map((section, index) => (
+                <button
+                  aria-controls={`vozon-fit-panel-${section.key}`}
+                  aria-selected={selectedFit.key === section.key}
+                  className={`vozon-fit-compact-tab w-full text-left ${selectedFit.key === section.key ? "is-active" : ""}`}
+                  id={`vozon-fit-tab-${section.key}`}
+                  key={section.key}
+                  onClick={() => setSelectedFitKey(section.key)}
+                  role="tab"
+                  type="button"
+                >
+                  <span className="vozon-fit-compact-number">{String(index + 1).padStart(2, "0")}</span>
+                  <span>{section.label}</span>
+                </button>
+              ))}
+            </div>
+
+            <div
               aria-labelledby={`vozon-fit-tab-${selectedFit.key}`}
-              className={`vozon-fit-content-grid vozon-fit-theme-${selectedFitIndex + 1} grid lg:grid-cols-3`}
+              className="vozon-fit-compact-image relative order-1 min-h-[300px] overflow-hidden sm:min-h-[420px] lg:order-2"
               id={`vozon-fit-panel-${selectedFit.key}`}
               role="tabpanel"
             >
-              {selectedFit.columns.map((column, index) => (
-                <article
-                  className="vozon-fit-content min-h-[250px] px-7 py-8 sm:px-8 sm:py-9"
-                  key={column.title}
-                >
-                  <div className="vozon-fit-card-meta mb-7 flex items-center gap-3">
-                    <span className="vozon-fit-index grid size-10 place-items-center rounded-lg text-xs font-black">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <span className="vozon-fit-kicker text-[10px] font-black uppercase tracking-[0.18em]">
-                      Use case
-                    </span>
-                  </div>
-                  <h3 className="m-0 text-xl font-black leading-tight text-white">{column.title}</h3>
-                  <p className="mt-4 mb-0 text-sm leading-7 text-white/58 sm:text-base">{column.body}</p>
-                </article>
-              ))}
-            </div> */}
+              <Image
+                src={selectedFit.src}
+                alt={selectedFit.label}
+                fill
+                className="object-cover object-top"
+                sizes="(max-width: 1024px) 100vw, 65vw"
+              />
+              <div className="vozon-fit-compact-image-label">
+                <span>Industry solution</span>
+                <strong>{selectedFit.label}</strong>
+              </div>
+            </div>
+          </div>
         </div>
         {/* </div> */}
       </section>
@@ -640,8 +630,11 @@ export function HomePlatformSections() {
                     <IntegrationIcon icon={step.icon} />
                   </div> */}
 
-                  <div className="vozon-integration-icon grid size-[52px] place-items-center rounded-[15px] border border-[#45ddce]/28 bg-[#45ddce]/10 text-[#9dfff4]">
-                    <IntegrationIcon icon={step.icon} />
+                  <div className="flex items-center gap-4">
+                    <div className="vozon-integration-icon grid size-[52px] shrink-0 place-items-center rounded-[15px] border border-[#45ddce]/28 bg-[#45ddce]/10 text-[#9dfff4]">
+                      <IntegrationIcon icon={step.icon} />
+                    </div>
+                    <h3 className="m-0 text-xl font-black leading-tight text-white sm:text-2xl">{step.title}</h3>
                   </div>
 
                   <ul className="mt-5 space-y-3.5 p-0 text-sm leading-6 text-white/55 sm:text-base">
@@ -862,6 +855,96 @@ export function HomePlatformSections() {
 
         .vozon-fit-section {
           background: transparent;
+        }
+
+        .vozon-fit-compact-tab {
+          display: flex;
+          min-height: 3.8rem;
+          align-items: center;
+          gap: 0.9rem;
+          padding: 0.75rem 0.9rem;
+          border: 1px solid transparent;
+          border-radius: 0.8rem;
+          color: rgba(255,255,255,0.55);
+          font-size: 0.95rem;
+          font-weight: 800;
+          line-height: 1.3;
+          transition: border-color 180ms ease, background 180ms ease, color 180ms ease;
+        }
+
+        .vozon-fit-compact-tab:hover,
+        .vozon-fit-compact-tab.is-active {
+          border-color: rgba(69,221,206,0.3);
+          background: rgba(69,221,206,0.07);
+          color: #fff;
+        }
+
+        .vozon-fit-compact-number {
+          display: grid;
+          width: 2rem;
+          height: 2rem;
+          flex: 0 0 auto;
+          place-items: center;
+          border: 1px solid rgba(69,221,206,0.28);
+          border-radius: 0.55rem;
+          color: #75fff0;
+          font-size: 0.65rem;
+          font-weight: 900;
+        }
+
+        .vozon-fit-mobile-item {
+          border: 1px solid rgba(69,221,206,0.18);
+          border-radius: 0.9rem;
+          background: rgba(255,255,255,0.02);
+        }
+
+        .vozon-fit-compact-tab.is-active .vozon-fit-compact-number {
+          background: #45ddce;
+          color: #031411;
+          box-shadow: 0 0 18px rgba(69,221,206,0.24);
+        }
+
+        .vozon-fit-compact-image {
+          border: 1px solid rgba(69,221,206,0.18);
+          border-radius: 1rem;
+          background: #071512;
+          box-shadow: 0 24px 70px rgba(0,0,0,0.24);
+        }
+
+        .vozon-fit-compact-image::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          background: linear-gradient(to top, rgba(2,10,8,0.78), transparent 48%);
+        }
+
+        .vozon-fit-compact-image-label {
+          position: absolute;
+          z-index: 1;
+          right: 1.5rem;
+          bottom: 1.5rem;
+          left: 1.5rem;
+        }
+
+        .vozon-fit-compact-image-label span,
+        .vozon-fit-compact-image-label strong {
+          display: block;
+        }
+
+        .vozon-fit-compact-image-label span {
+          color: #75fff0;
+          font-size: 0.65rem;
+          font-weight: 900;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+        }
+
+        .vozon-fit-compact-image-label strong {
+          margin-top: 0.35rem;
+          color: #fff;
+          font-size: 1.35rem;
+          line-height: 1.2;
         }
 
         .vozon-fit-panel {
@@ -4090,4 +4173,3 @@ export function HomePlatformSections() {
     </div>
   );
 }
-
