@@ -33,10 +33,22 @@ const catalog = {
     description: "Send automatic call completion notifications to a Slack channel.",
     color: "from-cyan-500 to-cyan-400",
   },
+  google_calendar: {
+    name: "Google Calendar",
+    category: "Scheduling",
+    description: "Check live availability and let selected voice agents create appointments during calls.",
+    color: "from-blue-500 to-cyan-400",
+  },
+  google_sheets: {
+    name: "Google Sheets",
+    category: "Data & leads",
+    description: "Append qualified leads and call outcomes to a spreadsheet and sheet tab you select.",
+    color: "from-cyan-500 to-cyan-400",
+  },
   google: {
-    name: "Google Workspace",
-    category: "Calendar & data",
-    description: "Connect Google Calendar and Sheets, then assign selected resources to individual voice agents.",
+    name: "Google",
+    category: "Google Workspace",
+    description: "Shared authorization for Google Calendar and Google Sheets.",
     color: "from-cyan-500 to-cyan-400",
   },
 } as const;
@@ -94,13 +106,14 @@ export function IntegrationsShell() {
   }
 
   async function disconnect(provider: Exclude<IntegrationProvider["id"], "vobiz">) {
-    if (!window.confirm(`Disconnect ${catalog[provider].name}?`)) return;
+    const providerName = provider === "google" ? "Google Calendar and Sheets" : catalog[provider].name;
+    if (!window.confirm(`Disconnect ${providerName}?`)) return;
     setBusy(true);
     try {
       if (provider === "google") await integrationsApi.disconnectGoogle();
       else await integrationsApi.disconnect(provider);
       await load();
-      setNotice(`${catalog[provider].name} disconnected.`);
+      setNotice(`${providerName} disconnected.`);
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not disconnect integration.");
     } finally {
@@ -119,10 +132,12 @@ export function IntegrationsShell() {
     }
   }
 
-  async function openGoogleManager() {
+  async function openGoogleManager(view: "calendar" | "sheets") {
     setBusy(true);
     try {
-      setCalendars((await integrationsApi.googleCalendars()).calendars);
+      if (view === "calendar") {
+        setCalendars((await integrationsApi.googleCalendars()).calendars);
+      }
       setManageGoogle(true);
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not load Google resources.");
@@ -142,6 +157,21 @@ export function IntegrationsShell() {
       setBusy(false);
     }
   }
+
+  const displayProviders = providers.reduce<Array<{
+    provider: IntegrationProvider;
+    displayId: keyof typeof catalog;
+  }>>((items, provider) => {
+    if (provider.id === "google") {
+      items.push(
+        { provider, displayId: "google_calendar" },
+        { provider, displayId: "google_sheets" },
+      );
+    } else {
+      items.push({ provider, displayId: provider.id });
+    }
+    return items;
+  }, []);
 
   if (!session) return <main className="grid min-h-screen place-items-center bg-slate-50 text-sm font-semibold">Loading integrations</main>;
 
@@ -169,15 +199,16 @@ export function IntegrationsShell() {
           </header>
           {notice ? <div className="rounded-xl border border-cyan-200 bg-cyan-50 px-4 py-3 text-sm text-cyan-800">{notice}</div> : null}
           <section className="grid gap-4 md:grid-cols-2">
-            {providers.map((provider) => {
-              const item = catalog[provider.id];
+            {displayProviders.map(({ provider, displayId }) => {
+              const item = catalog[displayId];
+              const googleView = displayId === "google_calendar" ? "calendar" : "sheets";
               return (
-                <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm" key={provider.id}>
+                <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm" key={displayId}>
                   <div className="p-5">
                     <div className="flex items-start justify-between gap-4"><div><span className="text-xs font-semibold uppercase tracking-wider text-slate-500">{item.category}</span><h2 className="mt-2 text-xl font-semibold">{item.name}</h2></div><span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase ${provider.connected ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-600"}`}>{provider.connected ? "Connected" : "Available"}</span></div>
                     <p className="mt-3 min-h-12 text-sm leading-6 text-slate-600">{item.description}</p>
                     {provider.connected ? <div className="mt-4 rounded-xl bg-slate-50 p-3"><strong className="block text-sm">{provider.accountId}</strong><span className="mt-1 block text-xs text-slate-500">Verified {provider.lastVerifiedAt ? new Date(provider.lastVerifiedAt).toLocaleString() : "recently"}</span></div> : null}
-                    <div className="mt-5 flex flex-wrap gap-2">{provider.id === "vobiz" ? <Link className="rounded-xl bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-white" href="/dashboard/phone-number" prefetch={false} onFocus={() => router.prefetch("/dashboard/phone-number")} onMouseEnter={() => router.prefetch("/dashboard/phone-number")} onPointerDown={() => router.prefetch("/dashboard/phone-number")}>Manage Vobiz</Link> : provider.id === "google" ? provider.connected ? <><button className="rounded-xl bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-white" disabled={busy} type="button" onClick={() => void openGoogleManager()}>Manage resources</button><button className="rounded-xl border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-700" disabled={busy} type="button" onClick={() => void disconnect("google")}>Disconnect</button></> : <button className="rounded-xl bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-white" disabled={busy} type="button" onClick={() => void connectGoogle()}>Connect Google</button> : provider.connected ? <button className="rounded-xl border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-700" disabled={busy} type="button" onClick={() => void disconnect(provider.id as Exclude<IntegrationProvider["id"], "vobiz">)}>Disconnect</button> : <button className="rounded-xl bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-white" type="button" onClick={() => { setSelected(provider.id as Exclude<IntegrationProvider["id"], "vobiz">); setCredential(""); }}>Connect {item.name}</button>}</div>
+                    <div className="mt-5 flex flex-wrap gap-2">{provider.id === "vobiz" ? <Link className="rounded-xl bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-white" href="/dashboard/phone-number" prefetch={false} onFocus={() => router.prefetch("/dashboard/phone-number")} onMouseEnter={() => router.prefetch("/dashboard/phone-number")} onPointerDown={() => router.prefetch("/dashboard/phone-number")}>Manage Vobiz</Link> : provider.id === "google" ? provider.connected ? <><button className="rounded-xl bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-white" disabled={busy} type="button" onClick={() => void openGoogleManager(googleView)}>Configure {item.name}</button><button className="rounded-xl border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-700" disabled={busy} type="button" onClick={() => void disconnect("google")}>Disconnect Google</button></> : <button className="rounded-xl bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-white" disabled={busy} type="button" onClick={() => void connectGoogle()}>Connect {item.name}</button> : provider.connected ? <button className="rounded-xl border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-700" disabled={busy} type="button" onClick={() => void disconnect(provider.id as Exclude<IntegrationProvider["id"], "vobiz">)}>Disconnect</button> : <button className="rounded-xl bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-white" type="button" onClick={() => { setSelected(provider.id as Exclude<IntegrationProvider["id"], "vobiz">); setCredential(""); }}>Connect {item.name}</button>}</div>
                   </div>
                 </article>
               );
