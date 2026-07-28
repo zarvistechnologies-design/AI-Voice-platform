@@ -10,6 +10,7 @@ import {
   registerWithPassword,
   validateStoredSession,
 } from "@/lib/auth";
+import { GoogleSignInButton } from "@/components/auth/GoogleSignInButton";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 function getNextPath(path: string | null) {
@@ -258,6 +259,14 @@ export function LoginForm() {
               ? "Create account"
               : recoveryNotice ? "Send again" : "Send reset link"}
       </button>
+
+      {mode !== "forgot" ? (
+        <GoogleSignInButton
+          disabled={isSubmitting}
+          nextPath={nextPath}
+          onError={setError}
+        />
+      ) : null}
 
       <button
         className="inline-flex min-h-9 items-center justify-center border-0 bg-transparent text-xs font-semibold text-white/40 disabled:cursor-wait disabled:opacity-70"
