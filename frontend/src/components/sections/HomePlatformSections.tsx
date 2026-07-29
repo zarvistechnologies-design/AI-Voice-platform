@@ -349,10 +349,10 @@ function IntegrationAppLogo({ app }: { app: (typeof appIntegrations)[number] }) 
 
   if (app.key === "salesforce") return <span className="vozon-app-salesforce">salesforce</span>;
 
-  if (app.key === "zoho") return <Image alt="" height={42} src="/images/integrations/zoho.svg" width={52} />;
+  if (app.key === "zoho") return <Image alt="" height={42} src="/images/integrations/zoho.svg" width={42} />;
   if (app.key === "calendar") return <Image alt="" height={40} src="/images/integrations/google-calendar.svg" width={40} />;
   if (app.key === "calendly") return <Image alt="" height={40} src="/images/integrations/calendly.svg" width={40} />;
-  if (app.key === "gmail") return <Image alt="" height={38} src="/images/integrations/gmail.svg" width={44} />;
+  if (app.key === "gmail") return <Image alt="" height={38} src="/images/integrations/gmail.svg" width={38} />;
 
   if (app.key === "twilio") {
     return <span className="vozon-app-twilio" aria-hidden="true">{[0, 1, 2, 3].map((dot) => <i key={dot} />)}</span>;
@@ -999,7 +999,8 @@ export function HomePlatformSections() {
 
         .vozon-app-moving-icon img {
           width: 38px;
-          height: 38px;
+          height: auto;
+          max-height: 38px;
           object-fit: contain;
         }
 
@@ -1111,7 +1112,8 @@ export function HomePlatformSections() {
 
         .vozon-app-node-icon img {
           width: 36px;
-          height: 36px;
+          height: auto;
+          max-height: 36px;
         }
 
         .vozon-app-node-outer-left { top: 58%; left: 9%; }
