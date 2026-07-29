@@ -115,6 +115,10 @@ export function BillingShell() {
   }, [data]);
 
   async function purchaseCredits() {
+    if (!data?.configured) {
+      setNotice("USD checkout is unavailable until Razorpay API keys are configured.");
+      return;
+    }
     setBusy("topup");
     try {
       const checkout = await billingApi.topUp(selectedTopUp);
@@ -143,6 +147,10 @@ export function BillingShell() {
     }
   }
   async function upgradeEnterprise() {
+    if (!data?.configured) {
+      setNotice("USD Autopay is unavailable until Razorpay API keys are configured.");
+      return;
+    }
     setBusy("enterprise");
     try {
       const checkout = await billingApi.checkout("enterprise");
@@ -185,7 +193,7 @@ export function BillingShell() {
               <button className="rounded-xl border border-white/10 bg-[#061b18] px-4 py-2.5 text-sm font-semibold text-white/70 shadow-sm hover:bg-white/[0.08] hover:text-white" type="button" onClick={() => void load()} disabled={Boolean(busy)}>
                 Refresh
               </button>
-              <button className="rounded-xl bg-[#45ddce] px-4 py-2.5 text-sm font-semibold text-[#02110d] shadow-[0_12px_28px_rgba(69,221,206,0.20)] hover:bg-[#75fff0]" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup"}>
+              <button className="rounded-xl bg-[#45ddce] px-4 py-2.5 text-sm font-semibold text-[#02110d] shadow-[0_12px_28px_rgba(69,221,206,0.20)] hover:bg-[#75fff0] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup" || !data?.configured}>
                 Buy ${selectedTopUp}
               </button>
               </div>
@@ -193,7 +201,21 @@ export function BillingShell() {
           </header>
 
           {notice ? <div className="rounded-xl border border-cyan-200 bg-cyan-50 px-4 py-3 text-sm font-semibold text-cyan-800">{notice}</div> : null}
-          {!data?.configured ? <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">Razorpay is not configured yet. Add Razorpay credentials to enable checkout.</div> : null}
+          {!data?.configured ? <div className="rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm font-semibold text-amber-200">Razorpay USD checkout is offline. Add live API credentials and the webhook secret to the production environment, then enable international payments in Razorpay.</div> : null}
+          {data?.paymentReadiness ? (
+            <div className="grid gap-3 rounded-2xl border border-white/10 bg-[#07110f] p-4 sm:grid-cols-3">
+              {[
+                ["Checkout mode", data.paymentReadiness.mode],
+                ["API credentials", data.paymentReadiness.credentialsConfigured ? "configured" : "missing"],
+                ["Webhook signing", data.paymentReadiness.webhookConfigured ? "configured" : "missing"],
+              ].map(([label, value]) => (
+                <div className="rounded-xl border border-white/10 bg-black/20 px-4 py-3" key={label}>
+                  <span className="block text-xs text-white/45">{label}</span>
+                  <strong className={`mt-1 block capitalize ${value === "live" || value === "configured" ? "text-emerald-300" : "text-amber-300"}`}>{value}</strong>
+                </div>
+              ))}
+            </div>
+          ) : null}
 
           <section className="grid gap-4 xl:grid-cols-[1.25fr_0.75fr]">
             <Card className="overflow-hidden">
@@ -230,7 +252,7 @@ export function BillingShell() {
                       </button>
                     ))}
                   </div>
-                  <button className="min-h-12 rounded-xl bg-emerald-600 px-4 text-sm font-semibold text-white shadow-lg shadow-emerald-600/20 hover:bg-emerald-700 disabled:opacity-60" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup"}>
+                  <button className="min-h-12 rounded-xl bg-emerald-600 px-4 text-sm font-semibold text-white shadow-lg shadow-emerald-600/20 hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup" || !data?.configured}>
                     {busy === "topup" ? "Opening checkout..." : "Purchase credits"}
                   </button>
                 </div>
@@ -296,7 +318,7 @@ export function BillingShell() {
                     <span className="rounded-full border border-[#45ddce]/30 bg-[#45ddce]/10 px-2.5 py-1">Indian cards</span>
                     <span className="rounded-full border border-[#45ddce]/30 bg-[#45ddce]/10 px-2.5 py-1">International cards</span>
                   </div>
-                  {data?.subscription.provider !== "razorpay" || data.subscription.status === "cancelled" ? <button className="mt-5 rounded-xl bg-[#45ddce] px-4 py-2.5 text-sm font-semibold text-[#02110d] hover:bg-[#75fff0] disabled:opacity-60" type="button" onClick={() => void upgradeEnterprise()} disabled={busy === "enterprise"}>Start monthly Autopay</button> : null}
+                  {data?.subscription.provider !== "razorpay" || data.subscription.status === "cancelled" ? <button className="mt-5 rounded-xl bg-[#45ddce] px-4 py-2.5 text-sm font-semibold text-[#02110d] hover:bg-[#75fff0] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void upgradeEnterprise()} disabled={busy === "enterprise" || !data?.configured}>Start monthly Autopay</button> : null}
                 </div>
               </Card>
             </div>

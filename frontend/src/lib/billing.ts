@@ -59,6 +59,12 @@ export type BillingTransaction = {
 
 export type BillingSummary = {
   configured: boolean;
+  paymentReadiness: {
+    credentialsConfigured: boolean;
+    webhookConfigured: boolean;
+    mode: "live" | "test" | "unconfigured";
+    currency: "USD";
+  };
   enterpriseMonthlyUsd: number;
   wallet: CreditWallet;
   creditSettings: {
