@@ -16,6 +16,7 @@ export function BrandLogo({ showWebsiteLogo = false }: { showWebsiteLogo?: boole
             alt=""
             className="h-full w-full object-contain drop-shadow-[0_0_10px_rgba(53,251,224,0.28)]"
             height={350}
+            loading="eager"
             src="/images/logo_2.svg"
             width={1160}
           />

@@ -39,55 +39,52 @@ function MicrophoneIcon() {
 
 function RotatingGlobe() {
   return (
-    <div className="india-globe-wrap" aria-label="Animated globe focused on India" role="img">
-      <span className="india-globe-aura" />
+    <div className="india-globe-wrap" aria-label="Rotating outline map of the world" role="img">
       <span className="india-globe-orbit india-globe-orbit-one"><i /></span>
       <span className="india-globe-orbit india-globe-orbit-two"><i /></span>
       <span className="india-globe-orbit india-globe-orbit-three"><i /></span>
       <div className="india-globe">
-        <span className="india-globe-shine" />
         <svg className="india-globe-map" viewBox="0 0 420 420" aria-hidden="true">
           <defs>
             <clipPath id="indiaGlobeClip"><circle cx="210" cy="210" r="196" /></clipPath>
-            <filter id="indiaMapGlow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="2.2" result="blur" />
+            <pattern id="indiaGlobeDots" width="7" height="7" patternUnits="userSpaceOnUse">
+              <circle cx="2" cy="2" r="1.35" fill="#80fff6" />
+              <circle cx="5.5" cy="5.5" r=".55" fill="#37cfc9" opacity=".72" />
+            </pattern>
+            <filter id="indiaGlobeLandGlow" x="-35%" y="-35%" width="170%" height="170%">
+              <feGaussianBlur stdDeviation="2.4" result="blur" />
               <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
             </filter>
-            <pattern id="indiaMapDots" width="5" height="5" patternUnits="userSpaceOnUse">
-              <circle cx="1.3" cy="1.3" r="0.85" fill="#75fff0" opacity=".72" />
-            </pattern>
-            <radialGradient id="indiaFocusGlow">
-              <stop stopColor="#b6ff76" stopOpacity=".65" />
-              <stop offset="1" stopColor="#45ddce" stopOpacity="0" />
-            </radialGradient>
+            <filter id="indiaOceanTexture" x="-20%" y="-20%" width="140%" height="140%">
+              <feTurbulence baseFrequency=".065" numOctaves="2" seed="7" type="fractalNoise" />
+              <feColorMatrix values="0 0 0 0 0.16 0 0 0 0 0.88 0 0 0 0 0.84 0 0 0 .13 0" />
+            </filter>
+            <g id="indiaWorldLand">
+              <path className="india-region india-region-north-america" d="M22 105 31 82 49 66 67 56 85 49 105 54 117 65 134 69 153 84 158 98 149 110 133 113 124 126 111 129 103 142 91 151 76 145 66 132 50 125 40 111Z" />
+              <path className="india-region india-region-north-america" d="m96 142 11-7 12 6 2 12 13 7-3 12-11-5-8-10-10-4Z" />
+              <path className="india-region india-region-south-america" d="m119 165 18-5 20 11 13 21-2 25 10 23-8 28-10 31-14 31-14 12-9-19 2-25-11-24-8-27 5-22-7-19 9-18-5-14Z" />
+              <path className="india-region india-region-eurasia" d="m169 91 12-17 18-5 15-14 26-9 27 4 21-5 24 8 19-2 21 10 25 4 17 14 18 7 13 18-7 13-20 2-13 12-20-1-13 11-19-2-13 12-15-2-9 13-20-1-13 10-20-8-15 7-17-8-14 5-14-13-18-3-7-14-15-8 5-13-10-9Z" />
+              <path className="india-region india-region-africa" d="m214 157 17-7 20 6 15 15 15 4 5 20-9 18-5 25-12 24-9 27-14 13-10-17 1-25-11-23-2-23-12-17 5-17-8-13Z" />
+              <path className="india-region india-region-islands" d="m176 116 7-7 8 3-1 11-9 3Z" />
+              <path className="india-region india-region-islands" d="m347 151 7-11 6 5-2 17-7 5Z" />
+              <path className="india-region india-region-islands" d="m322 206 8-7 7 8-3 13-8 4Z" />
+              <path className="india-region india-region-islands" d="m275 263 6-8 5 5-2 19-7 7Z" />
+              <path className="india-region india-region-oceania" d="m331 259 18-13 24-1 23 14 8 20-7 24-19 17-26-3-17-17-11-22Z" />
+              <path className="india-region india-region-islands" d="m398 302 8-8 5 5-4 16-7 5Z" />
+              <path className="india-region india-region-antarctica" d="M23 370 48 362l24 4 25-7 28 8 24-6 29 8 26-7 31 8 26-7 29 8 28-7 29 8 27-6 25 10-13 15-34 5-36-3-38 5-36-4-38 5-37-4-35 4-34-6-30 3-27-9Z" />
+              <path className="india-region india-region-antarctica" d="m145 53 11-18 20-9 22 4 12 15-9 15-24 5-22-4Z" />
+            </g>
           </defs>
           <g clipPath="url(#indiaGlobeClip)">
-            <g className="india-globe-graticule">
-              <ellipse cx="210" cy="210" rx="72" ry="194" />
-              <ellipse cx="210" cy="210" rx="139" ry="194" />
-              <ellipse cx="210" cy="210" rx="194" ry="58" />
-              <ellipse cx="210" cy="210" rx="194" ry="119" />
-              <path d="M16 210h388" />
-              <path d="M210 16v388" />
+            <circle className="india-ocean-texture" cx="210" cy="210" r="196" filter="url(#indiaOceanTexture)" />
+            <g className="india-globe-surface">
+              <use className="india-globe-land" href="#indiaWorldLand" />
+              <use className="india-globe-land" href="#indiaWorldLand" x="420" />
             </g>
-            <g className="india-globe-land">
-              <path d="M45 91 72 63l40-18 30 5 22 19 5 19-17 15-28 1-13 15-25-4-14 13-22-12Z" />
-              <path d="m109 133 24-10 28 13 20 32-6 38 13 29-12 44-18 45-23 32-16-24-2-39-19-37-4-43 14-30-8-27Z" />
-              <path d="m142 88 18-23 39-18 41-6 42 10 30-4 42 20 27 31-5 24-28 7-18 20-27 3-18 21-23-9-22 12-22-13-15 9-19-17-22-3-5-20-29-11 7-18-8-12Z" />
-              <path d="m286 180 17-17 20 4 8 20 16 12-7 18-19-4-9-18-17-2Z" />
-              <path d="m325 219 13-6 10 13-7 17-9-7Z" />
-              <path d="m340 255 27-18 30 6 18 25-8 34-25 25-37-6-16-26Z" />
-              <path d="m306 202 6-4 7 8-3 12-7-5Z" />
-            </g>
-            <circle className="india-globe-focus-pulse" cx="210" cy="210" r="112" />
-            <image className="india-globe-focus" href="/images/india-outline.svg" x="140" y="128" width="140" height="164" preserveAspectRatio="xMidYMid meet" />
-            <g className="india-globe-routes">
-              <path d="M207 183Q172 153 137 148" />
-              <path d="M220 190Q282 151 337 169" />
-              <path d="M213 223Q270 258 320 302" />
-              <circle cx="137" cy="148" r="3" />
-              <circle cx="337" cy="169" r="3" />
-              <circle cx="320" cy="302" r="3" />
+            <g className="india-globe-data-lines">
+              <path d="M-10 279C88 321 181 299 267 228S384 124 438 159" />
+              <path d="M14 84c82-70 180-74 275-34 47 20 83 20 119-4" />
+              <path d="M61 359c91-1 165-43 222-113 51-63 92-81 153-85" />
             </g>
           </g>
         </svg>
@@ -228,7 +225,7 @@ export function IndiaVoiceExperience() {
       </div>
 
       <style jsx global>{`
-        .india-voice-experience{--iv-accent:#45ddce;--iv-bright:#75fff0;position:relative;box-sizing:border-box;width:calc(100% - 2.5rem);max-width:1240px;margin:2.5rem auto 1rem;padding:4.75rem 0 5rem;overflow:hidden;border-block:1px solid rgba(69,221,206,.1);background:#000;color:#fff}
+        .india-voice-experience{--iv-accent:#45ddce;--iv-bright:#75fff0;position:relative;box-sizing:border-box;width:calc(100% - 2.5rem);max-width:1240px;margin:0 auto;padding:3rem 0;overflow:hidden;border:0;background:#000;color:#fff}
         .india-voice-experience:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 84% 32%,rgba(69,221,206,.09),transparent 29%),radial-gradient(circle at 49% 56%,rgba(69,221,206,.05),transparent 23%);pointer-events:none}
         .india-voice-layout{position:relative;display:grid;grid-template-columns:minmax(300px,.96fr) minmax(330px,1.08fr) minmax(280px,.86fr);align-items:center;gap:2rem}
         .india-voice-eyebrow,.india-agent-heading{display:flex;align-items:center;gap:.75rem;color:var(--iv-bright);font-size:.68rem;font-weight:900;letter-spacing:.18em;text-transform:uppercase}
@@ -252,15 +249,14 @@ export function IndiaVoiceExperience() {
         .india-mic-core{display:grid;width:86px;height:86px;place-items:center;border-radius:50%;background:rgba(69,221,206,.08);box-shadow:0 0 24px rgba(69,221,206,.16)}.india-mic-core svg{width:47px;fill:none;stroke:var(--iv-bright);stroke-width:3;stroke-linecap:round}
         .is-speaking .india-mic-core{animation:iv-pulse 1s ease-in-out infinite}.india-agent>strong{display:block;color:rgba(255,255,255,.68);font-size:.76rem;font-weight:600}.india-listening-dots{display:flex;justify-content:center;gap:.5rem;margin-top:.9rem}.india-listening-dots i{width:5px;height:5px;border-radius:50%;background:#123531}.india-listening-dots .is-lit{background:var(--iv-accent);box-shadow:0 0 8px var(--iv-accent)}
         .india-agent-reply{max-width:360px;margin:1.15rem auto 0;padding:.8rem 1rem;border:1px solid rgba(69,221,206,.12);border-radius:14px;background:rgba(69,221,206,.025);opacity:.68;transition:border-color .2s,background .2s,opacity .2s,transform .2s}.india-agent-reply.is-speaking{border-color:rgba(69,221,206,.38);background:rgba(69,221,206,.07);box-shadow:0 0 24px rgba(69,221,206,.08);opacity:1;transform:translateY(-2px)}.india-agent-reply span{display:block;color:var(--iv-bright);font-size:.57rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}.india-agent-reply p{margin:.4rem 0 0;color:rgba(255,255,255,.68);font-size:.7rem;line-height:1.5}
-        .india-world{display:flex;flex-direction:column;align-items:center}.india-globe-wrap{position:relative;width:min(100%,340px);aspect-ratio:1;display:grid;place-items:center}.india-globe-aura{position:absolute;inset:12%;border-radius:50%;background:var(--iv-accent);filter:blur(44px);opacity:.12}
-        .india-globe{position:relative;width:78%;height:78%;overflow:hidden;border:1px solid rgba(117,255,240,.58);border-radius:50%;background:radial-gradient(circle at 34% 28%,#123b37 0,#061714 48%,#010403 73%);box-shadow:0 0 22px rgba(69,221,206,.38),inset -25px -18px 42px #000,inset 8px 4px 24px rgba(117,255,240,.17)}
-        .india-globe-shine{position:absolute;z-index:4;inset:0;border-radius:50%;background:linear-gradient(115deg,rgba(161,255,245,.13),transparent 34%,transparent 70%,rgba(0,0,0,.58));pointer-events:none}
-        .india-globe-map{position:absolute;z-index:2;inset:0;width:100%;height:100%}.india-globe-graticule{fill:none;stroke:rgba(117,255,240,.15);stroke-width:1}.india-globe-land{fill:url(#indiaMapDots);stroke:var(--iv-accent);stroke-width:1.35;stroke-linejoin:round;opacity:.72;filter:url(#indiaMapGlow)}.india-globe-focus-pulse{fill:url(#indiaFocusGlow);transform-box:fill-box;transform-origin:center;animation:iv-india-pulse 2.8s ease-in-out infinite}.india-globe-focus{filter:drop-shadow(0 0 5px rgba(182,255,118,.85))}.india-globe-routes{fill:none;stroke:rgba(117,255,240,.58);stroke-width:1.15;stroke-linecap:round;stroke-dasharray:4 5}.india-globe-routes circle{fill:var(--iv-bright);stroke:none;filter:drop-shadow(0 0 3px var(--iv-accent))}
-        .india-globe-orbit{position:absolute;z-index:6;width:98%;height:35%;border:1px solid rgba(69,221,206,.32);border-radius:50%;transform:rotate(-17deg);animation:iv-orbit 9s linear infinite}.india-globe-orbit-two{width:105%;height:28%;transform:rotate(30deg);animation-duration:13s;animation-direction:reverse}.india-globe-orbit-three{width:90%;height:50%;transform:rotate(72deg);animation-duration:17s}.india-globe-orbit i{position:absolute;left:20%;top:-4px;width:7px;height:7px;border-radius:50%;background:var(--iv-bright);box-shadow:0 0 12px var(--iv-bright)}
+        .india-world{display:flex;flex-direction:column;align-items:center}.india-globe-wrap{position:relative;display:grid;width:min(100%,350px);aspect-ratio:1;place-items:center;isolation:isolate}.india-globe-wrap:before{content:"";position:absolute;inset:7%;border-radius:50%;background:rgba(0,224,236,.2);filter:blur(34px);opacity:.68}.india-globe-wrap:after{content:"";position:absolute;inset:9%;z-index:1;border-radius:50%;box-shadow:0 0 46px rgba(0,232,246,.32)}
+        .india-globe{position:relative;z-index:3;width:82%;aspect-ratio:1;overflow:hidden;border:1px solid rgba(143,255,255,.72);border-radius:50%;background:radial-gradient(circle at 34% 29%,#07323a 0,#02171c 38%,#00090d 70%,#000 100%);box-shadow:0 0 3px #b9ffff,0 0 14px rgba(0,242,255,.9),0 0 32px rgba(0,219,237,.58),0 0 54px rgba(0,208,228,.22),inset 0 0 18px rgba(67,248,255,.24),inset -34px -24px 48px rgba(0,0,0,.82)}.india-globe:before{content:"";position:absolute;z-index:4;inset:0;border-radius:50%;background:radial-gradient(circle at 27% 19%,rgba(147,255,255,.14),transparent 22%),linear-gradient(112deg,rgba(71,246,255,.07),transparent 36%,transparent 66%,rgba(0,0,0,.46));pointer-events:none}.india-globe:after{content:"";position:absolute;z-index:5;inset:0;border-radius:50%;box-shadow:inset 7px 4px 13px rgba(151,255,255,.13),inset -16px -10px 24px rgba(0,0,0,.66);pointer-events:none}
+        .india-globe-map{position:absolute;z-index:2;inset:0;width:100%;height:100%}.india-ocean-texture{opacity:.3}.india-globe-surface{animation:iv-world-turn 36s linear infinite;transform-box:view-box;transform-origin:center}.india-region{fill:url(#indiaGlobeDots);stroke:rgba(128,255,246,.86);stroke-width:.75;stroke-linejoin:round;stroke-linecap:round;filter:url(#indiaGlobeLandGlow);vector-effect:non-scaling-stroke}.india-globe-data-lines{fill:none;stroke:#52f8ff;stroke-width:2.4;stroke-linecap:round;filter:drop-shadow(0 0 4px #00e5f2);opacity:.9}.india-globe-data-lines path:nth-child(2){stroke-width:1.7;opacity:.7}.india-globe-data-lines path:nth-child(3){stroke-width:1.45;opacity:.62}
+        .india-globe-orbit{position:absolute;z-index:6;width:89%;height:27%;border-top:2px solid rgba(78,248,255,.88);border-radius:50%;filter:drop-shadow(0 0 5px rgba(0,232,246,.86));transform:rotate(-18deg);animation:iv-orbit-one 12s linear infinite}.india-globe-orbit-two{width:93%;height:23%;border-top-width:1px;transform:rotate(28deg);opacity:.8;animation:iv-orbit-two 16s linear infinite}.india-globe-orbit-three{width:76%;height:43%;border-top-width:1px;transform:rotate(72deg);opacity:.58;animation:iv-orbit-three 20s linear infinite}.india-globe-orbit i{position:absolute;top:-3px;left:21%;width:5px;height:5px;border-radius:50%;background:#b8ffff;box-shadow:0 0 10px #00ecfa}
         .india-world-features{width:100%;margin-top:.25rem;padding-left:1.1rem;border-left:1px solid rgba(69,221,206,.12)}.india-world-features>div{display:flex;align-items:center;gap:.9rem;padding:.55rem 0}.india-world-features svg{width:27px;fill:none;stroke:var(--iv-accent);stroke-width:2}.india-world-features span{display:flex;flex-direction:column;gap:.2rem}.india-world-features strong{font-size:.76rem}.india-world-features small{color:rgba(255,255,255,.38);font-size:.64rem}
-        @keyframes iv-wave{from{transform:scaleY(.5);opacity:.45}to{transform:scaleY(1.12);opacity:1}}@keyframes iv-spin{to{transform:rotate(360deg)}}@keyframes iv-pulse{50%{transform:scale(1.08);box-shadow:0 0 35px rgba(69,221,206,.3)}}@keyframes iv-india-pulse{50%{transform:scale(1.18);opacity:.5}}@keyframes iv-orbit{to{rotate:360deg}}
+        @keyframes iv-wave{from{transform:scaleY(.5);opacity:.45}to{transform:scaleY(1.12);opacity:1}}@keyframes iv-spin{to{transform:rotate(360deg)}}@keyframes iv-pulse{50%{transform:scale(1.08);box-shadow:0 0 35px rgba(69,221,206,.3)}}@keyframes iv-world-turn{to{transform:translateX(-420px)}}@keyframes iv-cloud-drift{from{transform:translateX(-8px)}to{transform:translateX(14px)}}@keyframes iv-orbit-one{to{transform:rotate(342deg)}}@keyframes iv-orbit-two{to{transform:rotate(-329deg)}}@keyframes iv-orbit-three{to{transform:rotate(434deg)}}
         @media(max-width:1050px){.india-voice-experience{width:calc(100% - 3rem);padding-inline:.5rem}.india-voice-layout{grid-template-columns:1fr 1fr}.india-world{grid-column:1/-1;display:grid;grid-template-columns:minmax(280px,400px) 280px;justify-content:center}.india-globe-wrap{width:340px}.india-world-features{margin:0;align-self:center}}
-        @media(max-width:720px){.india-voice-experience{width:calc(100% - 2rem);margin-top:1.5rem;padding:3.5rem 0 4rem}.india-voice-layout{grid-template-columns:minmax(0,1fr);gap:3.25rem}.india-voice-copy{text-align:center}.india-voice-copy>p{margin-inline:auto}.india-voice-eyebrow{justify-content:center}.india-language-list{text-align:left}.india-agent{padding-top:.5rem}.india-world{grid-column:auto;display:flex}.india-globe-wrap{width:min(100%,340px)}.india-world-features{max-width:300px}.india-mic-stage{height:300px}}
+        @media(max-width:720px){.india-voice-experience{width:calc(100% - 2rem);margin-top:0;padding:2.5rem 0}.india-voice-layout{grid-template-columns:minmax(0,1fr);gap:3.25rem}.india-voice-copy{text-align:center}.india-voice-copy>p{margin-inline:auto}.india-voice-eyebrow{justify-content:center}.india-language-list{text-align:left}.india-agent{padding-top:.5rem}.india-world{grid-column:auto;display:flex}.india-globe-wrap{width:min(100%,340px)}.india-world-features{max-width:300px}.india-mic-stage{height:300px}}
         @media(max-width:540px){.india-voice-copy{width:100%;min-width:0;max-width:100%;overflow:hidden}.india-language-list{box-sizing:border-box;width:100%;max-width:100%;grid-template-columns:minmax(0,1fr)}.india-language-list button{box-sizing:border-box;width:100%;max-width:100%;grid-template-columns:36px minmax(0,1fr);overflow:hidden}.india-language-native{overflow:hidden;text-overflow:ellipsis}.india-voice-copy h2{font-size:2.15rem;overflow-wrap:anywhere}.india-mic-wave{right:-8%;left:-8%}}
         @media(prefers-reduced-motion:reduce){.india-voice-experience *{animation:none!important}}
       `}</style>

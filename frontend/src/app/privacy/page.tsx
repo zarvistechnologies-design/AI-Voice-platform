@@ -6,190 +6,403 @@ import { SiteLayout } from "@/components/layout/SiteLayout";
 export const metadata: Metadata = {
   title: "Privacy Policy | vozon.ai",
   description:
-    "Learn how vozon.ai collects, uses, stores, shares, and protects personal information, including Google user data.",
+    "Learn how vozon.ai collects, uses, protects, and manages personal information across its AI voice platform and services.",
 };
 
-const sections = [
+const privacySections = [
   {
-    id: "information-we-collect",
-    title: "1. Information we collect",
+    id: "scope",
+    number: "01",
+    title: "Scope of this policy",
     content: (
       <>
-        <p>We collect information in the following categories:</p>
-        <ul>
-          <li><strong>Account and workspace information:</strong> name, email address, organization details, authentication information, team memberships, account preferences, and billing-related records.</li>
-          <li><strong>Voice-agent configuration:</strong> prompts, knowledge sources, phone-number settings, tool configurations, workflows, and integration preferences that you provide.</li>
-          <li><strong>Call and communication data:</strong> phone numbers, call timestamps, duration, direction, status, recordings when enabled, transcripts, summaries, extracted fields, tool activity, and call outcomes.</li>
-          <li><strong>Integration data:</strong> authorization tokens, account identifiers, selected resources, and data retrieved from or written to third-party services at your direction.</li>
-          <li><strong>Usage and technical data:</strong> IP address, browser and device information, application events, diagnostic logs, error reports, security events, and feature usage.</li>
-          <li><strong>Support communications:</strong> information you provide when contacting us for assistance, demonstrations, or other enquiries.</li>
-        </ul>
-        <p>Customers are responsible for providing any notices and obtaining any consents required before recording calls or submitting personal information to the service.</p>
+        <p>
+          This Privacy Policy explains how vozon.ai collects, uses, discloses, and protects
+          personal information when you visit our website, create an account, contact us, or use
+          our AI voice platform and related services.
+        </p>
+        <p>
+          When an organization uses vozon.ai to handle calls or other conversations, that
+          organization determines why the information is processed and is responsible for its
+          notices, permissions, and instructions. In those situations, vozon.ai processes the
+          information on the organization&apos;s behalf.
+        </p>
       </>
     ),
   },
   {
-    id: "how-we-use-information",
-    title: "2. How we use information",
+    id: "information",
+    number: "02",
+    title: "Information we collect",
+    content: (
+      <>
+        <p>We may collect the following categories of information:</p>
+        <ul>
+          <li>
+            <strong>Account and contact information:</strong> name, email address, organization,
+            login details, and the information you provide when requesting support or a demo.
+          </li>
+          <li>
+            <strong>Voice and conversation information:</strong> call audio, transcripts,
+            summaries, caller details, prompts, responses, and call outcomes when these features
+            are enabled by the customer.
+          </li>
+          <li>
+            <strong>Configuration and connected-service data:</strong> agent settings, knowledge
+            sources, integration details, and records required to perform customer-authorized
+            actions.
+          </li>
+          <li>
+            <strong>Usage and technical information:</strong> device and browser details, IP
+            address, timestamps, feature activity, diagnostic data, and security events.
+          </li>
+          <li>
+            <strong>Transaction information:</strong> subscription, billing, and payment status.
+            Payment card details may be handled directly by a payment provider rather than stored
+            by vozon.ai.
+          </li>
+        </ul>
+      </>
+    ),
+  },
+  {
+    id: "use",
+    number: "03",
+    title: "How we use information",
     content: (
       <>
         <p>We use information to:</p>
         <ul>
-          <li>provide, operate, secure, maintain, and improve the Vozon platform;</li>
-          <li>authenticate users and administer organizations, permissions, billing, and support;</li>
-          <li>place, receive, route, transcribe, analyse, and document calls according to customer configuration;</li>
-          <li>perform actions requested through connected tools, such as checking availability, creating appointments, or recording call outcomes;</li>
-          <li>monitor reliability, prevent misuse, investigate incidents, and enforce our terms;</li>
-          <li>comply with applicable law and respond to valid legal requests; and</li>
-          <li>communicate service, security, support, and administrative information.</li>
+          <li>Provide, operate, maintain, and support the platform.</li>
+          <li>Process calls and complete actions configured by our customers.</li>
+          <li>Authenticate users, administer accounts, and manage billing.</li>
+          <li>Monitor reliability, prevent abuse, investigate incidents, and protect the service.</li>
+          <li>Understand product performance and improve features and user experience.</li>
+          <li>Respond to enquiries and send service, security, and administrative communications.</li>
+          <li>Comply with applicable law and enforce our agreements.</li>
         </ul>
-        <p>We do not sell personal information. We do not use customer call content or Google user data for advertising.</p>
+        <p>
+          Where required, we rely on an appropriate legal basis such as performance of a contract,
+          legitimate interests, consent, or compliance with a legal obligation.
+        </p>
       </>
     ),
   },
   {
-    id: "google-user-data",
-    title: "3. Google user data",
+    id: "voice-data",
+    number: "04",
+    title: "Voice data and call recordings",
     content: (
       <>
-        <p>If you connect a Google account, Vozon requests access only after you initiate the connection and approve the permissions shown on Google&apos;s consent screen.</p>
-        <h3>Google Calendar</h3>
-        <p>Vozon may access calendar identity, availability, time-zone, and event information so an authorised voice agent can check availability and create or manage appointments in the calendar selected by you. Event details may include a title, start and end time, description, and attendee email that a user instructs the agent to add.</p>
-        <h3>Google Sheets</h3>
-        <p>Vozon may access a spreadsheet selected by you to verify its name and sheet tabs and to append information that you instruct an agent to record, such as a timestamp, customer details, call outcome, notes, and call identifier. Vozon does not scan unrelated spreadsheets.</p>
-        <h3>Storage and sharing of Google data</h3>
-        <p>Google OAuth access and refresh tokens are stored in encrypted form. We store the Google account identifier and the calendar, spreadsheet, and sheet-tab selections required to provide the configured integration. Calendar or spreadsheet content may be temporarily processed to complete the action requested by you, but we do not sell Google user data or share it for advertising.</p>
-        <p>We share Google user data only with infrastructure and service providers acting on our behalf where necessary to operate and secure the service, when you direct us to transmit it, or when disclosure is required by law. Our use and transfer of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy" rel="noreferrer" target="_blank">Google API Services User Data Policy</a>, including its Limited Use requirements.</p>
-        <h3>Your control</h3>
-        <p>You can disable an integration for an individual agent or disconnect Google from the Integrations page. Disconnecting removes the stored Google authorization from Vozon and attempts to revoke the token with Google. You may also revoke access through your Google Account security settings.</p>
+        <p>
+          Voice conversations can contain personal or sensitive information. Customers control
+          whether calls are recorded, which information an agent may request, how the agent uses
+          connected systems, and how long conversation records are retained within their
+          configuration.
+        </p>
+        <p>
+          Customers must provide any legally required call-recording or AI notices, obtain
+          appropriate consent, limit collection to information needed for the stated purpose, and
+          avoid submitting information they are not authorized to process.
+        </p>
       </>
     ),
   },
   {
     id: "sharing",
-    title: "4. When we share information",
+    number: "05",
+    title: "How information is shared",
     content: (
       <>
-        <p>We may disclose information to:</p>
+        <p>We may share information only as reasonably necessary with:</p>
         <ul>
-          <li><strong>Service providers:</strong> hosting, database, telephony, speech-processing, artificial-intelligence, storage, email, payment, monitoring, and security providers that process data to deliver the service.</li>
-          <li><strong>Connected services:</strong> third-party applications that a customer deliberately connects or invokes through a tool or webhook.</li>
-          <li><strong>Workspace users:</strong> authorised members of the customer organization according to their assigned permissions.</li>
-          <li><strong>Authorities and other parties:</strong> where reasonably necessary to comply with law, protect rights and safety, investigate abuse, or respond to valid legal process.</li>
-          <li><strong>Business transferees:</strong> as part of a merger, financing, acquisition, reorganization, or sale of assets, subject to appropriate confidentiality protections.</li>
+          <li>Service providers that support hosting, communications, security, analytics, billing, and customer support.</li>
+          <li>Integrations and destinations selected or configured by the customer.</li>
+          <li>Professional advisers, regulators, courts, or authorities when required by law or necessary to protect rights and safety.</li>
+          <li>A successor or relevant party in connection with a merger, financing, reorganization, or sale of all or part of the business.</li>
         </ul>
-        <p>Service providers are permitted to process information only for the services they provide to us and under applicable contractual and legal obligations.</p>
+        <p>We do not sell personal information for monetary consideration.</p>
       </>
     ),
   },
   {
     id: "retention",
-    title: "5. Data retention and deletion",
+    number: "06",
+    title: "Retention and deletion",
     content: (
       <>
-        <p>We retain information for as long as reasonably necessary to provide the service, maintain security and audit records, resolve disputes, comply with legal obligations, and enforce agreements. Retention depends on the type of information, customer configuration, contractual requirements, and applicable law.</p>
-        <p>Customers may delete supported records through the product or request account and personal-data deletion by emailing <a href="mailto:hello@vozon.ai">hello@vozon.ai</a>. After verifying the request and considering legal retention requirements, we will delete or de-identify applicable information from active systems. Residual copies may remain in encrypted backups until they are overwritten through normal backup cycles.</p>
-        <p>Disconnecting Google removes the connection credentials from Vozon. Data previously written to a customer&apos;s Google Calendar or Google Sheet remains in that Google account until the customer deletes it there.</p>
+        <p>
+          We retain personal information only for as long as needed to provide the services,
+          maintain legitimate business and security records, resolve disputes, and meet legal
+          obligations. Retention periods depend on the type of information, the customer&apos;s
+          configuration, contractual requirements, and applicable law.
+        </p>
+        <p>
+          When information is no longer required, we delete or anonymize it, subject to limited
+          backups, legal holds, fraud-prevention records, and other lawful exceptions.
+        </p>
       </>
     ),
   },
   {
     id: "security",
-    title: "6. Security",
+    number: "07",
+    title: "Security",
     content: (
-      <p>We use administrative, technical, and organizational safeguards designed to protect information, including access controls, encrypted transport, encryption of stored integration credentials, logging, and restricted production access. No method of transmission or storage is completely secure, so we cannot guarantee absolute security.</p>
+      <>
+        <p>
+          We use administrative, technical, and organizational safeguards designed to protect
+          information against unauthorized access, loss, misuse, or alteration. These measures
+          include access controls, monitoring, secure development practices, and protections for
+          data in transit and at rest where appropriate.
+        </p>
+        <p>
+          No system can guarantee absolute security. Customers should use strong authentication,
+          restrict workspace access, review integration permissions, and promptly report suspected
+          misuse.
+        </p>
+      </>
     ),
   },
   {
-    id: "international",
-    title: "7. International processing",
+    id: "transfers",
+    number: "08",
+    title: "International data transfers",
     content: (
-      <p>Vozon and its service providers may process information in countries other than the country where it was collected. Where required, we use appropriate safeguards for international transfers and process information in accordance with applicable data-protection law.</p>
+      <p>
+        Our services and providers may process information in countries other than the country
+        where it was collected. Where applicable, we use contractual and other safeguards intended
+        to provide an appropriate level of protection for cross-border transfers.
+      </p>
     ),
   },
   {
     id: "rights",
-    title: "8. Your choices and rights",
+    number: "09",
+    title: "Your rights and choices",
     content: (
       <>
-        <p>Depending on your location, you may have rights to request access, correction, deletion, restriction, portability, or objection concerning your personal information. You may also withdraw consent where processing is based on consent.</p>
-        <p>To submit a request, contact <a href="mailto:hello@vozon.ai">hello@vozon.ai</a>. We may need to verify your identity and authority. If Vozon processes information on behalf of a customer organization, we may direct your request to that organization.</p>
+        <p>
+          Depending on your location, you may have rights to access, correct, delete, restrict, or
+          object to certain processing of your personal information, or to request a portable copy.
+          You may also withdraw consent where processing is based on consent.
+        </p>
+        <p>
+          If your information was collected through a voice agent operated by one of our customers,
+          contact that organization first. We will support the customer in responding to valid
+          requests. For information controlled directly by vozon.ai, contact us using the details
+          below. We may verify your identity before completing a request.
+        </p>
       </>
     ),
   },
   {
     id: "children",
-    title: "9. Children",
+    number: "10",
+    title: "Children's privacy",
     content: (
-      <p>The service is intended for businesses and is not directed to children under 18. We do not knowingly collect personal information directly from children. If you believe a child has provided personal information to us, contact us so we can investigate and take appropriate action.</p>
+      <p>
+        The services are intended for business use and are not directed to children. We do not
+        knowingly collect personal information from children through accounts created for the
+        platform. If you believe a child has provided personal information to us, please contact us
+        so we can review and take appropriate action.
+      </p>
     ),
   },
   {
-    id: "changes",
-    title: "10. Changes to this policy",
+    id: "updates",
+    number: "11",
+    title: "Changes to this policy",
     content: (
-      <p>We may update this Privacy Policy to reflect changes in the service, law, or our data practices. We will publish the revised policy on this page and update the effective date. Where required, we will provide additional notice or request consent.</p>
+      <p>
+        We may update this Privacy Policy as our services, practices, or legal obligations change.
+        We will post the revised policy on this page and update the date shown above. Where required,
+        we will provide additional notice of material changes.
+      </p>
     ),
   },
-  {
-    id: "contact",
-    title: "11. Contact us",
-    content: (
-      <>
-        <p>For privacy questions, requests, or complaints, contact:</p>
-        <address>
-          <strong>vozon.ai Privacy Team</strong><br />
-          Email: <a href="mailto:hello@vozon.ai">hello@vozon.ai</a><br />
-          Website: <Link href="/">https://vozon.ai</Link>
-        </address>
-      </>
-    ),
-  },
+] as const;
+
+const sectionAccents = [
+  "border-[#5eead4]/30 bg-[#5eead4]/[0.07] text-[#72f2df]",
+  "border-[#9d8cff]/30 bg-[#9d8cff]/[0.07] text-[#c4b5fd]",
+  "border-[#fb923c]/30 bg-[#fb923c]/[0.07] text-[#ffb37d]",
+  "border-[#facc15]/25 bg-[#facc15]/[0.06] text-[#f6db75]",
 ] as const;
 
 export default function PrivacyPage() {
   return (
     <SiteLayout>
-      <div className="bg-[#f7faf9] text-[#10201c]">
-        <header className="border-b border-[#d9e6e2] bg-[#061410] px-5 pb-16 pt-36 text-white sm:px-8 sm:pt-40 lg:px-12">
-          <div className="mx-auto max-w-[1080px]">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#75fff0]">Legal</p>
-            <h1 className="mt-5 text-4xl font-semibold tracking-[-0.045em] sm:text-6xl">Privacy Policy</h1>
-            <p className="mt-6 max-w-3xl text-base leading-8 text-white/60">
-              This policy explains how vozon.ai collects, uses, stores, shares, and protects information when businesses use our AI voice-agent platform and connected services.
-            </p>
-            <p className="mt-7 text-sm font-medium text-white/45">Effective date: July 28, 2026</p>
+      <div className="min-h-screen overflow-hidden bg-black text-white">
+        <section className="relative border-b border-white/[0.07] bg-black px-[clamp(1.25rem,5vw,4.75rem)] pt-32 pb-20 sm:pt-36 lg:pt-40 lg:pb-24">
+          <div aria-hidden="true" className="absolute top-0 right-0 left-0 flex h-1.5">
+            <span className="flex-[1.4] bg-[#5eead4]" />
+            <span className="flex-1 bg-[#9d8cff]" />
+            <span className="flex-[0.7] bg-[#ffad73]" />
+            <span className="flex-[0.45] bg-[#f6db75]" />
           </div>
-        </header>
 
-        <div className="mx-auto grid max-w-[1080px] gap-10 px-5 py-14 sm:px-8 lg:grid-cols-[240px_minmax(0,1fr)] lg:px-0 lg:py-20">
-          <aside className="lg:sticky lg:top-28 lg:h-fit">
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#0a8f80]">On this page</p>
-            <nav aria-label="Privacy policy sections" className="mt-4 grid gap-2">
-              {sections.map((section) => (
-                <a className="text-sm text-[#526660] transition hover:text-[#087e71]" href={`#${section.id}`} key={section.id}>
-                  {section.title}
-                </a>
-              ))}
+          <div className="relative mx-auto max-w-[1240px]">
+            <nav aria-label="Breadcrumb" className="mb-12 flex items-center gap-2 text-xs font-semibold tracking-normal text-white/40 uppercase">
+              <Link className="transition hover:text-[#72f2df]" href="/">Home</Link>
+              <span aria-hidden="true" className="text-white/20">/</span>
+              <span className="text-[#72f2df]">Legal</span>
+              <span aria-hidden="true" className="text-white/20">/</span>
+              <span className="text-white/70">Privacy</span>
             </nav>
-          </aside>
 
-          <article className="min-w-0 rounded-3xl border border-[#d9e6e2] bg-white px-6 py-4 shadow-[0_22px_70px_rgba(11,44,36,0.07)] sm:px-10">
-            <div className="border-b border-[#e2ece9] py-8 text-sm leading-7 text-[#526660]">
-              <p>
-                This Privacy Policy applies to the Vozon website, dashboard, APIs, voice-agent services, and integrations (collectively, the &ldquo;Service&rdquo;). In this policy, &ldquo;Vozon,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; and &ldquo;our&rdquo; refer to vozon.ai.
+            <div className="mx-auto max-w-[780px] text-center">
+              <span className="mx-auto grid size-16 place-items-center rounded-lg border border-[#5eead4]/25 bg-[#5eead4]/[0.08] text-[#72f2df] shadow-[0_18px_45px_rgba(94,234,212,0.12)]">
+                <svg aria-hidden="true" className="size-8" fill="none" viewBox="0 0 24 24">
+                  <path d="M12 3 5 6v5c0 4.8 2.8 8.3 7 10 4.2-1.7 7-5.2 7-10V6l-7-3Z" stroke="currentColor" strokeWidth="1.5" />
+                  <path d="m9 12 2 2 4-4" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+                </svg>
+              </span>
+              <h1 className="mt-7 text-5xl leading-none font-semibold tracking-normal sm:text-6xl">
+                <span className="text-[#72f2df]">Privacy</span> Policy
+              </h1>
+              <p className="mt-4 text-lg font-semibold text-[#c4b5fd]">vozon.ai</p>
+              <p className="mt-4 inline-flex items-center justify-center gap-2 text-sm text-white/45">
+                <svg aria-hidden="true" className="size-4 text-[#ffb37d]" fill="none" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.5" />
+                  <path d="M12 7.5V12l3 2" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+                </svg>
+                Last updated: July 28, 2026
               </p>
             </div>
-            {sections.map((section) => (
-              <section className="scroll-mt-28 border-b border-[#e2ece9] py-9 last:border-b-0" id={section.id} key={section.id}>
-                <h2 className="text-2xl font-semibold tracking-[-0.025em] text-[#10201c]">{section.title}</h2>
-                <div className="mt-5 grid gap-4 text-[15px] leading-7 text-[#526660] [&_a]:font-semibold [&_a]:text-[#087e71] [&_a]:underline [&_a]:underline-offset-4 [&_address]:not-italic [&_h3]:mt-3 [&_h3]:font-semibold [&_h3]:text-[#203c34] [&_li]:pl-1 [&_strong]:font-semibold [&_strong]:text-[#203c34] [&_ul]:grid [&_ul]:list-disc [&_ul]:gap-2 [&_ul]:pl-5">
+          </div>
+        </section>
+
+        <section className="bg-black px-[clamp(1.25rem,5vw,4.75rem)] pb-10">
+          <div className="mx-auto max-w-[1040px] space-y-5">
+            <div className="flex flex-col gap-5 rounded-lg border border-white/10 border-l-[#5eead4] bg-[#080b0f] p-6 shadow-[0_22px_55px_rgba(0,0,0,0.3)] sm:flex-row sm:items-start sm:p-8">
+              <span className="grid size-11 shrink-0 place-items-center rounded-lg border border-[#5eead4]/20 bg-[#5eead4]/[0.08] text-[#72f2df]">
+                <svg aria-hidden="true" className="size-5" fill="none" viewBox="0 0 24 24">
+                  <path d="m12 3-1 4.2a2.4 2.4 0 0 1-1.8 1.8L5 10l4.2 1a2.4 2.4 0 0 1 1.8 1.8l1 4.2 1-4.2a2.4 2.4 0 0 1 1.8-1.8l4.2-1-4.2-1A2.4 2.4 0 0 1 13 7.2L12 3Z" stroke="currentColor" strokeLinejoin="round" strokeWidth="1.5" />
+                </svg>
+              </span>
+              <p className="text-[15px] leading-7 text-white/62 sm:text-base sm:leading-8">
+                Welcome to vozon.ai. We are committed to handling personal information
+                transparently and responsibly. This Privacy Policy explains how we collect, use,
+                protect, and manage information when you use our website, AI voice platform, and
+                related services.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-4 rounded-lg border border-[#ffad73]/35 bg-[#ffad73]/[0.07] p-6 sm:flex-row sm:items-start">
+              <span className="grid size-10 shrink-0 place-items-center rounded-lg border border-[#ffad73]/25 bg-[#ffad73]/10 text-[#ffb37d]">
+                <svg aria-hidden="true" className="size-5" fill="none" viewBox="0 0 24 24">
+                  <path d="M3 12s3.4-5 9-5 9 5 9 5-3.4 5-9 5-9-5-9-5Z" stroke="currentColor" strokeWidth="1.5" />
+                  <circle cx="12" cy="12" r="2.5" stroke="currentColor" strokeWidth="1.5" />
+                </svg>
+              </span>
+              <div>
+                <h2 className="text-lg font-semibold text-[#ffb37d]">Important notice</h2>
+                <p className="mt-2 text-sm leading-7 text-white/58 sm:text-[15px]">
+                  When a voice agent is operated by one of our customers, that customer determines why
+                  call information is processed and is responsible for required recording or AI notices.
+                  Contact that organization first for requests about those conversations.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-black px-[clamp(1.25rem,5vw,4.75rem)] pt-4 pb-24 sm:pb-28">
+          <div className="mx-auto max-w-[1040px] space-y-6">
+            {privacySections.map((section, index) => (
+              <article
+                className="privacy-policy-section scroll-mt-28 rounded-lg border border-white/10 bg-[#07090d] p-5 shadow-[0_22px_60px_rgba(0,0,0,0.26)] sm:p-8"
+                id={section.id}
+                key={section.id}
+              >
+                <div className="flex items-center gap-4">
+                  <span className={`inline-flex size-11 shrink-0 items-center justify-center rounded-lg border text-xs font-bold tracking-normal ${sectionAccents[index % sectionAccents.length]}`}>
+                    {section.number}
+                  </span>
+                  <h2 className="text-xl leading-snug font-semibold tracking-normal text-white/92 sm:text-3xl">
+                    {section.title}
+                  </h2>
+                </div>
+                <div
+                  className="privacy-policy-copy mt-6 rounded-lg border border-white/[0.07] bg-white/[0.025] p-5 text-[15px] leading-7 text-white/60 sm:p-6 sm:text-base sm:leading-8"
+                  style={{ borderLeftColor: ["#5eead4", "#9d8cff", "#ffad73", "#f6db75"][index % 4], borderLeftWidth: 3 }}
+                >
                   {section.content}
                 </div>
-              </section>
+              </article>
             ))}
-          </article>
-        </div>
+
+            <section className="scroll-mt-28 rounded-lg border border-[#9d8cff]/20 bg-[#0b0911] p-5 shadow-[0_22px_60px_rgba(0,0,0,0.26)] sm:p-8" id="contact">
+              <div className="flex items-center gap-4">
+                <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg border border-[#9d8cff]/30 bg-[#9d8cff]/[0.08] text-xs font-bold text-[#c4b5fd]">12</span>
+                <div>
+                  <p className="text-xs font-bold text-[#c4b5fd] uppercase">Privacy requests</p>
+                  <h2 className="mt-1 text-xl font-semibold tracking-normal sm:text-3xl">Contact us about your information</h2>
+                </div>
+              </div>
+              <div className="mt-6 rounded-lg border border-white/[0.07] border-l-[#9d8cff] bg-white/[0.025] p-5 sm:p-6">
+                <p className="max-w-[760px] text-[15px] leading-7 text-white/60 sm:text-base sm:leading-8">
+                  For privacy questions or requests, email us with enough detail to identify your
+                  account or interaction. Do not include passwords, payment card details, or
+                  unnecessary sensitive information.
+                </p>
+                <a
+                  className="group mt-6 inline-flex min-h-12 items-center gap-4 rounded-lg bg-[#5eead4] px-5 text-sm font-bold text-[#03110f] transition hover:-translate-y-0.5 hover:bg-[#8ff8e9]"
+                  href="mailto:hello@vozon.ai?subject=Privacy%20request"
+                >
+                  hello@vozon.ai
+                  <span aria-hidden="true" className="text-base transition group-hover:translate-x-0.5">&rarr;</span>
+                </a>
+              </div>
+            </section>
+
+            <p className="px-2 pt-3 text-center text-xs leading-6 text-white/30">
+              This policy is intended to explain our privacy practices clearly. It does not replace
+              any data processing agreement or other contract between vozon.ai and a customer.
+            </p>
+          </div>
+        </section>
+
+        <style>{`
+          .privacy-policy-copy strong {
+            color: rgba(255, 255, 255, 0.82);
+            font-weight: 600;
+          }
+
+          .privacy-policy-copy ul {
+            display: grid;
+            gap: 0.65rem;
+            margin: 1.25rem 0;
+            padding: 0;
+            list-style: none;
+          }
+
+          .privacy-policy-copy li {
+            position: relative;
+            padding-left: 1.4rem;
+          }
+
+          .privacy-policy-copy li::before {
+            position: absolute;
+            top: 0.72rem;
+            left: 0;
+            width: 0.35rem;
+            height: 0.35rem;
+            border-radius: 999px;
+            background: #5eead4;
+            content: "";
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+            .privacy-policy-copy *,
+            .privacy-policy-copy *::before,
+            .privacy-policy-copy *::after {
+              scroll-behavior: auto !important;
+              transition-duration: 0.01ms !important;
+            }
+          }
+        `}</style>
       </div>
     </SiteLayout>
   );
