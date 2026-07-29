@@ -101,8 +101,8 @@ export function BillingShell() {
   const wallet = data?.wallet;
   const currency = wallet?.currency || "USD";
   const balance = wallet?.balanceCredits ?? 0;
-  const lifetime = Math.max(wallet?.lifetimePurchasedCredits ?? 0, balance, 1);
-  const progress = Math.min(100, Math.max(4, (balance / lifetime) * 100));
+  const lifetime = Math.max(wallet?.lifetimePurchasedCredits ?? 0, balance, 0);
+  const progress = lifetime > 0 ? Math.min(100, Math.max(0, (balance / lifetime) * 100)) : 0;
   const latestPayment = data?.transactions.find((transaction) => transaction.type === "topup" || transaction.type === "auto_reload");
 
   const totals = useMemo(() => {
@@ -187,7 +187,7 @@ export function BillingShell() {
               <div>
                 <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#00b8c4]">Pay per use</span>
                 <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">Credit command center</h1>
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Top up once, run calls, and see every provider charge broken down by LLM, STT, TTS, and carrier usage.</p>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Top up once, run calls, and see every provider charge broken down by LLM, STT, and TTS usage.</p>
               </div>
               <div className="flex gap-2">
               <button className="rounded-xl border border-white/10 bg-[#061b18] px-4 py-2.5 text-sm font-semibold text-white/70 shadow-sm hover:bg-white/[0.08] hover:text-white" type="button" onClick={() => void load()} disabled={Boolean(busy)}>
@@ -267,8 +267,8 @@ export function BillingShell() {
 
           <section className="grid gap-4 md:grid-cols-3">
             <Metric label="Minimum to call" value={money(data?.creditSettings.minimumCallStartCredits ?? 0, currency)} detail="Pre-call wallet guard" tone="amber" />
-            <Metric label="Top-ups" value={String(totals.topUps)} detail={`${money(totals.net, currency)} net ledger movement`} tone="sky" />
-            <Metric label="Call debits" value={String(totals.debits)} detail="Recent call charge rows" tone="emerald" />
+            <Metric label="Recent top-ups" value={String(totals.topUps)} detail={`${money(totals.net, currency)} across the recent ledger rows`} tone="sky" />
+            <Metric label="Recent call debits" value={String(totals.debits)} detail="Call charges in the recent ledger rows" tone="emerald" />
           </section>
 
           <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.8fr)]">
@@ -312,7 +312,7 @@ export function BillingShell() {
               <Card className="overflow-hidden">
                 <div className="bg-slate-950 p-5 text-white">
                   <h2 className="m-0 text-lg font-semibold">Enterprise credits</h2>
-                  <p className="mt-2 text-sm leading-6 text-white/65">${data?.enterpriseMonthlyUsd ?? 500}/month credit, priority support, and higher call concurrency.</p>
+                  <p className="mt-2 text-sm leading-6 text-white/65">${data?.enterpriseMonthlyUsd ?? 500} in wallet credits added after each successful monthly Razorpay charge.</p>
                   <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-semibold text-[#9ff8ee]">
                     <span className="rounded-full border border-[#45ddce]/30 bg-[#45ddce]/10 px-2.5 py-1">Monthly Autopay</span>
                     <span className="rounded-full border border-[#45ddce]/30 bg-[#45ddce]/10 px-2.5 py-1">Indian cards</span>
