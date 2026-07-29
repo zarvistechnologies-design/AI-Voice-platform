@@ -11,7 +11,7 @@ import {
     subscribeToSession,
     validateStoredSession,
 } from "@/lib/auth";
-import { billingApi, type BillingSummary, type BillingTransaction } from "@/lib/billing";
+import { billingApi, type BillingSummary } from "@/lib/billing";
 import { openRazorpayCheckout } from "@/lib/razorpayCheckout";
 
 const topUpOptions = [5, 10, 50, 100];
@@ -29,19 +29,9 @@ function money(value: number, currency = "USD") {
   }).format(value);
 }
 
-function signedMoney(value: number, currency = "USD") {
-  return `${value < 0 ? "-" : "+"}${money(Math.abs(value), currency)}`;
-}
-
 function dateTime(value?: string) {
   if (!value) return "Never";
   return new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
-}
-
-function txLabel(transaction: BillingTransaction) {
-  if (transaction.description) return transaction.description;
-  if (transaction.category === "call") return `Call ${transaction.callId}`;
-  return transaction.type === "topup" ? "Credit purchase" : "Billing adjustment";
 }
 
 function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
@@ -322,36 +312,6 @@ export function BillingShell() {
             </div>
           </section>
 
-          <Card className="overflow-hidden">
-            <div className="flex flex-col gap-2 border-b border-slate-200 p-5 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <h2 className="m-0 text-lg font-semibold">Transactions</h2>
-                <p className="mt-1 text-sm text-slate-500">Credit purchases, auto-refills, and account adjustments. Per-call charges are shown in Call Logs.</p>
-              </div>
-              <span className="text-xs font-semibold text-slate-500">{data?.transactions.length ?? 0} recent rows</span>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[900px] text-left text-sm">
-                <thead className="bg-[#061b18] text-xs uppercase tracking-wider text-white/50">
-                  <tr>{["ID", "Transaction", "Category", "Amount", "Type", "Timestamp"].map((heading) => <th className="px-5 py-3" key={heading}>{heading}</th>)}</tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {data?.transactions.length ? data.transactions.map((transaction) => (
-                    <tr className="hover:bg-cyan-50/50" key={transaction._id}>
-                      <td className="max-w-[180px] truncate px-5 py-4 font-mono text-xs text-slate-500">{transaction._id}</td>
-                      <td className="px-5 py-4 font-semibold text-slate-950">{txLabel(transaction)}</td>
-                      <td className="px-5 py-4"><span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700">{transaction.category}</span></td>
-                      <td className={`px-5 py-4 font-semibold ${transaction.amountCredits < 0 ? "text-rose-700" : "text-emerald-700"}`}>{signedMoney(transaction.amountCredits, transaction.currency)}</td>
-                      <td className="px-5 py-4 font-medium text-slate-700">{transaction.type}</td>
-                      <td className="px-5 py-4 text-slate-600">{dateTime(transaction.createdAt)}</td>
-                    </tr>
-                  )) : (
-                    <tr><td className="px-5 py-10 text-center text-slate-500" colSpan={6}>No credit transactions yet.</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </Card>
         </div>
       </section>
     </main>
