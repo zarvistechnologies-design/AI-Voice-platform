@@ -537,7 +537,10 @@ export function CampaignShell() {
 
       <section className="min-w-0 overflow-y-auto overscroll-contain bg-black">
         <div className="mx-auto w-full max-w-[1500px] px-4 py-5 sm:px-6 lg:px-8">
-          <header className="relative overflow-hidden border-b border-[#45ddce]/25 bg-[linear-gradient(110deg,#06362f_0%,#075b54_44%,#0a2a27_100%)] px-5 py-6 sm:px-7 sm:py-7">
+          <header
+            className="relative overflow-hidden border-b border-[#75fff0]/30 px-5 py-6 sm:px-7 sm:py-7"
+            style={{ background: "linear-gradient(110deg, #075f4f 0%, #087f68 48%, #06483f 100%)" }}
+          >
             <span className="pointer-events-none absolute -top-24 right-[8%] size-56 rounded-full bg-[#75fff0]/10 blur-3xl" />
             <span className="pointer-events-none absolute -bottom-28 left-[32%] size-52 rounded-full bg-[#45ddce]/10 blur-3xl" />
             <div className="relative flex flex-wrap items-center justify-between gap-5">
