@@ -30,6 +30,7 @@ const integrationSteps = [
       { before: "Sync knowledge from your ", strong: "CRM, calendar, and docs", after: "." },
     ],
     tags: ["Flow builder", "Knowledge base"],
+    src: "/images/stt1.png",
   },
   {
     number: "02",
@@ -40,6 +41,7 @@ const integrationSteps = [
       { before: "Bring your own fine-tuned or ", strong: "self-hosted LLM", after: "." },
     ],
     tags: ["Bring your own model"],
+    src: "/images/st2.png",
   },
   {
     number: "03",
@@ -50,6 +52,7 @@ const integrationSteps = [
       { before: "Clone your own voice for a ", strong: "consistent brand sound", after: "." },
     ],
     tags: ["Voice cloning", "Multilingual"],
+    src: "/images/st3.png",
   },
   {
     number: "04",
@@ -60,6 +63,7 @@ const integrationSteps = [
       { before: "Ship to web, mobile, and desktop with ", strong: "one SDK", after: "." },
     ],
     tags: ["Phone", "SDK", "Widget"],
+    src: "/images/st4.png",
   },
 ];
 
@@ -81,6 +85,7 @@ const fitSections = [
         body: "Run outbound surveys and collect structured feedback without adding more manual calling work.",
       },
     ],
+    src: "/images/voice_healthcare_3.avif",
   },
   {
     key: "assistants",
@@ -99,6 +104,7 @@ const fitSections = [
         body: "Escalate sensitive or complex calls with context, transcript, and caller intent already captured.",
       },
     ],
+    src: "/images/virtualAssistance1.png",
   },
   {
     key: "devices",
@@ -117,6 +123,7 @@ const fitSections = [
         body: "Let customers continue from device to phone or web while preserving the same conversation context.",
       },
     ],
+    src: "/images/voice_healthcare.avif",
   },
   {
     key: "healthcare",
@@ -135,6 +142,7 @@ const fitSections = [
         body: "Capture patient needs after hours and route urgent or sensitive requests to the right care team.",
       },
     ],
+    src: "/images/healthcare.avif",
   },
   {
     key: "hospitality",
@@ -153,6 +161,7 @@ const fitSections = [
         body: "Support travelers across languages and time zones with consistent information and clear human handoffs.",
       },
     ],
+    src: "/images/travelAndHos.png",
   },
 ];
 
@@ -369,7 +378,6 @@ export function HomePlatformSections() {
   const [copiedCode, setCopiedCode] = useState(false);
   const [selectedFitKey, setSelectedFitKey] = useState("support");
   const selectedFit = fitSections.find((section) => section.key === selectedFitKey) ?? fitSections[0];
-  const selectedFitIndex = Math.max(0, fitSections.findIndex((section) => section.key === selectedFit.key));
 
   return (
     <div className="vozon-home relative isolate overflow-x-clip bg-black text-white">
@@ -586,124 +594,162 @@ export function HomePlatformSections() {
         </div>
       </section>
 
-      <section className="vozon-fit-section relative overflow-hidden px-5 pb-4 pt-8 sm:px-8 sm:pb-5 sm:pt-10 lg:pb-6 lg:pt-12">
+      <section className="vozon-fit-section relative overflow-hidden px-5 py-16 sm:px-8 lg:py-20">
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#45ddce]/24 bg-[#45ddce]/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#75fff0]">
+            <span className="size-1.5 rounded-full bg-[#45ddce] shadow-[0_0_12px_#45ddce]" />
+            Where Vozon Fits
+          </div>
+          <h2 className="vozon-platform-heading m-0 max-w-3xl text-white">
+            One voice agent, every industry
+            <span className="block text-white/42">that answers a phone</span>
+          </h2>
+          <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-white/58 sm:text-base">
+            Support, virtual assistants, or voice-enabled hardware. The same
+            agent adapts to how your business actually talks to people.
+          </p>
+        </div>
+
         <div className="relative z-10 mx-auto max-w-[1240px]">
-          <div className="mx-auto max-w-4xl text-center">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#45ddce]/24 bg-[#45ddce]/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#75fff0]">
-              <span className="size-1.5 rounded-full bg-[#45ddce] shadow-[0_0_12px_#45ddce]" />
-              Where Vozon Fits
-            </div>
-            <h2 className="mx-auto m-0 max-w-3xl text-[2rem] font-black leading-[1.12] text-white sm:text-[2.55rem] lg:text-[3.15rem]">
-              One voice agent, every industry
-              <span className="block text-white/42">that answers a phone</span>
-            </h2>
-            <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/56 sm:text-base">
-              Support, virtual assistants, or voice-enabled hardware. The same agent adapts to how your business actually talks to people.
-            </p>
+          <div className="mt-10 space-y-6 lg:hidden">
+            {fitSections.map((section, index) => (
+              <article className="vozon-fit-mobile-item overflow-hidden" key={section.key}>
+                <div className="flex items-center gap-3 px-5 py-4">
+                  <span className="vozon-fit-compact-number">{String(index + 1).padStart(2, "0")}</span>
+                  <h3 className="m-0 text-base font-black text-white">{section.label}</h3>
+                </div>
+                <div className="relative min-h-[250px]">
+                  <Image src={section.src} alt={section.label} fill className="object-cover object-top" sizes="100vw" />
+                </div>
+              </article>
+            ))}
           </div>
 
-          <div className="vozon-fit-panel mt-12">
-            <div aria-label="Vozon use cases" className="vozon-fit-tabs" role="tablist">
+          <div className="vozon-fit-compact mt-10 hidden gap-6 lg:grid lg:grid-cols-[minmax(280px,0.72fr)_minmax(0,1.28fr)] lg:gap-10">
+            <div aria-label="Vozon industry use cases" className="order-2 space-y-2 lg:order-1" role="tablist">
               {fitSections.map((section, index) => (
                 <button
                   aria-controls={`vozon-fit-panel-${section.key}`}
                   aria-selected={selectedFit.key === section.key}
-                  className={`vozon-fit-tab vozon-fit-tab-tone-${index + 1} min-w-0 px-4 py-4 text-left font-bold transition ${
-                    selectedFit.key === section.key ? "vozon-fit-tab-active text-white" : "text-white/55 hover:text-white/78"
-                  }`}
+                  className={`vozon-fit-compact-tab w-full text-left ${selectedFit.key === section.key ? "is-active" : ""}`}
                   id={`vozon-fit-tab-${section.key}`}
                   key={section.key}
                   onClick={() => setSelectedFitKey(section.key)}
                   role="tab"
                   type="button"
                 >
-                  <span className="vozon-fit-tab-number" aria-hidden="true">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <span className="vozon-fit-tab-label">{section.label}</span>
+                  <span className="vozon-fit-compact-number">{String(index + 1).padStart(2, "0")}</span>
+                  <span>{section.label}</span>
                 </button>
               ))}
             </div>
 
             <div
               aria-labelledby={`vozon-fit-tab-${selectedFit.key}`}
-              className={`vozon-fit-content-grid vozon-fit-theme-${selectedFitIndex + 1} grid lg:grid-cols-3`}
+              className="vozon-fit-compact-image relative order-1 min-h-[300px] overflow-hidden sm:min-h-[420px] lg:order-2"
               id={`vozon-fit-panel-${selectedFit.key}`}
               role="tabpanel"
             >
-              {selectedFit.columns.map((column, index) => (
-                <article
-                  className="vozon-fit-content min-h-[250px] px-7 py-8 sm:px-8 sm:py-9"
-                  key={column.title}
-                >
-                  <div className="vozon-fit-card-meta mb-7 flex items-center gap-3">
-                    <span className="vozon-fit-index grid size-10 place-items-center rounded-lg text-xs font-black">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <span className="vozon-fit-kicker text-[10px] font-black uppercase tracking-[0.18em]">
-                      Use case
-                    </span>
-                  </div>
-                  <h3 className="m-0 text-xl font-black leading-tight text-white">{column.title}</h3>
-                  <p className="mt-4 mb-0 text-sm leading-7 text-white/58 sm:text-base">{column.body}</p>
-                </article>
-              ))}
+              <Image
+                src={selectedFit.src}
+                alt={selectedFit.label}
+                fill
+                className="object-cover object-top"
+                sizes="(max-width: 1024px) 100vw, 65vw"
+              />
+              <div className="vozon-fit-compact-image-label">
+                <span>Industry solution</span>
+                <strong>{selectedFit.label}</strong>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="integrations" className="vozon-integrations-section relative overflow-hidden px-5 pb-10 pt-8 sm:px-8 sm:pb-12 sm:pt-10 lg:pb-14 lg:pt-12">
+      <section
+        id="integrations"
+        className="vozon-integrations-section relative overflow-hidden px-5 py-14 sm:px-8 lg:py-[72px]"
+      >
         <div className="relative z-10 mx-auto max-w-[1240px]">
-          <div className="max-w-3xl">
-            <div className="mb-5 flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.22em] text-[#45ddce]">
-              <span className="h-px w-8 bg-[#45ddce]" />
+          <div className="mx-auto max-w-3xl text-center">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#45ddce]/24 bg-[#45ddce]/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#75fff0]">
+              <span className="size-1.5 rounded-full bg-[#45ddce] shadow-[0_0_12px_#45ddce]" />
               Integrations
             </div>
 
             <h2 className="vozon-platform-heading m-0 max-w-3xl text-white">
-              From script to spoken word,{" "}
-              <span>wired end to end.</span>
+              From script to spoken word, <span>wired end to end.</span>
             </h2>
 
-            <p className="mt-6 max-w-2xl text-sm leading-7 text-white/58 sm:text-base">
-              Vozon routes every call through one continuous signal path - configure, connect, voice, deploy - so your agent goes live without stitching tools together yourself.
+            <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-white/58 sm:text-base">
+              Vozon routes every call through one continuous signal path -
+              configure, connect, voice, deploy - so your agent goes live
+              without stitching tools together yourself.
             </p>
           </div>
 
           <div className="vozon-integration-flow relative mt-12">
-            <div className="vozon-integration-rail relative z-10 grid auto-cols-[minmax(268px,1fr)] grid-flow-col items-stretch gap-4 overflow-x-auto pb-4 lg:grid-flow-row lg:grid-cols-4 lg:overflow-visible lg:pb-0">
-              {integrationSteps.map((step) => (
-                <article className="vozon-integration-card relative flex min-h-[332px] flex-col p-6" key={step.number}>
-                  <span className="vozon-integration-step-number text-[2.35rem] font-black leading-none text-white/[0.13]">
-                    {step.number}
-                  </span>
+            <div className="vozon-integration-rail relative z-10 space-y-6 lg:space-y-8">
+              {integrationSteps.map((step, index) => (
+                <article
+                  className="vozon-integration-card relative grid overflow-hidden lg:grid-cols-[0.9fr_1.1fr]"
+                  key={step.number}
+                >
+                  <div
+                    className={`vozon-integration-copy relative flex flex-col justify-center px-6 py-8 sm:px-9 lg:px-12 lg:py-10 ${
+                      index % 2 !== 0 ? "lg:order-2" : "lg:order-1"
+                    }`}
+                  >
+                    <div className="mb-5 flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-[#75fff0]">
+                      <span className="h-px w-7 bg-[#45ddce]" />
+                      Step {step.number}
+                    </div>
 
-                  <div className="vozon-integration-icon grid size-[52px] place-items-center rounded-[15px] border border-[#45ddce]/28 bg-[#45ddce]/10 text-[#9dfff4]">
-                    <IntegrationIcon icon={step.icon} />
+                    <div className="flex items-center gap-4">
+                      <div className="vozon-integration-icon grid size-[52px] shrink-0 place-items-center rounded-[15px] border border-[#45ddce]/28 bg-[#45ddce]/10 text-[#9dfff4]">
+                        <IntegrationIcon icon={step.icon} />
+                      </div>
+                      <h3 className="m-0 text-xl font-black leading-tight text-white sm:text-2xl">{step.title}</h3>
+                    </div>
+
+                    <ul className="mt-5 space-y-3.5 p-0 text-sm leading-6 text-white/55 sm:text-base">
+                      {step.bullets.map((bullet) => (
+                        <li className="flex gap-3" key={`${step.number}-${bullet.strong}`}>
+                          <span className="mt-2 size-1.5 shrink-0 rounded-full bg-[#45ddce]" />
+                          <span>
+                            {bullet.before}
+                            <strong className="font-black text-white/88">{bullet.strong}</strong>
+                            {bullet.after}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="mt-8 flex flex-wrap gap-2">
+                      {step.tags.map((tag) => (
+                        <span className="rounded-full border border-white/12 px-3 py-1 text-xs font-bold text-white/42" key={tag}>
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                   </div>
 
-                  <h3 className="mt-7 mb-0 text-xl font-black leading-tight text-white">{step.title}</h3>
-
-                  <ul className="mt-5 space-y-3.5 p-0 text-sm leading-6 text-white/55">
-                    {step.bullets.map((bullet) => (
-                      <li className="flex gap-3" key={`${step.number}-${bullet.strong}`}>
-                        <span className="mt-2 size-1.5 shrink-0 rounded-full bg-[#45ddce]" />
-                        <span>
-                          {bullet.before}
-                          <strong className="font-black text-white/88">{bullet.strong}</strong>
-                          {bullet.after}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className="mt-auto flex flex-wrap gap-2 pt-6">
-                    {step.tags.map((tag) => (
-                      <span className="rounded-full border border-white/12 px-3 py-1 text-xs font-bold text-white/42" key={tag}>
-                        {tag}
-                      </span>
-                    ))}
+                  <div
+                    className={`vozon-integration-image relative min-h-[260px] sm:min-h-[320px] lg:min-h-[360px] ${
+                      index % 2 !== 0
+                        ? "vozon-integration-image-left lg:order-1"
+                        : "vozon-integration-image-right lg:order-2"
+                    }`}
+                  >
+                    <div className="vozon-integration-image-placeholder absolute inset-0 grid place-items-center">
+                      <Image
+                        src={step.src}
+                        alt={`Step ${step.number}`}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 1024px) 100vw, 50vw"
+                      />
+                    </div>
                   </div>
                 </article>
               ))}
@@ -1588,6 +1634,183 @@ export function HomePlatformSections() {
 
         .vozon-fit-kicker {
           color: rgba(var(--vozon-fit-accent), 0.82);
+        }
+
+        /* Restored image-based fit and integration layouts. */
+        .vozon-fit-compact-tab {
+          display: flex;
+          min-height: 3.8rem;
+          align-items: center;
+          gap: 0.9rem;
+          padding: 0.75rem 0.9rem;
+          border: 1px solid transparent;
+          border-radius: 0.8rem;
+          color: rgba(255,255,255,0.55);
+          font-size: 0.95rem;
+          font-weight: 800;
+          line-height: 1.3;
+          transition: border-color 180ms ease, background 180ms ease, color 180ms ease;
+        }
+
+        .vozon-fit-compact-tab:hover,
+        .vozon-fit-compact-tab.is-active {
+          border-color: rgba(69,221,206,0.3);
+          background: rgba(69,221,206,0.07);
+          color: #fff;
+        }
+
+        .vozon-fit-compact-number {
+          display: grid;
+          width: 2rem;
+          height: 2rem;
+          flex: 0 0 auto;
+          place-items: center;
+          border: 1px solid rgba(69,221,206,0.28);
+          border-radius: 0.55rem;
+          color: #75fff0;
+          font-size: 0.65rem;
+          font-weight: 900;
+        }
+
+        .vozon-fit-mobile-item {
+          border: 1px solid rgba(69,221,206,0.18);
+          border-radius: 0.9rem;
+          background: rgba(255,255,255,0.02);
+        }
+
+        .vozon-fit-compact-tab.is-active .vozon-fit-compact-number {
+          background: #45ddce;
+          color: #031411;
+          box-shadow: 0 0 18px rgba(69,221,206,0.24);
+        }
+
+        .vozon-fit-compact-image {
+          border: 1px solid rgba(69,221,206,0.18);
+          border-radius: 1rem;
+          background: #071512;
+          box-shadow: 0 24px 70px rgba(0,0,0,0.24);
+        }
+
+        .vozon-fit-compact-image::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          background: linear-gradient(to top, rgba(2,10,8,0.78), transparent 48%);
+        }
+
+        .vozon-fit-compact-image-label {
+          position: absolute;
+          z-index: 1;
+          right: 1.5rem;
+          bottom: 1.5rem;
+          left: 1.5rem;
+        }
+
+        .vozon-fit-compact-image-label span,
+        .vozon-fit-compact-image-label strong {
+          display: block;
+        }
+
+        .vozon-fit-compact-image-label span {
+          color: #75fff0;
+          font-size: 0.65rem;
+          font-weight: 900;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+        }
+
+        .vozon-fit-compact-image-label strong {
+          margin-top: 0.35rem;
+          color: #fff;
+          font-size: 1.35rem;
+          line-height: 1.2;
+        }
+
+        .vozon-integration-rail {
+          position: relative;
+          min-width: 0;
+        }
+
+        .vozon-integration-rail::before {
+          content: "";
+          position: absolute;
+          top: 4rem;
+          bottom: 4rem;
+          left: 45%;
+          width: 1px;
+          background: linear-gradient(to bottom, transparent, rgba(69,221,206,0.34) 8%, rgba(69,221,206,0.34) 92%, transparent);
+          transform: translateX(-50%);
+        }
+
+        .vozon-integration-card {
+          overflow: hidden;
+          border: 1px solid rgba(117,255,240,0.14);
+          border-radius: 22px;
+          background: linear-gradient(135deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012));
+          box-shadow: inset 0 0 0 1px rgba(255,255,255,0.018), 0 18px 45px rgba(0,0,0,0.12);
+          transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+        }
+
+        .vozon-integration-card::before {
+          display: none;
+        }
+
+        .vozon-integration-card:hover {
+          border-color: rgba(117,255,240,0.3);
+          transform: translateY(-3px);
+          background: linear-gradient(135deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012));
+          box-shadow: inset 0 0 0 1px rgba(117,255,240,0.05), 0 24px 54px rgba(0,0,0,0.2);
+        }
+
+        .vozon-integration-image {
+          border-bottom: 1px solid rgba(117,255,240,0.14);
+          background:
+            radial-gradient(circle at 22% 18%, rgba(69,221,206,0.13), transparent 35%),
+            linear-gradient(135deg, rgba(13,36,38,0.92), rgba(5,14,19,0.96));
+        }
+
+        .vozon-integration-copy::after {
+          content: "";
+          position: absolute;
+          top: 50%;
+          width: 12px;
+          height: 12px;
+          border: 2px solid #071512;
+          border-radius: 999px;
+          background: #45ddce;
+          box-shadow: 0 0 0 5px rgba(69,221,206,0.12), 0 0 20px rgba(69,221,206,0.45);
+          transform: translateY(-50%);
+        }
+
+        @media (min-width: 1024px) {
+          .vozon-integration-image-right {
+            border-right: 1px solid rgba(117,255,240,0.14);
+            border-bottom: 0;
+          }
+
+          .vozon-integration-image-left {
+            border-right: 0;
+            border-bottom: 0;
+            border-left: 1px solid rgba(117,255,240,0.14);
+          }
+
+          .vozon-integration-copy::after {
+            right: -6px;
+            z-index: 2;
+          }
+
+          .vozon-integration-card:nth-child(even) .vozon-integration-copy::after {
+            right: auto;
+            left: -6px;
+          }
+        }
+
+        @media (max-width: 1023px) {
+          .vozon-integration-rail::before,
+          .vozon-integration-copy::after {
+            display: none;
+          }
         }
 
         .vozon-company-marquee-section {
