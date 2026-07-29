@@ -537,19 +537,23 @@ export function CampaignShell() {
 
       <section className="min-w-0 overflow-y-auto overscroll-contain bg-black">
         <div className="mx-auto w-full max-w-[1500px] px-4 py-5 sm:px-6 lg:px-8">
-          <header className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 px-0 py-5">
-            <div>
-              <span className="app-label text-[#00b8c4]">Campaigns</span>
-              <h1 className="m-0 text-xl font-semibold leading-7 text-white">Outbound campaigns</h1>
-              <p className="app-caption mt-1 mb-0 text-white/50">Create campaigns, upload leads, control pacing, and monitor delivery.</p>
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <span className={`rounded-lg px-3 py-2 text-xs font-semibold ${selectedPhoneReady ? "bg-[#ecfdf5] text-[#047857]" : "bg-[#fff7ed] text-[#d97706]"}`}>
-                {selectedPhoneReady ? "Route ready" : "Route needs setup"}
-              </span>
-              <span className="max-w-[360px] truncate border-l border-white/15 px-3 py-2 text-xs font-semibold text-white/55">
-                {routeSummary}
-              </span>
+          <header className="relative overflow-hidden border-b border-[#45ddce]/25 bg-[linear-gradient(110deg,#06362f_0%,#075b54_44%,#0a2a27_100%)] px-5 py-6 sm:px-7 sm:py-7">
+            <span className="pointer-events-none absolute -top-24 right-[8%] size-56 rounded-full bg-[#75fff0]/10 blur-3xl" />
+            <span className="pointer-events-none absolute -bottom-28 left-[32%] size-52 rounded-full bg-[#45ddce]/10 blur-3xl" />
+            <div className="relative flex flex-wrap items-center justify-between gap-5">
+              <div>
+                <span className="app-label text-[#9dfff4]">Campaigns</span>
+                <h1 className="m-0 text-2xl font-semibold leading-8 text-white">Outbound campaigns</h1>
+                <p className="mt-1 mb-0 text-sm text-white/65">Create campaigns, upload leads, control pacing, and monitor delivery.</p>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className={`rounded-lg px-3 py-2 text-xs font-semibold ${selectedPhoneReady ? "bg-emerald-300/15 text-emerald-200" : "bg-amber-300/15 text-amber-200"}`}>
+                  {selectedPhoneReady ? "Route ready" : "Route needs setup"}
+                </span>
+                <span className="max-w-[360px] truncate border-l border-white/20 px-3 py-2 text-xs font-semibold text-white/65">
+                  {routeSummary}
+                </span>
+              </div>
             </div>
           </header>
 
@@ -559,8 +563,8 @@ export function CampaignShell() {
             ))}
           </section>
 
-          <form className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1fr)_380px]" onSubmit={prepareCampaign}>
-            <section className="grid min-w-0 content-start gap-5">
+          <form className="mt-7 grid gap-7 xl:grid-cols-[minmax(0,1fr)_380px]" onSubmit={prepareCampaign}>
+            <section className="grid min-w-0 content-start gap-0">
               {notice ? <Notice tone="success" message={notice} onClose={() => setNotice("")} /> : null}
               {error ? <Notice tone="error" message={error} onClose={() => setError("")} /> : null}
 
@@ -911,7 +915,7 @@ export function CampaignShell() {
 
 function Panel({ children, compact = false }: { children: ReactNode; compact?: boolean }) {
   return (
-    <section className={`overflow-hidden border-b border-white/10 ${compact ? "py-5" : "py-7"}`}>
+    <section className={`overflow-hidden border-t border-white/15 ${compact ? "py-5" : "py-8"}`}>
       {children}
     </section>
   );
