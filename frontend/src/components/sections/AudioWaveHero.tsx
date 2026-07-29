@@ -38,7 +38,7 @@ export function AudioWaveHero() {
     const waveY = (x: number, time: number, layer: number) => {
       const position = x / Math.max(width, 1);
       const envelope = 0.62 + Math.sin(position * Math.PI) * 0.38;
-      return height * 0.59
+      return height * 0.68
         + Math.sin(position * Math.PI * (3.2 + layer * 0.09) + time * (0.42 + layer * 0.018) + layer * 0.74)
           * height * (0.105 + layer * 0.003) * envelope
         + Math.sin(position * Math.PI * 7.4 - time * 0.28 + layer) * height * 0.025;
@@ -49,16 +49,16 @@ export function AudioWaveHero() {
       context.clearRect(0, 0, width, height);
 
       const glow = context.createRadialGradient(width * 0.5, height * 0.55, 0, width * 0.5, height * 0.55, width * 0.52);
-      glow.addColorStop(0, "rgba(105, 7, 133, .17)");
-      glow.addColorStop(0.44, "rgba(0, 194, 221, .08)");
+      glow.addColorStop(0, "rgba(37, 244, 210, .16)");
+      glow.addColorStop(0.44, "rgba(72, 219, 139, .08)");
       glow.addColorStop(1, "rgba(0, 0, 0, 0)");
       context.fillStyle = glow;
       context.fillRect(0, 0, width, height);
 
       [
-        { offset: 66, start: "rgba(0, 211, 245, .66)", middle: "rgba(0, 58, 143, .12)", end: "rgba(55, 0, 160, .3)", layer: 1 },
-        { offset: 40, start: "rgba(25, 239, 220, .48)", middle: "rgba(56, 24, 170, .2)", end: "rgba(214, 0, 183, .38)", layer: 3 },
-        { offset: 54, start: "rgba(56, 0, 145, .12)", middle: "rgba(112, 0, 135, .3)", end: "rgba(255, 0, 111, .74)", layer: 6 },
+        { offset: 66, start: "rgba(37, 244, 210, .58)", middle: "rgba(32, 145, 116, .16)", end: "rgba(72, 219, 139, .34)", layer: 1 },
+        { offset: 40, start: "rgba(117, 255, 240, .42)", middle: "rgba(37, 244, 210, .2)", end: "rgba(45, 190, 121, .38)", layer: 3 },
+        { offset: 54, start: "rgba(18, 112, 88, .16)", middle: "rgba(36, 178, 126, .3)", end: "rgba(72, 219, 139, .56)", layer: 6 },
       ].forEach((ribbon, ribbonIndex) => {
         const gradient = context.createLinearGradient(0, 0, width, 0);
         gradient.addColorStop(0, ribbon.start);
@@ -76,7 +76,7 @@ export function AudioWaveHero() {
         }
         context.closePath();
         context.fillStyle = gradient;
-        context.shadowColor = ribbonIndex === 2 ? "rgba(255,0,145,.32)" : "rgba(0,220,255,.25)";
+        context.shadowColor = ribbonIndex === 2 ? "rgba(72,219,139,.3)" : "rgba(37,244,210,.24)";
         context.shadowBlur = 24;
         context.fill();
       });
@@ -107,5 +107,5 @@ export function AudioWaveHero() {
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true" />;
+  return <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 z-0 h-full w-full" aria-hidden="true" />;
 }

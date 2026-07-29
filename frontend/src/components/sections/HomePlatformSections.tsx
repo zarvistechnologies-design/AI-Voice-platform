@@ -383,8 +383,8 @@ export function HomePlatformSections() {
     <div className="vozon-home relative isolate overflow-x-clip bg-black text-white">
       <section id="product" className="relative mx-auto flex min-h-screen max-w-[1600px] items-center justify-center overflow-hidden px-5 pb-10 pt-28 text-center sm:px-8 lg:pt-32">
         <AudioWaveHero />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_15%,rgba(0,0,0,.16)_60%,rgba(0,0,0,.86)_100%)]" />
-        <div className="relative z-10 mx-auto w-full max-w-[1280px]">
+        <div className="pointer-events-none absolute inset-0 z-10 bg-[radial-gradient(ellipse_at_center,transparent_15%,rgba(0,0,0,.16)_60%,rgba(0,0,0,.86)_100%)]" />
+        <div className="relative z-20 mx-auto w-full max-w-[1280px]">
         <div className="mx-auto mb-7 inline-flex items-center gap-2 rounded-full border border-white/16 bg-black/30 px-4 py-2 text-xs font-semibold text-white/80 shadow-[inset_0_0_22px_rgba(255,255,255,0.04)] backdrop-blur">
           <span className="size-2 rounded-full bg-[#22f4d2] shadow-[0_0_14px_#22f4d2]" />
           Voice Agents Live Now
