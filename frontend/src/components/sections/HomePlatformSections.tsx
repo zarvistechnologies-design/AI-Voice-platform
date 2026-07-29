@@ -2,6 +2,7 @@
 
 import { useState, type CSSProperties } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { AudioWaveHero } from "./AudioWaveHero";
 import { IndiaVoiceExperience } from "./IndiaVoiceExperience";
 
@@ -30,7 +31,7 @@ const integrationSteps = [
       { before: "Sync knowledge from your ", strong: "CRM, calendar, and docs", after: "." },
     ],
     tags: ["Flow builder", "Knowledge base"],
-    src: "/images/stt1.png",
+    src: "/images/step01.png",
   },
   {
     number: "02",
@@ -64,104 +65,6 @@ const integrationSteps = [
     ],
     tags: ["Phone", "SDK", "Widget"],
     src: "/images/st4.png",
-  },
-];
-
-const fitSections = [
-  {
-    key: "support",
-    label: "Customer support & sales",
-    columns: [
-      {
-        title: "Customer support",
-        body: "Handle routine questions around the clock and free your human agents for the conversations that need judgment.",
-      },
-      {
-        title: "Lead qualification",
-        body: "Qualify callers, capture details, and book follow-ups while your sales team keeps momentum.",
-      },
-      {
-        title: "Surveys and feedback",
-        body: "Run outbound surveys and collect structured feedback without adding more manual calling work.",
-      },
-    ],
-    src: "/images/voice_healthcare_3.avif",
-  },
-  {
-    key: "assistants",
-    label: "Virtual assistants",
-    columns: [
-      {
-        title: "Appointment scheduling",
-        body: "Schedule, reschedule, and confirm meetings with natural conversations connected to your calendar.",
-      },
-      {
-        title: "Task follow-through",
-        body: "Turn spoken requests into CRM updates, reminders, notes, and workflow actions automatically.",
-      },
-      {
-        title: "Human handoff",
-        body: "Escalate sensitive or complex calls with context, transcript, and caller intent already captured.",
-      },
-    ],
-    src: "/images/virtualAssistance1.png",
-  },
-  {
-    key: "devices",
-    label: "Voice-enabled devices",
-    columns: [
-      {
-        title: "Embedded voice control",
-        body: "Bring conversational control to kiosks, connected hardware, apps, and in-product assistant surfaces.",
-      },
-      {
-        title: "Realtime responses",
-        body: "Keep latency low with speech, reasoning, and action routing tuned for live device interactions.",
-      },
-      {
-        title: "Cross-channel memory",
-        body: "Let customers continue from device to phone or web while preserving the same conversation context.",
-      },
-    ],
-    src: "/images/voice_healthcare.avif",
-  },
-  {
-    key: "healthcare",
-    label: "Healthcare appointments",
-    columns: [
-      {
-        title: "Patient appointment booking",
-        body: "Schedule, reschedule, or cancel patient visits against live availability without keeping callers on hold.",
-      },
-      {
-        title: "Reminders and follow-ups",
-        body: "Confirm upcoming visits, share preparation guidance, and follow up after appointments automatically.",
-      },
-      {
-        title: "After-hours patient routing",
-        body: "Capture patient needs after hours and route urgent or sensitive requests to the right care team.",
-      },
-    ],
-    src: "/images/healthcare.avif",
-  },
-  {
-    key: "hospitality",
-    label: "Travel & hospitality",
-    columns: [
-      {
-        title: "Reservation support",
-        body: "Handle booking questions, confirm reservations, and help guests make changes through natural phone conversations.",
-      },
-      {
-        title: "Guest assistance",
-        body: "Answer common stay and travel questions while routing urgent or high-touch requests to the right team.",
-      },
-      {
-        title: "Multilingual service",
-        body: "Support travelers across languages and time zones with consistent information and clear human handoffs.",
-      },
-    ],
-    src: "/images/travelAndHos.png",
   },
 ];
 
@@ -221,61 +124,73 @@ type CodeTab = keyof typeof codeExamples;
 const platformFeatures = [
   {
     icon: "calls",
-    eyebrow: "Campaign engine",
-    title: "Calls at any scale",
-    body: "Run one conversation or thousands of coordinated outbound calls with clear capacity controls.",
-    metric: "Inbound + outbound",
-    featured: true,
+    eyebrow: "Call campaigns",
+    title: "Bulk Calling at Scale",
+    body: "Run campaigns with thousands of AI calls simultaneously.",
+    metric: "Thousands of calls",
   },
   {
     icon: "api",
     eyebrow: "Live actions",
-    title: "Custom API triggers",
-    body: "Read and update business systems while the conversation is still happening.",
-    metric: "Real-time tools",
+    title: "Custom API Triggers",
+    body: "Call external APIs in real-time during a live conversation.",
+    metric: "Real-time APIs",
   },
   {
     icon: "handoff",
     eyebrow: "Human support",
-    title: "Context-rich handoff",
-    body: "Transfer sensitive or complex calls with the transcript and caller intent attached.",
-    metric: "Zero context loss",
+    title: "Human-in-the-Loop",
+    body: "Transfer call to a human agent instantly when needed.",
+    metric: "Instant transfer",
   },
   {
     icon: "workflow",
-    eyebrow: "Automations",
-    title: "Connected workflows",
-    body: "Link calendars, CRMs, support tools, webhooks, and the systems your team already uses.",
-    metric: "One workflow layer",
+    eyebrow: "Automation",
+    title: "Workflow Integration",
+    body: "Easy to integrate with n8n, Make.com, Zapier, and other tools.",
+    metric: "Connected tools",
   },
   {
     icon: "language",
     eyebrow: "Global speech",
-    title: "Natural multilingual voice",
-    body: "Serve customers in Indian and global languages with consistent conversation rules.",
-    metric: "Language ready",
-    featured: true,
+    title: "Multilingual",
+    body: "Converse fluently in 10+ Indian and foreign languages.",
+    metric: "10+ languages",
   },
   {
     icon: "latency",
     eyebrow: "Realtime",
-    title: "Fluid conversations",
-    body: "Handle interruptions and rapid turn-taking without making callers wait.",
-    metric: "Low-latency speech",
+    title: "Natural Conversations",
+    body: "Agents understand interruptions, reply with <300ms latency.",
+    metric: "<300ms latency",
   },
   {
     icon: "models",
-    eyebrow: "Flexible stack",
-    title: "Choose the right model",
-    body: "Match speech, reasoning, and voice providers to each agent and use case.",
-    metric: "Provider choice",
+    eyebrow: "Flexible AI stack",
+    title: "Connect Any Model",
+    body: "Integrated with 20+ ASR, LLM, and TTS models.",
+    metric: "20+ models",
+  },
+  {
+    icon: "enterprise",
+    eyebrow: "Enterprise",
+    title: "Enterprise Plans",
+    body: "Best-in-class pricing and Forward Deployed service.",
+    metric: "Forward deployed",
   },
   {
     icon: "security",
-    eyebrow: "Enterprise controls",
-    title: "Private by design",
-    body: "Keep access, credentials, audit history, and deployment boundaries visible.",
-    metric: "Secure operations",
+    eyebrow: "Data protection",
+    title: "100% Data Privacy",
+    body: "India / USA specific data residency and on-prem deployment.",
+    metric: "India + USA",
+  },
+  {
+    icon: "switching",
+    eyebrow: "Model routing",
+    title: "Model Switching",
+    body: "Run each call with models suited best for your use case.",
+    metric: "Per-call selection",
   },
 ] as const;
 
@@ -296,6 +211,169 @@ const appOrbitMotion = {
   middle: { path: "M196 420 A415 385 0 0 1 924 420", duration: "48s" },
   inner: { path: "M296 430 A320 300 0 0 1 824 430", duration: "42s" },
 } as const;
+
+const agentIndustries = ["Ecommerce", "EdTech", "HealthTech", "BFSI", "Hospitality"] as const;
+
+const agentsByIndustry = {
+  Ecommerce: [
+    {
+      title: "Customer Support Agent",
+      tags: ["Customer Support", "English"],
+      description: "Provides 24/7 inbound call answering for FAQs and customer triage",
+    },
+    {
+      title: "Cart Abandonment Agent",
+      tags: ["Cart Abandonment", "English + Hindi"],
+      description: "Calls customers with abandoned items in carts, recovering sales",
+    },
+    {
+      title: "COD Confirmation Agent",
+      tags: ["COD Confirmation", "English + Hindi"],
+      description: "Handles a variety of last mile logistics tasks, saving human effort",
+    },
+    {
+      title: "Recruitment Agent",
+      tags: ["Recruitment", "English"],
+      description: "AI agents that screen, interview, and onboard candidates at scale",
+    },
+  ],
+  EdTech: [
+    {
+      title: "Recruitment Agent",
+      tags: ["Recruitment", "English"],
+      description: "AI agents that screen, interview, and onboard candidates at scale",
+    },
+    {
+      title: "Lead Qualification Agent",
+      tags: ["Lead Qualification", "Multilingual"],
+      description: "Handles routine questions about classes, schedules, access, and learning resources",
+    },
+    {
+      title: "Onboarding Agent",
+      tags: ["Student Onboarding", "English + Hindi"],
+      description: "Sends timely payment reminders and guides students through the next payment step",
+    },
+    {
+      title: "Announcements Agent",
+      tags: ["Announcements", "English"],
+      description: "Collects structured student feedback after lessons, courses, and learning milestones",
+    },
+  ],
+  HealthTech: [
+    {
+      title: "Onboarding Agent",
+      tags: ["Patient Onboarding", "Multilingual"],
+      description: "Books, reschedules, and cancels patient appointments against available time slots",
+    },
+    {
+      title: "Customer Support Agent",
+      tags: ["Customer Support", "English + Hindi"],
+      description: "Answers common service questions and routes sensitive requests to the right care team",
+    },
+    {
+      title: "Reminders Agent",
+      tags: ["Appointment Reminders", "English + Hindi"],
+      description: "Confirms upcoming visits and shares preparation instructions before appointments",
+    },
+    {
+      title: "Front Desk Agent",
+      tags: ["Front Desk", "English"],
+      description: "",
+    },
+  ],
+  BFSI: [
+    {
+      title: "Reminders Agent",
+      tags: ["Payment Reminders", "English + Hindi"],
+      description: "Automates all reminders, from EMIs and collections to form filling deadlines",
+    },
+    {
+      title: "Customer Support Agent",
+      tags: ["Customer Support", "Multilingual"],
+      description: "Automates all reminders, from EMIs and collections to form filling deadlines",
+    },
+    {
+      title: "Lead Qualification Agent",
+      tags: ["Lead Qualification", "English + Hindi"],
+      description: "Calls every lead to ask qualifying questions, answer FAQs, and warmly introduces the business",
+    },
+    {
+      title: "Announcements Agent",
+      tags: ["Product Announcements", "English"],
+      description: "Keeps users engaged with all feature upgrades and product launches",
+    },
+  ],
+  Hospitality: [
+    {
+      title: "Front Desk Agent",
+      tags: ["Front Desk", "Multilingual"],
+      description: "Answers every call to handle clinic, hotel, and office scheduling",
+    },
+    {
+      title: "Surveys Agent",
+      tags: ["Guest Surveys", "English + Hindi"],
+      description: "Automated NPS, feedback & product surveys with detailed personalised questioning",
+    },
+    {
+      title: "Onboarding Agent",
+      tags: ["Guest Onboarding", "English"],
+      description: "Conducts personalized guidance calls to warmly onboard users",
+    },
+    {
+      title: "Announcements Agent",
+      tags: ["Guest Announcements", "Multilingual"],
+      description: "Keeps users engaged with all feature upgrades and product launches",
+    },
+  ],
+} as const satisfies Record<(typeof agentIndustries)[number], readonly {
+  title: string;
+  tags: readonly string[];
+  description: string;
+}[]>;
+
+function AgentTypeIcon({ title }: { title: string }) {
+  if (title.includes("Announcement")) {
+    return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 14 11-5v10L4 14Zm11-3 4-2v10l-4-2M7 15l1 5h3l-1-4" /></svg>;
+  }
+
+  if (title.includes("Survey")) {
+    return <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2" /><path d="M9 4V2h6v2M9 9h6M9 13h6M9 17h3" /></svg>;
+  }
+
+  if (title.includes("Front Desk")) {
+    return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17h14M7 17v-3a5 5 0 0 1 10 0v3M12 9V6M10 6h4M4 20h16" /></svg>;
+  }
+
+  if (title.includes("Cart") || title.includes("COD")) {
+    return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h2l2 10h10l3-7H6M9 20h.01M17 20h.01" /></svg>;
+  }
+
+  if (title.includes("Reminder")) {
+    return <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7" /><path d="M12 9v4l3 2M9 3h6" /></svg>;
+  }
+
+  return <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5" /><path d="M5 20c.9-4.2 3.2-6 7-6s6.1 1.8 7 6" /></svg>;
+}
+
+function AgentIndustryIcon({ industry }: { industry: (typeof agentIndustries)[number] }) {
+  if (industry === "Ecommerce") {
+    return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h2l2 10h10l3-7H6M9 20h.01M17 20h.01" /></svg>;
+  }
+
+  if (industry === "EdTech") {
+    return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 9 9-5 9 5-9 5-9-5Z" /><path d="M7 12v5c3 2 7 2 10 0v-5M21 9v6" /></svg>;
+  }
+
+  if (industry === "HealthTech") {
+    return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20S4 15.2 4 9.2A4.2 4.2 0 0 1 12 7a4.2 4.2 0 0 1 8 2.2C20 15.2 12 20 12 20Z" /><path d="M8 12h2l1-2 2 4 1-2h2" /></svg>;
+  }
+
+  if (industry === "BFSI") {
+    return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 9 9-5 9 5M5 10v7M9 10v7M15 10v7M19 10v7M3 20h18M2 8h20" /></svg>;
+  }
+
+  return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19v-8M19 19v-8M5 15h14M7 11V7h5a4 4 0 0 1 4 4M4 19h16" /></svg>;
+}
 
 function IntegrationIcon({ icon }: { icon: string }) {
   if (icon === "chip") {
@@ -339,6 +417,8 @@ function PlatformFeatureIcon({ icon }: { icon: string }) {
   if (icon === "language") return <svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="12" /><path d="M4 16h24M16 4c4 4 6 8 6 12s-2 8-6 12M16 4c-4 4-6 8-6 12s2 8 6 12" /></svg>;
   if (icon === "latency") return <svg viewBox="0 0 32 32"><path d="M4 17h4l3-8 5 16 4-11 3 6h5" /><path d="M5 6h5M22 6h5" /></svg>;
   if (icon === "models") return <svg viewBox="0 0 32 32"><circle cx="10" cy="10" r="5" /><circle cx="22" cy="10" r="5" /><circle cx="16" cy="22" r="5" /><path d="m13 13 1.5 4M19 13l-1.5 4" /></svg>;
+  if (icon === "enterprise") return <svg viewBox="0 0 32 32"><path d="M8 28V6h16v22M12 11h3M18 11h3M12 16h3M18 16h3M12 21h3M18 21h3M4 28h24" /></svg>;
+  if (icon === "switching") return <svg viewBox="0 0 32 32"><path d="M7 10h17M20 6l4 4-4 4M25 22H8M12 18l-4 4 4 4" /></svg>;
   return <svg viewBox="0 0 32 32"><path d="M16 3 27 7v8c0 7-4 12-11 15C9 27 5 22 5 15V7Z" /><path d="M12 15v-2a4 4 0 0 1 8 0v2M11 15h10v7H11Z" /></svg>;
 }
 
@@ -376,12 +456,11 @@ function GlowButton({ children, href }: { children: string; href: string }) {
 export function HomePlatformSections() {
   const [selectedCodeTab, setSelectedCodeTab] = useState<CodeTab>("python");
   const [copiedCode, setCopiedCode] = useState(false);
-  const [selectedFitKey, setSelectedFitKey] = useState("support");
-  const selectedFit = fitSections.find((section) => section.key === selectedFitKey) ?? fitSections[0];
+  const [selectedAgentIndustry, setSelectedAgentIndustry] = useState<(typeof agentIndustries)[number]>("Ecommerce");
 
   return (
     <div className="vozon-home relative isolate overflow-x-clip bg-black text-white">
-      <section id="product" className="relative mx-auto flex min-h-screen max-w-[1600px] items-center justify-center overflow-hidden px-5 pb-10 pt-28 text-center sm:px-8 lg:pt-32">
+      <section id="product" className="relative flex min-h-screen w-full items-center justify-center overflow-hidden px-5 pb-10 pt-28 text-center sm:px-8 lg:pt-32">
         <AudioWaveHero />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_15%,rgba(0,0,0,.16)_60%,rgba(0,0,0,.86)_100%)]" />
         <div className="relative z-10 mx-auto w-full max-w-[1280px]">
@@ -436,7 +515,7 @@ export function HomePlatformSections() {
 
       <IndiaVoiceExperience />
 
-      <section className="relative mx-auto max-w-[1240px] px-5 pb-4 pt-2 sm:px-8 sm:pb-5 lg:pb-6">
+      <section className="relative w-full px-5 pb-4 pt-2 sm:px-8 sm:pb-5 lg:pb-6">
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 inline-flex rounded-full border border-white/12 bg-white/[0.06] px-4 py-2 text-[11px] font-black uppercase tracking-[0.1em] text-[#75fff0]">
             One Platform
@@ -484,12 +563,6 @@ export function HomePlatformSections() {
 
           <div className="vozon-how-grid">
             <div className="vozon-how-flow">
-              <svg className="vozon-how-connectors" viewBox="0 0 520 540" preserveAspectRatio="none" aria-hidden="true">
-                <path d="M270 108C392 98 394 189 337 224" />
-                <path d="M196 300C67 286 65 390 118 426" />
-                <path d="m326 211 13 14 17-7M106 411l12 16 18-5" />
-              </svg>
-
               <article className="vozon-how-step vozon-how-step-one">
                 <header><span><small>Step one</small><strong>Connect account</strong></span><b>1</b></header>
                 <p>Sign in to your Vozon dashboard</p>
@@ -560,18 +633,18 @@ export function HomePlatformSections() {
       </section>
 
       <section className="vozon-feature-suite relative overflow-hidden px-5 pb-4 pt-6 sm:px-8 sm:pb-5 sm:pt-8 lg:pb-6 lg:pt-10" aria-labelledby="vozon-feature-title">
-        <div className="relative z-10 mx-auto max-w-[1240px]">
+        <div className="relative z-10 w-full">
           <div className="mx-auto max-w-4xl text-center">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#45ddce]/24 bg-[#45ddce]/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#75fff0]">
               <span className="size-1.5 rounded-full bg-[#45ddce] shadow-[0_0_12px_#45ddce]" />
-              Platform features
+              Features
             </div>
             <h2 className="vozon-platform-heading mx-auto m-0 max-w-4xl text-white" id="vozon-feature-title">
               Everything your voice agents need
               <span className="block text-white">to perform in the real world.</span>
             </h2>
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/56 sm:text-base">
-              Speech, intelligence, actions, telephony, and operational controls work together in one production-ready platform.
+              With integrated speech, telephony, and APIs, vozon.ai provides everything you need to take your idea into secure, production-ready deployment.
             </p>
           </div>
 
@@ -594,83 +667,11 @@ export function HomePlatformSections() {
         </div>
       </section>
 
-      <section className="vozon-fit-section relative overflow-hidden px-5 py-16 sm:px-8 lg:py-20">
-        <div className="mx-auto max-w-3xl text-center">
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#45ddce]/24 bg-[#45ddce]/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#75fff0]">
-            <span className="size-1.5 rounded-full bg-[#45ddce] shadow-[0_0_12px_#45ddce]" />
-            Where Vozon Fits
-          </div>
-          <h2 className="vozon-platform-heading m-0 max-w-3xl text-white">
-            One voice agent, every industry
-            <span className="block text-white/42">that answers a phone</span>
-          </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-white/58 sm:text-base">
-            Support, virtual assistants, or voice-enabled hardware. The same
-            agent adapts to how your business actually talks to people.
-          </p>
-        </div>
-
-        <div className="relative z-10 mx-auto max-w-[1240px]">
-          <div className="mt-10 space-y-6 lg:hidden">
-            {fitSections.map((section, index) => (
-              <article className="vozon-fit-mobile-item overflow-hidden" key={section.key}>
-                <div className="flex items-center gap-3 px-5 py-4">
-                  <span className="vozon-fit-compact-number">{String(index + 1).padStart(2, "0")}</span>
-                  <h3 className="m-0 text-base font-black text-white">{section.label}</h3>
-                </div>
-                <div className="relative min-h-[250px]">
-                  <Image src={section.src} alt={section.label} fill className="object-cover object-top" sizes="100vw" />
-                </div>
-              </article>
-            ))}
-          </div>
-
-          <div className="vozon-fit-compact mt-10 hidden gap-6 lg:grid lg:grid-cols-[minmax(280px,0.72fr)_minmax(0,1.28fr)] lg:gap-10">
-            <div aria-label="Vozon industry use cases" className="order-2 space-y-2 lg:order-1" role="tablist">
-              {fitSections.map((section, index) => (
-                <button
-                  aria-controls={`vozon-fit-panel-${section.key}`}
-                  aria-selected={selectedFit.key === section.key}
-                  className={`vozon-fit-compact-tab w-full text-left ${selectedFit.key === section.key ? "is-active" : ""}`}
-                  id={`vozon-fit-tab-${section.key}`}
-                  key={section.key}
-                  onClick={() => setSelectedFitKey(section.key)}
-                  role="tab"
-                  type="button"
-                >
-                  <span className="vozon-fit-compact-number">{String(index + 1).padStart(2, "0")}</span>
-                  <span>{section.label}</span>
-                </button>
-              ))}
-            </div>
-
-            <div
-              aria-labelledby={`vozon-fit-tab-${selectedFit.key}`}
-              className="vozon-fit-compact-image relative order-1 min-h-[300px] overflow-hidden sm:min-h-[420px] lg:order-2"
-              id={`vozon-fit-panel-${selectedFit.key}`}
-              role="tabpanel"
-            >
-              <Image
-                src={selectedFit.src}
-                alt={selectedFit.label}
-                fill
-                className="object-cover object-top"
-                sizes="(max-width: 1024px) 100vw, 65vw"
-              />
-              <div className="vozon-fit-compact-image-label">
-                <span>Industry solution</span>
-                <strong>{selectedFit.label}</strong>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <section
         id="integrations"
         className="vozon-integrations-section relative overflow-hidden px-5 py-14 sm:px-8 lg:py-[72px]"
       >
-        <div className="relative z-10 mx-auto max-w-[1240px]">
+        <div className="relative z-10 w-full">
           <div className="mx-auto max-w-3xl text-center">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#45ddce]/24 bg-[#45ddce]/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#75fff0]">
               <span className="size-1.5 rounded-full bg-[#45ddce] shadow-[0_0_12px_#45ddce]" />
@@ -736,6 +737,8 @@ export function HomePlatformSections() {
 
                   <div
                     className={`vozon-integration-image relative min-h-[260px] sm:min-h-[320px] lg:min-h-[360px] ${
+                      index === 0 ? "vozon-integration-image-flow " : ""
+                    }${
                       index % 2 !== 0
                         ? "vozon-integration-image-left lg:order-1"
                         : "vozon-integration-image-right lg:order-2"
@@ -744,9 +747,9 @@ export function HomePlatformSections() {
                     <div className="vozon-integration-image-placeholder absolute inset-0 grid place-items-center">
                       <Image
                         src={step.src}
-                        alt={`Step ${step.number}`}
+                        alt={`${step.title} workflow`}
                         fill
-                        className="object-cover"
+                        className={index === 0 ? "object-contain object-center" : "object-cover"}
                         sizes="(max-width: 1024px) 100vw, 50vw"
                       />
                     </div>
@@ -758,8 +761,69 @@ export function HomePlatformSections() {
         </div>
       </section>
 
+      <section
+        className="vozon-agent-showcase relative overflow-hidden px-5 py-16 sm:px-8 lg:py-20"
+        aria-labelledby="vozon-agent-showcase-title"
+      >
+        <div className="vozon-agent-showcase-glow" aria-hidden="true" />
+        <div className="relative z-10 w-full">
+          <div className="mx-auto max-w-3xl text-center">
+            <div className="vozon-agent-showcase-eyebrow">Agent gallery</div>
+            <h2 className="vozon-platform-heading m-0 text-white" id="vozon-agent-showcase-title">
+              AI agents that turn <span>every call into action.</span>
+            </h2>
+            <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/55 sm:text-base">
+              Meet ready-to-call Vozon agents built for the conversations that keep Indian businesses moving.
+            </p>
+          </div>
+
+          <div className="vozon-agent-tabs" aria-label="Agent industries" role="tablist">
+            {agentIndustries.map((industry) => (
+              <button
+                aria-selected={selectedAgentIndustry === industry}
+                className={selectedAgentIndustry === industry ? "is-active" : ""}
+                key={industry}
+                onClick={() => setSelectedAgentIndustry(industry)}
+                role="tab"
+                type="button"
+              >
+                <AgentIndustryIcon industry={industry} />
+                <span>{industry}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="vozon-agent-grid" role="tabpanel">
+            {agentsByIndustry[selectedAgentIndustry].map((agent) => (
+              <article className="vozon-agent-card" key={agent.title}>
+                <div className="vozon-agent-card-main">
+                  <div className="vozon-agent-identity">
+                    <span className="vozon-agent-type-icon"><AgentTypeIcon title={agent.title} /></span>
+                    <div className="min-w-0">
+                    <h3>{agent.title}</h3>
+                    <div className="vozon-agent-tags">
+                      {agent.tags.map((tag) => <span key={`${agent.title}-${tag}`}>{tag}</span>)}
+                    </div>
+                    <p>{agent.description}</p>
+                  </div>
+                  </div>
+
+                  <Link aria-label={`Explore ${agent.title}`} className="vozon-agent-explore" href="/dashboard/agents">
+                    <span>
+                      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9 6 9 6-9 6V6Z" /></svg>
+                    </span>
+                    <strong>Explore Agent</strong>
+                    <i>↗</i>
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="vozon-apps-section relative overflow-hidden px-5 pt-8 sm:px-8 sm:pt-10 lg:pt-12" id="app-integrations" aria-labelledby="vozon-apps-title">
-        <div className="relative z-10 mx-auto max-w-[1240px]">
+        <div className="relative z-10 w-full">
           <div className="mx-auto max-w-4xl text-center">
             <div className="vozon-apps-eyebrow"><span /> Integrations</div>
             <h2 className="vozon-platform-heading mx-auto m-0 max-w-4xl text-white" id="vozon-apps-title">
@@ -818,9 +882,15 @@ export function HomePlatformSections() {
             ))}
 
             <div className="vozon-app-hub">
-              <span className="vozon-app-hub-mark">V</span>
-              <strong>vozon.ai</strong>
-              <small>Integration hub</small>
+              <span className="vozon-app-hub-symbol" aria-hidden="true">
+                <Image
+                  alt=""
+                  className="vozon-app-hub-logo"
+                  height={350}
+                  src="/images/logo_2.svg"
+                  width={1160}
+                />
+              </span>
             </div>
           </div>
         </div>
@@ -830,6 +900,281 @@ export function HomePlatformSections() {
         .vozon-home {
           font-family: var(--font-site-sans), ui-sans-serif, system-ui, sans-serif;
           background: #000;
+          background-color: #000;
+        }
+
+        .vozon-agent-showcase {
+          background: #000 !important;
+        }
+
+        .vozon-agent-showcase-glow {
+          display: none;
+        }
+
+        .vozon-agent-showcase-eyebrow {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.55rem;
+          min-height: 26px;
+          margin-bottom: 1.1rem;
+          border: 1px solid rgba(29,225,188,0.46);
+          border-radius: 999px;
+          background: #000;
+          padding: 0.4rem 0.9rem;
+          color: #9dfff4;
+          font-family: var(--font-geist-mono), monospace;
+          font-size: 0.66rem;
+          font-weight: 900;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+        }
+
+        .vozon-agent-showcase-eyebrow::before {
+          content: "";
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #20e0bc;
+        }
+
+        .vozon-agent-tabs {
+          display: flex;
+          width: min(100%, 1040px);
+          max-width: 100%;
+          margin: 2.25rem auto 0;
+          overflow-x: auto;
+          border: 1px solid rgba(54,117,122,0.38);
+          border-radius: 999px;
+          background: #010405;
+          padding: 0 1rem;
+          scrollbar-width: none;
+        }
+
+        .vozon-agent-tabs::-webkit-scrollbar {
+          display: none;
+        }
+
+        .vozon-agent-tabs button {
+          position: relative;
+          display: inline-flex;
+          min-width: 150px;
+          min-height: 52px;
+          flex: 1 0 auto;
+          align-items: center;
+          justify-content: center;
+          gap: 0.65rem;
+          border: 0;
+          border-radius: 0;
+          background: transparent;
+          box-shadow: none;
+          color: rgba(255,255,255,0.68);
+          font-size: 0.78rem;
+          font-weight: 800;
+          outline: none;
+        }
+
+        .vozon-agent-tabs button > svg {
+          width: 22px;
+          height: 22px;
+          flex: 0 0 auto;
+          fill: none;
+          stroke: currentColor;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          stroke-width: 1.6;
+        }
+
+        .vozon-agent-tabs button:hover {
+          color: rgba(255,255,255,0.82);
+        }
+
+        .vozon-agent-tabs button.is-active {
+          background: transparent;
+          box-shadow: none;
+          color: #75fff0;
+        }
+
+        .vozon-agent-tabs button:focus,
+        .vozon-agent-tabs button:focus-visible {
+          background: transparent;
+          box-shadow: none;
+          color: #75fff0;
+          outline: none;
+        }
+
+        .vozon-agent-grid {
+          max-width: 1240px;
+          margin: 2.25rem auto 0;
+          overflow: hidden;
+          border: 1px solid rgba(75,173,166,0.3);
+          border-radius: 24px;
+          background: #000;
+          box-shadow:
+            0 0 0 1px rgba(255,255,255,0.018),
+            0 24px 80px rgba(0,0,0,0.34),
+            0 0 34px rgba(32,224,188,0.045);
+        }
+
+        .vozon-agent-card {
+          --agent-row-accent: #20e0bc;
+          position: relative;
+          min-width: 0;
+          overflow: hidden;
+          border-bottom: 1px solid rgba(82,154,157,0.18);
+          background: #000;
+          padding: 1.25rem 1.35rem;
+        }
+
+        .vozon-agent-card:last-child {
+          border-bottom: 0;
+        }
+
+        .vozon-agent-card:nth-child(2) {
+          --agent-row-accent: #29bfff;
+        }
+
+        .vozon-agent-card:nth-child(3) {
+          --agent-row-accent: #42df9b;
+        }
+
+        .vozon-agent-card:nth-child(4) {
+          --agent-row-accent: #a98bff;
+        }
+
+        .vozon-agent-card::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background:
+            radial-gradient(circle at 3% 50%, color-mix(in srgb, var(--agent-row-accent) 8%, transparent), transparent 24%),
+            linear-gradient(90deg, color-mix(in srgb, var(--agent-row-accent) 3%, transparent), transparent 42%);
+          pointer-events: none;
+        }
+
+        .vozon-agent-card::after {
+          content: "";
+          position: absolute;
+          top: 24px;
+          bottom: 24px;
+          left: 0;
+          width: 2px;
+          border-radius: 999px;
+          background: var(--agent-row-accent);
+          box-shadow: 0 0 14px color-mix(in srgb, var(--agent-row-accent) 55%, transparent);
+        }
+
+        .vozon-agent-card-main {
+          position: relative;
+          z-index: 1;
+          display: grid;
+          min-height: 106px;
+          grid-template-columns: minmax(300px, 1fr) 140px;
+          align-items: center;
+          gap: 1.5rem;
+        }
+
+        .vozon-agent-identity {
+          display: grid;
+          min-width: 0;
+          grid-template-columns: 56px minmax(0, 1fr);
+          align-items: center;
+          gap: 1rem;
+        }
+
+        .vozon-agent-type-icon {
+          display: grid;
+          width: 50px;
+          height: 50px;
+          place-items: center;
+          border: 1px solid var(--agent-row-accent);
+          border-radius: 50%;
+          background:
+            radial-gradient(circle, color-mix(in srgb, var(--agent-row-accent) 10%, transparent), transparent 70%);
+          color: color-mix(in srgb, var(--agent-row-accent) 76%, white);
+          box-shadow:
+            inset 0 0 0 5px rgba(0,0,0,0.72),
+            0 0 18px color-mix(in srgb, var(--agent-row-accent) 10%, transparent);
+        }
+
+        .vozon-agent-type-icon svg {
+          width: 24px;
+          height: 24px;
+          fill: none;
+          stroke: currentColor;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          stroke-width: 1.6;
+        }
+
+        .vozon-agent-card h3 {
+          margin: 0;
+          color: #fff;
+          font-size: 1.15rem;
+          font-weight: 850;
+          letter-spacing: -0.02em;
+        }
+
+        .vozon-agent-tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.45rem;
+          margin-top: 0.6rem;
+        }
+
+        .vozon-agent-tags span {
+          border-radius: 4px;
+          background: #111922;
+          padding: 0.3rem 0.55rem;
+          color: rgba(255,255,255,0.75);
+          font-size: 0.62rem;
+          font-weight: 700;
+          line-height: 1;
+        }
+
+        .vozon-agent-card p {
+          max-width: 370px;
+          margin: 0.6rem 0 0;
+          color: rgba(220,230,235,0.62);
+          font-size: 0.78rem;
+          line-height: 1.6;
+        }
+
+        .vozon-agent-explore {
+          display: grid;
+          min-height: 94px;
+          place-items: center;
+          align-content: center;
+          gap: 0.55rem;
+          border-left: 1px solid rgba(82,154,157,0.2);
+          color: color-mix(in srgb, var(--agent-row-accent) 80%, white);
+          text-align: center;
+        }
+
+        .vozon-agent-explore > span {
+          display: grid;
+          width: 46px;
+          height: 46px;
+          place-items: center;
+          border: 1px solid var(--agent-row-accent);
+          border-radius: 50%;
+          background: color-mix(in srgb, var(--agent-row-accent) 7%, transparent);
+          box-shadow: 0 0 20px color-mix(in srgb, var(--agent-row-accent) 10%, transparent);
+        }
+
+        .vozon-agent-explore svg {
+          width: 22px;
+          height: 22px;
+          fill: currentColor;
+          stroke: none;
+        }
+
+        .vozon-agent-explore strong {
+          font-size: 0.7rem;
+        }
+
+        .vozon-agent-explore i {
+          font-size: 0.9rem;
+          font-style: normal;
         }
 
         .vozon-apps-section {
@@ -1248,47 +1593,61 @@ export function HomePlatformSections() {
         .vozon-app-hub {
           position: absolute;
           z-index: 4;
-          bottom: -7px;
+          bottom: -20px;
           left: 50%;
           display: grid;
-          width: 120px;
-          min-height: 102px;
+          width: 112px;
+          height: 112px;
           place-items: center;
-          align-content: center;
           border: 1px solid rgba(117,255,240,0.42);
-          border-radius: 20px 20px 0 0;
+          border-radius: 50%;
           background:
-            radial-gradient(circle at 50% 10%, rgba(117,255,240,0.2), transparent 42%),
-            linear-gradient(160deg, #12342f, #061713 70%);
-          box-shadow: 0 -8px 44px rgba(69,221,206,0.2), inset 0 1px rgba(255,255,255,0.08);
+            radial-gradient(circle at 38% 24%, rgba(172,255,247,0.2), transparent 30%),
+            radial-gradient(circle at 50% 50%, #123b34, #061713 68%);
+          box-shadow:
+            0 0 34px rgba(69,221,206,0.28),
+            0 0 76px rgba(69,221,206,0.16),
+            inset 0 1px rgba(255,255,255,0.12),
+            inset 0 0 28px rgba(69,221,206,0.08);
           transform: translateX(-50%);
         }
 
-        .vozon-app-hub-mark {
-          display: grid;
-          width: 30px;
-          height: 30px;
-          place-items: center;
-          border-radius: 10px;
-          background: linear-gradient(135deg, #75fff0, #45ddce);
-          color: #03120f;
-          font-size: 0.88rem;
-          font-weight: 1000;
-          box-shadow: 0 0 24px rgba(69,221,206,0.32);
+        .vozon-app-hub::before,
+        .vozon-app-hub::after {
+          content: "";
+          position: absolute;
+          border-radius: 50%;
+          pointer-events: none;
         }
 
-        .vozon-app-hub strong {
-          margin-top: 0.4rem;
-          font-size: 0.85rem;
-          font-weight: 900;
+        .vozon-app-hub::before {
+          inset: -10px;
+          border: 1px solid rgba(117,255,240,0.16);
+          box-shadow: 0 0 24px rgba(69,221,206,0.18);
         }
 
-        .vozon-app-hub small {
-          margin-top: 0.15rem;
-          color: rgba(255,255,255,0.42);
-          font-size: 0.57rem;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
+        .vozon-app-hub::after {
+          inset: 8px;
+          border: 1px solid rgba(255,255,255,0.07);
+        }
+
+        .vozon-app-hub-symbol {
+          position: relative;
+          display: block;
+          width: 73px;
+          height: 66px;
+          overflow: hidden;
+          filter: drop-shadow(0 0 14px rgba(97,255,240,0.42));
+        }
+
+        .vozon-app-hub-logo {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: auto;
+          max-width: none;
+          height: 66px;
+          object-fit: none;
         }
 
         @keyframes vozonAppFloat {
@@ -1305,7 +1664,44 @@ export function HomePlatformSections() {
           to { stroke-dashoffset: -2750; }
         }
 
+        @media (max-width: 1050px) {
+          .vozon-agent-card-main {
+            grid-template-columns: minmax(0, 1fr) 120px;
+          }
+        }
+
         @media (max-width: 760px) {
+          .vozon-agent-card {
+            padding: 1.35rem 1.15rem;
+          }
+
+          .vozon-agent-card-main {
+            grid-template-columns: 1fr;
+          }
+
+          .vozon-agent-explore {
+            min-height: 56px;
+            grid-template-columns: auto auto auto;
+            justify-content: start;
+            border-top: 1px solid rgba(82,154,157,0.18);
+            border-left: 0;
+            padding: 0.85rem 0 0 72px;
+          }
+
+          .vozon-agent-explore > span {
+            width: 40px;
+            height: 40px;
+          }
+
+          .vozon-agent-tabs {
+            width: 100%;
+            justify-content: flex-start;
+          }
+
+          .vozon-agent-tabs button {
+            min-width: 104px;
+          }
+
           .vozon-app-orbit {
             display: grid;
             height: auto;
@@ -1342,15 +1738,36 @@ export function HomePlatformSections() {
             position: static;
             grid-column: 1 / -1;
             grid-row: 1;
-            width: min(100%, 230px);
-            min-height: 118px;
-            margin: 0 auto 0.8rem;
-            border-radius: 22px;
+            width: 112px;
+            height: 112px;
+            margin: 0 auto 1.3rem;
             transform: none;
           }
         }
 
         @media (max-width: 420px) {
+          .vozon-agent-grid {
+            border-radius: 18px;
+          }
+
+          .vozon-agent-card {
+            padding: 1.25rem 0.9rem;
+          }
+
+          .vozon-agent-identity {
+            grid-template-columns: 48px minmax(0, 1fr);
+            gap: 0.85rem;
+          }
+
+          .vozon-agent-type-icon {
+            width: 46px;
+            height: 46px;
+          }
+
+          .vozon-agent-explore {
+            padding-left: 0;
+          }
+
           .vozon-app-orbit {
             grid-template-columns: repeat(2, minmax(0, 1fr));
           }
@@ -2959,11 +3376,20 @@ export function HomePlatformSections() {
         }
 
         .vozon-how-flow {
+          --vozon-how-gap: 1.25rem;
           position: relative;
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 230px));
+          grid-template-rows: repeat(2, auto);
+          align-content: center;
+          align-items: center;
+          justify-content: center;
+          gap: 2.5rem var(--vozon-how-gap);
           overflow: hidden;
           border-right: 0;
           background-color: #000;
           background-image: none;
+          padding: 3rem 1.25rem;
         }
 
         .vozon-how-flow::before {
@@ -2990,9 +3416,11 @@ export function HomePlatformSections() {
         }
 
         .vozon-how-step {
-          position: absolute;
+          position: relative;
           z-index: 2;
-          width: min(270px, 52%);
+          width: 100%;
+          height: 154px;
+          justify-self: center;
           border: 1px solid color-mix(in srgb, var(--step-color) 52%, transparent);
           border-radius: 16px;
           background: color-mix(in srgb, var(--step-color) 22%, #07110f);
@@ -3055,20 +3483,21 @@ export function HomePlatformSections() {
 
         .vozon-how-step-one {
           --step-color: #45ddce;
-          top: 80px;
-          left: 21%;
+          grid-column: 1;
+          grid-row: 1;
         }
 
         .vozon-how-step-two {
           --step-color: #72a7ff;
-          top: 250px;
-          left: 36%;
+          grid-column: 2;
+          grid-row: 1;
         }
 
         .vozon-how-step-three {
           --step-color: #de6aa8;
-          top: 420px;
-          left: 17%;
+          grid-column: 1 / -1;
+          grid-row: 2;
+          width: min(230px, calc((100% - var(--vozon-how-gap)) / 2));
         }
 
         .vozon-code-area {
@@ -3333,19 +3762,18 @@ export function HomePlatformSections() {
           }
 
           .vozon-how-flow {
+            --vozon-how-gap: 0.75rem;
             min-height: 520px;
+            gap: 2rem var(--vozon-how-gap);
+            padding: 2.25rem 0.5rem;
           }
 
           .vozon-how-step {
-            width: 72%;
+            width: 100%;
           }
 
-          .vozon-how-step-one { top: 55px; left: 8%; }
-          .vozon-how-step-two { top: 205px; left: 20%; }
-          .vozon-how-step-three { top: 355px; left: 8%; }
-
-          .vozon-how-connectors {
-            opacity: 0.65;
+          .vozon-how-step-three {
+            width: calc((100% - var(--vozon-how-gap)) / 2);
           }
 
           .vozon-code-toolbar {
@@ -3408,9 +3836,7 @@ export function HomePlatformSections() {
           overflow: hidden;
           border: 1px solid rgba(255,255,255,0.09);
           border-radius: 18px;
-          background:
-            linear-gradient(155deg, color-mix(in srgb, var(--feature-accent) 8%, transparent), transparent 42%),
-            linear-gradient(145deg, rgba(16,27,34,0.92), rgba(3,9,12,0.96));
+          background: #000;
           padding: 1.5rem;
           box-shadow: inset 0 1px rgba(255,255,255,0.035), 0 18px 44px rgba(0,0,0,0.18);
           transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
@@ -3431,9 +3857,7 @@ export function HomePlatformSections() {
 
         .vozon-feature-card.is-featured {
           grid-column: span 2;
-          background:
-            radial-gradient(circle at 84% 22%, rgba(69,221,206,0.13), transparent 28%),
-            linear-gradient(135deg, rgba(10,38,40,0.96), rgba(3,10,14,0.98) 65%);
+          background: #000;
         }
 
         .vozon-feature-card:nth-last-child(-n + 2) {

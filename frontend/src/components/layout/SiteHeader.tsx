@@ -86,18 +86,18 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`vozon-site-header pointer-events-none fixed right-0 left-0 z-50 transition-all duration-200 max-[1180px]:top-2 max-[1180px]:px-[clamp(12px,4vw,28px)] max-[560px]:px-2.5 ${
+      className={`vozon-site-header pointer-events-none fixed right-0 left-0 z-50 px-3 transition-all duration-200 sm:px-5 max-[1180px]:top-2 max-[560px]:px-2.5 ${
         isScrolled
-          ? "top-2 px-[clamp(16px,5vw,72px)]"
-          : "top-3.5 px-[clamp(14px,3vw,36px)]"
+          ? "top-2"
+          : "top-3.5"
       }`}
       ref={headerRef}
     >
       <div
-        className={`pointer-events-auto relative mx-auto flex w-full items-center justify-between gap-2 px-4 py-3 text-white transition-all duration-200 max-[560px]:px-3 xl:grid xl:grid-cols-[minmax(170px,0.9fr)_auto_minmax(190px,0.9fr)] xl:gap-2.5 ${
+        className={`pointer-events-auto relative flex w-full items-center justify-between gap-2 px-2 py-3 text-white transition-all duration-200 max-[560px]:px-1.5 xl:grid xl:grid-cols-[minmax(170px,0.9fr)_auto_minmax(190px,0.9fr)] xl:gap-2.5 ${
           isScrolled
-            ? "min-h-[58px] max-w-[1220px]"
-            : "min-h-[72px] max-w-[1280px]"
+            ? "min-h-[58px]"
+            : "min-h-[72px]"
         }`}
       >
         <div className="flex min-w-0 items-center">
