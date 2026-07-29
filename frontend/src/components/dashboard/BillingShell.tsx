@@ -108,7 +108,6 @@ export function BillingShell() {
   const totals = useMemo(() => {
     const transactions = data?.transactions ?? [];
     return {
-      debits: transactions.filter((item) => item.category === "call").length,
       topUps: transactions.filter((item) => item.type === "topup" || item.type === "auto_reload").length,
       net: transactions.reduce((sum, item) => sum + item.amountCredits, 0),
     };
@@ -187,7 +186,7 @@ export function BillingShell() {
               <div>
                 <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#00b8c4]">Pay per use</span>
                 <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">Credit command center</h1>
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Top up once, run calls, and see every provider charge broken down by LLM, STT, and TTS usage.</p>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Top up once and run calls. Per-call provider costs are available in Call Logs.</p>
               </div>
               <div className="flex gap-2">
               <button className="rounded-xl border border-white/10 bg-[#061b18] px-4 py-2.5 text-sm font-semibold text-white/70 shadow-sm hover:bg-white/[0.08] hover:text-white" type="button" onClick={() => void load()} disabled={Boolean(busy)}>
@@ -224,7 +223,7 @@ export function BillingShell() {
                   <div>
                     <span className="inline-flex rounded-full bg-[#45ddce]/10 px-3 py-1 text-xs font-semibold text-[#75fff0] shadow-sm ring-1 ring-[#45ddce]/24">Wallet balance</span>
                     <h2 className="mt-5 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">{money(balance, currency)}</h2>
-                    <p className="mt-3 max-w-xl text-sm leading-6 text-slate-600">Calls start only when the wallet has the minimum required balance. Each completed call writes a ledger debit with provider-level detail.</p>
+                    <p className="mt-3 max-w-xl text-sm leading-6 text-slate-600">Calls start only when the wallet has the minimum required balance. Completed-call costs are deducted automatically and shown in Call Logs.</p>
                   </div>
                   <div className="grid gap-3">
                     <div className="flex items-center justify-between text-sm font-semibold text-slate-700">
@@ -265,10 +264,9 @@ export function BillingShell() {
             </div>
           </section>
 
-          <section className="grid gap-4 md:grid-cols-3">
+          <section className="grid gap-4 md:grid-cols-2">
             <Metric label="Minimum to call" value={money(data?.creditSettings.minimumCallStartCredits ?? 0, currency)} detail="Pre-call wallet guard" tone="amber" />
-            <Metric label="Recent top-ups" value={String(totals.topUps)} detail={`${money(totals.net, currency)} across the recent ledger rows`} tone="sky" />
-            <Metric label="Recent call debits" value={String(totals.debits)} detail="Call charges in the recent ledger rows" tone="emerald" />
+            <Metric label="Recent top-ups" value={String(totals.topUps)} detail={`${money(totals.net, currency)} across recent payment rows`} tone="sky" />
           </section>
 
           <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.8fr)]">
@@ -328,7 +326,7 @@ export function BillingShell() {
             <div className="flex flex-col gap-2 border-b border-slate-200 p-5 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <h2 className="m-0 text-lg font-semibold">Transactions</h2>
-                <p className="mt-1 text-sm text-slate-500">Every top-up, call debit, refund, and auto-refill lands here.</p>
+                <p className="mt-1 text-sm text-slate-500">Credit purchases, auto-refills, and account adjustments. Per-call charges are shown in Call Logs.</p>
               </div>
               <span className="text-xs font-semibold text-slate-500">{data?.transactions.length ?? 0} recent rows</span>
             </div>
