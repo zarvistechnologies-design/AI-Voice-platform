@@ -536,30 +536,25 @@ export function CampaignShell() {
       />
 
       <section className="min-w-0 overflow-y-auto overscroll-contain bg-black">
-        <div className="mx-auto w-full max-w-[1500px] px-4 py-5 sm:px-6 lg:px-8">
-          <header
-            className="relative overflow-hidden border-b border-[#75fff0]/30 px-5 py-6 sm:px-7 sm:py-7"
-            style={{ background: "linear-gradient(110deg, #075f4f 0%, #087f68 48%, #06483f 100%)" }}
-          >
-            <span className="pointer-events-none absolute -top-24 right-[8%] size-56 rounded-full bg-[#75fff0]/10 blur-3xl" />
-            <span className="pointer-events-none absolute -bottom-28 left-[32%] size-52 rounded-full bg-[#45ddce]/10 blur-3xl" />
-            <div className="relative flex flex-wrap items-center justify-between gap-5">
+        <header className="border-b border-white/10 bg-[#07110f] px-4 py-4 shadow-[0_12px_32px_rgba(0,0,0,0.32)] sm:px-6 lg:px-8">
+          <div className="mx-auto flex w-full max-w-[1500px] flex-wrap items-center justify-between gap-4">
               <div>
-                <span className="app-label text-[#9dfff4]">Campaigns</span>
-                <h1 className="m-0 text-2xl font-semibold leading-8 text-white">Outbound campaigns</h1>
-                <p className="mt-1 mb-0 text-sm text-white/65">Create campaigns, upload leads, control pacing, and monitor delivery.</p>
+                <span className="app-label text-[#75fff0]">{session.organization?.name ?? "Workspace"}</span>
+                <h1 className="m-0 mt-1 text-xl font-semibold leading-7 text-white sm:text-2xl">Outbound campaigns</h1>
+                <p className="app-caption mt-1 mb-0 text-white/60">Create campaigns, upload leads, control pacing, and monitor delivery.</p>
               </div>
               <div className="flex flex-wrap items-center gap-2">
-                <span className={`rounded-lg px-3 py-2 text-xs font-semibold ${selectedPhoneReady ? "bg-emerald-300/15 text-emerald-200" : "bg-amber-300/15 text-amber-200"}`}>
+                <span className={`rounded-lg border px-3 py-2 text-xs font-semibold ${selectedPhoneReady ? "border-[#45ddce]/24 bg-[#45ddce]/[0.07] text-[#75fff0]" : "border-amber-300/20 bg-amber-300/10 text-amber-200"}`}>
                   {selectedPhoneReady ? "Route ready" : "Route needs setup"}
                 </span>
-                <span className="max-w-[360px] truncate border-l border-white/20 px-3 py-2 text-xs font-semibold text-white/65">
+                <span className="max-w-[360px] truncate border-l border-white/15 px-3 py-2 text-xs font-semibold text-white/55">
                   {routeSummary}
                 </span>
               </div>
-            </div>
-          </header>
+          </div>
+        </header>
 
+        <div className="mx-auto w-full max-w-[1500px] px-4 py-5 sm:px-6 lg:px-8">
           <section className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {campaignMetrics.map((metric) => (
               <MetricCard detail={metric.detail} icon={metric.icon} key={metric.label} label={metric.label} value={metric.value} />
