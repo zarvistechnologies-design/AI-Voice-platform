@@ -73,7 +73,9 @@ export const modelPricingCategories: readonly ModelPriceCategory[] = [
         accent: "#67e8f9",
         sourceUrl: GEMINI_PRICING,
         models: [
-          { name: "gemini-3.5-flash", rate: "$1.50 in · $9.00 out", unit: "per 1M tokens", badge: "Recommended" },
+          { name: "gemini-3.6-flash", rate: "$1.50 in · $7.50 out", unit: "per 1M tokens", badge: "Recommended" },
+          { name: "gemini-3.5-flash", rate: "$1.50 in · $9.00 out", unit: "per 1M tokens" },
+          { name: "gemini-3.5-flash-lite", rate: "$0.30 in · $2.50 out", unit: "per 1M tokens" },
           { name: "gemini-3.1-pro-preview", rate: "$2.00 in · $12.00 out", unit: "per 1M tokens", detail: "Prompts up to 200K tokens", badge: "Preview" },
           { name: "gemini-3.1-flash-lite", rate: "$0.25 in · $1.50 out", unit: "per 1M tokens" },
           { name: "gemini-3-flash-preview", rate: "$0.50 in · $3.00 out", unit: "per 1M tokens", badge: "Preview" },
