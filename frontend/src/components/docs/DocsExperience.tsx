@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import { BrandLogo } from "@/components/ui/BrandLogo";
+import { docsTopics } from "@/lib/docsContent";
 
 type DocSection = {
   id: string;
@@ -221,6 +222,14 @@ export function DocsExperience() {
             <section id="errors" className="scroll-mt-24 border-t border-white/10 pt-16 mt-16"><h2 className="text-3xl font-semibold">Errors</h2><div className="mt-6 overflow-hidden rounded-xl border border-white/10">{[["400", "Invalid request", "Correct fields or formatting; do not retry unchanged."], ["401", "Authentication required", "Check the API key and Authorization header."], ["403", "Insufficient permission", "Use a key with the required scope and organization role."], ["404", "Resource not found", "Confirm the id belongs to the active organization."], ["409", "Resource conflict", "Refresh state, resolve the conflict, then retry."], ["429", "Rate limited", "Retry with exponential backoff and jitter."], ["5xx", "Temporary service error", "Retry idempotent operations with bounded backoff."]].map((row) => <div className="grid gap-2 border-b border-white/10 p-4 last:border-0 sm:grid-cols-[60px_180px_1fr]" key={row[0]}><code className="text-[#9ff8ee]">{row[0]}</code><b className="text-sm">{row[1]}</b><span className="text-sm text-white/48">{row[2]}</span></div>)}</div></section>
 
             <section id="security" className="scroll-mt-24 border-t border-white/10 pt-16 mt-16"><p className="text-xs font-black uppercase tracking-[0.16em] text-[#45ddce]">Operations</p><h2 className="mt-3 text-3xl font-semibold">Production security checklist</h2><div className="mt-6 grid gap-3">{["Keep credentials in a secrets manager and rotate them on a defined schedule.", "Use least-privilege API scopes and separate keys by environment.", "Restrict dashboard roles and remove members who no longer need access.", "Collect only the customer data required for the stated call purpose.", "Define retention and access rules for transcripts, recordings, and exports.", "Verify webhook signatures and reject stale or replayed deliveries.", "Test consent, disclosure, calling hours, suppression, and escalation requirements for every market."].map((item) => <div className="flex gap-3 rounded-xl border border-white/10 p-4 text-sm text-white/58" key={item}><span className="text-[#45ddce]">✓</span><span>{item}</span></div>)}</div></section>
+
+            <section className="mt-16 scroll-mt-24 border-t border-white/10 pt-16" id="all-guides">
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#45ddce]">Documentation library</p>
+              <div className="mt-3 flex flex-col justify-between gap-3 sm:flex-row sm:items-end"><div><h2 className="text-3xl font-semibold">Explore every guide</h2><p className="mt-2 text-white/50">Detailed workflows, field references, code samples, and production checklists.</p></div><a className="text-sm font-semibold text-[#75fff0]" href="/openapi.yaml">Download OpenAPI →</a></div>
+              <div className="mt-7 grid gap-3 sm:grid-cols-2">
+                {docsTopics.map((topic) => <Link className="group rounded-xl border border-white/10 p-4 transition hover:border-[#45ddce]/35 hover:bg-[#45ddce]/[0.05]" href={`/docs/${topic.slug}`} key={topic.slug}><span className="text-[10px] font-black uppercase tracking-[0.14em] text-[#45ddce]">{topic.group}</span><h3 className="mt-2 font-semibold group-hover:text-[#9ff8ee]">{topic.title} <span aria-hidden="true">→</span></h3><p className="mt-2 text-sm leading-6 text-white/45">{topic.description}</p></Link>)}
+              </div>
+            </section>
 
             <footer className="mt-20 border-t border-white/10 py-10 text-sm text-white/40"><p>Need help with a production rollout? <Link className="font-semibold text-[#75fff0]" href="/contact">Contact the Vozon team</Link>.</p><p className="mt-2">Examples use fictional identifiers and phone numbers. Never paste real credentials into sample code.</p></footer>
           </div>

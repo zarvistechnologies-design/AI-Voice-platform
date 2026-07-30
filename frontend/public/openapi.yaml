@@ -1,0 +1,112 @@
+openapi: 3.1.0
+info:
+  title: Vozon Public API
+  version: 1.0.0
+  description: Start outbound calls and retrieve normalized call records.
+servers:
+  - url: https://api.vozon.ai/api/v1
+security:
+  - bearerAuth: []
+paths:
+  /agents:
+    get:
+      summary: List agents
+      responses:
+        "200":
+          description: Agents belonging to the active organization.
+  /calls:
+    get:
+      summary: List calls
+      parameters:
+        - in: query
+          name: limit
+          schema: { type: integer, minimum: 1 }
+        - in: query
+          name: agentId
+          schema: { type: string }
+      responses:
+        "200":
+          description: Paginated normalized call records.
+  /calls/outbound:
+    post:
+      summary: Create an outbound call
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [agentId, phoneNumber]
+              properties:
+                agentId: { type: string }
+                phoneNumber:
+                  type: string
+                  description: E.164 destination number.
+                  example: "+919876543210"
+                phoneNumberId: { type: string }
+                metadata:
+                  type: object
+                  additionalProperties: true
+      responses:
+        "202":
+          description: Call accepted.
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "409":
+          description: Agent, phone number, wallet, or capacity conflict.
+  /calls/{callId}:
+    get:
+      summary: Retrieve a call
+      parameters:
+        - $ref: "#/components/parameters/CallId"
+      responses:
+        "200":
+          description: Normalized call record.
+        "404":
+          description: Call not found.
+  /calls/{callId}/recording:
+    get:
+      summary: Download an authorized call recording
+      parameters:
+        - $ref: "#/components/parameters/CallId"
+      responses:
+        "200":
+          description: Recording media.
+        "404":
+          description: Recording not found.
+  /calls/export.csv:
+    get:
+      summary: Export calls as CSV
+      responses:
+        "200":
+          description: CSV export.
+          content:
+            text/csv: {}
+  /calls/stream:
+    get:
+      summary: Stream call updates
+      responses:
+        "200":
+          description: Server-sent call events.
+          content:
+            text/event-stream: {}
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Vozon API key
+  parameters:
+    CallId:
+      in: path
+      name: callId
+      required: true
+      schema: { type: string }
+  responses:
+    BadRequest:
+      description: Invalid request.
+    Unauthorized:
+      description: Missing or invalid API key.
+    Forbidden:
+      description: Insufficient API scope or organization role.
