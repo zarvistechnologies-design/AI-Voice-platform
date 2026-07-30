@@ -72,7 +72,7 @@ export type BillingSummary = {
     initialCredits: number;
     minimumCallStartCredits: number;
     markupMultiplier: number;
-    platformFeeInrPerCall: number;
+    platformFeeInrPerMinute: number;
   };
   subscription: {
     plan: PlanId;

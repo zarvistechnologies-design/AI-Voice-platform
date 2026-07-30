@@ -254,7 +254,16 @@ export function CallDetailDrawer({ call, onClose }: { call: CallRecord; onClose:
         ["STT", configuredStack(call.sttProvider, call.sttModel), sttUsage, cost?.pricing?.stt, cost?.stt ?? 0],
         ["TTS", configuredTtsStack(call), ttsUsage, cost?.pricing?.tts, cost?.tts ?? 0],
       ]) as readonly (readonly [string, string, string, CostPricingDetail | undefined, number])[];
-  const costItems = providerCostItems;
+  const costItems = [
+    ...providerCostItems,
+    [
+      "Vozon platform",
+      "Vozon",
+      `${call.durationSeconds} sec`,
+      cost?.pricing?.platformFee,
+      cost?.platformFee ?? 0,
+    ] as const,
+  ];
 
   useEffect(() => {
     let active = true;
@@ -326,7 +335,7 @@ export function CallDetailDrawer({ call, onClose }: { call: CallRecord; onClose:
               ["Latency", call.avgResponseLatencyMs ? `${call.avgResponseLatencyMs} ms` : "—"],
               ["Sentiment", call.sentimentLabel ? titleCase(call.sentimentLabel) : "—"],
               ["Language", call.language || "—"],
-              ["Provider cost", money(charged, billing?.currency)],
+              ["Total cost", money(charged, billing?.currency)],
               ["Balance after", billing?.balanceAfterCredits != null ? money(billing.balanceAfterCredits, billing.currency) : "—"],
             ].map(([label, value]) => (
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-3" key={label}>
@@ -401,11 +410,12 @@ export function CallDetailDrawer({ call, onClose }: { call: CallRecord; onClose:
           <section className="overflow-hidden rounded-xl border border-slate-200 bg-white">
             <div className="flex flex-col gap-2 border-b border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h3 className="m-0 text-sm font-semibold text-slate-950">Provider cost breakdown</h3>
-                <p className="mt-1 text-xs text-slate-500">Total equals the selected provider/model cost only.</p>
+                <h3 className="m-0 text-sm font-semibold text-slate-950">Call cost breakdown</h3>
+                <p className="mt-1 text-xs text-slate-500">Provider usage plus the Vozon ₹2-per-minute platform fee, prorated by seconds.</p>
               </div>
               <div className="grid gap-1 text-right text-xs">
                 <span className="text-slate-500">Provider total: <strong className="text-emerald-700">{money(cost?.providerCost ?? billing?.providerCost ?? charged ?? 0, billing?.currency || cost?.currency)}</strong></span>
+                <span className="text-slate-500">Customer total: <strong className="text-emerald-700">{money(cost?.customerCost ?? billing?.customerCost ?? charged ?? 0, billing?.currency || cost?.currency)}</strong></span>
               </div>
             </div>
             <div className="overflow-x-auto">

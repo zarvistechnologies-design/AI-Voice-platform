@@ -249,7 +249,7 @@ export function BillingShell() {
             </Card>
 
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
-              <Metric label="This month charged" value={money(data?.usage.chargedCredits ?? 0, currency)} detail="Provider cost debited from calls" tone="emerald" />
+              <Metric label="This month charged" value={money(data?.usage.chargedCredits ?? 0, currency)} detail="Provider usage plus Vozon platform fees" tone="emerald" />
               <Metric label="Provider spend" value={money(data?.usage.providerCost ?? 0, currency)} detail="LLM/STT/TTS cost only" tone="sky" />
             </div>
           </section>
