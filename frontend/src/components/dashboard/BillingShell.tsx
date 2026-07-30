@@ -11,7 +11,7 @@ import {
     subscribeToSession,
     validateStoredSession,
 } from "@/lib/auth";
-import { billingApi, type BillingSummary, type BillingTransaction } from "@/lib/billing";
+import { billingApi, type BillingSummary } from "@/lib/billing";
 import { openRazorpayCheckout } from "@/lib/razorpayCheckout";
 
 const topUpOptions = [5, 10, 50, 100];
@@ -29,19 +29,9 @@ function money(value: number, currency = "USD") {
   }).format(value);
 }
 
-function signedMoney(value: number, currency = "USD") {
-  return `${value < 0 ? "-" : "+"}${money(Math.abs(value), currency)}`;
-}
-
 function dateTime(value?: string) {
   if (!value) return "Never";
   return new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
-}
-
-function txLabel(transaction: BillingTransaction) {
-  if (transaction.description) return transaction.description;
-  if (transaction.category === "call") return `Call ${transaction.callId}`;
-  return transaction.type === "topup" ? "Credit purchase" : "Billing adjustment";
 }
 
 function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
@@ -69,7 +59,7 @@ export function BillingShell() {
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
   const [data, setData] = useState<BillingSummary | null>(null);
   const [notice, setNotice] = useState("");
-  const [busy, setBusy] = useState<"" | "topup" | "cancel" | "enterprise">("");
+  const [busy, setBusy] = useState<"" | "topup" | "cancel" | "enterprise" | `invoice:${string}`>("");
   const [selectedTopUp, setSelectedTopUp] = useState(10);
   const [showUserSidebar, setShowUserSidebar] = useState(false);
 
@@ -101,20 +91,23 @@ export function BillingShell() {
   const wallet = data?.wallet;
   const currency = wallet?.currency || "USD";
   const balance = wallet?.balanceCredits ?? 0;
-  const lifetime = Math.max(wallet?.lifetimePurchasedCredits ?? 0, balance, 1);
-  const progress = Math.min(100, Math.max(4, (balance / lifetime) * 100));
+  const lifetime = Math.max(wallet?.lifetimePurchasedCredits ?? 0, balance, 0);
+  const progress = lifetime > 0 ? Math.min(100, Math.max(0, (balance / lifetime) * 100)) : 0;
   const latestPayment = data?.transactions.find((transaction) => transaction.type === "topup" || transaction.type === "auto_reload");
 
   const totals = useMemo(() => {
     const transactions = data?.transactions ?? [];
     return {
-      debits: transactions.filter((item) => item.category === "call").length,
       topUps: transactions.filter((item) => item.type === "topup" || item.type === "auto_reload").length,
       net: transactions.reduce((sum, item) => sum + item.amountCredits, 0),
     };
   }, [data]);
 
   async function purchaseCredits() {
+    if (!data?.configured) {
+      setNotice("USD checkout is unavailable until Razorpay API keys are configured.");
+      return;
+    }
     setBusy("topup");
     try {
       const checkout = await billingApi.topUp(selectedTopUp);
@@ -143,6 +136,10 @@ export function BillingShell() {
     }
   }
   async function upgradeEnterprise() {
+    if (!data?.configured) {
+      setNotice("USD Autopay is unavailable until Razorpay API keys are configured.");
+      return;
+    }
     setBusy("enterprise");
     try {
       const checkout = await billingApi.checkout("enterprise");
@@ -152,6 +149,26 @@ export function BillingShell() {
       setNotice(`Your $${checkout.amount / 100} USD monthly Razorpay subscription is active.`);
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not complete enterprise checkout.");
+    } finally {
+      setBusy("");
+    }
+  }
+
+  async function downloadInvoice(invoiceId: string, invoiceNumber: string) {
+    setBusy(`invoice:${invoiceId}`);
+    try {
+      const blob = await billingApi.downloadInvoice(invoiceId);
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = `${invoiceNumber || `Vozon-invoice-${invoiceId}`}.html`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1_000);
+      setNotice("Invoice downloaded. Open it and select Print / Save PDF for a PDF copy.");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Could not download invoice.");
     } finally {
       setBusy("");
     }
@@ -179,13 +196,13 @@ export function BillingShell() {
               <div>
                 <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#00b8c4]">Pay per use</span>
                 <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">Credit command center</h1>
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Top up once, run calls, and see every provider charge broken down by LLM, STT, TTS, and carrier usage.</p>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Top up once and run calls. Per-call provider costs are available in Call Logs.</p>
               </div>
               <div className="flex gap-2">
               <button className="rounded-xl border border-white/10 bg-[#061b18] px-4 py-2.5 text-sm font-semibold text-white/70 shadow-sm hover:bg-white/[0.08] hover:text-white" type="button" onClick={() => void load()} disabled={Boolean(busy)}>
                 Refresh
               </button>
-              <button className="rounded-xl bg-[#45ddce] px-4 py-2.5 text-sm font-semibold text-[#02110d] shadow-[0_12px_28px_rgba(69,221,206,0.20)] hover:bg-[#75fff0]" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup"}>
+              <button className="rounded-xl bg-[#45ddce] px-4 py-2.5 text-sm font-semibold text-[#02110d] shadow-[0_12px_28px_rgba(69,221,206,0.20)] hover:bg-[#75fff0] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup" || !data?.configured}>
                 Buy ${selectedTopUp}
               </button>
               </div>
@@ -193,7 +210,21 @@ export function BillingShell() {
           </header>
 
           {notice ? <div className="rounded-xl border border-cyan-200 bg-cyan-50 px-4 py-3 text-sm font-semibold text-cyan-800">{notice}</div> : null}
-          {!data?.configured ? <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">Razorpay is not configured yet. Add Razorpay credentials to enable checkout.</div> : null}
+          {!data?.configured ? <div className="rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm font-semibold text-amber-200">Razorpay USD checkout is offline. Add live API credentials and the webhook secret to the production environment, then enable international payments in Razorpay.</div> : null}
+          {data?.paymentReadiness ? (
+            <div className="grid gap-3 rounded-2xl border border-white/10 bg-[#07110f] p-4 sm:grid-cols-3">
+              {[
+                ["Checkout mode", data.paymentReadiness.mode],
+                ["API credentials", data.paymentReadiness.credentialsConfigured ? "configured" : "missing"],
+                ["Webhook signing", data.paymentReadiness.webhookConfigured ? "configured" : "missing"],
+              ].map(([label, value]) => (
+                <div className="rounded-xl border border-white/10 bg-black/20 px-4 py-3" key={label}>
+                  <span className="block text-xs text-white/45">{label}</span>
+                  <strong className={`mt-1 block capitalize ${value === "live" || value === "configured" ? "text-emerald-300" : "text-amber-300"}`}>{value}</strong>
+                </div>
+              ))}
+            </div>
+          ) : null}
 
           <section className="grid gap-4 xl:grid-cols-[1.25fr_0.75fr]">
             <Card className="overflow-hidden">
@@ -202,7 +233,7 @@ export function BillingShell() {
                   <div>
                     <span className="inline-flex rounded-full bg-[#45ddce]/10 px-3 py-1 text-xs font-semibold text-[#75fff0] shadow-sm ring-1 ring-[#45ddce]/24">Wallet balance</span>
                     <h2 className="mt-5 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">{money(balance, currency)}</h2>
-                    <p className="mt-3 max-w-xl text-sm leading-6 text-slate-600">Calls start only when the wallet has the minimum required balance. Each completed call writes a ledger debit with provider-level detail.</p>
+                    <p className="mt-3 max-w-xl text-sm leading-6 text-slate-600">Calls start only when the wallet has the minimum required balance. Completed-call costs are deducted automatically and shown in Call Logs.</p>
                   </div>
                   <div className="grid gap-3">
                     <div className="flex items-center justify-between text-sm font-semibold text-slate-700">
@@ -230,7 +261,7 @@ export function BillingShell() {
                       </button>
                     ))}
                   </div>
-                  <button className="min-h-12 rounded-xl bg-emerald-600 px-4 text-sm font-semibold text-white shadow-lg shadow-emerald-600/20 hover:bg-emerald-700 disabled:opacity-60" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup"}>
+                  <button className="min-h-12 rounded-xl bg-emerald-600 px-4 text-sm font-semibold text-white shadow-lg shadow-emerald-600/20 hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup" || !data?.configured}>
                     {busy === "topup" ? "Opening checkout..." : "Purchase credits"}
                   </button>
                 </div>
@@ -238,15 +269,14 @@ export function BillingShell() {
             </Card>
 
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
-              <Metric label="This month charged" value={money(data?.usage.chargedCredits ?? 0, currency)} detail="Provider cost debited from calls" tone="emerald" />
+              <Metric label="This month charged" value={money(data?.usage.chargedCredits ?? 0, currency)} detail="Provider usage plus Vozon platform fees" tone="emerald" />
               <Metric label="Provider spend" value={money(data?.usage.providerCost ?? 0, currency)} detail="LLM/STT/TTS cost only" tone="sky" />
             </div>
           </section>
 
-          <section className="grid gap-4 md:grid-cols-3">
+          <section className="grid gap-4 md:grid-cols-2">
             <Metric label="Minimum to call" value={money(data?.creditSettings.minimumCallStartCredits ?? 0, currency)} detail="Pre-call wallet guard" tone="amber" />
-            <Metric label="Top-ups" value={String(totals.topUps)} detail={`${money(totals.net, currency)} net ledger movement`} tone="sky" />
-            <Metric label="Call debits" value={String(totals.debits)} detail="Recent call charge rows" tone="emerald" />
+            <Metric label="Recent top-ups" value={String(totals.topUps)} detail={`${money(totals.net, currency)} across recent payment rows`} tone="sky" />
           </section>
 
           <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.8fr)]">
@@ -290,48 +320,58 @@ export function BillingShell() {
               <Card className="overflow-hidden">
                 <div className="bg-slate-950 p-5 text-white">
                   <h2 className="m-0 text-lg font-semibold">Enterprise credits</h2>
-                  <p className="mt-2 text-sm leading-6 text-white/65">${data?.enterpriseMonthlyUsd ?? 500}/month credit, priority support, and higher call concurrency.</p>
+                  <p className="mt-2 text-sm leading-6 text-white/65">${data?.enterpriseMonthlyUsd ?? 500} in wallet credits added after each successful monthly Razorpay charge.</p>
                   <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-semibold text-[#9ff8ee]">
                     <span className="rounded-full border border-[#45ddce]/30 bg-[#45ddce]/10 px-2.5 py-1">Monthly Autopay</span>
                     <span className="rounded-full border border-[#45ddce]/30 bg-[#45ddce]/10 px-2.5 py-1">Indian cards</span>
                     <span className="rounded-full border border-[#45ddce]/30 bg-[#45ddce]/10 px-2.5 py-1">International cards</span>
                   </div>
-                  {data?.subscription.provider !== "razorpay" || data.subscription.status === "cancelled" ? <button className="mt-5 rounded-xl bg-[#45ddce] px-4 py-2.5 text-sm font-semibold text-[#02110d] hover:bg-[#75fff0] disabled:opacity-60" type="button" onClick={() => void upgradeEnterprise()} disabled={busy === "enterprise"}>Start monthly Autopay</button> : null}
+                  {data?.subscription.provider !== "razorpay" || data.subscription.status === "cancelled" ? <button className="mt-5 rounded-xl bg-[#45ddce] px-4 py-2.5 text-sm font-semibold text-[#02110d] hover:bg-[#75fff0] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void upgradeEnterprise()} disabled={busy === "enterprise" || !data?.configured}>Start monthly Autopay</button> : null}
                 </div>
               </Card>
             </div>
           </section>
 
           <Card className="overflow-hidden">
-            <div className="flex flex-col gap-2 border-b border-slate-200 p-5 sm:flex-row sm:items-end sm:justify-between">
+            <div className="flex flex-col justify-between gap-3 border-b border-white/10 p-5 sm:flex-row sm:items-center">
               <div>
-                <h2 className="m-0 text-lg font-semibold">Transactions</h2>
-                <p className="mt-1 text-sm text-slate-500">Every top-up, call debit, refund, and auto-refill lands here.</p>
+                <h2 className="m-0 text-lg font-semibold">Invoices</h2>
+                <p className="mt-1 text-sm text-white/50">Download payment invoices for wallet top-ups and monthly charges.</p>
               </div>
-              <span className="text-xs font-semibold text-slate-500">{data?.transactions.length ?? 0} recent rows</span>
+              <span className="text-xs font-semibold text-white/40">{data?.invoices.length ?? 0} recent invoices</span>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[900px] text-left text-sm">
-                <thead className="bg-[#061b18] text-xs uppercase tracking-wider text-white/50">
-                  <tr>{["ID", "Transaction", "Category", "Amount", "Type", "Timestamp"].map((heading) => <th className="px-5 py-3" key={heading}>{heading}</th>)}</tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {data?.transactions.length ? data.transactions.map((transaction) => (
-                    <tr className="hover:bg-cyan-50/50" key={transaction._id}>
-                      <td className="max-w-[180px] truncate px-5 py-4 font-mono text-xs text-slate-500">{transaction._id}</td>
-                      <td className="px-5 py-4 font-semibold text-slate-950">{txLabel(transaction)}</td>
-                      <td className="px-5 py-4"><span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700">{transaction.category}</span></td>
-                      <td className={`px-5 py-4 font-semibold ${transaction.amountCredits < 0 ? "text-rose-700" : "text-emerald-700"}`}>{signedMoney(transaction.amountCredits, transaction.currency)}</td>
-                      <td className="px-5 py-4 font-medium text-slate-700">{transaction.type}</td>
-                      <td className="px-5 py-4 text-slate-600">{dateTime(transaction.createdAt)}</td>
-                    </tr>
-                  )) : (
-                    <tr><td className="px-5 py-10 text-center text-slate-500" colSpan={6}>No credit transactions yet.</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+            {data?.invoices.length ? (
+              <div className="divide-y divide-white/10">
+                {data.invoices.map((invoice) => {
+                  const amount = (invoice.amountPaid || invoice.amountDue) / 100;
+                  const isDownloading = busy === `invoice:${invoice._id}`;
+                  return (
+                    <div className="grid gap-3 p-4 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center sm:px-5" key={invoice._id}>
+                      <div className="min-w-0">
+                        <strong className="block truncate text-sm text-white">{invoice.invoiceNumber || "Vozon payment invoice"}</strong>
+                        <span className="mt-1 block text-xs text-white/45">{invoice.description || dateTime(invoice.createdAt)}</span>
+                      </div>
+                      <div className="sm:text-right">
+                        <strong className="block text-sm text-white">{money(amount, invoice.currency.toUpperCase())}</strong>
+                        <span className="mt-1 block text-xs capitalize text-emerald-300">{invoice.status || "paid"} · {dateTime(invoice.createdAt)}</span>
+                      </div>
+                      <button
+                        className="rounded-xl border border-[#45ddce]/30 bg-[#45ddce]/10 px-4 py-2.5 text-sm font-semibold text-[#75fff0] hover:bg-[#45ddce]/20 disabled:cursor-not-allowed disabled:opacity-50"
+                        type="button"
+                        onClick={() => void downloadInvoice(invoice._id, invoice.invoiceNumber)}
+                        disabled={Boolean(busy)}
+                      >
+                        {isDownloading ? "Downloading..." : "Download invoice"}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="p-8 text-center text-sm text-white/45">Invoices will appear here after a successful payment.</div>
+            )}
           </Card>
+
         </div>
       </section>
     </main>

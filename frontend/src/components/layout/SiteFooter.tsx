@@ -36,7 +36,7 @@ const footerNavigation = [
   {
     title: "Legal",
     links: [
-      { href: "/resources/trust-center", label: "Privacy" },
+      { href: "/privacy", label: "Privacy" },
       { href: "/resources/trust-center", label: "Terms" },
       { href: "/resources/trust-center", label: "Security" },
     ],
@@ -179,7 +179,7 @@ export function SiteFooter() {
               </span>
             </Link>
 
-            <div className="mt-5 flex flex-col gap-5 border-t border-white/10 pt-5 text-[11px] text-white/45 sm:flex-row sm:items-center sm:justify-between">
+            <div className="-mt-2 flex flex-col gap-5 border-t border-white/10 pt-5 text-[11px] text-white/45 sm:flex-row sm:items-center sm:justify-between">
               <p className="m-0">&copy; {new Date().getFullYear()} {siteConfig.name}. All rights reserved.</p>
 
               <div className="flex items-center gap-3">

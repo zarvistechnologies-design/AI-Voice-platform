@@ -1,7 +1,8 @@
 ﻿"use client";
 
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { AudioWaveHero } from "./AudioWaveHero";
 import { IndiaVoiceExperience } from "./IndiaVoiceExperience";
 
@@ -30,7 +31,7 @@ const integrationSteps = [
       { before: "Sync knowledge from your ", strong: "CRM, calendar, and docs", after: "." },
     ],
     tags: ["Flow builder", "Knowledge base"],
-    src: "/images/stt1.png"
+    src: "/images/step01.png",
   },
   {
     number: "02",
@@ -41,7 +42,7 @@ const integrationSteps = [
       { before: "Bring your own fine-tuned or ", strong: "self-hosted LLM", after: "." },
     ],
     tags: ["Bring your own model"],
-    src: "/images/st2.png"
+    src: "/images/st2.png",
   },
   {
     number: "03",
@@ -52,7 +53,7 @@ const integrationSteps = [
       { before: "Clone your own voice for a ", strong: "consistent brand sound", after: "." },
     ],
     tags: ["Voice cloning", "Multilingual"],
-     src: "/images/st3.png"
+    src: "/images/st3.png",
   },
   {
     number: "04",
@@ -63,29 +64,77 @@ const integrationSteps = [
       { before: "Ship to web, mobile, and desktop with ", strong: "one SDK", after: "." },
     ],
     tags: ["Phone", "SDK", "Widget"],
-     src: "/images/st4.png"
+    src: "/images/st4.png",
   },
 ];
 
-const fitSections = [
+const codeExamples = {
+  python: {
+    label: "Python",
+    code: `import requests
+
+response = requests.post(
+    "https://api.vozon.ai/api/voice/outbound-calls",
+    headers={
+        "Authorization": "Bearer <api_key>",
+        "Content-Type": "application/json",
+    },
+    json={
+        "agentId": "your_agent_id",
+        "phoneNumber": "+919876543210",
+    },
+)
+
+print(response.json())`,
+  },
+  api: {
+    label: "API",
+    code: `const response = await fetch(
+  "https://api.vozon.ai/api/voice/outbound-calls",
   {
-    key: "support",
-    label: "Customer support & sales",
-    columns: [
-      {
-        title: "Customer support",
-        body: "Handle routine questions around the clock and free your human agents for the conversations that need judgment.",
-      },
-      {
-        title: "Lead qualification",
-        body: "Qualify callers, capture details, and book follow-ups while your sales team keeps momentum.",
-      },
-      {
-        title: "Surveys and feedback",
-        body: "Run outbound surveys and collect structured feedback without adding more manual calling work.",
-      },
-    ],
-    src: "/images/voice_healthcare_3.avif"
+    method: "POST",
+    headers: {
+      Authorization: "Bearer <api_key>",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      agentId: "your_agent_id",
+      phoneNumber: "+919876543210",
+    }),
+  }
+);
+
+const call = await response.json();`,
+  },
+  curl: {
+    label: "cURL",
+    code: `curl --request POST \\
+  --url https://api.vozon.ai/api/voice/outbound-calls \\
+  --header 'Authorization: Bearer <api_key>' \\
+  --header 'Content-Type: application/json' \\
+  --data '{
+    "agentId": "your_agent_id",
+    "phoneNumber": "+919876543210"
+  }'`,
+  },
+} as const;
+
+type CodeTab = keyof typeof codeExamples;
+
+const platformFeatures = [
+  {
+    icon: "calls",
+    eyebrow: "Call campaigns",
+    title: "Bulk Calling at Scale",
+    body: "Run campaigns with thousands of AI calls simultaneously.",
+    metric: "Thousands of calls",
+  },
+  {
+    icon: "api",
+    eyebrow: "Live actions",
+    title: "Custom API Triggers",
+    body: "Call external APIs in real-time during a live conversation.",
+    metric: "Real-time APIs",
   },
   {
     key: "assistants",
@@ -292,60 +341,37 @@ function IntegrationIcon({ icon }: { icon: string }) {
   );
 }
 
-function VoiceOperationIcon({ icon }: { icon: string }) {
-  if (icon === "agent") {
-    return (
-      <svg viewBox="0 0 32 32" aria-hidden="true">
-        <path d="M10 13a6 6 0 0 1 12 0v5a6 6 0 0 1-12 0v-5Z" />
-        <path d="M7 17v1a9 9 0 0 0 18 0v-1M16 27v3M12 30h8M13 14h.01M19 14h.01M13.5 19a4 4 0 0 0 5 0" />
-      </svg>
-    );
+function PlatformFeatureIcon({ icon }: { icon: string }) {
+  if (icon === "calls") return <svg viewBox="0 0 32 32"><path d="M8 5h5l2 6-3 2c1.8 4 3.2 5.4 7 7l2-3 6 2v5c0 2-1.5 3-3.5 3C13 26 6 19 5 8.5 5 6.5 6 5 8 5Z" /><path d="M20 7h7M24 3l4 4-4 4" /></svg>;
+  if (icon === "api") return <svg viewBox="0 0 32 32"><rect x="4" y="6" width="24" height="20" rx="5" /><path d="m10 19 3-3-3-3M16 20h6" /></svg>;
+  if (icon === "handoff") return <svg viewBox="0 0 32 32"><path d="M11 15a5 5 0 1 1 10 0v3a5 5 0 0 1-10 0v-3Z" /><path d="M7 17v1a9 9 0 0 0 18 0v-1M16 27v3M5 9h5M5 9l3-3M5 9l3 3" /></svg>;
+  if (icon === "workflow") return <svg viewBox="0 0 32 32"><rect x="12" y="3" width="8" height="7" rx="2" /><rect x="3" y="22" width="8" height="7" rx="2" /><rect x="21" y="22" width="8" height="7" rx="2" /><path d="M16 10v6M7 22v-6h18v6" /></svg>;
+  if (icon === "language") return <svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="12" /><path d="M4 16h24M16 4c4 4 6 8 6 12s-2 8-6 12M16 4c-4 4-6 8-6 12s2 8 6 12" /></svg>;
+  if (icon === "latency") return <svg viewBox="0 0 32 32"><path d="M4 17h4l3-8 5 16 4-11 3 6h5" /><path d="M5 6h5M22 6h5" /></svg>;
+  if (icon === "models") return <svg viewBox="0 0 32 32"><circle cx="10" cy="10" r="5" /><circle cx="22" cy="10" r="5" /><circle cx="16" cy="22" r="5" /><path d="m13 13 1.5 4M19 13l-1.5 4" /></svg>;
+  if (icon === "enterprise") return <svg viewBox="0 0 32 32"><path d="M8 28V6h16v22M12 11h3M18 11h3M12 16h3M18 16h3M12 21h3M18 21h3M4 28h24" /></svg>;
+  if (icon === "switching") return <svg viewBox="0 0 32 32"><path d="M7 10h17M20 6l4 4-4 4M25 22H8M12 18l-4 4 4 4" /></svg>;
+  return <svg viewBox="0 0 32 32"><path d="M16 3 27 7v8c0 7-4 12-11 15C9 27 5 22 5 15V7Z" /><path d="M12 15v-2a4 4 0 0 1 8 0v2M11 15h10v7H11Z" /></svg>;
+}
+
+function IntegrationAppLogo({ app }: { app: (typeof appIntegrations)[number] }) {
+  if (app.key === "hubspot") {
+    return <Image alt="" height={38} src="/images/company-logos/hubspot.svg" width={38} />;
   }
 
-  if (icon === "knowledge") {
-    return (
-      <svg viewBox="0 0 32 32" aria-hidden="true">
-        <path d="M5 7.5A3.5 3.5 0 0 1 8.5 4H15v22H8.5A3.5 3.5 0 0 0 5 29.5v-22ZM27 7.5A3.5 3.5 0 0 0 23.5 4H17v22h6.5a3.5 3.5 0 0 1 3.5 3.5v-22Z" />
-        <path d="M8.5 9H12M20 9h3.5M8.5 14H12M20 14h3.5" />
-      </svg>
-    );
+  if (app.key === "salesforce") return <span className="vozon-app-salesforce">salesforce</span>;
+
+  if (app.key === "zoho") return <Image alt="" height={42} src="/images/integrations/zoho.svg" width={42} />;
+  if (app.key === "calendar") return <Image alt="" height={40} src="/images/integrations/google-calendar.svg" width={40} />;
+  if (app.key === "calendly") return <Image alt="" height={40} src="/images/integrations/calendly.svg" width={40} />;
+  if (app.key === "gmail") return <Image alt="" height={38} src="/images/integrations/gmail.svg" width={38} />;
+
+  if (app.key === "twilio") {
+    return <span className="vozon-app-twilio" aria-hidden="true">{[0, 1, 2, 3].map((dot) => <i key={dot} />)}</span>;
   }
 
-  if (icon === "tools") {
-    return (
-      <svg viewBox="0 0 32 32" aria-hidden="true">
-        <path d="m18.5 9.5 4-4a6 6 0 0 0-7.7 7.7L5.5 22.5a2.8 2.8 0 1 0 4 4l9.3-9.3a6 6 0 0 0 7.7-7.7l-4 4-4-1-1-4Z" />
-        <circle cx="7.5" cy="24.5" r=".8" fill="currentColor" stroke="none" />
-      </svg>
-    );
-  }
-
-  if (icon === "launch") {
-    return (
-      <svg viewBox="0 0 32 32" aria-hidden="true">
-        <path d="M19 5c4.5-2 8-1 8-1s1 3.5-1 8l-6.5 6.5-6-6L19 5Z" />
-        <path d="m14 13-5.5 1.5-3 3 6.5 1M19 18l-1 6.5 6.5-6.5-1.5-4.5M10.5 23.5C8 23 5 24 4 28c4 0 7-1 6.5-4.5Z" />
-        <circle cx="22" cy="9" r="2" />
-      </svg>
-    );
-  }
-
-  if (icon === "outcomes") {
-    return (
-      <svg viewBox="0 0 32 32" aria-hidden="true">
-        <path d="M5 27V16M12 27V10M19 27V18M26 27V5" />
-        <path d="m5 11 7-5 7 5 7-7M22 4h4v4" />
-      </svg>
-    );
-  }
-
-  return (
-    <svg viewBox="0 0 32 32" aria-hidden="true">
-      <path d="M25.5 11A11 11 0 0 0 7 7.5L4 11M6.5 21A11 11 0 0 0 25 24.5l3-3.5" />
-      <path d="M4 5v6h6M28 27v-6h-6" />
-      <path d="M11 13h10M11 17h10M11 21h6" />
-    </svg>
-  );
+  if (app.key === "exotel") return <span className="vozon-app-exotel">exo</span>;
+  return <span className="vozon-app-crm">CRM</span>;
 }
 
 function GlowButton({ children, href }: { children: string; href: string }) {
@@ -365,33 +391,29 @@ export function HomePlatformSections() {
     agentIndustries.find((industry) => industry.key === selectedAgentIndustryKey) ?? agentIndustries[0];
 
   return (
-    <div className="vozon-home relative isolate overflow-hidden bg-black text-white">
-      <section
-        id="product"
-        className="relative mx-auto flex min-h-screen max-w-[1600px] items-center justify-center overflow-hidden px-5 pb-20 pt-28 text-center sm:px-8 lg:pt-32"
-      >
+    <div className="vozon-home relative isolate overflow-x-clip bg-black text-white">
+      <section id="product" className="relative flex min-h-screen w-full items-center justify-center overflow-hidden px-5 pb-10 pt-28 text-center sm:px-8 lg:pt-32">
         <AudioWaveHero />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_15%,rgba(0,0,0,.16)_60%,rgba(0,0,0,.86)_100%)]" />
         <div className="relative z-10 mx-auto w-full max-w-[1280px]">
-          <div className="mx-auto mb-7 inline-flex items-center gap-2 rounded-full border border-white/16 bg-black/30 px-4 py-2 text-xs font-semibold text-white/80 shadow-[inset_0_0_22px_rgba(255,255,255,0.04)] backdrop-blur">
-            <span className="size-2 rounded-full bg-[#22f4d2] shadow-[0_0_14px_#22f4d2]" />
-            Voice Agents Live Now
-          </div>
-          <h1 className="mx-auto m-0 max-w-5xl text-[clamp(1.75rem,8vw,2.1rem)] font-black leading-[1.02] tracking-[-0.025em] text-white [overflow-wrap:anywhere] sm:text-[clamp(2.1rem,5.6vw,4.7rem)] sm:leading-[0.98] sm:tracking-[-0.03em]">
-            Launch enterprise-ready <span>AI voice agents</span>
-          </h1>
-          <p className="mx-auto mt-6 max-w-3xl text-sm leading-7 text-white/56 sm:text-base">
-            vozon.ai helps teams answer every call, qualify every lead, book
-            every next step, and turn conversations into clean workflows for
-            sales, support, and operations.
-          </p>
-          <div className="mt-8 flex justify-center">
-            <GlowButton href="/dashboard">Deploy Now</GlowButton>
-          </div>
+        <div className="mx-auto mb-7 inline-flex items-center gap-2 rounded-full border border-white/16 bg-black/30 px-4 py-2 text-xs font-semibold text-white/80 shadow-[inset_0_0_22px_rgba(255,255,255,0.04)] backdrop-blur">
+          <span className="size-2 rounded-full bg-[#22f4d2] shadow-[0_0_14px_#22f4d2]" />
+          Voice Agents Live Now
+        </div>
+        <h1 className="mx-auto m-0 max-w-5xl text-[clamp(1.75rem,8vw,2.1rem)] font-black leading-[1.02] tracking-[-0.025em] text-white [overflow-wrap:anywhere] sm:text-[clamp(2.1rem,5.6vw,4.7rem)] sm:leading-[0.98] sm:tracking-[-0.03em]">
+          Launch enterprise-ready{" "}
+          <span>AI voice agents</span>
+        </h1>
+        <p className="mx-auto mt-6 max-w-3xl text-sm leading-7 text-white/56 sm:text-base">
+          vozon.ai helps teams answer every call, qualify every lead, book every next step, and turn conversations into clean workflows for sales, support, and operations.
+        </p>
+        <div className="mt-8 flex justify-center">
+          <GlowButton href="/dashboard">Deploy Now</GlowButton>
+        </div>
         </div>
       </section>
 
-      <section className="vozon-company-marquee-section relative mt-8 overflow-hidden py-10 sm:mt-12 sm:py-12">
+      <section className="vozon-company-marquee-section relative overflow-hidden py-6 sm:py-8">
         <div className="relative z-10 mx-auto mb-9 max-w-4xl px-5 text-center sm:px-8">
           <h4 className="vozon-company-heading m-0 whitespace-nowrap text-white">
             Trusted by Developers &amp; Businesses Worldwide
@@ -400,10 +422,7 @@ export function HomePlatformSections() {
 
         <div className="vozon-company-marquee relative z-10 flex overflow-hidden py-3">
           {[0, 1].map((track) => (
-            <div
-              className="vozon-company-track flex min-w-full shrink-0 items-center gap-16 px-8"
-              key={track}
-            >
+            <div className="vozon-company-track flex min-w-full shrink-0 items-center gap-16 px-8" key={track}>
               {companyLogos.map((company) => (
                 <div
                   className="vozon-company-logo inline-flex min-w-[180px] items-center justify-center gap-3"
@@ -428,7 +447,7 @@ export function HomePlatformSections() {
 
       <IndiaVoiceExperience />
 
-      <section className="relative mx-auto max-w-[1240px] px-5 pb-4 pt-2 sm:px-8 sm:pb-5 lg:pb-6">
+      <section className="relative w-full px-5 pb-4 pt-2 sm:px-8 sm:pb-5 lg:pb-6">
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 inline-flex rounded-full border border-white/12 bg-white/[0.06] px-4 py-2 text-[11px] font-black uppercase tracking-[0.1em] text-[#75fff0]">
             One Platform
@@ -437,8 +456,7 @@ export function HomePlatformSections() {
             Every AI voice layer connected in one place
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-white/54">
-            LLMs, speech, realtime, vision, and external tools stay coordinated
-            through the Vozon agent layer.
+            LLMs, speech, realtime, vision, and external tools stay coordinated through the Vozon agent layer.
           </p>
         </div>
 
@@ -454,106 +472,95 @@ export function HomePlatformSections() {
         </div>
       </section>
 
-      <section className="vozon-operations-section relative overflow-hidden px-5 py-4 sm:px-8 sm:py-5 lg:py-6">
-        <div className="relative z-10 mx-auto max-w-[1240px]">
-          <div className="mx-auto max-w-4xl text-center">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#45ddce]/24 bg-[#45ddce]/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#75fff0]">
-              <span className="size-1.5 rounded-full bg-[#45ddce] shadow-[0_0_12px_#45ddce]" />
-              Voice Operations
+      <section className="vozon-how-section relative px-5 pb-4 pt-8 sm:px-8 sm:pb-5 sm:pt-10 lg:pb-6 lg:pt-12" aria-labelledby="vozon-how-title">
+        <div className="vozon-how-shell relative z-10 mx-auto max-w-[1240px] overflow-hidden">
+          <div className="vozon-how-intro">
+            <div>
+              <span className="vozon-how-kicker">How it works</span>
+              <h2 className="vozon-platform-heading" id="vozon-how-title">
+                <span>Built for developers.</span>
+                <span>Easy for everyone.</span>
+              </h2>
             </div>
-            <h2 className="vozon-platform-heading m-0 text-white">
-              Build, launch, and improve every conversation.
-            </h2>
-            <p className="mx-auto mt-5 max-w-3xl text-sm leading-7 text-white/56 sm:text-base">
-              Vozon gives your team the building blocks to create agents,
-              connect business knowledge, launch calls, monitor outcomes, and
-              move conversation data into the systems you already use.
+            <p>
+              Whether you prefer a visual builder or direct API control, Vozon makes it simple to create,
+              test, and launch multilingual voice agents for real customer conversations.
             </p>
           </div>
 
-          <div
-            className="vozon-operations-viewport mt-10 overflow-x-auto pb-4 sm:mt-14"
-            role="region"
-            aria-label="AI voice operations workflow"
-            tabIndex={0}
-          >
-            <div className="vozon-operations-map relative mx-auto min-w-[1080px]">
-              <svg
-                className="vozon-operations-connector absolute inset-x-0 top-0 h-[180px] w-full"
-                viewBox="0 0 1200 180"
-                preserveAspectRatio="none"
-                aria-hidden="true"
-              >
-                <defs>
-                  <linearGradient
-                    id="vozonOperationsLine"
-                    x1="0"
-                    x2="1200"
-                    y1="0"
-                    y2="0"
-                    gradientUnits="userSpaceOnUse"
-                  >
-                    <stop stopColor="#1acfff" stopOpacity="0.18" />
-                    <stop
-                      offset="0.22"
-                      stopColor="#2be3e1"
-                      stopOpacity="0.78"
-                    />
-                    <stop offset="0.52" stopColor="#75fff0" stopOpacity="0.9" />
-                    <stop offset="0.8" stopColor="#48db8b" stopOpacity="0.78" />
-                    <stop offset="1" stopColor="#48db8b" stopOpacity="0.18" />
-                  </linearGradient>
-                </defs>
-                <path
-                  d="M100 78 L300 118 L500 78 L700 118 L900 78 L1100 118"
-                  fill="none"
-                  stroke="url(#vozonOperationsLine)"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                />
-              </svg>
-
-              <div className="relative grid grid-cols-6">
-                {voiceOperationSteps.map((step, index) => (
-                  <article
-                    className={`vozon-operation-step relative flex min-w-0 flex-col items-center px-3 text-center ${index % 2 === 1 ? "vozon-operation-step-lower" : ""}`}
-                    key={step.number}
-                  >
-                    <div
-                      className="vozon-operation-hex relative grid h-[108px] w-[116px] place-items-center"
-                      aria-hidden="true"
-                    >
-                      <div className="vozon-operation-hex-inner absolute inset-[3px]" />
-                      <VoiceOperationIcon icon={step.icon} />
-                      <span className="vozon-operation-number absolute -right-2 -top-1 grid size-7 place-items-center rounded-full border border-[#75fff0]/30 bg-[#061b18] text-[9px] font-black text-[#8afff2]">
-                        {step.number}
-                      </span>
-                    </div>
-
-                    <span
-                      className="vozon-operation-stem block h-8 w-px"
-                      aria-hidden="true"
-                    />
-                    <span
-                      className="vozon-operation-dot block size-3 rounded-full bg-[#45ddce]"
-                      aria-hidden="true"
-                    />
-                    <h3 className="mb-0 mt-5 text-base font-black leading-tight text-white">
-                      {step.title}
-                    </h3>
-                    <p className="mb-0 mt-3 max-w-[180px] text-xs leading-5 text-white/48">
-                      {step.body}
-                    </p>
-                  </article>
-                ))}
-              </div>
-            </div>
+          <div className="vozon-how-column-headings" aria-hidden="true">
+            <strong><span>♙</span> No-code playground <i>↗</i></strong>
+            <strong><span>⌁</span> Developer APIs <i>↗</i></strong>
           </div>
 
-          <p className="vozon-operations-scroll-hint mb-0 mt-1 text-center text-[10px] font-bold uppercase tracking-[0.14em] text-white/25">
-            Scroll to explore the workflow
-          </p>
+          <div className="vozon-how-grid">
+            <div className="vozon-how-flow">
+              <article className="vozon-how-step vozon-how-step-one">
+                <header><span><small>Step one</small><strong>Connect account</strong></span><b>1</b></header>
+                <p>Sign in to your Vozon dashboard</p>
+              </article>
+              <article className="vozon-how-step vozon-how-step-two">
+                <header><span><small>Step two</small><strong>Configure agent</strong></span><b>2</b></header>
+                <p>Choose a template or build your agent from scratch</p>
+              </article>
+              <article className="vozon-how-step vozon-how-step-three">
+                <header><span><small>Step three</small><strong>Start conversations</strong></span><b>3</b></header>
+                <p>Launch calls, campaigns, or connect your phone number</p>
+              </article>
+            </div>
+
+            <div className="vozon-code-area">
+              <div className="vozon-code-window">
+                <div className="vozon-code-toolbar">
+                  <span className="vozon-code-lights" aria-hidden="true"><i /><i /><i /></span>
+                  <span className="vozon-code-file">api-integration</span>
+                  <div className="vozon-code-tabs" role="tablist" aria-label="API code examples">
+                    {(Object.keys(codeExamples) as CodeTab[]).map((tab) => (
+                      <button
+                        aria-selected={selectedCodeTab === tab}
+                        className={selectedCodeTab === tab ? "is-active" : ""}
+                        key={tab}
+                        onClick={() => {
+                          setSelectedCodeTab(tab);
+                          setCopiedCode(false);
+                        }}
+                        role="tab"
+                        type="button"
+                      >
+                        {codeExamples[tab].label}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    className="vozon-code-copy"
+                    onClick={() => {
+                      void navigator.clipboard?.writeText(codeExamples[selectedCodeTab].code);
+                      setCopiedCode(true);
+                    }}
+                    type="button"
+                  >
+                    {copiedCode ? "Copied" : "Copy"}
+                  </button>
+                </div>
+
+                <div className="vozon-code-body" role="tabpanel">
+                  <div className="vozon-code-context">
+                    <span><i /> POST</span>
+                    <code>/api/voice/outbound-calls</code>
+                    <small>Secure endpoint</small>
+                  </div>
+                  <pre>
+                    {codeExamples[selectedCodeTab].code.split("\n").map((line, index) => (
+                      <span className="vozon-code-line" key={`${selectedCodeTab}-${index}`}>
+                        <i>{index + 1}</i><code>{line || " "}</code>
+                      </span>
+                    ))}
+                  </pre>
+                </div>
+              </div>
+              <p className="vozon-code-note"><span>●</span> Production-ready API · Secure authentication · Fast setup</p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -641,25 +648,21 @@ export function HomePlatformSections() {
           </p>
         </div>
 
-        <div className="relative z-10 mx-auto max-w-[1240px]">
-          <div className="mt-10 space-y-6 lg:hidden">
-            {fitSections.map((section, index) => (
-              <article className="vozon-fit-mobile-item overflow-hidden" key={section.key}>
-                <div className="flex items-center gap-3 px-5 py-4">
-                  <span className="vozon-fit-compact-number">{String(index + 1).padStart(2, "0")}</span>
-                  <h3 className="m-0 text-base font-black text-white">{section.label}</h3>
-                </div>
-                <div className="relative min-h-[250px]">
-                  <Image
-                    src={section.src}
-                    alt={section.label}
-                    fill
-                    className="object-cover object-top"
-                    sizes="100vw"
-                  />
-                </div>
-              </article>
-            ))}
+          <div className="vozon-feature-bento mt-12">
+            {platformFeatures.map((feature, index) => {
+              const featured = "featured" in feature && feature.featured;
+
+              return (
+                <article className={`vozon-feature-card ${featured ? "is-featured" : ""}`} key={feature.title}>
+                  <span className="vozon-feature-card-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                  <div className="vozon-feature-icon"><PlatformFeatureIcon icon={feature.icon} /></div>
+                  <span className="vozon-feature-eyebrow">{feature.eyebrow}</span>
+                  <h3>{feature.title}</h3>
+                  <p>{feature.body}</p>
+                  <div className="vozon-feature-metric"><i /><span>{feature.metric}</span></div>
+                </article>
+              );
+            })}
           </div>
 
           <div className="vozon-fit-compact mt-10 hidden gap-6 lg:grid lg:grid-cols-[minmax(280px,0.72fr)_minmax(0,1.28fr)] lg:gap-10">
@@ -707,7 +710,7 @@ export function HomePlatformSections() {
         id="integrations"
         className="vozon-integrations-section relative overflow-hidden px-5 py-14 sm:px-8 lg:py-[72px]"
       >
-        <div className="relative z-10 mx-auto max-w-[1240px]">
+        <div className="relative z-10 w-full">
           <div className="mx-auto max-w-3xl text-center">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#45ddce]/24 bg-[#45ddce]/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#75fff0]">
               <span className="size-1.5 rounded-full bg-[#45ddce] shadow-[0_0_12px_#45ddce]" />
@@ -718,7 +721,7 @@ export function HomePlatformSections() {
               From script to spoken word, <span>wired end to end.</span>
             </h2>
 
-            <p className="mt-6 mx-auto  max-w-2xl text-sm leading-7 text-white/58 sm:text-base">
+            <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-white/58 sm:text-base">
               Vozon routes every call through one continuous signal path -
               configure, connect, voice, deploy - so your agent goes live
               without stitching tools together yourself.
@@ -737,57 +740,49 @@ export function HomePlatformSections() {
                       index % 2 !== 0 ? "lg:order-2" : "lg:order-1"
                     }`}
                   >
-                  {/* <span className="vozon-integration-step-number text-[2.35rem] font-black leading-none text-white/[0.13]">
-                    {step.number}
-                  </span> */}
-
-                  <div className="mb-5 flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-[#75fff0]">
-                    <span className="h-px w-7 bg-[#45ddce]" />
-                    Step {step.number}
-                  </div>
-
-                  {/* <div className="vozon-integration-icon grid size-[52px] place-items-center rounded-[15px] border border-[#45ddce]/28 bg-[#45ddce]/10 text-[#9dfff4]">
-                    <IntegrationIcon icon={step.icon} />
-                  </div> */}
-
-                  <div className="flex items-center gap-4">
-                    <div className="vozon-integration-icon grid size-[52px] shrink-0 place-items-center rounded-[15px] border border-[#45ddce]/28 bg-[#45ddce]/10 text-[#9dfff4]">
-                      <IntegrationIcon icon={step.icon} />
+                    <div className="mb-5 flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-[#75fff0]">
+                      <span className="h-px w-7 bg-[#45ddce]" />
+                      Step {step.number}
                     </div>
-                    <h3 className="m-0 text-xl font-black leading-tight text-white sm:text-2xl">{step.title}</h3>
-                  </div>
 
-                  <ul className="mt-5 space-y-3.5 p-0 text-sm leading-6 text-white/55 sm:text-base">
-                    {step.bullets.map((bullet) => (
-                      <li
-                        className="flex gap-3"
-                        key={`${step.number}-${bullet.strong}`}
-                      >
-                        <span className="mt-2 size-1.5 shrink-0 rounded-full bg-[#45ddce]" />
-                        <span>
-                          {bullet.before}
-                          <strong className="font-black text-white/88">
-                            {bullet.strong}
-                          </strong>
-                          {bullet.after}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
+                    <div className="flex items-center gap-4">
+                      <div className="vozon-integration-icon grid size-[52px] shrink-0 place-items-center rounded-[15px] border border-[#45ddce]/28 bg-[#45ddce]/10 text-[#9dfff4]">
+                        <IntegrationIcon icon={step.icon} />
+                      </div>
+                      <h3 className="m-0 text-xl font-black leading-tight text-white sm:text-2xl">{step.title}</h3>
+                    </div>
 
+                    <ul className="mt-5 space-y-3.5 p-0 text-sm leading-6 text-white/55 sm:text-base">
+                      {step.bullets.map((bullet) => (
+                        <li className="flex gap-3" key={`${step.number}-${bullet.strong}`}>
+                          <span className="mt-2 size-1.5 shrink-0 rounded-full bg-[#45ddce]" />
+                          <span>
+                            {bullet.before}
+                            <strong className="font-black text-white/88">{bullet.strong}</strong>
+                            {bullet.after}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
 
-                   <div className="mt-8 flex flex-wrap gap-2">
+                    <div className="mt-8 flex flex-wrap gap-2">
                       {step.tags.map((tag) => (
                         <span className="rounded-full border border-white/12 px-3 py-1 text-xs font-bold text-white/42" key={tag}>
                           {tag}
                         </span>
                       ))}
-                     </div>
                     </div>
+                  </div>
 
-                  <div className={`vozon-integration-image relative min-h-[260px] sm:min-h-[320px] lg:min-h-[360px] ${
-                    index % 2 !== 0 ? "vozon-integration-image-left lg:order-1" : "vozon-integration-image-right lg:order-2"
-                  }`}>
+                  <div
+                    className={`vozon-integration-image relative min-h-[260px] sm:min-h-[320px] lg:min-h-[360px] ${
+                      index === 0 ? "vozon-integration-image-flow " : ""
+                    }${
+                      index % 2 !== 0
+                        ? "vozon-integration-image-left lg:order-1"
+                        : "vozon-integration-image-right lg:order-2"
+                    }`}
+                  >
                     <div className="vozon-integration-image-placeholder absolute inset-0 grid place-items-center">
                       {index === 0 ? (
                         <div className="vozon-agent-config-card w-[82%] rounded-2xl p-5 sm:p-6">
@@ -823,10 +818,1032 @@ export function HomePlatformSections() {
         </div>
       </section>
 
+      <section
+        className="vozon-agent-showcase relative overflow-hidden px-5 py-16 sm:px-8 lg:py-20"
+        aria-labelledby="vozon-agent-showcase-title"
+      >
+        <div className="vozon-agent-showcase-glow" aria-hidden="true" />
+        <div className="relative z-10 w-full">
+          <div className="mx-auto max-w-3xl text-center">
+            <div className="vozon-agent-showcase-eyebrow">Agent gallery</div>
+            <h2 className="vozon-platform-heading m-0 text-white" id="vozon-agent-showcase-title">
+              AI agents that turn <span>every call into action.</span>
+            </h2>
+            <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/55 sm:text-base">
+              Meet ready-to-call Vozon agents built for the conversations that keep Indian businesses moving.
+            </p>
+          </div>
+
+          <div className="vozon-agent-tabs" aria-label="Agent industries" role="tablist">
+            {agentIndustries.map((industry) => (
+              <button
+                aria-selected={selectedAgentIndustry === industry}
+                className={selectedAgentIndustry === industry ? "is-active" : ""}
+                key={industry}
+                onClick={() => setSelectedAgentIndustry(industry)}
+                role="tab"
+                type="button"
+              >
+                <AgentIndustryIcon industry={industry} />
+                <span>{industry}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="vozon-agent-grid" role="tabpanel">
+            {agentsByIndustry[selectedAgentIndustry].map((agent) => (
+              <article className="vozon-agent-card" key={agent.title}>
+                <div className="vozon-agent-card-main">
+                  <div className="vozon-agent-identity">
+                    <span className="vozon-agent-type-icon"><AgentTypeIcon title={agent.title} /></span>
+                    <div className="min-w-0">
+                    <h3>{agent.title}</h3>
+                    <div className="vozon-agent-tags">
+                      {agent.tags.map((tag) => <span key={`${agent.title}-${tag}`}>{tag}</span>)}
+                    </div>
+                    <p>{agent.description}</p>
+                  </div>
+                  </div>
+
+                  <Link aria-label={`Explore ${agent.title}`} className="vozon-agent-explore" href="/dashboard/agents">
+                    <span>
+                      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9 6 9 6-9 6V6Z" /></svg>
+                    </span>
+                    <strong>Explore Agent</strong>
+                    <i>↗</i>
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="vozon-apps-section relative overflow-hidden px-5 pt-8 sm:px-8 sm:pt-10 lg:pt-12" id="app-integrations" aria-labelledby="vozon-apps-title">
+        <div className="relative z-10 w-full">
+          <div className="mx-auto max-w-4xl text-center">
+            <div className="vozon-apps-eyebrow"><span /> Integrations</div>
+            <h2 className="vozon-platform-heading mx-auto m-0 max-w-4xl text-white" id="vozon-apps-title">
+              Integrations across your favorite platforms
+            </h2>
+            <a className="vozon-apps-cta" href="/dashboard/integrations">Explore integrations <span>↗</span></a>
+          </div>
+
+          <div className="vozon-app-orbit mt-8" aria-label="Vozon app integration network">
+            <span className="vozon-app-orbit-glow" aria-hidden="true" />
+            <svg className="vozon-app-connections" viewBox="0 0 1120 590" preserveAspectRatio="none" aria-hidden="true">
+              <ellipse className="vozon-app-track-base" cx="560" cy="600" rx="510" ry="470" />
+              <ellipse className="vozon-app-track-base" cx="560" cy="600" rx="415" ry="385" />
+              <ellipse className="vozon-app-track-base" cx="560" cy="600" rx="320" ry="300" />
+              <ellipse className="vozon-app-track-flow" cx="560" cy="600" rx="510" ry="470" />
+              <ellipse className="vozon-app-track-flow" cx="560" cy="600" rx="415" ry="385" />
+              <ellipse className="vozon-app-track-flow" cx="560" cy="600" rx="320" ry="300" />
+            </svg>
+
+            <svg className="vozon-app-moving-nodes" viewBox="0 0 1120 590" preserveAspectRatio="none" aria-hidden="true">
+              {appIntegrations.map((app) => {
+                const motion = appOrbitMotion[app.orbit];
+
+                return (
+                  <g key={`moving-${app.key}`}>
+                    <animateMotion
+                      begin={`${app.delay}s`}
+                      calcMode="linear"
+                      dur={motion.duration}
+                      keyPoints="0;1"
+                      keyTimes="0;1"
+                      path={motion.path}
+                      repeatCount="indefinite"
+                    />
+                    <foreignObject height="90" width="90" x="-45" y="-45">
+                      <div className="vozon-app-moving-item">
+                        <div className="vozon-app-moving-icon">
+                          <IntegrationAppLogo app={app} />
+                        </div>
+                      </div>
+                    </foreignObject>
+                  </g>
+                );
+              })}
+            </svg>
+
+            {appIntegrations.map((app) => (
+              <article
+                className={`vozon-app-node vozon-app-node-${app.position} vozon-app-orbit-${app.orbit}`}
+                key={app.key}
+                style={{ "--app-delay": `${app.delay}s` } as CSSProperties}
+              >
+                <div className="vozon-app-node-icon"><IntegrationAppLogo app={app} /></div>
+                <span className="vozon-app-node-name">{app.name}</span>
+              </article>
+            ))}
+
+            <div className="vozon-app-hub">
+              <span className="vozon-app-hub-symbol" aria-hidden="true">
+                <Image
+                  alt=""
+                  className="vozon-app-hub-logo"
+                  height={350}
+                  src="/images/logo_2.svg"
+                  width={1160}
+                />
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <style>{`
         .vozon-home {
           font-family: var(--font-site-sans), ui-sans-serif, system-ui, sans-serif;
           background: #000;
+          background-color: #000;
+        }
+
+        .vozon-agent-showcase {
+          background: #000 !important;
+        }
+
+        .vozon-agent-showcase-glow {
+          display: none;
+        }
+
+        .vozon-agent-showcase-eyebrow {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.55rem;
+          min-height: 26px;
+          margin-bottom: 1.1rem;
+          border: 1px solid rgba(29,225,188,0.46);
+          border-radius: 999px;
+          background: #000;
+          padding: 0.4rem 0.9rem;
+          color: #9dfff4;
+          font-family: var(--font-geist-mono), monospace;
+          font-size: 0.66rem;
+          font-weight: 900;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+        }
+
+        .vozon-agent-showcase-eyebrow::before {
+          content: "";
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #20e0bc;
+        }
+
+        .vozon-agent-tabs {
+          display: flex;
+          width: min(100%, 1040px);
+          max-width: 100%;
+          margin: 2.25rem auto 0;
+          overflow-x: auto;
+          border: 1px solid rgba(54,117,122,0.38);
+          border-radius: 999px;
+          background: #010405;
+          padding: 0 1rem;
+          scrollbar-width: none;
+        }
+
+        .vozon-agent-tabs::-webkit-scrollbar {
+          display: none;
+        }
+
+        .vozon-agent-tabs button {
+          position: relative;
+          display: inline-flex;
+          min-width: 150px;
+          min-height: 52px;
+          flex: 1 0 auto;
+          align-items: center;
+          justify-content: center;
+          gap: 0.65rem;
+          border: 0;
+          border-radius: 0;
+          background: transparent;
+          box-shadow: none;
+          color: rgba(255,255,255,0.68);
+          font-size: 0.78rem;
+          font-weight: 800;
+          outline: none;
+        }
+
+        .vozon-agent-tabs button > svg {
+          width: 22px;
+          height: 22px;
+          flex: 0 0 auto;
+          fill: none;
+          stroke: currentColor;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          stroke-width: 1.6;
+        }
+
+        .vozon-agent-tabs button:hover {
+          color: rgba(255,255,255,0.82);
+        }
+
+        .vozon-agent-tabs button.is-active {
+          background: transparent;
+          box-shadow: none;
+          color: #75fff0;
+        }
+
+        .vozon-agent-tabs button:focus,
+        .vozon-agent-tabs button:focus-visible {
+          background: transparent;
+          box-shadow: none;
+          color: #75fff0;
+          outline: none;
+        }
+
+        .vozon-agent-grid {
+          max-width: 1240px;
+          margin: 2.25rem auto 0;
+          overflow: hidden;
+          border: 1px solid rgba(75,173,166,0.3);
+          border-radius: 24px;
+          background: #000;
+          box-shadow:
+            0 0 0 1px rgba(255,255,255,0.018),
+            0 24px 80px rgba(0,0,0,0.34),
+            0 0 34px rgba(32,224,188,0.045);
+        }
+
+        .vozon-agent-card {
+          --agent-row-accent: #20e0bc;
+          position: relative;
+          min-width: 0;
+          overflow: hidden;
+          border-bottom: 1px solid rgba(82,154,157,0.18);
+          background: #000;
+          padding: 1.25rem 1.35rem;
+        }
+
+        .vozon-agent-card:last-child {
+          border-bottom: 0;
+        }
+
+        .vozon-agent-card:nth-child(2) {
+          --agent-row-accent: #29bfff;
+        }
+
+        .vozon-agent-card:nth-child(3) {
+          --agent-row-accent: #42df9b;
+        }
+
+        .vozon-agent-card:nth-child(4) {
+          --agent-row-accent: #a98bff;
+        }
+
+        .vozon-agent-card::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background:
+            radial-gradient(circle at 3% 50%, color-mix(in srgb, var(--agent-row-accent) 8%, transparent), transparent 24%),
+            linear-gradient(90deg, color-mix(in srgb, var(--agent-row-accent) 3%, transparent), transparent 42%);
+          pointer-events: none;
+        }
+
+        .vozon-agent-card::after {
+          content: "";
+          position: absolute;
+          top: 24px;
+          bottom: 24px;
+          left: 0;
+          width: 2px;
+          border-radius: 999px;
+          background: var(--agent-row-accent);
+          box-shadow: 0 0 14px color-mix(in srgb, var(--agent-row-accent) 55%, transparent);
+        }
+
+        .vozon-agent-card-main {
+          position: relative;
+          z-index: 1;
+          display: grid;
+          min-height: 106px;
+          grid-template-columns: minmax(300px, 1fr) 140px;
+          align-items: center;
+          gap: 1.5rem;
+        }
+
+        .vozon-agent-identity {
+          display: grid;
+          min-width: 0;
+          grid-template-columns: 56px minmax(0, 1fr);
+          align-items: center;
+          gap: 1rem;
+        }
+
+        .vozon-agent-type-icon {
+          display: grid;
+          width: 50px;
+          height: 50px;
+          place-items: center;
+          border: 1px solid var(--agent-row-accent);
+          border-radius: 50%;
+          background:
+            radial-gradient(circle, color-mix(in srgb, var(--agent-row-accent) 10%, transparent), transparent 70%);
+          color: color-mix(in srgb, var(--agent-row-accent) 76%, white);
+          box-shadow:
+            inset 0 0 0 5px rgba(0,0,0,0.72),
+            0 0 18px color-mix(in srgb, var(--agent-row-accent) 10%, transparent);
+        }
+
+        .vozon-agent-type-icon svg {
+          width: 24px;
+          height: 24px;
+          fill: none;
+          stroke: currentColor;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          stroke-width: 1.6;
+        }
+
+        .vozon-agent-card h3 {
+          margin: 0;
+          color: #fff;
+          font-size: 1.15rem;
+          font-weight: 850;
+          letter-spacing: -0.02em;
+        }
+
+        .vozon-agent-tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.45rem;
+          margin-top: 0.6rem;
+        }
+
+        .vozon-agent-tags span {
+          border-radius: 4px;
+          background: #111922;
+          padding: 0.3rem 0.55rem;
+          color: rgba(255,255,255,0.75);
+          font-size: 0.62rem;
+          font-weight: 700;
+          line-height: 1;
+        }
+
+        .vozon-agent-card p {
+          max-width: 370px;
+          margin: 0.6rem 0 0;
+          color: rgba(220,230,235,0.62);
+          font-size: 0.78rem;
+          line-height: 1.6;
+        }
+
+        .vozon-agent-explore {
+          display: grid;
+          min-height: 94px;
+          place-items: center;
+          align-content: center;
+          gap: 0.55rem;
+          border-left: 1px solid rgba(82,154,157,0.2);
+          color: color-mix(in srgb, var(--agent-row-accent) 80%, white);
+          text-align: center;
+        }
+
+        .vozon-agent-explore > span {
+          display: grid;
+          width: 46px;
+          height: 46px;
+          place-items: center;
+          border: 1px solid var(--agent-row-accent);
+          border-radius: 50%;
+          background: color-mix(in srgb, var(--agent-row-accent) 7%, transparent);
+          box-shadow: 0 0 20px color-mix(in srgb, var(--agent-row-accent) 10%, transparent);
+        }
+
+        .vozon-agent-explore svg {
+          width: 22px;
+          height: 22px;
+          fill: currentColor;
+          stroke: none;
+        }
+
+        .vozon-agent-explore strong {
+          font-size: 0.7rem;
+        }
+
+        .vozon-agent-explore i {
+          font-size: 0.9rem;
+          font-style: normal;
+        }
+
+        .vozon-apps-section {
+          background: #000;
+        }
+
+        .vozon-apps-eyebrow {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.65rem;
+          margin-bottom: 1.25rem;
+          color: #75fff0;
+          font-size: 0.68rem;
+          font-weight: 900;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+        }
+
+        .vozon-apps-eyebrow span {
+          width: 8px;
+          height: 8px;
+          border-radius: 2px 8px 2px 8px;
+          background: #45ddce;
+          box-shadow: 0 0 11px rgba(69,221,206,0.7);
+        }
+
+        .vozon-apps-cta {
+          display: inline-flex;
+          min-height: 48px;
+          align-items: center;
+          gap: 0.8rem;
+          margin-top: 1.7rem;
+          border: 1px solid rgba(255,255,255,0.24);
+          border-radius: 12px;
+          background: rgba(255,255,255,0.035);
+          padding: 0 0.75rem 0 1.2rem;
+          color: #fff;
+          font-size: 0.78rem;
+          font-weight: 800;
+          transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+        }
+
+        .vozon-apps-cta span {
+          display: grid;
+          width: 32px;
+          height: 32px;
+          place-items: center;
+          border-radius: 8px;
+          background: #45ddce;
+          color: #03120f;
+          font-size: 0.9rem;
+        }
+
+        .vozon-apps-cta:hover {
+          border-color: rgba(117,255,240,0.42);
+          background: rgba(69,221,206,0.06);
+          transform: translateY(-2px);
+        }
+
+        .vozon-app-orbit {
+          position: relative;
+          width: min(100%, 920px);
+          height: 480px;
+          margin-inline: auto;
+          overflow: hidden;
+          isolation: isolate;
+        }
+
+        .vozon-app-orbit::before {
+          content: "";
+          position: absolute;
+          right: 5%;
+          bottom: 0;
+          left: 5%;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, rgba(117,255,240,0.42), transparent);
+          box-shadow: 0 0 22px rgba(69,221,206,0.3);
+        }
+
+        .vozon-app-ring {
+          position: absolute;
+          z-index: 0;
+          bottom: -215px;
+          left: 50%;
+          border: 1px solid rgba(69,221,206,0.16);
+          border-radius: 50%;
+          transform: translateX(-50%);
+          box-shadow: inset 0 0 28px rgba(69,221,206,0.018);
+        }
+
+        .vozon-app-ring-one {
+          width: 96%;
+          height: 650px;
+        }
+
+        .vozon-app-ring-two {
+          bottom: -158px;
+          width: 72%;
+          height: 500px;
+          border-color: rgba(105,200,255,0.16);
+        }
+
+        .vozon-app-ring-three {
+          bottom: -98px;
+          width: 47%;
+          height: 350px;
+          border-color: rgba(169,155,255,0.15);
+        }
+
+        .vozon-app-orbit-glow {
+          position: absolute;
+          z-index: 0;
+          bottom: -95px;
+          left: 50%;
+          width: 360px;
+          height: 200px;
+          border-radius: 50%;
+          background: rgba(69,221,206,0.18);
+          filter: blur(60px);
+          transform: translateX(-50%);
+          opacity: 0.7;
+        }
+
+        .vozon-app-connections {
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+          width: 100%;
+          height: 100%;
+          overflow: visible;
+          pointer-events: none;
+        }
+
+        .vozon-app-moving-nodes {
+          position: absolute;
+          inset: 0;
+          z-index: 3;
+          width: 100%;
+          height: 100%;
+          overflow: visible;
+          pointer-events: none;
+        }
+
+        .vozon-app-moving-nodes foreignObject {
+          overflow: visible;
+        }
+
+        .vozon-app-moving-item {
+          display: grid;
+          width: 90px;
+          justify-items: center;
+          gap: 0.45rem;
+          padding-top: 7px;
+        }
+
+        .vozon-app-moving-icon {
+          display: grid;
+          width: 76px;
+          height: 76px;
+          place-items: center;
+          overflow: hidden;
+          border: 1px solid rgba(255,255,255,0.13);
+          border-radius: 19px;
+          background: linear-gradient(145deg, rgba(27,35,40,0.99), rgba(10,14,17,0.99));
+          box-shadow: inset 0 1px rgba(255,255,255,0.06), 0 18px 38px rgba(0,0,0,0.38);
+        }
+
+        .vozon-app-moving-icon img {
+          width: 38px;
+          height: auto;
+          max-height: 38px;
+          object-fit: contain;
+        }
+
+        .vozon-app-track-base {
+          fill: none;
+          stroke: rgba(69,221,206,0.25);
+          stroke-width: 1.25;
+          filter: drop-shadow(0 0 3px rgba(69,221,206,0.18));
+        }
+
+        .vozon-app-track-base:nth-child(2) {
+          stroke: rgba(105,200,255,0.2);
+        }
+
+        .vozon-app-track-base:nth-child(3) {
+          stroke: rgba(169,155,255,0.19);
+        }
+
+        .vozon-app-track-flow {
+          fill: none;
+          stroke: rgba(117,255,240,0.65);
+          stroke-width: 1.65;
+          stroke-linecap: round;
+          stroke-dasharray: 150 2600;
+          filter: drop-shadow(0 0 4px rgba(69,221,206,0.55));
+          opacity: 0.72;
+          animation: vozonAppConnectionMove 5.8s linear infinite;
+        }
+
+        .vozon-app-track-flow:nth-child(5) {
+          stroke: rgba(105,200,255,0.58);
+          animation-duration: 4.2s;
+        }
+
+        .vozon-app-track-flow:nth-child(6) {
+          stroke: rgba(169,155,255,0.56);
+          animation-duration: 4.8s;
+        }
+
+        .vozon-app-node {
+          --app-delay: 0s;
+          --orbit-duration: 28s;
+          position: absolute;
+          z-index: 3;
+          display: none;
+          width: 94px;
+          justify-items: center;
+          gap: 0.55rem;
+          transform: translate(-50%, -50%);
+          animation: vozonAppFloat 4.8s ease-in-out var(--app-delay) infinite;
+        }
+
+        @supports (offset-path: ellipse(40% 80% at 50% 120%)) {
+          .vozon-app-node {
+            top: 0;
+            left: 0;
+            offset-anchor: center;
+            offset-rotate: 0deg;
+            transform: none;
+            animation: vozonAppTravel var(--orbit-duration) ease-in-out var(--app-delay) infinite alternate;
+          }
+
+          .vozon-app-orbit-outer {
+            --orbit-duration: 54s;
+            offset-path: ellipse(45.5% 98% at 50% 125%);
+          }
+
+          .vozon-app-orbit-middle {
+            --orbit-duration: 48s;
+            offset-path: ellipse(37% 80.2% at 50% 125%);
+          }
+
+          .vozon-app-orbit-inner {
+            --orbit-duration: 42s;
+            offset-path: ellipse(28.5% 62.5% at 50% 125%);
+          }
+
+          .vozon-app-node:hover {
+            animation-play-state: paused;
+          }
+        }
+
+        .vozon-app-node-name {
+          display: none;
+          color: rgba(255,255,255,0.56);
+          font-size: 0.65rem;
+          font-weight: 800;
+          text-align: center;
+        }
+
+        .vozon-app-node-icon {
+          display: grid;
+          width: 64px;
+          height: 64px;
+          place-items: center;
+          overflow: hidden;
+          border: 1px solid rgba(255,255,255,0.12);
+          border-radius: 16px;
+          background: linear-gradient(145deg, rgba(27,35,40,0.98), rgba(10,14,17,0.98));
+          box-shadow: inset 0 1px rgba(255,255,255,0.05), 0 18px 38px rgba(0,0,0,0.36);
+          transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+        }
+
+        .vozon-app-node:hover .vozon-app-node-icon {
+          border-color: rgba(117,255,240,0.34);
+          box-shadow: inset 0 1px rgba(255,255,255,0.07), 0 20px 44px rgba(0,0,0,0.42), 0 0 24px rgba(69,221,206,0.1);
+          transform: translateY(-3px);
+        }
+
+        .vozon-app-node-icon img {
+          width: 36px;
+          height: auto;
+          max-height: 36px;
+        }
+
+        .vozon-app-node-outer-left { top: 58%; left: 9%; }
+        .vozon-app-node-outer-right { top: 58%; left: 91%; }
+        .vozon-app-node-upper-left { top: 31%; left: 23%; }
+        .vozon-app-node-upper-right { top: 31%; left: 77%; }
+        .vozon-app-node-top-center { top: 17%; left: 50%; }
+        .vozon-app-node-middle-left { top: 54%; left: 32%; }
+        .vozon-app-node-middle-center { top: 46%; left: 50%; }
+        .vozon-app-node-middle-right { top: 54%; left: 68%; }
+        .vozon-app-node-lower-right { top: 70%; left: 78%; }
+
+        .vozon-app-salesforce {
+          display: grid;
+          width: 53px;
+          height: 34px;
+          place-items: center;
+          border-radius: 50%;
+          background: #20a7df;
+          color: #fff !important;
+          font-size: 0.46rem !important;
+          font-weight: 900 !important;
+          letter-spacing: -0.04em;
+        }
+
+        .vozon-app-zoho {
+          display: flex;
+          gap: 1px;
+          transform: rotate(-3deg);
+        }
+
+        .vozon-app-zoho i {
+          display: grid;
+          width: 14px;
+          height: 20px;
+          place-items: center;
+          border-radius: 2px;
+          background: #e84343;
+          color: #fff;
+          font-size: 0.48rem;
+          font-style: normal;
+          font-weight: 900;
+        }
+
+        .vozon-app-zoho i:nth-child(2) { background: #2e7adf; }
+        .vozon-app-zoho i:nth-child(3) { background: #e9b329; }
+        .vozon-app-zoho i:nth-child(4) { background: #2cad61; }
+
+        .vozon-app-crm {
+          display: grid;
+          width: 49px;
+          height: 37px;
+          place-items: center;
+          border: 1px solid rgba(117,255,240,0.34);
+          border-radius: 10px;
+          background: rgba(69,221,206,0.1);
+          color: #75fff0 !important;
+          font-family: var(--font-geist-mono), monospace;
+          font-size: 0.63rem !important;
+          font-weight: 900 !important;
+        }
+
+        .vozon-app-calendar {
+          position: relative;
+          display: grid;
+          width: 42px;
+          height: 42px;
+          place-items: center;
+          border-radius: 7px;
+          background: linear-gradient(135deg, #4285f4 0 48%, #34a853 48% 65%, #fbbc04 65% 80%, #ea4335 80%);
+          padding: 5px;
+        }
+
+        .vozon-app-calendar i {
+          display: grid;
+          width: 100%;
+          height: 100%;
+          place-items: center;
+          border-radius: 4px;
+          background: #fff;
+          color: #4285f4;
+          font-size: 0.7rem;
+          font-style: normal;
+          font-weight: 900;
+        }
+
+        .vozon-app-calendly {
+          color: #15b8dc !important;
+          font-family: Georgia, serif;
+          font-size: 2.45rem !important;
+          font-weight: 900 !important;
+          line-height: 1;
+        }
+
+        .vozon-app-gmail {
+          background: linear-gradient(135deg, #ea4335 0 44%, #fbbc04 44% 56%, #4285f4 56% 72%, #34a853 72%);
+          background-clip: text;
+          color: transparent !important;
+          font-family: Arial, sans-serif;
+          font-size: 2.1rem !important;
+          font-weight: 900 !important;
+          line-height: 1;
+        }
+
+        .vozon-app-twilio {
+          display: grid;
+          width: 43px;
+          height: 43px;
+          grid-template-columns: 1fr 1fr;
+          gap: 4px;
+          place-content: center;
+          border: 3px solid #f22f46;
+          border-radius: 50%;
+          padding: 7px;
+        }
+
+        .vozon-app-twilio i {
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background: #f22f46;
+        }
+
+        .vozon-app-exotel {
+          color: #ff8b37 !important;
+          font-family: var(--font-geist-mono), monospace;
+          font-size: 1.1rem !important;
+          font-weight: 900 !important;
+          letter-spacing: -0.08em;
+        }
+
+        .vozon-app-hub {
+          position: absolute;
+          z-index: 4;
+          bottom: -20px;
+          left: 50%;
+          display: grid;
+          width: 112px;
+          height: 112px;
+          place-items: center;
+          border: 1px solid rgba(117,255,240,0.42);
+          border-radius: 50%;
+          background:
+            radial-gradient(circle at 38% 24%, rgba(172,255,247,0.2), transparent 30%),
+            radial-gradient(circle at 50% 50%, #123b34, #061713 68%);
+          box-shadow:
+            0 0 34px rgba(69,221,206,0.28),
+            0 0 76px rgba(69,221,206,0.16),
+            inset 0 1px rgba(255,255,255,0.12),
+            inset 0 0 28px rgba(69,221,206,0.08);
+          transform: translateX(-50%);
+        }
+
+        .vozon-app-hub::before,
+        .vozon-app-hub::after {
+          content: "";
+          position: absolute;
+          border-radius: 50%;
+          pointer-events: none;
+        }
+
+        .vozon-app-hub::before {
+          inset: -10px;
+          border: 1px solid rgba(117,255,240,0.16);
+          box-shadow: 0 0 24px rgba(69,221,206,0.18);
+        }
+
+        .vozon-app-hub::after {
+          inset: 8px;
+          border: 1px solid rgba(255,255,255,0.07);
+        }
+
+        .vozon-app-hub-symbol {
+          position: relative;
+          display: block;
+          width: 73px;
+          height: 66px;
+          overflow: hidden;
+          filter: drop-shadow(0 0 14px rgba(97,255,240,0.42));
+        }
+
+        .vozon-app-hub-logo {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: auto;
+          max-width: none;
+          height: 66px;
+          object-fit: none;
+        }
+
+        @keyframes vozonAppFloat {
+          0%, 100% { margin-top: 0; }
+          50% { margin-top: -7px; }
+        }
+
+        @keyframes vozonAppTravel {
+          from { offset-distance: 58%; }
+          to { offset-distance: 92%; }
+        }
+
+        @keyframes vozonAppConnectionMove {
+          to { stroke-dashoffset: -2750; }
+        }
+
+        @media (max-width: 1050px) {
+          .vozon-agent-card-main {
+            grid-template-columns: minmax(0, 1fr) 120px;
+          }
+        }
+
+        @media (max-width: 760px) {
+          .vozon-agent-card {
+            padding: 1.35rem 1.15rem;
+          }
+
+          .vozon-agent-card-main {
+            grid-template-columns: 1fr;
+          }
+
+          .vozon-agent-explore {
+            min-height: 56px;
+            grid-template-columns: auto auto auto;
+            justify-content: start;
+            border-top: 1px solid rgba(82,154,157,0.18);
+            border-left: 0;
+            padding: 0.85rem 0 0 72px;
+          }
+
+          .vozon-agent-explore > span {
+            width: 40px;
+            height: 40px;
+          }
+
+          .vozon-agent-tabs {
+            width: 100%;
+            justify-content: flex-start;
+          }
+
+          .vozon-agent-tabs button {
+            min-width: 104px;
+          }
+
+          .vozon-app-orbit {
+            display: grid;
+            height: auto;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 1.4rem 0.5rem;
+            overflow: visible;
+            padding: 1rem 0 0;
+          }
+
+          .vozon-app-orbit::before,
+          .vozon-app-ring,
+          .vozon-app-orbit-glow,
+          .vozon-app-connections,
+          .vozon-app-moving-nodes {
+            display: none;
+          }
+
+          .vozon-app-node {
+            display: grid;
+            position: static;
+            width: auto;
+            offset-path: none;
+            transform: none;
+            animation: none;
+          }
+
+          .vozon-app-node-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+          }
+
+          .vozon-app-hub {
+            position: static;
+            grid-column: 1 / -1;
+            grid-row: 1;
+            width: 112px;
+            height: 112px;
+            margin: 0 auto 1.3rem;
+            transform: none;
+          }
+        }
+
+        @media (max-width: 420px) {
+          .vozon-agent-grid {
+            border-radius: 18px;
+          }
+
+          .vozon-agent-card {
+            padding: 1.25rem 0.9rem;
+          }
+
+          .vozon-agent-identity {
+            grid-template-columns: 48px minmax(0, 1fr);
+            gap: 0.85rem;
+          }
+
+          .vozon-agent-type-icon {
+            width: 46px;
+            height: 46px;
+          }
+
+          .vozon-agent-explore {
+            padding-left: 0;
+          }
+
+          .vozon-app-orbit {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .vozon-app-moving-nodes {
+            display: none;
+          }
+
+          .vozon-app-node {
+            display: grid;
+            offset-path: none;
+            animation: none;
+          }
+
+          .vozon-app-track-flow {
+            animation: none;
+          }
         }
 
         .vozon-company-heading {
@@ -872,27 +1889,19 @@ export function HomePlatformSections() {
         }
 
         .vozon-integration-rail {
-         min-width: 0;
-        position: relative;
+          scrollbar-width: none;
         }
 
-       .vozon-integration-rail::before {
-          content: "";
-          position: absolute;
-          top: 4rem;
-          bottom: 4rem;
-          left: 45%;
-          width: 1px;
-          background: linear-gradient(to bottom, transparent, rgba(69,221,206,0.34) 8%, rgba(69,221,206,0.34) 92%, transparent);
-          transform: translateX(-50%);
+        .vozon-integration-rail::-webkit-scrollbar {
+          display: none;
         }
 
         .vozon-integration-card {
-           border: 1px solid rgba(117,255,240,0.14);
-          border-radius: 22px;
-          background: linear-gradient(135deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012));
-          box-shadow: inset 0 0 0 1px rgba(255,255,255,0.018), 0 18px 45px rgba(0,0,0,0.12);
-          transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+          overflow: visible;
+          border-left: 1px solid rgba(117,255,240,0.12);
+          background: transparent;
+          box-shadow: none;
+          transition: transform 200ms ease, background 200ms ease;
         }
 
        .vozon-integration-card:hover {
@@ -960,15 +1969,17 @@ export function HomePlatformSections() {
         }
 
         .vozon-integration-step-number {
-          right: 2rem;
-          top: 1.7rem;
+          position: absolute;
+          right: 1.25rem;
+          top: 1.25rem;
+          z-index: 2;
           pointer-events: none;
         }
 
-        // .vozon-integration-card:hover {
-        //   transform: translateY(-4px);
-        //   background: radial-gradient(circle at 18% 0%, rgba(117,255,240,0.07), transparent 60%);
-        // }
+        .vozon-integration-card:hover {
+          transform: translateY(-4px);
+          background: radial-gradient(circle at 18% 0%, rgba(117,255,240,0.07), transparent 60%);
+        }
 
         .vozon-integration-icon {
           background:
@@ -979,34 +1990,113 @@ export function HomePlatformSections() {
             0 0 28px rgba(32,244,208,0.12);
         }
 
-          @media (min-width: 1024px) {
-          .vozon-integration-image-right {
-            border-right: 1px solid rgba(117,255,240,0.14);
-            border-bottom: 0;
-          }
-
-          .vozon-integration-image-left {
-            border-right: 0;
-            border-bottom: 0;
-            border-left: 1px solid rgba(117,255,240,0.14);
-          }
-
-          .vozon-integration-copy::after {
-            right: -6px;
-            z-index: 2;
-          }
-
-          .vozon-integration-card:nth-child(even) .vozon-integration-copy::after {
-            right: auto;
-            left: -6px;
-          }
+        .vozon-integration-icon svg {
+          width: 28px;
+          height: 28px;
+          fill: none;
+          stroke: currentColor;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          stroke-width: 2.2;
         }
 
-          @media (max-width: 1023px) {
-          .vozon-integration-rail::before,
-          .vozon-integration-copy::after {
-            display: none;
-          }
+        .vozon-fit-section {
+          background: transparent;
+        }
+
+        .vozon-fit-panel {
+          position: relative;
+          overflow: hidden;
+          border: 1px solid rgba(69,221,206,0.2);
+          border-radius: 18px;
+          background:
+            linear-gradient(145deg, rgba(69,221,206,0.07), transparent 36%),
+            rgba(2,12,10,0.82);
+          box-shadow:
+            inset 0 0 0 1px rgba(255,255,255,0.025),
+            0 26px 90px rgba(0,0,0,0.28);
+          backdrop-filter: blur(10px);
+        }
+
+        .vozon-fit-panel::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          right: 8%;
+          left: 8%;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, rgba(117,255,240,0.7), transparent);
+        }
+
+        .vozon-fit-tabs,
+        .vozon-fit-content {
+          position: relative;
+          z-index: 1;
+        }
+
+        .vozon-fit-tabs {
+          display: grid;
+          grid-template-columns: repeat(5, minmax(0, 1fr));
+          gap: 0.45rem;
+          padding: 0.5rem;
+          border-bottom: 1px solid rgba(255,255,255,0.08);
+          background: rgba(0,5,3,0.35);
+        }
+
+        .vozon-fit-tab {
+          --vozon-fit-tab-accent: 69, 221, 206;
+          position: relative;
+          display: flex;
+          min-height: 66px;
+          align-items: center;
+          gap: 0.85rem;
+          overflow: hidden;
+          border: 1px solid rgba(var(--vozon-fit-tab-accent), 0.16);
+          border-radius: 10px;
+          background: rgba(var(--vozon-fit-tab-accent), 0.025);
+        }
+
+        .vozon-fit-tab-tone-2 { --vozon-fit-tab-accent: 143, 131, 232; }
+        .vozon-fit-tab-tone-3 { --vozon-fit-tab-accent: 71, 170, 255; }
+        .vozon-fit-tab-tone-4 { --vozon-fit-tab-accent: 242, 141, 69; }
+        .vozon-fit-tab-tone-5 { --vozon-fit-tab-accent: 242, 210, 75; }
+
+        .vozon-fit-tab::after {
+          content: "";
+          position: absolute;
+          right: 0.75rem;
+          bottom: 0;
+          left: 0.75rem;
+          height: 2px;
+          border-radius: 999px;
+          background: rgb(var(--vozon-fit-tab-accent));
+          opacity: 0.3;
+          transition: opacity 180ms ease, box-shadow 180ms ease;
+        }
+
+        .vozon-fit-tab:hover {
+          border-color: rgba(var(--vozon-fit-tab-accent), 0.34);
+          background: rgba(var(--vozon-fit-tab-accent), 0.055);
+        }
+
+        .vozon-fit-tab-number {
+          display: grid;
+          width: 2rem;
+          height: 2rem;
+          flex: 0 0 auto;
+          place-items: center;
+          border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 8px;
+          background: rgba(var(--vozon-fit-tab-accent), 0.07);
+          color: rgba(var(--vozon-fit-tab-accent), 0.76);
+          font-size: 0.65rem;
+          transition: border-color 180ms ease, background 180ms ease, color 180ms ease;
+        }
+
+        .vozon-fit-tab-label {
+          min-width: 0;
+          font-size: 0.92rem;
+          line-height: 1.3;
         }
 
         .vozon-integration-icon svg {
@@ -1116,10 +2206,30 @@ export function HomePlatformSections() {
           background: rgba(255,255,255,0.13);
         }
 
-        .vozon-fit-section {
-          background: transparent;
+        .vozon-fit-content:last-child {
+          border-right: 0;
         }
 
+        .vozon-fit-content:hover {
+          background:
+            radial-gradient(circle at 12% 0%, rgba(var(--vozon-fit-accent), 0.16), transparent 38%),
+            linear-gradient(150deg, rgba(var(--vozon-fit-accent), 0.07), rgba(255,255,255,0.012)),
+            rgba(2,12,10,0.48);
+          box-shadow: inset 0 1px 0 rgba(var(--vozon-fit-accent), 0.18);
+        }
+
+        .vozon-fit-index {
+          border: 1px solid rgba(var(--vozon-fit-accent), 0.34);
+          background: rgba(var(--vozon-fit-accent), 0.1);
+          color: rgb(var(--vozon-fit-accent));
+          box-shadow: inset 0 0 18px rgba(var(--vozon-fit-accent), 0.05);
+        }
+
+        .vozon-fit-kicker {
+          color: rgba(var(--vozon-fit-accent), 0.82);
+        }
+
+        /* Restored image-based fit and integration layouts. */
         .vozon-fit-compact-tab {
           display: flex;
           min-height: 3.8rem;
@@ -1210,191 +2320,91 @@ export function HomePlatformSections() {
           line-height: 1.2;
         }
 
-        .vozon-fit-panel {
+        .vozon-integration-rail {
           position: relative;
-          overflow: hidden;
-            border: 1px solid rgba(69,221,206,0.18);
-          border-radius: 20px;
-          background:
-            radial-gradient(circle at 85% 88%, rgba(242,141,69,0.2), transparent 30%),
-            linear-gradient(145deg, rgba(69,221,206,0.08), transparent 42%),
-            #071512;
-          box-shadow:
-            inset 0 0 0 1px rgba(255,255,255,0.025),
-            0 26px 90px rgba(0,0,0,0.28);
+          min-width: 0;
         }
 
-        // .vozon-fit-panel::before {
-        //   content: "";
-        //   position: absolute;
-        //   top: 0;
-        //   right: 8%;
-        //   left: 8%;
-        //   height: 1px;
-        //   background: linear-gradient(90deg, transparent, rgba(117,255,240,0.7), transparent);
-        // }
-
-        // .vozon-fit-tabs,
-        // .vozon-fit-content {
-        //   position: relative;
-        //   z-index: 1;
-        // }
-
-        // .vozon-fit-tabs {
-        //   display: grid;
-        //   grid-template-columns: repeat(5, minmax(0, 1fr));
-        //   gap: 0.45rem;
-        //   padding: 0.5rem;
-        //   border-bottom: 1px solid rgba(255,255,255,0.08);
-        //   background: rgba(0,5,3,0.35);
-        // }
-
-        .vozon-fit-tab {
-          position: relative;
-          min-height: 7.75rem;
-          padding: 0.85rem 0.9rem 0.85rem 4rem;
-          border: 1px solid transparent;
-          border-radius: 0.9rem;
-          color: rgba(255,255,255,0.62);
-          transition: border-color 180ms ease, background 180ms ease, color 180ms ease;
-        }
-
-        .vozon-fit-tab-tone-2 { --vozon-fit-tab-accent: 143, 131, 232; }
-        .vozon-fit-tab-tone-3 { --vozon-fit-tab-accent: 71, 170, 255; }
-        .vozon-fit-tab-tone-4 { --vozon-fit-tab-accent: 242, 141, 69; }
-        .vozon-fit-tab-tone-5 { --vozon-fit-tab-accent: 242, 210, 75; }
-
-        .vozon-fit-tab::after {
+        .vozon-integration-rail::before {
           content: "";
           position: absolute;
-          right: 0.75rem;
-          bottom: 0;
-          left: 0.75rem;
-          height: 2px;
-          border-radius: 999px;
-          background: rgb(var(--vozon-fit-tab-accent));
-          opacity: 0.3;
-          transition: opacity 180ms ease, box-shadow 180ms ease;
+          top: 4rem;
+          bottom: 4rem;
+          left: 45%;
+          width: 1px;
+          background: linear-gradient(to bottom, transparent, rgba(69,221,206,0.34) 8%, rgba(69,221,206,0.34) 92%, transparent);
+          transform: translateX(-50%);
         }
 
-        .vozon-fit-tab:hover , 
-        .vozon-fit-tab-active {
-          color: #fff;
-          border-color: rgba(69,221,206,0.38);
-          background: rgba(69,221,206,0.055);
-          box-shadow: inset 0 0 0 5px rgba(69,221,206,0.025);
+        .vozon-integration-card {
+          overflow: hidden;
+          border: 1px solid rgba(117,255,240,0.14);
+          border-radius: 22px;
+          background: linear-gradient(135deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012));
+          box-shadow: inset 0 0 0 1px rgba(255,255,255,0.018), 0 18px 45px rgba(0,0,0,0.12);
+          transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
         }
 
-        .vozon-fit-tab-icon {
+        .vozon-integration-card::before {
+          display: none;
+        }
+
+        .vozon-integration-card:hover {
+          border-color: rgba(117,255,240,0.3);
+          transform: translateY(-3px);
+          background: linear-gradient(135deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012));
+          box-shadow: inset 0 0 0 1px rgba(117,255,240,0.05), 0 24px 54px rgba(0,0,0,0.2);
+        }
+
+        .vozon-integration-image {
+          border-bottom: 1px solid rgba(117,255,240,0.14);
+          background:
+            radial-gradient(circle at 22% 18%, rgba(69,221,206,0.13), transparent 35%),
+            linear-gradient(135deg, rgba(13,36,38,0.92), rgba(5,14,19,0.96));
+        }
+
+        .vozon-integration-copy::after {
+          content: "";
           position: absolute;
-          top: 0.85rem;
-          left: 0.9rem;
-          width: 2.2rem;
-          height: 2.2rem;
-          place-items: center;
-          border: 1px solid rgba(69,221,206,0.38);
-          border-radius: 0.7rem;
-          background: rgba(69,221,206,0.08);
-          color: #75fff0;
-          font-size: 0.65rem;
-            font-weight: 900;
-          transition: background 180ms ease, box-shadow 180ms ease;
-        }
-
-        // .vozon-fit-tab-label {
-        //   min-width: 0;
-        //   font-size: 0.92rem;
-        //   line-height: 1.3;
-        // }
-
-        // .vozon-fit-tab-active {
-        //   background:
-        //     linear-gradient(110deg, rgba(var(--vozon-fit-tab-accent), 0.16), rgba(var(--vozon-fit-tab-accent), 0.055)),
-        //     rgba(255,255,255,0.035);
-        //   border-color: rgba(var(--vozon-fit-tab-accent), 0.3);
-        //   box-shadow: inset 0 0 32px rgba(var(--vozon-fit-tab-accent), 0.055);
-        // }
-
-        // .vozon-fit-tab-active::after {
-        //   opacity: 1;
-        //   box-shadow: 0 0 12px rgba(var(--vozon-fit-tab-accent), 0.52);
-        // }
-
-       .vozon-fit-tab-active .vozon-fit-tab-icon {
+          top: 50%;
+          width: 12px;
+          height: 12px;
+          border: 2px solid #071512;
+          border-radius: 999px;
           background: #45ddce;
-          color: #02110d;
-          box-shadow: 0 0 22px rgba(69,221,206,0.22);
+          box-shadow: 0 0 0 5px rgba(69,221,206,0.12), 0 0 20px rgba(69,221,206,0.45);
+          transform: translateY(-50%);
         }
 
-        // .vozon-fit-content {
-        //   border-right: 1px solid rgba(255,255,255,0.08);
-        //   border-top: 2px solid rgba(var(--vozon-fit-accent), 0.68);
-        //   background:
-        //     radial-gradient(circle at 12% 0%, rgba(var(--vozon-fit-accent), 0.1), transparent 34%),
-        //     linear-gradient(150deg, rgba(255,255,255,0.035), rgba(255,255,255,0.008)),
-        //     rgba(2,12,10,0.34);
-        //   transition: background 180ms ease, box-shadow 180ms ease;
-        // }
+        @media (min-width: 1024px) {
+          .vozon-integration-image-right {
+            border-right: 1px solid rgba(117,255,240,0.14);
+            border-bottom: 0;
+          }
 
-         .vozon-fit-tab-label,
-        .vozon-fit-tab-description {
-          display: block;
+          .vozon-integration-image-left {
+            border-right: 0;
+            border-bottom: 0;
+            border-left: 1px solid rgba(117,255,240,0.14);
+          }
+
+          .vozon-integration-copy::after {
+            right: -6px;
+            z-index: 2;
+          }
+
+          .vozon-integration-card:nth-child(even) .vozon-integration-copy::after {
+            right: auto;
+            left: -6px;
+          }
         }
 
-        .vozon-fit-content-grid {
-          --vozon-fit-accent: 69, 221, 206;
-          background: rgba(0,5,3,0.12);
+        @media (max-width: 1023px) {
+          .vozon-integration-rail::before,
+          .vozon-integration-copy::after {
+            display: none;
+          }
         }
-
-        // .vozon-fit-theme-2 { --vozon-fit-accent: 143, 131, 232; }
-        // .vozon-fit-theme-3 { --vozon-fit-accent: 71, 170, 255; }
-        // .vozon-fit-theme-4 { --vozon-fit-accent: 242, 141, 69; }
-        // .vozon-fit-theme-5 { --vozon-fit-accent: 242, 210, 75; }
-
-        // .vozon-fit-content:last-child {
-        //   border-right: 0;
-        // }
-
-        // .vozon-fit-content:hover {
-        //   background:
-        //     radial-gradient(circle at 12% 0%, rgba(var(--vozon-fit-accent), 0.16), transparent 38%),
-        //     linear-gradient(150deg, rgba(var(--vozon-fit-accent), 0.07), rgba(255,255,255,0.012)),
-        //     rgba(2,12,10,0.48);
-        //   box-shadow: inset 0 1px 0 rgba(var(--vozon-fit-accent), 0.18);
-        // }
-
-        .vozon-fit-panel-top {
-          background: linear-gradient(110deg, #45ddce, #27ab9f);
-          color: #031411;
-        }
-
-          .vozon-fit-tab-description {
-          margin-top: 0.6rem;
-          color: rgba(255,255,255,0.5);
-          font-size: 0.87rem;
-          line-height: 1.65;
-        }
-
-        // .vozon-fit-index {
-        //   border: 1px solid rgba(var(--vozon-fit-accent), 0.34);
-        //   background: rgba(var(--vozon-fit-accent), 0.1);
-        //   color: rgb(var(--vozon-fit-accent));
-        //   box-shadow: inset 0 0 18px rgba(var(--vozon-fit-accent), 0.05);
-        // }
-
-        .vozon-fit-panel-body {
-          background: rgba(5,20,18,0.88);
-        }
-
-        .vozon-fit-workflow-row {
-          border: 1px solid rgba(117,255,240,0.13);
-          border-radius: 0.55rem;
-          background: rgba(255,255,255,0.025);
-        }
-
-        // .vozon-fit-kicker {
-        //   color: rgba(var(--vozon-fit-accent), 0.82);
-        // }
 
         .vozon-company-marquee-section {
           background: transparent;
@@ -1406,12 +2416,6 @@ export function HomePlatformSections() {
 
         .vozon-company-marquee::before {
           content: none;
-        }
-
-        @media (min-width: 721px) and (max-width: 1024px) {
-          .vozon-fit-tabs {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-          }
         }
 
         .vozon-platform-map {
@@ -2421,6 +3425,747 @@ export function HomePlatformSections() {
           filter: none;
         }
 
+        .vozon-how-section {
+          overflow: hidden;
+          background: #000;
+        }
+
+        .vozon-how-section::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          background:
+            radial-gradient(circle at 18% 48%, rgba(69,221,206,0.075), transparent 25%),
+            radial-gradient(circle at 79% 54%, rgba(69,221,206,0.055), transparent 27%);
+          opacity: 0.9;
+        }
+
+        .vozon-how-shell {
+          border: 0;
+          background: transparent;
+          box-shadow: none;
+        }
+
+        .vozon-how-intro {
+          max-width: 860px;
+          margin: 0 auto;
+          padding: 0 1.5rem;
+          text-align: center;
+        }
+
+        .vozon-how-kicker {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.55rem;
+          border: 1px solid rgba(117,255,240,0.34);
+          border-radius: 999px;
+          background: rgba(69,221,206,0.1);
+          padding: 0.55rem 0.9rem;
+          color: #9afff5;
+          font-size: 0.68rem;
+          font-weight: 900;
+          letter-spacing: 0.16em;
+          box-shadow: inset 0 0 18px rgba(69,221,206,0.08), 0 0 22px rgba(69,221,206,0.07);
+          text-transform: uppercase;
+        }
+
+        .vozon-how-kicker::before {
+          content: "";
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #45ddce;
+          box-shadow: 0 0 10px #45ddce;
+        }
+
+        .vozon-how-intro h2 {
+          max-width: 800px;
+          margin: 1.35rem auto 0;
+        }
+
+        .vozon-how-intro h2 span {
+          display: block;
+        }
+
+        .vozon-how-intro h2 span:last-child {
+          color: #fff;
+        }
+
+        .vozon-how-intro p {
+          max-width: 680px;
+          margin: 1.25rem auto 0;
+          color: rgba(255,255,255,0.56);
+          font-size: 1rem;
+          line-height: 1.7;
+        }
+
+        .vozon-how-column-headings {
+          position: relative;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          margin-top: 3.25rem;
+          border-block: 1px solid rgba(117,255,240,0.13);
+          border-radius: 14px;
+          background: rgba(13,27,36,0.64);
+          overflow: hidden;
+        }
+
+        .vozon-how-column-headings::before {
+          content: "";
+          position: absolute;
+          top: -1px;
+          left: 0;
+          width: 34%;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, #45ddce, transparent);
+          box-shadow: 0 0 9px #45ddce;
+        }
+
+        .vozon-how-column-headings strong {
+          display: flex;
+          min-height: 52px;
+          align-items: center;
+          gap: 0.65rem;
+          padding: 0 1.4rem;
+          font-size: 0.82rem;
+          letter-spacing: -0.01em;
+          text-transform: uppercase;
+        }
+
+        .vozon-how-column-headings strong + strong {
+          border-left: 0;
+        }
+
+        .vozon-how-column-headings span,
+        .vozon-how-column-headings i {
+          color: #75fff0;
+          font-style: normal;
+        }
+
+        .vozon-how-grid {
+          display: grid;
+          min-height: 590px;
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .vozon-how-flow {
+          --vozon-how-gap: 1.25rem;
+          position: relative;
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 230px));
+          grid-template-rows: repeat(2, auto);
+          align-content: center;
+          align-items: center;
+          justify-content: center;
+          gap: 2.5rem var(--vozon-how-gap);
+          overflow: hidden;
+          border-right: 0;
+          background-color: #000;
+          background-image: none;
+          padding: 3rem 1.25rem;
+        }
+
+        .vozon-how-flow::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: radial-gradient(circle at 50% 42%, rgba(69,221,206,0.055), transparent 42%);
+          pointer-events: none;
+        }
+
+        .vozon-how-connectors {
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+          width: 100%;
+          height: 100%;
+          fill: none;
+          stroke: rgba(117,255,240,0.34);
+          stroke-width: 3;
+          stroke-dasharray: 9 9;
+          stroke-linecap: round;
+          filter: drop-shadow(0 0 4px rgba(69,221,206,0.25));
+          animation: vozonHowSignal 8s linear infinite;
+        }
+
+        .vozon-how-step {
+          position: relative;
+          z-index: 2;
+          width: 100%;
+          height: 154px;
+          justify-self: center;
+          border: 1px solid color-mix(in srgb, var(--step-color) 52%, transparent);
+          border-radius: 16px;
+          background: color-mix(in srgb, var(--step-color) 22%, #07110f);
+          overflow: hidden;
+          box-shadow: 0 18px 36px rgba(0,0,0,0.24), 0 0 24px color-mix(in srgb, var(--step-color) 12%, transparent);
+          transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+        }
+
+        .vozon-how-step:hover {
+          border-color: color-mix(in srgb, var(--step-color) 78%, white);
+          box-shadow: 0 22px 46px rgba(0,0,0,0.32), 0 0 34px color-mix(in srgb, var(--step-color) 20%, transparent);
+          transform: translateY(-4px);
+        }
+
+        .vozon-how-step header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 1rem;
+          margin: 0.75rem;
+          padding: 0.8rem 0.9rem;
+          border: 1px solid color-mix(in srgb, var(--step-color) 35%, transparent);
+          border-radius: 11px;
+          background: rgba(0,0,0,0.36);
+        }
+
+        .vozon-how-step header span,
+        .vozon-how-step header small,
+        .vozon-how-step header strong {
+          display: block;
+        }
+
+        .vozon-how-step header small {
+          margin-bottom: 0.35rem;
+          color: color-mix(in srgb, var(--step-color) 74%, white);
+          font-size: 0.58rem;
+          font-weight: 900;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+        }
+
+        .vozon-how-step header strong {
+          font-size: 0.82rem;
+          text-transform: capitalize;
+        }
+
+        .vozon-how-step header b {
+          color: var(--step-color);
+          font-family: var(--font-geist-mono), monospace;
+          font-size: 1.35rem;
+        }
+
+        .vozon-how-step p {
+          margin: 0;
+          padding: 0 0.85rem 0.9rem;
+          color: rgba(255,255,255,0.72);
+          font-size: 0.7rem;
+          line-height: 1.45;
+        }
+
+        .vozon-how-step-one {
+          --step-color: #45ddce;
+          grid-column: 1;
+          grid-row: 1;
+        }
+
+        .vozon-how-step-two {
+          --step-color: #72a7ff;
+          grid-column: 2;
+          grid-row: 1;
+        }
+
+        .vozon-how-step-three {
+          --step-color: #de6aa8;
+          grid-column: 1 / -1;
+          grid-row: 2;
+          width: min(230px, calc((100% - var(--vozon-how-gap)) / 2));
+        }
+
+        .vozon-code-area {
+          display: flex;
+          min-width: 0;
+          flex-direction: column;
+          justify-content: center;
+          padding: 2.5rem 1.25rem;
+          background: #000;
+        }
+
+        .vozon-code-window {
+          position: relative;
+          width: 100%;
+          overflow: hidden;
+          border: 1px solid rgba(117,255,240,0.24);
+          border-radius: 20px;
+          background:
+            radial-gradient(circle at 92% 8%, rgba(69,221,206,0.09), transparent 27%),
+            linear-gradient(145deg, #0b1724, #07101b 62%, #07131a);
+          box-shadow:
+            0 28px 70px rgba(0,0,0,0.48),
+            0 0 42px rgba(69,221,206,0.075),
+            inset 0 1px rgba(255,255,255,0.045);
+          transition: border-color 180ms ease, box-shadow 180ms ease;
+        }
+
+        .vozon-code-window:hover {
+          border-color: rgba(117,255,240,0.3);
+          box-shadow: 0 26px 64px rgba(0,0,0,0.45), 0 0 42px rgba(69,221,206,0.1);
+        }
+
+        .vozon-code-toolbar {
+          display: flex;
+          min-height: 52px;
+          align-items: center;
+          gap: 0.7rem;
+          border-bottom: 1px solid rgba(117,255,240,0.14);
+          background: rgba(20,34,49,0.88);
+          padding: 0.45rem 0.55rem 0.45rem 1rem;
+          backdrop-filter: blur(16px);
+        }
+
+        .vozon-code-lights {
+          display: flex;
+          gap: 0.4rem;
+        }
+
+        .vozon-code-lights i {
+          width: 9px;
+          height: 9px;
+          border-radius: 50%;
+          background: #ff5f57;
+        }
+
+        .vozon-code-lights i:nth-child(2) { background: #febc2e; }
+        .vozon-code-lights i:nth-child(3) { background: #28c840; }
+
+        .vozon-code-file {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.42rem;
+          color: #8ee7df;
+          font-family: var(--font-geist-mono), monospace;
+          font-size: 0.62rem;
+        }
+
+        .vozon-code-file::before {
+          content: "</>";
+          color: #45ddce;
+          font-size: 0.58rem;
+          font-weight: 900;
+        }
+
+        .vozon-code-tabs {
+          display: flex;
+          align-self: stretch;
+          margin-left: auto;
+        }
+
+        .vozon-code-tabs button,
+        .vozon-code-copy {
+          border: 0;
+          background: transparent;
+          color: rgba(255,255,255,0.52);
+          cursor: pointer;
+          font-size: 0.66rem;
+          font-weight: 700;
+          padding: 0 0.8rem;
+          transition: background 160ms ease, color 160ms ease;
+        }
+
+        .vozon-code-tabs button:hover,
+        .vozon-code-tabs button.is-active {
+          border-radius: 9px;
+          background: rgba(255,255,255,0.075);
+          color: #fff;
+        }
+
+        .vozon-code-tabs button.is-active {
+          background: linear-gradient(135deg, rgba(69,221,206,0.2), rgba(69,221,206,0.08));
+          color: #a8fff6;
+          box-shadow: inset 0 0 0 1px rgba(117,255,240,0.16), 0 0 18px rgba(69,221,206,0.08);
+        }
+
+        .vozon-code-copy {
+          min-width: 62px;
+          margin: 0.55rem;
+          border: 1px solid rgba(117,255,240,0.13);
+          border-radius: 9px;
+          background: rgba(117,255,240,0.075);
+          color: #9afff5;
+          padding: 0 0.55rem;
+        }
+
+        .vozon-code-copy:hover {
+          border-color: rgba(117,255,240,0.3);
+          background: rgba(117,255,240,0.12);
+        }
+
+        .vozon-code-body {
+          min-height: 370px;
+          overflow: auto;
+          padding: 1rem 0 1.35rem;
+          scrollbar-color: rgba(117,255,240,0.25) transparent;
+        }
+
+        .vozon-code-context {
+          display: flex;
+          align-items: center;
+          gap: 0.7rem;
+          margin: 0 1rem 0.9rem;
+          border-radius: 10px;
+          background: rgba(0,0,0,0.24);
+          padding: 0.6rem 0.75rem;
+          font-family: var(--font-geist-mono), monospace;
+        }
+
+        .vozon-code-context span {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.35rem;
+          border-radius: 6px;
+          background: rgba(69,221,206,0.12);
+          padding: 0.28rem 0.48rem;
+          color: #75fff0;
+          font-size: 0.56rem;
+          font-weight: 900;
+        }
+
+        .vozon-code-context span i {
+          width: 5px;
+          height: 5px;
+          border-radius: 50%;
+          background: #45ddce;
+          box-shadow: 0 0 7px #45ddce;
+        }
+
+        .vozon-code-context code {
+          min-width: 0;
+          overflow: hidden;
+          color: rgba(255,255,255,0.72);
+          font-size: 0.58rem;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .vozon-code-context small {
+          margin-left: auto;
+          color: rgba(255,255,255,0.3);
+          font-size: 0.52rem;
+          white-space: nowrap;
+        }
+
+        .vozon-code-body pre {
+          min-width: 490px;
+          margin: 0;
+          font-family: var(--font-geist-mono), monospace;
+          font-size: 0.66rem;
+          line-height: 1.72;
+        }
+
+        .vozon-code-line {
+          display: grid;
+          grid-template-columns: 2.7rem 1fr;
+          padding-right: 1rem;
+        }
+
+        .vozon-code-line:hover {
+          background: rgba(117,255,240,0.035);
+        }
+
+        .vozon-code-line i {
+          padding-right: 0.8rem;
+          color: rgba(117,255,240,0.42);
+          font-style: normal;
+          text-align: right;
+          user-select: none;
+        }
+
+        .vozon-code-line code {
+          color: #d8e8f6;
+          white-space: pre;
+        }
+
+        .vozon-code-note {
+          margin: 1rem 0 0;
+          color: rgba(255,255,255,0.34);
+          font-size: 0.6rem;
+          text-align: center;
+        }
+
+        .vozon-code-note span {
+          margin-right: 0.45rem;
+          color: #45ddce;
+          text-shadow: 0 0 8px #45ddce;
+        }
+
+        @keyframes vozonHowSignal {
+          to { stroke-dashoffset: -72; }
+        }
+
+        @media (max-width: 900px) {
+          .vozon-how-intro {
+            max-width: 720px;
+          }
+
+          .vozon-how-grid,
+          .vozon-how-column-headings {
+            grid-template-columns: 1fr;
+          }
+
+          .vozon-how-column-headings strong + strong {
+            display: none;
+          }
+
+          .vozon-how-flow {
+            min-height: 570px;
+            border-right: 0;
+            border-bottom: 1px solid rgba(117,255,240,0.13);
+          }
+
+          .vozon-code-area::before {
+            content: "⌁  Developer APIs  ↗";
+            margin: -2.5rem -1.25rem 2rem;
+            border-bottom: 1px solid rgba(117,255,240,0.13);
+            background: rgba(13,27,36,0.88);
+            padding: 1.1rem 1.4rem;
+            font-size: 0.82rem;
+            font-weight: 900;
+            text-transform: uppercase;
+          }
+        }
+
+        @media (max-width: 560px) {
+          .vozon-how-section {
+            padding-inline: 1rem;
+          }
+
+          .vozon-how-intro {
+            padding-inline: 0.25rem;
+          }
+
+          .vozon-how-flow {
+            --vozon-how-gap: 0.75rem;
+            min-height: 520px;
+            gap: 2rem var(--vozon-how-gap);
+            padding: 2.25rem 0.5rem;
+          }
+
+          .vozon-how-step {
+            width: 100%;
+          }
+
+          .vozon-how-step-three {
+            width: calc((100% - var(--vozon-how-gap)) / 2);
+          }
+
+          .vozon-code-toolbar {
+            flex-wrap: wrap;
+            padding: 0.7rem;
+          }
+
+          .vozon-code-file {
+            margin-right: auto;
+          }
+
+          .vozon-code-tabs {
+            order: 3;
+            width: 100%;
+            min-height: 40px;
+          }
+
+          .vozon-code-tabs button {
+            flex: 1;
+          }
+
+          .vozon-code-body {
+            min-height: 340px;
+          }
+
+          .vozon-code-note {
+            padding-inline: 0.75rem;
+            line-height: 1.6;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .vozon-how-connectors {
+            animation: none;
+          }
+
+          .vozon-how-step,
+          .vozon-code-window {
+            transition: none;
+          }
+        }
+
+        .vozon-feature-suite {
+          background: #000;
+        }
+
+        .vozon-feature-bento {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 1rem;
+        }
+
+        .vozon-feature-card {
+          --feature-accent: #45ddce;
+          position: relative;
+          display: flex;
+          min-height: 292px;
+          min-width: 0;
+          flex-direction: column;
+          overflow: hidden;
+          border: 1px solid rgba(255,255,255,0.09);
+          border-radius: 18px;
+          background: #000;
+          padding: 1.5rem;
+          box-shadow: inset 0 1px rgba(255,255,255,0.035), 0 18px 44px rgba(0,0,0,0.18);
+          transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+        }
+
+        .vozon-feature-card:nth-child(2),
+        .vozon-feature-card:nth-child(6) { --feature-accent: #69c8ff; }
+        .vozon-feature-card:nth-child(3),
+        .vozon-feature-card:nth-child(7) { --feature-accent: #a99bff; }
+        .vozon-feature-card:nth-child(4),
+        .vozon-feature-card:nth-child(8) { --feature-accent: #64e5ad; }
+
+        .vozon-feature-card:hover {
+          border-color: color-mix(in srgb, var(--feature-accent) 35%, transparent);
+          box-shadow: inset 0 1px rgba(255,255,255,0.05), 0 22px 54px rgba(0,0,0,0.28), 0 0 30px color-mix(in srgb, var(--feature-accent) 8%, transparent);
+          transform: translateY(-4px);
+        }
+
+        .vozon-feature-card.is-featured {
+          grid-column: span 2;
+          background: #000;
+        }
+
+        .vozon-feature-card:nth-last-child(-n + 2) {
+          grid-column: span 2;
+          min-height: 250px;
+        }
+
+        .vozon-feature-card-number {
+          position: absolute;
+          top: 1.25rem;
+          right: 1.35rem;
+          color: rgba(255,255,255,0.14);
+          font-family: var(--font-geist-mono), monospace;
+          font-size: 0.72rem;
+          font-weight: 900;
+          transition: color 180ms ease;
+        }
+
+        .vozon-feature-card:hover .vozon-feature-card-number {
+          color: color-mix(in srgb, var(--feature-accent) 48%, white);
+        }
+
+        .vozon-feature-icon {
+          display: grid;
+          width: 48px;
+          height: 48px;
+          place-items: center;
+          border: 1px solid color-mix(in srgb, var(--feature-accent) 28%, transparent);
+          border-radius: 14px;
+          background: color-mix(in srgb, var(--feature-accent) 10%, transparent);
+          color: var(--feature-accent);
+          box-shadow: inset 0 0 18px color-mix(in srgb, var(--feature-accent) 7%, transparent);
+          transition: background 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+        }
+
+        .vozon-feature-card:hover .vozon-feature-icon {
+          background: color-mix(in srgb, var(--feature-accent) 15%, transparent);
+          box-shadow: inset 0 0 22px color-mix(in srgb, var(--feature-accent) 10%, transparent), 0 0 20px color-mix(in srgb, var(--feature-accent) 10%, transparent);
+          transform: translateY(-2px);
+        }
+
+        .vozon-feature-icon svg {
+          width: 25px;
+          height: 25px;
+          fill: none;
+          stroke: currentColor;
+          stroke-width: 1.6;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          filter: drop-shadow(0 0 5px rgba(69,221,206,0.34));
+        }
+
+        .vozon-feature-eyebrow {
+          margin-top: 1.35rem;
+          color: var(--feature-accent);
+          font-size: 0.64rem;
+          font-weight: 900;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+        }
+
+        .vozon-feature-card h3 {
+          position: relative;
+          z-index: 1;
+          margin: 0.55rem 0 0;
+          color: #fff;
+          font-size: 1.18rem;
+          font-weight: 900;
+          line-height: 1.25;
+          letter-spacing: -0.025em;
+        }
+
+        .vozon-feature-card p {
+          position: relative;
+          z-index: 1;
+          max-width: 430px;
+          margin: 0.85rem 0 0;
+          color: rgba(255,255,255,0.5);
+          font-size: 0.88rem;
+          line-height: 1.7;
+        }
+
+        .vozon-feature-metric {
+          position: relative;
+          z-index: 1;
+          display: flex;
+          align-items: center;
+          gap: 0.55rem;
+          margin-top: auto;
+          padding-top: 1rem;
+          color: rgba(255,255,255,0.66);
+          font-size: 0.72rem;
+          font-weight: 800;
+        }
+
+        .vozon-feature-metric i {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: var(--feature-accent);
+          box-shadow: 0 0 9px var(--feature-accent);
+        }
+
+        @media (max-width: 960px) {
+          .vozon-feature-bento {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+
+          .vozon-feature-card:nth-last-child(-n + 2) {
+            grid-column: span 1;
+            min-height: 292px;
+          }
+        }
+
+        @media (max-width: 600px) {
+          .vozon-feature-bento {
+            grid-template-columns: 1fr;
+          }
+
+          .vozon-feature-card,
+          .vozon-feature-card.is-featured,
+          .vozon-feature-card:nth-last-child(-n + 2) {
+            grid-column: span 1;
+            min-height: 250px;
+          }
+
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .vozon-feature-card {
+            transition: none;
+          }
+        }
+
         .vozon-operations-section {
           background:
             radial-gradient(circle at 50% 34%, rgba(26,207,255,0.09), transparent 24%),
@@ -2440,87 +4185,102 @@ export function HomePlatformSections() {
           mask-image: radial-gradient(ellipse at 50% 48%, black, transparent 72%);
         }
 
-        .vozon-operations-viewport {
-          scrollbar-width: none;
-          mask-image: linear-gradient(90deg, transparent 0, black 2.5%, black 97.5%, transparent 100%);
-        }
-
-        .vozon-operations-viewport::-webkit-scrollbar {
-          display: none;
-        }
-
-        .vozon-operations-map {
-          padding: 24px 0 18px;
-        }
-
         .vozon-operations-connector {
           filter: drop-shadow(0 0 8px rgba(69,221,206,0.32));
         }
 
-        .vozon-operation-step {
+        .vozon-operation-tone-1 {
           --operation-angle: 135deg;
           --operation-primary: #1acfff;
-          --operation-secondary: #4f7cff;
+          --operation-secondary: #2be3e1;
           --operation-ink: #d8f8ff;
           --operation-glow: rgba(26,207,255,0.34);
-          --operation-surface: rgba(26,207,255,0.24);
-          --operation-surface-soft: rgba(79,124,255,0.18);
-          z-index: 1;
-          scroll-snap-align: center;
+          --operation-surface: rgba(26,207,255,0.2);
+          --operation-surface-soft: rgba(43,227,225,0.15);
         }
 
-        .vozon-operation-step:nth-child(2) {
+        .vozon-operation-tone-2 {
           --operation-angle: 165deg;
-          --operation-primary: #8f83e8;
-          --operation-secondary: #c46cff;
-          --operation-ink: #f0eaff;
-          --operation-glow: rgba(143,131,232,0.36);
-          --operation-surface: rgba(143,131,232,0.25);
-          --operation-surface-soft: rgba(196,108,255,0.17);
+          --operation-primary: #2be3e1;
+          --operation-secondary: #45ddce;
+          --operation-ink: #dbfffd;
+          --operation-glow: rgba(43,227,225,0.34);
+          --operation-surface: rgba(43,227,225,0.2);
+          --operation-surface-soft: rgba(69,221,206,0.15);
         }
 
-        .vozon-operation-step:nth-child(3) {
+        .vozon-operation-tone-3 {
           --operation-angle: 205deg;
-          --operation-primary: #f2d24b;
-          --operation-secondary: #f28d45;
-          --operation-ink: #fff6c7;
-          --operation-glow: rgba(242,180,69,0.35);
-          --operation-surface: rgba(242,210,75,0.23);
-          --operation-surface-soft: rgba(242,141,69,0.17);
+          --operation-primary: #45ddce;
+          --operation-secondary: #58e6b7;
+          --operation-ink: #e0fff8;
+          --operation-glow: rgba(69,221,206,0.34);
+          --operation-surface: rgba(69,221,206,0.2);
+          --operation-surface-soft: rgba(88,230,183,0.15);
         }
 
-        .vozon-operation-step:nth-child(4) {
+        .vozon-operation-tone-4 {
           --operation-angle: 315deg;
-          --operation-primary: #ec6f8b;
-          --operation-secondary: #d958bd;
-          --operation-ink: #ffe1ec;
-          --operation-glow: rgba(236,111,139,0.35);
-          --operation-surface: rgba(236,111,139,0.24);
-          --operation-surface-soft: rgba(217,88,189,0.17);
+          --operation-primary: #58e6b7;
+          --operation-secondary: #48db8b;
+          --operation-ink: #e4fff0;
+          --operation-glow: rgba(88,230,183,0.34);
+          --operation-surface: rgba(88,230,183,0.2);
+          --operation-surface-soft: rgba(72,219,139,0.15);
         }
 
-        .vozon-operation-step:nth-child(5) {
+        .vozon-operation-tone-5 {
           --operation-angle: 35deg;
           --operation-primary: #48db8b;
-          --operation-secondary: #9be15d;
+          --operation-secondary: #75e77c;
           --operation-ink: #dcffe9;
           --operation-glow: rgba(72,219,139,0.34);
-          --operation-surface: rgba(72,219,139,0.23);
-          --operation-surface-soft: rgba(155,225,93,0.16);
+          --operation-surface: rgba(72,219,139,0.2);
+          --operation-surface-soft: rgba(117,231,124,0.15);
         }
 
-        .vozon-operation-step:nth-child(6) {
+        .vozon-operation-tone-6 {
           --operation-angle: 105deg;
-          --operation-primary: #2be3e1;
-          --operation-secondary: #45bde8;
-          --operation-ink: #d5ffff;
-          --operation-glow: rgba(43,227,225,0.34);
-          --operation-surface: rgba(43,227,225,0.23);
-          --operation-surface-soft: rgba(69,189,232,0.17);
+          --operation-primary: #75e77c;
+          --operation-secondary: #a4ef80;
+          --operation-ink: #efffe7;
+          --operation-glow: rgba(117,231,124,0.32);
+          --operation-surface: rgba(117,231,124,0.19);
+          --operation-surface-soft: rgba(164,239,128,0.14);
         }
 
-        .vozon-operation-step-lower {
-          padding-top: 40px;
+        .vozon-operation-step {
+          position: relative;
+          z-index: 1;
+          border: 1px solid transparent;
+          background: transparent;
+          color: inherit;
+          cursor: pointer;
+          transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+        }
+
+        .vozon-operation-step:hover,
+        .vozon-operation-step.is-active {
+          border-color: color-mix(in srgb, var(--operation-primary) 24%, transparent);
+          background: linear-gradient(180deg, color-mix(in srgb, var(--operation-primary) 8%, transparent), transparent);
+        }
+
+        .vozon-operation-step:focus-visible,
+        .vozon-operation-mobile-trigger:focus-visible {
+          outline: 2px solid #75fff0;
+          outline-offset: 3px;
+        }
+
+        .vozon-operation-step.is-active {
+          transform: translateY(-4px);
+        }
+
+        .vozon-operation-kicker {
+          color: color-mix(in srgb, var(--operation-primary) 82%, white);
+          font-size: 9px;
+          font-weight: 900;
+          letter-spacing: 0.17em;
+          text-transform: uppercase;
         }
 
         .vozon-operation-hex {
@@ -2555,8 +4315,8 @@ export function HomePlatformSections() {
         .vozon-operation-hex svg {
           position: relative;
           z-index: 2;
-          width: 39px;
-          height: 39px;
+          width: 34px;
+          height: 34px;
           fill: none;
           stroke: var(--operation-ink);
           stroke-linecap: round;
@@ -2567,31 +4327,817 @@ export function HomePlatformSections() {
 
         .vozon-operation-number {
           z-index: 3;
+          border: 1px solid color-mix(in srgb, var(--operation-primary) 52%, transparent);
           border-color: color-mix(in srgb, var(--operation-primary) 52%, transparent);
           background: color-mix(in srgb, var(--operation-primary) 14%, #061017);
           color: var(--operation-ink);
+          font-size: 9px;
+          font-weight: 900;
           box-shadow: 0 0 16px var(--operation-glow);
         }
 
-        .vozon-operation-stem {
-          background: linear-gradient(to bottom, var(--operation-primary), transparent);
-        }
-
-        .vozon-operation-dot {
+        .vozon-operation-node {
+          position: relative;
+          display: block;
+          width: 12px;
+          height: 12px;
+          border: 2px solid #03110f;
+          border-radius: 50%;
           background: var(--operation-primary);
           box-shadow:
             0 0 0 4px color-mix(in srgb, var(--operation-primary) 12%, transparent),
             0 0 18px var(--operation-glow);
         }
 
-        .vozon-operation-step:hover .vozon-operation-hex {
+        .vozon-operation-step:hover .vozon-operation-hex,
+        .vozon-operation-step.is-active .vozon-operation-hex {
           transform: translateY(-4px);
           filter: drop-shadow(0 0 22px var(--operation-glow));
         }
 
-        @media (min-width: 1200px) {
-          .vozon-operations-scroll-hint {
+        .vozon-operation-detail {
+          border: 1px solid color-mix(in srgb, var(--operation-primary) 22%, rgba(255,255,255,0.06));
+          border-radius: 28px;
+          background:
+            radial-gradient(circle at 82% 42%, color-mix(in srgb, var(--operation-primary) 10%, transparent), transparent 34%),
+            linear-gradient(145deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012)),
+            rgba(2,12,11,0.9);
+          box-shadow: inset 0 1px rgba(255,255,255,0.045), 0 28px 80px rgba(0,0,0,0.34);
+        }
+
+        .vozon-operation-detail-copy {
+          align-self: center;
+        }
+
+        .vozon-operation-detail-index {
+          display: grid;
+          width: 38px;
+          height: 38px;
+          place-items: center;
+          border: 1px solid color-mix(in srgb, var(--operation-primary) 36%, transparent);
+          border-radius: 11px;
+          background: color-mix(in srgb, var(--operation-primary) 10%, transparent);
+          color: var(--operation-ink);
+          font-size: 10px;
+          font-weight: 900;
+        }
+
+        .vozon-operation-cta {
+          transition: color 180ms ease, transform 180ms ease;
+        }
+
+        .vozon-operation-cta:hover {
+          color: #fff;
+          transform: translateX(3px);
+        }
+
+        .vozon-operation-preview {
+          border: 1px solid rgba(255,255,255,0.07);
+          border-radius: 22px;
+          background:
+            linear-gradient(rgba(69,221,206,0.025) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(69,221,206,0.025) 1px, transparent 1px),
+            rgba(0,7,7,0.76);
+          background-size: 28px 28px;
+          box-shadow: inset 0 1px rgba(255,255,255,0.035);
+        }
+
+        .vozon-operation-preview-header {
+          border-bottom: 1px solid rgba(255,255,255,0.065);
+        }
+
+        .vozon-operation-preview-icon,
+        .vozon-operation-row-index {
+          border: 1px solid color-mix(in srgb, var(--operation-primary) 24%, transparent);
+          background: color-mix(in srgb, var(--operation-primary) 9%, rgba(255,255,255,0.02));
+          color: var(--operation-ink);
+        }
+
+        .vozon-operation-preview-icon svg {
+          width: 23px;
+          height: 23px;
+          fill: none;
+          stroke: currentColor;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          stroke-width: 1.7;
+        }
+
+        .vozon-operation-live {
+          display: inline-flex;
+          align-items: center;
+          gap: 7px;
+          padding: 6px 9px;
+          border: 1px solid rgba(72,219,139,0.2);
+          border-radius: 999px;
+          color: rgba(190,255,216,0.75);
+          font-size: 9px;
+          font-weight: 900;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+        }
+
+        .vozon-operation-live i {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #48db8b;
+          box-shadow: 0 0 9px #48db8b;
+        }
+
+        .vozon-operation-preview-row {
+          border: 1px solid rgba(255,255,255,0.055);
+          border-radius: 13px;
+          background: rgba(255,255,255,0.025);
+          transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+        }
+
+        .vozon-operation-preview-row:hover {
+          border-color: color-mix(in srgb, var(--operation-primary) 22%, transparent);
+          background: color-mix(in srgb, var(--operation-primary) 5%, rgba(255,255,255,0.025));
+          transform: translateX(3px);
+        }
+
+        .vozon-operation-row-index {
+          font-size: 9px;
+          font-weight: 900;
+        }
+
+        .vozon-operation-row-status {
+          padding: 5px 8px;
+          border-radius: 999px;
+          background: color-mix(in srgb, var(--operation-primary) 9%, transparent);
+          color: color-mix(in srgb, var(--operation-primary) 76%, white);
+          font-size: 8px;
+          font-weight: 900;
+          letter-spacing: 0.11em;
+          text-transform: uppercase;
+        }
+
+        .vozon-operation-metric {
+          border: 1px solid color-mix(in srgb, var(--operation-primary) 16%, transparent);
+          border-radius: 14px;
+          background: linear-gradient(90deg, color-mix(in srgb, var(--operation-primary) 7%, transparent), transparent);
+        }
+
+        .vozon-operation-signal {
+          display: flex;
+          height: 40px;
+          align-items: center;
+          gap: 3px;
+        }
+
+        .vozon-operation-signal i {
+          display: block;
+          width: 3px;
+          border-radius: 4px;
+          background: linear-gradient(to top, var(--operation-primary), var(--operation-secondary));
+          box-shadow: 0 0 7px var(--operation-glow);
+          animation: vozonOperationSignal 1.2s ease-in-out infinite alternate;
+        }
+
+        .vozon-operation-signal i:nth-child(2n) {
+          animation-delay: -0.45s;
+        }
+
+        .vozon-operation-signal i:nth-child(3n) {
+          animation-delay: -0.8s;
+        }
+
+        .vozon-operations-mobile::before {
+          content: "";
+          position: absolute;
+          top: 24px;
+          bottom: 24px;
+          left: 17px;
+          width: 1px;
+          background: linear-gradient(#1acfff, #45ddce 48%, #75e77c);
+          box-shadow: 0 0 10px rgba(69,221,206,0.28);
+        }
+
+        .vozon-operation-mobile-step {
+          padding-bottom: 12px;
+        }
+
+        .vozon-operation-mobile-node {
+          z-index: 1;
+          border: 1px solid color-mix(in srgb, var(--operation-primary) 45%, transparent);
+          background: #03110f;
+          color: var(--operation-ink);
+          font-size: 9px;
+          font-weight: 900;
+          box-shadow: 0 0 14px var(--operation-glow);
+        }
+
+        .vozon-operation-mobile-trigger {
+          border: 1px solid rgba(255,255,255,0.065);
+          background: rgba(255,255,255,0.025);
+          color: inherit;
+        }
+
+        .vozon-operation-mobile-step.is-active .vozon-operation-mobile-trigger {
+          border-color: color-mix(in srgb, var(--operation-primary) 28%, transparent);
+          border-bottom-right-radius: 8px;
+          border-bottom-left-radius: 8px;
+          background: color-mix(in srgb, var(--operation-primary) 6%, rgba(255,255,255,0.025));
+        }
+
+        .vozon-operation-mobile-icon {
+          border: 1px solid color-mix(in srgb, var(--operation-primary) 22%, transparent);
+          background: color-mix(in srgb, var(--operation-primary) 8%, transparent);
+          color: var(--operation-ink);
+        }
+
+        .vozon-operation-mobile-icon svg {
+          width: 23px;
+          height: 23px;
+          fill: none;
+          stroke: currentColor;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          stroke-width: 1.7;
+        }
+
+        .vozon-operation-mobile-content {
+          border: 1px solid color-mix(in srgb, var(--operation-primary) 18%, transparent);
+          border-top: 0;
+          border-radius: 0 0 18px 18px;
+          background: rgba(1,13,11,0.86);
+          animation: vozonOperationReveal 220ms ease both;
+        }
+
+        .vozon-operation-mobile-bullet {
+          display: flex;
+          align-items: center;
+          gap: 9px;
+          color: rgba(255,255,255,0.66);
+          font-size: 12px;
+          font-weight: 700;
+        }
+
+        .vozon-operation-mobile-bullet i {
+          width: 5px;
+          height: 5px;
+          flex: 0 0 auto;
+          border-radius: 50%;
+          background: var(--operation-primary);
+          box-shadow: 0 0 8px var(--operation-glow);
+        }
+
+        @keyframes vozonOperationSignal {
+          to {
+            transform: scaleY(0.58);
+            opacity: 0.48;
+          }
+        }
+
+        @keyframes vozonOperationReveal {
+          from {
+            opacity: 0;
+            transform: translateY(-5px);
+          }
+        }
+
+        @media (max-width: 900px) and (min-width: 768px) {
+          .vozon-operation-step {
+            padding-inline: 3px;
+          }
+
+          .vozon-operation-hex {
+            width: 78px;
+            height: 74px;
+          }
+
+          .vozon-operation-hex svg {
+            width: 29px;
+            height: 29px;
+          }
+        }
+
+        .vozon-operation-stage-inner {
+          overflow: hidden;
+          padding: 1.4rem;
+          border: 1px solid rgba(117,255,240,0.13);
+          border-radius: 30px;
+          background:
+            radial-gradient(circle at 50% 36%, color-mix(in srgb, var(--operation-primary) 13%, transparent), transparent 37%),
+            linear-gradient(145deg, rgba(255,255,255,0.045), rgba(255,255,255,0.01)),
+            rgba(1,12,11,0.9);
+          box-shadow: inset 0 1px rgba(255,255,255,0.05), 0 30px 90px rgba(0,0,0,0.38);
+          transition: border-color 300ms ease, background 300ms ease;
+        }
+
+        .vozon-operation-stage-meta {
+          color: color-mix(in srgb, var(--operation-primary) 78%, white);
+          font-size: 9px;
+          font-weight: 900;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+        }
+
+        .vozon-operation-core-aura {
+          position: absolute;
+          inset: 19%;
+          border-radius: 50%;
+          background: var(--operation-primary);
+          filter: blur(48px);
+          opacity: 0.13;
+        }
+
+        .vozon-operation-core-ring {
+          position: absolute;
+          border: 1px solid color-mix(in srgb, var(--operation-primary) 28%, transparent);
+          border-radius: 50%;
+        }
+
+        .vozon-operation-core-ring-one {
+          inset: 11%;
+          border-style: dashed;
+          animation: vozonOperationCoreSpin 18s linear infinite;
+        }
+
+        .vozon-operation-core-ring-two {
+          inset: 22%;
+          border-color: color-mix(in srgb, var(--operation-secondary) 34%, transparent);
+          animation: vozonOperationCoreSpinReverse 13s linear infinite;
+        }
+
+        .vozon-operation-core-ring-three {
+          inset: 32%;
+          border-style: dotted;
+          animation: vozonOperationCoreSpin 9s linear infinite;
+        }
+
+        .vozon-operation-core-ring i {
+          position: absolute;
+          top: -4px;
+          left: 23%;
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background: var(--operation-primary);
+          box-shadow: 0 0 13px var(--operation-primary);
+        }
+
+        .vozon-operation-core-wave {
+          position: absolute;
+          right: 4%;
+          left: 4%;
+          display: flex;
+          height: 82px;
+          align-items: center;
+          justify-content: center;
+          gap: 5px;
+          opacity: 0.58;
+          mask-image: linear-gradient(90deg, transparent, black 18%, black 82%, transparent);
+        }
+
+        .vozon-operation-core-wave::before,
+        .vozon-operation-core-wave::after {
+          content: "";
+          height: 1px;
+          flex: 1;
+          background: linear-gradient(90deg, transparent, var(--operation-primary));
+        }
+
+        .vozon-operation-core-wave::after {
+          background: linear-gradient(90deg, var(--operation-primary), transparent);
+        }
+
+        .vozon-operation-core-wave i {
+          width: 3px;
+          border-radius: 4px;
+          background: linear-gradient(to top, var(--operation-primary), var(--operation-secondary));
+          box-shadow: 0 0 8px var(--operation-glow);
+          animation: vozonOperationCoreWave 850ms ease-in-out infinite alternate;
+        }
+
+        .vozon-operation-core-icon {
+          position: relative;
+          z-index: 2;
+          width: 126px;
+          height: 126px;
+          border: 1px solid color-mix(in srgb, var(--operation-primary) 42%, transparent);
+          border-radius: 34px;
+          background:
+            radial-gradient(circle at 25% 18%, color-mix(in srgb, var(--operation-primary) 20%, transparent), transparent 46%),
+            linear-gradient(145deg, rgba(8,30,27,0.96), rgba(1,11,10,0.98));
+          color: var(--operation-ink);
+          box-shadow: inset 0 1px rgba(255,255,255,0.09), 0 0 34px var(--operation-glow);
+          clip-path: polygon(24% 3%,76% 3%,97% 24%,97% 76%,76% 97%,24% 97%,3% 76%,3% 24%);
+        }
+
+        .vozon-operation-core-icon svg {
+          width: 54px;
+          height: 54px;
+          fill: none;
+          stroke: currentColor;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          stroke-width: 1.55;
+        }
+
+        .vozon-operation-core-number {
+          position: absolute;
+          z-index: 3;
+          right: 26%;
+          bottom: 26%;
+          display: grid;
+          width: 34px;
+          height: 34px;
+          place-items: center;
+          border: 1px solid color-mix(in srgb, var(--operation-primary) 46%, transparent);
+          border-radius: 50%;
+          background: #03110f;
+          color: var(--operation-ink);
+          font-size: 10px;
+          font-weight: 900;
+          box-shadow: 0 0 16px var(--operation-glow);
+        }
+
+        .vozon-operation-stage-footer {
+          padding: 1rem;
+          border: 1px solid rgba(255,255,255,0.06);
+          border-radius: 15px;
+          background: rgba(255,255,255,0.025);
+        }
+
+        .vozon-operation-stage-footer small,
+        .vozon-operation-card-outcome small {
+          display: block;
+          color: rgba(255,255,255,0.34);
+          font-size: 8px;
+          font-weight: 900;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+        }
+
+        .vozon-operation-stage-footer strong,
+        .vozon-operation-card-outcome strong {
+          display: block;
+          margin-top: 4px;
+          color: #fff;
+          font-size: 13px;
+        }
+
+        .vozon-operation-progress {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .vozon-operation-progress i {
+          display: block;
+          width: 6px;
+          height: 6px;
+          border-radius: 999px;
+          background: rgba(255,255,255,0.14);
+          transition: width 240ms ease, background 240ms ease, box-shadow 240ms ease;
+        }
+
+        .vozon-operation-progress i.is-active {
+          width: 24px;
+          background: var(--operation-primary);
+          box-shadow: 0 0 10px var(--operation-glow);
+        }
+
+        .vozon-operation-story-list {
+          display: grid;
+          gap: 1.35rem;
+        }
+
+        .vozon-operation-story-card {
+          overflow: hidden;
+          padding: 1.5rem;
+          border: 1px solid rgba(255,255,255,0.065);
+          border-radius: 25px;
+          outline: none;
+          background:
+            linear-gradient(135deg, color-mix(in srgb, var(--operation-primary) 5%, transparent), transparent 42%),
+            rgba(255,255,255,0.022);
+          box-shadow: inset 0 1px rgba(255,255,255,0.035);
+          opacity: 0.72;
+          transform: scale(0.985);
+          transition: opacity 280ms ease, transform 280ms ease, border-color 280ms ease, background 280ms ease, box-shadow 280ms ease;
+        }
+
+        .vozon-operation-story-card.is-active,
+        .vozon-operation-story-card:focus-visible,
+        .vozon-operation-story-card:hover {
+          border-color: color-mix(in srgb, var(--operation-primary) 32%, transparent);
+          background:
+            radial-gradient(circle at 92% 8%, color-mix(in srgb, var(--operation-primary) 11%, transparent), transparent 32%),
+            linear-gradient(135deg, color-mix(in srgb, var(--operation-primary) 7%, transparent), transparent 46%),
+            rgba(255,255,255,0.03);
+          box-shadow: inset 0 1px rgba(255,255,255,0.055), 0 24px 65px rgba(0,0,0,0.28), 0 0 32px color-mix(in srgb, var(--operation-glow) 34%, transparent);
+          opacity: 1;
+          transform: scale(1);
+        }
+
+        .vozon-operation-card-topline {
+          position: absolute;
+          inset: 0 0 auto;
+          height: 2px;
+          background: linear-gradient(90deg, transparent, var(--operation-primary), var(--operation-secondary), transparent);
+          opacity: 0.72;
+        }
+
+        .vozon-operation-card-icon {
+          border: 1px solid color-mix(in srgb, var(--operation-primary) 27%, transparent);
+          border-radius: 16px;
+          background: color-mix(in srgb, var(--operation-primary) 8%, rgba(255,255,255,0.02));
+          color: var(--operation-ink);
+          box-shadow: inset 0 1px rgba(255,255,255,0.06), 0 0 18px color-mix(in srgb, var(--operation-glow) 48%, transparent);
+        }
+
+        .vozon-operation-card-icon svg {
+          width: 30px;
+          height: 30px;
+          fill: none;
+          stroke: currentColor;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          stroke-width: 1.65;
+        }
+
+        .vozon-operation-card-header small {
+          color: color-mix(in srgb, var(--operation-primary) 78%, white);
+        }
+
+        .vozon-operation-card-number {
+          color: color-mix(in srgb, var(--operation-primary) 25%, rgba(255,255,255,0.1));
+          font-size: clamp(2rem,4vw,3.3rem);
+          font-weight: 950;
+          line-height: 0.9;
+        }
+
+        .vozon-operation-card-features span {
+          display: flex;
+          min-height: 42px;
+          align-items: center;
+          gap: 8px;
+          padding: 9px 10px;
+          border: 1px solid rgba(255,255,255,0.055);
+          border-radius: 11px;
+          background: rgba(255,255,255,0.022);
+          color: rgba(255,255,255,0.58);
+          font-size: 10px;
+          font-weight: 800;
+        }
+
+        .vozon-operation-card-features i {
+          width: 5px;
+          height: 5px;
+          flex: 0 0 auto;
+          border-radius: 50%;
+          background: var(--operation-primary);
+          box-shadow: 0 0 8px var(--operation-glow);
+        }
+
+        .vozon-operation-card-outcome {
+          padding-top: 1rem;
+          border-top: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .vozon-operation-card-signal {
+          display: flex;
+          height: 42px;
+          align-items: center;
+          gap: 3px;
+        }
+
+        .vozon-operation-card-signal i {
+          display: block;
+          width: 3px;
+          border-radius: 3px;
+          background: linear-gradient(to top, var(--operation-primary), var(--operation-secondary));
+          box-shadow: 0 0 6px var(--operation-glow);
+          animation: vozonOperationCoreWave 1.1s ease-in-out infinite alternate;
+        }
+
+        .vozon-operation-story-node,
+        .vozon-operation-story-line {
+          display: none;
+        }
+
+        .vozon-operation-scroll-cta {
+          border: 1px solid rgba(117,255,240,0.24);
+          background: linear-gradient(135deg, rgba(26,207,255,0.15), rgba(43,227,225,0.18), rgba(72,219,139,0.16));
+          color: #dffffa;
+          box-shadow: inset 0 1px rgba(255,255,255,0.08), 0 16px 38px rgba(29,244,203,0.1);
+          transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+        }
+
+        .vozon-operation-scroll-cta:hover {
+          border-color: rgba(117,255,240,0.44);
+          box-shadow: inset 0 1px rgba(255,255,255,0.1), 0 20px 45px rgba(29,244,203,0.16);
+          transform: translateY(-2px);
+        }
+
+        .vozon-operation-horizontal-sticky {
+          transition: color 240ms ease;
+        }
+
+        .vozon-operation-horizontal-status {
+          min-height: 62px;
+        }
+
+        .vozon-operation-horizontal-label,
+        .vozon-operation-horizontal-count {
+          color: color-mix(in srgb, var(--operation-primary) 78%, white);
+          font-size: 9px;
+          font-weight: 900;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+        }
+
+        .vozon-operation-horizontal-viewport {
+          position: relative;
+          overflow-x: auto;
+          overflow-y: hidden;
+          padding-block: 3rem 1rem;
+          scrollbar-width: none;
+          scroll-snap-type: x mandatory;
+          mask-image: linear-gradient(90deg, transparent, black 3%, black 97%, transparent);
+        }
+
+        .vozon-operation-horizontal-viewport::-webkit-scrollbar {
+          display: none;
+        }
+
+        .vozon-operation-horizontal-track {
+          position: relative;
+          display: flex;
+          width: max-content;
+          gap: 1rem;
+          padding-inline: 0.75rem;
+          will-change: transform;
+        }
+
+        .vozon-operation-horizontal-line {
+          position: absolute;
+          top: -1.45rem;
+          right: 1rem;
+          left: 1rem;
+          height: 1px;
+          background: linear-gradient(90deg, #1acfff, #2be3e1 32%, #45ddce 58%, #75e77c);
+          box-shadow: 0 0 11px rgba(69,221,206,0.3);
+        }
+
+        .vozon-operation-horizontal-card {
+          display: flex;
+          width: min(84vw, 360px);
+          min-height: 470px;
+          flex: 0 0 auto;
+          flex-direction: column;
+          overflow: visible;
+          scroll-snap-align: center;
+        }
+
+        .vozon-operation-horizontal-card::before {
+          content: "";
+          position: absolute;
+          inset: 1px;
+          z-index: -1;
+          border-radius: inherit;
+          background:
+            radial-gradient(circle at 90% 7%, color-mix(in srgb, var(--operation-primary) 10%, transparent), transparent 28%),
+            linear-gradient(155deg, rgba(8,31,27,0.98), rgba(1,12,11,0.98));
+        }
+
+        .vozon-operation-horizontal-node {
+          position: absolute;
+          top: -3.3rem;
+          left: 1.4rem;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          color: var(--operation-ink);
+          font-size: 9px;
+          font-weight: 900;
+        }
+
+        .vozon-operation-horizontal-node i {
+          display: block;
+          width: 12px;
+          height: 12px;
+          border: 2px solid #03110f;
+          border-radius: 50%;
+          background: var(--operation-primary);
+          box-shadow: 0 0 0 4px color-mix(in srgb, var(--operation-primary) 10%, transparent), 0 0 15px var(--operation-glow);
+        }
+
+        @media (min-width: 1024px) {
+          .vozon-operation-horizontal-shell {
+            min-height: 100vh;
+          }
+
+          .vozon-operation-horizontal-sticky {
+            position: sticky;
+            top: 0;
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+            justify-content: center;
+            padding-block: 5.5rem 2rem;
+          }
+
+          .vozon-operation-horizontal-viewport {
+            overflow: hidden;
+            padding-bottom: 1.25rem;
+          }
+
+          .vozon-operation-horizontal-track {
+            gap: 1.25rem;
+            transition: transform 90ms linear;
+          }
+
+          .vozon-operation-horizontal-card {
+            width: 390px;
+            min-height: 490px;
+            padding: 1.85rem;
+          }
+        }
+
+        @media (max-width: 1023px) {
+          .vozon-operation-horizontal-status {
+            padding-inline: 0.3rem;
+          }
+
+          .vozon-operation-horizontal-track {
+            transform: none !important;
+          }
+        }
+
+        @keyframes vozonOperationCoreSpin {
+          to { transform: rotate(360deg); }
+        }
+
+        @keyframes vozonOperationCoreSpinReverse {
+          to { transform: rotate(-360deg); }
+        }
+
+        @keyframes vozonOperationCoreWave {
+          to { transform: scaleY(0.48); opacity: 0.5; }
+        }
+
+        @media (min-width: 1024px) {
+          .vozon-operation-story-list {
+            gap: 5rem;
+            padding-block: 1.5rem 5rem;
+          }
+
+          .vozon-operation-story-card {
+            min-height: 430px;
+            padding: 2rem;
+          }
+
+          .vozon-operation-story-line {
+            position: absolute;
+            top: 2rem;
+            bottom: 5rem;
+            left: -2.05rem;
+            display: block;
+            width: 1px;
+            background: linear-gradient(#1acfff, #45ddce 48%, #75e77c);
+            box-shadow: 0 0 10px rgba(69,221,206,0.24);
+          }
+
+          .vozon-operation-story-node {
+            top: 2.1rem;
+            left: -3.15rem;
+            z-index: 2;
+            display: grid;
+            width: 34px;
+            height: 34px;
+            place-items: center;
+            border: 1px solid color-mix(in srgb, var(--operation-primary) 42%, transparent);
+            border-radius: 50%;
+            background: #03110f;
+            color: var(--operation-ink);
+            font-size: 9px;
+            font-weight: 900;
+            box-shadow: 0 0 14px var(--operation-glow);
+          }
+        }
+
+        @media (max-width: 639px) {
+          .vozon-operation-story-card {
+            padding: 1.15rem;
+            border-radius: 20px;
+          }
+
+          .vozon-operation-card-icon {
+            width: 46px;
+            height: 46px;
+          }
+
+          .vozon-operation-card-number {
             display: none;
+          }
+
+          .vozon-operation-card-features {
+            grid-template-columns: 1fr;
           }
         }
 
@@ -4296,60 +6842,25 @@ export function HomePlatformSections() {
             margin-top: 2rem;
           }
 
-            .vozon-fit-section {
-            padding-top: 3.5rem;
-            padding-bottom: 3.5rem;
-          }
-
           .vozon-fit-tabs {
             grid-template-columns: 1fr;
-            gap: 0.75rem;
+            gap: 0.35rem;
           }
 
           .vozon-fit-tab {
-             min-height: 7.1rem;
-            padding: 0.8rem 0.9rem 0.8rem 4rem;
-            border-color: rgba(255,255,255,0.08);
-            background: rgba(255,255,255,0.018);
-          }
-
-          .vozon-fit-tab-icon {
-            top: 0.8rem;
-            left: 0.9rem;
+            min-height: 54px;
+            padding: 0.65rem 0.8rem;
           }
 
           .vozon-fit-tab-active {
-            border-color: rgba(69,221,206,0.42);
-            box-shadow: inset 0 0 0 4px rgba(69,221,206,0.03);          }
-
-          // .vozon-fit-content {
-          //   min-height: auto;
-          //   border-right: 0;
-          //   border-top: 1px solid rgba(255,255,255,0.08);
-          //   padding: 1.4rem 1.25rem;
-          // }
-
-
-           .vozon-fit-tab-description {
-            margin-top: 0.4rem;
-            font-size: 0.8rem;
-            line-height: 1.5;
+            box-shadow: inset 0 0 28px rgba(69,221,206,0.06);
           }
 
-          .vozon-fit-panel {
-            border-radius: 16px;
-          }
-
-          .vozon-fit-panel-top {
-            padding: 1rem 1.1rem;
-          }
-
-          .vozon-fit-panel-body {
-            padding: 1.25rem 1.1rem;
-          }
-
-          .vozon-fit-workflow-row {
-            padding: 0.75rem;
+          .vozon-fit-content {
+            min-height: auto;
+            border-right: 0;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            padding: 1.4rem 1.25rem;
           }
 
           .vozon-company-logo {
@@ -4410,6 +6921,32 @@ export function HomePlatformSections() {
             animation-duration: 80s;
           }
 
+          .vozon-operation-signal i,
+          .vozon-operation-mobile-content,
+          .vozon-operation-core-ring,
+          .vozon-operation-core-wave i,
+          .vozon-operation-card-signal i {
+            animation: none;
+          }
+
+          .vozon-operation-horizontal-shell {
+            height: auto;
+          }
+
+          .vozon-operation-horizontal-sticky {
+            position: static;
+            min-height: auto;
+          }
+
+          .vozon-operation-horizontal-viewport {
+            overflow-x: auto;
+          }
+
+          .vozon-operation-horizontal-track {
+            transform: none !important;
+            transition: none;
+          }
+
           .vozon-orbit-input-glow,
           .vozon-orbit-input,
           .vozon-orbit-pulse,
@@ -4436,3 +6973,4 @@ export function HomePlatformSections() {
     </div>
   );
 }
+

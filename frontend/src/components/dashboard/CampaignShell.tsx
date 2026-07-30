@@ -522,7 +522,7 @@ export function CampaignShell() {
   }
 
   return (
-    <main className={`dashboard-home-theme grid min-h-screen bg-black text-white lg:h-screen lg:overflow-hidden ${
+    <main className={`dashboard-home-theme grid min-h-dvh bg-black text-white lg:h-dvh lg:overflow-hidden ${
       showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
     }`}>
       <DashboardSidebar
@@ -535,32 +535,34 @@ export function CampaignShell() {
         setShowUserSidebar={setShowUserSidebar}
       />
 
-      <section className="min-w-0 overflow-y-auto">
-        <div className="mx-auto w-full max-w-[1500px] px-4 py-5 sm:px-6 lg:px-8">
-          <header className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 bg-[#07110f] px-4 py-4 shadow-sm sm:px-5">
-            <div>
-              <span className="app-label text-[#00b8c4]">Campaigns</span>
-              <h1 className="m-0 text-xl font-semibold leading-7 text-[#0f172a]">Outbound campaigns</h1>
-              <p className="app-caption mt-1 mb-0 text-[#475569]">Create campaigns, upload leads, control pacing, and monitor delivery.</p>
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <span className={`rounded-lg px-3 py-2 text-xs font-semibold ${selectedPhoneReady ? "bg-[#ecfdf5] text-[#047857]" : "bg-[#fff7ed] text-[#d97706]"}`}>
-                {selectedPhoneReady ? "Route ready" : "Route needs setup"}
-              </span>
-              <span className="max-w-[360px] truncate rounded-lg bg-[#f1f5f9] px-3 py-2 text-xs font-semibold text-[#475569]">
-                {routeSummary}
-              </span>
-            </div>
-          </header>
+      <section className="min-w-0 overflow-y-auto overscroll-contain bg-black">
+        <header className="border-b border-white/10 bg-[#07110f] px-4 py-4 shadow-[0_12px_32px_rgba(0,0,0,0.32)] sm:px-6 lg:px-8">
+          <div className="mx-auto flex w-full max-w-[1500px] flex-wrap items-center justify-between gap-4">
+              <div>
+                <span className="app-label text-[#75fff0]">{session.organization?.name ?? "Workspace"}</span>
+                <h1 className="m-0 mt-1 text-xl font-semibold leading-7 text-white sm:text-2xl">Outbound campaigns</h1>
+                <p className="app-caption mt-1 mb-0 text-white/60">Create campaigns, upload leads, control pacing, and monitor delivery.</p>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className={`rounded-lg border px-3 py-2 text-xs font-semibold ${selectedPhoneReady ? "border-[#45ddce]/24 bg-[#45ddce]/[0.07] text-[#75fff0]" : "border-amber-300/20 bg-amber-300/10 text-amber-200"}`}>
+                  {selectedPhoneReady ? "Route ready" : "Route needs setup"}
+                </span>
+                <span className="max-w-[360px] truncate border-l border-white/15 px-3 py-2 text-xs font-semibold text-white/55">
+                  {routeSummary}
+                </span>
+              </div>
+          </div>
+        </header>
 
+        <div className="mx-auto w-full max-w-[1500px] px-4 py-5 sm:px-6 lg:px-8">
           <section className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {campaignMetrics.map((metric) => (
               <MetricCard detail={metric.detail} icon={metric.icon} key={metric.label} label={metric.label} value={metric.value} />
             ))}
           </section>
 
-          <form className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1fr)_380px]" onSubmit={prepareCampaign}>
-            <section className="grid min-w-0 content-start gap-5">
+          <form className="mt-7 grid gap-7 xl:grid-cols-[minmax(0,1fr)_380px]" onSubmit={prepareCampaign}>
+            <section className="grid min-w-0 content-start gap-0">
               {notice ? <Notice tone="success" message={notice} onClose={() => setNotice("")} /> : null}
               {error ? <Notice tone="error" message={error} onClose={() => setError("")} /> : null}
 
@@ -610,7 +612,7 @@ export function CampaignShell() {
                   </label>
                 </div>
 
-                <div className="mt-5 grid gap-3 rounded-3xl border border-[#dff7fb] bg-[#f4fdff] p-4 sm:grid-cols-3">
+                <div className="mt-5 grid gap-3 border-y border-white/10 py-4 sm:grid-cols-3">
                   <InfoPill icon="user" label="Assistant" value={selectedAgent?.name ?? "Not selected"} />
                   <InfoPill icon="phone" label="Caller ID" value={selectedPhone?.number ?? "Not selected"} />
                   <InfoPill icon="shield" label="Route status" value={selectedPhoneReady ? "Ready for outbound" : "Needs attention"} />
@@ -625,7 +627,7 @@ export function CampaignShell() {
                     title="Audience intelligence"
                     description="Drop in a CSV, preview the rows, and catch invalid phone numbers before they enter the campaign queue."
                   />
-                  <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-600">
+                  <span className="border-l border-white/15 px-3 py-1.5 text-xs font-semibold text-white/50">
                     {csvFile ? `${csvFile.name} - ${formatFileSize(csvFile.size)}` : "No file chosen"}
                   </span>
                 </div>
@@ -645,8 +647,8 @@ export function CampaignShell() {
                   </span>
                 </label>
 
-                <div className={`mt-5 grid gap-3 rounded-3xl border p-4 sm:grid-cols-[auto_minmax(0,1fr)] ${
-                  callWindowOpen ? "border-emerald-200 bg-emerald-50/80" : "border-amber-200 bg-amber-50/80"
+                <div className={`mt-5 grid gap-3 border-y py-4 sm:grid-cols-[auto_minmax(0,1fr)] ${
+                  callWindowOpen ? "border-emerald-300/20" : "border-amber-300/20"
                 }`}>
                   <span className={`grid size-10 place-items-center rounded-2xl bg-[#061b18] shadow-sm ${callWindowOpen ? "text-emerald-300" : "text-amber-300"}`}>
                     <Icon icon={callWindowOpen ? "check" : "warning"} />
@@ -673,8 +675,8 @@ export function CampaignShell() {
                 </div>
 
                 {leads.length ? (
-                  <div className="mt-5 overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#07110f] shadow-sm">
-                    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e2e8f0] bg-slate-50/80 px-4 py-3">
+                  <div className="mt-5 overflow-hidden border-y border-white/10">
+                    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 py-3">
                       <div>
                         <span className="text-sm font-semibold text-slate-950">{numberFormat(leads.length)} contacts loaded</span>
                         <p className="app-caption mt-1 mb-0">Showing first {previewLeads.length} rows for verification.</p>
@@ -755,7 +757,7 @@ export function CampaignShell() {
                       </label>
                     </>
                   ) : (
-                    <div className="rounded-3xl border border-[#45ddce]/20 bg-[#45ddce]/[0.06] p-4 lg:col-span-2">
+                    <div className="border-l-2 border-[#45ddce]/35 px-4 py-2 lg:col-span-2">
                       <span className="app-label text-[#008996]">Launch mode</span>
                       <p className="mt-1 mb-0 text-sm font-semibold text-slate-950">
                         {callWindowOpen ? "Immediate launch after campaign creation" : "Launch now, call when the window opens"}
@@ -784,7 +786,7 @@ export function CampaignShell() {
                   </label>
                 </div>
 
-                <div className="mt-6 grid gap-4 rounded-[1.75rem] border border-slate-200 bg-slate-50/80 p-4 sm:grid-cols-2 xl:grid-cols-4">
+                <div className="mt-6 grid gap-4 border-y border-white/10 py-5 sm:grid-cols-2 xl:grid-cols-4">
                   <label className="app-label grid gap-2">
                     Daily limit
                     <input className={controlClass} min={1} max={100000} type="number" value={dailyLimit} onChange={(event) => setDailyLimit(Number(event.target.value))} />
@@ -827,7 +829,7 @@ export function CampaignShell() {
                       Success criteria
                       <input className={controlClass} placeholder="Booked demo, qualified lead, reminder accepted..." value={successCriteria} onChange={(event) => setSuccessCriteria(event.target.value)} />
                     </label>
-                    <div className="rounded-3xl border border-cyan-200 bg-cyan-50/80 p-4">
+                    <div className="border-l-2 border-cyan-300/30 px-4 py-2">
                       <span className="inline-flex size-10 items-center justify-center rounded-2xl bg-[#45ddce]/10 text-[#75fff0] shadow-sm">
                         <Icon icon="target" />
                       </span>
@@ -854,7 +856,7 @@ export function CampaignShell() {
                     </span>
                   </div>
 
-                  <div className="mt-5 rounded-3xl border border-slate-200 bg-slate-50 p-4">
+                  <div className="mt-5 border-y border-white/10 py-4">
                     <div className="flex items-center justify-between gap-3">
                       <span className="text-sm font-semibold text-slate-700">Readiness score</span>
                       <span className="text-sm font-bold text-slate-950">{readinessPercent}%</span>
@@ -911,7 +913,7 @@ export function CampaignShell() {
 
 function Panel({ children, compact = false }: { children: ReactNode; compact?: boolean }) {
   return (
-    <section className={`overflow-hidden rounded-lg border border-white/10 bg-[#07110f] shadow-sm ${compact ? "p-4 sm:p-5" : "p-5 sm:p-6"}`}>
+    <section className={`overflow-hidden border-t border-white/15 ${compact ? "py-5" : "py-8"}`}>
       {children}
     </section>
   );
@@ -920,13 +922,13 @@ function Panel({ children, compact = false }: { children: ReactNode; compact?: b
 function SectionHeader({ description, eyebrow, icon, title }: { description: string; eyebrow: string; icon: IconName; title: string }) {
   return (
     <div className="flex items-start gap-4">
-      <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#ecfeff] text-[#008996]">
+      <span className="grid size-10 shrink-0 place-items-center border border-[#45ddce]/20 text-[#75fff0]">
         <Icon icon={icon} className="size-5" />
       </span>
       <div className="min-w-0">
         <span className="app-label text-[#008996]">{eyebrow}</span>
         <h2 className="app-section-title mt-1 mb-0">{title}</h2>
-        <p className="app-body mt-1 mb-0 max-w-3xl text-slate-500">{description}</p>
+        <p className="app-body mt-1 mb-0 max-w-3xl text-white/45">{description}</p>
       </div>
     </div>
   );
@@ -934,13 +936,13 @@ function SectionHeader({ description, eyebrow, icon, title }: { description: str
 
 function MetricCard({ detail, icon, label, value }: { detail: string; icon: IconName; label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-white/10 bg-[#07110f] p-4 shadow-sm">
+    <div className="border-l border-white/10 py-2 pl-4">
       <div className="flex items-start justify-between gap-3">
         <div>
           <span className="app-caption block">{label}</span>
           <strong className="app-value mt-2 block">{value}</strong>
         </div>
-        <span className="grid size-10 place-items-center rounded-lg bg-[#ecfeff] text-[#008996]">
+        <span className="grid size-10 place-items-center text-[#75fff0]">
           <Icon icon={icon} />
         </span>
       </div>
@@ -951,13 +953,13 @@ function MetricCard({ detail, icon, label, value }: { detail: string; icon: Icon
 
 function InfoPill({ icon, label, value }: { icon: IconName; label: string; value: string }) {
   return (
-    <div className="flex items-center gap-3 rounded-2xl bg-[#07110f] p-3 shadow-sm">
-      <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#ecfeff] text-[#008996]">
+    <div className="flex items-center gap-3 border-l border-white/10 px-3 py-2">
+      <span className="grid size-9 shrink-0 place-items-center text-[#75fff0]">
         <Icon icon={icon} className="size-4" />
       </span>
       <span className="min-w-0">
         <span className="app-caption block">{label}</span>
-        <strong className="block truncate text-sm font-semibold text-slate-950">{value}</strong>
+        <strong className="block truncate text-sm font-semibold text-white">{value}</strong>
       </span>
     </div>
   );
@@ -972,10 +974,10 @@ function ModeCard({ active, description, icon, onClick, title }: {
 }) {
   return (
     <button
-      className={`rounded-[1.5rem] border p-4 text-left transition hover:-translate-y-0.5 ${
+      className={`border-l-2 px-4 py-3 text-left transition ${
         active
-          ? "border-[#00b8c4] bg-[#ecfeff] shadow-[0_18px_42px_rgba(0,184,196,0.13)] ring-4 ring-[#00b8c4]/10"
-          : "border-white/10 bg-[#07110f] hover:border-[#45ddce]/35 hover:shadow-[0_14px_34px_rgba(69,221,206,0.08)]"
+          ? "border-[#45ddce] bg-[#45ddce]/[0.05]"
+          : "border-white/10 hover:border-[#45ddce]/35"
       }`}
       onClick={onClick}
       type="button"
@@ -986,7 +988,7 @@ function ModeCard({ active, description, icon, onClick, title }: {
           <Icon icon={icon} />
         </span>
         <span>
-          <strong className="block text-sm font-semibold text-slate-950">{title}</strong>
+          <strong className="block text-sm font-semibold text-white">{title}</strong>
           <span className="app-caption mt-1 block">{description}</span>
         </span>
       </span>
@@ -1004,8 +1006,8 @@ function ProgressBar({ className = "", value }: { className?: string; value: num
 
 function ReadinessRow({ label, ready }: { label: string; ready: boolean }) {
   return (
-    <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-[#07110f] px-3 py-2.5">
-      <span className="text-sm font-medium text-slate-600">{label}</span>
+    <div className="flex items-center justify-between gap-3 border-b border-white/10 px-1 py-2.5">
+      <span className="text-sm font-medium text-white/60">{label}</span>
       <span className={`grid size-7 shrink-0 place-items-center rounded-full ${ready ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
         <Icon icon={ready ? "check" : "info"} className="size-3.5" />
       </span>
@@ -1017,7 +1019,7 @@ function SummaryRow({ label, value, warn = false }: { label: string; value: stri
   return (
     <div className="flex justify-between gap-3">
       <dt className="app-caption">{label}</dt>
-      <dd className={`m-0 max-w-[210px] truncate text-right text-sm font-semibold ${warn ? "text-amber-700" : "text-slate-950"}`}>{value}</dd>
+      <dd className={`m-0 max-w-[210px] truncate text-right text-sm font-semibold ${warn ? "text-amber-300" : "text-white"}`}>{value}</dd>
     </div>
   );
 }
@@ -1030,14 +1032,14 @@ function CampaignOperationsSection({
   onControl: (campaign: BackendCampaign, action: CampaignAction) => void | Promise<void>;
 }) {
   return (
-    <section className="mt-5 overflow-hidden rounded-lg border border-white/10 bg-[#07110f] shadow-sm">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#edf0f4] bg-[#fbfdff] px-4 py-4 sm:px-5">
+    <section className="mt-8 overflow-hidden border-t border-white/10 pt-7">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
         <div>
           <span className="app-label text-[#00b8c4]">Live operations</span>
           <h2 className="app-section-title mt-1 mb-0">Recent campaigns</h2>
           <p className="app-caption mt-1 mb-0">Track status, progress, call results, pacing, and actions for each campaign.</p>
         </div>
-        <span className="rounded-lg bg-[#f1f5f9] px-3 py-2 text-xs font-semibold text-[#475569]">
+        <span className="border-l border-white/15 px-3 py-2 text-xs font-semibold text-white/50">
           {numberFormat(campaigns.length)} total
         </span>
       </div>
@@ -1108,14 +1110,14 @@ function CampaignOperationsSection({
             </table>
           </div>
 
-          <div className="grid gap-3 p-4 lg:hidden">
+          <div className="grid gap-3 py-4 lg:hidden">
             {campaigns.slice(0, 10).map((campaign) => (
               <CampaignCard campaign={campaign} key={campaign._id} onControl={(action) => onControl(campaign, action)} />
             ))}
           </div>
         </>
       ) : (
-        <div className="p-4">
+        <div className="py-6">
           <EmptyState
             icon="calendar"
             title="No campaigns yet"
@@ -1166,7 +1168,7 @@ function CampaignCard({ campaign, onControl }: { campaign: BackendCampaign; onCo
   const canCancel = ["running", "scheduled", "paused"].includes(campaign.status);
 
   return (
-    <div className="rounded-[1.35rem] border border-white/10 bg-[#07110f] p-3.5 shadow-sm">
+    <div className="border-b border-white/10 py-4">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <strong className="block truncate text-sm font-semibold text-slate-950">{campaign.name}</strong>
@@ -1201,7 +1203,7 @@ function CampaignCard({ campaign, onControl }: { campaign: BackendCampaign; onCo
 
 function MiniStat({ label, value }: { label: string; value: string }) {
   return (
-    <span className="rounded-2xl bg-slate-50 px-2 py-2">
+    <span className="border-l border-white/10 px-2 py-2">
       <span className="block text-[11px] font-medium text-slate-400">{label}</span>
       <strong className="block text-xs font-semibold text-slate-800">{value}</strong>
     </span>
@@ -1223,8 +1225,8 @@ function CampaignActionButton({ children, onClick, tone }: { children: ReactNode
 
 function EmptyState({ description, icon, title }: { description: string; icon: IconName; title: string }) {
   return (
-    <div className="rounded-[1.35rem] border border-dashed border-slate-300 bg-slate-50 p-5 text-center">
-      <span className="mx-auto grid size-11 place-items-center rounded-2xl bg-[#061b18] text-white/50 shadow-sm">
+    <div className="border-y border-dashed border-white/15 py-8 text-center">
+      <span className="mx-auto grid size-11 place-items-center text-white/50">
         <Icon icon={icon} />
       </span>
       <strong className="mt-3 block text-sm font-semibold text-slate-950">{title}</strong>
@@ -1241,7 +1243,7 @@ function ToggleRow({ detail, enabled, onChange, title }: {
 }) {
   return (
     <button
-      className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-[#07110f] px-3 py-3 text-left transition hover:-translate-y-0.5 hover:border-[#45ddce]/30 hover:shadow-sm"
+      className="flex items-center justify-between gap-4 border-b border-white/10 px-1 py-3 text-left transition hover:border-[#45ddce]/30"
       onClick={() => onChange(!enabled)}
       type="button"
       aria-pressed={enabled}

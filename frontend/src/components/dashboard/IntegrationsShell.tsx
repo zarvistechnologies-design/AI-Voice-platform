@@ -20,36 +20,42 @@ const catalog = {
     category: "CRM",
     description: "Create callers as contacts and log completed calls as CRM notes.",
     color: "from-cyan-500 to-cyan-400",
+    flow: "After every finalized call",
   },
   calendly: {
     name: "Calendly",
     category: "Scheduling",
     description: "Let agents discover event types and create one-time booking links during calls.",
     color: "from-cyan-500 to-cyan-400",
+    flow: "Used live by the agent during a call",
   },
   slack: {
     name: "Slack",
     category: "Notifications",
     description: "Send automatic call completion notifications to a Slack channel.",
     color: "from-cyan-500 to-cyan-400",
+    flow: "After every finalized call",
   },
   google_calendar: {
     name: "Google Calendar",
     category: "Scheduling",
     description: "Check live availability and let selected voice agents create appointments during calls.",
     color: "from-blue-500 to-cyan-400",
+    flow: "Used live by enabled agents",
   },
   google_sheets: {
     name: "Google Sheets",
     category: "Data & leads",
     description: "Append qualified leads and call outcomes to a spreadsheet and sheet tab you select.",
     color: "from-cyan-500 to-cyan-400",
+    flow: "Used live by enabled agents",
   },
   google: {
     name: "Google",
     category: "Google Workspace",
     description: "Shared authorization for Google Calendar and Google Sheets.",
     color: "from-cyan-500 to-cyan-400",
+    flow: "OAuth authorization",
   },
 } as const;
 
@@ -189,7 +195,7 @@ export function IntegrationsShell() {
         setShowUserSidebar={setShowUserSidebar}
       />
       <section className="min-w-0 p-4">
-        <div className="mx-auto grid max-w-1500px gap-6">
+        <div className="mx-auto grid max-w-[1500px] gap-6">
           <header className="border-b border-[#99f6e8] bg-white pb-4">
             <div>
               <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#00b8c4]">Native connections</span>
@@ -207,7 +213,9 @@ export function IntegrationsShell() {
                   <div className="p-5">
                     <div className="flex items-start justify-between gap-4"><div><span className="text-xs font-semibold uppercase tracking-wider text-slate-500">{item.category}</span><h2 className="mt-2 text-xl font-semibold">{item.name}</h2></div><span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase ${provider.connected ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-600"}`}>{provider.connected ? "Connected" : "Available"}</span></div>
                     <p className="mt-3 min-h-12 text-sm leading-6 text-slate-600">{item.description}</p>
+                    {"flow" in item ? <p className="mt-2 text-xs font-semibold text-cyan-700">{item.flow}</p> : null}
                     {provider.connected ? <div className="mt-4 rounded-xl bg-slate-50 p-3"><strong className="block text-sm">{provider.accountId}</strong><span className="mt-1 block text-xs text-slate-500">Verified {provider.lastVerifiedAt ? new Date(provider.lastVerifiedAt).toLocaleString() : "recently"}</span></div> : null}
+                    {provider.delivery ? <div className={`mt-3 rounded-xl border p-3 text-xs ${provider.delivery.status === "delivered" ? "border-emerald-200 bg-emerald-50 text-emerald-800" : provider.delivery.status === "failed" ? "border-rose-200 bg-rose-50 text-rose-800" : "border-amber-200 bg-amber-50 text-amber-800"}`}><strong className="block uppercase tracking-wide">Last delivery: {provider.delivery.status}</strong><span className="mt-1 block">Attempts: {provider.delivery.attempts} · Updated {new Date(provider.delivery.updatedAt).toLocaleString()}</span>{provider.delivery.errorMessage ? <span className="mt-1 block">{provider.delivery.errorMessage}</span> : null}</div> : null}
                     <div className="mt-5 flex flex-wrap gap-2">{provider.id === "vobiz" ? <Link className="rounded-xl bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-white" href="/dashboard/phone-number" prefetch={false} onFocus={() => router.prefetch("/dashboard/phone-number")} onMouseEnter={() => router.prefetch("/dashboard/phone-number")} onPointerDown={() => router.prefetch("/dashboard/phone-number")}>Manage Vobiz</Link> : provider.id === "google" ? provider.connected ? <><button className="rounded-xl bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-white" disabled={busy} type="button" onClick={() => void openGoogleManager(googleView)}>Configure {item.name}</button><button className="rounded-xl border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-700" disabled={busy} type="button" onClick={() => void disconnect("google")}>Disconnect Google</button></> : <button className="rounded-xl bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-white" disabled={busy} type="button" onClick={() => void connectGoogle()}>Connect {item.name}</button> : provider.connected ? <button className="rounded-xl border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-700" disabled={busy} type="button" onClick={() => void disconnect(provider.id as Exclude<IntegrationProvider["id"], "vobiz">)}>Disconnect</button> : <button className="rounded-xl bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-white" type="button" onClick={() => { setSelected(provider.id as Exclude<IntegrationProvider["id"], "vobiz">); setCredential(""); }}>Connect {item.name}</button>}</div>
                   </div>
                 </article>
