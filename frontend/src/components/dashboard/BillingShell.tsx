@@ -210,7 +210,6 @@ export function BillingShell() {
           </header>
 
           {notice ? <div className="rounded-xl border border-cyan-200 bg-cyan-50 px-4 py-3 text-sm font-semibold text-cyan-800">{notice}</div> : null}
-          {!data?.configured ? <div className="rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm font-semibold text-amber-200">Razorpay USD checkout is offline. Add live API credentials and the webhook secret to the production environment, then enable international payments in Razorpay.</div> : null}
           {data?.paymentReadiness ? (
             <div className="grid gap-3 rounded-2xl border border-white/10 bg-[#07110f] p-4 sm:grid-cols-3">
               {[
