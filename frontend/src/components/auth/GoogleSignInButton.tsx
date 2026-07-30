@@ -31,7 +31,7 @@ declare global {
 const googleScriptId = "google-identity-services";
 const googleClientId =
   process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID?.trim()
-  || "754509312565-iu2catjmjqrncv1vtogguavcsrfrp907.apps.googleusercontent.com";
+  || "754509312565-fin7bh1v5eielo3s8qjds3cjdh0ib7v6.apps.googleusercontent.com";
 
 function loadGoogleIdentityScript() {
   return new Promise<void>((resolve, reject) => {

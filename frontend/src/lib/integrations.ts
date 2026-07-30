@@ -9,6 +9,13 @@ export type IntegrationProvider = {
   status: "connected" | "error" | "disconnected";
   lastVerifiedAt: string | null;
   metadata: Record<string, unknown>;
+  delivery: {
+    status: "staged" | "pending" | "processing" | "delivered" | "retrying" | "failed";
+    attempts: number;
+    errorMessage: string;
+    deliveredAt: string | null;
+    updatedAt: string;
+  } | null;
 };
 
 async function request<T>(path: string, init: RequestInit = {}) {

@@ -347,7 +347,7 @@ export function CallLogsShell() {
               ["Completed", metrics.completed, "On this page"],
               ["Active now", metrics.active, "Live conversations"],
               ["Avg duration", formatDuration(metrics.averageDuration), "On this page"],
-              ["Provider cost", money(metrics.charged), "Visible page total"],
+              ["Customer cost", money(metrics.charged), "Provider usage plus Vozon fee"],
             ].map(([label, value, detail]) => (
               <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm" key={label}>
                 <span className="text-xs font-medium text-slate-500">{label}</span>

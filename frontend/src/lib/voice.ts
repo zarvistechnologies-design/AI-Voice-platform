@@ -162,7 +162,7 @@ export type PricingGuide = {
   currency: string;
   telephonyPerMinute: number;
   inrPerUsd: number;
-  platformFeeInrPerCall: number;
+  platformFeeInrPerMinute: number;
   markupMultiplier: number;
   ttsModels?: Readonly<Record<string, {
     currency: string;
@@ -486,7 +486,7 @@ export type CallRecord = {
     telephony: number;
     providerCost: number;
     platformFee: number;
-    platformFeeInrPerCall: number;
+    platformFeeInrPerMinute: number;
     customerCost: number;
     total: number;
     currency: string;
