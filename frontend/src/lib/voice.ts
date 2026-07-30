@@ -322,7 +322,6 @@ export type BackendPhoneNumber = {
   status: "Ready" | "Pending" | "Needs setup";
   lifecycle?: "active" | "deleting";
   inboundTrunkId: string;
-  inboundApplicationId: string;
   outboundTrunkId: string;
   dispatchRuleId: string;
   provider: string;
