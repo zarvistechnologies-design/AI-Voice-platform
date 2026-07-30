@@ -26,7 +26,7 @@ const footerNavigation = [
   {
     title: "Resources",
     links: [
-      { href: "/services/api-access", label: "API documentation" },
+      { href: "/docs", label: "API documentation" },
       { href: "/dashboard/developers", label: "Developer portal" },
       { href: "/resources/changelog", label: "Changelog" },
       { href: "/resources/community", label: "Help center" },
