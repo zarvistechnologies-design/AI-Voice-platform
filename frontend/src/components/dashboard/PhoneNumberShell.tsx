@@ -472,7 +472,11 @@ function PhoneNumberRow({
       <td className="px-4 py-4">
         <span className="app-body block whitespace-nowrap text-[#334155]">{formatDate(number.createdAt)}</span>
         <span className={`app-caption ${!deletionPending && number.status === "Ready" ? "text-[#059669]" : "text-[#d97706]"}`}>
-          {deletionPending ? "Deletion pending - retry" : number.status}
+          {deletionPending
+            ? "Deletion pending - retry"
+            : number.status === "Ready" && number.inboundApplicationId
+              ? "Ready · Application protected"
+              : number.status}
         </span>
       </td>
       <td className="px-4 py-4">
