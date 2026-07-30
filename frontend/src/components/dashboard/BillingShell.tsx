@@ -59,7 +59,7 @@ export function BillingShell() {
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
   const [data, setData] = useState<BillingSummary | null>(null);
   const [notice, setNotice] = useState("");
-  const [busy, setBusy] = useState<"" | "topup" | "cancel" | "enterprise">("");
+  const [busy, setBusy] = useState<"" | "topup" | "cancel" | "enterprise" | `invoice:${string}`>("");
   const [selectedTopUp, setSelectedTopUp] = useState(10);
   const [showUserSidebar, setShowUserSidebar] = useState(false);
 
@@ -149,6 +149,26 @@ export function BillingShell() {
       setNotice(`Your $${checkout.amount / 100} USD monthly Razorpay subscription is active.`);
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not complete enterprise checkout.");
+    } finally {
+      setBusy("");
+    }
+  }
+
+  async function downloadInvoice(invoiceId: string, invoiceNumber: string) {
+    setBusy(`invoice:${invoiceId}`);
+    try {
+      const blob = await billingApi.downloadInvoice(invoiceId);
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = `${invoiceNumber || `Vozon-invoice-${invoiceId}`}.html`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1_000);
+      setNotice("Invoice downloaded. Open it and select Print / Save PDF for a PDF copy.");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Could not download invoice.");
     } finally {
       setBusy("");
     }
@@ -311,6 +331,46 @@ export function BillingShell() {
               </Card>
             </div>
           </section>
+
+          <Card className="overflow-hidden">
+            <div className="flex flex-col justify-between gap-3 border-b border-white/10 p-5 sm:flex-row sm:items-center">
+              <div>
+                <h2 className="m-0 text-lg font-semibold">Invoices</h2>
+                <p className="mt-1 text-sm text-white/50">Download payment invoices for wallet top-ups and monthly charges.</p>
+              </div>
+              <span className="text-xs font-semibold text-white/40">{data?.invoices.length ?? 0} recent invoices</span>
+            </div>
+            {data?.invoices.length ? (
+              <div className="divide-y divide-white/10">
+                {data.invoices.map((invoice) => {
+                  const amount = (invoice.amountPaid || invoice.amountDue) / 100;
+                  const isDownloading = busy === `invoice:${invoice._id}`;
+                  return (
+                    <div className="grid gap-3 p-4 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center sm:px-5" key={invoice._id}>
+                      <div className="min-w-0">
+                        <strong className="block truncate text-sm text-white">{invoice.invoiceNumber || "Vozon payment invoice"}</strong>
+                        <span className="mt-1 block text-xs text-white/45">{invoice.description || dateTime(invoice.createdAt)}</span>
+                      </div>
+                      <div className="sm:text-right">
+                        <strong className="block text-sm text-white">{money(amount, invoice.currency.toUpperCase())}</strong>
+                        <span className="mt-1 block text-xs capitalize text-emerald-300">{invoice.status || "paid"} · {dateTime(invoice.createdAt)}</span>
+                      </div>
+                      <button
+                        className="rounded-xl border border-[#45ddce]/30 bg-[#45ddce]/10 px-4 py-2.5 text-sm font-semibold text-[#75fff0] hover:bg-[#45ddce]/20 disabled:cursor-not-allowed disabled:opacity-50"
+                        type="button"
+                        onClick={() => void downloadInvoice(invoice._id, invoice.invoiceNumber)}
+                        disabled={Boolean(busy)}
+                      >
+                        {isDownloading ? "Downloading..." : "Download invoice"}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="p-8 text-center text-sm text-white/45">Invoices will appear here after a successful payment.</div>
+            )}
+          </Card>
 
         </div>
       </section>

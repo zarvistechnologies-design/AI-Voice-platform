@@ -98,6 +98,8 @@ export type BillingSummary = {
   };
   invoices: {
     _id: string;
+    invoiceNumber: string;
+    description: string;
     status: string;
     amountDue: number;
     amountPaid: number;
@@ -138,6 +140,19 @@ async function request<T>(path: string, init: RequestInit = {}) {
   return (data ?? {}) as T;
 }
 
+async function downloadInvoice(invoiceId: string) {
+  if (!getSession()) throw new Error("Sign in before downloading an invoice.");
+  const response = await fetch(`${API_URL}/api/billing/invoices/${encodeURIComponent(invoiceId)}`, {
+    credentials: "include",
+    headers: getAuthHeaders(),
+  });
+  if (!response.ok) {
+    const data = (await response.json().catch(() => null)) as { message?: string } | null;
+    throw new Error(data?.message ?? "Invoice download failed.");
+  }
+  return response.blob();
+}
+
 export const billingApi = {
   summary: () => cachedApiRequest("billing", "/summary", 15_000, () => request<BillingSummary>("/summary")),
   transactions: (limit = 50) => request<{ transactions: BillingTransaction[] }>("/transactions?limit=" + limit),
@@ -174,4 +189,5 @@ export const billingApi = {
       method: "POST",
       body: JSON.stringify({ immediate }),
     }),
+  downloadInvoice,
 };
