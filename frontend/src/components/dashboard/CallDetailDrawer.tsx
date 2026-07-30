@@ -414,7 +414,6 @@ export function CallDetailDrawer({ call, onClose }: { call: CallRecord; onClose:
                 <p className="mt-1 text-xs text-slate-500">Provider usage plus the Vozon ₹2-per-minute platform fee, prorated by seconds.</p>
               </div>
               <div className="grid gap-1 text-right text-xs">
-                <span className="text-slate-500">Provider total: <strong className="text-emerald-700">{money(cost?.providerCost ?? billing?.providerCost ?? charged ?? 0, billing?.currency || cost?.currency)}</strong></span>
                 <span className="text-slate-500">Customer total: <strong className="text-emerald-700">{money(cost?.customerCost ?? billing?.customerCost ?? charged ?? 0, billing?.currency || cost?.currency)}</strong></span>
               </div>
             </div>
