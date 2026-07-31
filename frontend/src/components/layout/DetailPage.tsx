@@ -109,8 +109,63 @@ const defaultVisual = {
   points: ["Capture the right context on every call", "Automate routine actions immediately", "Bring people in with a complete handoff"],
 };
 
+const pagePhotography: Record<string, readonly { image: string; alt: string; label: string }[]> = {
+  "AI Phone Agent": [
+    {
+      image: "/images/seo-pages/ai-phone-agent-team.jpg",
+      alt: "Customer support team working across a live call center",
+      label: "Always-on call operations",
+    },
+    {
+      image: "/images/seo-pages/ai-phone-agent-specialist.jpg",
+      alt: "Customer service specialist speaking through a headset",
+      label: "Focused customer support",
+    },
+    {
+      image: "/images/seo-pages/ai-phone-agent-workstation.jpg",
+      alt: "Phone support professional working from a laptop and headset",
+      label: "Connected voice workspace",
+    },
+  ],
+  "AI Receptionist": [
+    {
+      image: "/images/seo-pages/ai-receptionist-team.jpg",
+      alt: "Customer service team coordinating calls from a professional office",
+      label: "Coordinated front-desk support",
+    },
+    {
+      image: "/images/seo-pages/ai-receptionist-landline.jpg",
+      alt: "Reception professional answering a landline at an office desk",
+      label: "Professional call answering",
+    },
+    {
+      image: "/images/seo-pages/ai-receptionist-exclusive.jpg",
+      alt: "Office receptionist handling a customer call while working on a laptop",
+      label: "Responsive customer assistance",
+    },
+  ],
+  "Outbound AI Calling": [
+    {
+      image: "/images/seo-pages/outbound-calling-floor.jpg",
+      alt: "Outbound call team working from a dedicated operations floor",
+      label: "Coordinated calling campaigns",
+    },
+    {
+      image: "/images/seo-pages/outbound-calling-team.jpg",
+      alt: "Sales representatives managing phone conversations from an office",
+      label: "Team-based outreach",
+    },
+    {
+      image: "/images/seo-pages/outbound-calling-agent.jpg",
+      alt: "Outbound calling specialist speaking with a customer by telephone",
+      label: "Focused customer follow-up",
+    },
+  ],
+};
+
 export function DetailPage({ kicker, title, summary, highlights, sections, primaryAction, secondaryAction, heroTitle }: DetailPageProps) {
-  const visual = visualContent[title] ?? defaultVisual;
+  const photography = pagePhotography[title];
+  const visual = visualContent[title] ?? (photography ? { ...defaultVisual, image: photography[0].image, alt: photography[0].alt } : defaultVisual);
 
   return (
     <SiteLayout>
@@ -204,6 +259,39 @@ export function DetailPage({ kicker, title, summary, highlights, sections, prima
             </div>
           </div>
         </section>
+
+        {photography ? (
+          <section className="bg-black px-4 py-20 text-white sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-[1240px]">
+              <div className="max-w-3xl">
+                <p className="m-0 text-sm font-extrabold text-[#75fff0]">Real customer operations</p>
+                <h2 className="m-0 mt-4 text-4xl leading-tight font-semibold sm:text-5xl">
+                  Designed for the people behind every conversation.
+                </h2>
+                <p className="m-0 mt-5 text-base leading-7 text-white/48 sm:text-lg">
+                  Bring call handling, team coordination, and measurable outcomes into one connected workflow.
+                </p>
+              </div>
+              <div className="mt-10 grid gap-4 md:grid-cols-2">
+                {photography.slice(1).map((photo) => (
+                  <figure className="group relative m-0 aspect-[16/10] overflow-hidden rounded-3xl border border-white/10 bg-[#071713]" key={photo.image}>
+                    <Image
+                      alt={photo.alt}
+                      className="object-cover transition duration-500 group-hover:scale-[1.025]"
+                      fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      src={photo.image}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-transparent" />
+                    <figcaption className="absolute right-5 bottom-5 left-5 text-sm font-bold text-white">
+                      {photo.label}
+                    </figcaption>
+                  </figure>
+                ))}
+              </div>
+            </div>
+          </section>
+        ) : null}
 
         <section className="bg-black px-4 py-20 sm:px-6 lg:px-8">
           <div className="mx-auto grid max-w-[1240px] gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
