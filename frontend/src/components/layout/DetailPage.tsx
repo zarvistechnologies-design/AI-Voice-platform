@@ -114,24 +114,24 @@ export function DetailPage({ kicker, title, summary, highlights, sections, prima
 
   return (
     <SiteLayout>
-      <div className="bg-[#111827] text-white">
-        <section className="relative overflow-hidden bg-[#111827] px-4 pt-36 pb-20 sm:px-6 lg:px-8 lg:pt-40">
-          <div className="absolute inset-0 opacity-[0.16] [background-image:linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] [background-size:64px_64px]" />
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,24,39,0.15)_0%,rgba(17,24,39,0.78)_68%,#111827_100%)]" />
+      <div className="bg-black text-white">
+        <section className="relative overflow-hidden bg-black px-4 pt-36 pb-20 sm:px-6 lg:px-8 lg:pt-40">
+          <div className="absolute inset-0 opacity-[0.12] [background-image:linear-gradient(rgba(69,221,206,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(69,221,206,0.12)_1px,transparent_1px)] [background-size:64px_64px]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_22%,rgba(69,221,206,0.18),transparent_30%),radial-gradient(circle_at_82%_18%,rgba(167,139,250,0.12),transparent_26%),linear-gradient(180deg,rgba(0,0,0,0.12)_0%,rgba(0,0,0,0.72)_72%,#000_100%)]" />
           <div className="relative mx-auto grid min-h-[540px] max-w-[1500px] gap-12 lg:grid-cols-[minmax(0,0.95fr)_minmax(460px,1.05fr)] lg:items-center">
             <div className="max-w-3xl">
-              <p className="m-0 text-sm font-extrabold text-cyan-200">{kicker} / AI Voice Platform</p>
-              <h1 className="m-0 mt-8 text-4xl leading-tight font-semibold sm:text-6xl sm:leading-none 2xl:text-7xl">
+              <p className="m-0 text-sm font-extrabold text-[#75fff0]">{kicker} / AI Voice Platform</p>
+              <h1 className="m-0 mt-8 bg-gradient-to-r from-white via-[#d9fffb] to-[#75fff0] bg-clip-text text-4xl leading-tight font-semibold text-transparent sm:text-6xl sm:leading-none 2xl:text-7xl">
                 {heroTitle ?? `${title} for every customer call.`}
               </h1>
-              <p className="m-0 mt-8 max-w-2xl text-lg leading-8 text-slate-200 sm:text-xl">{summary}</p>
+              <p className="m-0 mt-8 max-w-2xl text-lg leading-8 text-white/58 sm:text-xl">{summary}</p>
               <div className="mt-10 flex flex-wrap gap-4">
-                <Link className="inline-flex min-h-14 items-center rounded-lg bg-[#08b8c8] px-8 font-extrabold text-slate-950 shadow-[0_18px_48px_rgba(8,184,200,0.24)]" href={primaryAction.href}>{primaryAction.label}</Link>
-                <Link className="inline-flex min-h-14 items-center rounded-lg border border-white/16 bg-white/5 px-8 font-extrabold" href={secondaryAction.href}>{secondaryAction.label}</Link>
+                <Link className="inline-flex min-h-14 items-center rounded-xl bg-[#45ddce] px-8 font-extrabold text-[#02110d] shadow-[0_18px_48px_rgba(69,221,206,0.22)] transition hover:bg-[#75fff0]" href={primaryAction.href}>{primaryAction.label}</Link>
+                <Link className="inline-flex min-h-14 items-center rounded-xl border border-white/15 bg-white/[0.04] px-8 font-extrabold transition hover:border-[#45ddce]/40 hover:bg-[#45ddce]/[0.06]" href={secondaryAction.href}>{secondaryAction.label}</Link>
               </div>
             </div>
 
-            <div className="rounded-lg border border-white/10 bg-[#0b1120]/90 p-4 shadow-[0_26px_90px_rgba(0,0,0,0.32)] backdrop-blur-xl">
+            <div className="rounded-3xl border border-[#45ddce]/18 bg-[#071713]/90 p-4 shadow-[0_26px_90px_rgba(0,0,0,0.48)] backdrop-blur-xl">
               <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-4">
                 <div><p className="m-0 text-sm font-semibold">Live customer call</p><p className="m-0 mt-1 text-xs text-slate-400">Agent is listening and taking action</p></div>
                 <span className="rounded-full bg-emerald-300/10 px-3 py-1.5 text-xs font-extrabold text-emerald-200">Connected 02:14</span>
@@ -156,47 +156,47 @@ export function DetailPage({ kicker, title, summary, highlights, sections, prima
           </div>
         </section>
 
-        <section className="bg-[#111827] px-4 pb-16 sm:px-6 lg:px-8">
-          <div className="mx-auto grid max-w-[1500px] overflow-hidden rounded-lg border border-white/10 bg-white/[0.04] sm:grid-cols-3">
+        <section className="bg-black px-4 pb-16 sm:px-6 lg:px-8">
+          <div className="mx-auto grid max-w-[1500px] overflow-hidden rounded-2xl border border-[#45ddce]/15 bg-[#45ddce]/[0.035] sm:grid-cols-3">
             {highlights.map((highlight, index) => (
               <div className="border-b border-white/10 p-6 last:border-0 sm:border-r sm:border-b-0" key={highlight}>
-                <strong className="block text-3xl font-semibold text-cyan-200">0{index + 1}</strong>
-                <span className="mt-2 block font-semibold text-slate-300">{highlight}</span>
+                <strong className="block text-3xl font-semibold text-[#75fff0]">0{index + 1}</strong>
+                <span className="mt-2 block font-semibold text-white/68">{highlight}</span>
               </div>
             ))}
           </div>
         </section>
 
-        <section className="bg-[#f7fafc] px-4 py-20 text-slate-950 sm:px-6 lg:px-8">
+        <section className="bg-black px-4 py-20 text-white sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <p className="m-0 text-sm font-extrabold text-cyan-700">Designed for outcomes</p>
+            <p className="m-0 text-sm font-extrabold text-[#75fff0]">Designed for outcomes</p>
             <h2 className="m-0 mt-4 text-4xl leading-tight font-semibold sm:text-5xl">Every conversation moves the work forward.</h2>
-            <p className="m-0 mt-5 text-lg leading-7 text-slate-600">Configure the experience around your policies, systems, and escalation rules while your team keeps control.</p>
+            <p className="m-0 mt-5 text-lg leading-7 text-white/48">Configure the experience around your policies, systems, and escalation rules while your team keeps control.</p>
           </div>
           <div className="mx-auto mt-12 grid max-w-[1000px] gap-4 sm:grid-cols-2">
             {sections.map((section, index) => (
-              <article className="rounded-lg border border-slate-200 bg-white p-7 shadow-sm" key={section.title}>
-                <span className="grid size-11 place-items-center rounded-lg bg-[#111827] text-sm font-extrabold text-cyan-200">0{index + 1}</span>
+              <article className="rounded-2xl border border-white/10 bg-white/[0.035] p-7 shadow-[0_18px_48px_rgba(0,0,0,0.22)] transition hover:border-[#45ddce]/30 hover:bg-[#45ddce]/[0.05]" key={section.title}>
+                <span className="grid size-11 place-items-center rounded-xl bg-[#45ddce]/12 text-sm font-extrabold text-[#75fff0]">0{index + 1}</span>
                 <h3 className="m-0 mt-6 text-2xl font-semibold">{section.title}</h3>
-                <p className="m-0 mt-4 leading-7 text-slate-600">{section.body}</p>
+                <p className="m-0 mt-4 leading-7 text-white/48">{section.body}</p>
               </article>
             ))}
           </div>
         </section>
 
-        <section className="bg-white px-4 py-20 text-slate-950 sm:px-6 lg:px-8">
+        <section className="bg-black px-4 py-20 text-white sm:px-6 lg:px-8">
           <div className="mx-auto grid max-w-[1240px] gap-10 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-slate-200">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-white/10 bg-[#071713]">
               <Image className="object-cover" src={visual.image} alt={visual.alt} fill sizes="(max-width: 1024px) 100vw, 56vw" />
             </div>
             <div>
-              <p className="m-0 text-sm font-extrabold text-cyan-700">{visual.eyebrow}</p>
+              <p className="m-0 text-sm font-extrabold text-[#75fff0]">{visual.eyebrow}</p>
               <h2 className="m-0 mt-4 text-4xl leading-tight font-semibold sm:text-5xl">{visual.title}</h2>
-              <p className="m-0 mt-6 text-lg leading-8 text-slate-600">{visual.body}</p>
+              <p className="m-0 mt-6 text-lg leading-8 text-white/48">{visual.body}</p>
               <div className="mt-8 grid gap-3">
                 {visual.points.map((point) => (
-                  <div className="flex items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm font-semibold" key={point}>
-                    <span className="mt-1 size-2 shrink-0 rounded-full bg-cyan-600" />
+                  <div className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.035] p-4 text-sm font-semibold text-white/68" key={point}>
+                    <span className="mt-1 size-2 shrink-0 rounded-full bg-[#45ddce]" />
                     {point}
                   </div>
                 ))}
@@ -205,17 +205,17 @@ export function DetailPage({ kicker, title, summary, highlights, sections, prima
           </div>
         </section>
 
-        <section className="bg-[#111827] px-4 py-20 sm:px-6 lg:px-8">
+        <section className="bg-black px-4 py-20 sm:px-6 lg:px-8">
           <div className="mx-auto grid max-w-[1240px] gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
             <div>
-              <p className="m-0 text-sm font-extrabold text-cyan-200">One connected workflow</p>
+              <p className="m-0 text-sm font-extrabold text-[#75fff0]">One connected workflow</p>
               <h2 className="m-0 mt-4 text-4xl leading-tight font-semibold sm:text-5xl">From first hello to the next action.</h2>
-              <p className="m-0 mt-6 text-lg leading-8 text-slate-300">Build the conversation, connect your tools, test edge cases, and measure outcomes from the same operating surface.</p>
+              <p className="m-0 mt-6 text-lg leading-8 text-white/48">Build the conversation, connect your tools, test edge cases, and measure outcomes from the same operating surface.</p>
             </div>
-            <div className="rounded-lg border border-white/10 bg-[#0b1120] p-4">
+            <div className="rounded-2xl border border-[#45ddce]/15 bg-[#071713] p-4">
               {highlights.map((highlight, index) => (
                 <div className="grid grid-cols-[44px_1fr_auto] items-center gap-4 border-b border-white/10 p-4 last:border-0" key={highlight}>
-                  <span className="grid size-10 place-items-center rounded-lg bg-cyan-300 text-sm font-extrabold text-slate-950">0{index + 1}</span>
+                  <span className="grid size-10 place-items-center rounded-xl bg-[#45ddce] text-sm font-extrabold text-[#02110d]">0{index + 1}</span>
                   <div><strong className="block">{highlight}</strong><span className="mt-1 block text-xs text-slate-500">Configured and observable</span></div>
                   <span className="text-xs font-bold text-emerald-300">Ready</span>
                 </div>
@@ -224,25 +224,25 @@ export function DetailPage({ kicker, title, summary, highlights, sections, prima
           </div>
         </section>
 
-        <section className="bg-white px-4 py-20 text-slate-950 sm:px-6 lg:px-8">
+        <section className="bg-black px-4 py-20 text-white sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <p className="m-0 text-sm font-extrabold text-cyan-700">Integrations</p>
+            <p className="m-0 text-sm font-extrabold text-[#75fff0]">Integrations</p>
             <h2 className="m-0 mt-4 text-4xl font-semibold sm:text-5xl">Works with the tools already running your business.</h2>
           </div>
           <div className="mx-auto mt-12 grid max-w-[1000px] grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
             {["CRM", "Calendar", "Helpdesk", "Telephony", "Webhooks", "Analytics"].map((item) => (
-              <div className="rounded-lg border border-slate-200 bg-slate-50 p-5 text-center font-semibold" key={item}>{item}</div>
+              <div className="rounded-xl border border-white/10 bg-white/[0.035] p-5 text-center font-semibold text-white/68 transition hover:border-[#45ddce]/35 hover:text-[#75fff0]" key={item}>{item}</div>
             ))}
           </div>
         </section>
 
-        <section className="bg-[#111827] px-4 py-20 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-[1120px] rounded-lg border border-cyan-300/20 bg-[#08b8c8] p-8 text-center text-slate-950 sm:p-12">
-            <p className="m-0 text-sm font-extrabold">Ready to launch {title.toLowerCase()}?</p>
+        <section className="bg-black px-4 py-20 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-[1120px] rounded-3xl border border-[#45ddce]/20 bg-[radial-gradient(circle_at_15%_20%,rgba(69,221,206,0.16),transparent_36%),linear-gradient(135deg,#091a17,#050807)] p-8 text-center text-white shadow-[0_26px_90px_rgba(69,221,206,0.1)] sm:p-12">
+            <p className="m-0 text-sm font-extrabold text-[#75fff0]">Ready to launch {title.toLowerCase()}?</p>
             <h2 className="m-0 mx-auto mt-4 max-w-3xl text-4xl leading-tight font-semibold sm:text-5xl">Start with one workflow. Improve with every call.</h2>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <Link className="inline-flex min-h-12 items-center rounded-lg bg-[#111827] px-7 font-extrabold text-white" href="/dashboard">Try for free</Link>
-              <Link className="inline-flex min-h-12 items-center rounded-lg border border-slate-900/20 bg-white px-7 font-extrabold" href={primaryAction.href}>Contact sales</Link>
+              <Link className="inline-flex min-h-12 items-center rounded-xl bg-[#45ddce] px-7 font-extrabold text-[#02110d] transition hover:bg-[#75fff0]" href="/dashboard">Try for free</Link>
+              <Link className="inline-flex min-h-12 items-center rounded-xl border border-white/15 bg-white/[0.05] px-7 font-extrabold text-white transition hover:border-[#45ddce]/40" href={primaryAction.href}>Contact sales</Link>
             </div>
           </div>
         </section>
