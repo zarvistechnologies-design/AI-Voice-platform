@@ -189,20 +189,13 @@ export function VoiceAgentConfigExplorer({
               <p>{activeItem.description}</p>
             </div>
 
-            <div className="voice-config-bar-chart">
+            <div className="voice-config-option-grid">
+              <p className="voice-config-option-grid-label">Included controls</p>
               {activeItem.options.map((option, optionIndex) => (
-                <div className="voice-config-chart-row" key={option}>
-                  <div className="voice-config-chart-label">
-                    <span>{option}</span>
-                    <small>{String(optionIndex + 1).padStart(2, "0")}</small>
-                  </div>
-                  <span className="voice-config-chart-track" aria-hidden="true">
-                    <span
-                      style={{
-                        width: `${[88, 72, 94, 80][(activeIndex + optionIndex) % 4]}%`,
-                      }}
-                    />
-                  </span>
+                <div className="voice-config-option" key={option}>
+                  <span className="voice-config-option-number">{String(optionIndex + 1).padStart(2, "0")}</span>
+                  <span>{option}</span>
+                  <span className="voice-config-option-check" aria-hidden="true">✓</span>
                 </div>
               ))}
             </div>
@@ -644,6 +637,264 @@ export function VoiceAgentConfigExplorer({
             gap: 0.7rem;
           }
 
+        }
+
+        .voice-config-option-grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 0.7rem;
+          padding: 1.35rem;
+          border: 1px solid rgba(var(--active-config-rgb), 0.18);
+          border-radius: 1rem;
+          background:
+            radial-gradient(circle at 100% 0%, rgba(var(--active-config-rgb), 0.12), transparent 42%),
+            rgba(255, 255, 255, 0.025);
+        }
+
+        .voice-config-option-grid-label {
+          grid-column: 1 / -1;
+          margin: 0 0 0.2rem;
+          color: var(--active-config-color) !important;
+          font-size: 0.65rem !important;
+          font-weight: 900;
+          letter-spacing: 0.14em;
+          line-height: 1.2 !important;
+          text-transform: uppercase;
+        }
+
+        .voice-config-option {
+          display: grid;
+          grid-template-columns: 1.75rem minmax(0, 1fr) 1rem;
+          align-items: center;
+          gap: 0.6rem;
+          min-height: 3.2rem;
+          padding: 0.65rem;
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 0.65rem;
+          background: rgba(3, 8, 11, 0.48);
+          color: rgba(255, 255, 255, 0.78);
+          font-size: 0.78rem;
+          font-weight: 650;
+        }
+
+        .voice-config-option-number {
+          color: var(--active-config-color);
+          font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+          font-size: 0.62rem;
+          font-weight: 900;
+        }
+
+        .voice-config-option-check {
+          color: var(--active-config-color);
+          font-size: 0.85rem;
+          font-weight: 900;
+        }
+
+        @media (min-width: 900px) {
+          .voice-config-explorer {
+            display: grid;
+            grid-template-columns: minmax(245px, 0.48fr) minmax(0, 1.52fr);
+            align-items: stretch;
+            border-color: rgba(141, 215, 255, 0.2);
+            background: #050a0d;
+          }
+
+          .voice-config-explorer-main {
+            grid-column: 2;
+            grid-row: 1;
+            border-bottom: 0;
+            border-left: 1px solid rgba(255, 255, 255, 0.08);
+          }
+
+          .voice-config-tabs {
+            grid-column: 1;
+            grid-row: 1;
+            display: grid;
+            grid-auto-flow: row;
+            grid-auto-rows: minmax(0, 1fr);
+            grid-auto-columns: auto;
+            overflow: hidden;
+            padding: 0.7rem;
+            background:
+              linear-gradient(180deg, rgba(117, 186, 255, 0.07), transparent 28%),
+              rgba(3, 8, 11, 0.96);
+          }
+
+          .voice-config-tabs > button,
+          .voice-config-explorer-compact .voice-config-tabs > button {
+            min-height: 0;
+            grid-template-columns: 2rem minmax(0, 1fr);
+            gap: 0.8rem;
+            padding: 0.85rem 0.8rem;
+            border: 1px solid transparent;
+            border-right: 0;
+            border-radius: 0.7rem;
+          }
+
+          .voice-config-tabs > button.is-active {
+            border-color: rgba(var(--active-config-rgb), 0.28);
+            background: linear-gradient(100deg, rgba(var(--active-config-rgb), 0.16), rgba(var(--active-config-rgb), 0.045));
+            box-shadow: inset 3px 0 var(--active-config-color), 0 8px 22px rgba(var(--active-config-rgb), 0.06);
+          }
+
+          .voice-config-tab-icon {
+            width: 2rem;
+            height: 2rem;
+            border: 1px solid rgba(var(--active-config-rgb), 0.18);
+            border-radius: 0.55rem;
+            background: rgba(var(--active-config-rgb), 0.06);
+          }
+
+          .voice-config-tabs strong {
+            font-size: 0.84rem;
+          }
+
+          .voice-config-tabs em {
+            font-size: 0.64rem;
+          }
+
+          .voice-config-detail {
+            min-height: 100%;
+            padding: 2.5rem clamp(2rem, 4vw, 4rem);
+          }
+
+          .voice-config-detail-body {
+            grid-template-columns: minmax(0, 0.9fr) minmax(310px, 1.1fr);
+            gap: clamp(2rem, 4vw, 4.5rem);
+          }
+        }
+
+        @media (max-width: 639px) {
+          .voice-config-option-grid {
+            grid-template-columns: 1fr;
+            padding: 1rem;
+          }
+        }
+
+        /* Center the selected configuration panel on the right */
+        .voice-config-detail {
+          display: flex;
+          min-height: 540px;
+          align-items: center;
+          justify-content: center;
+          padding: clamp(2rem, 5vw, 4rem);
+        }
+
+        .voice-config-detail-body {
+          width: min(100%, 760px);
+          grid-template-columns: minmax(0, 1fr);
+          gap: 3.25rem;
+        }
+
+        .voice-config-detail-copy {
+          width: min(100%, 700px);
+          margin: 0 auto;
+        }
+
+        .voice-config-detail-progress {
+          width: 100%;
+          max-width: none;
+        }
+
+        .voice-config-title-row {
+          gap: 1.25rem;
+          margin-top: 2.5rem;
+        }
+
+        .voice-config-detail-icon {
+          width: 4.2rem;
+          height: 4.2rem;
+          border: 1px solid rgba(var(--active-config-rgb), 0.28);
+          border-left: 3px solid var(--active-config-color);
+          border-radius: 0.25rem;
+          background: linear-gradient(135deg, rgba(var(--active-config-rgb), 0.15), rgba(var(--active-config-rgb), 0.03));
+        }
+
+        .voice-config-detail-icon svg {
+          width: 2.15rem;
+          height: 2.15rem;
+        }
+
+        .voice-config-detail h3 {
+          max-width: none;
+          font-size: clamp(2rem, 4vw, 2.5rem);
+          line-height: 1.08;
+        }
+
+        .voice-config-detail-copy > p {
+          max-width: 680px;
+          margin-top: 1.5rem;
+          color: #a8b8ce;
+          font-size: clamp(1rem, 1.8vw, 1.25rem);
+          line-height: 1.75;
+        }
+
+        .voice-config-option-grid {
+          width: min(100%, 680px);
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 1rem;
+          margin: 0 auto;
+          padding: 2rem;
+          border: 1px solid rgba(117, 186, 255, 0.26);
+          border-radius: 1.25rem;
+          background: linear-gradient(145deg, rgba(117, 186, 255, 0.08), rgba(255, 255, 255, 0.018));
+        }
+
+        .voice-config-option-grid-label {
+          margin-bottom: 0.85rem;
+          color: #75baff !important;
+          font-size: 0.78rem !important;
+        }
+
+        .voice-config-option {
+          min-height: 5.2rem;
+          padding: 1rem 1.1rem;
+          border-color: rgba(255, 255, 255, 0.1);
+          border-radius: 0.9rem;
+          background: rgba(3, 8, 11, 0.58);
+          color: rgba(255, 255, 255, 0.82);
+          font-size: 0.95rem;
+        }
+
+        .voice-config-option-check {
+          color: #75baff;
+          font-size: 1.35rem;
+        }
+
+        @media (max-width: 639px) {
+          .voice-config-detail {
+            min-height: 0;
+            align-items: flex-start;
+            padding: 1.5rem;
+          }
+
+          .voice-config-detail-body {
+            gap: 2rem;
+          }
+
+          .voice-config-title-row {
+            align-items: flex-start;
+            margin-top: 1.75rem;
+          }
+
+          .voice-config-detail-icon {
+            width: 3.3rem;
+            height: 3.3rem;
+          }
+
+          .voice-config-detail h3 {
+            font-size: 1.7rem;
+          }
+
+          .voice-config-option-grid {
+            grid-template-columns: 1fr;
+            gap: 0.7rem;
+            padding: 1rem;
+          }
+
+          .voice-config-option {
+            min-height: 3.8rem;
+          }
         }
 
         @media (prefers-reduced-motion: reduce) {
