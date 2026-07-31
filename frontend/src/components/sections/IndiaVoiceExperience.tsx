@@ -115,6 +115,7 @@ function FeatureIcon({ name }: { name: "chat" | "bolt" | "shield" }) {
 export function IndiaVoiceExperience() {
   const [activeCode, setActiveCode] = useState("hi");
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [showAllLanguages, setShowAllLanguages] = useState(false);
   const runRef = useRef(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const active = languages.find((language) => language.code === activeCode) ?? languages[0];
@@ -177,17 +178,17 @@ export function IndiaVoiceExperience() {
       <div className="india-voice-intro">
         <div className="india-voice-eyebrow"><WaveMark /> Voice AI for global conversations</div>
         <h2 id="india-voice-title">
-          <span className="india-heading-line">Every Language.</span>
-          <span className="india-heading-line">Every Conversation<span className="india-heading-dot">.</span></span>
+          <span className="india-heading-line">Speak every customer&apos;s</span>
+          <span className="india-heading-line">language<span className="india-heading-dot">.</span></span>
         </h2>
-        <p>Speak with customers around the world in the language they are most comfortable with. Deliver natural conversations while keeping the same workflow, context, and quality.</p>
+        <p>Deploy natural AI phone agents across 140+ languages and dialects while keeping the same workflows, integrations, and human handoffs.</p>
       </div>
 
       <div className="india-voice-layout">
         <div className="india-voice-copy">
           <span className="india-language-label">Choose language</span>
           <div className="india-language-list">
-            {languages.map((language) => (
+            {(showAllLanguages ? languages : languages.slice(0, 8)).map((language) => (
               <button
                 aria-pressed={active.code === language.code}
                 className={active.code === language.code ? "is-active" : ""}
@@ -202,14 +203,15 @@ export function IndiaVoiceExperience() {
               </button>
             ))}
           </div>
-          <div className="india-more-languages">
-            <span>◎</span> + More Languages
-          </div>
+          <button className="india-more-languages" onClick={() => setShowAllLanguages((current) => !current)} type="button">
+            <span>{showAllLanguages ? "−" : "+"}</span>
+            {showAllLanguages ? "Show fewer languages" : `View all ${languages.length} languages`}
+          </button>
         </div>
 
         <div className="india-agent">
-          <div className="india-agent-heading"><WaveMark /> Talk to agent</div>
-          <p>Start speaking in your preferred language</p>
+          <div className="india-agent-heading"><WaveMark /> Try Vozon in your language</div>
+          <p>Select a language, then tap the microphone to hear the agent.</p>
           <div className={`india-mic-stage ${isSpeaking ? "is-speaking" : ""}`}>
             <div className="india-mic-wave">
               {waveBars.map((height, index) => <i key={index} style={{ height, animationDelay: `${index * -54}ms` }} />)}
@@ -220,7 +222,7 @@ export function IndiaVoiceExperience() {
               <span className="india-mic-core"><MicrophoneIcon /></span>
             </button>
           </div>
-          <strong aria-live="polite">{isSpeaking ? `Speaking ${active.name}...` : "Listening..."}</strong>
+          <strong aria-live="polite">{isSpeaking ? `Speaking ${active.name}...` : `Tap to start in ${active.name}`}</strong>
           <div className="india-listening-dots" aria-hidden="true">
             {[0, 1, 2, 3, 4, 5, 6, 7].map((dot) => <i className={dot === 0 || dot === 1 || dot === 5 ? "is-lit" : ""} key={dot} />)}
           </div>
@@ -241,22 +243,23 @@ export function IndiaVoiceExperience() {
       </div>
 
       <style jsx global>{`
-        .india-voice-experience{--iv-accent:#45ddce;--iv-bright:#75fff0;position:relative;box-sizing:border-box;width:100%;margin:0;padding:3rem 2rem;overflow:hidden;border:0;background:#000;color:#fff}
-        .india-voice-experience:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 84% 32%,rgba(69,221,206,.09),transparent 29%),radial-gradient(circle at 49% 56%,rgba(69,221,206,.05),transparent 23%);pointer-events:none}
-        .india-voice-intro{position:relative;z-index:1;max-width:820px;margin:0 auto 2.75rem;text-align:center}.india-voice-intro .india-voice-eyebrow{justify-content:center}
-        .india-voice-layout{position:relative;display:grid;grid-template-columns:minmax(300px,.96fr) minmax(330px,1.08fr) minmax(280px,.86fr);align-items:center;gap:2rem}
+        .india-voice-experience{--iv-accent:#45ddce;--iv-bright:#75fff0;position:relative;box-sizing:border-box;width:calc(100% - 3rem);max-width:1500px;margin:4rem auto;padding:5.5rem 2rem 4rem;overflow:hidden;scroll-margin-top:96px;border:1px solid transparent;border-radius:32px;background:linear-gradient(#000,#000) padding-box,linear-gradient(118deg,rgba(69,221,206,.88),rgba(24,104,202,.45) 35%,rgba(118,48,190,.58) 67%,rgba(236,0,151,.76)) border-box;box-shadow:0 0 0 1px rgba(255,255,255,.025),0 26px 90px rgba(0,0,0,.52),0 0 46px rgba(69,221,206,.08),0 0 70px rgba(190,0,151,.055);color:#fff}
+        .india-voice-experience:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 84% 32%,rgba(40,118,255,.11),transparent 29%),radial-gradient(circle at 49% 56%,rgba(69,221,206,.075),transparent 23%),radial-gradient(circle at 8% 72%,rgba(223,0,154,.07),transparent 26%);pointer-events:none}
+        .india-voice-experience:after{content:"";position:absolute;inset:0;border-radius:31px;box-shadow:inset 0 1px 0 rgba(255,255,255,.07),inset 0 0 54px rgba(69,221,206,.025);pointer-events:none}
+        .india-voice-intro{position:relative;z-index:1;max-width:920px;margin:0 auto 3.5rem;text-align:center}.india-voice-intro .india-voice-eyebrow{justify-content:center}
+        .india-voice-layout{position:relative;z-index:1;display:grid;grid-template-columns:minmax(300px,.96fr) minmax(330px,1.08fr) minmax(260px,.8fr);align-items:center;gap:2.5rem}
         .india-voice-eyebrow,.india-agent-heading{display:flex;align-items:center;gap:.75rem;color:var(--iv-bright);font-size:.68rem;font-weight:900;letter-spacing:.18em;text-transform:uppercase}
         .india-voice-wave-mark{display:inline-flex;height:25px;align-items:center;gap:3px}.india-voice-wave-mark i{display:block;width:2px;border-radius:4px;background:var(--iv-accent);animation:iv-wave .75s ease-in-out infinite alternate}
-        .india-voice-intro h2{margin:1.25rem 0 .9rem;font-size:clamp(2.55rem,4vw,3.7rem);font-weight:900;line-height:1.02;letter-spacing:-.052em}.india-heading-line{display:block;color:#fff;white-space:nowrap}.india-heading-line .india-heading-dot{color:var(--iv-accent)}
-        .india-voice-intro>p{max-width:680px;margin:0 auto;color:rgba(255,255,255,.56);font-size:.92rem;line-height:1.75}
+        .india-voice-intro h2{margin:1.25rem 0 1rem;font-size:clamp(2.75rem,5vw,5.25rem);font-weight:900;line-height:.94;letter-spacing:-.055em}.india-heading-line{display:block;color:#fff;white-space:nowrap}.india-heading-line .india-heading-dot{color:var(--iv-accent)}
+        .india-voice-intro>p{max-width:760px;margin:0 auto;color:rgba(255,255,255,.72);font-size:1rem;line-height:1.75}
         .india-language-label{display:block;margin-top:0;color:var(--iv-bright);font-size:.68rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
         .india-language-list{display:grid;grid-template-columns:1fr 1fr;gap:.35rem .7rem;margin-top:.8rem}
         .india-language-list button{position:relative;display:grid;min-width:0;grid-template-columns:36px minmax(0,1fr);grid-template-rows:auto auto;align-items:center;column-gap:.6rem;row-gap:.05rem;min-height:50px;padding:.35rem 1.75rem .35rem .3rem;border:1px solid transparent;border-radius:14px;background:transparent;color:#fff;text-align:left;cursor:pointer;transition:.2s}
         .india-language-list button:hover{background:rgba(69,221,206,.055);border-color:rgba(69,221,206,.17)}.india-language-list button.is-active{border-color:rgba(69,221,206,.72);background:rgba(69,221,206,.075);box-shadow:0 0 24px rgba(69,221,206,.11)}
         .india-language-glyph{display:grid;grid-row:1/3;width:34px;height:34px;place-items:center;border:1px solid rgba(255,255,255,.1);border-radius:10px;font-size:.9rem}.is-active .india-language-glyph{color:var(--iv-bright);border-color:rgba(69,221,206,.32);background:rgba(69,221,206,.08);box-shadow:inset 0 0 14px rgba(69,221,206,.1)}
         .india-language-native{min-width:0;overflow:hidden;color:rgba(255,255,255,.92);font-size:.82rem;line-height:1.1;text-overflow:ellipsis;white-space:nowrap}.india-language-name{color:rgba(255,255,255,.38);font-size:.63rem;line-height:1.1;white-space:nowrap}.india-language-check{position:absolute;right:.55rem;top:50%;display:grid;width:16px;height:16px;place-items:center;border-radius:50%;background:var(--iv-accent);color:#03110f;font-size:.65rem;font-weight:900;transform:translateY(-50%)}
-        .india-more-languages{display:flex;align-items:center;gap:.65rem;margin-top:.75rem;color:var(--iv-bright);font-size:.7rem;font-weight:700}.india-more-languages span{display:grid;width:34px;height:34px;place-items:center;border:1px solid rgba(69,221,206,.22);border-radius:10px;font-size:1.35rem}
-        .india-agent{align-self:center;text-align:center}.india-agent-heading{justify-content:center}.india-agent>p{margin:.75rem 0 0;color:rgba(255,255,255,.42);font-size:.72rem}
+        .india-more-languages{display:flex;align-items:center;gap:.65rem;margin-top:.85rem;padding:0;border:0;background:transparent;color:var(--iv-bright);font-size:.7rem;font-weight:800;cursor:pointer}.india-more-languages span{display:grid;width:34px;height:34px;place-items:center;border:1px solid rgba(69,221,206,.28);border-radius:10px;background:rgba(69,221,206,.04);font-size:1.15rem}.india-more-languages:hover span{border-color:rgba(69,221,206,.62);box-shadow:0 0 20px rgba(69,221,206,.12)}
+        .india-agent{align-self:center;text-align:center}.india-agent-heading{justify-content:center}.india-agent>p{max-width:300px;margin:.75rem auto 0;color:rgba(255,255,255,.58);font-size:.74rem;line-height:1.55}
         .india-mic-stage{position:relative;display:grid;height:310px;place-items:center}.india-mic-wave{position:absolute;right:-5%;left:-5%;display:flex;height:78px;align-items:center;justify-content:center;gap:4px;filter:drop-shadow(0 0 7px rgba(69,221,206,.45))}
         .india-mic-wave:after,.india-mic-wave:before{content:"";height:1px;flex:1;background:linear-gradient(90deg,transparent,var(--iv-accent))}.india-mic-wave:after{background:linear-gradient(90deg,var(--iv-accent),transparent)}
         .india-mic-wave i{width:2px;border-radius:4px;background:var(--iv-bright);opacity:.8;animation:iv-wave 1s ease-in-out infinite alternate}.india-mic-stage:not(.is-speaking) .india-mic-wave i{animation-duration:2.3s;opacity:.4}
@@ -271,9 +274,9 @@ export function IndiaVoiceExperience() {
         .india-globe-surface-photo{position:absolute;z-index:2;inset:0;border-radius:50%;background-image:url("/earth-surface-v2.webp");background-repeat:repeat-x;background-position:52% 50%;background-size:auto 100%;filter:saturate(1.08) contrast(1.04);animation:iv-earth-rotate 28s linear infinite;will-change:background-position}.india-globe-map{display:none}
         .india-world-features{width:calc(100% - 1.4rem);margin:.45rem 0 0 1.4rem;padding-left:1.15rem;border-left:1px solid rgba(69,221,206,.12)}.india-world-features>div{display:flex;align-items:center;gap:.9rem;padding:.55rem 0}.india-world-features svg{width:27px;fill:none;stroke:var(--iv-accent);stroke-width:2}.india-world-features span{display:flex;flex-direction:column;gap:.2rem}.india-world-features strong{font-size:.76rem}.india-world-features small{color:rgba(255,255,255,.38);font-size:.64rem}
         @keyframes iv-wave{from{transform:scaleY(.5);opacity:.45}to{transform:scaleY(1.12);opacity:1}}@keyframes iv-spin{to{transform:rotate(360deg)}}@keyframes iv-pulse{50%{transform:scale(1.08);box-shadow:0 0 35px rgba(69,221,206,.3)}}@keyframes iv-earth-rotate{from{background-position:52% 50%}to{background-position:-148% 50%}}
-        @media(max-width:1050px){.india-voice-experience{width:100%;padding-inline:1.5rem}.india-voice-layout{grid-template-columns:1fr 1fr}.india-world{grid-column:1/-1;display:grid;grid-template-columns:minmax(280px,400px) 280px;justify-content:center}.india-globe-wrap{width:340px}.india-world-features{width:100%;margin:0;align-self:center}}
-        @media(max-width:720px){.india-voice-experience{width:100%;margin-top:0;padding:2.5rem 1rem}.india-voice-intro{margin-bottom:2.25rem}.india-voice-layout{grid-template-columns:minmax(0,1fr);gap:3.25rem}.india-voice-copy{text-align:center}.india-voice-eyebrow{justify-content:center}.india-language-list{text-align:left}.india-agent{padding-top:.5rem}.india-world{grid-column:auto;display:flex}.india-globe-wrap{width:min(100%,340px)}.india-world-features{max-width:300px;margin:.5rem auto 0}.india-mic-stage{height:300px}}
-        @media(max-width:540px){.india-voice-copy{width:100%;min-width:0;max-width:100%;overflow:hidden}.india-language-list{box-sizing:border-box;width:100%;max-width:100%;grid-template-columns:minmax(0,1fr)}.india-language-list button{box-sizing:border-box;width:100%;max-width:100%;grid-template-columns:36px minmax(0,1fr);overflow:hidden}.india-language-native{overflow:hidden;text-overflow:ellipsis}.india-voice-intro h2{font-size:2.15rem;overflow-wrap:anywhere}.india-mic-wave{right:-8%;left:-8%}}
+        @media(max-width:1050px){.india-voice-experience{width:calc(100% - 2rem);padding:4.75rem 1.5rem 3.5rem}.india-voice-layout{grid-template-columns:1fr 1fr}.india-world{grid-column:1/-1;display:grid;grid-template-columns:minmax(260px,360px) 280px;justify-content:center}.india-globe-wrap{width:310px}.india-world-features{width:100%;margin:0;align-self:center}}
+        @media(max-width:720px){.india-voice-experience{width:calc(100% - 1rem);margin:2rem auto;padding:4rem 1rem 2.75rem;border-radius:24px}.india-voice-intro{margin-bottom:2.5rem}.india-voice-layout{grid-template-columns:minmax(0,1fr);gap:3.25rem}.india-voice-copy{text-align:center}.india-voice-eyebrow{justify-content:center}.india-language-list{text-align:left}.india-more-languages{justify-content:center}.india-agent{padding-top:.5rem}.india-world{grid-column:auto;display:flex}.india-globe-wrap{width:min(100%,300px)}.india-world-features{max-width:300px;margin:.5rem auto 0}.india-mic-stage{height:300px}}
+        @media(max-width:540px){.india-voice-copy{width:100%;min-width:0;max-width:100%;overflow:hidden}.india-language-list{box-sizing:border-box;width:100%;max-width:100%;grid-template-columns:minmax(0,1fr)}.india-language-list button{box-sizing:border-box;width:100%;max-width:100%;grid-template-columns:36px minmax(0,1fr);overflow:hidden}.india-language-native{overflow:hidden;text-overflow:ellipsis}.india-voice-intro h2{font-size:2.15rem;overflow-wrap:anywhere}.india-heading-line{white-space:normal}.india-mic-wave{right:-8%;left:-8%}}
         @media(prefers-reduced-motion:reduce){.india-voice-experience *{animation:none!important}}
       `}</style>
     </section>
