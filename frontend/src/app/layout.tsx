@@ -15,8 +15,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "vozon.ai",
-  description: "AI voice agents for sales, support, scheduling, and customer follow-up.",
+  metadataBase: new URL("https://www.vozon.ai"),
+  title: "AI Voice Agent Platform for Phone Call Automation | Vozon",
+  description: "Build multilingual AI phone agents for inbound and outbound calls, lead qualification, appointment booking, customer support, and workflow automation.",
+  applicationName: "Vozon",
+  keywords: ["AI voice agent", "AI phone agent", "voice AI platform", "automated phone calls", "AI receptionist", "call automation"],
+  authors: [{ name: "Vozon", url: "https://www.vozon.ai" }],
+  creator: "Vozon",
+  publisher: "Vozon",
+  openGraph: { type: "website", locale: "en_US", url: "/", siteName: "Vozon", title: "AI Voice Agent Platform for Phone Call Automation | Vozon", description: "Build multilingual AI phone agents that answer calls, qualify leads, book appointments, and automate customer workflows." },
+  twitter: { card: "summary_large_image", title: "AI Voice Agent Platform for Phone Call Automation | Vozon", description: "Build multilingual AI phone agents that answer calls, qualify leads, book appointments, and automate customer workflows." },
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
+  category: "technology",
 };
 
 export default function RootLayout({

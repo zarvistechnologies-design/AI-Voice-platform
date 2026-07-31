@@ -31,8 +31,9 @@ export async function generateMetadata({ params }: ResourcePageProps) {
   }
 
   return {
-    title: `${resource.title} | vozon.ai`,
+    title: `${resource.title} | Vozon`,
     description: resource.summary,
+    alternates: { canonical: `/resources/${resource.slug}` },
   };
 }
 

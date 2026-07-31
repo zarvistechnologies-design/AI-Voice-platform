@@ -56,8 +56,9 @@ export function generateIndustryMetadata(slug: string) {
   }
 
   return {
-    title: `${industry.title} | vozon.ai`,
+    title: `AI Phone Agents for ${industry.title} | Vozon`,
     description: industry.summary,
+    alternates: { canonical: `/business/industries/${industry.slug}` },
   };
 }
 
