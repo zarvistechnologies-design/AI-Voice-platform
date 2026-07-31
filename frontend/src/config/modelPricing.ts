@@ -48,6 +48,7 @@ export const modelPricingCategories: readonly ModelPriceCategory[] = [
         accent: "#45ddce",
         sourceUrl: OPENAI_PRICING,
         models: [
+          { name: "gpt-5.6-luna", rate: "$1.00 in · $6.00 out", unit: "per 1M tokens", detail: "$0.10 cached input", badge: "Recommended" },
           { name: "gpt-5.4", rate: "$2.50 in · $15.00 out", unit: "per 1M tokens", badge: "Recommended" },
           { name: "gpt-5.3-chat-latest", rate: "$1.75 in · $14.00 out", unit: "per 1M tokens", badge: "Legacy" },
           { name: "gpt-5.2", rate: "$1.75 in · $14.00 out", unit: "per 1M tokens" },
