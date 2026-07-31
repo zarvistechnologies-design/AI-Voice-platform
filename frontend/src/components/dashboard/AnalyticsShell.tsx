@@ -1,17 +1,12 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
+import { AdvancedAnalyticsCharts } from "@/components/dashboard/AdvancedAnalyticsCharts";
 import { getServerSession, getSession, logoutSession, subscribeToSession, validateStoredSession } from "@/lib/auth";
 import { publicVoiceMessage, voiceApi, type AnalyticsOverview } from "@/lib/voice";
-
-const AdvancedAnalyticsCharts = dynamic(
-  () => import("@/components/dashboard/AdvancedAnalyticsCharts").then((module) => module.AdvancedAnalyticsCharts),
-  { ssr: false, loading: () => <div className="mt-5 h-[360px] animate-pulse rounded-xl border border-[#29433e] bg-white/[.025]" aria-label="Loading analytics charts" /> },
-);
 
 const EMPTY: AnalyticsOverview = {
   range: { from: "", to: "" },
