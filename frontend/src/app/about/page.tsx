@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "About vozon.ai | Turning Conversations into Action",
   description:
     "Learn how vozon.ai turns live phone conversations into connected, trackable business workflows with AI voice agents.",
+  alternates: { canonical: "/about" },
 };
 
 const workflowSteps = [

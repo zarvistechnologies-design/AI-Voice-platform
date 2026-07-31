@@ -5,6 +5,7 @@ import { DocsExperience } from "@/components/docs/DocsExperience";
 export const metadata: Metadata = {
   title: "Documentation | Vozon",
   description: "Build, launch, and monitor production voice agents with Vozon.",
+  alternates: { canonical: "/docs" },
 };
 
 export default function DocsPage() {

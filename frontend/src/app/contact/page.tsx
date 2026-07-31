@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "Contact Sales | vozon.ai",
   description:
     "Talk to the vozon.ai team about voice agents, enterprise rollouts, pricing, integrations, and your customer conversation workflows.",
+  alternates: { canonical: "/contact" },
 };
 
 export default function ContactPage() {
