@@ -38,7 +38,7 @@ export function AudioWaveHero() {
     const waveY = (x: number, time: number, layer: number) => {
       const position = x / Math.max(width, 1);
       const envelope = 0.62 + Math.sin(position * Math.PI) * 0.38;
-      return height * 0.59
+      return height * 0.72
         + Math.sin(position * Math.PI * (3.2 + layer * 0.09) + time * (0.42 + layer * 0.018) + layer * 0.74)
           * height * (0.105 + layer * 0.003) * envelope
         + Math.sin(position * Math.PI * 7.4 - time * 0.28 + layer) * height * 0.025;

@@ -444,12 +444,12 @@ function IntegrationAppLogo({ app }: { app: (typeof appIntegrations)[number] }) 
 
 function GlowButton({ children, href }: { children: string; href: string }) {
   return (
-    <a
+    <Link
       className="vozon-glow-button inline-flex min-h-12 items-center justify-center rounded-[14px] px-7 text-sm font-black text-[#02110d]"
       href={href}
     >
       {children}
-    </a>
+    </Link>
   );
 }
 
@@ -460,23 +460,26 @@ export function HomePlatformSections() {
 
   return (
     <div className="vozon-home relative isolate overflow-x-clip bg-black text-white">
-      <section id="product" className="relative flex min-h-screen w-full items-center justify-center overflow-hidden px-5 pb-10 pt-28 text-center sm:px-8 lg:pt-32">
+      <section id="product" className="relative flex min-h-[700px] w-full items-center justify-center overflow-hidden px-5 pb-12 pt-24 text-center sm:min-h-[740px] sm:px-8 sm:pt-28 lg:min-h-[760px] lg:pt-28">
         <AudioWaveHero />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_15%,rgba(0,0,0,.16)_60%,rgba(0,0,0,.86)_100%)]" />
-        <div className="relative z-10 mx-auto w-full max-w-[1280px]">
-        <div className="mx-auto mb-7 inline-flex items-center gap-2 rounded-full border border-white/16 bg-black/30 px-4 py-2 text-xs font-semibold text-white/80 shadow-[inset_0_0_22px_rgba(255,255,255,0.04)] backdrop-blur">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_40%,rgba(0,0,0,.76)_0%,rgba(0,0,0,.48)_34%,transparent_64%),radial-gradient(ellipse_at_center,transparent_15%,rgba(0,0,0,.2)_60%,rgba(0,0,0,.9)_100%)]" />
+        <div className="relative z-10 mx-auto w-full max-w-[1180px]">
+        <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-white/16 bg-black/45 px-4 py-2 text-xs font-semibold text-white/85 shadow-[inset_0_0_22px_rgba(255,255,255,0.04)] backdrop-blur">
           <span className="size-2 rounded-full bg-[#22f4d2] shadow-[0_0_14px_#22f4d2]" />
-          Voice Agents Live Now
+          Multilingual AI Phone Agents
         </div>
-        <h1 className="mx-auto m-0 max-w-5xl text-[clamp(1.75rem,8vw,2.1rem)] font-black leading-[1.02] tracking-[-0.025em] text-white [overflow-wrap:anywhere] sm:text-[clamp(2.1rem,5.6vw,4.7rem)] sm:leading-[0.98] sm:tracking-[-0.03em]">
-          Launch enterprise-ready{" "}
-          <span>AI voice agents</span>
+        <h1 className="mx-auto m-0 max-w-5xl text-[clamp(2.25rem,9vw,3.25rem)] font-black leading-[1.04] tracking-[-0.035em] text-white sm:text-[clamp(3.25rem,5.2vw,4.6rem)] sm:leading-[0.98]">
+          AI phone agents that{" "}
+          <span className="bg-gradient-to-r from-white via-cyan-100 to-[#75fff0] bg-clip-text text-transparent">answer, act, and convert.</span>
         </h1>
-        <p className="mx-auto mt-6 max-w-3xl text-sm leading-7 text-white/56 sm:text-base">
-          vozon.ai helps teams answer every call, qualify every lead, book every next step, and turn conversations into clean workflows for sales, support, and operations.
+        <p className="mx-auto mt-6 max-w-[760px] text-base leading-7 font-medium text-white/78 drop-shadow-[0_2px_12px_rgba(0,0,0,.9)] sm:text-lg sm:leading-8">
+          Automate inbound and outbound calls, qualify leads, book appointments, and update your business systems—in every language, 24/7.
         </p>
-        <div className="mt-8 flex justify-center">
-          <GlowButton href="/dashboard">Deploy Now</GlowButton>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <GlowButton href="/dashboard">Build Your First Agent</GlowButton>
+          <Link className="inline-flex min-h-12 items-center justify-center rounded-[14px] border border-white/20 bg-black/45 px-7 text-sm font-black text-white shadow-[inset_0_1px_0_rgba(255,255,255,.08)] backdrop-blur transition hover:border-[#75fff0]/55 hover:bg-white/10" href="/contact">
+            Book a Live Demo
+          </Link>
         </div>
         </div>
       </section>
