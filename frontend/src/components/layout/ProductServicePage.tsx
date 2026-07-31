@@ -107,11 +107,108 @@ const voiceAgentBuildSteps = [
   },
 ] as const;
 
+const voiceAgentCapabilities = [
+  {
+    title: "Answer every call",
+    body: "Handle customer calls around the clock, even during your busiest hours.",
+    icon: "call",
+    color: "#35fbe0",
+  },
+  {
+    title: "Understand naturally",
+    body: "Follow language, interruptions, follow-up questions, and changing requests.",
+    icon: "conversation",
+    color: "#75baff",
+  },
+  {
+    title: "Complete tasks",
+    body: "Book appointments, update CRMs, create tickets, and capture qualified details.",
+    icon: "checklist",
+    color: "#a99cff",
+  },
+  {
+    title: "Access knowledge",
+    body: "Give accurate answers from approved FAQs, documents, policies, and data.",
+    icon: "knowledge",
+    color: "#ffb37d",
+  },
+  {
+    title: "Handoff to humans",
+    body: "Transfer calls with the full context and conversation history when needed.",
+    icon: "handoff",
+    color: "#ff9fb7",
+  },
+  {
+    title: "Learn and improve",
+    body: "Use transcripts, summaries, outcomes, and analytics to improve over time.",
+    icon: "insights",
+    color: "#f6db75",
+  },
+] as const;
+
 function Pill({ children }: { children: ReactNode }) {
   return (
     <span className="service-pill inline-flex rounded-full px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-[0.12em]">
       {children}
     </span>
+  );
+}
+
+type VoiceAgentCapabilityIconName = "call" | "conversation" | "checklist" | "knowledge" | "handoff" | "insights";
+
+function VoiceAgentCapabilityIcon({ name }: { name: VoiceAgentCapabilityIconName }) {
+  const common = { fill: "none", stroke: "currentColor", strokeLinecap: "round" as const, strokeLinejoin: "round" as const, strokeWidth: 1.6 };
+
+  if (name === "call") {
+    return (
+      <svg aria-hidden="true" className="size-5" viewBox="0 0 24 24" {...common}>
+        <path d="M6.5 5.5c1.9-.6 3.8 0 5.1 1.3l1 1c.6.6.8 1.4.4 2.1l-1.2 2c-.4.7-.2 1.5.4 2.1l1 1c1.3 1.3 1.9 3.2 1.3 5.1-.5 1.6-1.8 2.9-3.4 3.4-2.9.9-6-.1-8.1-2.2C3.1 13.9 2.2 9.9 3.1 7c.5-1.6 1.8-2.9 3.4-3.4Z" />
+      </svg>
+    );
+  }
+
+  if (name === "conversation") {
+    return (
+      <svg aria-hidden="true" className="size-5" viewBox="0 0 24 24" {...common}>
+        <path d="M5 6h14a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H8l-3 3V7a1 1 0 0 1 1-1Z" />
+        <path d="M7 9h10M7 13h6" />
+      </svg>
+    );
+  }
+
+  if (name === "checklist") {
+    return (
+      <svg aria-hidden="true" className="size-5" viewBox="0 0 24 24" {...common}>
+        <path d="M5 5.5h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-12a1 1 0 0 1 1-1Z" />
+        <path d="M8.5 11.5 10.5 13.5 15.5 8.5" />
+        <path d="M8.5 16.5h3M14.5 12.5h2" />
+      </svg>
+    );
+  }
+
+  if (name === "knowledge") {
+    return (
+      <svg aria-hidden="true" className="size-5" viewBox="0 0 24 24" {...common}>
+        <path d="M6 4.5h12a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-13a1 1 0 0 1 1-1Z" />
+        <path d="M6 7.5h12M6 11.5h12" />
+      </svg>
+    );
+  }
+
+  if (name === "handoff") {
+    return (
+      <svg aria-hidden="true" className="size-5" viewBox="0 0 24 24" {...common}>
+        <path d="M8 7h8M8 7l4-4m0 4-4 4" />
+        <path d="M8 17h8M16 17l-4 4m4-4-4-4" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg aria-hidden="true" className="size-5" viewBox="0 0 24 24" {...common}>
+      <path d="M6 16.5V11l3-3 2 2 4-4 4 4v8.5H6Z" />
+      <path d="M14 12.5h4" />
+    </svg>
   );
 }
 
@@ -322,6 +419,51 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
             <ProductServiceHeroPhoto slug={service.slug} title={service.title} />
           </div>
         </section>
+
+        {isVoiceAgents && (
+          <section className="voice-capabilities-section relative overflow-hidden border-b border-white/[0.06] bg-black px-5 py-20 sm:px-8 sm:py-24">
+            <div className="voice-agent-container relative mx-auto max-w-[1240px]">
+              <div className="voice-capabilities-intro mx-auto max-w-4xl text-center">
+                {/* <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-[rgba(var(--service-accent-rgb),0.16)] bg-[rgba(var(--service-accent-rgb),0.08)] text-[var(--service-accent)] shadow-[0_0_0_18px_rgba(var(--service-accent-rgb),0.08)]">
+                  <svg aria-hidden="true" className="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9 12l2 2 4-4" />
+                    <path d="M21 12c0 4.97-4.03 9-9 9S3 16.97 3 12 7.03 3 12 3s9 4.03 9 9Z" />
+                  </svg>
+                </div> */}
+                <div className="flex justify-center"><Pill>Voice agent capabilities</Pill></div>
+                <h2 className="voice-blueprint-heading mt-6 font-semibold leading-tight tracking-[-0.045em]">
+                  Built to answer, understand, act, and hand off with clarity.
+                </h2>
+                <p className="voice-capabilities-copy mx-auto mt-6 max-w-3xl">
+                  These are the core capabilities your voice agent brings to every conversation, from consistent answers to confident task completion.
+                </p>
+              </div>
+
+              <div className="voice-capabilities-grid mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {voiceAgentCapabilities.map((capability) => (
+                  <article
+                    key={capability.title}
+                    className="voice-capability-card rounded-[1.75rem] border border-white/[0.08] bg-white/[0.03] p-7 transition duration-300 hover:-translate-y-1 hover:border-white/[0.16] hover:bg-white/[0.06]"
+                  >
+                    <div
+                      className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-3xl border text-current"
+                      style={{
+                        borderColor: `${capability.color}30`,
+                        backgroundColor: `${capability.color}12`,
+                        color: capability.color,
+                        boxShadow: `0 0 40px ${capability.color}10`,
+                      }}
+                    >
+                      <VoiceAgentCapabilityIcon name={capability.icon} />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white">{capability.title}</h3>
+                    <p className="mt-3 text-sm leading-7 text-slate-300">{capability.body}</p>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         <section className="agent-anatomy-section relative overflow-hidden border-b border-white/[0.06] bg-black px-5 py-20 sm:px-8 sm:py-24">
             <div className="voice-agent-container relative mx-auto max-w-[1240px]">
@@ -585,6 +727,49 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
             linear-gradient(90deg, rgba(53, 251, 224, 0.025), transparent 28%),
             linear-gradient(270deg, rgba(169, 156, 255, 0.025), transparent 30%),
             #000;
+        }
+
+        .voice-capabilities-section {
+          background:
+            linear-gradient(120deg, rgba(53, 251, 224, 0.02), transparent 32%),
+            linear-gradient(300deg, rgba(169, 156, 255, 0.02), transparent 32%),
+            #000;
+        }
+
+        .voice-capabilities-intro {
+          text-align: center;
+        }
+
+        .voice-capabilities-intro .service-pill {
+          border-color: rgba(var(--service-accent-rgb), 0.28);
+          background: rgba(var(--service-accent-rgb), 0.08);
+          color: var(--service-accent-soft);
+        }
+
+        .voice-capabilities-heading {
+          max-width: 14ch;
+          font-size: clamp(2.25rem, 4.4vw, 4.6rem);
+          line-height: 1.02;
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        .voice-capabilities-copy {
+          color: rgba(255, 255, 255, 0.58);
+          font-size: clamp(1rem, 1.5vw, 1.15rem);
+          line-height: 1.8;
+        }
+
+        .voice-capabilities-grid {
+          display: grid;
+        }
+
+        .voice-capability-card {
+          min-height: 190px;
+        }
+
+        .voice-capability-card {
+          min-height: 176px;
         }
 
         .agent-anatomy-list {
