@@ -1209,6 +1209,6 @@ export const voiceApi = {
     const query = new URLSearchParams();
     query.set("days", String(input.days ?? 30));
     if (input.agentId) query.set("agentId", input.agentId);
-    return request<AnalyticsOverview>(`/analytics/overview?${query.toString()}`);
+    return cachedRequest<AnalyticsOverview>(`/analytics/overview?${query.toString()}`, 30_000);
   },
 };

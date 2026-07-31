@@ -1,12 +1,17 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
-import { AdvancedAnalyticsCharts } from "@/components/dashboard/AdvancedAnalyticsCharts";
 import { getServerSession, getSession, logoutSession, subscribeToSession, validateStoredSession } from "@/lib/auth";
 import { publicVoiceMessage, voiceApi, type AnalyticsOverview } from "@/lib/voice";
+
+const AdvancedAnalyticsCharts = dynamic(
+  () => import("@/components/dashboard/AdvancedAnalyticsCharts").then((module) => module.AdvancedAnalyticsCharts),
+  { ssr: false, loading: () => <div className="mt-5 h-[360px] animate-pulse rounded-xl border border-[#29433e] bg-white/[.025]" aria-label="Loading analytics charts" /> },
+);
 
 const EMPTY: AnalyticsOverview = {
   range: { from: "", to: "" },
@@ -106,10 +111,18 @@ export function AnalyticsShell() {
     setLoading(true);
     try {
       const from = new Date(Date.now() - (days - 1) * 86400000).toISOString();
-      const [overview, callResult] = await Promise.all([
-        voiceApi.analytics({ days }),
-        voiceApi.calls({ from, limit: 100 }),
-      ]);
+      const overview = await voiceApi.analytics({ days });
+      const quickData: AnalyticsOverview = {
+        ...overview,
+        summary: { ...overview.summary, costBreakdown: overview.summary.costBreakdown ?? EMPTY.summary.costBreakdown },
+        timeSeries: overview.timeSeries.map((row) => ({ ...row, cost: row.cost ?? 0 })),
+        sentimentBreakdown: overview.sentimentBreakdown ?? [],
+        hourlyActivity: overview.hourlyActivity ?? [],
+        durationBreakdown: overview.durationBreakdown ?? [],
+      };
+      setData(quickData);
+      setLoading(false);
+      const callResult = await voiceApi.calls({ from, limit: 20 });
       const calls = callResult.calls;
       const countBy = (labels: string[]) => labels.map((label) => ({ label, value: calls.filter((call) => call.sentimentLabel === label).length })).filter((row) => row.value);
       const hourlyActivity = Array.from({ length: 24 }, (_, hour) => {
@@ -125,14 +138,14 @@ export function AnalyticsShell() {
       const dailyCost = new Map<string, number>();
       calls.forEach((call) => { const date = call.createdAt.slice(0, 10); dailyCost.set(date, (dailyCost.get(date) ?? 0) + (call.costBreakdown?.total ?? 0)); });
       setData({
-        ...overview,
-        summary: { ...overview.summary, costBreakdown: { llm: sumCost("llm"), stt: sumCost("stt"), tts: sumCost("tts"), telephony: sumCost("telephony"), platform: sumCost("platformFee") } },
-        timeSeries: overview.timeSeries.map((row) => ({ ...row, cost: dailyCost.get(row.date) ?? 0 })),
+        ...quickData,
+        summary: { ...quickData.summary, costBreakdown: { llm: sumCost("llm"), stt: sumCost("stt"), tts: sumCost("tts"), telephony: sumCost("telephony"), platform: sumCost("platformFee") } },
+        timeSeries: quickData.timeSeries.map((row) => ({ ...row, cost: dailyCost.get(row.date) ?? 0 })),
         sentimentBreakdown: countBy(["positive", "neutral", "negative"]),
         hourlyActivity,
         durationBreakdown: durationRanges.map((range) => ({ label: range.label, value: calls.filter((call) => call.durationSeconds >= range.min && call.durationSeconds < range.max).length })).filter((row) => row.value),
       });
-      setNotice(callResult.pagination.total > calls.length ? `Detailed charts use the latest ${calls.length} calls in this period.` : "");
+      setNotice("");
     } catch (error) { setNotice(publicVoiceMessage(error, "Could not load analytics.")); }
     finally { setLoading(false); }
   }, [days]);
@@ -159,7 +172,7 @@ export function AnalyticsShell() {
         <div className="mx-auto max-w-[1540px]">
           <header className="flex flex-col justify-between gap-5 border-b border-white/[.08] pb-6 sm:flex-row sm:items-end">
             <div><span className="text-[10px] font-bold uppercase tracking-[.22em] text-[#5aeadc]">Performance intelligence</span><h1 className="mt-2 text-3xl font-semibold tracking-[-.04em] sm:text-4xl">Analytics that lead to action</h1><p className="mt-2 max-w-2xl text-sm leading-6 text-white/45">Understand demand, completed conversations, costs and which agents drive the strongest results.</p></div>
-            <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[.04] p-1">{[7, 30, 90].map((value) => <button key={value} type="button" onClick={() => setDays(value)} className={`rounded-lg px-3 py-2 text-xs font-semibold transition ${days === value ? "bg-[#22d3c5] text-[#03110e]" : "text-white/50 hover:text-white"}`}>{value} days</button>)}</div>
+            <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[.04] p-1">{[1, 7, 30, 90].map((value) => <button key={value} type="button" onClick={() => setDays(value)} className={`rounded-lg px-3 py-2 text-xs font-semibold transition ${days === value ? "bg-[#22d3c5] text-[#03110e]" : "text-white/50 hover:text-white"}`}>{value === 1 ? "Today" : `${value} days`}</button>)}</div>
           </header>
           {notice ? <div className="mt-4 rounded-xl border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-sm text-amber-200">{notice}</div> : null}
           <section className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-6">

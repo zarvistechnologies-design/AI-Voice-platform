@@ -10,11 +10,11 @@ import {
 import type { AnalyticsOverview } from "@/lib/voice";
 
 const COLORS = ["#36e1d0", "#7182ff", "#ae64ff", "#ffb84d", "#ff6384", "#2ca9ff"];
-const tooltipStyle = { background: "rgba(8,18,16,.96)", border: "1px solid rgba(255,255,255,.12)", borderRadius: 12, boxShadow: "0 18px 50px rgba(0,0,0,.45)", fontSize: 12 };
-const axis = { fill: "rgba(255,255,255,.34)", fontSize: 10 };
+const tooltipStyle = { background: "#101a18", border: "1px solid rgba(87,232,216,.35)", borderRadius: 8, boxShadow: "0 18px 50px rgba(0,0,0,.55)", color: "#f3fffd", fontSize: 12 };
+const axis = { fill: "rgba(231,255,251,.66)", fontSize: 10, fontWeight: 500 };
 
 function Card({ title, subtitle, children, wide = false }: { title: string; subtitle: string; children: ReactNode; wide?: boolean }) {
-  return <article className={`min-w-0 rounded-[22px] border border-white/[.08] bg-[linear-gradient(145deg,rgba(13,24,22,.95),rgba(7,13,12,.92))] p-5 shadow-[0_20px_70px_rgba(0,0,0,.22)] transition hover:border-[#36e1d0]/20 ${wide ? "xl:col-span-2" : ""}`}><div className="mb-5"><h2 className="text-sm font-semibold tracking-tight text-white">{title}</h2><p className="mt-1 text-[11px] text-white/35">{subtitle}</p></div>{children}</article>;
+  return <article className={`min-w-0 overflow-hidden rounded-xl border border-[#29433e] bg-[linear-gradient(155deg,rgba(12,25,22,.94),rgba(5,12,11,.98))] p-5 shadow-[0_12px_38px_rgba(0,0,0,.22)] transition hover:border-[#4edccc]/45 ${wide ? "xl:col-span-2" : ""}`}><div className="mb-5 border-b border-white/[.06] pb-4"><h2 className="text-[15px] font-semibold tracking-[-.01em] text-[#f3fffd]">{title}</h2><p className="mt-1.5 text-[11px] leading-5 text-[#9ab8b3]">{subtitle}</p></div>{children}</article>;
 }
 
 function EmptyChart() { return <div className="grid h-[270px] place-items-center rounded-xl border border-dashed border-white/[.08] text-xs text-white/25">Data appears after your first calls</div>; }
@@ -26,7 +26,8 @@ export function AdvancedAnalyticsCharts({ data }: { data: AnalyticsOverview }) {
   const channels = data.directionBreakdown.map((row) => ({ name: row.label, calls: row.value, share: Math.round((row.value / Math.max(1, data.summary.totalCalls)) * 100) }));
   const durationData = data.durationBreakdown.map((row) => ({ name: row.label, calls: row.value }));
   const sentiment = data.sentimentBreakdown.map((row) => ({ name: row.label, calls: row.value }));
-  const costData = Object.entries(data.summary.costBreakdown).map(([name, value], index) => ({ name, value, fill: COLORS[index] }));
+  const costNames: Record<string, string> = { llm: "Language model", stt: "Speech recognition", tts: "Voice synthesis", telephony: "Telephony", platform: "Vozon platform" };
+  const costData = Object.entries(data.summary.costBreakdown).map(([name, value], index) => ({ name: costNames[name] ?? name, value, fill: COLORS[index] }));
   const agentBubbles = data.agentPerformance.map((agent, index) => ({ name: agent.name, calls: agent.calls, talkMinutes: Math.round(agent.durationSeconds / 60), completion: agent.calls ? Math.round((agent.completed / agent.calls) * 100) : 0, size: Math.max(80, agent.calls * 55), fill: COLORS[index % COLORS.length] }));
   const maxAgent = Math.max(1, ...data.agentPerformance.map((agent) => agent.calls));
   const radarData = data.agentPerformance.slice(0, 5).map((agent) => ({ agent: agent.name.length > 12 ? `${agent.name.slice(0, 12)}…` : agent.name, volume: Math.round((agent.calls / maxAgent) * 100), completion: agent.calls ? Math.round((agent.completed / agent.calls) * 100) : 0, engagement: Math.min(100, Math.round((agent.durationSeconds / Math.max(1, agent.calls) / 300) * 100)) }));
@@ -36,7 +37,7 @@ export function AdvancedAnalyticsCharts({ data }: { data: AnalyticsOverview }) {
     { name: "Completed", value: data.summary.completedCalls, fill: COLORS[0] },
   ];
 
-  return <section className="mt-4 grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+  return <section className="mt-5 grid auto-flow-dense gap-5 text-[#eafffb] [&_.recharts-cartesian-axis-tick-value]:fill-[#a8c2bd] [&_.recharts-default-tooltip]:!bg-[#101a18] [&_.recharts-legend-item-text]:!text-[#b8d0cc] [&_.recharts-tooltip-item]:!text-[#dffcf8] [&_.recharts-tooltip-label]:!text-white lg:grid-cols-2 xl:grid-cols-3">
     <Card title="Conversation momentum" subtitle="Interactive calls, completions and cost trend" wide>
       {!timeline.length ? <EmptyChart /> : <div className="h-[330px]"><ResponsiveContainer width="100%" height="100%"><ComposedChart data={timeline} margin={{ top: 10, right: 8, left: -20, bottom: 0 }}><defs><linearGradient id="callsArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#36e1d0" stopOpacity={.4}/><stop offset="1" stopColor="#36e1d0" stopOpacity={0}/></linearGradient></defs><CartesianGrid stroke="rgba(255,255,255,.055)" vertical={false}/><XAxis dataKey="label" tick={axis} tickLine={false} axisLine={false}/><YAxis tick={axis} tickLine={false} axisLine={false}/><Tooltip contentStyle={tooltipStyle}/><Legend wrapperStyle={{ fontSize: 11, opacity: .7 }}/><Area type="monotone" dataKey="calls" name="Total calls" stroke="#36e1d0" strokeWidth={2.5} fill="url(#callsArea)"/><Line type="monotone" dataKey="completed" name="Completed" stroke="#8290ff" strokeWidth={2.2} dot={false}/><Bar dataKey="cost" name="Cost ($)" fill="#ae64ff" opacity={.3} radius={[4,4,0,0]}/></ComposedChart></ResponsiveContainer></div>}
     </Card>
@@ -69,7 +70,7 @@ export function AdvancedAnalyticsCharts({ data }: { data: AnalyticsOverview }) {
       {!costData.some((row) => row.value) ? <EmptyChart /> : <div className="h-[300px]"><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={costData} dataKey="value" nameKey="name" cx="50%" cy="45%" outerRadius={98} stroke="#09100f" strokeWidth={4}>{costData.map((row) => <Cell key={row.name} fill={row.fill}/>)}</Pie><Tooltip contentStyle={tooltipStyle}/><Legend iconType="circle" wrapperStyle={{ fontSize: 10, textTransform: "capitalize" }}/></PieChart></ResponsiveContainer></div>}
     </Card>
 
-    <Card title="Agent capability radar" subtitle="Normalized comparison across three useful dimensions">
+    <Card title="Agent capability radar" subtitle="Normalized comparison across three useful dimensions" wide>
       {!radarData.length ? <EmptyChart /> : <div className="h-[300px]"><ResponsiveContainer width="100%" height="100%"><RadarChart data={radarData} outerRadius="70%"><PolarGrid stroke="rgba(255,255,255,.12)"/><PolarAngleAxis dataKey="agent" tick={{ ...axis, fill: "rgba(255,255,255,.5)" }}/><Radar name="Volume" dataKey="volume" stroke="#36e1d0" fill="#36e1d0" fillOpacity={.2}/><Radar name="Completion" dataKey="completion" stroke="#8290ff" fill="#8290ff" fillOpacity={.18}/><Radar name="Engagement" dataKey="engagement" stroke="#ae64ff" fill="#ae64ff" fillOpacity={.14}/><Tooltip contentStyle={tooltipStyle}/><Legend wrapperStyle={{ fontSize: 10 }}/></RadarChart></ResponsiveContainer></div>}
     </Card>
   </section>;
