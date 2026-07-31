@@ -460,7 +460,7 @@ export function HomePlatformSections() {
 
   return (
     <div className="vozon-home relative isolate overflow-x-clip bg-black text-white">
-      <section id="product" className="relative flex min-h-[700px] w-full items-center justify-center overflow-hidden px-5 pb-12 pt-24 text-center sm:min-h-[740px] sm:px-8 sm:pt-28 lg:min-h-[760px] lg:pt-28">
+      <section id="product" className="relative flex min-h-[680px] w-full items-start justify-center overflow-hidden px-5 pb-12 pt-32 text-center sm:min-h-[700px] sm:px-8 sm:pt-36 lg:min-h-[720px] lg:pt-36">
         <AudioWaveHero />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_40%,rgba(0,0,0,.76)_0%,rgba(0,0,0,.48)_34%,transparent_64%),radial-gradient(ellipse_at_center,transparent_15%,rgba(0,0,0,.2)_60%,rgba(0,0,0,.9)_100%)]" />
         <div className="relative z-10 mx-auto w-full max-w-[1180px]">
