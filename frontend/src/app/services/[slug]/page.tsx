@@ -27,8 +27,9 @@ export async function generateMetadata({ params }: ServicePageProps) {
   }
 
   return {
-    title: `${service.title} | vozon.ai`,
+    title: `${service.title} | Vozon`,
     description: service.summary,
+    alternates: { canonical: `/services/${service.slug}` },
   };
 }
 

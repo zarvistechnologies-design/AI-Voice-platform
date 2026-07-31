@@ -10,7 +10,7 @@ import { announceDashboardNavigation } from "@/components/dashboard/DashboardNav
 type SidebarItem = {
   label: string;
   href: string;
-  icon: "agent" | "phone" | "campaign" | "knowledge" | "logs" | "billing" | "integrations" | "developers";
+  icon: "agent" | "phone" | "campaign" | "analytics" | "knowledge" | "logs" | "billing" | "integrations" | "developers";
 };
 
 type SidebarIconName = SidebarItem["icon"];
@@ -22,6 +22,7 @@ const sidebarGroups: { label: string; items: SidebarItem[] }[] = [
       { label: "Voice Agents", href: "/dashboard/agents", icon: "agent" },
       { label: "Phone Number", href: "/dashboard/phone-number", icon: "phone" },
       { label: "Campaigns", href: "/dashboard/campaign", icon: "campaign" },
+      { label: "Analytics", href: "/dashboard/analytics", icon: "analytics" },
     ],
   },
   {
@@ -81,6 +82,15 @@ function SidebarIcon({ icon }: { icon: SidebarIconName }) {
       <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
         <path d="M4 10v4h3l6 4V6l-6 4H4Z" />
         <path d="M17 9a4 4 0 0 1 0 6M19.5 6.5a7.5 7.5 0 0 1 0 11" />
+      </svg>
+    );
+  }
+
+  if (icon === "analytics") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 19V9M10 19V5M16 19v-7M22 19H2" />
+        <path d="m4 7 6-4 6 6 5-4" />
       </svg>
     );
   }

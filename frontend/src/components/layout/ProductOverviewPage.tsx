@@ -124,7 +124,7 @@ function HeroConsole() {
             <div className="relative flex items-center justify-between gap-3">
               <div>
                 <strong className="block text-sm text-white">Inbound appointment agent</strong>
-                <span className="mt-1 block text-[9px] text-white/38">Production workflow · Version 12</span>
+                <span className="mt-1 block text-[9px] text-white/38">Production workflow · Published</span>
               </div>
               <button className="rounded-lg border border-[#45ddce]/30 bg-[#45ddce]/10 px-3 py-2 text-[9px] font-black text-[#8afff2]" type="button">
                 Test agent

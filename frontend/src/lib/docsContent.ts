@@ -165,7 +165,7 @@ Summarize the confirmed appointment and the next step.` }] },
     description: "Understand the wallet, call charges, payments, and invoice downloads.",
     sections: [
       { title: "Customer charge", blocks: [{ type: "text", body: "Each completed call is charged from the organization wallet. The customer total combines metered call usage and the Vozon platform fee." }, { type: "code", language: "text", body: `customer total = metered call usage + Vozon platform fee
-platform fee = call duration in minutes × ₹2
+platform fee = call duration in minutes × ₹1.50
 
 Example:
 2-minute metered usage = ₹5.00

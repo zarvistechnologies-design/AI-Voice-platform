@@ -86,7 +86,7 @@ export const productServiceExperiences: Record<string, ProductServiceExperience>
     ],
     demo: {
       status: "Voice sample ready",
-      caller: "New support greeting Â· Version 04",
+      caller: "Authorized brand voice · Review requested",
       agent: "Warm, clear delivery with the approved brand pronunciation.",
       action: "Awaiting reviewer approval",
     },
@@ -249,7 +249,7 @@ export const productServiceExperiences: Record<string, ProductServiceExperience>
     demo: {
       status: "Request completed",
       caller: "POST /v1/calls",
-      agent: "201 Created Â· call_id: call_7f31",
+      agent: "201 Created · call_id: call_7f31",
       action: "Webhook endpoint notified",
     },
     capabilities: [
@@ -293,8 +293,8 @@ export const productServiceExperiences: Record<string, ProductServiceExperience>
   },
   "team-workflows": {
     label: "Voice operations",
-    heroTitle: "Unite Every Team",
-    heroAccent: "Govern Agents",
+    heroTitle: "Coordinate Every Team",
+    heroAccent: "Govern Every Agent",
     proof: [
       { value: "Shared", label: "templates and knowledge" },
       { value: "Clear", label: "review and publishing roles" },
@@ -302,7 +302,7 @@ export const productServiceExperiences: Record<string, ProductServiceExperience>
     ],
     demo: {
       status: "Ready for review",
-      caller: "Renewal reminder agent Â· Draft 12",
+      caller: "Customer support agent · Review requested",
       agent: "Legal wording updated and escalation path tested.",
       action: "2 approvals remaining",
     },
@@ -356,9 +356,9 @@ export const productServiceExperiences: Record<string, ProductServiceExperience>
     ],
     demo: {
       status: "Analysis complete",
-      caller: "184 calls Â· Returns workflow",
-      agent: "Top topic: delivery delay Â· 31% of analyzed calls",
-      action: "12 follow-up tasks identified",
+      caller: "Returns workflow · Analysis complete",
+      agent: "Delivery delay identified as the leading call topic.",
+      action: "Follow-up tasks prepared",
     },
     capabilities: [
       {
@@ -401,8 +401,8 @@ export const productServiceExperiences: Record<string, ProductServiceExperience>
   },
   "sentiment-detection": {
     label: "Conversation signals",
-    heroTitle: "Hear the Emotion",
-    heroAccent: "Respond With Care",
+    heroTitle: "Detect Conversation Signals",
+    heroAccent: "Respond With Context",
     proof: [
       { value: "Live", label: "conversation signals" },
       { value: "Flag", label: "calls for focused review" },
@@ -464,9 +464,9 @@ export const productServiceExperiences: Record<string, ProductServiceExperience>
     ],
     demo: {
       status: "New pattern detected",
-      caller: "Delivery questions Â· Last 30 days",
-      agent: "Weekend availability mentioned 2.4Ã— more often.",
-      action: "View 38 supporting conversations",
+      caller: "Delivery questions · Recent conversations",
+      agent: "Weekend availability is appearing more often.",
+      action: "View supporting conversations",
     },
     capabilities: [
       {

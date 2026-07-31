@@ -5,7 +5,6 @@ export const siteConfig = {
     { href: "/", label: "Home" },
     { href: "/#product", label: "Product", hasMenu: true },
     { href: "/pricing", label: "Pricing" },
-    { href: "/docs", label: "Documentation" },
     { href: "/#business", label: "For Business", hasMenu: true },
     { href: "/#company", label: "Company", hasMenu: true },
   ],
@@ -96,11 +95,11 @@ export const siteConfig = {
         title: "Integrations",
         links: [
           { href: "/#developers", label: "Make", icon: "M" },
-          { href: "/#developers", label: "Twilio", icon: "◎" },
+          { href: "/integrations/twilio", label: "Twilio", icon: "T" },
           { href: "/#developers", label: "Vonage", icon: "V" },
           { href: "/#developers", label: "Go High Level", icon: "H" },
           { href: "/#developers", label: "n8n", icon: "n8n" },
-          { href: "/#developers", label: "HubSpot", icon: "H" },
+          { href: "/integrations/hubspot", label: "HubSpot", icon: "H" },
         ],
       },
     ],
@@ -109,7 +108,7 @@ export const siteConfig = {
       title: "Status Page",
       body: "See how leading teams use vozon.ai to transform customer calls and drive real results.",
     },
-    cta: { href: "/#developers", label: "App Partners" },
+    cta: { href: "/integrations", label: "All Integrations" },
   },
   resourcesMenu: {
     featured: {
@@ -441,6 +440,24 @@ export const businessPages = [
 
 export const resourcePages = [
   {
+    slug: "case-studies",
+    title: "Case Studies",
+    kicker: "Customer Stories",
+    summary:
+      "Explore how teams apply AI voice agents to customer calls, operational workflows, and measurable service outcomes.",
+    highlights: ["Customer workflows", "Deployment outcomes", "Success measures"],
+    sections: [
+      {
+        title: "See the workflow",
+        body: "Understand the customer challenge, the deployed voice experience, and the operational decisions behind it.",
+      },
+      {
+        title: "Review meaningful outcomes",
+        body: "Evaluate coverage, routing, action completion, handoff quality, and the evidence used to measure success.",
+      },
+    ],
+  },
+  {
     slug: "comparison-overview",
     title: "Comparison Overview",
     kicker: "Resources",
@@ -509,6 +526,24 @@ export const resourcePages = [
       {
         title: "Prepare for review",
         body: "Give stakeholders a focused place to evaluate platform readiness before moving voice automation into production.",
+      },
+    ],
+  },
+  {
+    slug: "help-center",
+    title: "Help Center",
+    kicker: "Support",
+    summary:
+      "Find answers, setup guides, troubleshooting help, and support options for building and managing AI voice agents.",
+    highlights: ["Common questions", "Product guides", "Support options"],
+    sections: [
+      {
+        title: "Find the right answer",
+        body: "Browse clear guidance for voice agents, calls, integrations, analytics, workspace access, and billing.",
+      },
+      {
+        title: "Get additional help",
+        body: "Contact the support team when a guide does not resolve your product, account, or workflow question.",
       },
     ],
   },

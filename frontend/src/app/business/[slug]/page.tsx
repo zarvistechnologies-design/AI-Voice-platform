@@ -29,8 +29,9 @@ export async function generateMetadata({ params }: BusinessPageProps) {
   }
 
   return {
-    title: `${business.title} | vozon.ai`,
+    title: `${business.title} | Vozon`,
     description: business.summary,
+    alternates: { canonical: `/business/${business.slug}` },
   };
 }
 
