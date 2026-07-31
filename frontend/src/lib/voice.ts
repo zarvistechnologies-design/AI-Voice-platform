@@ -634,10 +634,14 @@ export type AnalyticsOverview = {
     sttSeconds: number;
     ttsCharacters: number;
     totalCost: number;
+    costBreakdown: { llm: number; stt: number; tts: number; telephony: number; platform: number };
   };
-  timeSeries: { date: string; calls: number; completed: number; durationSeconds: number }[];
+  timeSeries: { date: string; calls: number; completed: number; durationSeconds: number; cost: number }[];
   statusBreakdown: { label: string; value: number }[];
   directionBreakdown: { label: string; value: number }[];
+  sentimentBreakdown: { label: string; value: number }[];
+  hourlyActivity: { hour: number; calls: number; completed: number }[];
+  durationBreakdown: { label: string; value: number }[];
   agentPerformance: {
     agentId: string;
     name: string;
