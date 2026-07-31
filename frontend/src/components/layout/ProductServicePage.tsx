@@ -283,7 +283,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
             <div className="min-w-0 max-w-3xl">
               <Pill>{service.kicker} / {experience.label}</Pill>
               <h1 className="voice-agents-hero-heading mt-7 font-semibold leading-[0.98] tracking-[-0.055em]">
-                <span className="block">
+                <span className="product-service-heading-primary block">
                   {experience.heroTitle}
                 </span>{" "}
                 <span className="product-service-heading-accent block">
@@ -411,7 +411,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
               <div className="voice-agent-container relative mx-auto max-w-[1240px]">
                 <div className="voice-config-intro mx-auto max-w-4xl text-center">
                   <Pill>{design?.visualLabel ?? "What you can configure"}</Pill>
-                    <h2 className="voice-config-heading mt-6 font-semibold leading-tight tracking-[-0.04em] text-white">
+                    <h2 className={`voice-config-heading mt-6 font-semibold leading-tight tracking-[-0.04em] text-white ${service.slug === "team-workflows" ? "team-workflow-config-heading" : ""}`}>
                       {isVoiceAgents ? "Comprehensive Control Over Agent Behavior." : design.visualTitle}
                     </h2>
                     <p className="voice-section-copy mx-auto mt-6 max-w-4xl">
@@ -545,11 +545,12 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
           color: var(--service-accent-soft);
         }
 
+        .product-service-heading-primary {
+          color: #f7fbff;
+        }
+
         .product-service-heading-accent {
-          background: linear-gradient(105deg, var(--service-accent-soft) 5%, var(--service-accent) 45%, var(--service-secondary) 100%);
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
+          color: #75fff0;
         }
 
         .voice-agents-hero-heading {
@@ -2941,6 +2942,13 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
           max-width: none;
           font-size: clamp(1rem, 3.6vw, 2.7rem);
           white-space: nowrap;
+        }
+
+        .voice-agent-page > section.voice-config-section h2.team-workflow-config-heading {
+          max-width: 46rem;
+          margin-inline: auto;
+          font-size: clamp(1.55rem, 3vw, 2.25rem);
+          white-space: normal;
         }
 
         .voice-agent-page .voice-config-intro-grid {

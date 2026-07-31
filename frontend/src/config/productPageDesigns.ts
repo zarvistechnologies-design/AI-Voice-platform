@@ -31,7 +31,7 @@ export const productPageDesigns: Record<string, ProductPageDesign> = {
     tertiary: "#a99cff",
     tertiaryRgb: "169, 156, 255",
     visualLabel: "Agent control center",
-    visualTitle: "Customer Support / Live",
+    visualTitle: "Live Customer Conversation",
     blueprintLabel: "What you're building",
     blueprintTitle: "Every agent is made of three connected capabilities.",
     blueprintIntro:
@@ -43,7 +43,7 @@ export const productPageDesigns: Record<string, ProductPageDesign> = {
     useCaseLabel: "Where agents help",
     useCaseTitle: "One agent foundation, adapted to the calls your team handles.",
     integrationsTitle: "Connect agents to the systems that power each customer workflow.",
-    faqTitle: "Questions, answered clearly.",
+    faqTitle: "What teams ask before launching a voice agent.",
     ctaTitle: "Let's improve every customer call.",
   },
   "voice-cloning": {
@@ -55,7 +55,7 @@ export const productPageDesigns: Record<string, ProductPageDesign> = {
     tertiary: "#5eead4",
     tertiaryRgb: "94, 234, 212",
     visualLabel: "Authorized voice studio",
-    visualTitle: "Brand Voice / Master 01",
+    visualTitle: "Authorized Brand Voice",
     blueprintLabel: "Inside a voice profile",
     blueprintTitle: "A recognizable voice, built from controlled ingredients.",
     blueprintIntro:
@@ -79,7 +79,7 @@ export const productPageDesigns: Record<string, ProductPageDesign> = {
     tertiary: "#9d8cff",
     tertiaryRgb: "157, 140, 255",
     visualLabel: "Live speech stream",
-    visualTitle: "Response / Streaming now",
+    visualTitle: "Live Speech Streaming",
     blueprintLabel: "Inside the speech pipeline",
     blueprintTitle: "Every millisecond between text and speech has a job.",
     blueprintIntro:
@@ -103,7 +103,7 @@ export const productPageDesigns: Record<string, ProductPageDesign> = {
     tertiary: "#ff9fb7",
     tertiaryRgb: "255, 159, 183",
     visualLabel: "Language routing",
-    visualTitle: "Global Support / Auto locale",
+    visualTitle: "Global Language Experience",
     blueprintLabel: "Inside a localized experience",
     blueprintTitle: "Language, pronunciation, and local context move together.",
     blueprintIntro:
@@ -127,7 +127,7 @@ export const productPageDesigns: Record<string, ProductPageDesign> = {
     tertiary: "#5eead4",
     tertiaryRgb: "94, 234, 212",
     visualLabel: "Developer console",
-    visualTitle: "POST /v1/voice/generate",
+    visualTitle: "Voice API Integration",
     blueprintLabel: "Inside a production request",
     blueprintTitle: "Clear primitives at the edge. Strong controls underneath.",
     blueprintIntro:
@@ -151,7 +151,7 @@ export const productPageDesigns: Record<string, ProductPageDesign> = {
     tertiary: "#ffb37d",
     tertiaryRgb: "255, 179, 125",
     visualLabel: "Release workspace",
-    visualTitle: "Renewals Agent / Version 12",
+    visualTitle: "Team Review and Release Workflow",
     blueprintLabel: "Inside a shared workspace",
     blueprintTitle: "Contributors, reviewers, and owners stay in one release loop.",
     blueprintIntro:
@@ -175,7 +175,7 @@ export const productPageDesigns: Record<string, ProductPageDesign> = {
     tertiary: "#5eead4",
     tertiaryRgb: "94, 234, 212",
     visualLabel: "Call intelligence",
-    visualTitle: "Returns Workflow / 184 calls",
+    visualTitle: "Actionable Call Analytics",
     blueprintLabel: "Inside the analysis layer",
     blueprintTitle: "Every call becomes searchable evidence, not another recording.",
     blueprintIntro:
@@ -199,7 +199,7 @@ export const productPageDesigns: Record<string, ProductPageDesign> = {
     tertiary: "#9d8cff",
     tertiaryRgb: "157, 140, 255",
     visualLabel: "Conversation signal",
-    visualTitle: "Support Call / Live",
+    visualTitle: "Context-Aware Sentiment Detection",
     blueprintLabel: "Inside a sentiment signal",
     blueprintTitle: "Tone, language, and context combine before a workflow reacts.",
     blueprintIntro:
@@ -223,7 +223,7 @@ export const productPageDesigns: Record<string, ProductPageDesign> = {
     tertiary: "#8dd7ff",
     tertiaryRgb: "141, 215, 255",
     visualLabel: "Pattern discovery",
-    visualTitle: "Customer themes / Last 30 days",
+    visualTitle: "Customer Conversation Trends",
     blueprintLabel: "Inside an insight",
     blueprintTitle: "A useful finding stays connected to the conversations behind it.",
     blueprintIntro:
@@ -247,7 +247,7 @@ export const productPageDesigns: Record<string, ProductPageDesign> = {
     tertiary: "#ff9f8f",
     tertiaryRgb: "255, 159, 143",
     visualLabel: "Policy control center",
-    visualTitle: "Release Gate / Version 08",
+    visualTitle: "Production Quality Controls",
     blueprintLabel: "Inside a controlled workflow",
     blueprintTitle: "Boundaries, testing, and evidence travel with every release.",
     blueprintIntro:

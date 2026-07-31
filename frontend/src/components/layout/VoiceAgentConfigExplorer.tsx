@@ -587,7 +587,8 @@ export function VoiceAgentConfigExplorer({
 
         @media (min-width: 768px) {
           .voice-config-detail {
-            height: 340px;
+            min-height: 340px;
+            height: auto;
           }
 
           .voice-config-detail-body {
@@ -595,7 +596,8 @@ export function VoiceAgentConfigExplorer({
           }
 
           .voice-config-explorer-compact .voice-config-detail {
-            height: 260px;
+            min-height: 310px;
+            height: auto;
             padding: 2rem 2.5rem;
           }
 

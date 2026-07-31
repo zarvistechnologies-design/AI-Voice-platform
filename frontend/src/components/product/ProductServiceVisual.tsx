@@ -37,7 +37,7 @@ function VisualShell({
             <p className="truncate text-[10px] font-black uppercase tracking-[0.13em] text-[var(--service-accent-soft)]">
               {design.visualLabel}
             </p>
-            <p className="mt-0.5 truncate text-xs font-semibold text-white/72">{design.visualTitle}</p>
+            <p className="mt-0.5 text-xs font-semibold leading-5 text-white/72">{design.visualTitle}</p>
           </div>
         </div>
         <span className="inline-flex shrink-0 items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.035] px-2.5 py-1.5 text-[9px] font-bold uppercase tracking-[0.1em] text-white/50">
@@ -214,24 +214,24 @@ function ApiVisual() {
 
 function TeamWorkflowVisual() {
   const stages = [
-    { title: "Draft", items: ["Greeting refined", "CRM fields mapped"] },
-    { title: "Review", items: ["Policy wording", "Transfer test"] },
-    { title: "Approved", items: ["Version 11"] },
+    { title: "Draft", items: ["Greeting updated", "CRM fields mapped"] },
+    { title: "Review", items: ["Policy checked", "Handoff tested"] },
+    { title: "Approval", items: ["Final sign-off"] },
   ];
 
   return (
-    <div className="grid min-h-[350px] grid-cols-3 gap-2.5">
+    <div className="grid min-h-[350px] grid-cols-1 gap-3 sm:grid-cols-3">
       {stages.map((stage, stageIndex) => (
-        <div className="rounded-xl border border-white/[0.07] bg-white/[0.02] p-2.5 sm:p-3" key={stage.title}>
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-[8px] font-bold uppercase tracking-[0.1em] text-white/36 sm:text-[9px]">{stage.title}</p>
-            <span className="rounded-full bg-white/[0.05] px-1.5 py-0.5 text-[7px] text-white/24">{stage.items.length}</span>
+        <div className="min-w-0 rounded-xl border border-white/[0.07] bg-white/[0.02] p-3 sm:p-3.5" key={stage.title}>
+          <div className="flex min-w-0 items-center justify-between gap-2">
+            <p className="min-w-0 break-words text-[9px] font-bold uppercase tracking-[0.1em] text-white/42">{stage.title}</p>
+            <span className="shrink-0 rounded-full bg-white/[0.05] px-1.5 py-0.5 text-[7px] text-white/30">{stage.items.length}</span>
           </div>
-          <div className="mt-3 grid gap-2.5">
+          <div className="mt-3 grid gap-2.5 sm:mt-4">
             {stage.items.map((item, itemIndex) => (
-              <div className="rounded-lg border border-white/[0.07] bg-[#0b0e15] p-2.5 sm:p-3" key={item}>
+              <div className="min-w-0 rounded-lg border border-white/[0.07] bg-[#0b0e15] p-3" key={item}>
                 <span className="block h-1 w-8 rounded-full" style={{ background: stageIndex === 0 ? "var(--service-secondary)" : stageIndex === 1 ? "var(--service-tertiary)" : "var(--service-accent)" }} />
-                <p className="mt-3 text-[9px] font-semibold leading-4 text-white/64 sm:text-[10px]">{item}</p>
+                <p className="mt-3 whitespace-normal break-words text-[10px] font-semibold leading-4 text-white/68">{item}</p>
                 <div className="mt-3 flex -space-x-1">
                   {[0, 1].slice(0, itemIndex + 1).map((avatar) => <span className="size-4 rounded-full border border-[#0b0e15] bg-white/10" key={avatar} />)}
                 </div>
@@ -240,8 +240,8 @@ function TeamWorkflowVisual() {
           </div>
         </div>
       ))}
-      <div className="col-span-3 flex items-center justify-between rounded-xl border border-[rgba(var(--service-accent-rgb),0.14)] bg-[rgba(var(--service-accent-rgb),0.05)] px-4 py-3">
-        <div><p className="text-[9px] font-bold text-[var(--service-accent-soft)]">2 of 3 reviewers approved</p><p className="mt-1 text-[8px] text-white/28">Release gate · Production</p></div>
+      <div className="col-span-1 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[rgba(var(--service-accent-rgb),0.14)] bg-[rgba(var(--service-accent-rgb),0.05)] px-4 py-3 sm:col-span-3">
+        <div className="min-w-0"><p className="text-[9px] font-bold leading-4 text-[var(--service-accent-soft)]">2 of 3 reviewers approved</p><p className="mt-1 text-[8px] leading-3 text-white/32">Final review before production</p></div>
         <span className="rounded-lg bg-[var(--service-accent)] px-3 py-2 text-[8px] font-black text-[#06100d]">REVIEW</span>
       </div>
     </div>

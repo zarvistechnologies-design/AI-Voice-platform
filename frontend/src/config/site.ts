@@ -441,6 +441,24 @@ export const businessPages = [
 
 export const resourcePages = [
   {
+    slug: "case-studies",
+    title: "Case Studies",
+    kicker: "Customer Stories",
+    summary:
+      "Explore how teams apply AI voice agents to customer calls, operational workflows, and measurable service outcomes.",
+    highlights: ["Customer workflows", "Deployment outcomes", "Success measures"],
+    sections: [
+      {
+        title: "See the workflow",
+        body: "Understand the customer challenge, the deployed voice experience, and the operational decisions behind it.",
+      },
+      {
+        title: "Review meaningful outcomes",
+        body: "Evaluate coverage, routing, action completion, handoff quality, and the evidence used to measure success.",
+      },
+    ],
+  },
+  {
     slug: "comparison-overview",
     title: "Comparison Overview",
     kicker: "Resources",
@@ -509,6 +527,24 @@ export const resourcePages = [
       {
         title: "Prepare for review",
         body: "Give stakeholders a focused place to evaluate platform readiness before moving voice automation into production.",
+      },
+    ],
+  },
+  {
+    slug: "help-center",
+    title: "Help Center",
+    kicker: "Support",
+    summary:
+      "Find answers, setup guides, troubleshooting help, and support options for building and managing AI voice agents.",
+    highlights: ["Common questions", "Product guides", "Support options"],
+    sections: [
+      {
+        title: "Find the right answer",
+        body: "Browse clear guidance for voice agents, calls, integrations, analytics, workspace access, and billing.",
+      },
+      {
+        title: "Get additional help",
+        body: "Contact the support team when a guide does not resolve your product, account, or workflow question.",
       },
     ],
   },

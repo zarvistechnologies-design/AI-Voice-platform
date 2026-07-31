@@ -29,15 +29,15 @@ const footerNavigation = [
       { href: "/docs", label: "API documentation" },
       { href: "/dashboard/developers", label: "Developer portal" },
       { href: "/resources/changelog", label: "Changelog" },
-      { href: "/resources/community", label: "Help center" },
-      { href: "/resources/comparison-overview", label: "Case studies" },
+      { href: "/resources/help-center", label: "Help center" },
+      { href: "/resources/case-studies", label: "Case studies" },
     ],
   },
   {
     title: "Legal",
     links: [
       { href: "/privacy", label: "Privacy" },
-      { href: "/resources/trust-center", label: "Terms" },
+      { href: "/terms", label: "Terms" },
       { href: "/resources/trust-center", label: "Security" },
     ],
   },
