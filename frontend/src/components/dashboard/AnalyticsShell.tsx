@@ -124,7 +124,7 @@ export function AnalyticsShell() {
       setLoading(false);
       const callResult = await voiceApi.calls({ from, limit: 20 });
       const calls = callResult.calls;
-      const countBy = (labels: string[]) => labels.map((label) => ({ label, value: calls.filter((call) => call.sentimentLabel === label).length })).filter((row) => row.value);
+      const countBy = (labels: string[]) => labels.map((label) => ({ label, value: calls.filter((call) => call.sentimentLabel === label).length }));
       const hourlyActivity = Array.from({ length: 24 }, (_, hour) => {
         const matches = calls.filter((call) => new Date(call.createdAt).getHours() === hour);
         return { hour, calls: matches.length, completed: matches.filter((call) => call.status === "completed").length };
@@ -180,7 +180,7 @@ export function AnalyticsShell() {
               ["Total calls", number(s.totalCalls), "Conversation demand", "↗"],
               ["Completion rate", `${s.completionRate}%`, `${number(s.completedCalls)} completed`, "✓"],
               ["Talk time", duration(s.totalDurationSeconds), `${duration(s.averageDurationSeconds)} average`, "◉"],
-              ["Usage cost", money(s.totalCost), s.completedCalls ? `${money(s.totalCost / s.completedCalls)} / completed call` : "No completed calls", "$"],
+              ["Daily call average", number(s.totalCalls / Math.max(1, days)), `Across this ${days === 1 ? "day" : `${days}-day period`}`, "↗"],
               ["Needs review", number(s.failedCalls), "Failed conversations", "!"],
               ["Active now", number(s.activeCalls), "Live conversations", "●"],
             ].map(([label, value, detail, icon]) => <article key={label} className="group rounded-2xl border border-white/[.08] bg-white/[.035] p-5 shadow-[0_16px_60px_rgba(0,0,0,.18)] transition hover:border-[#22d3c5]/25 hover:bg-white/[.05]"><div className="flex items-center justify-between"><span className="text-xs font-medium text-white/40">{label}</span><span className="grid size-8 place-items-center rounded-lg bg-[#22d3c5]/10 text-sm text-[#5aeadc]">{icon}</span></div><strong className="mt-5 block text-3xl font-semibold tracking-[-.04em]">{loading ? "—" : value}</strong><span className="mt-1 block text-xs text-white/35">{detail}</span></article>)}

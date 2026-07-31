@@ -26,8 +26,7 @@ export function AdvancedAnalyticsCharts({ data }: { data: AnalyticsOverview }) {
   const channels = data.directionBreakdown.map((row) => ({ name: row.label, calls: row.value, share: Math.round((row.value / Math.max(1, data.summary.totalCalls)) * 100) }));
   const durationData = data.durationBreakdown.map((row) => ({ name: row.label, calls: row.value }));
   const sentiment = data.sentimentBreakdown.map((row) => ({ name: row.label, calls: row.value }));
-  const costNames: Record<string, string> = { llm: "Language model", stt: "Speech recognition", tts: "Voice synthesis", telephony: "Telephony", platform: "Vozon platform" };
-  const costData = Object.entries(data.summary.costBreakdown).map(([name, value], index) => ({ name: costNames[name] ?? name, value, fill: COLORS[index] }));
+  const hourlyData = data.hourlyActivity.map((row) => ({ ...row, label: `${String(row.hour).padStart(2, "0")}:00` }));
   const agentBubbles = data.agentPerformance.map((agent, index) => ({ name: agent.name, calls: agent.calls, talkMinutes: Math.round(agent.durationSeconds / 60), completion: agent.calls ? Math.round((agent.completed / agent.calls) * 100) : 0, size: Math.max(80, agent.calls * 55), fill: COLORS[index % COLORS.length] }));
   const maxAgent = Math.max(1, ...data.agentPerformance.map((agent) => agent.calls));
   const radarData = data.agentPerformance.slice(0, 5).map((agent) => ({ agent: agent.name.length > 12 ? `${agent.name.slice(0, 12)}…` : agent.name, volume: Math.round((agent.calls / maxAgent) * 100), completion: agent.calls ? Math.round((agent.completed / agent.calls) * 100) : 0, engagement: Math.min(100, Math.round((agent.durationSeconds / Math.max(1, agent.calls) / 300) * 100)) }));
@@ -63,11 +62,11 @@ export function AdvancedAnalyticsCharts({ data }: { data: AnalyticsOverview }) {
     </Card>
 
     <Card title="Customer sentiment" subtitle="Positive, neutral and negative conversation tone">
-      {!sentiment.length ? <EmptyChart /> : <div className="h-[300px]"><ResponsiveContainer width="100%" height="100%"><BarChart data={sentiment} margin={{ left: -18, right: 10 }}><CartesianGrid stroke="rgba(255,255,255,.055)" vertical={false}/><XAxis dataKey="name" tick={axis} axisLine={false} tickLine={false}/><YAxis tick={axis} axisLine={false} tickLine={false}/><Tooltip contentStyle={tooltipStyle}/><Bar dataKey="calls" radius={[9,9,0,0]}>{sentiment.map((row) => <Cell key={row.name} fill={row.name === "positive" ? "#36e1a0" : row.name === "negative" ? "#ff6384" : "#8290ff"}/>)}</Bar></BarChart></ResponsiveContainer></div>}
+      {!sentiment.length ? <EmptyChart /> : <div className="h-[300px]"><ResponsiveContainer width="100%" height="100%"><BarChart data={sentiment} margin={{ left: -18, right: 10 }}><CartesianGrid stroke="rgba(255,255,255,.055)" vertical={false}/><XAxis dataKey="name" tick={axis} axisLine={false} tickLine={false}/><YAxis tick={axis} axisLine={false} tickLine={false}/><Tooltip contentStyle={tooltipStyle}/><Bar dataKey="calls" minPointSize={3} radius={[9,9,0,0]}>{sentiment.map((row) => <Cell key={row.name} fill={row.name === "positive" ? "#36e1a0" : row.name === "negative" ? "#ff6384" : "#8290ff"}/>)}</Bar></BarChart></ResponsiveContainer></div>}
     </Card>
 
-    <Card title="Cost architecture" subtitle="Pie chart of the complete voice-agent stack">
-      {!costData.some((row) => row.value) ? <EmptyChart /> : <div className="h-[300px]"><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={costData} dataKey="value" nameKey="name" cx="50%" cy="45%" outerRadius={98} stroke="#09100f" strokeWidth={4}>{costData.map((row) => <Cell key={row.name} fill={row.fill}/>)}</Pie><Tooltip contentStyle={tooltipStyle}/><Legend iconType="circle" wrapperStyle={{ fontSize: 10, textTransform: "capitalize" }}/></PieChart></ResponsiveContainer></div>}
+    <Card title="Hourly demand pattern" subtitle="Discover the best hours for customer conversations">
+      {!hourlyData.some((row) => row.calls) ? <EmptyChart /> : <div className="h-[300px]"><ResponsiveContainer width="100%" height="100%"><ComposedChart data={hourlyData} margin={{ left: -20, right: 10 }}><CartesianGrid stroke="rgba(255,255,255,.055)" vertical={false}/><XAxis dataKey="label" interval={2} tick={axis} axisLine={false} tickLine={false}/><YAxis tick={axis} axisLine={false} tickLine={false}/><Tooltip contentStyle={tooltipStyle}/><Legend wrapperStyle={{ fontSize: 10 }}/><Bar dataKey="calls" name="Calls" fill="#36e1d0" radius={[5,5,0,0]}/><Line type="monotone" dataKey="completed" name="Completed" stroke="#8290ff" strokeWidth={2.4} dot={false}/></ComposedChart></ResponsiveContainer></div>}
     </Card>
 
     <Card title="Agent capability radar" subtitle="Normalized comparison across three useful dimensions" wide>
