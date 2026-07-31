@@ -5,7 +5,6 @@ export const siteConfig = {
     { href: "/", label: "Home" },
     { href: "/#product", label: "Product", hasMenu: true },
     { href: "/pricing", label: "Pricing" },
-    { href: "/docs", label: "Documentation" },
     { href: "/#business", label: "For Business", hasMenu: true },
     { href: "/#company", label: "Company", hasMenu: true },
   ],

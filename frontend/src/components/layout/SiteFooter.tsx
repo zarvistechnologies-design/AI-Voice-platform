@@ -30,7 +30,6 @@ const footerNavigation = [
     title: "Resources",
     links: [
       { href: "/docs", label: "API documentation" },
-      { href: "/dashboard/developers", label: "Developer portal" },
       { href: "/resources/changelog", label: "Changelog" },
       { href: "/resources/help-center", label: "Help center" },
       { href: "/resources/case-studies", label: "Case studies" },
