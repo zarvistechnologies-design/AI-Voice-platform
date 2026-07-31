@@ -105,6 +105,7 @@ export function AnalyticsShell() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
+      const sessionIdentity = session?.organization?.id ?? session?.id ?? "signed-in";
       const from = new Date(Date.now() - (days - 1) * 86400000).toISOString();
       const overview = await voiceApi.analytics({ days });
       const quickData: AnalyticsOverview = {
@@ -117,6 +118,21 @@ export function AnalyticsShell() {
       };
       setData(quickData);
       setLoading(false);
+      const detailCacheKey = `vozon:analytics:${sessionIdentity}:${days}`;
+      try {
+        const cached = sessionStorage.getItem(detailCacheKey);
+        if (cached) {
+          const entry = JSON.parse(cached) as { expiresAt: number; data: AnalyticsOverview };
+          if (entry.expiresAt > Date.now()) {
+            setData(entry.data);
+            setNotice("");
+            return;
+          }
+          sessionStorage.removeItem(detailCacheKey);
+        }
+      } catch {
+        /* analytics still loads normally when browser storage is unavailable */
+      }
       const callResult = await voiceApi.calls({ from, limit: 20 });
       const calls = callResult.calls;
       const countBy = (labels: string[]) => labels.map((label) => ({ label, value: calls.filter((call) => call.sentimentLabel === label).length }));
@@ -132,18 +148,24 @@ export function AnalyticsShell() {
       const sumCost = (key: "llm" | "stt" | "tts" | "telephony" | "platformFee") => calls.reduce((sum, call) => sum + (call.costBreakdown?.[key] ?? 0), 0);
       const dailyCost = new Map<string, number>();
       calls.forEach((call) => { const date = call.createdAt.slice(0, 10); dailyCost.set(date, (dailyCost.get(date) ?? 0) + (call.costBreakdown?.total ?? 0)); });
-      setData({
+      const detailedData: AnalyticsOverview = {
         ...quickData,
         summary: { ...quickData.summary, costBreakdown: { llm: sumCost("llm"), stt: sumCost("stt"), tts: sumCost("tts"), telephony: sumCost("telephony"), platform: sumCost("platformFee") } },
         timeSeries: quickData.timeSeries.map((row) => ({ ...row, cost: dailyCost.get(row.date) ?? 0 })),
         sentimentBreakdown: countBy(["positive", "neutral", "negative"]),
         hourlyActivity,
         durationBreakdown: durationRanges.map((range) => ({ label: range.label, value: calls.filter((call) => call.durationSeconds >= range.min && call.durationSeconds < range.max).length })).filter((row) => row.value),
-      });
+      };
+      setData(detailedData);
+      try {
+        sessionStorage.setItem(detailCacheKey, JSON.stringify({ expiresAt: Date.now() + 60_000, data: detailedData }));
+      } catch {
+        /* ignore storage quota and privacy-mode errors */
+      }
       setNotice("");
     } catch (error) { setNotice(publicVoiceMessage(error, "Could not load analytics.")); }
     finally { setLoading(false); }
-  }, [days]);
+  }, [days, session]);
   useEffect(() => {
     if (!session) { router.replace("/login?next=/dashboard/analytics"); return undefined; }
     void validateStoredSession();
