@@ -12,6 +12,7 @@ type DetailPageProps = {
   sections: readonly DetailSection[];
   primaryAction: { href: string; label: string };
   secondaryAction: { href: string; label: string };
+  heroTitle?: string;
 };
 
 const waveform = [10, 18, 24, 14, 28, 16, 32, 20, 26, 12, 22, 16, 30, 18, 12];
@@ -108,7 +109,7 @@ const defaultVisual = {
   points: ["Capture the right context on every call", "Automate routine actions immediately", "Bring people in with a complete handoff"],
 };
 
-export function DetailPage({ kicker, title, summary, highlights, sections, primaryAction, secondaryAction }: DetailPageProps) {
+export function DetailPage({ kicker, title, summary, highlights, sections, primaryAction, secondaryAction, heroTitle }: DetailPageProps) {
   const visual = visualContent[title] ?? defaultVisual;
 
   return (
@@ -121,7 +122,7 @@ export function DetailPage({ kicker, title, summary, highlights, sections, prima
             <div className="max-w-3xl">
               <p className="m-0 text-sm font-extrabold text-cyan-200">{kicker} / AI Voice Platform</p>
               <h1 className="m-0 mt-8 text-4xl leading-tight font-semibold sm:text-6xl sm:leading-none 2xl:text-7xl">
-                {title} for every customer call.
+                {heroTitle ?? `${title} for every customer call.`}
               </h1>
               <p className="m-0 mt-8 max-w-2xl text-lg leading-8 text-slate-200 sm:text-xl">{summary}</p>
               <div className="mt-10 flex flex-wrap gap-4">

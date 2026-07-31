@@ -96,11 +96,11 @@ export const siteConfig = {
         title: "Integrations",
         links: [
           { href: "/#developers", label: "Make", icon: "M" },
-          { href: "/#developers", label: "Twilio", icon: "◎" },
+          { href: "/integrations/twilio", label: "Twilio", icon: "T" },
           { href: "/#developers", label: "Vonage", icon: "V" },
           { href: "/#developers", label: "Go High Level", icon: "H" },
           { href: "/#developers", label: "n8n", icon: "n8n" },
-          { href: "/#developers", label: "HubSpot", icon: "H" },
+          { href: "/integrations/hubspot", label: "HubSpot", icon: "H" },
         ],
       },
     ],
@@ -109,7 +109,7 @@ export const siteConfig = {
       title: "Status Page",
       body: "See how leading teams use vozon.ai to transform customer calls and drive real results.",
     },
-    cta: { href: "/#developers", label: "App Partners" },
+    cta: { href: "/integrations", label: "All Integrations" },
   },
   resourcesMenu: {
     featured: {

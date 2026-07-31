@@ -8,8 +8,11 @@ const footerNavigation = [
     title: "Product",
     links: [
       { href: "/services/voice-agents", label: "Voice agents" },
+      { href: "/ai-phone-agent", label: "AI phone agent" },
+      { href: "/ai-receptionist", label: "AI receptionist" },
+      { href: "/outbound-ai-calling", label: "Outbound calling" },
       { href: "/services/speech-analytics", label: "Speech analytics" },
-      { href: "/#integrations", label: "Integrations" },
+      { href: "/integrations", label: "Integrations" },
       { href: "/services/api-access", label: "API access" },
       { href: "/pricing", label: "Pricing" },
     ],
@@ -31,6 +34,7 @@ const footerNavigation = [
       { href: "/resources/changelog", label: "Changelog" },
       { href: "/resources/help-center", label: "Help center" },
       { href: "/resources/case-studies", label: "Case studies" },
+      { href: "/compare", label: "Compare platforms" },
     ],
   },
   {

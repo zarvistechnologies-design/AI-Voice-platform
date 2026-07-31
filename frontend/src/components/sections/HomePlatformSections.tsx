@@ -829,7 +829,7 @@ export function HomePlatformSections() {
             <h2 className="vozon-platform-heading mx-auto m-0 max-w-4xl text-white" id="vozon-apps-title">
               Integrations across your favorite platforms
             </h2>
-            <a className="vozon-apps-cta" href="/dashboard/integrations">Explore integrations <span>↗</span></a>
+            <Link className="vozon-apps-cta" href="/integrations">Explore integrations <span>↗</span></Link>
           </div>
 
           <div className="vozon-app-orbit mt-8" aria-label="Vozon app integration network">
