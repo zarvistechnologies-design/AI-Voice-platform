@@ -151,31 +151,37 @@ const everythingIncludedCapabilities = [
     title: "Voice Personalities",
     body: "Create voices that match your brand with custom tone, style, and speaking behavior.",
     icon: "personality",
+    color: "#35fbe0",
   },
   {
     title: "Multilingual Conversations",
     body: "Speak naturally across 40+ languages and connect with customers worldwide.",
     icon: "languages",
+    color: "#8f83e8",
   },
   {
     title: "Knowledge Base",
     body: "Ground responses using your documents, PDFs, websites, FAQs, and internal resources.",
     icon: "knowledge",
+    color: "#ffad73",
   },
   {
     title: "Function Calling",
     body: "Trigger APIs, update CRMs, schedule appointments, send emails, create tickets, and automate workflows.",
     icon: "workflow",
+    color: "#75baff",
   },
   {
     title: "Analytics Dashboard",
     body: "Track call outcomes, success rates, caller satisfaction, and conversation quality in real time.",
     icon: "dashboard",
+    color: "#ff9fb7",
   },
   {
     title: "Enterprise Security",
     body: "Role-based access, encrypted conversations, secure infrastructure, and enterprise-ready deployment.",
     icon: "security",
+    color: "#f6db75",
   },
 ] as const;
 
@@ -651,12 +657,20 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
                       className="everything-vertical-item"
                       key={item.title}
                     >
-                      <div className="everything-icon-circle" >
+                      <div
+                        className="everything-icon-circle"
+                        style={{
+                          color: item.color,
+                          borderColor: `${item.color}40`,
+                          backgroundColor: `${item.color}12`,
+                          boxShadow: `0 0 28px ${item.color}20`,
+                        }}
+                      >
                         <EverythingIncludedIcon name={item.icon} />
                       </div>
 
                       <div className="everything-line">
-                        <span />
+                        <span style={{ backgroundColor: item.color }} />
                       </div>
 
                       <h3>{item.title}</h3>
@@ -1039,22 +1053,15 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--service-accent);
-            border: 1px solid rgba(var(--service-accent-rgb), .25);
-
-            background:
-              radial-gradient(circle,
-                rgba(var(--service-accent-rgb), .18),
-                rgba(var(--service-accent-rgb), .05));
-
-            box-shadow:
-              inset 0 0 0 1px rgba(255,255,255,.05),
-              0 0 40px rgba(var(--service-accent-rgb), .12);
+            color: currentColor;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.04);
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
           }
 
-          .everything-icon-circle svg{
-              width:42px;
-              height:42px;
+          .everything-icon-circle svg {
+              width: 42px;
+              height: 42px;
           }
 
           .everything-line{
