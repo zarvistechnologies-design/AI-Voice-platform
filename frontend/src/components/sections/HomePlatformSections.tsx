@@ -468,7 +468,7 @@ export function HomePlatformSections() {
           <span className="size-2 rounded-full bg-[#22f4d2] shadow-[0_0_14px_#22f4d2]" />
           Multilingual AI Phone Agents
         </div>
-        <h1 className="mx-auto m-0 max-w-5xl text-[clamp(2.25rem,3.4vw,3.35rem)] font-black leading-[1.04] tracking-[-0.035em] text-white sm:leading-[0.98]">
+        <h1 className="mx-auto m-0 max-w-none text-[clamp(2.25rem,3.4vw,3.35rem)] font-black leading-[1.04] tracking-[-0.035em] text-white sm:leading-[0.98] lg:whitespace-nowrap">
           AI phone agents that{" "}
           <span className="bg-gradient-to-r from-white via-cyan-100 to-[#75fff0] bg-clip-text text-transparent">answer, act, and convert.</span>
         </h1>
