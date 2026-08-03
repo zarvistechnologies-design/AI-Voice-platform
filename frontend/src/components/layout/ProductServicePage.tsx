@@ -817,7 +817,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
                     ? "Comprehensive Control Over Agent Behavior."
                     : design.visualTitle}
                 </h2>
-                <p className="voice-section-copy mx-auto mt-6 max-w-4xl">
+                <p className="voice-build-redesign-copy mx-auto mt-6 max-w-3xl">
                   {isVoiceAgents
                     ? "Fine-tune every detail that shapes a conversation—from voice and knowledge to handoff rules and deployment. Every control stays visible, reviewable, and easy to update."
                     : design.integrationsTitle}

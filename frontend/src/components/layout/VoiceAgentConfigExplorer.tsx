@@ -169,14 +169,24 @@ export function VoiceAgentConfigExplorer({
       role="region"
     >
       <div className="voice-config-explorer-main">
-        <article className="voice-config-detail" aria-live="polite" id="voice-config-panel" role="tabpanel">
+        <article
+          className="voice-config-detail"
+          aria-live="polite"
+          id="voice-config-panel"
+          role="tabpanel"
+        >
           <div className="voice-config-detail-body">
-            <div className="voice-config-detail-copy">
+            <div className="voice-config-detail-content">
               <div className="voice-config-detail-progress">
                 <strong>{String(activeIndex + 1).padStart(2, "0")}</strong>
                 <span>/ {String(items.length).padStart(2, "0")}</span>
+
                 <span className="voice-config-progress-track" aria-hidden="true">
-                  <span style={{ width: `${((activeIndex + 1) / items.length) * 100}%` }} />
+                  <span
+                    style={{
+                      width: `${((activeIndex + 1) / items.length) * 100}%`,
+                    }}
+                  />
                 </span>
               </div>
 
@@ -186,16 +196,27 @@ export function VoiceAgentConfigExplorer({
                 </span>
                 <h3>{activeItem.title}</h3>
               </div>
+
               <p>{activeItem.description}</p>
             </div>
 
             <div className="voice-config-option-grid">
               <p className="voice-config-option-grid-label">Included controls</p>
+
               {activeItem.options.map((option, optionIndex) => (
                 <div className="voice-config-option" key={option}>
-                  <span className="voice-config-option-number">{String(optionIndex + 1).padStart(2, "0")}</span>
+                  <span className="voice-config-option-number">
+                    {String(optionIndex + 1).padStart(2, "0")}
+                  </span>
+
                   <span>{option}</span>
-                  <span className="voice-config-option-check" aria-hidden="true">✓</span>
+
+                  <span
+                    className="voice-config-option-check"
+                    aria-hidden="true"
+                  >
+                    ✓
+                  </span>
                 </div>
               ))}
             </div>
@@ -307,6 +328,20 @@ export function VoiceAgentConfigExplorer({
           padding: clamp(2.15rem, 4.2vw, 3.5rem);
         }
 
+        .voice-config-detail-body {
+          display: flex;
+          flex-direction: column;
+          gap: 2rem;
+        }
+
+        .voice-config-detail-copy {
+          position: relative;
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 1.25rem;
+        }
+
         .voice-config-detail-progress {
           display: flex;
           align-items: center;
@@ -341,15 +376,10 @@ export function VoiceAgentConfigExplorer({
           transition: width 360ms ease;
         }
 
-        .voice-config-detail-body {
-          display: grid;
+        .voice-config-title-row {
+          display: flex;
           align-items: center;
-          gap: clamp(2.5rem, 5vw, 5.5rem);
-        }
-
-        .voice-config-detail-copy {
-          position: relative;
-          min-width: 0;
+          gap: 0.9rem;
         }
 
         .voice-config-detail-icon {
@@ -359,20 +389,17 @@ export function VoiceAgentConfigExplorer({
           flex: 0 0 auto;
           place-items: center;
           border-left: 2px solid var(--active-config-color);
-          background: linear-gradient(90deg, rgba(var(--active-config-rgb), 0.12), transparent);
+          background: linear-gradient(
+            90deg,
+            rgba(var(--active-config-rgb), 0.12),
+            transparent
+          );
           color: var(--active-config-color);
         }
 
         .voice-config-detail-icon svg {
           width: 1.95rem;
           height: 1.95rem;
-        }
-
-        .voice-config-title-row {
-          display: flex;
-          align-items: center;
-          gap: 0.9rem;
-          margin-top: 1.55rem;
         }
 
         .voice-config-detail h3 {
@@ -387,10 +414,14 @@ export function VoiceAgentConfigExplorer({
 
         .voice-config-detail p {
           max-width: 30rem;
-          margin-top: 0.85rem;
+          margin: 0;
           color: #94a3b8;
           font-size: 0.96rem;
           line-height: 1.72rem;
+        }
+
+        .voice-config-option-grid {
+          width: 100%;
         }
 
         .voice-config-bar-chart {
