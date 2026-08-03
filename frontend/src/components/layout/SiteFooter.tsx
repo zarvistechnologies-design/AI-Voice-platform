@@ -170,11 +170,11 @@ export function SiteFooter() {
               className="group flex items-center gap-[clamp(0.75rem,2vw,1.75rem)] text-white"
               href="/"
             >
-              <span className="relative block h-[clamp(3.25rem,7vw,6.25rem)] w-[clamp(11.375rem,24.5vw,21.875rem)] shrink-0 overflow-hidden transition-transform duration-300 group-hover:scale-[1.02]">
+              <span className="relative block h-[clamp(3.25rem,7vw,6.25rem)] w-[clamp(11.375rem,24.5vw,21.875rem)] shrink-0 bg-transparent transition-transform duration-300 group-hover:scale-[1.02]">
                 <Image
                   alt=""
                   aria-hidden="true"
-                  className="h-full w-full object-contain drop-shadow-[0_0_18px_rgba(53,251,224,0.2)]"
+                  className="h-full w-full object-contain object-left"
                   height={350}
                   src="/images/logo_2.svg"
                   width={1160}

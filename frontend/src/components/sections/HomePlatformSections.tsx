@@ -18,6 +18,11 @@ const companyLogos = [
   { name: "Dropbox", src: "/images/company-logos/dropbox.svg" },
   { name: "Figma", src: "/images/company-logos/figma.svg" },
   { name: "Spotify", src: "/images/company-logos/spotify.svg" },
+  {
+    name: "DigitalBot.ai",
+    src: "/images/company-logos/digitalbot.png",
+    logoClassName: "vozon-company-logo-image--digitalbot",
+  },
 ];
 
 const integrationSteps = [
@@ -42,7 +47,7 @@ const integrationSteps = [
       { before: "Bring your own fine-tuned or ", strong: "self-hosted LLM", after: "." },
     ],
     tags: ["Bring your own model"],
-    src: "/images/st2.png",
+    src: "/images/step02.png",
   },
   {
     number: "03",
@@ -53,7 +58,7 @@ const integrationSteps = [
       { before: "Clone your own voice for a ", strong: "consistent brand sound", after: "." },
     ],
     tags: ["Voice cloning", "Multilingual"],
-    src: "/images/st3.png",
+    src: "/images/step03-6cfeaa8e.png",
   },
   {
     number: "04",
@@ -64,28 +69,26 @@ const integrationSteps = [
       { before: "Ship to web, mobile, and desktop with ", strong: "one SDK", after: "." },
     ],
     tags: ["Phone", "SDK", "Widget"],
-    src: "/images/st4.png",
+    src: "/images/step04-da19d332.png",
   },
 ];
 
 const codeExamples = {
-  python: {
-    label: "Python",
-    code: `import requests
+  javascript: {
+    label: "JavaScript",
+    code: `const response = await fetch("https://api.vozon.ai/api/voice/outbound-calls", {
+  method: "POST",
+  headers: {
+    Authorization: "Bearer <api_key>",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    agentId: "your_agent_id",
+    phoneNumber: "+919876543210",
+  }),
+});
 
-response = requests.post(
-    "https://api.vozon.ai/api/voice/outbound-calls",
-    headers={
-        "Authorization": "Bearer <api_key>",
-        "Content-Type": "application/json",
-    },
-    json={
-        "agentId": "your_agent_id",
-        "phoneNumber": "+919876543210",
-    },
-)
-
-print(response.json())`,
+console.log(await response.json());`,
   },
   api: {
     label: "API",
@@ -203,6 +206,7 @@ const appIntegrations = [
   { key: "crm", name: "CRM", position: "upper-right", orbit: "middle", delay: -15 },
   { key: "calendly", name: "Calendly", position: "middle-left", orbit: "middle", delay: -27 },
   { key: "exotel", name: "Exotel", position: "lower-right", orbit: "middle", delay: -39 },
+  { key: "digitalbot", name: "DigitalBot.ai", position: "lower-center", orbit: "core", delay: -3 },
   { key: "gmail", name: "Gmail", position: "middle-center", orbit: "inner", delay: -5 },
 ] as const;
 
@@ -210,6 +214,7 @@ const appOrbitMotion = {
   outer: { path: "M85 430 A510 470 0 0 1 1035 430", duration: "54s" },
   middle: { path: "M196 420 A415 385 0 0 1 924 420", duration: "48s" },
   inner: { path: "M296 430 A320 300 0 0 1 824 430", duration: "42s" },
+  core: { path: "M330 600 A230 220 0 0 1 790 600", duration: "36s" },
 } as const;
 
 const agentIndustries = ["Ecommerce", "EdTech", "HealthTech", "BFSI", "Hospitality"] as const;
@@ -432,6 +437,7 @@ function IntegrationAppLogo({ app }: { app: (typeof appIntegrations)[number] }) 
   if (app.key === "zoho") return <Image alt="" height={42} src="/images/integrations/zoho.svg" width={42} />;
   if (app.key === "calendar") return <Image alt="" height={40} src="/images/integrations/google-calendar.svg" width={40} />;
   if (app.key === "calendly") return <Image alt="" height={40} src="/images/integrations/calendly.svg" width={40} />;
+  if (app.key === "digitalbot") return <Image alt="" className="vozon-app-digitalbot" height={18} src="/images/digitalbot_orbit.png" width={72} />;
   if (app.key === "gmail") return <Image alt="" height={38} src="/images/integrations/gmail.svg" width={38} />;
 
   if (app.key === "twilio") {
@@ -454,7 +460,7 @@ function GlowButton({ children, href }: { children: string; href: string }) {
 }
 
 export function HomePlatformSections() {
-  const [selectedCodeTab, setSelectedCodeTab] = useState<CodeTab>("python");
+  const [selectedCodeTab, setSelectedCodeTab] = useState<CodeTab>("javascript");
   const [copiedCode, setCopiedCode] = useState(false);
   const [selectedAgentIndustry, setSelectedAgentIndustry] = useState<(typeof agentIndustries)[number]>("Ecommerce");
 
@@ -501,7 +507,7 @@ export function HomePlatformSections() {
                 >
                   <Image
                     alt={`${company.name} logo`}
-                    className="vozon-company-logo-image h-9 w-9 object-contain"
+                    className={`vozon-company-logo-image h-9 w-9 object-contain ${company.logoClassName ?? ""}`}
                     height={40}
                     src={company.src}
                     width={40}
@@ -752,7 +758,7 @@ export function HomePlatformSections() {
                         src={step.src}
                         alt={`${step.title} workflow`}
                         fill
-                        className={index === 0 ? "object-contain object-center" : "object-cover"}
+                        className="object-contain object-center"
                         sizes="(max-width: 1024px) 100vw, 50vw"
                       />
                     </div>
@@ -825,7 +831,7 @@ export function HomePlatformSections() {
         </div>
       </section>
 
-      <section className="vozon-apps-section relative overflow-hidden px-5 pt-8 sm:px-8 sm:pt-10 lg:pt-12" id="app-integrations" aria-labelledby="vozon-apps-title">
+      <section className="vozon-apps-section relative overflow-hidden px-5 pb-8 pt-8 sm:px-8 sm:pb-12 sm:pt-10 lg:pb-14 lg:pt-12" id="app-integrations" aria-labelledby="vozon-apps-title">
         <div className="relative z-10 w-full">
           <div className="mx-auto max-w-4xl text-center">
             <div className="vozon-apps-eyebrow"><span /> Integrations</div>
@@ -844,11 +850,14 @@ export function HomePlatformSections() {
               <ellipse className="vozon-app-track-flow" cx="560" cy="600" rx="510" ry="470" />
               <ellipse className="vozon-app-track-flow" cx="560" cy="600" rx="415" ry="385" />
               <ellipse className="vozon-app-track-flow" cx="560" cy="600" rx="320" ry="300" />
+              <ellipse className="vozon-app-track-base vozon-app-track-core" cx="560" cy="600" rx="230" ry="220" />
+              <ellipse className="vozon-app-track-flow vozon-app-track-core" cx="560" cy="600" rx="230" ry="220" />
             </svg>
 
             <svg className="vozon-app-moving-nodes" viewBox="0 0 1120 590" preserveAspectRatio="none" aria-hidden="true">
               {appIntegrations.map((app) => {
                 const motion = appOrbitMotion[app.orbit];
+                const isDigitalBot = app.key === "digitalbot";
 
                 return (
                   <g key={`moving-${app.key}`}>
@@ -861,8 +870,13 @@ export function HomePlatformSections() {
                       path={motion.path}
                       repeatCount="indefinite"
                     />
-                    <foreignObject height="90" width="90" x="-45" y="-45">
-                      <div className="vozon-app-moving-item">
+                    <foreignObject
+                      height={isDigitalBot ? 80 : 90}
+                      width={isDigitalBot ? 200 : 90}
+                      x={isDigitalBot ? -100 : -45}
+                      y={isDigitalBot ? -40 : -45}
+                    >
+                      <div className={`vozon-app-moving-item ${isDigitalBot ? "vozon-app-moving-item-digitalbot" : ""}`}>
                         <div className="vozon-app-moving-icon">
                           <IntegrationAppLogo app={app} />
                         </div>
@@ -875,7 +889,7 @@ export function HomePlatformSections() {
 
             {appIntegrations.map((app) => (
               <article
-                className={`vozon-app-node vozon-app-node-${app.position} vozon-app-orbit-${app.orbit}`}
+                className={`vozon-app-node vozon-app-node-${app.position} vozon-app-orbit-${app.orbit} ${app.key === "digitalbot" ? "vozon-app-node-digitalbot" : ""}`}
                 key={app.key}
                 style={{ "--app-delay": `${app.delay}s` } as CSSProperties}
               >
@@ -1239,8 +1253,8 @@ export function HomePlatformSections() {
 
         .vozon-app-orbit {
           position: relative;
-          width: min(100%, 920px);
-          height: 480px;
+          width: min(100%, 1040px);
+          height: 500px;
           margin-inline: auto;
           overflow: hidden;
           isolation: isolate;
@@ -1333,16 +1347,27 @@ export function HomePlatformSections() {
           padding-top: 7px;
         }
 
+        .vozon-app-moving-item-digitalbot {
+          width: 200px;
+          height: 80px;
+          align-items: center;
+          padding-top: 0;
+        }
+
+        .vozon-app-moving-item-digitalbot .vozon-app-moving-icon {
+          width: 200px;
+          height: 80px;
+        }
+
         .vozon-app-moving-icon {
           display: grid;
           width: 76px;
           height: 76px;
           place-items: center;
-          overflow: hidden;
-          border: 1px solid rgba(255,255,255,0.13);
-          border-radius: 19px;
-          background: linear-gradient(145deg, rgba(27,35,40,0.99), rgba(10,14,17,0.99));
-          box-shadow: inset 0 1px rgba(255,255,255,0.06), 0 18px 38px rgba(0,0,0,0.38);
+          overflow: visible;
+          border: 0;
+          background: transparent;
+          box-shadow: none;
         }
 
         .vozon-app-moving-icon img {
@@ -1350,6 +1375,22 @@ export function HomePlatformSections() {
           height: auto;
           max-height: 38px;
           object-fit: contain;
+        }
+
+        .vozon-app-moving-icon > *,
+        .vozon-app-node-icon > * {
+          transform: scale(1.28);
+          transform-origin: center;
+        }
+
+        .vozon-app-moving-icon img.vozon-app-digitalbot,
+        .vozon-app-node-icon img.vozon-app-digitalbot {
+          width: 150px;
+          height: auto;
+          max-width: none;
+          max-height: 58px;
+          filter: drop-shadow(0 0 6px rgba(241,94,45,.28));
+          transform: none;
         }
 
         .vozon-app-track-base {
@@ -1386,6 +1427,15 @@ export function HomePlatformSections() {
         .vozon-app-track-flow:nth-child(6) {
           stroke: rgba(169,155,255,0.56);
           animation-duration: 4.8s;
+        }
+
+        .vozon-app-track-base.vozon-app-track-core {
+          stroke: rgba(241,94,45,0.2);
+        }
+
+        .vozon-app-track-flow.vozon-app-track-core {
+          stroke: rgba(255,126,72,0.52);
+          animation-duration: 4.2s;
         }
 
         .vozon-app-node {
@@ -1444,17 +1494,14 @@ export function HomePlatformSections() {
           width: 64px;
           height: 64px;
           place-items: center;
-          overflow: hidden;
-          border: 1px solid rgba(255,255,255,0.12);
-          border-radius: 16px;
-          background: linear-gradient(145deg, rgba(27,35,40,0.98), rgba(10,14,17,0.98));
-          box-shadow: inset 0 1px rgba(255,255,255,0.05), 0 18px 38px rgba(0,0,0,0.36);
-          transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+          overflow: visible;
+          border: 0;
+          background: transparent;
+          box-shadow: none;
+          transition: transform 180ms ease;
         }
 
         .vozon-app-node:hover .vozon-app-node-icon {
-          border-color: rgba(117,255,240,0.34);
-          box-shadow: inset 0 1px rgba(255,255,255,0.07), 0 20px 44px rgba(0,0,0,0.42), 0 0 24px rgba(69,221,206,0.1);
           transform: translateY(-3px);
         }
 
@@ -1735,6 +1782,16 @@ export function HomePlatformSections() {
             width: 60px;
             height: 60px;
             border-radius: 15px;
+          }
+
+          .vozon-app-node-digitalbot {
+            grid-column: 1 / -1;
+            margin-block: 0.35rem;
+          }
+
+          .vozon-app-node-digitalbot .vozon-app-node-icon {
+            width: 170px;
+            height: 58px;
           }
 
           .vozon-app-hub {
@@ -2267,6 +2324,13 @@ export function HomePlatformSections() {
         .vozon-company-logo-image {
           filter: saturate(0.9) brightness(0.88);
           opacity: 0.72;
+        }
+
+        .vozon-company-logo-image.vozon-company-logo-image--digitalbot {
+          width: 3rem;
+          height: 3rem;
+          filter: saturate(1.18) brightness(1.12) drop-shadow(0 0 8px rgba(30,189,255,.32));
+          opacity: 1;
         }
 
         .vozon-company-name {
