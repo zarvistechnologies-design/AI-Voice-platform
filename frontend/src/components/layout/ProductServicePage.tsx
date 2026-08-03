@@ -185,6 +185,46 @@ const everythingIncludedCapabilities = [
   },
 ] as const;
 
+
+const voiceCloningCapabilities = [
+  {
+    icon: "waveform",
+    color: "#35fbe0",
+    title: "Consistent Brand Identity",
+    body: "Deliver the same recognizable voice across phone calls, customer support, and AI assistants.",
+  },
+  {
+    icon: "microphone",
+    color: "#8f83e8",
+    title: "Natural Human Expression",
+    body: "Capture tone, pacing, pronunciation, and speaking style for conversations that feel authentic.",
+  },
+  {
+    icon: "bolt",
+    color: "#ffad73",
+    title: "Fast Voice Creation",
+    body: "Generate a production-ready AI voice from a short, high-quality voice sample.",
+  },
+  {
+    icon: "globe",
+    color: "#75baff",
+    title: "Multilingual Delivery",
+    body: "Use your cloned voice across multiple supported languages while preserving its unique character.",
+  },
+  {
+    icon: "users",
+    color: "#ff9fb7",
+    title: "Scalable Communication",
+    body: "Handle thousands of simultaneous conversations without compromising quality or consistency.",
+  },
+  {
+    icon: "shield",
+    color: "#f6db75",
+    title: "Enterprise Security",
+    body: "Voice data is securely processed with privacy and access controls designed for business use.",
+  },
+];
+
 function Pill({ children }: { children: ReactNode }) {
   return (
     <span className="service-pill inline-flex rounded-full px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-[0.12em]">
@@ -193,14 +233,36 @@ function Pill({ children }: { children: ReactNode }) {
   );
 }
 
-type VoiceAgentCapabilityIconName = "call" | "conversation" | "checklist" | "knowledge" | "handoff" | "insights" | "security";
+type VoiceAgentCapabilityIconName =
+  | "call"
+  | "conversation"
+  | "checklist"
+  | "knowledge"
+  | "handoff"
+  | "insights"
+  | "security";
 
-function VoiceAgentCapabilityIcon({ name }: { name: VoiceAgentCapabilityIconName }) {
-  const common = { fill: "none", stroke: "currentColor", strokeLinecap: "round" as const, strokeLinejoin: "round" as const, strokeWidth: 1.6 };
+function VoiceAgentCapabilityIcon({
+  name,
+}: {
+  name: VoiceAgentCapabilityIconName;
+}) {
+  const common = {
+    fill: "none",
+    stroke: "currentColor",
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    strokeWidth: 1.6,
+  };
 
   if (name === "call") {
     return (
-      <svg aria-hidden="true" className="size-5" viewBox="0 0 24 24" {...common}>
+      <svg
+        aria-hidden="true"
+        className="size-5"
+        viewBox="0 0 24 24"
+        {...common}
+      >
         <path d="M6.5 5.5c1.9-.6 3.8 0 5.1 1.3l1 1c.6.6.8 1.4.4 2.1l-1.2 2c-.4.7-.2 1.5.4 2.1l1 1c1.3 1.3 1.9 3.2 1.3 5.1-.5 1.6-1.8 2.9-3.4 3.4-2.9.9-6-.1-8.1-2.2C3.1 13.9 2.2 9.9 3.1 7c.5-1.6 1.8-2.9 3.4-3.4Z" />
       </svg>
     );
@@ -208,7 +270,12 @@ function VoiceAgentCapabilityIcon({ name }: { name: VoiceAgentCapabilityIconName
 
   if (name === "conversation") {
     return (
-      <svg aria-hidden="true" className="size-5" viewBox="0 0 24 24" {...common}>
+      <svg
+        aria-hidden="true"
+        className="size-5"
+        viewBox="0 0 24 24"
+        {...common}
+      >
         <path d="M5 6h14a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H8l-3 3V7a1 1 0 0 1 1-1Z" />
         <path d="M7 9h10M7 13h6" />
       </svg>
@@ -217,7 +284,12 @@ function VoiceAgentCapabilityIcon({ name }: { name: VoiceAgentCapabilityIconName
 
   if (name === "checklist") {
     return (
-      <svg aria-hidden="true" className="size-5" viewBox="0 0 24 24" {...common}>
+      <svg
+        aria-hidden="true"
+        className="size-5"
+        viewBox="0 0 24 24"
+        {...common}
+      >
         <path d="M5 5.5h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-12a1 1 0 0 1 1-1Z" />
         <path d="M8.5 11.5 10.5 13.5 15.5 8.5" />
         <path d="M8.5 16.5h3M14.5 12.5h2" />
@@ -227,7 +299,12 @@ function VoiceAgentCapabilityIcon({ name }: { name: VoiceAgentCapabilityIconName
 
   if (name === "knowledge") {
     return (
-      <svg aria-hidden="true" className="size-5" viewBox="0 0 24 24" {...common}>
+      <svg
+        aria-hidden="true"
+        className="size-5"
+        viewBox="0 0 24 24"
+        {...common}
+      >
         <path d="M6 4.5h12a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-13a1 1 0 0 1 1-1Z" />
         <path d="M6 7.5h12M6 11.5h12" />
       </svg>
@@ -236,7 +313,12 @@ function VoiceAgentCapabilityIcon({ name }: { name: VoiceAgentCapabilityIconName
 
   if (name === "handoff") {
     return (
-      <svg aria-hidden="true" className="size-5" viewBox="0 0 24 24" {...common}>
+      <svg
+        aria-hidden="true"
+        className="size-5"
+        viewBox="0 0 24 24"
+        {...common}
+      >
         <path d="M8 7h8M8 7l4-4m0 4-4 4" />
         <path d="M8 17h8M16 17l-4 4m4-4-4-4" />
       </svg>
@@ -245,7 +327,12 @@ function VoiceAgentCapabilityIcon({ name }: { name: VoiceAgentCapabilityIconName
 
   if (name === "insights") {
     return (
-      <svg aria-hidden="true" className="size-5" viewBox="0 0 24 24" {...common}>
+      <svg
+        aria-hidden="true"
+        className="size-5"
+        viewBox="0 0 24 24"
+        {...common}
+      >
         <path d="M6 16.5V11l3-3 2 2 4-4 4 4v8.5H6Z" />
         <path d="M14 12.5h4" />
       </svg>
@@ -254,7 +341,12 @@ function VoiceAgentCapabilityIcon({ name }: { name: VoiceAgentCapabilityIconName
 
   if (name === "security") {
     return (
-      <svg aria-hidden="true" className="size-5" viewBox="0 0 24 24" {...common}>
+      <svg
+        aria-hidden="true"
+        className="size-5"
+        viewBox="0 0 24 24"
+        {...common}
+      >
         <path d="M12 3 5 6v5c0 5.25 3.75 9.75 7 10 3.25-.25 7-4.75 7-10V6l-7-3Z" />
         <path d="M9.5 12.5 11 14l3-3" />
       </svg>
@@ -292,7 +384,12 @@ function EverythingIncludedIcon({
 
   if (name === "personality") {
     return (
-      <svg aria-hidden="true" className="size-6" viewBox="0 0 24 24" {...common}>
+      <svg
+        aria-hidden="true"
+        className="size-6"
+        viewBox="0 0 24 24"
+        {...common}
+      >
         <path d="M6 4v16" />
         <circle cx="6" cy="8" r="1.8" />
         <path d="M12 4v16" />
@@ -305,7 +402,12 @@ function EverythingIncludedIcon({
 
   if (name === "languages") {
     return (
-      <svg aria-hidden="true" className="size-6" viewBox="0 0 24 24" {...common}>
+      <svg
+        aria-hidden="true"
+        className="size-6"
+        viewBox="0 0 24 24"
+        {...common}
+      >
         <circle cx="12" cy="12" r="8" />
         <path d="M4 12h16" />
         <path d="M12 4c2.8 2.5 4 5.2 4 8s-1.2 5.5-4 8" />
@@ -316,7 +418,12 @@ function EverythingIncludedIcon({
 
   if (name === "knowledge") {
     return (
-      <svg aria-hidden="true" className="size-6" viewBox="0 0 24 24" {...common}>
+      <svg
+        aria-hidden="true"
+        className="size-6"
+        viewBox="0 0 24 24"
+        {...common}
+      >
         <path d="M6 6h10a2 2 0 0 1 2 2v10H8a2 2 0 0 0-2 2V6Z" />
         <path d="M8 8h8" />
         <path d="M8 12h8" />
@@ -327,7 +434,12 @@ function EverythingIncludedIcon({
 
   if (name === "workflow") {
     return (
-      <svg aria-hidden="true" className="size-6" viewBox="0 0 24 24" {...common}>
+      <svg
+        aria-hidden="true"
+        className="size-6"
+        viewBox="0 0 24 24"
+        {...common}
+      >
         <circle cx="6" cy="12" r="1.5" />
         <circle cx="12" cy="6" r="1.5" />
         <circle cx="18" cy="12" r="1.5" />
@@ -340,7 +452,12 @@ function EverythingIncludedIcon({
 
   if (name === "dashboard") {
     return (
-      <svg aria-hidden="true" className="size-6" viewBox="0 0 24 24" {...common}>
+      <svg
+        aria-hidden="true"
+        className="size-6"
+        viewBox="0 0 24 24"
+        {...common}
+      >
         <rect x="4" y="5" width="16" height="14" rx="2" />
         <path d="M4 9h16" />
         <path d="M8 15v2" />
@@ -352,7 +469,12 @@ function EverythingIncludedIcon({
 
   if (name === "security") {
     return (
-      <svg aria-hidden="true" className="size-6" viewBox="0 0 24 24" {...common}>
+      <svg
+        aria-hidden="true"
+        className="size-6"
+        viewBox="0 0 24 24"
+        {...common}
+      >
         <path d="M12 3 5 6v5c0 4.5 3.2 8.3 7 9 3.8-.7 7-4.5 7-9V6l-7-3Z" />
         <rect x="10" y="11" width="4" height="4" rx=".7" />
         <path d="M11 11V9.8a1 1 0 0 1 2 0V11" />
@@ -370,7 +492,12 @@ function BuildProcessIcon({ index }: { index: number }) {
     return (
       <svg aria-hidden="true" className="size-8" viewBox="0 0 24 24">
         <circle className={common} cx="12" cy="8" r="3.25" strokeWidth="1.5" />
-        <path className={common} d="M5.5 19c.8-3.3 3-5 6.5-5s5.7 1.7 6.5 5" strokeLinecap="round" strokeWidth="1.5" />
+        <path
+          className={common}
+          d="M5.5 19c.8-3.3 3-5 6.5-5s5.7 1.7 6.5 5"
+          strokeLinecap="round"
+          strokeWidth="1.5"
+        />
       </svg>
     );
   }
@@ -378,7 +505,13 @@ function BuildProcessIcon({ index }: { index: number }) {
   if (index === 1) {
     return (
       <svg aria-hidden="true" className="size-8" viewBox="0 0 24 24">
-        <path className={common} d="M7 3.75h7l3 3V20.25H7zM14 3.75v3h3M9.5 11h5M9.5 14.5h5" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+        <path
+          className={common}
+          d="M7 3.75h7l3 3V20.25H7zM14 3.75v3h3M9.5 11h5M9.5 14.5h5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.5"
+        />
       </svg>
     );
   }
@@ -386,7 +519,12 @@ function BuildProcessIcon({ index }: { index: number }) {
   if (index === 2) {
     return (
       <svg aria-hidden="true" className="size-8" viewBox="0 0 24 24">
-        <path className={common} d="M9.2 14.8 7.5 16.5a3.54 3.54 0 0 1-5-5l3-3a3.54 3.54 0 0 1 5 0M14.8 9.2l1.7-1.7a3.54 3.54 0 0 1 5 5l-3 3a3.54 3.54 0 0 1-5 0M8.5 15.5l7-7" strokeLinecap="round" strokeWidth="1.5" />
+        <path
+          className={common}
+          d="M9.2 14.8 7.5 16.5a3.54 3.54 0 0 1-5-5l3-3a3.54 3.54 0 0 1 5 0M14.8 9.2l1.7-1.7a3.54 3.54 0 0 1 5 5l-3 3a3.54 3.54 0 0 1-5 0M8.5 15.5l7-7"
+          strokeLinecap="round"
+          strokeWidth="1.5"
+        />
       </svg>
     );
   }
@@ -394,7 +532,13 @@ function BuildProcessIcon({ index }: { index: number }) {
   if (index === 3) {
     return (
       <svg aria-hidden="true" className="size-8" viewBox="0 0 24 24">
-        <path className={common} d="M4 12h2.2l1.4-4 2.4 8 2.2-7 1.8 5 1.5-2H20" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+        <path
+          className={common}
+          d="M4 12h2.2l1.4-4 2.4 8 2.2-7 1.8 5 1.5-2H20"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.5"
+        />
         <circle className={common} cx="12" cy="12" r="9" strokeWidth="1.25" />
       </svg>
     );
@@ -403,18 +547,351 @@ function BuildProcessIcon({ index }: { index: number }) {
   if (index === 4) {
     return (
       <svg aria-hidden="true" className="size-8" viewBox="0 0 24 24">
-        <path className={common} d="M12 16V4M7.5 8.5 12 4l4.5 4.5M5 14v5h14v-5" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+        <path
+          className={common}
+          d="M12 16V4M7.5 8.5 12 4l4.5 4.5M5 14v5h14v-5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.5"
+        />
       </svg>
     );
   }
 
   return (
     <svg aria-hidden="true" className="size-8" viewBox="0 0 24 24">
-      <path className={common} d="M5 19V9M10 19V5M15 19v-7M20 19V3M3.5 19.5h18" strokeLinecap="round" strokeWidth="1.5" />
+      <path
+        className={common}
+        d="M5 19V9M10 19V5M15 19v-7M20 19V3M3.5 19.5h18"
+        strokeLinecap="round"
+        strokeWidth="1.5"
+      />
     </svg>
   );
 }
 
+type VoiceCloningIconName =
+  | "waveform"
+  | "microphone"
+  | "bolt"
+  | "globe"
+  | "users"
+  | "shield";
+
+function VoiceCloningIcon({ name }: { name: VoiceCloningIconName }) {
+  const common = {
+    fill: "none",
+    stroke: "currentColor",
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    strokeWidth: 1.8,
+  };
+
+  if (name === "waveform") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-6"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <path d="M3 12h2" />
+        <path d="M6 9v6" />
+        <path d="M9 6v12" />
+        <path d="M12 10v4" />
+        <path d="M15 7v10" />
+        <path d="M18 9v6" />
+        <path d="M21 12h-2" />
+      </svg>
+    );
+  }
+
+  if (name === "microphone") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-6"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <rect x="9" y="3" width="6" height="11" rx="3" />
+        <path d="M6 11a6 6 0 0 0 12 0" />
+        <path d="M12 17v4" />
+        <path d="M9 21h6" />
+      </svg>
+    );
+  }
+
+  if (name === "bolt") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-6"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <path d="M13 2 6 13h5l-1 9 8-12h-5l1-8Z" />
+      </svg>
+    );
+  }
+
+  if (name === "globe") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-6"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <circle cx="12" cy="12" r="9" />
+        <path d="M3 12h18" />
+        <path d="M12 3c3 3 4.5 6 4.5 9S15 18 12 21" />
+        <path d="M12 3c-3 3-4.5 6-4.5 9S9 18 12 21" />
+      </svg>
+    );
+  }
+
+  if (name === "users") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-6"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <circle cx="12" cy="8" r="3" />
+        <path d="M6 19a6 6 0 0 1 12 0" />
+      </svg>
+    );
+  }
+
+  if (name === "shield") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-6"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <path d="M12 3 5 6v5c0 5 3.5 8.8 7 10 3.5-1.2 7-5 7-10V6l-7-3Z" />
+        <path d="M9 12h6" />
+        <path d="M12 9v6" />
+      </svg>
+    );
+  }
+
+  return null;
+}
+
+const voiceWorkflowSteps: {
+  icon: VoiceWorkflowIconName;
+  title: string;
+  body: string;
+  color: string;
+}[] = [
+  {
+    icon: "upload",
+    title: "Upload Voice Sample",
+    body: "Provide a clear recording of the speaker for accurate voice cloning.",
+    color: "#35fbe0",
+  },
+  {
+    icon: "waveform",
+    title: "AI Learns the Voice",
+    body: "Analyze pronunciation, tone, rhythm, and vocal characteristics.",
+    color: "#8f83e8",
+  },
+  {
+    icon: "microphone",
+    title: "Generate Your AI Voice",
+    body: "Create a realistic digital voice optimized for natural conversations.",
+    color: "#ffad73",
+  },
+  {
+    icon: "phone",
+    title: "Deploy Anywhere",
+    body: "Use it with voice agents, IVR systems, customer support, and business workflows.",
+    color: "#75baff",
+  },
+];
+
+type VoiceWorkflowIconName = "upload" | "waveform" | "microphone" | "phone";
+
+function VoiceWorkflowIcon({ name }: { name: VoiceWorkflowIconName }) {
+  const common = {
+    fill: "none",
+    stroke: "currentColor",
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    strokeWidth: 1.8,
+  };
+
+  if (name === "upload") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-7"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <path d="M7 17H6a3 3 0 0 1 0-6 5 5 0 0 1 9.7-1.5A4 4 0 1 1 18 17h-1" />
+        <path d="M12 15V8" />
+        <path d="m9 11 3-3 3 3" />
+      </svg>
+    );
+  }
+
+  if (name === "waveform") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-7"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <path d="M3 12h2" />
+        <path d="M6 9v6" />
+        <path d="M9 6v12" />
+        <path d="M12 10v4" />
+        <path d="M15 7v10" />
+        <path d="M18 9v6" />
+        <path d="M21 12h-2" />
+      </svg>
+    );
+  }
+
+  if (name === "microphone") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-7"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <rect x="9" y="3" width="6" height="11" rx="3" />
+        <path d="M6 11a6 6 0 0 0 12 0" />
+        <path d="M12 17v4" />
+        <path d="M9 21h6" />
+      </svg>
+    );
+  }
+
+  if (name === "phone") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-7"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <path d="M22 16.9v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7l.4 2.6a2 2 0 0 1-.6 1.8L7.3 9.7a16 16 0 0 0 7 7l1.6-1.6a2 2 0 0 1 1.8-.6l2.6.4a2 2 0 0 1 1.7 2Z" />
+        <path d="M16 4a5 5 0 0 1 4 4" />
+        <path d="M16 8a2 2 0 0 1 2 2" />
+      </svg>
+    );
+  }
+
+  return null;
+}
+
+const voicePreviewFeatures = [
+  "Natural & expressive",
+  "Clear pronunciation",
+  "Human-like intonation",
+  "Ready for real conversations",
+];
+
+const voiceSamples = [
+  {
+    title: "Original Voice Sample",
+    time: "00:05",
+  },
+  {
+    title: "Cloned Voice (AI)",
+    time: "00:05",
+  },
+];
+
+const voiceSliders = [
+  {
+    label: "Stability",
+    value: "85%",
+    progress: "85%",
+  },
+  {
+    label: "Similarity",
+    value: "90%",
+    progress: "90%",
+  },
+  {
+    label: "Speaking Speed",
+    value: "1.0x",
+    progress: "65%",
+  },
+  {
+    label: "Pitch",
+    value: "0%",
+    progress: "50%",
+  },
+];
+
+function PlayIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-5"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+    >
+      <path d="M8 6v12l10-6-10-6Z" />
+    </svg>
+  );
+}
+
+function MicrophoneIcon() {
+  const common = {
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.8,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+  };
+
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-8"
+      viewBox="0 0 24 24"
+      {...common}
+    >
+      <rect x="9" y="3" width="6" height="11" rx="3" />
+      <path d="M6 11a6 6 0 0 0 12 0" />
+      <path d="M12 17v4" />
+      <path d="M9 21h6" />
+    </svg>
+  );
+}
+
+function VoiceWaveform() {
+  const bars = [
+    18, 30, 14, 42, 24, 38, 18, 48, 22, 36,
+    28, 16, 40, 26, 44, 20, 34, 24, 30, 18,
+  ];
+
+  return (
+    <div className="voice-waveform-bars">
+      {bars.map((height, index) => (
+        <span
+          key={index}
+          style={{
+            height: `${height}px`,
+            animationDelay: `${index * 80}ms`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
 // Kept temporarily for the existing service-console styles below.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function ProductDemo({ experience, service }: { experience: ProductServiceExperience; service: ServiceOverview }) {
@@ -491,6 +968,7 @@ function ProductDemo({ experience, service }: { experience: ProductServiceExperi
 export function ProductServicePage({ service, experience }: ProductServicePageProps) {
   const design = productPageDesigns[service.slug];
   const isVoiceAgents = service.slug === "voice-agents";
+  const isVoiceCloning = service.slug === "voice-cloning";
   const buildingLayers = isVoiceAgents
     ? agentBuildingLayers
     : experience.capabilities.map((capability, index) => ({
@@ -681,6 +1159,252 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
                 </div>
               </div>
             </section>
+          </>
+        )}
+
+        {isVoiceCloning && (
+          <>
+            <section className="everything-included-section relative overflow-hidden border-b border-white/[0.06] px-5 py-20 sm:px-8 sm:py-24">
+              <div className="voice-agent-container mx-auto max-w-[1320px]">
+                <div className="mx-auto max-w-4xl text-center">
+                  <div className="flex justify-center">
+                    <Pill>Voice Features</Pill>
+                  </div>
+
+                  <h2 className="voice-capabilities-heading mt-6 font-semibold leading-tight tracking-[-0.045em]">
+                    Why{" "}
+                    <span className="text-[var(--service-accent)]">
+                      Voice Cloning?
+                    </span>
+                  </h2>
+
+                  <p className="voice-capabilities-copy mx-auto mt-6 max-w-3xl">
+                    Create a natural AI voice that reflects your brand, captures
+                    authentic speech patterns, and delivers consistent,
+                    multilingual conversations at enterprise scale.
+                  </p>
+                </div>
+
+                <div className="everything-vertical-list mt-20">
+                  {voiceCloningCapabilities.map((item) => (
+                    <article
+                      className="everything-vertical-item"
+                      key={item.title}
+                    >
+                      <div
+                        className="everything-icon-circle"
+                        style={{
+                          color: item.color,
+                          borderColor: `${item.color}40`,
+                          backgroundColor: `${item.color}12`,
+                          boxShadow: `0 0 28px ${item.color}20`,
+                        }}
+                      >
+                        <VoiceCloningIcon
+                          name={item.icon as VoiceCloningIconName}
+                        />
+                      </div>
+
+                      <div className="everything-line">
+                        <span
+                          style={{
+                            backgroundColor: item.color,
+                            boxShadow: `0 0 0 6px ${item.color}1f, 0 0 18px ${item.color}74`,
+                          }}
+                        />
+                      </div>
+
+                      <h3>{item.title}</h3>
+
+                      <p>{item.body}</p>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <section className="voice-workflow-section relative overflow-hidden border-b border-white/[0.06] px-5 py-20 sm:px-8 sm:py-24">
+              <div className="voice-agent-container mx-auto max-w-[1320px]">
+                <div className="mx-auto max-w-4xl text-center">
+                  <div className="flex justify-center">
+                    <Pill>Voice Cloning Workflow</Pill>
+                  </div>
+
+                  <h2 className="voice-capabilities-heading mt-6 font-semibold leading-tight tracking-[-0.045em]">
+                    Simple{" "}
+                    <span className="text-[var(--service-accent)]">
+                      Voice Cloning Workflow
+                    </span>
+                  </h2>
+
+                  <p className="voice-capabilities-copy mx-auto mt-6 max-w-3xl">
+                    Create a production-ready AI voice in just a few simple
+                    steps.
+                  </p>
+                </div>
+
+                <div className="voice-workflow-grid mt-20">
+                  {voiceWorkflowSteps.map((step, index) => (
+                    <article className="voice-workflow-card" key={step.title}>
+                      <div
+                        className="voice-workflow-number"
+                        style={{
+                          color: step.color,
+                          borderColor: `${step.color}40`,
+                          backgroundColor: `${step.color}12`,
+                          boxShadow: `0 0 20px ${step.color}20`,
+                        }}
+                      >
+                        {index + 1}
+                      </div>
+
+                      <div
+                        className="voice-workflow-icon"
+                        style={{
+                          color: step.color,
+                          borderColor: `${step.color}40`,
+                          backgroundColor: `${step.color}12`,
+                          boxShadow: `0 0 28px ${step.color}20`,
+                        }}
+                      >
+                        <VoiceWorkflowIcon name={step.icon} />
+                      </div>
+                      <h3>{step.title}</h3>
+
+                      <p>{step.body}</p>
+
+                      {index < voiceWorkflowSteps.length - 1 && (
+                        <div className="voice-workflow-connector">
+                          <span
+                            style={{
+                              borderColor: step.color,
+                            }}
+                          />
+                          <span
+                            className="voice-workflow-dot"
+                            style={{
+                              backgroundColor: step.color,
+                            }}
+                          />
+                        </div>
+                      )}
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <section className="voice-preview-section relative overflow-hidden border-b border-white/[0.06] px-5 py-20 sm:px-8 sm:py-24">
+  <div className="voice-agent-container mx-auto max-w-[1320px]">
+    <div className="mx-auto max-w-4xl text-center">
+      <div className="flex justify-center">
+        <Pill>Voice Preview</Pill>
+      </div>
+
+      <h2 className="voice-capabilities-heading mt-6 font-semibold leading-tight tracking-[-0.045em]">
+        Your Voice,{" "}
+        <span className="text-[var(--service-accent)]">
+          Perfected by AI
+        </span>
+      </h2>
+
+      <p className="voice-capabilities-copy mx-auto mt-6 max-w-3xl">
+        Experience realistic, expressive AI voices that preserve your identity,
+        capture natural speech patterns, and sound human in every conversation.
+      </p>
+    </div>
+
+    <div className="voice-preview-layout mt-20">
+      {/* Left */}
+      <div className="voice-preview-content">
+        <h3>Natural conversations. Enterprise quality.</h3>
+
+        <p>
+          Build production-ready cloned voices that sound authentic across
+          customer support, IVR, virtual assistants and outbound campaigns.
+        </p>
+
+        <ul className="voice-preview-list">
+          {voicePreviewFeatures.map((item) => (
+            <li key={item}>
+              <span className="voice-preview-check">✓</span>
+              {item}
+            </li>
+          ))}
+        </ul>
+
+        <button className="voice-preview-button">
+          Listen to Sample
+        </button>
+      </div>
+
+      {/* Center */}
+      <div className="voice-preview-comparison">
+        {voiceSamples.map((sample) => (
+          <article className="voice-sample-card" key={sample.title}>
+            <div className="voice-sample-header">
+              <h4>{sample.title}</h4>
+              <span>{sample.time}</span>
+            </div>
+
+            <div className="voice-sample-player">
+              <button className="voice-play-button">
+                <PlayIcon />
+              </button>
+
+              <div className="voice-waveform">
+                <VoiceWaveform />
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      {/* Right */}
+      <div className="voice-preview-controls">
+        <h3>Customize Your Voice</h3>
+
+        {voiceSliders.map((slider) => (
+          <div className="voice-slider" key={slider.label}>
+            <div className="voice-slider-label">
+              <span>{slider.label}</span>
+              <span>{slider.value}</span>
+            </div>
+
+            <div className="voice-slider-track">
+              <span
+                style={{
+                  width: slider.progress,
+                }}
+              />
+            </div>
+          </div>
+        ))}
+
+        <div className="voice-select">
+          <span>Emotion</span>
+          <button>Friendly</button>
+        </div>
+
+        <div className="voice-select">
+          <span>Language</span>
+          <button>English (US)</button>
+        </div>
+      </div>
+
+      {/* Voice Orb */}
+      {/* <div className="voice-preview-orb">
+        <div className="voice-orb-ring ring-1"></div>
+        <div className="voice-orb-ring ring-2"></div>
+        <div className="voice-orb-ring ring-3"></div>
+
+        <div className="voice-orb-center">
+          <MicrophoneIcon />
+        </div>
+      </div> */}
+    </div>
+  </div>
+</section>
           </>
         )}
 
@@ -2811,6 +3535,34 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
           background: rgba(255, 255, 255, 0.07);
         }
 
+        .voice-waveform-bars {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 4px;
+          width: 100%;
+          height: 52px;
+        }
+
+        .voice-waveform-bars span {
+          width: 4px;
+          border-radius: 999px;
+          background: var(--service-accent);
+          animation: voiceWave 1.4s ease-in-out infinite alternate;
+        }
+
+        @keyframes voiceWave {
+          from {
+            transform: scaleY(.55);
+            opacity: .6;
+          }
+
+          to {
+            transform: scaleY(1);
+            opacity: 1;
+          }
+        }
+
         .voice-config-meter > span {
           display: block;
           width: 68%;
@@ -3532,6 +4284,583 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
           display: none;
         }
 
+        /* ===========================================
+   LEFT CONTENT
+=========================================== */
+
+.voice-preview-content h3 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(1.8rem, 2.4vw, 2.5rem);
+  font-weight: 650;
+  line-height: 1.15;
+  letter-spacing: -0.04em;
+}
+
+.voice-preview-content p {
+  margin-top: 1rem;
+  color: #94a3b8;
+  font-size: 0.98rem;
+  line-height: 1.75;
+}
+
+.voice-preview-list {
+  display: grid;
+  gap: 1rem;
+  margin: 2rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.voice-preview-list li {
+  display: flex;
+  align-items: center;
+  gap: .85rem;
+
+  color: white;
+  font-weight: 500;
+}
+
+.voice-preview-check {
+  display: grid;
+  place-items: center;
+
+  width: 28px;
+  height: 28px;
+
+  border-radius: 999px;
+
+  color: var(--service-accent);
+
+  background: rgba(var(--service-accent-rgb), .12);
+
+  border: 1px solid rgba(var(--service-accent-rgb), .22);
+}
+
+.voice-preview-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: .95rem 1.7rem;
+
+  border: none;
+  border-radius: 999px;
+
+  background: var(--service-accent);
+  color: white;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: .3s;
+}
+
+.voice-preview-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px rgba(var(--service-accent-rgb), .3);
+}
+
+/* ===========================================
+   SAMPLE CARDS
+=========================================== */
+
+.voice-preview-comparison {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.voice-sample-card {
+  padding: 1.5rem;
+
+  border-radius: 22px;
+
+  border: 1px solid rgba(255,255,255,.07);
+
+  background: rgba(255,255,255,.03);
+
+  backdrop-filter: blur(16px);
+}
+
+.voice-sample-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 1rem;
+}
+
+.voice-sample-header h4 {
+  margin: 0;
+
+  color: white;
+
+  font-size: 1rem;
+
+  font-weight: 600;
+}
+
+.voice-sample-header span {
+  color: #94a3b8;
+
+  font-size: .85rem;
+}
+
+.voice-sample-player {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.voice-play-button {
+  display: grid;
+  place-items: center;
+
+  width: 52px;
+  height: 52px;
+
+  border: none;
+
+  border-radius: 999px;
+
+  color: white;
+
+  background: var(--service-accent);
+
+  cursor: pointer;
+
+  transition: .3s;
+}
+
+.voice-play-button:hover {
+  transform: scale(1.08);
+}
+
+.voice-waveform {
+  flex: 1;
+}
+
+/* ===========================================
+   WAVEFORM
+=========================================== */
+
+.voice-waveform-bars {
+  display: flex;
+  align-items: flex-end;
+
+  gap: 4px;
+
+  height: 52px;
+}
+
+.voice-waveform-bars span {
+  flex: 1;
+
+  border-radius: 999px;
+
+  background: linear-gradient(
+      to top,
+      var(--service-accent),
+      rgba(var(--service-accent-rgb), .35)
+  );
+
+  animation: waveformMove 1.3s ease-in-out infinite alternate;
+}
+
+@keyframes waveformMove {
+
+  from {
+    transform: scaleY(.45);
+    opacity: .6;
+  }
+
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+/* ===========================================
+   CONTROLS
+=========================================== */
+
+.voice-preview-controls {
+  padding: 1.75rem;
+
+  border-radius: 24px;
+
+  border: 1px solid rgba(255,255,255,.08);
+
+  background: rgba(255,255,255,.03);
+
+  backdrop-filter: blur(18px);
+}
+
+.voice-preview-controls h3 {
+  margin-bottom: 2rem;
+
+  color: white;
+}
+
+.voice-slider {
+  margin-bottom: 1.6rem;
+}
+
+.voice-slider-label {
+  display: flex;
+  justify-content: space-between;
+
+  margin-bottom: .7rem;
+
+  color: white;
+
+  font-size: .9rem;
+}
+
+.voice-slider-track {
+  position: relative;
+
+  overflow: hidden;
+
+  height: 8px;
+
+  border-radius: 999px;
+
+  background: rgba(255,255,255,.08);
+}
+
+.voice-slider-track span {
+  display: block;
+
+  height: 100%;
+
+  border-radius: inherit;
+
+  background: var(--service-accent);
+}
+
+.voice-select {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-top: 1.5rem;
+
+  padding: 1rem 1.15rem;
+
+  border-radius: 16px;
+
+  border: 1px solid rgba(255,255,255,.06);
+
+  background: rgba(255,255,255,.02);
+}
+
+.voice-select span {
+  color: #94a3b8;
+}
+
+.voice-select button {
+  border: none;
+  background: transparent;
+
+  color: white;
+
+  cursor: pointer;
+}
+
+/* ===========================================
+   VOICE ORB
+=========================================== */
+
+.voice-preview-orb {
+  position: relative;
+
+  width: 260px;
+  height: 260px;
+
+  margin: 3rem auto 0;
+}
+
+.voice-orb-ring {
+  position: absolute;
+
+  inset: 0;
+
+  border-radius: 50%;
+
+  border: 1px solid rgba(var(--service-accent-rgb), .2);
+
+  animation: orbPulse 4s infinite;
+}
+
+.voice-orb-ring.ring-2 {
+  inset: 20px;
+}
+
+.voice-orb-ring.ring-3 {
+  inset: 40px;
+}
+
+.voice-orb-center {
+  position: absolute;
+
+  inset: 70px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  color: white;
+
+  background: radial-gradient(
+      circle,
+      var(--service-accent),
+      rgba(var(--service-accent-rgb), .3)
+  );
+
+  box-shadow: 0 0 60px rgba(var(--service-accent-rgb), .4);
+}
+
+@keyframes orbPulse {
+
+  0% {
+    transform: scale(.96);
+    opacity: .5;
+  }
+
+  100% {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+}
+
+/* ===========================================
+   RESPONSIVE
+=========================================== */
+
+@media (max-width:1200px){
+
+.voice-preview-layout{
+grid-template-columns:1fr;
+}
+
+.voice-preview-orb{
+order:4;
+margin-top:4rem;
+}
+
+}
+
+@media (max-width:768px){
+
+.voice-preview-content h3{
+font-size:2rem;
+}
+
+.voice-sample-player{
+flex-direction:column;
+align-items:flex-start;
+}
+
+.voice-play-button{
+width:48px;
+height:48px;
+}
+
+.voice-preview-orb{
+width:210px;
+height:210px;
+}
+
+.voice-orb-center{
+inset:55px;
+}
+
+}
+
+/* ===========================================
+   SECTION
+=========================================== */
+
+.voice-preview-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.voice-preview-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 15% 20%,
+      rgba(var(--service-accent-rgb), .12),
+      transparent 32%),
+    radial-gradient(circle at 85% 75%,
+      rgba(var(--service-accent-rgb), .08),
+      transparent 35%);
+}
+
+.voice-preview-layout {
+  position: relative;
+  z-index: 1;
+
+  display: grid;
+  grid-template-columns: 340px minmax(420px, 1fr) 340px;
+  gap: clamp(2rem, 4vw, 3rem);
+
+  align-items: start;
+}
+
+/* ===========================================
+   LEFT COLUMN
+=========================================== */
+
+.voice-preview-content {
+  display: flex;
+  flex-direction: column;
+  // justify-content: center;
+
+  // min-height: 620px;
+}
+
+/* ===========================================
+   CENTER COLUMN
+=========================================== */
+
+.voice-preview-comparison {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+
+  padding: 2rem;
+
+  border-radius: 30px;
+
+  border: 1px solid rgba(255,255,255,.08);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.04),
+      rgba(255,255,255,.02)
+    );
+
+  backdrop-filter: blur(20px);
+
+  box-shadow:
+    0 25px 70px rgba(0,0,0,.25),
+    inset 0 1px 0 rgba(255,255,255,.05);
+}
+
+/* ===========================================
+   RIGHT COLUMN
+=========================================== */
+
+.voice-preview-controls {
+  // min-height: 620px;
+}
+
+/* ===========================================
+   SAMPLE CARDS
+=========================================== */
+
+.voice-sample-card {
+  position: relative;
+
+  overflow: hidden;
+
+  border-radius: 24px;
+
+  border: 1px solid rgba(255,255,255,.08);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.03),
+      rgba(255,255,255,.015)
+    );
+
+  transition: all .35s ease;
+}
+
+.voice-sample-card:hover {
+  transform: translateY(-6px);
+
+  border-color: rgba(var(--service-accent-rgb), .35);
+
+  box-shadow:
+    0 18px 45px rgba(var(--service-accent-rgb), .18);
+}
+
+/* ===========================================
+   GLOW
+=========================================== */
+
+.voice-sample-card::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(var(--service-accent-rgb), .12),
+      transparent 45%
+    );
+
+  pointer-events: none;
+}
+
+/* ===========================================
+   ORB POSITION
+=========================================== */
+
+.voice-preview-orb {
+  grid-column: 1 / -1;
+
+  display: flex;
+  justify-content: center;
+
+  margin-top: 5rem;
+}
+
+/* ===========================================
+   RESPONSIVE
+=========================================== */
+
+@media (max-width:1200px){
+
+  .voice-preview-layout{
+    grid-template-columns:1fr;
+    gap:2rem;
+  }
+
+  .voice-preview-content,
+  .voice-preview-controls{
+    min-height:auto;
+  }
+
+}
+
+@media (max-width:768px){
+
+  .voice-preview-comparison{
+    padding:1.25rem;
+  }
+
+  .voice-preview-layout{
+    gap:1.5rem;
+  }
+
+}
         .voice-agent-page .agent-anatomy-layer {
           min-height: 0;
           padding-top: 1.75rem;
@@ -3763,6 +5092,114 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
           border-color: rgba(53, 251, 224, 0.2);
           background: rgba(53, 251, 224, 0.018);
           transform: translateY(-1px);
+        }
+
+        .voice-workflow-grid {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 2rem;
+        }
+
+        .voice-workflow-card {
+          position: relative;
+          padding: 2.5rem 2rem;
+          border: 1px solid rgba(255,255,255,.08);
+          border-radius: 28px;
+          background: rgba(255,255,255,.02);
+          text-align: center;
+        }
+
+        .voice-workflow-number {
+          position: absolute;
+          top: 18px;
+          left: 18px;
+
+          width: 42px;
+          height: 42px;
+          border-radius: 999px;
+
+          display: grid;
+          place-items: center;
+
+          background: rgba(var(--service-accent-rgb),.12);
+          color: var(--service-accent);
+          border: 1px solid rgba(var(--service-accent-rgb),.3);
+
+          font-weight: 700;
+        }
+
+        .voice-workflow-icon {
+          width: 72px;
+          height: 72px;
+          margin: 1rem auto 1.75rem;
+
+          display: grid;
+          place-items: center;
+
+          border-radius: 50%;
+          background: rgba(var(--service-accent-rgb),.08);
+          color: var(--service-accent);
+        }
+
+        .voice-workflow-icon svg {
+          width: 36px;
+          height: 36px;
+        }
+
+        .voice-workflow-card h3 {
+          margin-bottom: .75rem;
+          color: white;
+          font-size: 1.2rem;
+        }
+
+        .voice-workflow-card p {
+          color: #94a3b8;
+          line-height: 1.7;
+        }
+
+        .voice-workflow-connector {
+          position: absolute;
+          top: 50%;
+          left: calc(100% + 8px);
+
+          width: calc(2rem - 16px);
+          height: 2px;
+
+          transform: translateY(-50%);
+        }
+
+        .voice-workflow-connector span:first-child {
+          display: block;
+          width: 100%;
+          border-top: 2px dashed rgba(var(--service-accent-rgb),.5);
+        }
+
+        .voice-workflow-dot {
+          position: absolute;
+          right: -6px;
+          top: -4px;
+
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+
+          background: var(--service-accent);
+        }
+
+        @media (max-width: 1024px) {
+          .voice-workflow-grid {
+            grid-template-columns: repeat(2,1fr);
+          }
+
+          .voice-workflow-connector {
+            display: none;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .voice-workflow-grid {
+            grid-template-columns: 1fr;
+          }
         }
 
         .voice-agent-page :is(
