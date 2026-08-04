@@ -93,8 +93,10 @@ export function IntegrationsShell() {
   const [spreadsheetInput, setSpreadsheetInput] = useState("");
   const [spreadsheet, setSpreadsheet] = useState<{ id: string; name: string; sheets: string[] } | null>(null);
   const [agents, setAgents] = useState<AgentSummary[]>([]);
+  const [agentsLoading, setAgentsLoading] = useState(false);
   const [digitalBotAgentId, setDigitalBotAgentId] = useState("");
   const [digitalBotConnectionName, setDigitalBotConnectionName] = useState("");
+  const [modalError, setModalError] = useState("");
 
   const load = useCallback(async () => {
     try {
@@ -114,12 +116,19 @@ export function IntegrationsShell() {
     return () => window.clearTimeout(timer);
   }, [load, router, session]);
 
+  useEffect(() => {
+    setModalError("");
+  }, [selected]);
+
   async function connect() {
     if (!selected || selected === "google") return;
     if (selected === "digitalbot" && !digitalBotAgentId) {
-      setNotice("Choose the Vozon agent this DigitalBot dashboard belongs to.");
+      const message = "Choose the Vozon agent this DigitalBot dashboard belongs to.";
+      setModalError(message);
+      setNotice(message);
       return;
     }
+    setModalError("");
     setBusy(true);
     try {
       if (selected === "digitalbot") {
@@ -141,7 +150,9 @@ export function IntegrationsShell() {
         setNotice(`${catalog[selected].name} connected and verified.`);
       }
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Could not connect integration.");
+      const message = error instanceof Error ? error.message : "Could not connect integration.";
+      setModalError(message);
+      setNotice(message);
     } finally {
       setBusy(false);
     }
@@ -201,12 +212,21 @@ export function IntegrationsShell() {
   }
 
   async function loadAgentsForDigitalBot() {
+    setAgentsLoading(true);
+    setModalError("");
     try {
       const result = await integrationsApi.agentSummaries();
       setAgents(result.agents);
       setDigitalBotAgentId((current) => current || result.agents[0]?._id || "");
+      if (result.agents.length === 0) {
+        setModalError("Create a Vozon agent before adding a DigitalBot connection.");
+      }
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Could not load agents.");
+      const message = error instanceof Error ? error.message : "Could not load agents.";
+      setModalError(message);
+      setNotice(message);
+    } finally {
+      setAgentsLoading(false);
     }
   }
 
@@ -320,6 +340,14 @@ export function IntegrationsShell() {
         </div>
       </section>
 
+      {selected && (modalError || (selected === "digitalbot" && agentsLoading)) ? (
+        <div
+          className={`fixed left-1/2 top-4 z-[60] w-[min(92vw,32rem)] -translate-x-1/2 rounded-xl border px-4 py-3 text-sm font-medium shadow-xl ${agentsLoading ? "border-cyan-300 bg-cyan-50 text-cyan-800" : "border-rose-300 bg-rose-50 text-rose-800"}`}
+          role={agentsLoading ? "status" : "alert"}
+        >
+          {agentsLoading ? "Loading your Vozon agents..." : modalError}
+        </div>
+      ) : null}
       {selected ? <div className="fixed inset-0 z-50 grid place-items-center bg-slate-950/50 p-4" onMouseDown={() => !busy && setSelected(null)}><div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl" onMouseDown={(event) => event.stopPropagation()}><div className="flex items-start justify-between gap-4"><div><span className="text-xs font-semibold uppercase tracking-wider text-cyan-600">{catalog[selected].category}</span><h2 className="mt-2 text-xl font-semibold">Connect {catalog[selected].name}</h2></div><button className="rounded-lg px-2 py-1 text-slate-500" type="button" disabled={busy} onClick={() => setSelected(null)}>Close</button></div><p className="mt-3 text-sm leading-6 text-slate-600">{selected === "slack" ? "Create an incoming webhook in Slack and paste its URL. A verification message will be sent immediately." : selected === "hubspot" ? "Create a HubSpot private app with CRM contacts and notes permissions, then paste its access token." : selected === "digitalbot" ? "Create a connection key in that doctor's DigitalBot dashboard, select the matching Vozon agent, then paste the key here." : "Create a Calendly personal access token and paste it here."}</p>{selected === "digitalbot" ? <div className="mt-4 rounded-xl bg-slate-50 p-3 text-xs leading-5 text-slate-600"><strong className="block text-slate-900">Per-doctor setup</strong><span>One DigitalBot key connects to one Vozon agent. If the agent already has a Ready phone number, Vozon binds that number too; otherwise the connector still saves and tools attach.</span><label className="mt-4 grid gap-2 text-xs font-semibold text-slate-600">Connection name<input className="rounded-xl border border-slate-200 px-3 py-3 text-sm font-normal text-slate-950" value={digitalBotConnectionName} onChange={(event) => setDigitalBotConnectionName(event.target.value)} placeholder="Dr. Suman DigitalBot" /></label><label className="mt-4 grid gap-2 text-xs font-semibold text-slate-600">Vozon agent<select className="min-h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm font-normal text-slate-950" value={digitalBotAgentId} onFocus={() => void loadAgentsForDigitalBot()} onChange={(event) => setDigitalBotAgentId(event.target.value)}><option value="">Select Vozon agent</option>{agents.map((agent) => <option key={agent._id} value={agent._id}>{digitalBotAgentLabel(agent)}</option>)}</select></label></div> : null}<label className="mt-5 grid gap-2 text-xs font-semibold text-slate-600">{selected === "slack" ? "Incoming webhook URL" : selected === "digitalbot" ? "DigitalBot connection key" : "Access token"}<input className="rounded-xl border border-slate-200 px-3 py-3 text-sm font-normal text-slate-950" autoComplete="new-password" type="password" value={credential} onChange={(event) => setCredential(event.target.value)} placeholder={selected === "slack" ? "https://hooks.slack.com/services/..." : selected === "digitalbot" ? "db_conn_..." : "Paste provider token"} /></label><button className="mt-5 w-full rounded-xl bg-cyan-500 px-4 py-3 text-sm font-semibold text-white disabled:opacity-50" type="button" disabled={busy || !credential.trim() || (selected === "digitalbot" && !digitalBotAgentId)} onClick={() => void connect()}>{busy ? "Verifying..." : selected === "digitalbot" ? "Connect and attach tools" : "Connect and verify"}</button></div></div> : null}
       {manageGoogle ? <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-slate-950/50 p-4" onMouseDown={() => !busy && setManageGoogle(false)}><div className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl" onMouseDown={(event) => event.stopPropagation()}><div className="flex justify-between gap-4"><div><span className="text-xs font-semibold uppercase tracking-wider text-cyan-600">Google Workspace</span><h2 className="mt-2 text-xl font-semibold">Available resources</h2></div><button type="button" onClick={() => setManageGoogle(false)}>Close</button></div><h3 className="mt-6 font-semibold">Calendars</h3><div className="mt-2 grid gap-2">{calendars.map((calendar) => <div className="rounded-xl border border-slate-200 p-3" key={calendar.id}><strong className="block text-sm">{calendar.name}{calendar.primary ? " (Primary)" : ""}</strong><code className="mt-1 block break-all text-xs text-slate-500">{calendar.id}</code><div className="mt-2 flex items-center justify-between"><span className="text-xs text-slate-500">{calendar.timezone}</span><button className="rounded-lg border border-cyan-200 px-3 py-1.5 text-xs font-semibold text-cyan-700" type="button" onClick={() => void integrationsApi.testCalendar(calendar.id, calendar.timezone).then(() => setNotice("Test appointment created successfully.")).catch((error) => setNotice(error instanceof Error ? error.message : "Calendar test failed."))}>Create test event</button></div></div>)}</div><h3 className="mt-6 font-semibold">Spreadsheet</h3><p className="mt-1 text-sm text-slate-600">Paste a spreadsheet URL or ID. The Google account must have edit access.</p><div className="mt-3 flex gap-2"><input className="min-w-0 flex-1 rounded-xl border border-slate-200 px-3 py-2.5 text-sm" value={spreadsheetInput} onChange={(event) => setSpreadsheetInput(event.target.value)} placeholder="https://docs.google.com/spreadsheets/d/..." /><button className="rounded-xl bg-cyan-500 px-4 text-sm font-semibold text-white" disabled={busy || !spreadsheetInput.trim()} type="button" onClick={() => void inspectSpreadsheet()}>Verify</button></div>{spreadsheet ? <div className="mt-3 rounded-xl border border-emerald-200 bg-emerald-50 p-3"><strong className="block">{spreadsheet.name}</strong><code className="mt-1 block break-all text-xs">{spreadsheet.id}</code><div className="mt-2 flex flex-wrap gap-2">{spreadsheet.sheets.map((sheet) => <button className="rounded-lg bg-white px-3 py-1.5 text-xs font-semibold" key={sheet} type="button" onClick={() => void integrationsApi.testSheet(spreadsheet.id, sheet).then(() => setNotice(`Test row added to ${sheet}.`)).catch((error) => setNotice(error instanceof Error ? error.message : "Sheet test failed."))}>{sheet} · test row</button>)}</div></div> : null}<p className="mt-5 text-xs leading-5 text-slate-500">Next: open an agent → Tools → Native Google tools, enter the selected resource IDs, enable them, and save the agent.</p></div></div> : null}
     </main>
