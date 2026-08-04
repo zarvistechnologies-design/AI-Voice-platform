@@ -4109,6 +4109,17 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     );
   }
 
+  function copyAgentId() {
+    if (!navigator.clipboard) {
+      setNotice(`Agent ID: ${selectedAgent.id}`);
+      return;
+    }
+    void navigator.clipboard.writeText(selectedAgent.id).then(
+      () => setNotice("Agent ID copied."),
+      () => setNotice(`Agent ID: ${selectedAgent.id}`),
+    );
+  }
+
   async function handleCopyWidgetCode() {
     try {
       await navigator.clipboard.writeText(widgetEmbedCode);
@@ -4199,6 +4210,20 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
               <p className="mt-1.5 mb-0 max-w-3xl text-xs leading-5 text-white/60">
                 Build, test, publish, and monitor your voice agent from one command center.
               </p>
+              <div className="mt-2 flex min-w-0 flex-wrap items-center gap-2">
+                <span className="text-[10px] font-extrabold uppercase tracking-[0.16em] text-white/35">Agent ID</span>
+                <code className="max-w-full truncate rounded-lg border border-white/10 bg-black/20 px-2 py-1 text-[11px] font-semibold text-white/70">
+                  {selectedAgent.id}
+                </code>
+                <button
+                  className="inline-flex min-h-7 items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.06] px-2 text-[11px] font-semibold text-white/60 transition hover:border-[#45ddce]/30 hover:bg-[#45ddce]/10 hover:text-[#82fff2]"
+                  type="button"
+                  onClick={copyAgentId}
+                >
+                  <Icon icon="copy" />
+                  Copy
+                </button>
+              </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-2 xl:justify-end">

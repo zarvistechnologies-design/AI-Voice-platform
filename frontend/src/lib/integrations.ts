@@ -3,7 +3,7 @@ import { cachedApiRequest, invalidateApiCache } from "@/lib/apiCache";
 import { API_URL } from "@/lib/apiBase";
 
 export type IntegrationProvider = {
-  id: "vobiz" | "hubspot" | "calendly" | "slack" | "google";
+  id: "vobiz" | "hubspot" | "calendly" | "slack" | "google" | "digitalbot";
   connected: boolean;
   accountId: string;
   status: "connected" | "error" | "disconnected";
@@ -16,6 +16,36 @@ export type IntegrationProvider = {
     deliveredAt: string | null;
     updatedAt: string;
   } | null;
+};
+
+export type DigitalBotConnection = {
+  id: "digitalbot";
+  connectionId: string;
+  connected: boolean;
+  displayName: string;
+  targetAgentId: string;
+  targetAgentName: string;
+  accountId: string;
+  status: "connected" | "error" | "disconnected";
+  lastVerifiedAt: string | null;
+  metadata: {
+    connectionId: string;
+    workspaceId: string;
+    workspaceName: string;
+    branchId: string;
+    branchName: string;
+    permissions: string[];
+    tokenPrefix: string;
+  };
+};
+
+export type AgentSummary = {
+  _id: string;
+  name: string;
+  team: string;
+  status: "Live" | "Draft" | "Paused";
+  phone: string;
+  version: number;
 };
 
 async function request<T>(path: string, init: RequestInit = {}) {
@@ -33,8 +63,20 @@ async function request<T>(path: string, init: RequestInit = {}) {
 export const integrationsApi = {
   list: () => cachedApiRequest("integrations", "/", 15_000, () => request<{ providers: IntegrationProvider[] }>("/")),
   connect: async (provider: Exclude<IntegrationProvider["id"], "vobiz">, credential: string) => {
-    const result = await request<IntegrationProvider>(`/${provider}`, { method: "PUT", body: JSON.stringify({ credential }) });
+    const result = await request<IntegrationProvider>(`/${provider}`, {
+      method: "PUT",
+      body: JSON.stringify(provider === "digitalbot" ? { connectorToken: credential } : { credential }),
+    });
     invalidateApiCache("integrations");
+    return result;
+  },
+  connectDigitalBot: async (payload: { agentId: string; connectorToken: string; name?: string }) => {
+    const result = await request<{ connection: DigitalBotConnection; attachedTools: string[] }>("/digitalbot/connections", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+    invalidateApiCache("integrations");
+    invalidateApiCache("voice", "/agents");
     return result;
   },
   disconnect: async (provider: Exclude<IntegrationProvider["id"], "vobiz">) => {
@@ -58,4 +100,33 @@ export const integrationsApi = {
   testSheet: (spreadsheetId: string, sheetName: string) => request<{ result: Record<string, unknown> }>("/google/sheets/test", {
     method: "POST", body: JSON.stringify({ spreadsheetId, sheetName }),
   }),
+  verifyDigitalBot: async (agentId: string) => {
+    const result = await request<DigitalBotConnection>(`/digitalbot/connections/${encodeURIComponent(agentId)}/verify`, { method: "POST" });
+    invalidateApiCache("integrations");
+    return result;
+  },
+  disconnectDigitalBot: async (agentId: string) => {
+    const result = await request<Record<string, never>>(`/digitalbot/connections/${encodeURIComponent(agentId)}`, { method: "DELETE" });
+    invalidateApiCache("integrations");
+    return result;
+  },
+  attachDigitalBotTools: async (agentId: string) => {
+    const result = await request<{ agent: AgentSummary; attachedTools: string[] }>("/digitalbot/attach-tools", {
+      method: "POST",
+      body: JSON.stringify({ agentId }),
+    });
+    invalidateApiCache("integrations");
+    invalidateApiCache("voice", "/agents");
+    return result;
+  },
+  agentSummaries: async () => {
+    if (!getSession()) throw new Error("Sign in before loading agents.");
+    const response = await fetch(`${API_URL}/api/voice/agents?view=summary`, {
+      credentials: "include",
+      headers: { ...getAuthHeaders() },
+    });
+    const data = (await response.json().catch(() => null)) as { agents?: AgentSummary[]; message?: string } | null;
+    if (!response.ok) throw new Error(data?.message ?? "Could not load agents.");
+    return { agents: data?.agents ?? [] };
+  },
 };
