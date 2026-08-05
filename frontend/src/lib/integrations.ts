@@ -1,6 +1,7 @@
 import { getAuthHeaders, getSession } from "@/lib/auth";
 import { cachedApiRequest, invalidateApiCache } from "@/lib/apiCache";
 import { API_URL } from "@/lib/apiBase";
+import { invalidateVoiceCache } from "@/lib/voiceCache";
 
 export type IntegrationProvider = {
   id: "vobiz" | "hubspot" | "calendly" | "slack" | "google" | "digitalbot";
@@ -76,7 +77,7 @@ export const integrationsApi = {
       body: JSON.stringify(payload),
     });
     invalidateApiCache("integrations");
-    invalidateApiCache("voice", "/agents");
+    invalidateVoiceCache("/agents");
     return result;
   },
   disconnect: async (provider: Exclude<IntegrationProvider["id"], "vobiz">) => {
@@ -108,6 +109,7 @@ export const integrationsApi = {
   disconnectDigitalBot: async (agentId: string) => {
     const result = await request<Record<string, never>>(`/digitalbot/connections/${encodeURIComponent(agentId)}`, { method: "DELETE" });
     invalidateApiCache("integrations");
+    invalidateVoiceCache("/agents");
     return result;
   },
   attachDigitalBotTools: async (agentId: string) => {
@@ -116,7 +118,7 @@ export const integrationsApi = {
       body: JSON.stringify({ agentId }),
     });
     invalidateApiCache("integrations");
-    invalidateApiCache("voice", "/agents");
+    invalidateVoiceCache("/agents");
     return result;
   },
   agentSummaries: async () => {

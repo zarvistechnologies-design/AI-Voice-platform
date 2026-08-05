@@ -1,6 +1,12 @@
 import { API_URL } from "@/lib/apiBase";
 import { clearSession, getAuthHeaders, getSession } from "@/lib/auth";
 import { getDashboardQueryClient } from "@/lib/dashboardQueryClient";
+import {
+  currentVoiceSessionScope,
+  invalidateVoiceCache,
+  voiceCacheGeneration,
+  voiceCacheKey,
+} from "@/lib/voiceCache";
 
 const privateVoiceInfrastructurePattern = /(?:livekit|vapi|retell|millis(?:\.ai|ai)?|(?:wss?|sips?):(?:\/\/)?|(?:room|dispatch|worker|participant|trunk)[ _-]?(?:name|id|sid)\b)/i;
 const genericCallFailureMessage = "Call ended before the agent could finish.";
@@ -756,39 +762,6 @@ async function request<T>(path: string, init: RequestInit = {}) {
 
 export type AgentSummary = Pick<BackendAgent, "_id" | "name" | "team" | "status" | "phone" | "version">;
 
-const VOICE_QUERY_SCOPE = "voice";
-const voiceCacheGenerations = new Map<string, number>();
-
-function voiceSessionScope() {
-  const session = getSession();
-  return session
-    ? `${session.id}:${session.signedInAt}:${session.organization?.id ?? ""}`
-    : "";
-}
-
-function voiceCacheGeneration(dependencies: readonly string[]) {
-  const generations: string[] = [];
-  for (const [prefix, generation] of voiceCacheGenerations) {
-    if (dependencies.some((path) => path.startsWith(prefix))) {
-      generations.push(`${prefix}:${generation}`);
-    }
-  }
-  return generations.sort().join("|");
-}
-
-function voiceCacheKey(path: string, dependencies: readonly string[] = [path]) {
-  const session = getSession();
-  return session
-    ? [
-        VOICE_QUERY_SCOPE,
-        `${session.id}:${session.signedInAt}`,
-        session.organization?.id ?? "",
-        path,
-        voiceCacheGeneration(dependencies),
-      ] as const
-    : null;
-}
-
 function seedVoiceCache<T>(path: string, value: T) {
   const queryKey = voiceCacheKey(path);
   if (!queryKey) return;
@@ -803,21 +776,6 @@ function cachedRequest<T>(path: string, ttlMs: number, dependencies: readonly st
     queryKey,
     queryFn: () => request<T>(path),
     staleTime: ttlMs,
-  });
-}
-
-function invalidateVoiceCache(...pathPrefixes: string[]) {
-  for (const prefix of pathPrefixes) {
-    voiceCacheGenerations.set(prefix, (voiceCacheGenerations.get(prefix) ?? 0) + 1);
-  }
-  void getDashboardQueryClient().invalidateQueries({
-    predicate: ({ queryKey }) => {
-      const path = queryKey[3];
-      return queryKey[0] === VOICE_QUERY_SCOPE
-        && typeof path === "string"
-        && pathPrefixes.some((prefix) => path.startsWith(prefix));
-    },
-    refetchType: "none",
   });
 }
 
@@ -847,13 +805,13 @@ export const voiceApi = {
   bootstrap: () => {
     const dependencies = ["/agents", "/config", "/agent-templates"] as const;
     const generation = voiceCacheGeneration(dependencies);
-    const sessionScope = voiceSessionScope();
+    const sessionScope = currentVoiceSessionScope();
     return cachedRequest<{
       agents: BackendAgent[];
       config: VoiceConfigResponse;
       templates: AgentTemplate[];
     }>("/bootstrap", 15_000, dependencies).then((result) => {
-      if (sessionScope && sessionScope === voiceSessionScope() && generation === voiceCacheGeneration(dependencies)) {
+      if (sessionScope && sessionScope === currentVoiceSessionScope() && generation === voiceCacheGeneration(dependencies)) {
         seedVoiceCache("/agents", { agents: result.agents });
         seedVoiceCache(
           "/agents?view=summary",
@@ -886,13 +844,13 @@ export const voiceApi = {
     const path = `/agents/${encodeURIComponent(agentId)}/dashboard`;
     const dependencies = [path, "/config"] as const;
     const generation = voiceCacheGeneration(dependencies);
-    const sessionScope = voiceSessionScope();
+    const sessionScope = currentVoiceSessionScope();
     return cachedRequest<{ agent: BackendAgent; config: VoiceConfigResponse }>(
       path,
       15_000,
       dependencies,
     ).then((result) => {
-      if (sessionScope && sessionScope === voiceSessionScope() && generation === voiceCacheGeneration(dependencies)) {
+      if (sessionScope && sessionScope === currentVoiceSessionScope() && generation === voiceCacheGeneration(dependencies)) {
         seedVoiceCache(`/agents/${encodeURIComponent(agentId)}`, { agent: result.agent });
         if (result.config.modelCatalogReady === true) {
           seedVoiceCache("/config", result.config);
