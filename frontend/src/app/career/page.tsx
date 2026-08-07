@@ -76,7 +76,7 @@ const faqs = [
   {
     question: "What roles are currently open?",
     answer:
-      "We do not have public role listings on this page yet. New opportunities will appear here as they open. You can still introduce yourself through a general application.",
+      "We do not have public role listings on this page yet. New opportunities will appear here as they open. You can still introduce yourself through a general applications.",
   },
   {
     question: "What should I include in a general application?",
