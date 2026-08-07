@@ -32,6 +32,7 @@ const languages: VoiceLanguage[] = [
 ];
 
 const waveBars = [12, 23, 38, 18, 31, 52, 25, 44, 17, 34, 58, 28, 42, 20, 48, 26, 36, 16, 31, 45, 22, 35, 14];
+const callWaveBars = [18, 34, 52, 70, 44, 62, 38, 26, 16];
 
 function WaveMark() {
   return (
@@ -119,6 +120,14 @@ export function IndiaVoiceExperience() {
   const runRef = useRef(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const active = languages.find((language) => language.code === activeCode) ?? languages[0];
+
+  const stopSpeaking = () => {
+    runRef.current += 1;
+    audioRef.current?.pause();
+    audioRef.current = null;
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    setIsSpeaking(false);
+  };
 
   useEffect(() => () => {
     runRef.current += 1;
@@ -215,13 +224,33 @@ export function IndiaVoiceExperience() {
             <div className="india-mic-wave">
               {waveBars.map((height, index) => <i key={index} style={{ height, animationDelay: `${index * -54}ms` }} />)}
             </div>
-            <button aria-label={`Talk to agent in ${active.name}`} onClick={() => speak()} type="button">
+            <button
+              aria-label={isSpeaking ? "End voice preview" : `Talk to agent in ${active.name}`}
+              aria-pressed={isSpeaking}
+              onClick={() => isSpeaking ? stopSpeaking() : speak()}
+              type="button"
+            >
               <span className="india-mic-ring india-mic-ring-one" />
               <span className="india-mic-ring india-mic-ring-two" />
-              <span className="india-mic-core"><MicrophoneIcon /></span>
+              <span className="india-mic-core">
+                {isSpeaking ? (
+                  <span className="india-call-waveform" aria-hidden="true">
+                    {callWaveBars.map((height, index) => (
+                      <i
+                        key={index}
+                        style={{
+                          height: `${height}%`,
+                          animationDelay: `${index * -73}ms`,
+                          animationDuration: `${520 + (index % 4) * 110}ms`,
+                        }}
+                      />
+                    ))}
+                  </span>
+                ) : <MicrophoneIcon />}
+              </span>
             </button>
           </div>
-          <strong aria-live="polite">{isSpeaking ? `Speaking ${active.name}...` : `Tap to start in ${active.name}`}</strong>
+          <strong aria-live="polite">{isSpeaking ? `Voice preview active · Tap to stop` : `Tap to start in ${active.name}`}</strong>
           <div className="india-listening-dots" aria-hidden="true">
             {[0, 1, 2, 3, 4, 5, 6, 7].map((dot) => <i className={dot === 0 || dot === 1 || dot === 5 ? "is-lit" : ""} key={dot} />)}
           </div>
@@ -259,21 +288,22 @@ export function IndiaVoiceExperience() {
         .india-language-native{min-width:0;overflow:hidden;color:rgba(255,255,255,.92);font-size:.82rem;line-height:1.1;text-overflow:ellipsis;white-space:nowrap}.india-language-name{color:rgba(255,255,255,.38);font-size:.63rem;line-height:1.1;white-space:nowrap}.india-language-check{position:absolute;right:.55rem;top:50%;display:grid;width:16px;height:16px;place-items:center;border-radius:50%;background:var(--iv-accent);color:#03110f;font-size:.65rem;font-weight:900;transform:translateY(-50%)}
         .india-more-languages{display:flex;align-items:center;gap:.5rem;margin-top:.45rem;padding:0;border:0;background:transparent;color:var(--iv-bright);font-size:.66rem;font-weight:800;cursor:pointer}.india-more-languages span{display:grid;width:28px;height:28px;place-items:center;border:1px solid rgba(69,221,206,.28);border-radius:8px;background:rgba(69,221,206,.04);font-size:1rem}.india-more-languages:hover span{border-color:rgba(69,221,206,.62);box-shadow:0 0 20px rgba(69,221,206,.12)}
         .india-agent{align-self:center;text-align:center}.india-agent-heading{justify-content:center}.india-agent>p{max-width:300px;margin:.75rem auto 0;color:rgba(255,255,255,.58);font-size:.74rem;line-height:1.55}
-        .india-mic-stage{position:relative;display:grid;height:190px;place-items:center}.india-mic-wave{position:absolute;right:-2%;left:-2%;display:flex;height:58px;align-items:center;justify-content:center;gap:4px;filter:drop-shadow(0 0 7px rgba(69,221,206,.45))}
+        .india-mic-stage{position:relative;display:grid;height:190px;place-items:center}.india-mic-wave{position:absolute;right:-2%;left:-2%;display:flex;height:58px;align-items:center;justify-content:center;gap:4px;opacity:.12;filter:drop-shadow(0 0 5px rgba(69,221,206,.3));transition:opacity .25s ease}
         .india-mic-wave:after,.india-mic-wave:before{content:"";height:1px;flex:1;background:linear-gradient(90deg,transparent,var(--iv-accent))}.india-mic-wave:after{background:linear-gradient(90deg,var(--iv-accent),transparent)}
-        .india-mic-wave i{width:2px;border-radius:4px;background:var(--iv-bright);opacity:.8;animation:iv-wave 1s ease-in-out infinite alternate}.india-mic-stage:not(.is-speaking) .india-mic-wave i{animation-duration:2.3s;opacity:.4}
-        .india-mic-stage button{position:relative;display:grid;width:108px;height:108px;place-items:center;border:1px solid rgba(69,221,206,.52);border-radius:50%;background:radial-gradient(circle,#0c3431 0,#061916 58%,#020706 100%);box-shadow:0 0 24px rgba(69,221,206,.16),inset 0 0 30px rgba(69,221,206,.12);cursor:pointer}
+        .india-mic-wave i{width:2px;border-radius:4px;background:var(--iv-bright);opacity:.8;animation:iv-wave 1s ease-in-out infinite alternate}.india-mic-stage.is-speaking .india-mic-wave{opacity:.3}.india-mic-stage:not(.is-speaking) .india-mic-wave i{animation:none;opacity:.2;transform:scaleY(.35)}
+        .india-mic-stage button{position:relative;display:grid;width:108px;height:108px;place-items:center;border:1px solid rgba(69,221,206,.52);border-radius:50%;background:radial-gradient(circle,#0c3431 0,#061916 58%,#020706 100%);box-shadow:0 0 20px rgba(69,221,206,.13),inset 0 0 30px rgba(69,221,206,.12);cursor:pointer;transition:border-color .25s ease,box-shadow .25s ease,transform .18s ease}.india-mic-stage button:hover{transform:scale(1.025)}.india-mic-stage button:focus-visible{outline:2px solid var(--iv-bright);outline-offset:6px}
         .india-mic-stage button:before,.india-mic-stage button:after{content:"";position:absolute;border:1px solid rgba(69,221,206,.12);border-radius:50%}.india-mic-stage button:before{inset:-22px}.india-mic-stage button:after{inset:-40px}
         .india-mic-ring{position:absolute;border:1px solid rgba(69,221,206,.28);border-radius:50%}.india-mic-ring-one{inset:-22px;border-style:dashed;animation:iv-spin 15s linear infinite}.india-mic-ring-two{inset:15px;box-shadow:0 0 20px rgba(69,221,206,.18)}
         .india-mic-core{display:grid;width:86px;height:86px;place-items:center;border-radius:50%;background:rgba(69,221,206,.08);box-shadow:0 0 24px rgba(69,221,206,.16)}.india-mic-core svg{width:47px;fill:none;stroke:var(--iv-bright);stroke-width:3;stroke-linecap:round}
-        .is-speaking .india-mic-core{animation:iv-pulse 1s ease-in-out infinite}.india-agent>strong{display:block;color:rgba(255,255,255,.68);font-size:.76rem;font-weight:600}.india-listening-dots{display:flex;justify-content:center;gap:.5rem;margin-top:.9rem}.india-listening-dots i{width:5px;height:5px;border-radius:50%;background:#123531}.india-listening-dots .is-lit{background:var(--iv-accent);box-shadow:0 0 8px var(--iv-accent)}
+        .india-call-waveform{display:flex;width:54px;height:46px;align-items:center;justify-content:center;gap:3px}.india-call-waveform i{display:block;width:4px;min-height:7px;border-radius:999px;background:var(--iv-bright);box-shadow:0 0 5px rgba(117,255,240,.38);transform-origin:center;will-change:transform;animation:iv-call-wave .7s ease-in-out infinite alternate}
+        .india-mic-stage button[aria-pressed="true"]{border-color:rgba(117,255,240,.78);box-shadow:0 0 24px rgba(69,221,206,.22),inset 0 0 30px rgba(69,221,206,.16)}.is-speaking .india-mic-core{animation:iv-pulse 1.8s ease-in-out infinite}.india-agent>strong{display:block;color:rgba(255,255,255,.68);font-size:.76rem;font-weight:600}.india-listening-dots{display:flex;justify-content:center;gap:.5rem;margin-top:.9rem}.india-listening-dots i{width:5px;height:5px;border-radius:50%;background:#123531}.india-listening-dots .is-lit{background:var(--iv-accent);box-shadow:0 0 8px var(--iv-accent)}
         .india-agent-reply{max-width:360px;margin:1.15rem auto 0;padding:.8rem 1rem;border:1px solid rgba(69,221,206,.12);border-radius:14px;background:rgba(69,221,206,.025);opacity:.68;transition:border-color .2s,background .2s,opacity .2s,transform .2s}.india-agent-reply.is-speaking{border-color:rgba(69,221,206,.38);background:rgba(69,221,206,.07);box-shadow:0 0 24px rgba(69,221,206,.08);opacity:1;transform:translateY(-2px)}.india-agent-reply span{display:block;color:var(--iv-bright);font-size:.57rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}.india-agent-reply p{margin:.4rem 0 0;color:rgba(255,255,255,.68);font-size:.7rem;line-height:1.5}
-        .india-world{display:flex;flex-direction:column;align-items:center}.india-globe-wrap{position:relative;display:grid;width:min(100%,350px);aspect-ratio:1;place-items:center;isolation:isolate}.india-globe-wrap:before{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at 14% 19%,rgba(255,255,255,.95) 0 1px,transparent 1.8px),radial-gradient(circle at 72% 12%,rgba(126,198,255,.9) 0 1px,transparent 1.7px),radial-gradient(circle at 84% 72%,rgba(255,255,255,.8) 0 1px,transparent 1.7px),radial-gradient(circle at 24% 76%,rgba(126,198,255,.75) 0 1px,transparent 1.8px),radial-gradient(circle at 50% 48%,rgba(255,255,255,.52) 0 .8px,transparent 1.5px);background-size:41px 47px,67px 61px,83px 79px,97px 89px,29px 31px;-webkit-mask-image:radial-gradient(circle,#000 34%,rgba(0,0,0,.84) 56%,transparent 78%);mask-image:radial-gradient(circle,#000 34%,rgba(0,0,0,.84) 56%,transparent 78%);opacity:.86}.india-globe-wrap:after{content:"";position:absolute;inset:8%;z-index:1;border-radius:50%;box-shadow:0 0 18px rgba(112,213,255,.9),0 0 42px rgba(28,113,255,.65)}
-        .india-globe{position:relative;z-index:3;width:82%;aspect-ratio:1;overflow:hidden;border:2px solid rgba(190,238,255,.95);border-radius:50%;background:#063b7c;box-shadow:0 0 5px #fff,0 0 15px #6bd6ff,0 0 34px rgba(33,117,255,.95),0 0 62px rgba(0,104,255,.5),inset 0 0 20px rgba(108,222,255,.5),inset -38px -10px 52px rgba(0,0,15,.78)}.india-globe:before{content:"";position:absolute;z-index:4;inset:0;border-radius:50%;background:radial-gradient(circle at 29% 22%,rgba(255,255,255,.24),transparent 25%),linear-gradient(96deg,rgba(0,0,18,.64) 0,transparent 28%,transparent 67%,rgba(0,0,20,.58) 100%);pointer-events:none}.india-globe:after{content:"";position:absolute;z-index:5;inset:0;border-radius:50%;box-shadow:inset 12px 0 22px rgba(0,5,25,.65),inset -18px -5px 30px rgba(0,0,12,.74),inset 0 0 10px rgba(197,245,255,.82);pointer-events:none}
+        .india-world{display:flex;flex-direction:column;align-items:center}.india-globe-wrap{position:relative;display:grid;width:min(100%,350px);aspect-ratio:1;place-items:center;isolation:isolate}.india-globe-wrap:before{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at 14% 19%,rgba(255,255,255,.95) 0 1px,transparent 1.8px),radial-gradient(circle at 72% 12%,rgba(126,198,255,.9) 0 1px,transparent 1.7px),radial-gradient(circle at 84% 72%,rgba(255,255,255,.8) 0 1px,transparent 1.7px),radial-gradient(circle at 24% 76%,rgba(126,198,255,.75) 0 1px,transparent 1.8px),radial-gradient(circle at 50% 48%,rgba(255,255,255,.52) 0 .8px,transparent 1.5px);background-size:41px 47px,67px 61px,83px 79px,97px 89px,29px 31px;-webkit-mask-image:radial-gradient(circle,#000 34%,rgba(0,0,0,.84) 56%,transparent 78%);mask-image:radial-gradient(circle,#000 34%,rgba(0,0,0,.84) 56%,transparent 78%);opacity:.86}
+        .india-globe{position:relative;z-index:3;width:82%;aspect-ratio:1;overflow:hidden;border:2px solid rgba(190,238,255,.95);border-radius:50%;background:#063b7c;box-shadow:inset 0 0 20px rgba(108,222,255,.5),inset -38px -10px 52px rgba(0,0,15,.78)}.india-globe:before{content:"";position:absolute;z-index:4;inset:0;border-radius:50%;background:radial-gradient(circle at 29% 22%,rgba(255,255,255,.24),transparent 25%),linear-gradient(96deg,rgba(0,0,18,.64) 0,transparent 28%,transparent 67%,rgba(0,0,20,.58) 100%);pointer-events:none}.india-globe:after{content:"";position:absolute;z-index:5;inset:0;border-radius:50%;box-shadow:inset 12px 0 22px rgba(0,5,25,.65),inset -18px -5px 30px rgba(0,0,12,.74),inset 0 0 10px rgba(197,245,255,.82);pointer-events:none}
         .india-globe-surface-photo{position:absolute;z-index:2;inset:0;border-radius:50%;background-image:url("/earth-surface-v2.webp");background-repeat:repeat-x;background-position:52% 50%;background-size:auto 100%;filter:saturate(1.08) contrast(1.04);animation:iv-earth-rotate 28s linear infinite;will-change:background-position}.india-globe-map{display:none}
         .india-world-features{width:calc(100% - 1.4rem);margin:.45rem 0 0 1.4rem;padding-left:1.15rem;border-left:1px solid rgba(69,221,206,.12)}.india-world-features>div{display:flex;align-items:center;gap:.9rem;padding:.55rem 0}.india-world-features svg{width:27px;fill:none;stroke:var(--iv-accent);stroke-width:2}.india-world-features span{display:flex;flex-direction:column;gap:.2rem}.india-world-features strong{font-size:.76rem}.india-world-features small{color:rgba(255,255,255,.38);font-size:.64rem}
         .india-world .india-globe-wrap{width:min(100%,225px)}.india-world-features>div{padding:.3rem 0}.india-agent-reply{margin-top:.55rem;padding:.6rem .8rem}
-        @keyframes iv-wave{from{transform:scaleY(.5);opacity:.45}to{transform:scaleY(1.12);opacity:1}}@keyframes iv-spin{to{transform:rotate(360deg)}}@keyframes iv-pulse{50%{transform:scale(1.08);box-shadow:0 0 35px rgba(69,221,206,.3)}}@keyframes iv-earth-rotate{from{background-position:52% 50%}to{background-position:-148% 50%}}
+        @keyframes iv-wave{from{transform:scaleY(.5);opacity:.45}to{transform:scaleY(1.12);opacity:1}}@keyframes iv-call-wave{0%{transform:scaleY(.35);opacity:.62}50%{transform:scaleY(1);opacity:1}100%{transform:scaleY(.55);opacity:.78}}@keyframes iv-spin{to{transform:rotate(360deg)}}@keyframes iv-pulse{50%{box-shadow:0 0 22px rgba(69,221,206,.22)}}@keyframes iv-earth-rotate{from{background-position:52% 50%}to{background-position:-148% 50%}}
         @media(max-width:1050px){.india-voice-experience{width:calc(100% - 2rem);padding:4.75rem 1.5rem 3.5rem}.india-voice-layout{grid-template-columns:1fr 1fr}.india-world{grid-column:1/-1;display:grid;grid-template-columns:minmax(260px,360px) 280px;justify-content:center}.india-globe-wrap{width:310px}.india-world-features{width:100%;margin:0;align-self:center}}
         @media(max-width:720px){.india-voice-experience{width:calc(100% - 1rem);margin:2rem auto;padding:4rem 1rem 2.75rem;border-radius:24px}.india-voice-intro{margin-bottom:2.5rem}.india-voice-layout{grid-template-columns:minmax(0,1fr);gap:3.25rem}.india-voice-copy{text-align:center}.india-voice-eyebrow{justify-content:center}.india-language-list{text-align:left}.india-more-languages{justify-content:center}.india-agent{padding-top:.5rem}.india-world{grid-column:auto;display:flex}.india-globe-wrap{width:min(100%,300px)}.india-world-features{max-width:300px;margin:.5rem auto 0}.india-mic-stage{height:300px}}
         @media(max-width:540px){.india-voice-copy{width:100%;min-width:0;max-width:100%;overflow:hidden}.india-language-list{box-sizing:border-box;width:100%;max-width:100%;grid-template-columns:minmax(0,1fr)}.india-language-list button{box-sizing:border-box;width:100%;max-width:100%;grid-template-columns:36px minmax(0,1fr);overflow:hidden}.india-language-native{overflow:hidden;text-overflow:ellipsis}.india-voice-intro h2{font-size:2.15rem;overflow-wrap:anywhere}.india-heading-line{white-space:normal}.india-mic-wave{right:-8%;left:-8%}}

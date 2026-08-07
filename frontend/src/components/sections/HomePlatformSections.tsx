@@ -18,6 +18,11 @@ const companyLogos = [
   { name: "Dropbox", src: "/images/company-logos/dropbox.svg" },
   { name: "Figma", src: "/images/company-logos/figma.svg" },
   { name: "Spotify", src: "/images/company-logos/spotify.svg" },
+  {
+    name: "DigitalBot.ai",
+    src: "/images/company-logos/digitalbot.png",
+    logoClassName: "vozon-company-logo-image--digitalbot",
+  },
 ];
 
 const integrationSteps = [
@@ -42,7 +47,7 @@ const integrationSteps = [
       { before: "Bring your own fine-tuned or ", strong: "self-hosted LLM", after: "." },
     ],
     tags: ["Bring your own model"],
-    src: "/images/st2.png",
+    src: "/images/step02.png",
   },
   {
     number: "03",
@@ -53,7 +58,7 @@ const integrationSteps = [
       { before: "Clone your own voice for a ", strong: "consistent brand sound", after: "." },
     ],
     tags: ["Voice cloning", "Multilingual"],
-    src: "/images/st3.png",
+    src: "/images/step03.png",
   },
   {
     number: "04",
@@ -64,28 +69,26 @@ const integrationSteps = [
       { before: "Ship to web, mobile, and desktop with ", strong: "one SDK", after: "." },
     ],
     tags: ["Phone", "SDK", "Widget"],
-    src: "/images/st4.png",
+    src: "/images/step04.png",
   },
 ];
 
 const codeExamples = {
-  python: {
-    label: "Python",
-    code: `import requests
+  javascript: {
+    label: "JavaScript",
+    code: `const response = await fetch("https://api.vozon.ai/api/voice/outbound-calls", {
+  method: "POST",
+  headers: {
+    Authorization: "Bearer <api_key>",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    agentId: "your_agent_id",
+    phoneNumber: "+919876543210",
+  }),
+});
 
-response = requests.post(
-    "https://api.vozon.ai/api/voice/outbound-calls",
-    headers={
-        "Authorization": "Bearer <api_key>",
-        "Content-Type": "application/json",
-    },
-    json={
-        "agentId": "your_agent_id",
-        "phoneNumber": "+919876543210",
-    },
-)
-
-print(response.json())`,
+console.log(await response.json());`,
   },
   api: {
     label: "API",
@@ -203,6 +206,7 @@ const appIntegrations = [
   { key: "crm", name: "CRM", position: "upper-right", orbit: "middle", delay: -15 },
   { key: "calendly", name: "Calendly", position: "middle-left", orbit: "middle", delay: -27 },
   { key: "exotel", name: "Exotel", position: "lower-right", orbit: "middle", delay: -39 },
+  { key: "digitalbot", name: "DigitalBot.ai", position: "lower-center", orbit: "core", delay: -3 },
   { key: "gmail", name: "Gmail", position: "middle-center", orbit: "inner", delay: -5 },
 ] as const;
 
@@ -210,6 +214,7 @@ const appOrbitMotion = {
   outer: { path: "M85 430 A510 470 0 0 1 1035 430", duration: "54s" },
   middle: { path: "M196 420 A415 385 0 0 1 924 420", duration: "48s" },
   inner: { path: "M296 430 A320 300 0 0 1 824 430", duration: "42s" },
+  core: { path: "M330 600 A230 220 0 0 1 790 600", duration: "36s" },
 } as const;
 
 const agentIndustries = ["Ecommerce", "EdTech", "HealthTech", "BFSI", "Hospitality"] as const;
@@ -432,6 +437,7 @@ function IntegrationAppLogo({ app }: { app: (typeof appIntegrations)[number] }) 
   if (app.key === "zoho") return <Image alt="" height={42} src="/images/integrations/zoho.svg" width={42} />;
   if (app.key === "calendar") return <Image alt="" height={40} src="/images/integrations/google-calendar.svg" width={40} />;
   if (app.key === "calendly") return <Image alt="" height={40} src="/images/integrations/calendly.svg" width={40} />;
+  if (app.key === "digitalbot") return <Image alt="" className="vozon-app-digitalbot" height={18} src="/images/digitalbot_orbit.png" width={72} />;
   if (app.key === "gmail") return <Image alt="" height={38} src="/images/integrations/gmail.svg" width={38} />;
 
   if (app.key === "twilio") {
@@ -454,9 +460,10 @@ function GlowButton({ children, href }: { children: string; href: string }) {
 }
 
 export function HomePlatformSections() {
-  const [selectedCodeTab, setSelectedCodeTab] = useState<CodeTab>("python");
+  const [selectedCodeTab, setSelectedCodeTab] = useState<CodeTab>("javascript");
   const [copiedCode, setCopiedCode] = useState(false);
   const [selectedAgentIndustry, setSelectedAgentIndustry] = useState<(typeof agentIndustries)[number]>("Ecommerce");
+  const [activePlatformCard, setActivePlatformCard] = useState<number | null>(null);
 
   return (
     <div className="vozon-home relative isolate overflow-x-clip bg-black text-white">
@@ -468,7 +475,7 @@ export function HomePlatformSections() {
           <span className="size-2 rounded-full bg-[#22f4d2] shadow-[0_0_14px_#22f4d2]" />
           Multilingual AI Phone Agents
         </div>
-        <h1 className="mx-auto m-0 max-w-5xl text-[clamp(2.25rem,3.4vw,3.35rem)] font-black leading-[1.04] tracking-[-0.035em] text-white sm:leading-[0.98]">
+        <h1 className="mx-auto m-0 max-w-none text-[clamp(2.25rem,3.4vw,3.35rem)] font-black leading-[1.04] tracking-[-0.035em] text-white sm:leading-[0.98] lg:whitespace-nowrap">
           AI phone agents that{" "}
           <span className="bg-gradient-to-r from-white via-cyan-100 to-[#75fff0] bg-clip-text text-transparent">answer, act, and convert.</span>
         </h1>
@@ -501,7 +508,7 @@ export function HomePlatformSections() {
                 >
                   <Image
                     alt={`${company.name} logo`}
-                    className="vozon-company-logo-image h-9 w-9 object-contain"
+                    className={`vozon-company-logo-image h-9 w-9 object-contain ${company.logoClassName ?? ""}`}
                     height={40}
                     src={company.src}
                     width={40}
@@ -518,28 +525,165 @@ export function HomePlatformSections() {
 
       <IndiaVoiceExperience />
 
-      <section className="relative w-full px-5 pb-4 pt-2 sm:px-8 sm:pb-5 lg:pb-6">
-        <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 inline-flex rounded-full border border-white/12 bg-white/[0.06] px-4 py-2 text-[11px] font-black uppercase tracking-[0.1em] text-[#75fff0]">
-            One Platform
-          </div>
-          <h2 className="vozon-platform-heading mx-auto m-0 max-w-5xl text-white lg:whitespace-nowrap">
-            Every AI voice layer connected in one place
-          </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-white/54">
-            LLMs, speech, realtime, vision, and external tools stay coordinated through the Vozon agent layer.
-          </p>
-        </div>
+      <section
+        aria-labelledby="vozon-platform-system-title"
+        className="vozon-one-section relative w-full px-5 py-16 sm:px-8 sm:py-20 lg:py-24"
+      >
+        <div className="vozon-one-glow" aria-hidden="true" />
+        <div className="relative z-10 mx-auto max-w-[1240px]">
+          <header className="vozon-one-heading">
+            <span className="vozon-one-kicker"><i /> All-in-One Voice System</span>
+            <h2 id="vozon-platform-system-title">
+              Everything Your AI Agent Needs. <span>One Smart Platform.</span>
+            </h2>
+            <p>
+              From speech understanding and AI reasoning to realtime responses and external tools,
+              Vozon brings every voice layer together in one connected platform.
+            </p>
+          </header>
 
-        <div className="vozon-platform-map relative overflow-hidden">
-          <Image
-            alt="Vozon AI platform connected to LLM, realtime, speech, vision, and external services"
-            className="relative z-10 block aspect-[16/9] w-full object-cover"
-            height={788}
-            priority={false}
-            src="/images/one_platform.png"
-            width={1400}
-          />
+          <div
+            className={`vozon-one-grid${activePlatformCard !== null ? " has-active-card" : ""}`}
+            onMouseLeave={() => setActivePlatformCard(null)}
+          >
+            <article
+              aria-pressed={activePlatformCard === 0}
+              className={`vozon-one-card vozon-one-speech-card${activePlatformCard === 0 ? " is-active" : ""}${activePlatformCard !== null && activePlatformCard !== 0 ? " is-muted" : ""}`}
+              onClick={() => setActivePlatformCard(activePlatformCard === 0 ? null : 0)}
+              onFocus={() => setActivePlatformCard(0)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  setActivePlatformCard(activePlatformCard === 0 ? null : 0);
+                }
+              }}
+              onMouseEnter={() => setActivePlatformCard(0)}
+              role="button"
+              tabIndex={0}
+            >
+              <header>
+                <span>01 · SPEECH <i className="vozon-one-live-label">LIVE</i></span>
+                <h3>Connected Speech Pipeline</h3>
+                <p>Listen, understand intent, handle interruptions, and reply naturally across every customer conversation.</p>
+                <div className="vozon-one-speech-points" aria-label="Voice platform capabilities">
+                  <span>Natural turn-taking</span>
+                  <span>12+ languages</span>
+                  <span>24/7 ready</span>
+                </div>
+              </header>
+              <div className="vozon-one-speech-map" aria-label="Turn detection, voice activity detection, speech-to-text, and text-to-speech connect to Vozon">
+                <span className="vozon-one-call-status"><i /> Live conversation <b>00:42</b></span>
+                <span className="vozon-one-speech-line vozon-one-line-a" aria-hidden="true" />
+                <span className="vozon-one-speech-line vozon-one-line-b" aria-hidden="true" />
+                <span className="vozon-one-speech-line vozon-one-line-c" aria-hidden="true" />
+                <span className="vozon-one-speech-line vozon-one-line-d" aria-hidden="true" />
+                <span className="vozon-one-node vozon-one-node-td"><i>TD</i><b>Turn Detection</b></span>
+                <span className="vozon-one-node vozon-one-node-vad"><i>VAD</i><b>Voice Activity</b></span>
+                <span className="vozon-one-node vozon-one-node-stt"><i>STT</i><b>Speech-to-Text</b></span>
+                <span className="vozon-one-node vozon-one-node-tts"><i>TTS</i><b>Text-to-Speech</b></span>
+                <span className="vozon-one-speech-core">
+                  <i aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Zm-6 9a6 6 0 0 0 12 0M12 18v3M9 21h6" /></svg>
+                  </i>
+                  <b>Vozon Voice</b>
+                  <span className="vozon-one-core-wave" aria-hidden="true">
+                    {[0, 1, 2, 3, 4].map((bar) => <i key={bar} />)}
+                  </span>
+                </span>
+              </div>
+              <footer><span><i /> Noise-aware · interruption ready</span><b>Voice in → action out</b></footer>
+            </article>
+
+            <article
+              aria-pressed={activePlatformCard === 1}
+              className={`vozon-one-card vozon-one-brain-card${activePlatformCard === 1 ? " is-active" : ""}${activePlatformCard !== null && activePlatformCard !== 1 ? " is-muted" : ""}`}
+              onClick={() => setActivePlatformCard(activePlatformCard === 1 ? null : 1)}
+              onFocus={() => setActivePlatformCard(1)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  setActivePlatformCard(activePlatformCard === 1 ? null : 1);
+                }
+              }}
+              onMouseEnter={() => setActivePlatformCard(1)}
+              role="button"
+              tabIndex={0}
+            >
+              <header>
+                <span>02 · INTELLIGENCE</span>
+                <h3>Centralized AI Intelligence</h3>
+                <p>One agent layer coordinates your models, context, and every realtime decision.</p>
+                <div className="vozon-one-card-points" aria-label="AI intelligence capabilities">
+                  <span>Context memory</span>
+                  <span>Model routing</span>
+                  <span>Intent reasoning</span>
+                </div>
+              </header>
+              <div className="vozon-one-console">
+                <div className="vozon-one-console-bar"><span><i /> Live orchestration</span><b>•••</b></div>
+                <div className="vozon-one-agent">
+                  <span className="vozon-one-agent-brand">
+                    <Image
+                      alt=""
+                      height={350}
+                      src="/images/logo_2.svg"
+                      style={{ height: "auto", width: 108 }}
+                      width={1160}
+                    />
+                    <small>Integrated AI Solutions</small>
+                  </span>
+                  <span className="vozon-one-agent-copy"><b>Agent Layer</b><small>Voice · Text · Vision</small></span>
+                  <em>Connected</em>
+                </div>
+                <div className="vozon-one-model-list">
+                  <span><i>✦</i><b>LLM</b><small>Language reasoning</small><em>Ready</em></span>
+                  <span><i>⌁</i><b>Realtime</b><small>Streaming response</small><em>Live</em></span>
+                  <span><i>◉</i><b>Vision AI</b><small>Visual understanding</small><em>Ready</em></span>
+                </div>
+              </div>
+              <footer><span><i /> Models stay synchronized</span><b>Agent layer</b></footer>
+            </article>
+
+            <article
+              aria-pressed={activePlatformCard === 2}
+              className={`vozon-one-card vozon-one-tools-card${activePlatformCard === 2 ? " is-active" : ""}${activePlatformCard !== null && activePlatformCard !== 2 ? " is-muted" : ""}`}
+              onClick={() => setActivePlatformCard(activePlatformCard === 2 ? null : 2)}
+              onFocus={() => setActivePlatformCard(2)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  setActivePlatformCard(activePlatformCard === 2 ? null : 2);
+                }
+              }}
+              onMouseEnter={() => setActivePlatformCard(2)}
+              role="button"
+              tabIndex={0}
+            >
+              <header>
+                <span>03 · ACTIONS</span>
+                <h3>External Services &amp; Tools</h3>
+                <p>Connect approved tools so every conversation can complete real business tasks.</p>
+                <div className="vozon-one-card-points" aria-label="External action capabilities">
+                  <span>CRM updates</span>
+                  <span>Bookings</span>
+                  <span>Webhooks</span>
+                </div>
+              </header>
+              <div className="vozon-one-tool-map" aria-label="Function calling, MCP, APIs, and GitHub connect Vozon to external services">
+                <span className="vozon-one-tool-tile tile-function"><i>ƒ</i><b>Function</b></span>
+                <span className="vozon-one-tool-tile tile-api"><i>↗</i><b>APIs</b></span>
+                <span className="vozon-one-tool-tile tile-mcp"><i>◇</i><b>MCP</b></span>
+                <span className="vozon-one-tool-tile tile-github">
+                  <i aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M12 2.8a9.2 9.2 0 0 0-2.9 17.9c.5.1.6-.2.6-.5v-1.8c-2.8.6-3.4-1.2-3.4-1.2-.4-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 0 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.6.3-1.1.6-1.3-2.2-.3-4.6-1.1-4.6-4.9 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.8 1a9.5 9.5 0 0 1 5 0c2-1.3 2.8-1 2.8-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.8-2.3 4.6-4.6 4.9.4.3.7.9.7 1.8v2.7c0 .3.2.6.7.5A9.2 9.2 0 0 0 12 2.8Z" /></svg>
+                  </i>
+                  <b>GitHub</b>
+                </span>
+                <span className="vozon-one-tool-core"><i>✓</i><b>Task complete</b><small>External services</small></span>
+              </div>
+              <footer><span><i /> Secure tool calling</span><b>Action out</b></footer>
+            </article>
+          </div>
         </div>
       </section>
 
@@ -752,7 +896,8 @@ export function HomePlatformSections() {
                         src={step.src}
                         alt={`${step.title} workflow`}
                         fill
-                        className={index === 0 ? "object-contain object-center" : "object-cover"}
+                        className="object-contain object-center"
+                        loading={index === 0 ? "eager" : "lazy"}
                         sizes="(max-width: 1024px) 100vw, 50vw"
                       />
                     </div>
@@ -825,7 +970,7 @@ export function HomePlatformSections() {
         </div>
       </section>
 
-      <section className="vozon-apps-section relative overflow-hidden px-5 pt-8 sm:px-8 sm:pt-10 lg:pt-12" id="app-integrations" aria-labelledby="vozon-apps-title">
+      <section className="vozon-apps-section relative overflow-hidden px-5 pb-8 pt-8 sm:px-8 sm:pb-12 sm:pt-10 lg:pb-14 lg:pt-12" id="app-integrations" aria-labelledby="vozon-apps-title">
         <div className="relative z-10 w-full">
           <div className="mx-auto max-w-4xl text-center">
             <div className="vozon-apps-eyebrow"><span /> Integrations</div>
@@ -844,11 +989,14 @@ export function HomePlatformSections() {
               <ellipse className="vozon-app-track-flow" cx="560" cy="600" rx="510" ry="470" />
               <ellipse className="vozon-app-track-flow" cx="560" cy="600" rx="415" ry="385" />
               <ellipse className="vozon-app-track-flow" cx="560" cy="600" rx="320" ry="300" />
+              <ellipse className="vozon-app-track-base vozon-app-track-core" cx="560" cy="600" rx="230" ry="220" />
+              <ellipse className="vozon-app-track-flow vozon-app-track-core" cx="560" cy="600" rx="230" ry="220" />
             </svg>
 
             <svg className="vozon-app-moving-nodes" viewBox="0 0 1120 590" preserveAspectRatio="none" aria-hidden="true">
               {appIntegrations.map((app) => {
                 const motion = appOrbitMotion[app.orbit];
+                const isDigitalBot = app.key === "digitalbot";
 
                 return (
                   <g key={`moving-${app.key}`}>
@@ -861,8 +1009,13 @@ export function HomePlatformSections() {
                       path={motion.path}
                       repeatCount="indefinite"
                     />
-                    <foreignObject height="90" width="90" x="-45" y="-45">
-                      <div className="vozon-app-moving-item">
+                    <foreignObject
+                      height={isDigitalBot ? 80 : 90}
+                      width={isDigitalBot ? 200 : 90}
+                      x={isDigitalBot ? -100 : -45}
+                      y={isDigitalBot ? -40 : -45}
+                    >
+                      <div className={`vozon-app-moving-item ${isDigitalBot ? "vozon-app-moving-item-digitalbot" : ""}`}>
                         <div className="vozon-app-moving-icon">
                           <IntegrationAppLogo app={app} />
                         </div>
@@ -875,7 +1028,7 @@ export function HomePlatformSections() {
 
             {appIntegrations.map((app) => (
               <article
-                className={`vozon-app-node vozon-app-node-${app.position} vozon-app-orbit-${app.orbit}`}
+                className={`vozon-app-node vozon-app-node-${app.position} vozon-app-orbit-${app.orbit} ${app.key === "digitalbot" ? "vozon-app-node-digitalbot" : ""}`}
                 key={app.key}
                 style={{ "--app-delay": `${app.delay}s` } as CSSProperties}
               >
@@ -1239,8 +1392,8 @@ export function HomePlatformSections() {
 
         .vozon-app-orbit {
           position: relative;
-          width: min(100%, 920px);
-          height: 480px;
+          width: min(100%, 1040px);
+          height: 500px;
           margin-inline: auto;
           overflow: hidden;
           isolation: isolate;
@@ -1333,16 +1486,27 @@ export function HomePlatformSections() {
           padding-top: 7px;
         }
 
+        .vozon-app-moving-item-digitalbot {
+          width: 200px;
+          height: 80px;
+          align-items: center;
+          padding-top: 0;
+        }
+
+        .vozon-app-moving-item-digitalbot .vozon-app-moving-icon {
+          width: 200px;
+          height: 80px;
+        }
+
         .vozon-app-moving-icon {
           display: grid;
           width: 76px;
           height: 76px;
           place-items: center;
-          overflow: hidden;
-          border: 1px solid rgba(255,255,255,0.13);
-          border-radius: 19px;
-          background: linear-gradient(145deg, rgba(27,35,40,0.99), rgba(10,14,17,0.99));
-          box-shadow: inset 0 1px rgba(255,255,255,0.06), 0 18px 38px rgba(0,0,0,0.38);
+          overflow: visible;
+          border: 0;
+          background: transparent;
+          box-shadow: none;
         }
 
         .vozon-app-moving-icon img {
@@ -1350,6 +1514,22 @@ export function HomePlatformSections() {
           height: auto;
           max-height: 38px;
           object-fit: contain;
+        }
+
+        .vozon-app-moving-icon > *,
+        .vozon-app-node-icon > * {
+          transform: scale(1.28);
+          transform-origin: center;
+        }
+
+        .vozon-app-moving-icon img.vozon-app-digitalbot,
+        .vozon-app-node-icon img.vozon-app-digitalbot {
+          width: 150px;
+          height: auto;
+          max-width: none;
+          max-height: 58px;
+          filter: drop-shadow(0 0 6px rgba(241,94,45,.28));
+          transform: none;
         }
 
         .vozon-app-track-base {
@@ -1386,6 +1566,15 @@ export function HomePlatformSections() {
         .vozon-app-track-flow:nth-child(6) {
           stroke: rgba(169,155,255,0.56);
           animation-duration: 4.8s;
+        }
+
+        .vozon-app-track-base.vozon-app-track-core {
+          stroke: rgba(241,94,45,0.2);
+        }
+
+        .vozon-app-track-flow.vozon-app-track-core {
+          stroke: rgba(255,126,72,0.52);
+          animation-duration: 4.2s;
         }
 
         .vozon-app-node {
@@ -1444,17 +1633,14 @@ export function HomePlatformSections() {
           width: 64px;
           height: 64px;
           place-items: center;
-          overflow: hidden;
-          border: 1px solid rgba(255,255,255,0.12);
-          border-radius: 16px;
-          background: linear-gradient(145deg, rgba(27,35,40,0.98), rgba(10,14,17,0.98));
-          box-shadow: inset 0 1px rgba(255,255,255,0.05), 0 18px 38px rgba(0,0,0,0.36);
-          transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+          overflow: visible;
+          border: 0;
+          background: transparent;
+          box-shadow: none;
+          transition: transform 180ms ease;
         }
 
         .vozon-app-node:hover .vozon-app-node-icon {
-          border-color: rgba(117,255,240,0.34);
-          box-shadow: inset 0 1px rgba(255,255,255,0.07), 0 20px 44px rgba(0,0,0,0.42), 0 0 24px rgba(69,221,206,0.1);
           transform: translateY(-3px);
         }
 
@@ -1735,6 +1921,16 @@ export function HomePlatformSections() {
             width: 60px;
             height: 60px;
             border-radius: 15px;
+          }
+
+          .vozon-app-node-digitalbot {
+            grid-column: 1 / -1;
+            margin-block: 0.35rem;
+          }
+
+          .vozon-app-node-digitalbot .vozon-app-node-icon {
+            width: 170px;
+            height: 58px;
           }
 
           .vozon-app-hub {
@@ -2255,6 +2451,1018 @@ export function HomePlatformSections() {
           mask-image: linear-gradient(to bottom, transparent 0%, black 7%, black 91%, transparent 100%);
         }
 
+        .vozon-one-section {
+          position: relative;
+          isolation: isolate;
+          overflow: hidden;
+          background: #000;
+          font-family: var(--font-site-sans), ui-sans-serif, system-ui, sans-serif;
+        }
+
+        .vozon-one-section::before {
+          content: none;
+        }
+
+        .vozon-one-glow {
+          display: none;
+        }
+
+        .vozon-one-heading {
+          max-width: 900px;
+          margin: 0 auto 72px;
+          text-align: center;
+        }
+
+        .vozon-one-kicker {
+          display: inline-flex;
+          align-items: center;
+          gap: 9px;
+          margin-bottom: 24px;
+          padding: 9px 13px;
+          border: 1px solid rgba(255, 255, 255, .1);
+          border-radius: 7px;
+          color: rgba(255, 255, 255, .82);
+          font-size: 12px;
+          font-weight: 750;
+          letter-spacing: .015em;
+          background: rgba(255, 255, 255, .035);
+          box-shadow: inset 0 1px rgba(255, 255, 255, .035);
+        }
+
+        .vozon-one-kicker i,
+        .vozon-one-card footer span i,
+        .vozon-one-console-bar i {
+          display: block;
+          width: 8px;
+          height: 8px;
+          flex: 0 0 auto;
+          border-radius: 50%;
+          background: #45ddce;
+          box-shadow: 0 0 12px rgba(69, 221, 206, .72);
+        }
+
+        .vozon-one-heading h2 {
+          margin: 0;
+          color: #fff;
+          font-size: 1.55rem;
+          font-weight: 900;
+          line-height: 1.15;
+          letter-spacing: 0;
+          text-wrap: balance;
+        }
+
+        .vozon-one-heading h2 span {
+          color: #fff;
+        }
+
+        .vozon-one-heading p {
+          max-width: 760px;
+          margin: 20px auto 0;
+          color: rgba(255, 255, 255, .56);
+          font-size: .875rem;
+          line-height: 1.75;
+          text-wrap: balance;
+        }
+
+        @media (min-width: 640px) {
+          .vozon-one-heading h2 {
+            font-size: 2.15rem;
+          }
+
+          .vozon-one-heading p {
+            font-size: 1rem;
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .vozon-one-heading h2 {
+            font-size: 2.5rem;
+          }
+        }
+
+        .vozon-one-grid {
+          display: flex;
+          align-items: stretch;
+          gap: 20px;
+          perspective: 1200px;
+        }
+
+        .vozon-one-card {
+          position: relative;
+          isolation: isolate;
+          display: flex;
+          min-width: 0;
+          min-height: 470px;
+          flex: .96 1 0;
+          flex-direction: column;
+          overflow: hidden;
+          border: 1px solid rgba(139, 159, 175, .19);
+          border-radius: 16px;
+          background:
+            linear-gradient(rgba(6, 11, 16, .93), rgba(5, 10, 14, .97)),
+            radial-gradient(circle at 50% 62%, rgba(69, 221, 206, .09), transparent 44%);
+          box-shadow: inset 0 1px rgba(255, 255, 255, .025), 0 24px 65px rgba(0, 0, 0, .2);
+          cursor: pointer;
+          outline: none;
+          transition:
+            flex-grow 320ms ease,
+            opacity 260ms ease,
+            border-color 240ms ease,
+            transform 260ms ease,
+            box-shadow 260ms ease;
+        }
+
+        .vozon-one-card::before {
+          content: "";
+          position: absolute;
+          z-index: -1;
+          inset: 0;
+          opacity: .47;
+          background-image: radial-gradient(rgba(255, 255, 255, .12) .7px, transparent .7px);
+          background-size: 19px 19px;
+          mask-image: linear-gradient(to bottom, transparent 7%, black 28%, black 91%, transparent);
+        }
+
+        .vozon-one-card::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          border-radius: inherit;
+          background: linear-gradient(90deg, transparent, rgba(111, 255, 239, .36), transparent) top / 64% 1px no-repeat;
+        }
+
+        .vozon-one-card:hover {
+          border-color: rgba(255, 255, 255, .24);
+          box-shadow: inset 0 1px rgba(255, 255, 255, .04), 0 28px 72px rgba(0, 0, 0, .34);
+          transform: translateY(-2px);
+        }
+
+        .vozon-one-card:focus-visible {
+          border-color: rgba(117, 255, 240, .72);
+          box-shadow: 0 0 0 3px rgba(69, 221, 206, .13), 0 25px 72px rgba(0, 0, 0, .34);
+        }
+
+        .vozon-one-speech-card {
+          flex-grow: 1.08;
+          border-color: rgba(255, 255, 255, .14);
+          background:
+            radial-gradient(circle at 50% 66%, rgba(255, 255, 255, .045), transparent 43%),
+            linear-gradient(150deg, #111317 0%, #090b0e 52%, #050607 100%);
+          box-shadow: inset 0 1px rgba(255, 255, 255, .045), 0 24px 65px rgba(0, 0, 0, .3);
+        }
+
+        .vozon-one-speech-card::after {
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .34), transparent) top / 72% 1px no-repeat;
+        }
+
+        .vozon-one-brain-card {
+          flex-grow: 1.38;
+          border-color: rgba(255, 255, 255, .14);
+          background:
+            radial-gradient(circle at 50% 66%, rgba(255, 255, 255, .045), transparent 43%),
+            linear-gradient(150deg, #111317 0%, #090b0e 52%, #050607 100%);
+          box-shadow: inset 0 1px rgba(255, 255, 255, .045), 0 24px 65px rgba(0, 0, 0, .3);
+        }
+
+        .vozon-one-tools-card {
+          border-color: rgba(255, 255, 255, .14);
+          background:
+            radial-gradient(circle at 50% 66%, rgba(255, 255, 255, .045), transparent 43%),
+            linear-gradient(150deg, #111317 0%, #090b0e 52%, #050607 100%);
+          box-shadow: inset 0 1px rgba(255, 255, 255, .045), 0 24px 65px rgba(0, 0, 0, .3);
+        }
+
+        .vozon-one-brain-card::after {
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .34), transparent) top / 72% 1px no-repeat;
+        }
+
+        .vozon-one-tools-card::after {
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .34), transparent) top / 72% 1px no-repeat;
+        }
+
+        .vozon-one-brain-card > header > span {
+          color: rgba(255, 255, 255, .64);
+        }
+
+        .vozon-one-tools-card > header > span {
+          color: rgba(255, 255, 255, .64);
+        }
+
+        .vozon-one-speech-card > header {
+          background: linear-gradient(180deg, rgba(255, 255, 255, .035), transparent);
+        }
+
+        .vozon-one-brain-card > header {
+          background: linear-gradient(180deg, rgba(255, 255, 255, .035), transparent);
+        }
+
+        .vozon-one-tools-card > header {
+          background: linear-gradient(180deg, rgba(255, 255, 255, .035), transparent);
+        }
+
+        .vozon-one-speech-card > footer {
+          background: rgba(3, 4, 6, .8);
+        }
+
+        .vozon-one-brain-card > footer {
+          background: rgba(3, 4, 6, .8);
+        }
+
+        .vozon-one-tools-card > footer {
+          background: rgba(3, 4, 6, .8);
+        }
+
+        .vozon-one-brain-card > footer span i {
+          background: rgba(255, 255, 255, .68);
+          box-shadow: 0 0 10px rgba(255, 255, 255, .24);
+        }
+
+        .vozon-one-brain-card > footer > b {
+          color: rgba(255, 255, 255, .56);
+        }
+
+        .vozon-one-tools-card > footer span i {
+          background: rgba(255, 255, 255, .68);
+          box-shadow: 0 0 10px rgba(255, 255, 255, .24);
+        }
+
+        .vozon-one-tools-card > footer > b {
+          color: rgba(255, 255, 255, .56);
+        }
+
+        .vozon-one-brain-card .vozon-one-console {
+          border-color: rgba(255, 255, 255, .12);
+          background: linear-gradient(155deg, rgba(23, 26, 30, .94), rgba(9, 11, 14, .96));
+        }
+
+        .vozon-one-brain-card .vozon-one-agent {
+          border-color: rgba(255, 255, 255, .13);
+          background: linear-gradient(110deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, .02));
+        }
+
+        .vozon-one-brain-card .vozon-one-model-list i {
+          color: rgba(255, 255, 255, .78);
+          background: rgba(255, 255, 255, .08);
+          box-shadow: none;
+        }
+
+        .vozon-one-brain-card .vozon-one-agent > em,
+        .vozon-one-brain-card .vozon-one-model-list em {
+          color: rgba(255, 255, 255, .66);
+          background: rgba(255, 255, 255, .07);
+        }
+
+        .vozon-one-tools-card .vozon-one-tool-tile:nth-of-type(2) i {
+          background: linear-gradient(145deg, #f4f4f5, #a1a1aa);
+        }
+
+        .vozon-one-tools-card .vozon-one-tool-tile:nth-of-type(3) i {
+          background: linear-gradient(145deg, #f4f4f5, #a1a1aa);
+        }
+
+        .vozon-one-tools-card .vozon-one-tool-tile:nth-of-type(4) i {
+          background: linear-gradient(145deg, #f4f4f5, #a1a1aa);
+          box-shadow: 0 0 14px rgba(255, 255, 255, .1);
+        }
+
+        .vozon-one-tools-card .vozon-one-tool-tile:nth-of-type(2) {
+          background: linear-gradient(145deg, rgba(35, 38, 43, .96), rgba(11, 13, 16, .98));
+        }
+
+        .vozon-one-tools-card .vozon-one-tool-tile:nth-of-type(3) {
+          background: linear-gradient(145deg, rgba(35, 38, 43, .96), rgba(11, 13, 16, .98));
+        }
+
+        .vozon-one-tools-card .vozon-one-tool-tile:nth-of-type(4) {
+          background: linear-gradient(145deg, rgba(35, 38, 43, .96), rgba(11, 13, 16, .98));
+        }
+
+        .vozon-one-speech-card:hover {
+          border-color: rgba(255, 255, 255, .25);
+          box-shadow: inset 0 1px rgba(255, 255, 255, .05), 0 30px 78px rgba(0, 0, 0, .36);
+        }
+
+        @media (min-width: 1051px) {
+          .vozon-one-grid.has-active-card .vozon-one-card.is-muted {
+            flex-grow: .92;
+            opacity: .9;
+            transform: scale(.995);
+          }
+
+          .vozon-one-grid.has-active-card .vozon-one-card.is-active {
+            z-index: 6;
+            flex-grow: 1.2;
+            opacity: 1;
+            border-color: rgba(255, 255, 255, .26);
+            transform: translateY(-4px) scale(1.006);
+            box-shadow: inset 0 1px rgba(255, 255, 255, .055), 0 34px 86px rgba(0, 0, 0, .42), 0 0 52px rgba(69, 221, 206, .08);
+          }
+
+          .vozon-one-grid.has-active-card .vozon-one-brain-card.is-active {
+            flex-grow: 1.5;
+            border-color: rgba(255, 255, 255, .28);
+            box-shadow: inset 0 1px rgba(255, 255, 255, .055), 0 28px 70px rgba(0, 0, 0, .4);
+          }
+
+          .vozon-one-grid.has-active-card .vozon-one-tools-card.is-active {
+            border-color: rgba(255, 255, 255, .28);
+            box-shadow: inset 0 1px rgba(255, 255, 255, .055), 0 28px 70px rgba(0, 0, 0, .4);
+          }
+
+          .vozon-one-card.is-active > header,
+          .vozon-one-card.is-active > footer,
+          .vozon-one-card.is-active > .vozon-one-speech-map,
+          .vozon-one-card.is-active > .vozon-one-console,
+          .vozon-one-card.is-active > .vozon-one-tool-map {
+            animation: vozonOneCardContentResolve 280ms ease both;
+          }
+        }
+
+        @keyframes vozonOneCardContentResolve {
+          0% { opacity: .72; }
+          100% { opacity: 1; }
+        }
+
+        .vozon-one-card > header {
+          min-height: 158px;
+          padding: 25px 22px 16px;
+          text-align: center;
+        }
+
+        .vozon-one-card > header > span {
+          display: block;
+          margin-bottom: 7px;
+          color: rgba(255, 255, 255, .64);
+          font-family: var(--font-commit-mono), monospace;
+          font-size: 9px;
+          font-weight: 850;
+          letter-spacing: .13em;
+        }
+
+        .vozon-one-live-label {
+          display: inline-flex;
+          align-items: center;
+          margin-left: 5px;
+          padding: 3px 5px 2px;
+          border: 1px solid rgba(105, 255, 237, .2);
+          border-radius: 999px;
+          color: #9efff3;
+          font-size: 6px;
+          font-style: normal;
+          letter-spacing: .1em;
+          background: rgba(69, 221, 206, .09);
+          box-shadow: 0 0 14px rgba(69, 221, 206, .08);
+          vertical-align: 1px;
+        }
+
+        .vozon-one-card h3 {
+          margin: 0;
+          color: rgba(255, 255, 255, .94);
+          font-size: clamp(1rem, 1.35vw, 1.18rem);
+          font-weight: 780;
+          line-height: 1.25;
+          letter-spacing: -.016em;
+        }
+
+        .vozon-one-card header p {
+          max-width: 440px;
+          margin: 9px auto 0;
+          color: rgba(227, 235, 239, .62);
+          font-size: 10.5px;
+          line-height: 1.5;
+        }
+
+        .vozon-one-speech-points {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 7px;
+          margin-top: 13px;
+        }
+
+        .vozon-one-speech-points span {
+          position: relative;
+          padding: 4px 7px 4px 15px;
+          border: 1px solid rgba(117, 255, 240, .13);
+          border-radius: 999px;
+          color: rgba(211, 255, 249, .7);
+          font-family: var(--font-commit-mono), monospace;
+          font-size: 6.5px;
+          letter-spacing: .015em;
+          background: rgba(25, 72, 67, .16);
+        }
+
+        .vozon-one-speech-points span::before {
+          content: "";
+          position: absolute;
+          left: 7px;
+          top: 50%;
+          width: 3px;
+          height: 3px;
+          border-radius: 50%;
+          background: #66f0df;
+          box-shadow: 0 0 6px rgba(69, 221, 206, .7);
+          transform: translateY(-50%);
+        }
+
+        .vozon-one-card-points {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 7px;
+          margin-top: 13px;
+        }
+
+        .vozon-one-card-points span {
+          padding: 4px 7px;
+          border: 1px solid rgba(255, 255, 255, .1);
+          border-radius: 999px;
+          font-family: var(--font-commit-mono), monospace;
+          font-size: 6.5px;
+          letter-spacing: .015em;
+        }
+
+        .vozon-one-brain-card .vozon-one-card-points span {
+          border-color: rgba(255, 255, 255, .12);
+          color: rgba(255, 255, 255, .62);
+          background: rgba(255, 255, 255, .045);
+        }
+
+        .vozon-one-tools-card .vozon-one-card-points span {
+          border-color: rgba(255, 255, 255, .12);
+          color: rgba(255, 255, 255, .62);
+          background: rgba(255, 255, 255, .045);
+        }
+
+        .vozon-one-card > footer {
+          position: relative;
+          z-index: 3;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 12px;
+          min-height: 50px;
+          margin-top: auto;
+          padding: 12px 18px;
+          border-top: 1px solid rgba(255, 255, 255, .065);
+          color: rgba(226, 235, 239, .55);
+          font-family: var(--font-commit-mono), monospace;
+          font-size: 8.5px;
+          background: rgba(3, 7, 10, .6);
+        }
+
+        .vozon-one-card > footer span {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .vozon-one-card > footer span i {
+          width: 5px;
+          height: 5px;
+        }
+
+        .vozon-one-card > footer > b {
+          color: rgba(117, 255, 240, .56);
+          font-weight: 700;
+        }
+
+        .vozon-one-speech-map {
+          position: relative;
+          flex: 1;
+          min-height: 250px;
+          margin: 4px 18px 18px;
+        }
+
+        .vozon-one-call-status {
+          position: absolute;
+          z-index: 4;
+          left: 50%;
+          top: -2px;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 5px 8px;
+          border: 1px solid rgba(105, 255, 237, .16);
+          border-radius: 999px;
+          color: rgba(177, 255, 246, .74);
+          font-family: var(--font-commit-mono), monospace;
+          font-size: 7px;
+          letter-spacing: .04em;
+          white-space: nowrap;
+          background: rgba(5, 24, 22, .86);
+          transform: translateX(-50%);
+        }
+
+        .vozon-one-call-status b {
+          margin-left: 2px;
+          color: rgba(255, 255, 255, .42);
+          font-size: 6px;
+          font-weight: 650;
+          letter-spacing: .06em;
+        }
+
+        .vozon-one-call-status i {
+          width: 5px;
+          height: 5px;
+          border-radius: 50%;
+          background: #68f5e3;
+          box-shadow: 0 0 9px rgba(69, 221, 206, .9);
+          animation: vozonOneStatusPulse 1.5s ease-in-out infinite;
+        }
+
+        .vozon-one-speech-map::before,
+        .vozon-one-speech-map::after {
+          content: "";
+          position: absolute;
+          z-index: 0;
+          background: rgba(69, 221, 206, .54);
+          box-shadow: 0 0 10px rgba(69, 221, 206, .18);
+        }
+
+        .vozon-one-speech-map::before {
+          left: 50%;
+          top: 45px;
+          bottom: 45px;
+          width: 1px;
+        }
+
+        .vozon-one-speech-map::after {
+          left: 44px;
+          right: 44px;
+          top: 50%;
+          height: 1px;
+        }
+
+        .vozon-one-speech-line {
+          position: absolute;
+          z-index: 0;
+          width: 34px;
+          height: 34px;
+          border-color: rgba(69, 221, 206, .54);
+          border-style: dashed;
+          animation: vozonOneSignalGlow 1.8s ease-in-out infinite alternate;
+        }
+
+        .vozon-one-line-a { left: 29%; top: 25%; border-width: 1px 0 0 1px; }
+        .vozon-one-line-b { right: 29%; top: 25%; border-width: 1px 1px 0 0; }
+        .vozon-one-line-c { left: 29%; bottom: 24%; border-width: 0 0 1px 1px; }
+        .vozon-one-line-d { right: 29%; bottom: 24%; border-width: 0 1px 1px 0; }
+
+        .vozon-one-node {
+          position: absolute;
+          z-index: 2;
+          display: flex;
+          width: 76px;
+          align-items: center;
+          flex-direction: column;
+          gap: 5px;
+          color: rgba(229, 240, 242, .66);
+          font-size: 8px;
+          text-align: center;
+        }
+
+        .vozon-one-node i {
+          display: grid;
+          width: 38px;
+          height: 38px;
+          place-items: center;
+          border: 1px solid rgba(144, 166, 178, .22);
+          border-radius: 7px;
+          color: #aafff4;
+          font-family: var(--font-commit-mono), monospace;
+          font-size: 8px;
+          font-style: normal;
+          font-weight: 850;
+          background: linear-gradient(145deg, rgba(24, 58, 57, .98), rgba(8, 19, 22, .98));
+          box-shadow: inset 0 1px rgba(255, 255, 255, .055), 0 8px 18px rgba(0, 0, 0, .25), 0 0 16px rgba(69, 221, 206, .055);
+          transition: transform 260ms ease, border-color 260ms ease, box-shadow 260ms ease;
+        }
+
+        .vozon-one-speech-card:hover .vozon-one-node i {
+          border-color: rgba(117, 255, 240, .34);
+          box-shadow: inset 0 1px rgba(255, 255, 255, .07), 0 9px 22px rgba(0, 0, 0, .3), 0 0 19px rgba(69, 221, 206, .13);
+          transform: translateY(-2px);
+        }
+
+        .vozon-one-node b {
+          font-weight: 650;
+          line-height: 1.2;
+        }
+
+        .vozon-one-node-td { left: 2px; top: 30px; }
+        .vozon-one-node-vad { right: 2px; top: 30px; }
+        .vozon-one-node-stt { left: 2px; bottom: 12px; }
+        .vozon-one-node-tts { right: 2px; bottom: 12px; }
+
+        .vozon-one-speech-core {
+          position: absolute;
+          z-index: 3;
+          left: 50%;
+          top: 50%;
+          display: flex;
+          width: 88px;
+          height: 96px;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          gap: 7px;
+          border: 1px solid rgba(104, 255, 237, .3);
+          border-radius: 14px;
+          color: #e8fffc;
+          font-size: 10px;
+          background: radial-gradient(circle at 50% 20%, rgba(69, 221, 206, .3), rgba(8, 29, 27, .97) 68%);
+          box-shadow: 0 0 36px rgba(69, 221, 206, .14), inset 0 1px rgba(255, 255, 255, .08);
+          transform: translate(-50%, -50%);
+        }
+
+        .vozon-one-speech-core::before,
+        .vozon-one-speech-core::after {
+          content: "";
+          position: absolute;
+          inset: -9px;
+          z-index: -1;
+          border: 1px solid rgba(104, 255, 237, .18);
+          border-radius: 19px;
+          animation: vozonOneCoreRing 2.4s ease-out infinite;
+        }
+
+        .vozon-one-speech-core::after {
+          animation-delay: 1.2s;
+        }
+
+        .vozon-one-speech-core i {
+          display: grid;
+          width: 32px;
+          height: 32px;
+          place-items: center;
+          border-radius: 9px;
+          background: #57ead8;
+          box-shadow: 0 0 18px rgba(69, 221, 206, .35);
+        }
+
+        .vozon-one-speech-core svg {
+          width: 18px;
+          fill: none;
+          stroke: #03120f;
+          stroke-width: 1.8;
+          stroke-linecap: round;
+        }
+
+        .vozon-one-core-wave {
+          display: flex;
+          height: 11px;
+          align-items: center;
+          gap: 2px;
+        }
+
+        .vozon-one-core-wave i {
+          display: block;
+          width: 2px;
+          height: 5px;
+          border-radius: 4px;
+          background: #7affef;
+          animation: vozonOneWave .65s ease-in-out infinite alternate;
+        }
+
+        .vozon-one-core-wave i:nth-child(2),
+        .vozon-one-core-wave i:nth-child(4) { height: 10px; animation-delay: -.34s; }
+        .vozon-one-core-wave i:nth-child(3) { height: 7px; animation-delay: -.18s; }
+
+        @keyframes vozonOneStatusPulse {
+          0%, 100% { opacity: .45; transform: scale(.78); }
+          50% { opacity: 1; transform: scale(1.12); }
+        }
+
+        @keyframes vozonOneSignalGlow {
+          from { border-color: rgba(69, 221, 206, .28); filter: drop-shadow(0 0 0 rgba(69, 221, 206, 0)); }
+          to { border-color: rgba(105, 255, 237, .72); filter: drop-shadow(0 0 4px rgba(69, 221, 206, .3)); }
+        }
+
+        @keyframes vozonOneCoreRing {
+          0% { opacity: .58; transform: scale(.88); }
+          75%, 100% { opacity: 0; transform: scale(1.18); }
+        }
+
+        @keyframes vozonOneWave {
+          from { transform: scaleY(.5); }
+          to { transform: scaleY(1); }
+        }
+
+        .vozon-one-console {
+          position: relative;
+          flex: 1;
+          min-height: 250px;
+          margin: 4px 18px 18px;
+          padding: 14px;
+          border: 1px solid rgba(142, 165, 178, .18);
+          border-radius: 11px;
+          background: rgba(17, 24, 28, .88);
+          box-shadow: inset 0 1px rgba(255, 255, 255, .035), 0 18px 42px rgba(0, 0, 0, .24);
+        }
+
+        .vozon-one-console-bar {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 2px 9px;
+          color: rgba(229, 237, 240, .55);
+          font-family: var(--font-commit-mono), monospace;
+          font-size: 8px;
+        }
+
+        .vozon-one-console-bar span {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .vozon-one-console-bar i {
+          width: 5px;
+          height: 5px;
+        }
+
+        .vozon-one-console-bar b {
+          color: rgba(255, 255, 255, .2);
+          letter-spacing: 2px;
+        }
+
+        .vozon-one-agent {
+          display: grid;
+          grid-template-columns: minmax(108px, .85fr) minmax(90px, 1fr) auto;
+          align-items: center;
+          gap: 11px;
+          min-height: 72px;
+          padding: 10px 11px;
+          border: 1px solid rgba(103, 244, 225, .15);
+          border-radius: 9px;
+          background: linear-gradient(110deg, rgba(69, 221, 206, .1), rgba(255, 255, 255, .025));
+        }
+
+        .vozon-one-agent-brand,
+        .vozon-one-agent-copy {
+          display: flex;
+          min-width: 0;
+          flex-direction: column;
+        }
+
+        .vozon-one-agent-brand {
+          gap: 3px;
+        }
+
+        .vozon-one-agent-brand small {
+          color: rgba(216, 231, 234, .45);
+          font-size: 7px;
+          letter-spacing: .04em;
+        }
+
+        .vozon-one-agent-copy {
+          gap: 3px;
+          padding-left: 12px;
+          border-left: 1px solid rgba(255, 255, 255, .1);
+        }
+
+        .vozon-one-agent-copy b {
+          color: rgba(255, 255, 255, .92);
+          font-size: 13px;
+        }
+
+        .vozon-one-agent-copy small {
+          color: rgba(227, 236, 239, .58);
+          font-size: 8px;
+        }
+
+        .vozon-one-agent > em,
+        .vozon-one-model-list em {
+          padding: 4px 6px;
+          border-radius: 5px;
+          color: #81fbed;
+          font-family: var(--font-commit-mono), monospace;
+          font-size: 7px;
+          font-style: normal;
+          background: rgba(69, 221, 206, .1);
+        }
+
+        .vozon-one-model-list {
+          display: grid;
+          gap: 6px;
+          margin-top: 8px;
+        }
+
+        .vozon-one-model-list > span {
+          display: grid;
+          grid-template-columns: 30px minmax(64px, .7fr) 1fr auto;
+          align-items: center;
+          gap: 8px;
+          min-height: 42px;
+          padding: 6px 9px;
+          border: 1px solid rgba(255, 255, 255, .065);
+          border-radius: 7px;
+          background: rgba(255, 255, 255, .025);
+        }
+
+        .vozon-one-model-list i {
+          display: grid;
+          width: 28px;
+          height: 28px;
+          place-items: center;
+          border-radius: 7px;
+          color: #75fff0;
+          font-size: 12px;
+          font-style: normal;
+          background: rgba(69, 221, 206, .1);
+        }
+
+        .vozon-one-model-list b {
+          color: rgba(255, 255, 255, .86);
+          font-size: 10px;
+        }
+
+        .vozon-one-model-list small {
+          color: rgba(224, 234, 237, .5);
+          font-size: 8px;
+        }
+
+        .vozon-one-tool-map {
+          position: relative;
+          display: grid;
+          flex: 1;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          grid-template-rows: repeat(3, minmax(0, 1fr));
+          gap: 10px;
+          min-height: 250px;
+          margin: 4px 18px 18px;
+          padding: 10px;
+        }
+
+        .vozon-one-tool-map::before {
+          content: "";
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          width: 72%;
+          height: 66%;
+          border: 1px dashed rgba(69, 221, 206, .25);
+          border-radius: 22px;
+          transform: translate(-50%, -50%);
+        }
+
+        .vozon-one-tool-tile {
+          position: relative;
+          z-index: 2;
+          display: flex;
+          min-width: 0;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          gap: 5px;
+          border: 1px solid rgba(132, 153, 166, .17);
+          border-radius: 7px;
+          color: rgba(229, 239, 242, .63);
+          font-size: 8px;
+          background: linear-gradient(145deg, rgba(27, 36, 40, .96), rgba(10, 16, 19, .97));
+          box-shadow: 0 9px 22px rgba(0, 0, 0, .23);
+        }
+
+        .vozon-one-tool-tile i {
+          display: grid;
+          width: 28px;
+          height: 28px;
+          place-items: center;
+          border-radius: 7px;
+          color: #061512;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 900;
+          background: linear-gradient(145deg, #9cfff3, #45ddce);
+          box-shadow: 0 0 17px rgba(69, 221, 206, .25);
+        }
+
+        .vozon-one-tool-tile svg {
+          width: 17px;
+          fill: #061512;
+        }
+
+        .tile-function { grid-column: 1; grid-row: 1; }
+        .tile-api { grid-column: 3; grid-row: 1; }
+        .tile-mcp { grid-column: 1; grid-row: 3; }
+        .tile-github { grid-column: 3; grid-row: 3; }
+
+        .vozon-one-tool-core {
+          position: relative;
+          z-index: 3;
+          display: flex;
+          grid-column: 2;
+          grid-row: 2;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          gap: 3px;
+          border: 1px solid rgba(107, 255, 238, .3);
+          border-radius: 10px;
+          color: rgba(255, 255, 255, .9);
+          font-size: 9px;
+          text-align: center;
+          background: radial-gradient(circle at 50% 10%, rgba(69, 221, 206, .27), rgba(8, 27, 25, .98) 70%);
+          box-shadow: 0 0 30px rgba(69, 221, 206, .15);
+        }
+
+        .vozon-one-tool-core i {
+          display: grid;
+          width: 27px;
+          height: 27px;
+          place-items: center;
+          border-radius: 50%;
+          color: #04120f;
+          font-size: 12px;
+          font-style: normal;
+          background: #62ebda;
+        }
+
+        .vozon-one-tool-core small {
+          color: rgba(219, 235, 236, .48);
+          font-size: 6.5px;
+        }
+
+        @media (max-width: 1050px) {
+          .vozon-one-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+          }
+
+          .vozon-one-brain-card {
+            grid-column: 1 / -1;
+            grid-row: 1;
+          }
+
+          .vozon-one-card {
+            flex: none;
+            min-height: 460px;
+          }
+        }
+
+        @media (max-width: 680px) {
+          .vozon-one-section {
+            padding-inline: 16px;
+          }
+
+          .vozon-one-heading {
+            margin-bottom: 38px;
+          }
+
+          .vozon-one-grid {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 16px;
+          }
+
+          .vozon-one-brain-card {
+            grid-column: auto;
+            grid-row: auto;
+          }
+
+          .vozon-one-card {
+            min-height: 450px;
+          }
+
+          .vozon-one-card > header {
+            min-height: 148px;
+            padding: 22px 18px 14px;
+          }
+
+          .vozon-one-agent {
+            grid-template-columns: minmax(102px, .9fr) minmax(82px, 1fr);
+          }
+
+          .vozon-one-agent > em {
+            display: none;
+          }
+
+          .vozon-one-model-list > span {
+            grid-template-columns: 30px minmax(58px, .8fr) 1fr auto;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .vozon-one-card {
+            transition: none;
+          }
+
+          .vozon-one-call-status i,
+          .vozon-one-speech-line,
+          .vozon-one-speech-core::before,
+          .vozon-one-speech-core::after,
+          .vozon-one-core-wave i,
+          .vozon-one-card.is-active > header,
+          .vozon-one-card.is-active > footer,
+          .vozon-one-card.is-active > .vozon-one-speech-map,
+          .vozon-one-card.is-active > .vozon-one-console,
+          .vozon-one-card.is-active > .vozon-one-tool-map {
+            animation: none;
+          }
+        }
+
         .vozon-company-track {
           animation: vozonCompanyMarquee 36s linear infinite;
         }
@@ -2267,6 +3475,13 @@ export function HomePlatformSections() {
         .vozon-company-logo-image {
           filter: saturate(0.9) brightness(0.88);
           opacity: 0.72;
+        }
+
+        .vozon-company-logo-image.vozon-company-logo-image--digitalbot {
+          width: 3rem;
+          height: 3rem;
+          filter: saturate(1.18) brightness(1.12) drop-shadow(0 0 8px rgba(30,189,255,.32));
+          opacity: 1;
         }
 
         .vozon-company-name {

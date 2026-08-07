@@ -146,6 +146,85 @@ const voiceAgentCapabilities = [
   },
 ] as const;
 
+const everythingIncludedCapabilities = [
+  {
+    title: "Voice Personalities",
+    body: "Create voices that match your brand with custom tone, style, and speaking behavior.",
+    icon: "personality",
+    color: "#35fbe0",
+  },
+  {
+    title: "Multilingual Conversations",
+    body: "Speak naturally across 40+ languages and connect with customers worldwide.",
+    icon: "languages",
+    color: "#8f83e8",
+  },
+  {
+    title: "Knowledge Base",
+    body: "Ground responses using your documents, PDFs, websites, FAQs, and internal resources.",
+    icon: "knowledge",
+    color: "#ffad73",
+  },
+  {
+    title: "Function Calling",
+    body: "Trigger APIs, update CRMs, schedule appointments, send emails, create tickets, and automate workflows.",
+    icon: "workflow",
+    color: "#75baff",
+  },
+  {
+    title: "Analytics Dashboard",
+    body: "Track call outcomes, success rates, caller satisfaction, and conversation quality in real time.",
+    icon: "dashboard",
+    color: "#ff9fb7",
+  },
+  {
+    title: "Enterprise Security",
+    body: "Role-based access, encrypted conversations, secure infrastructure, and enterprise-ready deployment.",
+    icon: "security",
+    color: "#f6db75",
+  },
+] as const;
+
+
+const voiceCloningCapabilities = [
+  {
+    icon: "waveform",
+    color: "#35fbe0",
+    title: "Consistent Brand Identity",
+    body: "Deliver the same recognizable voice across phone calls, customer support, and AI assistants.",
+  },
+  {
+    icon: "microphone",
+    color: "#8f83e8",
+    title: "Natural Human Expression",
+    body: "Capture tone, pacing, pronunciation, and speaking style for conversations that feel authentic.",
+  },
+  {
+    icon: "bolt",
+    color: "#ffad73",
+    title: "Fast Voice Creation",
+    body: "Generate a production-ready AI voice from a short, high-quality voice sample.",
+  },
+  {
+    icon: "globe",
+    color: "#75baff",
+    title: "Multilingual Delivery",
+    body: "Use your cloned voice across multiple supported languages while preserving its unique character.",
+  },
+  {
+    icon: "users",
+    color: "#ff9fb7",
+    title: "Scalable Communication",
+    body: "Handle thousands of simultaneous conversations without compromising quality or consistency.",
+  },
+  {
+    icon: "shield",
+    color: "#f6db75",
+    title: "Enterprise Security",
+    body: "Voice data is securely processed with privacy and access controls designed for business use.",
+  },
+];
+
 function Pill({ children }: { children: ReactNode }) {
   return (
     <span className="service-pill inline-flex rounded-full px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-[0.12em]">
@@ -154,14 +233,36 @@ function Pill({ children }: { children: ReactNode }) {
   );
 }
 
-type VoiceAgentCapabilityIconName = "call" | "conversation" | "checklist" | "knowledge" | "handoff" | "insights";
+type VoiceAgentCapabilityIconName =
+  | "call"
+  | "conversation"
+  | "checklist"
+  | "knowledge"
+  | "handoff"
+  | "insights"
+  | "security";
 
-function VoiceAgentCapabilityIcon({ name }: { name: VoiceAgentCapabilityIconName }) {
-  const common = { fill: "none", stroke: "currentColor", strokeLinecap: "round" as const, strokeLinejoin: "round" as const, strokeWidth: 1.6 };
+function VoiceAgentCapabilityIcon({
+  name,
+}: {
+  name: VoiceAgentCapabilityIconName;
+}) {
+  const common = {
+    fill: "none",
+    stroke: "currentColor",
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    strokeWidth: 1.6,
+  };
 
   if (name === "call") {
     return (
-      <svg aria-hidden="true" className="size-5" viewBox="0 0 24 24" {...common}>
+      <svg
+        aria-hidden="true"
+        className="size-5"
+        viewBox="0 0 24 24"
+        {...common}
+      >
         <path d="M6.5 5.5c1.9-.6 3.8 0 5.1 1.3l1 1c.6.6.8 1.4.4 2.1l-1.2 2c-.4.7-.2 1.5.4 2.1l1 1c1.3 1.3 1.9 3.2 1.3 5.1-.5 1.6-1.8 2.9-3.4 3.4-2.9.9-6-.1-8.1-2.2C3.1 13.9 2.2 9.9 3.1 7c.5-1.6 1.8-2.9 3.4-3.4Z" />
       </svg>
     );
@@ -169,7 +270,12 @@ function VoiceAgentCapabilityIcon({ name }: { name: VoiceAgentCapabilityIconName
 
   if (name === "conversation") {
     return (
-      <svg aria-hidden="true" className="size-5" viewBox="0 0 24 24" {...common}>
+      <svg
+        aria-hidden="true"
+        className="size-5"
+        viewBox="0 0 24 24"
+        {...common}
+      >
         <path d="M5 6h14a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H8l-3 3V7a1 1 0 0 1 1-1Z" />
         <path d="M7 9h10M7 13h6" />
       </svg>
@@ -178,7 +284,12 @@ function VoiceAgentCapabilityIcon({ name }: { name: VoiceAgentCapabilityIconName
 
   if (name === "checklist") {
     return (
-      <svg aria-hidden="true" className="size-5" viewBox="0 0 24 24" {...common}>
+      <svg
+        aria-hidden="true"
+        className="size-5"
+        viewBox="0 0 24 24"
+        {...common}
+      >
         <path d="M5 5.5h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-12a1 1 0 0 1 1-1Z" />
         <path d="M8.5 11.5 10.5 13.5 15.5 8.5" />
         <path d="M8.5 16.5h3M14.5 12.5h2" />
@@ -188,7 +299,12 @@ function VoiceAgentCapabilityIcon({ name }: { name: VoiceAgentCapabilityIconName
 
   if (name === "knowledge") {
     return (
-      <svg aria-hidden="true" className="size-5" viewBox="0 0 24 24" {...common}>
+      <svg
+        aria-hidden="true"
+        className="size-5"
+        viewBox="0 0 24 24"
+        {...common}
+      >
         <path d="M6 4.5h12a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-13a1 1 0 0 1 1-1Z" />
         <path d="M6 7.5h12M6 11.5h12" />
       </svg>
@@ -197,9 +313,42 @@ function VoiceAgentCapabilityIcon({ name }: { name: VoiceAgentCapabilityIconName
 
   if (name === "handoff") {
     return (
-      <svg aria-hidden="true" className="size-5" viewBox="0 0 24 24" {...common}>
+      <svg
+        aria-hidden="true"
+        className="size-5"
+        viewBox="0 0 24 24"
+        {...common}
+      >
         <path d="M8 7h8M8 7l4-4m0 4-4 4" />
         <path d="M8 17h8M16 17l-4 4m4-4-4-4" />
+      </svg>
+    );
+  }
+
+  if (name === "insights") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-5"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <path d="M6 16.5V11l3-3 2 2 4-4 4 4v8.5H6Z" />
+        <path d="M14 12.5h4" />
+      </svg>
+    );
+  }
+
+  if (name === "security") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-5"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <path d="M12 3 5 6v5c0 5.25 3.75 9.75 7 10 3.25-.25 7-4.75 7-10V6l-7-3Z" />
+        <path d="M9.5 12.5 11 14l3-3" />
       </svg>
     );
   }
@@ -212,6 +361,130 @@ function VoiceAgentCapabilityIcon({ name }: { name: VoiceAgentCapabilityIconName
   );
 }
 
+type EverythingIncludedIconName =
+  | "personality"
+  | "languages"
+  | "knowledge"
+  | "workflow"
+  | "dashboard"
+  | "security";
+
+function EverythingIncludedIcon({
+  name,
+}: {
+  name: EverythingIncludedIconName;
+}) {
+  const common = {
+    fill: "none",
+    stroke: "currentColor",
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    strokeWidth: 1.8,
+  };
+
+  if (name === "personality") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-6"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <path d="M6 4v16" />
+        <circle cx="6" cy="8" r="1.8" />
+        <path d="M12 4v16" />
+        <circle cx="12" cy="15" r="1.8" />
+        <path d="M18 4v16" />
+        <circle cx="18" cy="11" r="1.8" />
+      </svg>
+    );
+  }
+
+  if (name === "languages") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-6"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <circle cx="12" cy="12" r="8" />
+        <path d="M4 12h16" />
+        <path d="M12 4c2.8 2.5 4 5.2 4 8s-1.2 5.5-4 8" />
+        <path d="M12 4c-2.8 2.5-4 5.2-4 8s1.2 5.5 4 8" />
+      </svg>
+    );
+  }
+
+  if (name === "knowledge") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-6"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <path d="M6 6h10a2 2 0 0 1 2 2v10H8a2 2 0 0 0-2 2V6Z" />
+        <path d="M8 8h8" />
+        <path d="M8 12h8" />
+        <path d="M8 16h5" />
+      </svg>
+    );
+  }
+
+  if (name === "workflow") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-6"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <circle cx="6" cy="12" r="1.5" />
+        <circle cx="12" cy="6" r="1.5" />
+        <circle cx="18" cy="12" r="1.5" />
+        <circle cx="12" cy="18" r="1.5" />
+        <path d="M7.5 12h9" />
+        <path d="M12 7.5v9" />
+      </svg>
+    );
+  }
+
+  if (name === "dashboard") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-6"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <rect x="4" y="5" width="16" height="14" rx="2" />
+        <path d="M4 9h16" />
+        <path d="M8 15v2" />
+        <path d="M12 12v5" />
+        <path d="M16 10v7" />
+      </svg>
+    );
+  }
+
+  if (name === "security") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-6"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <path d="M12 3 5 6v5c0 4.5 3.2 8.3 7 9 3.8-.7 7-4.5 7-9V6l-7-3Z" />
+        <rect x="10" y="11" width="4" height="4" rx=".7" />
+        <path d="M11 11V9.8a1 1 0 0 1 2 0V11" />
+      </svg>
+    );
+  }
+
+  return null;
+}
+
 function BuildProcessIcon({ index }: { index: number }) {
   const common = "fill-none stroke-current";
 
@@ -219,7 +492,12 @@ function BuildProcessIcon({ index }: { index: number }) {
     return (
       <svg aria-hidden="true" className="size-8" viewBox="0 0 24 24">
         <circle className={common} cx="12" cy="8" r="3.25" strokeWidth="1.5" />
-        <path className={common} d="M5.5 19c.8-3.3 3-5 6.5-5s5.7 1.7 6.5 5" strokeLinecap="round" strokeWidth="1.5" />
+        <path
+          className={common}
+          d="M5.5 19c.8-3.3 3-5 6.5-5s5.7 1.7 6.5 5"
+          strokeLinecap="round"
+          strokeWidth="1.5"
+        />
       </svg>
     );
   }
@@ -227,7 +505,13 @@ function BuildProcessIcon({ index }: { index: number }) {
   if (index === 1) {
     return (
       <svg aria-hidden="true" className="size-8" viewBox="0 0 24 24">
-        <path className={common} d="M7 3.75h7l3 3V20.25H7zM14 3.75v3h3M9.5 11h5M9.5 14.5h5" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+        <path
+          className={common}
+          d="M7 3.75h7l3 3V20.25H7zM14 3.75v3h3M9.5 11h5M9.5 14.5h5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.5"
+        />
       </svg>
     );
   }
@@ -235,7 +519,12 @@ function BuildProcessIcon({ index }: { index: number }) {
   if (index === 2) {
     return (
       <svg aria-hidden="true" className="size-8" viewBox="0 0 24 24">
-        <path className={common} d="M9.2 14.8 7.5 16.5a3.54 3.54 0 0 1-5-5l3-3a3.54 3.54 0 0 1 5 0M14.8 9.2l1.7-1.7a3.54 3.54 0 0 1 5 5l-3 3a3.54 3.54 0 0 1-5 0M8.5 15.5l7-7" strokeLinecap="round" strokeWidth="1.5" />
+        <path
+          className={common}
+          d="M9.2 14.8 7.5 16.5a3.54 3.54 0 0 1-5-5l3-3a3.54 3.54 0 0 1 5 0M14.8 9.2l1.7-1.7a3.54 3.54 0 0 1 5 5l-3 3a3.54 3.54 0 0 1-5 0M8.5 15.5l7-7"
+          strokeLinecap="round"
+          strokeWidth="1.5"
+        />
       </svg>
     );
   }
@@ -243,7 +532,13 @@ function BuildProcessIcon({ index }: { index: number }) {
   if (index === 3) {
     return (
       <svg aria-hidden="true" className="size-8" viewBox="0 0 24 24">
-        <path className={common} d="M4 12h2.2l1.4-4 2.4 8 2.2-7 1.8 5 1.5-2H20" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+        <path
+          className={common}
+          d="M4 12h2.2l1.4-4 2.4 8 2.2-7 1.8 5 1.5-2H20"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.5"
+        />
         <circle className={common} cx="12" cy="12" r="9" strokeWidth="1.25" />
       </svg>
     );
@@ -252,18 +547,351 @@ function BuildProcessIcon({ index }: { index: number }) {
   if (index === 4) {
     return (
       <svg aria-hidden="true" className="size-8" viewBox="0 0 24 24">
-        <path className={common} d="M12 16V4M7.5 8.5 12 4l4.5 4.5M5 14v5h14v-5" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+        <path
+          className={common}
+          d="M12 16V4M7.5 8.5 12 4l4.5 4.5M5 14v5h14v-5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.5"
+        />
       </svg>
     );
   }
 
   return (
     <svg aria-hidden="true" className="size-8" viewBox="0 0 24 24">
-      <path className={common} d="M5 19V9M10 19V5M15 19v-7M20 19V3M3.5 19.5h18" strokeLinecap="round" strokeWidth="1.5" />
+      <path
+        className={common}
+        d="M5 19V9M10 19V5M15 19v-7M20 19V3M3.5 19.5h18"
+        strokeLinecap="round"
+        strokeWidth="1.5"
+      />
     </svg>
   );
 }
 
+type VoiceCloningIconName =
+  | "waveform"
+  | "microphone"
+  | "bolt"
+  | "globe"
+  | "users"
+  | "shield";
+
+function VoiceCloningIcon({ name }: { name: VoiceCloningIconName }) {
+  const common = {
+    fill: "none",
+    stroke: "currentColor",
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    strokeWidth: 1.8,
+  };
+
+  if (name === "waveform") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-6"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <path d="M3 12h2" />
+        <path d="M6 9v6" />
+        <path d="M9 6v12" />
+        <path d="M12 10v4" />
+        <path d="M15 7v10" />
+        <path d="M18 9v6" />
+        <path d="M21 12h-2" />
+      </svg>
+    );
+  }
+
+  if (name === "microphone") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-6"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <rect x="9" y="3" width="6" height="11" rx="3" />
+        <path d="M6 11a6 6 0 0 0 12 0" />
+        <path d="M12 17v4" />
+        <path d="M9 21h6" />
+      </svg>
+    );
+  }
+
+  if (name === "bolt") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-6"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <path d="M13 2 6 13h5l-1 9 8-12h-5l1-8Z" />
+      </svg>
+    );
+  }
+
+  if (name === "globe") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-6"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <circle cx="12" cy="12" r="9" />
+        <path d="M3 12h18" />
+        <path d="M12 3c3 3 4.5 6 4.5 9S15 18 12 21" />
+        <path d="M12 3c-3 3-4.5 6-4.5 9S9 18 12 21" />
+      </svg>
+    );
+  }
+
+  if (name === "users") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-6"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <circle cx="12" cy="8" r="3" />
+        <path d="M6 19a6 6 0 0 1 12 0" />
+      </svg>
+    );
+  }
+
+  if (name === "shield") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-6"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <path d="M12 3 5 6v5c0 5 3.5 8.8 7 10 3.5-1.2 7-5 7-10V6l-7-3Z" />
+        <path d="M9 12h6" />
+        <path d="M12 9v6" />
+      </svg>
+    );
+  }
+
+  return null;
+}
+
+const voiceWorkflowSteps: {
+  icon: VoiceWorkflowIconName;
+  title: string;
+  body: string;
+  color: string;
+}[] = [
+  {
+    icon: "upload",
+    title: "Upload Voice Sample",
+    body: "Provide a clear recording of the speaker for accurate voice cloning.",
+    color: "#35fbe0",
+  },
+  {
+    icon: "waveform",
+    title: "AI Learns the Voice",
+    body: "Analyze pronunciation, tone, rhythm, and vocal characteristics.",
+    color: "#8f83e8",
+  },
+  {
+    icon: "microphone",
+    title: "Generate Your AI Voice",
+    body: "Create a realistic digital voice optimized for natural conversations.",
+    color: "#ffad73",
+  },
+  {
+    icon: "phone",
+    title: "Deploy Anywhere",
+    body: "Use it with voice agents, IVR systems, customer support, and business workflows.",
+    color: "#75baff",
+  },
+];
+
+type VoiceWorkflowIconName = "upload" | "waveform" | "microphone" | "phone";
+
+function VoiceWorkflowIcon({ name }: { name: VoiceWorkflowIconName }) {
+  const common = {
+    fill: "none",
+    stroke: "currentColor",
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    strokeWidth: 1.8,
+  };
+
+  if (name === "upload") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-7"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <path d="M7 17H6a3 3 0 0 1 0-6 5 5 0 0 1 9.7-1.5A4 4 0 1 1 18 17h-1" />
+        <path d="M12 15V8" />
+        <path d="m9 11 3-3 3 3" />
+      </svg>
+    );
+  }
+
+  if (name === "waveform") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-7"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <path d="M3 12h2" />
+        <path d="M6 9v6" />
+        <path d="M9 6v12" />
+        <path d="M12 10v4" />
+        <path d="M15 7v10" />
+        <path d="M18 9v6" />
+        <path d="M21 12h-2" />
+      </svg>
+    );
+  }
+
+  if (name === "microphone") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-7"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <rect x="9" y="3" width="6" height="11" rx="3" />
+        <path d="M6 11a6 6 0 0 0 12 0" />
+        <path d="M12 17v4" />
+        <path d="M9 21h6" />
+      </svg>
+    );
+  }
+
+  if (name === "phone") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-7"
+        viewBox="0 0 24 24"
+        {...common}
+      >
+        <path d="M22 16.9v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7l.4 2.6a2 2 0 0 1-.6 1.8L7.3 9.7a16 16 0 0 0 7 7l1.6-1.6a2 2 0 0 1 1.8-.6l2.6.4a2 2 0 0 1 1.7 2Z" />
+        <path d="M16 4a5 5 0 0 1 4 4" />
+        <path d="M16 8a2 2 0 0 1 2 2" />
+      </svg>
+    );
+  }
+
+  return null;
+}
+
+const voicePreviewFeatures = [
+  "Natural & expressive",
+  "Clear pronunciation",
+  "Human-like intonation",
+  "Ready for real conversations",
+];
+
+const voiceSamples = [
+  {
+    title: "Original Voice Sample",
+    time: "00:05",
+  },
+  {
+    title: "Cloned Voice (AI)",
+    time: "00:05",
+  },
+];
+
+const voiceSliders = [
+  {
+    label: "Stability",
+    value: "85%",
+    progress: "85%",
+  },
+  {
+    label: "Similarity",
+    value: "90%",
+    progress: "90%",
+  },
+  {
+    label: "Speaking Speed",
+    value: "1.0x",
+    progress: "65%",
+  },
+  {
+    label: "Pitch",
+    value: "0%",
+    progress: "50%",
+  },
+];
+
+function PlayIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-5"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+    >
+      <path d="M8 6v12l10-6-10-6Z" />
+    </svg>
+  );
+}
+
+function MicrophoneIcon() {
+  const common = {
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.8,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+  };
+
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-8"
+      viewBox="0 0 24 24"
+      {...common}
+    >
+      <rect x="9" y="3" width="6" height="11" rx="3" />
+      <path d="M6 11a6 6 0 0 0 12 0" />
+      <path d="M12 17v4" />
+      <path d="M9 21h6" />
+    </svg>
+  );
+}
+
+function VoiceWaveform() {
+  const bars = [
+    18, 30, 14, 42, 24, 38, 18, 48, 22, 36,
+    28, 16, 40, 26, 44, 20, 34, 24, 30, 18,
+  ];
+
+  return (
+    <div className="voice-waveform-bars">
+      {bars.map((height, index) => (
+        <span
+          key={index}
+          style={{
+            height: `${height}px`,
+            animationDelay: `${index * 80}ms`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
 // Kept temporarily for the existing service-console styles below.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function ProductDemo({ experience, service }: { experience: ProductServiceExperience; service: ServiceOverview }) {
@@ -340,6 +968,7 @@ function ProductDemo({ experience, service }: { experience: ProductServiceExperi
 export function ProductServicePage({ service, experience }: ProductServicePageProps) {
   const design = productPageDesigns[service.slug];
   const isVoiceAgents = service.slug === "voice-agents";
+  const isVoiceCloning = service.slug === "voice-cloning";
   const buildingLayers = isVoiceAgents
     ? agentBuildingLayers
     : experience.capabilities.map((capability, index) => ({
@@ -373,12 +1002,18 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
 
   return (
     <SiteLayout>
-      <div className={`product-service-page product-page-${service.slug} voice-agent-page bg-black text-white`} style={theme as CSSProperties}>
+      <div
+        className={`product-service-page product-page-${service.slug} voice-agent-page bg-black text-white`}
+        style={theme as CSSProperties}
+      >
         <section className="product-service-hero relative overflow-hidden px-5 pb-8 pt-32 sm:px-8 sm:pb-10 sm:pt-36 lg:pt-40">
-
-          <div className={`voice-agent-container relative mx-auto grid w-full min-w-0 max-w-[1240px] gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(420px,0.88fr)] lg:items-center ${service.slug === "voice-agents" ? "voice-agent-hero-container" : ""}`}>
+          <div
+            className={`voice-agent-container relative mx-auto grid w-full min-w-0 max-w-[1240px] gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(420px,0.88fr)] lg:items-center ${service.slug === "voice-agents" ? "voice-agent-hero-container" : ""}`}
+          >
             <div className="min-w-0 max-w-3xl">
-              <Pill>{service.kicker} / {experience.label}</Pill>
+              <Pill>
+                {service.kicker} / {experience.label}
+              </Pill>
               <h1 className="voice-agents-hero-heading mt-7 font-semibold leading-[0.98] tracking-[-0.055em]">
                 <span className="product-service-heading-primary block">
                   {experience.heroTitle}
@@ -408,7 +1043,10 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
 
               <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3 text-sm text-slate-400">
                 {service.highlights.map((highlight) => (
-                  <span className="inline-flex items-center gap-2" key={highlight}>
+                  <span
+                    className="inline-flex items-center gap-2"
+                    key={highlight}
+                  >
                     <span className="service-live-dot size-1.5 rounded-full" />
                     {highlight}
                   </span>
@@ -416,156 +1054,506 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
               </div>
             </div>
 
-            <ProductServiceHeroPhoto slug={service.slug} title={service.title} />
+            <ProductServiceHeroPhoto
+              slug={service.slug}
+              title={service.title}
+            />
           </div>
         </section>
 
         {isVoiceAgents && (
-          <section className="voice-capabilities-section relative overflow-hidden border-b border-white/[0.06] bg-black px-5 py-20 sm:px-8 sm:py-24">
-            <div className="voice-agent-container relative mx-auto max-w-[1240px]">
-              <div className="voice-capabilities-intro mx-auto max-w-4xl text-center">
-                {/* <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-[rgba(var(--service-accent-rgb),0.16)] bg-[rgba(var(--service-accent-rgb),0.08)] text-[var(--service-accent)] shadow-[0_0_0_18px_rgba(var(--service-accent-rgb),0.08)]">
-                  <svg aria-hidden="true" className="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M9 12l2 2 4-4" />
-                    <path d="M21 12c0 4.97-4.03 9-9 9S3 16.97 3 12 7.03 3 12 3s9 4.03 9 9Z" />
-                  </svg>
-                </div> */}
-                <div className="flex justify-center"><Pill>Voice agent capabilities</Pill></div>
-                <h2 className="voice-blueprint-heading mt-6 font-semibold leading-tight tracking-[-0.045em]">
-                  Built to answer, understand, act, and hand off with clarity.
-                </h2>
-                <p className="voice-capabilities-copy mx-auto mt-6 max-w-3xl">
-                  These are the core capabilities your voice agent brings to every conversation, from consistent answers to confident task completion.
-                </p>
-              </div>
+          <>
+            <section className="voice-capabilities-section relative overflow-hidden border-b border-white/[0.06] bg-black px-5 py-20 sm:px-8 sm:py-24">
+              <div className="voice-agent-container relative mx-auto max-w-[1240px]">
+                <div className="voice-capabilities-intro mx-auto max-w-4xl text-center">
+                  <div className="flex justify-center">
+                    <Pill>Voice agent capabilities</Pill>
+                  </div>
+                  <h2 className="voice-blueprint-heading mt-6 font-semibold leading-tight tracking-[-0.045em]">
+                    What your voice agent can do.
+                  </h2>
+                  <p className="voice-capabilities-copy mx-auto mt-6 max-w-3xl">
+                    Built for natural conversations and useful work, with a
+                    human handoff whenever it matters.
+                  </p>
+                </div>
 
-              <div className="voice-capabilities-grid mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {voiceAgentCapabilities.map((capability) => (
-                  <article
-                    key={capability.title}
-                    className="voice-capability-card rounded-[1.75rem] border border-white/[0.08] bg-white/[0.03] p-7 transition duration-300 hover:-translate-y-1 hover:border-white/[0.16] hover:bg-white/[0.06]"
-                  >
-                    <div
-                      className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-3xl border text-current"
-                      style={{
-                        borderColor: `${capability.color}30`,
-                        backgroundColor: `${capability.color}12`,
-                        color: capability.color,
-                        boxShadow: `0 0 40px ${capability.color}10`,
-                      }}
+                <div className="voice-capabilities-grid mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  {voiceAgentCapabilities.map((capability) => (
+                    <article
+                      key={capability.title}
+                      className="voice-capability-card voice-agent-action-card rounded-[1.75rem] border border-white/[0.08] bg-white/[0.03] p-7 transition duration-300 hover:-translate-y-1 hover:bg-white/[0.06]"
                     >
-                      <VoiceAgentCapabilityIcon name={capability.icon} />
-                    </div>
-                    <h3 className="text-lg font-semibold text-white">{capability.title}</h3>
-                    <p className="mt-3 text-sm leading-7 text-slate-300">{capability.body}</p>
-                  </article>
-                ))}
+                      <div
+                        className="voice-capability-icon flex size-12 shrink-0 items-center justify-center rounded-xl border"
+                        style={{
+                          color: capability.color,
+                          borderColor: `${capability.color}33`,
+                          backgroundColor: `${capability.color}12`,
+                          boxShadow: `0 0 20px ${capability.color}20`,
+                        }}
+                      >
+                        <VoiceAgentCapabilityIcon name={capability.icon} />
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="text-base font-semibold text-white">
+                          {capability.title}
+                        </h3>
+                        <p className="mt-2 text-sm leading-6 text-slate-300">
+                          {capability.body}
+                        </p>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <section className="everything-included-section relative overflow-hidden border-b border-white/[0.06] px-5 py-20 sm:px-8 sm:py-24">
+              <div className="voice-agent-container mx-auto max-w-[1320px]">
+                <div className="mx-auto max-w-4xl text-center">
+                  <div className="flex justify-center">
+                    <Pill>Everything included</Pill>
+                  </div>
+
+                  <h2 className="voice-capabilities-heading mt-6 font-semibold leading-tight tracking-[-0.045em]">
+                    Everything included in your{" "}
+                    <span className="text-[var(--service-accent)]">
+                      voice agent.
+                    </span>
+                  </h2>
+
+                  <p className="voice-capabilities-copy mx-auto mt-6 max-w-3xl">
+                    All the building blocks you need to create secure, capable
+                    voice experiences that represent your business well.
+                  </p>
+                </div>
+
+                <div className="everything-vertical-list mt-20">
+                  {everythingIncludedCapabilities.map((item) => (
+                    <article
+                      className="everything-vertical-item"
+                      key={item.title}
+                    >
+                      <div
+                        className="everything-icon-circle"
+                        style={{
+                          color: item.color,
+                          borderColor: `${item.color}40`,
+                          backgroundColor: `${item.color}12`,
+                          boxShadow: `0 0 28px ${item.color}20`,
+                        }}
+                      >
+                        <EverythingIncludedIcon name={item.icon} />
+                      </div>
+
+                      <div className="everything-line">
+                        <span style={{ backgroundColor: item.color }} />
+                      </div>
+
+                      <h3>{item.title}</h3>
+
+                      <p>{item.body}</p>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </section>
+          </>
+        )}
+
+        {isVoiceCloning && (
+          <>
+            <section className="everything-included-section relative overflow-hidden border-b border-white/[0.06] px-5 py-20 sm:px-8 sm:py-24">
+              <div className="voice-agent-container mx-auto max-w-[1320px]">
+                <div className="mx-auto max-w-4xl text-center">
+                  <div className="flex justify-center">
+                    <Pill>Voice Features</Pill>
+                  </div>
+
+                  <h2 className="voice-capabilities-heading mt-6 font-semibold leading-tight tracking-[-0.045em]">
+                    Why{" "}
+                    <span className="text-[var(--service-accent)]">
+                      Voice Cloning?
+                    </span>
+                  </h2>
+
+                  <p className="voice-capabilities-copy mx-auto mt-6 max-w-3xl">
+                    Create a natural AI voice that reflects your brand, captures
+                    authentic speech patterns, and delivers consistent,
+                    multilingual conversations at enterprise scale.
+                  </p>
+                </div>
+
+                <div className="everything-vertical-list mt-20">
+                  {voiceCloningCapabilities.map((item) => (
+                    <article
+                      className="everything-vertical-item"
+                      key={item.title}
+                    >
+                      <div
+                        className="everything-icon-circle"
+                        style={{
+                          color: item.color,
+                          borderColor: `${item.color}40`,
+                          backgroundColor: `${item.color}12`,
+                          boxShadow: `0 0 28px ${item.color}20`,
+                        }}
+                      >
+                        <VoiceCloningIcon
+                          name={item.icon as VoiceCloningIconName}
+                        />
+                      </div>
+
+                      <div className="everything-line">
+                        <span
+                          style={{
+                            backgroundColor: item.color,
+                            boxShadow: `0 0 0 6px ${item.color}1f, 0 0 18px ${item.color}74`,
+                          }}
+                        />
+                      </div>
+
+                      <h3>{item.title}</h3>
+
+                      <p>{item.body}</p>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <section className="voice-workflow-section relative overflow-hidden border-b border-white/[0.06] px-5 py-20 sm:px-8 sm:py-24">
+              <div className="voice-agent-container mx-auto max-w-[1320px]">
+                <div className="mx-auto max-w-4xl text-center">
+                  <div className="flex justify-center">
+                    <Pill>Voice Cloning Workflow</Pill>
+                  </div>
+
+                  <h2 className="voice-capabilities-heading mt-6 font-semibold leading-tight tracking-[-0.045em]">
+                    Simple{" "}
+                    <span className="text-[var(--service-accent)]">
+                      Voice Cloning Workflow
+                    </span>
+                  </h2>
+
+                  <p className="voice-capabilities-copy mx-auto mt-6 max-w-3xl">
+                    Create a production-ready AI voice in just a few simple
+                    steps.
+                  </p>
+                </div>
+
+                <div className="voice-workflow-grid mt-20">
+                  {voiceWorkflowSteps.map((step, index) => (
+                    <article className="voice-workflow-card" key={step.title}>
+                      <div
+                        className="voice-workflow-number"
+                        style={{
+                          color: step.color,
+                          borderColor: `${step.color}40`,
+                          backgroundColor: `${step.color}12`,
+                          boxShadow: `0 0 20px ${step.color}20`,
+                        }}
+                      >
+                        {index + 1}
+                      </div>
+
+                      <div
+                        className="voice-workflow-icon"
+                        style={{
+                          color: step.color,
+                          borderColor: `${step.color}40`,
+                          backgroundColor: `${step.color}12`,
+                          boxShadow: `0 0 28px ${step.color}20`,
+                        }}
+                      >
+                        <VoiceWorkflowIcon name={step.icon} />
+                      </div>
+                      <h3>{step.title}</h3>
+
+                      <p>{step.body}</p>
+
+                      {index < voiceWorkflowSteps.length - 1 && (
+                        <div className="voice-workflow-connector">
+                          <span
+                            style={{
+                              borderColor: step.color,
+                            }}
+                          />
+                          <span
+                            className="voice-workflow-dot"
+                            style={{
+                              backgroundColor: step.color,
+                            }}
+                          />
+                        </div>
+                      )}
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <section className="voice-preview-section relative overflow-hidden border-b border-white/[0.06] px-5 py-20 sm:px-8 sm:py-24">
+  <div className="voice-agent-container mx-auto max-w-[1320px]">
+    <div className="mx-auto max-w-4xl text-center">
+      <div className="flex justify-center">
+        <Pill>Voice Preview</Pill>
+      </div>
+
+      <h2 className="voice-capabilities-heading mt-6 font-semibold leading-tight tracking-[-0.045em]">
+        Your Voice,{" "}
+        <span className="text-[var(--service-accent)]">
+          Perfected by AI
+        </span>
+      </h2>
+
+      <p className="voice-capabilities-copy mx-auto mt-6 max-w-3xl">
+        Experience realistic, expressive AI voices that preserve your identity,
+        capture natural speech patterns, and sound human in every conversation.
+      </p>
+    </div>
+
+    <div className="voice-preview-layout mt-20">
+      {/* Left */}
+      <div className="voice-preview-content">
+        <h3>Natural conversations. Enterprise quality.</h3>
+
+        <p>
+          Build production-ready cloned voices that sound authentic across
+          customer support, IVR, virtual assistants and outbound campaigns.
+        </p>
+
+        <ul className="voice-preview-list">
+          {voicePreviewFeatures.map((item) => (
+            <li key={item}>
+              <span className="voice-preview-check">✓</span>
+              {item}
+            </li>
+          ))}
+        </ul>
+
+        <button className="voice-preview-button">
+          Listen to Sample
+        </button>
+      </div>
+
+      {/* Center */}
+      <div className="voice-preview-comparison">
+        {voiceSamples.map((sample) => (
+          <article className="voice-sample-card" key={sample.title}>
+            <div className="voice-sample-header">
+              <h4>{sample.title}</h4>
+              <span>{sample.time}</span>
+            </div>
+
+            <div className="voice-sample-player">
+              <button className="voice-play-button">
+                <PlayIcon />
+              </button>
+
+              <div className="voice-waveform">
+                <VoiceWaveform />
               </div>
             </div>
-          </section>
+          </article>
+        ))}
+      </div>
+
+      {/* Right */}
+      <div className="voice-preview-controls">
+        <h3>Customize Your Voice</h3>
+
+        {voiceSliders.map((slider) => (
+          <div className="voice-slider" key={slider.label}>
+            <div className="voice-slider-label">
+              <span>{slider.label}</span>
+              <span>{slider.value}</span>
+            </div>
+
+            <div className="voice-slider-track">
+              <span
+                style={{
+                  width: slider.progress,
+                }}
+              />
+            </div>
+          </div>
+        ))}
+
+        <div className="voice-select">
+          <span>Emotion</span>
+          <button>Friendly</button>
+        </div>
+
+        <div className="voice-select">
+          <span>Language</span>
+          <button>English (US)</button>
+        </div>
+      </div>
+
+      {/* Voice Orb */}
+      {/* <div className="voice-preview-orb">
+        <div className="voice-orb-ring ring-1"></div>
+        <div className="voice-orb-ring ring-2"></div>
+        <div className="voice-orb-ring ring-3"></div>
+
+        <div className="voice-orb-center">
+          <MicrophoneIcon />
+        </div>
+      </div> */}
+    </div>
+  </div>
+</section>
+          </>
         )}
 
         <section className="agent-anatomy-section relative overflow-hidden border-b border-white/[0.06] bg-black px-5 py-20 sm:px-8 sm:py-24">
-            <div className="voice-agent-container relative mx-auto max-w-[1240px]">
-              <div className="voice-blueprint-intro mx-auto max-w-4xl text-center">
-                <div className="flex justify-center"><Pill>{design?.blueprintLabel ?? "What you're building"}</Pill></div>
-                <h2 className="voice-blueprint-heading mt-6 font-semibold leading-tight tracking-[-0.045em]">
-                  {design?.blueprintTitle ?? "Every agent is made of three things."}
+          <div className="voice-agent-container relative mx-auto max-w-[1240px]">
+            <div className="voice-blueprint-intro mx-auto max-w-4xl text-center">
+              <div className="flex justify-center">
+                <Pill>{design?.blueprintLabel ?? "What you're building"}</Pill>
+              </div>
+              <h2 className="voice-blueprint-heading mt-6 font-semibold leading-tight tracking-[-0.045em]">
+                {design?.blueprintTitle ??
+                  "Every agent is made of three things."}
+              </h2>
+              <p className="voice-blueprint-copy mx-auto mt-6 max-w-3xl">
+                {design?.blueprintIntro ??
+                  "Together, they define how your agent represents the business, what it knows, and what it can do. Update each one independently as your needs evolve."}
+              </p>
+            </div>
+
+            <div className="voice-blueprint-panel mt-14 grid gap-8 p-5 sm:p-8 lg:grid-cols-[minmax(260px,0.72fr)_minmax(0,1.28fr)] lg:gap-12 lg:p-10">
+              <div className="voice-blueprint-core flex flex-col justify-between rounded-2xl p-7 sm:p-8">
+                <div>
+                  <p className="text-[10px] font-black tracking-[0.16em] text-[#8dd7ff] uppercase">
+                    Agent blueprint
+                  </p>
+                  <h3 className="mt-3 text-3xl font-semibold leading-tight tracking-[-0.045em] text-white">
+                    Built to listen, decide, and act.
+                  </h3>
+                  <p className="mt-4 text-sm leading-7 text-white/55">
+                    Every capability is governed independently, then connected
+                    to create one consistent call experience.
+                  </p>
+                </div>
+                <div className="mx-auto mt-10 grid size-36 place-items-center rounded-full border border-[#a99cff]/35 bg-[#a99cff]/10 text-center shadow-[0_0_55px_rgba(169,156,255,0.16)]">
+                  <span className="text-xs font-black tracking-[0.2em] text-[#d3ccff] uppercase">
+                    Agent
+                    <br />
+                    core
+                  </span>
+                </div>
+              </div>
+
+              <ol className="voice-blueprint-list">
+                {buildingLayers.map((layer, index) => (
+                  <li
+                    className={`voice-blueprint-layer ${layer.className}`}
+                    key={layer.name}
+                    tabIndex={0}
+                  >
+                    <span className="voice-blueprint-number">
+                      {layer.number}
+                    </span>
+                    <div>
+                      <p className="voice-blueprint-system">System</p>
+                      <h3>{layer.name}</h3>
+                      <p className="voice-blueprint-title">{layer.title}</p>
+                    </div>
+                    <p className="voice-blueprint-body">{layer.body}</p>
+                    {index < buildingLayers.length - 1 && (
+                      <span
+                        className="voice-blueprint-connector"
+                        aria-hidden="true"
+                      />
+                    )}
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
+        </section>
+
+        <>
+          <section className="voice-build-process relative overflow-hidden bg-black px-5 py-20 sm:px-8 sm:py-24">
+            <div className="voice-agent-container relative mx-auto max-w-[1360px]">
+              <div className="voice-build-redesign-intro mx-auto max-w-4xl text-center">
+                <div className="flex justify-center">
+                  <Pill>{design?.workflowLabel ?? "How you build it"}</Pill>
+                </div>
+                <h2 className="voice-build-redesign-heading mt-6 font-semibold leading-tight tracking-[-0.045em] text-white">
+                  {design?.workflowTitle ??
+                    "A guided process, from first setup to going live."}
                 </h2>
-                <p className="voice-blueprint-copy mx-auto mt-6 max-w-3xl">
-                  {design?.blueprintIntro ?? "Together, they define how your agent represents the business, what it knows, and what it can do. Update each one independently as your needs evolve."}
+                <p className="voice-build-redesign-copy mx-auto mt-6 max-w-3xl">
+                  {design?.workflowIntro ??
+                    "Move through each stage in order, or return to any step whenever your workflow changes. The builder keeps every decision clear and easy to refine."}
                 </p>
               </div>
 
-              <div className="voice-blueprint-panel mt-14 grid gap-8 p-5 sm:p-8 lg:grid-cols-[minmax(260px,0.72fr)_minmax(0,1.28fr)] lg:gap-12 lg:p-10">
-                <div className="voice-blueprint-core flex flex-col justify-between rounded-2xl p-7 sm:p-8">
-                  <div>
-                    <p className="text-[10px] font-black tracking-[0.16em] text-[#8dd7ff] uppercase">Agent blueprint</p>
-                    <h3 className="mt-3 text-3xl font-semibold leading-tight tracking-[-0.045em] text-white">Built to listen, decide, and act.</h3>
-                    <p className="mt-4 text-sm leading-7 text-white/55">Every capability is governed independently, then connected to create one consistent call experience.</p>
-                  </div>
-                  <div className="mx-auto mt-10 grid size-36 place-items-center rounded-full border border-[#a99cff]/35 bg-[#a99cff]/10 text-center shadow-[0_0_55px_rgba(169,156,255,0.16)]">
-                    <span className="text-xs font-black tracking-[0.2em] text-[#d3ccff] uppercase">Agent<br />core</span>
-                  </div>
+              <div className="voice-build-redesign-panel mt-14">
+                <div className="voice-build-redesign-panel-head flex flex-wrap items-center justify-between gap-3">
+                  <span>Guided setup workflow</span>
+                  <span>{buildSteps.length} stages to launch</span>
                 </div>
-
-                <ol className="voice-blueprint-list">
-                  {buildingLayers.map((layer, index) => (
-                    <li className={`voice-blueprint-layer ${layer.className}`} key={layer.name} tabIndex={0}>
-                      <span className="voice-blueprint-number">{layer.number}</span>
-                      <div>
-                        <p className="voice-blueprint-system">System</p>
-                        <h3>{layer.name}</h3>
-                        <p className="voice-blueprint-title">{layer.title}</p>
+                <ol
+                  className="voice-build-redesign-grid"
+                  aria-label={`${service.title} build process`}
+                >
+                  {buildSteps.map((step, index) => (
+                    <li
+                      className={`voice-build-redesign-step voice-build-tone-${index + 1}`}
+                      key={step.title}
+                    >
+                      <div className="voice-build-redesign-step-top">
+                        <span className="voice-build-redesign-number">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <BuildProcessIcon index={index} />
                       </div>
-                      <p className="voice-blueprint-body">{layer.body}</p>
-                      {index < buildingLayers.length - 1 && <span className="voice-blueprint-connector" aria-hidden="true" />}
+                      <span className="voice-build-redesign-label">
+                        Stage {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <h3>{step.title}</h3>
+                      <p>{step.body}</p>
                     </li>
                   ))}
                 </ol>
               </div>
             </div>
-        </section>
+          </section>
 
-        <>
-            <section className="voice-build-process relative overflow-hidden bg-black px-5 py-20 sm:px-8 sm:py-24">
-              <div className="voice-agent-container relative mx-auto max-w-[1360px]">
-                <div className="voice-build-redesign-intro mx-auto max-w-4xl text-center">
-                  <div className="flex justify-center"><Pill>{design?.workflowLabel ?? "How you build it"}</Pill></div>
-                  <h2 className="voice-build-redesign-heading mt-6 font-semibold leading-tight tracking-[-0.045em] text-white">
-                    {design?.workflowTitle ?? "A guided process, from first setup to going live."}
-                  </h2>
-                  <p className="voice-build-redesign-copy mx-auto mt-6 max-w-3xl">
-                    {design?.workflowIntro ?? "Move through each stage in order, or return to any step whenever your workflow changes. The builder keeps every decision clear and easy to refine."}
-                  </p>
-                </div>
+          <section className="voice-config-section relative overflow-hidden bg-black px-5 py-16 sm:px-8 sm:py-20">
+            <div
+              className="voice-config-wash pointer-events-none absolute inset-0"
+              aria-hidden="true"
+            />
 
-                <div className="voice-build-redesign-panel mt-14">
-                  <div className="voice-build-redesign-panel-head flex flex-wrap items-center justify-between gap-3">
-                    <span>Guided setup workflow</span>
-                    <span>{buildSteps.length} stages to launch</span>
-                  </div>
-                  <ol className="voice-build-redesign-grid" aria-label={`${service.title} build process`}>
-                    {buildSteps.map((step, index) => (
-                      <li className={`voice-build-redesign-step voice-build-tone-${index + 1}`} key={step.title}>
-                        <div className="voice-build-redesign-step-top">
-                          <span className="voice-build-redesign-number">
-                            {String(index + 1).padStart(2, "0")}
-                          </span>
-                          <BuildProcessIcon index={index} />
-                        </div>
-                        <span className="voice-build-redesign-label">Stage {String(index + 1).padStart(2, "0")}</span>
-                        <h3>{step.title}</h3>
-                        <p>{step.body}</p>
-                      </li>
-                    ))}
-                  </ol>
-                </div>
+            <div className="voice-agent-container relative mx-auto max-w-[1240px]">
+              <div className="voice-config-intro mx-auto max-w-4xl text-center">
+                <Pill>{design?.visualLabel ?? "What you can configure"}</Pill>
+                <h2
+                  className={`voice-config-heading mt-6 font-semibold leading-tight tracking-[-0.04em] text-white ${service.slug === "team-workflows" ? "team-workflow-config-heading" : ""}`}
+                >
+                  {isVoiceAgents
+                    ? "Comprehensive Control Over Agent Behavior."
+                    : design.visualTitle}
+                </h2>
+                <p className="voice-build-redesign-copy mx-auto mt-6 max-w-3xl">
+                  {isVoiceAgents
+                    ? "Fine-tune every detail that shapes a conversation—from voice and knowledge to handoff rules and deployment. Every control stays visible, reviewable, and easy to update."
+                    : design.integrationsTitle}
+                </p>
               </div>
-            </section>
 
-            <section className="voice-config-section relative overflow-hidden bg-black px-5 py-16 sm:px-8 sm:py-20">
-              <div className="voice-config-wash pointer-events-none absolute inset-0" aria-hidden="true" />
-
-              <div className="voice-agent-container relative mx-auto max-w-[1240px]">
-                <div className="voice-config-intro mx-auto max-w-4xl text-center">
-                  <Pill>{design?.visualLabel ?? "What you can configure"}</Pill>
-                    <h2 className={`voice-config-heading mt-6 font-semibold leading-tight tracking-[-0.04em] text-white ${service.slug === "team-workflows" ? "team-workflow-config-heading" : ""}`}>
-                      {isVoiceAgents ? "Comprehensive Control Over Agent Behavior." : design.visualTitle}
-                    </h2>
-                    <p className="voice-section-copy mx-auto mt-6 max-w-4xl">
-                      {isVoiceAgents
-                        ? "Fine-tune every detail that shapes a conversation—from voice and knowledge to handoff rules and deployment. Every control stays visible, reviewable, and easy to update."
-                        : design.integrationsTitle}
-                    </p>
-                </div>
-
-                <VoiceAgentConfigExplorer
-                  items={configurationExplorerItems}
-                  label={`${service.title} configuration explorer`}
-                />
-              </div>
-            </section>
+              <VoiceAgentConfigExplorer
+                items={configurationExplorerItems}
+                label={`${service.title} configuration explorer`}
+              />
+            </div>
+          </section>
         </>
 
         <section className="voice-faq-section px-5 py-20 sm:px-8 sm:py-24">
@@ -578,12 +1566,19 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
             </div>
             <div className="mt-10 grid gap-2">
               {experience.faqs.map((faq) => (
-                <details className="service-faq group rounded-xl border border-white/[0.09] bg-black px-5 py-4 transition sm:px-6" key={faq.question}>
+                <details
+                  className="service-faq group rounded-xl border border-white/[0.09] bg-black px-5 py-4 transition sm:px-6"
+                  key={faq.question}
+                >
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-sm font-semibold sm:text-base">
                     {faq.question}
-                    <span className="service-accent-text grid size-7 shrink-0 place-items-center rounded-full border border-white/10 transition group-open:rotate-45">+</span>
+                    <span className="service-accent-text grid size-7 shrink-0 place-items-center rounded-full border border-white/10 transition group-open:rotate-45">
+                      +
+                    </span>
                   </summary>
-                  <p className="mt-4 max-w-3xl border-t border-white/[0.07] pt-4 text-sm leading-6 text-slate-400">{faq.answer}</p>
+                  <p className="mt-4 max-w-3xl border-t border-white/[0.07] pt-4 text-sm leading-6 text-slate-400">
+                    {faq.answer}
+                  </p>
                 </details>
               ))}
             </div>
@@ -597,7 +1592,9 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
               aria-hidden="true"
             />
             <div className="relative">
-              <p className="service-accent-text text-xs font-bold uppercase tracking-[0.14em]">Ready to get started?</p>
+              <p className="service-accent-text text-xs font-bold uppercase tracking-[0.14em]">
+                Ready to get started?
+              </p>
               <h2 className="mt-3 text-[1.375rem] font-semibold tracking-[-0.02em] md:text-[1.75rem]">
                 {design.ctaTitle}
               </h2>
@@ -731,8 +1728,8 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
 
         .voice-capabilities-section {
           background:
-            linear-gradient(120deg, rgba(53, 251, 224, 0.02), transparent 32%),
-            linear-gradient(300deg, rgba(169, 156, 255, 0.02), transparent 32%),
+            radial-gradient(circle at 12% 18%, rgba(var(--service-accent-rgb), 0.11), transparent 27rem),
+            radial-gradient(circle at 88% 88%, rgba(var(--service-secondary-rgb), 0.09), transparent 25rem),
             #000;
         }
 
@@ -747,13 +1744,129 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
         }
 
         .voice-capabilities-heading {
-          max-width: 14ch;
+          // max-width: 14ch;
           font-size: clamp(2.25rem, 4.4vw, 4.6rem);
           line-height: 1.02;
           margin-left: auto;
           margin-right: auto;
         }
 
+        .everything-vertical-list {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 1.5rem;
+          }
+
+          .everything-vertical-item {
+            border-right: 1px solid rgba(255,255,255,.08);
+            position: relative;
+            text-align: center;
+            padding: 0 12px;
+            transition: all .35s ease;
+          }
+
+          .everything-vertical-item:hover {
+            transform: translateY(-8px);
+          }
+
+          .everything-icon-circle {
+            width: 90px;
+            height: 90px;
+            margin-inline: auto;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: currentColor;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.04);
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
+          }
+
+          .everything-icon-circle svg {
+              width: 42px;
+              height: 42px;
+          }
+
+          .everything-line{
+              position:relative;
+              width:2px;
+              height:72px;
+              margin:18px auto 26px;
+              background:rgba(255,255,255,.08);
+          }
+
+          .everything-line span{
+              position:absolute;
+              left:50%;
+              top:50%;
+              width:10px;
+              height:10px;
+              transform:translate(-50%,-50%);
+              border-radius:50%;
+              background:var(--service-accent);
+              box-shadow:
+                  0 0 0 6px rgba(var(--service-accent-rgb),.12),
+                  0 0 18px rgba(var(--service-accent-rgb),.45);
+          }
+
+          .everything-vertical-item h3{
+              color:#fff;
+              font-size:22px;
+              font-weight:600;
+              line-height:1.3;
+              margin-bottom:18px;
+          }
+
+          .everything-vertical-item p{
+              color:#9CA3AF;
+              font-size:15px;
+              line-height:1.9;
+              max-width:220px;
+              margin-inline:auto;
+          }
+
+          .everything-vertical-item:hover .everything-icon-circle{
+              border-color:rgba(var(--service-accent-rgb),.55);
+              box-shadow:
+                0 0 60px rgba(var(--service-accent-rgb),.2);
+
+              transform:scale(1.05);
+          }
+
+          @media (max-width:1200px){
+
+          .everything-vertical-list{
+              grid-template-columns:repeat(3,1fr);
+              row-gap:70px;
+          }
+          }
+
+          @media (max-width:768px){
+
+          .everything-vertical-list{
+              grid-template-columns:1fr;
+              row-gap:60px;
+          }
+
+          .everything-icon-circle{
+              width:74px;
+              height:74px;
+          }
+
+          .everything-line{
+             height:48px;
+          }
+
+          .everything-vertical-item h3{
+              font-size:20px;
+          }
+
+          .everything-vertical-item p{
+              max-width:300px;
+          }
+
+          }
         .voice-capabilities-copy {
           color: rgba(255, 255, 255, 0.58);
           font-size: clamp(1rem, 1.5vw, 1.15rem);
@@ -765,11 +1878,73 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
         }
 
         .voice-capability-card {
-          min-height: 190px;
+          display: flex;
+          align-items: flex-start;
+          gap: 1rem;
+          min-height: 10.25rem;
+          border-color: rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.035);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
         }
 
-        .voice-capability-card {
-          min-height: 176px;
+        .voice-agent-action-card {
+          display: block;
+          min-height: 12.5rem;
+        }
+
+        .voice-agent-action-card .voice-capability-icon {
+          margin-bottom: 1.25rem;
+        }
+
+        .voice-capability-card:hover {
+          border-color: rgba(var(--service-accent-rgb), 0.42);
+          background: rgba(var(--service-accent-rgb), 0.075);
+          box-shadow: 0 18px 44px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .voice-capability-icon {
+          color: var(--service-accent);
+          border-color: rgba(var(--service-accent-rgb), 0.26);
+          background: rgba(var(--service-accent-rgb), 0.1);
+          box-shadow: 0 0 28px rgba(var(--service-accent-rgb), 0.1);
+        }
+
+        .voice-capability-card:hover .voice-capability-icon {
+          background: rgba(var(--service-accent-rgb), 0.16);
+        }
+
+        .everything-included-section {
+          background:
+            linear-gradient(180deg, rgba(var(--service-secondary-rgb), 0.07), transparent 38%),
+            #050609;
+        }
+
+        .everything-included-grid {
+          display: grid;
+        }
+
+        .everything-included-card {
+          display: flex;
+          align-items: flex-start;
+          gap: 1rem;
+          min-height: 10.5rem;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.025));
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+          transition: transform 220ms ease, border-color 220ms ease, background 220ms ease;
+        }
+
+        .everything-included-card:hover {
+          transform: translateY(-0.25rem);
+          border-color: rgba(var(--service-accent-rgb), 0.48);
+          background: linear-gradient(135deg, rgba(var(--service-accent-rgb), 0.14), rgba(255, 255, 255, 0.04));
+        }
+
+        .everything-included-icon {
+          color: var(--service-accent);
+          border-color: rgba(var(--service-accent-rgb), 0.34);
+          background: rgba(var(--service-accent-rgb), 0.1);
+          box-shadow: 0 0 26px rgba(var(--service-accent-rgb), 0.12);
         }
 
         .agent-anatomy-list {
@@ -2360,6 +3535,34 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
           background: rgba(255, 255, 255, 0.07);
         }
 
+        .voice-waveform-bars {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 4px;
+          width: 100%;
+          height: 52px;
+        }
+
+        .voice-waveform-bars span {
+          width: 4px;
+          border-radius: 999px;
+          background: var(--service-accent);
+          animation: voiceWave 1.4s ease-in-out infinite alternate;
+        }
+
+        @keyframes voiceWave {
+          from {
+            transform: scaleY(.55);
+            opacity: .6;
+          }
+
+          to {
+            transform: scaleY(1);
+            opacity: 1;
+          }
+        }
+
         .voice-config-meter > span {
           display: block;
           width: 68%;
@@ -3081,6 +4284,583 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
           display: none;
         }
 
+        /* ===========================================
+   LEFT CONTENT
+=========================================== */
+
+.voice-preview-content h3 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(1.8rem, 2.4vw, 2.5rem);
+  font-weight: 650;
+  line-height: 1.15;
+  letter-spacing: -0.04em;
+}
+
+.voice-preview-content p {
+  margin-top: 1rem;
+  color: #94a3b8;
+  font-size: 0.98rem;
+  line-height: 1.75;
+}
+
+.voice-preview-list {
+  display: grid;
+  gap: 1rem;
+  margin: 2rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.voice-preview-list li {
+  display: flex;
+  align-items: center;
+  gap: .85rem;
+
+  color: white;
+  font-weight: 500;
+}
+
+.voice-preview-check {
+  display: grid;
+  place-items: center;
+
+  width: 28px;
+  height: 28px;
+
+  border-radius: 999px;
+
+  color: var(--service-accent);
+
+  background: rgba(var(--service-accent-rgb), .12);
+
+  border: 1px solid rgba(var(--service-accent-rgb), .22);
+}
+
+.voice-preview-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: .95rem 1.7rem;
+
+  border: none;
+  border-radius: 999px;
+
+  background: var(--service-accent);
+  color: white;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: .3s;
+}
+
+.voice-preview-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px rgba(var(--service-accent-rgb), .3);
+}
+
+/* ===========================================
+   SAMPLE CARDS
+=========================================== */
+
+.voice-preview-comparison {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.voice-sample-card {
+  padding: 1.5rem;
+
+  border-radius: 22px;
+
+  border: 1px solid rgba(255,255,255,.07);
+
+  background: rgba(255,255,255,.03);
+
+  backdrop-filter: blur(16px);
+}
+
+.voice-sample-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 1rem;
+}
+
+.voice-sample-header h4 {
+  margin: 0;
+
+  color: white;
+
+  font-size: 1rem;
+
+  font-weight: 600;
+}
+
+.voice-sample-header span {
+  color: #94a3b8;
+
+  font-size: .85rem;
+}
+
+.voice-sample-player {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.voice-play-button {
+  display: grid;
+  place-items: center;
+
+  width: 52px;
+  height: 52px;
+
+  border: none;
+
+  border-radius: 999px;
+
+  color: white;
+
+  background: var(--service-accent);
+
+  cursor: pointer;
+
+  transition: .3s;
+}
+
+.voice-play-button:hover {
+  transform: scale(1.08);
+}
+
+.voice-waveform {
+  flex: 1;
+}
+
+/* ===========================================
+   WAVEFORM
+=========================================== */
+
+.voice-waveform-bars {
+  display: flex;
+  align-items: flex-end;
+
+  gap: 4px;
+
+  height: 52px;
+}
+
+.voice-waveform-bars span {
+  flex: 1;
+
+  border-radius: 999px;
+
+  background: linear-gradient(
+      to top,
+      var(--service-accent),
+      rgba(var(--service-accent-rgb), .35)
+  );
+
+  animation: waveformMove 1.3s ease-in-out infinite alternate;
+}
+
+@keyframes waveformMove {
+
+  from {
+    transform: scaleY(.45);
+    opacity: .6;
+  }
+
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+/* ===========================================
+   CONTROLS
+=========================================== */
+
+.voice-preview-controls {
+  padding: 1.75rem;
+
+  border-radius: 24px;
+
+  border: 1px solid rgba(255,255,255,.08);
+
+  background: rgba(255,255,255,.03);
+
+  backdrop-filter: blur(18px);
+}
+
+.voice-preview-controls h3 {
+  margin-bottom: 2rem;
+
+  color: white;
+}
+
+.voice-slider {
+  margin-bottom: 1.6rem;
+}
+
+.voice-slider-label {
+  display: flex;
+  justify-content: space-between;
+
+  margin-bottom: .7rem;
+
+  color: white;
+
+  font-size: .9rem;
+}
+
+.voice-slider-track {
+  position: relative;
+
+  overflow: hidden;
+
+  height: 8px;
+
+  border-radius: 999px;
+
+  background: rgba(255,255,255,.08);
+}
+
+.voice-slider-track span {
+  display: block;
+
+  height: 100%;
+
+  border-radius: inherit;
+
+  background: var(--service-accent);
+}
+
+.voice-select {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-top: 1.5rem;
+
+  padding: 1rem 1.15rem;
+
+  border-radius: 16px;
+
+  border: 1px solid rgba(255,255,255,.06);
+
+  background: rgba(255,255,255,.02);
+}
+
+.voice-select span {
+  color: #94a3b8;
+}
+
+.voice-select button {
+  border: none;
+  background: transparent;
+
+  color: white;
+
+  cursor: pointer;
+}
+
+/* ===========================================
+   VOICE ORB
+=========================================== */
+
+.voice-preview-orb {
+  position: relative;
+
+  width: 260px;
+  height: 260px;
+
+  margin: 3rem auto 0;
+}
+
+.voice-orb-ring {
+  position: absolute;
+
+  inset: 0;
+
+  border-radius: 50%;
+
+  border: 1px solid rgba(var(--service-accent-rgb), .2);
+
+  animation: orbPulse 4s infinite;
+}
+
+.voice-orb-ring.ring-2 {
+  inset: 20px;
+}
+
+.voice-orb-ring.ring-3 {
+  inset: 40px;
+}
+
+.voice-orb-center {
+  position: absolute;
+
+  inset: 70px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  color: white;
+
+  background: radial-gradient(
+      circle,
+      var(--service-accent),
+      rgba(var(--service-accent-rgb), .3)
+  );
+
+  box-shadow: 0 0 60px rgba(var(--service-accent-rgb), .4);
+}
+
+@keyframes orbPulse {
+
+  0% {
+    transform: scale(.96);
+    opacity: .5;
+  }
+
+  100% {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+}
+
+/* ===========================================
+   RESPONSIVE
+=========================================== */
+
+@media (max-width:1200px){
+
+.voice-preview-layout{
+grid-template-columns:1fr;
+}
+
+.voice-preview-orb{
+order:4;
+margin-top:4rem;
+}
+
+}
+
+@media (max-width:768px){
+
+.voice-preview-content h3{
+font-size:2rem;
+}
+
+.voice-sample-player{
+flex-direction:column;
+align-items:flex-start;
+}
+
+.voice-play-button{
+width:48px;
+height:48px;
+}
+
+.voice-preview-orb{
+width:210px;
+height:210px;
+}
+
+.voice-orb-center{
+inset:55px;
+}
+
+}
+
+/* ===========================================
+   SECTION
+=========================================== */
+
+.voice-preview-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.voice-preview-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 15% 20%,
+      rgba(var(--service-accent-rgb), .12),
+      transparent 32%),
+    radial-gradient(circle at 85% 75%,
+      rgba(var(--service-accent-rgb), .08),
+      transparent 35%);
+}
+
+.voice-preview-layout {
+  position: relative;
+  z-index: 1;
+
+  display: grid;
+  grid-template-columns: 340px minmax(420px, 1fr) 340px;
+  gap: clamp(2rem, 4vw, 3rem);
+
+  align-items: start;
+}
+
+/* ===========================================
+   LEFT COLUMN
+=========================================== */
+
+.voice-preview-content {
+  display: flex;
+  flex-direction: column;
+  // justify-content: center;
+
+  // min-height: 620px;
+}
+
+/* ===========================================
+   CENTER COLUMN
+=========================================== */
+
+.voice-preview-comparison {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+
+  padding: 2rem;
+
+  border-radius: 30px;
+
+  border: 1px solid rgba(255,255,255,.08);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.04),
+      rgba(255,255,255,.02)
+    );
+
+  backdrop-filter: blur(20px);
+
+  box-shadow:
+    0 25px 70px rgba(0,0,0,.25),
+    inset 0 1px 0 rgba(255,255,255,.05);
+}
+
+/* ===========================================
+   RIGHT COLUMN
+=========================================== */
+
+.voice-preview-controls {
+  // min-height: 620px;
+}
+
+/* ===========================================
+   SAMPLE CARDS
+=========================================== */
+
+.voice-sample-card {
+  position: relative;
+
+  overflow: hidden;
+
+  border-radius: 24px;
+
+  border: 1px solid rgba(255,255,255,.08);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.03),
+      rgba(255,255,255,.015)
+    );
+
+  transition: all .35s ease;
+}
+
+.voice-sample-card:hover {
+  transform: translateY(-6px);
+
+  border-color: rgba(var(--service-accent-rgb), .35);
+
+  box-shadow:
+    0 18px 45px rgba(var(--service-accent-rgb), .18);
+}
+
+/* ===========================================
+   GLOW
+=========================================== */
+
+.voice-sample-card::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(var(--service-accent-rgb), .12),
+      transparent 45%
+    );
+
+  pointer-events: none;
+}
+
+/* ===========================================
+   ORB POSITION
+=========================================== */
+
+.voice-preview-orb {
+  grid-column: 1 / -1;
+
+  display: flex;
+  justify-content: center;
+
+  margin-top: 5rem;
+}
+
+/* ===========================================
+   RESPONSIVE
+=========================================== */
+
+@media (max-width:1200px){
+
+  .voice-preview-layout{
+    grid-template-columns:1fr;
+    gap:2rem;
+  }
+
+  .voice-preview-content,
+  .voice-preview-controls{
+    min-height:auto;
+  }
+
+}
+
+@media (max-width:768px){
+
+  .voice-preview-comparison{
+    padding:1.25rem;
+  }
+
+  .voice-preview-layout{
+    gap:1.5rem;
+  }
+
+}
         .voice-agent-page .agent-anatomy-layer {
           min-height: 0;
           padding-top: 1.75rem;
@@ -3312,6 +5092,114 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
           border-color: rgba(53, 251, 224, 0.2);
           background: rgba(53, 251, 224, 0.018);
           transform: translateY(-1px);
+        }
+
+        .voice-workflow-grid {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 2rem;
+        }
+
+        .voice-workflow-card {
+          position: relative;
+          padding: 2.5rem 2rem;
+          border: 1px solid rgba(255,255,255,.08);
+          border-radius: 28px;
+          background: rgba(255,255,255,.02);
+          text-align: center;
+        }
+
+        .voice-workflow-number {
+          position: absolute;
+          top: 18px;
+          left: 18px;
+
+          width: 42px;
+          height: 42px;
+          border-radius: 999px;
+
+          display: grid;
+          place-items: center;
+
+          background: rgba(var(--service-accent-rgb),.12);
+          color: var(--service-accent);
+          border: 1px solid rgba(var(--service-accent-rgb),.3);
+
+          font-weight: 700;
+        }
+
+        .voice-workflow-icon {
+          width: 72px;
+          height: 72px;
+          margin: 1rem auto 1.75rem;
+
+          display: grid;
+          place-items: center;
+
+          border-radius: 50%;
+          background: rgba(var(--service-accent-rgb),.08);
+          color: var(--service-accent);
+        }
+
+        .voice-workflow-icon svg {
+          width: 36px;
+          height: 36px;
+        }
+
+        .voice-workflow-card h3 {
+          margin-bottom: .75rem;
+          color: white;
+          font-size: 1.2rem;
+        }
+
+        .voice-workflow-card p {
+          color: #94a3b8;
+          line-height: 1.7;
+        }
+
+        .voice-workflow-connector {
+          position: absolute;
+          top: 50%;
+          left: calc(100% + 8px);
+
+          width: calc(2rem - 16px);
+          height: 2px;
+
+          transform: translateY(-50%);
+        }
+
+        .voice-workflow-connector span:first-child {
+          display: block;
+          width: 100%;
+          border-top: 2px dashed rgba(var(--service-accent-rgb),.5);
+        }
+
+        .voice-workflow-dot {
+          position: absolute;
+          right: -6px;
+          top: -4px;
+
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+
+          background: var(--service-accent);
+        }
+
+        @media (max-width: 1024px) {
+          .voice-workflow-grid {
+            grid-template-columns: repeat(2,1fr);
+          }
+
+          .voice-workflow-connector {
+            display: none;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .voice-workflow-grid {
+            grid-template-columns: 1fr;
+          }
         }
 
         .voice-agent-page :is(
