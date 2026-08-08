@@ -848,6 +848,30 @@ function PlayIcon() {
   );
 }
 
+function MicrophoneIcon() {
+  const common = {
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.8,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+  };
+
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-8"
+      viewBox="0 0 24 24"
+      {...common}
+    >
+      <rect x="9" y="3" width="6" height="11" rx="3" />
+      <path d="M6 11a6 6 0 0 0 12 0" />
+      <path d="M12 17v4" />
+      <path d="M9 21h6" />
+    </svg>
+  );
+}
+
 function VoiceWaveform() {
   const bars = [
     18, 30, 14, 42, 24, 38, 18, 48, 22, 36,
