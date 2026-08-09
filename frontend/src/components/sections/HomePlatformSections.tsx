@@ -124,76 +124,40 @@ const call = await response.json();`,
 
 type CodeTab = keyof typeof codeExamples;
 
-const platformFeatures = [
+const featureCategories = [
   {
-    icon: "calls",
-    eyebrow: "Call campaigns",
-    title: "Bulk Calling at Scale",
-    body: "Run campaigns with thousands of AI calls simultaneously.",
-    metric: "Thousands of calls",
-  },
-  {
-    icon: "api",
-    eyebrow: "Live actions",
-    title: "Custom API Triggers",
-    body: "Call external APIs in real-time during a live conversation.",
-    metric: "Real-time APIs",
-  },
-  {
-    icon: "handoff",
-    eyebrow: "Human support",
-    title: "Human-in-the-Loop",
-    body: "Transfer call to a human agent instantly when needed.",
-    metric: "Instant transfer",
+    icon: "language",
+    title: "Conversations",
+    body: "Human-like calls that listen, adapt, and respond naturally in real time.",
+    featured: true,
+    capabilities: [
+      { title: "Natural turn-taking", detail: "Handles pauses and interruptions without losing context." },
+      { title: "Multilingual calling", detail: "Speaks naturally across Indian and global languages." },
+      { title: "Low latency", detail: "Keeps every exchange quick, fluid, and responsive." },
+    ],
   },
   {
     icon: "workflow",
-    eyebrow: "Automation",
-    title: "Workflow Integration",
-    body: "Easy to integrate with n8n, Make.com, Zapier, and other tools.",
-    metric: "Connected tools",
-  },
-  {
-    icon: "language",
-    eyebrow: "Global speech",
-    title: "Multilingual",
-    body: "Converse fluently in 10+ Indian and foreign languages.",
-    metric: "10+ languages",
-  },
-  {
-    icon: "latency",
-    eyebrow: "Realtime",
-    title: "Natural Conversations",
-    body: "Agents understand interruptions, reply with <300ms latency.",
-    metric: "<300ms latency",
-  },
-  {
-    icon: "models",
-    eyebrow: "Flexible AI stack",
-    title: "Connect Any Model",
-    body: "Integrated with 20+ ASR, LLM, and TTS models.",
-    metric: "20+ models",
-  },
-  {
-    icon: "enterprise",
-    eyebrow: "Enterprise",
-    title: "Enterprise Plans",
-    body: "Best-in-class pricing and Forward Deployed service.",
-    metric: "Forward deployed",
+    title: "Automation",
+    body: "Move every call from conversation to completed work.",
+    featured: false,
+    capabilities: [
+      { title: "Bulk campaigns", detail: "Run thousands of outbound calls at scale." },
+      { title: "API triggers", detail: "Call approved services during live conversations." },
+      { title: "Human handoff", detail: "Transfer complex calls to the right person instantly." },
+      { title: "Workflow integration", detail: "Connect n8n, Make, Zapier, and business tools." },
+    ],
   },
   {
     icon: "security",
-    eyebrow: "Data protection",
-    title: "100% Data Privacy",
-    body: "India / USA specific data residency and on-prem deployment.",
-    metric: "India + USA",
-  },
-  {
-    icon: "switching",
-    eyebrow: "Model routing",
-    title: "Model Switching",
-    body: "Run each call with models suited best for your use case.",
-    metric: "Per-call selection",
+    title: "Enterprise",
+    body: "Flexible, secure infrastructure built for production workloads.",
+    featured: false,
+    capabilities: [
+      { title: "Model flexibility", detail: "Choose the best ASR, LLM, and voice for each use case." },
+      { title: "Data residency", detail: "Keep workloads in India or the USA based on your needs." },
+      { title: "Private deployment", detail: "Use secure cloud or on-premise deployment controls." },
+    ],
   },
 ] as const;
 
@@ -795,21 +759,55 @@ export function HomePlatformSections() {
             </p>
           </div>
 
-          <div className="vozon-feature-bento mt-12">
-            {platformFeatures.map((feature, index) => {
-              const featured = "featured" in feature && feature.featured;
+          <div className="vozon-capability-grid mt-12">
+            {featureCategories.map((category) => (
+              <article
+                className={`vozon-capability-card is-${category.title.toLowerCase()}${category.featured ? " is-featured" : ""}`}
+                key={category.title}
+              >
+                <header className="vozon-capability-header">
+                  <span className="vozon-capability-icon" aria-hidden="true">
+                    <PlatformFeatureIcon icon={category.icon} />
+                  </span>
+                  <div>
+                    <h3>{category.title}</h3>
+                    <p>{category.body}</p>
+                  </div>
+                </header>
 
-              return (
-                <article className={`vozon-feature-card ${featured ? "is-featured" : ""}`} key={feature.title}>
-                  <span className="vozon-feature-card-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-                  <div className="vozon-feature-icon"><PlatformFeatureIcon icon={feature.icon} /></div>
-                  <span className="vozon-feature-eyebrow">{feature.eyebrow}</span>
-                  <h3>{feature.title}</h3>
-                  <p>{feature.body}</p>
-                  <div className="vozon-feature-metric"><i /><span>{feature.metric}</span></div>
-                </article>
-              );
-            })}
+                {category.featured ? (
+                  <div className="vozon-conversation-demo" aria-label="Live multilingual voice conversation">
+                    <div className="vozon-conversation-demo-topline">
+                      <span><i /> Live conversation</span>
+                      <b>00:42</b>
+                    </div>
+                    <div className="vozon-conversation-demo-body">
+                      <div className="vozon-conversation-demo-speaker">
+                        <span className="vozon-conversation-demo-avatar">AI</span>
+                        <span><small>Voice agent</small><strong>Listening naturally</strong></span>
+                      </div>
+                      <div className="vozon-conversation-demo-wave" aria-hidden="true">
+                        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((bar) => <i key={bar} />)}
+                      </div>
+                      <div className="vozon-conversation-demo-status">
+                        <span>English + Hindi</span>
+                        <span>Interruption ready</span>
+                        <strong>&lt;300ms</strong>
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
+
+                <ul className="vozon-capability-list">
+                  {category.capabilities.map((capability) => (
+                    <li key={capability.title}>
+                      <span className="vozon-capability-check" aria-hidden="true">✓</span>
+                      <span><strong>{capability.title}</strong><small>{capability.detail}</small></span>
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            ))}
           </div>
         </div>
       </section>
@@ -5043,181 +5041,527 @@ export function HomePlatformSections() {
         }
 
         .vozon-feature-suite {
-          background: #000;
+          background:
+            radial-gradient(circle at 14% 38%, rgba(69, 221, 206, .07), transparent 27%),
+            radial-gradient(circle at 88% 76%, rgba(58, 222, 153, .055), transparent 25%),
+            #000;
         }
 
-        .vozon-feature-bento {
+        .vozon-feature-suite::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          opacity: .28;
+          background-image:
+            linear-gradient(rgba(117, 255, 240, .028) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(117, 255, 240, .028) 1px, transparent 1px);
+          background-size: 52px 52px;
+          mask-image: radial-gradient(ellipse at 50% 58%, black, transparent 72%);
+        }
+
+        .vozon-capability-grid {
+          position: relative;
+          z-index: 1;
           display: grid;
-          grid-template-columns: repeat(4, minmax(0, 1fr));
-          gap: 1rem;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 18px;
+          max-width: 1240px;
+          margin-inline: auto;
         }
 
-        .vozon-feature-card {
-          --feature-accent: #45ddce;
+        .vozon-capability-card {
+          --capability-accent: #45ddce;
           position: relative;
           display: flex;
-          min-height: 292px;
+          min-height: 350px;
           min-width: 0;
           flex-direction: column;
           overflow: hidden;
-          border: 1px solid rgba(255,255,255,0.09);
-          border-radius: 18px;
-          background: #000;
-          padding: 1.5rem;
-          box-shadow: inset 0 1px rgba(255,255,255,0.035), 0 18px 44px rgba(0,0,0,0.18);
-          transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+          border: 1px solid rgba(255, 255, 255, .14);
+          border-radius: 22px;
+          padding: 26px;
+          background:
+            radial-gradient(circle at 95% 0%, rgba(69, 221, 206, .11), transparent 40%),
+            linear-gradient(150deg, rgba(17, 27, 27, .99), rgba(6, 11, 12, .99));
+          box-shadow: inset 0 1px rgba(255, 255, 255, .07), 0 22px 58px rgba(0, 0, 0, .28);
+          transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
         }
 
-        .vozon-feature-card:nth-child(2),
-        .vozon-feature-card:nth-child(6) { --feature-accent: #69c8ff; }
-        .vozon-feature-card:nth-child(3),
-        .vozon-feature-card:nth-child(7) { --feature-accent: #a99bff; }
-        .vozon-feature-card:nth-child(4),
-        .vozon-feature-card:nth-child(8) { --feature-accent: #64e5ad; }
-
-        .vozon-feature-card:hover {
-          border-color: color-mix(in srgb, var(--feature-accent) 35%, transparent);
-          box-shadow: inset 0 1px rgba(255,255,255,0.05), 0 22px 54px rgba(0,0,0,0.28), 0 0 30px color-mix(in srgb, var(--feature-accent) 8%, transparent);
-          transform: translateY(-4px);
+        .vozon-capability-card.is-automation {
+          --capability-accent: #52d9f5;
+          background:
+            radial-gradient(circle at 96% 4%, rgba(82, 217, 245, .15), transparent 40%),
+            linear-gradient(150deg, rgba(14, 27, 30, .99), rgba(6, 11, 12, .99));
         }
 
-        .vozon-feature-card.is-featured {
-          grid-column: span 2;
-          background: #000;
+        .vozon-capability-card.is-enterprise {
+          --capability-accent: #62e6a6;
+          background:
+            radial-gradient(circle at 96% 4%, rgba(98, 230, 166, .14), transparent 40%),
+            linear-gradient(150deg, rgba(14, 28, 23, .99), rgba(6, 11, 10, .99));
         }
 
-        .vozon-feature-card:nth-last-child(-n + 2) {
-          grid-column: span 2;
-          min-height: 250px;
-        }
-
-        .vozon-feature-card-number {
+        .vozon-capability-card::before {
+          content: "";
           position: absolute;
-          top: 1.25rem;
-          right: 1.35rem;
-          color: rgba(255,255,255,0.14);
-          font-family: var(--font-geist-mono), monospace;
-          font-size: 0.72rem;
-          font-weight: 900;
-          transition: color 180ms ease;
+          inset: 0;
+          pointer-events: none;
+          border-radius: inherit;
+          background: linear-gradient(90deg, transparent, var(--capability-accent), transparent) top / 62% 1px no-repeat;
+          opacity: .5;
+          transition: opacity 220ms ease;
         }
 
-        .vozon-feature-card:hover .vozon-feature-card-number {
-          color: color-mix(in srgb, var(--feature-accent) 48%, white);
+        .vozon-capability-card::after {
+          content: "";
+          position: absolute;
+          right: -74px;
+          bottom: -88px;
+          width: 190px;
+          height: 190px;
+          pointer-events: none;
+          border: 1px solid color-mix(in srgb, var(--capability-accent) 13%, transparent);
+          border-radius: 50%;
+          box-shadow:
+            0 0 0 24px color-mix(in srgb, var(--capability-accent) 3%, transparent),
+            0 0 70px color-mix(in srgb, var(--capability-accent) 8%, transparent);
+          opacity: .72;
+          transition: transform 500ms ease, opacity 300ms ease;
         }
 
-        .vozon-feature-icon {
+        .vozon-capability-card:hover {
+          border-color: color-mix(in srgb, var(--capability-accent) 30%, transparent);
+          transform: translateY(-3px);
+          box-shadow: inset 0 1px rgba(255, 255, 255, .05), 0 28px 68px rgba(0, 0, 0, .3), 0 0 38px color-mix(in srgb, var(--capability-accent) 7%, transparent);
+        }
+
+        .vozon-capability-card:hover::before {
+          opacity: .9;
+        }
+
+        .vozon-capability-card:hover::after {
+          opacity: 1;
+          transform: scale(1.08) translate(-5px, -5px);
+        }
+
+        .vozon-capability-card.is-featured {
           display: grid;
-          width: 48px;
-          height: 48px;
+          grid-column: 1 / -1;
+          grid-template-columns: minmax(280px, .82fr) minmax(420px, 1.18fr);
+          grid-template-rows: auto 1fr;
+          column-gap: 32px;
+          min-height: 390px;
+          padding: 32px;
+          background:
+            radial-gradient(circle at 55% 42%, rgba(69, 221, 206, .17), transparent 36%),
+            radial-gradient(circle at 0% 100%, rgba(26, 207, 255, .06), transparent 38%),
+            linear-gradient(150deg, rgba(15, 30, 28, .99), rgba(5, 10, 11, .99));
+        }
+
+        .vozon-capability-header {
+          position: relative;
+          z-index: 2;
+          display: flex;
+          align-items: flex-start;
+          gap: 16px;
+        }
+
+        .vozon-capability-card.is-featured .vozon-capability-header {
+          grid-column: 1;
+          grid-row: 1;
+        }
+
+        .vozon-capability-card:not(.is-featured) .vozon-capability-header {
+          min-height: 82px;
+          padding-bottom: 20px;
+          border-bottom: 1px solid rgba(255, 255, 255, .11);
+        }
+
+        .vozon-capability-icon {
+          position: relative;
+          display: grid;
+          width: 50px;
+          height: 50px;
+          flex: 0 0 auto;
           place-items: center;
-          border: 1px solid color-mix(in srgb, var(--feature-accent) 28%, transparent);
-          border-radius: 14px;
-          background: color-mix(in srgb, var(--feature-accent) 10%, transparent);
-          color: var(--feature-accent);
-          box-shadow: inset 0 0 18px color-mix(in srgb, var(--feature-accent) 7%, transparent);
-          transition: background 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+          border: 1px solid color-mix(in srgb, var(--capability-accent) 34%, transparent);
+          border-radius: 15px;
+          color: var(--capability-accent);
+          background: color-mix(in srgb, var(--capability-accent) 10%, transparent);
+          box-shadow: inset 0 0 18px color-mix(in srgb, var(--capability-accent) 7%, transparent), 0 10px 28px rgba(0, 0, 0, .24);
+          transition: transform 220ms ease, box-shadow 220ms ease;
         }
 
-        .vozon-feature-card:hover .vozon-feature-icon {
-          background: color-mix(in srgb, var(--feature-accent) 15%, transparent);
-          box-shadow: inset 0 0 22px color-mix(in srgb, var(--feature-accent) 10%, transparent), 0 0 20px color-mix(in srgb, var(--feature-accent) 10%, transparent);
-          transform: translateY(-2px);
+        .vozon-capability-card:hover .vozon-capability-icon {
+          transform: translateY(-2px) rotate(-2deg);
+          box-shadow: inset 0 0 22px color-mix(in srgb, var(--capability-accent) 10%, transparent), 0 0 24px color-mix(in srgb, var(--capability-accent) 12%, transparent);
         }
 
-        .vozon-feature-icon svg {
+        .vozon-capability-icon svg {
           width: 25px;
           height: 25px;
           fill: none;
           stroke: currentColor;
-          stroke-width: 1.6;
+          stroke-width: 1.65;
           stroke-linecap: round;
           stroke-linejoin: round;
-          filter: drop-shadow(0 0 5px rgba(69,221,206,0.34));
         }
 
-        .vozon-feature-eyebrow {
-          margin-top: 1.35rem;
-          color: var(--feature-accent);
-          font-size: 0.64rem;
+        .vozon-capability-header h3 {
+          margin: 1px 0 0;
+          color: #fff;
+          font-size: 1.48rem;
           font-weight: 900;
-          letter-spacing: 0.16em;
+          line-height: 1.15;
+          letter-spacing: -.03em;
+        }
+
+        .vozon-capability-card.is-featured .vozon-capability-header h3 {
+          font-size: clamp(1.55rem, 2.3vw, 2rem);
+        }
+
+        .vozon-capability-header p {
+          max-width: 540px;
+          margin: 8px 0 0;
+          color: rgba(255, 255, 255, .7);
+          font-size: .9rem;
+          line-height: 1.62;
+        }
+
+        .vozon-conversation-demo {
+          position: relative;
+          z-index: 2;
+          grid-column: 2;
+          grid-row: 1 / span 2;
+          min-height: 320px;
+          margin: 0;
+          overflow: hidden;
+          border: 1px solid rgba(117, 255, 240, .23);
+          border-radius: 18px;
+          background:
+            radial-gradient(circle at 50% 70%, rgba(69, 221, 206, .16), transparent 48%),
+            rgba(3, 13, 13, .92);
+          box-shadow: inset 0 1px rgba(255, 255, 255, .06), 0 20px 50px rgba(0, 0, 0, .28), 0 0 36px rgba(69, 221, 206, .04);
+        }
+
+        .vozon-conversation-demo::before {
+          content: "";
+          position: absolute;
+          z-index: 1;
+          top: 44px;
+          bottom: 0;
+          left: -28%;
+          width: 24%;
+          pointer-events: none;
+          background: linear-gradient(90deg, transparent, rgba(117, 255, 240, .075), transparent);
+          transform: skewX(-10deg);
+          animation: vozonCapabilityScan 5.5s ease-in-out infinite;
+        }
+
+        .vozon-conversation-demo::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          opacity: .25;
+          background-image: radial-gradient(rgba(117, 255, 240, .28) .65px, transparent .65px);
+          background-size: 19px 19px;
+          mask-image: radial-gradient(circle at 50% 60%, black, transparent 72%);
+        }
+
+        .vozon-conversation-demo-topline {
+          position: relative;
+          z-index: 2;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          min-height: 44px;
+          padding: 0 16px;
+          border-bottom: 1px solid rgba(255, 255, 255, .07);
+          color: rgba(255, 255, 255, .72);
+          font-size: 11px;
+          font-weight: 750;
+        }
+
+        .vozon-conversation-demo-topline span {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .vozon-conversation-demo-topline i {
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background: #45ddce;
+          box-shadow: 0 0 10px rgba(69, 221, 206, .85);
+        }
+
+        .vozon-conversation-demo-topline b {
+          color: rgba(255, 255, 255, .9);
+          font-family: var(--font-geist-mono), monospace;
+          font-size: 10px;
+        }
+
+        .vozon-conversation-demo-body {
+          position: relative;
+          z-index: 2;
+          display: grid;
+          min-height: 274px;
+          place-items: center;
+          padding: 26px 20px 22px;
+        }
+
+        .vozon-conversation-demo-speaker {
+          display: flex;
+          align-items: center;
+          gap: 11px;
+        }
+
+        .vozon-conversation-demo-avatar {
+          display: grid;
+          width: 42px;
+          height: 42px;
+          place-items: center;
+          border: 1px solid rgba(117, 255, 240, .28);
+          border-radius: 50%;
+          color: #9dfff4;
+          font-size: 10px;
+          font-weight: 900;
+          background: rgba(69, 221, 206, .11);
+          box-shadow: 0 0 22px rgba(69, 221, 206, .1);
+        }
+
+        .vozon-conversation-demo-speaker > span:last-child {
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+        }
+
+        .vozon-conversation-demo-speaker small {
+          color: rgba(255, 255, 255, .58);
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: .1em;
           text-transform: uppercase;
         }
 
-        .vozon-feature-card h3 {
-          position: relative;
-          z-index: 1;
-          margin: 0.55rem 0 0;
+        .vozon-conversation-demo-speaker strong {
           color: #fff;
-          font-size: 1.18rem;
-          font-weight: 900;
-          line-height: 1.25;
-          letter-spacing: -0.025em;
-        }
-
-        .vozon-feature-card p {
-          position: relative;
-          z-index: 1;
-          max-width: 430px;
-          margin: 0.85rem 0 0;
-          color: rgba(255,255,255,0.5);
-          font-size: 0.88rem;
-          line-height: 1.7;
-        }
-
-        .vozon-feature-metric {
-          position: relative;
-          z-index: 1;
-          display: flex;
-          align-items: center;
-          gap: 0.55rem;
-          margin-top: auto;
-          padding-top: 1rem;
-          color: rgba(255,255,255,0.66);
-          font-size: 0.72rem;
+          font-size: 13px;
           font-weight: 800;
         }
 
-        .vozon-feature-metric i {
-          width: 6px;
-          height: 6px;
+        .vozon-conversation-demo-wave {
+          display: flex;
+          height: 58px;
+          align-items: center;
+          justify-content: center;
+          gap: 5px;
+        }
+
+        .vozon-conversation-demo-wave i {
+          display: block;
+          width: 4px;
+          height: 38px;
+          border-radius: 999px;
+          background: linear-gradient(180deg, #a4fff5, #45ddce);
+          box-shadow: 0 0 8px rgba(69, 221, 206, .3);
+          transform-origin: center;
+          animation: vozonCapabilityWave 1.05s ease-in-out infinite alternate;
+        }
+
+        .vozon-conversation-demo-wave i:nth-child(2n) { animation-delay: -.25s; }
+        .vozon-conversation-demo-wave i:nth-child(3n) { animation-delay: -.55s; }
+        .vozon-conversation-demo-wave i:nth-child(4n) { animation-delay: -.8s; }
+
+        .vozon-conversation-demo-status {
+          display: flex;
+          width: 100%;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: center;
+          gap: 7px;
+        }
+
+        .vozon-conversation-demo-status span,
+        .vozon-conversation-demo-status strong {
+          padding: 7px 10px;
+          border: 1px solid rgba(255, 255, 255, .13);
+          border-radius: 999px;
+          color: rgba(255, 255, 255, .74);
+          font-size: 10px;
+          font-weight: 750;
+          background: rgba(255, 255, 255, .035);
+        }
+
+        .vozon-conversation-demo-status strong {
+          border-color: rgba(117, 255, 240, .18);
+          color: #75fff0;
+          background: rgba(69, 221, 206, .07);
+        }
+
+        .vozon-capability-list {
+          position: relative;
+          z-index: 2;
+          display: grid;
+          gap: 10px;
+          margin: 18px 0 0;
+          padding: 0;
+          list-style: none;
+        }
+
+        .vozon-capability-card.is-featured .vozon-capability-list {
+          grid-column: 1;
+          grid-row: 2;
+          align-content: end;
+          margin-top: 24px;
+        }
+
+        .vozon-capability-card:not(.is-featured) .vozon-capability-list {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          flex: 1;
+        }
+
+        .vozon-capability-card:not(.is-featured) .vozon-capability-list li:last-child:nth-child(odd) {
+          grid-column: 1 / -1;
+        }
+
+        .vozon-capability-list li {
+          display: grid;
+          grid-template-columns: 25px minmax(0, 1fr);
+          gap: 11px;
+          min-width: 0;
+          padding: 13px;
+          border: 1px solid rgba(255, 255, 255, .11);
+          border-radius: 13px;
+          background: rgba(255, 255, 255, .045);
+          box-shadow: inset 0 1px rgba(255, 255, 255, .025);
+          transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+        }
+
+        .vozon-capability-list li:hover {
+          border-color: color-mix(in srgb, var(--capability-accent) 22%, transparent);
+          background: color-mix(in srgb, var(--capability-accent) 5%, transparent);
+          transform: translateX(2px);
+        }
+
+        .vozon-capability-check {
+          display: grid;
+          width: 26px;
+          height: 26px;
+          place-items: center;
+          border: 1px solid color-mix(in srgb, var(--capability-accent) 30%, transparent);
           border-radius: 50%;
-          background: var(--feature-accent);
-          box-shadow: 0 0 9px var(--feature-accent);
+          color: var(--capability-accent);
+          font-size: 11px;
+          font-weight: 900;
+          background: color-mix(in srgb, var(--capability-accent) 8%, transparent);
         }
 
-        @media (max-width: 960px) {
-          .vozon-feature-bento {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+        .vozon-capability-list li > span:last-child {
+          display: flex;
+          min-width: 0;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .vozon-capability-list strong {
+          color: #f4fffd;
+          font-size: .84rem;
+          font-weight: 850;
+          line-height: 1.3;
+        }
+
+        .vozon-capability-list small {
+          color: rgba(255, 255, 255, .65);
+          font-size: .74rem;
+          line-height: 1.5;
+        }
+
+        @keyframes vozonCapabilityWave {
+          from { opacity: .5; transform: scaleY(.28); }
+          to { opacity: 1; transform: scaleY(1); }
+        }
+
+        @keyframes vozonCapabilityScan {
+          0%, 14% { transform: translateX(0) skewX(-10deg); opacity: 0; }
+          28% { opacity: 1; }
+          72% { opacity: 1; }
+          86%, 100% { transform: translateX(650%) skewX(-10deg); opacity: 0; }
+        }
+
+        @media (max-width: 900px) {
+          .vozon-capability-card.is-featured {
+            grid-template-columns: minmax(0, 1fr);
+            grid-template-rows: auto auto auto;
+            min-height: 0;
           }
 
-          .vozon-feature-card:nth-last-child(-n + 2) {
-            grid-column: span 1;
-            min-height: 292px;
+          .vozon-capability-card.is-featured .vozon-capability-header,
+          .vozon-capability-card.is-featured .vozon-capability-list,
+          .vozon-conversation-demo {
+            grid-column: 1;
+            grid-row: auto;
+          }
+
+          .vozon-conversation-demo {
+            min-height: 0;
+            margin-top: 26px;
+          }
+
+          .vozon-capability-card.is-featured .vozon-capability-list {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
           }
         }
 
-        @media (max-width: 600px) {
-          .vozon-feature-bento {
-            grid-template-columns: 1fr;
+        @media (max-width: 720px) {
+          .vozon-capability-grid {
+            grid-template-columns: minmax(0, 1fr);
+            max-width: 620px;
           }
 
-          .vozon-feature-card,
-          .vozon-feature-card.is-featured,
-          .vozon-feature-card:nth-last-child(-n + 2) {
-            grid-column: span 1;
-            min-height: 250px;
+          .vozon-capability-card.is-featured {
+            grid-column: 1;
+          }
+        }
+
+        @media (max-width: 560px) {
+          .vozon-capability-card,
+          .vozon-capability-card.is-featured {
+            min-height: 0;
+            padding: 21px;
+            border-radius: 18px;
           }
 
+          .vozon-capability-card.is-featured .vozon-capability-list,
+          .vozon-capability-card:not(.is-featured) .vozon-capability-list {
+            grid-template-columns: minmax(0, 1fr);
+          }
+
+          .vozon-capability-card:not(.is-featured) .vozon-capability-list li:last-child:nth-child(odd) {
+            grid-column: auto;
+          }
+
+          .vozon-conversation-demo-body {
+            min-height: 210px;
+          }
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .vozon-feature-card {
+          .vozon-capability-card {
             transition: none;
           }
-        }
 
+          .vozon-conversation-demo-wave i {
+            animation: none;
+          }
+
+          .vozon-conversation-demo::before {
+            animation: none;
+          }
+        }
         .vozon-operations-section {
           background:
             radial-gradient(circle at 50% 34%, rgba(26,207,255,0.09), transparent 24%),
