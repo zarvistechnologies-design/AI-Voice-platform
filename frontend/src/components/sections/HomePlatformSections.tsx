@@ -19,8 +19,8 @@ const companyLogos = [
   { name: "Figma", src: "/images/company-logos/figma.svg" },
   { name: "Spotify", src: "/images/company-logos/spotify.svg" },
   {
-    name: "DigitalBot.ai",
-    src: "/images/company-logos/digitalbot.png",
+    name: "DigitalBot",
+    src: "/images/digitalbot_orbit.png",
     logoClassName: "vozon-company-logo-image--digitalbot",
   },
 ];
@@ -970,7 +970,7 @@ export function HomePlatformSections() {
         </div>
       </section>
 
-      <section className="vozon-apps-section relative overflow-hidden px-5 pb-8 pt-8 sm:px-8 sm:pb-12 sm:pt-10 lg:pb-14 lg:pt-12" id="app-integrations" aria-labelledby="vozon-apps-title">
+      <section className="vozon-apps-section relative overflow-hidden px-5 pb-0 pt-8 sm:px-8 sm:pb-0 sm:pt-10 lg:pb-0 lg:pt-12" id="app-integrations" aria-labelledby="vozon-apps-title">
         <div className="relative z-10 w-full">
           <div className="mx-auto max-w-4xl text-center">
             <div className="vozon-apps-eyebrow"><span /> Integrations</div>
@@ -3478,9 +3478,12 @@ export function HomePlatformSections() {
         }
 
         .vozon-company-logo-image.vozon-company-logo-image--digitalbot {
-          width: 3rem;
-          height: 3rem;
-          filter: saturate(1.18) brightness(1.12) drop-shadow(0 0 8px rgba(30,189,255,.32));
+          width: 9.375rem;
+          height: auto;
+          max-width: none;
+          max-height: 3.625rem;
+          object-fit: contain;
+          filter: drop-shadow(0 0 6px rgba(241,94,45,.28));
           opacity: 1;
         }
 
@@ -3501,6 +3504,11 @@ export function HomePlatformSections() {
         .vozon-company-logo:hover .vozon-company-logo-image {
           filter: saturate(1.15) brightness(1);
           opacity: 0.92;
+        }
+
+        .vozon-company-logo:hover .vozon-company-logo-image--digitalbot {
+          filter: drop-shadow(0 0 8px rgba(241,94,45,.42));
+          opacity: 1;
         }
 
         .vozon-company-logo:hover .vozon-company-name {

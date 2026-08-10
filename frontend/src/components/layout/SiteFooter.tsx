@@ -22,6 +22,7 @@ const footerNavigation = [
     links: [
       { href: "/about", label: "About" },
       { href: "/career", label: "Careers" },
+      { href: "/partners", label: "Partners" },
       { href: "/resources/blog", label: "Blog" },
       { href: "/contact", label: "Contact" },
     ],
