@@ -16,9 +16,22 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.vozon.ai"),
-  title: "AI Voice Agent Platform for Phone Call Automation | Vozon",
+  title: {
+    default: "Vozon | AI Voice Agent Platform",
+    template: "%s | Vozon",
+  },
   description: "Build multilingual AI phone agents for inbound and outbound calls, lead qualification, appointment booking, customer support, and workflow automation.",
   applicationName: "Vozon",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icons/vozon-mark-192.png", type: "image/png", sizes: "192x192" },
+      { url: "/icons/vozon-mark-512.png", type: "image/png", sizes: "512x512" },
+    ],
+    apple: [
+      { url: "/icons/vozon-mark-180.png", type: "image/png", sizes: "180x180" },
+    ],
+  },
   keywords: ["AI voice agent", "AI phone agent", "voice AI platform", "automated phone calls", "AI receptionist", "call automation"],
   authors: [{ name: "Vozon", url: "https://www.vozon.ai" }],
   creator: "Vozon",
