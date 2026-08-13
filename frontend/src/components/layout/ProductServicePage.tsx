@@ -1034,7 +1034,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
                   Try a demo <span className="ml-3">&rarr;</span>
                 </Link>
                 <Link
-                  className="service-secondary-button inline-flex min-h-12 items-center rounded-lg border border-white/15 bg-white/[0.04] px-6 text-sm font-extrabold text-white transition"
+                  className="service-primary-button inline-flex min-h-12 items-center rounded-lg px-6 text-sm font-extrabold transition hover:-translate-y-0.5"
                   href="/contact"
                 >
                   Contact sales
@@ -4803,20 +4803,7 @@ inset:55px;
 =========================================== */
 
 .voice-sample-card::before {
-  content: "";
-
-  position: absolute;
-
-  inset: 0;
-
-  background:
-    radial-gradient(
-      circle at top right,
-      rgba(var(--service-accent-rgb), .12),
-      transparent 45%
-    );
-
-  pointer-events: none;
+  display: none;
 }
 
 /* ===========================================

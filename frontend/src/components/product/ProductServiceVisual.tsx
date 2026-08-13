@@ -375,9 +375,7 @@ export function ProductServiceVisual({ slug, experience, design }: ProductServic
         .product-visual-shell {
           isolation: isolate;
           background:
-            radial-gradient(circle at 80% 0%, rgba(var(--service-accent-rgb), 0.09), transparent 38%),
-            radial-gradient(circle at 0% 100%, rgba(var(--service-secondary-rgb), 0.07), transparent 42%),
-            #080b12;
+           #000000;
         }
 
         .product-visual-sheen {

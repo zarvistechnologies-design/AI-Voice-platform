@@ -294,62 +294,1110 @@ export function SiteHeader() {
           </div>
         );
       })}
-      <style>{`
-        .vozon-site-header > div:first-of-type {
-          border-color: transparent !important;
-          background: transparent !important;
-          color: rgba(238, 255, 251, 0.95) !important;
-          box-shadow: none !important;
-        }
+  <style>{`
+  /* HEADER*/
 
-        .vozon-site-header nav {
-          border-color: rgba(45, 255, 219, 0.14) !important;
-          background: rgba(255,255,255,0.05) !important;
-          color: rgba(238, 255, 251, 0.76) !important;
-        }
+  .vozon-site-header {
+    --header-text: #ffffff;
+    --header-muted: rgba(255, 255, 255, 0.92);
 
-        .vozon-site-header a,
-        .vozon-site-header button {
-          color: inherit !important;
-        }
+    pointer-events: none;
+  }
 
-        .vozon-site-header nav a:hover,
-        .vozon-site-header nav button:hover {
-          background: rgba(31,244,208,0.10) !important;
-          color: #61fff0 !important;
-        }
+  .vozon-site-header > div:first-of-type {
+    position: relative;
 
-        .vozon-site-header a[href="/contact"] {
-          border-color: rgba(31,244,208,0.35) !important;
-          background: linear-gradient(135deg, rgba(12,119,139,0.72), rgba(31,244,208,0.22), rgba(57,219,141,0.72)) !important;
-          color: #dffff8 !important;
-          box-shadow: 0 10px 28px rgba(31,244,208,0.14) !important;
-        }
+    min-height: 58px !important;
 
-        .vozon-site-header > div[id$="-menu"] {
-          border-color: rgba(31,244,208,0.18) !important;
-          background: rgba(2, 18, 15, 0.94) !important;
-          color: rgba(238, 255, 251, 0.94) !important;
-          box-shadow: 0 28px 90px rgba(0,0,0,0.5) !important;
-        }
+    /* NO OUTER BORDER */
+    border: 0 !important;
+    border-width: 0 !important;
+    border-style: none !important;
+    border-color: transparent !important;
 
-        .vozon-site-header > div[id$="-menu"] > a:first-child {
-          background: linear-gradient(135deg, rgba(4,32,27,0.96), rgba(18,137,116,0.5)) !important;
-        }
+    border-radius: 18px !important;
 
-        .vozon-site-header > div[id$="-menu"] p,
-        .vozon-site-header > div[id$="-menu"] a {
-          color: rgba(238, 255, 251, 0.72) !important;
-        }
+    background:
+      linear-gradient(
+        180deg,
+        rgba(7, 13, 12, 0.66),
+        rgba(2, 6, 6, 0.36)
+      ) !important;
 
-        .vozon-site-header > div[id$="-menu"] h2 {
-          color: #61fff0 !important;
-        }
+    color: #ffffff !important;
 
-        .vozon-site-header > div[id$="-menu"] a:hover {
-          color: #61fff0 !important;
-        }
-      `}</style>
+    /* KEEP SHADOW / REMOVE INNER TOP LINE */
+    box-shadow:
+      0 12px 40px rgba(0, 0, 0, 0.24),
+      0 0 45px rgba(69, 221, 206, 0.035) !important;
+
+    backdrop-filter:
+      blur(18px) saturate(120%);
+
+    -webkit-backdrop-filter:
+      blur(18px) saturate(120%);
+
+    overflow: visible;
+  }
+
+  .vozon-site-header > div:first-of-type::before {
+    content: "";
+
+    position: absolute;
+
+    left: 12%;
+    right: 12%;
+    bottom: -18px;
+
+    height: 36px;
+
+    border: 0 !important;
+
+    background:
+      radial-gradient(
+        ellipse,
+        rgba(69, 221, 206, 0.09),
+        rgba(69, 221, 206, 0.02) 40%,
+        transparent 72%
+      );
+
+    filter: blur(16px);
+
+    pointer-events: none;
+
+    z-index: -1;
+  }
+  .vozon-site-header > div:first-of-type::after {
+    content: none !important;
+
+    display: none !important;
+
+    border: 0 !important;
+
+    background: none !important;
+
+    box-shadow: none !important;
+  }
+  .vozon-site-header nav {
+    
+    border: 0 !important;
+    border-width: 0 !important;
+    border-style: none !important;
+    border-color: transparent !important;
+
+    border-radius: 999px !important;
+
+    background:
+      rgba(255, 255, 255, 0.015) !important;
+
+    color:
+      #ffffff !important;
+
+    padding:
+      3px !important;
+
+    /* NO INNER LINE / SHADOW */
+    box-shadow:
+      none !important;
+
+    backdrop-filter:
+      blur(10px);
+
+    -webkit-backdrop-filter:
+      blur(10px);
+  }
+
+
+  /* NAVIGATION TEXT*/
+
+  .vozon-site-header nav a,
+  .vozon-site-header nav button {
+    min-height:
+      34px;
+
+    border-radius:
+      999px;
+
+    padding-left:
+      13px;
+
+    padding-right:
+      13px;
+
+    color:
+      #ffffff !important;
+
+    font-weight:
+      600 !important;
+
+    text-shadow:
+      none !important;
+
+    transition:
+      background 180ms ease,
+      color 180ms ease,
+      transform 180ms ease;
+  }
+
+
+  /* NAVIGATION HOVER */
+
+  .vozon-site-header nav a:hover,
+  .vozon-site-header nav button:hover {
+    background:
+      rgba(97, 255, 240, 0.055) !important;
+
+    color:
+      #61fff0 !important;
+
+    transform:
+      translateY(-1px);
+
+    box-shadow:
+      none !important;
+  }
+
+
+  /* ACTIVE DROPDOWN BUTTON */
+
+  .vozon-site-header nav button[aria-expanded="true"] {
+    background:
+      rgba(97, 255, 240, 0.07) !important;
+
+    color:
+      #61fff0 !important;
+
+    box-shadow:
+      none !important;
+  }
+
+
+  /* LOGIN + CONTACT SALES BUTTONS */
+
+  .vozon-site-header a[href="/login"],
+  .vozon-site-header a[href="/contact"] {
+    position:
+      relative;
+
+    overflow:
+      hidden;
+
+    min-height:
+      34px !important;
+
+    display:
+      inline-flex !important;
+
+    align-items:
+      center !important;
+
+    justify-content:
+      center !important;
+
+    padding-left:
+      15px !important;
+
+    padding-right:
+      15px !important;
+
+    border:
+      1px solid rgba(97, 255, 240, 0.18) !important;
+
+    border-radius:
+      9px !important;
+
+    background:
+      linear-gradient(
+        135deg,
+        rgba(97, 255, 240, 0.90),
+        rgba(57, 219, 141, 0.90)
+      ) !important;
+
+    color:
+      #031d18 !important;
+
+    font-weight:
+      800 !important;
+
+    box-shadow:
+      0 5px 20px rgba(69, 221, 206, 0.08) !important;
+
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease,
+      filter 180ms ease !important;
+  }
+
+
+  /* BUTTON SHINE */
+
+  .vozon-site-header a[href="/login"]::before,
+  .vozon-site-header a[href="/contact"]::before {
+    content:
+      "";
+
+    position:
+      absolute;
+
+    top:
+      0;
+
+    left:
+      -100%;
+
+    width:
+      55%;
+
+    height:
+      100%;
+
+    background:
+      linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.25),
+        transparent
+      );
+
+    transform:
+      skewX(-20deg);
+
+    transition:
+      left 500ms ease;
+
+    pointer-events:
+      none;
+  }
+
+
+  .vozon-site-header a[href="/login"]:hover::before,
+  .vozon-site-header a[href="/contact"]:hover::before {
+    left:
+      140%;
+  }
+
+
+  /*   BUTTON HOVER*/
+
+  .vozon-site-header a[href="/login"]:hover,
+  .vozon-site-header a[href="/contact"]:hover {
+    transform:
+      translateY(-2px) !important;
+
+    filter:
+      brightness(1.06);
+
+    box-shadow:
+      0 0 20px rgba(97, 255, 240, 0.14),
+      0 8px 24px rgba(31, 244, 208, 0.10) !important;
+  }
+
+
+  .vozon-site-header a[href="/login"]:active,
+  .vozon-site-header a[href="/contact"]:active {
+    transform:
+      translateY(0) !important;
+  }
+
+
+  /*DROPDOWN MENUS */
+
+  .vozon-site-header > div[id$="-menu"] {
+    position:
+      absolute;
+
+    border:
+      1px solid rgba(97, 255, 240, 0.13) !important;
+
+    border-radius:
+      15px !important;
+
+    background:
+      linear-gradient(
+        180deg,
+        rgba(5, 20, 17, 0.96),
+        rgba(2, 12, 10, 0.95)
+      ) !important;
+
+    color:
+      rgba(238, 255, 251, 0.94) !important;
+
+    box-shadow:
+      0 28px 90px rgba(0, 0, 0, 0.50) !important;
+
+    backdrop-filter:
+      blur(18px);
+
+    -webkit-backdrop-filter:
+      blur(18px);
+  }
+
+
+  /*FEATURED DROPDOWN CARD */
+
+  .vozon-site-header
+    > div[id$="-menu"]
+    > a:first-child {
+
+    background:
+      linear-gradient(
+        135deg,
+        rgba(4, 32, 27, 0.96),
+        rgba(18, 137, 116, 0.46)
+      ) !important;
+
+    border-radius:
+      11px !important;
+
+    border:
+      1px solid rgba(31, 244, 208, 0.09);
+
+    box-shadow:
+      none !important;
+
+    transition:
+      border-color 180ms ease,
+      transform 180ms ease;
+  }
+
+
+  .vozon-site-header
+    > div[id$="-menu"]
+    > a:first-child:hover {
+
+    border-color:
+      rgba(31, 244, 208, 0.20);
+
+    transform:
+      translateY(-1px);
+
+    box-shadow:
+      none !important;
+  }
+
+
+  /* DROPDOWN TEXT */
+
+  .vozon-site-header
+    > div[id$="-menu"]
+    p {
+
+    color:
+      rgba(238, 255, 251, 0.72) !important;
+
+    line-height:
+      1.55 !important;
+
+    margin-top:
+      7px !important;
+  }
+
+
+  .vozon-site-header
+    > div[id$="-menu"]
+    h2 {
+
+    color:
+      #61fff0 !important;
+
+    letter-spacing:
+      0.075em;
+
+    margin-bottom:
+      10px !important;
+  }
+
+
+  .vozon-site-header
+    > div[id$="-menu"]
+    a {
+
+    color:
+      rgba(238, 255, 251, 0.72) !important;
+
+    transition:
+      color 160ms ease,
+      background 160ms ease,
+      transform 160ms ease;
+  }
+
+
+  .vozon-site-header
+    > div[id$="-menu"]
+    a:hover {
+
+    color:
+      #61fff0 !important;
+
+    transform:
+      translateX(2px);
+  }
+
+
+  /*BUSINESS MENU */
+
+  .vozon-site-header
+    > div[id="business-menu"] {
+
+    padding:
+      15px !important;
+
+    border-radius:
+      15px !important;
+
+    background:
+      rgba(2, 18, 15, 0.94) !important;
+  }
+
+
+  .vozon-site-header
+    > div[id="business-menu"]
+    > div:nth-child(2) {
+
+    column-gap:
+      20px !important;
+
+    row-gap:
+      12px !important;
+  }
+
+
+  /*BUSINESS GROUPS */
+
+  .vozon-site-header
+    > div[id="business-menu"]
+    > div:nth-child(2)
+    > div {
+
+    padding-top:
+      3px !important;
+
+    padding-bottom:
+      3px !important;
+  }
+
+
+  /* PLAN YOUR ROLLOUT CARD*/
+
+  .vozon-site-header
+    > div[id="business-menu"]
+    > div:nth-child(2)
+    > a:last-child {
+
+    display:
+      flex !important;
+
+    flex-direction:
+      column !important;
+
+    align-items:
+      flex-start !important;
+
+    justify-content:
+      flex-start !important;
+
+    gap:
+      7px !important;
+
+    width:
+      100% !important;
+
+    min-width:
+      205px !important;
+
+    margin:
+      0 !important;
+
+    padding:
+      14px 15px !important;
+
+    border:
+      1px solid rgba(75, 130, 104, 0.12) !important;
+
+    border-radius:
+      11px !important;
+
+    background:
+      rgba(7, 22, 18, 0.62) !important;
+
+    color:
+      rgba(235, 245, 240, 0.88) !important;
+
+    box-shadow:
+      none !important;
+
+    transform:
+      none !important;
+
+    transition:
+      background 180ms ease,
+      border-color 180ms ease !important;
+  }
+
+
+  /* PLAN YOUR ROLLOUT TITLE*/
+
+  .vozon-site-header
+    > div[id="business-menu"]
+    > div:nth-child(2)
+    > a:last-child
+    > span {
+
+    display:
+      block !important;
+
+    width:
+      100% !important;
+
+    margin:
+      0 !important;
+
+    padding:
+      0 !important;
+
+    color:
+      rgba(151, 204, 182, 0.82) !important;
+
+    font-size:
+      0.82rem !important;
+
+    line-height:
+      1.3 !important;
+
+    font-weight:
+      700 !important;
+
+    text-align:
+      left !important;
+  }
+
+
+  /*PLAN YOUR ROLLOUT DESCRIPTION */
+
+  .vozon-site-header
+    > div[id="business-menu"]
+    > div:nth-child(2)
+    > a:last-child
+    > p {
+
+    display:
+      block !important;
+
+    width:
+      100% !important;
+
+    max-width:
+      245px !important;
+
+    margin:
+      0 !important;
+
+    padding:
+      0 !important;
+
+    color:
+      rgba(215, 229, 222, 0.72) !important;
+
+    font-size:
+      0.76rem !important;
+
+    line-height:
+      1.5 !important;
+
+    font-weight:
+      500 !important;
+
+    text-align:
+      left !important;
+  }
+
+
+  /* PLAN YOUR ROLLOUT HOVER */
+
+  .vozon-site-header
+    > div[id="business-menu"]
+    > div:nth-child(2)
+    > a:last-child:hover {
+
+    background:
+      rgba(9, 27, 22, 0.72) !important;
+
+    border-color:
+      rgba(75, 130, 104, 0.18) !important;
+
+    color:
+      rgba(235, 245, 240, 0.90) !important;
+
+    transform:
+      none !important;
+  }
+
+
+  .vozon-site-header
+    > div[id="business-menu"]
+    > div:nth-child(2)
+    > a:last-child:hover
+    > span {
+
+    color:
+      rgba(161, 211, 191, 0.88) !important;
+  }
+
+
+  .vozon-site-header
+    > div[id="business-menu"]
+    > div:nth-child(2)
+    > a:last-child:hover
+    > p {
+
+    color:
+      rgba(220, 232, 226, 0.76) !important;
+  }
+
+
+  /* BUSINESS MENU LINKS*/
+
+  .vozon-site-header
+    > div[id="business-menu"]
+    > div:nth-child(2)
+    > div
+    a {
+
+    border-radius:
+      8px !important;
+
+    transition:
+      background 160ms ease,
+      color 160ms ease,
+      transform 160ms ease;
+  }
+
+
+  .vozon-site-header
+    > div[id="business-menu"]
+    > div:nth-child(2)
+    > div
+    a:hover {
+
+    background:
+      rgba(97, 255, 240, 0.04) !important;
+
+    color:
+      #61fff0 !important;
+
+    transform:
+      translateX(1px);
+  }
+
+
+  /* PRODUCT MENU*/
+
+  .vozon-site-header
+    > div[id="product-menu"]
+    > div {
+
+    row-gap:
+      14px;
+
+    column-gap:
+      24px;
+  }
+
+
+  .vozon-site-header
+    > div[id="product-menu"]
+    > div
+    > div {
+
+    padding-top:
+      3px;
+
+    padding-bottom:
+      3px;
+  }
+
+
+  /* COMPANY MENU*/
+
+  .vozon-site-header
+    > div[id="company-menu"]
+    > div {
+
+    row-gap:
+      14px;
+
+    column-gap:
+      24px;
+  }
+
+
+  /* DROPDOWN BOTTOM CTA */
+
+  .vozon-site-header
+    > div[id$="-menu"]
+    > a:last-child {
+
+    position:
+      absolute !important;
+
+    right:
+      10px !important;
+
+    bottom:
+      10px !important;
+
+    width:
+      170px !important;
+
+    min-height:
+      36px !important;
+
+    display:
+      inline-flex !important;
+
+    align-items:
+      center !important;
+
+    justify-content:
+      center !important;
+
+    border-radius:
+      8px !important;
+
+    border:
+      1px solid rgba(97, 255, 240, 0.30) !important;
+
+    background:
+      linear-gradient(
+        135deg,
+        #61fff0,
+        #39db8d
+      ) !important;
+
+    color:
+      #04251f !important;
+
+    font-size:
+      0.72rem !important;
+
+    font-weight:
+      800 !important;
+
+    box-shadow:
+      0 6px 18px rgba(31, 244, 208, 0.08) !important;
+
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease,
+      filter 180ms ease !important;
+  }
+
+
+  .vozon-site-header
+    > div[id$="-menu"]
+    > a:last-child:hover {
+
+    transform:
+      translateY(-2px) !important;
+
+    filter:
+      brightness(1.05);
+
+    box-shadow:
+      0 0 20px rgba(97, 255, 240, 0.14),
+      0 9px 24px rgba(31, 244, 208, 0.10) !important;
+  }
+
+
+  /*TABLET*/
+
+  @media (max-width: 1180px) {
+
+    .vozon-site-header nav {
+
+      /* INNER BORDER REMOVED ON TABLET TOO */
+      border:
+        0 !important;
+
+      border-width:
+        0 !important;
+
+      border-style:
+        none !important;
+
+      border-color:
+        transparent !important;
+
+      border-radius:
+        14px;
+
+      padding:
+        5px !important;
+
+      background:
+        rgba(0, 0, 0, 0.55) !important;
+
+      box-shadow:
+        none !important;
+    }
+
+
+    .vozon-site-header
+      nav
+      a,
+    .vozon-site-header
+      nav
+      button {
+
+      min-height:
+        40px;
+
+      border-radius:
+        9px;
+
+      padding-left:
+        14px;
+
+      padding-right:
+        14px;
+
+      color:
+        #ffffff !important;
+
+      font-weight:
+        600 !important;
+    }
+
+
+    .vozon-site-header
+      > div[id$="-menu"] {
+
+      border-radius:
+        14px !important;
+
+      background:
+        rgba(2, 18, 15, 0.96) !important;
+    }
+
+
+    .vozon-site-header
+      > div[id="business-menu"] {
+
+      padding:
+        13px !important;
+    }
+
+
+    .vozon-site-header
+      > div[id="business-menu"]
+      > div:nth-child(2) {
+
+      row-gap:
+        10px !important;
+
+      column-gap:
+        16px !important;
+    }
+  }
+
+
+  /*MOBILE */
+
+  @media (max-width: 560px) {
+
+    .vozon-site-header {
+
+      padding-left:
+        7px;
+
+      padding-right:
+        7px;
+    }
+
+
+    .vozon-site-header
+      > div:first-of-type {
+
+      min-height:
+        50px !important;
+
+      /* OUTER BORDER REMOVED ON MOBILE */
+      border:
+        0 !important;
+
+      border-width:
+        0 !important;
+
+      border-style:
+        none !important;
+
+      border-color:
+        transparent !important;
+
+      border-radius:
+        14px !important;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(7, 13, 12, 0.72),
+          rgba(2, 6, 6, 0.42)
+        ) !important;
+
+      box-shadow:
+        0 0 15px rgba(69, 221, 206, 0.035),
+        0 6px 22px rgba(0, 0, 0, 0.30) !important;
+
+      backdrop-filter:
+        blur(16px);
+    }
+
+    .vozon-site-header nav {
+
+      border:
+        0 !important;
+
+      border-width:
+        0 !important;
+
+      border-style:
+        none !important;
+
+      border-color:
+        transparent !important;
+
+      box-shadow:
+        none !important;
+    }
+
+
+    .vozon-site-header
+      > div:first-of-type
+      > div:last-child {
+
+      gap:
+        5px;
+    }
+
+
+    .vozon-site-header
+      > div[id="business-menu"] {
+
+      padding:
+        12px !important;
+    }
+
+
+    .vozon-site-header
+      > div[id="business-menu"]
+      > div:nth-child(2) {
+
+      row-gap:
+        9px !important;
+
+      column-gap:
+        12px !important;
+    }
+
+
+    /* Mobile rollout card */
+
+    .vozon-site-header
+      > div[id="business-menu"]
+      > div:nth-child(2)
+      > a:last-child {
+
+      min-width:
+        0 !important;
+
+      width:
+        100% !important;
+
+      padding:
+        12px !important;
+    }
+
+
+    .vozon-site-header
+      > div[id="business-menu"]
+      > div:nth-child(2)
+      > a:last-child
+      > p {
+
+      max-width:
+        none !important;
+
+      font-size:
+        0.74rem !important;
+    }
+
+
+    /* Mobile dropdown CTA */
+
+    .vozon-site-header
+      > div[id$="-menu"]
+      > a:last-child {
+
+      position:
+        relative !important;
+
+      right:
+        auto !important;
+
+      bottom:
+        auto !important;
+
+      width:
+        100% !important;
+
+      margin-top:
+        10px !important;
+    }
+
+    .vozon-site-header
+      a[href="/login"],
+    .vozon-site-header
+      a[href="/contact"] {
+
+      min-height:
+        36px !important;
+
+      padding-left:
+        13px !important;
+
+      padding-right:
+        13px !important;
+    }
+  }
+  .vozon-site-header
+    a:focus-visible,
+  .vozon-site-header
+    button:focus-visible {
+
+    outline:
+      2px solid rgba(97, 255, 240, 0.65);
+
+    outline-offset:
+      2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+
+    .vozon-site-header *,
+    .vozon-site-header *::before,
+    .vozon-site-header *::after {
+
+      transition-duration:
+        0.01ms !important;
+
+      animation-duration:
+        0.01ms !important;
+
+      animation-iteration-count:
+        1 !important;
+    }
+  }
+
+`}</style>
     </header>
   );
 }
