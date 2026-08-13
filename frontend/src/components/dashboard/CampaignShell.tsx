@@ -496,11 +496,15 @@ export function CampaignShell() {
   async function controlCampaign(campaign: BackendCampaign, action: CampaignAction) {
     setError("");
     try {
+      if (action === "cancel") {
+        const result = await voiceApi.cancelCampaign(campaign._id);
+        setCampaigns((current) => current.map((item) => item._id === campaign._id ? result.campaign : item));
+        setNotice(result.message || "Campaign cancelled.");
+        return;
+      }
       const result = action === "pause"
         ? await voiceApi.pauseCampaign(campaign._id)
-        : action === "resume"
-          ? await voiceApi.resumeCampaign(campaign._id)
-          : await voiceApi.cancelCampaign(campaign._id);
+        : await voiceApi.resumeCampaign(campaign._id);
       setCampaigns((current) => current.map((item) => item._id === campaign._id ? result.campaign : item));
     } catch (caught) {
       setError(errorMessage(caught));

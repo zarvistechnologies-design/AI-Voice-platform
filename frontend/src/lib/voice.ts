@@ -1059,7 +1059,11 @@ export const voiceApi = {
   resumeCampaign: (campaignId: string) =>
     mutation<{ campaign: BackendCampaign }>(`/campaigns/${campaignId}/resume`, { method: "POST" }, ["/campaigns"]),
   cancelCampaign: (campaignId: string) =>
-    mutation<{ campaign: BackendCampaign }>(`/campaigns/${campaignId}/cancel`, { method: "POST" }, ["/campaigns"]),
+    mutation<{
+      campaign: BackendCampaign;
+      cleanupPending?: boolean;
+      message?: string;
+    }>(`/campaigns/${campaignId}/cancel`, { method: "POST" }, ["/campaigns"]),
   phoneNumbers: () => cachedRequest<{ numbers: BackendPhoneNumber[] }>("/phone-numbers", 15_000),
   createPhoneNumber: (input: PhoneNumberImportInput) =>
     mutation<{ number: BackendPhoneNumber }>("/phone-numbers", {
