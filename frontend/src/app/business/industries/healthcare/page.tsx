@@ -453,13 +453,13 @@ export default function HealthcarePage() {
   return (
     <SiteLayout>
       <div className="healthcare-page min-h-screen bg-black text-slate-50">
-        <section className="healthcare-hero-grid relative mx-auto min-h-[82vh] max-w-[1360px] items-center gap-12 px-5 pb-14 pt-32 sm:px-8">
+        <section className="healthcare-hero-grid relative mx-auto min-h-[72vh] max-w-[1360px] items-center gap-12 px-5 pb-10 pt-28 sm:px-8 sm:pt-32">
           <div>
             <div className="mb-7 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-slate-400">
               <span className="size-2 rounded-full bg-[#35fbe0] shadow-[0_0_12px_rgba(53,251,224,0.8)]" />
               Built for modern healthcare teams
             </div>
-            <h1 className="healthcare-hero-heading max-w-3xl font-semibold text-white">
+            <h1 className="healthcare-hero-heading max-w-3xl font-medium text-white">
               AI Voice Agents for{" "}
               <span className="healthcare-heading-accent block">
                 Healthcare
@@ -472,16 +472,16 @@ export default function HealthcarePage() {
             </p>
             <div className="mt-10 flex flex-wrap gap-3">
               <Link
-                className="healthcare-demo-button inline-flex min-h-12 items-center rounded-lg border px-7 text-sm font-black transition hover:-translate-y-0.5"
+                className="healthcare-demo-button inline-flex min-h-12 items-center rounded-lg px-6 text-sm font-extrabold transition hover:-translate-y-0.5"
                 href="/#demo"
               >
-                BOOK A FREE DEMO
+                Book a free demo <span className="ml-3">&rarr;</span>
               </Link>
               <Link
-                className="inline-flex min-h-12 items-center rounded-lg border border-white/15 bg-white/[0.05] px-6 text-sm font-bold text-slate-50 shadow-sm transition hover:-translate-y-0.5 hover:bg-white/10"
+                className="healthcare-demo-button inline-flex min-h-12 items-center rounded-lg px-6 text-sm font-extrabold transition hover:-translate-y-0.5"
                 href="/contact"
               >
-                CONTACT SALES
+                Contact sales
               </Link>
             </div>
           </div>
@@ -504,7 +504,7 @@ export default function HealthcarePage() {
         </section>
 
         <section
-          className="border-y border-white/[0.07] bg-black py-8"
+          className="bg-black py-6"
           aria-label="Healthcare platforms"
         >
           <div className="mx-auto flex max-w-[1360px] flex-col items-center gap-6 px-5 sm:px-8">
@@ -528,7 +528,7 @@ export default function HealthcarePage() {
           </div>
         </section>
 
-        <section className="overflow-hidden bg-black py-14" aria-label="Healthcare use cases">
+        <section className="overflow-hidden bg-black py-10" aria-label="Healthcare use cases">
           <div className="healthcare-marquee flex w-max gap-5">
             {[...photoCards, ...photoCards].map((card, index) => (
               <article
@@ -551,8 +551,8 @@ export default function HealthcarePage() {
           </div>
         </section>
 
-        <section className="border-t border-white/[0.06] bg-black">
-          <div className="mx-auto max-w-[1360px] px-5 py-20 sm:px-8">
+        <section className="bg-black">
+          <div className="mx-auto max-w-[1360px] px-5 py-14 sm:px-8 sm:py-16">
             <Pill>Reviews</Pill>
             <div className="mt-6 flex flex-col justify-between gap-5 md:flex-row md:items-end">
               <h2 className="max-w-xl text-3xl font-semibold leading-tight tracking-[-0.02em] md:text-4xl">
@@ -589,8 +589,8 @@ export default function HealthcarePage() {
           </div>
         </section>
 
-        <section className="healthcare-features relative border-t border-white/[0.06] bg-black">
-          <div className="mx-auto max-w-[1360px] px-5 py-20 sm:px-8">
+        <section className="healthcare-features relative bg-black">
+          <div className="mx-auto max-w-[1360px] px-5 py-14 sm:px-8 sm:py-16">
           <Pill>Healthcare features</Pill>
           <h2 className="mt-6 max-w-3xl text-3xl font-semibold leading-tight tracking-[-0.02em] md:text-4xl">
             Support every patient call with a clear next step
@@ -659,8 +659,8 @@ export default function HealthcarePage() {
           </div>
         </section>
 
-        <section className="healthcare-integrations overflow-hidden border-t border-white/[0.06] bg-black">
-          <div className="relative mx-auto max-w-[1360px] px-5 pb-8 pt-20 sm:px-8">
+        <section className="healthcare-integrations overflow-hidden bg-black">
+          <div className="relative mx-auto max-w-[1360px] px-5 pb-8 pt-14 sm:px-8 sm:pt-16">
             <div className="grid gap-7 md:grid-cols-[minmax(0,1fr)_minmax(280px,0.65fr)] md:items-end">
               <div>
                 <Pill>Integrations</Pill>
@@ -733,7 +733,7 @@ export default function HealthcarePage() {
           </div>
         </section>
 
-        <section className="border-t border-white/[0.06] bg-black">
+        <section className="bg-black">
           <div className="mx-auto max-w-6xl px-6 pb-0 pt-8 lg:px-8">
             <div className="mx-auto max-w-3xl text-center">
               <Pill>Pricing</Pill>
@@ -812,8 +812,8 @@ export default function HealthcarePage() {
           </div>
         </section>
 
-        <section className="border-t border-white/[0.06] bg-black">
-          <div className="mx-auto max-w-4xl px-6 pb-20 pt-8 text-center lg:px-8">
+        <section className="bg-black">
+          <div className="mx-auto max-w-4xl px-6 pb-14 pt-8 text-center lg:px-8">
           <div className="mx-auto max-w-2xl">
             <Pill>F.A.Q</Pill>
             <h2 className="mt-6 text-3xl font-semibold leading-tight tracking-[-0.02em] md:text-4xl">Questions &amp; answers</h2>
@@ -841,7 +841,7 @@ export default function HealthcarePage() {
           </div>
         </section>
 
-        <section className="bg-black px-6 pb-16 pt-4 lg:px-8">
+        <section className="bg-black px-6 pb-12 pt-4 lg:px-8">
           <div className="healthcare-contact mx-auto flex max-w-6xl flex-col items-center justify-between gap-7 overflow-hidden rounded-[24px] border border-[#35fbe0]/35 bg-[#07100d] p-8 text-center shadow-[0_24px_70px_rgba(53,251,224,0.08)] sm:p-10 md:flex-row md:text-left">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#75fff0]">Ready to get started?</p>
@@ -869,7 +869,7 @@ export default function HealthcarePage() {
         }
 
         .healthcare-hero-heading {
-          font-size: clamp(2.8rem, 5vw, 4.7rem);
+          font-size: clamp(2.25rem, 4.7vw, 4rem);
           line-height: 0.98;
           letter-spacing: -0.05em;
         }
@@ -879,10 +879,9 @@ export default function HealthcarePage() {
         }
 
         .healthcare-demo-button {
-          border-color: rgba(117, 255, 240, 0.5);
           background: #35fbe0;
           color: #031310;
-          box-shadow: 0 14px 35px rgba(53, 251, 224, 0.2);
+          box-shadow: 0 12px 32px rgba(53, 251, 224, 0.12);
         }
 
         .healthcare-demo-button:hover {

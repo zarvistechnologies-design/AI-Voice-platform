@@ -136,13 +136,13 @@ export function IndustryExperiencePage({
   return (
     <SiteLayout>
       <div className="industry-experience min-h-screen bg-black text-slate-50" style={style}>
-        <section className="industry-hero-grid relative mx-auto min-h-[82vh] max-w-[1360px] items-center gap-12 px-5 pb-14 pt-32 sm:px-8">
+        <section className="industry-hero-grid relative mx-auto min-h-[72vh] max-w-[1360px] items-center gap-12 px-5 pb-10 pt-28 sm:px-8 sm:pt-32">
           <div>
             <div className="mb-7 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-slate-400">
               <span className="size-2 rounded-full bg-[var(--industry-accent)] shadow-[0_0_12px_var(--industry-accent)]" />
               Built for modern {industry.title.toLowerCase()} teams
             </div>
-            <h1 className="industry-hero-heading max-w-3xl font-semibold text-white">
+            <h1 className="industry-hero-heading max-w-3xl font-medium text-white">
               AI Voice Agents for{" "}
               <span className="block text-[var(--industry-accent)]">{industry.title}</span>
             </h1>
@@ -161,16 +161,16 @@ export function IndustryExperiencePage({
             </div>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link
-                className="inline-flex min-h-12 items-center rounded-lg border border-[var(--industry-accent)]/50 bg-[var(--industry-accent)] px-7 text-sm font-black text-[#031310] shadow-[0_14px_35px_color-mix(in_srgb,var(--industry-accent)_20%,transparent)] transition hover:-translate-y-0.5 hover:brightness-110"
+                className="inline-flex min-h-12 items-center rounded-lg bg-[var(--industry-accent)] px-6 text-sm font-extrabold text-[#031310] shadow-[0_12px_32px_rgba(0,0,0,0.16)] transition hover:-translate-y-0.5 hover:brightness-110"
                 href="/#demo"
               >
-                BOOK A FREE DEMO
+                Book a free demo <span className="ml-3">&rarr;</span>
               </Link>
               <Link
-                className="inline-flex min-h-12 items-center rounded-lg border border-white/15 bg-white/[0.05] px-6 text-sm font-bold text-slate-50 transition hover:-translate-y-0.5 hover:bg-white/10"
+                className="inline-flex min-h-12 items-center rounded-lg bg-[var(--industry-accent)] px-6 text-sm font-extrabold text-[#031310] shadow-[0_12px_32px_rgba(0,0,0,0.16)] transition hover:-translate-y-0.5 hover:brightness-110"
                 href="/contact"
               >
-                CONTACT SALES
+                Contact sales
               </Link>
             </div>
           </div>
@@ -191,7 +191,7 @@ export function IndustryExperiencePage({
           </div>
         </section>
 
-        <section className="border-y border-white/[0.07] bg-black py-8" aria-label={`${industry.title} platforms`}>
+        <section className="bg-black py-6" aria-label={`${industry.title} platforms`}>
           <div className="mx-auto flex max-w-[1360px] flex-col items-center gap-6 px-5 sm:px-8">
             <p className="text-center text-xs font-bold uppercase tracking-[0.22em] text-slate-500">
               Connect with the tools powering leading {industry.title.toLowerCase()} teams
@@ -213,7 +213,7 @@ export function IndustryExperiencePage({
           </div>
         </section>
 
-        <section className="overflow-hidden bg-black py-14" aria-label={`${industry.title} use cases`}>
+        <section className="overflow-hidden bg-black py-10" aria-label={`${industry.title} use cases`}>
           <div className="industry-photo-marquee flex w-max gap-5">
             {[...preset.photoCards, ...preset.photoCards].map((card, index) => (
               <article
@@ -231,8 +231,8 @@ export function IndustryExperiencePage({
           </div>
         </section>
 
-        <section className="border-t border-white/[0.06] bg-black">
-          <div className="mx-auto max-w-[1360px] px-5 py-20 sm:px-8">
+        <section className="bg-black">
+          <div className="mx-auto max-w-[1360px] px-5 py-14 sm:px-8 sm:py-16">
             <Pill>Reviews</Pill>
             <div className="mt-6 flex flex-col justify-between gap-5 md:flex-row md:items-end">
               <h2 className="max-w-xl text-3xl font-semibold leading-tight tracking-[-0.02em] md:text-4xl">
@@ -284,8 +284,8 @@ export function IndustryExperiencePage({
           </div>
         </section>
 
-        <section className="relative border-t border-white/[0.06] bg-black">
-          <div className="mx-auto max-w-[1360px] px-5 py-20 sm:px-8">
+        <section className="relative bg-black">
+          <div className="mx-auto max-w-[1360px] px-5 py-14 sm:px-8 sm:py-16">
             <Pill>{industry.title} features</Pill>
             <h2 className="mt-6 max-w-3xl text-3xl font-semibold leading-tight tracking-[-0.02em] md:text-4xl">
               Support every {industry.title.toLowerCase()} call with a clear next step
@@ -367,8 +367,8 @@ export function IndustryExperiencePage({
           </div>
         </section>
 
-        <section className="overflow-hidden border-t border-white/[0.06] bg-black">
-          <div className="relative mx-auto max-w-[1360px] px-5 pb-8 pt-20 sm:px-8">
+        <section className="overflow-hidden bg-black">
+          <div className="relative mx-auto max-w-[1360px] px-5 pb-8 pt-14 sm:px-8 sm:pt-16">
             <div className="grid gap-7 md:grid-cols-[minmax(0,1fr)_minmax(280px,0.65fr)] md:items-end">
               <div>
                 <Pill>Integrations</Pill>
@@ -439,8 +439,8 @@ export function IndustryExperiencePage({
           </div>
         </section>
 
-        <section className="border-t border-white/[0.06] bg-black">
-          <div className="mx-auto max-w-6xl px-6 pt-16 lg:px-8">
+        <section className="bg-black">
+          <div className="mx-auto max-w-6xl px-6 pt-12 lg:px-8">
             <div className="mx-auto max-w-3xl text-center">
               <Pill>Pricing</Pill>
               <h2 className="mt-6 text-3xl font-semibold leading-tight tracking-[-0.02em] md:text-4xl">Simple plans that scale with your calls</h2>
@@ -486,8 +486,8 @@ export function IndustryExperiencePage({
           </div>
         </section>
 
-        <section className="border-t border-white/[0.06] bg-black">
-          <div className="mx-auto max-w-4xl px-6 pb-20 pt-16 text-center lg:px-8">
+        <section className="bg-black">
+          <div className="mx-auto max-w-4xl px-6 pb-14 pt-12 text-center lg:px-8">
             <div className="mx-auto max-w-2xl">
               <Pill>F.A.Q</Pill>
               <h2 className="mt-6 text-3xl font-semibold leading-tight tracking-[-0.02em] md:text-4xl">Questions &amp; answers</h2>
@@ -505,7 +505,7 @@ export function IndustryExperiencePage({
           </div>
         </section>
 
-        <section className="bg-black px-6 pb-16 pt-4 lg:px-8">
+        <section className="bg-black px-6 pb-12 pt-4 lg:px-8">
           <div className="industry-contact mx-auto flex max-w-6xl flex-col items-center justify-between gap-7 overflow-hidden rounded-[24px] border border-[var(--industry-accent)]/35 bg-[#07100d] p-8 text-center sm:p-10 md:flex-row md:text-left">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--industry-accent-soft)]">Ready to get started?</p>
@@ -524,7 +524,7 @@ export function IndustryExperiencePage({
         }
 
         .industry-hero-heading {
-          font-size: clamp(2.8rem, 5vw, 4.7rem);
+          font-size: clamp(2.25rem, 4.7vw, 4rem);
           line-height: 0.98;
           letter-spacing: -0.05em;
         }

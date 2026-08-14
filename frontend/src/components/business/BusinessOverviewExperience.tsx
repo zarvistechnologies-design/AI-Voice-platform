@@ -151,7 +151,7 @@ export function BusinessOverviewExperience() {
   return (
     <SiteLayout>
       <div className="overflow-hidden bg-[#020504] text-white">
-        <section className="relative px-3 pb-20 pt-36 sm:px-5 sm:pt-40 lg:pb-28 lg:pt-44">
+        <section className="relative px-3 pb-14 pt-28 sm:px-5 sm:pt-32 lg:pb-16 lg:pt-36">
           <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(69,221,206,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(69,221,206,0.055)_1px,transparent_1px)] [background-size:54px_54px] [mask-image:linear-gradient(to_bottom,black,transparent_88%)]" aria-hidden="true" />
           <div className="absolute left-1/2 top-0 h-[520px] w-[940px] -translate-x-1/2 rounded-full bg-[#45ddce]/[0.07] blur-[135px]" aria-hidden="true" />
 
@@ -160,7 +160,7 @@ export function BusinessOverviewExperience() {
               <div className="inline-flex items-center gap-2 rounded-full border border-[#45ddce]/22 bg-[#45ddce]/[0.07] px-4 py-2 text-[10px] font-black uppercase tracking-[0.17em] text-[#75fff0]">
                 <span className="size-1.5 rounded-full bg-[#45ddce] shadow-[0_0_10px_#45ddce]" /> AI voice for business
               </div>
-              <h1 className="mt-7 text-[clamp(1.65rem,4.8vw,4.25rem)] leading-[0.98] font-black tracking-[-0.05em]">
+              <h1 className="mt-7 text-[clamp(1.65rem,4.4vw,3.8rem)] leading-[0.98] font-medium tracking-[-0.05em]">
                 <span className="block whitespace-nowrap">Every customer call,</span>
                 <span className="block whitespace-nowrap text-[#75fff0]">handled with purpose.</span>
               </h1>
@@ -179,7 +179,7 @@ export function BusinessOverviewExperience() {
           </div>
         </section>
 
-        <section className="border-y border-white/[0.07] bg-white/[0.018] px-5 sm:px-8">
+        <section className="bg-white/[0.018] px-5 sm:px-8">
           <div className="mx-auto grid max-w-[1280px] grid-cols-2 lg:grid-cols-4">
             {outcomes.map((outcome, index) => (
               <div className="border-b border-r border-white/[0.07] px-5 py-7 even:border-r-0 lg:border-b-0 lg:even:border-r lg:last:border-r-0" key={outcome.label}>
@@ -190,7 +190,7 @@ export function BusinessOverviewExperience() {
           </div>
         </section>
 
-        <section className="px-5 py-20 sm:px-8 lg:py-28" id="use-cases">
+        <section className="px-5 py-14 sm:px-8 lg:py-20" id="use-cases">
           <div className="mx-auto max-w-[1280px]">
             <div className="grid gap-8 lg:grid-cols-[0.7fr_1.3fr] lg:items-end">
               <div><p className="text-[10px] font-black uppercase tracking-[0.19em] text-[#75fff0]">High-value workflows</p><h2 className="mt-5 text-[clamp(2.2rem,4.5vw,4rem)] leading-[1.02] font-black tracking-[-0.04em]">Start where calls create the most work.</h2></div>
@@ -217,7 +217,7 @@ export function BusinessOverviewExperience() {
           </div>
         </section>
 
-        <section className="border-y border-white/[0.07] bg-[#050b09] px-5 py-20 sm:px-8 lg:py-28">
+        <section className="bg-[#050b09] px-5 py-14 sm:px-8 lg:py-20">
           <div className="mx-auto max-w-[1280px]">
             <div className="mx-auto max-w-3xl text-center">
               <p className="text-[10px] font-black uppercase tracking-[0.19em] text-[#75fff0]">One continuous operation</p>
@@ -238,7 +238,7 @@ export function BusinessOverviewExperience() {
           </div>
         </section>
 
-        <section className="px-5 py-20 sm:px-8 lg:py-28" id="industries">
+        <section className="px-5 py-14 sm:px-8 lg:py-20" id="industries">
           <div className="mx-auto max-w-[1280px]">
             <div className="flex flex-col justify-between gap-7 lg:flex-row lg:items-end">
               <div className="max-w-3xl"><p className="text-[10px] font-black uppercase tracking-[0.19em] text-[#75fff0]">Built for your operating reality</p><h2 className="mt-5 text-[clamp(2.2rem,4.5vw,4rem)] leading-[1.02] font-black tracking-[-0.04em]">Voice workflows shaped for every industry.</h2></div>
@@ -258,7 +258,7 @@ export function BusinessOverviewExperience() {
           </div>
         </section>
 
-        <section className="border-y border-white/[0.07] bg-[#050b09] px-5 py-20 sm:px-8 lg:py-24">
+        <section className="bg-[#050b09] px-5 py-14 sm:px-8 lg:py-16">
           <div className="mx-auto grid max-w-[1180px] overflow-hidden rounded-[26px] border border-white/[0.09] bg-[#07110f] lg:grid-cols-[1.05fr_0.95fr]">
             <div className="p-7 sm:p-10 lg:p-12">
               <p className="text-[10px] font-black uppercase tracking-[0.19em] text-[#75fff0]">Enterprise ready</p>
@@ -276,13 +276,13 @@ export function BusinessOverviewExperience() {
           </div>
         </section>
 
-        <section className="px-5 py-20 sm:px-8 lg:py-28">
+        <section className="px-5 py-14 sm:px-8 lg:py-20">
           <div className="relative mx-auto max-w-[1120px] overflow-hidden rounded-[28px] border border-[#45ddce]/20 bg-[linear-gradient(125deg,rgba(69,221,206,0.16),rgba(143,131,232,0.08)_55%,rgba(242,141,69,0.1))] p-8 text-center shadow-[0_36px_100px_rgba(0,0,0,0.34)] sm:p-12 lg:p-16">
             <div className="absolute left-1/2 top-0 h-px w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-[#75fff0] to-transparent" />
             <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#75fff0]">Ready for better conversations?</p>
             <h2 className="mx-auto mt-5 max-w-3xl text-3xl leading-tight font-black tracking-[-0.04em] sm:text-5xl">Put your next customer workflow on voice.</h2>
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/52 sm:text-base">Start with free usage, or work with our team to design a production rollout around your call volume and systems.</p>
-            <div className="mt-8 flex flex-wrap justify-center gap-3"><Link className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[#45ddce] px-6 text-sm font-black text-[#03110e]" href="/login">Start building <ArrowIcon /></Link><Link className="inline-flex min-h-12 items-center rounded-full border border-white/14 bg-black/20 px-6 text-sm font-black text-white" href="/pricing">View pricing</Link><Link className="inline-flex min-h-12 items-center rounded-full border border-white/14 bg-black/20 px-6 text-sm font-black text-white" href="#contact">Contact sales</Link></div>
+            <div className="mt-8 flex flex-wrap justify-center gap-3"><Link className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[#45ddce] px-6 text-sm font-black text-[#03110e]" href="/login">Start building <ArrowIcon /></Link><Link className="inline-flex min-h-12 items-center rounded-full border border-white/14 bg-black/20 px-6 text-sm font-black text-white" href="/pricing">View pricing</Link><Link className="inline-flex min-h-12 items-center rounded-full bg-[#45ddce] px-6 text-sm font-black text-[#03110e] transition hover:-translate-y-0.5 hover:bg-[#75fff0]" href="#contact">Contact sales</Link></div>
           </div>
         </section>
       </div>

@@ -11,6 +11,10 @@ export type ProductPageDesign = {
   blueprintLabel: string;
   blueprintTitle: string;
   blueprintIntro: string;
+  blueprintCoreLabel: string;
+  blueprintCoreTitle: string;
+  blueprintCoreBody: string;
+  blueprintCoreBadge: string;
   workflowLabel: string;
   workflowTitle: string;
   workflowIntro: string;
@@ -36,6 +40,11 @@ export const productPageDesigns: Record<string, ProductPageDesign> = {
     blueprintTitle: "Every agent is made of three connected capabilities.",
     blueprintIntro:
       "Identity, approved knowledge, and connected actions define how an agent represents your business and completes useful work.",
+    blueprintCoreLabel: "Conversation engine",
+    blueprintCoreTitle: "A coordinated core for every call.",
+    blueprintCoreBody:
+      "Voice identity, trusted knowledge, and approved actions meet here to create one consistent customer experience.",
+    blueprintCoreBadge: "Agent core",
     workflowLabel: "How you build it",
     workflowTitle: "A guided process, from first setup to going live.",
     workflowIntro:
@@ -60,6 +69,11 @@ export const productPageDesigns: Record<string, ProductPageDesign> = {
     blueprintTitle: "A recognizable voice, built from controlled ingredients.",
     blueprintIntro:
       "A production voice is more than a recording. Source quality, delivery controls, and publishing permissions work together to keep every generated line consistent and authorized.",
+    blueprintCoreLabel: "Voice model",
+    blueprintCoreTitle: "A governed identity ready for new scripts.",
+    blueprintCoreBody:
+      "The approved source, delivery profile, and usage permissions stay connected as the voice moves across channels.",
+    blueprintCoreBadge: "Voice profile",
     workflowLabel: "From sample to library",
     workflowTitle: "Create once, review carefully, then reuse with confidence.",
     workflowIntro:
@@ -84,6 +98,11 @@ export const productPageDesigns: Record<string, ProductPageDesign> = {
     blueprintTitle: "Every millisecond between text and speech has a job.",
     blueprintIntro:
       "Fast voice experiences depend on more than synthesis speed. Text handling, delivery controls, and resilient streaming must work as one responsive pipeline.",
+    blueprintCoreLabel: "Streaming engine",
+    blueprintCoreTitle: "Text becomes playable speech in one responsive path.",
+    blueprintCoreBody:
+      "Input handling, synthesis, and resilient delivery remain synchronized from the first text fragment to the final audio frame.",
+    blueprintCoreBadge: "Speech stream",
     workflowLabel: "From text to playback",
     workflowTitle: "A streaming path tuned for natural turn-taking.",
     workflowIntro:
@@ -108,6 +127,11 @@ export const productPageDesigns: Record<string, ProductPageDesign> = {
     blueprintTitle: "Language, pronunciation, and local context move together.",
     blueprintIntro:
       "Reliable multilingual speech preserves intent while adapting the words, voice delivery, and regional details customers expect in their market.",
+    blueprintCoreLabel: "Localization layer",
+    blueprintCoreTitle: "One message, adapted for each listener.",
+    blueprintCoreBody:
+      "Language, pronunciation, and regional context travel together so every localized experience preserves the original intent.",
+    blueprintCoreBadge: "Language core",
     workflowLabel: "From source to locale",
     workflowTitle: "Localize the workflow, not only the sentence.",
     workflowIntro:
@@ -132,6 +156,11 @@ export const productPageDesigns: Record<string, ProductPageDesign> = {
     blueprintTitle: "Clear primitives at the edge. Strong controls underneath.",
     blueprintIntro:
       "Authentication, voice endpoints, and observable events give developers a predictable path from the first request to production traffic.",
+    blueprintCoreLabel: "Request lifecycle",
+    blueprintCoreTitle: "Every request stays predictable and observable.",
+    blueprintCoreBody:
+      "Scoped authentication, stable endpoints, and visible events create a dependable runtime from integration through production.",
+    blueprintCoreBadge: "API runtime",
     workflowLabel: "From key to production",
     workflowTitle: "A developer path that stays clear as usage grows.",
     workflowIntro:
@@ -156,6 +185,11 @@ export const productPageDesigns: Record<string, ProductPageDesign> = {
     blueprintTitle: "Contributors, reviewers, and owners stay in one release loop.",
     blueprintIntro:
       "Reusable standards, explicit approvals, and scoped visibility let teams move quickly without losing ownership of what reaches production.",
+    blueprintCoreLabel: "Release workspace",
+    blueprintCoreTitle: "Every change moves through one shared approval loop.",
+    blueprintCoreBody:
+      "Contributors, reviewers, and owners work from the same version with clear permissions and visible release status.",
+    blueprintCoreBadge: "Release hub",
     workflowLabel: "From draft to release",
     workflowTitle: "Every change has an owner, a review, and a visible outcome.",
     workflowIntro:
@@ -180,6 +214,11 @@ export const productPageDesigns: Record<string, ProductPageDesign> = {
     blueprintTitle: "Every call becomes searchable evidence, not another recording.",
     blueprintIntro:
       "Transcripts, workflow-specific fields, and trend views turn unstructured audio into information teams can verify and act on.",
+    blueprintCoreLabel: "Analysis engine",
+    blueprintCoreTitle: "Conversations become structured, traceable evidence.",
+    blueprintCoreBody:
+      "Transcripts, extracted fields, and source-linked metrics turn every call into information teams can inspect and use.",
+    blueprintCoreBadge: "Insight layer",
     workflowLabel: "From call to action",
     workflowTitle: "Structure the conversation, validate the pattern, close the loop.",
     workflowIntro:
@@ -204,6 +243,11 @@ export const productPageDesigns: Record<string, ProductPageDesign> = {
     blueprintTitle: "Tone, language, and context combine before a workflow reacts.",
     blueprintIntro:
       "Sentiment is most useful as evidence. Conversation changes, customer context, and calibrated thresholds work together to support the right human response.",
+    blueprintCoreLabel: "Signal engine",
+    blueprintCoreTitle: "Context turns emotion into a calibrated signal.",
+    blueprintCoreBody:
+      "Tone, language, and conversation history combine before any alert, escalation, or review workflow begins.",
+    blueprintCoreBadge: "Signal core",
     workflowLabel: "From signal to response",
     workflowTitle: "Detect carefully, respond proportionately, review continuously.",
     workflowIntro:
@@ -228,6 +272,11 @@ export const productPageDesigns: Record<string, ProductPageDesign> = {
     blueprintTitle: "A useful finding stays connected to the conversations behind it.",
     blueprintIntro:
       "Theme discovery, meaningful comparison, and source evidence turn thousands of customer calls into a clear decision teams can trust.",
+    blueprintCoreLabel: "Discovery layer",
+    blueprintCoreTitle: "Patterns stay connected to source conversations.",
+    blueprintCoreBody:
+      "Themes, comparisons, and representative examples remain linked so teams can validate a finding before acting on it.",
+    blueprintCoreBadge: "Evidence graph",
     workflowLabel: "From question to finding",
     workflowTitle: "Discover the pattern, validate the evidence, assign the response.",
     workflowIntro:
@@ -252,6 +301,11 @@ export const productPageDesigns: Record<string, ProductPageDesign> = {
     blueprintTitle: "Boundaries, testing, and evidence travel with every release.",
     blueprintIntro:
       "Production quality comes from defined behavior limits, realistic pre-launch tests, and focused human oversight after calls begin.",
+    blueprintCoreLabel: "Governance layer",
+    blueprintCoreTitle: "Controls and evidence travel with every release.",
+    blueprintCoreBody:
+      "Behavior limits, test results, and human review stay connected throughout deployment and continuous improvement.",
+    blueprintCoreBadge: "Control core",
     workflowLabel: "From risk to release",
     workflowTitle: "Set the boundary, test the difficult path, monitor the evidence.",
     workflowIntro:
