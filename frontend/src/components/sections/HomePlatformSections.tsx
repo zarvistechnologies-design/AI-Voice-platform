@@ -2628,10 +2628,10 @@ export function HomePlatformSections() {
         }
 
         .vozon-one-grid {
-          display: flex;
+          display: grid;
+          grid-template-columns: 1fr 1.28fr 1fr;
           align-items: stretch;
           gap: 20px;
-          perspective: 1200px;
         }
 
         .vozon-one-card {
@@ -2640,7 +2640,6 @@ export function HomePlatformSections() {
           display: flex;
           min-width: 0;
           min-height: 470px;
-          flex: .96 1 0;
           flex-direction: column;
           overflow: hidden;
           border: 1px solid rgba(139, 159, 175, .19);
@@ -2652,10 +2651,8 @@ export function HomePlatformSections() {
           cursor: pointer;
           outline: none;
           transition:
-            flex-grow 320ms ease,
             opacity 260ms ease,
             border-color 240ms ease,
-            transform 260ms ease,
             box-shadow 260ms ease;
         }
 
@@ -2682,7 +2679,6 @@ export function HomePlatformSections() {
         .vozon-one-card:hover {
           border-color: rgba(255, 255, 255, .24);
           box-shadow: inset 0 1px rgba(255, 255, 255, .04), 0 28px 72px rgba(0, 0, 0, .34);
-          transform: translateY(-2px);
         }
 
         .vozon-one-card:focus-visible {
@@ -2691,7 +2687,6 @@ export function HomePlatformSections() {
         }
 
         .vozon-one-speech-card {
-          flex-grow: 1.08;
           border-color: rgba(255, 255, 255, .14);
           background:
             radial-gradient(circle at 18% 0%, rgba(69, 221, 206, .18), transparent 42%),
@@ -2704,7 +2699,6 @@ export function HomePlatformSections() {
         }
 
         .vozon-one-brain-card {
-          flex-grow: 1.38;
           border-color: rgba(255, 255, 255, .14);
           background:
             radial-gradient(circle at 82% 0%, rgba(169, 156, 255, .2), transparent 42%),
@@ -2832,22 +2826,17 @@ export function HomePlatformSections() {
 
         @media (min-width: 1051px) {
           .vozon-one-grid.has-active-card .vozon-one-card.is-muted {
-            flex-grow: .92;
             opacity: .9;
-            transform: scale(.995);
           }
 
           .vozon-one-grid.has-active-card .vozon-one-card.is-active {
             z-index: 6;
-            flex-grow: 1.2;
             opacity: 1;
             border-color: rgba(255, 255, 255, .26);
-            transform: translateY(-4px) scale(1.006);
             box-shadow: inset 0 1px rgba(255, 255, 255, .055), 0 34px 86px rgba(0, 0, 0, .42), 0 0 52px rgba(69, 221, 206, .08);
           }
 
           .vozon-one-grid.has-active-card .vozon-one-brain-card.is-active {
-            flex-grow: 1.5;
             border-color: rgba(255, 255, 255, .28);
             box-shadow: inset 0 1px rgba(255, 255, 255, .055), 0 28px 70px rgba(0, 0, 0, .4);
           }

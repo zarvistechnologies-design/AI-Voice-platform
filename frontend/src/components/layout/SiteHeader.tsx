@@ -86,11 +86,7 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`vozon-site-header pointer-events-none fixed right-0 left-0 z-50 px-3 transition-all duration-200 sm:px-5 max-[1180px]:top-2 max-[560px]:px-2.5 ${
-        isScrolled
-          ? "top-2"
-          : "top-3.5"
-      }`}
+      className="vozon-site-header pointer-events-none fixed top-0 right-0 left-0 z-50 px-3 transition-all duration-200 sm:px-5 max-[560px]:px-2.5"
       ref={headerRef}
     >
       <div
@@ -302,6 +298,7 @@ export function SiteHeader() {
     --header-muted: rgba(255, 255, 255, 0.92);
 
     pointer-events: none;
+    background: #000000;
   }
 
   .vozon-site-header > div:first-of-type {
@@ -317,12 +314,7 @@ export function SiteHeader() {
 
     border-radius: 18px !important;
 
-    background:
-      linear-gradient(
-        180deg,
-        rgba(7, 13, 12, 0.66),
-        rgba(2, 6, 6, 0.36)
-      ) !important;
+    background: #000000 !important;
 
     color: #ffffff !important;
 
@@ -1237,12 +1229,7 @@ export function SiteHeader() {
       border-radius:
         14px !important;
 
-      background:
-        linear-gradient(
-          180deg,
-          rgba(7, 13, 12, 0.72),
-          rgba(2, 6, 6, 0.42)
-        ) !important;
+      background: #000000 !important;
 
       box-shadow:
         0 0 15px rgba(69, 221, 206, 0.035),
