@@ -29,6 +29,7 @@ export type DigitalBotConnection = {
   targetAgentName: string;
   accountId: string;
   status: "connected" | "error" | "disconnected";
+  toolsActive: boolean;
   lastVerifiedAt: string | null;
   metadata: {
     connectionId: string;
