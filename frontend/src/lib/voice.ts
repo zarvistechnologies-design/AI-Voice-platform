@@ -71,6 +71,7 @@ export type AgentTool = {
   executeAfterMessage?: boolean;
   excludeSessionId?: boolean;
   messages?: string[];
+  managedBy?: string;
 };
 
 export type AgentToolRunResult = {

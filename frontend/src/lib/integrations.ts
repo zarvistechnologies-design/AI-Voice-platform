@@ -8,6 +8,7 @@ export type IntegrationProvider = {
   connected: boolean;
   accountId: string;
   status: "connected" | "error" | "disconnected";
+  toolsActive: boolean;
   lastVerifiedAt: string | null;
   metadata: Record<string, unknown>;
   delivery: {
@@ -117,6 +118,15 @@ export const integrationsApi = {
       method: "POST",
       body: JSON.stringify({ agentId }),
     });
+    invalidateApiCache("integrations");
+    invalidateVoiceCache("/agents");
+    return result;
+  },
+  setDigitalBotTools: async (agentId: string, enabled: boolean) => {
+    const result = await request<{ active: boolean; attachedTools: string[]; addedTools: string[] }>(
+      `/digitalbot/connections/${encodeURIComponent(agentId)}/tools`,
+      { method: "PUT", body: JSON.stringify({ enabled }) },
+    );
     invalidateApiCache("integrations");
     invalidateVoiceCache("/agents");
     return result;
