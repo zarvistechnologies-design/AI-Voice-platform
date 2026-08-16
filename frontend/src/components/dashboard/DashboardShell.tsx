@@ -4774,6 +4774,44 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                         const headers = headersToDrafts(tool.headers);
                         const toolKey = tool._id ?? `${tool.name}-${index}`;
                         const isTesting = testingToolKey === toolKey;
+                        const isDigitalBotManaged = tool.managedBy === "digitalbot";
+
+                        if (isDigitalBotManaged) {
+                          return (
+                            <article
+                              className="flex flex-col gap-3 rounded-xl border border-[#99f6e8] bg-[#ecfeff] p-4 sm:flex-row sm:items-center sm:justify-between"
+                              key={toolKey}
+                            >
+                              <div className="flex min-w-0 items-center gap-3">
+                                <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-white text-[#00b8c4]">
+                                  <Icon icon="tool" />
+                                </span>
+                                <div className="min-w-0">
+                                  <div className="flex flex-wrap items-center gap-2">
+                                    <strong className="app-strong">{tool.name}</strong>
+                                    <span className="app-label rounded-full border border-[#99f6e8] bg-white px-2 py-0.5 text-[#008c96]">
+                                      Managed by DigitalBot
+                                    </span>
+                                  </div>
+                                  <span className="app-caption block">{tool.description}</span>
+                                </div>
+                              </div>
+                              <div className="flex shrink-0 items-center gap-2">
+                                <span className="app-label rounded-lg border border-[#99f6e8] bg-white px-3 py-2 text-[#008c96]">
+                                  {tool.enabled !== false ? "Active" : "Inactive"}
+                                </span>
+                                <button
+                                  className="app-button-text min-h-9 rounded-lg border border-[#99f6e8] bg-white px-3 text-[#00b8c4] transition hover:bg-[#f0fdff] disabled:cursor-not-allowed disabled:opacity-60"
+                                  type="button"
+                                  disabled={isTesting}
+                                  onClick={() => void handleTestTool(index)}
+                                >
+                                  {isTesting ? "Testing..." : "Test"}
+                                </button>
+                              </div>
+                            </article>
+                          );
+                        }
 
                         return (
                           <article

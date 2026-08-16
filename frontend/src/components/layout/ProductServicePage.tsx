@@ -683,117 +683,6 @@ function VoiceCloningIcon({ name }: { name: VoiceCloningIconName }) {
   return null;
 }
 
-const voiceWorkflowSteps: {
-  icon: VoiceWorkflowIconName;
-  title: string;
-  body: string;
-  color: string;
-}[] = [
-  {
-    icon: "upload",
-    title: "Upload Voice Sample",
-    body: "Provide a clear recording of the speaker for accurate voice cloning.",
-    color: "#35fbe0",
-  },
-  {
-    icon: "waveform",
-    title: "AI Learns the Voice",
-    body: "Analyze pronunciation, tone, rhythm, and vocal characteristics.",
-    color: "#8f83e8",
-  },
-  {
-    icon: "microphone",
-    title: "Generate Your AI Voice",
-    body: "Create a realistic digital voice optimized for natural conversations.",
-    color: "#ffad73",
-  },
-  {
-    icon: "phone",
-    title: "Deploy Anywhere",
-    body: "Use it with voice agents, IVR systems, customer support, and business workflows.",
-    color: "#75baff",
-  },
-];
-
-type VoiceWorkflowIconName = "upload" | "waveform" | "microphone" | "phone";
-
-function VoiceWorkflowIcon({ name }: { name: VoiceWorkflowIconName }) {
-  const common = {
-    fill: "none",
-    stroke: "currentColor",
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-    strokeWidth: 1.8,
-  };
-
-  if (name === "upload") {
-    return (
-      <svg
-        aria-hidden="true"
-        className="size-7"
-        viewBox="0 0 24 24"
-        {...common}
-      >
-        <path d="M7 17H6a3 3 0 0 1 0-6 5 5 0 0 1 9.7-1.5A4 4 0 1 1 18 17h-1" />
-        <path d="M12 15V8" />
-        <path d="m9 11 3-3 3 3" />
-      </svg>
-    );
-  }
-
-  if (name === "waveform") {
-    return (
-      <svg
-        aria-hidden="true"
-        className="size-7"
-        viewBox="0 0 24 24"
-        {...common}
-      >
-        <path d="M3 12h2" />
-        <path d="M6 9v6" />
-        <path d="M9 6v12" />
-        <path d="M12 10v4" />
-        <path d="M15 7v10" />
-        <path d="M18 9v6" />
-        <path d="M21 12h-2" />
-      </svg>
-    );
-  }
-
-  if (name === "microphone") {
-    return (
-      <svg
-        aria-hidden="true"
-        className="size-7"
-        viewBox="0 0 24 24"
-        {...common}
-      >
-        <rect x="9" y="3" width="6" height="11" rx="3" />
-        <path d="M6 11a6 6 0 0 0 12 0" />
-        <path d="M12 17v4" />
-        <path d="M9 21h6" />
-      </svg>
-    );
-  }
-
-  if (name === "phone") {
-    return (
-      <svg
-        aria-hidden="true"
-        className="size-7"
-        viewBox="0 0 24 24"
-        {...common}
-      >
-        <path d="M22 16.9v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7l.4 2.6a2 2 0 0 1-.6 1.8L7.3 9.7a16 16 0 0 0 7 7l1.6-1.6a2 2 0 0 1 1.8-.6l2.6.4a2 2 0 0 1 1.7 2Z" />
-        <path d="M16 4a5 5 0 0 1 4 4" />
-        <path d="M16 8a2 2 0 0 1 2 2" />
-      </svg>
-    );
-  }
-
-  return null;
-}
-
 const voicePreviewFeatures = [
   "Natural & expressive",
   "Clear pronunciation",
@@ -844,30 +733,6 @@ function PlayIcon() {
       fill="currentColor"
     >
       <path d="M8 6v12l10-6-10-6Z" />
-    </svg>
-  );
-}
-
-function MicrophoneIcon() {
-  const common = {
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.8,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-  };
-
-  return (
-    <svg
-      aria-hidden="true"
-      className="size-8"
-      viewBox="0 0 24 24"
-      {...common}
-    >
-      <rect x="9" y="3" width="6" height="11" rx="3" />
-      <path d="M6 11a6 6 0 0 0 12 0" />
-      <path d="M12 17v4" />
-      <path d="M9 21h6" />
     </svg>
   );
 }
@@ -1014,7 +879,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
               <Pill>
                 {service.kicker} / {experience.label}
               </Pill>
-              <h1 className="voice-agents-hero-heading mt-7 font-semibold leading-[0.98] tracking-[-0.055em]">
+              <h1 className="voice-agents-hero-heading mt-7 font-medium leading-[0.98] tracking-[-0.055em]">
                 <span className="product-service-heading-primary block">
                   {experience.heroTitle}
                 </span>{" "}
@@ -1034,7 +899,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
                   Try a demo <span className="ml-3">&rarr;</span>
                 </Link>
                 <Link
-                  className="service-secondary-button inline-flex min-h-12 items-center rounded-lg border border-white/15 bg-white/[0.04] px-6 text-sm font-extrabold text-white transition"
+                  className="service-primary-button inline-flex min-h-12 items-center rounded-lg px-6 text-sm font-extrabold transition hover:-translate-y-0.5"
                   href="/contact"
                 >
                   Contact sales
@@ -1223,77 +1088,6 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
               </div>
             </section>
 
-            <section className="voice-workflow-section relative overflow-hidden border-b border-white/[0.06] px-5 py-20 sm:px-8 sm:py-24">
-              <div className="voice-agent-container mx-auto max-w-[1320px]">
-                <div className="mx-auto max-w-4xl text-center">
-                  <div className="flex justify-center">
-                    <Pill>Voice Cloning Workflow</Pill>
-                  </div>
-
-                  <h2 className="voice-capabilities-heading mt-6 font-semibold leading-tight tracking-[-0.045em]">
-                    Simple{" "}
-                    <span className="text-[var(--service-accent)]">
-                      Voice Cloning Workflow
-                    </span>
-                  </h2>
-
-                  <p className="voice-capabilities-copy mx-auto mt-6 max-w-3xl">
-                    Create a production-ready AI voice in just a few simple
-                    steps.
-                  </p>
-                </div>
-
-                <div className="voice-workflow-grid mt-20">
-                  {voiceWorkflowSteps.map((step, index) => (
-                    <article className="voice-workflow-card" key={step.title}>
-                      <div
-                        className="voice-workflow-number"
-                        style={{
-                          color: step.color,
-                          borderColor: `${step.color}40`,
-                          backgroundColor: `${step.color}12`,
-                          boxShadow: `0 0 20px ${step.color}20`,
-                        }}
-                      >
-                        {index + 1}
-                      </div>
-
-                      <div
-                        className="voice-workflow-icon"
-                        style={{
-                          color: step.color,
-                          borderColor: `${step.color}40`,
-                          backgroundColor: `${step.color}12`,
-                          boxShadow: `0 0 28px ${step.color}20`,
-                        }}
-                      >
-                        <VoiceWorkflowIcon name={step.icon} />
-                      </div>
-                      <h3>{step.title}</h3>
-
-                      <p>{step.body}</p>
-
-                      {index < voiceWorkflowSteps.length - 1 && (
-                        <div className="voice-workflow-connector">
-                          <span
-                            style={{
-                              borderColor: step.color,
-                            }}
-                          />
-                          <span
-                            className="voice-workflow-dot"
-                            style={{
-                              backgroundColor: step.color,
-                            }}
-                          />
-                        </div>
-                      )}
-                    </article>
-                  ))}
-                </div>
-              </div>
-            </section>
-
             <section className="voice-preview-section relative overflow-hidden border-b border-white/[0.06] px-5 py-20 sm:px-8 sm:py-24">
   <div className="voice-agent-container mx-auto max-w-[1320px]">
     <div className="mx-auto max-w-4xl text-center">
@@ -1392,16 +1186,6 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
         </div>
       </div>
 
-      {/* Voice Orb */}
-      {/* <div className="voice-preview-orb">
-        <div className="voice-orb-ring ring-1"></div>
-        <div className="voice-orb-ring ring-2"></div>
-        <div className="voice-orb-ring ring-3"></div>
-
-        <div className="voice-orb-center">
-          <MicrophoneIcon />
-        </div>
-      </div> */}
     </div>
   </div>
 </section>
@@ -1427,22 +1211,20 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
             <div className="voice-blueprint-panel mt-14 grid gap-8 p-5 sm:p-8 lg:grid-cols-[minmax(260px,0.72fr)_minmax(0,1.28fr)] lg:gap-12 lg:p-10">
               <div className="voice-blueprint-core flex flex-col justify-between rounded-2xl p-7 sm:p-8">
                 <div>
-                  <p className="text-[10px] font-black tracking-[0.16em] text-[#8dd7ff] uppercase">
-                    Agent blueprint
+                  <p className="text-[10px] font-black tracking-[0.16em] text-[var(--service-accent-soft)] uppercase">
+                    {design?.blueprintCoreLabel ?? "Product foundation"}
                   </p>
                   <h3 className="mt-3 text-3xl font-semibold leading-tight tracking-[-0.045em] text-white">
-                    Built to listen, decide, and act.
+                    {design?.blueprintCoreTitle ?? "Connected capabilities, working as one."}
                   </h3>
                   <p className="mt-4 text-sm leading-7 text-white/55">
-                    Every capability is governed independently, then connected
-                    to create one consistent call experience.
+                    {design?.blueprintCoreBody ??
+                      "Each capability can be managed independently while remaining connected to one reliable production workflow."}
                   </p>
                 </div>
-                <div className="mx-auto mt-10 grid size-36 place-items-center rounded-full border border-[#a99cff]/35 bg-[#a99cff]/10 text-center shadow-[0_0_55px_rgba(169,156,255,0.16)]">
-                  <span className="text-xs font-black tracking-[0.2em] text-[#d3ccff] uppercase">
-                    Agent
-                    <br />
-                    core
+                <div className="mx-auto mt-10 grid size-36 place-items-center rounded-full border border-[rgba(var(--service-secondary-rgb),0.35)] bg-[rgba(var(--service-secondary-rgb),0.1)] p-4 text-center shadow-[0_0_55px_rgba(var(--service-secondary-rgb),0.16)]">
+                  <span className="text-xs font-black tracking-[0.16em] text-[var(--service-secondary)] uppercase">
+                    {design?.blueprintCoreBadge ?? "Product core"}
                   </span>
                 </div>
               </div>
@@ -4688,6 +4470,7 @@ inset:55px;
 .voice-preview-section {
   position: relative;
   overflow: hidden;
+  background: #000;
 }
 
 .voice-preview-section::before {
@@ -4695,13 +4478,7 @@ inset:55px;
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background:
-    radial-gradient(circle at 15% 20%,
-      rgba(var(--service-accent-rgb), .12),
-      transparent 32%),
-    radial-gradient(circle at 85% 75%,
-      rgba(var(--service-accent-rgb), .08),
-      transparent 35%);
+  background: none;
 }
 
 .voice-preview-layout {
@@ -4803,20 +4580,7 @@ inset:55px;
 =========================================== */
 
 .voice-sample-card::before {
-  content: "";
-
-  position: absolute;
-
-  inset: 0;
-
-  background:
-    radial-gradient(
-      circle at top right,
-      rgba(var(--service-accent-rgb), .12),
-      transparent 45%
-    );
-
-  pointer-events: none;
+  display: none;
 }
 
 /* ===========================================
@@ -4888,7 +4652,7 @@ inset:55px;
         }
 
         .voice-agent-page .voice-agents-hero-heading {
-          font-size: clamp(2.55rem, 5.3vw, 4.6rem);
+          font-size: clamp(2.25rem, 4.7vw, 4rem);
           line-height: 0.98;
         }
 
@@ -5092,114 +4856,6 @@ inset:55px;
           border-color: rgba(53, 251, 224, 0.2);
           background: rgba(53, 251, 224, 0.018);
           transform: translateY(-1px);
-        }
-
-        .voice-workflow-grid {
-          display: grid;
-          grid-template-columns: repeat(4, minmax(0, 1fr));
-          gap: 2rem;
-        }
-
-        .voice-workflow-card {
-          position: relative;
-          padding: 2.5rem 2rem;
-          border: 1px solid rgba(255,255,255,.08);
-          border-radius: 28px;
-          background: rgba(255,255,255,.02);
-          text-align: center;
-        }
-
-        .voice-workflow-number {
-          position: absolute;
-          top: 18px;
-          left: 18px;
-
-          width: 42px;
-          height: 42px;
-          border-radius: 999px;
-
-          display: grid;
-          place-items: center;
-
-          background: rgba(var(--service-accent-rgb),.12);
-          color: var(--service-accent);
-          border: 1px solid rgba(var(--service-accent-rgb),.3);
-
-          font-weight: 700;
-        }
-
-        .voice-workflow-icon {
-          width: 72px;
-          height: 72px;
-          margin: 1rem auto 1.75rem;
-
-          display: grid;
-          place-items: center;
-
-          border-radius: 50%;
-          background: rgba(var(--service-accent-rgb),.08);
-          color: var(--service-accent);
-        }
-
-        .voice-workflow-icon svg {
-          width: 36px;
-          height: 36px;
-        }
-
-        .voice-workflow-card h3 {
-          margin-bottom: .75rem;
-          color: white;
-          font-size: 1.2rem;
-        }
-
-        .voice-workflow-card p {
-          color: #94a3b8;
-          line-height: 1.7;
-        }
-
-        .voice-workflow-connector {
-          position: absolute;
-          top: 50%;
-          left: calc(100% + 8px);
-
-          width: calc(2rem - 16px);
-          height: 2px;
-
-          transform: translateY(-50%);
-        }
-
-        .voice-workflow-connector span:first-child {
-          display: block;
-          width: 100%;
-          border-top: 2px dashed rgba(var(--service-accent-rgb),.5);
-        }
-
-        .voice-workflow-dot {
-          position: absolute;
-          right: -6px;
-          top: -4px;
-
-          width: 10px;
-          height: 10px;
-          border-radius: 50%;
-
-          background: var(--service-accent);
-        }
-
-        @media (max-width: 1024px) {
-          .voice-workflow-grid {
-            grid-template-columns: repeat(2,1fr);
-          }
-
-          .voice-workflow-connector {
-            display: none;
-          }
-        }
-
-        @media (max-width: 640px) {
-          .voice-workflow-grid {
-            grid-template-columns: 1fr;
-          }
         }
 
         .voice-agent-page :is(
@@ -6114,6 +5770,108 @@ inset:55px;
           .voice-build-redesign-grid {
             grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 1.15rem;
+          }
+        }
+
+        /* Keep the shared product configuration studio consistent and focused. */
+        .voice-agent-page .voice-config-intro {
+          max-width: 48rem;
+        }
+
+        .voice-agent-page .voice-config-intro > h2 {
+          margin-top: 1.1rem;
+        }
+
+        .voice-agent-page .voice-config-intro > p {
+          max-width: 44rem;
+          margin-top: 1rem;
+          font-size: 0.925rem;
+          line-height: 1.6rem;
+        }
+
+        .voice-agent-page .voice-config-explorer {
+          max-width: 1160px;
+          margin-top: 1.75rem;
+        }
+
+        .voice-agent-page .voice-config-detail {
+          min-height: 400px;
+          padding: 2rem 2.25rem;
+        }
+
+        .voice-agent-page .voice-config-detail-body {
+          width: min(100%, 760px);
+          gap: 1.75rem;
+        }
+
+        .voice-agent-page .voice-config-title-row {
+          gap: 1rem;
+          margin-top: 1.2rem;
+        }
+
+        .voice-agent-page .voice-config-detail-icon {
+          width: 3.5rem;
+          height: 3.5rem;
+        }
+
+        .voice-agent-page .voice-config-detail-icon svg {
+          width: 1.85rem;
+          height: 1.85rem;
+        }
+
+        .voice-agent-page .voice-config-detail h3 {
+          font-size: clamp(1.6rem, 2.5vw, 2rem);
+        }
+
+        .voice-agent-page .voice-config-detail-content > p {
+          margin-top: 1rem;
+          font-size: 0.925rem;
+          line-height: 1.6rem;
+        }
+
+        .voice-agent-page .voice-config-option-grid {
+          gap: 0.75rem;
+          padding: 1.25rem;
+          border-radius: 1rem;
+        }
+
+        .voice-agent-page .voice-config-option-grid-label {
+          margin-bottom: 0.35rem;
+          font-size: 0.68rem !important;
+        }
+
+        .voice-agent-page .voice-config-option {
+          min-height: 3.7rem;
+          padding: 0.8rem 0.9rem;
+          font-size: 0.84rem;
+        }
+
+        @media (min-width: 900px) {
+          .voice-agent-page .voice-config-explorer {
+            grid-template-columns: minmax(235px, 0.44fr) minmax(0, 1.56fr);
+          }
+
+          .voice-agent-page .voice-config-tabs > button {
+            padding: 0.72rem 0.8rem;
+          }
+        }
+
+        @media (max-width: 639px) {
+          .voice-agent-page .voice-config-detail {
+            min-height: 0;
+            padding: 1.4rem;
+          }
+
+          .voice-agent-page .voice-config-detail-body {
+            gap: 1.4rem;
+          }
+
+          .voice-agent-page .voice-config-title-row {
+            margin-top: 1.1rem;
+          }
+
+          .voice-agent-page .voice-config-option-grid {
+            padding: 0.95rem;
           }
         }
 

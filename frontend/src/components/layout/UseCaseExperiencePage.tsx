@@ -92,22 +92,22 @@ export function UseCaseExperiencePage({ business, experience }: { business: Busi
   return (
     <SiteLayout>
       <div className="use-case-page overflow-hidden bg-black text-white">
-        <section className="use-case-hero relative overflow-hidden border-b border-white/[0.06] px-5 pb-16 pt-32 sm:px-8 sm:pb-20 sm:pt-36 lg:pt-40">
+        <section className="use-case-hero relative overflow-hidden px-5 pb-12 pt-28 sm:px-8 sm:pb-16 sm:pt-32 lg:pt-36">
           <div className="use-case-grid absolute inset-0 opacity-45" />
           <div className="absolute -left-52 top-16 size-[34rem] rounded-full bg-[#35fbe0]/[0.07] blur-[120px]" />
           <div className="absolute -right-40 top-24 size-[30rem] rounded-full bg-[#8f83e8]/[0.07] blur-[120px]" />
           <div className="relative mx-auto grid max-w-[1320px] gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(420px,0.88fr)] lg:items-center">
             <div className="max-w-3xl">
               <Pill>{experience.label}</Pill>
-              <h1 className="mt-7 text-[clamp(2.6rem,5.2vw,4.65rem)] font-semibold leading-[0.98] tracking-[-0.055em]">
+              <h1 className="mt-7 text-[clamp(2.25rem,4.7vw,4rem)] font-medium leading-[0.98] tracking-[-0.055em]">
                 AI voice agents for {business.title.toLowerCase()} <span className="use-case-heading-accent">{experience.heroAccent}</span>
               </h1>
               <p className="mt-7 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">{business.summary}</p>
               <div className="mt-9 flex flex-wrap gap-3">
-                <Link className="inline-flex min-h-12 items-center rounded-lg bg-[#35fbe0] px-6 text-sm font-extrabold text-[#031310] transition hover:-translate-y-0.5 hover:bg-[#75fff0]" href="/#demo">
-                  Try a demo <span className="ml-3">&rarr;</span>
+                <Link className="inline-flex min-h-12 items-center rounded-lg bg-[#35fbe0] px-6 text-sm font-extrabold text-[#031310] shadow-[0_12px_32px_rgba(53,251,224,0.12)] transition hover:-translate-y-0.5 hover:bg-[#75fff0]" href="/#demo">
+                  Book a free demo <span className="ml-3">&rarr;</span>
                 </Link>
-                <Link className="inline-flex min-h-12 items-center rounded-lg border border-white/15 bg-white/[0.04] px-6 text-sm font-extrabold text-white transition hover:bg-white/[0.08]" href="/contact">
+                <Link className="inline-flex min-h-12 items-center rounded-lg bg-[#35fbe0] px-6 text-sm font-extrabold text-[#031310] shadow-[0_12px_32px_rgba(53,251,224,0.12)] transition hover:-translate-y-0.5 hover:bg-[#75fff0]" href="/contact">
                   Contact sales
                 </Link>
               </div>
@@ -121,7 +121,7 @@ export function UseCaseExperiencePage({ business, experience }: { business: Busi
           </div>
         </section>
 
-        <section className="border-b border-white/[0.06] bg-black px-5 sm:px-8">
+        <section className="bg-black px-5 sm:px-8">
           <div className="mx-auto grid max-w-[1320px] sm:grid-cols-3">
             {experience.proof.map((item, index) => (
               <div className="border-b border-white/[0.08] py-7 last:border-b-0 sm:border-b-0 sm:border-r sm:px-7 sm:last:border-r-0 sm:first:pl-0" key={item.label}>
@@ -135,7 +135,7 @@ export function UseCaseExperiencePage({ business, experience }: { business: Busi
           </div>
         </section>
 
-        <section className="px-5 py-20 sm:px-8 sm:py-24">
+        <section className="px-5 py-14 sm:px-8 sm:py-16">
           <div className="mx-auto max-w-[1320px]">
             <div className="max-w-3xl">
               <Pill>What it handles</Pill>
@@ -161,7 +161,7 @@ export function UseCaseExperiencePage({ business, experience }: { business: Busi
           </div>
         </section>
 
-        <section className="border-y border-white/[0.06] bg-[#030605] px-5 py-20 sm:px-8 sm:py-24">
+        <section className="bg-[#030605] px-5 py-14 sm:px-8 sm:py-16">
           <div className="mx-auto grid max-w-[1320px] gap-12 lg:grid-cols-[0.72fr_1.28fr] lg:gap-20">
             <div className="lg:sticky lg:top-32 lg:self-start">
               <Pill>How it works</Pill>
@@ -179,7 +179,7 @@ export function UseCaseExperiencePage({ business, experience }: { business: Busi
           </div>
         </section>
 
-        <section className="px-5 py-20 sm:px-8 sm:py-24">
+        <section className="px-5 py-14 sm:px-8 sm:py-16">
           <div className="mx-auto max-w-[1320px]">
             <div className="mx-auto max-w-3xl text-center"><Pill>Common workflows</Pill><h2 className="mt-6 text-3xl font-semibold leading-tight tracking-[-0.035em] sm:text-5xl">Useful in the moments that matter.</h2></div>
             <div className="mt-12 grid gap-4 md:grid-cols-3">
@@ -196,7 +196,7 @@ export function UseCaseExperiencePage({ business, experience }: { business: Busi
           </div>
         </section>
 
-        <section className="border-y border-white/[0.06] bg-[#030605] px-5 py-20 sm:px-8">
+        <section className="bg-[#030605] px-5 py-14 sm:px-8 sm:py-16">
           <div className="mx-auto max-w-[1100px] text-center">
             <Pill>Connect your stack</Pill>
             <h2 className="mx-auto mt-6 max-w-3xl text-3xl font-semibold leading-tight tracking-[-0.035em] sm:text-4xl">Fit the workflow around the systems your team already uses.</h2>
@@ -208,7 +208,7 @@ export function UseCaseExperiencePage({ business, experience }: { business: Busi
           </div>
         </section>
 
-        <section className="px-5 py-20 sm:px-8 sm:py-24">
+        <section className="px-5 py-14 sm:px-8 sm:py-16">
           <div className="mx-auto max-w-4xl">
             <div className="text-center"><Pill>F.A.Q.</Pill><h2 className="mt-6 text-3xl font-semibold tracking-[-0.035em] sm:text-5xl">Questions, answered clearly.</h2></div>
             <div className="mt-10 grid gap-2">
@@ -219,7 +219,7 @@ export function UseCaseExperiencePage({ business, experience }: { business: Busi
           </div>
         </section>
 
-        <section className="px-5 pb-20 sm:px-8 sm:pb-24">
+        <section className="px-5 pb-14 sm:px-8 sm:pb-16">
           <div className="use-case-cta relative mx-auto flex max-w-[1160px] flex-col items-center justify-between gap-8 overflow-hidden rounded-3xl border border-[#35fbe0]/25 p-8 text-center sm:p-10 md:flex-row md:text-left lg:p-12">
             <div className="relative max-w-2xl"><p className="text-xs font-black uppercase tracking-[0.14em] text-[#75fff0]">Ready to get started?</p><h2 className="mt-4 text-3xl font-semibold leading-tight tracking-[-0.035em] sm:text-4xl">Put {business.title.toLowerCase()} to work on one real call workflow.</h2></div>
             <Link className="relative inline-flex min-h-12 shrink-0 items-center rounded-lg bg-[#35fbe0] px-7 text-sm font-extrabold text-[#031310] transition hover:-translate-y-0.5 hover:bg-[#75fff0]" href="/contact">Contact us <span className="ml-3">&rarr;</span></Link>

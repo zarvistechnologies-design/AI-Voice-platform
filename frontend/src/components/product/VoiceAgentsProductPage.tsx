@@ -215,9 +215,9 @@ function ConfigIcon({ name }: { name: (typeof configuration)[number]["icon"] }) 
 export function VoiceAgentsProductPage() {
   return (
     <SiteLayout>
-      <div className="voice-build-page overflow-hidden bg-[#07101c] text-white">
+      <div className="voice-build-page overflow-hidden bg-black text-white">
         <section className="relative px-[clamp(1.25rem,5vw,4.75rem)] pt-24 pb-20 sm:pt-28 lg:pt-32 lg:pb-28">
-          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,#07101c_0%,#081321_100%)]" />
+          
           <div className="pointer-events-none absolute inset-0 opacity-25 [background-image:linear-gradient(rgba(255,255,255,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.045)_1px,transparent_1px)] [background-size:64px_64px] [mask-image:linear-gradient(to_bottom,black,transparent_90%)]" />
 
           <div className="relative mx-auto max-w-[1380px]">
@@ -361,9 +361,8 @@ export function VoiceAgentsProductPage() {
           </div>
         </section>
 
-        <section className="relative border-t border-white/[0.06] bg-[#0a1421] px-[clamp(1.25rem,5vw,4.75rem)] py-20 sm:py-24 lg:py-28">
-          <div className="pointer-events-none absolute top-0 left-0 h-72 w-72 bg-[#2dd4bf]/6 blur-[120px]" />
-          <div className="pointer-events-none absolute right-[-6rem] bottom-[-8rem] size-80 rounded-full bg-[#9d8cff]/5 blur-[130px]" />
+        <section className="relative border-t border-white/[0.06] bg-black px-[clamp(1.25rem,5vw,4.75rem)] py-20 sm:py-24 lg:py-28">
+          
           <div className="relative mx-auto max-w-[1380px]">
             <div className="grid gap-6 lg:grid-cols-[minmax(210px,0.38fr)_minmax(0,1fr)] lg:gap-16">
               <div className="pt-1">
@@ -402,8 +401,8 @@ export function VoiceAgentsProductPage() {
           </div>
         </section>
 
-        <section className="relative bg-[#07101c] px-[clamp(1.25rem,5vw,4.75rem)] py-24 sm:py-28 lg:py-32">
-          <div className="pointer-events-none absolute top-[20%] right-[-10%] size-[28rem] rounded-full bg-[#9d8cff]/7 blur-[130px]" />
+        <section className="relative bg-black px-[clamp(1.25rem,5vw,4.75rem)] py-24 sm:py-28 lg:py-32">
+          
           <div className="relative mx-auto max-w-[1380px]">
             <div className="grid gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-end">
               <div>
@@ -435,7 +434,7 @@ export function VoiceAgentsProductPage() {
           </div>
         </section>
 
-        <section className="relative border-y border-white/[0.06] bg-[#0b1523] px-[clamp(1.25rem,5vw,4.75rem)] py-24 sm:py-28 lg:py-32">
+        <section className="relative border-y border-white/[0.06] bg-black px-[clamp(1.25rem,5vw,4.75rem)] py-24 sm:py-28 lg:py-32">
           <div className="pointer-events-none absolute inset-0 opacity-20 [background-image:radial-gradient(circle_at_center,rgba(255,255,255,0.12)_1px,transparent_1px)] [background-size:28px_28px] [mask-image:linear-gradient(to_right,black,transparent_20%,transparent_80%,black)]" />
           <div className="relative mx-auto grid max-w-[1380px] gap-14 lg:grid-cols-[minmax(300px,0.72fr)_minmax(0,1.28fr)] lg:gap-20">
             <div>
@@ -479,8 +478,8 @@ export function VoiceAgentsProductPage() {
           </div>
         </section>
 
-        <section className="relative bg-[#07101c] px-[clamp(1.25rem,5vw,4.75rem)] py-24 sm:py-28 lg:py-32">
-          <div className="pointer-events-none absolute bottom-0 left-[15%] h-72 w-72 bg-[#2dd4bf]/6 blur-[110px]" />
+        <section className="relative bg-black px-[clamp(1.25rem,5vw,4.75rem)] py-24 sm:py-28 lg:py-32">
+         
           <div className="relative mx-auto grid max-w-[1380px] gap-14 lg:grid-cols-[0.72fr_1.28fr] lg:gap-24">
             <div>
               <Eyebrow>F.A.Q.</Eyebrow>
