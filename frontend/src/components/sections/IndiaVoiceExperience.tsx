@@ -1,7 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Room, RoomEvent, Track, setLogLevel } from "livekit-client";
 import { API_URL } from "@/lib/apiBase";
+
+setLogLevel("silent");
+
+const WEBSITE_AGENT_ID = process.env.NEXT_PUBLIC_WEBSITE_AGENT_ID ?? "6a818ee880e87c6c405274b3";
+const WEBSITE_AGENT_PUBLIC_KEY = process.env.NEXT_PUBLIC_WEBSITE_AGENT_PUBLIC_KEY ?? "wpk_f2fc6a2375744227a4bf3c53889816dc";
+
+type WidgetToken = { serverUrl: string; participantToken: string };
 
 type VoiceLanguage = {
   code: string;
@@ -115,71 +123,100 @@ function FeatureIcon({ name }: { name: "chat" | "bolt" | "shield" }) {
 
 export function IndiaVoiceExperience() {
   const [activeCode, setActiveCode] = useState("hi");
-  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [callActive, setCallActive] = useState(false);
+  const [connecting, setConnecting] = useState(false);
+  const [agentSpeaking, setAgentSpeaking] = useState(false);
+  const [callStatus, setCallStatus] = useState("Select a language, then tap the microphone.");
   const [showAllLanguages, setShowAllLanguages] = useState(false);
-  const runRef = useRef(0);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const roomRef = useRef<Room | null>(null);
+  const audioElementsRef = useRef<HTMLMediaElement[]>([]);
   const active = languages.find((language) => language.code === activeCode) ?? languages[0];
+  const inCall = callActive || connecting;
 
-  const stopSpeaking = () => {
-    runRef.current += 1;
-    audioRef.current?.pause();
-    audioRef.current = null;
-    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
-    setIsSpeaking(false);
-  };
-
-  useEffect(() => () => {
-    runRef.current += 1;
-    audioRef.current?.pause();
-    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+  const disconnect = useCallback((message = "Call ended. Tap the microphone to talk again.") => {
+    const room = roomRef.current;
+    roomRef.current = null;
+    room?.disconnect();
+    audioElementsRef.current.forEach((element) => element.remove());
+    audioElementsRef.current = [];
+    setCallActive(false);
+    setConnecting(false);
+    setAgentSpeaking(false);
+    setCallStatus(message);
   }, []);
 
-  const speak = (language = active) => {
+  useEffect(() => () => disconnect(""), [disconnect]);
+
+  const chooseLanguage = (language: VoiceLanguage) => {
+    if (inCall) disconnect(`Language changed to ${language.name}. Tap the microphone to start.`);
+    else setCallStatus(`Ready to talk in ${language.name}.`);
     setActiveCode(language.code);
-    runRef.current += 1;
-    const currentRun = runRef.current;
-    audioRef.current?.pause();
-    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
-    setIsSpeaking(true);
-    let fallbackStarted = false;
+  };
 
-    const finish = () => {
-      if (runRef.current === currentRun) setIsSpeaking(false);
-    };
-    const browserSpeech = () => {
-      if (fallbackStarted || runRef.current !== currentRun) return;
-      fallbackStarted = true;
-      if (!("speechSynthesis" in window)) return finish();
-      const utterance = new SpeechSynthesisUtterance(language.reply);
-      utterance.lang = language.locale;
-      utterance.rate = 0.94;
-      const languagePrefix = language.locale.split("-")[0].toLowerCase();
-      utterance.voice =
-        window.speechSynthesis
-          .getVoices()
-          .find((voice) => voice.lang.toLowerCase().startsWith(languagePrefix)) ?? null;
-      utterance.onend = finish;
-      utterance.onerror = finish;
-      window.speechSynthesis.speak(utterance);
-    };
+  const startCall = async () => {
+    if (connecting) return;
+    setConnecting(true);
+    setCallStatus(`Connecting your ${active.name} voice agent...`);
+    const room = new Room({ adaptiveStream: true, dynacast: true });
+    roomRef.current = room;
 
-    const sources = [
-      language.audio ?? `/audio/india-voices/${language.code}.wav`,
-      `${API_URL}/api/voice/marketing-preview/${language.code}`,
-    ];
-    const playSource = (sourceIndex: number) => {
-      if (runRef.current !== currentRun) return;
-      const source = sources[sourceIndex];
-      if (!source) return browserSpeech();
+    room.on(RoomEvent.TrackSubscribed, (track) => {
+      if (track.kind !== Track.Kind.Audio) return;
+      const element = track.attach();
+      element.autoplay = true;
+      element.style.display = "none";
+      document.body.appendChild(element);
+      audioElementsRef.current.push(element);
+      void element.play().catch(() => setCallStatus("Sound was blocked. Allow audio and try again."));
+      setCallStatus(`Connected in ${active.name}. Speak now.`);
+    });
+    room.on(RoomEvent.TrackUnsubscribed, (track) => {
+      track.detach().forEach((element) => {
+        element.remove();
+        audioElementsRef.current = audioElementsRef.current.filter((item) => item !== element);
+      });
+    });
+    room.on(RoomEvent.ActiveSpeakersChanged, (speakers) => {
+      setAgentSpeaking(speakers.some((speaker) => speaker.identity !== room.localParticipant.identity));
+    });
+    room.on(RoomEvent.ParticipantConnected, () => setCallStatus(`Agent joined in ${active.name}. Speak now.`));
+    room.on(RoomEvent.Disconnected, () => {
+      if (roomRef.current === room) disconnect();
+    });
 
-      const audio = new Audio(source);
-      audioRef.current = audio;
-      audio.onended = finish;
-      audio.onerror = () => playSource(sourceIndex + 1);
-      void audio.play().catch(() => playSource(sourceIndex + 1));
-    };
-    playSource(0);
+    try {
+      await room.startAudio();
+      const response = await fetch(`${API_URL}/api/widget/call-token`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          agentId: WEBSITE_AGENT_ID,
+          publicKey: WEBSITE_AGENT_PUBLIC_KEY,
+          parentOrigin: window.location.origin,
+          origin: window.location.origin,
+          metadata: {
+            SelectedLanguage: active.name,
+            SelectedLocale: active.locale,
+            Source: "homepage-language-demo",
+          },
+        }),
+      });
+      const token = await response.json().catch(() => null) as (WidgetToken & { message?: string }) | null;
+      if (!response.ok || !token?.participantToken) throw new Error(token?.message || "Could not start the voice session.");
+      await room.connect(token.serverUrl, token.participantToken);
+      await room.localParticipant.setMicrophoneEnabled(true, {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true,
+      });
+      setCallActive(true);
+      setCallStatus(room.remoteParticipants.size ? `Connected in ${active.name}. Speak now.` : "Connected. Waiting for the agent...");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Could not start the voice session.";
+      disconnect(message.toLowerCase().includes("permission") ? "Microphone permission is required. Allow access and try again." : message);
+    } finally {
+      setConnecting(false);
+    }
   };
 
   return (
@@ -201,7 +238,7 @@ export function IndiaVoiceExperience() {
                 aria-pressed={active.code === language.code}
                 className={active.code === language.code ? "is-active" : ""}
                 key={language.code}
-                onClick={() => speak(language)}
+                onClick={() => chooseLanguage(language)}
                 type="button"
               >
                 <span className="india-language-glyph">{language.glyph}</span>
@@ -219,21 +256,22 @@ export function IndiaVoiceExperience() {
 
         <div className="india-agent">
           <div className="india-agent-heading"><WaveMark /> Try Vozon in your language</div>
-          <p>Select a language, then tap the microphone to hear the agent.</p>
-          <div className={`india-mic-stage ${isSpeaking ? "is-speaking" : ""}`}>
+          <p>Select a language, then tap the microphone to have a real conversation about Vozon.</p>
+          <div className={`india-mic-stage ${inCall ? "is-speaking" : ""}`}>
             <div className="india-mic-wave">
               {waveBars.map((height, index) => <i key={index} style={{ height, animationDelay: `${index * -54}ms` }} />)}
             </div>
             <button
-              aria-label={isSpeaking ? "End voice preview" : `Talk to agent in ${active.name}`}
-              aria-pressed={isSpeaking}
-              onClick={() => isSpeaking ? stopSpeaking() : speak()}
+              aria-label={inCall ? "End voice call" : `Talk to agent in ${active.name}`}
+              aria-pressed={inCall}
+              disabled={connecting}
+              onClick={() => inCall ? disconnect() : void startCall()}
               type="button"
             >
               <span className="india-mic-ring india-mic-ring-one" />
               <span className="india-mic-ring india-mic-ring-two" />
               <span className="india-mic-core">
-                {isSpeaking ? (
+                {inCall ? (
                   <span className="india-call-waveform" aria-hidden="true">
                     {callWaveBars.map((height, index) => (
                       <i
@@ -250,13 +288,13 @@ export function IndiaVoiceExperience() {
               </span>
             </button>
           </div>
-          <strong aria-live="polite">{isSpeaking ? `Voice preview active · Tap to stop` : `Tap to start in ${active.name}`}</strong>
+          <strong aria-live="polite">{callStatus}</strong>
           <div className="india-listening-dots" aria-hidden="true">
             {[0, 1, 2, 3, 4, 5, 6, 7].map((dot) => <i className={dot === 0 || dot === 1 || dot === 5 ? "is-lit" : ""} key={dot} />)}
           </div>
-          <div className={`india-agent-reply ${isSpeaking ? "is-speaking" : ""}`} aria-live="polite">
+          <div className={`india-agent-reply ${inCall ? "is-speaking" : ""}`} aria-live="polite">
             <span>AI agent · {active.native}</span>
-            <p>{active.reply}</p>
+            <p>{agentSpeaking ? "The Vozon agent is speaking..." : callActive ? "Listening — ask anything about the Vozon platform." : active.reply}</p>
           </div>
         </div>
 
