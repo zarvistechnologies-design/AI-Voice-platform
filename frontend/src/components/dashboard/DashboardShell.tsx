@@ -1491,7 +1491,7 @@ function createEmptyToolDraft(): AgentTool {
     runAfterCall: false,
     executeAfterMessage: false,
     excludeSessionId: true,
-    messages: ["Let me check that for you."],
+    messages: [],
   };
 }
 
