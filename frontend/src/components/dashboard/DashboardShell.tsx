@@ -284,9 +284,10 @@ const fallbackLanguageCatalog: VoiceLanguageOption[] = [
   { value: "Swahili", label: "Swahili", code: "sw-KE", sarvamStt: false, sarvamTts: false },
 ];
 
-const elevenLabsV25LanguageCodes = new Set(["en", "hi", "ta", "es", "fr"]);
+const elevenLabsV25LanguageCodes = new Set(["en", "hi", "ta", "es", "fr", "pt", "ar", "zh"]);
 const elevenLabsV3LanguageCodes = new Set([
   "en", "as", "bn", "gu", "hi", "kn", "ml", "mr", "ne", "pa", "sd", "ta", "te", "ur", "es", "fr",
+  "pt", "ar", "zh",
 ]);
 const fallbackElevenLabsV25Languages = fallbackLanguageCatalog.filter((language) =>
   elevenLabsV25LanguageCodes.has(language.code.split("-")[0]?.toLowerCase()));
@@ -2579,7 +2580,7 @@ function StackConfigurationModal({
                 <div>
                   <div className="mb-2 flex items-center justify-between gap-3">
                     <span className="app-label">
-                      {provider.provider === "elevenlabs" ? "Your voices + Indian Voice Library" : "Available voices"}
+                      {provider.provider === "elevenlabs" ? "Your voices + Curated Voice Library" : "Available voices"}
                     </span>
                     <span className="app-caption">
                       {languageSpecificVoices.length
