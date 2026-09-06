@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { DocsArticle } from "@/components/docs/DocsArticle";
+import { SiteLayout } from "@/components/layout/SiteLayout";
 import { docsTopic, docsTopics } from "@/lib/docsContent";
 
 export function generateStaticParams() {
@@ -18,5 +19,5 @@ export default async function DocsTopicPage({ params }: { params: Promise<{ slug
   const { slug } = await params;
   const topic = docsTopic(slug);
   if (!topic) notFound();
-  return <DocsArticle topic={topic} />;
+  return <SiteLayout><DocsArticle topic={topic} /></SiteLayout>;
 }

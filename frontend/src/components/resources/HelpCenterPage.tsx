@@ -183,7 +183,7 @@ function ArrowIcon() {
 export function HelpCenterPage() {
   return (
     <SiteLayout>
-      <main className="min-h-screen bg-black text-white">
+      <main className="help-center-page min-h-screen bg-black text-white">
         <section className="relative overflow-hidden bg-black px-5 pb-0 pt-28 sm:px-8 sm:pt-32 lg:px-12">
           <div
             aria-hidden="true"

@@ -514,7 +514,7 @@ export function VoiceAgentsProductPage() {
         </section>
 
         <section className="px-[clamp(1.25rem,5vw,4.75rem)] pb-8">
-          <div className="relative mx-auto max-w-[1380px] overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(120deg,#102a2d_0%,#182447_48%,#30203e_100%)] px-6 py-16 text-center shadow-[0_30px_90px_rgba(0,0,0,0.26)] sm:px-10 sm:py-20 lg:px-16 lg:py-24">
+          <div className="voice-ready-card relative mx-auto max-w-[1380px] overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(120deg,#102a2d_0%,#182447_48%,#30203e_100%)] px-6 py-16 text-center shadow-[0_30px_90px_rgba(0,0,0,0.26)] sm:px-10 sm:py-20 lg:px-16 lg:py-24">
             <div className="pointer-events-none absolute -top-36 -left-16 size-80 rounded-full bg-[#2dd4bf]/24 blur-[90px]" />
             <div className="pointer-events-none absolute -right-10 -bottom-48 size-96 rounded-full bg-[#fb7185]/22 blur-[110px]" />
             <div className="pointer-events-none absolute top-0 right-[28%] size-72 rounded-full bg-[#9d8cff]/17 blur-[90px]" />
@@ -528,7 +528,7 @@ export function VoiceAgentsProductPage() {
                 <Link className="inline-flex min-h-13 items-center rounded-xl bg-white px-6 text-sm font-bold text-[#0b1720] transition hover:-translate-y-0.5 hover:bg-[#5eead4]" href="/dashboard/agents">
                   Start building <span className="ml-3" aria-hidden="true">→</span>
                 </Link>
-                <a className="inline-flex min-h-13 items-center rounded-xl border border-white/18 bg-white/[0.06] px-6 text-sm font-bold text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/12" href="mailto:hello@vozon.ai">
+                <a className="voice-ready-contact inline-flex min-h-13 items-center rounded-full border border-white/18 bg-white/[0.06] px-6 text-sm font-bold text-white backdrop-blur transition hover:-translate-y-0.5" href="mailto:hello@vozon.ai">
                   Talk to sales
                 </a>
               </div>

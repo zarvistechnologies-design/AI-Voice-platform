@@ -733,7 +733,7 @@ export default function HealthcarePage() {
           </div>
         </section>
 
-        <section className="bg-black">
+        <section className="business-pricing-section bg-black" id="pricing">
           <div className="mx-auto max-w-6xl px-6 pb-0 pt-8 lg:px-8">
             <div className="mx-auto max-w-3xl text-center">
               <Pill>Pricing</Pill>
@@ -746,8 +746,8 @@ export default function HealthcarePage() {
               </p>
             </div>
 
-            <div className="mt-10 grid gap-4 lg:grid-cols-2">
-              <article className="relative overflow-hidden rounded-2xl border border-[#35fbe0]/25 bg-[#07100d] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.22)] sm:p-7">
+            <div className="business-pricing-grid mt-10 grid gap-4 lg:grid-cols-2">
+              <article className="business-pricing-card relative overflow-hidden rounded-2xl border border-[#35fbe0]/25 bg-[#07100d] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.22)] sm:p-7">
                 <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#35fbe0] to-transparent" />
                 <div className="flex items-start justify-between gap-4">
                   <div>
@@ -771,14 +771,14 @@ export default function HealthcarePage() {
                   ))}
                 </ul>
                 <Link
-                  className="mt-7 inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-[#35fbe0]/30 bg-[#35fbe0]/10 text-sm font-bold text-[#75fff0] transition hover:bg-[#35fbe0]/15"
+                  className="business-pricing-button mt-7 inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-[#35fbe0]/30 bg-[#35fbe0]/10 text-sm font-bold text-[#75fff0] transition hover:bg-[#35fbe0]/15"
                   href="/#demo"
                 >
                   Get started
                 </Link>
               </article>
 
-              <article className="relative overflow-hidden rounded-2xl border border-[#8f83e8]/30 bg-[radial-gradient(circle_at_95%_0%,rgba(143,131,232,0.22),transparent_42%),#0a0b0d] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.22)] sm:p-7">
+              <article className="business-pricing-card relative overflow-hidden rounded-2xl border border-[#8f83e8]/30 bg-[radial-gradient(circle_at_95%_0%,rgba(143,131,232,0.22),transparent_42%),#0a0b0d] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.22)] sm:p-7">
                 <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#8f83e8] to-transparent" />
                 <div className="flex items-start justify-between gap-4">
                   <div>
@@ -802,7 +802,7 @@ export default function HealthcarePage() {
                   ))}
                 </ul>
                 <Link
-                  className="mt-7 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-[linear-gradient(90deg,#35fbe0,#8f83e8)] text-sm font-extrabold text-[#031310] transition hover:brightness-110"
+                  className="business-pricing-button mt-7 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-[linear-gradient(90deg,#35fbe0,#8f83e8)] text-sm font-extrabold text-[#031310] transition hover:brightness-110"
                   href="/contact"
                 >
                   Talk to sales

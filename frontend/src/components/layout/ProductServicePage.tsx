@@ -1368,7 +1368,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
         </section>
 
         <section className="voice-agent-contact-section bg-black px-6 pb-16 pt-4 lg:px-8">
-          <div className="relative mx-auto flex max-w-6xl flex-col items-center justify-between gap-7 overflow-hidden rounded-[24px] border border-[rgba(var(--service-accent-rgb),0.35)] bg-[#07100d] p-8 text-center shadow-[0_24px_70px_rgba(var(--service-accent-rgb),0.08)] sm:p-10 md:flex-row md:text-left">
+          <div className="product-service-ready-card relative mx-auto flex max-w-6xl flex-col items-center justify-between gap-7 overflow-hidden rounded-[24px] border border-[rgba(var(--service-accent-rgb),0.35)] bg-[#07100d] p-8 text-center shadow-[0_24px_70px_rgba(var(--service-accent-rgb),0.08)] sm:p-10 md:flex-row md:text-left">
             <div
               className="pointer-events-none absolute right-[18%] top-1/2 hidden size-56 -translate-y-1/2 rounded-full border border-[rgba(var(--service-accent-rgb),0.15)] shadow-[0_0_0_24px_rgba(var(--service-accent-rgb),0.025),0_0_0_54px_rgba(var(--service-secondary-rgb),0.025)] lg:block"
               aria-hidden="true"
@@ -1382,7 +1382,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
               </h2>
             </div>
             <Link
-              className="service-primary-button relative inline-flex min-h-12 shrink-0 items-center rounded-lg px-7 text-sm font-bold transition hover:-translate-y-0.5"
+              className="product-service-contact-button relative inline-flex min-h-12 shrink-0 items-center rounded-full px-7 text-sm font-bold transition hover:-translate-y-0.5"
               href="/contact"
             >
               CONTACT US <span className="ml-3">&rarr;</span>
@@ -2201,7 +2201,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
           place-items: center;
           border: 1px solid rgba(var(--step-rgb), 0.7);
           border-radius: 999px;
-          background: #000;
+          background: #f5f3ff;
           color: var(--step-color);
           font-size: 0.72rem;
           font-weight: 900;
@@ -3927,7 +3927,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
 
         .service-workflow-step:hover {
           border-color: rgba(var(--service-secondary-rgb), 0.34);
-          background: #000;
+          background: #f7f6ff;
           transform: translateX(4px);
         }
 
@@ -3944,7 +3944,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
         }
 
         .service-use-case {
-          background: #000;
+          background: linear-gradient(145deg, #ffffff, #f5f3ff);
         }
 
         .service-use-case:hover {
@@ -4008,7 +4008,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
 
         .product-service-cta {
           border: 1px solid rgba(var(--service-accent-rgb), 0.28);
-          background: #000;
+          background: linear-gradient(135deg, #e8e9ff 0%, #f4edff 52%, #fff2ed 100%);
         }
 
         .product-cta-rings {
@@ -4019,7 +4019,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
         }
 
         .voice-agent-page {
-          background: #000;
+          background: #fff;
           overflow-x: clip;
         }
 
@@ -4048,7 +4048,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
           padding-top: 2.5rem;
           padding-bottom: 2.5rem;
           border-color: transparent;
-          background: #000;
+          background: #fff;
         }
 
         .voice-agent-page .product-service-hero {
@@ -4058,7 +4058,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
         .voice-agent-page .agent-anatomy-section,
         .voice-agent-page .voice-build-process,
         .voice-agent-page .voice-config-section {
-          background: #000;
+          background: linear-gradient(180deg, #ffffff 0%, #f7f6ff 100%);
         }
 
         .voice-agent-page .voice-build-process::before,
@@ -4470,7 +4470,7 @@ inset:55px;
 .voice-preview-section {
   position: relative;
   overflow: hidden;
-  background: #000;
+  background: linear-gradient(180deg, #ffffff 0%, #f7f6ff 100%);
 }
 
 .voice-preview-section::before {

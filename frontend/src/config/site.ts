@@ -3,10 +3,10 @@ export const siteConfig = {
   description: "AI voice agents for sales, support, scheduling, and customer follow-up.",
   headerLinks: [
     { href: "/", label: "Home" },
-    { href: "/#product", label: "Product", hasMenu: true },
+    { href: "/product", label: "Products", hasMenu: true },
     { href: "/pricing", label: "Pricing" },
-    { href: "/#business", label: "For Business", hasMenu: true },
-    { href: "/#company", label: "Company", hasMenu: true },
+    { href: "/business", label: "For Business", hasMenu: true },
+    { href: "/about", label: "Company", hasMenu: true },
   ],
   headerActions: [
     { href: "/login", label: "Login", variant: "ghost" },

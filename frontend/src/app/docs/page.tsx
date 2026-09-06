@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { DocsExperience } from "@/components/docs/DocsExperience";
+import { SiteLayout } from "@/components/layout/SiteLayout";
 
 export const metadata: Metadata = {
   title: "Documentation | Vozon",
@@ -9,5 +10,5 @@ export const metadata: Metadata = {
 };
 
 export default function DocsPage() {
-  return <DocsExperience />;
+  return <SiteLayout><DocsExperience /></SiteLayout>;
 }

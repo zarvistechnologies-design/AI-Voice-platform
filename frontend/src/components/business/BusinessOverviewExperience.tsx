@@ -89,14 +89,14 @@ function OperationsConsole() {
   return (
     <div className="relative mx-auto w-full max-w-[650px]">
       <div className="absolute -inset-12 -z-10 rounded-full bg-[#45ddce]/10 blur-[90px]" aria-hidden="true" />
-      <div className="overflow-hidden rounded-[24px] border border-white/12 bg-[#06110f] shadow-[0_36px_110px_rgba(0,0,0,0.55)]">
-        <div className="flex h-12 items-center justify-between border-b border-white/[0.08] bg-white/[0.025] px-4">
+      <div className="business-hero-console overflow-visible">
+        <div className="flex h-12 items-center justify-between px-0">
           <div className="flex items-center gap-2">
             <span className="grid size-7 place-items-center rounded-lg bg-[#45ddce] text-[10px] font-black text-[#03110e]">V</span>
             <span className="text-[10px] font-bold text-white/70">Voice operations</span>
           </div>
           <span className="inline-flex items-center gap-2 rounded-full border border-emerald-300/15 bg-emerald-300/[0.07] px-2.5 py-1 text-[9px] font-bold text-emerald-200">
-            <span className="size-1.5 rounded-full bg-emerald-300 shadow-[0_0_8px_#6ee7b7]" /> All systems live
+            <span className="size-1.5 rounded-full bg-[#6268ff] shadow-[0_0_8px_#6268ff]" /> All systems live
           </span>
         </div>
 
@@ -150,15 +150,15 @@ export function BusinessOverviewExperience() {
 
   return (
     <SiteLayout>
-      <div className="overflow-hidden bg-[#020504] text-white">
-        <section className="relative px-3 pb-14 pt-28 sm:px-5 sm:pt-32 lg:pb-16 lg:pt-36">
+      <div className="business-page overflow-hidden bg-[#020504] text-white">
+        <section className="business-hero relative px-3 pb-14 pt-28 sm:px-5 sm:pt-32 lg:pb-16 lg:pt-36">
           <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(69,221,206,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(69,221,206,0.055)_1px,transparent_1px)] [background-size:54px_54px] [mask-image:linear-gradient(to_bottom,black,transparent_88%)]" aria-hidden="true" />
           <div className="absolute left-1/2 top-0 h-[520px] w-[940px] -translate-x-1/2 rounded-full bg-[#45ddce]/[0.07] blur-[135px]" aria-hidden="true" />
 
           <div className="relative mx-auto grid max-w-[1380px] items-center gap-14 lg:grid-cols-[0.9fr_1.1fr]">
             <div className="max-w-2xl">
               <div className="inline-flex items-center gap-2 rounded-full border border-[#45ddce]/22 bg-[#45ddce]/[0.07] px-4 py-2 text-[10px] font-black uppercase tracking-[0.17em] text-[#75fff0]">
-                <span className="size-1.5 rounded-full bg-[#45ddce] shadow-[0_0_10px_#45ddce]" /> AI voice for business
+                <span className="size-1.5 rounded-full bg-[#6268ff] shadow-[0_0_10px_#6268ff]" /> AI voice for business
               </div>
               <h1 className="mt-7 text-[clamp(1.65rem,4.4vw,3.8rem)] leading-[0.98] font-medium tracking-[-0.05em]">
                 <span className="block whitespace-nowrap">Every customer call,</span>
@@ -259,7 +259,7 @@ export function BusinessOverviewExperience() {
         </section>
 
         <section className="bg-[#050b09] px-5 py-14 sm:px-8 lg:py-16">
-          <div className="mx-auto grid max-w-[1180px] overflow-hidden rounded-[26px] border border-white/[0.09] bg-[#07110f] lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="business-enterprise-card mx-auto grid max-w-[1180px] overflow-hidden rounded-[26px] border border-white/[0.09] bg-[#07110f] lg:grid-cols-[1.05fr_0.95fr]">
             <div className="p-7 sm:p-10 lg:p-12">
               <p className="text-[10px] font-black uppercase tracking-[0.19em] text-[#75fff0]">Enterprise ready</p>
               <h2 className="mt-5 max-w-xl text-3xl leading-tight font-black tracking-[-0.035em] sm:text-4xl">Control the experience without slowing down the operation.</h2>
@@ -277,8 +277,8 @@ export function BusinessOverviewExperience() {
         </section>
 
         <section className="px-5 py-14 sm:px-8 lg:py-20">
-          <div className="relative mx-auto max-w-[1120px] overflow-hidden rounded-[28px] border border-[#45ddce]/20 bg-[linear-gradient(125deg,rgba(69,221,206,0.16),rgba(143,131,232,0.08)_55%,rgba(242,141,69,0.1))] p-8 text-center shadow-[0_36px_100px_rgba(0,0,0,0.34)] sm:p-12 lg:p-16">
-            <div className="absolute left-1/2 top-0 h-px w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-[#75fff0] to-transparent" />
+          <div className="business-ready-card relative mx-auto max-w-[1120px] overflow-hidden rounded-[28px] border border-[#45ddce]/20 bg-[linear-gradient(125deg,rgba(69,221,206,0.16),rgba(143,131,232,0.08)_55%,rgba(242,141,69,0.1))] p-8 text-center shadow-[0_36px_100px_rgba(0,0,0,0.34)] sm:p-12 lg:p-16">
+            <div className="absolute left-1/2 top-0 h-px w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-[#6268ff] to-transparent" />
             <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#75fff0]">Ready for better conversations?</p>
             <h2 className="mx-auto mt-5 max-w-3xl text-3xl leading-tight font-black tracking-[-0.04em] sm:text-5xl">Put your next customer workflow on voice.</h2>
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/52 sm:text-base">Start with free usage, or work with our team to design a production rollout around your call volume and systems.</p>

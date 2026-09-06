@@ -16,7 +16,6 @@ const workAreas = [
     description:
       "Build the intelligence behind natural conversations—from speech recognition and reasoning to real-time responses and multilingual experiences.",
     tags: ["Voice AI", "LLMs", "Speech", "Real-time"],
-    accent: "#45ddce",
   },
   {
     number: "02",
@@ -24,7 +23,6 @@ const workAreas = [
     description:
       "Create reliable products and infrastructure that help businesses build, deploy, monitor, and scale intelligent voice agents.",
     tags: ["Product", "Engineering", "Infrastructure", "APIs"],
-    accent: "#67e8f9",
   },
   {
     number: "03",
@@ -32,7 +30,6 @@ const workAreas = [
     description:
       "Design intuitive experiences that make sophisticated voice technology feel simple, useful, and effortless for businesses and their customers.",
     tags: ["UX", "UI", "Research", "Systems"],
-    accent: "#a78bfa",
   },
 ];
 
@@ -42,28 +39,24 @@ const principles = [
     title: "Own the outcome",
     description:
       "Take responsibility beyond your task. Understand the problem, make thoughtful decisions, and stay close to the result.",
-    accent: "#45ddce",
   },
   {
     number: "02",
     title: "Move with purpose",
     description:
       "We value momentum without sacrificing quality. Make decisions, test ideas, learn quickly, and keep moving forward.",
-    accent: "#67e8f9",
   },
   {
     number: "03",
     title: "Stay curious",
     description:
       "Voice AI is evolving quickly. We ask questions, challenge assumptions, experiment often, and keep learning.",
-    accent: "#a78bfa",
   },
   {
     number: "04",
     title: "Build for people",
     description:
       "Technology matters when it creates a better experience. We care deeply about the people who use what we build.",
-    accent: "#f6c76e",
   },
 ];
 
@@ -97,35 +90,30 @@ const benefits = [
 const openRoles = [
   {
     title: "Frontend Engineer",
-    
     description:
       "Shape the interfaces people use to build, launch, and monitor voice experiences with clarity and speed.",
     tags: ["Next.js", "TypeScript", "Design systems"],
   },
   {
     title: "Backend Engineer",
-    
     description:
       "Build reliable APIs, integrations, and internal services that keep voice workflows fast and dependable.",
     tags: ["APIs", "Infrastructure", "Reliability"],
   },
   {
     title: "AI / ML Engineer",
-    
     description:
       "Build speech, reasoning, and real-time systems that make conversations feel natural and useful.",
     tags: ["LLMs", "Speech", "Realtime"],
   },
   {
     title: "Product Designer",
-    
     description:
       "Design intuitive flows that make sophisticated voice technology feel simple for teams and end users.",
     tags: ["UX", "UI", "Research"],
   },
   {
     title: "DevOps / Platform Engineer",
-    
     description:
       "Support deployment, observability, and scale so the product stays stable as usage and complexity grow.",
     tags: ["Cloud", "Monitoring", "Automation"],
@@ -210,15 +198,10 @@ function ArrowIcon() {
   );
 }
 
-function SparkIcon({ color }: { color: string }) {
+function SparkIcon() {
   return (
     <span
-      className="grid size-11 shrink-0 place-items-center rounded-xl border"
-      style={{
-        borderColor: `${color}30`,
-        backgroundColor: `${color}10`,
-        color,
-      }}
+      className="grid size-11 shrink-0 place-items-center rounded-xl border border-gray-200 bg-gray-50 text-black"
       aria-hidden="true"
     >
       <svg className="size-5" fill="none" viewBox="0 0 20 20">
@@ -234,20 +217,13 @@ function SparkIcon({ color }: { color: string }) {
 }
 
 function WorkCardIcon({
-  color,
   kind,
 }: {
-  color: string;
   kind: "spark" | "trend" | "check";
 }) {
   return (
     <span
-      className="mx-auto grid size-10 place-items-center rounded-full border"
-      style={{
-        borderColor: `${color}30`,
-        backgroundColor: `${color}10`,
-        color,
-      }}
+      className="mx-auto grid size-10 place-items-center rounded-full border border-gray-200 bg-gray-50 text-black"
       aria-hidden="true"
     >
       {kind === "spark" ? (
@@ -298,7 +274,7 @@ function WorkCardIcon({
 
 function CheckIcon() {
   return (
-    <span className="grid size-5 shrink-0 place-items-center rounded-full bg-[#45ddce]/10 text-[#45ddce]">
+    <span className="grid size-5 shrink-0 place-items-center rounded-full border border-gray-300 bg-white text-black">
       <svg className="size-3" fill="none" viewBox="0 0 16 16">
         <path
           d="m3.5 8 3 3 6-6"
@@ -315,29 +291,25 @@ function CheckIcon() {
 export default function CareerPage() {
   return (
     <SiteLayout>
-      <main className="overflow-hidden bg-black text-white">
-        {/* HERO*/}
-        <section className="relative px-5 pb-8 pt-36 sm:px-8 sm:pt-40 lg:px-12 lg:pb-16">
-          <div
-            className="pointer-events-none absolute left-[-12rem] top-20 size-[34rem] rounded-full bg-[#45ddce]/[0.055] blur-3xl"
-            aria-hidden="true"
-          />
+      <main className="overflow-hidden bg-white text-black">
 
-          <div
-            className="pointer-events-none absolute right-[-10rem] top-32 size-[30rem] rounded-full bg-[#a78bfa]/[0.06] blur-3xl"
-            aria-hidden="true"
-          />
+        {/* =========================================================
+            HERO
+        ========================================================== */}
+        <section className="relative bg-white px-5 pb-8 pt-36 sm:px-8 sm:pt-40 lg:px-12 lg:pb-16">
 
           <div className="relative mx-auto max-w-[920px] text-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#45ddce]/20 bg-[#45ddce]/[0.06] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#75fff0]">
-              <span className="size-1.5 rounded-full bg-[#45ddce] shadow-[0_0_12px_#45ddce]" />
+
+            <div className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-black shadow-sm">
+              <span className="size-1.5 rounded-full bg-black" />
               Careers at vozon.ai
             </div>
 
-            <h3 className="mt-7 max-w-4xl text-[clamp(2.35rem,4.5vw,4.9rem)] font-medium leading-[0.96] tracking-[-0.06em]">
-              Build career with vozon.ai</h3>
+            <h3 className="mt-7 max-w-4xl text-[clamp(2.35rem,4.5vw,4.9rem)] font-medium leading-[0.96] tracking-[-0.06em] text-black">
+              Build career with vozon.ai
+            </h3>
 
-            <p className="mx-auto mt-7 max-w-2xl text-base leading-7 text-white/55 sm:text-base sm:leading-8">
+            <p className="mx-auto mt-7 max-w-2xl text-base leading-7 text-black sm:text-base sm:leading-8">
               We are building the intelligence layer for business
               conversations. Join us to make voice AI more natural, useful,
               reliable, and capable of turning conversations into meaningful
@@ -345,9 +317,10 @@ export default function CareerPage() {
             </p>
 
             <div className="mt-9 flex flex-wrap justify-center gap-3">
+
               <Link
                 href="#open-roles"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#38bdf8] to-[#93c5fd] px-6 text-sm font-bold text-[#02110d] shadow-[0_15px_45px_rgba(69,221,206,0.16)] transition duration-300 hover:-translate-y-1"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-black bg-white px-6 text-sm font-bold text-black shadow-sm transition duration-300 hover:-translate-y-1 hover:bg-black hover:text-white hover:shadow-md"
               >
                 Explore opportunities
                 <ArrowIcon />
@@ -355,221 +328,586 @@ export default function CareerPage() {
 
               <Link
                 href="/about"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#38bdf8] to-[#93c5fd] px-6 text-sm font-bold text-[#02110d] shadow-[0_15px_45px_rgba(69,221,206,0.16)] transition duration-300 hover:-translate-y-1"
-                >
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-6 text-sm font-bold text-black shadow-sm transition duration-300 hover:-translate-y-1 hover:border-black hover:bg-gray-50"
+              >
                 Meet vozon.ai
                 <ArrowIcon />
               </Link>
+
             </div>
+
           </div>
         </section>
 
-        
 
-        <section className="px-5 pt-4 pb-10 sm:px-8 sm:pt-5 lg:px-12 lg:pt-8 lg:pb-16">
+        {/* =========================================================
+            WHY WORK WITH US
+        ========================================================== */}
+        <section className="bg-white px-5 pb-10 pt-4 sm:px-8 sm:pt-5 lg:px-12 lg:pb-16 lg:pt-8">
+
           <div className="mx-auto max-w-[1120px]">
+
             <div className="mx-auto max-w-3xl text-center">
-              <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#75fff0]">
+
+              <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-black">
                 Why work with us
               </p>
 
-              <h3 className="mt-4 text-2xl font-semibold tracking-[-0.03em] sm:text-4xl">
+              <h3 className="mt-4 text-2xl font-semibold tracking-[-0.03em] text-black sm:text-4xl">
                 Build something that genuinely matters.
               </h3>
 
-              <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-white/50 sm:text-base sm:leading-8">
+              <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-black">
                 We are building technology that changes business communication.
               </p>
+
             </div>
 
-            <div className="mx-auto mt-12 grid max-w-5xl gap-4 sm:grid-cols-3">
-              <article className="group relative overflow-hidden rounded-[24px] border border-white/20 bg-[#030303] px-7 py-8 text-center shadow-[0_18px_50px_rgba(0,0,0,0.22)] transition duration-300 hover:-translate-y-1 hover:border-[#45ddce]/60 sm:px-8 sm:py-10">
-                <WorkCardIcon color="#45ddce" kind="spark" />
 
-                <h3 className="mt-6 text-xl font-semibold tracking-[-0.03em]">
+            <div className="mx-auto mt-12 grid max-w-5xl gap-4 sm:grid-cols-3">
+
+              <article className="group relative overflow-hidden rounded-[24px] border border-gray-200 bg-white px-7 py-8 text-center shadow-[0_12px_35px_rgba(0,0,0,0.04)] transition duration-300 hover:-translate-y-1 hover:border-gray-400 hover:shadow-[0_18px_45px_rgba(0,0,0,0.08)] sm:px-8 sm:py-10">
+
+                <WorkCardIcon kind="spark" />
+
+                <h3 className="mt-6 text-xl font-semibold tracking-[-0.03em] text-black">
                   Purposeful innovation
                 </h3>
 
-                <p className="mt-3 text-sm leading-7 text-white/45">
-                  Build technology that solves complex problems, improves experiences, and creates meaningful value for businesses.
+                <p className="mt-3 text-sm leading-7 text-black">
+                  Build technology that solves complex problems, improves
+                  experiences, and creates meaningful value for businesses.
                 </p>
+
               </article>
 
-              <article className="group relative overflow-hidden rounded-[24px] border border-white/20 bg-[#030303] px-7 py-8 text-center shadow-[0_18px_50px_rgba(0,0,0,0.22)] transition duration-300 hover:-translate-y-1 hover:border-[#67e8f9]/60 sm:px-8 sm:py-10">
-                <WorkCardIcon color="#67e8f9" kind="trend" />
 
-                <h3 className="mt-6 text-xl font-semibold tracking-[-0.03em]">
+              <article className="group relative overflow-hidden rounded-[24px] border border-gray-200 bg-white px-7 py-8 text-center shadow-[0_12px_35px_rgba(0,0,0,0.04)] transition duration-300 hover:-translate-y-1 hover:border-gray-400 hover:shadow-[0_18px_45px_rgba(0,0,0,0.08)] sm:px-8 sm:py-10">
+
+                <WorkCardIcon kind="trend" />
+
+                <h3 className="mt-6 text-xl font-semibold tracking-[-0.03em] text-black">
                   Continuous growth
                 </h3>
 
-                <p className="mt-3 text-sm leading-7 text-white/45">
-                  Learn, experiment, and collaborate with a team that values curiosity, technical excellence, and continuous improvement.
+                <p className="mt-3 text-sm leading-7 text-black">
+                  Learn, experiment, and collaborate with a team that values
+                  curiosity, technical excellence, and continuous improvement.
                 </p>
+
               </article>
 
-              <article className="group relative overflow-hidden rounded-[24px] border border-white/20 bg-[#030303] px-7 py-8 text-center shadow-[0_18px_50px_rgba(0,0,0,0.22)] transition duration-300 hover:-translate-y-1 hover:border-[#a78bfa]/60 sm:px-8 sm:py-10">
-                <WorkCardIcon color="#a78bfa" kind="check" />
 
-                <h3 className="mt-6 text-xl font-semibold tracking-[-0.03em]">
+              <article className="group relative overflow-hidden rounded-[24px] border border-gray-200 bg-white px-7 py-8 text-center shadow-[0_12px_35px_rgba(0,0,0,0.04)] transition duration-300 hover:-translate-y-1 hover:border-gray-400 hover:shadow-[0_18px_45px_rgba(0,0,0,0.08)] sm:px-8 sm:py-10">
+
+                <WorkCardIcon kind="check" />
+
+                <h3 className="mt-6 text-xl font-semibold tracking-[-0.03em] text-black">
                   Meaningful ownership
                 </h3>
 
-                <p className="mt-3 text-sm leading-7 text-white/45">
-                  Take responsibility from idea to execution and make a tangible contribution to products built for real-world impact.
+                <p className="mt-3 text-sm leading-7 text-black">
+                  Take responsibility from idea to execution and make a
+                  tangible contribution to products built for real-world
+                  impact.
                 </p>
+
               </article>
+
             </div>
+
           </div>
         </section>
 
-        {/*open role*/}
+
+        {/* =========================================================
+            OPEN ROLES
+        ========================================================== */}
         <section
-          className="px-5 py-8 sm:px-8 lg:px-12 lg:py-12"
+          className="bg-white px-5 py-8 sm:px-8 lg:px-12 lg:py-12"
           id="open-roles"
         >
+
           <div className="mx-auto max-w-[1180px]">
+
             <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
+
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#75fff0]">
+
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-black">
                   Open roles
                 </p>
 
-                <h2 className="mt-5 text-3xl font-semibold tracking-[-0.04.3em] sm:text-4xl">
+                <h2 className="mt-5 text-3xl font-semibold tracking-[-0.04em] text-black sm:text-4xl">
                   Open roles at vozon.ai.
                 </h2>
 
-                <p className="mt-5 max-w-2xl text-sm leading-7 text-white/45 sm:text-base sm:leading-8">
+                <p className="mt-5 max-w-2xl text-sm leading-7 text-black sm:text-base sm:leading-8">
                   We are hiring for the core roles that help shape the website,
                   platform, and voice technology behind vozon.ai.
                 </p>
+
               </div>
+
             </div>
 
+
             <div className="mt-12 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+
               {openRoles.map((role, index) => (
+
                 <article
                   key={role.title}
-                  className="group relative flex h-full min-h-[260px] flex-col overflow-hidden rounded-[22px] border border-white/10 bg-white/[0.025] p-4 transition duration-300 hover:-translate-y-1 hover:border-[#45ddce]/30 hover:bg-white/[0.04]"
+                  className="group relative flex h-full min-h-[260px] flex-col overflow-hidden rounded-[22px] border border-gray-200 bg-white p-4 shadow-[0_12px_35px_rgba(0,0,0,0.04)] transition duration-300 hover:-translate-y-1 hover:border-gray-400 hover:shadow-[0_18px_45px_rgba(0,0,0,0.08)]"
                 >
+
                   <div className="flex flex-1 flex-col">
+
                     <div className="flex items-start justify-between gap-3">
+
                       <div>
-                        <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/30">
+
+                        <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-black">
                           0{index + 1}
                         </span>
-                        <h3 className="mt-3 text-lg font-semibold tracking-[-0.03em]">
+
+                        <h3 className="mt-3 text-lg font-semibold tracking-[-0.03em] text-black">
                           {role.title}
                         </h3>
+
                       </div>
 
                     </div>
 
-                    <p className="mt-3 text-sm leading-6 text-white/45">
+
+                    <p className="mt-3 text-sm leading-6 text-black">
                       {role.description}
                     </p>
 
+
                     <div className="mt-3 flex flex-wrap gap-2">
+
                       {role.tags.map((tag) => (
+
                         <span
                           key={tag}
-                          className="rounded-full border border-white/[0.08] bg-black/30 px-2.5 py-1 text-[9px] font-medium text-white/40"
+                          className="rounded-full border border-gray-200 bg-white px-2.5 py-1 text-[9px] font-medium text-black"
                         >
                           {tag}
                         </span>
+
                       ))}
+
                     </div>
 
+
                     <a
-                      href={`mailto:hello@vozon.ai?subject=Apply%20now%20-%20${encodeURIComponent(role.title)}%20at%20vozon.ai`}
-                      className="mt-2 self-end inline-flex min-h-9 items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-[#2faea1] to-[#4db6ca] px-4 text-[11px] font-bold text-[#031310] shadow-[0_10px_24px_rgba(47,174,161,0.12)] transition duration-300 hover:-translate-y-0.5 hover:brightness-105"
+                      href={`mailto:hello@vozon.ai?subject=Apply%20now%20-%20${encodeURIComponent(
+                        role.title
+                      )}%20at%20vozon.ai`}
+                      className="mt-2 self-end inline-flex min-h-9 items-center justify-center gap-1.5 rounded-lg border border-black bg-white px-4 text-[11px] font-bold text-black transition duration-300 hover:-translate-y-0.5 hover:bg-black hover:text-white"
                     >
                       Apply now
                       <ArrowIcon />
                     </a>
+
                   </div>
+
                 </article>
+
               ))}
+
             </div>
+
           </div>
         </section>
+
+
+        {/* =========================================================
+            WORK AREAS
+        ========================================================== */}
+        <section className="bg-white px-5 py-10 sm:px-8 lg:px-12 lg:py-14">
+
+          <div className="mx-auto max-w-[1180px]">
+
+            <div className="mx-auto max-w-3xl text-center">
+
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-black">
+                Where you can contribute
+              </p>
+
+              <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-black sm:text-4xl">
+                Build across the voice AI stack.
+              </h2>
+
+            </div>
+
+
+            <div className="mt-10 grid gap-5 md:grid-cols-3">
+
+              {workAreas.map((area) => (
+
+                <article
+                  key={area.number}
+                  className="rounded-[24px] border border-gray-200 bg-white p-7 shadow-[0_12px_35px_rgba(0,0,0,0.04)] transition duration-300 hover:-translate-y-1 hover:border-gray-400 hover:shadow-[0_18px_45px_rgba(0,0,0,0.08)]"
+                >
+
+                  <div className="flex items-center justify-between">
+
+                    <span className="text-xs font-bold tracking-[0.18em] text-black">
+                      {area.number}
+                    </span>
+
+                    <SparkIcon />
+
+                  </div>
+
+                  <h3 className="mt-7 text-xl font-semibold tracking-[-0.03em] text-black">
+                    {area.title}
+                  </h3>
+
+                  <p className="mt-4 text-sm leading-7 text-black">
+                    {area.description}
+                  </p>
+
+                  <div className="mt-6 flex flex-wrap gap-2">
+
+                    {area.tags.map((tag) => (
+
+                      <span
+                        key={tag}
+                        className="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-[10px] font-medium text-black"
+                      >
+                        {tag}
+                      </span>
+
+                    ))}
+
+                  </div>
+
+                </article>
+
+              ))}
+
+            </div>
+
+          </div>
+        </section>
+
+
+        {/* =========================================================
+            PRINCIPLES
+        ========================================================== */}
+        <section className="bg-white px-5 py-10 sm:px-8 lg:px-12 lg:py-14">
+
+          <div className="mx-auto max-w-[1180px]">
+
+            <div className="grid gap-10 lg:grid-cols-[0.7fr_1.3fr]">
+
+              <div>
+
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-black">
+                  How we work
+                </p>
+
+                <h2 className="mt-5 text-3xl font-semibold tracking-[-0.04em] text-black sm:text-4xl">
+                  Principles that guide us.
+                </h2>
+
+                <p className="mt-5 max-w-md text-sm leading-7 text-black">
+                  We want people to do their best work while building
+                  technology that creates meaningful impact.
+                </p>
+
+              </div>
+
+
+              <div className="divide-y divide-gray-200 border-y border-gray-200">
+
+                {principles.map((principle) => (
+
+                  <article
+                    key={principle.number}
+                    className="grid gap-4 py-7 sm:grid-cols-[60px_1fr]"
+                  >
+
+                    <span className="text-xs font-bold tracking-[0.15em] text-black">
+                      {principle.number}
+                    </span>
+
+                    <div>
+
+                      <h3 className="text-xl font-semibold tracking-[-0.03em] text-black">
+                        {principle.title}
+                      </h3>
+
+                      <p className="mt-3 text-sm leading-7 text-black">
+                        {principle.description}
+                      </p>
+
+                    </div>
+
+                  </article>
+
+                ))}
+
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+
+
+        {/* =========================================================
+            BENEFITS
+        ========================================================== */}
+        <section className="bg-white px-5 py-10 sm:px-8 lg:px-12 lg:py-14">
+
+          <div className="mx-auto max-w-[1180px]">
+
+            <div className="mx-auto max-w-3xl text-center">
+
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-black">
+                What you can expect
+              </p>
+
+              <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-black sm:text-4xl">
+                A place to learn, build, and grow.
+              </h2>
+
+            </div>
+
+
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+
+              {benefits.map((benefit) => (
+
+                <article
+                  key={benefit.title}
+                  className="rounded-[22px] border border-gray-200 bg-white p-6 shadow-[0_12px_35px_rgba(0,0,0,0.04)] transition duration-300 hover:-translate-y-1 hover:border-gray-400 hover:shadow-[0_18px_45px_rgba(0,0,0,0.08)]"
+                >
+
+                  <div className="grid size-11 place-items-center rounded-xl border border-gray-200 bg-gray-50 text-lg text-black">
+                    {benefit.icon}
+                  </div>
+
+                  <h3 className="mt-6 text-lg font-semibold tracking-[-0.03em] text-black">
+                    {benefit.title}
+                  </h3>
+
+                  <p className="mt-3 text-sm leading-7 text-black">
+                    {benefit.description}
+                  </p>
+
+                </article>
+
+              ))}
+
+            </div>
+
+          </div>
+        </section>
+
+
+        {/* =========================================================
+            QUALITIES + PROCESS
+        ========================================================== */}
+        <section className="bg-white px-5 py-10 sm:px-8 lg:px-12 lg:py-14">
+
+          <div className="mx-auto grid max-w-[1180px] gap-12 lg:grid-cols-2">
+
+            <div>
+
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-black">
+                What we value
+              </p>
+
+              <h2 className="mt-5 text-3xl font-semibold tracking-[-0.04em] text-black sm:text-4xl">
+                Bring your strengths.
+              </h2>
+
+              <p className="mt-5 max-w-xl text-sm leading-7 text-black">
+                You do not need to know everything. We care about how you
+                think, how you learn, and how you approach difficult problems.
+              </p>
+
+
+              <div className="mt-8 grid gap-4 sm:grid-cols-2">
+
+                {qualities.map((quality) => (
+
+                  <div
+                    key={quality}
+                    className="flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-4"
+                  >
+                    <CheckIcon />
+
+                    <span className="text-sm font-medium text-black">
+                      {quality}
+                    </span>
+                  </div>
+
+                ))}
+
+              </div>
+
+            </div>
+
+
+            <div>
+
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-black">
+                Our process
+              </p>
+
+              <h2 className="mt-5 text-3xl font-semibold tracking-[-0.04em] text-black sm:text-4xl">
+                From application to impact.
+              </h2>
+
+
+              <div className="mt-8 divide-y divide-gray-200 border-y border-gray-200">
+
+                {process.map((step) => (
+
+                  <article
+                    key={step.number}
+                    className="grid gap-4 py-6 sm:grid-cols-[55px_1fr]"
+                  >
+
+                    <span className="text-xs font-bold tracking-[0.16em] text-black">
+                      {step.number}
+                    </span>
+
+                    <div>
+
+                      <h3 className="text-lg font-semibold text-black">
+                        {step.title}
+                      </h3>
+
+                      <p className="mt-2 text-sm leading-7 text-black">
+                        {step.description}
+                      </p>
+
+                    </div>
+
+                  </article>
+
+                ))}
+
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+
 
         {/* =========================================================
             FAQ
         ========================================================== */}
-        <section className="px-5 py-8 sm:px-8 lg:px-12 lg:py-12">
+        <section className="bg-white px-5 py-8 sm:px-8 lg:px-12 lg:py-12">
+
           <div className="mx-auto grid max-w-[1180px] gap-12 lg:grid-cols-[0.65fr_1.35fr]">
+
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#b9a5ff]">
+
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-black">
                 Careers FAQ
               </p>
 
-              <h2 className="mt-5 text-3xl font-semibold tracking-[-0.04.4em] sm:text-4.5xl">
+              <h2 className="mt-5 text-3xl font-semibold tracking-[-0.04em] text-black sm:text-[2.8rem]">
                 Before you apply.
               </h2>
 
-              <p className="mt-6 max-w-sm text-sm leading-7 text-white/40">
+              <p className="mt-6 max-w-sm text-sm leading-7 text-black">
                 A few answers to help you understand what it is like to
                 explore a career at vozon.ai.
               </p>
+
             </div>
 
-            <div className="divide-y divide-white/10">
+
+            <div className="divide-y divide-gray-200">
+
               {faqs.map((faq, index) => (
+
                 <details
                   key={faq.question}
                   className="group"
                   open={index === 0}
                 >
+
                   <summary className="flex cursor-pointer list-none items-center gap-5 py-6 text-left [&::-webkit-details-marker]:hidden">
-                    <span className="text-[10px] font-bold text-[#75fff0]/70">
+
+                    <span className="text-[10px] font-bold text-black">
                       0{index + 1}
                     </span>
 
-                    <span className="text-base font-semibold sm:text-lg">
+                    <span className="text-base font-semibold text-black sm:text-lg">
                       {faq.question}
                     </span>
 
-                    <span className="ml-auto grid size-8 shrink-0 place-items-center rounded-full border border-white/10 text-lg font-light text-white/45 transition duration-300 group-open:rotate-45">
+                    <span className="ml-auto grid size-8 shrink-0 place-items-center rounded-full border border-gray-300 bg-white text-lg font-light text-black transition duration-300 group-open:rotate-45">
                       +
                     </span>
+
                   </summary>
 
-                  <p className="max-w-2xl pb-7 pl-10 pr-8 text-sm leading-7 text-white/40">
+                  <p className="max-w-2xl pb-7 pl-10 pr-8 text-sm leading-7 text-black">
                     {faq.answer}
                   </p>
+
                 </details>
+
               ))}
+
             </div>
+
           </div>
+
         </section>
+
 
         {/* =========================================================
             FINAL CTA
         ========================================================== */}
-        <section className="bg-black px-5 pb-10 pt-2 sm:px-8 lg:px-12 lg:pb-14">
-          <div className="mx-auto flex max-w-[1120px] flex-col items-center justify-between gap-5 overflow-hidden rounded-[22px] border border-[#45ddce]/30 bg-[#07100d] p-6 text-center shadow-[0_20px_56px_rgba(69,221,206,0.07)] sm:p-8 md:flex-row md:text-left">
+        <section className="bg-white px-5 pb-10 pt-2 sm:px-8 lg:px-12 lg:pb-14">
+
+          <div className="mx-auto flex max-w-[1120px] flex-col items-center justify-between gap-5 overflow-hidden rounded-[22px] border border-gray-200 bg-white p-6 text-center shadow-[0_15px_45px_rgba(0,0,0,0.05)] sm:p-8 md:flex-row md:text-left">
+
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#75fff0]">
+
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-black">
                 Ready to join the team?
               </p>
-              <h2 className="mt-2 text-xl font-semibold tracking-[-0.02em] md:text-2xl">
+
+              <h2 className="mt-2 text-xl font-semibold tracking-[-0.02em] text-black md:text-2xl">
                 Explore a career helping shape voice AI at vozon.ai.
               </h2>
-              <p className="mt-3 max-w-xl text-sm leading-6 text-white/45">
+
+              <p className="mt-3 max-w-xl text-sm leading-6 text-black">
                 Meaningful work, real ownership, and a chance to shape how
                 businesses use voice AI.
               </p>
+
             </div>
+
 
             <a
               href="mailto:hello@vozon.ai?subject=Careers%20at%20vozon.ai"
-              className="inline-flex min-h-11 shrink-0 items-center rounded-lg bg-[#45ddce] px-6 text-sm font-bold text-[#031310] transition duration-300 hover:-translate-y-0.5 hover:brightness-110"
+              className="inline-flex min-h-11 shrink-0 items-center rounded-lg border border-black bg-white px-6 text-sm font-bold text-black transition duration-300 hover:-translate-y-0.5 hover:bg-black hover:text-white"
             >
-              CONTACT US <span className="ml-3">&rarr;</span>
+              CONTACT US
+              <span className="ml-3">&rarr;</span>
             </a>
+
           </div>
+
         </section>
+
       </main>
     </SiteLayout>
   );
 }
+

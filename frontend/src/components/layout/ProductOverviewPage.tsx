@@ -263,7 +263,7 @@ function StageVisual({ index }: { index: number }) {
 export function ProductOverviewPage() {
   return (
     <SiteLayout>
-      <div className="overflow-hidden bg-[#020504] text-white">
+      <div className="product-overview-page overflow-hidden bg-[#020504] text-white">
         <section className="relative px-5 pb-20 pt-36 sm:px-8 sm:pt-40 lg:pb-28 lg:pt-44">
           <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(69,221,206,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(69,221,206,0.055)_1px,transparent_1px)] [background-size:54px_54px] [mask-image:linear-gradient(to_bottom,black,transparent_86%)]" />
           <div className="absolute left-1/2 top-0 h-[500px] w-[900px] -translate-x-1/2 rounded-full bg-[#45ddce]/[0.07] blur-[130px]" />
@@ -358,12 +358,12 @@ export function ProductOverviewPage() {
         </section>
 
         <section className="px-5 py-20 sm:px-8 lg:py-28">
-          <div className="relative mx-auto max-w-[1120px] overflow-hidden rounded-[28px] border border-[#45ddce]/20 bg-[linear-gradient(125deg,rgba(69,221,206,0.16),rgba(143,131,232,0.08)_55%,rgba(242,141,69,0.1))] p-8 text-center shadow-[0_36px_100px_rgba(0,0,0,0.34)] sm:p-12 lg:p-16">
+          <div className="product-overview-ready-card relative mx-auto max-w-[1120px] overflow-hidden rounded-[28px] border border-[#45ddce]/20 bg-[linear-gradient(125deg,rgba(69,221,206,0.16),rgba(143,131,232,0.08)_55%,rgba(242,141,69,0.1))] p-8 text-center shadow-[0_36px_100px_rgba(0,0,0,0.34)] sm:p-12 lg:p-16">
             <div className="absolute left-1/2 top-0 h-px w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-[#75fff0] to-transparent" />
             <p className="m-0 text-[10px] font-black uppercase tracking-[0.18em] text-[#75fff0]">Ready when your callers are</p>
             <h2 className="mx-auto m-0 mt-5 max-w-3xl text-3xl font-black leading-tight sm:text-5xl">Launch your first production voice workflow.</h2>
             <p className="mx-auto mb-0 mt-5 max-w-2xl text-sm leading-7 text-white/52 sm:text-base">Start with one high-value call journey, connect the actions it needs, and expand from real results.</p>
-            <div className="mt-8 flex flex-wrap justify-center gap-3"><Link className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[#45ddce] px-6 text-sm font-black text-[#03110e]" href="/dashboard">Start building <ArrowIcon /></Link><Link className="inline-flex min-h-12 items-center rounded-full border border-white/14 bg-black/20 px-6 text-sm font-black text-white" href="/contact">Contact sales</Link></div>
+            <div className="mt-8 flex flex-wrap justify-center gap-3"><Link className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[#45ddce] px-6 text-sm font-black text-[#03110e]" href="/dashboard">Start building <ArrowIcon /></Link><Link className="product-overview-contact-button inline-flex min-h-12 items-center rounded-full border border-white/14 bg-black/20 px-6 text-sm font-black text-white" href="/contact">Contact sales</Link></div>
           </div>
         </section>
       </div>

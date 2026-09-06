@@ -87,7 +87,6 @@ const nextSteps = [
 
 export function ContactExperience() {
   const [status, setStatus] = useState("");
-  const [statusType, setStatusType] = useState<"idle" | "success" | "error">("idle");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -110,7 +109,6 @@ export function ContactExperience() {
 
     setIsSubmitting(true);
     setStatus("");
-    setStatusType("idle");
 
     try {
       const response = await fetch(`${API_URL}/api/contact`, {
@@ -126,44 +124,41 @@ export function ContactExperience() {
 
       form.reset();
       setStatus(result.message || "Thanks — your message has been sent to our sales team.");
-      setStatusType("success");
     } catch (error) {
       setStatus(
         error instanceof Error
           ? error.message
           : `We could not send your message. Please email ${salesEmail} directly.`,
       );
-      setStatusType("error");
     } finally {
       setIsSubmitting(false);
     }
   }
 
   return (
-    <div className="overflow-hidden bg-black text-white">
-      <section className="relative px-5 pb-16 pt-28 sm:px-8 sm:pt-32 lg:min-h-screen lg:px-12 lg:pb-14 lg:pt-24">
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_22%,rgba(69,221,206,0.12),transparent_28%),radial-gradient(circle_at_82%_12%,rgba(103,232,249,0.09),transparent_28%),linear-gradient(180deg,#020504_0%,#000_74%)]" />
+    <div className="overflow-hidden bg-white text-black">
+      <section className="relative bg-white px-5 pb-16 pt-28 sm:px-8 sm:pt-32 lg:min-h-screen lg:px-12 lg:pb-14 lg:pt-24">
         <div className="relative mx-auto max-w-[1240px]">
-          <nav aria-label="Breadcrumb" className="mb-7 flex items-center gap-2 text-xs font-medium text-white/38 lg:mb-5">
-            <Link className="transition hover:text-[#75fff0]" href="/">Home</Link>
+          <nav aria-label="Breadcrumb" className="mb-7 flex items-center gap-2 text-xs font-medium text-black lg:mb-5">
+            <Link className="transition hover:text-black" href="/">Home</Link>
             <span aria-hidden="true">/</span>
-            <span className="text-[#75fff0]">Contact</span>
+            <span className="text-black">Contact</span>
           </nav>
 
           <div className="grid gap-14 lg:grid-cols-[0.82fr_1.18fr] lg:items-start xl:gap-20">
             <div className="lg:sticky lg:top-32">
-              <span className="inline-flex items-center gap-2 rounded-full border border-[#45ddce]/20 bg-[#45ddce]/[0.07] px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#75fff0]">
-                <span className="size-1.5 rounded-full bg-[#45ddce] shadow-[0_0_10px_#45ddce]" aria-hidden="true" />
+              <span className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-black">
+                <span className="size-1.5 rounded-full bg-teal-500" aria-hidden="true" />
                 Get in touch
               </span>
 
               <h1 className="mt-7 text-[clamp(3rem,6.2vw,5.65rem)] font-medium leading-[0.96] tracking-[-0.058em]">
                 Let&apos;s start a{" "}
-                <span className="bg-gradient-to-r from-[#75fff0] via-[#67e8f9] to-[#b9a5ff] bg-clip-text text-transparent">
+                <span className="text-black">
                   conversation.
                 </span>
               </h1>
-              <p className="mt-7 max-w-xl text-base leading-7 text-white/55 sm:text-lg sm:leading-8">
+              <p className="mt-7 max-w-xl text-base leading-7 text-black sm:text-lg sm:leading-8">
                 Tell us about your voice AI goals or plans to offer the platform under your own brand. We&apos;ll help you understand the right workflow, integrations, and rollout.
               </p>
 
@@ -173,58 +168,72 @@ export function ContactExperience() {
                   ["shield", "Secure by design"],
                   ["team", "Dedicated guidance"],
                 ].map(([icon, label]) => (
-                  <span className="inline-flex min-h-10 items-center gap-2 rounded-full border border-white/10 bg-white/[0.035] px-4 text-xs font-semibold text-white/62" key={label}>
-                    <Icon className="size-4 text-[#75fff0]" name={icon as IconName} />
+                  <span className="inline-flex min-h-10 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-xs font-semibold text-black shadow-sm" key={label}>
+                    <Icon className="size-4 text-teal-600" name={icon as IconName} />
                     {label}
                   </span>
                 ))}
               </div>
 
               <div className="mt-9 flex flex-wrap gap-3">
-                <Link className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#45ddce] to-[#67e8f9] px-6 text-sm font-bold text-[#02110d] shadow-[0_14px_40px_rgba(69,221,206,0.18)] transition hover:-translate-y-0.5" href="#contact-form">
+                <Link className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-6 text-sm font-bold text-black shadow-sm transition hover:-translate-y-0.5 hover:border-teal-300 hover:bg-teal-50" href="#contact-form">
                   Send a message <Icon className="size-4" name="arrow" />
                 </Link>
-                <a className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.035] px-6 text-sm font-bold transition hover:border-[#45ddce]/30 hover:bg-[#45ddce]/[0.06]" href={`mailto:${salesEmail}`}>
-                  <Icon className="size-4 text-[#75fff0]" name="email" /> Email sales
+                <a className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-6 text-sm font-bold text-black shadow-sm transition hover:border-teal-300 hover:bg-teal-50" href={`mailto:${salesEmail}`}>
+                  <Icon className="size-4 text-teal-600" name="email" /> Email sales
                 </a>
               </div>
             </div>
 
-            <form aria-busy={isSubmitting} className="scroll-mt-24 rounded-[28px] border border-white/10 bg-[#06110e]/95 p-5 shadow-[0_35px_100px_rgba(0,0,0,0.5)] sm:p-7 lg:translate-x-8 lg:p-6 xl:translate-x-12" id="contact-form" onSubmit={handleSubmit}>
-              <div className="mb-6 flex items-center gap-4 border-b border-white/[0.08] pb-5 lg:mb-5 lg:pb-4">
-                <span className="grid size-13 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-[#45ddce] to-[#0aa9bb] text-[#02110d] shadow-[0_12px_30px_rgba(69,221,206,0.2)] lg:size-11 lg:rounded-xl">
+            <form aria-busy={isSubmitting} className="scroll-mt-24 rounded-[28px] border border-slate-200 bg-white p-5 shadow-[0_28px_80px_rgba(15,23,42,0.10)] sm:p-7 lg:translate-x-8 lg:p-6 xl:translate-x-12" id="contact-form" onSubmit={handleSubmit}>
+              <div className="mb-6 flex items-center gap-4 border-b border-slate-200 pb-5 lg:mb-5 lg:pb-4">
+                <span className="grid size-13 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-500 text-black shadow-[0_12px_30px_rgba(13,148,136,0.2)] lg:size-11 lg:rounded-xl">
                   <Icon className="size-6" name="send" />
                 </span>
                 <div>
                   <h2 className="text-xl font-semibold tracking-[-0.025em] sm:text-2xl">Send us a message</h2>
-                  <p className="mt-1 text-sm text-white/42">We&apos;ll reply as soon as possible.</p>
+                  <p className="mt-1 text-sm text-black">We&apos;ll reply as soon as possible.</p>
                 </div>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2 lg:gap-3">
-                <label className="grid gap-2 text-sm font-semibold text-white/75 lg:gap-1.5">
+                <label className="grid gap-2 text-sm font-semibold text-black lg:gap-1.5">
                   First name <span className="sr-only">(required)</span>
-                  <input className="min-h-12 rounded-xl border border-white/10 bg-white/[0.035] px-4 font-normal text-white placeholder:text-white/25 focus:border-[#45ddce]/55 focus:bg-[#45ddce]/[0.035] lg:min-h-11" name="firstName" placeholder="First name" required />
+                  <input className="min-h-12 rounded-xl border border-slate-200 bg-white px-4 font-normal text-black placeholder:text-black/50 focus:border-teal-500 focus:bg-teal-50/30 lg:min-h-11" name="firstName" placeholder="First name" required />
                 </label>
-                <label className="grid gap-2 text-sm font-semibold text-white/75 lg:gap-1.5">
+                <label className="grid gap-2 text-sm font-semibold text-black lg:gap-1.5">
                   Last name <span className="sr-only">(required)</span>
-                  <input className="min-h-12 rounded-xl border border-white/10 bg-white/[0.035] px-4 font-normal text-white placeholder:text-white/25 focus:border-[#45ddce]/55 focus:bg-[#45ddce]/[0.035] lg:min-h-11" name="lastName" placeholder="Last name" required />
+                  <input className="min-h-12 rounded-xl border border-slate-200 bg-white px-4 font-normal text-black placeholder:text-black/50 focus:border-teal-500 focus:bg-teal-50/30 lg:min-h-11" name="lastName" placeholder="Last name" required />
                 </label>
-                <label className="grid gap-2 text-sm font-semibold text-white/75 lg:gap-1.5">
+                <label className="grid gap-2 text-sm font-semibold text-black lg:gap-1.5">
                   Work email <span className="sr-only">(required)</span>
-                  <input autoComplete="email" className="min-h-12 rounded-xl border border-white/10 bg-white/[0.035] px-4 font-normal text-white placeholder:text-white/25 focus:border-[#45ddce]/55 focus:bg-[#45ddce]/[0.035] lg:min-h-11" name="email" placeholder="you@company.com" required type="email" />
+                  <input autoComplete="email" className="min-h-12 rounded-xl border border-slate-200 bg-white px-4 font-normal text-black placeholder:text-black/50 focus:border-teal-500 focus:bg-teal-50/30 lg:min-h-11" name="email" placeholder="you@company.com" required type="email" />
                 </label>
-                <label className="grid gap-2 text-sm font-semibold text-white/75 lg:gap-1.5">
-                  Phone number <span className="font-normal text-white/30">(optional)</span>
-                  <input autoComplete="tel" className="min-h-12 rounded-xl border border-white/10 bg-white/[0.035] px-4 font-normal text-white placeholder:text-white/25 focus:border-[#45ddce]/55 focus:bg-[#45ddce]/[0.035] lg:min-h-11" name="phone" placeholder="+91 00000 00000" type="tel" />
+                <label className="grid gap-2 text-sm font-semibold text-black lg:gap-1.5">
+                  Phone number <span className="font-normal text-black">(optional)</span>
+                  <input
+                    autoComplete="tel"
+                    className="min-h-12 rounded-xl border border-slate-200 bg-white px-4 font-normal text-black placeholder:text-black/50 focus:border-teal-500 focus:bg-teal-50/30 lg:min-h-11"
+                    inputMode="numeric"
+                    maxLength={15}
+                    minLength={10}
+                    name="phone"
+                    onInput={(event) => {
+                      event.currentTarget.value = event.currentTarget.value.replace(/\D/g, "");
+                    }}
+                    pattern="[0-9]{10,15}"
+                    placeholder="9876543210"
+                    title="Enter a phone number containing 10 to 15 digits"
+                    type="tel"
+                  />
                 </label>
-                <label className="grid gap-2 text-sm font-semibold text-white/75 lg:gap-1.5">
+                <label className="grid gap-2 text-sm font-semibold text-black lg:gap-1.5">
                   Company <span className="sr-only">(required)</span>
-                  <input autoComplete="organization" className="min-h-12 rounded-xl border border-white/10 bg-white/[0.035] px-4 font-normal text-white placeholder:text-white/25 focus:border-[#45ddce]/55 focus:bg-[#45ddce]/[0.035] lg:min-h-11" name="company" placeholder="Your company" required />
+                  <input autoComplete="organization" className="min-h-12 rounded-xl border border-slate-200 bg-white px-4 font-normal text-black placeholder:text-black/50 focus:border-teal-500 focus:bg-teal-50/30 lg:min-h-11" name="company" placeholder="Your company" required />
                 </label>
-                <label className="grid gap-2 text-sm font-semibold text-white/75 lg:gap-1.5">
+                <label className="grid gap-2 text-sm font-semibold text-black lg:gap-1.5">
                   Inquiry type <span className="sr-only">(required)</span>
-                  <select className="min-h-12 rounded-xl border border-white/10 bg-[#0a1915] px-4 font-normal text-white focus:border-[#45ddce]/55 lg:min-h-11" defaultValue="" name="inquiry" required>
+                  <select className="min-h-12 rounded-xl border border-slate-200 bg-white px-4 font-normal text-black focus:border-teal-500 lg:min-h-11" defaultValue="" name="inquiry" required>
                     <option disabled value="">Select an option</option>
                     <option>Product demo</option>
                     <option>Enterprise rollout</option>
@@ -236,9 +245,9 @@ export function ContactExperience() {
                 </label>
               </div>
 
-              <label className="mt-4 grid gap-2 text-sm font-semibold text-white/75 lg:mt-3 lg:gap-1.5">
+              <label className="mt-4 grid gap-2 text-sm font-semibold text-black lg:mt-3 lg:gap-1.5">
                 Message <span className="sr-only">(required)</span>
-                <textarea className="min-h-32 resize-y rounded-xl border border-white/10 bg-white/[0.035] px-4 py-3 font-normal leading-6 text-white placeholder:text-white/25 focus:border-[#45ddce]/55 focus:bg-[#45ddce]/[0.035] lg:min-h-24" name="message" placeholder="Tell us about your team, use case, expected customers or call volume, and what you would like to achieve..." required />
+                <textarea className="min-h-32 resize-y rounded-xl border border-slate-200 bg-white px-4 py-3 font-normal leading-6 text-black placeholder:text-black/50 focus:border-teal-500 focus:bg-teal-50/30 lg:min-h-24" name="message" placeholder="Tell us about your team, use case, expected customers or call volume, and what you would like to achieve..." required />
               </label>
 
               <label aria-hidden="true" className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden">
@@ -246,15 +255,15 @@ export function ContactExperience() {
                 <input autoComplete="off" name="website" tabIndex={-1} />
               </label>
 
-              <button className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#45ddce] to-[#67e8f9] px-6 text-sm font-bold text-[#02110d] shadow-[0_14px_40px_rgba(69,221,206,0.16)] transition hover:-translate-y-0.5 hover:brightness-105 disabled:cursor-wait disabled:opacity-65 disabled:hover:translate-y-0 lg:mt-4 lg:min-h-11" disabled={isSubmitting} type="submit">
+              <button className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-black bg-black px-6 text-sm font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:cursor-wait disabled:opacity-65 disabled:hover:translate-y-0 lg:mt-4 lg:min-h-11" disabled={isSubmitting} type="submit">
                 {isSubmitting ? "Sending message..." : "Send message"}
                 {!isSubmitting ? <Icon className="size-4" name="arrow" /> : null}
               </button>
-              <p className="mt-4 text-center text-xs leading-5 text-white/34">
+              <p className="mt-4 text-center text-xs leading-5 text-black">
                 Your message will be sent securely to {salesEmail}. By continuing, you agree to our{" "}
-                <Link className="text-[#75fff0] hover:underline" href="/resources/trust-center">privacy practices</Link>.
+                <Link className="font-medium text-black hover:underline" href="/resources/trust-center">privacy practices</Link>.
               </p>
-              <p aria-live="polite" className={`mt-2 min-h-5 text-center text-xs font-medium ${statusType === "error" ? "text-rose-300" : "text-[#75fff0]"}`}>
+              <p aria-live="polite" className="mt-2 min-h-5 text-center text-xs font-medium text-black">
                 {status}
               </p>
             </form>
@@ -262,26 +271,26 @@ export function ContactExperience() {
         </div>
       </section>
 
-      <section className="bg-[#030806] px-5 py-20 sm:px-8 sm:py-24 lg:px-12">
+      <section className="border-t border-slate-100 bg-white px-5 py-20 sm:px-8 sm:py-24 lg:px-12">
         <div className="mx-auto max-w-[1240px]">
           <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#45ddce]/20 bg-[#45ddce]/[0.07] px-4 py-2 text-[11px] font-bold uppercase tracking-[0.17em] text-[#75fff0]">
+            <span className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.17em] text-black">
               <Icon className="size-4" name="chat" /> Multiple ways to reach us
             </span>
             <h2 className="mt-6 text-[clamp(2.25rem,5vw,4rem)] font-medium leading-[1.02] tracking-[-0.05em]">Choose the right channel.</h2>
-            <p className="mt-5 text-base leading-7 text-white/48 sm:text-lg">Whether you&apos;re exploring voice AI or already building with vozon.ai, we&apos;ll point you to the right next step.</p>
+            <p className="mt-5 text-base leading-7 text-black sm:text-lg">Whether you&apos;re exploring voice AI or already building with vozon.ai, we&apos;ll point you to the right next step.</p>
           </div>
 
           <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
             {contactChannels.map((channel) => (
-              <a className="group flex min-h-72 flex-col rounded-[24px] border border-white/[0.09] bg-white/[0.025] p-7 transition hover:-translate-y-1 hover:border-[#45ddce]/30 hover:bg-[#45ddce]/[0.045] sm:p-8" href={channel.href} key={channel.title}>
-                <span className="grid size-13 place-items-center rounded-2xl bg-[#45ddce]/12 text-[#75fff0] ring-1 ring-inset ring-[#45ddce]/20 transition group-hover:bg-[#45ddce] group-hover:text-[#02110d]">
+              <a className="group flex min-h-72 flex-col rounded-[24px] border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:p-8" href={channel.href} key={channel.title}>
+                <span className="grid size-13 place-items-center rounded-2xl bg-teal-50 text-black ring-1 ring-inset ring-teal-200 transition group-hover:bg-teal-500 group-hover:text-black">
                   <Icon className="size-6" name={channel.icon} />
                 </span>
-                <span className="mt-8 text-[10px] font-bold uppercase tracking-[0.16em] text-[#75fff0]">{channel.eyebrow}</span>
+                <span className="mt-8 text-[10px] font-bold uppercase tracking-[0.16em] text-black">{channel.eyebrow}</span>
                 <h3 className="mt-2 text-xl font-semibold tracking-[-0.025em]">{channel.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-white/45">{channel.body}</p>
-                <span className="mt-auto inline-flex items-center gap-2 pt-6 text-sm font-semibold text-white/75 transition group-hover:text-[#75fff0]">
+                <p className="mt-3 text-sm leading-6 text-black">{channel.body}</p>
+                <span className="mt-auto inline-flex items-center gap-2 pt-6 text-sm font-semibold text-black transition group-hover:text-black">
                   {channel.action} <Icon className="size-4 transition group-hover:translate-x-1" name="arrow" />
                 </span>
               </a>
@@ -290,20 +299,20 @@ export function ContactExperience() {
         </div>
       </section>
 
-      <section className="bg-black px-5 py-20 sm:px-8 sm:py-24 lg:px-12 lg:py-28">
+      <section className="border-t border-slate-100 bg-white px-5 py-20 sm:px-8 sm:py-24 lg:px-12 lg:py-28">
         <div className="mx-auto max-w-[1240px]">
           <div className="grid gap-8 lg:grid-cols-[0.7fr_1.3fr] lg:gap-16">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.17em] text-[#75fff0]">What happens next</p>
+              <p className="text-xs font-bold uppercase tracking-[0.17em] text-black">What happens next</p>
               <h2 className="mt-5 text-[clamp(2.25rem,4.6vw,3.8rem)] font-medium leading-[1.02] tracking-[-0.05em]">From first message to a clear plan.</h2>
             </div>
             <div className="grid gap-4">
               {nextSteps.map((step) => (
-                <article className="grid gap-4 rounded-[22px] border border-white/[0.08] bg-white/[0.025] p-6 sm:grid-cols-[52px_1fr] sm:items-start sm:p-7" key={step.number}>
-                  <span className="grid size-11 place-items-center rounded-xl border border-[#45ddce]/20 bg-[#45ddce]/[0.07] text-xs font-bold text-[#75fff0]">{step.number}</span>
+                <article className="grid gap-4 rounded-[22px] border border-slate-200 bg-white p-6 shadow-sm sm:grid-cols-[52px_1fr] sm:items-start sm:p-7" key={step.number}>
+                  <span className="grid size-11 place-items-center rounded-xl border border-teal-200 bg-teal-50 text-xs font-bold text-black">{step.number}</span>
                   <div>
                     <h3 className="text-lg font-semibold tracking-[-0.02em]">{step.title}</h3>
-                    <p className="mt-2 text-sm leading-6 text-white/45">{step.body}</p>
+                    <p className="mt-2 text-sm leading-6 text-black">{step.body}</p>
                   </div>
                 </article>
               ))}

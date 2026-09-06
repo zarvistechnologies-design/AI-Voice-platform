@@ -105,7 +105,7 @@ export function IndustryExperiencePage({
 }) {
   const heroCard = preset.photoCards[0];
   const companyColors = [
-    "var(--industry-accent-soft)",
+    "var(--industry-logo-accent)",
     "#c5bdff",
     "#ffb17e",
     "#8dd7ff",
@@ -131,6 +131,7 @@ export function IndustryExperiencePage({
   const style = {
     "--industry-accent": preset.accent,
     "--industry-accent-soft": preset.accentSoft,
+    "--industry-logo-accent": preset.accentSoft,
   } as CSSProperties;
 
   return (
@@ -439,15 +440,15 @@ export function IndustryExperiencePage({
           </div>
         </section>
 
-        <section className="bg-black">
+        <section className="business-pricing-section bg-black" id="pricing">
           <div className="mx-auto max-w-6xl px-6 pt-12 lg:px-8">
             <div className="mx-auto max-w-3xl text-center">
               <Pill>Pricing</Pill>
               <h2 className="mt-6 text-3xl font-semibold leading-tight tracking-[-0.02em] md:text-4xl">Simple plans that scale with your calls</h2>
               <p className="mt-4 text-base leading-7 text-slate-300">Start with usage-based pricing, then move to a tailored plan as your call volume and deployment needs grow.</p>
             </div>
-            <div className="mt-10 grid gap-4 lg:grid-cols-2">
-              <article className="relative overflow-hidden rounded-2xl border border-[var(--industry-accent)]/25 bg-[#07100d] p-6 sm:p-7">
+            <div className="business-pricing-grid mt-10 grid gap-4 lg:grid-cols-2">
+              <article className="business-pricing-card relative overflow-hidden rounded-2xl border border-[var(--industry-accent)]/25 bg-[#07100d] p-6 sm:p-7">
                 <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--industry-accent)] to-transparent" />
                 <div className="flex items-start justify-between gap-4">
                   <div>
@@ -465,10 +466,10 @@ export function IndustryExperiencePage({
                     <li className="flex items-start gap-3" key={item}><CheckIcon />{item}</li>
                   ))}
                 </ul>
-                <Link className="mt-7 inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-[var(--industry-accent)]/30 bg-[var(--industry-accent)]/10 text-sm font-bold text-[var(--industry-accent-soft)] transition hover:bg-[var(--industry-accent)]/15" href="/#demo">Get started</Link>
+                <Link className="business-pricing-button mt-7 inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-[var(--industry-accent)]/30 bg-[var(--industry-accent)]/10 text-sm font-bold text-[var(--industry-accent-soft)] transition hover:bg-[var(--industry-accent)]/15" href="/#demo">Get started</Link>
               </article>
 
-              <article className="relative overflow-hidden rounded-2xl border border-[#8f83e8]/30 bg-[radial-gradient(circle_at_95%_0%,rgba(143,131,232,0.22),transparent_42%),#0a0b0d] p-6 sm:p-7">
+              <article className="business-pricing-card relative overflow-hidden rounded-2xl border border-[#8f83e8]/30 bg-[radial-gradient(circle_at_95%_0%,rgba(143,131,232,0.22),transparent_42%),#0a0b0d] p-6 sm:p-7">
                 <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#8f83e8] to-transparent" />
                 <div className="flex items-start justify-between gap-4">
                   <div><span className="text-xs font-bold uppercase tracking-[0.14em] text-[#c5bdff]">For growing teams</span><h3 className="mt-2 text-xl font-bold">Enterprise</h3></div>
@@ -480,7 +481,7 @@ export function IndustryExperiencePage({
                     <li className="flex items-start gap-3" key={item}><CheckIcon tone="purple" />{item}</li>
                   ))}
                 </ul>
-                <Link className="mt-7 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-[linear-gradient(90deg,var(--industry-accent),#8f83e8)] text-sm font-extrabold text-[#031310] transition hover:brightness-110" href="/contact">Talk to sales</Link>
+                <Link className="business-pricing-button mt-7 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-[linear-gradient(90deg,var(--industry-accent),#8f83e8)] text-sm font-extrabold text-[#031310] transition hover:brightness-110" href="/contact">Talk to sales</Link>
               </article>
             </div>
           </div>
