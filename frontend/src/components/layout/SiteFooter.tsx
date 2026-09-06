@@ -6,7 +6,13 @@ import { useEffect, useRef, useState } from "react";
 import { BrandLogo } from "@/components/ui/BrandLogo";
 import "@/components/sections/HomeDesignFourEnding.css";
 
-const footerTags = [
+type FooterTag = {
+  label: string;
+  icon: string;
+  tone?: "green" | "orange" | "pink" | "purple" | "white";
+};
+
+const footerTags: readonly FooterTag[] = [
   { label: "Media", icon: "◆" }, { label: "Freelancing", icon: "⚡" },
   { label: "Podcast", icon: "▥" }, { label: "Media", icon: "◆" },
   { label: "Investing", icon: "$", tone: "pink" }, { label: "Partnership", icon: "◈", tone: "white" },
@@ -17,7 +23,7 @@ const footerTags = [
   { label: "Consulting", icon: "▥" }, { label: "CRM", icon: "▦" },
   { label: "Leads", icon: "≋" }, { label: "Deal", icon: "$" },
   { label: "Agencies", icon: "▦" }, { label: "Contractors", icon: "▦" },
-] as const;
+];
 
 export function SiteFooter() {
   const [visible, setVisible] = useState(false);
