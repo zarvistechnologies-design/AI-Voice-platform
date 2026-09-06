@@ -366,8 +366,8 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
       if (call.dispatch.region) onRegionChange(call.dispatch.region);
       setStatus("Phone call is connecting to the agent.");
       startDispatchPolling(call.roomName, call.dispatchId);
-    } catch {
-      setStatus("Could not start the phone call.");
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : "Could not start the phone call.");
     } finally {
       setBusy(false);
     }
@@ -447,6 +447,9 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
                 value={phoneNumber}
                 onChange={(event) => setPhoneNumber(event.target.value)}
               />
+              <span className="font-normal leading-5 text-white/40">
+                Include the country code. International formats such as +1, +44, +971, and +91 are supported.
+              </span>
             </label>
           ) : null}
 
