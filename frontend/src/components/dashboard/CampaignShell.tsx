@@ -21,7 +21,9 @@ type CampaignLead = {
   email: string;
   company: string;
   customFields: Record<string, string>;
+  source?: "csv" | "manual";
 };
+type MetadataFieldDraft = { id: string; key: string; value: string };
 type CampaignCsvWorkerResponse =
   | { ok: true; leads: CampaignLead[] }
   | { ok: false; message: string };
@@ -120,6 +122,22 @@ function parseCampaignCsvInWorker(buffer: ArrayBuffer, signal: AbortSignal) {
 
 function isDialable(phone: string) {
   return /^\+[1-9]\d{7,14}$/.test(phone);
+}
+
+function normalizePhone(phone: string) {
+  return phone.trim().replace(/[^\d+]/g, "");
+}
+
+function normalizeMetadataKey(key: string) {
+  return key.trim().replace(/[^a-zA-Z0-9_]+/g, "_").replace(/^_+|_+$/g, "").slice(0, 80);
+}
+
+function newMetadataField(): MetadataFieldDraft {
+  return {
+    id: globalThis.crypto?.randomUUID?.() ?? `metadata-${Date.now()}-${Math.random()}`,
+    key: "",
+    value: "",
+  };
 }
 
 function formatFileSize(size: number) {
@@ -261,6 +279,8 @@ export function CampaignShell() {
   const [requireConsentLine, setRequireConsentLine] = useState(true);
   const [csvFile, setCsvFile] = useState<File | null>(null);
   const [leads, setLeads] = useState<CampaignLead[]>([]);
+  const [manualContact, setManualContact] = useState({ phone: "", name: "", email: "", company: "" });
+  const [manualMetadata, setManualMetadata] = useState<MetadataFieldDraft[]>([]);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -375,7 +395,7 @@ export function CampaignShell() {
     { label: "Campaign name", ready: Boolean(campaignName.trim()) },
     { label: "Ready caller ID assigned", ready: selectedPhoneReady },
     { label: "Assistant is Live", ready: selectedAgent?.status === "Live" },
-    { label: "CSV contacts uploaded", ready: leads.length > 0 },
+    { label: "Audience contact added", ready: leads.length > 0 },
     { label: "All phone numbers E.164", ready: leads.length > 0 && invalidLeadCount === 0 },
     { label: "Compliance guardrails on", ready: respectDnc && requireConsentLine },
     { label: "Schedule selected", ready: sendMode === "now" || Boolean(scheduledAt) },
@@ -406,7 +426,7 @@ export function CampaignShell() {
     csvParseAbortRef.current?.abort();
     csvParseAbortRef.current = null;
     setCsvFile(null);
-    setLeads([]);
+    setLeads((current) => current.filter((lead) => lead.source === "manual"));
     setNotice("");
     setError("");
     if (file.size > maxCsvSize) {
@@ -424,12 +444,24 @@ export function CampaignShell() {
       if (sequence !== csvParseSequenceRef.current || controller.signal.aborted) return;
       if (!parsed.length) throw new Error("No contacts found in the CSV.");
       setCsvFile(file);
-      setLeads(parsed);
-      setNotice(`${parsed.length} contacts loaded from ${file.name}.`);
+      setLeads((current) => {
+        const manualLeads = current.filter((lead) => lead.source === "manual");
+        const knownPhones = new Set(manualLeads.map((lead) => lead.phone));
+        const csvLeads = parsed.reduce<CampaignLead[]>((result, lead) => {
+          if (knownPhones.has(lead.phone)) {
+            return result;
+          }
+          knownPhones.add(lead.phone);
+          result.push({ ...lead, source: "csv" });
+          return result;
+        }, []);
+        return [...manualLeads, ...csvLeads];
+      });
+      setNotice(`${parsed.length} CSV rows processed from ${file.name}. Duplicate phone numbers are skipped automatically.`);
     } catch (caught) {
       if (sequence !== csvParseSequenceRef.current || controller.signal.aborted) return;
       setCsvFile(null);
-      setLeads([]);
+      setLeads((current) => current.filter((lead) => lead.source === "manual"));
       setError(errorMessage(caught));
     } finally {
       if (sequence === csvParseSequenceRef.current) csvParseAbortRef.current = null;
@@ -439,6 +471,63 @@ export function CampaignShell() {
   function handleDrop(event: DragEvent<HTMLLabelElement>) {
     event.preventDefault();
     void handleCsv(event.dataTransfer.files[0]);
+  }
+
+  function addManualContact() {
+    setNotice("");
+    setError("");
+    const phone = normalizePhone(manualContact.phone);
+    if (!isDialable(phone)) {
+      setError("Enter the manual contact phone number in E.164 format, for example +919876543210.");
+      return;
+    }
+    if (leads.length >= maxCampaignLeads) {
+      setError(`A campaign can contain at most ${maxCampaignLeads.toLocaleString("en-IN")} contacts.`);
+      return;
+    }
+    if (leads.some((lead) => lead.phone === phone)) {
+      setError("That phone number is already in this campaign audience.");
+      return;
+    }
+
+    const customFields: Record<string, string> = {};
+    for (const field of manualMetadata) {
+      const rawKey = field.key.trim();
+      const value = field.value.trim();
+      if (!rawKey && !value) continue;
+      if (!rawKey || !value) {
+        setError("Every metadata row needs both a field name and a value.");
+        return;
+      }
+      const key = normalizeMetadataKey(rawKey);
+      if (!key) {
+        setError(`Metadata field "${rawKey}" needs at least one letter or number.`);
+        return;
+      }
+      if (Object.prototype.hasOwnProperty.call(customFields, key)) {
+        setError(`Metadata field "${key}" is duplicated.`);
+        return;
+      }
+      customFields[key] = value.slice(0, 500);
+    }
+
+    const nextRow = leads.reduce((highest, lead) => Math.max(highest, lead.row), 1) + 1;
+    setLeads((current) => [...current, {
+      row: nextRow,
+      phone,
+      name: manualContact.name.trim().slice(0, 300),
+      email: manualContact.email.trim().slice(0, 320),
+      company: manualContact.company.trim().slice(0, 300),
+      customFields,
+      source: "manual",
+    }]);
+    setManualContact({ phone: "", name: "", email: "", company: "" });
+    setManualMetadata([]);
+    setNotice(`Manual contact ${manualContact.name.trim() || phone} added with ${plural(Object.keys(customFields).length, "metadata field")}.`);
+  }
+
+  function updateManualMetadata(id: string, changes: Partial<Pick<MetadataFieldDraft, "key" | "value">>) {
+    setManualMetadata((current) => current.map((field) => field.id === id ? { ...field, ...changes } : field));
   }
 
   async function prepareCampaign(event: FormEvent<HTMLFormElement>) {
@@ -629,10 +718,10 @@ export function CampaignShell() {
                     eyebrow="Step 02"
                     icon="upload"
                     title="Audience intelligence"
-                    description="Drop in a CSV, preview the rows, and catch invalid phone numbers before they enter the campaign queue."
+                    description="Upload contacts in bulk or add them manually with the metadata your assistant needs during each call."
                   />
                   <span className="border-l border-white/15 px-3 py-1.5 text-xs font-semibold text-white/50">
-                    {csvFile ? `${csvFile.name} - ${formatFileSize(csvFile.size)}` : "No file chosen"}
+                    {csvFile ? `${csvFile.name} - ${formatFileSize(csvFile.size)}` : "No CSV chosen"}
                   </span>
                 </div>
 
@@ -650,6 +739,104 @@ export function CampaignShell() {
                     <span className="mt-2 block text-sm leading-6 text-slate-500">Up to 25MB and {maxCampaignLeads.toLocaleString("en-IN")} contacts. Required column: phone or phone_number. Optional: name, email, company, and custom fields.</span>
                   </span>
                 </label>
+
+                <div className="my-6 flex items-center gap-4" aria-hidden="true">
+                  <span className="h-px flex-1 bg-white/10" />
+                  <span className="app-label text-white/35">or add one contact</span>
+                  <span className="h-px flex-1 bg-white/10" />
+                </div>
+
+                <section
+                  className="border-l-2 border-[#45ddce]/35 bg-[#45ddce]/[0.04] px-4 py-5 sm:px-5"
+                  onKeyDown={(event) => {
+                    if (event.key !== "Enter") return;
+                    event.preventDefault();
+                    addManualContact();
+                  }}
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <h3 className="app-section-title m-0 text-white">Manual contact</h3>
+                      <p className="app-caption mt-1 mb-0">Phone is required. Metadata becomes a prompt variable, such as {"{{appointment_date}}"}.</p>
+                    </div>
+                    <span className="rounded-full border border-white/10 px-3 py-1 text-xs font-semibold text-white/45">E.164 required</span>
+                  </div>
+
+                  <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                    <label className="app-label grid gap-2">
+                      Phone number <span className="sr-only">required</span>
+                      <input
+                        className={controlClass}
+                        inputMode="tel"
+                        placeholder="+919876543210"
+                        value={manualContact.phone}
+                        onChange={(event) => setManualContact((current) => ({ ...current, phone: event.target.value }))}
+                      />
+                    </label>
+                    <label className="app-label grid gap-2">
+                      Name
+                      <input className={controlClass} placeholder="Amit Sharma" value={manualContact.name} onChange={(event) => setManualContact((current) => ({ ...current, name: event.target.value }))} />
+                    </label>
+                    <label className="app-label grid gap-2">
+                      Email
+                      <input className={controlClass} placeholder="amit@example.com" type="email" value={manualContact.email} onChange={(event) => setManualContact((current) => ({ ...current, email: event.target.value }))} />
+                    </label>
+                    <label className="app-label grid gap-2">
+                      Company
+                      <input className={controlClass} placeholder="Example Company" value={manualContact.company} onChange={(event) => setManualContact((current) => ({ ...current, company: event.target.value }))} />
+                    </label>
+                  </div>
+
+                  <div className="mt-5 border-t border-white/10 pt-5">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div>
+                        <h4 className="m-0 text-sm font-semibold text-white">Contact metadata</h4>
+                        <p className="app-caption mt-1 mb-0">Use clear names such as appointment_date, customer_id, or preferred_language.</p>
+                      </div>
+                      <button
+                        className={`${buttonClass} border border-white/10 text-white/70 hover:border-[#45ddce]/35 hover:text-[#75fff0]`}
+                        disabled={manualMetadata.length >= 40}
+                        onClick={() => setManualMetadata((current) => [...current, newMetadataField()])}
+                        type="button"
+                      >
+                        Add metadata field
+                      </button>
+                    </div>
+
+                    {manualMetadata.length ? (
+                      <div className="mt-4 grid gap-3">
+                        {manualMetadata.map((field) => (
+                          <div className="grid gap-3 sm:grid-cols-[minmax(0,.8fr)_minmax(0,1.2fr)_auto] sm:items-end" key={field.id}>
+                            <label className="app-label grid gap-2">
+                              Field name
+                              <input className={controlClass} maxLength={80} placeholder="appointment_date" value={field.key} onChange={(event) => updateManualMetadata(field.id, { key: event.target.value })} />
+                            </label>
+                            <label className="app-label grid gap-2">
+                              Value
+                              <input className={controlClass} maxLength={500} placeholder="2026-09-10" value={field.value} onChange={(event) => updateManualMetadata(field.id, { value: event.target.value })} />
+                            </label>
+                            <button
+                              aria-label={`Remove ${field.key || "metadata"} field`}
+                              className={`${buttonClass} border border-white/10 px-3 text-white/45 hover:border-rose-300/30 hover:text-rose-300`}
+                              onClick={() => setManualMetadata((current) => current.filter((item) => item.id !== field.id))}
+                              type="button"
+                            >
+                              <Icon icon="close" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="app-caption mt-4 mb-0 border-l border-white/10 pl-3">No metadata fields yet. The standard contact details will still be available to the assistant.</p>
+                    )}
+                  </div>
+
+                  <div className="mt-5 flex justify-end border-t border-white/10 pt-5">
+                    <button className={`${buttonClass} bg-[#00b8c4] text-white hover:bg-[#008996]`} onClick={addManualContact} type="button">
+                      <Icon icon="user" /> Add contact to audience
+                    </button>
+                  </div>
+                </section>
 
                 <div className={`mt-5 grid gap-3 border-y py-4 sm:grid-cols-[auto_minmax(0,1fr)] ${
                   callWindowOpen ? "border-emerald-300/20" : "border-amber-300/20"
@@ -698,6 +885,7 @@ export function CampaignShell() {
                             <th className="px-4 py-3">Name</th>
                             <th className="px-4 py-3">Company</th>
                             <th className="px-4 py-3">Custom fields</th>
+                            <th className="px-4 py-3"><span className="sr-only">Actions</span></th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-[#edf0f4]">
@@ -707,7 +895,20 @@ export function CampaignShell() {
                               <td className={`px-4 py-3 text-sm font-semibold ${isDialable(lead.phone) ? "text-slate-950" : "text-red-600"}`}>{lead.phone}</td>
                               <td className="app-body px-4 py-3 text-[#475569]">{lead.name || "-"}</td>
                               <td className="app-body px-4 py-3 text-[#475569]">{lead.company || "-"}</td>
-                              <td className="app-caption px-4 py-3">{Object.keys(lead.customFields).length}</td>
+                              <td className="app-caption px-4 py-3">
+                                {Object.keys(lead.customFields).length}
+                                {lead.source ? <span className="ml-2 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase text-slate-500">{lead.source}</span> : null}
+                              </td>
+                              <td className="px-4 py-3 text-right">
+                                <button
+                                  aria-label={`Remove ${lead.name || lead.phone}`}
+                                  className="inline-grid size-8 place-items-center rounded-full text-slate-400 transition hover:bg-rose-50 hover:text-rose-600"
+                                  onClick={() => setLeads((current) => current.filter((item) => item !== lead))}
+                                  type="button"
+                                >
+                                  <Icon icon="close" className="size-3.5" />
+                                </button>
+                              </td>
                             </tr>
                           ))}
                         </tbody>
