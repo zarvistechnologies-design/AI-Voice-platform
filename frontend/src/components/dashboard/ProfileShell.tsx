@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { type FormEvent, useCallback, useEffect, useState, useSyncExternalStore } from "react";
 
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
+import { useBrand } from "@/components/branding/BrandProvider";
 import {
   accountApi,
   getServerSession,
@@ -159,6 +160,7 @@ function SectionHeading({
 }
 
 export function ProfileShell() {
+  const brand = useBrand();
   const router = useRouter();
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
   const [showUserSidebar, setShowUserSidebar] = useState(false);
@@ -250,7 +252,7 @@ export function ProfileShell() {
       const result = await accountApi.setupTwoFactor();
       setTotpSecret(result.secret);
       setTotpUri(result.otpauthUrl);
-      setNotice({ tone: "info", message: "Add Vozon to your authenticator, then enter the current six-digit code." });
+      setNotice({ tone: "info", message: `Add ${brand.productName} to your authenticator, then enter the current six-digit code.` });
     } catch (error) {
       setNotice({ tone: "error", message: error instanceof Error ? error.message : "Could not start two-factor setup." });
     } finally {

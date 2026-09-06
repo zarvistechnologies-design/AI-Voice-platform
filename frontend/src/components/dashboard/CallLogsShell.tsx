@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
+import { useBrand } from "@/components/branding/BrandProvider";
 import {
     getServerSession,
     getSession,
@@ -168,6 +169,7 @@ const filterInputClass =
   "rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium outline-none focus:border-cyan-500";
 
 export function CallLogsShell() {
+  const brand = useBrand();
   const router = useRouter();
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
   const [calls, setCalls] = useState<CallRecord[]>([]);
@@ -347,7 +349,7 @@ export function CallLogsShell() {
               ["Completed", metrics.completed, "On this page"],
               ["Active now", metrics.active, "Live conversations"],
               ["Avg duration", formatDuration(metrics.averageDuration), "On this page"],
-              ["Customer cost", money(metrics.charged), "Provider usage plus Vozon fee"],
+              ["Customer cost", money(metrics.charged), `Provider usage plus ${brand.productName} fee`],
             ].map(([label, value, detail]) => (
               <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm" key={label}>
                 <span className="text-xs font-medium text-slate-500">{label}</span>

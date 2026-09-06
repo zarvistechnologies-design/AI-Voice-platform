@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState, useSyncExternalStore, type R
 import { useRouter } from "next/navigation";
 
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
+import { useBrand } from "@/components/branding/BrandProvider";
 import {
   getServerSession,
   getSession,
@@ -127,7 +128,7 @@ function sampleOutboundCurl(baseUrl: string) {
   -d '{"agentId":"agent_id","phoneNumber":"+919999999999"}'`;
 }
 
-function sampleCallResponse() {
+function sampleCallResponse(publicApiUrl: string) {
   return `{
   "call": {
     "id": "call_id",
@@ -140,10 +141,10 @@ function sampleCallResponse() {
       "to": "+918047280782",
       "direction": "inbound"
     },
-    "recording_url": "https://www.vozon.ai/api/public/recordings/call_id?expires=1780000000&signature=signed_value",
+    "recording_url": "${publicApiUrl}/api/public/recordings/call_id?expires=1780000000&signature=signed_value",
     "recording": {
       "key": "recordings/inbound-...mp3",
-      "url": "https://www.vozon.ai/api/v1/calls/call_id/recording",
+      "url": "${publicApiUrl}/api/v1/calls/call_id/recording",
       "status": "completed"
     },
     "chat": [
@@ -176,7 +177,7 @@ function sampleCallResponse() {
 }`;
 }
 
-function sampleWebhookPayload() {
+function sampleWebhookPayload(publicApiUrl: string) {
   return `{
   "id": "call.ended:call_id",
   "event": "call.ended",
@@ -191,7 +192,7 @@ function sampleWebhookPayload() {
       "to": "+918047280782",
       "direction": "inbound"
     },
-    "recording_url": "https://www.vozon.ai/api/public/recordings/call_id?expires=1780000000&signature=signed_value",
+    "recording_url": "${publicApiUrl}/api/public/recordings/call_id?expires=1780000000&signature=signed_value",
     "chat": [],
     "transcription_text": "Customer: Hello\\nAgent: Hi, how can I help?",
     "providers": {
@@ -212,6 +213,7 @@ function sampleWebhookPayload() {
 }
 
 export function DeveloperShell() {
+  const brand = useBrand();
   const router = useRouter();
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
   const [apiKeys, setApiKeys] = useState<ApiKeyRecord[]>([]);
@@ -232,7 +234,8 @@ export function DeveloperShell() {
   const [showUserSidebar, setShowUserSidebar] = useState(false);
   const [activeView, setActiveView] = useState<DeveloperView>("overview");
   const [inspectorView, setInspectorView] = useState<InspectorView>("request");
-  const baseUrl = useMemo(() => `${API_URL}/api/v1`, []);
+  const publicApiUrl = (brand.urls.api || API_URL).replace(/\/$/, "");
+  const baseUrl = useMemo(() => `${publicApiUrl}/api/v1`, [publicApiUrl]);
   const activeKeys = useMemo(() => apiKeys.filter((apiKey) => !apiKey.revokedAt).length, [apiKeys]);
   const enabledWebhooks = useMemo(() => webhooks.filter((webhook) => webhook.enabled).length, [webhooks]);
   const deliveredCount = useMemo(() => deliveries.filter((delivery) => delivery.status === "delivered").length, [deliveries]);
@@ -359,8 +362,8 @@ export function DeveloperShell() {
   const inspectorContent = inspectorView === "request"
     ? sampleCurl(baseUrl)
     : inspectorView === "response"
-      ? sampleCallResponse()
-      : sampleWebhookPayload();
+      ? sampleCallResponse(publicApiUrl)
+      : sampleWebhookPayload(publicApiUrl);
   const inspectorLabel = inspectorView === "request"
     ? "List calls request"
     : inspectorView === "response"

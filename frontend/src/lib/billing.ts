@@ -5,9 +5,11 @@ import { getAuthHeaders, getSession } from "@/lib/auth";
 export type PlanId = "free" | "starter" | "growth" | "enterprise";
 
 export type BillingPlan = {
-  id: PlanId;
+  id: string;
   name: string;
   monthlyPrice: number | null;
+  currency?: string;
+  interval?: string;
   limits: {
     agents: number | null;
     members: number | null;
@@ -62,10 +64,13 @@ export type BillingSummary = {
   paymentReadiness: {
     credentialsConfigured: boolean;
     webhookConfigured: boolean;
-    mode: "live" | "test" | "unconfigured";
-    currency: "USD";
+    mode: "live" | "test" | "unconfigured" | "partner_managed";
+    currency: string;
   };
-  enterpriseMonthlyUsd: number;
+  enterpriseMonthlyUsd?: number;
+  billingModel?: "pay_as_you_go" | "white_label_partner_managed" | "white_label_customer_checkout";
+  paymentProvider?: string;
+  whiteLabel?: { productName: string; supportEmail: string; managedByPartner: boolean };
   wallet: CreditWallet;
   creditSettings: {
     currency: string;
@@ -75,11 +80,14 @@ export type BillingSummary = {
     platformFeeInrPerMinute: number;
   };
   subscription: {
-    plan: PlanId;
-    provider: "internal" | "razorpay";
-    status: "active" | "trialing" | "past_due" | "cancelled" | "incomplete";
+    plan?: PlanId;
+    planKey?: string;
+    planVersion?: number;
+    provider: "internal" | "razorpay" | string;
+    status: "active" | "trialing" | "past_due" | "cancelled" | "incomplete" | "paused";
     currentPeriodEnd?: string;
-    cancelAtPeriodEnd: boolean;
+    cancelAtPeriodEnd?: boolean;
+    priceSnapshot?: { currency?: string; recurringAmountMinor?: number; interval?: string };
   };
   currentPlan: BillingPlan;
   plans: BillingPlan[];
@@ -101,13 +109,43 @@ export type BillingSummary = {
     invoiceNumber: string;
     description: string;
     status: string;
-    amountDue: number;
-    amountPaid: number;
+    amountDue?: number;
+    amountPaid?: number;
+    totalMinor?: number;
+    recurringAmountMinor?: number;
+    setupFeeMinor?: number;
+    taxMinor?: number;
+    taxLabel?: string;
+    refundedMinor?: number;
+    refundStatus?: "none" | "partial" | "full";
+    disputeStatus?: string;
+    periodStart?: string;
+    periodEnd?: string;
+    paidAt?: string;
     currency: string;
     hostedInvoiceUrl: string;
     invoicePdf: string;
     createdAt: string;
   }[];
+  currentInvoice?: {
+    _id: string;
+    invoiceNumber: string;
+    status: "open" | "paid" | "past_due" | "disputed" | "void" | "refunded";
+    currency: "USD" | "INR";
+    recurringAmountMinor: number;
+    setupFeeMinor: number;
+    taxMinor: number;
+    taxLabel: string;
+    totalMinor: number;
+    dueAt: string;
+    periodStart: string;
+    periodEnd: string;
+    paidAt?: string;
+    transferStatus?: string;
+    refundedMinor?: number;
+    refundStatus?: "none" | "partial" | "full";
+    disputeStatus?: string;
+  } | null;
   transactions: BillingTransaction[];
 };
 
@@ -118,7 +156,7 @@ export type RazorpayCheckoutPayload = {
   orderId?: string;
   subscriptionId?: string;
   amount: number;
-  currency: "USD";
+  currency: "USD" | "INR";
   credits?: number;
   name: string;
   description: string;
@@ -166,6 +204,16 @@ export const billingApi = {
       method: "POST",
       body: JSON.stringify(result),
     }),
+  whiteLabelCheckout: () =>
+    request<(RazorpayCheckoutPayload & { settled: false }) | { settled: true; invoice: BillingSummary["currentInvoice"] }>("/white-label/checkout", {
+      method: "POST",
+      body: JSON.stringify({}),
+    }),
+  verifyWhiteLabelCheckout: (result: { razorpay_order_id?: string; razorpay_payment_id: string; razorpay_signature: string }) =>
+    request<{ success: boolean; invoice: BillingSummary["currentInvoice"] }>("/white-label/verify", {
+      method: "POST",
+      body: JSON.stringify(result),
+    }),
   updateAutoReload: async (input: { enabled: boolean; thresholdCredits: number; reloadAmountCredits: number }) => {
     const result = await request<{ wallet: CreditWallet }>("/auto-reload", {
       method: "PUT",
@@ -190,4 +238,16 @@ export const billingApi = {
       body: JSON.stringify({ immediate }),
     }),
   downloadInvoice,
+  downloadWhiteLabelInvoice: async (invoiceId: string) => {
+    if (!getSession()) throw new Error("Sign in before downloading an invoice.");
+    const response = await fetch(`${API_URL}/api/billing/white-label/invoices/${encodeURIComponent(invoiceId)}`, {
+      credentials: "include",
+      headers: getAuthHeaders(),
+    });
+    if (!response.ok) {
+      const data = (await response.json().catch(() => null)) as { message?: string } | null;
+      throw new Error(data?.message ?? "Invoice download failed.");
+    }
+    return response.blob();
+  },
 };

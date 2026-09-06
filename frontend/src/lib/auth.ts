@@ -7,12 +7,24 @@ export type AuthSession = {
   signedInAt: string;
   emailVerified: boolean;
   twoFactorEnabled: boolean;
+  platformRole: "user" | "support" | "super_admin";
   token?: string;
   organization?: {
     id: string;
     name: string;
     slug: string;
     role: string;
+    whiteLabelAccountId?: string;
+    whiteLabelBrandId?: string;
+    whiteLabelOwnerAccountId?: string;
+    lifecycleStatus?: "active" | "suspended" | "archived";
+  };
+  whiteLabel?: {
+    accountId: string;
+    brandId: string;
+    hostname: string;
+    allowGoogleSignIn: boolean;
+    requireEmailVerification: boolean;
   };
 };
 
@@ -23,6 +35,7 @@ type AuthResponse = {
     email: string;
     emailVerified: boolean;
     twoFactorEnabled: boolean;
+    platformRole?: "user" | "support" | "super_admin";
     createdAt: string;
   };
   organization?: {
@@ -30,7 +43,12 @@ type AuthResponse = {
     name: string;
     slug: string;
     role: string;
+    whiteLabelAccountId?: string;
+    whiteLabelBrandId?: string;
+    whiteLabelOwnerAccountId?: string;
+    lifecycleStatus?: "active" | "suspended" | "archived";
   };
+  whiteLabel?: AuthSession["whiteLabel"];
   token?: string;
 };
 
@@ -68,8 +86,10 @@ function createSession(authResponse: AuthResponse): AuthSession {
     signedInAt: new Date().toISOString(),
     emailVerified: authResponse.user.emailVerified,
     twoFactorEnabled: authResponse.user.twoFactorEnabled,
+    platformRole: authResponse.user.platformRole ?? "user",
     token: authResponse.token,
     organization: authResponse.organization,
+    whiteLabel: authResponse.whiteLabel,
   };
 }
 
@@ -183,8 +203,10 @@ export function getSession(): AuthSession | null {
       signedInAt: parsed.signedInAt,
       emailVerified: parsed.emailVerified ?? false,
       twoFactorEnabled: parsed.twoFactorEnabled ?? false,
+      platformRole: parsed.platformRole ?? "user",
       token: parsed.token,
       organization: parsed.organization,
+      whiteLabel: parsed.whiteLabel,
     };
     return cachedSession;
   } catch {
@@ -233,9 +255,11 @@ async function validateSessionWithServer(session: AuthSession) {
       email: string;
       emailVerified: boolean;
       twoFactorEnabled: boolean;
+      platformRole?: "user" | "support" | "super_admin";
       createdAt: string;
     };
     organization?: AuthSession["organization"];
+    whiteLabel?: AuthSession["whiteLabel"];
   };
 
   if (!data.user) {
@@ -249,10 +273,18 @@ async function validateSessionWithServer(session: AuthSession) {
     session.email === data.user.email
     && session.emailVerified === data.user.emailVerified
     && session.twoFactorEnabled === data.user.twoFactorEnabled
+    && session.platformRole === (data.user.platformRole ?? "user")
     && session.organization?.id === data.organization?.id
     && session.organization?.name === data.organization?.name
     && session.organization?.slug === data.organization?.slug
     && session.organization?.role === data.organization?.role
+    && session.organization?.whiteLabelAccountId === data.organization?.whiteLabelAccountId
+    && session.organization?.whiteLabelBrandId === data.organization?.whiteLabelBrandId
+    && session.organization?.whiteLabelOwnerAccountId === data.organization?.whiteLabelOwnerAccountId
+    && session.organization?.lifecycleStatus === data.organization?.lifecycleStatus
+    && session.whiteLabel?.accountId === data.whiteLabel?.accountId
+    && session.whiteLabel?.brandId === data.whiteLabel?.brandId
+    && session.whiteLabel?.hostname === data.whiteLabel?.hostname
   ) {
     return session;
   }
@@ -264,7 +296,9 @@ async function validateSessionWithServer(session: AuthSession) {
     email: data.user.email,
     emailVerified: data.user.emailVerified,
     twoFactorEnabled: data.user.twoFactorEnabled,
+    platformRole: data.user.platformRole ?? "user",
     organization: data.organization,
+    whiteLabel: data.whiteLabel,
   };
 
   saveSession(updatedSession);

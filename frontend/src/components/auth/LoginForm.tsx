@@ -11,6 +11,7 @@ import {
   validateStoredSession,
 } from "@/lib/auth";
 import { GoogleSignInButton } from "@/components/auth/GoogleSignInButton";
+import { useBrand } from "@/components/branding/BrandProvider";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 function getNextPath(path: string | null) {
@@ -21,6 +22,7 @@ function getNextPath(path: string | null) {
 }
 
 export function LoginForm() {
+  const brand = useBrand();
   const router = useRouter();
   const searchParams = useSearchParams();
   const nextPath = getNextPath(searchParams.get("next"));
@@ -136,7 +138,7 @@ export function LoginForm() {
         </h1>
         <p className="auth-description m-0 text-sm leading-5 text-white/42">
           {mode === "login"
-            ? "Sign in to continue to your voice workspace."
+            ? `Sign in to continue to ${brand.productName}.`
             : mode === "register"
               ? "Start building your first AI voice agent today."
               : "Enter your email and we'll send you a secure reset link."}
@@ -247,7 +249,7 @@ export function LoginForm() {
       ) : null}
 
       <button
-        className="auth-submit inline-flex min-h-12 items-center justify-center rounded-xl border-0 bg-[#45ddce] text-sm font-black text-[#02110d] shadow-[0_14px_32px_rgba(69,221,206,0.2)] transition hover:-translate-y-0.5 hover:bg-[#75fff0] disabled:cursor-wait disabled:opacity-70"
+        className="auth-submit inline-flex min-h-12 items-center justify-center rounded-xl border-0 bg-[var(--brand-primary)] text-sm font-black text-[#02110d] shadow-lg transition hover:-translate-y-0.5 hover:brightness-110 disabled:cursor-wait disabled:opacity-70"
         disabled={isSubmitting}
         type="submit"
       >
@@ -260,7 +262,7 @@ export function LoginForm() {
               : recoveryNotice ? "Send again" : "Send reset link"}
       </button>
 
-      {mode !== "forgot" ? (
+      {mode !== "forgot" && brand.authentication.googleSignIn ? (
         <GoogleSignInButton
           disabled={isSubmitting}
           nextPath={nextPath}
@@ -268,7 +270,7 @@ export function LoginForm() {
         />
       ) : null}
 
-      <button
+      {mode === "forgot" || brand.authentication.registrationMode === "open" ? <button
         className="inline-flex min-h-9 items-center justify-center border-0 bg-transparent text-xs font-semibold text-white/40 disabled:cursor-wait disabled:opacity-70"
         disabled={isSubmitting}
         onClick={() => {
@@ -286,7 +288,12 @@ export function LoginForm() {
         ) : (
           <span>Remembered your password? <strong className="ml-1 text-[#75fff0] hover:text-white">Back to sign in</strong></span>
         )}
-      </button>
+      </button> : (
+        <p className="m-0 text-center text-xs text-white/40">
+          Need access? Contact <a className="font-bold text-[var(--brand-accent)]" href={`mailto:${brand.support.email}`}>{brand.support.email || "your account administrator"}</a>.
+        </p>
+      )}
+      {brand.poweredBy.visible ? <p className="m-0 text-center text-[10px] font-semibold uppercase tracking-[0.14em] text-white/25">{brand.poweredBy.text}</p> : null}
     </form>
   );
 }

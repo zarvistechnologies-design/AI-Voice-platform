@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
+import { useBrand } from "@/components/branding/BrandProvider";
 import {
     getServerSession,
     getSession,
@@ -55,11 +56,12 @@ function Metric({ label, value, detail, tone = "sky" }: { label: string; value: 
 }
 
 export function BillingShell() {
+  const brand = useBrand();
   const router = useRouter();
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
   const [data, setData] = useState<BillingSummary | null>(null);
   const [notice, setNotice] = useState("");
-  const [busy, setBusy] = useState<"" | "topup" | "cancel" | "enterprise" | `invoice:${string}`>("");
+  const [busy, setBusy] = useState<"" | "topup" | "cancel" | "enterprise" | "white-label" | `invoice:${string}`>("");
   const [selectedTopUp, setSelectedTopUp] = useState(10);
   const [showUserSidebar, setShowUserSidebar] = useState(false);
 
@@ -161,7 +163,7 @@ export function BillingShell() {
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement("a");
       anchor.href = url;
-      anchor.download = `${invoiceNumber || `Vozon-invoice-${invoiceId}`}.html`;
+      anchor.download = `${invoiceNumber || `${brand.productName}-invoice-${invoiceId}`}.html`;
       document.body.appendChild(anchor);
       anchor.click();
       anchor.remove();
@@ -175,6 +177,120 @@ export function BillingShell() {
   }
 
   if (!session) return <main className="grid min-h-screen place-items-center bg-black text-sm font-semibold text-white/60">Loading billing</main>;
+
+  if (data?.billingModel === "white_label_customer_checkout") {
+    const currentInvoice = data.currentInvoice;
+    const planCurrency = data.currentPlan.currency || currency;
+    const recurring = data.currentPlan.monthlyPrice;
+    const payable = currentInvoice && (currentInvoice.status === "open" || currentInvoice.status === "past_due");
+    return (
+      <main className={`dashboard-home-theme grid min-h-screen bg-black text-white ${showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}>
+        <DashboardSidebar activeLabel="Billing" userInitials={initials(session.name)} userName={session.name} userEmail={session.email} onLogout={() => void logoutSession().then(() => router.replace("/login"))} showUserSidebar={showUserSidebar} setShowUserSidebar={setShowUserSidebar} />
+        <section className="min-w-0 p-4 sm:p-6">
+          <div className="mx-auto grid max-w-[1300px] gap-5">
+            <header className="rounded-3xl border border-[var(--brand-primary)]/20 bg-[radial-gradient(circle_at_8%_0%,rgba(69,221,206,0.12),transparent_38%),#07110f] p-6">
+              <span className="text-xs font-black uppercase tracking-[0.18em] text-[var(--brand-accent)]">Verified subscription billing</span>
+              <h1 className="mt-2 text-3xl font-black">Billing overview</h1>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-white/50">Pay invoices securely through Razorpay. Access is renewed only after the backend verifies the signature, captured payment, order, amount, currency, and tenant.</p>
+            </header>
+            {notice ? <div className="rounded-xl border border-cyan-300/20 bg-cyan-300/10 px-4 py-3 text-sm font-bold text-cyan-100">{notice}</div> : null}
+            <div className="grid gap-4 md:grid-cols-3">
+              <Card className="p-5"><span className="text-xs font-bold text-white/35">Current plan</span><strong className="mt-2 block text-2xl font-black capitalize">{data.currentPlan.name}</strong><span className="mt-1 block text-xs text-white/40">Version {data.subscription.planVersion ?? "current"} · {data.subscription.status}</span></Card>
+              <Card className="p-5"><span className="text-xs font-bold text-white/35">Recurring price</span><strong className="mt-2 block text-2xl font-black">{recurring === null ? "Custom" : money(recurring, planCurrency)}</strong><span className="mt-1 block text-xs text-white/40">per {data.currentPlan.interval || "month"}</span></Card>
+              <Card className="p-5"><span className="text-xs font-bold text-white/35">Usage balance</span><strong className="mt-2 block text-2xl font-black">{money(balance, currency)}</strong><span className="mt-1 block text-xs text-white/40">Included credits and metered usage</span></Card>
+            </div>
+            <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
+              <Card className="p-5">
+                <div className="flex items-start justify-between gap-4"><div><span className="text-xs font-bold uppercase tracking-[0.14em] text-white/35">Current invoice</span><h2 className="mt-2 text-xl font-black">{currentInvoice?.invoiceNumber || "No payment due"}</h2></div>{currentInvoice ? <span className={`rounded-full px-2.5 py-1 text-[10px] font-black uppercase ${currentInvoice.status === "paid" ? "bg-emerald-300/10 text-emerald-200" : "bg-amber-300/10 text-amber-200"}`}>{currentInvoice.status.replaceAll("_", " ")}</span> : null}</div>
+                {currentInvoice ? <dl className="mt-5 grid gap-3 text-sm"><div className="flex justify-between"><dt className="text-white/45">Recurring service</dt><dd className="font-bold">{money(currentInvoice.recurringAmountMinor / 100, currentInvoice.currency)}</dd></div>{currentInvoice.setupFeeMinor ? <div className="flex justify-between"><dt className="text-white/45">Setup fee</dt><dd className="font-bold">{money(currentInvoice.setupFeeMinor / 100, currentInvoice.currency)}</dd></div> : null}{currentInvoice.taxMinor ? <div className="flex justify-between"><dt className="text-white/45">{currentInvoice.taxLabel}</dt><dd className="font-bold">{money(currentInvoice.taxMinor / 100, currentInvoice.currency)}</dd></div> : null}<div className="flex justify-between border-t border-white/10 pt-3"><dt className="text-white/45">Total</dt><dd className="text-xl font-black">{money(currentInvoice.totalMinor / 100, currentInvoice.currency)}</dd></div><div className="flex justify-between"><dt className="text-white/45">Service period</dt><dd className="text-right text-xs font-bold">{dateTime(currentInvoice.periodStart)}<br />to {dateTime(currentInvoice.periodEnd)}</dd></div></dl> : <p className="mt-4 text-sm text-white/45">Your current service period is paid.</p>}
+                {payable ? <button className="mt-5 w-full rounded-xl bg-[var(--brand-primary)] px-4 py-3 text-sm font-black text-black disabled:opacity-45" disabled={busy === "white-label" || !data.configured} onClick={() => void payWhiteLabelInvoice()}>{busy === "white-label" ? "Verifying payment…" : `Pay ${money(currentInvoice.totalMinor / 100, currentInvoice.currency)}`}</button> : null}
+                {payable && !data.configured ? <p className="mt-3 text-xs text-rose-300">Payment configuration is incomplete. Contact {data.whiteLabel?.supportEmail || "billing support"}.</p> : null}
+              </Card>
+              <Card className="overflow-hidden"><div className="border-b border-white/[0.08] p-5"><h2 className="font-black">Invoice history</h2><p className="mt-1 text-xs text-white/35">Server-issued invoices, refunds, disputes, and verified payment status.</p></div><div className="divide-y divide-white/[0.07]">{data.invoices.map((invoice) => <div className="grid gap-3 p-4 sm:grid-cols-[1fr_auto_auto] sm:items-center" key={invoice._id}><div><strong className="block text-sm">{invoice.invoiceNumber}</strong><span className="mt-1 block text-xs text-white/35">{invoice.periodStart ? dateTime(invoice.periodStart) : dateTime(invoice.createdAt)}</span></div><div className="sm:text-right"><strong className="block">{money(Math.max(0, (invoice.totalMinor ?? 0) - (invoice.refundedMinor ?? 0)) / 100, invoice.currency.toUpperCase())}</strong><span className="text-xs capitalize text-white/40">{invoice.status}{invoice.refundedMinor ? ` · ${money(invoice.refundedMinor / 100, invoice.currency.toUpperCase())} refunded` : ""}</span></div><button className="rounded-xl border border-white/10 px-3 py-2 text-xs font-bold text-white/70" disabled={Boolean(busy)} onClick={() => void downloadWhiteLabelInvoice(invoice._id, invoice.invoiceNumber)}>{busy === `invoice:${invoice._id}` ? "Downloading…" : "Download"}</button></div>)}</div></Card>
+            </div>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
+  if (data?.billingModel === "white_label_partner_managed") {
+    const planCurrency = data.currentPlan.currency || currency;
+    const recurring = data.currentPlan.monthlyPrice;
+    return (
+      <main className={`dashboard-home-theme grid min-h-screen bg-black text-white ${showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}>
+        <DashboardSidebar
+          activeLabel="Billing"
+          userInitials={initials(session.name)}
+          userName={session.name}
+          userEmail={session.email}
+          onLogout={() => void logoutSession().then(() => router.replace("/login"))}
+          showUserSidebar={showUserSidebar}
+          setShowUserSidebar={setShowUserSidebar}
+        />
+        <section className="min-w-0 p-4 sm:p-6">
+          <div className="mx-auto grid max-w-[1300px] gap-5">
+            <header className="rounded-3xl border border-[var(--brand-primary)]/20 bg-[radial-gradient(circle_at_8%_0%,rgba(69,221,206,0.12),transparent_38%),#07110f] p-6">
+              <span className="text-xs font-black uppercase tracking-[0.18em] text-[var(--brand-accent)]">Subscription and usage</span>
+              <h1 className="mt-2 text-3xl font-black">Billing overview</h1>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-white/50">Your plan and usage are managed by {data.whiteLabel?.productName || "your service provider"}. Contact support for payment methods, invoices, plan changes, or additional credits.</p>
+            </header>
+            {notice ? <div className="rounded-xl border border-cyan-300/20 bg-cyan-300/10 px-4 py-3 text-sm font-bold text-cyan-100">{notice}</div> : null}
+            <div className="grid gap-4 md:grid-cols-3">
+              <Card className="p-5"><span className="text-xs font-bold text-white/35">Current plan</span><strong className="mt-2 block text-2xl font-black capitalize">{data.currentPlan.name}</strong><span className="mt-1 block text-xs text-white/40">Version {data.subscription.planVersion ?? "current"} · {data.subscription.status}</span></Card>
+              <Card className="p-5"><span className="text-xs font-bold text-white/35">Recurring price</span><strong className="mt-2 block text-2xl font-black">{recurring === null ? "Custom" : money(recurring, planCurrency)}</strong><span className="mt-1 block text-xs text-white/40">per {data.currentPlan.interval || "month"}, taxes per contract</span></Card>
+              <Card className="p-5"><span className="text-xs font-bold text-white/35">Available usage credits</span><strong className="mt-2 block text-2xl font-black">{money(balance, currency)}</strong><span className="mt-1 block text-xs text-white/40">Usage charging follows your immutable plan snapshot</span></Card>
+            </div>
+            <div className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
+              <Card className="p-5"><h2 className="font-black">This period</h2><dl className="mt-4 grid grid-cols-2 gap-3 text-sm">{[["Calls", data.usage.calls.toLocaleString()], ["Minutes", data.usage.minutes.toFixed(1)], ["Charged", money(data.usage.chargedCredits, currency)], ["Plan status", data.subscription.status]].map(([label, value]) => <div className="rounded-xl border border-white/[0.08] bg-black/20 p-4" key={label}><dt className="text-xs text-white/35">{label}</dt><dd className="mt-1 font-black capitalize">{value}</dd></div>)}</dl>{data.whiteLabel?.supportEmail ? <a className="mt-5 inline-flex text-sm font-black text-[var(--brand-accent)] hover:underline" href={`mailto:${data.whiteLabel.supportEmail}`}>Contact billing support</a> : null}</Card>
+              <Card className="overflow-hidden"><div className="border-b border-white/[0.08] p-5"><h2 className="font-black">Usage ledger</h2><p className="mt-1 text-xs text-white/35">Recent credit events and call charges.</p></div><div className="divide-y divide-white/[0.07]">{data.transactions.slice(0, 12).map((transaction) => <div className="grid grid-cols-[1fr_auto] gap-4 p-4" key={transaction._id}><div><strong className="block text-xs text-white/80">{transaction.description}</strong><span className="mt-1 block text-[10px] text-white/30">{dateTime(transaction.createdAt)}</span></div><strong className={`text-sm ${transaction.amountCredits < 0 ? "text-rose-300" : "text-emerald-300"}`}>{transaction.amountCredits > 0 ? "+" : ""}{money(transaction.amountCredits, transaction.currency || currency)}</strong></div>)}{!data.transactions.length ? <p className="p-8 text-center text-xs text-white/35">No usage ledger entries yet.</p> : null}</div></Card>
+            </div>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
+  async function payWhiteLabelInvoice() {
+    if (!data?.configured) {
+      setNotice("Checkout is unavailable until Razorpay API credentials and webhook signing are configured.");
+      return;
+    }
+    setBusy("white-label");
+    try {
+      const checkout = await billingApi.whiteLabelCheckout();
+      if (!checkout.settled) {
+        const payment = await openRazorpayCheckout(checkout);
+        await billingApi.verifyWhiteLabelCheckout(payment);
+      }
+      await load();
+      setNotice("Payment was verified and your subscription is active.");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Could not complete invoice payment.");
+    } finally {
+      setBusy("");
+    }
+  }
+
+  async function downloadWhiteLabelInvoice(invoiceId: string, invoiceNumber: string) {
+    setBusy(`invoice:${invoiceId}`);
+    try {
+      const blob = await billingApi.downloadWhiteLabelInvoice(invoiceId);
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = `${invoiceNumber || `${brand.productName}-invoice-${invoiceId}`}.html`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1_000);
+      setNotice("Invoice downloaded. Open it and select Print / Save PDF for a PDF copy.");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Could not download invoice.");
+    } finally {
+      setBusy("");
+    }
+  }
 
   return (
     <main className={`dashboard-home-theme grid min-h-screen bg-black text-white ${
@@ -268,7 +384,7 @@ export function BillingShell() {
             </Card>
 
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
-              <Metric label="This month charged" value={money(data?.usage.chargedCredits ?? 0, currency)} detail="Provider usage plus Vozon platform fees" tone="emerald" />
+              <Metric label="This month charged" value={money(data?.usage.chargedCredits ?? 0, currency)} detail={`Provider usage plus ${brand.productName} platform fees`} tone="emerald" />
               <Metric label="Provider spend" value={money(data?.usage.providerCost ?? 0, currency)} detail="LLM/STT/TTS cost only" tone="sky" />
             </div>
           </section>
@@ -342,12 +458,12 @@ export function BillingShell() {
             {data?.invoices.length ? (
               <div className="divide-y divide-white/10">
                 {data.invoices.map((invoice) => {
-                  const amount = (invoice.amountPaid || invoice.amountDue) / 100;
+                  const amount = (invoice.amountPaid || invoice.amountDue || 0) / 100;
                   const isDownloading = busy === `invoice:${invoice._id}`;
                   return (
                     <div className="grid gap-3 p-4 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center sm:px-5" key={invoice._id}>
                       <div className="min-w-0">
-                        <strong className="block truncate text-sm text-white">{invoice.invoiceNumber || "Vozon payment invoice"}</strong>
+                        <strong className="block truncate text-sm text-white">{invoice.invoiceNumber || `${brand.productName} payment invoice`}</strong>
                         <span className="mt-1 block text-xs text-white/45">{invoice.description || dateTime(invoice.createdAt)}</span>
                       </div>
                       <div className="sm:text-right">

@@ -5,10 +5,11 @@
   orderId?: string;
   subscriptionId?: string;
   amount: number;
-  currency: "USD";
+  currency: "USD" | "INR";
   name: string;
   description: string;
   prefill: { name?: string; email?: string };
+  displayMode?: "cards_only" | "all";
 };
 
 export type RazorpayPaymentResult = {
@@ -58,18 +59,20 @@ export async function openRazorpayCheckout(payload: RazorpayCheckoutPayload) {
       prefill: payload.prefill,
       theme: { color: "#45ddce" },
       retry: { enabled: true },
-      config: {
-        display: {
-          blocks: {
-            cards: {
-              name: payload.kind === "subscription" ? "Card for monthly Autopay" : "Pay with card",
-              instruments: [{ method: "card" }],
+      ...(payload.displayMode === "all" ? {} : {
+        config: {
+          display: {
+            blocks: {
+              cards: {
+                name: payload.kind === "subscription" ? "Card for monthly Autopay" : "Pay with card",
+                instruments: [{ method: "card" }],
+              },
             },
+            sequence: ["block.cards"],
+            preferences: { show_default_blocks: false },
           },
-          sequence: ["block.cards"],
-          preferences: { show_default_blocks: false },
         },
-      },
+      }),
       handler: (result: RazorpayPaymentResult) => resolve(result),
       modal: { ondismiss: () => reject(new Error("Payment was closed before completion.")) },
     });

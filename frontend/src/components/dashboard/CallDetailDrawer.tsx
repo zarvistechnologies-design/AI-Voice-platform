@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+import { useBrand } from "@/components/branding/BrandProvider";
 import { publicVoiceMessage, voiceApi, type CallRecord, type CostPricingDetail } from "@/lib/voice";
 
 function agentName(call: CallRecord) {
@@ -202,6 +203,7 @@ function statusTone(status: CallRecord["status"]) {
 }
 
 export function CallDetailDrawer({ call, onClose }: { call: CallRecord; onClose: () => void }) {
+  const brand = useBrand();
   const billing = call.billing;
   const charged = billing?.estimatedChargeCredits ?? billing?.chargedCredits ?? 0;
   const cost = call.costBreakdown;
@@ -257,8 +259,8 @@ export function CallDetailDrawer({ call, onClose }: { call: CallRecord; onClose:
   const costItems = [
     ...providerCostItems,
     [
-      "Vozon platform",
-      "Vozon",
+      `${brand.productName} platform`,
+      brand.productName,
       `${call.durationSeconds} sec`,
       cost?.pricing?.platformFee,
       cost?.platformFee ?? 0,
@@ -411,7 +413,7 @@ export function CallDetailDrawer({ call, onClose }: { call: CallRecord; onClose:
             <div className="flex flex-col gap-2 border-b border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h3 className="m-0 text-sm font-semibold text-slate-950">Call cost breakdown</h3>
-                <p className="mt-1 text-xs text-slate-500">Provider usage plus the Vozon ₹1.50-per-minute platform fee, prorated by seconds.</p>
+                <p className="mt-1 text-xs text-slate-500">Provider usage plus the {brand.productName} platform fee, prorated by seconds.</p>
               </div>
               <div className="grid gap-1 text-right text-xs">
                 <span className="text-slate-500">Customer total: <strong className="text-emerald-700">{money(cost?.customerCost ?? billing?.customerCost ?? charged ?? 0, billing?.currency || cost?.currency)}</strong></span>

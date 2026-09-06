@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 
 
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { AdvancedAnalyticsCharts } from "@/components/dashboard/AdvancedAnalyticsCharts";
+import { useBrand } from "@/components/branding/BrandProvider";
 import { getServerSession, getSession, logoutSession, subscribeToSession, validateStoredSession } from "@/lib/auth";
 import { publicVoiceMessage, voiceApi, type AnalyticsOverview } from "@/lib/voice";
 
@@ -94,6 +95,7 @@ function CostComposition({ costs }: { costs: AnalyticsOverview["summary"]["costB
 }
 
 export function AnalyticsShell() {
+  const brand = useBrand();
   const router = useRouter();
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
   const [days, setDays] = useState(30);
@@ -174,11 +176,11 @@ export function AnalyticsShell() {
   }, [load, router, session]);
 
   const insight = useMemo(() => {
-    if (!data.summary.totalCalls) return { tone: "Start here", headline: "Your analytics will become useful after the first calls", body: "Run a test call or launch a campaign. Vozon will turn the results into trends, outcomes and agent comparisons here." };
+    if (!data.summary.totalCalls) return { tone: "Start here", headline: "Your analytics will become useful after the first calls", body: `Run a test call or launch a campaign. ${brand.productName} will turn the results into trends, outcomes and agent comparisons here.` };
     if (data.summary.completionRate >= 85) return { tone: "Strong performance", headline: `${data.summary.completionRate}% of calls completed successfully`, body: "Call delivery is healthy. Review your highest-volume agent and connect outcome fields to measure bookings or qualified leads next." };
     const failed = data.statusBreakdown.find((item) => item.label === "failed")?.value ?? 0;
     return { tone: "Opportunity", headline: `${failed} calls need attention in this period`, body: "Review failed calls by agent and direction. Fixing the largest failure group is the fastest way to improve completed conversations." };
-  }, [data]);
+  }, [brand.productName, data]);
 
   if (!session) return <main className="grid min-h-screen place-items-center bg-[#050908] text-sm text-white/60">Loading analytics…</main>;
   const s = data.summary;

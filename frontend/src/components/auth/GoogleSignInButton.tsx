@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { loginWithGoogle, validateStoredSession } from "@/lib/auth";
+import { API_URL } from "@/lib/apiBase";
 
 type GoogleCredentialResponse = {
   credential?: string;
@@ -29,10 +30,6 @@ declare global {
 }
 
 const googleScriptId = "google-identity-services";
-const googleClientId =
-  process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID?.trim()
-  || "754509312565-fin7bh1v5eielo3s8qjds3cjdh0ib7v6.apps.googleusercontent.com";
-
 function loadGoogleIdentityScript() {
   return new Promise<void>((resolve, reject) => {
     if (window.google?.accounts.id) {
@@ -74,11 +71,19 @@ export function GoogleSignInButton({
 
     void (async () => {
       try {
+        const configResponse = await fetch(`${API_URL}/api/auth/google/config`, {
+          credentials: "include",
+          headers: { Accept: "application/json" },
+        });
+        const config = (await configResponse.json().catch(() => null)) as { enabled?: boolean; clientId?: string; message?: string } | null;
+        if (!configResponse.ok || !config?.enabled || !config.clientId) {
+          throw new Error(config?.message ?? "Google sign-in is not available for this workspace.");
+        }
         await loadGoogleIdentityScript();
         if (cancelled || !containerRef.current || !window.google?.accounts.id) return;
 
         window.google.accounts.id.initialize({
-          client_id: googleClientId,
+          client_id: config.clientId,
           cancel_on_tap_outside: true,
           callback: async ({ credential }) => {
             if (!credential) {

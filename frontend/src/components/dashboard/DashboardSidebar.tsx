@@ -6,11 +6,14 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { announceDashboardNavigation } from "@/components/dashboard/DashboardNavigationFeedback";
+import { useBrand } from "@/components/branding/BrandProvider";
+import { getSession } from "@/lib/auth";
+import { whiteLabelFrontendEnabled } from "@/lib/platformHosts";
 
 type SidebarItem = {
   label: string;
   href: string;
-  icon: "agent" | "phone" | "campaign" | "analytics" | "knowledge" | "logs" | "billing" | "integrations" | "developers";
+  icon: "agent" | "phone" | "campaign" | "analytics" | "knowledge" | "logs" | "billing" | "integrations" | "developers" | "white_label" | "platform";
 };
 
 type SidebarIconName = SidebarItem["icon"];
@@ -168,10 +171,24 @@ export function DashboardSidebar({
   showUserSidebar,
   setShowUserSidebar,
 }: DashboardSidebarProps) {
+  const brand = useBrand();
+  const session = getSession();
+  const logoUrl = brand.logoDarkUrl || brand.logoUrl;
   const pathname = usePathname();
   const router = useRouter();
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement>(null);
+  const administrativeItems: SidebarItem[] = [];
+  const whiteLabelEnabled = whiteLabelFrontendEnabled();
+  if (whiteLabelEnabled && session?.organization?.whiteLabelOwnerAccountId && (session.organization.role === "owner" || session.organization.role === "admin")) {
+    administrativeItems.push({ label: "White label", href: "/dashboard/white-label", icon: "white_label" });
+  }
+  if (whiteLabelEnabled && session?.platformRole === "super_admin") {
+    administrativeItems.push({ label: "Platform admin", href: "/platform-admin/white-label", icon: "platform" });
+  }
+  const visibleSidebarGroups = administrativeItems.length
+    ? [...sidebarGroups, { label: "Administration", items: administrativeItems }]
+    : sidebarGroups;
 
   useEffect(() => {
     try {
@@ -238,8 +255,8 @@ export function DashboardSidebar({
           <Link
             className="group flex min-w-0 items-center overflow-hidden rounded-xl outline-none ring-cyan-300/50 transition focus-visible:ring-2"
             href="/dashboard/agents"
-            title="Vozon Voice Platform"
-            aria-label="Vozon Voice Platform"
+            title={`${brand.productName} Voice Platform`}
+            aria-label={`${brand.productName} Voice Platform`}
             onClick={(event) => {
               if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
               if (!beginNavigation("/dashboard/agents")) event.preventDefault();
@@ -249,14 +266,23 @@ export function DashboardSidebar({
             onPointerDown={() => prefetchDashboardRoute("/dashboard/agents")}
           >
             <span className={`relative block h-10 shrink-0 overflow-hidden ${showUserSidebar ? "w-[148px]" : "w-10"}`}>
-              <Image
-                alt=""
-                className="absolute left-0 top-1/2 h-auto w-[148px] max-w-none -translate-y-1/2 object-contain object-left transition group-hover:brightness-110"
-                height={350}
-                priority
-                src="/images/logo_2.svg"
-                width={1160}
-              />
+              {brand.source === "platform" ? (
+                <Image
+                  alt=""
+                  className="absolute left-0 top-1/2 h-auto w-[148px] max-w-none -translate-y-1/2 object-contain object-left transition group-hover:brightness-110"
+                  height={350}
+                  priority
+                  src="/images/logo_2.svg"
+                  width={1160}
+                />
+              ) : logoUrl?.startsWith("/") ? (
+                <Image alt={brand.productName} className="absolute left-0 top-1/2 h-auto w-[148px] max-w-none -translate-y-1/2 object-contain object-left transition group-hover:brightness-110" height={350} priority src={logoUrl} width={1160} />
+              ) : logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img alt={brand.productName} className="absolute left-0 top-1/2 h-auto w-[148px] max-w-none -translate-y-1/2 object-contain object-left" src={logoUrl} />
+              ) : (
+                <span className="grid size-10 place-items-center rounded-xl bg-[var(--brand-primary)] font-black text-black">{brand.productName.slice(0, 1)}</span>
+              )}
             </span>
           </Link>
 
@@ -271,7 +297,7 @@ export function DashboardSidebar({
           className="flex min-w-0 flex-1 gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mt-4 lg:block lg:overflow-x-visible lg:overflow-y-auto"
           aria-label="Dashboard navigation"
         >
-          {sidebarGroups.map((group) => (
+          {visibleSidebarGroups.map((group) => (
             <div className="contents lg:mb-5 lg:block" key={group.label}>
               {showUserSidebar ? (
                 <p className="app-label mb-2 hidden px-3 text-[10px] uppercase tracking-[0.18em] text-white/50 lg:block">

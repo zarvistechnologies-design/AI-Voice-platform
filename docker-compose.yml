@@ -48,6 +48,7 @@ services:
         BACKEND_URL: http://backend:5000
         NEXT_PUBLIC_API_PROXY_MODE: "on"
         NEXT_PUBLIC_API_URL: ""
+        NEXT_PUBLIC_WHITE_LABEL_ENABLED: "false"
     restart: unless-stopped
     depends_on:
       - backend
