@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-import { BrandLogo } from "@/components/ui/BrandLogo";
 import { docsTopics } from "@/lib/docsContent";
 
 type DocSection = {
@@ -85,7 +84,7 @@ function CodeBlock({ children, label = "Shell" }: { children: string; label?: st
     window.setTimeout(() => setCopied(false), 1_500);
   }
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#07110f] shadow-2xl shadow-black/20">
+    <div className="docs-code-block overflow-hidden rounded-2xl border border-white/10 bg-[#07110f] shadow-2xl shadow-black/20">
       <div className="flex items-center justify-between border-b border-white/10 px-4 py-2.5 text-xs text-white/45">
         <span>{label}</span>
         <button className="font-semibold text-[#75fff0] hover:text-white" onClick={() => void copy()} type="button">{copied ? "Copied" : "Copy"}</button>
@@ -160,14 +159,7 @@ export function DocsExperience() {
   const groups = [...new Set(sections.map((item) => item.group))];
 
   return (
-    <main className="min-h-screen bg-[#020706] text-white">
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#020706]/90 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-[1500px] items-center gap-5 px-4 lg:px-7">
-          <BrandLogo showWebsiteLogo />
-          <span className="hidden h-6 w-px bg-white/15 sm:block" /><span className="hidden text-sm font-semibold text-white/55 sm:block">Documentation</span>
-          <div className="ml-auto flex items-center gap-2"><Link className="rounded-lg px-3 py-2 text-sm font-semibold text-white/60 hover:text-white" href="/dashboard/developers">Developer portal</Link><Link className="rounded-lg bg-[#45ddce] px-3 py-2 text-sm font-bold text-[#02110d]" href="/login">Sign in</Link></div>
-        </div>
-      </header>
+    <div className="docs-page min-h-screen bg-[#020706] pt-24 text-white">
 
       <div className="mx-auto grid max-w-[1500px] lg:grid-cols-[260px_minmax(0,1fr)]">
         <aside className="border-r border-white/10 p-4 lg:sticky lg:top-16 lg:h-[calc(100vh-64px)] lg:overflow-y-auto lg:p-6">
@@ -235,6 +227,6 @@ export function DocsExperience() {
           </div>
         </article>
       </div>
-    </main>
+    </div>
   );
 }

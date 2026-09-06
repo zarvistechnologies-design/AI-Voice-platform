@@ -10,6 +10,7 @@ type MarketingOverviewPageProps = {
   summary: string;
   groups: readonly OverviewGroup[];
   proof: readonly { value: string; label: string }[];
+  lightTheme?: boolean;
 };
 
 const callRows = [
@@ -18,10 +19,10 @@ const callRows = [
   ["Appointment reminder", "Connected", "00:27"],
 ];
 
-export function MarketingOverviewPage({ eyebrow, title, summary, groups, proof }: MarketingOverviewPageProps) {
+export function MarketingOverviewPage({ eyebrow, title, summary, groups, proof, lightTheme = false }: MarketingOverviewPageProps) {
   return (
     <SiteLayout>
-      <div className="bg-black text-white">
+      <div className={`${lightTheme ? "marketing-overview-light blog-light-theme" : ""} bg-black text-white`}>
         <section className="relative overflow-hidden bg-black px-4 pt-36 pb-20 sm:px-6 lg:px-8 lg:pt-40">
           <div className="absolute inset-0 opacity-[0.12] [background-image:linear-gradient(rgba(69,221,206,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(69,221,206,0.12)_1px,transparent_1px)] [background-size:64px_64px]" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_22%,rgba(69,221,206,0.18),transparent_30%),radial-gradient(circle_at_82%_18%,rgba(167,139,250,0.12),transparent_26%),linear-gradient(180deg,rgba(0,0,0,0.12)_0%,rgba(0,0,0,0.72)_72%,#000_100%)]" />

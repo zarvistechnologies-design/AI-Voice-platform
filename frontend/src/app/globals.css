@@ -1,5 +1,947 @@
 @import "tailwindcss";
 @source not "../../.runlogs";
+@source not "../../.next";
+@source not "../../.next-stale-*";
+
+/* Shared public-site theme. The homepage established this editorial white,
+   violet and soft-pastel visual language; every SiteLayout page inherits it. */
+.marketing-site,
+.home-design-four {
+  --marketing-ink: #111113;
+  --marketing-muted: #676773;
+  --marketing-line: #dedee8;
+  --marketing-violet: #5b63ff;
+  font-family: var(--font-site-sans), Arial, sans-serif;
+}
+
+/* Business landing page: homepage-aligned light palette and readable contrast. */
+.business-page {
+  --business-ink: #2b2b2f;
+  --business-muted: #626270;
+  --business-line: #dedee8;
+  --business-primary: #4f4f56;
+  background: #fff !important;
+  color: var(--business-ink) !important;
+}
+
+.business-page > section {
+  border-color: var(--business-line) !important;
+  background: #fff !important;
+}
+
+.business-page > section:nth-of-type(even) {
+  background: linear-gradient(135deg, #fafafa 0%, #f3f3f3 58%, #fff 100%) !important;
+}
+
+.business-page .business-hero {
+  background: radial-gradient(circle at 74% 10%, rgba(0,0,0,0.055), transparent 30rem), radial-gradient(circle at 26% 2%, rgba(0,0,0,0.04), transparent 34rem), linear-gradient(180deg, #f8f8f8 0%, #fff 100%) !important;
+}
+
+.business-page :is(h1, h2, h3, h4, strong) {
+  color: var(--business-ink) !important;
+  -webkit-text-fill-color: var(--business-ink) !important;
+}
+
+.business-page :is(p, li),
+.business-page [class*="text-white/"] {
+  color: var(--business-muted) !important;
+}
+
+.business-page [class*="text-[#45ddce"],
+.business-page [class*="text-[#75fff0"],
+.business-page [class*="text-emerald"] {
+  color: var(--business-primary) !important;
+  -webkit-text-fill-color: var(--business-primary) !important;
+}
+
+.business-page [class*="bg-[#45ddce"],
+.business-page [class*="bg-emerald"] {
+  background-color: #ececef !important;
+}
+
+.business-page [class*="border-[#45ddce"],
+.business-page [class*="border-emerald"],
+.business-page [class*="border-white"] {
+  border-color: var(--business-line) !important;
+}
+
+.business-page [class*="bg-black"],
+.business-page [class*="bg-[#020504"],
+.business-page [class*="bg-[#050b09"],
+.business-page [class*="bg-[#06110f"],
+.business-page [class*="bg-[#07110f"] {
+  background-color: rgba(255,255,255,0.88) !important;
+}
+
+.business-page [class*="69,221,206"] {
+  background-image: linear-gradient(135deg, rgba(0,0,0,0.09), rgba(0,0,0,0.035) 56%, rgba(255,255,255,0.7)) !important;
+}
+
+.business-page a[class*="rounded-[22px]"],
+.business-page a[class*="rounded-[18px]"],
+.business-page article,
+.business-page [class*="rounded-2xl"] {
+  border-color: var(--business-line) !important;
+  background-color: rgba(255,255,255,0.9) !important;
+  box-shadow: 0 18px 55px rgba(55,50,105,0.08) !important;
+}
+
+/* The hero console has no outer white card, so it flows into the hero canvas. */
+.business-page .business-hero-console {
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.business-page .business-hero-console > div:first-child {
+  border: 0 !important;
+  background: transparent !important;
+  padding-inline: 0 !important;
+}
+
+.business-page .business-hero-console > div:last-child {
+  padding-inline: 0 !important;
+}
+
+.business-page .business-enterprise-card {
+  border-color: var(--business-line) !important;
+  background: linear-gradient(145deg, #fff, #f2f2f2) !important;
+  box-shadow: 0 24px 70px rgba(0,0,0,0.09) !important;
+}
+
+.business-page .business-enterprise-card > div:last-child {
+  border-color: var(--business-line) !important;
+  background: radial-gradient(circle at 84% 12%, rgba(0,0,0,0.07), transparent 34%), linear-gradient(145deg, #f1f1f1, #fff) !important;
+}
+
+.business-page .business-ready-card {
+  border-color: rgba(0,0,0,0.2) !important;
+  background: radial-gradient(circle at 88% 18%, rgba(0,0,0,0.06), transparent 32%), linear-gradient(135deg, #ededed, #f7f7f7 54%, #fff) !important;
+  box-shadow: 0 28px 80px rgba(0,0,0,0.12) !important;
+}
+
+.business-page a[href="/login"],
+.business-page a[href="#contact"] {
+  border-color: #ceced5 !important;
+  background: #fff !important;
+  color: #333338 !important;
+  -webkit-text-fill-color: #333338 !important;
+  box-shadow: 0 10px 26px rgba(30,30,40,0.08) !important;
+}
+
+.business-page a[href="/login"]:hover,
+.business-page a[href="#contact"]:hover {
+  background: #f2f2f4 !important;
+}
+
+.business-page a[href="/pricing"] {
+  border-color: rgba(0,0,0,0.24) !important;
+  background: rgba(255,255,255,0.78) !important;
+  color: var(--business-primary) !important;
+}
+
+.marketing-nav-link {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 999px;
+  padding: 0 0.9rem;
+  color: #494955;
+  font-size: 0.78rem;
+  font-weight: 700;
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+.marketing-nav-link:hover,
+.marketing-nav-link.is-active,
+.marketing-nav-link[aria-expanded="true"] {
+  background: #f0efff;
+  color: #343ad0;
+}
+
+.site-header-previous .header-previous-logo span {
+  width: 190px;
+  height: 54px;
+}
+
+.site-header-previous .marketing-nav-link {
+  min-height: 42px;
+  border-radius: 0;
+  padding-inline: 0.25rem;
+  background: transparent;
+  color: #161619;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.site-header-previous .marketing-nav-link:hover,
+.site-header-previous .marketing-nav-link.is-active,
+.site-header-previous .marketing-nav-link[aria-expanded="true"] {
+  background: transparent;
+  color: #303035;
+}
+
+.site-header-previous .header-previous-start,
+.site-header-previous .header-previous-signup {
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.marketing-site .site-header-previous .header-previous-signup,
+.site-header-previous .header-previous-signup {
+  border: 1px solid #202024 !important;
+  background: #202024 !important;
+  color: #fff !important;
+}
+
+.site-header-previous .header-previous-start:hover,
+.site-header-previous .header-previous-signup:hover {
+  transform: translateY(-2px);
+}
+
+@media (max-width: 900px) {
+  .site-header-previous .header-previous-logo span { width: 155px; height: 48px; }
+}
+
+@media (max-width: 640px) {
+  .site-header-previous .header-previous-logo span { width: 118px; height: 38px; }
+}
+
+.mobile-nav-heading,
+.mobile-nav-item {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 0.75rem;
+  padding: 0 0.8rem;
+  color: #34343f;
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+
+.mobile-nav-heading {
+  color: #343ad0;
+  font-weight: 850;
+}
+
+.mobile-nav-item:hover,
+.mobile-nav-heading:hover {
+  background: #f3f2ff;
+}
+
+.marketing-site > main {
+  background: #fff;
+}
+
+.marketing-site > main > div,
+.marketing-site > main > section,
+.marketing-site > main > div > section {
+  background-color: #fff !important;
+  color: var(--marketing-ink) !important;
+}
+
+.marketing-site > main > div > section:nth-of-type(even) {
+  background-color: #faf9ff !important;
+}
+
+.marketing-site [class~="bg-black"],
+.marketing-site [class*="bg-[#020"],
+.marketing-site [class*="bg-[#050"],
+.marketing-site [class*="bg-[#061"],
+.marketing-site [class*="bg-[#071"],
+.marketing-site [class*="bg-[#081"],
+.marketing-site [class*="bg-[#091"],
+.marketing-site [class*="bg-[#101"],
+.marketing-site [class*="bg-[#111827"] {
+  background-color: #f7f6ff !important;
+}
+
+.marketing-site [class*="linear-gradient"][class*="#0"],
+.marketing-site [class*="linear-gradient"][class*="#1"] {
+  background-image: linear-gradient(135deg, #fbfbff 0%, #f2f0ff 52%, #ecfbf7 100%) !important;
+}
+
+.marketing-site > main > div > section > [aria-hidden="true"][class*="absolute"][class*="inset-0"][class*="bg-"] {
+  background-image: radial-gradient(circle at 18% 12%, rgba(100, 104, 255, 0.13), transparent 32%), radial-gradient(circle at 82% 18%, rgba(108, 222, 202, 0.14), transparent 30%) !important;
+}
+
+.marketing-site [class*="text-white"] {
+  color: var(--marketing-ink) !important;
+}
+
+.marketing-site [class*="text-slate-300"],
+.marketing-site [class*="text-slate-400"],
+.marketing-site [class*="text-slate-500"],
+.marketing-site [class*="text-white/"] {
+  color: var(--marketing-muted) !important;
+}
+
+.marketing-site [class*="border-white"] {
+  border-color: var(--marketing-line) !important;
+}
+
+.marketing-site [class*="text-[#75fff0]"],
+.marketing-site [class*="text-[#72f2df]"],
+.marketing-site [class*="text-[#45ddce]"] {
+  color: #565dcc !important;
+}
+
+.marketing-site h1[class*="bg-gradient"] {
+  background-image: linear-gradient(100deg, #111113 8%, #454bd2 58%, #6655d8 100%) !important;
+}
+
+.marketing-site input,
+.marketing-site select,
+.marketing-site textarea {
+  border-color: #d9d9e5 !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: var(--marketing-ink) !important;
+}
+
+.marketing-site input::placeholder,
+.marketing-site textarea::placeholder {
+  color: #9898a5 !important;
+}
+
+.marketing-site article,
+.marketing-site [class*="rounded-2xl"],
+.marketing-site [class*="rounded-3xl"],
+.marketing-site [class*="rounded-[22px]"],
+.marketing-site [class*="rounded-[24px]"],
+.marketing-site [class*="rounded-[28px]"] {
+  box-shadow: 0 18px 55px rgba(49, 46, 90, 0.07);
+}
+
+.marketing-site a[class*="bg-[#45ddce]"],
+.marketing-site button[class*="bg-[#45ddce]"],
+.marketing-site a[class*="bg-[#17171d]"],
+.marketing-header a[class*="bg-[#17171d]"],
+.marketing-footer a[class*="bg-[#17171d]"] {
+  color: #fff !important;
+}
+
+.marketing-site figure [class*="text-white"],
+.marketing-site [class*="from-black"] [class*="text-white"] {
+  color: #fff !important;
+}
+
+.marketing-site .docs-code-block {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  background: #11131a !important;
+  color: #dffcf7 !important;
+}
+
+.marketing-site .docs-code-block * {
+  color: inherit !important;
+}
+
+/* Product pages use the homepage's bright editorial palette. Product-specific
+   accent variables still provide a distinct gradient for each capability. */
+.product-overview-page,
+.product-service-page,
+.voice-build-page {
+  --service-accent: #6268ff !important;
+  --service-accent-soft: #5158df !important;
+  --service-accent-rgb: 98, 104, 255 !important;
+  --service-secondary: #a855f7 !important;
+  --service-secondary-rgb: 168, 85, 247 !important;
+  --service-tertiary: #f08a66 !important;
+  --service-tertiary-rgb: 240, 138, 102 !important;
+  background: #fff !important;
+  color: #171719 !important;
+}
+
+.product-service-page *,
+.voice-build-page * {
+  --layer-color: #6268ff !important;
+  --step-color: #6268ff !important;
+  --clean-step-color: #6268ff !important;
+  --config-color: #6268ff !important;
+  --build-primary: #6268ff !important;
+}
+
+.product-overview-page > section,
+.product-service-page > section,
+.voice-build-page > section {
+  border-color: #e2e2eb !important;
+  background: #fff !important;
+  color: #171719 !important;
+}
+
+.product-overview-page > section:nth-of-type(even),
+.product-service-page > section:nth-of-type(even),
+.voice-build-page > section:nth-of-type(even) {
+  background: linear-gradient(135deg, #fbfbff 0%, #f6f4ff 55%, #f1fbf8 100%) !important;
+}
+
+.product-overview-page > section:first-child,
+.product-service-page > section:first-child,
+.voice-build-page > section:first-child {
+  background: radial-gradient(circle at 50% 0%, rgba(107, 111, 255, 0.14), transparent 36rem), linear-gradient(180deg, #fbfbff, #fff) !important;
+}
+
+.product-overview-page [class*="bg-black"],
+.product-service-page [class*="bg-black"],
+.voice-build-page [class*="bg-black"],
+.product-overview-page [class*="bg-[#0"],
+.product-service-page [class*="bg-[#0"],
+.voice-build-page [class*="bg-[#0"] {
+  background-color: #fff !important;
+}
+
+.product-overview-page [class*="bg-[#35fbe0"],
+.product-overview-page [class*="bg-[#45ddce"],
+.product-overview-page [class*="bg-[#5eead4"],
+.product-overview-page [class*="bg-[#2dd4bf"],
+.product-overview-page [class*="bg-[#34d399"],
+.product-service-page [class*="bg-[#35fbe0"],
+.product-service-page [class*="bg-[#45ddce"],
+.product-service-page [class*="bg-[#5eead4"],
+.product-service-page [class*="bg-[#2dd4bf"],
+.product-service-page [class*="bg-[#34d399"],
+.voice-build-page [class*="bg-[#35fbe0"],
+.voice-build-page [class*="bg-[#45ddce"],
+.voice-build-page [class*="bg-[#5eead4"],
+.voice-build-page [class*="bg-[#2dd4bf"],
+.voice-build-page [class*="bg-[#34d399"],
+.product-overview-page [class*="bg-emerald"],
+.product-service-page [class*="bg-emerald"],
+.voice-build-page [class*="bg-emerald"] {
+  background-color: #6268ff !important;
+}
+
+.product-overview-page [class*="text-[#35fbe0"],
+.product-overview-page [class*="text-[#45ddce"],
+.product-overview-page [class*="text-[#5eead4"],
+.product-overview-page [class*="text-[#72f2df"],
+.product-overview-page [class*="text-[#75fff0"],
+.product-overview-page [class*="text-[#8afff2"],
+.product-overview-page [class*="text-[#9ff8ee"],
+.product-service-page [class*="text-[#35fbe0"],
+.product-service-page [class*="text-[#45ddce"],
+.product-service-page [class*="text-[#5eead4"],
+.product-service-page [class*="text-[#72f2df"],
+.product-service-page [class*="text-[#75fff0"],
+.product-service-page [class*="text-[#8afff2"],
+.product-service-page [class*="text-[#9ff8ee"],
+.voice-build-page [class*="text-[#35fbe0"],
+.voice-build-page [class*="text-[#45ddce"],
+.voice-build-page [class*="text-[#5eead4"],
+.voice-build-page [class*="text-[#72f2df"],
+.voice-build-page [class*="text-[#75fff0"],
+.voice-build-page [class*="text-[#8afff2"],
+.voice-build-page [class*="text-[#9ff8ee"],
+.product-overview-page [class*="text-emerald"],
+.product-service-page [class*="text-emerald"],
+.voice-build-page [class*="text-emerald"] {
+  color: #565dcc !important;
+}
+
+.product-overview-page [class*="border-[#35fbe0"],
+.product-overview-page [class*="border-[#45ddce"],
+.product-overview-page [class*="border-[#5eead4"],
+.product-overview-page [class*="border-[#2dd4bf"],
+.product-overview-page [class*="border-[#34d399"],
+.product-service-page [class*="border-[#35fbe0"],
+.product-service-page [class*="border-[#45ddce"],
+.product-service-page [class*="border-[#5eead4"],
+.product-service-page [class*="border-[#2dd4bf"],
+.product-service-page [class*="border-[#34d399"],
+.voice-build-page [class*="border-[#35fbe0"],
+.voice-build-page [class*="border-[#45ddce"],
+.voice-build-page [class*="border-[#5eead4"],
+.voice-build-page [class*="border-[#2dd4bf"],
+.voice-build-page [class*="border-[#34d399"] {
+  border-color: rgba(98, 104, 255, 0.28) !important;
+}
+
+.product-overview-page [class*="text-white"],
+.product-service-page [class*="text-white"],
+.voice-build-page [class*="text-white"],
+.product-overview-page [class*="text-slate-300"],
+.product-service-page [class*="text-slate-300"],
+.voice-build-page [class*="text-slate-300"] {
+  color: #676773 !important;
+}
+
+.product-overview-page :is(h1, h2, h3, h4, strong),
+.product-service-page :is(h1, h2, h3, h4, strong),
+.voice-build-page :is(h1, h2, h3, h4, strong) {
+  color: #171719 !important;
+}
+
+.product-service-page :is(p, li, label, small),
+.voice-build-page :is(p, li, label, small),
+.product-overview-page :is(p, li, label, small) {
+  color: #676773 !important;
+}
+
+.product-overview-page [class*="border-white"],
+.product-service-page [class*="border-white"],
+.voice-build-page [class*="border-white"] {
+  border-color: #dedee8 !important;
+}
+
+.product-overview-page article,
+.product-overview-page [class*="rounded-2xl"],
+.product-service-page article,
+.product-service-page [class*="rounded-2xl"],
+.voice-build-page article,
+.voice-build-page [class*="rounded-2xl"] {
+  border-color: #dedee8 !important;
+  background-color: rgba(255, 255, 255, 0.88) !important;
+  box-shadow: 0 18px 55px rgba(50, 47, 92, 0.08) !important;
+}
+
+.product-service-page .voice-agent-page,
+.product-service-page .voice-capabilities-section,
+.product-service-page .agent-anatomy-section,
+.product-service-page .voice-build-process,
+.product-service-page .voice-config-section,
+.product-service-page .voice-preview-section,
+.product-service-page .service-use-case,
+.product-service-page .product-service-cta {
+  background: #fff !important;
+}
+
+.product-service-page .voice-build-step-number {
+  background: #fff !important;
+}
+
+.product-service-page .service-workflow-step:hover {
+  background: #f3f2ff !important;
+}
+
+.product-service-page .voice-build-orbit-number,
+.product-service-page .voice-config-console,
+.product-service-page .service-float-chip {
+  border-color: #dedee8 !important;
+  background: #fff !important;
+  color: #565dcc !important;
+  box-shadow: 0 14px 38px rgba(50, 47, 92, 0.1) !important;
+}
+
+.product-service-page .voice-config-console-signal,
+.product-service-page .voice-config-radar > span:nth-child(1) {
+  background: #6268ff !important;
+  box-shadow: 0 0 18px rgba(98, 104, 255, 0.34) !important;
+}
+
+.product-service-page .voice-config-stage::before {
+  background: rgba(98, 104, 255, 0.09) !important;
+}
+
+.product-service-page .voice-config-radar {
+  border-color: rgba(98, 104, 255, 0.2) !important;
+  background-image: linear-gradient(90deg, transparent 49.85%, rgba(98,104,255,.1) 50%, transparent 50.15%), linear-gradient(transparent 49.85%, rgba(98,104,255,.1) 50%, transparent 50.15%), radial-gradient(circle, rgba(168,85,247,.09) 0 2px, transparent 3px) !important;
+  box-shadow: inset 0 0 80px rgba(98,104,255,.04), 0 20px 70px rgba(50,47,92,.09) !important;
+}
+
+.product-service-page .service-faq:hover {
+  border-color: rgba(98, 104, 255, 0.25) !important;
+  background: rgba(98, 104, 255, 0.045) !important;
+}
+
+.product-service-page .voice-build-redesign-panel {
+  border-color: rgba(98, 104, 255, 0.22) !important;
+  background: linear-gradient(145deg, #fff, #f4f2ff) !important;
+}
+
+.product-service-page .voice-process-eyebrow,
+.product-service-page .voice-process-heading-accent,
+.product-service-page .voice-config-heading-accent {
+  background-image: linear-gradient(100deg, #4f55db, #8068df 52%, #c170c8) !important;
+  color: #565dcc !important;
+}
+
+.product-service-page .voice-build-flow::before,
+.product-service-page .voice-config-list::before,
+.product-service-page .voice-config-console::before {
+  background: linear-gradient(90deg, transparent, #6268ff, #a855f7 52%, #f08a66, transparent) !important;
+}
+
+.product-overview-page [class*="bg-[linear-gradient"][class*="#45ddce"],
+.product-service-page [class*="bg-[linear-gradient"][class*="#35fbe0"],
+.product-service-page [class*="bg-[linear-gradient"][class*="#45ddce"],
+.product-service-page [class*="bg-[linear-gradient"][class*="#5eead4"],
+.voice-build-page [class*="bg-[linear-gradient"][class*="#5eead4"] {
+  background-image: linear-gradient(100deg, #6268ff, #9b72df 52%, #f08aa8) !important;
+}
+
+.product-service-page [style*="#35fbe0"],
+.product-service-page [style*="#45ddce"],
+.product-service-page [style*="#5eead4"],
+.product-service-page [style*="#2dd4bf"],
+.product-service-page [style*="#34d399"],
+.voice-build-page [style*="#35fbe0"],
+.voice-build-page [style*="#45ddce"],
+.voice-build-page [style*="#5eead4"],
+.voice-build-page [style*="#2dd4bf"],
+.voice-build-page [style*="#34d399"] {
+  border-color: rgba(98, 104, 255, 0.28) !important;
+  background-color: rgba(98, 104, 255, 0.1) !important;
+  color: #565dcc !important;
+}
+
+.product-overview-page [class*="#8fe388"],
+.product-overview-page [class*="#71efc2"],
+.product-service-page [class*="#8fe388"],
+.product-service-page [class*="#71efc2"],
+.voice-build-page [class*="#8fe388"],
+.voice-build-page [class*="#71efc2"],
+.product-overview-page [style*="#8fe388"],
+.product-overview-page [style*="#71efc2"],
+.product-service-page [style*="#8fe388"],
+.product-service-page [style*="#71efc2"],
+.voice-build-page [style*="#8fe388"],
+.voice-build-page [style*="#71efc2"] {
+  border-color: rgba(168, 85, 247, 0.24) !important;
+  background-color: rgba(168, 85, 247, 0.09) !important;
+  color: #7b4fc4 !important;
+}
+
+.product-service-page .voice-agent-page > section:not(.product-service-hero) {
+  background: transparent !important;
+}
+
+.product-service-page .product-service-console,
+.product-service-page .voice-config-explorer,
+.product-service-page .voice-config-detail,
+.product-overview-page [class*="rounded-[22px]"] {
+  border-color: #dcdce8 !important;
+  background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(244,243,255,0.94)) !important;
+  color: #171719 !important;
+  box-shadow: 0 24px 70px rgba(53, 49, 105, 0.1) !important;
+}
+
+.product-service-page .product-service-heading-accent,
+.product-service-page .service-accent-text,
+.product-overview-page [class*="text-[#75fff0]"],
+.voice-build-page [class*="text-[#72f2df]"] {
+  color: #565dcc !important;
+}
+
+.product-service-page .service-primary-button,
+.product-overview-page a[class*="bg-[#45ddce]"],
+.voice-build-page a[class*="bg-[#5eead4]"] {
+  border-color: #17171d !important;
+  background: #17171d !important;
+  color: #fff !important;
+  box-shadow: 0 12px 30px rgba(23, 23, 29, 0.14) !important;
+}
+
+.product-service-page .service-primary-button *,
+.product-overview-page a[class*="bg-[#45ddce]"] *,
+.voice-build-page a[class*="bg-[#5eead4]"] * {
+  color: #fff !important;
+}
+
+/* Final product contrast pass: no light text may disappear on white surfaces. */
+.product-service-page .product-service-heading-primary,
+.voice-build-page h1 > span:first-child {
+  background: none !important;
+  color: #171719 !important;
+  -webkit-text-fill-color: #171719 !important;
+}
+
+.product-service-page .product-service-heading-accent,
+.product-service-page .voice-process-heading-accent,
+.product-service-page .voice-config-heading-accent,
+.product-service-page [class*="text-transparent"],
+.product-overview-page [class*="text-transparent"],
+.voice-build-page [class*="text-transparent"] {
+  background: none !important;
+  color: #565dcc !important;
+  -webkit-text-fill-color: #565dcc !important;
+}
+
+.product-service-page .product-service-ready-card,
+.product-overview-page .product-overview-ready-card,
+.voice-build-page .voice-ready-card {
+  border: 1px solid rgba(98, 104, 255, 0.22) !important;
+  background-color: #f5f3ff !important;
+  background-image: radial-gradient(circle at 12% 14%, rgba(255,255,255,.92), transparent 28%), radial-gradient(circle at 88% 82%, rgba(239,138,166,.14), transparent 30%), linear-gradient(135deg, #e8e9ff 0%, #f4edff 52%, #fff2ed 100%) !important;
+  color: #171719 !important;
+  box-shadow: 0 28px 80px rgba(74, 67, 142, 0.14) !important;
+}
+
+.product-service-page .product-service-ready-card h2,
+.product-overview-page .product-overview-ready-card h2,
+.voice-build-page .voice-ready-card h2 {
+  color: #171719 !important;
+  -webkit-text-fill-color: #171719 !important;
+}
+
+.product-service-page .product-service-ready-card > div:first-of-type p,
+.product-overview-page .product-overview-ready-card > p,
+.voice-build-page .voice-ready-card p {
+  color: #565dcc !important;
+}
+
+.product-service-page .product-service-contact-button,
+.product-overview-page .product-overview-contact-button,
+.voice-build-page .voice-ready-contact {
+  border: 1px solid #6268ff !important;
+  background: linear-gradient(135deg, #565dcc, #7d63dc) !important;
+  color: #fff !important;
+  box-shadow: 0 12px 30px rgba(86, 93, 220, 0.24) !important;
+}
+
+.product-service-page .product-service-contact-button:hover,
+.product-overview-page .product-overview-contact-button:hover,
+.voice-build-page .voice-ready-contact:hover {
+  background: linear-gradient(135deg, #454bd0, #6f55ca) !important;
+  box-shadow: 0 16px 36px rgba(86, 93, 220, 0.3) !important;
+}
+
+.product-service-page .product-service-contact-button *,
+.product-overview-page .product-overview-contact-button *,
+.voice-build-page .voice-ready-contact * {
+  color: #fff !important;
+}
+
+/* Pricing uses a plain white canvas with black copy throughout. */
+.pricing-page {
+  --pricing-ink: #000;
+  --pricing-muted: #000;
+  --pricing-line: #dedee8;
+  --pricing-primary: #000;
+  background: #fff !important;
+  color: var(--pricing-ink) !important;
+}
+
+.pricing-page > section {
+  border-color: var(--pricing-line) !important;
+  background: #fff !important;
+  background-image: none !important;
+}
+
+.pricing-page,
+.pricing-page :where(*) {
+  color: var(--pricing-ink) !important;
+  -webkit-text-fill-color: var(--pricing-ink) !important;
+}
+
+.pricing-page [class*="text-[#45ddce"],
+.pricing-page [class*="text-[#75fff0"],
+.pricing-page [class*="text-[#9ffaf1"],
+.pricing-page [class*="text-[#67e8f9"] {
+  color: var(--pricing-primary) !important;
+  -webkit-text-fill-color: var(--pricing-primary) !important;
+}
+
+.pricing-page [class*="bg-[#45ddce"],
+.pricing-page [class*="bg-[#75fff0"] {
+  background-color: #fff !important;
+  background-image: none !important;
+}
+
+.pricing-page [class*="border-[#45ddce"],
+.pricing-page [class*="border-[#67e8f9"],
+.pricing-page [class*="border-white"] {
+  border-color: var(--pricing-line) !important;
+}
+
+.pricing-page [class*="bg-black"],
+.pricing-page [class*="bg-[#07100e"],
+.pricing-page [class*="bg-[#091512"],
+.pricing-page [class*="bg-[#020b09"] {
+  background-color: #fff !important;
+  background-image: none !important;
+}
+
+.pricing-page nav a {
+  border-color: #d9d9e7 !important;
+  background: #fff !important;
+  color: #000 !important;
+  box-shadow: none !important;
+}
+
+.pricing-page nav a:hover {
+  border-color: #000 !important;
+  color: #000 !important;
+}
+
+.pricing-page .pricing-plan-card,
+.pricing-page .pricing-calculator-card,
+.pricing-page .pricing-stack-card,
+.pricing-page .pricing-faq-card {
+  border-color: var(--pricing-line) !important;
+  background: #fff !important;
+  background-image: none !important;
+  color: var(--pricing-ink) !important;
+  box-shadow: none !important;
+}
+
+.pricing-page .pricing-estimate-panel {
+  border-left: 1px solid var(--pricing-line);
+  background: #fff !important;
+  background-image: none !important;
+}
+
+.pricing-page .pricing-contact-card {
+  border-color: var(--pricing-line) !important;
+  background: #fff !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+.pricing-page input,
+.pricing-page select {
+  border-color: #d9d9e5 !important;
+  background: #fff !important;
+  color: var(--pricing-ink) !important;
+}
+
+.pricing-page input:focus,
+.pricing-page select:focus {
+  border-color: #000 !important;
+  box-shadow: none !important;
+}
+
+.pricing-page button,
+.pricing-page a[href="/login"],
+.pricing-page a[href="/contact"]:last-child {
+  border: 1px solid #000 !important;
+  background: #fff !important;
+  background-image: none !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  box-shadow: none !important;
+}
+
+.pricing-page button:hover,
+.pricing-page a[href="/login"]:hover,
+.pricing-page a[href="/contact"]:last-child:hover {
+  background: #fff !important;
+  background-image: none !important;
+  color: #000 !important;
+}
+
+.pricing-page .pricing-faq-card[open] {
+  border-color: var(--pricing-line) !important;
+  background: #fff !important;
+}
+
+.pricing-page .pricing-faq-card summary span {
+  border-color: var(--pricing-line) !important;
+  background: #fff !important;
+  color: #000 !important;
+}
+
+@media (max-width: 1023px) {
+  .pricing-page .pricing-estimate-panel {
+    border-left: 0;
+    border-top: 1px solid var(--pricing-line);
+  }
+}
+
+/* Remove legacy blue/lilac utility fills from every pricing-page surface. */
+.pricing-page :is(section, article, details, div, nav, ul, li, dl, dt, dd, label, span, a, button, input, select),
+.pricing-page [style*="background-color"] {
+  background-color: #fff !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+.pricing-page [class*="border-"] {
+  border-color: var(--pricing-line) !important;
+}
+
+.pricing-page button,
+.pricing-page a[href="/login"],
+.pricing-page a[href="/contact"]:last-child {
+  border-color: #000 !important;
+}
+
+/* Docs and Help Centre use a pure-white canvas with black text and controls. */
+:is(.docs-page, .help-center-page) {
+  --support-ink: #000;
+  --support-line: #dedede;
+  background: #fff !important;
+  background-image: none !important;
+  color: var(--support-ink) !important;
+}
+
+:is(.docs-page, .help-center-page),
+:is(.docs-page, .help-center-page) :where(*) {
+  color: var(--support-ink) !important;
+  -webkit-text-fill-color: var(--support-ink) !important;
+}
+
+:is(.docs-page, .help-center-page) :is(section, article, aside, details, div, nav, footer, figure, figcaption, pre, code, ul, ol, li, dl, dt, dd, label, span, a, button, input, select),
+:is(.docs-page, .help-center-page) [style*="background-color"] {
+  background-color: #fff !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+:is(.docs-page, .help-center-page) [class*="border-"] {
+  border-color: var(--support-line) !important;
+}
+
+:is(.docs-page, .help-center-page) :is(button, [role="button"]) {
+  border: 1px solid #000 !important;
+  border-radius: 0.5rem;
+  background: #fff !important;
+  background-image: none !important;
+  padding: 0.45rem 0.75rem;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  box-shadow: none !important;
+}
+
+:is(.docs-page, .help-center-page) :is(button, [role="button"]):hover,
+:is(.docs-page, .help-center-page) a:hover {
+  background-color: #fff !important;
+  background-image: none !important;
+  color: #000 !important;
+}
+
+:is(.docs-page, .help-center-page) :is(input, select):focus {
+  border-color: #000 !important;
+  box-shadow: none !important;
+  outline-color: #000 !important;
+}
+
+:is(.docs-page, .help-center-page) input::placeholder {
+  color: #000 !important;
+  opacity: 1;
+}
+
+.docs-page .docs-code-block,
+.docs-page .docs-code-block * {
+  border-color: var(--support-line) !important;
+  background: #fff !important;
+  background-image: none !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  box-shadow: none !important;
+}
+
+.docs-page svg text {
+  fill: #000 !important;
+}
+
+.docs-page svg rect {
+  fill: #fff !important;
+}
+
+.product-service-page .voice-faq-section,
+.product-service-page .voice-preview-section,
+.product-service-page .voice-build-process,
+.product-service-page .voice-config-section,
+.product-service-page .agent-anatomy-section {
+  background-color: #fff !important;
+  background-image: linear-gradient(135deg, rgba(247,246,255,.92), rgba(255,255,255,.98)) !important;
+}
+
+@media (max-width: 640px) {
+  .marketing-footer { padding-inline: 1rem; }
+}
 
 .login-auth-form input:-webkit-autofill,
 .login-auth-form input:-webkit-autofill:hover,
@@ -1154,4 +2096,327 @@
       inset 0 0 0 1px color-mix(in srgb, var(--app-color-accent) 35%, transparent),
       0 6px 16px rgba(0, 184, 196, 0.16);
   }
+}
+
+/* Keep this final so general marketing surface rules cannot recreate a hero card. */
+.marketing-site .business-page .business-hero-console {
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.marketing-site .business-page .business-hero-console > div:first-child {
+  border: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  padding-inline: 0 !important;
+}
+
+/* Final business-route colour guard. The business overview, use-case pages and
+   industry pages were built from separate templates, so keep their public
+   palette aligned here instead of allowing legacy teal or dark section fills
+   to leak through template-specific styles. */
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) {
+  --industry-accent: #dedee3 !important;
+  --industry-accent-soft: #4f4f56 !important;
+}
+
+.marketing-site :is(.use-case-page, .industry-experience, .healthcare-page) > section {
+  border-color: #dedee8 !important;
+  background: #fff !important;
+  color: #171719 !important;
+}
+
+.marketing-site :is(.use-case-page, .industry-experience, .healthcare-page) > section:nth-of-type(even) {
+  background: linear-gradient(135deg, #fafafa 0%, #f3f3f3 58%, #fff 100%) !important;
+}
+
+.marketing-site .healthcare-page,
+.marketing-site .healthcare-page .healthcare-integrations {
+  background: #fff !important;
+}
+
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[#35fbe0"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[#45ddce"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[#5eead4"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[#6268ff"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[#8f83e8"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[#f28d45"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[#ff9655"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[#ffb17e"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-cyan"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-sky"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-blue"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-emerald"] {
+  background-color: #ececef !important;
+}
+
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-[#35fbe0"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-[#45ddce"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-[#5eead4"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-[#75fff0"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-[#565dcc"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-[#6268ff"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-[#c5bdff"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-[#c6bdff"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-[#0f766e"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-[#f28d45"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-[#ff9655"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-[#ffb17e"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-[#ffbd8c"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-cyan"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-sky"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-blue"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-emerald"] {
+  color: #4f4f56 !important;
+  -webkit-text-fill-color: #4f4f56 !important;
+}
+
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="border-[#35fbe0"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="border-[#45ddce"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="border-[#5eead4"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="border-[#6268ff"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="border-[#8f83e8"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="border-[#f28d45"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="border-[#ff9655"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="border-emerald"] {
+  border-color: rgba(0, 0, 0, 0.22) !important;
+}
+
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="via-[#35fbe0"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="via-[#45ddce"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="via-[#6268ff"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="via-[#8f83e8"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="via-[#f28d45"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="via-[#ff9655"] {
+  --tw-gradient-via: #cfcfd5 var(--tw-gradient-via-position) !important;
+}
+
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[linear-gradient"][class*="#35fbe0"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[linear-gradient"][class*="#45ddce"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[linear-gradient"][class*="#6268ff"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[linear-gradient"][class*="#8f83e8"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[linear-gradient"][class*="#ff9655"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[linear-gradient"][class*="#f28d45"] {
+  background-image: linear-gradient(100deg, #f7f7f8, #e8e8eb 54%, #d9d9de) !important;
+}
+
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[radial-gradient"][class*="#35fbe0"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[radial-gradient"][class*="#5eead4"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[radial-gradient"][class*="#8f83e8"] {
+  background-image: radial-gradient(circle at 22% 18%, #fff 0, #e3e3e6 25%, transparent 43%), radial-gradient(circle at 82% 26%, #ededf0 0, #d4d4d9 34%, transparent 57%), linear-gradient(135deg, #fff, #f1f1f3 48%, #e2e2e6) !important;
+}
+
+.marketing-site .use-case-page .use-case-heading-accent {
+  background-image: linear-gradient(105deg, #2f2f34 5%, #55555c 48%, #777780 100%) !important;
+}
+
+.marketing-site .use-case-page .use-case-step:hover > span {
+  background: #e7e7ea !important;
+  color: #3f3f45 !important;
+}
+
+.marketing-site :is(.industry-experience, .healthcare-page) .industry-integration-card:nth-child(3n + 2) .industry-integration-icon,
+.marketing-site .healthcare-page .healthcare-integration-card:nth-child(3n + 2) .healthcare-integration-icon {
+  background: #eeeeef !important;
+  color: #4f4f56 !important;
+}
+
+.marketing-site :is(.industry-experience, .healthcare-page) .industry-integration-card:nth-child(3n) .industry-integration-icon,
+.marketing-site .healthcare-page .healthcare-integration-card:nth-child(3n) .healthcare-integration-icon {
+  background: #eeeeef !important;
+  color: #4f4f56 !important;
+}
+
+/* Preserve the original colour rotation in the scrolling integrations row. */
+.marketing-site :is(.industry-experience, .healthcare-page) :is(.industry-integration-card, .healthcare-integration-card) {
+  border-color: #dedee4 !important;
+  background: #fff !important;
+  box-shadow: 0 10px 28px rgba(35, 35, 45, 0.07) !important;
+}
+
+.marketing-site :is(.industry-experience, .healthcare-page) :is(.industry-integration-card, .healthcare-integration-card):nth-child(3n + 1) strong,
+.marketing-site :is(.industry-experience, .healthcare-page) :is(.industry-integration-card, .healthcare-integration-card):nth-child(3n + 1) :is(.industry-integration-icon, .healthcare-integration-icon) {
+  color: #16806b !important;
+  -webkit-text-fill-color: #16806b !important;
+}
+
+.marketing-site :is(.industry-experience, .healthcare-page) :is(.industry-integration-card, .healthcare-integration-card):nth-child(3n + 2) strong,
+.marketing-site :is(.industry-experience, .healthcare-page) :is(.industry-integration-card, .healthcare-integration-card):nth-child(3n + 2) :is(.industry-integration-icon, .healthcare-integration-icon) {
+  color: #7567c6 !important;
+  -webkit-text-fill-color: #7567c6 !important;
+}
+
+.marketing-site :is(.industry-experience, .healthcare-page) :is(.industry-integration-card, .healthcare-integration-card):nth-child(3n) strong,
+.marketing-site :is(.industry-experience, .healthcare-page) :is(.industry-integration-card, .healthcare-integration-card):nth-child(3n) :is(.industry-integration-icon, .healthcare-integration-icon) {
+  color: #c3622f !important;
+  -webkit-text-fill-color: #c3622f !important;
+}
+
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="shadow-"][class*="53,251,224"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="shadow-"][class*="69,221,206"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="shadow-"][class*="#35fbe0"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="shadow-"][class*="#45ddce"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="shadow-"][class*="#6268ff"] {
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14) !important;
+}
+
+/* Business copy sits on light surfaces. Keep all running text dark, including
+   legacy classes that originally expected a dark page. */
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) :is(p, li, blockquote) {
+  color: #252529 !important;
+  -webkit-text-fill-color: #252529 !important;
+}
+
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) :is(h1, h2, h3, h4, strong, summary) {
+  color: #202024 !important;
+  -webkit-text-fill-color: #202024 !important;
+}
+
+.marketing-site :is(.industry-experience, .healthcare-page) .industry-hero-heading span,
+.marketing-site .healthcare-page .healthcare-heading-accent {
+  color: #303035 !important;
+  -webkit-text-fill-color: #303035 !important;
+}
+
+/* Text placed on deliberately dark photo captions remains readable. */
+.marketing-site :is(.industry-experience, .healthcare-page) :is(.industry-hero-card, .industry-photo-marquee, .industry-feature-row, .healthcare-feature-row) [class*="bg-black/"] :is(p, strong, span),
+.marketing-site :is(.industry-experience, .healthcare-page) .industry-photo-marquee article h2 {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+/* Pricing cards use one explicit light treatment across every industry page. */
+.marketing-site :is(.industry-experience, .healthcare-page) .business-pricing-section {
+  background: #fafafa !important;
+}
+
+.marketing-site :is(.industry-experience, .healthcare-page) .business-pricing-grid {
+  gap: 1rem;
+  grid-auto-rows: 1fr;
+  align-items: stretch;
+}
+
+.marketing-site :is(.industry-experience, .healthcare-page) .business-pricing-card {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  border: 1px solid #d9d9df !important;
+  background: #fff !important;
+  color: #202024 !important;
+  box-shadow: 0 16px 42px rgba(30, 30, 40, 0.08) !important;
+}
+
+.marketing-site :is(.industry-experience, .healthcare-page) .business-pricing-card > div:first-child {
+  background: #d2d2d7 !important;
+}
+
+.marketing-site :is(.industry-experience, .healthcare-page) .business-pricing-card :is(p, li, span, strong, h3) {
+  color: #252529 !important;
+  -webkit-text-fill-color: #252529 !important;
+}
+
+.marketing-site :is(.industry-experience, .healthcare-page) .business-pricing-card ul {
+  color: #34343a !important;
+}
+
+.marketing-site :is(.industry-experience, .healthcare-page) .business-pricing-card [class*="rounded-full"] {
+  border-color: #d8d8dd !important;
+  background: #f1f1f3 !important;
+  color: #3f3f45 !important;
+  -webkit-text-fill-color: #3f3f45 !important;
+}
+
+.marketing-site :is(.industry-experience, .healthcare-page) .business-pricing-card li > span {
+  border-color: #d8d8dd !important;
+  background: #eeeeef !important;
+  color: #3f3f45 !important;
+  -webkit-text-fill-color: #3f3f45 !important;
+}
+
+.marketing-site :is(.industry-experience, .healthcare-page) .business-pricing-button {
+  margin-top: auto !important;
+  border: 1px solid #cfcfd6 !important;
+  background: #eeeeef !important;
+  color: #252529 !important;
+  -webkit-text-fill-color: #252529 !important;
+  box-shadow: none !important;
+}
+
+.marketing-site :is(.industry-experience, .healthcare-page) .business-pricing-button:hover {
+  border-color: #bdbdc5 !important;
+  background: #e9e9ec !important;
+}
+.marketing-site .marketing-overview-light.blog-light-theme,
+.marketing-site .marketing-overview-light.blog-light-theme * {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+.marketing-site .marketing-overview-light.blog-light-theme [class*="border"] {
+  border-color: #e2e8f0 !important;
+}
+
+/* Final monochrome treatment for every Product and Business route template. */
+.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page) {
+  background: #fff !important;
+  background-image: none !important;
+  color: #000 !important;
+}
+
+.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page) * {
+  box-shadow: none !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+}
+
+.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page) :is(section, article, aside, details, figure, [class*="rounded"]) {
+  background-color: #fff !important;
+  background-image: none !important;
+}
+
+.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page) :is([class*="bg-black"], [class*="bg-[#"], [style*="background-color"], [style*="background:"]) {
+  background-color: #fff !important;
+}
+
+.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page) :is([class*="gradient"], [class*="[background-image"], [style*="gradient"]) {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Image overlays become transparent, while URL-backed image layers remain intact. */
+.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="absolute"][class*="inset"]:not([style*="url("]) {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page) *::before,
+.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page) *::after {
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="border"] {
+  border-color: #dedede !important;
+}
+
+.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page) :is(button, a[class*="bg-"]) {
+  border: 1px solid #000 !important;
+  background: #fff !important;
+  background-image: none !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  box-shadow: none !important;
+}
+
+.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page) svg text {
+  fill: #000 !important;
 }

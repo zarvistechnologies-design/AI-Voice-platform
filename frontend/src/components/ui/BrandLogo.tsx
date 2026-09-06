@@ -5,7 +5,13 @@ import Image from "next/image";
 
 import { useBrand } from "@/components/branding/BrandProvider";
 
-export function BrandLogo({ showWebsiteLogo = false }: { showWebsiteLogo?: boolean }) {
+export function BrandLogo({
+  compact = false,
+  showWebsiteLogo = false,
+}: {
+  compact?: boolean;
+  showWebsiteLogo?: boolean;
+}) {
   const brand = useBrand();
   const logoUrl = brand.logoDarkUrl || brand.logoUrl;
   return (
@@ -15,7 +21,13 @@ export function BrandLogo({ showWebsiteLogo = false }: { showWebsiteLogo?: boole
       aria-label={`${brand.productName} home`}
     >
       {showWebsiteLogo && logoUrl ? (
-        <span className="relative block h-10 w-[140px] shrink-0 overflow-hidden max-[560px]:h-8 max-[560px]:w-[112px]">
+        <span
+          className={`relative block shrink-0 overflow-hidden ${
+            compact
+              ? "h-8 w-[112px] max-[560px]:h-7 max-[560px]:w-[98px]"
+              : "h-10 w-[140px] max-[560px]:h-8 max-[560px]:w-[112px]"
+          }`}
+        >
           {logoUrl.startsWith("/") ? (
             <Image alt={brand.productName} className="h-full w-full object-contain" height={350} loading="eager" src={logoUrl} width={1160} />
           ) : (

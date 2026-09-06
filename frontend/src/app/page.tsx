@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { SiteLayout } from "@/components/layout/SiteLayout";
-import { HomePlatformSections } from "@/components/sections/HomePlatformSections";
+import { HomeDesignFour } from "@/components/sections/HomeDesignFour";
 import { EnquiryChatbot } from "@/components/sections/EnquiryChatbot";
 
 export const metadata: Metadata = {
@@ -9,9 +8,9 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <SiteLayout>
-      <HomePlatformSections />
+    <>
+      <HomeDesignFour />
       <EnquiryChatbot />
-    </SiteLayout>
+    </>
   );
 }

@@ -64,11 +64,11 @@ export function ProductServiceHeroPhoto({ slug, title }: { slug: string; title: 
   const photo = productPhotos[slug as ProductServiceSlug] ?? productPhotos["voice-agents"];
 
   return (
-    <figure className="relative m-0 mx-auto w-full max-w-[650px] overflow-hidden rounded-[1.35rem] border border-white/12 bg-[#07100f] shadow-[0_28px_72px_rgba(0,0,0,0.52)]">
+    <figure className="relative m-0 mx-auto w-full max-w-[650px] overflow-hidden rounded-[1.35rem] border border-[#dedeea] bg-[#f7f6ff] shadow-[0_24px_70px_rgba(65,61,120,0.14)]">
       <div className="relative h-[clamp(360px,30vw,430px)]">
         <Image
           alt={photo.alt}
-          className="object-cover brightness-[0.78] saturate-[0.82]"
+          className="object-cover brightness-[0.94] saturate-[0.86]"
           fill
           priority
           sizes="(max-width: 1023px) 100vw, 650px"
@@ -76,13 +76,13 @@ export function ProductServiceHeroPhoto({ slug, title }: { slug: string; title: 
         />
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-[linear-gradient(to_top,rgba(2,7,8,0.96),rgba(2,7,8,0.06)_60%),linear-gradient(115deg,rgba(var(--service-accent-rgb),0.10),transparent_52%)]"
+          className="absolute inset-0 bg-[linear-gradient(to_top,rgba(247,246,255,0.98),rgba(247,246,255,0.08)_62%),linear-gradient(115deg,rgba(var(--service-accent-rgb),0.16),transparent_54%)]"
         />
       </div>
 
       <figcaption className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
         <p className="service-accent-text text-[10px] font-black tracking-[0.14em] uppercase">{title}</p>
-        <p className="mt-2 max-w-[31rem] text-sm leading-6 text-slate-200/80">{photo.caption}</p>
+        <p className="mt-2 max-w-[31rem] text-sm leading-6 text-[#575766]">{photo.caption}</p>
       </figcaption>
     </figure>
   );

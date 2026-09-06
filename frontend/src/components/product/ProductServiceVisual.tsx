@@ -26,26 +26,26 @@ function VisualShell({
   footer?: ReactNode;
 }) {
   return (
-    <div className="product-visual-shell relative mx-auto w-full min-w-0 max-w-[650px] overflow-hidden rounded-[1.6rem] border border-white/10 bg-[#080b12] shadow-[0_32px_90px_rgba(0,0,0,0.5)]">
+    <div className="product-visual-shell relative mx-auto w-full min-w-0 max-w-[650px] overflow-hidden rounded-[1.6rem] border border-[#dedeea] bg-[linear-gradient(145deg,#ffffff,#f5f3ff)] shadow-[0_28px_80px_rgba(65,61,120,0.14)]">
       <div className="product-visual-sheen pointer-events-none absolute inset-0" />
-      <div className="relative flex items-center justify-between gap-4 border-b border-white/[0.08] px-4 py-3.5 sm:px-5">
+      <div className="relative flex items-center justify-between gap-4 border-b border-[#e2e2ec] bg-white/70 px-4 py-3.5 sm:px-5">
         <div className="flex min-w-0 items-center gap-3">
-          <span className="grid size-8 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/[0.045]">
+          <span className="grid size-8 shrink-0 place-items-center rounded-lg border border-[#dedeea] bg-[#f0efff]">
             <span className="size-2 rounded-sm bg-[var(--service-accent)] shadow-[0_0_16px_rgba(var(--service-accent-rgb),0.85)]" />
           </span>
           <div className="min-w-0">
             <p className="truncate text-[10px] font-black uppercase tracking-[0.13em] text-[var(--service-accent-soft)]">
               {design.visualLabel}
             </p>
-            <p className="mt-0.5 text-xs font-semibold leading-5 text-white/72">{design.visualTitle}</p>
+            <p className="mt-0.5 text-xs font-semibold leading-5 text-[#454551]">{design.visualTitle}</p>
           </div>
         </div>
-        <span className="inline-flex shrink-0 items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.035] px-2.5 py-1.5 text-[9px] font-bold uppercase tracking-[0.1em] text-white/50">
+        <span className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[#dedeea] bg-white px-2.5 py-1.5 text-[9px] font-bold uppercase tracking-[0.1em] text-[#676773]">
           <StatusDot /> Live
         </span>
       </div>
       <div className="relative min-h-[354px] p-4 sm:min-h-[390px] sm:p-5">{children}</div>
-      {footer && <div className="relative border-t border-white/[0.07] px-4 py-3 sm:px-5">{footer}</div>}
+      {footer && <div className="relative border-t border-[#e2e2ec] bg-white/55 px-4 py-3 sm:px-5">{footer}</div>}
     </div>
   );
 }
@@ -375,14 +375,15 @@ export function ProductServiceVisual({ slug, experience, design }: ProductServic
         .product-visual-shell {
           isolation: isolate;
           background:
-           #000000;
+            radial-gradient(circle at 12% 8%, rgba(var(--service-accent-rgb), 0.1), transparent 34%),
+            linear-gradient(145deg, #ffffff, #f5f3ff);
         }
 
         .product-visual-sheen {
           z-index: -1;
           background-image:
-            linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+            linear-gradient(rgba(98,104,255,0.045) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(98,104,255,0.045) 1px, transparent 1px);
           background-size: 28px 28px;
           mask-image: linear-gradient(to bottom, black, transparent 82%);
         }
