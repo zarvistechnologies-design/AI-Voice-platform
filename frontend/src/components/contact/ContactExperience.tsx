@@ -51,11 +51,11 @@ const contactChannels = [
   },
   {
     icon: "calendar" as const,
-    eyebrow: "Plan your rollout",
-    title: "Request a conversation",
-    body: "Share your goals below and our team will help map workflows, integrations, and handoffs.",
+    eyebrow: "Launch under your brand",
+    title: "White-label partnerships",
+    body: "Tell us about your customers, expected usage, and brand so our team can review the right partner setup.",
     href: "#contact-form",
-    action: "Start with the form",
+    action: "Request partner review",
   },
   {
     icon: "headset" as const,
@@ -164,7 +164,7 @@ export function ContactExperience() {
                 </span>
               </h1>
               <p className="mt-7 max-w-xl text-base leading-7 text-white/55 sm:text-lg sm:leading-8">
-                Tell us about your voice AI goals. We&apos;ll help you understand the right workflow, integrations, and rollout for your team.
+                Tell us about your voice AI goals or plans to offer the platform under your own brand. We&apos;ll help you understand the right workflow, integrations, and rollout.
               </p>
 
               <div className="mt-8 flex flex-wrap gap-2.5">
@@ -229,6 +229,7 @@ export function ContactExperience() {
                     <option>Product demo</option>
                     <option>Enterprise rollout</option>
                     <option>Pricing and plans</option>
+                    <option>White-label partnership</option>
                     <option>Partnership</option>
                     <option>Other</option>
                   </select>
@@ -237,7 +238,7 @@ export function ContactExperience() {
 
               <label className="mt-4 grid gap-2 text-sm font-semibold text-white/75 lg:mt-3 lg:gap-1.5">
                 Message <span className="sr-only">(required)</span>
-                <textarea className="min-h-32 resize-y rounded-xl border border-white/10 bg-white/[0.035] px-4 py-3 font-normal leading-6 text-white placeholder:text-white/25 focus:border-[#45ddce]/55 focus:bg-[#45ddce]/[0.035] lg:min-h-24" name="message" placeholder="Tell us about your team, use case, and what you would like to achieve..." required />
+                <textarea className="min-h-32 resize-y rounded-xl border border-white/10 bg-white/[0.035] px-4 py-3 font-normal leading-6 text-white placeholder:text-white/25 focus:border-[#45ddce]/55 focus:bg-[#45ddce]/[0.035] lg:min-h-24" name="message" placeholder="Tell us about your team, use case, expected customers or call volume, and what you would like to achieve..." required />
               </label>
 
               <label aria-hidden="true" className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden">

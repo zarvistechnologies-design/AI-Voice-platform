@@ -170,6 +170,7 @@ export const siteConfig = {
       title: "Company",
       links: [
         { href: "/business", label: "For Business" },
+        { href: "/contact#contact-form", label: "White-label Partners" },
         { href: "/about", label: "About" },
         { href: "/career", label: "Careers" },
       ],
