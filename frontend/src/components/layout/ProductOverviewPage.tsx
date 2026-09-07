@@ -182,11 +182,11 @@ function HeroConsole() {
 function StageVisual({ index }: { index: number }) {
   if (index === 0) {
     return (
-      <div className="relative min-h-[390px] overflow-hidden rounded-[22px] border border-[#45ddce]/18 bg-[#06110f] p-5 shadow-[0_28px_80px_rgba(0,0,0,0.32)] sm:p-7">
+      <div className="relative min-h-[390px] overflow-hidden rounded-[22px] border border-[#dce5ff] bg-[#f4f7ff] p-5 shadow-[0_18px_48px_rgba(62,117,255,0.08)] sm:p-7">
         <div className="absolute inset-0 opacity-30 [background-image:radial-gradient(circle_at_center,rgba(69,221,206,0.13)_1px,transparent_1px)] [background-size:20px_20px]" />
         <div className="relative flex items-center justify-between">
-          <span className="text-xs font-black text-white">Conversation canvas</span>
-          <span className="rounded-full border border-[#45ddce]/20 bg-[#45ddce]/[0.07] px-3 py-1.5 text-[9px] font-bold text-[#75fff0]">Auto-saved</span>
+          <span className="text-xs font-black text-[#17203f]">Conversation canvas</span>
+          <span className="rounded-full border border-[#3e75ff]/20 bg-white px-3 py-1.5 text-[9px] font-bold text-[#3e75ff]">Auto-saved</span>
         </div>
         <div className="relative mx-auto mt-10 max-w-md">
           <div className="absolute left-8 top-12 h-[190px] w-px bg-gradient-to-b from-[#45ddce] via-[#45ddce]/30 to-[#8f83e8]" />
@@ -195,9 +195,9 @@ function StageVisual({ index }: { index: number }) {
             ["Business knowledge", "Use approved answers and live data"],
             ["Take action", "Book, update, notify, or transfer"],
           ].map(([title, body], itemIndex) => (
-            <div className={`relative flex gap-4 rounded-2xl border bg-[#091a16]/95 p-4 ${itemIndex === 1 ? "ml-12 border-[#8f83e8]/30" : "border-[#45ddce]/25"} ${itemIndex > 0 ? "mt-5" : ""}`} key={title}>
+            <div className={`relative flex gap-4 rounded-2xl border bg-white p-4 shadow-[0_8px_24px_rgba(38,52,102,0.05)] ${itemIndex === 1 ? "ml-12 border-[#6d5ce7]/25" : "border-[#3e75ff]/20"} ${itemIndex > 0 ? "mt-5" : ""}`} key={title}>
               <span className={`relative z-10 grid size-9 shrink-0 place-items-center rounded-xl text-[10px] font-black ${itemIndex === 1 ? "bg-[#8f83e8]" : "bg-[#45ddce] text-[#03110e]"}`}>0{itemIndex + 1}</span>
-              <div><strong className="text-sm text-white">{title}</strong><p className="mb-0 mt-1 text-[11px] leading-5 text-white/40">{body}</p></div>
+              <div><strong className="text-sm text-[#17203f]">{title}</strong><p className="mb-0 mt-1 text-[11px] leading-5 text-[#5d6478]">{body}</p></div>
             </div>
           ))}
         </div>
@@ -207,10 +207,10 @@ function StageVisual({ index }: { index: number }) {
 
   if (index === 1) {
     return (
-      <div className="relative min-h-[390px] overflow-hidden rounded-[22px] border border-[#8f83e8]/20 bg-[#080d17] p-5 shadow-[0_28px_80px_rgba(0,0,0,0.32)] sm:p-7">
+      <div className="relative min-h-[390px] overflow-hidden rounded-[22px] border border-[#e3defb] bg-[#f7f5ff] p-5 shadow-[0_18px_48px_rgba(109,92,231,0.08)] sm:p-7">
         <div className="absolute -right-16 -top-16 size-64 rounded-full bg-[#8f83e8]/15 blur-[70px]" />
         <div className="relative flex items-center justify-between border-b border-white/[0.08] pb-5">
-          <div><span className="text-xs font-black text-white">Deployment center</span><span className="mt-1 block text-[9px] text-white/35">All production channels</span></div>
+          <div><span className="text-xs font-black text-[#17203f]">Deployment center</span><span className="mt-1 block text-[9px] text-[#5d6478]">All production channels</span></div>
           <span className="flex items-center gap-2 text-[9px] font-bold text-emerald-300"><span className="size-1.5 rounded-full bg-emerald-300" /> Healthy</span>
         </div>
         <div className="relative mt-5 grid gap-3 sm:grid-cols-2">
@@ -220,27 +220,27 @@ function StageVisual({ index }: { index: number }) {
             ["Calendar action", "Live availability", "Ready"],
             ["Human handoff", "Support queue", "Ready"],
           ].map(([title, detail, status], itemIndex) => (
-            <div className="rounded-2xl border border-white/[0.09] bg-white/[0.035] p-4" key={title}>
+            <div className="rounded-2xl border border-[#e3defb] bg-white p-4 shadow-[0_8px_24px_rgba(55,46,120,0.05)]" key={title}>
               <div className="flex items-center justify-between"><span className="grid size-9 place-items-center rounded-xl bg-[#8f83e8]/14 text-[#c6bdff]"><ProductGlyph type={itemIndex % 2 ? "workflow" : "voice"} /></span><span className="rounded-full bg-emerald-300/10 px-2 py-1 text-[8px] font-bold text-emerald-300">{status}</span></div>
-              <strong className="mt-5 block text-sm text-white">{title}</strong>
-              <span className="mt-1 block text-[10px] text-white/36">{detail}</span>
+              <strong className="mt-5 block text-sm text-[#17203f]">{title}</strong>
+              <span className="mt-1 block text-[10px] text-[#5d6478]">{detail}</span>
             </div>
           ))}
         </div>
         <div className="relative mt-4 flex items-center justify-between rounded-xl border border-[#8f83e8]/20 bg-[#8f83e8]/[0.07] px-4 py-3">
-          <span className="text-[10px] font-bold text-white/60">Production agent</span><span className="rounded-lg bg-[#8f83e8] px-3 py-2 text-[9px] font-black text-white">Deployed</span>
+          <span className="text-[10px] font-bold text-[#5d6478]">Production agent</span><span className="rounded-lg bg-[#6d5ce7] px-3 py-2 text-[9px] font-black text-white">Deployed</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="relative min-h-[390px] overflow-hidden rounded-[22px] border border-[#f28d45]/20 bg-[#130d08] p-5 shadow-[0_28px_80px_rgba(0,0,0,0.32)] sm:p-7">
+    <div className="relative min-h-[390px] overflow-hidden rounded-[22px] border border-[#f4dfcf] bg-[#fff7f1] p-5 shadow-[0_18px_48px_rgba(233,130,58,0.08)] sm:p-7">
       <div className="absolute -left-20 -top-20 size-64 rounded-full bg-[#f28d45]/12 blur-[75px]" />
-      <div className="relative flex items-center justify-between"><div><span className="text-xs font-black text-white">Call intelligence</span><span className="mt-1 block text-[9px] text-white/35">Last 7 days</span></div><span className="rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-[9px] text-white/50">All agents</span></div>
+      <div className="relative flex items-center justify-between"><div><span className="text-xs font-black text-[#17203f]">Call intelligence</span><span className="mt-1 block text-[9px] text-[#5d6478]">Last 7 days</span></div><span className="rounded-lg border border-[#f4dfcf] bg-white px-3 py-2 text-[9px] text-[#5d6478]">All agents</span></div>
       <div className="relative mt-5 grid grid-cols-3 gap-2.5">
         {[["1,284", "Calls"], ["91%", "Resolved"], ["4.7", "Quality"]].map(([value, label]) => (
-          <div className="rounded-xl border border-white/[0.08] bg-white/[0.035] p-3 sm:p-4" key={label}><strong className="block text-lg text-white sm:text-2xl">{value}</strong><span className="mt-1 block text-[8px] text-white/35 sm:text-[9px]">{label}</span></div>
+          <div className="rounded-xl border border-[#f4dfcf] bg-white p-3 shadow-[0_7px_20px_rgba(120,68,30,0.045)] sm:p-4" key={label}><strong className="block text-lg text-[#17203f] sm:text-2xl">{value}</strong><span className="mt-1 block text-[8px] text-[#5d6478] sm:text-[9px]">{label}</span></div>
         ))}
       </div>
       <div className="relative mt-3 rounded-2xl border border-white/[0.08] bg-white/[0.025] p-4">
@@ -263,7 +263,7 @@ function StageVisual({ index }: { index: number }) {
 export function ProductOverviewPage() {
   return (
     <SiteLayout>
-      <div className="product-overview-page overflow-hidden bg-[#020504] text-white">
+      <div className="product-overview-page overflow-hidden bg-white text-[#17203f]" id="product-overview-page">
         <section className="relative px-5 pb-20 pt-36 sm:px-8 sm:pt-40 lg:pb-28 lg:pt-44">
           <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(69,221,206,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(69,221,206,0.055)_1px,transparent_1px)] [background-size:54px_54px] [mask-image:linear-gradient(to_bottom,black,transparent_86%)]" />
           <div className="absolute left-1/2 top-0 h-[500px] w-[900px] -translate-x-1/2 rounded-full bg-[#45ddce]/[0.07] blur-[130px]" />
@@ -272,15 +272,15 @@ export function ProductOverviewPage() {
               <div className="inline-flex items-center gap-2 rounded-full border border-[#45ddce]/22 bg-[#45ddce]/[0.07] px-4 py-2 text-[10px] font-black uppercase tracking-[0.17em] text-[#75fff0]">
                 <span className="size-1.5 rounded-full bg-[#45ddce] shadow-[0_0_10px_#45ddce]" /> Vozon product platform
               </div>
-              <h1 className="m-0 mt-7 text-[clamp(2.6rem,5.7vw,5.3rem)] font-black leading-[0.96] tracking-[-0.045em] text-white">
-                Every voice workflow, <span className="text-[#75fff0]">one platform.</span>
+              <h1 className="product-hero-title m-0 mt-7 text-[clamp(2.6rem,5.7vw,5.3rem)] font-black leading-[0.96] tracking-[-0.045em] text-[#7a3e9d]">
+                Every voice workflow, <span className="product-overview-heading-accent text-[#7a3e9d]" id="product-overview-heading-accent">one platform.</span>
               </h1>
-              <p className="mb-0 mt-7 max-w-xl text-base leading-8 text-white/56 sm:text-lg">
+              <p className="mb-0 mt-7 max-w-xl text-base leading-8 text-[#5d6478] sm:text-lg">
                 Build natural AI phone agents, connect them to real business actions, and improve every conversation from one production-ready workspace.
               </p>
               <div className="mt-9 flex flex-wrap gap-3">
                 <Link className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[#45ddce] px-6 text-sm font-black text-[#03110e] shadow-[0_18px_48px_rgba(69,221,206,0.2)] transition hover:-translate-y-0.5 hover:bg-[#75fff0]" href="/dashboard">Start building <ArrowIcon /></Link>
-                <Link className="inline-flex min-h-12 items-center rounded-full border border-white/14 bg-white/[0.045] px-6 text-sm font-black text-white transition hover:border-[#45ddce]/35 hover:bg-[#45ddce]/[0.07]" href="/contact">Talk to our team</Link>
+                <Link className="inline-flex min-h-12 items-center rounded-full border border-white/14 bg-white/[0.045] px-6 text-sm font-black text-white transition hover:border-[#45ddce]/35 hover:bg-[#45ddce]/[0.07]" href="/contact" id="product-overview-secondary-cta">Talk to our team</Link>
               </div>
               <div className="mt-10 flex flex-wrap gap-x-8 gap-y-3 text-[11px] font-bold text-white/38">
                 {["Natural real-time voice", "Business tool actions", "Human handoff controls"].map((item) => (
@@ -367,6 +367,33 @@ export function ProductOverviewPage() {
           </div>
         </section>
       </div>
+      <style>{`
+        #product-overview-page#product-overview-page h1,
+        #product-overview-page#product-overview-page h1 * {
+          color: var(--product-hero-heading) !important;
+          -webkit-text-fill-color: var(--product-hero-heading) !important;
+        }
+
+        #product-overview-page#product-overview-page h2,
+        #product-overview-page#product-overview-page h2 * {
+          color: #252161 !important;
+          -webkit-text-fill-color: #252161 !important;
+        }
+
+        #product-overview-page#product-overview-page article a,
+        #product-overview-page#product-overview-page section:nth-of-type(4) [class*="grid"] > div,
+        #product-overview-page#product-overview-page [class*="rounded-[22px]"],
+        #product-overview-page#product-overview-page .product-overview-ready-card {
+          border-color: color-mix(in srgb, #ffad6f 48%, #fff) !important;
+          background: linear-gradient(145deg, #fff 0%, color-mix(in srgb, #ffad6f 16%, #fff) 100%) !important;
+          box-shadow: 0 10px 28px rgba(255, 149, 104, 0.1) !important;
+        }
+
+        #product-overview-page#product-overview-page article a:hover {
+          border-color: #ffad6f !important;
+          box-shadow: 0 14px 32px rgba(255, 149, 104, 0.15) !important;
+        }
+      `}</style>
     </SiteLayout>
   );
 }

@@ -371,18 +371,17 @@
   color: inherit !important;
 }
 
-/* Product pages use the homepage's bright editorial palette. Product-specific
-   accent variables still provide a distinct gradient for each capability. */
+/* Product pages use the homepage's clean blue editorial palette. */
 .product-overview-page,
 .product-service-page,
 .voice-build-page {
   --service-accent: #6268ff !important;
   --service-accent-soft: #5158df !important;
   --service-accent-rgb: 98, 104, 255 !important;
-  --service-secondary: #a855f7 !important;
-  --service-secondary-rgb: 168, 85, 247 !important;
-  --service-tertiary: #f08a66 !important;
-  --service-tertiary-rgb: 240, 138, 102 !important;
+  --service-secondary: #7f85ff !important;
+  --service-secondary-rgb: 127, 133, 255 !important;
+  --service-tertiary: #aeb2ff !important;
+  --service-tertiary-rgb: 174, 178, 255 !important;
   background: #fff !important;
   color: #171719 !important;
 }
@@ -407,7 +406,7 @@
 .product-overview-page > section:nth-of-type(even),
 .product-service-page > section:nth-of-type(even),
 .voice-build-page > section:nth-of-type(even) {
-  background: linear-gradient(135deg, #fbfbff 0%, #f6f4ff 55%, #f1fbf8 100%) !important;
+  background: linear-gradient(180deg, #f7f8ff 0%, #f2f4ff 100%) !important;
 }
 
 .product-overview-page > section:first-child,
@@ -569,7 +568,7 @@
 
 .product-service-page .voice-config-radar {
   border-color: rgba(98, 104, 255, 0.2) !important;
-  background-image: linear-gradient(90deg, transparent 49.85%, rgba(98,104,255,.1) 50%, transparent 50.15%), linear-gradient(transparent 49.85%, rgba(98,104,255,.1) 50%, transparent 50.15%), radial-gradient(circle, rgba(168,85,247,.09) 0 2px, transparent 3px) !important;
+  background-image: linear-gradient(90deg, transparent 49.85%, rgba(98,104,255,.1) 50%, transparent 50.15%), linear-gradient(transparent 49.85%, rgba(98,104,255,.1) 50%, transparent 50.15%), radial-gradient(circle, rgba(98,104,255,.09) 0 2px, transparent 3px) !important;
   box-shadow: inset 0 0 80px rgba(98,104,255,.04), 0 20px 70px rgba(50,47,92,.09) !important;
 }
 
@@ -586,14 +585,14 @@
 .product-service-page .voice-process-eyebrow,
 .product-service-page .voice-process-heading-accent,
 .product-service-page .voice-config-heading-accent {
-  background-image: linear-gradient(100deg, #4f55db, #8068df 52%, #c170c8) !important;
+  background-image: none !important;
   color: #565dcc !important;
 }
 
 .product-service-page .voice-build-flow::before,
 .product-service-page .voice-config-list::before,
 .product-service-page .voice-config-console::before {
-  background: linear-gradient(90deg, transparent, #6268ff, #a855f7 52%, #f08a66, transparent) !important;
+  background: linear-gradient(90deg, transparent, #6268ff, #6268ff 52%, #6268ff, transparent) !important;
 }
 
 .product-overview-page [class*="bg-[linear-gradient"][class*="#45ddce"],
@@ -601,7 +600,7 @@
 .product-service-page [class*="bg-[linear-gradient"][class*="#45ddce"],
 .product-service-page [class*="bg-[linear-gradient"][class*="#5eead4"],
 .voice-build-page [class*="bg-[linear-gradient"][class*="#5eead4"] {
-  background-image: linear-gradient(100deg, #6268ff, #9b72df 52%, #f08aa8) !important;
+  background-image: linear-gradient(100deg, #6268ff, #7f85ff) !important;
 }
 
 .product-service-page [style*="#35fbe0"],
@@ -660,16 +659,24 @@
 .product-service-page .service-primary-button,
 .product-overview-page a[class*="bg-[#45ddce]"],
 .voice-build-page a[class*="bg-[#5eead4]"] {
-  border-color: #17171d !important;
-  background: #17171d !important;
+  border: 1px solid #6268ff !important;
+  background: #6268ff !important;
   color: #fff !important;
-  box-shadow: 0 12px 30px rgba(23, 23, 29, 0.14) !important;
+  box-shadow: 0 12px 28px rgba(98, 104, 255, 0.22) !important;
 }
 
 .product-service-page .service-primary-button *,
 .product-overview-page a[class*="bg-[#45ddce]"] *,
 .voice-build-page a[class*="bg-[#5eead4]"] * {
   color: #fff !important;
+}
+
+.product-service-page .service-primary-button:hover,
+.product-overview-page a[class*="bg-[#45ddce]"]:hover,
+.voice-build-page a[class*="bg-[#5eead4]"]:hover {
+  border-color: #5158df !important;
+  background: #5158df !important;
+  box-shadow: 0 15px 32px rgba(81, 88, 223, 0.26) !important;
 }
 
 /* Final product contrast pass: no light text may disappear on white surfaces. */
@@ -695,8 +702,8 @@
 .product-overview-page .product-overview-ready-card,
 .voice-build-page .voice-ready-card {
   border: 1px solid rgba(98, 104, 255, 0.22) !important;
-  background-color: #f5f3ff !important;
-  background-image: radial-gradient(circle at 12% 14%, rgba(255,255,255,.92), transparent 28%), radial-gradient(circle at 88% 82%, rgba(239,138,166,.14), transparent 30%), linear-gradient(135deg, #e8e9ff 0%, #f4edff 52%, #fff2ed 100%) !important;
+  background-color: #f2f4ff !important;
+  background-image: linear-gradient(135deg, #f7f8ff, #edf0ff) !important;
   color: #171719 !important;
   box-shadow: 0 28px 80px rgba(74, 67, 142, 0.14) !important;
 }
@@ -718,22 +725,88 @@
 .product-overview-page .product-overview-contact-button,
 .voice-build-page .voice-ready-contact {
   border: 1px solid #6268ff !important;
-  background: linear-gradient(135deg, #565dcc, #7d63dc) !important;
+  background: #6268ff !important;
   color: #fff !important;
-  box-shadow: 0 12px 30px rgba(86, 93, 220, 0.24) !important;
+  box-shadow: 0 12px 30px rgba(98, 104, 255, 0.22) !important;
 }
 
 .product-service-page .product-service-contact-button:hover,
 .product-overview-page .product-overview-contact-button:hover,
 .voice-build-page .voice-ready-contact:hover {
-  background: linear-gradient(135deg, #454bd0, #6f55ca) !important;
-  box-shadow: 0 16px 36px rgba(86, 93, 220, 0.3) !important;
+  background: #5158df !important;
+  box-shadow: 0 16px 36px rgba(81, 88, 223, 0.28) !important;
 }
 
 .product-service-page .product-service-contact-button *,
 .product-overview-page .product-overview-contact-button *,
 .voice-build-page .voice-ready-contact * {
   color: #fff !important;
+}
+
+/* Keep every product detail page on one clean, light visual system. */
+.product-service-page .voice-faq-section,
+.product-service-page .voice-agent-contact-section {
+  background: #fff !important;
+}
+
+.product-service-page :is(
+  .voice-capability-card,
+  .everything-included-card,
+  .voice-blueprint-layer,
+  .voice-build-redesign-step,
+  .voice-config-item,
+  .voice-sample-card,
+  .service-faq
+) {
+  --blueprint-primary: #6268ff !important;
+  --blueprint-rgb: 98, 104, 255 !important;
+  --build-primary: #6268ff !important;
+  --build-rgb: 98, 104, 255 !important;
+  --config-color: #6268ff !important;
+  --config-rgb: 98, 104, 255 !important;
+  border-color: #dedee8 !important;
+  background: #fff !important;
+  background-image: none !important;
+  box-shadow: 0 16px 42px rgba(50, 47, 92, 0.07) !important;
+}
+
+.product-service-page :is(
+  .voice-capability-icon,
+  .everything-icon-circle,
+  .voice-blueprint-number,
+  .voice-build-redesign-number,
+  .voice-config-number
+) {
+  border-color: rgba(98, 104, 255, 0.25) !important;
+  background: rgba(98, 104, 255, 0.09) !important;
+  color: #565dcc !important;
+  box-shadow: none !important;
+}
+
+.product-service-page .everything-line > span,
+.product-service-page .voice-build-redesign-step::before {
+  background: #6268ff !important;
+  box-shadow: none !important;
+}
+
+.product-service-page :is(
+  .voice-blueprint-panel,
+  .voice-blueprint-core,
+  .voice-build-redesign-panel,
+  .product-service-ready-card
+) {
+  border-color: rgba(98, 104, 255, 0.2) !important;
+  background: #f2f4ff !important;
+  background-image: none !important;
+}
+
+.product-service-page .service-faq,
+.product-service-page .service-faq summary {
+  color: #171719 !important;
+}
+
+.product-service-page .service-faq p {
+  color: #676773 !important;
 }
 
 /* Pricing uses a plain white canvas with black copy throughout. */
@@ -960,6 +1033,28 @@
 }
 
 .docs-page svg rect {
+  fill: #fff !important;
+}
+
+.docs-page .docs-step-number {
+  border: 1px solid #000 !important;
+  background: #000 !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+.docs-page .docs-step-line {
+  background: linear-gradient(to bottom, #000, transparent) !important;
+}
+
+.docs-page .docs-figure-number {
+  border: 1px solid #000 !important;
+  background: #000 !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+.docs-page svg text.docs-agent-callout-number {
   fill: #fff !important;
 }
 
@@ -2304,7 +2399,7 @@
   -webkit-text-fill-color: #252529 !important;
 }
 
-.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) :is(h1, h2, h3, h4, strong, summary) {
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) :is(h1, h2, h3, h4, strong:not(.business-integration-marquee-name), summary) {
   color: #202024 !important;
   -webkit-text-fill-color: #202024 !important;
 }
@@ -2397,51 +2492,55 @@
   border-color: #e2e8f0 !important;
 }
 
-/* Final monochrome treatment for every Product and Business route template. */
-.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page) {
+/* Monochrome compatibility is business-only. Product routes own their palette. */
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page) {
   background: #fff !important;
   background-image: none !important;
   color: #000 !important;
 }
 
-.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page) * {
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page) *:not(.business-company-marquee-name):not(.business-integration-marquee-name):not(.industry-integration-icon):not(.healthcare-integration-icon) {
   box-shadow: none !important;
   color: #000 !important;
   -webkit-text-fill-color: #000 !important;
 }
 
-.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page) :is(section, article, aside, details, figure, [class*="rounded"]) {
+.marketing-site :is(.business-company-marquee-name, .business-integration-marquee-name, .industry-integration-icon, .healthcare-integration-icon) {
+  -webkit-text-fill-color: currentColor;
+}
+
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page) :is(section, article, aside, details, figure, [class*="rounded"]) {
   background-color: #fff !important;
   background-image: none !important;
 }
 
-.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page) :is([class*="bg-black"], [class*="bg-[#"], [style*="background-color"], [style*="background:"]) {
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page) :is([class*="bg-black"], [class*="bg-[#"], [style*="background-color"], [style*="background:"]) {
   background-color: #fff !important;
 }
 
-.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page) :is([class*="gradient"], [class*="[background-image"], [style*="gradient"]) {
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page) :is([class*="gradient"], [class*="[background-image"], [style*="gradient"]) {
   background-color: transparent !important;
   background-image: none !important;
 }
 
 /* Image overlays become transparent, while URL-backed image layers remain intact. */
-.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="absolute"][class*="inset"]:not([style*="url("]) {
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="absolute"][class*="inset"]:not([style*="url("]) {
   background-color: transparent !important;
   background-image: none !important;
 }
 
-.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page) *::before,
-.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page) *::after {
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page) *::before,
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page) *::after {
   background-color: transparent !important;
   background-image: none !important;
   box-shadow: none !important;
 }
 
-.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="border"] {
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="border"] {
   border-color: #dedede !important;
 }
 
-.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page) :is(button, a[class*="bg-"]) {
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page) :is(button, a[class*="bg-"]) {
   border: 1px solid #000 !important;
   background: #fff !important;
   background-image: none !important;
@@ -2450,6 +2549,1276 @@
   box-shadow: none !important;
 }
 
-.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page):is(.product-overview-page, .product-service-page, .voice-build-page, .business-page, .use-case-page, .industry-experience, .healthcare-page) svg text {
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page) svg text {
   fill: #000 !important;
+}
+
+/* Match product CTAs to the filled blue Talk to Sales button on the homepage. */
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page :is(.service-primary-button, .product-service-contact-button),
+.marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page :is(a[class*="bg-[#45ddce]"], .product-overview-contact-button),
+.marketing-site .voice-build-page.voice-build-page.voice-build-page.voice-build-page :is(a[class*="bg-[#5eead4]"], .voice-ready-contact) {
+  border: 1px solid #3e75ff !important;
+  background-color: #3e75ff !important;
+  background-image: none !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  box-shadow: 0 12px 28px rgba(62, 117, 255, 0.22) !important;
+}
+
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page :is(.service-primary-button, .product-service-contact-button) *,
+.marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page :is(a[class*="bg-[#45ddce]"], .product-overview-contact-button) *,
+.marketing-site .voice-build-page.voice-build-page.voice-build-page.voice-build-page :is(a[class*="bg-[#5eead4]"], .voice-ready-contact) * {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page :is(.service-primary-button, .product-service-contact-button):hover,
+.marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page :is(a[class*="bg-[#45ddce]"], .product-overview-contact-button):hover,
+.marketing-site .voice-build-page.voice-build-page.voice-build-page.voice-build-page :is(a[class*="bg-[#5eead4]"], .voice-ready-contact):hover {
+  border-color: #315fdb !important;
+  background-color: #315fdb !important;
+  box-shadow: 0 15px 34px rgba(49, 95, 219, 0.26) !important;
+}
+
+/* Clean product-page rhythm and restrained blue surface treatment. */
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page > section:nth-of-type(even),
+.marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page > section:nth-of-type(even),
+.marketing-site .voice-build-page.voice-build-page.voice-build-page.voice-build-page > section:nth-of-type(even) {
+  background-color: #f6f8ff !important;
+  background-image: none !important;
+}
+
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page :is(
+  .voice-capability-card,
+  .everything-included-card,
+  .voice-blueprint-layer,
+  .voice-build-redesign-step,
+  .voice-config-item,
+  .voice-sample-card,
+  .service-faq
+) {
+  border-color: #dfe4f3 !important;
+  background-color: #fff !important;
+  background-image: none !important;
+  box-shadow: 0 14px 36px rgba(50, 64, 120, 0.07) !important;
+}
+
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page .product-service-ready-card {
+  border-color: #e1e1e8 !important;
+  background-color: #fff !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page > section.voice-agent-contact-section,
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page > section:last-of-type,
+.marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page > section:last-of-type,
+.marketing-site .voice-build-page.voice-build-page.voice-build-page.voice-build-page > section:last-of-type {
+  background-color: #fff !important;
+  background-image: none !important;
+}
+
+.marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page .product-overview-ready-card,
+.marketing-site .voice-build-page.voice-build-page.voice-build-page.voice-build-page .voice-ready-card {
+  background-color: #fff !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+/* The bottom Contact Us CTA matches the homepage Explore Vozon button. */
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page .product-service-contact-button {
+  min-height: 46px;
+  border: 1px solid #202024 !important;
+  border-radius: 12px !important;
+  background-color: #202024 !important;
+  background-image: none !important;
+  padding-right: 22px;
+  padding-left: 22px;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  box-shadow: none !important;
+}
+
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page .product-service-contact-button:hover {
+  border-color: #050506 !important;
+  background-color: #050506 !important;
+  box-shadow: none !important;
+}
+
+/* Deep blue-black headings align product pages with the homepage palette. */
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page :is(h1, h2, h3),
+.marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page :is(h1, h2, h3),
+.marketing-site .voice-build-page.voice-build-page.voice-build-page.voice-build-page :is(h1, h2, h3),
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page :is(h1, h2, h3) *,
+.marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page :is(h1, h2, h3) *,
+.marketing-site .voice-build-page.voice-build-page.voice-build-page.voice-build-page :is(h1, h2, h3) * {
+  background-image: none !important;
+  color: #17203f !important;
+  -webkit-text-fill-color: #17203f !important;
+}
+
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page .product-hero-bullet {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
+  border: 0 !important;
+  border-radius: 999px;
+  background-color: #3e75ff !important;
+  background-image: none !important;
+  box-shadow: 0 0 0 3px rgba(62, 117, 255, 0.12) !important;
+}
+
+/* Business hero CTAs use the same blue treatment as the homepage. */
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page) .business-blue-cta {
+  border: 1px solid #3e75ff !important;
+  background-color: #3e75ff !important;
+  background-image: none !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  box-shadow: 0 12px 28px rgba(62, 117, 255, 0.22) !important;
+}
+
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page) .business-blue-cta * {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page) .business-blue-cta:hover {
+  border-color: #315fdb !important;
+  background-color: #315fdb !important;
+  box-shadow: 0 15px 34px rgba(49, 95, 219, 0.26) !important;
+}
+
+/* Product family polish: a white editorial canvas with the homepage palette. */
+.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page):is(.product-overview-page, .product-service-page, .voice-build-page):is(.product-overview-page, .product-service-page, .voice-build-page):is(.product-overview-page, .product-service-page, .voice-build-page) {
+  --product-ink: #17203f;
+  --product-copy: #5d6478;
+  --product-blue: #3e75ff;
+  --product-violet: #6d5ce7;
+  --product-peach: #e9823a;
+  --product-line: #e4e8f2;
+  --product-soft-blue: #f4f7ff;
+  --product-soft-violet: #f7f5ff;
+  --product-soft-peach: #fff7f1;
+  --service-accent: var(--product-blue) !important;
+  --service-accent-soft: #315fdb !important;
+  --service-accent-rgb: 62, 117, 255 !important;
+  --service-secondary: var(--product-violet) !important;
+  --service-secondary-rgb: 109, 92, 231 !important;
+  --service-tertiary: var(--product-peach) !important;
+  --service-tertiary-rgb: 233, 130, 58 !important;
+  background: #fff !important;
+  color: var(--product-ink) !important;
+}
+
+.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page):is(.product-overview-page, .product-service-page, .voice-build-page):is(.product-overview-page, .product-service-page, .voice-build-page):is(.product-overview-page, .product-service-page, .voice-build-page) > section {
+  border-color: var(--product-line) !important;
+  background: #fff !important;
+  background-image: none !important;
+}
+
+.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page):is(.product-overview-page, .product-service-page, .voice-build-page):is(.product-overview-page, .product-service-page, .voice-build-page):is(.product-overview-page, .product-service-page, .voice-build-page) :is(h1, h2, h3, h4, strong),
+.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page):is(.product-overview-page, .product-service-page, .voice-build-page):is(.product-overview-page, .product-service-page, .voice-build-page):is(.product-overview-page, .product-service-page, .voice-build-page) :is(h1, h2, h3, h4, strong) * {
+  color: var(--product-ink) !important;
+  -webkit-text-fill-color: var(--product-ink) !important;
+}
+
+.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page):is(.product-overview-page, .product-service-page, .voice-build-page):is(.product-overview-page, .product-service-page, .voice-build-page):is(.product-overview-page, .product-service-page, .voice-build-page) :is(p, li, label, small),
+.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page):is(.product-overview-page, .product-service-page, .voice-build-page):is(.product-overview-page, .product-service-page, .voice-build-page):is(.product-overview-page, .product-service-page, .voice-build-page) [class*="text-white/"] {
+  color: var(--product-copy) !important;
+  -webkit-text-fill-color: var(--product-copy) !important;
+}
+
+/* Small accent labels carry color; large areas remain quiet and white. */
+.marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page):is(.product-overview-page, .product-service-page, .voice-build-page):is(.product-overview-page, .product-service-page, .voice-build-page):is(.product-overview-page, .product-service-page, .voice-build-page) :is(
+  .service-pill,
+  .service-accent-text,
+  .product-service-heading-accent,
+  .voice-section-eyebrow,
+  .voice-process-eyebrow,
+  .voice-process-heading-accent,
+  .voice-config-heading-accent,
+  [class*="text-[#75fff0]"]
+) {
+  background-image: none !important;
+  color: var(--product-blue) !important;
+  -webkit-text-fill-color: var(--product-blue) !important;
+}
+
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page .service-pill,
+.marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page section:first-child > div > div:first-child > div:first-child {
+  border-color: rgba(62, 117, 255, 0.2) !important;
+  background: var(--product-soft-blue) !important;
+  color: var(--product-blue) !important;
+  box-shadow: none !important;
+}
+
+/* Cards use hairline borders and shallow depth so pages feel open, not heavy. */
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page :is(
+  .voice-capability-card,
+  .everything-included-card,
+  .voice-blueprint-layer,
+  .voice-build-redesign-step,
+  .voice-config-item,
+  .voice-sample-card,
+  .service-faq
+),
+.marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page article a,
+.marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page section:nth-of-type(4) [class*="border"] {
+  border-color: var(--product-line) !important;
+  background: #fff !important;
+  background-image: none !important;
+  box-shadow: 0 10px 28px rgba(38, 52, 102, 0.055) !important;
+}
+
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page :is(
+  .voice-capability-card,
+  .everything-included-card,
+  .voice-blueprint-layer,
+  .voice-build-redesign-step,
+  .voice-config-item,
+  .voice-sample-card,
+  .service-faq
+):hover,
+.marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page article a:hover {
+  border-color: rgba(62, 117, 255, 0.28) !important;
+  background: #fbfcff !important;
+  box-shadow: 0 14px 34px rgba(38, 52, 102, 0.085) !important;
+}
+
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page :is(
+  .voice-capability-icon,
+  .everything-icon-circle,
+  .voice-blueprint-number,
+  .voice-build-redesign-number,
+  .voice-config-number,
+  .voice-preview-check,
+  .voice-play-button
+) {
+  border-color: rgba(62, 117, 255, 0.2) !important;
+  background: var(--product-soft-blue) !important;
+  color: var(--product-blue) !important;
+  -webkit-text-fill-color: var(--product-blue) !important;
+  box-shadow: none !important;
+}
+
+/* Product diagrams get soft pastel fields while the page itself stays white. */
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page :is(
+  .product-service-console,
+  .voice-blueprint-panel,
+  .voice-blueprint-core,
+  .voice-build-redesign-panel,
+  .voice-config-explorer,
+  .voice-config-detail,
+  .voice-preview-controls
+) {
+  border-color: var(--product-line) !important;
+  background: linear-gradient(145deg, #fff 16%, var(--product-soft-blue)) !important;
+  box-shadow: 0 18px 48px rgba(38, 52, 102, 0.08) !important;
+}
+
+.marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page article:nth-child(1) [class*="rounded-[22px]"] {
+  border-color: #dce5ff !important;
+  background: var(--product-soft-blue) !important;
+  box-shadow: 0 18px 48px rgba(62, 117, 255, 0.08) !important;
+}
+
+.marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page article:nth-child(2) [class*="rounded-[22px]"] {
+  border-color: #e3defb !important;
+  background: var(--product-soft-violet) !important;
+  box-shadow: 0 18px 48px rgba(109, 92, 231, 0.075) !important;
+}
+
+.marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page article:nth-child(3) [class*="rounded-[22px]"] {
+  border-color: #f4dfcf !important;
+  background: var(--product-soft-peach) !important;
+  box-shadow: 0 18px 48px rgba(233, 130, 58, 0.07) !important;
+}
+
+/* Restore the homepage blue CTA after the broad monochrome compatibility layer. */
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page .service-primary-button,
+.marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page a[class*="bg-[#45ddce]"],
+.marketing-site .voice-build-page.voice-build-page.voice-build-page.voice-build-page a[class*="bg-[#5eead4]"] {
+  border: 1px solid var(--product-blue) !important;
+  background: var(--product-blue) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  box-shadow: 0 10px 24px rgba(62, 117, 255, 0.2) !important;
+}
+
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page .service-primary-button *,
+.marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page a[class*="bg-[#45ddce]"] * {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page .service-primary-button:hover,
+.marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page a[class*="bg-[#45ddce]"]:hover {
+  border-color: #315fdb !important;
+  background: #315fdb !important;
+  box-shadow: 0 13px 28px rgba(49, 95, 219, 0.24) !important;
+}
+
+.marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page .product-overview-contact-button,
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page .product-service-contact-button {
+  border: 1px solid #cfd6e6 !important;
+  background: #fff !important;
+  color: var(--product-ink) !important;
+  -webkit-text-fill-color: var(--product-ink) !important;
+  box-shadow: none !important;
+}
+
+.marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page .product-overview-contact-button:hover,
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page .product-service-contact-button:hover {
+  border-color: var(--product-blue) !important;
+  background: var(--product-soft-blue) !important;
+  color: var(--product-blue) !important;
+  -webkit-text-fill-color: var(--product-blue) !important;
+}
+
+.marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page .product-overview-ready-card,
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page .product-service-ready-card,
+.marketing-site .voice-build-page.voice-build-page.voice-build-page.voice-build-page .voice-ready-card {
+  border-color: #dfe5f4 !important;
+  background: linear-gradient(135deg, #f8faff, #f5f3ff 58%, #fff9f5) !important;
+  box-shadow: 0 18px 52px rgba(38, 52, 102, 0.07) !important;
+}
+
+@media (max-width: 639px) {
+  .marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page) > section {
+    padding-right: 1.25rem;
+    padding-left: 1.25rem;
+  }
+
+  .marketing-site .product-service-page .product-service-ready-card,
+  .marketing-site .product-overview-page .product-overview-ready-card {
+    border-radius: 20px !important;
+  }
+}
+
+/* High-specificity restoration after legacy monochrome product rules. */
+.marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page .product-overview-heading-accent.product-overview-heading-accent,
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page .product-service-heading-accent.product-service-heading-accent {
+  color: #7a3e9d !important;
+  -webkit-text-fill-color: #7a3e9d !important;
+}
+
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page .service-secondary-button.service-secondary-button,
+.marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page .product-overview-contact-button.product-overview-contact-button {
+  border: 1px solid #cfd6e6 !important;
+  background: #fff !important;
+  color: #17203f !important;
+  -webkit-text-fill-color: #17203f !important;
+  box-shadow: none !important;
+}
+
+.marketing-site .product-service-page.product-service-page.product-service-page.product-service-page .service-secondary-button.service-secondary-button:hover,
+.marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page .product-overview-contact-button.product-overview-contact-button:hover {
+  border-color: #3e75ff !important;
+  background: #f4f7ff !important;
+  color: #315fdb !important;
+  -webkit-text-fill-color: #315fdb !important;
+}
+
+#product-overview-heading-accent,
+#product-service-heading-accent {
+  color: #7a3e9d !important;
+  -webkit-text-fill-color: #7a3e9d !important;
+}
+
+#product-overview-secondary-cta {
+  border: 1px solid #cfd6e6 !important;
+  background: #fff !important;
+  color: #17203f !important;
+  -webkit-text-fill-color: #17203f !important;
+  box-shadow: none !important;
+}
+
+.product-service-hero-photo {
+  box-shadow: none !important;
+}
+
+/* The product canvas stays pure white; color is reserved for UI elements. */
+#product-overview-page,
+#product-service-page,
+#product-overview-page > section,
+#product-service-page > section,
+#product-service-page section {
+  background-color: #fff !important;
+  background-image: none !important;
+}
+
+#product-overview-page > section > .absolute,
+#product-overview-page article > .absolute,
+#product-service-page :is(.product-service-grid, .voice-config-wash) {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Pastel card rhythm drawn from the homepage blue and supporting accents. */
+#product-service-page :is(
+  .voice-capability-card,
+  .everything-included-card,
+  .voice-blueprint-layer,
+  .voice-build-redesign-step,
+  .voice-config-item,
+  .voice-sample-card,
+  .service-faq
+) {
+  border-color: #dce5ff !important;
+  background-color: #f5f8ff !important;
+  background-image: linear-gradient(145deg, #ffffff 5%, #f2f6ff 100%) !important;
+  box-shadow: 0 10px 28px rgba(62, 117, 255, 0.065) !important;
+}
+
+#product-service-page :is(
+  .voice-capability-card,
+  .everything-included-card,
+  .voice-blueprint-layer,
+  .voice-build-redesign-step,
+  .voice-config-item,
+  .voice-sample-card,
+  .service-faq
+):nth-child(3n + 2) {
+  border-color: #e5defb !important;
+  background-color: #f8f6ff !important;
+  background-image: linear-gradient(145deg, #ffffff 5%, #f6f3ff 100%) !important;
+  box-shadow: 0 10px 28px rgba(109, 92, 231, 0.06) !important;
+}
+
+#product-service-page :is(
+  .voice-capability-card,
+  .everything-included-card,
+  .voice-blueprint-layer,
+  .voice-build-redesign-step,
+  .voice-config-item,
+  .voice-sample-card,
+  .service-faq
+):nth-child(3n) {
+  border-color: #f3dfd1 !important;
+  background-color: #fff8f3 !important;
+  background-image: linear-gradient(145deg, #ffffff 5%, #fff6ef 100%) !important;
+  box-shadow: 0 10px 28px rgba(233, 130, 58, 0.055) !important;
+}
+
+#product-service-page :is(
+  .voice-capability-card,
+  .everything-included-card,
+  .voice-blueprint-layer,
+  .voice-build-redesign-step,
+  .voice-config-item,
+  .voice-sample-card,
+  .service-faq
+):hover {
+  border-color: rgba(62, 117, 255, 0.32) !important;
+  box-shadow: 0 16px 36px rgba(47, 67, 135, 0.105) !important;
+}
+
+#product-service-page :is(.voice-capability-icon, .everything-icon-circle, .voice-blueprint-number, .voice-build-redesign-number, .voice-config-number) {
+  border-color: rgba(62, 117, 255, 0.22) !important;
+  background-color: #eaf0ff !important;
+  background-image: none !important;
+  color: #3e75ff !important;
+  -webkit-text-fill-color: #3e75ff !important;
+}
+
+#product-service-page :is(.voice-capability-card, .everything-included-card, .voice-build-redesign-step):nth-child(3n + 2) :is(.voice-capability-icon, .everything-icon-circle, .voice-build-redesign-number) {
+  border-color: rgba(109, 92, 231, 0.2) !important;
+  background-color: #eeeaff !important;
+  color: #6d5ce7 !important;
+  -webkit-text-fill-color: #6d5ce7 !important;
+}
+
+#product-service-page :is(.voice-capability-card, .everything-included-card, .voice-build-redesign-step):nth-child(3n) :is(.voice-capability-icon, .everything-icon-circle, .voice-build-redesign-number) {
+  border-color: rgba(233, 130, 58, 0.2) !important;
+  background-color: #fff0e5 !important;
+  color: #d66f27 !important;
+  -webkit-text-fill-color: #d66f27 !important;
+}
+
+#product-overview-page article:nth-child(1) a,
+#product-overview-page section:nth-of-type(4) [class*="grid"] > div:nth-child(1),
+#product-overview-page section:nth-of-type(4) [class*="grid"] > div:nth-child(4) {
+  border-color: #dce5ff !important;
+  background-color: #f5f8ff !important;
+  background-image: none !important;
+}
+
+#product-overview-page article:nth-child(2) a,
+#product-overview-page section:nth-of-type(4) [class*="grid"] > div:nth-child(2) {
+  border-color: #e5defb !important;
+  background-color: #f8f6ff !important;
+  background-image: none !important;
+}
+
+#product-overview-page article:nth-child(3) a,
+#product-overview-page section:nth-of-type(4) [class*="grid"] > div:nth-child(3) {
+  border-color: #f3dfd1 !important;
+  background-color: #fff8f3 !important;
+  background-image: none !important;
+}
+
+#product-overview-page article a:hover {
+  border-color: rgba(62, 117, 255, 0.3) !important;
+  box-shadow: 0 12px 30px rgba(47, 67, 135, 0.09) !important;
+  transform: translateY(-2px);
+}
+
+/* Final product color roles — sourced only from the homepage palette. */
+#product-overview-page,
+#product-service-page {
+  --product-hero-heading: #7a3e9d;
+  --product-section-heading: #252161;
+  --product-card-warm: #ffad6f;
+}
+
+#product-overview-page h1,
+#product-overview-page h1 *,
+#product-service-page h1,
+#product-service-page h1 *,
+#product-overview-page #product-overview-heading-accent,
+#product-service-page #product-service-heading-accent {
+  color: var(--product-hero-heading) !important;
+  -webkit-text-fill-color: var(--product-hero-heading) !important;
+}
+
+/* Product hero titles use the homepage's plum accent on the white canvas. */
+#product-overview-page h1.product-hero-title,
+#product-overview-page h1.product-hero-title *,
+#product-service-page h1.product-hero-title,
+#product-service-page h1.product-hero-title * {
+  background-image: none !important;
+  color: var(--product-hero-heading) !important;
+  -webkit-text-fill-color: var(--product-hero-heading) !important;
+}
+
+#product-service-page h1.product-hero-title .product-service-heading-primary {
+  color: #111113 !important;
+  -webkit-text-fill-color: #111113 !important;
+}
+
+#product-overview-page :is(h2, h3),
+#product-overview-page :is(h2, h3) *,
+#product-service-page :is(h2, h3),
+#product-service-page :is(h2, h3) * {
+  color: #252161 !important;
+  -webkit-text-fill-color: #252161 !important;
+}
+
+/* Every product card shares one warm orange treatment. */
+#product-service-page :is(
+  .voice-capability-card,
+  .everything-included-card,
+  .voice-blueprint-layer,
+  .voice-build-redesign-step,
+  .voice-config-item,
+  .voice-sample-card,
+  .service-faq
+):is(
+  .voice-capability-card,
+  .everything-included-card,
+  .voice-blueprint-layer,
+  .voice-build-redesign-step,
+  .voice-config-item,
+  .voice-sample-card,
+  .service-faq
+) {
+  border-color: color-mix(in srgb, #ffad6f 46%, #fff) !important;
+  background-color: color-mix(in srgb, #ffad6f 13%, #fff) !important;
+  background-image: linear-gradient(145deg, #fff 0%, color-mix(in srgb, #ffad6f 16%, #fff) 100%) !important;
+  box-shadow: 0 10px 28px rgba(255, 149, 104, 0.09) !important;
+}
+
+#product-service-page :is(
+  .voice-capability-card,
+  .everything-included-card,
+  .voice-build-redesign-step
+):is(
+  .voice-capability-card,
+  .everything-included-card,
+  .voice-build-redesign-step
+) :is(
+  .voice-capability-icon,
+  .everything-icon-circle,
+  .voice-build-redesign-number
+):is(
+  .voice-capability-icon,
+  .everything-icon-circle,
+  .voice-build-redesign-number
+),
+#product-service-page :is(.voice-blueprint-number, .voice-config-number) {
+  border-color: color-mix(in srgb, #ffad6f 58%, #fff) !important;
+  background-color: color-mix(in srgb, #ffad6f 24%, #fff) !important;
+  background-image: none !important;
+  color: #ff9568 !important;
+  -webkit-text-fill-color: #ff9568 !important;
+}
+
+#product-service-page :is(
+  .voice-capability-card,
+  .everything-included-card,
+  .voice-blueprint-layer,
+  .voice-build-redesign-step,
+  .voice-config-item,
+  .voice-sample-card,
+  .service-faq
+):hover {
+  border-color: #ffad6f !important;
+  box-shadow: 0 16px 36px rgba(255, 149, 104, 0.14) !important;
+}
+
+#product-overview-page article:nth-child(n) a,
+#product-overview-page section:nth-of-type(4) [class*="grid"] > div:nth-child(n),
+#product-overview-page [class*="rounded-[22px]"][class*="rounded-[22px]"],
+#product-overview-page .product-overview-ready-card.product-overview-ready-card,
+#product-service-page .product-service-ready-card.product-service-ready-card {
+  border-color: color-mix(in srgb, #ffad6f 46%, #fff) !important;
+  background-color: color-mix(in srgb, #ffad6f 13%, #fff) !important;
+  background-image: linear-gradient(145deg, #fff 0%, color-mix(in srgb, #ffad6f 16%, #fff) 100%) !important;
+  box-shadow: 0 10px 28px rgba(255, 149, 104, 0.09) !important;
+}
+
+#product-overview-page article:nth-child(n) a:hover {
+  border-color: #ffad6f !important;
+  box-shadow: 0 14px 32px rgba(255, 149, 104, 0.14) !important;
+}
+
+#product-service-page .product-service-photo-caption,
+#product-service-page .product-service-photo-caption p {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+/* Business pages: clean white-theme presentation shared by overview, use cases, and industries. */
+:is(
+  #business-overview-page,
+  #business-use-case-page,
+  #business-industry-page,
+  #business-healthcare-page
+) {
+  --business-ink: #15131a;
+  --business-copy: #5f5b67;
+  --business-line: #e6e2eb;
+  --business-blue: #5867e8;
+  --business-plum: #7a3e9d;
+  --business-orange: #d86f35;
+  --business-aqua: #168f91;
+  --business-gold: #9a6714;
+  background: #fff !important;
+  color: var(--business-ink) !important;
+}
+
+:is(
+  #business-overview-page,
+  #business-use-case-page,
+  #business-industry-page,
+  #business-healthcare-page
+) *,
+:is(
+  #business-overview-page,
+  #business-use-case-page,
+  #business-industry-page,
+  #business-healthcare-page
+) h1,
+:is(
+  #business-overview-page,
+  #business-use-case-page,
+  #business-industry-page,
+  #business-healthcare-page
+) :is(h2, h3, h4, strong, summary) {
+  color: var(--business-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+:is(
+  #business-overview-page,
+  #business-use-case-page,
+  #business-industry-page,
+  #business-healthcare-page
+) :is(p, li) {
+  color: var(--business-copy) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+:is(
+  #business-overview-page,
+  #business-use-case-page,
+  #business-industry-page,
+  #business-healthcare-page
+) section {
+  background-color: #fff !important;
+  background-image: none !important;
+}
+
+:is(
+  #business-overview-page,
+  #business-use-case-page,
+  #business-industry-page,
+  #business-healthcare-page
+) :is(.business-blue-cta, .business-pricing-button) {
+  border-color: var(--business-blue) !important;
+  background: var(--business-blue) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  box-shadow: 0 12px 26px rgba(88, 103, 232, 0.2) !important;
+}
+
+:is(
+  #business-overview-page,
+  #business-use-case-page,
+  #business-industry-page,
+  #business-healthcare-page
+) .business-blue-cta:nth-of-type(2),
+#business-overview-page .business-secondary-cta,
+:is(#business-industry-page, #business-healthcare-page) .business-pricing-card:nth-child(2) .business-pricing-button {
+  border-color: var(--business-plum) !important;
+  background: var(--business-plum) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  box-shadow: 0 12px 26px rgba(122, 62, 157, 0.19) !important;
+}
+
+:is(
+  #business-overview-page,
+  #business-use-case-page,
+  #business-industry-page,
+  #business-healthcare-page
+) :is(.business-blue-cta, .business-pricing-button):hover {
+  filter: brightness(0.96) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Business overview */
+#business-overview-page .business-hero {
+  background: linear-gradient(180deg, #fbfaff 0%, #fff 92%) !important;
+}
+
+#business-overview-page .business-hero > div[aria-hidden="true"] {
+  display: none !important;
+}
+
+#business-overview-page .business-hero-pill {
+  border-color: #d9d4fa !important;
+  background: #f2f0ff !important;
+  color: #5147a7 !important;
+  -webkit-text-fill-color: #5147a7 !important;
+}
+
+#business-overview-page .business-hero h1 span:last-child {
+  color: var(--business-plum) !important;
+  -webkit-text-fill-color: var(--business-plum) !important;
+}
+
+#business-overview-page .business-hero-console {
+  border: 1px solid #ded9e6 !important;
+  border-radius: 24px !important;
+  background: #fff !important;
+  box-shadow: 0 24px 70px rgba(63, 48, 82, 0.12) !important;
+}
+
+#business-overview-page .business-hero-console :is([class*="rounded-xl"], [class*="rounded-2xl"], [class*="rounded-lg"]) {
+  border-color: #e7e3eb !important;
+  background: #faf9fc !important;
+  box-shadow: none !important;
+}
+
+#business-overview-page .business-hero-console :is(strong, span) {
+  color: #37313f !important;
+  -webkit-text-fill-color: #37313f !important;
+}
+
+#business-overview-page .business-hero-console [class*="text-[#75fff0]"] {
+  color: var(--business-aqua) !important;
+  -webkit-text-fill-color: var(--business-aqua) !important;
+}
+
+#business-overview-page .business-outcome-card:nth-child(1) strong,
+#business-overview-page .business-outcome-card:nth-child(4) strong {
+  color: var(--business-aqua) !important;
+}
+
+#business-overview-page .business-outcome-card:nth-child(2) strong {
+  color: var(--business-plum) !important;
+}
+
+#business-overview-page .business-outcome-card:nth-child(3) strong {
+  color: var(--business-orange) !important;
+}
+
+#business-overview-page section:nth-of-type(4) {
+  background: #f2fbfb !important;
+}
+
+#business-overview-page section:nth-of-type(6) {
+  background: #faf7ff !important;
+}
+
+#business-overview-page :is(.business-use-case-card, .business-workflow-card, .business-industry-card) {
+  border: 1px solid var(--business-line) !important;
+  background: #fff !important;
+  box-shadow: 0 10px 28px rgba(48, 41, 57, 0.06) !important;
+}
+
+#business-overview-page :is(.business-use-case-card, .business-workflow-card, .business-industry-card):hover {
+  border-color: #cfc7d9 !important;
+  box-shadow: 0 16px 36px rgba(48, 41, 57, 0.11) !important;
+}
+
+#business-overview-page .business-use-case-card:nth-child(4n + 1),
+#business-overview-page .business-industry-card:nth-child(4n + 1) {
+  border-top: 3px solid var(--business-blue) !important;
+}
+
+#business-overview-page .business-use-case-card:nth-child(4n + 2),
+#business-overview-page .business-industry-card:nth-child(4n + 2) {
+  border-top: 3px solid var(--business-plum) !important;
+}
+
+#business-overview-page .business-use-case-card:nth-child(4n + 3),
+#business-overview-page .business-industry-card:nth-child(4n + 3) {
+  border-top: 3px solid var(--business-orange) !important;
+}
+
+#business-overview-page .business-use-case-card:nth-child(4n),
+#business-overview-page .business-industry-card:nth-child(4n) {
+  border-top: 3px solid var(--business-aqua) !important;
+}
+
+#business-overview-page .business-workflow-card:nth-child(1) { border-top: 3px solid var(--business-aqua) !important; }
+#business-overview-page .business-workflow-card:nth-child(2) { border-top: 3px solid var(--business-plum) !important; }
+#business-overview-page .business-workflow-card:nth-child(3) { border-top: 3px solid var(--business-orange) !important; }
+#business-overview-page .business-workflow-card:nth-child(4) { border-top: 3px solid var(--business-gold) !important; }
+
+#business-overview-page :is(.business-enterprise-card, .business-ready-card) {
+  border: 1px solid #ddd6eb !important;
+  background: linear-gradient(135deg, #fff 0%, #f2ecfb 100%) !important;
+  box-shadow: 0 20px 54px rgba(77, 50, 101, 0.1) !important;
+}
+
+#business-overview-page .business-enterprise-card > div:last-child {
+  border-color: #ddd6eb !important;
+  background: #f4effb !important;
+}
+
+#business-overview-page .business-ready-card a {
+  border-color: var(--business-plum) !important;
+  background: var(--business-plum) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+/* Use-case pages */
+#business-use-case-page .use-case-hero {
+  background: linear-gradient(180deg, #fbfaff 0%, #fff 100%) !important;
+}
+
+#business-use-case-page .use-case-grid {
+  background-image: linear-gradient(rgba(122,62,157,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(122,62,157,.045) 1px, transparent 1px) !important;
+}
+
+#business-use-case-page .use-case-heading-accent {
+  background: none !important;
+  color: var(--business-plum) !important;
+  -webkit-text-fill-color: var(--business-plum) !important;
+}
+
+#business-use-case-page .use-case-visual > div:not(.use-case-orbit) {
+  border-color: #ddd8e3 !important;
+  background: #fff !important;
+  box-shadow: 0 24px 66px rgba(57, 45, 69, 0.13) !important;
+}
+
+#business-use-case-page .use-case-visual :is([class*="rounded-xl"], [class*="rounded-lg"]) {
+  border-color: #e6e1ea !important;
+  background: #faf9fc !important;
+}
+
+#business-use-case-page .use-case-orbit {
+  border-color: rgba(122, 62, 157, 0.18) !important;
+  background: transparent !important;
+}
+
+#business-use-case-page section:nth-of-type(4) {
+  background: #f0fafa !important;
+}
+
+#business-use-case-page section:nth-of-type(6) {
+  background: #fff8f0 !important;
+}
+
+#business-use-case-page :is(.use-case-capability, .use-case-step, .use-case-scenario, .use-case-integration) {
+  border: 1px solid var(--business-line) !important;
+  background: #fff !important;
+  box-shadow: 0 8px 24px rgba(49, 42, 58, 0.055) !important;
+}
+
+#business-use-case-page .use-case-capability:nth-child(1),
+#business-use-case-page .use-case-scenario:nth-child(1) { border-top: 3px solid var(--business-blue) !important; }
+#business-use-case-page .use-case-capability:nth-child(2),
+#business-use-case-page .use-case-scenario:nth-child(2) { border-top: 3px solid var(--business-plum) !important; }
+#business-use-case-page .use-case-capability:nth-child(3),
+#business-use-case-page .use-case-scenario:nth-child(3) { border-top: 3px solid var(--business-orange) !important; }
+
+#business-use-case-page .use-case-step > span {
+  border-color: #cfe4e4 !important;
+  background: #e9f6f6 !important;
+  color: var(--business-aqua) !important;
+  -webkit-text-fill-color: var(--business-aqua) !important;
+}
+
+#business-use-case-page .use-case-integration:nth-child(3n + 1) { border-bottom: 3px solid var(--business-aqua) !important; }
+#business-use-case-page .use-case-integration:nth-child(3n + 2) { border-bottom: 3px solid var(--business-plum) !important; }
+#business-use-case-page .use-case-integration:nth-child(3n) { border-bottom: 3px solid var(--business-gold) !important; }
+
+#business-use-case-page details {
+  border: 1px solid var(--business-line) !important;
+  background: #fff !important;
+  box-shadow: none !important;
+}
+
+#business-use-case-page .use-case-cta {
+  border-color: #d9cbea !important;
+  background: linear-gradient(120deg, #f3ecfb 0%, #ece8ff 100%) !important;
+  box-shadow: 0 18px 48px rgba(91, 54, 123, 0.1) !important;
+}
+
+#business-use-case-page .use-case-cta a {
+  border-color: var(--business-plum) !important;
+  background: var(--business-plum) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+/* Industry and healthcare pages */
+:is(#business-industry-page, #business-healthcare-page) :is(.industry-hero-grid, .healthcare-hero-grid) {
+  min-height: auto !important;
+  padding-top: 8.5rem !important;
+  padding-bottom: 4.5rem !important;
+  background: linear-gradient(180deg, #fbfaff 0%, #fff 100%) !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) :is(.industry-hero-heading, .healthcare-hero-heading) span {
+  color: var(--business-plum) !important;
+  -webkit-text-fill-color: var(--business-plum) !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) :is(.industry-hero-card, .healthcare-hero-card) {
+  border: 1px solid #ded8e5 !important;
+  background: #f6f3f8 !important;
+  box-shadow: 0 22px 58px rgba(60, 46, 72, 0.13) !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) :is(.industry-hero-card, .healthcare-hero-card) > div.absolute.inset-0,
+:is(#business-industry-page, #business-healthcare-page) :is(.industry-photo-marquee, .healthcare-marquee) article > div.absolute.inset-0 {
+  background: linear-gradient(180deg, transparent 40%, rgba(16, 13, 20, 0.88) 100%) !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) :is(.industry-photo-marquee, .healthcare-marquee) h2,
+:is(#business-industry-page, #business-healthcare-page) :is(.industry-hero-card, .healthcare-hero-card) .absolute span {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) section:nth-of-type(4),
+:is(#business-industry-page, #business-healthcare-page) :is(.industry-features, .healthcare-features) {
+  background: #f3f9fb !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) :is(.industry-feature-row, .healthcare-feature-row) {
+  border: 1px solid #e4e0e8 !important;
+  border-radius: 24px !important;
+  background: #fff !important;
+  padding: clamp(1.25rem, 3vw, 2.25rem) !important;
+  box-shadow: 0 12px 34px rgba(48, 41, 57, 0.065) !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) :is(.industry-feature-row, .healthcare-feature-row) a,
+:is(#business-industry-page, #business-healthcare-page) :is(.industry-integrations, .healthcare-integrations) a {
+  border-color: var(--business-aqua) !important;
+  background: var(--business-aqua) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) :is(.industry-integrations, .healthcare-integrations) {
+  background: #fffaf2 !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) :is(.industry-integration-card, .healthcare-integration-card),
+:is(#business-industry-page, #business-healthcare-page) :is(.industry-integrations, .healthcare-integrations) article {
+  border: 1px solid #e5dfd2 !important;
+  background: #fff !important;
+  box-shadow: 0 9px 24px rgba(91, 70, 33, 0.07) !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) .business-pricing-section {
+  background: #fff !important;
+  padding-top: 3rem !important;
+  padding-bottom: 3rem !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) .business-pricing-card {
+  border: 1px solid #cfe3e3 !important;
+  background: #fff !important;
+  box-shadow: 0 14px 38px rgba(29, 93, 94, 0.08) !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) .business-pricing-card:nth-child(2) {
+  border-color: #d9cbea !important;
+  background: #fcf9ff !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) details {
+  border: 1px solid var(--business-line) !important;
+  background: #fff !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) :is(.industry-contact, .healthcare-contact) {
+  border: 1px solid #d7c8e8 !important;
+  background: linear-gradient(120deg, #f1e9fa 0%, #e9e7ff 100%) !important;
+  box-shadow: 0 18px 46px rgba(91, 54, 123, 0.11) !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) :is(.industry-contact, .healthcare-contact) a {
+  border-color: var(--business-plum) !important;
+  background: var(--business-plum) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+:is(#business-use-case-page, #business-industry-page, #business-healthcare-page) .business-section-pill {
+  border-color: #d9d4fa !important;
+  background: #f2f0ff !important;
+  color: #5147a7 !important;
+  -webkit-text-fill-color: #5147a7 !important;
+}
+
+#business-use-case-page section:nth-of-type(4) .business-section-pill,
+:is(#business-industry-page, #business-healthcare-page) section:nth-of-type(5) .business-section-pill {
+  border-color: #c7e3e3 !important;
+  background: #e8f6f6 !important;
+  color: var(--business-aqua) !important;
+  -webkit-text-fill-color: var(--business-aqua) !important;
+}
+
+#business-use-case-page section:nth-of-type(6) .business-section-pill,
+:is(#business-industry-page, #business-healthcare-page) section:nth-of-type(6) .business-section-pill {
+  border-color: #efd9bd !important;
+  background: #fff2df !important;
+  color: var(--business-gold) !important;
+  -webkit-text-fill-color: var(--business-gold) !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) .business-company-marquee-name:nth-child(6n + 1) {
+  color: #5967d9 !important;
+  -webkit-text-fill-color: #5967d9 !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) .business-company-marquee-name:nth-child(6n + 2) {
+  color: #3974b9 !important;
+  -webkit-text-fill-color: #3974b9 !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) .business-company-marquee-name:nth-child(6n + 3) {
+  color: #d86f35 !important;
+  -webkit-text-fill-color: #d86f35 !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) .business-company-marquee-name:nth-child(6n + 4) {
+  color: #168f91 !important;
+  -webkit-text-fill-color: #168f91 !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) .business-company-marquee-name:nth-child(6n + 5) {
+  color: #b0447b !important;
+  -webkit-text-fill-color: #b0447b !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) .business-company-marquee-name:nth-child(6n) {
+  color: #9a6714 !important;
+  -webkit-text-fill-color: #9a6714 !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) .business-review-card {
+  box-shadow: 0 10px 28px rgba(48, 41, 57, 0.065) !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) .business-review-card:nth-child(1) {
+  border-color: #cbd3fa !important;
+  background: #f1f4ff !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) .business-review-card:nth-child(2) {
+  border-color: #dcc8e8 !important;
+  background: #f7f1fb !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) .business-review-card:nth-child(3) {
+  border-color: #f0d1bc !important;
+  background: #fff3eb !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) .business-review-card > div:first-child > span {
+  border: 1px solid transparent !important;
+  background: #fff !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) .business-review-card:nth-child(1) > div:first-child > span {
+  border-color: #cbd3fa !important;
+  color: var(--business-blue) !important;
+  -webkit-text-fill-color: var(--business-blue) !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) .business-review-card:nth-child(2) > div:first-child > span {
+  border-color: #dcc8e8 !important;
+  color: var(--business-plum) !important;
+  -webkit-text-fill-color: var(--business-plum) !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) .business-review-card:nth-child(3) > div:first-child > span {
+  border-color: #f0d1bc !important;
+  color: var(--business-orange) !important;
+  -webkit-text-fill-color: var(--business-orange) !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) .business-review-card:hover {
+  box-shadow: 0 16px 36px rgba(48, 41, 57, 0.11) !important;
+}
+
+@media (max-width: 767px) {
+  :is(#business-industry-page, #business-healthcare-page) :is(.industry-hero-grid, .healthcare-hero-grid) {
+    padding-top: 7.5rem !important;
+    padding-bottom: 3rem !important;
+  }
+}
+
+/* Integrations use the site's light lavender palette; marquee names retain their original rotation. */
+:is(#business-industry-page, #business-healthcare-page) :is(.industry-integrations, .healthcare-integrations) {
+  background: #fff !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) :is(.industry-integrations, .healthcare-integrations) .business-section-pill {
+  border-color: #d8cff2 !important;
+  background: #fff !important;
+  color: #6653a8 !important;
+  -webkit-text-fill-color: #6653a8 !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) .business-integration-highlight:nth-child(1) {
+  border-color: #ddd4f3 !important;
+  background: #f2eeff !important;
+  box-shadow: 0 12px 28px rgba(102, 83, 168, 0.08) !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) .business-integration-highlight:nth-child(2) {
+  background: #f2eeff !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) .business-integration-highlight:nth-child(3) {
+  background: #f2eeff !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) .business-integration-help-card {
+  border-color: #171719 !important;
+  background: #fff !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) .business-integration-help-card a {
+  border-color: #171719 !important;
+  background: #171719 !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) .business-integration-help-card > span {
+  border-color: #171719 !important;
+  background: #fff !important;
+  color: #171719 !important;
+  -webkit-text-fill-color: #171719 !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) :is(.industry-integration-card, .healthcare-integration-card) {
+  border-color: #171719 !important;
+  background: #fff !important;
+  box-shadow: 0 8px 20px rgba(23, 23, 25, 0.06) !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) :is(.industry-integration-card, .healthcare-integration-card):nth-child(3n + 1) :is(.business-integration-marquee-name, .industry-integration-icon, .healthcare-integration-icon) {
+  color: #16806b !important;
+  -webkit-text-fill-color: #16806b !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) :is(.industry-integration-card, .healthcare-integration-card):nth-child(3n + 2) :is(.business-integration-marquee-name, .industry-integration-icon, .healthcare-integration-icon) {
+  color: #7567c6 !important;
+  -webkit-text-fill-color: #7567c6 !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) :is(.industry-integration-card, .healthcare-integration-card):nth-child(3n) :is(.business-integration-marquee-name, .industry-integration-icon, .healthcare-integration-icon) {
+  color: #c3622f !important;
+  -webkit-text-fill-color: #c3622f !important;
+}
+
+/* Slightly more compact business-page heroes. */
+#business-overview-page .business-hero h1 {
+  font-size: clamp(1.5rem, 3.7vw, 3.25rem) !important;
+}
+
+#business-overview-page .business-hero-console {
+  max-width: 550px !important;
+  margin-inline: auto !important;
+}
+
+#business-use-case-page .use-case-hero h1,
+:is(#business-industry-page, #business-healthcare-page) :is(.industry-hero-heading, .healthcare-hero-heading) {
+  font-size: clamp(1.95rem, 4vw, 3.4rem) !important;
+}
+
+#business-use-case-page .use-case-visual {
+  max-width: 500px !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) :is(.industry-hero-card, .healthcare-hero-card) {
+  width: min(100%, 480px) !important;
+  justify-self: center !important;
+}
+
+:is(#business-industry-page, #business-healthcare-page) :is(.industry-hero-image, .healthcare-hero-image) {
+  height: clamp(310px, 37vw, 375px) !important;
+}
+
+/* Neutral primary demo action on business-page heroes. */
+#business-overview-page .business-primary-cta,
+#business-use-case-page .use-case-hero .business-blue-cta:first-of-type,
+#business-industry-page .industry-hero-grid .business-blue-cta:first-of-type,
+#business-healthcare-page .healthcare-hero-grid .business-blue-cta:first-of-type {
+  border-color: #171719 !important;
+  background: #fff !important;
+  color: #171719 !important;
+  -webkit-text-fill-color: #171719 !important;
+  box-shadow: none !important;
+}
+
+#business-overview-page .business-primary-cta:hover,
+#business-use-case-page .use-case-hero .business-blue-cta:first-of-type:hover,
+#business-industry-page .industry-hero-grid .business-blue-cta:first-of-type:hover,
+#business-healthcare-page .healthcare-hero-grid .business-blue-cta:first-of-type:hover {
+  background: #f5f5f6 !important;
+}
+
+/* Slightly more compact product-page heroes. */
+#product-overview-page h1.product-hero-title {
+  font-size: clamp(2rem, 4.3vw, 4.05rem) !important;
+}
+
+#product-service-page h1.product-hero-title {
+  font-size: clamp(1.85rem, 3.8vw, 3.25rem) !important;
+}
+
+:is(#product-overview-page, #product-service-page) .product-service-hero-photo {
+  max-width: 570px !important;
+}
+
+:is(#product-overview-page, #product-service-page) .product-service-hero-photo > div:first-child {
+  height: clamp(320px, 27vw, 390px) !important;
 }

@@ -13,7 +13,7 @@ type BusinessUseCase = {
 
 function Pill({ children }: { children: string }) {
   return (
-    <span className="inline-flex rounded-full border border-[#35fbe0]/25 bg-[#35fbe0]/10 px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-[0.12em] text-[#75fff0]">
+    <span className="business-section-pill inline-flex rounded-full border border-[#35fbe0]/25 bg-[#35fbe0]/10 px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-[0.12em] text-[#75fff0]">
       {children}
     </span>
   );
@@ -39,7 +39,7 @@ function WorkflowDemo({ business, experience }: { business: BusinessUseCase; exp
   };
 
   return (
-    <div className="use-case-visual relative mx-auto w-full max-w-[590px] py-5 sm:px-5 sm:py-8">
+    <div className="use-case-visual relative mx-auto w-full max-w-[540px] py-5 sm:px-5 sm:py-8">
       <div className="use-case-orbit use-case-orbit-one absolute left-1/2 top-1/2 size-[108%] -translate-x-1/2 -translate-y-1/2 rounded-full" />
       <div className="use-case-orbit use-case-orbit-two absolute left-1/2 top-1/2 size-[82%] -translate-x-1/2 -translate-y-1/2 rounded-full" />
       <div className="relative z-10 overflow-hidden rounded-2xl border border-white/10 bg-black shadow-[0_28px_90px_rgba(0,0,0,0.55)]">
@@ -91,7 +91,7 @@ function WorkflowDemo({ business, experience }: { business: BusinessUseCase; exp
 export function UseCaseExperiencePage({ business, experience }: { business: BusinessUseCase; experience: UseCaseExperience }) {
   return (
     <SiteLayout>
-      <div className="use-case-page overflow-hidden bg-black text-white">
+      <div id="business-use-case-page" className="use-case-page overflow-hidden bg-black text-white">
         <section className="use-case-hero relative overflow-hidden px-5 pb-12 pt-28 sm:px-8 sm:pb-16 sm:pt-32 lg:pt-36">
           <div className="use-case-grid absolute inset-0 opacity-45" />
           <div className="absolute -left-52 top-16 size-[34rem] rounded-full bg-[#35fbe0]/[0.07] blur-[120px]" />
@@ -99,15 +99,15 @@ export function UseCaseExperiencePage({ business, experience }: { business: Busi
           <div className="relative mx-auto grid max-w-[1320px] gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(420px,0.88fr)] lg:items-center">
             <div className="max-w-3xl">
               <Pill>{experience.label}</Pill>
-              <h1 className="mt-7 text-[clamp(2.25rem,4.7vw,4rem)] font-medium leading-[0.98] tracking-[-0.055em]">
+              <h1 className="mt-7 text-[clamp(2.1rem,4.3vw,3.65rem)] font-medium leading-[0.98] tracking-[-0.055em]">
                 AI voice agents for {business.title.toLowerCase()} <span className="use-case-heading-accent">{experience.heroAccent}</span>
               </h1>
               <p className="mt-7 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">{business.summary}</p>
               <div className="mt-9 flex flex-wrap gap-3">
-                <Link className="inline-flex min-h-12 items-center rounded-lg bg-[#35fbe0] px-6 text-sm font-extrabold text-[#031310] shadow-[0_12px_32px_rgba(53,251,224,0.12)] transition hover:-translate-y-0.5 hover:bg-[#75fff0]" href="/#demo">
+                <Link className="business-blue-cta inline-flex min-h-12 items-center rounded-lg border border-[#3e75ff] bg-[#3e75ff] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(62,117,255,0.22)] transition hover:-translate-y-0.5" href="/#demo">
                   Book a free demo <span className="ml-3">&rarr;</span>
                 </Link>
-                <Link className="inline-flex min-h-12 items-center rounded-lg bg-[#35fbe0] px-6 text-sm font-extrabold text-[#031310] shadow-[0_12px_32px_rgba(53,251,224,0.12)] transition hover:-translate-y-0.5 hover:bg-[#75fff0]" href="/contact">
+                <Link className="business-blue-cta inline-flex min-h-12 items-center rounded-lg border border-[#3e75ff] bg-[#3e75ff] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(62,117,255,0.22)] transition hover:-translate-y-0.5" href="/contact">
                   Contact sales
                 </Link>
               </div>
