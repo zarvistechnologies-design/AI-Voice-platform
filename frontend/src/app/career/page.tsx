@@ -223,7 +223,7 @@ function WorkCardIcon({
 }) {
   return (
     <span
-      className="mx-auto grid size-12 place-items-center rounded-2xl border border-[#3e75ff]/15 bg-[#3e75ff]/5 text-[#3e75ff] transition duration-300 group-hover:bg-[#3e75ff] group-hover:text-white"
+      className="career-card-icon mx-auto grid size-12 place-items-center rounded-2xl border transition duration-300"
       aria-hidden="true"
     >
       {kind === "spark" ? (
@@ -291,12 +291,12 @@ function CheckIcon() {
 export default function CareerPage() {
   return (
     <SiteLayout>
-      <main className="min-h-screen overflow-hidden bg-white text-black">
+      <main id="career-page" className="min-h-screen overflow-hidden bg-white text-black">
 
         {/* =========================================================
             HERO
         ========================================================== */}
-        <section className="relative overflow-hidden bg-white px-5 pb-8 pt-32 sm:px-8 sm:pb-10 sm:pt-40 lg:px-12 lg:pb-12">
+        <section className="relative overflow-hidden bg-white px-5 pb-4 pt-32 sm:px-8 sm:pb-6 sm:pt-40 lg:px-12 lg:pb-8">
 
           <div
             aria-hidden="true"
@@ -312,10 +312,10 @@ export default function CareerPage() {
             </div>
 
             {/* Heading */}
-            <h1 className="mx-auto mt-7 max-w-5xl text-[clamp(2.5rem,5vw,5rem)] font-medium leading-[0.94] tracking-[-0.065em] text-black">
+            <h1 className="mx-auto mt-7 max-w-5xl text-[clamp(2.25rem,4.4vw,4.25rem)] font-medium leading-[0.96] tracking-[-0.055em] text-[#132a5e]">
               Build your career.
               <br />
-              <span className="text-[#3e75ff]">
+              <span className="text-[#132a5e]">
                 Build what matters.
               </span>
             </h1>
@@ -351,7 +351,7 @@ export default function CareerPage() {
           </div>
 
           {/* Hero bottom line */}
-          <div className="mx-auto mt-8 h-px max-w-[1180px] bg-gray-100 sm:mt-10" />
+          <div className="mx-auto mt-5 h-px max-w-[1180px] bg-gray-100 sm:mt-6" />
 
         </section>
 
@@ -359,7 +359,7 @@ export default function CareerPage() {
         {/* =========================================================
             WHY WORK WITH US
         ========================================================== */}
-        <section className="bg-white px-5 py-10 sm:px-8 sm:py-12 lg:px-12 lg:py-20">
+        <section className="bg-white px-5 pb-10 pt-6 sm:px-8 sm:pb-12 sm:pt-8 lg:px-12 lg:pb-20 lg:pt-10">
 
           <div className="mx-auto max-w-[1180px]">
 
@@ -389,9 +389,9 @@ export default function CareerPage() {
 
 
             {/* Cards */}
-            <div className="mx-auto mt-12 grid max-w-5xl gap-5 sm:grid-cols-3">
+            <div className="mx-auto mt-12 grid max-w-[1060px] gap-6 sm:grid-cols-3">
 
-              <article className="group relative overflow-hidden rounded-[24px] border border-gray-200 bg-white px-7 py-9 text-center shadow-[0_12px_35px_rgba(0,0,0,0.04)] transition duration-500 hover:-translate-y-2 hover:border-[#3e75ff]/25 hover:shadow-[0_20px_50px_rgba(62,117,255,0.10)] sm:px-8">
+              <article className="career-benefit-card group relative min-h-[270px] overflow-hidden rounded-[22px] border px-7 py-8 text-center transition duration-300 sm:px-8 sm:py-9">
 
                 <WorkCardIcon kind="spark" />
 
@@ -407,7 +407,7 @@ export default function CareerPage() {
               </article>
 
 
-              <article className="group relative overflow-hidden rounded-[24px] border border-gray-200 bg-white px-7 py-9 text-center shadow-[0_12px_35px_rgba(0,0,0,0.04)] transition duration-500 hover:-translate-y-2 hover:border-[#3e75ff]/25 hover:shadow-[0_20px_50px_rgba(62,117,255,0.10)] sm:px-8">
+              <article className="career-benefit-card group relative min-h-[270px] overflow-hidden rounded-[22px] border px-7 py-8 text-center transition duration-300 sm:px-8 sm:py-9">
 
                 <WorkCardIcon kind="trend" />
 
@@ -423,7 +423,7 @@ export default function CareerPage() {
               </article>
 
 
-              <article className="group relative overflow-hidden rounded-[24px] border border-gray-200 bg-white px-7 py-9 text-center shadow-[0_12px_35px_rgba(0,0,0,0.04)] transition duration-500 hover:-translate-y-2 hover:border-[#3e75ff]/25 hover:shadow-[0_20px_50px_rgba(62,117,255,0.10)] sm:px-8">
+              <article className="career-benefit-card group relative min-h-[270px] overflow-hidden rounded-[22px] border px-7 py-8 text-center transition duration-300 sm:px-8 sm:py-9">
 
                 <WorkCardIcon kind="check" />
 
@@ -478,34 +478,26 @@ export default function CareerPage() {
 
               </div>
 
-              <div className="hidden h-12 w-12 items-center justify-center rounded-full border border-[#3e75ff]/20 bg-[#3e75ff]/5 text-[#3e75ff] sm:flex">
-                <ArrowIcon />
-              </div>
-
             </div>
 
 
-            <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
 
               {openRoles.map((role, index) => (
 
                 <article
                   key={role.title}
-                  className="group relative flex h-full min-h-[285px] flex-col overflow-hidden rounded-[24px] border border-gray-200 bg-white p-6 shadow-[0_12px_35px_rgba(0,0,0,0.04)] transition-all duration-500 hover:-translate-y-2 hover:border-[#3e75ff]/30 hover:shadow-[0_22px_55px_rgba(62,117,255,0.10)]"
+                  className="career-role-card group relative flex h-full min-h-[320px] flex-col overflow-hidden rounded-[22px] border p-7 transition-all duration-300"
                 >
 
                   <div className="absolute inset-x-0 top-0 h-0.5 bg-[#3e75ff] opacity-0 transition duration-300 group-hover:opacity-100" />
 
                   <div className="flex flex-1 flex-col">
 
-                    <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-start">
 
-                      <span className="flex size-9 items-center justify-center rounded-lg bg-[#3e75ff]/5 text-[10px] font-bold text-[#3e75ff]">
+                      <span className="career-role-number flex size-10 items-center justify-center rounded-xl text-[10px] font-bold">
                         0{index + 1}
-                      </span>
-
-                      <span className="text-gray-300 transition duration-300 group-hover:text-[#3e75ff]">
-                        <ArrowIcon />
                       </span>
 
                     </div>
@@ -516,7 +508,7 @@ export default function CareerPage() {
                     </h3>
 
 
-                    <p className="mt-3 text-sm leading-6 text-gray-600">
+                    <p className="mt-3 text-sm leading-7 text-gray-600">
                       {role.description}
                     </p>
 
@@ -537,15 +529,17 @@ export default function CareerPage() {
                     </div>
 
 
-                    <a
-                      href={`mailto:hello@vozon.ai?subject=Apply%20now%20-%20${encodeURIComponent(
-                        role.title
-                      )}%20at%20vozon.ai`}
-                      className="mt-auto inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white text-[11px] font-bold text-black transition duration-300 hover:border-[#3e75ff] hover:bg-[#3e75ff] hover:text-white"
-                    >
-                      Apply now
-                      <ArrowIcon />
-                    </a>
+                    <div className="mt-auto pt-7">
+                      <a
+                        href={`mailto:hello@vozon.ai?subject=Apply%20now%20-%20${encodeURIComponent(
+                          role.title
+                        )}%20at%20vozon.ai`}
+                        className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-3 text-xs font-bold text-black transition duration-300 hover:border-[#3e75ff] hover:bg-[#3e75ff] hover:text-white"
+                      >
+                        Apply now
+                        <ArrowIcon />
+                      </a>
+                    </div>
 
                   </div>
 
@@ -562,7 +556,7 @@ export default function CareerPage() {
         {/* =========================================================
             WORK AREAS
         ========================================================== */}
-        <section className="bg-white px-5 py-14 sm:px-8 lg:px-12 lg:py-20">
+        <section className="career-work-areas px-5 py-14 sm:px-8 lg:px-12 lg:py-20">
 
           <div className="mx-auto max-w-[1180px]">
 
@@ -598,12 +592,12 @@ export default function CareerPage() {
 
                 <article
                   key={area.number}
-                  className="group relative overflow-hidden rounded-[24px] border border-gray-200 bg-white p-7 shadow-[0_12px_35px_rgba(0,0,0,0.04)] transition duration-500 hover:-translate-y-2 hover:border-[#3e75ff]/30 hover:shadow-[0_20px_50px_rgba(62,117,255,0.09)]"
+                  className="career-work-card group relative overflow-hidden rounded-[22px] border p-7 transition duration-300"
                 >
 
                   <div className="flex items-center justify-between">
 
-                    <span className="flex size-9 items-center justify-center rounded-lg bg-[#3e75ff]/5 text-[10px] font-bold text-[#3e75ff]">
+                    <span className="career-work-number flex size-9 items-center justify-center rounded-lg text-[10px] font-bold">
                       {area.number}
                     </span>
 
@@ -650,7 +644,7 @@ export default function CareerPage() {
         {/* =========================================================
             PRINCIPLES
         ========================================================== */}
-        <section className="bg-white px-5 py-14 sm:px-8 lg:px-12 lg:py-20">
+        <section className="career-principles px-5 py-14 sm:px-8 lg:px-12 lg:py-20">
 
           <div className="mx-auto max-w-[1180px]">
 
@@ -680,16 +674,16 @@ export default function CareerPage() {
               </div>
 
 
-              <div className="divide-y divide-gray-200 border-y border-gray-200">
+              <div className="career-principles-list divide-y border-y">
 
                 {principles.map((principle) => (
 
                   <article
                     key={principle.number}
-                    className="group grid gap-4 py-7 sm:grid-cols-[60px_1fr]"
+                    className="career-principle-row group grid gap-4 py-7 sm:grid-cols-[60px_1fr]"
                   >
 
-                    <span className="flex size-9 items-center justify-center rounded-lg bg-[#3e75ff]/5 text-[10px] font-bold text-[#3e75ff]">
+                    <span className="career-neutral-number flex size-9 items-center justify-center rounded-lg border text-[10px] font-bold">
                       {principle.number}
                     </span>
 
@@ -720,7 +714,7 @@ export default function CareerPage() {
         {/* =========================================================
             BENEFITS
         ========================================================== */}
-        <section className="bg-white px-5 py-14 sm:px-8 lg:px-12 lg:py-20">
+        <section className="career-benefits px-5 py-14 sm:px-8 lg:px-12 lg:py-20">
 
           <div className="mx-auto max-w-[1180px]">
 
@@ -751,7 +745,7 @@ export default function CareerPage() {
 
                 <article
                   key={benefit.title}
-                  className="group rounded-[22px] border border-gray-200 bg-white p-6 shadow-[0_12px_35px_rgba(0,0,0,0.04)] transition duration-500 hover:-translate-y-2 hover:border-[#3e75ff]/25 hover:shadow-[0_20px_50px_rgba(62,117,255,0.09)]"
+                  className="career-expect-card group min-h-[250px] rounded-[22px] border p-7 transition duration-300"
                 >
 
                   <div className="grid size-11 place-items-center rounded-xl border border-[#3e75ff]/15 bg-[#3e75ff]/5 text-lg text-[#3e75ff] transition duration-300 group-hover:bg-[#3e75ff] group-hover:text-white">
@@ -779,7 +773,7 @@ export default function CareerPage() {
         {/* =========================================================
             QUALITIES + PROCESS
         ========================================================== */}
-        <section className="bg-white px-5 py-14 sm:px-8 lg:px-12 lg:py-20">
+        <section className="career-qualities-process px-5 py-14 sm:px-8 lg:px-12 lg:py-20">
 
           <div className="mx-auto grid max-w-[1180px] gap-14 lg:grid-cols-2">
 
@@ -812,7 +806,7 @@ export default function CareerPage() {
 
                   <div
                     key={quality}
-                    className="group flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-4 transition duration-300 hover:border-[#3e75ff]/25 hover:shadow-sm"
+                    className="career-quality-card group flex items-center gap-3 rounded-xl border px-4 py-4 transition duration-300"
                   >
 
                     <CheckIcon />
@@ -848,16 +842,16 @@ export default function CareerPage() {
               </h2>
 
 
-              <div className="mt-8 divide-y divide-gray-200 border-y border-gray-200">
+              <div className="career-process-list mt-8 divide-y border-y">
 
                 {process.map((step) => (
 
                   <article
                     key={step.number}
-                    className="group grid gap-4 py-6 sm:grid-cols-[55px_1fr]"
+                    className="career-process-row group grid gap-4 py-6 sm:grid-cols-[55px_1fr]"
                   >
 
-                    <span className="flex size-8 items-center justify-center rounded-lg bg-[#3e75ff]/5 text-[10px] font-bold text-[#3e75ff]">
+                    <span className="career-neutral-number flex size-8 items-center justify-center rounded-lg border text-[10px] font-bold">
                       {step.number}
                     </span>
 
@@ -959,28 +953,17 @@ export default function CareerPage() {
         {/* =========================================================
             FINAL CTA
         ========================================================== */}
-        <section className="bg-white px-5 pb-14 pt-2 sm:px-8 lg:px-12 lg:pb-20">
+        <section className="bg-white px-6 pb-12 pt-4 lg:px-8">
 
-          <div className="relative mx-auto max-w-[1120px] overflow-hidden rounded-[26px] border border-gray-200 bg-white shadow-[0_18px_50px_rgba(0,0,0,0.06)]">
-
-            {/* Blue top line */}
-            <div className="absolute inset-x-0 top-0 h-1 bg-[#3e75ff]" />
-
-            <div className="relative flex flex-col items-start justify-between gap-7 px-6 py-9 sm:px-9 sm:py-10 md:flex-row md:items-center md:px-10">
+          <div className="career-contact mx-auto flex max-w-6xl flex-col items-center justify-between gap-7 overflow-hidden rounded-[24px] border border-[#d7c8e8] bg-[#f1e9fa] p-8 text-center text-black shadow-[0_18px_46px_rgba(91,54,123,0.11)] sm:p-10 md:flex-row md:text-left">
 
               <div>
 
-                <div className="inline-flex items-center gap-2 rounded-full border border-[#3e75ff]/20 bg-[#3e75ff]/5 px-3 py-1.5">
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#7a3e9d]">
+                  Join vozon.ai
+                </p>
 
-                  <span className="size-1.5 rounded-full bg-[#3e75ff]" />
-
-                  <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-[#3e75ff]">
-                    Join vozon.ai
-                  </span>
-
-                </div>
-
-                <h2 className="mt-4 text-xl font-semibold tracking-[-0.03em] text-black md:text-2xl">
+                <h2 className="mt-3 text-2xl font-semibold tracking-[-0.02em] text-black md:text-3xl">
                   Ready to help shape the future of voice AI?
                 </h2>
 
@@ -998,22 +981,218 @@ export default function CareerPage() {
               ====================================================== */}
               <a
                 href="mailto:hello@vozon.ai?subject=Careers%20at%20vozon.ai"
-                className="relative z-10 inline-flex min-h-12 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-black !bg-black px-6 text-sm font-bold !text-white shadow-[0_10px_25px_rgba(0,0,0,0.15)] transition duration-300 hover:-translate-y-1 hover:!bg-gray-800 hover:!text-white hover:shadow-[0_15px_35px_rgba(0,0,0,0.2)]"
+                className="inline-flex min-h-12 shrink-0 items-center rounded-lg border border-[#7a3e9d] bg-[#7a3e9d] px-7 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#683486]"
               >
-                <span className="!text-white">
-                  Contact Us
-                </span>
-
-                <span className="!text-white">
-                  <ArrowIcon />
-                </span>
+                CONTACT US <span className="ml-3">&rarr;</span>
               </a>
-
-            </div>
 
           </div>
 
         </section>
+
+        <style>{`
+          #career-page .career-benefit-card,
+          #career-page .career-role-card {
+            --card-accent: #3e75ff;
+            --card-soft: #e8edff;
+            border-color: #dce4ff;
+            background: #f4f6ff;
+            box-shadow: 0 14px 38px rgba(32, 52, 110, .07);
+          }
+
+          #career-page .career-benefit-card:nth-child(2),
+          #career-page .career-role-card:nth-child(2) {
+            --card-accent: #7855b8;
+            --card-soft: #eadff8;
+            border-color: #e2d7f1;
+            background: #f8f3fc;
+          }
+
+          #career-page .career-benefit-card:nth-child(3),
+          #career-page .career-role-card:nth-child(3) {
+            --card-accent: #277b7a;
+            --card-soft: #dcefee;
+            border-color: #d4e9e8;
+            background: #f0f8f7;
+          }
+
+          #career-page .career-role-card:nth-child(4) {
+            --card-accent: #ad5573;
+            --card-soft: #f3dfe6;
+            border-color: #edd9e0;
+            background: #fcf3f6;
+          }
+
+          #career-page .career-role-card:nth-child(5) {
+            --card-accent: #405376;
+            --card-soft: #e3e8f1;
+            border-color: #dfe3eb;
+            background: #f5f6fa;
+          }
+
+          #career-page .career-benefit-card:hover,
+          #career-page .career-role-card:hover {
+            border-color: var(--card-accent);
+            box-shadow: 0 20px 48px rgba(44, 57, 105, .1);
+          }
+
+          #career-page .career-card-icon,
+          #career-page .career-role-number {
+            border-color: color-mix(in srgb, var(--card-accent) 22%, transparent);
+            background: var(--card-soft);
+            color: var(--card-accent);
+          }
+
+          #career-page .career-benefit-card:hover .career-card-icon {
+            background: var(--card-accent);
+            color: #fff;
+          }
+
+          #career-page .career-role-card > div:first-child {
+            background: var(--card-accent);
+          }
+
+          #career-page .career-role-card [class*="rounded-full"] {
+            border-color: color-mix(in srgb, var(--card-accent) 18%, white);
+            background: rgba(255, 255, 255, .72);
+          }
+
+          #career-page .career-work-areas {
+            --section-accent: #b95838;
+            --section-soft: #f5e2da;
+            background: #fff;
+          }
+
+          #career-page .career-principles {
+            --section-accent: #a54862;
+            --section-soft: #f3dfe5;
+            background: #fff;
+          }
+
+          #career-page .career-benefits {
+            --section-accent: #a87313;
+            --section-soft: #f5e8bf;
+            background: #fff;
+          }
+
+          #career-page .career-qualities-process {
+            --section-accent: #74466f;
+            --section-soft: #ecdfeb;
+            background: #f5f2ff;
+          }
+
+          #career-page :is(
+            .career-work-areas,
+            .career-principles,
+            .career-benefits,
+            .career-qualities-process
+          ) [class*="text-[#3e75ff]"] {
+            color: var(--section-accent);
+          }
+
+          #career-page :is(
+            .career-work-areas,
+            .career-principles,
+            .career-benefits,
+            .career-qualities-process
+          ) [class*="bg-[#3e75ff]"] {
+            background-color: var(--section-accent);
+          }
+
+          #career-page :is(
+            .career-work-areas,
+            .career-principles,
+            .career-benefits,
+            .career-qualities-process
+          ) [class*="border-[#3e75ff]"] {
+            border-color: color-mix(in srgb, var(--section-accent) 28%, transparent);
+          }
+
+          #career-page .career-work-card {
+            border-color: #ead7cf;
+            background: #fffdfb;
+            box-shadow: 0 12px 32px rgba(121, 68, 49, .06);
+          }
+
+          #career-page .career-work-card:hover {
+            border-color: var(--section-accent);
+          }
+
+          #career-page .career-work-card [class*="rounded-lg"],
+          #career-page .career-work-card [class*="rounded-xl"] {
+            background: var(--section-soft);
+            color: var(--section-accent);
+          }
+
+          #career-page .career-work-number {
+            background: var(--section-soft);
+            color: var(--section-accent);
+          }
+
+          #career-page .career-principles-list,
+          #career-page .career-process-list {
+            border-color: color-mix(in srgb, var(--section-accent) 22%, white);
+          }
+
+          #career-page .career-principle-row,
+          #career-page .career-process-row {
+            background: transparent;
+            box-shadow: none;
+          }
+
+          #career-page .career-quality-card [class*="rounded-full"] {
+            background: var(--section-soft);
+            color: var(--section-accent);
+          }
+
+          #career-page .career-neutral-number {
+            border-color: #e5e7eb !important;
+            background: #f5f5f5 !important;
+            color: #52525b !important;
+          }
+
+          #career-page .career-expect-card {
+            border-color: #eadfbf;
+            background: #fffdf7;
+            box-shadow: 0 12px 32px rgba(120, 87, 24, .06);
+          }
+
+          #career-page .career-expect-card:hover {
+            border-color: var(--section-accent);
+          }
+
+          #career-page .career-expect-card > div:first-child {
+            border-color: color-mix(in srgb, var(--section-accent) 24%, white);
+            background: var(--section-soft);
+            color: var(--section-accent);
+          }
+
+          #career-page .career-quality-card {
+            border-color: #e5d9e3;
+            background: rgba(255, 255, 255, .72);
+            box-shadow: none;
+          }
+
+          #career-page .career-quality-card:hover {
+            border-color: var(--section-accent);
+          }
+
+          #career-page .career-contact {
+            border-color: #d7c8e8;
+            background: linear-gradient(120deg, #f1e9fa 0%, #e9e7ff 100%);
+            box-shadow: 0 18px 46px rgba(91, 54, 123, .11);
+          }
+
+          #career-page .career-contact a {
+            border-color: #7a3e9d;
+            background: #7a3e9d;
+            color: #fff;
+          }
+
+          #career-page .career-contact a:hover {
+            background: #683486;
+          }
+        `}</style>
 
       </main>
     </SiteLayout>

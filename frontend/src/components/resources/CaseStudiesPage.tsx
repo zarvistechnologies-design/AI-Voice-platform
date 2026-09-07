@@ -38,7 +38,7 @@ const caseStudies = [
     image: "/images/voice-agents/real-customer-support.jpg",
     imageAlt:
       "Customer support specialist coordinating home-service requests",
-    accent: "#3e75ff",
+    accent: "#7a3e9d",
     challenge:
       "Technicians missed calls while working, and after-hours requests were inconsistently qualified.",
     solution:
@@ -63,7 +63,7 @@ const caseStudies = [
     image: "/service-images/conversation-insights.jpg",
     imageAlt:
       "Operations team reviewing customer conversation insights",
-    accent: "#3e75ff",
+    accent: "#277b7a",
     challenge:
       "Routine status and account calls limited time for complex customer cases.",
     solution:
@@ -104,24 +104,6 @@ const measurementPrinciples = [
   },
 ] as const;
 
-function ArrowIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      className="size-4"
-      fill="none"
-      viewBox="0 0 24 24"
-    >
-      <path
-        d="M5 12h14m-5-5 5 5-5 5"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.8"
-      />
-    </svg>
-  );
-}
 function OutcomeFlow() {
   return (
     <div className="relative min-h-[310px] overflow-hidden rounded-2xl border border-[#3e75ff]/15 bg-white p-6 shadow-[0_20px_60px_rgba(20,40,80,0.08)]">
@@ -214,9 +196,9 @@ function OutcomeFlow() {
 export function CaseStudiesPage() {
   return (
     <SiteLayout>
-      <main className="min-h-screen bg-white text-black">
+      <main id="case-studies-page" className="min-h-screen bg-white text-black">
         {/* Hero */}
-        <section className="relative overflow-hidden bg-white px-5 pb-20 pt-28 sm:px-8 sm:pt-32 lg:px-12 lg:pb-24">
+        <section className="case-studies-hero relative overflow-hidden bg-white px-5 pb-20 pt-28 sm:px-8 sm:pt-32 lg:px-12 lg:pb-24">
           <div
             aria-hidden="true"
             className="absolute inset-0 bg-[radial-gradient(circle_at_78%_22%,rgba(62,117,255,0.09),transparent_28%),radial-gradient(circle_at_12%_75%,rgba(62,117,255,0.045),transparent_25%),linear-gradient(rgba(62,117,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(62,117,255,0.015)_1px,transparent_1px)] [background-size:auto,auto,64px_64px,64px_64px]"
@@ -279,7 +261,7 @@ export function CaseStudiesPage() {
             <div className="mt-10 grid gap-5 lg:grid-cols-3">
               {caseStudies.map((study) => (
                 <article
-                  className="group flex h-full flex-col overflow-hidden rounded-2xl border border-black/[0.08] bg-white shadow-[0_15px_50px_rgba(20,30,60,0.07)] transition duration-300 hover:-translate-y-1.5 hover:border-[#3e75ff]/25 hover:shadow-[0_24px_65px_rgba(62,117,255,0.12)]"
+                  className="case-study-card group flex h-full flex-col overflow-hidden rounded-2xl border border-black/[0.08] bg-white shadow-[0_15px_50px_rgba(20,30,60,0.07)] transition duration-300 hover:border-[#3e75ff]/25"
                   key={study.industry}
                   style={{
                     background: `radial-gradient(circle at 92% 0%, ${study.accent}08, transparent 34%), #ffffff`,
@@ -374,7 +356,7 @@ export function CaseStudiesPage() {
         </section>
 
         {/* Measurement */}
-        <section className="bg-white px-5 py-20 sm:px-8 lg:px-12 lg:py-24">
+        <section className="case-studies-measurement bg-white px-5 py-20 sm:px-8 lg:px-12 lg:py-24">
           <div className="mx-auto max-w-[1160px]">
             <div className="grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:gap-16">
               <div>
@@ -417,32 +399,63 @@ export function CaseStudiesPage() {
         </section>
 
         {/* CTA */}
-        <section className="bg-white px-5 py-20 sm:px-8 lg:px-12 lg:py-24">
-          <div className="mx-auto flex max-w-[1080px] flex-col items-start justify-between gap-8 rounded-2xl border border-[#3e75ff]/20 bg-gradient-to-br from-[#f5f8ff] via-white to-[#f9fbff] p-7 shadow-[0_15px_50px_rgba(62,117,255,0.08)] sm:p-10 lg:flex-row lg:items-center">
+        <section className="bg-white px-6 pb-12 pt-4 lg:px-8">
+          <div className="case-studies-contact mx-auto flex max-w-6xl flex-col items-center justify-between gap-7 overflow-hidden rounded-[24px] border border-[#d7c8e8] bg-[#f1e9fa] p-8 text-center text-black shadow-[0_18px_46px_rgba(91,54,123,0.11)] sm:p-10 md:flex-row md:text-left">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#3e75ff]">
-                Build your story
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#7a3e9d]">
+                Ready to get started?
               </p>
 
-              <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-black sm:text-4xl">
+              <h2 className="mt-3 text-2xl font-semibold tracking-[-0.02em] text-black md:text-3xl">
                 Start with one valuable call workflow.
               </h2>
 
-              <p className="mt-3 max-w-[640px] text-sm leading-7 text-black/50">
+              <p className="mt-3 max-w-[640px] text-sm leading-6 text-gray-700">
                 We&apos;ll help map the caller journey, define measurable
                 outcomes, and plan a responsible rollout.
               </p>
             </div>
 
             <Link
-              className="inline-flex min-h-12 shrink-0 items-center gap-2 rounded-lg bg-[#3e75ff] px-6 text-sm font-bold text-white shadow-[0_8px_25px_rgba(62,117,255,0.22)] transition hover:bg-[#3267ed] hover:shadow-[0_10px_30px_rgba(62,117,255,0.30)]"
+              className="inline-flex min-h-12 shrink-0 items-center rounded-lg border border-[#7a3e9d] bg-[#7a3e9d] px-7 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#683486]"
               href="/contact"
             >
-              Discuss your use case
-              <ArrowIcon />
+              DISCUSS YOUR CASE <span className="ml-3">&rarr;</span>
             </Link>
           </div>
         </section>
+
+        <style>{`
+          #case-studies-page .case-studies-hero {
+            background: linear-gradient(180deg, #fbfbff 0%, #f5f3ff 62%, #fff 100%);
+          }
+
+          #case-studies-page .case-studies-measurement {
+            background: #fff;
+          }
+
+          #case-studies-page .case-study-card {
+            border-color: #e1deeb;
+            box-shadow: 0 14px 38px rgba(49, 46, 90, .07);
+          }
+
+          #case-studies-page .case-study-card:hover {
+            border-color: #b9b2d8;
+            box-shadow: 0 18px 44px rgba(49, 46, 90, .09);
+          }
+
+          #case-studies-page .case-studies-contact {
+            border-color: #d7c8e8;
+            background: linear-gradient(120deg, #f1e9fa 0%, #e9e7ff 100%);
+            box-shadow: 0 18px 46px rgba(91, 54, 123, .11);
+          }
+
+          #case-studies-page .case-studies-contact a {
+            border-color: #7a3e9d;
+            background: #7a3e9d;
+            color: #fff;
+          }
+        `}</style>
       </main>
     </SiteLayout>
   );

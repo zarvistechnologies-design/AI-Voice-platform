@@ -2479,11 +2479,9 @@
   border-color: #bdbdc5 !important;
   background: #e9e9ec !important;
 }
-.marketing-site .marketing-overview-light.blog-light-theme,
-.marketing-site .marketing-overview-light.blog-light-theme * {
+.marketing-site .marketing-overview-light.blog-light-theme {
   background-color: #ffffff !important;
   background-image: none !important;
-  box-shadow: none !important;
   color: #000000 !important;
   -webkit-text-fill-color: #000000 !important;
 }
@@ -3821,4 +3819,187 @@
 
 :is(#product-overview-page, #product-service-page) .product-service-hero-photo > div:first-child {
   height: clamp(320px, 27vw, 390px) !important;
+}
+
+/* Blog: clean light editorial theme with one lavender content section. */
+.marketing-site .blog-light-theme.blog-light-theme {
+  background: #fff !important;
+  color: #161622 !important;
+}
+
+.marketing-site .marketing-overview-light.blog-light-theme.blog-light-theme > section {
+  background-color: #fff !important;
+  background-image: none !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-hero {
+  background: #fff !important;
+  padding: 8rem clamp(1.5rem, 6vw, 6rem) 4rem !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-hero > [aria-hidden="true"] {
+  display: none !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-hero-grid {
+  min-height: 440px !important;
+  max-width: 1240px !important;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.78fr) !important;
+  gap: clamp(2.5rem, 5vw, 5rem) !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-title {
+  max-width: 720px !important;
+  background: none !important;
+  font-size: clamp(2.25rem, 4.25vw, 3.75rem) !important;
+  line-height: 1.02 !important;
+  letter-spacing: -0.05em !important;
+  color: #151522 !important;
+  -webkit-text-fill-color: #151522 !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-hero p:first-child,
+.marketing-site .blog-light-theme .blog-overview-guides > div:first-child > p:first-child {
+  color: #565dcc !important;
+  -webkit-text-fill-color: #565dcc !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-hero-grid > div:first-child > p:nth-of-type(2),
+.marketing-site .blog-light-theme .blog-overview-guides > div:first-child > p:last-child,
+.marketing-site .blog-light-theme .blog-overview-card > p:last-child {
+  color: #646472 !important;
+  -webkit-text-fill-color: #646472 !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-hero-grid > div:first-child a:first-child {
+  border: 1px solid #6268ff !important;
+  background: #6268ff !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-hero-grid > div:first-child a:last-child {
+  border: 1px solid #d8d8e4 !important;
+  background: #fff !important;
+  color: #20202a !important;
+  -webkit-text-fill-color: #20202a !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-visual {
+  border-color: #dedbea !important;
+  background: #f8f6ff !important;
+  box-shadow: 0 18px 50px rgba(62, 59, 112, 0.08) !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-visual [class*="rounded-lg"] {
+  border-color: #e5e2ef !important;
+  background: #fff !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-proof {
+  background: #fff !important;
+  padding-right: clamp(1.5rem, 6vw, 6rem) !important;
+  padding-left: clamp(1.5rem, 6vw, 6rem) !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-proof > div {
+  border-color: #e2e0ea !important;
+  background: #fff !important;
+  box-shadow: 0 14px 36px rgba(52, 50, 90, 0.06) !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-proof strong {
+  background: none !important;
+  color: #565dcc !important;
+  -webkit-text-fill-color: #565dcc !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-proof span {
+  color: #686875 !important;
+  -webkit-text-fill-color: #686875 !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-guides {
+  background: #fff !important;
+  padding-right: clamp(1.5rem, 6vw, 6rem) !important;
+  padding-left: clamp(1.5rem, 6vw, 6rem) !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-card {
+  border-color: #ded9ee !important;
+  background: #fff !important;
+  box-shadow: 0 12px 34px rgba(55, 48, 102, 0.07) !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-card:hover {
+  border-color: #aaa3d2 !important;
+  background: #fff !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-card > p:first-of-type {
+  color: #6268ff !important;
+  -webkit-text-fill-color: #6268ff !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-card:nth-child(4n + 1) > span:first-child {
+  background: #e8edff !important;
+  color: #3f59b5 !important;
+  -webkit-text-fill-color: #3f59b5 !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-card:nth-child(4n + 2) > span:first-child {
+  background: #f2e6f5 !important;
+  color: #87508f !important;
+  -webkit-text-fill-color: #87508f !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-card:nth-child(4n + 3) > span:first-child {
+  background: #e4f2ef !important;
+  color: #287268 !important;
+  -webkit-text-fill-color: #287268 !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-card:nth-child(4n) > span:first-child {
+  background: #f8edcf !important;
+  color: #91691c !important;
+  -webkit-text-fill-color: #91691c !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-contact-section {
+  background: #fff !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-contact {
+  border-color: #d7c8e8 !important;
+  background: linear-gradient(120deg, #f1e9fa 0%, #e9e7ff 100%) !important;
+  box-shadow: 0 18px 46px rgba(91, 54, 123, 0.11) !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-contact p:first-child {
+  color: #7a3e9d !important;
+  -webkit-text-fill-color: #7a3e9d !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-contact p:last-child {
+  color: #5f5f6b !important;
+  -webkit-text-fill-color: #5f5f6b !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-contact-button {
+  border: 1px solid #7a3e9d !important;
+  background: #7a3e9d !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+.marketing-site .blog-light-theme .blog-overview-contact-button * {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+@media (max-width: 1023px) {
+  .marketing-site .blog-light-theme .blog-overview-hero-grid {
+    min-height: auto !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
 }

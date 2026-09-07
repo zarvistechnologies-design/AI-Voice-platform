@@ -136,7 +136,7 @@ export function ContactExperience() {
   }
 
   return (
-    <div className="overflow-hidden bg-white text-black">
+    <div id="contact-page" className="overflow-hidden bg-white text-black">
       <section className="relative bg-white px-5 pb-16 pt-28 sm:px-8 sm:pt-32 lg:min-h-screen lg:px-12 lg:pb-14 lg:pt-24">
         <div className="relative mx-auto max-w-[1240px]">
           <nav aria-label="Breadcrumb" className="mb-7 flex items-center gap-2 text-xs font-medium text-black lg:mb-5">
@@ -176,11 +176,11 @@ export function ContactExperience() {
               </div>
 
               <div className="mt-9 flex flex-wrap gap-3">
-                <Link className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-6 text-sm font-bold text-black shadow-sm transition hover:-translate-y-0.5 hover:border-teal-300 hover:bg-teal-50" href="#contact-form">
+                <Link className="contact-primary-button inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border px-6 text-sm font-bold shadow-sm transition hover:-translate-y-0.5" href="#contact-form">
                   Send a message <Icon className="size-4" name="arrow" />
                 </Link>
-                <a className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-6 text-sm font-bold text-black shadow-sm transition hover:border-teal-300 hover:bg-teal-50" href={`mailto:${salesEmail}`}>
-                  <Icon className="size-4 text-teal-600" name="email" /> Email sales
+                <a className="contact-secondary-button inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border px-6 text-sm font-bold shadow-sm transition" href={`mailto:${salesEmail}`}>
+                  <Icon className="size-4" name="email" /> Email sales
                 </a>
               </div>
             </div>
@@ -255,7 +255,7 @@ export function ContactExperience() {
                 <input autoComplete="off" name="website" tabIndex={-1} />
               </label>
 
-              <button className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-black bg-black px-6 text-sm font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:cursor-wait disabled:opacity-65 disabled:hover:translate-y-0 lg:mt-4 lg:min-h-11" disabled={isSubmitting} type="submit">
+              <button className="contact-submit-button mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border px-6 text-sm font-bold shadow-sm transition hover:-translate-y-0.5 disabled:cursor-wait disabled:opacity-65 disabled:hover:translate-y-0 lg:mt-4 lg:min-h-11" disabled={isSubmitting} type="submit">
                 {isSubmitting ? "Sending message..." : "Send message"}
                 {!isSubmitting ? <Icon className="size-4" name="arrow" /> : null}
               </button>
@@ -320,6 +320,50 @@ export function ContactExperience() {
           </div>
         </div>
       </section>
+
+      <style>{`
+        #contact-page .contact-primary-button {
+          border-color: #6268ff !important;
+          background: #6268ff !important;
+          color: #fff !important;
+          -webkit-text-fill-color: #fff !important;
+        }
+
+        #contact-page .contact-primary-button:hover {
+          border-color: #565dcc !important;
+          background: #565dcc !important;
+        }
+
+        #contact-page .contact-secondary-button {
+          border-color: #d7c8e8 !important;
+          background: #f1e9fa !important;
+          color: #6d3b8d !important;
+          -webkit-text-fill-color: #6d3b8d !important;
+        }
+
+        #contact-page .contact-secondary-button:hover {
+          border-color: #b99dce !important;
+          background: #e9ddf4 !important;
+        }
+
+        #contact-page .contact-submit-button {
+          border-color: #7a3e9d !important;
+          background: #7a3e9d !important;
+          color: #fff !important;
+          -webkit-text-fill-color: #fff !important;
+        }
+
+        #contact-page .contact-submit-button:hover {
+          border-color: #683486 !important;
+          background: #683486 !important;
+        }
+
+        #contact-page .contact-primary-button *,
+        #contact-page .contact-submit-button * {
+          color: #fff !important;
+          -webkit-text-fill-color: #fff !important;
+        }
+      `}</style>
     </div>
   );
 }

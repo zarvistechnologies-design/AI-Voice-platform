@@ -116,17 +116,12 @@ function SparkIcon() {
 export default function AboutPage() {
   return (
     <SiteLayout>
-      <main className="min-h-screen overflow-hidden bg-white text-black">
+      <main id="about-page" className="min-h-screen overflow-hidden bg-white text-black">
 
         {/* =========================================================
             HERO
         ========================================================= */}
-        <section className="relative overflow-hidden bg-white px-5 pb-12 pt-24 sm:px-8 sm:pb-14 sm:pt-28 lg:px-10 lg:pb-16 lg:pt-32">
-
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute left-1/2 top-12 h-72 w-72 -translate-x-1/2 rounded-full bg-[#3e75ff]/5 blur-[110px]"
-          />
+        <section className="about-hero relative overflow-hidden px-5 pb-12 pt-24 sm:px-8 sm:pb-14 sm:pt-28 lg:px-10 lg:pb-16 lg:pt-32">
 
           <div className="relative mx-auto max-w-[1250px] text-center">
 
@@ -142,7 +137,7 @@ export default function AboutPage() {
             {/* Heading */}
             <h1 className="mx-auto mt-6 max-w-5xl text-[clamp(1.8rem,4vw,3.6rem)] font-medium leading-[0.97] tracking-[-0.06em] text-black">
               Building the future of{" "}
-              <span className="text-[#3e75ff]">
+              <span className="about-gradient-text">
                 intelligent communication.
               </span>
             </h1>
@@ -156,15 +151,15 @@ export default function AboutPage() {
 
             {/* =====================================================
                 HERO BUTTONS
-                Talk to us = BLUE
+                Talk to us = VIOLET
                 Join our team = WHITE
             ===================================================== */}
             <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
 
-              {/* TALK TO US — BLUE */}
+              {/* TALK TO US — VIOLET */}
               <Link
                 href="/contact"
-                className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[#3e75ff] px-6 text-sm font-bold text-white shadow-[0_12px_30px_rgba(62,117,255,0.22)] transition-all duration-300 hover:-translate-y-1 hover:bg-[#3268ed] hover:shadow-[0_18px_40px_rgba(62,117,255,0.28)]"
+                className="about-primary-button inline-flex min-h-11 items-center gap-2 rounded-xl px-6 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-1"
               >
                 Talk to us
                 <ArrowIcon />
@@ -183,11 +178,6 @@ export default function AboutPage() {
 
             {/* Hero Image */}
             <div className="relative mx-auto mt-9 max-w-[1100px]">
-
-              <div
-                aria-hidden="true"
-                className="absolute -inset-2 rounded-[32px] bg-[#3e75ff]/5 blur-xl"
-              />
 
               <div className="relative overflow-hidden rounded-[28px] border border-gray-200 bg-white shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
                 <img
@@ -218,9 +208,9 @@ export default function AboutPage() {
               </span>
             </div>
 
-            <div className="relative overflow-hidden rounded-[24px] border border-gray-200 bg-white px-6 py-7 shadow-[0_14px_45px_rgba(0,0,0,0.05)] transition-shadow duration-300 hover:shadow-[0_18px_50px_rgba(0,0,0,0.07)] sm:px-9 sm:py-8 lg:px-11 lg:py-9">
+            <div className="about-mission-card relative overflow-hidden rounded-[24px] border border-gray-200 px-6 py-7 shadow-[0_14px_45px_rgba(0,0,0,0.05)] transition-shadow duration-300 hover:shadow-[0_18px_50px_rgba(0,0,0,0.07)] sm:px-9 sm:py-8 lg:px-11 lg:py-9">
 
-              <div className="absolute inset-x-0 top-0 h-1 bg-[#3e75ff]" />
+              <div className="about-color-bar absolute inset-x-0 top-0 h-1" />
 
               <div className="relative flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
 
@@ -312,13 +302,8 @@ export default function AboutPage() {
 
                 <article
                   key={value.title}
-                  className="group relative overflow-hidden rounded-[24px] border border-gray-200 bg-white p-7 shadow-[0_12px_40px_rgba(0,0,0,0.045)] transition-all duration-500 hover:-translate-y-2 hover:border-[#3e75ff]/35 hover:shadow-[0_20px_55px_rgba(62,117,255,0.10)] sm:p-8"
+                  className="about-values-card group relative overflow-hidden rounded-[24px] border border-gray-200 bg-white p-7 shadow-[0_12px_40px_rgba(0,0,0,0.045)] transition-all duration-500 hover:-translate-y-2 sm:p-8"
                 >
-
-                  <div
-                    aria-hidden="true"
-                    className="pointer-events-none absolute -right-20 -top-20 h-44 w-44 rounded-full bg-[#3e75ff]/10 blur-[70px] opacity-0 transition duration-700 group-hover:opacity-100"
-                  />
 
                   <div className="relative flex min-h-[300px] flex-col">
 
@@ -386,14 +371,14 @@ export default function AboutPage() {
 
                 <article
                   key={line}
-                  className="group relative overflow-hidden rounded-[22px] border border-gray-200 bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.04)] transition-all duration-500 hover:-translate-y-1 hover:border-[#3e75ff]/30 hover:shadow-[0_18px_40px_rgba(62,117,255,0.08)] sm:p-7"
+                  className="about-manifesto-card group relative overflow-hidden rounded-[22px] border border-gray-200 bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.04)] transition-all duration-500 hover:-translate-y-1 sm:p-7"
                 >
 
                   <div className="relative">
 
                     <div className="flex items-center gap-3">
 
-                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#3e75ff]/10 text-[10px] font-bold text-[#3e75ff]">
+                      <span className="about-manifesto-number flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-bold">
                         0{index + 1}
                       </span>
 
@@ -599,7 +584,7 @@ export default function AboutPage() {
 
                   <article
                     key={`${item.label}-${index}`}
-                    className="group relative grid sm:grid-cols-2"
+                    className="about-journey-item group relative grid sm:grid-cols-2"
                   >
 
                     <div
@@ -611,7 +596,7 @@ export default function AboutPage() {
                     >
 
                       <div
-                        className={`relative overflow-hidden rounded-[24px] border border-gray-200 bg-white p-6 shadow-[0_12px_35px_rgba(0,0,0,0.04)] transition duration-500 group-hover:border-[#3e75ff]/30 group-hover:shadow-[0_18px_45px_rgba(62,117,255,0.08)] sm:p-7 ${
+                        className={`relative py-3 ${
                           index % 2 === 0 ? "sm:ml-auto" : ""
                         }`}
                       >
@@ -638,9 +623,8 @@ export default function AboutPage() {
 
                     <div
                       aria-hidden="true"
-                      className="absolute left-5 top-8 flex h-5 w-5 -translate-x-1/2 items-center justify-center rounded-full border-2 border-[#3e75ff] bg-white shadow-[0_3px_12px_rgba(62,117,255,0.16)] sm:left-1/2"
+                      className="absolute left-5 top-8 flex h-3 w-3 -translate-x-1/2 items-center justify-center rounded-full bg-[#3e75ff] sm:left-1/2"
                     >
-                      <span className="h-2 w-2 rounded-full bg-[#3e75ff]" />
                     </div>
 
                   </article>
@@ -658,32 +642,21 @@ export default function AboutPage() {
         {/* =========================================================
             CONTACT
         ========================================================= */}
-        <section className="bg-white px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
+        <section className="about-contact-section bg-white px-6 pb-10 pt-3 lg:px-8">
 
-          {/* WHITE CONTACT BOX */}
-          <div className="relative mx-auto max-w-[1180px] overflow-hidden rounded-[26px] border border-gray-200 bg-white shadow-[0_15px_45px_rgba(0,0,0,0.05)]">
-
-            <div className="absolute inset-x-0 top-0 h-1 bg-[#3e75ff]" />
-
-            <div className="relative grid gap-7 px-6 py-8 sm:px-8 sm:py-9 lg:grid-cols-[1fr_auto] lg:items-center lg:px-10 lg:py-10">
+          <div className="about-contact mx-auto flex flex-col items-center justify-between gap-5 overflow-hidden rounded-[20px] border border-[#d7c8e8] bg-[#f1e9fa] p-6 text-center text-black shadow-[0_14px_36px_rgba(91,54,123,0.09)] md:flex-row md:text-left">
 
               <div>
 
-                <div className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1.5">
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#7a3e9d]">
+                  Ready to get started?
+                </p>
 
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#3e75ff]" />
-
-                  <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-[#3e75ff]">
-                    Contact Us
-                  </span>
-
-                </div>
-
-                <h2 className="mt-4 max-w-2xl text-[clamp(1.5rem,2.4vw,2.3rem)] font-medium leading-[1.05] tracking-[-0.04em] text-black">
+                <h2 className="mt-2 max-w-2xl text-xl font-semibold tracking-[-0.02em] text-black md:text-2xl">
                   Build what comes next.
                 </h2>
 
-                <p className="mt-3 max-w-xl text-sm leading-6 text-gray-600">
+                <p className="mt-2 max-w-lg text-sm leading-6 text-gray-700">
                   We are building technology that can change how businesses
                   communicate and operate. If you want to help shape that
                   future, we&apos;d love to meet you.
@@ -692,25 +665,160 @@ export default function AboutPage() {
               </div>
 
 
-              {/* =====================================================
-                  FINAL CONTACT US — BLACK BACKGROUND + WHITE TEXT
-              ===================================================== */}
               <Link
                 href="/contact"
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-6 text-xs font-bold shadow-[0_10px_25px_rgba(0,0,0,0.15)] transition-all duration-300 hover:-translate-y-1 hover:bg-gray-800 hover:shadow-[0_15px_32px_rgba(0,0,0,0.2)]"
-                style={{
-                  backgroundColor: "#000000",
-                  color: "#ffffff",
-                }}
+                className="inline-flex min-h-11 shrink-0 items-center rounded-lg bg-[#7a3e9d] px-6 text-xs font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#683486]"
               >
-                Contact Us
-                <ArrowIcon />
+                CONTACT US <span className="ml-3">&rarr;</span>
               </Link>
-
-            </div>
 
           </div>
         </section>
+
+        <style>{`
+          #about-page {
+            background: #fff;
+          }
+
+          #about-page .about-hero {
+            background: linear-gradient(180deg, #fbf9ff 0%, #f5f2ff 68%, #fff 100%);
+          }
+
+          #about-page .about-gradient-text {
+            color: #000;
+          }
+
+          #about-page .about-primary-button {
+            background: #6268ff;
+          }
+
+          #about-page .about-primary-button:hover {
+            background: #565dcc;
+          }
+
+          #about-page .about-color-bar {
+            background: linear-gradient(90deg, #df4f82, #a45ee8, #6268ff);
+          }
+
+          #about-page [class*="text-[#3e75ff]"] {
+            color: #805bd8;
+          }
+
+          #about-page [class*="bg-[#3e75ff]"] {
+            background-color: #805bd8;
+          }
+
+          #about-page [class*="border-[#3e75ff]"] {
+            border-color: rgba(128, 91, 216, .36);
+          }
+
+          #about-page > section:nth-of-type(2) {
+            background: #fff;
+          }
+
+          #about-page .about-mission-card {
+            background: #f1edff;
+            border-color: #ddd5ff;
+          }
+
+          #about-page > section:nth-of-type(3) {
+            background: #fff;
+          }
+
+          #about-page > section:nth-of-type(4) {
+            background: #fcf8ff;
+          }
+
+          #about-page > section:nth-of-type(5) {
+            background: linear-gradient(145deg, #ffffff 0%, #f4f1ff 100%);
+          }
+
+          #about-page > section:nth-of-type(6) {
+            background: #fff;
+          }
+
+          #about-page .about-journey-item {
+            border: 0;
+            background: transparent;
+            box-shadow: none;
+          }
+
+          #about-page .about-values-card,
+          #about-page .about-manifesto-card {
+            border-color: rgba(128, 91, 216, .18);
+          }
+
+          #about-page .about-values-card:nth-child(4n + 1) {
+            background: #fcf1f4;
+            border-color: #eedce1;
+          }
+
+          #about-page .about-values-card:nth-child(4n + 2) {
+            background: #faf1f6;
+            border-color: #eadde4;
+          }
+
+          #about-page .about-values-card:nth-child(4n + 3) {
+            background: #f8f2f5;
+            border-color: #e6dce1;
+          }
+
+          #about-page .about-values-card:nth-child(4n) {
+            background: #fcf7e8;
+            border-color: #ebe3c8;
+          }
+
+          #about-page .about-values-card:nth-child(4n + 1) [class*="text-[#3e75ff]"] {
+            color: #d84f6f;
+          }
+
+          #about-page .about-values-card:nth-child(4n + 2) [class*="text-[#3e75ff]"],
+          #about-page .about-manifesto-card:nth-child(4n + 2) [class*="text-[#3e75ff]"] {
+            color: #c64f7c;
+          }
+
+          #about-page .about-values-card:nth-child(4n + 3) [class*="text-[#3e75ff]"],
+          #about-page .about-manifesto-card:nth-child(4n + 3) [class*="text-[#3e75ff]"] {
+            color: #9b5274;
+          }
+
+          #about-page .about-values-card:nth-child(4n) [class*="text-[#3e75ff]"],
+          #about-page .about-manifesto-card:nth-child(4n) [class*="text-[#3e75ff]"] {
+            color: #d98a00;
+          }
+
+          #about-page .about-manifesto-number {
+            background: #f5e7ed;
+            color: #a85370;
+          }
+
+          #about-page .about-values-card:hover,
+          #about-page .about-manifesto-card:hover {
+            border-color: rgba(128, 91, 216, .42);
+          }
+
+          #about-page .about-manifesto-card:nth-child(4n + 2) {
+            border-color: rgba(98, 104, 255, .2);
+          }
+
+          #about-page .about-contact {
+            width: min(100%, 980px);
+            border-color: #d7c8e8;
+            background: linear-gradient(120deg, #f1e9fa 0%, #e9e7ff 100%);
+            box-shadow: 0 14px 36px rgba(91, 54, 123, .09);
+            padding: 1.5rem;
+          }
+
+          #about-page .about-contact a {
+            border-color: #7a3e9d;
+            background: #7a3e9d;
+            color: #fff;
+          }
+
+          #about-page .about-contact a:hover {
+            background: #683486;
+          }
+        `}</style>
 
       </main>
     </SiteLayout>
