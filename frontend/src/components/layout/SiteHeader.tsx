@@ -46,8 +46,15 @@ export function SiteHeader() {
 
   return (
     <header className="site-header-previous fixed inset-x-0 top-0 z-50 bg-[#f1f1f6]" ref={headerRef}>
-      <div className="relative mx-auto flex min-h-[100px] w-[min(1318px,calc(100%-48px))] items-center justify-between gap-4 max-[900px]:min-h-[84px] max-[640px]:min-h-[72px] max-[640px]:w-[calc(100%-28px)]">
-        <div className="header-previous-logo text-[#111113] [&_img]:brightness-0"><BrandLogo showWebsiteLogo /></div>
+      <div className="relative mx-auto flex w-full items-center justify-between gap-4 px-20 py-2.5 max-[900px]:px-6 max-[900px]:py-2.5 max-[640px]:px-4 max-[640px]:py-2">
+        <div className="header-previous-logo flex -translate-x-8 flex-col items-center text-[#111113] max-[640px]:-translate-x-3">
+          <div className="header-previous-brand-unit flex flex-col items-center">
+            <BrandLogo showWebsiteLogo />
+            <small className="header-previous-tagline">
+              AI Voice for a Smarter Business
+            </small>
+          </div>
+        </div>
         <nav aria-label="Main navigation" className="hidden items-center gap-7 min-[901px]:flex xl:gap-12">
           <Link className={`marketing-nav-link ${pathname === "/" ? "is-active" : ""}`} href="/" onClick={closeAll}>Home</Link>
           <button aria-expanded={activeMenu === "product"} className={`marketing-nav-link ${pathname.startsWith("/product") || pathname.startsWith("/services") ? "is-active" : ""}`} onClick={() => setActiveMenu(activeMenu === "product" ? null : "product")} type="button">Products<Chevron open={activeMenu === "product"} /></button>
@@ -55,9 +62,9 @@ export function SiteHeader() {
           <button aria-expanded={activeMenu === "business"} className={`marketing-nav-link ${pathname.startsWith("/business") ? "is-active" : ""}`} onClick={() => setActiveMenu(activeMenu === "business" ? null : "business")} type="button">For Business<Chevron open={activeMenu === "business"} /></button>
           <button aria-expanded={activeMenu === "company"} className={`marketing-nav-link ${isCompany ? "is-active" : ""}`} onClick={() => setActiveMenu(activeMenu === "company" ? null : "company")} type="button">Company<Chevron open={activeMenu === "company"} /></button>
         </nav>
-        <div className="flex items-center gap-2">
-          <Link className="header-previous-start hidden min-h-[54px] items-center justify-center rounded-full border-[1.5px] border-[#111116] px-8 text-sm font-bold text-[#111116] min-[901px]:inline-flex" href="/dashboard">Get started</Link>
-          <Link className="header-previous-signup inline-flex min-h-[54px] items-center justify-center rounded-full bg-[#05050b] px-6 text-sm font-bold text-white max-[900px]:min-h-[42px] max-[640px]:hidden" href="/login">Sign Up</Link>
+        <div className="flex items-center gap-2 min-[901px]:translate-x-4">
+          <Link className="header-previous-start hidden min-h-12 items-center justify-center rounded-full border-[1.5px] border-[#111116] px-7 text-sm font-bold text-[#111116] min-[901px]:inline-flex" href="/dashboard">Get started</Link>
+          <Link className="header-previous-signup inline-flex min-h-12 items-center justify-center rounded-full bg-[#05050b] px-6 text-sm font-bold text-white max-[900px]:min-h-[42px] max-[640px]:hidden" href="/login">Sign Up</Link>
           <button aria-expanded={mobileOpen} aria-label="Toggle navigation" className="grid size-10 place-items-center rounded-full border border-[#cfcfd9] text-[#111113] min-[901px]:hidden" onClick={() => setMobileOpen(!mobileOpen)} type="button"><span className="text-lg leading-none">{mobileOpen ? "×" : "≡"}</span></button>
         </div>
 

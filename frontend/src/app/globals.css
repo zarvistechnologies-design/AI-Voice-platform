@@ -163,8 +163,40 @@
 }
 
 .site-header-previous .header-previous-logo span {
-  width: 190px;
-  height: 54px;
+  width: 176px;
+  height: 48px;
+}
+
+.site-header-previous .header-previous-logo img {
+  filter: brightness(0) saturate(100%) invert(47%) sepia(92%) saturate(3394%) hue-rotate(213deg) brightness(102%) contrast(101%) !important;
+}
+
+.site-header-previous .header-previous-tagline {
+  display: block;
+  width: 116px;
+  margin: -8px 8px 0 auto;
+  color: #51515b;
+  font-size: 6px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.site-header-previous .header-previous-brand-unit {
+  animation: header-logo-entrance-bounce 1s cubic-bezier(.2, .75, .25, 1) both;
+}
+
+@keyframes header-logo-entrance-bounce {
+  0% { opacity: 0; transform: translateY(-42px) scale(.94); }
+  62% { opacity: 1; transform: translateY(9px) scale(1.02); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header-previous .header-previous-brand-unit { animation: none; }
 }
 
 .site-header-previous .marketing-nav-link {
@@ -202,11 +234,12 @@
 }
 
 @media (max-width: 900px) {
-  .site-header-previous .header-previous-logo span { width: 155px; height: 48px; }
+  .site-header-previous .header-previous-logo span { width: 145px; height: 42px; }
 }
 
 @media (max-width: 640px) {
-  .site-header-previous .header-previous-logo span { width: 118px; height: 38px; }
+  .site-header-previous .header-previous-logo span { width: 112px; height: 34px; }
+  .site-header-previous .header-previous-tagline { width: 82px; margin-top: -6px; margin-right: 0; font-size: 4px; }
 }
 
 .mobile-nav-heading,
