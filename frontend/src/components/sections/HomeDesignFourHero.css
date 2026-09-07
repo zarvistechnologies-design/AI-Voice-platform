@@ -2,6 +2,7 @@
 
 /* Logo and capability lines enter first; the phone form follows and settles by two seconds. */
 .home-design-four__header > a:first-child,
+.header-previous-logo-home > a,
 .design-four-hero__features > span,
 .design-four-phone {
   animation: designFourEntranceBounce 1s cubic-bezier(.2,.75,.25,1) both;
@@ -20,16 +21,29 @@
 
 @media (prefers-reduced-motion: reduce) {
   .home-design-four__header > a:first-child,
+  .header-previous-logo-home > a,
   .design-four-hero__features > span,
   .design-four-phone {
     animation: none;
   }
 }
 @media(max-width:1248px){.home-design-four__header nav:first-of-type{gap:26px}.home-design-four__header nav:first-of-type a{font-size:14px}.design-four-get-started,.design-four-sign-up{min-height:48px;padding:0 25px;font-size:14px}}
-@media(max-width:900px){.home-design-four__header{height:84px}.home-design-four__header::before{height:84px}.home-design-four__header>a:first-child span{width:155px;height:48px}.design-four-get-started{display:none}.design-four-sign-up{min-width:auto;min-height:42px;padding:0 20px}.home-design-four__hero{min-height:700px;padding-top:138px}.home-design-four__hero h1{margin-top:67px;font-size:clamp(44px,7vw,64px)}.design-four-trust-pill{font-size:16px}}
-@media(max-width:640px){.home-design-four__header{height:72px}.home-design-four__header::before{height:72px}.home-design-four__header>a:first-child span{width:118px;height:38px}.design-four-sign-up{display:none}.home-design-four__hero{min-height:650px;padding-top:112px}.design-four-hero__features{flex-wrap:wrap;gap:10px 18px}.design-four-hero__features span{gap:7px;font-size:11px}.design-four-hero__features i{width:20px;height:20px;font-size:11px}.home-design-four__hero h1{margin-top:50px;font-size:clamp(38px,11vw,51px);line-height:1.09}.design-four-desktop-break{display:none}.design-four-phone{height:62px;margin-top:54px;border-width:5px}.design-four-india-flag{width:35px;height:35px}.design-four-phone input{padding:0 10px;font-size:13px}.design-four-phone button{height:44px;padding:0 18px;font-size:12px}.design-four-trust-pill{min-height:42px;margin-top:38px;padding:9px 14px;font-size:12px;line-height:1.35}.home-design-four__logos{min-height:205px;padding-top:48px;padding-bottom:55px}.home-design-four__logos>div{gap:25px 31px}.home-design-four__logos b{font-size:17px}}
+@media(max-width:900px){.home-design-four__header{height:84px}.home-design-four__header::before{height:84px}.home-design-four__header>a:first-child span{width:155px;height:48px}.design-four-get-started{display:none}.design-four-sign-up{min-width:auto;min-height:42px;padding:0 20px}.home-design-four__hero{min-height:700px;padding-top:138px}.home-design-four__hero h1{margin-top:67px;font-size:clamp(38px,6.2vw,55px)}.design-four-trust-pill{font-size:16px}}
+@media(max-width:640px){.home-design-four__header{height:72px}.home-design-four__header::before{height:72px}.home-design-four__header>a:first-child span{width:118px;height:38px}.design-four-sign-up{display:none}.home-design-four__hero{min-height:650px;padding-top:112px}.design-four-hero__features{flex-wrap:wrap;gap:10px 18px}.design-four-hero__features span{gap:7px;font-size:11px}.design-four-hero__features i{width:20px;height:20px;font-size:11px}.home-design-four__hero h1{margin-top:50px;font-size:clamp(32px,9.5vw,43px);line-height:1.09}.design-four-desktop-break{display:none}.design-four-phone{height:62px;margin-top:54px;border-width:5px}.design-four-india-flag{width:35px;height:35px}.design-four-phone input{padding:0 10px;font-size:13px}.design-four-phone button{height:44px;padding:0 18px;font-size:12px}.design-four-trust-pill{min-height:42px;margin-top:38px;padding:9px 14px;font-size:12px;line-height:1.35}.home-design-four__logos{min-height:205px;padding-top:48px;padding-bottom:55px}.home-design-four__logos>div{gap:25px 31px}.home-design-four__logos b{font-size:17px}}
 
 /* Reference-matched landing header and first viewport. */
+.header-previous-logo-home {
+  transform: translateX(-24px);
+}
+
+.header-previous-logo-home img {
+  filter: brightness(0) saturate(100%) invert(47%) sepia(92%) saturate(3394%) hue-rotate(213deg) brightness(102%) contrast(101%) !important;
+}
+
+@media (min-width: 901px) {
+  .header-previous-actions-home { transform: translateX(16px); }
+}
+
 @media (min-width: 901px) {
   .home-design-four__header {
     top: 8px;
@@ -95,7 +109,7 @@
     padding-top: 159px;
     background-color: #fdfdff;
     background-image:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1288 795' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='l' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23ebe7ff' stop-opacity='.78'/%3E%3Cstop offset='.62' stop-color='%23f0eeff' stop-opacity='.5'/%3E%3Cstop offset='1' stop-color='%23fff' stop-opacity='0'/%3E%3C/linearGradient%3E%3ClinearGradient id='r' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23eaefff' stop-opacity='.74'/%3E%3Cstop offset='.62' stop-color='%23f0f3ff' stop-opacity='.46'/%3E%3Cstop offset='1' stop-color='%23fff' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M0 100H135C250 100 326 476 470 795H0Z' fill='url(%23l)'/%3E%3Cpath d='M1288 100h-135C1038 100 962 476 818 795h470Z' fill='url(%23r)'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1288 795' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='l' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23ebe7ff' stop-opacity='.78'/%3E%3Cstop offset='.62' stop-color='%23f0eeff' stop-opacity='.5'/%3E%3Cstop offset='1' stop-color='%23fff' stop-opacity='0'/%3E%3C/linearGradient%3E%3ClinearGradient id='r' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23eaefff' stop-opacity='.74'/%3E%3Cstop offset='.62' stop-color='%23f0f3ff' stop-opacity='.46'/%3E%3Cstop offset='1' stop-color='%23fff' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M0 68H135C250 68 326 476 470 795H0Z' fill='url(%23l)'/%3E%3Cpath d='M1288 68h-135C1038 68 962 476 818 795h470Z' fill='url(%23r)'/%3E%3C/svg%3E"),
       linear-gradient(180deg, #fafaff 0%, #ffffff 82%);
     background-position: center, center;
     background-size: 100% 100%, 100% 100%;
@@ -130,7 +144,7 @@
 
   .home-design-four__hero h1 {
     margin-top: 76px;
-    font-size: clamp(46px, 4.35vw, 67px);
+    font-size: clamp(42px, 3.85vw, 58px);
     line-height: 1.16;
     letter-spacing: -.035em;
   }
@@ -225,6 +239,10 @@
   .design-four-client-logo.is-simplamo sup { margin-left: 1px; font-size: 7px; }
   .design-four-client-logo.is-soulpage { font-size: 23px; font-weight: 500; }
   .design-four-client-logo.is-soulpage svg { width: 20px; height: 24px; }
+}
+
+@media (max-width: 640px) {
+  .header-previous-logo-home { transform: translateX(-8px); }
 }
 
 @media (max-width: 900px) {

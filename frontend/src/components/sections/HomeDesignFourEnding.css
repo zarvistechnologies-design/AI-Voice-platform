@@ -9,7 +9,7 @@
 .design-four-insights-section {
   box-sizing: border-box;
   background: linear-gradient(118deg, #ffffff 0%, #fcfcff 46%, #f5f6ff 100%);
-  padding: 26px max(24px, calc((100vw - 1080px) / 2)) 30px !important;
+  padding: 26px max(32px, calc((100vw - 1180px) / 2)) 30px !important;
 }
 
 .design-four-insights-header {
@@ -589,7 +589,7 @@
 
 .design-four-integration-copy h2 {
   margin: 28px 0 82px;
-  font-size: clamp(58px, 6.3vw, 84px);
+  font-size: clamp(48px, 5.2vw, 70px);
   line-height: .98;
   letter-spacing: -.065em;
 }
@@ -597,14 +597,14 @@
 .design-four-integration-copy h2 strong { color: #737985; }
 .design-four-integration-copy a {
   display: inline-flex;
-  min-width: 214px;
-  min-height: 86px;
+  min-width: 180px;
+  min-height: 64px;
   align-items: center;
   justify-content: center;
   border-radius: 999px;
   background: #03040b;
   color: #fff;
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 700;
   text-decoration: none;
 }
@@ -621,19 +621,19 @@
   background: #fff;
   font-size: 29px;
   font-weight: 700;
-  animation: design-four-float 5s ease-in-out infinite;
+  animation: none;
 }
 
-.design-four-integration-icons .calendar { left: 6%; top: 135px; }
-.design-four-integration-icons .crm { left: 17%; top: 280px; }
-.design-four-integration-icons .facebook { left: 7%; top: 430px; color: #1818ed; font: 700 70px Arial; }
-.design-four-integration-icons .twilio { left: 28%; top: 420px; color: #d42631; line-height: .6; }
-.design-four-integration-icons .gmail { left: 17%; top: 570px; }
-.design-four-integration-icons .salesforce { right: 6%; top: 135px; color: #098ecb; font-size: 17px; }
-.design-four-integration-icons .instagram { right: 17%; top: 280px; color: #dd3576; font-size: 72px; }
-.design-four-integration-icons .whatsapp { right: 28%; top: 420px; color: #2acb4c; font-size: 58px; }
-.design-four-integration-icons .hubspot { right: 5%; top: 440px; }
-.design-four-integration-icons .slack { right: 17%; top: 585px; color: #28b99b; font-size: 65px; }
+.design-four-integration-icons .calendar { left: 6%; top: 145px; }
+.design-four-integration-icons .crm { left: 17%; top: 260px; }
+.design-four-integration-icons .facebook { left: 7%; top: 390px; color: #1818ed; font: 700 70px Arial; }
+.design-four-integration-icons .twilio { left: 28%; top: 390px; color: #d42631; line-height: .6; }
+.design-four-integration-icons .gmail { left: 17%; top: 515px; }
+.design-four-integration-icons .salesforce { right: 6%; top: 145px; color: #098ecb; font-size: 17px; }
+.design-four-integration-icons .instagram { right: 17%; top: 260px; color: #dd3576; font-size: 72px; }
+.design-four-integration-icons .whatsapp { right: 28%; top: 390px; color: #2acb4c; font-size: 58px; }
+.design-four-integration-icons .hubspot { right: 5%; top: 390px; }
+.design-four-integration-icons .slack { right: 17%; top: 515px; color: #28b99b; font-size: 65px; }
 .design-four-integration-icons > span:nth-child(even) { animation-delay: -2.4s; }
 .design-four-integration-icons svg { width: 68px; height: 68px; }
 .design-four-integration-icons .facebook svg { fill: #1877f2; }
@@ -683,7 +683,7 @@
 }
 
 .design-four-footer-cta {
-  min-height: 170px;
+  min-height: 140px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -719,7 +719,7 @@
   display: grid;
   grid-template-columns: 320px minmax(0, 1fr);
   gap: 72px;
-  padding: 105px clamp(24px, 3.5vw, 48px) 250px;
+  padding: 78px clamp(24px, 3.5vw, 48px) 250px;
 }
 
 .design-four-footer-brand > a { display: inline-flex; opacity: 0; filter: brightness(0) invert(1); }
@@ -877,7 +877,7 @@
   .design-four-faq-list details p { margin-right: 0; }
   .design-four-integrations-section { min-height: 700px; }
   .design-four-integration-copy { padding: 185px 18px 0; }
-  .design-four-integration-copy h2 { font-size: clamp(48px, 15vw, 66px); }
+  .design-four-integration-copy h2 { font-size: clamp(40px, 12vw, 54px); }
   .design-four-integration-icons > span { width: 78px; height: 78px; border-radius: 20px; }
   .design-four-integration-icons > span img { width: 46px; height: 46px; }
   .design-four-integration-icons .calendar { left: 4%; top: 55px; }
@@ -912,7 +912,7 @@
   margin: 0;
   padding: 0;
   overflow-x: clip;
-  --design-four-page-gutter: 15vw;
+  --design-four-page-gutter: max(32px, calc((100vw - 1180px) / 2));
   --design-four-header-gutter: clamp(28px, 7vw, 126px);
 }
 
@@ -941,8 +941,8 @@
 .design-four-industry-section,
 .design-four-testimonials-section,
 .design-four-support-section {
-  padding-right: var(--design-four-page-gutter);
-  padding-left: var(--design-four-page-gutter);
+  padding-right: var(--design-four-page-gutter) !important;
+  padding-left: var(--design-four-page-gutter) !important;
 }
 
 .design-four-security-row { padding-right: 0; padding-left: 0; }
@@ -954,7 +954,7 @@
 
 @media (max-width: 1100px) {
   .home-design-four {
-    --design-four-page-gutter: 7vw;
+    --design-four-page-gutter: 32px;
     --design-four-header-gutter: 32px;
   }
 }
@@ -1082,8 +1082,8 @@
 /* Keep all four workflow cards on the same reference grid and baseline. */
 @media (min-width: 901px) {
   .design-four-launch-section {
-    padding-right: max(28px, calc((100vw - 1100px) / 2));
-    padding-left: max(28px, calc((100vw - 1100px) / 2));
+    padding-right: max(32px, calc((100vw - 1180px) / 2));
+    padding-left: max(32px, calc((100vw - 1180px) / 2));
   }
 
   .design-four-step-grid {
@@ -1443,8 +1443,8 @@
     width: 100%;
     margin-right: auto;
     margin-left: auto;
-    transform: translateX(-24px);
-    justify-content: flex-start;
+    transform: none;
+    justify-content: space-between !important;
   }
 
   .design-four-voice-layout {
@@ -1476,6 +1476,8 @@
   max-width: 1180px;
   padding: 2px 0 6px;
   gap: 10px;
+  translate: none;
+  justify-content: space-between !important;
 }
 
 /* Slightly enlarge the symbols in step 2 and language flags in step 3. */
@@ -1495,7 +1497,15 @@
 
 .design-four-step-grid .design-four-voice-flags > i,
 .design-four-step-grid .design-four-voice-flags > button {
-  width: 32px !important;
-  height: 32px !important;
-  flex-basis: 32px !important;
+  width: 34px !important;
+  height: 34px !important;
+  flex-basis: 34px !important;
+}
+
+.design-four-step-grid .design-four-voice .design-four-voice-flags {
+  width: 100%;
+  min-height: 44px;
+  flex: 1 1 auto;
+  gap: 6px;
+  padding: 4px 2px;
 }
