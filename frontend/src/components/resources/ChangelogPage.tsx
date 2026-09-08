@@ -158,8 +158,8 @@ function ReleaseMark() {
 export function ChangelogPage() {
   return (
     <SiteLayout>
-      <main className="min-h-screen bg-black text-white">
-        <section className="relative overflow-hidden bg-black px-5 pb-16 pt-28 sm:px-8 sm:pb-20 sm:pt-32 lg:px-12 lg:pt-32">
+      <main className="changelog-page min-h-screen bg-black text-white">
+        <section className="changelog-hero relative overflow-hidden bg-black px-5 pb-16 pt-28 sm:px-8 sm:pb-20 sm:pt-32 lg:px-12 lg:pt-32">
           <div
             aria-hidden="true"
             className="absolute inset-0 bg-[radial-gradient(circle_at_76%_20%,rgba(69,221,206,0.13),transparent_30%),radial-gradient(circle_at_18%_72%,rgba(139,124,255,0.08),transparent_28%),linear-gradient(rgba(69,221,206,0.025)_1px,transparent_1px),linear-gradient(90deg,rgba(69,221,206,0.025)_1px,transparent_1px)] [background-size:auto,auto,64px_64px,64px_64px]"
@@ -181,7 +181,7 @@ export function ChangelogPage() {
               </p>
             </div>
 
-            <div className="mt-14 overflow-hidden rounded-2xl border border-[#45ddce]/22 bg-[#050807]/90 shadow-[0_28px_80px_rgba(0,0,0,0.42)] backdrop-blur">
+            <div className="changelog-latest mt-14 overflow-hidden rounded-2xl border border-[#45ddce]/22 bg-[#050807]/90 shadow-[0_28px_80px_rgba(0,0,0,0.42)] backdrop-blur">
               <div className="grid lg:grid-cols-[210px_minmax(0,1fr)_170px]">
                 <div className="flex items-center gap-3 border-b border-white/[0.07] p-6 lg:border-b-0 lg:border-r">
                   <span className="relative flex size-3">
@@ -212,7 +212,7 @@ export function ChangelogPage() {
           </div>
         </section>
 
-        <section className="bg-[#020403] px-5 py-20 sm:px-8 lg:px-12 lg:py-24">
+        <section className="changelog-archive bg-[#020403] px-5 py-20 sm:px-8 lg:px-12 lg:py-24">
           <div className="mx-auto grid max-w-[1240px] gap-12 lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-16">
             <aside className="lg:sticky lg:top-28 lg:h-fit">
               <p className="text-[11px] font-bold uppercase tracking-[0.17em] text-[#75fff0]">
@@ -238,7 +238,7 @@ export function ChangelogPage() {
                 </ul>
               </nav>
 
-              <div className="mt-8 rounded-xl border border-white/[0.08] bg-white/[0.018] p-5">
+              <div className="changelog-guide mt-8 rounded-xl border border-white/[0.08] bg-white/[0.018] p-5">
                 <p className="text-xs font-semibold text-white/72">How to read this log</p>
                 <p className="mt-3 text-xs leading-6 text-white/38">
                   New introduces a capability. Improved refines existing behaviour. Fixed resolves
@@ -260,7 +260,7 @@ export function ChangelogPage() {
             <div className="relative">
               <div
                 aria-hidden="true"
-                className="absolute bottom-10 left-[19px] top-7 w-px bg-gradient-to-b from-[#45ddce]/55 via-[#8b7cff]/25 to-transparent sm:left-[23px]"
+                className="changelog-timeline absolute bottom-10 left-[19px] top-7 w-px bg-gradient-to-b from-[#45ddce]/55 via-[#8b7cff]/25 to-transparent sm:left-[23px]"
               />
 
               <div className="space-y-8">
@@ -271,13 +271,13 @@ export function ChangelogPage() {
                     key={release.version}
                   >
                     <div className="relative z-10 flex justify-center pt-7">
-                      <span className="grid size-10 place-items-center rounded-xl border border-[#45ddce]/20 bg-[#07100e] text-[#75fff0] shadow-[0_0_28px_rgba(0,0,0,0.8)]">
+                      <span className="changelog-release-mark grid size-10 place-items-center rounded-xl border border-[#45ddce]/20 bg-[#07100e] text-[#75fff0] shadow-[0_0_28px_rgba(0,0,0,0.8)]">
                         <ReleaseMark />
                       </span>
                     </div>
 
                     <div
-                      className={`overflow-hidden rounded-2xl border p-6 shadow-[0_22px_70px_rgba(0,0,0,0.24)] sm:p-8 ${release.accent}`}
+                      className={`changelog-release-card overflow-hidden rounded-2xl border p-6 shadow-[0_22px_70px_rgba(0,0,0,0.24)] sm:p-8 ${release.accent}`}
                     >
                       <div className="flex flex-col gap-4 border-b border-white/[0.08] pb-6 sm:flex-row sm:items-start sm:justify-between">
                         <div>
@@ -308,7 +308,7 @@ export function ChangelogPage() {
                             key={`${update.type}-${update.text}`}
                           >
                             <span
-                              className={`mt-0.5 w-fit rounded-full border px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.12em] ${updateTypeStyles[update.type]}`}
+                              className={`changelog-update-pill mt-0.5 w-fit rounded-full border px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.12em] ${updateTypeStyles[update.type]}`}
                             >
                               {update.type}
                             </span>
@@ -324,8 +324,8 @@ export function ChangelogPage() {
           </div>
         </section>
 
-        <section className="bg-black px-5 py-20 sm:px-8 lg:px-12 lg:py-24">
-          <div className="mx-auto flex max-w-[1040px] flex-col items-start justify-between gap-8 rounded-2xl border border-[#45ddce]/20 bg-[linear-gradient(115deg,rgba(69,221,206,0.1),rgba(139,124,255,0.035)_52%,transparent)] p-7 sm:p-10 lg:flex-row lg:items-center">
+        <section className="changelog-contact-section bg-black px-5 py-14 sm:px-8 lg:px-12 lg:py-16">
+          <div className="changelog-contact mx-auto flex max-w-[1040px] flex-col items-start justify-between gap-8 rounded-2xl border border-[#45ddce]/20 bg-[linear-gradient(115deg,rgba(69,221,206,0.1),rgba(139,124,255,0.035)_52%,transparent)] p-7 sm:p-10 lg:flex-row lg:items-center">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#75fff0]">
                 Need more detail?

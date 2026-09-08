@@ -5788,3 +5788,423 @@
     padding: 2rem 2.25rem !important;
   }
 }
+
+/* Changelog: clean white marketing presentation. */
+.changelog-page.changelog-page {
+  --changelog-ink: #17203f;
+  --changelog-copy: #626a7d;
+  --changelog-blue: #3e75ff;
+  --changelog-blue-dark: #315fdb;
+  --changelog-line: #dfe5f1;
+  background: #fff !important;
+  color: var(--changelog-ink) !important;
+}
+
+.changelog-page.changelog-page > section {
+  background: #fff !important;
+  background-image: none !important;
+}
+
+.changelog-page.changelog-page .changelog-hero > [aria-hidden="true"] {
+  display: none !important;
+}
+
+.changelog-page.changelog-page :is(h1, h2, h3, strong) {
+  color: var(--changelog-ink) !important;
+  -webkit-text-fill-color: var(--changelog-ink) !important;
+}
+
+.changelog-page.changelog-page :is(p, time) {
+  color: var(--changelog-copy) !important;
+  -webkit-text-fill-color: var(--changelog-copy) !important;
+}
+
+.changelog-page.changelog-page span {
+  color: var(--changelog-copy) !important;
+  -webkit-text-fill-color: var(--changelog-copy) !important;
+}
+
+.changelog-page.changelog-page p[class*="uppercase"],
+.changelog-page.changelog-page .changelog-release-card div > span:first-child {
+  color: var(--changelog-blue-dark) !important;
+  -webkit-text-fill-color: var(--changelog-blue-dark) !important;
+}
+
+.changelog-page.changelog-page .changelog-hero > div > div:first-child > p:last-child {
+  border-color: #b9caff !important;
+}
+
+.changelog-page.changelog-page .changelog-latest,
+.changelog-page.changelog-page .changelog-guide,
+.changelog-page.changelog-page .changelog-release-card {
+  border-color: var(--changelog-line) !important;
+  background: #fff !important;
+  background-image: none !important;
+  box-shadow: 0 12px 34px rgba(45, 63, 118, 0.07) !important;
+  backdrop-filter: none !important;
+}
+
+.changelog-page.changelog-page .changelog-latest > div > div {
+  border-color: var(--changelog-line) !important;
+}
+
+.changelog-page.changelog-page .changelog-latest span[class*="rounded-full"],
+.changelog-page.changelog-page .changelog-release-card > div > div span[class*="rounded-full"],
+.changelog-page.changelog-page .changelog-guide span[class*="rounded-full"] {
+  border-color: #c8d5ff !important;
+  background: #eef3ff !important;
+  color: var(--changelog-blue-dark) !important;
+  -webkit-text-fill-color: var(--changelog-blue-dark) !important;
+}
+
+.changelog-page.changelog-page .changelog-latest p[class*="font-semibold"] {
+  color: var(--changelog-ink) !important;
+  -webkit-text-fill-color: var(--changelog-ink) !important;
+}
+
+.changelog-page.changelog-page [class*="bg-[#45ddce]"] {
+  background-color: var(--changelog-blue) !important;
+}
+
+.changelog-page.changelog-page .changelog-archive aside nav a {
+  border-color: transparent !important;
+  color: #667085 !important;
+  -webkit-text-fill-color: #667085 !important;
+}
+
+.changelog-page.changelog-page .changelog-archive aside nav li:first-child a,
+.changelog-page.changelog-page .changelog-archive aside nav a:hover {
+  border-color: #cbd7ff !important;
+  background: #fff !important;
+  color: var(--changelog-blue-dark) !important;
+  -webkit-text-fill-color: var(--changelog-blue-dark) !important;
+}
+
+.changelog-page.changelog-page .changelog-archive .space-y-8 > article:first-child .changelog-release-card {
+  background: #fff !important;
+  background-color: #fff !important;
+  background-image: none !important;
+}
+
+.changelog-page.changelog-page .changelog-timeline {
+  background: linear-gradient(to bottom, var(--changelog-blue), rgba(62, 117, 255, 0.12), transparent) !important;
+}
+
+.changelog-page.changelog-page .changelog-release-mark {
+  border-color: #b9caff !important;
+  background: #fff !important;
+  color: var(--changelog-blue) !important;
+  box-shadow: 0 6px 18px rgba(62, 117, 255, 0.12) !important;
+}
+
+.changelog-page.changelog-page .changelog-release-card > div:first-child {
+  border-color: var(--changelog-line) !important;
+}
+
+.changelog-page.changelog-page .changelog-update-pill {
+  border-color: #c8d5ff !important;
+  background: #eef3ff !important;
+  color: var(--changelog-blue-dark) !important;
+  -webkit-text-fill-color: var(--changelog-blue-dark) !important;
+}
+
+.changelog-page.changelog-page .changelog-contact {
+  border-color: #cbd8ff !important;
+  background: linear-gradient(135deg, #f5f8ff 0%, #ebf1ff 100%) !important;
+  background-image: linear-gradient(135deg, #f5f8ff 0%, #ebf1ff 100%) !important;
+  box-shadow: 0 14px 34px rgba(62, 117, 255, 0.09) !important;
+}
+
+.changelog-page.changelog-page .changelog-contact a {
+  border: 1px solid var(--changelog-blue) !important;
+  background: var(--changelog-blue) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  box-shadow: 0 8px 20px rgba(62, 117, 255, 0.18) !important;
+}
+
+.changelog-page.changelog-page .changelog-contact a:hover {
+  border-color: var(--changelog-blue-dark) !important;
+  background: var(--changelog-blue-dark) !important;
+}
+
+/* Documentation: structured white layout with the shared blue accent. */
+.docs-page.docs-page {
+  --support-ink: #17203f;
+  --support-muted: #626a7d;
+  --support-line: #e1e6ef;
+  --support-blue: #3e75ff;
+  --support-blue-dark: #315fdb;
+  background: #fff !important;
+  color: var(--support-ink) !important;
+}
+
+.docs-page.docs-page > div > aside {
+  border-color: var(--support-line) !important;
+  background: #fbfcff !important;
+}
+
+.docs-page.docs-page :is(h1, h2, h3, h4, strong, b, summary, label, th) {
+  color: var(--support-ink) !important;
+  -webkit-text-fill-color: var(--support-ink) !important;
+}
+
+.docs-page.docs-page :is(p, li, td),
+.docs-page.docs-page [class*="text-white/"] {
+  color: var(--support-muted) !important;
+  -webkit-text-fill-color: var(--support-muted) !important;
+}
+
+.docs-page.docs-page :is(article, section) > :is(span, p)[class*="uppercase"],
+.docs-page.docs-page a[href^="/docs"],
+.docs-page.docs-page a[href="/openapi.yaml"] {
+  color: var(--support-blue-dark) !important;
+  -webkit-text-fill-color: var(--support-blue-dark) !important;
+}
+
+.docs-page.docs-page aside nav a:hover,
+.docs-page.docs-page aside nav a[class*="bg-[#45ddce]"] {
+  background: #eef3ff !important;
+  color: var(--support-blue-dark) !important;
+  -webkit-text-fill-color: var(--support-blue-dark) !important;
+}
+
+.docs-page.docs-page article > div > section {
+  border-color: var(--support-line) !important;
+}
+
+.docs-page.docs-page [class*="rounded-xl"][class*="border"]:not(.docs-code-block) {
+  border-color: var(--support-line) !important;
+  background: #fff !important;
+  box-shadow: 0 6px 20px rgba(37, 55, 105, 0.045) !important;
+}
+
+.docs-page.docs-page .docs-step-number,
+.docs-page.docs-page .docs-figure-number {
+  border-color: var(--support-blue) !important;
+  background: var(--support-blue) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+.docs-page.docs-page .docs-step-line {
+  background: linear-gradient(to bottom, var(--support-blue), transparent) !important;
+}
+
+.docs-page.docs-page .docs-code-block,
+.docs-page.docs-page .docs-code-block :is(div, pre, code, span) {
+  border-color: #263451 !important;
+  background: #111827 !important;
+  color: #dbeafe !important;
+  -webkit-text-fill-color: #dbeafe !important;
+  box-shadow: none !important;
+}
+
+.docs-page.docs-page .docs-code-block > div {
+  border-bottom-color: #33415c !important;
+  background: #172033 !important;
+}
+
+.docs-page.docs-page .docs-code-block button {
+  border-color: #6687ff !important;
+  background: transparent !important;
+  color: #a9bfff !important;
+  -webkit-text-fill-color: #a9bfff !important;
+}
+
+.docs-page.docs-page [class*="border-amber"] {
+  border-color: #efd18d !important;
+  background: #fff9eb !important;
+}
+
+.docs-page.docs-page [class*="border-cyan"] {
+  border-color: #bcdcf8 !important;
+  background: #f2f8ff !important;
+}
+
+/* Site-wide responsive foundation for public, auth, docs, and app screens. */
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+:where(body, main, header, footer, nav, section, article, aside, form, fieldset, div) {
+  min-width: 0;
+}
+
+:where(img, video, canvas, iframe, picture, object, embed) {
+  max-width: 100%;
+}
+
+:where(video, iframe) {
+  width: 100%;
+}
+
+:where(pre, code) {
+  max-width: 100%;
+}
+
+pre {
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+
+:where(input, textarea, select) {
+  max-width: 100%;
+}
+
+:where([role="dialog"], dialog) {
+  max-width: calc(100vw - 2rem);
+  max-height: calc(100dvh - 2rem);
+}
+
+:where(.marketing-site, .docs-page, .pricing-page, .business-page) :where(h1, h2, h3, p, li, a, button) {
+  overflow-wrap: break-word;
+}
+
+.marketing-site :where(section, article),
+.docs-page :where(section, article),
+.pricing-page :where(section, article) {
+  max-width: 100%;
+}
+
+/* Compact laptops and tablets. */
+@media (max-width: 1023px) {
+  .site-header-previous > div {
+    width: 100%;
+  }
+
+  .docs-page > div {
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .docs-page > div > aside:first-child {
+    position: static !important;
+    width: 100%;
+    height: auto !important;
+    max-height: 340px;
+    overflow-y: auto;
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--support-line, #e1e6ef);
+  }
+
+  .docs-page > div > article {
+    width: 100%;
+  }
+
+  :is(#business-industry-page, #business-healthcare-page) :is(.industry-hero-grid, .healthcare-hero-grid) {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  :is(#business-industry-page, #business-healthcare-page) :is(.industry-hero-card, .healthcare-hero-card) {
+    width: min(100%, 560px) !important;
+  }
+}
+
+/* Phones and portrait tablets. */
+@media (max-width: 767px) {
+  :root {
+    --device-page-gutter: clamp(1rem, 4.5vw, 1.5rem);
+  }
+
+  :where(input, textarea, select) {
+    font-size: 16px;
+  }
+
+  .site-header-previous > div {
+    padding-right: var(--device-page-gutter) !important;
+    padding-left: var(--device-page-gutter) !important;
+  }
+
+  .site-header-previous nav[aria-label="Mobile navigation"] {
+    right: var(--device-page-gutter) !important;
+    left: var(--device-page-gutter) !important;
+    width: auto !important;
+    max-height: calc(100dvh - 5.5rem) !important;
+    overscroll-behavior: contain;
+  }
+
+  .marketing-site :where(h1, h2),
+  .docs-page :where(h1, h2),
+  .pricing-page :where(h1, h2) {
+    text-wrap: balance;
+  }
+
+  .marketing-site :where([class*="overflow-x-auto"], [class*="overflow-auto"]),
+  .docs-page :where([class*="overflow-x-auto"], [class*="overflow-auto"]),
+  .voice-agent-theme :where([class*="overflow-x-auto"], [class*="overflow-auto"]) {
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .docs-page {
+    padding-top: 5rem !important;
+  }
+
+  .docs-page > div > aside:first-child {
+    max-height: 280px;
+    padding-right: var(--device-page-gutter) !important;
+    padding-left: var(--device-page-gutter) !important;
+  }
+
+  .docs-page > div > article {
+    padding-right: var(--device-page-gutter) !important;
+    padding-left: var(--device-page-gutter) !important;
+  }
+
+  .docs-page table {
+    font-size: 0.75rem;
+  }
+
+  :is(#business-overview-page, #business-use-case-page, #business-industry-page, #business-healthcare-page) h1 span {
+    white-space: normal !important;
+  }
+
+  :is(#business-industry-page, #business-healthcare-page) [class*="w-[560px]"],
+  :is(#business-industry-page, #business-healthcare-page) [class*="w-[430px]"],
+  :is(#business-industry-page, #business-healthcare-page) [class*="w-[420px]"],
+  :is(#business-industry-page, #business-healthcare-page) [class*="w-[380px]"] {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  :is(#business-industry-page, #business-healthcare-page) [class*="grid-cols-7"] {
+    gap: 0.25rem !important;
+    font-size: 0.7rem !important;
+  }
+
+  :where([role="dialog"], dialog) {
+    width: calc(100vw - 1.5rem) !important;
+    max-width: calc(100vw - 1.5rem) !important;
+    max-height: calc(100dvh - 1.5rem) !important;
+    overflow-y: auto;
+  }
+}
+
+/* Very narrow phones. */
+@media (max-width: 420px) {
+  .site-header-previous .header-previous-logo {
+    transform: translateX(-0.25rem) !important;
+  }
+
+  .site-header-previous .header-previous-logo span {
+    width: 104px;
+  }
+
+  .site-header-previous button[aria-label="Toggle navigation"] {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+  }
+
+  .docs-page > div > aside:first-child {
+    max-height: 240px;
+  }
+
+  :is(#business-industry-page, #business-healthcare-page) :is(.industry-hero-image, .healthcare-hero-image) {
+    height: 280px !important;
+  }
+}

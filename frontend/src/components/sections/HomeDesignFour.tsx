@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { customerReviews } from "@/config/customerReviews";
 
 import styles from "./HomeDesignFour.module.css";
 import "./HomeDesignFourGrid.css";
@@ -38,15 +39,6 @@ const industries = [
   { title: "Hospitality", tab: "Hospitality", image: "/images/3.png" },
   { title: "Education & EdTech", tab: "Education & EdTech", image: "/images/4.png" },
   { title: "B2B Goods and Services", tab: "B2B Goods & Services", image: "/images/5.png" },
-] as const;
-
-const testimonials = [
-  { quote: "Vozon helped us automate repetitive calls without compromising the customer experience.", name: "Operations Lead", role: "Enterprise Customer" },
-  { quote: "The conversations feel natural, while the automation happens completely in the background.", name: "Daniel", role: "Head of Customer Experience" },
-  { quote: "We can launch and improve voice agents much faster than before.", name: "Sofia", role: "Growing Business" },
-  { quote: "The conversations feel natural, while the automation happens completely in the background.", name: "Aaron Chope", role: "Product Designer" },
-  { quote: "The conversations feel natural, while the automation happens completely in the background.", name: "Laura Kim", role: "Product Designer" },
-  { quote: "We can launch and improve voice agents much faster than before.", name: "Arjun Mehta", role: "Software Developer" },
 ] as const;
 
 const insights = [
@@ -190,6 +182,7 @@ export function HomeDesignFour() {
             <b className="design-four-client-logo is-hubspot">HubSpot</b>
             <b className="design-four-client-logo is-shopify">Shopify</b>
             <b className="design-four-client-logo is-zendesk">zendesk</b>
+            <b className="design-four-client-logo is-digitalbot" aria-label="DigitalBot">DigitalBot</b>
             </div>
             <div aria-hidden="true" className="design-four-client-marquee-group">
               <b className="design-four-client-logo is-deloitte">Deloitte<span>.</span></b>
@@ -216,6 +209,7 @@ export function HomeDesignFour() {
               <b className="design-four-client-logo is-hubspot">HubSpot</b>
               <b className="design-four-client-logo is-shopify">Shopify</b>
               <b className="design-four-client-logo is-zendesk">zendesk</b>
+              <b className="design-four-client-logo is-digitalbot">DigitalBot</b>
             </div>
           </div>
         </section>
@@ -293,11 +287,11 @@ export function HomeDesignFour() {
             <span>Trusted Clients says</span><h2>What our customers say</h2><p><strong>4.5/5.0</strong> <b>★★★★★</b> (Trusted by 100+ companies)</p>
           </div>
           <div className="design-four-review-grid">
-            {testimonials.map((item) => (
+            {customerReviews.slice(0, 6).map((item) => (
               <article key={item.name}><blockquote>{item.quote}</blockquote><footer><span>{item.name.slice(0,1)}</span><div><b>{item.name}</b><small>{item.role}</small></div><i>𝕏</i></footer></article>
             ))}
           </div>
-          <Link className="design-four-review-button" href="/resources/case-studies">View all Reviews</Link>
+          <Link className="design-four-review-button" href="/reviews">View all Reviews</Link>
         </section>
 
         <section className={`${styles.insights} home-design-four__section design-four-insights-section`} id="insights">

@@ -1534,3 +1534,295 @@
   gap: 6px;
   padding: 4px 2px;
 }
+
+/* Final responsive pass: keep the homepage usable from small phones to laptops. */
+.home-design-four img,
+.home-design-four svg {
+  max-width: 100%;
+}
+
+@media (min-width: 901px) and (max-width: 1248px) {
+  .home-design-four__hero h1 {
+    max-width: 940px;
+  }
+
+  .design-four-voice-player {
+    transform: none;
+  }
+
+  .design-four-industry-section {
+    grid-template-columns: minmax(260px, 300px) minmax(0, 1fr);
+    gap: 32px;
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1100px) {
+  .design-four-step-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 48px 16px !important;
+  }
+
+  .design-four-review-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .design-four-insights-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .home-design-four__hero h1 {
+    width: min(100%, 720px);
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .design-four-phone {
+    width: min(100%, 500px);
+  }
+
+  .design-four-trust-pill {
+    max-width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    text-align: center;
+  }
+
+  .design-four-language-tabs {
+    justify-content: flex-start !important;
+    padding-bottom: 10px;
+  }
+
+  .design-four-launch-heading h2 {
+    font-size: clamp(34px, 5vw, 42px);
+  }
+
+  .design-four-step-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .design-four-metrics {
+    margin-top: 38px;
+  }
+
+  .design-four-agent-banner {
+    width: 100%;
+  }
+
+  .design-four-industry-experience {
+    min-width: 0;
+  }
+
+  .design-four-industry-panel {
+    width: 100%;
+  }
+
+  .design-four-review-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .design-four-insights-grid,
+  .design-four-featured-insight {
+    grid-template-columns: 1fr;
+  }
+
+  .design-four-security-row {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .home-design-four__hero h1 {
+    max-width: 520px;
+  }
+
+  .design-four-phone {
+    max-width: 460px;
+  }
+
+  .design-four-phone button {
+    min-width: max-content;
+  }
+
+  .design-four-voice-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .design-four-voice-copy h2,
+  .design-four-industry-copy h2 {
+    font-size: clamp(29px, 9vw, 34px);
+  }
+
+  .design-four-voice-selector {
+    width: 100%;
+  }
+
+  .design-four-launch-heading {
+    flex-direction: column;
+  }
+
+  .design-four-launch-heading h2 {
+    font-size: clamp(30px, 9vw, 36px);
+  }
+
+  .design-four-launch-heading > a {
+    min-height: 44px;
+  }
+
+  .design-four-step-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 48px !important;
+  }
+
+  .design-four-step-grid article {
+    width: 100%;
+    min-height: 370px !important;
+  }
+
+  .design-four-outcomes-section > h2 {
+    font-size: clamp(25px, 8vw, 30px);
+    line-height: 1.2;
+  }
+
+  .design-four-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .design-four-metrics div {
+    min-width: 0;
+    padding: 14px 8px;
+  }
+
+  .design-four-agent-banner {
+    gap: 16px;
+  }
+
+  .design-four-agent-banner > div {
+    min-width: 0;
+  }
+
+  .design-four-agent-banner p {
+    max-width: none;
+  }
+
+  .design-four-industry-copy > div {
+    flex-wrap: wrap;
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .design-four-industry-copy > div a {
+    min-height: 44px;
+    flex: 1 1 150px;
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .design-four-industry-panel {
+    min-height: 360px;
+  }
+
+  .design-four-review-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .design-four-testimonial-heading h2 {
+    font-size: clamp(30px, 9vw, 36px);
+    line-height: 1.1;
+  }
+
+  .design-four-testimonial-heading p {
+    line-height: 1.6;
+  }
+
+  .design-four-insights-header {
+    align-items: center;
+  }
+
+  .design-four-featured-insight {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .design-four-featured-caption {
+    padding: 24px 20px;
+  }
+
+  .design-four-featured-caption h3 {
+    font-size: clamp(22px, 7vw, 28px);
+  }
+
+  .design-four-faq-list summary {
+    gap: 18px;
+    padding: 10px 0;
+    line-height: 1.35;
+  }
+
+  .design-four-integration-copy h2 {
+    font-size: clamp(36px, 12vw, 48px);
+  }
+
+  .design-four-footer-cta h2 {
+    font-size: clamp(27px, 8vw, 38px);
+    line-height: 1.12;
+    text-align: center;
+  }
+
+  .design-four-footer-main nav {
+    gap: 36px 20px;
+  }
+}
+
+@media (max-width: 420px) {
+  .design-four-hero__features {
+    align-items: flex-start;
+    flex-direction: column;
+    width: max-content;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .design-four-phone input {
+    padding-right: 6px;
+    padding-left: 8px;
+  }
+
+  .design-four-phone button {
+    padding-right: 13px;
+    padding-left: 13px;
+  }
+
+  .design-four-india-flag {
+    width: 30px;
+    height: 30px;
+    flex: 0 0 30px;
+  }
+
+  .design-four-trust-pill {
+    border-radius: 18px;
+  }
+
+  .design-four-agent-banner {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .design-four-agent-banner > a {
+    align-self: flex-end;
+    margin: 0;
+  }
+
+  .design-four-industry-copy > div a {
+    flex-basis: 100%;
+  }
+
+  .design-four-footer-cta > div {
+    flex-direction: column;
+  }
+
+  .design-four-footer-cta a {
+    width: 100%;
+    min-height: 46px;
+  }
+}
