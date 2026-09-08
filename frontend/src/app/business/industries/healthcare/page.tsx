@@ -454,7 +454,7 @@ export default function HealthcarePage() {
     <SiteLayout>
       <div id="business-healthcare-page" className="healthcare-page min-h-screen bg-black text-slate-50">
         <section className="healthcare-hero-grid relative mx-auto min-h-[72vh] max-w-[1360px] items-center gap-12 px-5 pb-10 pt-28 sm:px-8 sm:pt-32">
-          <div>
+          <div className="healthcare-hero-copy">
             <div className="mb-7 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-slate-400">
               <span className="size-2 rounded-full bg-[#35fbe0] shadow-[0_0_12px_rgba(53,251,224,0.8)]" />
               Built for modern healthcare teams
@@ -495,10 +495,6 @@ export default function HealthcarePage() {
                 src="/images/healthcare/voice-agent-hero.png"
               />
               <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_48%,rgba(17,24,39,0.9)_100%)]" />
-              <div className="absolute left-5 top-5 flex items-center gap-3 rounded-full border border-white/20 bg-black/80 px-4 py-2.5 backdrop-blur-md">
-                <span className="size-2.5 rounded-full bg-[#35fbe0] shadow-[0_0_12px_#35fbe0]" />
-                <span className="text-xs font-bold uppercase tracking-[0.12em]">Voice agent active</span>
-              </div>
             </div>
           </div>
         </section>
@@ -869,7 +865,7 @@ export default function HealthcarePage() {
         }
 
         .healthcare-hero-heading {
-          font-size: clamp(2.1rem, 4.3vw, 3.65rem);
+          font-size: clamp(1.85rem, 3.8vw, 3.25rem);
           line-height: 0.98;
           letter-spacing: -0.05em;
         }

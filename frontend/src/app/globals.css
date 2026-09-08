@@ -3346,7 +3346,7 @@
 /* Final product color roles — sourced only from the homepage palette. */
 #product-overview-page,
 #product-service-page {
-  --product-hero-heading: #7a3e9d;
+  --product-hero-heading: #3e75ff;
   --product-section-heading: #252161;
   --product-card-warm: #ffad6f;
 }
@@ -3361,7 +3361,7 @@
   -webkit-text-fill-color: var(--product-hero-heading) !important;
 }
 
-/* Product hero titles use the homepage's plum accent on the white canvas. */
+/* Product hero titles use the site's primary blue on the white canvas. */
 #product-overview-page h1.product-hero-title,
 #product-overview-page h1.product-hero-title *,
 #product-service-page h1.product-hero-title,
@@ -3584,8 +3584,8 @@
 }
 
 #business-overview-page .business-hero h1 span:last-child {
-  color: var(--business-plum) !important;
-  -webkit-text-fill-color: var(--business-plum) !important;
+  color: var(--business-blue) !important;
+  -webkit-text-fill-color: var(--business-blue) !important;
 }
 
 #business-overview-page .business-hero-console {
@@ -3697,8 +3697,8 @@
 
 #business-use-case-page .use-case-heading-accent {
   background: none !important;
-  color: var(--business-plum) !important;
-  -webkit-text-fill-color: var(--business-plum) !important;
+  color: var(--business-blue) !important;
+  -webkit-text-fill-color: var(--business-blue) !important;
 }
 
 #business-use-case-page .use-case-visual > div {
@@ -3787,8 +3787,8 @@
 }
 
 :is(#business-industry-page, #business-healthcare-page) :is(.industry-hero-heading, .healthcare-hero-heading) span {
-  color: var(--business-plum) !important;
-  -webkit-text-fill-color: var(--business-plum) !important;
+  color: var(--business-blue) !important;
+  -webkit-text-fill-color: var(--business-blue) !important;
 }
 
 :is(#business-industry-page, #business-healthcare-page) :is(.industry-hero-card, .healthcare-hero-card) {
@@ -4136,7 +4136,17 @@
 }
 
 :is(#business-industry-page, #business-healthcare-page) :is(.industry-hero-heading, .healthcare-hero-heading) {
-  font-size: clamp(1.95rem, 4vw, 3.4rem) !important;
+  font-size: clamp(1.85rem, 3.8vw, 3.25rem) !important;
+}
+
+/* Align industry hero copy with the content rhythm used by the sections below. */
+@media (min-width: 1024px) {
+  :is(
+    #business-industry-page .industry-hero-copy,
+    #business-healthcare-page .healthcare-hero-copy
+  ) {
+    padding-left: clamp(3rem, 4vw, 4rem);
+  }
 }
 
 #business-use-case-page .use-case-visual {

@@ -138,7 +138,7 @@ export function IndustryExperiencePage({
     <SiteLayout>
       <div id="business-industry-page" className="industry-experience min-h-screen bg-black text-slate-50" style={style}>
         <section className="industry-hero-grid relative mx-auto min-h-[72vh] max-w-[1360px] items-center gap-12 px-5 pb-10 pt-28 sm:px-8 sm:pt-32">
-          <div>
+          <div className="industry-hero-copy">
             <div className="mb-7 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-slate-400">
               <span className="size-2 rounded-full bg-[var(--industry-accent)] shadow-[0_0_12px_var(--industry-accent)]" />
               Built for modern {industry.title.toLowerCase()} teams
@@ -185,10 +185,6 @@ export function IndustryExperiencePage({
               src={heroCard.image}
             />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_42%,rgba(0,0,0,0.92)_100%)]" />
-            <div className="absolute left-5 top-5 flex items-center gap-3 rounded-full border border-white/20 bg-black/80 px-4 py-2.5 backdrop-blur-md">
-              <span className="size-2.5 rounded-full bg-[var(--industry-accent)] shadow-[0_0_12px_var(--industry-accent)]" />
-              <span className="text-xs font-bold uppercase tracking-[0.12em]">Voice agent active</span>
-            </div>
           </div>
         </section>
 
@@ -525,7 +521,7 @@ export function IndustryExperiencePage({
         }
 
         .industry-hero-heading {
-          font-size: clamp(2.1rem, 4.3vw, 3.65rem);
+          font-size: clamp(1.85rem, 3.8vw, 3.25rem);
           line-height: 0.98;
           letter-spacing: -0.05em;
         }
