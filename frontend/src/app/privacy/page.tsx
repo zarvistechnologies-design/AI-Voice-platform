@@ -262,19 +262,17 @@ export default function PrivacyPage() {
     <SiteLayout>
       <div className="min-h-screen overflow-hidden bg-white text-black">
         {/* =========================================================
-            HERO
+            HERO — Terms-style soft blurry background wash
         ========================================================== */}
-        <section className="relative border-b border-[#E5E5E5] bg-white px-[clamp(1.25rem,5vw,4.75rem)] pb-20 pt-32 sm:pt-36 lg:pb-24 lg:pt-40">
-          <div className="relative mx-auto max-w-[1240px]">
+        <section className="relative isolate overflow-hidden bg-white px-[clamp(1.25rem,5vw,4.75rem)] pb-20 pt-32 sm:pt-36 lg:pb-24 lg:pt-25">
+
+          <div className="relative z-10 mx-auto max-w-[1240px]">
             {/* BREADCRUMB */}
             <nav
               aria-label="Breadcrumb"
               className="mb-12 flex items-center gap-2 text-xs font-semibold uppercase tracking-normal text-black"
             >
-              <Link
-                className="transition hover:opacity-60"
-                href="/"
-              >
+              <Link className="transition hover:opacity-60" href="/">
                 Home
               </Link>
 
@@ -282,22 +280,18 @@ export default function PrivacyPage() {
                 /
               </span>
 
-              <span className="text-black">
-                Legal
-              </span>
+              <span className="text-black">Legal</span>
 
               <span aria-hidden="true" className="text-[#B5B5B5]">
                 /
               </span>
 
-              <span className="font-bold text-black">
-                Privacy
-              </span>
+              <span className="font-bold text-black">Privacy</span>
             </nav>
 
             <div className="mx-auto max-w-[780px] text-center">
-              {/* PRIVACY ICON */}
-              <span className="mx-auto grid size-16 place-items-center rounded-lg border border-black bg-white text-black shadow-[0_18px_45px_rgba(0,0,0,0.06)]">
+              {/* PRIVACY ICON — Terms style (soft blue background, no border) */}
+              <span className="mx-auto grid size-16 place-items-center rounded-xl bg-[#EEF2FF] text-[#4165D6] shadow-[0_18px_45px_rgba(77,98,160,0.10)]">
                 <svg
                   aria-hidden="true"
                   className="size-8"
@@ -307,15 +301,15 @@ export default function PrivacyPage() {
                   <path
                     d="M12 3 5 6v5c0 4.8 2.8 8.3 7 10 4.2-1.7 7-5.2 7-10V6l-7-3Z"
                     stroke="currentColor"
-                    strokeWidth="1.5"
+                    strokeWidth="1.6"
+                    strokeLinejoin="round"
                   />
-
                   <path
                     d="m9 12 2 2 4-4"
                     stroke="currentColor"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth="1.5"
+                    strokeWidth="1.6"
                   />
                 </svg>
               </span>
@@ -324,14 +318,12 @@ export default function PrivacyPage() {
                 Privacy Policy
               </h1>
 
-              <p className="mt-4 text-lg font-semibold text-black">
-                vozon.ai
-              </p>
+              <p className="mt-4 text-lg font-semibold text-black">vozon.ai</p>
 
               <p className="mt-4 inline-flex items-center justify-center gap-2 text-sm text-black">
                 <svg
                   aria-hidden="true"
-                  className="size-4 text-black"
+                  className="size-4 text-[#5879E8]"
                   fill="none"
                   viewBox="0 0 24 24"
                 >
@@ -340,18 +332,16 @@ export default function PrivacyPage() {
                     cy="12"
                     r="8.5"
                     stroke="currentColor"
-                    strokeWidth="1.5"
+                    strokeWidth="1.6"
                   />
-
                   <path
                     d="M12 7.5V12l3 2"
                     stroke="currentColor"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth="1.5"
+                    strokeWidth="1.6"
                   />
                 </svg>
-
                 Last updated: July 28, 2026
               </p>
             </div>
@@ -365,7 +355,8 @@ export default function PrivacyPage() {
           <div className="mx-auto max-w-[1040px] space-y-5">
             {/* INTRO CARD */}
             <div className="flex flex-col gap-5 rounded-lg border border-[#E2E2E2] bg-white p-6 shadow-[0_22px_55px_rgba(0,0,0,0.04)] sm:flex-row sm:items-start sm:p-8">
-              <span className="grid size-11 shrink-0 place-items-center rounded-lg border border-black bg-white text-black">
+              {/* Icon — Terms style */}
+              <span className="grid size-11 shrink-0 place-items-center rounded-lg bg-[#EEF2FF] text-[#4165D6]">
                 <svg
                   aria-hidden="true"
                   className="size-5"
@@ -376,7 +367,7 @@ export default function PrivacyPage() {
                     d="m12 3-1 4.2a2.4 2.4 0 0 1-1.8 1.8L5 10l4.2 1a2.4 2.4 0 0 1 1.8 1.8l1 4.2 1-4.2a2.4 2.4 0 0 1 1.8-1.8l4.2-1-4.2-1A2.4 2.4 0 0 1 13 7.2L12 3Z"
                     stroke="currentColor"
                     strokeLinejoin="round"
-                    strokeWidth="1.5"
+                    strokeWidth="1.6"
                   />
                 </svg>
               </span>
@@ -391,8 +382,9 @@ export default function PrivacyPage() {
             </div>
 
             {/* IMPORTANT NOTICE */}
-            <div className="flex flex-col gap-4 rounded-lg border border-[#D8D8D8] bg-white p-6 sm:flex-row sm:items-start">
-              <span className="grid size-10 shrink-0 place-items-center rounded-lg border border-black bg-white text-black">
+            <div className="flex flex-col gap-4 rounded-lg border border-[#E2E2E2] bg-white p-6 sm:flex-row sm:items-start">
+              {/* Icon — Terms style */}
+              <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#EEF2FF] text-[#5879E8]">
                 <svg
                   aria-hidden="true"
                   className="size-5"
@@ -402,15 +394,14 @@ export default function PrivacyPage() {
                   <path
                     d="M3 12s3.4-5 9-5 9 5 9 5-3.4 5-9 5-9-5-9-5Z"
                     stroke="currentColor"
-                    strokeWidth="1.5"
+                    strokeWidth="1.6"
                   />
-
                   <circle
                     cx="12"
                     cy="12"
                     r="2.5"
                     stroke="currentColor"
-                    strokeWidth="1.5"
+                    strokeWidth="1.6"
                   />
                 </svg>
               </span>
@@ -443,9 +434,9 @@ export default function PrivacyPage() {
                 id={section.id}
                 key={section.id}
               >
-                {/* SECTION HEADER */}
                 <div className="flex items-center gap-4">
-                  <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg border border-black bg-white text-xs font-bold tracking-normal text-black">
+                  {/* Number badge — Terms style (blue) */}
+                  <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg bg-[#EEF2FF] font-mono text-xs font-bold tracking-normal text-[#4165D6]">
                     {section.number}
                   </span>
 
@@ -454,27 +445,25 @@ export default function PrivacyPage() {
                   </h2>
                 </div>
 
-                {/* SECTION CONTENT */}
-                <div className="privacy-policy-copy mt-6 rounded-lg border border-[#E5E5E5] border-l-black bg-white p-5 text-[15px] leading-7 text-black sm:p-6 sm:text-base sm:leading-8">
+                <div className="privacy-policy-copy mt-6 rounded-lg border border-[#E5E5E5] border-l-[#4165D6] bg-white p-5 text-[15px] leading-7 text-black sm:p-6 sm:text-base sm:leading-8">
                   {section.content}
                 </div>
               </article>
             ))}
 
-            {/* =====================================================
-                CONTACT / PRIVACY REQUESTS
-            ====================================================== */}
+            {/* CONTACT */}
             <section
               className="scroll-mt-28 rounded-lg border border-[#E2E2E2] bg-white p-5 shadow-[0_22px_60px_rgba(0,0,0,0.035)] sm:p-8"
               id="contact"
             >
               <div className="flex items-center gap-4">
-                <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg border border-black bg-white text-xs font-bold text-black">
+                {/* Number badge — Terms style */}
+                <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg bg-[#EEF2FF] font-mono text-xs font-bold text-[#4165D6]">
                   12
                 </span>
 
                 <div>
-                  <p className="text-xs font-bold uppercase text-black">
+                  <p className="text-xs font-bold uppercase text-[#5879E8]">
                     Privacy requests
                   </p>
 
@@ -484,7 +473,7 @@ export default function PrivacyPage() {
                 </div>
               </div>
 
-              <div className="mt-6 rounded-lg border border-[#E5E5E5] border-l-black bg-white p-5 sm:p-6">
+              <div className="mt-6 rounded-lg border border-[#E5E5E5] border-l-[#4165D6] bg-white p-5 sm:p-6">
                 <p className="max-w-[760px] text-[15px] leading-7 text-black sm:text-base sm:leading-8">
                   For privacy questions or requests, email us with enough
                   detail to identify your account or interaction. Do not
@@ -497,7 +486,6 @@ export default function PrivacyPage() {
                   href="mailto:hello@vozon.ai?subject=Privacy%20request"
                 >
                   hello@vozon.ai
-
                   <span
                     aria-hidden="true"
                     className="text-base transition group-hover:translate-x-0.5"
@@ -508,7 +496,6 @@ export default function PrivacyPage() {
               </div>
             </section>
 
-            {/* DISCLAIMER */}
             <p className="px-2 pt-3 text-center text-xs leading-6 text-black">
               This policy is intended to explain our privacy practices clearly.
               It does not replace any data processing agreement or other
@@ -517,9 +504,6 @@ export default function PrivacyPage() {
           </div>
         </section>
 
-        {/* =========================================================
-            LOCAL STYLING
-        ========================================================== */}
         <style>{`
           .privacy-policy-copy p + p {
             margin-top: 1.25rem;
@@ -550,7 +534,7 @@ export default function PrivacyPage() {
             width: 0.35rem;
             height: 0.35rem;
             border-radius: 999px;
-            background: #000000;
+            background: #4165D6;
             content: "";
           }
 

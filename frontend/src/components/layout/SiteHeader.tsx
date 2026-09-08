@@ -45,7 +45,7 @@ export function SiteHeader() {
   const isCompany = ["/about", "/career", "/partners", "/contact"].some((route) => pathname.startsWith(route));
 
   return (
-    <header className="site-header-previous fixed inset-x-0 top-0 z-50 bg-[#f1f1f6]" ref={headerRef}>
+    <header className="site-header-previous fixed inset-x-0 top-0 z-50 border-b border-[#ececf1] bg-white" ref={headerRef}>
       <div className="relative mx-auto flex w-full items-center justify-between gap-4 px-20 py-2.5 max-[900px]:px-6 max-[900px]:py-2.5 max-[640px]:px-4 max-[640px]:py-2">
         <div className="header-previous-logo flex -translate-x-8 flex-col items-center text-[#111113] max-[640px]:-translate-x-3">
           <div className="header-previous-brand-unit flex flex-col items-center">
@@ -64,7 +64,12 @@ export function SiteHeader() {
         </nav>
         <div className="flex items-center gap-2 min-[901px]:translate-x-4">
           <Link className="header-previous-start hidden min-h-12 items-center justify-center rounded-full border-[1.5px] border-[#111116] px-7 text-sm font-bold text-[#111116] min-[901px]:inline-flex" href="/dashboard">Get started</Link>
-          <Link className="header-previous-signup inline-flex min-h-12 items-center justify-center rounded-full bg-[#05050b] px-6 text-sm font-bold text-white max-[900px]:min-h-[42px] max-[640px]:hidden" href="/login">Sign Up</Link>
+          <Link
+            className="header-previous-contact-sales inline-flex min-h-12 items-center justify-center rounded-full bg-[#2563eb] px-6 text-sm font-bold text-white max-[900px]:min-h-[42px] max-[640px]:hidden"
+            href="/contact"
+          >
+            Contact sales
+          </Link>
           <button aria-expanded={mobileOpen} aria-label="Toggle navigation" className="grid size-10 place-items-center rounded-full border border-[#cfcfd9] text-[#111113] min-[901px]:hidden" onClick={() => setMobileOpen(!mobileOpen)} type="button"><span className="text-lg leading-none">{mobileOpen ? "×" : "≡"}</span></button>
         </div>
 

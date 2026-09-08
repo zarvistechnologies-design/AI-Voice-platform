@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 
 import {
   estimatedModelCostPerMinute,
@@ -13,9 +13,9 @@ import {
 type StackLayer = Extract<ModelPriceCategory["id"], "llm" | "stt" | "tts">;
 
 const layers: readonly { id: StackLayer; label: string; helper: string; accent: string }[] = [
-  { id: "llm", label: "Language model (LLM)", helper: "Understands and responds", accent: "#6268ff" },
-  { id: "stt", label: "Speech to text (STT)", helper: "Transcribes the caller", accent: "#a855f7" },
-  { id: "tts", label: "Text to speech (TTS)", helper: "Generates the agent voice", accent: "#ef8aa6" },
+  { id: "llm", label: "Language model (LLM)", helper: "Understands and responds", accent: "#4f6df5" },
+  { id: "stt", label: "Speech to text (STT)", helper: "Transcribes the caller", accent: "#d95d88" },
+  { id: "tts", label: "Text to speech (TTS)", helper: "Generates the agent voice", accent: "#c58a25" },
 ] as const;
 
 const defaults: Record<StackLayer, string> = {
@@ -57,7 +57,7 @@ function ModelDropdown({
           <span className="block text-sm font-semibold text-white/80">{layer.label}</span>
           <span className="mt-1 block text-[11px] text-white/35">{layer.helper}</span>
         </span>
-        <span className="rounded-full px-2.5 py-1 text-[10px] font-bold" style={{ backgroundColor: `${layer.accent}14`, color: layer.accent }}>
+        <span className="pricing-stack-rate rounded-full px-2.5 py-1 text-[10px] font-bold" style={{ "--stack-accent": layer.accent } as CSSProperties}>
           {formatEstimatedMinuteCost(estimate)}
         </span>
       </span>
@@ -116,11 +116,11 @@ export function VoiceStackCalculator() {
     <div className="pricing-stack-card mt-10 overflow-hidden rounded-[24px] border border-[#6268ff]/15 bg-[radial-gradient(circle_at_95%_0%,rgba(239,138,166,0.12),transparent_32%),linear-gradient(145deg,#ffffff,#f5f3ff)] shadow-[0_24px_80px_rgba(65,61,120,0.12)]">
       <div className="grid gap-5 border-b border-white/10 px-5 py-6 sm:px-7 lg:grid-cols-[1fr_auto] lg:items-end">
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#f6c76e]">Build your voice stack</p>
+          <p className="pricing-eyebrow text-[11px] font-bold uppercase tracking-[0.15em] text-[#f6c76e]">Build your voice stack</p>
           <h3 className="mt-2 text-2xl font-semibold tracking-[-0.025em]">LLM + STT + TTS cost per minute</h3>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-white/45">Open each dropdown, choose a model, and see the combined provider cost instantly.</p>
         </div>
-        <div className="rounded-2xl border border-[#6268ff]/20 bg-[#6268ff]/[0.07] px-5 py-4 text-left lg:min-w-56 lg:text-right">
+        <div className="pricing-stack-subtotal rounded-2xl border border-[#6268ff]/20 bg-[#6268ff]/[0.07] px-5 py-4 text-left lg:min-w-56 lg:text-right">
           <span className="block text-[10px] font-bold uppercase tracking-[0.13em] text-[#565dcc]">Model stack subtotal</span>
           <strong className="mt-1 block text-3xl font-semibold tracking-[-0.04em] text-[#454bd0]">{formatEstimatedMinuteCost(total)}</strong>
         </div>
@@ -142,7 +142,7 @@ export function VoiceStackCalculator() {
           {breakdown.map((item) => (
             <div className="flex items-center justify-between gap-5 text-xs" key={item.id}>
               <span className="flex min-w-0 items-center gap-2 text-white/45">
-                <span className="size-1.5 shrink-0 rounded-full" style={{ backgroundColor: item.accent }} aria-hidden="true" />
+                <span className="pricing-stack-dot size-1.5 shrink-0 rounded-full" style={{ "--stack-accent": item.accent } as CSSProperties} aria-hidden="true" />
                 <span className="truncate">{item.model.name}</span>
               </span>
               <strong className="shrink-0 text-white/70">{formatEstimatedMinuteCost(item.cost)}</strong>

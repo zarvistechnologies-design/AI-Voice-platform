@@ -87,7 +87,7 @@ function OperationsConsole() {
   ];
 
   return (
-    <div className="relative mx-auto w-full max-w-[650px]">
+    <div className="relative mx-auto w-full max-w-[600px]">
       <div className="absolute -inset-12 -z-10 rounded-full bg-[#45ddce]/10 blur-[90px]" aria-hidden="true" />
       <div className="business-hero-console overflow-visible">
         <div className="flex h-12 items-center justify-between px-0">
@@ -150,17 +150,17 @@ export function BusinessOverviewExperience() {
 
   return (
     <SiteLayout>
-      <div className="business-page overflow-hidden bg-[#020504] text-white">
+      <div id="business-overview-page" className="business-page overflow-hidden bg-[#020504] text-white">
         <section className="business-hero relative px-3 pb-14 pt-28 sm:px-5 sm:pt-32 lg:pb-16 lg:pt-36">
           <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(69,221,206,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(69,221,206,0.055)_1px,transparent_1px)] [background-size:54px_54px] [mask-image:linear-gradient(to_bottom,black,transparent_88%)]" aria-hidden="true" />
           <div className="absolute left-1/2 top-0 h-[520px] w-[940px] -translate-x-1/2 rounded-full bg-[#45ddce]/[0.07] blur-[135px]" aria-hidden="true" />
 
           <div className="relative mx-auto grid max-w-[1380px] items-center gap-14 lg:grid-cols-[0.9fr_1.1fr]">
             <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#45ddce]/22 bg-[#45ddce]/[0.07] px-4 py-2 text-[10px] font-black uppercase tracking-[0.17em] text-[#75fff0]">
+              <div className="business-hero-pill inline-flex items-center gap-2 rounded-full border border-[#45ddce]/22 bg-[#45ddce]/[0.07] px-4 py-2 text-[10px] font-black uppercase tracking-[0.17em] text-[#75fff0]">
                 <span className="size-1.5 rounded-full bg-[#6268ff] shadow-[0_0_10px_#6268ff]" /> AI voice for business
               </div>
-              <h1 className="mt-7 text-[clamp(1.65rem,4.4vw,3.8rem)] leading-[0.98] font-medium tracking-[-0.05em]">
+              <h1 className="mt-7 text-[clamp(1.55rem,4vw,3.5rem)] leading-[0.98] font-medium tracking-[-0.05em]">
                 <span className="block whitespace-nowrap">Every customer call,</span>
                 <span className="block whitespace-nowrap text-[#75fff0]">handled with purpose.</span>
               </h1>
@@ -168,8 +168,8 @@ export function BusinessOverviewExperience() {
                 Give sales, support, and operations teams AI phone agents that answer naturally, complete real work, and know exactly when to involve a person.
               </p>
               <div className="mt-9 flex flex-wrap gap-3">
-                <Link className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[#45ddce] px-6 text-sm font-black text-[#03110e] shadow-[0_18px_48px_rgba(69,221,206,0.20)] hover:bg-[#75fff0]" href="/login">Start building <ArrowIcon /></Link>
-                <Link className="inline-flex min-h-12 items-center rounded-full border border-white/14 bg-white/[0.045] px-6 text-sm font-black text-white hover:border-[#45ddce]/35 hover:bg-[#45ddce]/[0.07]" href="#contact">Talk to our team</Link>
+                <Link className="business-blue-cta business-primary-cta inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border border-[#3e75ff] bg-[#3e75ff] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(62,117,255,0.22)] transition hover:-translate-y-0.5" href="/contact?request=demo">Book a free demo <ArrowIcon /></Link>
+                <Link className="business-blue-cta business-secondary-cta inline-flex min-h-12 items-center justify-center rounded-lg border border-[#3e75ff] bg-[#3e75ff] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(62,117,255,0.22)] transition hover:-translate-y-0.5" href="/contact">Contact sales</Link>
               </div>
               <div className="mt-10 flex flex-wrap gap-x-7 gap-y-3 text-[11px] font-bold text-white/38">
                 {["Inbound and outbound", "Human handoffs", "Call-level analytics"].map((item) => <span className="flex items-center gap-2" key={item}><CheckIcon />{item}</span>)}
@@ -182,7 +182,7 @@ export function BusinessOverviewExperience() {
         <section className="bg-white/[0.018] px-5 sm:px-8">
           <div className="mx-auto grid max-w-[1280px] grid-cols-2 lg:grid-cols-4">
             {outcomes.map((outcome, index) => (
-              <div className="border-b border-r border-white/[0.07] px-5 py-7 even:border-r-0 lg:border-b-0 lg:even:border-r lg:last:border-r-0" key={outcome.label}>
+              <div className="business-outcome-card border-b border-r border-white/[0.07] px-5 py-7 even:border-r-0 lg:border-b-0 lg:even:border-r lg:last:border-r-0" key={outcome.label}>
                 <strong className={`block text-2xl font-black ${index === 1 ? "text-[#c6bdff]" : index === 2 ? "text-[#ffbd8c]" : "text-[#75fff0]"}`}>{outcome.value}</strong>
                 <span className="mt-1.5 block text-[11px] font-bold text-white/36">{outcome.label}</span>
               </div>
@@ -199,7 +199,7 @@ export function BusinessOverviewExperience() {
 
             <div className="mt-14 grid gap-4 md:grid-cols-2">
               {useCases.map((useCase, index) => (
-                <Link className="group relative min-h-[300px] overflow-hidden rounded-[22px] border border-white/[0.09] bg-white/[0.025] p-6 transition hover:-translate-y-1 hover:border-white/18 hover:bg-white/[0.045] sm:p-8" href={`/business/${useCase.slug}`} key={useCase.slug}>
+                <Link className="business-use-case-card group relative min-h-[300px] overflow-hidden rounded-[22px] border border-white/[0.09] bg-white/[0.025] p-6 transition hover:-translate-y-1 hover:border-white/18 hover:bg-white/[0.045] sm:p-8" href={`/business/${useCase.slug}`} key={useCase.slug}>
                   <div className={`absolute -right-20 -top-20 size-56 rounded-full blur-[70px] ${index === 1 ? "bg-[#8f83e8]/12" : index === 2 ? "bg-[#f28d45]/10" : "bg-[#45ddce]/10"}`} aria-hidden="true" />
                   <div className="relative flex h-full flex-col">
                     <div className="flex items-start justify-between gap-5">
@@ -226,7 +226,7 @@ export function BusinessOverviewExperience() {
             </div>
             <div className="mt-14 grid overflow-hidden rounded-[22px] border border-white/[0.09] md:grid-cols-2 lg:grid-cols-4">
               {workflowSteps.map((step, index) => (
-                <article className="group relative min-h-[300px] border-b border-white/[0.08] bg-white/[0.02] p-6 last:border-b-0 md:border-r md:[&:nth-child(2)]:border-r-0 lg:border-b-0 lg:[&:nth-child(2)]:border-r lg:last:border-r-0 sm:p-7" key={step.number}>
+                <article className="business-workflow-card group relative min-h-[300px] border-b border-white/[0.08] bg-white/[0.02] p-6 last:border-b-0 md:border-r md:[&:nth-child(2)]:border-r-0 lg:border-b-0 lg:[&:nth-child(2)]:border-r lg:last:border-r-0 sm:p-7" key={step.number}>
                   <div className={`absolute inset-x-0 top-0 h-px ${index === 1 ? "bg-[#8f83e8]" : index === 2 ? "bg-[#f28d45]" : "bg-[#45ddce]"}`} />
                   <div className="flex items-center justify-between"><span className="text-[10px] font-black text-white/28">{step.number}</span><span className={`size-2 rounded-full ${index === 1 ? "bg-[#8f83e8]" : index === 2 ? "bg-[#f28d45]" : "bg-[#45ddce]"}`} /></div>
                   <p className="mt-10 text-[10px] font-black uppercase tracking-[0.15em] text-white/35">{step.label}</p>
@@ -247,7 +247,7 @@ export function BusinessOverviewExperience() {
 
             <div className="mt-14 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {industries.map((industry, index) => (
-                <Link className="group flex min-h-[230px] flex-col rounded-[18px] border border-white/[0.09] bg-white/[0.025] p-5 transition hover:-translate-y-1 hover:border-[#45ddce]/25 hover:bg-[#45ddce]/[0.04]" href={`/business/industries/${industry.slug}`} key={industry.slug}>
+                <Link className="business-industry-card group flex min-h-[230px] flex-col rounded-[18px] border border-white/[0.09] bg-white/[0.025] p-5 transition hover:-translate-y-1 hover:border-[#45ddce]/25 hover:bg-[#45ddce]/[0.04]" href={`/business/industries/${industry.slug}`} key={industry.slug}>
                   <div className="flex items-center justify-between"><span className="grid size-9 place-items-center rounded-lg border border-[#45ddce]/18 bg-[#45ddce]/[0.07] text-[#75fff0]"><BusinessIcon index={index} /></span><span className="text-white/20 transition group-hover:translate-x-1 group-hover:text-[#75fff0]"><ArrowIcon /></span></div>
                   <h3 className="mt-8 text-lg font-black">{industry.title}</h3>
                   <p className="mt-3 line-clamp-3 text-xs leading-5 text-white/38">{industry.summary}</p>
@@ -269,7 +269,6 @@ export function BusinessOverviewExperience() {
               </div>
             </div>
             <div className="relative flex min-h-[420px] flex-col justify-between overflow-hidden border-t border-white/[0.08] bg-[radial-gradient(circle_at_80%_15%,rgba(69,221,206,0.2),transparent_38%),linear-gradient(145deg,#0b211a,#06110e)] p-7 lg:border-l lg:border-t-0 sm:p-10">
-              <div className="absolute right-[-70px] top-[-70px] size-64 rounded-full border border-[#45ddce]/15" aria-hidden="true" />
               <div className="relative"><span className="inline-flex items-center gap-2 rounded-full border border-emerald-300/15 bg-emerald-300/[0.07] px-3 py-1.5 text-[9px] font-bold text-emerald-200"><span className="size-1.5 rounded-full bg-emerald-300" /> Production ready</span><h3 className="mt-6 text-2xl font-black">Plan your rollout with our solutions team.</h3><p className="mt-4 text-sm leading-6 text-white/45">Map call volume, systems, security needs, and human escalation paths before going live.</p></div>
               <div className="relative mt-12 grid grid-cols-2 gap-3">{[["Custom", "Concurrency"], ["Priority", "Support"], ["Tailored", "Workflows"], ["Visible", "Usage"]].map(([value, label]) => <div className="rounded-xl border border-white/[0.08] bg-black/20 p-4" key={label}><strong className="block text-sm text-[#75fff0]">{value}</strong><span className="mt-1 block text-[9px] text-white/30">{label}</span></div>)}</div>
             </div>

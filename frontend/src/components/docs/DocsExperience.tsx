@@ -106,9 +106,9 @@ function Callout({ children, tone = "info" }: { children: React.ReactNode; tone?
 function Step({ number, title, children }: { number: number; title: string; children: React.ReactNode }) {
   return (
     <div className="relative grid grid-cols-[36px_minmax(0,1fr)] gap-3 pb-7 last:pb-0">
-      <span className="relative z-10 grid size-9 place-items-center rounded-full bg-[#45ddce] text-sm font-black text-[#02110d]">{number}</span>
+      <span className="docs-step-number relative z-10 grid size-9 place-items-center rounded-full text-sm font-black">{number}</span>
       <div><h3 className="text-base font-semibold text-white">{title}</h3><div className="mt-1 text-sm leading-6 text-white/58">{children}</div></div>
-      <span className="absolute bottom-0 left-[17px] top-9 w-px bg-gradient-to-b from-[#45ddce]/50 to-transparent last:hidden" />
+      <span className="docs-step-line absolute bottom-0 left-[17px] top-9 w-px last:hidden" />
     </div>
   );
 }
@@ -118,7 +118,7 @@ function AnnotatedAgentVisual() {
     <figure className="rounded-2xl border border-white/10 bg-[#07110f] p-4">
       <svg aria-labelledby="agent-visual-title" className="h-auto w-full" role="img" viewBox="0 0 760 390">
         <title id="agent-visual-title">Annotated agent configuration interface</title>
-        <defs><marker id="arrow" markerHeight="8" markerWidth="8" orient="auto" refX="7" refY="4"><path d="M0 0 8 4 0 8Z" fill="#45ddce" /></marker></defs>
+        <defs><marker id="arrow" markerHeight="8" markerWidth="8" orient="auto" refX="7" refY="4"><path d="M0 0 8 4 0 8Z" fill="#000" /></marker></defs>
         <rect fill="#020907" height="350" rx="18" width="540" x="15" y="20" />
         <rect fill="#0b1916" height="48" rx="18" width="540" x="15" y="20" />
         <circle cx="42" cy="44" fill="#45ddce" r="7" /><text fill="#fff" fontSize="14" fontWeight="700" x="60" y="49">Customer support agent</text>
@@ -126,11 +126,11 @@ function AnnotatedAgentVisual() {
         <rect fill="#10231f" height="68" rx="10" width="220" x="285" y="92" /><text fill="#8ba29e" fontSize="11" x="300" y="114">VOICE</text><text fill="#fff" fontSize="14" fontWeight="700" x="300" y="141">Natural · Warm</text>
         <rect fill="#10231f" height="116" rx="10" width="465" x="40" y="180" /><text fill="#8ba29e" fontSize="11" x="55" y="203">AGENT INSTRUCTIONS</text><text fill="#dbe8e5" fontSize="12" x="55" y="229">Greet the caller, identify their request,</text><text fill="#dbe8e5" fontSize="12" x="55" y="250">use approved knowledge, and confirm the</text><text fill="#dbe8e5" fontSize="12" x="55" y="271">next action before ending the call.</text>
         <rect fill="#45ddce" height="36" rx="8" width="92" x="413" y="316" /><text fill="#02110d" fontSize="12" fontWeight="800" x="441" y="339">Save</text>
-        <path d="M680 85 C625 85 603 105 512 120" fill="none" markerEnd="url(#arrow)" stroke="#45ddce" strokeWidth="2" /><circle cx="696" cy="84" fill="#45ddce" r="17" /><text fill="#02110d" fontSize="13" fontWeight="900" textAnchor="middle" x="696" y="89">1</text>
-        <path d="M680 205 C620 205 605 220 510 225" fill="none" markerEnd="url(#arrow)" stroke="#45ddce" strokeWidth="2" /><circle cx="696" cy="204" fill="#45ddce" r="17" /><text fill="#02110d" fontSize="13" fontWeight="900" textAnchor="middle" x="696" y="209">2</text>
-        <path d="M680 325 C615 325 590 333 510 334" fill="none" markerEnd="url(#arrow)" stroke="#45ddce" strokeWidth="2" /><circle cx="696" cy="324" fill="#45ddce" r="17" /><text fill="#02110d" fontSize="13" fontWeight="900" textAnchor="middle" x="696" y="329">3</text>
+        <path d="M680 85 C625 85 603 105 512 120" fill="none" markerEnd="url(#arrow)" stroke="#000" strokeWidth="2" /><circle cx="696" cy="84" fill="#000" r="17" /><text className="docs-agent-callout-number" fontSize="13" fontWeight="900" textAnchor="middle" x="696" y="89">1</text>
+        <path d="M680 205 C620 205 605 220 510 225" fill="none" markerEnd="url(#arrow)" stroke="#000" strokeWidth="2" /><circle cx="696" cy="204" fill="#000" r="17" /><text className="docs-agent-callout-number" fontSize="13" fontWeight="900" textAnchor="middle" x="696" y="209">2</text>
+        <path d="M680 325 C615 325 590 333 510 334" fill="none" markerEnd="url(#arrow)" stroke="#000" strokeWidth="2" /><circle cx="696" cy="324" fill="#000" r="17" /><text className="docs-agent-callout-number" fontSize="13" fontWeight="900" textAnchor="middle" x="696" y="329">3</text>
       </svg>
-      <figcaption className="grid gap-2 border-t border-white/10 pt-4 text-xs text-white/55 sm:grid-cols-3"><span><b className="text-[#75fff0]">1.</b> Select language and voice</span><span><b className="text-[#75fff0]">2.</b> Write precise instructions</span><span><b className="text-[#75fff0]">3.</b> Save before testing</span></figcaption>
+      <figcaption className="grid gap-2 border-t border-white/10 pt-4 text-xs text-white/55 sm:grid-cols-3"><span className="flex items-center gap-2"><b className="docs-figure-number inline-grid size-5 shrink-0 place-items-center rounded-full">1</b> Select language and voice</span><span className="flex items-center gap-2"><b className="docs-figure-number inline-grid size-5 shrink-0 place-items-center rounded-full">2</b> Write precise instructions</span><span className="flex items-center gap-2"><b className="docs-figure-number inline-grid size-5 shrink-0 place-items-center rounded-full">3</b> Save before testing</span></figcaption>
     </figure>
   );
 }

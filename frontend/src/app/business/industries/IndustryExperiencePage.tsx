@@ -40,7 +40,7 @@ export type IndustryExperiencePreset = {
 
 function Pill({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-flex rounded-full border border-[var(--industry-accent)]/25 bg-[var(--industry-accent)]/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.08em] text-[var(--industry-accent-soft)]">
+    <span className="business-section-pill inline-flex rounded-full border border-[var(--industry-accent)]/25 bg-[var(--industry-accent)]/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.08em] text-[var(--industry-accent-soft)]">
       {children}
     </span>
   );
@@ -136,9 +136,9 @@ export function IndustryExperiencePage({
 
   return (
     <SiteLayout>
-      <div className="industry-experience min-h-screen bg-black text-slate-50" style={style}>
+      <div id="business-industry-page" className="industry-experience min-h-screen bg-black text-slate-50" style={style}>
         <section className="industry-hero-grid relative mx-auto min-h-[72vh] max-w-[1360px] items-center gap-12 px-5 pb-10 pt-28 sm:px-8 sm:pt-32">
-          <div>
+          <div className="industry-hero-copy">
             <div className="mb-7 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-slate-400">
               <span className="size-2 rounded-full bg-[var(--industry-accent)] shadow-[0_0_12px_var(--industry-accent)]" />
               Built for modern {industry.title.toLowerCase()} teams
@@ -162,13 +162,13 @@ export function IndustryExperiencePage({
             </div>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link
-                className="inline-flex min-h-12 items-center rounded-lg bg-[var(--industry-accent)] px-6 text-sm font-extrabold text-[#031310] shadow-[0_12px_32px_rgba(0,0,0,0.16)] transition hover:-translate-y-0.5 hover:brightness-110"
+                className="business-blue-cta inline-flex min-h-12 items-center rounded-lg border border-[#3e75ff] bg-[#3e75ff] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(62,117,255,0.22)] transition hover:-translate-y-0.5"
                 href="/#demo"
               >
                 Book a free demo <span className="ml-3">&rarr;</span>
               </Link>
               <Link
-                className="inline-flex min-h-12 items-center rounded-lg bg-[var(--industry-accent)] px-6 text-sm font-extrabold text-[#031310] shadow-[0_12px_32px_rgba(0,0,0,0.16)] transition hover:-translate-y-0.5 hover:brightness-110"
+                className="business-blue-cta inline-flex min-h-12 items-center rounded-lg border border-[#3e75ff] bg-[#3e75ff] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(62,117,255,0.22)] transition hover:-translate-y-0.5"
                 href="/contact"
               >
                 Contact sales
@@ -185,10 +185,6 @@ export function IndustryExperiencePage({
               src={heroCard.image}
             />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_42%,rgba(0,0,0,0.92)_100%)]" />
-            <div className="absolute left-5 top-5 flex items-center gap-3 rounded-full border border-white/20 bg-black/80 px-4 py-2.5 backdrop-blur-md">
-              <span className="size-2.5 rounded-full bg-[var(--industry-accent)] shadow-[0_0_12px_var(--industry-accent)]" />
-              <span className="text-xs font-bold uppercase tracking-[0.12em]">Voice agent active</span>
-            </div>
           </div>
         </section>
 
@@ -202,7 +198,7 @@ export function IndustryExperiencePage({
                 {[...preset.logos, ...preset.logos].map((logo, index) => (
                   <span
                     aria-hidden={index >= preset.logos.length}
-                    className="shrink-0 text-xl font-bold tracking-[-0.02em] md:text-2xl"
+                    className="business-company-marquee-name shrink-0 text-xl font-bold tracking-[-0.02em] md:text-2xl"
                     key={`${logo}-${index}`}
                     style={{ color: companyColors[(index % preset.logos.length) % companyColors.length] }}
                   >
@@ -246,7 +242,7 @@ export function IndustryExperiencePage({
             <div className="mt-10 grid gap-4 lg:grid-cols-3">
               {reviews.map((review) => (
                 <article
-                  className={`flex min-h-[275px] flex-col justify-between rounded-xl border p-6 transition duration-300 hover:-translate-y-1 ${
+                  className={`business-review-card flex min-h-[275px] flex-col justify-between rounded-xl border p-6 transition duration-300 hover:-translate-y-1 ${
                     review.tone === "accent"
                       ? "border-[var(--industry-accent)]/25 bg-[var(--industry-accent)]/[0.045]"
                       : "border-[#8f83e8]/25 bg-[#8f83e8]/[0.045]"
@@ -265,7 +261,7 @@ export function IndustryExperiencePage({
                   </div>
                 </article>
               ))}
-              <article className="flex min-h-[275px] flex-col justify-between rounded-xl border border-[#ff9655]/25 bg-[#ff9655]/[0.045] p-6 transition duration-300 hover:-translate-y-1">
+              <article className="business-review-card flex min-h-[275px] flex-col justify-between rounded-xl border border-[#ff9655]/25 bg-[#ff9655]/[0.045] p-6 transition duration-300 hover:-translate-y-1">
                 <div>
                   <span className="inline-flex rounded-full bg-white/[0.07] px-3 py-1.5 text-xs font-bold text-white/75">
                     Operational impact
@@ -368,7 +364,7 @@ export function IndustryExperiencePage({
           </div>
         </section>
 
-        <section className="overflow-hidden bg-black">
+        <section className="industry-integrations overflow-hidden bg-black">
           <div className="relative mx-auto max-w-[1360px] px-5 pb-8 pt-14 sm:px-8 sm:pt-16">
             <div className="grid gap-7 md:grid-cols-[minmax(0,1fr)_minmax(280px,0.65fr)] md:items-end">
               <div>
@@ -382,7 +378,7 @@ export function IndustryExperiencePage({
 
             <div className="mt-9 grid gap-3 md:grid-cols-3">
               {industry.highlights.map((highlight, index) => (
-                <article className="rounded-xl border border-white/10 bg-white/[0.025] p-5" key={highlight}>
+                <article className="business-integration-highlight rounded-xl border border-white/10 bg-white/[0.025] p-5" key={highlight}>
                   <div className="flex items-center gap-3">
                     <span
                       className={`grid size-9 place-items-center rounded-lg border text-[11px] font-extrabold ${
@@ -416,13 +412,13 @@ export function IndustryExperiencePage({
                     <span className="industry-integration-icon grid size-10 shrink-0 place-items-center rounded-lg bg-[var(--industry-accent)]/10 text-xs font-extrabold uppercase text-[var(--industry-accent-soft)]">
                       {integration.slice(0, 2)}
                     </span>
-                    <strong className="text-base leading-tight text-slate-100">{integration}</strong>
+                    <strong className="business-integration-marquee-name text-base leading-tight text-slate-100">{integration}</strong>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="mt-11 grid items-center gap-6 overflow-hidden rounded-2xl border border-white/10 bg-[linear-gradient(115deg,rgba(53,251,224,0.12),rgba(143,131,232,0.08)_55%,rgba(255,150,85,0.09))] p-6 sm:p-8 md:grid-cols-[auto_1fr_auto]">
+            <div className="business-integration-help-card mt-11 grid items-center gap-6 overflow-hidden rounded-2xl border border-white/10 bg-[linear-gradient(115deg,rgba(53,251,224,0.12),rgba(143,131,232,0.08)_55%,rgba(255,150,85,0.09))] p-6 sm:p-8 md:grid-cols-[auto_1fr_auto]">
               <span className="grid size-12 place-items-center rounded-xl border border-[var(--industry-accent)]/25 bg-black text-xl text-[var(--industry-accent-soft)]">
                 &#8644;
               </span>
@@ -501,7 +497,7 @@ export function IndustryExperiencePage({
                   <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300">{faqAnswer(question, industry)}</p>
                 </details>
               ))}
-              <p className="mt-5 text-center text-sm text-slate-300">More questions? Visit our <Link className="rounded-md bg-black px-2 py-1 font-bold text-[var(--industry-accent-soft)]" href="/#resources">docs</Link></p>
+              <p className="mt-5 text-center text-sm text-slate-300">More questions? <Link className="font-bold text-[#3e75ff] transition hover:text-[#315fdb] hover:underline" href="/contact">Contact us</Link></p>
             </div>
           </div>
         </section>
@@ -525,18 +521,18 @@ export function IndustryExperiencePage({
         }
 
         .industry-hero-heading {
-          font-size: clamp(2.25rem, 4.7vw, 4rem);
+          font-size: clamp(1.85rem, 3.8vw, 3.25rem);
           line-height: 0.98;
           letter-spacing: -0.05em;
         }
 
         .industry-hero-card {
-          width: min(100%, 560px);
+          width: min(100%, 520px);
           justify-self: center;
           box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45), 0 0 0 1px color-mix(in srgb, var(--industry-accent) 8%, transparent);
         }
 
-        .industry-hero-image { height: clamp(360px, 44vw, 440px); }
+        .industry-hero-image { height: clamp(340px, 41vw, 410px); }
 
         .industry-marquee-fade {
           -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);

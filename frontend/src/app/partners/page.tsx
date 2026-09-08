@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 
 import { SiteLayout } from "@/components/layout/SiteLayout";
 
@@ -54,19 +55,19 @@ const workflow = [
 export default function PartnersPage() {
   return (
     <SiteLayout>
-      <div className="min-h-screen bg-white text-black">
+      <div id="partners-page" className="min-h-screen bg-white text-black">
         {/* =========================================================
             HERO
         ========================================================== */}
         <section className="relative isolate overflow-hidden bg-white px-5 pb-16 pt-32 sm:px-8 sm:pb-20 sm:pt-40 lg:pb-24">
           <div className="mx-auto max-w-[1240px]">
             <header className="mx-auto max-w-[1240px] text-center">
-              <span className="inline-flex items-center gap-2 rounded-full border border-[#D9D9D9] bg-white px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.14em] text-black">
-                <i className="size-2 rounded-full bg-black" />
+              <span className="inline-flex items-center gap-2 rounded-full border border-[#3e75ff]/20 bg-white px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#3e75ff] shadow-sm">
+                <i className="size-1.5 rounded-full bg-[#3e75ff]" />
                 Partner spotlight
               </span>
 
-              <h1 className="mt-7 text-balance text-[clamp(2.55rem,5vw,4.5rem)] font-black leading-[1.01] tracking-[-0.052em] text-black">
+              <h1 className="mt-7 text-balance text-[clamp(2.25rem,4.4vw,4.25rem)] font-medium leading-[0.98] tracking-[-0.055em] text-black">
                 <span className="block">Connected by innovation.</span>
 
                 <span className="block text-black lg:whitespace-nowrap">
@@ -74,7 +75,7 @@ export default function PartnersPage() {
                 </span>
               </h1>
 
-              <p className="mx-auto mt-7 max-w-3xl text-lg leading-8 text-black sm:text-xl sm:leading-9">
+              <p className="mx-auto mt-7 max-w-3xl text-base leading-8 text-gray-600 sm:text-lg">
                 DigitalBot brings WhatsApp automation, calls, chat, CRM
                 operations, bookings, customer support, campaigns, and
                 analytics into one connected business platform.
@@ -111,12 +112,20 @@ export default function PartnersPage() {
               <div className="grid items-center gap-4 md:grid-cols-[1fr_150px_1fr]">
                 {/* VOZON */}
                 <div className="flex min-h-40 items-center justify-center rounded-2xl border border-[#E8E8E8] bg-white p-7 sm:min-h-44">
-                  <Image
-                    alt="Vozon"
-                    className="h-auto w-[min(250px,76%)]"
-                    height={350}
-                    src="/images/logo_2.svg"
-                    width={1160}
+                  <span
+                    aria-label="Vozon"
+                    className="block aspect-[1160/350] w-[min(250px,76%)] bg-[#3e75ff]"
+                    role="img"
+                    style={{
+                      WebkitMaskImage: "url('/images/logo_2.svg')",
+                      WebkitMaskPosition: "center",
+                      WebkitMaskRepeat: "no-repeat",
+                      WebkitMaskSize: "contain",
+                      maskImage: "url('/images/logo_2.svg')",
+                      maskPosition: "center",
+                      maskRepeat: "no-repeat",
+                      maskSize: "contain",
+                    }}
                   />
                 </div>
 
@@ -189,16 +198,16 @@ export default function PartnersPage() {
           <div className="relative mx-auto max-w-[1240px]">
             <div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:items-end">
               <div>
-                <span className="text-xs font-black uppercase tracking-[0.18em] text-black">
+                <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#3e75ff]">
                   Inside DigitalBot
                 </span>
 
-                <h2 className="mt-4 text-balance text-3xl font-black leading-tight tracking-[-0.04em] text-black sm:text-4xl lg:text-5xl">
+                <h2 className="mt-4 text-balance text-[clamp(1.9rem,3.4vw,3.25rem)] font-medium leading-[1.05] tracking-[-0.045em] text-black">
                   Every customer interaction, connected in one place.
                 </h2>
               </div>
 
-              <p className="max-w-2xl text-lg leading-8 text-black lg:justify-self-end">
+              <p className="max-w-2xl text-base leading-8 text-gray-600 lg:justify-self-end">
                 DigitalBot helps businesses manage conversations and the work
                 behind them—from customer questions and CRM records to
                 bookings, approvals, campaigns, follow-ups, and client-ready
@@ -212,22 +221,22 @@ export default function PartnersPage() {
             <div className="mt-12 grid gap-6 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
               {digitalBotCapabilities.map((capability) => (
                 <article
-                  className="group relative min-h-60 overflow-hidden rounded-[22px] border border-[#E3E3E3] bg-white p-7 shadow-[0_10px_35px_rgba(0,0,0,0.035)] transition duration-300 hover:-translate-y-1 hover:border-black hover:shadow-[0_22px_60px_rgba(0,0,0,0.08)]"
+                  className="partners-capability-card group relative min-h-60 overflow-hidden rounded-[22px] border border-[#E3E3E3] bg-white p-7 shadow-[0_10px_35px_rgba(0,0,0,0.035)] transition duration-300 hover:-translate-y-1 hover:border-black hover:shadow-[0_22px_60px_rgba(0,0,0,0.08)]"
                   key={capability.number}
                 >
                   <div className="relative flex items-center justify-between">
-                    <span className="font-mono text-[10px] font-bold tracking-[0.12em] text-black">
+                    <span className="text-[10px] font-bold tracking-[0.12em] text-[#3e75ff]">
                       DIGITALBOT / {capability.number}
                     </span>
 
-                    <i className="size-2 rounded-full bg-black" />
+                    <i className="size-2 rounded-full bg-[#3e75ff]" />
                   </div>
 
-                  <h3 className="relative mt-7 text-xl font-extrabold text-black">
+                  <h3 className="relative mt-7 text-xl font-semibold tracking-[-0.03em] text-black">
                     {capability.title}
                   </h3>
 
-                  <p className="relative mt-3 text-[15px] leading-7 text-black sm:text-base">
+                  <p className="relative mt-3 text-sm leading-7 text-gray-600 sm:text-base">
                     {capability.body}
                   </p>
                 </article>
@@ -240,18 +249,18 @@ export default function PartnersPage() {
             WORKFLOW
         ========================================================== */}
         <section className="bg-white px-5 py-20 sm:px-8 sm:py-24">
-          <div className="relative mx-auto max-w-[1240px] overflow-hidden rounded-[28px] border border-[#E2E2E2] bg-white p-6 shadow-[0_18px_55px_rgba(0,0,0,0.055)] sm:p-10 lg:p-14">
+          <div className="partners-workflow-card relative mx-auto max-w-[1240px] overflow-hidden rounded-[28px] border border-[#E2E2E2] bg-white p-6 shadow-[0_18px_55px_rgba(0,0,0,0.055)] sm:p-10 lg:p-14">
             <div className="relative grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:items-center">
               <div>
-                <span className="text-xs font-black uppercase tracking-[0.18em] text-black">
+                <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#3e75ff]">
                   DigitalBot workflow
                 </span>
 
-                <h2 className="mt-4 text-3xl font-black tracking-[-0.035em] text-black sm:text-4xl">
+                <h2 className="mt-4 text-3xl font-semibold tracking-[-0.045em] text-black sm:text-4xl">
                   From first message to finished work
                 </h2>
 
-                <p className="mt-5 text-base leading-8 text-black sm:text-lg">
+                <p className="mt-5 text-base leading-8 text-gray-600">
                   DigitalBot connects each customer interaction with the
                   record, owner, workflow, and next step it needs—without
                   losing context along the way.
@@ -264,11 +273,11 @@ export default function PartnersPage() {
                     className="flex items-center gap-4 border-b border-[#E5E5E5] px-1 py-4 last:border-b-0 sm:py-5"
                     key={step}
                   >
-                    <span className="grid size-9 shrink-0 place-items-center rounded-lg border border-black bg-white font-mono text-[10px] font-bold text-black">
+                    <span className="grid size-9 shrink-0 place-items-center rounded-lg border border-gray-200 bg-gray-50 text-[10px] font-bold text-gray-600">
                       {String(index + 1).padStart(2, "0")}
                     </span>
 
-                    <span className="text-base font-semibold leading-7 text-black sm:text-lg">
+                    <span className="text-base font-semibold leading-7 text-gray-800 sm:text-lg">
                       {step}
                     </span>
                   </li>
@@ -281,33 +290,35 @@ export default function PartnersPage() {
         {/* =========================================================
             FINAL CTA
         ========================================================== */}
-        <section className="bg-white px-[clamp(1.25rem,5vw,4.75rem)] pb-8 pt-8 text-center">
-          <div className="relative mx-auto max-w-[1120px] overflow-hidden rounded-[1.5rem] border border-[#D9D9D9] bg-white px-6 py-8 shadow-[0_22px_64px_rgba(0,0,0,0.07)] sm:px-8 sm:py-10 lg:px-10 lg:py-11">
-            <div className="relative mx-auto grid max-w-[1080px] gap-7 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:text-left">
+        <section className="bg-white px-6 pb-12 pt-4 lg:px-8">
+          <div className="partners-contact mx-auto max-w-6xl overflow-hidden rounded-[24px] border border-[#d7c8e8] bg-[#f1e9fa] p-8 text-center text-black shadow-[0_18px_46px_rgba(91,54,123,0.11)] sm:p-10">
+            <div className="mx-auto grid gap-7 md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:text-left">
               <div>
-                <h2 className="text-[clamp(1.35rem,2vw,2.1rem)] font-semibold leading-[1.12] tracking-[-0.035em] text-black">
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#7a3e9d]">
+                  Ready to get started?
+                </p>
+
+                <h2 className="mt-3 text-2xl font-semibold tracking-[-0.02em] text-black md:text-3xl">
                   See how DigitalBot can simplify your customer operations.
                 </h2>
 
-                <p className="mx-auto mt-3 max-w-2xl text-xs leading-5 text-black sm:text-sm sm:leading-6 lg:mx-0">
+                <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-gray-700 md:mx-0">
                   Explore DigitalBot&apos;s connected platform for customer
                   conversations, CRM workflows, support, bookings, campaigns,
                   and analytics.
                 </p>
               </div>
 
-              <div className="flex flex-wrap justify-center gap-3 lg:justify-end">
-                <a
-                  className="inline-flex min-h-12 items-center justify-center rounded-xl border border-black bg-white px-6 text-xs font-bold text-black shadow-[0_8px_25px_rgba(0,0,0,0.06)] transition duration-300 hover:-translate-y-0.5 hover:bg-black hover:text-white"
-                  href="https://digitalbot.ai"
-                  rel="noreferrer"
-                  target="_blank"
+              <div className="flex flex-wrap justify-center gap-3 md:justify-end">
+                <Link
+                  className="inline-flex min-h-12 items-center justify-center rounded-lg border border-[#7a3e9d] bg-[#7a3e9d] px-7 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#683486]"
+                  href="/contact"
                 >
-                  Visit DigitalBot.ai
+                  CONTACT US
                   <span className="ml-3" aria-hidden="true">
-                    ↗
+                    &rarr;
                   </span>
-                </a>
+                </Link>
               </div>
             </div>
           </div>

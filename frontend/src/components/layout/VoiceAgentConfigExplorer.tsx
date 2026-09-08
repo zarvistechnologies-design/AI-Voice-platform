@@ -154,7 +154,7 @@ export function VoiceAgentConfigExplorer({
   return (
     <div
       aria-label={label}
-      className={`voice-config-explorer voice-config-tone-${(activeIndex % 8) + 1} ${isCompact ? "voice-config-explorer-compact" : ""}`}
+      className={`voice-config-explorer ${isCompact ? "voice-config-explorer-compact" : ""}`}
       onKeyDown={(event) => {
         if (event.key === "ArrowLeft") {
           event.preventDefault();
@@ -249,8 +249,8 @@ export function VoiceAgentConfigExplorer({
 
       <style>{`
         .voice-config-explorer {
-          --active-config-color: #35fbe0;
-          --active-config-rgb: 53, 251, 224;
+          --active-config-color: #6268ff;
+          --active-config-rgb: 98, 104, 255;
           position: relative;
           width: 100%;
           max-width: 1360px;
@@ -276,41 +276,6 @@ export function VoiceAgentConfigExplorer({
         .voice-config-explorer-compact .voice-config-tabs > button {
           min-height: 92px;
           padding: 0.75rem 1rem;
-        }
-
-        .voice-config-tone-2 {
-          --active-config-color: #75baff;
-          --active-config-rgb: 117, 186, 255;
-        }
-
-        .voice-config-tone-3 {
-          --active-config-color: #a99cff;
-          --active-config-rgb: 169, 156, 255;
-        }
-
-        .voice-config-tone-4 {
-          --active-config-color: #f080d0;
-          --active-config-rgb: 240, 128, 208;
-        }
-
-        .voice-config-tone-5 {
-          --active-config-color: #ffad5c;
-          --active-config-rgb: 255, 173, 92;
-        }
-
-        .voice-config-tone-6 {
-          --active-config-color: #ff6f91;
-          --active-config-rgb: 255, 111, 145;
-        }
-
-        .voice-config-tone-7 {
-          --active-config-color: #72f6a1;
-          --active-config-rgb: 114, 246, 161;
-        }
-
-        .voice-config-tone-8 {
-          --active-config-color: #69e5ff;
-          --active-config-rgb: 105, 229, 255;
         }
 
         .voice-config-explorer-main {
@@ -507,10 +472,7 @@ export function VoiceAgentConfigExplorer({
           content: none;
         }
 
-        .voice-config-chart-row:nth-child(1) { --chart-color: #35fbe0; --chart-rgb: 53, 251, 224; }
-        .voice-config-chart-row:nth-child(2) { --chart-color: #75baff; --chart-rgb: 117, 186, 255; }
-        .voice-config-chart-row:nth-child(3) { --chart-color: #a99cff; --chart-rgb: 169, 156, 255; }
-        .voice-config-chart-row:nth-child(4) { --chart-color: #f080d0; --chart-rgb: 240, 128, 208; }
+        .voice-config-chart-row { --chart-color: #6268ff; --chart-rgb: 98, 104, 255; }
 
         .voice-config-tabs {
           display: grid;
@@ -600,14 +562,7 @@ export function VoiceAgentConfigExplorer({
           outline-offset: 3px;
         }
 
-        .voice-config-tabs > button:nth-child(1) { --tab-color: #35fbe0; }
-        .voice-config-tabs > button:nth-child(2) { --tab-color: #75baff; }
-        .voice-config-tabs > button:nth-child(3) { --tab-color: #a99cff; }
-        .voice-config-tabs > button:nth-child(4) { --tab-color: #f080d0; }
-        .voice-config-tabs > button:nth-child(5) { --tab-color: #ffad5c; }
-        .voice-config-tabs > button:nth-child(6) { --tab-color: #ff6f91; }
-        .voice-config-tabs > button:nth-child(7) { --tab-color: #72f6a1; }
-        .voice-config-tabs > button:nth-child(8) { --tab-color: #69e5ff; }
+        .voice-config-tabs > button { --tab-color: #6268ff; }
 
         @media (min-width: 768px) {
           .voice-config-detail {
@@ -926,6 +881,90 @@ export function VoiceAgentConfigExplorer({
           .voice-config-option {
             min-height: 3.8rem;
           }
+        }
+
+        /* Product pages use a light, single-accent configuration studio. */
+        .voice-config-explorer {
+          border-color: #dedee8;
+          background: #fff;
+          box-shadow: 0 20px 55px rgba(50, 47, 92, 0.08);
+        }
+
+        .voice-config-explorer-main,
+        .voice-config-detail {
+          border-color: #e5e5ed;
+          background: #fff;
+        }
+
+        .voice-config-detail-progress {
+          color: #8b8b98;
+        }
+
+        .voice-config-progress-track {
+          background: #e7e7ef;
+        }
+
+        .voice-config-detail h3 {
+          color: #171719;
+        }
+
+        .voice-config-detail-copy > p,
+        .voice-config-detail p {
+          color: #676773;
+        }
+
+        .voice-config-detail-icon {
+          border-color: rgba(98, 104, 255, 0.24);
+          border-left-color: #6268ff;
+          background: rgba(98, 104, 255, 0.08);
+          color: #565dcc;
+        }
+
+        .voice-config-option-grid {
+          border-color: #dedee8;
+          background: #f7f7fb;
+        }
+
+        .voice-config-option-grid-label,
+        .voice-config-option-check {
+          color: #565dcc !important;
+        }
+
+        .voice-config-option {
+          border-color: #e1e1e9;
+          background: #fff;
+          color: #34343f;
+        }
+
+        .voice-config-tabs {
+          border-color: #e2e2ea;
+          background: #f7f7fb;
+        }
+
+        .voice-config-tabs > button {
+          border-color: #e2e2ea;
+          color: #676773;
+        }
+
+        .voice-config-tabs > button.is-active {
+          border-color: rgba(98, 104, 255, 0.24);
+          background: rgba(98, 104, 255, 0.08);
+          color: #171719;
+          box-shadow: inset 3px 0 #6268ff;
+        }
+
+        .voice-config-tab-icon {
+          border-color: rgba(98, 104, 255, 0.2);
+          background: rgba(98, 104, 255, 0.07);
+          color: #565dcc;
+        }
+
+        .voice-config-tabs small {
+          color: #565dcc;
+        }
+
+        .voice-config-tabs em {
+          color: #858592;
         }
 
         @media (prefers-reduced-motion: reduce) {

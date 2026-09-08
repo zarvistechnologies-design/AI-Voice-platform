@@ -204,7 +204,7 @@ function CheckIcon() {
 
 function Pill({ children }: { children: string }) {
   return (
-    <span className="inline-flex rounded-full border border-[#35fbe0]/25 bg-[#35fbe0]/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.08em] text-[#75fff0]">
+    <span className="business-section-pill inline-flex rounded-full border border-[#35fbe0]/25 bg-[#35fbe0]/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.08em] text-[#75fff0]">
       {children}
     </span>
   );
@@ -452,9 +452,9 @@ function WorkflowVisual({ type, image }: { type: string; image?: string }) {
 export default function HealthcarePage() {
   return (
     <SiteLayout>
-      <div className="healthcare-page min-h-screen bg-black text-slate-50">
+      <div id="business-healthcare-page" className="healthcare-page min-h-screen bg-black text-slate-50">
         <section className="healthcare-hero-grid relative mx-auto min-h-[72vh] max-w-[1360px] items-center gap-12 px-5 pb-10 pt-28 sm:px-8 sm:pt-32">
-          <div>
+          <div className="healthcare-hero-copy">
             <div className="mb-7 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-slate-400">
               <span className="size-2 rounded-full bg-[#35fbe0] shadow-[0_0_12px_rgba(53,251,224,0.8)]" />
               Built for modern healthcare teams
@@ -472,13 +472,13 @@ export default function HealthcarePage() {
             </p>
             <div className="mt-10 flex flex-wrap gap-3">
               <Link
-                className="healthcare-demo-button inline-flex min-h-12 items-center rounded-lg px-6 text-sm font-extrabold transition hover:-translate-y-0.5"
+                className="business-blue-cta healthcare-demo-button inline-flex min-h-12 items-center rounded-lg px-6 text-sm font-extrabold transition hover:-translate-y-0.5"
                 href="/#demo"
               >
                 Book a free demo <span className="ml-3">&rarr;</span>
               </Link>
               <Link
-                className="healthcare-demo-button inline-flex min-h-12 items-center rounded-lg px-6 text-sm font-extrabold transition hover:-translate-y-0.5"
+                className="business-blue-cta healthcare-demo-button inline-flex min-h-12 items-center rounded-lg px-6 text-sm font-extrabold transition hover:-translate-y-0.5"
                 href="/contact"
               >
                 Contact sales
@@ -495,10 +495,6 @@ export default function HealthcarePage() {
                 src="/images/healthcare/voice-agent-hero.png"
               />
               <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_48%,rgba(17,24,39,0.9)_100%)]" />
-              <div className="absolute left-5 top-5 flex items-center gap-3 rounded-full border border-white/20 bg-black/80 px-4 py-2.5 backdrop-blur-md">
-                <span className="size-2.5 rounded-full bg-[#35fbe0] shadow-[0_0_12px_#35fbe0]" />
-                <span className="text-xs font-bold uppercase tracking-[0.12em]">Voice agent active</span>
-              </div>
             </div>
           </div>
         </section>
@@ -516,7 +512,7 @@ export default function HealthcarePage() {
                 {[...healthcareCompanies, ...healthcareCompanies].map((company, index) => (
                   <span
                     aria-hidden={index >= healthcareCompanies.length}
-                    className="shrink-0 text-xl font-bold tracking-[-0.02em] md:text-2xl"
+                    className="business-company-marquee-name shrink-0 text-xl font-bold tracking-[-0.02em] md:text-2xl"
                     key={`${company.name}-${index}`}
                     style={{ color: company.color }}
                   >
@@ -566,7 +562,7 @@ export default function HealthcarePage() {
             <div className="mt-10 grid gap-4 lg:grid-cols-3">
               {reviews.map((review, index) => (
                 <article
-                  className={`flex min-h-[275px] flex-col justify-between rounded-xl border p-6 transition duration-300 hover:-translate-y-1 ${
+                  className={`business-review-card flex min-h-[275px] flex-col justify-between rounded-xl border p-6 transition duration-300 hover:-translate-y-1 ${
                     index === 0
                       ? "border-[#35fbe0]/25 bg-[#35fbe0]/[0.045]"
                       : index === 1
@@ -677,7 +673,7 @@ export default function HealthcarePage() {
             <div className="mt-9 grid gap-3 md:grid-cols-3">
               {integrationHighlights.map((highlight) => (
                 <article
-                  className="rounded-xl border border-white/10 bg-white/[0.025] p-5"
+                  className="business-integration-highlight rounded-xl border border-white/10 bg-white/[0.025] p-5"
                   key={highlight.title}
                 >
                   <div className="flex items-center gap-3">
@@ -705,13 +701,13 @@ export default function HealthcarePage() {
                     <span className="healthcare-integration-icon grid size-10 shrink-0 place-items-center rounded-lg bg-[#35fbe0]/10 text-xs font-extrabold uppercase text-[#75fff0]">
                       {integration.slice(0, 2)}
                     </span>
-                    <strong className="text-base leading-tight text-slate-100">{integration}</strong>
+                    <strong className="business-integration-marquee-name text-base leading-tight text-slate-100">{integration}</strong>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="mt-11 grid items-center gap-6 overflow-hidden rounded-2xl border border-white/10 bg-[linear-gradient(115deg,rgba(53,251,224,0.12),rgba(143,131,232,0.08)_55%,rgba(255,150,85,0.09))] p-6 sm:p-8 md:grid-cols-[auto_1fr_auto]">
+            <div className="business-integration-help-card mt-11 grid items-center gap-6 overflow-hidden rounded-2xl border border-white/10 bg-[linear-gradient(115deg,rgba(53,251,224,0.12),rgba(143,131,232,0.08)_55%,rgba(255,150,85,0.09))] p-6 sm:p-8 md:grid-cols-[auto_1fr_auto]">
               <span className="grid size-12 place-items-center rounded-xl border border-[#35fbe0]/25 bg-black text-xl text-[#75fff0] shadow-[0_0_30px_rgba(53,251,224,0.12)]">
                 &#8644;
               </span>
@@ -832,9 +828,9 @@ export default function HealthcarePage() {
               </details>
             ))}
             <p className="mt-5 text-center text-sm text-slate-300">
-              More questions? Visit our{" "}
-              <Link className="rounded-md bg-black px-2 py-1 font-bold text-[#75fff0]" href="/#resources">
-                docs
+              More questions?{" "}
+              <Link className="font-bold text-[#3e75ff] transition hover:text-[#315fdb] hover:underline" href="/contact">
+                Contact us
               </Link>
             </p>
           </div>
@@ -869,7 +865,7 @@ export default function HealthcarePage() {
         }
 
         .healthcare-hero-heading {
-          font-size: clamp(2.25rem, 4.7vw, 4rem);
+          font-size: clamp(1.85rem, 3.8vw, 3.25rem);
           line-height: 0.98;
           letter-spacing: -0.05em;
         }
@@ -879,17 +875,19 @@ export default function HealthcarePage() {
         }
 
         .healthcare-demo-button {
-          background: #35fbe0;
-          color: #031310;
-          box-shadow: 0 12px 32px rgba(53, 251, 224, 0.12);
+          border: 1px solid #3e75ff;
+          background: #3e75ff;
+          color: #fff;
+          box-shadow: 0 12px 28px rgba(62, 117, 255, 0.22);
         }
 
         .healthcare-demo-button:hover {
-          background: #75fff0;
+          border-color: #315fdb;
+          background: #315fdb;
         }
 
         .healthcare-hero-card {
-          width: min(100%, 560px);
+          width: min(100%, 520px);
           justify-self: center;
           box-shadow:
             0 24px 70px rgba(0, 0, 0, 0.45),
@@ -898,7 +896,7 @@ export default function HealthcarePage() {
         }
 
         .healthcare-hero-image {
-          height: clamp(360px, 44vw, 440px);
+          height: clamp(340px, 41vw, 410px);
         }
 
         .healthcare-features::before {

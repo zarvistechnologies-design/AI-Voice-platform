@@ -868,7 +868,8 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
   return (
     <SiteLayout>
       <div
-        className={`product-service-page product-page-${service.slug} voice-agent-page bg-black text-white`}
+        className={`product-service-page product-page-${service.slug} voice-agent-page bg-white text-[#17203f]`}
+        id="product-service-page"
         style={theme as CSSProperties}
       >
         <section className="product-service-hero relative overflow-hidden px-5 pb-8 pt-32 sm:px-8 sm:pb-10 sm:pt-36 lg:pt-40">
@@ -879,11 +880,11 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
               <Pill>
                 {service.kicker} / {experience.label}
               </Pill>
-              <h1 className="voice-agents-hero-heading mt-7 font-medium leading-[0.98] tracking-[-0.055em]">
+              <h1 className="product-hero-title voice-agents-hero-heading mt-7 font-medium leading-[0.98] tracking-[-0.055em]">
                 <span className="product-service-heading-primary block">
                   {experience.heroTitle}
                 </span>{" "}
-                <span className="product-service-heading-accent block">
+                <span className="product-service-heading-accent block" id="product-service-heading-accent">
                   {experience.heroAccent}
                 </span>
               </h1>
@@ -893,7 +894,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
 
               <div className="mt-9 flex flex-wrap gap-3">
                 <Link
-                  className="service-primary-button inline-flex min-h-12 items-center rounded-lg px-6 text-sm font-extrabold transition hover:-translate-y-0.5"
+                  className="service-secondary-button inline-flex min-h-12 items-center rounded-lg border border-[#cfd6e6] bg-white px-6 text-sm font-extrabold text-[#17203f] transition hover:-translate-y-0.5"
                   href="/#demo"
                 >
                   Try a demo <span className="ml-3">&rarr;</span>
@@ -912,7 +913,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
                     className="inline-flex items-center gap-2"
                     key={highlight}
                   >
-                    <span className="service-live-dot size-1.5 rounded-full" />
+                    <span className="product-hero-bullet service-live-dot size-1.5 rounded-full" aria-hidden="true" />
                     {highlight}
                   </span>
                 ))}
@@ -928,7 +929,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
 
         {isVoiceAgents && (
           <>
-            <section className="voice-capabilities-section relative overflow-hidden border-b border-white/[0.06] bg-black px-5 py-20 sm:px-8 sm:py-24">
+            <section className="voice-capabilities-section relative overflow-hidden border-b border-[#e4e8f2] bg-white px-5 py-20 sm:px-8 sm:py-24">
               <div className="voice-agent-container relative mx-auto max-w-[1240px]">
                 <div className="voice-capabilities-intro mx-auto max-w-4xl text-center">
                   <div className="flex justify-center">
@@ -1192,7 +1193,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
           </>
         )}
 
-        <section className="agent-anatomy-section relative overflow-hidden border-b border-white/[0.06] bg-black px-5 py-20 sm:px-8 sm:py-24">
+        <section className="agent-anatomy-section relative overflow-hidden border-b border-[#e4e8f2] bg-white px-5 py-20 sm:px-8 sm:py-24">
           <div className="voice-agent-container relative mx-auto max-w-[1240px]">
             <div className="voice-blueprint-intro mx-auto max-w-4xl text-center">
               <div className="flex justify-center">
@@ -1222,7 +1223,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
                       "Each capability can be managed independently while remaining connected to one reliable production workflow."}
                   </p>
                 </div>
-                <div className="mx-auto mt-10 grid size-36 place-items-center rounded-full border border-[rgba(var(--service-secondary-rgb),0.35)] bg-[rgba(var(--service-secondary-rgb),0.1)] p-4 text-center shadow-[0_0_55px_rgba(var(--service-secondary-rgb),0.16)]">
+                <div className="voice-blueprint-core-badge mx-auto mt-10 grid size-36 place-items-center rounded-full border border-[rgba(var(--service-secondary-rgb),0.35)] bg-[rgba(var(--service-secondary-rgb),0.1)] p-4 text-center shadow-[0_0_55px_rgba(var(--service-secondary-rgb),0.16)]">
                   <span className="text-xs font-black tracking-[0.16em] text-[var(--service-secondary)] uppercase">
                     {design?.blueprintCoreBadge ?? "Product core"}
                   </span>
@@ -1259,7 +1260,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
         </section>
 
         <>
-          <section className="voice-build-process relative overflow-hidden bg-black px-5 py-20 sm:px-8 sm:py-24">
+          <section className="voice-build-process relative overflow-hidden bg-white px-5 py-20 sm:px-8 sm:py-24" id="how-you-build-it">
             <div className="voice-agent-container relative mx-auto max-w-[1360px]">
               <div className="voice-build-redesign-intro mx-auto max-w-4xl text-center">
                 <div className="flex justify-center">
@@ -1307,7 +1308,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
             </div>
           </section>
 
-          <section className="voice-config-section relative overflow-hidden bg-black px-5 py-16 sm:px-8 sm:py-20">
+          <section className="voice-config-section relative overflow-hidden bg-white px-5 py-16 sm:px-8 sm:py-20" id="agent-control-center">
             <div
               className="voice-config-wash pointer-events-none absolute inset-0"
               aria-hidden="true"
@@ -1367,7 +1368,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
           </div>
         </section>
 
-        <section className="voice-agent-contact-section bg-black px-6 pb-16 pt-4 lg:px-8">
+        <section className="voice-agent-contact-section bg-white px-6 pb-16 pt-4 lg:px-8">
           <div className="product-service-ready-card relative mx-auto flex max-w-6xl flex-col items-center justify-between gap-7 overflow-hidden rounded-[24px] border border-[rgba(var(--service-accent-rgb),0.35)] bg-[#07100d] p-8 text-center shadow-[0_24px_70px_rgba(var(--service-accent-rgb),0.08)] sm:p-10 md:flex-row md:text-left">
             <div
               className="pointer-events-none absolute right-[18%] top-1/2 hidden size-56 -translate-y-1/2 rounded-full border border-[rgba(var(--service-accent-rgb),0.15)] shadow-[0_0_0_24px_rgba(var(--service-accent-rgb),0.025),0_0_0_54px_rgba(var(--service-secondary-rgb),0.025)] lg:block"
@@ -5892,6 +5893,436 @@ inset:55px;
             scroll-behavior: auto !important;
             transition-duration: 0.01ms !important;
           }
+        }
+      `}</style>
+      <style>{`
+        #product-service-page#product-service-page h1,
+        #product-service-page#product-service-page h1 * {
+          color: var(--product-hero-heading) !important;
+          -webkit-text-fill-color: var(--product-hero-heading) !important;
+        }
+
+        #product-service-page#product-service-page h1 .product-service-heading-primary {
+          color: #111113 !important;
+          -webkit-text-fill-color: #111113 !important;
+        }
+
+        #product-service-page#product-service-page h2,
+        #product-service-page#product-service-page h2 * {
+          color: #252161 !important;
+          -webkit-text-fill-color: #252161 !important;
+        }
+
+        #product-service-page#product-service-page :is(
+          .voice-capability-card,
+          .everything-included-card,
+          .voice-blueprint-layer,
+          .voice-build-redesign-step,
+          .voice-config-item,
+          .voice-sample-card,
+          .service-faq
+        ) {
+          border-color: #d8e3ff !important;
+          background: linear-gradient(145deg, #fff 0%, #eef4ff 100%) !important;
+          box-shadow: 0 10px 28px rgba(62, 117, 255, 0.08) !important;
+        }
+
+        #product-service-page#product-service-page :is(
+          .voice-capability-icon,
+          .everything-icon-circle,
+          .voice-blueprint-number,
+          .voice-build-redesign-number,
+          .voice-config-number
+        ) {
+          border-color: #bfd0ff !important;
+          background: #e8efff !important;
+          color: #3e75ff !important;
+          -webkit-text-fill-color: #3e75ff !important;
+        }
+
+        #product-service-page#product-service-page :is(
+          .voice-capability-card,
+          .everything-included-card,
+          .voice-blueprint-layer,
+          .voice-build-redesign-step,
+          .voice-config-item,
+          .voice-sample-card,
+          .service-faq
+        ):hover {
+          border-color: #8facff !important;
+          box-shadow: 0 16px 36px rgba(62, 117, 255, 0.14) !important;
+        }
+
+        #product-service-page#product-service-page .voice-capabilities-section .voice-capability-card {
+          border-color: #e1e4ec !important;
+          background: #fff !important;
+          box-shadow: none !important;
+        }
+
+        #product-service-page#product-service-page .voice-capabilities-section .voice-capability-card:hover {
+          border-color: #cbd1dc !important;
+          background: #fff !important;
+          box-shadow: 0 10px 26px rgba(23, 32, 63, 0.07) !important;
+        }
+
+        #product-service-page#product-service-page .everything-included-section {
+          --everything-accent: #3e75ff;
+          --everything-soft: #eef4ff;
+          --everything-border: #bfd0ff;
+        }
+
+        #product-service-page#product-service-page .everything-included-section h2 span {
+          color: #252161 !important;
+          -webkit-text-fill-color: #252161 !important;
+        }
+
+        #product-service-page#product-service-page .everything-included-section .service-pill {
+          border-color: rgba(62, 117, 255, 0.2) !important;
+          background: #f4f7ff !important;
+          color: #3e75ff !important;
+          -webkit-text-fill-color: #3e75ff !important;
+        }
+
+        #product-service-page#product-service-page .everything-included-section .everything-icon-circle {
+          border-color: var(--everything-border) !important;
+          background: var(--everything-soft) !important;
+          color: var(--everything-accent) !important;
+          -webkit-text-fill-color: var(--everything-accent) !important;
+          box-shadow: 0 10px 28px rgba(62, 117, 255, 0.12) !important;
+        }
+
+        #product-service-page#product-service-page .everything-included-section .everything-line {
+          background: #d8e3ff !important;
+        }
+
+        #product-service-page#product-service-page .everything-included-section .everything-line > span {
+          background: var(--everything-accent) !important;
+          box-shadow: 0 0 0 6px rgba(62, 117, 255, 0.12), 0 0 18px rgba(62, 117, 255, 0.3) !important;
+        }
+
+        #product-service-page#product-service-page .everything-included-section .everything-included-card {
+          border-color: var(--everything-border) !important;
+          background: linear-gradient(145deg, #fff 0%, var(--everything-soft) 100%) !important;
+          box-shadow: 0 10px 28px rgba(62, 117, 255, 0.09) !important;
+        }
+
+        #product-service-page#product-service-page .everything-included-section .everything-included-card:hover {
+          border-color: var(--everything-accent) !important;
+          box-shadow: 0 16px 36px rgba(62, 117, 255, 0.14) !important;
+        }
+
+        #product-service-page#product-service-page .voice-build-process {
+          --build-clean-accent: #3e75ff;
+          --build-clean-soft: #eef4ff;
+          --build-clean-border: #bfd0ff;
+          background: #fff !important;
+        }
+
+        #product-service-page#product-service-page .voice-build-process .service-pill {
+          border-color: var(--build-clean-border) !important;
+          background: var(--build-clean-soft) !important;
+          color: var(--build-clean-accent) !important;
+          -webkit-text-fill-color: var(--build-clean-accent) !important;
+        }
+
+        #product-service-page#product-service-page .voice-build-process .voice-build-redesign-heading {
+          color: #111113 !important;
+          -webkit-text-fill-color: #111113 !important;
+        }
+
+        #product-service-page#product-service-page .voice-build-process .voice-build-redesign-copy {
+          color: #5d6478 !important;
+          -webkit-text-fill-color: #5d6478 !important;
+        }
+
+        #product-service-page#product-service-page .voice-build-process .voice-build-redesign-panel {
+          border-color: #dfe5e8 !important;
+          background: #f9fbfb !important;
+          background-image: none !important;
+          box-shadow: none !important;
+        }
+
+        #product-service-page#product-service-page .voice-build-process .voice-build-redesign-panel::before {
+          display: none !important;
+        }
+
+        #product-service-page#product-service-page .voice-build-process .voice-build-redesign-panel-head {
+          border-color: #dfe5e8 !important;
+          color: #697181 !important;
+          -webkit-text-fill-color: #697181 !important;
+        }
+
+        #product-service-page#product-service-page .voice-build-process .voice-build-redesign-panel-head span:last-child {
+          color: var(--build-clean-accent) !important;
+          -webkit-text-fill-color: var(--build-clean-accent) !important;
+        }
+
+        #product-service-page#product-service-page .voice-build-process .voice-build-redesign-step {
+          --build-primary: var(--build-clean-accent) !important;
+          --build-rgb: 21, 154, 156 !important;
+          border-color: #dfe5e8 !important;
+          background: #fff !important;
+          background-image: none !important;
+          box-shadow: none !important;
+        }
+
+        #product-service-page#product-service-page .voice-build-process .voice-build-redesign-step::before {
+          background: var(--build-clean-accent) !important;
+          box-shadow: none !important;
+          opacity: 0.72 !important;
+        }
+
+        #product-service-page#product-service-page .voice-build-process .voice-build-redesign-step:hover {
+          border-color: var(--build-clean-border) !important;
+          background: #fff !important;
+          box-shadow: 0 10px 26px rgba(23, 32, 63, 0.07) !important;
+        }
+
+        #product-service-page#product-service-page .voice-build-process :is(
+          .voice-build-redesign-step-top,
+          .voice-build-redesign-label
+        ) {
+          color: var(--build-clean-accent) !important;
+          -webkit-text-fill-color: var(--build-clean-accent) !important;
+        }
+
+        #product-service-page#product-service-page .voice-build-process .voice-build-redesign-number {
+          border-color: var(--build-clean-border) !important;
+          background: var(--build-clean-soft) !important;
+          color: var(--build-clean-accent) !important;
+          -webkit-text-fill-color: var(--build-clean-accent) !important;
+        }
+
+        #product-service-page#product-service-page .voice-build-process .voice-build-redesign-step h3 {
+          color: #252161 !important;
+          -webkit-text-fill-color: #252161 !important;
+        }
+
+        #product-service-page#product-service-page .voice-build-process .voice-build-redesign-step p {
+          color: #5d6478 !important;
+          -webkit-text-fill-color: #5d6478 !important;
+        }
+
+        #product-service-page#product-service-page .voice-config-section {
+          --agent-control-accent: #3e75ff;
+          --agent-control-soft: #eef4ff;
+          --agent-control-border: #bfd0ff;
+          background: #fff !important;
+        }
+
+        #product-service-page#product-service-page .voice-config-section .voice-config-wash {
+          background: transparent !important;
+          background-image: none !important;
+        }
+
+        #product-service-page#product-service-page .voice-config-section .service-pill {
+          border-color: var(--agent-control-border) !important;
+          background: var(--agent-control-soft) !important;
+          color: var(--agent-control-accent) !important;
+          -webkit-text-fill-color: var(--agent-control-accent) !important;
+        }
+
+        #product-service-page#product-service-page .voice-config-section .voice-config-heading {
+          color: #111113 !important;
+          -webkit-text-fill-color: #111113 !important;
+        }
+
+        #product-service-page#product-service-page .voice-config-section .voice-config-explorer {
+          --active-config-color: var(--agent-control-accent) !important;
+          --active-config-rgb: 62, 117, 255 !important;
+          border-color: #dfe3e8 !important;
+          background: #fff !important;
+          box-shadow: 0 12px 32px rgba(23, 32, 63, 0.06) !important;
+        }
+
+        #product-service-page#product-service-page .voice-config-section :is(
+          .voice-config-explorer-main,
+          .voice-config-detail
+        ) {
+          border-color: #e2e5ea !important;
+          background: #fff !important;
+        }
+
+        #product-service-page#product-service-page .voice-config-section .voice-config-detail-progress strong,
+        #product-service-page#product-service-page .voice-config-section .voice-config-option-number,
+        #product-service-page#product-service-page .voice-config-section .voice-config-option-grid-label,
+        #product-service-page#product-service-page .voice-config-section .voice-config-option-check,
+        #product-service-page#product-service-page .voice-config-section .voice-config-tabs small {
+          color: var(--agent-control-accent) !important;
+          -webkit-text-fill-color: var(--agent-control-accent) !important;
+        }
+
+        #product-service-page#product-service-page .voice-config-section .voice-config-progress-track > span {
+          background: var(--agent-control-accent) !important;
+          box-shadow: none !important;
+        }
+
+        #product-service-page#product-service-page .voice-config-section .voice-config-detail-icon {
+          border-color: var(--agent-control-border) !important;
+          border-left-color: var(--agent-control-accent) !important;
+          background: var(--agent-control-soft) !important;
+          color: var(--agent-control-accent) !important;
+        }
+
+        #product-service-page#product-service-page .voice-config-section .voice-config-option-grid {
+          border-color: #e2e5ea !important;
+          background: #fafafa !important;
+          background-image: none !important;
+        }
+
+        #product-service-page#product-service-page .voice-config-section .voice-config-option {
+          border-color: #e2e5ea !important;
+          background: #fff !important;
+          color: #34343f !important;
+          -webkit-text-fill-color: #34343f !important;
+        }
+
+        #product-service-page#product-service-page .voice-config-section .voice-config-tabs {
+          border-color: #e2e5ea !important;
+          background: #fafafa !important;
+        }
+
+        #product-service-page#product-service-page .voice-config-section .voice-config-tab-icon {
+          border-color: var(--agent-control-border) !important;
+          background: var(--agent-control-soft) !important;
+          color: var(--agent-control-accent) !important;
+        }
+
+        #product-service-page#product-service-page .voice-config-section .voice-config-tabs > button.is-active {
+          border-color: var(--agent-control-border) !important;
+          background: var(--agent-control-soft) !important;
+          color: #111113 !important;
+          -webkit-text-fill-color: #111113 !important;
+          box-shadow: inset 3px 0 var(--agent-control-accent) !important;
+        }
+
+        #product-service-page#product-service-page .voice-config-section .voice-config-detail {
+          min-height: 0 !important;
+          align-items: flex-start !important;
+          justify-content: flex-start !important;
+          padding: 1.5rem 1.75rem !important;
+        }
+
+        #product-service-page#product-service-page .voice-config-section .voice-config-detail-body {
+          width: min(100%, 740px) !important;
+          gap: 1.25rem !important;
+        }
+
+        #product-service-page#product-service-page .voice-config-section .voice-config-title-row {
+          gap: 0.85rem !important;
+          margin-top: 0.85rem !important;
+        }
+
+        #product-service-page#product-service-page .voice-config-section .voice-config-detail-icon {
+          width: 3rem !important;
+          height: 3rem !important;
+        }
+
+        #product-service-page#product-service-page .voice-config-section .voice-config-detail-icon svg {
+          width: 1.55rem !important;
+          height: 1.55rem !important;
+        }
+
+        #product-service-page#product-service-page .voice-config-section .voice-config-detail h3 {
+          font-size: clamp(1.55rem, 2.4vw, 1.9rem) !important;
+        }
+
+        #product-service-page#product-service-page .voice-config-section .voice-config-detail-content > p {
+          margin-top: 0.75rem !important;
+          font-size: 0.9rem !important;
+          line-height: 1.55rem !important;
+        }
+
+        #product-service-page#product-service-page .voice-config-section .voice-config-option-grid {
+          gap: 0.6rem !important;
+          padding: 0.9rem !important;
+          border-radius: 0.85rem !important;
+        }
+
+        #product-service-page#product-service-page .voice-config-section .voice-config-option-grid-label {
+          margin-bottom: 0.2rem !important;
+        }
+
+        #product-service-page#product-service-page .voice-config-section .voice-config-option {
+          min-height: 3.1rem !important;
+          padding: 0.65rem 0.75rem !important;
+          font-size: 0.8rem !important;
+        }
+
+        @media (min-width: 900px) {
+          #product-service-page#product-service-page .voice-config-section .voice-config-tabs {
+            padding: 0.5rem !important;
+          }
+
+          #product-service-page#product-service-page .voice-config-section .voice-config-tabs > button {
+            min-height: 2.75rem !important;
+            gap: 0.65rem !important;
+            padding: 0.45rem 0.6rem !important;
+          }
+
+          #product-service-page#product-service-page .voice-config-section .voice-config-tab-icon {
+            width: 1.75rem !important;
+            height: 1.75rem !important;
+          }
+
+          #product-service-page#product-service-page .voice-config-section .voice-config-tabs em {
+            display: none !important;
+          }
+        }
+
+        #product-service-page#product-service-page .voice-faq-section {
+          background: #fff !important;
+          background-image: none !important;
+        }
+
+        #product-service-page#product-service-page .voice-faq-section .service-faq {
+          border-color: #e1e4ea !important;
+          background: #fff !important;
+          background-image: none !important;
+          box-shadow: none !important;
+        }
+
+        #product-service-page#product-service-page .voice-faq-section .service-faq:hover {
+          border-color: #cdd2dc !important;
+          background: #fff !important;
+          box-shadow: 0 8px 22px rgba(23, 32, 63, 0.055) !important;
+        }
+
+        #product-service-page#product-service-page .voice-agent-contact-section {
+          background: #fff !important;
+          background-image: none !important;
+        }
+
+        #product-service-page#product-service-page .voice-agent-contact-section .product-service-ready-card {
+          border-color: #d9d6f1 !important;
+          background: linear-gradient(135deg, #f8f7ff 0%, #f1f0ff 100%) !important;
+          background-image: linear-gradient(135deg, #f8f7ff 0%, #f1f0ff 100%) !important;
+          box-shadow: 0 14px 36px rgba(79, 70, 145, 0.08) !important;
+        }
+
+        #product-service-page#product-service-page .voice-agent-contact-section .product-service-ready-card > div:first-child {
+          border-color: rgba(100, 104, 255, 0.16) !important;
+          box-shadow: 0 0 0 24px rgba(100, 104, 255, 0.025), 0 0 0 54px rgba(100, 104, 255, 0.02) !important;
+        }
+
+        #product-service-page#product-service-page .voice-agent-contact-section .service-accent-text {
+          color: #6468ff !important;
+          -webkit-text-fill-color: #6468ff !important;
+        }
+
+        #product-service-page#product-service-page .voice-agent-contact-section .product-service-contact-button {
+          border-color: #6468ff !important;
+          background: #6468ff !important;
+          background-image: none !important;
+          color: #fff !important;
+          -webkit-text-fill-color: #fff !important;
+          box-shadow: 0 10px 24px rgba(100, 104, 255, 0.2) !important;
+        }
+
+        #product-service-page#product-service-page .voice-agent-contact-section .product-service-contact-button:hover {
+          border-color: #5459e8 !important;
+          background: #5459e8 !important;
+          box-shadow: 0 13px 28px rgba(84, 89, 232, 0.24) !important;
         }
       `}</style>
     </SiteLayout>

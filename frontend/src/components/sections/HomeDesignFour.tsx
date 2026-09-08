@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { customerReviews } from "@/config/customerReviews";
 
 import styles from "./HomeDesignFour.module.css";
 import "./HomeDesignFourGrid.css";
@@ -38,15 +39,6 @@ const industries = [
   { title: "Hospitality", tab: "Hospitality", image: "/images/3.png" },
   { title: "Education & EdTech", tab: "Education & EdTech", image: "/images/4.png" },
   { title: "B2B Goods and Services", tab: "B2B Goods & Services", image: "/images/5.png" },
-] as const;
-
-const testimonials = [
-  { quote: "Vozon helped us automate repetitive calls without compromising the customer experience.", name: "Operations Lead", role: "Enterprise Customer" },
-  { quote: "The conversations feel natural, while the automation happens completely in the background.", name: "Daniel", role: "Head of Customer Experience" },
-  { quote: "We can launch and improve voice agents much faster than before.", name: "Sofia", role: "Growing Business" },
-  { quote: "The conversations feel natural, while the automation happens completely in the background.", name: "Aaron Chope", role: "Product Designer" },
-  { quote: "The conversations feel natural, while the automation happens completely in the background.", name: "Laura Kim", role: "Product Designer" },
-  { quote: "We can launch and improve voice agents much faster than before.", name: "Arjun Mehta", role: "Software Developer" },
 ] as const;
 
 const insights = [
@@ -164,7 +156,8 @@ export function HomeDesignFour() {
         </section>
 
         <section className={`${styles.logoStrip} home-design-four__logos`} aria-label="Companies using modern voice workflows">
-          <div>
+          <div className="design-four-client-marquee-track">
+            <div className="design-four-client-marquee-group">
             <b className="design-four-client-logo is-deloitte" aria-label="Deloitte">Deloitte<span>.</span></b>
             <b className="design-four-client-logo is-appsmith" aria-label="Appsmith">appsmith_</b>
             <b className="design-four-client-logo is-vigilant" aria-label="Vigilant">Vigilant</b>
@@ -184,6 +177,40 @@ export function HomeDesignFour() {
               <svg aria-hidden="true" viewBox="0 0 24 28"><path d="M2 2h18v9H11v3h9v12H2v-9h9v-3H2V2Z" /></svg>
               <em>SOULPAGE</em>
             </b>
+            <b className="design-four-client-logo is-google">Google</b>
+            <b className="design-four-client-logo is-microsoft">Microsoft</b>
+            <b className="design-four-client-logo is-hubspot">HubSpot</b>
+            <b className="design-four-client-logo is-shopify">Shopify</b>
+            <b className="design-four-client-logo is-zendesk">zendesk</b>
+            <b className="design-four-client-logo is-digitalbot" aria-label="DigitalBot">DigitalBot</b>
+            </div>
+            <div aria-hidden="true" className="design-four-client-marquee-group">
+              <b className="design-four-client-logo is-deloitte">Deloitte<span>.</span></b>
+              <b className="design-four-client-logo is-appsmith">appsmith_</b>
+              <b className="design-four-client-logo is-vigilant">Vigilant</b>
+              <b className="design-four-client-logo is-edison">
+                <svg aria-hidden="true" viewBox="0 0 28 28"><rect x="1" y="2" width="22" height="6" rx="1" /><rect x="1" y="11" width="16" height="6" rx="1" /><rect x="1" y="20" width="22" height="6" rx="1" /></svg>
+                <em>ed.is.on</em>
+              </b>
+              <b className="design-four-client-logo is-kobe">
+                <svg aria-hidden="true" viewBox="0 0 34 34"><path d="M17 3c5 3 7 7 5 12-2 4-6 5-10 3 3-2 4-5 3-8-1-2 0-5 2-7Z" /><path d="M30 19c-1 6-4 9-10 9-4 0-7-3-7-7 3 2 6 1 8-1 2-2 5-3 9-1Z" /><path d="M7 29c-4-4-5-9-2-13 2-4 6-5 10-3-3 2-4 5-3 8 1 3-1 6-5 8Z" /></svg>
+                <em>Kobe<br />Creations</em>
+              </b>
+              <b className="design-four-client-logo is-simplamo">
+                <svg aria-hidden="true" viewBox="0 0 36 32"><circle cx="13" cy="12" r="9" /><circle cx="21" cy="18" r="9" /><path d="M4 25c7 5 18 5 27-1" /></svg>
+                <em>Simplamo<sup>&reg;</sup></em>
+              </b>
+              <b className="design-four-client-logo is-soulpage">
+                <svg aria-hidden="true" viewBox="0 0 24 28"><path d="M2 2h18v9H11v3h9v12H2v-9h9v-3H2V2Z" /></svg>
+                <em>SOULPAGE</em>
+              </b>
+              <b className="design-four-client-logo is-google">Google</b>
+              <b className="design-four-client-logo is-microsoft">Microsoft</b>
+              <b className="design-four-client-logo is-hubspot">HubSpot</b>
+              <b className="design-four-client-logo is-shopify">Shopify</b>
+              <b className="design-four-client-logo is-zendesk">zendesk</b>
+              <b className="design-four-client-logo is-digitalbot">DigitalBot</b>
+            </div>
           </div>
         </section>
 
@@ -224,7 +251,6 @@ export function HomeDesignFour() {
             ))}
           </div>
           <p className="design-four-launch-note">Configure your agent, choose the right model and voice, then deploy it across your preferred channels.</p>
-          <Link className="design-four-review-button" href="/resources/case-studies">View all Reviews</Link>
         </section>
 
         <section className="design-four-outcomes-section">
@@ -261,11 +287,11 @@ export function HomeDesignFour() {
             <span>Trusted Clients says</span><h2>What our customers say</h2><p><strong>4.5/5.0</strong> <b>★★★★★</b> (Trusted by 100+ companies)</p>
           </div>
           <div className="design-four-review-grid">
-            {testimonials.map((item) => (
+            {customerReviews.slice(0, 6).map((item) => (
               <article key={item.name}><blockquote>{item.quote}</blockquote><footer><span>{item.name.slice(0,1)}</span><div><b>{item.name}</b><small>{item.role}</small></div><i>𝕏</i></footer></article>
             ))}
           </div>
-          <Link className="design-four-review-button" href="/resources/case-studies">View all Reviews</Link>
+          <Link className="design-four-review-button" href="/reviews">View all Reviews</Link>
         </section>
 
         <section className={`${styles.insights} home-design-four__section design-four-insights-section`} id="insights">
