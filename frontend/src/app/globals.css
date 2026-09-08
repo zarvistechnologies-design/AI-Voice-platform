@@ -291,7 +291,7 @@
 }
 
 .marketing-site > main > div > section:nth-of-type(even) {
-  background-color: #faf9ff !important;
+  background-color: #fff !important;
 }
 
 .marketing-site [class~="bg-black"],
@@ -1231,20 +1231,22 @@
   color: var(--support-ink) !important;
 }
 
+/* Don’t force black fill on the gradient accent */
 :is(.docs-page, .help-center-page),
-:is(.docs-page, .help-center-page) :where(*) {
+:is(.docs-page, .help-center-page) :where(*):not(.help-gradient-text) {
   color: var(--support-ink) !important;
   -webkit-text-fill-color: var(--support-ink) !important;
 }
 
-:is(.docs-page, .help-center-page) :is(section, article, aside, details, div, nav, footer, figure, figcaption, pre, code, ul, ol, li, dl, dt, dd, label, span, a, button, input, select),
+:is(.docs-page, .help-center-page) :is(section, article, aside, details, div, nav, footer, figure, figcaption, pre, code, ul, ol, li, dl, dt, dd, label, span, a, button, input, select):not(.help-gradient-text),
 :is(.docs-page, .help-center-page) [style*="background-color"] {
-  background-color: #fff !important;
+  /* background-color: #fff !important; */
   background-image: none !important;
   box-shadow: none !important;
 }
 
-:is(.docs-page, .help-center-page) [class*="border-"] {
+:is(.docs-page, .help-center-page)
+  [class*="border-"]:not(.help-topic-card):not(.help-guides-panel):not(.help-topic-rail) {
   border-color: var(--support-line) !important;
 }
 
@@ -1275,6 +1277,25 @@
 :is(.docs-page, .help-center-page) input::placeholder {
   color: #000 !important;
   opacity: 1;
+}
+
+.docs-page .docs-code-block,
+.docs-page .docs-code-block * {
+  border-color: var(--support-line) !important;
+  background: #fff !important;
+  background-image: none !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  box-shadow: none !important;
+}
+/* Gradient tagline — allowed exception */
+.help-center-page .help-gradient-text {
+  display: inline;
+  padding: 0.12em 0.2em;
+  margin: 0 -0.1em;
+ -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  overflow: visible;
 }
 
 .docs-page .docs-code-block,

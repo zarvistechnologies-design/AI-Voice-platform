@@ -12,14 +12,14 @@ export const metadata: Metadata = {
 const sections = [
   {
     id: "acceptance",
-    title: "1. Acceptance and eligibility",
+    title: "Acceptance and eligibility",
     content: (
       <>
         <p>
           These Terms and Conditions (&ldquo;Terms&rdquo;) govern your use of
-          the Vozon website, dashboard, APIs, AI voice agents, calling
-          features, integrations, and related offerings (the &ldquo;Service&rdquo;).
-          By creating an account or using the Service, you agree to these Terms.
+          the Vozon website, dashboard, APIs, AI voice agents, calling features,
+          integrations, and related offerings (the &ldquo;Service&rdquo;). By
+          creating an account or using the Service, you agree to these Terms.
         </p>
 
         <p>
@@ -32,14 +32,14 @@ const sections = [
   },
   {
     id: "service",
-    title: "2. The Service",
+    title: "The Service",
     content: (
       <>
         <p>
-          Vozon provides tools for operating AI voice agents, including
-          calling, speech processing, workflows, knowledge sources, analytics,
-          phone numbers, integrations, and automated actions. The Service may
-          process synthetic speech, recordings, transcripts, summaries, and
+          Vozon provides tools for operating AI voice agents, including calling,
+          speech processing, workflows, knowledge sources, analytics, phone
+          numbers, integrations, and automated actions. The Service may process
+          synthetic speech, recordings, transcripts, summaries, and
           connected-tool actions.
         </p>
 
@@ -54,7 +54,7 @@ const sections = [
   },
   {
     id: "accounts",
-    title: "3. Accounts and authorized users",
+    title: "Accounts and authorized users",
     content: (
       <>
         <ul>
@@ -83,7 +83,7 @@ const sections = [
   },
   {
     id: "customer-responsibilities",
-    title: "4. Customer responsibilities",
+    title: "Customer responsibilities",
     content: (
       <>
         <p>
@@ -93,8 +93,8 @@ const sections = [
 
         <ul>
           <li>
-            all prompts, knowledge, contacts, numbers, recordings,
-            integrations, and other content you provide;
+            all prompts, knowledge, contacts, numbers, recordings, integrations,
+            and other content you provide;
           </li>
 
           <li>
@@ -118,8 +118,8 @@ const sections = [
           </li>
 
           <li>
-            honouring opt-outs, do-not-call preferences, calling hours, and
-            laws applicable to your use case and regions.
+            honouring opt-outs, do-not-call preferences, calling hours, and laws
+            applicable to your use case and regions.
           </li>
         </ul>
 
@@ -133,7 +133,7 @@ const sections = [
   },
   {
     id: "acceptable-use",
-    title: "5. Acceptable use",
+    title: "Acceptable use",
     content: (
       <>
         <p>You may not use the Service to:</p>
@@ -155,8 +155,8 @@ const sections = [
           </li>
 
           <li>
-            disregard applicable do-not-call preferences, calling hours,
-            sender registration, or campaign rules;
+            disregard applicable do-not-call preferences, calling hours, sender
+            registration, or campaign rules;
           </li>
 
           <li>
@@ -184,7 +184,7 @@ const sections = [
   },
   {
     id: "ai",
-    title: "6. AI and voice-service limitations",
+    title: "AI and voice-service limitations",
     content: (
       <>
         <p>
@@ -200,60 +200,60 @@ const sections = [
         </p>
 
         <p>
-          The Service is not an emergency calling service and must not be
-          relied upon for urgent life-safety communication.
+          The Service is not an emergency calling service and must not be relied
+          upon for urgent life-safety communication.
         </p>
       </>
     ),
   },
   {
     id: "integrations",
-    title: "7. Third-party services and integrations",
+    title: "Third-party services and integrations",
     content: (
       <>
         <p>
-          The Service may connect with carriers, AI providers, payment
-          services, CRMs, calendars, messaging tools, webhooks, and other
-          third parties governed by their own terms.
+          The Service may connect with carriers, AI providers, payment services,
+          CRMs, calendars, messaging tools, webhooks, and other third parties
+          governed by their own terms.
         </p>
 
         <p>
           You authorize required data exchange with connected services and
-          remain responsible for their permissions and accounts. Vozon does
-          not control third-party availability or data practices.
+          remain responsible for their permissions and accounts. Vozon does not
+          control third-party availability or data practices.
         </p>
       </>
     ),
   },
   {
     id: "content",
-    title: "8. Customer content, recordings, and voice rights",
+    title: "Customer content, recordings, and voice rights",
     content: (
       <>
         <p>
           You retain ownership of submitted prompts, knowledge, scripts,
-          contacts, recordings, and authorized voice assets. You permit Vozon
-          to process that content only to provide, secure, support, and improve
-          the Service, comply with law, and enforce these Terms.
+          contacts, recordings, and authorized voice assets. You permit Vozon to
+          process that content only to provide, secure, support, and improve the
+          Service, comply with law, and enforce these Terms.
         </p>
 
         <p>
-          You must hold the necessary rights for every recording, sample,
-          voice profile, cloned voice, and contact you provide. Do not clone or
-          deploy another person&apos;s voice without valid authorization.
+          You must hold the necessary rights for every recording, sample, voice
+          profile, cloned voice, and contact you provide. Do not clone or deploy
+          another person&apos;s voice without valid authorization.
         </p>
 
         <p>
-          Synthetic voices may not be used for impersonation, false
-          endorsement, fraud, or infringement of privacy, publicity,
-          intellectual-property, or other rights.
+          Synthetic voices may not be used for impersonation, false endorsement,
+          fraud, or infringement of privacy, publicity, intellectual-property,
+          or other rights.
         </p>
       </>
     ),
   },
   {
     id: "privacy",
-    title: "9. Privacy and data protection",
+    title: "Privacy and data protection",
     content: (
       <>
         <p>
@@ -264,16 +264,16 @@ const sections = [
         </p>
 
         <p>
-          You must provide required notices, limit collection, honour
-          applicable rights, and configure suitable access and retention.
-          Additional data-processing terms may apply.
+          You must provide required notices, limit collection, honour applicable
+          rights, and configure suitable access and retention. Additional
+          data-processing terms may apply.
         </p>
       </>
     ),
   },
   {
     id: "fees",
-    title: "10. Fees, credits, and taxes",
+    title: "Fees, credits, and taxes",
     content: (
       <>
         <p>
@@ -293,7 +293,7 @@ const sections = [
   },
   {
     id: "intellectual-property",
-    title: "11. Vozon intellectual property",
+    title: "Vozon intellectual property",
     content: (
       <p>
         Vozon and its licensors own the Service, software, designs,
@@ -306,12 +306,12 @@ const sections = [
   },
   {
     id: "suspension",
-    title: "12. Suspension and termination",
+    title: "Suspension and termination",
     content: (
       <>
         <p>
-          You may stop using the Service or request account closure at any
-          time. Cancellation and remaining credits follow your plan or order.
+          You may stop using the Service or request account closure at any time.
+          Cancellation and remaining credits follow your plan or order.
         </p>
 
         <p>
@@ -330,20 +330,20 @@ const sections = [
   },
   {
     id: "disclaimers",
-    title: "13. Disclaimers",
+    title: "Disclaimers",
     content: (
       <p>
         To the extent permitted by law, the Service is provided &ldquo;as
         is&rdquo; and &ldquo;as available&rdquo; without implied warranties.
         Vozon does not guarantee connected calls, accurate AI outputs,
-        uninterrupted operation, or third-party availability. Rights that
-        cannot legally be excluded remain unaffected.
+        uninterrupted operation, or third-party availability. Rights that cannot
+        legally be excluded remain unaffected.
       </p>
     ),
   },
   {
     id: "liability",
-    title: "14. Limitation of liability",
+    title: "Limitation of liability",
     content: (
       <>
         <p>
@@ -362,7 +362,7 @@ const sections = [
   },
   {
     id: "indemnity",
-    title: "15. Indemnity",
+    title: "Indemnity",
     content: (
       <p>
         To the extent permitted by law, you will indemnify Vozon and its
@@ -374,7 +374,7 @@ const sections = [
   },
   {
     id: "law",
-    title: "16. Governing law and disputes",
+    title: "Governing law and disputes",
     content: (
       <>
         <p>
@@ -385,15 +385,15 @@ const sections = [
 
         <p>
           Before filing a claim, each party will provide written notice and
-          allow 30 days for good-faith resolution, except where urgent relief
-          is reasonably necessary.
+          allow 30 days for good-faith resolution, except where urgent relief is
+          reasonably necessary.
         </p>
       </>
     ),
   },
   {
     id: "general",
-    title: "17. General terms",
+    title: "General terms",
     content: (
       <p>
         These Terms, the Privacy Policy, applicable orders, and incorporated
@@ -406,19 +406,19 @@ const sections = [
   },
   {
     id: "changes",
-    title: "18. Changes to these Terms",
+    title: "Changes to these Terms",
     content: (
       <p>
-        We may update these Terms as the Service or law changes. We will
-        publish a new effective date and provide notice of material changes
-        where required. Continued use after that date means you accept the
-        revised Terms.
+        We may update these Terms as the Service or law changes. We will publish
+        a new effective date and provide notice of material changes where
+        required. Continued use after that date means you accept the revised
+        Terms.
       </p>
     ),
   },
   {
     id: "contact",
-    title: "19. Contact",
+    title: "Contact",
     content: (
       <address>
         <strong>vozon.ai</strong>
@@ -434,166 +434,260 @@ const sections = [
 export default function TermsPage() {
   return (
     <SiteLayout>
-      <div className="min-h-screen bg-white text-black">
+      <div className="relative isolate min-h-screen overflow-hidden bg-[#FAF9FF] text-black">
         {/* =========================================================
-            HERO / DOCUMENT HEADER
-        ========================================================== */}
-        <header className="border-b border-[#E5E5E5] bg-white px-5 pb-14 pt-32 sm:px-8 sm:pb-16 sm:pt-36 lg:px-12 lg:pt-40">
-          <div className="mx-auto grid w-full max-w-[1440px] gap-12 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-end">
+             HERO / DOCUMENT HEADER
+         ========================================================= */}
+        <header className="relative z-10 px-5 pb-14 pt-28 sm:px-8 sm:pb-16 sm:pt-32 lg:px-12 lg:pb-20 lg:pt-36">
+          <div className="mx-auto grid w-full max-w-[1690px] gap-10 lg:grid-cols-[minmax(0,1fr)_560px] lg:items-center">
             <div>
-              {/* BREADCRUMB */}
               <nav
                 aria-label="Breadcrumb"
-                className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-black"
+                className="flex items-center gap-3 text-[12px] font-semibold uppercase tracking-[0.14em] text-[#5E6E88]"
               >
                 <Link
-                  className="transition hover:opacity-60"
                   href="/"
+                  className="rounded-full bg-[#F0F3FF] px-4 py-2 text-[#5578E8] transition duration-200 hover:bg-[#E7ECFF]"
                 >
                   Home
                 </Link>
 
-                <span aria-hidden="true" className="text-[#B5B5B5]">
-                  /
+                <span
+                  aria-hidden="true"
+                  className="text-[16px] font-normal text-[#9AA6B9]"
+                >
+                  ›
                 </span>
 
-                <span className="text-black">
-                  Legal agreement
-                </span>
+                <span className="text-[#52627D]">Legal Agreement</span>
               </nav>
 
-              <p className="mt-10 text-xs font-bold uppercase tracking-[0.2em] text-black">
-                Vozon platform agreement
+              <p className="mt-10 text-xs font-bold uppercase tracking-[0.2em] text-[#5879E8]">
+                Vozon Platform Agreement
               </p>
 
-              <h1 className="mt-4 max-w-[760px] text-5xl font-semibold tracking-[-0.055em] text-black sm:text-7xl">
+              <h1 className="mt-4 max-w-[850px] text-5xl font-semibold leading-[0.98] tracking-[-0.055em] text-[#101B32] sm:text-6xl md:text-7xl lg:text-[76px]">
                 Terms &amp; Conditions
               </h1>
 
-              <p className="mt-6 max-w-[690px] text-base leading-8 text-black sm:text-lg">
+              <p className="mt-7 max-w-[760px] text-base leading-8 text-[#536987] sm:text-lg">
                 The agreement governing access to vozon.ai and the responsible
                 use of its AI voice agents, calling features, APIs,
                 integrations, and connected services.
               </p>
             </div>
 
-            {/* DOCUMENT DETAILS */}
-            <dl className="divide-y divide-[#E5E5E5] border-y border-[#DCDCDC] text-sm">
-              <div className="flex items-center justify-between gap-6 py-4">
-                <dt className="text-black">
-                  Document
-                </dt>
+            <div className="w-full max-w-[560px] justify-self-end overflow-hidden rounded-xl border border-[#DCE1EC] bg-white/70 px-6 py-2 shadow-[0_18px_50px_rgba(77,98,160,0.08)] backdrop-blur-[12px]">
+              <dl className="divide-y divide-[#E2E6EF]">
+                {/* DOCUMENT */}
+                <div className="flex min-h-[72px] items-center justify-between gap-5">
+                  <dt className="flex items-center gap-4 text-[17px] text-[#71819C]">
+                    <span
+                      aria-hidden="true"
+                      className="flex size-[40px] shrink-0 items-center justify-center rounded-full bg-[#EEF2FF] text-[#647FE0]"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        className="size-[16px]"
+                      >
+                        <path
+                          d="M7 3.5h7l3.5 3.5V20H7V3.5Z"
+                          stroke="currentColor"
+                          strokeWidth="1.6"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M14 3.5V7h3.5"
+                          stroke="currentColor"
+                          strokeWidth="1.6"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M9.5 11h5M9.5 14h5"
+                          stroke="currentColor"
+                          strokeWidth="1.4"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                    </span>
+                    Document
+                  </dt>
+                  <dd className="text-right text-[16px] font-semibold text-[#17233B]">
+                    Terms &amp; Conditions
+                  </dd>
+                </div>
 
-                <dd className="font-semibold text-black">
-                  Terms &amp; Conditions
-                </dd>
-              </div>
+                {/* EFFECTIVE */}
+                <div className="flex min-h-[72px] items-center justify-between gap-5">
+                  <dt className="flex items-center gap-4 text-[17px] text-[#71819C]">
+                    <span
+                      aria-hidden="true"
+                      className="flex size-[40px] shrink-0 items-center justify-center rounded-full bg-[#EEF2FF] text-[#5879E8]"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        className="size-[16px]"
+                      >
+                        <rect
+                          x="5"
+                          y="5"
+                          width="14"
+                          height="14"
+                          rx="2"
+                          stroke="currentColor"
+                          strokeWidth="1.6"
+                        />
+                        <path
+                          d="M8 3.5v3M16 3.5v3M8 9.5h8"
+                          stroke="currentColor"
+                          strokeWidth="1.6"
+                          strokeLinecap="round"
+                        />
+                        <path d="M9 13h2v2H9z" fill="currentColor" />
+                      </svg>
+                    </span>
+                    Effective
+                  </dt>
+                  <dd className="text-right text-[16px] font-semibold text-[#17233B]">
+                    July 28, 2026
+                  </dd>
+                </div>
 
-              <div className="flex items-center justify-between gap-6 py-4">
-                <dt className="text-black">
-                  Effective
-                </dt>
+                {/* STATUS */}
+                <div className="flex min-h-[72px] items-center justify-between gap-5">
+                  <dt className="flex items-center gap-4 text-[17px] text-[#71819C]">
+                    <span
+                      aria-hidden="true"
+                      className="flex size-[40px] shrink-0 items-center justify-center rounded-full bg-[#EEF2FF] text-[#5379FF]"
+                    >
+                      <span className="size-3 rounded-full bg-current" />
+                    </span>
+                    Status
+                  </dt>
 
-                <dd className="font-semibold text-black">
-                  July 28, 2026
-                </dd>
-              </div>
-
-              <div className="flex items-center justify-between gap-6 py-4">
-                <dt className="text-black">
-                  Status
-                </dt>
-
-                <dd className="inline-flex items-center gap-2 font-semibold text-black">
-                  <span
-                    aria-hidden="true"
-                    className="size-1.5 rounded-full bg-black"
-                  />
-                  Current
-                </dd>
-              </div>
-            </dl>
+                  <dd className="text-right text-[16px] font-semibold text-[#17233B]">
+                    Current
+                  </dd>
+                </div>
+              </dl>
+            </div>
           </div>
         </header>
 
         {/* =========================================================
             CONTENT AREA
         ========================================================== */}
-        <div className="mx-auto grid w-full max-w-[1440px] gap-6 bg-white px-4 py-12 sm:px-6 lg:grid-cols-[270px_minmax(0,1fr)] lg:px-6 lg:py-16 xl:px-4">
+        <div className="relative z-10 mx-auto grid w-full max-w-[1440px] gap-6 px-4 py-12 sm:px-6 lg:grid-cols-[270px_minmax(0,1fr)] lg:px-6 lg:py-16 xl:px-4">
           {/* =======================================================
-              SIDEBAR
+              SIDEBAR (Glassmorphic Accent)
           ======================================================== */}
           <aside className="lg:sticky lg:top-28 lg:h-fit">
-            <div className="border-t border-black pt-5">
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-black">
-                Agreement index
-              </p>
+            <div className="overflow-hidden rounded-xl border border-[#DCE1EC] bg-white/70 shadow-[0_4px_18px_rgba(80,100,160,0.04)] backdrop-blur-[12px]">
+              {/* TABLE OF CONTENTS */}
+              <div className="px-3.5 pb-4 pt-3.5 sm:px-4">
+                <p className="text-[9px] font-bold leading-4 uppercase text-[#26344D]">
+                  Agreement index
+                </p>
+                <p className="text-[9px] font-semibold leading-4 text-[#26344D]">
+                  Select a clause to move directly to that part of the agreement
+                </p>
 
-              <p className="mt-3 text-sm leading-6 text-black">
-                Select a clause to move directly to that part of the
-                agreement.
-              </p>
-            </div>
-
-            <nav
-              aria-label="Terms and Conditions sections"
-              className="mt-6 grid max-h-[58vh] gap-1.5 overflow-y-auto pr-3"
-            >
-              {sections.map((section) => (
-                <a
-                  className="border-l border-[#DCDCDC] py-0.5 pl-3 text-[13px] leading-5 text-black transition hover:border-black hover:font-semibold"
-                  href={`#${section.id}`}
-                  key={section.id}
+                <nav
+                  aria-label="Terms and Conditions sections"
+                  className="mt-3"
                 >
-                  {section.title}
+                  <div className="grid gap-0.5">
+                    {sections.map((section, index) => (
+                      <a
+                        href={`#${section.id}`}
+                        key={section.id}
+                        className="group relative flex min-h-[25px] items-center gap-2 px-1.5 py-1 text-[12px] leading-4 text-[#697892] transition-colors duration-200 hover:text-[#17233B]"
+                      >
+                        {/* BLUE ACTIVE SIDE LINE */}
+                        {index === 0 && (
+                          <span className="absolute -left-[16px] top-1/2 h-[14px] w-[2px] -translate-y-1/2 rounded-r-full bg-[#617FEF]" />
+                        )}
+
+                        {/* NUMBER */}
+                        <span
+                          className={`flex size-[15px] shrink-0 items-center justify-center rounded-full text-[7px] font-bold ${
+                            index === 0
+                              ? "bg-[#101B32] text-white"
+                              : "bg-transparent text-[#77849A]"
+                          }`}
+                        >
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+
+                        {/* TITLE */}
+                        <span
+                          className={`${index === 0 ? "font-medium text-[#26344D]" : ""}`}
+                        >
+                          {section.title}
+                        </span>
+                      </a>
+                    ))}
+                  </div>
+                </nav>
+              </div>
+
+              {/* DIVIDER */}
+              <div className="mx-3.5 border-t border-[#EEF0F6]" />
+
+              {/* QUESTIONS */}
+              <div className="px-3.5 pb-3.5 pt-4 sm:px-4">
+                <div className="flex size-[22px] items-center justify-center rounded-full bg-[#F0F3FF] text-[#5C7BEA]">
+                  <svg viewBox="0 0 24 24" fill="none" className="size-[11px]">
+                    <path
+                      d="M12 5.5a6.5 6.5 0 0 0-6.5 6.5c0 1.6.58 3.07 1.54 4.2L6 19l3.1-.8c.88.5 1.86.8 2.9.8a6.5 6.5 0 1 0 0-13.5Z"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M9.7 10.3a2.35 2.35 0 1 1 4.25 1.4c-.57.76-1.55 1.05-1.55 1.9"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <circle cx="12.4" cy="15.9" r=".7" fill="currentColor" />
+                  </svg>
+                </div>
+
+                <p className="text-xs text-black">
+                  Questions about this agreement?
+                </p>
+
+                <a
+                  className="mt-2 inline-block text-sm font-semibold text-black underline underline-offset-4 transition hover:opacity-60"
+                  href="mailto:hello@vozon.ai"
+                >
+                  hello@vozon.ai
                 </a>
-              ))}
-            </nav>
-
-            <div className="mt-8 border-t border-[#E2E2E2] pt-5">
-              <p className="text-xs text-black">
-                Questions about this agreement?
-              </p>
-
-              <a
-                className="mt-2 inline-block text-sm font-semibold text-black underline underline-offset-4 transition hover:opacity-60"
-                href="mailto:hello@vozon.ai"
-              >
-                hello@vozon.ai
-              </a>
+              </div>
             </div>
           </aside>
 
           {/* =======================================================
-              MAIN AGREEMENT CARD
+              MAIN AGREEMENT CARD (Glassmorphic Container)
           ======================================================== */}
-          <article className="relative min-w-0 overflow-hidden rounded-xl border border-[#DEDEDE] bg-white shadow-[0_28px_90px_rgba(0,0,0,0.06)]">
-            {/* TOP LINE */}
-            <span
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 z-20 h-px bg-black"
-            />
-
-            {/* LEFT ACCENT */}
-            <span
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-y-0 left-0 z-20 w-px bg-[#D0D0D0]"
-            />
-
+          <article className="relative min-w-0 overflow-hidden rounded-2xl border border-[#DCE1EC] bg-white/70 shadow-[0_18px_50px_rgba(77,98,160,0.06)] backdrop-blur-[12px]">
             {/* DOCUMENT HEADER */}
-            <header className="flex flex-col gap-6 border-b border-[#E3E3E3] bg-white px-6 py-7 sm:flex-row sm:items-end sm:justify-between sm:px-10 sm:py-9">
+            <header className="flex flex-col gap-6 px-6 py-7 sm:flex-row sm:items-end sm:justify-between sm:px-10 sm:py-9">
               <div>
-                <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-black">
+                <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-[#4F68C4]">
                   Official agreement
                 </p>
 
-                <h2 className="mt-3 text-xl font-semibold tracking-[-0.025em] text-black sm:text-2xl">
+                <h2 className="mt-3 text-xl font-semibold tracking-[-0.025em] text-[#17233B] sm:text-2xl">
                   AI voice-agent terms
                 </h2>
 
-                <p className="mt-2 max-w-[560px] text-sm leading-6 text-black">
-                  Read this document together with any applicable order form
-                  and our{" "}
+                <p className="mt-2 max-w-[560px] text-sm leading-6 text-[#526482]">
+                  Read this document together with any applicable order form and
+                  our{" "}
                   <Link
                     className="font-semibold text-black underline underline-offset-4 transition hover:opacity-60"
                     href="/privacy"
@@ -604,19 +698,12 @@ export default function TermsPage() {
                 </p>
               </div>
 
-              <div className="flex shrink-0 items-center gap-3 text-xs text-black">
-                <span className="font-mono">
-                  19 CLAUSES
-                </span>
+              <div className="flex shrink-0 items-center gap-3 text-xs text-[#526482]">
+                <span className="font-mono">19 CLAUSES</span>
 
-                <span
-                  aria-hidden="true"
-                  className="h-3 w-px bg-[#D5D5D5]"
-                />
+                <span aria-hidden="true" className="h-3 w-px bg-[#D5D5D5]" />
 
-                <span className="font-mono">
-                  28 JUL 2026
-                </span>
+                <span className="font-mono">28 JUL 2026</span>
               </div>
             </header>
 
@@ -629,26 +716,23 @@ export default function TermsPage() {
 
                 return (
                   <section
-                    className="relative scroll-mt-28 border-b border-[#E5E5E5] py-10 last:border-b-0 sm:grid sm:grid-cols-[58px_minmax(0,1fr)] sm:gap-7 sm:py-12"
+                    className="scroll-mt-28 border-b border-[#EEF0F4] py-10 last:border-b-0 sm:grid sm:grid-cols-[42px_minmax(0,1fr)] sm:gap-7 sm:py-11 lg:grid-cols-[42px_minmax(0,820px)] lg:gap-7"
                     id={section.id}
                     key={section.id}
                   >
-                    {/* CLAUSE NUMBER */}
                     <span
                       aria-hidden="true"
-                      className="mb-5 inline-flex size-9 items-center justify-center border border-black bg-white font-mono text-[11px] font-semibold tracking-[0.08em] text-black sm:mb-0"
+                      className="mb-4 inline-flex size-8 items-center justify-center rounded-lg bg-[#EEF2FF] font-mono text-[10px] font-semibold tracking-[0.04em] text-[#4165D6] sm:mb-0"
                     >
                       {String(index + 1).padStart(2, "0")}
                     </span>
 
-                    <div>
-                      {/* CLAUSE TITLE */}
-                      <h2 className="text-2xl font-semibold tracking-[-0.03em] text-black sm:text-[1.75rem]">
+                    <div className="min-w-0">
+                      <h2 className="text-[22px] font-semibold leading-tight tracking-[-0.025em] text-[#17233B] sm:text-2xl">
                         {clauseTitle}
                       </h2>
 
-                      {/* CLAUSE CONTENT */}
-                      <div className="terms-copy mt-6 grid gap-5 text-justify text-[15px] leading-7 text-black marker:text-black [hyphens:auto] sm:text-base sm:leading-8">
+                      <div className="terms-copy mt-4 grid gap-3 text-[14px] leading-[1.75] text-[#536580] sm:mt-5 sm:text-sm sm:leading-7">
                         {section.content}
                       </div>
                     </div>
@@ -660,10 +744,8 @@ export default function TermsPage() {
             {/* =====================================================
                 FOOTER
             ====================================================== */}
-            <footer className="flex flex-col gap-3 border-t border-[#E3E3E3] bg-white px-6 py-6 text-xs text-black sm:flex-row sm:items-center sm:justify-between sm:px-10">
-              <span>
-                End of Terms &amp; Conditions
-              </span>
+            <footer className="flex flex-col gap-3 border-t border-[#EEF0F4] bg-white/50 px-6 py-6 text-xs text-[#526482] sm:flex-row sm:items-center sm:justify-between sm:px-10">
+              <span>End of Terms &amp; Conditions</span>
 
               <span className="font-mono uppercase tracking-[0.12em]">
                 vozon.ai · Legal
@@ -681,7 +763,7 @@ export default function TermsPage() {
           }
 
           .terms-copy strong {
-            color: #000000;
+            color: #101B32;
             font-weight: 700;
           }
 
@@ -698,20 +780,21 @@ export default function TermsPage() {
           }
 
           .terms-copy a {
-            color: #000000;
+            color: #4165D6;
             font-weight: 600;
             text-decoration: underline;
-            text-decoration-color: #999999;
+            text-decoration-color: #A5B4FC;
             text-underline-offset: 4px;
-            transition: opacity 0.2s ease;
+            transition: all 0.2s ease;
           }
 
           .terms-copy a:hover {
-            opacity: 0.6;
+            opacity: 0.8;
+            text-decoration-color: #4165D6;
           }
 
           .terms-copy address {
-            color: #000000;
+            color: #101B32;
             font-style: normal;
             line-height: 2;
           }
