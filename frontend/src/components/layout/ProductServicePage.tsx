@@ -1223,7 +1223,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
                       "Each capability can be managed independently while remaining connected to one reliable production workflow."}
                   </p>
                 </div>
-                <div className="mx-auto mt-10 grid size-36 place-items-center rounded-full border border-[rgba(var(--service-secondary-rgb),0.35)] bg-[rgba(var(--service-secondary-rgb),0.1)] p-4 text-center shadow-[0_0_55px_rgba(var(--service-secondary-rgb),0.16)]">
+                <div className="voice-blueprint-core-badge mx-auto mt-10 grid size-36 place-items-center rounded-full border border-[rgba(var(--service-secondary-rgb),0.35)] bg-[rgba(var(--service-secondary-rgb),0.1)] p-4 text-center shadow-[0_0_55px_rgba(var(--service-secondary-rgb),0.16)]">
                   <span className="text-xs font-black tracking-[0.16em] text-[var(--service-secondary)] uppercase">
                     {design?.blueprintCoreBadge ?? "Product core"}
                   </span>
@@ -5922,9 +5922,9 @@ inset:55px;
           .voice-sample-card,
           .service-faq
         ) {
-          border-color: color-mix(in srgb, #ffad6f 48%, #fff) !important;
-          background: linear-gradient(145deg, #fff 0%, color-mix(in srgb, #ffad6f 16%, #fff) 100%) !important;
-          box-shadow: 0 10px 28px rgba(255, 149, 104, 0.1) !important;
+          border-color: #d8e3ff !important;
+          background: linear-gradient(145deg, #fff 0%, #eef4ff 100%) !important;
+          box-shadow: 0 10px 28px rgba(62, 117, 255, 0.08) !important;
         }
 
         #product-service-page#product-service-page :is(
@@ -5934,10 +5934,10 @@ inset:55px;
           .voice-build-redesign-number,
           .voice-config-number
         ) {
-          border-color: #ffad6f !important;
-          background: color-mix(in srgb, #ffad6f 24%, #fff) !important;
-          color: #ff9568 !important;
-          -webkit-text-fill-color: #ff9568 !important;
+          border-color: #bfd0ff !important;
+          background: #e8efff !important;
+          color: #3e75ff !important;
+          -webkit-text-fill-color: #3e75ff !important;
         }
 
         #product-service-page#product-service-page :is(
@@ -5949,8 +5949,8 @@ inset:55px;
           .voice-sample-card,
           .service-faq
         ):hover {
-          border-color: #ffad6f !important;
-          box-shadow: 0 16px 36px rgba(255, 149, 104, 0.15) !important;
+          border-color: #8facff !important;
+          box-shadow: 0 16px 36px rgba(62, 117, 255, 0.14) !important;
         }
 
         #product-service-page#product-service-page .voice-capabilities-section .voice-capability-card {
@@ -5966,9 +5966,9 @@ inset:55px;
         }
 
         #product-service-page#product-service-page .everything-included-section {
-          --everything-accent: #b83280;
-          --everything-soft: #fff1f7;
-          --everything-border: #efb3ce;
+          --everything-accent: #3e75ff;
+          --everything-soft: #eef4ff;
+          --everything-border: #bfd0ff;
         }
 
         #product-service-page#product-service-page .everything-included-section h2 span {
@@ -5988,33 +5988,33 @@ inset:55px;
           background: var(--everything-soft) !important;
           color: var(--everything-accent) !important;
           -webkit-text-fill-color: var(--everything-accent) !important;
-          box-shadow: 0 10px 28px rgba(184, 50, 128, 0.12) !important;
+          box-shadow: 0 10px 28px rgba(62, 117, 255, 0.12) !important;
         }
 
         #product-service-page#product-service-page .everything-included-section .everything-line {
-          background: #f4d7e5 !important;
+          background: #d8e3ff !important;
         }
 
         #product-service-page#product-service-page .everything-included-section .everything-line > span {
           background: var(--everything-accent) !important;
-          box-shadow: 0 0 0 6px rgba(184, 50, 128, 0.12), 0 0 18px rgba(184, 50, 128, 0.32) !important;
+          box-shadow: 0 0 0 6px rgba(62, 117, 255, 0.12), 0 0 18px rgba(62, 117, 255, 0.3) !important;
         }
 
         #product-service-page#product-service-page .everything-included-section .everything-included-card {
           border-color: var(--everything-border) !important;
           background: linear-gradient(145deg, #fff 0%, var(--everything-soft) 100%) !important;
-          box-shadow: 0 10px 28px rgba(184, 50, 128, 0.09) !important;
+          box-shadow: 0 10px 28px rgba(62, 117, 255, 0.09) !important;
         }
 
         #product-service-page#product-service-page .everything-included-section .everything-included-card:hover {
           border-color: var(--everything-accent) !important;
-          box-shadow: 0 16px 36px rgba(184, 50, 128, 0.14) !important;
+          box-shadow: 0 16px 36px rgba(62, 117, 255, 0.14) !important;
         }
 
         #product-service-page#product-service-page .voice-build-process {
-          --build-clean-accent: #159a9c;
-          --build-clean-soft: #effafa;
-          --build-clean-border: #b9dfe0;
+          --build-clean-accent: #3e75ff;
+          --build-clean-soft: #eef4ff;
+          --build-clean-border: #bfd0ff;
           background: #fff !important;
         }
 
@@ -6104,9 +6104,9 @@ inset:55px;
         }
 
         #product-service-page#product-service-page .voice-config-section {
-          --agent-control-accent: #a46a08;
-          --agent-control-soft: #fff8e7;
-          --agent-control-border: #ead6a6;
+          --agent-control-accent: #3e75ff;
+          --agent-control-soft: #eef4ff;
+          --agent-control-border: #bfd0ff;
           background: #fff !important;
         }
 
@@ -6129,7 +6129,7 @@ inset:55px;
 
         #product-service-page#product-service-page .voice-config-section .voice-config-explorer {
           --active-config-color: var(--agent-control-accent) !important;
-          --active-config-rgb: 164, 106, 8 !important;
+          --active-config-rgb: 62, 117, 255 !important;
           border-color: #dfe3e8 !important;
           background: #fff !important;
           box-shadow: 0 12px 32px rgba(23, 32, 63, 0.06) !important;

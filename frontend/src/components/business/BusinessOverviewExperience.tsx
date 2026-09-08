@@ -269,7 +269,6 @@ export function BusinessOverviewExperience() {
               </div>
             </div>
             <div className="relative flex min-h-[420px] flex-col justify-between overflow-hidden border-t border-white/[0.08] bg-[radial-gradient(circle_at_80%_15%,rgba(69,221,206,0.2),transparent_38%),linear-gradient(145deg,#0b211a,#06110e)] p-7 lg:border-l lg:border-t-0 sm:p-10">
-              <div className="absolute right-[-70px] top-[-70px] size-64 rounded-full border border-[#45ddce]/15" aria-hidden="true" />
               <div className="relative"><span className="inline-flex items-center gap-2 rounded-full border border-emerald-300/15 bg-emerald-300/[0.07] px-3 py-1.5 text-[9px] font-bold text-emerald-200"><span className="size-1.5 rounded-full bg-emerald-300" /> Production ready</span><h3 className="mt-6 text-2xl font-black">Plan your rollout with our solutions team.</h3><p className="mt-4 text-sm leading-6 text-white/45">Map call volume, systems, security needs, and human escalation paths before going live.</p></div>
               <div className="relative mt-12 grid grid-cols-2 gap-3">{[["Custom", "Concurrency"], ["Priority", "Support"], ["Tailored", "Workflows"], ["Visible", "Usage"]].map(([value, label]) => <div className="rounded-xl border border-white/[0.08] bg-black/20 p-4" key={label}><strong className="block text-sm text-[#75fff0]">{value}</strong><span className="mt-1 block text-[9px] text-white/30">{label}</span></div>)}</div>
             </div>

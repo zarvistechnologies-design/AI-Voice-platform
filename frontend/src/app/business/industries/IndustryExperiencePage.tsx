@@ -501,7 +501,7 @@ export function IndustryExperiencePage({
                   <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300">{faqAnswer(question, industry)}</p>
                 </details>
               ))}
-              <p className="mt-5 text-center text-sm text-slate-300">More questions? Visit our <Link className="rounded-md bg-black px-2 py-1 font-bold text-[var(--industry-accent-soft)]" href="/#resources">docs</Link></p>
+              <p className="mt-5 text-center text-sm text-slate-300">More questions? <Link className="font-bold text-[#3e75ff] transition hover:text-[#315fdb] hover:underline" href="/contact">Contact us</Link></p>
             </div>
           </div>
         </section>

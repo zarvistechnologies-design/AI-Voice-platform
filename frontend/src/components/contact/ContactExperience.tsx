@@ -271,10 +271,10 @@ export function ContactExperience() {
         </div>
       </section>
 
-      <section className="border-t border-slate-100 bg-white px-5 py-20 sm:px-8 sm:py-24 lg:px-12">
+      <section className="contact-channels-section border-t border-slate-100 bg-white px-5 py-20 sm:px-8 sm:py-24 lg:px-12" id="contact-channels">
         <div className="mx-auto max-w-[1240px]">
           <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.17em] text-black">
+            <span className="contact-channels-pill inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.17em] text-black">
               <Icon className="size-4" name="chat" /> Multiple ways to reach us
             </span>
             <h2 className="mt-6 text-[clamp(2.25rem,5vw,4rem)] font-medium leading-[1.02] tracking-[-0.05em]">Choose the right channel.</h2>
@@ -283,14 +283,14 @@ export function ContactExperience() {
 
           <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
             {contactChannels.map((channel) => (
-              <a className="group flex min-h-72 flex-col rounded-[24px] border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:p-8" href={channel.href} key={channel.title}>
-                <span className="grid size-13 place-items-center rounded-2xl bg-teal-50 text-black ring-1 ring-inset ring-teal-200 transition group-hover:bg-teal-500 group-hover:text-black">
+              <a className="contact-channel-card group flex min-h-72 flex-col rounded-[24px] border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:p-8" href={channel.href} key={channel.title}>
+                <span className="contact-channel-icon grid size-13 place-items-center rounded-2xl bg-teal-50 text-black ring-1 ring-inset ring-teal-200 transition group-hover:bg-teal-500 group-hover:text-black">
                   <Icon className="size-6" name={channel.icon} />
                 </span>
-                <span className="mt-8 text-[10px] font-bold uppercase tracking-[0.16em] text-black">{channel.eyebrow}</span>
+                <span className="contact-channel-eyebrow mt-8 text-[10px] font-bold uppercase tracking-[0.16em] text-black">{channel.eyebrow}</span>
                 <h3 className="mt-2 text-xl font-semibold tracking-[-0.025em]">{channel.title}</h3>
                 <p className="mt-3 text-sm leading-6 text-black">{channel.body}</p>
-                <span className="mt-auto inline-flex items-center gap-2 pt-6 text-sm font-semibold text-black transition group-hover:text-black">
+                <span className="contact-channel-action mt-auto inline-flex items-center gap-2 pt-6 text-sm font-semibold text-black transition group-hover:text-black">
                   {channel.action} <Icon className="size-4 transition group-hover:translate-x-1" name="arrow" />
                 </span>
               </a>

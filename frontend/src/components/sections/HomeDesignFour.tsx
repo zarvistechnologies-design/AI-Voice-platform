@@ -164,7 +164,8 @@ export function HomeDesignFour() {
         </section>
 
         <section className={`${styles.logoStrip} home-design-four__logos`} aria-label="Companies using modern voice workflows">
-          <div>
+          <div className="design-four-client-marquee-track">
+            <div className="design-four-client-marquee-group">
             <b className="design-four-client-logo is-deloitte" aria-label="Deloitte">Deloitte<span>.</span></b>
             <b className="design-four-client-logo is-appsmith" aria-label="Appsmith">appsmith_</b>
             <b className="design-four-client-logo is-vigilant" aria-label="Vigilant">Vigilant</b>
@@ -184,6 +185,38 @@ export function HomeDesignFour() {
               <svg aria-hidden="true" viewBox="0 0 24 28"><path d="M2 2h18v9H11v3h9v12H2v-9h9v-3H2V2Z" /></svg>
               <em>SOULPAGE</em>
             </b>
+            <b className="design-four-client-logo is-google">Google</b>
+            <b className="design-four-client-logo is-microsoft">Microsoft</b>
+            <b className="design-four-client-logo is-hubspot">HubSpot</b>
+            <b className="design-four-client-logo is-shopify">Shopify</b>
+            <b className="design-four-client-logo is-zendesk">zendesk</b>
+            </div>
+            <div aria-hidden="true" className="design-four-client-marquee-group">
+              <b className="design-four-client-logo is-deloitte">Deloitte<span>.</span></b>
+              <b className="design-four-client-logo is-appsmith">appsmith_</b>
+              <b className="design-four-client-logo is-vigilant">Vigilant</b>
+              <b className="design-four-client-logo is-edison">
+                <svg aria-hidden="true" viewBox="0 0 28 28"><rect x="1" y="2" width="22" height="6" rx="1" /><rect x="1" y="11" width="16" height="6" rx="1" /><rect x="1" y="20" width="22" height="6" rx="1" /></svg>
+                <em>ed.is.on</em>
+              </b>
+              <b className="design-four-client-logo is-kobe">
+                <svg aria-hidden="true" viewBox="0 0 34 34"><path d="M17 3c5 3 7 7 5 12-2 4-6 5-10 3 3-2 4-5 3-8-1-2 0-5 2-7Z" /><path d="M30 19c-1 6-4 9-10 9-4 0-7-3-7-7 3 2 6 1 8-1 2-2 5-3 9-1Z" /><path d="M7 29c-4-4-5-9-2-13 2-4 6-5 10-3-3 2-4 5-3 8 1 3-1 6-5 8Z" /></svg>
+                <em>Kobe<br />Creations</em>
+              </b>
+              <b className="design-four-client-logo is-simplamo">
+                <svg aria-hidden="true" viewBox="0 0 36 32"><circle cx="13" cy="12" r="9" /><circle cx="21" cy="18" r="9" /><path d="M4 25c7 5 18 5 27-1" /></svg>
+                <em>Simplamo<sup>&reg;</sup></em>
+              </b>
+              <b className="design-four-client-logo is-soulpage">
+                <svg aria-hidden="true" viewBox="0 0 24 28"><path d="M2 2h18v9H11v3h9v12H2v-9h9v-3H2V2Z" /></svg>
+                <em>SOULPAGE</em>
+              </b>
+              <b className="design-four-client-logo is-google">Google</b>
+              <b className="design-four-client-logo is-microsoft">Microsoft</b>
+              <b className="design-four-client-logo is-hubspot">HubSpot</b>
+              <b className="design-four-client-logo is-shopify">Shopify</b>
+              <b className="design-four-client-logo is-zendesk">zendesk</b>
+            </div>
           </div>
         </section>
 
@@ -224,7 +257,6 @@ export function HomeDesignFour() {
             ))}
           </div>
           <p className="design-four-launch-note">Configure your agent, choose the right model and voice, then deploy it across your preferred channels.</p>
-          <Link className="design-four-review-button" href="/resources/case-studies">View all Reviews</Link>
         </section>
 
         <section className="design-four-outcomes-section">

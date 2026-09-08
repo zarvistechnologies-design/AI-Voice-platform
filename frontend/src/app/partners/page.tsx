@@ -221,7 +221,7 @@ export default function PartnersPage() {
             <div className="mt-12 grid gap-6 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
               {digitalBotCapabilities.map((capability) => (
                 <article
-                  className="group relative min-h-60 overflow-hidden rounded-[22px] border border-[#E3E3E3] bg-white p-7 shadow-[0_10px_35px_rgba(0,0,0,0.035)] transition duration-300 hover:-translate-y-1 hover:border-black hover:shadow-[0_22px_60px_rgba(0,0,0,0.08)]"
+                  className="partners-capability-card group relative min-h-60 overflow-hidden rounded-[22px] border border-[#E3E3E3] bg-white p-7 shadow-[0_10px_35px_rgba(0,0,0,0.035)] transition duration-300 hover:-translate-y-1 hover:border-black hover:shadow-[0_22px_60px_rgba(0,0,0,0.08)]"
                   key={capability.number}
                 >
                   <div className="relative flex items-center justify-between">
@@ -249,7 +249,7 @@ export default function PartnersPage() {
             WORKFLOW
         ========================================================== */}
         <section className="bg-white px-5 py-20 sm:px-8 sm:py-24">
-          <div className="relative mx-auto max-w-[1240px] overflow-hidden rounded-[28px] border border-[#E2E2E2] bg-white p-6 shadow-[0_18px_55px_rgba(0,0,0,0.055)] sm:p-10 lg:p-14">
+          <div className="partners-workflow-card relative mx-auto max-w-[1240px] overflow-hidden rounded-[28px] border border-[#E2E2E2] bg-white p-6 shadow-[0_18px_55px_rgba(0,0,0,0.055)] sm:p-10 lg:p-14">
             <div className="relative grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:items-center">
               <div>
                 <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#3e75ff]">

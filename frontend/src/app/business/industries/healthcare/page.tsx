@@ -832,9 +832,9 @@ export default function HealthcarePage() {
               </details>
             ))}
             <p className="mt-5 text-center text-sm text-slate-300">
-              More questions? Visit our{" "}
-              <Link className="rounded-md bg-black px-2 py-1 font-bold text-[#75fff0]" href="/#resources">
-                docs
+              More questions?{" "}
+              <Link className="font-bold text-[#3e75ff] transition hover:text-[#315fdb] hover:underline" href="/contact">
+                Contact us
               </Link>
             </p>
           </div>

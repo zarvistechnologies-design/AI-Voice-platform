@@ -382,16 +382,15 @@ export function ProductOverviewPage() {
 
         #product-overview-page#product-overview-page article a,
         #product-overview-page#product-overview-page section:nth-of-type(4) [class*="grid"] > div,
-        #product-overview-page#product-overview-page [class*="rounded-[22px]"],
-        #product-overview-page#product-overview-page .product-overview-ready-card {
-          border-color: color-mix(in srgb, #ffad6f 48%, #fff) !important;
-          background: linear-gradient(145deg, #fff 0%, color-mix(in srgb, #ffad6f 16%, #fff) 100%) !important;
-          box-shadow: 0 10px 28px rgba(255, 149, 104, 0.1) !important;
+        #product-overview-page#product-overview-page [class*="rounded-[22px]"] {
+          border-color: #d8e3ff !important;
+          background: linear-gradient(145deg, #fff 0%, #eef4ff 100%) !important;
+          box-shadow: 0 10px 28px rgba(62, 117, 255, 0.08) !important;
         }
 
         #product-overview-page#product-overview-page article a:hover {
-          border-color: #ffad6f !important;
-          box-shadow: 0 14px 32px rgba(255, 149, 104, 0.15) !important;
+          border-color: #8facff !important;
+          box-shadow: 0 14px 32px rgba(62, 117, 255, 0.14) !important;
         }
       `}</style>
     </SiteLayout>

@@ -135,11 +135,8 @@ export default function AboutPage() {
             </div>
 
             {/* Heading */}
-            <h1 className="mx-auto mt-6 max-w-5xl text-[clamp(1.8rem,4vw,3.6rem)] font-medium leading-[0.97] tracking-[-0.06em] text-black">
-              Building the future of{" "}
-              <span className="about-gradient-text">
-                intelligent communication.
-              </span>
+            <h1 className="about-hero-heading mx-auto mt-6 max-w-5xl text-[clamp(1.8rem,4vw,3.6rem)] font-medium leading-[0.97] tracking-[-0.06em] text-black">
+              Building the future of intelligent communication.
             </h1>
 
             {/* Description */}
@@ -267,7 +264,10 @@ export default function AboutPage() {
         {/* =========================================================
             VALUES
         ========================================================= */}
-        <section className="relative overflow-hidden bg-white px-5 py-10 sm:px-8 lg:px-10 lg:py-12">
+        <section className="about-values-section relative overflow-hidden px-5 py-14 sm:px-8 sm:py-16 lg:px-10 lg:py-20">
+
+          <div aria-hidden="true" className="about-values-glow about-values-glow-left" />
+          <div aria-hidden="true" className="about-values-glow about-values-glow-right" />
 
           <div className="relative mx-auto max-w-[1380px]">
 
@@ -276,50 +276,52 @@ export default function AboutPage() {
               <div>
 
                 <div className="flex items-center gap-3">
-                  <span className="h-px w-8 bg-[#3e75ff]" />
+                  <span className="h-0.5 w-8 rounded-full bg-[#3e75ff]" />
 
                   <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#3e75ff]">
                     Our values
                   </p>
                 </div>
 
-                <h2 className="mt-4 max-w-3xl text-[clamp(1.8rem,3vw,2.8rem)] font-medium leading-[1.03] tracking-[-0.05em] text-black">
+                <h2 className="mt-4 max-w-3xl text-[clamp(1.8rem,3vw,2.8rem)] font-semibold leading-[1.03] tracking-[-0.05em] text-[#102a56]">
                   What Guides Us Ahead
                 </h2>
 
               </div>
 
-              <p className="max-w-md text-sm leading-7 text-gray-600 lg:justify-self-end">
+              <p className="max-w-md text-sm leading-7 text-[#425b7f] lg:justify-self-end">
                 The principles behind our products, decisions, partnerships,
                 and the way we work together.
               </p>
 
             </div>
 
-            <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
 
               {values.map((value) => (
 
                 <article
                   key={value.title}
-                  className="about-values-card group relative overflow-hidden rounded-[24px] border border-gray-200 bg-white p-7 shadow-[0_12px_40px_rgba(0,0,0,0.045)] transition-all duration-500 hover:-translate-y-2 sm:p-8"
+                  className="about-values-card group relative overflow-hidden rounded-[22px] border bg-white/90 p-7 shadow-[0_12px_36px_rgba(26,79,150,0.08)] transition-all duration-300 hover:-translate-y-1 sm:p-8"
                 >
 
-                  <div className="relative flex min-h-[300px] flex-col">
+                  <div className="about-values-card-bar absolute inset-x-0 top-0 h-1" />
 
-                    <div className="flex h-[68px] w-[68px] items-center justify-center rounded-[20px] border border-gray-200 bg-white text-3xl text-[#3e75ff] shadow-sm transition duration-500 group-hover:scale-105 group-hover:-rotate-2 group-hover:border-[#3e75ff]/30">
+                  <div className="relative flex min-h-[260px] flex-col">
+
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[#3e75ff]/20 bg-[#edf4ff] text-2xl text-[#3e75ff] transition duration-300 group-hover:border-[#3e75ff]/40 group-hover:bg-[#3e75ff] group-hover:text-white">
                       <span className="font-light leading-none">
                         {value.icon}
                       </span>
                     </div>
 
-                    <div className="mt-auto min-h-[150px] pt-10">
+                    <div className="mt-auto pt-10">
 
-                      <h3 className="text-[1.35rem] font-semibold tracking-[-0.035em] text-black">
+                      <h3 className="text-[1.35rem] font-semibold tracking-[-0.035em] text-[#102a56]">
                         {value.title}
                       </h3>
 
-                      <p className="mt-3 text-[0.95rem] leading-7 text-gray-600">
+                      <p className="mt-3 text-[0.95rem] leading-7 text-[#526987]">
                         {value.description}
                       </p>
 
@@ -575,7 +577,7 @@ export default function AboutPage() {
 
               <div
                 aria-hidden="true"
-                className="absolute bottom-0 left-5 top-0 w-px bg-[#3e75ff]/25 sm:left-1/2 sm:-translate-x-1/2"
+                className="about-milestone-line absolute bottom-0 left-5 top-0 bg-[#3e75ff] sm:left-1/2 sm:-translate-x-1/2"
               />
 
               <div className="space-y-7 sm:space-y-9">
@@ -623,7 +625,7 @@ export default function AboutPage() {
 
                     <div
                       aria-hidden="true"
-                      className="absolute left-5 top-8 flex h-3 w-3 -translate-x-1/2 items-center justify-center rounded-full bg-[#3e75ff] sm:left-1/2"
+                      className="about-milestone-dot absolute left-5 top-8 flex h-3 w-3 -translate-x-1/2 items-center justify-center rounded-full bg-[#3e75ff] sm:left-1/2"
                     >
                     </div>
 
@@ -685,7 +687,16 @@ export default function AboutPage() {
           }
 
           #about-page .about-gradient-text {
-            color: #000;
+            background: none !important;
+            color: #000 !important;
+            -webkit-text-fill-color: #000 !important;
+          }
+
+          #about-page .about-hero-heading,
+          #about-page .about-hero-heading span {
+            background: none !important;
+            color: #000 !important;
+            -webkit-text-fill-color: #000 !important;
           }
 
           #about-page .about-primary-button {
@@ -721,8 +732,30 @@ export default function AboutPage() {
             border-color: #ddd5ff;
           }
 
-          #about-page > section:nth-of-type(3) {
-            background: #fff;
+          #about-page .about-values-section {
+            background: linear-gradient(135deg, #f4f8ff 0%, #eaf2ff 55%, #f8fbff 100%);
+            border-top: 1px solid #dce9fb;
+            border-bottom: 1px solid #dce9fb;
+          }
+
+          #about-page .about-values-glow {
+            position: absolute;
+            width: 24rem;
+            height: 24rem;
+            border-radius: 9999px;
+            background: rgba(62, 117, 255, .11);
+            filter: blur(90px);
+            pointer-events: none;
+          }
+
+          #about-page .about-values-glow-left {
+            left: -12rem;
+            top: -10rem;
+          }
+
+          #about-page .about-values-glow-right {
+            right: -12rem;
+            bottom: -12rem;
           }
 
           #about-page > section:nth-of-type(4) {
@@ -738,51 +771,68 @@ export default function AboutPage() {
           }
 
           #about-page .about-journey-item {
-            border: 0;
-            background: transparent;
-            box-shadow: none;
+            z-index: 2;
+            border: 0 !important;
+            background: transparent !important;
+            box-shadow: none !important;
           }
 
-          #about-page .about-values-card,
+          #about-page .about-milestone-line {
+            top: 2rem !important;
+            bottom: 2rem !important;
+            z-index: 10 !important;
+            width: 3px !important;
+            background: #3e75ff !important;
+            opacity: 1 !important;
+          }
+
+          #about-page .about-milestone-dot {
+            z-index: 20 !important;
+            width: 16px !important;
+            height: 16px !important;
+            border: 3px solid #fff !important;
+            background: #3e75ff !important;
+            box-shadow: 0 0 0 2px #3e75ff !important;
+          }
+
           #about-page .about-manifesto-card {
             border-color: rgba(128, 91, 216, .18);
           }
 
-          #about-page .about-values-card:nth-child(4n + 1) {
-            background: #fcf1f4;
-            border-color: #eedce1;
+          #about-page .about-values-card {
+            border-color: #cfe0f7;
           }
 
-          #about-page .about-values-card:nth-child(4n + 2) {
-            background: #faf1f6;
-            border-color: #eadde4;
+          #about-page .about-values-section [class*="text-[#3e75ff]"] {
+            color: #2563eb;
           }
 
-          #about-page .about-values-card:nth-child(4n + 3) {
-            background: #f8f2f5;
-            border-color: #e6dce1;
+          #about-page .about-values-section [class*="bg-[#3e75ff]"] {
+            background-color: #2563eb;
           }
 
-          #about-page .about-values-card:nth-child(4n) {
-            background: #fcf7e8;
-            border-color: #ebe3c8;
+          #about-page .about-values-card:hover [class*="text-[#3e75ff]"] {
+            color: #fff;
           }
 
-          #about-page .about-values-card:nth-child(4n + 1) [class*="text-[#3e75ff]"] {
-            color: #d84f6f;
+          #about-page .about-values-card-bar {
+            background: linear-gradient(90deg, #2563eb, #60a5fa);
+            opacity: .9;
           }
 
-          #about-page .about-values-card:nth-child(4n + 2) [class*="text-[#3e75ff]"],
+          #about-page .about-values-card:hover {
+            border-color: #82ace5;
+            box-shadow: 0 18px 44px rgba(26, 79, 150, .14);
+          }
+
           #about-page .about-manifesto-card:nth-child(4n + 2) [class*="text-[#3e75ff]"] {
             color: #c64f7c;
           }
 
-          #about-page .about-values-card:nth-child(4n + 3) [class*="text-[#3e75ff]"],
           #about-page .about-manifesto-card:nth-child(4n + 3) [class*="text-[#3e75ff]"] {
             color: #9b5274;
           }
 
-          #about-page .about-values-card:nth-child(4n) [class*="text-[#3e75ff]"],
           #about-page .about-manifesto-card:nth-child(4n) [class*="text-[#3e75ff]"] {
             color: #d98a00;
           }
@@ -792,7 +842,6 @@ export default function AboutPage() {
             color: #a85370;
           }
 
-          #about-page .about-values-card:hover,
           #about-page .about-manifesto-card:hover {
             border-color: rgba(128, 91, 216, .42);
           }

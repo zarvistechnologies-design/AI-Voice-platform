@@ -1282,13 +1282,12 @@ export function LegacyIndustryPage({ slug }: { slug: string }) {
                 </details>
               ))}
               <p className="mt-5 text-sm text-slate-300">
-                More questions? Visit our{" "}
+                More questions?{" "}
                 <Link
-                  className="rounded-md bg-[#111827] px-2 py-1 font-bold"
-                  href="/#resources"
-                  style={{ color: preset.accent }}
+                  className="font-bold text-[#3e75ff] transition hover:text-[#315fdb] hover:underline"
+                  href="/contact"
                 >
-                  docs
+                  Contact us
                 </Link>
               </p>
             </div>

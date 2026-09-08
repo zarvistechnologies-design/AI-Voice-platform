@@ -201,7 +201,7 @@ function ArrowIcon() {
 function SparkIcon() {
   return (
     <span
-      className="grid size-11 shrink-0 place-items-center rounded-xl border border-[#3e75ff]/15 bg-[#3e75ff]/5 text-[#3e75ff]"
+      className="grid size-11 shrink-0 place-items-center rounded-xl border border-black/20 bg-black/5 text-black"
       aria-hidden="true"
     >
       <svg className="size-5" fill="none" viewBox="0 0 20 20">
@@ -274,7 +274,7 @@ function WorkCardIcon({
 
 function CheckIcon() {
   return (
-    <span className="grid size-5 shrink-0 place-items-center rounded-full border border-[#3e75ff]/20 bg-[#3e75ff]/5 text-[#3e75ff]">
+    <span className="grid size-5 shrink-0 place-items-center rounded-full border border-black/25 bg-black/5 text-black">
       <svg className="size-3" fill="none" viewBox="0 0 16 16">
         <path
           d="m3.5 8 3 3 6-6"
@@ -359,7 +359,7 @@ export default function CareerPage() {
         {/* =========================================================
             WHY WORK WITH US
         ========================================================== */}
-        <section className="bg-white px-5 pb-10 pt-6 sm:px-8 sm:pb-12 sm:pt-8 lg:px-12 lg:pb-20 lg:pt-10">
+        <section className="bg-white px-5 pb-10 pt-6 sm:px-8 sm:pb-12 sm:pt-8 lg:px-12 lg:pb-14 lg:pt-10">
 
           <div className="mx-auto max-w-[1180px]">
 
@@ -449,7 +449,7 @@ export default function CareerPage() {
             OPEN ROLES
         ========================================================== */}
         <section
-          className="bg-white px-5 py-14 sm:px-8 lg:px-12 lg:py-20"
+          className="bg-white px-5 py-10 sm:px-8 lg:px-12 lg:py-14"
           id="open-roles"
         >
 
@@ -496,7 +496,7 @@ export default function CareerPage() {
 
                     <div className="flex items-start">
 
-                      <span className="career-role-number flex size-10 items-center justify-center rounded-xl text-[10px] font-bold">
+                      <span className="career-role-index flex size-10 items-center justify-center rounded-xl border border-black bg-white text-[10px] font-bold text-black">
                         0{index + 1}
                       </span>
 
@@ -556,7 +556,7 @@ export default function CareerPage() {
         {/* =========================================================
             WORK AREAS
         ========================================================== */}
-        <section className="career-work-areas px-5 py-14 sm:px-8 lg:px-12 lg:py-20">
+        <section className="career-work-areas px-5 py-10 sm:px-8 lg:px-12 lg:py-14">
 
           <div className="mx-auto max-w-[1180px]">
 
@@ -564,13 +564,13 @@ export default function CareerPage() {
 
               <div className="flex items-center justify-center gap-3">
 
-                <span className="h-px w-8 bg-[#3e75ff]" />
+                <span className="h-px w-8 bg-black" />
 
-                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#3e75ff]">
+                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-black">
                   Where you can contribute
                 </p>
 
-                <span className="h-px w-8 bg-[#3e75ff]" />
+                <span className="h-px w-8 bg-black" />
 
               </div>
 
@@ -597,7 +597,7 @@ export default function CareerPage() {
 
                   <div className="flex items-center justify-between">
 
-                    <span className="career-work-number flex size-9 items-center justify-center rounded-lg text-[10px] font-bold">
+                    <span className="career-work-index flex size-9 items-center justify-center rounded-lg border border-black bg-white text-[10px] font-bold text-black">
                       {area.number}
                     </span>
 
@@ -644,7 +644,7 @@ export default function CareerPage() {
         {/* =========================================================
             PRINCIPLES
         ========================================================== */}
-        <section className="career-principles px-5 py-14 sm:px-8 lg:px-12 lg:py-20">
+        <section className="career-principles px-5 py-10 sm:px-8 lg:px-12 lg:py-14">
 
           <div className="mx-auto max-w-[1180px]">
 
@@ -683,7 +683,7 @@ export default function CareerPage() {
                     className="career-principle-row group grid gap-4 py-7 sm:grid-cols-[60px_1fr]"
                   >
 
-                    <span className="career-neutral-number flex size-9 items-center justify-center rounded-lg border text-[10px] font-bold">
+                    <span className="career-neutral-index flex size-9 items-center justify-center rounded-lg border border-black bg-white text-[10px] font-bold text-black">
                       {principle.number}
                     </span>
 
@@ -714,7 +714,7 @@ export default function CareerPage() {
         {/* =========================================================
             BENEFITS
         ========================================================== */}
-        <section className="career-benefits px-5 py-14 sm:px-8 lg:px-12 lg:py-20">
+        <section className="career-benefits px-5 py-10 sm:px-8 lg:px-12 lg:py-14">
 
           <div className="mx-auto max-w-[1180px]">
 
@@ -773,7 +773,7 @@ export default function CareerPage() {
         {/* =========================================================
             QUALITIES + PROCESS
         ========================================================== */}
-        <section className="career-qualities-process px-5 py-14 sm:px-8 lg:px-12 lg:py-20">
+        <section className="career-qualities-process px-5 py-10 sm:px-8 lg:px-12 lg:py-14">
 
           <div className="mx-auto grid max-w-[1180px] gap-14 lg:grid-cols-2">
 
@@ -782,9 +782,9 @@ export default function CareerPage() {
 
               <div className="flex items-center gap-3">
 
-                <span className="h-px w-8 bg-[#3e75ff]" />
+                <span className="h-px w-8 bg-black" />
 
-                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#3e75ff]">
+                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-black">
                   What we value
                 </p>
 
@@ -851,7 +851,7 @@ export default function CareerPage() {
                     className="career-process-row group grid gap-4 py-6 sm:grid-cols-[55px_1fr]"
                   >
 
-                    <span className="career-neutral-number flex size-8 items-center justify-center rounded-lg border text-[10px] font-bold">
+                    <span className="career-neutral-index flex size-8 items-center justify-center rounded-lg border border-black bg-white text-[10px] font-bold text-black">
                       {step.number}
                     </span>
 
@@ -882,7 +882,7 @@ export default function CareerPage() {
         {/* =========================================================
             FAQ
         ========================================================== */}
-        <section className="bg-white px-5 py-14 sm:px-8 lg:px-12 lg:py-20">
+        <section className="bg-white px-5 py-10 sm:px-8 lg:px-12 lg:py-14">
 
           <div className="mx-auto grid max-w-[1180px] gap-12 lg:grid-cols-[0.65fr_1.35fr]">
 
@@ -922,7 +922,7 @@ export default function CareerPage() {
 
                   <summary className="flex cursor-pointer list-none items-center gap-5 py-6 text-left [&::-webkit-details-marker]:hidden">
 
-                    <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-[#3e75ff]/5 text-[9px] font-bold text-[#3e75ff]">
+                    <span className="career-faq-index flex size-7 shrink-0 items-center justify-center rounded-lg border border-black bg-white text-[9px] font-bold text-black">
                       0{index + 1}
                     </span>
 
@@ -1058,8 +1058,8 @@ export default function CareerPage() {
           }
 
           #career-page .career-work-areas {
-            --section-accent: #b95838;
-            --section-soft: #f5e2da;
+            --section-accent: #111114;
+            --section-soft: #f4f4f5;
             background: #fff;
           }
 
@@ -1076,9 +1076,9 @@ export default function CareerPage() {
           }
 
           #career-page .career-qualities-process {
-            --section-accent: #74466f;
-            --section-soft: #ecdfeb;
-            background: #f5f2ff;
+            --section-accent: #111114;
+            --section-soft: #f4f4f5;
+            background: #fafafa;
           }
 
           #career-page :is(
@@ -1109,9 +1109,9 @@ export default function CareerPage() {
           }
 
           #career-page .career-work-card {
-            border-color: #ead7cf;
-            background: #fffdfb;
-            box-shadow: 0 12px 32px rgba(121, 68, 49, .06);
+            border-color: #e4e4e7;
+            background: #fff;
+            box-shadow: 0 10px 28px rgba(17, 17, 20, .05);
           }
 
           #career-page .career-work-card:hover {
@@ -1146,9 +1146,19 @@ export default function CareerPage() {
           }
 
           #career-page .career-neutral-number {
-            border-color: #e5e7eb !important;
-            background: #f5f5f5 !important;
-            color: #52525b !important;
+            border-color: #111114 !important;
+            background: #fff !important;
+            color: #111114 !important;
+          }
+
+          #career-page .career-role-index,
+          #career-page .career-work-index,
+          #career-page .career-neutral-index,
+          #career-page .career-faq-index {
+            border-color: #111114 !important;
+            background: #fff !important;
+            color: #111114 !important;
+            -webkit-text-fill-color: #111114 !important;
           }
 
           #career-page .career-expect-card {
@@ -1168,8 +1178,8 @@ export default function CareerPage() {
           }
 
           #career-page .career-quality-card {
-            border-color: #e5d9e3;
-            background: rgba(255, 255, 255, .72);
+            border-color: #e4e4e7;
+            background: #fff;
             box-shadow: none;
           }
 

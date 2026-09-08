@@ -278,3 +278,69 @@
     transform: none;
   }
 }
+
+/* Single-row marquee for the original client names. */
+.home-design-four__logos {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+
+.home-design-four__logos > .design-four-client-marquee-track {
+  display: flex;
+  width: max-content;
+  max-width: none;
+  margin: 0;
+  transform: none;
+  grid-template-columns: none;
+  justify-content: flex-start;
+  gap: 0;
+  animation: designFourClientMarquee 38s linear infinite;
+  will-change: transform;
+}
+
+.design-four-client-marquee-group {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: clamp(44px, 4vw, 76px);
+  padding-right: clamp(44px, 4vw, 76px);
+}
+
+.home-design-four__logos .design-four-client-marquee-group b {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.home-design-four__logos .design-four-client-marquee-group .design-four-client-logo,
+.home-design-four__logos .design-four-client-marquee-group .design-four-client-logo em {
+  color: #141416;
+  font-size: clamp(20px, 1.55vw, 25px);
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -.035em;
+}
+
+.home-design-four__logos:hover > .design-four-client-marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes designFourClientMarquee {
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-design-four__logos > .design-four-client-marquee-track {
+    width: max-content;
+    transform: none;
+    animation: none;
+  }
+
+  .design-four-client-marquee-group[aria-hidden="true"] {
+    display: none;
+  }
+}

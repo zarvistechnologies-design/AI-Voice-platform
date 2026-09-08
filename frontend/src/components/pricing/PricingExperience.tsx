@@ -84,16 +84,16 @@ export function PricingExperience() {
 
   return (
     <div className="pricing-page bg-white text-[#171719]">
-      <section className="relative overflow-hidden bg-black px-4 pb-12 pt-28 sm:px-6 sm:pb-14 sm:pt-32 lg:px-8">
+      <section className="pricing-hero relative overflow-hidden bg-black px-4 pb-12 pt-28 sm:px-6 sm:pb-14 sm:pt-32 lg:px-8">
         <div className="mx-auto flex max-w-[1320px] flex-col items-center text-center">
-          <p className="inline-flex rounded-full border border-[#6268ff]/20 bg-[#6268ff]/[0.07] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[#565dcc]">Pricing</p>
+          <p className="pricing-badge inline-flex rounded-full border border-[#6268ff]/20 bg-[#6268ff]/[0.07] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[#565dcc]">Pricing</p>
           <h1 className="mt-5 max-w-3xl text-[clamp(2rem,4vw,3.35rem)] font-semibold leading-[1.08] tracking-[-0.04em] text-white">
             Pay only for the voice AI you use.
           </h1>
           <p className="mt-5 max-w-2xl text-sm leading-7 text-white/55 sm:text-base">
             No subscription, setup fee, or monthly commitment. Add wallet credits and pay only for the services used during each call.
           </p>
-          <nav className="mt-7 flex flex-wrap justify-center gap-2" aria-label="Pricing page sections">
+          <nav className="pricing-nav mt-7 flex flex-wrap justify-center gap-2" aria-label="Pricing page sections">
             {[
               ["Pricing plan", "#pricing-plan"],
               ["Voice stack", "#voice-stack"],
@@ -110,7 +110,7 @@ export function PricingExperience() {
       <section className="scroll-mt-20 px-4 py-14 sm:px-6 sm:py-16 lg:px-8" id="pricing-plan">
         <div className="mx-auto max-w-[1320px]">
           <div className="mb-8 max-w-2xl">
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-white/50">Pricing plan</p>
+            <p className="pricing-eyebrow text-xs font-bold uppercase tracking-[0.16em] text-white/50">Pricing plan</p>
             <h2 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-white sm:text-3xl">One plan for every account</h2>
           </div>
 
@@ -119,7 +119,7 @@ export function PricingExperience() {
             <div className="border-b border-white/10 bg-[linear-gradient(145deg,rgba(98,104,255,0.09),transparent_52%)] p-6 sm:p-8 lg:border-b-0 lg:border-r lg:p-9">
               <span className="inline-flex rounded-full border border-white/10 bg-black/20 px-3 py-1.5 text-[11px] font-semibold text-white/65">Pay as you go</span>
               <div className="mt-5 flex flex-wrap items-end gap-x-3 gap-y-2">
-                <strong className="text-[clamp(2.4rem,5vw,4rem)] font-semibold leading-none tracking-[-0.05em] text-white">$0.07–$0.12</strong>
+                <strong className="pricing-plan-price text-[clamp(2.4rem,5vw,4rem)] font-semibold leading-none tracking-[-0.05em] text-white">$0.07–$0.12</strong>
                 <span className="pb-2 text-sm text-white/50">per connected minute</span>
               </div>
               <p className="mt-5 max-w-xl text-sm leading-6 text-white/55">
@@ -163,7 +163,7 @@ export function PricingExperience() {
       <section className="scroll-mt-20 bg-black px-4 py-14 sm:px-6 sm:py-16 lg:px-8" id="voice-stack">
         <div className="mx-auto max-w-[1320px]">
           <div className="max-w-2xl">
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-white/50">Model pricing</p>
+            <p className="pricing-eyebrow text-xs font-bold uppercase tracking-[0.16em] text-white/50">Model pricing</p>
             <h2 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-white sm:text-3xl">Build and price your voice stack</h2>
             <p className="mt-4 text-sm leading-6 text-white/50">
               Select your language model, speech-to-text provider, and text-to-speech voice to estimate the combined provider cost per connected minute.
@@ -176,7 +176,7 @@ export function PricingExperience() {
       <section className="scroll-mt-20 bg-black px-4 py-14 sm:px-6 sm:py-16 lg:px-8" id="calculator">
         <div className="mx-auto max-w-[1320px]">
           <div className="mb-8 max-w-2xl">
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-white/50">Usage calculator</p>
+            <p className="pricing-eyebrow text-xs font-bold uppercase tracking-[0.16em] text-white/50">Usage calculator</p>
             <h2 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-white sm:text-3xl">Estimate your monthly cost</h2>
             <p className="mt-4 text-sm leading-6 text-white/50">Enter your expected call usage to calculate an estimated range. This is not a subscription or recurring charge.</p>
           </div>
@@ -237,7 +237,7 @@ export function PricingExperience() {
       <section className="scroll-mt-20 bg-black px-4 py-14 sm:px-6 sm:py-16 lg:px-8" id="faq">
         <div className="mx-auto grid max-w-[1320px] gap-10 lg:grid-cols-[0.55fr_1.45fr]">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-white/50">FAQ</p>
+            <p className="pricing-eyebrow text-xs font-bold uppercase tracking-[0.16em] text-white/50">FAQ</p>
             <h2 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-white sm:text-3xl">Pricing questions</h2>
             <p className="mt-4 max-w-sm text-sm leading-6 text-white/50">Clear answers about billing, wallet credits, and usage costs.</p>
           </div>
@@ -257,15 +257,13 @@ export function PricingExperience() {
         </div>
       </section>
 
-      <section className="scroll-mt-20 bg-black px-4 py-14 sm:px-6 sm:py-16 lg:px-8" id="contact">
-        <div className="pricing-contact-card relative mx-auto flex max-w-[1320px] flex-col items-start justify-between gap-7 overflow-hidden rounded-3xl border border-[#6268ff]/15 bg-[linear-gradient(120deg,rgba(98,104,255,0.10),rgba(255,255,255,1)_48%)] p-6 shadow-[0_28px_80px_rgba(70,65,130,0.13)] sm:p-8 lg:flex-row lg:items-center lg:p-9">
-          <span className="absolute inset-y-6 left-0 w-px bg-gradient-to-b from-transparent via-[#6268ff] to-transparent" aria-hidden="true" />
+      <section className="scroll-mt-20 bg-black px-6 pb-12 pt-4 lg:px-8" id="contact">
+        <div className="pricing-contact-card mx-auto flex max-w-6xl flex-col items-center justify-between gap-7 overflow-hidden rounded-[24px] border border-[#6268ff]/15 bg-white p-8 text-center shadow-[0_28px_80px_rgba(70,65,130,0.13)] sm:p-10 md:flex-row md:text-left">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-white/50">Contact</p>
-            <h2 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-white sm:text-3xl">Need help estimating your usage?</h2>
-            <p className="mt-4 max-w-2xl text-sm leading-6 text-white/55">Tell us about your call volume and requirements. Our team will help you understand the expected cost.</p>
+            <p className="pricing-eyebrow text-xs font-bold uppercase tracking-[0.14em] text-white/50">Ready to get started?</p>
+            <h2 className="mt-3 text-2xl font-semibold tracking-[-0.02em] text-white md:text-3xl">Need help estimating your usage?</h2>
           </div>
-          <Link className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#6268ff] px-5 text-sm font-bold text-white transition hover:bg-[#565dcc]" href="/contact">Contact us <ArrowIcon /></Link>
+          <Link className="inline-flex min-h-12 shrink-0 items-center rounded-lg bg-[#6268ff] px-7 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#565dcc]" href="/contact">CONTACT US <span className="ml-3">&rarr;</span></Link>
         </div>
       </section>
     </div>
