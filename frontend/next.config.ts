@@ -13,6 +13,11 @@ const backendUrl = (
 const nextConfig: NextConfig = {
   output: "standalone",
   poweredByHeader: false,
+  // Avoid large disk caches for the local launcher; production keeps its defaults.
+  webpack(config, { dev }) {
+    if (dev) config.cache = false;
+    return config;
+  },
   async headers() {
     return [
       {

@@ -42,9 +42,9 @@ const eventLabels: Record<WebhookEvent, string> = {
 type DeveloperView = "overview" | "keys" | "webhooks" | "activity";
 type InspectorView = "request" | "response" | "webhook";
 
-const panelClass = "border border-[#dce3ea] bg-white shadow-[0_10px_30px_rgba(15,23,42,0.045)]";
-const controlClass = "h-10 rounded-md border border-[#cfd8e3] bg-white px-3 text-sm font-medium text-[#172033] outline-none transition placeholder:text-[#8a96a8] focus:border-[#087f8c] focus:ring-3 focus:ring-[#087f8c]/10";
-const primaryButtonClass = "inline-flex h-10 items-center justify-center rounded-md bg-[#087f8c] px-4 text-sm font-semibold text-white transition hover:bg-[#066a75] disabled:cursor-not-allowed disabled:opacity-50";
+const panelClass = "border border-[#dce3ea] bg-white shadow-sm";
+const controlClass = "h-10 rounded-md border border-[#cfd8e3] bg-white px-3 text-sm font-medium text-[#172033] outline-none transition placeholder:text-[#8a96a8] focus:border-[#5b63ff] focus:ring-3 focus:ring-[#5b63ff]/10";
+const primaryButtonClass = "inline-flex h-10 items-center justify-center rounded-md bg-[#5b63ff] px-4 text-sm font-semibold text-[#ffffff] transition hover:bg-[#4b52df] disabled:cursor-not-allowed disabled:opacity-50";
 const secondaryButtonClass = "inline-flex h-9 items-center justify-center rounded-md border border-[#cfd8e3] bg-white px-3 text-sm font-semibold text-[#334155] transition hover:border-[#9aacbd] hover:bg-[#f4f7fa]";
 const dangerButtonClass = "inline-flex h-9 items-center justify-center rounded-md border border-[#fecdd3] bg-white px-3 text-sm font-semibold text-[#be123c] transition hover:bg-[#fff1f2]";
 const includedFields = ["recording_url", "chat", "transcription_text", "providers", "usage", "billing", "structuredOutput"];
@@ -231,7 +231,7 @@ export function DeveloperShell() {
   const [createdSecret, setCreatedSecret] = useState("");
   const [loading, setLoading] = useState(true);
   const [notice, setNotice] = useState("");
-  const [showUserSidebar, setShowUserSidebar] = useState(false);
+  const [showUserSidebar, setShowUserSidebar] = useState(true);
   const [activeView, setActiveView] = useState<DeveloperView>("overview");
   const [inspectorView, setInspectorView] = useState<InspectorView>("request");
   const publicApiUrl = (brand.urls.api || API_URL).replace(/\/$/, "");
@@ -263,6 +263,8 @@ export function DeveloperShell() {
 
   useEffect(() => {
     if (!session) {
+      // The server snapshot is empty until the persisted session hydrates.
+      if (getSession()) return;
       router.replace("/login?next=/dashboard/developers");
       return;
     }
@@ -393,16 +395,16 @@ export function DeveloperShell() {
           <div className="mx-auto flex max-w-[1600px] flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className="size-2 rounded-full bg-[#16a34a] shadow-[0_0_0_4px_rgba(22,163,74,0.12)]" aria-hidden="true" />
+                <span className="size-2 rounded-full bg-[#16a34a] shadow-sm" aria-hidden="true" />
                 <span className="text-xs font-bold uppercase text-[#15803d]">Production API online</span>
               </div>
-              <h1 className="mt-1 text-xl font-semibold text-[#101827] sm:text-2xl">Developer workspace</h1>
+              <h1 className="mt-1 text-xl font-semibold text-[#101827] sm:text-2xl">Developers</h1>
             </div>
             <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center">
               <div className="flex h-10 min-w-0 items-center border border-[#d3dce6] bg-[#f8fafc] pl-3">
                 <span className="shrink-0 text-[10px] font-black uppercase text-[#78869a]">API v1</span>
                 <code className="min-w-0 truncate px-3 text-xs font-semibold text-[#334155]">{baseUrl}</code>
-                <button className="h-full shrink-0 border-l border-[#d3dce6] bg-white px-3 text-xs font-bold text-[#087f8c] hover:bg-[#eefbfb]" type="button" onClick={() => void copyText(baseUrl, "Base URL")}>Copy</button>
+                <button className="h-full shrink-0 border-l border-[#d3dce6] bg-white px-3 text-xs font-bold text-[#5b63ff] hover:bg-[#f0efff]" type="button" onClick={() => void copyText(baseUrl, "Base URL")}>Copy</button>
               </div>
               <button className={secondaryButtonClass} type="button" onClick={() => void loadDeveloperData()}>{loading ? "Refreshing..." : "Refresh data"}</button>
             </div>
@@ -410,7 +412,7 @@ export function DeveloperShell() {
         </header>
 
         <div className="mx-auto grid max-w-[1600px] gap-4 p-4 lg:p-6 xl:grid-cols-[190px_minmax(0,1fr)_380px] xl:gap-5">
-          <nav className="flex overflow-x-auto border border-[#dce3ea] bg-white p-1.5 xl:block xl:self-start xl:p-2" aria-label="Developer workspace sections">
+          <nav className="flex overflow-x-auto border border-[#dce3ea] bg-white p-1.5 xl:block xl:self-start xl:p-2" aria-label="Developers sections">
             {([
               ["overview", "Overview", "API health"],
               ["keys", "API keys", `${activeKeys} active`],
@@ -420,7 +422,7 @@ export function DeveloperShell() {
               <button
                 className={`min-w-36 border-l-2 px-3 py-2.5 text-left transition xl:mb-1 xl:block xl:w-full ${
                   activeView === value
-                    ? "border-[#087f8c] bg-[#edf8f8] text-[#065f68]"
+                    ? "border-[#5b63ff] bg-[#f0efff] text-[#4b52df]"
                     : "border-transparent text-[#64748b] hover:bg-[#f5f7f9] hover:text-[#172033]"
                 }`}
                 key={value}
@@ -442,7 +444,7 @@ export function DeveloperShell() {
               <section className={`${panelClass} min-h-[720px]`}>
                 <div className="flex flex-col gap-3 border-b border-[#dce3ea] px-5 py-5 sm:flex-row sm:items-end sm:justify-between">
                   <div>
-                    <span className="text-xs font-bold uppercase text-[#087f8c]">Connection map</span>
+                    <span className="text-xs font-bold uppercase text-[#5b63ff]">Connection map</span>
                     <h2 className="mt-1 text-xl font-semibold text-[#101827]">Your API at a glance</h2>
                   </div>
                   <span className="text-xs font-medium text-[#64748b]">Last synced {loading ? "now" : "just now"}</span>
@@ -450,7 +452,7 @@ export function DeveloperShell() {
 
                 <div className="grid border-b border-[#dce3ea] sm:grid-cols-4">
                   {[
-                    ["01", "Authenticate", `${activeKeys} active keys`, "#75fff0"],
+                    ["01", "Authenticate", `${activeKeys} active keys`, "#4d54db"],
                     ["02", "Create call", "POST outbound", "#c4b5fd"],
                     ["03", "Receive event", `${enabledWebhooks} webhooks`, "#fda4af"],
                     ["04", "Fetch result", "Recording + transcript", "#6ee7b7"],
@@ -486,7 +488,7 @@ export function DeveloperShell() {
                         <h3 className="text-sm font-semibold text-[#172033]">Available endpoints</h3>
                         <p className="mt-1 text-xs text-[#718096]">Stable REST routes under /api/v1</p>
                       </div>
-                      <span className="rounded bg-[#e7f7f7] px-2 py-1 text-xs font-bold text-[#087f8c]">{endpointRows.length} routes</span>
+                      <span className="rounded bg-[#f0efff] px-2 py-1 text-xs font-bold text-[#5b63ff]">{endpointRows.length} routes</span>
                     </div>
                     <div className="border border-[#dce3ea]">
                       {endpointRows.map(([method, path]) => <EndpointRow key={`${method}-${path}`} method={method} path={path} />)}
@@ -496,10 +498,10 @@ export function DeveloperShell() {
                     <h3 className="text-sm font-semibold text-[#172033]">Call object</h3>
                     <div className="mt-4 flex flex-wrap gap-2">
                       {includedFields.map((item, index) => (
-                        <code className={`border-l-2 bg-[#f5f7f9] px-2 py-1.5 text-[11px] font-semibold ${index % 3 === 0 ? "border-[#087f8c]" : index % 3 === 1 ? "border-[#e05252]" : "border-[#7c3aed]"}`} key={item}>{item}</code>
+                        <code className={`border-l-2 bg-[#f5f7f9] px-2 py-1.5 text-[11px] font-semibold ${index % 3 === 0 ? "border-[#5b63ff]" : index % 3 === 1 ? "border-[#e05252]" : "border-[#7c3aed]"}`} key={item}>{item}</code>
                       ))}
                     </div>
-                    <button className="mt-5 text-sm font-semibold text-[#087f8c] hover:text-[#065f68]" type="button" onClick={() => setInspectorView("response")}>Inspect response</button>
+                    <button className="mt-5 text-sm font-semibold text-[#5b63ff] hover:text-[#4b52df]" type="button" onClick={() => setInspectorView("response")}>Inspect response</button>
                   </div>
                 </div>
               </section>
@@ -509,13 +511,13 @@ export function DeveloperShell() {
               <section className={`${panelClass} min-h-[720px]`}>
                 <div className="flex items-center justify-between gap-4 border-b border-[#dce3ea] px-5 py-5">
                   <div><h2 className="text-xl font-semibold text-[#101827]">API keys</h2><p className="mt-1 text-xs text-[#718096]">Production credentials and access scopes</p></div>
-                  <span className="rounded bg-[#e7f7f7] px-2.5 py-1 text-xs font-bold text-[#087f8c]">{activeKeys} active</span>
+                  <span className="rounded bg-[#f0efff] px-2.5 py-1 text-xs font-bold text-[#5b63ff]">{activeKeys} active</span>
                 </div>
                 {createdKey ? (
                   <div className="border-b border-[#86c9a4] bg-[#effbf3] px-5 py-4">
                     <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                       <div className="min-w-0"><strong className="block text-sm text-[#166534]">New key created. Copy it now.</strong><code className="mt-2 block truncate bg-white px-3 py-2 text-xs text-[#334155]">{createdKey}</code></div>
-                      <button className="h-9 shrink-0 rounded-md bg-[#15803d] px-3 text-sm font-semibold text-white" type="button" onClick={() => void copyText(createdKey, "API key")}>Copy key</button>
+                      <button className="h-9 shrink-0 rounded-md bg-[#15803d] px-3 text-sm font-semibold text-[#242535]" type="button" onClick={() => void copyText(createdKey, "API key")}>Copy key</button>
                     </div>
                   </div>
                 ) : null}
@@ -526,7 +528,7 @@ export function DeveloperShell() {
                   </div>
                   <div className="mt-4 grid gap-2 sm:grid-cols-2">
                     {scopeCatalog.map((scope) => (
-                      <label className={`flex cursor-pointer items-center gap-3 border px-3 py-2.5 text-sm font-semibold transition ${keyScopes.includes(scope) ? "border-[#6bb7bd] bg-[#edf8f8] text-[#065f68]" : "border-[#d7dfe8] bg-white text-[#526174]"}`} key={scope}>
+                      <label className={`flex cursor-pointer items-center gap-3 border px-3 py-2.5 text-sm font-semibold transition ${keyScopes.includes(scope) ? "border-[#6bb7bd] bg-[#f0efff] text-[#4b52df]" : "border-[#d7dfe8] bg-white text-[#526174]"}`} key={scope}>
                         <input checked={keyScopes.includes(scope)} onChange={() => setKeyScopes((current) => toggleValue(current, scope))} type="checkbox" />
                         {scopeLabels[scope] ?? scope}
                       </label>
@@ -559,7 +561,7 @@ export function DeveloperShell() {
                   <span className="rounded bg-[#fff1ee] px-2.5 py-1 text-xs font-bold text-[#c24134]">{enabledWebhooks} listening</span>
                 </div>
                 {createdSecret ? (
-                  <div className="border-b border-[#86c9a4] bg-[#effbf3] px-5 py-4"><strong className="block text-sm text-[#166534]">Signing secret created. Copy it now.</strong><div className="mt-2 flex gap-2"><code className="min-w-0 flex-1 truncate bg-white px-3 py-2 text-xs">{createdSecret}</code><button className="rounded-md bg-[#15803d] px-3 text-sm font-semibold text-white" type="button" onClick={() => void copyText(createdSecret, "Webhook secret")}>Copy</button></div></div>
+                  <div className="border-b border-[#86c9a4] bg-[#effbf3] px-5 py-4"><strong className="block text-sm text-[#166534]">Signing secret created. Copy it now.</strong><div className="mt-2 flex gap-2"><code className="min-w-0 flex-1 truncate bg-white px-3 py-2 text-xs">{createdSecret}</code><button className="rounded-md bg-[#15803d] px-3 text-sm font-semibold text-[#242535]" type="button" onClick={() => void copyText(createdSecret, "Webhook secret")}>Copy</button></div></div>
                 ) : null}
                 <div className="border-b border-[#dce3ea] bg-[#f8fafc] p-5">
                   <div className="grid gap-3 lg:grid-cols-[210px_minmax(0,1fr)]">
@@ -606,29 +608,29 @@ export function DeveloperShell() {
             ) : null}
           </div>
 
-          <aside className="min-w-0 self-start bg-[#101827] text-white shadow-[0_18px_48px_rgba(15,23,42,0.18)] xl:sticky xl:top-5">
-            <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
-              <div><span className="block text-[10px] font-black uppercase text-[#70d1d8]">API inspector</span><strong className="mt-0.5 block text-sm">{inspectorLabel}</strong></div>
-              <button className="rounded border border-white/15 bg-white/5 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-white/10" type="button" onClick={() => void copyText(inspectorContent, inspectorLabel)}>Copy</button>
+          <aside className="min-w-0 self-start bg-[#101827] text-[#ffffff] shadow-sm xl:sticky xl:top-5">
+            <div className="flex items-center justify-between border-b border-[#293148] px-4 py-3">
+              <div><span className="block text-[10px] font-black uppercase text-[#a9afff]">API inspector</span><strong className="mt-0.5 block text-sm">{inspectorLabel}</strong></div>
+              <button className="rounded border border-[#293148] bg-[#f6f7fb] px-2.5 py-1.5 text-xs font-semibold text-[#242535] hover:bg-[#f6f7fb]" type="button" onClick={() => void copyText(inspectorContent, inspectorLabel)}>Copy</button>
             </div>
-            <div className="grid grid-cols-3 border-b border-white/10 bg-[#0b1220] p-1.5">
+            <div className="grid grid-cols-3 border-b border-[#293148] bg-[#101827] p-1.5">
               {(["request", "response", "webhook"] as const).map((view) => (
-                <button className={`h-8 rounded text-xs font-semibold capitalize transition ${inspectorView === view ? "bg-[#45ddce] text-[#04231f]" : "text-[#9facbd] hover:text-white"}`} key={view} type="button" onClick={() => setInspectorView(view)}>{view}</button>
+                <button className={`h-8 rounded text-xs font-semibold capitalize transition ${inspectorView === view ? "bg-[#5b63ff] text-[#ffffff]" : "text-[#9facbd] hover:text-[#242535]"}`} key={view} type="button" onClick={() => setInspectorView(view)}>{view}</button>
               ))}
             </div>
             <pre className="max-h-[520px] min-h-80 overflow-auto p-4 text-xs leading-5 text-[#d7e2ef]">{inspectorContent}</pre>
-            <div className="border-t border-white/10 bg-[#0b1220] p-4">
+            <div className="border-t border-[#293148] bg-[#101827] p-4">
               <span className="text-[10px] font-black uppercase text-[#8fa0b4]">Outbound call</span>
               <pre className="mt-2 max-h-44 overflow-auto whitespace-pre-wrap text-[11px] leading-5 text-[#b7c6d8]">{sampleOutboundCurl(baseUrl)}</pre>
-              <button className="mt-3 text-xs font-bold text-[#70d1d8] hover:text-white" type="button" onClick={() => void copyText(sampleOutboundCurl(baseUrl), "Outbound call example")}>Copy outbound request</button>
+              <button className="mt-3 text-xs font-bold text-[#a9afff] hover:text-[#242535]" type="button" onClick={() => void copyText(sampleOutboundCurl(baseUrl), "Outbound call example")}>Copy outbound request</button>
             </div>
           </aside>
         </div>
       </section>
 
       {notice ? (
-        <div className="fixed bottom-4 right-4 z-50 grid w-[min(380px,calc(100vw-32px))] grid-cols-[4px_minmax(0,1fr)_28px] overflow-hidden border border-[#cfd8e3] bg-white shadow-[0_18px_50px_rgba(15,23,42,0.2)]" role="status" aria-live="polite">
-          <span className="bg-[#087f8c]" aria-hidden="true" />
+        <div className="fixed bottom-4 right-4 z-50 grid w-[min(380px,calc(100vw-32px))] grid-cols-[4px_minmax(0,1fr)_28px] overflow-hidden border border-[#cfd8e3] bg-white shadow-sm" role="status" aria-live="polite">
+          <span className="bg-[#5b63ff]" aria-hidden="true" />
           <span className="px-4 py-3 text-sm font-semibold text-[#334155]">{notice}</span>
           <button className="mr-2 mt-2 grid size-7 place-items-center rounded text-[#78869a] hover:bg-[#f1f5f9]" type="button" aria-label="Dismiss notification" onClick={() => setNotice("")}>x</button>
         </div>

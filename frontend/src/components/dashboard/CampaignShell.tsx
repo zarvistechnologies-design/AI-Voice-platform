@@ -35,7 +35,7 @@ const maxCampaignLeads = 100_000;
 const buttonClass =
   "app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 transition disabled:cursor-not-allowed disabled:opacity-50";
 const controlClass =
-  "app-control-text min-h-11 w-full rounded-lg border border-white/10 bg-[#061b18] px-3 text-white outline-none transition placeholder:text-white/45 focus:border-[#45ddce] focus:ring-4 focus:ring-[#45ddce]/10";
+  "app-control-text min-h-11 w-full rounded-lg border border-[#e5e7ef] bg-[#f8f8fc] px-3 text-[#242535] outline-none transition placeholder:text-[#737587] focus:border-[#5b63ff] focus:ring-4 focus:ring-[#5b63ff]/10";
 
 function Icon({ icon, className = "size-4" }: { icon: IconName; className?: string }) {
   const props = {
@@ -201,7 +201,7 @@ function statusTheme(status: BackendCampaign["status"]) {
   if (status === "completed") return "border-slate-200 bg-slate-100 text-slate-700";
   if (status === "cancelled") return "border-rose-200 bg-rose-50 text-rose-700";
   if (status === "failed") return "border-red-200 bg-red-50 text-red-700";
-  return "border-white/10 bg-[#07110f] text-white/60";
+  return "border-[#e5e7ef] bg-[#ffffff] text-[#737587]";
 }
 
 function progressValue(value: number) {
@@ -259,6 +259,8 @@ export function CampaignShell() {
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
   const [agents, setAgents] = useState<AgentSummary[]>([]);
   const [numbers, setNumbers] = useState<BackendPhoneNumber[]>([]);
+  const [composerOpen, setComposerOpen] = useState(false);
+  const [composerStep, setComposerStep] = useState(0);
   const [campaigns, setCampaigns] = useState<BackendCampaign[]>([]);
   const [campaignName, setCampaignName] = useState("");
   const [selectedPhoneId, setSelectedPhoneId] = useState("");
@@ -285,7 +287,7 @@ export function CampaignShell() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [launching, setLaunching] = useState(false);
-  const [showUserSidebar, setShowUserSidebar] = useState(false);
+  const [showUserSidebar, setShowUserSidebar] = useState(true);
   const [now, setNow] = useState(() => new Date());
   const [idempotencyKey, setIdempotencyKey] = useState(() => globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`);
   const csvParseAbortRef = useRef<AbortController | null>(null);
@@ -295,6 +297,8 @@ export function CampaignShell() {
 
   useEffect(() => {
     if (!session) {
+      // The server snapshot is empty until the persisted session hydrates.
+      if (getSession()) return;
       router.replace("/login?next=/dashboard/campaign");
       return;
     }
@@ -532,6 +536,7 @@ export function CampaignShell() {
 
   async function prepareCampaign(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (composerStep < 4) { setComposerStep((step) => step + 1); return; }
     setNotice("");
     setError("");
     if (!canPrepare) {
@@ -568,6 +573,8 @@ export function CampaignShell() {
         mode: sendMode,
         ...(sendMode === "schedule" ? { scheduledAt: zonedLocalDateTimeToIso(scheduledAt, timezone) } : {}),
       });
+      setComposerOpen(false);
+      setComposerStep(0);
       setCampaigns((current) => [launched.campaign, ...current.filter((item) => item._id !== launched.campaign._id)]);
       setNotice(
         sendMode === "schedule"
@@ -602,9 +609,9 @@ export function CampaignShell() {
 
   if (!session) {
     return (
-      <main className="app-strong grid min-h-screen place-items-center bg-black px-6 text-white/70">
-        <div className="rounded-lg border border-white/10 bg-[#07110f] px-6 py-5 text-center shadow-sm">
-          <span className="mx-auto mb-3 grid size-10 place-items-center rounded-lg bg-[#ecfeff] text-[#008996]">
+      <main className="app-strong grid min-h-screen place-items-center bg-[#f7f8fc] px-6 text-[#737587]">
+        <div className="rounded-lg border border-[#e5e7ef] bg-[#ffffff] px-6 py-5 text-center shadow-sm">
+          <span className="mx-auto mb-3 grid size-10 place-items-center rounded-lg bg-[#f0efff] text-[#4b52df]">
             <Icon icon="spark" />
           </span>
           <p className="app-strong m-0">Loading campaigns</p>
@@ -615,7 +622,7 @@ export function CampaignShell() {
   }
 
   return (
-    <main className={`dashboard-home-theme grid min-h-dvh bg-black text-white lg:h-dvh lg:overflow-hidden ${
+    <main className={`dashboard-home-theme grid min-h-dvh bg-[#f7f8fc] text-[#242535] lg:h-dvh lg:overflow-hidden ${
       showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
     }`}>
       <DashboardSidebar
@@ -628,19 +635,20 @@ export function CampaignShell() {
         setShowUserSidebar={setShowUserSidebar}
       />
 
-      <section className="min-w-0 overflow-y-auto overscroll-contain bg-black">
-        <header className="border-b border-white/10 bg-[#07110f] px-4 py-4 shadow-[0_12px_32px_rgba(0,0,0,0.32)] sm:px-6 lg:px-8">
+      <section className="min-w-0 overflow-y-auto overscroll-contain bg-[#f7f8fc]">
+        <header className="border-b border-[#e5e7ef] bg-[#ffffff] px-4 py-4 shadow-sm sm:px-6 lg:px-8">
           <div className="mx-auto flex w-full max-w-[1500px] flex-wrap items-center justify-between gap-4">
               <div>
-                <span className="app-label text-[#75fff0]">{session.organization?.name ?? "Workspace"}</span>
-                <h1 className="m-0 mt-1 text-xl font-semibold leading-7 text-white sm:text-2xl">Outbound campaigns</h1>
-                <p className="app-caption mt-1 mb-0 text-white/60">Create campaigns, upload leads, control pacing, and monitor delivery.</p>
+                <span className="app-label text-[#4d54db]">{session.organization?.name ?? "Workspace"}</span>
+                <h1 className="m-0 mt-1 text-xl font-semibold leading-7 text-[#242535] sm:text-2xl">Outbound campaigns</h1>
+                <p className="app-caption mt-1 mb-0 text-[#737587]">Create campaigns, upload leads, control pacing, and monitor delivery.</p>
               </div>
               <div className="flex flex-wrap items-center gap-2">
-                <span className={`rounded-lg border px-3 py-2 text-xs font-semibold ${selectedPhoneReady ? "border-[#45ddce]/24 bg-[#45ddce]/[0.07] text-[#75fff0]" : "border-amber-300/20 bg-amber-300/10 text-amber-200"}`}>
+                <button className="saas-primary" type="button" aria-expanded={composerOpen} aria-controls="campaign-composer" onClick={() => { setComposerOpen((open) => !open); setError(""); }}>{composerOpen ? "Close setup" : "+ Create campaign"}</button>
+                <span className={`rounded-lg border px-3 py-2 text-xs font-semibold ${selectedPhoneReady ? "border-[#5b63ff]/24 bg-[#5b63ff]/[0.07] text-[#4d54db]" : "border-amber-300/20 bg-amber-300/10 text-amber-700"}`}>
                   {selectedPhoneReady ? "Route ready" : "Route needs setup"}
                 </span>
-                <span className="max-w-[360px] truncate border-l border-white/15 px-3 py-2 text-xs font-semibold text-white/55">
+                <span className="max-w-[360px] truncate border-l border-[#e5e7ef] px-3 py-2 text-xs font-semibold text-[#737587]">
                   {routeSummary}
                 </span>
               </div>
@@ -654,16 +662,19 @@ export function CampaignShell() {
             ))}
           </section>
 
-          <form className="mt-7 grid gap-7 xl:grid-cols-[minmax(0,1fr)_380px]" onSubmit={prepareCampaign}>
+          {notice ? <Notice tone="success" message={notice} onClose={() => setNotice("")} /> : null}
+          {error ? <Notice tone="error" message={error} onClose={() => setError("")} /> : null}
+          {composerOpen ? <div className="campaign-composer" id="campaign-composer">
+          <div className="campaign-composer-heading"><div><span className="saas-eyebrow">New outbound campaign</span><h2>One step closer to your next conversation.</h2></div><span>Step {composerStep + 1} of 5</span></div>
+          <nav className="campaign-steps" aria-label="Campaign setup steps">{["Setup", "Audience", "Timing", "Instructions", "Review"].map((step, index) => <button type="button" key={step} aria-current={composerStep === index ? "step" : undefined} onClick={() => setComposerStep(index)}><span>{index < composerStep ? "✓" : index + 1}</span>{step}</button>)}</nav>
+          <form className="campaign-composer-form grid gap-7 xl:grid-cols-[minmax(0,1fr)_300px]" onSubmit={prepareCampaign}>
             <section className="grid min-w-0 content-start gap-0">
-              {notice ? <Notice tone="success" message={notice} onClose={() => setNotice("")} /> : null}
-              {error ? <Notice tone="error" message={error} onClose={() => setError("")} /> : null}
 
-              <Panel>
+              <Panel hidden={composerStep !== 0}>
                 <SectionHeader
                   eyebrow="Step 01"
                   icon="target"
-                  title="Campaign blueprint"
+                  title="Campaign setup"
                   description="Name the campaign and choose the live assistant plus outbound caller ID that will carry the traffic."
                 />
 
@@ -705,34 +716,34 @@ export function CampaignShell() {
                   </label>
                 </div>
 
-                <div className="mt-5 grid gap-3 border-y border-white/10 py-4 sm:grid-cols-3">
+                <div className="mt-5 grid gap-3 border-y border-[#e5e7ef] py-4 sm:grid-cols-3">
                   <InfoPill icon="user" label="Assistant" value={selectedAgent?.name ?? "Not selected"} />
                   <InfoPill icon="phone" label="Caller ID" value={selectedPhone?.number ?? "Not selected"} />
                   <InfoPill icon="shield" label="Route status" value={selectedPhoneReady ? "Ready for outbound" : "Needs attention"} />
                 </div>
               </Panel>
 
-              <Panel>
+              <Panel hidden={composerStep !== 1}>
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <SectionHeader
                     eyebrow="Step 02"
                     icon="upload"
-                    title="Audience intelligence"
+                    title="Your audience"
                     description="Upload contacts in bulk or add them manually with the metadata your assistant needs during each call."
                   />
-                  <span className="border-l border-white/15 px-3 py-1.5 text-xs font-semibold text-white/50">
+                  <span className="border-l border-[#e5e7ef] px-3 py-1.5 text-xs font-semibold text-[#737587]">
                     {csvFile ? `${csvFile.name} - ${formatFileSize(csvFile.size)}` : "No CSV chosen"}
                   </span>
                 </div>
 
                 <label
-                  className="mt-6 grid min-h-[220px] cursor-pointer place-items-center rounded-[1.75rem] border border-dashed border-[#45ddce]/35 bg-[radial-gradient(circle_at_50%_0%,rgba(69,221,206,0.10),transparent_52%),linear-gradient(135deg,#07110f_0%,#061b18_100%)] p-6 text-center shadow-[inset_0_1px_0_rgba(69,221,206,0.10)] transition hover:-translate-y-0.5 hover:border-[#45ddce]/55 hover:shadow-[0_20px_50px_rgba(69,221,206,0.10)]"
+                  className="mt-6 grid min-h-[220px] cursor-pointer place-items-center rounded-[1.75rem] border border-dashed border-[#5b63ff]/35 bg-white p-6 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-[#5b63ff]/55 hover:shadow-sm"
                   onDragOver={(event) => event.preventDefault()}
                   onDrop={handleDrop}
                 >
                   <input className="sr-only" type="file" accept=".csv,text/csv" onChange={(event) => void handleCsv(event.target.files?.[0])} />
                   <span className="max-w-md">
-                    <span className="mx-auto mb-4 grid size-14 place-items-center rounded-2xl bg-[#45ddce]/10 text-[#75fff0] shadow-[0_14px_30px_rgba(69,221,206,0.12)]">
+                    <span className="mx-auto mb-4 grid size-14 place-items-center rounded-2xl bg-[#5b63ff]/10 text-[#4d54db] shadow-sm">
                       <Icon icon="file" className="size-6" />
                     </span>
                     <strong className="block text-base font-semibold text-slate-950">Drop CSV or choose file</strong>
@@ -741,13 +752,13 @@ export function CampaignShell() {
                 </label>
 
                 <div className="my-6 flex items-center gap-4" aria-hidden="true">
-                  <span className="h-px flex-1 bg-white/10" />
-                  <span className="app-label text-white/35">or add one contact</span>
-                  <span className="h-px flex-1 bg-white/10" />
+                  <span className="h-px flex-1 bg-[#f6f7fb]" />
+                  <span className="app-label text-[#737587]">or add one contact</span>
+                  <span className="h-px flex-1 bg-[#f6f7fb]" />
                 </div>
 
                 <section
-                  className="border-l-2 border-[#45ddce]/35 bg-[#45ddce]/[0.04] px-4 py-5 sm:px-5"
+                  className="border-l-2 border-[#5b63ff]/35 bg-[#5b63ff]/[0.04] px-4 py-5 sm:px-5"
                   onKeyDown={(event) => {
                     if (event.key !== "Enter") return;
                     event.preventDefault();
@@ -756,10 +767,10 @@ export function CampaignShell() {
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                      <h3 className="app-section-title m-0 text-white">Manual contact</h3>
+                      <h3 className="app-section-title m-0 text-[#242535]">Manual contact</h3>
                       <p className="app-caption mt-1 mb-0">Phone is required. Metadata becomes a prompt variable, such as {"{{appointment_date}}"}.</p>
                     </div>
-                    <span className="rounded-full border border-white/10 px-3 py-1 text-xs font-semibold text-white/45">E.164 required</span>
+                    <span className="rounded-full border border-[#e5e7ef] px-3 py-1 text-xs font-semibold text-[#737587]">E.164 required</span>
                   </div>
 
                   <div className="mt-5 grid gap-4 sm:grid-cols-2">
@@ -787,14 +798,14 @@ export function CampaignShell() {
                     </label>
                   </div>
 
-                  <div className="mt-5 border-t border-white/10 pt-5">
+                  <div className="mt-5 border-t border-[#e5e7ef] pt-5">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div>
-                        <h4 className="m-0 text-sm font-semibold text-white">Contact metadata</h4>
+                        <h4 className="m-0 text-sm font-semibold text-[#242535]">Contact metadata</h4>
                         <p className="app-caption mt-1 mb-0">Use clear names such as appointment_date, customer_id, or preferred_language.</p>
                       </div>
                       <button
-                        className={`${buttonClass} border border-white/10 text-white/70 hover:border-[#45ddce]/35 hover:text-[#75fff0]`}
+                        className={`${buttonClass} border border-[#e5e7ef] text-[#737587] hover:border-[#5b63ff]/35 hover:text-[#4d54db]`}
                         disabled={manualMetadata.length >= 40}
                         onClick={() => setManualMetadata((current) => [...current, newMetadataField()])}
                         type="button"
@@ -817,7 +828,7 @@ export function CampaignShell() {
                             </label>
                             <button
                               aria-label={`Remove ${field.key || "metadata"} field`}
-                              className={`${buttonClass} border border-white/10 px-3 text-white/45 hover:border-rose-300/30 hover:text-rose-300`}
+                              className={`${buttonClass} border border-[#e5e7ef] px-3 text-[#737587] hover:border-rose-300/30 hover:text-rose-700`}
                               onClick={() => setManualMetadata((current) => current.filter((item) => item.id !== field.id))}
                               type="button"
                             >
@@ -827,12 +838,12 @@ export function CampaignShell() {
                         ))}
                       </div>
                     ) : (
-                      <p className="app-caption mt-4 mb-0 border-l border-white/10 pl-3">No metadata fields yet. The standard contact details will still be available to the assistant.</p>
+                      <p className="app-caption mt-4 mb-0 border-l border-[#e5e7ef] pl-3">No metadata fields yet. The standard contact details will still be available to the assistant.</p>
                     )}
                   </div>
 
-                  <div className="mt-5 flex justify-end border-t border-white/10 pt-5">
-                    <button className={`${buttonClass} bg-[#00b8c4] text-white hover:bg-[#008996]`} onClick={addManualContact} type="button">
+                  <div className="mt-5 flex justify-end border-t border-[#e5e7ef] pt-5">
+                    <button className={`${buttonClass} bg-[#5b63ff] text-[#ffffff] hover:bg-[#4b52df]`} onClick={addManualContact} type="button">
                       <Icon icon="user" /> Add contact to audience
                     </button>
                   </div>
@@ -841,7 +852,7 @@ export function CampaignShell() {
                 <div className={`mt-5 grid gap-3 border-y py-4 sm:grid-cols-[auto_minmax(0,1fr)] ${
                   callWindowOpen ? "border-emerald-300/20" : "border-amber-300/20"
                 }`}>
-                  <span className={`grid size-10 place-items-center rounded-2xl bg-[#061b18] shadow-sm ${callWindowOpen ? "text-emerald-300" : "text-amber-300"}`}>
+                  <span className={`grid size-10 place-items-center rounded-2xl bg-[#f8f8fc] shadow-sm ${callWindowOpen ? "text-emerald-700" : "text-amber-700"}`}>
                     <Icon icon={callWindowOpen ? "check" : "warning"} />
                   </span>
                   <div className={callWindowOpen ? "text-emerald-900" : "text-amber-900"}>
@@ -852,7 +863,7 @@ export function CampaignShell() {
                     </p>
                     {!callWindowOpen ? (
                       <button
-                        className="mt-3 rounded-full border border-amber-300/25 bg-amber-400/10 px-3 py-1.5 text-xs font-semibold text-amber-200 transition hover:-translate-y-0.5 hover:bg-amber-400/15"
+                        className="mt-3 rounded-full border border-amber-300/25 bg-amber-400/10 px-3 py-1.5 text-xs font-semibold text-amber-700 transition hover:-translate-y-0.5 hover:bg-amber-400/15"
                         type="button"
                         onClick={() => {
                           setWindowStart("00:00");
@@ -866,8 +877,8 @@ export function CampaignShell() {
                 </div>
 
                 {leads.length ? (
-                  <div className="mt-5 overflow-hidden border-y border-white/10">
-                    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 py-3">
+                  <div className="mt-5 overflow-hidden border-y border-[#e5e7ef]">
+                    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e5e7ef] py-3">
                       <div>
                         <span className="text-sm font-semibold text-slate-950">{numberFormat(leads.length)} contacts loaded</span>
                         <p className="app-caption mt-1 mb-0">Showing first {previewLeads.length} rows for verification.</p>
@@ -878,7 +889,7 @@ export function CampaignShell() {
                     </div>
                     <div className="overflow-x-auto">
                       <table className="w-full min-w-[760px] text-left">
-                        <thead className="bg-[#061b18] text-white/50">
+                        <thead className="bg-[#f8f8fc] text-[#737587]">
                           <tr className="text-xs font-semibold uppercase tracking-[0.12em]">
                             <th className="px-4 py-3">Row</th>
                             <th className="px-4 py-3">Phone</th>
@@ -918,7 +929,7 @@ export function CampaignShell() {
                 ) : null}
               </Panel>
 
-              <Panel>
+              <Panel hidden={composerStep !== 2}>
                 <SectionHeader
                   eyebrow="Step 03"
                   icon="clock"
@@ -962,15 +973,15 @@ export function CampaignShell() {
                       </label>
                     </>
                   ) : (
-                    <div className="border-l-2 border-[#45ddce]/35 px-4 py-2 lg:col-span-2">
-                      <span className="app-label text-[#008996]">Launch mode</span>
+                    <div className="border-l-2 border-[#5b63ff]/35 px-4 py-2 lg:col-span-2">
+                      <span className="app-label text-[#4b52df]">Launch mode</span>
                       <p className="mt-1 mb-0 text-sm font-semibold text-slate-950">
                         {callWindowOpen ? "Immediate launch after campaign creation" : "Launch now, call when the window opens"}
                       </p>
                       <p className="app-caption mt-1 mb-0">Calls still respect business hours, concurrency, daily caps, and suppression rules.</p>
                       {!callWindowOpen ? (
                         <button
-                          className="mt-3 rounded-full border border-[#45ddce]/30 bg-[#061b18] px-3 py-1.5 text-xs font-semibold text-[#75fff0] transition hover:-translate-y-0.5 hover:bg-[#45ddce]/10"
+                          className="mt-3 rounded-full border border-[#5b63ff]/30 bg-[#f8f8fc] px-3 py-1.5 text-xs font-semibold text-[#4d54db] transition hover:-translate-y-0.5 hover:bg-[#5b63ff]/10"
                           type="button"
                           onClick={() => {
                             setWindowStart("00:00");
@@ -991,7 +1002,7 @@ export function CampaignShell() {
                   </label>
                 </div>
 
-                <div className="mt-6 grid gap-4 border-y border-white/10 py-5 sm:grid-cols-2 xl:grid-cols-4">
+                <div className="mt-6 grid gap-4 border-y border-[#e5e7ef] py-5 sm:grid-cols-2 xl:grid-cols-4">
                   <label className="app-label grid gap-2">
                     Daily limit
                     <input className={controlClass} min={1} max={100000} type="number" value={dailyLimit} onChange={(event) => setDailyLimit(Number(event.target.value))} />
@@ -1011,7 +1022,7 @@ export function CampaignShell() {
                 </div>
               </Panel>
 
-              <Panel>
+              <Panel hidden={composerStep !== 3}>
                 <SectionHeader
                   eyebrow="Step 04"
                   icon="spark"
@@ -1023,7 +1034,7 @@ export function CampaignShell() {
                   <label className="app-label grid gap-2">
                     Goal
                     <textarea
-                      className="app-control-text min-h-36 resize-y rounded-2xl border border-white/10 bg-[#061b18] p-4 text-white shadow-[0_1px_0_rgba(0,0,0,0.18)] outline-none transition placeholder:text-white/45 hover:border-white/20 focus:border-[#45ddce] focus:ring-4 focus:ring-[#45ddce]/10"
+                      className="app-control-text min-h-36 resize-y rounded-2xl border border-[#e5e7ef] bg-[#f8f8fc] p-4 text-[#242535] shadow-sm outline-none transition placeholder:text-[#737587] hover:border-[#e5e7ef] focus:border-[#5b63ff] focus:ring-4 focus:ring-[#5b63ff]/10"
                       placeholder="Confirm appointment interest and capture preferred callback time."
                       value={campaignGoal}
                       onChange={(event) => setCampaignGoal(event.target.value)}
@@ -1034,16 +1045,22 @@ export function CampaignShell() {
                       Success criteria
                       <input className={controlClass} placeholder="Booked demo, qualified lead, reminder accepted..." value={successCriteria} onChange={(event) => setSuccessCriteria(event.target.value)} />
                     </label>
-                    <div className="border-l-2 border-cyan-300/30 px-4 py-2">
-                      <span className="inline-flex size-10 items-center justify-center rounded-2xl bg-[#45ddce]/10 text-[#75fff0] shadow-sm">
+                    <div className="border-l-2 border-indigo-300/30 px-4 py-2">
+                      <span className="inline-flex size-10 items-center justify-center rounded-2xl bg-[#5b63ff]/10 text-[#4d54db] shadow-sm">
                         <Icon icon="target" />
                       </span>
-                      <p className="mt-3 mb-0 text-sm font-semibold text-cyan-950">These instructions are applied to every call in this campaign.</p>
-                      <p className="app-caption mt-1 mb-0 text-cyan-800">That keeps the base assistant reusable while each campaign carries its own mission.</p>
+                      <p className="mt-3 mb-0 text-sm font-semibold text-indigo-950">These instructions are applied to every call in this campaign.</p>
+                      <p className="app-caption mt-1 mb-0 text-indigo-800">That keeps the base assistant reusable while each campaign carries its own mission.</p>
                     </div>
                   </div>
                 </div>
               </Panel>
+              <Panel hidden={composerStep !== 4}>
+                <SectionHeader eyebrow="Step 05" icon="check" title="Review your campaign" description="Check the audience, timing, and instructions before you launch." />
+                <dl className="mt-6 grid gap-4 rounded-xl border border-[#e5e7ef] bg-[#f8f9fc] p-5"><SummaryRow label="Campaign" value={campaignName || "Not named"}/><SummaryRow label="Assistant" value={selectedAgent?.name || "Not selected"}/><SummaryRow label="Audience" value={plural(leads.length, "contact")}/><SummaryRow label="Call window" value={`${windowStart}–${windowEnd} · ${timezone}`}/><SummaryRow label="Goal" value={campaignGoal || "Agent instructions"}/></dl>
+                <p className="mt-5 text-sm text-[#737587]">{canPrepare ? "Your campaign is ready. Use the launch button to begin." : "Complete the readiness checks in the launch summary before starting."}</p>
+              </Panel>
+              <div className="campaign-step-actions"><button className="saas-secondary" type="button" disabled={composerStep === 0} onClick={() => setComposerStep((step) => Math.max(0, step - 1))}>Back</button>{composerStep < 4 ? <button className="saas-primary" type="button" onClick={() => setComposerStep((step) => step + 1)}>{composerStep === 3 ? "Review campaign" : "Continue"} <span aria-hidden="true">→</span></button> : <span>Review your settings, then launch when ready.</span>}</div>
             </section>
 
             <aside className="min-w-0">
@@ -1051,9 +1068,9 @@ export function CampaignShell() {
                 <Panel compact>
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <span className="app-label text-[#008996]">Launch console</span>
+                      <span className="app-label text-[#4b52df]">Launch summary</span>
                       <h2 className="mt-1 mb-0 text-xl font-semibold tracking-[-0.03em] text-slate-950">
-                        {canPrepare ? "Ready to launch" : "Preflight in progress"}
+                        {canPrepare ? "Ready to launch" : "Finish your setup"}
                       </h2>
                     </div>
                     <span className={`grid size-12 place-items-center rounded-2xl ${canPrepare ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
@@ -1061,7 +1078,7 @@ export function CampaignShell() {
                     </span>
                   </div>
 
-                  <div className="mt-5 border-y border-white/10 py-4">
+                  <div className="mt-5 border-y border-[#e5e7ef] py-4">
                     <div className="flex items-center justify-between gap-3">
                       <span className="text-sm font-semibold text-slate-700">Readiness score</span>
                       <span className="text-sm font-bold text-slate-950">{readinessPercent}%</span>
@@ -1095,7 +1112,7 @@ export function CampaignShell() {
                       <SummaryRow label="Assistant" value={selectedAgent?.name ?? "Not selected"} />
                       <SummaryRow label="Launch" value={launchModeSummary} />
                     </dl>
-                    <button className={`${buttonClass} mt-5 w-full bg-[#00b8c4] text-white shadow-sm hover:bg-[#008996]`} disabled={loading || launching || !canPrepare} type="submit">
+                    <button className={`${buttonClass} mt-5 w-full bg-[#5b63ff] text-[#ffffff] shadow-sm hover:bg-[#4b52df]`} disabled={loading || launching || !canPrepare || composerStep !== 4} type="submit">
                       <Icon icon="play" /> {launching ? "Launching..." : sendMode === "now" ? callWindowOpen ? "Start calls now" : "Queue until call window" : "Schedule campaign"}
                     </button>
                     <p className="app-caption mt-3 mb-0 text-center">
@@ -1108,7 +1125,7 @@ export function CampaignShell() {
 
               </div>
             </aside>
-          </form>
+          </form></div> : null}
           <CampaignOperationsSection campaigns={campaigns} onControl={controlCampaign} />
         </div>
       </section>
@@ -1116,9 +1133,9 @@ export function CampaignShell() {
   );
 }
 
-function Panel({ children, compact = false }: { children: ReactNode; compact?: boolean }) {
+function Panel({ children, compact = false, hidden = false }: { children: ReactNode; compact?: boolean; hidden?: boolean }) {
   return (
-    <section className={`overflow-hidden border-t border-white/15 ${compact ? "py-5" : "py-8"}`}>
+    <section hidden={hidden} className={`campaign-step-panel overflow-hidden ${compact ? "py-5" : "py-8"}`}>
       {children}
     </section>
   );
@@ -1127,13 +1144,13 @@ function Panel({ children, compact = false }: { children: ReactNode; compact?: b
 function SectionHeader({ description, eyebrow, icon, title }: { description: string; eyebrow: string; icon: IconName; title: string }) {
   return (
     <div className="flex items-start gap-4">
-      <span className="grid size-10 shrink-0 place-items-center border border-[#45ddce]/20 text-[#75fff0]">
+      <span className="grid size-10 shrink-0 place-items-center border border-[#5b63ff]/20 text-[#4d54db]">
         <Icon icon={icon} className="size-5" />
       </span>
       <div className="min-w-0">
-        <span className="app-label text-[#008996]">{eyebrow}</span>
+        <span className="app-label text-[#4b52df]">{eyebrow}</span>
         <h2 className="app-section-title mt-1 mb-0">{title}</h2>
-        <p className="app-body mt-1 mb-0 max-w-3xl text-white/45">{description}</p>
+        <p className="app-body mt-1 mb-0 max-w-3xl text-[#737587]">{description}</p>
       </div>
     </div>
   );
@@ -1141,13 +1158,13 @@ function SectionHeader({ description, eyebrow, icon, title }: { description: str
 
 function MetricCard({ detail, icon, label, value }: { detail: string; icon: IconName; label: string; value: string }) {
   return (
-    <div className="border-l border-white/10 py-2 pl-4">
+    <div className="border-l border-[#e5e7ef] py-2 pl-4">
       <div className="flex items-start justify-between gap-3">
         <div>
           <span className="app-caption block">{label}</span>
           <strong className="app-value mt-2 block">{value}</strong>
         </div>
-        <span className="grid size-10 place-items-center text-[#75fff0]">
+        <span className="grid size-10 place-items-center text-[#4d54db]">
           <Icon icon={icon} />
         </span>
       </div>
@@ -1158,13 +1175,13 @@ function MetricCard({ detail, icon, label, value }: { detail: string; icon: Icon
 
 function InfoPill({ icon, label, value }: { icon: IconName; label: string; value: string }) {
   return (
-    <div className="flex items-center gap-3 border-l border-white/10 px-3 py-2">
-      <span className="grid size-9 shrink-0 place-items-center text-[#75fff0]">
+    <div className="flex items-center gap-3 border-l border-[#e5e7ef] px-3 py-2">
+      <span className="grid size-9 shrink-0 place-items-center text-[#4d54db]">
         <Icon icon={icon} className="size-4" />
       </span>
       <span className="min-w-0">
         <span className="app-caption block">{label}</span>
-        <strong className="block truncate text-sm font-semibold text-white">{value}</strong>
+        <strong className="block truncate text-sm font-semibold text-[#242535]">{value}</strong>
       </span>
     </div>
   );
@@ -1181,19 +1198,19 @@ function ModeCard({ active, description, icon, onClick, title }: {
     <button
       className={`border-l-2 px-4 py-3 text-left transition ${
         active
-          ? "border-[#45ddce] bg-[#45ddce]/[0.05]"
-          : "border-white/10 hover:border-[#45ddce]/35"
+          ? "border-[#5b63ff] bg-[#5b63ff]/[0.05]"
+          : "border-[#e5e7ef] hover:border-[#5b63ff]/35"
       }`}
       onClick={onClick}
       type="button"
       aria-pressed={active}
     >
       <span className="flex items-center gap-3">
-        <span className={`grid size-11 place-items-center rounded-2xl ${active ? "bg-[#061b18] text-[#75fff0]" : "bg-white/[0.06] text-white/50"}`}>
+        <span className={`grid size-11 place-items-center rounded-2xl ${active ? "bg-[#f8f8fc] text-[#4d54db]" : "bg-[#f6f7fb] text-[#737587]"}`}>
           <Icon icon={icon} />
         </span>
         <span>
-          <strong className="block text-sm font-semibold text-white">{title}</strong>
+          <strong className="block text-sm font-semibold text-[#242535]">{title}</strong>
           <span className="app-caption mt-1 block">{description}</span>
         </span>
       </span>
@@ -1204,15 +1221,15 @@ function ModeCard({ active, description, icon, onClick, title }: {
 function ProgressBar({ className = "", value }: { className?: string; value: number }) {
   return (
     <div className={`h-2 overflow-hidden rounded-full bg-slate-200 ${className}`}>
-      <div className="h-full rounded-full bg-gradient-to-r from-[#00b8c4] via-[#22d3ee] to-[#7c3aed] transition-all" style={{ width: `${progressValue(value)}%` }} />
+      <div className="h-full rounded-full bg-gradient-to-r from-[#5b63ff] via-[#22d3ee] to-[#7c3aed] transition-all" style={{ width: `${progressValue(value)}%` }} />
     </div>
   );
 }
 
 function ReadinessRow({ label, ready }: { label: string; ready: boolean }) {
   return (
-    <div className="flex items-center justify-between gap-3 border-b border-white/10 px-1 py-2.5">
-      <span className="text-sm font-medium text-white/60">{label}</span>
+    <div className="flex items-center justify-between gap-3 border-b border-[#e5e7ef] px-1 py-2.5">
+      <span className="text-sm font-medium text-[#737587]">{label}</span>
       <span className={`grid size-7 shrink-0 place-items-center rounded-full ${ready ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
         <Icon icon={ready ? "check" : "info"} className="size-3.5" />
       </span>
@@ -1224,7 +1241,7 @@ function SummaryRow({ label, value, warn = false }: { label: string; value: stri
   return (
     <div className="flex justify-between gap-3">
       <dt className="app-caption">{label}</dt>
-      <dd className={`m-0 max-w-[210px] truncate text-right text-sm font-semibold ${warn ? "text-amber-300" : "text-white"}`}>{value}</dd>
+      <dd className={`m-0 max-w-[210px] truncate text-right text-sm font-semibold ${warn ? "text-amber-700" : "text-[#242535]"}`}>{value}</dd>
     </div>
   );
 }
@@ -1237,14 +1254,14 @@ function CampaignOperationsSection({
   onControl: (campaign: BackendCampaign, action: CampaignAction) => void | Promise<void>;
 }) {
   return (
-    <section className="mt-8 overflow-hidden border-t border-white/10 pt-7">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
+    <section className="campaign-operations mt-8 overflow-hidden rounded-xl border border-[#e5e7ef] bg-white p-5">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e5e7ef] pb-4">
         <div>
-          <span className="app-label text-[#00b8c4]">Live operations</span>
+          <span className="app-label text-[#5b63ff]">Live operations</span>
           <h2 className="app-section-title mt-1 mb-0">Recent campaigns</h2>
           <p className="app-caption mt-1 mb-0">Track status, progress, call results, pacing, and actions for each campaign.</p>
         </div>
-        <span className="border-l border-white/15 px-3 py-2 text-xs font-semibold text-white/50">
+        <span className="border-l border-[#e5e7ef] px-3 py-2 text-xs font-semibold text-[#737587]">
           {numberFormat(campaigns.length)} total
         </span>
       </div>
@@ -1253,7 +1270,7 @@ function CampaignOperationsSection({
         <>
           <div className="hidden overflow-x-auto lg:block">
             <table className="w-full min-w-[1100px] text-left">
-              <thead className="bg-[#061b18] text-white/50">
+              <thead className="bg-[#f8f8fc] text-[#737587]">
                 <tr className="text-xs font-semibold uppercase tracking-[0.12em]">
                   <th className="px-4 py-3">Campaign</th>
                   <th className="px-4 py-3">Status</th>
@@ -1373,7 +1390,7 @@ function CampaignCard({ campaign, onControl }: { campaign: BackendCampaign; onCo
   const canCancel = ["running", "scheduled", "paused"].includes(campaign.status);
 
   return (
-    <div className="border-b border-white/10 py-4">
+    <div className="border-b border-[#e5e7ef] py-4">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <strong className="block truncate text-sm font-semibold text-slate-950">{campaign.name}</strong>
@@ -1408,7 +1425,7 @@ function CampaignCard({ campaign, onControl }: { campaign: BackendCampaign; onCo
 
 function MiniStat({ label, value }: { label: string; value: string }) {
   return (
-    <span className="border-l border-white/10 px-2 py-2">
+    <span className="border-l border-[#e5e7ef] px-2 py-2">
       <span className="block text-[11px] font-medium text-slate-400">{label}</span>
       <strong className="block text-xs font-semibold text-slate-800">{value}</strong>
     </span>
@@ -1430,8 +1447,8 @@ function CampaignActionButton({ children, onClick, tone }: { children: ReactNode
 
 function EmptyState({ description, icon, title }: { description: string; icon: IconName; title: string }) {
   return (
-    <div className="border-y border-dashed border-white/15 py-8 text-center">
-      <span className="mx-auto grid size-11 place-items-center text-white/50">
+    <div className="border-y border-dashed border-[#e5e7ef] py-8 text-center">
+      <span className="mx-auto grid size-11 place-items-center text-[#737587]">
         <Icon icon={icon} />
       </span>
       <strong className="mt-3 block text-sm font-semibold text-slate-950">{title}</strong>
@@ -1448,7 +1465,7 @@ function ToggleRow({ detail, enabled, onChange, title }: {
 }) {
   return (
     <button
-      className="flex items-center justify-between gap-4 border-b border-white/10 px-1 py-3 text-left transition hover:border-[#45ddce]/30"
+      className="flex items-center justify-between gap-4 border-b border-[#e5e7ef] px-1 py-3 text-left transition hover:border-[#5b63ff]/30"
       onClick={() => onChange(!enabled)}
       type="button"
       aria-pressed={enabled}
@@ -1457,7 +1474,7 @@ function ToggleRow({ detail, enabled, onChange, title }: {
         <strong className="block text-sm font-semibold text-slate-950">{title}</strong>
         <span className="app-caption mt-1 block">{detail}</span>
       </span>
-      <span className={`relative h-6 w-11 rounded-full transition ${enabled ? "bg-[#45ddce]" : "bg-white/20"}`}>
+      <span className={`relative h-6 w-11 rounded-full transition ${enabled ? "bg-[#5b63ff]" : "bg-[#f6f7fb]"}`}>
         <span className={`absolute top-1 size-4 rounded-full bg-[#ffffff] shadow transition ${enabled ? "left-6" : "left-1"}`} />
       </span>
     </button>

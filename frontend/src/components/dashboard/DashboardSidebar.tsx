@@ -9,6 +9,7 @@ import { announceDashboardNavigation } from "@/components/dashboard/DashboardNav
 import { useBrand } from "@/components/branding/BrandProvider";
 import { getSession } from "@/lib/auth";
 import { whiteLabelFrontendEnabled } from "@/lib/platformHosts";
+import { WorkspaceBar } from "@/components/dashboard/WorkspaceBar";
 
 type SidebarItem = {
   label: string;
@@ -173,7 +174,7 @@ export function DashboardSidebar({
 }: DashboardSidebarProps) {
   const brand = useBrand();
   const session = getSession();
-  const logoUrl = brand.logoDarkUrl || brand.logoUrl;
+  const logoUrl = brand.logoUrl || brand.logoDarkUrl;
   const pathname = usePathname();
   const router = useRouter();
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
@@ -247,13 +248,13 @@ export function DashboardSidebar({
   return (
     <>
       <aside
-        className={`z-40 flex min-w-0 items-center gap-2 border-b border-white/[0.07] bg-[#07110f] px-2 py-2 text-white shadow-[0_12px_35px_rgba(0,0,0,0.28)] lg:fixed lg:inset-y-0 lg:left-0 lg:h-dvh lg:flex-col lg:items-stretch lg:border-r lg:border-b-0 lg:bg-[radial-gradient(circle_at_15%_0%,rgba(69,221,206,0.08),transparent_30%)] lg:px-2.5 lg:py-3 lg:transition-[width] lg:duration-300 ${
+        className={`dashboard-sidebar z-40 flex min-w-0 items-center gap-2 border-b border-[#e5e7ef] bg-[#ffffff] px-2 py-2 text-[#242535] lg:fixed lg:inset-y-0 lg:left-0 lg:h-dvh lg:flex-col lg:items-stretch lg:border-r lg:border-b-0 ${
           showUserSidebar ? "lg:w-[272px]" : "lg:w-16"
         }`}
       >
         <div className={`flex h-11 shrink-0 items-center ${showUserSidebar ? "lg:px-1" : "lg:justify-center"}`}>
           <Link
-            className="group flex min-w-0 items-center overflow-hidden rounded-xl outline-none ring-cyan-300/50 transition focus-visible:ring-2"
+            className="group flex min-w-0 items-center overflow-hidden rounded-xl outline-none ring-indigo-300/50 transition focus-visible:ring-2"
             href="/dashboard/agents"
             title={`${brand.productName} Voice Platform`}
             aria-label={`${brand.productName} Voice Platform`}
@@ -269,7 +270,7 @@ export function DashboardSidebar({
               {brand.source === "platform" ? (
                 <Image
                   alt=""
-                  className="absolute left-0 top-1/2 h-auto w-[148px] max-w-none -translate-y-1/2 object-contain object-left transition group-hover:brightness-110"
+                  className="dashboard-logo absolute left-0 top-1/2 h-auto w-[148px] max-w-none -translate-y-1/2 object-contain object-left transition group-hover:brightness-110"
                   height={350}
                   priority
                   src="/images/logo_2.svg"
@@ -287,11 +288,13 @@ export function DashboardSidebar({
           </Link>
 
           {showUserSidebar ? (
-            <span className="ml-auto hidden rounded-full border border-[#45ddce]/20 bg-[#45ddce]/10 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.16em] text-[#82fff2] lg:block">
-              Console
+            <span className="ml-auto hidden rounded-full border border-[#5b63ff]/20 bg-[#5b63ff]/10 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.16em] text-[#4d54db] lg:block">
+              App
             </span>
           ) : null}
         </div>
+
+        {showUserSidebar ? <div className="sidebar-workspace"><span>{userInitials.slice(0, 1)}</span><div className="min-w-0"><strong className="truncate">{session?.organization?.name || "My workspace"}</strong><small>Voice AI platform</small></div></div> : null}
 
         <nav
           className="flex min-w-0 flex-1 gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mt-4 lg:block lg:overflow-x-visible lg:overflow-y-auto"
@@ -300,7 +303,7 @@ export function DashboardSidebar({
           {visibleSidebarGroups.map((group) => (
             <div className="contents lg:mb-5 lg:block" key={group.label}>
               {showUserSidebar ? (
-                <p className="app-label mb-2 hidden px-3 text-[10px] uppercase tracking-[0.18em] text-white/50 lg:block">
+                <p className="app-label mb-2 hidden px-3 text-[10px] uppercase tracking-[0.18em] text-[#737587] lg:block">
                   {group.label}
                 </p>
               ) : null}
@@ -309,16 +312,16 @@ export function DashboardSidebar({
                   const isActive = item.label === activeLabel;
                   return (
                     <Link
-                      className={`group/item relative flex size-10 shrink-0 items-center justify-center rounded-xl outline-none transition duration-200 focus-visible:ring-2 focus-visible:ring-cyan-300/60 lg:h-11 lg:w-full ${
+                      className={`group/item relative flex size-10 shrink-0 items-center justify-center rounded-xl outline-none transition duration-200 focus-visible:ring-2 focus-visible:ring-indigo-300/60 lg:h-11 lg:w-full ${
                         showUserSidebar ? "lg:justify-start lg:gap-3 lg:px-3" : "lg:justify-center"
                       } ${
                         isActive
-                          ? "bg-[#45ddce]/10 text-white shadow-[inset_0_0_0_1px_rgba(69,221,206,0.12),0_8px_22px_rgba(69,221,206,0.08)]"
-                          : "text-white hover:bg-white/[0.06]"
+                          ? "bg-[#5b63ff]/10 text-[#242535] shadow-sm"
+                          : "text-[#242535] hover:bg-[#f6f7fb]"
                       }`}
                       href={item.href}
                       key={item.label}
-                      title={showUserSidebar ? undefined : item.label}
+                      title={item.label}
                       onFocus={() => prefetchDashboardRoute(item.href)}
                       onMouseEnter={() => prefetchDashboardRoute(item.href)}
                       onPointerDown={() => prefetchDashboardRoute(item.href)}
@@ -329,13 +332,13 @@ export function DashboardSidebar({
                       aria-label={item.label}
                       aria-current={isActive ? "page" : undefined}
                     >
-                      {isActive ? <span className="absolute inset-y-2 left-0 hidden w-0.5 rounded-full bg-[#45ddce] shadow-[0_0_8px_#45ddce] lg:block" /> : null}
-                      <span className={`grid size-8 shrink-0 place-items-center rounded-lg ${isActive ? "bg-[#45ddce]/10" : ""}`}>
+                      {isActive ? <span className="absolute inset-y-2 left-0 hidden w-0.5 rounded-full bg-[#5b63ff] shadow-sm lg:block" /> : null}
+                      <span className={`grid size-8 shrink-0 place-items-center rounded-lg ${isActive ? "bg-[#5b63ff]/10" : ""}`}>
                         <SidebarIcon icon={item.icon} />
                       </span>
-                      {showUserSidebar ? <span className="app-body hidden truncate font-medium text-white lg:block">{item.label}</span> : null}
+                      {showUserSidebar ? <span className="app-body hidden truncate font-medium text-[#242535] lg:block">{item.label}</span> : null}
                       {!showUserSidebar ? (
-                        <span className="app-label pointer-events-none absolute left-[calc(100%+12px)] z-50 hidden min-w-max translate-x-1 rounded-lg border border-white/10 bg-[#0b1220] px-2.5 py-1.5 text-white opacity-0 shadow-2xl transition group-hover/item:translate-x-0 group-hover/item:opacity-100 lg:block">
+                        <span className="app-label pointer-events-none absolute left-[calc(100%+12px)] z-50 hidden min-w-max translate-x-1 rounded-lg border border-[#e5e7ef] bg-[#ffffff] px-2.5 py-1.5 text-[#242535] opacity-0 shadow-2xl transition group-hover/item:translate-x-0 group-hover/item:opacity-100 lg:block">
                           {item.label}
                         </span>
                       ) : null}
@@ -347,26 +350,28 @@ export function DashboardSidebar({
           ))}
         </nav>
 
-        <div className={`relative ml-auto flex shrink-0 items-center gap-2 lg:ml-0 lg:border-t lg:border-white/[0.07] lg:pt-3 ${showUserSidebar ? "lg:px-1" : "lg:flex-col"}`} ref={accountMenuRef}>
+        {showUserSidebar ? <div className="sidebar-help"><strong>A little help goes a long way</strong><p>Everything you need to build your first voice agent.</p><Link href="/docs" onClick={(event) => { if (!event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey && !beginNavigation('/docs')) event.preventDefault(); }}>Explore the guides <span aria-hidden="true">↗</span></Link></div> : null}
+
+        <div className={`relative ml-auto flex shrink-0 items-center gap-2 lg:ml-0 lg:border-t lg:border-[#e5e7ef] lg:pt-3 ${showUserSidebar ? "lg:px-1" : "lg:flex-col"}`} ref={accountMenuRef}>
           <button
-            className={`group/account flex min-w-0 items-center rounded-xl text-left outline-none transition focus-visible:ring-2 focus-visible:ring-[#45ddce]/60 ${accountMenuOpen ? "bg-white/[0.07] ring-1 ring-white/[0.08]" : "hover:bg-white/[0.05]"} ${showUserSidebar ? "gap-3 p-1 lg:flex-1" : "p-0"}`}
+            className={`group/account flex min-w-0 items-center rounded-xl text-left outline-none transition focus-visible:ring-2 focus-visible:ring-[#5b63ff]/60 ${accountMenuOpen ? "bg-[#f6f7fb] ring-1 ring-white/[0.08]" : "hover:bg-[#f6f7fb]"} ${showUserSidebar ? "gap-3 p-1 lg:flex-1" : "p-0"}`}
             type="button"
             aria-label="Open account menu"
             aria-haspopup="menu"
             aria-expanded={accountMenuOpen}
             onClick={() => setAccountMenuOpen((current) => !current)}
           >
-            <span className="app-label grid size-9 shrink-0 place-items-center rounded-xl bg-[#45ddce] text-[#03110e] shadow-[0_8px_20px_rgba(69,221,206,0.18)] transition group-hover/account:brightness-110">
+            <span className="app-label grid size-9 shrink-0 place-items-center rounded-xl bg-[#5b63ff] text-[#ffffff] shadow-sm transition group-hover/account:brightness-110">
               {userInitials}
             </span>
             {showUserSidebar ? (
               <span className="hidden min-w-0 flex-1 lg:block">
-                <span className="app-body block truncate font-semibold text-white">{userName}</span>
-                <span className="app-caption block truncate text-white/55">{userEmail}</span>
+                <span className="app-body block truncate font-semibold text-[#242535]">{userName}</span>
+                <span className="app-caption block truncate text-[#737587]">{userEmail}</span>
               </span>
             ) : null}
             {showUserSidebar ? (
-              <svg className={`hidden size-4 shrink-0 fill-none stroke-current stroke-2 text-white/30 transition-transform lg:block ${accountMenuOpen ? "rotate-180" : ""}`} viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+              <svg className={`hidden size-4 shrink-0 fill-none stroke-current stroke-2 text-[#737587] transition-transform lg:block ${accountMenuOpen ? "rotate-180" : ""}`} viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
             ) : null}
           </button>
 
@@ -385,32 +390,32 @@ export function DashboardSidebar({
 
           {accountMenuOpen ? (
             <div
-              className={`absolute right-0 top-[calc(100%+10px)] z-[70] w-[290px] overflow-hidden rounded-[20px] border border-[#29443e] bg-[radial-gradient(circle_at_15%_0%,rgba(69,221,206,0.13),transparent_42%),linear-gradient(145deg,#0b1b18_0%,#08130f_100%)] p-2.5 text-white shadow-[0_28px_80px_rgba(0,0,0,0.58)] ring-1 ring-black/20 backdrop-blur-2xl lg:top-auto lg:bottom-[calc(100%+12px)] ${
+              className={`absolute right-0 top-[calc(100%+10px)] z-[70] w-[290px] overflow-hidden rounded-[20px] border border-[#e5e7ef] bg-white p-2.5 text-[#242535] shadow-sm ring-1 ring-black/20 backdrop-blur-2xl lg:top-auto lg:bottom-[calc(100%+12px)] ${
                 showUserSidebar ? "lg:left-1 lg:right-1 lg:w-auto" : "lg:right-auto lg:left-[calc(100%+14px)] lg:w-[280px]"
               }`}
               role="menu"
             >
-              <div className="relative overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.045] p-3">
-                <span className="pointer-events-none absolute -right-7 -top-8 size-24 rounded-full bg-[#45ddce]/[0.07] blur-xl" />
+              <div className="relative overflow-hidden rounded-xl border border-[#e5e7ef] bg-[#f6f7fb] p-3">
+                <span className="pointer-events-none absolute -right-7 -top-8 size-24 rounded-full bg-[#5b63ff]/[0.07] blur-xl" />
                 <div className="relative flex min-w-0 items-center gap-3">
-                  <span className="app-label grid size-10 shrink-0 place-items-center rounded-xl bg-[#45ddce] font-black text-[#03110e] shadow-[0_8px_22px_rgba(69,221,206,0.18)]">
+                  <span className="app-label grid size-10 shrink-0 place-items-center rounded-xl bg-[#5b63ff] font-black text-[#ffffff] shadow-sm">
                     {userInitials}
                   </span>
                   <span className="min-w-0">
-                    <span className="block text-[9px] font-extrabold uppercase tracking-[0.16em] text-[#82fff2]/55">Signed in as</span>
-                    <span className="mt-0.5 block truncate text-sm font-bold text-white/90">{userName}</span>
-                    <span className="mt-0.5 block truncate text-[10px] text-white/35">{userEmail}</span>
+                    <span className="block text-[9px] font-extrabold uppercase tracking-[0.16em] text-[#4d54db]/55">Signed in as</span>
+                    <span className="mt-0.5 block truncate text-sm font-bold text-[#737587]">{userName}</span>
+                    <span className="mt-0.5 block truncate text-[10px] text-[#737587]">{userEmail}</span>
                   </span>
                 </div>
               </div>
-              <p className="mb-1 mt-3 px-2 text-[9px] font-extrabold uppercase tracking-[0.16em] text-white/25">Account shortcuts</p>
+              <p className="mb-1 mt-3 px-2 text-[9px] font-extrabold uppercase tracking-[0.16em] text-[#737587]">Account shortcuts</p>
               <div className="grid gap-1.5">
                 {accountMenuItems.map((item) => {
                   const itemPath = item.href.split("#", 1)[0];
                   const isActive = pathname === itemPath && (item.href === "/dashboard/profile" || item.href.startsWith("/dashboard/settings"));
                   return (
                     <Link
-                      className={`group/menu flex min-w-0 items-center gap-3 rounded-xl border px-3 py-3 outline-none transition focus-visible:ring-2 focus-visible:ring-[#45ddce]/50 ${isActive ? "border-[#45ddce]/20 bg-[#45ddce]/10 text-[#82fff2] shadow-[inset_0_0_0_1px_rgba(69,221,206,0.04)]" : "border-transparent bg-white/[0.025] text-white/65 hover:border-white/[0.08] hover:bg-white/[0.06] hover:text-white"}`}
+                      className={`group/menu flex min-w-0 items-center gap-3 rounded-xl border px-3 py-3 outline-none transition focus-visible:ring-2 focus-visible:ring-[#5b63ff]/50 ${isActive ? "border-[#5b63ff]/20 bg-[#5b63ff]/10 text-[#4d54db] shadow-sm" : "border-transparent bg-[#f6f7fb] text-[#737587] hover:border-[#e5e7ef] hover:bg-[#f6f7fb] hover:text-[#242535]"}`}
                       href={item.href}
                       key={item.label}
                       role="menuitem"
@@ -423,14 +428,14 @@ export function DashboardSidebar({
                         setAccountMenuOpen(false);
                       }}
                     >
-                      <span className={`grid size-9 shrink-0 place-items-center rounded-xl border transition ${isActive ? "border-[#45ddce]/20 bg-[#45ddce]/15 text-[#82fff2]" : "border-white/[0.07] bg-white/[0.04] text-white/55 group-hover/menu:text-[#82fff2]"}`}>
+                      <span className={`grid size-9 shrink-0 place-items-center rounded-xl border transition ${isActive ? "border-[#5b63ff]/20 bg-[#5b63ff]/15 text-[#4d54db]" : "border-[#e5e7ef] bg-[#f6f7fb] text-[#737587] group-hover/menu:text-[#4d54db]"}`}>
                         <AccountMenuIcon icon={item.icon} />
                       </span>
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-xs font-bold">{item.label}</span>
-                        <span className="mt-1 block truncate text-[10px] font-medium text-white/30">{item.detail}</span>
+                        <span className="mt-1 block truncate text-[10px] font-medium text-[#737587]">{item.detail}</span>
                       </span>
-                      <svg aria-hidden="true" className="size-3.5 shrink-0 fill-none stroke-current stroke-2 text-white/20 transition group-hover/menu:translate-x-0.5 group-hover/menu:text-[#82fff2]" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
+                      <svg aria-hidden="true" className="size-3.5 shrink-0 fill-none stroke-current stroke-2 text-[#737587] transition group-hover/menu:translate-x-0.5 group-hover/menu:text-[#4d54db]" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
                     </Link>
                   );
                 })}
@@ -440,7 +445,7 @@ export function DashboardSidebar({
         </div>
 
         <button
-          className="absolute right-0 top-[68px] hidden size-7 translate-x-1/2 place-items-center rounded-full border border-white/10 bg-[#07110f] text-white/45 shadow-lg transition hover:border-[#45ddce]/40 hover:bg-[#0c211d] hover:text-[#82fff2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#45ddce]/60 lg:grid"
+          className="absolute right-0 top-[68px] hidden size-7 translate-x-1/2 place-items-center rounded-full border border-[#e5e7ef] bg-[#ffffff] text-[#737587] shadow-lg transition hover:border-[#5b63ff]/40 hover:bg-[#f0efff] hover:text-[#4d54db] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5b63ff]/60 lg:grid"
           type="button"
           title={showUserSidebar ? "Collapse sidebar" : "Expand sidebar"}
           aria-label={showUserSidebar ? "Collapse sidebar" : "Expand sidebar"}
@@ -459,6 +464,7 @@ export function DashboardSidebar({
         }`}
         aria-hidden="true"
       />
+      <WorkspaceBar expanded={showUserSidebar} onNavigate={beginNavigation} />
     </>
   );
 }

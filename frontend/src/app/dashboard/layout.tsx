@@ -1,3 +1,4 @@
+import "./dashboard.css";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
@@ -24,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <DashboardQueryProvider>
-      <div className="dashboard-home-theme min-h-screen bg-black text-white">
+      <div className="dashboard-home-theme min-h-screen bg-[#f7f8fc] text-[#242535]">
         <DashboardNavigationFeedback />
         {children}
       </div>
