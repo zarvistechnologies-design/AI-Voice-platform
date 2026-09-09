@@ -1762,8 +1762,8 @@
     }
 
     .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-brand {
-      height: 4.25rem;
-      padding: 0.25rem 0.5rem 0.65rem !important;
+      height: 4.75rem;
+      padding: 0.2rem 0.5rem 0.9rem !important;
       border: 0;
       border-radius: 0;
       background: transparent;
@@ -1783,11 +1783,11 @@
     }
 
     .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-tagline {
-      margin-top: 0.05rem;
-      color: #85889a !important;
-      font-size: 0.6rem;
-      font-weight: 650;
-      line-height: 1.2;
+      margin-top: 0.3rem;
+      color: #74788b !important;
+      font-size: 0.625rem;
+      font-weight: 600;
+      line-height: 1.25;
       letter-spacing: 0.035em;
     }
 
@@ -1885,7 +1885,7 @@
     }
 
     .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-toggle {
-      top: 4.25rem;
+      top: 4.75rem;
       border-color: #d9dcea !important;
       background: #ffffff !important;
       color: #626577 !important;
