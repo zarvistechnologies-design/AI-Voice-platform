@@ -17,7 +17,7 @@ export function ModelAccessPicker({
   value,
   onChange,
   disabled = false,
-  tone = "dark",
+  tone = "light",
 }: {
   catalog: WhiteLabelModelCatalog;
   value: WhiteLabelModelAccess;
