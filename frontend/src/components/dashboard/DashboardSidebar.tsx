@@ -305,7 +305,7 @@ export function DashboardSidebar({
           className={`dashboard-sidebar-brand flex h-11 shrink-0 items-center ${showUserSidebar ? "lg:px-1" : "lg:justify-center"}`}
         >
           <Link
-            className="dashboard-sidebar-brand-link group flex min-w-0 items-center overflow-hidden rounded-xl outline-none ring-[#bfc3ea]/50 transition focus-visible:ring-2"
+            className="dashboard-sidebar-brand-link group flex min-w-0 items-center rounded-xl outline-none ring-[#bfc3ea]/50 transition focus-visible:ring-2"
             href="/dashboard/agents"
             title="Vozon Voice Platform"
             aria-label="Vozon Voice Platform"

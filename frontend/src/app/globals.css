@@ -1762,17 +1762,18 @@
     }
 
     .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-brand {
-      height: 4.5rem;
-      padding: 0.4rem 0.5rem !important;
-      border: 1px solid transparent;
-      border-radius: 0.875rem;
-      transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
+      height: 4.25rem;
+      padding: 0.25rem 0.5rem 0.65rem !important;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
     }
 
     .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-shell[data-expanded="true"] .dashboard-sidebar-brand {
-      border-color: #ececf4;
-      background: linear-gradient(135deg, #ffffff 0%, #f8f8ff 100%);
-      box-shadow: 0 5px 18px rgb(37 40 74 / 0.055);
+      border: 0;
+      background: transparent;
+      box-shadow: none;
     }
 
     .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-brand-link {
@@ -1782,11 +1783,11 @@
     }
 
     .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-tagline {
-      margin-top: -0.08rem;
+      margin-top: 0.05rem;
       color: #85889a !important;
-      font-size: 0.58rem;
+      font-size: 0.6rem;
       font-weight: 650;
-      line-height: 1.1;
+      line-height: 1.2;
       letter-spacing: 0.035em;
     }
 
