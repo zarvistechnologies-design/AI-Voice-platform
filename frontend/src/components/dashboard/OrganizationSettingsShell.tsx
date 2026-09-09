@@ -191,8 +191,8 @@ function formatDate(value?: string | null, dateOnly = false) {
 }
 
 function roleTone(role: OrganizationRole) {
-  if (role === "owner") return "bg-violet-50 text-violet-700 ring-violet-200";
-  if (role === "admin") return "bg-[#eff0fb] text-[#515bb4] ring-[#c9ccef]";
+  if (role === "owner") return "bg-[#edf7f4] text-[#0e6f62] ring-[#b8d8d0]";
+  if (role === "admin") return "bg-[#edf7f4] text-[#123d35] ring-[#b8c8c3]";
   if (role === "billing") return "bg-amber-50 text-amber-700 ring-amber-200";
   return "bg-slate-100 text-slate-700 ring-slate-200";
 }
@@ -228,7 +228,7 @@ function SectionHeading({
   return (
     <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[#e7eef3] px-5 py-5 sm:px-6">
       <div className="flex min-w-0 items-start gap-3.5">
-        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#f7f7fc] text-[#087f75] ring-1 ring-[#dfe1ef]">
+        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#f7f9f8] text-[#087f75] ring-1 ring-[#dfe7e4]">
           <WorkspaceIcon name={icon} />
         </span>
         <div className="min-w-0">
@@ -473,7 +473,7 @@ export function OrganizationSettingsShell() {
       ? "border-rose-200 bg-rose-50 text-rose-900"
       : notice?.tone === "success"
         ? "border-emerald-200 bg-emerald-50 text-emerald-900"
-        : "border-[#c9ccef] bg-[#eff0fb] text-[#343b78]";
+        : "border-[#b8c8c3] bg-[#edf7f4] text-[#343b78]";
   const visibleSections = workspaceSections.filter(
     (section) => !section.managerOnly || canManage,
   );
@@ -505,7 +505,7 @@ export function OrganizationSettingsShell() {
           description="Manage organizations, teammates, permissions, invitations, and activity."
           actions={
             <Link
-              className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-[#dfe1ed] bg-white px-3.5 text-xs font-bold text-[#505261] shadow-sm transition hover:border-[#bfc3ea] hover:text-[#5963b8]"
+              className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-[#dfe1ed] bg-white px-3.5 text-xs font-bold text-[#52645f] shadow-sm transition hover:border-[#9fcfc3] hover:text-[#0e6f62]"
               href="/dashboard/profile"
             >
               <WorkspaceIcon className="size-4" name="profile" />
@@ -515,13 +515,13 @@ export function OrganizationSettingsShell() {
         />
 
         <div className="mx-auto grid w-full max-w-[1500px] gap-6 px-4 py-6 sm:px-6 lg:px-8">
-          <section className="relative overflow-hidden rounded-[26px] border border-[#e1e3ed] bg-[radial-gradient(circle_at_12%_0%,rgba(115,124,207,0.22),transparent_38%),linear-gradient(135deg,#ffffff_0%,#ffffff_62%,#f0f1f9_100%)] p-5 text-white shadow-[0_22px_55px_rgba(7,28,24,0.20)] sm:p-7">
+          <section className="relative overflow-hidden rounded-[26px] border border-[#dbe4e1] bg-[radial-gradient(circle_at_12%_0%,rgba(17,135,120,0.22),transparent_38%),linear-gradient(135deg,#ffffff_0%,#ffffff_62%,#eef5f3_100%)] p-5 text-white shadow-[0_22px_55px_rgba(7,28,24,0.20)] sm:p-7">
             <div className="pointer-events-none absolute -right-16 -top-24 size-72 rounded-full border border-white/10" />
-            <div className="pointer-events-none absolute -bottom-32 right-20 size-64 rounded-full bg-[#737ccf]/[0.07] blur-2xl" />
+            <div className="pointer-events-none absolute -bottom-32 right-20 size-64 rounded-full bg-[#118778]/[0.07] blur-2xl" />
             <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1fr)_230px] lg:items-center">
               <div className="min-w-0">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <span className="grid size-16 shrink-0 place-items-center rounded-2xl border border-[#5963b8]/30 bg-[#737ccf] text-xl font-black text-[#05231f] shadow-[0_12px_30px_rgba(115,124,207,0.20)]">
+                  <span className="grid size-16 shrink-0 place-items-center rounded-2xl border border-[#0e6f62]/30 bg-[#118778] text-xl font-black text-[#05231f] shadow-[0_12px_30px_rgba(17,135,120,0.20)]">
                     {initials(activeOrganization?.name)}
                   </span>
                   <div className="min-w-0">
@@ -533,7 +533,7 @@ export function OrganizationSettingsShell() {
                             : "No active workspace")}
                       </h2>
                       {activeOrganization ? (
-                        <span className="rounded-full bg-[#737ccf]/15 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-[#5963b8] ring-1 ring-[#737ccf]/30">
+                        <span className="rounded-full bg-[#118778]/15 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-[#0e6f62] ring-1 ring-[#118778]/30">
                           {activeOrganization.plan} plan
                         </span>
                       ) : null}
@@ -584,7 +584,7 @@ export function OrganizationSettingsShell() {
               </div>
 
               <div className="rounded-2xl border border-white/10 bg-white/[0.07] p-5 backdrop-blur-sm">
-                <span className="grid size-10 place-items-center rounded-xl bg-[#737ccf]/15 text-[#5963b8] ring-1 ring-[#737ccf]/25">
+                <span className="grid size-10 place-items-center rounded-xl bg-[#118778]/15 text-[#0e6f62] ring-1 ring-[#118778]/25">
                   <WorkspaceIcon name="shield" />
                 </span>
                 <p className="mt-4 text-[10px] font-extrabold uppercase tracking-[0.16em] text-white/45">
@@ -659,7 +659,7 @@ export function OrganizationSettingsShell() {
                         return (
                           <button
                             aria-current={active ? "true" : undefined}
-                            className={`grid w-full grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-3 rounded-xl border p-2.5 text-left transition ${active ? "border-[#b9e5df] bg-[#f7f7fc]" : "border-transparent hover:border-slate-200 hover:bg-slate-50"}`}
+                            className={`grid w-full grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-3 rounded-xl border p-2.5 text-left transition ${active ? "border-[#b9e5df] bg-[#f7f9f8]" : "border-transparent hover:border-slate-200 hover:bg-slate-50"}`}
                             disabled={busy}
                             key={organization._id}
                             onClick={() =>
@@ -668,7 +668,7 @@ export function OrganizationSettingsShell() {
                             type="button"
                           >
                             <span
-                              className={`grid size-10 place-items-center rounded-xl text-xs font-black ${active ? "bg-[#ffffff] text-[#5963b8]" : "bg-slate-100 text-slate-700"}`}
+                              className={`grid size-10 place-items-center rounded-xl text-xs font-black ${active ? "bg-[#ffffff] text-[#0e6f62]" : "bg-slate-100 text-slate-700"}`}
                             >
                               {initials(organization.name)}
                             </span>
@@ -681,7 +681,7 @@ export function OrganizationSettingsShell() {
                               </span>
                             </span>
                             {active ? (
-                              <span className="grid size-6 place-items-center rounded-full bg-[#737ccf] text-[#05231f]">
+                              <span className="grid size-6 place-items-center rounded-full bg-[#118778] text-[#05231f]">
                                 <WorkspaceIcon
                                   className="size-3.5"
                                   name="check"
@@ -703,7 +703,7 @@ export function OrganizationSettingsShell() {
                 className="grid gap-3 rounded-2xl border border-[#e2eaf0] bg-white p-4 shadow-[0_14px_34px_rgba(15,23,42,0.06)]"
                 onSubmit={createWorkspace}
               >
-                <span className="grid size-9 place-items-center rounded-xl bg-[#f7f7fc] text-[#087f75] ring-1 ring-[#dfe1ef]">
+                <span className="grid size-9 place-items-center rounded-xl bg-[#f7f9f8] text-[#087f75] ring-1 ring-[#dfe7e4]">
                   <WorkspaceIcon className="size-4.5" name="plus" />
                 </span>
                 <div>
@@ -719,7 +719,7 @@ export function OrganizationSettingsShell() {
                 </label>
                 <input
                   autoComplete="organization"
-                  className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#737ccf]/20"
+                  className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#118778]/20"
                   id="new-workspace-name"
                   minLength={2}
                   placeholder="Workspace name"
@@ -745,7 +745,7 @@ export function OrganizationSettingsShell() {
               >
                 {visibleSections.map((item) => (
                   <a
-                    className="inline-flex min-w-max items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-600 transition hover:bg-[#f7f7fc] hover:text-[#087f75]"
+                    className="inline-flex min-w-max items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-600 transition hover:bg-[#f7f9f8] hover:text-[#087f75]"
                     href={`#${item.id}`}
                     key={item.id}
                   >
@@ -788,7 +788,7 @@ export function OrganizationSettingsShell() {
                         Organization name
                         <input
                           autoComplete="organization"
-                          className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-normal text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#737ccf]/20"
+                          className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-normal text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#118778]/20"
                           id="organization-name"
                           minLength={2}
                           required
@@ -804,7 +804,7 @@ export function OrganizationSettingsShell() {
                       >
                         Timezone
                         <input
-                          className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-normal text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#737ccf]/20"
+                          className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-normal text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#118778]/20"
                           id="organization-timezone"
                           placeholder="Asia/Kolkata"
                           required
@@ -820,7 +820,7 @@ export function OrganizationSettingsShell() {
                       >
                         Data retention
                         <input
-                          className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-normal text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#737ccf]/20"
+                          className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-normal text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#118778]/20"
                           id="retention-days"
                           min={1}
                           required
@@ -834,7 +834,7 @@ export function OrganizationSettingsShell() {
                           Number of days workspace data is retained.
                         </span>
                       </label>
-                      <div className="rounded-xl border border-[#dfe1ef] bg-[#f7fbfa] p-4">
+                      <div className="rounded-xl border border-[#dfe7e4] bg-[#f7fbfa] p-4">
                         <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#087f75]">
                           Workspace identity
                         </span>
@@ -852,7 +852,7 @@ export function OrganizationSettingsShell() {
                         not affect your other organizations.
                       </p>
                       <button
-                        className="min-h-11 shrink-0 rounded-xl bg-[#737ccf] px-5 text-sm font-extrabold text-[#ffffff] transition hover:bg-[#5963b8] disabled:cursor-not-allowed disabled:opacity-50"
+                        className="min-h-11 shrink-0 rounded-xl bg-[#118778] px-5 text-sm font-extrabold text-[#ffffff] transition hover:bg-[#0e6f62] disabled:cursor-not-allowed disabled:opacity-50"
                         disabled={busy || organizationName.trim().length < 2}
                         type="submit"
                       >
@@ -924,7 +924,7 @@ export function OrganizationSettingsShell() {
                 />
                 {canManage ? (
                   <form
-                    className="m-5 grid gap-4 rounded-2xl border border-[#dfe1ef] bg-[#f7fbfa] p-4 sm:m-6 sm:p-5 lg:grid-cols-[minmax(0,1fr)_170px_auto] lg:items-end"
+                    className="m-5 grid gap-4 rounded-2xl border border-[#dfe7e4] bg-[#f7fbfa] p-4 sm:m-6 sm:p-5 lg:grid-cols-[minmax(0,1fr)_170px_auto] lg:items-end"
                     onSubmit={inviteMember}
                   >
                     <div className="lg:col-span-3">
@@ -946,7 +946,7 @@ export function OrganizationSettingsShell() {
                       Email address
                       <input
                         autoComplete="email"
-                        className="min-h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm font-normal text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#737ccf]/20"
+                        className="min-h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm font-normal text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#118778]/20"
                         id="invite-email"
                         placeholder="teammate@company.com"
                         required
@@ -976,7 +976,7 @@ export function OrganizationSettingsShell() {
                       </select>
                     </label>
                     <button
-                      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#737ccf] px-5 text-sm font-extrabold text-[#ffffff] transition hover:bg-[#5963b8] disabled:cursor-not-allowed disabled:opacity-50"
+                      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#118778] px-5 text-sm font-extrabold text-[#ffffff] transition hover:bg-[#0e6f62] disabled:cursor-not-allowed disabled:opacity-50"
                       disabled={busy || !inviteEmail.trim()}
                       type="submit"
                     >

@@ -1284,7 +1284,7 @@ export function LegacyIndustryPage({ slug }: { slug: string }) {
               <p className="mt-5 text-sm text-slate-300">
                 More questions?{" "}
                 <Link
-                  className="font-bold text-[#3e75ff] transition hover:text-[#315fdb] hover:underline"
+                  className="font-bold text-[#118778] transition hover:text-[#0e6f62] hover:underline"
                   href="/contact"
                 >
                   Contact us

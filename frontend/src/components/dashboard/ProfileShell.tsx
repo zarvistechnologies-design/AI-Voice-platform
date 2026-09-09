@@ -229,7 +229,7 @@ function SectionHeading({
   return (
     <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[#e7eef3] px-5 py-5 sm:px-6">
       <div className="flex min-w-0 items-start gap-3.5">
-        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#f7f7fc] text-[#087f75] ring-1 ring-[#dfe1ef]">
+        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#f7f9f8] text-[#087f75] ring-1 ring-[#dfe7e4]">
           <ProfileIcon name={icon} />
         </span>
         <div className="min-w-0">
@@ -452,7 +452,7 @@ export function ProfileShell() {
       ? "border-rose-200 bg-rose-50 text-rose-900"
       : notice?.tone === "success"
         ? "border-emerald-200 bg-emerald-50 text-emerald-900"
-        : "border-[#c9ccef] bg-[#eff0fb] text-[#343b78]";
+        : "border-[#b8c8c3] bg-[#edf7f4] text-[#343b78]";
 
   return (
     <main
@@ -481,7 +481,7 @@ export function ProfileShell() {
           description="Manage your identity, sign-in protection, password, and trusted devices."
           actions={
             <Link
-              className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-[#dfe1ed] bg-white px-3.5 text-xs font-bold text-[#505261] shadow-sm transition hover:border-[#bfc3ea] hover:text-[#5963b8]"
+              className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-[#dfe1ed] bg-white px-3.5 text-xs font-bold text-[#52645f] shadow-sm transition hover:border-[#9fcfc3] hover:text-[#0e6f62]"
               href="/dashboard/settings"
             >
               <ProfileIcon className="size-4" name="workspace" />
@@ -491,13 +491,13 @@ export function ProfileShell() {
         />
 
         <div className="mx-auto grid w-full max-w-[1500px] gap-6 px-4 py-6 sm:px-6 lg:px-8">
-          <section className="relative overflow-hidden rounded-[26px] border border-[#e1e3ed] bg-[radial-gradient(circle_at_12%_0%,rgba(115,124,207,0.22),transparent_38%),linear-gradient(135deg,#ffffff_0%,#ffffff_62%,#f0f1f9_100%)] p-5 text-white shadow-[0_22px_55px_rgba(7,28,24,0.20)] sm:p-7">
+          <section className="relative overflow-hidden rounded-[26px] border border-[#dbe4e1] bg-[radial-gradient(circle_at_12%_0%,rgba(17,135,120,0.22),transparent_38%),linear-gradient(135deg,#ffffff_0%,#ffffff_62%,#eef5f3_100%)] p-5 text-white shadow-[0_22px_55px_rgba(7,28,24,0.20)] sm:p-7">
             <div className="pointer-events-none absolute -right-16 -top-24 size-72 rounded-full border border-white/10" />
-            <div className="pointer-events-none absolute -bottom-32 right-20 size-64 rounded-full bg-[#737ccf]/[0.07] blur-2xl" />
+            <div className="pointer-events-none absolute -bottom-32 right-20 size-64 rounded-full bg-[#118778]/[0.07] blur-2xl" />
             <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1fr)_190px] lg:items-center">
               <div className="min-w-0">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <span className="grid size-16 shrink-0 place-items-center rounded-2xl border border-[#5963b8]/30 bg-[#737ccf] text-xl font-black text-[#05231f] shadow-[0_12px_30px_rgba(115,124,207,0.20)]">
+                  <span className="grid size-16 shrink-0 place-items-center rounded-2xl border border-[#0e6f62]/30 bg-[#118778] text-xl font-black text-[#05231f] shadow-[0_12px_30px_rgba(17,135,120,0.20)]">
                     {initials(session.name)}
                   </span>
                   <div className="min-w-0">
@@ -506,7 +506,7 @@ export function ProfileShell() {
                         {session.name}
                       </h2>
                       <span
-                        className={`rounded-full px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider ${session.emailVerified ? "bg-[#737ccf]/15 text-[#5963b8] ring-1 ring-[#737ccf]/30" : "bg-amber-400/15 text-amber-200 ring-1 ring-amber-300/25"}`}
+                        className={`rounded-full px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider ${session.emailVerified ? "bg-[#118778]/15 text-[#0e6f62] ring-1 ring-[#118778]/30" : "bg-amber-400/15 text-amber-200 ring-1 ring-amber-300/25"}`}
                       >
                         {session.emailVerified ? "Verified" : "Verify email"}
                       </span>
@@ -530,7 +530,7 @@ export function ProfileShell() {
                     </span>
                     <strong className="mt-1 flex items-center gap-2 text-sm text-white">
                       <span
-                        className={`size-2 rounded-full ${session.emailVerified ? "bg-[#737ccf]" : "bg-amber-300"}`}
+                        className={`size-2 rounded-full ${session.emailVerified ? "bg-[#118778]" : "bg-amber-300"}`}
                       />
                       {session.emailVerified ? "Verified" : "Action needed"}
                     </strong>
@@ -541,7 +541,7 @@ export function ProfileShell() {
                     </span>
                     <strong className="mt-1 flex items-center gap-2 text-sm text-white">
                       <span
-                        className={`size-2 rounded-full ${session.twoFactorEnabled ? "bg-[#737ccf]" : "bg-white/30"}`}
+                        className={`size-2 rounded-full ${session.twoFactorEnabled ? "bg-[#118778]" : "bg-white/30"}`}
                       />
                       {session.twoFactorEnabled ? "Enabled" : "Not enabled"}
                     </strong>
@@ -563,7 +563,7 @@ export function ProfileShell() {
                 <div
                   className="grid size-36 place-items-center rounded-full p-[9px]"
                   style={{
-                    background: `conic-gradient(#737ccf ${securityPercent}%, rgba(255,255,255,0.12) 0)`,
+                    background: `conic-gradient(#118778 ${securityPercent}%, rgba(255,255,255,0.12) 0)`,
                   }}
                 >
                   <div className="grid size-full place-items-center rounded-full border border-white/10 bg-[#0a211d] text-center shadow-inner">
@@ -571,7 +571,7 @@ export function ProfileShell() {
                       <strong className="block text-3xl font-black tracking-[-0.04em] text-white">
                         {securityPercent}%
                       </strong>
-                      <span className="mt-1 block text-[10px] font-bold uppercase tracking-[0.16em] text-[#5963b8]">
+                      <span className="mt-1 block text-[10px] font-bold uppercase tracking-[0.16em] text-[#0e6f62]">
                         {securityLabel}
                       </span>
                     </div>
@@ -632,7 +632,7 @@ export function ProfileShell() {
                 >
                   {profileSections.map((item) => (
                     <a
-                      className="inline-flex min-w-max items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-600 transition hover:bg-[#f7f7fc] hover:text-[#087f75]"
+                      className="inline-flex min-w-max items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-600 transition hover:bg-[#f7f9f8] hover:text-[#087f75]"
                       href={`#${item.id}`}
                       key={item.id}
                     >
@@ -770,7 +770,7 @@ export function ProfileShell() {
                               key={step}
                             >
                               <span
-                                className={`grid size-6 place-items-center rounded-full text-[10px] ${index === 0 ? "bg-[#737ccf] text-[#06231f]" : "bg-slate-200 text-slate-500"}`}
+                                className={`grid size-6 place-items-center rounded-full text-[10px] ${index === 0 ? "bg-[#118778] text-[#06231f]" : "bg-slate-200 text-slate-500"}`}
                               >
                                 {index + 1}
                               </span>
@@ -780,7 +780,7 @@ export function ProfileShell() {
                         )}
                       </div>
 
-                      <div className="grid gap-4 rounded-2xl border border-[#dfe1ef] bg-[#f7fbfa] p-4 sm:p-5 lg:grid-cols-[minmax(0,1fr)_260px]">
+                      <div className="grid gap-4 rounded-2xl border border-[#dfe7e4] bg-[#f7fbfa] p-4 sm:p-5 lg:grid-cols-[minmax(0,1fr)_260px]">
                         <div className="min-w-0">
                           <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#087f75]">
                             Manual setup key
@@ -818,7 +818,7 @@ export function ProfileShell() {
                           </label>
                           <input
                             autoComplete="one-time-code"
-                            className="mt-2 min-h-11 w-full rounded-xl border border-slate-200 px-3 text-center text-base font-bold tracking-[0.32em] text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#737ccf]/20"
+                            className="mt-2 min-h-11 w-full rounded-xl border border-slate-200 px-3 text-center text-base font-bold tracking-[0.32em] text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#118778]/20"
                             id="enable-two-factor-code"
                             inputMode="numeric"
                             maxLength={6}
@@ -830,7 +830,7 @@ export function ProfileShell() {
                             }
                           />
                           <button
-                            className="mt-3 min-h-11 w-full rounded-xl bg-[#737ccf] px-4 text-sm font-extrabold text-[#ffffff] transition hover:bg-[#5963b8] disabled:cursor-not-allowed disabled:opacity-50"
+                            className="mt-3 min-h-11 w-full rounded-xl bg-[#118778] px-4 text-sm font-extrabold text-[#ffffff] transition hover:bg-[#0e6f62] disabled:cursor-not-allowed disabled:opacity-50"
                             disabled={
                               activeAction !== null || totpCode.length !== 6
                             }
@@ -993,7 +993,7 @@ export function ProfileShell() {
                       <span className="relative">
                         <input
                           autoComplete="current-password"
-                          className="min-h-11 w-full rounded-xl border border-slate-200 px-3 pr-16 text-sm font-normal text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#737ccf]/20"
+                          className="min-h-11 w-full rounded-xl border border-slate-200 px-3 pr-16 text-sm font-normal text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#118778]/20"
                           id="current-password"
                           maxLength={128}
                           minLength={8}
@@ -1025,7 +1025,7 @@ export function ProfileShell() {
                         <input
                           aria-describedby="password-requirement"
                           autoComplete="new-password"
-                          className="min-h-11 w-full rounded-xl border border-slate-200 px-3 pr-16 text-sm font-normal text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#737ccf]/20"
+                          className="min-h-11 w-full rounded-xl border border-slate-200 px-3 pr-16 text-sm font-normal text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#118778]/20"
                           id="new-password"
                           maxLength={128}
                           minLength={8}
@@ -1071,7 +1071,7 @@ export function ProfileShell() {
                       </div>
                     </div>
                     <button
-                      className="min-h-11 rounded-xl bg-[#737ccf] px-5 text-sm font-extrabold text-[#ffffff] transition hover:bg-[#5963b8] disabled:cursor-not-allowed disabled:opacity-50"
+                      className="min-h-11 rounded-xl bg-[#118778] px-5 text-sm font-extrabold text-[#ffffff] transition hover:bg-[#0e6f62] disabled:cursor-not-allowed disabled:opacity-50"
                       disabled={activeAction !== null || !passwordReady}
                       type="submit"
                     >

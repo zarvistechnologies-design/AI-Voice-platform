@@ -22,8 +22,8 @@ import {
 import type { AgentSummary, AnalyticsOverview } from "@/lib/voice";
 
 const COLORS = [
-  "#737ccf",
-  "#5963b8",
+  "#118778",
+  "#0e6f62",
   "#a855f7",
   "#f59e0b",
   "#ef5d7a",
@@ -31,13 +31,13 @@ const COLORS = [
 ];
 const tooltipStyle = {
   background: "#ffffff",
-  border: "1px solid #dfe1ef",
+  border: "1px solid #dfe7e4",
   borderRadius: 12,
   boxShadow: "0 18px 48px rgba(39,45,94,.16)",
   color: "#111827",
   fontSize: 12,
 };
-const axis = { fill: "#7a7d8e", fontSize: 10, fontWeight: 500 };
+const axis = { fill: "#71817d", fontSize: 10, fontWeight: 500 };
 
 function Area(props: ComponentProps<typeof ReArea>) {
   return <ReArea {...props} isAnimationActive={false} />;
@@ -70,7 +70,7 @@ function ChartCard({
         <h2 className="text-[15px] font-semibold tracking-[-.01em] text-[#171923]">
           {title}
         </h2>
-        <p className="mt-1 text-xs leading-5 text-[#7a7d8e]">{subtitle}</p>
+        <p className="mt-1 text-xs leading-5 text-[#71817d]">{subtitle}</p>
       </div>
       {children}
     </article>
@@ -79,7 +79,7 @@ function ChartCard({
 
 function EmptyChart() {
   return (
-    <div className="grid h-[260px] place-items-center rounded-xl border border-dashed border-[#dfe1ef] bg-[#fafaff] text-xs text-[#8a8da0]">
+    <div className="grid h-[260px] place-items-center rounded-xl border border-dashed border-[#dfe7e4] bg-[#fafcfb] text-xs text-[#84938f]">
       Data appears after your first calls
     </div>
   );
@@ -124,20 +124,20 @@ function AgentPerformanceTooltip({
   const row = payload?.[0]?.payload;
   if (!active || !row) return null;
   return (
-    <div className="min-w-56 rounded-xl border border-[#dfe1ef] bg-white p-3 shadow-[0_18px_48px_rgba(39,45,94,.16)]">
+    <div className="min-w-56 rounded-xl border border-[#dfe7e4] bg-white p-3 shadow-[0_18px_48px_rgba(39,45,94,.16)]">
       <div className="flex items-center justify-between gap-3">
         <strong className="text-sm">{row.fullName}</strong>
         <span
-          className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${row.active ? "bg-[#eff0fb] text-[#515bb4]" : row.status === "Live" ? "bg-emerald-50 text-emerald-700" : row.status === "Paused" ? "bg-amber-50 text-amber-700" : "bg-slate-100 text-slate-600"}`}
+          className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${row.active ? "bg-[#edf7f4] text-[#123d35]" : row.status === "Live" ? "bg-emerald-50 text-emerald-700" : row.status === "Paused" ? "bg-amber-50 text-amber-700" : "bg-slate-100 text-slate-600"}`}
         >
           {row.active ? "On a call" : row.status}
         </span>
       </div>
-      <span className="mt-1 block text-xs text-[#8a8da0]">
+      <span className="mt-1 block text-xs text-[#84938f]">
         {row.phone || "No phone route"}
       </span>
       <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-        <span className="rounded-lg bg-[#f7f7fc] p-2 text-[#686c7e]">
+        <span className="rounded-lg bg-[#f7f9f8] p-2 text-[#686c7e]">
           Total<strong className="mt-1 block text-sm">{row.calls}</strong>
         </span>
         <span className="rounded-lg bg-emerald-50 p-2 text-emerald-700">
@@ -148,12 +148,12 @@ function AgentPerformanceTooltip({
           Not completed
           <strong className="mt-1 block text-sm">{row.incomplete}</strong>
         </span>
-        <span className="rounded-lg bg-[#eff0fb] p-2 text-[#515bb4]">
+        <span className="rounded-lg bg-[#edf7f4] p-2 text-[#123d35]">
           Success rate
           <strong className="mt-1 block text-sm">{row.completion}%</strong>
         </span>
       </div>
-      <span className="mt-3 block text-xs text-[#7a7d8e]">
+      <span className="mt-3 block text-xs text-[#71817d]">
         Talk time: {row.talkTime}
       </span>
     </div>
@@ -204,14 +204,14 @@ function AgentPerformanceCommandCenter({
   const routedCount = agents.filter((agent) => Boolean(agent.phone)).length;
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-[#dfe1ef] bg-white shadow-[0_14px_38px_rgba(52,58,116,.07)]">
+    <section className="overflow-hidden rounded-2xl border border-[#dfe7e4] bg-white shadow-[0_14px_38px_rgba(52,58,116,.07)]">
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#e5e7ef] px-5 py-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="size-2 rounded-full bg-[#737ccf] shadow-[0_0_0_4px_rgba(115,124,207,.12)]" />
+            <span className="size-2 rounded-full bg-[#118778] shadow-[0_0_0_4px_rgba(17,135,120,.12)]" />
             <h2 className="text-[15px] font-semibold">Agent performance</h2>
           </div>
-          <p className="mt-1 text-xs text-[#7a7d8e]">
+          <p className="mt-1 text-xs text-[#71817d]">
             Compare every agent by completed conversations, volume, routing, and
             live availability.
           </p>
@@ -220,7 +220,7 @@ function AgentPerformanceCommandCenter({
           <span className="rounded-full bg-emerald-50 px-3 py-1.5 text-emerald-700">
             {liveCount} live
           </span>
-          <span className="rounded-full bg-[#eff0fb] px-3 py-1.5 text-[#515bb4]">
+          <span className="rounded-full bg-[#edf7f4] px-3 py-1.5 text-[#123d35]">
             {activeAgentIds.length} on calls
           </span>
           <span className="rounded-full bg-slate-100 px-3 py-1.5 text-slate-600">
@@ -228,21 +228,21 @@ function AgentPerformanceCommandCenter({
           </span>
         </div>
       </div>
-      <div className="flex flex-wrap items-center gap-5 border-b border-[#ececf3] bg-[#fafaff] px-5 py-3 text-xs text-[#686c7e]">
+      <div className="flex flex-wrap items-center gap-5 border-b border-[#ececf3] bg-[#fafcfb] px-5 py-3 text-xs text-[#686c7e]">
         <span className="inline-flex items-center gap-2">
-          <i className="size-2.5 rounded-sm bg-gradient-to-r from-[#737ccf] via-[#a855f7] to-[#22c98f]" />
+          <i className="size-2.5 rounded-sm bg-gradient-to-r from-[#118778] via-[#a855f7] to-[#22c98f]" />
           Completed · unique agent colour
         </span>
         <span className="inline-flex items-center gap-2">
           <i className="size-2.5 rounded-sm bg-[#ef5d7a]" />
           Not completed
         </span>
-        <span className="ml-auto hidden text-[#8a8da0] sm:block">
+        <span className="ml-auto hidden text-[#84938f] sm:block">
           Sorted by active call, then call volume
         </span>
       </div>
       {!chartRows.length ? (
-        <div className="grid h-80 place-items-center text-sm text-[#8a8da0]">
+        <div className="grid h-80 place-items-center text-sm text-[#84938f]">
           Agent performance appears when the workspace is ready.
         </div>
       ) : (
@@ -273,7 +273,7 @@ function AgentPerformanceCommandCenter({
                 />
                 <Tooltip
                   content={<AgentPerformanceTooltip />}
-                  cursor={{ fill: "rgba(115,124,207,.045)" }}
+                  cursor={{ fill: "rgba(17,135,120,.045)" }}
                 />
                 <Bar
                   dataKey="completed"
@@ -371,7 +371,7 @@ export function AdvancedAnalyticsCharts({
     {
       label: "Completion",
       value: `${data.summary.completionRate}%`,
-      tone: "text-[#5963b8]",
+      tone: "text-[#0e6f62]",
     },
     {
       label: "Talk time",
@@ -400,32 +400,32 @@ export function AdvancedAnalyticsCharts({
 
   return (
     <section className="mt-5 space-y-5 text-[#171923]">
-      <section className="overflow-hidden rounded-2xl border border-[#dfe1ef] bg-white shadow-[0_14px_38px_rgba(52,58,116,.07)]">
+      <section className="overflow-hidden rounded-2xl border border-[#dfe7e4] bg-white shadow-[0_14px_38px_rgba(52,58,116,.07)]">
         <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-6">
           <div>
-            <span className="text-[10px] font-bold uppercase tracking-[.18em] text-[#5963b8]">
+            <span className="text-[10px] font-bold uppercase tracking-[.18em] text-[#0e6f62]">
               Conversation intelligence
             </span>
             <h2 className="mt-1 text-lg font-semibold tracking-[-.02em]">
               Performance overview
             </h2>
-            <p className="mt-1 text-xs leading-5 text-[#7a7d8e]">
+            <p className="mt-1 text-xs leading-5 text-[#71817d]">
               Follow demand, outcomes, customer behaviour, and operating
               patterns from one connected view.
             </p>
           </div>
-          <span className="rounded-full bg-[#eff0fb] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.14em] text-[#5963b8]">
+          <span className="rounded-full bg-[#edf7f4] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.14em] text-[#0e6f62]">
             Live workspace data
           </span>
         </div>
 
-        <div className="grid grid-cols-2 border-t border-[#e5e7ef] bg-[#fafaff] sm:grid-cols-3 xl:grid-cols-6">
+        <div className="grid grid-cols-2 border-t border-[#e5e7ef] bg-[#fafcfb] sm:grid-cols-3 xl:grid-cols-6">
           {periodMetrics.map((metric, index) => (
             <div
               className={`px-5 py-3.5 ${index % 2 ? "border-l" : ""} border-b border-[#e5e7ef] sm:border-l sm:[&:nth-child(3n+1)]:border-l-0 xl:border-b-0 xl:[&:nth-child(3n+1)]:border-l xl:first:border-l-0`}
               key={metric.label}
             >
-              <span className="block text-[10px] font-semibold uppercase tracking-[.12em] text-[#7a7d8e]">
+              <span className="block text-[10px] font-semibold uppercase tracking-[.12em] text-[#71817d]">
                 {metric.label}
               </span>
               <strong
@@ -434,7 +434,7 @@ export function AdvancedAnalyticsCharts({
                 {loading ? "—" : metric.value}
               </strong>
               {"detail" in metric && metric.detail ? (
-                <span className="mt-0.5 block text-[10px] text-[#8a8da0]">
+                <span className="mt-0.5 block text-[10px] text-[#84938f]">
                   {metric.detail}
                 </span>
               ) : null}
@@ -466,12 +466,12 @@ export function AdvancedAnalyticsCharts({
                       >
                         <stop
                           offset="0"
-                          stopColor="#737ccf"
+                          stopColor="#118778"
                           stopOpacity={0.32}
                         />
                         <stop
                           offset="1"
-                          stopColor="#737ccf"
+                          stopColor="#118778"
                           stopOpacity={0.02}
                         />
                       </linearGradient>
@@ -490,7 +490,7 @@ export function AdvancedAnalyticsCharts({
                       type="monotone"
                       dataKey="calls"
                       name="Total calls"
-                      stroke="#737ccf"
+                      stroke="#118778"
                       strokeWidth={2.5}
                       fill="url(#callsArea)"
                     />
@@ -498,7 +498,7 @@ export function AdvancedAnalyticsCharts({
                       type="monotone"
                       dataKey="completed"
                       name="Completed"
-                      stroke="#5963b8"
+                      stroke="#0e6f62"
                       strokeWidth={2.2}
                       dot={false}
                     />
@@ -544,8 +544,8 @@ export function AdvancedAnalyticsCharts({
                 </ResponsiveContainer>
               </div>
             )}
-            <div className="mt-3 rounded-xl border border-[#dfe1ef] bg-[#f8f8fe] p-4">
-              <span className="text-[10px] font-bold uppercase tracking-[.16em] text-[#5963b8]">
+            <div className="mt-3 rounded-xl border border-[#dfe7e4] bg-[#f8f8fe] p-4">
+              <span className="text-[10px] font-bold uppercase tracking-[.16em] text-[#0e6f62]">
                 {focus.label}
               </span>
               <strong className="mt-2 block text-sm leading-5">
@@ -562,11 +562,11 @@ export function AdvancedAnalyticsCharts({
           <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 marker:hidden">
             <div>
               <h2 className="text-[15px] font-semibold">Advanced analysis</h2>
-              <p className="mt-1 text-xs text-[#7a7d8e]">
+              <p className="mt-1 text-xs text-[#71817d]">
                 Channels, timing, sentiment, and conversation duration
               </p>
             </div>
-            <span className="grid size-9 place-items-center rounded-lg border border-[#dfe1ef] text-lg text-[#5963b8] transition group-open:rotate-45">
+            <span className="grid size-9 place-items-center rounded-lg border border-[#dfe7e4] text-lg text-[#0e6f62] transition group-open:rotate-45">
               +
             </span>
           </summary>
@@ -680,7 +680,7 @@ export function AdvancedAnalyticsCharts({
                                 ? "#22c98f"
                                 : row.name === "negative"
                                   ? "#ef5d7a"
-                                  : "#737ccf"
+                                  : "#118778"
                             }
                           />
                         ))}
@@ -715,13 +715,13 @@ export function AdvancedAnalyticsCharts({
                       <Tooltip contentStyle={tooltipStyle} />
                       <Bar
                         dataKey="calls"
-                        fill="#737ccf"
+                        fill="#118778"
                         radius={[5, 5, 0, 0]}
                       />
                       <Line
                         type="monotone"
                         dataKey="completed"
-                        stroke="#5963b8"
+                        stroke="#0e6f62"
                         strokeWidth={2.4}
                         dot={false}
                       />

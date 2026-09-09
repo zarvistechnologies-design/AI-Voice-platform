@@ -184,7 +184,7 @@ function CallRoute({
   return (
     <div className={`grid gap-1.5 ${compact ? "min-w-56" : ""}`}>
       <div className="grid min-w-0 grid-cols-[44px_minmax(0,1fr)] items-center gap-2">
-        <span className="rounded-md bg-[#eff0fb] px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-[#515bb4]">
+        <span className="rounded-md bg-[#edf7f4] px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-[#123d35]">
           From
         </span>
         {route.fromMissing ? (
@@ -230,12 +230,12 @@ function statusTone(status: CallRecord["status"]) {
     return "bg-emerald-50 text-emerald-700 ring-emerald-200";
   if (status === "failed" || status === "cancelled")
     return "bg-rose-50 text-rose-700 ring-rose-200";
-  if (status === "active") return "bg-[#eff0fb] text-[#515bb4] ring-[#c9ccef]";
+  if (status === "active") return "bg-[#edf7f4] text-[#123d35] ring-[#b8c8c3]";
   return "bg-amber-50 text-amber-700 ring-amber-200";
 }
 
 const filterInputClass =
-  "rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium outline-none focus:border-[#737ccf]";
+  "rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium outline-none focus:border-[#118778]";
 
 export function CallLogsShell() {
   const router = useRouter();
@@ -475,7 +475,7 @@ export function CallLogsShell() {
                 Refresh
               </button>
               <button
-                className="rounded-xl bg-[#737ccf] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(115,124,207,0.18)] hover:bg-[#5963b8]"
+                className="rounded-xl bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(17,135,120,0.18)] hover:bg-[#0e6f62]"
                 type="button"
                 onClick={() => void exportCsv()}
               >
@@ -486,9 +486,9 @@ export function CallLogsShell() {
         />
         <div className="mx-auto grid max-w-[1500px] gap-4 px-4 py-5 sm:px-6 lg:px-8">
           <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-            <div className="flex flex-col gap-4 border-b border-slate-200 bg-[linear-gradient(135deg,#ffffff_0%,#fafaff_100%)] px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex flex-col gap-4 border-b border-slate-200 bg-[linear-gradient(135deg,#ffffff_0%,#fafcfb_100%)] px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex min-w-0 items-center gap-3">
-                <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#eff0fb] text-[#5963b8]">
+                <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#edf7f4] text-[#0e6f62]">
                   <svg
                     className="size-5"
                     viewBox="0 0 20 20"
@@ -539,7 +539,7 @@ export function CallLogsShell() {
             <div className="grid gap-3 border-b border-slate-200 p-4">
               <div className="grid gap-2 md:grid-cols-[minmax(240px,1fr)_auto_auto_auto_auto]">
                 <input
-                  className="min-w-0 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
+                  className="min-w-0 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10"
                   placeholder="Search transcript, tag, or outcome"
                   value={search}
                   onChange={(event) => {
@@ -591,7 +591,7 @@ export function CallLogsShell() {
                   ))}
                 </select>
                 <button
-                  className={`rounded-lg border px-3 py-2 text-sm font-semibold transition ${showAdvancedFilters || advancedFilterCount ? "border-[#c9ccef] bg-[#eff0fb] text-[#515bb4]" : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"}`}
+                  className={`rounded-lg border px-3 py-2 text-sm font-semibold transition ${showAdvancedFilters || advancedFilterCount ? "border-[#b8c8c3] bg-[#edf7f4] text-[#123d35]" : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"}`}
                   type="button"
                   onClick={() => setShowAdvancedFilters((current) => !current)}
                 >
@@ -600,7 +600,7 @@ export function CallLogsShell() {
                 </button>
               </div>
               {showAdvancedFilters ? (
-                <div className="grid gap-2 rounded-xl border border-[#e1e3ef] bg-[#fafaff] p-3 sm:grid-cols-2 xl:grid-cols-5">
+                <div className="grid gap-2 rounded-xl border border-[#e1e3ef] bg-[#fafcfb] p-3 sm:grid-cols-2 xl:grid-cols-5">
                   <select
                     className={filterInputClass}
                     value={sentiment}
@@ -704,7 +704,7 @@ export function CallLogsShell() {
                 <tbody className="divide-y divide-slate-100">
                   {calls.map((call) => (
                     <tr
-                      className="cursor-pointer transition hover:bg-[#eff0fb]/60"
+                      className="cursor-pointer transition hover:bg-[#edf7f4]/60"
                       key={call._id}
                       onClick={() => void openCall(call._id)}
                       onPointerDown={preloadCallDetailDrawer}
@@ -728,7 +728,7 @@ export function CallLogsShell() {
                         {call.endedAt ? (
                           formatDate(call.endedAt)
                         ) : call.status === "active" ? (
-                          <span className="font-semibold text-[#5963b8]">
+                          <span className="font-semibold text-[#0e6f62]">
                             Live
                           </span>
                         ) : (

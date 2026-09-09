@@ -55,11 +55,11 @@ type InspectorView = "request" | "response" | "webhook";
 const panelClass =
   "overflow-hidden rounded-2xl border border-[#dfe1ed] bg-white shadow-[0_16px_40px_rgba(52,58,116,0.06)]";
 const controlClass =
-  "h-11 rounded-xl border border-[#dfe1ed] bg-white px-3.5 text-sm font-medium text-[#272936] outline-none transition placeholder:text-[#9699aa] focus:border-[#737ccf] focus:ring-3 focus:ring-[#737ccf]/10";
+  "h-11 rounded-xl border border-[#dfe1ed] bg-white px-3.5 text-sm font-medium text-[#20342e] outline-none transition placeholder:text-[#9699aa] focus:border-[#118778] focus:ring-3 focus:ring-[#118778]/10";
 const primaryButtonClass =
-  "inline-flex h-10 items-center justify-center rounded-xl bg-[#737ccf] px-4 text-sm font-semibold text-white transition hover:bg-[#626bc0] disabled:cursor-not-allowed disabled:opacity-50";
+  "inline-flex h-10 items-center justify-center rounded-xl bg-[#118778] px-4 text-sm font-semibold text-white transition hover:bg-[#626bc0] disabled:cursor-not-allowed disabled:opacity-50";
 const secondaryButtonClass =
-  "inline-flex h-10 items-center justify-center rounded-xl border border-[#dfe1ed] bg-white px-3.5 text-sm font-semibold text-[#3d4050] transition hover:border-[#bfc3e5] hover:bg-[#f7f7fc]";
+  "inline-flex h-10 items-center justify-center rounded-xl border border-[#dfe1ed] bg-white px-3.5 text-sm font-semibold text-[#3d4050] transition hover:border-[#bfc3e5] hover:bg-[#f7f9f8]";
 const dangerButtonClass =
   "inline-flex h-10 items-center justify-center rounded-xl border border-[#ffd3d9] bg-white px-3.5 text-sm font-semibold text-[#d64b62] transition hover:bg-[#fff4f5]";
 const includedFields = [
@@ -148,7 +148,7 @@ function EndpointRow({
   method: "GET" | "POST";
   path: string;
 }) {
-  const methodClass = "bg-[#eff0fb] text-[#5963b8]";
+  const methodClass = "bg-[#edf7f4] text-[#0e6f62]";
   return (
     <div className="grid grid-cols-[54px_minmax(0,1fr)] items-center gap-2 border-b border-[#e8edf2] px-3 py-2.5 last:border-b-0">
       <span
@@ -468,7 +468,7 @@ export function DeveloperShell() {
 
   return (
     <main
-      className={`grid min-h-screen bg-[#f7f7fc] text-[#1b1b22] ${
+      className={`grid min-h-screen bg-[#f7f9f8] text-[#14231f] ${
         showUserSidebar
           ? "lg:grid-cols-[240px_minmax(0,1fr)]"
           : "lg:grid-cols-[64px_minmax(0,1fr)]"
@@ -501,12 +501,12 @@ export function DeveloperShell() {
           description="Manage API credentials, webhooks, event activity, and production requests from one workspace."
           actions={
             <>
-              <div className="flex h-10 min-w-0 items-center overflow-hidden rounded-xl border border-[#dfe1ed] bg-[#f7f7fc]">
+              <div className="flex h-10 min-w-0 items-center overflow-hidden rounded-xl border border-[#dfe1ed] bg-[#f7f9f8]">
                 <code className="max-w-52 truncate px-3 text-xs font-semibold text-[#51556a]">
                   {baseUrl}
                 </code>
                 <button
-                  className="h-full shrink-0 border-l border-[#dfe1ed] bg-white px-3 text-xs font-bold text-[#5963b8] transition hover:bg-[#eff0fb]"
+                  className="h-full shrink-0 border-l border-[#dfe1ed] bg-white px-3 text-xs font-bold text-[#0e6f62] transition hover:bg-[#edf7f4]"
                   type="button"
                   onClick={() => void copyText(baseUrl, "Base URL")}
                 >
@@ -540,15 +540,15 @@ export function DeveloperShell() {
               <button
                 className={`min-w-0 rounded-xl px-3 py-2.5 text-left transition ${
                   activeView === value
-                    ? "bg-[#eff0fb] text-[#515bb4] shadow-sm"
-                    : "text-[#6b6f80] hover:bg-[#f7f7fc] hover:text-[#272936]"
+                    ? "bg-[#edf7f4] text-[#123d35] shadow-sm"
+                    : "text-[#60716c] hover:bg-[#f7f9f8] hover:text-[#20342e]"
                 }`}
                 key={value}
                 type="button"
                 onClick={() => setActiveView(value)}
               >
                 <span className="flex items-center gap-2 text-sm font-semibold">
-                  <span className="grid size-6 shrink-0 place-items-center rounded-lg bg-white/80 text-[10px] text-[#737ccf]">
+                  <span className="grid size-6 shrink-0 place-items-center rounded-lg bg-white/80 text-[10px] text-[#118778]">
                     0{index + 1}
                   </span>
                   {label}
@@ -566,7 +566,7 @@ export function DeveloperShell() {
                 <section className={panelClass}>
                   <div className="flex flex-col gap-3 border-b border-[#dce3ea] px-5 py-5 sm:flex-row sm:items-end sm:justify-between">
                     <div>
-                      <span className="text-xs font-bold uppercase text-[#5963b8]">
+                      <span className="text-xs font-bold uppercase text-[#0e6f62]">
                         Connection map
                       </span>
                       <h2 className="mt-1 text-xl font-semibold text-[#101827]">
@@ -584,20 +584,20 @@ export function DeveloperShell() {
                         "01",
                         "Authenticate",
                         `${activeKeys} active keys`,
-                        "#737ccf",
+                        "#118778",
                       ],
-                      ["02", "Create call", "POST outbound", "#737ccf"],
+                      ["02", "Create call", "POST outbound", "#118778"],
                       [
                         "03",
                         "Receive event",
                         `${enabledWebhooks} webhooks`,
-                        "#737ccf",
+                        "#118778",
                       ],
                       [
                         "04",
                         "Fetch result",
                         "Recording + transcript",
-                        "#737ccf",
+                        "#118778",
                       ],
                     ].map(([number, label, detail, color], index) => (
                       <div
@@ -674,7 +674,7 @@ export function DeveloperShell() {
                             Stable REST routes under /api/v1
                           </p>
                         </div>
-                        <span className="rounded-lg bg-[#eff0fb] px-2.5 py-1 text-xs font-bold text-[#5963b8]">
+                        <span className="rounded-lg bg-[#edf7f4] px-2.5 py-1 text-xs font-bold text-[#0e6f62]">
                           {endpointRows.length} routes
                         </span>
                       </div>
@@ -695,7 +695,7 @@ export function DeveloperShell() {
                       <div className="mt-4 flex flex-wrap gap-2">
                         {includedFields.map((item) => (
                           <code
-                            className="rounded-lg border border-[#e1e3ed] bg-[#f7f7fc] px-2.5 py-1.5 text-[11px] font-semibold text-[#51556a]"
+                            className="rounded-lg border border-[#dbe4e1] bg-[#f7f9f8] px-2.5 py-1.5 text-[11px] font-semibold text-[#51556a]"
                             key={item}
                           >
                             {item}
@@ -703,7 +703,7 @@ export function DeveloperShell() {
                         ))}
                       </div>
                       <button
-                        className="mt-5 text-sm font-semibold text-[#5963b8] hover:text-[#444da4]"
+                        className="mt-5 text-sm font-semibold text-[#0e6f62] hover:text-[#444da4]"
                         type="button"
                         onClick={() => setInspectorView("response")}
                       >
@@ -725,7 +725,7 @@ export function DeveloperShell() {
                         Production credentials and access scopes
                       </p>
                     </div>
-                    <span className="rounded-lg bg-[#eff0fb] px-2.5 py-1 text-xs font-bold text-[#5963b8]">
+                    <span className="rounded-lg bg-[#edf7f4] px-2.5 py-1 text-xs font-bold text-[#0e6f62]">
                       {activeKeys} active
                     </span>
                   </div>
@@ -772,7 +772,7 @@ export function DeveloperShell() {
                     <div className="mt-4 grid gap-2 sm:grid-cols-2">
                       {scopeCatalog.map((scope) => (
                         <label
-                          className={`flex cursor-pointer items-center gap-3 rounded-xl border px-3 py-2.5 text-sm font-semibold transition ${keyScopes.includes(scope) ? "border-[#c4c8ec] bg-[#eff0fb] text-[#515bb4]" : "border-[#dfe1ed] bg-white text-[#5f6374] hover:bg-[#f7f7fc]"}`}
+                          className={`flex cursor-pointer items-center gap-3 rounded-xl border px-3 py-2.5 text-sm font-semibold transition ${keyScopes.includes(scope) ? "border-[#c4c8ec] bg-[#edf7f4] text-[#123d35]" : "border-[#dfe1ed] bg-white text-[#5f6374] hover:bg-[#f7f9f8]"}`}
                           key={scope}
                         >
                           <input
@@ -782,7 +782,7 @@ export function DeveloperShell() {
                                 toggleValue(current, scope),
                               )
                             }
-                            className="accent-[#737ccf]"
+                            className="accent-[#118778]"
                             type="checkbox"
                           />
                           {scopeLabels[scope] ?? scope}
@@ -875,7 +875,7 @@ export function DeveloperShell() {
                         Signed call lifecycle events
                       </p>
                     </div>
-                    <span className="rounded-lg bg-[#eff0fb] px-2.5 py-1 text-xs font-bold text-[#5963b8]">
+                    <span className="rounded-lg bg-[#edf7f4] px-2.5 py-1 text-xs font-bold text-[#0e6f62]">
                       {enabledWebhooks} listening
                     </span>
                   </div>
@@ -926,7 +926,7 @@ export function DeveloperShell() {
                     <div className="mt-4 grid gap-2 sm:grid-cols-2">
                       {eventCatalog.map((event) => (
                         <label
-                          className={`flex cursor-pointer items-center gap-3 rounded-xl border px-3 py-2.5 text-sm font-semibold transition ${webhookEvents.includes(event) ? "border-[#c4c8ec] bg-[#eff0fb] text-[#515bb4]" : "border-[#dfe1ed] bg-white text-[#5f6374] hover:bg-[#f7f7fc]"}`}
+                          className={`flex cursor-pointer items-center gap-3 rounded-xl border px-3 py-2.5 text-sm font-semibold transition ${webhookEvents.includes(event) ? "border-[#c4c8ec] bg-[#edf7f4] text-[#123d35]" : "border-[#dfe1ed] bg-white text-[#5f6374] hover:bg-[#f7f9f8]"}`}
                           key={event}
                         >
                           <input
@@ -936,7 +936,7 @@ export function DeveloperShell() {
                                 toggleValue(current, event),
                               )
                             }
-                            className="accent-[#737ccf]"
+                            className="accent-[#118778]"
                             type="checkbox"
                           />
                           {eventLabels[event] ?? event}
@@ -1105,7 +1105,7 @@ export function DeveloperShell() {
               <div className="grid grid-cols-3 border-b border-white/10 bg-[#0b1220] p-1.5">
                 {(["request", "response", "webhook"] as const).map((view) => (
                   <button
-                    className={`h-8 rounded-lg text-xs font-semibold capitalize transition ${inspectorView === view ? "bg-[#737ccf] text-white" : "text-[#aeb6c7] hover:text-white"}`}
+                    className={`h-8 rounded-lg text-xs font-semibold capitalize transition ${inspectorView === view ? "bg-[#118778] text-white" : "text-[#aeb6c7] hover:text-white"}`}
                     key={view}
                     type="button"
                     onClick={() => setInspectorView(view)}
@@ -1148,7 +1148,7 @@ export function DeveloperShell() {
           role="status"
           aria-live="polite"
         >
-          <span className="bg-[#737ccf]" aria-hidden="true" />
+          <span className="bg-[#118778]" aria-hidden="true" />
           <span className="px-4 py-3 text-sm font-semibold text-[#334155]">
             {notice}
           </span>

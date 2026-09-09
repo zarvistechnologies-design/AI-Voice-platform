@@ -506,15 +506,15 @@ export function ContactExperience() {
 
       <style>{`
         #contact-page .contact-primary-button {
-          border-color: #6268ff !important;
-          background: #6268ff !important;
+          border-color: #118778 !important;
+          background: #118778 !important;
           color: #fff !important;
           -webkit-text-fill-color: #fff !important;
         }
 
         #contact-page .contact-primary-button:hover {
-          border-color: #565dcc !important;
-          background: #565dcc !important;
+          border-color: #0e6f62 !important;
+          background: #0e6f62 !important;
         }
 
         #contact-page .contact-secondary-button {

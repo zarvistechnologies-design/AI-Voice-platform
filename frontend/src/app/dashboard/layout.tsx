@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <DashboardQueryProvider>
-      <div className="dashboard-home-theme min-h-screen bg-[#f7f7fc] text-[#1b1b22]">
+      <div className="dashboard-home-theme min-h-screen bg-[#f7f9f8] text-[#1b1b22]">
         <DashboardNavigationFeedback />
         {children}
       </div>

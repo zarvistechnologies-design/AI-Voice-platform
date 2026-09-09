@@ -67,16 +67,16 @@ function DashboardWorkspaceBar() {
     session.organization?.name || `${session.name}'s workspace`;
 
   return (
-    <div className="dashboard-workspace-bar border-b border-[#e1e3ed] bg-white px-4 sm:px-6 lg:px-8">
+    <div className="dashboard-workspace-bar border-b border-[#dbe4e1] bg-white px-4 sm:px-6 lg:px-8">
       <div className="mx-auto flex h-12 w-full max-w-[1500px] items-center justify-between gap-4">
         <Link
-          className="group flex min-w-0 items-center gap-2 text-sm font-semibold text-[#272936]"
+          className="group flex min-w-0 items-center gap-2 text-sm font-semibold text-[#20342e]"
           href="/dashboard/settings"
           title="Workspace settings"
         >
           <span className="truncate">{workspaceName}</span>
           <svg
-            className="size-4 shrink-0 fill-none stroke-current stroke-2 text-[#8b8e9f] transition group-hover:text-[#5963b8]"
+            className="size-4 shrink-0 fill-none stroke-current stroke-2 text-[#8b8e9f] transition group-hover:text-[#0e6f62]"
             viewBox="0 0 24 24"
             aria-hidden="true"
           >
@@ -84,12 +84,12 @@ function DashboardWorkspaceBar() {
           </svg>
         </Link>
         <Link
-          className="group inline-flex shrink-0 items-center gap-2 rounded-lg border border-[#dfe1ef] bg-[#f7f7fc] px-3 py-1.5 text-sm font-bold text-[#515bb4] transition hover:border-[#bfc3ea] hover:bg-[#eff0fb]"
+          className="group inline-flex shrink-0 items-center gap-2 rounded-lg border border-[#dfe7e4] bg-[#f7f9f8] px-3 py-1.5 text-sm font-bold text-[#123d35] transition hover:border-[#9fcfc3] hover:bg-[#edf7f4]"
           href="/dashboard/billing"
           title="Open billing"
         >
           <span
-            className="grid size-5 place-items-center rounded-md bg-white text-[#5963b8] shadow-sm"
+            className="grid size-5 place-items-center rounded-md bg-white text-[#0e6f62] shadow-sm"
             aria-hidden="true"
           >
             <svg
@@ -120,14 +120,14 @@ export function DashboardPageHeader({
 }: DashboardPageHeaderProps) {
   return (
     <header
-      className={`dashboard-page-header sticky top-0 z-30 bg-white ${bordered ? "border-b border-[#e1e3ed]" : ""}`}
+      className={`dashboard-page-header sticky top-0 z-30 bg-white ${bordered ? "border-b border-[#dbe4e1]" : ""}`}
     >
       <DashboardWorkspaceBar />
       <div className="dashboard-page-header-inner mx-auto w-full max-w-[1500px] px-4 py-3 sm:px-6 lg:px-8">
         <div className="flex min-h-16 flex-col justify-center gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
             {eyebrow ? (
-              <div className="text-[10px] font-bold uppercase leading-4 tracking-[0.18em] text-[#5963b8]">
+              <div className="text-[10px] font-bold uppercase leading-4 tracking-[0.18em] text-[#0e6f62]">
                 {eyebrow}
               </div>
             ) : null}
@@ -135,7 +135,7 @@ export function DashboardPageHeader({
               {title}
             </h1>
             {description ? (
-              <p className="m-0 mt-1 max-w-3xl text-sm leading-5 text-[#6b6f80]">
+              <p className="m-0 mt-1 max-w-3xl text-sm leading-5 text-[#60716c]">
                 {description}
               </p>
             ) : null}

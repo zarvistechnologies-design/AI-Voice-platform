@@ -829,7 +829,7 @@ export default function HealthcarePage() {
             ))}
             <p className="mt-5 text-center text-sm text-slate-300">
               More questions?{" "}
-              <Link className="font-bold text-[#3e75ff] transition hover:text-[#315fdb] hover:underline" href="/contact">
+              <Link className="font-bold text-[#118778] transition hover:text-[#0e6f62] hover:underline" href="/contact">
                 Contact us
               </Link>
             </p>
@@ -875,15 +875,15 @@ export default function HealthcarePage() {
         }
 
         .healthcare-demo-button {
-          border: 1px solid #3e75ff;
-          background: #3e75ff;
+          border: 1px solid #118778;
+          background: #118778;
           color: #fff;
-          box-shadow: 0 12px 28px rgba(62, 117, 255, 0.22);
+          box-shadow: 0 12px 28px rgba(17, 135, 120, 0.22);
         }
 
         .healthcare-demo-button:hover {
-          border-color: #315fdb;
-          background: #315fdb;
+          border-color: #0e6f62;
+          background: #0e6f62;
         }
 
         .healthcare-hero-card {

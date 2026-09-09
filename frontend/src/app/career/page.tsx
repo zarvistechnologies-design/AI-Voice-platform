@@ -300,14 +300,14 @@ export default function CareerPage() {
 
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute left-1/2 top-16 h-72 w-72 -translate-x-1/2 rounded-full bg-[#3e75ff]/5 blur-[110px]"
+            className="pointer-events-none absolute left-1/2 top-16 h-72 w-72 -translate-x-1/2 rounded-full bg-[#118778]/5 blur-[110px]"
           />
 
           <div className="relative mx-auto max-w-[1000px] text-center">
 
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#3e75ff]/20 bg-white px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#3e75ff] shadow-sm">
-              <span className="size-1.5 rounded-full bg-[#3e75ff]" />
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#118778]/20 bg-white px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#118778] shadow-sm">
+              <span className="size-1.5 rounded-full bg-[#118778]" />
               Careers at vozon.ai
             </div>
 
@@ -333,7 +333,7 @@ export default function CareerPage() {
 
               <Link
                 href="#open-roles"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#3e75ff] px-6 text-sm font-bold text-white shadow-[0_12px_30px_rgba(62,117,255,0.2)] transition duration-300 hover:-translate-y-1 hover:bg-[#3268ed] hover:shadow-[0_18px_40px_rgba(62,117,255,0.25)]"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#118778] px-6 text-sm font-bold text-white shadow-[0_12px_30px_rgba(17,135,120,0.2)] transition duration-300 hover:-translate-y-1 hover:bg-[#0e6f62] hover:shadow-[0_18px_40px_rgba(17,135,120,0.25)]"
               >
                 Explore opportunities
                 <ArrowIcon />
@@ -341,7 +341,7 @@ export default function CareerPage() {
 
               <Link
                 href="/about"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-6 text-sm font-bold text-black shadow-sm transition duration-300 hover:-translate-y-1 hover:border-[#3e75ff]/40 hover:text-[#3e75ff] hover:shadow-md"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-6 text-sm font-bold text-black shadow-sm transition duration-300 hover:-translate-y-1 hover:border-[#118778]/40 hover:text-[#118778] hover:shadow-md"
               >
                 Meet vozon.ai
                 <ArrowIcon />
@@ -366,13 +366,13 @@ export default function CareerPage() {
             <div className="mx-auto max-w-3xl text-center">
 
               <div className="mx-auto flex items-center justify-center gap-3">
-                <span className="h-px w-8 bg-[#3e75ff]" />
+                <span className="h-px w-8 bg-[#118778]" />
 
-                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#3e75ff]">
+                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#118778]">
                   Why work with us
                 </p>
 
-                <span className="h-px w-8 bg-[#3e75ff]" />
+                <span className="h-px w-8 bg-[#118778]" />
               </div>
 
               <h2 className="mt-5 text-3xl font-semibold tracking-[-0.045em] text-black sm:text-4xl">
@@ -460,9 +460,9 @@ export default function CareerPage() {
               <div>
 
                 <div className="flex items-center gap-3">
-                  <span className="h-px w-8 bg-[#3e75ff]" />
+                  <span className="h-px w-8 bg-[#118778]" />
 
-                  <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#3e75ff]">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#118778]">
                     Open roles
                   </p>
                 </div>
@@ -490,7 +490,7 @@ export default function CareerPage() {
                   className="career-role-card group relative flex h-full min-h-[320px] flex-col overflow-hidden rounded-[22px] border p-7 transition-all duration-300"
                 >
 
-                  <div className="absolute inset-x-0 top-0 h-0.5 bg-[#3e75ff] opacity-0 transition duration-300 group-hover:opacity-100" />
+                  <div className="absolute inset-x-0 top-0 h-0.5 bg-[#118778] opacity-0 transition duration-300 group-hover:opacity-100" />
 
                   <div className="flex flex-1 flex-col">
 
@@ -519,7 +519,7 @@ export default function CareerPage() {
 
                         <span
                           key={tag}
-                          className="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-[9px] font-medium text-gray-600 transition duration-300 group-hover:border-[#3e75ff]/20"
+                          className="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-[9px] font-medium text-gray-600 transition duration-300 group-hover:border-[#118778]/20"
                         >
                           {tag}
                         </span>
@@ -534,7 +534,7 @@ export default function CareerPage() {
                         href={`mailto:hello@vozon.ai?subject=Apply%20now%20-%20${encodeURIComponent(
                           role.title
                         )}%20at%20vozon.ai`}
-                        className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-3 text-xs font-bold text-black transition duration-300 hover:border-[#3e75ff] hover:bg-[#3e75ff] hover:text-white"
+                        className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-3 text-xs font-bold text-black transition duration-300 hover:border-[#118778] hover:bg-[#118778] hover:text-white"
                       >
                         Apply now
                         <ArrowIcon />
@@ -654,9 +654,9 @@ export default function CareerPage() {
 
                 <div className="flex items-center gap-3">
 
-                  <span className="h-px w-8 bg-[#3e75ff]" />
+                  <span className="h-px w-8 bg-[#118778]" />
 
-                  <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#3e75ff]">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#118778]">
                     How we work
                   </p>
 
@@ -722,13 +722,13 @@ export default function CareerPage() {
 
               <div className="flex items-center justify-center gap-3">
 
-                <span className="h-px w-8 bg-[#3e75ff]" />
+                <span className="h-px w-8 bg-[#118778]" />
 
-                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#3e75ff]">
+                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#118778]">
                   What you can expect
                 </p>
 
-                <span className="h-px w-8 bg-[#3e75ff]" />
+                <span className="h-px w-8 bg-[#118778]" />
 
               </div>
 
@@ -748,7 +748,7 @@ export default function CareerPage() {
                   className="career-expect-card group min-h-[250px] rounded-[22px] border p-7 transition duration-300"
                 >
 
-                  <div className="grid size-11 place-items-center rounded-xl border border-[#3e75ff]/15 bg-[#3e75ff]/5 text-lg text-[#3e75ff] transition duration-300 group-hover:bg-[#3e75ff] group-hover:text-white">
+                  <div className="grid size-11 place-items-center rounded-xl border border-[#118778]/15 bg-[#118778]/5 text-lg text-[#118778] transition duration-300 group-hover:bg-[#118778] group-hover:text-white">
                     {benefit.icon}
                   </div>
 
@@ -829,9 +829,9 @@ export default function CareerPage() {
 
               <div className="flex items-center gap-3">
 
-                <span className="h-px w-8 bg-[#3e75ff]" />
+                <span className="h-px w-8 bg-[#118778]" />
 
-                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#3e75ff]">
+                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#118778]">
                   Our process
                 </p>
 
@@ -890,9 +890,9 @@ export default function CareerPage() {
 
               <div className="flex items-center gap-3">
 
-                <span className="h-px w-8 bg-[#3e75ff]" />
+                <span className="h-px w-8 bg-[#118778]" />
 
-                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#3e75ff]">
+                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#118778]">
                   Careers FAQ
                 </p>
 
@@ -930,7 +930,7 @@ export default function CareerPage() {
                       {faq.question}
                     </span>
 
-                    <span className="ml-auto grid size-8 shrink-0 place-items-center rounded-full border border-gray-300 bg-white text-lg font-light text-black transition duration-300 group-open:rotate-45 group-open:border-[#3e75ff] group-open:text-[#3e75ff]">
+                    <span className="ml-auto grid size-8 shrink-0 place-items-center rounded-full border border-gray-300 bg-white text-lg font-light text-black transition duration-300 group-open:rotate-45 group-open:border-[#118778] group-open:text-[#118778]">
                       +
                     </span>
 
@@ -993,7 +993,7 @@ export default function CareerPage() {
         <style>{`
           #career-page .career-benefit-card,
           #career-page .career-role-card {
-            --card-accent: #3e75ff;
+            --card-accent: #118778;
             --card-soft: #e8edff;
             border-color: #dce4ff;
             background: #f4f6ff;
@@ -1086,7 +1086,7 @@ export default function CareerPage() {
             .career-principles,
             .career-benefits,
             .career-qualities-process
-          ) [class*="text-[#3e75ff]"] {
+          ) [class*="text-[#118778]"] {
             color: var(--section-accent);
           }
 
@@ -1095,7 +1095,7 @@ export default function CareerPage() {
             .career-principles,
             .career-benefits,
             .career-qualities-process
-          ) [class*="bg-[#3e75ff]"] {
+          ) [class*="bg-[#118778]"] {
             background-color: var(--section-accent);
           }
 
@@ -1104,7 +1104,7 @@ export default function CareerPage() {
             .career-principles,
             .career-benefits,
             .career-qualities-process
-          ) [class*="border-[#3e75ff]"] {
+          ) [class*="border-[#118778]"] {
             border-color: color-mix(in srgb, var(--section-accent) 28%, transparent);
           }
 
