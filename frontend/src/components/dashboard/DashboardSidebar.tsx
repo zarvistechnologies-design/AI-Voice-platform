@@ -338,8 +338,12 @@ export function DashboardSidebar({
           </Link>
 
           {showUserSidebar ? (
-            <span className="dashboard-sidebar-console ml-auto hidden rounded-full border border-[#737ccf]/20 bg-[#737ccf]/10 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.16em] text-[#515bb4] lg:block">
-              Console
+            <span
+              className="dashboard-sidebar-console ml-auto hidden size-7 place-items-center rounded-lg text-[9px] font-extrabold uppercase tracking-[0.08em] lg:grid"
+              aria-label="AI voice workspace"
+              title="AI voice workspace"
+            >
+              AI
             </span>
           ) : null}
         </div>
