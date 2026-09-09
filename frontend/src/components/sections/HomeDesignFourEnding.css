@@ -909,6 +909,25 @@
   .design-four-integration-icons .instagram { right: 5%; top: 480px; font-size: 45px; }
   .design-four-integration-icons .hubspot { right: 20%; top: 595px; }
   .design-four-integration-icons .slack { display: none; }
+  .design-four-integration-icons {
+    position: absolute;
+    z-index: 2;
+    top: 360px;
+    right: 18px;
+    left: 18px;
+    display: grid;
+    grid-template-columns: repeat(3, 78px);
+    justify-content: space-between;
+    row-gap: 18px;
+  }
+  .design-four-integration-icons > span {
+    position: static;
+    box-sizing: border-box;
+  }
+  .design-four-integration-icons svg {
+    width: 46px;
+    height: 46px;
+  }
   .design-four-integration-arrow { bottom: -385px; }
   .design-four-footer { min-height: 1010px; }
   .design-four-footer-cta { min-height: 205px; flex-direction: column; padding: 28px 20px 38px; }

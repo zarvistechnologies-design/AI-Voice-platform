@@ -137,7 +137,7 @@ export function HomeDesignFour() {
             <span><i>✓</i>Multilingual speech</span>
             <span><i>✓</i>Flexible voice stack</span>
           </div>
-          <h1>One platform. Every niche. Voice<br className="design-four-desktop-break" /> agents that already speak your <strong>industry&apos;s language.</strong></h1>
+          <h1>One platform. Every niche. Voice<br className="design-four-desktop-break" /> agents that already speak your <strong>Industrial language.</strong></h1>
           <form
             className="design-four-phone"
             onSubmit={(event) => {
@@ -177,8 +177,6 @@ export function HomeDesignFour() {
               <svg aria-hidden="true" viewBox="0 0 24 28"><path d="M2 2h18v9H11v3h9v12H2v-9h9v-3H2V2Z" /></svg>
               <em>SOULPAGE</em>
             </b>
-            <b className="design-four-client-logo is-google">Google</b>
-            <b className="design-four-client-logo is-microsoft">Microsoft</b>
             <b className="design-four-client-logo is-hubspot">HubSpot</b>
             <b className="design-four-client-logo is-shopify">Shopify</b>
             <b className="design-four-client-logo is-zendesk">zendesk</b>
@@ -204,8 +202,6 @@ export function HomeDesignFour() {
                 <svg aria-hidden="true" viewBox="0 0 24 28"><path d="M2 2h18v9H11v3h9v12H2v-9h9v-3H2V2Z" /></svg>
                 <em>SOULPAGE</em>
               </b>
-              <b className="design-four-client-logo is-google">Google</b>
-              <b className="design-four-client-logo is-microsoft">Microsoft</b>
               <b className="design-four-client-logo is-hubspot">HubSpot</b>
               <b className="design-four-client-logo is-shopify">Shopify</b>
               <b className="design-four-client-logo is-zendesk">zendesk</b>
@@ -221,9 +217,9 @@ export function HomeDesignFour() {
           </div>
           <div className="design-four-voice-layout">
             <div className="design-four-voice-copy">
-              <h2><strong>Vozon.ai</strong> named a next generation platform for Enterprise Voice AI, transforming conversations into business outcomes</h2>
+              <h2 className="leading-tight tracking-tight">Vozon.ai named a next generation<br className="hidden md:block" />platform for Enterprise Voice AI,<br className="hidden md:block" />transforming conversations into<br className="hidden md:block" />business outcomes</h2>
               <p>Build intelligent voice agents, connect your business systems, and automate customer conversations with Vozon.</p>
-              <Link href="/product">Explore Vozon</Link>
+              <Link  href="/product" className="rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-blue-700">Explore Vozon</Link>
             </div>
             <div className="design-four-voice-player">
               <button aria-label={voicePlaying ? "Pause voice preview" : "Play voice preview"} className={`design-four-voice-disc${voicePlaying ? " is-playing" : ""}`} onClick={() => setVoicePlaying((playing) => !playing)} type="button"><span>{voicePlaying ? "Ⅱ" : "▶"}</span></button>
