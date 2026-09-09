@@ -55,7 +55,7 @@ const providers: { id: TelephonyProvider; description: string; docs: string }[] 
 const buttonClass =
   "app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 transition disabled:cursor-not-allowed disabled:opacity-50";
 const controlClass =
-  "app-control-text min-h-11 w-full rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#6468ff] focus:ring-4 focus:ring-[#6468ff]/10";
+  "app-control-text min-h-11 w-full rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10";
 
 export function PhoneNumberModals({
   agents,
@@ -221,11 +221,11 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
           <RequestError message={requestError} />
 
           <section className="grid gap-3">
-            <div><span className="app-label text-[#5057e5]">Step 1</span><h3 className="app-section-title mt-1 mb-0">Choose provider</h3></div>
-            <div className="grid grid-cols-3 gap-1 rounded-xl border border-[#dfe3ea] bg-[#fbfbff] p-1">
+            <div><span className="app-label text-[#5963b8]">Step 1</span><h3 className="app-section-title mt-1 mb-0">Choose provider</h3></div>
+            <div className="grid grid-cols-3 gap-1 rounded-xl border border-[#dfe3ea] bg-[#f7f7fc] p-1">
               {providers.map((item) => (
                 <button
-                  className={`min-h-10 rounded-lg px-2 text-center transition ${provider === item.id ? "border border-[#b8bde8] bg-white text-[#5057e5]" : "border border-transparent text-[#64748b] hover:bg-white hover:text-[#334155]"}`}
+                  className={`min-h-10 rounded-lg px-2 text-center transition ${provider === item.id ? "border border-[#b8bde8] bg-white text-[#5963b8]" : "border border-transparent text-[#64748b] hover:bg-white hover:text-[#334155]"}`}
                   disabled={busy}
                   key={item.id}
                   onClick={() => setProvider(item.id)}
@@ -238,15 +238,15 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
             </div>
           </section>
 
-          <div className="rounded-lg border border-[#c9ccef] bg-[#eff0ff] px-3 py-2.5">
+          <div className="rounded-lg border border-[#c9ccef] bg-[#eff0fb] px-3 py-2.5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <span className="app-body text-[#1e40af]">{providers.find((item) => item.id === provider)?.description}</span>
-              <a className="app-label text-[#6468ff] underline underline-offset-2" href={providers.find((item) => item.id === provider)?.docs} rel="noreferrer" target="_blank">Provider docs</a>
+              <a className="app-label text-[#737ccf] underline underline-offset-2" href={providers.find((item) => item.id === provider)?.docs} rel="noreferrer" target="_blank">Provider docs</a>
             </div>
           </div>
 
           <section className="grid gap-3">
-            <div><span className="app-label text-[#5057e5]">Step 2</span><h3 className="app-section-title mt-1 mb-0">Number details</h3></div>
+            <div><span className="app-label text-[#5963b8]">Step 2</span><h3 className="app-section-title mt-1 mb-0">Number details</h3></div>
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="app-label grid gap-2">
                 Phone number
@@ -260,7 +260,7 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
             </div>
           </section>
 
-          <div><span className="app-label text-[#5057e5]">Step 3</span><h3 className="app-section-title mt-1 mb-0">Provider credentials</h3><p className="app-caption mt-1 mb-0">Used securely to verify ownership of this number.</p></div>
+          <div><span className="app-label text-[#5963b8]">Step 3</span><h3 className="app-section-title mt-1 mb-0">Provider credentials</h3><p className="app-caption mt-1 mb-0">Used securely to verify ownership of this number.</p></div>
 
           {provider === "Twilio" ? (
             <div className="grid gap-4 rounded-xl border border-[#e5e7eb] bg-[#f8fafc] p-4">
@@ -350,7 +350,7 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
 
         <footer className="flex items-center justify-end gap-2 border-t border-[#e5e7eb] px-5 py-4 sm:px-6">
           <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button>
-          <button className={`${buttonClass} bg-[#6468ff] text-white hover:bg-[#5057e5]`} aria-describedby="phone-import-validation" disabled={busy || !valid} type="submit">
+          <button className={`${buttonClass} bg-[#737ccf] text-white hover:bg-[#5963b8]`} aria-describedby="phone-import-validation" disabled={busy || !valid} type="submit">
             <Icon icon="import" /> {busy ? "Importing..." : "Import number"}
           </button>
         </footer>
@@ -432,7 +432,7 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase, onSearchInven
             Area code or digits <span className="font-normal text-[#94a3b8]">(optional)</span>
             <input className={controlClass} inputMode="tel" placeholder="For example 80 or 650" value={query} onChange={(event) => setQuery(event.target.value)} />
           </label>
-          <button className={`${buttonClass} self-end border border-[#c9ccef] bg-white text-[#6468ff] hover:bg-[#eff0ff]`} disabled={searching || busy} type="submit">
+          <button className={`${buttonClass} self-end border border-[#c9ccef] bg-white text-[#737ccf] hover:bg-[#eff0fb]`} disabled={searching || busy} type="submit">
             <Icon icon="search" /> {searching ? "Searching..." : "Search"}
           </button>
         </form>
@@ -454,7 +454,7 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase, onSearchInven
                 const voiceAvailable = number.voice_enabled !== false && number.capabilities?.voice !== false;
                 return (
                   <button
-                    className={`grid w-full gap-3 rounded-xl border p-3 text-left transition sm:grid-cols-[minmax(0,1fr)_145px_145px_auto] sm:items-center ${active ? "border-[#6468ff] bg-[#eff0ff] ring-2 ring-[#6468ff]/10" : "border-[#e5e7eb] bg-white hover:border-[#c9ccef] hover:bg-[#fbfcff]"}`}
+                    className={`grid w-full gap-3 rounded-xl border p-3 text-left transition sm:grid-cols-[minmax(0,1fr)_145px_145px_auto] sm:items-center ${active ? "border-[#737ccf] bg-[#eff0fb] ring-2 ring-[#737ccf]/10" : "border-[#e5e7eb] bg-white hover:border-[#c9ccef] hover:bg-[#fbfcff]"}`}
                     disabled={!voiceAvailable || busy}
                     key={number.id || number.e164}
                     onClick={() => setSelected(number)}
@@ -486,7 +486,7 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase, onSearchInven
           </label>
           <div className="flex gap-2">
             <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button>
-            <button className={`${buttonClass} bg-[#6468ff] text-white hover:bg-[#5057e5]`} disabled={busy || !selected} onClick={() => { if (selected) onPurchase(selected, label); }} type="button">
+            <button className={`${buttonClass} bg-[#737ccf] text-white hover:bg-[#5963b8]`} disabled={busy || !selected} onClick={() => { if (selected) onPurchase(selected, label); }} type="button">
               <Icon icon="plus" /> {busy ? "Purchasing..." : "Purchase number"}
             </button>
           </div>
@@ -527,20 +527,20 @@ function AgentModal({ agents, busy, number, requestError, onAssign, onClose }: {
             const selected = selectedId === agent._id;
             return (
               <button
-                className={`mb-1 flex w-full items-center gap-3 rounded-lg border p-3 text-left transition ${selected ? "border-[#c9ccef] bg-[#eff0ff]" : "border-transparent hover:bg-[#f8fafc]"}`}
+                className={`mb-1 flex w-full items-center gap-3 rounded-lg border p-3 text-left transition ${selected ? "border-[#c9ccef] bg-[#eff0fb]" : "border-transparent hover:bg-[#f8fafc]"}`}
                 disabled={busy}
                 key={agent._id}
                 onClick={() => setSelectedId(agent._id)}
                 type="button"
                 aria-pressed={selected}
               >
-                <span className={`grid size-10 shrink-0 place-items-center rounded-lg ${selected ? "bg-[#6468ff] text-white" : "bg-[#eff0ff] text-[#6468ff]"}`}><Icon icon="user" /></span>
+                <span className={`grid size-10 shrink-0 place-items-center rounded-lg ${selected ? "bg-[#737ccf] text-white" : "bg-[#eff0fb] text-[#737ccf]"}`}><Icon icon="user" /></span>
                 <span className="min-w-0 flex-1">
                   <strong className="app-strong block truncate">{agent.name}</strong>
                   <span className="app-caption block truncate">{agent.team || "Voice agent"}</span>
                 </span>
                 <span className={`app-label rounded-full px-2 py-1 ${agent.status === "Live" ? "bg-[#ecfdf5] text-[#047857]" : "bg-[#f1f5f9] text-[#64748b]"}`}>{agent.status}</span>
-                <span className={`grid size-5 place-items-center rounded-full border ${selected ? "border-[#6468ff] bg-[#6468ff] text-white" : "border-[#cbd5e1]"}`}>{selected ? <Icon icon="check" className="size-3" /> : null}</span>
+                <span className={`grid size-5 place-items-center rounded-full border ${selected ? "border-[#737ccf] bg-[#737ccf] text-white" : "border-[#cbd5e1]"}`}>{selected ? <Icon icon="check" className="size-3" /> : null}</span>
               </button>
             );
           })}
@@ -557,7 +557,7 @@ function AgentModal({ agents, busy, number, requestError, onAssign, onClose }: {
           </div>
           <div className="flex gap-2">
             <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button>
-            <button className={`${buttonClass} bg-[#6468ff] text-white hover:bg-[#5057e5]`} disabled={busy || !selectedId} onClick={() => onAssign(selectedId)} type="button">
+            <button className={`${buttonClass} bg-[#737ccf] text-white hover:bg-[#5963b8]`} disabled={busy || !selectedId} onClick={() => onAssign(selectedId)} type="button">
               <Icon icon="link" /> {busy ? "Saving..." : "Set agent"}
             </button>
           </div>
@@ -583,7 +583,7 @@ function ModalFrame({ busy = false, children, onClose, subtitle, title, width = 
             <h2 className="app-page-title m-0">{title}</h2>
             <p className="app-caption mt-1 mb-0">{subtitle}</p>
           </div>
-          <button className="grid size-9 shrink-0 place-items-center rounded-lg border border-[#dfe3ea] bg-[#ffffff] text-[#64748b] transition hover:border-[#b8bde8] hover:bg-[#fbfbff] hover:text-[#5057e5] disabled:cursor-wait disabled:opacity-50" disabled={busy} onClick={onClose} type="button" aria-label={busy ? "Please wait for the current request to finish" : "Close"}>
+          <button className="grid size-9 shrink-0 place-items-center rounded-lg border border-[#dfe3ea] bg-[#ffffff] text-[#64748b] transition hover:border-[#b8bde8] hover:bg-[#f7f7fc] hover:text-[#5963b8] disabled:cursor-wait disabled:opacity-50" disabled={busy} onClick={onClose} type="button" aria-label={busy ? "Please wait for the current request to finish" : "Close"}>
             <Icon icon="close" />
           </button>
         </header>

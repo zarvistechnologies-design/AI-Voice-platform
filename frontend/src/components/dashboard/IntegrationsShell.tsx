@@ -28,14 +28,14 @@ const catalog = {
     name: "Vobiz",
     category: "Telephony",
     description: "Buy, import, and route phone numbers to your voice agents.",
-    color: "from-[#6468ff] to-[#8990d8]",
+    color: "from-[#737ccf] to-[#8990d8]",
   },
   hubspot: {
     name: "HubSpot",
     category: "CRM",
     description:
       "Create callers as contacts and log completed calls as CRM notes.",
-    color: "from-[#6468ff] to-[#8990d8]",
+    color: "from-[#737ccf] to-[#8990d8]",
     flow: "After every finalized call",
   },
   calendly: {
@@ -43,7 +43,7 @@ const catalog = {
     category: "Scheduling",
     description:
       "Let agents discover event types and create one-time booking links during calls.",
-    color: "from-[#6468ff] to-[#8990d8]",
+    color: "from-[#737ccf] to-[#8990d8]",
     flow: "Used live by the agent during a call",
   },
   slack: {
@@ -51,7 +51,7 @@ const catalog = {
     category: "Notifications",
     description:
       "Send automatic call completion notifications to a Slack channel.",
-    color: "from-[#6468ff] to-[#8990d8]",
+    color: "from-[#737ccf] to-[#8990d8]",
     flow: "After every finalized call",
   },
   google_calendar: {
@@ -59,7 +59,7 @@ const catalog = {
     category: "Scheduling",
     description:
       "Check live availability and let selected voice agents create appointments during calls.",
-    color: "from-[#5057e5] to-[#8990d8]",
+    color: "from-[#5963b8] to-[#8990d8]",
     flow: "Used live by enabled agents",
   },
   google_sheets: {
@@ -67,14 +67,14 @@ const catalog = {
     category: "Data & leads",
     description:
       "Append qualified leads and call outcomes to a spreadsheet and sheet tab you select.",
-    color: "from-[#6468ff] to-[#8990d8]",
+    color: "from-[#737ccf] to-[#8990d8]",
     flow: "Used live by enabled agents",
   },
   google: {
     name: "Google",
     category: "Google Workspace",
     description: "Shared authorization for Google Calendar and Google Sheets.",
-    color: "from-[#6468ff] to-[#8990d8]",
+    color: "from-[#737ccf] to-[#8990d8]",
     flow: "OAuth authorization",
   },
   digitalbot: {
@@ -82,7 +82,7 @@ const catalog = {
     category: "Clinic operations",
     description:
       "Connect a DigitalBot workspace so agents can check doctor availability and create appointments.",
-    color: "from-[#6468ff] to-emerald-400",
+    color: "from-[#737ccf] to-emerald-400",
     flow: "Used live by attached agents",
   },
 } as const;
@@ -419,7 +419,7 @@ export function IntegrationsShell() {
         />
         <div className="mx-auto grid max-w-[1500px] gap-6 px-4 py-5 sm:px-6 lg:px-8">
           {notice ? (
-            <div className="rounded-xl border border-[#c9ccef] bg-[#eff0ff] px-4 py-3 text-sm text-[#454bd3]">
+            <div className="rounded-xl border border-[#c9ccef] bg-[#eff0fb] px-4 py-3 text-sm text-[#515bb4]">
               {notice}
             </div>
           ) : null}
@@ -457,7 +457,7 @@ export function IntegrationsShell() {
                       {item.description}
                     </p>
                     {"flow" in item ? (
-                      <p className="mt-2 text-xs font-semibold text-[#454bd3]">
+                      <p className="mt-2 text-xs font-semibold text-[#515bb4]">
                         {item.flow}
                       </p>
                     ) : null}
@@ -495,7 +495,7 @@ export function IntegrationsShell() {
                       </div>
                     ) : null}
                     {provider.id === "digitalbot" ? (
-                      <div className="mt-4 rounded-xl border border-[#dfe1ef] bg-[#eff0ff]/60 p-3 text-xs leading-5 text-slate-700">
+                      <div className="mt-4 rounded-xl border border-[#dfe1ef] bg-[#eff0fb]/60 p-3 text-xs leading-5 text-slate-700">
                         <strong className="block text-slate-900">
                           One connection belongs to one selected Vozon agent.
                         </strong>
@@ -541,7 +541,7 @@ export function IntegrationsShell() {
                                 </div>
                                 <div className="mt-3 flex flex-wrap items-center gap-2">
                                   <button
-                                    className="rounded-lg border border-[#c9ccef] px-3 py-1.5 font-semibold text-[#454bd3]"
+                                    className="rounded-lg border border-[#c9ccef] px-3 py-1.5 font-semibold text-[#515bb4]"
                                     disabled={busy}
                                     type="button"
                                     onClick={() =>
@@ -554,7 +554,7 @@ export function IntegrationsShell() {
                                   </button>
                                   <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 px-3 py-1.5 font-semibold text-slate-700">
                                     <input
-                                      className="h-4 w-4 accent-[#6468ff]"
+                                      className="h-4 w-4 accent-[#737ccf]"
                                       type="checkbox"
                                       role="switch"
                                       checked={connection.toolsActive}
@@ -597,7 +597,7 @@ export function IntegrationsShell() {
                     <div className="mt-5 flex flex-wrap gap-2">
                       {provider.id === "vobiz" ? (
                         <Link
-                          className="rounded-lg bg-[#6468ff] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#5057e5]"
+                          className="rounded-lg bg-[#737ccf] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#5963b8]"
                           href="/dashboard/phone-number"
                           prefetch={false}
                           onFocus={() =>
@@ -616,7 +616,7 @@ export function IntegrationsShell() {
                         provider.connected ? (
                           <>
                             <button
-                              className="rounded-lg bg-[#6468ff] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#5057e5]"
+                              className="rounded-lg bg-[#737ccf] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#5963b8]"
                               disabled={busy}
                               type="button"
                               onClick={() => void openGoogleManager(googleView)}
@@ -634,7 +634,7 @@ export function IntegrationsShell() {
                           </>
                         ) : (
                           <button
-                            className="rounded-lg bg-[#6468ff] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#5057e5]"
+                            className="rounded-lg bg-[#737ccf] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#5963b8]"
                             disabled={busy}
                             type="button"
                             onClick={() => void connectGoogle()}
@@ -644,7 +644,7 @@ export function IntegrationsShell() {
                         )
                       ) : provider.id === "digitalbot" ? (
                         <button
-                          className="rounded-lg bg-[#6468ff] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#5057e5]"
+                          className="rounded-lg bg-[#737ccf] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#5963b8]"
                           type="button"
                           onClick={() => {
                             setSelected("digitalbot");
@@ -674,7 +674,7 @@ export function IntegrationsShell() {
                         </button>
                       ) : (
                         <button
-                          className="rounded-lg bg-[#6468ff] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#5057e5]"
+                          className="rounded-lg bg-[#737ccf] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#5963b8]"
                           type="button"
                           onClick={() => {
                             setSelected(
@@ -702,7 +702,7 @@ export function IntegrationsShell() {
       {selected &&
       (modalError || (selected === "digitalbot" && agentsLoading)) ? (
         <div
-          className={`fixed left-1/2 top-4 z-[60] w-[min(92vw,32rem)] -translate-x-1/2 rounded-xl border px-4 py-3 text-sm font-medium shadow-xl ${agentsLoading ? "border-[#c8caff] bg-[#eff0ff] text-[#454bd3]" : "border-rose-300 bg-rose-50 text-rose-800"}`}
+          className={`fixed left-1/2 top-4 z-[60] w-[min(92vw,32rem)] -translate-x-1/2 rounded-xl border px-4 py-3 text-sm font-medium shadow-xl ${agentsLoading ? "border-[#bfc3ea] bg-[#eff0fb] text-[#515bb4]" : "border-rose-300 bg-rose-50 text-rose-800"}`}
           role={agentsLoading ? "status" : "alert"}
         >
           {agentsLoading ? "Loading your Vozon agents..." : modalError}
@@ -719,7 +719,7 @@ export function IntegrationsShell() {
           >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-[#5057e5]">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#5963b8]">
                   {catalog[selected].category}
                 </span>
                 <h2 className="mt-2 text-xl font-semibold">
@@ -808,7 +808,7 @@ export function IntegrationsShell() {
               />
             </label>
             <button
-              className="mt-5 w-full rounded-lg bg-[#6468ff] px-4 py-3 text-sm font-semibold text-white hover:bg-[#5057e5] disabled:opacity-50"
+              className="mt-5 w-full rounded-lg bg-[#737ccf] px-4 py-3 text-sm font-semibold text-white hover:bg-[#5963b8] disabled:opacity-50"
               type="button"
               disabled={
                 busy ||
@@ -837,7 +837,7 @@ export function IntegrationsShell() {
           >
             <div className="flex justify-between gap-4">
               <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-[#5057e5]">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#5963b8]">
                   Google Workspace
                 </span>
                 <h2 className="mt-2 text-xl font-semibold">
@@ -867,7 +867,7 @@ export function IntegrationsShell() {
                       {calendar.timezone}
                     </span>
                     <button
-                      className="rounded-lg border border-[#c9ccef] px-3 py-1.5 text-xs font-semibold text-[#454bd3]"
+                      className="rounded-lg border border-[#c9ccef] px-3 py-1.5 text-xs font-semibold text-[#515bb4]"
                       type="button"
                       onClick={() =>
                         void integrationsApi
@@ -903,7 +903,7 @@ export function IntegrationsShell() {
                 placeholder="https://docs.google.com/spreadsheets/d/..."
               />
               <button
-                className="rounded-lg bg-[#6468ff] px-4 text-sm font-semibold text-white transition hover:bg-[#5057e5] disabled:opacity-50"
+                className="rounded-lg bg-[#737ccf] px-4 text-sm font-semibold text-white transition hover:bg-[#5963b8] disabled:opacity-50"
                 disabled={busy || !spreadsheetInput.trim()}
                 type="button"
                 onClick={() => void inspectSpreadsheet()}
