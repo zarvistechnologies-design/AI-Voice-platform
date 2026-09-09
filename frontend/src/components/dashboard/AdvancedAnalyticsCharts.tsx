@@ -22,8 +22,8 @@ import {
 import type { AgentSummary, AnalyticsOverview } from "@/lib/voice";
 
 const COLORS = [
-  "#737ccf",
-  "#5963b8",
+  "#6468ff",
+  "#5057e5",
   "#a855f7",
   "#f59e0b",
   "#ef5d7a",
@@ -37,7 +37,7 @@ const tooltipStyle = {
   color: "#111827",
   fontSize: 12,
 };
-const axis = { fill: "#7a7d8e", fontSize: 10, fontWeight: 500 };
+const axis = { fill: "#676773", fontSize: 10, fontWeight: 500 };
 
 function Area(props: ComponentProps<typeof ReArea>) {
   return <ReArea {...props} isAnimationActive={false} />;
@@ -70,7 +70,7 @@ function ChartCard({
         <h2 className="text-[15px] font-semibold tracking-[-.01em] text-[#171923]">
           {title}
         </h2>
-        <p className="mt-1 text-xs leading-5 text-[#7a7d8e]">{subtitle}</p>
+        <p className="mt-1 text-xs leading-5 text-[#676773]">{subtitle}</p>
       </div>
       {children}
     </article>
@@ -128,7 +128,7 @@ function AgentPerformanceTooltip({
       <div className="flex items-center justify-between gap-3">
         <strong className="text-sm">{row.fullName}</strong>
         <span
-          className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${row.active ? "bg-[#eff0fb] text-[#515bb4]" : row.status === "Live" ? "bg-emerald-50 text-emerald-700" : row.status === "Paused" ? "bg-amber-50 text-amber-700" : "bg-slate-100 text-slate-600"}`}
+          className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${row.active ? "bg-[#eff0ff] text-[#454bd3]" : row.status === "Live" ? "bg-emerald-50 text-emerald-700" : row.status === "Paused" ? "bg-amber-50 text-amber-700" : "bg-slate-100 text-slate-600"}`}
         >
           {row.active ? "On a call" : row.status}
         </span>
@@ -137,7 +137,7 @@ function AgentPerformanceTooltip({
         {row.phone || "No phone route"}
       </span>
       <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-        <span className="rounded-lg bg-[#f7f7fc] p-2 text-[#686c7e]">
+        <span className="rounded-lg bg-[#fbfbff] p-2 text-[#686c7e]">
           Total<strong className="mt-1 block text-sm">{row.calls}</strong>
         </span>
         <span className="rounded-lg bg-emerald-50 p-2 text-emerald-700">
@@ -148,12 +148,12 @@ function AgentPerformanceTooltip({
           Not completed
           <strong className="mt-1 block text-sm">{row.incomplete}</strong>
         </span>
-        <span className="rounded-lg bg-[#eff0fb] p-2 text-[#515bb4]">
+        <span className="rounded-lg bg-[#eff0ff] p-2 text-[#454bd3]">
           Success rate
           <strong className="mt-1 block text-sm">{row.completion}%</strong>
         </span>
       </div>
-      <span className="mt-3 block text-xs text-[#7a7d8e]">
+      <span className="mt-3 block text-xs text-[#676773]">
         Talk time: {row.talkTime}
       </span>
     </div>
@@ -208,10 +208,10 @@ function AgentPerformanceCommandCenter({
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#e5e7ef] px-5 py-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="size-2 rounded-full bg-[#737ccf] shadow-[0_0_0_4px_rgba(115,124,207,.12)]" />
+            <span className="size-2 rounded-full bg-[#6468ff] shadow-[0_0_0_4px_rgba(100,104,255,.12)]" />
             <h2 className="text-[15px] font-semibold">Agent performance</h2>
           </div>
-          <p className="mt-1 text-xs text-[#7a7d8e]">
+          <p className="mt-1 text-xs text-[#676773]">
             Compare every agent by completed conversations, volume, routing, and
             live availability.
           </p>
@@ -220,7 +220,7 @@ function AgentPerformanceCommandCenter({
           <span className="rounded-full bg-emerald-50 px-3 py-1.5 text-emerald-700">
             {liveCount} live
           </span>
-          <span className="rounded-full bg-[#eff0fb] px-3 py-1.5 text-[#515bb4]">
+          <span className="rounded-full bg-[#eff0ff] px-3 py-1.5 text-[#454bd3]">
             {activeAgentIds.length} on calls
           </span>
           <span className="rounded-full bg-slate-100 px-3 py-1.5 text-slate-600">
@@ -230,7 +230,7 @@ function AgentPerformanceCommandCenter({
       </div>
       <div className="flex flex-wrap items-center gap-5 border-b border-[#ececf3] bg-[#fafaff] px-5 py-3 text-xs text-[#686c7e]">
         <span className="inline-flex items-center gap-2">
-          <i className="size-2.5 rounded-sm bg-gradient-to-r from-[#737ccf] via-[#a855f7] to-[#22c98f]" />
+          <i className="size-2.5 rounded-sm bg-gradient-to-r from-[#6468ff] via-[#a855f7] to-[#22c98f]" />
           Completed · unique agent colour
         </span>
         <span className="inline-flex items-center gap-2">
@@ -273,7 +273,7 @@ function AgentPerformanceCommandCenter({
                 />
                 <Tooltip
                   content={<AgentPerformanceTooltip />}
-                  cursor={{ fill: "rgba(115,124,207,.045)" }}
+                  cursor={{ fill: "rgba(100,104,255,.045)" }}
                 />
                 <Bar
                   dataKey="completed"
@@ -371,7 +371,7 @@ export function AdvancedAnalyticsCharts({
     {
       label: "Completion",
       value: `${data.summary.completionRate}%`,
-      tone: "text-[#5963b8]",
+      tone: "text-[#5057e5]",
     },
     {
       label: "Talk time",
@@ -403,18 +403,18 @@ export function AdvancedAnalyticsCharts({
       <section className="overflow-hidden rounded-2xl border border-[#dfe1ef] bg-white shadow-[0_14px_38px_rgba(52,58,116,.07)]">
         <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-6">
           <div>
-            <span className="text-[10px] font-bold uppercase tracking-[.18em] text-[#5963b8]">
+            <span className="text-[10px] font-bold uppercase tracking-[.18em] text-[#5057e5]">
               Conversation intelligence
             </span>
             <h2 className="mt-1 text-lg font-semibold tracking-[-.02em]">
               Performance overview
             </h2>
-            <p className="mt-1 text-xs leading-5 text-[#7a7d8e]">
+            <p className="mt-1 text-xs leading-5 text-[#676773]">
               Follow demand, outcomes, customer behaviour, and operating
               patterns from one connected view.
             </p>
           </div>
-          <span className="rounded-full bg-[#eff0fb] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.14em] text-[#5963b8]">
+          <span className="rounded-full bg-[#eff0ff] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.14em] text-[#5057e5]">
             Live workspace data
           </span>
         </div>
@@ -425,7 +425,7 @@ export function AdvancedAnalyticsCharts({
               className={`px-5 py-3.5 ${index % 2 ? "border-l" : ""} border-b border-[#e5e7ef] sm:border-l sm:[&:nth-child(3n+1)]:border-l-0 xl:border-b-0 xl:[&:nth-child(3n+1)]:border-l xl:first:border-l-0`}
               key={metric.label}
             >
-              <span className="block text-[10px] font-semibold uppercase tracking-[.12em] text-[#7a7d8e]">
+              <span className="block text-[10px] font-semibold uppercase tracking-[.12em] text-[#676773]">
                 {metric.label}
               </span>
               <strong
@@ -466,12 +466,12 @@ export function AdvancedAnalyticsCharts({
                       >
                         <stop
                           offset="0"
-                          stopColor="#737ccf"
+                          stopColor="#6468ff"
                           stopOpacity={0.32}
                         />
                         <stop
                           offset="1"
-                          stopColor="#737ccf"
+                          stopColor="#6468ff"
                           stopOpacity={0.02}
                         />
                       </linearGradient>
@@ -490,7 +490,7 @@ export function AdvancedAnalyticsCharts({
                       type="monotone"
                       dataKey="calls"
                       name="Total calls"
-                      stroke="#737ccf"
+                      stroke="#6468ff"
                       strokeWidth={2.5}
                       fill="url(#callsArea)"
                     />
@@ -498,7 +498,7 @@ export function AdvancedAnalyticsCharts({
                       type="monotone"
                       dataKey="completed"
                       name="Completed"
-                      stroke="#5963b8"
+                      stroke="#5057e5"
                       strokeWidth={2.2}
                       dot={false}
                     />
@@ -545,7 +545,7 @@ export function AdvancedAnalyticsCharts({
               </div>
             )}
             <div className="mt-3 rounded-xl border border-[#dfe1ef] bg-[#f8f8fe] p-4">
-              <span className="text-[10px] font-bold uppercase tracking-[.16em] text-[#5963b8]">
+              <span className="text-[10px] font-bold uppercase tracking-[.16em] text-[#5057e5]">
                 {focus.label}
               </span>
               <strong className="mt-2 block text-sm leading-5">
@@ -562,11 +562,11 @@ export function AdvancedAnalyticsCharts({
           <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 marker:hidden">
             <div>
               <h2 className="text-[15px] font-semibold">Advanced analysis</h2>
-              <p className="mt-1 text-xs text-[#7a7d8e]">
+              <p className="mt-1 text-xs text-[#676773]">
                 Channels, timing, sentiment, and conversation duration
               </p>
             </div>
-            <span className="grid size-9 place-items-center rounded-lg border border-[#dfe1ef] text-lg text-[#5963b8] transition group-open:rotate-45">
+            <span className="grid size-9 place-items-center rounded-lg border border-[#dfe1ef] text-lg text-[#5057e5] transition group-open:rotate-45">
               +
             </span>
           </summary>
@@ -680,7 +680,7 @@ export function AdvancedAnalyticsCharts({
                                 ? "#22c98f"
                                 : row.name === "negative"
                                   ? "#ef5d7a"
-                                  : "#737ccf"
+                                  : "#6468ff"
                             }
                           />
                         ))}
@@ -715,13 +715,13 @@ export function AdvancedAnalyticsCharts({
                       <Tooltip contentStyle={tooltipStyle} />
                       <Bar
                         dataKey="calls"
-                        fill="#737ccf"
+                        fill="#6468ff"
                         radius={[5, 5, 0, 0]}
                       />
                       <Line
                         type="monotone"
                         dataKey="completed"
-                        stroke="#5963b8"
+                        stroke="#5057e5"
                         strokeWidth={2.4}
                         dot={false}
                       />

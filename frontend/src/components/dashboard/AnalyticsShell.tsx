@@ -56,7 +56,7 @@ const EMPTY: AnalyticsOverview = {
   providerUsage: [],
 };
 
-const palette = ["#737ccf", "#5963b8", "#a855f7", "#f59e0b", "#ef5d7a"];
+const palette = ["#6468ff", "#5057e5", "#a855f7", "#f59e0b", "#ef5d7a"];
 
 function initials(name: string) {
   return name
@@ -126,7 +126,7 @@ function TrendChart({ rows }: { rows: AnalyticsOverview["timeSeries"] }) {
           <span className="block text-[10px] font-bold uppercase tracking-wider text-white/35">
             {data[hovered].date}
           </span>
-          <strong className="mt-2 block text-sm text-[#737ccf]">
+          <strong className="mt-2 block text-sm text-[#6468ff]">
             {data[hovered].calls} total calls
           </strong>
           <span className="mt-1 block text-xs text-white/55">
@@ -158,8 +158,8 @@ function TrendChart({ rows }: { rows: AnalyticsOverview["timeSeries"] }) {
       >
         <defs>
           <linearGradient id="trend-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#737ccf" stopOpacity=".34" />
-            <stop offset="1" stopColor="#737ccf" stopOpacity="0" />
+            <stop offset="0" stopColor="#6468ff" stopOpacity=".34" />
+            <stop offset="1" stopColor="#6468ff" stopOpacity="0" />
           </linearGradient>
         </defs>
         {[20, 40, 60, 80, 100].map((y) => (
@@ -177,7 +177,7 @@ function TrendChart({ rows }: { rows: AnalyticsOverview["timeSeries"] }) {
         <polyline
           points={points}
           fill="none"
-          stroke="#737ccf"
+          stroke="#6468ff"
           strokeWidth="1.7"
           vectorEffect="non-scaling-stroke"
         />
@@ -205,7 +205,7 @@ function TrendChart({ rows }: { rows: AnalyticsOverview["timeSeries"] }) {
               cy={92 - (data[hovered].calls / max) * 72}
               r="1.4"
               fill="#ffffff"
-              stroke="#737ccf"
+              stroke="#6468ff"
               strokeWidth=".8"
               vectorEffect="non-scaling-stroke"
             />
@@ -332,7 +332,7 @@ function WaveActivity({ rows }: { rows: AnalyticsOverview["timeSeries"] }) {
             onPointerEnter={() => setHovered(i)}
             onPointerLeave={() => setHovered(null)}
             key={i}
-            className="relative flex-1 rounded-full bg-gradient-to-t from-[#5963b8] to-[#737ccf] opacity-80 transition hover:scale-x-125 hover:opacity-100"
+            className="relative flex-1 rounded-full bg-gradient-to-t from-[#5057e5] to-[#6468ff] opacity-80 transition hover:scale-x-125 hover:opacity-100"
             style={{ height: `${Math.max(6, (value / max) * 100)}%` }}
           />
         ))}
@@ -368,10 +368,10 @@ function ActivityHeatmap({
       ).map((row) => (
         <div className="group relative" key={row.hour}>
           <div
-            className="aspect-square rounded-md border border-white/[.06] transition group-hover:scale-110 group-hover:border-[#737ccf]/50"
+            className="aspect-square rounded-md border border-white/[.06] transition group-hover:scale-110 group-hover:border-[#6468ff]/50"
             style={{
               background: row.calls
-                ? `rgba(115,124,207,${0.12 + (row.calls / max) * 0.76})`
+                ? `rgba(100,104,255,${0.12 + (row.calls / max) * 0.76})`
                 : "rgba(255,255,255,.025)",
             }}
           />
@@ -695,14 +695,14 @@ export function AnalyticsShell() {
 
   if (!session)
     return (
-      <main className="grid min-h-screen place-items-center bg-[#f7f7fc] text-sm text-[#7a7d8e]">
+      <main className="grid min-h-screen place-items-center bg-[#fbfbff] text-sm text-[#676773]">
         Loading analytics…
       </main>
     );
   const s = data.summary;
   return (
     <main
-      className={`grid min-h-screen bg-[#f7f7fc] text-[#1b1b22] ${showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}
+      className={`grid min-h-screen bg-[#fbfbff] text-[#111113] ${showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}
     >
       <DashboardSidebar
         activeLabel="Analytics"
@@ -715,19 +715,19 @@ export function AnalyticsShell() {
         showUserSidebar={showUserSidebar}
         setShowUserSidebar={setShowUserSidebar}
       />
-      <section className="min-w-0 overflow-hidden bg-[radial-gradient(circle_at_82%_3%,rgba(89,99,184,.14),transparent_28%),radial-gradient(circle_at_18%_0%,rgba(115,124,207,.09),transparent_24%)]">
+      <section className="min-w-0 overflow-hidden bg-[radial-gradient(circle_at_82%_3%,rgba(89,99,184,.14),transparent_28%),radial-gradient(circle_at_18%_0%,rgba(100,104,255,.09),transparent_24%)]">
         <DashboardPageHeader
           eyebrow="Performance intelligence"
           title="Analytics"
           description="Understand demand, completed conversations, costs, and which agents drive the strongest results."
           actions={
-            <div className="flex items-center gap-1 rounded-xl border border-[#dfe1ef] bg-[#f7f7fc] p-1">
+            <div className="flex items-center gap-1 rounded-xl border border-[#dfe1ef] bg-[#fbfbff] p-1">
               {[1, 7, 30, 90].map((value) => (
                 <button
                   key={value}
                   type="button"
                   onClick={() => setDays(value)}
-                  className={`rounded-lg px-3 py-2 text-xs font-semibold transition ${days === value ? "bg-[#737ccf] text-white shadow-sm" : "text-[#686c7e] hover:bg-white hover:text-[#22242d]"}`}
+                  className={`rounded-lg px-3 py-2 text-xs font-semibold transition ${days === value ? "bg-[#6468ff] text-white shadow-sm" : "text-[#686c7e] hover:bg-white hover:text-[#22242d]"}`}
                 >
                   {value === 1 ? "Today" : `${value} days`}
                 </button>
@@ -750,7 +750,7 @@ export function AnalyticsShell() {
                     Agent fleet
                   </h2>
                 </div>
-                <p className="mt-1 text-xs text-[#7a7d8e]">
+                <p className="mt-1 text-xs text-[#676773]">
                   See which agents are live, routed, and producing results in
                   this period.
                 </p>
@@ -760,7 +760,7 @@ export function AnalyticsShell() {
                   {agents.filter((agent) => agent.status === "Live").length}{" "}
                   live
                 </span>
-                <span className="rounded-full bg-[#eff0fb] px-3 py-1.5 text-[#515bb4]">
+                <span className="rounded-full bg-[#eff0ff] px-3 py-1.5 text-[#454bd3]">
                   {activeAgentIds.length} active calls
                 </span>
               </div>
@@ -792,7 +792,7 @@ export function AnalyticsShell() {
                         >
                           <td className="px-5 py-3.5">
                             <div className="flex items-center gap-3">
-                              <span className="grid size-9 place-items-center rounded-xl bg-[#eff0fb] text-xs font-bold text-[#5963b8]">
+                              <span className="grid size-9 place-items-center rounded-xl bg-[#eff0ff] text-xs font-bold text-[#5057e5]">
                                 {agent.name.slice(0, 2).toUpperCase()}
                               </span>
                               <div>
@@ -807,10 +807,10 @@ export function AnalyticsShell() {
                           </td>
                           <td className="px-5 py-3.5">
                             <span
-                              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${active ? "bg-[#eff0fb] text-[#515bb4]" : agent.status === "Live" ? "bg-emerald-50 text-emerald-700" : agent.status === "Paused" ? "bg-amber-50 text-amber-700" : "bg-slate-100 text-slate-600"}`}
+                              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${active ? "bg-[#eff0ff] text-[#454bd3]" : agent.status === "Live" ? "bg-emerald-50 text-emerald-700" : agent.status === "Paused" ? "bg-amber-50 text-amber-700" : "bg-slate-100 text-slate-600"}`}
                             >
                               <span
-                                className={`size-1.5 rounded-full ${active ? "animate-pulse bg-[#737ccf]" : agent.status === "Live" ? "bg-emerald-500" : agent.status === "Paused" ? "bg-amber-500" : "bg-slate-400"}`}
+                                className={`size-1.5 rounded-full ${active ? "animate-pulse bg-[#6468ff]" : agent.status === "Live" ? "bg-emerald-500" : agent.status === "Paused" ? "bg-amber-500" : "bg-slate-400"}`}
                               />
                               {active ? "On a call" : agent.status}
                             </span>
@@ -834,7 +834,7 @@ export function AnalyticsShell() {
                             <div className="flex items-center gap-2">
                               <div className="h-1.5 w-20 overflow-hidden rounded-full bg-[#ececf5]">
                                 <div
-                                  className="h-full rounded-full bg-gradient-to-r from-[#737ccf] to-[#a855f7]"
+                                  className="h-full rounded-full bg-gradient-to-r from-[#6468ff] to-[#a855f7]"
                                   style={{ width: `${completion}%` }}
                                 />
                               </div>
@@ -845,7 +845,7 @@ export function AnalyticsShell() {
                           </td>
                           <td className="px-5 py-3.5 text-right">
                             <button
-                              className="rounded-lg border border-[#dfe1ef] px-3 py-2 text-xs font-semibold text-[#5963b8] transition hover:border-[#bfc3ea] hover:bg-[#eff0fb]"
+                              className="rounded-lg border border-[#dfe1ef] px-3 py-2 text-xs font-semibold text-[#5057e5] transition hover:border-[#c8caff] hover:bg-[#eff0ff]"
                               type="button"
                               onClick={() =>
                                 router.push(`/dashboard/agents/${agent._id}`)
@@ -892,7 +892,7 @@ export function AnalyticsShell() {
                 </div>
                 <div className="flex gap-4 text-[11px] text-white/45">
                   <span>
-                    <i className="mr-2 inline-block size-2 rounded-full bg-[#737ccf]" />
+                    <i className="mr-2 inline-block size-2 rounded-full bg-[#6468ff]" />
                     All calls
                   </span>
                   <span>
@@ -912,8 +912,8 @@ export function AnalyticsShell() {
             </article>
           </section>
           <section className="hidden">
-            <article className="rounded-2xl border border-[#737ccf]/20 bg-[linear-gradient(135deg,rgba(115,124,207,.10),rgba(89,99,184,.06))] p-5 sm:p-6">
-              <span className="text-[10px] font-bold uppercase tracking-[.2em] text-[#5963b8]">
+            <article className="rounded-2xl border border-[#6468ff]/20 bg-[linear-gradient(135deg,rgba(100,104,255,.10),rgba(89,99,184,.06))] p-5 sm:p-6">
+              <span className="text-[10px] font-bold uppercase tracking-[.2em] text-[#5057e5]">
                 {insight.tone}
               </span>
               <h2 className="mt-3 text-xl font-semibold leading-7">
@@ -923,7 +923,7 @@ export function AnalyticsShell() {
                 {insight.body}
               </p>
               <button
-                className="mt-5 rounded-lg border border-[#737ccf]/20 bg-[#737ccf]/10 px-3 py-2 text-xs font-semibold text-[#5963b8]"
+                className="mt-5 rounded-lg border border-[#6468ff]/20 bg-[#6468ff]/10 px-3 py-2 text-xs font-semibold text-[#5057e5]"
                 type="button"
                 onClick={() => router.push("/dashboard/calls")}
               >
@@ -995,7 +995,7 @@ export function AnalyticsShell() {
                     Call activity by hour of day · hover any cell
                   </p>
                 </div>
-                <span className="rounded-lg bg-[#737ccf]/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#737ccf]">
+                <span className="rounded-lg bg-[#6468ff]/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#6468ff]">
                   24-hour map
                 </span>
               </div>

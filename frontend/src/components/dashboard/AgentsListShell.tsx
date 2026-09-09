@@ -51,7 +51,7 @@ function Icon({ icon }: { icon: IconName }) {
 function statusTone(status: AgentSummary["status"]) {
   if (status === "Live") return "border-emerald-200 bg-emerald-50 text-emerald-700";
   if (status === "Paused") return "border-amber-200 bg-amber-50 text-amber-700";
-  return "border-[#dfe1ef] bg-[#f7f7fc] text-[#6b6f80]";
+  return "border-[#dfe1ef] bg-[#fbfbff] text-[#6b6f80]";
 }
 
 export function AgentsListShell() {
@@ -238,11 +238,11 @@ export function AgentsListShell() {
   }
 
   if (!session) {
-    return <main className="grid min-h-screen place-items-center bg-[#f7f7fc] text-sm font-semibold text-[#7a7d8e]" role="status">Loading agents</main>;
+    return <main className="grid min-h-screen place-items-center bg-[#fbfbff] text-sm font-semibold text-[#676773]" role="status">Loading agents</main>;
   }
 
   return (
-    <main className={`agents-home-palette grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#f7f7fc] text-[#1b1b22] ${
+    <main className={`agents-home-palette grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#fbfbff] text-[#111113] ${
       showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
     }`}>
       <DashboardSidebar
@@ -262,7 +262,7 @@ export function AgentsListShell() {
           description="Create, configure, and monitor every voice agent from one place."
           actions={
             <button
-              className="app-button-text inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-lg border border-[#737ccf] bg-[#737ccf] px-4 text-white shadow-[0_8px_18px_rgba(115,124,207,0.20)] transition hover:border-[#5963b8] hover:bg-[#5963b8] active:translate-y-px disabled:opacity-50 sm:w-auto"
+              className="app-button-text inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-lg border border-[#6468ff] bg-[#6468ff] px-4 text-white shadow-[0_8px_18px_rgba(100,104,255,0.20)] transition hover:border-[#5057e5] hover:bg-[#5057e5] active:translate-y-px disabled:opacity-50 sm:w-auto"
               type="button"
               disabled={busy}
               onClick={() => {
@@ -278,30 +278,30 @@ export function AgentsListShell() {
 
         <section className="mx-auto grid w-full max-w-[1500px] gap-3 px-4 py-5 sm:px-6 lg:px-8">
           {notice && !showCreateForm && !editingAgent ? (
-            <div className="rounded-lg border border-[#dfe1ef] bg-white px-4 py-3 text-sm font-medium text-[#505261] shadow-sm" role="status" aria-live="polite">
+            <div className="rounded-lg border border-[#dfe1ef] bg-white px-4 py-3 text-sm font-medium text-[#494955] shadow-sm" role="status" aria-live="polite">
               {notice}
             </div>
           ) : null}
 
           <div className="rounded-xl border border-[#dfe1ef] bg-white shadow-[0_10px_30px_rgba(34,38,74,0.05)]">
             <div className="flex flex-col gap-3 border-b border-[#e6e7ef] p-3 lg:flex-row lg:items-center">
-              <div className="flex min-h-10 min-w-0 flex-1 items-center gap-2 rounded-lg border border-[#dfe1ef] bg-white px-3 transition focus-within:border-[#737ccf] focus-within:ring-4 focus-within:ring-[#737ccf]/10">
+              <div className="flex min-h-10 min-w-0 flex-1 items-center gap-2 rounded-lg border border-[#dfe1ef] bg-white px-3 transition focus-within:border-[#6468ff] focus-within:ring-4 focus-within:ring-[#6468ff]/10">
                 <span className="shrink-0 text-[#8b8e9f]"><Icon icon="search" /></span>
                 <input
-                  className="app-control-text min-h-9 min-w-0 flex-1 border-0 bg-transparent p-0 text-[#1b1b22] outline-none"
+                  className="app-control-text min-h-9 min-w-0 flex-1 border-0 bg-transparent p-0 text-[#111113] outline-none"
                   aria-label="Search agents"
                   value={query}
                   placeholder="Search by agent, team, or phone number"
                   onChange={(event) => setQuery(event.target.value)}
                 />
-                {query ? <button className="text-xs font-semibold text-[#737ccf] hover:text-[#5963b8]" type="button" onClick={() => setQuery("")}>Clear</button> : null}
+                {query ? <button className="text-xs font-semibold text-[#6468ff] hover:text-[#5057e5]" type="button" onClick={() => setQuery("")}>Clear</button> : null}
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
                 <label className="relative min-w-[132px] flex-1 lg:flex-none">
                   <span className="sr-only">Filter by status</span>
                   <select
-                    className="app-control-text min-h-10 w-full appearance-none rounded-lg border border-[#dfe1ef] bg-white py-0 pr-9 pl-3 text-sm font-semibold text-[#3b3e4e] outline-none transition hover:border-[#bfc3ea]"
+                    className="app-control-text min-h-10 w-full appearance-none rounded-lg border border-[#dfe1ef] bg-white py-0 pr-9 pl-3 text-sm font-semibold text-[#3b3e4e] outline-none transition hover:border-[#c8caff]"
                     value={statusFilter}
                     onChange={(event) => setStatusFilter(event.target.value as AgentStatusFilter)}
                   >
@@ -310,12 +310,12 @@ export function AgentsListShell() {
                     <option value="Paused">Paused</option>
                     <option value="Draft">Draft</option>
                   </select>
-                  <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-[#7a7d8e]"><Icon icon="chevron" /></span>
+                  <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-[#676773]"><Icon icon="chevron" /></span>
                 </label>
                 <label className="relative min-w-[148px] flex-1 lg:flex-none">
                   <span className="sr-only">Sort agents</span>
                   <select
-                    className="app-control-text min-h-10 w-full appearance-none rounded-lg border border-[#dfe1ef] bg-white py-0 pr-9 pl-3 text-sm font-semibold text-[#3b3e4e] outline-none transition hover:border-[#bfc3ea]"
+                    className="app-control-text min-h-10 w-full appearance-none rounded-lg border border-[#dfe1ef] bg-white py-0 pr-9 pl-3 text-sm font-semibold text-[#3b3e4e] outline-none transition hover:border-[#c8caff]"
                     value={sortBy}
                     onChange={(event) => setSortBy(event.target.value as AgentSort)}
                   >
@@ -323,17 +323,17 @@ export function AgentsListShell() {
                     <option value="name-desc">Name Z–A</option>
                     <option value="status">Status</option>
                   </select>
-                  <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-[#7a7d8e]"><Icon icon="chevron" /></span>
+                  <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-[#676773]"><Icon icon="chevron" /></span>
                 </label>
               </div>
             </div>
 
             <div className="flex items-center justify-between gap-3 border-b border-[#e6e7ef] px-4 py-2.5">
               <p className="m-0 text-sm font-semibold text-[#272936]">{filteredAgents.length} {filteredAgents.length === 1 ? "agent" : "agents"}</p>
-              <p className="m-0 flex items-center gap-2 text-xs font-medium text-[#7a7d8e]"><span className="size-2 rounded-full bg-emerald-500 ring-4 ring-emerald-50" />{liveCount} live</p>
+              <p className="m-0 flex items-center gap-2 text-xs font-medium text-[#676773]"><span className="size-2 rounded-full bg-emerald-500 ring-4 ring-emerald-50" />{liveCount} live</p>
             </div>
 
-            <div className="hidden grid-cols-[minmax(260px,1.6fr)_minmax(190px,0.9fr)_120px_48px] items-center gap-5 border-b border-[#e6e7ef] bg-[#fafafe] px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[#7a7d8e] md:grid">
+            <div className="hidden grid-cols-[minmax(260px,1.6fr)_minmax(190px,0.9fr)_120px_48px] items-center gap-5 border-b border-[#e6e7ef] bg-[#fafafe] px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[#676773] md:grid">
               <span>Agent</span>
               <span>Phone route</span>
               <span>Status</span>
@@ -343,7 +343,7 @@ export function AgentsListShell() {
             <div className="divide-y divide-[#e6e7ef]">
             {loading ? (
               <div className="grid gap-0 divide-y divide-[#ececf3]" aria-label="Loading agents" role="status">
-                {[0, 1, 2, 3].map((item) => <div className="grid min-h-[76px] grid-cols-[44px_1fr] items-center gap-3 px-4" key={item}><span className="size-10 animate-pulse rounded-lg bg-[#eff0fb]" /><span className="grid gap-2"><span className="h-3 w-44 animate-pulse rounded bg-[#eff0fb]" /><span className="h-2.5 w-28 animate-pulse rounded bg-[#f0f1f9]" /></span></div>)}
+                {[0, 1, 2, 3].map((item) => <div className="grid min-h-[76px] grid-cols-[44px_1fr] items-center gap-3 px-4" key={item}><span className="size-10 animate-pulse rounded-lg bg-[#eff0ff]" /><span className="grid gap-2"><span className="h-3 w-44 animate-pulse rounded bg-[#eff0ff]" /><span className="h-2.5 w-28 animate-pulse rounded bg-[#f7f5ff]" /></span></div>)}
               </div>
             ) : null}
 
@@ -364,14 +364,14 @@ export function AgentsListShell() {
                     prefetchAgentRoute(agent._id);
                   }}
                 >
-                  <span className="grid size-10 place-items-center rounded-lg bg-[#eff0fb] text-[#5963b8] ring-1 ring-[#737ccf]/10 transition group-hover:bg-[#e6e8fa]">
+                  <span className="grid size-10 place-items-center rounded-lg bg-[#eff0ff] text-[#5057e5] ring-1 ring-[#6468ff]/10 transition group-hover:bg-[#e6e8fa]">
                     <Icon icon="agent" />
                   </span>
                   <span className="min-w-0">
-                    <strong className="block truncate text-sm font-semibold text-[#20212b] transition group-hover:text-[#515bb4] sm:text-[15px]">{agent.name}</strong>
-                    <span className="mt-0.5 block truncate text-xs text-[#7a7d8e]">{agent.team || "Voice team"}<span className="md:hidden"> · {agent.phone || "No phone assigned"}</span></span>
+                    <strong className="block truncate text-sm font-semibold text-[#20212b] transition group-hover:text-[#454bd3] sm:text-[15px]">{agent.name}</strong>
+                    <span className="mt-0.5 block truncate text-xs text-[#676773]">{agent.team || "Voice team"}<span className="md:hidden"> · {agent.phone || "No phone assigned"}</span></span>
                   </span>
-                  <span className="hidden min-w-0 items-center gap-2 text-sm text-[#505261] md:flex">
+                  <span className="hidden min-w-0 items-center gap-2 text-sm text-[#494955] md:flex">
                     <span className="text-[#8b8e9f]"><Icon icon="phone" /></span>
                     <span className="truncate">{agent.phone || "Not assigned"}</span>
                   </span>
@@ -382,7 +382,7 @@ export function AgentsListShell() {
                 </Link>
                 <span className="relative shrink-0">
                   <button
-                    className="grid size-9 place-items-center rounded-lg border border-transparent text-[#7a7d8e] transition hover:border-[#dfe1ef] hover:bg-white hover:text-[#515bb4] active:translate-y-px disabled:opacity-50"
+                    className="grid size-9 place-items-center rounded-lg border border-transparent text-[#676773] transition hover:border-[#dfe1ef] hover:bg-white hover:text-[#454bd3] active:translate-y-px disabled:opacity-50"
                     type="button"
                     aria-label={`Actions for ${agent.name}`}
                     aria-haspopup="menu"
@@ -395,8 +395,8 @@ export function AgentsListShell() {
                   </button>
                   {openMenuId === agent._id ? (
                     <span className="absolute top-10 right-0 z-40 grid w-44 overflow-hidden rounded-xl border border-[#dfe1ef] bg-white p-1.5 shadow-[0_18px_45px_rgba(34,38,74,0.16)]" role="menu" onPointerDown={(event) => event.stopPropagation()}>
-                      <button className="flex min-h-9 items-center gap-2 rounded-lg px-3 text-left text-sm font-medium text-[#3b3e4e] hover:bg-[#f0f1f9] hover:text-[#515bb4]" role="menuitem" type="button" onClick={() => beginEditAgent(agent)}><Icon icon="edit" />Edit name</button>
-                      <button className="flex min-h-9 items-center gap-2 rounded-lg px-3 text-left text-sm font-medium text-[#3b3e4e] hover:bg-[#f0f1f9] hover:text-[#515bb4]" role="menuitem" type="button" onClick={() => void cloneAgent(agent)}><Icon icon="clone" />Clone agent</button>
+                      <button className="flex min-h-9 items-center gap-2 rounded-lg px-3 text-left text-sm font-medium text-[#3b3e4e] hover:bg-[#f7f5ff] hover:text-[#454bd3]" role="menuitem" type="button" onClick={() => beginEditAgent(agent)}><Icon icon="edit" />Edit name</button>
+                      <button className="flex min-h-9 items-center gap-2 rounded-lg px-3 text-left text-sm font-medium text-[#3b3e4e] hover:bg-[#f7f5ff] hover:text-[#454bd3]" role="menuitem" type="button" onClick={() => void cloneAgent(agent)}><Icon icon="clone" />Clone agent</button>
                       <span className="my-1 h-px bg-[#e6e7ef]" />
                       <button className="flex min-h-9 items-center gap-2 rounded-lg px-3 text-left text-sm font-medium text-rose-600 hover:bg-rose-50" role="menuitem" type="button" onClick={() => void deleteAgent(agent)}><Icon icon="trash" />Delete agent</button>
                     </span>
@@ -408,10 +408,10 @@ export function AgentsListShell() {
             {!loading && !filteredAgents.length ? (
               <div className="grid min-h-56 place-items-center p-8 text-center">
                 <div>
-                  <span className="mx-auto grid size-12 place-items-center rounded-xl bg-[#eff0fb] text-[#5963b8]"><Icon icon="agent" /></span>
+                  <span className="mx-auto grid size-12 place-items-center rounded-xl bg-[#eff0ff] text-[#5057e5]"><Icon icon="agent" /></span>
                   <strong className="mt-4 block text-base font-semibold text-[#20212b]">No agents found</strong>
-                  <span className="mt-1 block text-sm text-[#7a7d8e]">Try another search or status filter.</span>
-                  {(query || statusFilter !== "All") ? <button className="mt-4 text-sm font-semibold text-[#5963b8] hover:text-[#515bb4]" type="button" onClick={() => { setQuery(""); setStatusFilter("All"); }}>Clear filters</button> : null}
+                  <span className="mt-1 block text-sm text-[#676773]">Try another search or status filter.</span>
+                  {(query || statusFilter !== "All") ? <button className="mt-4 text-sm font-semibold text-[#5057e5] hover:text-[#454bd3]" type="button" onClick={() => { setQuery(""); setStatusFilter("All"); }}>Clear filters</button> : null}
                 </div>
               </div>
             ) : null}
@@ -421,7 +421,7 @@ export function AgentsListShell() {
       </section>
 
       {showCreateForm ? (
-        <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-[#1b1b22]/35 px-4 py-4 backdrop-blur-[6px]" role="dialog" aria-modal="true" aria-labelledby="create-agent-title" aria-describedby="create-agent-description" aria-busy={busy}>
+        <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-[#111113]/35 px-4 py-4 backdrop-blur-[6px]" role="dialog" aria-modal="true" aria-labelledby="create-agent-title" aria-describedby="create-agent-description" aria-busy={busy}>
           <form
             className="grid max-h-[calc(100dvh-2rem)] w-full max-w-md gap-5 overflow-y-auto rounded-2xl border border-[#dfe1ef] bg-white p-6 shadow-[0_28px_80px_rgba(34,38,74,0.24)]"
             onSubmit={(event) => {
@@ -431,15 +431,15 @@ export function AgentsListShell() {
           >
             <div>
               <h2 className="app-section-title m-0" id="create-agent-title">New agent</h2>
-              <p className="mt-1 mb-0 text-sm text-[#7a7d8e]" id="create-agent-description">Give the agent a clear name. You can configure its voice and behavior next.</p>
+              <p className="mt-1 mb-0 text-sm text-[#676773]" id="create-agent-description">Give the agent a clear name. You can configure its voice and behavior next.</p>
             </div>
             {notice ? <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-medium text-amber-700" role="alert">{notice}</div> : null}
             <label className="grid gap-1.5">
-              <span className="text-xs font-semibold text-[#505261]">Agent name</span>
+              <span className="text-xs font-semibold text-[#494955]">Agent name</span>
               <input
                 autoFocus
                 required
-                className="app-control-text min-h-11 rounded-lg border border-[#dfe1ef] bg-white px-3 text-[#1b1b22] outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
+                className="app-control-text min-h-11 rounded-lg border border-[#dfe1ef] bg-white px-3 text-[#111113] outline-none transition focus:border-[#6468ff] focus:ring-4 focus:ring-[#6468ff]/10"
                 value={agentName}
                 maxLength={80}
                 placeholder="Example: Support desk"
@@ -448,7 +448,7 @@ export function AgentsListShell() {
             </label>
             <div className="flex justify-end gap-2">
               <button
-                className="app-button-text min-h-10 rounded-lg border border-[#dfe1ef] bg-white px-4 text-[#505261] transition hover:bg-[#f7f7fc] active:translate-y-px disabled:opacity-50"
+                className="app-button-text min-h-10 rounded-lg border border-[#dfe1ef] bg-white px-4 text-[#494955] transition hover:bg-[#fbfbff] active:translate-y-px disabled:opacity-50"
                 type="button"
                 disabled={busy}
                 onClick={() => {
@@ -459,7 +459,7 @@ export function AgentsListShell() {
                 Cancel
               </button>
               <button
-                className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border-0 bg-[#737ccf] px-4 text-[#ffffff] shadow-[0_12px_28px_rgba(115,124,207,0.20)] transition hover:bg-[#5963b8] active:translate-y-px disabled:opacity-50"
+                className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border-0 bg-[#6468ff] px-4 text-[#ffffff] shadow-[0_12px_28px_rgba(100,104,255,0.20)] transition hover:bg-[#5057e5] active:translate-y-px disabled:opacity-50"
                 type="submit"
                 disabled={busy}
               >
@@ -472,7 +472,7 @@ export function AgentsListShell() {
       ) : null}
 
       {editingAgent ? (
-        <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-[#1b1b22]/35 px-4 py-4 backdrop-blur-[6px]" role="dialog" aria-modal="true" aria-labelledby="edit-agent-title" aria-describedby="edit-agent-description" aria-busy={busy}>
+        <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-[#111113]/35 px-4 py-4 backdrop-blur-[6px]" role="dialog" aria-modal="true" aria-labelledby="edit-agent-title" aria-describedby="edit-agent-description" aria-busy={busy}>
           <form
             className="grid max-h-[calc(100dvh-2rem)] w-full max-w-md gap-5 overflow-y-auto rounded-2xl border border-[#dfe1ef] bg-white p-6 shadow-[0_28px_80px_rgba(34,38,74,0.24)]"
             onSubmit={(event) => {
@@ -482,15 +482,15 @@ export function AgentsListShell() {
           >
             <div>
               <h2 className="app-section-title m-0" id="edit-agent-title">Edit agent</h2>
-              <p className="mt-1 mb-0 text-sm text-[#7a7d8e]" id="edit-agent-description">Update the name shown throughout this workspace.</p>
+              <p className="mt-1 mb-0 text-sm text-[#676773]" id="edit-agent-description">Update the name shown throughout this workspace.</p>
             </div>
             {notice ? <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-medium text-amber-700" role="alert">{notice}</div> : null}
             <label className="grid gap-1.5">
-              <span className="text-xs font-semibold text-[#505261]">Agent name</span>
+              <span className="text-xs font-semibold text-[#494955]">Agent name</span>
               <input
                 autoFocus
                 required
-                className="app-control-text min-h-11 rounded-lg border border-[#dfe1ef] bg-white px-3 text-[#1b1b22] outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
+                className="app-control-text min-h-11 rounded-lg border border-[#dfe1ef] bg-white px-3 text-[#111113] outline-none transition focus:border-[#6468ff] focus:ring-4 focus:ring-[#6468ff]/10"
                 value={editAgentName}
                 maxLength={80}
                 onChange={(event) => setEditAgentName(event.target.value)}
@@ -498,7 +498,7 @@ export function AgentsListShell() {
             </label>
             <div className="flex justify-end gap-2">
               <button
-                className="app-button-text min-h-10 rounded-lg border border-[#dfe1ef] bg-white px-4 text-[#505261] transition hover:bg-[#f7f7fc] active:translate-y-px disabled:opacity-50"
+                className="app-button-text min-h-10 rounded-lg border border-[#dfe1ef] bg-white px-4 text-[#494955] transition hover:bg-[#fbfbff] active:translate-y-px disabled:opacity-50"
                 type="button"
                 disabled={busy}
                 onClick={() => {
@@ -509,7 +509,7 @@ export function AgentsListShell() {
                 Cancel
               </button>
               <button
-                className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#737ccf] bg-[#737ccf] px-4 text-white shadow-sm transition hover:border-[#5963b8] hover:bg-[#5963b8] active:translate-y-px disabled:opacity-50"
+                className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#6468ff] bg-[#6468ff] px-4 text-white shadow-sm transition hover:border-[#5057e5] hover:bg-[#5057e5] active:translate-y-px disabled:opacity-50"
                 type="submit"
                 disabled={busy}
               >

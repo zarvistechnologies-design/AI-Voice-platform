@@ -1,21 +1,21 @@
 /* Dashboard design system. Public pages keep their own theme. */
 .dashboard-home-theme {
-  --app-color-heading: #242535;
-  --app-color-body: #525569;
-  --app-color-muted: #737587;
-  --app-color-label: #737587;
+  --app-color-heading: #111113;
+  --app-color-body: #494955;
+  --app-color-muted: #676773;
+  --app-color-label: #676773;
   --app-color-accent: #5b63ff;
   --dashboard-surface: #fff;
-  --dashboard-border: #e5e7ef;
+  --dashboard-border: #dedee8;
   --voice-surface: #fff;
-  --voice-surface-raised: #f8f9fc;
-  --voice-surface-soft: #f8f9fc;
-  --voice-border: #e5e7ef;
-  --voice-heading: #242535;
-  --voice-muted: #737587;
+  --voice-surface-raised: #fbfbff;
+  --voice-surface-soft: #f7f5ff;
+  --voice-border: #dedee8;
+  --voice-heading: #111113;
+  --voice-muted: #676773;
   color-scheme: light;
-  background: #f7f8fc;
-  color: #242535;
+  background: #fbfbff;
+  color: #111113;
   font-family: var(--font-site-sans), Arial, sans-serif;
   font-size: 14px;
   line-height: 1.5;

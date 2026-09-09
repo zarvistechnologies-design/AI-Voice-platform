@@ -296,7 +296,7 @@ export function DashboardSidebar({
   return (
     <>
       <aside
-        className={`dashboard-sidebar z-40 flex min-w-0 items-center gap-2 border-b border-[#e1e3ed] bg-white px-2 py-2 text-[#505261] lg:fixed lg:inset-y-0 lg:left-0 lg:h-dvh lg:flex-col lg:items-stretch lg:border-b-0 lg:px-2.5 lg:py-3 lg:shadow-[4px_0_22px_rgba(115,124,207,0.045)] lg:transition-[width] lg:duration-300 motion-reduce:transition-none ${
+        className={`dashboard-sidebar z-40 flex min-w-0 items-center gap-2 border-b border-[#dedee8] bg-white px-2 py-2 text-[#494955] lg:fixed lg:inset-y-0 lg:left-0 lg:h-dvh lg:flex-col lg:items-stretch lg:border-b-0 lg:px-2.5 lg:py-3 lg:shadow-[4px_0_22px_rgba(100,104,255,0.045)] lg:transition-[width] lg:duration-300 motion-reduce:transition-none ${
           showUserSidebar ? "lg:w-[272px]" : "lg:w-16"
         }`}
       >
@@ -304,7 +304,7 @@ export function DashboardSidebar({
           className={`flex h-11 shrink-0 items-center ${showUserSidebar ? "lg:px-1" : "lg:justify-center"}`}
         >
           <Link
-            className="group flex min-w-0 items-center overflow-hidden rounded-xl outline-none ring-[#bfc3ea]/50 transition focus-visible:ring-2"
+            className="group flex min-w-0 items-center overflow-hidden rounded-xl outline-none ring-[#c8caff]/50 transition focus-visible:ring-2"
             href="/dashboard/agents"
             title="Vozon Voice Platform"
             aria-label="Vozon Voice Platform"
@@ -337,7 +337,7 @@ export function DashboardSidebar({
           </Link>
 
           {showUserSidebar ? (
-            <span className="ml-auto hidden rounded-full border border-[#737ccf]/20 bg-[#737ccf]/10 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.16em] text-[#515bb4] lg:block">
+            <span className="ml-auto hidden rounded-full border border-[#6468ff]/20 bg-[#6468ff]/10 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.16em] text-[#454bd3] lg:block">
               Console
             </span>
           ) : null}
@@ -359,14 +359,14 @@ export function DashboardSidebar({
                   const isActive = item.label === activeLabel;
                   return (
                     <Link
-                      className={`dashboard-sidebar-nav group/item relative flex size-10 shrink-0 items-center justify-center rounded-xl outline-none transition duration-200 focus-visible:ring-2 focus-visible:ring-[#bfc3ea]/60 lg:h-11 lg:w-full ${
+                      className={`dashboard-sidebar-nav group/item relative flex size-10 shrink-0 items-center justify-center rounded-xl outline-none transition duration-200 focus-visible:ring-2 focus-visible:ring-[#c8caff]/60 lg:h-11 lg:w-full ${
                         showUserSidebar
                           ? "lg:justify-start lg:gap-3 lg:px-3"
                           : "lg:justify-center"
                       } ${
                         isActive
-                          ? "bg-[#eff0fb] text-[#515bb4] shadow-[inset_0_0_0_1px_rgba(115,124,207,0.12)]"
-                          : "text-[#505261] hover:bg-[#f5f5fa] hover:text-[#272936]"
+                          ? "bg-[#eff0ff] text-[#454bd3] shadow-[inset_0_0_0_1px_rgba(100,104,255,0.12)]"
+                          : "text-[#494955] hover:bg-[#f5f5fa] hover:text-[#272936]"
                       }`}
                       href={item.href}
                       key={item.label}
@@ -388,22 +388,22 @@ export function DashboardSidebar({
                       aria-current={isActive ? "page" : undefined}
                     >
                       {isActive ? (
-                        <span className="absolute inset-y-2 left-0 hidden w-0.5 rounded-full bg-[#737ccf] lg:block" />
+                        <span className="absolute inset-y-2 left-0 hidden w-0.5 rounded-full bg-[#6468ff] lg:block" />
                       ) : null}
                       <span
-                        className={`grid size-8 shrink-0 place-items-center rounded-lg ${isActive ? "bg-[#737ccf]/10" : ""}`}
+                        className={`grid size-8 shrink-0 place-items-center rounded-lg ${isActive ? "bg-[#6468ff]/10" : ""}`}
                       >
                         <SidebarIcon icon={item.icon} />
                       </span>
                       {showUserSidebar ? (
                         <span
-                          className={`app-body hidden truncate font-medium lg:block ${isActive ? "text-[#515bb4]" : "text-[#505261]"}`}
+                          className={`app-body hidden truncate font-medium lg:block ${isActive ? "text-[#454bd3]" : "text-[#494955]"}`}
                         >
                           {item.label}
                         </span>
                       ) : null}
                       {!showUserSidebar ? (
-                        <span className="app-label pointer-events-none absolute left-[calc(100%+12px)] z-50 hidden min-w-max translate-x-1 rounded-lg border border-[#e1e3ed] bg-white px-2.5 py-1.5 text-[#272936] opacity-0 shadow-[0_12px_32px_rgba(37,40,74,0.16)] transition group-hover/item:translate-x-0 group-hover/item:opacity-100 lg:block">
+                        <span className="app-label pointer-events-none absolute left-[calc(100%+12px)] z-50 hidden min-w-max translate-x-1 rounded-lg border border-[#dedee8] bg-white px-2.5 py-1.5 text-[#272936] opacity-0 shadow-[0_12px_32px_rgba(37,40,74,0.16)] transition group-hover/item:translate-x-0 group-hover/item:opacity-100 lg:block">
                           {item.label}
                         </span>
                       ) : null}
@@ -416,18 +416,18 @@ export function DashboardSidebar({
         </nav>
 
         <div
-          className={`relative ml-auto flex shrink-0 items-center gap-2 lg:ml-0 lg:border-t lg:border-[#e1e3ed] lg:pt-3 ${showUserSidebar ? "lg:px-1" : "lg:flex-col"}`}
+          className={`relative ml-auto flex shrink-0 items-center gap-2 lg:ml-0 lg:border-t lg:border-[#dedee8] lg:pt-3 ${showUserSidebar ? "lg:px-1" : "lg:flex-col"}`}
           ref={accountMenuRef}
         >
           <button
-            className={`group/account flex min-w-0 items-center rounded-xl text-left outline-none transition focus-visible:ring-2 focus-visible:ring-[#737ccf]/60 ${accountMenuOpen ? "bg-[#f5f5fa] ring-1 ring-[#e1e3ed]" : "hover:bg-[#f7f7fb]"} ${showUserSidebar ? "gap-3 p-1 lg:flex-1" : "p-0"}`}
+            className={`group/account flex min-w-0 items-center rounded-xl text-left outline-none transition focus-visible:ring-2 focus-visible:ring-[#6468ff]/60 ${accountMenuOpen ? "bg-[#f5f5fa] ring-1 ring-[#dedee8]" : "hover:bg-[#f7f7fb]"} ${showUserSidebar ? "gap-3 p-1 lg:flex-1" : "p-0"}`}
             type="button"
             aria-label="Open account menu"
             aria-haspopup="menu"
             aria-expanded={accountMenuOpen}
             onClick={() => setAccountMenuOpen((current) => !current)}
           >
-            <span className="app-label grid size-9 shrink-0 place-items-center rounded-xl bg-[#737ccf] text-[#03110e] shadow-[0_8px_20px_rgba(115,124,207,0.18)] transition group-hover/account:brightness-110">
+            <span className="app-label grid size-9 shrink-0 place-items-center rounded-xl bg-[#6468ff] text-[#03110e] shadow-[0_8px_20px_rgba(100,104,255,0.18)] transition group-hover/account:brightness-110">
               {userInitials}
             </span>
             {showUserSidebar ? (
@@ -470,21 +470,21 @@ export function DashboardSidebar({
 
           {accountMenuOpen ? (
             <div
-              className={`absolute right-0 top-[calc(100%+10px)] z-[70] w-[290px] overflow-hidden rounded-2xl border border-[#e1e3ed] bg-white p-2.5 text-[#272936] shadow-[0_24px_64px_rgba(37,40,74,0.18)] lg:top-auto lg:bottom-[calc(100%+12px)] ${
+              className={`absolute right-0 top-[calc(100%+10px)] z-[70] w-[290px] overflow-hidden rounded-2xl border border-[#dedee8] bg-white p-2.5 text-[#272936] shadow-[0_24px_64px_rgba(37,40,74,0.18)] lg:top-auto lg:bottom-[calc(100%+12px)] ${
                 showUserSidebar
                   ? "lg:left-1 lg:right-1 lg:w-auto"
                   : "lg:right-auto lg:left-[calc(100%+14px)] lg:w-[280px]"
               }`}
               role="menu"
             >
-              <div className="relative overflow-hidden rounded-xl border border-[#e1e3ed] bg-[#f7f7fc] p-3">
-                <span className="pointer-events-none absolute -right-7 -top-8 size-24 rounded-full bg-[#737ccf]/[0.07] blur-xl" />
+              <div className="relative overflow-hidden rounded-xl border border-[#dedee8] bg-[#fbfbff] p-3">
+                <span className="pointer-events-none absolute -right-7 -top-8 size-24 rounded-full bg-[#6468ff]/[0.07] blur-xl" />
                 <div className="relative flex min-w-0 items-center gap-3">
-                  <span className="app-label grid size-10 shrink-0 place-items-center rounded-xl bg-[#737ccf] font-black text-[#03110e] shadow-[0_8px_22px_rgba(115,124,207,0.18)]">
+                  <span className="app-label grid size-10 shrink-0 place-items-center rounded-xl bg-[#6468ff] font-black text-[#03110e] shadow-[0_8px_22px_rgba(100,104,255,0.18)]">
                     {userInitials}
                   </span>
                   <span className="min-w-0">
-                    <span className="block text-[9px] font-extrabold uppercase tracking-[0.16em] text-[#515bb4]/55">
+                    <span className="block text-[9px] font-extrabold uppercase tracking-[0.16em] text-[#454bd3]/55">
                       Signed in as
                     </span>
                     <span className="mt-0.5 block truncate text-sm font-bold text-[#272936]">
@@ -508,7 +508,7 @@ export function DashboardSidebar({
                       item.href.startsWith("/dashboard/settings"));
                   return (
                     <Link
-                      className={`group/menu flex min-w-0 items-center gap-3 rounded-xl border px-3 py-3 outline-none transition focus-visible:ring-2 focus-visible:ring-[#737ccf]/50 ${isActive ? "border-[#737ccf]/20 bg-[#737ccf]/10 text-[#515bb4]" : "border-transparent text-[#505261] hover:border-[#e1e3ed] hover:bg-[#f7f7fb] hover:text-[#272936]"}`}
+                      className={`group/menu flex min-w-0 items-center gap-3 rounded-xl border px-3 py-3 outline-none transition focus-visible:ring-2 focus-visible:ring-[#6468ff]/50 ${isActive ? "border-[#6468ff]/20 bg-[#6468ff]/10 text-[#454bd3]" : "border-transparent text-[#494955] hover:border-[#dedee8] hover:bg-[#f7f7fb] hover:text-[#272936]"}`}
                       href={item.href}
                       key={item.label}
                       role="menuitem"
@@ -528,7 +528,7 @@ export function DashboardSidebar({
                       }}
                     >
                       <span
-                        className={`grid size-9 shrink-0 place-items-center rounded-xl border transition ${isActive ? "border-[#737ccf]/20 bg-[#737ccf]/15 text-[#515bb4]" : "border-[#e1e3ed] bg-white text-[#6b6f80] group-hover/menu:text-[#515bb4]"}`}
+                        className={`grid size-9 shrink-0 place-items-center rounded-xl border transition ${isActive ? "border-[#6468ff]/20 bg-[#6468ff]/15 text-[#454bd3]" : "border-[#dedee8] bg-white text-[#6b6f80] group-hover/menu:text-[#454bd3]"}`}
                       >
                         <AccountMenuIcon icon={item.icon} />
                       </span>
@@ -542,7 +542,7 @@ export function DashboardSidebar({
                       </span>
                       <svg
                         aria-hidden="true"
-                        className="size-3.5 shrink-0 fill-none stroke-current stroke-2 text-[#a4a7b5] transition group-hover/menu:translate-x-0.5 group-hover/menu:text-[#515bb4]"
+                        className="size-3.5 shrink-0 fill-none stroke-current stroke-2 text-[#a4a7b5] transition group-hover/menu:translate-x-0.5 group-hover/menu:text-[#454bd3]"
                         viewBox="0 0 24 24"
                       >
                         <path d="m9 18 6-6-6-6" />
@@ -556,7 +556,7 @@ export function DashboardSidebar({
         </div>
 
         <button
-          className="absolute right-0 top-[68px] hidden size-7 translate-x-1/2 place-items-center rounded-full border border-[#737ccf]/20 bg-white text-[#7a7d8e] shadow-[0_4px_12px_rgba(37,40,74,0.08)] transition hover:border-[#aeb4e5] hover:bg-[#eff0fb] hover:text-[#515bb4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#737ccf]/45 motion-reduce:transition-none lg:grid"
+          className="absolute right-0 top-[68px] hidden size-7 translate-x-1/2 place-items-center rounded-full border border-[#6468ff]/20 bg-white text-[#676773] shadow-[0_4px_12px_rgba(37,40,74,0.08)] transition hover:border-[#aeb4e5] hover:bg-[#eff0ff] hover:text-[#454bd3] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6468ff]/45 motion-reduce:transition-none lg:grid"
           type="button"
           title={showUserSidebar ? "Collapse sidebar" : "Expand sidebar"}
           aria-label={showUserSidebar ? "Collapse sidebar" : "Expand sidebar"}
@@ -574,7 +574,7 @@ export function DashboardSidebar({
       </aside>
 
       <div
-        className={`dashboard-page-edge pointer-events-none fixed inset-y-0 z-[35] hidden w-3 rounded-l-[14px] border-l border-[#737ccf]/15 shadow-[-3px_0_14px_rgba(115,124,207,0.055)] transition-[left] duration-300 motion-reduce:transition-none lg:block ${
+        className={`dashboard-page-edge pointer-events-none fixed inset-y-0 z-[35] hidden w-3 rounded-l-[14px] border-l border-[#6468ff]/15 shadow-[-3px_0_14px_rgba(100,104,255,0.055)] transition-[left] duration-300 motion-reduce:transition-none lg:block ${
           showUserSidebar ? "left-[272px]" : "left-16"
         }`}
         aria-hidden="true"

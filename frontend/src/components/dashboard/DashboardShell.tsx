@@ -163,7 +163,7 @@ const defaultWidget: AgentWidget = {
   theme: "auto",
   position: "bottom-right",
   buttonText: "Talk to us",
-  accentColor: "#737ccf",
+  accentColor: "#6468ff",
 };
 
 const defaultBusinessHours: AgentBusinessHours = {
@@ -2330,8 +2330,8 @@ function noticeToast(value: string) {
   if (isBusy) {
     return {
       title: "Working",
-      dot: "bg-[#737ccf]",
-      panel: "border-[#c9ccef] bg-[#eff0fb] text-[#0e7490]",
+      dot: "bg-[#6468ff]",
+      panel: "border-[#c9ccef] bg-[#eff0ff] text-[#0e7490]",
       body: "text-[#155e75]",
       button: "text-[#0e7490] hover:bg-[#cffafe]",
     };
@@ -2573,8 +2573,8 @@ function ToggleRow({
       />
       <span
         aria-hidden="true"
-        className={`relative mt-0.5 h-6 w-11 rounded-full transition peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[#5963b8] ${
-          enabled ? "bg-[#737ccf]" : "bg-[#cbd5e1]"
+        className={`relative mt-0.5 h-6 w-11 rounded-full transition peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[#5057e5] ${
+          enabled ? "bg-[#6468ff]" : "bg-[#cbd5e1]"
         }`}
       >
         <span
@@ -2599,9 +2599,9 @@ function BehaviorPanel({
   children: ReactNode;
 }) {
   return (
-    <section className="overflow-hidden rounded-xl border border-[#e1e3ed] bg-white">
+    <section className="overflow-hidden rounded-xl border border-[#dedee8] bg-white">
       <div className="flex items-center gap-3 border-b border-[#edf0f5] bg-white px-4 py-3.5">
-        <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-[#eff0fb] text-[#5963b8]">
+        <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-[#eff0ff] text-[#5057e5]">
           <Icon icon={icon} />
         </span>
         <div className="min-w-0 flex-1">
@@ -2624,7 +2624,7 @@ function BehaviorMetric({
   tone: "sky" | "green" | "amber" | "slate";
 }) {
   const toneClass = {
-    sky: "text-[#5963b8]",
+    sky: "text-[#5057e5]",
     green: "text-[#047857]",
     amber: "text-[#b45309]",
     slate: "text-[#334155]",
@@ -2658,7 +2658,7 @@ function SelectField({
       <span>{label}</span>
       <span className="relative block">
         <select
-          className="app-control-text min-h-10 w-full appearance-none rounded-lg border border-[#dfe3ea] bg-white py-2 pr-10 pl-3 text-black outline-none transition hover:border-[#c4c8db] focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
+          className="app-control-text min-h-10 w-full appearance-none rounded-lg border border-[#dfe3ea] bg-white py-2 pr-10 pl-3 text-black outline-none transition hover:border-[#c4c8db] focus:border-[#6468ff] focus:ring-4 focus:ring-[#6468ff]/10"
           {...(value === undefined ? { defaultValue } : { value })}
           onChange={
             onChange ? (event) => onChange(event.target.value) : undefined
@@ -2767,7 +2767,7 @@ function VoiceChoiceList({
           <div
             key={voice}
             className={`grid min-h-16 grid-cols-[minmax(0,1fr)_44px] items-center border-b border-[#eef2f7] last:border-b-0 ${
-              active ? "bg-[#eff0fb]" : "bg-white"
+              active ? "bg-[#eff0ff]" : "bg-white"
             }`}
           >
             <button
@@ -2777,7 +2777,7 @@ function VoiceChoiceList({
               onClick={() => onChange(voice)}
             >
               <span
-                className={`grid size-10 place-items-center rounded-lg text-sm font-bold ${active ? "bg-[#737ccf] text-white" : "bg-[#eef2f7] text-[#64748b]"}`}
+                className={`grid size-10 place-items-center rounded-lg text-sm font-bold ${active ? "bg-[#6468ff] text-white" : "bg-[#eef2f7] text-[#64748b]"}`}
               >
                 {(parts.name || voice).slice(0, 1).toUpperCase()}
               </span>
@@ -2791,7 +2791,7 @@ function VoiceChoiceList({
               </span>
             </button>
             <button
-              className="grid size-9 place-items-center rounded-lg text-[#737ccf] transition hover:bg-white disabled:cursor-wait disabled:opacity-50"
+              className="grid size-9 place-items-center rounded-lg text-[#6468ff] transition hover:bg-white disabled:cursor-wait disabled:opacity-50"
               type="button"
               aria-label={`Preview ${parts.name}`}
               title={isPreviewing ? "Loading preview" : "Preview voice"}
@@ -3223,7 +3223,7 @@ function StackConfigurationModal({
                   key={mode}
                   className={`min-h-8 rounded-md px-3 text-xs font-semibold capitalize transition ${
                     agent.pipelineMode === mode
-                      ? "bg-[#737ccf] text-white shadow-sm"
+                      ? "bg-[#6468ff] text-white shadow-sm"
                       : "text-[#64748b] hover:bg-white hover:text-[#0f172a]"
                   }`}
                   type="button"
@@ -3235,7 +3235,7 @@ function StackConfigurationModal({
               ))}
             </div>
             <button
-              className="grid size-10 place-items-center rounded-lg border border-[#dfe3ea] bg-white text-[#64748b] transition hover:border-[#b8bde8] hover:text-[#5963b8]"
+              className="grid size-10 place-items-center rounded-lg border border-[#dfe3ea] bg-white text-[#64748b] transition hover:border-[#b8bde8] hover:text-[#5057e5]"
               type="button"
               onClick={onClose}
               aria-label="Close configuration"
@@ -3345,13 +3345,13 @@ function StackConfigurationModal({
                             <label
                               className={`flex min-h-10 items-center gap-2 rounded-md border px-3 text-sm font-semibold transition ${
                                 checked
-                                  ? "border-[#b8bde8] bg-[#eff0fb] text-[#5963b8]"
+                                  ? "border-[#b8bde8] bg-[#eff0ff] text-[#5057e5]"
                                   : "border-[#e5e7eb] bg-white text-[#475569] hover:border-[#b8bde8]"
                               } ${required ? "cursor-not-allowed" : "cursor-pointer"}`}
                               key={option.value}
                             >
                               <input
-                                className="size-4 accent-[#737ccf]"
+                                className="size-4 accent-[#6468ff]"
                                 type="checkbox"
                                 checked={checked}
                                 disabled={required}
@@ -3385,7 +3385,7 @@ function StackConfigurationModal({
               {stack === "voice" &&
               provider.provider === "elevenlabs" &&
               languageSpecificVoices.length > 0 ? (
-                <div className="rounded-lg border border-[#b8bde8] bg-[#eff0fb] px-3 py-2 text-sm font-medium text-[#5963b8]">
+                <div className="rounded-lg border border-[#b8bde8] bg-[#eff0ff] px-3 py-2 text-sm font-medium text-[#5057e5]">
                   “Best for” is the primary/native training language. “Also
                   verified” names every other language ElevenLabs reports for
                   that voice, but those may not have a native accent. Match
@@ -3448,7 +3448,7 @@ function StackConfigurationModal({
             Cancel
           </button>
           <button
-            className="app-button-text rounded-lg bg-[#737ccf] px-4 py-2.5 text-white shadow-sm transition hover:bg-[#5963b8] disabled:cursor-not-allowed disabled:opacity-60"
+            className="app-button-text rounded-lg bg-[#6468ff] px-4 py-2.5 text-white shadow-sm transition hover:bg-[#5057e5] disabled:cursor-not-allowed disabled:opacity-60"
             type="button"
             disabled={saving || !dirty}
             onClick={onSave}
@@ -3489,12 +3489,12 @@ function SliderField({
     >
       <span className="flex min-w-0 items-center justify-between gap-3">
         <span className="truncate">{label}</span>
-        <strong className="app-strong shrink-0 rounded-md bg-[#eff0fb] px-2 py-1 text-[#5963b8]">
+        <strong className="app-strong shrink-0 rounded-md bg-[#eff0ff] px-2 py-1 text-[#5057e5]">
           {valueText ?? value}
         </strong>
       </span>
       <input
-        className="h-2 w-full cursor-pointer accent-[#737ccf] disabled:cursor-not-allowed disabled:opacity-50"
+        className="h-2 w-full cursor-pointer accent-[#6468ff] disabled:cursor-not-allowed disabled:opacity-50"
         type="range"
         min={min}
         max={max}
@@ -3545,7 +3545,7 @@ function InputField({
     <label className="app-label grid gap-2" title={title}>
       <span>{label}</span>
       <input
-        className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10 disabled:cursor-not-allowed disabled:bg-[#f8fafc] disabled:text-[#94a3b8]"
+        className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#6468ff] focus:ring-4 focus:ring-[#6468ff]/10 disabled:cursor-not-allowed disabled:bg-[#f8fafc] disabled:text-[#94a3b8]"
         {...(value === undefined ? { defaultValue } : { value })}
         placeholder={placeholder}
         type={type}
@@ -3590,7 +3590,7 @@ function ToolParameterEditor({
       />
       <label className="app-label flex min-h-10 items-center gap-2 self-end rounded-lg border border-[#e5e7eb] bg-[#f8fafc] px-3">
         <input
-          className="size-4 accent-[#737ccf]"
+          className="size-4 accent-[#6468ff]"
           type="checkbox"
           checked={parameter.required}
           onChange={(event) => onChange({ required: event.target.checked })}
@@ -3607,7 +3607,7 @@ function ToolParameterEditor({
       <label className="app-label grid gap-2 lg:col-span-4">
         <span>Description</span>
         <input
-          className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
+          className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#6468ff] focus:ring-4 focus:ring-[#6468ff]/10"
           value={parameter.description}
           placeholder="What value should the agent collect before calling this tool?"
           onChange={(event) => onChange({ description: event.target.value })}
@@ -3768,7 +3768,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
             ? `${selectedAgent.realtimeProvider}/${selectedAgent.realtimeModel}`
             : `${selectedAgent.sttProvider} → ${selectedAgent.llmProvider} → ${selectedAgent.ttsProvider}`),
       ),
-      tone: "text-[#737ccf]",
+      tone: "text-[#6468ff]",
     },
   ];
   const voiceStackCards = [
@@ -5245,11 +5245,11 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   if (!session || agentLoading) {
     return (
       <main
-        className="app-strong grid min-h-screen place-items-center gap-3 bg-[#f7f7fc] text-[#7a7d8e]"
+        className="app-strong grid min-h-screen place-items-center gap-3 bg-[#fbfbff] text-[#676773]"
         role="status"
       >
         <span
-          className="size-9 animate-spin rounded-full border-3 border-white/10 border-t-[#737ccf] motion-reduce:animate-none"
+          className="size-9 animate-spin rounded-full border-3 border-white/10 border-t-[#6468ff] motion-reduce:animate-none"
           aria-hidden="true"
         />
         Loading voice agent
@@ -5259,7 +5259,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
 
   if (agentLoadError || !selectedAgentLoaded) {
     return (
-      <main className="agents-home-palette grid min-h-screen place-items-center bg-[#f7f7fc] px-4 text-center">
+      <main className="agents-home-palette grid min-h-screen place-items-center bg-[#fbfbff] px-4 text-center">
         <section className="grid max-w-lg gap-4 rounded-2xl border border-rose-300/20 bg-[#ffffff] p-6 shadow-[0_18px_46px_rgba(0,0,0,0.32)]">
           <h1 className="app-page-title m-0 text-white">
             Could not load this agent
@@ -5268,7 +5268,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
             {agentLoadError || "The requested agent was not found."}
           </p>
           <button
-            className="app-button-text mx-auto min-h-10 rounded-xl bg-[#737ccf] px-4 text-[#ffffff] transition hover:bg-[#5963b8]"
+            className="app-button-text mx-auto min-h-10 rounded-xl bg-[#6468ff] px-4 text-[#ffffff] transition hover:bg-[#5057e5]"
             type="button"
             onClick={() => window.location.reload()}
           >
@@ -5281,7 +5281,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
 
   return (
     <main
-      className={`voice-agent-theme grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#f7f7fc] text-[#1b1b22] ${
+      className={`voice-agent-theme grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#fbfbff] text-[#111113] ${
         showUserSidebar
           ? "lg:grid-cols-[272px_minmax(0,1fr)]"
           : "lg:grid-cols-[64px_minmax(0,1fr)]"
@@ -5314,15 +5314,15 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                 {selectedAgent.name}
               </span>
               <span
-                className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[9px] font-extrabold uppercase tracking-wider ${selectedAgent.status === "Live" ? "bg-[#eff0fb] text-[#515bb4] ring-1 ring-[#c9ccef]" : selectedAgent.status === "Paused" ? "bg-amber-50 text-amber-700 ring-1 ring-amber-200" : "bg-slate-100 text-slate-600 ring-1 ring-slate-200"}`}
+                className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[9px] font-extrabold uppercase tracking-wider ${selectedAgent.status === "Live" ? "bg-[#eff0ff] text-[#454bd3] ring-1 ring-[#c9ccef]" : selectedAgent.status === "Paused" ? "bg-amber-50 text-amber-700 ring-1 ring-amber-200" : "bg-slate-100 text-slate-600 ring-1 ring-slate-200"}`}
               >
                 <span
-                  className={`size-1.5 rounded-full ${selectedAgent.status === "Live" ? "bg-[#737ccf]" : selectedAgent.status === "Paused" ? "bg-amber-500" : "bg-slate-400"}`}
+                  className={`size-1.5 rounded-full ${selectedAgent.status === "Live" ? "bg-[#6468ff]" : selectedAgent.status === "Paused" ? "bg-amber-500" : "bg-slate-400"}`}
                 />
                 {selectedAgent.status}
               </span>
               <button
-                className="grid size-8 shrink-0 place-items-center rounded-lg border border-[#dfe1ec] bg-white text-[#6b6f80] transition hover:border-[#737ccf] hover:text-[#5963b8] disabled:opacity-45"
+                className="grid size-8 shrink-0 place-items-center rounded-lg border border-[#dedee8] bg-white text-[#6b6f80] transition hover:border-[#6468ff] hover:text-[#5057e5] disabled:opacity-45"
                 type="button"
                 aria-label={`Edit ${selectedAgent.name} name`}
                 title="Edit name"
@@ -5341,14 +5341,14 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
               <span className="text-[#c5c8d4]" aria-hidden="true">
                 •
               </span>
-              <span className="shrink-0 text-[10px] font-bold uppercase tracking-[0.14em] text-[#7a7d8e]">
+              <span className="shrink-0 text-[10px] font-bold uppercase tracking-[0.14em] text-[#676773]">
                 Agent ID
               </span>
-              <code className="max-w-[260px] truncate rounded-md bg-[#f3f4f8] px-2 py-0.5 text-[11px] font-semibold text-[#505261]">
+              <code className="max-w-[260px] truncate rounded-md bg-[#f3f4f8] px-2 py-0.5 text-[11px] font-semibold text-[#494955]">
                 {selectedAgent.id}
               </code>
               <button
-                className="grid size-6 shrink-0 place-items-center rounded-md border border-[#dfe1ec] bg-white text-[#5963b8] transition hover:border-[#737ccf] hover:bg-[#f3f4fb]"
+                className="grid size-6 shrink-0 place-items-center rounded-md border border-[#dedee8] bg-white text-[#5057e5] transition hover:border-[#6468ff] hover:bg-[#f3f4fb]"
                 type="button"
                 aria-label="Copy agent ID"
                 title="Copy agent ID"
@@ -5361,7 +5361,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
           actions={
             <>
               <button
-                className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#dfe1ec] bg-white px-3 text-[#505261] transition hover:border-[#737ccf] hover:text-[#5963b8] active:translate-y-px disabled:opacity-45"
+                className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#dedee8] bg-white px-3 text-[#494955] transition hover:border-[#6468ff] hover:text-[#5057e5] active:translate-y-px disabled:opacity-45"
                 type="button"
                 disabled={agentMutationBusy}
                 onClick={() => navigateToDashboardPage("/dashboard/agents")}
@@ -5384,7 +5384,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
               </button>
               {hasUnsavedChanges ? (
                 <button
-                  className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#c9ccef] bg-[#eff0fb] px-3 text-[#515bb4] transition hover:bg-[#e4e6f7] active:translate-y-px disabled:opacity-45"
+                  className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#c9ccef] bg-[#eff0ff] px-3 text-[#454bd3] transition hover:bg-[#e4e6f7] active:translate-y-px disabled:opacity-45"
                   type="button"
                   disabled={agentMutationBusy}
                   title="Save agent changes"
@@ -5405,7 +5405,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                 </span>
               )}
               <button
-                className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#bfc3ea] bg-[#eff0fb] px-3.5 text-[#515bb4] transition hover:border-[#737ccf] hover:bg-[#e5e7f8] active:translate-y-px disabled:opacity-45"
+                className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#c8caff] bg-[#eff0ff] px-3.5 text-[#454bd3] transition hover:border-[#6468ff] hover:bg-[#e5e7f8] active:translate-y-px disabled:opacity-45"
                 type="button"
                 disabled={!testCallsEnabled || agentMutationBusy}
                 title={
@@ -5419,7 +5419,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                 Test call
               </button>
               <button
-                className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border-0 bg-[#737ccf] px-4 text-white shadow-[0_8px_20px_rgba(89,99,184,0.22)] transition hover:bg-[#5963b8] hover:shadow-[0_10px_24px_rgba(89,99,184,0.28)] active:translate-y-px disabled:opacity-45"
+                className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border-0 bg-[#6468ff] px-4 text-white shadow-[0_8px_20px_rgba(89,99,184,0.22)] transition hover:bg-[#5057e5] hover:shadow-[0_10px_24px_rgba(89,99,184,0.28)] active:translate-y-px disabled:opacity-45"
                 type="button"
                 disabled={agentMutationBusy}
                 onClick={() => {
@@ -5432,7 +5432,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
               </button>
               <details className="group relative">
                 <summary
-                  className="app-button-text grid min-h-9 min-w-9 cursor-pointer list-none place-items-center rounded-lg border border-[#dfe1ec] bg-white px-2 text-[#6b6f80] transition hover:border-[#737ccf] hover:text-[#5963b8]"
+                  className="app-button-text grid min-h-9 min-w-9 cursor-pointer list-none place-items-center rounded-lg border border-[#dedee8] bg-white px-2 text-[#6b6f80] transition hover:border-[#6468ff] hover:text-[#5057e5]"
                   aria-label="More agent actions"
                   title="More actions"
                 >
@@ -5447,9 +5447,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                     <circle cx="16" cy="10" r="1.5" />
                   </svg>
                 </summary>
-                <div className="absolute top-[calc(100%+8px)] right-0 z-50 grid w-48 overflow-hidden rounded-xl border border-[#e1e3ed] bg-white p-1.5 shadow-[0_18px_48px_rgba(37,40,74,0.16)]">
+                <div className="absolute top-[calc(100%+8px)] right-0 z-50 grid w-48 overflow-hidden rounded-xl border border-[#dedee8] bg-white p-1.5 shadow-[0_18px_48px_rgba(37,40,74,0.16)]">
                   <button
-                    className="app-button-text flex min-h-10 items-center gap-2 rounded-lg px-3 text-left text-[#505261] transition hover:bg-[#f5f5fb] hover:text-[#515bb4] disabled:opacity-45"
+                    className="app-button-text flex min-h-10 items-center gap-2 rounded-lg px-3 text-left text-[#494955] transition hover:bg-[#f5f5fb] hover:text-[#454bd3] disabled:opacity-45"
                     type="button"
                     disabled={agentMutationBusy}
                     onClick={(event) => {
@@ -5497,8 +5497,8 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
 
         <section className={contentGridClass}>
           <section className="grid min-w-0 content-start gap-4">
-            <article className="agent-editor-shell min-w-0 overflow-hidden rounded-2xl border border-[#e1e3ed] bg-white">
-              <div className="agent-editor-header flex flex-col gap-3 border-b border-[#e1e3ed] bg-white px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
+            <article className="agent-editor-shell min-w-0 overflow-hidden rounded-2xl border border-[#dedee8] bg-white">
+              <div className="agent-editor-header flex flex-col gap-3 border-b border-[#dedee8] bg-white px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                   <h2 className="m-0 text-base font-bold tracking-[-0.02em] text-[#171821]">
                     {tabPresentation[activeTab].title}
@@ -5508,16 +5508,16 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                   </p>
                 </div>
                 <div
-                  className="flex max-w-full gap-1 overflow-x-auto rounded-xl border border-[#e1e3ed] bg-[#f7f7fc] p-1"
+                  className="flex max-w-full gap-1 overflow-x-auto rounded-xl border border-[#dedee8] bg-[#fbfbff] p-1"
                   role="group"
                   aria-label="Agent editor sections"
                 >
                   {tabs.map((tab) => (
                     <button
-                      className={`app-button-text min-h-8 rounded-lg px-3 py-1.5 transition focus-visible:ring-2 focus-visible:ring-[#515bb4]/60 ${
+                      className={`app-button-text min-h-8 rounded-lg px-3 py-1.5 transition focus-visible:ring-2 focus-visible:ring-[#454bd3]/60 ${
                         activeTab === tab.id
-                          ? "bg-[#737ccf]/10 text-[#515bb4] shadow-[inset_0_0_0_1px_rgba(115,124,207,0.18)]"
-                          : "text-[#6b6f80] hover:bg-white hover:text-[#515bb4]"
+                          ? "bg-[#6468ff]/10 text-[#454bd3] shadow-[inset_0_0_0_1px_rgba(100,104,255,0.18)]"
+                          : "text-[#6b6f80] hover:bg-white hover:text-[#454bd3]"
                       }`}
                       key={tab.id}
                       type="button"
@@ -5546,7 +5546,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                       />
                     </div>
 
-                    <section className="agent-stack-panel overflow-hidden rounded-xl border border-[#e1e3ed] bg-white">
+                    <section className="agent-stack-panel overflow-hidden rounded-xl border border-[#dedee8] bg-white">
                       <div className="flex flex-col gap-2 border-b border-[#edf0f4] px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                           <h3 className="app-section-title m-0">
@@ -5558,7 +5558,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="rounded-full bg-[#eff0fb] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-[#515bb4]">
+                          <span className="rounded-full bg-[#eff0ff] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-[#454bd3]">
                             {selectedAgent.pipelineMode}
                           </span>
                         </div>
@@ -5568,10 +5568,10 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                         {voiceStackCards.map((card, index) => (
                           <div className="contents" key={card.id}>
                             <button
-                              className={`group relative grid min-h-32 min-w-0 flex-1 cursor-pointer gap-3 overflow-hidden rounded-xl border bg-white p-4 text-left transition duration-200 hover:-translate-y-0.5 hover:border-[#bfc3ea] hover:shadow-[0_12px_30px_rgba(37,40,74,0.08)] ${
+                              className={`group relative grid min-h-32 min-w-0 flex-1 cursor-pointer gap-3 overflow-hidden rounded-xl border bg-white p-4 text-left transition duration-200 hover:-translate-y-0.5 hover:border-[#c8caff] hover:shadow-[0_12px_30px_rgba(37,40,74,0.08)] ${
                                 openStackConfig === card.id
                                   ? "z-10 border-[#aeb4e5] shadow-[0_12px_30px_rgba(37,40,74,0.1)]"
-                                  : "border-[#e1e3ed]"
+                                  : "border-[#dedee8]"
                               }`}
                               type="button"
                               aria-label={`Configure ${card.label}`}
@@ -5584,14 +5584,14 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                               />
                               <span className="flex items-center justify-between gap-3">
                                 <span className="flex min-w-0 items-center gap-2">
-                                  <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-[#eff0fb] text-[10px] font-extrabold text-[#5963b8]">
+                                  <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-[#eff0ff] text-[10px] font-extrabold text-[#5057e5]">
                                     {card.step}
                                   </span>
                                   <span className="app-label truncate text-[#64748b]">
                                     {card.label}
                                   </span>
                                 </span>
-                                <span className="grid size-8 shrink-0 place-items-center rounded-lg border border-[#d9dcea] bg-white text-[#737789] transition group-hover:border-[#aeb4e5] group-hover:bg-[#f5f5fc] group-hover:text-[#5963b8]">
+                                <span className="grid size-8 shrink-0 place-items-center rounded-lg border border-[#d9dcea] bg-white text-[#737789] transition group-hover:border-[#aeb4e5] group-hover:bg-[#f5f5fc] group-hover:text-[#5057e5]">
                                   <Icon icon="edit" />
                                 </span>
                               </span>
@@ -5609,7 +5609,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                                 className="flex h-5 w-full shrink-0 items-center justify-center lg:h-auto lg:w-5"
                                 aria-hidden="true"
                               >
-                                <span className="h-full w-1 rounded-full bg-[linear-gradient(180deg,#14b8a6_0%,#f97316_33%,#3b82f6_66%,#c026d3_100%)] shadow-[0_0_10px_rgba(115,124,207,0.24)] lg:h-1 lg:w-full lg:bg-[linear-gradient(90deg,#14b8a6_0%,#f97316_33%,#3b82f6_66%,#c026d3_100%)]" />
+                                <span className="h-full w-1 rounded-full bg-[linear-gradient(180deg,#14b8a6_0%,#f97316_33%,#3b82f6_66%,#c026d3_100%)] shadow-[0_0_10px_rgba(100,104,255,0.24)] lg:h-1 lg:w-full lg:bg-[linear-gradient(90deg,#14b8a6_0%,#f97316_33%,#3b82f6_66%,#c026d3_100%)]" />
                               </span>
                             ) : null}
                           </div>
@@ -5626,7 +5626,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                       />
                     ) : null}
                     <section
-                      className={`agent-prompt-editor overflow-hidden rounded-xl border border-[#e1e3ed] bg-white transition ${promptExpanded ? "fixed inset-4 z-60 grid grid-rows-[auto_minmax(0,1fr)] shadow-[0_30px_90px_rgba(27,27,34,0.24)] sm:inset-8" : ""}`}
+                      className={`agent-prompt-editor overflow-hidden rounded-xl border border-[#dedee8] bg-white transition ${promptExpanded ? "fixed inset-4 z-60 grid grid-rows-[auto_minmax(0,1fr)] shadow-[0_30px_90px_rgba(27,27,34,0.24)] sm:inset-8" : ""}`}
                     >
                       <div className="flex flex-col gap-3 border-b border-[#edf0f4] bg-[#fbfbfe] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
                         <div className="min-w-0">
@@ -5634,7 +5634,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                             <h3 className="app-section-title m-0">
                               System instructions
                             </h3>
-                            <span className="rounded-full bg-[#eff0fb] px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-[#5963b8]">
+                            <span className="rounded-full bg-[#eff0ff] px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-[#5057e5]">
                               Version {selectedAgent.version}
                             </span>
                           </div>
@@ -5645,7 +5645,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                         </div>
                         <div className="flex shrink-0 items-center gap-2">
                           <button
-                            className="app-button-text inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-[#dfe1ec] bg-white px-2.5 text-[#505261] transition hover:border-[#bfc3ea] hover:text-[#5963b8]"
+                            className="app-button-text inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-[#dedee8] bg-white px-2.5 text-[#494955] transition hover:border-[#c8caff] hover:text-[#5057e5]"
                             type="button"
                             aria-pressed={promptExpanded}
                             onClick={() =>
@@ -5681,7 +5681,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                         <label className="app-label grid gap-2">
                           <span>Opening message</span>
                           <input
-                            className="app-control-text min-h-12 rounded-lg border border-[#d9e2ec] bg-white px-4 text-black shadow-[0_1px_2px_rgba(15,23,42,0.04)] outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
+                            className="app-control-text min-h-12 rounded-lg border border-[#d9e2ec] bg-white px-4 text-black shadow-[0_1px_2px_rgba(15,23,42,0.04)] outline-none transition focus:border-[#6468ff] focus:ring-4 focus:ring-[#6468ff]/10"
                             value={selectedAgent.firstMessage}
                             onChange={(event) =>
                               updateSelectedAgent({
@@ -5706,7 +5706,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                             </span>
                           </span>
                           <textarea
-                            className={`app-control-text min-h-72 resize-y overflow-y-auto rounded-lg border border-[#d9e2ec] bg-white p-4 leading-6 text-black shadow-[0_1px_2px_rgba(15,23,42,0.04)] outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10 ${promptExpanded ? "h-full max-h-none resize-none" : "h-[340px] max-h-[65vh] lg:h-[400px]"}`}
+                            className={`app-control-text min-h-72 resize-y overflow-y-auto rounded-lg border border-[#d9e2ec] bg-white p-4 leading-6 text-black shadow-[0_1px_2px_rgba(15,23,42,0.04)] outline-none transition focus:border-[#6468ff] focus:ring-4 focus:ring-[#6468ff]/10 ${promptExpanded ? "h-full max-h-none resize-none" : "h-[340px] max-h-[65vh] lg:h-[400px]"}`}
                             value={selectedAgent.prompt}
                             onChange={(event) =>
                               updateSelectedAgent({
@@ -5749,7 +5749,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                       <label className="app-label grid gap-2 rounded-lg bg-[#f8fafc] px-4 py-3">
                         <span>Creativity</span>
                         <input
-                          className="accent-[#737ccf]"
+                          className="accent-[#6468ff]"
                           type="range"
                           min="0"
                           max="2"
@@ -5857,7 +5857,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                   <div className="grid gap-4">
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                       <div>
-                        <span className="app-label text-[#5963b8]">
+                        <span className="app-label text-[#5057e5]">
                           Conversation policy
                         </span>
                         <h3 className="mt-1 mb-0 text-lg font-bold tracking-[-0.02em] text-[#171821]">
@@ -5873,7 +5873,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                       </span>
                     </div>
 
-                    <div className="grid gap-px overflow-hidden rounded-xl border border-[#e1e3ed] bg-[#e7e9f1] md:grid-cols-2 xl:grid-cols-4">
+                    <div className="grid gap-px overflow-hidden rounded-xl border border-[#dedee8] bg-[#e7e9f1] md:grid-cols-2 xl:grid-cols-4">
                       {behaviorMetrics.map((metric) => (
                         <BehaviorMetric
                           key={metric.label}
@@ -6044,7 +6044,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                             </span>
                             <label className="app-label flex items-center gap-2">
                               <input
-                                className="size-4 accent-[#737ccf]"
+                                className="size-4 accent-[#6468ff]"
                                 type="checkbox"
                                 checked={item.enabled}
                                 onChange={(event) =>
@@ -6058,7 +6058,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                             <label className="app-label grid gap-1">
                               <span>Start</span>
                               <input
-                                className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
+                                className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#6468ff] focus:ring-4 focus:ring-[#6468ff]/10"
                                 type="time"
                                 value={item.start}
                                 onChange={(event) =>
@@ -6071,7 +6071,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                             <label className="app-label grid gap-1">
                               <span>End</span>
                               <input
-                                className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
+                                className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#6468ff] focus:ring-4 focus:ring-[#6468ff]/10"
                                 type="time"
                                 value={item.end}
                                 onChange={(event) =>
@@ -6114,7 +6114,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                       <label className="app-label grid gap-2">
                         <span>Voicemail message</span>
                         <textarea
-                          className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
+                          className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#6468ff] focus:ring-4 focus:ring-[#6468ff]/10"
                           value={selectedAgent.behavior.voicemailMessage}
                           onChange={(event) =>
                             updateBehavior({
@@ -6129,7 +6129,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
 
                 {activeTab === "tools" ? (
                   <div className="grid gap-4">
-                    <section className="overflow-hidden rounded-xl border border-[#e1e3ed] bg-white">
+                    <section className="overflow-hidden rounded-xl border border-[#dedee8] bg-white">
                       <div className="flex flex-col gap-3 border-b border-[#edf0f4] px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                           <h3 className="app-section-title m-0">
@@ -6147,7 +6147,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                             active
                           </span>
                           <button
-                            className="min-h-8 rounded-lg border border-[#d9dcea] bg-white px-3 text-xs font-semibold text-[#5963b8] transition hover:border-[#bfc3ea] hover:bg-[#eff0fb]"
+                            className="min-h-8 rounded-lg border border-[#d9dcea] bg-white px-3 text-xs font-semibold text-[#5057e5] transition hover:border-[#c8caff] hover:bg-[#eff0ff]"
                             type="button"
                             onClick={() =>
                               router.push("/dashboard/integrations")
@@ -6314,11 +6314,11 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="app-label w-fit rounded-full border border-[#c9ccef] bg-[#eff0fb] px-2.5 py-1 text-[#737ccf]">
+                          <span className="app-label w-fit rounded-full border border-[#c9ccef] bg-[#eff0ff] px-2.5 py-1 text-[#6468ff]">
                             {selectedAgent.tools.length} / 20 configured
                           </span>
                           <button
-                            className="app-button-text min-h-9 rounded-lg bg-[#737ccf] px-3 text-white transition hover:bg-[#5963b8]"
+                            className="app-button-text min-h-9 rounded-lg bg-[#6468ff] px-3 text-white transition hover:bg-[#5057e5]"
                             type="button"
                             onClick={() =>
                               setShowToolCreator((current) => !current)
@@ -6340,11 +6340,11 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                         if (isDigitalBotManaged) {
                           return (
                             <article
-                              className="flex flex-col gap-3 rounded-xl border border-[#c9ccef] bg-[#eff0fb] p-4 sm:flex-row sm:items-center sm:justify-between"
+                              className="flex flex-col gap-3 rounded-xl border border-[#c9ccef] bg-[#eff0ff] p-4 sm:flex-row sm:items-center sm:justify-between"
                               key={toolKey}
                             >
                               <div className="flex min-w-0 items-center gap-3">
-                                <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-white text-[#737ccf]">
+                                <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-white text-[#6468ff]">
                                   <Icon icon="tool" />
                                 </span>
                                 <div className="min-w-0">
@@ -6368,7 +6368,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                                     : "Inactive"}
                                 </span>
                                 <button
-                                  className="app-button-text min-h-9 rounded-lg border border-[#c9ccef] bg-white px-3 text-[#737ccf] transition hover:bg-[#f0fdff] disabled:cursor-not-allowed disabled:opacity-60"
+                                  className="app-button-text min-h-9 rounded-lg border border-[#c9ccef] bg-white px-3 text-[#6468ff] transition hover:bg-[#f0fdff] disabled:cursor-not-allowed disabled:opacity-60"
                                   type="button"
                                   disabled={isTesting}
                                   onClick={() => void handleTestTool(index)}
@@ -6387,7 +6387,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                           >
                             <div className="flex flex-col gap-3 border-b border-[#edf0f5] bg-[#f8fafc] px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
                               <div className="flex min-w-0 items-center gap-3">
-                                <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#eff0fb] text-[#737ccf]">
+                                <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#eff0ff] text-[#6468ff]">
                                   <Icon icon="tool" />
                                 </span>
                                 <div className="min-w-0">
@@ -6403,7 +6403,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                               <div className="flex flex-wrap items-center gap-2">
                                 <label className="app-label flex min-h-9 items-center gap-2 rounded-lg border border-[#dfe3ea] bg-white px-3">
                                   <input
-                                    className="size-4 accent-[#737ccf]"
+                                    className="size-4 accent-[#6468ff]"
                                     type="checkbox"
                                     checked={tool.enabled !== false}
                                     onChange={(event) =>
@@ -6415,7 +6415,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                                   Enabled
                                 </label>
                                 <button
-                                  className={`app-button-text min-h-9 rounded-lg border px-3 transition ${expandedToolKey === toolKey ? "border-[#bfc3ea] bg-[#eff0fb] text-[#5963b8]" : "border-[#d5d8df] bg-white text-[#475569] hover:border-[#bfc3ea]"}`}
+                                  className={`app-button-text min-h-9 rounded-lg border px-3 transition ${expandedToolKey === toolKey ? "border-[#c8caff] bg-[#eff0ff] text-[#5057e5]" : "border-[#d5d8df] bg-white text-[#475569] hover:border-[#c8caff]"}`}
                                   type="button"
                                   onClick={() =>
                                     setExpandedToolKey((current) =>
@@ -6428,7 +6428,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                                     : "Configure"}
                                 </button>
                                 <button
-                                  className="app-button-text min-h-9 rounded-lg border border-[#c9ccef] bg-white px-3 text-[#737ccf] transition hover:bg-[#eff0fb] disabled:cursor-not-allowed disabled:opacity-60"
+                                  className="app-button-text min-h-9 rounded-lg border border-[#c9ccef] bg-white px-3 text-[#6468ff] transition hover:bg-[#eff0ff] disabled:cursor-not-allowed disabled:opacity-60"
                                   type="button"
                                   disabled={isTesting}
                                   onClick={() => void handleTestTool(index)}
@@ -6496,7 +6496,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                                 <label className="app-label grid gap-2">
                                   <span>Description</span>
                                   <textarea
-                                    className="app-control-text min-h-20 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
+                                    className="app-control-text min-h-20 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#6468ff] focus:ring-4 focus:ring-[#6468ff]/10"
                                     value={tool.description}
                                     placeholder="Tell the agent exactly when to use this function."
                                     onChange={(event) =>
@@ -6519,7 +6519,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                                       </span>
                                     </div>
                                     <button
-                                      className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#737ccf]"
+                                      className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#6468ff]"
                                       type="button"
                                       onClick={() => addToolHeader(index)}
                                     >
@@ -6564,7 +6564,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                                       </span>
                                     </div>
                                     <button
-                                      className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#737ccf]"
+                                      className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#6468ff]"
                                       type="button"
                                       onClick={() => addToolParameter(index)}
                                     >
@@ -6644,7 +6644,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                                       Filler messages while calling tool
                                     </span>
                                     <textarea
-                                      className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
+                                      className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#6468ff] focus:ring-4 focus:ring-[#6468ff]/10"
                                       value={(tool.messages ?? []).join("\n")}
                                       placeholder={
                                         "Let me check that for you.\nOne moment while I look that up."
@@ -6679,7 +6679,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                     </section>
 
                     {showToolCreator ? (
-                      <section className="grid gap-4 rounded-xl border border-[#bfc3ea] bg-[#f7f7fc] p-4 shadow-[0_16px_40px_rgba(37,40,74,0.08)]">
+                      <section className="grid gap-4 rounded-xl border border-[#c8caff] bg-[#fbfbff] p-4 shadow-[0_16px_40px_rgba(37,40,74,0.08)]">
                         <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                           <div>
                             <h3 className="app-section-title m-0">
@@ -6691,7 +6691,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                             </span>
                           </div>
                           <button
-                            className="app-button-text min-h-10 rounded-lg bg-[#737ccf] px-4 text-white shadow-sm"
+                            className="app-button-text min-h-10 rounded-lg bg-[#6468ff] px-4 text-white shadow-sm"
                             type="button"
                             onClick={addTool}
                           >
@@ -6775,7 +6775,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                           <label className="app-label grid gap-2">
                             <span>Filler messages</span>
                             <textarea
-                              className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
+                              className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#6468ff] focus:ring-4 focus:ring-[#6468ff]/10"
                               value={(toolDraft.messages ?? []).join("\n")}
                               placeholder={
                                 "Let me check that for you.\nOne moment while I look that up."
@@ -6804,7 +6804,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                               </span>
                             </div>
                             <button
-                              className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#737ccf]"
+                              className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#6468ff]"
                               type="button"
                               onClick={addDraftHeader}
                             >
@@ -6846,7 +6846,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                               </span>
                             </div>
                             <button
-                              className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#737ccf]"
+                              className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#6468ff]"
                               type="button"
                               onClick={addDraftParameter}
                             >
@@ -6928,7 +6928,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                         <div className="flex flex-wrap gap-2">
                           {systemDynamicVariables.map((variable) => (
                             <button
-                              className="app-label rounded-full border border-[#c9ccef] bg-white px-2.5 py-1 text-[#737ccf] transition hover:border-[#c9ccef] hover:bg-[#eff0fb]"
+                              className="app-label rounded-full border border-[#c9ccef] bg-white px-2.5 py-1 text-[#6468ff] transition hover:border-[#c9ccef] hover:bg-[#eff0ff]"
                               key={variable}
                               type="button"
                               title="Copy variable"
@@ -6945,7 +6945,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                       <div className="flex flex-wrap gap-2">
                         {selectedAgent.dynamicVariables.map((variable) => (
                           <button
-                            className="app-label rounded-full border border-[#c9ccef] bg-[#eff0fb] px-2.5 py-1 text-[#737ccf] transition hover:border-[#c9ccef] hover:bg-white"
+                            className="app-label rounded-full border border-[#c9ccef] bg-[#eff0ff] px-2.5 py-1 text-[#6468ff] transition hover:border-[#c9ccef] hover:bg-white"
                             key={variable}
                             type="button"
                             title="Remove variable"
@@ -6965,7 +6965,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                       </div>
                       <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_84px]">
                         <input
-                          className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
+                          className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 outline-none transition focus:border-[#6468ff] focus:ring-4 focus:ring-[#6468ff]/10"
                           aria-label="New dynamic variable name"
                           value={variableDraft}
                           placeholder="customerID"
@@ -6974,7 +6974,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                           }
                         />
                         <button
-                          className="app-button-text rounded-lg border border-[#d5d8df] bg-white px-3 text-[#737ccf]"
+                          className="app-button-text rounded-lg border border-[#d5d8df] bg-white px-3 text-[#6468ff]"
                           type="button"
                           onClick={addVariable}
                         >
@@ -6989,7 +6989,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                   <div className="grid gap-4">
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                       <div>
-                        <span className="app-label text-[#5963b8]">
+                        <span className="app-label text-[#5057e5]">
                           Telephony operations
                         </span>
                         <h3 className="mt-1 mb-0 text-lg font-bold tracking-[-0.02em] text-[#171821]">
@@ -7008,7 +7008,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                           : "Needs attention"}
                       </span>
                     </div>
-                    <section className="grid gap-4 rounded-xl border border-[#e1e3ed] bg-white p-4">
+                    <section className="grid gap-4 rounded-xl border border-[#dedee8] bg-white p-4">
                       <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                         <div>
                           <h3 className="app-section-title m-0">
@@ -7021,7 +7021,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                           </span>
                         </div>
                         <button
-                          className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-[#737ccf] px-3 text-white transition hover:bg-[#5963b8] disabled:cursor-not-allowed disabled:opacity-60"
+                          className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-[#6468ff] px-3 text-white transition hover:bg-[#5057e5] disabled:cursor-not-allowed disabled:opacity-60"
                           type="button"
                           disabled={!testCallsEnabled || agentMutationBusy}
                           onClick={() => void handleStartTestCall()}
@@ -7038,7 +7038,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                           enabled={liveCallsEnabled}
                           onChange={handleSetLiveCalls}
                         />
-                        <div className="rounded-lg border border-[#e1e3ed] bg-[#fafafe] p-3">
+                        <div className="rounded-lg border border-[#dedee8] bg-[#fafafe] p-3">
                           <span className="app-label block">Agent status</span>
                           <strong
                             className={`app-strong block ${selectedTone.text}`}
@@ -7051,7 +7051,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                         </div>
                       </div>
 
-                      <div className="grid overflow-hidden rounded-lg border border-[#e1e3ed] bg-[#edf0f4] gap-px md:grid-cols-2 xl:grid-cols-4">
+                      <div className="grid overflow-hidden rounded-lg border border-[#dedee8] bg-[#edf0f4] gap-px md:grid-cols-2 xl:grid-cols-4">
                         {callReadiness.map((item) => (
                           <div
                             className={`p-3 ${
@@ -7072,7 +7072,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                       </div>
                     </section>
 
-                    <div className="grid gap-px overflow-hidden rounded-lg border border-[#e1e3ed] bg-[#edf0f4] lg:grid-cols-4">
+                    <div className="grid gap-px overflow-hidden rounded-lg border border-[#dedee8] bg-[#edf0f4] lg:grid-cols-4">
                       <div className="bg-white p-3">
                         <span className="app-label block">Assigned phone</span>
                         <strong className="app-strong block truncate">
@@ -7127,7 +7127,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
 
                     <div className="flex flex-wrap gap-2">
                       <button
-                        className="app-button-text min-h-10 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#737ccf]"
+                        className="app-button-text min-h-10 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#6468ff]"
                         type="button"
                         disabled={agentMutationBusy}
                         onClick={() => void handleSyncPhoneRoutes()}
@@ -7211,7 +7211,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                       </div>
                     </BehaviorPanel>
 
-                    <section className="overflow-hidden rounded-xl border border-[#e1e3ed] bg-white">
+                    <section className="overflow-hidden rounded-xl border border-[#dedee8] bg-white">
                       <div className="flex items-center justify-between gap-3 border-b border-[#edf0f4] px-4 py-3.5">
                         <div>
                           <h3 className="app-section-title m-0">
@@ -7222,7 +7222,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                           </span>
                         </div>
                         <button
-                          className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#737ccf]"
+                          className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#6468ff]"
                           type="button"
                           onClick={() =>
                             navigateToDashboardPage("/dashboard/calls")
@@ -7270,7 +7270,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                   <div className="grid gap-4">
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                       <div>
-                        <span className="app-label text-[#5963b8]">
+                        <span className="app-label text-[#5057e5]">
                           Web deployment
                         </span>
                         <h3 className="mt-1 mb-0 text-lg font-bold tracking-[-0.02em] text-[#171821]">
@@ -7282,15 +7282,15 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                         </p>
                       </div>
                       <span
-                        className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] ${selectedAgent.widget.enabled ? "bg-emerald-50 text-emerald-700" : "bg-[#eff0fb] text-[#5963b8]"}`}
+                        className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] ${selectedAgent.widget.enabled ? "bg-emerald-50 text-emerald-700" : "bg-[#eff0ff] text-[#5057e5]"}`}
                       >
                         {selectedAgent.widget.enabled ? "Enabled" : "Draft"}
                       </span>
                     </div>
 
-                    <section className="flex flex-col gap-3 rounded-xl border border-[#dfe1ec] bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+                    <section className="flex flex-col gap-3 rounded-xl border border-[#dedee8] bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
                       <div className="flex items-center gap-3">
-                        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#eff0fb] text-[#5963b8]">
+                        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#eff0ff] text-[#5057e5]">
                           <Icon icon="widget" />
                         </span>
                         <div>
@@ -7317,12 +7317,12 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                             })
                           }
                         />
-                        <span className="absolute inset-0 rounded-full bg-[#cbd5e1] transition peer-checked:bg-[#737ccf] peer-focus-visible:ring-4 peer-focus-visible:ring-[#737ccf]/15" />
+                        <span className="absolute inset-0 rounded-full bg-[#cbd5e1] transition peer-checked:bg-[#6468ff] peer-focus-visible:ring-4 peer-focus-visible:ring-[#6468ff]/15" />
                         <span className="absolute left-1 size-5 rounded-full bg-white shadow-sm transition peer-checked:translate-x-5" />
                       </label>
                     </section>
 
-                    <section className="grid gap-4 rounded-xl border border-[#e1e3ed] bg-white p-4">
+                    <section className="grid gap-4 rounded-xl border border-[#dedee8] bg-white p-4">
                       <div>
                         <h3 className="app-section-title m-0">
                           Access and appearance
@@ -7347,7 +7347,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                             }
                           />
                           <button
-                            className="app-button-text min-h-10 self-end rounded-lg border border-[#d5d8df] bg-white px-3 text-[#737ccf]"
+                            className="app-button-text min-h-10 self-end rounded-lg border border-[#d5d8df] bg-white px-3 text-[#6468ff]"
                             type="button"
                             onClick={handleGenerateWidgetKey}
                           >
@@ -7431,7 +7431,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                               }
                             />
                             <input
-                              className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
+                              className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#6468ff] focus:ring-4 focus:ring-[#6468ff]/10"
                               aria-label="Widget accent color hex value"
                               value={selectedAgent.widget.accentColor}
                               onChange={(event) =>
@@ -7457,7 +7457,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                       </p>
                     ) : null}
 
-                    <section className="overflow-hidden rounded-xl border border-[#e1e3ed] bg-white">
+                    <section className="overflow-hidden rounded-xl border border-[#dedee8] bg-white">
                       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#edf0f4] px-4 py-3.5">
                         <div>
                           <h3 className="app-section-title m-0">
@@ -7468,7 +7468,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                             code to your website.
                           </span>
                         </div>
-                        <span className="grid size-8 place-items-center rounded-lg bg-[#eff0fb] text-[#737ccf]">
+                        <span className="grid size-8 place-items-center rounded-lg bg-[#eff0ff] text-[#6468ff]">
                           <Icon icon="widget" />
                         </span>
                       </div>
@@ -7482,14 +7482,14 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                                 Public site widget
                               </span>
                             </div>
-                            <span className="rounded-full bg-[#eff0fb] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[.1em] text-[#5963b8]">
+                            <span className="rounded-full bg-[#eff0ff] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[.1em] text-[#5057e5]">
                               {selectedAgent.widget.position.replace("-", " ")}
                             </span>
                           </div>
 
-                          <div className="widget-preview-canvas relative grid min-h-[230px] content-end overflow-hidden rounded-xl border border-[#e1e3ed] p-4">
+                          <div className="widget-preview-canvas relative grid min-h-[230px] content-end overflow-hidden rounded-xl border border-[#dedee8] p-4">
                             <div
-                              className="absolute inset-x-0 top-0 flex h-10 items-center gap-1.5 border-b border-[#e1e3ed] bg-white/80 px-3"
+                              className="absolute inset-x-0 top-0 flex h-10 items-center gap-1.5 border-b border-[#dedee8] bg-white/80 px-3"
                               aria-hidden="true"
                             >
                               <span className="size-2 rounded-full bg-[#d6d8e3]" />
@@ -7498,7 +7498,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                               <span className="ml-2 h-5 flex-1 rounded-md bg-[#f0f1f7]" />
                             </div>
                             <div
-                              className={`w-full max-w-[270px] rounded-xl border border-[#dfe1ec] bg-white p-4 shadow-[0_18px_45px_rgba(37,40,74,0.14)] ${selectedAgent.widget.position === "bottom-left" ? "justify-self-start" : "justify-self-end"}`}
+                              className={`w-full max-w-[270px] rounded-xl border border-[#dedee8] bg-white p-4 shadow-[0_18px_45px_rgba(37,40,74,0.14)] ${selectedAgent.widget.position === "bottom-left" ? "justify-self-start" : "justify-self-end"}`}
                             >
                               <div className="mb-3 flex items-center gap-2">
                                 <span
@@ -7543,7 +7543,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                               Complete these checks before going live.
                             </span>
                           </div>
-                          <div className="grid overflow-hidden rounded-xl border border-[#e1e3ed] bg-white">
+                          <div className="grid overflow-hidden rounded-xl border border-[#dedee8] bg-white">
                             {[
                               {
                                 label: "Agent published",
@@ -7574,7 +7574,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                             ))}
                           </div>
 
-                          <details className="overflow-hidden rounded-xl border border-[#e1e3ed] bg-white">
+                          <details className="overflow-hidden rounded-xl border border-[#dedee8] bg-white">
                             <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3 marker:hidden">
                               <span>
                                 <strong className="app-strong block">
@@ -7584,7 +7584,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                                   Paste before the closing body tag.
                                 </span>
                               </span>
-                              <span className="app-button-text rounded-lg bg-[#eff0fb] px-2.5 py-1.5 text-[#5963b8]">
+                              <span className="app-button-text rounded-lg bg-[#eff0ff] px-2.5 py-1.5 text-[#5057e5]">
                                 View code
                               </span>
                             </summary>
@@ -7604,7 +7604,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                           </details>
 
                           <button
-                            className="app-button-text min-h-10 w-full rounded-lg border border-[#c9ccef] bg-white px-3 text-[#5963b8] transition hover:bg-[#eff0fb] disabled:cursor-not-allowed disabled:opacity-50"
+                            className="app-button-text min-h-10 w-full rounded-lg border border-[#c9ccef] bg-white px-3 text-[#5057e5] transition hover:bg-[#eff0ff] disabled:cursor-not-allowed disabled:opacity-50"
                             type="button"
                             disabled={!selectedAgent.widget.publicKey}
                             onClick={() =>
@@ -7634,7 +7634,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                       <div className="flex flex-wrap gap-2">
                         {selectedAgent.dynamicVariables.map((item) => (
                           <span
-                            className="app-label rounded-full border border-[#c9ccef] bg-[#eff0fb] px-2.5 py-1 text-[#737ccf]"
+                            className="app-label rounded-full border border-[#c9ccef] bg-[#eff0ff] px-2.5 py-1 text-[#6468ff]"
                             key={item}
                           >
                             {item}
@@ -7652,8 +7652,8 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
           </section>
 
           <aside className={runtimeAsideClass}>
-            <article className="agent-runtime-card min-w-0 overflow-hidden rounded-2xl border border-[#e1e3ed] bg-white">
-              <div className="border-b border-[#e1e3ed] px-4 pt-4 pb-3">
+            <article className="agent-runtime-card min-w-0 overflow-hidden rounded-2xl border border-[#dedee8] bg-white">
+              <div className="border-b border-[#dedee8] px-4 pt-4 pb-3">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <span className="app-label block">Live operations</span>
@@ -7669,7 +7669,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                   </span>
                 </div>
 
-                <div className="mt-3 rounded-xl border border-[#dfe2f0] bg-[#f7f7fc] p-3.5">
+                <div className="mt-3 rounded-xl border border-[#dfe2f0] bg-[#fbfbff] p-3.5">
                   <div className="flex items-center gap-2">
                     <span className="relative flex size-2.5 shrink-0">
                       {selectedRuntimeStreamState === "live" ? (
@@ -7695,7 +7695,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                   <div className="mt-3 grid grid-cols-2 divide-x divide-[#dfe2f0] border-t border-[#dfe2f0] pt-3">
                     <span className="pr-3">
                       <span className="app-label block">Service mode</span>
-                      <strong className="mt-0.5 block text-lg font-bold capitalize text-[#5963b8]">
+                      <strong className="mt-0.5 block text-lg font-bold capitalize text-[#5057e5]">
                         {selectedAgent.pipelineMode}
                       </strong>
                     </span>
@@ -7743,7 +7743,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
               </div>
             </article>
 
-            <article className="agent-runtime-card overflow-hidden rounded-2xl border border-[#e1e3ed] bg-white">
+            <article className="agent-runtime-card overflow-hidden rounded-2xl border border-[#dedee8] bg-white">
               <div className="p-4">
                 <div className="mb-3 flex items-center justify-between gap-3">
                   <div className="min-w-0">
@@ -7854,7 +7854,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
           aria-busy={renamingAgentSaving}
         >
           <form
-            className="dashboard-overlay-panel grid max-h-[calc(100dvh-2rem)] w-full max-w-md gap-4 overflow-y-auto rounded-2xl border border-[#e1e3ed] bg-white p-5"
+            className="dashboard-overlay-panel grid max-h-[calc(100dvh-2rem)] w-full max-w-md gap-4 overflow-y-auto rounded-2xl border border-[#dedee8] bg-white p-5"
             onSubmit={(event) => {
               event.preventDefault();
               void saveAgentName(selectedAgent);
@@ -7881,11 +7881,11 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
               </div>
             ) : null}
             <label className="grid gap-1.5">
-              <span className="app-label text-[#5963b8]">Agent name</span>
+              <span className="app-label text-[#5057e5]">Agent name</span>
               <input
                 autoFocus
                 required
-                className="app-control-text min-h-11 rounded-lg border border-[#d9dcea] bg-white px-3 text-[#171821] outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
+                className="app-control-text min-h-11 rounded-lg border border-[#d9dcea] bg-white px-3 text-[#171821] outline-none transition focus:border-[#6468ff] focus:ring-4 focus:ring-[#6468ff]/10"
                 value={agentNameDraft}
                 maxLength={80}
                 onChange={(event) => setAgentNameDraft(event.target.value)}
@@ -7893,7 +7893,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
             </label>
             <div className="flex justify-end gap-2">
               <button
-                className="app-button-text min-h-10 rounded-lg border border-[#d9dcea] bg-white px-4 text-[#505261] transition hover:bg-[#f7f7fc] active:translate-y-px disabled:opacity-50"
+                className="app-button-text min-h-10 rounded-lg border border-[#d9dcea] bg-white px-4 text-[#494955] transition hover:bg-[#fbfbff] active:translate-y-px disabled:opacity-50"
                 type="button"
                 disabled={renamingAgentSaving}
                 onClick={cancelAgentRename}
@@ -7901,7 +7901,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                 Cancel
               </button>
               <button
-                className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#737ccf]/24 bg-[#737ccf]/[0.07] px-4 text-[#5963b8] shadow-sm transition hover:border-[#737ccf]/40 hover:bg-[#737ccf]/12 active:translate-y-px disabled:opacity-50"
+                className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#6468ff]/24 bg-[#6468ff]/[0.07] px-4 text-[#5057e5] shadow-sm transition hover:border-[#6468ff]/40 hover:bg-[#6468ff]/12 active:translate-y-px disabled:opacity-50"
                 type="submit"
                 disabled={renamingAgentSaving}
               >
