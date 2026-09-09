@@ -980,7 +980,7 @@
 /* ========================================================================== */
 
 :is(.dashboard-home-theme, .agents-home-palette) {
-  --dashboard-canvas: #f7f7fc;
+  --dashboard-canvas: #ffffff;
   --dashboard-paper: #ffffff;
   --dashboard-soft: #f0f1f9;
   --dashboard-border: #e1e3ed;
@@ -1757,7 +1757,7 @@
       isolation: isolate;
       overflow: visible;
       border-right-color: #e7e8ef !important;
-      background: #f8f9fc !important;
+      background: #ffffff !important;
       box-shadow: none !important;
     }
 
@@ -1897,7 +1897,7 @@
 /* SaaS workspace cohesion: fewer hard dividers, clearer surface hierarchy. */
 @layer components {
   .dashboard-home-theme.dashboard-home-theme {
-    --dashboard-canvas: #f6f7fb;
+    --dashboard-canvas: #ffffff;
     --dashboard-border: #e8e9f0 !important;
     background-color: var(--dashboard-canvas) !important;
   }
@@ -1909,14 +1909,14 @@
 
   .dashboard-home-theme.dashboard-home-theme .dashboard-page-header {
     border-bottom: 0 !important;
-    background: rgb(246 247 251 / 0.92) !important;
+    background: rgb(255 255 255 / 0.96) !important;
     box-shadow: none !important;
     backdrop-filter: blur(14px);
   }
 
   .dashboard-home-theme.dashboard-home-theme .dashboard-workspace-bar {
     border-bottom-color: #ececf2 !important;
-    background: rgb(255 255 255 / 0.72) !important;
+    background: #ffffff !important;
   }
 
   .dashboard-home-theme.dashboard-home-theme .dashboard-page-header-inner {
