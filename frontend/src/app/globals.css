@@ -929,6 +929,51 @@
   }
 }
 
+/* Dashboard shell repair: keep the page header flush with the viewport and
+   make the persistent navigation compact enough for laptop-height screens. */
+@layer components {
+  @media (min-width: 1024px) {
+    .dashboard-home-theme.dashboard-home-theme main:has(> .dashboard-sidebar) > section {
+      padding-top: 0 !important;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme main:has(> .dashboard-sidebar) > section > .dashboard-page-header {
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar {
+      padding: 0.75rem 0.625rem !important;
+      border-right: 1px solid #e1e3ed !important;
+      box-shadow: none !important;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar > div:first-child {
+      padding-inline: 0.25rem !important;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar nav {
+      margin-top: 0.75rem !important;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar nav > div {
+      margin-bottom: 0.75rem !important;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar nav p {
+      margin-bottom: 0.375rem !important;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar nav a {
+      height: 2.5rem !important;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-page-edge {
+      display: none !important;
+    }
+  }
+}
+
 /* ========================================================================== */
 /* Dashboard palette: white surfaces with Moody Blue product accents.         */
 /* Kept dashboard-scoped so public and marketing pages retain their styling.   */

@@ -243,7 +243,7 @@ export function AgentsListShell() {
 
   return (
     <main className={`agents-home-palette grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#f7f7fc] text-[#1b1b22] ${
-      showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
+      showUserSidebar ? "lg:grid-cols-[240px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
     }`}>
       <DashboardSidebar
         activeLabel="Voice Agents"

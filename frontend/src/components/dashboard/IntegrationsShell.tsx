@@ -396,7 +396,7 @@ export function IntegrationsShell() {
     <main
       className={`grid min-h-screen bg-[#f4f7fb] text-slate-950 ${
         showUserSidebar
-          ? "lg:grid-cols-[272px_minmax(0,1fr)]"
+          ? "lg:grid-cols-[240px_minmax(0,1fr)]"
           : "lg:grid-cols-[64px_minmax(0,1fr)]"
       }`}
     >

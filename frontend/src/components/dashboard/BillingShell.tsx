@@ -151,7 +151,7 @@ export function BillingShell() {
   if (!session) return <main className="grid min-h-screen place-items-center bg-[#f7f7fc] text-sm font-semibold text-[#7a7d8e]">Loading billing</main>;
 
   return (
-    <main className={`dashboard-home-theme grid min-h-screen bg-[#f7f7fc] text-[#1b1b22] ${showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}>
+    <main className={`dashboard-home-theme grid min-h-screen bg-[#f7f7fc] text-[#1b1b22] ${showUserSidebar ? "lg:grid-cols-[240px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}>
       <DashboardSidebar activeLabel="Billing" userInitials={initials(session.name)} userName={session.name} userEmail={session.email} onLogout={() => void logoutSession().then(() => router.replace("/login"))} showUserSidebar={showUserSidebar} setShowUserSidebar={setShowUserSidebar} />
 
       <section className="min-w-0 overflow-y-auto">

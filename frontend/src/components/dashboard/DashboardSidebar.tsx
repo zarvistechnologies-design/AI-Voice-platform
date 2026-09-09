@@ -297,7 +297,7 @@ export function DashboardSidebar({
     <>
       <aside
         className={`dashboard-sidebar z-40 flex min-w-0 items-center gap-2 border-b border-[#e1e3ed] bg-white px-2 py-2 text-[#505261] lg:fixed lg:inset-y-0 lg:left-0 lg:h-dvh lg:flex-col lg:items-stretch lg:border-b-0 lg:px-2.5 lg:py-3 lg:shadow-[4px_0_22px_rgba(115,124,207,0.045)] lg:transition-[width] lg:duration-300 motion-reduce:transition-none ${
-          showUserSidebar ? "lg:w-[272px]" : "lg:w-16"
+          showUserSidebar ? "lg:w-[240px]" : "lg:w-16"
         }`}
       >
         <div
@@ -323,11 +323,11 @@ export function DashboardSidebar({
             onPointerDown={() => prefetchDashboardRoute("/dashboard/agents")}
           >
             <span
-              className={`relative block h-10 shrink-0 overflow-hidden ${showUserSidebar ? "w-[148px]" : "w-10"}`}
+              className={`relative block h-10 shrink-0 overflow-hidden ${showUserSidebar ? "w-[132px]" : "w-10"}`}
             >
               <Image
                 alt=""
-                className="dashboard-sidebar-logo absolute left-0 top-1/2 h-auto w-[148px] max-w-none -translate-y-1/2 object-contain object-left transition group-hover:brightness-110"
+                className="dashboard-sidebar-logo absolute left-0 top-1/2 h-auto w-[132px] max-w-none -translate-y-1/2 object-contain object-left transition group-hover:brightness-110"
                 height={350}
                 priority
                 src="/images/logo_2.svg"
@@ -575,14 +575,14 @@ export function DashboardSidebar({
 
       <div
         className={`dashboard-page-edge pointer-events-none fixed inset-y-0 z-[35] hidden w-3 rounded-l-[14px] border-l border-[#737ccf]/15 shadow-[-3px_0_14px_rgba(115,124,207,0.055)] transition-[left] duration-300 motion-reduce:transition-none lg:block ${
-          showUserSidebar ? "left-[272px]" : "left-16"
+          showUserSidebar ? "left-[240px]" : "left-16"
         }`}
         aria-hidden="true"
       />
 
       <div
         className={`hidden lg:block lg:h-dvh ${
-          showUserSidebar ? "lg:w-[272px]" : "lg:w-16"
+          showUserSidebar ? "lg:w-[240px]" : "lg:w-16"
         }`}
         aria-hidden="true"
       />
