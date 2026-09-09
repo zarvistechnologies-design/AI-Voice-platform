@@ -4,7 +4,8 @@ import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "reac
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
+import { DashboardSidebar, getDashboardSidebarInitialState } from "@/components/dashboard/DashboardSidebar";
+import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
 import {
   getServerSession,
   getSession,
@@ -13,7 +14,9 @@ import {
 } from "@/lib/auth";
 import { voiceApi, type AgentSummary } from "@/lib/voice";
 
-type IconName = "agent" | "edit" | "plus" | "search" | "trash" | "grid" | "list" | "phone" | "activity" | "arrow";
+type IconName = "agent" | "chevron" | "clone" | "edit" | "more" | "phone" | "plus" | "search" | "trash";
+type AgentStatusFilter = "All" | AgentSummary["status"];
+type AgentSort = "name-asc" | "name-desc" | "status";
 
 const prefetchedAgentRoutes = new Set<string>();
 const MAX_PREFETCHED_AGENT_ROUTES = 250;
@@ -29,12 +32,11 @@ function Icon({ icon }: { icon: IconName }) {
     "aria-hidden": true,
   };
 
-  if (icon === "grid") return <svg {...props}><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>;
-  if (icon === "list") return <svg {...props}><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>;
-  if (icon === "phone") return <svg {...props}><path d="M8 3 5 4c-4 4 11 19 15 15l1-3-5-3-2 2a12 12 0 0 1-5-5l2-2-3-5Z"/></svg>;
-  if (icon === "activity") return <svg {...props}><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>;
-  if (icon === "arrow") return <svg {...props}><path d="M5 12h14m-5-5 5 5-5 5"/></svg>;
   if (icon === "edit") return <svg {...props}><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z" /></svg>;
+  if (icon === "chevron") return <svg {...props}><path d="m7 10 5 5 5-5" /></svg>;
+  if (icon === "clone") return <svg {...props}><rect x="9" y="9" width="10" height="10" rx="2" /><path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" /></svg>;
+  if (icon === "more") return <svg {...props}><circle cx="5" cy="12" r="1" className="fill-current stroke-none" /><circle cx="12" cy="12" r="1" className="fill-current stroke-none" /><circle cx="19" cy="12" r="1" className="fill-current stroke-none" /></svg>;
+  if (icon === "phone") return <svg {...props}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.62 2.63a2 2 0 0 1-.45 2.11L8 9.73a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.85.29 1.73.5 2.63.62A2 2 0 0 1 22 16.92Z" /></svg>;
   if (icon === "plus") return <svg {...props}><path d="M12 5v14M5 12h14" /></svg>;
   if (icon === "search") return <svg {...props}><circle cx="11" cy="11" r="7" /><path d="m20 20-4-4" /></svg>;
   if (icon === "trash") return <svg {...props}><path d="M4 7h16M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7V4h6v3" /></svg>;
@@ -46,15 +48,20 @@ function Icon({ icon }: { icon: IconName }) {
   );
 }
 
+function statusTone(status: AgentSummary["status"]) {
+  if (status === "Live") return "border-emerald-200 bg-emerald-50 text-emerald-700";
+  if (status === "Paused") return "border-amber-200 bg-amber-50 text-amber-700";
+  return "border-[#dfe1ef] bg-[#f7f7fc] text-[#6b6f80]";
+}
+
 export function AgentsListShell() {
   const router = useRouter();
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
   const [agents, setAgents] = useState<AgentSummary[]>([]);
   const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("All agents");
-  const [view, setView] = useState<"list" | "grid">("list");
-  const dialogRef = useRef<HTMLDivElement>(null);
-  const dialogTriggerRef = useRef<HTMLElement | null>(null);
+  const [statusFilter, setStatusFilter] = useState<AgentStatusFilter>("All");
+  const [sortBy, setSortBy] = useState<AgentSort>("name-asc");
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
@@ -62,7 +69,7 @@ export function AgentsListShell() {
   const [agentName, setAgentName] = useState("");
   const [editingAgent, setEditingAgent] = useState<AgentSummary | null>(null);
   const [editAgentName, setEditAgentName] = useState("");
-  const [showUserSidebar, setShowUserSidebar] = useState(true);
+  const [showUserSidebar, setShowUserSidebar] = useState(getDashboardSidebarInitialState);
   const agentDataPrefetchTimersRef = useRef(new Map<string, number>());
 
   function prefetchAgentRoute(agentId: string, includeData = true) {
@@ -100,9 +107,21 @@ export function AgentsListShell() {
   }, []);
 
   useEffect(() => {
+    if (!openMenuId) return;
+    const closeMenu = () => setOpenMenuId(null);
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closeMenu();
+    };
+    document.addEventListener("pointerdown", closeMenu);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeMenu);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [openMenuId]);
+
+  useEffect(() => {
     if (!session) {
-      // The server snapshot is empty until the persisted session hydrates.
-      if (getSession()) return;
       router.replace("/login?next=/dashboard/agents");
       return;
     }
@@ -115,37 +134,18 @@ export function AgentsListShell() {
 
   const filteredAgents = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
-    return agents.filter((agent) =>
-      (statusFilter === "All agents" || agent.status === statusFilter) &&
-      (!normalizedQuery || [agent.name, agent.team, agent.status, agent.phone].some((value) =>
+    const statusPriority: Record<AgentSummary["status"], number> = { Live: 0, Paused: 1, Draft: 2 };
+    return agents
+      .filter((agent) => statusFilter === "All" || agent.status === statusFilter)
+      .filter((agent) => !normalizedQuery || [agent.name, agent.team, agent.status, agent.phone].some((value) =>
         String(value ?? "").toLowerCase().includes(normalizedQuery),
-      )),
-    );
-  }, [agents, query, statusFilter]);
-
-  useEffect(() => {
-    if (!showCreateForm && !editingAgent) return;
-    const restoreTarget = dialogTriggerRef.current;
-    const dialogElement = dialogRef.current;
-    function handleDialogKey(event: KeyboardEvent) {
-      if (event.key === "Escape" && !busy) {
-        setShowCreateForm(false);
-        setEditingAgent(null);
-        setAgentName("");
-      }
-      if (event.key !== "Tab") return;
-      const controls = dialogElement?.querySelectorAll<HTMLElement>('button:not(:disabled), input:not(:disabled), a[href], [tabindex="0"]');
-      if (!controls?.length) return;
-      const first = controls[0];
-      const last = controls[controls.length - 1];
-      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
-    }
-    document.addEventListener("keydown", handleDialogKey);
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => { document.removeEventListener("keydown", handleDialogKey); document.body.style.overflow = previousOverflow; if (!dialogElement?.isConnected) restoreTarget?.focus(); };
-  }, [showCreateForm, editingAgent, busy]);
+      ))
+      .sort((left, right) => {
+        if (sortBy === "name-desc") return right.name.localeCompare(left.name);
+        if (sortBy === "status") return statusPriority[left.status] - statusPriority[right.status] || left.name.localeCompare(right.name);
+        return left.name.localeCompare(right.name);
+      });
+  }, [agents, query, sortBy, statusFilter]);
 
   const liveCount = agents.filter((agent) => agent.status === "Live").length;
 
@@ -169,10 +169,25 @@ export function AgentsListShell() {
   }
 
   function beginEditAgent(agent: AgentSummary) {
-    dialogTriggerRef.current = document.activeElement as HTMLElement;
+    setOpenMenuId(null);
     setEditingAgent(agent);
     setEditAgentName(agent.name);
     setNotice("");
+  }
+
+  async function cloneAgent(agent: AgentSummary) {
+    setOpenMenuId(null);
+    setBusy(true);
+    setNotice("");
+    try {
+      const { agent: clonedAgent } = await voiceApi.cloneAgent(agent._id);
+      setAgents((current) => [...current, clonedAgent]);
+      setNotice(`${agent.name} cloned.`);
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Could not clone agent.");
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function saveAgentName() {
@@ -206,6 +221,7 @@ export function AgentsListShell() {
   }
 
   async function deleteAgent(agent: AgentSummary) {
+    setOpenMenuId(null);
     if (!window.confirm(`Delete ${agent.name}? This cannot be undone.`)) return;
 
     setBusy(true);
@@ -222,11 +238,11 @@ export function AgentsListShell() {
   }
 
   if (!session) {
-    return <main className="grid min-h-screen place-items-center bg-[#f7f8fc] text-sm font-semibold text-[#737587]" role="status">Loading agents</main>;
+    return <main className="grid min-h-screen place-items-center bg-[#f7f7fc] text-sm font-semibold text-[#7a7d8e]" role="status">Loading agents</main>;
   }
 
   return (
-    <main className={`agents-home-palette grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#f7f8fc] text-[#242535] ${
+    <main className={`agents-home-palette grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#f7f7fc] text-[#1b1b22] ${
       showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
     }`}>
       <DashboardSidebar
@@ -239,95 +255,191 @@ export function AgentsListShell() {
         setShowUserSidebar={setShowUserSidebar}
       />
 
-      <section className="grid min-w-0 content-start gap-5">
-        <header className="px-4 sm:px-6 lg:px-8">
-          <div className="agents-page-header mx-auto w-full max-w-[1500px]">
-            <div>
-              <span className="saas-eyebrow">Your voice workspace</span>
-              <h1>Voice agents</h1>
-              <p>A great conversation starts with the right agent.</p>
-            </div>
-            <div className="agents-heading-actions">
-              <Link className="saas-secondary" href="/dashboard/analytics"><Icon icon="activity" /> View analytics</Link>
-              <button className="saas-primary" type="button" disabled={busy} onClick={(event) => {
-                dialogTriggerRef.current = event.currentTarget;
+      <section className="grid min-w-0 content-start">
+        <DashboardPageHeader
+          eyebrow="Voice agents"
+          title="Agents"
+          description="Create, configure, and monitor every voice agent from one place."
+          actions={
+            <button
+              className="app-button-text inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-lg border border-[#737ccf] bg-[#737ccf] px-4 text-white shadow-[0_8px_18px_rgba(115,124,207,0.20)] transition hover:border-[#5963b8] hover:bg-[#5963b8] active:translate-y-px disabled:opacity-50 sm:w-auto"
+              type="button"
+              disabled={busy}
+              onClick={() => {
                 setShowCreateForm(true);
                 setNotice("");
-              }}><Icon icon="plus" /> Create agent</button>
-            </div>
-          </div>
-        </header>
+              }}
+            >
+              <Icon icon="plus" />
+              New agent
+            </button>
+          }
+        />
 
-        <section className="agents-content mx-auto grid w-full max-w-[1500px] gap-4 px-4 pb-8 sm:px-6 lg:px-8">
+        <section className="mx-auto grid w-full max-w-[1500px] gap-3 px-4 py-5 sm:px-6 lg:px-8">
           {notice && !showCreateForm && !editingAgent ? (
-            <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700" role="status" aria-live="polite">{notice}</div>
+            <div className="rounded-lg border border-[#dfe1ef] bg-white px-4 py-3 text-sm font-medium text-[#505261] shadow-sm" role="status" aria-live="polite">
+              {notice}
+            </div>
           ) : null}
 
-          <div className="agents-metrics">
-            {([
-              { label: "Total agents", value: agents.length, detail: "Across your workspace", icon: "agent" },
-              { label: "Live agents", value: liveCount, detail: "Published and ready", icon: "activity" },
-              { label: "Draft agents", value: agents.filter((agent) => agent.status === "Draft").length, detail: "Ready for your next idea", icon: "edit" },
-              { label: "Connected numbers", value: new Set(agents.map((agent) => agent.phone).filter((phone) => phone && !["Not assigned", "No phone number assigned"].includes(phone))).size, detail: "Assigned to your agents", icon: "phone" },
-            ] as const).map((metric) => <article className="agents-metric" key={metric.label}><div><span className="agents-metric-label">{metric.label}</span><strong>{loading ? "—" : metric.value}</strong><small>{metric.detail}</small></div><span className="agents-metric-icon"><Icon icon={metric.icon} /></span></article>)}
+          <div className="rounded-xl border border-[#dfe1ef] bg-white shadow-[0_10px_30px_rgba(34,38,74,0.05)]">
+            <div className="flex flex-col gap-3 border-b border-[#e6e7ef] p-3 lg:flex-row lg:items-center">
+              <div className="flex min-h-10 min-w-0 flex-1 items-center gap-2 rounded-lg border border-[#dfe1ef] bg-white px-3 transition focus-within:border-[#737ccf] focus-within:ring-4 focus-within:ring-[#737ccf]/10">
+                <span className="shrink-0 text-[#8b8e9f]"><Icon icon="search" /></span>
+                <input
+                  className="app-control-text min-h-9 min-w-0 flex-1 border-0 bg-transparent p-0 text-[#1b1b22] outline-none"
+                  aria-label="Search agents"
+                  value={query}
+                  placeholder="Search by agent, team, or phone number"
+                  onChange={(event) => setQuery(event.target.value)}
+                />
+                {query ? <button className="text-xs font-semibold text-[#737ccf] hover:text-[#5963b8]" type="button" onClick={() => setQuery("")}>Clear</button> : null}
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <label className="relative min-w-[132px] flex-1 lg:flex-none">
+                  <span className="sr-only">Filter by status</span>
+                  <select
+                    className="app-control-text min-h-10 w-full appearance-none rounded-lg border border-[#dfe1ef] bg-white py-0 pr-9 pl-3 text-sm font-semibold text-[#3b3e4e] outline-none transition hover:border-[#bfc3ea]"
+                    value={statusFilter}
+                    onChange={(event) => setStatusFilter(event.target.value as AgentStatusFilter)}
+                  >
+                    <option value="All">All statuses</option>
+                    <option value="Live">Live</option>
+                    <option value="Paused">Paused</option>
+                    <option value="Draft">Draft</option>
+                  </select>
+                  <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-[#7a7d8e]"><Icon icon="chevron" /></span>
+                </label>
+                <label className="relative min-w-[148px] flex-1 lg:flex-none">
+                  <span className="sr-only">Sort agents</span>
+                  <select
+                    className="app-control-text min-h-10 w-full appearance-none rounded-lg border border-[#dfe1ef] bg-white py-0 pr-9 pl-3 text-sm font-semibold text-[#3b3e4e] outline-none transition hover:border-[#bfc3ea]"
+                    value={sortBy}
+                    onChange={(event) => setSortBy(event.target.value as AgentSort)}
+                  >
+                    <option value="name-asc">Name A–Z</option>
+                    <option value="name-desc">Name Z–A</option>
+                    <option value="status">Status</option>
+                  </select>
+                  <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-[#7a7d8e]"><Icon icon="chevron" /></span>
+                </label>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between gap-3 border-b border-[#e6e7ef] px-4 py-2.5">
+              <p className="m-0 text-sm font-semibold text-[#272936]">{filteredAgents.length} {filteredAgents.length === 1 ? "agent" : "agents"}</p>
+              <p className="m-0 flex items-center gap-2 text-xs font-medium text-[#7a7d8e]"><span className="size-2 rounded-full bg-emerald-500 ring-4 ring-emerald-50" />{liveCount} live</p>
+            </div>
+
+            <div className="hidden grid-cols-[minmax(260px,1.6fr)_minmax(190px,0.9fr)_120px_48px] items-center gap-5 border-b border-[#e6e7ef] bg-[#fafafe] px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[#7a7d8e] md:grid">
+              <span>Agent</span>
+              <span>Phone route</span>
+              <span>Status</span>
+              <span className="sr-only">Actions</span>
+            </div>
+
+            <div className="divide-y divide-[#e6e7ef]">
+            {loading ? (
+              <div className="grid gap-0 divide-y divide-[#ececf3]" aria-label="Loading agents" role="status">
+                {[0, 1, 2, 3].map((item) => <div className="grid min-h-[76px] grid-cols-[44px_1fr] items-center gap-3 px-4" key={item}><span className="size-10 animate-pulse rounded-lg bg-[#eff0fb]" /><span className="grid gap-2"><span className="h-3 w-44 animate-pulse rounded bg-[#eff0fb]" /><span className="h-2.5 w-28 animate-pulse rounded bg-[#f0f1f9]" /></span></div>)}
+              </div>
+            ) : null}
+
+            {!loading && filteredAgents.map((agent) => (
+              <article
+                className="relative flex min-h-[76px] w-full items-center gap-2 px-3 text-left transition hover:bg-[#fafafe] focus-within:z-10 focus-within:bg-[#fafafe] sm:px-4"
+                key={agent._id}
+              >
+                <Link
+                  className="group grid min-w-0 flex-1 grid-cols-[44px_minmax(0,1fr)] items-center gap-3 rounded-md text-left outline-none md:grid-cols-[44px_minmax(190px,1.6fr)_minmax(170px,0.9fr)_120px] md:gap-5"
+                  href={`/dashboard/agents/${encodeURIComponent(agent._id)}`}
+                  prefetch={false}
+                  onFocus={() => prefetchAgentRoute(agent._id)}
+                  onMouseEnter={() => scheduleAgentDataPrefetch(agent._id)}
+                  onMouseLeave={() => cancelAgentDataPrefetch(agent._id)}
+                  onPointerDown={() => {
+                    cancelAgentDataPrefetch(agent._id);
+                    prefetchAgentRoute(agent._id);
+                  }}
+                >
+                  <span className="grid size-10 place-items-center rounded-lg bg-[#eff0fb] text-[#5963b8] ring-1 ring-[#737ccf]/10 transition group-hover:bg-[#e6e8fa]">
+                    <Icon icon="agent" />
+                  </span>
+                  <span className="min-w-0">
+                    <strong className="block truncate text-sm font-semibold text-[#20212b] transition group-hover:text-[#515bb4] sm:text-[15px]">{agent.name}</strong>
+                    <span className="mt-0.5 block truncate text-xs text-[#7a7d8e]">{agent.team || "Voice team"}<span className="md:hidden"> · {agent.phone || "No phone assigned"}</span></span>
+                  </span>
+                  <span className="hidden min-w-0 items-center gap-2 text-sm text-[#505261] md:flex">
+                    <span className="text-[#8b8e9f]"><Icon icon="phone" /></span>
+                    <span className="truncate">{agent.phone || "Not assigned"}</span>
+                  </span>
+                  <span className={`hidden w-fit items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold md:inline-flex ${statusTone(agent.status)}`}>
+                    <span className={`size-1.5 rounded-full ${agent.status === "Live" ? "bg-emerald-500" : agent.status === "Paused" ? "bg-amber-500" : "bg-[#9a9dac]"}`} />
+                    {agent.status}
+                  </span>
+                </Link>
+                <span className="relative shrink-0">
+                  <button
+                    className="grid size-9 place-items-center rounded-lg border border-transparent text-[#7a7d8e] transition hover:border-[#dfe1ef] hover:bg-white hover:text-[#515bb4] active:translate-y-px disabled:opacity-50"
+                    type="button"
+                    aria-label={`Actions for ${agent.name}`}
+                    aria-haspopup="menu"
+                    aria-expanded={openMenuId === agent._id}
+                    disabled={busy}
+                    onPointerDown={(event) => event.stopPropagation()}
+                    onClick={() => setOpenMenuId((current) => current === agent._id ? null : agent._id)}
+                  >
+                    <Icon icon="more" />
+                  </button>
+                  {openMenuId === agent._id ? (
+                    <span className="absolute top-10 right-0 z-40 grid w-44 overflow-hidden rounded-xl border border-[#dfe1ef] bg-white p-1.5 shadow-[0_18px_45px_rgba(34,38,74,0.16)]" role="menu" onPointerDown={(event) => event.stopPropagation()}>
+                      <button className="flex min-h-9 items-center gap-2 rounded-lg px-3 text-left text-sm font-medium text-[#3b3e4e] hover:bg-[#f0f1f9] hover:text-[#515bb4]" role="menuitem" type="button" onClick={() => beginEditAgent(agent)}><Icon icon="edit" />Edit name</button>
+                      <button className="flex min-h-9 items-center gap-2 rounded-lg px-3 text-left text-sm font-medium text-[#3b3e4e] hover:bg-[#f0f1f9] hover:text-[#515bb4]" role="menuitem" type="button" onClick={() => void cloneAgent(agent)}><Icon icon="clone" />Clone agent</button>
+                      <span className="my-1 h-px bg-[#e6e7ef]" />
+                      <button className="flex min-h-9 items-center gap-2 rounded-lg px-3 text-left text-sm font-medium text-rose-600 hover:bg-rose-50" role="menuitem" type="button" onClick={() => void deleteAgent(agent)}><Icon icon="trash" />Delete agent</button>
+                    </span>
+                  ) : null}
+                </span>
+              </article>
+            ))}
+
+            {!loading && !filteredAgents.length ? (
+              <div className="grid min-h-56 place-items-center p-8 text-center">
+                <div>
+                  <span className="mx-auto grid size-12 place-items-center rounded-xl bg-[#eff0fb] text-[#5963b8]"><Icon icon="agent" /></span>
+                  <strong className="mt-4 block text-base font-semibold text-[#20212b]">No agents found</strong>
+                  <span className="mt-1 block text-sm text-[#7a7d8e]">Try another search or status filter.</span>
+                  {(query || statusFilter !== "All") ? <button className="mt-4 text-sm font-semibold text-[#5963b8] hover:text-[#515bb4]" type="button" onClick={() => { setQuery(""); setStatusFilter("All"); }}>Clear filters</button> : null}
+                </div>
+              </div>
+            ) : null}
+            </div>
           </div>
-
-          <section className="agents-panel" aria-label="Your voice agents">
-            <div className="agents-panel-heading"><div><h2>Your agents<span className="agents-count">{loading ? "—" : agents.length}</span></h2><p>Build, manage, and fine-tune your AI voice team.</p></div><div className="agents-view-toggle" role="group" aria-label="Agent layout"><button type="button" aria-label="List view" aria-pressed={view === "list"} onClick={() => setView("list")}><Icon icon="list" /></button><button type="button" aria-label="Card view" aria-pressed={view === "grid"} onClick={() => setView("grid")}><Icon icon="grid" /></button></div></div>
-            <div className="agents-toolbar">
-              <div className="agents-tabs" role="group" aria-label="Filter agents by status">{["All agents", "Live", "Draft", "Paused"].map((status) => <button type="button" key={status} aria-pressed={statusFilter === status} onClick={() => setStatusFilter(status)}>{status}</button>)}</div>
-              <label className="agents-search"><Icon icon="search" /><input aria-label="Search agents" value={query} placeholder="Search agents…" onChange={(event) => setQuery(event.target.value)} /></label>
-            </div>
-            {view === "list" && !loading && filteredAgents.length > 0 ? <div className="agents-table-heading" aria-hidden="true"><span>Agent name</span><span>Team</span><span>Phone number</span><span>Status</span><span>Actions</span></div> : null}
-            <div className={view === "grid" && filteredAgents.length ? "agents-grid" : "agents-list"} aria-busy={loading}>
-              {loading ? <div className="agents-loading" role="status"><span className="sr-only">Loading agents</span><div/><div/><div/></div> : filteredAgents.map((agent) => (
-                <article className="agent-row" key={agent._id}>
-                  <div className="agent-identity"><span className="agent-avatar"><Icon icon="agent" /></span><Link
-                    href={`/dashboard/agents/${encodeURIComponent(agent._id)}`} prefetch={false}
-                    onFocus={() => prefetchAgentRoute(agent._id)}
-                    onMouseEnter={() => scheduleAgentDataPrefetch(agent._id)}
-                    onMouseLeave={() => cancelAgentDataPrefetch(agent._id)}
-                    onPointerDown={() => { cancelAgentDataPrefetch(agent._id); prefetchAgentRoute(agent._id); }}
-                  ><strong title={agent.name}>{agent.name}</strong><small>Voice assistant</small></Link></div>
-                  <span className="agent-team" title={agent.team || "Voice team"}><span className="agent-mobile-label">Team</span>{agent.team || "Voice team"}</span>
-                  <span className="agent-phone" title={agent.phone || "Not assigned"}><span className="agent-mobile-label">Phone</span>{agent.phone || "Not assigned"}</span>
-                  <span className="agent-status" data-status={agent.status}>{agent.status}</span>
-                  <div className="agent-actions">
-                    <Link href={`/dashboard/agents/${encodeURIComponent(agent._id)}`} aria-label={`Open ${agent.name}`} title="Open agent"><Icon icon="arrow" /></Link>
-                    <button type="button" aria-label={`Edit ${agent.name}`} title="Rename agent" disabled={busy} onClick={() => beginEditAgent(agent)}><Icon icon="edit" /></button>
-                    <button type="button" aria-label={`Delete ${agent.name}`} title="Delete agent" disabled={busy} onClick={() => void deleteAgent(agent)}><Icon icon="trash" /></button>
-                  </div>
-                </article>
-              ))}
-              {!loading && !filteredAgents.length ? <div className="agents-empty"><span className="agent-avatar"><Icon icon="agent" /></span><h3>{agents.length ? "No matching agents" : "Meet your next voice agent"}</h3><p>{agents.length ? "Try a different search or status to find the agent you need." : "Create an agent, give it a voice, and make your first conversation happen."}</p><button className="saas-primary" type="button" onClick={(event) => { if (agents.length) { setQuery(""); setStatusFilter("All agents"); } else { dialogTriggerRef.current = event.currentTarget; setShowCreateForm(true); setNotice(""); } }}>{agents.length ? "Clear filters" : "Create your first agent"}</button></div> : null}
-            </div>
-            <div className="agents-panel-footer" aria-live="polite"><span>{loading ? "Loading your workspace…" : `Showing ${filteredAgents.length} of ${agents.length} agents`}</span><span>Built for better conversations</span></div>
-          </section>
-
-          <div className="agents-guide"><div className="agents-guide-copy"><span className="agents-guide-symbol" aria-hidden="true">✧</span><div><h3>A voice that feels like your business.</h3><p>Explore our guides to build, test, and launch your next voice agent.</p></div></div><Link href="/docs">Explore the quickstart <span aria-hidden="true">↗</span></Link></div>
         </section>
       </section>
 
       {showCreateForm ? (
-        <div ref={dialogRef} className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-black/80 px-4 py-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="create-agent-title" aria-describedby="create-agent-description" aria-busy={busy}>
+        <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-[#1b1b22]/35 px-4 py-4 backdrop-blur-[6px]" role="dialog" aria-modal="true" aria-labelledby="create-agent-title" aria-describedby="create-agent-description" aria-busy={busy}>
           <form
-            className="grid max-h-[calc(100dvh-2rem)] w-full max-w-md gap-4 overflow-y-auto rounded-lg border border-[#e5e7ef] bg-[#ffffff] p-5 shadow-sm"
+            className="grid max-h-[calc(100dvh-2rem)] w-full max-w-md gap-5 overflow-y-auto rounded-2xl border border-[#dfe1ef] bg-white p-6 shadow-[0_28px_80px_rgba(34,38,74,0.24)]"
             onSubmit={(event) => {
               event.preventDefault();
               void createAgent();
             }}
           >
             <div>
-              <h2 className="app-section-title m-0" id="create-agent-title">Create a voice agent</h2>
-              <p className="app-caption mt-1 mb-0 text-[#737587]" id="create-agent-description">Start with a name. Then choose a voice and teach your agent what to say.</p>
+              <h2 className="app-section-title m-0" id="create-agent-title">New agent</h2>
+              <p className="mt-1 mb-0 text-sm text-[#7a7d8e]" id="create-agent-description">Give the agent a clear name. You can configure its voice and behavior next.</p>
             </div>
-            {notice ? <div className="rounded-lg border border-amber-300/20 bg-amber-400/10 px-3 py-2 text-xs font-semibold text-amber-700" role="alert">{notice}</div> : null}
+            {notice ? <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-medium text-amber-700" role="alert">{notice}</div> : null}
             <label className="grid gap-1.5">
-              <span className="app-label text-[#4d54db]">Agent name</span>
+              <span className="text-xs font-semibold text-[#505261]">Agent name</span>
               <input
                 autoFocus
                 required
-                className="app-control-text min-h-11 rounded-lg border border-[#e5e7ef] bg-[#f8f8fc] px-3 text-[#242535] outline-none transition focus:border-[#5b63ff] focus:ring-4 focus:ring-[#5b63ff]/10"
+                className="app-control-text min-h-11 rounded-lg border border-[#dfe1ef] bg-white px-3 text-[#1b1b22] outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
                 value={agentName}
                 maxLength={80}
                 placeholder="Example: Support desk"
@@ -336,7 +448,7 @@ export function AgentsListShell() {
             </label>
             <div className="flex justify-end gap-2">
               <button
-                className="app-button-text min-h-10 rounded-lg border border-[#e5e7ef] bg-[#f8f8fc] px-4 text-[#737587] transition hover:bg-[#f6f7fb] active:translate-y-px disabled:opacity-50"
+                className="app-button-text min-h-10 rounded-lg border border-[#dfe1ef] bg-white px-4 text-[#505261] transition hover:bg-[#f7f7fc] active:translate-y-px disabled:opacity-50"
                 type="button"
                 disabled={busy}
                 onClick={() => {
@@ -347,7 +459,7 @@ export function AgentsListShell() {
                 Cancel
               </button>
               <button
-                className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border-0 bg-[#5b63ff] px-4 text-[#ffffff] shadow-sm transition hover:bg-[#4d54db] active:translate-y-px disabled:opacity-50"
+                className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border-0 bg-[#737ccf] px-4 text-[#ffffff] shadow-[0_12px_28px_rgba(115,124,207,0.20)] transition hover:bg-[#5963b8] active:translate-y-px disabled:opacity-50"
                 type="submit"
                 disabled={busy}
               >
@@ -360,9 +472,9 @@ export function AgentsListShell() {
       ) : null}
 
       {editingAgent ? (
-        <div ref={dialogRef} className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-black/80 px-4 py-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="edit-agent-title" aria-describedby="edit-agent-description" aria-busy={busy}>
+        <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-[#1b1b22]/35 px-4 py-4 backdrop-blur-[6px]" role="dialog" aria-modal="true" aria-labelledby="edit-agent-title" aria-describedby="edit-agent-description" aria-busy={busy}>
           <form
-            className="grid max-h-[calc(100dvh-2rem)] w-full max-w-md gap-4 overflow-y-auto rounded-lg border border-[#e5e7ef] bg-[#ffffff] p-5 shadow-sm"
+            className="grid max-h-[calc(100dvh-2rem)] w-full max-w-md gap-5 overflow-y-auto rounded-2xl border border-[#dfe1ef] bg-white p-6 shadow-[0_28px_80px_rgba(34,38,74,0.24)]"
             onSubmit={(event) => {
               event.preventDefault();
               void saveAgentName();
@@ -370,15 +482,15 @@ export function AgentsListShell() {
           >
             <div>
               <h2 className="app-section-title m-0" id="edit-agent-title">Edit agent</h2>
-              <p className="app-caption mt-1 mb-0 text-[#737587]" id="edit-agent-description">Rename this agent from the agents page.</p>
+              <p className="mt-1 mb-0 text-sm text-[#7a7d8e]" id="edit-agent-description">Update the name shown throughout this workspace.</p>
             </div>
-            {notice ? <div className="rounded-lg border border-amber-300/20 bg-amber-400/10 px-3 py-2 text-xs font-semibold text-amber-700" role="alert">{notice}</div> : null}
+            {notice ? <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-medium text-amber-700" role="alert">{notice}</div> : null}
             <label className="grid gap-1.5">
-              <span className="app-label text-[#4d54db]">Agent name</span>
+              <span className="text-xs font-semibold text-[#505261]">Agent name</span>
               <input
                 autoFocus
                 required
-                className="app-control-text min-h-11 rounded-lg border border-[#e5e7ef] bg-[#f8f8fc] px-3 text-[#242535] outline-none transition focus:border-[#5b63ff] focus:ring-4 focus:ring-[#5b63ff]/10"
+                className="app-control-text min-h-11 rounded-lg border border-[#dfe1ef] bg-white px-3 text-[#1b1b22] outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
                 value={editAgentName}
                 maxLength={80}
                 onChange={(event) => setEditAgentName(event.target.value)}
@@ -386,7 +498,7 @@ export function AgentsListShell() {
             </label>
             <div className="flex justify-end gap-2">
               <button
-                className="app-button-text min-h-10 rounded-lg border border-[#e5e7ef] bg-[#f8f8fc] px-4 text-[#737587] transition hover:bg-[#f6f7fb] active:translate-y-px disabled:opacity-50"
+                className="app-button-text min-h-10 rounded-lg border border-[#dfe1ef] bg-white px-4 text-[#505261] transition hover:bg-[#f7f7fc] active:translate-y-px disabled:opacity-50"
                 type="button"
                 disabled={busy}
                 onClick={() => {
@@ -397,7 +509,7 @@ export function AgentsListShell() {
                 Cancel
               </button>
               <button
-                className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#5b63ff]/24 bg-[#5b63ff]/[0.07] px-4 text-[#4d54db] shadow-sm transition hover:border-[#5b63ff]/40 hover:bg-[#5b63ff]/12 active:translate-y-px disabled:opacity-50"
+                className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#737ccf] bg-[#737ccf] px-4 text-white shadow-sm transition hover:border-[#5963b8] hover:bg-[#5963b8] active:translate-y-px disabled:opacity-50"
                 type="submit"
                 disabled={busy}
               >

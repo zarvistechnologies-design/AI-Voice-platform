@@ -8,12 +8,23 @@ import {
   voiceCacheKey,
 } from "@/lib/voiceCache";
 
-const privateVoiceInfrastructurePattern = /(?:livekit|vapi|retell|millis(?:\.ai|ai)?|(?:wss?|sips?):(?:\/\/)?|(?:room|dispatch|worker|participant|trunk)[ _-]?(?:name|id|sid)\b)/i;
+const privateVoiceInfrastructurePattern =
+  /(?:livekit|vapi|retell|millis(?:\.ai|ai)?|(?:wss?|sips?):(?:\/\/)?|(?:room|dispatch|worker|participant|trunk)[ _-]?(?:name|id|sid)\b)/i;
 const genericCallFailureMessage = "Call ended before the agent could finish.";
 
-export function publicVoiceMessage(value: unknown, fallback = "Voice service request failed.") {
-  const message = value instanceof Error ? value.message : typeof value === "string" ? value : "";
-  return message && !privateVoiceInfrastructurePattern.test(message) ? message : fallback;
+export function publicVoiceMessage(
+  value: unknown,
+  fallback = "Voice service request failed.",
+) {
+  const message =
+    value instanceof Error
+      ? value.message
+      : typeof value === "string"
+        ? value
+        : "";
+  return message && !privateVoiceInfrastructurePattern.test(message)
+    ? message
+    : fallback;
 }
 
 export type ProviderModel = "openai-realtime" | "gemini-live" | "sarvam-gemini";
@@ -21,7 +32,8 @@ export type PipelineMode = "realtime" | "pipeline";
 export type RealtimeProvider = "openai" | "gemini";
 export type PipelineProvider = "openai" | "gemini" | "sarvam" | "elevenlabs";
 export type SttProvider = "openai" | "sarvam" | "elevenlabs" | "deepgram";
-export type FirstMessageMode = "assistant-speaks-first" | "user-speaks-first" | "model-generated";
+export type FirstMessageMode =
+  "assistant-speaks-first" | "user-speaks-first" | "model-generated";
 
 export type AgentBehavior = {
   interruptions: boolean;
@@ -171,19 +183,24 @@ export type PricingGuide = {
   inrPerUsd: number;
   platformFeeInrPerMinute: number;
   markupMultiplier: number;
-  ttsModels?: Readonly<Record<string, {
-    currency: string;
-    source: "catalog" | "override";
-    key: string;
-    provider: string;
-    model: string;
-    unit: "per 1M characters" | "per minute" | "per 1M tokens";
-    perMillionCharacters?: number;
-    perThousandCharacters?: number;
-    perMinute?: number;
-    inputPerMillionTokens?: number;
-    outputPerMillionTokens?: number;
-  }>>;
+  ttsModels?: Readonly<
+    Record<
+      string,
+      {
+        currency: string;
+        source: "catalog" | "override";
+        key: string;
+        provider: string;
+        model: string;
+        unit: "per 1M characters" | "per minute" | "per 1M tokens";
+        perMillionCharacters?: number;
+        perThousandCharacters?: number;
+        perMinute?: number;
+        inputPerMillionTokens?: number;
+        outputPerMillionTokens?: number;
+      }
+    >
+  >;
 };
 
 export type LatencyGuide = {
@@ -198,7 +215,12 @@ export type VoiceConfigResponse = {
   configured: boolean;
   agentName: string;
   modelCatalogReady: boolean;
-  providers: { id: string; label: string; detail: string; configured: boolean }[];
+  providers: {
+    id: string;
+    label: string;
+    detail: string;
+    configured: boolean;
+  }[];
   languageCatalog: VoiceLanguageOption[];
   modelCatalog: ModelCatalog;
   pricing: PricingGuide;
@@ -414,7 +436,13 @@ export type CallTranscriptItem = {
 };
 
 export type CostPricingDetail = {
-  source?: "catalog" | "override" | "account" | "not_applicable" | "unpriced" | "mixed";
+  source?:
+    | "catalog"
+    | "override"
+    | "account"
+    | "not_applicable"
+    | "unpriced"
+    | "mixed";
   key?: string;
   unit?: string;
   provider?: string;
@@ -439,9 +467,11 @@ export type CostPricingDetail = {
 
 export type CallRecord = {
   _id: string;
-  agentId: BackendAgent | { _id: string; name: string; team?: string } | string | null;
+  agentId:
+    BackendAgent | { _id: string; name: string; team?: string } | string | null;
   direction: "web" | "inbound" | "outbound";
-  status: "initiated" | "ringing" | "active" | "completed" | "failed" | "cancelled";
+  status:
+    "initiated" | "ringing" | "active" | "completed" | "failed" | "cancelled";
   callerNumber: string;
   callerNumberSource?: "recorded" | "room_name" | "missing";
   calledNumber: string;
@@ -555,7 +585,9 @@ function sanitizeCallRecord(call: CallRecord): CallRecord {
   return {
     ...call,
     endReason: publicCallEndReason(call.endReason),
-    errorMessage: call.errorMessage ? publicVoiceMessage(call.errorMessage, genericCallFailureMessage) : "",
+    errorMessage: call.errorMessage
+      ? publicVoiceMessage(call.errorMessage, genericCallFailureMessage)
+      : "",
   };
 }
 
@@ -572,7 +604,14 @@ export type AgentDispatchHealth = {
   dispatchId: string;
   agentName: string;
   region: string;
-  state: "missing" | "waiting" | "pending" | "running" | "completed" | "failed" | "unknown";
+  state:
+    | "missing"
+    | "waiting"
+    | "pending"
+    | "running"
+    | "completed"
+    | "failed"
+    | "unknown";
   message: string;
   jobs: {
     id: string;
@@ -641,9 +680,21 @@ export type AnalyticsOverview = {
     sttSeconds: number;
     ttsCharacters: number;
     totalCost: number;
-    costBreakdown: { llm: number; stt: number; tts: number; telephony: number; platform: number };
+    costBreakdown: {
+      llm: number;
+      stt: number;
+      tts: number;
+      telephony: number;
+      platform: number;
+    };
   };
-  timeSeries: { date: string; calls: number; completed: number; durationSeconds: number; cost: number }[];
+  timeSeries: {
+    date: string;
+    calls: number;
+    completed: number;
+    durationSeconds: number;
+    cost: number;
+  }[];
   statusBreakdown: { label: string; value: number }[];
   directionBreakdown: { label: string; value: number }[];
   sentimentBreakdown: { label: string; value: number }[];
@@ -677,7 +728,14 @@ export type CampaignLeadInput = {
 };
 
 export type CampaignStats = Record<
-  "queued" | "leased" | "active" | "completed" | "retry_wait" | "failed" | "suppressed" | "cancelled",
+  | "queued"
+  | "leased"
+  | "active"
+  | "completed"
+  | "retry_wait"
+  | "failed"
+  | "suppressed"
+  | "cancelled",
   number
 > & {
   total: number;
@@ -690,7 +748,14 @@ export type BackendCampaign = {
   name: string;
   agentId: string;
   phoneNumberId: string;
-  status: "draft" | "scheduled" | "running" | "paused" | "completed" | "cancelled" | "failed";
+  status:
+    | "draft"
+    | "scheduled"
+    | "running"
+    | "paused"
+    | "completed"
+    | "cancelled"
+    | "failed";
   scheduledAt: string | null;
   startedAt: string | null;
   completedAt: string | null;
@@ -736,17 +801,19 @@ async function request<T>(path: string, init: RequestInit = {}) {
   }
 
   const headers = new Headers(init.headers);
-  for (const [name, value] of Object.entries(getAuthHeaders())) headers.set(name, value);
-  const isFormData = typeof FormData !== "undefined" && init.body instanceof FormData;
-  if (init.body && !isFormData && !headers.has("Content-Type")) headers.set("Content-Type", "application/json");
+  for (const [name, value] of Object.entries(getAuthHeaders()))
+    headers.set(name, value);
+  const isFormData =
+    typeof FormData !== "undefined" && init.body instanceof FormData;
+  if (init.body && !isFormData && !headers.has("Content-Type"))
+    headers.set("Content-Type", "application/json");
   const response = await fetch(`${API_URL}/api/voice${path}`, {
     ...init,
     credentials: "include",
     headers,
   });
   const data = (await response.json().catch(() => null)) as
-    | (T & { message?: string })
-    | null;
+    (T & { message?: string }) | null;
 
   if (!response.ok) {
     if (response.status === 401) clearSession();
@@ -761,15 +828,32 @@ async function request<T>(path: string, init: RequestInit = {}) {
   return data;
 }
 
-export type AgentSummary = Pick<BackendAgent, "_id" | "name" | "team" | "status" | "phone" | "version">;
+export type AgentSummary = Pick<
+  BackendAgent,
+  "_id" | "name" | "team" | "status" | "phone" | "version"
+>;
+export type KnowledgeAgentSummary = Pick<
+  BackendAgent,
+  "_id" | "name" | "knowledgeDocuments" | "knowledgeSourceCount"
+>;
+export type WorkspaceKnowledgeSource = KnowledgeSource & {
+  agentId: string;
+  agentName: string;
+};
 
 function seedVoiceCache<T>(path: string, value: T) {
   const queryKey = voiceCacheKey(path);
   if (!queryKey) return;
-  getDashboardQueryClient().setQueryData(queryKey, value, { updatedAt: Date.now() });
+  getDashboardQueryClient().setQueryData(queryKey, value, {
+    updatedAt: Date.now(),
+  });
 }
 
-function cachedRequest<T>(path: string, ttlMs: number, dependencies: readonly string[] = [path]) {
+function cachedRequest<T>(
+  path: string,
+  ttlMs: number,
+  dependencies: readonly string[] = [path],
+) {
   const queryKey = voiceCacheKey(path, dependencies);
   if (!queryKey) return request<T>(path);
   const queryClient = getDashboardQueryClient();
@@ -781,7 +865,10 @@ function cachedRequest<T>(path: string, ttlMs: number, dependencies: readonly st
 }
 
 async function loadVoiceConfig() {
-  const config = await cachedRequest<VoiceConfigResponse>("/config", 5 * 60_000);
+  const config = await cachedRequest<VoiceConfigResponse>(
+    "/config",
+    5 * 60_000,
+  );
   if (config.modelCatalogReady !== true) {
     // A cold provider fallback is useful for immediate rendering but must not
     // become the five-minute client cache entry. The next bounded retry will
@@ -812,21 +899,24 @@ export const voiceApi = {
       config: VoiceConfigResponse;
       templates: AgentTemplate[];
     }>("/bootstrap", 15_000, dependencies).then((result) => {
-      if (sessionScope && sessionScope === currentVoiceSessionScope() && generation === voiceCacheGeneration(dependencies)) {
+      if (
+        sessionScope &&
+        sessionScope === currentVoiceSessionScope() &&
+        generation === voiceCacheGeneration(dependencies)
+      ) {
         seedVoiceCache("/agents", { agents: result.agents });
-        seedVoiceCache(
-          "/agents?view=summary",
-          {
-            agents: result.agents.map(({ _id, name, team, status, phone, version }) => ({
+        seedVoiceCache("/agents?view=summary", {
+          agents: result.agents.map(
+            ({ _id, name, team, status, phone, version }) => ({
               _id,
               name,
               team,
               status,
               phone,
               version,
-            })),
-          },
-        );
+            }),
+          ),
+        });
         if (result.config.modelCatalogReady === true) {
           seedVoiceCache("/config", result.config);
         } else {
@@ -838,9 +928,25 @@ export const voiceApi = {
     });
   },
   agents: () => cachedRequest<{ agents: BackendAgent[] }>("/agents", 15_000),
-  agentSummaries: () => cachedRequest<{ agents: AgentSummary[] }>("/agents?view=summary", 15_000),
+  agentSummaries: () =>
+    cachedRequest<{ agents: AgentSummary[] }>("/agents?view=summary", 15_000),
+  knowledgeAgents: () =>
+    cachedRequest<{ agents: KnowledgeAgentSummary[] }>(
+      "/agents?view=knowledge",
+      30_000,
+      ["/agents"],
+    ),
+  workspaceKnowledge: () =>
+    cachedRequest<{
+      agents: KnowledgeAgentSummary[];
+      sources: WorkspaceKnowledgeSource[];
+      maximumSources: number;
+    }>("/knowledge", 15_000, ["/knowledge", "/agents"]),
   agent: (agentId: string) =>
-    cachedRequest<{ agent: BackendAgent }>(`/agents/${encodeURIComponent(agentId)}`, 15_000),
+    cachedRequest<{ agent: BackendAgent }>(
+      `/agents/${encodeURIComponent(agentId)}`,
+      15_000,
+    ),
   agentDashboard: (agentId: string) => {
     const path = `/agents/${encodeURIComponent(agentId)}/dashboard`;
     const dependencies = [path, "/config"] as const;
@@ -851,8 +957,14 @@ export const voiceApi = {
       15_000,
       dependencies,
     ).then((result) => {
-      if (sessionScope && sessionScope === currentVoiceSessionScope() && generation === voiceCacheGeneration(dependencies)) {
-        seedVoiceCache(`/agents/${encodeURIComponent(agentId)}`, { agent: result.agent });
+      if (
+        sessionScope &&
+        sessionScope === currentVoiceSessionScope() &&
+        generation === voiceCacheGeneration(dependencies)
+      ) {
+        seedVoiceCache(`/agents/${encodeURIComponent(agentId)}`, {
+          agent: result.agent,
+        });
         if (result.config.modelCatalogReady === true) {
           seedVoiceCache("/config", result.config);
         } else {
@@ -862,69 +974,139 @@ export const voiceApi = {
       return result;
     });
   },
-  agentTemplates: () => cachedRequest<{ templates: AgentTemplate[] }>("/agent-templates", 60 * 60_000),
-  createAgent: (input: Partial<Pick<BackendAgent, "name" | "team" | "language">> = {}) =>
-    mutation<{ agent: BackendAgent }>("/agents", {
-      method: "POST",
-      body: JSON.stringify(input),
-    }, ["/agents"]),
+  agentTemplates: () =>
+    cachedRequest<{ templates: AgentTemplate[] }>(
+      "/agent-templates",
+      60 * 60_000,
+    ),
+  createAgent: (
+    input: Partial<Pick<BackendAgent, "name" | "team" | "language">> = {},
+  ) =>
+    mutation<{ agent: BackendAgent }>(
+      "/agents",
+      {
+        method: "POST",
+        body: JSON.stringify(input),
+      },
+      ["/agents"],
+    ),
   createAgentFromTemplate: (templateId: string) =>
-    mutation<{ agent: BackendAgent }>(`/agent-templates/${templateId}`, { method: "POST" }, ["/agents"]),
+    mutation<{ agent: BackendAgent }>(
+      `/agent-templates/${templateId}`,
+      { method: "POST" },
+      ["/agents"],
+    ),
   saveAgent: (agentId: string, changes: Partial<BackendAgent>) =>
-    mutation<{ agent: BackendAgent; routingWarning: string }>(`/agents/${agentId}`, {
-      method: "PUT",
-      body: JSON.stringify(changes),
-    }, ["/agents"]),
+    mutation<{ agent: BackendAgent; routingWarning: string }>(
+      `/agents/${agentId}`,
+      {
+        method: "PUT",
+        body: JSON.stringify(changes),
+      },
+      ["/agents"],
+    ),
   knowledgeSources: (agentId: string) => {
     const path = `/agents/${agentId}/knowledge`;
-    return cachedRequest<{ sources: KnowledgeSource[]; maximumSources: number }>(path, 10_000);
+    return cachedRequest<{
+      sources: KnowledgeSource[];
+      maximumSources: number;
+    }>(path, 10_000);
   },
   knowledgeSource: (agentId: string, sourceId: string) =>
-    request<{ source: KnowledgeSource }>(`/agents/${agentId}/knowledge/${sourceId}`),
-  addKnowledgeText: (agentId: string, input: { name: string; content: string }) =>
-    mutation<{ source: KnowledgeSource }>(`/agents/${agentId}/knowledge/text`, {
-      method: "POST",
-      body: JSON.stringify(input),
-    }, ["/agents"]),
+    request<{ source: KnowledgeSource }>(
+      `/agents/${agentId}/knowledge/${sourceId}`,
+    ),
+  addKnowledgeText: (
+    agentId: string,
+    input: { name: string; content: string },
+  ) =>
+    mutation<{ source: KnowledgeSource }>(
+      `/agents/${agentId}/knowledge/text`,
+      {
+        method: "POST",
+        body: JSON.stringify(input),
+      },
+      ["/agents", "/knowledge", `/agents/${agentId}/knowledge`],
+    ),
   addKnowledgeUrl: (agentId: string, input: { name?: string; url: string }) =>
-    mutation<{ source: KnowledgeSource }>(`/agents/${agentId}/knowledge/url`, {
-      method: "POST",
-      body: JSON.stringify(input),
-    }, ["/agents"]),
+    mutation<{ source: KnowledgeSource }>(
+      `/agents/${agentId}/knowledge/url`,
+      {
+        method: "POST",
+        body: JSON.stringify(input),
+      },
+      ["/agents", "/knowledge", `/agents/${agentId}/knowledge`],
+    ),
   addKnowledgeFile: (agentId: string, file: File, name = "") => {
     const body = new FormData();
     body.set("file", file);
     if (name.trim()) body.set("name", name.trim());
-    return mutation<{ source: KnowledgeSource }>(`/agents/${agentId}/knowledge/file`, {
-      method: "POST",
-      body,
-    }, ["/agents"]);
+    return mutation<{ source: KnowledgeSource }>(
+      `/agents/${agentId}/knowledge/file`,
+      {
+        method: "POST",
+        body,
+      },
+      ["/agents", "/knowledge", `/agents/${agentId}/knowledge`],
+    );
   },
-  updateKnowledgeSource: (agentId: string, sourceId: string, input: { name?: string; content?: string; status?: "ready" | "disabled" }) =>
-    mutation<{ source: KnowledgeSource }>(`/agents/${agentId}/knowledge/${sourceId}`, {
-      method: "PUT",
-      body: JSON.stringify(input),
-    }, ["/agents"]),
+  updateKnowledgeSource: (
+    agentId: string,
+    sourceId: string,
+    input: { name?: string; content?: string; status?: "ready" | "disabled" },
+  ) =>
+    mutation<{ source: KnowledgeSource }>(
+      `/agents/${agentId}/knowledge/${sourceId}`,
+      {
+        method: "PUT",
+        body: JSON.stringify(input),
+      },
+      ["/agents", "/knowledge", `/agents/${agentId}/knowledge`],
+    ),
   reindexKnowledgeSource: (agentId: string, sourceId: string) =>
-    mutation<{ source: KnowledgeSource }>(`/agents/${agentId}/knowledge/${sourceId}/reindex`, {
-      method: "POST",
-    }, ["/agents"]),
+    mutation<{ source: KnowledgeSource }>(
+      `/agents/${agentId}/knowledge/${sourceId}/reindex`,
+      {
+        method: "POST",
+      },
+      ["/agents", "/knowledge", `/agents/${agentId}/knowledge`],
+    ),
   deleteKnowledgeSource: (agentId: string, sourceId: string) =>
-    mutation<Record<string, never>>(`/agents/${agentId}/knowledge/${sourceId}`, {
-      method: "DELETE",
-    }, ["/agents"]),
+    mutation<Record<string, never>>(
+      `/agents/${agentId}/knowledge/${sourceId}`,
+      {
+        method: "DELETE",
+      },
+      ["/agents", "/knowledge", `/agents/${agentId}/knowledge`],
+    ),
   testKnowledgeSearch: (agentId: string, query: string) =>
-    request<{ query: string; results: KnowledgeSearchResult[]; context: string }>(`/agents/${agentId}/knowledge/search`, {
+    request<{
+      query: string;
+      results: KnowledgeSearchResult[];
+      context: string;
+    }>(`/agents/${agentId}/knowledge/search`, {
       method: "POST",
       body: JSON.stringify({ query }),
     }),
   cloneAgent: (agentId: string) =>
-    mutation<{ agent: BackendAgent }>(`/agents/${agentId}/clone`, { method: "POST" }, ["/agents"]),
+    mutation<{ agent: BackendAgent }>(
+      `/agents/${agentId}/clone`,
+      { method: "POST" },
+      ["/agents"],
+    ),
   deleteAgent: (agentId: string) =>
-    mutation<Record<string, never>>(`/agents/${agentId}`, { method: "DELETE" }, ["/agents", "/phone-numbers"]),
+    mutation<Record<string, never>>(
+      `/agents/${agentId}`,
+      { method: "DELETE" },
+      ["/agents", "/phone-numbers"],
+    ),
   testAgentTool: (
     agentId: string,
-    input: { toolId?: string; tool?: AgentTool; args?: Record<string, unknown> },
+    input: {
+      toolId?: string;
+      tool?: AgentTool;
+      args?: Record<string, unknown>;
+    },
   ) =>
     request<{
       tool: { name: string; method: AgentTool["method"]; url: string };
@@ -945,8 +1127,12 @@ export const voiceApi = {
       body: JSON.stringify(input),
     });
     if (!response.ok) {
-      const data = (await response.json().catch(() => null)) as { message?: string } | null;
-      throw new Error(publicVoiceMessage(data?.message, "Could not play this voice preview."));
+      const data = (await response.json().catch(() => null)) as {
+        message?: string;
+      } | null;
+      throw new Error(
+        publicVoiceMessage(data?.message, "Could not play this voice preview."),
+      );
     }
     return response.blob();
   },
@@ -958,17 +1144,16 @@ export const voiceApi = {
       dispatch: AgentDispatchHealth;
       serverUrl: string;
       participantToken: string;
-    }>(
-      "/web-call-token",
-      {
-        method: "POST",
-        body: JSON.stringify({ agentId }),
-      },
-    ),
+    }>("/web-call-token", {
+      method: "POST",
+      body: JSON.stringify({ agentId }),
+    }),
   agentDispatchStatus: (input: { roomName: string; dispatchId?: string }) => {
     const query = new URLSearchParams({ roomName: input.roomName });
     if (input.dispatchId) query.set("dispatchId", input.dispatchId);
-    return request<AgentDispatchHealth>(`/agent-dispatch-status?${query.toString()}`);
+    return request<AgentDispatchHealth>(
+      `/agent-dispatch-status?${query.toString()}`,
+    );
   },
   agentRuntimeStream: (agentId: string) =>
     new EventSource(
@@ -978,7 +1163,10 @@ export const voiceApi = {
   outboundCall: (
     agentId: string,
     phoneNumber: string,
-    options: { phoneNumberId?: string; metadata?: Record<string, string | number | boolean> } = {},
+    options: {
+      phoneNumberId?: string;
+      metadata?: Record<string, string | number | boolean>;
+    } = {},
   ) =>
     request<{
       callId: string;
@@ -991,44 +1179,77 @@ export const voiceApi = {
       body: JSON.stringify({
         agentId,
         phoneNumber,
-        ...(options.phoneNumberId ? { phoneNumberId: options.phoneNumberId } : {}),
+        ...(options.phoneNumberId
+          ? { phoneNumberId: options.phoneNumberId }
+          : {}),
         ...(options.metadata ? { metadata: options.metadata } : {}),
       }),
     }),
-  campaigns: () => cachedRequest<{ campaigns: BackendCampaign[] }>("/campaigns", 3_000),
-  campaign: (campaignId: string) => request<{ campaign: BackendCampaign }>(`/campaigns/${campaignId}`),
+  campaigns: () =>
+    cachedRequest<{ campaigns: BackendCampaign[] }>("/campaigns", 3_000),
+  campaign: (campaignId: string) =>
+    request<{ campaign: BackendCampaign }>(`/campaigns/${campaignId}`),
   createCampaign: (input: CreateCampaignInput) =>
-    mutation<{ campaign: BackendCampaign }>("/campaigns", {
-      method: "POST",
-      headers: { "Idempotency-Key": input.idempotencyKey },
-      body: JSON.stringify(input),
-    }, ["/campaigns"]),
+    mutation<{ campaign: BackendCampaign }>(
+      "/campaigns",
+      {
+        method: "POST",
+        headers: { "Idempotency-Key": input.idempotencyKey },
+        body: JSON.stringify(input),
+      },
+      ["/campaigns"],
+    ),
   addCampaignLeads: (campaignId: string, leads: CampaignLeadInput[]) =>
-    request<{ inserted: number; duplicates: number; total: number; suppressed: number }>(`/campaigns/${campaignId}/leads`, {
+    request<{
+      inserted: number;
+      duplicates: number;
+      total: number;
+      suppressed: number;
+    }>(`/campaigns/${campaignId}/leads`, {
       method: "POST",
       body: JSON.stringify({ leads }),
     }),
-  launchCampaign: (campaignId: string, input: { mode: "now" | "schedule"; scheduledAt?: string }) =>
-    mutation<{ campaign: BackendCampaign }>(`/campaigns/${campaignId}/launch`, {
-      method: "POST",
-      body: JSON.stringify(input),
-    }, ["/campaigns"]),
+  launchCampaign: (
+    campaignId: string,
+    input: { mode: "now" | "schedule"; scheduledAt?: string },
+  ) =>
+    mutation<{ campaign: BackendCampaign }>(
+      `/campaigns/${campaignId}/launch`,
+      {
+        method: "POST",
+        body: JSON.stringify(input),
+      },
+      ["/campaigns"],
+    ),
   pauseCampaign: (campaignId: string) =>
-    mutation<{ campaign: BackendCampaign }>(`/campaigns/${campaignId}/pause`, { method: "POST" }, ["/campaigns"]),
+    mutation<{ campaign: BackendCampaign }>(
+      `/campaigns/${campaignId}/pause`,
+      { method: "POST" },
+      ["/campaigns"],
+    ),
   resumeCampaign: (campaignId: string) =>
-    mutation<{ campaign: BackendCampaign }>(`/campaigns/${campaignId}/resume`, { method: "POST" }, ["/campaigns"]),
+    mutation<{ campaign: BackendCampaign }>(
+      `/campaigns/${campaignId}/resume`,
+      { method: "POST" },
+      ["/campaigns"],
+    ),
   cancelCampaign: (campaignId: string) =>
     mutation<{
       campaign: BackendCampaign;
       cleanupPending?: boolean;
       message?: string;
     }>(`/campaigns/${campaignId}/cancel`, { method: "POST" }, ["/campaigns"]),
-  phoneNumbers: () => cachedRequest<{ numbers: BackendPhoneNumber[] }>("/phone-numbers", 15_000),
+  phoneNumbers: () =>
+    cachedRequest<{ numbers: BackendPhoneNumber[] }>("/phone-numbers", 15_000),
   createPhoneNumber: (input: PhoneNumberImportInput) =>
-    mutation<{ number: BackendPhoneNumber }>("/phone-numbers", {
-      method: "POST",
-      body: JSON.stringify(input),
-    }, ["/phone-numbers", "/agents"]),
+    mutation<{ number: BackendPhoneNumber }>(
+      "/phone-numbers",
+      {
+        method: "POST",
+        body: JSON.stringify(input),
+      },
+      ["/phone-numbers", "/agents"],
+    ),
   assignPhoneNumberAgent: (phoneNumberId: string, agentId: string | null) =>
     mutation<{ number: BackendPhoneNumber; routingWarning: string }>(
       `/phone-numbers/${phoneNumberId}/agent`,
@@ -1047,12 +1268,20 @@ export const voiceApi = {
   vobizNumbers: () => request<VobizNumberList>("/vobiz/numbers"),
   vobizIntegration: () => request<VobizIntegration>("/integrations/vobiz"),
   connectVobiz: (authId: string, authToken: string) =>
-    mutation<VobizIntegration>("/integrations/vobiz", {
-      method: "PUT",
-      body: JSON.stringify({ authId, authToken }),
-    }, ["/config"]),
+    mutation<VobizIntegration>(
+      "/integrations/vobiz",
+      {
+        method: "PUT",
+        body: JSON.stringify({ authId, authToken }),
+      },
+      ["/config"],
+    ),
   disconnectVobiz: () =>
-    mutation<Record<string, never>>("/integrations/vobiz", { method: "DELETE" }, ["/config"]),
+    mutation<Record<string, never>>(
+      "/integrations/vobiz",
+      { method: "DELETE" },
+      ["/config"],
+    ),
   vobizInventory: (input: { country?: string; search?: string } = {}) => {
     const query = new URLSearchParams();
     if (input.country) query.set("country", input.country);
@@ -1066,10 +1295,14 @@ export const voiceApi = {
     direction: BackendPhoneNumber["direction"];
     region: string;
   }) =>
-    mutation<{ number: BackendPhoneNumber }>("/phone-numbers/import", {
-      method: "POST",
-      body: JSON.stringify(input),
-    }, ["/phone-numbers", "/agents"]),
+    mutation<{ number: BackendPhoneNumber }>(
+      "/phone-numbers/import",
+      {
+        method: "POST",
+        body: JSON.stringify(input),
+      },
+      ["/phone-numbers", "/agents"],
+    ),
   purchasePhoneNumber: (input: {
     agentId?: string;
     phoneNumber: string;
@@ -1077,10 +1310,14 @@ export const voiceApi = {
     direction: BackendPhoneNumber["direction"];
     currency?: string;
   }) =>
-    mutation<{ number: BackendPhoneNumber }>("/phone-numbers/purchase", {
-      method: "POST",
-      body: JSON.stringify(input),
-    }, ["/phone-numbers", "/agents"]),
+    mutation<{ number: BackendPhoneNumber }>(
+      "/phone-numbers/purchase",
+      {
+        method: "POST",
+        body: JSON.stringify(input),
+      },
+      ["/phone-numbers", "/agents"],
+    ),
   syncPhoneNumbers: () =>
     mutation<{
       vobiz: VobizNumberList;
@@ -1090,7 +1327,11 @@ export const voiceApi = {
         needsSetup: number;
         errors: { number: string; message: string }[];
       };
-    }>("/phone-numbers/sync", { method: "POST" }, ["/phone-numbers", "/agents", "/config"]),
+    }>("/phone-numbers/sync", { method: "POST" }, [
+      "/phone-numbers",
+      "/agents",
+      "/config",
+    ]),
   calls: (
     input: {
       agentId?: string;
@@ -1123,7 +1364,9 @@ export const voiceApi = {
     query.set("limit", String(input.limit ?? 20));
     if (input.recent) query.set("view", "recent");
     const path = `/calls?${query.toString()}`;
-    return cachedRequest<CallsResponse>(path, 3_000).then(sanitizeCallsResponse);
+    return cachedRequest<CallsResponse>(path, 3_000).then(
+      sanitizeCallsResponse,
+    );
   },
   call: (callId: string) =>
     request<{ call: CallRecord }>(`/calls/${callId}`).then((data) => ({
@@ -1131,32 +1374,60 @@ export const voiceApi = {
       call: sanitizeCallRecord(data.call),
     })),
   callRecordingBlob: async (callId: string) => {
-    if (!getSession()) throw new Error("Sign in before playing call recordings.");
-    const response = await fetch(`${API_URL}/api/voice/calls/${encodeURIComponent(callId)}/recording-file`, {
-      credentials: "include",
-      headers: getAuthHeaders(),
-    });
+    if (!getSession())
+      throw new Error("Sign in before playing call recordings.");
+    const response = await fetch(
+      `${API_URL}/api/voice/calls/${encodeURIComponent(callId)}/recording-file`,
+      {
+        credentials: "include",
+        headers: getAuthHeaders(),
+      },
+    );
     if (!response.ok) {
-      const data = (await response.json().catch(() => null)) as { message?: string } | null;
-      throw new Error(publicVoiceMessage(data?.message, "Could not load the call recording."));
+      const data = (await response.json().catch(() => null)) as {
+        message?: string;
+      } | null;
+      throw new Error(
+        publicVoiceMessage(data?.message, "Could not load the call recording."),
+      );
     }
     return response.blob();
   },
-  uploadWebCallRecording: async (callId: string, recording: Blob, durationMs: number) => {
-    if (!getSession()) throw new Error("Sign in before uploading call recordings.");
-    const response = await fetch(`${API_URL}/api/voice/calls/${encodeURIComponent(callId)}/recording`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        ...getAuthHeaders(),
-        "Content-Type": recording.type || "application/octet-stream",
-        "X-Recording-Duration-Ms": String(Math.max(0, Math.round(durationMs))),
+  uploadWebCallRecording: async (
+    callId: string,
+    recording: Blob,
+    durationMs: number,
+  ) => {
+    if (!getSession())
+      throw new Error("Sign in before uploading call recordings.");
+    const response = await fetch(
+      `${API_URL}/api/voice/calls/${encodeURIComponent(callId)}/recording`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          ...getAuthHeaders(),
+          "Content-Type": recording.type || "application/octet-stream",
+          "X-Recording-Duration-Ms": String(
+            Math.max(0, Math.round(durationMs)),
+          ),
+        },
+        body: recording,
       },
-      body: recording,
-    });
-    const data = (await response.json().catch(() => null)) as ({ call: CallRecord; message?: string }) | null;
-    if (!response.ok) throw new Error(publicVoiceMessage(data?.message, "Could not upload the web call recording."));
-    if (!data?.call) throw new Error("Voice service returned an empty recording response.");
+    );
+    const data = (await response.json().catch(() => null)) as {
+      call: CallRecord;
+      message?: string;
+    } | null;
+    if (!response.ok)
+      throw new Error(
+        publicVoiceMessage(
+          data?.message,
+          "Could not upload the web call recording.",
+        ),
+      );
+    if (!data?.call)
+      throw new Error("Voice service returned an empty recording response.");
     return { ...data, call: sanitizeCallRecord(data.call) };
   },
   exportCallsCsv: async () => {
@@ -1172,6 +1443,9 @@ export const voiceApi = {
     const query = new URLSearchParams();
     query.set("days", String(input.days ?? 30));
     if (input.agentId) query.set("agentId", input.agentId);
-    return cachedRequest<AnalyticsOverview>(`/analytics/overview?${query.toString()}`, 30_000);
+    return cachedRequest<AnalyticsOverview>(
+      `/analytics/overview?${query.toString()}`,
+      30_000,
+    );
   },
 };

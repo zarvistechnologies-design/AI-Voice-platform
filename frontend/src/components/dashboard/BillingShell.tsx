@@ -1,17 +1,11 @@
-﻿"use client";
+"use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 
-import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
-import { useBrand } from "@/components/branding/BrandProvider";
-import {
-    getServerSession,
-    getSession,
-    logoutSession,
-    subscribeToSession,
-    validateStoredSession,
-} from "@/lib/auth";
+import { DashboardSidebar, getDashboardSidebarInitialState } from "@/components/dashboard/DashboardSidebar";
+import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
+import { getServerSession, getSession, logoutSession, subscribeToSession, validateStoredSession } from "@/lib/auth";
 import { billingApi, type BillingSummary } from "@/lib/billing";
 import { openRazorpayCheckout } from "@/lib/razorpayCheckout";
 
@@ -35,35 +29,14 @@ function dateTime(value?: string) {
   return new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
 }
 
-function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <article className={`rounded-2xl border border-[#e5e7ef] bg-[#ffffff] shadow-sm ${className}`}>{children}</article>;
-}
-
-function Metric({ label, value, detail, tone = "sky" }: { label: string; value: string; detail: string; tone?: "sky" | "emerald" | "amber" | "slate" }) {
-  const tones = {
-    sky: "bg-indigo-50 text-indigo-700",
-    emerald: "bg-emerald-50 text-emerald-700",
-    amber: "bg-amber-50 text-amber-700",
-    slate: "bg-slate-100 text-slate-700",
-  };
-  return (
-    <Card className="p-4">
-      <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${tones[tone]}`}>{label}</span>
-      <strong className="mt-3 block text-2xl font-semibold tracking-tight text-slate-950">{value}</strong>
-      <span className="mt-1 block text-xs leading-5 text-slate-500">{detail}</span>
-    </Card>
-  );
-}
-
 export function BillingShell() {
-  const brand = useBrand();
   const router = useRouter();
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
   const [data, setData] = useState<BillingSummary | null>(null);
   const [notice, setNotice] = useState("");
-  const [busy, setBusy] = useState<"" | "topup" | "cancel" | "enterprise" | "white-label" | `invoice:${string}`>("");
+  const [busy, setBusy] = useState<"" | "topup" | "cancel" | "enterprise" | `invoice:${string}`>("");
   const [selectedTopUp, setSelectedTopUp] = useState(10);
-  const [showUserSidebar, setShowUserSidebar] = useState(true);
+  const [showUserSidebar, setShowUserSidebar] = useState(getDashboardSidebarInitialState);
 
   const load = useCallback(async () => {
     try {
@@ -77,8 +50,6 @@ export function BillingShell() {
 
   useEffect(() => {
     if (!session) {
-      // The server snapshot is empty until the persisted session hydrates.
-      if (getSession()) return;
       router.replace("/login?next=/dashboard/billing");
       return;
     }
@@ -96,9 +67,7 @@ export function BillingShell() {
   const currency = wallet?.currency || "USD";
   const balance = wallet?.balanceCredits ?? 0;
   const lifetime = Math.max(wallet?.lifetimePurchasedCredits ?? 0, balance, 0);
-  const progress = lifetime > 0 ? Math.min(100, Math.max(0, (balance / lifetime) * 100)) : 0;
-  const latestPayment = data?.transactions.find((transaction) => transaction.type === "topup" || transaction.type === "auto_reload");
-
+  const latestPayment = data?.transactions.find((item) => item.type === "topup" || item.type === "auto_reload");
   const totals = useMemo(() => {
     const transactions = data?.transactions ?? [];
     return {
@@ -118,7 +87,7 @@ export function BillingShell() {
       const payment = await openRazorpayCheckout(checkout);
       const verified = await billingApi.verifyTopUp(payment);
       await load();
-      setNotice("$" + verified.credits.toFixed(2) + " in USD credits was added successfully.");
+      setNotice(`$${verified.credits.toFixed(2)} in USD credits was added successfully.`);
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not complete credit purchase.");
     } finally {
@@ -139,6 +108,7 @@ export function BillingShell() {
       setBusy("");
     }
   }
+
   async function upgradeEnterprise() {
     if (!data?.configured) {
       setNotice("USD Autopay is unavailable until Razorpay API keys are configured.");
@@ -165,7 +135,7 @@ export function BillingShell() {
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement("a");
       anchor.href = url;
-      anchor.download = `${invoiceNumber || `${brand.productName}-invoice-${invoiceId}`}.html`;
+      anchor.download = `${invoiceNumber || `Vozon-invoice-${invoiceId}`}.html`;
       document.body.appendChild(anchor);
       anchor.click();
       anchor.remove();
@@ -178,322 +148,89 @@ export function BillingShell() {
     }
   }
 
-  if (!session) return <main className="grid min-h-screen place-items-center bg-[#f7f8fc] text-sm font-semibold text-[#737587]">Loading billing</main>;
-
-  if (data?.billingModel === "white_label_customer_checkout") {
-    const currentInvoice = data.currentInvoice;
-    const planCurrency = data.currentPlan.currency || currency;
-    const recurring = data.currentPlan.monthlyPrice;
-    const payable = currentInvoice && (currentInvoice.status === "open" || currentInvoice.status === "past_due");
-    return (
-      <main className={`dashboard-home-theme grid min-h-screen bg-[#f7f8fc] text-[#242535] ${showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}>
-        <DashboardSidebar activeLabel="Billing" userInitials={initials(session.name)} userName={session.name} userEmail={session.email} onLogout={() => void logoutSession().then(() => router.replace("/login"))} showUserSidebar={showUserSidebar} setShowUserSidebar={setShowUserSidebar} />
-        <section className="min-w-0 p-4 sm:p-6">
-          <div className="mx-auto grid max-w-[1300px] gap-5">
-            <header className="rounded-3xl border border-[var(--brand-primary)]/20 bg-white p-6">
-              <span className="text-xs font-black uppercase tracking-[0.18em] text-[var(--brand-accent)]">Verified subscription billing</span>
-              <h1 className="mt-2 text-3xl font-black">Billing overview</h1>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-[#737587]">Pay invoices securely through Razorpay. Access is renewed only after the backend verifies the signature, captured payment, order, amount, currency, and tenant.</p>
-            </header>
-            {notice ? <div className="rounded-xl border border-indigo-300/20 bg-indigo-300/10 px-4 py-3 text-sm font-bold text-indigo-100">{notice}</div> : null}
-            <div className="grid gap-4 md:grid-cols-3">
-              <Card className="p-5"><span className="text-xs font-bold text-[#737587]">Current plan</span><strong className="mt-2 block text-2xl font-black capitalize">{data.currentPlan.name}</strong><span className="mt-1 block text-xs text-[#737587]">Version {data.subscription.planVersion ?? "current"} · {data.subscription.status}</span></Card>
-              <Card className="p-5"><span className="text-xs font-bold text-[#737587]">Recurring price</span><strong className="mt-2 block text-2xl font-black">{recurring === null ? "Custom" : money(recurring, planCurrency)}</strong><span className="mt-1 block text-xs text-[#737587]">per {data.currentPlan.interval || "month"}</span></Card>
-              <Card className="p-5"><span className="text-xs font-bold text-[#737587]">Usage balance</span><strong className="mt-2 block text-2xl font-black">{money(balance, currency)}</strong><span className="mt-1 block text-xs text-[#737587]">Included credits and metered usage</span></Card>
-            </div>
-            <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
-              <Card className="p-5">
-                <div className="flex items-start justify-between gap-4"><div><span className="text-xs font-bold uppercase tracking-[0.14em] text-[#737587]">Current invoice</span><h2 className="mt-2 text-xl font-black">{currentInvoice?.invoiceNumber || "No payment due"}</h2></div>{currentInvoice ? <span className={`rounded-full px-2.5 py-1 text-[10px] font-black uppercase ${currentInvoice.status === "paid" ? "bg-emerald-300/10 text-emerald-700" : "bg-amber-300/10 text-amber-700"}`}>{currentInvoice.status.replaceAll("_", " ")}</span> : null}</div>
-                {currentInvoice ? <dl className="mt-5 grid gap-3 text-sm"><div className="flex justify-between"><dt className="text-[#737587]">Recurring service</dt><dd className="font-bold">{money(currentInvoice.recurringAmountMinor / 100, currentInvoice.currency)}</dd></div>{currentInvoice.setupFeeMinor ? <div className="flex justify-between"><dt className="text-[#737587]">Setup fee</dt><dd className="font-bold">{money(currentInvoice.setupFeeMinor / 100, currentInvoice.currency)}</dd></div> : null}{currentInvoice.taxMinor ? <div className="flex justify-between"><dt className="text-[#737587]">{currentInvoice.taxLabel}</dt><dd className="font-bold">{money(currentInvoice.taxMinor / 100, currentInvoice.currency)}</dd></div> : null}<div className="flex justify-between border-t border-[#e5e7ef] pt-3"><dt className="text-[#737587]">Total</dt><dd className="text-xl font-black">{money(currentInvoice.totalMinor / 100, currentInvoice.currency)}</dd></div><div className="flex justify-between"><dt className="text-[#737587]">Service period</dt><dd className="text-right text-xs font-bold">{dateTime(currentInvoice.periodStart)}<br />to {dateTime(currentInvoice.periodEnd)}</dd></div></dl> : <p className="mt-4 text-sm text-[#737587]">Your current service period is paid.</p>}
-                {payable ? <button className="mt-5 w-full rounded-xl bg-[var(--brand-primary)] px-4 py-3 text-sm font-black text-black disabled:opacity-45" disabled={busy === "white-label" || !data.configured} onClick={() => void payWhiteLabelInvoice()}>{busy === "white-label" ? "Verifying payment…" : `Pay ${money(currentInvoice.totalMinor / 100, currentInvoice.currency)}`}</button> : null}
-                {payable && !data.configured ? <p className="mt-3 text-xs text-rose-700">Payment configuration is incomplete. Contact {data.whiteLabel?.supportEmail || "billing support"}.</p> : null}
-              </Card>
-              <Card className="overflow-hidden"><div className="border-b border-[#e5e7ef] p-5"><h2 className="font-black">Invoice history</h2><p className="mt-1 text-xs text-[#737587]">Server-issued invoices, refunds, disputes, and verified payment status.</p></div><div className="divide-y divide-[#e5e7ef]">{data.invoices.map((invoice) => <div className="grid gap-3 p-4 sm:grid-cols-[1fr_auto_auto] sm:items-center" key={invoice._id}><div><strong className="block text-sm">{invoice.invoiceNumber}</strong><span className="mt-1 block text-xs text-[#737587]">{invoice.periodStart ? dateTime(invoice.periodStart) : dateTime(invoice.createdAt)}</span></div><div className="sm:text-right"><strong className="block">{money(Math.max(0, (invoice.totalMinor ?? 0) - (invoice.refundedMinor ?? 0)) / 100, invoice.currency.toUpperCase())}</strong><span className="text-xs capitalize text-[#737587]">{invoice.status}{invoice.refundedMinor ? ` · ${money(invoice.refundedMinor / 100, invoice.currency.toUpperCase())} refunded` : ""}</span></div><button className="rounded-xl border border-[#e5e7ef] px-3 py-2 text-xs font-bold text-[#737587]" disabled={Boolean(busy)} onClick={() => void downloadWhiteLabelInvoice(invoice._id, invoice.invoiceNumber)}>{busy === `invoice:${invoice._id}` ? "Downloading…" : "Download"}</button></div>)}</div></Card>
-            </div>
-          </div>
-        </section>
-      </main>
-    );
-  }
-
-  if (data?.billingModel === "white_label_partner_managed") {
-    const planCurrency = data.currentPlan.currency || currency;
-    const recurring = data.currentPlan.monthlyPrice;
-    return (
-      <main className={`dashboard-home-theme grid min-h-screen bg-[#f7f8fc] text-[#242535] ${showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}>
-        <DashboardSidebar
-          activeLabel="Billing"
-          userInitials={initials(session.name)}
-          userName={session.name}
-          userEmail={session.email}
-          onLogout={() => void logoutSession().then(() => router.replace("/login"))}
-          showUserSidebar={showUserSidebar}
-          setShowUserSidebar={setShowUserSidebar}
-        />
-        <section className="min-w-0 p-4 sm:p-6">
-          <div className="mx-auto grid max-w-[1300px] gap-5">
-            <header className="rounded-3xl border border-[var(--brand-primary)]/20 bg-white p-6">
-              <span className="text-xs font-black uppercase tracking-[0.18em] text-[var(--brand-accent)]">Subscription and usage</span>
-              <h1 className="mt-2 text-3xl font-black">Billing overview</h1>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-[#737587]">Your plan and usage are managed by {data.whiteLabel?.productName || "your service provider"}. Contact support for payment methods, invoices, plan changes, or additional credits.</p>
-            </header>
-            {notice ? <div className="rounded-xl border border-indigo-300/20 bg-indigo-300/10 px-4 py-3 text-sm font-bold text-indigo-100">{notice}</div> : null}
-            <div className="grid gap-4 md:grid-cols-3">
-              <Card className="p-5"><span className="text-xs font-bold text-[#737587]">Current plan</span><strong className="mt-2 block text-2xl font-black capitalize">{data.currentPlan.name}</strong><span className="mt-1 block text-xs text-[#737587]">Version {data.subscription.planVersion ?? "current"} · {data.subscription.status}</span></Card>
-              <Card className="p-5"><span className="text-xs font-bold text-[#737587]">Recurring price</span><strong className="mt-2 block text-2xl font-black">{recurring === null ? "Custom" : money(recurring, planCurrency)}</strong><span className="mt-1 block text-xs text-[#737587]">per {data.currentPlan.interval || "month"}, taxes per contract</span></Card>
-              <Card className="p-5"><span className="text-xs font-bold text-[#737587]">Available usage credits</span><strong className="mt-2 block text-2xl font-black">{money(balance, currency)}</strong><span className="mt-1 block text-xs text-[#737587]">Usage charging follows your immutable plan snapshot</span></Card>
-            </div>
-            <div className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
-              <Card className="p-5"><h2 className="font-black">This period</h2><dl className="mt-4 grid grid-cols-2 gap-3 text-sm">{[["Calls", data.usage.calls.toLocaleString()], ["Minutes", data.usage.minutes.toFixed(1)], ["Charged", money(data.usage.chargedCredits, currency)], ["Plan status", data.subscription.status]].map(([label, value]) => <div className="rounded-xl border border-[#e5e7ef] bg-[#f0f1f6] p-4" key={label}><dt className="text-xs text-[#737587]">{label}</dt><dd className="mt-1 font-black capitalize">{value}</dd></div>)}</dl>{data.whiteLabel?.supportEmail ? <a className="mt-5 inline-flex text-sm font-black text-[var(--brand-accent)] hover:underline" href={`mailto:${data.whiteLabel.supportEmail}`}>Contact billing support</a> : null}</Card>
-              <Card className="overflow-hidden"><div className="border-b border-[#e5e7ef] p-5"><h2 className="font-black">Usage ledger</h2><p className="mt-1 text-xs text-[#737587]">Recent credit events and call charges.</p></div><div className="divide-y divide-[#e5e7ef]">{data.transactions.slice(0, 12).map((transaction) => <div className="grid grid-cols-[1fr_auto] gap-4 p-4" key={transaction._id}><div><strong className="block text-xs text-[#737587]">{transaction.description}</strong><span className="mt-1 block text-[10px] text-[#737587]">{dateTime(transaction.createdAt)}</span></div><strong className={`text-sm ${transaction.amountCredits < 0 ? "text-rose-700" : "text-emerald-700"}`}>{transaction.amountCredits > 0 ? "+" : ""}{money(transaction.amountCredits, transaction.currency || currency)}</strong></div>)}{!data.transactions.length ? <p className="p-8 text-center text-xs text-[#737587]">No usage ledger entries yet.</p> : null}</div></Card>
-            </div>
-          </div>
-        </section>
-      </main>
-    );
-  }
-
-  async function payWhiteLabelInvoice() {
-    if (!data?.configured) {
-      setNotice("Checkout is unavailable until Razorpay API credentials and webhook signing are configured.");
-      return;
-    }
-    setBusy("white-label");
-    try {
-      const checkout = await billingApi.whiteLabelCheckout();
-      if (!checkout.settled) {
-        const payment = await openRazorpayCheckout(checkout);
-        await billingApi.verifyWhiteLabelCheckout(payment);
-      }
-      await load();
-      setNotice("Payment was verified and your subscription is active.");
-    } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Could not complete invoice payment.");
-    } finally {
-      setBusy("");
-    }
-  }
-
-  async function downloadWhiteLabelInvoice(invoiceId: string, invoiceNumber: string) {
-    setBusy(`invoice:${invoiceId}`);
-    try {
-      const blob = await billingApi.downloadWhiteLabelInvoice(invoiceId);
-      const url = URL.createObjectURL(blob);
-      const anchor = document.createElement("a");
-      anchor.href = url;
-      anchor.download = `${invoiceNumber || `${brand.productName}-invoice-${invoiceId}`}.html`;
-      document.body.appendChild(anchor);
-      anchor.click();
-      anchor.remove();
-      window.setTimeout(() => URL.revokeObjectURL(url), 1_000);
-      setNotice("Invoice downloaded. Open it and select Print / Save PDF for a PDF copy.");
-    } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Could not download invoice.");
-    } finally {
-      setBusy("");
-    }
-  }
+  if (!session) return <main className="grid min-h-screen place-items-center bg-[#f7f7fc] text-sm font-semibold text-[#7a7d8e]">Loading billing</main>;
 
   return (
-    <main className={`dashboard-home-theme grid min-h-screen bg-[#f7f8fc] text-[#242535] ${
-      showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
-    }`}>
-      <DashboardSidebar
-        activeLabel="Billing"
-        userInitials={initials(session.name)}
-        userName={session.name}
-        userEmail={session.email}
-        onLogout={() => void logoutSession().then(() => router.replace("/login"))}
-        showUserSidebar={showUserSidebar}
-        setShowUserSidebar={setShowUserSidebar}
-      />
-      <section className="min-w-0 p-4">
-        <div className="mx-auto grid max-w-[1500px] gap-6">
-          <header className="border-b border-[#5b63ff]/24 bg-[#ffffff] pb-4">
-            <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-              <div>
-                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#5b63ff]">Workspace billing</span>
-                <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">Billing</h1>
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Top up once and run calls. Per-call provider costs are available in Call Logs.</p>
-              </div>
-              <div className="flex gap-2">
-              <button className="rounded-xl border border-[#e5e7ef] bg-[#f8f8fc] px-4 py-2.5 text-sm font-semibold text-[#737587] shadow-sm hover:bg-[#f6f7fb] hover:text-[#242535]" type="button" onClick={() => void load()} disabled={Boolean(busy)}>
-                Refresh
-              </button>
-              <button className="rounded-xl bg-[#5b63ff] px-4 py-2.5 text-sm font-semibold text-[#ffffff] shadow-sm hover:bg-[#4d54db] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup" || !data?.configured}>
-                Buy ${selectedTopUp}
-              </button>
-              </div>
-            </div>
-          </header>
+    <main className={`dashboard-home-theme grid min-h-screen bg-[#f7f7fc] text-[#1b1b22] ${showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}>
+      <DashboardSidebar activeLabel="Billing" userInitials={initials(session.name)} userName={session.name} userEmail={session.email} onLogout={() => void logoutSession().then(() => router.replace("/login"))} showUserSidebar={showUserSidebar} setShowUserSidebar={setShowUserSidebar} />
 
-          {notice ? <div className="rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-sm font-semibold text-indigo-800">{notice}</div> : null}
+      <section className="min-w-0 overflow-y-auto">
+        <DashboardPageHeader
+          eyebrow="Pay per use"
+          title="Billing"
+          description="Manage credits, usage, payments, and invoices."
+          actions={
+            <button className="rounded-lg border border-[#d1d4e3] bg-white px-4 py-2.5 text-sm font-semibold text-[#505261] hover:border-[#737ccf] hover:text-[#5963b8]" type="button" onClick={() => void load()} disabled={Boolean(busy)}>Refresh</button>
+          }
+        />
+
+        <div className="mx-auto grid w-full max-w-[1500px] gap-5 px-4 py-5 sm:px-6 lg:px-8">
+          {notice ? <div className="rounded-lg border border-[#c9ccef] bg-[#eff0fb] px-4 py-3 text-sm font-semibold text-[#515bb4]">{notice}</div> : null}
+
           {data?.paymentReadiness ? (
-            <div className="grid gap-3 rounded-2xl border border-[#e5e7ef] bg-[#ffffff] p-4 sm:grid-cols-3">
-              {[
-                ["Checkout mode", data.paymentReadiness.mode],
-                ["API credentials", data.paymentReadiness.credentialsConfigured ? "configured" : "missing"],
-                ["Webhook signing", data.paymentReadiness.webhookConfigured ? "configured" : "missing"],
-              ].map(([label, value]) => (
-                <div className="rounded-xl border border-[#e5e7ef] bg-[#f0f1f6] px-4 py-3" key={label}>
-                  <span className="block text-xs text-[#737587]">{label}</span>
-                  <strong className={`mt-1 block capitalize ${value === "live" || value === "configured" ? "text-emerald-700" : "text-amber-700"}`}>{value}</strong>
-                </div>
-              ))}
-            </div>
+            <section className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-[#e1e3ed] bg-white px-5 py-4">
+              <div className="flex items-center gap-3"><span className={`size-2.5 rounded-full ${data.configured ? "bg-emerald-500" : "bg-amber-500"}`} /><div><h2 className="app-section-title m-0">Payment setup</h2><p className="app-caption mt-1 mb-0">{data.configured ? "Checkout is ready" : "Checkout configuration is incomplete"}</p></div></div>
+              <dl className="flex flex-wrap gap-x-6 gap-y-2 text-xs">
+                <div><dt className="text-[#7a7d8e]">Mode</dt><dd className="m-0 mt-0.5 font-semibold capitalize">{data.paymentReadiness.mode}</dd></div>
+                <div><dt className="text-[#7a7d8e]">Credentials</dt><dd className="m-0 mt-0.5 font-semibold">{data.paymentReadiness.credentialsConfigured ? "Ready" : "Missing"}</dd></div>
+                <div><dt className="text-[#7a7d8e]">Webhook</dt><dd className="m-0 mt-0.5 font-semibold">{data.paymentReadiness.webhookConfigured ? "Ready" : "Missing"}</dd></div>
+              </dl>
+            </section>
           ) : null}
 
-          <section className="grid gap-4 xl:grid-cols-[1.25fr_0.75fr]">
-            <Card className="overflow-hidden">
-              <div className="grid gap-6 bg-white p-5 md:grid-cols-[minmax(0,1fr)_320px] md:p-6">
-                <div className="grid content-between gap-6">
-                  <div>
-                    <span className="inline-flex rounded-full bg-[#5b63ff]/10 px-3 py-1 text-xs font-semibold text-[#4d54db] shadow-sm ring-1 ring-[#5b63ff]/24">Wallet balance</span>
-                    <h2 className="mt-5 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">{money(balance, currency)}</h2>
-                    <p className="mt-3 max-w-xl text-sm leading-6 text-slate-600">Calls start only when the wallet has the minimum required balance. Completed-call costs are deducted automatically and shown in Call Logs.</p>
-                  </div>
-                  <div className="grid gap-3">
-                    <div className="flex items-center justify-between text-sm font-semibold text-slate-700">
-                      <span>{money(balance, currency)} available</span>
-                      <span>{money(lifetime, currency)} lifetime credits</span>
-                    </div>
-                    <div className="h-3 overflow-hidden rounded-full bg-[#f6f7fb] shadow-inner ring-1 ring-white/10">
-                      <div className="h-full rounded-full bg-gradient-to-r from-indigo-500 via-indigo-500 to-indigo-400" style={{ width: `${progress}%` }} />
-                    </div>
-                  </div>
+          <section className="overflow-hidden rounded-xl border border-[#dfe3ea] bg-white">
+            <div className="grid gap-6 p-5 md:grid-cols-[minmax(0,1fr)_320px] md:p-6">
+              <div><span className="app-label text-[#5963b8]">Available balance</span><h2 className="mt-2 mb-0 text-4xl font-semibold tracking-tight text-slate-950">{money(balance, currency)}</h2><p className="app-caption mt-2 mb-0">{money(lifetime, currency)} lifetime credits purchased</p></div>
+              <div className="grid gap-3 border-t border-[#e1e3ed] pt-5 md:border-t-0 md:border-l md:pt-0 md:pl-6">
+                <span className="app-label">Add credits</span>
+                <div className="grid grid-cols-4 gap-2">
+                  {topUpOptions.map((amount) => <button className={`min-h-10 rounded-lg border text-sm font-semibold ${selectedTopUp === amount ? "border-[#737ccf] bg-[#eff0fb] text-[#5963b8]" : "border-[#dfe3ea] bg-white text-[#505261] hover:border-[#737ccf]/60"}`} key={amount} type="button" aria-pressed={selectedTopUp === amount} onClick={() => setSelectedTopUp(amount)}>${amount}</button>)}
                 </div>
-
-                <div className="grid gap-3 rounded-2xl border border-[#e5e7ef] bg-[#f0f1f6] p-4 shadow-sm backdrop-blur">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">Quick top-up</span>
-                  <div className="grid grid-cols-2 gap-2">
-                    {topUpOptions.map((amount) => (
-                      <button
-                        className={`min-h-12 rounded-xl border px-3 text-sm font-semibold transition ${selectedTopUp === amount ? "border-[#5b63ff]/35 bg-[#5b63ff] text-[#ffffff] shadow-sm" : "border-[#e5e7ef] bg-[#ffffff] text-[#737587] hover:border-[#5b63ff]/35 hover:bg-[#5b63ff]/10 hover:text-[#242535]"}`}
-                        key={amount}
-                        type="button"
-                        aria-pressed={selectedTopUp === amount}
-                        onClick={() => setSelectedTopUp(amount)}
-                      >
-                        ${amount}
-                      </button>
-                    ))}
-                  </div>
-                  <button className="min-h-12 rounded-xl bg-[#5b63ff] px-4 text-sm font-semibold text-[#ffffff] shadow-sm hover:bg-[#4b52df] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup" || !data?.configured}>
-                    {busy === "topup" ? "Opening checkout..." : "Purchase credits"}
-                  </button>
-                </div>
+                <button className="min-h-11 rounded-lg bg-[#737ccf] px-4 text-sm font-semibold text-white hover:bg-[#5963b8] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup" || !data?.configured}>{busy === "topup" ? "Opening checkout..." : `Add $${selectedTopUp} credits`}</button>
               </div>
-            </Card>
+            </div>
+            <dl className="grid border-t border-[#e1e3ed] sm:grid-cols-2 lg:grid-cols-4">
+              {[["This month", money(data?.usage.chargedCredits ?? 0, currency)], ["Provider spend", money(data?.usage.providerCost ?? 0, currency)], ["Minimum to call", money(data?.creditSettings.minimumCallStartCredits ?? 0, currency)], ["Recent top-ups", `${totals.topUps} (${money(totals.net, currency)})`]].map(([label, value], index) => <div className={`px-5 py-4 ${index ? "border-t border-[#e1e3ed] sm:border-t-0 sm:border-l" : ""}`} key={label}><dt className="app-caption">{label}</dt><dd className="m-0 mt-1 text-lg font-semibold">{value}</dd></div>)}
+            </dl>
+          </section>
 
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
-              <Metric label="This month charged" value={money(data?.usage.chargedCredits ?? 0, currency)} detail={`Provider usage plus ${brand.productName} platform fees`} tone="emerald" />
-              <Metric label="Provider spend" value={money(data?.usage.providerCost ?? 0, currency)} detail="LLM/STT/TTS cost only" tone="sky" />
+          <section className="overflow-hidden rounded-xl border border-[#dfe3ea] bg-white">
+            <div className="border-b border-[#e1e3ed] px-5 py-4"><h2 className="app-section-title m-0">Billing details</h2></div>
+            <div className="grid md:grid-cols-2">
+              <div className="p-5">
+                <div className="flex items-center justify-between gap-3"><h3 className="m-0 text-sm font-semibold">Monthly Autopay</h3><span className="rounded-full bg-[#f6f6f8] px-2.5 py-1 text-xs font-semibold capitalize text-[#505261]">{data?.subscription.status?.replace("_", " ") ?? "inactive"}</span></div>
+                <dl className="mt-4 grid gap-3 text-sm">
+                  <div className="flex justify-between gap-4"><dt className="text-[#7a7d8e]">Plan</dt><dd className="m-0 font-semibold capitalize">{data?.subscription.plan ?? "free"}</dd></div>
+                  <div className="flex justify-between gap-4"><dt className="text-[#7a7d8e]">Monthly charge</dt><dd className="m-0 font-semibold">{money(data?.enterpriseMonthlyUsd ?? 500, "USD")}</dd></div>
+                  <div className="flex justify-between gap-4"><dt className="text-[#7a7d8e]">Next renewal</dt><dd className="m-0 text-right font-semibold">{dateTime(data?.subscription.currentPeriodEnd)}</dd></div>
+                </dl>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {data?.subscription.provider !== "razorpay" || data.subscription.status === "cancelled" ? <button className="rounded-lg bg-[#737ccf] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#5963b8] disabled:opacity-50" type="button" onClick={() => void upgradeEnterprise()} disabled={busy === "enterprise" || !data?.configured}>Start Autopay</button> : null}
+                  {data?.subscription.provider === "razorpay" && !data.subscription.cancelAtPeriodEnd && data.subscription.status !== "cancelled" ? <button className="rounded-lg border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-700 hover:bg-rose-50 disabled:opacity-50" type="button" onClick={() => void cancelAutopay()} disabled={busy === "cancel"}>{busy === "cancel" ? "Cancelling..." : "Cancel Autopay"}</button> : null}
+                </div>
+                {data?.subscription.cancelAtPeriodEnd ? <p className="mt-3 mb-0 text-sm font-semibold text-amber-700">Cancellation is scheduled for the end of this billing cycle.</p> : null}
+              </div>
+              <div className="border-t border-[#e1e3ed] p-5 md:border-t-0 md:border-l">
+                <div className="flex items-center justify-between gap-3"><div><h3 className="m-0 text-sm font-semibold">Payment method</h3><p className="app-caption mt-1 mb-0">{session.email}</p></div><span className={`rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${wallet?.lastPaymentStatus === "success" ? "bg-emerald-50 text-emerald-700" : "bg-[#f6f6f8] text-[#505261]"}`}>{wallet?.lastPaymentStatus ?? "none"}</span></div>
+                <dl className="mt-4 grid gap-3 text-sm">
+                  <div className="flex justify-between gap-4"><dt className="text-[#7a7d8e]">Provider</dt><dd className="m-0 font-semibold">{wallet?.paymentProvider === "razorpay" ? "Razorpay" : "Not linked"}</dd></div>
+                  <div className="flex justify-between gap-4"><dt className="text-[#7a7d8e]">Last payment</dt><dd className="m-0 font-semibold">{latestPayment ? money(latestPayment.amountCredits, currency) : money(wallet?.lastPaymentAmountCredits ?? 0, currency)}</dd></div>
+                  <div className="flex justify-between gap-4"><dt className="text-[#7a7d8e]">Last checked</dt><dd className="m-0 text-right font-semibold">{dateTime(wallet?.lastCheckedAt)}</dd></div>
+                </dl>
+              </div>
             </div>
           </section>
 
-          <section className="grid gap-4 md:grid-cols-2">
-            <Metric label="Minimum to call" value={money(data?.creditSettings.minimumCallStartCredits ?? 0, currency)} detail="Pre-call wallet guard" tone="amber" />
-            <Metric label="Recent top-ups" value={String(totals.topUps)} detail={`${money(totals.net, currency)} across recent payment rows`} tone="sky" />
+          <section className="overflow-hidden rounded-xl border border-[#dfe3ea] bg-white">
+            <div className="flex items-center justify-between gap-4 border-b border-[#e1e3ed] px-5 py-4"><div><h2 className="app-section-title m-0">Invoices</h2><p className="app-caption mt-1 mb-0">Wallet top-ups and monthly charges</p></div><span className="app-caption">{data?.invoices.length ?? 0} invoices</span></div>
+            {data?.invoices.length ? <div className="divide-y divide-[#e1e3ed]">{data.invoices.map((invoice) => {
+              const amount = (invoice.amountPaid || invoice.amountDue) / 100;
+              const isDownloading = busy === `invoice:${invoice._id}`;
+              return <div className="grid gap-3 px-5 py-4 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center" key={invoice._id}><div className="min-w-0"><strong className="block truncate text-sm">{invoice.invoiceNumber || "Vozon payment invoice"}</strong><span className="app-caption mt-1 block">{invoice.description || dateTime(invoice.createdAt)}</span></div><div className="sm:text-right"><strong className="block text-sm">{money(amount, invoice.currency.toUpperCase())}</strong><span className="app-caption mt-1 block capitalize">{invoice.status || "paid"} · {dateTime(invoice.createdAt)}</span></div><button className="rounded-lg border border-[#c9ccef] px-3 py-2 text-sm font-semibold text-[#5963b8] hover:bg-[#eff0fb] disabled:opacity-50" type="button" onClick={() => void downloadInvoice(invoice._id, invoice.invoiceNumber)} disabled={Boolean(busy)}>{isDownloading ? "Downloading..." : "Download"}</button></div>;
+            })}</div> : <div className="px-5 py-8 text-center text-sm text-[#7a7d8e]">No invoices yet.</div>}
           </section>
-
-          <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.8fr)]">
-            <Card>
-              <div className="border-b border-slate-200 p-5">
-                <h2 className="m-0 text-lg font-semibold">Monthly Autopay</h2>
-                <p className="mt-1 text-sm leading-6 text-slate-500">Your card mandate and recurring Enterprise billing status.</p>
-              </div>
-              <div className="grid gap-5 p-5">
-                <div className="grid gap-3 text-sm">
-                  <div className="flex justify-between gap-4"><span className="text-slate-500">Plan</span><strong className="capitalize text-slate-950">{data?.subscription.plan ?? "free"}</strong></div>
-                  <div className="flex justify-between gap-4"><span className="text-slate-500">Status</span><strong className="capitalize text-slate-950">{data?.subscription.status?.replace("_", " ") ?? "inactive"}</strong></div>
-                  <div className="flex justify-between gap-4"><span className="text-slate-500">Monthly charge</span><strong className="text-slate-950">{money(data?.enterpriseMonthlyUsd ?? 500, "USD")}</strong></div>
-                  <div className="flex justify-between gap-4"><span className="text-slate-500">Next renewal</span><strong className="text-right text-slate-950">{dateTime(data?.subscription.currentPeriodEnd)}</strong></div>
-                </div>
-                {data?.subscription.provider === "razorpay" && !data.subscription.cancelAtPeriodEnd && data.subscription.status !== "cancelled" ? (
-                  <button className="w-fit rounded-xl border border-rose-400/30 px-4 py-2.5 text-sm font-semibold text-rose-700 hover:bg-rose-400/10 disabled:opacity-60" type="button" onClick={() => void cancelAutopay()} disabled={busy === "cancel"}>
-                    {busy === "cancel" ? "Cancelling..." : "Cancel at period end"}
-                  </button>
-                ) : null}
-                {data?.subscription.cancelAtPeriodEnd ? <p className="m-0 text-sm font-semibold text-amber-700">Cancellation is scheduled for the end of this billing cycle.</p> : null}
-              </div>
-            </Card>
-
-            <div className="grid gap-4">
-              <Card className="p-5">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h2 className="m-0 text-lg font-semibold">Payment status</h2>
-                    <p className="mt-1 text-sm text-slate-500">{session.email}</p>
-                  </div>
-                  <span className={`rounded-full px-3 py-1 text-xs font-semibold capitalize ${wallet?.lastPaymentStatus === "success" ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-600"}`}>{wallet?.lastPaymentStatus ?? "none"}</span>
-                </div>
-                <div className="mt-5 grid gap-3 text-sm">
-                  <div className="flex justify-between gap-4"><span className="text-slate-500">Provider</span><strong className="text-slate-950">{wallet?.paymentProvider === "razorpay" ? "Razorpay" : "Internal / not linked"}</strong></div>
-                  <div className="flex justify-between gap-4"><span className="text-slate-500">Last payment</span><strong className="text-slate-950">{latestPayment ? money(latestPayment.amountCredits, currency) : money(wallet?.lastPaymentAmountCredits ?? 0, currency)}</strong></div>
-                  <div className="flex justify-between gap-4"><span className="text-slate-500">Last checked</span><strong className="text-right text-slate-950">{dateTime(wallet?.lastCheckedAt)}</strong></div>
-                </div>
-              </Card>
-
-              <Card className="overflow-hidden">
-                <div className="bg-[#f0efff] p-5 text-[#30334f]">
-                  <h2 className="m-0 text-lg font-semibold">Enterprise credits</h2>
-                  <p className="mt-2 text-sm leading-6 text-[#737587]">${data?.enterpriseMonthlyUsd ?? 500} in wallet credits added after each successful monthly Razorpay charge.</p>
-                  <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-semibold text-[#6269dc]">
-                    <span className="rounded-full border border-[#5b63ff]/30 bg-[#5b63ff]/10 px-2.5 py-1">Monthly Autopay</span>
-                    <span className="rounded-full border border-[#5b63ff]/30 bg-[#5b63ff]/10 px-2.5 py-1">Indian cards</span>
-                    <span className="rounded-full border border-[#5b63ff]/30 bg-[#5b63ff]/10 px-2.5 py-1">International cards</span>
-                  </div>
-                  {data?.subscription.provider !== "razorpay" || data.subscription.status === "cancelled" ? <button className="mt-5 rounded-xl bg-[#5b63ff] px-4 py-2.5 text-sm font-semibold text-[#ffffff] hover:bg-[#4d54db] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void upgradeEnterprise()} disabled={busy === "enterprise" || !data?.configured}>Start monthly Autopay</button> : null}
-                </div>
-              </Card>
-            </div>
-          </section>
-
-          <Card className="overflow-hidden">
-            <div className="flex flex-col justify-between gap-3 border-b border-[#e5e7ef] p-5 sm:flex-row sm:items-center">
-              <div>
-                <h2 className="m-0 text-lg font-semibold">Invoices</h2>
-                <p className="mt-1 text-sm text-[#737587]">Download payment invoices for wallet top-ups and monthly charges.</p>
-              </div>
-              <span className="text-xs font-semibold text-[#737587]">{data?.invoices.length ?? 0} recent invoices</span>
-            </div>
-            {data?.invoices.length ? (
-              <div className="divide-y divide-[#e5e7ef]">
-                {data.invoices.map((invoice) => {
-                  const amount = (invoice.amountPaid || invoice.amountDue || 0) / 100;
-                  const isDownloading = busy === `invoice:${invoice._id}`;
-                  return (
-                    <div className="grid gap-3 p-4 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center sm:px-5" key={invoice._id}>
-                      <div className="min-w-0">
-                        <strong className="block truncate text-sm text-[#242535]">{invoice.invoiceNumber || `${brand.productName} payment invoice`}</strong>
-                        <span className="mt-1 block text-xs text-[#737587]">{invoice.description || dateTime(invoice.createdAt)}</span>
-                      </div>
-                      <div className="sm:text-right">
-                        <strong className="block text-sm text-[#242535]">{money(amount, invoice.currency.toUpperCase())}</strong>
-                        <span className="mt-1 block text-xs capitalize text-emerald-700">{invoice.status || "paid"} · {dateTime(invoice.createdAt)}</span>
-                      </div>
-                      <button
-                        className="rounded-xl border border-[#5b63ff]/30 bg-[#5b63ff]/10 px-4 py-2.5 text-sm font-semibold text-[#4d54db] hover:bg-[#5b63ff]/20 disabled:cursor-not-allowed disabled:opacity-50"
-                        type="button"
-                        onClick={() => void downloadInvoice(invoice._id, invoice.invoiceNumber)}
-                        disabled={Boolean(busy)}
-                      >
-                        {isDownloading ? "Downloading..." : "Download invoice"}
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="p-8 text-center text-sm text-[#737587]">Invoices will appear here after a successful payment.</div>
-            )}
-          </Card>
-
         </div>
       </section>
     </main>
   );
 }
-
-
-
