@@ -1473,6 +1473,7 @@ const systemDynamicVariables = [
 
 const toolMethodOptions: AgentTool["method"][] = ["GET", "POST", "PUT", "PATCH", "DELETE"];
 const toolParameterTypeOptions: AgentToolParameter["type"][] = ["string", "number", "boolean", "object"];
+const maxToolParameters = 50;
 const toolNamePattern = /^[a-zA-Z][a-zA-Z0-9_]{1,79}$/;
 const keyNamePattern = /^[a-zA-Z][a-zA-Z0-9_]{0,79}$/;
 const headerNamePattern = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
@@ -3940,8 +3941,8 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     const tool = selectedAgent.tools[index];
     if (!tool) return;
     const parameters = tool.parameters ?? [];
-    if (parameters.length >= 20) {
-      setNotice("A tool can have at most 20 parameters.");
+    if (parameters.length >= maxToolParameters) {
+      setNotice(`A tool can have at most ${maxToolParameters} parameters.`);
       return;
     }
     updateTool(index, { parameters: [...parameters, createEmptyToolParameter(nextParameterName(parameters))] });
@@ -3988,8 +3989,8 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
 
   function addDraftParameter() {
     const parameters = toolDraft.parameters ?? [];
-    if (parameters.length >= 20) {
-      setNotice("A tool can have at most 20 parameters.");
+    if (parameters.length >= maxToolParameters) {
+      setNotice(`A tool can have at most ${maxToolParameters} parameters.`);
       return;
     }
     setToolDraft((current) => ({
