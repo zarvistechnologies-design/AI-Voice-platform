@@ -1,12 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { RoomEvent, Track, setLogLevel, type Room } from "livekit-client";
+import { Room, RoomEvent, Track, setLogLevel } from "livekit-client";
 import { API_URL } from "@/lib/apiBase";
-import {
-  createVoiceRoom,
-  connectVoiceRoom,
-} from "@/lib/liveVoiceAudio";
 
 setLogLevel("silent");
 
@@ -133,18 +129,14 @@ export function IndiaVoiceExperience() {
   const [callStatus, setCallStatus] = useState("Select a language, then tap the microphone.");
   const [showAllLanguages, setShowAllLanguages] = useState(false);
   const roomRef = useRef<Room | null>(null);
-  const connectionAttemptRef = useRef<AbortController | null>(null);
   const audioElementsRef = useRef<HTMLMediaElement[]>([]);
   const active = languages.find((language) => language.code === activeCode) ?? languages[0];
   const inCall = callActive || connecting;
 
   const disconnect = useCallback((message = "Call ended. Tap the microphone to talk again.") => {
-    const attempt = connectionAttemptRef.current;
-    connectionAttemptRef.current = null;
     const room = roomRef.current;
     roomRef.current = null;
-    attempt?.abort();
-    void room?.disconnect().catch(() => undefined);
+    room?.disconnect();
     audioElementsRef.current.forEach((element) => element.remove());
     audioElementsRef.current = [];
     setCallActive(false);
@@ -162,26 +154,20 @@ export function IndiaVoiceExperience() {
   };
 
   const startCall = async () => {
-    if (connecting || roomRef.current) return;
+    if (connecting) return;
     setConnecting(true);
     setCallStatus(`Connecting your ${active.name} voice agent...`);
-    const room = createVoiceRoom();
-    const attempt = new AbortController();
-    connectionAttemptRef.current = attempt;
+    const room = new Room({ adaptiveStream: true, dynacast: true });
     roomRef.current = room;
 
     room.on(RoomEvent.TrackSubscribed, (track) => {
-      if (roomRef.current !== room) return;
       if (track.kind !== Track.Kind.Audio) return;
       const element = track.attach();
       element.autoplay = true;
-      element.setAttribute("playsinline", "true");
       element.style.display = "none";
       document.body.appendChild(element);
       audioElementsRef.current.push(element);
-      void element.play().catch(() => {
-        if (roomRef.current === room) setCallStatus("Sound was blocked. Allow audio and try again.");
-      });
+      void element.play().catch(() => setCallStatus("Sound was blocked. Allow audio and try again."));
       setCallStatus(`Connected in ${active.name}. Speak now.`);
     });
     room.on(RoomEvent.TrackUnsubscribed, (track) => {
@@ -191,53 +177,45 @@ export function IndiaVoiceExperience() {
       });
     });
     room.on(RoomEvent.ActiveSpeakersChanged, (speakers) => {
-      if (roomRef.current !== room) return;
       setAgentSpeaking(speakers.some((speaker) => speaker.identity !== room.localParticipant.identity));
     });
-    room.on(RoomEvent.ParticipantConnected, () => {
-      if (roomRef.current === room) setCallStatus(`Agent joined in ${active.name}. Speak now.`);
-    });
+    room.on(RoomEvent.ParticipantConnected, () => setCallStatus(`Agent joined in ${active.name}. Speak now.`));
     room.on(RoomEvent.Disconnected, () => {
       if (roomRef.current === room) disconnect();
     });
 
     try {
-      await connectVoiceRoom(
-        room,
-        async (signal) => {
-          const response = await fetch(`${API_URL}/api/widget/call-token`, {
-            method: "POST",
-            signal,
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              agentId: WEBSITE_AGENT_ID,
-              publicKey: WEBSITE_AGENT_PUBLIC_KEY,
-              parentOrigin: window.location.origin,
-              origin: window.location.origin,
-              metadata: {
-                SelectedLanguage: active.name,
-                SelectedLocale: active.locale,
-                Source: "homepage-language-demo",
-              },
-            }),
-          });
-          const body = await response.json().catch(() => null) as (WidgetToken & { message?: string }) | null;
-          if (!response.ok || !body?.participantToken) {
-            throw new Error(body?.message || "Could not start the voice session.");
-          }
-          return body;
-        },
-        attempt.signal,
-      );
-      if (roomRef.current !== room) return;
+      await room.startAudio();
+      const response = await fetch(`${API_URL}/api/widget/call-token`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          agentId: WEBSITE_AGENT_ID,
+          publicKey: WEBSITE_AGENT_PUBLIC_KEY,
+          parentOrigin: window.location.origin,
+          origin: window.location.origin,
+          metadata: {
+            SelectedLanguage: active.name,
+            SelectedLocale: active.locale,
+            Source: "homepage-language-demo",
+          },
+        }),
+      });
+      const token = await response.json().catch(() => null) as (WidgetToken & { message?: string }) | null;
+      if (!response.ok || !token?.participantToken) throw new Error(token?.message || "Could not start the voice session.");
+      await room.connect(token.serverUrl, token.participantToken);
+      await room.localParticipant.setMicrophoneEnabled(true, {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true,
+      });
       setCallActive(true);
       setCallStatus(room.remoteParticipants.size ? `Connected in ${active.name}. Speak now.` : "Connected. Waiting for the agent...");
     } catch (error) {
-      if (connectionAttemptRef.current !== attempt) return;
       const message = error instanceof Error ? error.message : "Could not start the voice session.";
       disconnect(message.toLowerCase().includes("permission") ? "Microphone permission is required. Allow access and try again." : message);
     } finally {
-      if (connectionAttemptRef.current === attempt) setConnecting(false);
+      setConnecting(false);
     }
   };
 

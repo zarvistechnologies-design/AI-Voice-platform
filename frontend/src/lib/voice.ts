@@ -950,7 +950,7 @@ export const voiceApi = {
     }
     return response.blob();
   },
-  webCallToken: (agentId: string, signal?: AbortSignal) =>
+  webCallToken: (agentId: string) =>
     request<{
       callId: string;
       roomName: string;
@@ -962,7 +962,6 @@ export const voiceApi = {
       "/web-call-token",
       {
         method: "POST",
-        signal,
         body: JSON.stringify({ agentId }),
       },
     ),
