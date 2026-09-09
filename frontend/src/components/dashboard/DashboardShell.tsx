@@ -2,41 +2,52 @@
 
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type ReactNode,
+} from "react";
 
 import { announceDashboardNavigation } from "@/components/dashboard/DashboardNavigationFeedback";
-import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
+import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
 import {
-    getServerSession,
-    getSession,
-    logoutSession,
-    subscribeToSession,
+  DashboardSidebar,
+  getDashboardSidebarInitialState,
+} from "@/components/dashboard/DashboardSidebar";
+import {
+  getServerSession,
+  getSession,
+  logoutSession,
+  subscribeToSession,
 } from "@/lib/auth";
 import {
-    publicVoiceMessage,
-    voiceApi,
-    type AgentBehavior,
-    type AgentBusinessHours,
-    type AgentCallSettings,
-    type AgentRuntimeSnapshot,
-    type AgentTool,
-    type AgentToolParameter,
-    type AgentWidget,
-    type BackendAgent,
-    type BusinessHoursDay,
-    type CallRecord,
-    type FirstMessageMode,
-    type KnowledgeDocument,
-    type ModelCatalog,
-    type ModelProvider,
-    type PipelineMode,
-    type PipelineProvider,
-    type PricingGuide,
-    type RealtimeProvider,
-    type SttProvider,
-    type VoiceLanguageOption,
-    type VoicePreviewRequest,
-    type VoiceProfile,
+  publicVoiceMessage,
+  voiceApi,
+  type AgentBehavior,
+  type AgentBusinessHours,
+  type AgentCallSettings,
+  type AgentRuntimeSnapshot,
+  type AgentTool,
+  type AgentToolParameter,
+  type AgentWidget,
+  type BackendAgent,
+  type BusinessHoursDay,
+  type CallRecord,
+  type FirstMessageMode,
+  type KnowledgeDocument,
+  type ModelCatalog,
+  type ModelProvider,
+  type PipelineMode,
+  type PipelineProvider,
+  type PricingGuide,
+  type RealtimeProvider,
+  type SttProvider,
+  type VoiceLanguageOption,
+  type VoicePreviewRequest,
+  type VoiceProfile,
 } from "@/lib/voice";
 
 type AgentStatus = "Live" | "Draft" | "Paused";
@@ -44,7 +55,10 @@ type AgentTab = "builder" | "behavior" | "tools" | "calls" | "widget";
 type StackConfig = "llm" | "stt" | "voice";
 
 const TestCallPanel = dynamic(
-  () => import("@/components/dashboard/TestCallPanel").then((module) => module.TestCallPanel),
+  () =>
+    import("@/components/dashboard/TestCallPanel").then(
+      (module) => module.TestCallPanel,
+    ),
   { ssr: false },
 );
 
@@ -77,7 +91,6 @@ type VoiceAgent = {
   callbackEmail: string;
   businessHoursEnabled: boolean;
   businessHours: AgentBusinessHours;
-  latency: string;
   calls: number;
   success: string;
   prompt: string;
@@ -132,7 +145,8 @@ const defaultBehavior: AgentBehavior = {
   transferPhone: "",
   transferMessage: "Please hold while I transfer your call.",
   timezone: "UTC",
-  voicemailMessage: "Sorry we missed you. Please leave a message after the tone.",
+  voicemailMessage:
+    "Sorry we missed you. Please leave a message after the tone.",
 };
 
 const defaultCallSettings: AgentCallSettings = {
@@ -149,7 +163,7 @@ const defaultWidget: AgentWidget = {
   theme: "auto",
   position: "bottom-right",
   buttonText: "Talk to us",
-  accentColor: "#5b63ff",
+  accentColor: "#737ccf",
 };
 
 const defaultBusinessHours: AgentBusinessHours = {
@@ -175,124 +189,508 @@ const businessDayLabels: Record<BusinessHoursDay["day"], string> = {
   sat: "Sat",
 };
 
-const agents: VoiceAgent[] = [{
-  id: "loading",
-  name: "Loading agent",
-  team: "Voice team",
-  status: "Draft",
-  phone: "Not assigned",
-  language: "English",
-  multilingualEnabled: false,
-  languageSwitchingEnabled: false,
-  supportedLanguages: ["English"],
-  voice: "alloy",
-  pipelineMode: "realtime",
-  realtimeProvider: "openai",
-  realtimeModel: "gpt-realtime-2.1",
-  llmProvider: "openai",
-  llmModel: "gpt-4.1-mini",
-  sttProvider: "openai",
-  sttModel: "gpt-4o-mini-transcribe",
-  ttsProvider: "openai",
-  ttsModel: "gpt-4o-mini-tts",
-  temperature: 0.35,
-  maxConcurrentCalls: 5,
-  voiceSpeed: 1,
-  voicePitch: 0,
-  interruptionSensitivity: "medium",
-  backgroundNoise: "none",
-  callbackEmail: "",
-  businessHoursEnabled: false,
-  businessHours: defaultBusinessHours,
-  latency: "No data",
-  calls: 0,
-  success: "-",
-  prompt: "",
-  firstMessage: "",
-  firstMessageMode: "assistant-speaks-first",
-  behavior: defaultBehavior,
-  callSettings: defaultCallSettings,
-  tools: [],
-  knowledgeDocuments: [],
-  knowledgeSourceCount: 0,
-  dynamicVariables: ["FromPhone", "ToPhone"],
-  prefetchWebhook: "",
-  endOfCallWebhook: "",
-  googleCalendar: { enabled: false, calendarId: "", calendarName: "", timezone: "Asia/Kolkata", appointmentDurationMinutes: 30 },
-  googleSheets: { enabled: false, spreadsheetId: "", spreadsheetName: "", sheetName: "Sheet1" },
-  widget: defaultWidget,
-  version: 1,
-}];
-
-const fallbackLanguageCatalog: VoiceLanguageOption[] = [
-  { value: "Multilingual", label: "Auto detect", code: "unknown", sarvamStt: true, sarvamTts: false },
-  { value: "English", label: "English (India)", code: "en-IN", sarvamStt: true, sarvamTts: true },
-  { value: "English US", label: "English (US)", code: "en-US", sarvamStt: false, sarvamTts: false },
-  { value: "English UK", label: "English (UK)", code: "en-GB", sarvamStt: false, sarvamTts: false },
-  { value: "English Australia", label: "English (Australia)", code: "en-AU", sarvamStt: false, sarvamTts: false },
-  { value: "Hindi", label: "Hindi", code: "hi-IN", sarvamStt: true, sarvamTts: true },
-  { value: "Bengali", label: "Bengali", code: "bn-IN", sarvamStt: true, sarvamTts: true },
-  { value: "Tamil", label: "Tamil", code: "ta-IN", sarvamStt: true, sarvamTts: true },
-  { value: "Telugu", label: "Telugu", code: "te-IN", sarvamStt: true, sarvamTts: true },
-  { value: "Kannada", label: "Kannada", code: "kn-IN", sarvamStt: true, sarvamTts: true },
-  { value: "Malayalam", label: "Malayalam", code: "ml-IN", sarvamStt: true, sarvamTts: true },
-  { value: "Marathi", label: "Marathi", code: "mr-IN", sarvamStt: true, sarvamTts: true },
-  { value: "Gujarati", label: "Gujarati", code: "gu-IN", sarvamStt: true, sarvamTts: true },
-  { value: "Punjabi", label: "Punjabi", code: "pa-IN", sarvamStt: true, sarvamTts: true },
-  { value: "Odia", label: "Odia", code: "od-IN", sarvamStt: true, sarvamTts: true },
-  { value: "Assamese", label: "Assamese", code: "as-IN", sarvamStt: true, sarvamTts: false },
-  { value: "Urdu", label: "Urdu", code: "ur-IN", sarvamStt: true, sarvamTts: false },
-  { value: "Nepali", label: "Nepali", code: "ne-IN", sarvamStt: true, sarvamTts: false },
-  { value: "Konkani", label: "Konkani", code: "kok-IN", sarvamStt: true, sarvamTts: false },
-  { value: "Kashmiri", label: "Kashmiri", code: "ks-IN", sarvamStt: true, sarvamTts: false },
-  { value: "Sindhi", label: "Sindhi", code: "sd-IN", sarvamStt: true, sarvamTts: false },
-  { value: "Sanskrit", label: "Sanskrit", code: "sa-IN", sarvamStt: true, sarvamTts: false },
-  { value: "Santali", label: "Santali", code: "sat-IN", sarvamStt: true, sarvamTts: false },
-  { value: "Manipuri", label: "Manipuri", code: "mni-IN", sarvamStt: true, sarvamTts: false },
-  { value: "Bodo", label: "Bodo", code: "brx-IN", sarvamStt: true, sarvamTts: false },
-  { value: "Maithili", label: "Maithili", code: "mai-IN", sarvamStt: true, sarvamTts: false },
-  { value: "Dogri", label: "Dogri", code: "doi-IN", sarvamStt: true, sarvamTts: false },
-  { value: "Spanish", label: "Spanish", code: "es-ES", sarvamStt: false, sarvamTts: false },
-  { value: "French", label: "French", code: "fr-FR", sarvamStt: false, sarvamTts: false },
-  { value: "German", label: "German", code: "de-DE", sarvamStt: false, sarvamTts: false },
-  { value: "Italian", label: "Italian", code: "it-IT", sarvamStt: false, sarvamTts: false },
-  { value: "Portuguese Brazil", label: "Portuguese (Brazil)", code: "pt-BR", sarvamStt: false, sarvamTts: false },
-  { value: "Portuguese Portugal", label: "Portuguese (Portugal)", code: "pt-PT", sarvamStt: false, sarvamTts: false },
-  { value: "Dutch", label: "Dutch", code: "nl-NL", sarvamStt: false, sarvamTts: false },
-  { value: "Arabic", label: "Arabic", code: "ar-SA", sarvamStt: false, sarvamTts: false },
-  { value: "Chinese Mandarin", label: "Chinese (Mandarin)", code: "zh-CN", sarvamStt: false, sarvamTts: false },
-  { value: "Japanese", label: "Japanese", code: "ja-JP", sarvamStt: false, sarvamTts: false },
-  { value: "Korean", label: "Korean", code: "ko-KR", sarvamStt: false, sarvamTts: false },
-  { value: "Russian", label: "Russian", code: "ru-RU", sarvamStt: false, sarvamTts: false },
-  { value: "Turkish", label: "Turkish", code: "tr-TR", sarvamStt: false, sarvamTts: false },
-  { value: "Indonesian", label: "Indonesian", code: "id-ID", sarvamStt: false, sarvamTts: false },
-  { value: "Malay", label: "Malay", code: "ms-MY", sarvamStt: false, sarvamTts: false },
-  { value: "Thai", label: "Thai", code: "th-TH", sarvamStt: false, sarvamTts: false },
-  { value: "Vietnamese", label: "Vietnamese", code: "vi-VN", sarvamStt: false, sarvamTts: false },
-  { value: "Filipino", label: "Filipino", code: "fil-PH", sarvamStt: false, sarvamTts: false },
-  { value: "Polish", label: "Polish", code: "pl-PL", sarvamStt: false, sarvamTts: false },
-  { value: "Ukrainian", label: "Ukrainian", code: "uk-UA", sarvamStt: false, sarvamTts: false },
-  { value: "Romanian", label: "Romanian", code: "ro-RO", sarvamStt: false, sarvamTts: false },
-  { value: "Greek", label: "Greek", code: "el-GR", sarvamStt: false, sarvamTts: false },
-  { value: "Hebrew", label: "Hebrew", code: "he-IL", sarvamStt: false, sarvamTts: false },
-  { value: "Swedish", label: "Swedish", code: "sv-SE", sarvamStt: false, sarvamTts: false },
-  { value: "Norwegian", label: "Norwegian", code: "nb-NO", sarvamStt: false, sarvamTts: false },
-  { value: "Danish", label: "Danish", code: "da-DK", sarvamStt: false, sarvamTts: false },
-  { value: "Finnish", label: "Finnish", code: "fi-FI", sarvamStt: false, sarvamTts: false },
-  { value: "Czech", label: "Czech", code: "cs-CZ", sarvamStt: false, sarvamTts: false },
-  { value: "Hungarian", label: "Hungarian", code: "hu-HU", sarvamStt: false, sarvamTts: false },
-  { value: "Swahili", label: "Swahili", code: "sw-KE", sarvamStt: false, sarvamTts: false },
+const agents: VoiceAgent[] = [
+  {
+    id: "loading",
+    name: "Loading agent",
+    team: "Voice team",
+    status: "Draft",
+    phone: "Not assigned",
+    language: "English",
+    multilingualEnabled: false,
+    languageSwitchingEnabled: false,
+    supportedLanguages: ["English"],
+    voice: "alloy",
+    pipelineMode: "realtime",
+    realtimeProvider: "openai",
+    realtimeModel: "gpt-realtime-2.1",
+    llmProvider: "openai",
+    llmModel: "gpt-4.1-mini",
+    sttProvider: "openai",
+    sttModel: "gpt-4o-mini-transcribe",
+    ttsProvider: "openai",
+    ttsModel: "gpt-4o-mini-tts",
+    temperature: 0.35,
+    maxConcurrentCalls: 5,
+    voiceSpeed: 1,
+    voicePitch: 0,
+    interruptionSensitivity: "medium",
+    backgroundNoise: "none",
+    callbackEmail: "",
+    businessHoursEnabled: false,
+    businessHours: defaultBusinessHours,
+    calls: 0,
+    success: "-",
+    prompt: "",
+    firstMessage: "",
+    firstMessageMode: "assistant-speaks-first",
+    behavior: defaultBehavior,
+    callSettings: defaultCallSettings,
+    tools: [],
+    knowledgeDocuments: [],
+    knowledgeSourceCount: 0,
+    dynamicVariables: ["FromPhone", "ToPhone"],
+    prefetchWebhook: "",
+    endOfCallWebhook: "",
+    googleCalendar: {
+      enabled: false,
+      calendarId: "",
+      calendarName: "",
+      timezone: "Asia/Kolkata",
+      appointmentDurationMinutes: 30,
+    },
+    googleSheets: {
+      enabled: false,
+      spreadsheetId: "",
+      spreadsheetName: "",
+      sheetName: "Sheet1",
+    },
+    widget: defaultWidget,
+    version: 1,
+  },
 ];
 
-const elevenLabsV25LanguageCodes = new Set(["en", "hi", "ta", "es", "fr", "pt", "ar", "zh"]);
-const elevenLabsV3LanguageCodes = new Set([
-  "en", "as", "bn", "gu", "hi", "kn", "ml", "mr", "ne", "pa", "sd", "ta", "te", "ur", "es", "fr",
-  "pt", "ar", "zh",
+const fallbackLanguageCatalog: VoiceLanguageOption[] = [
+  {
+    value: "Multilingual",
+    label: "Auto detect",
+    code: "unknown",
+    sarvamStt: true,
+    sarvamTts: false,
+  },
+  {
+    value: "English",
+    label: "English (India)",
+    code: "en-IN",
+    sarvamStt: true,
+    sarvamTts: true,
+  },
+  {
+    value: "English US",
+    label: "English (US)",
+    code: "en-US",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "English UK",
+    label: "English (UK)",
+    code: "en-GB",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "English Australia",
+    label: "English (Australia)",
+    code: "en-AU",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Hindi",
+    label: "Hindi",
+    code: "hi-IN",
+    sarvamStt: true,
+    sarvamTts: true,
+  },
+  {
+    value: "Bengali",
+    label: "Bengali",
+    code: "bn-IN",
+    sarvamStt: true,
+    sarvamTts: true,
+  },
+  {
+    value: "Tamil",
+    label: "Tamil",
+    code: "ta-IN",
+    sarvamStt: true,
+    sarvamTts: true,
+  },
+  {
+    value: "Telugu",
+    label: "Telugu",
+    code: "te-IN",
+    sarvamStt: true,
+    sarvamTts: true,
+  },
+  {
+    value: "Kannada",
+    label: "Kannada",
+    code: "kn-IN",
+    sarvamStt: true,
+    sarvamTts: true,
+  },
+  {
+    value: "Malayalam",
+    label: "Malayalam",
+    code: "ml-IN",
+    sarvamStt: true,
+    sarvamTts: true,
+  },
+  {
+    value: "Marathi",
+    label: "Marathi",
+    code: "mr-IN",
+    sarvamStt: true,
+    sarvamTts: true,
+  },
+  {
+    value: "Gujarati",
+    label: "Gujarati",
+    code: "gu-IN",
+    sarvamStt: true,
+    sarvamTts: true,
+  },
+  {
+    value: "Punjabi",
+    label: "Punjabi",
+    code: "pa-IN",
+    sarvamStt: true,
+    sarvamTts: true,
+  },
+  {
+    value: "Odia",
+    label: "Odia",
+    code: "od-IN",
+    sarvamStt: true,
+    sarvamTts: true,
+  },
+  {
+    value: "Assamese",
+    label: "Assamese",
+    code: "as-IN",
+    sarvamStt: true,
+    sarvamTts: false,
+  },
+  {
+    value: "Urdu",
+    label: "Urdu",
+    code: "ur-IN",
+    sarvamStt: true,
+    sarvamTts: false,
+  },
+  {
+    value: "Nepali",
+    label: "Nepali",
+    code: "ne-IN",
+    sarvamStt: true,
+    sarvamTts: false,
+  },
+  {
+    value: "Konkani",
+    label: "Konkani",
+    code: "kok-IN",
+    sarvamStt: true,
+    sarvamTts: false,
+  },
+  {
+    value: "Kashmiri",
+    label: "Kashmiri",
+    code: "ks-IN",
+    sarvamStt: true,
+    sarvamTts: false,
+  },
+  {
+    value: "Sindhi",
+    label: "Sindhi",
+    code: "sd-IN",
+    sarvamStt: true,
+    sarvamTts: false,
+  },
+  {
+    value: "Sanskrit",
+    label: "Sanskrit",
+    code: "sa-IN",
+    sarvamStt: true,
+    sarvamTts: false,
+  },
+  {
+    value: "Santali",
+    label: "Santali",
+    code: "sat-IN",
+    sarvamStt: true,
+    sarvamTts: false,
+  },
+  {
+    value: "Manipuri",
+    label: "Manipuri",
+    code: "mni-IN",
+    sarvamStt: true,
+    sarvamTts: false,
+  },
+  {
+    value: "Bodo",
+    label: "Bodo",
+    code: "brx-IN",
+    sarvamStt: true,
+    sarvamTts: false,
+  },
+  {
+    value: "Maithili",
+    label: "Maithili",
+    code: "mai-IN",
+    sarvamStt: true,
+    sarvamTts: false,
+  },
+  {
+    value: "Dogri",
+    label: "Dogri",
+    code: "doi-IN",
+    sarvamStt: true,
+    sarvamTts: false,
+  },
+  {
+    value: "Spanish",
+    label: "Spanish",
+    code: "es-ES",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "French",
+    label: "French",
+    code: "fr-FR",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "German",
+    label: "German",
+    code: "de-DE",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Italian",
+    label: "Italian",
+    code: "it-IT",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Portuguese Brazil",
+    label: "Portuguese (Brazil)",
+    code: "pt-BR",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Portuguese Portugal",
+    label: "Portuguese (Portugal)",
+    code: "pt-PT",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Dutch",
+    label: "Dutch",
+    code: "nl-NL",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Arabic",
+    label: "Arabic",
+    code: "ar-SA",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Chinese Mandarin",
+    label: "Chinese (Mandarin)",
+    code: "zh-CN",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Japanese",
+    label: "Japanese",
+    code: "ja-JP",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Korean",
+    label: "Korean",
+    code: "ko-KR",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Russian",
+    label: "Russian",
+    code: "ru-RU",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Turkish",
+    label: "Turkish",
+    code: "tr-TR",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Indonesian",
+    label: "Indonesian",
+    code: "id-ID",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Malay",
+    label: "Malay",
+    code: "ms-MY",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Thai",
+    label: "Thai",
+    code: "th-TH",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Vietnamese",
+    label: "Vietnamese",
+    code: "vi-VN",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Filipino",
+    label: "Filipino",
+    code: "fil-PH",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Polish",
+    label: "Polish",
+    code: "pl-PL",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Ukrainian",
+    label: "Ukrainian",
+    code: "uk-UA",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Romanian",
+    label: "Romanian",
+    code: "ro-RO",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Greek",
+    label: "Greek",
+    code: "el-GR",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Hebrew",
+    label: "Hebrew",
+    code: "he-IL",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Swedish",
+    label: "Swedish",
+    code: "sv-SE",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Norwegian",
+    label: "Norwegian",
+    code: "nb-NO",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Danish",
+    label: "Danish",
+    code: "da-DK",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Finnish",
+    label: "Finnish",
+    code: "fi-FI",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Czech",
+    label: "Czech",
+    code: "cs-CZ",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Hungarian",
+    label: "Hungarian",
+    code: "hu-HU",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+  {
+    value: "Swahili",
+    label: "Swahili",
+    code: "sw-KE",
+    sarvamStt: false,
+    sarvamTts: false,
+  },
+];
+
+const elevenLabsV25LanguageCodes = new Set([
+  "en",
+  "hi",
+  "ta",
+  "es",
+  "fr",
+  "pt",
+  "ar",
+  "zh",
 ]);
-const fallbackElevenLabsV25Languages = fallbackLanguageCatalog.filter((language) =>
-  elevenLabsV25LanguageCodes.has(language.code.split("-")[0]?.toLowerCase()));
-const fallbackElevenLabsV3Languages = fallbackLanguageCatalog.filter((language) =>
-  elevenLabsV3LanguageCodes.has(language.code.split("-")[0]?.toLowerCase()));
+const elevenLabsV3LanguageCodes = new Set([
+  "en",
+  "as",
+  "bn",
+  "gu",
+  "hi",
+  "kn",
+  "ml",
+  "mr",
+  "ne",
+  "pa",
+  "sd",
+  "ta",
+  "te",
+  "ur",
+  "es",
+  "fr",
+  "pt",
+  "ar",
+  "zh",
+]);
+const fallbackElevenLabsV25Languages = fallbackLanguageCatalog.filter(
+  (language) =>
+    elevenLabsV25LanguageCodes.has(language.code.split("-")[0]?.toLowerCase()),
+);
+const fallbackElevenLabsV3Languages = fallbackLanguageCatalog.filter(
+  (language) =>
+    elevenLabsV3LanguageCodes.has(language.code.split("-")[0]?.toLowerCase()),
+);
 const fallbackElevenLabsLanguagesByModel = {
   eleven_flash_v2_5: fallbackElevenLabsV25Languages,
   eleven_turbo_v2_5: fallbackElevenLabsV25Languages,
@@ -350,7 +748,10 @@ const fallbackSarvamV2Voices = [
   "hitesh",
 ];
 
-const fallbackSarvamVoices = [...fallbackSarvamV3Voices, ...fallbackSarvamV2Voices];
+const fallbackSarvamVoices = [
+  ...fallbackSarvamV3Voices,
+  ...fallbackSarvamV2Voices,
+];
 
 function fallbackSarvamVoiceProfile(
   value: string,
@@ -379,7 +780,9 @@ function fallbackSarvamVoiceProfile(
       ? {
           languageCodes,
           languageLabels: languageCodes.map(
-            (code) => fallbackLanguageCatalog.find((language) => language.code === code)?.label ?? code,
+            (code) =>
+              fallbackLanguageCatalog.find((language) => language.code === code)
+                ?.label ?? code,
           ),
         }
       : {}),
@@ -629,15 +1032,14 @@ const fallbackElevenLabsVoiceProfiles: VoiceProfile[] = [
 ];
 
 const defaultGeminiRealtimeModel = "gemini-3.1-flash-live-preview";
-const geminiRealtimeModels = [
-  defaultGeminiRealtimeModel,
-];
+const geminiRealtimeModels = [defaultGeminiRealtimeModel];
 const geminiRealtimeModelAliases: Record<string, string> = {
   "gemini-2.5-flash-native-audio-preview-12-2025": defaultGeminiRealtimeModel,
   "gemini-2.5-flash-native-audio-latest": defaultGeminiRealtimeModel,
   "gemini-2.5-flash-native-audio-preview-09-2025": defaultGeminiRealtimeModel,
   "gemini-2.5-flash-preview-native-audio-dialog": defaultGeminiRealtimeModel,
-  "gemini-2.5-flash-exp-native-audio-thinking-dialog": defaultGeminiRealtimeModel,
+  "gemini-2.5-flash-exp-native-audio-thinking-dialog":
+    defaultGeminiRealtimeModel,
   "gemini-live-2.5-flash-preview": defaultGeminiRealtimeModel,
   "gemini-live-2.5-flash-native-audio": defaultGeminiRealtimeModel,
   "gemini-2.0-flash-live-001": defaultGeminiRealtimeModel,
@@ -727,11 +1129,15 @@ const openaiRealtimeModels = ["gpt-realtime-2.1", "gpt-realtime-2.1-mini"];
 function normalizeRealtimeModel(provider: RealtimeProvider, model: string) {
   if (provider === "gemini") {
     const resolved = geminiRealtimeModelAliases[model] ?? model;
-    return geminiRealtimeModels.includes(resolved) ? resolved : defaultGeminiRealtimeModel;
+    return geminiRealtimeModels.includes(resolved)
+      ? resolved
+      : defaultGeminiRealtimeModel;
   }
   // OpenAI: resolve legacy aliases first, then validate against known models
   const resolved = openaiRealtimeModelAliases[model] ?? model;
-  return openaiRealtimeModels.includes(resolved) ? resolved : defaultOpenAIRealtimeModel;
+  return openaiRealtimeModels.includes(resolved)
+    ? resolved
+    : defaultOpenAIRealtimeModel;
 }
 
 function normalizeGeminiLlmModel(provider: PipelineProvider, model: string) {
@@ -744,7 +1150,10 @@ function normalizeGeminiTtsModel(provider: PipelineProvider, model: string) {
   return geminiTtsModels.includes(model) ? model : defaultGeminiTtsModel;
 }
 
-const fallbackSarvamRecommendedVoicesByLanguageCode: Record<string, readonly string[]> = {
+const fallbackSarvamRecommendedVoicesByLanguageCode: Record<
+  string,
+  readonly string[]
+> = {
   "en-IN": ["ratan", "ishita"],
   "hi-IN": ["shubh", "ashutosh", "priya", "suhani"],
   "te-IN": ["shubh", "ratan", "neha", "priya"],
@@ -766,7 +1175,9 @@ function voicesByLanguageFromRecommendations(
 
   for (const [code, recommendedVoices] of Object.entries(recommendations)) {
     const language = languages.find((item) => item.code === code);
-    const keys = [code, language?.value, language?.label].filter(Boolean) as string[];
+    const keys = [code, language?.value, language?.label].filter(
+      Boolean,
+    ) as string[];
     for (const key of keys) {
       voicesByLanguage.set(key, [...recommendedVoices]);
     }
@@ -784,7 +1195,9 @@ function voicesByLanguageFromProfiles(
   for (const profile of profiles) {
     for (const code of profile.languageCodes ?? []) {
       const language = languages.find((item) => item.code === code);
-      const keys = [code, language?.value, language?.label].filter(Boolean) as string[];
+      const keys = [code, language?.value, language?.label].filter(
+        Boolean,
+      ) as string[];
       for (const key of keys) {
         const voices = voicesByLanguage.get(key) ?? [];
         if (!voices.includes(profile.value)) voices.push(profile.value);
@@ -798,22 +1211,67 @@ function voicesByLanguageFromProfiles(
 
 const fallbackCatalog: ModelCatalog = {
   realtime: [
-    { provider: "openai", label: "OpenAI Realtime", configured: true, models: openaiRealtimeModels, voices: ["alloy", "ash", "ballad", "coral", "echo", "sage", "shimmer", "verse", "marin", "cedar"] },
-    { provider: "gemini", label: "Gemini Live", configured: true, models: geminiRealtimeModels, voices: ["Aoede"] },
+    {
+      provider: "openai",
+      label: "OpenAI Realtime",
+      configured: true,
+      models: openaiRealtimeModels,
+      voices: [
+        "alloy",
+        "ash",
+        "ballad",
+        "coral",
+        "echo",
+        "sage",
+        "shimmer",
+        "verse",
+        "marin",
+        "cedar",
+      ],
+    },
+    {
+      provider: "gemini",
+      label: "Gemini Live",
+      configured: true,
+      models: geminiRealtimeModels,
+      voices: ["Aoede"],
+    },
   ],
   llm: [
-    { provider: "openai", label: "OpenAI", configured: true, models: ["gpt-4.1-mini"] },
-    { provider: "gemini", label: "Gemini", configured: true, models: geminiLlmModels },
-    { provider: "sarvam", label: "Sarvam", configured: true, models: ["sarvam-30b"] },
+    {
+      provider: "openai",
+      label: "OpenAI",
+      configured: true,
+      models: ["gpt-4.1-mini"],
+    },
+    {
+      provider: "gemini",
+      label: "Gemini",
+      configured: true,
+      models: geminiLlmModels,
+    },
+    {
+      provider: "sarvam",
+      label: "Sarvam",
+      configured: true,
+      models: ["sarvam-30b"],
+    },
   ],
   stt: [
-    { provider: "openai", label: "OpenAI", configured: true, models: ["gpt-4o-mini-transcribe"] },
+    {
+      provider: "openai",
+      label: "OpenAI",
+      configured: true,
+      models: ["gpt-4o-mini-transcribe"],
+    },
     {
       provider: "sarvam",
       label: "Sarvam",
       configured: true,
       models: ["saaras:v3"],
-      languages: fallbackLanguageCatalog.filter((language) => language.sarvamStt),
+      languages: fallbackLanguageCatalog.filter(
+        (language) => language.sarvamStt,
+      ),
     },
     {
       provider: "elevenlabs",
@@ -831,8 +1289,20 @@ const fallbackCatalog: ModelCatalog = {
     },
   ],
   tts: [
-    { provider: "openai", label: "OpenAI", configured: true, models: ["gpt-4o-mini-tts"], voices: ["alloy"] },
-    { provider: "gemini", label: "Gemini", configured: true, models: geminiTtsModels, voices: ["Aoede"] },
+    {
+      provider: "openai",
+      label: "OpenAI",
+      configured: true,
+      models: ["gpt-4o-mini-tts"],
+      voices: ["alloy"],
+    },
+    {
+      provider: "gemini",
+      label: "Gemini",
+      configured: true,
+      models: geminiTtsModels,
+      voices: ["Aoede"],
+    },
     {
       provider: "sarvam",
       label: "Sarvam",
@@ -840,7 +1310,9 @@ const fallbackCatalog: ModelCatalog = {
       models: ["bulbul:v3"],
       voices: fallbackSarvamVoices,
       voiceProfiles: fallbackSarvamVoiceProfiles,
-      languages: fallbackLanguageCatalog.filter((language) => language.sarvamTts),
+      languages: fallbackLanguageCatalog.filter(
+        (language) => language.sarvamTts,
+      ),
       voicesByLanguage: voicesByLanguageFromRecommendations(
         fallbackSarvamRecommendedVoicesByLanguageCode,
         fallbackLanguageCatalog,
@@ -855,7 +1327,12 @@ const fallbackCatalog: ModelCatalog = {
       provider: "elevenlabs",
       label: "ElevenLabs",
       configured: true,
-      models: ["eleven_flash_v2_5", "eleven_turbo_v2_5", "eleven_multilingual_v2", "eleven_v3"],
+      models: [
+        "eleven_flash_v2_5",
+        "eleven_turbo_v2_5",
+        "eleven_multilingual_v2",
+        "eleven_v3",
+      ],
       voices: fallbackElevenLabsVoices,
       voiceProfiles: fallbackElevenLabsVoiceProfiles,
       languages: fallbackElevenLabsV3Languages,
@@ -869,18 +1346,26 @@ const fallbackCatalog: ModelCatalog = {
   ],
 };
 
-function enrichProvider(provider: ModelProvider, fallback?: ModelProvider): ModelProvider {
+function enrichProvider(
+  provider: ModelProvider,
+  fallback?: ModelProvider,
+): ModelProvider {
   if (!fallback) return provider;
   return {
     ...provider,
     voices: provider.voices?.length ? provider.voices : fallback.voices,
-    voiceProfiles: provider.voiceProfiles?.length ? provider.voiceProfiles : fallback.voiceProfiles,
+    voiceProfiles: provider.voiceProfiles?.length
+      ? provider.voiceProfiles
+      : fallback.voiceProfiles,
     voicesByModel: provider.voicesByModel ?? fallback.voicesByModel,
     voicesByLanguage: provider.voicesByLanguage ?? fallback.voicesByLanguage,
     languagesByModel: provider.languagesByModel ?? fallback.languagesByModel,
     showAllVoicesWithLanguageOrder:
-      provider.showAllVoicesWithLanguageOrder ?? fallback.showAllVoicesWithLanguageOrder,
-    languages: provider.languages?.length ? provider.languages : fallback.languages,
+      provider.showAllVoicesWithLanguageOrder ??
+      fallback.showAllVoicesWithLanguageOrder,
+    languages: provider.languages?.length
+      ? provider.languages
+      : fallback.languages,
   };
 }
 
@@ -889,7 +1374,9 @@ function enrichModelCatalog(catalog: ModelCatalog): ModelCatalog {
     catalog[layer].map((provider) =>
       enrichProvider(
         provider,
-        fallbackCatalog[layer].find((fallback) => fallback.provider === provider.provider),
+        fallbackCatalog[layer].find(
+          (fallback) => fallback.provider === provider.provider,
+        ),
       ),
     );
 
@@ -901,8 +1388,15 @@ function enrichModelCatalog(catalog: ModelCatalog): ModelCatalog {
   };
 }
 
-function getProvider(catalog: ModelCatalog, layer: keyof ModelCatalog, provider: string) {
-  return catalog[layer].find((item) => item.provider === provider) ?? catalog[layer][0];
+function getProvider(
+  catalog: ModelCatalog,
+  layer: keyof ModelCatalog,
+  provider: string,
+) {
+  return (
+    catalog[layer].find((item) => item.provider === provider) ??
+    catalog[layer][0]
+  );
 }
 
 function providerLanguagesForModel(provider: ModelProvider, model: string) {
@@ -917,9 +1411,14 @@ function modelSupportsLanguage(
 ) {
   const supported = providerLanguagesForModel(provider, model);
   if (!supported.length || !language) return true;
-  const keys = new Set(languageKeys(language, languageCatalog).map((key) => key.toLowerCase()));
+  const keys = new Set(
+    languageKeys(language, languageCatalog).map((key) => key.toLowerCase()),
+  );
   return supported.some((option) =>
-    [option.value, option.label, option.code].some((candidate) => keys.has(candidate.toLowerCase())));
+    [option.value, option.label, option.code].some((candidate) =>
+      keys.has(candidate.toLowerCase()),
+    ),
+  );
 }
 
 function modelForLanguage(
@@ -927,16 +1426,30 @@ function modelForLanguage(
   language: string,
   languageCatalog: readonly VoiceLanguageOption[],
 ) {
-  return provider.models.find((model) => modelSupportsLanguage(provider, model, language, languageCatalog))
-    ?? provider.models[0];
+  return (
+    provider.models.find((model) =>
+      modelSupportsLanguage(provider, model, language, languageCatalog),
+    ) ?? provider.models[0]
+  );
 }
 
-function languageKeys(language: string, languageCatalog: readonly VoiceLanguageOption[]) {
+function languageKeys(
+  language: string,
+  languageCatalog: readonly VoiceLanguageOption[],
+) {
   const normalized = language.trim().toLowerCase();
   const matched = languageCatalog.find((item) =>
-    [item.value, item.label, item.code].some((candidate) => candidate.toLowerCase() === normalized),
+    [item.value, item.label, item.code].some(
+      (candidate) => candidate.toLowerCase() === normalized,
+    ),
   );
-  return [...new Set([language, matched?.value, matched?.label, matched?.code].filter(Boolean) as string[])];
+  return [
+    ...new Set(
+      [language, matched?.value, matched?.label, matched?.code].filter(
+        Boolean,
+      ) as string[],
+    ),
+  ];
 }
 
 function getVoices(
@@ -959,7 +1472,10 @@ function getVoices(
     const allowed = new Set(languageVoices);
     const filtered = modelVoices.filter((voice) => allowed.has(voice));
     if (item.showAllVoicesWithLanguageOrder && filtered.length) {
-      return [...filtered, ...modelVoices.filter((voice) => !allowed.has(voice))];
+      return [
+        ...filtered,
+        ...modelVoices.filter((voice) => !allowed.has(voice)),
+      ];
     }
     return filtered.length ? filtered : [...modelVoices];
   }
@@ -977,7 +1493,14 @@ function getDisplayedVoices(
 ) {
   const item = getProvider(catalog, layer, provider);
   if (!item.showAllVoicesWithLanguageOrder) {
-    return getVoices(catalog, layer, provider, model, language, languageCatalog);
+    return getVoices(
+      catalog,
+      layer,
+      provider,
+      model,
+      language,
+      languageCatalog,
+    );
   }
 
   const allVoices = item.voices?.length
@@ -1006,12 +1529,15 @@ function getLanguageSpecificVoices(
 ) {
   if (!language) return [];
   const item = getProvider(catalog, layer, provider);
-  return languageKeys(language, languageCatalog)
-    .map((key) => item.voicesByLanguage?.[key])
-    .find((voices) => voices && voices.length) ?? [];
+  return (
+    languageKeys(language, languageCatalog)
+      .map((key) => item.voicesByLanguage?.[key])
+      .find((voices) => voices && voices.length) ?? []
+  );
 }
 
-type SelectOption = string | { value: string; label: string };
+type SelectOption =
+  string | { value: string; label: string; disabled?: boolean };
 
 function getSelectOptionValue(option: SelectOption) {
   return typeof option === "string" ? option : option.value;
@@ -1021,8 +1547,14 @@ function getSelectOptionLabel(option: SelectOption) {
   return typeof option === "string" ? option : option.label;
 }
 
+function getSelectOptionDisabled(option: SelectOption) {
+  return typeof option === "string" ? false : Boolean(option.disabled);
+}
+
 function getOptionLabel(options: SelectOption[], value: string) {
-  return getSelectOptionLabel(options.find((option) => getSelectOptionValue(option) === value) ?? value);
+  return getSelectOptionLabel(
+    options.find((option) => getSelectOptionValue(option) === value) ?? value,
+  );
 }
 
 function splitVoiceOptionLabel(label: string) {
@@ -1098,14 +1630,22 @@ const voiceLabels: Record<string, string> = {
   TxGEqnHWrfWFTfGW9XjX: "Josh - ElevenLabs",
 };
 
-function findLanguageOption(language: string, languageCatalog: readonly VoiceLanguageOption[]) {
+function findLanguageOption(
+  language: string,
+  languageCatalog: readonly VoiceLanguageOption[],
+) {
   const normalized = language.trim().toLowerCase();
   return languageCatalog.find((item) =>
-    [item.value, item.label, item.code].some((candidate) => candidate.toLowerCase() === normalized),
+    [item.value, item.label, item.code].some(
+      (candidate) => candidate.toLowerCase() === normalized,
+    ),
   );
 }
 
-function languageDisplayName(language: string, languageCatalog: readonly VoiceLanguageOption[]) {
+function languageDisplayName(
+  language: string,
+  languageCatalog: readonly VoiceLanguageOption[],
+) {
   const matched = findLanguageOption(language, languageCatalog);
   return matched?.label ?? language;
 }
@@ -1116,7 +1656,9 @@ function voiceRecommendedForLanguage(
   languageCatalog: readonly VoiceLanguageOption[],
 ) {
   if (!profile || !language) return false;
-  const keys = new Set(languageKeys(language, languageCatalog).map((key) => key.toLowerCase()));
+  const keys = new Set(
+    languageKeys(language, languageCatalog).map((key) => key.toLowerCase()),
+  );
   return [
     ...(profile.languageCodes ?? []),
     ...(profile.languageLabels ?? []),
@@ -1135,7 +1677,10 @@ function compactLanguageTag(
   languageCatalog: readonly VoiceLanguageOption[],
 ) {
   if (!profile) return "";
-  if (language && voiceRecommendedForLanguage(profile, language, languageCatalog)) {
+  if (
+    language &&
+    voiceRecommendedForLanguage(profile, language, languageCatalog)
+  ) {
     return languageDisplayName(language, languageCatalog);
   }
   const labels = profile.languageLabels?.filter(Boolean) ?? [];
@@ -1150,18 +1695,27 @@ function voiceSelectOptions(
   languageCatalog: readonly VoiceLanguageOption[] = [],
   languageSpecificVoices: readonly string[] = [],
 ): SelectOption[] {
-  const profilesByValue = new Map(profiles.map((profile) => [profile.value, profile]));
+  const profilesByValue = new Map(
+    profiles.map((profile) => [profile.value, profile]),
+  );
   const specific = new Set(languageSpecificVoices);
   return voices.map((voice) => ({
     value: voice,
     label: (() => {
       const profile = profilesByValue.get(voice);
       const fallbackLabel = voiceLabels[voice];
-      const name = shortVoiceName(profile?.label ?? fallbackLabel ?? voice, voice);
+      const name = shortVoiceName(
+        profile?.label ?? fallbackLabel ?? voice,
+        voice,
+      );
       if (specific.has(voice) && language) {
         return `${name} - Best for ${languageDisplayName(language, languageCatalog)}`;
       }
-      const languageTag = compactLanguageTag(profile, language, languageCatalog);
+      const languageTag = compactLanguageTag(
+        profile,
+        language,
+        languageCatalog,
+      );
       if (languageTag) return `${name} - ${languageTag}`;
       return fallbackLabel ? name : voice;
     })(),
@@ -1173,15 +1727,25 @@ function coerceLanguage(
   options: readonly VoiceLanguageOption[],
   fallback = "English",
 ) {
-  return options.some((option) => option.value === language) ? language : options[0]?.value ?? fallback;
+  return options.some((option) => option.value === language)
+    ? language
+    : (options[0]?.value ?? fallback);
 }
 
-function coerceVoice(voice: string, options: readonly string[], fallback = "alloy") {
-  return options.includes(voice) ? voice : options[0] ?? fallback;
+function coerceVoice(
+  voice: string,
+  options: readonly string[],
+  fallback = "alloy",
+) {
+  return options.includes(voice) ? voice : (options[0] ?? fallback);
 }
 
 function supportsVoicePitch(agent: VoiceAgent) {
-  return agent.pipelineMode === "pipeline" && agent.ttsProvider === "sarvam" && agent.ttsModel === "bulbul:v2";
+  return (
+    agent.pipelineMode === "pipeline" &&
+    agent.ttsProvider === "sarvam" &&
+    agent.ttsModel === "bulbul:v2"
+  );
 }
 
 const deepgramMultilingualSafeModels = new Set([
@@ -1199,12 +1763,99 @@ const deepgramMultilingualSafeModels = new Set([
   "whisper-large",
 ]);
 
-const deepgramFluxMultiLanguages = new Set(["en", "es", "fr", "de", "hi", "ru", "pt", "ja", "it", "nl"]);
-const deepgramNova3Languages = new Set(["en", "es", "fr", "de", "it", "ja", "ko", "nl", "pt", "ru", "tr", "zh", "hi", "bn", "gu", "kn", "mr", "ta", "te", "ur", "id"]);
-const deepgramNova2GeneralLanguages = new Set(["en", "es", "fr", "de", "it", "ja", "ko", "nl", "pt", "ru", "tr", "zh", "hi", "id", "th", "pl", "uk", "sv", "no", "da"]);
-const deepgramEnhancedGeneralLanguages = new Set(["en", "es", "fr", "de", "it", "ja", "ko", "nl", "pt", "ru", "zh", "hi", "ta"]);
-const deepgramBaseLanguages = new Set(["en", "es", "fr", "de", "it", "ja", "ko", "nl", "pt", "ru", "zh", "hi"]);
-const deepgramWhisperModels = new Set(["whisper-tiny", "whisper-base", "whisper-small", "whisper-medium", "whisper-large"]);
+const deepgramFluxMultiLanguages = new Set([
+  "en",
+  "es",
+  "fr",
+  "de",
+  "hi",
+  "ru",
+  "pt",
+  "ja",
+  "it",
+  "nl",
+]);
+const deepgramNova3Languages = new Set([
+  "en",
+  "es",
+  "fr",
+  "de",
+  "it",
+  "ja",
+  "ko",
+  "nl",
+  "pt",
+  "ru",
+  "tr",
+  "zh",
+  "hi",
+  "bn",
+  "gu",
+  "kn",
+  "mr",
+  "ta",
+  "te",
+  "ur",
+  "id",
+]);
+const deepgramNova2GeneralLanguages = new Set([
+  "en",
+  "es",
+  "fr",
+  "de",
+  "it",
+  "ja",
+  "ko",
+  "nl",
+  "pt",
+  "ru",
+  "tr",
+  "zh",
+  "hi",
+  "id",
+  "th",
+  "pl",
+  "uk",
+  "sv",
+  "no",
+  "da",
+]);
+const deepgramEnhancedGeneralLanguages = new Set([
+  "en",
+  "es",
+  "fr",
+  "de",
+  "it",
+  "ja",
+  "ko",
+  "nl",
+  "pt",
+  "ru",
+  "zh",
+  "hi",
+  "ta",
+]);
+const deepgramBaseLanguages = new Set([
+  "en",
+  "es",
+  "fr",
+  "de",
+  "it",
+  "ja",
+  "ko",
+  "nl",
+  "pt",
+  "ru",
+  "zh",
+  "hi",
+]);
+const deepgramWhisperModels = new Set([
+  "whisper-tiny",
+  "whisper-base",
+  "whisper-small",
+  "whisper-medium",
+  "whisper-large",
+]);
 const deepgramEnglishOnlyModels = new Set([
   "flux-general-en",
   "nova-2-meeting",
@@ -1229,7 +1880,10 @@ const deepgramEnglishOnlyModels = new Set([
   "video",
 ]);
 
-function deepgramLanguageCodeForUi(language: string, languageCatalog: readonly VoiceLanguageOption[]) {
+function deepgramLanguageCodeForUi(
+  language: string,
+  languageCatalog: readonly VoiceLanguageOption[],
+) {
   const matched = findLanguageOption(language, languageCatalog);
   const code = matched?.code ?? language;
   const value = matched?.value ?? language;
@@ -1281,15 +1935,23 @@ function deepgramModelsForLanguage(
   const code = deepgramLanguageCodeForUi(language, languageCatalog);
   const baseCode = code.split("-")[0];
   if (code === "multi") {
-    return models.filter((model) => model === "flux-general-multi" || deepgramMultilingualSafeModels.has(model));
+    return models.filter(
+      (model) =>
+        model === "flux-general-multi" ||
+        deepgramMultilingualSafeModels.has(model),
+    );
   }
   if (baseCode === "en") return [...models];
 
   return models.filter((model) => {
-    if (model === "flux-general-multi") return deepgramFluxMultiLanguages.has(baseCode);
-    if (model === "nova-3" || model === "nova-3-general") return deepgramNova3Languages.has(baseCode);
-    if (model === "nova-2-general" || model === "nova-general") return deepgramNova2GeneralLanguages.has(baseCode);
-    if (model === "enhanced-general") return deepgramEnhancedGeneralLanguages.has(baseCode);
+    if (model === "flux-general-multi")
+      return deepgramFluxMultiLanguages.has(baseCode);
+    if (model === "nova-3" || model === "nova-3-general")
+      return deepgramNova3Languages.has(baseCode);
+    if (model === "nova-2-general" || model === "nova-general")
+      return deepgramNova2GeneralLanguages.has(baseCode);
+    if (model === "enhanced-general")
+      return deepgramEnhancedGeneralLanguages.has(baseCode);
     if (model === "base") return deepgramBaseLanguages.has(baseCode);
     if (deepgramWhisperModels.has(model)) return true;
     return !deepgramEnglishOnlyModels.has(model);
@@ -1303,7 +1965,11 @@ function normalizeSttModelForLanguage(
   languageCatalog: readonly VoiceLanguageOption[],
 ) {
   if (provider !== "deepgram") return model;
-  const models = deepgramModelsForLanguage(fallbackDeepgramSttModels, language, languageCatalog);
+  const models = deepgramModelsForLanguage(
+    fallbackDeepgramSttModels,
+    language,
+    languageCatalog,
+  );
   if (models.includes(model)) return model;
   return models[0] ?? "nova-3";
 }
@@ -1317,7 +1983,11 @@ function getLanguageOptions(
   if (agent.pipelineMode === "pipeline") {
     const ttsProvider = getProvider(catalog, "tts", agent.ttsProvider);
     const ttsLanguages = providerLanguagesForModel(ttsProvider, agent.ttsModel);
-    const sttLanguages = getProvider(catalog, "stt", agent.sttProvider).languages;
+    const sttLanguages = getProvider(
+      catalog,
+      "stt",
+      agent.sttProvider,
+    ).languages;
     if (ttsLanguages?.length) {
       options = [...ttsLanguages];
     } else if (sttLanguages?.length) {
@@ -1327,7 +1997,10 @@ function getLanguageOptions(
 
   const mapped = options.map((language) => ({
     value: language.value,
-    label: language.code === "unknown" ? language.label : `${language.label} (${language.code})`,
+    label:
+      language.code === "unknown"
+        ? language.label
+        : `${language.label} (${language.code})`,
   }));
   return mapped.some((option) => option.value === agent.language)
     ? mapped
@@ -1342,31 +2015,54 @@ const tabs: { id: AgentTab; label: string }[] = [
   { id: "widget", label: "Widget" },
 ];
 
-function dispatchLabel(state: AgentRuntimeSnapshot["dispatch"]["state"] | undefined) {
+const tabPresentation: Record<AgentTab, { title: string; detail: string }> = {
+  builder: {
+    title: "Conversation designer",
+    detail: "Build the intelligence and experience behind every call.",
+  },
+  behavior: {
+    title: "Behavior studio",
+    detail: "Shape turn-taking, safeguards, handoff, and availability.",
+  },
+  tools: {
+    title: "Capability hub",
+    detail: "Connect native integrations, webhooks, and reusable variables.",
+  },
+  calls: {
+    title: "Call operations",
+    detail: "Control telephony readiness, routing, safeguards, and activity.",
+  },
+  widget: {
+    title: "Web deployment",
+    detail: "Configure, preview, and install the public voice experience.",
+  },
+};
+
+function dispatchLabel(
+  state: AgentRuntimeSnapshot["dispatch"]["state"] | undefined,
+) {
   if (!state) return "Connecting";
   return state.charAt(0).toUpperCase() + state.slice(1);
 }
 
-function dispatchTone(state: AgentRuntimeSnapshot["dispatch"]["state"] | undefined) {
+function dispatchTone(
+  state: AgentRuntimeSnapshot["dispatch"]["state"] | undefined,
+) {
   if (state === "running") return "text-[#059669]";
   if (state === "failed" || state === "missing") return "text-[#dc2626]";
   if (state === "pending" || state === "waiting") return "text-[#d97706]";
   return "text-[#64748b]";
 }
 
-function dispatchBadge(state: AgentRuntimeSnapshot["dispatch"]["state"] | undefined) {
+function dispatchBadge(
+  state: AgentRuntimeSnapshot["dispatch"]["state"] | undefined,
+) {
   if (state === "running") return "bg-[#dcfce7] text-[#047857]";
-  if (state === "failed" || state === "missing") return "bg-[#fee2e2] text-[#b91c1c]";
-  if (state === "pending" || state === "waiting") return "bg-[#fef3c7] text-[#b45309]";
+  if (state === "failed" || state === "missing")
+    return "bg-[#fee2e2] text-[#b91c1c]";
+  if (state === "pending" || state === "waiting")
+    return "bg-[#fef3c7] text-[#b45309]";
   return "bg-[#e2e8f0] text-[#475569]";
-}
-
-function formatVoiceRegion(region: string) {
-  return publicVoiceMessage(region, "Active region")
-    .split(/[-_\s]+/)
-    .filter(Boolean)
-    .map((part) => part.length <= 3 ? part.toUpperCase() : `${part[0].toUpperCase()}${part.slice(1)}`)
-    .join(" ");
 }
 
 const flowSettings = [
@@ -1419,15 +2115,6 @@ const voicemailActionOptions: SelectOption[] = [
   { value: "hangup", label: "Hang up" },
 ];
 
-const deployChecklist = [
-  "Prompt and first message ready",
-  "Voice, STT, and LLM selected",
-  "Tools have params and webhook URLs",
-  "Knowledge files attached",
-  "Phone route assigned",
-  "Privacy and recording reviewed",
-];
-
 const commonTimezoneOptions: SelectOption[] = [
   { value: "UTC", label: "UTC" },
   { value: "Asia/Kolkata", label: "IST - India (Asia/Kolkata)" },
@@ -1471,9 +2158,19 @@ const systemDynamicVariables = [
   "current_calendar",
 ];
 
-const toolMethodOptions: AgentTool["method"][] = ["GET", "POST", "PUT", "PATCH", "DELETE"];
-const toolParameterTypeOptions: AgentToolParameter["type"][] = ["string", "number", "boolean", "object"];
-const maxToolParameters = 50;
+const toolMethodOptions: AgentTool["method"][] = [
+  "GET",
+  "POST",
+  "PUT",
+  "PATCH",
+  "DELETE",
+];
+const toolParameterTypeOptions: AgentToolParameter["type"][] = [
+  "string",
+  "number",
+  "boolean",
+  "object",
+];
 const toolNamePattern = /^[a-zA-Z][a-zA-Z0-9_]{1,79}$/;
 const keyNamePattern = /^[a-zA-Z][a-zA-Z0-9_]{0,79}$/;
 const headerNamePattern = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
@@ -1518,11 +2215,16 @@ function headersToDrafts(headers: Record<string, string> = {}): HeaderDraft[] {
   return Object.entries(headers).map(([name, value]) => ({ name, value }));
 }
 
-function draftsToHeaders(drafts: readonly HeaderDraft[], keepIncomplete = false) {
+function draftsToHeaders(
+  drafts: readonly HeaderDraft[],
+  keepIncomplete = false,
+) {
   return Object.fromEntries(
     drafts
       .map((header) => [header.name.trim(), header.value.trim()] as const)
-      .filter(([name, value]) => keepIncomplete ? name || value : name && value),
+      .filter(([name, value]) =>
+        keepIncomplete ? name || value : name && value,
+      ),
   );
 }
 
@@ -1562,34 +2264,50 @@ function normalizeTool(tool: AgentTool): AgentTool {
       ...parameter,
       name: parameter.name.trim(),
       description: parameter.description.trim(),
-      type: toolParameterTypeOptions.includes(parameter.type) ? parameter.type : "string",
+      type: toolParameterTypeOptions.includes(parameter.type)
+        ? parameter.type
+        : "string",
       required: parameter.required === true,
     })),
     runAfterCall: tool.runAfterCall === true,
     executeAfterMessage: tool.executeAfterMessage === true,
     excludeSessionId: tool.excludeSessionId !== false,
-    messages: (tool.messages ?? []).map((message) => message.trim()).filter(Boolean).slice(0, 5),
+    messages: (tool.messages ?? [])
+      .map((message) => message.trim())
+      .filter(Boolean)
+      .slice(0, 5),
   };
 }
 
 function createWidgetPublicKey() {
-  const random = typeof crypto !== "undefined" && "randomUUID" in crypto
-    ? crypto.randomUUID().replace(/-/g, "")
-    : Array.from({ length: 32 }, () => Math.floor(Math.random() * 16).toString(16)).join("");
+  const random =
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID().replace(/-/g, "")
+      : Array.from({ length: 32 }, () =>
+          Math.floor(Math.random() * 16).toString(16),
+        ).join("");
   return `wpk_${random}`;
 }
 
 function getTimezoneOptions(timezone: string): SelectOption[] {
   const selected = timezone || "UTC";
-  return commonTimezoneOptions.some((option) => getSelectOptionValue(option) === selected)
+  return commonTimezoneOptions.some(
+    (option) => getSelectOptionValue(option) === selected,
+  )
     ? commonTimezoneOptions
-    : [{ value: selected, label: `Custom (${selected})` }, ...commonTimezoneOptions];
+    : [
+        { value: selected, label: `Custom (${selected})` },
+        ...commonTimezoneOptions,
+      ];
 }
 
 function noticeToast(value: string) {
   const normalized = value.toLowerCase();
-  const isError = /could not|failed|invalid|must|cannot|can't|expired|error/.test(normalized);
-  const isWarning = /warning|paused|missing|needs|requires|wait/.test(normalized);
+  const isError =
+    /could not|failed|invalid|must|cannot|can't|expired|error/.test(normalized);
+  const isWarning = /warning|paused|missing|needs|requires|wait/.test(
+    normalized,
+  );
   const isBusy = /saving|syncing|testing|loading/.test(normalized);
   if (isError) {
     return {
@@ -1612,10 +2330,10 @@ function noticeToast(value: string) {
   if (isBusy) {
     return {
       title: "Working",
-      dot: "bg-[#5b63ff]",
-      panel: "border-[#e1e2ef] bg-[#f0efff] text-[#4b52df]",
+      dot: "bg-[#737ccf]",
+      panel: "border-[#c9ccef] bg-[#eff0fb] text-[#0e7490]",
       body: "text-[#155e75]",
-      button: "text-[#4b52df] hover:bg-[#e7e7ff]",
+      button: "text-[#0e7490] hover:bg-[#cffafe]",
     };
   }
   return {
@@ -1808,12 +2526,11 @@ function getStatusTone(status: AgentStatus) {
   };
 }
 
-function formatLatency(metrics: BackendAgent["latencyMetrics"]) {
-  const latestMs = metrics?.latestMs;
-  if (typeof latestMs !== "number" || !Number.isFinite(latestMs)) {
-    return "No data";
-  }
-  return `${Math.round(latestMs)}ms`;
+function cleanRuntimeLabel(value: string) {
+  return value
+    .replaceAll("\u00e2\u2020\u2019", "→")
+    .replaceAll("\u00c3\u00a2\u00c2\u2020\u00c2\u2019", "→")
+    .replaceAll(" -> ", " → ");
 }
 
 function ToggleRow({
@@ -1821,18 +2538,26 @@ function ToggleRow({
   detail,
   enabled,
   disabled = false,
+  compact = false,
   onChange,
 }: {
   title: string;
   detail: string;
   enabled: boolean;
   disabled?: boolean;
+  compact?: boolean;
   onChange?: (enabled: boolean) => void;
 }) {
   return (
-    <label className={`group grid grid-cols-[minmax(0,1fr)_44px] items-start gap-3 rounded-lg border border-[#e5e7eb] bg-white p-3 transition ${
-      disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer hover:border-[#e1e2ef] hover:bg-[#f8fbff]"
-    }`}>
+    <label
+      className={`group grid grid-cols-[minmax(0,1fr)_44px] items-start gap-3 transition ${compact ? "py-3" : "rounded-lg border border-[#e5e7eb] bg-white p-3"} ${
+        disabled
+          ? "cursor-not-allowed opacity-60"
+          : compact
+            ? "cursor-pointer"
+            : "cursor-pointer hover:border-[#c9ccef] hover:bg-[#f8fbff]"
+      }`}
+    >
       <span className="min-w-0">
         <span className="app-strong block">{title}</span>
         <span className="app-caption block">{detail}</span>
@@ -1842,12 +2567,14 @@ function ToggleRow({
         type="checkbox"
         checked={enabled}
         disabled={disabled}
-        onChange={onChange ? (event) => onChange(event.target.checked) : undefined}
+        onChange={
+          onChange ? (event) => onChange(event.target.checked) : undefined
+        }
       />
       <span
         aria-hidden="true"
-        className={`relative mt-0.5 h-6 w-11 rounded-full transition peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[#4d54db] ${
-          enabled ? "bg-[#5b63ff]" : "bg-[#cbd5e1]"
+        className={`relative mt-0.5 h-6 w-11 rounded-full transition peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[#5963b8] ${
+          enabled ? "bg-[#737ccf]" : "bg-[#cbd5e1]"
         }`}
       >
         <span
@@ -1872,17 +2599,17 @@ function BehaviorPanel({
   children: ReactNode;
 }) {
   return (
-    <section className="overflow-hidden rounded-xl border border-[#dfe3ea] bg-white">
-      <div className="flex items-start justify-between gap-3 border-b border-[#edf0f5] bg-[#f8fafc] px-4 py-3">
-        <div className="min-w-0">
+    <section className="overflow-hidden rounded-xl border border-[#e1e3ed] bg-white">
+      <div className="flex items-center gap-3 border-b border-[#edf0f5] bg-white px-4 py-3.5">
+        <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-[#eff0fb] text-[#5963b8]">
+          <Icon icon={icon} />
+        </span>
+        <div className="min-w-0 flex-1">
           <h3 className="app-section-title m-0">{title}</h3>
           <span className="app-caption">{detail}</span>
         </div>
-        <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-white text-[#5b63ff] shadow-sm">
-          <Icon icon={icon} />
-        </span>
       </div>
-      <div className="grid gap-4 p-4">{children}</div>
+      <div className="grid gap-4 bg-[#fbfbfe] p-4">{children}</div>
     </section>
   );
 }
@@ -1897,16 +2624,18 @@ function BehaviorMetric({
   tone: "sky" | "green" | "amber" | "slate";
 }) {
   const toneClass = {
-    sky: "border-[#e1e2ef] bg-[#f0efff] text-[#4b52df]",
-    green: "border-[#bbf7d0] bg-[#ecfdf5] text-[#047857]",
-    amber: "border-[#fde68a] bg-[#fffbeb] text-[#b45309]",
-    slate: "border-[#e2e8f0] bg-[#f8fafc] text-[#334155]",
+    sky: "text-[#5963b8]",
+    green: "text-[#047857]",
+    amber: "text-[#b45309]",
+    slate: "text-[#334155]",
   }[tone];
 
   return (
-    <div className={`rounded-lg border px-3 py-2.5 ${toneClass}`}>
+    <div className={`bg-white px-4 py-3 ${toneClass}`}>
       <span className="app-label block opacity-80">{label}</span>
-      <strong className="app-strong mt-0.5 block truncate text-current">{value}</strong>
+      <strong className="app-strong mt-0.5 block truncate text-current">
+        {value}
+      </strong>
     </div>
   );
 }
@@ -1927,73 +2656,51 @@ function SelectField({
   return (
     <label className="app-label grid gap-2">
       <span>{label}</span>
-      <select
-        className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#5b63ff] focus:ring-4 focus:ring-[#5b63ff]/10"
-        {...(value === undefined ? { defaultValue } : { value })}
-        onChange={onChange ? (event) => onChange(event.target.value) : undefined}
-      >
-        {options.map((option) => (
-          <option key={getSelectOptionValue(option)} value={getSelectOptionValue(option)}>
-            {getSelectOptionLabel(option)}
-          </option>
-        ))}
-      </select>
-    </label>
-  );
-}
-
-function ProviderRail({
-  providers,
-  selected,
-  onSelect,
-}: {
-  providers: readonly ModelProvider[];
-  selected: string;
-  onSelect: (provider: string) => void;
-}) {
-  return (
-    <nav className="min-w-0 border-b border-[#e5e7eb] bg-[#fbfdff] p-2 sm:border-r sm:border-b-0 sm:p-3">
-      <div className="flex gap-1 overflow-x-auto sm:grid sm:overflow-visible">
-        {providers.map((provider) => {
-          const active = provider.provider === selected;
-          const disabled = !provider.configured;
-          const statusText = provider.configurationError ?? (provider.configured ? "Connected" : "Not connected");
-          return (
-            <button
-              key={provider.provider}
-              className={`min-w-40 border-l-2 px-3 py-3 text-left transition sm:min-w-0 ${
-                active
-                  ? "border-[#5b63ff] bg-[#f0efff] text-[#4b52df]"
-                  : "border-transparent text-[#64748b] hover:bg-white hover:text-[#0f172a]"
-              } ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
-              type="button"
-              aria-pressed={active}
-              disabled={disabled}
-              title={statusText}
-              onClick={() => {
-                if (!disabled) onSelect(provider.provider);
-              }}
+      <span className="relative block">
+        <select
+          className="app-control-text min-h-10 w-full appearance-none rounded-lg border border-[#dfe3ea] bg-white py-2 pr-10 pl-3 text-black outline-none transition hover:border-[#c4c8db] focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
+          {...(value === undefined ? { defaultValue } : { value })}
+          onChange={
+            onChange ? (event) => onChange(event.target.value) : undefined
+          }
+        >
+          {options.map((option) => (
+            <option
+              key={getSelectOptionValue(option)}
+              value={getSelectOptionValue(option)}
+              disabled={getSelectOptionDisabled(option)}
             >
-              <span className="block text-sm font-semibold">{provider.label}</span>
-              <span className={`mt-1 block truncate text-xs font-medium ${provider.configured ? "text-[#059669]" : "text-[#b45309]"}`}>
-                {statusText}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-    </nav>
+              {getSelectOptionLabel(option)}
+            </option>
+          ))}
+        </select>
+        <svg
+          className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-[#737789]"
+          viewBox="0 0 20 20"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            d="m6 8 4 4 4-4"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </span>
+    </label>
   );
 }
 
 const modelPresentation: Record<string, { label: string; detail: string }> = {
   eleven_flash_v2_5: {
     label: "Eleven Flash v2.5",
-    detail: "Lowest latency · Hindi and Tamil · No Kannada support",
+    detail: "Hindi and Tamil · No Kannada support",
   },
   eleven_turbo_v2_5: {
     label: "Eleven Turbo v2.5",
-    detail: "Low latency · Hindi and Tamil · No Kannada support",
+    detail: "Hindi and Tamil · No Kannada support",
   },
   eleven_multilingual_v2: {
     label: "Eleven Multilingual v2",
@@ -2001,74 +2708,12 @@ const modelPresentation: Record<string, { label: string; detail: string }> = {
   },
   eleven_v3: {
     label: "Eleven v3",
-    detail: "Kannada and 70+ languages · Higher conversational latency",
+    detail: "Kannada and 70+ languages",
   },
 };
 
 function modelDisplayLabel(model: string) {
   return modelPresentation[model]?.label ?? model;
-}
-
-function ttsPricingLabel(
-  pricing: PricingGuide | undefined,
-  provider: string,
-  model: string,
-  voiceRateMultiplier = 1,
-) {
-  const key = `${provider.trim().toLowerCase()}:${model.trim().toLowerCase().replace(/^models\//, "")}`;
-  const rate = pricing?.ttsModels?.[key];
-  const multiplier = Number.isFinite(voiceRateMultiplier) && voiceRateMultiplier > 0
-    ? voiceRateMultiplier
-    : 1;
-  if (rate?.perThousandCharacters !== undefined) {
-    const price = rate.perThousandCharacters * multiplier;
-    const customRate = multiplier === 1 ? "" : ` · ${Number(multiplier.toFixed(2))}× voice rate`;
-    return `$${price.toFixed(price < 0.01 ? 4 : 2)} / 1K chars${customRate}`;
-  }
-  if (rate?.perMinute !== undefined) {
-    return `$${(rate.perMinute * multiplier).toFixed(4)} / minute`;
-  }
-  return "Pricing unavailable";
-}
-
-function ModelChoiceList({
-  models,
-  value,
-  onChange,
-}: {
-  models: readonly string[];
-  value: string;
-  onChange: (model: string) => void;
-}) {
-  return (
-    <div className="max-h-[420px] overflow-y-auto border-y border-[#e5e7eb]">
-      {models.map((model) => {
-        const active = model === value;
-        return (
-          <button
-            key={model}
-            className={`grid min-h-14 w-full grid-cols-[36px_minmax(0,1fr)_20px] items-center gap-3 border-b border-[#eef2f7] px-3 text-left transition last:border-b-0 ${
-              active ? "bg-[#f0efff]" : "bg-white hover:bg-[#f8fafc]"
-            }`}
-            type="button"
-            aria-pressed={active}
-            onClick={() => onChange(model)}
-          >
-            <span className={`grid size-9 place-items-center rounded-lg text-xs font-bold ${active ? "bg-[#5b63ff] text-[#ffffff]" : "bg-[#eef2f7] text-[#64748b]"}`}>
-              AI
-            </span>
-            <span className="min-w-0">
-              <span className="block truncate text-sm font-semibold text-[#0f172a]">{modelDisplayLabel(model)}</span>
-              {modelPresentation[model]?.detail ? (
-                <span className="mt-0.5 block text-xs font-medium text-[#64748b]">{modelPresentation[model].detail}</span>
-              ) : null}
-            </span>
-            <span className={`size-4 rounded-full border-2 ${active ? "border-[#5b63ff] bg-[#5b63ff] shadow-sm" : "border-[#cbd5e1]"}`} />
-          </button>
-        );
-      })}
-    </div>
-  );
 }
 
 function VoiceChoiceList({
@@ -2088,7 +2733,9 @@ function VoiceChoiceList({
   onChange: (voice: string) => void;
   onPreview: (voice: string) => void;
 }) {
-  const profilesByValue = new Map(profiles.map((profile) => [profile.value, profile]));
+  const profilesByValue = new Map(
+    profiles.map((profile) => [profile.value, profile]),
+  );
 
   return (
     <div className="max-h-[440px] overflow-y-auto border-y border-[#e5e7eb]">
@@ -2099,23 +2746,28 @@ function VoiceChoiceList({
         const active = voice === value;
         const isPreviewing = previewingVoice === previewKey(voice);
         const primaryLanguages = new Set(profile?.languageLabels ?? []);
-        const additionallyVerified = (profile?.verifiedLanguageLabels ?? [])
-          .filter((language) => !primaryLanguages.has(language));
+        const additionallyVerified = (
+          profile?.verifiedLanguageLabels ?? []
+        ).filter((language) => !primaryLanguages.has(language));
         const detail = [
           parts.detail,
-          additionallyVerified.length ? `Also verified: ${additionallyVerified.join(', ')}` : '',
+          additionallyVerified.length
+            ? `Also verified: ${additionallyVerified.join(", ")}`
+            : "",
           profile?.model,
           profile?.source,
           profile?.qualityTier,
           profile?.gender,
           profile?.accent,
           profile?.tone,
-        ].filter(Boolean).join(" / ");
+        ]
+          .filter(Boolean)
+          .join(" / ");
         return (
           <div
             key={voice}
             className={`grid min-h-16 grid-cols-[minmax(0,1fr)_44px] items-center border-b border-[#eef2f7] last:border-b-0 ${
-              active ? "bg-[#f0efff]" : "bg-white"
+              active ? "bg-[#eff0fb]" : "bg-white"
             }`}
           >
             <button
@@ -2124,18 +2776,22 @@ function VoiceChoiceList({
               aria-pressed={active}
               onClick={() => onChange(voice)}
             >
-              <span className={`grid size-10 place-items-center rounded-lg text-sm font-bold ${active ? "bg-[#5b63ff] text-[#ffffff]" : "bg-[#eef2f7] text-[#64748b]"}`}>
+              <span
+                className={`grid size-10 place-items-center rounded-lg text-sm font-bold ${active ? "bg-[#737ccf] text-white" : "bg-[#eef2f7] text-[#64748b]"}`}
+              >
                 {(parts.name || voice).slice(0, 1).toUpperCase()}
               </span>
               <span className="min-w-0">
-                <span className="block truncate text-sm font-semibold text-[#0f172a]">{parts.name}</span>
+                <span className="block truncate text-sm font-semibold text-[#0f172a]">
+                  {parts.name}
+                </span>
                 <span className="block text-xs font-medium leading-5 text-[#64748b]">
                   {detail || profile?.category || "Available voice"}
                 </span>
               </span>
             </button>
             <button
-              className="grid size-9 place-items-center rounded-lg text-[#5b63ff] transition hover:bg-white disabled:cursor-wait disabled:opacity-50"
+              className="grid size-9 place-items-center rounded-lg text-[#737ccf] transition hover:bg-white disabled:cursor-wait disabled:opacity-50"
               type="button"
               aria-label={`Preview ${parts.name}`}
               title={isPreviewing ? "Loading preview" : "Preview voice"}
@@ -2179,13 +2835,21 @@ function StackConfigurationModal({
   onLanguageChange: (language: string) => void;
   onPipelineModeChange: (mode: PipelineMode) => void;
   onPreview: (
-    input: Pick<VoicePreviewRequest, "mode" | "provider" | "model"> & { voice?: string },
+    input: Pick<VoicePreviewRequest, "mode" | "provider" | "model"> & {
+      voice?: string;
+    },
   ) => void;
   onClose: () => void;
   onSave: () => void;
 }) {
   const realtime = agent.pipelineMode === "realtime";
-  const layer: keyof ModelCatalog = realtime ? "realtime" : stack === "llm" ? "llm" : stack === "stt" ? "stt" : "tts";
+  const layer: keyof ModelCatalog = realtime
+    ? "realtime"
+    : stack === "llm"
+      ? "llm"
+      : stack === "stt"
+        ? "stt"
+        : "tts";
   const providers = catalog[layer];
   const providerId = realtime
     ? agent.realtimeProvider
@@ -2202,32 +2866,59 @@ function StackConfigurationModal({
       : stack === "stt"
         ? agent.sttModel
         : agent.ttsModel;
-  const effectiveLanguage = agent.multilingualEnabled ? "Multilingual" : agent.language;
+  const effectiveLanguage = agent.multilingualEnabled
+    ? "Multilingual"
+    : agent.language;
   const modelOptions = useMemo(
     () =>
       stack === "stt" && provider.provider === "deepgram"
-        ? deepgramModelsForLanguage(provider.models, effectiveLanguage, languageCatalog)
+        ? deepgramModelsForLanguage(
+            provider.models,
+            effectiveLanguage,
+            languageCatalog,
+          )
         : [...provider.models],
-    [effectiveLanguage, languageCatalog, provider.models, provider.provider, stack],
+    [
+      effectiveLanguage,
+      languageCatalog,
+      provider.models,
+      provider.provider,
+      stack,
+    ],
   );
   const selectedModelValue = modelOptions.includes(selectedModel)
     ? selectedModel
-    : modelOptions[0] ?? selectedModel;
-  const title = stack === "llm" ? "Agent LLM" : stack === "stt" ? "Agent STT" : "Agent Voice";
+    : (modelOptions[0] ?? selectedModel);
+  const title =
+    stack === "llm"
+      ? "Agent LLM"
+      : stack === "stt"
+        ? "Agent STT"
+        : realtime
+          ? "Agent Realtime Voice"
+          : "Agent TTS & Voice";
   const languageName = languageDisplayName(agent.language, languageCatalog);
   const normalizedLanguageOptions = languageOptions.map((option) =>
     typeof option === "string" ? { value: option, label: option } : option,
   );
-  const selectedModelLanguages = providerLanguagesForModel(provider, selectedModelValue);
+  const selectedModelLanguages = providerLanguagesForModel(
+    provider,
+    selectedModelValue,
+  );
   const primaryLanguageOptions = (
     stack !== "llm" && selectedModelLanguages.length
       ? selectedModelLanguages.map((language) => ({
           value: language.value,
-          label: language.code === "unknown" ? language.label : `${language.label} (${language.code})`,
+          label:
+            language.code === "unknown"
+              ? language.label
+              : `${language.label} (${language.code})`,
         }))
       : normalizedLanguageOptions
   ).filter((option) => option.value !== "Multilingual");
-  const allowedLanguageOptions = normalizedLanguageOptions.filter((option) => option.value !== "Multilingual");
+  const allowedLanguageOptions = normalizedLanguageOptions.filter(
+    (option) => option.value !== "Multilingual",
+  );
 
   useEffect(() => {
     if (stack === "stt" && selectedModelValue !== selectedModel) {
@@ -2237,15 +2928,33 @@ function StackConfigurationModal({
 
   useEffect(() => {
     if (
-      stack !== "voice"
-      || realtime
-      || modelSupportsLanguage(provider, selectedModelValue, agent.language, languageCatalog)
-    ) return;
-    const compatibleModel = modelForLanguage(provider, agent.language, languageCatalog);
+      stack !== "voice" ||
+      realtime ||
+      modelSupportsLanguage(
+        provider,
+        selectedModelValue,
+        agent.language,
+        languageCatalog,
+      )
+    )
+      return;
+    const compatibleModel = modelForLanguage(
+      provider,
+      agent.language,
+      languageCatalog,
+    );
     if (compatibleModel && compatibleModel !== selectedModelValue) {
       onChange({ ttsModel: compatibleModel });
     }
-  }, [agent.language, languageCatalog, onChange, provider, realtime, selectedModelValue, stack]);
+  }, [
+    agent.language,
+    languageCatalog,
+    onChange,
+    provider,
+    realtime,
+    selectedModelValue,
+    stack,
+  ]);
 
   const selectProvider = (nextProviderId: string) => {
     const next = getProvider(catalog, layer, nextProviderId);
@@ -2261,7 +2970,9 @@ function StackConfigurationModal({
       onChange({
         realtimeProvider: nextProviderId as RealtimeProvider,
         realtimeModel: next.models[0],
-        voice: voices.includes(agent.voice) ? agent.voice : voices[0] ?? agent.voice,
+        voice: voices.includes(agent.voice)
+          ? agent.voice
+          : (voices[0] ?? agent.voice),
       });
       return;
     }
@@ -2274,7 +2985,12 @@ function StackConfigurationModal({
     }
     if (stack === "stt") {
       const nextLanguage = next.languages?.length
-        ? coerceLanguage(agent.language, next.languages.filter((language) => language.value !== "Multilingual"))
+        ? coerceLanguage(
+            agent.language,
+            next.languages.filter(
+              (language) => language.value !== "Multilingual",
+            ),
+          )
         : agent.language;
       const nextModel = normalizeSttModelForLanguage(
         nextProviderId,
@@ -2293,7 +3009,10 @@ function StackConfigurationModal({
     const nextModel = modelForLanguage(next, agent.language, languageCatalog);
     const nextLanguages = providerLanguagesForModel(next, nextModel);
     const nextLanguage = nextLanguages.length
-      ? coerceLanguage(agent.language, nextLanguages.filter((language) => language.value !== "Multilingual"))
+      ? coerceLanguage(
+          agent.language,
+          nextLanguages.filter((language) => language.value !== "Multilingual"),
+        )
       : agent.language;
     const voices = getVoices(
       catalog,
@@ -2307,7 +3026,9 @@ function StackConfigurationModal({
       ttsProvider: nextProviderId as PipelineProvider,
       ttsModel: nextModel,
       language: nextLanguage,
-      voice: voices.includes(agent.voice) ? agent.voice : voices[0] ?? agent.voice,
+      voice: voices.includes(agent.voice)
+        ? agent.voice
+        : (voices[0] ?? agent.voice),
     });
   };
 
@@ -2323,18 +3044,30 @@ function StackConfigurationModal({
       );
       onChange({
         realtimeModel: model,
-        voice: voices.includes(agent.voice) ? agent.voice : voices[0] ?? agent.voice,
+        voice: voices.includes(agent.voice)
+          ? agent.voice
+          : (voices[0] ?? agent.voice),
       });
     } else if (stack === "llm") {
       onChange({ llmModel: model });
     } else if (stack === "stt") {
       onChange({
-        sttModel: normalizeSttModelForLanguage(provider.provider, model, effectiveLanguage, languageCatalog),
+        sttModel: normalizeSttModelForLanguage(
+          provider.provider,
+          model,
+          effectiveLanguage,
+          languageCatalog,
+        ),
       });
     } else {
       const modelLanguages = providerLanguagesForModel(provider, model);
       const nextLanguage = modelLanguages.length
-        ? coerceLanguage(agent.language, modelLanguages.filter((language) => language.value !== "Multilingual"))
+        ? coerceLanguage(
+            agent.language,
+            modelLanguages.filter(
+              (language) => language.value !== "Multilingual",
+            ),
+          )
         : agent.language;
       const voices = getVoices(
         catalog,
@@ -2347,7 +3080,9 @@ function StackConfigurationModal({
       onChange({
         ttsModel: model,
         language: nextLanguage,
-        voice: voices.includes(agent.voice) ? agent.voice : voices[0] ?? agent.voice,
+        voice: voices.includes(agent.voice)
+          ? agent.voice
+          : (voices[0] ?? agent.voice),
       });
     }
   };
@@ -2355,31 +3090,59 @@ function StackConfigurationModal({
   const voiceLayer = realtime ? "realtime" : "tts";
   const voiceProviderId = realtime ? agent.realtimeProvider : agent.ttsProvider;
   const voiceModel = realtime ? agent.realtimeModel : agent.ttsModel;
-  const voices = stack === "voice"
-    ? getDisplayedVoices(catalog, voiceLayer, voiceProviderId, voiceModel, effectiveLanguage, languageCatalog)
-    : [];
-  const languageSpecificVoices = stack === "voice"
-    ? getLanguageSpecificVoices(catalog, voiceLayer, voiceProviderId, effectiveLanguage, languageCatalog)
-    : [];
-  const profiles = stack === "voice" ? provider.voiceProfiles ?? [] : [];
-  const voiceOptions = stack === "voice"
-    ? voiceSelectOptions(voices, profiles, effectiveLanguage, languageCatalog, languageSpecificVoices)
-    : [];
+  const voices =
+    stack === "voice"
+      ? getDisplayedVoices(
+          catalog,
+          voiceLayer,
+          voiceProviderId,
+          voiceModel,
+          effectiveLanguage,
+          languageCatalog,
+        )
+      : [];
+  const languageSpecificVoices =
+    stack === "voice"
+      ? getLanguageSpecificVoices(
+          catalog,
+          voiceLayer,
+          voiceProviderId,
+          effectiveLanguage,
+          languageCatalog,
+        )
+      : [];
+  const profiles = stack === "voice" ? (provider.voiceProfiles ?? []) : [];
+  const voiceOptions =
+    stack === "voice"
+      ? voiceSelectOptions(
+          voices,
+          profiles,
+          effectiveLanguage,
+          languageCatalog,
+          languageSpecificVoices,
+        )
+      : [];
   const previewMode: PipelineMode = realtime ? "realtime" : "pipeline";
-  const previewProvider = voiceProviderId as RealtimeProvider | PipelineProvider;
+  const previewProvider = voiceProviderId as
+    RealtimeProvider | PipelineProvider;
   const modelForVoice = (voice: string) => {
-    const profileModel = profiles.find((profile) => profile.value === voice)?.model;
-    return profileModel && provider.models.includes(profileModel) ? profileModel : voiceModel;
+    const profileModel = profiles.find(
+      (profile) => profile.value === voice,
+    )?.model;
+    return profileModel && provider.models.includes(profileModel)
+      ? profileModel
+      : voiceModel;
   };
-  const previewKey = (voice: string) => [
-    agent.id,
-    previewMode,
-    previewProvider,
-    modelForVoice(voice),
-    voice,
-    agent.language,
-    agent.voiceSpeed,
-  ].join(":");
+  const previewKey = (voice: string) =>
+    [
+      agent.id,
+      previewMode,
+      previewProvider,
+      modelForVoice(voice),
+      voice,
+      agent.language,
+      agent.voiceSpeed,
+    ].join(":");
   const noElevenLabsLanguageVoice =
     stack === "voice" &&
     provider.provider === "elevenlabs" &&
@@ -2391,7 +3154,11 @@ function StackConfigurationModal({
     agent.ttsProvider === "sarvam" &&
     agent.multilingualEnabled &&
     agent.languageSwitchingEnabled &&
-    new Set(agent.supportedLanguages.filter((language) => language && language !== "Multilingual")).size > 1;
+    new Set(
+      agent.supportedLanguages.filter(
+        (language) => language && language !== "Multilingual",
+      ),
+    ).size > 1;
   const selectLanguage = (language: string) => {
     onLanguageChange(language);
   };
@@ -2399,8 +3166,12 @@ function StackConfigurationModal({
     const nextLanguage = enabled ? "Multilingual" : agent.language;
     onChange({
       multilingualEnabled: enabled,
-      languageSwitchingEnabled: enabled ? agent.languageSwitchingEnabled : false,
-      supportedLanguages: [...new Set([agent.language, ...agent.supportedLanguages])],
+      languageSwitchingEnabled: enabled
+        ? agent.languageSwitchingEnabled
+        : false,
+      supportedLanguages: [
+        ...new Set([agent.language, ...agent.supportedLanguages]),
+      ],
       sttModel: normalizeSttModelForLanguage(
         agent.sttProvider,
         agent.sttModel,
@@ -2413,7 +3184,9 @@ function StackConfigurationModal({
     const nextLanguages = enabled
       ? [...new Set([...agent.supportedLanguages, language])]
       : agent.supportedLanguages.filter((item) => item !== language);
-    onChange({ supportedLanguages: [...new Set([agent.language, ...nextLanguages])] });
+    onChange({
+      supportedLanguages: [...new Set([agent.language, ...nextLanguages])],
+    });
   };
 
   return (
@@ -2425,12 +3198,14 @@ function StackConfigurationModal({
       onClick={onClose}
     >
       <section
-        className="grid max-h-[calc(100vh-32px)] w-full max-w-6xl grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm"
+        className="grid max-h-[calc(100vh-32px)] w-full max-w-4xl grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden rounded-xl border border-[#dbe2ea] bg-white shadow-[0_24px_80px_rgba(15,23,42,0.24)]"
         onClick={(event) => event.stopPropagation()}
       >
         <header className="flex flex-col gap-4 border-b border-[#e5e7eb] px-5 py-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
-            <h3 className="m-0 text-xl font-bold text-[#0f172a] sm:text-2xl">{title}</h3>
+            <h3 className="m-0 text-xl font-bold text-[#0f172a] sm:text-2xl">
+              {title}
+            </h3>
             <p className="mt-1 mb-0 text-sm font-medium text-[#64748b]">
               {stack === "voice"
                 ? agent.multilingualEnabled
@@ -2441,147 +3216,191 @@ function StackConfigurationModal({
                   : "Choose the provider and model used for agent reasoning."}
             </p>
           </div>
-          <div className="flex shrink-0 rounded-lg border border-[#dfe3ea] bg-[#f8fafc] p-1">
-            {(["pipeline", "realtime"] as const).map((mode) => (
-              <button
-                key={mode}
-                className={`min-h-8 rounded-md px-3 text-xs font-semibold capitalize transition ${
-                  agent.pipelineMode === mode
-                    ? "bg-[#5b63ff] text-[#ffffff] shadow-sm"
-                    : "text-[#64748b] hover:bg-white hover:text-[#0f172a]"
-                }`}
-                type="button"
-                aria-pressed={agent.pipelineMode === mode}
-                onClick={() => onPipelineModeChange(mode)}
-              >
-                {mode}
-              </button>
-            ))}
+          <div className="flex shrink-0 items-center gap-2">
+            <div className="flex rounded-lg border border-[#dfe3ea] bg-[#f8fafc] p-1">
+              {(["pipeline", "realtime"] as const).map((mode) => (
+                <button
+                  key={mode}
+                  className={`min-h-8 rounded-md px-3 text-xs font-semibold capitalize transition ${
+                    agent.pipelineMode === mode
+                      ? "bg-[#737ccf] text-white shadow-sm"
+                      : "text-[#64748b] hover:bg-white hover:text-[#0f172a]"
+                  }`}
+                  type="button"
+                  aria-pressed={agent.pipelineMode === mode}
+                  onClick={() => onPipelineModeChange(mode)}
+                >
+                  {mode}
+                </button>
+              ))}
+            </div>
+            <button
+              className="grid size-10 place-items-center rounded-lg border border-[#dfe3ea] bg-white text-[#64748b] transition hover:border-[#b8bde8] hover:text-[#5963b8]"
+              type="button"
+              onClick={onClose}
+              aria-label="Close configuration"
+            >
+              <Icon icon="close" />
+            </button>
           </div>
         </header>
 
-        <div className="grid min-h-0 sm:grid-cols-[230px_minmax(0,1fr)]">
-          <ProviderRail providers={providers} selected={providerId} onSelect={selectProvider} />
-          <main className="min-h-0 overflow-y-auto p-4 sm:p-5">
-            <div className="grid gap-4">
-              <SelectField
-                label={stack === "voice" ? "Voice model" : stack === "stt" ? "Speech recognition model" : "Language model"}
-                defaultValue={selectedModelValue}
-                value={selectedModelValue}
-                onChange={selectModel}
-                options={modelOptions.map((model) => ({ value: model, label: modelDisplayLabel(model) }))}
-              />
-
-              {stack === "voice" && provider.provider === "elevenlabs" ? (
-                <div>
-                  <div className="mb-2 flex items-center justify-between gap-3">
-                    <span className="app-label">ElevenLabs TTS model</span>
-                    <span className="app-caption">Choose by language and latency</span>
-                  </div>
-                  <ModelChoiceList models={modelOptions} value={selectedModelValue} onChange={selectModel} />
-                </div>
-              ) : null}
-
-              <div className="grid gap-3 rounded-lg border border-[#dfe3ea] bg-[#f8fafc] p-3">
-                <SelectField
-                  label="Primary language"
-                  defaultValue={agent.language}
-                  value={agent.language}
-                  onChange={selectLanguage}
-                  options={primaryLanguageOptions}
-                />
-                <div className="grid gap-3 lg:grid-cols-2">
-                  <ToggleRow
-                    title="Multilingual"
-                    detail="Understand and speak only the languages selected below."
-                    enabled={agent.multilingualEnabled}
-                    onChange={setMultilingualEnabled}
-                  />
-                  <ToggleRow
-                    title="Automatic language switching"
-                    detail="Follow the caller when they change to another allowed language."
-                    enabled={agent.languageSwitchingEnabled}
-                    disabled={!agent.multilingualEnabled}
-                    onChange={(languageSwitchingEnabled) => onChange({ languageSwitchingEnabled })}
-                  />
-                </div>
-                {sarvamDynamicLanguageTts ? (
-                  <p className="m-0 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-medium text-amber-900">
-                    Sarvam TTS remains selected. The worker sends its supported language code for each reply, so choose a voice that supports every allowed language.
+        <div className="min-h-0 overflow-y-auto overscroll-contain">
+          <main className="p-4 sm:p-6">
+            <div className="mx-auto grid max-w-4xl gap-5">
+              <section className="overflow-hidden rounded-xl border border-[#dfe3ea] bg-white">
+                <div className="border-b border-[#edf0f5] bg-[#fafafe] px-4 py-3 sm:px-5">
+                  <h4 className="app-section-title m-0">Model configuration</h4>
+                  <p className="app-caption mt-1 mb-0">
+                    Select one connected provider and one model. Changes apply
+                    after you save.
                   </p>
-                ) : null}
-                {agent.multilingualEnabled ? (
+                </div>
+                <div className="grid gap-4 p-4 sm:grid-cols-2 sm:p-5">
+                  <SelectField
+                    label="Provider"
+                    defaultValue={providerId}
+                    value={providerId}
+                    onChange={selectProvider}
+                    options={providers.map((item) => ({
+                      value: item.provider,
+                      label: `${item.label} — ${item.configured ? "Connected" : "Not connected"}`,
+                      disabled: !item.configured,
+                    }))}
+                  />
+                  <SelectField
+                    label={
+                      stack === "voice"
+                        ? "Voice model"
+                        : stack === "stt"
+                          ? "Speech recognition model"
+                          : "Language model"
+                    }
+                    defaultValue={selectedModelValue}
+                    value={selectedModelValue}
+                    onChange={selectModel}
+                    options={modelOptions.map((model) => ({
+                      value: model,
+                      label: modelDisplayLabel(model),
+                    }))}
+                  />
+                </div>
+              </section>
+
+              {stack === "voice" ? (
+                <section className="grid gap-4 rounded-xl border border-[#dfe3ea] bg-[#fafafe] p-4 sm:p-5">
                   <div>
-                    <div className="mb-2 flex items-center justify-between gap-3">
-                      <span className="app-label">Allowed languages</span>
-                      <span className="app-caption">{agent.supportedLanguages.length} selected</span>
+                    <h4 className="app-section-title m-0">Language settings</h4>
+                    <p className="app-caption mt-1 mb-0">
+                      Set the language used for speech output and optional
+                      multilingual conversations.
+                    </p>
+                  </div>
+                  <SelectField
+                    label="Primary language"
+                    defaultValue={agent.language}
+                    value={agent.language}
+                    onChange={selectLanguage}
+                    options={primaryLanguageOptions}
+                  />
+                  <div className="grid gap-3 lg:grid-cols-2">
+                    <ToggleRow
+                      title="Multilingual"
+                      detail="Understand and speak only the languages selected below."
+                      enabled={agent.multilingualEnabled}
+                      onChange={setMultilingualEnabled}
+                    />
+                    <ToggleRow
+                      title="Automatic language switching"
+                      detail="Follow the caller when they change to another allowed language."
+                      enabled={agent.languageSwitchingEnabled}
+                      disabled={!agent.multilingualEnabled}
+                      onChange={(languageSwitchingEnabled) =>
+                        onChange({ languageSwitchingEnabled })
+                      }
+                    />
+                  </div>
+                  {sarvamDynamicLanguageTts ? (
+                    <p className="m-0 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-medium text-amber-900">
+                      Sarvam TTS remains selected. The worker sends its
+                      supported language code for each reply, so choose a voice
+                      that supports every allowed language.
+                    </p>
+                  ) : null}
+                  {agent.multilingualEnabled ? (
+                    <div>
+                      <div className="mb-2 flex items-center justify-between gap-3">
+                        <span className="app-label">Allowed languages</span>
+                        <span className="app-caption">
+                          {agent.supportedLanguages.length} selected
+                        </span>
+                      </div>
+                      <div className="grid gap-2 rounded-lg border border-[#dfe3ea] bg-white p-2 sm:grid-cols-2">
+                        {allowedLanguageOptions.map((option) => {
+                          const required = option.value === agent.language;
+                          const checked =
+                            required ||
+                            agent.supportedLanguages.includes(option.value);
+                          return (
+                            <label
+                              className={`flex min-h-10 items-center gap-2 rounded-md border px-3 text-sm font-semibold transition ${
+                                checked
+                                  ? "border-[#b8bde8] bg-[#eff0fb] text-[#5963b8]"
+                                  : "border-[#e5e7eb] bg-white text-[#475569] hover:border-[#b8bde8]"
+                              } ${required ? "cursor-not-allowed" : "cursor-pointer"}`}
+                              key={option.value}
+                            >
+                              <input
+                                className="size-4 accent-[#737ccf]"
+                                type="checkbox"
+                                checked={checked}
+                                disabled={required}
+                                onChange={(event) =>
+                                  toggleAllowedLanguage(
+                                    option.value,
+                                    event.target.checked,
+                                  )
+                                }
+                              />
+                              <span className="min-w-0 truncate">
+                                {option.label}
+                              </span>
+                            </label>
+                          );
+                        })}
+                      </div>
                     </div>
-                    <div className="grid max-h-44 gap-2 overflow-y-auto rounded-lg border border-[#dfe3ea] bg-white p-2 sm:grid-cols-2 lg:grid-cols-3">
-                      {allowedLanguageOptions.map((option) => {
-                        const required = option.value === agent.language;
-                        const checked = required || agent.supportedLanguages.includes(option.value);
-                        return (
-                          <label
-                            className={`flex min-h-10 items-center gap-2 rounded-md border px-3 text-sm font-semibold transition ${
-                              checked
-                                ? "border-[#c5c8ff] bg-[#f0efff] text-[#4b52df]"
-                                : "border-[#e5e7eb] bg-white text-[#475569] hover:border-[#d9dbff]"
-                            } ${required ? "cursor-not-allowed" : "cursor-pointer"}`}
-                            key={option.value}
-                          >
-                            <input
-                              className="size-4 accent-[#5b63ff]"
-                              type="checkbox"
-                              checked={checked}
-                              disabled={required}
-                              onChange={(event) => toggleAllowedLanguage(option.value, event.target.checked)}
-                            />
-                            <span className="min-w-0 truncate">{option.label}</span>
-                          </label>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-
-              {stack === "llm" ? (
-                <div>
-                  <div className="mb-2 flex items-center justify-between gap-3">
-                    <span className="app-label">Available models</span>
-                    <span className="app-caption">{modelOptions.length} models</span>
-                  </div>
-                  <ModelChoiceList models={modelOptions} value={selectedModelValue} onChange={selectModel} />
-                </div>
-              ) : null}
-
-              {stack === "stt" ? (
-                <div>
-                  <div className="mb-2 flex items-center justify-between gap-3">
-                    <span className="app-label">Recognition models</span>
-                    <span className="app-caption">{modelOptions.length} models</span>
-                  </div>
-                  <ModelChoiceList models={modelOptions} value={selectedModelValue} onChange={selectModel} />
-                </div>
+                  ) : null}
+                </section>
               ) : null}
 
               {noElevenLabsLanguageVoice ? (
                 <div className="rounded-lg border border-[#fde68a] bg-[#fffbeb] px-3 py-2 text-sm font-medium text-[#92400e]">
-                  No voice is tagged as primarily trained for {languageName}. A multilingual voice may still speak it, but pronunciation and accent quality can be worse.
+                  No voice is tagged as primarily trained for {languageName}. A
+                  multilingual voice may still speak it, but pronunciation and
+                  accent quality can be worse.
                 </div>
               ) : null}
 
-              {stack === 'voice' && provider.provider === 'elevenlabs' && languageSpecificVoices.length > 0 ? (
-                <div className="rounded-lg border border-[#d9dbff] bg-[#f0efff] px-3 py-2 text-sm font-medium text-[#4b52df]">
-                  “Best for” is the primary/native training language. “Also verified” names every other language ElevenLabs reports for that voice, but those may not have a native accent. Match “Best for” to the agent language for better pronunciation. A library voice is added when you save.
+              {stack === "voice" &&
+              provider.provider === "elevenlabs" &&
+              languageSpecificVoices.length > 0 ? (
+                <div className="rounded-lg border border-[#b8bde8] bg-[#eff0fb] px-3 py-2 text-sm font-medium text-[#5963b8]">
+                  “Best for” is the primary/native training language. “Also
+                  verified” names every other language ElevenLabs reports for
+                  that voice, but those may not have a native accent. Match
+                  “Best for” to the agent language for better pronunciation. A
+                  library voice is added when you save.
                 </div>
               ) : null}
 
               {stack === "voice" ? (
-                <div>
-                  <div className="mb-2 flex items-center justify-between gap-3">
+                <section className="overflow-hidden rounded-xl border border-[#dfe3ea] bg-white">
+                  <div className="flex items-center justify-between gap-3 border-b border-[#edf0f5] bg-[#fafafe] px-4 py-3 sm:px-5">
                     <span className="app-label">
-                      {provider.provider === "elevenlabs" ? "Your voices + Curated Voice Library" : "Available voices"}
+                      {provider.provider === "elevenlabs"
+                        ? "Your voices + Curated Voice Library"
+                        : "Available voices"}
                     </span>
                     <span className="app-caption">
                       {languageSpecificVoices.length
@@ -2589,26 +3408,32 @@ function StackConfigurationModal({
                         : `${voices.length} voices`}
                     </span>
                   </div>
-                  <VoiceChoiceList
-                    options={voiceOptions}
-                    profiles={profiles}
-                    value={agent.voice}
-                    previewingVoice={previewingVoice}
-                    previewKey={previewKey}
-                    onChange={(voice) => {
-                      const model = modelForVoice(voice);
-                      onChange(realtime ? { voice, realtimeModel: model } : { voice, ttsModel: model });
-                    }}
-                    onPreview={(voice) =>
-                      onPreview({
-                        mode: previewMode,
-                        provider: previewProvider,
-                        model: modelForVoice(voice),
-                        voice,
-                      })
-                    }
-                  />
-                </div>
+                  <div className="p-2 sm:p-3">
+                    <VoiceChoiceList
+                      options={voiceOptions}
+                      profiles={profiles}
+                      value={agent.voice}
+                      previewingVoice={previewingVoice}
+                      previewKey={previewKey}
+                      onChange={(voice) => {
+                        const model = modelForVoice(voice);
+                        onChange(
+                          realtime
+                            ? { voice, realtimeModel: model }
+                            : { voice, ttsModel: model },
+                        );
+                      }}
+                      onPreview={(voice) =>
+                        onPreview({
+                          mode: previewMode,
+                          provider: previewProvider,
+                          model: modelForVoice(voice),
+                          voice,
+                        })
+                      }
+                    />
+                  </div>
+                </section>
               ) : null}
             </div>
           </main>
@@ -2623,7 +3448,7 @@ function StackConfigurationModal({
             Cancel
           </button>
           <button
-            className="app-button-text rounded-lg bg-[#5b63ff] px-4 py-2.5 text-[#ffffff] shadow-sm transition hover:bg-[#4b52df] disabled:cursor-not-allowed disabled:opacity-60"
+            className="app-button-text rounded-lg bg-[#737ccf] px-4 py-2.5 text-white shadow-sm transition hover:bg-[#5963b8] disabled:cursor-not-allowed disabled:opacity-60"
             type="button"
             disabled={saving || !dirty}
             onClick={onSave}
@@ -2658,15 +3483,18 @@ function SliderField({
   onChange: (value: number) => void;
 }) {
   return (
-    <label className="app-label grid gap-2 rounded-lg border border-[#e5e7eb] bg-white p-3" title={title}>
+    <label
+      className="app-label grid gap-2 rounded-lg border border-[#e5e7eb] bg-white p-3"
+      title={title}
+    >
       <span className="flex min-w-0 items-center justify-between gap-3">
         <span className="truncate">{label}</span>
-        <strong className="app-strong shrink-0 rounded-md bg-[#f0efff] px-2 py-1 text-[#4b52df]">
+        <strong className="app-strong shrink-0 rounded-md bg-[#eff0fb] px-2 py-1 text-[#5963b8]">
           {valueText ?? value}
         </strong>
       </span>
       <input
-        className="h-2 w-full cursor-pointer accent-[#5b63ff] disabled:cursor-not-allowed disabled:opacity-50"
+        className="h-2 w-full cursor-pointer accent-[#737ccf] disabled:cursor-not-allowed disabled:opacity-50"
         type="range"
         min={min}
         max={max}
@@ -2674,7 +3502,15 @@ function SliderField({
         value={value}
         disabled={disabled}
         title={title}
-        onChange={(event) => onChange(clampNumericInput(event.target.value, { min, max, fallback: value }))}
+        onChange={(event) =>
+          onChange(
+            clampNumericInput(event.target.value, {
+              min,
+              max,
+              fallback: value,
+            }),
+          )
+        }
       />
     </label>
   );
@@ -2709,7 +3545,7 @@ function InputField({
     <label className="app-label grid gap-2" title={title}>
       <span>{label}</span>
       <input
-        className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#5b63ff] focus:ring-4 focus:ring-[#5b63ff]/10 disabled:cursor-not-allowed disabled:bg-[#f8fafc] disabled:text-[#94a3b8]"
+        className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10 disabled:cursor-not-allowed disabled:bg-[#f8fafc] disabled:text-[#94a3b8]"
         {...(value === undefined ? { defaultValue } : { value })}
         placeholder={placeholder}
         type={type}
@@ -2718,7 +3554,9 @@ function InputField({
         step={step}
         disabled={disabled}
         title={title}
-        onChange={onChange ? (event) => onChange(event.target.value) : undefined}
+        onChange={
+          onChange ? (event) => onChange(event.target.value) : undefined
+        }
       />
     </label>
   );
@@ -2735,17 +3573,24 @@ function ToolParameterEditor({
 }) {
   return (
     <article className="grid gap-3 rounded-lg border border-[#e5e7eb] bg-white p-3 lg:grid-cols-[minmax(0,1fr)_150px_118px_88px]">
-      <InputField label="Name" value={parameter.name} placeholder="email" onChange={(name) => onChange({ name })} />
+      <InputField
+        label="Name"
+        value={parameter.name}
+        placeholder="email"
+        onChange={(name) => onChange({ name })}
+      />
       <SelectField
         label="Type"
         defaultValue="string"
         value={parameter.type}
         options={toolParameterTypeOptions}
-        onChange={(type) => onChange({ type: type as AgentToolParameter["type"] })}
+        onChange={(type) =>
+          onChange({ type: type as AgentToolParameter["type"] })
+        }
       />
       <label className="app-label flex min-h-10 items-center gap-2 self-end rounded-lg border border-[#e5e7eb] bg-[#f8fafc] px-3">
         <input
-          className="size-4 accent-[#5b63ff]"
+          className="size-4 accent-[#737ccf]"
           type="checkbox"
           checked={parameter.required}
           onChange={(event) => onChange({ required: event.target.checked })}
@@ -2762,7 +3607,7 @@ function ToolParameterEditor({
       <label className="app-label grid gap-2 lg:col-span-4">
         <span>Description</span>
         <input
-          className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#5b63ff] focus:ring-4 focus:ring-[#5b63ff]/10"
+          className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
           value={parameter.description}
           placeholder="What value should the agent collect before calling this tool?"
           onChange={(event) => onChange({ description: event.target.value })}
@@ -2783,8 +3628,18 @@ function HeaderEditor({
 }) {
   return (
     <article className="grid gap-3 rounded-lg border border-[#e5e7eb] bg-white p-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_88px]">
-      <InputField label="Header" value={header.name} placeholder="Authorization" onChange={(name) => onChange({ name })} />
-      <InputField label="Value" value={header.value} placeholder="Bearer token" onChange={(value) => onChange({ value })} />
+      <InputField
+        label="Header"
+        value={header.name}
+        placeholder="Authorization"
+        onChange={(name) => onChange({ name })}
+      />
+      <InputField
+        label="Value"
+        value={header.value}
+        placeholder="Bearer token"
+        onChange={(value) => onChange({ value })}
+      />
       <button
         className="app-button-text min-h-10 self-end rounded-lg border border-rose-200 bg-white px-3 text-rose-600 transition hover:bg-rose-50"
         type="button"
@@ -2811,7 +3666,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     getSession,
     getServerSession,
   );
-  const [showUserSidebar, setShowUserSidebar] = useState(true);
+  const [showUserSidebar, setShowUserSidebar] = useState(
+    getDashboardSidebarInitialState,
+  );
   const [agentList, setAgentList] = useState(agents);
   const [selectedAgentId, setSelectedAgentId] = useState(initialAgentId);
   const [agentNameDraft, setAgentNameDraft] = useState("");
@@ -2823,24 +3680,43 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [agentLoading, setAgentLoading] = useState(true);
   const [agentLoadError, setAgentLoadError] = useState("");
-  const [agentMutation, setAgentMutation] = useState<"" | "syncing" | "cloning" | "deleting">("");
+  const [agentMutation, setAgentMutation] = useState<
+    "" | "syncing" | "cloning" | "deleting"
+  >("");
   const [showTestCall, setShowTestCall] = useState(false);
-  const [openStackConfig, setOpenStackConfig] = useState<StackConfig | null>(null);
-  const [modelCatalog, setModelCatalog] = useState<ModelCatalog>(fallbackCatalog);
-  const [languageCatalog, setLanguageCatalog] = useState<VoiceLanguageOption[]>(fallbackLanguageCatalog);
-  const [voiceConfig, setVoiceConfig] = useState<DashboardVoiceConfig | null>(null);
+  const [promptExpanded, setPromptExpanded] = useState(false);
+  const [expandedToolKey, setExpandedToolKey] = useState("");
+  const [showToolCreator, setShowToolCreator] = useState(false);
+  const [openStackConfig, setOpenStackConfig] = useState<StackConfig | null>(
+    null,
+  );
+  const [modelCatalog, setModelCatalog] =
+    useState<ModelCatalog>(fallbackCatalog);
+  const [languageCatalog, setLanguageCatalog] = useState<VoiceLanguageOption[]>(
+    fallbackLanguageCatalog,
+  );
+  const [voiceConfig, setVoiceConfig] = useState<DashboardVoiceConfig | null>(
+    null,
+  );
   const voiceConfigLoaded = voiceConfig !== null;
   const modelCatalogReady = voiceConfig?.modelCatalogReady;
   const [recentCalls, setRecentCalls] = useState<CallRecord[]>([]);
-  const [toolDraft, setToolDraft] = useState<AgentTool>(() => createEmptyToolDraft());
+  const [toolDraft, setToolDraft] = useState<AgentTool>(() =>
+    createEmptyToolDraft(),
+  );
   const [variableDraft, setVariableDraft] = useState("");
   const [previewingVoice, setPreviewingVoice] = useState("");
   const [testingToolKey, setTestingToolKey] = useState("");
-  const [runtimeRegions, setRuntimeRegions] = useState<Record<string, string>>({});
-  const [runtimeSnapshot, setRuntimeSnapshot] = useState<AgentRuntimeSnapshot | null>(null);
-  const [runtimeStreamState, setRuntimeStreamState] = useState<"connecting" | "live" | "reconnecting">("connecting");
+  const [, setRuntimeRegions] = useState<Record<string, string>>({});
+  const [runtimeSnapshot, setRuntimeSnapshot] =
+    useState<AgentRuntimeSnapshot | null>(null);
+  const [runtimeStreamState, setRuntimeStreamState] = useState<
+    "connecting" | "live" | "reconnecting"
+  >("connecting");
   const [appOrigin] = useState(() =>
-    typeof window === "undefined" ? "http://localhost:3000" : window.location.origin,
+    typeof window === "undefined"
+      ? "http://localhost:3000"
+      : window.location.origin,
   );
   const previewAudioRef = useRef<HTMLAudioElement | null>(null);
   const previewUrlRef = useRef("");
@@ -2851,28 +3727,33 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   const renamingAgentSavingRef = useRef(false);
 
   const selectedAgent = useMemo(
-    () => agentList.find((agent) => agent.id === selectedAgentId) ?? agentList[0] ?? agents[0],
+    () =>
+      agentList.find((agent) => agent.id === selectedAgentId) ??
+      agentList[0] ??
+      agents[0],
     [agentList, selectedAgentId],
   );
   const selectedAgentLoaded = useMemo(
     () => agentList.some((agent) => agent.id === selectedAgentId),
     [agentList, selectedAgentId],
   );
-  const agentMutationBusy = saving || renamingAgentSaving || Boolean(agentMutation);
+  const agentMutationBusy =
+    saving || renamingAgentSaving || Boolean(agentMutation);
   const voicePitchSupported = supportsVoicePitch(selectedAgent);
-  const languageOptions = getLanguageOptions(modelCatalog, selectedAgent, languageCatalog);
+  const languageOptions = getLanguageOptions(
+    modelCatalog,
+    selectedAgent,
+    languageCatalog,
+  );
   const selectedSchedule = selectedAgent.businessHours.schedule.length
     ? selectedAgent.businessHours.schedule
     : defaultBusinessHours.schedule;
   const selectedTone = getStatusTone(selectedAgent.status);
-  const selectedRuntimeSnapshot = runtimeSnapshot?.agentId === selectedAgent.id ? runtimeSnapshot : null;
-  const selectedRuntimeStreamState = selectedRuntimeSnapshot ? runtimeStreamState : "connecting";
-  const selectedRuntimeRegion = selectedRuntimeSnapshot?.region || runtimeRegions[selectedAgent.id] || "";
-  const selectedRuntimeWorkerLabel = selectedRuntimeSnapshot?.dispatch.state === "pending" || selectedRuntimeSnapshot?.dispatch.state === "waiting"
-    ? "Connecting"
-    : selectedRuntimeSnapshot?.dispatch.state === "running"
-      ? "Active"
-      : "Idle until call";
+  const selectedRuntimeSnapshot =
+    runtimeSnapshot?.agentId === selectedAgent.id ? runtimeSnapshot : null;
+  const selectedRuntimeStreamState = selectedRuntimeSnapshot
+    ? runtimeStreamState
+    : "connecting";
   const selectedRuntimeItems = [
     {
       label: "Call status",
@@ -2881,123 +3762,106 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     },
     {
       label: "Model",
-      value: selectedRuntimeSnapshot?.pipeline.label ?? (selectedAgent.pipelineMode === "realtime"
-        ? `${selectedAgent.realtimeProvider}/${selectedAgent.realtimeModel}`
-        : `${selectedAgent.sttProvider} -> ${selectedAgent.llmProvider} -> ${selectedAgent.ttsProvider}`),
-      tone: "text-[#5b63ff]",
-    },
-    {
-      label: "Region",
-      value: selectedRuntimeRegion ? formatVoiceRegion(selectedRuntimeRegion) : "No active call",
-      tone: selectedRuntimeRegion ? "text-[#111827]" : "text-[#64748b]",
+      value: cleanRuntimeLabel(
+        selectedRuntimeSnapshot?.pipeline.label ??
+          (selectedAgent.pipelineMode === "realtime"
+            ? `${selectedAgent.realtimeProvider}/${selectedAgent.realtimeModel}`
+            : `${selectedAgent.sttProvider} → ${selectedAgent.llmProvider} → ${selectedAgent.ttsProvider}`),
+      ),
+      tone: "text-[#737ccf]",
     },
   ];
-  const agentStatTone = "border-[#dce8f2] bg-white text-[#0f766e] shadow-sm";
-  const agentHeroStats = [
-    {
-      label: "Status",
-      value: selectedAgent.status,
-      tone: agentStatTone,
-    },
-    {
-      label: "Mode",
-      value: selectedAgent.pipelineMode === "realtime" ? "Realtime" : "Pipeline",
-      tone: agentStatTone,
-    },
-    {
-      label: "Tools",
-      value: selectedAgent.tools.length.toLocaleString("en-IN"),
-      tone: agentStatTone,
-    },
-    {
-      label: "Knowledge",
-      value: (selectedAgent.knowledgeSourceCount ?? selectedAgent.knowledgeDocuments.length).toLocaleString("en-IN"),
-      tone: agentStatTone,
-    },
-  ];
-  const voiceStackLatencyMs =
-    selectedRuntimeSnapshot?.latency.averageMs ?? selectedRuntimeSnapshot?.latency.latestMs;
-  const voiceStackLatencyValue =
-    typeof voiceStackLatencyMs === "number" && Number.isFinite(voiceStackLatencyMs)
-      ? Math.round(voiceStackLatencyMs).toLocaleString("en-IN")
-      : "1,250";
-  const selectedTtsProvider = getProvider(modelCatalog, "tts", selectedAgent.ttsProvider);
-  const selectedVoiceRateMultiplier = selectedTtsProvider.voiceProfiles
-    ?.find((profile) => profile.value === selectedAgent.voice)?.rateMultiplier ?? 1;
-  const selectedTtsPricing = ttsPricingLabel(
-    voiceConfig?.pricing,
-    selectedAgent.ttsProvider,
-    selectedAgent.ttsModel,
-    selectedVoiceRateMultiplier,
-  );
   const voiceStackCards = [
     {
       id: "stt" as const,
-      label: "TRANSCRIBER",
-      dot: "bg-[#f97316]",
-      title: selectedAgent.pipelineMode === "realtime" ? "Native realtime" : `${selectedAgent.sttProvider} STT`,
-      provider: selectedAgent.pipelineMode === "realtime" ? selectedAgent.realtimeModel : selectedAgent.sttModel,
-      cost: selectedAgent.pipelineMode === "realtime" ? "No separate STT" : "Provider cost only",
-      latency: "250ms",
-      accent: "text-[#4b52df]",
+      label: "Speech recognition",
+      step: "01",
+      title:
+        selectedAgent.pipelineMode === "realtime"
+          ? "Native realtime"
+          : `${selectedAgent.sttProvider} STT`,
+      provider:
+        selectedAgent.pipelineMode === "realtime"
+          ? selectedAgent.realtimeModel
+          : selectedAgent.sttModel,
     },
     {
       id: "llm" as const,
-      label: "MODEL",
-      dot: "bg-[#3b82f6]",
-      title: selectedAgent.pipelineMode === "realtime" ? `${selectedAgent.realtimeProvider} realtime` : `${selectedAgent.llmProvider} LLM`,
-      provider: selectedAgent.pipelineMode === "realtime" ? selectedAgent.realtimeModel : selectedAgent.llmModel,
-      cost: "Provider cost only",
-      latency: "600ms",
-      accent: "text-[#d97706]",
+      label: "Intelligence",
+      step: "02",
+      title:
+        selectedAgent.pipelineMode === "realtime"
+          ? `${selectedAgent.realtimeProvider} realtime`
+          : `${selectedAgent.llmProvider} LLM`,
+      provider:
+        selectedAgent.pipelineMode === "realtime"
+          ? selectedAgent.realtimeModel
+          : selectedAgent.llmModel,
     },
     {
       id: "voice" as const,
-      label: "VOICE",
-      dot: "bg-[#c026d3]",
-      title: selectedAgent.pipelineMode === "realtime" ? "Realtime voice" : `${selectedAgent.ttsProvider} TTS`,
+      label: "Voice output",
+      step: "03",
+      title:
+        selectedAgent.pipelineMode === "realtime"
+          ? "Realtime voice"
+          : `${selectedAgent.ttsProvider} TTS`,
       provider: `${selectedAgent.voice}${selectedAgent.pipelineMode === "pipeline" ? ` / ${selectedAgent.ttsModel}` : ""}`,
-      cost: selectedAgent.pipelineMode === "realtime"
-        ? "No separate TTS"
-        : selectedAgent.ttsProvider === "elevenlabs"
-          ? selectedTtsPricing
-          : "Provider cost only",
-      latency: "400ms",
-      accent: "text-[#4b52df]",
     },
   ];
-  const phoneAssigned = Boolean(selectedAgent.phone && selectedAgent.phone !== "Not assigned");
+  const phoneAssigned = Boolean(
+    selectedAgent.phone && selectedAgent.phone !== "Not assigned",
+  );
   const liveCallsEnabled = selectedAgent.status === "Live";
-  const testCallsEnabled = selectedAgent.status !== "Paused" && selectedAgent.id !== "loading";
+  const testCallsEnabled =
+    selectedAgent.status !== "Paused" && selectedAgent.id !== "loading";
   const inboundReady = Boolean(
-    selectedRuntimeSnapshot?.phoneRoute.inboundReady
-      ?? (phoneAssigned && voiceConfig?.sip.inboundConfigured && voiceConfig?.sip.inboundDestinationConfigured),
+    selectedRuntimeSnapshot?.phoneRoute.inboundReady ??
+    (phoneAssigned &&
+      voiceConfig?.sip.inboundConfigured &&
+      voiceConfig?.sip.inboundDestinationConfigured),
   );
   const outboundReady = Boolean(
-    selectedRuntimeSnapshot?.phoneRoute.outboundReady
-      ?? (phoneAssigned && voiceConfig?.sip.outboundConfigured && voiceConfig?.vobiz.configured),
+    selectedRuntimeSnapshot?.phoneRoute.outboundReady ??
+    (phoneAssigned &&
+      voiceConfig?.sip.outboundConfigured &&
+      voiceConfig?.vobiz.configured),
   );
   const browserTestReady = testCallsEnabled && Boolean(voiceConfig?.agentName);
   const hoursGuardLabel = !selectedAgent.businessHoursEnabled
     ? "Off"
     : selectedRuntimeSnapshot
-      ? selectedRuntimeSnapshot.businessHours.open ? "Open" : "Closed"
+      ? selectedRuntimeSnapshot.businessHours.open
+        ? "Open"
+        : "Closed"
       : "Checking";
   const callReadiness = [
     {
       label: "Browser test",
       ready: browserTestReady,
-      value: browserTestReady ? "Ready" : selectedAgent.status === "Paused" ? "Paused" : "Needs agent",
+      value: browserTestReady
+        ? "Ready"
+        : selectedAgent.status === "Paused"
+          ? "Paused"
+          : "Needs agent",
     },
     {
       label: "Inbound calls",
       ready: liveCallsEnabled && inboundReady,
-      value: !liveCallsEnabled ? "Disabled" : inboundReady ? "Ready" : "Needs route",
+      value: !liveCallsEnabled
+        ? "Disabled"
+        : inboundReady
+          ? "Ready"
+          : "Needs route",
     },
     {
       label: "Outbound calls",
       ready: liveCallsEnabled && outboundReady,
-      value: !liveCallsEnabled ? "Disabled" : outboundReady ? "Ready" : "Needs route",
+      value: !liveCallsEnabled
+        ? "Disabled"
+        : outboundReady
+          ? "Ready"
+          : "Needs route",
     },
     {
       label: "Hours guard",
@@ -3008,12 +3872,18 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   const behaviorMetrics = [
     {
       label: "Opening",
-      value: getOptionLabel(firstMessageModeOptions, selectedAgent.firstMessageMode),
+      value: getOptionLabel(
+        firstMessageModeOptions,
+        selectedAgent.firstMessageMode,
+      ),
       tone: "sky" as const,
     },
     {
       label: "Endpointing",
-      value: getOptionLabel(endpointingModeOptions, selectedAgent.behavior.endpointingMode),
+      value: getOptionLabel(
+        endpointingModeOptions,
+        selectedAgent.behavior.endpointingMode,
+      ),
       tone: "green" as const,
     },
     {
@@ -3023,7 +3893,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     },
     {
       label: "Call cap",
-      value: formatCompactDuration(selectedAgent.behavior.maxCallDurationSeconds),
+      value: formatCompactDuration(
+        selectedAgent.behavior.maxCallDurationSeconds,
+      ),
       tone: "slate" as const,
     },
   ];
@@ -3039,8 +3911,10 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   data-metadata="${selectedAgent.dynamicVariables.join(",")}"
 ></script>`;
   const toast = notice ? noticeToast(notice) : null;
-  const contentGridClass = "voice-agent-workspace mx-auto grid w-full max-w-[1520px] min-w-0 gap-6 px-4 pb-8 sm:px-6 lg:grid-cols-[minmax(0,1fr)] lg:px-8 2xl:grid-cols-[minmax(0,1fr)_360px]";
-  const runtimeAsideClass = "grid min-w-0 content-start gap-5 xl:grid-cols-2 2xl:grid-cols-1";
+  const contentGridClass =
+    "voice-agent-workspace mx-auto grid w-full max-w-[1500px] min-w-0 gap-5 px-4 pb-8 pt-5 sm:px-6 lg:grid-cols-[minmax(0,1fr)] lg:px-8 2xl:grid-cols-[minmax(0,1fr)_360px]";
+  const runtimeAsideClass =
+    "grid min-w-0 content-start gap-5 self-start xl:grid-cols-2 2xl:sticky 2xl:top-[136px] 2xl:grid-cols-1 2xl:pr-1";
 
   useEffect(() => {
     return () => {
@@ -3054,11 +3928,12 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   useEffect(() => {
     const warnBeforeUnload = (event: BeforeUnloadEvent) => {
       if (
-        !unsavedChangesRef.current
-        && !savePromiseRef.current
-        && !agentMutationRef.current
-        && !renamingAgentSavingRef.current
-      ) return;
+        !unsavedChangesRef.current &&
+        !savePromiseRef.current &&
+        !agentMutationRef.current &&
+        !renamingAgentSavingRef.current
+      )
+        return;
       event.preventDefault();
       event.returnValue = "";
     };
@@ -3067,9 +3942,11 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   }, []);
 
   useEffect(() => {
-    const browserNavigation = (window as unknown as {
-      navigation?: { currentEntry?: { index?: number } };
-    }).navigation;
+    const browserNavigation = (
+      window as unknown as {
+        navigation?: { currentEntry?: { index?: number } };
+      }
+    ).navigation;
     const editorEntryIndex = browserNavigation?.currentEntry?.index;
     const editorEntryStateKey = "__voiceAgentEditorEntry";
     const forwardEntryStateKey = "__voiceAgentEditorForwardFrom";
@@ -3078,16 +3955,15 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
       [forwardEntryStateKey]?: string;
     };
     const currentState = (
-      window.history.state
-      && typeof window.history.state === "object"
-      ? window.history.state
-      : {}
+      window.history.state && typeof window.history.state === "object"
+        ? window.history.state
+        : {}
     ) as EditorHistoryState;
-    const editorEntryKey = currentState[editorEntryStateKey] ?? (
-      typeof window.crypto.randomUUID === "function"
+    const editorEntryKey =
+      currentState[editorEntryStateKey] ??
+      (typeof window.crypto.randomUUID === "function"
         ? window.crypto.randomUUID()
-        : `${Date.now()}-${Math.random().toString(36).slice(2)}`
-    );
+        : `${Date.now()}-${Math.random().toString(36).slice(2)}`);
     const editorEntryState = { ...currentState };
     delete editorEntryState[forwardEntryStateKey];
     window.history.replaceState(
@@ -3100,53 +3976,55 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     // propagates the editor key through every later pushed descendant, even
     // after this component unmounts, so multi-entry Forward traversals remain
     // distinguishable on browsers without the Navigation API.
-    type TrackedHistory = History & { __voiceAgentPushTracker?: History["pushState"] };
+    type TrackedHistory = History & {
+      __voiceAgentPushTracker?: History["pushState"];
+    };
     const trackedHistory = window.history as TrackedHistory;
     if (trackedHistory.__voiceAgentPushTracker !== trackedHistory.pushState) {
       const originalPushState = trackedHistory.pushState;
-      const pushTracker: History["pushState"] = function trackAgentEditorLineage(
-        data,
-        unused,
-        url,
-      ) {
-        const nextState = data && typeof data === "object" ? data as EditorHistoryState : {};
-        const activeState = (
-          trackedHistory.state && typeof trackedHistory.state === "object"
-            ? trackedHistory.state
-            : {}
-        ) as EditorHistoryState;
-        const lineage = nextState[forwardEntryStateKey]
-          ?? activeState[editorEntryStateKey]
-          ?? activeState[forwardEntryStateKey];
-        return originalPushState.call(
-          trackedHistory,
-          lineage ? { ...nextState, [forwardEntryStateKey]: lineage } : nextState,
-          unused,
-          url,
-        );
-      };
+      const pushTracker: History["pushState"] =
+        function trackAgentEditorLineage(data, unused, url) {
+          const nextState =
+            data && typeof data === "object"
+              ? (data as EditorHistoryState)
+              : {};
+          const activeState = (
+            trackedHistory.state && typeof trackedHistory.state === "object"
+              ? trackedHistory.state
+              : {}
+          ) as EditorHistoryState;
+          const lineage =
+            nextState[forwardEntryStateKey] ??
+            activeState[editorEntryStateKey] ??
+            activeState[forwardEntryStateKey];
+          return originalPushState.call(
+            trackedHistory,
+            lineage
+              ? { ...nextState, [forwardEntryStateKey]: lineage }
+              : nextState,
+            unused,
+            url,
+          );
+        };
       trackedHistory.pushState = pushTracker;
       trackedHistory.__voiceAgentPushTracker = pushTracker;
     }
 
     const originalReplaceState = window.history.replaceState;
-    const taggedReplaceState: History["replaceState"] = function taggedAgentEditorReplaceState(
-      data,
-      unused,
-      url,
-    ) {
-      const nextState = (
-        data && typeof data === "object" ? data : {}
-      ) as EditorHistoryState;
-      const cleanEditorState = { ...nextState };
-      delete cleanEditorState[forwardEntryStateKey];
-      return originalReplaceState.call(
-        window.history,
-        { ...cleanEditorState, [editorEntryStateKey]: editorEntryKey },
-        unused,
-        url,
-      );
-    };
+    const taggedReplaceState: History["replaceState"] =
+      function taggedAgentEditorReplaceState(data, unused, url) {
+        const nextState = (
+          data && typeof data === "object" ? data : {}
+        ) as EditorHistoryState;
+        const cleanEditorState = { ...nextState };
+        delete cleanEditorState[forwardEntryStateKey];
+        return originalReplaceState.call(
+          window.history,
+          { ...cleanEditorState, [editorEntryStateKey]: editorEntryKey },
+          unused,
+          url,
+        );
+      };
     window.history.replaceState = taggedReplaceState;
     let restoringStep: -1 | 0 | 1 = 0;
     let restoringTimeout: number | undefined;
@@ -3175,7 +4053,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
       };
       const continueWalk = (walkEvent: PopStateEvent) => {
         const walkState = (
-          walkEvent.state && typeof walkEvent.state === "object" ? walkEvent.state : {}
+          walkEvent.state && typeof walkEvent.state === "object"
+            ? walkEvent.state
+            : {}
         ) as EditorHistoryState;
         if (walkState[editorEntryStateKey] === editorEntryKey) {
           cleanupWalk();
@@ -3194,12 +4074,11 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
         event.state && typeof event.state === "object" ? event.state : {}
       ) as EditorHistoryState;
       const traversedEntryIndex = browserNavigation?.currentEntry?.index;
-      const reachedEditorEntry = traversedState[editorEntryStateKey] === editorEntryKey
-        || (
-          typeof editorEntryIndex === "number"
-          && typeof traversedEntryIndex === "number"
-          && editorEntryIndex === traversedEntryIndex
-        );
+      const reachedEditorEntry =
+        traversedState[editorEntryStateKey] === editorEntryKey ||
+        (typeof editorEntryIndex === "number" &&
+          typeof traversedEntryIndex === "number" &&
+          editorEntryIndex === traversedEntryIndex);
       if (restoringStep) {
         if (reachedEditorEntry) {
           clearRestoration();
@@ -3211,21 +4090,23 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
       }
       if (walkingRestoration) return;
       const updateInProgress = Boolean(
-        savePromiseRef.current
-        || agentMutationRef.current
-        || renamingAgentSavingRef.current,
+        savePromiseRef.current ||
+        agentMutationRef.current ||
+        renamingAgentSavingRef.current,
       );
       if (updateInProgress) {
         setNotice("Please wait for the current agent update to finish.");
       }
-      const canLeave = !updateInProgress && (
-        !unsavedChangesRef.current
-        || window.confirm("Discard the unsaved agent changes and leave this page?")
-      );
+      const canLeave =
+        !updateInProgress &&
+        (!unsavedChangesRef.current ||
+          window.confirm(
+            "Discard the unsaved agent changes and leave this page?",
+          ));
       if (!canLeave) {
         if (
-          typeof editorEntryIndex === "number"
-          && typeof traversedEntryIndex === "number"
+          typeof editorEntryIndex === "number" &&
+          typeof traversedEntryIndex === "number"
         ) {
           const restoreDelta = editorEntryIndex - traversedEntryIndex;
           if (restoreDelta === 0) return;
@@ -3259,8 +4140,6 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
 
   useEffect(() => {
     if (!session) {
-      // The server snapshot is empty until the persisted session hydrates.
-      if (getSession()) return;
       router.replace("/login?next=/dashboard");
       return;
     }
@@ -3268,7 +4147,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
       const mapped = backendAgents.map(mapBackendAgent);
       setAgentList(mapped);
       setSelectedAgentId((current) =>
-        mapped.some((agent) => agent.id === current) ? current : mapped[0]?.id ?? current,
+        mapped.some((agent) => agent.id === current)
+          ? current
+          : (mapped[0]?.id ?? current),
       );
     };
 
@@ -3295,12 +4176,13 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
       setModelCatalog(enrichModelCatalog(config.modelCatalog));
       setLanguageCatalog(config.languageCatalog ?? fallbackLanguageCatalog);
       setAgentLoading(false);
-    })()
-      .catch((error) => {
-        if (cancelled) return;
-        setAgentLoadError(error instanceof Error ? error.message : "Could not load the agent.");
-        setAgentLoading(false);
-      });
+    })().catch((error) => {
+      if (cancelled) return;
+      setAgentLoadError(
+        error instanceof Error ? error.message : "Could not load the agent.",
+      );
+      setAgentLoading(false);
+    });
 
     const refreshTimer = window.setInterval(() => {
       void refreshAgents().catch(() => undefined);
@@ -3349,7 +4231,13 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   }, [initialAgentId, modelCatalogReady, session, voiceConfigLoaded]);
 
   useEffect(() => {
-    if (!session || !selectedAgentLoaded || !selectedAgentId || selectedAgentId === "loading" || selectedAgentId === "maya") {
+    if (
+      !session ||
+      !selectedAgentLoaded ||
+      !selectedAgentId ||
+      selectedAgentId === "loading" ||
+      selectedAgentId === "maya"
+    ) {
       return;
     }
 
@@ -3357,11 +4245,16 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
 
     const handleRuntime = (event: Event) => {
       try {
-        const snapshot = JSON.parse((event as MessageEvent<string>).data) as AgentRuntimeSnapshot;
+        const snapshot = JSON.parse(
+          (event as MessageEvent<string>).data,
+        ) as AgentRuntimeSnapshot;
         setRuntimeSnapshot(snapshot);
         setRuntimeStreamState("live");
         if (snapshot.region) {
-          setRuntimeRegions((current) => ({ ...current, [snapshot.agentId]: snapshot.region }));
+          setRuntimeRegions((current) => ({
+            ...current,
+            [snapshot.agentId]: snapshot.region,
+          }));
         }
       } catch {
         setRuntimeStreamState("reconnecting");
@@ -3379,7 +4272,14 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   }, [selectedAgentId, selectedAgentLoaded, session]);
 
   useEffect(() => {
-    if (!session || activeTab !== "calls" || !selectedAgentId || selectedAgentId === "loading" || selectedAgentId === "maya") return;
+    if (
+      !session ||
+      activeTab !== "calls" ||
+      !selectedAgentId ||
+      selectedAgentId === "loading" ||
+      selectedAgentId === "maya"
+    )
+      return;
     void voiceApi
       .calls({ agentId: selectedAgentId, limit: 5, recent: true })
       .then((result) => setRecentCalls(result.calls))
@@ -3387,7 +4287,11 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   }, [activeTab, selectedAgentId, session]);
 
   function beginAgentMutation(kind: "syncing" | "cloning" | "deleting") {
-    if (agentMutationRef.current || savePromiseRef.current || renamingAgentSavingRef.current) {
+    if (
+      agentMutationRef.current ||
+      savePromiseRef.current ||
+      renamingAgentSavingRef.current
+    ) {
       setNotice("Please wait for the current agent update to finish.");
       return false;
     }
@@ -3402,7 +4306,11 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   }
 
   async function handleSyncPhoneRoutes() {
-    if (agentMutationRef.current || savePromiseRef.current || renamingAgentSavingRef.current) {
+    if (
+      agentMutationRef.current ||
+      savePromiseRef.current ||
+      renamingAgentSavingRef.current
+    ) {
       setNotice("Please wait for the current agent update to finish.");
       return;
     }
@@ -3416,10 +4324,15 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
         voiceApi.config(),
       ]);
       const mappedAgents = backendAgents.map(mapBackendAgent);
-      setAgentList((current) => mappedAgents.map((serverAgent) => {
-        if (!unsavedChangesRef.current || serverAgent.id !== selectedAgent.id) return serverAgent;
-        return current.find((item) => item.id === serverAgent.id) ?? serverAgent;
-      }));
+      setAgentList((current) =>
+        mappedAgents.map((serverAgent) => {
+          if (!unsavedChangesRef.current || serverAgent.id !== selectedAgent.id)
+            return serverAgent;
+          return (
+            current.find((item) => item.id === serverAgent.id) ?? serverAgent
+          );
+        }),
+      );
       setVoiceConfig(config);
       setNotice(
         `Synced ${response.vobiz.total} phone numbers, checked ${response.routes.total} routes, repaired ${response.routes.repaired}, needs setup ${response.routes.needsSetup}.`,
@@ -3449,55 +4362,62 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
       setSaving(true);
       setNotice("Saving agent...");
       try {
-        const { agent, routingWarning } = await voiceApi.saveAgent(savingAgent.id, {
-          version: savingAgent.version,
-          name: savingAgent.name,
-          team: savingAgent.team,
-          status: savingAgent.status,
-          language: savingAgent.language,
-          multilingualEnabled: savingAgent.multilingualEnabled,
-          languageSwitchingEnabled: savingAgent.languageSwitchingEnabled,
-          supportedLanguages: savingAgent.supportedLanguages,
-          voice: savingAgent.voice,
-          pipelineMode: savingAgent.pipelineMode,
-          realtimeProvider: savingAgent.realtimeProvider,
-          realtimeModel: savingAgent.realtimeModel,
-          llmProvider: savingAgent.llmProvider,
-          llmModel: savingAgent.llmModel,
-          sttProvider: savingAgent.sttProvider,
-          sttModel: savingAgent.sttModel,
-          ttsProvider: savingAgent.ttsProvider,
-          ttsModel: savingAgent.ttsModel,
-          temperature: savingAgent.temperature,
-          maxConcurrentCalls: savingAgent.maxConcurrentCalls,
-          voiceSpeed: savingAgent.voiceSpeed,
-          voicePitch: savingAgent.voicePitch,
-          interruptionSensitivity: savingAgent.interruptionSensitivity,
-          backgroundNoise: savingAgent.backgroundNoise,
-          callbackEmail: savingAgent.callbackEmail,
-          businessHoursEnabled: savingAgent.businessHoursEnabled,
-          businessHours: savingAgent.businessHours,
-          prompt: savingAgent.prompt,
-          firstMessage: savingAgent.firstMessage,
-          firstMessageMode: savingAgent.firstMessageMode,
-          behavior: savingAgent.behavior,
-          callSettings: savingAgent.callSettings,
-          tools: savingAgent.tools.map(normalizeTool),
-          dynamicVariables: savingAgent.dynamicVariables,
-          prefetchWebhook: savingAgent.prefetchWebhook,
-          endOfCallWebhook: savingAgent.endOfCallWebhook,
-          googleCalendar: savingAgent.googleCalendar,
-          googleSheets: savingAgent.googleSheets,
-          widget: savingAgent.widget,
-          ...changes,
-        });
+        const { agent, routingWarning } = await voiceApi.saveAgent(
+          savingAgent.id,
+          {
+            version: savingAgent.version,
+            name: savingAgent.name,
+            team: savingAgent.team,
+            status: savingAgent.status,
+            language: savingAgent.language,
+            multilingualEnabled: savingAgent.multilingualEnabled,
+            languageSwitchingEnabled: savingAgent.languageSwitchingEnabled,
+            supportedLanguages: savingAgent.supportedLanguages,
+            voice: savingAgent.voice,
+            pipelineMode: savingAgent.pipelineMode,
+            realtimeProvider: savingAgent.realtimeProvider,
+            realtimeModel: savingAgent.realtimeModel,
+            llmProvider: savingAgent.llmProvider,
+            llmModel: savingAgent.llmModel,
+            sttProvider: savingAgent.sttProvider,
+            sttModel: savingAgent.sttModel,
+            ttsProvider: savingAgent.ttsProvider,
+            ttsModel: savingAgent.ttsModel,
+            temperature: savingAgent.temperature,
+            maxConcurrentCalls: savingAgent.maxConcurrentCalls,
+            voiceSpeed: savingAgent.voiceSpeed,
+            voicePitch: savingAgent.voicePitch,
+            interruptionSensitivity: savingAgent.interruptionSensitivity,
+            backgroundNoise: savingAgent.backgroundNoise,
+            callbackEmail: savingAgent.callbackEmail,
+            businessHoursEnabled: savingAgent.businessHoursEnabled,
+            businessHours: savingAgent.businessHours,
+            prompt: savingAgent.prompt,
+            firstMessage: savingAgent.firstMessage,
+            firstMessageMode: savingAgent.firstMessageMode,
+            behavior: savingAgent.behavior,
+            callSettings: savingAgent.callSettings,
+            tools: savingAgent.tools.map(normalizeTool),
+            dynamicVariables: savingAgent.dynamicVariables,
+            prefetchWebhook: savingAgent.prefetchWebhook,
+            endOfCallWebhook: savingAgent.endOfCallWebhook,
+            googleCalendar: savingAgent.googleCalendar,
+            googleSheets: savingAgent.googleSheets,
+            widget: savingAgent.widget,
+            ...changes,
+          },
+        );
 
         if (editRevisionRef.current !== saveRevision) {
           // Preserve the user's newer local edits, but advance the server
           // revision so the next save can pass optimistic concurrency.
-          setAgentList((current) => current.map((item) => (
-            item.id === agent._id ? { ...item, version: agent.version } : item
-          )));
+          setAgentList((current) =>
+            current.map((item) =>
+              item.id === agent._id
+                ? { ...item, version: agent.version }
+                : item,
+            ),
+          );
           setNotice(
             routingWarning
               ? `${publicVoiceMessage(routingWarning, "Agent saved, but phone routing still needs setup.")} Newer changes still need saving.`
@@ -3507,13 +4427,24 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
         }
 
         const mapped = mapBackendAgent(agent);
-        setAgentList((current) => current.map((item) => (item.id === mapped.id ? mapped : item)));
+        setAgentList((current) =>
+          current.map((item) => (item.id === mapped.id ? mapped : item)),
+        );
         unsavedChangesRef.current = false;
         setHasUnsavedChanges(false);
-        setNotice(routingWarning ? publicVoiceMessage(routingWarning, "Agent saved, but phone routing still needs setup.") : "Agent saved.");
+        setNotice(
+          routingWarning
+            ? publicVoiceMessage(
+                routingWarning,
+                "Agent saved, but phone routing still needs setup.",
+              )
+            : "Agent saved.",
+        );
         return true;
       } catch (error) {
-        setNotice(error instanceof Error ? error.message : "Could not save agent.");
+        setNotice(
+          error instanceof Error ? error.message : "Could not save agent.",
+        );
         return false;
       } finally {
         setSaving(false);
@@ -3528,7 +4459,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   }
 
   async function handlePreviewVoice(
-    input: Pick<VoicePreviewRequest, "mode" | "provider" | "model"> & { voice?: string },
+    input: Pick<VoicePreviewRequest, "mode" | "provider" | "model"> & {
+      voice?: string;
+    },
   ) {
     const request: VoicePreviewRequest = {
       ...input,
@@ -3559,21 +4492,33 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
       const audio = new Audio(url);
       previewUrlRef.current = url;
       previewAudioRef.current = audio;
-      audio.addEventListener("ended", () => {
-        if (previewUrlRef.current === url) {
-          URL.revokeObjectURL(url);
-          previewUrlRef.current = "";
-        }
-      }, { once: true });
-      audio.addEventListener("error", () => {
-        if (previewUrlRef.current === url) {
-          URL.revokeObjectURL(url);
-          previewUrlRef.current = "";
-        }
-      }, { once: true });
+      audio.addEventListener(
+        "ended",
+        () => {
+          if (previewUrlRef.current === url) {
+            URL.revokeObjectURL(url);
+            previewUrlRef.current = "";
+          }
+        },
+        { once: true },
+      );
+      audio.addEventListener(
+        "error",
+        () => {
+          if (previewUrlRef.current === url) {
+            URL.revokeObjectURL(url);
+            previewUrlRef.current = "";
+          }
+        },
+        { once: true },
+      );
       await audio.play();
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Could not play this voice preview.");
+      setNotice(
+        error instanceof Error
+          ? error.message
+          : "Could not play this voice preview.",
+      );
     } finally {
       setPreviewingVoice("");
     }
@@ -3588,12 +4533,19 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     unsavedChangesRef.current = true;
     setHasUnsavedChanges(true);
     setAgentList((current) =>
-      current.map((agent) => (agent.id === selectedAgent.id ? { ...agent, ...changes } : agent)),
+      current.map((agent) =>
+        agent.id === selectedAgent.id ? { ...agent, ...changes } : agent,
+      ),
     );
   }
 
   function beginSelectedAgentRename() {
-    if (renamingAgentSavingRef.current || savePromiseRef.current || agentMutationRef.current) return;
+    if (
+      renamingAgentSavingRef.current ||
+      savePromiseRef.current ||
+      agentMutationRef.current
+    )
+      return;
     setAgentNameDraft(selectedAgent.name);
     setNotice("");
     setShowAgentNameEditor(true);
@@ -3606,7 +4558,11 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   }
 
   async function saveAgentName(agent: VoiceAgent) {
-    if (renamingAgentSavingRef.current || savePromiseRef.current || agentMutationRef.current) {
+    if (
+      renamingAgentSavingRef.current ||
+      savePromiseRef.current ||
+      agentMutationRef.current
+    ) {
       setNotice("Please wait for the current agent update to finish.");
       return;
     }
@@ -3624,22 +4580,34 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     setRenamingAgentSaving(true);
     setNotice("Renaming agent...");
     try {
-      const { agent: savedAgent, routingWarning } = await voiceApi.saveAgent(agent.id, {
-        name,
-        version: agent.version,
-      });
+      const { agent: savedAgent, routingWarning } = await voiceApi.saveAgent(
+        agent.id,
+        {
+          name,
+          version: agent.version,
+        },
+      );
       setAgentList((current) =>
-        current.map((item) => (
+        current.map((item) =>
           item.id === agent.id
             ? { ...item, name: savedAgent.name, version: savedAgent.version }
-            : item
-        )),
+            : item,
+        ),
       );
       setAgentNameDraft("");
       setShowAgentNameEditor(false);
-      setNotice(routingWarning ? publicVoiceMessage(routingWarning, "Agent renamed, but phone routing still needs setup.") : "Agent renamed.");
+      setNotice(
+        routingWarning
+          ? publicVoiceMessage(
+              routingWarning,
+              "Agent renamed, but phone routing still needs setup.",
+            )
+          : "Agent renamed.",
+      );
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Could not rename agent.");
+      setNotice(
+        error instanceof Error ? error.message : "Could not rename agent.",
+      );
     } finally {
       renamingAgentSavingRef.current = false;
       setRenamingAgentSaving(false);
@@ -3647,7 +4615,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   }
 
   function updateAgentLanguage(language: string) {
-    const effectiveLanguage = selectedAgent.multilingualEnabled ? "Multilingual" : language;
+    const effectiveLanguage = selectedAgent.multilingualEnabled
+      ? "Multilingual"
+      : language;
     const voices =
       selectedAgent.pipelineMode === "realtime"
         ? getVoices(
@@ -3668,7 +4638,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
           );
     updateSelectedAgent({
       language,
-      supportedLanguages: [...new Set([language, ...selectedAgent.supportedLanguages])],
+      supportedLanguages: [
+        ...new Set([language, ...selectedAgent.supportedLanguages]),
+      ],
       voice: coerceVoice(selectedAgent.voice, voices, selectedAgent.voice),
       sttModel: normalizeSttModelForLanguage(
         selectedAgent.sttProvider,
@@ -3680,15 +4652,23 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   }
 
   function updatePipelineMode(pipelineMode: PipelineMode) {
-    const ttsLanguages = getProvider(modelCatalog, "tts", selectedAgent.ttsProvider).languages;
+    const ttsLanguages = getProvider(
+      modelCatalog,
+      "tts",
+      selectedAgent.ttsProvider,
+    ).languages;
     const nextLanguage =
       pipelineMode === "pipeline" && ttsLanguages?.length
         ? coerceLanguage(
             selectedAgent.language,
-            ttsLanguages.filter((language) => language.value !== "Multilingual"),
+            ttsLanguages.filter(
+              (language) => language.value !== "Multilingual",
+            ),
           )
         : selectedAgent.language;
-    const effectiveLanguage = selectedAgent.multilingualEnabled ? "Multilingual" : nextLanguage;
+    const effectiveLanguage = selectedAgent.multilingualEnabled
+      ? "Multilingual"
+      : nextLanguage;
     const nextVoices =
       pipelineMode === "realtime"
         ? getVoices(
@@ -3725,7 +4705,10 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     if (saved) setOpenStackConfig(null);
   }
 
-  function updateBehavior(changes: Partial<AgentBehavior>, agentChanges: Partial<VoiceAgent> = {}) {
+  function updateBehavior(
+    changes: Partial<AgentBehavior>,
+    agentChanges: Partial<VoiceAgent> = {},
+  ) {
     updateSelectedAgent({
       ...agentChanges,
       behavior: { ...selectedAgent.behavior, ...changes },
@@ -3750,11 +4733,17 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
           if (setting.field === "userStartsFirst") {
             updateBehavior(
               { userStartsFirst: enabled },
-              { firstMessageMode: enabled ? "user-speaks-first" : "assistant-speaks-first" },
+              {
+                firstMessageMode: enabled
+                  ? "user-speaks-first"
+                  : "assistant-speaks-first",
+              },
             );
             return;
           }
-          updateBehavior({ [setting.field]: enabled } as Partial<AgentBehavior>);
+          updateBehavior({
+            [setting.field]: enabled,
+          } as Partial<AgentBehavior>);
         }}
       />
     );
@@ -3770,9 +4759,14 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     });
   }
 
-  function updateBusinessDay(day: BusinessHoursDay["day"], changes: Partial<BusinessHoursDay>) {
+  function updateBusinessDay(
+    day: BusinessHoursDay["day"],
+    changes: Partial<BusinessHoursDay>,
+  ) {
     updateBusinessHours({
-      schedule: selectedSchedule.map((item) => (item.day === day ? { ...item, ...changes } : item)),
+      schedule: selectedSchedule.map((item) =>
+        item.day === day ? { ...item, ...changes } : item,
+      ),
     });
   }
 
@@ -3783,12 +4777,19 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   }
 
   function confirmLeaveAgentEditor() {
-    if (savePromiseRef.current || agentMutationRef.current || renamingAgentSavingRef.current) {
+    if (
+      savePromiseRef.current ||
+      agentMutationRef.current ||
+      renamingAgentSavingRef.current
+    ) {
       setNotice("Please wait for the current agent update to finish.");
       return false;
     }
     if (!unsavedChangesRef.current) return true;
-    if (!window.confirm("Discard the unsaved agent changes and leave this page?")) return false;
+    if (
+      !window.confirm("Discard the unsaved agent changes and leave this page?")
+    )
+      return false;
     return true;
   }
 
@@ -3815,7 +4816,11 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   }
 
   async function handleCloneAgent() {
-    if (agentMutationRef.current || savePromiseRef.current || renamingAgentSavingRef.current) {
+    if (
+      agentMutationRef.current ||
+      savePromiseRef.current ||
+      renamingAgentSavingRef.current
+    ) {
       setNotice("Please wait for the current agent update to finish.");
       return;
     }
@@ -3827,7 +4832,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
       const mapped = mapBackendAgent(agent);
       if (editRevisionRef.current !== cloneRevision) {
         setAgentList((current) => [...current, mapped]);
-        setNotice("Agent cloned, but newer edits remain on this agent and still need saving.");
+        setNotice(
+          "Agent cloned, but newer edits remain on this agent and still need saving.",
+        );
         return;
       }
       clearUnsavedChanges();
@@ -3836,30 +4843,47 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
       navigateToAgent(mapped.id, true);
       setNotice("Agent cloned as a new draft.");
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Could not clone agent.");
+      setNotice(
+        error instanceof Error ? error.message : "Could not clone agent.",
+      );
     } finally {
       finishAgentMutation();
     }
   }
 
   async function handleDeleteAgent() {
-    if (agentMutationRef.current || savePromiseRef.current || renamingAgentSavingRef.current) {
+    if (
+      agentMutationRef.current ||
+      savePromiseRef.current ||
+      renamingAgentSavingRef.current
+    ) {
       setNotice("Please wait for the current agent update to finish.");
       return;
     }
-    const unsavedWarning = unsavedChangesRef.current ? " Unsaved changes will also be discarded." : "";
-    if (!window.confirm(`Delete ${selectedAgent.name}? This cannot be undone.${unsavedWarning}`)) return;
+    const unsavedWarning = unsavedChangesRef.current
+      ? " Unsaved changes will also be discarded."
+      : "";
+    if (
+      !window.confirm(
+        `Delete ${selectedAgent.name}? This cannot be undone.${unsavedWarning}`,
+      )
+    )
+      return;
     if (!beginAgentMutation("deleting")) return;
     try {
       await voiceApi.deleteAgent(selectedAgent.id);
       clearUnsavedChanges();
-      const nextAgents = agentList.filter((agent) => agent.id !== selectedAgent.id);
+      const nextAgents = agentList.filter(
+        (agent) => agent.id !== selectedAgent.id,
+      );
       setAgentList(nextAgents);
       setSelectedAgentId("");
       navigateToDashboardPage("/dashboard/agents", true);
       setNotice("Agent deleted.");
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Could not delete agent.");
+      setNotice(
+        error instanceof Error ? error.message : "Could not delete agent.",
+      );
     } finally {
       finishAgentMutation();
     }
@@ -3868,7 +4892,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   function validateTool(tool: AgentTool) {
     const normalized = normalizeTool(tool);
     if (!toolNamePattern.test(normalized.name)) {
-      setNotice("Tool names must start with a letter and use letters, numbers, or underscores.");
+      setNotice(
+        "Tool names must start with a letter and use letters, numbers, or underscores.",
+      );
       return null;
     }
     if (!isHttpUrl(normalized.url)) {
@@ -3877,17 +4903,24 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     }
     const parameters = normalized.parameters ?? [];
     if (parameters.some((parameter) => !keyNamePattern.test(parameter.name))) {
-      setNotice("Parameter names must start with a letter and use letters, numbers, or underscores.");
+      setNotice(
+        "Parameter names must start with a letter and use letters, numbers, or underscores.",
+      );
       return null;
     }
-    const duplicateParameter = parameters.find((parameter, index) =>
-      parameters.findIndex((item) => item.name === parameter.name) !== index,
+    const duplicateParameter = parameters.find(
+      (parameter, index) =>
+        parameters.findIndex((item) => item.name === parameter.name) !== index,
     );
     if (duplicateParameter) {
       setNotice(`Parameter "${duplicateParameter.name}" is duplicated.`);
       return null;
     }
-    if (Object.keys(normalized.headers ?? {}).some((name) => !headerNamePattern.test(name))) {
+    if (
+      Object.keys(normalized.headers ?? {}).some(
+        (name) => !headerNamePattern.test(name),
+      )
+    ) {
       setNotice("Header names must be valid HTTP header names.");
       return null;
     }
@@ -3903,6 +4936,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     if (!tool) return;
     updateSelectedAgent({ tools: [...selectedAgent.tools, tool] });
     setToolDraft(createEmptyToolDraft());
+    setShowToolCreator(false);
     setNotice("Webhook tool added. Save to deploy it.");
   }
 
@@ -3915,7 +4949,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   }
 
   function removeTool(index: number) {
-    updateSelectedAgent({ tools: selectedAgent.tools.filter((_, toolIndex) => toolIndex !== index) });
+    updateSelectedAgent({
+      tools: selectedAgent.tools.filter((_, toolIndex) => toolIndex !== index),
+    });
   }
 
   function duplicateTool(index: number) {
@@ -3932,7 +4968,10 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
           _id: undefined,
           name: `${source.name}_copy`.slice(0, 80),
           enabled: false,
-          parameters: (source.parameters ?? []).map((parameter) => ({ ...parameter, _id: undefined })),
+          parameters: (source.parameters ?? []).map((parameter) => ({
+            ...parameter,
+            _id: undefined,
+          })),
         }),
       ],
     });
@@ -3943,14 +4982,23 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     const tool = selectedAgent.tools[index];
     if (!tool) return;
     const parameters = tool.parameters ?? [];
-    if (parameters.length >= maxToolParameters) {
-      setNotice(`A tool can have at most ${maxToolParameters} parameters.`);
+    if (parameters.length >= 20) {
+      setNotice("A tool can have at most 20 parameters.");
       return;
     }
-    updateTool(index, { parameters: [...parameters, createEmptyToolParameter(nextParameterName(parameters))] });
+    updateTool(index, {
+      parameters: [
+        ...parameters,
+        createEmptyToolParameter(nextParameterName(parameters)),
+      ],
+    });
   }
 
-  function updateToolParameter(toolIndex: number, parameterIndex: number, changes: Partial<AgentToolParameter>) {
+  function updateToolParameter(
+    toolIndex: number,
+    parameterIndex: number,
+    changes: Partial<AgentToolParameter>,
+  ) {
     const tool = selectedAgent.tools[toolIndex];
     if (!tool) return;
     updateTool(toolIndex, {
@@ -3963,15 +5011,28 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   function removeToolParameter(toolIndex: number, parameterIndex: number) {
     const tool = selectedAgent.tools[toolIndex];
     if (!tool) return;
-    updateTool(toolIndex, { parameters: (tool.parameters ?? []).filter((_, index) => index !== parameterIndex) });
+    updateTool(toolIndex, {
+      parameters: (tool.parameters ?? []).filter(
+        (_, index) => index !== parameterIndex,
+      ),
+    });
   }
 
-  function updateToolHeader(toolIndex: number, headerIndex: number, changes: Partial<HeaderDraft>) {
+  function updateToolHeader(
+    toolIndex: number,
+    headerIndex: number,
+    changes: Partial<HeaderDraft>,
+  ) {
     const tool = selectedAgent.tools[toolIndex];
     if (!tool) return;
     const drafts = headersToDrafts(tool.headers);
     updateTool(toolIndex, {
-      headers: draftsToHeaders(drafts.map((header, index) => index === headerIndex ? { ...header, ...changes } : header), true),
+      headers: draftsToHeaders(
+        drafts.map((header, index) =>
+          index === headerIndex ? { ...header, ...changes } : header,
+        ),
+        true,
+      ),
     });
   }
 
@@ -3985,23 +5046,33 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     const tool = selectedAgent.tools[toolIndex];
     if (!tool) return;
     updateTool(toolIndex, {
-      headers: draftsToHeaders(headersToDrafts(tool.headers).filter((_, index) => index !== headerIndex)),
+      headers: draftsToHeaders(
+        headersToDrafts(tool.headers).filter(
+          (_, index) => index !== headerIndex,
+        ),
+      ),
     });
   }
 
   function addDraftParameter() {
     const parameters = toolDraft.parameters ?? [];
-    if (parameters.length >= maxToolParameters) {
-      setNotice(`A tool can have at most ${maxToolParameters} parameters.`);
+    if (parameters.length >= 20) {
+      setNotice("A tool can have at most 20 parameters.");
       return;
     }
     setToolDraft((current) => ({
       ...current,
-      parameters: [...(current.parameters ?? []), createEmptyToolParameter(nextParameterName(current.parameters ?? []))],
+      parameters: [
+        ...(current.parameters ?? []),
+        createEmptyToolParameter(nextParameterName(current.parameters ?? [])),
+      ],
     }));
   }
 
-  function updateDraftParameter(index: number, changes: Partial<AgentToolParameter>) {
+  function updateDraftParameter(
+    index: number,
+    changes: Partial<AgentToolParameter>,
+  ) {
     setToolDraft((current) => ({
       ...current,
       parameters: (current.parameters ?? []).map((parameter, parameterIndex) =>
@@ -4013,23 +5084,35 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   function removeDraftParameter(index: number) {
     setToolDraft((current) => ({
       ...current,
-      parameters: (current.parameters ?? []).filter((_, parameterIndex) => parameterIndex !== index),
+      parameters: (current.parameters ?? []).filter(
+        (_, parameterIndex) => parameterIndex !== index,
+      ),
     }));
   }
 
-  function updateDraftHeader(headerIndex: number, changes: Partial<HeaderDraft>) {
+  function updateDraftHeader(
+    headerIndex: number,
+    changes: Partial<HeaderDraft>,
+  ) {
     setToolDraft((current) => {
       const drafts = headersToDrafts(current.headers);
       return {
         ...current,
-        headers: draftsToHeaders(drafts.map((header, index) => index === headerIndex ? { ...header, ...changes } : header), true),
+        headers: draftsToHeaders(
+          drafts.map((header, index) =>
+            index === headerIndex ? { ...header, ...changes } : header,
+          ),
+          true,
+        ),
       };
     });
   }
 
   async function handleStartTestCall() {
     if (!testCallsEnabled) {
-      setNotice("Paused agents cannot start test calls. Enable calls or switch the agent back to Draft/Live first.");
+      setNotice(
+        "Paused agents cannot start test calls. Enable calls or switch the agent back to Draft/Live first.",
+      );
       return;
     }
 
@@ -4041,9 +5124,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     const testRevision = editRevisionRef.current;
     const saved = await handleSave();
     if (
-      saved
-      && !unsavedChangesRef.current
-      && editRevisionRef.current === testRevision
+      saved &&
+      !unsavedChangesRef.current &&
+      editRevisionRef.current === testRevision
     ) {
       setShowTestCall(true);
     }
@@ -4060,13 +5143,20 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   }
 
   function addDraftHeader() {
-    setToolDraft((current) => ({ ...current, headers: { ...(current.headers ?? {}), "": "" } }));
+    setToolDraft((current) => ({
+      ...current,
+      headers: { ...(current.headers ?? {}), "": "" },
+    }));
   }
 
   function removeDraftHeader(headerIndex: number) {
     setToolDraft((current) => ({
       ...current,
-      headers: draftsToHeaders(headersToDrafts(current.headers).filter((_, index) => index !== headerIndex)),
+      headers: draftsToHeaders(
+        headersToDrafts(current.headers).filter(
+          (_, index) => index !== headerIndex,
+        ),
+      ),
     }));
   }
 
@@ -4083,7 +5173,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
         tool: normalized,
         args: sampleArgsForTool(normalized),
       });
-      setNotice(`Tool ${normalized.name} returned HTTP ${result.status} in ${result.elapsedMs}ms.`);
+      setNotice(
+        `Tool ${normalized.name} returned HTTP ${result.status} in ${result.elapsedMs}ms.`,
+      );
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Tool test failed.");
     } finally {
@@ -4094,7 +5186,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   function addVariable() {
     const value = variableDraft.trim().replace(/[{}]/g, "");
     if (!value || selectedAgent.dynamicVariables.includes(value)) return;
-    updateSelectedAgent({ dynamicVariables: [...selectedAgent.dynamicVariables, value] });
+    updateSelectedAgent({
+      dynamicVariables: [...selectedAgent.dynamicVariables, value],
+    });
     setVariableDraft("");
   }
 
@@ -4129,7 +5223,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
       await navigator.clipboard.writeText(widgetEmbedCode);
       setNotice("Widget embed code copied.");
     } catch {
-      setNotice("Could not copy automatically. Select the code and copy it manually.");
+      setNotice(
+        "Could not copy automatically. Select the code and copy it manually.",
+      );
     }
   }
 
@@ -4141,13 +5237,21 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
         publicKey: createWidgetPublicKey(),
       },
     });
-    setNotice("Widget key generated. Save the agent before using the embed code.");
+    setNotice(
+      "Widget key generated. Save the agent before using the embed code.",
+    );
   }
 
   if (!session || agentLoading) {
     return (
-      <main className="app-strong grid min-h-screen place-items-center gap-3 bg-[#f7f8fc] text-[#737587]" role="status">
-        <span className="size-9 animate-spin rounded-full border-3 border-[#e5e7ef] border-t-[#5b63ff] motion-reduce:animate-none" aria-hidden="true" />
+      <main
+        className="app-strong grid min-h-screen place-items-center gap-3 bg-[#f7f7fc] text-[#7a7d8e]"
+        role="status"
+      >
+        <span
+          className="size-9 animate-spin rounded-full border-3 border-white/10 border-t-[#737ccf] motion-reduce:animate-none"
+          aria-hidden="true"
+        />
         Loading voice agent
       </main>
     );
@@ -4155,12 +5259,16 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
 
   if (agentLoadError || !selectedAgentLoaded) {
     return (
-      <main className="agents-home-palette grid min-h-screen place-items-center bg-[#f7f8fc] px-4 text-center">
-        <section className="grid max-w-lg gap-4 rounded-2xl border border-rose-300/20 bg-[#ffffff] p-6 shadow-sm">
-          <h1 className="app-page-title m-0 text-[#242535]">Could not load this agent</h1>
-          <p className="app-body m-0 text-rose-700">{agentLoadError || "The requested agent was not found."}</p>
+      <main className="agents-home-palette grid min-h-screen place-items-center bg-[#f7f7fc] px-4 text-center">
+        <section className="grid max-w-lg gap-4 rounded-2xl border border-rose-300/20 bg-[#ffffff] p-6 shadow-[0_18px_46px_rgba(0,0,0,0.32)]">
+          <h1 className="app-page-title m-0 text-white">
+            Could not load this agent
+          </h1>
+          <p className="app-body m-0 text-rose-200">
+            {agentLoadError || "The requested agent was not found."}
+          </p>
           <button
-            className="app-button-text mx-auto min-h-10 rounded-xl bg-[#5b63ff] px-4 text-[#ffffff] transition hover:bg-[#4d54db]"
+            className="app-button-text mx-auto min-h-10 rounded-xl bg-[#737ccf] px-4 text-[#ffffff] transition hover:bg-[#5963b8]"
             type="button"
             onClick={() => window.location.reload()}
           >
@@ -4172,9 +5280,13 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   }
 
   return (
-    <main className={`voice-agent-theme grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#f7f8fc] text-[#242535] ${
-      showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
-    }`}>
+    <main
+      className={`voice-agent-theme grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#f7f7fc] text-[#1b1b22] ${
+        showUserSidebar
+          ? "lg:grid-cols-[240px_minmax(0,1fr)]"
+          : "lg:grid-cols-[64px_minmax(0,1fr)]"
+      }`}
+    >
       <DashboardSidebar
         activeLabel="Voice Agents"
         userInitials={getInitials(session.name)}
@@ -4187,135 +5299,225 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
       />
 
       <section
-        className="grid min-w-0 content-start gap-6"
+        className="grid min-w-0 content-start gap-0"
         aria-busy={agentMutationBusy}
         inert={agentMutation ? true : undefined}
       >
-        <header className="relative overflow-hidden border-b border-[#e5e7ef] bg-white px-4 py-4 text-[#242535] shadow-sm sm:px-6 lg:px-8">
-          <div className="pointer-events-none absolute -right-20 -top-32 size-80 rounded-full border border-[#e5e7ef]" />
-          <div className="mx-auto grid w-full max-w-[1520px] gap-4 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-center">
-            <div className="min-w-0">
-              <span className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#4d54db]/70">{session.organization?.name ?? "Workspace"} / Voice agent</span>
-              <div className="mt-1.5 flex min-w-0 flex-wrap items-center gap-2.5">
-                <h1 className="m-0 min-w-0 truncate text-xl font-bold leading-7 tracking-[-0.02em] text-[#242535] sm:text-2xl" title={selectedAgent.name}>{selectedAgent.name}</h1>
-                <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[9px] font-extrabold uppercase tracking-wider ${selectedAgent.status === "Live" ? "bg-[#5b63ff]/15 text-[#4d54db] ring-1 ring-[#5b63ff]/25" : selectedAgent.status === "Paused" ? "bg-amber-400/15 text-amber-700 ring-1 ring-amber-300/20" : "bg-[#f6f7fb] text-[#737587] ring-1 ring-white/10"}`}><span className={`size-1.5 rounded-full ${selectedAgent.status === "Live" ? "bg-[#5b63ff]" : selectedAgent.status === "Paused" ? "bg-amber-300" : "bg-[#f6f7fb]"}`} />{selectedAgent.status}</span>
-                <span className={`rounded-full px-2.5 py-1 text-[9px] font-extrabold uppercase tracking-wider ${hasUnsavedChanges ? "bg-amber-400/15 text-amber-700 ring-1 ring-amber-300/20" : "bg-[#f6f7fb] text-[#737587] ring-1 ring-white/[0.08]"}`}>{hasUnsavedChanges ? "Unsaved changes" : "Up to date"}</span>
+        <DashboardPageHeader
+          eyebrow="Voice agent"
+          title={
+            <span className="flex min-w-0 flex-wrap items-center gap-2">
+              <span
+                className="truncate text-[28px] font-bold leading-8 tracking-[-0.035em]"
+                title={selectedAgent.name}
+              >
+                {selectedAgent.name}
+              </span>
+              <span
+                className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[9px] font-extrabold uppercase tracking-wider ${selectedAgent.status === "Live" ? "bg-[#eff0fb] text-[#515bb4] ring-1 ring-[#c9ccef]" : selectedAgent.status === "Paused" ? "bg-amber-50 text-amber-700 ring-1 ring-amber-200" : "bg-slate-100 text-slate-600 ring-1 ring-slate-200"}`}
+              >
+                <span
+                  className={`size-1.5 rounded-full ${selectedAgent.status === "Live" ? "bg-[#737ccf]" : selectedAgent.status === "Paused" ? "bg-amber-500" : "bg-slate-400"}`}
+                />
+                {selectedAgent.status}
+              </span>
+              <button
+                className="grid size-8 shrink-0 place-items-center rounded-lg border border-[#dfe1ec] bg-white text-[#6b6f80] transition hover:border-[#737ccf] hover:text-[#5963b8] disabled:opacity-45"
+                type="button"
+                aria-label={`Edit ${selectedAgent.name} name`}
+                title="Edit name"
+                disabled={agentMutationBusy}
+                onClick={beginSelectedAgentRename}
+              >
+                <Icon icon="edit" />
+              </button>
+            </span>
+          }
+          description={
+            <span className="inline-flex max-w-full flex-wrap items-center gap-2">
+              <span className="text-sm text-[#6b6f80]">
+                {selectedAgent.team || "Voice team"}
+              </span>
+              <span className="text-[#c5c8d4]" aria-hidden="true">
+                •
+              </span>
+              <span className="shrink-0 text-[10px] font-bold uppercase tracking-[0.14em] text-[#7a7d8e]">
+                Agent ID
+              </span>
+              <code className="max-w-[260px] truncate rounded-md bg-[#f3f4f8] px-2 py-0.5 text-[11px] font-semibold text-[#505261]">
+                {selectedAgent.id}
+              </code>
+              <button
+                className="grid size-6 shrink-0 place-items-center rounded-md border border-[#dfe1ec] bg-white text-[#5963b8] transition hover:border-[#737ccf] hover:bg-[#f3f4fb]"
+                type="button"
+                aria-label="Copy agent ID"
+                title="Copy agent ID"
+                onClick={copyAgentId}
+              >
+                <Icon icon="copy" />
+              </button>
+            </span>
+          }
+          actions={
+            <>
+              <button
+                className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#dfe1ec] bg-white px-3 text-[#505261] transition hover:border-[#737ccf] hover:text-[#5963b8] active:translate-y-px disabled:opacity-45"
+                type="button"
+                disabled={agentMutationBusy}
+                onClick={() => navigateToDashboardPage("/dashboard/agents")}
+              >
+                <svg
+                  className="size-4"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="m12 5-5 5 5 5"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                Back to agents
+              </button>
+              {hasUnsavedChanges ? (
                 <button
-                  className="grid size-8 shrink-0 place-items-center rounded-lg border border-[#e5e7ef] bg-[#f6f7fb] text-[#737587] transition hover:border-[#5b63ff]/30 hover:bg-[#5b63ff]/10 hover:text-[#4d54db] disabled:opacity-45"
+                  className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#c9ccef] bg-[#eff0fb] px-3 text-[#515bb4] transition hover:bg-[#e4e6f7] active:translate-y-px disabled:opacity-45"
                   type="button"
-                  aria-label={`Edit ${selectedAgent.name} name`}
-                  title="Edit name"
                   disabled={agentMutationBusy}
-                  onClick={beginSelectedAgentRename}
+                  title="Save agent changes"
+                  onClick={() => void handleSave()}
                 >
-                  <Icon icon="edit" />
+                  <Icon icon="save" />
+                  {saving ? "Saving..." : "Save changes"}
                 </button>
-              </div>
-              <p className="mt-1.5 mb-0 max-w-3xl text-xs leading-5 text-[#737587]">
-                Build, test, publish, and monitor your voice agent from one command center.
-              </p>
-              <div className="mt-2 flex min-w-0 flex-wrap items-center gap-2">
-                <span className="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#737587]">Agent ID</span>
-                <code className="max-w-full truncate rounded-lg border border-[#e5e7ef] bg-[#f0f1f6] px-2 py-1 text-[11px] font-semibold text-[#737587]">
-                  {selectedAgent.id}
-                </code>
-                <button
-                  className="inline-flex min-h-7 items-center justify-center gap-1.5 rounded-lg border border-[#e5e7ef] bg-[#f6f7fb] px-2 text-[11px] font-semibold text-[#737587] transition hover:border-[#5b63ff]/30 hover:bg-[#5b63ff]/10 hover:text-[#4d54db]"
-                  type="button"
-                  onClick={copyAgentId}
+              ) : (
+                <span
+                  className="app-button-text inline-flex min-h-9 items-center gap-2 px-1.5 text-[#6b6f80]"
+                  title="All changes are saved"
                 >
-                  <Icon icon="copy" />
-                  Copy
-                </button>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-2 xl:justify-end">
-            <button
-              className="app-button-text inline-flex min-h-10 items-center justify-center rounded-lg border border-[#e5e7ef] bg-[#f6f7fb] px-3 text-[#737587] transition hover:bg-[#f6f7fb] hover:text-[#242535] active:translate-y-px disabled:opacity-45 sm:min-h-9"
-              type="button"
-              disabled={agentMutationBusy}
-              onClick={() => navigateToDashboardPage("/dashboard/agents")}
-            >
-              Back to agents
-            </button>
-            <button
-              className="app-button-text inline-flex min-h-10 items-center justify-center rounded-lg border border-[#e5e7ef] bg-[#f6f7fb] px-3 text-[#737587] transition hover:bg-[#f6f7fb] hover:text-[#242535] active:translate-y-px disabled:opacity-45 sm:min-h-9"
-              type="button"
-              disabled={agentMutationBusy}
-              onClick={() => void handleCloneAgent()}
-            >
-              Clone
-            </button>
-            <button
-              className="app-button-text inline-flex min-h-10 items-center justify-center rounded-lg border border-rose-300/20 bg-rose-400/10 px-3 text-rose-700 transition hover:bg-rose-400/15 active:translate-y-px disabled:opacity-45 sm:min-h-9"
-              type="button"
-              disabled={agentMutationBusy}
-              onClick={() => void handleDeleteAgent()}
-            >
-              Delete
-            </button>
-            <button
-              className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#5b63ff]/25 bg-[#5b63ff]/10 px-3 text-[#4d54db] shadow-sm transition hover:bg-[#5b63ff]/15 active:translate-y-px disabled:opacity-45 sm:min-h-9"
-              type="button"
-              disabled={agentMutationBusy || !hasUnsavedChanges}
-              title={hasUnsavedChanges ? "Save agent changes" : "Agent is already saved"}
-              onClick={() => void handleSave()}
-            >
-              <Icon icon="save" />
-              {saving ? "Saving..." : hasUnsavedChanges ? "Save" : "Saved"}
-            </button>
-            <button
-              className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-emerald-300/20 bg-emerald-400/10 px-3 text-emerald-700 shadow-sm transition hover:bg-emerald-400/15 active:translate-y-px disabled:opacity-45 sm:min-h-9"
-              type="button"
-              disabled={!testCallsEnabled || agentMutationBusy}
-              title={testCallsEnabled ? "Start browser test call" : "Paused agents cannot start test calls"}
-              onClick={() => void handleStartTestCall()}
-            >
-              <Icon icon="phone" />
-              Test call
-            </button>
-            <button
-              className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border-0 bg-[#5b63ff] px-3.5 text-[#ffffff] shadow-sm transition hover:bg-[#4d54db] active:translate-y-px disabled:opacity-45 sm:min-h-9"
-              type="button"
-              disabled={agentMutationBusy}
-              onClick={() => {
-                updateSelectedAgent({ status: "Live" });
-                void handleSave({ status: "Live" });
-              }}
-            >
-              <Icon icon="play" />
-              {saving ? "Saving..." : "Publish"}
-            </button>
-            </div>
-          </div>
-          <div className="relative mx-auto flex w-full max-w-[1520px] gap-2 overflow-x-auto pt-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {agentHeroStats.map((item) => (
-              <div className="inline-flex min-w-max items-center gap-2 rounded-lg border border-[#e5e7ef] bg-[#f6f7fb] px-2.5 py-1.5 backdrop-blur-sm" key={item.label}>
-                <span className="text-[9px] font-extrabold uppercase tracking-wider text-[#737587]">{item.label}</span>
-                <strong className="max-w-48 truncate text-[11px] font-bold text-[#242535]" title={String(item.value)}>{item.value}</strong>
-              </div>
-            ))}
-          </div>
-        </header>
+                  <span className="grid size-5 place-items-center rounded-full bg-emerald-50 text-emerald-600">
+                    <Icon icon="save" />
+                  </span>
+                  Saved
+                </span>
+              )}
+              <button
+                className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#bfc3ea] bg-[#eff0fb] px-3.5 text-[#515bb4] transition hover:border-[#737ccf] hover:bg-[#e5e7f8] active:translate-y-px disabled:opacity-45"
+                type="button"
+                disabled={!testCallsEnabled || agentMutationBusy}
+                title={
+                  testCallsEnabled
+                    ? "Start browser test call"
+                    : "Paused agents cannot start test calls"
+                }
+                onClick={() => void handleStartTestCall()}
+              >
+                <Icon icon="phone" />
+                Test call
+              </button>
+              <button
+                className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border-0 bg-[#737ccf] px-4 text-white shadow-[0_8px_20px_rgba(89,99,184,0.22)] transition hover:bg-[#5963b8] hover:shadow-[0_10px_24px_rgba(89,99,184,0.28)] active:translate-y-px disabled:opacity-45"
+                type="button"
+                disabled={agentMutationBusy}
+                onClick={() => {
+                  updateSelectedAgent({ status: "Live" });
+                  void handleSave({ status: "Live" });
+                }}
+              >
+                <Icon icon="play" />
+                {saving ? "Saving..." : "Publish"}
+              </button>
+              <details className="group relative">
+                <summary
+                  className="app-button-text grid min-h-9 min-w-9 cursor-pointer list-none place-items-center rounded-lg border border-[#dfe1ec] bg-white px-2 text-[#6b6f80] transition hover:border-[#737ccf] hover:text-[#5963b8]"
+                  aria-label="More agent actions"
+                  title="More actions"
+                >
+                  <svg
+                    className="size-4"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <circle cx="4" cy="10" r="1.5" />
+                    <circle cx="10" cy="10" r="1.5" />
+                    <circle cx="16" cy="10" r="1.5" />
+                  </svg>
+                </summary>
+                <div className="absolute top-[calc(100%+8px)] right-0 z-50 grid w-48 overflow-hidden rounded-xl border border-[#e1e3ed] bg-white p-1.5 shadow-[0_18px_48px_rgba(37,40,74,0.16)]">
+                  <button
+                    className="app-button-text flex min-h-10 items-center gap-2 rounded-lg px-3 text-left text-[#505261] transition hover:bg-[#f5f5fb] hover:text-[#515bb4] disabled:opacity-45"
+                    type="button"
+                    disabled={agentMutationBusy}
+                    onClick={(event) => {
+                      event.currentTarget
+                        .closest("details")
+                        ?.removeAttribute("open");
+                      void handleCloneAgent();
+                    }}
+                  >
+                    <Icon icon="copy" /> Clone agent
+                  </button>
+                  <div className="my-1 h-px bg-[#eceef4]" />
+                  <button
+                    className="app-button-text flex min-h-10 items-center gap-2 rounded-lg px-3 text-left text-rose-600 transition hover:bg-rose-50 disabled:opacity-45"
+                    type="button"
+                    disabled={agentMutationBusy}
+                    onClick={(event) => {
+                      event.currentTarget
+                        .closest("details")
+                        ?.removeAttribute("open");
+                      void handleDeleteAgent();
+                    }}
+                  >
+                    <svg
+                      className="size-4"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M4.5 6h11M8 6V4.5h4V6m-6 0 .6 9h6.8l.6-9M8.5 9v3.5m3-3.5v3.5"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    Delete agent
+                  </button>
+                </div>
+              </details>
+            </>
+          }
+        />
 
         <section className={contentGridClass}>
-          <section className="grid min-w-0 content-start gap-5">
-            <article className="min-w-0 overflow-hidden rounded-2xl border border-[#e5e7ef] bg-[#ffffff] shadow-sm">
-              <div className="flex flex-col gap-4 border-b border-[#e5e7ef] bg-white px-5 py-4 text-[#242535] lg:flex-row lg:items-center lg:justify-between">
+          <section className="grid min-w-0 content-start gap-4">
+            <article className="agent-editor-shell min-w-0 overflow-hidden rounded-2xl border border-[#e1e3ed] bg-white">
+              <div className="agent-editor-header flex flex-col gap-3 border-b border-[#e1e3ed] bg-white px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
-                  <h2 className="m-0 text-sm font-bold tracking-[-0.01em] text-[#242535]">Agent builder</h2>
-                  <span className="mt-1 block text-[11px] text-[#737587]">
-                    {selectedAgent.name} / {selectedAgent.team}
-                  </span>
+                  <h2 className="m-0 text-base font-bold tracking-[-0.02em] text-[#171821]">
+                    {tabPresentation[activeTab].title}
+                  </h2>
+                  <p className="app-caption mt-1 mb-0">
+                    {tabPresentation[activeTab].detail}
+                  </p>
                 </div>
-                <div className="flex max-w-full gap-1 overflow-x-auto rounded-xl border border-[#e5e7ef] bg-[#f0f1f6] p-1" role="group" aria-label="Agent editor sections">
+                <div
+                  className="flex max-w-full gap-1 overflow-x-auto rounded-xl border border-[#e1e3ed] bg-[#f7f7fc] p-1"
+                  role="group"
+                  aria-label="Agent editor sections"
+                >
                   {tabs.map((tab) => (
                     <button
-                      className={`app-button-text min-h-8 rounded-lg px-3 py-1.5 transition focus-visible:ring-2 focus-visible:ring-[#4d54db]/60 ${
+                      className={`app-button-text min-h-8 rounded-lg px-3 py-1.5 transition focus-visible:ring-2 focus-visible:ring-[#515bb4]/60 ${
                         activeTab === tab.id
-                          ? "bg-[#5b63ff]/10 text-[#4d54db] shadow-sm"
-                          : "text-[#737587] hover:bg-[#f6f7fb] hover:text-[#242535]"
+                          ? "bg-[#737ccf]/10 text-[#515bb4] shadow-[inset_0_0_0_1px_rgba(115,124,207,0.18)]"
+                          : "text-[#6b6f80] hover:bg-white hover:text-[#515bb4]"
                       }`}
                       key={tab.id}
                       type="button"
@@ -4328,9 +5530,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                 </div>
               </div>
 
-              <div className="bg-[#f8f9fc] p-5 sm:p-6">
+              <div className="bg-[#fafafe] p-4 sm:p-5">
                 {activeTab === "builder" ? (
-                  <div className="grid gap-6">
+                  <div className="grid gap-4">
                     <div className="hidden gap-3 lg:grid-cols-2">
                       <InputField
                         label="Agent name"
@@ -4344,84 +5546,177 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                       />
                     </div>
 
-                    <section className="grid gap-5 rounded-lg border border-[#e2e8f0] bg-white p-5 shadow-sm">
-                      <div className="grid gap-5 xl:grid-cols-2">
-                        <div className="grid gap-2">
-                          <span className="app-label uppercase text-[#64748b]">Pricing basis</span>
-                          <div className="flex min-w-0 flex-wrap items-center gap-4 sm:flex-nowrap">
-                            <strong className="text-2xl font-semibold leading-7 text-[#111827]">Provider<span className="text-base font-medium text-[#64748b]"> cost only</span></strong>
-                            <span className="grid h-2 w-full min-w-32 flex-1 grid-cols-[1.8fr_0.45fr_0.6fr_1fr] overflow-hidden rounded-full bg-[#eef2f7] sm:w-auto">
-                              <span className="bg-[#14b8a6]" />
-                              <span className="bg-[#f97316]" />
-                              <span className="bg-[#3b82f6]" />
-                              <span className="bg-[#c026d3]" />
-                            </span>
-                          </div>
+                    <section className="agent-stack-panel overflow-hidden rounded-xl border border-[#e1e3ed] bg-white">
+                      <div className="flex flex-col gap-2 border-b border-[#edf0f4] px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                          <h3 className="app-section-title m-0">
+                            Voice pipeline
+                          </h3>
+                          <p className="app-caption mt-1 mb-0">
+                            The three connected services that listen, reason,
+                            and respond.
+                          </p>
                         </div>
-                        <div className="grid gap-2">
-                          <span className="app-label uppercase text-[#64748b]">Average latency</span>
-                          <div className="flex min-w-0 flex-wrap items-center gap-4 sm:flex-nowrap">
-                            <strong className="text-2xl font-semibold leading-7 text-[#d97706]">~{voiceStackLatencyValue}<span className="text-base font-medium text-[#64748b]"> ms</span></strong>
-                            <span className="grid h-2 w-full min-w-32 flex-1 grid-cols-[0.6fr_1.6fr_1.4fr_0.25fr] overflow-hidden rounded-full bg-[#eef2f7] sm:w-auto">
-                              <span className="bg-[#f97316]" />
-                              <span className="bg-[#3b82f6]" />
-                              <span className="bg-[#c026d3]" />
-                              <span className="bg-[#22c55e]" />
-                            </span>
-                          </div>
+                        <div className="flex items-center gap-2">
+                          <span className="rounded-full bg-[#eff0fb] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-[#515bb4]">
+                            {selectedAgent.pipelineMode}
+                          </span>
                         </div>
                       </div>
 
-                      <div className="grid gap-4 lg:grid-cols-3">
-                        {voiceStackCards.map((card) => (
-                          <button
-                            className={`grid min-h-40 gap-4 rounded-lg border border-[#e2e8f0] bg-[#f8fafc] p-4 text-left transition hover:-translate-y-0.5 hover:border-[#cbd5e1] hover:bg-white hover:shadow-sm ${
-                              openStackConfig === card.id ? "bg-white shadow-sm" : ""
-                            }`}
-                            key={card.id}
-                            type="button"
-                            aria-pressed={openStackConfig === card.id}
-                            onClick={() => setOpenStackConfig(card.id)}
-                          >
-                            <span className="flex items-center justify-between gap-3">
-                              <span className="flex min-w-0 items-center gap-2">
-                                <span className={`size-2.5 shrink-0 rounded-full ${card.dot}`} />
-                                <span className="app-label truncate uppercase text-[#64748b]">{card.label}</span>
+                      <div className="flex flex-col bg-[#f8f8fc] p-3.5 lg:flex-row lg:items-stretch lg:p-4">
+                        {voiceStackCards.map((card, index) => (
+                          <div className="contents" key={card.id}>
+                            <button
+                              className={`group relative grid min-h-32 min-w-0 flex-1 cursor-pointer gap-3 overflow-hidden rounded-xl border bg-white p-4 text-left transition duration-200 hover:-translate-y-0.5 hover:border-[#bfc3ea] hover:shadow-[0_12px_30px_rgba(37,40,74,0.08)] ${
+                                openStackConfig === card.id
+                                  ? "z-10 border-[#aeb4e5] shadow-[0_12px_30px_rgba(37,40,74,0.1)]"
+                                  : "border-[#e1e3ed]"
+                              }`}
+                              type="button"
+                              aria-label={`Configure ${card.label}`}
+                              aria-pressed={openStackConfig === card.id}
+                              onClick={() => setOpenStackConfig(card.id)}
+                            >
+                              <span
+                                aria-hidden="true"
+                                className={`absolute inset-x-0 top-0 h-1 ${card.id === "stt" ? "bg-[#f97316]" : card.id === "llm" ? "bg-[#3b82f6]" : "bg-[#c026d3]"}`}
+                              />
+                              <span className="flex items-center justify-between gap-3">
+                                <span className="flex min-w-0 items-center gap-2">
+                                  <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-[#eff0fb] text-[10px] font-extrabold text-[#5963b8]">
+                                    {card.step}
+                                  </span>
+                                  <span className="app-label truncate text-[#64748b]">
+                                    {card.label}
+                                  </span>
+                                </span>
+                                <span className="grid size-8 shrink-0 place-items-center rounded-lg border border-[#d9dcea] bg-white text-[#737789] transition group-hover:border-[#aeb4e5] group-hover:bg-[#f5f5fc] group-hover:text-[#5963b8]">
+                                  <Icon icon="edit" />
+                                </span>
                               </span>
-                              <span className="grid size-8 shrink-0 place-items-center rounded-md border border-[#dbe2ea] bg-white text-[#64748b]">
-                                <Icon icon="edit" />
+                              <span className="grid min-w-0 gap-1">
+                                <strong className="block truncate text-base font-bold tracking-[-0.015em] text-[#111827]">
+                                  {card.title}
+                                </strong>
+                                <span className="app-caption block truncate text-[#64748b]">
+                                  {card.provider}
+                                </span>
                               </span>
-                            </span>
-                            <span className="grid min-w-0 gap-1">
-                              <strong className="app-strong block truncate text-[#111827]">{card.title}</strong>
-                              <span className="app-caption block truncate text-[#64748b]">{card.provider}</span>
-                            </span>
-                            <span className="flex items-center gap-4">
-                              <span className="app-strong text-[#111827]">{card.cost}</span>
-                              <span className={`app-strong ${card.accent}`}>{card.latency}</span>
-                            </span>
-                          </button>
+                            </button>
+                            {index < voiceStackCards.length - 1 ? (
+                              <span
+                                className="flex h-5 w-full shrink-0 items-center justify-center lg:h-auto lg:w-5"
+                                aria-hidden="true"
+                              >
+                                <span className="h-full w-1 rounded-full bg-[linear-gradient(180deg,#14b8a6_0%,#f97316_33%,#3b82f6_66%,#c026d3_100%)] shadow-[0_0_10px_rgba(115,124,207,0.24)] lg:h-1 lg:w-full lg:bg-[linear-gradient(90deg,#14b8a6_0%,#f97316_33%,#3b82f6_66%,#c026d3_100%)]" />
+                              </span>
+                            ) : null}
+                          </div>
                         ))}
                       </div>
                     </section>
 
-                    <label className="app-label grid gap-2">
-                      <span>Opening message</span>
-                      <input
-                        className="app-control-text min-h-12 rounded-lg border border-[#d9e2ec] bg-white px-4 text-black shadow-sm outline-none transition focus:border-[#5b63ff] focus:ring-4 focus:ring-[#5b63ff]/10"
-                        value={selectedAgent.firstMessage}
-                        onChange={(event) => updateSelectedAgent({ firstMessage: event.target.value })}
+                    {promptExpanded ? (
+                      <button
+                        className="fixed inset-0 z-50 cursor-default bg-slate-950/30 backdrop-blur-sm"
+                        type="button"
+                        aria-label="Close expanded prompt editor"
+                        onClick={() => setPromptExpanded(false)}
                       />
-                    </label>
+                    ) : null}
+                    <section
+                      className={`agent-prompt-editor overflow-hidden rounded-xl border border-[#e1e3ed] bg-white transition ${promptExpanded ? "fixed inset-4 z-60 grid grid-rows-[auto_minmax(0,1fr)] shadow-[0_30px_90px_rgba(27,27,34,0.24)] sm:inset-8" : ""}`}
+                    >
+                      <div className="flex flex-col gap-3 border-b border-[#edf0f4] bg-[#fbfbfe] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="min-w-0">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <h3 className="app-section-title m-0">
+                              System instructions
+                            </h3>
+                            <span className="rounded-full bg-[#eff0fb] px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-[#5963b8]">
+                              Version {selectedAgent.version}
+                            </span>
+                          </div>
+                          <p className="app-caption mt-1 mb-0">
+                            Define how the agent introduces itself, reasons, and
+                            responds.
+                          </p>
+                        </div>
+                        <div className="flex shrink-0 items-center gap-2">
+                          <button
+                            className="app-button-text inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-[#dfe1ec] bg-white px-2.5 text-[#505261] transition hover:border-[#bfc3ea] hover:text-[#5963b8]"
+                            type="button"
+                            aria-pressed={promptExpanded}
+                            onClick={() =>
+                              setPromptExpanded((current) => !current)
+                            }
+                          >
+                            <svg
+                              className="size-4"
+                              viewBox="0 0 20 20"
+                              fill="none"
+                              aria-hidden="true"
+                            >
+                              <path
+                                d={
+                                  promptExpanded
+                                    ? "M7 3v4H3m10-4v4h4M7 17v-4H3m10 4v-4h4"
+                                    : "M3 7V3h4m10 4V3h-4M3 13v4h4m10-4v4h-4"
+                                }
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                            {promptExpanded ? "Collapse" : "Expand"}
+                          </button>
+                        </div>
+                      </div>
 
-                    <label className="app-label grid gap-2">
-                      <span>Instructions / prompt</span>
-                      <textarea
-                        className="app-control-text h-[420px] min-h-80 max-h-[70vh] resize-y overflow-y-auto rounded-lg border border-[#d9e2ec] bg-white p-4 leading-6 text-black shadow-sm outline-none transition focus:border-[#5b63ff] focus:ring-4 focus:ring-[#5b63ff]/10 lg:h-[520px]"
-                        value={selectedAgent.prompt}
-                        onChange={(event) => updateSelectedAgent({ prompt: event.target.value })}
-                      />
-                    </label>
+                      <div
+                        className={`grid gap-4 p-4 ${promptExpanded ? "min-h-0 grid-rows-[auto_minmax(0,1fr)]" : ""}`}
+                      >
+                        <label className="app-label grid gap-2">
+                          <span>Opening message</span>
+                          <input
+                            className="app-control-text min-h-12 rounded-lg border border-[#d9e2ec] bg-white px-4 text-black shadow-[0_1px_2px_rgba(15,23,42,0.04)] outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
+                            value={selectedAgent.firstMessage}
+                            onChange={(event) =>
+                              updateSelectedAgent({
+                                firstMessage: event.target.value,
+                              })
+                            }
+                          />
+                        </label>
+
+                        <label className="app-label grid min-h-0 gap-2">
+                          <span className="flex items-center justify-between gap-3">
+                            <span>Prompt</span>
+                            <span className="app-caption font-normal">
+                              {selectedAgent.prompt.length.toLocaleString(
+                                "en-IN",
+                              )}{" "}
+                              characters · ~
+                              {Math.ceil(
+                                selectedAgent.prompt.length / 4,
+                              ).toLocaleString("en-IN")}{" "}
+                              tokens
+                            </span>
+                          </span>
+                          <textarea
+                            className={`app-control-text min-h-72 resize-y overflow-y-auto rounded-lg border border-[#d9e2ec] bg-white p-4 leading-6 text-black shadow-[0_1px_2px_rgba(15,23,42,0.04)] outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10 ${promptExpanded ? "h-full max-h-none resize-none" : "h-[340px] max-h-[65vh] lg:h-[400px]"}`}
+                            value={selectedAgent.prompt}
+                            onChange={(event) =>
+                              updateSelectedAgent({
+                                prompt: event.target.value,
+                              })
+                            }
+                          />
+                        </label>
+                      </div>
+                    </section>
 
                     {openStackConfig ? (
                       <StackConfigurationModal
@@ -4454,14 +5749,16 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                       <label className="app-label grid gap-2 rounded-lg bg-[#f8fafc] px-4 py-3">
                         <span>Creativity</span>
                         <input
-                          className="accent-[#5b63ff]"
+                          className="accent-[#737ccf]"
                           type="range"
                           min="0"
                           max="2"
                           step="0.05"
                           value={selectedAgent.temperature}
                           onChange={(event) =>
-                            updateSelectedAgent({ temperature: Number(event.target.value) })
+                            updateSelectedAgent({
+                              temperature: Number(event.target.value),
+                            })
                           }
                         />
                       </label>
@@ -4470,7 +5767,10 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                     <section className="grid gap-3 rounded-xl border border-[#e5e7eb] bg-[#f8fafc] p-4">
                       <div>
                         <h3 className="app-section-title m-0">Voice tuning</h3>
-                        <span className="app-caption">Control how quickly, clearly, and aggressively the live agent responds.</span>
+                        <span className="app-caption">
+                          Control how quickly, clearly, and aggressively the
+                          live agent responds.
+                        </span>
                       </div>
                       <div className="grid gap-3 lg:grid-cols-3">
                         <SliderField
@@ -4480,7 +5780,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                           max={voiceSpeedRange.max}
                           step={voiceSpeedRange.step}
                           valueText={`${selectedAgent.voiceSpeed.toFixed(2)}x`}
-                          onChange={(value) => updateSelectedAgent({ voiceSpeed: value })}
+                          onChange={(value) =>
+                            updateSelectedAgent({ voiceSpeed: value })
+                          }
                         />
                         <SliderField
                           label="Voice pitch"
@@ -4488,14 +5790,20 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                           min={voicePitchRange.min}
                           max={voicePitchRange.max}
                           step={voicePitchRange.step}
-                          valueText={selectedAgent.voicePitch > 0 ? `+${selectedAgent.voicePitch}` : String(selectedAgent.voicePitch)}
+                          valueText={
+                            selectedAgent.voicePitch > 0
+                              ? `+${selectedAgent.voicePitch}`
+                              : String(selectedAgent.voicePitch)
+                          }
                           disabled={!voicePitchSupported}
                           title={
                             voicePitchSupported
                               ? "Pitch applies to Sarvam bulbul:v2."
                               : "Pitch is available only for Sarvam bulbul:v2."
                           }
-                          onChange={(value) => updateSelectedAgent({ voicePitch: value })}
+                          onChange={(value) =>
+                            updateSelectedAgent({ voicePitch: value })
+                          }
                         />
                         <SliderField
                           label="Concurrent calls"
@@ -4504,27 +5812,41 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                           max={concurrentCallsRange.max}
                           step={concurrentCallsRange.step}
                           valueText={String(selectedAgent.maxConcurrentCalls)}
-                          onChange={(value) => updateSelectedAgent({ maxConcurrentCalls: value })}
+                          onChange={(value) =>
+                            updateSelectedAgent({ maxConcurrentCalls: value })
+                          }
                         />
                         <SelectField
                           label="Interruption sensitivity"
                           defaultValue="medium"
                           value={selectedAgent.interruptionSensitivity}
                           options={["low", "medium", "high"]}
-                          onChange={(value) => updateSelectedAgent({ interruptionSensitivity: value as BackendAgent["interruptionSensitivity"] })}
+                          onChange={(value) =>
+                            updateSelectedAgent({
+                              interruptionSensitivity:
+                                value as BackendAgent["interruptionSensitivity"],
+                            })
+                          }
                         />
                         <SelectField
                           label="Background profile"
                           defaultValue="none"
                           value={selectedAgent.backgroundNoise}
                           options={["none", "office", "cafe", "street"]}
-                          onChange={(value) => updateSelectedAgent({ backgroundNoise: value as BackendAgent["backgroundNoise"] })}
+                          onChange={(value) =>
+                            updateSelectedAgent({
+                              backgroundNoise:
+                                value as BackendAgent["backgroundNoise"],
+                            })
+                          }
                         />
                         <InputField
                           label="Callback email"
                           value={selectedAgent.callbackEmail}
                           placeholder="ops@example.com"
-                          onChange={(callbackEmail) => updateSelectedAgent({ callbackEmail })}
+                          onChange={(callbackEmail) =>
+                            updateSelectedAgent({ callbackEmail })
+                          }
                         />
                       </div>
                     </section>
@@ -4533,7 +5855,25 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
 
                 {activeTab === "behavior" ? (
                   <div className="grid gap-4">
-                    <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                      <div>
+                        <span className="app-label text-[#5963b8]">
+                          Conversation policy
+                        </span>
+                        <h3 className="mt-1 mb-0 text-lg font-bold tracking-[-0.02em] text-[#171821]">
+                          Behavior and call flow
+                        </h3>
+                        <p className="app-caption mt-1 mb-0">
+                          Control turn-taking, safeguards, handoff,
+                          availability, and voicemail.
+                        </p>
+                      </div>
+                      <span className="app-caption">
+                        Changes are applied when the agent is saved.
+                      </span>
+                    </div>
+
+                    <div className="grid gap-px overflow-hidden rounded-xl border border-[#e1e3ed] bg-[#e7e9f1] md:grid-cols-2 xl:grid-cols-4">
                       {behaviorMetrics.map((metric) => (
                         <BehaviorMetric
                           key={metric.label}
@@ -4555,24 +5895,32 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                           defaultValue="assistant-speaks-first"
                           value={selectedAgent.firstMessageMode}
                           options={firstMessageModeOptions}
-                          onChange={(value) => updateFirstMessageMode(value as FirstMessageMode)}
+                          onChange={(value) =>
+                            updateFirstMessageMode(value as FirstMessageMode)
+                          }
                         />
                         <SelectField
                           label="Endpointing mode"
                           defaultValue="fast"
                           value={selectedAgent.behavior.endpointingMode}
                           options={endpointingModeOptions}
-                          onChange={(value) => updateBehavior({ endpointingMode: value as AgentBehavior["endpointingMode"] })}
+                          onChange={(value) =>
+                            updateBehavior({
+                              endpointingMode:
+                                value as AgentBehavior["endpointingMode"],
+                            })
+                          }
                         />
                       </div>
 
                       <div className="grid gap-3 lg:grid-cols-2">
                         {flowSettings
-                          .filter((setting) =>
-                            setting.field === "interruptions" ||
-                            setting.field === "userStartsFirst" ||
-                            setting.field === "autoFillResponses" ||
-                            setting.field === "agentCanTerminate"
+                          .filter(
+                            (setting) =>
+                              setting.field === "interruptions" ||
+                              setting.field === "userStartsFirst" ||
+                              setting.field === "autoFillResponses" ||
+                              setting.field === "agentCanTerminate",
                           )
                           .map(renderBehaviorToggle)}
                       </div>
@@ -4587,18 +5935,36 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                         <div className="grid gap-3">
                           <InputField
                             label="Response delay (ms)"
-                            value={String(selectedAgent.behavior.responseDelayMs)}
-                            onChange={(value) => updateBehavior({ responseDelayMs: Number(value) || 0 })}
+                            value={String(
+                              selectedAgent.behavior.responseDelayMs,
+                            )}
+                            onChange={(value) =>
+                              updateBehavior({
+                                responseDelayMs: Number(value) || 0,
+                              })
+                            }
                           />
                           <InputField
                             label="Max idle time (seconds)"
-                            value={String(selectedAgent.behavior.maxIdleSeconds)}
-                            onChange={(value) => updateBehavior({ maxIdleSeconds: Number(value) || 5 })}
+                            value={String(
+                              selectedAgent.behavior.maxIdleSeconds,
+                            )}
+                            onChange={(value) =>
+                              updateBehavior({
+                                maxIdleSeconds: Number(value) || 5,
+                              })
+                            }
                           />
                           <InputField
                             label="Max call duration (seconds)"
-                            value={String(selectedAgent.behavior.maxCallDurationSeconds)}
-                            onChange={(value) => updateBehavior({ maxCallDurationSeconds: Number(value) || 30 })}
+                            value={String(
+                              selectedAgent.behavior.maxCallDurationSeconds,
+                            )}
+                            onChange={(value) =>
+                              updateBehavior({
+                                maxCallDurationSeconds: Number(value) || 30,
+                              })
+                            }
                           />
                         </div>
                       </BehaviorPanel>
@@ -4616,19 +5982,25 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                             label="Transfer phone"
                             value={selectedAgent.behavior.transferPhone}
                             placeholder="+14155550123"
-                            onChange={(value) => updateBehavior({ transferPhone: value })}
+                            onChange={(value) =>
+                              updateBehavior({ transferPhone: value })
+                            }
                           />
                           <InputField
                             label="Transfer message"
                             value={selectedAgent.behavior.transferMessage}
                             placeholder="Please hold while I transfer your call."
-                            onChange={(value) => updateBehavior({ transferMessage: value })}
+                            onChange={(value) =>
+                              updateBehavior({ transferMessage: value })
+                            }
                           />
                           <InputField
                             label="DTMF sequence"
                             value={selectedAgent.behavior.dtmfSequence}
                             placeholder="1234,w,#"
-                            onChange={(value) => updateBehavior({ dtmfSequence: value })}
+                            onChange={(value) =>
+                              updateBehavior({ dtmfSequence: value })
+                            }
                           />
                         </div>
                       </BehaviorPanel>
@@ -4644,14 +6016,20 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                           title="Business hours guard"
                           detail="Block browser and phone calls outside the schedule below."
                           enabled={selectedAgent.businessHoursEnabled}
-                          onChange={(businessHoursEnabled) => updateSelectedAgent({ businessHoursEnabled })}
+                          onChange={(businessHoursEnabled) =>
+                            updateSelectedAgent({ businessHoursEnabled })
+                          }
                         />
                         <SelectField
                           label="Agent timezone"
                           defaultValue="UTC"
                           value={selectedAgent.businessHours.timezone || "UTC"}
-                          options={getTimezoneOptions(selectedAgent.businessHours.timezone)}
-                          onChange={(timezone) => updateBusinessHours({ timezone })}
+                          options={getTimezoneOptions(
+                            selectedAgent.businessHours.timezone,
+                          )}
+                          onChange={(timezone) =>
+                            updateBusinessHours({ timezone })
+                          }
                         />
                       </div>
 
@@ -4661,32 +6039,46 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                             className="grid gap-2 border-b border-[#edf0f5] bg-white p-3 last:border-b-0 sm:grid-cols-[64px_92px_minmax(0,1fr)_minmax(0,1fr)]"
                             key={item.day}
                           >
-                            <span className="app-strong self-center">{businessDayLabels[item.day]}</span>
+                            <span className="app-strong self-center">
+                              {businessDayLabels[item.day]}
+                            </span>
                             <label className="app-label flex items-center gap-2">
                               <input
-                                className="size-4 accent-[#5b63ff]"
+                                className="size-4 accent-[#737ccf]"
                                 type="checkbox"
                                 checked={item.enabled}
-                                onChange={(event) => updateBusinessDay(item.day, { enabled: event.target.checked })}
+                                onChange={(event) =>
+                                  updateBusinessDay(item.day, {
+                                    enabled: event.target.checked,
+                                  })
+                                }
                               />
                               Open
                             </label>
                             <label className="app-label grid gap-1">
                               <span>Start</span>
                               <input
-                                className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#5b63ff] focus:ring-4 focus:ring-[#5b63ff]/10"
+                                className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
                                 type="time"
                                 value={item.start}
-                                onChange={(event) => updateBusinessDay(item.day, { start: event.target.value })}
+                                onChange={(event) =>
+                                  updateBusinessDay(item.day, {
+                                    start: event.target.value,
+                                  })
+                                }
                               />
                             </label>
                             <label className="app-label grid gap-1">
                               <span>End</span>
                               <input
-                                className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#5b63ff] focus:ring-4 focus:ring-[#5b63ff]/10"
+                                className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
                                 type="time"
                                 value={item.end}
-                                onChange={(event) => updateBusinessDay(item.day, { end: event.target.value })}
+                                onChange={(event) =>
+                                  updateBusinessDay(item.day, {
+                                    end: event.target.value,
+                                  })
+                                }
                               />
                             </label>
                           </div>
@@ -4701,23 +6093,34 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                     >
                       <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_260px]">
                         {flowSettings
-                          .filter((setting) => setting.field === "voicemailHandling")
+                          .filter(
+                            (setting) => setting.field === "voicemailHandling",
+                          )
                           .map(renderBehaviorToggle)}
                         <SelectField
                           label="Voicemail action"
                           defaultValue="leave-message"
                           value={selectedAgent.behavior.voicemailAction}
                           options={voicemailActionOptions}
-                          onChange={(value) => updateBehavior({ voicemailAction: value as AgentBehavior["voicemailAction"] })}
+                          onChange={(value) =>
+                            updateBehavior({
+                              voicemailAction:
+                                value as AgentBehavior["voicemailAction"],
+                            })
+                          }
                         />
                       </div>
 
                       <label className="app-label grid gap-2">
                         <span>Voicemail message</span>
                         <textarea
-                          className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#5b63ff] focus:ring-4 focus:ring-[#5b63ff]/10"
+                          className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
                           value={selectedAgent.behavior.voicemailMessage}
-                          onChange={(event) => updateBehavior({ voicemailMessage: event.target.value })}
+                          onChange={(event) =>
+                            updateBehavior({
+                              voicemailMessage: event.target.value,
+                            })
+                          }
                         />
                       </label>
                     </BehaviorPanel>
@@ -4726,51 +6129,204 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
 
                 {activeTab === "tools" ? (
                   <div className="grid gap-4">
-                    <section className="grid gap-4 rounded-xl border border-[#e1e2ef] bg-[#f0efff] p-4">
-                      <div>
-                        <h3 className="app-section-title m-0">Native Google tools</h3>
-                        <span className="app-caption">Assign the Google resources this agent may access. Connect Google first on Dashboard → Integrations.</span>
+                    <section className="overflow-hidden rounded-xl border border-[#e1e3ed] bg-white">
+                      <div className="flex flex-col gap-3 border-b border-[#edf0f4] px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                          <h3 className="app-section-title m-0">
+                            Google Workspace
+                          </h3>
+                          <span className="app-caption">
+                            Give this agent access to approved Calendar and
+                            Sheets resources.
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-emerald-700">
+                            {Number(selectedAgent.googleCalendar.enabled) +
+                              Number(selectedAgent.googleSheets.enabled)}{" "}
+                            active
+                          </span>
+                          <button
+                            className="min-h-8 rounded-lg border border-[#d9dcea] bg-white px-3 text-xs font-semibold text-[#5963b8] transition hover:border-[#bfc3ea] hover:bg-[#eff0fb]"
+                            type="button"
+                            onClick={() =>
+                              router.push("/dashboard/integrations")
+                            }
+                          >
+                            Manage connection
+                          </button>
+                        </div>
                       </div>
-                      <div className="grid gap-4 lg:grid-cols-2">
-                        <article className="grid gap-3 rounded-xl border border-[#bae6fd] bg-white p-4">
+                      <div className="divide-y divide-[#edf0f4] px-4">
+                        <article>
                           <ToggleRow
                             title="Google Calendar"
                             detail="Check availability and create confirmed appointments during calls."
                             enabled={selectedAgent.googleCalendar.enabled}
-                            onChange={(enabled) => updateSelectedAgent({ googleCalendar: { ...selectedAgent.googleCalendar, enabled } })}
+                            compact
+                            onChange={(enabled) =>
+                              updateSelectedAgent({
+                                googleCalendar: {
+                                  ...selectedAgent.googleCalendar,
+                                  enabled,
+                                },
+                              })
+                            }
                           />
-                          <InputField label="Calendar ID" value={selectedAgent.googleCalendar.calendarId} placeholder="primary or calendar email" onChange={(calendarId) => updateSelectedAgent({ googleCalendar: { ...selectedAgent.googleCalendar, calendarId } })} />
-                          <InputField label="Calendar name" value={selectedAgent.googleCalendar.calendarName} placeholder="Sales appointments" onChange={(calendarName) => updateSelectedAgent({ googleCalendar: { ...selectedAgent.googleCalendar, calendarName } })} />
-                          <div className="grid gap-3 sm:grid-cols-2">
-                            <InputField label="Timezone" value={selectedAgent.googleCalendar.timezone} placeholder="Asia/Kolkata" onChange={(timezone) => updateSelectedAgent({ googleCalendar: { ...selectedAgent.googleCalendar, timezone } })} />
-                            <InputField label="Duration (minutes)" value={String(selectedAgent.googleCalendar.appointmentDurationMinutes)} onChange={(value) => updateSelectedAgent({ googleCalendar: { ...selectedAgent.googleCalendar, appointmentDurationMinutes: Number(value) || 30 } })} />
-                          </div>
+                          {selectedAgent.googleCalendar.enabled ? (
+                            <div className="grid gap-3 border-t border-[#edf0f4] bg-[#fafafe] px-4 py-4 sm:grid-cols-2">
+                              <InputField
+                                label="Calendar ID"
+                                value={selectedAgent.googleCalendar.calendarId}
+                                placeholder="primary or calendar email"
+                                onChange={(calendarId) =>
+                                  updateSelectedAgent({
+                                    googleCalendar: {
+                                      ...selectedAgent.googleCalendar,
+                                      calendarId,
+                                    },
+                                  })
+                                }
+                              />
+                              <InputField
+                                label="Calendar name"
+                                value={
+                                  selectedAgent.googleCalendar.calendarName
+                                }
+                                placeholder="Sales appointments"
+                                onChange={(calendarName) =>
+                                  updateSelectedAgent({
+                                    googleCalendar: {
+                                      ...selectedAgent.googleCalendar,
+                                      calendarName,
+                                    },
+                                  })
+                                }
+                              />
+                              <InputField
+                                label="Timezone"
+                                value={selectedAgent.googleCalendar.timezone}
+                                placeholder="Asia/Kolkata"
+                                onChange={(timezone) =>
+                                  updateSelectedAgent({
+                                    googleCalendar: {
+                                      ...selectedAgent.googleCalendar,
+                                      timezone,
+                                    },
+                                  })
+                                }
+                              />
+                              <InputField
+                                label="Duration (minutes)"
+                                value={String(
+                                  selectedAgent.googleCalendar
+                                    .appointmentDurationMinutes,
+                                )}
+                                onChange={(value) =>
+                                  updateSelectedAgent({
+                                    googleCalendar: {
+                                      ...selectedAgent.googleCalendar,
+                                      appointmentDurationMinutes:
+                                        Number(value) || 30,
+                                    },
+                                  })
+                                }
+                              />
+                            </div>
+                          ) : null}
                         </article>
-                        <article className="grid gap-3 rounded-xl border border-[#bbf7d0] bg-white p-4">
+                        <article>
                           <ToggleRow
                             title="Google Sheets"
                             detail="Let the agent append qualified leads and outcomes to a selected sheet."
                             enabled={selectedAgent.googleSheets.enabled}
-                            onChange={(enabled) => updateSelectedAgent({ googleSheets: { ...selectedAgent.googleSheets, enabled } })}
+                            compact
+                            onChange={(enabled) =>
+                              updateSelectedAgent({
+                                googleSheets: {
+                                  ...selectedAgent.googleSheets,
+                                  enabled,
+                                },
+                              })
+                            }
                           />
-                          <InputField label="Spreadsheet ID" value={selectedAgent.googleSheets.spreadsheetId} placeholder="Google spreadsheet ID" onChange={(spreadsheetId) => updateSelectedAgent({ googleSheets: { ...selectedAgent.googleSheets, spreadsheetId } })} />
-                          <InputField label="Spreadsheet name" value={selectedAgent.googleSheets.spreadsheetName} placeholder="Inbound leads" onChange={(spreadsheetName) => updateSelectedAgent({ googleSheets: { ...selectedAgent.googleSheets, spreadsheetName } })} />
-                          <InputField label="Sheet tab" value={selectedAgent.googleSheets.sheetName} placeholder="Sheet1" onChange={(sheetName) => updateSelectedAgent({ googleSheets: { ...selectedAgent.googleSheets, sheetName } })} />
-                          <span className="app-caption">Rows: timestamp, customer, phone, email, outcome, notes, call ID.</span>
+                          {selectedAgent.googleSheets.enabled ? (
+                            <div className="grid gap-3 border-t border-[#edf0f4] bg-[#fafafe] px-4 py-4 sm:grid-cols-2">
+                              <InputField
+                                label="Spreadsheet ID"
+                                value={selectedAgent.googleSheets.spreadsheetId}
+                                placeholder="Google spreadsheet ID"
+                                onChange={(spreadsheetId) =>
+                                  updateSelectedAgent({
+                                    googleSheets: {
+                                      ...selectedAgent.googleSheets,
+                                      spreadsheetId,
+                                    },
+                                  })
+                                }
+                              />
+                              <InputField
+                                label="Spreadsheet name"
+                                value={
+                                  selectedAgent.googleSheets.spreadsheetName
+                                }
+                                placeholder="Inbound leads"
+                                onChange={(spreadsheetName) =>
+                                  updateSelectedAgent({
+                                    googleSheets: {
+                                      ...selectedAgent.googleSheets,
+                                      spreadsheetName,
+                                    },
+                                  })
+                                }
+                              />
+                              <InputField
+                                label="Sheet tab"
+                                value={selectedAgent.googleSheets.sheetName}
+                                placeholder="Sheet1"
+                                onChange={(sheetName) =>
+                                  updateSelectedAgent({
+                                    googleSheets: {
+                                      ...selectedAgent.googleSheets,
+                                      sheetName,
+                                    },
+                                  })
+                                }
+                              />
+                              <span className="app-caption self-end pb-3">
+                                Saves timestamp, contact, outcome, notes, and
+                                call ID.
+                              </span>
+                            </div>
+                          ) : null}
                         </article>
                       </div>
                     </section>
                     <section className="grid gap-3">
                       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                         <div>
-                          <h3 className="app-section-title m-0">Webhook tools</h3>
+                          <h3 className="app-section-title m-0">
+                            Webhook tools
+                          </h3>
                           <span className="app-caption">
-                            Configure functions with a webhook URL, headers, parameters, method, timeout, and execution options.
+                            Configure functions with a webhook URL, headers,
+                            parameters, method, timeout, and execution options.
                           </span>
                         </div>
-                        <span className="app-label w-fit rounded-full border border-[#e1e2ef] bg-[#f0efff] px-2.5 py-1 text-[#5b63ff]">
-                          {selectedAgent.tools.length} / 20 configured
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="app-label w-fit rounded-full border border-[#c9ccef] bg-[#eff0fb] px-2.5 py-1 text-[#737ccf]">
+                            {selectedAgent.tools.length} / 20 configured
+                          </span>
+                          <button
+                            className="app-button-text min-h-9 rounded-lg bg-[#737ccf] px-3 text-white transition hover:bg-[#5963b8]"
+                            type="button"
+                            onClick={() =>
+                              setShowToolCreator((current) => !current)
+                            }
+                          >
+                            {showToolCreator ? "Close creator" : "+ New tool"}
+                          </button>
+                        </div>
                       </div>
 
                       {selectedAgent.tools.map((tool, index) => {
@@ -4778,34 +6334,41 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                         const headers = headersToDrafts(tool.headers);
                         const toolKey = tool._id ?? `${tool.name}-${index}`;
                         const isTesting = testingToolKey === toolKey;
-                        const isDigitalBotManaged = tool.managedBy === "digitalbot";
+                        const isDigitalBotManaged =
+                          tool.managedBy === "digitalbot";
 
                         if (isDigitalBotManaged) {
                           return (
                             <article
-                              className="flex flex-col gap-3 rounded-xl border border-[#e1e2ef] bg-[#f0efff] p-4 sm:flex-row sm:items-center sm:justify-between"
+                              className="flex flex-col gap-3 rounded-xl border border-[#c9ccef] bg-[#eff0fb] p-4 sm:flex-row sm:items-center sm:justify-between"
                               key={toolKey}
                             >
                               <div className="flex min-w-0 items-center gap-3">
-                                <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-white text-[#5b63ff]">
+                                <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-white text-[#737ccf]">
                                   <Icon icon="tool" />
                                 </span>
                                 <div className="min-w-0">
                                   <div className="flex flex-wrap items-center gap-2">
-                                    <strong className="app-strong">{tool.name}</strong>
-                                    <span className="app-label rounded-full border border-[#e1e2ef] bg-white px-2 py-0.5 text-[#008c96]">
+                                    <strong className="app-strong">
+                                      {tool.name}
+                                    </strong>
+                                    <span className="app-label rounded-full border border-[#c9ccef] bg-white px-2 py-0.5 text-[#008c96]">
                                       Managed by DigitalBot
                                     </span>
                                   </div>
-                                  <span className="app-caption block">{tool.description}</span>
+                                  <span className="app-caption block">
+                                    {tool.description}
+                                  </span>
                                 </div>
                               </div>
                               <div className="flex shrink-0 items-center gap-2">
-                                <span className="app-label rounded-lg border border-[#e1e2ef] bg-white px-3 py-2 text-[#008c96]">
-                                  {tool.enabled !== false ? "Active" : "Inactive"}
+                                <span className="app-label rounded-lg border border-[#c9ccef] bg-white px-3 py-2 text-[#008c96]">
+                                  {tool.enabled !== false
+                                    ? "Active"
+                                    : "Inactive"}
                                 </span>
                                 <button
-                                  className="app-button-text min-h-9 rounded-lg border border-[#e1e2ef] bg-white px-3 text-[#5b63ff] transition hover:bg-[#f0fdff] disabled:cursor-not-allowed disabled:opacity-60"
+                                  className="app-button-text min-h-9 rounded-lg border border-[#c9ccef] bg-white px-3 text-[#737ccf] transition hover:bg-[#f0fdff] disabled:cursor-not-allowed disabled:opacity-60"
                                   type="button"
                                   disabled={isTesting}
                                   onClick={() => void handleTestTool(index)}
@@ -4819,32 +6382,53 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
 
                         return (
                           <article
-                            className="overflow-hidden rounded-xl border border-[#dfe3ea] bg-white shadow-sm"
+                            className="overflow-hidden rounded-xl border border-[#dfe3ea] bg-white shadow-[0_10px_26px_rgba(15,23,42,0.05)]"
                             key={toolKey}
                           >
                             <div className="flex flex-col gap-3 border-b border-[#edf0f5] bg-[#f8fafc] px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
                               <div className="flex min-w-0 items-center gap-3">
-                                <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#f0efff] text-[#5b63ff]">
+                                <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#eff0fb] text-[#737ccf]">
                                   <Icon icon="tool" />
                                 </span>
                                 <div className="min-w-0">
-                                  <strong className="app-strong block truncate">{tool.name || `Tool ${index + 1}`}</strong>
-                                  <span className="app-caption block truncate">{tool.url || "Webhook URL required"}</span>
+                                  <strong className="app-strong block truncate">
+                                    {tool.name || `Tool ${index + 1}`}
+                                  </strong>
+                                  <span className="app-caption block truncate">
+                                    {tool.url || "Webhook URL required"}
+                                  </span>
                                 </div>
                               </div>
 
                               <div className="flex flex-wrap items-center gap-2">
                                 <label className="app-label flex min-h-9 items-center gap-2 rounded-lg border border-[#dfe3ea] bg-white px-3">
                                   <input
-                                    className="size-4 accent-[#5b63ff]"
+                                    className="size-4 accent-[#737ccf]"
                                     type="checkbox"
                                     checked={tool.enabled !== false}
-                                    onChange={(event) => updateTool(index, { enabled: event.target.checked })}
+                                    onChange={(event) =>
+                                      updateTool(index, {
+                                        enabled: event.target.checked,
+                                      })
+                                    }
                                   />
                                   Enabled
                                 </label>
                                 <button
-                                  className="app-button-text min-h-9 rounded-lg border border-[#e1e2ef] bg-white px-3 text-[#5b63ff] transition hover:bg-[#f0efff] disabled:cursor-not-allowed disabled:opacity-60"
+                                  className={`app-button-text min-h-9 rounded-lg border px-3 transition ${expandedToolKey === toolKey ? "border-[#bfc3ea] bg-[#eff0fb] text-[#5963b8]" : "border-[#d5d8df] bg-white text-[#475569] hover:border-[#bfc3ea]"}`}
+                                  type="button"
+                                  onClick={() =>
+                                    setExpandedToolKey((current) =>
+                                      current === toolKey ? "" : toolKey,
+                                    )
+                                  }
+                                >
+                                  {expandedToolKey === toolKey
+                                    ? "Close"
+                                    : "Configure"}
+                                </button>
+                                <button
+                                  className="app-button-text min-h-9 rounded-lg border border-[#c9ccef] bg-white px-3 text-[#737ccf] transition hover:bg-[#eff0fb] disabled:cursor-not-allowed disabled:opacity-60"
                                   type="button"
                                   disabled={isTesting}
                                   onClick={() => void handleTestTool(index)}
@@ -4868,248 +6452,490 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                               </div>
                             </div>
 
-                            <div className="grid gap-4 p-4">
-                              <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_150px_160px]">
-                                <InputField label="Function name" value={tool.name} placeholder="getUserInfo" onChange={(name) => updateTool(index, { name })} />
-                                <SelectField label="Method" defaultValue="POST" value={tool.method} options={toolMethodOptions} onChange={(method) => updateTool(index, { method: method as AgentTool["method"] })} />
-                                <InputField label="Timeout seconds" value={String(tool.timeoutSeconds)} onChange={(timeoutSeconds) => updateTool(index, { timeoutSeconds: Number(timeoutSeconds) || 8 })} />
-                              </div>
+                            {expandedToolKey === toolKey ? (
+                              <div className="grid gap-4 p-4">
+                                <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_150px_160px]">
+                                  <InputField
+                                    label="Function name"
+                                    value={tool.name}
+                                    placeholder="getUserInfo"
+                                    onChange={(name) =>
+                                      updateTool(index, { name })
+                                    }
+                                  />
+                                  <SelectField
+                                    label="Method"
+                                    defaultValue="POST"
+                                    value={tool.method}
+                                    options={toolMethodOptions}
+                                    onChange={(method) =>
+                                      updateTool(index, {
+                                        method: method as AgentTool["method"],
+                                      })
+                                    }
+                                  />
+                                  <InputField
+                                    label="Timeout seconds"
+                                    value={String(tool.timeoutSeconds)}
+                                    onChange={(timeoutSeconds) =>
+                                      updateTool(index, {
+                                        timeoutSeconds:
+                                          Number(timeoutSeconds) || 8,
+                                      })
+                                    }
+                                  />
+                                </div>
 
-                              <InputField label="Webhook URL" value={tool.url} placeholder="https://api.company.com/user" onChange={(url) => updateTool(index, { url })} />
-
-                              <label className="app-label grid gap-2">
-                                <span>Description</span>
-                                <textarea
-                                  className="app-control-text min-h-20 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#5b63ff] focus:ring-4 focus:ring-[#5b63ff]/10"
-                                  value={tool.description}
-                                  placeholder="Tell the agent exactly when to use this function."
-                                  onChange={(event) => updateTool(index, { description: event.target.value })}
+                                <InputField
+                                  label="Webhook URL"
+                                  value={tool.url}
+                                  placeholder="https://api.company.com/user"
+                                  onChange={(url) => updateTool(index, { url })}
                                 />
-                              </label>
 
-                              <div className="grid gap-3 rounded-xl border border-[#e5e7eb] bg-[#f8fafc] p-3">
-                                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                                  <div>
-                                    <strong className="app-strong block">Headers</strong>
-                                    <span className="app-caption">Authorization, API keys, content type overrides, or tenant headers.</span>
-                                  </div>
-                                  <button className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#5b63ff]" type="button" onClick={() => addToolHeader(index)}>
-                                    Add header
-                                  </button>
-                                </div>
-                                {headers.length ? (
-                                  <div className="grid gap-2">
-                                    {headers.map((header, headerIndex) => (
-                                      <HeaderEditor
-                                        key={`${toolKey}-header-${headerIndex}`}
-                                        header={header}
-                                        onChange={(changes) => updateToolHeader(index, headerIndex, changes)}
-                                        onRemove={() => removeToolHeader(index, headerIndex)}
-                                      />
-                                    ))}
-                                  </div>
-                                ) : (
-                                  <span className="app-caption rounded-lg border border-dashed border-[#cbd5e1] bg-white p-3 text-center">No custom headers.</span>
-                                )}
-                              </div>
-
-                              <div className="grid gap-3 rounded-xl border border-[#e5e7eb] bg-[#f8fafc] p-3">
-                                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                                  <div>
-                                    <strong className="app-strong block">Parameters</strong>
-                                    <span className="app-caption">These become the JSON fields the agent sends to your webhook.</span>
-                                  </div>
-                                  <button className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#5b63ff]" type="button" onClick={() => addToolParameter(index)}>
-                                    Add parameter
-                                  </button>
-                                </div>
-                                {parameters.length ? (
-                                  <div className="grid gap-2">
-                                    {parameters.map((parameter, parameterIndex) => (
-                                      <ToolParameterEditor
-                                        key={parameter._id ?? `${toolKey}-parameter-${parameterIndex}`}
-                                        parameter={parameter}
-                                        onChange={(changes) => updateToolParameter(index, parameterIndex, changes)}
-                                        onRemove={() => removeToolParameter(index, parameterIndex)}
-                                      />
-                                    ))}
-                                  </div>
-                                ) : (
-                                  <span className="app-caption rounded-lg border border-dashed border-[#cbd5e1] bg-white p-3 text-center">No parameters yet.</span>
-                                )}
-                              </div>
-
-                              <div className="grid gap-3 rounded-xl border border-[#e5e7eb] bg-white p-3">
-                                <strong className="app-strong block">Execution and filler</strong>
-                                <div className="grid gap-3 lg:grid-cols-3">
-                                  <ToggleRow
-                                    title="Run after call"
-                                    detail="Execute this webhook after the session closes."
-                                    enabled={tool.runAfterCall === true}
-                                    onChange={(runAfterCall) => updateTool(index, { runAfterCall })}
-                                  />
-                                  <ToggleRow
-                                    title="Wait for filler"
-                                    detail="Speak filler first, then call the webhook."
-                                    enabled={tool.executeAfterMessage === true}
-                                    onChange={(executeAfterMessage) => updateTool(index, { executeAfterMessage })}
-                                  />
-                                  <ToggleRow
-                                    title="Exclude session id"
-                                    detail="Do not add call/session metadata to webhook args."
-                                    enabled={tool.excludeSessionId !== false}
-                                    onChange={(excludeSessionId) => updateTool(index, { excludeSessionId })}
-                                  />
-                                </div>
                                 <label className="app-label grid gap-2">
-                                  <span>Filler messages while calling tool</span>
+                                  <span>Description</span>
                                   <textarea
-                                    className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#5b63ff] focus:ring-4 focus:ring-[#5b63ff]/10"
-                                    value={(tool.messages ?? []).join("\n")}
-                                    placeholder={"Let me check that for you.\nOne moment while I look that up."}
-                                    onChange={(event) => updateTool(index, {
-                                      messages: event.target.value.split("\n").map((item) => item.trim()).filter(Boolean),
-                                    })}
+                                    className="app-control-text min-h-20 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
+                                    value={tool.description}
+                                    placeholder="Tell the agent exactly when to use this function."
+                                    onChange={(event) =>
+                                      updateTool(index, {
+                                        description: event.target.value,
+                                      })
+                                    }
                                   />
-                                  <span className="app-caption">
-                                    One line is picked at random. If wait is off, the webhook starts while the agent says it.
-                                  </span>
                                 </label>
+
+                                <div className="grid gap-3 rounded-xl border border-[#e5e7eb] bg-[#f8fafc] p-3">
+                                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                    <div>
+                                      <strong className="app-strong block">
+                                        Headers
+                                      </strong>
+                                      <span className="app-caption">
+                                        Authorization, API keys, content type
+                                        overrides, or tenant headers.
+                                      </span>
+                                    </div>
+                                    <button
+                                      className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#737ccf]"
+                                      type="button"
+                                      onClick={() => addToolHeader(index)}
+                                    >
+                                      Add header
+                                    </button>
+                                  </div>
+                                  {headers.length ? (
+                                    <div className="grid gap-2">
+                                      {headers.map((header, headerIndex) => (
+                                        <HeaderEditor
+                                          key={`${toolKey}-header-${headerIndex}`}
+                                          header={header}
+                                          onChange={(changes) =>
+                                            updateToolHeader(
+                                              index,
+                                              headerIndex,
+                                              changes,
+                                            )
+                                          }
+                                          onRemove={() =>
+                                            removeToolHeader(index, headerIndex)
+                                          }
+                                        />
+                                      ))}
+                                    </div>
+                                  ) : (
+                                    <span className="app-caption rounded-lg border border-dashed border-[#cbd5e1] bg-white p-3 text-center">
+                                      No custom headers.
+                                    </span>
+                                  )}
+                                </div>
+
+                                <div className="grid gap-3 rounded-xl border border-[#e5e7eb] bg-[#f8fafc] p-3">
+                                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                    <div>
+                                      <strong className="app-strong block">
+                                        Parameters
+                                      </strong>
+                                      <span className="app-caption">
+                                        These become the JSON fields the agent
+                                        sends to your webhook.
+                                      </span>
+                                    </div>
+                                    <button
+                                      className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#737ccf]"
+                                      type="button"
+                                      onClick={() => addToolParameter(index)}
+                                    >
+                                      Add parameter
+                                    </button>
+                                  </div>
+                                  {parameters.length ? (
+                                    <div className="grid gap-2">
+                                      {parameters.map(
+                                        (parameter, parameterIndex) => (
+                                          <ToolParameterEditor
+                                            key={
+                                              parameter._id ??
+                                              `${toolKey}-parameter-${parameterIndex}`
+                                            }
+                                            parameter={parameter}
+                                            onChange={(changes) =>
+                                              updateToolParameter(
+                                                index,
+                                                parameterIndex,
+                                                changes,
+                                              )
+                                            }
+                                            onRemove={() =>
+                                              removeToolParameter(
+                                                index,
+                                                parameterIndex,
+                                              )
+                                            }
+                                          />
+                                        ),
+                                      )}
+                                    </div>
+                                  ) : (
+                                    <span className="app-caption rounded-lg border border-dashed border-[#cbd5e1] bg-white p-3 text-center">
+                                      No parameters yet.
+                                    </span>
+                                  )}
+                                </div>
+
+                                <div className="grid gap-3 rounded-xl border border-[#e5e7eb] bg-white p-3">
+                                  <strong className="app-strong block">
+                                    Execution and filler
+                                  </strong>
+                                  <div className="grid gap-3 lg:grid-cols-3">
+                                    <ToggleRow
+                                      title="Run after call"
+                                      detail="Execute this webhook after the session closes."
+                                      enabled={tool.runAfterCall === true}
+                                      onChange={(runAfterCall) =>
+                                        updateTool(index, { runAfterCall })
+                                      }
+                                    />
+                                    <ToggleRow
+                                      title="Wait for filler"
+                                      detail="Speak filler first, then call the webhook."
+                                      enabled={
+                                        tool.executeAfterMessage === true
+                                      }
+                                      onChange={(executeAfterMessage) =>
+                                        updateTool(index, {
+                                          executeAfterMessage,
+                                        })
+                                      }
+                                    />
+                                    <ToggleRow
+                                      title="Exclude session id"
+                                      detail="Do not add call/session metadata to webhook args."
+                                      enabled={tool.excludeSessionId !== false}
+                                      onChange={(excludeSessionId) =>
+                                        updateTool(index, { excludeSessionId })
+                                      }
+                                    />
+                                  </div>
+                                  <label className="app-label grid gap-2">
+                                    <span>
+                                      Filler messages while calling tool
+                                    </span>
+                                    <textarea
+                                      className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
+                                      value={(tool.messages ?? []).join("\n")}
+                                      placeholder={
+                                        "Let me check that for you.\nOne moment while I look that up."
+                                      }
+                                      onChange={(event) =>
+                                        updateTool(index, {
+                                          messages: event.target.value
+                                            .split("\n")
+                                            .map((item) => item.trim())
+                                            .filter(Boolean),
+                                        })
+                                      }
+                                    />
+                                    <span className="app-caption">
+                                      One line is picked at random. If wait is
+                                      off, the webhook starts while the agent
+                                      says it.
+                                    </span>
+                                  </label>
+                                </div>
                               </div>
-                            </div>
+                            ) : null}
                           </article>
                         );
                       })}
 
                       {!selectedAgent.tools.length ? (
-                        <span className="app-caption rounded-xl border border-dashed border-[#cbd5e1] bg-white p-5 text-center">No webhook tools configured yet.</span>
+                        <span className="app-caption rounded-xl border border-dashed border-[#cbd5e1] bg-white p-5 text-center">
+                          No webhook tools configured yet.
+                        </span>
                       ) : null}
                     </section>
 
-                    <section className="grid gap-4 rounded-xl border border-[#e1e2ef] bg-[#f8fbff] p-4">
-                      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                        <div>
-                          <h3 className="app-section-title m-0">Add webhook tool</h3>
-                          <span className="app-caption">Set the name, description, webhook, headers, parameters, method, and timeout.</span>
+                    {showToolCreator ? (
+                      <section className="grid gap-4 rounded-xl border border-[#bfc3ea] bg-[#f7f7fc] p-4 shadow-[0_16px_40px_rgba(37,40,74,0.08)]">
+                        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                          <div>
+                            <h3 className="app-section-title m-0">
+                              Add webhook tool
+                            </h3>
+                            <span className="app-caption">
+                              Set the name, description, webhook, headers,
+                              parameters, method, and timeout.
+                            </span>
+                          </div>
+                          <button
+                            className="app-button-text min-h-10 rounded-lg bg-[#737ccf] px-4 text-white shadow-sm"
+                            type="button"
+                            onClick={addTool}
+                          >
+                            Add tool
+                          </button>
                         </div>
-                        <button className="app-button-text min-h-10 rounded-lg bg-[#5b63ff] px-4 text-[#ffffff] shadow-sm" type="button" onClick={addTool}>
-                          Add tool
-                        </button>
-                      </div>
 
-                      <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_150px_160px]">
-                        <InputField label="Function name" value={toolDraft.name} placeholder="getUserInfo" onChange={(name) => setToolDraft((current) => ({ ...current, name }))} />
-                        <SelectField label="Method" defaultValue="POST" value={toolDraft.method} options={toolMethodOptions} onChange={(method) => setToolDraft((current) => ({ ...current, method: method as AgentTool["method"] }))} />
-                        <InputField label="Timeout seconds" value={String(toolDraft.timeoutSeconds)} onChange={(timeoutSeconds) => setToolDraft((current) => ({ ...current, timeoutSeconds: Number(timeoutSeconds) || 8 }))} />
-                      </div>
-                      <InputField label="Webhook URL" value={toolDraft.url} placeholder="https://api.company.com/user" onChange={(url) => setToolDraft((current) => ({ ...current, url }))} />
-                      <InputField label="Description" value={toolDraft.description} placeholder="Retrieves user information using their email." onChange={(description) => setToolDraft((current) => ({ ...current, description }))} />
-
-                      <div className="grid gap-3 rounded-xl border border-[#e1e2ef] bg-white p-3">
-                        <div>
-                          <strong className="app-strong block">Filler while tool runs</strong>
-                          <span className="app-caption">Messages the agent can say while calling this webhook.</span>
-                        </div>
-                        <ToggleRow
-                          title="Wait for filler"
-                          detail="Speak filler first, then call the webhook."
-                          enabled={toolDraft.executeAfterMessage === true}
-                          onChange={(executeAfterMessage) => setToolDraft((current) => ({ ...current, executeAfterMessage }))}
-                        />
-                        <label className="app-label grid gap-2">
-                          <span>Filler messages</span>
-                          <textarea
-                            className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#5b63ff] focus:ring-4 focus:ring-[#5b63ff]/10"
-                            value={(toolDraft.messages ?? []).join("\n")}
-                            placeholder={"Let me check that for you.\nOne moment while I look that up."}
-                            onChange={(event) => setToolDraft((current) => ({
-                              ...current,
-                              messages: event.target.value.split("\n").map((item) => item.trim()).filter(Boolean),
-                            }))}
+                        <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_150px_160px]">
+                          <InputField
+                            label="Function name"
+                            value={toolDraft.name}
+                            placeholder="getUserInfo"
+                            onChange={(name) =>
+                              setToolDraft((current) => ({ ...current, name }))
+                            }
                           />
-                        </label>
-                      </div>
-
-                      <div className="grid gap-3 rounded-xl border border-[#e1e2ef] bg-white p-3">
-                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                          <div>
-                            <strong className="app-strong block">Headers</strong>
-                            <span className="app-caption">Example: Authorization: Bearer token.</span>
-                          </div>
-                          <button className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#5b63ff]" type="button" onClick={addDraftHeader}>
-                            Add header
-                          </button>
+                          <SelectField
+                            label="Method"
+                            defaultValue="POST"
+                            value={toolDraft.method}
+                            options={toolMethodOptions}
+                            onChange={(method) =>
+                              setToolDraft((current) => ({
+                                ...current,
+                                method: method as AgentTool["method"],
+                              }))
+                            }
+                          />
+                          <InputField
+                            label="Timeout seconds"
+                            value={String(toolDraft.timeoutSeconds)}
+                            onChange={(timeoutSeconds) =>
+                              setToolDraft((current) => ({
+                                ...current,
+                                timeoutSeconds: Number(timeoutSeconds) || 8,
+                              }))
+                            }
+                          />
                         </div>
-                        {headersToDrafts(toolDraft.headers).length ? (
-                          <div className="grid gap-2">
-                            {headersToDrafts(toolDraft.headers).map((header, headerIndex) => (
-                              <HeaderEditor
-                                key={`draft-header-${headerIndex}`}
-                                header={header}
-                                onChange={(changes) => updateDraftHeader(headerIndex, changes)}
-                                onRemove={() => removeDraftHeader(headerIndex)}
-                              />
-                            ))}
-                          </div>
-                        ) : (
-                          <span className="app-caption rounded-lg border border-dashed border-[#cbd5e1] bg-[#f8fafc] p-3 text-center">No custom headers.</span>
-                        )}
-                      </div>
+                        <InputField
+                          label="Webhook URL"
+                          value={toolDraft.url}
+                          placeholder="https://api.company.com/user"
+                          onChange={(url) =>
+                            setToolDraft((current) => ({ ...current, url }))
+                          }
+                        />
+                        <InputField
+                          label="Description"
+                          value={toolDraft.description}
+                          placeholder="Retrieves user information using their email."
+                          onChange={(description) =>
+                            setToolDraft((current) => ({
+                              ...current,
+                              description,
+                            }))
+                          }
+                        />
 
-                      <div className="grid gap-3 rounded-xl border border-[#e1e2ef] bg-white p-3">
-                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="grid gap-3 rounded-xl border border-[#c9ccef] bg-white p-3">
                           <div>
-                            <strong className="app-strong block">Parameters</strong>
-                            <span className="app-caption">Fields the agent should collect and send.</span>
+                            <strong className="app-strong block">
+                              Filler while tool runs
+                            </strong>
+                            <span className="app-caption">
+                              Messages the agent can say while calling this
+                              webhook.
+                            </span>
                           </div>
-                          <button className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#5b63ff]" type="button" onClick={addDraftParameter}>
-                            Add parameter
-                          </button>
+                          <ToggleRow
+                            title="Wait for filler"
+                            detail="Speak filler first, then call the webhook."
+                            enabled={toolDraft.executeAfterMessage === true}
+                            onChange={(executeAfterMessage) =>
+                              setToolDraft((current) => ({
+                                ...current,
+                                executeAfterMessage,
+                              }))
+                            }
+                          />
+                          <label className="app-label grid gap-2">
+                            <span>Filler messages</span>
+                            <textarea
+                              className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 text-black outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
+                              value={(toolDraft.messages ?? []).join("\n")}
+                              placeholder={
+                                "Let me check that for you.\nOne moment while I look that up."
+                              }
+                              onChange={(event) =>
+                                setToolDraft((current) => ({
+                                  ...current,
+                                  messages: event.target.value
+                                    .split("\n")
+                                    .map((item) => item.trim())
+                                    .filter(Boolean),
+                                }))
+                              }
+                            />
+                          </label>
                         </div>
-                        {(toolDraft.parameters ?? []).length ? (
-                          <div className="grid gap-2">
-                            {(toolDraft.parameters ?? []).map((parameter, parameterIndex) => (
-                              <ToolParameterEditor
-                                key={`draft-parameter-${parameterIndex}`}
-                                parameter={parameter}
-                                onChange={(changes) => updateDraftParameter(parameterIndex, changes)}
-                                onRemove={() => removeDraftParameter(parameterIndex)}
-                              />
-                            ))}
+
+                        <div className="grid gap-3 rounded-xl border border-[#c9ccef] bg-white p-3">
+                          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                              <strong className="app-strong block">
+                                Headers
+                              </strong>
+                              <span className="app-caption">
+                                Example: Authorization: Bearer token.
+                              </span>
+                            </div>
+                            <button
+                              className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#737ccf]"
+                              type="button"
+                              onClick={addDraftHeader}
+                            >
+                              Add header
+                            </button>
                           </div>
-                        ) : (
-                          <span className="app-caption rounded-lg border border-dashed border-[#cbd5e1] bg-[#f8fafc] p-3 text-center">No parameters added.</span>
-                        )}
-                      </div>
-                    </section>
+                          {headersToDrafts(toolDraft.headers).length ? (
+                            <div className="grid gap-2">
+                              {headersToDrafts(toolDraft.headers).map(
+                                (header, headerIndex) => (
+                                  <HeaderEditor
+                                    key={`draft-header-${headerIndex}`}
+                                    header={header}
+                                    onChange={(changes) =>
+                                      updateDraftHeader(headerIndex, changes)
+                                    }
+                                    onRemove={() =>
+                                      removeDraftHeader(headerIndex)
+                                    }
+                                  />
+                                ),
+                              )}
+                            </div>
+                          ) : (
+                            <span className="app-caption rounded-lg border border-dashed border-[#cbd5e1] bg-[#f8fafc] p-3 text-center">
+                              No custom headers.
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="grid gap-3 rounded-xl border border-[#c9ccef] bg-white p-3">
+                          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                              <strong className="app-strong block">
+                                Parameters
+                              </strong>
+                              <span className="app-caption">
+                                Fields the agent should collect and send.
+                              </span>
+                            </div>
+                            <button
+                              className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#737ccf]"
+                              type="button"
+                              onClick={addDraftParameter}
+                            >
+                              Add parameter
+                            </button>
+                          </div>
+                          {(toolDraft.parameters ?? []).length ? (
+                            <div className="grid gap-2">
+                              {(toolDraft.parameters ?? []).map(
+                                (parameter, parameterIndex) => (
+                                  <ToolParameterEditor
+                                    key={`draft-parameter-${parameterIndex}`}
+                                    parameter={parameter}
+                                    onChange={(changes) =>
+                                      updateDraftParameter(
+                                        parameterIndex,
+                                        changes,
+                                      )
+                                    }
+                                    onRemove={() =>
+                                      removeDraftParameter(parameterIndex)
+                                    }
+                                  />
+                                ),
+                              )}
+                            </div>
+                          ) : (
+                            <span className="app-caption rounded-lg border border-dashed border-[#cbd5e1] bg-[#f8fafc] p-3 text-center">
+                              No parameters added.
+                            </span>
+                          )}
+                        </div>
+                      </section>
+                    ) : null}
 
                     <section className="grid gap-3 rounded-xl border border-[#e5e7eb] bg-white p-4">
                       <div>
-                        <h3 className="app-section-title m-0">Lifecycle webhooks</h3>
-                        <span className="app-caption">Send context before a call or receive call results after completion.</span>
+                        <h3 className="app-section-title m-0">
+                          Lifecycle webhooks
+                        </h3>
+                        <span className="app-caption">
+                          Send context before a call or receive call results
+                          after completion.
+                        </span>
                       </div>
                       <div className="grid gap-3 lg:grid-cols-2">
-                        <InputField label="Prefetch data webhook" value={selectedAgent.prefetchWebhook} placeholder="https://api.company.com/prefetch" onChange={(value) => updateSelectedAgent({ prefetchWebhook: value })} />
-                        <InputField label="End-of-call webhook" value={selectedAgent.endOfCallWebhook} placeholder="https://api.company.com/calls/end" onChange={(value) => updateSelectedAgent({ endOfCallWebhook: value })} />
+                        <InputField
+                          label="Prefetch data webhook"
+                          value={selectedAgent.prefetchWebhook}
+                          placeholder="https://api.company.com/prefetch"
+                          onChange={(value) =>
+                            updateSelectedAgent({ prefetchWebhook: value })
+                          }
+                        />
+                        <InputField
+                          label="End-of-call webhook"
+                          value={selectedAgent.endOfCallWebhook}
+                          placeholder="https://api.company.com/calls/end"
+                          onChange={(value) =>
+                            updateSelectedAgent({ endOfCallWebhook: value })
+                          }
+                        />
                       </div>
                     </section>
 
                     <section className="grid gap-3 rounded-xl border border-[#e5e7eb] bg-white p-4">
                       <div>
-                        <h3 className="app-section-title m-0">Dynamic variables</h3>
-                        <span className="app-caption">Reusable values for prompts, widgets, and webhooks.</span>
+                        <h3 className="app-section-title m-0">
+                          Dynamic variables
+                        </h3>
+                        <span className="app-caption">
+                          Reusable values for prompts, widgets, and webhooks.
+                        </span>
                       </div>
                       <div className="grid gap-2 rounded-lg border border-[#e5e7eb] bg-[#f8fafc] p-3">
-                        <strong className="app-strong block">System variables</strong>
+                        <strong className="app-strong block">
+                          System variables
+                        </strong>
                         <div className="flex flex-wrap gap-2">
                           {systemDynamicVariables.map((variable) => (
                             <button
-                              className="app-label rounded-full border border-[#e1e2ef] bg-white px-2.5 py-1 text-[#5b63ff] transition hover:border-[#e1e2ef] hover:bg-[#f0efff]"
+                              className="app-label rounded-full border border-[#c9ccef] bg-white px-2.5 py-1 text-[#737ccf] transition hover:border-[#c9ccef] hover:bg-[#eff0fb]"
                               key={variable}
                               type="button"
                               title="Copy variable"
                               aria-label={`Copy ${variable} variable`}
-                              onClick={() => copyVariableSnippet(`{${variable}}`)}
+                              onClick={() =>
+                                copyVariableSnippet(`{${variable}}`)
+                              }
                             >
                               {`{${variable}}`}
                             </button>
@@ -5119,20 +6945,41 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                       <div className="flex flex-wrap gap-2">
                         {selectedAgent.dynamicVariables.map((variable) => (
                           <button
-                            className="app-label rounded-full border border-[#e1e2ef] bg-[#f0efff] px-2.5 py-1 text-[#5b63ff] transition hover:border-[#e1e2ef] hover:bg-white"
+                            className="app-label rounded-full border border-[#c9ccef] bg-[#eff0fb] px-2.5 py-1 text-[#737ccf] transition hover:border-[#c9ccef] hover:bg-white"
                             key={variable}
                             type="button"
                             title="Remove variable"
                             aria-label={`Remove ${variable} variable`}
-                            onClick={() => updateSelectedAgent({ dynamicVariables: selectedAgent.dynamicVariables.filter((item) => item !== variable) })}
+                            onClick={() =>
+                              updateSelectedAgent({
+                                dynamicVariables:
+                                  selectedAgent.dynamicVariables.filter(
+                                    (item) => item !== variable,
+                                  ),
+                              })
+                            }
                           >
                             {`{${variable}}`} x
                           </button>
                         ))}
                       </div>
                       <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_84px]">
-                        <input className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 outline-none transition focus:border-[#5b63ff] focus:ring-4 focus:ring-[#5b63ff]/10" aria-label="New dynamic variable name" value={variableDraft} placeholder="customerID" onChange={(event) => setVariableDraft(event.target.value)} />
-                        <button className="app-button-text rounded-lg border border-[#d5d8df] bg-white px-3 text-[#5b63ff]" type="button" onClick={addVariable}>Add</button>
+                        <input
+                          className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
+                          aria-label="New dynamic variable name"
+                          value={variableDraft}
+                          placeholder="customerID"
+                          onChange={(event) =>
+                            setVariableDraft(event.target.value)
+                          }
+                        />
+                        <button
+                          className="app-button-text rounded-lg border border-[#d5d8df] bg-white px-3 text-[#737ccf]"
+                          type="button"
+                          onClick={addVariable}
+                        >
+                          Add
+                        </button>
                       </div>
                     </section>
                   </div>
@@ -5140,16 +6987,41 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
 
                 {activeTab === "calls" ? (
                   <div className="grid gap-4">
-                    <section className="grid gap-3 rounded-xl border border-[#e1e2ef] bg-[#f8fbff] p-4">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                      <div>
+                        <span className="app-label text-[#5963b8]">
+                          Telephony operations
+                        </span>
+                        <h3 className="mt-1 mb-0 text-lg font-bold tracking-[-0.02em] text-[#171821]">
+                          Calling and routing
+                        </h3>
+                        <p className="app-caption mt-1 mb-0">
+                          Verify readiness, control safeguards, and review this
+                          agent’s latest calls.
+                        </p>
+                      </div>
+                      <span
+                        className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] ${inboundReady && outboundReady ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"}`}
+                      >
+                        {inboundReady && outboundReady
+                          ? "Routes ready"
+                          : "Needs attention"}
+                      </span>
+                    </div>
+                    <section className="grid gap-4 rounded-xl border border-[#e1e3ed] bg-white p-4">
                       <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                         <div>
-                          <h3 className="app-section-title m-0">Call enablement</h3>
+                          <h3 className="app-section-title m-0">
+                            Call enablement
+                          </h3>
                           <span className="app-caption">
-                            Live phone traffic requires a Live agent and ready phone route. Dashboard test calls work for Draft agents.
+                            Live phone traffic requires a Live agent and ready
+                            phone route. Dashboard test calls work for Draft
+                            agents.
                           </span>
                         </div>
                         <button
-                          className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#e1e2ef] bg-white px-3 text-[#5b63ff] disabled:cursor-not-allowed disabled:opacity-60"
+                          className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-[#737ccf] px-3 text-white transition hover:bg-[#5963b8] disabled:cursor-not-allowed disabled:opacity-60"
                           type="button"
                           disabled={!testCallsEnabled || agentMutationBusy}
                           onClick={() => void handleStartTestCall()}
@@ -5166,70 +7038,96 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                           enabled={liveCallsEnabled}
                           onChange={handleSetLiveCalls}
                         />
-                        <div className="rounded-lg border border-[#e1e2ef] bg-white p-3">
+                        <div className="rounded-lg border border-[#e1e3ed] bg-[#fafafe] p-3">
                           <span className="app-label block">Agent status</span>
-                          <strong className={`app-strong block ${selectedTone.text}`}>{selectedAgent.status}</strong>
-                          <span className="app-caption">Save happens automatically when toggled.</span>
+                          <strong
+                            className={`app-strong block ${selectedTone.text}`}
+                          >
+                            {selectedAgent.status}
+                          </strong>
+                          <span className="app-caption">
+                            Save happens automatically when toggled.
+                          </span>
                         </div>
                       </div>
 
-                      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                      <div className="grid overflow-hidden rounded-lg border border-[#e1e3ed] bg-[#edf0f4] gap-px md:grid-cols-2 xl:grid-cols-4">
                         {callReadiness.map((item) => (
                           <div
-                            className={`rounded-lg border p-3 ${
+                            className={`p-3 ${
                               item.ready
-                                ? "border-[#bbf7d0] bg-[#ecfdf5] text-[#047857]"
-                                : "border-[#fde68a] bg-[#fffbeb] text-[#b45309]"
+                                ? "bg-white text-[#047857]"
+                                : "bg-white text-[#b45309]"
                             }`}
                             key={item.label}
                           >
-                            <span className="app-label block opacity-80">{item.label}</span>
-                            <strong className="app-strong block text-current">{item.value}</strong>
+                            <span className="app-label block opacity-80">
+                              {item.label}
+                            </span>
+                            <strong className="app-strong block text-current">
+                              {item.value}
+                            </strong>
                           </div>
                         ))}
                       </div>
                     </section>
 
-                    <div className="grid gap-3 lg:grid-cols-4">
-                      <div className="rounded-lg border border-[#e5e7eb] bg-white p-3">
+                    <div className="grid gap-px overflow-hidden rounded-lg border border-[#e1e3ed] bg-[#edf0f4] lg:grid-cols-4">
+                      <div className="bg-white p-3">
                         <span className="app-label block">Assigned phone</span>
-                        <strong className="app-strong block truncate">{selectedAgent.phone}</strong>
-                      </div>
-                      <div className="rounded-lg border border-[#e5e7eb] bg-white p-3">
-                        <span className="app-label block">Incoming call routing</span>
-                        <strong className={`app-strong ${voiceConfig?.sip.inboundConfigured ? "text-[#059669]" : "text-[#dc2626]"}`}>
-                          {voiceConfig?.sip.inboundConfigured ? "Configured" : "Missing"}
+                        <strong className="app-strong block truncate">
+                          {selectedAgent.phone}
                         </strong>
                       </div>
-                      <div className="rounded-lg border border-[#e5e7eb] bg-white p-3">
+                      <div className="bg-white p-3">
+                        <span className="app-label block">
+                          Incoming call routing
+                        </span>
+                        <strong
+                          className={`app-strong ${voiceConfig?.sip.inboundConfigured ? "text-[#059669]" : "text-[#dc2626]"}`}
+                        >
+                          {voiceConfig?.sip.inboundConfigured
+                            ? "Configured"
+                            : "Missing"}
+                        </strong>
+                      </div>
+                      <div className="bg-white p-3">
                         <span className="app-label block">Voice service</span>
-                        <strong className={`app-strong ${voiceConfig?.agentName ? "text-[#059669]" : "text-[#dc2626]"}`}>
+                        <strong
+                          className={`app-strong ${voiceConfig?.agentName ? "text-[#059669]" : "text-[#dc2626]"}`}
+                        >
                           {voiceConfig?.agentName ? "Available" : "Missing"}
                         </strong>
                       </div>
-                      <div className="rounded-lg border border-[#e5e7eb] bg-white p-3">
+                      <div className="bg-white p-3">
                         <span className="app-label block">Phone provider</span>
-                        <strong className={`app-strong ${voiceConfig?.vobiz.configured ? "text-[#059669]" : "text-[#dc2626]"}`}>
-                          {voiceConfig?.vobiz.configured ? "Connected" : "Missing"}
+                        <strong
+                          className={`app-strong ${voiceConfig?.vobiz.configured ? "text-[#059669]" : "text-[#dc2626]"}`}
+                        >
+                          {voiceConfig?.vobiz.configured
+                            ? "Connected"
+                            : "Missing"}
                         </strong>
                       </div>
                     </div>
 
                     {!voiceConfig?.sip.inboundConfigured ? (
                       <p className="app-caption m-0 rounded-lg border border-[#fecaca] bg-[#fef2f2] p-3 text-[#b91c1c]">
-                        Incoming call routing is not configured. Contact your administrator, then sync phone routes.
+                        Incoming call routing is not configured. Contact your
+                        administrator, then sync phone routes.
                       </p>
                     ) : null}
 
                     {!voiceConfig?.sip.inboundDestinationConfigured ? (
                       <p className="app-caption m-0 rounded-lg border border-[#fecaca] bg-[#fef2f2] p-3 text-[#b91c1c]">
-                        The incoming call destination is not configured. Contact your administrator, then sync phone routes.
+                        The incoming call destination is not configured. Contact
+                        your administrator, then sync phone routes.
                       </p>
                     ) : null}
 
                     <div className="flex flex-wrap gap-2">
                       <button
-                        className="app-button-text min-h-10 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#5b63ff]"
+                        className="app-button-text min-h-10 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#737ccf]"
                         type="button"
                         disabled={agentMutationBusy}
                         onClick={() => void handleSyncPhoneRoutes()}
@@ -5240,220 +7138,503 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                         className="app-button-text min-h-10 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#111827]"
                         type="button"
                         disabled={agentMutationBusy}
-                        onClick={() => navigateToDashboardPage("/dashboard/phone-number")}
+                        onClick={() =>
+                          navigateToDashboardPage("/dashboard/phone-number")
+                        }
                       >
                         Manage numbers
                       </button>
                     </div>
 
-                    <div className="grid gap-3 lg:grid-cols-2">
-                      <ToggleRow
-                        title="Enable recording"
-                        detail="Store recording URL in end-of-call webhook payload."
-                        enabled={selectedAgent.callSettings.recordingEnabled}
-                        onChange={(enabled) => updateSelectedAgent({ callSettings: { ...selectedAgent.callSettings, recordingEnabled: enabled } })}
-                      />
-                      <ToggleRow
-                        title="Do-not-call detection"
-                        detail="Detect opt-out intent and mark session metadata."
-                        enabled={selectedAgent.callSettings.doNotCallDetection}
-                        onChange={(enabled) => updateSelectedAgent({ callSettings: { ...selectedAgent.callSettings, doNotCallDetection: enabled } })}
-                      />
-                      <ToggleRow
-                        title="Session continuation"
-                        detail="Continue conversations by session or caller identifier."
-                        enabled={selectedAgent.callSettings.sessionContinuation}
-                        onChange={(enabled) => updateSelectedAgent({ callSettings: { ...selectedAgent.callSettings, sessionContinuation: enabled } })}
-                      />
-                      <ToggleRow
-                        title="Memory"
-                        detail="Use a caller identifier key for repeat interactions."
-                        enabled={selectedAgent.callSettings.memoryEnabled}
-                        onChange={(enabled) => updateSelectedAgent({ callSettings: { ...selectedAgent.callSettings, memoryEnabled: enabled } })}
-                      />
-                    </div>
+                    <BehaviorPanel
+                      title="Call safeguards"
+                      detail="Recording, consent, continuity, and caller memory"
+                      icon="shield"
+                    >
+                      <div className="grid gap-3 lg:grid-cols-2">
+                        <ToggleRow
+                          title="Enable recording"
+                          detail="Store recording URL in end-of-call webhook payload."
+                          enabled={selectedAgent.callSettings.recordingEnabled}
+                          onChange={(enabled) =>
+                            updateSelectedAgent({
+                              callSettings: {
+                                ...selectedAgent.callSettings,
+                                recordingEnabled: enabled,
+                              },
+                            })
+                          }
+                        />
+                        <ToggleRow
+                          title="Do-not-call detection"
+                          detail="Detect opt-out intent and mark session metadata."
+                          enabled={
+                            selectedAgent.callSettings.doNotCallDetection
+                          }
+                          onChange={(enabled) =>
+                            updateSelectedAgent({
+                              callSettings: {
+                                ...selectedAgent.callSettings,
+                                doNotCallDetection: enabled,
+                              },
+                            })
+                          }
+                        />
+                        <ToggleRow
+                          title="Session continuation"
+                          detail="Continue conversations by session or caller identifier."
+                          enabled={
+                            selectedAgent.callSettings.sessionContinuation
+                          }
+                          onChange={(enabled) =>
+                            updateSelectedAgent({
+                              callSettings: {
+                                ...selectedAgent.callSettings,
+                                sessionContinuation: enabled,
+                              },
+                            })
+                          }
+                        />
+                        <ToggleRow
+                          title="Memory"
+                          detail="Use a caller identifier key for repeat interactions."
+                          enabled={selectedAgent.callSettings.memoryEnabled}
+                          onChange={(enabled) =>
+                            updateSelectedAgent({
+                              callSettings: {
+                                ...selectedAgent.callSettings,
+                                memoryEnabled: enabled,
+                              },
+                            })
+                          }
+                        />
+                      </div>
+                    </BehaviorPanel>
 
-                    <div className="grid gap-2">
-                      {recentCalls.map((call) => (
-                        <article
-                          className="grid gap-3 rounded-lg border border-[#e5e7eb] bg-white p-3 md:grid-cols-[minmax(0,1fr)_120px_90px]"
-                          key={call._id}
-                        >
-                          <strong className="app-strong truncate">
-                            {call.callerNumber || call.calledNumber || "Browser caller"}
-                          </strong>
-                          <span className="app-caption capitalize">{call.status}</span>
-                          <span className="app-caption md:text-right">
-                            {Math.floor(call.durationSeconds / 60)}:{String(call.durationSeconds % 60).padStart(2, "0")}
+                    <section className="overflow-hidden rounded-xl border border-[#e1e3ed] bg-white">
+                      <div className="flex items-center justify-between gap-3 border-b border-[#edf0f4] px-4 py-3.5">
+                        <div>
+                          <h3 className="app-section-title m-0">
+                            Recent calls
+                          </h3>
+                          <span className="app-caption">
+                            Latest activity for this voice agent
                           </span>
-                        </article>
-                      ))}
-                      {!recentCalls.length ? (
-                        <div className="rounded-lg border border-dashed border-[#d5d8df] bg-[#f8fafc] p-5 text-center">
-                          <span className="app-caption">No real calls recorded for this agent yet.</span>
                         </div>
-                      ) : null}
-                      <button
-                        className="app-button-text min-h-10 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#5b63ff]"
-                        type="button"
-                        onClick={() => navigateToDashboardPage("/dashboard/calls")}
-                      >
-                        Open all call logs
-                      </button>
-                    </div>
+                        <button
+                          className="app-button-text min-h-9 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#737ccf]"
+                          type="button"
+                          onClick={() =>
+                            navigateToDashboardPage("/dashboard/calls")
+                          }
+                        >
+                          View all
+                        </button>
+                      </div>
+                      <div className="grid gap-2 bg-[#fbfbfe] p-4">
+                        {recentCalls.map((call) => (
+                          <article
+                            className="grid gap-3 rounded-lg border border-[#e5e7eb] bg-white p-3 md:grid-cols-[minmax(0,1fr)_120px_90px]"
+                            key={call._id}
+                          >
+                            <strong className="app-strong truncate">
+                              {call.callerNumber ||
+                                call.calledNumber ||
+                                "Browser caller"}
+                            </strong>
+                            <span className="app-caption capitalize">
+                              {call.status}
+                            </span>
+                            <span className="app-caption md:text-right">
+                              {Math.floor(call.durationSeconds / 60)}:
+                              {String(call.durationSeconds % 60).padStart(
+                                2,
+                                "0",
+                              )}
+                            </span>
+                          </article>
+                        ))}
+                        {!recentCalls.length ? (
+                          <div className="rounded-lg border border-dashed border-[#d5d8df] bg-[#f8fafc] p-5 text-center">
+                            <span className="app-caption">
+                              No real calls recorded for this agent yet.
+                            </span>
+                          </div>
+                        ) : null}
+                      </div>
+                    </section>
                   </div>
                 ) : null}
 
                 {activeTab === "widget" ? (
                   <div className="grid gap-4">
-                    <ToggleRow
-                      title="Enable public widget"
-                      detail="Allow website visitors to start browser voice sessions."
-                      enabled={selectedAgent.widget.enabled}
-                      onChange={(enabled) => updateSelectedAgent({ widget: { ...selectedAgent.widget, enabled } })}
-                    />
-                    <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-                      <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_120px]">
-                        <InputField label="Public widget key" value={selectedAgent.widget.publicKey} onChange={(value) => updateSelectedAgent({ widget: { ...selectedAgent.widget, publicKey: value } })} />
-                        <button
-                          className="app-button-text min-h-10 self-end rounded-lg border border-[#d5d8df] bg-white px-3 text-[#5b63ff]"
-                          type="button"
-                          onClick={handleGenerateWidgetKey}
-                        >
-                          Generate
-                        </button>
-                      </div>
-                      <InputField
-                        label="Allowed domains (comma separated)"
-                        value={selectedAgent.widget.allowedDomains.join(", ")}
-                        placeholder="example.com, app.example.com"
-                        onChange={(value) => updateSelectedAgent({ widget: { ...selectedAgent.widget, allowedDomains: value.split(",").map((item) => item.trim()).filter(Boolean) } })}
-                      />
-                    </div>
-
-                    <div className="grid gap-3 lg:grid-cols-4">
-                      <SelectField
-                        label="Widget theme"
-                        defaultValue="auto"
-                        value={selectedAgent.widget.theme}
-                        options={["light", "dark", "auto"]}
-                        onChange={(value) => updateSelectedAgent({ widget: { ...selectedAgent.widget, theme: value as AgentWidget["theme"] } })}
-                      />
-                      <SelectField
-                        label="Position"
-                        defaultValue="bottom-right"
-                        value={selectedAgent.widget.position}
-                        options={["bottom-right", "bottom-left", "inline"]}
-                        onChange={(value) => updateSelectedAgent({ widget: { ...selectedAgent.widget, position: value as AgentWidget["position"] } })}
-                      />
-                      <InputField label="Button text" value={selectedAgent.widget.buttonText} onChange={(value) => updateSelectedAgent({ widget: { ...selectedAgent.widget, buttonText: value } })} />
-                      <label className="app-label grid gap-2">
-                        <span>Accent color</span>
-                        <span className="grid grid-cols-[44px_minmax(0,1fr)] gap-2">
-                          <input
-                            aria-label="Widget accent color"
-                            className="h-10 w-11 rounded-lg border border-[#dfe3ea] bg-white p-1"
-                            type="color"
-                            value={selectedAgent.widget.accentColor}
-                            onChange={(event) => updateSelectedAgent({ widget: { ...selectedAgent.widget, accentColor: event.target.value } })}
-                          />
-                          <input
-                            className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#5b63ff] focus:ring-4 focus:ring-[#5b63ff]/10"
-                            aria-label="Widget accent color hex value"
-                            value={selectedAgent.widget.accentColor}
-                            onChange={(event) => updateSelectedAgent({ widget: { ...selectedAgent.widget, accentColor: event.target.value } })}
-                          />
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                      <div>
+                        <span className="app-label text-[#5963b8]">
+                          Web deployment
                         </span>
-                      </label>
+                        <h3 className="mt-1 mb-0 text-lg font-bold tracking-[-0.02em] text-[#171821]">
+                          Website voice widget
+                        </h3>
+                        <p className="app-caption mt-1 mb-0">
+                          Configure access, appearance, and deployment from one
+                          focused workspace.
+                        </p>
+                      </div>
+                      <span
+                        className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] ${selectedAgent.widget.enabled ? "bg-emerald-50 text-emerald-700" : "bg-[#eff0fb] text-[#5963b8]"}`}
+                      >
+                        {selectedAgent.widget.enabled ? "Enabled" : "Draft"}
+                      </span>
                     </div>
 
-                    {selectedAgent.status !== "Live" || !selectedAgent.widget.publicKey ? (
+                    <section className="flex flex-col gap-3 rounded-xl border border-[#dfe1ec] bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="flex items-center gap-3">
+                        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#eff0fb] text-[#5963b8]">
+                          <Icon icon="widget" />
+                        </span>
+                        <div>
+                          <strong className="app-strong block">
+                            Public widget
+                          </strong>
+                          <span className="app-caption">
+                            Allow website visitors to start browser voice
+                            sessions.
+                          </span>
+                        </div>
+                      </div>
+                      <label className="relative inline-flex h-7 w-12 shrink-0 cursor-pointer items-center">
+                        <input
+                          className="peer sr-only"
+                          type="checkbox"
+                          checked={selectedAgent.widget.enabled}
+                          onChange={(event) =>
+                            updateSelectedAgent({
+                              widget: {
+                                ...selectedAgent.widget,
+                                enabled: event.target.checked,
+                              },
+                            })
+                          }
+                        />
+                        <span className="absolute inset-0 rounded-full bg-[#cbd5e1] transition peer-checked:bg-[#737ccf] peer-focus-visible:ring-4 peer-focus-visible:ring-[#737ccf]/15" />
+                        <span className="absolute left-1 size-5 rounded-full bg-white shadow-sm transition peer-checked:translate-x-5" />
+                      </label>
+                    </section>
+
+                    <section className="grid gap-4 rounded-xl border border-[#e1e3ed] bg-white p-4">
+                      <div>
+                        <h3 className="app-section-title m-0">
+                          Access and appearance
+                        </h3>
+                        <span className="app-caption">
+                          Secure the widget and match it to the website where it
+                          will be installed.
+                        </span>
+                      </div>
+                      <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+                        <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_120px]">
+                          <InputField
+                            label="Public widget key"
+                            value={selectedAgent.widget.publicKey}
+                            onChange={(value) =>
+                              updateSelectedAgent({
+                                widget: {
+                                  ...selectedAgent.widget,
+                                  publicKey: value,
+                                },
+                              })
+                            }
+                          />
+                          <button
+                            className="app-button-text min-h-10 self-end rounded-lg border border-[#d5d8df] bg-white px-3 text-[#737ccf]"
+                            type="button"
+                            onClick={handleGenerateWidgetKey}
+                          >
+                            Generate
+                          </button>
+                        </div>
+                        <InputField
+                          label="Allowed domains (comma separated)"
+                          value={selectedAgent.widget.allowedDomains.join(", ")}
+                          placeholder="example.com, app.example.com"
+                          onChange={(value) =>
+                            updateSelectedAgent({
+                              widget: {
+                                ...selectedAgent.widget,
+                                allowedDomains: value
+                                  .split(",")
+                                  .map((item) => item.trim())
+                                  .filter(Boolean),
+                              },
+                            })
+                          }
+                        />
+                      </div>
+
+                      <div className="grid gap-3 lg:grid-cols-4">
+                        <SelectField
+                          label="Widget theme"
+                          defaultValue="auto"
+                          value={selectedAgent.widget.theme}
+                          options={["light", "dark", "auto"]}
+                          onChange={(value) =>
+                            updateSelectedAgent({
+                              widget: {
+                                ...selectedAgent.widget,
+                                theme: value as AgentWidget["theme"],
+                              },
+                            })
+                          }
+                        />
+                        <SelectField
+                          label="Position"
+                          defaultValue="bottom-right"
+                          value={selectedAgent.widget.position}
+                          options={["bottom-right", "bottom-left", "inline"]}
+                          onChange={(value) =>
+                            updateSelectedAgent({
+                              widget: {
+                                ...selectedAgent.widget,
+                                position: value as AgentWidget["position"],
+                              },
+                            })
+                          }
+                        />
+                        <InputField
+                          label="Button text"
+                          value={selectedAgent.widget.buttonText}
+                          onChange={(value) =>
+                            updateSelectedAgent({
+                              widget: {
+                                ...selectedAgent.widget,
+                                buttonText: value,
+                              },
+                            })
+                          }
+                        />
+                        <label className="app-label grid gap-2">
+                          <span>Accent color</span>
+                          <span className="grid grid-cols-[44px_minmax(0,1fr)] gap-2">
+                            <input
+                              aria-label="Widget accent color"
+                              className="h-10 w-11 rounded-lg border border-[#dfe3ea] bg-white p-1"
+                              type="color"
+                              value={selectedAgent.widget.accentColor}
+                              onChange={(event) =>
+                                updateSelectedAgent({
+                                  widget: {
+                                    ...selectedAgent.widget,
+                                    accentColor: event.target.value,
+                                  },
+                                })
+                              }
+                            />
+                            <input
+                              className="app-control-text min-h-10 rounded-lg border border-[#dfe3ea] bg-white px-3 text-black outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
+                              aria-label="Widget accent color hex value"
+                              value={selectedAgent.widget.accentColor}
+                              onChange={(event) =>
+                                updateSelectedAgent({
+                                  widget: {
+                                    ...selectedAgent.widget,
+                                    accentColor: event.target.value,
+                                  },
+                                })
+                              }
+                            />
+                          </span>
+                        </label>
+                      </div>
+                    </section>
+
+                    {selectedAgent.status !== "Live" ||
+                    !selectedAgent.widget.publicKey ? (
                       <p className="app-caption m-0 rounded-lg border border-[#fde68a] bg-[#fffbeb] p-3 text-[#92400e]">
-                        Public widgets require a Live agent and a saved widget key.
+                        {selectedAgent.status !== "Live"
+                          ? "Publish this agent before enabling the widget on a public website."
+                          : "Generate and save a public widget key before installation."}
                       </p>
                     ) : null}
 
-                    <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_260px]">
-                      <article className="rounded-lg border border-[#e5e7eb] bg-[#f8fafc] p-3">
-                        <div className="mb-3 flex items-center justify-between gap-3">
-                          <div>
-                            <h3 className="app-section-title m-0">Embed code</h3>
-                            <span className="app-caption">
-                              Paste this before the closing body tag on another website.
-                            </span>
-                          </div>
-                          <button
-                            className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#111827]"
-                            type="button"
-                            onClick={handleCopyWidgetCode}
-                          >
-                            <Icon icon="copy" />
-                            Copy
-                          </button>
-                        </div>
-
-                        <pre className="m-0 max-h-[220px] overflow-auto rounded-lg bg-[#111827] p-3 text-xs leading-5 text-[#cbd5e1]">
-                          {widgetEmbedCode}
-                        </pre>
-                      </article>
-
-                      <article className="rounded-lg border border-[#e5e7eb] bg-white p-3">
-                        <div className="mb-4 flex items-center justify-between gap-3">
-                          <div>
-                            <h3 className="app-section-title m-0">Preview</h3>
-                            <span className="app-caption">Public site widget</span>
-                          </div>
-                          <span className="grid size-8 place-items-center rounded-lg bg-[#f0efff] text-[#5b63ff]">
-                            <Icon icon="widget" />
+                    <section className="overflow-hidden rounded-xl border border-[#e1e3ed] bg-white">
+                      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#edf0f4] px-4 py-3.5">
+                        <div>
+                          <h3 className="app-section-title m-0">
+                            Preview and installation
+                          </h3>
+                          <span className="app-caption">
+                            Confirm the visitor experience, then copy the embed
+                            code to your website.
                           </span>
                         </div>
+                        <span className="grid size-8 place-items-center rounded-lg bg-[#eff0fb] text-[#737ccf]">
+                          <Icon icon="widget" />
+                        </span>
+                      </div>
 
-                        <div className="grid min-h-[170px] content-end rounded-lg border border-[#e5e7eb] bg-[#f8fafc] p-3">
-                          <div className="justify-self-end rounded-lg border border-[#e1e2ef] bg-white p-3 shadow-sm">
-                            <div className="mb-3 flex items-center gap-2">
-                              <span
-                                className="grid size-8 place-items-center rounded-full text-[#242535]"
-                                style={{ backgroundColor: selectedAgent.widget.accentColor }}
-                              >
-                                <Icon icon="phone" />
-                              </span>
-                              <span>
-                                <strong className="app-strong block">{selectedAgent.name}</strong>
-                                <span className="app-caption">Voice assistant</span>
+                      <div className="grid gap-px bg-[#e5e7ef] lg:grid-cols-[minmax(340px,1.15fr)_minmax(300px,.85fr)]">
+                        <div className="bg-white p-4">
+                          <div className="mb-3 flex items-center justify-between gap-3">
+                            <div>
+                              <h3 className="app-section-title m-0">Preview</h3>
+                              <span className="app-caption">
+                                Public site widget
                               </span>
                             </div>
+                            <span className="rounded-full bg-[#eff0fb] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[.1em] text-[#5963b8]">
+                              {selectedAgent.widget.position.replace("-", " ")}
+                            </span>
+                          </div>
+
+                          <div className="widget-preview-canvas relative grid min-h-[230px] content-end overflow-hidden rounded-xl border border-[#e1e3ed] p-4">
                             <div
+                              className="absolute inset-x-0 top-0 flex h-10 items-center gap-1.5 border-b border-[#e1e3ed] bg-white/80 px-3"
                               aria-hidden="true"
-                              className="app-button-text inline-flex min-h-9 w-full items-center justify-center gap-2 rounded-lg px-3 text-[#242535]"
-                              style={{ backgroundColor: selectedAgent.widget.accentColor }}
                             >
-                              <Icon icon="phone" />
-                              {selectedAgent.widget.buttonText}
+                              <span className="size-2 rounded-full bg-[#d6d8e3]" />
+                              <span className="size-2 rounded-full bg-[#d6d8e3]" />
+                              <span className="size-2 rounded-full bg-[#d6d8e3]" />
+                              <span className="ml-2 h-5 flex-1 rounded-md bg-[#f0f1f7]" />
+                            </div>
+                            <div
+                              className={`w-full max-w-[270px] rounded-xl border border-[#dfe1ec] bg-white p-4 shadow-[0_18px_45px_rgba(37,40,74,0.14)] ${selectedAgent.widget.position === "bottom-left" ? "justify-self-start" : "justify-self-end"}`}
+                            >
+                              <div className="mb-3 flex items-center gap-2">
+                                <span
+                                  className="grid size-8 place-items-center rounded-full text-white"
+                                  style={{
+                                    backgroundColor:
+                                      selectedAgent.widget.accentColor,
+                                  }}
+                                >
+                                  <Icon icon="phone" />
+                                </span>
+                                <span>
+                                  <strong className="app-strong block">
+                                    {selectedAgent.name}
+                                  </strong>
+                                  <span className="app-caption">
+                                    Voice assistant
+                                  </span>
+                                </span>
+                              </div>
+                              <div
+                                aria-hidden="true"
+                                className="app-button-text inline-flex min-h-9 w-full items-center justify-center gap-2 rounded-lg px-3 text-white"
+                                style={{
+                                  backgroundColor:
+                                    selectedAgent.widget.accentColor,
+                                }}
+                              >
+                                <Icon icon="phone" />
+                                {selectedAgent.widget.buttonText}
+                              </div>
                             </div>
                           </div>
                         </div>
-                        <button
-                          className="app-button-text mt-3 min-h-9 w-full rounded-lg border border-[#d5d8df] bg-white px-3 text-[#5b63ff] disabled:cursor-not-allowed disabled:opacity-60"
-                          type="button"
-                          disabled={!selectedAgent.widget.publicKey}
-                          onClick={() => window.open(widgetUrl, "_blank", "noopener,noreferrer")}
-                        >
-                          Open widget page
-                        </button>
-                      </article>
-                    </div>
+
+                        <div className="grid content-start gap-3 bg-[#fbfbfe] p-4">
+                          <div>
+                            <h3 className="app-section-title m-0">
+                              Installation readiness
+                            </h3>
+                            <span className="app-caption">
+                              Complete these checks before going live.
+                            </span>
+                          </div>
+                          <div className="grid overflow-hidden rounded-xl border border-[#e1e3ed] bg-white">
+                            {[
+                              {
+                                label: "Agent published",
+                                ready: selectedAgent.status === "Live",
+                              },
+                              {
+                                label: "Public key generated",
+                                ready: Boolean(selectedAgent.widget.publicKey),
+                              },
+                              {
+                                label: "Allowed domain added",
+                                ready:
+                                  selectedAgent.widget.allowedDomains.length >
+                                  0,
+                              },
+                            ].map((item) => (
+                              <span
+                                className="flex items-center justify-between gap-3 border-b border-[#edf0f4] px-3 py-2.5 last:border-b-0"
+                                key={item.label}
+                              >
+                                <span className="app-body">{item.label}</span>
+                                <span
+                                  className={`app-label rounded-full px-2 py-0.5 ${item.ready ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"}`}
+                                >
+                                  {item.ready ? "Ready" : "Required"}
+                                </span>
+                              </span>
+                            ))}
+                          </div>
+
+                          <details className="overflow-hidden rounded-xl border border-[#e1e3ed] bg-white">
+                            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3 marker:hidden">
+                              <span>
+                                <strong className="app-strong block">
+                                  Embed code
+                                </strong>
+                                <span className="app-caption">
+                                  Paste before the closing body tag.
+                                </span>
+                              </span>
+                              <span className="app-button-text rounded-lg bg-[#eff0fb] px-2.5 py-1.5 text-[#5963b8]">
+                                View code
+                              </span>
+                            </summary>
+                            <div className="border-t border-[#edf0f4] p-3">
+                              <button
+                                className="app-button-text mb-3 inline-flex min-h-9 w-full items-center justify-center gap-2 rounded-lg border border-[#d5d8df] bg-white px-3 text-[#111827]"
+                                type="button"
+                                onClick={handleCopyWidgetCode}
+                              >
+                                <Icon icon="copy" />
+                                Copy embed code
+                              </button>
+                              <pre className="m-0 max-h-[180px] overflow-auto rounded-lg bg-[#111827] p-3 text-xs leading-5 text-[#cbd5e1]">
+                                {widgetEmbedCode}
+                              </pre>
+                            </div>
+                          </details>
+
+                          <button
+                            className="app-button-text min-h-10 w-full rounded-lg border border-[#c9ccef] bg-white px-3 text-[#5963b8] transition hover:bg-[#eff0fb] disabled:cursor-not-allowed disabled:opacity-50"
+                            type="button"
+                            disabled={!selectedAgent.widget.publicKey}
+                            onClick={() =>
+                              window.open(
+                                widgetUrl,
+                                "_blank",
+                                "noopener,noreferrer",
+                              )
+                            }
+                          >
+                            Open widget page
+                          </button>
+                        </div>
+                      </div>
+                    </section>
 
                     <div className="grid gap-3 rounded-lg border border-[#e5e7eb] bg-white p-3">
                       <div>
-                        <h3 className="app-section-title m-0">Metadata parameters</h3>
+                        <h3 className="app-section-title m-0">
+                          Metadata parameters
+                        </h3>
                         <span className="app-caption">
-                          These query values can become session metadata for prompt variables and webhooks.
+                          These query values can become session metadata for
+                          prompt variables and webhooks.
                         </span>
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {selectedAgent.dynamicVariables.map((item) => (
                           <span
-                            className="app-label rounded-full border border-[#e1e2ef] bg-[#f0efff] px-2.5 py-1 text-[#5b63ff]"
+                            className="app-label rounded-full border border-[#c9ccef] bg-[#eff0fb] px-2.5 py-1 text-[#737ccf]"
                             key={item}
                           >
                             {item}
@@ -5468,223 +7649,243 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                 ) : null}
               </div>
             </article>
-
           </section>
 
           <aside className={runtimeAsideClass}>
-            <article className="min-w-0 overflow-hidden rounded-2xl border border-[#e5e7ef] bg-[#ffffff] shadow-sm">
-              <div className="flex min-h-[68px] items-center justify-between gap-3 border-b border-[#e5e7ef] bg-white px-4 text-[#242535]">
-                <div className="min-w-0">
+            <article className="agent-runtime-card min-w-0 overflow-hidden rounded-2xl border border-[#e1e3ed] bg-white">
+              <div className="border-b border-[#e1e3ed] px-4 pt-4 pb-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <span className="app-label block">Live operations</span>
+                    <h2 className="mt-1 mb-0 text-base font-bold tracking-[-0.02em] text-[#171821]">
+                      Runtime health
+                    </h2>
+                  </div>
+                  <span
+                    className={`app-label shrink-0 rounded-full px-2.5 py-1 ${dispatchBadge(selectedRuntimeSnapshot?.dispatch.state)}`}
+                    title="Voice service status"
+                  >
+                    {dispatchLabel(selectedRuntimeSnapshot?.dispatch.state)}
+                  </span>
+                </div>
+
+                <div className="mt-3 rounded-xl border border-[#dfe2f0] bg-[#f7f7fc] p-3.5">
                   <div className="flex items-center gap-2">
                     <span className="relative flex size-2.5 shrink-0">
-                      {selectedRuntimeStreamState === "live" ? <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-50 motion-reduce:animate-none" /> : null}
-                      <span className={`relative inline-flex size-2.5 rounded-full ${selectedRuntimeStreamState === "live" ? "bg-emerald-500" : "bg-amber-400"}`} />
+                      {selectedRuntimeStreamState === "live" ? (
+                        <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-50 motion-reduce:animate-none" />
+                      ) : null}
+                      <span
+                        className={`relative inline-flex size-2.5 rounded-full ${selectedRuntimeStreamState === "live" ? "bg-emerald-500" : "bg-amber-400"}`}
+                      />
                     </span>
-                    <h2 className="m-0 text-sm font-bold text-[#242535]">Runtime health</h2>
+                    <strong className="text-sm font-bold text-[#171821]">
+                      {selectedRuntimeStreamState === "live"
+                        ? "Operational"
+                        : selectedRuntimeStreamState === "connecting"
+                          ? "Connecting"
+                          : "Reconnecting"}
+                    </strong>
                   </div>
-                  <span className="mt-1 block truncate text-[10px] text-[#737587]">
+                  <p className="app-caption mt-1 mb-0">
                     {selectedRuntimeStreamState === "live"
-                      ? `Live stream${selectedRuntimeSnapshot?.observedAt ? ` / ${new Date(selectedRuntimeSnapshot.observedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}` : ""}`
-                      : selectedRuntimeStreamState === "connecting" ? "Connecting live stream..." : "Reconnecting live stream..."}
-                  </span>
-                </div>
-                <span className={`app-label shrink-0 rounded-full px-2.5 py-1 ${dispatchBadge(selectedRuntimeSnapshot?.dispatch.state)}`} title="Voice service status">
-                  {dispatchLabel(selectedRuntimeSnapshot?.dispatch.state)}
-                </span>
-              </div>
-
-              <div className="grid gap-4 p-4">
-                <div className="grid gap-2">
-                  {selectedRuntimeItems.map((item) => (
-                    <span
-                      className="flex min-w-0 items-center justify-between gap-3 rounded-lg bg-[#f8fafc] px-3 py-2.5"
-                      key={item.label}
-                      title={item.label === "Region" && selectedRuntimeRegion ? formatVoiceRegion(selectedRuntimeRegion) : undefined}
-                    >
-                      <span className="app-label shrink-0 truncate">{item.label}</span>
-                      <strong className={`app-strong min-w-0 truncate text-right ${item.tone}`}>{item.value}</strong>
+                      ? "Voice services are online and ready for calls."
+                      : "Waiting for the live service connection."}
+                  </p>
+                  <div className="mt-3 grid grid-cols-2 divide-x divide-[#dfe2f0] border-t border-[#dfe2f0] pt-3">
+                    <span className="pr-3">
+                      <span className="app-label block">Service mode</span>
+                      <strong className="mt-0.5 block text-lg font-bold capitalize text-[#5963b8]">
+                        {selectedAgent.pipelineMode}
+                      </strong>
                     </span>
-                  ))}
-                </div>
-
-                <div className="grid min-w-0 divide-y divide-[#eef2f7] border-y border-[#eef2f7] px-1">
-                  <span className="flex min-w-0 items-center justify-between gap-3 py-2.5">
-                    <span className="app-caption shrink-0">AI service</span>
-                    <strong className="app-strong min-w-0 truncate text-right" title={selectedRuntimeWorkerLabel}>
-                      {selectedRuntimeWorkerLabel}
-                    </strong>
-                  </span>
-                  <span className="flex min-w-0 items-center justify-between gap-3 py-2.5">
-                    <span className="app-caption shrink-0">STT</span>
-                    <strong className="app-strong min-w-0 truncate text-right" title={selectedRuntimeSnapshot?.pipeline.stt}>
-                      {selectedRuntimeSnapshot?.pipeline.stt ?? (selectedAgent.pipelineMode === "realtime" ? "Native realtime" : `${selectedAgent.sttProvider}/${selectedAgent.sttModel}`)}
-                    </strong>
-                  </span>
-                  <span className="flex items-center justify-between gap-3 py-2.5">
-                    <span className="app-caption">Latency</span>
-                    <strong className={`app-strong ${selectedRuntimeSnapshot?.latency.latestMs !== null && selectedRuntimeSnapshot?.latency.latestMs !== undefined ? selectedTone.text : "text-[#64748b]"}`}>
-                      {selectedRuntimeSnapshot?.latency.latestMs !== null && selectedRuntimeSnapshot?.latency.latestMs !== undefined
-                        ? `${selectedRuntimeSnapshot.latency.latestMs} ms`
-                        : "No samples"}
-                    </strong>
-                  </span>
-                  <span className="flex items-center justify-between gap-3 py-2.5">
-                    <span className="app-caption">Concurrency</span>
-                    <strong className="app-strong">
-                      {selectedRuntimeSnapshot ? `${selectedRuntimeSnapshot.activeCalls} / ${selectedRuntimeSnapshot.maxConcurrentCalls} active` : "Connecting..."}
-                    </strong>
-                  </span>
-                  <span className="flex items-center justify-between gap-3 py-2.5">
-                    <span className="app-caption">Hours guard</span>
-                    <strong className="app-strong" title={selectedRuntimeSnapshot?.businessHours.timezone}>
-                      {!selectedRuntimeSnapshot
-                        ? "Connecting..."
-                        : !selectedRuntimeSnapshot.businessHours.enabled
-                          ? "Off"
-                          : selectedRuntimeSnapshot.businessHours.open ? "Open" : "Closed"}
-                    </strong>
-                  </span>
-                </div>
-              </div>
-            </article>
-
-            <article className="overflow-hidden rounded-2xl border border-[#e4ebf3] bg-white shadow-sm">
-              <div className="p-4">
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <div className="min-w-0">
-                  <h2 className="app-section-title m-0">Phone route</h2>
-                  <span className="app-caption block truncate">
-                    {selectedRuntimeSnapshot
-                      ? [selectedRuntimeSnapshot.phoneRoute.provider, selectedRuntimeSnapshot.phoneRoute.direction].filter(Boolean).join(" / ") || "No route assigned"
-                      : "Connecting live stream..."}
-                  </span>
-                </div>
-                <span className={`grid size-8 shrink-0 place-items-center rounded-lg ${selectedRuntimeSnapshot?.phoneRoute.status === "Ready" ? "bg-[#ecfdf5] text-[#059669]" : "bg-[#fff7ed] text-[#d97706]"}`}>
-                  <Icon icon="route" />
-                </span>
-              </div>
-
-              <div className="grid gap-3">
-                <div className="min-w-0">
-                  <span className="app-label block">Number</span>
-                  <strong className="app-value block truncate" title={selectedRuntimeSnapshot?.phoneRoute.number || selectedAgent.phone}>
-                    {selectedRuntimeSnapshot?.phoneRoute.number || selectedAgent.phone || "Not assigned"}
-                  </strong>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <span>
-                    <span className="app-label block">Calls</span>
-                    <strong className="app-strong block">{selectedRuntimeSnapshot?.phoneRoute.totalCalls ?? "-"}</strong>
-                    <span className="app-caption">{selectedRuntimeSnapshot ? `${selectedRuntimeSnapshot.phoneRoute.activeCalls} active` : "Connecting..."}</span>
-                  </span>
-                  <span>
-                    <span className="app-label block">Completion</span>
-                    <strong className="app-strong text-[#059669]">
-                      {selectedRuntimeSnapshot?.phoneRoute.completionRate === null || selectedRuntimeSnapshot?.phoneRoute.completionRate === undefined
-                        ? "-"
-                        : `${selectedRuntimeSnapshot.phoneRoute.completionRate}%`}
-                    </strong>
-                  </span>
-                </div>
-                {selectedRuntimeSnapshot ? (
-                  <div className="flex flex-wrap gap-2 border-t border-[#eef2f7] pt-3">
-                    {selectedRuntimeSnapshot.phoneRoute.direction !== "Outbound" && selectedRuntimeSnapshot.phoneRoute.direction ? (
-                      <span className={`app-label rounded-full px-2.5 py-1 ${selectedRuntimeSnapshot.phoneRoute.inboundReady ? "bg-[#dcfce7] text-[#047857]" : "bg-[#fee2e2] text-[#b91c1c]"}`}>
-                        Inbound {selectedRuntimeSnapshot.phoneRoute.inboundReady ? "ready" : "not ready"}
-                      </span>
-                    ) : null}
-                    {selectedRuntimeSnapshot.phoneRoute.direction !== "Inbound" && selectedRuntimeSnapshot.phoneRoute.direction ? (
-                      <span className={`app-label rounded-full px-2.5 py-1 ${selectedRuntimeSnapshot.phoneRoute.outboundReady ? "bg-[#dcfce7] text-[#047857]" : "bg-[#fee2e2] text-[#b91c1c]"}`}>
-                        Outbound {selectedRuntimeSnapshot.phoneRoute.outboundReady ? "ready" : "not ready"}
-                      </span>
-                    ) : null}
-                    {!selectedRuntimeSnapshot.phoneRoute.direction ? (
-                      <span className="app-label rounded-full bg-[#f1f5f9] px-2.5 py-1 text-[#64748b]">Unassigned</span>
-                    ) : null}
+                    <span className="pl-3">
+                      <span className="app-label block">Active calls</span>
+                      <strong className="mt-0.5 block text-lg font-bold text-[#171821]">
+                        {selectedRuntimeSnapshot
+                          ? `${selectedRuntimeSnapshot.activeCalls} / ${selectedRuntimeSnapshot.maxConcurrentCalls}`
+                          : "—"}
+                      </strong>
+                    </span>
                   </div>
-                ) : null}
-              </div>
-              </div>
-            </article>
-
-            <article className="overflow-hidden rounded-2xl border border-[#e4ebf3] bg-white shadow-sm">
-              <div className="p-4">
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <div>
-                  <h2 className="app-section-title m-0">Deploy checklist</h2>
-                  <span className="app-caption">Required before live traffic</span>
                 </div>
-                <span className="grid size-8 place-items-center rounded-lg bg-[#ecfdf5] text-[#059669]">
-                  <Icon icon="shield" />
-                </span>
               </div>
 
-              <div className="grid gap-3">
-                {deployChecklist.map((item) => (
-                  <div className="flex items-center gap-3" key={item}>
-                    <span className="size-2 rounded-full bg-[#059669]" />
-                    <span className="app-body">{item}</span>
-                  </div>
+              <div className="grid divide-y divide-[#edf0f4] px-4 py-1">
+                {selectedRuntimeItems.map((item) => (
+                  <span
+                    className="grid min-w-0 grid-cols-[96px_minmax(0,1fr)] items-start gap-3 py-3"
+                    key={item.label}
+                  >
+                    <span className="app-label truncate">{item.label}</span>
+                    <strong
+                      className={`app-strong min-w-0 break-words text-right ${item.tone}`}
+                    >
+                      {item.value}
+                    </strong>
+                  </span>
                 ))}
-              </div>
+                <span className="grid grid-cols-[96px_minmax(0,1fr)] items-center gap-3 py-3">
+                  <span className="app-label">Hours guard</span>
+                  <strong
+                    className="app-strong text-right"
+                    title={selectedRuntimeSnapshot?.businessHours.timezone}
+                  >
+                    {!selectedRuntimeSnapshot
+                      ? "Checking"
+                      : !selectedRuntimeSnapshot.businessHours.enabled
+                        ? "Off"
+                        : selectedRuntimeSnapshot.businessHours.open
+                          ? "Open"
+                          : "Closed"}
+                  </strong>
+                </span>
               </div>
             </article>
 
-            <article className="overflow-hidden rounded-2xl border border-[#dbe2ea] bg-white text-[#111827] shadow-sm">
+            <article className="agent-runtime-card overflow-hidden rounded-2xl border border-[#e1e3ed] bg-white">
               <div className="p-4">
-              <div className="mb-3 flex items-center justify-between gap-3">
-                <h2 className="app-section-title m-0">Config preview</h2>
-                <Icon icon="code" />
-              </div>
-              <pre className="m-0 max-h-72 overflow-auto rounded-xl bg-[#f8f8fc] p-3 text-xs leading-5 text-[#56607c]">
-{`{
-  "architecture": "${selectedAgent.pipelineMode}",
-  "language": "${selectedAgent.language}",
-  "multilingual": ${selectedAgent.multilingualEnabled},
-  "language_switching": ${selectedAgent.languageSwitchingEnabled},
-  "allowed_languages": ${JSON.stringify(selectedAgent.supportedLanguages)},
-  "voice": "${selectedAgent.voice}",
-  "realtime": "${selectedAgent.realtimeProvider}/${selectedAgent.realtimeModel}",
-  "stt": "${selectedAgent.sttProvider}/${selectedAgent.sttModel}",
-  "llm": "${selectedAgent.llmProvider}/${selectedAgent.llmModel}",
-  "tts": "${selectedAgent.ttsProvider}/${selectedAgent.ttsModel}",
-  "opening_mode": "${selectedAgent.firstMessageMode}",
-  "endpointing": "${selectedAgent.behavior.endpointingMode}",
-  "timezone": "${selectedAgent.businessHours.timezone}",
-  "voice_speed": ${selectedAgent.voiceSpeed},
-  "voice_pitch": ${selectedAgent.voicePitch},
-  "concurrent_calls": ${selectedAgent.maxConcurrentCalls},
-  "business_hours": ${selectedAgent.businessHoursEnabled},
-  "tools": ${selectedAgent.tools.length},
-  "knowledge_base": ${selectedAgent.knowledgeSourceCount ?? selectedAgent.knowledgeDocuments.length},
-  "version": ${selectedAgent.version}
-}`}
-              </pre>
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <h2 className="app-section-title m-0">Phone route</h2>
+                    <span className="app-caption block truncate">
+                      {selectedRuntimeSnapshot
+                        ? [
+                            selectedRuntimeSnapshot.phoneRoute.provider,
+                            selectedRuntimeSnapshot.phoneRoute.direction,
+                          ]
+                            .filter(Boolean)
+                            .join(" / ") || "No route assigned"
+                        : "Connecting live stream..."}
+                    </span>
+                  </div>
+                  <span
+                    className={`grid size-8 shrink-0 place-items-center rounded-lg ${selectedRuntimeSnapshot?.phoneRoute.status === "Ready" ? "bg-[#ecfdf5] text-[#059669]" : "bg-[#fff7ed] text-[#d97706]"}`}
+                  >
+                    <Icon icon="route" />
+                  </span>
+                </div>
+
+                <div className="grid gap-2.5">
+                  <div className="min-w-0">
+                    <span className="app-label block">Number</span>
+                    <strong
+                      className="app-strong block truncate"
+                      title={
+                        selectedRuntimeSnapshot?.phoneRoute.number ||
+                        selectedAgent.phone
+                      }
+                    >
+                      {selectedRuntimeSnapshot?.phoneRoute.number ||
+                        selectedAgent.phone ||
+                        "Not assigned"}
+                    </strong>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <span>
+                      <span className="app-label block">Calls</span>
+                      <strong className="app-strong block">
+                        {selectedRuntimeSnapshot?.phoneRoute.totalCalls ?? "-"}
+                      </strong>
+                      <span className="app-caption">
+                        {selectedRuntimeSnapshot
+                          ? `${selectedRuntimeSnapshot.phoneRoute.activeCalls} active`
+                          : "Connecting..."}
+                      </span>
+                    </span>
+                    <span>
+                      <span className="app-label block">Completion</span>
+                      <strong className="app-strong text-[#059669]">
+                        {selectedRuntimeSnapshot?.phoneRoute.completionRate ===
+                          null ||
+                        selectedRuntimeSnapshot?.phoneRoute.completionRate ===
+                          undefined
+                          ? "-"
+                          : `${selectedRuntimeSnapshot.phoneRoute.completionRate}%`}
+                      </strong>
+                    </span>
+                  </div>
+                  {selectedRuntimeSnapshot ? (
+                    <div className="flex flex-wrap gap-2 border-t border-[#eef2f7] pt-3">
+                      {selectedRuntimeSnapshot.phoneRoute.direction !==
+                        "Outbound" &&
+                      selectedRuntimeSnapshot.phoneRoute.direction ? (
+                        <span
+                          className={`app-label rounded-full px-2.5 py-1 ${selectedRuntimeSnapshot.phoneRoute.inboundReady ? "bg-[#dcfce7] text-[#047857]" : "bg-[#fee2e2] text-[#b91c1c]"}`}
+                        >
+                          Inbound{" "}
+                          {selectedRuntimeSnapshot.phoneRoute.inboundReady
+                            ? "ready"
+                            : "not ready"}
+                        </span>
+                      ) : null}
+                      {selectedRuntimeSnapshot.phoneRoute.direction !==
+                        "Inbound" &&
+                      selectedRuntimeSnapshot.phoneRoute.direction ? (
+                        <span
+                          className={`app-label rounded-full px-2.5 py-1 ${selectedRuntimeSnapshot.phoneRoute.outboundReady ? "bg-[#dcfce7] text-[#047857]" : "bg-[#fee2e2] text-[#b91c1c]"}`}
+                        >
+                          Outbound{" "}
+                          {selectedRuntimeSnapshot.phoneRoute.outboundReady
+                            ? "ready"
+                            : "not ready"}
+                        </span>
+                      ) : null}
+                      {!selectedRuntimeSnapshot.phoneRoute.direction ? (
+                        <span className="app-label rounded-full bg-[#f1f5f9] px-2.5 py-1 text-[#64748b]">
+                          Unassigned
+                        </span>
+                      ) : null}
+                    </div>
+                  ) : null}
+                </div>
               </div>
             </article>
           </aside>
         </section>
       </section>
       {showAgentNameEditor ? (
-        <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-black/80 px-4 py-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="edit-agent-name-title" aria-describedby="edit-agent-name-description" aria-busy={renamingAgentSaving}>
+        <div
+          className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-slate-950/35 px-4 py-4 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="edit-agent-name-title"
+          aria-describedby="edit-agent-name-description"
+          aria-busy={renamingAgentSaving}
+        >
           <form
-            className="grid max-h-[calc(100dvh-2rem)] w-full max-w-md gap-4 overflow-y-auto rounded-xl border border-[#e5e7ef] bg-[#ffffff] p-5 shadow-sm"
+            className="dashboard-overlay-panel grid max-h-[calc(100dvh-2rem)] w-full max-w-md gap-4 overflow-y-auto rounded-2xl border border-[#e1e3ed] bg-white p-5"
             onSubmit={(event) => {
               event.preventDefault();
               void saveAgentName(selectedAgent);
             }}
           >
             <div>
-              <h2 className="app-section-title m-0" id="edit-agent-name-title">Edit agent name</h2>
-              <p className="app-caption mt-1 mb-0 text-[#737587]" id="edit-agent-name-description">Update the name shown across the dashboard.</p>
+              <h2 className="app-section-title m-0" id="edit-agent-name-title">
+                Edit agent name
+              </h2>
+              <p
+                className="app-caption mt-1 mb-0"
+                id="edit-agent-name-description"
+              >
+                Update the name shown across the dashboard.
+              </p>
             </div>
-            {notice ? <div className="rounded-lg border border-amber-300/20 bg-amber-400/10 px-3 py-2 text-xs font-semibold text-amber-700" role="status" aria-live="polite">{notice}</div> : null}
+            {notice ? (
+              <div
+                className="rounded-lg border border-amber-300/20 bg-amber-400/10 px-3 py-2 text-xs font-semibold text-amber-200"
+                role="status"
+                aria-live="polite"
+              >
+                {notice}
+              </div>
+            ) : null}
             <label className="grid gap-1.5">
-              <span className="app-label text-[#4d54db]">Agent name</span>
+              <span className="app-label text-[#5963b8]">Agent name</span>
               <input
                 autoFocus
                 required
-                className="app-control-text min-h-11 rounded-lg border border-[#e5e7ef] bg-[#f8f8fc] px-3 text-[#242535] outline-none transition focus:border-[#5b63ff] focus:ring-4 focus:ring-[#5b63ff]/10"
+                className="app-control-text min-h-11 rounded-lg border border-[#d9dcea] bg-white px-3 text-[#171821] outline-none transition focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
                 value={agentNameDraft}
                 maxLength={80}
                 onChange={(event) => setAgentNameDraft(event.target.value)}
@@ -5692,7 +7893,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
             </label>
             <div className="flex justify-end gap-2">
               <button
-                className="app-button-text min-h-10 rounded-lg border border-[#e5e7ef] bg-[#f8f8fc] px-4 text-[#737587] transition hover:bg-[#f6f7fb] active:translate-y-px disabled:opacity-50"
+                className="app-button-text min-h-10 rounded-lg border border-[#d9dcea] bg-white px-4 text-[#505261] transition hover:bg-[#f7f7fc] active:translate-y-px disabled:opacity-50"
                 type="button"
                 disabled={renamingAgentSaving}
                 onClick={cancelAgentRename}
@@ -5700,7 +7901,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                 Cancel
               </button>
               <button
-                className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#5b63ff]/24 bg-[#5b63ff]/[0.07] px-4 text-[#4d54db] shadow-sm transition hover:border-[#5b63ff]/40 hover:bg-[#5b63ff]/12 active:translate-y-px disabled:opacity-50"
+                className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#737ccf]/24 bg-[#737ccf]/[0.07] px-4 text-[#5963b8] shadow-sm transition hover:border-[#737ccf]/40 hover:bg-[#737ccf]/12 active:translate-y-px disabled:opacity-50"
                 type="submit"
                 disabled={renamingAgentSaving}
               >
@@ -5715,24 +7916,40 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
         <TestCallPanel
           agentId={selectedAgent.id}
           agentName={selectedAgent.name}
-          knowledgeCount={selectedAgent.knowledgeSourceCount ?? selectedAgent.knowledgeDocuments.length}
+          knowledgeCount={
+            selectedAgent.knowledgeSourceCount ??
+            selectedAgent.knowledgeDocuments.length
+          }
           recordingEnabled={selectedAgent.callSettings.recordingEnabled}
-          onRegionChange={(region) => setRuntimeRegions((current) => ({ ...current, [selectedAgent.id]: region }))}
+          onRegionChange={(region) =>
+            setRuntimeRegions((current) => ({
+              ...current,
+              [selectedAgent.id]: region,
+            }))
+          }
           onClose={() => setShowTestCall(false)}
         />
       ) : null}
       {notice && toast && !showAgentNameEditor ? (
         <div
-          className={`fixed right-4 bottom-4 z-[90] grid w-[min(420px,calc(100vw-32px))] grid-cols-[36px_minmax(0,1fr)_28px] items-start gap-3 rounded-lg border p-3 shadow-sm ${toast.panel}`}
+          className={`fixed right-4 bottom-4 z-[90] grid w-[min(420px,calc(100vw-32px))] grid-cols-[36px_minmax(0,1fr)_28px] items-start gap-3 rounded-lg border p-3 shadow-[0_20px_56px_rgba(15,23,42,0.22)] ${toast.panel}`}
           role="status"
           aria-live="polite"
         >
-          <span className={`mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg bg-[#f6f7fb] shadow-sm`}>
+          <span
+            className={`mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg bg-white/80 shadow-sm`}
+          >
             <span className={`size-2.5 rounded-full ${toast.dot}`} />
           </span>
           <div className="min-w-0">
-            <strong className="app-strong block text-current">{toast.title}</strong>
-            <p className={`app-caption m-0 mt-0.5 min-w-0 wrap-break-word ${toast.body}`}>{notice}</p>
+            <strong className="app-strong block text-current">
+              {toast.title}
+            </strong>
+            <p
+              className={`app-caption m-0 mt-0.5 min-w-0 wrap-break-word ${toast.body}`}
+            >
+              {notice}
+            </p>
           </div>
           <button
             aria-label="Dismiss notification"
@@ -5751,14 +7968,13 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
 function mapBackendAgent(agent: BackendAgent): VoiceAgent {
   const firstMessageMode: FirstMessageMode = agent.behavior?.userStartsFirst
     ? "user-speaks-first"
-    : agent.firstMessageMode ?? "assistant-speaks-first";
+    : (agent.firstMessageMode ?? "assistant-speaks-first");
   const realtimeProvider = agent.realtimeProvider ?? "openai";
   const legacyMultilingual = agent.language === "Multilingual";
   const primaryLanguage = legacyMultilingual ? "English" : agent.language;
-  const supportedLanguages = [...new Set([
-    primaryLanguage,
-    ...(agent.supportedLanguages ?? []),
-  ])].filter((language) => language && language !== "Multilingual");
+  const supportedLanguages = [
+    ...new Set([primaryLanguage, ...(agent.supportedLanguages ?? [])]),
+  ].filter((language) => language && language !== "Multilingual");
   const llmProvider = agent.llmProvider ?? "openai";
   const ttsProvider = agent.ttsProvider ?? "openai";
 
@@ -5777,13 +7993,22 @@ function mapBackendAgent(agent: BackendAgent): VoiceAgent {
     voice: agent.voice,
     pipelineMode: agent.pipelineMode ?? "realtime",
     realtimeProvider,
-    realtimeModel: normalizeRealtimeModel(realtimeProvider, agent.realtimeModel ?? defaultOpenAIRealtimeModel),
+    realtimeModel: normalizeRealtimeModel(
+      realtimeProvider,
+      agent.realtimeModel ?? defaultOpenAIRealtimeModel,
+    ),
     llmProvider,
-    llmModel: normalizeGeminiLlmModel(llmProvider, agent.llmModel ?? "gpt-4.1-mini"),
+    llmModel: normalizeGeminiLlmModel(
+      llmProvider,
+      agent.llmModel ?? "gpt-4.1-mini",
+    ),
     sttProvider: agent.sttProvider ?? "openai",
     sttModel: agent.sttModel ?? "gpt-4o-mini-transcribe",
     ttsProvider,
-    ttsModel: normalizeGeminiTtsModel(ttsProvider, agent.ttsModel ?? "gpt-4o-mini-tts"),
+    ttsModel: normalizeGeminiTtsModel(
+      ttsProvider,
+      agent.ttsModel ?? "gpt-4o-mini-tts",
+    ),
     temperature: agent.temperature ?? 0.35,
     maxConcurrentCalls: agent.maxConcurrentCalls ?? 5,
     voiceSpeed: agent.voiceSpeed ?? 1,
@@ -5795,9 +8020,10 @@ function mapBackendAgent(agent: BackendAgent): VoiceAgent {
     businessHours: {
       ...defaultBusinessHours,
       ...agent.businessHours,
-      schedule: agent.businessHours?.schedule?.length ? agent.businessHours.schedule : defaultBusinessHours.schedule,
+      schedule: agent.businessHours?.schedule?.length
+        ? agent.businessHours.schedule
+        : defaultBusinessHours.schedule,
     },
-    latency: formatLatency(agent.latencyMetrics),
     calls: 0,
     success: "-",
     prompt: agent.prompt,
@@ -5811,12 +8037,24 @@ function mapBackendAgent(agent: BackendAgent): VoiceAgent {
     callSettings: { ...defaultCallSettings, ...agent.callSettings },
     tools: (agent.tools ?? []).map(normalizeTool),
     knowledgeDocuments: agent.knowledgeDocuments ?? [],
-    knowledgeSourceCount: agent.knowledgeSourceCount ?? agent.knowledgeDocuments?.length ?? 0,
+    knowledgeSourceCount:
+      agent.knowledgeSourceCount ?? agent.knowledgeDocuments?.length ?? 0,
     dynamicVariables: agent.dynamicVariables ?? ["FromPhone", "ToPhone"],
     prefetchWebhook: agent.prefetchWebhook ?? "",
     endOfCallWebhook: agent.endOfCallWebhook ?? "",
-    googleCalendar: agent.googleCalendar ?? { enabled: false, calendarId: "", calendarName: "", timezone: "Asia/Kolkata", appointmentDurationMinutes: 30 },
-    googleSheets: agent.googleSheets ?? { enabled: false, spreadsheetId: "", spreadsheetName: "", sheetName: "Sheet1" },
+    googleCalendar: agent.googleCalendar ?? {
+      enabled: false,
+      calendarId: "",
+      calendarName: "",
+      timezone: "Asia/Kolkata",
+      appointmentDurationMinutes: 30,
+    },
+    googleSheets: agent.googleSheets ?? {
+      enabled: false,
+      spreadsheetId: "",
+      spreadsheetName: "",
+      sheetName: "Sheet1",
+    },
     widget: { ...defaultWidget, ...agent.widget },
     version: agent.version ?? 1,
   };

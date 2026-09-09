@@ -1,31 +1,19 @@
-import "./dashboard.css";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 import { DashboardNavigationFeedback } from "@/components/dashboard/DashboardNavigationFeedback";
 import { DashboardQueryProvider } from "@/components/dashboard/DashboardQueryProvider";
-import { requestBrandConfig } from "@/lib/brandServer";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const brand = await requestBrandConfig();
-  if (brand.source === "platform") {
-    return {
-      title: "Dashboard | Vozon",
-      description: "Manage your Vozon voice agents, calls, campaigns, and workspace.",
-      robots: { index: false, follow: false, nocache: true },
-    };
-  }
-  return {
-    title: `Dashboard | ${brand.productName}`,
-    description: `Manage your ${brand.productName} voice agents, calls, campaigns, and workspace.`,
-    robots: { index: false, follow: false, nocache: true },
-  };
-}
+export const metadata: Metadata = {
+  title: "Dashboard | Vozon",
+  description: "Manage your Vozon voice agents, calls, campaigns, and workspace.",
+  robots: { index: false, follow: false, nocache: true },
+};
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <DashboardQueryProvider>
-      <div className="dashboard-home-theme min-h-screen bg-[#f7f8fc] text-[#242535]">
+      <div className="dashboard-home-theme min-h-screen bg-[#f7f7fc] text-[#1b1b22]">
         <DashboardNavigationFeedback />
         {children}
       </div>

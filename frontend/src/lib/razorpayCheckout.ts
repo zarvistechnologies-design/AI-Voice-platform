@@ -57,7 +57,7 @@ export async function openRazorpayCheckout(payload: RazorpayCheckoutPayload) {
       description: payload.description,
       ...(payload.kind === "order" ? { order_id: payload.orderId } : { subscription_id: payload.subscriptionId }),
       prefill: payload.prefill,
-      theme: { color: "#45ddce" },
+      theme: { color: "#737ccf" },
       retry: { enabled: true },
       ...(payload.displayMode === "all" ? {} : {
         config: {

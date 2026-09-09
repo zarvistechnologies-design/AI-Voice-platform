@@ -20,6 +20,10 @@ export async function prefetchDashboardData(href: string) {
     await Promise.all([voiceApi.calls(), voiceApi.agentSummaries()]);
     return;
   }
+  if (href === "/dashboard/knowledge") {
+    await voiceApi.workspaceKnowledge();
+    return;
+  }
   if (href === "/dashboard/integrations") {
     await integrationsApi.list();
     return;
