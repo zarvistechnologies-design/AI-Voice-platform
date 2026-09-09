@@ -1748,3 +1748,141 @@
     background: #f5f5fb !important;
   }
 }
+
+/* Refined dashboard navigation. These rules intentionally live last so the
+   sidebar keeps its product identity without changing page-level surfaces. */
+@layer components {
+  @media (min-width: 1024px) {
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-shell {
+      isolation: isolate;
+      overflow: visible;
+      background:
+        radial-gradient(circle at 8% 2%, rgb(115 124 207 / 0.13), transparent 12rem),
+        linear-gradient(180deg, #ffffff 0%, #fbfbff 48%, #f7f7fc 100%) !important;
+      box-shadow: 8px 0 32px rgb(37 40 74 / 0.065) !important;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-brand {
+      height: 3.5rem;
+      padding: 0 0.5rem 0.75rem !important;
+      border-bottom: 1px solid rgb(225 227 237 / 0.82);
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-brand-link {
+      border-radius: 0.625rem;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-console {
+      border-color: rgb(115 124 207 / 0.2) !important;
+      background: rgb(115 124 207 / 0.08) !important;
+      color: #5963b8 !important;
+      letter-spacing: 0.13em;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar nav {
+      padding: 0 0.125rem 0.5rem;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-group-label {
+      color: #8a8d9f !important;
+      font-size: 0.625rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav {
+      border: 1px solid transparent;
+      border-radius: 0.75rem;
+      color: #626577 !important;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav .dashboard-sidebar-icon {
+      background: #f0f1f9 !important;
+      color: #6f748f !important;
+      transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav .dashboard-sidebar-label {
+      color: #626577 !important;
+      font-weight: 600;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav:hover {
+      border-color: #e1e3ed !important;
+      background: rgb(255 255 255 / 0.82) !important;
+      box-shadow: 0 6px 18px rgb(37 40 74 / 0.055) !important;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav:hover .dashboard-sidebar-icon {
+      color: #5963b8 !important;
+      transform: translateX(1px);
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] {
+      border-color: #6972d4 !important;
+      background: linear-gradient(135deg, #737ccf 0%, #626bc6 100%) !important;
+      color: #ffffff !important;
+      box-shadow: 0 10px 24px rgb(89 99 184 / 0.2) !important;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-icon {
+      background: rgb(255 255 255 / 0.16) !important;
+      color: #ffffff !important;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-label {
+      color: #ffffff !important;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-footer {
+      margin-inline: 0.125rem;
+      padding: 0.75rem 0.25rem 0.125rem !important;
+      border-color: rgb(225 227 237 / 0.9) !important;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-account {
+      min-height: 3rem;
+      padding: 0.25rem !important;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-avatar {
+      border: 1px solid rgb(255 255 255 / 0.72);
+      background: #737ccf !important;
+      color: #ffffff !important;
+      box-shadow: 0 7px 18px rgb(89 99 184 / 0.2) !important;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-logout {
+      color: #8b8e9f !important;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-logout:hover {
+      background: #fff1f2 !important;
+      color: #e05252 !important;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-toggle {
+      top: 4.25rem;
+      border-color: #d9dcea !important;
+      background: #ffffff !important;
+      color: #626577 !important;
+      box-shadow: 0 5px 16px rgb(37 40 74 / 0.12) !important;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-toggle:hover {
+      border-color: #aeb4e5 !important;
+      color: #5963b8 !important;
+      transform: translateX(50%) scale(1.05);
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-shell[data-expanded="false"] .dashboard-sidebar-brand {
+      padding-inline: 0 !important;
+      border-bottom-color: transparent;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-shell[data-expanded="false"] .dashboard-sidebar-footer {
+      margin-inline: 0;
+      padding-inline: 0 !important;
+    }
+  }
+}
