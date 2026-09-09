@@ -32,17 +32,14 @@ const stageAccents = [
   {
     number: "text-[#75fff0] border-[#45ddce]/30 bg-[#45ddce]/10",
     line: "from-[#45ddce]",
-    glow: "bg-[#45ddce]/15",
   },
   {
     number: "text-[#c6bdff] border-[#8f83e8]/30 bg-[#8f83e8]/10",
     line: "from-[#8f83e8]",
-    glow: "bg-[#8f83e8]/15",
   },
   {
     number: "text-[#ffbd8c] border-[#f28d45]/30 bg-[#f28d45]/10",
     line: "from-[#f28d45]",
-    glow: "bg-[#f28d45]/15",
   },
 ] as const;
 
@@ -86,7 +83,6 @@ function ProductGlyph({ type }: { type: "voice" | "workflow" | "signal" }) {
 function HeroConsole() {
   return (
     <div className="relative mx-auto w-full max-w-[720px]">
-      <div className="absolute -inset-12 -z-10 rounded-full bg-[#45ddce]/12 blur-[90px]" />
       <div className="overflow-hidden rounded-[22px] border border-white/12 bg-[#06110f] shadow-[0_36px_100px_rgba(0,0,0,0.52)]">
         <div className="flex h-11 items-center justify-between border-b border-white/[0.08] bg-white/[0.025] px-4">
           <div className="flex gap-1.5" aria-hidden="true">
@@ -207,11 +203,10 @@ function StageVisual({ index }: { index: number }) {
 
   if (index === 1) {
     return (
-      <div className="relative min-h-[390px] overflow-hidden rounded-[22px] border border-[#e3defb] bg-[#f7f5ff] p-5 shadow-[0_18px_48px_rgba(109,92,231,0.08)] sm:p-7">
-        <div className="absolute -right-16 -top-16 size-64 rounded-full bg-[#8f83e8]/15 blur-[70px]" />
+      <div className="product-deployment-card relative min-h-[390px] overflow-hidden rounded-[22px] border border-[#e3defb] bg-[#f7f5ff] p-5 sm:p-7">
         <div className="relative flex items-center justify-between border-b border-white/[0.08] pb-5">
           <div><span className="text-xs font-black text-[#17203f]">Deployment center</span><span className="mt-1 block text-[9px] text-[#5d6478]">All production channels</span></div>
-          <span className="flex items-center gap-2 text-[9px] font-bold text-emerald-300"><span className="size-1.5 rounded-full bg-emerald-300" /> Healthy</span>
+          <span className="text-[9px] font-bold text-[#667085]">Healthy</span>
         </div>
         <div className="relative mt-5 grid gap-3 sm:grid-cols-2">
           {[
@@ -221,14 +216,14 @@ function StageVisual({ index }: { index: number }) {
             ["Human handoff", "Support queue", "Ready"],
           ].map(([title, detail, status], itemIndex) => (
             <div className="rounded-2xl border border-[#e3defb] bg-white p-4 shadow-[0_8px_24px_rgba(55,46,120,0.05)]" key={title}>
-              <div className="flex items-center justify-between"><span className="grid size-9 place-items-center rounded-xl bg-[#8f83e8]/14 text-[#c6bdff]"><ProductGlyph type={itemIndex % 2 ? "workflow" : "voice"} /></span><span className="rounded-full bg-emerald-300/10 px-2 py-1 text-[8px] font-bold text-emerald-300">{status}</span></div>
+              <div className="flex items-center justify-between"><span className="product-deployment-icon grid size-9 place-items-center rounded-xl bg-[#8f83e8]/14 text-[#c6bdff]"><ProductGlyph type={itemIndex % 2 ? "workflow" : "voice"} /></span><span className="product-deployment-status rounded-full bg-emerald-300/10 px-2 py-1 text-[8px] font-bold text-emerald-300">{status}</span></div>
               <strong className="mt-5 block text-sm text-[#17203f]">{title}</strong>
               <span className="mt-1 block text-[10px] text-[#5d6478]">{detail}</span>
             </div>
           ))}
         </div>
-        <div className="relative mt-4 flex items-center justify-between rounded-xl border border-[#8f83e8]/20 bg-[#8f83e8]/[0.07] px-4 py-3">
-          <span className="text-[10px] font-bold text-[#5d6478]">Production agent</span><span className="rounded-lg bg-[#6d5ce7] px-3 py-2 text-[9px] font-black text-white">Deployed</span>
+        <div className="product-deployment-summary relative mt-4 flex items-center justify-between rounded-xl border border-[#8f83e8]/20 bg-[#8f83e8]/[0.07] px-4 py-3">
+          <span className="text-[10px] font-bold text-[#5d6478]">Production agent</span><span className="product-deployment-deployed rounded-lg bg-[#6d5ce7] px-3 py-2 text-[9px] font-black text-white">Deployed</span>
         </div>
       </div>
     );
@@ -236,7 +231,6 @@ function StageVisual({ index }: { index: number }) {
 
   return (
     <div className="relative min-h-[390px] overflow-hidden rounded-[22px] border border-[#f4dfcf] bg-[#fff7f1] p-5 shadow-[0_18px_48px_rgba(233,130,58,0.08)] sm:p-7">
-      <div className="absolute -left-20 -top-20 size-64 rounded-full bg-[#f28d45]/12 blur-[75px]" />
       <div className="relative flex items-center justify-between"><div><span className="text-xs font-black text-[#17203f]">Call intelligence</span><span className="mt-1 block text-[9px] text-[#5d6478]">Last 7 days</span></div><span className="rounded-lg border border-[#f4dfcf] bg-white px-3 py-2 text-[9px] text-[#5d6478]">All agents</span></div>
       <div className="relative mt-5 grid grid-cols-3 gap-2.5">
         {[["1,284", "Calls"], ["91%", "Resolved"], ["4.7", "Quality"]].map(([value, label]) => (
@@ -265,14 +259,12 @@ export function ProductOverviewPage() {
     <SiteLayout>
       <div className="product-overview-page overflow-hidden bg-white text-[#17203f]" id="product-overview-page">
         <section className="relative px-5 pb-20 pt-36 sm:px-8 sm:pt-40 lg:pb-28 lg:pt-44">
-          <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(69,221,206,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(69,221,206,0.055)_1px,transparent_1px)] [background-size:54px_54px] [mask-image:linear-gradient(to_bottom,black,transparent_86%)]" />
-          <div className="absolute left-1/2 top-0 h-[500px] w-[900px] -translate-x-1/2 rounded-full bg-[#45ddce]/[0.07] blur-[130px]" />
           <div className="relative mx-auto grid max-w-[1280px] items-center gap-14 lg:grid-cols-[0.88fr_1.12fr]">
             <div className="max-w-2xl">
               <div className="inline-flex items-center gap-2 rounded-full border border-[#45ddce]/22 bg-[#45ddce]/[0.07] px-4 py-2 text-[10px] font-black uppercase tracking-[0.17em] text-[#75fff0]">
                 <span className="size-1.5 rounded-full bg-[#45ddce] shadow-[0_0_10px_#45ddce]" /> Vozon product platform
               </div>
-              <h1 className="product-hero-title m-0 mt-7 text-[clamp(2.6rem,5.7vw,5.3rem)] font-black leading-[0.96] tracking-[-0.045em] text-[#7a3e9d]">
+              <h1 className="product-hero-title m-0 mt-7 text-[clamp(2.6rem,5.7vw,5.3rem)] font-medium leading-[0.98] tracking-[-0.045em] text-[#7a3e9d]">
                 Every voice workflow, <span className="product-overview-heading-accent text-[#7a3e9d]" id="product-overview-heading-accent">one platform.</span>
               </h1>
               <p className="mb-0 mt-7 max-w-xl text-base leading-8 text-[#5d6478] sm:text-lg">
@@ -303,27 +295,26 @@ export function ProductOverviewPage() {
           </div>
         </section>
 
-        <section className="px-5 py-20 sm:px-8 lg:py-28">
+        <section className="px-5 py-16 sm:px-8 lg:py-20">
           <div className="mx-auto max-w-[1280px]">
-            <div className="mx-auto max-w-3xl text-center">
+            <div className="mx-auto max-w-[680px] text-center">
               <p className="m-0 text-[10px] font-black uppercase tracking-[0.2em] text-[#75fff0]">The complete operating layer</p>
-              <h2 className="m-0 mt-5 text-[clamp(2.1rem,4.5vw,4rem)] font-black leading-[1.02] tracking-[-0.035em]">From first prompt to every live outcome.</h2>
-              <p className="mx-auto mb-0 mt-6 max-w-2xl text-sm leading-7 text-white/48 sm:text-base">Design the experience, connect the workflow, and learn from real calls without stitching together disconnected tools.</p>
+              <h2 className="m-0 mt-4 text-[clamp(1.9rem,3.6vw,3.25rem)] font-semibold leading-[1.08] tracking-[-0.03em]">From first prompt to every live outcome.</h2>
+              <p className="mx-auto mb-0 mt-5 max-w-xl text-sm leading-7 text-white/48 sm:text-base">Design the experience, connect the workflow, and learn from real calls without stitching together disconnected tools.</p>
             </div>
 
-            <div className="mt-16 space-y-24 lg:mt-24 lg:space-y-32">
+            <div className="mt-14 space-y-20 lg:mt-20 lg:space-y-24">
               {productStages.map((stage, stageIndex) => {
                 const services = servicePages.filter((service) => service.kicker === stage.key);
                 const accent = stageAccents[stageIndex];
                 return (
                   <article className="relative grid items-center gap-12 lg:grid-cols-2 lg:gap-20" key={stage.key}>
-                    <div className={`pointer-events-none absolute -z-10 size-80 rounded-full blur-[100px] ${accent.glow} ${stageIndex % 2 ? "right-0" : "left-0"}`} />
                     <div className={stageIndex % 2 ? "lg:order-2" : ""}>
                       <div className="flex items-center gap-3">
                         <span className={`grid size-10 place-items-center rounded-xl border text-xs font-black ${accent.number}`}>0{stageIndex + 1}</span>
                         <span className="text-[10px] font-black uppercase tracking-[0.17em] text-white/38">{stage.eyebrow}</span>
                       </div>
-                      <h2 className="m-0 mt-6 max-w-xl text-3xl font-black leading-[1.08] tracking-[-0.025em] sm:text-4xl lg:text-[2.8rem]">{stage.title}</h2>
+                      <h2 className="m-0 mt-5 max-w-lg text-2xl font-semibold leading-[1.14] tracking-[-0.025em] sm:text-3xl lg:text-[2.25rem]">{stage.title}</h2>
                       <p className="mb-0 mt-5 max-w-xl text-sm leading-7 text-white/48 sm:text-base">{stage.description}</p>
                       <div className="mt-8 grid gap-2">
                         {services.map((service) => (
@@ -343,10 +334,10 @@ export function ProductOverviewPage() {
           </div>
         </section>
 
-        <section className="border-y border-white/[0.07] bg-[#050b09] px-5 py-20 sm:px-8 lg:py-24">
+        <section className="border-y border-white/[0.07] bg-[#050b09] px-5 py-16 sm:px-8 lg:py-20">
           <div className="mx-auto max-w-[1180px]">
             <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
-              <div><p className="m-0 text-[10px] font-black uppercase tracking-[0.18em] text-[#75fff0]">One continuous system</p><h2 className="m-0 mt-4 text-3xl font-black leading-tight sm:text-4xl">A call becomes completed work.</h2></div>
+              <div><p className="m-0 text-[10px] font-black uppercase tracking-[0.18em] text-[#75fff0]">One continuous system</p><h2 className="m-0 mt-4 text-2xl font-semibold leading-[1.15] sm:text-3xl">A call becomes completed work.</h2></div>
               <p className="m-0 max-w-2xl text-sm leading-7 text-white/45 lg:justify-self-end">Vozon carries context from the first hello through reasoning, action, handoff, and reporting—so every team sees the same outcome.</p>
             </div>
             <div className="mt-12 grid overflow-hidden rounded-2xl border border-white/[0.09] md:grid-cols-4">
@@ -357,13 +348,13 @@ export function ProductOverviewPage() {
           </div>
         </section>
 
-        <section className="px-5 py-20 sm:px-8 lg:py-28">
-          <div className="product-overview-ready-card relative mx-auto max-w-[1120px] overflow-hidden rounded-[28px] border border-[#45ddce]/20 bg-[linear-gradient(125deg,rgba(69,221,206,0.16),rgba(143,131,232,0.08)_55%,rgba(242,141,69,0.1))] p-8 text-center shadow-[0_36px_100px_rgba(0,0,0,0.34)] sm:p-12 lg:p-16">
-            <div className="absolute left-1/2 top-0 h-px w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-[#75fff0] to-transparent" />
+        <section className="px-5 py-16 sm:px-8 lg:py-20">
+          <div className="product-overview-ready-card relative mx-auto max-w-[900px] overflow-hidden rounded-[24px] border p-7 text-center sm:p-9 lg:p-10">
+            <div className="absolute left-1/2 top-0 h-0.5 w-28 -translate-x-1/2 bg-[#3e75ff]" />
             <p className="m-0 text-[10px] font-black uppercase tracking-[0.18em] text-[#75fff0]">Ready when your callers are</p>
-            <h2 className="mx-auto m-0 mt-5 max-w-3xl text-3xl font-black leading-tight sm:text-5xl">Launch your first production voice workflow.</h2>
-            <p className="mx-auto mb-0 mt-5 max-w-2xl text-sm leading-7 text-white/52 sm:text-base">Start with one high-value call journey, connect the actions it needs, and expand from real results.</p>
-            <div className="mt-8 flex flex-wrap justify-center gap-3"><Link className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[#45ddce] px-6 text-sm font-black text-[#03110e]" href="/dashboard">Start building <ArrowIcon /></Link><Link className="product-overview-contact-button inline-flex min-h-12 items-center rounded-full border border-white/14 bg-black/20 px-6 text-sm font-black text-white" href="/contact">Contact sales</Link></div>
+            <h2 className="mx-auto m-0 mt-4 max-w-xl text-2xl font-semibold leading-[1.15] sm:text-3xl">Launch your first production voice workflow.</h2>
+            <p className="mx-auto mb-0 mt-4 max-w-xl text-sm leading-6 text-white/52 sm:text-base">Start with one high-value call journey, connect the actions it needs, and expand from real results.</p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3"><Link className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#45ddce] px-5 text-sm font-bold text-[#03110e]" href="/dashboard">Start building <ArrowIcon /></Link><Link className="product-overview-contact-button inline-flex min-h-11 items-center rounded-full border border-white/14 bg-black/20 px-5 text-sm font-bold text-white" href="/contact">Contact sales</Link></div>
           </div>
         </section>
       </div>
@@ -380,17 +371,56 @@ export function ProductOverviewPage() {
           -webkit-text-fill-color: #252161 !important;
         }
 
+        #product-overview-page#product-overview-page,
+        #product-overview-page#product-overview-page > section {
+          background: #fff !important;
+          background-image: none !important;
+        }
+
         #product-overview-page#product-overview-page article a,
         #product-overview-page#product-overview-page section:nth-of-type(4) [class*="grid"] > div,
         #product-overview-page#product-overview-page [class*="rounded-[22px]"] {
-          border-color: #d8e3ff !important;
-          background: linear-gradient(145deg, #fff 0%, #eef4ff 100%) !important;
-          box-shadow: 0 10px 28px rgba(62, 117, 255, 0.08) !important;
+          border-color: #e1e5ec !important;
+          background: #fff !important;
+          background-image: none !important;
+          box-shadow: none !important;
         }
 
         #product-overview-page#product-overview-page article a:hover {
-          border-color: #8facff !important;
-          box-shadow: 0 14px 32px rgba(62, 117, 255, 0.14) !important;
+          border-color: #c8ced9 !important;
+          box-shadow: none !important;
+        }
+
+        #product-overview-page#product-overview-page#product-overview-page .product-deployment-card,
+        #product-overview-page#product-overview-page#product-overview-page .product-deployment-card > div > div {
+          border-color: #e1e5ec !important;
+          background: #fff !important;
+          background-image: none !important;
+          box-shadow: none !important;
+        }
+
+        #product-overview-page#product-overview-page#product-overview-page .product-deployment-icon,
+        #product-overview-page#product-overview-page#product-overview-page .product-deployment-status,
+        #product-overview-page#product-overview-page#product-overview-page .product-deployment-summary {
+          border-color: #e1e5ec !important;
+          background: #f5f6f8 !important;
+          background-image: none !important;
+          color: #5d6478 !important;
+          -webkit-text-fill-color: #5d6478 !important;
+        }
+
+        #product-overview-page#product-overview-page#product-overview-page .product-deployment-deployed {
+          background: #252a35 !important;
+          background-image: none !important;
+          color: #fff !important;
+          -webkit-text-fill-color: #fff !important;
+        }
+
+        #product-overview-page#product-overview-page#product-overview-page .product-overview-ready-card {
+          border-color: #dce5ff !important;
+          background: #f7f9ff !important;
+          background-image: none !important;
+          box-shadow: none !important;
         }
       `}</style>
     </SiteLayout>
