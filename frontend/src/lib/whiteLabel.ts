@@ -247,6 +247,7 @@ export const partnerWhiteLabelApi = {
   verifyEmailDomain: (brandId: string) => request<{ brand: WhiteLabelBrand }>(`/api/partner/white-label/brands/${brandId}/verify-email-domain`, { method: "POST" }),
   addDomain: (body: { brandId: string; hostname: string; kind: string }) => request<{ domain: WhiteLabelDomain }>("/api/partner/white-label/domains", { method: "POST", body }),
   verifyDomain: (domainId: string) => request<{ domain: WhiteLabelDomain }>(`/api/partner/white-label/domains/${domainId}/verify`, { method: "POST" }),
+  reactivateDomain: (domainId: string) => request<{ domain: WhiteLabelDomain }>(`/api/partner/white-label/domains/${domainId}/reactivate`, { method: "POST" }),
   disableDomain: (domainId: string, reason: string) => request<{ domain: WhiteLabelDomain }>(`/api/partner/white-label/domains/${domainId}/status`, { method: "PATCH", body: { reason } }),
   createPlan: (body: unknown) => request<{ plan: WhiteLabelPlan }>("/api/partner/white-label/plans", { method: "POST", body }),
   updatePlan: (planId: string, body: unknown) => request<{ plan: WhiteLabelPlan }>(`/api/partner/white-label/plans/${planId}`, { method: "PATCH", body }),

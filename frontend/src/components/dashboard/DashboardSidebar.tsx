@@ -181,11 +181,17 @@ export function DashboardSidebar({
   const accountMenuRef = useRef<HTMLDivElement>(null);
   const administrativeItems: SidebarItem[] = [];
   const whiteLabelEnabled = whiteLabelFrontendEnabled();
-  if (whiteLabelEnabled && session?.organization?.whiteLabelOwnerAccountId && (session.organization.role === "owner" || session.organization.role === "admin")) {
+  const isApprovedWhiteLabelPartner = Boolean(
+    session?.organization?.whiteLabelOwnerAccountId
+    && (session.organization.role === "owner" || session.organization.role === "admin"),
+  );
+  const isPlatformSuperAdmin = session?.platformRole === "super_admin";
+
+  if (whiteLabelEnabled && isApprovedWhiteLabelPartner) {
     administrativeItems.push({ label: "White label", href: "/dashboard/white-label", icon: "white_label" });
   }
-  if (whiteLabelEnabled && session?.platformRole === "super_admin") {
-    administrativeItems.push({ label: "Platform admin", href: "/platform-admin/white-label", icon: "platform" });
+  if (whiteLabelEnabled && isPlatformSuperAdmin) {
+    administrativeItems.push({ label: "White-label admin", href: "/platform-admin/white-label", icon: "platform" });
   }
   const visibleSidebarGroups = administrativeItems.length
     ? [...sidebarGroups, { label: "Administration", items: administrativeItems }]
