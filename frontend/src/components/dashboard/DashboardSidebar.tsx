@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
+import { useBrand } from "@/components/branding/BrandProvider";
 import { announceDashboardNavigation } from "@/components/dashboard/DashboardNavigationFeedback";
 
 type SidebarItem = {
@@ -222,6 +223,7 @@ export function DashboardSidebar({
   showUserSidebar,
   setShowUserSidebar,
 }: DashboardSidebarProps) {
+  const brand = useBrand();
   const pathname = usePathname();
   const router = useRouter();
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
@@ -307,8 +309,8 @@ export function DashboardSidebar({
           <Link
             className="dashboard-sidebar-brand-link group flex min-w-0 items-center overflow-hidden rounded-xl outline-none ring-[#bfc3ea]/50 transition focus-visible:ring-2"
             href="/dashboard/agents"
-            title="Vozon Voice Platform"
-            aria-label="Vozon Voice Platform"
+            title={`${brand.productName} Voice Platform`}
+            aria-label={`${brand.productName} Voice Platform`}
             onClick={(event) => {
               if (
                 event.ctrlKey ||
@@ -329,14 +331,20 @@ export function DashboardSidebar({
               <span
                 className={`relative block shrink-0 overflow-hidden ${showUserSidebar ? "h-9 w-[132px]" : "h-10 w-10"}`}
               >
-                <Image
-                  alt=""
-                  className="dashboard-sidebar-logo absolute left-0 top-1/2 h-auto w-[132px] max-w-none -translate-y-1/2 object-contain object-left transition group-hover:brightness-110"
-                  height={350}
-                  priority
-                  src="/images/logo_2.svg"
-                  width={1160}
-                />
+                {brand.logoUrl ? (
+                  <Image
+                    alt={`${brand.productName} logo`}
+                    className={`dashboard-sidebar-logo object-contain transition group-hover:brightness-110 ${showUserSidebar ? "object-left" : "object-center"}`}
+                    fill
+                    priority
+                    sizes={showUserSidebar ? "132px" : "40px"}
+                    src={showUserSidebar ? brand.logoUrl : brand.iconUrl || brand.logoUrl}
+                  />
+                ) : (
+                  <span className="flex h-full items-center text-sm font-bold text-[#5963b8]">
+                    {brand.productName}
+                  </span>
+                )}
               </span>
               {showUserSidebar ? (
                 <span className="dashboard-sidebar-tagline hidden lg:block">
