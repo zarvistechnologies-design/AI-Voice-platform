@@ -324,28 +324,28 @@ export function DashboardSidebar({
             onPointerDown={() => prefetchDashboardRoute("/dashboard/agents")}
           >
             <span
-              className={`relative block h-10 shrink-0 overflow-hidden ${showUserSidebar ? "w-[132px]" : "w-10"}`}
+              className={`dashboard-sidebar-brand-copy flex min-w-0 ${showUserSidebar ? "flex-col items-start justify-center" : "items-center"}`}
             >
-              <Image
-                alt=""
-                className="dashboard-sidebar-logo absolute left-0 top-1/2 h-auto w-[132px] max-w-none -translate-y-1/2 object-contain object-left transition group-hover:brightness-110"
-                height={350}
-                priority
-                src="/images/logo_2.svg"
-                width={1160}
-              />
+              <span
+                className={`relative block shrink-0 overflow-hidden ${showUserSidebar ? "h-9 w-[132px]" : "h-10 w-10"}`}
+              >
+                <Image
+                  alt=""
+                  className="dashboard-sidebar-logo absolute left-0 top-1/2 h-auto w-[132px] max-w-none -translate-y-1/2 object-contain object-left transition group-hover:brightness-110"
+                  height={350}
+                  priority
+                  src="/images/logo_2.svg"
+                  width={1160}
+                />
+              </span>
+              {showUserSidebar ? (
+                <span className="dashboard-sidebar-tagline hidden lg:block">
+                  Voice agents, built to perform.
+                </span>
+              ) : null}
             </span>
           </Link>
 
-          {showUserSidebar ? (
-            <span
-              className="dashboard-sidebar-console ml-auto hidden size-7 place-items-center rounded-lg text-[9px] font-extrabold uppercase tracking-[0.08em] lg:grid"
-              aria-label="AI voice workspace"
-              title="AI voice workspace"
-            >
-              AI
-            </span>
-          ) : null}
         </div>
 
         <nav
