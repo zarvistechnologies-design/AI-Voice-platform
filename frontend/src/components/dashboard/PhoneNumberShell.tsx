@@ -583,7 +583,7 @@ export function PhoneNumberShell() {
           }
         />
 
-        <div className="mx-auto grid w-full max-w-[1500px] gap-4 px-4 py-5 sm:px-6 lg:px-8">
+        <div className="dashboard-page-content mx-auto grid w-full max-w-[1500px] gap-4 px-4 py-5 sm:px-6 lg:px-8">
           {notice ? (
             <Notice
               tone="success"
@@ -595,8 +595,8 @@ export function PhoneNumberShell() {
             <Notice tone="error" message={error} onClose={() => setError("")} />
           ) : null}
 
-          <section className="overflow-hidden rounded-2xl border border-[#dfe3ea] bg-white shadow-[0_14px_38px_rgba(52,58,116,.05)]">
-            <div className="flex flex-col gap-4 border-b border-[#e5e7eb] bg-[linear-gradient(135deg,#ffffff_0%,#fafaff_100%)] px-4 py-4 sm:px-5 lg:flex-row lg:items-center lg:justify-between">
+          <section className="dashboard-primary-panel overflow-hidden rounded-2xl border border-[#dfe3ea] bg-white shadow-[0_14px_38px_rgba(52,58,116,.05)]">
+            <div className="dashboard-panel-heading flex flex-col gap-4 border-b border-[#e5e7eb] bg-[linear-gradient(135deg,#ffffff_0%,#fafaff_100%)] px-4 py-4 sm:px-5 lg:flex-row lg:items-center lg:justify-between">
               <div>
                 <span className="text-[10px] font-bold uppercase tracking-[.16em] text-[#5963b8]">
                   Number inventory
@@ -624,7 +624,7 @@ export function PhoneNumberShell() {
               </div>
             </div>
 
-            <div className="grid gap-2 border-b border-[#e5e7eb] p-4 lg:grid-cols-[minmax(260px,1fr)_180px_180px_180px_auto]">
+            <div className="dashboard-filter-bar grid gap-2 border-b border-[#e5e7eb] p-4 lg:grid-cols-[minmax(260px,1fr)_180px_180px_180px_auto]">
               <label className="relative min-w-0">
                 <span className="sr-only">Search phone numbers</span>
                 <Icon
@@ -692,7 +692,7 @@ export function PhoneNumberShell() {
               </div>
             ) : filteredNumbers.length ? (
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[980px] border-collapse text-left">
+                <table className="dashboard-data-table w-full min-w-[980px] border-collapse text-left">
                   <thead className="bg-[#f8fafc]">
                     <tr className="app-label text-[#64748b]">
                       <th className="px-5 py-3 font-medium">Phone number</th>
@@ -881,7 +881,7 @@ function PhoneNumberRow({
   }
 
   return (
-    <tr className="border-t border-[#edf0f4] transition hover:bg-[#fbfcfe]">
+    <tr className="dashboard-data-row border-t border-[#edf0f4] transition hover:bg-[#fbfcfe]">
       <td className="px-5 py-4">
         <div className="flex items-center gap-3">
           <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#eff0fb] text-[#737ccf]">
@@ -906,7 +906,7 @@ function PhoneNumberRow({
       </td>
       <td className="px-4 py-4">
         <button
-          className={`group inline-flex max-w-full items-center gap-2 rounded-lg border px-2.5 py-2 text-left transition focus-visible:ring-2 focus-visible:ring-[#737ccf]/50 ${agent ? "border-[#e5e7eb] bg-[#f8fafc] hover:border-[#c9ccef] hover:bg-[#eff0fb]" : "border-dashed border-[#cbd5e1] bg-white text-[#475569] hover:border-[#737ccf] hover:text-[#737ccf]"}`}
+          className={`dashboard-agent-assignment group inline-flex max-w-full items-center gap-2 rounded-lg border px-2.5 py-2 text-left transition focus-visible:ring-2 focus-visible:ring-[#737ccf]/50 ${agent ? "border-[#e5e7eb] bg-[#f8fafc] hover:border-[#c9ccef] hover:bg-[#eff0fb]" : "border-dashed border-[#cbd5e1] bg-white text-[#475569] hover:border-[#737ccf] hover:text-[#737ccf]"}`}
           disabled={busy || deletionPending}
           onClick={onManage}
           onFocus={preloadPhoneNumberModals}
