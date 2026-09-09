@@ -21,7 +21,7 @@ import {
 type IconName = "check" | "close" | "edit" | "file" | "link" | "plus" | "refresh" | "search" | "spark" | "trash" | "upload" | "user";
 
 const buttonClass = "app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 transition disabled:cursor-not-allowed disabled:opacity-50";
-const controlClass = "app-control-text min-h-11 w-full rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10";
+const controlClass = "app-control-text min-h-11 w-full rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#5b63ff] focus:ring-4 focus:ring-[#5b63ff]/10";
 const acceptedFiles = ".pdf,.docx,.txt,.md,.csv,.json,.html,.htm,.xml,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,text/markdown,text/csv,application/json,text/html,application/xml";
 
 function Icon({ icon, className = "size-4" }: { icon: IconName; className?: string }) {
@@ -80,12 +80,14 @@ export function KnowledgeBaseShell() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [editor, setEditor] = useState<{ sourceId: string; name: string; content: string } | null>(null);
-  const [showUserSidebar, setShowUserSidebar] = useState(false);
+  const [showUserSidebar, setShowUserSidebar] = useState(true);
   const [testQuestion, setTestQuestion] = useState("");
   const [testResults, setTestResults] = useState<KnowledgeSearchResult[] | null>(null);
 
   useEffect(() => {
     if (!session) {
+      // The server snapshot is empty until the persisted session hydrates.
+      if (getSession()) return;
       router.replace("/login?next=/dashboard/knowledge");
       return;
     }
@@ -254,11 +256,11 @@ export function KnowledgeBaseShell() {
       />
 
       <section className="min-w-0 overflow-y-auto">
-        <header className="border-b border-[#99f6e8] bg-white px-4 py-4 sm:px-6 lg:px-8">
+        <header className="border-b border-[#e1e2ef] bg-white px-4 py-4 sm:px-6 lg:px-8">
           <div className="mx-auto flex w-full max-w-1500px flex-wrap items-center justify-between gap-4">
             <div>
-              <span className="app-label text-[#00b8c4]">Knowledge Base</span>
-              <h1 className="m-0 text-xl font-semibold leading-7 text-[#0f172a]">Retrieval studio</h1>
+              <span className="app-label text-[#5b63ff]">Knowledge Base</span>
+              <h1 className="m-0 text-xl font-semibold leading-7 text-[#0f172a]">Knowledge base</h1>
               <p className="app-caption mt-1 mb-0 text-[#475569]">Indexed sources retrieved automatically for every caller question.</p>
             </div>
             <div className="grid w-full grid-cols-2 gap-2 sm:w-auto sm:grid-cols-4">
@@ -268,7 +270,7 @@ export function KnowledgeBaseShell() {
                 ["Issues", issueCount.toLocaleString("en-IN")],
                 ["Chunks", totalChunks.toLocaleString("en-IN")],
               ].map(([label, value]) => (
-                <div className="rounded-lg border border-[#99f6e8] bg-[#ecfeff] px-3 py-2 text-[#008996]" key={label}>
+                <div className="rounded-lg border border-[#e1e2ef] bg-[#f0efff] px-3 py-2 text-[#4b52df]" key={label}>
                   <span className="app-caption block text-current">{label}</span>
                   <strong className="block text-sm font-semibold leading-5">{value}</strong>
                 </div>
@@ -296,10 +298,10 @@ export function KnowledgeBaseShell() {
                     {agents.map((agent) => <option key={agent._id} value={agent._id}>{agent.name}</option>)}
                   </select>
                 </label>
-                <button className={`${buttonClass} bg-[#00b8c4] text-white hover:bg-[#008996]`} disabled={!selectedAgent || busy || atCapacity} onClick={() => setEditor({ sourceId: "", name: "", content: "" })} type="button">
+                <button className={`${buttonClass} bg-[#5b63ff] text-[#ffffff] hover:bg-[#4b52df]`} disabled={!selectedAgent || busy || atCapacity} onClick={() => setEditor({ sourceId: "", name: "", content: "" })} type="button">
                   <Icon icon="plus" /> Add text
                 </button>
-                <label className={`${buttonClass} relative cursor-pointer border border-[#99f6e8] bg-[#ecfeff] text-[#008996] hover:bg-[#ccfbf1] ${busy || atCapacity ? "pointer-events-none opacity-50" : ""}`}>
+                <label className={`${buttonClass} relative cursor-pointer border border-[#e1e2ef] bg-[#f0efff] text-[#4b52df] hover:bg-[#ccfbf1] ${busy || atCapacity ? "pointer-events-none opacity-50" : ""}`}>
                   <input className="absolute inset-0 cursor-pointer opacity-0" type="file" accept={acceptedFiles} disabled={busy || atCapacity} onChange={(event) => { const file = event.target.files?.[0]; event.target.value = ""; void uploadFile(file); }} />
                   <Icon icon="upload" /> Upload file
                 </label>
@@ -317,8 +319,8 @@ export function KnowledgeBaseShell() {
                 <p className="app-caption mt-1 mb-0">See the excerpts the voice agent receives.</p>
               </div>
               <form className="grid gap-3 p-4" onSubmit={(event) => void testRetrieval(event)}>
-                <textarea className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 outline-none focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10" placeholder="What is our refund policy?" value={testQuestion} onChange={(event) => setTestQuestion(event.target.value)} />
-                <button className={`${buttonClass} bg-[#0f172a] text-white hover:bg-[#1e293b]`} disabled={busy || !testQuestion.trim() || readyCount === 0} type="submit"><Icon icon="spark" /> Search knowledge</button>
+                <textarea className="app-control-text min-h-24 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 outline-none focus:border-[#5b63ff] focus:ring-4 focus:ring-[#5b63ff]/10" placeholder="What is our refund policy?" value={testQuestion} onChange={(event) => setTestQuestion(event.target.value)} />
+                <button className={`${buttonClass} bg-[#0f172a] text-[#ffffff] hover:bg-[#1e293b]`} disabled={busy || !testQuestion.trim() || readyCount === 0} type="submit"><Icon icon="spark" /> Search knowledge</button>
               </form>
               {testResults ? (
                 <div className="grid gap-2 border-t border-[#edf0f4] p-4">
@@ -342,7 +344,7 @@ export function KnowledgeBaseShell() {
             {loading ? (
               <div className="grid min-h-52 place-items-center p-10"><span className="app-caption">Loading indexed knowledge…</span></div>
             ) : sources.length === 0 ? (
-              <div className="mx-auto grid max-w-xl place-items-center gap-4 px-5 py-14 text-center"><span className="grid size-12 place-items-center rounded-lg bg-[#ecfeff] text-[#00b8c4]"><Icon icon="file" className="size-5" /></span><div><strong className="app-strong block">No indexed knowledge yet</strong><p className="app-caption mt-1 mb-0">Add approved text, a document, or a website. The agent retrieves only relevant excerpts during calls.</p></div></div>
+              <div className="mx-auto grid max-w-xl place-items-center gap-4 px-5 py-14 text-center"><span className="grid size-12 place-items-center rounded-lg bg-[#f0efff] text-[#5b63ff]"><Icon icon="file" className="size-5" /></span><div><strong className="app-strong block">No indexed knowledge yet</strong><p className="app-caption mt-1 mb-0">Add approved text, a document, or a website. The agent retrieves only relevant excerpts during calls.</p></div></div>
             ) : filteredSources.length === 0 ? (
               <div className="grid min-h-52 place-items-center p-10 text-center"><div><strong className="app-strong block">No matching source</strong><span className="app-caption mt-1 block">Try a different filter.</span></div></div>
             ) : (
@@ -350,7 +352,7 @@ export function KnowledgeBaseShell() {
                 {filteredSources.map((source) => (
                   <li className="grid gap-3 p-4 transition hover:bg-[#fbfdff] sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:p-5" key={source._id}>
                     <div className="flex min-w-0 gap-3">
-                      <span className="mt-0.5 grid size-10 shrink-0 place-items-center rounded-lg border border-[#99f6e8] bg-[#ecfeff] text-[#008996]"><Icon icon={source.sourceType === "url" ? "link" : "file"} /></span>
+                      <span className="mt-0.5 grid size-10 shrink-0 place-items-center rounded-lg border border-[#e1e2ef] bg-[#f0efff] text-[#4b52df]"><Icon icon={source.sourceType === "url" ? "link" : "file"} /></span>
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2"><strong className="app-strong truncate">{source.name}</strong><span className={`app-label rounded-lg px-2.5 py-1 ${statusStyle(source.status)}`}>{source.status}</span><span className="app-label rounded-lg bg-[#f8fafc] px-2.5 py-1 text-[#64748b]">{sourceTypeLabel(source)}</span><span className="app-label rounded-lg bg-[#f8fafc] px-2.5 py-1 text-[#64748b]">{source.chunkCount} chunks</span></div>
                         <p className="app-caption mt-1 mb-0 max-w-4xl text-[#64748b]">{source.error || preview(source.preview) || source.url || source.originalFileName}</p>
@@ -382,14 +384,14 @@ function ActionButton({ busy, danger = false, icon, label, onClick }: { busy: bo
 function TextEditorModal({ busy, editor, error, onChange, onClose, onSave }: { busy: boolean; editor: { sourceId: string; name: string; content: string }; error: string; onChange: (value: { sourceId: string; name: string; content: string }) => void; onClose: () => void; onSave: () => void }) {
   return (
     <div className="dashboard-home-theme fixed inset-0 z-50 grid place-items-center bg-black/80 p-3 backdrop-blur-[2px]" role="dialog" aria-modal="true" aria-label={editor.sourceId ? "Edit knowledge" : "Add knowledge"} onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
-      <section className="grid max-h-[calc(100vh-24px)] w-full max-w-2xl grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden rounded-lg border border-white/10 bg-[#07110f] shadow-2xl">
-        <header className="flex items-start justify-between gap-4 border-b border-white/10 bg-[#061b18] px-5 py-4 sm:px-6"><div><h2 className="app-page-title m-0">{editor.sourceId ? "Edit knowledge" : "Add text knowledge"}</h2><p className="app-caption mt-1 mb-0">Saving creates fresh searchable chunks and embeddings.</p></div><button className="grid size-9 place-items-center rounded-lg border border-white/10 text-white/60 hover:bg-white/[0.08] hover:text-white" onClick={onClose} type="button" aria-label="Close"><Icon icon="close" /></button></header>
+      <section className="grid max-h-[calc(100vh-24px)] w-full max-w-2xl grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden rounded-lg border border-[#e5e7ef] bg-[#ffffff] shadow-2xl">
+        <header className="flex items-start justify-between gap-4 border-b border-[#e5e7ef] bg-[#f8f8fc] px-5 py-4 sm:px-6"><div><h2 className="app-page-title m-0">{editor.sourceId ? "Edit knowledge" : "Add text knowledge"}</h2><p className="app-caption mt-1 mb-0">Saving creates fresh searchable chunks and embeddings.</p></div><button className="grid size-9 place-items-center rounded-lg border border-[#e5e7ef] text-[#737587] hover:bg-[#f6f7fb] hover:text-[#242535]" onClick={onClose} type="button" aria-label="Close"><Icon icon="close" /></button></header>
         <div className="grid gap-4 overflow-y-auto px-5 py-5 sm:px-6">
           {error ? <div className="app-body rounded-lg border border-[#fecaca] bg-[#fff1f2] px-3 py-2 text-[#b91c1c]">{error}</div> : null}
           <label className="app-label grid gap-2">Title<input className={controlClass} maxLength={200} placeholder="Pricing and refunds" value={editor.name} onChange={(event) => onChange({ ...editor, name: event.target.value })} /></label>
-          <label className="app-label grid gap-2">Knowledge text<textarea className="app-control-text min-h-80 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 outline-none focus:border-[#00b8c4] focus:ring-4 focus:ring-[#00b8c4]/10" placeholder="Add approved facts, policies, FAQs, and procedures…" value={editor.content} onChange={(event) => onChange({ ...editor, content: event.target.value })} /></label>
+          <label className="app-label grid gap-2">Knowledge text<textarea className="app-control-text min-h-80 resize-y rounded-lg border border-[#dfe3ea] bg-white p-3 outline-none focus:border-[#5b63ff] focus:ring-4 focus:ring-[#5b63ff]/10" placeholder="Add approved facts, policies, FAQs, and procedures…" value={editor.content} onChange={(event) => onChange({ ...editor, content: event.target.value })} /></label>
         </div>
-        <footer className="flex justify-end gap-2 border-t border-[#e5e7eb] px-5 py-4 sm:px-6"><button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button><button className={`${buttonClass} bg-[#00b8c4] text-white hover:bg-[#008996]`} disabled={busy || !editor.name.trim() || !editor.content.trim()} onClick={onSave} type="button"><Icon icon="check" />{busy ? "Indexing…" : "Save and index"}</button></footer>
+        <footer className="flex justify-end gap-2 border-t border-[#e5e7eb] px-5 py-4 sm:px-6"><button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button><button className={`${buttonClass} bg-[#5b63ff] text-[#ffffff] hover:bg-[#4b52df]`} disabled={busy || !editor.name.trim() || !editor.content.trim()} onClick={onSave} type="button"><Icon icon="check" />{busy ? "Indexing…" : "Save and index"}</button></footer>
       </section>
     </div>
   );

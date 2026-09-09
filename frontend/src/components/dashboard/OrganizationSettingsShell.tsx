@@ -118,7 +118,7 @@ function formatDate(value?: string | null, dateOnly = false) {
 
 function roleTone(role: OrganizationRole) {
   if (role === "owner") return "bg-violet-50 text-violet-700 ring-violet-200";
-  if (role === "admin") return "bg-cyan-50 text-cyan-700 ring-cyan-200";
+  if (role === "admin") return "bg-indigo-50 text-indigo-700 ring-indigo-200";
   if (role === "billing") return "bg-amber-50 text-amber-700 ring-amber-200";
   return "bg-slate-100 text-slate-700 ring-slate-200";
 }
@@ -148,7 +148,7 @@ function SectionHeading({
   return (
     <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[#e7eef3] px-5 py-5 sm:px-6">
       <div className="flex min-w-0 items-start gap-3.5">
-        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#eaf9f7] text-[#087f75] ring-1 ring-[#cdeae6]">
+        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#eaf9f7] text-[#4b52df] ring-1 ring-[#cdeae6]">
           <WorkspaceIcon name={icon} />
         </span>
         <div className="min-w-0">
@@ -164,7 +164,7 @@ function SectionHeading({
 export function OrganizationSettingsShell() {
   const router = useRouter();
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
-  const [showUserSidebar, setShowUserSidebar] = useState(false);
+  const [showUserSidebar, setShowUserSidebar] = useState(true);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [activeId, setActiveId] = useState("");
   const [members, setMembers] = useState<OrganizationMember[]>([]);
@@ -218,6 +218,8 @@ export function OrganizationSettingsShell() {
 
   useEffect(() => {
     if (!session) {
+      // The server snapshot is empty until the persisted session hydrates.
+      if (getSession()) return;
       router.replace("/login?next=/dashboard/settings");
       return;
     }
@@ -334,7 +336,7 @@ export function OrganizationSettingsShell() {
     ? "border-rose-200 bg-rose-50 text-rose-900"
     : notice?.tone === "success"
       ? "border-emerald-200 bg-emerald-50 text-emerald-900"
-      : "border-cyan-200 bg-cyan-50 text-cyan-950";
+      : "border-indigo-200 bg-indigo-50 text-indigo-950";
   const visibleSections = workspaceSections.filter((section) => !section.managerOnly || canManage);
 
   return (
@@ -354,13 +356,13 @@ export function OrganizationSettingsShell() {
       <section className="min-w-0">
         <header className="border-b border-[#e5edf2] bg-white px-4 py-5 sm:px-6 lg:px-8">
           <div className="mx-auto w-full max-w-[1280px]">
-            <span className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#087f75]">Workspace administration</span>
+            <span className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#4b52df]">Workspace administration</span>
             <div className="mt-1 flex flex-wrap items-end justify-between gap-3">
               <div>
                 <h1 className="m-0 text-2xl font-bold tracking-[-0.03em] text-slate-950 sm:text-[30px]">Team &amp; workspace</h1>
                 <p className="mt-1.5 text-sm leading-6 text-slate-500">Manage organizations, teammates, permissions, invitations, and activity.</p>
               </div>
-              <Link className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 text-xs font-bold text-slate-700 shadow-sm transition hover:border-[#b9ddd8] hover:text-[#087f75]" href="/dashboard/profile">
+              <Link className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 text-xs font-bold text-slate-700 shadow-sm transition hover:border-[#b9ddd8] hover:text-[#4b52df]" href="/dashboard/profile">
                 <WorkspaceIcon className="size-4" name="profile" />
                 Profile &amp; security
               </Link>
@@ -369,52 +371,52 @@ export function OrganizationSettingsShell() {
         </header>
 
         <div className="mx-auto grid w-full max-w-[1280px] gap-6 px-4 py-6 sm:px-6 lg:px-8">
-          <section className="relative overflow-hidden rounded-[26px] border border-[#183b34] bg-[radial-gradient(circle_at_12%_0%,rgba(69,221,206,0.22),transparent_38%),linear-gradient(135deg,#07110f_0%,#0a2520_62%,#103a33_100%)] p-5 text-white shadow-[0_22px_55px_rgba(7,28,24,0.20)] sm:p-7">
-            <div className="pointer-events-none absolute -right-16 -top-24 size-72 rounded-full border border-white/10" />
-            <div className="pointer-events-none absolute -bottom-32 right-20 size-64 rounded-full bg-[#45ddce]/[0.07] blur-2xl" />
+          <section className="relative overflow-hidden rounded-[26px] border border-[#e5e7ef] bg-white p-5 text-[#242535] shadow-sm sm:p-7">
+            <div className="pointer-events-none absolute -right-16 -top-24 size-72 rounded-full border border-[#e5e7ef]" />
+            <div className="pointer-events-none absolute -bottom-32 right-20 size-64 rounded-full bg-[#5b63ff]/[0.07] blur-2xl" />
             <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1fr)_230px] lg:items-center">
               <div className="min-w-0">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <span className="grid size-16 shrink-0 place-items-center rounded-2xl border border-[#75fff0]/30 bg-[#45ddce] text-xl font-black text-[#05231f] shadow-[0_12px_30px_rgba(69,221,206,0.20)]">
+                  <span className="grid size-16 shrink-0 place-items-center rounded-2xl border border-[#4d54db]/30 bg-[#5b63ff] text-xl font-black text-[#ffffff] shadow-sm">
                     {initials(activeOrganization?.name)}
                   </span>
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2.5">
-                      <h2 className="m-0 truncate text-2xl font-bold tracking-[-0.025em] text-white">
+                      <h2 className="m-0 truncate text-2xl font-bold tracking-[-0.025em] text-[#242535]">
                         {activeOrganization?.name ?? (loading ? "Loading workspace..." : "No active workspace")}
                       </h2>
                       {activeOrganization ? (
-                        <span className="rounded-full bg-[#45ddce]/15 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-[#75fff0] ring-1 ring-[#45ddce]/30">
+                        <span className="rounded-full bg-[#5b63ff]/15 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-[#4d54db] ring-1 ring-[#5b63ff]/30">
                           {activeOrganization.plan} plan
                         </span>
                       ) : null}
                     </div>
-                    <p className="mt-1 truncate text-sm text-white/65">{activeOrganization?.slug ?? "Workspace details will appear here."}</p>
-                    <p className="mt-2 text-xs font-semibold text-white/45">Voice agents, calls, numbers, and team access stay isolated per workspace.</p>
+                    <p className="mt-1 truncate text-sm text-[#737587]">{activeOrganization?.slug ?? "Workspace details will appear here."}</p>
+                    <p className="mt-2 text-xs font-semibold text-[#737587]">Voice agents, calls, numbers, and team access stay isolated per workspace.</p>
                   </div>
                 </div>
 
                 <div className="mt-6 grid gap-2.5 sm:grid-cols-3">
-                  <div className="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 backdrop-blur-sm">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-white/45">Workspaces</span>
-                    <strong className="mt-1 block text-sm text-white">{loading && !organizations.length ? "Checking..." : organizations.length}</strong>
+                  <div className="rounded-xl border border-[#e5e7ef] bg-[#f6f7fb] px-4 py-3 backdrop-blur-sm">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#737587]">Workspaces</span>
+                    <strong className="mt-1 block text-sm text-[#242535]">{loading && !organizations.length ? "Checking..." : organizations.length}</strong>
                   </div>
-                  <div className="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 backdrop-blur-sm">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-white/45">Team members</span>
-                    <strong className="mt-1 block text-sm text-white">{loading && !members.length ? "Checking..." : members.length}</strong>
+                  <div className="rounded-xl border border-[#e5e7ef] bg-[#f6f7fb] px-4 py-3 backdrop-blur-sm">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#737587]">Team members</span>
+                    <strong className="mt-1 block text-sm text-[#242535]">{loading && !members.length ? "Checking..." : members.length}</strong>
                   </div>
-                  <div className="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 backdrop-blur-sm">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-white/45">Pending invites</span>
-                    <strong className="mt-1 block text-sm text-white">{loading && !invitations.length ? "Checking..." : pendingInvitations.length}</strong>
+                  <div className="rounded-xl border border-[#e5e7ef] bg-[#f6f7fb] px-4 py-3 backdrop-blur-sm">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#737587]">Pending invites</span>
+                    <strong className="mt-1 block text-sm text-[#242535]">{loading && !invitations.length ? "Checking..." : pendingInvitations.length}</strong>
                   </div>
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-white/[0.07] p-5 backdrop-blur-sm">
-                <span className="grid size-10 place-items-center rounded-xl bg-[#45ddce]/15 text-[#75fff0] ring-1 ring-[#45ddce]/25"><WorkspaceIcon name="shield" /></span>
-                <p className="mt-4 text-[10px] font-extrabold uppercase tracking-[0.16em] text-white/45">Your access</p>
-                <strong className="mt-1 block text-xl font-bold capitalize text-white">{activeOrganization?.role ?? "Loading"}</strong>
-                <p className="mt-2 text-xs leading-5 text-white/55">{activeOrganization ? roleDescription(activeOrganization.role) : "Checking your workspace permissions."}</p>
+              <div className="rounded-2xl border border-[#e5e7ef] bg-[#f6f7fb] p-5 backdrop-blur-sm">
+                <span className="grid size-10 place-items-center rounded-xl bg-[#5b63ff]/15 text-[#4d54db] ring-1 ring-[#5b63ff]/25"><WorkspaceIcon name="shield" /></span>
+                <p className="mt-4 text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#737587]">Your access</p>
+                <strong className="mt-1 block text-xl font-bold capitalize text-[#242535]">{activeOrganization?.role ?? "Loading"}</strong>
+                <p className="mt-2 text-xs leading-5 text-[#737587]">{activeOrganization ? roleDescription(activeOrganization.role) : "Checking your workspace permissions."}</p>
               </div>
             </div>
           </section>
@@ -431,7 +433,7 @@ export function OrganizationSettingsShell() {
 
           <section className="grid min-w-0 gap-6 xl:grid-cols-[286px_minmax(0,1fr)]">
             <aside className="grid min-w-0 content-start gap-4 xl:sticky xl:top-6 xl:self-start">
-              <article className="overflow-hidden rounded-2xl border border-[#e2eaf0] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]">
+              <article className="overflow-hidden rounded-2xl border border-[#e2eaf0] bg-white shadow-sm">
                 <div className="border-b border-[#edf2f5] px-4 py-4">
                   <div className="flex items-center justify-between gap-3">
                     <div>
@@ -446,9 +448,9 @@ export function OrganizationSettingsShell() {
                     const active = organization._id === activeId;
                     return (
                       <button aria-current={active ? "true" : undefined} className={`grid w-full grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-3 rounded-xl border p-2.5 text-left transition ${active ? "border-[#b9e5df] bg-[#edf9f7]" : "border-transparent hover:border-slate-200 hover:bg-slate-50"}`} disabled={busy} key={organization._id} onClick={() => void switchWorkspace(organization._id)} type="button">
-                        <span className={`grid size-10 place-items-center rounded-xl text-xs font-black ${active ? "bg-[#071b18] text-[#75fff0]" : "bg-slate-100 text-slate-700"}`}>{initials(organization.name)}</span>
+                        <span className={`grid size-10 place-items-center rounded-xl text-xs font-black ${active ? "bg-[#5b63ff] text-[#4d54db]" : "bg-slate-100 text-slate-700"}`}>{initials(organization.name)}</span>
                         <span className="min-w-0"><strong className="block truncate text-xs font-bold text-slate-900">{organization.name}</strong><span className="mt-0.5 block truncate text-[10px] font-medium capitalize text-slate-500">{organization.role} / {organization.plan}</span></span>
-                        {active ? <span className="grid size-6 place-items-center rounded-full bg-[#45ddce] text-[#05231f]"><WorkspaceIcon className="size-3.5" name="check" /></span> : null}
+                        {active ? <span className="grid size-6 place-items-center rounded-full bg-[#5b63ff] text-[#ffffff]"><WorkspaceIcon className="size-3.5" name="check" /></span> : null}
                       </button>
                     );
                   })}
@@ -456,39 +458,39 @@ export function OrganizationSettingsShell() {
                 </div>
               </article>
 
-              <form className="grid gap-3 rounded-2xl border border-[#e2eaf0] bg-white p-4 shadow-[0_14px_34px_rgba(15,23,42,0.06)]" onSubmit={createWorkspace}>
-                <span className="grid size-9 place-items-center rounded-xl bg-[#eaf9f7] text-[#087f75] ring-1 ring-[#cdeae6]"><WorkspaceIcon className="size-4.5" name="plus" /></span>
+              <form className="grid gap-3 rounded-2xl border border-[#e2eaf0] bg-white p-4 shadow-sm" onSubmit={createWorkspace}>
+                <span className="grid size-9 place-items-center rounded-xl bg-[#eaf9f7] text-[#4b52df] ring-1 ring-[#cdeae6]"><WorkspaceIcon className="size-4.5" name="plus" /></span>
                 <div><h2 className="m-0 text-sm font-bold text-slate-950">Create workspace</h2><p className="mt-1 text-xs leading-5 text-slate-500">Start a separate organization for another team or client.</p></div>
                 <label className="sr-only" htmlFor="new-workspace-name">Workspace name</label>
-                <input autoComplete="organization" className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#45ddce]/20" id="new-workspace-name" minLength={2} placeholder="Workspace name" required value={workspaceName} onChange={(event) => setWorkspaceName(event.target.value)} />
-                <button className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#071b18] px-4 text-sm font-bold text-white transition hover:bg-[#123a33] disabled:cursor-not-allowed disabled:opacity-50" disabled={busy || workspaceName.trim().length < 2} type="submit"><WorkspaceIcon className="size-4" name="plus" />{activeAction === "create-workspace" ? "Creating..." : "Create workspace"}</button>
+                <input autoComplete="organization" className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-950 outline-none transition focus:border-[#5b63ff] focus:ring-3 focus:ring-[#5b63ff]/20" id="new-workspace-name" minLength={2} placeholder="Workspace name" required value={workspaceName} onChange={(event) => setWorkspaceName(event.target.value)} />
+                <button className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#5b63ff] px-4 text-sm font-bold text-[#ffffff] transition hover:bg-[#4b52df] disabled:cursor-not-allowed disabled:opacity-50" disabled={busy || workspaceName.trim().length < 2} type="submit"><WorkspaceIcon className="size-4" name="plus" />{activeAction === "create-workspace" ? "Creating..." : "Create workspace"}</button>
               </form>
 
-              <nav aria-label="Workspace settings sections" className="flex gap-1 overflow-x-auto rounded-2xl border border-[#e2eaf0] bg-white p-2.5 shadow-[0_14px_34px_rgba(15,23,42,0.06)] xl:grid">
+              <nav aria-label="Workspace settings sections" className="flex gap-1 overflow-x-auto rounded-2xl border border-[#e2eaf0] bg-white p-2.5 shadow-sm xl:grid">
                 {visibleSections.map((item) => (
-                  <a className="inline-flex min-w-max items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-600 transition hover:bg-[#edf9f7] hover:text-[#087f75]" href={`#${item.id}`} key={item.id}><WorkspaceIcon className="size-4" name={item.icon} />{item.label}</a>
+                  <a className="inline-flex min-w-max items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-600 transition hover:bg-[#edf9f7] hover:text-[#4b52df]" href={`#${item.id}`} key={item.id}><WorkspaceIcon className="size-4" name={item.icon} />{item.label}</a>
                 ))}
               </nav>
             </aside>
 
             <div className="grid min-w-0 content-start gap-5">
-              <article className="scroll-mt-6 overflow-hidden rounded-2xl border border-[#e2eaf0] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]" id="workspace">
+              <article className="scroll-mt-6 overflow-hidden rounded-2xl border border-[#e2eaf0] bg-white shadow-sm" id="workspace">
                 <SectionHeading description="Update the name, timezone, and data retention policy for this workspace." icon="settings" status={activeOrganization ? <span className={`rounded-full px-2.5 py-1 text-[11px] font-bold capitalize ring-1 ${roleTone(activeOrganization.role)}`}>{activeOrganization.role} access</span> : null} title="Workspace settings" />
                 {canManage ? (
                   <form className="grid gap-5 p-5 sm:p-6" onSubmit={saveWorkspace}>
                     <div className="grid gap-4 md:grid-cols-2">
-                      <label className="grid gap-2 text-xs font-bold text-slate-700" htmlFor="organization-name">Organization name<input autoComplete="organization" className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-normal text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#45ddce]/20" id="organization-name" minLength={2} required value={organizationName} onChange={(event) => setOrganizationName(event.target.value)} /></label>
-                      <label className="grid gap-2 text-xs font-bold text-slate-700" htmlFor="organization-timezone">Timezone<input className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-normal text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#45ddce]/20" id="organization-timezone" placeholder="Asia/Kolkata" required value={organizationTimezone} onChange={(event) => setOrganizationTimezone(event.target.value)} /></label>
-                      <label className="grid gap-2 text-xs font-bold text-slate-700" htmlFor="retention-days">Data retention<input className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-normal text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#45ddce]/20" id="retention-days" min={1} required type="number" value={dataRetentionDays} onChange={(event) => setDataRetentionDays(event.target.value)} /><span className="font-normal leading-5 text-slate-500">Number of days workspace data is retained.</span></label>
+                      <label className="grid gap-2 text-xs font-bold text-slate-700" htmlFor="organization-name">Organization name<input autoComplete="organization" className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-normal text-slate-950 outline-none transition focus:border-[#5b63ff] focus:ring-3 focus:ring-[#5b63ff]/20" id="organization-name" minLength={2} required value={organizationName} onChange={(event) => setOrganizationName(event.target.value)} /></label>
+                      <label className="grid gap-2 text-xs font-bold text-slate-700" htmlFor="organization-timezone">Timezone<input className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-normal text-slate-950 outline-none transition focus:border-[#5b63ff] focus:ring-3 focus:ring-[#5b63ff]/20" id="organization-timezone" placeholder="Asia/Kolkata" required value={organizationTimezone} onChange={(event) => setOrganizationTimezone(event.target.value)} /></label>
+                      <label className="grid gap-2 text-xs font-bold text-slate-700" htmlFor="retention-days">Data retention<input className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-normal text-slate-950 outline-none transition focus:border-[#5b63ff] focus:ring-3 focus:ring-[#5b63ff]/20" id="retention-days" min={1} required type="number" value={dataRetentionDays} onChange={(event) => setDataRetentionDays(event.target.value)} /><span className="font-normal leading-5 text-slate-500">Number of days workspace data is retained.</span></label>
                       <div className="rounded-xl border border-[#dce9e6] bg-[#f7fbfa] p-4">
-                        <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#087f75]">Workspace identity</span>
+                        <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#4b52df]">Workspace identity</span>
                         <p className="mt-2 truncate text-sm font-bold text-slate-900">{activeOrganization?.slug ?? "Not available"}</p>
                         <p className="mt-1 text-xs capitalize text-slate-500">{activeOrganization?.plan ?? "Free"} plan</p>
                       </div>
                     </div>
                     <div className="flex flex-col justify-between gap-3 rounded-xl border border-[#e7eef2] bg-[#f8fafb] p-4 sm:flex-row sm:items-center">
                       <p className="m-0 max-w-xl text-xs leading-5 text-slate-500">These settings apply only to the active workspace and do not affect your other organizations.</p>
-                      <button className="min-h-11 shrink-0 rounded-xl bg-[#45ddce] px-5 text-sm font-extrabold text-[#04231f] transition hover:bg-[#75fff0] disabled:cursor-not-allowed disabled:opacity-50" disabled={busy || organizationName.trim().length < 2} type="submit">{activeAction === "save-workspace" ? "Saving..." : "Save settings"}</button>
+                      <button className="min-h-11 shrink-0 rounded-xl bg-[#5b63ff] px-5 text-sm font-extrabold text-[#ffffff] transition hover:bg-[#4d54db] disabled:cursor-not-allowed disabled:opacity-50" disabled={busy || organizationName.trim().length < 2} type="submit">{activeAction === "save-workspace" ? "Saving..." : "Save settings"}</button>
                     </div>
                   </form>
                 ) : (
@@ -503,14 +505,14 @@ export function OrganizationSettingsShell() {
                 )}
               </article>
 
-              <article className="scroll-mt-6 overflow-hidden rounded-2xl border border-[#e2eaf0] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]" id="team">
+              <article className="scroll-mt-6 overflow-hidden rounded-2xl border border-[#e2eaf0] bg-white shadow-sm" id="team">
                 <SectionHeading description="Invite teammates and control what each person can do in this workspace." icon="users" status={<span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600">{members.length} member{members.length === 1 ? "" : "s"}</span>} title="Team access" />
                 {canManage ? (
                   <form className="m-5 grid gap-4 rounded-2xl border border-[#dce9e6] bg-[#f7fbfa] p-4 sm:m-6 sm:p-5 lg:grid-cols-[minmax(0,1fr)_170px_auto] lg:items-end" onSubmit={inviteMember}>
-                    <div className="lg:col-span-3"><span className="grid size-9 place-items-center rounded-xl bg-[#dff5f1] text-[#087f75]"><WorkspaceIcon className="size-4.5" name="invite" /></span><h3 className="mt-3 text-sm font-bold text-slate-950">Invite a teammate</h3><p className="mt-1 text-xs leading-5 text-slate-500">They will receive a secure email link to join this workspace.</p></div>
-                    <label className="grid gap-2 text-xs font-bold text-slate-700" htmlFor="invite-email">Email address<input autoComplete="email" className="min-h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm font-normal text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#45ddce]/20" id="invite-email" placeholder="teammate@company.com" required type="email" value={inviteEmail} onChange={(event) => setInviteEmail(event.target.value)} /></label>
-                    <label className="grid gap-2 text-xs font-bold text-slate-700" htmlFor="invite-role">Workspace role<select className="min-h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold capitalize text-slate-950 outline-none focus:border-[#0a9f8f]" id="invite-role" value={inviteRole} onChange={(event) => setInviteRole(event.target.value as typeof inviteRole)}>{assignableRoles.map((role) => <option key={role} value={role}>{role}</option>)}</select></label>
-                    <button className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#45ddce] px-5 text-sm font-extrabold text-[#04231f] transition hover:bg-[#75fff0] disabled:cursor-not-allowed disabled:opacity-50" disabled={busy || !inviteEmail.trim()} type="submit"><WorkspaceIcon className="size-4" name="invite" />{activeAction === "invite-member" ? "Sending..." : "Send invite"}</button>
+                    <div className="lg:col-span-3"><span className="grid size-9 place-items-center rounded-xl bg-[#dff5f1] text-[#4b52df]"><WorkspaceIcon className="size-4.5" name="invite" /></span><h3 className="mt-3 text-sm font-bold text-slate-950">Invite a teammate</h3><p className="mt-1 text-xs leading-5 text-slate-500">They will receive a secure email link to join this workspace.</p></div>
+                    <label className="grid gap-2 text-xs font-bold text-slate-700" htmlFor="invite-email">Email address<input autoComplete="email" className="min-h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm font-normal text-slate-950 outline-none transition focus:border-[#5b63ff] focus:ring-3 focus:ring-[#5b63ff]/20" id="invite-email" placeholder="teammate@company.com" required type="email" value={inviteEmail} onChange={(event) => setInviteEmail(event.target.value)} /></label>
+                    <label className="grid gap-2 text-xs font-bold text-slate-700" htmlFor="invite-role">Workspace role<select className="min-h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold capitalize text-slate-950 outline-none focus:border-[#5b63ff]" id="invite-role" value={inviteRole} onChange={(event) => setInviteRole(event.target.value as typeof inviteRole)}>{assignableRoles.map((role) => <option key={role} value={role}>{role}</option>)}</select></label>
+                    <button className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#5b63ff] px-5 text-sm font-extrabold text-[#ffffff] transition hover:bg-[#4d54db] disabled:cursor-not-allowed disabled:opacity-50" disabled={busy || !inviteEmail.trim()} type="submit"><WorkspaceIcon className="size-4" name="invite" />{activeAction === "invite-member" ? "Sending..." : "Send invite"}</button>
                     <p className="text-xs leading-5 text-slate-500 lg:col-span-3"><strong className="capitalize text-slate-700">{inviteRole}:</strong> {roleDescription(inviteRole)}</p>
                     {inviteUrl ? (
                       <div className="grid min-w-0 gap-2 rounded-xl border border-amber-200 bg-amber-50 p-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center lg:col-span-3">
@@ -534,7 +536,7 @@ export function OrganizationSettingsShell() {
                         <span className="grid size-11 place-items-center rounded-xl bg-slate-100 text-sm font-black text-slate-700">{initials(member.userId.name)}</span>
                         <div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><strong className="truncate text-sm font-bold text-slate-900">{member.userId.name}</strong>{member.userId._id === session.id ? <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-emerald-700 ring-1 ring-emerald-200">You</span> : null}</div><p className="mt-1 truncate text-xs text-slate-500">{member.userId.email}</p><p className="mt-1 text-[10px] text-slate-400">Joined {formatDate(member.joinedAt, true)}</p></div>
                         {canManage && member.role !== "owner" ? (
-                          <label className="grid gap-1.5 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Role<select aria-label={`Role for ${member.userId.name}`} className="min-h-10 rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold capitalize text-slate-800 outline-none focus:border-[#0a9f8f]" disabled={busy} value={member.role} onChange={(event) => void runAction(roleAction, () => organizationApi.updateMember(member._id, event.target.value as Exclude<OrganizationRole, "owner">), "Member role updated.")}>{assignableRoles.map((role) => <option key={role} value={role}>{role}</option>)}</select></label>
+                          <label className="grid gap-1.5 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Role<select aria-label={`Role for ${member.userId.name}`} className="min-h-10 rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold capitalize text-slate-800 outline-none focus:border-[#5b63ff]" disabled={busy} value={member.role} onChange={(event) => void runAction(roleAction, () => organizationApi.updateMember(member._id, event.target.value as Exclude<OrganizationRole, "owner">), "Member role updated.")}>{assignableRoles.map((role) => <option key={role} value={role}>{role}</option>)}</select></label>
                         ) : <span className={`w-fit rounded-full px-2.5 py-1 text-[11px] font-bold capitalize ring-1 ${roleTone(member.role)}`}>{member.role}</span>}
                         {canManage && member.role !== "owner" ? (
                           <button className="w-fit rounded-xl border border-rose-200 bg-white px-3 py-2 text-xs font-bold text-rose-700 transition hover:bg-rose-50 disabled:opacity-50" disabled={busy} onClick={() => {
@@ -548,7 +550,7 @@ export function OrganizationSettingsShell() {
                 </div>
               </article>
 
-              <article className="scroll-mt-6 overflow-hidden rounded-2xl border border-[#e2eaf0] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]" id="invitations">
+              <article className="scroll-mt-6 overflow-hidden rounded-2xl border border-[#e2eaf0] bg-white shadow-sm" id="invitations">
                 <SectionHeading description="Invitations waiting for a teammate to join this workspace." icon="invite" status={<span className="rounded-full bg-amber-50 px-2.5 py-1 text-[11px] font-bold text-amber-700 ring-1 ring-amber-200">{pendingInvitations.length} pending</span>} title="Pending invitations" />
                 {pendingInvitations.length ? (
                   <div className="divide-y divide-[#edf2f5]">{pendingInvitations.map((invitation) => (
@@ -564,7 +566,7 @@ export function OrganizationSettingsShell() {
               </article>
 
               {canManage ? (
-                <article className="scroll-mt-6 overflow-hidden rounded-2xl border border-[#e2eaf0] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]" id="audit">
+                <article className="scroll-mt-6 overflow-hidden rounded-2xl border border-[#e2eaf0] bg-white shadow-sm" id="audit">
                   <SectionHeading description="Recent administrative changes in the active workspace." icon="audit" status={<span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600">Latest {auditLogs.length}</span>} title="Audit log" />
                   {auditLogs.length ? (
                     <div className="divide-y divide-[#edf2f5]">{auditLogs.map((entry) => (

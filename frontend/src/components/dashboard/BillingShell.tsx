@@ -36,12 +36,12 @@ function dateTime(value?: string) {
 }
 
 function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <article className={`rounded-2xl border border-white/10 bg-[#07110f] shadow-[0_16px_38px_rgba(0,0,0,0.28)] ${className}`}>{children}</article>;
+  return <article className={`rounded-2xl border border-[#e5e7ef] bg-[#ffffff] shadow-sm ${className}`}>{children}</article>;
 }
 
 function Metric({ label, value, detail, tone = "sky" }: { label: string; value: string; detail: string; tone?: "sky" | "emerald" | "amber" | "slate" }) {
   const tones = {
-    sky: "bg-cyan-50 text-cyan-700",
+    sky: "bg-indigo-50 text-indigo-700",
     emerald: "bg-emerald-50 text-emerald-700",
     amber: "bg-amber-50 text-amber-700",
     slate: "bg-slate-100 text-slate-700",
@@ -63,7 +63,7 @@ export function BillingShell() {
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState<"" | "topup" | "cancel" | "enterprise" | "white-label" | `invoice:${string}`>("");
   const [selectedTopUp, setSelectedTopUp] = useState(10);
-  const [showUserSidebar, setShowUserSidebar] = useState(false);
+  const [showUserSidebar, setShowUserSidebar] = useState(true);
 
   const load = useCallback(async () => {
     try {
@@ -77,6 +77,8 @@ export function BillingShell() {
 
   useEffect(() => {
     if (!session) {
+      // The server snapshot is empty until the persisted session hydrates.
+      if (getSession()) return;
       router.replace("/login?next=/dashboard/billing");
       return;
     }
@@ -176,7 +178,7 @@ export function BillingShell() {
     }
   }
 
-  if (!session) return <main className="grid min-h-screen place-items-center bg-black text-sm font-semibold text-white/60">Loading billing</main>;
+  if (!session) return <main className="grid min-h-screen place-items-center bg-[#f7f8fc] text-sm font-semibold text-[#737587]">Loading billing</main>;
 
   if (data?.billingModel === "white_label_customer_checkout") {
     const currentInvoice = data.currentInvoice;
@@ -184,29 +186,29 @@ export function BillingShell() {
     const recurring = data.currentPlan.monthlyPrice;
     const payable = currentInvoice && (currentInvoice.status === "open" || currentInvoice.status === "past_due");
     return (
-      <main className={`dashboard-home-theme grid min-h-screen bg-black text-white ${showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}>
+      <main className={`dashboard-home-theme grid min-h-screen bg-[#f7f8fc] text-[#242535] ${showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}>
         <DashboardSidebar activeLabel="Billing" userInitials={initials(session.name)} userName={session.name} userEmail={session.email} onLogout={() => void logoutSession().then(() => router.replace("/login"))} showUserSidebar={showUserSidebar} setShowUserSidebar={setShowUserSidebar} />
         <section className="min-w-0 p-4 sm:p-6">
           <div className="mx-auto grid max-w-[1300px] gap-5">
-            <header className="rounded-3xl border border-[var(--brand-primary)]/20 bg-[radial-gradient(circle_at_8%_0%,rgba(69,221,206,0.12),transparent_38%),#07110f] p-6">
+            <header className="rounded-3xl border border-[var(--brand-primary)]/20 bg-white p-6">
               <span className="text-xs font-black uppercase tracking-[0.18em] text-[var(--brand-accent)]">Verified subscription billing</span>
               <h1 className="mt-2 text-3xl font-black">Billing overview</h1>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-white/50">Pay invoices securely through Razorpay. Access is renewed only after the backend verifies the signature, captured payment, order, amount, currency, and tenant.</p>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-[#737587]">Pay invoices securely through Razorpay. Access is renewed only after the backend verifies the signature, captured payment, order, amount, currency, and tenant.</p>
             </header>
-            {notice ? <div className="rounded-xl border border-cyan-300/20 bg-cyan-300/10 px-4 py-3 text-sm font-bold text-cyan-100">{notice}</div> : null}
+            {notice ? <div className="rounded-xl border border-indigo-300/20 bg-indigo-300/10 px-4 py-3 text-sm font-bold text-indigo-100">{notice}</div> : null}
             <div className="grid gap-4 md:grid-cols-3">
-              <Card className="p-5"><span className="text-xs font-bold text-white/35">Current plan</span><strong className="mt-2 block text-2xl font-black capitalize">{data.currentPlan.name}</strong><span className="mt-1 block text-xs text-white/40">Version {data.subscription.planVersion ?? "current"} · {data.subscription.status}</span></Card>
-              <Card className="p-5"><span className="text-xs font-bold text-white/35">Recurring price</span><strong className="mt-2 block text-2xl font-black">{recurring === null ? "Custom" : money(recurring, planCurrency)}</strong><span className="mt-1 block text-xs text-white/40">per {data.currentPlan.interval || "month"}</span></Card>
-              <Card className="p-5"><span className="text-xs font-bold text-white/35">Usage balance</span><strong className="mt-2 block text-2xl font-black">{money(balance, currency)}</strong><span className="mt-1 block text-xs text-white/40">Included credits and metered usage</span></Card>
+              <Card className="p-5"><span className="text-xs font-bold text-[#737587]">Current plan</span><strong className="mt-2 block text-2xl font-black capitalize">{data.currentPlan.name}</strong><span className="mt-1 block text-xs text-[#737587]">Version {data.subscription.planVersion ?? "current"} · {data.subscription.status}</span></Card>
+              <Card className="p-5"><span className="text-xs font-bold text-[#737587]">Recurring price</span><strong className="mt-2 block text-2xl font-black">{recurring === null ? "Custom" : money(recurring, planCurrency)}</strong><span className="mt-1 block text-xs text-[#737587]">per {data.currentPlan.interval || "month"}</span></Card>
+              <Card className="p-5"><span className="text-xs font-bold text-[#737587]">Usage balance</span><strong className="mt-2 block text-2xl font-black">{money(balance, currency)}</strong><span className="mt-1 block text-xs text-[#737587]">Included credits and metered usage</span></Card>
             </div>
             <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
               <Card className="p-5">
-                <div className="flex items-start justify-between gap-4"><div><span className="text-xs font-bold uppercase tracking-[0.14em] text-white/35">Current invoice</span><h2 className="mt-2 text-xl font-black">{currentInvoice?.invoiceNumber || "No payment due"}</h2></div>{currentInvoice ? <span className={`rounded-full px-2.5 py-1 text-[10px] font-black uppercase ${currentInvoice.status === "paid" ? "bg-emerald-300/10 text-emerald-200" : "bg-amber-300/10 text-amber-200"}`}>{currentInvoice.status.replaceAll("_", " ")}</span> : null}</div>
-                {currentInvoice ? <dl className="mt-5 grid gap-3 text-sm"><div className="flex justify-between"><dt className="text-white/45">Recurring service</dt><dd className="font-bold">{money(currentInvoice.recurringAmountMinor / 100, currentInvoice.currency)}</dd></div>{currentInvoice.setupFeeMinor ? <div className="flex justify-between"><dt className="text-white/45">Setup fee</dt><dd className="font-bold">{money(currentInvoice.setupFeeMinor / 100, currentInvoice.currency)}</dd></div> : null}{currentInvoice.taxMinor ? <div className="flex justify-between"><dt className="text-white/45">{currentInvoice.taxLabel}</dt><dd className="font-bold">{money(currentInvoice.taxMinor / 100, currentInvoice.currency)}</dd></div> : null}<div className="flex justify-between border-t border-white/10 pt-3"><dt className="text-white/45">Total</dt><dd className="text-xl font-black">{money(currentInvoice.totalMinor / 100, currentInvoice.currency)}</dd></div><div className="flex justify-between"><dt className="text-white/45">Service period</dt><dd className="text-right text-xs font-bold">{dateTime(currentInvoice.periodStart)}<br />to {dateTime(currentInvoice.periodEnd)}</dd></div></dl> : <p className="mt-4 text-sm text-white/45">Your current service period is paid.</p>}
+                <div className="flex items-start justify-between gap-4"><div><span className="text-xs font-bold uppercase tracking-[0.14em] text-[#737587]">Current invoice</span><h2 className="mt-2 text-xl font-black">{currentInvoice?.invoiceNumber || "No payment due"}</h2></div>{currentInvoice ? <span className={`rounded-full px-2.5 py-1 text-[10px] font-black uppercase ${currentInvoice.status === "paid" ? "bg-emerald-300/10 text-emerald-700" : "bg-amber-300/10 text-amber-700"}`}>{currentInvoice.status.replaceAll("_", " ")}</span> : null}</div>
+                {currentInvoice ? <dl className="mt-5 grid gap-3 text-sm"><div className="flex justify-between"><dt className="text-[#737587]">Recurring service</dt><dd className="font-bold">{money(currentInvoice.recurringAmountMinor / 100, currentInvoice.currency)}</dd></div>{currentInvoice.setupFeeMinor ? <div className="flex justify-between"><dt className="text-[#737587]">Setup fee</dt><dd className="font-bold">{money(currentInvoice.setupFeeMinor / 100, currentInvoice.currency)}</dd></div> : null}{currentInvoice.taxMinor ? <div className="flex justify-between"><dt className="text-[#737587]">{currentInvoice.taxLabel}</dt><dd className="font-bold">{money(currentInvoice.taxMinor / 100, currentInvoice.currency)}</dd></div> : null}<div className="flex justify-between border-t border-[#e5e7ef] pt-3"><dt className="text-[#737587]">Total</dt><dd className="text-xl font-black">{money(currentInvoice.totalMinor / 100, currentInvoice.currency)}</dd></div><div className="flex justify-between"><dt className="text-[#737587]">Service period</dt><dd className="text-right text-xs font-bold">{dateTime(currentInvoice.periodStart)}<br />to {dateTime(currentInvoice.periodEnd)}</dd></div></dl> : <p className="mt-4 text-sm text-[#737587]">Your current service period is paid.</p>}
                 {payable ? <button className="mt-5 w-full rounded-xl bg-[var(--brand-primary)] px-4 py-3 text-sm font-black text-black disabled:opacity-45" disabled={busy === "white-label" || !data.configured} onClick={() => void payWhiteLabelInvoice()}>{busy === "white-label" ? "Verifying payment…" : `Pay ${money(currentInvoice.totalMinor / 100, currentInvoice.currency)}`}</button> : null}
-                {payable && !data.configured ? <p className="mt-3 text-xs text-rose-300">Payment configuration is incomplete. Contact {data.whiteLabel?.supportEmail || "billing support"}.</p> : null}
+                {payable && !data.configured ? <p className="mt-3 text-xs text-rose-700">Payment configuration is incomplete. Contact {data.whiteLabel?.supportEmail || "billing support"}.</p> : null}
               </Card>
-              <Card className="overflow-hidden"><div className="border-b border-white/[0.08] p-5"><h2 className="font-black">Invoice history</h2><p className="mt-1 text-xs text-white/35">Server-issued invoices, refunds, disputes, and verified payment status.</p></div><div className="divide-y divide-white/[0.07]">{data.invoices.map((invoice) => <div className="grid gap-3 p-4 sm:grid-cols-[1fr_auto_auto] sm:items-center" key={invoice._id}><div><strong className="block text-sm">{invoice.invoiceNumber}</strong><span className="mt-1 block text-xs text-white/35">{invoice.periodStart ? dateTime(invoice.periodStart) : dateTime(invoice.createdAt)}</span></div><div className="sm:text-right"><strong className="block">{money(Math.max(0, (invoice.totalMinor ?? 0) - (invoice.refundedMinor ?? 0)) / 100, invoice.currency.toUpperCase())}</strong><span className="text-xs capitalize text-white/40">{invoice.status}{invoice.refundedMinor ? ` · ${money(invoice.refundedMinor / 100, invoice.currency.toUpperCase())} refunded` : ""}</span></div><button className="rounded-xl border border-white/10 px-3 py-2 text-xs font-bold text-white/70" disabled={Boolean(busy)} onClick={() => void downloadWhiteLabelInvoice(invoice._id, invoice.invoiceNumber)}>{busy === `invoice:${invoice._id}` ? "Downloading…" : "Download"}</button></div>)}</div></Card>
+              <Card className="overflow-hidden"><div className="border-b border-[#e5e7ef] p-5"><h2 className="font-black">Invoice history</h2><p className="mt-1 text-xs text-[#737587]">Server-issued invoices, refunds, disputes, and verified payment status.</p></div><div className="divide-y divide-[#e5e7ef]">{data.invoices.map((invoice) => <div className="grid gap-3 p-4 sm:grid-cols-[1fr_auto_auto] sm:items-center" key={invoice._id}><div><strong className="block text-sm">{invoice.invoiceNumber}</strong><span className="mt-1 block text-xs text-[#737587]">{invoice.periodStart ? dateTime(invoice.periodStart) : dateTime(invoice.createdAt)}</span></div><div className="sm:text-right"><strong className="block">{money(Math.max(0, (invoice.totalMinor ?? 0) - (invoice.refundedMinor ?? 0)) / 100, invoice.currency.toUpperCase())}</strong><span className="text-xs capitalize text-[#737587]">{invoice.status}{invoice.refundedMinor ? ` · ${money(invoice.refundedMinor / 100, invoice.currency.toUpperCase())} refunded` : ""}</span></div><button className="rounded-xl border border-[#e5e7ef] px-3 py-2 text-xs font-bold text-[#737587]" disabled={Boolean(busy)} onClick={() => void downloadWhiteLabelInvoice(invoice._id, invoice.invoiceNumber)}>{busy === `invoice:${invoice._id}` ? "Downloading…" : "Download"}</button></div>)}</div></Card>
             </div>
           </div>
         </section>
@@ -218,7 +220,7 @@ export function BillingShell() {
     const planCurrency = data.currentPlan.currency || currency;
     const recurring = data.currentPlan.monthlyPrice;
     return (
-      <main className={`dashboard-home-theme grid min-h-screen bg-black text-white ${showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}>
+      <main className={`dashboard-home-theme grid min-h-screen bg-[#f7f8fc] text-[#242535] ${showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}>
         <DashboardSidebar
           activeLabel="Billing"
           userInitials={initials(session.name)}
@@ -230,20 +232,20 @@ export function BillingShell() {
         />
         <section className="min-w-0 p-4 sm:p-6">
           <div className="mx-auto grid max-w-[1300px] gap-5">
-            <header className="rounded-3xl border border-[var(--brand-primary)]/20 bg-[radial-gradient(circle_at_8%_0%,rgba(69,221,206,0.12),transparent_38%),#07110f] p-6">
+            <header className="rounded-3xl border border-[var(--brand-primary)]/20 bg-white p-6">
               <span className="text-xs font-black uppercase tracking-[0.18em] text-[var(--brand-accent)]">Subscription and usage</span>
               <h1 className="mt-2 text-3xl font-black">Billing overview</h1>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-white/50">Your plan and usage are managed by {data.whiteLabel?.productName || "your service provider"}. Contact support for payment methods, invoices, plan changes, or additional credits.</p>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-[#737587]">Your plan and usage are managed by {data.whiteLabel?.productName || "your service provider"}. Contact support for payment methods, invoices, plan changes, or additional credits.</p>
             </header>
-            {notice ? <div className="rounded-xl border border-cyan-300/20 bg-cyan-300/10 px-4 py-3 text-sm font-bold text-cyan-100">{notice}</div> : null}
+            {notice ? <div className="rounded-xl border border-indigo-300/20 bg-indigo-300/10 px-4 py-3 text-sm font-bold text-indigo-100">{notice}</div> : null}
             <div className="grid gap-4 md:grid-cols-3">
-              <Card className="p-5"><span className="text-xs font-bold text-white/35">Current plan</span><strong className="mt-2 block text-2xl font-black capitalize">{data.currentPlan.name}</strong><span className="mt-1 block text-xs text-white/40">Version {data.subscription.planVersion ?? "current"} · {data.subscription.status}</span></Card>
-              <Card className="p-5"><span className="text-xs font-bold text-white/35">Recurring price</span><strong className="mt-2 block text-2xl font-black">{recurring === null ? "Custom" : money(recurring, planCurrency)}</strong><span className="mt-1 block text-xs text-white/40">per {data.currentPlan.interval || "month"}, taxes per contract</span></Card>
-              <Card className="p-5"><span className="text-xs font-bold text-white/35">Available usage credits</span><strong className="mt-2 block text-2xl font-black">{money(balance, currency)}</strong><span className="mt-1 block text-xs text-white/40">Usage charging follows your immutable plan snapshot</span></Card>
+              <Card className="p-5"><span className="text-xs font-bold text-[#737587]">Current plan</span><strong className="mt-2 block text-2xl font-black capitalize">{data.currentPlan.name}</strong><span className="mt-1 block text-xs text-[#737587]">Version {data.subscription.planVersion ?? "current"} · {data.subscription.status}</span></Card>
+              <Card className="p-5"><span className="text-xs font-bold text-[#737587]">Recurring price</span><strong className="mt-2 block text-2xl font-black">{recurring === null ? "Custom" : money(recurring, planCurrency)}</strong><span className="mt-1 block text-xs text-[#737587]">per {data.currentPlan.interval || "month"}, taxes per contract</span></Card>
+              <Card className="p-5"><span className="text-xs font-bold text-[#737587]">Available usage credits</span><strong className="mt-2 block text-2xl font-black">{money(balance, currency)}</strong><span className="mt-1 block text-xs text-[#737587]">Usage charging follows your immutable plan snapshot</span></Card>
             </div>
             <div className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
-              <Card className="p-5"><h2 className="font-black">This period</h2><dl className="mt-4 grid grid-cols-2 gap-3 text-sm">{[["Calls", data.usage.calls.toLocaleString()], ["Minutes", data.usage.minutes.toFixed(1)], ["Charged", money(data.usage.chargedCredits, currency)], ["Plan status", data.subscription.status]].map(([label, value]) => <div className="rounded-xl border border-white/[0.08] bg-black/20 p-4" key={label}><dt className="text-xs text-white/35">{label}</dt><dd className="mt-1 font-black capitalize">{value}</dd></div>)}</dl>{data.whiteLabel?.supportEmail ? <a className="mt-5 inline-flex text-sm font-black text-[var(--brand-accent)] hover:underline" href={`mailto:${data.whiteLabel.supportEmail}`}>Contact billing support</a> : null}</Card>
-              <Card className="overflow-hidden"><div className="border-b border-white/[0.08] p-5"><h2 className="font-black">Usage ledger</h2><p className="mt-1 text-xs text-white/35">Recent credit events and call charges.</p></div><div className="divide-y divide-white/[0.07]">{data.transactions.slice(0, 12).map((transaction) => <div className="grid grid-cols-[1fr_auto] gap-4 p-4" key={transaction._id}><div><strong className="block text-xs text-white/80">{transaction.description}</strong><span className="mt-1 block text-[10px] text-white/30">{dateTime(transaction.createdAt)}</span></div><strong className={`text-sm ${transaction.amountCredits < 0 ? "text-rose-300" : "text-emerald-300"}`}>{transaction.amountCredits > 0 ? "+" : ""}{money(transaction.amountCredits, transaction.currency || currency)}</strong></div>)}{!data.transactions.length ? <p className="p-8 text-center text-xs text-white/35">No usage ledger entries yet.</p> : null}</div></Card>
+              <Card className="p-5"><h2 className="font-black">This period</h2><dl className="mt-4 grid grid-cols-2 gap-3 text-sm">{[["Calls", data.usage.calls.toLocaleString()], ["Minutes", data.usage.minutes.toFixed(1)], ["Charged", money(data.usage.chargedCredits, currency)], ["Plan status", data.subscription.status]].map(([label, value]) => <div className="rounded-xl border border-[#e5e7ef] bg-[#f0f1f6] p-4" key={label}><dt className="text-xs text-[#737587]">{label}</dt><dd className="mt-1 font-black capitalize">{value}</dd></div>)}</dl>{data.whiteLabel?.supportEmail ? <a className="mt-5 inline-flex text-sm font-black text-[var(--brand-accent)] hover:underline" href={`mailto:${data.whiteLabel.supportEmail}`}>Contact billing support</a> : null}</Card>
+              <Card className="overflow-hidden"><div className="border-b border-[#e5e7ef] p-5"><h2 className="font-black">Usage ledger</h2><p className="mt-1 text-xs text-[#737587]">Recent credit events and call charges.</p></div><div className="divide-y divide-[#e5e7ef]">{data.transactions.slice(0, 12).map((transaction) => <div className="grid grid-cols-[1fr_auto] gap-4 p-4" key={transaction._id}><div><strong className="block text-xs text-[#737587]">{transaction.description}</strong><span className="mt-1 block text-[10px] text-[#737587]">{dateTime(transaction.createdAt)}</span></div><strong className={`text-sm ${transaction.amountCredits < 0 ? "text-rose-700" : "text-emerald-700"}`}>{transaction.amountCredits > 0 ? "+" : ""}{money(transaction.amountCredits, transaction.currency || currency)}</strong></div>)}{!data.transactions.length ? <p className="p-8 text-center text-xs text-[#737587]">No usage ledger entries yet.</p> : null}</div></Card>
             </div>
           </div>
         </section>
@@ -293,7 +295,7 @@ export function BillingShell() {
   }
 
   return (
-    <main className={`dashboard-home-theme grid min-h-screen bg-black text-white ${
+    <main className={`dashboard-home-theme grid min-h-screen bg-[#f7f8fc] text-[#242535] ${
       showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
     }`}>
       <DashboardSidebar
@@ -307,35 +309,35 @@ export function BillingShell() {
       />
       <section className="min-w-0 p-4">
         <div className="mx-auto grid max-w-[1500px] gap-6">
-          <header className="border-b border-[#45ddce]/24 bg-[#07110f] pb-4">
+          <header className="border-b border-[#5b63ff]/24 bg-[#ffffff] pb-4">
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
               <div>
-                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#00b8c4]">Pay per use</span>
-                <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">Credit command center</h1>
+                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#5b63ff]">Workspace billing</span>
+                <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">Billing</h1>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Top up once and run calls. Per-call provider costs are available in Call Logs.</p>
               </div>
               <div className="flex gap-2">
-              <button className="rounded-xl border border-white/10 bg-[#061b18] px-4 py-2.5 text-sm font-semibold text-white/70 shadow-sm hover:bg-white/[0.08] hover:text-white" type="button" onClick={() => void load()} disabled={Boolean(busy)}>
+              <button className="rounded-xl border border-[#e5e7ef] bg-[#f8f8fc] px-4 py-2.5 text-sm font-semibold text-[#737587] shadow-sm hover:bg-[#f6f7fb] hover:text-[#242535]" type="button" onClick={() => void load()} disabled={Boolean(busy)}>
                 Refresh
               </button>
-              <button className="rounded-xl bg-[#45ddce] px-4 py-2.5 text-sm font-semibold text-[#02110d] shadow-[0_12px_28px_rgba(69,221,206,0.20)] hover:bg-[#75fff0] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup" || !data?.configured}>
+              <button className="rounded-xl bg-[#5b63ff] px-4 py-2.5 text-sm font-semibold text-[#ffffff] shadow-sm hover:bg-[#4d54db] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup" || !data?.configured}>
                 Buy ${selectedTopUp}
               </button>
               </div>
             </div>
           </header>
 
-          {notice ? <div className="rounded-xl border border-cyan-200 bg-cyan-50 px-4 py-3 text-sm font-semibold text-cyan-800">{notice}</div> : null}
+          {notice ? <div className="rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-sm font-semibold text-indigo-800">{notice}</div> : null}
           {data?.paymentReadiness ? (
-            <div className="grid gap-3 rounded-2xl border border-white/10 bg-[#07110f] p-4 sm:grid-cols-3">
+            <div className="grid gap-3 rounded-2xl border border-[#e5e7ef] bg-[#ffffff] p-4 sm:grid-cols-3">
               {[
                 ["Checkout mode", data.paymentReadiness.mode],
                 ["API credentials", data.paymentReadiness.credentialsConfigured ? "configured" : "missing"],
                 ["Webhook signing", data.paymentReadiness.webhookConfigured ? "configured" : "missing"],
               ].map(([label, value]) => (
-                <div className="rounded-xl border border-white/10 bg-black/20 px-4 py-3" key={label}>
-                  <span className="block text-xs text-white/45">{label}</span>
-                  <strong className={`mt-1 block capitalize ${value === "live" || value === "configured" ? "text-emerald-300" : "text-amber-300"}`}>{value}</strong>
+                <div className="rounded-xl border border-[#e5e7ef] bg-[#f0f1f6] px-4 py-3" key={label}>
+                  <span className="block text-xs text-[#737587]">{label}</span>
+                  <strong className={`mt-1 block capitalize ${value === "live" || value === "configured" ? "text-emerald-700" : "text-amber-700"}`}>{value}</strong>
                 </div>
               ))}
             </div>
@@ -343,10 +345,10 @@ export function BillingShell() {
 
           <section className="grid gap-4 xl:grid-cols-[1.25fr_0.75fr]">
             <Card className="overflow-hidden">
-              <div className="grid gap-6 bg-[radial-gradient(circle_at_8%_0%,rgba(69,221,206,0.11),transparent_40%),linear-gradient(135deg,#07110f_0%,#061b18_100%)] p-5 md:grid-cols-[minmax(0,1fr)_320px] md:p-6">
+              <div className="grid gap-6 bg-white p-5 md:grid-cols-[minmax(0,1fr)_320px] md:p-6">
                 <div className="grid content-between gap-6">
                   <div>
-                    <span className="inline-flex rounded-full bg-[#45ddce]/10 px-3 py-1 text-xs font-semibold text-[#75fff0] shadow-sm ring-1 ring-[#45ddce]/24">Wallet balance</span>
+                    <span className="inline-flex rounded-full bg-[#5b63ff]/10 px-3 py-1 text-xs font-semibold text-[#4d54db] shadow-sm ring-1 ring-[#5b63ff]/24">Wallet balance</span>
                     <h2 className="mt-5 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">{money(balance, currency)}</h2>
                     <p className="mt-3 max-w-xl text-sm leading-6 text-slate-600">Calls start only when the wallet has the minimum required balance. Completed-call costs are deducted automatically and shown in Call Logs.</p>
                   </div>
@@ -355,18 +357,18 @@ export function BillingShell() {
                       <span>{money(balance, currency)} available</span>
                       <span>{money(lifetime, currency)} lifetime credits</span>
                     </div>
-                    <div className="h-3 overflow-hidden rounded-full bg-white/10 shadow-inner ring-1 ring-white/10">
-                      <div className="h-full rounded-full bg-gradient-to-r from-cyan-500 via-cyan-500 to-cyan-400" style={{ width: `${progress}%` }} />
+                    <div className="h-3 overflow-hidden rounded-full bg-[#f6f7fb] shadow-inner ring-1 ring-white/10">
+                      <div className="h-full rounded-full bg-gradient-to-r from-indigo-500 via-indigo-500 to-indigo-400" style={{ width: `${progress}%` }} />
                     </div>
                   </div>
                 </div>
 
-                <div className="grid gap-3 rounded-2xl border border-white/10 bg-black/20 p-4 shadow-sm backdrop-blur">
+                <div className="grid gap-3 rounded-2xl border border-[#e5e7ef] bg-[#f0f1f6] p-4 shadow-sm backdrop-blur">
                   <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">Quick top-up</span>
                   <div className="grid grid-cols-2 gap-2">
                     {topUpOptions.map((amount) => (
                       <button
-                        className={`min-h-12 rounded-xl border px-3 text-sm font-semibold transition ${selectedTopUp === amount ? "border-[#45ddce]/35 bg-[#45ddce] text-[#02110d] shadow-[0_10px_24px_rgba(69,221,206,0.18)]" : "border-white/10 bg-[#07110f] text-white/70 hover:border-[#45ddce]/35 hover:bg-[#45ddce]/10 hover:text-white"}`}
+                        className={`min-h-12 rounded-xl border px-3 text-sm font-semibold transition ${selectedTopUp === amount ? "border-[#5b63ff]/35 bg-[#5b63ff] text-[#ffffff] shadow-sm" : "border-[#e5e7ef] bg-[#ffffff] text-[#737587] hover:border-[#5b63ff]/35 hover:bg-[#5b63ff]/10 hover:text-[#242535]"}`}
                         key={amount}
                         type="button"
                         aria-pressed={selectedTopUp === amount}
@@ -376,7 +378,7 @@ export function BillingShell() {
                       </button>
                     ))}
                   </div>
-                  <button className="min-h-12 rounded-xl bg-emerald-600 px-4 text-sm font-semibold text-white shadow-lg shadow-emerald-600/20 hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup" || !data?.configured}>
+                  <button className="min-h-12 rounded-xl bg-[#5b63ff] px-4 text-sm font-semibold text-[#ffffff] shadow-sm hover:bg-[#4b52df] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup" || !data?.configured}>
                     {busy === "topup" ? "Opening checkout..." : "Purchase credits"}
                   </button>
                 </div>
@@ -408,16 +410,16 @@ export function BillingShell() {
                   <div className="flex justify-between gap-4"><span className="text-slate-500">Next renewal</span><strong className="text-right text-slate-950">{dateTime(data?.subscription.currentPeriodEnd)}</strong></div>
                 </div>
                 {data?.subscription.provider === "razorpay" && !data.subscription.cancelAtPeriodEnd && data.subscription.status !== "cancelled" ? (
-                  <button className="w-fit rounded-xl border border-rose-400/30 px-4 py-2.5 text-sm font-semibold text-rose-300 hover:bg-rose-400/10 disabled:opacity-60" type="button" onClick={() => void cancelAutopay()} disabled={busy === "cancel"}>
+                  <button className="w-fit rounded-xl border border-rose-400/30 px-4 py-2.5 text-sm font-semibold text-rose-700 hover:bg-rose-400/10 disabled:opacity-60" type="button" onClick={() => void cancelAutopay()} disabled={busy === "cancel"}>
                     {busy === "cancel" ? "Cancelling..." : "Cancel at period end"}
                   </button>
                 ) : null}
-                {data?.subscription.cancelAtPeriodEnd ? <p className="m-0 text-sm font-semibold text-amber-300">Cancellation is scheduled for the end of this billing cycle.</p> : null}
+                {data?.subscription.cancelAtPeriodEnd ? <p className="m-0 text-sm font-semibold text-amber-700">Cancellation is scheduled for the end of this billing cycle.</p> : null}
               </div>
             </Card>
 
             <div className="grid gap-4">
-              <Card className="">
+              <Card className="p-5">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <h2 className="m-0 text-lg font-semibold">Payment status</h2>
@@ -433,45 +435,45 @@ export function BillingShell() {
               </Card>
 
               <Card className="overflow-hidden">
-                <div className="bg-slate-950 p-5 text-white">
+                <div className="bg-[#f0efff] p-5 text-[#30334f]">
                   <h2 className="m-0 text-lg font-semibold">Enterprise credits</h2>
-                  <p className="mt-2 text-sm leading-6 text-white/65">${data?.enterpriseMonthlyUsd ?? 500} in wallet credits added after each successful monthly Razorpay charge.</p>
-                  <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-semibold text-[#9ff8ee]">
-                    <span className="rounded-full border border-[#45ddce]/30 bg-[#45ddce]/10 px-2.5 py-1">Monthly Autopay</span>
-                    <span className="rounded-full border border-[#45ddce]/30 bg-[#45ddce]/10 px-2.5 py-1">Indian cards</span>
-                    <span className="rounded-full border border-[#45ddce]/30 bg-[#45ddce]/10 px-2.5 py-1">International cards</span>
+                  <p className="mt-2 text-sm leading-6 text-[#737587]">${data?.enterpriseMonthlyUsd ?? 500} in wallet credits added after each successful monthly Razorpay charge.</p>
+                  <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-semibold text-[#6269dc]">
+                    <span className="rounded-full border border-[#5b63ff]/30 bg-[#5b63ff]/10 px-2.5 py-1">Monthly Autopay</span>
+                    <span className="rounded-full border border-[#5b63ff]/30 bg-[#5b63ff]/10 px-2.5 py-1">Indian cards</span>
+                    <span className="rounded-full border border-[#5b63ff]/30 bg-[#5b63ff]/10 px-2.5 py-1">International cards</span>
                   </div>
-                  {data?.subscription.provider !== "razorpay" || data.subscription.status === "cancelled" ? <button className="mt-5 rounded-xl bg-[#45ddce] px-4 py-2.5 text-sm font-semibold text-[#02110d] hover:bg-[#75fff0] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void upgradeEnterprise()} disabled={busy === "enterprise" || !data?.configured}>Start monthly Autopay</button> : null}
+                  {data?.subscription.provider !== "razorpay" || data.subscription.status === "cancelled" ? <button className="mt-5 rounded-xl bg-[#5b63ff] px-4 py-2.5 text-sm font-semibold text-[#ffffff] hover:bg-[#4d54db] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void upgradeEnterprise()} disabled={busy === "enterprise" || !data?.configured}>Start monthly Autopay</button> : null}
                 </div>
               </Card>
             </div>
           </section>
 
           <Card className="overflow-hidden">
-            <div className="flex flex-col justify-between gap-3 border-b border-white/10 p-5 sm:flex-row sm:items-center">
+            <div className="flex flex-col justify-between gap-3 border-b border-[#e5e7ef] p-5 sm:flex-row sm:items-center">
               <div>
                 <h2 className="m-0 text-lg font-semibold">Invoices</h2>
-                <p className="mt-1 text-sm text-white/50">Download payment invoices for wallet top-ups and monthly charges.</p>
+                <p className="mt-1 text-sm text-[#737587]">Download payment invoices for wallet top-ups and monthly charges.</p>
               </div>
-              <span className="text-xs font-semibold text-white/40">{data?.invoices.length ?? 0} recent invoices</span>
+              <span className="text-xs font-semibold text-[#737587]">{data?.invoices.length ?? 0} recent invoices</span>
             </div>
             {data?.invoices.length ? (
-              <div className="divide-y divide-white/10">
+              <div className="divide-y divide-[#e5e7ef]">
                 {data.invoices.map((invoice) => {
                   const amount = (invoice.amountPaid || invoice.amountDue || 0) / 100;
                   const isDownloading = busy === `invoice:${invoice._id}`;
                   return (
                     <div className="grid gap-3 p-4 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center sm:px-5" key={invoice._id}>
                       <div className="min-w-0">
-                        <strong className="block truncate text-sm text-white">{invoice.invoiceNumber || `${brand.productName} payment invoice`}</strong>
-                        <span className="mt-1 block text-xs text-white/45">{invoice.description || dateTime(invoice.createdAt)}</span>
+                        <strong className="block truncate text-sm text-[#242535]">{invoice.invoiceNumber || `${brand.productName} payment invoice`}</strong>
+                        <span className="mt-1 block text-xs text-[#737587]">{invoice.description || dateTime(invoice.createdAt)}</span>
                       </div>
                       <div className="sm:text-right">
-                        <strong className="block text-sm text-white">{money(amount, invoice.currency.toUpperCase())}</strong>
-                        <span className="mt-1 block text-xs capitalize text-emerald-300">{invoice.status || "paid"} · {dateTime(invoice.createdAt)}</span>
+                        <strong className="block text-sm text-[#242535]">{money(amount, invoice.currency.toUpperCase())}</strong>
+                        <span className="mt-1 block text-xs capitalize text-emerald-700">{invoice.status || "paid"} · {dateTime(invoice.createdAt)}</span>
                       </div>
                       <button
-                        className="rounded-xl border border-[#45ddce]/30 bg-[#45ddce]/10 px-4 py-2.5 text-sm font-semibold text-[#75fff0] hover:bg-[#45ddce]/20 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="rounded-xl border border-[#5b63ff]/30 bg-[#5b63ff]/10 px-4 py-2.5 text-sm font-semibold text-[#4d54db] hover:bg-[#5b63ff]/20 disabled:cursor-not-allowed disabled:opacity-50"
                         type="button"
                         onClick={() => void downloadInvoice(invoice._id, invoice.invoiceNumber)}
                         disabled={Boolean(busy)}
@@ -483,7 +485,7 @@ export function BillingShell() {
                 })}
               </div>
             ) : (
-              <div className="p-8 text-center text-sm text-white/45">Invoices will appear here after a successful payment.</div>
+              <div className="p-8 text-center text-sm text-[#737587]">Invoices will appear here after a successful payment.</div>
             )}
           </Card>
 

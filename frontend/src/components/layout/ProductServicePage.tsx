@@ -1156,7 +1156,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
       </div>
 
       {/* Right */}
-      <div className="voice-preview-controls">
+      <div className="voice-preview-controls" id="voice-customization">
         <h3>Customize Your Voice</h3>
 
         {voiceSliders.map((slider) => (
@@ -1176,15 +1176,25 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
           </div>
         ))}
 
-        <div className="voice-select">
+        <label className="voice-select">
           <span>Emotion</span>
-          <button>Friendly</button>
-        </div>
+          <select aria-label="Voice emotion" defaultValue="Friendly">
+            <option>Friendly</option>
+            <option>Professional</option>
+            <option>Warm</option>
+            <option>Calm</option>
+          </select>
+        </label>
 
-        <div className="voice-select">
+        <label className="voice-select">
           <span>Language</span>
-          <button>English (US)</button>
-        </div>
+          <select aria-label="Voice language" defaultValue="English (US)">
+            <option>English (US)</option>
+            <option>English (UK)</option>
+            <option>Hindi</option>
+            <option>Spanish</option>
+          </select>
+        </label>
       </div>
 
     </div>
@@ -6323,6 +6333,109 @@ inset:55px;
           border-color: #5459e8 !important;
           background: #5459e8 !important;
           box-shadow: 0 13px 28px rgba(84, 89, 232, 0.24) !important;
+        }
+
+        /* Voice-cloning controls: a compact, readable settings card. */
+        #product-service-page#product-service-page#product-service-page.product-page-voice-cloning .voice-preview-layout {
+          margin-top: 3.5rem !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page.product-page-voice-cloning .voice-preview-controls {
+          min-height: 0 !important;
+          padding: 1.5rem !important;
+          border: 1px solid #dfe4ec !important;
+          border-radius: 1.25rem !important;
+          background: #fff !important;
+          background-image: none !important;
+          box-shadow: none !important;
+          backdrop-filter: none !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page.product-page-voice-cloning .voice-preview-controls h3 {
+          margin: 0 0 1.5rem !important;
+          color: #17203f !important;
+          -webkit-text-fill-color: #17203f !important;
+          font-size: 1.25rem !important;
+          font-weight: 600 !important;
+          line-height: 1.3 !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page.product-page-voice-cloning .voice-slider {
+          margin-bottom: 1.25rem !important;
+          border-color: transparent !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page.product-page-voice-cloning .voice-slider-label,
+        #product-service-page#product-service-page#product-service-page.product-page-voice-cloning .voice-slider-label span {
+          margin-bottom: 0.55rem !important;
+          color: #4b5565 !important;
+          -webkit-text-fill-color: #4b5565 !important;
+          font-size: 0.8rem !important;
+          font-weight: 600 !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page.product-page-voice-cloning .voice-slider-label span:last-child {
+          color: #17203f !important;
+          -webkit-text-fill-color: #17203f !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page.product-page-voice-cloning .voice-slider-track {
+          height: 0.4rem !important;
+          border: 0 !important;
+          background: #e8edf5 !important;
+          box-shadow: none !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page.product-page-voice-cloning .voice-slider-track > span {
+          background: #3e75ff !important;
+          background-image: none !important;
+          box-shadow: none !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page.product-page-voice-cloning .voice-select {
+          min-height: 3.5rem !important;
+          margin-top: 0.75rem !important;
+          padding: 0.65rem 0.9rem !important;
+          border: 1px solid #dfe4ec !important;
+          border-radius: 0.85rem !important;
+          background: #f8fafc !important;
+          background-image: none !important;
+          box-shadow: none !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page.product-page-voice-cloning .voice-select > span {
+          color: #667085 !important;
+          -webkit-text-fill-color: #667085 !important;
+          font-size: 0.82rem !important;
+          font-weight: 500 !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page.product-page-voice-cloning .voice-select > select {
+          min-width: 8.5rem;
+          border: 0 !important;
+          outline: 0 !important;
+          background: transparent !important;
+          color: #17203f !important;
+          font: inherit;
+          font-size: 0.82rem !important;
+          font-weight: 600 !important;
+          text-align: right;
+          cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+          #product-service-page#product-service-page#product-service-page.product-page-voice-cloning .voice-preview-layout {
+            margin-top: 2.25rem !important;
+          }
+
+          #product-service-page#product-service-page#product-service-page.product-page-voice-cloning .voice-preview-controls {
+            padding: 1.15rem !important;
+            border-radius: 1rem !important;
+          }
+
+          #product-service-page#product-service-page#product-service-page.product-page-voice-cloning .voice-select > select {
+            min-width: 7.5rem;
+          }
         }
       `}</style>
     </SiteLayout>
