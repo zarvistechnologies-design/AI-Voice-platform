@@ -55,7 +55,7 @@ const providers: { id: TelephonyProvider; description: string; docs: string }[] 
 const buttonClass =
   "app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 transition disabled:cursor-not-allowed disabled:opacity-50";
 const controlClass =
-  "app-control-text min-h-11 w-full rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#108D82] focus:ring-4 focus:ring-[#108D82]/10";
+  "app-control-text min-h-11 w-full rounded-lg border border-[#dbe4e1] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10";
 
 export function PhoneNumberModals({
   agents,
@@ -207,9 +207,9 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
   }
 
   return (
-    <ModalFrame busy={busy} title="Import phone number" subtitle="Add a number from your telephony provider." onClose={onClose}>
+    <ModalFrame busy={busy} title="Import phone number" subtitle="Connect a number you already own." width="max-w-3xl" onClose={onClose}>
       <form
-        className="grid min-h-0 grid-rows-[auto_minmax(0,1fr)_auto]"
+        className="grid min-h-0 grid-rows-[minmax(0,1fr)_auto]"
         aria-busy={busy}
         onSubmit={(event) => {
           event.preventDefault();
@@ -217,46 +217,53 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
           submit();
         }}
       >
-        <div className="grid grid-cols-3 border-b border-[#e5e7eb] px-5 sm:px-6">
-          {providers.map((item) => (
-            <button
-              className={`relative min-h-14 border-0 bg-transparent px-2 text-center transition ${provider === item.id ? "text-[#108D82]" : "text-[#64748b] hover:text-[#334155]"}`}
-              disabled={busy}
-              key={item.id}
-              onClick={() => setProvider(item.id)}
-              type="button"
-              aria-pressed={provider === item.id}
-            >
-              <span className="app-strong">{item.id}</span>
-              {provider === item.id ? <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-[#108D82]" /> : null}
-            </button>
-          ))}
-        </div>
-
         <div className="grid gap-5 overflow-y-auto px-5 py-5 sm:px-6">
           <RequestError message={requestError} />
-          <div className="rounded-lg border border-[#e1e2ef] bg-[#f0efff] px-3 py-2.5">
+
+          <section className="grid gap-3">
+            <div><span className="app-label text-[#0e6f62]">Step 1</span><h3 className="app-section-title mt-1 mb-0">Choose provider</h3></div>
+            <div className="grid grid-cols-3 gap-1 rounded-xl border border-[#dbe4e1] bg-[#f7f9f8] p-1">
+              {providers.map((item) => (
+                <button
+                  className={`min-h-10 rounded-lg px-2 text-center transition ${provider === item.id ? "border border-[#9fcfc3] bg-white text-[#0e6f62]" : "border border-transparent text-[#64748b] hover:bg-white hover:text-[#334155]"}`}
+                  disabled={busy}
+                  key={item.id}
+                  onClick={() => setProvider(item.id)}
+                  type="button"
+                  aria-pressed={provider === item.id}
+                >
+                  <span className="app-strong">{item.id}</span>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          <div className="rounded-lg border border-[#b8c8c3] bg-[#edf7f4] px-3 py-2.5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <span className="app-body text-[#108D82]">{providers.find((item) => item.id === provider)?.description}</span>
-              <a className="app-label text-[#108D82] underline underline-offset-2" href={providers.find((item) => item.id === provider)?.docs} rel="noreferrer" target="_blank">Provider docs</a>
+              <a className="app-label text-[#118778] underline underline-offset-2" href={providers.find((item) => item.id === provider)?.docs} rel="noreferrer" target="_blank">Provider docs</a>
             </div>
           </div>
 
-          <label className="app-label grid gap-2">
-            Phone number
-            <input
-              className={controlClass}
-              disabled={busy}
-              inputMode="tel"
-              placeholder="+919876543210"
-              value={phoneNumber}
-              onChange={(event) => setPhoneNumber(event.target.value)}
-            />
-            <span className="app-caption font-normal">Use E.164 format with country code, for example +919876543210.</span>
-          </label>
+          <section className="grid gap-3">
+            <div><span className="app-label text-[#0e6f62]">Step 2</span><h3 className="app-section-title mt-1 mb-0">Number details</h3></div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="app-label grid gap-2">
+                Phone number
+                <input className={controlClass} disabled={busy} inputMode="tel" placeholder="+919876543210" value={phoneNumber} onChange={(event) => setPhoneNumber(event.target.value)} />
+                <span className="app-caption font-normal">Use E.164 format with country code.</span>
+              </label>
+              <label className="app-label grid content-start gap-2">
+                <span>Label <span className="font-normal text-[#94a3b8]">(optional)</span></span>
+                <input className={controlClass} disabled={busy} maxLength={120} placeholder="Support main line" value={label} onChange={(event) => setLabel(event.target.value)} />
+              </label>
+            </div>
+          </section>
+
+          <div><span className="app-label text-[#0e6f62]">Step 3</span><h3 className="app-section-title mt-1 mb-0">Provider credentials</h3><p className="app-caption mt-1 mb-0">Used securely to verify ownership of this number.</p></div>
 
           {provider === "Twilio" ? (
-            <div className="grid gap-4 rounded-xl border border-[#e5e7eb] bg-[#f8fafc] p-4">
+            <div className="grid gap-4 rounded-xl border border-[#e6ecea] bg-[#f8fafc] p-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <label className="app-label grid gap-2">
                   Twilio API region
@@ -283,7 +290,7 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
           ) : null}
 
           {provider === "Exotel" ? (
-            <div className="grid gap-4 rounded-xl border border-[#e5e7eb] bg-[#f8fafc] p-4">
+            <div className="grid gap-4 rounded-xl border border-[#e6ecea] bg-[#f8fafc] p-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <label className="app-label grid gap-2">
                   Exotel data center
@@ -309,7 +316,7 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
           ) : null}
 
           {provider === "Vobiz" ? (
-            <div className="grid gap-4 rounded-xl border border-[#e5e7eb] bg-[#f8fafc] p-4">
+            <div className="grid gap-4 rounded-xl border border-[#e6ecea] bg-[#f8fafc] p-4">
               <label className="app-label grid gap-2">
                 Auth ID
                 <input className={controlClass} autoComplete="off" disabled={busy} placeholder="MA_... or SA_..." value={authId} onChange={(event) => setAuthId(event.target.value)} />
@@ -321,12 +328,7 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
             </div>
           ) : null}
 
-          <label className="app-label grid gap-2">
-            Label <span className="font-normal text-[#94a3b8]">(optional)</span>
-            <input className={controlClass} disabled={busy} maxLength={120} placeholder="Support main line" value={label} onChange={(event) => setLabel(event.target.value)} />
-          </label>
-
-          <div className="flex items-start gap-3 rounded-lg border border-[#e5e7eb] bg-[#f8fafc] p-3">
+          <div className="flex items-start gap-3 rounded-lg border border-[#e6ecea] bg-[#f8fafc] p-3">
             <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-[#dcfce7] text-[#059669]"><Icon icon="check" className="size-3.5" /></span>
             <p className="app-caption m-0">
               {provider === "Vobiz"
@@ -346,9 +348,9 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
           )}
         </div>
 
-        <footer className="flex items-center justify-end gap-2 border-t border-[#e5e7eb] px-5 py-4 sm:px-6">
+        <footer className="flex items-center justify-end gap-2 border-t border-[#e6ecea] px-5 py-4 sm:px-6">
           <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button>
-          <button className={`${buttonClass} bg-[#108D82] text-[#ffffff] hover:bg-[#108D82]`} aria-describedby="phone-import-validation" disabled={busy || !valid} type="submit">
+          <button className={`${buttonClass} bg-[#118778] text-white hover:bg-[#0e6f62]`} aria-describedby="phone-import-validation" disabled={busy || !valid} type="submit">
             <Icon icon="import" /> {busy ? "Importing..." : "Import number"}
           </button>
         </footer>
@@ -413,7 +415,7 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase, onSearchInven
     <ModalFrame busy={busy} title="Buy phone number" subtitle="Purchase from your connected Vobiz account and add it to inventory." onClose={onClose} width="max-w-3xl">
       <div className="grid min-h-0 grid-rows-[auto_minmax(0,1fr)_auto]">
         <form
-          className="grid gap-3 border-b border-[#e5e7eb] px-5 py-4 sm:grid-cols-[150px_minmax(0,1fr)_auto] sm:px-6"
+          className="grid gap-3 border-b border-[#e6ecea] px-5 py-4 sm:grid-cols-[150px_minmax(0,1fr)_auto] sm:px-6"
           onSubmit={(event) => { event.preventDefault(); void searchInventory(); }}
         >
           <label className="app-label grid gap-2">
@@ -430,7 +432,7 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase, onSearchInven
             Area code or digits <span className="font-normal text-[#94a3b8]">(optional)</span>
             <input className={controlClass} inputMode="tel" placeholder="For example 80 or 650" value={query} onChange={(event) => setQuery(event.target.value)} />
           </label>
-          <button className={`${buttonClass} self-end border border-[#e1e2ef] bg-white text-[#108D82] hover:bg-[#f0efff]`} disabled={searching || busy} type="submit">
+          <button className={`${buttonClass} self-end border border-[#b8c8c3] bg-white text-[#118778] hover:bg-[#edf7f4]`} disabled={searching || busy} type="submit">
             <Icon icon="search" /> {searching ? "Searching..." : "Search"}
           </button>
         </form>
@@ -452,7 +454,7 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase, onSearchInven
                 const voiceAvailable = number.voice_enabled !== false && number.capabilities?.voice !== false;
                 return (
                   <button
-                    className={`grid w-full gap-3 rounded-xl border p-3 text-left transition sm:grid-cols-[minmax(0,1fr)_145px_145px_auto] sm:items-center ${active ? "border-[#108D82] bg-[#f0efff] ring-2 ring-[#108D82]/10" : "border-[#e5e7eb] bg-white hover:border-[#e1e2ef] hover:bg-[#fbfcff]"}`}
+                    className={`grid w-full gap-3 rounded-xl border p-3 text-left transition sm:grid-cols-[minmax(0,1fr)_145px_145px_auto] sm:items-center ${active ? "border-[#118778] bg-[#edf7f4] ring-2 ring-[#118778]/10" : "border-[#e6ecea] bg-white hover:border-[#b8c8c3] hover:bg-[#fbfcff]"}`}
                     disabled={!voiceAvailable || busy}
                     key={number.id || number.e164}
                     onClick={() => setSelected(number)}
@@ -477,14 +479,14 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase, onSearchInven
           ) : null}
         </div>
 
-        <footer className="flex flex-wrap items-end justify-between gap-3 border-t border-[#e5e7eb] px-5 py-4 sm:px-6">
-          <label className="app-label grid min-w-240px flex-1 gap-2 sm:max-w-sm">
+        <footer className="flex flex-wrap items-end justify-between gap-3 border-t border-[#e6ecea] px-5 py-4 sm:px-6">
+          <label className="app-label grid min-w-[240px] flex-1 gap-2 sm:max-w-sm">
             Label <span className="font-normal text-[#94a3b8]">(optional)</span>
             <input className={controlClass} maxLength={120} placeholder="Sales main line" value={label} onChange={(event) => setLabel(event.target.value)} />
           </label>
           <div className="flex gap-2">
             <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button>
-            <button className={`${buttonClass} bg-[#108D82] text-[#ffffff] hover:bg-[#108D82]`} disabled={busy || !selected} onClick={() => { if (selected) onPurchase(selected, label); }} type="button">
+            <button className={`${buttonClass} bg-[#118778] text-white hover:bg-[#0e6f62]`} disabled={busy || !selected} onClick={() => { if (selected) onPurchase(selected, label); }} type="button">
               <Icon icon="plus" /> {busy ? "Purchasing..." : "Purchase number"}
             </button>
           </div>
@@ -512,7 +514,7 @@ function AgentModal({ agents, busy, number, requestError, onAssign, onClose }: {
   return (
     <ModalFrame busy={busy} title="Link an agent" subtitle={`${number.number} / ${number.provider}`} onClose={onClose} width="max-w-xl">
       <div className="grid min-h-0 grid-rows-[auto_minmax(0,1fr)_auto]">
-        <div className="grid gap-3 border-b border-[#e5e7eb] px-5 py-4 sm:px-6">
+        <div className="grid gap-3 border-b border-[#e6ecea] px-5 py-4 sm:px-6">
           <RequestError message={requestError} />
           <label className="relative block">
             <span className="absolute inset-y-0 left-3 grid place-items-center text-[#94a3b8]"><Icon icon="search" /></span>
@@ -525,27 +527,27 @@ function AgentModal({ agents, busy, number, requestError, onAssign, onClose }: {
             const selected = selectedId === agent._id;
             return (
               <button
-                className={`mb-1 flex w-full items-center gap-3 rounded-lg border p-3 text-left transition ${selected ? "border-[#e1e2ef] bg-[#f0efff]" : "border-transparent hover:bg-[#f8fafc]"}`}
+                className={`mb-1 flex w-full items-center gap-3 rounded-lg border p-3 text-left transition ${selected ? "border-[#b8c8c3] bg-[#edf7f4]" : "border-transparent hover:bg-[#f8fafc]"}`}
                 disabled={busy}
                 key={agent._id}
                 onClick={() => setSelectedId(agent._id)}
                 type="button"
                 aria-pressed={selected}
               >
-                <span className={`grid size-10 shrink-0 place-items-center rounded-lg ${selected ? "bg-[#108D82] text-[#ffffff]" : "bg-[#f0efff] text-[#108D82]"}`}><Icon icon="user" /></span>
+                <span className={`grid size-10 shrink-0 place-items-center rounded-lg ${selected ? "bg-[#118778] text-white" : "bg-[#edf7f4] text-[#118778]"}`}><Icon icon="user" /></span>
                 <span className="min-w-0 flex-1">
                   <strong className="app-strong block truncate">{agent.name}</strong>
                   <span className="app-caption block truncate">{agent.team || "Voice agent"}</span>
                 </span>
                 <span className={`app-label rounded-full px-2 py-1 ${agent.status === "Live" ? "bg-[#ecfdf5] text-[#047857]" : "bg-[#f1f5f9] text-[#64748b]"}`}>{agent.status}</span>
-                <span className={`grid size-5 place-items-center rounded-full border ${selected ? "border-[#108D82] bg-[#108D82] text-[#ffffff]" : "border-[#cbd5e1]"}`}>{selected ? <Icon icon="check" className="size-3" /> : null}</span>
+                <span className={`grid size-5 place-items-center rounded-full border ${selected ? "border-[#118778] bg-[#118778] text-white" : "border-[#cbd5e1]"}`}>{selected ? <Icon icon="check" className="size-3" /> : null}</span>
               </button>
             );
           })}
           {!filteredAgents.length ? <p className="app-caption m-0 p-8 text-center">No agents found.</p> : null}
         </div>
 
-        <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-[#e5e7eb] px-5 py-4 sm:px-6">
+        <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-[#e6ecea] px-5 py-4 sm:px-6">
           <div>
             {number.agentId ? (
               <button className={`${buttonClass} border border-[#fecaca] bg-white text-[#dc2626] hover:bg-[#fff1f2]`} disabled={busy} onClick={() => onAssign(null)} type="button">
@@ -555,7 +557,7 @@ function AgentModal({ agents, busy, number, requestError, onAssign, onClose }: {
           </div>
           <div className="flex gap-2">
             <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button>
-            <button className={`${buttonClass} bg-[#108D82] text-[#ffffff] hover:bg-[#108D82]`} disabled={busy || !selectedId} onClick={() => onAssign(selectedId)} type="button">
+            <button className={`${buttonClass} bg-[#118778] text-white hover:bg-[#0e6f62]`} disabled={busy || !selectedId} onClick={() => onAssign(selectedId)} type="button">
               <Icon icon="link" /> {busy ? "Saving..." : "Set agent"}
             </button>
           </div>
@@ -574,14 +576,14 @@ function ModalFrame({ busy = false, children, onClose, subtitle, title, width = 
   width?: string;
 }) {
   return (
-    <div className="dashboard-home-theme fixed inset-0 z-50 grid place-items-center bg-black/80 p-3 backdrop-blur-[2px]" role="dialog" aria-modal="true" aria-label={title} aria-busy={busy} onMouseDown={(event) => { if (!busy && event.target === event.currentTarget) onClose(); }}>
-      <section className={`grid max-h-[calc(100vh-24px)] w-full ${width} grid-rows-[auto_minmax(0,1fr)] overflow-hidden rounded-2xl border border-[#e5e7ef] bg-[#ffffff] shadow-2xl`}>
-        <header className="flex items-start justify-between gap-4 border-b border-[#e5e7ef] bg-[#f8f8fc] px-5 py-4 sm:px-6 sm:py-5">
+    <div className="fixed inset-0 z-50 grid place-items-center bg-[#25284a]/30 p-3 backdrop-blur-md sm:p-5" role="dialog" aria-modal="true" aria-label={title} aria-busy={busy} onMouseDown={(event) => { if (!busy && event.target === event.currentTarget) onClose(); }}>
+      <section className={`dashboard-overlay-panel grid max-h-[calc(100dvh-2rem)] w-full ${width} grid-rows-[auto_minmax(0,1fr)] overflow-hidden rounded-2xl border border-[#d7e0dd] bg-[#ffffff]`}>
+        <header className="flex items-start justify-between gap-4 border-b border-[#e6ecea] bg-[#ffffff]/95 px-5 py-4 backdrop-blur-sm sm:px-6 sm:py-5">
           <div>
             <h2 className="app-page-title m-0">{title}</h2>
             <p className="app-caption mt-1 mb-0">{subtitle}</p>
           </div>
-          <button className="grid size-9 shrink-0 place-items-center rounded-lg border border-[#e5e7ef] bg-[#f8f8fc] text-[#737587] transition hover:bg-[#f6f7fb] hover:text-[#242535] disabled:cursor-wait disabled:opacity-50" disabled={busy} onClick={onClose} type="button" aria-label={busy ? "Please wait for the current request to finish" : "Close"}>
+          <button className="grid size-9 shrink-0 place-items-center rounded-lg border border-[#dbe4e1] bg-[#ffffff] text-[#64748b] transition hover:border-[#9fcfc3] hover:bg-[#f7f9f8] hover:text-[#0e6f62] disabled:cursor-wait disabled:opacity-50" disabled={busy} onClick={onClose} type="button" aria-label={busy ? "Please wait for the current request to finish" : "Close"}>
             <Icon icon="close" />
           </button>
         </header>
