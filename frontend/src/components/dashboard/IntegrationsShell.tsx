@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -28,6 +29,7 @@ const catalog = {
     name: "Vobiz",
     category: "Telephony",
     description: "Buy, import, and route phone numbers to your voice agents.",
+    logo: "/images/integrations/vobiz.svg",
     color: "from-[#118778] to-[#25b39f]",
   },
   hubspot: {
@@ -35,6 +37,7 @@ const catalog = {
     category: "CRM",
     description:
       "Create callers as contacts and log completed calls as CRM notes.",
+    logo: "/images/company-logos/hubspot.svg",
     color: "from-[#118778] to-[#25b39f]",
     flow: "After every finalized call",
   },
@@ -43,6 +46,7 @@ const catalog = {
     category: "Scheduling",
     description:
       "Let agents discover event types and create one-time booking links during calls.",
+    logo: "/images/integrations/calendly.svg",
     color: "from-[#118778] to-[#25b39f]",
     flow: "Used live by the agent during a call",
   },
@@ -51,6 +55,7 @@ const catalog = {
     category: "Notifications",
     description:
       "Send automatic call completion notifications to a Slack channel.",
+    logo: "/images/integrations/slack.svg",
     color: "from-[#118778] to-[#25b39f]",
     flow: "After every finalized call",
   },
@@ -59,6 +64,7 @@ const catalog = {
     category: "Scheduling",
     description:
       "Check live availability and let selected voice agents create appointments during calls.",
+    logo: "/images/integrations/google-calendar.svg",
     color: "from-[#0e6f62] to-[#25b39f]",
     flow: "Used live by enabled agents",
   },
@@ -67,6 +73,7 @@ const catalog = {
     category: "Data & leads",
     description:
       "Append qualified leads and call outcomes to a spreadsheet and sheet tab you select.",
+    logo: "/images/integrations/google-sheets.svg",
     color: "from-[#118778] to-[#25b39f]",
     flow: "Used live by enabled agents",
   },
@@ -74,6 +81,7 @@ const catalog = {
     name: "Google",
     category: "Google Workspace",
     description: "Shared authorization for Google Calendar and Google Sheets.",
+    logo: "/images/integrations/google-calendar.svg",
     color: "from-[#118778] to-[#25b39f]",
     flow: "OAuth authorization",
   },
@@ -82,6 +90,7 @@ const catalog = {
     category: "Clinic operations",
     description:
       "Connect a DigitalBot workspace so agents can check doctor availability and create appointments.",
+    logo: "/images/company-logos/digitalbot.png",
     color: "from-[#118778] to-emerald-400",
     flow: "Used live by attached agents",
   },
@@ -423,7 +432,7 @@ export function IntegrationsShell() {
               {notice}
             </div>
           ) : null}
-          <section className="grid gap-4 md:grid-cols-2">
+          <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {displayProviders.map(({ provider, displayId }) => {
               const item = catalog[displayId];
               const googleView =
@@ -434,68 +443,77 @@ export function IntegrationsShell() {
                   : [];
               return (
                 <article
-                  className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-[0_16px_36px_rgba(52,58,116,.10)]"
+                  className="min-h-[300px] overflow-hidden rounded-xl border border-[#dfe7e4] bg-white transition hover:border-[#9fcfc3] hover:shadow-[0_14px_34px_rgba(17,62,53,.08)]"
                   key={displayId}
                 >
-                  <div className="p-5">
+                  <div className="flex h-full flex-col p-5">
                     <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-                          {item.category}
-                        </span>
-                        <h2 className="mt-2 text-xl font-semibold">
-                          {item.name}
-                        </h2>
-                      </div>
+                      <span className="grid h-12 min-w-12 place-items-start">
+                        <Image
+                          alt={`${item.name} logo`}
+                          className={`h-12 w-auto object-contain object-left ${displayId === "digitalbot" ? "max-w-14" : "max-w-28"}`}
+                          height={48}
+                          src={item.logo}
+                          width={112}
+                        />
+                      </span>
                       <span
-                        className={`rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase ${provider.connected ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-600"}`}
+                        className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${provider.connected ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-600"}`}
                       >
                         {provider.connected ? "Connected" : "Available"}
                       </span>
                     </div>
-                    <p className="mt-3 min-h-12 text-sm leading-6 text-slate-600">
+                    <span className="mt-5 text-[10px] font-bold uppercase tracking-[.14em] text-[#71817d]">
+                      {item.category}
+                    </span>
+                    <h2 className="mt-1 text-xl font-semibold tracking-[-.02em] text-slate-950">
+                      {item.name}
+                    </h2>
+                    <p className="mt-1 min-h-12 text-sm leading-6 text-slate-600">
                       {item.description}
                     </p>
-                    {"flow" in item ? (
-                      <p className="mt-2 text-xs font-semibold text-[#123d35]">
-                        {item.flow}
-                      </p>
-                    ) : null}
-                    {provider.connected ? (
-                      <div className="mt-4 rounded-xl bg-slate-50 p-3">
-                        <strong className="block text-sm">
-                          {provider.accountId}
-                        </strong>
-                        <span className="mt-1 block text-xs text-slate-500">
-                          Verified{" "}
-                          {provider.lastVerifiedAt
-                            ? new Date(provider.lastVerifiedAt).toLocaleString()
-                            : "recently"}
-                        </span>
-                      </div>
-                    ) : null}
-                    {provider.delivery ? (
-                      <div
-                        className={`mt-3 rounded-xl border p-3 text-xs ${provider.delivery.status === "delivered" ? "border-emerald-200 bg-emerald-50 text-emerald-800" : provider.delivery.status === "failed" ? "border-rose-200 bg-rose-50 text-rose-800" : "border-amber-200 bg-amber-50 text-amber-800"}`}
-                      >
-                        <strong className="block uppercase tracking-wide">
-                          Last delivery: {provider.delivery.status}
-                        </strong>
-                        <span className="mt-1 block">
-                          Attempts: {provider.delivery.attempts} · Updated{" "}
-                          {new Date(
-                            provider.delivery.updatedAt,
-                          ).toLocaleString()}
-                        </span>
-                        {provider.delivery.errorMessage ? (
-                          <span className="mt-1 block">
-                            {provider.delivery.errorMessage}
-                          </span>
-                        ) : null}
-                      </div>
+                    {provider.connected || provider.delivery ? (
+                      <details className="group mt-3 text-xs text-slate-600">
+                        <summary className="flex cursor-pointer list-none items-center gap-2 font-semibold text-[#0e6f62] marker:content-none">
+                          Connection details
+                          <span className="transition group-open:rotate-180">⌄</span>
+                        </summary>
+                        <div className="mt-2 rounded-xl bg-[#f7f9f8] p-3">
+                          {provider.connected ? (
+                            <>
+                              <strong className="block text-sm text-slate-900">
+                                {provider.accountId}
+                              </strong>
+                              <span className="mt-1 block text-slate-500">
+                                Verified{" "}
+                                {provider.lastVerifiedAt
+                                  ? new Date(provider.lastVerifiedAt).toLocaleString()
+                                  : "recently"}
+                              </span>
+                            </>
+                          ) : null}
+                          {provider.delivery ? (
+                            <div className={`mt-2 rounded-lg border p-2 ${provider.delivery.status === "delivered" ? "border-emerald-200 bg-emerald-50 text-emerald-800" : provider.delivery.status === "failed" ? "border-rose-200 bg-rose-50 text-rose-800" : "border-amber-200 bg-amber-50 text-amber-800"}`}>
+                              <strong className="block uppercase tracking-wide">
+                                Last delivery: {provider.delivery.status}
+                              </strong>
+                              <span className="mt-1 block">
+                                Attempts: {provider.delivery.attempts} · Updated{" "}
+                                {new Date(provider.delivery.updatedAt).toLocaleString()}
+                              </span>
+                              {provider.delivery.errorMessage ? <span className="mt-1 block">{provider.delivery.errorMessage}</span> : null}
+                            </div>
+                          ) : null}
+                        </div>
+                      </details>
                     ) : null}
                     {provider.id === "digitalbot" ? (
-                      <div className="mt-4 rounded-xl border border-[#dfe7e4] bg-[#edf7f4]/60 p-3 text-xs leading-5 text-slate-700">
+                      <details className="group mt-3 text-xs leading-5 text-slate-700">
+                        <summary className="flex cursor-pointer list-none items-center gap-2 font-semibold text-[#0e6f62] marker:content-none">
+                          Manage agent connections
+                          <span className="transition group-open:rotate-180">⌄</span>
+                        </summary>
+                        <div className="mt-2 rounded-xl border border-[#dfe7e4] bg-[#edf7f4]/60 p-3">
                         <strong className="block text-slate-900">
                           One connection belongs to one selected Vozon agent.
                         </strong>
@@ -592,9 +610,10 @@ export function IntegrationsShell() {
                             No DigitalBot agent connections yet.
                           </p>
                         )}
-                      </div>
+                        </div>
+                      </details>
                     ) : null}
-                    <div className="mt-5 flex flex-wrap gap-2">
+                    <div className="mt-auto flex flex-wrap gap-2 pt-5">
                       {provider.id === "vobiz" ? (
                         <Link
                           className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62]"

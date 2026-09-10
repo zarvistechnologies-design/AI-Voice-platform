@@ -315,16 +315,6 @@ export function KnowledgeBaseShell() {
             .includes(term),
         );
   }, [query, sources]);
-  const readyCount = sources.filter(
-    (source) => source.status === "ready",
-  ).length;
-  const issueCount = sources.filter(
-    (source) => source.status === "failed",
-  ).length;
-  const totalChunks = sources.reduce(
-    (total, source) => total + source.chunkCount,
-    0,
-  );
   const selectedAgentSourceCount = sources.filter(
     (source) => source.agentId === selectedAgentId,
   ).length;
@@ -486,7 +476,7 @@ export function KnowledgeBaseShell() {
           }
         />
 
-        <div className="dashboard-page-content grid w-full gap-3 py-2">
+        <div className="dashboard-page-content grid w-full gap-3 py-0">
           <div className="grid gap-3">
             {notice ? (
               <Notice
@@ -505,33 +495,6 @@ export function KnowledgeBaseShell() {
           </div>
 
           <section className="dashboard-flat-panel min-w-0 overflow-hidden bg-white">
-            <div className="dashboard-panel-heading flex flex-col gap-4 px-4 py-4 sm:px-5 lg:flex-row lg:items-center lg:justify-between">
-              <div>
-                <h2 className="app-section-title m-0">All knowledge</h2>
-                <p className="app-caption mt-1 mb-0">
-                  Every knowledge source added to any voice agent in this
-                  workspace.
-                </p>
-              </div>
-              {!loading ? (
-                <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
-                  <span className="rounded-full bg-[#edf7f4] px-3 py-1.5 text-[#123d35]">
-                    {sources.length} total
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-emerald-700">
-                    <span className="size-1.5 rounded-full bg-emerald-500" />
-                    {readyCount} ready
-                  </span>
-                  <span className={`rounded-full px-3 py-1.5 ${issueCount ? "bg-rose-50 text-rose-700" : "bg-slate-100 text-slate-600"}`}>
-                    {issueCount} issues
-                  </span>
-                  <span className="rounded-full bg-slate-100 px-3 py-1.5 text-slate-600">
-                    {totalChunks} chunks
-                  </span>
-                </div>
-              ) : null}
-            </div>
-
             <div className="dashboard-filter-bar px-4 py-3 sm:px-5">
               <label className="relative block">
                 <span className="sr-only">Search knowledge</span>
