@@ -122,21 +122,21 @@ export function LoginForm() {
 
   return (
     <form
-      className={`login-auth-form relative z-[1] grid w-full max-w-[420px] gap-4 text-white ${mode === "register" ? "is-register" : ""}`}
+      className={`login-auth-form relative z-[1] grid w-full max-w-[420px] gap-4 text-slate-900 ${mode === "register" ? "is-register" : ""}`}
       onSubmit={handleSubmit}
     >
       <div className="auth-heading mb-2 grid gap-2 text-center">
-        <div className="mx-auto mb-2 grid size-11 place-items-center rounded-xl border border-[#45ddce]/25 bg-[#45ddce]/10 shadow-[0_0_28px_rgba(69,221,206,0.11)]" aria-hidden="true">
-          <span className="flex h-5 items-center gap-[3px]">
-            {[9, 18, 13, 6, 11].map((height) => (
-              <span className="w-[3px] rounded-full bg-[#75fff0]" key={height} style={{ height }} />
+        <div className="mx-auto mb-1 grid size-12 place-items-center rounded-2xl border border-teal-500/20 bg-teal-50/80 shadow-xs" aria-hidden="true">
+          <span className="flex h-5 items-center gap-[3.5px]">
+            {[10, 20, 14, 8, 16].map((height) => (
+              <span className="w-[3px] rounded-full bg-[#108D82]" key={height} style={{ height }} />
             ))}
           </span>
         </div>
-        <h1 className="m-0 text-[clamp(1.9rem,4vw,2.5rem)] font-black leading-none tracking-[-0.04em] text-white">
+        <h1 className="m-0 text-[clamp(1.75rem,3.8vw,2.35rem)] font-extrabold leading-tight tracking-[-0.035em] text-slate-900">
           {mode === "login" ? "Welcome back" : mode === "register" ? "Create your account" : "Reset your password"}
         </h1>
-        <p className="auth-description m-0 text-sm leading-5 text-white/42">
+        <p className="auth-description m-0 text-sm leading-5 text-slate-500">
           {mode === "login"
             ? `Sign in to continue to ${brand.productName}.`
             : mode === "register"
@@ -146,12 +146,12 @@ export function LoginForm() {
       </div>
 
       {mode === "register" ? (
-        <label className="auth-field grid gap-2 text-xs font-bold text-white/65">
+        <label className="auth-field grid gap-1.5 text-xs font-semibold text-slate-700">
           <span>Name</span>
           <span className="relative block">
-            <svg aria-hidden="true" className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-white/28" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.7" /><path d="M4.5 21a7.5 7.5 0 0115 0" stroke="currentColor" strokeLinecap="round" strokeWidth="1.7" /></svg>
+            <svg aria-hidden="true" className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.7" /><path d="M4.5 21a7.5 7.5 0 0115 0" stroke="currentColor" strokeLinecap="round" strokeWidth="1.7" /></svg>
             <input
-              className="auth-input min-h-12 w-full rounded-xl border border-white/10 bg-white/[0.035] px-4 pl-11 text-sm font-medium text-white outline-none transition placeholder:text-white/22 hover:border-white/20 focus:border-[#45ddce]/55 focus:bg-[#45ddce]/[0.035] focus:ring-4 focus:ring-[#45ddce]/10"
+              className="auth-input min-h-12 w-full rounded-xl border border-slate-200 bg-slate-50/70 px-4 pl-10 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-slate-50 focus:border-[#108D82] focus:bg-white focus:ring-4 focus:ring-[#108D82]/10"
               autoComplete="name"
               onChange={(event) => setName(event.target.value)}
               placeholder="Your full name"
@@ -162,12 +162,12 @@ export function LoginForm() {
         </label>
       ) : null}
 
-      <label className="auth-field grid gap-2 text-xs font-bold text-white/65">
+      <label className="auth-field grid gap-1.5 text-xs font-semibold text-slate-700">
         <span>Email address</span>
         <span className="relative block">
-          <svg aria-hidden="true" className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-white/28" fill="none" viewBox="0 0 24 24"><rect height="15" rx="2.5" stroke="currentColor" strokeWidth="1.7" width="19" x="2.5" y="4.5" /><path d="M4 7l8 6 8-6" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" /></svg>
+          <svg aria-hidden="true" className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24"><rect height="15" rx="2.5" stroke="currentColor" strokeWidth="1.7" width="19" x="2.5" y="4.5" /><path d="M4 7l8 6 8-6" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" /></svg>
           <input
-            className="auth-input min-h-12 w-full rounded-xl border border-white/10 bg-white/[0.035] px-4 pl-11 text-sm font-medium text-white outline-none transition placeholder:text-white/22 hover:border-white/20 focus:border-[#45ddce]/55 focus:bg-[#45ddce]/[0.035] focus:ring-4 focus:ring-[#45ddce]/10"
+            className="auth-input min-h-12 w-full rounded-xl border border-slate-200 bg-slate-50/70 px-4 pl-10 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-slate-50 focus:border-[#108D82] focus:bg-white focus:ring-4 focus:ring-[#108D82]/10"
             autoComplete="email"
             onChange={(event) => setEmail(event.target.value)}
             placeholder="name@company.com"
@@ -177,12 +177,12 @@ export function LoginForm() {
         </span>
       </label>
 
-      {mode !== "forgot" ? <label className="auth-field grid gap-2 text-xs font-bold text-white/65">
+      {mode !== "forgot" ? <label className="auth-field grid gap-1.5 text-xs font-semibold text-slate-700">
         <span>Password</span>
         <span className="relative block">
-          <svg aria-hidden="true" className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-white/28" fill="none" viewBox="0 0 24 24"><rect height="12" rx="2.5" stroke="currentColor" strokeWidth="1.7" width="17" x="3.5" y="9" /><path d="M7.5 9V6.5a4.5 4.5 0 019 0V9" stroke="currentColor" strokeLinecap="round" strokeWidth="1.7" /></svg>
+          <svg aria-hidden="true" className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24"><rect height="12" rx="2.5" stroke="currentColor" strokeWidth="1.7" width="17" x="3.5" y="9" /><path d="M7.5 9V6.5a4.5 4.5 0 019 0V9" stroke="currentColor" strokeLinecap="round" strokeWidth="1.7" /></svg>
           <input
-            className="auth-input min-h-12 w-full rounded-xl border border-white/10 bg-white/[0.035] px-11 pr-12 text-sm font-medium text-white outline-none transition placeholder:text-white/22 hover:border-white/20 focus:border-[#45ddce]/55 focus:bg-[#45ddce]/[0.035] focus:ring-4 focus:ring-[#45ddce]/10"
+            className="auth-input min-h-12 w-full rounded-xl border border-slate-200 bg-slate-50/70 px-10 pr-11 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-slate-50 focus:border-[#108D82] focus:bg-white focus:ring-4 focus:ring-[#108D82]/10"
             autoComplete={mode === "login" ? "current-password" : "new-password"}
             onChange={(event) => setPassword(event.target.value)}
             placeholder="Enter your password"
@@ -191,7 +191,7 @@ export function LoginForm() {
           />
           <button
             aria-label={showPassword ? "Hide password" : "Show password"}
-            className="absolute inset-y-0 right-0 grid w-12 place-items-center border-0 bg-transparent text-white/28 transition hover:text-[#75fff0]"
+            className="absolute inset-y-0 right-0 grid w-11 place-items-center border-0 bg-transparent text-slate-400 transition hover:text-slate-700"
             onClick={() => setShowPassword((current) => !current)}
             type="button"
           >
@@ -201,10 +201,10 @@ export function LoginForm() {
       </label> : null}
 
       {mode === "login" && needsTwoFactor ? (
-        <label className="auth-field grid gap-2 text-xs font-bold text-white/65">
+        <label className="auth-field grid gap-1.5 text-xs font-semibold text-slate-700">
           <span>Authenticator code</span>
           <input
-            className="auth-input min-h-12 w-full rounded-xl border border-white/10 bg-white/[0.035] px-4 text-sm font-medium text-white outline-none transition placeholder:text-white/22 focus:border-[#45ddce]/55 focus:ring-4 focus:ring-[#45ddce]/10"
+            className="auth-input min-h-12 w-full rounded-xl border border-slate-200 bg-slate-50/70 px-4 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#108D82] focus:bg-white focus:ring-4 focus:ring-[#108D82]/10"
             autoComplete="one-time-code"
             inputMode="numeric"
             maxLength={6}
@@ -216,26 +216,26 @@ export function LoginForm() {
       ) : null}
 
       {error ? (
-        <p className="m-0 rounded-xl border border-rose-300/20 bg-rose-300/10 px-3.5 py-3 text-sm font-semibold text-rose-200">
+        <p className="m-0 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-3 text-xs font-semibold text-rose-700">
           {error}
         </p>
       ) : null}
 
       {recoveryNotice ? (
-        <div className="rounded-xl border border-[#45ddce]/20 bg-[#45ddce]/10 px-3.5 py-3 text-sm leading-5 text-[#a8fff5]">
+        <div className="rounded-xl border border-teal-200 bg-teal-50 px-3.5 py-3 text-xs leading-5 text-teal-900">
           <p className="m-0">{recoveryNotice}</p>
-          {developmentResetUrl ? <a className="mt-2 block break-all font-bold text-[#75fff0] underline underline-offset-2 hover:text-white" href={developmentResetUrl}>Open development reset link</a> : null}
+          {developmentResetUrl ? <a className="mt-2 block break-all font-bold text-[#108D82] underline underline-offset-2 hover:text-[#0b655d]" href={developmentResetUrl}>Open development reset link</a> : null}
         </div>
       ) : null}
 
       {mode === "login" ? (
-        <div className="flex items-center justify-between gap-4 text-xs">
-          <label className="flex cursor-pointer items-center gap-2 text-white/48">
-            <input className="size-3.5 accent-[#45ddce]" checked={rememberMe} onChange={(event) => setRememberMe(event.target.checked)} type="checkbox" />
+        <div className="flex items-center justify-between gap-4 text-xs font-medium">
+          <label className="flex cursor-pointer items-center gap-2 text-slate-600 hover:text-slate-800">
+            <input className="size-4 rounded border-slate-300 accent-[#108D82]" checked={rememberMe} onChange={(event) => setRememberMe(event.target.checked)} type="checkbox" />
             Remember me
           </label>
           <button
-            className="border-0 bg-transparent p-0 font-bold text-[#75fff0] transition hover:text-white"
+            className="border-0 bg-transparent p-0 font-semibold text-[#108D82] transition hover:text-[#0b655d]"
             onClick={() => {
               setError("");
               setRecoveryNotice("");
@@ -249,7 +249,7 @@ export function LoginForm() {
       ) : null}
 
       <button
-        className="auth-submit inline-flex min-h-12 items-center justify-center rounded-xl border-0 bg-[var(--brand-primary)] text-sm font-black text-[#02110d] shadow-lg transition hover:-translate-y-0.5 hover:brightness-110 disabled:cursor-wait disabled:opacity-70"
+        className="auth-submit inline-flex min-h-12 items-center justify-center rounded-xl border-0 bg-[#108D82] text-sm font-bold text-white shadow-md shadow-[#108D82]/20 transition-all hover:bg-[#0d7970] hover:shadow-lg hover:shadow-[#108D82]/30 active:scale-[0.99] disabled:cursor-wait disabled:opacity-70"
         disabled={isSubmitting}
         type="submit"
       >
@@ -270,30 +270,32 @@ export function LoginForm() {
         />
       ) : null}
 
-      {mode === "forgot" || brand.authentication.registrationMode === "open" ? <button
-        className="inline-flex min-h-9 items-center justify-center border-0 bg-transparent text-xs font-semibold text-white/40 disabled:cursor-wait disabled:opacity-70"
-        disabled={isSubmitting}
-        onClick={() => {
-          setError("");
-          setRecoveryNotice("");
-          setDevelopmentResetUrl("");
-          setMode((current) => (current === "login" ? "register" : "login"));
-        }}
-        type="button"
-      >
-        {mode === "login" ? (
-          <span>Don&apos;t have an account? <strong className="ml-1 text-[#75fff0] hover:text-white">Sign up</strong></span>
-        ) : mode === "register" ? (
-          <span>Already have an account? <strong className="ml-1 text-[#75fff0] hover:text-white">Sign in</strong></span>
-        ) : (
-          <span>Remembered your password? <strong className="ml-1 text-[#75fff0] hover:text-white">Back to sign in</strong></span>
-        )}
-      </button> : (
-        <p className="m-0 text-center text-xs text-white/40">
-          Need access? Contact <a className="font-bold text-[var(--brand-accent)]" href={`mailto:${brand.support.email}`}>{brand.support.email || "your account administrator"}</a>.
+      {mode === "forgot" || brand.authentication.registrationMode === "open" ? (
+        <button
+          className="inline-flex min-h-9 items-center justify-center border-0 bg-transparent text-xs font-medium text-slate-500 transition hover:text-slate-700 disabled:cursor-wait disabled:opacity-70"
+          disabled={isSubmitting}
+          onClick={() => {
+            setError("");
+            setRecoveryNotice("");
+            setDevelopmentResetUrl("");
+            setMode((current) => (current === "login" ? "register" : "login"));
+          }}
+          type="button"
+        >
+          {mode === "login" ? (
+            <span>Don&apos;t have an account? <strong className="ml-1 font-semibold text-[#108D82] hover:underline">Sign up</strong></span>
+          ) : mode === "register" ? (
+            <span>Already have an account? <strong className="ml-1 font-semibold text-[#108D82] hover:underline">Sign in</strong></span>
+          ) : (
+            <span>Remembered your password? <strong className="ml-1 font-semibold text-[#108D82] hover:underline">Back to sign in</strong></span>
+          )}
+        </button>
+      ) : (
+        <p className="m-0 text-center text-xs text-slate-500">
+          Need access? Contact <a className="font-semibold text-[#108D82] hover:underline" href={`mailto:${brand.support.email}`}>{brand.support.email || "your account administrator"}</a>.
         </p>
       )}
-      {brand.poweredBy.visible ? <p className="m-0 text-center text-[10px] font-semibold uppercase tracking-[0.14em] text-white/25">{brand.poweredBy.text}</p> : null}
+      {brand.poweredBy.visible ? <p className="m-0 text-center text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">{brand.poweredBy.text}</p> : null}
     </form>
   );
 }

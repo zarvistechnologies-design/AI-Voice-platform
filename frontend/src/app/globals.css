@@ -5,24 +5,25 @@
 html:not([data-brand-source="white_label"]) .platform-brand-logo {
   filter: brightness(0) saturate(100%) invert(42%) sepia(42%) saturate(920%) hue-rotate(123deg) brightness(88%) contrast(91%);
 }
+
 @source not "../../.runlogs";
 
 .login-auth-form input:-webkit-autofill,
 .login-auth-form input:-webkit-autofill:hover,
 .login-auth-form input:-webkit-autofill:focus,
 .login-auth-form input:-webkit-autofill:active {
-  -webkit-text-fill-color: #ffffff !important;
-  caret-color: #ffffff;
-  box-shadow: 0 0 0 1000px #08110f inset !important;
-  -webkit-box-shadow: 0 0 0 1000px #08110f inset !important;
-  border-color: rgb(69 221 206 / 0.55) !important;
+  -webkit-text-fill-color: #0f172a !important;
+  caret-color: #0f172a;
+  box-shadow: 0 0 0 1000px #ffffff inset !important;
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  border-color: #108D82 !important;
   transition: background-color 9999s ease-out 0s;
 }
 
 .login-auth-form input:autofill {
-  color: #ffffff !important;
-  background: #08110f !important;
-  border-color: rgb(69 221 206 / 0.55) !important;
+  color: #0f172a !important;
+  background: #ffffff !important;
+  border-color: #108D82 !important;
 }
 
 /* Published white-label workspaces inherit their dashboard accent palette
@@ -38,69 +39,56 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
   filter: none !important;
 }
 
-html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :is(
-  [class~="bg-[#108D82]"],
+html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :is([class~="bg-[#108D82]"],
   [class~="bg-[#5963b8]"],
-  [class~="bg-[#108D82]"]
-) {
+  [class~="bg-[#108D82]"]) {
   color: #ffffff !important;
   border-color: var(--dashboard-moody) !important;
   background: var(--dashboard-moody) !important;
 }
 
-html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :is(
-  button,
-  a[href]
-):is(
-  [class~="bg-[#108D82]"],
+html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :is(button,
+  a[href]):is([class~="bg-[#108D82]"],
   [class~="bg-[#5963b8]"],
-  [class~="bg-[#108D82]"]
-):hover:not(:disabled) {
+  [class~="bg-[#108D82]"]):hover:not(:disabled) {
   background: var(--dashboard-moody-dark) !important;
 }
 
-html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :is(
-  [class~="bg-[#eff0fb]"],
+html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :is([class~="bg-[#eff0fb]"],
   [class~="bg-[#f3f4fb]"],
   [class~="bg-[#f5f5fb]"],
-  [class~="bg-[#f5f5fc]"]
-) {
+  [class~="bg-[#f5f5fc]"]) {
   background-color: var(--dashboard-moody-soft) !important;
 }
 
-html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :is(
-  [class~="text-[#108D82]"],
+html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :is([class~="text-[#108D82]"],
   [class~="text-[#515bb4]"],
   [class~="text-[#5963b8]"],
   [class~="text-[#108D82]"],
-  [class~="text-[#108D82]"]
-) {
+  [class~="text-[#108D82]"]) {
   color: var(--dashboard-moody-dark) !important;
 }
 
-html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :is(
-  [class~="border-[#a7abff]"],
+html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :is([class~="border-[#a7abff]"],
   [class~="border-[#108D82]"],
   [class~="border-[#bfc3ea]"],
   [class~="border-[#c9ccef]"],
-  [class~="border-[#d9dcea]"]
-) {
+  [class~="border-[#d9dcea]"]) {
   border-color: var(--dashboard-border-strong) !important;
 }
 
-html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :where(
-  button,
+html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :where(button,
   a[href],
   input,
   textarea,
-  select
-):focus-visible {
+  select):focus-visible {
   outline-color: var(--dashboard-moody) !important;
   border-color: var(--dashboard-moody) !important;
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 16%, transparent) !important;
 }
 
 @media (min-width: 1024px) {
+
   html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav:hover .dashboard-sidebar-icon,
   html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-toggle:hover {
     color: var(--dashboard-moody-dark) !important;
@@ -143,8 +131,9 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
 }
 
 @media (max-height: 590px) {
+
   .login-auth-form .auth-description,
-  .login-auth-form .auth-heading > div {
+  .login-auth-form .auth-heading>div {
     display: none;
   }
 
@@ -244,7 +233,7 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
   }
 
   @media (min-width: 64rem) {
-    .platform-chevron + .platform-chevron {
+    .platform-chevron+.platform-chevron {
       margin-left: -22px;
     }
   }
@@ -323,8 +312,7 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
     background-color: rgb(244 63 94 / 0.1) !important;
   }
 
-  .dashboard-home-theme :is(
-    .bg-slate-50,
+  .dashboard-home-theme :is(.bg-slate-50,
     .bg-slate-100,
     [class~="bg-[#fafbfc]"],
     [class~="bg-[#fbfcfe]"],
@@ -343,8 +331,7 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
     [class~="bg-[#f4f7fa]"],
     [class~="bg-[#f4f7fb]"],
     [class~="bg-[#f1f5f9]"],
-    [class~="bg-[#eef2f7]"]
-  ) {
+    [class~="bg-[#eef2f7]"]) {
     background-color: var(--dashboard-surface-soft) !important;
   }
 
@@ -352,8 +339,7 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
     background-color: rgb(255 255 255 / 0.12) !important;
   }
 
-  .dashboard-home-theme :is(
-    .bg-cyan-50,
+  .dashboard-home-theme :is(.bg-cyan-50,
     [class~="bg-cyan-50/80"],
     [class~="bg-[#ccfbf1]"],
     [class~="bg-[#ecfeff]"],
@@ -366,43 +352,36 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
     [class~="bg-[#dff5f1]"],
     [class~="bg-[#f4fdff]"],
     [class~="bg-[#effaf8]"],
-    [class~="bg-[#eff6ff]"]
-  ) {
+    [class~="bg-[#eff6ff]"]) {
     background-color: rgb(69 221 206 / 0.08) !important;
   }
 
-  .dashboard-home-theme :is(
-    .bg-emerald-50,
+  .dashboard-home-theme :is(.bg-emerald-50,
     .bg-green-50,
     .bg-green-100,
     [class~="bg-[#ecfdf5]"],
     [class~="bg-[#dcfce7]"],
     [class~="bg-[#d1fae5]"],
     [class~="bg-[#f0fdf4]"],
-    [class~="bg-[#effbf3]"]
-  ) {
+    [class~="bg-[#effbf3]"]) {
     background-color: rgb(16 185 129 / 0.11) !important;
   }
 
-  .dashboard-home-theme :is(
-    .bg-amber-50,
+  .dashboard-home-theme :is(.bg-amber-50,
     .bg-amber-100,
     .bg-orange-50,
     [class~="bg-[#fff7ed]"],
-    [class~="bg-[#fffbeb]"]
-  ) {
+    [class~="bg-[#fffbeb]"]) {
     background-color: rgb(245 158 11 / 0.11) !important;
   }
 
-  .dashboard-home-theme :is(
-    .bg-red-50,
+  .dashboard-home-theme :is(.bg-red-50,
     .bg-rose-50,
     .bg-rose-100,
     [class~="bg-[#fff1ee]"],
     [class~="bg-[#fff1f2]"],
     [class~="bg-[#fff5f3]"],
-    [class~="bg-[#fee2e2]"]
-  ) {
+    [class~="bg-[#fee2e2]"]) {
     background-color: rgb(244 63 94 / 0.1) !important;
   }
 
@@ -410,24 +389,20 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
     background-color: rgb(139 92 246 / 0.12) !important;
   }
 
-  .dashboard-home-theme :is(
-    .bg-cyan-500,
+  .dashboard-home-theme :is(.bg-cyan-500,
     .bg-cyan-600,
     [class~="bg-[#00b8c4]"],
     [class~="bg-[#008996]"],
-    [class~="bg-[#087f8c]"]
-  ) {
+    [class~="bg-[#087f8c]"]) {
     background-color: #45ddce !important;
     color: #02110d !important;
   }
 
-  .dashboard-home-theme :is(
-    .bg-cyan-500,
+  .dashboard-home-theme :is(.bg-cyan-500,
     .bg-cyan-600,
     [class~="bg-[#00b8c4]"],
     [class~="bg-[#008996]"],
-    [class~="bg-[#087f8c]"]
-  ):hover {
+    [class~="bg-[#087f8c]"]):hover {
     background-color: #75fff0 !important;
   }
 
@@ -527,8 +502,7 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
     border-color: var(--dashboard-border) !important;
   }
 
-  .dashboard-home-theme :is(
-    .border-cyan-200,
+  .dashboard-home-theme :is(.border-cyan-200,
     .border-cyan-300,
     .border-cyan-500,
     [class~="border-[#00b8c4]"],
@@ -544,8 +518,7 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
     [class~="border-[#b9e5df]"],
     [class~="border-[#cdeae6]"],
     [class~="border-[#ccfbf1]"],
-    [class~="border-[#dff7fb]"]
-  ) {
+    [class~="border-[#dff7fb]"]) {
     border-color: rgb(69 221 206 / 0.28) !important;
   }
 
@@ -589,13 +562,12 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
     --tw-ring-color: rgb(251 113 133 / 0.28) !important;
   }
 
-  .dashboard-home-theme [class*="divide-[#"] > :not(:last-child),
-  .dashboard-home-theme :is(.divide-slate-100, .divide-slate-200) > :not(:last-child) {
+  .dashboard-home-theme [class*="divide-[#"]> :not(:last-child),
+  .dashboard-home-theme :is(.divide-slate-100, .divide-slate-200)> :not(:last-child) {
     border-color: var(--dashboard-border) !important;
   }
 
-  .dashboard-home-theme :is(
-    .text-black,
+  .dashboard-home-theme :is(.text-black,
     .text-slate-950,
     .text-slate-900,
     .text-slate-800,
@@ -603,26 +575,22 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
     [class~="text-[#101827]"],
     [class~="text-[#111827]"],
     [class~="text-[#172033]"],
-    [class~="text-[#1e293b]"]
-  ) {
+    [class~="text-[#1e293b]"]) {
     color: #ffffff !important;
   }
 
-  .dashboard-home-theme :is(
-    .text-slate-700,
+  .dashboard-home-theme :is(.text-slate-700,
     .text-slate-600,
     [class~="text-[#334155]"],
     [class~="text-[#475569]"],
     [class~="text-[#526174]"],
     [class~="text-[#64748b]"],
     [class~="text-[#718096]"],
-    [class~="text-[#78869a]"]
-  ) {
+    [class~="text-[#78869a]"]) {
     color: rgb(255 255 255 / 0.68) !important;
   }
 
-  .dashboard-home-theme :is(
-    .text-slate-500,
+  .dashboard-home-theme :is(.text-slate-500,
     .text-slate-400,
     .text-gray-500,
     [class~="text-[#8a96a8]"],
@@ -633,13 +601,11 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
     [class~="text-[#9facbd]"],
     [class~="text-[#b7c4d7]"],
     [class~="text-[#b7c6d8]"],
-    [class~="text-[#cbd5e1]"]
-  ) {
+    [class~="text-[#cbd5e1]"]) {
     color: rgb(255 255 255 / 0.5) !important;
   }
 
-  .dashboard-home-theme :is(
-    .text-cyan-950,
+  .dashboard-home-theme :is(.text-cyan-950,
     .text-cyan-900,
     .text-cyan-800,
     .text-cyan-700,
@@ -655,13 +621,11 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
     [class~="text-[#087f75]"],
     [class~="text-[#087f8c]"],
     [class~="text-[#0a9f8f]"],
-    [class~="text-[#70d1d8]"]
-  ) {
+    [class~="text-[#70d1d8]"]) {
     color: #75fff0 !important;
   }
 
-  .dashboard-home-theme :is(
-    .text-emerald-700,
+  .dashboard-home-theme :is(.text-emerald-700,
     .text-emerald-600,
     .text-emerald-950,
     .text-emerald-900,
@@ -674,8 +638,7 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
     [class~="text-[#10b981]"],
     [class~="text-[#15803d]"],
     [class~="text-[#166534]"],
-    [class~="text-[#16a34a]"]
-  ) {
+    [class~="text-[#16a34a]"]) {
     color: #6ee7b7 !important;
   }
 
@@ -683,8 +646,7 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
     color: rgb(110 231 183 / 0.82) !important;
   }
 
-  .dashboard-home-theme :is(
-    .text-amber-800,
+  .dashboard-home-theme :is(.text-amber-800,
     .text-amber-700,
     .text-amber-600,
     .text-amber-950,
@@ -693,13 +655,11 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
     .text-orange-600,
     [class~="text-[#92400e]"],
     [class~="text-[#9a3412]"],
-    [class~="text-[#d97706]"]
-  ) {
+    [class~="text-[#d97706]"]) {
     color: #fbbf24 !important;
   }
 
-  .dashboard-home-theme :is(
-    .text-red-800,
+  .dashboard-home-theme :is(.text-red-800,
     .text-red-700,
     .text-red-600,
     .text-rose-800,
@@ -711,8 +671,7 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
     [class~="text-[#be123c]"],
     [class~="text-[#c24134]"],
     [class~="text-[#dc2626]"],
-    [class~="text-[#e05252]"]
-  ) {
+    [class~="text-[#e05252]"]) {
     color: #fda4af !important;
   }
 
@@ -892,7 +851,7 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
     border-color: var(--voice-border, rgb(255 255 255 / 0.1)) !important;
   }
 
-  .voice-agent-workspace [class*="divide-[#e"] > :not(:last-child) {
+  .voice-agent-workspace [class*="divide-[#e"]> :not(:last-child) {
     border-color: var(--voice-border) !important;
   }
 
@@ -1021,6 +980,7 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
   }
 
   @media (prefers-reduced-motion: reduce) {
+
     .agents-home-palette *,
     .voice-agent-theme *,
     .test-call-theme * {
@@ -1036,11 +996,11 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
    make the persistent navigation compact enough for laptop-height screens. */
 @layer components {
   @media (min-width: 1024px) {
-    .dashboard-home-theme.dashboard-home-theme main:has(> .dashboard-sidebar) > section {
+    .dashboard-home-theme.dashboard-home-theme main:has(> .dashboard-sidebar)>section {
       padding-top: 0 !important;
     }
 
-    .dashboard-home-theme.dashboard-home-theme main:has(> .dashboard-sidebar) > section > .dashboard-page-header {
+    .dashboard-home-theme.dashboard-home-theme main:has(> .dashboard-sidebar)>section>.dashboard-page-header {
       padding-top: 0 !important;
       padding-bottom: 0 !important;
     }
@@ -1051,7 +1011,7 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
       box-shadow: none !important;
     }
 
-    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar > div:first-child {
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar>div:first-child {
       padding-inline: 0 !important;
     }
 
@@ -1059,7 +1019,7 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
       margin-top: 1.1rem !important;
     }
 
-    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar nav > div {
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar nav>div {
       margin-bottom: 0.8rem !important;
     }
 
@@ -1121,8 +1081,7 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
   color: var(--dashboard-muted) !important;
 }
 
-:is(.dashboard-home-theme, .agents-home-palette) :is(
-  .bg-black,
+:is(.dashboard-home-theme, .agents-home-palette) :is(.bg-black,
   [class~="bg-[#020806]"],
   [class~="bg-[#02110d]"],
   [class~="bg-[#04231f]"],
@@ -1133,16 +1092,14 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
   [class~="bg-[#09100f]"],
   [class~="bg-[#101a18]"],
   [class~="bg-[#0b1220]"],
-  [class~="bg-[#123a33]"]
-) {
+  [class~="bg-[#123a33]"]) {
   color: var(--dashboard-ink) !important;
   border-color: var(--dashboard-border) !important;
   background-color: var(--dashboard-paper) !important;
   background-image: none !important;
 }
 
-:is(.dashboard-home-theme, .agents-home-palette) :is(
-  .bg-white,
+:is(.dashboard-home-theme, .agents-home-palette) :is(.bg-white,
   [class~="bg-white/80"],
   [class~="bg-white/95"],
   .bg-slate-50,
@@ -1154,23 +1111,20 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
   [class~="bg-[#f8fafb]"],
   [class~="bg-[#f8fafc]"],
   [class~="bg-[#f5f7f9]"],
-  [class~="bg-[#f4f6f8]"]
-) {
+  [class~="bg-[#f4f6f8]"]) {
   color: var(--dashboard-ink) !important;
   border-color: var(--dashboard-border) !important;
   background-color: var(--dashboard-paper) !important;
   background-image: none !important;
 }
 
-:is(.dashboard-home-theme, .agents-home-palette) :is(
-  [class~="bg-[#ecfeff]"],
+:is(.dashboard-home-theme, .agents-home-palette) :is([class~="bg-[#ecfeff]"],
   [class~="bg-[#ccfbf1]"],
   [class~="bg-[#eefbfb]"],
   [class~="bg-[#edf8f8]"],
   [class~="bg-[#edf9f7]"],
   [class~="bg-[#eaf9f7]"],
-  [class~="bg-[#edf7f4]"]
-) {
+  [class~="bg-[#edf7f4]"]) {
   color: var(--dashboard-moody-dark) !important;
   background-color: var(--dashboard-moody-soft) !important;
   background-image: none !important;
@@ -1180,10 +1134,8 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
   background-image: none !important;
 }
 
-:is(.dashboard-home-theme, .agents-home-palette) :is(
-  [class*="bg-[radial-gradient"],
-  [class*="bg-[linear-gradient"]
-) {
+:is(.dashboard-home-theme, .agents-home-palette) :is([class*="bg-[radial-gradient"],
+  [class*="bg-[linear-gradient"]) {
   background-color: var(--dashboard-paper) !important;
 }
 
@@ -1191,13 +1143,11 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
   background: var(--dashboard-moody) !important;
 }
 
-:is(.dashboard-home-theme, .agents-home-palette) :is(
-  [class*="border-white/"],
+:is(.dashboard-home-theme, .agents-home-palette) :is([class*="border-white/"],
   [class~="border-[#29433e]"],
   [class~="border-[#cdeae6]"],
   [class~="border-[#dce9e6]"],
-  [class~="border-[#99f6e8]"]
-) {
+  [class~="border-[#99f6e8]"]) {
   border-color: var(--dashboard-border) !important;
 }
 
@@ -1205,8 +1155,7 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
   color: var(--dashboard-body) !important;
 }
 
-:is(.dashboard-home-theme, .agents-home-palette) :is(
-  .text-cyan-500,
+:is(.dashboard-home-theme, .agents-home-palette) :is(.text-cyan-500,
   .text-cyan-600,
   .text-cyan-700,
   .text-teal-500,
@@ -1220,8 +1169,7 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
   [class~="text-[#61efe1]"],
   [class~="text-[#36e1d0]"],
   [class~="text-[#5aeadc]"],
-  [class~="text-[#73f4e7]"]
-) {
+  [class~="text-[#73f4e7]"]) {
   color: var(--dashboard-moody-dark) !important;
 }
 
@@ -1262,70 +1210,58 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
   accent-color: var(--dashboard-moody) !important;
 }
 
-:is(.dashboard-home-theme, .agents-home-palette) :is(
-  .bg-cyan-500,
+:is(.dashboard-home-theme, .agents-home-palette) :is(.bg-cyan-500,
   .bg-cyan-600,
   .bg-teal-500,
   .bg-teal-600,
   [class~="bg-[#45ddce]"],
   [class~="bg-[#00b8c4]"],
   [class~="bg-[#008996]"],
-  [class~="bg-[#118778]"]
-) {
+  [class~="bg-[#118778]"]) {
   color: #ffffff !important;
   border-color: var(--dashboard-moody) !important;
   background: var(--dashboard-moody) !important;
   background-image: none !important;
 }
 
-:is(.dashboard-home-theme, .agents-home-palette) :is(
-  button,
-  a[href]
-):is(
-  .bg-cyan-500,
+:is(.dashboard-home-theme, .agents-home-palette) :is(button,
+  a[href]):is(.bg-cyan-500,
   .bg-cyan-600,
   .bg-teal-500,
   .bg-teal-600,
   [class~="bg-[#45ddce]"],
   [class~="bg-[#00b8c4]"],
   [class~="bg-[#008996]"],
-  [class~="bg-[#118778]"]
-):hover:not(:disabled) {
+  [class~="bg-[#118778]"]):hover:not(:disabled) {
   color: #ffffff !important;
   border-color: var(--dashboard-moody-dark) !important;
   background: var(--dashboard-moody-dark) !important;
 }
 
-:is(.dashboard-home-theme, .agents-home-palette) :is(
-  .border-cyan-200,
+:is(.dashboard-home-theme, .agents-home-palette) :is(.border-cyan-200,
   .border-cyan-300,
   .border-cyan-500,
   .border-teal-200,
   .border-teal-300,
   [class*="border-[#45ddce]"],
   [class*="border-[#00b8c4]"],
-  [class*="border-[#99f6e8]"]
-) {
+  [class*="border-[#99f6e8]"]) {
   border-color: #9fcfc3 !important;
 }
 
-:is(.dashboard-home-theme, .agents-home-palette) :is(
-  .bg-cyan-50,
+:is(.dashboard-home-theme, .agents-home-palette) :is(.bg-cyan-50,
   [class~="bg-cyan-50/50"],
   [class~="bg-cyan-50/60"],
   [class~="bg-cyan-50/80"],
-  .bg-teal-50
-) {
+  .bg-teal-50) {
   color: var(--dashboard-moody-dark) !important;
   background: var(--dashboard-moody-soft) !important;
 }
 
 /* Legacy dark utility text becomes readable on the new paper surfaces. */
-:is(.dashboard-home-theme, .agents-home-palette) :is(
-  [class~="text-[#f3fffd]"],
+:is(.dashboard-home-theme, .agents-home-palette) :is([class~="text-[#f3fffd]"],
   [class~="text-[#d9fff9]"],
-  [class~="text-[#9ab8b3]"]
-) {
+  [class~="text-[#9ab8b3]"]) {
   color: var(--dashboard-body) !important;
 }
 
@@ -1597,6 +1533,7 @@ html:not([data-brand-source="white_label"]) :is(.dashboard-home-theme, .agents-h
    lives in the components layer and uses important declarations, so these
    rules intentionally share that layer and use the owning layout scope. */
 @layer components {
+
   .dashboard-home-theme.dashboard-home-theme,
   .dashboard-home-theme .dashboard-home-theme,
   .dashboard-home-theme .agents-home-palette,
@@ -1629,23 +1566,20 @@ html:not([data-brand-source="white_label"]) :is(.dashboard-home-theme, .agents-h
     background-image: none !important;
   }
 
-  .dashboard-home-theme.dashboard-home-theme :is(
-    .bg-white,
+  .dashboard-home-theme.dashboard-home-theme :is(.bg-white,
     [class~="bg-white/80"],
     [class~="bg-white/85"],
     [class~="bg-white/95"],
     [class~="bg-[#ffffff]"],
     [class~="bg-[#fbfdff]"],
-    [class~="bg-[#f8fafc]"]
-  ) {
+    [class~="bg-[#f8fafc]"]) {
     color: #14231f !important;
     border-color: #dbe4e1 !important;
     background-color: #ffffff !important;
     background-image: none !important;
   }
 
-  .dashboard-home-theme.dashboard-home-theme :is(
-    [class~="bg-black/20"],
+  .dashboard-home-theme.dashboard-home-theme :is([class~="bg-black/20"],
     [class~="bg-white/10"],
     [class~="bg-white/[.025]"],
     [class~="bg-white/[.035]"],
@@ -1653,16 +1587,14 @@ html:not([data-brand-source="white_label"]) :is(.dashboard-home-theme, .agents-h
     [class~="bg-white/[.055]"],
     [class~="bg-white/[.06]"],
     [class~="bg-white/[.07]"],
-    [class~="bg-white/[.08]"]
-  ) {
+    [class~="bg-white/[.08]"]) {
     color: #52645f !important;
     border-color: #dbe4e1 !important;
     background-color: #eef5f3 !important;
     background-image: none !important;
   }
 
-  .dashboard-home-theme.dashboard-home-theme :is(
-    [class~="text-slate-950"],
+  .dashboard-home-theme.dashboard-home-theme :is([class~="text-slate-950"],
     [class~="text-slate-900"],
     [class~="text-slate-800"],
     [class~="text-[#111827]"],
@@ -1670,27 +1602,22 @@ html:not([data-brand-source="white_label"]) :is(.dashboard-home-theme, .agents-h
     .app-page-title,
     .app-section-title,
     .app-value,
-    .app-strong
-  ) {
+    .app-strong) {
     color: #14231f !important;
   }
 
-  .dashboard-home-theme.dashboard-home-theme :is(
-    [class~="text-slate-700"],
+  .dashboard-home-theme.dashboard-home-theme :is([class~="text-slate-700"],
     [class~="text-slate-600"],
     [class~="text-[#334155]"],
-    [class~="text-[#475569]"]
-  ) {
+    [class~="text-[#475569]"]) {
     color: #52645f !important;
   }
 
-  .dashboard-home-theme.dashboard-home-theme :is(
-    [class~="text-slate-500"],
+  .dashboard-home-theme.dashboard-home-theme :is([class~="text-slate-500"],
     [class~="text-slate-400"],
     [class~="text-[#64748b]"],
     [class~="text-[#94a3b8]"],
-    [class*="text-white/"]
-  ) {
+    [class*="text-white/"]) {
     color: #71817d !important;
   }
 
@@ -1757,10 +1684,8 @@ html:not([data-brand-source="white_label"]) :is(.dashboard-home-theme, .agents-h
     color: #71817d !important;
   }
 
-  .dashboard-home-theme.dashboard-home-theme :is(button, a[href]):is(
-    [class~="bg-[#118778]"],
-    [class~="bg-[#0e6f62]"]
-  ) {
+  .dashboard-home-theme.dashboard-home-theme :is(button, a[href]):is([class~="bg-[#118778]"],
+    [class~="bg-[#0e6f62]"]) {
     color: #ffffff !important;
   }
 
@@ -1768,15 +1693,13 @@ html:not([data-brand-source="white_label"]) :is(.dashboard-home-theme, .agents-h
     background-image: none !important;
   }
 
-  .dashboard-home-theme.dashboard-home-theme :is(
-    [class*="shadow-"],
+  .dashboard-home-theme.dashboard-home-theme :is([class*="shadow-"],
     .shadow,
     .shadow-sm,
     .shadow-md,
     .shadow-lg,
     .shadow-xl,
-    .shadow-2xl
-  ) {
+    .shadow-2xl) {
     box-shadow: none !important;
   }
 
@@ -1857,11 +1780,11 @@ html:not([data-brand-source="white_label"]) :is(.dashboard-home-theme, .agents-h
       linear-gradient(135deg, #fafcfb 0%, #f1f2fa 100%) !important;
   }
 
-  .dashboard-home-theme.dashboard-home-theme details > summary::-webkit-details-marker {
+  .dashboard-home-theme.dashboard-home-theme details>summary::-webkit-details-marker {
     display: none;
   }
 
-  .dashboard-home-theme.dashboard-home-theme details[open] > summary {
+  .dashboard-home-theme.dashboard-home-theme details[open]>summary {
     border-color: #9fcfc3 !important;
     color: #0e6f62 !important;
     background: #f3f6f5 !important;
@@ -2039,7 +1962,7 @@ html:not([data-brand-source="white_label"]) :is(.dashboard-home-theme, .agents-h
       padding-inline: 0 !important;
     }
 
-    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-shell[data-expanded="false"] nav > div {
+    .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-shell[data-expanded="false"] nav>div {
       margin-bottom: 0.25rem !important;
     }
 
@@ -2178,7 +2101,7 @@ html:not([data-brand-source="white_label"]) :is(.dashboard-home-theme, .agents-h
 
   /* Top-level dashboard cards use elevation; nested controls keep only the
      borders needed to communicate interaction. */
-  .dashboard-home-theme.dashboard-home-theme main > section > div:not(.dashboard-workspace-bar) > :is(section, article)[class*="rounded-2xl"] {
+  .dashboard-home-theme.dashboard-home-theme main>section>div:not(.dashboard-workspace-bar)> :is(section, article)[class*="rounded-2xl"] {
     border-color: transparent !important;
     box-shadow: 0 10px 32px rgb(37 40 74 / 0.065) !important;
   }

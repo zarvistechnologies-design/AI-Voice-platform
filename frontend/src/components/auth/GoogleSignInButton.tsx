@@ -103,7 +103,7 @@ export function GoogleSignInButton({
         containerRef.current.replaceChildren();
         window.google.accounts.id.renderButton(containerRef.current, {
           type: "standard",
-          theme: "filled_black",
+          theme: "outline",
           size: "large",
           text: "continue_with",
           shape: "rectangular",
@@ -124,13 +124,13 @@ export function GoogleSignInButton({
   return (
     <div className={`grid gap-3 transition ${disabled ? "pointer-events-none opacity-60" : ""}`}>
       <div className="flex items-center gap-3" aria-hidden="true">
-        <span className="h-px flex-1 bg-white/10" />
-        <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-white/28">or</span>
-        <span className="h-px flex-1 bg-white/10" />
+        <span className="h-px flex-1 bg-slate-200" />
+        <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">or</span>
+        <span className="h-px flex-1 bg-slate-200" />
       </div>
-      <div className={`relative grid min-h-11 place-items-center overflow-hidden rounded-xl ${ready ? "" : "border border-white/10 bg-white/[0.035]"}`}>
+      <div className={`relative grid min-h-11 place-items-center overflow-hidden rounded-xl ${ready ? "" : "border border-slate-200 bg-slate-50"}`}>
         <div aria-label="Continue with Google" className="grid w-full place-items-center" ref={containerRef} />
-        {!ready ? <span className="pointer-events-none absolute text-xs font-semibold text-white/40">Loading Google sign-in…</span> : null}
+        {!ready ? <span className="pointer-events-none absolute text-xs font-medium text-slate-400">Loading Google sign-in…</span> : null}
       </div>
     </div>
   );
