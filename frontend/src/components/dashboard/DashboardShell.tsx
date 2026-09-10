@@ -5283,7 +5283,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     <main
       className={`voice-agent-theme grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#f7f9f8] text-[#14231f] ${
         showUserSidebar
-          ? "lg:grid-cols-[240px_minmax(0,1fr)]"
+          ? "lg:grid-cols-[272px_minmax(0,1fr)]"
           : "lg:grid-cols-[64px_minmax(0,1fr)]"
       }`}
     >

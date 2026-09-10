@@ -458,7 +458,7 @@ export function ProfileShell() {
     <main
       className={`grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#f5f8fb] text-[#111827] ${
         showUserSidebar
-          ? "lg:grid-cols-[240px_minmax(0,1fr)]"
+          ? "lg:grid-cols-[272px_minmax(0,1fr)]"
           : "lg:grid-cols-[64px_minmax(0,1fr)]"
       }`}
     >
