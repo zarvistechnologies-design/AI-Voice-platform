@@ -209,17 +209,17 @@ export function SiteHeader() {
         <div className="flex items-center gap-2">
           <Link
             className="hidden px-3 py-1 text-[13px] font-semibold text-slate-700 transition-colors duration-150 hover:text-slate-950 sm:inline-block"
-            href="/dashboard"
+            href="/signup"
           >
-            Dashboard
+            Get started
           </Link>
 
-          {/* Slim Gradient CTA */}
+          {/* Slim Gradient Contact Us CTA */}
           <Link
             className="group relative inline-flex items-center justify-center gap-1.5 overflow-hidden rounded-full bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 px-4 py-1.5 text-[12.5px] font-bold text-white shadow-[0_3px_12px_rgba(16,185,129,0.25)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_4px_16px_rgba(16,185,129,0.4)] active:scale-[0.97]"
             href="/contact"
           >
-            <span className="relative z-10">Get started</span>
+            <span className="relative z-10">Contact us</span>
             <svg
               className="relative z-10 size-3 transition-transform duration-200 group-hover:translate-x-0.5"
               fill="none"
@@ -384,17 +384,17 @@ export function SiteHeader() {
               <div className="grid grid-cols-2 gap-2.5 border-t border-slate-100 pt-3">
                 <Link
                   className="flex items-center justify-center rounded-full border border-slate-200 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50"
-                  href="/dashboard"
+                  href="/signup"
                   onClick={closeAll}
                 >
-                  Dashboard
+                  Get started
                 </Link>
                 <Link
                   className="flex items-center justify-center rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 py-2 text-xs font-bold text-white shadow-xs"
                   href="/contact"
                   onClick={closeAll}
                 >
-                  Get started
+                  Contact us
                 </Link>
               </div>
             </div>
