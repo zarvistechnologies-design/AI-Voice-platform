@@ -69,7 +69,7 @@ const campaignSteps = ["Setup", "Audience", "Timing", "Instructions", "Review"];
 const buttonClass =
   "app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 transition disabled:cursor-not-allowed disabled:opacity-50";
 const controlClass =
-  "app-control-text min-h-11 w-full rounded-lg border border-white/10 bg-[#ffffff] px-3 text-white outline-none transition placeholder:text-white/45 focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10";
+  "app-control-text min-h-11 w-full rounded-lg border border-white/10 bg-[#ffffff] px-3 text-white outline-none transition placeholder:text-white/45 focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10";
 
 function Icon({
   icon,
@@ -792,9 +792,9 @@ export function CampaignShell() {
 
   if (!session) {
     return (
-      <main className="app-strong grid min-h-screen place-items-center bg-[#f7f7fc] px-6 text-[#7a7d8e]">
+      <main className="app-strong grid min-h-screen place-items-center bg-[#f7f9f8] px-6 text-[#71817d]">
         <div className="rounded-lg border border-white/10 bg-[#ffffff] px-6 py-5 text-center shadow-sm">
-          <span className="mx-auto mb-3 grid size-10 place-items-center rounded-lg bg-[#eff0fb] text-[#5963b8]">
+          <span className="mx-auto mb-3 grid size-10 place-items-center rounded-lg bg-[#edf7f4] text-[#0e6f62]">
             <Icon icon="spark" />
           </span>
           <p className="app-strong m-0">Loading campaigns</p>
@@ -808,9 +808,9 @@ export function CampaignShell() {
 
   return (
     <main
-      className={`dashboard-home-theme grid min-h-dvh bg-[#f7f7fc] text-[#1b1b22] lg:h-dvh lg:overflow-hidden ${
+      className={`dashboard-home-theme grid min-h-dvh bg-[#f7f9f8] text-[#14231f] lg:h-dvh lg:overflow-hidden ${
         showUserSidebar
-          ? "lg:grid-cols-[240px_minmax(0,1fr)]"
+          ? "lg:grid-cols-[272px_minmax(0,1fr)]"
           : "lg:grid-cols-[64px_minmax(0,1fr)]"
       }`}
     >
@@ -826,14 +826,14 @@ export function CampaignShell() {
         setShowUserSidebar={setShowUserSidebar}
       />
 
-      <section className="min-w-0 overflow-y-auto overscroll-contain bg-[#f7f7fc]">
+      <section className="min-w-0 overflow-y-auto overscroll-contain bg-[#f7f9f8]">
         <DashboardPageHeader
           eyebrow="Outbound operations"
           title="Outbound campaigns"
           description="Create campaigns, upload leads, control pacing, and monitor delivery."
           actions={
             <button
-              className={`${buttonClass} border border-[#737ccf] ${showCreateCampaign ? "bg-white text-[#5963b8]" : "bg-[#737ccf] text-white hover:bg-[#5963b8]"}`}
+              className={`${buttonClass} border border-[#118778] ${showCreateCampaign ? "bg-white text-[#0e6f62]" : "bg-[#118778] text-white hover:bg-[#0e6f62]"}`}
               type="button"
               onClick={() => {
                 setCreateStep(1);
@@ -872,14 +872,14 @@ export function CampaignShell() {
               }}
             >
               <form
-                className="grid max-h-[calc(100dvh-1.5rem)] w-full max-w-[720px] overflow-y-auto rounded-xl border border-[#e1e3ed] bg-white px-5 pb-5 sm:max-h-[calc(100dvh-2.5rem)] sm:px-7"
+                className="grid max-h-[calc(100dvh-1.5rem)] w-full max-w-[720px] overflow-y-auto rounded-xl border border-[#dbe4e1] bg-white px-5 pb-5 sm:max-h-[calc(100dvh-2.5rem)] sm:px-7"
                 onMouseDown={(event) => event.stopPropagation()}
                 onSubmit={prepareCampaign}
               >
-                <div className="sticky top-0 z-20 -mx-5 grid gap-4 border-b border-[#e1e3ed] bg-white px-5 py-4 sm:-mx-7 sm:px-7">
+                <div className="sticky top-0 z-20 -mx-5 grid gap-4 border-b border-[#dbe4e1] bg-white px-5 py-4 sm:-mx-7 sm:px-7">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <span className="app-label text-[#5963b8]">
+                      <span className="app-label text-[#0e6f62]">
                         New campaign · Step {createStep} of{" "}
                         {campaignSteps.length}
                       </span>
@@ -892,7 +892,7 @@ export function CampaignShell() {
                     </div>
                     <button
                       aria-label="Close campaign form"
-                      className="grid size-10 shrink-0 place-items-center rounded-lg border border-[#e1e3ed] bg-white text-[#505261] hover:border-[#737ccf] hover:text-[#5963b8] disabled:opacity-50"
+                      className="grid size-10 shrink-0 place-items-center rounded-lg border border-[#dbe4e1] bg-white text-[#52645f] hover:border-[#118778] hover:text-[#0e6f62] disabled:opacity-50"
                       disabled={launching}
                       type="button"
                       onClick={() => {
@@ -914,10 +914,10 @@ export function CampaignShell() {
                       return (
                         <li className="min-w-0" key={step}>
                           <span
-                            className={`block h-1.5 rounded-full ${active || complete ? "bg-[#737ccf]" : "bg-[#e1e3ed]"}`}
+                            className={`block h-1.5 rounded-full ${active || complete ? "bg-[#118778]" : "bg-[#dbe4e1]"}`}
                           />
                           <span
-                            className={`mt-1 hidden truncate text-[10px] font-semibold sm:block ${active ? "text-[#5963b8]" : "text-[#7a7d8e]"}`}
+                            className={`mt-1 hidden truncate text-[10px] font-semibold sm:block ${active ? "text-[#0e6f62]" : "text-[#71817d]"}`}
                           >
                             {step}
                           </span>
@@ -1026,7 +1026,7 @@ export function CampaignShell() {
                       </div>
 
                       <label
-                        className="mt-5 grid min-h-[150px] cursor-pointer place-items-center rounded-xl border border-dashed border-[#737ccf]/35 bg-[radial-gradient(circle_at_50%_0%,rgba(115,124,207,0.10),transparent_52%),linear-gradient(135deg,#ffffff_0%,#ffffff_100%)] p-5 text-center transition hover:border-[#737ccf]/55"
+                        className="mt-5 grid min-h-[150px] cursor-pointer place-items-center rounded-xl border border-dashed border-[#118778]/35 bg-[radial-gradient(circle_at_50%_0%,rgba(17,135,120,0.10),transparent_52%),linear-gradient(135deg,#ffffff_0%,#ffffff_100%)] p-5 text-center transition hover:border-[#118778]/55"
                         onDragOver={(event) => event.preventDefault()}
                         onDrop={handleDrop}
                       >
@@ -1039,7 +1039,7 @@ export function CampaignShell() {
                           }
                         />
                         <span className="max-w-md">
-                          <span className="mx-auto mb-4 grid size-14 place-items-center rounded-2xl bg-[#737ccf]/10 text-[#5963b8] shadow-[0_14px_30px_rgba(115,124,207,0.12)]">
+                          <span className="mx-auto mb-4 grid size-14 place-items-center rounded-2xl bg-[#118778]/10 text-[#0e6f62] shadow-[0_14px_30px_rgba(17,135,120,0.12)]">
                             <Icon icon="file" className="size-6" />
                           </span>
                           <strong className="block text-base font-semibold text-slate-950">
@@ -1055,7 +1055,7 @@ export function CampaignShell() {
                       </label>
 
                       {leads.length ? (
-                        <div className="mt-4 flex items-center justify-between gap-3 rounded-lg border border-[#e1e3ed] px-4 py-3">
+                        <div className="mt-4 flex items-center justify-between gap-3 rounded-lg border border-[#dbe4e1] px-4 py-3">
                           <span className="text-sm font-semibold text-slate-950">
                             {numberFormat(leads.length)} contacts loaded
                           </span>
@@ -1237,7 +1237,7 @@ export function CampaignShell() {
                         <label className="app-label grid gap-2">
                           Goal
                           <textarea
-                            className="app-control-text min-h-36 resize-y rounded-2xl border border-white/10 bg-[#ffffff] p-4 text-white shadow-[0_1px_0_rgba(0,0,0,0.18)] outline-none transition placeholder:text-white/45 hover:border-white/20 focus:border-[#737ccf] focus:ring-4 focus:ring-[#737ccf]/10"
+                            className="app-control-text min-h-36 resize-y rounded-2xl border border-white/10 bg-[#ffffff] p-4 text-white shadow-[0_1px_0_rgba(0,0,0,0.18)] outline-none transition placeholder:text-white/45 hover:border-white/20 focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10"
                             placeholder="Confirm appointment interest and capture preferred callback time."
                             value={campaignGoal}
                             onChange={(event) =>
@@ -1257,7 +1257,7 @@ export function CampaignShell() {
                           />
                         </label>
                       </div>
-                      <div className="mt-5 border-t border-[#e1e3ed] pt-5">
+                      <div className="mt-5 border-t border-[#dbe4e1] pt-5">
                         <h3 className="app-section-title m-0">
                           Safety and compliance
                         </h3>
@@ -1296,7 +1296,7 @@ export function CampaignShell() {
                       <Panel compact>
                         <div className="flex items-start justify-between gap-4">
                           <div>
-                            <span className="app-label text-[#5963b8]">
+                            <span className="app-label text-[#0e6f62]">
                               Launch console
                             </span>
                             <h2 className="mt-1 mb-0 text-xl font-semibold tracking-[-0.03em] text-slate-950">
@@ -1347,7 +1347,7 @@ export function CampaignShell() {
                             />
                           </dl>
                           <button
-                            className={`${buttonClass} mt-5 w-full bg-[#737ccf] text-white shadow-sm hover:bg-[#5963b8]`}
+                            className={`${buttonClass} mt-5 w-full bg-[#118778] text-white shadow-sm hover:bg-[#0e6f62]`}
                             disabled={loading || launching || !canPrepare}
                             type="submit"
                           >
@@ -1379,9 +1379,9 @@ export function CampaignShell() {
                   </p>
                 ) : null}
 
-                <div className="sticky bottom-0 z-20 -mx-5 flex items-center justify-between gap-3 border-t border-[#e1e3ed] bg-white px-5 py-4 sm:-mx-7 sm:px-7">
+                <div className="sticky bottom-0 z-20 -mx-5 flex items-center justify-between gap-3 border-t border-[#dbe4e1] bg-white px-5 py-4 sm:-mx-7 sm:px-7">
                   <button
-                    className={`${buttonClass} border border-[#d1d4e3] bg-white text-[#505261] hover:border-[#737ccf] disabled:opacity-40`}
+                    className={`${buttonClass} border border-[#c6d4d0] bg-white text-[#52645f] hover:border-[#118778] disabled:opacity-40`}
                     disabled={createStep === 1 || launching}
                     type="button"
                     onClick={() => {
@@ -1396,7 +1396,7 @@ export function CampaignShell() {
                   </span>
                   {createStep < campaignSteps.length ? (
                     <button
-                      className={`${buttonClass} bg-[#737ccf] text-white hover:bg-[#5963b8]`}
+                      className={`${buttonClass} bg-[#118778] text-white hover:bg-[#0e6f62]`}
                       disabled={!currentStepReady || launching}
                       type="button"
                       onClick={() => {
@@ -1454,8 +1454,8 @@ function ModeCard({
     <button
       className={`rounded-lg border px-4 py-3 text-left transition ${
         active
-          ? "border-[#737ccf] bg-[#eff0fb] text-[#5963b8]"
-          : "border-[#e1e3ed] bg-white text-[#505261] hover:border-[#737ccf]/50"
+          ? "border-[#118778] bg-[#edf7f4] text-[#0e6f62]"
+          : "border-[#dbe4e1] bg-white text-[#52645f] hover:border-[#118778]/50"
       }`}
       onClick={onClick}
       type="button"
@@ -1463,7 +1463,7 @@ function ModeCard({
     >
       <span className="flex items-center gap-3">
         <span
-          className={`grid size-9 place-items-center rounded-lg ${active ? "bg-white text-[#5963b8]" : "bg-[#f6f6f8] text-[#7a7d8e]"}`}
+          className={`grid size-9 place-items-center rounded-lg ${active ? "bg-white text-[#0e6f62]" : "bg-[#f6f6f8] text-[#71817d]"}`}
         >
           <Icon icon={icon} />
         </span>
@@ -1487,7 +1487,7 @@ function ProgressBar({
       className={`h-2 overflow-hidden rounded-full bg-slate-200 ${className}`}
     >
       <div
-        className="h-full rounded-full bg-gradient-to-r from-[#737ccf] via-[#8990d8] to-[#5963b8] transition-all"
+        className="h-full rounded-full bg-gradient-to-r from-[#118778] via-[#25b39f] to-[#0e6f62] transition-all"
         style={{ width: `${progressValue(value)}%` }}
       />
     </div>
@@ -1526,8 +1526,8 @@ function CampaignOperationsSection({
   ) => void | Promise<void>;
 }) {
   return (
-    <section className="mt-4 overflow-hidden rounded-xl border border-[#dfe3ea] bg-white">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e1e3ed] px-5 py-4">
+    <section className="mt-4 overflow-hidden rounded-xl border border-[#dbe4e1] bg-white">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#dbe4e1] px-5 py-4">
         <div>
           <h2 className="app-section-title m-0">Campaigns</h2>
           <p className="app-caption mt-1 mb-0">
@@ -1866,7 +1866,7 @@ function ToggleRow({
 }) {
   return (
     <button
-      className="flex items-center justify-between gap-4 border-b border-white/10 px-1 py-3 text-left transition hover:border-[#737ccf]/30"
+      className="flex items-center justify-between gap-4 border-b border-white/10 px-1 py-3 text-left transition hover:border-[#118778]/30"
       onClick={() => onChange(!enabled)}
       type="button"
       aria-pressed={enabled}
@@ -1878,7 +1878,7 @@ function ToggleRow({
         <span className="app-caption mt-1 block">{detail}</span>
       </span>
       <span
-        className={`relative h-6 w-11 rounded-full transition ${enabled ? "bg-[#737ccf]" : "bg-white/20"}`}
+        className={`relative h-6 w-11 rounded-full transition ${enabled ? "bg-[#118778]" : "bg-white/20"}`}
       >
         <span
           className={`absolute top-1 size-4 rounded-full bg-[#ffffff] shadow transition ${enabled ? "left-6" : "left-1"}`}

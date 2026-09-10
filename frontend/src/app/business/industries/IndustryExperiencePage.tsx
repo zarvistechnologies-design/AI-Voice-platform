@@ -162,13 +162,13 @@ export function IndustryExperiencePage({
             </div>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link
-                className="business-blue-cta inline-flex min-h-12 items-center rounded-lg border border-[#3e75ff] bg-[#3e75ff] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(62,117,255,0.22)] transition hover:-translate-y-0.5"
+                className="business-blue-cta inline-flex min-h-12 items-center rounded-lg border border-[#118778] bg-[#118778] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(17,135,120,0.22)] transition hover:-translate-y-0.5"
                 href="/#demo"
               >
                 Book a free demo <span className="ml-3">&rarr;</span>
               </Link>
               <Link
-                className="business-blue-cta inline-flex min-h-12 items-center rounded-lg border border-[#3e75ff] bg-[#3e75ff] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(62,117,255,0.22)] transition hover:-translate-y-0.5"
+                className="business-blue-cta inline-flex min-h-12 items-center rounded-lg border border-[#118778] bg-[#118778] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(17,135,120,0.22)] transition hover:-translate-y-0.5"
                 href="/contact"
               >
                 Contact sales
@@ -497,7 +497,7 @@ export function IndustryExperiencePage({
                   <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300">{faqAnswer(question, industry)}</p>
                 </details>
               ))}
-              <p className="mt-5 text-center text-sm text-slate-300">More questions? <Link className="font-bold text-[#3e75ff] transition hover:text-[#315fdb] hover:underline" href="/contact">Contact us</Link></p>
+              <p className="mt-5 text-center text-sm text-slate-300">More questions? <Link className="font-bold text-[#118778] transition hover:text-[#0e6f62] hover:underline" href="/contact">Contact us</Link></p>
             </div>
           </div>
         </section>

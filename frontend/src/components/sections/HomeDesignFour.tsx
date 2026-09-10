@@ -219,7 +219,7 @@ export function HomeDesignFour() {
             <div className="design-four-voice-copy">
               <h2 className="leading-tight tracking-tight">Vozon.ai named a next generation<br className="hidden md:block" />platform for Enterprise Voice AI,<br className="hidden md:block" />transforming conversations into<br className="hidden md:block" />business outcomes</h2>
               <p>Build intelligent voice agents, connect your business systems, and automate customer conversations with Vozon.</p>
-              <Link  href="/product" className="rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-blue-700">Explore Vozon</Link>
+              <Link href="/product" className="rounded-lg bg-[#123d35] px-6 py-3 font-semibold text-white transition-colors hover:bg-[#0e6f62]">Explore Vozon</Link>
             </div>
             <div className="design-four-voice-player">
               <button aria-label={voicePlaying ? "Pause voice preview" : "Play voice preview"} className={`design-four-voice-disc${voicePlaying ? " is-playing" : ""}`} onClick={() => setVoicePlaying((playing) => !playing)} type="button"><span>{voicePlaying ? "Ⅱ" : "▶"}</span></button>

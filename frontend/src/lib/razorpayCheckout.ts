@@ -1,4 +1,4 @@
-﻿export type RazorpayCheckoutPayload = {
+export type RazorpayCheckoutPayload = {
   provider: "razorpay";
   kind: "order" | "subscription";
   keyId: string;
@@ -57,7 +57,7 @@ export async function openRazorpayCheckout(payload: RazorpayCheckoutPayload) {
       description: payload.description,
       ...(payload.kind === "order" ? { order_id: payload.orderId } : { subscription_id: payload.subscriptionId }),
       prefill: payload.prefill,
-      theme: { color: "#737ccf" },
+      theme: { color: "#118778" },
       retry: { enabled: true },
       ...(payload.displayMode === "all" ? {} : {
         config: {

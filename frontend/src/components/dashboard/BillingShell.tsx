@@ -148,10 +148,10 @@ export function BillingShell() {
     }
   }
 
-  if (!session) return <main className="grid min-h-screen place-items-center bg-[#f7f7fc] text-sm font-semibold text-[#7a7d8e]">Loading billing</main>;
+  if (!session) return <main className="grid min-h-screen place-items-center bg-[#f7f9f8] text-sm font-semibold text-[#71817d]">Loading billing</main>;
 
   return (
-    <main className={`dashboard-home-theme grid min-h-screen bg-[#f7f7fc] text-[#1b1b22] ${showUserSidebar ? "lg:grid-cols-[240px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}>
+    <main className={`dashboard-home-theme grid min-h-screen bg-[#f7f9f8] text-[#14231f] ${showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}>
       <DashboardSidebar activeLabel="Billing" userInitials={initials(session.name)} userName={session.name} userEmail={session.email} onLogout={() => void logoutSession().then(() => router.replace("/login"))} showUserSidebar={showUserSidebar} setShowUserSidebar={setShowUserSidebar} />
 
       <section className="min-w-0 overflow-y-auto">
@@ -160,74 +160,74 @@ export function BillingShell() {
           title="Billing"
           description="Manage credits, usage, payments, and invoices."
           actions={
-            <button className="rounded-lg border border-[#d1d4e3] bg-white px-4 py-2.5 text-sm font-semibold text-[#505261] hover:border-[#737ccf] hover:text-[#5963b8]" type="button" onClick={() => void load()} disabled={Boolean(busy)}>Refresh</button>
+            <button className="rounded-lg border border-[#c6d4d0] bg-white px-4 py-2.5 text-sm font-semibold text-[#52645f] hover:border-[#118778] hover:text-[#0e6f62]" type="button" onClick={() => void load()} disabled={Boolean(busy)}>Refresh</button>
           }
         />
 
         <div className="mx-auto grid w-full max-w-[1500px] gap-5 px-4 py-5 sm:px-6 lg:px-8">
-          {notice ? <div className="rounded-lg border border-[#c9ccef] bg-[#eff0fb] px-4 py-3 text-sm font-semibold text-[#515bb4]">{notice}</div> : null}
+          {notice ? <div className="rounded-lg border border-[#b8c8c3] bg-[#edf7f4] px-4 py-3 text-sm font-semibold text-[#123d35]">{notice}</div> : null}
 
           {data?.paymentReadiness ? (
-            <section className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-[#e1e3ed] bg-white px-5 py-4">
+            <section className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-[#dbe4e1] bg-white px-5 py-4">
               <div className="flex items-center gap-3"><span className={`size-2.5 rounded-full ${data.configured ? "bg-emerald-500" : "bg-amber-500"}`} /><div><h2 className="app-section-title m-0">Payment setup</h2><p className="app-caption mt-1 mb-0">{data.configured ? "Checkout is ready" : "Checkout configuration is incomplete"}</p></div></div>
               <dl className="flex flex-wrap gap-x-6 gap-y-2 text-xs">
-                <div><dt className="text-[#7a7d8e]">Mode</dt><dd className="m-0 mt-0.5 font-semibold capitalize">{data.paymentReadiness.mode}</dd></div>
-                <div><dt className="text-[#7a7d8e]">Credentials</dt><dd className="m-0 mt-0.5 font-semibold">{data.paymentReadiness.credentialsConfigured ? "Ready" : "Missing"}</dd></div>
-                <div><dt className="text-[#7a7d8e]">Webhook</dt><dd className="m-0 mt-0.5 font-semibold">{data.paymentReadiness.webhookConfigured ? "Ready" : "Missing"}</dd></div>
+                <div><dt className="text-[#71817d]">Mode</dt><dd className="m-0 mt-0.5 font-semibold capitalize">{data.paymentReadiness.mode}</dd></div>
+                <div><dt className="text-[#71817d]">Credentials</dt><dd className="m-0 mt-0.5 font-semibold">{data.paymentReadiness.credentialsConfigured ? "Ready" : "Missing"}</dd></div>
+                <div><dt className="text-[#71817d]">Webhook</dt><dd className="m-0 mt-0.5 font-semibold">{data.paymentReadiness.webhookConfigured ? "Ready" : "Missing"}</dd></div>
               </dl>
             </section>
           ) : null}
 
-          <section className="overflow-hidden rounded-xl border border-[#dfe3ea] bg-white">
+          <section className="overflow-hidden rounded-xl border border-[#dbe4e1] bg-white">
             <div className="grid gap-6 p-5 md:grid-cols-[minmax(0,1fr)_320px] md:p-6">
-              <div><span className="app-label text-[#5963b8]">Available balance</span><h2 className="mt-2 mb-0 text-4xl font-semibold tracking-tight text-slate-950">{money(balance, currency)}</h2><p className="app-caption mt-2 mb-0">{money(lifetime, currency)} lifetime credits purchased</p></div>
-              <div className="grid gap-3 border-t border-[#e1e3ed] pt-5 md:border-t-0 md:border-l md:pt-0 md:pl-6">
+              <div><span className="app-label text-[#0e6f62]">Available balance</span><h2 className="mt-2 mb-0 text-4xl font-semibold tracking-tight text-slate-950">{money(balance, currency)}</h2><p className="app-caption mt-2 mb-0">{money(lifetime, currency)} lifetime credits purchased</p></div>
+              <div className="grid gap-3 border-t border-[#dbe4e1] pt-5 md:border-t-0 md:border-l md:pt-0 md:pl-6">
                 <span className="app-label">Add credits</span>
                 <div className="grid grid-cols-4 gap-2">
-                  {topUpOptions.map((amount) => <button className={`min-h-10 rounded-lg border text-sm font-semibold ${selectedTopUp === amount ? "border-[#737ccf] bg-[#eff0fb] text-[#5963b8]" : "border-[#dfe3ea] bg-white text-[#505261] hover:border-[#737ccf]/60"}`} key={amount} type="button" aria-pressed={selectedTopUp === amount} onClick={() => setSelectedTopUp(amount)}>${amount}</button>)}
+                  {topUpOptions.map((amount) => <button className={`min-h-10 rounded-lg border text-sm font-semibold ${selectedTopUp === amount ? "border-[#118778] bg-[#edf7f4] text-[#0e6f62]" : "border-[#dbe4e1] bg-white text-[#52645f] hover:border-[#118778]/60"}`} key={amount} type="button" aria-pressed={selectedTopUp === amount} onClick={() => setSelectedTopUp(amount)}>${amount}</button>)}
                 </div>
-                <button className="min-h-11 rounded-lg bg-[#737ccf] px-4 text-sm font-semibold text-white hover:bg-[#5963b8] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup" || !data?.configured}>{busy === "topup" ? "Opening checkout..." : `Add $${selectedTopUp} credits`}</button>
+                <button className="min-h-11 rounded-lg bg-[#118778] px-4 text-sm font-semibold text-white hover:bg-[#0e6f62] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup" || !data?.configured}>{busy === "topup" ? "Opening checkout..." : `Add $${selectedTopUp} credits`}</button>
               </div>
             </div>
-            <dl className="grid border-t border-[#e1e3ed] sm:grid-cols-2 lg:grid-cols-4">
-              {[["This month", money(data?.usage.chargedCredits ?? 0, currency)], ["Provider spend", money(data?.usage.providerCost ?? 0, currency)], ["Minimum to call", money(data?.creditSettings.minimumCallStartCredits ?? 0, currency)], ["Recent top-ups", `${totals.topUps} (${money(totals.net, currency)})`]].map(([label, value], index) => <div className={`px-5 py-4 ${index ? "border-t border-[#e1e3ed] sm:border-t-0 sm:border-l" : ""}`} key={label}><dt className="app-caption">{label}</dt><dd className="m-0 mt-1 text-lg font-semibold">{value}</dd></div>)}
+            <dl className="grid border-t border-[#dbe4e1] sm:grid-cols-2 lg:grid-cols-4">
+              {[["This month", money(data?.usage.chargedCredits ?? 0, currency)], ["Provider spend", money(data?.usage.providerCost ?? 0, currency)], ["Minimum to call", money(data?.creditSettings.minimumCallStartCredits ?? 0, currency)], ["Recent top-ups", `${totals.topUps} (${money(totals.net, currency)})`]].map(([label, value], index) => <div className={`px-5 py-4 ${index ? "border-t border-[#dbe4e1] sm:border-t-0 sm:border-l" : ""}`} key={label}><dt className="app-caption">{label}</dt><dd className="m-0 mt-1 text-lg font-semibold">{value}</dd></div>)}
             </dl>
           </section>
 
-          <section className="overflow-hidden rounded-xl border border-[#dfe3ea] bg-white">
-            <div className="border-b border-[#e1e3ed] px-5 py-4"><h2 className="app-section-title m-0">Billing details</h2></div>
+          <section className="overflow-hidden rounded-xl border border-[#dbe4e1] bg-white">
+            <div className="border-b border-[#dbe4e1] px-5 py-4"><h2 className="app-section-title m-0">Billing details</h2></div>
             <div className="grid md:grid-cols-2">
               <div className="p-5">
-                <div className="flex items-center justify-between gap-3"><h3 className="m-0 text-sm font-semibold">Monthly Autopay</h3><span className="rounded-full bg-[#f6f6f8] px-2.5 py-1 text-xs font-semibold capitalize text-[#505261]">{data?.subscription.status?.replace("_", " ") ?? "inactive"}</span></div>
+                <div className="flex items-center justify-between gap-3"><h3 className="m-0 text-sm font-semibold">Monthly Autopay</h3><span className="rounded-full bg-[#f6f6f8] px-2.5 py-1 text-xs font-semibold capitalize text-[#52645f]">{data?.subscription.status?.replace("_", " ") ?? "inactive"}</span></div>
                 <dl className="mt-4 grid gap-3 text-sm">
-                  <div className="flex justify-between gap-4"><dt className="text-[#7a7d8e]">Plan</dt><dd className="m-0 font-semibold capitalize">{data?.subscription.plan ?? "free"}</dd></div>
-                  <div className="flex justify-between gap-4"><dt className="text-[#7a7d8e]">Monthly charge</dt><dd className="m-0 font-semibold">{money(data?.enterpriseMonthlyUsd ?? 500, "USD")}</dd></div>
-                  <div className="flex justify-between gap-4"><dt className="text-[#7a7d8e]">Next renewal</dt><dd className="m-0 text-right font-semibold">{dateTime(data?.subscription.currentPeriodEnd)}</dd></div>
+                  <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Plan</dt><dd className="m-0 font-semibold capitalize">{data?.subscription.plan ?? "free"}</dd></div>
+                  <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Monthly charge</dt><dd className="m-0 font-semibold">{money(data?.enterpriseMonthlyUsd ?? 500, "USD")}</dd></div>
+                  <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Next renewal</dt><dd className="m-0 text-right font-semibold">{dateTime(data?.subscription.currentPeriodEnd)}</dd></div>
                 </dl>
                 <div className="mt-5 flex flex-wrap gap-2">
-                  {data?.subscription.provider !== "razorpay" || data.subscription.status === "cancelled" ? <button className="rounded-lg bg-[#737ccf] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#5963b8] disabled:opacity-50" type="button" onClick={() => void upgradeEnterprise()} disabled={busy === "enterprise" || !data?.configured}>Start Autopay</button> : null}
+                  {data?.subscription.provider !== "razorpay" || data.subscription.status === "cancelled" ? <button className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62] disabled:opacity-50" type="button" onClick={() => void upgradeEnterprise()} disabled={busy === "enterprise" || !data?.configured}>Start Autopay</button> : null}
                   {data?.subscription.provider === "razorpay" && !data.subscription.cancelAtPeriodEnd && data.subscription.status !== "cancelled" ? <button className="rounded-lg border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-700 hover:bg-rose-50 disabled:opacity-50" type="button" onClick={() => void cancelAutopay()} disabled={busy === "cancel"}>{busy === "cancel" ? "Cancelling..." : "Cancel Autopay"}</button> : null}
                 </div>
                 {data?.subscription.cancelAtPeriodEnd ? <p className="mt-3 mb-0 text-sm font-semibold text-amber-700">Cancellation is scheduled for the end of this billing cycle.</p> : null}
               </div>
-              <div className="border-t border-[#e1e3ed] p-5 md:border-t-0 md:border-l">
-                <div className="flex items-center justify-between gap-3"><div><h3 className="m-0 text-sm font-semibold">Payment method</h3><p className="app-caption mt-1 mb-0">{session.email}</p></div><span className={`rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${wallet?.lastPaymentStatus === "success" ? "bg-emerald-50 text-emerald-700" : "bg-[#f6f6f8] text-[#505261]"}`}>{wallet?.lastPaymentStatus ?? "none"}</span></div>
+              <div className="border-t border-[#dbe4e1] p-5 md:border-t-0 md:border-l">
+                <div className="flex items-center justify-between gap-3"><div><h3 className="m-0 text-sm font-semibold">Payment method</h3><p className="app-caption mt-1 mb-0">{session.email}</p></div><span className={`rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${wallet?.lastPaymentStatus === "success" ? "bg-emerald-50 text-emerald-700" : "bg-[#f6f6f8] text-[#52645f]"}`}>{wallet?.lastPaymentStatus ?? "none"}</span></div>
                 <dl className="mt-4 grid gap-3 text-sm">
-                  <div className="flex justify-between gap-4"><dt className="text-[#7a7d8e]">Provider</dt><dd className="m-0 font-semibold">{wallet?.paymentProvider === "razorpay" ? "Razorpay" : "Not linked"}</dd></div>
-                  <div className="flex justify-between gap-4"><dt className="text-[#7a7d8e]">Last payment</dt><dd className="m-0 font-semibold">{latestPayment ? money(latestPayment.amountCredits, currency) : money(wallet?.lastPaymentAmountCredits ?? 0, currency)}</dd></div>
-                  <div className="flex justify-between gap-4"><dt className="text-[#7a7d8e]">Last checked</dt><dd className="m-0 text-right font-semibold">{dateTime(wallet?.lastCheckedAt)}</dd></div>
+                  <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Provider</dt><dd className="m-0 font-semibold">{wallet?.paymentProvider === "razorpay" ? "Razorpay" : "Not linked"}</dd></div>
+                  <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Last payment</dt><dd className="m-0 font-semibold">{latestPayment ? money(latestPayment.amountCredits, currency) : money(wallet?.lastPaymentAmountCredits ?? 0, currency)}</dd></div>
+                  <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Last checked</dt><dd className="m-0 text-right font-semibold">{dateTime(wallet?.lastCheckedAt)}</dd></div>
                 </dl>
               </div>
             </div>
           </section>
 
-          <section className="overflow-hidden rounded-xl border border-[#dfe3ea] bg-white">
-            <div className="flex items-center justify-between gap-4 border-b border-[#e1e3ed] px-5 py-4"><div><h2 className="app-section-title m-0">Invoices</h2><p className="app-caption mt-1 mb-0">Wallet top-ups and monthly charges</p></div><span className="app-caption">{data?.invoices.length ?? 0} invoices</span></div>
-            {data?.invoices.length ? <div className="divide-y divide-[#e1e3ed]">{data.invoices.map((invoice) => {
+          <section className="overflow-hidden rounded-xl border border-[#dbe4e1] bg-white">
+            <div className="flex items-center justify-between gap-4 border-b border-[#dbe4e1] px-5 py-4"><div><h2 className="app-section-title m-0">Invoices</h2><p className="app-caption mt-1 mb-0">Wallet top-ups and monthly charges</p></div><span className="app-caption">{data?.invoices.length ?? 0} invoices</span></div>
+            {data?.invoices.length ? <div className="divide-y divide-[#dbe4e1]">{data.invoices.map((invoice) => {
               const amount = (invoice.amountPaid ?? invoice.amountDue ?? 0) / 100;
               const isDownloading = busy === `invoice:${invoice._id}`;
-              return <div className="grid gap-3 px-5 py-4 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center" key={invoice._id}><div className="min-w-0"><strong className="block truncate text-sm">{invoice.invoiceNumber || "Vozon payment invoice"}</strong><span className="app-caption mt-1 block">{invoice.description || dateTime(invoice.createdAt)}</span></div><div className="sm:text-right"><strong className="block text-sm">{money(amount, invoice.currency.toUpperCase())}</strong><span className="app-caption mt-1 block capitalize">{invoice.status || "paid"} · {dateTime(invoice.createdAt)}</span></div><button className="rounded-lg border border-[#c9ccef] px-3 py-2 text-sm font-semibold text-[#5963b8] hover:bg-[#eff0fb] disabled:opacity-50" type="button" onClick={() => void downloadInvoice(invoice._id, invoice.invoiceNumber)} disabled={Boolean(busy)}>{isDownloading ? "Downloading..." : "Download"}</button></div>;
-            })}</div> : <div className="px-5 py-8 text-center text-sm text-[#7a7d8e]">No invoices yet.</div>}
+              return <div className="grid gap-3 px-5 py-4 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center" key={invoice._id}><div className="min-w-0"><strong className="block truncate text-sm">{invoice.invoiceNumber || "Vozon payment invoice"}</strong><span className="app-caption mt-1 block">{invoice.description || dateTime(invoice.createdAt)}</span></div><div className="sm:text-right"><strong className="block text-sm">{money(amount, invoice.currency.toUpperCase())}</strong><span className="app-caption mt-1 block capitalize">{invoice.status || "paid"} · {dateTime(invoice.createdAt)}</span></div><button className="rounded-lg border border-[#b8c8c3] px-3 py-2 text-sm font-semibold text-[#0e6f62] hover:bg-[#edf7f4] disabled:opacity-50" type="button" onClick={() => void downloadInvoice(invoice._id, invoice.invoiceNumber)} disabled={Boolean(busy)}>{isDownloading ? "Downloading..." : "Download"}</button></div>;
+            })}</div> : <div className="px-5 py-8 text-center text-sm text-[#71817d]">No invoices yet.</div>}
           </section>
         </div>
       </section>

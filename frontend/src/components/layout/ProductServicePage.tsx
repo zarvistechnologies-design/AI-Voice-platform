@@ -5919,8 +5919,8 @@ inset:55px;
 
         #product-service-page#product-service-page h2,
         #product-service-page#product-service-page h2 * {
-          color: #252161 !important;
-          -webkit-text-fill-color: #252161 !important;
+          color: #123d35 !important;
+          -webkit-text-fill-color: #123d35 !important;
         }
 
         #product-service-page#product-service-page :is(
@@ -5934,7 +5934,7 @@ inset:55px;
         ) {
           border-color: #d8e3ff !important;
           background: linear-gradient(145deg, #fff 0%, #eef4ff 100%) !important;
-          box-shadow: 0 10px 28px rgba(62, 117, 255, 0.08) !important;
+          box-shadow: 0 10px 28px rgba(17, 135, 120, 0.08) !important;
         }
 
         #product-service-page#product-service-page :is(
@@ -5946,8 +5946,8 @@ inset:55px;
         ) {
           border-color: #bfd0ff !important;
           background: #e8efff !important;
-          color: #3e75ff !important;
-          -webkit-text-fill-color: #3e75ff !important;
+          color: #118778 !important;
+          -webkit-text-fill-color: #118778 !important;
         }
 
         #product-service-page#product-service-page :is(
@@ -5960,7 +5960,7 @@ inset:55px;
           .service-faq
         ):hover {
           border-color: #8facff !important;
-          box-shadow: 0 16px 36px rgba(62, 117, 255, 0.14) !important;
+          box-shadow: 0 16px 36px rgba(17, 135, 120, 0.14) !important;
         }
 
         #product-service-page#product-service-page .voice-capabilities-section .voice-capability-card {
@@ -5976,21 +5976,21 @@ inset:55px;
         }
 
         #product-service-page#product-service-page .everything-included-section {
-          --everything-accent: #3e75ff;
+          --everything-accent: #118778;
           --everything-soft: #eef4ff;
           --everything-border: #bfd0ff;
         }
 
         #product-service-page#product-service-page .everything-included-section h2 span {
-          color: #252161 !important;
-          -webkit-text-fill-color: #252161 !important;
+          color: #123d35 !important;
+          -webkit-text-fill-color: #123d35 !important;
         }
 
         #product-service-page#product-service-page .everything-included-section .service-pill {
-          border-color: rgba(62, 117, 255, 0.2) !important;
+          border-color: rgba(17, 135, 120, 0.2) !important;
           background: #f4f7ff !important;
-          color: #3e75ff !important;
-          -webkit-text-fill-color: #3e75ff !important;
+          color: #118778 !important;
+          -webkit-text-fill-color: #118778 !important;
         }
 
         #product-service-page#product-service-page .everything-included-section .everything-icon-circle {
@@ -5998,7 +5998,7 @@ inset:55px;
           background: var(--everything-soft) !important;
           color: var(--everything-accent) !important;
           -webkit-text-fill-color: var(--everything-accent) !important;
-          box-shadow: 0 10px 28px rgba(62, 117, 255, 0.12) !important;
+          box-shadow: 0 10px 28px rgba(17, 135, 120, 0.12) !important;
         }
 
         #product-service-page#product-service-page .everything-included-section .everything-line {
@@ -6007,22 +6007,22 @@ inset:55px;
 
         #product-service-page#product-service-page .everything-included-section .everything-line > span {
           background: var(--everything-accent) !important;
-          box-shadow: 0 0 0 6px rgba(62, 117, 255, 0.12), 0 0 18px rgba(62, 117, 255, 0.3) !important;
+          box-shadow: 0 0 0 6px rgba(17, 135, 120, 0.12), 0 0 18px rgba(17, 135, 120, 0.3) !important;
         }
 
         #product-service-page#product-service-page .everything-included-section .everything-included-card {
           border-color: var(--everything-border) !important;
           background: linear-gradient(145deg, #fff 0%, var(--everything-soft) 100%) !important;
-          box-shadow: 0 10px 28px rgba(62, 117, 255, 0.09) !important;
+          box-shadow: 0 10px 28px rgba(17, 135, 120, 0.09) !important;
         }
 
         #product-service-page#product-service-page .everything-included-section .everything-included-card:hover {
           border-color: var(--everything-accent) !important;
-          box-shadow: 0 16px 36px rgba(62, 117, 255, 0.14) !important;
+          box-shadow: 0 16px 36px rgba(17, 135, 120, 0.14) !important;
         }
 
         #product-service-page#product-service-page .voice-build-process {
-          --build-clean-accent: #3e75ff;
+          --build-clean-accent: #118778;
           --build-clean-soft: #eef4ff;
           --build-clean-border: #bfd0ff;
           background: #fff !important;
@@ -6104,8 +6104,8 @@ inset:55px;
         }
 
         #product-service-page#product-service-page .voice-build-process .voice-build-redesign-step h3 {
-          color: #252161 !important;
-          -webkit-text-fill-color: #252161 !important;
+          color: #123d35 !important;
+          -webkit-text-fill-color: #123d35 !important;
         }
 
         #product-service-page#product-service-page .voice-build-process .voice-build-redesign-step p {
@@ -6114,7 +6114,7 @@ inset:55px;
         }
 
         #product-service-page#product-service-page .voice-config-section {
-          --agent-control-accent: #3e75ff;
+          --agent-control-accent: #118778;
           --agent-control-soft: #eef4ff;
           --agent-control-border: #bfd0ff;
           background: #fff !important;
@@ -6139,7 +6139,7 @@ inset:55px;
 
         #product-service-page#product-service-page .voice-config-section .voice-config-explorer {
           --active-config-color: var(--agent-control-accent) !important;
-          --active-config-rgb: 62, 117, 255 !important;
+          --active-config-rgb: 17, 135, 120 !important;
           border-color: #dfe3e8 !important;
           background: #fff !important;
           box-shadow: 0 12px 32px rgba(23, 32, 63, 0.06) !important;
@@ -6316,13 +6316,13 @@ inset:55px;
         }
 
         #product-service-page#product-service-page .voice-agent-contact-section .service-accent-text {
-          color: #6468ff !important;
-          -webkit-text-fill-color: #6468ff !important;
+          color: #118778 !important;
+          -webkit-text-fill-color: #118778 !important;
         }
 
         #product-service-page#product-service-page .voice-agent-contact-section .product-service-contact-button {
-          border-color: #6468ff !important;
-          background: #6468ff !important;
+          border-color: #118778 !important;
+          background: #118778 !important;
           background-image: none !important;
           color: #fff !important;
           -webkit-text-fill-color: #fff !important;
@@ -6387,7 +6387,7 @@ inset:55px;
         }
 
         #product-service-page#product-service-page#product-service-page.product-page-voice-cloning .voice-slider-track > span {
-          background: #3e75ff !important;
+          background: #118778 !important;
           background-image: none !important;
           box-shadow: none !important;
         }

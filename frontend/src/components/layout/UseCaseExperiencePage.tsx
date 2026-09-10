@@ -102,10 +102,10 @@ export function UseCaseExperiencePage({ business, experience }: { business: Busi
               </h1>
               <p className="mt-7 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">{business.summary}</p>
               <div className="mt-9 flex flex-wrap gap-3">
-                <Link className="business-blue-cta inline-flex min-h-12 items-center rounded-lg border border-[#3e75ff] bg-[#3e75ff] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(62,117,255,0.22)] transition hover:-translate-y-0.5" href="/#demo">
+                <Link className="business-blue-cta inline-flex min-h-12 items-center rounded-lg border border-[#118778] bg-[#118778] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(17,135,120,0.22)] transition hover:-translate-y-0.5" href="/#demo">
                   Book a free demo <span className="ml-3">&rarr;</span>
                 </Link>
-                <Link className="business-blue-cta inline-flex min-h-12 items-center rounded-lg border border-[#3e75ff] bg-[#3e75ff] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(62,117,255,0.22)] transition hover:-translate-y-0.5" href="/contact">
+                <Link className="business-blue-cta inline-flex min-h-12 items-center rounded-lg border border-[#118778] bg-[#118778] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(17,135,120,0.22)] transition hover:-translate-y-0.5" href="/contact">
                   Contact sales
                 </Link>
               </div>
