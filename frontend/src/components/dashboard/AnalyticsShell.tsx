@@ -184,7 +184,7 @@ function TrendChart({ rows }: { rows: AnalyticsOverview["timeSeries"] }) {
         <polyline
           points={completePoints}
           fill="none"
-          stroke="#7c8cff"
+          stroke="#108D82"
           strokeWidth="1.4"
           strokeDasharray="4 3"
           vectorEffect="non-scaling-stroke"
@@ -702,7 +702,7 @@ export function AnalyticsShell() {
   const s = data.summary;
   return (
     <main
-      className={`grid min-h-screen bg-[#f7f9f8] text-[#14231f] ${showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}
+      className={`grid min-h-screen bg-[#f7f9f8] text-[#14231f] ${showUserSidebar ? "lg:grid-cols-[248px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}
     >
       <DashboardSidebar
         activeLabel="Analytics"
@@ -896,7 +896,7 @@ export function AnalyticsShell() {
                     All calls
                   </span>
                   <span>
-                    <i className="mr-2 inline-block size-2 rounded-full bg-[#7c8cff]" />
+                    <i className="mr-2 inline-block size-2 rounded-full bg-[#108D82]" />
                     Completed
                   </span>
                 </div>
@@ -1023,7 +1023,7 @@ export function AnalyticsShell() {
                   (sum, row) => sum + row.value,
                   0,
                 )}
-                colors={["#22c98f", "#7c8cff", "#ef5d7a"]}
+                colors={["#22c98f", "#108D82", "#ef5d7a"]}
               />
             </article>
             <article className="rounded-2xl border border-white/[.08] bg-[#ffffff]/85 p-5 sm:p-6">

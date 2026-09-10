@@ -500,7 +500,7 @@ export function PhoneNumberShell() {
     <main
       className={`grid min-h-screen bg-[#f7f9f8] text-[#111827] lg:h-screen lg:overflow-hidden ${
         showUserSidebar
-          ? "lg:grid-cols-[272px_minmax(0,1fr)]"
+          ? "lg:grid-cols-[248px_minmax(0,1fr)]"
           : "lg:grid-cols-[64px_minmax(0,1fr)]"
       }`}
     >

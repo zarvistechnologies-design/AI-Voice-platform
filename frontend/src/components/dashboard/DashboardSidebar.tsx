@@ -72,6 +72,16 @@ const sidebarGroups: { label: string; items: SidebarItem[] }[] = [
 ];
 
 const prefetchedDashboardRoutes = new Set<string>();
+const dashboardWarmupRoutes = [
+  "/dashboard/agents",
+  "/dashboard/phone-number",
+  "/dashboard/campaign",
+  "/dashboard/calls",
+  "/dashboard/knowledge",
+  "/dashboard/integrations",
+  "/dashboard/developers",
+] as const;
+let dashboardDataWarmupStarted = false;
 let dashboardSidebarExpanded = false;
 
 export function getDashboardSidebarInitialState() {
@@ -304,6 +314,21 @@ export function DashboardSidebar({
   }, [router, effectiveSidebarGroups]);
 
   useEffect(() => {
+    if (dashboardDataWarmupStarted) return undefined;
+    const warmupTimer = window.setTimeout(() => {
+      dashboardDataWarmupStarted = true;
+      void import("@/lib/dashboardDataPrefetch")
+        .then(({ prefetchDashboardData }) =>
+          Promise.allSettled(
+            dashboardWarmupRoutes.map((href) => prefetchDashboardData(href)),
+          ),
+        )
+        .catch(() => undefined);
+    }, 650);
+    return () => window.clearTimeout(warmupTimer);
+  }, []);
+
+  useEffect(() => {
     try {
       const savedPreference = localStorage.getItem("showUserSidebar");
       if (savedPreference !== null) {
@@ -375,7 +400,7 @@ export function DashboardSidebar({
     <>
       <aside
         className={`dashboard-sidebar dashboard-sidebar-shell z-40 flex min-w-0 items-center gap-2 border-b border-[#dbe4e1] bg-white px-2 py-2 text-[#52645f] lg:fixed lg:inset-y-0 lg:left-0 lg:h-dvh lg:flex-col lg:items-stretch lg:border-b-0 lg:px-2.5 lg:py-3 lg:shadow-[4px_0_22px_rgba(17,135,120,0.045)] lg:transition-[width] lg:duration-300 motion-reduce:transition-none ${
-          showUserSidebar ? "lg:w-[272px]" : "lg:w-16"
+          showUserSidebar ? "lg:w-[248px]" : "lg:w-16"
         }`}
         data-expanded={showUserSidebar}
       >
@@ -405,7 +430,7 @@ export function DashboardSidebar({
               className={`dashboard-sidebar-brand-copy flex min-w-0 ${showUserSidebar ? "flex-col items-start justify-center" : "items-center"}`}
             >
               <span
-                className={`dashboard-sidebar-logo-frame relative block shrink-0 overflow-hidden ${showUserSidebar ? "h-10 w-36" : "h-10 w-10"}`}
+                className={`dashboard-sidebar-logo-frame relative block shrink-0 overflow-hidden ${showUserSidebar ? "h-12 w-[168px]" : "h-10 w-10"}`}
               >
                 {brand.logoUrl ? (
                   <Image
@@ -413,8 +438,12 @@ export function DashboardSidebar({
                     className={`dashboard-sidebar-logo object-contain transition group-hover:brightness-110 ${showUserSidebar ? "object-left" : "object-center"}`}
                     fill
                     priority
-                    sizes={showUserSidebar ? "144px" : "40px"}
-                    src={showUserSidebar ? brand.logoUrl : brand.iconUrl || brand.logoUrl}
+                    sizes={showUserSidebar ? "168px" : "132px"}
+                    src={
+                      showUserSidebar || brand.source === "platform"
+                        ? brand.logoUrl
+                        : brand.iconUrl || brand.logoUrl
+                    }
                   />
                 ) : (
                   <span className="flex h-full items-center text-sm font-bold text-[#5963b8]">
@@ -458,7 +487,7 @@ export function DashboardSidebar({
                           : "lg:justify-center"
                       } ${
                         isActive
-                          ? "bg-[#edf7f4] text-[#123d35] shadow-[inset_0_0_0_1px_rgba(17,135,120,0.12)]"
+                          ? "bg-[#118778] text-white shadow-[0_8px_18px_rgba(17,135,120,0.18)]"
                           : "text-[#52645f] hover:bg-[#f3f6f5] hover:text-[#20342e]"
                       }`}
                       href={item.href}
@@ -481,13 +510,13 @@ export function DashboardSidebar({
                       aria-current={isActive ? "page" : undefined}
                     >
                       <span
-                        className={`dashboard-sidebar-icon grid size-8 shrink-0 place-items-center rounded-lg ${isActive ? "bg-[#118778]/10" : ""}`}
+                        className={`dashboard-sidebar-icon grid size-8 shrink-0 place-items-center rounded-lg ${isActive ? "bg-white/10" : ""}`}
                       >
                         <SidebarIcon icon={item.icon} />
                       </span>
                       {showUserSidebar ? (
                         <span
-                          className={`dashboard-sidebar-label app-body hidden truncate font-medium lg:block ${isActive ? "text-[#123d35]" : "text-[#52645f]"}`}
+                          className={`dashboard-sidebar-label app-body hidden truncate font-medium lg:block ${isActive ? "text-white" : "text-[#52645f]"}`}
                         >
                           {item.label}
                         </span>
@@ -646,33 +675,44 @@ export function DashboardSidebar({
         </div>
 
         <button
-          className="dashboard-sidebar-toggle absolute right-0 top-[68px] hidden size-7 translate-x-1/2 place-items-center rounded-full border border-[#118778]/20 bg-white text-[#71817d] shadow-[0_4px_12px_rgba(37,40,74,0.08)] transition hover:border-[#aeb4e5] hover:bg-[#edf7f4] hover:text-[#123d35] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#118778]/45 motion-reduce:transition-none lg:grid"
+          className="dashboard-sidebar-toggle absolute z-[60] hidden size-8 touch-manipulation select-none cursor-pointer place-items-center rounded-lg border-0 bg-transparent text-[#52645f] transition hover:bg-[#edf7f4] hover:text-[#0e6f62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#118778]/45 active:scale-95 motion-reduce:transition-none lg:grid"
           type="button"
           title={showUserSidebar ? "Collapse sidebar" : "Expand sidebar"}
           aria-label={showUserSidebar ? "Collapse sidebar" : "Expand sidebar"}
           aria-expanded={showUserSidebar}
           onClick={toggleSidebar}
         >
-          <svg
-            className={`size-4 fill-none stroke-current stroke-2 transition-transform ${showUserSidebar ? "" : "rotate-180"}`}
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path d="m15 18-6-6 6-6" />
-          </svg>
+          {showUserSidebar ? (
+            <svg
+              className="pointer-events-none size-[18px] fill-none stroke-current stroke-[1.8]"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <rect x="3" y="4" width="18" height="16" rx="2" />
+              <path d="M15 4v16" />
+            </svg>
+          ) : (
+            <Image
+              alt=""
+              className="pointer-events-none size-7 object-contain"
+              height={28}
+              src={brand.iconUrl || brand.logoUrl}
+              width={28}
+            />
+          )}
         </button>
       </aside>
 
       <div
         className={`dashboard-page-edge pointer-events-none fixed inset-y-0 z-[35] hidden w-3 rounded-l-[14px] border-l border-[#118778]/15 shadow-[-3px_0_14px_rgba(17,135,120,0.055)] transition-[left] duration-300 motion-reduce:transition-none lg:block ${
-          showUserSidebar ? "left-[272px]" : "left-16"
+          showUserSidebar ? "left-[248px]" : "left-16"
         }`}
         aria-hidden="true"
       />
 
       <div
         className={`hidden lg:block lg:h-dvh ${
-          showUserSidebar ? "lg:w-[272px]" : "lg:w-16"
+          showUserSidebar ? "lg:w-[248px]" : "lg:w-16"
         }`}
         aria-hidden="true"
       />

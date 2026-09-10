@@ -291,7 +291,7 @@ export default function PrivacyPage() {
 
             <div className="mx-auto max-w-[780px] text-center">
               {/* PRIVACY ICON — Terms style (soft blue background, no border) */}
-              <span className="mx-auto grid size-16 place-items-center rounded-xl bg-[#EEF2FF] text-[#4165D6] shadow-[0_18px_45px_rgba(77,98,160,0.10)]">
+              <span className="mx-auto grid size-16 place-items-center rounded-xl bg-[#EEF2FF] text-[#108D82] shadow-[0_18px_45px_rgba(77,98,160,0.10)]">
                 <svg
                   aria-hidden="true"
                   className="size-8"
@@ -323,7 +323,7 @@ export default function PrivacyPage() {
               <p className="mt-4 inline-flex items-center justify-center gap-2 text-sm text-black">
                 <svg
                   aria-hidden="true"
-                  className="size-4 text-[#5879E8]"
+                  className="size-4 text-[#108D82]"
                   fill="none"
                   viewBox="0 0 24 24"
                 >
@@ -356,7 +356,7 @@ export default function PrivacyPage() {
             {/* INTRO CARD */}
             <div className="flex flex-col gap-5 rounded-lg border border-[#E2E2E2] bg-white p-6 shadow-[0_22px_55px_rgba(0,0,0,0.04)] sm:flex-row sm:items-start sm:p-8">
               {/* Icon — Terms style */}
-              <span className="grid size-11 shrink-0 place-items-center rounded-lg bg-[#EEF2FF] text-[#4165D6]">
+              <span className="grid size-11 shrink-0 place-items-center rounded-lg bg-[#EEF2FF] text-[#108D82]">
                 <svg
                   aria-hidden="true"
                   className="size-5"
@@ -384,7 +384,7 @@ export default function PrivacyPage() {
             {/* IMPORTANT NOTICE */}
             <div className="flex flex-col gap-4 rounded-lg border border-[#E2E2E2] bg-white p-6 sm:flex-row sm:items-start">
               {/* Icon — Terms style */}
-              <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#EEF2FF] text-[#5879E8]">
+              <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#EEF2FF] text-[#108D82]">
                 <svg
                   aria-hidden="true"
                   className="size-5"
@@ -436,7 +436,7 @@ export default function PrivacyPage() {
               >
                 <div className="flex items-center gap-4">
                   {/* Number badge — Terms style (blue) */}
-                  <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg bg-[#EEF2FF] font-mono text-xs font-bold tracking-normal text-[#4165D6]">
+                  <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg bg-[#EEF2FF] font-mono text-xs font-bold tracking-normal text-[#108D82]">
                     {section.number}
                   </span>
 
@@ -445,7 +445,7 @@ export default function PrivacyPage() {
                   </h2>
                 </div>
 
-                <div className="privacy-policy-copy mt-6 rounded-lg border border-[#E5E5E5] border-l-[#4165D6] bg-white p-5 text-[15px] leading-7 text-black sm:p-6 sm:text-base sm:leading-8">
+                <div className="privacy-policy-copy mt-6 rounded-lg border border-[#E5E5E5] border-l-[#108D82] bg-white p-5 text-[15px] leading-7 text-black sm:p-6 sm:text-base sm:leading-8">
                   {section.content}
                 </div>
               </article>
@@ -458,12 +458,12 @@ export default function PrivacyPage() {
             >
               <div className="flex items-center gap-4">
                 {/* Number badge — Terms style */}
-                <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg bg-[#EEF2FF] font-mono text-xs font-bold text-[#4165D6]">
+                <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg bg-[#EEF2FF] font-mono text-xs font-bold text-[#108D82]">
                   12
                 </span>
 
                 <div>
-                  <p className="text-xs font-bold uppercase text-[#5879E8]">
+                  <p className="text-xs font-bold uppercase text-[#108D82]">
                     Privacy requests
                   </p>
 
@@ -473,7 +473,7 @@ export default function PrivacyPage() {
                 </div>
               </div>
 
-              <div className="mt-6 rounded-lg border border-[#E5E5E5] border-l-[#4165D6] bg-white p-5 sm:p-6">
+              <div className="mt-6 rounded-lg border border-[#E5E5E5] border-l-[#108D82] bg-white p-5 sm:p-6">
                 <p className="max-w-[760px] text-[15px] leading-7 text-black sm:text-base sm:leading-8">
                   For privacy questions or requests, email us with enough
                   detail to identify your account or interaction. Do not
@@ -534,7 +534,7 @@ export default function PrivacyPage() {
             width: 0.35rem;
             height: 0.35rem;
             border-radius: 999px;
-            background: #4165D6;
+            background: #108D82;
             content: "";
           }
 

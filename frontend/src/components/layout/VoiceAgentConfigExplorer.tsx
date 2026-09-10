@@ -828,7 +828,7 @@ export function VoiceAgentConfigExplorer({
 
         .voice-config-option-grid-label {
           margin-bottom: 0.85rem;
-          color: #75baff !important;
+          color: #108D82 !important;
           font-size: 0.78rem !important;
         }
 
@@ -843,7 +843,7 @@ export function VoiceAgentConfigExplorer({
         }
 
         .voice-config-option-check {
-          color: #75baff;
+          color: #108D82;
           font-size: 1.35rem;
         }
 

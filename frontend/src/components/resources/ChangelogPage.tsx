@@ -48,7 +48,7 @@ const releases: Release[] = [
     title: "Conversation outcomes that are easier to act on",
     summary:
       "Teams can now review call quality by outcome and quickly locate the conversations that need attention.",
-    accent: "border-[#8b7cff]/28 bg-[#8b7cff]/[0.055]",
+    accent: "border-[#108D82]/28 bg-[#108D82]/[0.055]",
     updates: [
       {
         type: "New",
@@ -117,7 +117,7 @@ const releases: Release[] = [
     title: "Stronger workspace access and audit visibility",
     summary:
       "Workspace owners have clearer control over who can edit agents, access recordings, and manage production integrations.",
-    accent: "border-[#65a8ff]/28 bg-[#65a8ff]/[0.05]",
+    accent: "border-[#108D82]/28 bg-[#108D82]/[0.05]",
     updates: [
       {
         type: "New",
@@ -137,7 +137,7 @@ const releases: Release[] = [
 
 const updateTypeStyles: Record<UpdateType, string> = {
   New: "border-[#45ddce]/28 bg-[#45ddce]/10 text-[#75fff0]",
-  Improved: "border-[#8b7cff]/28 bg-[#8b7cff]/10 text-[#b8adff]",
+  Improved: "border-[#108D82]/28 bg-[#108D82]/10 text-[#b8adff]",
   Fixed: "border-[#ffb25b]/28 bg-[#ffb25b]/10 text-[#ffc982]",
 };
 
@@ -260,7 +260,7 @@ export function ChangelogPage() {
             <div className="relative">
               <div
                 aria-hidden="true"
-                className="changelog-timeline absolute bottom-10 left-[19px] top-7 w-px bg-gradient-to-b from-[#45ddce]/55 via-[#8b7cff]/25 to-transparent sm:left-[23px]"
+                className="changelog-timeline absolute bottom-10 left-[19px] top-7 w-px bg-gradient-to-b from-[#45ddce]/55 via-[#108D82]/25 to-transparent sm:left-[23px]"
               />
 
               <div className="space-y-8">

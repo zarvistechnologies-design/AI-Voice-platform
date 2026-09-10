@@ -26,8 +26,8 @@ const helpTopics = [
       "Configure instructions, voices, languages, tools, and conversation behaviour.",
     guides: "8 guides",
     icon: "voice" as TopicIconName,
-    accent: "border-[#8b7cff]/24 bg-[#8b7cff]/[0.05]",
-    iconStyle: "border-[#8b7cff]/25 bg-[#8b7cff]/10 text-[#b8adff]",
+    accent: "border-[#108D82]/24 bg-[#108D82]/[0.05]",
+    iconStyle: "border-[#108D82]/25 bg-[#108D82]/10 text-[#b8adff]",
   },
   {
     title: "Calls & conversations",
@@ -44,8 +44,8 @@ const helpTopics = [
       "Connect business tools, configure webhooks, and troubleshoot API requests.",
     guides: "9 guides",
     icon: "code" as TopicIconName,
-    accent: "border-[#65a8ff]/24 bg-[#65a8ff]/[0.045]",
-    iconStyle: "border-[#65a8ff]/25 bg-[#65a8ff]/10 text-[#91c2ff]",
+    accent: "border-[#108D82]/24 bg-[#108D82]/[0.045]",
+    iconStyle: "border-[#108D82]/25 bg-[#108D82]/10 text-[#108D82]",
   },
   {
     title: "Analytics",
@@ -319,14 +319,14 @@ export function HelpCenterPage() {
                     {/* Blue left rail */}
                     <div
                       aria-hidden="true"
-                      className="absolute inset-y-0 left-0 w-[6px] rounded-l-xl bg-[#5379FF]"
+                      className="absolute inset-y-0 left-0 w-[6px] rounded-l-xl bg-[#108D82]"
                     />
 
                     {/* Content */}
                     <div className="pl-2">
                       <div className="flex items-start justify-between gap-3">
                         {/* Topic Icon */}
-                        <div className="grid size-11 place-items-center rounded-xl border border-[#A5B8FF] bg-[#EEF2FF] text-[#5379FF]">
+                        <div className="grid size-11 place-items-center rounded-xl border border-[#A5B8FF] bg-[#EEF2FF] text-[#108D82]">
                           <TopicIcon name={topic.icon} />
                         </div>
                       </div>
@@ -339,7 +339,7 @@ export function HelpCenterPage() {
                         {topic.description}
                       </p>
 
-                      <span className="mt-5 inline-flex rounded-full bg-[#F0F3FF] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#5379FF]">
+                      <span className="mt-5 inline-flex rounded-full bg-[#F0F3FF] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#108D82]">
                         {topic.guides}
                       </span>
                     </div>
@@ -369,7 +369,7 @@ export function HelpCenterPage() {
                   {/* left purple rail — full height, not covered */}
                   <div
                     aria-hidden="true"
-                    className="absolute inset-y-0 left-0 z-10 w-[6px] rounded-l-2xl bg-[#5379FF]"
+                    className="absolute inset-y-0 left-0 z-10 w-[6px] rounded-l-2xl bg-[#108D82]"
                   />
 
                   <div className="grid md:grid-cols-2 lg:grid-cols-3">
@@ -385,12 +385,12 @@ export function HelpCenterPage() {
                       >
                         <div>
                           <div className="flex items-start justify-between gap-3">
-                            <span className="inline-flex rounded-full bg-[#EEF2FF] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#7c6af0]">
+                            <span className="inline-flex rounded-full bg-[#EEF2FF] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#108D82]">
                               {guide.category}
                             </span>
                           </div>
 
-                          <h3 className="mt-4 text-base font-semibold tracking-[-0.02em] text-[#1a1523] transition group-hover:text-[#5b4fd6]">
+                          <h3 className="mt-4 text-base font-semibold tracking-[-0.02em] text-[#1a1523] transition group-hover:text-[#108D82]">
                             {guide.title}
                           </h3>
 
@@ -399,7 +399,7 @@ export function HelpCenterPage() {
                           </p>
                         </div>
 
-                        <span className="mt-5 inline-flex items-center gap-1.5 text-xs font-semibold text-[#6b5ce7] transition group-hover:gap-2.5">
+                        <span className="mt-5 inline-flex items-center gap-1.5 text-xs font-semibold text-[#108D82] transition group-hover:gap-2.5">
                           Read guide
                           <span aria-hidden="true">→</span>
                         </span>
@@ -410,7 +410,7 @@ export function HelpCenterPage() {
                   {/* right rail stays as-is */}
                   <div
                     aria-hidden="true"
-                    className="absolute inset-y-0 right-0 w-[6px] bg-[#5379FF]"
+                    className="absolute inset-y-0 right-0 w-[6px] bg-[#108D82]"
                   />
                 </div>
               </div>
@@ -440,13 +440,13 @@ export function HelpCenterPage() {
               {/* left purple rail */}
               <div
                 aria-hidden="true"
-                className="absolute inset-y-0 left-0 z-10 w-[6px] bg-[#5379FF] shadow-[0_0_6px_1px_rgba(70,55,160,0.7),0_0_14px_3px_rgba(80,60,170,0.45),0_0_28px_6px_rgba(60,45,140,0.3)]"
+                className="absolute inset-y-0 left-0 z-10 w-[6px] bg-[#108D82] shadow-[0_0_6px_1px_rgba(70,55,160,0.7),0_0_14px_3px_rgba(80,60,170,0.45),0_0_28px_6px_rgba(60,45,140,0.3)]"
               />
 
               {/* card header */}
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#efeaf8] px-5 py-4 sm:px-6">
                 <div className="inline-flex items-center gap-2.5">
-                  <span className="grid size-7 place-items-center rounded-full bg-[#EEF2FF] text-sm font-bold text-[#7c6af0]">
+                  <span className="grid size-7 place-items-center rounded-full bg-[#EEF2FF] text-sm font-bold text-[#108D82]">
                     ?
                   </span>
                   <span className="text-sm font-semibold text-[#1a1523]">
@@ -467,7 +467,7 @@ export function HelpCenterPage() {
                         {faq.question}
                       </span>
 
-                      <span className="grid size-8 shrink-0 place-items-center rounded-full border border-[#e7e2f3] bg-white text-[#7c6af0] transition group-open:border-transparent group-open:bg-[#6b5ce7] group-open:text-white">
+                      <span className="grid size-8 shrink-0 place-items-center rounded-full border border-[#e7e2f3] bg-white text-[#108D82] transition group-open:border-transparent group-open:bg-[#108D82] group-open:text-white">
                         <svg
                           aria-hidden="true"
                           className="size-3.5 group-open:hidden"
@@ -508,7 +508,7 @@ export function HelpCenterPage() {
               <div className="border-t border-[#efeaf8] bg-[#EEF2FF] px-5 py-4 sm:px-6">
                 <a
                   href="mailto:hello@vozon.ai"
-                  className="inline-flex items-center gap-1.5 text-xs font-medium text-[#9a94a8] transition hover:text-[#6b5ce7]"
+                  className="inline-flex items-center gap-1.5 text-xs font-medium text-[#9a94a8] transition hover:text-[#108D82]"
                 >
                   Still stuck? Ask support
                   <span aria-hidden="true">→</span>
@@ -540,7 +540,7 @@ export function HelpCenterPage() {
               >
                 <div
                   aria-hidden="true"
-                  className="absolute inset-y-0 left-0 w-1.5 bg-[#5379FF]"
+                  className="absolute inset-y-0 left-0 w-1.5 bg-[#108D82]"
                 />
 
                 <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#b0a8c9]">
@@ -553,7 +553,7 @@ export function HelpCenterPage() {
                   Send details, screenshots, or call references to
                   hello@vozon.ai.
                 </p>
-                <span className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-[#EEF2FF] px-3.5 py-1.5 text-xs font-semibold text-[#6b5ce7] transition group-hover:gap-2.5">
+                <span className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-[#EEF2FF] px-3.5 py-1.5 text-xs font-semibold text-[#108D82] transition group-hover:gap-2.5">
                   Send an email
                   <span aria-hidden="true">→</span>
                 </span>
@@ -566,7 +566,7 @@ export function HelpCenterPage() {
               >
                 <div
                   aria-hidden="true"
-                  className="absolute inset-y-0 left-0 w-1.5 bg-[#5379FF]"
+                  className="absolute inset-y-0 left-0 w-1.5 bg-[#108D82]"
                 />
 
                 <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#b0a8c9]">
@@ -579,7 +579,7 @@ export function HelpCenterPage() {
                   Get help with setup, workflows, account questions, or
                   production planning.
                 </p>
-                <span className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-[#EEF2FF] px-3.5 py-1.5 text-xs font-semibold text-[#6b5ce7] transition group-hover:gap-2.5">
+                <span className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-[#EEF2FF] px-3.5 py-1.5 text-xs font-semibold text-[#108D82] transition group-hover:gap-2.5">
                   Contact support
                   <span aria-hidden="true">→</span>
                 </span>
@@ -592,7 +592,7 @@ export function HelpCenterPage() {
               >
                 <div
                   aria-hidden="true"
-                  className="absolute inset-y-0 left-0 w-1.5 bg-[#5379FF]"
+                  className="absolute inset-y-0 left-0 w-1.5 bg-[#108D82]"
                 />
 
                 <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#b0a8c9]">
@@ -605,7 +605,7 @@ export function HelpCenterPage() {
                   Review API access, integrations, webhook setup, and developer
                   tools.
                 </p>
-                <span className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-[#EEF2FF] px-3.5 py-1.5 text-xs font-semibold text-[#6b5ce7] transition group-hover:gap-2.5">
+                <span className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-[#EEF2FF] px-3.5 py-1.5 text-xs font-semibold text-[#108D82] transition group-hover:gap-2.5">
                   Open developer portal
                   <span aria-hidden="true">→</span>
                 </span>

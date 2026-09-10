@@ -927,9 +927,9 @@ export const voiceApi = {
       return result;
     });
   },
-  agents: () => cachedRequest<{ agents: BackendAgent[] }>("/agents", 15_000),
+  agents: () => cachedRequest<{ agents: BackendAgent[] }>("/agents", 60_000),
   agentSummaries: () =>
-    cachedRequest<{ agents: AgentSummary[] }>("/agents?view=summary", 15_000),
+    cachedRequest<{ agents: AgentSummary[] }>("/agents?view=summary", 60_000),
   knowledgeAgents: () =>
     cachedRequest<{ agents: KnowledgeAgentSummary[] }>(
       "/agents?view=knowledge",
@@ -941,11 +941,11 @@ export const voiceApi = {
       agents: KnowledgeAgentSummary[];
       sources: WorkspaceKnowledgeSource[];
       maximumSources: number;
-    }>("/knowledge", 15_000, ["/knowledge", "/agents"]),
+    }>("/knowledge", 60_000, ["/knowledge", "/agents"]),
   agent: (agentId: string) =>
     cachedRequest<{ agent: BackendAgent }>(
       `/agents/${encodeURIComponent(agentId)}`,
-      15_000,
+      60_000,
     ),
   agentDashboard: (agentId: string) => {
     const path = `/agents/${encodeURIComponent(agentId)}/dashboard`;
@@ -954,7 +954,7 @@ export const voiceApi = {
     const sessionScope = currentVoiceSessionScope();
     return cachedRequest<{ agent: BackendAgent; config: VoiceConfigResponse }>(
       path,
-      15_000,
+      60_000,
       dependencies,
     ).then((result) => {
       if (
@@ -1186,7 +1186,7 @@ export const voiceApi = {
       }),
     }),
   campaigns: () =>
-    cachedRequest<{ campaigns: BackendCampaign[] }>("/campaigns", 3_000),
+    cachedRequest<{ campaigns: BackendCampaign[] }>("/campaigns", 15_000),
   campaign: (campaignId: string) =>
     request<{ campaign: BackendCampaign }>(`/campaigns/${campaignId}`),
   createCampaign: (input: CreateCampaignInput) =>
@@ -1240,7 +1240,7 @@ export const voiceApi = {
       message?: string;
     }>(`/campaigns/${campaignId}/cancel`, { method: "POST" }, ["/campaigns"]),
   phoneNumbers: () =>
-    cachedRequest<{ numbers: BackendPhoneNumber[] }>("/phone-numbers", 15_000),
+    cachedRequest<{ numbers: BackendPhoneNumber[] }>("/phone-numbers", 60_000),
   createPhoneNumber: (input: PhoneNumberImportInput) =>
     mutation<{ number: BackendPhoneNumber }>(
       "/phone-numbers",
@@ -1364,7 +1364,7 @@ export const voiceApi = {
     query.set("limit", String(input.limit ?? 20));
     if (input.recent) query.set("view", "recent");
     const path = `/calls?${query.toString()}`;
-    return cachedRequest<CallsResponse>(path, 3_000).then(
+    return cachedRequest<CallsResponse>(path, 10_000).then(
       sanitizeCallsResponse,
     );
   },

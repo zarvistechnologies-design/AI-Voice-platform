@@ -49,7 +49,7 @@ function Pill({ children }: { children: ReactNode }) {
 function CheckIcon({ tone = "accent" }: { tone?: "accent" | "purple" | "orange" }) {
   const color =
     tone === "purple"
-      ? "border-[#8f83e8]/25 bg-[#8f83e8]/10 text-[#c5bdff]"
+      ? "border-[#108D82]/25 bg-[#108D82]/10 text-[#c5bdff]"
       : tone === "orange"
         ? "border-[#ff9655]/25 bg-[#ff9655]/10 text-[#ffb17e]"
         : "border-[var(--industry-accent)]/25 bg-[var(--industry-accent)]/10 text-[var(--industry-accent-soft)]";
@@ -108,7 +108,7 @@ export function IndustryExperiencePage({
     "var(--industry-logo-accent)",
     "#c5bdff",
     "#ffb17e",
-    "#8dd7ff",
+    "#108D82",
     "#b8f65b",
     "#ff8fb1",
   ];
@@ -245,7 +245,7 @@ export function IndustryExperiencePage({
                   className={`business-review-card flex min-h-[275px] flex-col justify-between rounded-xl border p-6 transition duration-300 hover:-translate-y-1 ${
                     review.tone === "accent"
                       ? "border-[var(--industry-accent)]/25 bg-[var(--industry-accent)]/[0.045]"
-                      : "border-[#8f83e8]/25 bg-[#8f83e8]/[0.045]"
+                      : "border-[#108D82]/25 bg-[#108D82]/[0.045]"
                   }`}
                   key={review.name}
                 >
@@ -309,7 +309,7 @@ export function IndustryExperiencePage({
                     ? "border-[var(--industry-accent)]/25 bg-[var(--industry-accent)]/[0.06] text-[var(--industry-accent-soft)] hover:bg-[var(--industry-accent)]/10"
                     : tone === "orange"
                       ? "border-[#ff9655]/25 bg-[#ff9655]/[0.06] text-[#ffb17e] hover:bg-[#ff9655]/10"
-                      : "border-[#8f83e8]/25 bg-[#8f83e8]/[0.06] text-[#c5bdff] hover:bg-[#8f83e8]/10";
+                      : "border-[#108D82]/25 bg-[#108D82]/[0.06] text-[#c5bdff] hover:bg-[#108D82]/10";
 
                 return (
                   <div
@@ -385,7 +385,7 @@ export function IndustryExperiencePage({
                         index === 0
                           ? "border-[var(--industry-accent)]/20 bg-[var(--industry-accent)]/10 text-[var(--industry-accent-soft)]"
                           : index === 1
-                            ? "border-[#8f83e8]/20 bg-[#8f83e8]/10 text-[#c5bdff]"
+                            ? "border-[#108D82]/20 bg-[#108D82]/10 text-[#c5bdff]"
                             : "border-[#ff9655]/20 bg-[#ff9655]/10 text-[#ffb17e]"
                       }`}
                     >
@@ -465,8 +465,8 @@ export function IndustryExperiencePage({
                 <Link className="business-pricing-button mt-7 inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-[var(--industry-accent)]/30 bg-[var(--industry-accent)]/10 text-sm font-bold text-[var(--industry-accent-soft)] transition hover:bg-[var(--industry-accent)]/15" href="/#demo">Get started</Link>
               </article>
 
-              <article className="business-pricing-card relative overflow-hidden rounded-2xl border border-[#8f83e8]/30 bg-[radial-gradient(circle_at_95%_0%,rgba(143,131,232,0.22),transparent_42%),#0a0b0d] p-6 sm:p-7">
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#8f83e8] to-transparent" />
+              <article className="business-pricing-card relative overflow-hidden rounded-2xl border border-[#108D82]/30 bg-[radial-gradient(circle_at_95%_0%,rgba(143,131,232,0.22),transparent_42%),#0a0b0d] p-6 sm:p-7">
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#108D82] to-transparent" />
                 <div className="flex items-start justify-between gap-4">
                   <div><span className="text-xs font-bold uppercase tracking-[0.14em] text-[#c5bdff]">For growing teams</span><h3 className="mt-2 text-xl font-bold">Enterprise</h3></div>
                   <span className="rounded-full border border-[#ff9655]/25 bg-[#ff9655]/10 px-3 py-1.5 text-xs font-bold text-[#ffb17e]">Custom plan</span>
@@ -477,7 +477,7 @@ export function IndustryExperiencePage({
                     <li className="flex items-start gap-3" key={item}><CheckIcon tone="purple" />{item}</li>
                   ))}
                 </ul>
-                <Link className="business-pricing-button mt-7 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-[linear-gradient(90deg,var(--industry-accent),#8f83e8)] text-sm font-extrabold text-[#031310] transition hover:brightness-110" href="/contact">Talk to sales</Link>
+                <Link className="business-pricing-button mt-7 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-[linear-gradient(90deg,var(--industry-accent),#108D82)] text-sm font-extrabold text-[#031310] transition hover:brightness-110" href="/contact">Talk to sales</Link>
               </article>
             </div>
           </div>

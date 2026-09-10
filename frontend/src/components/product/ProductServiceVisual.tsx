@@ -189,7 +189,7 @@ function ApiVisual() {
         <span className="ml-auto text-[8px] text-white/24">request.ts</span>
       </div>
       <div className="p-4 text-[10px] leading-6 sm:p-5 sm:text-[11px]">
-        <p><span className="text-[#ff9fb7]">const</span> <span className="text-[#8dd7ff]">speech</span> <span className="text-white/42">=</span> <span className="text-[#ff9fb7]">await</span> <span className="text-white/74">vozon.voice.create</span><span className="text-white/42">{"({"}</span></p>
+        <p><span className="text-[#ff9fb7]">const</span> <span className="text-[#108D82]">speech</span> <span className="text-white/42">=</span> <span className="text-[#ff9fb7]">await</span> <span className="text-white/74">vozon.voice.create</span><span className="text-white/42">{"({"}</span></p>
         <p className="pl-5"><span className="text-[#b8a9ff]">voice</span><span className="text-white/42">:</span> <span className="text-[#f6db75]">&quot;maya_support&quot;</span><span className="text-white/42">,</span></p>
         <p className="pl-5"><span className="text-[#b8a9ff]">text</span><span className="text-white/42">:</span> <span className="text-[#f6db75]">&quot;Your booking is confirmed.&quot;</span><span className="text-white/42">,</span></p>
         <p className="pl-5"><span className="text-[#b8a9ff]">stream</span><span className="text-white/42">:</span> <span className="text-[#5eead4]">true</span></p>
@@ -275,7 +275,7 @@ function SpeechAnalyticsVisual() {
 
 function SentimentVisual() {
   const segments = [
-    { label: "Neutral", width: "24%", color: "#8dd7ff" },
+    { label: "Neutral", width: "24%", color: "#108D82" },
     { label: "Concern", width: "30%", color: "#f6db75" },
     { label: "Frustration", width: "46%", color: "#ff9f8f" },
   ];
@@ -291,7 +291,7 @@ function SentimentVisual() {
         </div>
         <div className="relative mt-8 h-24 border-b border-l border-white/[0.08]">
           <svg aria-hidden="true" className="absolute inset-0 h-full w-full" preserveAspectRatio="none" viewBox="0 0 400 100">
-            <defs><linearGradient id="sentiment-line" x1="0" x2="1"><stop stopColor="#8dd7ff" /><stop offset=".55" stopColor="#f6db75" /><stop offset="1" stopColor="#ff9f8f" /></linearGradient></defs>
+            <defs><linearGradient id="sentiment-line" x1="0" x2="1"><stop stopColor="#108D82" /><stop offset=".55" stopColor="#f6db75" /><stop offset="1" stopColor="#ff9f8f" /></linearGradient></defs>
             <path d="M0 72 C45 68,65 74,95 61 S145 50,178 57 S230 68,252 40 S315 55,340 25 S375 19,400 10" fill="none" stroke="url(#sentiment-line)" strokeWidth="3" />
           </svg>
         </div>

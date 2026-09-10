@@ -122,7 +122,7 @@ export function VoiceStackCalculator() {
         </div>
         <div className="pricing-stack-subtotal rounded-2xl border border-[#118778]/20 bg-[#118778]/[0.07] px-5 py-4 text-left lg:min-w-56 lg:text-right">
           <span className="block text-[10px] font-bold uppercase tracking-[0.13em] text-[#0e6f62]">Model stack subtotal</span>
-          <strong className="mt-1 block text-3xl font-semibold tracking-[-0.04em] text-[#454bd0]">{formatEstimatedMinuteCost(total)}</strong>
+          <strong className="mt-1 block text-3xl font-semibold tracking-[-0.04em] text-[#108D82]">{formatEstimatedMinuteCost(total)}</strong>
         </div>
       </div>
 

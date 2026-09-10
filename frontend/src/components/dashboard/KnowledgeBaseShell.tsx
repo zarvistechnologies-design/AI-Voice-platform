@@ -170,7 +170,7 @@ function sourceTypeLabel(source: KnowledgeSource) {
 function statusStyle(status: KnowledgeSource["status"]) {
   if (status === "ready") return "bg-[#ecfdf5] text-[#047857]";
   if (status === "failed") return "bg-[#fff1f2] text-[#b91c1c]";
-  if (status === "processing") return "bg-[#eff6ff] text-[#1d4ed8]";
+  if (status === "processing") return "bg-[#eff6ff] text-[#108D82]";
   return "bg-[#f1f5f9] text-[#64748b]";
 }
 
@@ -452,7 +452,7 @@ export function KnowledgeBaseShell() {
 
   return (
     <main
-      className={`grid min-h-screen bg-[#f6f8fc] text-[#111827] lg:h-screen lg:overflow-hidden ${showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}
+      className={`grid min-h-screen bg-[#f6f8fc] text-[#111827] lg:h-screen lg:overflow-hidden ${showUserSidebar ? "lg:grid-cols-[248px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}
     >
       <DashboardSidebar
         activeLabel="Knowledge Base"

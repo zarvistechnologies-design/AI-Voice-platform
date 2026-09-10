@@ -27,7 +27,7 @@ const COLORS = [
   "#a855f7",
   "#f59e0b",
   "#ef5d7a",
-  "#2ca9ff",
+  "#108D82",
 ];
 const tooltipStyle = {
   background: "#ffffff",

@@ -712,11 +712,11 @@ export default function AboutPage() {
           }
 
           #about-page [class*="text-[#118778]"] {
-            color: #805bd8;
+            color: #108D82;
           }
 
           #about-page [class*="bg-[#118778]"] {
-            background-color: #805bd8;
+            background-color: #108D82;
           }
 
           #about-page [class*="border-[#118778]"] {
@@ -816,12 +816,12 @@ export default function AboutPage() {
           }
 
           #about-page .about-values-card-bar {
-            background: linear-gradient(90deg, #123d35, #60a5fa);
+            background: linear-gradient(90deg, #123d35, #108D82);
             opacity: .9;
           }
 
           #about-page .about-values-card:hover {
-            border-color: #82ace5;
+            border-color: #108D82;
             box-shadow: 0 18px 44px rgba(26, 79, 150, .14);
           }
 

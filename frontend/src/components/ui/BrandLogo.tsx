@@ -7,9 +7,11 @@ import { useBrand } from "@/components/branding/BrandProvider";
 
 export function BrandLogo({
   compact = false,
+  logoColor,
   showWebsiteLogo = false,
 }: {
   compact?: boolean;
+  logoColor?: string;
   showWebsiteLogo?: boolean;
 }) {
   const brand = useBrand();
@@ -28,12 +30,28 @@ export function BrandLogo({
               : "h-10 w-[140px] max-[560px]:h-8 max-[560px]:w-[112px]"
           }`}
         >
-          {logoUrl.startsWith("/") ? (
-            <Image alt={brand.productName} className="h-full w-full object-contain" height={350} loading="eager" src={logoUrl} width={1160} />
+          {logoColor ? (
+            <span
+              aria-hidden="true"
+              className="block size-full"
+              style={{
+                backgroundColor: logoColor,
+                WebkitMaskImage: `url("${logoUrl}")`,
+                WebkitMaskPosition: "center",
+                WebkitMaskRepeat: "no-repeat",
+                WebkitMaskSize: "contain",
+                maskImage: `url("${logoUrl}")`,
+                maskPosition: "center",
+                maskRepeat: "no-repeat",
+                maskSize: "contain",
+              }}
+            />
+          ) : logoUrl.startsWith("/") ? (
+            <Image alt={brand.productName} className="platform-brand-logo h-full w-full object-contain" height={350} loading="eager" src={logoUrl} width={1160} />
           ) : (
             // Partner assets are already served by the approved asset/domain pipeline.
             // eslint-disable-next-line @next/next/no-img-element
-            <img alt={brand.productName} className="h-full w-full object-contain" src={logoUrl} />
+            <img alt={brand.productName} className="platform-brand-logo h-full w-full object-contain" src={logoUrl} />
           )}
         </span>
       ) : (
