@@ -505,7 +505,7 @@ export function KnowledgeBaseShell() {
           </div>
 
           <section className="dashboard-flat-panel min-w-0 overflow-hidden bg-white">
-            <div className="grid gap-4 border-b border-[#edf0f4] p-4 sm:p-5 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
+            <div className="dashboard-panel-heading flex flex-col gap-4 px-4 py-4 sm:px-5 lg:flex-row lg:items-center lg:justify-between">
               <div>
                 <h2 className="app-section-title m-0">All knowledge</h2>
                 <p className="app-caption mt-1 mb-0">
@@ -513,46 +513,39 @@ export function KnowledgeBaseShell() {
                   workspace.
                 </p>
               </div>
-              <label className="app-label grid gap-2">
-                Search
-                <span className="relative">
-                  <span className="absolute inset-y-0 left-3 grid place-items-center text-[#94a3b8]">
-                    <Icon icon="search" />
+              {!loading ? (
+                <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
+                  <span className="rounded-full bg-[#edf7f4] px-3 py-1.5 text-[#123d35]">
+                    {sources.length} total
                   </span>
-                  <input
-                    className={`${controlClass} pl-10`}
-                    placeholder="Search knowledge or agent"
-                    value={query}
-                    onChange={(event) => setQuery(event.target.value)}
-                  />
-                </span>
-              </label>
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-emerald-700">
+                    <span className="size-1.5 rounded-full bg-emerald-500" />
+                    {readyCount} ready
+                  </span>
+                  <span className={`rounded-full px-3 py-1.5 ${issueCount ? "bg-rose-50 text-rose-700" : "bg-slate-100 text-slate-600"}`}>
+                    {issueCount} issues
+                  </span>
+                  <span className="rounded-full bg-slate-100 px-3 py-1.5 text-slate-600">
+                    {totalChunks} chunks
+                  </span>
+                </div>
+              ) : null}
             </div>
 
-            {!loading && sources.length ? (
-              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-b border-[#edf0f4] bg-[#fafcfb] px-4 py-2.5 sm:px-5">
-                <span className="app-caption">
-                  <strong className="text-[#14231f]">{sources.length}</strong>{" "}
-                  total sources
+            <div className="dashboard-filter-bar px-4 py-3 sm:px-5">
+              <label className="relative block">
+                <span className="sr-only">Search knowledge</span>
+                <span className="pointer-events-none absolute inset-y-0 left-3 grid place-items-center text-[#94a3b8]">
+                  <Icon icon="search" />
                 </span>
-                <span className="app-caption">
-                  <strong className="text-emerald-700">{readyCount}</strong>{" "}
-                  ready
-                </span>
-                <span className="app-caption">
-                  <strong
-                    className={issueCount ? "text-rose-600" : "text-[#14231f]"}
-                  >
-                    {issueCount}
-                  </strong>{" "}
-                  issues
-                </span>
-                <span className="app-caption">
-                  <strong className="text-[#14231f]">{totalChunks}</strong>{" "}
-                  chunks
-                </span>
-              </div>
-            ) : null}
+                <input
+                  className={`${controlClass} pl-10`}
+                  placeholder="Search source, agent, type, or content"
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                />
+              </label>
+            </div>
 
             {loading ? (
               <div className="grid min-h-52 place-items-center p-10">
@@ -595,120 +588,123 @@ export function KnowledgeBaseShell() {
                 </div>
               </div>
             ) : (
-              <ul className="divide-y divide-[#edf0f4]">
-                {filteredSources.map((source) => (
-                  <li
-                    className="grid gap-3 p-4 transition hover:bg-[#fbfdff] sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:p-5"
-                    key={`${source.agentId}-${source._id}`}
-                  >
-                    <div className="flex min-w-0 gap-3">
-                      <span className="mt-0.5 grid size-10 shrink-0 place-items-center rounded-lg border border-[#b8c8c3] bg-[#edf7f4] text-[#0e6f62]">
-                        <Icon
-                          icon={source.sourceType === "url" ? "link" : "file"}
-                        />
-                      </span>
-                      <div className="min-w-0">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <strong className="app-strong truncate">
+              <div>
+                <div className="hidden grid-cols-[minmax(280px,1fr)_minmax(150px,.45fr)_110px_minmax(190px,auto)] gap-4 bg-[#f7f9f8] px-5 py-3 text-[10px] font-bold uppercase tracking-[0.12em] text-[#71817d] lg:grid">
+                  <span>Source</span>
+                  <span>Agent</span>
+                  <span>Status</span>
+                  <span className="text-right">Actions</span>
+                </div>
+                <ul className="divide-y divide-[#edf0f4]">
+                  {filteredSources.map((source) => (
+                    <li
+                      className="grid gap-4 px-4 py-4 transition hover:bg-[#fafcfb] sm:px-5 lg:grid-cols-[minmax(280px,1fr)_minmax(150px,.45fr)_110px_minmax(190px,auto)] lg:items-center"
+                      key={`${source.agentId}-${source._id}`}
+                    >
+                      <div className="flex min-w-0 gap-3">
+                        <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#edf7f4] text-[#0e6f62]">
+                          <Icon icon={source.sourceType === "url" ? "link" : "file"} />
+                        </span>
+                        <div className="min-w-0">
+                          <strong className="app-strong block truncate">
                             {source.name}
                           </strong>
-                          <span
-                            className={`app-label rounded-lg px-2.5 py-1 ${statusStyle(source.status)}`}
-                          >
-                            {source.status}
-                          </span>
-                          <span className="app-label inline-flex items-center gap-1.5 rounded-lg bg-[#edf7f4] px-2.5 py-1 text-[#0e6f62]">
-                            <Icon icon="user" className="size-3.5" />
-                            {source.agentName}
-                          </span>
-                          <span className="app-label rounded-lg bg-[#f8fafc] px-2.5 py-1 text-[#64748b]">
-                            {sourceTypeLabel(source)}
-                          </span>
-                          <span className="app-label rounded-lg bg-[#f8fafc] px-2.5 py-1 text-[#64748b]">
-                            {source.chunkCount} chunks
+                          <p className="app-caption mt-1 mb-0 truncate text-[#64748b]">
+                            {source.error ||
+                              preview(source.preview) ||
+                              source.url ||
+                              source.originalFileName}
+                          </p>
+                          <span className="app-caption mt-1 block">
+                            {sourceTypeLabel(source)} · {source.chunkCount} chunks
                           </span>
                         </div>
-                        <p className="app-caption mt-1 mb-0 max-w-4xl text-[#64748b]">
-                          {source.error ||
-                            preview(source.preview) ||
-                            source.url ||
-                            source.originalFileName}
-                        </p>
                       </div>
-                    </div>
-                    <div className="flex flex-wrap gap-2 sm:justify-end">
-                      {source.attachedLegacy ? (
-                        <span className="app-label inline-flex min-h-9 items-center rounded-lg bg-[#edf7f4] px-3 text-[#0e6f62]">
-                          Attached to agent
+
+                      <span className="flex min-w-0 items-center gap-2 text-sm font-semibold text-[#52645f]">
+                        <Icon icon="user" className="size-4 shrink-0 text-[#71817d]" />
+                        <span className="truncate">{source.agentName}</span>
+                      </span>
+
+                      <span>
+                        <span className={`app-label inline-flex rounded-full px-2.5 py-1 ${statusStyle(source.status)}`}>
+                          {source.status}
                         </span>
-                      ) : (
-                        <>
-                          <button
-                            className={`app-label min-h-9 rounded-lg px-3 transition ${source.status === "ready" ? "bg-[#ecfdf5] text-[#047857] hover:bg-[#d1fae5]" : "bg-[#f1f5f9] text-[#64748b] hover:bg-[#e2e8f0]"}`}
-                            disabled={busy || source.status === "processing"}
-                            onClick={() =>
-                              void mutate(
-                                source.agentId,
-                                () =>
-                                  voiceApi.updateKnowledgeSource(
-                                    source.agentId,
-                                    source._id,
-                                    {
-                                      status:
-                                        source.status === "ready"
-                                          ? "disabled"
-                                          : "ready",
-                                    },
-                                  ),
-                                source.status === "ready"
-                                  ? "Knowledge source disabled."
-                                  : "Knowledge source indexed and enabled.",
-                              )
-                            }
-                            type="button"
-                          >
-                            {source.status === "ready" ? "Turn off" : "Turn on"}
-                          </button>
-                          {source.sourceType === "url" ||
-                          source.status === "failed" ? (
-                            <ActionButton
-                              label={`Re-index ${source.name}`}
-                              icon="refresh"
-                              busy={busy}
+                      </span>
+
+                      <div className="flex flex-wrap gap-2 lg:justify-end">
+                        {source.attachedLegacy ? (
+                          <span className="app-label inline-flex min-h-9 items-center rounded-lg bg-[#edf7f4] px-3 text-[#0e6f62]">
+                            Attached
+                          </span>
+                        ) : (
+                          <>
+                            <button
+                              className={`app-label min-h-9 rounded-lg px-3 transition ${source.status === "ready" ? "bg-[#ecfdf5] text-[#047857] hover:bg-[#d1fae5]" : "bg-[#f1f5f9] text-[#64748b] hover:bg-[#e2e8f0]"}`}
+                              disabled={busy || source.status === "processing"}
                               onClick={() =>
                                 void mutate(
                                   source.agentId,
                                   () =>
-                                    voiceApi.reindexKnowledgeSource(
+                                    voiceApi.updateKnowledgeSource(
                                       source.agentId,
                                       source._id,
+                                      {
+                                        status:
+                                          source.status === "ready"
+                                            ? "disabled"
+                                            : "ready",
+                                      },
                                     ),
-                                  "Knowledge source was re-indexed.",
+                                  source.status === "ready"
+                                    ? "Knowledge source disabled."
+                                    : "Knowledge source indexed and enabled.",
                                 )
                               }
-                            />
-                          ) : null}
-                          {["text", "legacy"].includes(source.sourceType) ? (
+                              type="button"
+                            >
+                              {source.status === "ready" ? "Turn off" : "Turn on"}
+                            </button>
+                            {source.sourceType === "url" || source.status === "failed" ? (
+                              <ActionButton
+                                label={`Re-index ${source.name}`}
+                                icon="refresh"
+                                busy={busy}
+                                onClick={() =>
+                                  void mutate(
+                                    source.agentId,
+                                    () =>
+                                      voiceApi.reindexKnowledgeSource(
+                                        source.agentId,
+                                        source._id,
+                                      ),
+                                    "Knowledge source was re-indexed.",
+                                  )
+                                }
+                              />
+                            ) : null}
+                            {["text", "legacy"].includes(source.sourceType) ? (
+                              <ActionButton
+                                label={`Edit ${source.name}`}
+                                icon="edit"
+                                busy={busy}
+                                onClick={() => void openEdit(source)}
+                              />
+                            ) : null}
                             <ActionButton
-                              label={`Edit ${source.name}`}
-                              icon="edit"
+                              label={`Remove ${source.name}`}
+                              icon="trash"
                               busy={busy}
-                              onClick={() => void openEdit(source)}
+                              danger
+                              onClick={() => void removeSource(source)}
                             />
-                          ) : null}
-                          <ActionButton
-                            label={`Remove ${source.name}`}
-                            icon="trash"
-                            busy={busy}
-                            danger
-                            onClick={() => void removeSource(source)}
-                          />
-                        </>
-                      )}
-                    </div>
-                  </li>
-                ))}
-              </ul>
+                          </>
+                        )}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
           </section>
         </div>

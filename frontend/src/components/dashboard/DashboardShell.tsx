@@ -3914,7 +3914,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   const contentGridClass =
     "voice-agent-workspace grid w-full min-w-0 gap-3 pb-6 pt-2 lg:grid-cols-[minmax(0,1fr)] 2xl:grid-cols-[minmax(0,1fr)_360px]";
   const runtimeAsideClass =
-    "grid min-w-0 content-start gap-5 self-start xl:grid-cols-2 2xl:sticky 2xl:top-[136px] 2xl:grid-cols-1 2xl:pr-1";
+    "grid min-w-0 content-start gap-3 self-start xl:grid-cols-2 2xl:sticky 2xl:top-[136px] 2xl:grid-cols-1 2xl:pr-1";
 
   useEffect(() => {
     return () => {
@@ -5498,7 +5498,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
         <section className={contentGridClass}>
           <section className="grid min-w-0 content-start gap-4">
             <article className="agent-editor-shell dashboard-flat-panel min-w-0 overflow-hidden bg-white">
-              <div className="agent-editor-header flex flex-col gap-3 border-b border-[#dbe4e1] bg-white px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
+              <div className="agent-editor-header flex flex-col gap-4 bg-white px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                   <h2 className="m-0 text-base font-bold tracking-[-0.02em] text-[#171821]">
                     {tabPresentation[activeTab].title}
@@ -5508,7 +5508,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                   </p>
                 </div>
                 <div
-                  className="flex max-w-full gap-1 overflow-x-auto rounded-xl border border-[#dbe4e1] bg-[#f7f9f8] p-1"
+                  className="flex max-w-full gap-1 overflow-x-auto rounded-xl bg-[#edf7f4] p-1"
                   role="group"
                   aria-label="Agent editor sections"
                 >
@@ -5516,8 +5516,8 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                     <button
                       className={`app-button-text min-h-8 rounded-lg px-3 py-1.5 transition focus-visible:ring-2 focus-visible:ring-[#123d35]/60 ${
                         activeTab === tab.id
-                          ? "bg-[#118778]/10 text-[#123d35] shadow-[inset_0_0_0_1px_rgba(17,135,120,0.18)]"
-                          : "text-[#60716c] hover:bg-white hover:text-[#123d35]"
+                          ? "bg-[#118778] text-white shadow-[0_5px_12px_rgba(17,135,120,0.18)]"
+                          : "text-[#52645f] hover:bg-white hover:text-[#123d35]"
                       }`}
                       key={tab.id}
                       type="button"
@@ -5530,7 +5530,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                 </div>
               </div>
 
-              <div className="bg-[#fafcfb] p-4 sm:p-5">
+              <div className="agent-editor-body bg-white px-4 pb-5 sm:px-5">
                 {activeTab === "builder" ? (
                   <div className="grid gap-4">
                     <div className="hidden gap-3 lg:grid-cols-2">
@@ -5546,8 +5546,8 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                       />
                     </div>
 
-                    <section className="agent-stack-panel overflow-hidden rounded-xl border border-[#dbe4e1] bg-white">
-                      <div className="flex flex-col gap-2 border-b border-[#edf0f4] px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between">
+                    <section className="agent-stack-panel overflow-hidden bg-white">
+                      <div className="flex flex-col gap-2 px-1 py-3.5 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                           <h3 className="app-section-title m-0">
                             Voice pipeline
@@ -5564,13 +5564,13 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                         </div>
                       </div>
 
-                      <div className="flex flex-col bg-[#f8f8fc] p-3.5 lg:flex-row lg:items-stretch lg:p-4">
+                      <div className="voice-pipeline-flow flex flex-col rounded-2xl bg-[#f7f9f8] p-3 lg:flex-row lg:items-stretch lg:p-4">
                         {voiceStackCards.map((card, index) => (
                           <div className="contents" key={card.id}>
                             <button
-                              className={`group relative grid min-h-32 min-w-0 flex-1 cursor-pointer gap-3 overflow-hidden rounded-xl border bg-white p-4 text-left transition duration-200 hover:-translate-y-0.5 hover:border-[#9fcfc3] hover:shadow-[0_12px_30px_rgba(37,40,74,0.08)] ${
+                              className={`voice-pipeline-node group relative grid min-h-32 min-w-0 flex-1 cursor-pointer gap-3 overflow-hidden rounded-xl border bg-white p-4 text-left transition duration-200 hover:border-[#118778] ${
                                 openStackConfig === card.id
-                                  ? "z-10 border-[#108D82] shadow-[0_12px_30px_rgba(37,40,74,0.1)]"
+                                  ? "z-10 border-[#118778] ring-4 ring-[#118778]/10"
                                   : "border-[#dbe4e1]"
                               }`}
                               type="button"
@@ -5580,7 +5580,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                             >
                               <span
                                 aria-hidden="true"
-                                className={`absolute inset-x-0 top-0 h-1 ${card.id === "stt" ? "bg-[#f97316]" : card.id === "llm" ? "bg-[#108D82]" : "bg-[#c026d3]"}`}
+                                className="absolute inset-x-0 top-0 h-1 bg-[#118778]"
                               />
                               <span className="flex items-center justify-between gap-3">
                                 <span className="flex min-w-0 items-center gap-2">
@@ -5606,10 +5606,15 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                             </button>
                             {index < voiceStackCards.length - 1 ? (
                               <span
-                                className="flex h-5 w-full shrink-0 items-center justify-center lg:h-auto lg:w-5"
+                                className="relative flex h-10 w-full shrink-0 items-center justify-center lg:h-auto lg:w-10"
                                 aria-hidden="true"
                               >
-                                <span className="h-full w-1 rounded-full bg-[linear-gradient(180deg,#14b8a6_0%,#f97316_33%,#108D82_66%,#c026d3_100%)] shadow-[0_0_10px_rgba(17,135,120,0.24)] lg:h-1 lg:w-full lg:bg-[linear-gradient(90deg,#14b8a6_0%,#f97316_33%,#108D82_66%,#c026d3_100%)]" />
+                                <span className="h-full w-0.5 bg-[#9fcfc3] lg:h-0.5 lg:w-full" />
+                                <span className="absolute left-1/2 top-1/2 grid size-5 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-[#118778] text-white shadow-[0_4px_10px_rgba(17,135,120,0.22)]">
+                                  <svg className="size-3 rotate-90 fill-none stroke-current stroke-2 lg:rotate-0" viewBox="0 0 16 16">
+                                    <path d="m6 3 5 5-5 5" strokeLinecap="round" strokeLinejoin="round" />
+                                  </svg>
+                                </span>
                               </span>
                             ) : null}
                           </div>
@@ -5626,9 +5631,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                       />
                     ) : null}
                     <section
-                      className={`agent-prompt-editor overflow-hidden rounded-xl border border-[#dbe4e1] bg-white transition ${promptExpanded ? "fixed inset-4 z-60 grid grid-rows-[auto_minmax(0,1fr)] shadow-[0_30px_90px_rgba(27,27,34,0.24)] sm:inset-8" : ""}`}
+                      className={`agent-prompt-editor overflow-hidden bg-white transition ${promptExpanded ? "fixed inset-4 z-60 grid grid-rows-[auto_minmax(0,1fr)] rounded-xl border border-[#dbe4e1] shadow-[0_30px_90px_rgba(27,27,34,0.24)] sm:inset-8" : "border-t border-[#e6ecea]"}`}
                     >
-                      <div className="flex flex-col gap-3 border-b border-[#edf0f4] bg-[#fbfbfe] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+                      <div className={`flex flex-col gap-3 bg-white py-4 sm:flex-row sm:items-center sm:justify-between ${promptExpanded ? "px-5" : "px-1"}`}>
                         <div className="min-w-0">
                           <div className="flex flex-wrap items-center gap-2">
                             <h3 className="app-section-title m-0">
@@ -5676,7 +5681,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                       </div>
 
                       <div
-                        className={`grid gap-4 p-4 ${promptExpanded ? "min-h-0 grid-rows-[auto_minmax(0,1fr)]" : ""}`}
+                        className={`grid gap-4 ${promptExpanded ? "min-h-0 grid-rows-[auto_minmax(0,1fr)] px-5 pb-5" : "px-1 pb-4"}`}
                       >
                         <label className="app-label grid gap-2">
                           <span>Opening message</span>
@@ -7652,7 +7657,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
           </section>
 
           <aside className={runtimeAsideClass}>
-            <article className="agent-runtime-card min-w-0 overflow-hidden rounded-2xl border border-[#dbe4e1] bg-white">
+            <article className="agent-runtime-card min-w-0 overflow-hidden rounded-xl border border-[#e6ecea] bg-white">
               <div className="border-b border-[#dbe4e1] px-4 pt-4 pb-3">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
@@ -7743,7 +7748,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
               </div>
             </article>
 
-            <article className="agent-runtime-card overflow-hidden rounded-2xl border border-[#dbe4e1] bg-white">
+            <article className="agent-runtime-card overflow-hidden rounded-xl border border-[#e6ecea] bg-white">
               <div className="p-4">
                 <div className="mb-3 flex items-center justify-between gap-3">
                   <div className="min-w-0">
