@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+import { useBrand } from "@/components/branding/BrandProvider";
 import { publicVoiceMessage, voiceApi, type CallRecord, type CostPricingDetail } from "@/lib/voice";
 
 function agentName(call: CallRecord) {
@@ -117,7 +118,7 @@ function CallRoute({ call }: { call: CallRecord }) {
   return (
     <div className="grid gap-1.5">
       <div className="grid min-w-0 grid-cols-[44px_minmax(0,1fr)] items-center gap-2">
-        <span className="rounded-md bg-[#edf7f4] px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-[#123d35]">From</span>
+        <span className="rounded-md bg-indigo-50 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-[#108D82]">From</span>
         {route.fromMissing ? (
           <span className="rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">
             Caller ID not sent
@@ -197,11 +198,12 @@ function rateTitle(detail?: CostPricingDetail) {
 function statusTone(status: CallRecord["status"]) {
   if (status === "completed") return "bg-emerald-50 text-emerald-700 ring-emerald-200";
   if (status === "failed" || status === "cancelled") return "bg-rose-50 text-rose-700 ring-rose-200";
-  if (status === "active") return "bg-[#edf7f4] text-[#123d35] ring-[#b8c8c3]";
+  if (status === "active") return "bg-indigo-50 text-[#108D82] ring-indigo-200";
   return "bg-amber-50 text-amber-700 ring-amber-200";
 }
 
 export function CallDetailDrawer({ call, onClose }: { call: CallRecord; onClose: () => void }) {
+  const brand = useBrand();
   const billing = call.billing;
   const charged = billing?.estimatedChargeCredits ?? billing?.chargedCredits ?? 0;
   const cost = call.costBreakdown;
@@ -257,8 +259,8 @@ export function CallDetailDrawer({ call, onClose }: { call: CallRecord; onClose:
   const costItems = [
     ...providerCostItems,
     [
-      "Vozon platform",
-      "Vozon",
+      `${brand.productName} platform`,
+      brand.productName,
       `${call.durationSeconds} sec`,
       cost?.pricing?.platformFee,
       cost?.platformFee ?? 0,
@@ -304,12 +306,12 @@ export function CallDetailDrawer({ call, onClose }: { call: CallRecord; onClose:
   }, [call._id, privateRecording]);
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end bg-[#25284a]/30 p-0 backdrop-blur-md sm:py-2 sm:pr-2" onClick={onClose}>
+    <div className="dashboard-home-theme fixed inset-0 z-50 flex justify-end bg-black/75 backdrop-blur-sm" onClick={onClose}>
       <aside
-        className="dashboard-overlay-panel h-full w-full max-w-2xl overflow-y-auto border-l border-[#d7e0dd] bg-[#ffffff] sm:rounded-l-2xl"
+        className="h-full w-full max-w-2xl overflow-y-auto border-l border-[#e5e7ef] bg-[#ffffff] shadow-2xl"
         onClick={(event) => event.stopPropagation()}
       >
-        <header className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-white/10 bg-[#ffffff]/95 p-6 backdrop-blur">
+        <header className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-[#e5e7ef] bg-[#f8f8fc]/95 p-6 backdrop-blur">
           <div>
             <div className="mb-2 flex items-center gap-2">
               <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${statusTone(call.status)}`}>
@@ -323,7 +325,7 @@ export function CallDetailDrawer({ call, onClose }: { call: CallRecord; onClose:
               {call.endedAt ? <> &middot; Ended {formatDate(call.endedAt)}</> : null}
             </p>
           </div>
-          <button className="rounded-lg border border-[#dbe4e1] bg-white px-3 py-2 text-sm font-semibold text-[#64748b] transition hover:border-[#9fcfc3] hover:bg-[#f7f9f8] hover:text-[#0e6f62]" type="button" onClick={onClose}>
+          <button className="rounded-lg border border-[#e5e7ef] px-3 py-2 text-sm font-semibold text-[#737587] hover:bg-[#f6f7fb] hover:text-[#242535]" type="button" onClick={onClose}>
             Close
           </button>
         </header>
@@ -332,6 +334,7 @@ export function CallDetailDrawer({ call, onClose }: { call: CallRecord; onClose:
           <section className="grid grid-cols-3 gap-2 sm:grid-cols-6">
             {[
               ["Duration", formatDuration(call.durationSeconds)],
+              ["Latency", call.avgResponseLatencyMs ? `${call.avgResponseLatencyMs} ms` : "—"],
               ["Sentiment", call.sentimentLabel ? titleCase(call.sentimentLabel) : "—"],
               ["Language", call.language || "—"],
               ["Total cost", money(charged, billing?.currency)],
@@ -379,16 +382,16 @@ export function CallDetailDrawer({ call, onClose }: { call: CallRecord; onClose:
               <div className="grid gap-3">
                 <audio className="w-full rounded-lg" controls src={recordingPlayerHref} />
                 <div className="flex gap-3">
-                  <a className="text-sm font-semibold text-[#0e6f62] hover:text-white" href={recordingPlayerHref} target="_blank" rel="noreferrer">
+                  <a className="text-sm font-semibold text-[#108D82] hover:text-[#242535]" href={recordingPlayerHref} target="_blank" rel="noreferrer">
                     Open in new tab
                   </a>
-                  <a className="text-sm font-semibold text-white/65 hover:text-white" href={recordingPlayerHref} download>
+                  <a className="text-sm font-semibold text-[#737587] hover:text-[#242535]" href={recordingPlayerHref} download>
                     ↓ Download
                   </a>
                 </div>
               </div>
             ) : recordingLoading ? (
-              <div className="rounded-xl border border-dashed border-[#b8c8c3] bg-[#edf7f4] p-4 text-sm text-[#123d35]">
+              <div className="rounded-xl border border-dashed border-indigo-200 bg-indigo-50 p-4 text-sm text-[#108D82]">
                 Loading recording...
               </div>
             ) : recordingLoadError ? (
@@ -410,14 +413,14 @@ export function CallDetailDrawer({ call, onClose }: { call: CallRecord; onClose:
             <div className="flex flex-col gap-2 border-b border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h3 className="m-0 text-sm font-semibold text-slate-950">Call cost breakdown</h3>
-                <p className="mt-1 text-xs text-slate-500">Provider usage plus the Vozon ₹1.50-per-minute platform fee, prorated by seconds.</p>
+                <p className="mt-1 text-xs text-slate-500">Provider usage plus the {brand.productName} platform fee, prorated by seconds.</p>
               </div>
               <div className="grid gap-1 text-right text-xs">
                 <span className="text-slate-500">Customer total: <strong className="text-emerald-700">{money(cost?.customerCost ?? billing?.customerCost ?? charged ?? 0, billing?.currency || cost?.currency)}</strong></span>
               </div>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[760px] text-left text-sm">
+              <table className="w-full min-w-760px text-left text-sm">
                 <thead className="bg-white text-xs uppercase tracking-wider text-slate-500">
                   <tr>
                     {["Component", "Provider / Model", "Usage", "Rate used", "Cost"].map((item) => <th className="px-4 py-3" key={item}>{item}</th>)}
@@ -465,16 +468,16 @@ export function CallDetailDrawer({ call, onClose }: { call: CallRecord; onClose:
               {transcript.length ? (
                 transcript.map((item) => (
                   <article
-                    className={`max-w-[88%] rounded-2xl border px-4 py-3 ${
+                    className={`max-w-[88%] rounded-2xl px-4 py-3 ${
                       item.role === "assistant"
-                        ? "justify-self-start rounded-bl-md border-[#d7e0dd] bg-[#eef5f3] text-[#30313a]"
+                        ? "justify-self-start rounded-bl-md bg-[#108D82]/10 text-[#4d5476] ring-1 ring-[#108D82]/20"
                         : item.role === "user"
-                          ? "justify-self-end rounded-br-md border-[#0e6f62] bg-[#118778]"
-                          : "justify-self-center border-amber-200 bg-amber-50 text-amber-900"
+                          ? "justify-self-end rounded-br-md bg-[#f0efff] text-[#242535] ring-1 ring-white/10"
+                          : "justify-self-center bg-amber-400/10 text-amber-700 ring-1 ring-amber-300/20"
                     }`}
                     key={item.itemId}
                   >
-                    <span className={`mb-1 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider ${item.role === "user" ? "opacity-75" : "text-[#71817d]"}`}>
+                    <span className={`mb-1 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider ${item.role === "user" ? "text-slate-400" : "opacity-60"}`}>
                       <span>{item.role === "assistant" ? agentName(call) : titleCase(item.role)}</span>
                       {item.timestamp ? <span className="font-normal normal-case opacity-70">{formatTime(item.timestamp)}</span> : null}
                     </span>

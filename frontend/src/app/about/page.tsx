@@ -126,10 +126,10 @@ export default function AboutPage() {
           <div className="relative mx-auto max-w-[1250px] text-center">
 
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#118778]/20 bg-white px-4 py-2 shadow-sm">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#118778]" />
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#108D82]/20 bg-white px-4 py-2 shadow-sm">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#108D82]" />
 
-              <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#118778]">
+              <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#108D82]">
                 About vozon.ai
               </span>
             </div>
@@ -198,9 +198,9 @@ export default function AboutPage() {
           <div className="mx-auto max-w-[1200px]">
 
             <div className="mb-5 flex items-center gap-3">
-              <span className="h-px w-8 bg-[#118778]" />
+              <span className="h-px w-8 bg-[#108D82]" />
 
-              <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#118778]">
+              <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#108D82]">
                 Our mission
               </span>
             </div>
@@ -215,11 +215,11 @@ export default function AboutPage() {
 
                   <div className="mb-4 flex items-center gap-2">
 
-                    <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-[#118778] shadow-sm">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-[#108D82] shadow-sm">
                       <SparkIcon />
                     </div>
 
-                    <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#118778]">
+                    <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#108D82]">
                       What we believe
                     </span>
 
@@ -227,7 +227,7 @@ export default function AboutPage() {
 
                   <h2 className="text-[clamp(1.8rem,3vw,2.8rem)] font-medium leading-[1.05] tracking-[-0.045em] text-black">
                     Make every conversation{" "}
-                    <span className="text-[#118778]">
+                    <span className="text-[#108D82]">
                       more intelligent.
                     </span>
                   </h2>
@@ -245,9 +245,9 @@ export default function AboutPage() {
                   </p>
 
                   <div className="mt-5 flex items-center gap-3">
-                    <span className="h-px w-8 bg-[#118778]" />
+                    <span className="h-px w-8 bg-[#108D82]" />
 
-                    <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#118778]">
+                    <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#108D82]">
                       vozon.ai
                     </span>
                   </div>
@@ -276,9 +276,9 @@ export default function AboutPage() {
               <div>
 
                 <div className="flex items-center gap-3">
-                  <span className="h-0.5 w-8 rounded-full bg-[#118778]" />
+                  <span className="h-0.5 w-8 rounded-full bg-[#108D82]" />
 
-                  <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#118778]">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#108D82]">
                     Our values
                   </p>
                 </div>
@@ -309,7 +309,7 @@ export default function AboutPage() {
 
                   <div className="relative flex min-h-[260px] flex-col">
 
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[#118778]/20 bg-[#edf4ff] text-2xl text-[#118778] transition duration-300 group-hover:border-[#118778]/40 group-hover:bg-[#118778] group-hover:text-white">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[#108D82]/20 bg-[#edf4ff] text-2xl text-[#108D82] transition duration-300 group-hover:border-[#108D82]/40 group-hover:bg-[#108D82] group-hover:text-white">
                       <span className="font-light leading-none">
                         {value.icon}
                       </span>
@@ -349,9 +349,9 @@ export default function AboutPage() {
             <div className="mb-8 max-w-3xl">
 
               <div className="flex items-center gap-3">
-                <span className="h-px w-8 bg-[#118778]" />
+                <span className="h-px w-8 bg-[#108D82]" />
 
-                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#118778]">
+                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#108D82]">
                   Our manifesto
                 </p>
               </div>
@@ -419,9 +419,9 @@ export default function AboutPage() {
 
                 <div className="flex items-center gap-3">
 
-                  <span className="h-px w-8 bg-[#118778]" />
+                  <span className="h-px w-8 bg-[#108D82]" />
 
-                  <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#118778]">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#108D82]">
                     Our Team
                   </p>
 
@@ -460,7 +460,7 @@ export default function AboutPage() {
 
                 <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-7">
 
-                  <div className="mb-4 h-px w-16 bg-[#118778]" />
+                  <div className="mb-4 h-px w-16 bg-[#108D82]" />
 
                   <h3 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
                     One team.
@@ -480,14 +480,14 @@ export default function AboutPage() {
 
                 <div className="relative">
 
-                  <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-xl border border-[#118778]/20 bg-white text-[#118778]">
+                  <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-xl border border-[#108D82]/20 bg-white text-[#108D82]">
                     <SparkIcon />
                   </div>
 
                   <h3 className="max-w-xl text-[clamp(1.8rem,3vw,2.5rem)] font-medium leading-[1.08] tracking-[-0.04em] text-black">
                     Different expertise.
                     <br />
-                    <span className="text-[#118778]">
+                    <span className="text-[#108D82]">
                       Shared purpose.
                     </span>
                   </h3>
@@ -508,9 +508,9 @@ export default function AboutPage() {
 
                 </div>
 
-                <div className="relative mt-8 border-l-2 border-[#118778] pl-5 sm:pl-6">
+                <div className="relative mt-8 border-l-2 border-[#108D82] pl-5 sm:pl-6">
 
-                  <div className="mb-2 text-2xl leading-none text-[#118778]">
+                  <div className="mb-2 text-2xl leading-none text-[#108D82]">
                     “
                   </div>
 
@@ -522,9 +522,9 @@ export default function AboutPage() {
 
                   <div className="mt-5 flex items-center gap-3">
 
-                    <div className="h-px w-8 bg-[#118778]" />
+                    <div className="h-px w-8 bg-[#108D82]" />
 
-                    <span className="text-[9px] font-bold uppercase tracking-[0.16em] text-[#118778]">
+                    <span className="text-[9px] font-bold uppercase tracking-[0.16em] text-[#108D82]">
                       Built together
                     </span>
 
@@ -551,13 +551,13 @@ export default function AboutPage() {
 
               <div className="flex items-center justify-center gap-3">
 
-                <span className="h-px w-8 bg-[#118778]" />
+                <span className="h-px w-8 bg-[#108D82]" />
 
-                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#118778]">
+                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#108D82]">
                   Our journey
                 </p>
 
-                <span className="h-px w-8 bg-[#118778]" />
+                <span className="h-px w-8 bg-[#108D82]" />
 
               </div>
 
@@ -577,7 +577,7 @@ export default function AboutPage() {
 
               <div
                 aria-hidden="true"
-                className="about-milestone-line absolute bottom-0 left-5 top-0 bg-[#118778] sm:left-1/2 sm:-translate-x-1/2"
+                className="about-milestone-line absolute bottom-0 left-5 top-0 bg-[#108D82] sm:left-1/2 sm:-translate-x-1/2"
               />
 
               <div className="space-y-7 sm:space-y-9">
@@ -605,7 +605,7 @@ export default function AboutPage() {
 
                         <div className="relative">
 
-                          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#118778]">
+                          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#108D82]">
                             {item.label}
                           </p>
 
@@ -625,7 +625,7 @@ export default function AboutPage() {
 
                     <div
                       aria-hidden="true"
-                      className="about-milestone-dot absolute left-5 top-8 flex h-3 w-3 -translate-x-1/2 items-center justify-center rounded-full bg-[#118778] sm:left-1/2"
+                      className="about-milestone-dot absolute left-5 top-8 flex h-3 w-3 -translate-x-1/2 items-center justify-center rounded-full bg-[#108D82] sm:left-1/2"
                     >
                     </div>
 
@@ -700,26 +700,26 @@ export default function AboutPage() {
           }
 
           #about-page .about-primary-button {
-            background: #118778;
+            background: #108D82;
           }
 
           #about-page .about-primary-button:hover {
-            background: #0e6f62;
+            background: #108D82;
           }
 
           #about-page .about-color-bar {
-            background: linear-gradient(90deg, #df4f82, #a45ee8, #118778);
+            background: linear-gradient(90deg, #df4f82, #a45ee8, #108D82);
           }
 
-          #about-page [class*="text-[#118778]"] {
-            color: #108D82;
+          #about-page [class*="text-[#108D82]"] {
+            color: #805bd8;
           }
 
-          #about-page [class*="bg-[#118778]"] {
-            background-color: #108D82;
+          #about-page [class*="bg-[#108D82]"] {
+            background-color: #805bd8;
           }
 
-          #about-page [class*="border-[#118778]"] {
+          #about-page [class*="border-[#108D82]"] {
             border-color: rgba(128, 91, 216, .36);
           }
 
@@ -743,7 +743,7 @@ export default function AboutPage() {
             width: 24rem;
             height: 24rem;
             border-radius: 9999px;
-            background: rgba(17, 135, 120, .11);
+            background: rgba(16, 141, 130, .11);
             filter: blur(90px);
             pointer-events: none;
           }
@@ -782,7 +782,7 @@ export default function AboutPage() {
             bottom: 2rem !important;
             z-index: 10 !important;
             width: 3px !important;
-            background: #118778 !important;
+            background: #108D82 !important;
             opacity: 1 !important;
           }
 
@@ -791,8 +791,8 @@ export default function AboutPage() {
             width: 16px !important;
             height: 16px !important;
             border: 3px solid #fff !important;
-            background: #118778 !important;
-            box-shadow: 0 0 0 2px #118778 !important;
+            background: #108D82 !important;
+            box-shadow: 0 0 0 2px #108D82 !important;
           }
 
           #about-page .about-manifesto-card {
@@ -803,20 +803,20 @@ export default function AboutPage() {
             border-color: #cfe0f7;
           }
 
-          #about-page .about-values-section [class*="text-[#118778]"] {
-            color: #123d35;
+          #about-page .about-values-section [class*="text-[#108D82]"] {
+            color: #108D82;
           }
 
-          #about-page .about-values-section [class*="bg-[#118778]"] {
-            background-color: #123d35;
+          #about-page .about-values-section [class*="bg-[#108D82]"] {
+            background-color: #108D82;
           }
 
-          #about-page .about-values-card:hover [class*="text-[#118778]"] {
+          #about-page .about-values-card:hover [class*="text-[#108D82]"] {
             color: #fff;
           }
 
           #about-page .about-values-card-bar {
-            background: linear-gradient(90deg, #123d35, #108D82);
+            background: linear-gradient(90deg, #108D82, #108D82);
             opacity: .9;
           }
 
@@ -825,15 +825,15 @@ export default function AboutPage() {
             box-shadow: 0 18px 44px rgba(26, 79, 150, .14);
           }
 
-          #about-page .about-manifesto-card:nth-child(4n + 2) [class*="text-[#118778]"] {
+          #about-page .about-manifesto-card:nth-child(4n + 2) [class*="text-[#108D82]"] {
             color: #c64f7c;
           }
 
-          #about-page .about-manifesto-card:nth-child(4n + 3) [class*="text-[#118778]"] {
+          #about-page .about-manifesto-card:nth-child(4n + 3) [class*="text-[#108D82]"] {
             color: #9b5274;
           }
 
-          #about-page .about-manifesto-card:nth-child(4n) [class*="text-[#118778]"] {
+          #about-page .about-manifesto-card:nth-child(4n) [class*="text-[#108D82]"] {
             color: #d98a00;
           }
 
@@ -847,7 +847,7 @@ export default function AboutPage() {
           }
 
           #about-page .about-manifesto-card:nth-child(4n + 2) {
-            border-color: rgba(17, 135, 120, .2);
+            border-color: rgba(16, 141, 130, .2);
           }
 
           #about-page .about-contact {

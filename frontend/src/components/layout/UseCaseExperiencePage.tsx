@@ -22,7 +22,7 @@ function Pill({ children }: { children: string }) {
 function CheckIcon({ tone = 0 }: { tone?: number }) {
   const color =
     tone % 3 === 1
-      ? "border-[#108D82]/25 bg-[#108D82]/10 text-[#c5bdff]"
+      ? "border-[#8f83e8]/25 bg-[#8f83e8]/10 text-[#c5bdff]"
       : tone % 3 === 2
         ? "border-[#ff9655]/25 bg-[#ff9655]/10 text-[#ffb17e]"
         : "border-[#35fbe0]/25 bg-[#35fbe0]/10 text-[#75fff0]";
@@ -60,7 +60,7 @@ function WorkflowDemo({ business, experience }: { business: BusinessUseCase; exp
         <div className="px-5 pb-5 pt-3">
           <div className="flex h-9 items-center justify-center gap-1" aria-label="Live voice activity">
             {[8, 16, 12, 24, 14, 30, 18, 27, 11, 21, 9, 28, 15, 23, 12].map((height, index) => (
-              <span className="use-case-wave w-1 rounded-full bg-[linear-gradient(180deg,#75fff0,#108D82)]" key={index} style={{ height, animationDelay: `${index * -65}ms` }} />
+              <span className="use-case-wave w-1 rounded-full bg-[linear-gradient(180deg,#75fff0,#8f83e8)]" key={index} style={{ height, animationDelay: `${index * -65}ms` }} />
             ))}
           </div>
           <div className="mt-3 grid gap-3">
@@ -68,7 +68,7 @@ function WorkflowDemo({ business, experience }: { business: BusinessUseCase; exp
               <span className="text-[10px] font-black uppercase tracking-[0.13em] text-slate-500">Caller</span>
               <p className="mt-2 text-sm leading-6 text-slate-200">{experience.demo.caller}</p>
             </div>
-            <div className="ml-6 rounded-lg rounded-tr-sm border border-[#108D82]/20 bg-[#108D82]/[0.075] p-3.5 sm:ml-10">
+            <div className="ml-6 rounded-lg rounded-tr-sm border border-[#8f83e8]/20 bg-[#8f83e8]/[0.075] p-3.5 sm:ml-10">
               <span className="text-[10px] font-black uppercase tracking-[0.13em] text-[#c5bdff]">vozon.ai</span>
               <p className="mt-2 text-sm leading-6 text-white">{experience.demo.agent}</p>
             </div>
@@ -93,7 +93,7 @@ export function UseCaseExperiencePage({ business, experience }: { business: Busi
         <section className="use-case-hero relative overflow-hidden px-5 pb-12 pt-28 sm:px-8 sm:pb-16 sm:pt-32 lg:pt-36">
           <div className="use-case-grid absolute inset-0 opacity-45" />
           <div className="absolute -left-52 top-16 size-[34rem] rounded-full bg-[#35fbe0]/[0.07] blur-[120px]" />
-          <div className="absolute -right-40 top-24 size-[30rem] rounded-full bg-[#108D82]/[0.07] blur-[120px]" />
+          <div className="absolute -right-40 top-24 size-[30rem] rounded-full bg-[#8f83e8]/[0.07] blur-[120px]" />
           <div className="relative mx-auto grid max-w-[1320px] gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(420px,0.88fr)] lg:items-center">
             <div className="max-w-3xl">
               <Pill>{experience.label}</Pill>
@@ -102,10 +102,10 @@ export function UseCaseExperiencePage({ business, experience }: { business: Busi
               </h1>
               <p className="mt-7 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">{business.summary}</p>
               <div className="mt-9 flex flex-wrap gap-3">
-                <Link className="business-blue-cta inline-flex min-h-12 items-center rounded-lg border border-[#118778] bg-[#118778] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(17,135,120,0.22)] transition hover:-translate-y-0.5" href="/#demo">
+                <Link className="business-blue-cta inline-flex min-h-12 items-center rounded-lg border border-[#108D82] bg-[#108D82] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(16, 141, 130,0.22)] transition hover:-translate-y-0.5" href="/#demo">
                   Book a free demo <span className="ml-3">&rarr;</span>
                 </Link>
-                <Link className="business-blue-cta inline-flex min-h-12 items-center rounded-lg border border-[#118778] bg-[#118778] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(17,135,120,0.22)] transition hover:-translate-y-0.5" href="/contact">
+                <Link className="business-blue-cta inline-flex min-h-12 items-center rounded-lg border border-[#108D82] bg-[#108D82] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(16, 141, 130,0.22)] transition hover:-translate-y-0.5" href="/contact">
                   Contact sales
                 </Link>
               </div>
@@ -143,7 +143,7 @@ export function UseCaseExperiencePage({ business, experience }: { business: Busi
             <div className="mt-12 grid gap-4 lg:grid-cols-3">
               {experience.capabilities.map((capability, index) => (
                 <article className="use-case-capability group relative overflow-hidden rounded-2xl border border-white/10 bg-black p-6 transition hover:-translate-y-1 sm:p-7" key={capability.title}>
-                  <div className={`absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent ${index === 1 ? "via-[#108D82]" : index === 2 ? "via-[#ff9655]" : "via-[#35fbe0]"} to-transparent opacity-70`} />
+                  <div className={`absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent ${index === 1 ? "via-[#8f83e8]" : index === 2 ? "via-[#ff9655]" : "via-[#35fbe0]"} to-transparent opacity-70`} />
                   <div className="flex items-center justify-between gap-5">
                     <span className={`text-xs font-black uppercase tracking-[0.13em] ${index === 1 ? "text-[#c5bdff]" : index === 2 ? "text-[#ffb17e]" : "text-[#75fff0]"}`}>{capability.eyebrow}</span>
                     <span className="text-4xl font-black text-white/[0.04]">0{index + 1}</span>
@@ -169,7 +169,7 @@ export function UseCaseExperiencePage({ business, experience }: { business: Busi
             <ol className="grid gap-2.5">
               {experience.workflow.map((step, index) => (
                 <li className="use-case-step group relative grid grid-cols-[44px_1fr] gap-4 rounded-xl border border-white/[0.08] bg-black p-4 transition sm:grid-cols-[52px_1fr] sm:p-5" key={step.title}>
-                  <span className="grid size-11 place-items-center rounded-lg border border-[#108D82]/25 bg-[#108D82]/10 text-xs font-black text-[#c5bdff] transition sm:size-12">0{index + 1}</span>
+                  <span className="grid size-11 place-items-center rounded-lg border border-[#8f83e8]/25 bg-[#8f83e8]/10 text-xs font-black text-[#c5bdff] transition sm:size-12">0{index + 1}</span>
                   <div><h3 className="text-lg font-semibold tracking-[-0.02em] sm:text-xl">{step.title}</h3><p className="mt-1.5 text-sm leading-6 text-slate-400">{step.body}</p></div>
                 </li>
               ))}
@@ -183,7 +183,7 @@ export function UseCaseExperiencePage({ business, experience }: { business: Busi
             <div className="mt-12 grid gap-4 md:grid-cols-3">
               {experience.scenarios.map((scenario, index) => (
                 <article className="use-case-scenario relative overflow-hidden rounded-2xl border border-white/10 bg-black p-6 sm:p-7" key={scenario.title}>
-                  <div className={`absolute -right-16 -top-16 size-40 rounded-full blur-[55px] ${index === 1 ? "bg-[#108D82]/15" : index === 2 ? "bg-[#ff9655]/15" : "bg-[#35fbe0]/15"}`} />
+                  <div className={`absolute -right-16 -top-16 size-40 rounded-full blur-[55px] ${index === 1 ? "bg-[#8f83e8]/15" : index === 2 ? "bg-[#ff9655]/15" : "bg-[#35fbe0]/15"}`} />
                   <span className={`relative text-xs font-black ${index === 1 ? "text-[#c5bdff]" : index === 2 ? "text-[#ffb17e]" : "text-[#75fff0]"}`}>0{index + 1}</span>
                   <h3 className="relative mt-8 text-2xl font-semibold tracking-[-0.025em]">{scenario.title}</h3>
                   <p className="relative mt-3 text-sm leading-6 text-slate-400">{scenario.body}</p>
@@ -232,11 +232,11 @@ export function UseCaseExperiencePage({ business, experience }: { business: Busi
           -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 88%);
           mask-image: linear-gradient(to bottom, black 0%, transparent 88%);
         }
-        .use-case-heading-accent { background: linear-gradient(105deg,#75fff0 5%,#35fbe0 45%,#108D82 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+        .use-case-heading-accent { background: linear-gradient(105deg,#75fff0 5%,#35fbe0 45%,#8f83e8 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
         .use-case-wave { transform-origin:center; animation:use-case-wave 1.1s ease-in-out infinite alternate; }
         .use-case-capability:hover { border-color:rgba(53,251,224,.24); box-shadow:0 22px 55px rgba(53,251,224,.05); }
         .use-case-step:hover { border-color:rgba(143,131,232,.32); transform:translateX(4px); }
-        .use-case-step:hover > span { background:#108D82; color:white; }
+        .use-case-step:hover > span { background:#8f83e8; color:white; }
         .use-case-integration:hover { border-color:rgba(53,251,224,.28); background:rgba(53,251,224,.035); transform:translateY(-2px); }
         .use-case-cta { background:radial-gradient(circle at 8% 0%,rgba(53,251,224,.18),transparent 38%),radial-gradient(circle at 92% 100%,rgba(143,131,232,.14),transparent 38%),#050a08; }
         @keyframes use-case-wave { from { transform:scaleY(.55); opacity:.55; } to { transform:scaleY(1); opacity:1; } }

@@ -86,7 +86,7 @@ export function PricingExperience() {
     <div className="pricing-page bg-white text-[#171719]">
       <section className="pricing-hero relative overflow-hidden bg-black px-4 pb-12 pt-28 sm:px-6 sm:pb-14 sm:pt-32 lg:px-8">
         <div className="mx-auto flex max-w-[1320px] flex-col items-center text-center">
-          <p className="pricing-badge inline-flex rounded-full border border-[#118778]/20 bg-[#118778]/[0.07] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[#0e6f62]">Pricing</p>
+          <p className="pricing-badge inline-flex rounded-full border border-[#108D82]/20 bg-[#108D82]/[0.07] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[#108D82]">Pricing</p>
           <h1 className="mt-5 max-w-3xl text-[clamp(2rem,4vw,3.35rem)] font-semibold leading-[1.08] tracking-[-0.04em] text-white">
             Pay only for the voice AI you use.
           </h1>
@@ -101,7 +101,7 @@ export function PricingExperience() {
               ["FAQ", "#faq"],
               ["Contact", "#contact"],
             ].map(([label, href]) => (
-              <a className="rounded-full border border-white/10 bg-white/[0.035] px-4 py-2 text-xs font-semibold text-white/60 transition hover:border-[#118778]/30 hover:text-[#0e6f62]" href={href} key={href}>{label}</a>
+              <a className="rounded-full border border-white/10 bg-white/[0.035] px-4 py-2 text-xs font-semibold text-white/60 transition hover:border-[#108D82]/30 hover:text-[#108D82]" href={href} key={href}>{label}</a>
             ))}
           </nav>
         </div>
@@ -114,9 +114,9 @@ export function PricingExperience() {
             <h2 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-white sm:text-3xl">One plan for every account</h2>
           </div>
 
-          <article className="pricing-plan-card relative grid overflow-hidden rounded-3xl border border-[#118778]/15 bg-[#f7f6ff] shadow-[0_28px_80px_rgba(70,65,130,0.12)] lg:grid-cols-[0.85fr_1.15fr]">
-            <span className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#118778]/80 to-transparent" aria-hidden="true" />
-            <div className="border-b border-white/10 bg-[linear-gradient(145deg,rgba(17,135,120,0.09),transparent_52%)] p-6 sm:p-8 lg:border-b-0 lg:border-r lg:p-9">
+          <article className="pricing-plan-card relative grid overflow-hidden rounded-3xl border border-[#108D82]/15 bg-[#f7f6ff] shadow-[0_28px_80px_rgba(70,65,130,0.12)] lg:grid-cols-[0.85fr_1.15fr]">
+            <span className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#108D82]/80 to-transparent" aria-hidden="true" />
+            <div className="border-b border-white/10 bg-[linear-gradient(145deg,rgba(16, 141, 130,0.09),transparent_52%)] p-6 sm:p-8 lg:border-b-0 lg:border-r lg:p-9">
               <span className="inline-flex rounded-full border border-white/10 bg-black/20 px-3 py-1.5 text-[11px] font-semibold text-white/65">Pay as you go</span>
               <div className="mt-5 flex flex-wrap items-end gap-x-3 gap-y-2">
                 <strong className="pricing-plan-price text-[clamp(2.4rem,5vw,4rem)] font-semibold leading-none tracking-[-0.05em] text-white">$0.07–$0.12</strong>
@@ -133,18 +133,18 @@ export function PricingExperience() {
               </dl>
 
               <div className="mt-8 flex flex-wrap gap-3">
-                <Link className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#118778] px-5 text-sm font-bold text-white transition hover:bg-[#0e6f62]" href="/login">Get started <ArrowIcon /></Link>
+                <Link className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#108D82] px-5 text-sm font-bold text-white transition hover:bg-[#108D82]" href="/login">Get started <ArrowIcon /></Link>
                 <Link className="inline-flex min-h-11 items-center justify-center rounded-xl border border-white/15 bg-white/[0.025] px-5 text-sm font-bold text-white transition hover:border-white/30 hover:bg-white/[0.06]" href="/contact">Contact sales</Link>
               </div>
             </div>
 
             <div className="p-6 sm:p-8 lg:p-9">
-              <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#0e6f62]">Included with usage</p>
+              <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#108D82]">Included with usage</p>
               <h3 className="mt-2 text-lg font-semibold text-white">Everything required to run your calls</h3>
               <ul className="mt-6 grid gap-3 sm:grid-cols-2">
                 {includedServices.map((service) => (
                   <li className="flex min-h-12 items-center gap-3 rounded-xl border border-white/[0.07] bg-black/15 px-4 py-3 text-sm leading-5 text-white/65" key={service}>
-                    <span className="grid size-5 shrink-0 place-items-center rounded-full bg-[#118778]/10 text-[10px] font-black text-[#0e6f62]" aria-hidden="true">✓</span>
+                    <span className="grid size-5 shrink-0 place-items-center rounded-full bg-[#108D82]/10 text-[10px] font-black text-[#108D82]" aria-hidden="true">✓</span>
                     {service}
                   </li>
                 ))}
@@ -189,7 +189,7 @@ export function PricingExperience() {
                   const isActive = calls === preset.calls && minutes === preset.minutes;
                   return (
                     <button
-                      className={`min-h-10 rounded-xl border px-3 text-xs font-semibold transition ${isActive ? "border-[#118778]/60 bg-[#118778]/10 text-[#108D82]" : "border-white/10 bg-black/20 text-white/55 hover:border-[#118778]/25 hover:text-[#0e6f62]"}`}
+                      className={`min-h-10 rounded-xl border px-3 text-xs font-semibold transition ${isActive ? "border-[#108D82]/60 bg-[#108D82]/10 text-[#108D82]" : "border-white/10 bg-black/20 text-white/55 hover:border-[#108D82]/25 hover:text-[#108D82]"}`}
                       key={preset.label}
                       type="button"
                       aria-pressed={isActive}
@@ -207,16 +207,16 @@ export function PricingExperience() {
               <div className="mt-7 grid gap-5 sm:grid-cols-2">
                 <label className="grid gap-2 text-sm font-semibold text-white/70">
                   Number of calls
-                  <input className="h-12 rounded-xl border border-white/10 bg-black/50 px-4 text-white outline-none transition focus:border-[#118778]/60 focus:ring-2 focus:ring-[#118778]/10" min="0" max="1000000" inputMode="numeric" type="number" value={calls} onChange={(event) => setCalls(event.target.valueAsNumber || 0)} />
+                  <input className="h-12 rounded-xl border border-white/10 bg-black/50 px-4 text-white outline-none transition focus:border-[#108D82]/60 focus:ring-2 focus:ring-[#108D82]/10" min="0" max="1000000" inputMode="numeric" type="number" value={calls} onChange={(event) => setCalls(event.target.valueAsNumber || 0)} />
                 </label>
                 <label className="grid gap-2 text-sm font-semibold text-white/70">
                   Average minutes per call
-                  <input className="h-12 rounded-xl border border-white/10 bg-black/50 px-4 text-white outline-none transition focus:border-[#118778]/60 focus:ring-2 focus:ring-[#118778]/10" min="0" max="240" step="0.5" inputMode="decimal" type="number" value={minutes} onChange={(event) => setMinutes(event.target.valueAsNumber || 0)} />
+                  <input className="h-12 rounded-xl border border-white/10 bg-black/50 px-4 text-white outline-none transition focus:border-[#108D82]/60 focus:ring-2 focus:ring-[#108D82]/10" min="0" max="240" step="0.5" inputMode="decimal" type="number" value={minutes} onChange={(event) => setMinutes(event.target.valueAsNumber || 0)} />
                 </label>
               </div>
             </div>
 
-            <div className="pricing-estimate-panel flex flex-col justify-between bg-[linear-gradient(145deg,rgba(17,135,120,0.10),rgba(255,255,255,1)_55%)] p-6 sm:p-8 lg:p-9">
+            <div className="pricing-estimate-panel flex flex-col justify-between bg-[linear-gradient(145deg,rgba(16, 141, 130,0.10),rgba(255,255,255,1)_55%)] p-6 sm:p-8 lg:p-9">
               <div>
                 <span className="text-xs font-semibold uppercase tracking-[0.12em] text-white/50">Estimated cost range</span>
                 <strong className="mt-4 block text-[clamp(2rem,4vw,3.25rem)] font-semibold leading-none tracking-[-0.045em] text-white">
@@ -244,11 +244,11 @@ export function PricingExperience() {
 
           <div className="grid gap-3">
             {faqs.map((faq) => (
-              <details className="pricing-faq-card group rounded-2xl border border-white/[0.08] bg-[#f7f6ff] px-5 transition open:border-[#118778]/20 open:bg-[#f2f0ff]" key={faq.question}>
+              <details className="pricing-faq-card group rounded-2xl border border-white/[0.08] bg-[#f7f6ff] px-5 transition open:border-[#108D82]/20 open:bg-[#f2f0ff]" key={faq.question}>
                 <summary className="flex min-h-16 cursor-pointer list-none items-center justify-between gap-5 py-3 text-[15px] font-semibold text-white marker:content-none">
                   {faq.question}
-                  <span className="grid size-8 shrink-0 place-items-center rounded-full border border-white/10 bg-black/20 text-lg font-normal text-[#0e6f62] group-open:hidden" aria-hidden="true">+</span>
-                  <span className="hidden size-8 shrink-0 place-items-center rounded-full border border-[#118778]/20 bg-[#118778]/10 text-lg font-normal text-[#0e6f62] group-open:grid" aria-hidden="true">−</span>
+                  <span className="grid size-8 shrink-0 place-items-center rounded-full border border-white/10 bg-black/20 text-lg font-normal text-[#108D82] group-open:hidden" aria-hidden="true">+</span>
+                  <span className="hidden size-8 shrink-0 place-items-center rounded-full border border-[#108D82]/20 bg-[#108D82]/10 text-lg font-normal text-[#108D82] group-open:grid" aria-hidden="true">−</span>
                 </summary>
                 <p className="max-w-3xl pb-6 pr-10 text-sm leading-7 text-white/55">{faq.answer}</p>
               </details>
@@ -258,12 +258,12 @@ export function PricingExperience() {
       </section>
 
       <section className="scroll-mt-20 bg-black px-6 pb-12 pt-4 lg:px-8" id="contact">
-        <div className="pricing-contact-card mx-auto flex max-w-6xl flex-col items-center justify-between gap-7 overflow-hidden rounded-[24px] border border-[#118778]/15 bg-white p-8 text-center shadow-[0_28px_80px_rgba(70,65,130,0.13)] sm:p-10 md:flex-row md:text-left">
+        <div className="pricing-contact-card mx-auto flex max-w-6xl flex-col items-center justify-between gap-7 overflow-hidden rounded-[24px] border border-[#108D82]/15 bg-white p-8 text-center shadow-[0_28px_80px_rgba(70,65,130,0.13)] sm:p-10 md:flex-row md:text-left">
           <div>
             <p className="pricing-eyebrow text-xs font-bold uppercase tracking-[0.14em] text-white/50">Ready to get started?</p>
             <h2 className="mt-3 text-2xl font-semibold tracking-[-0.02em] text-white md:text-3xl">Need help estimating your usage?</h2>
           </div>
-          <Link className="inline-flex min-h-12 shrink-0 items-center rounded-lg bg-[#118778] px-7 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#0e6f62]" href="/contact">CONTACT US <span className="ml-3">&rarr;</span></Link>
+          <Link className="inline-flex min-h-12 shrink-0 items-center rounded-lg bg-[#108D82] px-7 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#108D82]" href="/contact">CONTACT US <span className="ml-3">&rarr;</span></Link>
         </div>
       </section>
     </div>

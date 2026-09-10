@@ -31,13 +31,13 @@ const pageThemes = {
     "--service-accent": "#35fbe0",
     "--service-accent-soft": "#75fff0",
     "--service-accent-rgb": "53, 251, 224",
-    "--service-secondary": "#108D82",
+    "--service-secondary": "#8f83e8",
     "--service-secondary-rgb": "143, 131, 232",
     "--service-tertiary": "#ffad73",
     "--service-tertiary-rgb": "255, 173, 115",
   },
   Deploy: {
-    "--service-accent": "#108D82",
+    "--service-accent": "#a99cff",
     "--service-accent-soft": "#d3ccff",
     "--service-accent-rgb": "169, 156, 255",
     "--service-secondary": "#35fbe0",
@@ -51,7 +51,7 @@ const pageThemes = {
     "--service-accent-rgb": "255, 173, 115",
     "--service-secondary": "#35fbe0",
     "--service-secondary-rgb": "53, 251, 224",
-    "--service-tertiary": "#108D82",
+    "--service-tertiary": "#8f83e8",
     "--service-tertiary-rgb": "143, 131, 232",
   },
 } as const;
@@ -124,7 +124,7 @@ const voiceAgentCapabilities = [
     title: "Complete tasks",
     body: "Book appointments, update CRMs, create tickets, and capture qualified details.",
     icon: "checklist",
-    color: "#108D82",
+    color: "#a99cff",
   },
   {
     title: "Access knowledge",
@@ -157,7 +157,7 @@ const everythingIncludedCapabilities = [
     title: "Multilingual Conversations",
     body: "Speak naturally across 40+ languages and connect with customers worldwide.",
     icon: "languages",
-    color: "#108D82",
+    color: "#8f83e8",
   },
   {
     title: "Knowledge Base",
@@ -195,7 +195,7 @@ const voiceCloningCapabilities = [
   },
   {
     icon: "microphone",
-    color: "#108D82",
+    color: "#8f83e8",
     title: "Natural Human Expression",
     body: "Capture tone, pacing, pronunciation, and speaking style for conversations that feel authentic.",
   },
@@ -1416,7 +1416,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
           --service-accent: #35fbe0;
           --service-accent-soft: #75fff0;
           --service-accent-rgb: 53, 251, 224;
-          --service-secondary: #108D82;
+          --service-secondary: #8f83e8;
           --service-secondary-rgb: 143, 131, 232;
           --service-tertiary: #ffad73;
           --service-tertiary-rgb: 255, 173, 115;
@@ -1755,7 +1755,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
         }
 
         .agent-layer-knowledge {
-          --layer-color: #108D82;
+          --layer-color: #a99cff;
           --layer-rgb: 169, 156, 255;
         }
 
@@ -1878,7 +1878,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
         }
 
         .voice-process-heading-accent {
-          background: linear-gradient(100deg, #75fff0, #108D82 48%, #108D82);
+          background: linear-gradient(100deg, #75fff0, #108D82 48%, #a99cff);
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
@@ -1899,11 +1899,11 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
 
         .voice-build-step:nth-child(2) {
           --step-color: #108D82;
-          --step-rgb: 117, 186, 255;
+          --step-rgb: 16, 141, 130;
         }
 
         .voice-build-step:nth-child(3) {
-          --step-color: #108D82;
+          --step-color: #a99cff;
           --step-rgb: 169, 156, 255;
         }
 
@@ -2016,7 +2016,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
         }
 
         .voice-config-heading-accent {
-          background: linear-gradient(100deg, #f58bd6, #108D82 48%, #75fff0);
+          background: linear-gradient(100deg, #f58bd6, #a99cff 48%, #75fff0);
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
@@ -2044,11 +2044,11 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
 
         .voice-config-item:nth-child(2) {
           --config-color: #108D82;
-          --config-rgb: 117, 186, 255;
+          --config-rgb: 16, 141, 130;
         }
 
         .voice-config-item:nth-child(3) {
-          --config-color: #108D82;
+          --config-color: #a99cff;
           --config-rgb: 169, 156, 255;
         }
 
@@ -2181,7 +2181,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
           right: 0;
           top: 50%;
           height: 1px;
-          background: linear-gradient(90deg, #35fbe0, #108D82 20%, #108D82 40%, #f58bd6 60%, #ffad73 80%, #8fe388);
+          background: linear-gradient(90deg, #35fbe0, #108D82 20%, #a99cff 40%, #f58bd6 60%, #ffad73 80%, #8fe388);
           opacity: 0.48;
         }
 
@@ -2299,7 +2299,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
             top: 0;
             bottom: 0;
             width: 1px;
-            background: linear-gradient(to bottom, #35fbe0, #108D82 45%, #f58bd6 68%, #ffad73);
+            background: linear-gradient(to bottom, #35fbe0, #a99cff 45%, #f58bd6 68%, #ffad73);
             opacity: 0.45;
           }
 
@@ -2766,11 +2766,11 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
 
         .voice-build-clean-step:nth-child(2) {
           --clean-step-color: #108D82;
-          --clean-step-rgb: 117, 186, 255;
+          --clean-step-rgb: 16, 141, 130;
         }
 
         .voice-build-clean-step:nth-child(3) {
-          --clean-step-color: #108D82;
+          --clean-step-color: #a99cff;
           --clean-step-rgb: 169, 156, 255;
         }
 
@@ -2962,12 +2962,12 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
 
         .voice-build-tone-2 {
           --build-primary: #108D82;
-          --build-rgb: 117, 186, 255;
+          --build-rgb: 16, 141, 130;
           --build-ink: #d9ecff;
         }
 
         .voice-build-tone-3 {
-          --build-primary: #108D82;
+          --build-primary: #a99cff;
           --build-rgb: 169, 156, 255;
           --build-ink: #eeeaff;
         }
@@ -3182,7 +3182,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
           right: 0;
           left: 0;
           height: 1px;
-          background: linear-gradient(90deg, transparent, #35fbe0, #108D82 52%, #ffad73, transparent);
+          background: linear-gradient(90deg, transparent, #35fbe0, #a99cff 52%, #ffad73, transparent);
           content: "";
           opacity: 0.75;
         }
@@ -4813,12 +4813,12 @@ inset:55px;
         .voice-agent-page .voice-config-item:nth-child(3),
         .voice-agent-page .voice-config-item:nth-child(4) {
           --config-color: #108D82;
-          --config-rgb: 117, 186, 255;
+          --config-rgb: 16, 141, 130;
         }
 
         .voice-agent-page .voice-config-item:nth-child(5),
         .voice-agent-page .voice-config-item:nth-child(6) {
-          --config-color: #108D82;
+          --config-color: #a99cff;
           --config-rgb: 169, 156, 255;
         }
 
@@ -5029,7 +5029,7 @@ inset:55px;
         .voice-agent-page .voice-config-radar > span:nth-child(2) {
           width: 57%;
           height: 57%;
-          border-color: rgba(117, 186, 255, 0.11);
+          border-color: rgba(16, 141, 130, 0.11);
         }
 
         .voice-agent-page .voice-config-radar > span:nth-child(3) {
@@ -5470,8 +5470,8 @@ inset:55px;
         }
 
         .voice-blueprint-intro .service-pill {
-          border-color: rgba(141, 215, 255, 0.28);
-          background: rgba(141, 215, 255, 0.1);
+          border-color: rgba(16, 141, 130, 0.28);
+          background: rgba(16, 141, 130, 0.1);
           color: #bfe7ff;
         }
 
@@ -5488,10 +5488,10 @@ inset:55px;
         .voice-blueprint-panel {
           position: relative;
           overflow: hidden;
-          border: 1px solid rgba(141, 215, 255, 0.16);
+          border: 1px solid rgba(16, 141, 130, 0.16);
           border-radius: 1.5rem;
           background:
-            radial-gradient(circle at 8% 10%, rgba(117, 186, 255, 0.12), transparent 33%),
+            radial-gradient(circle at 8% 10%, rgba(16, 141, 130, 0.12), transparent 33%),
             radial-gradient(circle at 92% 90%, rgba(255, 173, 115, 0.1), transparent 34%),
             #040a0b;
           box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.018), 0 28px 80px rgba(0, 0, 0, 0.22);
@@ -5500,7 +5500,7 @@ inset:55px;
         .voice-blueprint-core {
           min-height: 320px;
           border: 1px solid rgba(169, 156, 255, 0.18);
-          background: linear-gradient(145deg, rgba(169, 156, 255, 0.12), rgba(117, 186, 255, 0.045));
+          background: linear-gradient(145deg, rgba(169, 156, 255, 0.12), rgba(16, 141, 130, 0.045));
         }
 
         .voice-blueprint-list {
@@ -5513,7 +5513,7 @@ inset:55px;
 
         .voice-blueprint-layer {
           --blueprint-primary: #108D82;
-          --blueprint-rgb: 117, 186, 255;
+          --blueprint-rgb: 16, 141, 130;
           position: relative;
           display: grid;
           grid-template-columns: 3rem minmax(0, 1fr);
@@ -5525,7 +5525,7 @@ inset:55px;
           transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
         }
 
-        .voice-blueprint-layer.agent-layer-knowledge { --blueprint-primary: #108D82; --blueprint-rgb: 169, 156, 255; }
+        .voice-blueprint-layer.agent-layer-knowledge { --blueprint-primary: #a99cff; --blueprint-rgb: 169, 156, 255; }
         .voice-blueprint-layer.agent-layer-actions { --blueprint-primary: #ffad73; --blueprint-rgb: 255, 173, 115; }
 
         .voice-blueprint-layer:hover,
@@ -5623,7 +5623,7 @@ inset:55px;
           border-radius: 1.5rem;
           padding: 1.25rem;
           background:
-            radial-gradient(circle at 6% 5%, rgba(117, 186, 255, 0.12), transparent 32%),
+            radial-gradient(circle at 6% 5%, rgba(16, 141, 130, 0.12), transparent 32%),
             radial-gradient(circle at 94% 95%, rgba(255, 173, 115, 0.1), transparent 34%),
             #040a0b;
           box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.018), 0 28px 80px rgba(0, 0, 0, 0.22);
@@ -5635,7 +5635,7 @@ inset:55px;
           inset: 0;
           pointer-events: none;
           opacity: 0.3;
-          background-image: linear-gradient(rgba(117, 186, 255, 0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(169, 156, 255, 0.07) 1px, transparent 1px);
+          background-image: linear-gradient(rgba(16, 141, 130, 0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(169, 156, 255, 0.07) 1px, transparent 1px);
           background-size: 38px 38px;
           mask-image: radial-gradient(ellipse at center, black, transparent 78%);
         }
@@ -5670,7 +5670,7 @@ inset:55px;
 
         .voice-build-redesign-step {
           --build-primary: #108D82;
-          --build-rgb: 117, 186, 255;
+          --build-rgb: 16, 141, 130;
           position: relative;
           min-height: 210px;
           overflow: hidden;
@@ -5681,11 +5681,11 @@ inset:55px;
           transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
         }
 
-        .voice-build-redesign-step.voice-build-tone-1 { --build-primary: #108D82; --build-rgb: 117, 186, 255; }
-        .voice-build-redesign-step.voice-build-tone-2 { --build-primary: #108D82; --build-rgb: 169, 156, 255; }
+        .voice-build-redesign-step.voice-build-tone-1 { --build-primary: #108D82; --build-rgb: 16, 141, 130; }
+        .voice-build-redesign-step.voice-build-tone-2 { --build-primary: #a99cff; --build-rgb: 169, 156, 255; }
         .voice-build-redesign-step.voice-build-tone-3 { --build-primary: #f58bd6; --build-rgb: 245, 139, 214; }
         .voice-build-redesign-step.voice-build-tone-4 { --build-primary: #ffad73; --build-rgb: 255, 173, 115; }
-        .voice-build-redesign-step.voice-build-tone-5 { --build-primary: #108D82; --build-rgb: 141, 215, 255; }
+        .voice-build-redesign-step.voice-build-tone-5 { --build-primary: #108D82; --build-rgb: 16, 141, 130; }
         .voice-build-redesign-step.voice-build-tone-6 { --build-primary: #d3ccff; --build-rgb: 211, 204, 255; }
 
         .voice-build-redesign-step::before {
@@ -5919,8 +5919,8 @@ inset:55px;
 
         #product-service-page#product-service-page h2,
         #product-service-page#product-service-page h2 * {
-          color: #123d35 !important;
-          -webkit-text-fill-color: #123d35 !important;
+          color: #252161 !important;
+          -webkit-text-fill-color: #252161 !important;
         }
 
         #product-service-page#product-service-page :is(
@@ -5934,7 +5934,7 @@ inset:55px;
         ) {
           border-color: #d8e3ff !important;
           background: linear-gradient(145deg, #fff 0%, #eef4ff 100%) !important;
-          box-shadow: 0 10px 28px rgba(17, 135, 120, 0.08) !important;
+          box-shadow: 0 10px 28px rgba(16, 141, 130, 0.08) !important;
         }
 
         #product-service-page#product-service-page :is(
@@ -5946,8 +5946,8 @@ inset:55px;
         ) {
           border-color: #bfd0ff !important;
           background: #e8efff !important;
-          color: #118778 !important;
-          -webkit-text-fill-color: #118778 !important;
+          color: #108D82 !important;
+          -webkit-text-fill-color: #108D82 !important;
         }
 
         #product-service-page#product-service-page :is(
@@ -5960,7 +5960,7 @@ inset:55px;
           .service-faq
         ):hover {
           border-color: #108D82 !important;
-          box-shadow: 0 16px 36px rgba(17, 135, 120, 0.14) !important;
+          box-shadow: 0 16px 36px rgba(16, 141, 130, 0.14) !important;
         }
 
         #product-service-page#product-service-page .voice-capabilities-section .voice-capability-card {
@@ -5976,21 +5976,21 @@ inset:55px;
         }
 
         #product-service-page#product-service-page .everything-included-section {
-          --everything-accent: #118778;
+          --everything-accent: #108D82;
           --everything-soft: #eef4ff;
           --everything-border: #bfd0ff;
         }
 
         #product-service-page#product-service-page .everything-included-section h2 span {
-          color: #123d35 !important;
-          -webkit-text-fill-color: #123d35 !important;
+          color: #252161 !important;
+          -webkit-text-fill-color: #252161 !important;
         }
 
         #product-service-page#product-service-page .everything-included-section .service-pill {
-          border-color: rgba(17, 135, 120, 0.2) !important;
+          border-color: rgba(16, 141, 130, 0.2) !important;
           background: #f4f7ff !important;
-          color: #118778 !important;
-          -webkit-text-fill-color: #118778 !important;
+          color: #108D82 !important;
+          -webkit-text-fill-color: #108D82 !important;
         }
 
         #product-service-page#product-service-page .everything-included-section .everything-icon-circle {
@@ -5998,7 +5998,7 @@ inset:55px;
           background: var(--everything-soft) !important;
           color: var(--everything-accent) !important;
           -webkit-text-fill-color: var(--everything-accent) !important;
-          box-shadow: 0 10px 28px rgba(17, 135, 120, 0.12) !important;
+          box-shadow: 0 10px 28px rgba(16, 141, 130, 0.12) !important;
         }
 
         #product-service-page#product-service-page .everything-included-section .everything-line {
@@ -6007,22 +6007,22 @@ inset:55px;
 
         #product-service-page#product-service-page .everything-included-section .everything-line > span {
           background: var(--everything-accent) !important;
-          box-shadow: 0 0 0 6px rgba(17, 135, 120, 0.12), 0 0 18px rgba(17, 135, 120, 0.3) !important;
+          box-shadow: 0 0 0 6px rgba(16, 141, 130, 0.12), 0 0 18px rgba(16, 141, 130, 0.3) !important;
         }
 
         #product-service-page#product-service-page .everything-included-section .everything-included-card {
           border-color: var(--everything-border) !important;
           background: linear-gradient(145deg, #fff 0%, var(--everything-soft) 100%) !important;
-          box-shadow: 0 10px 28px rgba(17, 135, 120, 0.09) !important;
+          box-shadow: 0 10px 28px rgba(16, 141, 130, 0.09) !important;
         }
 
         #product-service-page#product-service-page .everything-included-section .everything-included-card:hover {
           border-color: var(--everything-accent) !important;
-          box-shadow: 0 16px 36px rgba(17, 135, 120, 0.14) !important;
+          box-shadow: 0 16px 36px rgba(16, 141, 130, 0.14) !important;
         }
 
         #product-service-page#product-service-page .voice-build-process {
-          --build-clean-accent: #118778;
+          --build-clean-accent: #108D82;
           --build-clean-soft: #eef4ff;
           --build-clean-border: #bfd0ff;
           background: #fff !important;
@@ -6104,8 +6104,8 @@ inset:55px;
         }
 
         #product-service-page#product-service-page .voice-build-process .voice-build-redesign-step h3 {
-          color: #123d35 !important;
-          -webkit-text-fill-color: #123d35 !important;
+          color: #252161 !important;
+          -webkit-text-fill-color: #252161 !important;
         }
 
         #product-service-page#product-service-page .voice-build-process .voice-build-redesign-step p {
@@ -6114,7 +6114,7 @@ inset:55px;
         }
 
         #product-service-page#product-service-page .voice-config-section {
-          --agent-control-accent: #118778;
+          --agent-control-accent: #108D82;
           --agent-control-soft: #eef4ff;
           --agent-control-border: #bfd0ff;
           background: #fff !important;
@@ -6139,7 +6139,7 @@ inset:55px;
 
         #product-service-page#product-service-page .voice-config-section .voice-config-explorer {
           --active-config-color: var(--agent-control-accent) !important;
-          --active-config-rgb: 17, 135, 120 !important;
+          --active-config-rgb: 16, 141, 130 !important;
           border-color: #dfe3e8 !important;
           background: #fff !important;
           box-shadow: 0 12px 32px rgba(23, 32, 63, 0.06) !important;
@@ -6311,28 +6311,28 @@ inset:55px;
         }
 
         #product-service-page#product-service-page .voice-agent-contact-section .product-service-ready-card > div:first-child {
-          border-color: rgba(100, 104, 255, 0.16) !important;
-          box-shadow: 0 0 0 24px rgba(100, 104, 255, 0.025), 0 0 0 54px rgba(100, 104, 255, 0.02) !important;
+          border-color: rgba(16, 141, 130, 0.16) !important;
+          box-shadow: 0 0 0 24px rgba(16, 141, 130, 0.025), 0 0 0 54px rgba(16, 141, 130, 0.02) !important;
         }
 
         #product-service-page#product-service-page .voice-agent-contact-section .service-accent-text {
-          color: #118778 !important;
-          -webkit-text-fill-color: #118778 !important;
+          color: #108D82 !important;
+          -webkit-text-fill-color: #108D82 !important;
         }
 
         #product-service-page#product-service-page .voice-agent-contact-section .product-service-contact-button {
-          border-color: #118778 !important;
-          background: #118778 !important;
+          border-color: #108D82 !important;
+          background: #108D82 !important;
           background-image: none !important;
           color: #fff !important;
           -webkit-text-fill-color: #fff !important;
-          box-shadow: 0 10px 24px rgba(100, 104, 255, 0.2) !important;
+          box-shadow: 0 10px 24px rgba(16, 141, 130, 0.2) !important;
         }
 
         #product-service-page#product-service-page .voice-agent-contact-section .product-service-contact-button:hover {
           border-color: #108D82 !important;
           background: #108D82 !important;
-          box-shadow: 0 13px 28px rgba(84, 89, 232, 0.24) !important;
+          box-shadow: 0 13px 28px rgba(16, 141, 130, 0.24) !important;
         }
 
         /* Voice-cloning controls: a compact, readable settings card. */
@@ -6387,7 +6387,7 @@ inset:55px;
         }
 
         #product-service-page#product-service-page#product-service-page.product-page-voice-cloning .voice-slider-track > span {
-          background: #118778 !important;
+          background: #108D82 !important;
           background-image: none !important;
           box-shadow: none !important;
         }

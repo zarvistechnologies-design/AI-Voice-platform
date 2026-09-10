@@ -42,9 +42,9 @@ const trustAreaAccents = [
     glow: "bg-[#45ddce]/16",
   },
   {
-    card: "border-[#108D82]/25 bg-[linear-gradient(145deg,rgba(157,140,255,0.09),rgba(157,140,255,0.018)_48%,#040605)] hover:border-[#108D82]/50",
-    badge: "border-[#108D82]/30 bg-[#108D82]/10 text-[#c4b5fd]",
-    glow: "bg-[#108D82]/16",
+    card: "border-[#9d8cff]/25 bg-[linear-gradient(145deg,rgba(157,140,255,0.09),rgba(157,140,255,0.018)_48%,#040605)] hover:border-[#9d8cff]/50",
+    badge: "border-[#9d8cff]/30 bg-[#9d8cff]/10 text-[#c4b5fd]",
+    glow: "bg-[#9d8cff]/16",
   },
   {
     card: "border-[#ff9f6e]/25 bg-[linear-gradient(145deg,rgba(255,159,110,0.09),rgba(255,159,110,0.018)_48%,#040605)] hover:border-[#ff9f6e]/50",
@@ -57,7 +57,7 @@ const trustAreaAccents = [
     glow: "bg-[#f6d365]/14",
   },
   {
-    card: "border-[#108D82]/25 bg-[linear-gradient(145deg,rgba(88,166,231,0.09),rgba(88,166,231,0.018)_48%,#040605)] hover:border-[#108D82]/50",
+    card: "border-[#108D82]/25 bg-[linear-gradient(145deg,rgba(16, 141, 130,0.09),rgba(16, 141, 130,0.018)_48%,#040605)] hover:border-[#108D82]/50",
     badge: "border-[#108D82]/30 bg-[#108D82]/10 text-[#108D82]",
     glow: "bg-[#108D82]/16",
   },

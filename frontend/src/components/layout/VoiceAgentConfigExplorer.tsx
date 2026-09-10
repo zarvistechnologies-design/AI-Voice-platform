@@ -249,8 +249,8 @@ export function VoiceAgentConfigExplorer({
 
       <style>{`
         .voice-config-explorer {
-          --active-config-color: #118778;
-          --active-config-rgb: 17, 135, 120;
+          --active-config-color: #108D82;
+          --active-config-rgb: 16, 141, 130;
           position: relative;
           width: 100%;
           max-width: 1360px;
@@ -472,7 +472,7 @@ export function VoiceAgentConfigExplorer({
           content: none;
         }
 
-        .voice-config-chart-row { --chart-color: #118778; --chart-rgb: 17, 135, 120; }
+        .voice-config-chart-row { --chart-color: #108D82; --chart-rgb: 16, 141, 130; }
 
         .voice-config-tabs {
           display: grid;
@@ -562,7 +562,7 @@ export function VoiceAgentConfigExplorer({
           outline-offset: 3px;
         }
 
-        .voice-config-tabs > button { --tab-color: #118778; }
+        .voice-config-tabs > button { --tab-color: #108D82; }
 
         @media (min-width: 768px) {
           .voice-config-detail {
@@ -681,7 +681,7 @@ export function VoiceAgentConfigExplorer({
             display: grid;
             grid-template-columns: minmax(245px, 0.48fr) minmax(0, 1.52fr);
             align-items: stretch;
-            border-color: rgba(141, 215, 255, 0.2);
+            border-color: rgba(16, 141, 130, 0.2);
             background: #050a0d;
           }
 
@@ -702,7 +702,7 @@ export function VoiceAgentConfigExplorer({
             overflow: hidden;
             padding: 0.7rem;
             background:
-              linear-gradient(180deg, rgba(117, 186, 255, 0.07), transparent 28%),
+              linear-gradient(180deg, rgba(16, 141, 130, 0.07), transparent 28%),
               rgba(3, 8, 11, 0.96);
           }
 
@@ -821,9 +821,9 @@ export function VoiceAgentConfigExplorer({
           gap: 1rem;
           margin: 0 auto;
           padding: 2rem;
-          border: 1px solid rgba(117, 186, 255, 0.26);
+          border: 1px solid rgba(16, 141, 130, 0.26);
           border-radius: 1.25rem;
-          background: linear-gradient(145deg, rgba(117, 186, 255, 0.08), rgba(255, 255, 255, 0.018));
+          background: linear-gradient(145deg, rgba(16, 141, 130, 0.08), rgba(255, 255, 255, 0.018));
         }
 
         .voice-config-option-grid-label {
@@ -914,10 +914,10 @@ export function VoiceAgentConfigExplorer({
         }
 
         .voice-config-detail-icon {
-          border-color: rgba(17, 135, 120, 0.24);
-          border-left-color: #118778;
-          background: rgba(17, 135, 120, 0.08);
-          color: #0e6f62;
+          border-color: rgba(16, 141, 130, 0.24);
+          border-left-color: #108D82;
+          background: rgba(16, 141, 130, 0.08);
+          color: #108D82;
         }
 
         .voice-config-option-grid {
@@ -927,7 +927,7 @@ export function VoiceAgentConfigExplorer({
 
         .voice-config-option-grid-label,
         .voice-config-option-check {
-          color: #0e6f62 !important;
+          color: #108D82 !important;
         }
 
         .voice-config-option {
@@ -947,20 +947,20 @@ export function VoiceAgentConfigExplorer({
         }
 
         .voice-config-tabs > button.is-active {
-          border-color: rgba(17, 135, 120, 0.24);
-          background: rgba(17, 135, 120, 0.08);
+          border-color: rgba(16, 141, 130, 0.24);
+          background: rgba(16, 141, 130, 0.08);
           color: #171719;
-          box-shadow: inset 3px 0 #118778;
+          box-shadow: inset 3px 0 #108D82;
         }
 
         .voice-config-tab-icon {
-          border-color: rgba(17, 135, 120, 0.2);
-          background: rgba(17, 135, 120, 0.07);
-          color: #0e6f62;
+          border-color: rgba(16, 141, 130, 0.2);
+          background: rgba(16, 141, 130, 0.07);
+          color: #108D82;
         }
 
         .voice-config-tabs small {
-          color: #0e6f62;
+          color: #108D82;
         }
 
         .voice-config-tabs em {

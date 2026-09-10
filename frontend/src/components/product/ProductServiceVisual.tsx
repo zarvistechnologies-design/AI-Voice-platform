@@ -382,8 +382,8 @@ export function ProductServiceVisual({ slug, experience, design }: ProductServic
         .product-visual-sheen {
           z-index: -1;
           background-image:
-            linear-gradient(rgba(17,135,120,0.045) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(17,135,120,0.045) 1px, transparent 1px);
+            linear-gradient(rgba(16, 141, 130,0.045) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(16, 141, 130,0.045) 1px, transparent 1px);
           background-size: 28px 28px;
           mask-image: linear-gradient(to bottom, black, transparent 82%);
         }

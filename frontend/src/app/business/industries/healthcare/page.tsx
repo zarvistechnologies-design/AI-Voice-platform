@@ -30,7 +30,7 @@ const photoCards = [
 
 const healthcareCompanies = [
   { name: "Epic", color: "#35fbe0" },
-  { name: "Cerner", color: "#108D82" },
+  { name: "Cerner", color: "#9b8cff" },
   { name: "Athenahealth", color: "#ff9f5a" },
   { name: "DrChrono", color: "#108D82" },
   { name: "Dentrix", color: "#ff6f91" },
@@ -154,7 +154,7 @@ const integrationHighlights = [
     label: "Patient systems",
     title: "Share useful call outcomes",
     body: "Send structured summaries and next steps into the tools your care team already checks.",
-    accent: "text-[#c5bdff] bg-[#108D82]/10 border-[#108D82]/20",
+    accent: "text-[#c5bdff] bg-[#8f83e8]/10 border-[#8f83e8]/20",
     icon: "02",
   },
   {
@@ -232,9 +232,9 @@ function WorkflowVisual({ type, image }: { type: string; image?: string }) {
               badge: "bg-[#ff9655] text-[#241006]",
             }
           : {
-              border: "border-[#108D82]/35",
+              border: "border-[#8f83e8]/35",
               label: "text-[#c5bdff]",
-              badge: "bg-[#108D82] text-white",
+              badge: "bg-[#8f83e8] text-white",
             };
 
     return (
@@ -566,7 +566,7 @@ export default function HealthcarePage() {
                     index === 0
                       ? "border-[#35fbe0]/25 bg-[#35fbe0]/[0.045]"
                       : index === 1
-                        ? "border-[#108D82]/25 bg-[#108D82]/[0.045]"
+                        ? "border-[#8f83e8]/25 bg-[#8f83e8]/[0.045]"
                         : "border-[#ff9655]/25 bg-[#ff9655]/[0.045]"
                   }`}
                   key={review.name}
@@ -642,7 +642,7 @@ export default function HealthcarePage() {
                         ? "border-[#35fbe0]/25 bg-[#35fbe0]/[0.06] text-[#75fff0] hover:bg-[#35fbe0]/10"
                         : section.visual === "ivr"
                           ? "border-[#ff9655]/25 bg-[#ff9655]/[0.06] text-[#ffb17e] hover:bg-[#ff9655]/10"
-                          : "border-[#108D82]/25 bg-[#108D82]/[0.06] text-[#c5bdff] hover:bg-[#108D82]/10"
+                          : "border-[#8f83e8]/25 bg-[#8f83e8]/[0.06] text-[#c5bdff] hover:bg-[#8f83e8]/10"
                     }`}
                     href="/#demo"
                   >
@@ -774,8 +774,8 @@ export default function HealthcarePage() {
                 </Link>
               </article>
 
-              <article className="business-pricing-card relative overflow-hidden rounded-2xl border border-[#108D82]/30 bg-[radial-gradient(circle_at_95%_0%,rgba(143,131,232,0.22),transparent_42%),#0a0b0d] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.22)] sm:p-7">
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#108D82] to-transparent" />
+              <article className="business-pricing-card relative overflow-hidden rounded-2xl border border-[#8f83e8]/30 bg-[radial-gradient(circle_at_95%_0%,rgba(143,131,232,0.22),transparent_42%),#0a0b0d] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.22)] sm:p-7">
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#8f83e8] to-transparent" />
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <span className="text-xs font-bold uppercase tracking-[0.14em] text-[#c5bdff]">For growing teams</span>
@@ -792,13 +792,13 @@ export default function HealthcarePage() {
                 <ul className="mt-5 grid gap-3 text-sm leading-6 text-slate-200">
                   {["White-glove setup for your use case.", "Dedicated solutions and premium support.", "Custom concurrency, pricing, and workflows.", "Deployment guidance for larger care teams."].map((item) => (
                     <li className="flex items-start gap-3" key={item}>
-                      <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-[#108D82]/15 text-xs text-[#c5bdff]">&#10003;</span>
+                      <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-[#8f83e8]/15 text-xs text-[#c5bdff]">&#10003;</span>
                       {item}
                     </li>
                   ))}
                 </ul>
                 <Link
-                  className="business-pricing-button mt-7 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-[linear-gradient(90deg,#35fbe0,#108D82)] text-sm font-extrabold text-[#031310] transition hover:brightness-110"
+                  className="business-pricing-button mt-7 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-[linear-gradient(90deg,#35fbe0,#8f83e8)] text-sm font-extrabold text-[#031310] transition hover:brightness-110"
                   href="/contact"
                 >
                   Talk to sales
@@ -829,7 +829,7 @@ export default function HealthcarePage() {
             ))}
             <p className="mt-5 text-center text-sm text-slate-300">
               More questions?{" "}
-              <Link className="font-bold text-[#118778] transition hover:text-[#0e6f62] hover:underline" href="/contact">
+              <Link className="font-bold text-[#108D82] transition hover:text-[#108D82] hover:underline" href="/contact">
                 Contact us
               </Link>
             </p>
@@ -875,15 +875,15 @@ export default function HealthcarePage() {
         }
 
         .healthcare-demo-button {
-          border: 1px solid #118778;
-          background: #118778;
+          border: 1px solid #108D82;
+          background: #108D82;
           color: #fff;
-          box-shadow: 0 12px 28px rgba(17, 135, 120, 0.22);
+          box-shadow: 0 12px 28px rgba(16, 141, 130, 0.22);
         }
 
         .healthcare-demo-button:hover {
-          border-color: #0e6f62;
-          background: #0e6f62;
+          border-color: #108D82;
+          background: #108D82;
         }
 
         .healthcare-hero-card {

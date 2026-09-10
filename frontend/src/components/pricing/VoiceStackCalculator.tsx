@@ -13,7 +13,7 @@ import {
 type StackLayer = Extract<ModelPriceCategory["id"], "llm" | "stt" | "tts">;
 
 const layers: readonly { id: StackLayer; label: string; helper: string; accent: string }[] = [
-  { id: "llm", label: "Language model (LLM)", helper: "Understands and responds", accent: "#118778" },
+  { id: "llm", label: "Language model (LLM)", helper: "Understands and responds", accent: "#108D82" },
   { id: "stt", label: "Speech to text (STT)", helper: "Transcribes the caller", accent: "#d95d88" },
   { id: "tts", label: "Text to speech (TTS)", helper: "Generates the agent voice", accent: "#c58a25" },
 ] as const;
@@ -64,7 +64,7 @@ function ModelDropdown({
 
       <span className="relative block">
         <select
-          className="h-12 w-full appearance-none rounded-xl border border-white/10 bg-white px-4 pr-11 text-sm font-semibold text-[#171719] outline-none transition hover:border-[#118778]/25 focus:border-[#118778]/50"
+          className="h-12 w-full appearance-none rounded-xl border border-white/10 bg-white px-4 pr-11 text-sm font-semibold text-[#171719] outline-none transition hover:border-[#108D82]/25 focus:border-[#108D82]/50"
           value={value}
           onChange={(event) => onChange(event.target.value)}
         >
@@ -113,15 +113,15 @@ export function VoiceStackCalculator() {
   const total = breakdown.reduce((sum, item) => sum + item.cost, 0);
 
   return (
-    <div className="pricing-stack-card mt-10 overflow-hidden rounded-[24px] border border-[#118778]/15 bg-[radial-gradient(circle_at_95%_0%,rgba(239,138,166,0.12),transparent_32%),linear-gradient(145deg,#ffffff,#f5f3ff)] shadow-[0_24px_80px_rgba(65,61,120,0.12)]">
+    <div className="pricing-stack-card mt-10 overflow-hidden rounded-[24px] border border-[#108D82]/15 bg-[radial-gradient(circle_at_95%_0%,rgba(239,138,166,0.12),transparent_32%),linear-gradient(145deg,#ffffff,#f5f3ff)] shadow-[0_24px_80px_rgba(65,61,120,0.12)]">
       <div className="grid gap-5 border-b border-white/10 px-5 py-6 sm:px-7 lg:grid-cols-[1fr_auto] lg:items-end">
         <div>
           <p className="pricing-eyebrow text-[11px] font-bold uppercase tracking-[0.15em] text-[#f6c76e]">Build your voice stack</p>
           <h3 className="mt-2 text-2xl font-semibold tracking-[-0.025em]">LLM + STT + TTS cost per minute</h3>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-white/45">Open each dropdown, choose a model, and see the combined provider cost instantly.</p>
         </div>
-        <div className="pricing-stack-subtotal rounded-2xl border border-[#118778]/20 bg-[#118778]/[0.07] px-5 py-4 text-left lg:min-w-56 lg:text-right">
-          <span className="block text-[10px] font-bold uppercase tracking-[0.13em] text-[#0e6f62]">Model stack subtotal</span>
+        <div className="pricing-stack-subtotal rounded-2xl border border-[#108D82]/20 bg-[#108D82]/[0.07] px-5 py-4 text-left lg:min-w-56 lg:text-right">
+          <span className="block text-[10px] font-bold uppercase tracking-[0.13em] text-[#108D82]">Model stack subtotal</span>
           <strong className="mt-1 block text-3xl font-semibold tracking-[-0.04em] text-[#108D82]">{formatEstimatedMinuteCost(total)}</strong>
         </div>
       </div>
