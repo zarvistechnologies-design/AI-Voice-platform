@@ -590,7 +590,7 @@ export function DashboardSidebar({
         </div>
 
         <button
-          className="dashboard-sidebar-toggle absolute z-[60] hidden size-7 touch-manipulation select-none cursor-pointer place-items-center rounded-[9px] border border-[#0e6f62] bg-[#123d35] text-white shadow-[0_5px_14px_rgba(18,61,53,0.2)] transition hover:border-[#118778] hover:bg-[#118778] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#118778]/45 active:scale-95 motion-reduce:transition-none lg:grid"
+          className="dashboard-sidebar-toggle absolute z-[60] hidden size-8 touch-manipulation select-none cursor-pointer place-items-center rounded-lg border-0 bg-transparent text-[#52645f] transition hover:bg-[#edf7f4] hover:text-[#0e6f62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#118778]/45 active:scale-95 motion-reduce:transition-none lg:grid"
           type="button"
           title={showUserSidebar ? "Collapse sidebar" : "Expand sidebar"}
           aria-label={showUserSidebar ? "Collapse sidebar" : "Expand sidebar"}
@@ -598,11 +598,12 @@ export function DashboardSidebar({
           onClick={toggleSidebar}
         >
           <svg
-            className={`pointer-events-none size-4 fill-none stroke-current stroke-2 transition-transform ${showUserSidebar ? "" : "rotate-180"}`}
+            className="pointer-events-none size-[18px] fill-none stroke-current stroke-[1.8]"
             viewBox="0 0 24 24"
             aria-hidden="true"
           >
-            <path d="m15 18-6-6 6-6" />
+            <rect x="3" y="4" width="18" height="16" rx="2" />
+            <path d="M15 4v16" />
           </svg>
         </button>
       </aside>

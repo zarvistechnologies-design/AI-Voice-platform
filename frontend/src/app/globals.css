@@ -1056,7 +1056,7 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
     }
 
     .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar nav {
-      margin-top: 0.75rem !important;
+      margin-top: 1.1rem !important;
     }
 
     .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar nav > div {
@@ -1064,7 +1064,7 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
     }
 
     .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar nav p {
-      margin-bottom: 0.35rem !important;
+      margin-bottom: 0.6rem !important;
     }
 
     .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar nav a {
@@ -1904,7 +1904,7 @@ html:not([data-brand-source="white_label"]) :is(.dashboard-home-theme, .agents-h
     }
 
     .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar nav {
-      margin-top: 0.75rem !important;
+      margin-top: 1.1rem !important;
       padding: 0 0.125rem 0.75rem;
     }
 
@@ -1993,20 +1993,20 @@ html:not([data-brand-source="white_label"]) :is(.dashboard-home-theme, .agents-h
     }
 
     .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-toggle {
-      top: 5.15rem;
-      right: 0.65rem;
-      border-color: #0e6f62 !important;
-      background: #123d35 !important;
-      color: #ffffff !important;
-      box-shadow: 0 5px 14px rgb(18 61 53 / 0.2) !important;
+      top: 1.35rem;
+      right: 0.8rem;
+      border: 0 !important;
+      background: transparent !important;
+      color: #52645f !important;
+      box-shadow: none !important;
       transform: none !important;
     }
 
     .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-toggle:hover {
-      border-color: #118778 !important;
-      background: #118778 !important;
-      color: #ffffff !important;
-      transform: translateY(-1px) !important;
+      border: 0 !important;
+      background: #edf7f4 !important;
+      color: #0e6f62 !important;
+      transform: none !important;
     }
 
     .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-shell[data-expanded="false"] .dashboard-sidebar-brand {
