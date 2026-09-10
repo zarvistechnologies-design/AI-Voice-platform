@@ -847,7 +847,7 @@ export function CampaignShell() {
           }
         />
 
-        <div className="mx-auto w-full max-w-[1500px] px-4 py-5 sm:px-6 lg:px-8">
+        <div className="dashboard-page-content w-full py-2">
           {!showCreateCampaign && notice ? (
             <Notice
               tone="success"
@@ -1526,7 +1526,7 @@ function CampaignOperationsSection({
   ) => void | Promise<void>;
 }) {
   return (
-    <section className="mt-4 overflow-hidden rounded-xl border border-[#dbe4e1] bg-white">
+    <section className="dashboard-flat-panel mt-0 overflow-hidden bg-white">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#dbe4e1] px-5 py-4">
         <div>
           <h2 className="app-section-title m-0">Campaigns</h2>

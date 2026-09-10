@@ -204,7 +204,7 @@ function AgentPerformanceCommandCenter({
   const routedCount = agents.filter((agent) => Boolean(agent.phone)).length;
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-[#dfe7e4] bg-white shadow-[0_14px_38px_rgba(52,58,116,.07)]">
+    <section className="dashboard-flat-panel overflow-hidden bg-white">
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#e5e7ef] px-5 py-4">
         <div>
           <div className="flex items-center gap-2">
@@ -399,8 +399,8 @@ export function AdvancedAnalyticsCharts({
   ];
 
   return (
-    <section className="mt-5 space-y-5 text-[#171923]">
-      <section className="overflow-hidden rounded-2xl border border-[#dfe7e4] bg-white shadow-[0_14px_38px_rgba(52,58,116,.07)]">
+    <section className="space-y-5 text-[#171923]">
+      <section className="dashboard-flat-panel overflow-hidden bg-white">
         <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-6">
           <div>
             <span className="text-[10px] font-bold uppercase tracking-[.18em] text-[#0e6f62]">

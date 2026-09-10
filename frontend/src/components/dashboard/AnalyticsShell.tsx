@@ -702,7 +702,7 @@ export function AnalyticsShell() {
   const s = data.summary;
   return (
     <main
-      className={`grid min-h-screen bg-[#f7f9f8] text-[#14231f] ${showUserSidebar ? "lg:grid-cols-[248px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}
+      className={`dashboard-home-theme grid min-h-screen bg-white text-[#14231f] ${showUserSidebar ? "lg:grid-cols-[248px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}
     >
       <DashboardSidebar
         activeLabel="Analytics"
@@ -735,7 +735,7 @@ export function AnalyticsShell() {
             </div>
           }
         />
-        <div className="mx-auto max-w-[1500px] px-4 py-5 sm:px-6 lg:px-8">
+        <div className="dashboard-page-content w-full py-2">
           {notice ? (
             <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
               {notice}

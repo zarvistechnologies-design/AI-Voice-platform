@@ -452,7 +452,7 @@ export function KnowledgeBaseShell() {
 
   return (
     <main
-      className={`grid min-h-screen bg-[#f6f8fc] text-[#111827] lg:h-screen lg:overflow-hidden ${showUserSidebar ? "lg:grid-cols-[248px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}
+      className={`dashboard-home-theme grid min-h-screen bg-white text-[#111827] lg:h-screen lg:overflow-hidden ${showUserSidebar ? "lg:grid-cols-[248px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}
     >
       <DashboardSidebar
         activeLabel="Knowledge Base"
@@ -486,7 +486,7 @@ export function KnowledgeBaseShell() {
           }
         />
 
-        <div className="mx-auto grid w-full max-w-[1500px] gap-4 px-4 py-5 sm:px-6 lg:px-8">
+        <div className="dashboard-page-content grid w-full gap-3 py-2">
           <div className="grid gap-3">
             {notice ? (
               <Notice
@@ -504,7 +504,7 @@ export function KnowledgeBaseShell() {
             ) : null}
           </div>
 
-          <section className="min-w-0 overflow-hidden rounded-lg border border-[#dbe2ea] bg-white shadow-sm">
+          <section className="dashboard-flat-panel min-w-0 overflow-hidden bg-white">
             <div className="grid gap-4 border-b border-[#edf0f4] p-4 sm:p-5 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
               <div>
                 <h2 className="app-section-title m-0">All knowledge</h2>

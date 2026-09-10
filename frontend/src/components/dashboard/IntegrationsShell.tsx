@@ -394,7 +394,7 @@ export function IntegrationsShell() {
 
   return (
     <main
-      className={`grid min-h-screen bg-[#f4f7fb] text-slate-950 ${
+      className={`dashboard-home-theme grid min-h-screen bg-white text-slate-950 ${
         showUserSidebar
           ? "lg:grid-cols-[248px_minmax(0,1fr)]"
           : "lg:grid-cols-[64px_minmax(0,1fr)]"
@@ -417,7 +417,7 @@ export function IntegrationsShell() {
           title="Integrations"
           description="Connect telephony, CRM, scheduling, and notification providers. Credentials are encrypted and never displayed again."
         />
-        <div className="mx-auto grid max-w-[1500px] gap-6 px-4 py-5 sm:px-6 lg:px-8">
+        <div className="grid w-full gap-5 px-4 py-4 sm:px-5 lg:px-6">
           {notice ? (
             <div className="rounded-xl border border-[#b8c8c3] bg-[#edf7f4] px-4 py-3 text-sm text-[#123d35]">
               {notice}

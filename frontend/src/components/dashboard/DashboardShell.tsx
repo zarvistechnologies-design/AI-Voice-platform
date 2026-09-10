@@ -3912,7 +3912,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
 ></script>`;
   const toast = notice ? noticeToast(notice) : null;
   const contentGridClass =
-    "voice-agent-workspace mx-auto grid w-full max-w-[1500px] min-w-0 gap-5 px-4 pb-8 pt-5 sm:px-6 lg:grid-cols-[minmax(0,1fr)] lg:px-8 2xl:grid-cols-[minmax(0,1fr)_360px]";
+    "voice-agent-workspace grid w-full min-w-0 gap-3 pb-6 pt-2 lg:grid-cols-[minmax(0,1fr)] 2xl:grid-cols-[minmax(0,1fr)_360px]";
   const runtimeAsideClass =
     "grid min-w-0 content-start gap-5 self-start xl:grid-cols-2 2xl:sticky 2xl:top-[136px] 2xl:grid-cols-1 2xl:pr-1";
 
@@ -5281,7 +5281,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
 
   return (
     <main
-      className={`voice-agent-theme grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#f7f9f8] text-[#14231f] ${
+      className={`voice-agent-theme dashboard-home-theme grid min-h-screen w-full min-w-0 overflow-x-hidden bg-white text-[#14231f] ${
         showUserSidebar
           ? "lg:grid-cols-[248px_minmax(0,1fr)]"
           : "lg:grid-cols-[64px_minmax(0,1fr)]"
@@ -5497,7 +5497,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
 
         <section className={contentGridClass}>
           <section className="grid min-w-0 content-start gap-4">
-            <article className="agent-editor-shell min-w-0 overflow-hidden rounded-2xl border border-[#dbe4e1] bg-white">
+            <article className="agent-editor-shell dashboard-flat-panel min-w-0 overflow-hidden bg-white">
               <div className="agent-editor-header flex flex-col gap-3 border-b border-[#dbe4e1] bg-white px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                   <h2 className="m-0 text-base font-bold tracking-[-0.02em] text-[#171821]">

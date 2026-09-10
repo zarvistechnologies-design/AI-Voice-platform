@@ -443,7 +443,7 @@ export function CallLogsShell() {
 
   return (
     <main
-      className={`grid min-h-screen bg-[#f4f7fb] text-slate-950 ${
+      className={`dashboard-home-theme grid min-h-screen bg-white text-slate-950 ${
         showUserSidebar
           ? "lg:grid-cols-[248px_minmax(0,1fr)]"
           : "lg:grid-cols-[64px_minmax(0,1fr)]"
@@ -484,9 +484,9 @@ export function CallLogsShell() {
             </>
           }
         />
-        <div className="mx-auto grid max-w-[1500px] gap-4 px-4 py-5 sm:px-6 lg:px-8">
-          <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-            <div className="flex flex-col gap-4 border-b border-slate-200 bg-[linear-gradient(135deg,#ffffff_0%,#fafcfb_100%)] px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="dashboard-page-content grid w-full py-2">
+          <section className="dashboard-flat-panel overflow-hidden bg-white">
+            <div className="dashboard-panel-heading flex flex-col gap-4 px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex min-w-0 items-center gap-3">
                 <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#edf7f4] text-[#0e6f62]">
                   <svg
@@ -518,14 +518,14 @@ export function CallLogsShell() {
                   </p>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-4 sm:divide-x sm:divide-slate-200">
+              <div className="grid grid-cols-2 gap-x-8 gap-y-3 sm:grid-cols-4">
                 {[
                   ["Completed", metrics.completed],
                   ["Live now", metrics.active],
                   ["Avg duration", formatDuration(metrics.averageDuration)],
                   ["Customer cost", money(metrics.charged)],
-                ].map(([label, value], index) => (
-                  <span className={index ? "sm:pl-6" : ""} key={label}>
+                ].map(([label, value]) => (
+                  <span key={label}>
                     <span className="block text-[10px] font-semibold uppercase tracking-[.12em] text-slate-500">
                       {label}
                     </span>
@@ -536,7 +536,7 @@ export function CallLogsShell() {
                 ))}
               </div>
             </div>
-            <div className="grid gap-3 border-b border-slate-200 p-4">
+            <div className="dashboard-filter-bar grid gap-3 p-4">
               <div className="grid gap-2 md:grid-cols-[minmax(240px,1fr)_auto_auto_auto_auto]">
                 <input
                   className="min-w-0 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10"
@@ -682,7 +682,7 @@ export function CallLogsShell() {
             ) : null}
 
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[1050px] border-collapse text-left">
+              <table className="dashboard-data-table w-full min-w-[1050px] border-collapse text-left">
                 <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500">
                   <tr>
                     {[
