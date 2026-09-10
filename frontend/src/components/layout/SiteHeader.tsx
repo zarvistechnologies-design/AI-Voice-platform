@@ -50,9 +50,6 @@ export function SiteHeader() {
         <div className="header-previous-logo flex -translate-x-8 flex-col items-center text-[#111113] max-[640px]:-translate-x-3">
           <div className="header-previous-brand-unit flex flex-col items-center">
             <BrandLogo showWebsiteLogo />
-            <small className="header-previous-tagline">
-              AI Voice for a Smarter Business
-            </small>
           </div>
         </div>
         <nav aria-label="Main navigation" className="hidden items-center gap-7 min-[901px]:flex xl:gap-12">
@@ -65,7 +62,7 @@ export function SiteHeader() {
         <div className="flex items-center gap-2 min-[901px]:translate-x-4">
           <Link className="header-previous-start hidden min-h-12 items-center justify-center rounded-full border-[1.5px] border-[#111116] px-7 text-sm font-bold text-[#111116] min-[901px]:inline-flex" href="/dashboard">Get started</Link>
           <Link
-            className="header-previous-contact-sales inline-flex min-h-12 items-center justify-center rounded-full bg-[#2563eb] px-6 text-sm font-bold text-white max-[900px]:min-h-[42px] max-[640px]:hidden"
+            className="header-previous-contact-sales inline-flex min-h-12 items-center justify-center rounded-full bg-[#108D82] px-6 text-sm font-bold text-white max-[900px]:min-h-[42px] max-[640px]:hidden"
             href="/contact"
           >
             Contact sales
@@ -76,12 +73,12 @@ export function SiteHeader() {
         {activeMenu ? (
           <div className="absolute left-1/2 top-[calc(100%+10px)] hidden w-[min(960px,calc(100vw-40px))] -translate-x-1/2 overflow-hidden rounded-[24px] border border-[#dedee8] bg-white p-2 shadow-[0_28px_80px_rgba(42,39,82,0.14)] min-[901px]:grid min-[901px]:grid-cols-[0.72fr_1.28fr]">
             <Link className="group flex min-h-[260px] flex-col justify-between overflow-hidden rounded-[18px] bg-[radial-gradient(circle_at_85%_10%,rgba(255,255,255,0.65),transparent_30%),linear-gradient(145deg,#dfe2ff,#f2e9ff_52%,#dcfaf4)] p-7 text-[#111113]" href={menus[activeMenu].intro.href} onClick={closeAll}>
-              <span className="text-[10px] font-black uppercase tracking-[0.16em] text-[#6268ff]">Overview</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.16em] text-[#108D82]">Overview</span>
               <div><h2 className="text-3xl font-semibold tracking-[-0.045em]">{menus[activeMenu].intro.title}</h2><p className="mt-3 max-w-sm text-sm leading-6 text-[#676773]">{menus[activeMenu].intro.body}</p></div>
               <span className="text-xs font-extrabold">Explore overview →</span>
             </Link>
             <div className={`grid gap-8 p-7 ${activeMenu === "product" ? "grid-cols-3" : activeMenu === "business" ? "grid-cols-2" : "grid-cols-1"}`}>
-              {menus[activeMenu].groups.map((group) => <div key={group.title}><h3 className="mb-5 text-[10px] font-black uppercase tracking-[0.15em] text-[#777783]">{group.title}</h3><div className="grid gap-1">{group.links.map((link) => <Link className="rounded-xl px-3 py-2.5 text-sm font-semibold text-[#34343f] transition hover:bg-[#f3f2ff] hover:text-[#5158df]" href={link.href} key={link.href} onClick={closeAll}>{link.label}</Link>)}</div></div>)}
+              {menus[activeMenu].groups.map((group) => <div key={group.title}><h3 className="mb-5 text-[10px] font-black uppercase tracking-[0.15em] text-[#777783]">{group.title}</h3><div className="grid gap-1">{group.links.map((link) => <Link className="rounded-xl px-3 py-2.5 text-sm font-semibold text-[#34343f] transition hover:bg-[#f3f2ff] hover:text-[#108D82]" href={link.href} key={link.href} onClick={closeAll}>{link.label}</Link>)}</div></div>)}
             </div>
           </div>
         ) : null}

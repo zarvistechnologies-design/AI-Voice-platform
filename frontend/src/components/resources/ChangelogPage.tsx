@@ -117,7 +117,7 @@ const releases: Release[] = [
     title: "Stronger workspace access and audit visibility",
     summary:
       "Workspace owners have clearer control over who can edit agents, access recordings, and manage production integrations.",
-    accent: "border-[#65a8ff]/28 bg-[#65a8ff]/[0.05]",
+    accent: "border-[#108D82]/28 bg-[#108D82]/[0.05]",
     updates: [
       {
         type: "New",

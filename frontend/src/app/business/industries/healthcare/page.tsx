@@ -32,7 +32,7 @@ const healthcareCompanies = [
   { name: "Epic", color: "#35fbe0" },
   { name: "Cerner", color: "#9b8cff" },
   { name: "Athenahealth", color: "#ff9f5a" },
-  { name: "DrChrono", color: "#58a6ff" },
+  { name: "DrChrono", color: "#108D82" },
   { name: "Dentrix", color: "#ff6f91" },
   { name: "Jane App", color: "#b8f65b" },
 ];
@@ -829,7 +829,7 @@ export default function HealthcarePage() {
             ))}
             <p className="mt-5 text-center text-sm text-slate-300">
               More questions?{" "}
-              <Link className="font-bold text-[#3e75ff] transition hover:text-[#315fdb] hover:underline" href="/contact">
+              <Link className="font-bold text-[#108D82] transition hover:text-[#108D82] hover:underline" href="/contact">
                 Contact us
               </Link>
             </p>
@@ -875,15 +875,15 @@ export default function HealthcarePage() {
         }
 
         .healthcare-demo-button {
-          border: 1px solid #3e75ff;
-          background: #3e75ff;
+          border: 1px solid #108D82;
+          background: #108D82;
           color: #fff;
-          box-shadow: 0 12px 28px rgba(62, 117, 255, 0.22);
+          box-shadow: 0 12px 28px rgba(16, 141, 130, 0.22);
         }
 
         .healthcare-demo-button:hover {
-          border-color: #315fdb;
-          background: #315fdb;
+          border-color: #108D82;
+          background: #108D82;
         }
 
         .healthcare-hero-card {

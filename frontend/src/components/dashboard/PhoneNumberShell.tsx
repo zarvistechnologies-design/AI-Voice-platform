@@ -86,7 +86,7 @@ function formatDate(value: string) {
 
 function providerTone(provider: string) {
   if (provider === "Twilio") return "border-[#fee2e2] bg-[#fff1f2] text-[#be123c]";
-  if (provider === "Exotel") return "border-[#e1e2ef] bg-[#f0efff] text-[#4b52df]";
+  if (provider === "Exotel") return "border-[#e1e2ef] bg-[#f0efff] text-[#108D82]";
   return "border-[#d1fae5] bg-[#ecfdf5] text-[#047857]";
 }
 
@@ -286,7 +286,7 @@ export function PhoneNumberShell() {
         <header className="border-b border-[#e1e2ef] bg-white px-4 py-4 sm:px-6 lg:px-8">
           <div className="mx-auto flex w-full max-w-1500px flex-wrap items-center justify-between gap-4">
             <div>
-              <span className="app-label text-[#5b63ff]">Telephony</span>
+              <span className="app-label text-[#108D82]">Telephony</span>
               <h1 className="m-0 mt-1 text-xl font-semibold leading-7 text-[#0f172a] sm:text-2xl">Phone numbers</h1>
               <p className="app-caption mt-1 mb-0 text-[#475569]">Import or buy telephony numbers, then link them to any voice agent.</p>
             </div>
@@ -301,7 +301,7 @@ export function PhoneNumberShell() {
                 Repair routes
               </button>
               <button
-                className={`${buttonClass} border border-[#e1e2ef] bg-[#f0efff] text-[#4b52df] hover:bg-[#ccfbf1]`}
+                className={`${buttonClass} border border-[#e1e2ef] bg-[#f0efff] text-[#108D82] hover:bg-[#ccfbf1]`}
                 disabled={busy || loading}
                 onClick={() => { setShowImport(true); showMessage(""); }}
                 onFocus={preloadPhoneNumberModals}
@@ -313,7 +313,7 @@ export function PhoneNumberShell() {
                 Import number
               </button>
               <button
-                className={`${buttonClass} border-0 bg-[#5b63ff] text-[#ffffff] shadow-sm hover:bg-[#4b52df]`}
+                className={`${buttonClass} border-0 bg-[#108D82] text-[#ffffff] shadow-sm hover:bg-[#108D82]`}
                 disabled={busy || loading}
                 onClick={() => { setShowBuy(true); showMessage(""); }}
                 onFocus={preloadPhoneNumberModals}
@@ -377,16 +377,16 @@ export function PhoneNumberShell() {
             ) : (
               <div className="grid min-h-360px place-items-center p-6 text-center">
                 <div className="max-w-sm">
-                  <span className="mx-auto mb-4 grid size-12 place-items-center rounded-xl bg-[#f0efff] text-[#5b63ff]">
+                  <span className="mx-auto mb-4 grid size-12 place-items-center rounded-xl bg-[#f0efff] text-[#108D82]">
                     <Icon icon="phone" className="size-5" />
                   </span>
                   <h3 className="app-section-title m-0">No phone numbers yet</h3>
                   <p className="app-caption mt-1 mb-4">Import from Twilio, Exotel, or Vobiz-or buy a new Vobiz number.</p>
                   <div className="flex flex-wrap justify-center gap-2">
-                    <button className={`${buttonClass} border border-[#e1e2ef] bg-white text-[#5b63ff]`} disabled={busy || loading} onClick={() => { setShowImport(true); showMessage(""); }} onFocus={preloadPhoneNumberModals} onPointerDown={preloadPhoneNumberModals} onPointerEnter={preloadPhoneNumberModals} type="button">
+                    <button className={`${buttonClass} border border-[#e1e2ef] bg-white text-[#108D82]`} disabled={busy || loading} onClick={() => { setShowImport(true); showMessage(""); }} onFocus={preloadPhoneNumberModals} onPointerDown={preloadPhoneNumberModals} onPointerEnter={preloadPhoneNumberModals} type="button">
                       <Icon icon="import" /> Import number
                     </button>
-                    <button className={`${buttonClass} bg-[#5b63ff] text-[#ffffff]`} disabled={busy || loading} onClick={() => { setShowBuy(true); showMessage(""); }} onFocus={preloadPhoneNumberModals} onPointerDown={preloadPhoneNumberModals} onPointerEnter={preloadPhoneNumberModals} type="button">
+                    <button className={`${buttonClass} bg-[#108D82] text-[#ffffff]`} disabled={busy || loading} onClick={() => { setShowBuy(true); showMessage(""); }} onFocus={preloadPhoneNumberModals} onPointerDown={preloadPhoneNumberModals} onPointerEnter={preloadPhoneNumberModals} type="button">
                       <Icon icon="plus" /> Buy number
                     </button>
                   </div>
@@ -439,7 +439,7 @@ function PhoneNumberRow({
     <tr className="border-t border-[#edf0f4] transition hover:bg-[#fbfcfe]">
       <td className="px-5 py-4">
         <div className="flex items-center gap-3">
-          <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#f0efff] text-[#5b63ff]">
+          <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#f0efff] text-[#108D82]">
             <Icon icon="phone" />
           </span>
           <span className="min-w-0">
@@ -455,7 +455,7 @@ function PhoneNumberRow({
       </td>
       <td className="px-4 py-4">
         <button
-          className={`group inline-flex max-w-240px items-center gap-2 rounded-lg border px-2.5 py-2 text-left transition ${agent ? "border-[#e5e7eb] bg-[#f8fafc] hover:border-[#e1e2ef] hover:bg-[#f0efff]" : "border-dashed border-[#cbd5e1] bg-white text-[#475569] hover:border-[#5b63ff] hover:text-[#5b63ff]"}`}
+          className={`group inline-flex max-w-240px items-center gap-2 rounded-lg border px-2.5 py-2 text-left transition ${agent ? "border-[#e5e7eb] bg-[#f8fafc] hover:border-[#e1e2ef] hover:bg-[#f0efff]" : "border-dashed border-[#cbd5e1] bg-white text-[#475569] hover:border-[#108D82] hover:text-[#108D82]"}`}
           disabled={busy || deletionPending}
           onClick={onManage}
           onFocus={preloadPhoneNumberModals}
@@ -463,11 +463,11 @@ function PhoneNumberRow({
           onPointerEnter={preloadPhoneNumberModals}
           type="button"
         >
-          <span className={`grid size-7 shrink-0 place-items-center rounded-md ${agent ? "bg-white text-[#64748b]" : "bg-[#f0efff] text-[#5b63ff]"}`}>
+          <span className={`grid size-7 shrink-0 place-items-center rounded-md ${agent ? "bg-white text-[#64748b]" : "bg-[#f0efff] text-[#108D82]"}`}>
             <Icon icon={agent ? "user" : "link"} className="size-3.5" />
           </span>
           <span className="app-strong truncate">{deletionPending ? "Deletion pending" : agent?.name ?? "Link agent"}</span>
-          {agent ? <Icon icon="edit" className="size-3.5 text-[#94a3b8] group-hover:text-[#5b63ff]" /> : null}
+          {agent ? <Icon icon="edit" className="size-3.5 text-[#94a3b8] group-hover:text-[#108D82]" /> : null}
         </button>
       </td>
       <td className="app-body whitespace-nowrap px-4 py-4 text-[#475569]">{number.region || "Global"}</td>
@@ -479,7 +479,7 @@ function PhoneNumberRow({
       </td>
       <td className="px-4 py-4">
         <div className="flex items-center justify-end gap-1">
-          <button className="grid size-9 place-items-center rounded-lg text-[#64748b] transition hover:bg-[#f0efff] hover:text-[#5b63ff] disabled:cursor-not-allowed disabled:opacity-40" disabled={busy || deletionPending} onClick={onManage} onFocus={preloadPhoneNumberModals} onPointerDown={preloadPhoneNumberModals} onPointerEnter={preloadPhoneNumberModals} type="button" aria-label={`Manage ${number.number}`}>
+          <button className="grid size-9 place-items-center rounded-lg text-[#64748b] transition hover:bg-[#f0efff] hover:text-[#108D82] disabled:cursor-not-allowed disabled:opacity-40" disabled={busy || deletionPending} onClick={onManage} onFocus={preloadPhoneNumberModals} onPointerDown={preloadPhoneNumberModals} onPointerEnter={preloadPhoneNumberModals} type="button" aria-label={`Manage ${number.number}`}>
             <Icon icon="edit" />
           </button>
           <button className="grid size-9 place-items-center rounded-lg text-[#dc2626] transition hover:bg-[#fff1f2]" disabled={busy} onClick={onDelete} type="button" aria-label={`${deletionPending ? "Retry deletion of" : "Delete"} ${number.number}`}>

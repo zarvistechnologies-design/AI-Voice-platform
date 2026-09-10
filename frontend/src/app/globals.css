@@ -10,7 +10,7 @@
   --marketing-ink: #111113;
   --marketing-muted: #676773;
   --marketing-line: #dedee8;
-  --marketing-violet: #5b63ff;
+  --marketing-violet: #108D82;
   font-family: var(--font-site-sans), Arial, sans-serif;
 }
 
@@ -159,7 +159,7 @@
 .marketing-nav-link.is-active,
 .marketing-nav-link[aria-expanded="true"] {
   background: #f0efff;
-  color: #343ad0;
+  color: #108D82;
 }
 
 .site-header-previous .header-previous-logo span {
@@ -168,21 +168,7 @@
 }
 
 .site-header-previous .header-previous-logo img {
-  filter: brightness(0) saturate(100%) invert(47%) sepia(92%) saturate(3394%) hue-rotate(213deg) brightness(102%) contrast(101%) !important;
-}
-
-.site-header-previous .header-previous-tagline {
-  display: block;
-  width: 116px;
-  margin: -8px 8px 0 auto;
-  color: #51515b;
-  font-size: 6px;
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: 0.08em;
-  text-align: center;
-  text-transform: uppercase;
-  white-space: nowrap;
+  filter: none !important;
 }
 
 .site-header-previous .header-previous-brand-unit {
@@ -236,8 +222,8 @@
 }
 
 .site-header-previous .header-previous-contact-sales {
-  border: 1px solid #2563eb;
-  background: #2563eb;
+  border: 1px solid #108D82;
+  background: #108D82;
   color: #fff;
 }
 
@@ -253,7 +239,6 @@
 
 @media (max-width: 640px) {
   .site-header-previous .header-previous-logo span { width: 112px; height: 34px; }
-  .site-header-previous .header-previous-tagline { width: 82px; margin-top: -6px; margin-right: 0; font-size: 4px; }
 }
 
 .mobile-nav-heading,
@@ -270,7 +255,7 @@
 }
 
 .mobile-nav-heading {
-  color: #343ad0;
+  color: #108D82;
   font-weight: 850;
 }
 
@@ -312,7 +297,7 @@
 }
 
 .marketing-site > main > div > section > [aria-hidden="true"][class*="absolute"][class*="inset-0"][class*="bg-"] {
-  background-image: radial-gradient(circle at 18% 12%, rgba(100, 104, 255, 0.13), transparent 32%), radial-gradient(circle at 82% 18%, rgba(108, 222, 202, 0.14), transparent 30%) !important;
+  background-image: radial-gradient(circle at 18% 12%, rgba(16, 141, 130, 0.13), transparent 32%), radial-gradient(circle at 82% 18%, rgba(108, 222, 202, 0.14), transparent 30%) !important;
 }
 
 .marketing-site [class*="text-white"] {
@@ -333,11 +318,11 @@
 .marketing-site [class*="text-[#75fff0]"],
 .marketing-site [class*="text-[#72f2df]"],
 .marketing-site [class*="text-[#45ddce]"] {
-  color: #565dcc !important;
+  color: #108D82 !important;
 }
 
 .marketing-site h1[class*="bg-gradient"] {
-  background-image: linear-gradient(100deg, #111113 8%, #454bd2 58%, #6655d8 100%) !important;
+  background-image: linear-gradient(100deg, #111113 8%, #108D82 58%, #6655d8 100%) !important;
 }
 
 .marketing-site input,
@@ -389,11 +374,11 @@
 .product-overview-page,
 .product-service-page,
 .voice-build-page {
-  --service-accent: #6268ff !important;
-  --service-accent-soft: #5158df !important;
-  --service-accent-rgb: 98, 104, 255 !important;
-  --service-secondary: #7f85ff !important;
-  --service-secondary-rgb: 127, 133, 255 !important;
+  --service-accent: #108D82 !important;
+  --service-accent-soft: #108D82 !important;
+  --service-accent-rgb: 16, 141, 130 !important;
+  --service-secondary: #108D82 !important;
+  --service-secondary-rgb: 16, 141, 130 !important;
   --service-tertiary: #aeb2ff !important;
   --service-tertiary-rgb: 174, 178, 255 !important;
   background: #fff !important;
@@ -402,11 +387,11 @@
 
 .product-service-page *,
 .voice-build-page * {
-  --layer-color: #6268ff !important;
-  --step-color: #6268ff !important;
-  --clean-step-color: #6268ff !important;
-  --config-color: #6268ff !important;
-  --build-primary: #6268ff !important;
+  --layer-color: #108D82 !important;
+  --step-color: #108D82 !important;
+  --clean-step-color: #108D82 !important;
+  --config-color: #108D82 !important;
+  --build-primary: #108D82 !important;
 }
 
 .product-overview-page > section,
@@ -456,7 +441,7 @@
 .product-overview-page [class*="bg-emerald"],
 .product-service-page [class*="bg-emerald"],
 .voice-build-page [class*="bg-emerald"] {
-  background-color: #6268ff !important;
+  background-color: #108D82 !important;
 }
 
 .product-overview-page [class*="text-[#35fbe0"],
@@ -483,7 +468,7 @@
 .product-overview-page [class*="text-emerald"],
 .product-service-page [class*="text-emerald"],
 .voice-build-page [class*="text-emerald"] {
-  color: #565dcc !important;
+  color: #108D82 !important;
 }
 
 .product-overview-page [class*="border-[#35fbe0"],
@@ -501,7 +486,7 @@
 .voice-build-page [class*="border-[#5eead4"],
 .voice-build-page [class*="border-[#2dd4bf"],
 .voice-build-page [class*="border-[#34d399"] {
-  border-color: rgba(98, 104, 255, 0.28) !important;
+  border-color: rgba(16, 141, 130, 0.28) !important;
 }
 
 .product-overview-page [class*="text-white"],
@@ -566,33 +551,33 @@
 .product-service-page .service-float-chip {
   border-color: #dedee8 !important;
   background: #fff !important;
-  color: #565dcc !important;
+  color: #108D82 !important;
   box-shadow: 0 14px 38px rgba(50, 47, 92, 0.1) !important;
 }
 
 .product-service-page .voice-config-console-signal,
 .product-service-page .voice-config-radar > span:nth-child(1) {
-  background: #6268ff !important;
-  box-shadow: 0 0 18px rgba(98, 104, 255, 0.34) !important;
+  background: #108D82 !important;
+  box-shadow: 0 0 18px rgba(16, 141, 130, 0.34) !important;
 }
 
 .product-service-page .voice-config-stage::before {
-  background: rgba(98, 104, 255, 0.09) !important;
+  background: rgba(16, 141, 130, 0.09) !important;
 }
 
 .product-service-page .voice-config-radar {
-  border-color: rgba(98, 104, 255, 0.2) !important;
-  background-image: linear-gradient(90deg, transparent 49.85%, rgba(98,104,255,.1) 50%, transparent 50.15%), linear-gradient(transparent 49.85%, rgba(98,104,255,.1) 50%, transparent 50.15%), radial-gradient(circle, rgba(98,104,255,.09) 0 2px, transparent 3px) !important;
-  box-shadow: inset 0 0 80px rgba(98,104,255,.04), 0 20px 70px rgba(50,47,92,.09) !important;
+  border-color: rgba(16, 141, 130, 0.2) !important;
+  background-image: linear-gradient(90deg, transparent 49.85%, rgba(16, 141, 130,.1) 50%, transparent 50.15%), linear-gradient(transparent 49.85%, rgba(16, 141, 130,.1) 50%, transparent 50.15%), radial-gradient(circle, rgba(16, 141, 130,.09) 0 2px, transparent 3px) !important;
+  box-shadow: inset 0 0 80px rgba(16, 141, 130,.04), 0 20px 70px rgba(50,47,92,.09) !important;
 }
 
 .product-service-page .service-faq:hover {
-  border-color: rgba(98, 104, 255, 0.25) !important;
-  background: rgba(98, 104, 255, 0.045) !important;
+  border-color: rgba(16, 141, 130, 0.25) !important;
+  background: rgba(16, 141, 130, 0.045) !important;
 }
 
 .product-service-page .voice-build-redesign-panel {
-  border-color: rgba(98, 104, 255, 0.22) !important;
+  border-color: rgba(16, 141, 130, 0.22) !important;
   background: linear-gradient(145deg, #fff, #f4f2ff) !important;
 }
 
@@ -600,13 +585,13 @@
 .product-service-page .voice-process-heading-accent,
 .product-service-page .voice-config-heading-accent {
   background-image: none !important;
-  color: #565dcc !important;
+  color: #108D82 !important;
 }
 
 .product-service-page .voice-build-flow::before,
 .product-service-page .voice-config-list::before,
 .product-service-page .voice-config-console::before {
-  background: linear-gradient(90deg, transparent, #6268ff, #6268ff 52%, #6268ff, transparent) !important;
+  background: linear-gradient(90deg, transparent, #108D82, #108D82 52%, #108D82, transparent) !important;
 }
 
 .product-overview-page [class*="bg-[linear-gradient"][class*="#45ddce"],
@@ -614,7 +599,7 @@
 .product-service-page [class*="bg-[linear-gradient"][class*="#45ddce"],
 .product-service-page [class*="bg-[linear-gradient"][class*="#5eead4"],
 .voice-build-page [class*="bg-[linear-gradient"][class*="#5eead4"] {
-  background-image: linear-gradient(100deg, #6268ff, #7f85ff) !important;
+  background-image: linear-gradient(100deg, #108D82, #108D82) !important;
 }
 
 .product-service-page [style*="#35fbe0"],
@@ -627,9 +612,9 @@
 .voice-build-page [style*="#5eead4"],
 .voice-build-page [style*="#2dd4bf"],
 .voice-build-page [style*="#34d399"] {
-  border-color: rgba(98, 104, 255, 0.28) !important;
-  background-color: rgba(98, 104, 255, 0.1) !important;
-  color: #565dcc !important;
+  border-color: rgba(16, 141, 130, 0.28) !important;
+  background-color: rgba(16, 141, 130, 0.1) !important;
+  color: #108D82 !important;
 }
 
 .product-overview-page [class*="#8fe388"],
@@ -667,16 +652,16 @@
 .product-service-page .service-accent-text,
 .product-overview-page [class*="text-[#75fff0]"],
 .voice-build-page [class*="text-[#72f2df]"] {
-  color: #565dcc !important;
+  color: #108D82 !important;
 }
 
 .product-service-page .service-primary-button,
 .product-overview-page a[class*="bg-[#45ddce]"],
 .voice-build-page a[class*="bg-[#5eead4]"] {
-  border: 1px solid #6268ff !important;
-  background: #6268ff !important;
+  border: 1px solid #108D82 !important;
+  background: #108D82 !important;
   color: #fff !important;
-  box-shadow: 0 12px 28px rgba(98, 104, 255, 0.22) !important;
+  box-shadow: 0 12px 28px rgba(16, 141, 130, 0.22) !important;
 }
 
 .product-service-page .service-primary-button *,
@@ -688,8 +673,8 @@
 .product-service-page .service-primary-button:hover,
 .product-overview-page a[class*="bg-[#45ddce]"]:hover,
 .voice-build-page a[class*="bg-[#5eead4]"]:hover {
-  border-color: #5158df !important;
-  background: #5158df !important;
+  border-color: #108D82 !important;
+  background: #108D82 !important;
   box-shadow: 0 15px 32px rgba(81, 88, 223, 0.26) !important;
 }
 
@@ -708,14 +693,14 @@
 .product-overview-page [class*="text-transparent"],
 .voice-build-page [class*="text-transparent"] {
   background: none !important;
-  color: #565dcc !important;
-  -webkit-text-fill-color: #565dcc !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 .product-service-page .product-service-ready-card,
 .product-overview-page .product-overview-ready-card,
 .voice-build-page .voice-ready-card {
-  border: 1px solid rgba(98, 104, 255, 0.22) !important;
+  border: 1px solid rgba(16, 141, 130, 0.22) !important;
   background-color: #f2f4ff !important;
   background-image: linear-gradient(135deg, #f7f8ff, #edf0ff) !important;
   color: #171719 !important;
@@ -732,22 +717,22 @@
 .product-service-page .product-service-ready-card > div:first-of-type p,
 .product-overview-page .product-overview-ready-card > p,
 .voice-build-page .voice-ready-card p {
-  color: #565dcc !important;
+  color: #108D82 !important;
 }
 
 .product-service-page .product-service-contact-button,
 .product-overview-page .product-overview-contact-button,
 .voice-build-page .voice-ready-contact {
-  border: 1px solid #6268ff !important;
-  background: #6268ff !important;
+  border: 1px solid #108D82 !important;
+  background: #108D82 !important;
   color: #fff !important;
-  box-shadow: 0 12px 30px rgba(98, 104, 255, 0.22) !important;
+  box-shadow: 0 12px 30px rgba(16, 141, 130, 0.22) !important;
 }
 
 .product-service-page .product-service-contact-button:hover,
 .product-overview-page .product-overview-contact-button:hover,
 .voice-build-page .voice-ready-contact:hover {
-  background: #5158df !important;
+  background: #108D82 !important;
   box-shadow: 0 16px 36px rgba(81, 88, 223, 0.28) !important;
 }
 
@@ -772,12 +757,12 @@
   .voice-sample-card,
   .service-faq
 ) {
-  --blueprint-primary: #6268ff !important;
-  --blueprint-rgb: 98, 104, 255 !important;
-  --build-primary: #6268ff !important;
-  --build-rgb: 98, 104, 255 !important;
-  --config-color: #6268ff !important;
-  --config-rgb: 98, 104, 255 !important;
+  --blueprint-primary: #108D82 !important;
+  --blueprint-rgb: 16, 141, 130 !important;
+  --build-primary: #108D82 !important;
+  --build-rgb: 16, 141, 130 !important;
+  --config-color: #108D82 !important;
+  --config-rgb: 16, 141, 130 !important;
   border-color: #dedee8 !important;
   background: #fff !important;
   background-image: none !important;
@@ -791,15 +776,15 @@
   .voice-build-redesign-number,
   .voice-config-number
 ) {
-  border-color: rgba(98, 104, 255, 0.25) !important;
-  background: rgba(98, 104, 255, 0.09) !important;
-  color: #565dcc !important;
+  border-color: rgba(16, 141, 130, 0.25) !important;
+  background: rgba(16, 141, 130, 0.09) !important;
+  color: #108D82 !important;
   box-shadow: none !important;
 }
 
 .product-service-page .everything-line > span,
 .product-service-page .voice-build-redesign-step::before {
-  background: #6268ff !important;
+  background: #108D82 !important;
   box-shadow: none !important;
 }
 
@@ -809,7 +794,7 @@
   .voice-build-redesign-panel,
   .product-service-ready-card
 ) {
-  border-color: rgba(98, 104, 255, 0.2) !important;
+  border-color: rgba(16, 141, 130, 0.2) !important;
   background: #f2f4ff !important;
   background-image: none !important;
 }
@@ -982,8 +967,8 @@
   --pricing-ink: #171719;
   --pricing-muted: #676773;
   --pricing-line: #e2e5ef;
-  --pricing-blue: #4f6df5;
-  --pricing-blue-dark: #334fc4;
+  --pricing-blue: #108D82;
+  --pricing-blue-dark: #108D82;
   --pricing-blue-soft: #eef2ff;
   --pricing-rose: #d95d88;
   --pricing-gold: #c58a25;
@@ -1135,7 +1120,7 @@
 
 .pricing-page .pricing-stack-card label:focus-within {
   border-color: var(--pricing-blue) !important;
-  box-shadow: 0 0 0 3px rgba(79, 109, 245, 0.1) !important;
+  box-shadow: 0 0 0 3px rgba(16, 141, 130, 0.1) !important;
 }
 
 .pricing-page .pricing-stack-card > div:last-child {
@@ -1154,7 +1139,7 @@
 .pricing-page input:focus,
 .pricing-page select:focus {
   border-color: var(--pricing-blue) !important;
-  box-shadow: 0 0 0 3px rgba(79, 109, 245, 0.1) !important;
+  box-shadow: 0 0 0 3px rgba(16, 141, 130, 0.1) !important;
 }
 
 .pricing-page #calculator button {
@@ -1770,7 +1755,7 @@
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[#35fbe0"],
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[#45ddce"],
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[#5eead4"],
-.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[#6268ff"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[#108D82"],
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[#8f83e8"],
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[#f28d45"],
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[#ff9655"],
@@ -1786,8 +1771,8 @@
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-[#45ddce"],
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-[#5eead4"],
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-[#75fff0"],
-.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-[#565dcc"],
-.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-[#6268ff"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-[#108D82"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-[#108D82"],
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-[#c5bdff"],
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-[#c6bdff"],
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="text-[#0f766e"],
@@ -1806,7 +1791,7 @@
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="border-[#35fbe0"],
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="border-[#45ddce"],
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="border-[#5eead4"],
-.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="border-[#6268ff"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="border-[#108D82"],
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="border-[#8f83e8"],
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="border-[#f28d45"],
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="border-[#ff9655"],
@@ -1816,7 +1801,7 @@
 
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="via-[#35fbe0"],
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="via-[#45ddce"],
-.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="via-[#6268ff"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="via-[#108D82"],
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="via-[#8f83e8"],
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="via-[#f28d45"],
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="via-[#ff9655"] {
@@ -1825,7 +1810,7 @@
 
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[linear-gradient"][class*="#35fbe0"],
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[linear-gradient"][class*="#45ddce"],
-.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[linear-gradient"][class*="#6268ff"],
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[linear-gradient"][class*="#108D82"],
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[linear-gradient"][class*="#8f83e8"],
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[linear-gradient"][class*="#ff9655"],
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="bg-[linear-gradient"][class*="#f28d45"] {
@@ -1888,7 +1873,7 @@
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="shadow-"][class*="69,221,206"],
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="shadow-"][class*="#35fbe0"],
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="shadow-"][class*="#45ddce"],
-.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="shadow-"][class*="#6268ff"] {
+.marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page) [class*="shadow-"][class*="#108D82"] {
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14) !important;
 }
 
@@ -2055,12 +2040,12 @@
 .marketing-site .product-service-page.product-service-page.product-service-page.product-service-page :is(.service-primary-button, .product-service-contact-button),
 .marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page :is(a[class*="bg-[#45ddce]"], .product-overview-contact-button),
 .marketing-site .voice-build-page.voice-build-page.voice-build-page.voice-build-page :is(a[class*="bg-[#5eead4]"], .voice-ready-contact) {
-  border: 1px solid #3e75ff !important;
-  background-color: #3e75ff !important;
+  border: 1px solid #108D82 !important;
+  background-color: #108D82 !important;
   background-image: none !important;
   color: #fff !important;
   -webkit-text-fill-color: #fff !important;
-  box-shadow: 0 12px 28px rgba(62, 117, 255, 0.22) !important;
+  box-shadow: 0 12px 28px rgba(16, 141, 130, 0.22) !important;
 }
 
 .marketing-site .product-service-page.product-service-page.product-service-page.product-service-page :is(.service-primary-button, .product-service-contact-button) *,
@@ -2073,9 +2058,9 @@
 .marketing-site .product-service-page.product-service-page.product-service-page.product-service-page :is(.service-primary-button, .product-service-contact-button):hover,
 .marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page :is(a[class*="bg-[#45ddce]"], .product-overview-contact-button):hover,
 .marketing-site .voice-build-page.voice-build-page.voice-build-page.voice-build-page :is(a[class*="bg-[#5eead4]"], .voice-ready-contact):hover {
-  border-color: #315fdb !important;
-  background-color: #315fdb !important;
-  box-shadow: 0 15px 34px rgba(49, 95, 219, 0.26) !important;
+  border-color: #108D82 !important;
+  background-color: #108D82 !important;
+  box-shadow: 0 15px 34px rgba(16, 141, 130, 0.26) !important;
 }
 
 /* Clean product-page rhythm and restrained blue surface treatment. */
@@ -2162,19 +2147,19 @@
   flex: 0 0 7px;
   border: 0 !important;
   border-radius: 999px;
-  background-color: #3e75ff !important;
+  background-color: #108D82 !important;
   background-image: none !important;
-  box-shadow: 0 0 0 3px rgba(62, 117, 255, 0.12) !important;
+  box-shadow: 0 0 0 3px rgba(16, 141, 130, 0.12) !important;
 }
 
 /* Business hero CTAs use the same blue treatment as the homepage. */
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page) .business-blue-cta {
-  border: 1px solid #3e75ff !important;
-  background-color: #3e75ff !important;
+  border: 1px solid #108D82 !important;
+  background-color: #108D82 !important;
   background-image: none !important;
   color: #fff !important;
   -webkit-text-fill-color: #fff !important;
-  box-shadow: 0 12px 28px rgba(62, 117, 255, 0.22) !important;
+  box-shadow: 0 12px 28px rgba(16, 141, 130, 0.22) !important;
 }
 
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page) .business-blue-cta * {
@@ -2183,16 +2168,16 @@
 }
 
 .marketing-site :is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page):is(.business-page, .use-case-page, .industry-experience, .healthcare-page) .business-blue-cta:hover {
-  border-color: #315fdb !important;
-  background-color: #315fdb !important;
-  box-shadow: 0 15px 34px rgba(49, 95, 219, 0.26) !important;
+  border-color: #108D82 !important;
+  background-color: #108D82 !important;
+  box-shadow: 0 15px 34px rgba(16, 141, 130, 0.26) !important;
 }
 
 /* Product family polish: a white editorial canvas with the homepage palette. */
 .marketing-site :is(.product-overview-page, .product-service-page, .voice-build-page):is(.product-overview-page, .product-service-page, .voice-build-page):is(.product-overview-page, .product-service-page, .voice-build-page):is(.product-overview-page, .product-service-page, .voice-build-page) {
   --product-ink: #17203f;
   --product-copy: #5d6478;
-  --product-blue: #3e75ff;
+  --product-blue: #108D82;
   --product-violet: #6d5ce7;
   --product-peach: #e9823a;
   --product-line: #e4e8f2;
@@ -2200,8 +2185,8 @@
   --product-soft-violet: #f7f5ff;
   --product-soft-peach: #fff7f1;
   --service-accent: var(--product-blue) !important;
-  --service-accent-soft: #315fdb !important;
-  --service-accent-rgb: 62, 117, 255 !important;
+  --service-accent-soft: #108D82 !important;
+  --service-accent-rgb: 16, 141, 130 !important;
   --service-secondary: var(--product-violet) !important;
   --service-secondary-rgb: 109, 92, 231 !important;
   --service-tertiary: var(--product-peach) !important;
@@ -2246,7 +2231,7 @@
 
 .marketing-site .product-service-page.product-service-page.product-service-page.product-service-page .service-pill,
 .marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page section:first-child > div > div:first-child > div:first-child {
-  border-color: rgba(62, 117, 255, 0.2) !important;
+  border-color: rgba(16, 141, 130, 0.2) !important;
   background: var(--product-soft-blue) !important;
   color: var(--product-blue) !important;
   box-shadow: none !important;
@@ -2280,7 +2265,7 @@
   .service-faq
 ):hover,
 .marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page article a:hover {
-  border-color: rgba(62, 117, 255, 0.28) !important;
+  border-color: rgba(16, 141, 130, 0.28) !important;
   background: #fbfcff !important;
   box-shadow: 0 14px 34px rgba(38, 52, 102, 0.085) !important;
 }
@@ -2294,7 +2279,7 @@
   .voice-preview-check,
   .voice-play-button
 ) {
-  border-color: rgba(62, 117, 255, 0.2) !important;
+  border-color: rgba(16, 141, 130, 0.2) !important;
   background: var(--product-soft-blue) !important;
   color: var(--product-blue) !important;
   -webkit-text-fill-color: var(--product-blue) !important;
@@ -2319,7 +2304,7 @@
 .marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page article:nth-child(1) [class*="rounded-[22px]"] {
   border-color: #dce5ff !important;
   background: var(--product-soft-blue) !important;
-  box-shadow: 0 18px 48px rgba(62, 117, 255, 0.08) !important;
+  box-shadow: 0 18px 48px rgba(16, 141, 130, 0.08) !important;
 }
 
 .marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page article:nth-child(2) [class*="rounded-[22px]"] {
@@ -2342,7 +2327,7 @@
   background: var(--product-blue) !important;
   color: #fff !important;
   -webkit-text-fill-color: #fff !important;
-  box-shadow: 0 10px 24px rgba(62, 117, 255, 0.2) !important;
+  box-shadow: 0 10px 24px rgba(16, 141, 130, 0.2) !important;
 }
 
 .marketing-site .product-service-page.product-service-page.product-service-page.product-service-page .service-primary-button *,
@@ -2353,9 +2338,9 @@
 
 .marketing-site .product-service-page.product-service-page.product-service-page.product-service-page .service-primary-button:hover,
 .marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page a[class*="bg-[#45ddce]"]:hover {
-  border-color: #315fdb !important;
-  background: #315fdb !important;
-  box-shadow: 0 13px 28px rgba(49, 95, 219, 0.24) !important;
+  border-color: #108D82 !important;
+  background: #108D82 !important;
+  box-shadow: 0 13px 28px rgba(16, 141, 130, 0.24) !important;
 }
 
 .marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page .product-overview-contact-button,
@@ -2413,10 +2398,10 @@
 
 .marketing-site .product-service-page.product-service-page.product-service-page.product-service-page .service-secondary-button.service-secondary-button:hover,
 .marketing-site .product-overview-page.product-overview-page.product-overview-page.product-overview-page .product-overview-contact-button.product-overview-contact-button:hover {
-  border-color: #3e75ff !important;
+  border-color: #108D82 !important;
   background: #f4f7ff !important;
-  color: #315fdb !important;
-  -webkit-text-fill-color: #315fdb !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 #product-overview-heading-accent,
@@ -2467,7 +2452,7 @@
   border-color: #dce5ff !important;
   background-color: #f5f8ff !important;
   background-image: linear-gradient(145deg, #ffffff 5%, #f2f6ff 100%) !important;
-  box-shadow: 0 10px 28px rgba(62, 117, 255, 0.065) !important;
+  box-shadow: 0 10px 28px rgba(16, 141, 130, 0.065) !important;
 }
 
 #product-service-page :is(
@@ -2509,16 +2494,16 @@
   .voice-sample-card,
   .service-faq
 ):hover {
-  border-color: rgba(62, 117, 255, 0.32) !important;
+  border-color: rgba(16, 141, 130, 0.32) !important;
   box-shadow: 0 16px 36px rgba(47, 67, 135, 0.105) !important;
 }
 
 #product-service-page :is(.voice-capability-icon, .everything-icon-circle, .voice-blueprint-number, .voice-build-redesign-number, .voice-config-number) {
-  border-color: rgba(62, 117, 255, 0.22) !important;
+  border-color: rgba(16, 141, 130, 0.22) !important;
   background-color: #eaf0ff !important;
   background-image: none !important;
-  color: #3e75ff !important;
-  -webkit-text-fill-color: #3e75ff !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 #product-service-page :is(.voice-capability-card, .everything-included-card, .voice-build-redesign-step):nth-child(3n + 2) :is(.voice-capability-icon, .everything-icon-circle, .voice-build-redesign-number) {
@@ -2558,7 +2543,7 @@
 }
 
 #product-overview-page article a:hover {
-  border-color: rgba(62, 117, 255, 0.3) !important;
+  border-color: rgba(16, 141, 130, 0.3) !important;
   box-shadow: 0 12px 30px rgba(47, 67, 135, 0.09) !important;
   transform: translateY(-2px);
 }
@@ -2566,7 +2551,7 @@
 /* Final product color roles — sourced only from the homepage palette. */
 #product-overview-page,
 #product-service-page {
-  --product-hero-heading: #3e75ff;
+  --product-hero-heading: #108D82;
   --product-section-heading: #252161;
   --product-card-warm: #ffad6f;
 }
@@ -2698,7 +2683,7 @@
   --business-ink: #15131a;
   --business-copy: #5f5b67;
   --business-line: #e6e2eb;
-  --business-blue: #5867e8;
+  --business-blue: #108D82;
   --business-plum: #7a3e9d;
   --business-orange: #d86f35;
   --business-aqua: #168f91;
@@ -2759,7 +2744,7 @@
   background: var(--business-blue) !important;
   color: #fff !important;
   -webkit-text-fill-color: #fff !important;
-  box-shadow: 0 12px 26px rgba(88, 103, 232, 0.2) !important;
+  box-shadow: 0 12px 26px rgba(16, 141, 130, 0.2) !important;
 }
 
 :is(
@@ -3114,8 +3099,8 @@
   #business-industry-page .industry-contact,
   #business-healthcare-page .healthcare-contact
 ) :is(p:first-of-type) {
-  color: #6468ff !important;
-  -webkit-text-fill-color: #6468ff !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 :is(
@@ -3124,12 +3109,12 @@
   #business-industry-page .industry-contact,
   #business-healthcare-page .healthcare-contact
 ) a {
-  border-color: #6468ff !important;
-  background: #6468ff !important;
+  border-color: #108D82 !important;
+  background: #108D82 !important;
   background-image: none !important;
   color: #fff !important;
   -webkit-text-fill-color: #fff !important;
-  box-shadow: 0 10px 24px rgba(100, 104, 255, 0.2) !important;
+  box-shadow: 0 10px 24px rgba(16, 141, 130, 0.2) !important;
 }
 
 :is(
@@ -3138,9 +3123,9 @@
   #business-industry-page .industry-contact,
   #business-healthcare-page .healthcare-contact
 ) a:hover {
-  border-color: #5459e8 !important;
-  background: #5459e8 !important;
-  box-shadow: 0 13px 28px rgba(84, 89, 232, 0.24) !important;
+  border-color: #108D82 !important;
+  background: #108D82 !important;
+  box-shadow: 0 13px 28px rgba(16, 141, 130, 0.24) !important;
 }
 
 /* Keep the hero Contact sales action consistently blue. */
@@ -3150,12 +3135,12 @@
   #business-industry-page,
   #business-healthcare-page
 ) .business-blue-cta[href="/contact"] {
-  border-color: #3e75ff !important;
-  background: #3e75ff !important;
+  border-color: #108D82 !important;
+  background: #108D82 !important;
   background-image: none !important;
   color: #fff !important;
   -webkit-text-fill-color: #fff !important;
-  box-shadow: 0 12px 28px rgba(62, 117, 255, 0.22) !important;
+  box-shadow: 0 12px 28px rgba(16, 141, 130, 0.22) !important;
 }
 
 :is(
@@ -3164,9 +3149,9 @@
   #business-industry-page,
   #business-healthcare-page
 ) .business-blue-cta[href="/contact"]:hover {
-  border-color: #315fdb !important;
-  background: #315fdb !important;
-  box-shadow: 0 15px 34px rgba(49, 95, 219, 0.26) !important;
+  border-color: #108D82 !important;
+  background: #108D82 !important;
+  box-shadow: 0 15px 34px rgba(16, 141, 130, 0.26) !important;
 }
 
 :is(#business-use-case-page, #business-industry-page, #business-healthcare-page) .business-section-pill {
@@ -3193,13 +3178,13 @@
 }
 
 :is(#business-industry-page, #business-healthcare-page) .business-company-marquee-name:nth-child(6n + 1) {
-  color: #5967d9 !important;
-  -webkit-text-fill-color: #5967d9 !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 :is(#business-industry-page, #business-healthcare-page) .business-company-marquee-name:nth-child(6n + 2) {
-  color: #3974b9 !important;
-  -webkit-text-fill-color: #3974b9 !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 :is(#business-industry-page, #business-healthcare-page) .business-company-marquee-name:nth-child(6n + 3) {
@@ -3457,8 +3442,8 @@
 
 .marketing-site .blog-light-theme .blog-overview-hero p:first-child,
 .marketing-site .blog-light-theme .blog-overview-guides > div:first-child > p:first-child {
-  color: #565dcc !important;
-  -webkit-text-fill-color: #565dcc !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 .marketing-site .blog-light-theme .blog-overview-hero-grid > div:first-child > p:nth-of-type(2),
@@ -3469,8 +3454,8 @@
 }
 
 .marketing-site .blog-light-theme .blog-overview-hero-grid > div:first-child a:first-child {
-  border: 1px solid #6268ff !important;
-  background: #6268ff !important;
+  border: 1px solid #108D82 !important;
+  background: #108D82 !important;
   color: #fff !important;
   -webkit-text-fill-color: #fff !important;
 }
@@ -3507,8 +3492,8 @@
 
 .marketing-site .blog-light-theme .blog-overview-proof strong {
   background: none !important;
-  color: #565dcc !important;
-  -webkit-text-fill-color: #565dcc !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 .marketing-site .blog-light-theme .blog-overview-proof span {
@@ -3534,36 +3519,36 @@
 }
 
 .marketing-site .blog-light-theme .blog-overview-card > p:first-of-type {
-  color: #6268ff !important;
-  -webkit-text-fill-color: #6268ff !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 .marketing-site .blog-light-theme .blog-overview-card:nth-child(4n + 1) > span:first-child {
-  border: 1px solid #9db6ff !important;
+  border: 1px solid #108D82 !important;
   background: #fff !important;
-  color: #3e75ff !important;
-  -webkit-text-fill-color: #3e75ff !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 .marketing-site .blog-light-theme .blog-overview-card:nth-child(4n + 2) > span:first-child {
-  border: 1px solid #9db6ff !important;
+  border: 1px solid #108D82 !important;
   background: #fff !important;
-  color: #3e75ff !important;
-  -webkit-text-fill-color: #3e75ff !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 .marketing-site .blog-light-theme .blog-overview-card:nth-child(4n + 3) > span:first-child {
-  border: 1px solid #9db6ff !important;
+  border: 1px solid #108D82 !important;
   background: #fff !important;
-  color: #3e75ff !important;
-  -webkit-text-fill-color: #3e75ff !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 .marketing-site .blog-light-theme .blog-overview-card:nth-child(4n) > span:first-child {
-  border: 1px solid #9db6ff !important;
+  border: 1px solid #108D82 !important;
   background: #fff !important;
-  color: #3e75ff !important;
-  -webkit-text-fill-color: #3e75ff !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 .marketing-site .blog-light-theme .blog-overview-contact-section {
@@ -3577,8 +3562,8 @@
 }
 
 .marketing-site .blog-light-theme .blog-overview-contact p:first-child {
-  color: #3e75ff !important;
-  -webkit-text-fill-color: #3e75ff !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 .marketing-site .blog-light-theme .blog-overview-contact p:last-child {
@@ -3587,8 +3572,8 @@
 }
 
 .marketing-site .blog-light-theme .blog-overview-contact-button {
-  border: 1px solid #3e75ff !important;
-  background: #3e75ff !important;
+  border: 1px solid #108D82 !important;
+  background: #108D82 !important;
   color: #fff !important;
   -webkit-text-fill-color: #fff !important;
 }
@@ -3607,20 +3592,20 @@
 
 /* Product pages: one clean blue system outside the hero and final contact box. */
 :is(#product-overview-page, #product-service-page) > section:not(:first-child):not(:last-child) {
-  --product-section-blue: #3e75ff;
+  --product-section-blue: #108D82;
   --product-section-blue-dark: #252161;
   --product-section-blue-soft: #f3f7ff;
   --product-section-blue-line: #d8e3ff;
 }
 
 #product-service-page > section:not(.product-service-hero):not(.voice-agent-contact-section) {
-  --service-accent: #3e75ff !important;
-  --service-accent-soft: #315fdb !important;
-  --service-accent-rgb: 62, 117, 255 !important;
-  --service-secondary: #5579e8 !important;
-  --service-secondary-rgb: 85, 121, 232 !important;
-  --service-tertiary: #78a0ff !important;
-  --service-tertiary-rgb: 120, 160, 255 !important;
+  --service-accent: #108D82 !important;
+  --service-accent-soft: #108D82 !important;
+  --service-accent-rgb: 16, 141, 130 !important;
+  --service-secondary: #108D82 !important;
+  --service-secondary-rgb: 16, 141, 130 !important;
+  --service-tertiary: #108D82 !important;
+  --service-tertiary-rgb: 16, 141, 130 !important;
 }
 
 :is(#product-overview-page, #product-service-page) > section:not(:first-child):not(:last-child) :is(h2, h3, h4),
@@ -3641,8 +3626,8 @@
   [class*="text-[#ffbd8c]"],
   [class*="text-emerald"]
 ) {
-  color: #3e75ff !important;
-  -webkit-text-fill-color: #3e75ff !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 #product-service-page > section:not(.product-service-hero):not(.voice-agent-contact-section) :is(
@@ -3664,7 +3649,7 @@
 ) {
   border-color: #d8e3ff !important;
   background: linear-gradient(145deg, #fff 0%, #f2f6ff 100%) !important;
-  box-shadow: 0 10px 28px rgba(62, 117, 255, 0.07) !important;
+  box-shadow: 0 10px 28px rgba(16, 141, 130, 0.07) !important;
 }
 
 #product-service-page > section:not(.product-service-hero):not(.voice-agent-contact-section) :is(
@@ -3676,9 +3661,9 @@
   .voice-sample-card,
   .service-faq
 ):hover {
-  border-color: #8facff !important;
+  border-color: #108D82 !important;
   background: linear-gradient(145deg, #fff 0%, #eaf1ff 100%) !important;
-  box-shadow: 0 16px 36px rgba(62, 117, 255, 0.13) !important;
+  box-shadow: 0 16px 36px rgba(16, 141, 130, 0.13) !important;
 }
 
 #product-service-page > section:not(.product-service-hero):not(.voice-agent-contact-section) :is(
@@ -3692,15 +3677,15 @@
 ) {
   border-color: #bfd0ff !important;
   background: #e8efff !important;
-  color: #3e75ff !important;
-  -webkit-text-fill-color: #3e75ff !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
   box-shadow: none !important;
 }
 
 #product-service-page > section:not(.product-service-hero):not(.voice-agent-contact-section) :is(.everything-line > span, .voice-slider-track > span),
 #product-service-page > section:not(.product-service-hero):not(.voice-agent-contact-section) .voice-config-list::before,
 #product-service-page > section:not(.product-service-hero):not(.voice-agent-contact-section) .voice-build-flow::before {
-  background-color: #3e75ff !important;
+  background-color: #108D82 !important;
   background-image: none !important;
 }
 
@@ -3716,7 +3701,7 @@
 ) {
   border-color: #d8e3ff !important;
   background: linear-gradient(145deg, #fff 10%, #eef4ff 100%) !important;
-  box-shadow: 0 18px 48px rgba(62, 117, 255, 0.09) !important;
+  box-shadow: 0 18px 48px rgba(16, 141, 130, 0.09) !important;
 }
 
 #product-overview-page#product-overview-page#product-overview-page > section:not(:first-child):not(:last-child) article a,
@@ -3767,7 +3752,7 @@
   [class*="border-[#f28d45]"],
   [class*="border-[#ffad6f]"]
 ) {
-  border-color: #a9bfff !important;
+  border-color: #108D82 !important;
 }
 
 #product-overview-page#product-overview-page > section:not(:first-child):not(:last-child) :is(
@@ -3775,7 +3760,7 @@
   [class*="from-[#8f83e8]"],
   [class*="from-[#f28d45]"]
 ) {
-  --tw-gradient-from: #3e75ff var(--tw-gradient-from-position) !important;
+  --tw-gradient-from: #108D82 var(--tw-gradient-from-position) !important;
   --tw-gradient-to: rgb(62 117 255 / 0) var(--tw-gradient-to-position) !important;
 }
 
@@ -3792,24 +3777,24 @@
   .voice-preview-button,
   .voice-select button
 ) {
-  border-color: #3e75ff !important;
-  background-color: #3e75ff !important;
+  border-color: #108D82 !important;
+  background-color: #108D82 !important;
   color: #fff !important;
   -webkit-text-fill-color: #fff !important;
-  box-shadow: 0 10px 24px rgba(62, 117, 255, 0.2) !important;
+  box-shadow: 0 10px 24px rgba(16, 141, 130, 0.2) !important;
 }
 
 #product-service-page#product-service-page > section:not(.product-service-hero):not(.voice-agent-contact-section) * {
-  --layer-color: #3e75ff !important;
-  --layer-rgb: 62, 117, 255 !important;
-  --step-color: #3e75ff !important;
-  --step-rgb: 62, 117, 255 !important;
-  --config-color: #3e75ff !important;
-  --config-rgb: 62, 117, 255 !important;
-  --clean-step-color: #3e75ff !important;
-  --clean-step-rgb: 62, 117, 255 !important;
-  --build-primary: #3e75ff !important;
-  --build-rgb: 62, 117, 255 !important;
+  --layer-color: #108D82 !important;
+  --layer-rgb: 16, 141, 130 !important;
+  --step-color: #108D82 !important;
+  --step-rgb: 16, 141, 130 !important;
+  --config-color: #108D82 !important;
+  --config-rgb: 16, 141, 130 !important;
+  --clean-step-color: #108D82 !important;
+  --clean-step-rgb: 16, 141, 130 !important;
+  --build-primary: #108D82 !important;
+  --build-rgb: 16, 141, 130 !important;
 }
 
 #product-service-page#product-service-page > section:not(.product-service-hero):not(.voice-agent-contact-section) :is(
@@ -3817,7 +3802,7 @@
   .voice-config-list,
   .voice-config-console
 )::before {
-  background: linear-gradient(90deg, transparent, #3e75ff, #78a0ff, #3e75ff, transparent) !important;
+  background: linear-gradient(90deg, transparent, #108D82, #108D82, #108D82, transparent) !important;
 }
 
 /* Business pages: one clean home-page blue system outside the hero and contact box. */
@@ -3827,13 +3812,13 @@
   #business-industry-page#business-industry-page,
   #business-healthcare-page#business-healthcare-page
 ) > section:not(:first-of-type):not(:last-of-type) {
-  --business-blue: #3e75ff;
-  --business-plum: #3e75ff;
-  --business-orange: #3e75ff;
-  --business-aqua: #3e75ff;
-  --business-gold: #3e75ff;
-  --industry-accent: #3e75ff;
-  --industry-accent-soft: rgba(62, 117, 255, 0.12);
+  --business-blue: #108D82;
+  --business-plum: #108D82;
+  --business-orange: #108D82;
+  --business-aqua: #108D82;
+  --business-gold: #108D82;
+  --industry-accent: #108D82;
+  --industry-accent-soft: rgba(16, 141, 130, 0.12);
   background: #fff !important;
   background-color: #fff !important;
   background-image: none !important;
@@ -3845,13 +3830,13 @@
   #business-industry-page#business-industry-page,
   #business-healthcare-page#business-healthcare-page
 ) > section:not(:first-of-type):not(:last-of-type) * {
-  --business-blue: #3e75ff;
-  --business-plum: #3e75ff;
-  --business-orange: #3e75ff;
-  --business-aqua: #3e75ff;
-  --business-gold: #3e75ff;
-  --industry-accent: #3e75ff;
-  --industry-accent-soft: rgba(62, 117, 255, 0.12);
+  --business-blue: #108D82;
+  --business-plum: #108D82;
+  --business-orange: #108D82;
+  --business-aqua: #108D82;
+  --business-gold: #108D82;
+  --industry-accent: #108D82;
+  --industry-accent-soft: rgba(16, 141, 130, 0.12);
 }
 
 :is(
@@ -3880,7 +3865,7 @@
 ) {
   border-color: #d8e3ff !important;
   background: linear-gradient(145deg, #fff 0%, #f5f8ff 100%) !important;
-  box-shadow: 0 12px 30px rgba(62, 117, 255, 0.08) !important;
+  box-shadow: 0 12px 30px rgba(16, 141, 130, 0.08) !important;
 }
 
 :is(
@@ -3902,7 +3887,7 @@
   .business-review-card
 ):hover {
   border-color: #9bb6ff !important;
-  box-shadow: 0 18px 38px rgba(62, 117, 255, 0.14) !important;
+  box-shadow: 0 18px 38px rgba(16, 141, 130, 0.14) !important;
 }
 
 :is(
@@ -3918,8 +3903,8 @@
 ) {
   border-color: #c7d7ff !important;
   background: #edf3ff !important;
-  color: #315fdb !important;
-  -webkit-text-fill-color: #315fdb !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 :is(
@@ -3934,8 +3919,8 @@
   .industry-integration-icon,
   .healthcare-integration-icon
 ) {
-  color: #3e75ff !important;
-  -webkit-text-fill-color: #3e75ff !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 :is(
@@ -3953,11 +3938,11 @@
   .healthcare-integrations a,
   .business-integration-help-card a
 ) {
-  border-color: #3e75ff !important;
-  background: #3e75ff !important;
+  border-color: #108D82 !important;
+  background: #108D82 !important;
   color: #fff !important;
   -webkit-text-fill-color: #fff !important;
-  box-shadow: 0 10px 24px rgba(62, 117, 255, 0.2) !important;
+  box-shadow: 0 10px 24px rgba(16, 141, 130, 0.2) !important;
 }
 
 :is(
@@ -3985,8 +3970,8 @@
   [class*="text-purple"],
   [class*="text-teal"]
 ) {
-  color: #3e75ff !important;
-  -webkit-text-fill-color: #3e75ff !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 :is(
@@ -4042,7 +4027,7 @@
   [class*="from-[#ff9655]"],
   [class*="from-[#f28d45]"]
 ) {
-  --tw-gradient-from: #3e75ff var(--tw-gradient-from-position) !important;
+  --tw-gradient-from: #108D82 var(--tw-gradient-from-position) !important;
   --tw-gradient-to: rgb(62 117 255 / 0) var(--tw-gradient-to-position) !important;
 }
 
@@ -4051,7 +4036,7 @@
   [class*="via-[#8f83e8]"],
   [class*="via-[#ff9655]"]
 ) {
-  --tw-gradient-via: #3e75ff var(--tw-gradient-via-position) !important;
+  --tw-gradient-via: #108D82 var(--tw-gradient-via-position) !important;
   --tw-gradient-to: rgb(62 117 255 / 0) var(--tw-gradient-to-position) !important;
 }
 
@@ -4110,7 +4095,7 @@
   .business-pricing-card,
   .business-review-card
 ):hover {
-  border-color: #8facff !important;
+  border-color: #108D82 !important;
   background: #fff !important;
   box-shadow: none !important;
 }
@@ -4143,9 +4128,9 @@
   #blog-overview-page#blog-overview-page#blog-overview-page,
   #blog-detail-page#blog-detail-page#blog-detail-page
 ) > section:not(:first-of-type):not(:last-of-type) {
-  --card-accent: #3e75ff;
+  --card-accent: #108D82;
   --card-soft: #edf3ff;
-  --section-accent: #3e75ff;
+  --section-accent: #108D82;
   --section-soft: #edf3ff;
   background: #fff !important;
   background-color: #fff !important;
@@ -4160,9 +4145,9 @@
   #blog-overview-page#blog-overview-page#blog-overview-page,
   #blog-detail-page#blog-detail-page#blog-detail-page
 ) > section:not(:first-of-type):not(:last-of-type) * {
-  --card-accent: #3e75ff;
+  --card-accent: #108D82;
   --card-soft: #edf3ff;
-  --section-accent: #3e75ff;
+  --section-accent: #108D82;
   --section-soft: #edf3ff;
 }
 
@@ -4247,7 +4232,7 @@
   .blog-overview-card,
   article
 ):hover {
-  border-color: #8facff !important;
+  border-color: #108D82 !important;
   background: #fff !important;
   box-shadow: none !important;
 }
@@ -4270,8 +4255,8 @@
 ) {
   border-color: #c7d7ff !important;
   background: #edf3ff !important;
-  color: #315fdb !important;
-  -webkit-text-fill-color: #315fdb !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
   box-shadow: none !important;
 }
 
@@ -4282,7 +4267,7 @@
   #blog-overview-page#blog-overview-page#blog-overview-page,
   #blog-detail-page#blog-detail-page#blog-detail-page
 ) > section:not(:first-of-type):not(:last-of-type) :is(
-  [class*="text-[#3e75ff]"],
+  [class*="text-[#108D82]"],
   [class*="text-[#75fff0]"],
   [class*="text-[#45ddce]"],
   [class*="text-cyan"],
@@ -4295,8 +4280,8 @@
   [class*="text-teal"],
   .blog-overview-card > p:first-of-type
 ) {
-  color: #3e75ff !important;
-  -webkit-text-fill-color: #3e75ff !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 :is(
@@ -4306,7 +4291,7 @@
   #blog-overview-page#blog-overview-page#blog-overview-page,
   #blog-detail-page#blog-detail-page#blog-detail-page
 ) > section:not(:first-of-type):not(:last-of-type) :is(
-  [class*="bg-[#3e75ff]"],
+  [class*="bg-[#108D82]"],
   [class*="bg-[#45ddce]"],
   [class*="bg-cyan"],
   [class*="bg-sky"],
@@ -4322,7 +4307,7 @@
 
 #about-page#about-page#about-page > section:not(:first-of-type):not(:last-of-type) .about-color-bar,
 #career-page#career-page#career-page > section:not(:first-of-type):not(:last-of-type) [class*="bg-gradient"] {
-  background: #3e75ff !important;
+  background: #108D82 !important;
   background-image: none !important;
 }
 
@@ -4360,7 +4345,7 @@
   section:nth-of-type(2) a,
   section:nth-of-type(3) article
 ):hover {
-  border-color: #8facff !important;
+  border-color: #108D82 !important;
   background: #fff !important;
   box-shadow: none !important;
 }
@@ -4371,7 +4356,7 @@
   select:focus,
   textarea:focus
 ) {
-  border-color: #8facff !important;
+  border-color: #108D82 !important;
 }
 
 #contact-page#contact-page#contact-page :is(
@@ -4391,13 +4376,13 @@
   section:nth-of-type(2) a > span:first-child,
   section:nth-of-type(3) article > span:first-child
 ) {
-  color: #3e75ff !important;
-  -webkit-text-fill-color: #3e75ff !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 #contact-page#contact-page#contact-page :is(.contact-primary-button, .contact-submit-button) {
-  border-color: #3e75ff !important;
-  background: #3e75ff !important;
+  border-color: #108D82 !important;
+  background: #108D82 !important;
   color: #fff !important;
   -webkit-text-fill-color: #fff !important;
   box-shadow: none !important;
@@ -4406,8 +4391,8 @@
 #contact-page#contact-page#contact-page .contact-secondary-button {
   border-color: #c7d7ff !important;
   background: #edf3ff !important;
-  color: #315fdb !important;
-  -webkit-text-fill-color: #315fdb !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
   box-shadow: none !important;
 }
 
@@ -4420,9 +4405,9 @@
   #blog-overview-page#blog-overview-page#blog-overview-page#blog-overview-page,
   #blog-detail-page#blog-detail-page#blog-detail-page#blog-detail-page
 ) {
-  --card-accent: #3e75ff;
+  --card-accent: #108D82;
   --card-soft: #fff;
-  --section-accent: #3e75ff;
+  --section-accent: #108D82;
   --section-soft: #fff;
   background: #fff !important;
   color: #111114 !important;
@@ -4518,7 +4503,7 @@
   #blog-overview-page#blog-overview-page#blog-overview-page#blog-overview-page,
   #blog-detail-page#blog-detail-page#blog-detail-page#blog-detail-page
 ) > section :is(
-  [class*="text-[#3e75ff]"],
+  [class*="text-[#108D82]"],
   [class*="text-[#45ddce]"],
   [class*="text-[#75fff0]"],
   [class*="text-cyan"],
@@ -4537,8 +4522,8 @@
   .career-expect-card > div:first-child,
   .career-quality-card [class*="rounded-full"]
 ) {
-  color: #3e75ff !important;
-  -webkit-text-fill-color: #3e75ff !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 :is(
@@ -4566,7 +4551,7 @@
   .career-quality-card [class*="rounded-full"],
   .blog-overview-card > span:first-child
 ) {
-  border-color: #3e75ff !important;
+  border-color: #108D82 !important;
   background: #fff !important;
   background-color: #fff !important;
   background-image: none !important;
@@ -4582,11 +4567,11 @@
 ) > section :is(
   .about-color-bar,
   .career-role-card > div:first-child,
-  i[class*="bg-[#3e75ff]"],
-  span[class*="bg-[#3e75ff]"]
+  i[class*="bg-[#108D82]"],
+  span[class*="bg-[#108D82]"]
 ) {
-  background: #3e75ff !important;
-  background-color: #3e75ff !important;
+  background: #108D82 !important;
+  background-color: #108D82 !important;
   background-image: none !important;
 }
 
@@ -4606,11 +4591,11 @@
   .career-contact a,
   .partners-contact a,
   .blog-overview-contact-button,
-  a[class*="bg-[#3e75ff]"],
+  a[class*="bg-[#108D82]"],
   a[class*="bg-[#45ddce]"]
 ) {
-  border-color: #3e75ff !important;
-  background: #3e75ff !important;
+  border-color: #108D82 !important;
+  background: #108D82 !important;
   color: #fff !important;
   -webkit-text-fill-color: #fff !important;
   box-shadow: none !important;
@@ -4631,7 +4616,7 @@
   .career-contact a,
   .partners-contact a,
   .blog-overview-contact-button,
-  a[class*="bg-[#3e75ff]"],
+  a[class*="bg-[#108D82]"],
   a[class*="bg-[#45ddce]"]
 ) * {
   color: #fff !important;
@@ -4711,7 +4696,7 @@
   #blog-overview-page#blog-overview-page#blog-overview-page#blog-overview-page,
   #blog-detail-page#blog-detail-page#blog-detail-page#blog-detail-page
 ) > section :is(
-  [class*="text-[#3e75ff]"],
+  [class*="text-[#108D82]"],
   [class*="text-[#45ddce]"],
   [class*="text-[#75fff0]"],
   [class*="text-cyan"],
@@ -4730,8 +4715,8 @@
   .career-expect-card > div:first-child,
   .career-quality-card [class*="rounded-full"]
 ) {
-  color: #3e75ff !important;
-  -webkit-text-fill-color: #3e75ff !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 :is(
@@ -4742,10 +4727,10 @@
   #blog-overview-page#blog-overview-page#blog-overview-page#blog-overview-page,
   #blog-detail-page#blog-detail-page#blog-detail-page#blog-detail-page
 ) > section :is(.contact-secondary-button, a[class*="border-white"]) {
-  border-color: #3e75ff !important;
+  border-color: #108D82 !important;
   background: #fff !important;
-  color: #3e75ff !important;
-  -webkit-text-fill-color: #3e75ff !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
   box-shadow: none !important;
 }
 
@@ -4764,7 +4749,7 @@
   .career-contact a,
   .partners-contact a,
   .blog-overview-contact-button,
-  a[class*="bg-[#3e75ff]"],
+  a[class*="bg-[#108D82]"],
   a[class*="bg-[#45ddce]"]
 ),
 :is(
@@ -4782,11 +4767,11 @@
   .career-contact a,
   .partners-contact a,
   .blog-overview-contact-button,
-  a[class*="bg-[#3e75ff]"],
+  a[class*="bg-[#108D82]"],
   a[class*="bg-[#45ddce]"]
 ) * {
-  border-color: #3e75ff !important;
-  background: #3e75ff !important;
+  border-color: #108D82 !important;
+  background: #108D82 !important;
   color: #fff !important;
   -webkit-text-fill-color: #fff !important;
 }
@@ -4824,7 +4809,7 @@
   bottom: 2rem !important;
   z-index: 10 !important;
   width: 3px !important;
-  background: #3e75ff !important;
+  background: #108D82 !important;
   opacity: 1 !important;
 }
 
@@ -4833,8 +4818,8 @@
   width: 16px !important;
   height: 16px !important;
   border: 3px solid #fff !important;
-  background: #3e75ff !important;
-  box-shadow: 0 0 0 2px #3e75ff !important;
+  background: #108D82 !important;
+  box-shadow: 0 0 0 2px #108D82 !important;
 }
 
 #about-page#about-page#about-page#about-page .about-journey-item {
@@ -4868,32 +4853,32 @@
 #contact-page#contact-page#contact-page#contact-page#contact-page .contact-channels-pill {
   border-color: #bfd0ff !important;
   background: #fff !important;
-  color: #315fdb !important;
-  -webkit-text-fill-color: #315fdb !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 #contact-page#contact-page#contact-page#contact-page#contact-page .contact-channels-pill * {
-  color: #315fdb !important;
-  -webkit-text-fill-color: #315fdb !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 #contact-page#contact-page#contact-page#contact-page#contact-page .contact-channel-card {
   border: 1px solid #ccdaff !important;
-  border-top: 3px solid #3e75ff !important;
+  border-top: 3px solid #108D82 !important;
   background: #fff !important;
-  box-shadow: 0 12px 30px rgba(62, 117, 255, 0.08) !important;
+  box-shadow: 0 12px 30px rgba(16, 141, 130, 0.08) !important;
 }
 
 #contact-page#contact-page#contact-page#contact-page#contact-page .contact-channel-card:hover {
-  border-color: #7fa2ff !important;
-  border-top-color: #3e75ff !important;
+  border-color: #108D82 !important;
+  border-top-color: #108D82 !important;
   background: #fff !important;
-  box-shadow: 0 18px 38px rgba(62, 117, 255, 0.14) !important;
+  box-shadow: 0 18px 38px rgba(16, 141, 130, 0.14) !important;
 }
 
 #contact-page#contact-page#contact-page#contact-page#contact-page .contact-channel-icon {
-  border-color: #3e75ff !important;
-  background: #3e75ff !important;
+  border-color: #108D82 !important;
+  background: #108D82 !important;
   color: #fff !important;
   -webkit-text-fill-color: #fff !important;
   box-shadow: none !important;
@@ -4908,8 +4893,8 @@
   .contact-channel-eyebrow,
   .contact-channel-action
 ) {
-  color: #3e75ff !important;
-  -webkit-text-fill-color: #3e75ff !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 /* Keep the What you're building blueprint card free of tinted washes. */
@@ -4931,11 +4916,11 @@
 
 /* Business overview: white canvas, black headings, and one blue accent system. */
 #business-overview-page#business-overview-page {
-  --business-blue: #3e75ff;
-  --business-plum: #3e75ff;
-  --business-orange: #3e75ff;
-  --business-aqua: #3e75ff;
-  --business-gold: #3e75ff;
+  --business-blue: #108D82;
+  --business-plum: #108D82;
+  --business-orange: #108D82;
+  --business-aqua: #108D82;
+  --business-gold: #108D82;
   background: #fff !important;
   background-color: #fff !important;
 }
@@ -4957,8 +4942,8 @@
 }
 
 #business-overview-page#business-overview-page > section:not(:first-of-type) p[class*="uppercase"] {
-  color: #3e75ff !important;
-  -webkit-text-fill-color: #3e75ff !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 #business-overview-page#business-overview-page .business-enterprise-card > div:last-child {
@@ -4974,7 +4959,7 @@
   border-radius: 20px !important;
   background: linear-gradient(135deg, #f5f8ff 0%, #eaf1ff 100%) !important;
   background-image: linear-gradient(135deg, #f5f8ff 0%, #eaf1ff 100%) !important;
-  box-shadow: 0 14px 34px rgba(62, 117, 255, 0.1) !important;
+  box-shadow: 0 14px 34px rgba(16, 141, 130, 0.1) !important;
 }
 
 #business-overview-page#business-overview-page .business-ready-card h2 {
@@ -4992,25 +4977,25 @@
 
 #business-overview-page#business-overview-page .business-ready-card a {
   min-height: 44px !important;
-  border-color: #3e75ff !important;
+  border-color: #108D82 !important;
   border-radius: 10px !important;
-  background: #3e75ff !important;
+  background: #108D82 !important;
   background-image: none !important;
   color: #fff !important;
   -webkit-text-fill-color: #fff !important;
-  box-shadow: 0 8px 20px rgba(62, 117, 255, 0.18) !important;
+  box-shadow: 0 8px 20px rgba(16, 141, 130, 0.18) !important;
 }
 
 #business-overview-page#business-overview-page .business-ready-card a[href="/pricing"] {
   background: #fff !important;
-  color: #315fdb !important;
-  -webkit-text-fill-color: #315fdb !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
   box-shadow: none !important;
 }
 
 #business-overview-page#business-overview-page .business-ready-card a:hover {
-  border-color: #315fdb !important;
-  background: #315fdb !important;
+  border-color: #108D82 !important;
+  background: #108D82 !important;
   color: #fff !important;
   -webkit-text-fill-color: #fff !important;
 }
@@ -5025,8 +5010,8 @@
 .changelog-page.changelog-page {
   --changelog-ink: #17203f;
   --changelog-copy: #626a7d;
-  --changelog-blue: #3e75ff;
-  --changelog-blue-dark: #315fdb;
+  --changelog-blue: #108D82;
+  --changelog-blue-dark: #108D82;
   --changelog-line: #dfe5f1;
   background: #fff !important;
   color: var(--changelog-ink) !important;
@@ -5119,14 +5104,14 @@
 }
 
 .changelog-page.changelog-page .changelog-timeline {
-  background: linear-gradient(to bottom, var(--changelog-blue), rgba(62, 117, 255, 0.12), transparent) !important;
+  background: linear-gradient(to bottom, var(--changelog-blue), rgba(16, 141, 130, 0.12), transparent) !important;
 }
 
 .changelog-page.changelog-page .changelog-release-mark {
   border-color: #b9caff !important;
   background: #fff !important;
   color: var(--changelog-blue) !important;
-  box-shadow: 0 6px 18px rgba(62, 117, 255, 0.12) !important;
+  box-shadow: 0 6px 18px rgba(16, 141, 130, 0.12) !important;
 }
 
 .changelog-page.changelog-page .changelog-release-card > div:first-child {
@@ -5144,7 +5129,7 @@
   border-color: #cbd8ff !important;
   background: linear-gradient(135deg, #f5f8ff 0%, #ebf1ff 100%) !important;
   background-image: linear-gradient(135deg, #f5f8ff 0%, #ebf1ff 100%) !important;
-  box-shadow: 0 14px 34px rgba(62, 117, 255, 0.09) !important;
+  box-shadow: 0 14px 34px rgba(16, 141, 130, 0.09) !important;
 }
 
 .changelog-page.changelog-page .changelog-contact a {
@@ -5152,7 +5137,7 @@
   background: var(--changelog-blue) !important;
   color: #fff !important;
   -webkit-text-fill-color: #fff !important;
-  box-shadow: 0 8px 20px rgba(62, 117, 255, 0.18) !important;
+  box-shadow: 0 8px 20px rgba(16, 141, 130, 0.18) !important;
 }
 
 .changelog-page.changelog-page .changelog-contact a:hover {
@@ -5165,8 +5150,8 @@
   --support-ink: #17203f;
   --support-muted: #626a7d;
   --support-line: #e1e6ef;
-  --support-blue: #3e75ff;
-  --support-blue-dark: #315fdb;
+  --support-blue: #108D82;
+  --support-blue-dark: #108D82;
   background: #fff !important;
   color: var(--support-ink) !important;
 }
@@ -5238,10 +5223,10 @@
 }
 
 .docs-page.docs-page .docs-code-block button {
-  border-color: #6687ff !important;
+  border-color: #108D82 !important;
   background: transparent !important;
-  color: #a9bfff !important;
-  -webkit-text-fill-color: #a9bfff !important;
+  color: #108D82 !important;
+  -webkit-text-fill-color: #108D82 !important;
 }
 
 .docs-page.docs-page [class*="border-amber"] {

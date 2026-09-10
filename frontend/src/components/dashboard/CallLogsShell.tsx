@@ -131,7 +131,7 @@ function CallRoute({ call, compact = false }: { call: CallRecord; compact?: bool
   return (
     <div className={`grid gap-1.5 ${compact ? "min-w-56" : ""}`}>
       <div className="grid min-w-0 grid-cols-[44px_minmax(0,1fr)] items-center gap-2">
-        <span className="rounded-md bg-indigo-50 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-indigo-700">From</span>
+        <span className="rounded-md bg-indigo-50 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-[#108D82]">From</span>
         {route.fromMissing ? (
           <span className="rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">
             Caller ID not sent
@@ -161,12 +161,12 @@ function queryDate(value: string) {
 function statusTone(status: CallRecord["status"]) {
   if (status === "completed") return "bg-emerald-50 text-emerald-700 ring-emerald-200";
   if (status === "failed" || status === "cancelled") return "bg-rose-50 text-rose-700 ring-rose-200";
-  if (status === "active") return "bg-indigo-50 text-indigo-700 ring-indigo-200";
+  if (status === "active") return "bg-indigo-50 text-[#108D82] ring-indigo-200";
   return "bg-amber-50 text-amber-700 ring-amber-200";
 }
 
 const filterInputClass =
-  "rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium outline-none focus:border-indigo-500";
+  "rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium outline-none focus:border-[#108D82]";
 
 export function CallLogsShell() {
   const brand = useBrand();
@@ -330,7 +330,7 @@ export function CallLogsShell() {
           <header className="border-b border-[#e1e2ef] bg-white pb-4">
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
               <div>
-                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#5b63ff]">Conversation operations</span>
+                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#108D82]">Conversation operations</span>
                 <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">Call logs</h1>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Every browser, inbound, and outbound call is captured here with its status, timing, latency, and transcript.</p>
               </div>
@@ -338,7 +338,7 @@ export function CallLogsShell() {
               <button className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50" type="button" onClick={() => void loadCalls()}>
                 Refresh
               </button>
-              <button className="rounded-xl bg-indigo-500 px-4 py-2.5 text-sm font-semibold text-[#ffffff] shadow-lg shadow-indigo-500/20 hover:bg-indigo-600" type="button" onClick={() => void exportCsv()}>
+              <button className="rounded-xl bg-[#108D82] px-4 py-2.5 text-sm font-semibold text-[#ffffff] shadow-lg shadow-[#108D82]/20 hover:bg-[#108D82]" type="button" onClick={() => void exportCsv()}>
                 Export CSV
               </button>
               </div>
@@ -364,7 +364,7 @@ export function CallLogsShell() {
           <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
             <div className="grid gap-3 border-b border-slate-200 p-4">
               <div className="flex flex-wrap gap-2">
-                <input className="min-w-56 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-500" placeholder="Search transcript or tag" value={search} onChange={(event) => { setSearch(event.target.value); setPage(1); }} />
+                <input className="min-w-56 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-[#108D82]" placeholder="Search transcript or tag" value={search} onChange={(event) => { setSearch(event.target.value); setPage(1); }} />
                 <select className={filterInputClass} value={agentId} onChange={(event) => { setAgentId(event.target.value); setPage(1); }}>
                   <option value="">All agents</option>
                   {agents.map((agent) => <option key={agent._id} value={agent._id}>{agent.name}</option>)}
@@ -413,7 +413,7 @@ export function CallLogsShell() {
                         {call.endedAt
                           ? formatDate(call.endedAt)
                           : call.status === "active"
-                            ? <span className="font-semibold text-indigo-600">Live</span>
+                            ? <span className="font-semibold text-[#108D82]">Live</span>
                             : "—"}
                       </td>
                       <td className="px-4 py-4 font-mono text-sm font-medium text-slate-700">{formatDuration(call.durationSeconds)}</td>

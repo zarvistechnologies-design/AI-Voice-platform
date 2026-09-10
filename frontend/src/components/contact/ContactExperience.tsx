@@ -257,7 +257,7 @@ export function ContactExperience() {
               onSubmit={handleSubmit}
             >
               <div className="mb-6 flex items-center gap-4 border-b border-slate-200 pb-5 lg:mb-5 lg:pb-4">
-                <span className="grid size-13 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-500 text-black shadow-[0_12px_30px_rgba(13,148,136,0.2)] lg:size-11 lg:rounded-xl">
+                <span className="grid size-13 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-teal-500 to-[#108D82] text-black shadow-[0_12px_30px_rgba(13,148,136,0.2)] lg:size-11 lg:rounded-xl">
                   <Icon className="size-6" name="send" />
                 </span>
 
@@ -506,15 +506,15 @@ export function ContactExperience() {
 
       <style>{`
         #contact-page .contact-primary-button {
-          border-color: #6268ff !important;
-          background: #6268ff !important;
+          border-color: #108D82 !important;
+          background: #108D82 !important;
           color: #fff !important;
           -webkit-text-fill-color: #fff !important;
         }
 
         #contact-page .contact-primary-button:hover {
-          border-color: #565dcc !important;
-          background: #565dcc !important;
+          border-color: #108D82 !important;
+          background: #108D82 !important;
         }
 
         #contact-page .contact-secondary-button {

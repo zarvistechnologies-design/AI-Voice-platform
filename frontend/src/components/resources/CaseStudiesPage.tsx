@@ -13,7 +13,7 @@ const caseStudies = [
     image: "/images/healthcare/marquee-frontdesk.jpg",
     imageAlt:
       "Healthcare front-desk team supporting patient appointment calls",
-    accent: "#3e75ff",
+    accent: "#108D82",
     challenge:
       "Peak-hour scheduling calls competed with the team's in-person patient support.",
     solution:
@@ -112,7 +112,7 @@ export function CaseStudiesPage() {
         <section className="bg-white px-5 pb-20 pt-28 sm:px-8 sm:pt-32 lg:px-12 lg:pb-24">
           <div className="mx-auto max-w-[1240px]">
             <div className="max-w-[760px]">
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#3e75ff]">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#108D82]">
                 Deployment stories
               </p>
 
@@ -130,7 +130,7 @@ export function CaseStudiesPage() {
             <div className="mt-10 grid gap-5 lg:grid-cols-3">
               {caseStudies.map((study) => (
                 <article
-                  className="case-study-card group flex h-full flex-col overflow-hidden rounded-2xl border border-black/[0.08] bg-white shadow-[0_15px_50px_rgba(20,30,60,0.07)] transition duration-300 hover:border-[#3e75ff]/25"
+                  className="case-study-card group flex h-full flex-col overflow-hidden rounded-2xl border border-black/[0.08] bg-white shadow-[0_15px_50px_rgba(20,30,60,0.07)] transition duration-300 hover:border-[#108D82]/25"
                   key={study.industry}
                   style={{
                     background: `radial-gradient(circle at 92% 0%, ${study.accent}08, transparent 34%), #ffffff`,
@@ -201,7 +201,7 @@ export function CaseStudiesPage() {
                     <div className="mt-auto grid grid-cols-3 gap-2 pt-5">
                       {study.outcomes.map((outcome) => (
                         <div
-                          className="rounded-lg border border-black/[0.07] bg-[#fafbfe] p-2.5 transition hover:border-[#3e75ff]/25 hover:bg-[#f6f8ff]"
+                          className="rounded-lg border border-black/[0.07] bg-[#fafbfe] p-2.5 transition hover:border-[#108D82]/25 hover:bg-[#f6f8ff]"
                           key={outcome.label}
                         >
                           <p
@@ -229,7 +229,7 @@ export function CaseStudiesPage() {
           <div className="mx-auto max-w-[1160px]">
             <div className="grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:gap-16">
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#3e75ff]">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#108D82]">
                   Evidence that matters
                 </p>
 
@@ -246,10 +246,10 @@ export function CaseStudiesPage() {
               <div className="grid gap-3 sm:grid-cols-2">
                 {measurementPrinciples.map((principle) => (
                   <article
-                    className="group rounded-2xl border border-black/[0.08] bg-white p-6 shadow-[0_8px_30px_rgba(20,30,60,0.04)] transition duration-300 hover:border-[#3e75ff]/25 hover:bg-[#fafbff] hover:shadow-[0_12px_35px_rgba(62,117,255,0.08)]"
+                    className="group rounded-2xl border border-black/[0.08] bg-white p-6 shadow-[0_8px_30px_rgba(20,30,60,0.04)] transition duration-300 hover:border-[#108D82]/25 hover:bg-[#fafbff] hover:shadow-[0_12px_35px_rgba(16, 141, 130,0.08)]"
                     key={principle.number}
                   >
-                    <p className="font-mono text-xs font-bold text-[#3e75ff]">
+                    <p className="font-mono text-xs font-bold text-[#108D82]">
                       {principle.number}
                     </p>
 

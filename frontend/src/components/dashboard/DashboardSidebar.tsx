@@ -288,7 +288,7 @@ export function DashboardSidebar({
           </Link>
 
           {showUserSidebar ? (
-            <span className="ml-auto hidden rounded-full border border-[#5b63ff]/20 bg-[#5b63ff]/10 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.16em] text-[#4d54db] lg:block">
+            <span className="ml-auto hidden rounded-full border border-[#108D82]/20 bg-[#108D82]/10 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.16em] text-[#108D82] lg:block">
               App
             </span>
           ) : null}
@@ -316,7 +316,7 @@ export function DashboardSidebar({
                         showUserSidebar ? "lg:justify-start lg:gap-3 lg:px-3" : "lg:justify-center"
                       } ${
                         isActive
-                          ? "bg-[#5b63ff]/10 text-[#242535] shadow-sm"
+                          ? "bg-[#108D82]/10 text-[#242535] shadow-sm"
                           : "text-[#242535] hover:bg-[#f6f7fb]"
                       }`}
                       href={item.href}
@@ -332,8 +332,8 @@ export function DashboardSidebar({
                       aria-label={item.label}
                       aria-current={isActive ? "page" : undefined}
                     >
-                      {isActive ? <span className="absolute inset-y-2 left-0 hidden w-0.5 rounded-full bg-[#5b63ff] shadow-sm lg:block" /> : null}
-                      <span className={`grid size-8 shrink-0 place-items-center rounded-lg ${isActive ? "bg-[#5b63ff]/10" : ""}`}>
+                      {isActive ? <span className="absolute inset-y-2 left-0 hidden w-0.5 rounded-full bg-[#108D82] shadow-sm lg:block" /> : null}
+                      <span className={`grid size-8 shrink-0 place-items-center rounded-lg ${isActive ? "bg-[#108D82]/10" : ""}`}>
                         <SidebarIcon icon={item.icon} />
                       </span>
                       {showUserSidebar ? <span className="app-body hidden truncate font-medium text-[#242535] lg:block">{item.label}</span> : null}
@@ -354,14 +354,14 @@ export function DashboardSidebar({
 
         <div className={`relative ml-auto flex shrink-0 items-center gap-2 lg:ml-0 lg:border-t lg:border-[#e5e7ef] lg:pt-3 ${showUserSidebar ? "lg:px-1" : "lg:flex-col"}`} ref={accountMenuRef}>
           <button
-            className={`group/account flex min-w-0 items-center rounded-xl text-left outline-none transition focus-visible:ring-2 focus-visible:ring-[#5b63ff]/60 ${accountMenuOpen ? "bg-[#f6f7fb] ring-1 ring-white/[0.08]" : "hover:bg-[#f6f7fb]"} ${showUserSidebar ? "gap-3 p-1 lg:flex-1" : "p-0"}`}
+            className={`group/account flex min-w-0 items-center rounded-xl text-left outline-none transition focus-visible:ring-2 focus-visible:ring-[#108D82]/60 ${accountMenuOpen ? "bg-[#f6f7fb] ring-1 ring-white/[0.08]" : "hover:bg-[#f6f7fb]"} ${showUserSidebar ? "gap-3 p-1 lg:flex-1" : "p-0"}`}
             type="button"
             aria-label="Open account menu"
             aria-haspopup="menu"
             aria-expanded={accountMenuOpen}
             onClick={() => setAccountMenuOpen((current) => !current)}
           >
-            <span className="app-label grid size-9 shrink-0 place-items-center rounded-xl bg-[#5b63ff] text-[#ffffff] shadow-sm transition group-hover/account:brightness-110">
+            <span className="app-label grid size-9 shrink-0 place-items-center rounded-xl bg-[#108D82] text-[#ffffff] shadow-sm transition group-hover/account:brightness-110">
               {userInitials}
             </span>
             {showUserSidebar ? (
@@ -396,13 +396,13 @@ export function DashboardSidebar({
               role="menu"
             >
               <div className="relative overflow-hidden rounded-xl border border-[#e5e7ef] bg-[#f6f7fb] p-3">
-                <span className="pointer-events-none absolute -right-7 -top-8 size-24 rounded-full bg-[#5b63ff]/[0.07] blur-xl" />
+                <span className="pointer-events-none absolute -right-7 -top-8 size-24 rounded-full bg-[#108D82]/[0.07] blur-xl" />
                 <div className="relative flex min-w-0 items-center gap-3">
-                  <span className="app-label grid size-10 shrink-0 place-items-center rounded-xl bg-[#5b63ff] font-black text-[#ffffff] shadow-sm">
+                  <span className="app-label grid size-10 shrink-0 place-items-center rounded-xl bg-[#108D82] font-black text-[#ffffff] shadow-sm">
                     {userInitials}
                   </span>
                   <span className="min-w-0">
-                    <span className="block text-[9px] font-extrabold uppercase tracking-[0.16em] text-[#4d54db]/55">Signed in as</span>
+                    <span className="block text-[9px] font-extrabold uppercase tracking-[0.16em] text-[#108D82]/55">Signed in as</span>
                     <span className="mt-0.5 block truncate text-sm font-bold text-[#737587]">{userName}</span>
                     <span className="mt-0.5 block truncate text-[10px] text-[#737587]">{userEmail}</span>
                   </span>
@@ -415,7 +415,7 @@ export function DashboardSidebar({
                   const isActive = pathname === itemPath && (item.href === "/dashboard/profile" || item.href.startsWith("/dashboard/settings"));
                   return (
                     <Link
-                      className={`group/menu flex min-w-0 items-center gap-3 rounded-xl border px-3 py-3 outline-none transition focus-visible:ring-2 focus-visible:ring-[#5b63ff]/50 ${isActive ? "border-[#5b63ff]/20 bg-[#5b63ff]/10 text-[#4d54db] shadow-sm" : "border-transparent bg-[#f6f7fb] text-[#737587] hover:border-[#e5e7ef] hover:bg-[#f6f7fb] hover:text-[#242535]"}`}
+                      className={`group/menu flex min-w-0 items-center gap-3 rounded-xl border px-3 py-3 outline-none transition focus-visible:ring-2 focus-visible:ring-[#108D82]/50 ${isActive ? "border-[#108D82]/20 bg-[#108D82]/10 text-[#108D82] shadow-sm" : "border-transparent bg-[#f6f7fb] text-[#737587] hover:border-[#e5e7ef] hover:bg-[#f6f7fb] hover:text-[#242535]"}`}
                       href={item.href}
                       key={item.label}
                       role="menuitem"
@@ -428,14 +428,14 @@ export function DashboardSidebar({
                         setAccountMenuOpen(false);
                       }}
                     >
-                      <span className={`grid size-9 shrink-0 place-items-center rounded-xl border transition ${isActive ? "border-[#5b63ff]/20 bg-[#5b63ff]/15 text-[#4d54db]" : "border-[#e5e7ef] bg-[#f6f7fb] text-[#737587] group-hover/menu:text-[#4d54db]"}`}>
+                      <span className={`grid size-9 shrink-0 place-items-center rounded-xl border transition ${isActive ? "border-[#108D82]/20 bg-[#108D82]/15 text-[#108D82]" : "border-[#e5e7ef] bg-[#f6f7fb] text-[#737587] group-hover/menu:text-[#108D82]"}`}>
                         <AccountMenuIcon icon={item.icon} />
                       </span>
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-xs font-bold">{item.label}</span>
                         <span className="mt-1 block truncate text-[10px] font-medium text-[#737587]">{item.detail}</span>
                       </span>
-                      <svg aria-hidden="true" className="size-3.5 shrink-0 fill-none stroke-current stroke-2 text-[#737587] transition group-hover/menu:translate-x-0.5 group-hover/menu:text-[#4d54db]" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
+                      <svg aria-hidden="true" className="size-3.5 shrink-0 fill-none stroke-current stroke-2 text-[#737587] transition group-hover/menu:translate-x-0.5 group-hover/menu:text-[#108D82]" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
                     </Link>
                   );
                 })}
@@ -445,7 +445,7 @@ export function DashboardSidebar({
         </div>
 
         <button
-          className="absolute right-0 top-[68px] hidden size-7 translate-x-1/2 place-items-center rounded-full border border-[#e5e7ef] bg-[#ffffff] text-[#737587] shadow-lg transition hover:border-[#5b63ff]/40 hover:bg-[#f0efff] hover:text-[#4d54db] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5b63ff]/60 lg:grid"
+          className="absolute right-0 top-[68px] hidden size-7 translate-x-1/2 place-items-center rounded-full border border-[#e5e7ef] bg-[#ffffff] text-[#737587] shadow-lg transition hover:border-[#108D82]/40 hover:bg-[#f0efff] hover:text-[#108D82] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#108D82]/60 lg:grid"
           type="button"
           title={showUserSidebar ? "Collapse sidebar" : "Expand sidebar"}
           aria-label={showUserSidebar ? "Collapse sidebar" : "Expand sidebar"}

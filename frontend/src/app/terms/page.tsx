@@ -447,7 +447,7 @@ export default function TermsPage() {
               >
                 <Link
                   href="/"
-                  className="rounded-full bg-[#F0F3FF] px-4 py-2 text-[#5578E8] transition duration-200 hover:bg-[#E7ECFF]"
+                  className="rounded-full bg-[#F0F3FF] px-4 py-2 text-[#108D82] transition duration-200 hover:bg-[#E7ECFF]"
                 >
                   Home
                 </Link>
@@ -462,7 +462,7 @@ export default function TermsPage() {
                 <span className="text-[#52627D]">Legal Agreement</span>
               </nav>
 
-              <p className="mt-10 text-xs font-bold uppercase tracking-[0.2em] text-[#5879E8]">
+              <p className="mt-10 text-xs font-bold uppercase tracking-[0.2em] text-[#108D82]">
                 Vozon Platform Agreement
               </p>
 
@@ -484,7 +484,7 @@ export default function TermsPage() {
                   <dt className="flex items-center gap-4 text-[17px] text-[#71819C]">
                     <span
                       aria-hidden="true"
-                      className="flex size-[40px] shrink-0 items-center justify-center rounded-full bg-[#EEF2FF] text-[#647FE0]"
+                      className="flex size-[40px] shrink-0 items-center justify-center rounded-full bg-[#EEF2FF] text-[#108D82]"
                     >
                       <svg
                         viewBox="0 0 24 24"
@@ -523,7 +523,7 @@ export default function TermsPage() {
                   <dt className="flex items-center gap-4 text-[17px] text-[#71819C]">
                     <span
                       aria-hidden="true"
-                      className="flex size-[40px] shrink-0 items-center justify-center rounded-full bg-[#EEF2FF] text-[#5879E8]"
+                      className="flex size-[40px] shrink-0 items-center justify-center rounded-full bg-[#EEF2FF] text-[#108D82]"
                     >
                       <svg
                         viewBox="0 0 24 24"
@@ -560,7 +560,7 @@ export default function TermsPage() {
                   <dt className="flex items-center gap-4 text-[17px] text-[#71819C]">
                     <span
                       aria-hidden="true"
-                      className="flex size-[40px] shrink-0 items-center justify-center rounded-full bg-[#EEF2FF] text-[#5379FF]"
+                      className="flex size-[40px] shrink-0 items-center justify-center rounded-full bg-[#EEF2FF] text-[#108D82]"
                     >
                       <span className="size-3 rounded-full bg-current" />
                     </span>
@@ -607,7 +607,7 @@ export default function TermsPage() {
                       >
                         {/* BLUE ACTIVE SIDE LINE */}
                         {index === 0 && (
-                          <span className="absolute -left-[16px] top-1/2 h-[14px] w-[2px] -translate-y-1/2 rounded-r-full bg-[#617FEF]" />
+                          <span className="absolute -left-[16px] top-1/2 h-[14px] w-[2px] -translate-y-1/2 rounded-r-full bg-[#108D82]" />
                         )}
 
                         {/* NUMBER */}
@@ -638,7 +638,7 @@ export default function TermsPage() {
 
               {/* QUESTIONS */}
               <div className="px-3.5 pb-3.5 pt-4 sm:px-4">
-                <div className="flex size-[22px] items-center justify-center rounded-full bg-[#F0F3FF] text-[#5C7BEA]">
+                <div className="flex size-[22px] items-center justify-center rounded-full bg-[#F0F3FF] text-[#108D82]">
                   <svg viewBox="0 0 24 24" fill="none" className="size-[11px]">
                     <path
                       d="M12 5.5a6.5 6.5 0 0 0-6.5 6.5c0 1.6.58 3.07 1.54 4.2L6 19l3.1-.8c.88.5 1.86.8 2.9.8a6.5 6.5 0 1 0 0-13.5Z"
@@ -677,7 +677,7 @@ export default function TermsPage() {
             {/* DOCUMENT HEADER */}
             <header className="flex flex-col gap-6 px-6 py-7 sm:flex-row sm:items-end sm:justify-between sm:px-10 sm:py-9">
               <div>
-                <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-[#4F68C4]">
+                <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-[#108D82]">
                   Official agreement
                 </p>
 
@@ -722,7 +722,7 @@ export default function TermsPage() {
                   >
                     <span
                       aria-hidden="true"
-                      className="mb-4 inline-flex size-8 items-center justify-center rounded-lg bg-[#EEF2FF] font-mono text-[10px] font-semibold tracking-[0.04em] text-[#4165D6] sm:mb-0"
+                      className="mb-4 inline-flex size-8 items-center justify-center rounded-lg bg-[#EEF2FF] font-mono text-[10px] font-semibold tracking-[0.04em] text-[#108D82] sm:mb-0"
                     >
                       {String(index + 1).padStart(2, "0")}
                     </span>
@@ -780,7 +780,7 @@ export default function TermsPage() {
           }
 
           .terms-copy a {
-            color: #4165D6;
+            color: #108D82;
             font-weight: 600;
             text-decoration: underline;
             text-decoration-color: #A5B4FC;
@@ -790,7 +790,7 @@ export default function TermsPage() {
 
           .terms-copy a:hover {
             opacity: 0.8;
-            text-decoration-color: #4165D6;
+            text-decoration-color: #108D82;
           }
 
           .terms-copy address {

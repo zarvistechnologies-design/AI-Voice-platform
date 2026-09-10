@@ -178,11 +178,11 @@ function HeroConsole() {
 function StageVisual({ index }: { index: number }) {
   if (index === 0) {
     return (
-      <div className="relative min-h-[390px] overflow-hidden rounded-[22px] border border-[#dce5ff] bg-[#f4f7ff] p-5 shadow-[0_18px_48px_rgba(62,117,255,0.08)] sm:p-7">
+      <div className="relative min-h-[390px] overflow-hidden rounded-[22px] border border-[#dce5ff] bg-[#f4f7ff] p-5 shadow-[0_18px_48px_rgba(16, 141, 130,0.08)] sm:p-7">
         <div className="absolute inset-0 opacity-30 [background-image:radial-gradient(circle_at_center,rgba(69,221,206,0.13)_1px,transparent_1px)] [background-size:20px_20px]" />
         <div className="relative flex items-center justify-between">
           <span className="text-xs font-black text-[#17203f]">Conversation canvas</span>
-          <span className="rounded-full border border-[#3e75ff]/20 bg-white px-3 py-1.5 text-[9px] font-bold text-[#3e75ff]">Auto-saved</span>
+          <span className="rounded-full border border-[#108D82]/20 bg-white px-3 py-1.5 text-[9px] font-bold text-[#108D82]">Auto-saved</span>
         </div>
         <div className="relative mx-auto mt-10 max-w-md">
           <div className="absolute left-8 top-12 h-[190px] w-px bg-gradient-to-b from-[#45ddce] via-[#45ddce]/30 to-[#8f83e8]" />
@@ -191,7 +191,7 @@ function StageVisual({ index }: { index: number }) {
             ["Business knowledge", "Use approved answers and live data"],
             ["Take action", "Book, update, notify, or transfer"],
           ].map(([title, body], itemIndex) => (
-            <div className={`relative flex gap-4 rounded-2xl border bg-white p-4 shadow-[0_8px_24px_rgba(38,52,102,0.05)] ${itemIndex === 1 ? "ml-12 border-[#6d5ce7]/25" : "border-[#3e75ff]/20"} ${itemIndex > 0 ? "mt-5" : ""}`} key={title}>
+            <div className={`relative flex gap-4 rounded-2xl border bg-white p-4 shadow-[0_8px_24px_rgba(38,52,102,0.05)] ${itemIndex === 1 ? "ml-12 border-[#6d5ce7]/25" : "border-[#108D82]/20"} ${itemIndex > 0 ? "mt-5" : ""}`} key={title}>
               <span className={`relative z-10 grid size-9 shrink-0 place-items-center rounded-xl text-[10px] font-black ${itemIndex === 1 ? "bg-[#8f83e8]" : "bg-[#45ddce] text-[#03110e]"}`}>0{itemIndex + 1}</span>
               <div><strong className="text-sm text-[#17203f]">{title}</strong><p className="mb-0 mt-1 text-[11px] leading-5 text-[#5d6478]">{body}</p></div>
             </div>
@@ -350,7 +350,7 @@ export function ProductOverviewPage() {
 
         <section className="px-5 py-16 sm:px-8 lg:py-20">
           <div className="product-overview-ready-card relative mx-auto max-w-[900px] overflow-hidden rounded-[24px] border p-7 text-center sm:p-9 lg:p-10">
-            <div className="absolute left-1/2 top-0 h-0.5 w-28 -translate-x-1/2 bg-[#3e75ff]" />
+            <div className="absolute left-1/2 top-0 h-0.5 w-28 -translate-x-1/2 bg-[#108D82]" />
             <p className="m-0 text-[10px] font-black uppercase tracking-[0.18em] text-[#75fff0]">Ready when your callers are</p>
             <h2 className="mx-auto m-0 mt-4 max-w-xl text-2xl font-semibold leading-[1.15] sm:text-3xl">Launch your first production voice workflow.</h2>
             <p className="mx-auto mb-0 mt-4 max-w-xl text-sm leading-6 text-white/52 sm:text-base">Start with one high-value call journey, connect the actions it needs, and expand from real results.</p>

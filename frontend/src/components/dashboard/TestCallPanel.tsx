@@ -385,7 +385,7 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
       >
         <header className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-[#e5e7ef] bg-white/95 p-4 backdrop-blur-xl">
           <div className="min-w-0">
-            <span className="text-[9px] font-extrabold uppercase tracking-[0.18em] text-[#4d54db]/55">Realtime voice session</span>
+            <span className="text-[9px] font-extrabold uppercase tracking-[0.18em] text-[#108D82]/55">Realtime voice session</span>
             <h2 className="mt-1 truncate text-base font-bold text-[#242535]" id="test-call-title" title={`Test ${agentName}`}>Test {agentName}</h2>
           </div>
           <button autoFocus aria-label={active ? "Close and end test call" : "Close test call"} className="app-button-text min-h-10 shrink-0 rounded-xl border border-[#e5e7ef] bg-[#f6f7fb] px-3 py-2 text-[#737587] transition hover:bg-[#f6f7fb] hover:text-[#242535] active:translate-y-px" type="button" onClick={onClose}>
@@ -397,7 +397,7 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
           <div className="grid grid-cols-2 gap-1 rounded-xl border border-[#e5e7ef] bg-[#f8f8fc] p-1" role="group" aria-label="Test call type">
             {(["web", "phone"] as const).map((item) => (
               <button
-                className={`app-button-text flex-1 rounded-lg px-3 py-2 transition active:translate-y-px disabled:opacity-50 ${mode === item ? "bg-[#5b63ff] text-[#ffffff] shadow-sm" : "text-[#737587] hover:bg-[#f6f7fb] hover:text-[#737587]"}`}
+                className={`app-button-text flex-1 rounded-lg px-3 py-2 transition active:translate-y-px disabled:opacity-50 ${mode === item ? "bg-[#108D82] text-[#ffffff] shadow-sm" : "text-[#737587] hover:bg-[#f6f7fb] hover:text-[#737587]"}`}
                 key={item}
                 type="button"
                 aria-pressed={mode === item}
@@ -410,17 +410,17 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
           </div>
 
           <div className="relative grid min-h-52 min-w-0 place-items-center overflow-hidden rounded-2xl border border-[#e5e7ef] bg-white p-4 text-[#242535] shadow-inner sm:p-5">
-            <span className="pointer-events-none absolute -top-16 -right-10 size-44 rounded-full bg-[#5b63ff]/10 blur-2xl" />
-            <span className="pointer-events-none absolute -bottom-20 -left-10 size-48 rounded-full bg-[#5b63ff]/[0.07] blur-2xl" />
+            <span className="pointer-events-none absolute -top-16 -right-10 size-44 rounded-full bg-[#108D82]/10 blur-2xl" />
+            <span className="pointer-events-none absolute -bottom-20 -left-10 size-48 rounded-full bg-[#108D82]/[0.07] blur-2xl" />
             <div className="relative grid min-w-0 max-w-full place-items-center gap-4 text-center">
-              <div className={`relative grid size-20 place-items-center rounded-full border border-[#5b63ff]/25 bg-[#5b63ff]/10 text-[#4d54db] ${active ? "ring-8 ring-[#5b63ff]/[0.07]" : ""}`}>
-                {active ? <span className="absolute inset-0 animate-ping rounded-full bg-[#5b63ff]/15 motion-reduce:animate-none" /> : null}
+              <div className={`relative grid size-20 place-items-center rounded-full border border-[#108D82]/25 bg-[#108D82]/10 text-[#108D82] ${active ? "ring-8 ring-[#108D82]/[0.07]" : ""}`}>
+                {active ? <span className="absolute inset-0 animate-ping rounded-full bg-[#108D82]/15 motion-reduce:animate-none" /> : null}
                 <span className="text-xl font-black">AI</span>
               </div>
               <div className="flex h-8 items-center gap-1" role="img" aria-label={active ? "Call audio active" : "Call audio inactive"}>
                 {[16, 28, 20, 32, 24, 30, 18].map((height, index) => (
                   <span
-                    className={`w-1.5 rounded-full bg-[#4d54db] ${active ? "animate-pulse motion-reduce:animate-none" : "opacity-30"}`}
+                    className={`w-1.5 rounded-full bg-[#108D82] ${active ? "animate-pulse motion-reduce:animate-none" : "opacity-30"}`}
                     key={`${height}-${index}`}
                     style={{ height, animationDelay: `${index * 90}ms` }}
                   />
@@ -439,7 +439,7 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
             <label className="grid gap-2 text-xs font-bold text-[#737587]">
               <span>Destination number</span>
               <input
-                className="app-control-text min-h-11 rounded-xl border border-[#e5e7ef] bg-[#f8f8fc] px-3 text-[#242535] outline-none transition placeholder:text-[#737587] focus:border-[#5b63ff] focus:ring-3 focus:ring-[#5b63ff]/15"
+                className="app-control-text min-h-11 rounded-xl border border-[#e5e7ef] bg-[#f8f8fc] px-3 text-[#242535] outline-none transition placeholder:text-[#737587] focus:border-[#108D82] focus:ring-3 focus:ring-[#108D82]/15"
                 placeholder="+12525550123"
                 type="tel"
                 inputMode="tel"
@@ -454,7 +454,7 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
           ) : null}
 
           <button
-            className={`app-button-text min-h-12 rounded-xl px-4 font-extrabold transition active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50 ${active ? "border border-rose-400/25 bg-rose-400/15 text-rose-700 hover:bg-rose-400/20" : "bg-[#5b63ff] text-[#ffffff] shadow-sm hover:bg-[#4d54db]"}`}
+            className={`app-button-text min-h-12 rounded-xl px-4 font-extrabold transition active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50 ${active ? "border border-rose-400/25 bg-rose-400/15 text-rose-700 hover:bg-rose-400/20" : "bg-[#108D82] text-[#ffffff] shadow-sm hover:bg-[#108D82]"}`}
             type="button"
             disabled={busy}
             aria-busy={busy}

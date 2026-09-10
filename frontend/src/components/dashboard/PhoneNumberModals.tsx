@@ -55,7 +55,7 @@ const providers: { id: TelephonyProvider; description: string; docs: string }[] 
 const buttonClass =
   "app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 transition disabled:cursor-not-allowed disabled:opacity-50";
 const controlClass =
-  "app-control-text min-h-11 w-full rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#5b63ff] focus:ring-4 focus:ring-[#5b63ff]/10";
+  "app-control-text min-h-11 w-full rounded-lg border border-[#dfe3ea] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#108D82] focus:ring-4 focus:ring-[#108D82]/10";
 
 export function PhoneNumberModals({
   agents,
@@ -220,7 +220,7 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
         <div className="grid grid-cols-3 border-b border-[#e5e7eb] px-5 sm:px-6">
           {providers.map((item) => (
             <button
-              className={`relative min-h-14 border-0 bg-transparent px-2 text-center transition ${provider === item.id ? "text-[#5b63ff]" : "text-[#64748b] hover:text-[#334155]"}`}
+              className={`relative min-h-14 border-0 bg-transparent px-2 text-center transition ${provider === item.id ? "text-[#108D82]" : "text-[#64748b] hover:text-[#334155]"}`}
               disabled={busy}
               key={item.id}
               onClick={() => setProvider(item.id)}
@@ -228,7 +228,7 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
               aria-pressed={provider === item.id}
             >
               <span className="app-strong">{item.id}</span>
-              {provider === item.id ? <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-[#5b63ff]" /> : null}
+              {provider === item.id ? <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-[#108D82]" /> : null}
             </button>
           ))}
         </div>
@@ -237,8 +237,8 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
           <RequestError message={requestError} />
           <div className="rounded-lg border border-[#e1e2ef] bg-[#f0efff] px-3 py-2.5">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <span className="app-body text-[#1e40af]">{providers.find((item) => item.id === provider)?.description}</span>
-              <a className="app-label text-[#5b63ff] underline underline-offset-2" href={providers.find((item) => item.id === provider)?.docs} rel="noreferrer" target="_blank">Provider docs</a>
+              <span className="app-body text-[#108D82]">{providers.find((item) => item.id === provider)?.description}</span>
+              <a className="app-label text-[#108D82] underline underline-offset-2" href={providers.find((item) => item.id === provider)?.docs} rel="noreferrer" target="_blank">Provider docs</a>
             </div>
           </div>
 
@@ -348,7 +348,7 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
 
         <footer className="flex items-center justify-end gap-2 border-t border-[#e5e7eb] px-5 py-4 sm:px-6">
           <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button>
-          <button className={`${buttonClass} bg-[#5b63ff] text-[#ffffff] hover:bg-[#4b52df]`} aria-describedby="phone-import-validation" disabled={busy || !valid} type="submit">
+          <button className={`${buttonClass} bg-[#108D82] text-[#ffffff] hover:bg-[#108D82]`} aria-describedby="phone-import-validation" disabled={busy || !valid} type="submit">
             <Icon icon="import" /> {busy ? "Importing..." : "Import number"}
           </button>
         </footer>
@@ -430,7 +430,7 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase, onSearchInven
             Area code or digits <span className="font-normal text-[#94a3b8]">(optional)</span>
             <input className={controlClass} inputMode="tel" placeholder="For example 80 or 650" value={query} onChange={(event) => setQuery(event.target.value)} />
           </label>
-          <button className={`${buttonClass} self-end border border-[#e1e2ef] bg-white text-[#5b63ff] hover:bg-[#f0efff]`} disabled={searching || busy} type="submit">
+          <button className={`${buttonClass} self-end border border-[#e1e2ef] bg-white text-[#108D82] hover:bg-[#f0efff]`} disabled={searching || busy} type="submit">
             <Icon icon="search" /> {searching ? "Searching..." : "Search"}
           </button>
         </form>
@@ -452,7 +452,7 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase, onSearchInven
                 const voiceAvailable = number.voice_enabled !== false && number.capabilities?.voice !== false;
                 return (
                   <button
-                    className={`grid w-full gap-3 rounded-xl border p-3 text-left transition sm:grid-cols-[minmax(0,1fr)_145px_145px_auto] sm:items-center ${active ? "border-[#5b63ff] bg-[#f0efff] ring-2 ring-[#5b63ff]/10" : "border-[#e5e7eb] bg-white hover:border-[#e1e2ef] hover:bg-[#fbfcff]"}`}
+                    className={`grid w-full gap-3 rounded-xl border p-3 text-left transition sm:grid-cols-[minmax(0,1fr)_145px_145px_auto] sm:items-center ${active ? "border-[#108D82] bg-[#f0efff] ring-2 ring-[#108D82]/10" : "border-[#e5e7eb] bg-white hover:border-[#e1e2ef] hover:bg-[#fbfcff]"}`}
                     disabled={!voiceAvailable || busy}
                     key={number.id || number.e164}
                     onClick={() => setSelected(number)}
@@ -484,7 +484,7 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase, onSearchInven
           </label>
           <div className="flex gap-2">
             <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button>
-            <button className={`${buttonClass} bg-[#5b63ff] text-[#ffffff] hover:bg-[#4b52df]`} disabled={busy || !selected} onClick={() => { if (selected) onPurchase(selected, label); }} type="button">
+            <button className={`${buttonClass} bg-[#108D82] text-[#ffffff] hover:bg-[#108D82]`} disabled={busy || !selected} onClick={() => { if (selected) onPurchase(selected, label); }} type="button">
               <Icon icon="plus" /> {busy ? "Purchasing..." : "Purchase number"}
             </button>
           </div>
@@ -532,13 +532,13 @@ function AgentModal({ agents, busy, number, requestError, onAssign, onClose }: {
                 type="button"
                 aria-pressed={selected}
               >
-                <span className={`grid size-10 shrink-0 place-items-center rounded-lg ${selected ? "bg-[#5b63ff] text-[#ffffff]" : "bg-[#f0efff] text-[#5b63ff]"}`}><Icon icon="user" /></span>
+                <span className={`grid size-10 shrink-0 place-items-center rounded-lg ${selected ? "bg-[#108D82] text-[#ffffff]" : "bg-[#f0efff] text-[#108D82]"}`}><Icon icon="user" /></span>
                 <span className="min-w-0 flex-1">
                   <strong className="app-strong block truncate">{agent.name}</strong>
                   <span className="app-caption block truncate">{agent.team || "Voice agent"}</span>
                 </span>
                 <span className={`app-label rounded-full px-2 py-1 ${agent.status === "Live" ? "bg-[#ecfdf5] text-[#047857]" : "bg-[#f1f5f9] text-[#64748b]"}`}>{agent.status}</span>
-                <span className={`grid size-5 place-items-center rounded-full border ${selected ? "border-[#5b63ff] bg-[#5b63ff] text-[#ffffff]" : "border-[#cbd5e1]"}`}>{selected ? <Icon icon="check" className="size-3" /> : null}</span>
+                <span className={`grid size-5 place-items-center rounded-full border ${selected ? "border-[#108D82] bg-[#108D82] text-[#ffffff]" : "border-[#cbd5e1]"}`}>{selected ? <Icon icon="check" className="size-3" /> : null}</span>
               </button>
             );
           })}
@@ -555,7 +555,7 @@ function AgentModal({ agents, busy, number, requestError, onAssign, onClose }: {
           </div>
           <div className="flex gap-2">
             <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button>
-            <button className={`${buttonClass} bg-[#5b63ff] text-[#ffffff] hover:bg-[#4b52df]`} disabled={busy || !selectedId} onClick={() => onAssign(selectedId)} type="button">
+            <button className={`${buttonClass} bg-[#108D82] text-[#ffffff] hover:bg-[#108D82]`} disabled={busy || !selectedId} onClick={() => onAssign(selectedId)} type="button">
               <Icon icon="link" /> {busy ? "Saving..." : "Set agent"}
             </button>
           </div>

@@ -146,7 +146,7 @@ function SectionHeading({
   return (
     <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[#e7eef3] px-5 py-5 sm:px-6">
       <div className="flex min-w-0 items-start gap-3.5">
-        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#eaf9f7] text-[#4b52df] ring-1 ring-[#cdeae6]">
+        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#eaf9f7] text-[#108D82] ring-1 ring-[#cdeae6]">
           <ProfileIcon name={icon} />
         </span>
         <div className="min-w-0">
@@ -325,13 +325,13 @@ export function ProfileShell() {
       <section className="min-w-0">
         <header className="border-b border-[#e5edf2] bg-white px-4 py-5 sm:px-6 lg:px-8">
           <div className="mx-auto w-full max-w-[1280px]">
-            <span className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#4b52df]">Account center</span>
+            <span className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#108D82]">Account center</span>
             <div className="mt-1 flex flex-wrap items-end justify-between gap-3">
               <div>
                 <h1 className="m-0 text-2xl font-bold tracking-[-0.03em] text-slate-950 sm:text-[30px]">Profile & security</h1>
                 <p className="mt-1.5 text-sm leading-6 text-slate-500">Manage your identity, sign-in protection, password, and trusted devices.</p>
               </div>
-              <Link className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 text-xs font-bold text-slate-700 shadow-sm transition hover:border-[#b9ddd8] hover:text-[#4b52df]" href="/dashboard/settings">
+              <Link className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 text-xs font-bold text-slate-700 shadow-sm transition hover:border-[#b9ddd8] hover:text-[#108D82]" href="/dashboard/settings">
                 <ProfileIcon className="size-4" name="workspace" />
                 Team & workspace
               </Link>
@@ -342,17 +342,17 @@ export function ProfileShell() {
         <div className="mx-auto grid w-full max-w-[1280px] gap-6 px-4 py-6 sm:px-6 lg:px-8">
           <section className="relative overflow-hidden rounded-[26px] border border-[#e5e7ef] bg-white p-5 text-[#242535] shadow-sm sm:p-7">
             <div className="pointer-events-none absolute -right-16 -top-24 size-72 rounded-full border border-[#e5e7ef]" />
-            <div className="pointer-events-none absolute -bottom-32 right-20 size-64 rounded-full bg-[#5b63ff]/[0.07] blur-2xl" />
+            <div className="pointer-events-none absolute -bottom-32 right-20 size-64 rounded-full bg-[#108D82]/[0.07] blur-2xl" />
             <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1fr)_190px] lg:items-center">
               <div className="min-w-0">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <span className="grid size-16 shrink-0 place-items-center rounded-2xl border border-[#4d54db]/30 bg-[#5b63ff] text-xl font-black text-[#ffffff] shadow-sm">
+                  <span className="grid size-16 shrink-0 place-items-center rounded-2xl border border-[#108D82]/30 bg-[#108D82] text-xl font-black text-[#ffffff] shadow-sm">
                     {initials(session.name)}
                   </span>
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2.5">
                       <h2 className="m-0 truncate text-2xl font-bold tracking-[-0.025em] text-[#242535]">{session.name}</h2>
-                      <span className={`rounded-full px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider ${session.emailVerified ? "bg-[#5b63ff]/15 text-[#4d54db] ring-1 ring-[#5b63ff]/30" : "bg-amber-400/15 text-amber-700 ring-1 ring-amber-300/25"}`}>
+                      <span className={`rounded-full px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider ${session.emailVerified ? "bg-[#108D82]/15 text-[#108D82] ring-1 ring-[#108D82]/30" : "bg-amber-400/15 text-amber-700 ring-1 ring-amber-300/25"}`}>
                         {session.emailVerified ? "Verified" : "Verify email"}
                       </span>
                     </div>
@@ -367,11 +367,11 @@ export function ProfileShell() {
                 <div className="mt-6 grid gap-2.5 sm:grid-cols-3">
                   <div className="rounded-xl border border-[#e5e7ef] bg-[#f6f7fb] px-4 py-3 backdrop-blur-sm">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-[#737587]">Email</span>
-                    <strong className="mt-1 flex items-center gap-2 text-sm text-[#242535]"><span className={`size-2 rounded-full ${session.emailVerified ? "bg-[#5b63ff]" : "bg-amber-300"}`} />{session.emailVerified ? "Verified" : "Action needed"}</strong>
+                    <strong className="mt-1 flex items-center gap-2 text-sm text-[#242535]"><span className={`size-2 rounded-full ${session.emailVerified ? "bg-[#108D82]" : "bg-amber-300"}`} />{session.emailVerified ? "Verified" : "Action needed"}</strong>
                   </div>
                   <div className="rounded-xl border border-[#e5e7ef] bg-[#f6f7fb] px-4 py-3 backdrop-blur-sm">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-[#737587]">Two-factor</span>
-                    <strong className="mt-1 flex items-center gap-2 text-sm text-[#242535]"><span className={`size-2 rounded-full ${session.twoFactorEnabled ? "bg-[#5b63ff]" : "bg-[#f6f7fb]"}`} />{session.twoFactorEnabled ? "Enabled" : "Not enabled"}</strong>
+                    <strong className="mt-1 flex items-center gap-2 text-sm text-[#242535]"><span className={`size-2 rounded-full ${session.twoFactorEnabled ? "bg-[#108D82]" : "bg-[#f6f7fb]"}`} />{session.twoFactorEnabled ? "Enabled" : "Not enabled"}</strong>
                   </div>
                   <div className="rounded-xl border border-[#e5e7ef] bg-[#f6f7fb] px-4 py-3 backdrop-blur-sm">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-[#737587]">Active sessions</span>
@@ -381,11 +381,11 @@ export function ProfileShell() {
               </div>
 
               <div className="justify-self-start lg:justify-self-end">
-                <div className="grid size-36 place-items-center rounded-full p-[9px]" style={{ background: `conic-gradient(#5b63ff ${securityPercent}%, #e9eaf5 0)` }}>
+                <div className="grid size-36 place-items-center rounded-full p-[9px]" style={{ background: `conic-gradient(#108D82 ${securityPercent}%, #e9eaf5 0)` }}>
                   <div className="grid size-full place-items-center rounded-full border border-[#e5e7ef] bg-[#ffffff] text-center shadow-inner">
                     <div>
                       <strong className="block text-3xl font-black tracking-[-0.04em] text-[#242535]">{securityPercent}%</strong>
-                      <span className="mt-1 block text-[10px] font-bold uppercase tracking-[0.16em] text-[#4d54db]">{securityLabel}</span>
+                      <span className="mt-1 block text-[10px] font-bold uppercase tracking-[0.16em] text-[#108D82]">{securityLabel}</span>
                     </div>
                   </div>
                 </div>
@@ -412,14 +412,14 @@ export function ProfileShell() {
                 </div>
                 <nav aria-label="Profile sections" className="flex gap-1 overflow-x-auto p-2.5 xl:grid">
                   {profileSections.map((item) => (
-                    <a className="inline-flex min-w-max items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-600 transition hover:bg-[#edf9f7] hover:text-[#4b52df]" href={`#${item.id}`} key={item.id}>
+                    <a className="inline-flex min-w-max items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-600 transition hover:bg-[#edf9f7] hover:text-[#108D82]" href={`#${item.id}`} key={item.id}>
                       <ProfileIcon className="size-4" name={item.icon} />
                       {item.label}
                     </a>
                   ))}
                 </nav>
                 <div className="hidden border-t border-[#edf2f5] bg-[#f8fbfa] p-4 xl:block">
-                  <div className="flex items-start gap-2.5 text-[#4b52df]"><ProfileIcon className="mt-0.5 size-4" name="shield" /><p className="m-0 text-xs font-bold">Security recommendation</p></div>
+                  <div className="flex items-start gap-2.5 text-[#108D82]"><ProfileIcon className="mt-0.5 size-4" name="shield" /><p className="m-0 text-xs font-bold">Security recommendation</p></div>
                   <p className="mt-2 text-xs leading-5 text-slate-500">Enable email verification and two-factor authentication for the strongest protection.</p>
                 </div>
               </div>
@@ -455,7 +455,7 @@ export function ProfileShell() {
                     <h3 className="mt-4 text-sm font-bold text-slate-950">{session.emailVerified ? "Email verified" : "Verify your email"}</h3>
                     <p className="mt-1.5 text-xs leading-5 text-slate-600">{session.emailVerified ? "Your identity is confirmed and account recovery is available." : "Confirm your address to strengthen your account and receive security messages."}</p>
                     {!session.emailVerified ? (
-                      <button className="mt-4 inline-flex min-h-10 items-center justify-center rounded-xl bg-[#5b63ff] px-4 text-xs font-bold text-[#ffffff] transition hover:bg-[#4b52df] disabled:cursor-not-allowed disabled:opacity-50" disabled={activeAction !== null} onClick={() => void resendVerificationEmail()} type="button">
+                      <button className="mt-4 inline-flex min-h-10 items-center justify-center rounded-xl bg-[#108D82] px-4 text-xs font-bold text-[#ffffff] transition hover:bg-[#108D82] disabled:cursor-not-allowed disabled:opacity-50" disabled={activeAction !== null} onClick={() => void resendVerificationEmail()} type="button">
                         {activeAction === "verification" ? "Sending…" : "Resend verification"}
                       </button>
                     ) : null}
@@ -470,8 +470,8 @@ export function ProfileShell() {
                     <div className="grid gap-5">
                       <div className="grid gap-3 sm:grid-cols-3">
                         {["Add account", "Enter code", "Protection on"].map((step, index) => (
-                          <div className={`flex items-center gap-2.5 rounded-xl border px-3 py-2.5 text-xs font-bold ${index === 0 ? "border-[#b9e5df] bg-[#effaf8] text-[#4b52df]" : "border-slate-200 bg-slate-50 text-slate-400"}`} key={step}>
-                            <span className={`grid size-6 place-items-center rounded-full text-[10px] ${index === 0 ? "bg-[#5b63ff] text-[#ffffff]" : "bg-slate-200 text-slate-500"}`}>{index + 1}</span>
+                          <div className={`flex items-center gap-2.5 rounded-xl border px-3 py-2.5 text-xs font-bold ${index === 0 ? "border-[#b9e5df] bg-[#effaf8] text-[#108D82]" : "border-slate-200 bg-slate-50 text-slate-400"}`} key={step}>
+                            <span className={`grid size-6 place-items-center rounded-full text-[10px] ${index === 0 ? "bg-[#108D82] text-[#ffffff]" : "bg-slate-200 text-slate-500"}`}>{index + 1}</span>
                             {step}
                           </div>
                         ))}
@@ -479,18 +479,18 @@ export function ProfileShell() {
 
                       <div className="grid gap-4 rounded-2xl border border-[#dce9e6] bg-[#f7fbfa] p-4 sm:p-5 lg:grid-cols-[minmax(0,1fr)_260px]">
                         <div className="min-w-0">
-                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#4b52df]">Manual setup key</span>
+                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#108D82]">Manual setup key</span>
                           <div className="mt-2 flex min-w-0 items-center gap-2 rounded-xl border border-[#d9e8e5] bg-white p-2.5">
                             <code className="min-w-0 flex-1 break-all px-1 text-xs font-bold tracking-wider text-slate-800">{totpSecret}</code>
                             <button className="shrink-0 rounded-lg border border-slate-200 px-2.5 py-1.5 text-[11px] font-bold text-slate-600 hover:bg-slate-50" onClick={() => void copyTotpSecret()} type="button">Copy</button>
                           </div>
-                          <a className="mt-3 inline-flex items-center gap-2 text-xs font-bold text-[#4b52df] underline-offset-2 hover:underline" href={totpUri}><ProfileIcon className="size-4" name="key" />Open in authenticator app</a>
+                          <a className="mt-3 inline-flex items-center gap-2 text-xs font-bold text-[#108D82] underline-offset-2 hover:underline" href={totpUri}><ProfileIcon className="size-4" name="key" />Open in authenticator app</a>
                           <p className="mt-3 text-xs leading-5 text-slate-500">Add this key to Google Authenticator, Microsoft Authenticator, Authy, or another TOTP app.</p>
                         </div>
                         <div>
                           <label className="grid gap-2 text-xs font-bold text-slate-700" htmlFor="enable-two-factor-code">Current six-digit code</label>
-                          <input autoComplete="one-time-code" className="mt-2 min-h-11 w-full rounded-xl border border-slate-200 px-3 text-center text-base font-bold tracking-[0.32em] text-slate-950 outline-none transition focus:border-[#5b63ff] focus:ring-3 focus:ring-[#5b63ff]/20" id="enable-two-factor-code" inputMode="numeric" maxLength={6} pattern="[0-9]{6}" placeholder="000000" value={totpCode} onChange={(event) => updateTotpCode(event.target.value)} />
-                          <button className="mt-3 min-h-11 w-full rounded-xl bg-[#5b63ff] px-4 text-sm font-extrabold text-[#ffffff] transition hover:bg-[#4d54db] disabled:cursor-not-allowed disabled:opacity-50" disabled={activeAction !== null || totpCode.length !== 6} onClick={() => void runAction("two-factor-enable", async () => {
+                          <input autoComplete="one-time-code" className="mt-2 min-h-11 w-full rounded-xl border border-slate-200 px-3 text-center text-base font-bold tracking-[0.32em] text-slate-950 outline-none transition focus:border-[#108D82] focus:ring-3 focus:ring-[#108D82]/20" id="enable-two-factor-code" inputMode="numeric" maxLength={6} pattern="[0-9]{6}" placeholder="000000" value={totpCode} onChange={(event) => updateTotpCode(event.target.value)} />
+                          <button className="mt-3 min-h-11 w-full rounded-xl bg-[#108D82] px-4 text-sm font-extrabold text-[#ffffff] transition hover:bg-[#108D82] disabled:cursor-not-allowed disabled:opacity-50" disabled={activeAction !== null || totpCode.length !== 6} onClick={() => void runAction("two-factor-enable", async () => {
                             await accountApi.verifyTwoFactor(totpCode);
                             setTotpCode("");
                             setTotpSecret("");
@@ -528,7 +528,7 @@ export function ProfileShell() {
                           {["Works without SMS", "Required on every new sign-in"].map((benefit) => <div className="flex items-center gap-2 text-xs font-semibold text-slate-600" key={benefit}><span className="grid size-5 place-items-center rounded-full bg-emerald-100 text-emerald-700"><ProfileIcon className="size-3" name="check" /></span>{benefit}</div>)}
                         </div>
                       </div>
-                      <button className="min-h-11 rounded-xl bg-[#5b63ff] px-5 text-sm font-bold text-[#ffffff] transition hover:bg-[#4b52df] disabled:cursor-not-allowed disabled:opacity-50" disabled={activeAction !== null} onClick={() => void beginTwoFactorSetup()} type="button">{activeAction === "two-factor-setup" ? "Preparing…" : "Set up authenticator"}</button>
+                      <button className="min-h-11 rounded-xl bg-[#108D82] px-5 text-sm font-bold text-[#ffffff] transition hover:bg-[#108D82] disabled:cursor-not-allowed disabled:opacity-50" disabled={activeAction !== null} onClick={() => void beginTwoFactorSetup()} type="button">{activeAction === "two-factor-setup" ? "Preparing…" : "Set up authenticator"}</button>
                     </div>
                   )}
                 </div>
@@ -541,14 +541,14 @@ export function ProfileShell() {
                     <label className="grid gap-2 text-xs font-bold text-slate-700" htmlFor="current-password">
                       Current password
                       <span className="relative">
-                        <input autoComplete="current-password" className="min-h-11 w-full rounded-xl border border-slate-200 px-3 pr-16 text-sm font-normal text-slate-950 outline-none transition focus:border-[#5b63ff] focus:ring-3 focus:ring-[#5b63ff]/20" id="current-password" maxLength={128} minLength={8} required type={showCurrentPassword ? "text" : "password"} value={currentPassword} onChange={(event) => setCurrentPassword(event.target.value)} />
+                        <input autoComplete="current-password" className="min-h-11 w-full rounded-xl border border-slate-200 px-3 pr-16 text-sm font-normal text-slate-950 outline-none transition focus:border-[#108D82] focus:ring-3 focus:ring-[#108D82]/20" id="current-password" maxLength={128} minLength={8} required type={showCurrentPassword ? "text" : "password"} value={currentPassword} onChange={(event) => setCurrentPassword(event.target.value)} />
                         <button aria-label={`${showCurrentPassword ? "Hide" : "Show"} current password`} className="absolute inset-y-0 right-0 px-3 text-[11px] font-bold text-slate-500 hover:text-slate-800" onClick={() => setShowCurrentPassword((value) => !value)} type="button">{showCurrentPassword ? "Hide" : "Show"}</button>
                       </span>
                     </label>
                     <label className="grid gap-2 text-xs font-bold text-slate-700" htmlFor="new-password">
                       New password
                       <span className="relative">
-                        <input aria-describedby="password-requirement" autoComplete="new-password" className="min-h-11 w-full rounded-xl border border-slate-200 px-3 pr-16 text-sm font-normal text-slate-950 outline-none transition focus:border-[#5b63ff] focus:ring-3 focus:ring-[#5b63ff]/20" id="new-password" maxLength={128} minLength={8} required type={showNewPassword ? "text" : "password"} value={newPassword} onChange={(event) => setNewPassword(event.target.value)} />
+                        <input aria-describedby="password-requirement" autoComplete="new-password" className="min-h-11 w-full rounded-xl border border-slate-200 px-3 pr-16 text-sm font-normal text-slate-950 outline-none transition focus:border-[#108D82] focus:ring-3 focus:ring-[#108D82]/20" id="new-password" maxLength={128} minLength={8} required type={showNewPassword ? "text" : "password"} value={newPassword} onChange={(event) => setNewPassword(event.target.value)} />
                         <button aria-label={`${showNewPassword ? "Hide" : "Show"} new password`} className="absolute inset-y-0 right-0 px-3 text-[11px] font-bold text-slate-500 hover:text-slate-800" onClick={() => setShowNewPassword((value) => !value)} type="button">{showNewPassword ? "Hide" : "Show"}</button>
                       </span>
                     </label>
@@ -558,13 +558,13 @@ export function ProfileShell() {
                       <span className={`mt-0.5 grid size-7 place-items-center rounded-lg ${newPassword.length >= 8 ? "bg-emerald-100 text-emerald-700" : "bg-slate-200 text-slate-500"}`}><ProfileIcon className="size-4" name={newPassword.length >= 8 ? "check" : "key"} /></span>
                       <div><p className="m-0 text-xs font-bold text-slate-700" id="password-requirement">Use 8–128 characters</p><p className="mt-1 text-xs leading-5 text-slate-500">Changing your password revokes every other active session.</p></div>
                     </div>
-                    <button className="min-h-11 rounded-xl bg-[#5b63ff] px-5 text-sm font-extrabold text-[#ffffff] transition hover:bg-[#4d54db] disabled:cursor-not-allowed disabled:opacity-50" disabled={activeAction !== null || !passwordReady} type="submit">{activeAction === "password" ? "Updating…" : "Update password"}</button>
+                    <button className="min-h-11 rounded-xl bg-[#108D82] px-5 text-sm font-extrabold text-[#ffffff] transition hover:bg-[#108D82] disabled:cursor-not-allowed disabled:opacity-50" disabled={activeAction !== null || !passwordReady} type="submit">{activeAction === "password" ? "Updating…" : "Update password"}</button>
                   </div>
                 </form>
               </article>
 
               <article className="scroll-mt-6 overflow-hidden rounded-2xl border border-[#e2eaf0] bg-white shadow-sm" id="sessions">
-                <SectionHeading description="Devices and browsers currently signed in to your account." icon="devices" status={<button className="inline-flex min-h-9 items-center gap-2 rounded-xl border border-slate-200 px-3 text-[11px] font-bold text-slate-600 transition hover:border-[#b9ddd8] hover:text-[#4b52df] disabled:opacity-50" disabled={sessionsLoading || activeAction !== null} onClick={() => {
+                <SectionHeading description="Devices and browsers currently signed in to your account." icon="devices" status={<button className="inline-flex min-h-9 items-center gap-2 rounded-xl border border-slate-200 px-3 text-[11px] font-bold text-slate-600 transition hover:border-[#b9ddd8] hover:text-[#108D82] disabled:opacity-50" disabled={sessionsLoading || activeAction !== null} onClick={() => {
                   setActiveAction("sessions-refresh");
                   void loadSessions().finally(() => setActiveAction(null));
                 }} type="button"><ProfileIcon className={`size-3.5 ${sessionsLoading ? "animate-spin" : ""}`} name="refresh" />{sessionsLoading ? "Refreshing" : "Refresh"}</button>} title="Active sessions" />

@@ -57,9 +57,9 @@ const trustAreaAccents = [
     glow: "bg-[#f6d365]/14",
   },
   {
-    card: "border-[#58a6e7]/25 bg-[linear-gradient(145deg,rgba(88,166,231,0.09),rgba(88,166,231,0.018)_48%,#040605)] hover:border-[#58a6e7]/50",
-    badge: "border-[#58a6e7]/30 bg-[#58a6e7]/10 text-[#8dccff]",
-    glow: "bg-[#58a6e7]/16",
+    card: "border-[#108D82]/25 bg-[linear-gradient(145deg,rgba(16, 141, 130,0.09),rgba(16, 141, 130,0.018)_48%,#040605)] hover:border-[#108D82]/50",
+    badge: "border-[#108D82]/30 bg-[#108D82]/10 text-[#108D82]",
+    glow: "bg-[#108D82]/16",
   },
   {
     card: "border-[#ff78b7]/25 bg-[linear-gradient(145deg,rgba(255,120,183,0.085),rgba(255,120,183,0.018)_48%,#040605)] hover:border-[#ff78b7]/50",

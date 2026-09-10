@@ -96,7 +96,7 @@ function OperationsConsole() {
             <span className="text-[10px] font-bold text-white/70">Voice operations</span>
           </div>
           <span className="inline-flex items-center gap-2 rounded-full border border-emerald-300/15 bg-emerald-300/[0.07] px-2.5 py-1 text-[9px] font-bold text-emerald-200">
-            <span className="size-1.5 rounded-full bg-[#6268ff] shadow-[0_0_8px_#6268ff]" /> All systems live
+            <span className="size-1.5 rounded-full bg-[#108D82] shadow-[0_0_8px_#108D82]" /> All systems live
           </span>
         </div>
 
@@ -158,7 +158,7 @@ export function BusinessOverviewExperience() {
           <div className="relative mx-auto grid max-w-[1380px] items-center gap-14 lg:grid-cols-[0.9fr_1.1fr]">
             <div className="max-w-2xl">
               <div className="business-hero-pill inline-flex items-center gap-2 rounded-full border border-[#45ddce]/22 bg-[#45ddce]/[0.07] px-4 py-2 text-[10px] font-black uppercase tracking-[0.17em] text-[#75fff0]">
-                <span className="size-1.5 rounded-full bg-[#6268ff] shadow-[0_0_10px_#6268ff]" /> AI voice for business
+                <span className="size-1.5 rounded-full bg-[#108D82] shadow-[0_0_10px_#108D82]" /> AI voice for business
               </div>
               <h1 className="mt-7 text-[clamp(1.55rem,4vw,3.5rem)] leading-[0.98] font-medium tracking-[-0.05em]">
                 <span className="block whitespace-nowrap">Every customer call,</span>
@@ -168,8 +168,8 @@ export function BusinessOverviewExperience() {
                 Give sales, support, and operations teams AI phone agents that answer naturally, complete real work, and know exactly when to involve a person.
               </p>
               <div className="mt-9 flex flex-wrap gap-3">
-                <Link className="business-blue-cta business-primary-cta inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border border-[#3e75ff] bg-[#3e75ff] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(62,117,255,0.22)] transition hover:-translate-y-0.5" href="/contact?request=demo">Book a free demo <ArrowIcon /></Link>
-                <Link className="business-blue-cta business-secondary-cta inline-flex min-h-12 items-center justify-center rounded-lg border border-[#3e75ff] bg-[#3e75ff] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(62,117,255,0.22)] transition hover:-translate-y-0.5" href="/contact">Contact sales</Link>
+                <Link className="business-blue-cta business-primary-cta inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border border-[#108D82] bg-[#108D82] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(16, 141, 130,0.22)] transition hover:-translate-y-0.5" href="/contact?request=demo">Book a free demo <ArrowIcon /></Link>
+                <Link className="business-blue-cta business-secondary-cta inline-flex min-h-12 items-center justify-center rounded-lg border border-[#108D82] bg-[#108D82] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(16, 141, 130,0.22)] transition hover:-translate-y-0.5" href="/contact">Contact sales</Link>
               </div>
               <div className="mt-10 flex flex-wrap gap-x-7 gap-y-3 text-[11px] font-bold text-white/38">
                 {["Inbound and outbound", "Human handoffs", "Call-level analytics"].map((item) => <span className="flex items-center gap-2" key={item}><CheckIcon />{item}</span>)}
@@ -277,7 +277,7 @@ export function BusinessOverviewExperience() {
 
         <section className="px-5 py-14 sm:px-8 lg:py-20">
           <div className="business-ready-card relative mx-auto max-w-[1120px] overflow-hidden rounded-[28px] border border-[#45ddce]/20 bg-[linear-gradient(125deg,rgba(69,221,206,0.16),rgba(143,131,232,0.08)_55%,rgba(242,141,69,0.1))] p-8 text-center shadow-[0_36px_100px_rgba(0,0,0,0.34)] sm:p-12 lg:p-16">
-            <div className="absolute left-1/2 top-0 h-px w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-[#6268ff] to-transparent" />
+            <div className="absolute left-1/2 top-0 h-px w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-[#108D82] to-transparent" />
             <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#75fff0]">Ready for better conversations?</p>
             <h2 className="mx-auto mt-5 max-w-3xl text-3xl leading-tight font-black tracking-[-0.04em] sm:text-5xl">Put your next customer workflow on voice.</h2>
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/52 sm:text-base">Start with free usage, or work with our team to design a production rollout around your call volume and systems.</p>

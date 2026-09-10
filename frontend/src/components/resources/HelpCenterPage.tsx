@@ -44,8 +44,8 @@ const helpTopics = [
       "Connect business tools, configure webhooks, and troubleshoot API requests.",
     guides: "9 guides",
     icon: "code" as TopicIconName,
-    accent: "border-[#65a8ff]/24 bg-[#65a8ff]/[0.045]",
-    iconStyle: "border-[#65a8ff]/25 bg-[#65a8ff]/10 text-[#91c2ff]",
+    accent: "border-[#108D82]/24 bg-[#108D82]/[0.045]",
+    iconStyle: "border-[#108D82]/25 bg-[#108D82]/10 text-[#108D82]",
   },
   {
     title: "Analytics",
@@ -319,14 +319,14 @@ export function HelpCenterPage() {
                     {/* Blue left rail */}
                     <div
                       aria-hidden="true"
-                      className="absolute inset-y-0 left-0 w-[6px] rounded-l-xl bg-[#5379FF]"
+                      className="absolute inset-y-0 left-0 w-[6px] rounded-l-xl bg-[#108D82]"
                     />
 
                     {/* Content */}
                     <div className="pl-2">
                       <div className="flex items-start justify-between gap-3">
                         {/* Topic Icon */}
-                        <div className="grid size-11 place-items-center rounded-xl border border-[#A5B8FF] bg-[#EEF2FF] text-[#5379FF]">
+                        <div className="grid size-11 place-items-center rounded-xl border border-[#A5B8FF] bg-[#EEF2FF] text-[#108D82]">
                           <TopicIcon name={topic.icon} />
                         </div>
                       </div>
@@ -339,7 +339,7 @@ export function HelpCenterPage() {
                         {topic.description}
                       </p>
 
-                      <span className="mt-5 inline-flex rounded-full bg-[#F0F3FF] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#5379FF]">
+                      <span className="mt-5 inline-flex rounded-full bg-[#F0F3FF] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#108D82]">
                         {topic.guides}
                       </span>
                     </div>
@@ -369,7 +369,7 @@ export function HelpCenterPage() {
                   {/* left purple rail — full height, not covered */}
                   <div
                     aria-hidden="true"
-                    className="absolute inset-y-0 left-0 z-10 w-[6px] rounded-l-2xl bg-[#5379FF]"
+                    className="absolute inset-y-0 left-0 z-10 w-[6px] rounded-l-2xl bg-[#108D82]"
                   />
 
                   <div className="grid md:grid-cols-2 lg:grid-cols-3">
@@ -410,7 +410,7 @@ export function HelpCenterPage() {
                   {/* right rail stays as-is */}
                   <div
                     aria-hidden="true"
-                    className="absolute inset-y-0 right-0 w-[6px] bg-[#5379FF]"
+                    className="absolute inset-y-0 right-0 w-[6px] bg-[#108D82]"
                   />
                 </div>
               </div>
@@ -440,7 +440,7 @@ export function HelpCenterPage() {
               {/* left purple rail */}
               <div
                 aria-hidden="true"
-                className="absolute inset-y-0 left-0 z-10 w-[6px] bg-[#5379FF] shadow-[0_0_6px_1px_rgba(70,55,160,0.7),0_0_14px_3px_rgba(80,60,170,0.45),0_0_28px_6px_rgba(60,45,140,0.3)]"
+                className="absolute inset-y-0 left-0 z-10 w-[6px] bg-[#108D82] shadow-[0_0_6px_1px_rgba(70,55,160,0.7),0_0_14px_3px_rgba(80,60,170,0.45),0_0_28px_6px_rgba(60,45,140,0.3)]"
               />
 
               {/* card header */}
@@ -540,7 +540,7 @@ export function HelpCenterPage() {
               >
                 <div
                   aria-hidden="true"
-                  className="absolute inset-y-0 left-0 w-1.5 bg-[#5379FF]"
+                  className="absolute inset-y-0 left-0 w-1.5 bg-[#108D82]"
                 />
 
                 <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#b0a8c9]">
@@ -566,7 +566,7 @@ export function HelpCenterPage() {
               >
                 <div
                   aria-hidden="true"
-                  className="absolute inset-y-0 left-0 w-1.5 bg-[#5379FF]"
+                  className="absolute inset-y-0 left-0 w-1.5 bg-[#108D82]"
                 />
 
                 <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#b0a8c9]">
@@ -592,7 +592,7 @@ export function HelpCenterPage() {
               >
                 <div
                   aria-hidden="true"
-                  className="absolute inset-y-0 left-0 w-1.5 bg-[#5379FF]"
+                  className="absolute inset-y-0 left-0 w-1.5 bg-[#108D82]"
                 />
 
                 <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#b0a8c9]">

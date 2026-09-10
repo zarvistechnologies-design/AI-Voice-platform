@@ -118,7 +118,7 @@ function CallRoute({ call }: { call: CallRecord }) {
   return (
     <div className="grid gap-1.5">
       <div className="grid min-w-0 grid-cols-[44px_minmax(0,1fr)] items-center gap-2">
-        <span className="rounded-md bg-indigo-50 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-indigo-700">From</span>
+        <span className="rounded-md bg-indigo-50 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-[#108D82]">From</span>
         {route.fromMissing ? (
           <span className="rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">
             Caller ID not sent
@@ -198,7 +198,7 @@ function rateTitle(detail?: CostPricingDetail) {
 function statusTone(status: CallRecord["status"]) {
   if (status === "completed") return "bg-emerald-50 text-emerald-700 ring-emerald-200";
   if (status === "failed" || status === "cancelled") return "bg-rose-50 text-rose-700 ring-rose-200";
-  if (status === "active") return "bg-indigo-50 text-indigo-700 ring-indigo-200";
+  if (status === "active") return "bg-indigo-50 text-[#108D82] ring-indigo-200";
   return "bg-amber-50 text-amber-700 ring-amber-200";
 }
 
@@ -382,7 +382,7 @@ export function CallDetailDrawer({ call, onClose }: { call: CallRecord; onClose:
               <div className="grid gap-3">
                 <audio className="w-full rounded-lg" controls src={recordingPlayerHref} />
                 <div className="flex gap-3">
-                  <a className="text-sm font-semibold text-[#4d54db] hover:text-[#242535]" href={recordingPlayerHref} target="_blank" rel="noreferrer">
+                  <a className="text-sm font-semibold text-[#108D82] hover:text-[#242535]" href={recordingPlayerHref} target="_blank" rel="noreferrer">
                     Open in new tab
                   </a>
                   <a className="text-sm font-semibold text-[#737587] hover:text-[#242535]" href={recordingPlayerHref} download>
@@ -391,7 +391,7 @@ export function CallDetailDrawer({ call, onClose }: { call: CallRecord; onClose:
                 </div>
               </div>
             ) : recordingLoading ? (
-              <div className="rounded-xl border border-dashed border-indigo-200 bg-indigo-50 p-4 text-sm text-indigo-700">
+              <div className="rounded-xl border border-dashed border-indigo-200 bg-indigo-50 p-4 text-sm text-[#108D82]">
                 Loading recording...
               </div>
             ) : recordingLoadError ? (
@@ -470,7 +470,7 @@ export function CallDetailDrawer({ call, onClose }: { call: CallRecord; onClose:
                   <article
                     className={`max-w-[88%] rounded-2xl px-4 py-3 ${
                       item.role === "assistant"
-                        ? "justify-self-start rounded-bl-md bg-[#5b63ff]/10 text-[#4d5476] ring-1 ring-[#5b63ff]/20"
+                        ? "justify-self-start rounded-bl-md bg-[#108D82]/10 text-[#4d5476] ring-1 ring-[#108D82]/20"
                         : item.role === "user"
                           ? "justify-self-end rounded-br-md bg-[#f0efff] text-[#242535] ring-1 ring-white/10"
                           : "justify-self-center bg-amber-400/10 text-amber-700 ring-1 ring-amber-300/20"

@@ -118,7 +118,7 @@ const voiceAgentCapabilities = [
     title: "Understand naturally",
     body: "Follow language, interruptions, follow-up questions, and changing requests.",
     icon: "conversation",
-    color: "#75baff",
+    color: "#108D82",
   },
   {
     title: "Complete tasks",
@@ -169,7 +169,7 @@ const everythingIncludedCapabilities = [
     title: "Function Calling",
     body: "Trigger APIs, update CRMs, schedule appointments, send emails, create tickets, and automate workflows.",
     icon: "workflow",
-    color: "#75baff",
+    color: "#108D82",
   },
   {
     title: "Analytics Dashboard",
@@ -207,7 +207,7 @@ const voiceCloningCapabilities = [
   },
   {
     icon: "globe",
-    color: "#75baff",
+    color: "#108D82",
     title: "Multilingual Delivery",
     body: "Use your cloned voice across multiple supported languages while preserving its unique character.",
   },
@@ -1878,7 +1878,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
         }
 
         .voice-process-heading-accent {
-          background: linear-gradient(100deg, #75fff0, #8dd7ff 48%, #a99cff);
+          background: linear-gradient(100deg, #75fff0, #108D82 48%, #a99cff);
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
@@ -1898,8 +1898,8 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
         }
 
         .voice-build-step:nth-child(2) {
-          --step-color: #75baff;
-          --step-rgb: 117, 186, 255;
+          --step-color: #108D82;
+          --step-rgb: 16, 141, 130;
         }
 
         .voice-build-step:nth-child(3) {
@@ -2043,8 +2043,8 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
         }
 
         .voice-config-item:nth-child(2) {
-          --config-color: #75baff;
-          --config-rgb: 117, 186, 255;
+          --config-color: #108D82;
+          --config-rgb: 16, 141, 130;
         }
 
         .voice-config-item:nth-child(3) {
@@ -2181,7 +2181,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
           right: 0;
           top: 50%;
           height: 1px;
-          background: linear-gradient(90deg, #35fbe0, #75baff 20%, #a99cff 40%, #f58bd6 60%, #ffad73 80%, #8fe388);
+          background: linear-gradient(90deg, #35fbe0, #108D82 20%, #a99cff 40%, #f58bd6 60%, #ffad73 80%, #8fe388);
           opacity: 0.48;
         }
 
@@ -2765,8 +2765,8 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
         }
 
         .voice-build-clean-step:nth-child(2) {
-          --clean-step-color: #75baff;
-          --clean-step-rgb: 117, 186, 255;
+          --clean-step-color: #108D82;
+          --clean-step-rgb: 16, 141, 130;
         }
 
         .voice-build-clean-step:nth-child(3) {
@@ -2961,8 +2961,8 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
         }
 
         .voice-build-tone-2 {
-          --build-primary: #75baff;
-          --build-rgb: 117, 186, 255;
+          --build-primary: #108D82;
+          --build-rgb: 16, 141, 130;
           --build-ink: #d9ecff;
         }
 
@@ -4812,8 +4812,8 @@ inset:55px;
 
         .voice-agent-page .voice-config-item:nth-child(3),
         .voice-agent-page .voice-config-item:nth-child(4) {
-          --config-color: #75baff;
-          --config-rgb: 117, 186, 255;
+          --config-color: #108D82;
+          --config-rgb: 16, 141, 130;
         }
 
         .voice-agent-page .voice-config-item:nth-child(5),
@@ -5029,7 +5029,7 @@ inset:55px;
         .voice-agent-page .voice-config-radar > span:nth-child(2) {
           width: 57%;
           height: 57%;
-          border-color: rgba(117, 186, 255, 0.11);
+          border-color: rgba(16, 141, 130, 0.11);
         }
 
         .voice-agent-page .voice-config-radar > span:nth-child(3) {
@@ -5470,8 +5470,8 @@ inset:55px;
         }
 
         .voice-blueprint-intro .service-pill {
-          border-color: rgba(141, 215, 255, 0.28);
-          background: rgba(141, 215, 255, 0.1);
+          border-color: rgba(16, 141, 130, 0.28);
+          background: rgba(16, 141, 130, 0.1);
           color: #bfe7ff;
         }
 
@@ -5488,10 +5488,10 @@ inset:55px;
         .voice-blueprint-panel {
           position: relative;
           overflow: hidden;
-          border: 1px solid rgba(141, 215, 255, 0.16);
+          border: 1px solid rgba(16, 141, 130, 0.16);
           border-radius: 1.5rem;
           background:
-            radial-gradient(circle at 8% 10%, rgba(117, 186, 255, 0.12), transparent 33%),
+            radial-gradient(circle at 8% 10%, rgba(16, 141, 130, 0.12), transparent 33%),
             radial-gradient(circle at 92% 90%, rgba(255, 173, 115, 0.1), transparent 34%),
             #040a0b;
           box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.018), 0 28px 80px rgba(0, 0, 0, 0.22);
@@ -5500,7 +5500,7 @@ inset:55px;
         .voice-blueprint-core {
           min-height: 320px;
           border: 1px solid rgba(169, 156, 255, 0.18);
-          background: linear-gradient(145deg, rgba(169, 156, 255, 0.12), rgba(117, 186, 255, 0.045));
+          background: linear-gradient(145deg, rgba(169, 156, 255, 0.12), rgba(16, 141, 130, 0.045));
         }
 
         .voice-blueprint-list {
@@ -5512,8 +5512,8 @@ inset:55px;
         }
 
         .voice-blueprint-layer {
-          --blueprint-primary: #75baff;
-          --blueprint-rgb: 117, 186, 255;
+          --blueprint-primary: #108D82;
+          --blueprint-rgb: 16, 141, 130;
           position: relative;
           display: grid;
           grid-template-columns: 3rem minmax(0, 1fr);
@@ -5623,7 +5623,7 @@ inset:55px;
           border-radius: 1.5rem;
           padding: 1.25rem;
           background:
-            radial-gradient(circle at 6% 5%, rgba(117, 186, 255, 0.12), transparent 32%),
+            radial-gradient(circle at 6% 5%, rgba(16, 141, 130, 0.12), transparent 32%),
             radial-gradient(circle at 94% 95%, rgba(255, 173, 115, 0.1), transparent 34%),
             #040a0b;
           box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.018), 0 28px 80px rgba(0, 0, 0, 0.22);
@@ -5635,7 +5635,7 @@ inset:55px;
           inset: 0;
           pointer-events: none;
           opacity: 0.3;
-          background-image: linear-gradient(rgba(117, 186, 255, 0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(169, 156, 255, 0.07) 1px, transparent 1px);
+          background-image: linear-gradient(rgba(16, 141, 130, 0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(169, 156, 255, 0.07) 1px, transparent 1px);
           background-size: 38px 38px;
           mask-image: radial-gradient(ellipse at center, black, transparent 78%);
         }
@@ -5669,8 +5669,8 @@ inset:55px;
         }
 
         .voice-build-redesign-step {
-          --build-primary: #75baff;
-          --build-rgb: 117, 186, 255;
+          --build-primary: #108D82;
+          --build-rgb: 16, 141, 130;
           position: relative;
           min-height: 210px;
           overflow: hidden;
@@ -5681,11 +5681,11 @@ inset:55px;
           transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
         }
 
-        .voice-build-redesign-step.voice-build-tone-1 { --build-primary: #75baff; --build-rgb: 117, 186, 255; }
+        .voice-build-redesign-step.voice-build-tone-1 { --build-primary: #108D82; --build-rgb: 16, 141, 130; }
         .voice-build-redesign-step.voice-build-tone-2 { --build-primary: #a99cff; --build-rgb: 169, 156, 255; }
         .voice-build-redesign-step.voice-build-tone-3 { --build-primary: #f58bd6; --build-rgb: 245, 139, 214; }
         .voice-build-redesign-step.voice-build-tone-4 { --build-primary: #ffad73; --build-rgb: 255, 173, 115; }
-        .voice-build-redesign-step.voice-build-tone-5 { --build-primary: #8dd7ff; --build-rgb: 141, 215, 255; }
+        .voice-build-redesign-step.voice-build-tone-5 { --build-primary: #108D82; --build-rgb: 16, 141, 130; }
         .voice-build-redesign-step.voice-build-tone-6 { --build-primary: #d3ccff; --build-rgb: 211, 204, 255; }
 
         .voice-build-redesign-step::before {
@@ -5934,7 +5934,7 @@ inset:55px;
         ) {
           border-color: #d8e3ff !important;
           background: linear-gradient(145deg, #fff 0%, #eef4ff 100%) !important;
-          box-shadow: 0 10px 28px rgba(62, 117, 255, 0.08) !important;
+          box-shadow: 0 10px 28px rgba(16, 141, 130, 0.08) !important;
         }
 
         #product-service-page#product-service-page :is(
@@ -5946,8 +5946,8 @@ inset:55px;
         ) {
           border-color: #bfd0ff !important;
           background: #e8efff !important;
-          color: #3e75ff !important;
-          -webkit-text-fill-color: #3e75ff !important;
+          color: #108D82 !important;
+          -webkit-text-fill-color: #108D82 !important;
         }
 
         #product-service-page#product-service-page :is(
@@ -5959,8 +5959,8 @@ inset:55px;
           .voice-sample-card,
           .service-faq
         ):hover {
-          border-color: #8facff !important;
-          box-shadow: 0 16px 36px rgba(62, 117, 255, 0.14) !important;
+          border-color: #108D82 !important;
+          box-shadow: 0 16px 36px rgba(16, 141, 130, 0.14) !important;
         }
 
         #product-service-page#product-service-page .voice-capabilities-section .voice-capability-card {
@@ -5976,7 +5976,7 @@ inset:55px;
         }
 
         #product-service-page#product-service-page .everything-included-section {
-          --everything-accent: #3e75ff;
+          --everything-accent: #108D82;
           --everything-soft: #eef4ff;
           --everything-border: #bfd0ff;
         }
@@ -5987,10 +5987,10 @@ inset:55px;
         }
 
         #product-service-page#product-service-page .everything-included-section .service-pill {
-          border-color: rgba(62, 117, 255, 0.2) !important;
+          border-color: rgba(16, 141, 130, 0.2) !important;
           background: #f4f7ff !important;
-          color: #3e75ff !important;
-          -webkit-text-fill-color: #3e75ff !important;
+          color: #108D82 !important;
+          -webkit-text-fill-color: #108D82 !important;
         }
 
         #product-service-page#product-service-page .everything-included-section .everything-icon-circle {
@@ -5998,7 +5998,7 @@ inset:55px;
           background: var(--everything-soft) !important;
           color: var(--everything-accent) !important;
           -webkit-text-fill-color: var(--everything-accent) !important;
-          box-shadow: 0 10px 28px rgba(62, 117, 255, 0.12) !important;
+          box-shadow: 0 10px 28px rgba(16, 141, 130, 0.12) !important;
         }
 
         #product-service-page#product-service-page .everything-included-section .everything-line {
@@ -6007,22 +6007,22 @@ inset:55px;
 
         #product-service-page#product-service-page .everything-included-section .everything-line > span {
           background: var(--everything-accent) !important;
-          box-shadow: 0 0 0 6px rgba(62, 117, 255, 0.12), 0 0 18px rgba(62, 117, 255, 0.3) !important;
+          box-shadow: 0 0 0 6px rgba(16, 141, 130, 0.12), 0 0 18px rgba(16, 141, 130, 0.3) !important;
         }
 
         #product-service-page#product-service-page .everything-included-section .everything-included-card {
           border-color: var(--everything-border) !important;
           background: linear-gradient(145deg, #fff 0%, var(--everything-soft) 100%) !important;
-          box-shadow: 0 10px 28px rgba(62, 117, 255, 0.09) !important;
+          box-shadow: 0 10px 28px rgba(16, 141, 130, 0.09) !important;
         }
 
         #product-service-page#product-service-page .everything-included-section .everything-included-card:hover {
           border-color: var(--everything-accent) !important;
-          box-shadow: 0 16px 36px rgba(62, 117, 255, 0.14) !important;
+          box-shadow: 0 16px 36px rgba(16, 141, 130, 0.14) !important;
         }
 
         #product-service-page#product-service-page .voice-build-process {
-          --build-clean-accent: #3e75ff;
+          --build-clean-accent: #108D82;
           --build-clean-soft: #eef4ff;
           --build-clean-border: #bfd0ff;
           background: #fff !important;
@@ -6114,7 +6114,7 @@ inset:55px;
         }
 
         #product-service-page#product-service-page .voice-config-section {
-          --agent-control-accent: #3e75ff;
+          --agent-control-accent: #108D82;
           --agent-control-soft: #eef4ff;
           --agent-control-border: #bfd0ff;
           background: #fff !important;
@@ -6139,7 +6139,7 @@ inset:55px;
 
         #product-service-page#product-service-page .voice-config-section .voice-config-explorer {
           --active-config-color: var(--agent-control-accent) !important;
-          --active-config-rgb: 62, 117, 255 !important;
+          --active-config-rgb: 16, 141, 130 !important;
           border-color: #dfe3e8 !important;
           background: #fff !important;
           box-shadow: 0 12px 32px rgba(23, 32, 63, 0.06) !important;
@@ -6311,28 +6311,28 @@ inset:55px;
         }
 
         #product-service-page#product-service-page .voice-agent-contact-section .product-service-ready-card > div:first-child {
-          border-color: rgba(100, 104, 255, 0.16) !important;
-          box-shadow: 0 0 0 24px rgba(100, 104, 255, 0.025), 0 0 0 54px rgba(100, 104, 255, 0.02) !important;
+          border-color: rgba(16, 141, 130, 0.16) !important;
+          box-shadow: 0 0 0 24px rgba(16, 141, 130, 0.025), 0 0 0 54px rgba(16, 141, 130, 0.02) !important;
         }
 
         #product-service-page#product-service-page .voice-agent-contact-section .service-accent-text {
-          color: #6468ff !important;
-          -webkit-text-fill-color: #6468ff !important;
+          color: #108D82 !important;
+          -webkit-text-fill-color: #108D82 !important;
         }
 
         #product-service-page#product-service-page .voice-agent-contact-section .product-service-contact-button {
-          border-color: #6468ff !important;
-          background: #6468ff !important;
+          border-color: #108D82 !important;
+          background: #108D82 !important;
           background-image: none !important;
           color: #fff !important;
           -webkit-text-fill-color: #fff !important;
-          box-shadow: 0 10px 24px rgba(100, 104, 255, 0.2) !important;
+          box-shadow: 0 10px 24px rgba(16, 141, 130, 0.2) !important;
         }
 
         #product-service-page#product-service-page .voice-agent-contact-section .product-service-contact-button:hover {
-          border-color: #5459e8 !important;
-          background: #5459e8 !important;
-          box-shadow: 0 13px 28px rgba(84, 89, 232, 0.24) !important;
+          border-color: #108D82 !important;
+          background: #108D82 !important;
+          box-shadow: 0 13px 28px rgba(16, 141, 130, 0.24) !important;
         }
 
         /* Voice-cloning controls: a compact, readable settings card. */
@@ -6387,7 +6387,7 @@ inset:55px;
         }
 
         #product-service-page#product-service-page#product-service-page.product-page-voice-cloning .voice-slider-track > span {
-          background: #3e75ff !important;
+          background: #108D82 !important;
           background-image: none !important;
           box-shadow: none !important;
         }

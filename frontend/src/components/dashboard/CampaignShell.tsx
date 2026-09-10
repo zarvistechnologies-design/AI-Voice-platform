@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { type DragEvent, type FormEvent, type ReactNode, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
@@ -35,7 +35,7 @@ const maxCampaignLeads = 100_000;
 const buttonClass =
   "app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 transition disabled:cursor-not-allowed disabled:opacity-50";
 const controlClass =
-  "app-control-text min-h-11 w-full rounded-lg border border-[#e5e7ef] bg-[#f8f8fc] px-3 text-[#242535] outline-none transition placeholder:text-[#737587] focus:border-[#5b63ff] focus:ring-4 focus:ring-[#5b63ff]/10";
+  "app-control-text min-h-11 w-full rounded-lg border border-[#e5e7ef] bg-[#f8f8fc] px-3 text-[#242535] outline-none transition placeholder:text-[#737587] focus:border-[#108D82] focus:ring-4 focus:ring-[#108D82]/10";
 
 function Icon({ icon, className = "size-4" }: { icon: IconName; className?: string }) {
   const props = {
@@ -196,7 +196,7 @@ function statusCopy(status: BackendCampaign["status"]) {
 
 function statusTheme(status: BackendCampaign["status"]) {
   if (status === "running") return "border-emerald-200 bg-emerald-50 text-emerald-700";
-  if (status === "scheduled") return "border-sky-200 bg-sky-50 text-sky-700";
+  if (status === "scheduled") return "border-sky-200 bg-sky-50 text-[#108D82]";
   if (status === "paused") return "border-amber-200 bg-amber-50 text-amber-700";
   if (status === "completed") return "border-slate-200 bg-slate-100 text-slate-700";
   if (status === "cancelled") return "border-rose-200 bg-rose-50 text-rose-700";
@@ -611,7 +611,7 @@ export function CampaignShell() {
     return (
       <main className="app-strong grid min-h-screen place-items-center bg-[#f7f8fc] px-6 text-[#737587]">
         <div className="rounded-lg border border-[#e5e7ef] bg-[#ffffff] px-6 py-5 text-center shadow-sm">
-          <span className="mx-auto mb-3 grid size-10 place-items-center rounded-lg bg-[#f0efff] text-[#4b52df]">
+          <span className="mx-auto mb-3 grid size-10 place-items-center rounded-lg bg-[#f0efff] text-[#108D82]">
             <Icon icon="spark" />
           </span>
           <p className="app-strong m-0">Loading campaigns</p>
@@ -639,13 +639,13 @@ export function CampaignShell() {
         <header className="border-b border-[#e5e7ef] bg-[#ffffff] px-4 py-4 shadow-sm sm:px-6 lg:px-8">
           <div className="mx-auto flex w-full max-w-[1500px] flex-wrap items-center justify-between gap-4">
               <div>
-                <span className="app-label text-[#4d54db]">{session.organization?.name ?? "Workspace"}</span>
+                <span className="app-label text-[#108D82]">{session.organization?.name ?? "Workspace"}</span>
                 <h1 className="m-0 mt-1 text-xl font-semibold leading-7 text-[#242535] sm:text-2xl">Outbound campaigns</h1>
                 <p className="app-caption mt-1 mb-0 text-[#737587]">Create campaigns, upload leads, control pacing, and monitor delivery.</p>
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <button className="saas-primary" type="button" aria-expanded={composerOpen} aria-controls="campaign-composer" onClick={() => { setComposerOpen((open) => !open); setError(""); }}>{composerOpen ? "Close setup" : "+ Create campaign"}</button>
-                <span className={`rounded-lg border px-3 py-2 text-xs font-semibold ${selectedPhoneReady ? "border-[#5b63ff]/24 bg-[#5b63ff]/[0.07] text-[#4d54db]" : "border-amber-300/20 bg-amber-300/10 text-amber-700"}`}>
+                <span className={`rounded-lg border px-3 py-2 text-xs font-semibold ${selectedPhoneReady ? "border-[#108D82]/24 bg-[#108D82]/[0.07] text-[#108D82]" : "border-amber-300/20 bg-amber-300/10 text-amber-700"}`}>
                   {selectedPhoneReady ? "Route ready" : "Route needs setup"}
                 </span>
                 <span className="max-w-[360px] truncate border-l border-[#e5e7ef] px-3 py-2 text-xs font-semibold text-[#737587]">
@@ -737,13 +737,13 @@ export function CampaignShell() {
                 </div>
 
                 <label
-                  className="mt-6 grid min-h-[220px] cursor-pointer place-items-center rounded-[1.75rem] border border-dashed border-[#5b63ff]/35 bg-white p-6 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-[#5b63ff]/55 hover:shadow-sm"
+                  className="mt-6 grid min-h-[220px] cursor-pointer place-items-center rounded-[1.75rem] border border-dashed border-[#108D82]/35 bg-white p-6 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-[#108D82]/55 hover:shadow-sm"
                   onDragOver={(event) => event.preventDefault()}
                   onDrop={handleDrop}
                 >
                   <input className="sr-only" type="file" accept=".csv,text/csv" onChange={(event) => void handleCsv(event.target.files?.[0])} />
                   <span className="max-w-md">
-                    <span className="mx-auto mb-4 grid size-14 place-items-center rounded-2xl bg-[#5b63ff]/10 text-[#4d54db] shadow-sm">
+                    <span className="mx-auto mb-4 grid size-14 place-items-center rounded-2xl bg-[#108D82]/10 text-[#108D82] shadow-sm">
                       <Icon icon="file" className="size-6" />
                     </span>
                     <strong className="block text-base font-semibold text-slate-950">Drop CSV or choose file</strong>
@@ -758,7 +758,7 @@ export function CampaignShell() {
                 </div>
 
                 <section
-                  className="border-l-2 border-[#5b63ff]/35 bg-[#5b63ff]/[0.04] px-4 py-5 sm:px-5"
+                  className="border-l-2 border-[#108D82]/35 bg-[#108D82]/[0.04] px-4 py-5 sm:px-5"
                   onKeyDown={(event) => {
                     if (event.key !== "Enter") return;
                     event.preventDefault();
@@ -805,7 +805,7 @@ export function CampaignShell() {
                         <p className="app-caption mt-1 mb-0">Use clear names such as appointment_date, customer_id, or preferred_language.</p>
                       </div>
                       <button
-                        className={`${buttonClass} border border-[#e5e7ef] text-[#737587] hover:border-[#5b63ff]/35 hover:text-[#4d54db]`}
+                        className={`${buttonClass} border border-[#e5e7ef] text-[#737587] hover:border-[#108D82]/35 hover:text-[#108D82]`}
                         disabled={manualMetadata.length >= 40}
                         onClick={() => setManualMetadata((current) => [...current, newMetadataField()])}
                         type="button"
@@ -843,7 +843,7 @@ export function CampaignShell() {
                   </div>
 
                   <div className="mt-5 flex justify-end border-t border-[#e5e7ef] pt-5">
-                    <button className={`${buttonClass} bg-[#5b63ff] text-[#ffffff] hover:bg-[#4b52df]`} onClick={addManualContact} type="button">
+                    <button className={`${buttonClass} bg-[#108D82] text-[#ffffff] hover:bg-[#108D82]`} onClick={addManualContact} type="button">
                       <Icon icon="user" /> Add contact to audience
                     </button>
                   </div>
@@ -973,15 +973,15 @@ export function CampaignShell() {
                       </label>
                     </>
                   ) : (
-                    <div className="border-l-2 border-[#5b63ff]/35 px-4 py-2 lg:col-span-2">
-                      <span className="app-label text-[#4b52df]">Launch mode</span>
+                    <div className="border-l-2 border-[#108D82]/35 px-4 py-2 lg:col-span-2">
+                      <span className="app-label text-[#108D82]">Launch mode</span>
                       <p className="mt-1 mb-0 text-sm font-semibold text-slate-950">
                         {callWindowOpen ? "Immediate launch after campaign creation" : "Launch now, call when the window opens"}
                       </p>
                       <p className="app-caption mt-1 mb-0">Calls still respect business hours, concurrency, daily caps, and suppression rules.</p>
                       {!callWindowOpen ? (
                         <button
-                          className="mt-3 rounded-full border border-[#5b63ff]/30 bg-[#f8f8fc] px-3 py-1.5 text-xs font-semibold text-[#4d54db] transition hover:-translate-y-0.5 hover:bg-[#5b63ff]/10"
+                          className="mt-3 rounded-full border border-[#108D82]/30 bg-[#f8f8fc] px-3 py-1.5 text-xs font-semibold text-[#108D82] transition hover:-translate-y-0.5 hover:bg-[#108D82]/10"
                           type="button"
                           onClick={() => {
                             setWindowStart("00:00");
@@ -1034,7 +1034,7 @@ export function CampaignShell() {
                   <label className="app-label grid gap-2">
                     Goal
                     <textarea
-                      className="app-control-text min-h-36 resize-y rounded-2xl border border-[#e5e7ef] bg-[#f8f8fc] p-4 text-[#242535] shadow-sm outline-none transition placeholder:text-[#737587] hover:border-[#e5e7ef] focus:border-[#5b63ff] focus:ring-4 focus:ring-[#5b63ff]/10"
+                      className="app-control-text min-h-36 resize-y rounded-2xl border border-[#e5e7ef] bg-[#f8f8fc] p-4 text-[#242535] shadow-sm outline-none transition placeholder:text-[#737587] hover:border-[#e5e7ef] focus:border-[#108D82] focus:ring-4 focus:ring-[#108D82]/10"
                       placeholder="Confirm appointment interest and capture preferred callback time."
                       value={campaignGoal}
                       onChange={(event) => setCampaignGoal(event.target.value)}
@@ -1046,11 +1046,11 @@ export function CampaignShell() {
                       <input className={controlClass} placeholder="Booked demo, qualified lead, reminder accepted..." value={successCriteria} onChange={(event) => setSuccessCriteria(event.target.value)} />
                     </label>
                     <div className="border-l-2 border-indigo-300/30 px-4 py-2">
-                      <span className="inline-flex size-10 items-center justify-center rounded-2xl bg-[#5b63ff]/10 text-[#4d54db] shadow-sm">
+                      <span className="inline-flex size-10 items-center justify-center rounded-2xl bg-[#108D82]/10 text-[#108D82] shadow-sm">
                         <Icon icon="target" />
                       </span>
                       <p className="mt-3 mb-0 text-sm font-semibold text-indigo-950">These instructions are applied to every call in this campaign.</p>
-                      <p className="app-caption mt-1 mb-0 text-indigo-800">That keeps the base assistant reusable while each campaign carries its own mission.</p>
+                      <p className="app-caption mt-1 mb-0 text-[#108D82]">That keeps the base assistant reusable while each campaign carries its own mission.</p>
                     </div>
                   </div>
                 </div>
@@ -1068,7 +1068,7 @@ export function CampaignShell() {
                 <Panel compact>
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <span className="app-label text-[#4b52df]">Launch summary</span>
+                      <span className="app-label text-[#108D82]">Launch summary</span>
                       <h2 className="mt-1 mb-0 text-xl font-semibold tracking-[-0.03em] text-slate-950">
                         {canPrepare ? "Ready to launch" : "Finish your setup"}
                       </h2>
@@ -1112,7 +1112,7 @@ export function CampaignShell() {
                       <SummaryRow label="Assistant" value={selectedAgent?.name ?? "Not selected"} />
                       <SummaryRow label="Launch" value={launchModeSummary} />
                     </dl>
-                    <button className={`${buttonClass} mt-5 w-full bg-[#5b63ff] text-[#ffffff] shadow-sm hover:bg-[#4b52df]`} disabled={loading || launching || !canPrepare || composerStep !== 4} type="submit">
+                    <button className={`${buttonClass} mt-5 w-full bg-[#108D82] text-[#ffffff] shadow-sm hover:bg-[#108D82]`} disabled={loading || launching || !canPrepare || composerStep !== 4} type="submit">
                       <Icon icon="play" /> {launching ? "Launching..." : sendMode === "now" ? callWindowOpen ? "Start calls now" : "Queue until call window" : "Schedule campaign"}
                     </button>
                     <p className="app-caption mt-3 mb-0 text-center">
@@ -1144,11 +1144,11 @@ function Panel({ children, compact = false, hidden = false }: { children: ReactN
 function SectionHeader({ description, eyebrow, icon, title }: { description: string; eyebrow: string; icon: IconName; title: string }) {
   return (
     <div className="flex items-start gap-4">
-      <span className="grid size-10 shrink-0 place-items-center border border-[#5b63ff]/20 text-[#4d54db]">
+      <span className="grid size-10 shrink-0 place-items-center border border-[#108D82]/20 text-[#108D82]">
         <Icon icon={icon} className="size-5" />
       </span>
       <div className="min-w-0">
-        <span className="app-label text-[#4b52df]">{eyebrow}</span>
+        <span className="app-label text-[#108D82]">{eyebrow}</span>
         <h2 className="app-section-title mt-1 mb-0">{title}</h2>
         <p className="app-body mt-1 mb-0 max-w-3xl text-[#737587]">{description}</p>
       </div>
@@ -1164,7 +1164,7 @@ function MetricCard({ detail, icon, label, value }: { detail: string; icon: Icon
           <span className="app-caption block">{label}</span>
           <strong className="app-value mt-2 block">{value}</strong>
         </div>
-        <span className="grid size-10 place-items-center text-[#4d54db]">
+        <span className="grid size-10 place-items-center text-[#108D82]">
           <Icon icon={icon} />
         </span>
       </div>
@@ -1176,7 +1176,7 @@ function MetricCard({ detail, icon, label, value }: { detail: string; icon: Icon
 function InfoPill({ icon, label, value }: { icon: IconName; label: string; value: string }) {
   return (
     <div className="flex items-center gap-3 border-l border-[#e5e7ef] px-3 py-2">
-      <span className="grid size-9 shrink-0 place-items-center text-[#4d54db]">
+      <span className="grid size-9 shrink-0 place-items-center text-[#108D82]">
         <Icon icon={icon} className="size-4" />
       </span>
       <span className="min-w-0">
@@ -1198,15 +1198,15 @@ function ModeCard({ active, description, icon, onClick, title }: {
     <button
       className={`border-l-2 px-4 py-3 text-left transition ${
         active
-          ? "border-[#5b63ff] bg-[#5b63ff]/[0.05]"
-          : "border-[#e5e7ef] hover:border-[#5b63ff]/35"
+          ? "border-[#108D82] bg-[#108D82]/[0.05]"
+          : "border-[#e5e7ef] hover:border-[#108D82]/35"
       }`}
       onClick={onClick}
       type="button"
       aria-pressed={active}
     >
       <span className="flex items-center gap-3">
-        <span className={`grid size-11 place-items-center rounded-2xl ${active ? "bg-[#f8f8fc] text-[#4d54db]" : "bg-[#f6f7fb] text-[#737587]"}`}>
+        <span className={`grid size-11 place-items-center rounded-2xl ${active ? "bg-[#f8f8fc] text-[#108D82]" : "bg-[#f6f7fb] text-[#737587]"}`}>
           <Icon icon={icon} />
         </span>
         <span>
@@ -1221,7 +1221,7 @@ function ModeCard({ active, description, icon, onClick, title }: {
 function ProgressBar({ className = "", value }: { className?: string; value: number }) {
   return (
     <div className={`h-2 overflow-hidden rounded-full bg-slate-200 ${className}`}>
-      <div className="h-full rounded-full bg-gradient-to-r from-[#5b63ff] via-[#22d3ee] to-[#7c3aed] transition-all" style={{ width: `${progressValue(value)}%` }} />
+      <div className="h-full rounded-full bg-gradient-to-r from-[#108D82] via-[#22d3ee] to-[#7c3aed] transition-all" style={{ width: `${progressValue(value)}%` }} />
     </div>
   );
 }
@@ -1257,7 +1257,7 @@ function CampaignOperationsSection({
     <section className="campaign-operations mt-8 overflow-hidden rounded-xl border border-[#e5e7ef] bg-white p-5">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e5e7ef] pb-4">
         <div>
-          <span className="app-label text-[#5b63ff]">Live operations</span>
+          <span className="app-label text-[#108D82]">Live operations</span>
           <h2 className="app-section-title mt-1 mb-0">Recent campaigns</h2>
           <p className="app-caption mt-1 mb-0">Track status, progress, call results, pacing, and actions for each campaign.</p>
         </div>
@@ -1465,7 +1465,7 @@ function ToggleRow({ detail, enabled, onChange, title }: {
 }) {
   return (
     <button
-      className="flex items-center justify-between gap-4 border-b border-[#e5e7ef] px-1 py-3 text-left transition hover:border-[#5b63ff]/30"
+      className="flex items-center justify-between gap-4 border-b border-[#e5e7ef] px-1 py-3 text-left transition hover:border-[#108D82]/30"
       onClick={() => onChange(!enabled)}
       type="button"
       aria-pressed={enabled}
@@ -1474,7 +1474,7 @@ function ToggleRow({ detail, enabled, onChange, title }: {
         <strong className="block text-sm font-semibold text-slate-950">{title}</strong>
         <span className="app-caption mt-1 block">{detail}</span>
       </span>
-      <span className={`relative h-6 w-11 rounded-full transition ${enabled ? "bg-[#5b63ff]" : "bg-[#f6f7fb]"}`}>
+      <span className={`relative h-6 w-11 rounded-full transition ${enabled ? "bg-[#108D82]" : "bg-[#f6f7fb]"}`}>
         <span className={`absolute top-1 size-4 rounded-full bg-[#ffffff] shadow transition ${enabled ? "left-6" : "left-1"}`} />
       </span>
     </button>

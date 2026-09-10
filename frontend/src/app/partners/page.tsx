@@ -62,8 +62,8 @@ export default function PartnersPage() {
         <section className="relative isolate overflow-hidden bg-white px-5 pb-16 pt-32 sm:px-8 sm:pb-20 sm:pt-40 lg:pb-24">
           <div className="mx-auto max-w-[1240px]">
             <header className="mx-auto max-w-[1240px] text-center">
-              <span className="inline-flex items-center gap-2 rounded-full border border-[#3e75ff]/20 bg-white px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#3e75ff] shadow-sm">
-                <i className="size-1.5 rounded-full bg-[#3e75ff]" />
+              <span className="inline-flex items-center gap-2 rounded-full border border-[#108D82]/20 bg-white px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#108D82] shadow-sm">
+                <i className="size-1.5 rounded-full bg-[#108D82]" />
                 Partner spotlight
               </span>
 
@@ -114,7 +114,7 @@ export default function PartnersPage() {
                 <div className="flex min-h-40 items-center justify-center rounded-2xl border border-[#E8E8E8] bg-white p-7 sm:min-h-44">
                   <span
                     aria-label="Vozon"
-                    className="block aspect-[1160/350] w-[min(250px,76%)] bg-[#3e75ff]"
+                    className="block aspect-[1160/350] w-[min(250px,76%)] bg-[#108D82]"
                     role="img"
                     style={{
                       WebkitMaskImage: "url('/images/logo_2.svg')",
@@ -198,7 +198,7 @@ export default function PartnersPage() {
           <div className="relative mx-auto max-w-[1240px]">
             <div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:items-end">
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#3e75ff]">
+                <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#108D82]">
                   Inside DigitalBot
                 </span>
 
@@ -225,11 +225,11 @@ export default function PartnersPage() {
                   key={capability.number}
                 >
                   <div className="relative flex items-center justify-between">
-                    <span className="text-[10px] font-bold tracking-[0.12em] text-[#3e75ff]">
+                    <span className="text-[10px] font-bold tracking-[0.12em] text-[#108D82]">
                       DIGITALBOT / {capability.number}
                     </span>
 
-                    <i className="size-2 rounded-full bg-[#3e75ff]" />
+                    <i className="size-2 rounded-full bg-[#108D82]" />
                   </div>
 
                   <h3 className="relative mt-7 text-xl font-semibold tracking-[-0.03em] text-black">
@@ -252,7 +252,7 @@ export default function PartnersPage() {
           <div className="partners-workflow-card relative mx-auto max-w-[1240px] overflow-hidden rounded-[28px] border border-[#E2E2E2] bg-white p-6 shadow-[0_18px_55px_rgba(0,0,0,0.055)] sm:p-10 lg:p-14">
             <div className="relative grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:items-center">
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#3e75ff]">
+                <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#108D82]">
                   DigitalBot workflow
                 </span>
 

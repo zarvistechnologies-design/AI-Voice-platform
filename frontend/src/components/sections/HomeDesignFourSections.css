@@ -7,6 +7,13 @@
 @media(max-width:640px){.design-four-voice-section,.design-four-launch-section,.design-four-outcomes-section,.design-four-industry-section,.design-four-testimonials-section{padding-right:20px;padding-left:20px}.design-four-language-tabs{gap:8px}.design-four-voice-layout{grid-template-columns:1fr}.design-four-voice-copy h2{font-size:31px}.design-four-voice-player{margin-top:20px}.design-four-voice-disc{width:180px;height:180px}.design-four-voice-disc:before{inset:65px}.design-four-launch-heading{align-items:flex-start;gap:20px}.design-four-launch-heading h2{font-size:35px}.design-four-launch-heading>a{margin-top:6px;padding:0 15px}.design-four-step-grid{grid-template-columns:1fr}.design-four-step-grid article{min-height:320px}.design-four-launch-note{font-size:14px}.design-four-metrics{grid-template-columns:repeat(2,1fr)}.design-four-metrics div{border-bottom:1px solid #c8c5ff}.design-four-metrics div:nth-child(2n){border-right:0}.design-four-metrics div:last-child{grid-column:1/-1}.design-four-agent-banner{margin-right:0;margin-left:0;padding:30px 25px}.design-four-agent-banner h3{font-size:22px}.design-four-agent-banner p{max-width:80%;font-size:11px}.design-four-industry-section{padding-top:70px}.design-four-industry-copy h2{font-size:34px}.design-four-industry-copy>p{margin-top:30px}.design-four-industry-panel{min-height:430px}.design-four-industry-panel h3{font-size:25px}.design-four-industry-panel p{margin-right:20px;line-height:1.4}.design-four-testimonial-heading h2{font-size:36px}.design-four-testimonial-heading p{font-size:12px}.design-four-review-grid{grid-template-columns:1fr;gap:14px}.design-four-review-grid article{min-height:150px}.design-four-testimonials-section{padding-bottom:100px}.design-four-testimonials-section:after{height:130px}}
 @media(prefers-reduced-motion:reduce){.design-four-voice-disc.is-playing,.design-four-agent-banner:before{animation:none}}
 
+.design-four-voice-copy > a,
+.design-four-industry-copy > div a:first-child {
+  border-color: #108D82;
+  background: #108D82;
+  color: #fff;
+}
+
 /* Launch workflow cards — matched to the Design 4 reference. */
 .design-four-voice-selector{grid-template-columns:minmax(90px,1fr) 38px 130px 38px minmax(90px,1fr);gap:4px}
 .design-four-voice-current,.design-four-voice-neighbor{align-items:center;justify-content:center}
@@ -135,7 +142,7 @@
   min-height: 46px;
   margin: 28px 0 8px 23px;
   border-radius: 13px;
-  background: #2563eb;
+  background: #108D82;
   padding: 0 16px;
   font-size: 13px;
   font-weight: 500;

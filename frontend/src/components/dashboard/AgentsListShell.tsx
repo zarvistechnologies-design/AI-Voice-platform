@@ -323,11 +323,11 @@ export function AgentsListShell() {
             </div>
             {notice ? <div className="rounded-lg border border-amber-300/20 bg-amber-400/10 px-3 py-2 text-xs font-semibold text-amber-700" role="alert">{notice}</div> : null}
             <label className="grid gap-1.5">
-              <span className="app-label text-[#4d54db]">Agent name</span>
+              <span className="app-label text-[#108D82]">Agent name</span>
               <input
                 autoFocus
                 required
-                className="app-control-text min-h-11 rounded-lg border border-[#e5e7ef] bg-[#f8f8fc] px-3 text-[#242535] outline-none transition focus:border-[#5b63ff] focus:ring-4 focus:ring-[#5b63ff]/10"
+                className="app-control-text min-h-11 rounded-lg border border-[#e5e7ef] bg-[#f8f8fc] px-3 text-[#242535] outline-none transition focus:border-[#108D82] focus:ring-4 focus:ring-[#108D82]/10"
                 value={agentName}
                 maxLength={80}
                 placeholder="Example: Support desk"
@@ -347,7 +347,7 @@ export function AgentsListShell() {
                 Cancel
               </button>
               <button
-                className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border-0 bg-[#5b63ff] px-4 text-[#ffffff] shadow-sm transition hover:bg-[#4d54db] active:translate-y-px disabled:opacity-50"
+                className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border-0 bg-[#108D82] px-4 text-[#ffffff] shadow-sm transition hover:bg-[#108D82] active:translate-y-px disabled:opacity-50"
                 type="submit"
                 disabled={busy}
               >
@@ -374,11 +374,11 @@ export function AgentsListShell() {
             </div>
             {notice ? <div className="rounded-lg border border-amber-300/20 bg-amber-400/10 px-3 py-2 text-xs font-semibold text-amber-700" role="alert">{notice}</div> : null}
             <label className="grid gap-1.5">
-              <span className="app-label text-[#4d54db]">Agent name</span>
+              <span className="app-label text-[#108D82]">Agent name</span>
               <input
                 autoFocus
                 required
-                className="app-control-text min-h-11 rounded-lg border border-[#e5e7ef] bg-[#f8f8fc] px-3 text-[#242535] outline-none transition focus:border-[#5b63ff] focus:ring-4 focus:ring-[#5b63ff]/10"
+                className="app-control-text min-h-11 rounded-lg border border-[#e5e7ef] bg-[#f8f8fc] px-3 text-[#242535] outline-none transition focus:border-[#108D82] focus:ring-4 focus:ring-[#108D82]/10"
                 value={editAgentName}
                 maxLength={80}
                 onChange={(event) => setEditAgentName(event.target.value)}
@@ -397,7 +397,7 @@ export function AgentsListShell() {
                 Cancel
               </button>
               <button
-                className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#5b63ff]/24 bg-[#5b63ff]/[0.07] px-4 text-[#4d54db] shadow-sm transition hover:border-[#5b63ff]/40 hover:bg-[#5b63ff]/12 active:translate-y-px disabled:opacity-50"
+                className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#108D82]/24 bg-[#108D82]/[0.07] px-4 text-[#108D82] shadow-sm transition hover:border-[#108D82]/40 hover:bg-[#108D82]/12 active:translate-y-px disabled:opacity-50"
                 type="submit"
                 disabled={busy}
               >

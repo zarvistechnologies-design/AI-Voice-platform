@@ -9,7 +9,7 @@ import {
 
 import type { AnalyticsOverview } from "@/lib/voice";
 
-const COLORS = ["#5b63ff", "#7182ff", "#ae64ff", "#ffb84d", "#ff6384", "#2ca9ff"];
+const COLORS = ["#108D82", "#108D82", "#ae64ff", "#ffb84d", "#ff6384", "#108D82"];
 const tooltipStyle = { background: "#ffffff", border: "1px solid #e5e7ef", borderRadius: 8, boxShadow: "0 18px 50px rgba(35,38,72,.10)", color: "#242535", fontSize: 12 };
 const axis = { fill: "#737587", fontSize: 10, fontWeight: 500 };
 
@@ -22,7 +22,7 @@ function Radar(props: ComponentProps<typeof ReRadar>) { return <ReRadar {...prop
 function Scatter(props: ComponentProps<typeof ReScatter>) { return <ReScatter {...props} isAnimationActive={false} />; }
 
 function Card({ title, subtitle, children, wide = false }: { title: string; subtitle: string; children: ReactNode; wide?: boolean }) {
-  return <article className={`min-w-0 overflow-hidden rounded-xl border border-[#e5e7ef] bg-white p-5 shadow-sm [contain-intrinsic-size:auto_380px] [content-visibility:auto] transition hover:border-[#5b63ff]/45 ${wide ? "xl:col-span-2" : ""}`}><div className="mb-5 border-b border-[#e5e7ef] pb-4"><h2 className="text-[15px] font-semibold tracking-[-.01em] text-[#242535]">{title}</h2><p className="mt-1.5 text-[11px] leading-5 text-[#737587]">{subtitle}</p></div>{children}</article>;
+  return <article className={`min-w-0 overflow-hidden rounded-xl border border-[#e5e7ef] bg-white p-5 shadow-sm [contain-intrinsic-size:auto_380px] [content-visibility:auto] transition hover:border-[#108D82]/45 ${wide ? "xl:col-span-2" : ""}`}><div className="mb-5 border-b border-[#e5e7ef] pb-4"><h2 className="text-[15px] font-semibold tracking-[-.01em] text-[#242535]">{title}</h2><p className="mt-1.5 text-[11px] leading-5 text-[#737587]">{subtitle}</p></div>{children}</article>;
 }
 
 function EmptyChart() { return <div className="grid h-[270px] place-items-center rounded-xl border border-dashed border-[#e5e7ef] text-xs text-[#737587]">Data appears after your first calls</div>; }
@@ -46,7 +46,7 @@ export function AdvancedAnalyticsCharts({ data }: { data: AnalyticsOverview }) {
 
   return <section className="mt-5 grid auto-flow-dense gap-5 text-[#242535] [&_.recharts-cartesian-axis-tick-value]:fill-[#737587] [&_.recharts-default-tooltip]:!bg-[#ffffff] [&_.recharts-legend-item-text]:!text-[#737587] [&_.recharts-tooltip-item]:!text-[#242535] [&_.recharts-tooltip-label]:!text-[#242535] lg:grid-cols-2 xl:grid-cols-3">
     <Card title="Conversation momentum" subtitle="Call volume and completed conversations over time" wide>
-      {!timeline.length ? <EmptyChart /> : <div className="h-[330px]"><ResponsiveContainer width="100%" height="100%"><ComposedChart data={timeline} margin={{ top: 10, right: 8, left: -20, bottom: 0 }}><defs><linearGradient id="callsArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#5b63ff" stopOpacity={.4}/><stop offset="1" stopColor="#5b63ff" stopOpacity={0}/></linearGradient></defs><CartesianGrid stroke="#e6e8f0" vertical={false}/><XAxis dataKey="label" tick={axis} tickLine={false} axisLine={false}/><YAxis tick={axis} tickLine={false} axisLine={false}/><Tooltip contentStyle={tooltipStyle}/><Legend wrapperStyle={{ fontSize: 11, opacity: .7 }}/><Area type="monotone" dataKey="calls" name="Total calls" stroke="#5b63ff" strokeWidth={2.5} fill="url(#callsArea)"/><Line type="monotone" dataKey="completed" name="Completed" stroke="#8290ff" strokeWidth={2.2} dot={false}/></ComposedChart></ResponsiveContainer></div>}
+      {!timeline.length ? <EmptyChart /> : <div className="h-[330px]"><ResponsiveContainer width="100%" height="100%"><ComposedChart data={timeline} margin={{ top: 10, right: 8, left: -20, bottom: 0 }}><defs><linearGradient id="callsArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#108D82" stopOpacity={.4}/><stop offset="1" stopColor="#108D82" stopOpacity={0}/></linearGradient></defs><CartesianGrid stroke="#e6e8f0" vertical={false}/><XAxis dataKey="label" tick={axis} tickLine={false} axisLine={false}/><YAxis tick={axis} tickLine={false} axisLine={false}/><Tooltip contentStyle={tooltipStyle}/><Legend wrapperStyle={{ fontSize: 11, opacity: .7 }}/><Area type="monotone" dataKey="calls" name="Total calls" stroke="#108D82" strokeWidth={2.5} fill="url(#callsArea)"/><Line type="monotone" dataKey="completed" name="Completed" stroke="#108D82" strokeWidth={2.2} dot={false}/></ComposedChart></ResponsiveContainer></div>}
     </Card>
 
     <Card title="Outcome intelligence" subtitle="How your conversations ended">
@@ -70,15 +70,15 @@ export function AdvancedAnalyticsCharts({ data }: { data: AnalyticsOverview }) {
     </Card>
 
     <Card title="Customer sentiment" subtitle="Detected tone from the latest recorded calls">
-      {!sentiment.length ? <EmptyChart /> : <div className="h-[300px]"><ResponsiveContainer width="100%" height="100%"><BarChart data={sentiment} margin={{ left: -18, right: 10 }}><CartesianGrid stroke="#e6e8f0" vertical={false}/><XAxis dataKey="name" tick={axis} axisLine={false} tickLine={false}/><YAxis tick={axis} axisLine={false} tickLine={false}/><Tooltip contentStyle={tooltipStyle}/><Bar dataKey="calls" minPointSize={3} radius={[9,9,0,0]}>{sentiment.map((row) => <Cell key={row.name} fill={row.name === "positive" ? "#36e1a0" : row.name === "negative" ? "#ff6384" : "#8290ff"}/>)}</Bar></BarChart></ResponsiveContainer></div>}
+      {!sentiment.length ? <EmptyChart /> : <div className="h-[300px]"><ResponsiveContainer width="100%" height="100%"><BarChart data={sentiment} margin={{ left: -18, right: 10 }}><CartesianGrid stroke="#e6e8f0" vertical={false}/><XAxis dataKey="name" tick={axis} axisLine={false} tickLine={false}/><YAxis tick={axis} axisLine={false} tickLine={false}/><Tooltip contentStyle={tooltipStyle}/><Bar dataKey="calls" minPointSize={3} radius={[9,9,0,0]}>{sentiment.map((row) => <Cell key={row.name} fill={row.name === "positive" ? "#36e1a0" : row.name === "negative" ? "#ff6384" : "#108D82"}/>)}</Bar></BarChart></ResponsiveContainer></div>}
     </Card>
 
     <Card title="Hourly demand pattern" subtitle="Call timing from the latest recorded calls">
-      {!hourlyData.some((row) => row.calls) ? <EmptyChart /> : <div className="h-[300px]"><ResponsiveContainer width="100%" height="100%"><ComposedChart data={hourlyData} margin={{ left: -20, right: 10 }}><CartesianGrid stroke="#e6e8f0" vertical={false}/><XAxis dataKey="label" interval={2} tick={axis} axisLine={false} tickLine={false}/><YAxis tick={axis} axisLine={false} tickLine={false}/><Tooltip contentStyle={tooltipStyle}/><Legend wrapperStyle={{ fontSize: 10 }}/><Bar dataKey="calls" name="Calls" fill="#5b63ff" radius={[5,5,0,0]}/><Line type="monotone" dataKey="completed" name="Completed" stroke="#8290ff" strokeWidth={2.4} dot={false}/></ComposedChart></ResponsiveContainer></div>}
+      {!hourlyData.some((row) => row.calls) ? <EmptyChart /> : <div className="h-[300px]"><ResponsiveContainer width="100%" height="100%"><ComposedChart data={hourlyData} margin={{ left: -20, right: 10 }}><CartesianGrid stroke="#e6e8f0" vertical={false}/><XAxis dataKey="label" interval={2} tick={axis} axisLine={false} tickLine={false}/><YAxis tick={axis} axisLine={false} tickLine={false}/><Tooltip contentStyle={tooltipStyle}/><Legend wrapperStyle={{ fontSize: 10 }}/><Bar dataKey="calls" name="Calls" fill="#108D82" radius={[5,5,0,0]}/><Line type="monotone" dataKey="completed" name="Completed" stroke="#108D82" strokeWidth={2.4} dot={false}/></ComposedChart></ResponsiveContainer></div>}
     </Card>
 
     <Card title="Agent capability radar" subtitle="Indexes calculated only from real volume, completion and average duration" wide>
-      {!radarData.length ? <EmptyChart /> : <div className="h-[300px]"><ResponsiveContainer width="100%" height="100%"><RadarChart data={radarData} outerRadius="70%"><PolarGrid stroke="#e6e8f0"/><PolarAngleAxis dataKey="agent" tick={{ ...axis, fill: "#e6e8f0" }}/><Radar name="Relative volume" dataKey="volumeIndex" stroke="#5b63ff" fill="#5b63ff" fillOpacity={.2}/><Radar name="Completion rate" dataKey="completionRate" stroke="#8290ff" fill="#8290ff" fillOpacity={.18}/><Radar name="Avg duration index" dataKey="durationIndex" stroke="#ae64ff" fill="#ae64ff" fillOpacity={.14}/><Tooltip contentStyle={tooltipStyle}/><Legend wrapperStyle={{ fontSize: 10 }}/></RadarChart></ResponsiveContainer></div>}
+      {!radarData.length ? <EmptyChart /> : <div className="h-[300px]"><ResponsiveContainer width="100%" height="100%"><RadarChart data={radarData} outerRadius="70%"><PolarGrid stroke="#e6e8f0"/><PolarAngleAxis dataKey="agent" tick={{ ...axis, fill: "#e6e8f0" }}/><Radar name="Relative volume" dataKey="volumeIndex" stroke="#108D82" fill="#108D82" fillOpacity={.2}/><Radar name="Completion rate" dataKey="completionRate" stroke="#108D82" fill="#108D82" fillOpacity={.18}/><Radar name="Avg duration index" dataKey="durationIndex" stroke="#ae64ff" fill="#ae64ff" fillOpacity={.14}/><Tooltip contentStyle={tooltipStyle}/><Legend wrapperStyle={{ fontSize: 10 }}/></RadarChart></ResponsiveContainer></div>}
     </Card>
   </section>;
 }

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
@@ -41,7 +41,7 @@ function Card({ children, className = "" }: { children: ReactNode; className?: s
 
 function Metric({ label, value, detail, tone = "sky" }: { label: string; value: string; detail: string; tone?: "sky" | "emerald" | "amber" | "slate" }) {
   const tones = {
-    sky: "bg-indigo-50 text-indigo-700",
+    sky: "bg-indigo-50 text-[#108D82]",
     emerald: "bg-emerald-50 text-emerald-700",
     amber: "bg-amber-50 text-amber-700",
     slate: "bg-slate-100 text-slate-700",
@@ -309,10 +309,10 @@ export function BillingShell() {
       />
       <section className="min-w-0 p-4">
         <div className="mx-auto grid max-w-[1500px] gap-6">
-          <header className="border-b border-[#5b63ff]/24 bg-[#ffffff] pb-4">
+          <header className="border-b border-[#108D82]/24 bg-[#ffffff] pb-4">
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
               <div>
-                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#5b63ff]">Workspace billing</span>
+                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#108D82]">Workspace billing</span>
                 <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">Billing</h1>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Top up once and run calls. Per-call provider costs are available in Call Logs.</p>
               </div>
@@ -320,14 +320,14 @@ export function BillingShell() {
               <button className="rounded-xl border border-[#e5e7ef] bg-[#f8f8fc] px-4 py-2.5 text-sm font-semibold text-[#737587] shadow-sm hover:bg-[#f6f7fb] hover:text-[#242535]" type="button" onClick={() => void load()} disabled={Boolean(busy)}>
                 Refresh
               </button>
-              <button className="rounded-xl bg-[#5b63ff] px-4 py-2.5 text-sm font-semibold text-[#ffffff] shadow-sm hover:bg-[#4d54db] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup" || !data?.configured}>
+              <button className="rounded-xl bg-[#108D82] px-4 py-2.5 text-sm font-semibold text-[#ffffff] shadow-sm hover:bg-[#108D82] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup" || !data?.configured}>
                 Buy ${selectedTopUp}
               </button>
               </div>
             </div>
           </header>
 
-          {notice ? <div className="rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-sm font-semibold text-indigo-800">{notice}</div> : null}
+          {notice ? <div className="rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-sm font-semibold text-[#108D82]">{notice}</div> : null}
           {data?.paymentReadiness ? (
             <div className="grid gap-3 rounded-2xl border border-[#e5e7ef] bg-[#ffffff] p-4 sm:grid-cols-3">
               {[
@@ -348,7 +348,7 @@ export function BillingShell() {
               <div className="grid gap-6 bg-white p-5 md:grid-cols-[minmax(0,1fr)_320px] md:p-6">
                 <div className="grid content-between gap-6">
                   <div>
-                    <span className="inline-flex rounded-full bg-[#5b63ff]/10 px-3 py-1 text-xs font-semibold text-[#4d54db] shadow-sm ring-1 ring-[#5b63ff]/24">Wallet balance</span>
+                    <span className="inline-flex rounded-full bg-[#108D82]/10 px-3 py-1 text-xs font-semibold text-[#108D82] shadow-sm ring-1 ring-[#108D82]/24">Wallet balance</span>
                     <h2 className="mt-5 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">{money(balance, currency)}</h2>
                     <p className="mt-3 max-w-xl text-sm leading-6 text-slate-600">Calls start only when the wallet has the minimum required balance. Completed-call costs are deducted automatically and shown in Call Logs.</p>
                   </div>
@@ -358,7 +358,7 @@ export function BillingShell() {
                       <span>{money(lifetime, currency)} lifetime credits</span>
                     </div>
                     <div className="h-3 overflow-hidden rounded-full bg-[#f6f7fb] shadow-inner ring-1 ring-white/10">
-                      <div className="h-full rounded-full bg-gradient-to-r from-indigo-500 via-indigo-500 to-indigo-400" style={{ width: `${progress}%` }} />
+                      <div className="h-full rounded-full bg-gradient-to-r from-[#108D82] via-[#108D82] to-[#108D82]" style={{ width: `${progress}%` }} />
                     </div>
                   </div>
                 </div>
@@ -368,7 +368,7 @@ export function BillingShell() {
                   <div className="grid grid-cols-2 gap-2">
                     {topUpOptions.map((amount) => (
                       <button
-                        className={`min-h-12 rounded-xl border px-3 text-sm font-semibold transition ${selectedTopUp === amount ? "border-[#5b63ff]/35 bg-[#5b63ff] text-[#ffffff] shadow-sm" : "border-[#e5e7ef] bg-[#ffffff] text-[#737587] hover:border-[#5b63ff]/35 hover:bg-[#5b63ff]/10 hover:text-[#242535]"}`}
+                        className={`min-h-12 rounded-xl border px-3 text-sm font-semibold transition ${selectedTopUp === amount ? "border-[#108D82]/35 bg-[#108D82] text-[#ffffff] shadow-sm" : "border-[#e5e7ef] bg-[#ffffff] text-[#737587] hover:border-[#108D82]/35 hover:bg-[#108D82]/10 hover:text-[#242535]"}`}
                         key={amount}
                         type="button"
                         aria-pressed={selectedTopUp === amount}
@@ -378,7 +378,7 @@ export function BillingShell() {
                       </button>
                     ))}
                   </div>
-                  <button className="min-h-12 rounded-xl bg-[#5b63ff] px-4 text-sm font-semibold text-[#ffffff] shadow-sm hover:bg-[#4b52df] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup" || !data?.configured}>
+                  <button className="min-h-12 rounded-xl bg-[#108D82] px-4 text-sm font-semibold text-[#ffffff] shadow-sm hover:bg-[#108D82] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup" || !data?.configured}>
                     {busy === "topup" ? "Opening checkout..." : "Purchase credits"}
                   </button>
                 </div>
@@ -438,12 +438,12 @@ export function BillingShell() {
                 <div className="bg-[#f0efff] p-5 text-[#30334f]">
                   <h2 className="m-0 text-lg font-semibold">Enterprise credits</h2>
                   <p className="mt-2 text-sm leading-6 text-[#737587]">${data?.enterpriseMonthlyUsd ?? 500} in wallet credits added after each successful monthly Razorpay charge.</p>
-                  <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-semibold text-[#6269dc]">
-                    <span className="rounded-full border border-[#5b63ff]/30 bg-[#5b63ff]/10 px-2.5 py-1">Monthly Autopay</span>
-                    <span className="rounded-full border border-[#5b63ff]/30 bg-[#5b63ff]/10 px-2.5 py-1">Indian cards</span>
-                    <span className="rounded-full border border-[#5b63ff]/30 bg-[#5b63ff]/10 px-2.5 py-1">International cards</span>
+                  <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-semibold text-[#108D82]">
+                    <span className="rounded-full border border-[#108D82]/30 bg-[#108D82]/10 px-2.5 py-1">Monthly Autopay</span>
+                    <span className="rounded-full border border-[#108D82]/30 bg-[#108D82]/10 px-2.5 py-1">Indian cards</span>
+                    <span className="rounded-full border border-[#108D82]/30 bg-[#108D82]/10 px-2.5 py-1">International cards</span>
                   </div>
-                  {data?.subscription.provider !== "razorpay" || data.subscription.status === "cancelled" ? <button className="mt-5 rounded-xl bg-[#5b63ff] px-4 py-2.5 text-sm font-semibold text-[#ffffff] hover:bg-[#4d54db] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void upgradeEnterprise()} disabled={busy === "enterprise" || !data?.configured}>Start monthly Autopay</button> : null}
+                  {data?.subscription.provider !== "razorpay" || data.subscription.status === "cancelled" ? <button className="mt-5 rounded-xl bg-[#108D82] px-4 py-2.5 text-sm font-semibold text-[#ffffff] hover:bg-[#108D82] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void upgradeEnterprise()} disabled={busy === "enterprise" || !data?.configured}>Start monthly Autopay</button> : null}
                 </div>
               </Card>
             </div>
@@ -473,7 +473,7 @@ export function BillingShell() {
                         <span className="mt-1 block text-xs capitalize text-emerald-700">{invoice.status || "paid"} · {dateTime(invoice.createdAt)}</span>
                       </div>
                       <button
-                        className="rounded-xl border border-[#5b63ff]/30 bg-[#5b63ff]/10 px-4 py-2.5 text-sm font-semibold text-[#4d54db] hover:bg-[#5b63ff]/20 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="rounded-xl border border-[#108D82]/30 bg-[#108D82]/10 px-4 py-2.5 text-sm font-semibold text-[#108D82] hover:bg-[#108D82]/20 disabled:cursor-not-allowed disabled:opacity-50"
                         type="button"
                         onClick={() => void downloadInvoice(invoice._id, invoice.invoiceNumber)}
                         disabled={Boolean(busy)}

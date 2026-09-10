@@ -42,7 +42,7 @@ const buildSteps = [
   {
     title: "Add its knowledge",
     body: "Connect approved documentation, policies, and FAQs.",
-    color: "#8dd7ff",
+    color: "#108D82",
   },
   {
     title: "Connect its actions",
@@ -77,7 +77,7 @@ const configuration = [
     label: "Supported languages",
     detail: "40+, including cloned voice for brand consistency",
     icon: "language",
-    color: "text-[#8dd7ff] bg-[#38bdf8]/10 border-[#38bdf8]/18",
+    color: "text-[#108D82] bg-[#38bdf8]/10 border-[#38bdf8]/18",
   },
   {
     label: "Knowledge sources",
@@ -236,7 +236,7 @@ export function VoiceAgentsProductPage() {
 
                 <h1 className="mt-7 text-[clamp(2rem,3.1vw,3.1rem)] leading-[0.98] font-semibold tracking-[-0.055em]">
                   <span className="block">Build Intelligent</span>
-                  <span className="block bg-[linear-gradient(100deg,#5eead4_4%,#8dd7ff_36%,#b8a9ff_68%,#ff9fb7_100%)] bg-clip-text text-transparent">
+                  <span className="block bg-[linear-gradient(100deg,#5eead4_4%,#108D82_36%,#b8a9ff_68%,#ff9fb7_100%)] bg-clip-text text-transparent">
                     Voice Agents
                   </span>
                 </h1>
@@ -417,7 +417,7 @@ export function VoiceAgentsProductPage() {
             </div>
 
             <div className="relative mt-16 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              <div className="pointer-events-none absolute top-9 right-[10%] left-[10%] hidden h-px bg-[linear-gradient(90deg,#5eead4,#8dd7ff,#b8a9ff,#ff9fb7,#ffb37d,#f6db75)] opacity-30 xl:block" />
+              <div className="pointer-events-none absolute top-9 right-[10%] left-[10%] hidden h-px bg-[linear-gradient(90deg,#5eead4,#108D82,#b8a9ff,#ff9fb7,#ffb37d,#f6db75)] opacity-30 xl:block" />
               {buildSteps.map((step, index) => (
                 <article className="group relative rounded-2xl border border-white/[0.075] bg-white/[0.026] p-6 transition hover:border-white/15 hover:bg-white/[0.04] sm:p-7" key={step.title}>
                   <div className="relative z-10 flex items-center justify-between">
