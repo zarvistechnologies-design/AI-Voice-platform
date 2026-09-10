@@ -5564,8 +5564,8 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                         </div>
                       </div>
 
-                      <div className="voice-pipeline-flow flex flex-col rounded-2xl bg-[#f7f9f8] p-3 lg:flex-row lg:items-stretch lg:p-4">
-                        {voiceStackCards.map((card, index) => (
+                      <div className="voice-pipeline-flow flex flex-col gap-3 rounded-2xl bg-[#f7f9f8] p-3 lg:flex-row lg:items-stretch lg:p-4">
+                        {voiceStackCards.map((card) => (
                           <div className="contents" key={card.id}>
                             <button
                               className={`voice-pipeline-node group relative grid min-h-32 min-w-0 flex-1 cursor-pointer gap-3 overflow-hidden rounded-xl border bg-white p-4 text-left transition duration-200 hover:border-[#118778] ${
@@ -5580,7 +5580,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                             >
                               <span
                                 aria-hidden="true"
-                                className="absolute inset-x-0 top-0 h-1 bg-[#118778]"
+                                className={`absolute inset-x-0 top-0 h-1 ${card.id === "stt" ? "bg-[#f97316]" : card.id === "llm" ? "bg-[#118778]" : "bg-[#c026d3]"}`}
                               />
                               <span className="flex items-center justify-between gap-3">
                                 <span className="flex min-w-0 items-center gap-2">
@@ -5604,19 +5604,6 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                                 </span>
                               </span>
                             </button>
-                            {index < voiceStackCards.length - 1 ? (
-                              <span
-                                className="relative flex h-10 w-full shrink-0 items-center justify-center lg:h-auto lg:w-10"
-                                aria-hidden="true"
-                              >
-                                <span className="h-full w-0.5 bg-[#9fcfc3] lg:h-0.5 lg:w-full" />
-                                <span className="absolute left-1/2 top-1/2 grid size-5 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-[#118778] text-white shadow-[0_4px_10px_rgba(17,135,120,0.22)]">
-                                  <svg className="size-3 rotate-90 fill-none stroke-current stroke-2 lg:rotate-0" viewBox="0 0 16 16">
-                                    <path d="m6 3 5 5-5 5" strokeLinecap="round" strokeLinejoin="round" />
-                                  </svg>
-                                </span>
-                              </span>
-                            ) : null}
                           </div>
                         ))}
                       </div>
