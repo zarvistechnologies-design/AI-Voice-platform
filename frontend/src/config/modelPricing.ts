@@ -248,6 +248,8 @@ export const modelPricingCategories: readonly ModelPriceCategory[] = [
         models: [
           { name: "gpt-realtime-2.1", rate: "$32.00 audio in · $64.00 audio out", unit: "per 1M audio tokens", badge: "Recommended", detail: "$4.00 text in · $24.00 text out per 1M tokens" },
           { name: "gpt-realtime-2.1-mini", rate: "$10.00 audio in · $20.00 audio out", unit: "per 1M audio tokens", detail: "$0.60 text in · $2.40 text out per 1M tokens" },
+          { name: "gpt-4o-realtime-preview", rate: "$40.00 audio in · $80.00 audio out", unit: "per 1M audio tokens", badge: "Preview", detail: "$5.00 text in · $20.00 text out per 1M tokens" },
+          { name: "gpt-4o-mini-realtime-preview", rate: "$10.00 audio in · $20.00 audio out", unit: "per 1M audio tokens", badge: "Preview", detail: "$0.60 text in · $2.40 text out per 1M tokens" },
         ],
       },
       {
@@ -257,17 +259,10 @@ export const modelPricingCategories: readonly ModelPriceCategory[] = [
         sourceUrl: GEMINI_PRICING,
         models: [
           { name: "gemini-3.1-flash-live-preview", rate: "~$0.005 audio in · ~$0.018 audio out", unit: "per audio minute", badge: "Recommended", detail: "Preview; token-based billing" },
-          ...pricedModels(
-            [
-              "gemini-live-2.5-flash-native-audio",
-              "gemini-2.5-flash-native-audio-preview-12-2025",
-              "gemini-live-2.5-flash-preview-native-audio-09-2025",
-              "gemini-live-2.5-flash-preview-native-audio",
-            ],
-            "$3.00 audio in · $12.00 audio out",
-            "per 1M audio tokens",
-            { badge: "Preview" },
-          ),
+          { name: "gemini-3.1-pro-live-preview", rate: "~$0.008 audio in · ~$0.028 audio out", unit: "per audio minute", badge: "Preview", detail: "Pro Live; high-reasoning multimodal live" },
+          { name: "gemini-2.5-flash-native-audio", rate: "$3.00 audio in · $12.00 audio out", unit: "per 1M audio tokens", detail: "Stable Flash Native Audio" },
+          { name: "gemini-2.5-pro-native-audio", rate: "$5.00 audio in · $20.00 audio out", unit: "per 1M audio tokens", detail: "Stable Pro Native Audio" },
+          { name: "gemini-2.0-flash-exp", rate: "$3.00 audio in · $12.00 audio out", unit: "per 1M audio tokens", badge: "Legacy" },
         ],
       },
     ],
