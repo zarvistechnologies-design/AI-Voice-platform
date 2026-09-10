@@ -82,7 +82,7 @@ function BusinessIcon({ index }: { index: number }) {
 function OperationsConsole() {
   const activeCalls = [
     { name: "Inbound support", detail: "Order status resolved", time: "01:42", tone: "text-[#75fff0] bg-[#45ddce]/10" },
-    { name: "Lead qualification", detail: "Sales handoff ready", time: "02:18", tone: "text-[#c6bdff] bg-[#8f83e8]/10" },
+    { name: "Lead qualification", detail: "Sales handoff ready", time: "02:18", tone: "text-[#c6bdff] bg-[#108D82]/10" },
     { name: "Appointment booking", detail: "Calendar confirmed", time: "00:56", tone: "text-[#ffbd8c] bg-[#f28d45]/10" },
   ];
 
@@ -200,10 +200,10 @@ export function BusinessOverviewExperience() {
             <div className="mt-14 grid gap-4 md:grid-cols-2">
               {useCases.map((useCase, index) => (
                 <Link className="business-use-case-card group relative min-h-[300px] overflow-hidden rounded-[22px] border border-white/[0.09] bg-white/[0.025] p-6 transition hover:-translate-y-1 hover:border-white/18 hover:bg-white/[0.045] sm:p-8" href={`/business/${useCase.slug}`} key={useCase.slug}>
-                  <div className={`absolute -right-20 -top-20 size-56 rounded-full blur-[70px] ${index === 1 ? "bg-[#8f83e8]/12" : index === 2 ? "bg-[#f28d45]/10" : "bg-[#45ddce]/10"}`} aria-hidden="true" />
+                  <div className={`absolute -right-20 -top-20 size-56 rounded-full blur-[70px] ${index === 1 ? "bg-[#108D82]/12" : index === 2 ? "bg-[#f28d45]/10" : "bg-[#45ddce]/10"}`} aria-hidden="true" />
                   <div className="relative flex h-full flex-col">
                     <div className="flex items-start justify-between gap-5">
-                      <span className={`grid size-11 place-items-center rounded-xl border ${index === 1 ? "border-[#8f83e8]/25 bg-[#8f83e8]/10 text-[#c6bdff]" : index === 2 ? "border-[#f28d45]/25 bg-[#f28d45]/10 text-[#ffbd8c]" : "border-[#45ddce]/25 bg-[#45ddce]/10 text-[#75fff0]"}`}><BusinessIcon index={index} /></span>
+                      <span className={`grid size-11 place-items-center rounded-xl border ${index === 1 ? "border-[#108D82]/25 bg-[#108D82]/10 text-[#c6bdff]" : index === 2 ? "border-[#f28d45]/25 bg-[#f28d45]/10 text-[#ffbd8c]" : "border-[#45ddce]/25 bg-[#45ddce]/10 text-[#75fff0]"}`}><BusinessIcon index={index} /></span>
                       <span className="text-white/25 transition group-hover:translate-x-1 group-hover:text-white/70"><ArrowIcon /></span>
                     </div>
                     <p className="mt-8 text-[10px] font-black uppercase tracking-[0.14em] text-white/32">{useCase.highlights[0]}</p>
@@ -227,8 +227,8 @@ export function BusinessOverviewExperience() {
             <div className="mt-14 grid overflow-hidden rounded-[22px] border border-white/[0.09] md:grid-cols-2 lg:grid-cols-4">
               {workflowSteps.map((step, index) => (
                 <article className="business-workflow-card group relative min-h-[300px] border-b border-white/[0.08] bg-white/[0.02] p-6 last:border-b-0 md:border-r md:[&:nth-child(2)]:border-r-0 lg:border-b-0 lg:[&:nth-child(2)]:border-r lg:last:border-r-0 sm:p-7" key={step.number}>
-                  <div className={`absolute inset-x-0 top-0 h-px ${index === 1 ? "bg-[#8f83e8]" : index === 2 ? "bg-[#f28d45]" : "bg-[#45ddce]"}`} />
-                  <div className="flex items-center justify-between"><span className="text-[10px] font-black text-white/28">{step.number}</span><span className={`size-2 rounded-full ${index === 1 ? "bg-[#8f83e8]" : index === 2 ? "bg-[#f28d45]" : "bg-[#45ddce]"}`} /></div>
+                  <div className={`absolute inset-x-0 top-0 h-px ${index === 1 ? "bg-[#108D82]" : index === 2 ? "bg-[#f28d45]" : "bg-[#45ddce]"}`} />
+                  <div className="flex items-center justify-between"><span className="text-[10px] font-black text-white/28">{step.number}</span><span className={`size-2 rounded-full ${index === 1 ? "bg-[#108D82]" : index === 2 ? "bg-[#f28d45]" : "bg-[#45ddce]"}`} /></div>
                   <p className="mt-10 text-[10px] font-black uppercase tracking-[0.15em] text-white/35">{step.label}</p>
                   <h3 className="mt-4 text-xl font-black leading-tight">{step.title}</h3>
                   <p className="mt-4 text-xs leading-6 text-white/38">{step.body}</p>

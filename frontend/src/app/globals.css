@@ -39,9 +39,9 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
 }
 
 html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :is(
-  [class~="bg-[#5b63ff]"],
+  [class~="bg-[#108D82]"],
   [class~="bg-[#5963b8]"],
-  [class~="bg-[#737ccf]"]
+  [class~="bg-[#108D82]"]
 ) {
   color: #ffffff !important;
   border-color: var(--dashboard-moody) !important;
@@ -52,9 +52,9 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
   button,
   a[href]
 ):is(
-  [class~="bg-[#5b63ff]"],
+  [class~="bg-[#108D82]"],
   [class~="bg-[#5963b8]"],
-  [class~="bg-[#737ccf]"]
+  [class~="bg-[#108D82]"]
 ):hover:not(:disabled) {
   background: var(--dashboard-moody-dark) !important;
 }
@@ -69,18 +69,18 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
 }
 
 html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :is(
-  [class~="text-[#4b52df]"],
+  [class~="text-[#108D82]"],
   [class~="text-[#515bb4]"],
   [class~="text-[#5963b8]"],
-  [class~="text-[#5b63ff]"],
-  [class~="text-[#737ccf]"]
+  [class~="text-[#108D82]"],
+  [class~="text-[#108D82]"]
 ) {
   color: var(--dashboard-moody-dark) !important;
 }
 
 html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :is(
   [class~="border-[#a7abff]"],
-  [class~="border-[#b8bde8]"],
+  [class~="border-[#108D82]"],
   [class~="border-[#bfc3ea]"],
   [class~="border-[#c9ccef]"],
   [class~="border-[#d9dcea]"]
@@ -716,8 +716,8 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
     color: #fda4af !important;
   }
 
-  .dashboard-home-theme :is(.text-blue-700, .text-blue-600, [class~="text-[#1d4ed8]"], [class~="text-[#1e40af]"]) {
-    color: #93c5fd !important;
+  .dashboard-home-theme :is(.text-[#108D82], .text-[#108D82], [class~="text-[#108D82]"], [class~="text-[#108D82]"]) {
+    color: #108D82 !important;
   }
 
   .dashboard-home-theme :is(.text-purple-700, .text-purple-600, [class~="text-[#7c3aed]"], [class~="text-[#7e22ce]"]) {

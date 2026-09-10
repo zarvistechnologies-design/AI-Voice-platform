@@ -5570,7 +5570,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                             <button
                               className={`group relative grid min-h-32 min-w-0 flex-1 cursor-pointer gap-3 overflow-hidden rounded-xl border bg-white p-4 text-left transition duration-200 hover:-translate-y-0.5 hover:border-[#9fcfc3] hover:shadow-[0_12px_30px_rgba(37,40,74,0.08)] ${
                                 openStackConfig === card.id
-                                  ? "z-10 border-[#aeb4e5] shadow-[0_12px_30px_rgba(37,40,74,0.1)]"
+                                  ? "z-10 border-[#108D82] shadow-[0_12px_30px_rgba(37,40,74,0.1)]"
                                   : "border-[#dbe4e1]"
                               }`}
                               type="button"
@@ -5580,7 +5580,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                             >
                               <span
                                 aria-hidden="true"
-                                className={`absolute inset-x-0 top-0 h-1 ${card.id === "stt" ? "bg-[#f97316]" : card.id === "llm" ? "bg-[#3b82f6]" : "bg-[#c026d3]"}`}
+                                className={`absolute inset-x-0 top-0 h-1 ${card.id === "stt" ? "bg-[#f97316]" : card.id === "llm" ? "bg-[#108D82]" : "bg-[#c026d3]"}`}
                               />
                               <span className="flex items-center justify-between gap-3">
                                 <span className="flex min-w-0 items-center gap-2">
@@ -5591,7 +5591,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                                     {card.label}
                                   </span>
                                 </span>
-                                <span className="grid size-8 shrink-0 place-items-center rounded-lg border border-[#d7e0dd] bg-white text-[#737789] transition group-hover:border-[#aeb4e5] group-hover:bg-[#f5f5fc] group-hover:text-[#0e6f62]">
+                                <span className="grid size-8 shrink-0 place-items-center rounded-lg border border-[#d7e0dd] bg-white text-[#737789] transition group-hover:border-[#108D82] group-hover:bg-[#f5f5fc] group-hover:text-[#0e6f62]">
                                   <Icon icon="edit" />
                                 </span>
                               </span>
@@ -5609,7 +5609,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                                 className="flex h-5 w-full shrink-0 items-center justify-center lg:h-auto lg:w-5"
                                 aria-hidden="true"
                               >
-                                <span className="h-full w-1 rounded-full bg-[linear-gradient(180deg,#14b8a6_0%,#f97316_33%,#3b82f6_66%,#c026d3_100%)] shadow-[0_0_10px_rgba(17,135,120,0.24)] lg:h-1 lg:w-full lg:bg-[linear-gradient(90deg,#14b8a6_0%,#f97316_33%,#3b82f6_66%,#c026d3_100%)]" />
+                                <span className="h-full w-1 rounded-full bg-[linear-gradient(180deg,#14b8a6_0%,#f97316_33%,#108D82_66%,#c026d3_100%)] shadow-[0_0_10px_rgba(17,135,120,0.24)] lg:h-1 lg:w-full lg:bg-[linear-gradient(90deg,#14b8a6_0%,#f97316_33%,#108D82_66%,#c026d3_100%)]" />
                               </span>
                             ) : null}
                           </div>

@@ -391,8 +391,8 @@
 }
 
 .design-four-security-row a:first-child {
-  border-color: #118778;
-  background: #118778;
+  border-color: #108D82;
+  background: #108D82;
   color: #fff;
 }
 
@@ -722,7 +722,7 @@
   padding: 78px clamp(24px, 3.5vw, 48px) 220px;
 }
 
-.design-four-footer-brand > a { display: inline-flex; opacity: 0; filter: brightness(0) invert(1); }
+.design-four-footer-brand > a { display: inline-flex; opacity: 0; filter: brightness(0) saturate(100%) invert(78%) sepia(81%) saturate(2641%) hue-rotate(118deg) brightness(58%) contrast(87%); }
 .design-four-footer.is-visible .design-four-footer-brand > a { animation: design-four-footer-logo-bounce 1s cubic-bezier(.2,.75,.25,1) both; }
 .design-four-footer-brand > a > span { width: 260px !important; height: 70px !important; }
 .design-four-footer-brand > a img { width: 260px !important; height: auto !important; }

@@ -551,7 +551,7 @@ export function ContactExperience() {
         }
 
         #contact-page .contact-form-field:focus {
-          border-color: #8b82d9 !important;
+          border-color: #108D82 !important;
           background: #fcfbff !important;
           box-shadow:
             0 0 0 3px rgba(139, 130, 217, 0.10),

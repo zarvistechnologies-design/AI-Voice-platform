@@ -19,7 +19,7 @@ const layers = [
     heading: "What it's authorized to say",
     body: "Product information, policies, FAQs, and internal documentation. The agent answers only from approved sources, reducing the risk of inconsistent or inaccurate responses at scale.",
     accent: "text-[#b8a9ff]",
-    iconBackground: "bg-[#9d8cff]/12",
+    iconBackground: "bg-[#108D82]/12",
     icon: "knowledge",
   },
   {
@@ -42,7 +42,7 @@ const buildSteps = [
   {
     title: "Add its knowledge",
     body: "Connect approved documentation, policies, and FAQs.",
-    color: "#8dd7ff",
+    color: "#108D82",
   },
   {
     title: "Connect its actions",
@@ -77,13 +77,13 @@ const configuration = [
     label: "Supported languages",
     detail: "40+, including cloned voice for brand consistency",
     icon: "language",
-    color: "text-[#8dd7ff] bg-[#38bdf8]/10 border-[#38bdf8]/18",
+    color: "text-[#108D82] bg-[#38bdf8]/10 border-[#38bdf8]/18",
   },
   {
     label: "Knowledge sources",
     detail: "Documents, FAQs, policies, and product data",
     icon: "knowledge",
-    color: "text-[#b8a9ff] bg-[#9d8cff]/10 border-[#9d8cff]/18",
+    color: "text-[#b8a9ff] bg-[#108D82]/10 border-[#108D82]/18",
   },
   {
     label: "Integrations",
@@ -113,7 +113,7 @@ const configuration = [
     label: "Access and permissions",
     detail: "Control configuration rights across team members",
     icon: "permissions",
-    color: "text-[#c4b5fd] bg-[#a78bfa]/10 border-[#a78bfa]/18",
+    color: "text-[#c4b5fd] bg-[#108D82]/10 border-[#108D82]/18",
   },
 ] as const;
 
@@ -236,7 +236,7 @@ export function VoiceAgentsProductPage() {
 
                 <h1 className="mt-7 text-[clamp(2rem,3.1vw,3.1rem)] leading-[0.98] font-semibold tracking-[-0.055em]">
                   <span className="block">Build Intelligent</span>
-                  <span className="block bg-[linear-gradient(100deg,#5eead4_4%,#8dd7ff_36%,#b8a9ff_68%,#ff9fb7_100%)] bg-clip-text text-transparent">
+                  <span className="block bg-[linear-gradient(100deg,#5eead4_4%,#108D82_36%,#b8a9ff_68%,#ff9fb7_100%)] bg-clip-text text-transparent">
                     Voice Agents
                   </span>
                 </h1>
@@ -249,7 +249,7 @@ export function VoiceAgentsProductPage() {
                   <Link className="inline-flex min-h-13 items-center justify-center rounded-xl bg-[#5eead4] px-6 text-sm font-bold text-[#06201c] shadow-[0_14px_40px_rgba(45,212,191,0.18)] transition hover:-translate-y-0.5 hover:bg-white" href="/dashboard/agents">
                     Start building <span className="ml-3" aria-hidden="true">→</span>
                   </Link>
-                  <a className="inline-flex min-h-13 items-center justify-center rounded-xl border border-white/13 bg-white/[0.045] px-6 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:border-[#b8a9ff]/45 hover:bg-[#9d8cff]/10" href="mailto:hello@vozon.ai">
+                  <a className="inline-flex min-h-13 items-center justify-center rounded-xl border border-white/13 bg-white/[0.045] px-6 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:border-[#b8a9ff]/45 hover:bg-[#108D82]/10" href="mailto:hello@vozon.ai">
                     Talk to sales
                   </a>
                 </div>
@@ -299,7 +299,7 @@ export function VoiceAgentsProductPage() {
                       </div>
 
                       <div className="flex gap-3">
-                        <span className="grid size-7 shrink-0 place-items-center rounded-full bg-[#9d8cff]/14 text-[9px] font-black text-[#c4b8ff]">AI</span>
+                        <span className="grid size-7 shrink-0 place-items-center rounded-full bg-[#108D82]/14 text-[9px] font-black text-[#c4b8ff]">AI</span>
                         <div className="min-w-0 flex-1">
                           <p className="text-[10px] font-semibold text-[#c4b8ff]/70">Agent <span className="ml-1 font-normal text-white/28">Now</span></p>
                           <p className="mt-1.5 max-w-[410px] text-[13px] leading-6 text-white/90">Friday at 2:30 PM is available. I&apos;ve moved the visit and sent a confirmation.</p>
@@ -417,7 +417,7 @@ export function VoiceAgentsProductPage() {
             </div>
 
             <div className="relative mt-16 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              <div className="pointer-events-none absolute top-9 right-[10%] left-[10%] hidden h-px bg-[linear-gradient(90deg,#5eead4,#8dd7ff,#b8a9ff,#ff9fb7,#ffb37d,#f6db75)] opacity-30 xl:block" />
+              <div className="pointer-events-none absolute top-9 right-[10%] left-[10%] hidden h-px bg-[linear-gradient(90deg,#5eead4,#108D82,#b8a9ff,#ff9fb7,#ffb37d,#f6db75)] opacity-30 xl:block" />
               {buildSteps.map((step, index) => (
                 <article className="group relative rounded-2xl border border-white/[0.075] bg-white/[0.026] p-6 transition hover:border-white/15 hover:bg-white/[0.04] sm:p-7" key={step.title}>
                   <div className="relative z-10 flex items-center justify-between">
@@ -517,7 +517,7 @@ export function VoiceAgentsProductPage() {
           <div className="voice-ready-card relative mx-auto max-w-[1380px] overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(120deg,#102a2d_0%,#182447_48%,#30203e_100%)] px-6 py-16 text-center shadow-[0_30px_90px_rgba(0,0,0,0.26)] sm:px-10 sm:py-20 lg:px-16 lg:py-24">
             <div className="pointer-events-none absolute -top-36 -left-16 size-80 rounded-full bg-[#2dd4bf]/24 blur-[90px]" />
             <div className="pointer-events-none absolute -right-10 -bottom-48 size-96 rounded-full bg-[#fb7185]/22 blur-[110px]" />
-            <div className="pointer-events-none absolute top-0 right-[28%] size-72 rounded-full bg-[#9d8cff]/17 blur-[90px]" />
+            <div className="pointer-events-none absolute top-0 right-[28%] size-72 rounded-full bg-[#108D82]/17 blur-[90px]" />
             <div className="pointer-events-none absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] [background-size:48px_48px] [mask-image:radial-gradient(circle_at_center,black,transparent_76%)]" />
             <div className="relative mx-auto max-w-[970px]">
               <div className="flex justify-center"><Eyebrow>Ready to build</Eyebrow></div>
