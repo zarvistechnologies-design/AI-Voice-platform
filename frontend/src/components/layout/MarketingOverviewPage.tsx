@@ -115,7 +115,7 @@ export function MarketingOverviewPage({ eyebrow, title, summary, groups, proof, 
                       index % 4 === 0
                         ? "bg-cyan-100 text-cyan-800"
                         : index % 4 === 1
-                          ? "bg-sky-100 text-sky-800"
+                          ? "bg-sky-100 text-[#108D82]"
                           : index % 4 === 2
                             ? "bg-emerald-100 text-emerald-800"
                             : "bg-amber-100 text-amber-800"
