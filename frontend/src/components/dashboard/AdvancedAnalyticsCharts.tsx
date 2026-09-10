@@ -401,30 +401,13 @@ export function AdvancedAnalyticsCharts({
   return (
     <section className="space-y-5 text-[#171923]">
       <section className="dashboard-flat-panel overflow-hidden bg-white">
-        <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-6">
-          <div>
-            <span className="text-[10px] font-bold uppercase tracking-[.18em] text-[#0e6f62]">
-              Conversation intelligence
-            </span>
-            <h2 className="mt-1 text-lg font-semibold tracking-[-.02em]">
-              Performance overview
-            </h2>
-            <p className="mt-1 text-xs leading-5 text-[#71817d]">
-              Follow demand, outcomes, customer behaviour, and operating
-              patterns from one connected view.
-            </p>
-          </div>
-          <span className="rounded-full bg-[#edf7f4] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.14em] text-[#0e6f62]">
-            Live workspace data
-          </span>
-        </div>
-
-        <div className="grid grid-cols-2 border-t border-[#e5e7ef] bg-[#fafcfb] sm:grid-cols-3 xl:grid-cols-6">
-          {periodMetrics.map((metric, index) => (
+        <div className="grid grid-cols-2 gap-3 px-4 py-4 sm:grid-cols-3 sm:px-5 xl:grid-cols-6">
+          {periodMetrics.map((metric) => (
             <div
-              className={`px-5 py-3.5 ${index % 2 ? "border-l" : ""} border-b border-[#e5e7ef] sm:border-l sm:[&:nth-child(3n+1)]:border-l-0 xl:border-b-0 xl:[&:nth-child(3n+1)]:border-l xl:first:border-l-0`}
+              className="relative overflow-hidden rounded-xl border border-[#e1e9e6] bg-white px-4 py-4 shadow-[0_6px_18px_rgba(17,62,53,0.05)]"
               key={metric.label}
             >
+              <span className="absolute inset-y-3 left-0 w-1 rounded-r-full bg-[#118778]" aria-hidden="true" />
               <span className="block text-[10px] font-semibold uppercase tracking-[.12em] text-[#71817d]">
                 {metric.label}
               </span>
