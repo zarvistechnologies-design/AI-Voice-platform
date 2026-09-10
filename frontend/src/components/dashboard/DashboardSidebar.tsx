@@ -402,7 +402,7 @@ export function DashboardSidebar({
                           : "lg:justify-center"
                       } ${
                         isActive
-                          ? "bg-[#edf7f4] text-[#123d35] shadow-[inset_0_0_0_1px_rgba(17,135,120,0.12)]"
+                          ? "bg-[#118778] text-white shadow-[0_8px_18px_rgba(17,135,120,0.18)]"
                           : "text-[#52645f] hover:bg-[#f3f6f5] hover:text-[#20342e]"
                       }`}
                       href={item.href}
@@ -425,13 +425,13 @@ export function DashboardSidebar({
                       aria-current={isActive ? "page" : undefined}
                     >
                       <span
-                        className={`dashboard-sidebar-icon grid size-8 shrink-0 place-items-center rounded-lg ${isActive ? "bg-[#118778]/10" : ""}`}
+                        className={`dashboard-sidebar-icon grid size-8 shrink-0 place-items-center rounded-lg ${isActive ? "bg-white/10" : ""}`}
                       >
                         <SidebarIcon icon={item.icon} />
                       </span>
                       {showUserSidebar ? (
                         <span
-                          className={`dashboard-sidebar-label app-body hidden truncate font-medium lg:block ${isActive ? "text-[#123d35]" : "text-[#52645f]"}`}
+                          className={`dashboard-sidebar-label app-body hidden truncate font-medium lg:block ${isActive ? "text-white" : "text-[#52645f]"}`}
                         >
                           {item.label}
                         </span>
@@ -590,7 +590,7 @@ export function DashboardSidebar({
         </div>
 
         <button
-          className="dashboard-sidebar-toggle absolute right-0 top-[68px] z-[60] hidden size-9 touch-manipulation select-none translate-x-1/2 cursor-pointer place-items-center rounded-full border border-[#118778]/20 bg-white text-[#71817d] shadow-[0_5px_16px_rgba(17,135,120,0.14)] transition hover:border-[#9fcfc3] hover:bg-[#edf7f4] hover:text-[#123d35] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#118778]/45 active:scale-95 motion-reduce:transition-none lg:grid"
+          className="dashboard-sidebar-toggle absolute z-[60] hidden size-7 touch-manipulation select-none cursor-pointer place-items-center rounded-[9px] border border-[#0e6f62] bg-[#123d35] text-white shadow-[0_5px_14px_rgba(18,61,53,0.2)] transition hover:border-[#118778] hover:bg-[#118778] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#118778]/45 active:scale-95 motion-reduce:transition-none lg:grid"
           type="button"
           title={showUserSidebar ? "Collapse sidebar" : "Expand sidebar"}
           aria-label={showUserSidebar ? "Collapse sidebar" : "Expand sidebar"}
