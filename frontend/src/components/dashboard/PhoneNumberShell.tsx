@@ -240,10 +240,6 @@ export function PhoneNumberShell() {
     () => Array.from(new Set(numbers.map((number) => number.provider))).sort(),
     [numbers],
   );
-  const readyCount = numbers.filter(
-    (number) => number.status === "Ready" && number.lifecycle !== "deleting",
-  ).length;
-  const unassignedCount = numbers.filter((number) => !number.agentId).length;
   const filteredNumbers = useMemo(() => {
     const query = search.trim().toLowerCase();
     return numbers.filter((number) => {
@@ -583,7 +579,7 @@ export function PhoneNumberShell() {
           }
         />
 
-        <div className="dashboard-page-content grid w-full gap-3 py-2">
+        <div className="dashboard-page-content grid w-full gap-3 py-0">
           {notice ? (
             <Notice
               tone="success"
@@ -596,34 +592,6 @@ export function PhoneNumberShell() {
           ) : null}
 
           <section className="dashboard-primary-panel dashboard-flat-panel overflow-hidden bg-white">
-            <div className="dashboard-panel-heading flex flex-col gap-4 border-b border-[#e6ecea] bg-[linear-gradient(135deg,#ffffff_0%,#fafcfb_100%)] px-4 py-4 sm:px-5 lg:flex-row lg:items-center lg:justify-between">
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-[.16em] text-[#0e6f62]">
-                  Number inventory
-                </span>
-                <h2 className="mt-1 mb-0 text-base font-semibold tracking-[-.02em] text-[#171923]">
-                  Your phone numbers
-                </h2>
-                <span className="app-caption mt-0.5 block">
-                  Assign, monitor, and manage every telephony route.
-                </span>
-              </div>
-              <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
-                <span className="rounded-full bg-[#edf7f4] px-3 py-1.5 text-[#123d35]">
-                  {numbers.length} total
-                </span>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-emerald-700">
-                  <span className="size-1.5 rounded-full bg-emerald-500" />
-                  {readyCount} ready
-                </span>
-                <span
-                  className={`rounded-full px-3 py-1.5 ${unassignedCount ? "bg-amber-50 text-amber-700" : "bg-slate-100 text-slate-600"}`}
-                >
-                  {unassignedCount} unassigned
-                </span>
-              </div>
-            </div>
-
             <div className="dashboard-filter-bar grid gap-2 border-b border-[#e6ecea] p-4 lg:grid-cols-[minmax(260px,1fr)_180px_180px_180px_auto]">
               <label className="relative min-w-0">
                 <span className="sr-only">Search phone numbers</span>

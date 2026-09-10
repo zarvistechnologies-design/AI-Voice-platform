@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import {
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
   useSyncExternalStore,
@@ -358,27 +357,6 @@ export function CallLogsShell() {
     session,
   ]);
 
-  const metrics = useMemo(() => {
-    const completed = calls.filter(
-      (call) => call.status === "completed",
-    ).length;
-    const active = calls.filter((call) => call.status === "active").length;
-    const charged = calls.reduce(
-      (sum, call) =>
-        sum +
-        (call.billing?.estimatedChargeCredits ??
-          call.billing?.chargedCredits ??
-          0),
-      0,
-    );
-    const averageDuration = calls.length
-      ? Math.round(
-          calls.reduce((sum, call) => sum + call.durationSeconds, 0) /
-            calls.length,
-        )
-      : 0;
-    return { completed, active, averageDuration, charged };
-  }, [calls]);
   const advancedFilterCount =
     [sentiment, phoneNumber, startTime, endTime].filter(Boolean).length +
     (minDuration ? 1 : 0);
@@ -484,58 +462,8 @@ export function CallLogsShell() {
             </>
           }
         />
-        <div className="dashboard-page-content grid w-full py-2">
+        <div className="dashboard-page-content grid w-full py-0">
           <section className="dashboard-flat-panel overflow-hidden bg-white">
-            <div className="dashboard-panel-heading flex flex-col gap-4 px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
-              <div className="flex min-w-0 items-center gap-3">
-                <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#edf7f4] text-[#0e6f62]">
-                  <svg
-                    className="size-5"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M4.5 4.5h11v11h-11zM7 8h6M7 11h4"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </span>
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-                    <h2 className="text-base font-semibold tracking-[-.015em] text-slate-950">
-                      Call activity
-                    </h2>
-                    <span className="text-xs font-medium text-slate-500">
-                      {total.toLocaleString("en-IN")} records
-                    </span>
-                  </div>
-                  <p className="mt-0.5 text-xs text-slate-500">
-                    Search, review, and export every conversation from one view.
-                  </p>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-x-8 gap-y-3 sm:grid-cols-4">
-                {[
-                  ["Completed", metrics.completed],
-                  ["Live now", metrics.active],
-                  ["Avg duration", formatDuration(metrics.averageDuration)],
-                  ["Customer cost", money(metrics.charged)],
-                ].map(([label, value]) => (
-                  <span key={label}>
-                    <span className="block text-[10px] font-semibold uppercase tracking-[.12em] text-slate-500">
-                      {label}
-                    </span>
-                    <strong className="mt-1 block text-base font-semibold tracking-tight text-slate-950">
-                      {value}
-                    </strong>
-                  </span>
-                ))}
-              </div>
-            </div>
             <div className="dashboard-filter-bar grid gap-3 p-4">
               <div className="grid gap-2 md:grid-cols-[minmax(240px,1fr)_auto_auto_auto_auto]">
                 <input

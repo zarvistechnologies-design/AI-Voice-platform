@@ -147,8 +147,6 @@ export function AgentsListShell() {
       });
   }, [agents, query, sortBy, statusFilter]);
 
-  const liveCount = agents.filter((agent) => agent.status === "Live").length;
-
   async function createAgent() {
     const name = agentName.trim();
     if (!name) {
@@ -276,7 +274,7 @@ export function AgentsListShell() {
           }
         />
 
-        <section className="dashboard-page-content grid w-full gap-3 py-2">
+        <section className="dashboard-page-content grid w-full gap-3 py-0">
           {notice && !showCreateForm && !editingAgent ? (
             <div className="rounded-lg border border-[#dfe7e4] bg-white px-4 py-3 text-sm font-medium text-[#52645f] shadow-sm" role="status" aria-live="polite">
               {notice}
@@ -326,11 +324,6 @@ export function AgentsListShell() {
                   <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-[#71817d]"><Icon icon="chevron" /></span>
                 </label>
               </div>
-            </div>
-
-            <div className="mx-3 flex items-center justify-between gap-3 rounded-lg bg-[#f7f9f8] px-3 py-2.5">
-              <p className="m-0 text-sm font-semibold text-[#20342e]">{filteredAgents.length} {filteredAgents.length === 1 ? "agent" : "agents"}</p>
-              <p className="m-0 flex items-center gap-2 text-xs font-medium text-[#71817d]"><span className="size-2 rounded-full bg-emerald-500 ring-4 ring-emerald-50" />{liveCount} live</p>
             </div>
 
             <div className="hidden grid-cols-[minmax(260px,1.6fr)_minmax(190px,0.9fr)_120px_48px] items-center gap-5 px-5 pt-4 pb-2 text-[10px] font-bold uppercase tracking-[0.14em] text-[#71817d] md:grid">

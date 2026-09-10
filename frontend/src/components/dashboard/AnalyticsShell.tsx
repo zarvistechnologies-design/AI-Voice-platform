@@ -735,7 +735,7 @@ export function AnalyticsShell() {
             </div>
           }
         />
-        <div className="dashboard-page-content w-full py-2">
+        <div className="dashboard-page-content w-full py-0">
           {notice ? (
             <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
               {notice}

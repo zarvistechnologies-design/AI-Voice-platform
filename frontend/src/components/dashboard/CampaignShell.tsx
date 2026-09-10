@@ -848,7 +848,7 @@ export function CampaignShell() {
           }
         />
 
-        <div className="dashboard-page-content w-full py-2">
+        <div className="dashboard-page-content w-full py-0">
           {!showCreateCampaign && notice ? (
             <Notice
               tone="success"
