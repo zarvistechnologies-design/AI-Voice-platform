@@ -1,4 +1,10 @@
 @import "tailwindcss";
+
+/* Keep the public Vozon mark aligned with the dashboard palette. Partner
+   logos retain their uploaded colors on white-label hostnames. */
+html:not([data-brand-source="white_label"]) .platform-brand-logo {
+  filter: brightness(0) saturate(100%) invert(42%) sepia(42%) saturate(920%) hue-rotate(123deg) brightness(88%) contrast(91%);
+}
 @source not "../../.runlogs";
 
 .login-auth-form input:-webkit-autofill,

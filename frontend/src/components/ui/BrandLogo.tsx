@@ -29,11 +29,11 @@ export function BrandLogo({
           }`}
         >
           {logoUrl.startsWith("/") ? (
-            <Image alt={brand.productName} className="h-full w-full object-contain" height={350} loading="eager" src={logoUrl} width={1160} />
+            <Image alt={brand.productName} className="platform-brand-logo h-full w-full object-contain" height={350} loading="eager" src={logoUrl} width={1160} />
           ) : (
             // Partner assets are already served by the approved asset/domain pipeline.
             // eslint-disable-next-line @next/next/no-img-element
-            <img alt={brand.productName} className="h-full w-full object-contain" src={logoUrl} />
+            <img alt={brand.productName} className="platform-brand-logo h-full w-full object-contain" src={logoUrl} />
           )}
         </span>
       ) : (
