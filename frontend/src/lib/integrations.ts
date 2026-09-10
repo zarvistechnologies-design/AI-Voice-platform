@@ -64,7 +64,7 @@ async function request<T>(path: string, init: RequestInit = {}) {
 }
 
 export const integrationsApi = {
-  list: () => cachedApiRequest("integrations", "/", 15_000, () => request<{ providers: IntegrationProvider[] }>("/")),
+  list: () => cachedApiRequest("integrations", "/", 60_000, () => request<{ providers: IntegrationProvider[] }>("/")),
   connect: async (provider: Exclude<IntegrationProvider["id"], "vobiz">, credential: string) => {
     const result = await request<IntegrationProvider>(`/${provider}`, {
       method: "PUT",
