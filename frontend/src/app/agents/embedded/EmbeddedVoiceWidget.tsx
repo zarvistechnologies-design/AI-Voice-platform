@@ -61,7 +61,7 @@ export function EmbeddedVoiceWidget() {
 
   const theme = agent?.theme ?? queryTheme ?? "auto";
   const isDark = theme === "dark" || (theme === "auto" && typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches);
-  const accentColor = agent?.accentColor || queryAccent || "#108D82";
+  const accentColor = agent?.accentColor || queryAccent || "#1438f5";
   const buttonText = agent?.buttonText || "Talk to us";
 
   const postSize = useCallback((open: boolean) => {

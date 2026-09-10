@@ -34,8 +34,8 @@ const stageAccents = [
     line: "from-[#45ddce]",
   },
   {
-    number: "text-[#c6bdff] border-[#108D82]/30 bg-[#108D82]/10",
-    line: "from-[#108D82]",
+    number: "text-[#c6bdff] border-[#8f83e8]/30 bg-[#8f83e8]/10",
+    line: "from-[#8f83e8]",
   },
   {
     number: "text-[#ffbd8c] border-[#f28d45]/30 bg-[#f28d45]/10",
@@ -129,14 +129,14 @@ function HeroConsole() {
 
             <div className="relative mt-7 grid gap-3 md:grid-cols-[1fr_168px]">
               <div className="relative min-h-[285px] rounded-xl border border-white/[0.08] bg-black/25 p-4">
-                <div className="absolute left-[33px] top-[55px] h-[165px] w-px bg-gradient-to-b from-[#45ddce]/70 via-[#45ddce]/30 to-[#108D82]/60" />
+                <div className="absolute left-[33px] top-[55px] h-[165px] w-px bg-gradient-to-b from-[#45ddce]/70 via-[#45ddce]/30 to-[#8f83e8]/60" />
                 {[
                   ["01", "Welcome caller", "Natural greeting + intent"],
                   ["02", "Check availability", "Calendar function"],
                   ["03", "Confirm next step", "Book or warm transfer"],
                 ].map(([number, title, meta], index) => (
-                  <div className={`relative flex items-center gap-3 rounded-xl border px-3 py-3 ${index === 1 ? "ml-5 border-[#108D82]/28 bg-[#108D82]/[0.08]" : "border-[#45ddce]/20 bg-[#45ddce]/[0.055]"} ${index > 0 ? "mt-4" : ""}`} key={title}>
-                    <span className={`relative z-10 grid size-8 shrink-0 place-items-center rounded-lg text-[9px] font-black ${index === 1 ? "bg-[#108D82] text-white" : "bg-[#45ddce] text-[#03110e]"}`}>{number}</span>
+                  <div className={`relative flex items-center gap-3 rounded-xl border px-3 py-3 ${index === 1 ? "ml-5 border-[#8f83e8]/28 bg-[#8f83e8]/[0.08]" : "border-[#45ddce]/20 bg-[#45ddce]/[0.055]"} ${index > 0 ? "mt-4" : ""}`} key={title}>
+                    <span className={`relative z-10 grid size-8 shrink-0 place-items-center rounded-lg text-[9px] font-black ${index === 1 ? "bg-[#8f83e8] text-white" : "bg-[#45ddce] text-[#03110e]"}`}>{number}</span>
                     <div className="min-w-0">
                       <strong className="block truncate text-[11px] text-white/90">{title}</strong>
                       <span className="mt-1 block truncate text-[8px] text-white/35">{meta}</span>
@@ -154,7 +154,7 @@ function HeroConsole() {
                   <strong className="block text-[#75fff0]">Agent</strong>
                   How can I help with your appointment today?
                 </div>
-                <div className="mt-2 rounded-lg bg-[#108D82]/10 p-2.5 text-[8px] leading-4 text-white/45">
+                <div className="mt-2 rounded-lg bg-[#8f83e8]/10 p-2.5 text-[8px] leading-4 text-white/45">
                   <strong className="block text-[#c6bdff]">Caller</strong>
                   I need to move it to Friday afternoon.
                 </div>
@@ -185,14 +185,14 @@ function StageVisual({ index }: { index: number }) {
           <span className="rounded-full border border-[#118778]/20 bg-white px-3 py-1.5 text-[9px] font-bold text-[#118778]">Auto-saved</span>
         </div>
         <div className="relative mx-auto mt-10 max-w-md">
-          <div className="absolute left-8 top-12 h-[190px] w-px bg-gradient-to-b from-[#45ddce] via-[#45ddce]/30 to-[#108D82]" />
+          <div className="absolute left-8 top-12 h-[190px] w-px bg-gradient-to-b from-[#45ddce] via-[#45ddce]/30 to-[#8f83e8]" />
           {[
             ["Greeting", "Understand intent and caller context"],
             ["Business knowledge", "Use approved answers and live data"],
             ["Take action", "Book, update, notify, or transfer"],
           ].map(([title, body], itemIndex) => (
             <div className={`relative flex gap-4 rounded-2xl border bg-white p-4 shadow-[0_8px_24px_rgba(38,52,102,0.05)] ${itemIndex === 1 ? "ml-12 border-[#118778]/25" : "border-[#118778]/20"} ${itemIndex > 0 ? "mt-5" : ""}`} key={title}>
-              <span className={`relative z-10 grid size-9 shrink-0 place-items-center rounded-xl text-[10px] font-black ${itemIndex === 1 ? "bg-[#108D82]" : "bg-[#45ddce] text-[#03110e]"}`}>0{itemIndex + 1}</span>
+              <span className={`relative z-10 grid size-9 shrink-0 place-items-center rounded-xl text-[10px] font-black ${itemIndex === 1 ? "bg-[#8f83e8]" : "bg-[#45ddce] text-[#03110e]"}`}>0{itemIndex + 1}</span>
               <div><strong className="text-sm text-[#17203f]">{title}</strong><p className="mb-0 mt-1 text-[11px] leading-5 text-[#5d6478]">{body}</p></div>
             </div>
           ))}
@@ -216,13 +216,13 @@ function StageVisual({ index }: { index: number }) {
             ["Human handoff", "Support queue", "Ready"],
           ].map(([title, detail, status], itemIndex) => (
             <div className="rounded-2xl border border-[#e3defb] bg-white p-4 shadow-[0_8px_24px_rgba(55,46,120,0.05)]" key={title}>
-              <div className="flex items-center justify-between"><span className="product-deployment-icon grid size-9 place-items-center rounded-xl bg-[#108D82]/14 text-[#c6bdff]"><ProductGlyph type={itemIndex % 2 ? "workflow" : "voice"} /></span><span className="product-deployment-status rounded-full bg-emerald-300/10 px-2 py-1 text-[8px] font-bold text-emerald-300">{status}</span></div>
+              <div className="flex items-center justify-between"><span className="product-deployment-icon grid size-9 place-items-center rounded-xl bg-[#8f83e8]/14 text-[#c6bdff]"><ProductGlyph type={itemIndex % 2 ? "workflow" : "voice"} /></span><span className="product-deployment-status rounded-full bg-emerald-300/10 px-2 py-1 text-[8px] font-bold text-emerald-300">{status}</span></div>
               <strong className="mt-5 block text-sm text-[#17203f]">{title}</strong>
               <span className="mt-1 block text-[10px] text-[#5d6478]">{detail}</span>
             </div>
           ))}
         </div>
-        <div className="product-deployment-summary relative mt-4 flex items-center justify-between rounded-xl border border-[#108D82]/20 bg-[#108D82]/[0.07] px-4 py-3">
+        <div className="product-deployment-summary relative mt-4 flex items-center justify-between rounded-xl border border-[#8f83e8]/20 bg-[#8f83e8]/[0.07] px-4 py-3">
           <span className="text-[10px] font-bold text-[#5d6478]">Production agent</span><span className="product-deployment-deployed rounded-lg bg-[#118778] px-3 py-2 text-[9px] font-black text-white">Deployed</span>
         </div>
       </div>

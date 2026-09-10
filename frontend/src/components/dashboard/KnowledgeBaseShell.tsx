@@ -170,7 +170,7 @@ function sourceTypeLabel(source: KnowledgeSource) {
 function statusStyle(status: KnowledgeSource["status"]) {
   if (status === "ready") return "bg-[#ecfdf5] text-[#047857]";
   if (status === "failed") return "bg-[#fff1f2] text-[#b91c1c]";
-  if (status === "processing") return "bg-[#eff6ff] text-[#108D82]";
+  if (status === "processing") return "bg-[#eff6ff] text-[#1d4ed8]";
   return "bg-[#f1f5f9] text-[#64748b]";
 }
 

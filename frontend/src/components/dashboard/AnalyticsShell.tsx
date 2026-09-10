@@ -184,7 +184,7 @@ function TrendChart({ rows }: { rows: AnalyticsOverview["timeSeries"] }) {
         <polyline
           points={completePoints}
           fill="none"
-          stroke="#108D82"
+          stroke="#7c8cff"
           strokeWidth="1.4"
           strokeDasharray="4 3"
           vectorEffect="non-scaling-stroke"
@@ -896,7 +896,7 @@ export function AnalyticsShell() {
                     All calls
                   </span>
                   <span>
-                    <i className="mr-2 inline-block size-2 rounded-full bg-[#108D82]" />
+                    <i className="mr-2 inline-block size-2 rounded-full bg-[#7c8cff]" />
                     Completed
                   </span>
                 </div>
@@ -1023,7 +1023,7 @@ export function AnalyticsShell() {
                   (sum, row) => sum + row.value,
                   0,
                 )}
-                colors={["#22c98f", "#108D82", "#ef5d7a"]}
+                colors={["#22c98f", "#7c8cff", "#ef5d7a"]}
               />
             </article>
             <article className="rounded-2xl border border-white/[.08] bg-[#ffffff]/85 p-5 sm:p-6">
