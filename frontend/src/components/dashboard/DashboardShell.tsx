@@ -1040,6 +1040,8 @@ const geminiRealtimeModels = [
   "gemini-2.0-flash-exp",
 ];
 const geminiRealtimeModelAliases: Record<string, string> = {
+  "gemini-3.1-pro-live-preview": "gemini-3.1-flash-live-preview",
+  "gemini-2.5-pro-native-audio": "gemini-2.5-flash-native-audio",
   "gemini-2.5-flash-native-audio-preview-12-2025": "gemini-2.5-flash-native-audio",
   "gemini-2.5-flash-native-audio-latest": "gemini-2.5-flash-native-audio",
   "gemini-2.5-flash-native-audio-preview-09-2025": "gemini-2.5-flash-native-audio",
@@ -1135,14 +1137,18 @@ const openaiRealtimeModels = [
 ];
 
 function normalizeRealtimeModel(provider: RealtimeProvider, model: string) {
+  let normalized = (model || "").trim();
+  if (normalized.startsWith("models/")) {
+    normalized = normalized.slice("models/".length).trim();
+  }
   if (provider === "gemini") {
-    const resolved = geminiRealtimeModelAliases[model] ?? model;
+    const resolved = geminiRealtimeModelAliases[normalized] ?? normalized;
     return geminiRealtimeModels.includes(resolved)
       ? resolved
       : defaultGeminiRealtimeModel;
   }
   // OpenAI: resolve legacy aliases first, then validate against known models
-  const resolved = openaiRealtimeModelAliases[model] ?? model;
+  const resolved = openaiRealtimeModelAliases[normalized] ?? normalized;
   return openaiRealtimeModels.includes(resolved)
     ? resolved
     : defaultOpenAIRealtimeModel;
