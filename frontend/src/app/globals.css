@@ -1859,8 +1859,8 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
     }
 
     .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-brand {
-      height: 5.75rem;
-      padding: 0.65rem 0.75rem 1rem !important;
+      height: 6.5rem;
+      padding: 0.7rem 0.75rem 1.15rem !important;
       border: 0;
       border-radius: 0;
       background: transparent;
@@ -1977,7 +1977,7 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
     }
 
     .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-toggle {
-      top: 5.35rem;
+      top: 5.85rem;
       border-color: #d7e0dd !important;
       background: #ffffff !important;
       color: #626577 !important;
@@ -2020,8 +2020,9 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
 
   .dashboard-home-theme.dashboard-home-theme .dashboard-page-header {
     border-bottom: 0 !important;
+    border-radius: 0 0 1.25rem 1.25rem;
     background: rgb(255 255 255 / 0.96) !important;
-    box-shadow: none !important;
+    box-shadow: 0 8px 24px rgb(17 62 53 / 0.055) !important;
     backdrop-filter: blur(14px);
   }
 
@@ -2031,8 +2032,8 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
   }
 
   .dashboard-home-theme.dashboard-home-theme .dashboard-page-header-inner {
-    padding-top: 1.15rem;
-    padding-bottom: 1.15rem;
+    padding-top: 1.5rem;
+    padding-bottom: 1.6rem;
   }
 
   .dashboard-home-theme.dashboard-home-theme .dashboard-page-content {

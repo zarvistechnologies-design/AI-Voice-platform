@@ -345,7 +345,7 @@ export function DashboardSidebar({
               className={`dashboard-sidebar-brand-copy flex min-w-0 ${showUserSidebar ? "flex-col items-start justify-center" : "items-center"}`}
             >
               <span
-                className={`dashboard-sidebar-logo-frame relative block shrink-0 overflow-hidden ${showUserSidebar ? "h-10 w-36" : "h-10 w-10"}`}
+                className={`dashboard-sidebar-logo-frame relative block shrink-0 overflow-hidden ${showUserSidebar ? "h-12 w-[168px]" : "h-10 w-10"}`}
               >
                 {brand.logoUrl ? (
                   <Image
@@ -353,7 +353,7 @@ export function DashboardSidebar({
                     className={`dashboard-sidebar-logo object-contain transition group-hover:brightness-110 ${showUserSidebar ? "object-left" : "object-center"}`}
                     fill
                     priority
-                    sizes={showUserSidebar ? "144px" : "40px"}
+                    sizes={showUserSidebar ? "168px" : "40px"}
                     src={showUserSidebar ? brand.logoUrl : brand.iconUrl || brand.logoUrl}
                   />
                 ) : (
@@ -586,7 +586,7 @@ export function DashboardSidebar({
         </div>
 
         <button
-          className="dashboard-sidebar-toggle absolute right-0 top-[68px] hidden size-7 translate-x-1/2 place-items-center rounded-full border border-[#118778]/20 bg-white text-[#71817d] shadow-[0_4px_12px_rgba(37,40,74,0.08)] transition hover:border-[#aeb4e5] hover:bg-[#edf7f4] hover:text-[#123d35] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#118778]/45 motion-reduce:transition-none lg:grid"
+          className="dashboard-sidebar-toggle absolute right-0 top-[68px] z-[60] hidden size-9 touch-manipulation select-none translate-x-1/2 cursor-pointer place-items-center rounded-full border border-[#118778]/20 bg-white text-[#71817d] shadow-[0_5px_16px_rgba(17,135,120,0.14)] transition hover:border-[#9fcfc3] hover:bg-[#edf7f4] hover:text-[#123d35] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#118778]/45 active:scale-95 motion-reduce:transition-none lg:grid"
           type="button"
           title={showUserSidebar ? "Collapse sidebar" : "Expand sidebar"}
           aria-label={showUserSidebar ? "Collapse sidebar" : "Expand sidebar"}
@@ -594,7 +594,7 @@ export function DashboardSidebar({
           onClick={toggleSidebar}
         >
           <svg
-            className={`size-4 fill-none stroke-current stroke-2 transition-transform ${showUserSidebar ? "" : "rotate-180"}`}
+            className={`pointer-events-none size-4 fill-none stroke-current stroke-2 transition-transform ${showUserSidebar ? "" : "rotate-180"}`}
             viewBox="0 0 24 24"
             aria-hidden="true"
           >
