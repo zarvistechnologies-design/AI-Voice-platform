@@ -443,7 +443,7 @@ export function CampaignShell() {
   const [campaignGoal, setCampaignGoal] = useState("");
   const [successCriteria, setSuccessCriteria] = useState("");
   const [respectDnc, setRespectDnc] = useState(true);
-  const [detectVoicemail, setDetectVoicemail] = useState(true);
+  const [detectVoicemail, setDetectVoicemail] = useState(false);
   const [requireConsentLine, setRequireConsentLine] = useState(true);
   const [csvFile, setCsvFile] = useState<File | null>(null);
   const [leads, setLeads] = useState<CampaignLead[]>([]);
@@ -837,6 +837,7 @@ export function CampaignShell() {
               type="button"
               onClick={() => {
                 setCreateStep(1);
+                setDetectVoicemail(false);
                 setShowCreateCampaign(true);
                 setError("");
               }}
@@ -1233,7 +1234,62 @@ export function CampaignShell() {
 
                   {createStep === 4 ? (
                     <Panel>
-                      <div className="grid gap-4">
+                      <section className="rounded-xl bg-[#f7f9f8] p-4 sm:p-5">
+                        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                          <div>
+                            <span className="app-label text-[#0e6f62]">
+                              Required safeguards
+                            </span>
+                            <h3 className="app-section-title mt-1 mb-0">
+                              Safety and compliance
+                            </h3>
+                            <p className="app-caption mt-1 mb-0">
+                              Review these controls before defining the campaign instructions.
+                            </p>
+                          </div>
+                          <span className="w-fit rounded-full bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.1em] text-[#0e6f62]">
+                            Review first
+                          </span>
+                        </div>
+
+                        <div className="mt-4 grid divide-y divide-[#dfe7e4] sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+                          <ToggleRow
+                            title="Respect opt-outs"
+                            detail="Required"
+                            enabled={respectDnc}
+                            onChange={setRespectDnc}
+                          />
+                          <ToggleRow
+                            title="Voicemail detection"
+                            detail={detectVoicemail ? "Enabled" : "Off by default"}
+                            enabled={detectVoicemail}
+                            onChange={setDetectVoicemail}
+                          />
+                          <ToggleRow
+                            title="Consent opening"
+                            detail="Required"
+                            enabled={requireConsentLine}
+                            onChange={setRequireConsentLine}
+                          />
+                        </div>
+
+                        {detectVoicemail ? (
+                          <div
+                            className="mt-4 flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 px-3.5 py-3 text-sm leading-5 text-amber-900"
+                            role="alert"
+                          >
+                            <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-amber-200 font-bold" aria-hidden="true">
+                              !
+                            </span>
+                            <span>
+                              <strong className="block">Voicemail detection is enabled</strong>
+                              It can occasionally classify a live person as voicemail. Test it with your provider and campaign language before launch.
+                            </span>
+                          </div>
+                        ) : null}
+                      </section>
+
+                      <div className="mt-5 grid gap-4">
                         <label className="app-label grid gap-2">
                           Goal
                           <textarea
@@ -1256,35 +1312,6 @@ export function CampaignShell() {
                             }
                           />
                         </label>
-                      </div>
-                      <div className="mt-5 border-t border-[#dbe4e1] pt-5">
-                        <h3 className="app-section-title m-0">
-                          Safety and compliance
-                        </h3>
-                        <p className="app-caption mt-1 mb-0">
-                          Required calling safeguards stay enabled for every
-                          lead.
-                        </p>
-                        <div className="mt-3 grid gap-3 sm:grid-cols-3">
-                          <ToggleRow
-                            title="Respect opt-outs"
-                            detail="Required"
-                            enabled={respectDnc}
-                            onChange={setRespectDnc}
-                          />
-                          <ToggleRow
-                            title="Voicemail detection"
-                            detail="Tag outcomes"
-                            enabled={detectVoicemail}
-                            onChange={setDetectVoicemail}
-                          />
-                          <ToggleRow
-                            title="Consent opening"
-                            detail="Required"
-                            enabled={requireConsentLine}
-                            onChange={setRequireConsentLine}
-                          />
-                        </div>
                       </div>
                     </Panel>
                   ) : null}
@@ -1866,7 +1893,7 @@ function ToggleRow({
 }) {
   return (
     <button
-      className="flex items-center justify-between gap-4 border-b border-white/10 px-1 py-3 text-left transition hover:border-[#118778]/30"
+      className="flex items-center justify-between gap-4 px-3 py-3 text-left transition hover:bg-white/70 sm:first:pr-5 sm:last:pl-5 sm:[&:not(:first-child):not(:last-child)]:px-5"
       onClick={() => onChange(!enabled)}
       type="button"
       aria-pressed={enabled}
@@ -1878,7 +1905,7 @@ function ToggleRow({
         <span className="app-caption mt-1 block">{detail}</span>
       </span>
       <span
-        className={`relative h-6 w-11 rounded-full transition ${enabled ? "bg-[#118778]" : "bg-white/20"}`}
+        className={`relative h-6 w-11 shrink-0 rounded-full transition ${enabled ? "bg-[#118778]" : "bg-[#cbd5e1]"}`}
       >
         <span
           className={`absolute top-1 size-4 rounded-full bg-[#ffffff] shadow transition ${enabled ? "left-6" : "left-1"}`}
