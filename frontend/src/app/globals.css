@@ -19,6 +19,103 @@
   border-color: rgb(69 221 206 / 0.55) !important;
 }
 
+/* Published white-label workspaces inherit their dashboard accent palette
+   from the active brand. Platform hosts keep the default Vozon palette. */
+html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) {
+  --dashboard-moody: var(--brand-primary) !important;
+  --dashboard-moody-dark: color-mix(in srgb, var(--brand-primary) 82%, #000000) !important;
+  --dashboard-moody-soft: color-mix(in srgb, var(--brand-primary) 10%, #ffffff) !important;
+  --dashboard-border-strong: color-mix(in srgb, var(--brand-primary) 25%, #e1e3ed) !important;
+}
+
+html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) .dashboard-sidebar-logo {
+  filter: none !important;
+}
+
+html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :is(
+  [class~="bg-[#5b63ff]"],
+  [class~="bg-[#5963b8]"],
+  [class~="bg-[#737ccf]"]
+) {
+  color: #ffffff !important;
+  border-color: var(--dashboard-moody) !important;
+  background: var(--dashboard-moody) !important;
+}
+
+html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :is(
+  button,
+  a[href]
+):is(
+  [class~="bg-[#5b63ff]"],
+  [class~="bg-[#5963b8]"],
+  [class~="bg-[#737ccf]"]
+):hover:not(:disabled) {
+  background: var(--dashboard-moody-dark) !important;
+}
+
+html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :is(
+  [class~="bg-[#eff0fb]"],
+  [class~="bg-[#f3f4fb]"],
+  [class~="bg-[#f5f5fb]"],
+  [class~="bg-[#f5f5fc]"]
+) {
+  background-color: var(--dashboard-moody-soft) !important;
+}
+
+html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :is(
+  [class~="text-[#4b52df]"],
+  [class~="text-[#515bb4]"],
+  [class~="text-[#5963b8]"],
+  [class~="text-[#5b63ff]"],
+  [class~="text-[#737ccf]"]
+) {
+  color: var(--dashboard-moody-dark) !important;
+}
+
+html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :is(
+  [class~="border-[#a7abff]"],
+  [class~="border-[#b8bde8]"],
+  [class~="border-[#bfc3ea]"],
+  [class~="border-[#c9ccef]"],
+  [class~="border-[#d9dcea]"]
+) {
+  border-color: var(--dashboard-border-strong) !important;
+}
+
+html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :where(
+  button,
+  a[href],
+  input,
+  textarea,
+  select
+):focus-visible {
+  outline-color: var(--dashboard-moody) !important;
+  border-color: var(--dashboard-moody) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 16%, transparent) !important;
+}
+
+@media (min-width: 1024px) {
+  html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav:hover .dashboard-sidebar-icon,
+  html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-toggle:hover {
+    color: var(--dashboard-moody-dark) !important;
+  }
+
+  html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"]::before {
+    background: var(--dashboard-moody) !important;
+  }
+
+  html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-icon {
+    color: var(--dashboard-moody-dark) !important;
+    background: var(--dashboard-moody-soft) !important;
+  }
+
+  html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-avatar {
+    border-color: var(--dashboard-border-strong) !important;
+    color: var(--dashboard-moody-dark) !important;
+    background: var(--dashboard-moody-soft) !important;
+  }
+}
+
 @media (max-height: 700px) {
   .login-auth-form {
     gap: 0.65rem;
