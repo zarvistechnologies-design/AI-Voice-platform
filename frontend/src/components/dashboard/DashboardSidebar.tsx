@@ -7,6 +7,7 @@ import { startTransition, useEffect, useOptimistic, useRef, useState } from "rea
 
 import { useBrand } from "@/components/branding/BrandProvider";
 import { announceDashboardNavigation } from "@/components/dashboard/DashboardNavigationFeedback";
+import { getSession, type AuthSession } from "@/lib/auth";
 
 type SidebarItem = {
   label: string;
@@ -20,7 +21,9 @@ type SidebarItem = {
     | "logs"
     | "billing"
     | "integrations"
-    | "developers";
+    | "developers"
+    | "shield"
+    | "whitelabel";
 };
 
 type SidebarIconName = SidebarItem["icon"];
@@ -194,6 +197,24 @@ function SidebarIcon({ icon }: { icon: SidebarIconName }) {
     );
   }
 
+  if (icon === "shield") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 3 4.5 6v5.2c0 4.8 3 8.1 7.5 9.8 4.5-1.7 7.5-5 7.5-9.8V6L12 3Z" />
+        <path d="m9 12 2 2 4-4" />
+      </svg>
+    );
+  }
+
+  if (icon === "whitelabel") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 2 2 7l10 5 10-5-10-5Z" />
+        <path d="m2 17 10 5 10-5M2 12l10 5 10-5" />
+      </svg>
+    );
+  }
+
   return (
     <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
       <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" />
@@ -228,11 +249,50 @@ export function DashboardSidebar({
   const router = useRouter();
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [optimisticPathname, setOptimisticPathname] = useOptimistic(pathname);
+  const [session, setSession] = useState<AuthSession | null>(null);
   const accountMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    setSession(getSession());
+  }, []);
+
+  const isSuperAdmin = session?.platformRole === "super_admin";
+  const isWhiteLabelPartner = Boolean(session?.organization?.whiteLabelOwnerAccountId);
+
+  const effectiveSidebarGroups = [
+    ...sidebarGroups,
+    ...(isSuperAdmin || isWhiteLabelPartner
+      ? [
+          {
+            label: "Administration",
+            items: [
+              ...(isWhiteLabelPartner
+                ? [
+                    {
+                      label: "White Label",
+                      href: "/dashboard/white-label",
+                      icon: "whitelabel" as const,
+                    },
+                  ]
+                : []),
+              ...(isSuperAdmin
+                ? [
+                    {
+                      label: "Platform Admin",
+                      href: "/platform-admin/white-label",
+                      icon: "shield" as const,
+                    },
+                  ]
+                : []),
+            ],
+          },
+        ]
+      : []),
+  ];
+
+  useEffect(() => {
     const preloadTimer = window.setTimeout(() => {
-      for (const group of sidebarGroups) {
+      for (const group of effectiveSidebarGroups) {
         for (const item of group.items) {
           if (prefetchedDashboardRoutes.has(item.href)) continue;
           prefetchedDashboardRoutes.add(item.href);
@@ -241,7 +301,7 @@ export function DashboardSidebar({
       }
     }, 250);
     return () => window.clearTimeout(preloadTimer);
-  }, [router]);
+  }, [router, effectiveSidebarGroups]);
 
   useEffect(() => {
     try {
@@ -376,7 +436,7 @@ export function DashboardSidebar({
           className="flex min-w-0 flex-1 gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mt-4 lg:block lg:overflow-x-visible lg:overflow-y-auto"
           aria-label="Dashboard navigation"
         >
-          {sidebarGroups.map((group) => (
+          {effectiveSidebarGroups.map((group) => (
             <div className="dashboard-sidebar-group contents lg:mb-5 lg:block" key={group.label}>
               {showUserSidebar ? (
                 <p className="dashboard-sidebar-group-label app-label mb-2 hidden px-3 text-[10px] uppercase tracking-[0.16em] text-[#84938f] lg:block">
