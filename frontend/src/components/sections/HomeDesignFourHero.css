@@ -1,35 +1,486 @@
-.home-design-four__header{z-index:100;height:108px;border-bottom:0;font-size:16px}.home-design-four__header::before{position:absolute;z-index:-1;top:0;left:50%;width:100vw;height:108px;transform:translateX(-50%);background:#f5f5f9;content:""}.home-design-four__header>a:first-child span{width:218px;height:66px}.home-design-four__header nav:first-of-type{gap:49px}.home-design-four__header nav:first-of-type a{display:inline-flex;align-items:center;gap:10px;color:#161619;font-size:17px;font-weight:600}.design-four-nav-chevron{width:10px;height:10px;transform:translateY(-2px) rotate(45deg);border-right:2px solid currentColor;border-bottom:2px solid currentColor}.design-four-get-started,.design-four-sign-up{display:inline-flex;min-height:58px;align-items:center;justify-content:center;border-radius:999px;padding:0 42px;font-size:16px;font-weight:700}.design-four-get-started{border:1.5px solid #111116;color:#111116}.design-four-sign-up{min-width:110px;background:#05050b;color:#fff}.home-design-four__hero{min-height:770px;padding-top:178px;background-color:#f3f6f5;background-image:radial-gradient(circle at 1px 1px,rgba(17,135,120,.18) 1px,transparent 1.2px),linear-gradient(112deg,rgba(231,246,240,.75) 0 22%,transparent 22.2%),linear-gradient(246deg,rgba(237,247,244,.82) 0 21%,transparent 21.2%),linear-gradient(180deg,#f3f6f5 0%,#ffffff 100%);background-position:center,left top,right top,center;background-size:17px 17px,45% 100%,45% 100%,100% 100%}.home-design-four__hero>div:first-child{display:none}.design-four-hero__features{position:relative;z-index:3;display:flex;justify-content:center;gap:32px}.design-four-hero__features span{display:inline-flex;align-items:center;gap:11px;color:#1d1c20;font-size:16px;font-weight:500}.design-four-hero__features i{display:grid;width:27px;height:27px;place-items:center;border-radius:50%;background:#1c0a0a;color:#fff;font-size:15px;font-style:normal;font-weight:900}.home-design-four__hero h1{position:relative;z-index:3;max-width:1160px;margin-top:92px;color:#17171a;font-size:clamp(50px,4.5vw,78px);font-weight:400;line-height:1.27;letter-spacing:-.052em}.home-design-four__hero h1 strong{display:block;color:#000;font-weight:900;line-height:1.05}.design-four-phone{position:relative;z-index:4;display:flex;width:min(552px,100%);height:62px;margin:72px auto 0;align-items:center;border:7px solid rgba(255,255,255,.95);border-radius:999px;background:#fff;box-shadow:0 0 0 1px #d5d5db,0 8px 24px rgba(40,40,75,.08)}.design-four-india-flag{position:relative;width:40px;height:40px;margin-left:2px;overflow:hidden;border-radius:50%;background:linear-gradient(#ff671f 0 33%,#fff 33% 66%,#046a38 66%)}.design-four-india-flag::after{position:absolute;top:50%;left:50%;width:10px;height:10px;transform:translate(-50%,-50%);border:1.5px solid #1a3f9a;border-radius:50%;content:""}.design-four-phone input{min-width:0;flex:1;border:0;outline:0;background:transparent;padding:0 16px;color:#15151a;font:inherit;font-size:16px;font-weight:600}.design-four-phone input::placeholder{color:#aaa9ad}.design-four-phone button{height:46px;border:0;border-radius:999px;background:#070711;padding:0 28px;color:#fff;cursor:pointer;font:inherit;font-size:15px;font-weight:700}.design-four-trust-pill{position:relative;z-index:3;display:inline-flex;min-height:49px;margin-top:49px;align-items:center;border:1px solid #d9dae3;border-radius:999px;padding:0 20px;color:#596071;font-size:21px;letter-spacing:.01em}.design-four-trust-pill strong{margin:0 4px;font-weight:800}.design-four-hero__ambient{position:absolute;inset:0;overflow:hidden;pointer-events:none}.design-four-hero__ambient i{position:absolute;border-radius:50%;background:rgba(17,135,120,.08);filter:blur(2px);animation:designFourHeroFloat 9s ease-in-out infinite alternate}.design-four-hero__ambient i:nth-child(1){top:20%;left:-10%;width:460px;height:460px}.design-four-hero__ambient i:nth-child(2){top:2%;right:-8%;width:420px;height:420px;animation-delay:-3s}.design-four-hero__ambient i:nth-child(3){bottom:-45%;left:35%;width:520px;height:520px;opacity:.34;animation-delay:-6s}.home-design-four__logos{min-height:245px;padding-top:64px;padding-bottom:74px;background:#ffffff}.home-design-four__logos>div{max-width:1520px;gap:38px}.home-design-four__logos b{color:#111114;font-size:clamp(18px,1.7vw,29px);font-weight:800;line-height:.9;letter-spacing:-.045em}.home-design-four__logos b span{color:#777}@keyframes designFourHeroFloat{to{transform:translate3d(18px,-14px,0) scale(1.06)}}
+.home-design-four__header {
+  z-index: 100;
+  height: 108px;
+  border-bottom: 0;
+  font-size: 16px
+}
+
+.home-design-four__header::before {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 50%;
+  width: 100vw;
+  height: 108px;
+  transform: translateX(-50%);
+  background: #f5f5f9;
+  content: ""
+}
+
+.home-design-four__header>a:first-child span {
+  width: 218px;
+  height: 66px
+}
+
+.home-design-four__header nav:first-of-type {
+  gap: 49px
+}
+
+.home-design-four__header nav:first-of-type a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #161619;
+  font-size: 17px;
+  font-weight: 600
+}
+
+.design-four-nav-chevron {
+  width: 10px;
+  height: 10px;
+  transform: translateY(-2px) rotate(45deg);
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor
+}
+
+.design-four-get-started,
+.design-four-sign-up {
+  display: inline-flex;
+  min-height: 58px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0 42px;
+  font-size: 16px;
+  font-weight: 700
+}
+
+.design-four-get-started {
+  border: 1.5px solid #111116;
+  color: #111116
+}
+
+.design-four-sign-up {
+  min-width: 110px;
+  background: #05050b;
+  color: #fff
+}
+
+.home-design-four__hero {
+  min-height: 770px;
+  padding-top: 178px;
+  background-color: #f3f6f5;
+  background-image: radial-gradient(circle at 1px 1px, rgba(17, 135, 120, .18) 1px, transparent 1.2px), linear-gradient(112deg, rgba(231, 246, 240, .75) 0 22%, transparent 22.2%), linear-gradient(246deg, rgba(237, 247, 244, .82) 0 21%, transparent 21.2%), linear-gradient(180deg, #f3f6f5 0%, #ffffff 100%);
+  background-position: center, left top, right top, center;
+  background-size: 17px 17px, 45% 100%, 45% 100%, 100% 100%
+}
+
+.home-design-four__hero>div:first-child {
+  display: none
+}
+
+.design-four-hero__features {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  gap: 32px
+}
+
+.design-four-hero__features span {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  color: #1d1c20;
+  font-size: 16px;
+  font-weight: 500
+}
+
+.design-four-hero__features i {
+  display: grid;
+  width: 27px;
+  height: 27px;
+  place-items: center;
+  border-radius: 50%;
+  background: #1c0a0a;
+  color: #fff;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 900
+}
+
+.home-design-four__hero h1 {
+  position: relative;
+  z-index: 3;
+  max-width: 1160px;
+  margin-top: 92px;
+  color: #17171a;
+  font-size: clamp(50px, 4.5vw, 78px);
+  font-weight: 400;
+  line-height: 1.27;
+  letter-spacing: -.052em
+}
+
+.home-design-four__hero h1 strong {
+  display: block;
+  color: #000;
+  font-weight: 900;
+  line-height: 1.05
+}
+
+.design-four-phone {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  width: min(552px, 100%);
+  height: 62px;
+  margin: 72px auto 0;
+  align-items: center;
+  border: 7px solid rgba(255, 255, 255, .95);
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 0 0 1px #d5d5db, 0 8px 24px rgba(40, 40, 75, .08)
+}
+
+.design-four-india-flag {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  margin-left: 2px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: linear-gradient(#ff671f 0 33%, #fff 33% 66%, #046a38 66%)
+}
+
+.design-four-india-flag::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  transform: translate(-50%, -50%);
+  border: 1.5px solid #1a3f9a;
+  border-radius: 50%;
+  content: ""
+}
+
+.design-four-phone input {
+  min-width: 0;
+  flex: 1;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  padding: 0 16px;
+  color: #15151a;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600
+}
+
+.design-four-phone input::placeholder {
+  color: #aaa9ad
+}
+
+.design-four-phone button {
+  height: 46px;
+  border: 0;
+  border-radius: 999px;
+  background: #070711;
+  padding: 0 28px;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700
+}
+
+.design-four-trust-pill {
+  position: relative;
+  z-index: 3;
+  display: inline-flex;
+  min-height: 49px;
+  margin-top: 49px;
+  align-items: center;
+  border: 1px solid #d9dae3;
+  border-radius: 999px;
+  padding: 0 20px;
+  color: #596071;
+  font-size: 21px;
+  letter-spacing: .01em
+}
+
+.design-four-trust-pill strong {
+  margin: 0 4px;
+  font-weight: 800
+}
+
+.design-four-hero__ambient {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none
+}
+
+.design-four-hero__ambient i {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(17, 135, 120, .08);
+  filter: blur(2px);
+  animation: designFourHeroFloat 9s ease-in-out infinite alternate
+}
+
+.design-four-hero__ambient i:nth-child(1) {
+  top: 20%;
+  left: -10%;
+  width: 460px;
+  height: 460px
+}
+
+.design-four-hero__ambient i:nth-child(2) {
+  top: 2%;
+  right: -8%;
+  width: 420px;
+  height: 420px;
+  animation-delay: -3s
+}
+
+.design-four-hero__ambient i:nth-child(3) {
+  bottom: -45%;
+  left: 35%;
+  width: 520px;
+  height: 520px;
+  opacity: .34;
+  animation-delay: -6s
+}
+
+.home-design-four__logos {
+  min-height: 245px;
+  padding-top: 64px;
+  padding-bottom: 74px;
+  background: #ffffff
+}
+
+.home-design-four__logos>div {
+  max-width: 1520px;
+  gap: 38px
+}
+
+.home-design-four__logos b {
+  color: #111114;
+  font-size: clamp(18px, 1.7vw, 29px);
+  font-weight: 800;
+  line-height: .9;
+  letter-spacing: -.045em
+}
+
+.home-design-four__logos b span {
+  color: #777
+}
+
+@keyframes designFourHeroFloat {
+  to {
+    transform: translate3d(18px, -14px, 0) scale(1.06)
+  }
+}
 
 /* Logo and capability lines enter first; the phone form follows and settles by two seconds. */
-.home-design-four__header > a:first-child,
-.header-previous-logo-home > a,
-.design-four-hero__features > span,
+.home-design-four__header>a:first-child,
+.header-previous-logo-home>a,
+.design-four-hero__features>span,
 .design-four-phone {
-  animation: designFourEntranceBounce 1s cubic-bezier(.2,.75,.25,1) both;
+  animation: designFourEntranceBounce 1s cubic-bezier(.2, .75, .25, 1) both;
   will-change: transform, opacity;
 }
+
 .design-four-phone {
   animation-duration: .9s;
   animation-delay: 1s;
 }
 
 @keyframes designFourEntranceBounce {
-  0% { opacity: 0; transform: translateY(-42px) scale(.94); }
-  62% { opacity: 1; transform: translateY(9px) scale(1.02); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
+  0% {
+    opacity: 0;
+    transform: translateY(-42px) scale(.94);
+  }
+
+  62% {
+    opacity: 1;
+    transform: translateY(9px) scale(1.02);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .home-design-four__header > a:first-child,
-  .header-previous-logo-home > a,
-  .design-four-hero__features > span,
+
+  .home-design-four__header>a:first-child,
+  .header-previous-logo-home>a,
+  .design-four-hero__features>span,
   .design-four-phone {
     animation: none;
   }
 }
-@media(max-width:1248px){.home-design-four__header nav:first-of-type{gap:26px}.home-design-four__header nav:first-of-type a{font-size:14px}.design-four-get-started,.design-four-sign-up{min-height:48px;padding:0 25px;font-size:14px}}
-@media(max-width:900px){.home-design-four__header{height:84px}.home-design-four__header::before{height:84px}.home-design-four__header>a:first-child span{width:155px;height:48px}.design-four-get-started{display:none}.design-four-sign-up{min-width:auto;min-height:42px;padding:0 20px}.home-design-four__hero{min-height:700px;padding-top:120px}.home-design-four__hero h1{margin-top:40px;font-size:clamp(36px,5.8vw,50px);line-height:1.16;letter-spacing:-.025em}.design-four-phone{margin-top:42px}.design-four-trust-pill{margin-top:32px;font-size:16px}}
-@media(max-width:640px){.home-design-four__header{height:72px}.home-design-four__header::before{height:72px}.home-design-four__header>a:first-child span{width:118px;height:38px}.design-four-sign-up{display:none}.home-design-four__hero{min-height:650px;padding-top:96px}.design-four-hero__features{flex-wrap:wrap;gap:10px 18px}.design-four-hero__features span{gap:7px;font-size:11px}.design-four-hero__features i{width:20px;height:20px;font-size:11px}.home-design-four__hero h1{margin-top:32px;font-size:clamp(30px,8.5vw,38px);line-height:1.14;letter-spacing:-.02em}.design-four-desktop-break{display:none}.design-four-phone{height:54px;margin-top:38px;border-width:5px}.design-four-india-flag{width:35px;height:35px}.design-four-phone input{padding:0 10px;font-size:13px}.design-four-phone button{height:44px;padding:0 18px;font-size:12px}.design-four-trust-pill{min-height:42px;margin-top:28px;padding:9px 14px;font-size:12px;line-height:1.35}.home-design-four__logos{min-height:205px;padding-top:48px;padding-bottom:55px}.home-design-four__logos>div{gap:25px 31px}.home-design-four__logos b{font-size:17px}}
+
+@media(max-width:1248px) {
+  .home-design-four__header nav:first-of-type {
+    gap: 26px
+  }
+
+  .home-design-four__header nav:first-of-type a {
+    font-size: 14px
+  }
+
+  .design-four-get-started,
+  .design-four-sign-up {
+    min-height: 48px;
+    padding: 0 25px;
+    font-size: 14px
+  }
+}
+
+@media(max-width:900px) {
+  .home-design-four__header {
+    height: 84px
+  }
+
+  .home-design-four__header::before {
+    height: 84px
+  }
+
+  .home-design-four__header>a:first-child span {
+    width: 155px;
+    height: 48px
+  }
+
+  .design-four-get-started {
+    display: none
+  }
+
+  .design-four-sign-up {
+    min-width: auto;
+    min-height: 42px;
+    padding: 0 20px
+  }
+
+  .home-design-four__hero {
+    min-height: 700px;
+    padding-top: 120px
+  }
+
+  .home-design-four__hero h1 {
+    margin-top: 40px;
+    font-size: clamp(36px, 5.8vw, 50px);
+    line-height: 1.16;
+    letter-spacing: -.025em
+  }
+
+  .design-four-phone {
+    margin-top: 42px
+  }
+
+  .design-four-trust-pill {
+    margin-top: 32px;
+    font-size: 16px
+  }
+}
+
+@media(max-width:640px) {
+  .home-design-four__header {
+    height: 72px
+  }
+
+  .home-design-four__header::before {
+    height: 72px
+  }
+
+  .home-design-four__header>a:first-child span {
+    width: 118px;
+    height: 38px
+  }
+
+  .design-four-sign-up {
+    display: none
+  }
+
+  .home-design-four__hero {
+    min-height: 650px;
+    padding-top: 96px
+  }
+
+  .design-four-hero__features {
+    flex-wrap: wrap;
+    gap: 10px 18px
+  }
+
+  .design-four-hero__features span {
+    gap: 7px;
+    font-size: 11px
+  }
+
+  .design-four-hero__features i {
+    width: 20px;
+    height: 20px;
+    font-size: 11px
+  }
+
+  .home-design-four__hero h1 {
+    margin-top: 32px;
+    font-size: clamp(30px, 8.5vw, 38px);
+    line-height: 1.14;
+    letter-spacing: -.02em
+  }
+
+  .design-four-desktop-break {
+    display: none
+  }
+
+  .design-four-phone {
+    height: 54px;
+    margin-top: 38px;
+    border-width: 5px
+  }
+
+  .design-four-india-flag {
+    width: 35px;
+    height: 35px
+  }
+
+  .design-four-phone input {
+    padding: 0 10px;
+    font-size: 13px
+  }
+
+  .design-four-phone button {
+    height: 44px;
+    padding: 0 18px;
+    font-size: 12px
+  }
+
+  .design-four-trust-pill {
+    min-height: 42px;
+    margin-top: 28px;
+    padding: 9px 14px;
+    font-size: 12px;
+    line-height: 1.35
+  }
+
+  .home-design-four__logos {
+    min-height: 205px;
+    padding-top: 48px;
+    padding-bottom: 55px
+  }
+
+  .home-design-four__logos>div {
+    gap: 25px 31px
+  }
+
+  .home-design-four__logos b {
+    font-size: 17px
+  }
+}
 
 /* Reference-matched landing header and first viewport. */
 .header-previous-logo-home {
@@ -41,7 +492,9 @@
 }
 
 @media (min-width: 901px) {
-  .header-previous-actions-home { transform: translateX(16px); }
+  .header-previous-actions-home {
+    transform: translateX(16px);
+  }
 }
 
 @media (min-width: 901px) {
@@ -63,16 +516,16 @@
     background-size: 3px 3px, 4px 4px, 100% 100%;
   }
 
-  .home-design-four__header > a:first-child {
+  .home-design-four__header>a:first-child {
     transform: translateX(-6px);
   }
 
-  .home-design-four__header > a:first-child span {
+  .home-design-four__header>a:first-child span {
     width: 190px;
     height: 54px;
   }
 
-  .home-design-four__header > a:first-child img {
+  .home-design-four__header>a:first-child img {
     filter: brightness(0) saturate(100%) invert(9%) sepia(38%) saturate(2554%) hue-rotate(219deg) brightness(77%) contrast(113%);
   }
 
@@ -85,7 +538,7 @@
     transform: translateX(70px);
   }
 
-  .home-design-four__header > div {
+  .home-design-four__header>div {
     gap: 10px;
     transform: translateX(36px);
   }
@@ -101,8 +554,14 @@
     padding: 0 34px;
   }
 
-  .design-four-get-started { min-width: 168px; }
-  .design-four-sign-up { min-width: 96px; padding-inline: 24px; }
+  .design-four-get-started {
+    min-width: 168px;
+  }
+
+  .design-four-sign-up {
+    min-width: 96px;
+    padding-inline: 24px;
+  }
 
   .home-design-four__hero {
     min-height: 770px;
@@ -138,9 +597,13 @@
     font-size: 13px;
   }
 
-  .design-four-hero__features { gap: 28px; }
+  .design-four-hero__features {
+    gap: 28px;
+  }
 
-  .design-four-hero__ambient { display: none; }
+  .design-four-hero__ambient {
+    display: none;
+  }
 
   .home-design-four__hero h1 {
     margin-top: 40px;
@@ -149,7 +612,9 @@
     letter-spacing: -.025em;
   }
 
-  .home-design-four__hero h1 strong { line-height: 1.08; }
+  .home-design-four__hero h1 strong {
+    line-height: 1.08;
+  }
 
   .design-four-phone {
     width: min(474px, 100%);
@@ -187,7 +652,7 @@
     padding-top: 0;
   }
 
-  .home-design-four__logos > div {
+  .home-design-four__logos>div {
     display: grid;
     width: min(calc(100% - 8px), 1400px);
     max-width: 1400px;
@@ -224,33 +689,96 @@
     fill: currentColor;
   }
 
-  .design-four-client-logo.is-deloitte { font-size: 30px; font-weight: 900; }
-  .design-four-client-logo.is-deloitte span { color: #737378; }
-  .design-four-client-logo.is-appsmith { font-size: 26px; font-weight: 800; }
-  .design-four-client-logo.is-vigilant { font-size: 24px; font-weight: 700; }
-  .design-four-client-logo.is-edison { font-size: 25px; font-weight: 500; }
-  .design-four-client-logo.is-edison svg { width: 25px; height: 25px; }
-  .design-four-client-logo.is-kobe { gap: 5px; }
-  .design-four-client-logo.is-kobe svg { width: 27px; height: 27px; }
-  .design-four-client-logo.is-kobe em { font-size: 13px; font-weight: 800; line-height: .82; text-align: left; }
-  .design-four-client-logo.is-simplamo { font-size: 22px; font-weight: 800; }
-  .design-four-client-logo.is-simplamo svg { width: 28px; height: 26px; fill: #6e7070; }
-  .design-four-client-logo.is-simplamo svg path { fill: none; stroke: #6e7070; stroke-width: 2; }
-  .design-four-client-logo.is-simplamo sup { margin-left: 1px; font-size: 7px; }
-  .design-four-client-logo.is-soulpage { font-size: 23px; font-weight: 500; }
-  .design-four-client-logo.is-soulpage svg { width: 20px; height: 24px; }
+  .design-four-client-logo.is-deloitte {
+    font-size: 30px;
+    font-weight: 900;
+  }
+
+  .design-four-client-logo.is-deloitte span {
+    color: #737378;
+  }
+
+  .design-four-client-logo.is-appsmith {
+    font-size: 26px;
+    font-weight: 800;
+  }
+
+  .design-four-client-logo.is-vigilant {
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  .design-four-client-logo.is-edison {
+    font-size: 25px;
+    font-weight: 500;
+  }
+
+  .design-four-client-logo.is-edison svg {
+    width: 25px;
+    height: 25px;
+  }
+
+  .design-four-client-logo.is-kobe {
+    gap: 5px;
+  }
+
+  .design-four-client-logo.is-kobe svg {
+    width: 27px;
+    height: 27px;
+  }
+
+  .design-four-client-logo.is-kobe em {
+    font-size: 13px;
+    font-weight: 800;
+    line-height: .82;
+    text-align: left;
+  }
+
+  .design-four-client-logo.is-simplamo {
+    font-size: 22px;
+    font-weight: 800;
+  }
+
+  .design-four-client-logo.is-simplamo svg {
+    width: 28px;
+    height: 26px;
+    fill: #6e7070;
+  }
+
+  .design-four-client-logo.is-simplamo svg path {
+    fill: none;
+    stroke: #6e7070;
+    stroke-width: 2;
+  }
+
+  .design-four-client-logo.is-simplamo sup {
+    margin-left: 1px;
+    font-size: 7px;
+  }
+
+  .design-four-client-logo.is-soulpage {
+    font-size: 23px;
+    font-weight: 500;
+  }
+
+  .design-four-client-logo.is-soulpage svg {
+    width: 20px;
+    height: 24px;
+  }
 }
 
 @media (max-width: 640px) {
-  .header-previous-logo-home { transform: translateX(-8px); }
+  .header-previous-logo-home {
+    transform: translateX(-8px);
+  }
 }
 
 @media (max-width: 900px) {
-  .home-design-four__header > a:first-child img {
+  .home-design-four__header>a:first-child img {
     filter: brightness(0) saturate(100%) invert(9%) sepia(38%) saturate(2554%) hue-rotate(219deg) brightness(77%) contrast(113%);
   }
 
-  .home-design-four__logos > div {
+  .home-design-four__logos>div {
     display: grid;
     width: min(92%, 720px);
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -266,15 +794,16 @@
 }
 
 @media (max-width: 560px) {
-  .home-design-four__logos > div {
+  .home-design-four__logos>div {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 24px 18px;
   }
 }
 
 @media (min-width: 901px) and (max-width: 1248px) {
+
   .home-design-four__header nav:first-of-type,
-  .home-design-four__header > div {
+  .home-design-four__header>div {
     transform: none;
   }
 }
@@ -286,7 +815,7 @@
   mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
 }
 
-.home-design-four__logos > .design-four-client-marquee-track {
+.home-design-four__logos>.design-four-client-marquee-track {
   display: flex;
   width: max-content;
   max-width: none;
@@ -325,16 +854,18 @@
   letter-spacing: -.035em;
 }
 
-.home-design-four__logos:hover > .design-four-client-marquee-track {
+.home-design-four__logos:hover>.design-four-client-marquee-track {
   animation-play-state: paused;
 }
 
 @keyframes designFourClientMarquee {
-  to { transform: translateX(-50%); }
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .home-design-four__logos > .design-four-client-marquee-track {
+  .home-design-four__logos>.design-four-client-marquee-track {
     width: max-content;
     transform: none;
     animation: none;
