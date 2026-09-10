@@ -67,8 +67,8 @@ function DashboardWorkspaceBar() {
     session.organization?.name || `${session.name}'s workspace`;
 
   return (
-    <div className="dashboard-workspace-bar border-b border-[#dbe4e1] bg-white px-4 sm:px-6 lg:px-8">
-      <div className="mx-auto flex h-12 w-full max-w-[1500px] items-center justify-between gap-4">
+    <div className="dashboard-workspace-bar border-b border-[#dbe4e1] bg-white px-4 sm:px-5 lg:px-6">
+      <div className="flex h-12 w-full items-center justify-between gap-4">
         <Link
           className="group flex min-w-0 items-center gap-2 text-sm font-semibold text-[#20342e]"
           href="/dashboard/settings"
@@ -123,7 +123,7 @@ export function DashboardPageHeader({
       className={`dashboard-page-header sticky top-0 z-30 bg-white ${bordered ? "border-b border-[#dbe4e1]" : ""}`}
     >
       <DashboardWorkspaceBar />
-      <div className="dashboard-page-header-inner mx-auto w-full max-w-[1500px] px-4 py-3 sm:px-6 lg:px-8">
+      <div className="dashboard-page-header-inner w-full px-4 py-3 sm:px-5 lg:px-6">
         <div className="flex min-h-16 flex-col justify-center gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
             {eyebrow ? (

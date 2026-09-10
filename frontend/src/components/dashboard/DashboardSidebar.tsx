@@ -72,16 +72,6 @@ const sidebarGroups: { label: string; items: SidebarItem[] }[] = [
 ];
 
 const prefetchedDashboardRoutes = new Set<string>();
-const dashboardWarmupRoutes = [
-  "/dashboard/agents",
-  "/dashboard/phone-number",
-  "/dashboard/campaign",
-  "/dashboard/calls",
-  "/dashboard/knowledge",
-  "/dashboard/integrations",
-  "/dashboard/developers",
-] as const;
-let dashboardDataWarmupStarted = false;
 let dashboardSidebarExpanded = false;
 
 export function getDashboardSidebarInitialState() {
@@ -312,21 +302,6 @@ export function DashboardSidebar({
     }, 250);
     return () => window.clearTimeout(preloadTimer);
   }, [router, effectiveSidebarGroups]);
-
-  useEffect(() => {
-    if (dashboardDataWarmupStarted) return undefined;
-    const warmupTimer = window.setTimeout(() => {
-      dashboardDataWarmupStarted = true;
-      void import("@/lib/dashboardDataPrefetch")
-        .then(({ prefetchDashboardData }) =>
-          Promise.allSettled(
-            dashboardWarmupRoutes.map((href) => prefetchDashboardData(href)),
-          ),
-        )
-        .catch(() => undefined);
-    }, 650);
-    return () => window.clearTimeout(warmupTimer);
-  }, []);
 
   useEffect(() => {
     try {
@@ -682,24 +657,14 @@ export function DashboardSidebar({
           aria-expanded={showUserSidebar}
           onClick={toggleSidebar}
         >
-          {showUserSidebar ? (
-            <svg
-              className="pointer-events-none size-[18px] fill-none stroke-current stroke-[1.8]"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <rect x="3" y="4" width="18" height="16" rx="2" />
-              <path d="M15 4v16" />
-            </svg>
-          ) : (
-            <Image
-              alt=""
-              className="pointer-events-none size-7 object-contain"
-              height={28}
-              src={brand.iconUrl || brand.logoUrl}
-              width={28}
-            />
-          )}
+          <svg
+            className="pointer-events-none size-[18px] fill-none stroke-current stroke-[1.8]"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <rect x="3" y="4" width="18" height="16" rx="2" />
+            <path d="M15 4v16" />
+          </svg>
         </button>
       </aside>
 

@@ -242,7 +242,7 @@ export function AgentsListShell() {
   }
 
   return (
-    <main className={`agents-home-palette grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#f7f9f8] text-[#14231f] ${
+    <main className={`agents-home-palette dashboard-home-theme grid min-h-screen w-full min-w-0 overflow-x-hidden bg-white text-[#14231f] ${
       showUserSidebar ? "lg:grid-cols-[248px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
     }`}>
       <DashboardSidebar
@@ -276,14 +276,14 @@ export function AgentsListShell() {
           }
         />
 
-        <section className="mx-auto grid w-full max-w-[1500px] gap-3 px-4 py-5 sm:px-6 lg:px-8">
+        <section className="dashboard-page-content grid w-full gap-3 py-2">
           {notice && !showCreateForm && !editingAgent ? (
             <div className="rounded-lg border border-[#dfe7e4] bg-white px-4 py-3 text-sm font-medium text-[#52645f] shadow-sm" role="status" aria-live="polite">
               {notice}
             </div>
           ) : null}
 
-          <div className="dashboard-agent-list rounded-2xl border border-transparent bg-white shadow-[0_12px_34px_rgba(17,62,53,0.065)]">
+          <div className="dashboard-agent-list dashboard-flat-panel bg-white">
             <div className="flex flex-col gap-3 p-3 lg:flex-row lg:items-center">
               <div className="flex min-h-10 min-w-0 flex-1 items-center gap-2 rounded-lg border border-[#dfe7e4] bg-white px-3 transition focus-within:border-[#118778] focus-within:ring-4 focus-within:ring-[#118778]/10">
                 <span className="shrink-0 text-[#8b8e9f]"><Icon icon="search" /></span>

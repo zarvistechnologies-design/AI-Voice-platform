@@ -456,7 +456,7 @@ export function ProfileShell() {
 
   return (
     <main
-      className={`grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#f5f8fb] text-[#111827] ${
+      className={`dashboard-home-theme grid min-h-screen w-full min-w-0 overflow-x-hidden bg-white text-[#111827] ${
         showUserSidebar
           ? "lg:grid-cols-[248px_minmax(0,1fr)]"
           : "lg:grid-cols-[64px_minmax(0,1fr)]"
@@ -490,7 +490,7 @@ export function ProfileShell() {
           }
         />
 
-        <div className="mx-auto grid w-full max-w-[1500px] gap-6 px-4 py-6 sm:px-6 lg:px-8">
+        <div className="grid w-full gap-5 px-4 py-4 sm:px-5 lg:px-6">
           <section className="relative overflow-hidden rounded-[26px] border border-[#dbe4e1] bg-[radial-gradient(circle_at_12%_0%,rgba(17,135,120,0.22),transparent_38%),linear-gradient(135deg,#ffffff_0%,#ffffff_62%,#eef5f3_100%)] p-5 text-white shadow-[0_22px_55px_rgba(7,28,24,0.20)] sm:p-7">
             <div className="pointer-events-none absolute -right-16 -top-24 size-72 rounded-full border border-white/10" />
             <div className="pointer-events-none absolute -bottom-32 right-20 size-64 rounded-full bg-[#118778]/[0.07] blur-2xl" />

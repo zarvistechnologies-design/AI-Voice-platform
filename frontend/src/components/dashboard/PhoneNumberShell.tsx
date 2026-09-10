@@ -498,7 +498,7 @@ export function PhoneNumberShell() {
 
   return (
     <main
-      className={`grid min-h-screen bg-[#f7f9f8] text-[#111827] lg:h-screen lg:overflow-hidden ${
+      className={`dashboard-home-theme grid min-h-screen bg-white text-[#111827] lg:h-screen lg:overflow-hidden ${
         showUserSidebar
           ? "lg:grid-cols-[248px_minmax(0,1fr)]"
           : "lg:grid-cols-[64px_minmax(0,1fr)]"
@@ -583,7 +583,7 @@ export function PhoneNumberShell() {
           }
         />
 
-        <div className="dashboard-page-content mx-auto grid w-full max-w-[1500px] gap-4 px-4 py-5 sm:px-6 lg:px-8">
+        <div className="dashboard-page-content grid w-full gap-3 py-2">
           {notice ? (
             <Notice
               tone="success"
@@ -595,7 +595,7 @@ export function PhoneNumberShell() {
             <Notice tone="error" message={error} onClose={() => setError("")} />
           ) : null}
 
-          <section className="dashboard-primary-panel overflow-hidden rounded-2xl border border-[#dbe4e1] bg-white shadow-[0_14px_38px_rgba(52,58,116,.05)]">
+          <section className="dashboard-primary-panel dashboard-flat-panel overflow-hidden bg-white">
             <div className="dashboard-panel-heading flex flex-col gap-4 border-b border-[#e6ecea] bg-[linear-gradient(135deg,#ffffff_0%,#fafcfb_100%)] px-4 py-4 sm:px-5 lg:flex-row lg:items-center lg:justify-between">
               <div>
                 <span className="text-[10px] font-bold uppercase tracking-[.16em] text-[#0e6f62]">
