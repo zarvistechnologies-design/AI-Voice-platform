@@ -315,7 +315,7 @@ export function DashboardSidebar({
     <>
       <aside
         className={`dashboard-sidebar dashboard-sidebar-shell z-40 flex min-w-0 items-center gap-2 border-b border-[#dbe4e1] bg-white px-2 py-2 text-[#52645f] lg:fixed lg:inset-y-0 lg:left-0 lg:h-dvh lg:flex-col lg:items-stretch lg:border-b-0 lg:px-2.5 lg:py-3 lg:shadow-[4px_0_22px_rgba(17,135,120,0.045)] lg:transition-[width] lg:duration-300 motion-reduce:transition-none ${
-          showUserSidebar ? "lg:w-[272px]" : "lg:w-16"
+          showUserSidebar ? "lg:w-[248px]" : "lg:w-16"
         }`}
         data-expanded={showUserSidebar}
       >
@@ -353,8 +353,12 @@ export function DashboardSidebar({
                     className={`dashboard-sidebar-logo object-contain transition group-hover:brightness-110 ${showUserSidebar ? "object-left" : "object-center"}`}
                     fill
                     priority
-                    sizes={showUserSidebar ? "168px" : "40px"}
-                    src={showUserSidebar ? brand.logoUrl : brand.iconUrl || brand.logoUrl}
+                    sizes={showUserSidebar ? "168px" : "132px"}
+                    src={
+                      showUserSidebar || brand.source === "platform"
+                        ? brand.logoUrl
+                        : brand.iconUrl || brand.logoUrl
+                    }
                   />
                 ) : (
                   <span className="flex h-full items-center text-sm font-bold text-[#5963b8]">
@@ -605,14 +609,14 @@ export function DashboardSidebar({
 
       <div
         className={`dashboard-page-edge pointer-events-none fixed inset-y-0 z-[35] hidden w-3 rounded-l-[14px] border-l border-[#118778]/15 shadow-[-3px_0_14px_rgba(17,135,120,0.055)] transition-[left] duration-300 motion-reduce:transition-none lg:block ${
-          showUserSidebar ? "left-[272px]" : "left-16"
+          showUserSidebar ? "left-[248px]" : "left-16"
         }`}
         aria-hidden="true"
       />
 
       <div
         className={`hidden lg:block lg:h-dvh ${
-          showUserSidebar ? "lg:w-[272px]" : "lg:w-16"
+          showUserSidebar ? "lg:w-[248px]" : "lg:w-16"
         }`}
         aria-hidden="true"
       />

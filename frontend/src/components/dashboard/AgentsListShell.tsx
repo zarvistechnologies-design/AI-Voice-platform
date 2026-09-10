@@ -243,7 +243,7 @@ export function AgentsListShell() {
 
   return (
     <main className={`agents-home-palette grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#f7f9f8] text-[#14231f] ${
-      showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
+      showUserSidebar ? "lg:grid-cols-[248px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
     }`}>
       <DashboardSidebar
         activeLabel="Voice Agents"
@@ -283,8 +283,8 @@ export function AgentsListShell() {
             </div>
           ) : null}
 
-          <div className="rounded-xl border border-[#dfe7e4] bg-white shadow-[0_10px_30px_rgba(34,38,74,0.05)]">
-            <div className="flex flex-col gap-3 border-b border-[#e6e7ef] p-3 lg:flex-row lg:items-center">
+          <div className="dashboard-agent-list rounded-2xl border border-transparent bg-white shadow-[0_12px_34px_rgba(17,62,53,0.065)]">
+            <div className="flex flex-col gap-3 p-3 lg:flex-row lg:items-center">
               <div className="flex min-h-10 min-w-0 flex-1 items-center gap-2 rounded-lg border border-[#dfe7e4] bg-white px-3 transition focus-within:border-[#118778] focus-within:ring-4 focus-within:ring-[#118778]/10">
                 <span className="shrink-0 text-[#8b8e9f]"><Icon icon="search" /></span>
                 <input
@@ -328,19 +328,19 @@ export function AgentsListShell() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between gap-3 border-b border-[#e6e7ef] px-4 py-2.5">
+            <div className="mx-3 flex items-center justify-between gap-3 rounded-lg bg-[#f7f9f8] px-3 py-2.5">
               <p className="m-0 text-sm font-semibold text-[#20342e]">{filteredAgents.length} {filteredAgents.length === 1 ? "agent" : "agents"}</p>
               <p className="m-0 flex items-center gap-2 text-xs font-medium text-[#71817d]"><span className="size-2 rounded-full bg-emerald-500 ring-4 ring-emerald-50" />{liveCount} live</p>
             </div>
 
-            <div className="hidden grid-cols-[minmax(260px,1.6fr)_minmax(190px,0.9fr)_120px_48px] items-center gap-5 border-b border-[#e6e7ef] bg-[#fafcfb] px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[#71817d] md:grid">
+            <div className="hidden grid-cols-[minmax(260px,1.6fr)_minmax(190px,0.9fr)_120px_48px] items-center gap-5 px-5 pt-4 pb-2 text-[10px] font-bold uppercase tracking-[0.14em] text-[#71817d] md:grid">
               <span>Agent</span>
               <span>Phone route</span>
               <span>Status</span>
               <span className="sr-only">Actions</span>
             </div>
 
-            <div className="divide-y divide-[#e6e7ef]">
+            <div className="dashboard-agent-rows grid gap-1 p-2">
             {loading ? (
               <div className="grid gap-0 divide-y divide-[#ececf3]" aria-label="Loading agents" role="status">
                 {[0, 1, 2, 3].map((item) => <div className="grid min-h-[76px] grid-cols-[44px_1fr] items-center gap-3 px-4" key={item}><span className="size-10 animate-pulse rounded-lg bg-[#edf7f4]" /><span className="grid gap-2"><span className="h-3 w-44 animate-pulse rounded bg-[#edf7f4]" /><span className="h-2.5 w-28 animate-pulse rounded bg-[#eef5f3]" /></span></div>)}
@@ -349,7 +349,7 @@ export function AgentsListShell() {
 
             {!loading && filteredAgents.map((agent) => (
               <article
-                className="relative flex min-h-[76px] w-full items-center gap-2 px-3 text-left transition hover:bg-[#fafcfb] focus-within:z-10 focus-within:bg-[#fafcfb] sm:px-4"
+                className="relative flex min-h-[76px] w-full items-center gap-2 rounded-xl px-3 text-left transition hover:bg-[#f7faf9] focus-within:z-10 focus-within:bg-[#f7faf9] sm:px-4"
                 key={agent._id}
               >
                 <Link
