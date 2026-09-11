@@ -8,7 +8,7 @@
 /* AI Insights — CSS artwork and layout based on the supplied reference. */
 .design-four-insights-section {
   box-sizing: border-box;
-  background: linear-gradient(118deg, #ffffff 0%, #fcfcff 46%, #f5f6ff 100%);
+  background: #ffffff;
   padding: 26px max(32px, calc((100vw - 1180px) / 2)) 30px !important;
 }
 

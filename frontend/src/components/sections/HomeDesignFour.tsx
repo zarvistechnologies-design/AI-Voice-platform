@@ -131,7 +131,6 @@ export function HomeDesignFour() {
 
       <main>
         <section className={`${styles.hero} home-design-four__hero`}>
-          <div className={styles.heroGlow} aria-hidden="true" />
           <div className="design-four-hero__features" aria-label="Platform capabilities">
             <span><i>✓</i>Natural conversations</span>
             <span><i>✓</i>Multilingual speech</span>
@@ -150,9 +149,6 @@ export function HomeDesignFour() {
             <button type="submit">Try an agent</button>
           </form>
           <div className="design-four-trust-pill">Trusted by <strong>100+</strong> teams building the future of <strong>customer conversations</strong></div>
-          <div className="design-four-hero__ambient" aria-hidden="true">
-            <i /><i /><i />
-          </div>
         </section>
 
         <section className={`${styles.logoStrip} home-design-four__logos`} aria-label="Companies using modern voice workflows">

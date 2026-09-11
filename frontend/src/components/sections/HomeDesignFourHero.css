@@ -6,15 +6,7 @@
 }
 
 .home-design-four__header::before {
-  position: absolute;
-  z-index: -1;
-  top: 0;
-  left: 50%;
-  width: 100vw;
-  height: 108px;
-  transform: translateX(-50%);
-  background: #f5f5f9;
-  content: ""
+  display: none;
 }
 
 .home-design-four__header>a:first-child span {
@@ -69,14 +61,7 @@
 .home-design-four__hero {
   min-height: 770px;
   padding-top: 178px;
-  background-color: #f3f6f5;
-  background-image: radial-gradient(circle at 1px 1px, rgba(17, 135, 120, .18) 1px, transparent 1.2px), linear-gradient(112deg, rgba(231, 246, 240, .75) 0 22%, transparent 22.2%), linear-gradient(246deg, rgba(237, 247, 244, .82) 0 21%, transparent 21.2%), linear-gradient(180deg, #f3f6f5 0%, #ffffff 100%);
-  background-position: center, left top, right top, center;
-  background-size: 17px 17px, 45% 100%, 45% 100%, 100% 100%
-}
-
-.home-design-four__hero>div:first-child {
-  display: none
+  background: #ffffff;
 }
 
 .design-four-hero__features {
@@ -215,10 +200,7 @@
 }
 
 .design-four-hero__ambient {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none
+  display: none !important;
 }
 
 .design-four-hero__ambient i {
@@ -505,15 +487,7 @@
   }
 
   .home-design-four__header::before {
-    top: -8px;
-    height: 100px;
-    background-color: #f1f1f6;
-    background-image:
-      radial-gradient(circle at 25% 25%, rgba(255, 255, 255, .48) 0 .55px, transparent .7px),
-      radial-gradient(circle at 75% 70%, rgba(103, 105, 130, .075) 0 .45px, transparent .65px),
-      linear-gradient(180deg, rgba(255, 255, 255, .18), rgba(226, 227, 237, .1));
-    background-position: 0 0, 1px 1px, 0 0;
-    background-size: 3px 3px, 4px 4px, 100% 100%;
+    display: none;
   }
 
   .home-design-four__header>a:first-child {
@@ -566,29 +540,11 @@
   .home-design-four__hero {
     min-height: 770px;
     padding-top: 140px;
-    background-color: #fdfdff;
-    background-image:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1288 795' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='l' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23ebe7ff' stop-opacity='.78'/%3E%3Cstop offset='.62' stop-color='%23f0eeff' stop-opacity='.5'/%3E%3Cstop offset='1' stop-color='%23fff' stop-opacity='0'/%3E%3C/linearGradient%3E%3ClinearGradient id='r' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23eaefff' stop-opacity='.74'/%3E%3Cstop offset='.62' stop-color='%23f0f3ff' stop-opacity='.46'/%3E%3Cstop offset='1' stop-color='%23fff' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M0 68H135C250 68 326 476 470 795H0Z' fill='url(%23l)'/%3E%3Cpath d='M1288 68h-135C1038 68 962 476 818 795h470Z' fill='url(%23r)'/%3E%3C/svg%3E"),
-      linear-gradient(180deg, #fafaff 0%, #ffffff 82%);
-    background-position: center, center;
-    background-size: 100% 100%, 100% 100%;
-    background-repeat: no-repeat;
+    background: #ffffff;
   }
 
   .home-design-four__hero::before {
-    position: absolute;
-    z-index: 1;
-    top: 73px;
-    left: 50%;
-    width: min(540px, 46vw);
-    height: 250px;
-    transform: translateX(-50%);
-    background-image: radial-gradient(circle, rgba(105, 116, 255, .28) .75px, transparent .9px);
-    background-size: 14px 14px;
-    content: "";
-    pointer-events: none;
-    -webkit-mask-image: radial-gradient(ellipse at top, #000 12%, transparent 73%);
-    mask-image: radial-gradient(ellipse at top, #000 12%, transparent 73%);
+    display: none;
   }
 
   .design-four-hero__features i {
