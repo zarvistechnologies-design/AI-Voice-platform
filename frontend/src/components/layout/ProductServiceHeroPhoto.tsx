@@ -76,7 +76,7 @@ export function ProductServiceHeroPhoto({ slug, title }: { slug: string; title: 
         />
       </div>
 
-      <figcaption className="product-service-photo-caption absolute inset-x-0 bottom-0 p-5 sm:p-6">
+      <figcaption className="product-service-photo-caption absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/65 to-transparent p-5 text-white sm:p-6">
         <p className="text-[10px] font-black tracking-[0.14em] uppercase">{title}</p>
         <p className="mt-2 max-w-[31rem] text-sm leading-6">{photo.caption}</p>
       </figcaption>

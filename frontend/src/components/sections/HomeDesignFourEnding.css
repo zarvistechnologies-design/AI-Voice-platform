@@ -692,6 +692,14 @@
   border-bottom: 1px solid #3a3a3a;
 }
 
+.site-pre-footer-cta {
+  position: relative;
+  width: 100%;
+  max-width: none;
+  background: #000;
+  color: #f8f9ff;
+}
+
 .design-four-footer-cta h2 {
   margin: 0;
   font-size: clamp(34px, 4vw, 48px);

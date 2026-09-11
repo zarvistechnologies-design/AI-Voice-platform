@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { BrandLogo } from "@/components/ui/BrandLogo";
+import { SitePreFooterCta } from "@/components/layout/SitePreFooterCta";
 import "@/components/sections/HomeDesignFourEnding.css";
 
 type FooterTag = {
@@ -42,12 +43,10 @@ export function SiteFooter() {
   }, []);
 
   return (
-    <footer className={`design-four-footer${visible ? " is-visible" : ""}`} ref={footerRef}>
-      <div className="design-four-footer-cta">
-        <h2>Build your AI voice agent</h2>
-        <div><Link href="/dashboard">Try for free</Link><Link href="/contact">Get a demo</Link></div>
-      </div>
-      <div className="design-four-footer-main">
+    <>
+      <SitePreFooterCta />
+      <footer className={`design-four-footer${visible ? " is-visible" : ""}`} ref={footerRef}>
+        <div className="design-four-footer-main">
         <div className="design-four-footer-brand">
           <BrandLogo showWebsiteLogo />
           <p>Building intelligent voice experiences that help businesses create better conversations, automate meaningful work, and connect people with outcomes.</p>
@@ -65,13 +64,14 @@ export function SiteFooter() {
           <div><b>Contact US</b><a href="mailto:hello@vozon.ai">hello@vozon.ai</a><a className="design-four-footer-phone" href="tel:+917892518414">+91 7892518414</a><Link className="design-four-footer-demo" href="/contact">Book a free demo</Link></div>
         </nav>
       </div>
-      <div className="design-four-footer-tags" aria-hidden="true">
-        {[...footerTags,
-          { label: "Voice AI", icon: "AI", tone: "purple" as const },
-          { label: "Automation", icon: "+", tone: "green" as const },
-          { label: "Customer Support", icon: "*", tone: "orange" as const },
-        ].map((tag, index) => <span className={tag.tone ? `is-${tag.tone}` : undefined} key={`${tag.label}-${index}`}><i>{tag.icon}</i><b>{tag.label}</b></span>)}
-      </div>
-    </footer>
+        <div className="design-four-footer-tags" aria-hidden="true">
+          {[...footerTags,
+            { label: "Voice AI", icon: "AI", tone: "purple" as const },
+            { label: "Automation", icon: "+", tone: "green" as const },
+            { label: "Customer Support", icon: "*", tone: "orange" as const },
+          ].map((tag, index) => <span className={tag.tone ? `is-${tag.tone}` : undefined} key={`${tag.label}-${index}`}><i>{tag.icon}</i><b>{tag.label}</b></span>)}
+        </div>
+      </footer>
+    </>
   );
 }

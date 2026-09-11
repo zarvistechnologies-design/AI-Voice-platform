@@ -26,34 +26,14 @@ type ProductServicePageProps = {
 const waveform = [16, 26, 42, 22, 54, 34, 66, 28, 48, 72, 38, 58, 24, 46, 30, 62, 36, 20, 44, 28];
 const serviceMarks: Record<string, string> = {};
 
-const pageThemes = {
-  Build: {
-    "--service-accent": "#35fbe0",
-    "--service-accent-soft": "#75fff0",
-    "--service-accent-rgb": "53, 251, 224",
-    "--service-secondary": "#108D82",
-    "--service-secondary-rgb": "143, 131, 232",
-    "--service-tertiary": "#ffad73",
-    "--service-tertiary-rgb": "255, 173, 115",
-  },
-  Deploy: {
-    "--service-accent": "#108D82",
-    "--service-accent-soft": "#d3ccff",
-    "--service-accent-rgb": "169, 156, 255",
-    "--service-secondary": "#35fbe0",
-    "--service-secondary-rgb": "53, 251, 224",
-    "--service-tertiary": "#ffad73",
-    "--service-tertiary-rgb": "255, 173, 115",
-  },
-  Monitor: {
-    "--service-accent": "#ffad73",
-    "--service-accent-soft": "#ffd0ae",
-    "--service-accent-rgb": "255, 173, 115",
-    "--service-secondary": "#35fbe0",
-    "--service-secondary-rgb": "53, 251, 224",
-    "--service-tertiary": "#108D82",
-    "--service-tertiary-rgb": "143, 131, 232",
-  },
+const dashboardServiceTheme = {
+  "--service-accent": "#118778",
+  "--service-accent-soft": "#0e6f62",
+  "--service-accent-rgb": "17, 135, 120",
+  "--service-secondary": "#118778",
+  "--service-secondary-rgb": "17, 135, 120",
+  "--service-tertiary": "#118778",
+  "--service-tertiary-rgb": "17, 135, 120",
 } as const;
 
 const agentBuildingLayers = [
@@ -853,22 +833,12 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
         description: capability.body,
         options: capability.points,
       }));
-  const theme = design
-    ? {
-        "--service-accent": design.accent,
-        "--service-accent-soft": design.accentSoft,
-        "--service-accent-rgb": design.accentRgb,
-        "--service-secondary": design.secondary,
-        "--service-secondary-rgb": design.secondaryRgb,
-        "--service-tertiary": design.tertiary,
-        "--service-tertiary-rgb": design.tertiaryRgb,
-      }
-    : pageThemes[service.kicker as keyof typeof pageThemes] ?? pageThemes.Build;
+  const theme = dashboardServiceTheme;
 
   return (
     <SiteLayout>
       <div
-        className={`product-service-page product-page-${service.slug} voice-agent-page bg-white text-[#17203f]`}
+        className={`product-service-page product-page-${service.slug} voice-agent-page bg-white text-[#14231f]`}
         id="product-service-page"
         style={theme as CSSProperties}
       >
@@ -888,7 +858,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
                   {experience.heroAccent}
                 </span>
               </h1>
-              <p className="mt-7 max-w-2xl text-[0.95rem] leading-7 text-slate-300 sm:text-[1.05rem] sm:leading-8">
+              <p className="mt-7 max-w-2xl text-[0.95rem] leading-7 text-[#52645f] sm:text-[1.05rem] sm:leading-8">
                 {service.summary}
               </p>
 
@@ -907,7 +877,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
                 </Link>
               </div>
 
-              <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3 text-sm text-slate-400">
+              <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3 text-sm text-[#71817d]">
                 {service.highlights.map((highlight) => (
                   <span
                     className="inline-flex items-center gap-2"
@@ -1413,13 +1383,13 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
         }
 
         .product-service-page {
-          --service-accent: #35fbe0;
-          --service-accent-soft: #75fff0;
-          --service-accent-rgb: 53, 251, 224;
-          --service-secondary: #108D82;
-          --service-secondary-rgb: 143, 131, 232;
-          --service-tertiary: #ffad73;
-          --service-tertiary-rgb: 255, 173, 115;
+          --service-accent: #118778;
+          --service-accent-soft: #0e6f62;
+          --service-accent-rgb: 17, 135, 120;
+          --service-secondary: #118778;
+          --service-secondary-rgb: 17, 135, 120;
+          --service-tertiary: #118778;
+          --service-tertiary-rgb: 17, 135, 120;
         }
 
         .product-story-page {
@@ -1475,11 +1445,11 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
         }
 
         .product-service-heading-primary {
-          color: #f7fbff;
+          color: #14231f;
         }
 
         .product-service-heading-accent {
-          color: #75fff0;
+          color: #118778;
         }
 
         .voice-agents-hero-heading {
@@ -6435,6 +6405,253 @@ inset:55px;
 
           #product-service-page#product-service-page#product-service-page.product-page-voice-cloning .voice-select > select {
             min-width: 7.5rem;
+          }
+        }
+
+        /* Unified light SaaS theme for every page in the Products menu. */
+        #product-service-page#product-service-page#product-service-page {
+          --service-accent: #118778 !important;
+          --service-accent-soft: #0e6f62 !important;
+          --service-accent-rgb: 17, 135, 120 !important;
+          --service-secondary: #118778 !important;
+          --service-secondary-rgb: 17, 135, 120 !important;
+          --service-tertiary: #118778 !important;
+          --service-tertiary-rgb: 17, 135, 120 !important;
+          background: #ffffff !important;
+          color: #14231f !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page > section {
+          border-color: #e6ecea !important;
+          background: #ffffff !important;
+          background-image: none !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page > section:nth-of-type(even) {
+          background: #f7f9f8 !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page :is(h1, h2, h3, h4, strong) {
+          color: #14231f !important;
+          -webkit-text-fill-color: #14231f !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page :is(
+          p,
+          .voice-capabilities-copy,
+          .voice-blueprint-copy,
+          .voice-build-redesign-copy,
+          .voice-blueprint-title,
+          .voice-blueprint-body
+        ) {
+          color: #52645f !important;
+          -webkit-text-fill-color: #52645f !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .product-service-heading-primary {
+          color: #14231f !important;
+          -webkit-text-fill-color: #14231f !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .product-service-heading-accent,
+        #product-service-page#product-service-page#product-service-page [class*="text-[var(--service-accent)"] {
+          color: #118778 !important;
+          -webkit-text-fill-color: #118778 !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .service-pill {
+          border: 1px solid #b9ddd4 !important;
+          background: #edf7f4 !important;
+          color: #0e6f62 !important;
+          -webkit-text-fill-color: #0e6f62 !important;
+          box-shadow: none !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .service-live-dot,
+        #product-service-page#product-service-page#product-service-page .service-integration-dot {
+          background: #118778 !important;
+          box-shadow: 0 0 0 4px rgba(17, 135, 120, 0.1) !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .service-primary-button,
+        #product-service-page#product-service-page#product-service-page .service-solid,
+        #product-service-page#product-service-page#product-service-page .product-service-contact-button,
+        #product-service-page#product-service-page#product-service-page .voice-preview-button {
+          border: 1px solid #118778 !important;
+          background: #118778 !important;
+          background-image: none !important;
+          color: #ffffff !important;
+          -webkit-text-fill-color: #ffffff !important;
+          box-shadow: 0 10px 24px rgba(17, 135, 120, 0.16) !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .service-primary-button:hover,
+        #product-service-page#product-service-page#product-service-page .service-solid:hover,
+        #product-service-page#product-service-page#product-service-page .product-service-contact-button:hover,
+        #product-service-page#product-service-page#product-service-page .voice-preview-button:hover {
+          border-color: #0e6f62 !important;
+          background: #0e6f62 !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .service-secondary-button {
+          border: 1px solid #c9d8d4 !important;
+          background: #ffffff !important;
+          color: #14231f !important;
+          -webkit-text-fill-color: #14231f !important;
+          box-shadow: none !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .service-secondary-button:hover {
+          border-color: #118778 !important;
+          background: #edf7f4 !important;
+          color: #0e6f62 !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .product-service-hero {
+          min-height: 0 !important;
+          background: #ffffff !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .product-service-hero .voice-agent-container {
+          min-height: 0 !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .voice-capabilities-heading,
+        #product-service-page#product-service-page#product-service-page .voice-blueprint-heading,
+        #product-service-page#product-service-page#product-service-page .voice-build-redesign-heading,
+        #product-service-page#product-service-page#product-service-page .voice-config-heading {
+          color: #14231f !important;
+          -webkit-text-fill-color: #14231f !important;
+          text-shadow: none !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .voice-capability-card,
+        #product-service-page#product-service-page#product-service-page .voice-sample-card,
+        #product-service-page#product-service-page#product-service-page .service-faq {
+          border: 1px solid #dbe4e1 !important;
+          background: #ffffff !important;
+          background-image: none !important;
+          box-shadow: 0 10px 28px rgba(20, 35, 31, 0.05) !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .voice-capability-card:hover,
+        #product-service-page#product-service-page#product-service-page .service-faq:hover {
+          border-color: #9fcfc3 !important;
+          background: #ffffff !important;
+          box-shadow: 0 14px 34px rgba(17, 135, 120, 0.08) !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .voice-capability-icon,
+        #product-service-page#product-service-page#product-service-page .everything-icon-circle,
+        #product-service-page#product-service-page#product-service-page .voice-preview-check,
+        #product-service-page#product-service-page#product-service-page .voice-play-button {
+          border-color: #b9ddd4 !important;
+          background: #edf7f4 !important;
+          color: #118778 !important;
+          box-shadow: none !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .everything-line,
+        #product-service-page#product-service-page#product-service-page .everything-line span {
+          border-color: #cde2dc !important;
+          background: #118778 !important;
+          box-shadow: none !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .everything-vertical-item h3,
+        #product-service-page#product-service-page#product-service-page .voice-preview-content h3,
+        #product-service-page#product-service-page#product-service-page .voice-sample-card h4 {
+          color: #14231f !important;
+          -webkit-text-fill-color: #14231f !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .everything-vertical-item p,
+        #product-service-page#product-service-page#product-service-page .voice-preview-content p,
+        #product-service-page#product-service-page#product-service-page .voice-preview-list {
+          color: #52645f !important;
+          -webkit-text-fill-color: #52645f !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page :is(
+          .voice-blueprint-panel,
+          .voice-build-redesign-panel,
+          .voice-preview-layout,
+          .voice-config-explorer
+        ) {
+          border: 1px solid #dbe4e1 !important;
+          background: #f7f9f8 !important;
+          background-image: none !important;
+          box-shadow: none !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .voice-build-redesign-panel::before,
+        #product-service-page#product-service-page#product-service-page .voice-config-wash {
+          display: none !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page :is(
+          .voice-blueprint-core,
+          .voice-blueprint-layer,
+          .voice-build-redesign-step,
+          .voice-preview-content,
+          .voice-preview-controls,
+          .voice-sample-card
+        ) {
+          --blueprint-primary: #118778 !important;
+          --blueprint-rgb: 17, 135, 120 !important;
+          --build-primary: #118778 !important;
+          --build-rgb: 17, 135, 120 !important;
+          border-color: #dbe4e1 !important;
+          background: #ffffff !important;
+          background-image: none !important;
+          color: #14231f !important;
+          box-shadow: none !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .voice-blueprint-core-badge,
+        #product-service-page#product-service-page#product-service-page .voice-blueprint-number,
+        #product-service-page#product-service-page#product-service-page .voice-build-redesign-number {
+          border-color: #b9ddd4 !important;
+          background: #edf7f4 !important;
+          color: #0e6f62 !important;
+          -webkit-text-fill-color: #0e6f62 !important;
+          box-shadow: none !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .voice-build-redesign-panel-head {
+          border-color: #dbe4e1 !important;
+          color: #71817d !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .voice-build-redesign-panel-head span:last-child,
+        #product-service-page#product-service-page#product-service-page .voice-build-redesign-label,
+        #product-service-page#product-service-page#product-service-page .voice-blueprint-system {
+          color: #118778 !important;
+          -webkit-text-fill-color: #118778 !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .product-service-ready-card {
+          border: 1px solid #cde2dc !important;
+          background: #edf7f4 !important;
+          background-image: none !important;
+          color: #14231f !important;
+          box-shadow: 0 12px 34px rgba(17, 135, 120, 0.07) !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .product-service-photo-caption,
+        #product-service-page#product-service-page#product-service-page .product-service-photo-caption :is(p, strong, span) {
+          color: #ffffff !important;
+          -webkit-text-fill-color: #ffffff !important;
+        }
+
+        @media (max-width: 767px) {
+          #product-service-page#product-service-page#product-service-page > section {
+            padding-top: 4rem;
+            padding-bottom: 4rem;
+          }
+
+          #product-service-page#product-service-page#product-service-page .product-service-hero {
+            padding-top: 7rem !important;
           }
         }
       `}</style>
