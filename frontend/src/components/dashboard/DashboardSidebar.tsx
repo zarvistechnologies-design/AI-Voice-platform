@@ -323,9 +323,6 @@ export function DashboardSidebar({
         if (prefetchedDashboardRoutes.has(href)) return;
         prefetchedDashboardRoutes.add(href);
         router.prefetch(href);
-        void import("@/lib/dashboardDataPrefetch")
-          .then(({ prefetchDashboardData }) => prefetchDashboardData(href))
-          .catch(() => undefined);
       }, 400 + index * 400);
     });
   }, [router]);

@@ -97,6 +97,7 @@ export type KnowledgeDocument = {
   _id?: string;
   name: string;
   content: string;
+  characterCount?: number;
   status: "ready" | "disabled";
 };
 

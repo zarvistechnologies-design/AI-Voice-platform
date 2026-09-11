@@ -203,7 +203,7 @@ function includeAttachedKnowledge(
       originalFileName: "",
       mimeType: "text/plain",
       url: "",
-      characterCount: document.content.length,
+      characterCount: document.characterCount ?? document.content.length,
       chunkCount: 0,
       embeddingModel: "",
       error: "",
