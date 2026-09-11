@@ -675,8 +675,8 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
     color: #fda4af !important;
   }
 
-  .dashboard-home-theme :is(.text-[#108D82], .text-[#108D82], [class~="text-[#108D82]"], [class~="text-[#108D82]"]) {
-    color: #108D82 !important;
+  .dashboard-home-theme :is(.text-blue-700, .text-blue-600, [class~="text-[#1d4ed8]"], [class~="text-[#1e40af]"]) {
+    color: #93c5fd !important;
   }
 
   .dashboard-home-theme :is(.text-purple-700, .text-purple-600, [class~="text-[#7c3aed]"], [class~="text-[#7e22ce]"]) {

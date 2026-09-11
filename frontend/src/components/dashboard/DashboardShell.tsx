@@ -5605,7 +5605,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                                     {card.label}
                                   </span>
                                 </span>
-                                <span className="grid size-8 shrink-0 place-items-center rounded-lg border border-[#d7e0dd] bg-white text-[#737789] transition group-hover:border-[#108D82] group-hover:bg-[#f5f5fc] group-hover:text-[#0e6f62]">
+                                <span className="grid size-8 shrink-0 place-items-center rounded-lg border border-[#d7e0dd] bg-white text-[#737789] transition group-hover:border-[#aeb4e5] group-hover:bg-[#f5f5fc] group-hover:text-[#0e6f62]">
                                   <Icon icon="edit" />
                                 </span>
                               </span>

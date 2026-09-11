@@ -131,7 +131,7 @@ export const modelPricingCategories: readonly ModelPriceCategory[] = [
       {
         name: "ElevenLabs",
         shortName: "11",
-        accent: "#108D82",
+        accent: "#a78bfa",
         sourceUrl: ELEVENLABS_PRICING,
         models: [
           { name: "scribe_v2_realtime", rate: "$0.0065", unit: "per audio minute ($0.39/hour)", badge: "Recommended" },
@@ -224,7 +224,7 @@ export const modelPricingCategories: readonly ModelPriceCategory[] = [
       {
         name: "ElevenLabs",
         shortName: "11",
-        accent: "#108D82",
+        accent: "#a78bfa",
         sourceUrl: ELEVENLABS_PRICING,
         models: [
           { name: "eleven_flash_v2_5", rate: "$0.05", unit: "per 1K characters", badge: "Recommended" },

@@ -240,7 +240,7 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
 
           <div className="rounded-lg border border-[#b8c8c3] bg-[#edf7f4] px-3 py-2.5">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <span className="app-body text-[#108D82]">{providers.find((item) => item.id === provider)?.description}</span>
+              <span className="app-body text-[#1e40af]">{providers.find((item) => item.id === provider)?.description}</span>
               <a className="app-label text-[#118778] underline underline-offset-2" href={providers.find((item) => item.id === provider)?.docs} rel="noreferrer" target="_blank">Provider docs</a>
             </div>
           </div>

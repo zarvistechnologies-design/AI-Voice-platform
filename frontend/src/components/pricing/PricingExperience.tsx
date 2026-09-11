@@ -189,7 +189,7 @@ export function PricingExperience() {
                   const isActive = calls === preset.calls && minutes === preset.minutes;
                   return (
                     <button
-                      className={`min-h-10 rounded-xl border px-3 text-xs font-semibold transition ${isActive ? "border-[#118778]/60 bg-[#118778]/10 text-[#108D82]" : "border-white/10 bg-black/20 text-white/55 hover:border-[#118778]/25 hover:text-[#0e6f62]"}`}
+                      className={`min-h-10 rounded-xl border px-3 text-xs font-semibold transition ${isActive ? "border-[#118778]/60 bg-[#118778]/10 text-[#454bd0]" : "border-white/10 bg-black/20 text-white/55 hover:border-[#118778]/25 hover:text-[#0e6f62]"}`}
                       key={preset.label}
                       type="button"
                       aria-pressed={isActive}
