@@ -292,11 +292,10 @@ export function ProfileShell() {
       return;
     }
     let cancelled = false;
-    void validateStoredSession()
-      .then(() => {
-        if (!cancelled) return loadSessions();
-        return undefined;
-      })
+    void Promise.all([
+      validateStoredSession(),
+      Promise.resolve().then(loadSessions),
+    ])
       .catch((error) => {
         if (!cancelled) {
           setNotice({

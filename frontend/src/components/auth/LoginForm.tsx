@@ -122,21 +122,21 @@ export function LoginForm() {
 
   return (
     <form
-      className={`login-auth-form relative z-[1] grid w-full max-w-[420px] gap-4 text-slate-900 ${mode === "register" ? "is-register" : ""}`}
+      className={`login-auth-form relative z-[1] grid w-full max-w-[440px] gap-[18px] text-[#14231f] ${mode === "register" ? "is-register" : ""}`}
       onSubmit={handleSubmit}
     >
-      <div className="auth-heading mb-2 grid gap-2 text-center">
-        <div className="mx-auto mb-1 grid size-12 place-items-center rounded-2xl border border-teal-500/20 bg-teal-50/80 shadow-xs" aria-hidden="true">
+      <div className="auth-heading mb-2 grid gap-2 text-left">
+        <div className="mb-2 grid size-11 place-items-center rounded-xl border border-[#c8e1db] bg-[#edf7f4]" aria-hidden="true">
           <span className="flex h-5 items-center gap-[3.5px]">
             {[10, 20, 14, 8, 16].map((height) => (
-              <span className="w-[3px] rounded-full bg-[#108D82]" key={height} style={{ height }} />
+              <span className="w-[3px] rounded-full bg-[#118778]" key={height} style={{ height }} />
             ))}
           </span>
         </div>
-        <h1 className="m-0 text-[clamp(1.75rem,3.8vw,2.35rem)] font-extrabold leading-tight tracking-[-0.035em] text-slate-900">
+        <h1 className="m-0 text-[2rem] font-black leading-tight tracking-[-0.04em] text-[#14231f] sm:text-[2.25rem]">
           {mode === "login" ? "Welcome back" : mode === "register" ? "Create your account" : "Reset your password"}
         </h1>
-        <p className="auth-description m-0 text-sm leading-5 text-slate-500">
+        <p className="auth-description m-0 text-[15px] leading-6 text-[#657670]">
           {mode === "login"
             ? `Sign in to continue to ${brand.productName}.`
             : mode === "register"
@@ -151,7 +151,7 @@ export function LoginForm() {
           <span className="relative block">
             <svg aria-hidden="true" className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.7" /><path d="M4.5 21a7.5 7.5 0 0115 0" stroke="currentColor" strokeLinecap="round" strokeWidth="1.7" /></svg>
             <input
-              className="auth-input min-h-12 w-full rounded-xl border border-slate-200 bg-slate-50/70 px-4 pl-10 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-slate-50 focus:border-[#108D82] focus:bg-white focus:ring-4 focus:ring-[#108D82]/10"
+              className="auth-input min-h-13 w-full rounded-xl border border-[#d7e2df] bg-white px-4 pl-10 text-sm font-medium text-[#14231f] outline-none transition placeholder:text-[#91a09c] hover:border-[#b9cbc6] focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10"
               autoComplete="name"
               onChange={(event) => setName(event.target.value)}
               placeholder="Your full name"
@@ -167,7 +167,7 @@ export function LoginForm() {
         <span className="relative block">
           <svg aria-hidden="true" className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24"><rect height="15" rx="2.5" stroke="currentColor" strokeWidth="1.7" width="19" x="2.5" y="4.5" /><path d="M4 7l8 6 8-6" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" /></svg>
           <input
-            className="auth-input min-h-12 w-full rounded-xl border border-slate-200 bg-slate-50/70 px-4 pl-10 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-slate-50 focus:border-[#108D82] focus:bg-white focus:ring-4 focus:ring-[#108D82]/10"
+            className="auth-input min-h-13 w-full rounded-xl border border-[#d7e2df] bg-white px-4 pl-10 text-sm font-medium text-[#14231f] outline-none transition placeholder:text-[#91a09c] hover:border-[#b9cbc6] focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10"
             autoComplete="email"
             onChange={(event) => setEmail(event.target.value)}
             placeholder="name@company.com"
@@ -182,7 +182,7 @@ export function LoginForm() {
         <span className="relative block">
           <svg aria-hidden="true" className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24"><rect height="12" rx="2.5" stroke="currentColor" strokeWidth="1.7" width="17" x="3.5" y="9" /><path d="M7.5 9V6.5a4.5 4.5 0 019 0V9" stroke="currentColor" strokeLinecap="round" strokeWidth="1.7" /></svg>
           <input
-            className="auth-input min-h-12 w-full rounded-xl border border-slate-200 bg-slate-50/70 px-10 pr-11 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:bg-slate-50 focus:border-[#108D82] focus:bg-white focus:ring-4 focus:ring-[#108D82]/10"
+            className="auth-input min-h-13 w-full rounded-xl border border-[#d7e2df] bg-white px-10 pr-11 text-sm font-medium text-[#14231f] outline-none transition placeholder:text-[#91a09c] hover:border-[#b9cbc6] focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10"
             autoComplete={mode === "login" ? "current-password" : "new-password"}
             onChange={(event) => setPassword(event.target.value)}
             placeholder="Enter your password"
@@ -204,7 +204,7 @@ export function LoginForm() {
         <label className="auth-field grid gap-1.5 text-xs font-semibold text-slate-700">
           <span>Authenticator code</span>
           <input
-            className="auth-input min-h-12 w-full rounded-xl border border-slate-200 bg-slate-50/70 px-4 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#108D82] focus:bg-white focus:ring-4 focus:ring-[#108D82]/10"
+            className="auth-input min-h-13 w-full rounded-xl border border-[#d7e2df] bg-white px-4 text-sm font-medium text-[#14231f] outline-none transition placeholder:text-[#91a09c] focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10"
             autoComplete="one-time-code"
             inputMode="numeric"
             maxLength={6}
@@ -249,7 +249,7 @@ export function LoginForm() {
       ) : null}
 
       <button
-        className="auth-submit inline-flex min-h-12 items-center justify-center rounded-xl border-0 bg-[#108D82] text-sm font-bold text-white shadow-md shadow-[#108D82]/20 transition-all hover:bg-[#0d7970] hover:shadow-lg hover:shadow-[#108D82]/30 active:scale-[0.99] disabled:cursor-wait disabled:opacity-70"
+        className="auth-submit inline-flex min-h-13 items-center justify-center rounded-xl border-0 bg-[#118778] text-sm font-black text-white shadow-[0_10px_24px_rgba(17,135,120,0.18)] transition-all hover:bg-[#0e6f62] hover:shadow-[0_12px_28px_rgba(17,135,120,0.23)] active:scale-[0.99] disabled:cursor-wait disabled:opacity-70"
         disabled={isSubmitting}
         type="submit"
       >

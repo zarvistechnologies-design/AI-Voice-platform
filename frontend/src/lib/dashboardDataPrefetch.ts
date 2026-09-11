@@ -1,5 +1,7 @@
 import { developerApi } from "@/lib/developer";
+import { billingApi } from "@/lib/billing";
 import { integrationsApi } from "@/lib/integrations";
+import { organizationApi } from "@/lib/organizations";
 import { voiceApi } from "@/lib/voice";
 
 /** Warms only idempotent dashboard reads after explicit navigation intent. */
@@ -20,12 +22,28 @@ export async function prefetchDashboardData(href: string) {
     await Promise.all([voiceApi.calls(), voiceApi.agentSummaries()]);
     return;
   }
+  if (href === "/dashboard/analytics") {
+    await Promise.all([
+      voiceApi.analytics({ days: 30 }),
+      voiceApi.agentSummaries(),
+      voiceApi.calls({ status: "active", limit: 100 }),
+    ]);
+    return;
+  }
   if (href === "/dashboard/knowledge") {
     await voiceApi.workspaceKnowledge();
     return;
   }
   if (href === "/dashboard/integrations") {
     await integrationsApi.list();
+    return;
+  }
+  if (href === "/dashboard/billing") {
+    await billingApi.summary();
+    return;
+  }
+  if (href.startsWith("/dashboard/settings")) {
+    await Promise.all([organizationApi.list(), organizationApi.members()]);
     return;
   }
   if (href === "/dashboard/developers") {

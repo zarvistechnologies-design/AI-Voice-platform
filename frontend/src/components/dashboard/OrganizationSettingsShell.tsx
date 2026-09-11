@@ -283,21 +283,24 @@ export function OrganizationSettingsShell() {
     (invitation) => invitation.status === "pending",
   );
   const busy = activeAction !== null;
+  const canLoadAudit =
+    session?.organization?.role === "owner" ||
+    session?.organization?.role === "admin";
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const organizationResult = await organizationApi.list();
+      const [organizationResult, memberResult, auditResult] = await Promise.all([
+        organizationApi.list(),
+        organizationApi.members(),
+        canLoadAudit
+          ? organizationApi.auditLog({ limit: 20 }).catch(() => null)
+          : Promise.resolve(null),
+      ]);
       const active = organizationResult.organizations.find(
         (organization) =>
           organization._id === organizationResult.activeOrganizationId,
       );
-      const memberResult = await organizationApi.members();
-      let nextAuditLogs: AuditLogEntry[] = [];
-      if (active?.role === "owner" || active?.role === "admin") {
-        const auditResult = await organizationApi.auditLog({ limit: 20 });
-        nextAuditLogs = auditResult.auditLogs;
-      }
 
       setOrganizations(organizationResult.organizations);
       setActiveId(organizationResult.activeOrganizationId);
@@ -306,11 +309,11 @@ export function OrganizationSettingsShell() {
       setDataRetentionDays(String(active?.settings?.dataRetentionDays ?? 90));
       setMembers(memberResult.members);
       setInvitations(memberResult.invitations);
-      setAuditLogs(nextAuditLogs);
+      setAuditLogs(auditResult?.auditLogs ?? []);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [canLoadAudit]);
 
   useEffect(() => {
     if (!session) {
@@ -318,11 +321,7 @@ export function OrganizationSettingsShell() {
       return;
     }
     let cancelled = false;
-    void validateStoredSession()
-      .then(() => {
-        if (!cancelled) return load();
-        return undefined;
-      })
+    void Promise.all([validateStoredSession(), Promise.resolve().then(load)])
       .catch((error) => {
         if (!cancelled) {
           setLoading(false);

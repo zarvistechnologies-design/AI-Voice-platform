@@ -74,7 +74,7 @@ async function request<T>(path: string, init: RequestInit = {}) {
 
 export const organizationApi = {
   list: () =>
-    cachedApiRequest("organizations", "/", 30_000, () => request<{ activeOrganizationId: string; organizations: Organization[] }>("/")),
+    cachedApiRequest("organizations", "/", 60_000, () => request<{ activeOrganizationId: string; organizations: Organization[] }>("/")),
   create: async (name: string) => {
     const result = await request<{ organization: Organization }>("/", {
       method: "POST",
@@ -97,7 +97,7 @@ export const organizationApi = {
     return result;
   },
   members: () =>
-    cachedApiRequest("organizations", "/current/members", 15_000, () =>
+    cachedApiRequest("organizations", "/current/members", 60_000, () =>
       request<{ members: OrganizationMember[]; invitations: OrganizationInvitation[] }>(
         "/current/members",
       )),

@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import {
   useCallback,
@@ -14,7 +15,6 @@ import {
   getDashboardSidebarInitialState,
 } from "@/components/dashboard/DashboardSidebar";
 import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
-import { AdvancedAnalyticsCharts } from "@/components/dashboard/AdvancedAnalyticsCharts";
 import {
   getServerSession,
   getSession,
@@ -28,6 +28,22 @@ import {
   type AgentSummary,
   type AnalyticsOverview,
 } from "@/lib/voice";
+
+const AdvancedAnalyticsCharts = dynamic(
+  () => import("@/components/dashboard/AdvancedAnalyticsCharts").then(
+    (module) => module.AdvancedAnalyticsCharts,
+  ),
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        className="min-h-[360px] animate-pulse rounded-xl bg-[#f3f6f5]"
+        role="status"
+        aria-label="Loading analytics charts"
+      />
+    ),
+  },
+);
 
 const EMPTY: AnalyticsOverview = {
   range: { from: "", to: "" },

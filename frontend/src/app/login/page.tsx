@@ -1,92 +1,82 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 
 import { LoginForm } from "@/components/auth/LoginForm";
 import { BrandLogo } from "@/components/ui/BrandLogo";
 
+const capabilities = [
+  "Answer every customer call",
+  "Qualify and route every lead",
+  "Complete work in connected tools",
+];
+
 const benefits = [
-  ["0.8s", "Avg. response"],
+  ["0.8s", "Average response"],
   ["24/7", "Always available"],
   ["99.9%", "Platform uptime"],
 ];
 
 export default function LoginPage() {
   return (
-    <main className="h-[100svh] overflow-hidden bg-[#f8fafc] text-slate-900 supports-[height:100dvh]:h-[100dvh]">
-      <div className="mx-auto grid h-full w-full max-w-[1540px] gap-4 p-3 sm:p-4 lg:grid-cols-[minmax(0,1.48fr)_minmax(390px,0.72fr)] lg:gap-5 lg:p-5">
-        <section className="relative hidden min-h-0 overflow-hidden rounded-[28px] border border-slate-200/90 bg-gradient-to-br from-[#ffffff] via-[#f7faf9] to-[#edf7f5] shadow-[0_10px_35px_rgba(0,0,0,0.03)] lg:block">
-          <Image
-            alt="AI voice agent operating from a laptop"
-            className="object-cover object-center opacity-15 mix-blend-multiply"
-            fill
-            priority
-            sizes="(min-width: 1024px) 68vw, 0vw"
-            src="/images/login-voice-agent-hero.png"
-          />
-          <div className="absolute inset-0 bg-gradient-to-br from-white/90 via-slate-50/85 to-[#edf7f5]/80" />
+    <main className="min-h-[100svh] overflow-x-hidden bg-[#f3f7f6] text-[#14231f] lg:h-[100svh] lg:overflow-y-hidden supports-[height:100dvh]:lg:h-[100dvh]">
+      <div className="mx-auto grid min-h-[100svh] w-full min-w-0 max-w-[1440px] gap-4 p-3 sm:p-5 lg:h-full lg:min-h-0 lg:grid-cols-[minmax(0,1.06fr)_minmax(440px,0.94fr)] lg:gap-5 lg:p-6">
+        <section className="relative hidden min-h-0 overflow-hidden rounded-[28px] border border-[#d7e5e1] bg-[#eaf5f2] lg:flex lg:flex-col">
+          <div className="pointer-events-none absolute -right-32 -top-40 size-[34rem] rounded-full border-[90px] border-white/35" aria-hidden="true" />
+          <div className="pointer-events-none absolute -bottom-56 -left-40 size-[38rem] rounded-full border-[110px] border-[#118778]/[0.045]" aria-hidden="true" />
 
-          <div className="absolute inset-x-0 top-0 z-10 flex h-20 items-center justify-between px-[clamp(24px,3vw,44px)]">
+          <header className="relative z-10 flex min-h-20 items-center justify-between px-[clamp(28px,3vw,48px)]">
             <BrandLogo showWebsiteLogo />
-            <span className="inline-flex items-center gap-2 rounded-full border border-teal-500/20 bg-white/90 px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[#0d7970] shadow-xs backdrop-blur-md">
-              <span className="relative flex size-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#108D82] opacity-75" />
-                <span className="relative inline-flex size-2 rounded-full bg-[#108D82]" />
-              </span>
-              Voice AI online
+            <span className="rounded-full border border-[#bddbd4] bg-white/75 px-3.5 py-2 text-[10px] font-black uppercase tracking-[0.15em] text-[#0e6f62]">
+              AI voice platform
             </span>
-          </div>
+          </header>
 
-          <div className="absolute left-[clamp(24px,3vw,44px)] top-[18%] z-10 max-w-[490px]">
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-teal-500/25 bg-teal-50/90 px-3.5 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#0d7970] shadow-xs backdrop-blur">
-              <span className="grid size-4 place-items-center rounded bg-teal-500/15 text-xs text-[#108D82]">✦</span>
-              AI Voice Agent Platform
-            </div>
-            <h1 className="m-0 text-[clamp(2.5rem,4.2vw,4.4rem)] font-black leading-[0.96] tracking-[-0.05em] text-slate-900">
-              Build voice agents<br />
-              <span className="bg-gradient-to-r from-[#108D82] to-[#0ea5e9] bg-clip-text text-transparent">
-                that get things done.
-              </span>
-            </h1>
-            <p className="mt-4 max-w-[410px] text-sm leading-6 text-slate-600 xl:text-base xl:leading-7">
-              Answer every call, qualify every lead, and complete customer workflows with natural, ultra-low latency voice AI conversations.
-            </p>
+          <div className="relative z-10 flex flex-1 items-center px-[clamp(28px,4vw,64px)] py-8">
+            <div className="max-w-[590px]">
+              <p className="m-0 text-[11px] font-black uppercase tracking-[0.18em] text-[#0e6f62]">
+                Voice automation, simplified
+              </p>
+              <h1 className="mt-5 max-w-[570px] text-[clamp(2.8rem,4vw,4.35rem)] font-black leading-[0.98] tracking-[-0.055em] text-[#14231f]">
+                Build voice agents that <span className="text-[#118778]">move work forward.</span>
+              </h1>
+              <p className="mt-6 max-w-[520px] text-base leading-7 text-[#52645f] xl:text-lg xl:leading-8">
+                Create natural phone conversations that answer questions, qualify customers, and complete the next action.
+              </p>
 
-            <div className="login-capability-tags mt-6 flex max-w-[460px] flex-wrap gap-2">
-              {["Inbound calls", "Lead qualification", "Appointment booking", "Custom tools & CRM"].map((capability) => (
-                <span className="inline-flex items-center gap-2 rounded-full border border-slate-200/90 bg-white/90 px-3 py-1.5 text-[11px] font-semibold text-slate-700 shadow-xs backdrop-blur-md" key={capability}>
-                  <span className="size-1.5 rounded-full bg-[#108D82]" />
-                  {capability}
-                </span>
-              ))}
+              <ul className="mt-8 grid max-w-[520px] gap-3" aria-label="Platform capabilities">
+                {capabilities.map((capability) => (
+                  <li className="flex items-center gap-3 text-sm font-bold text-[#30443e]" key={capability}>
+                    <span className="grid size-6 shrink-0 place-items-center rounded-full bg-[#118778] text-[11px] text-white" aria-hidden="true">&#10003;</span>
+                    {capability}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
 
-          <div className="absolute inset-x-[clamp(24px,3vw,44px)] bottom-[clamp(20px,3vh,32px)] z-10 grid grid-cols-3 overflow-hidden rounded-2xl border border-slate-200/90 bg-white/90 shadow-sm backdrop-blur-xl">
+          <div className="relative z-10 mx-[clamp(28px,3vw,48px)] mb-[clamp(28px,4vh,44px)] grid grid-cols-3 overflow-hidden rounded-2xl border border-[#cfe0dc] bg-white/80 shadow-[0_10px_30px_rgba(20,35,31,0.04)] backdrop-blur">
             {benefits.map(([value, label], index) => (
-              <div className={`px-5 py-4 text-center ${index ? "border-l border-slate-200/80" : ""}`} key={label}>
-                <strong className="block text-xl font-black text-[#108D82] xl:text-2xl">{value}</strong>
-                <span className="mt-1 block text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">{label}</span>
+              <div className={`px-4 py-4 ${index ? "border-l border-[#dce8e5]" : ""}`} key={label}>
+                <strong className="block text-xl font-black tracking-[-0.03em] text-[#118778] xl:text-2xl">{value}</strong>
+                <span className="mt-1 block text-[9px] font-black uppercase tracking-[0.12em] text-[#71817d] xl:text-[10px]">{label}</span>
               </div>
             ))}
           </div>
         </section>
 
-        <section className="relative flex min-h-0 items-center justify-center rounded-[28px] border border-slate-200/90 bg-white px-4 py-3 shadow-[0_20px_60px_-15px_rgba(15,23,42,0.06)] sm:px-7 lg:px-[clamp(24px,3vw,42px)]">
-          <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[28px]">
-            <div className="absolute -right-28 -top-28 size-64 rounded-full bg-teal-100/40 blur-3xl" />
-            <div className="absolute -bottom-28 -left-28 size-64 rounded-full bg-emerald-100/30 blur-3xl" />
+        <section className="relative flex min-h-[calc(100svh-1.5rem)] min-w-0 items-center justify-center overflow-hidden rounded-[24px] border border-[#dbe4e1] bg-white px-5 py-24 shadow-[0_20px_65px_-28px_rgba(20,35,31,0.18)] sm:px-8 lg:min-h-0 lg:rounded-[28px] lg:px-[clamp(38px,4vw,68px)] lg:py-14">
+          <div className="absolute inset-x-5 top-5 z-10 flex items-center justify-between lg:inset-x-7 lg:top-6">
+            <div className="lg:hidden"><BrandLogo showWebsiteLogo /></div>
+            <Link className="ml-auto inline-flex min-h-9 items-center gap-2 rounded-full border border-[#dbe4e1] bg-white px-3.5 text-xs font-bold text-[#52645f] transition hover:border-[#b9d6cf] hover:text-[#14231f]" href="/">
+              <span aria-hidden="true">&larr;</span> Back home
+            </Link>
           </div>
 
-          <div className="absolute inset-x-5 top-4 z-10 flex items-center justify-between lg:hidden">
-            <BrandLogo showWebsiteLogo />
-            <Link className="text-xs font-semibold text-slate-500 hover:text-slate-900" href="/">Back home</Link>
+          <div className="w-full min-w-0 max-w-[440px]">
+            <Suspense fallback={<div className="h-[500px] w-full animate-pulse rounded-2xl bg-[#f3f7f6]" />}>
+              <LoginForm />
+            </Suspense>
           </div>
-          <Link className="absolute right-6 top-5 z-10 hidden text-xs font-semibold text-slate-500 transition hover:text-slate-900 lg:block" href="/">← Back home</Link>
-
-          <Suspense fallback={<div className="h-[500px] w-full max-w-[440px] rounded-2xl bg-slate-100/60 animate-pulse" />}>
-            <LoginForm />
-          </Suspense>
         </section>
       </div>
     </main>

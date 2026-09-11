@@ -929,7 +929,7 @@ export const voiceApi = {
   },
   agents: () => cachedRequest<{ agents: BackendAgent[] }>("/agents", 15_000),
   agentSummaries: () =>
-    cachedRequest<{ agents: AgentSummary[] }>("/agents?view=summary", 15_000),
+    cachedRequest<{ agents: AgentSummary[] }>("/agents?view=summary", 60_000),
   knowledgeAgents: () =>
     cachedRequest<{ agents: KnowledgeAgentSummary[] }>(
       "/agents?view=knowledge",
@@ -941,7 +941,7 @@ export const voiceApi = {
       agents: KnowledgeAgentSummary[];
       sources: WorkspaceKnowledgeSource[];
       maximumSources: number;
-    }>("/knowledge", 15_000, ["/knowledge", "/agents"]),
+    }>("/knowledge", 60_000, ["/knowledge", "/agents"]),
   agent: (agentId: string) =>
     cachedRequest<{ agent: BackendAgent }>(
       `/agents/${encodeURIComponent(agentId)}`,
@@ -1240,7 +1240,7 @@ export const voiceApi = {
       message?: string;
     }>(`/campaigns/${campaignId}/cancel`, { method: "POST" }, ["/campaigns"]),
   phoneNumbers: () =>
-    cachedRequest<{ numbers: BackendPhoneNumber[] }>("/phone-numbers", 15_000),
+    cachedRequest<{ numbers: BackendPhoneNumber[] }>("/phone-numbers", 60_000),
   createPhoneNumber: (input: PhoneNumberImportInput) =>
     mutation<{ number: BackendPhoneNumber }>(
       "/phone-numbers",

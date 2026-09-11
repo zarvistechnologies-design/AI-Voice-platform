@@ -192,7 +192,7 @@ async function downloadInvoice(invoiceId: string) {
 }
 
 export const billingApi = {
-  summary: () => cachedApiRequest("billing", "/summary", 15_000, () => request<BillingSummary>("/summary")),
+  summary: () => cachedApiRequest("billing", "/summary", 60_000, () => request<BillingSummary>("/summary")),
   transactions: (limit = 50) => request<{ transactions: BillingTransaction[] }>("/transactions?limit=" + limit),
   topUp: (amountCredits: number) =>
     request<RazorpayCheckoutPayload>("/top-up", {

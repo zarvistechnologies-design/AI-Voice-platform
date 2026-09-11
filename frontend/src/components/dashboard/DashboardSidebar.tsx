@@ -3,11 +3,22 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { startTransition, useEffect, useOptimistic, useRef, useState } from "react";
+import {
+  startTransition,
+  useEffect,
+  useOptimistic,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 
 import { useBrand } from "@/components/branding/BrandProvider";
 import { announceDashboardNavigation } from "@/components/dashboard/DashboardNavigationFeedback";
-import { getSession, type AuthSession } from "@/lib/auth";
+import {
+  getServerSession,
+  getSession,
+  subscribeToSession,
+} from "@/lib/auth";
 
 type SidebarItem = {
   label: string;
@@ -73,6 +84,18 @@ const sidebarGroups: { label: string; items: SidebarItem[] }[] = [
 
 const prefetchedDashboardRoutes = new Set<string>();
 let dashboardSidebarExpanded = false;
+
+const dashboardRouteWarmupOrder = [
+  "/dashboard/agents",
+  "/dashboard/calls",
+  "/dashboard/phone-number",
+  "/dashboard/analytics",
+  "/dashboard/campaign",
+  "/dashboard/knowledge",
+  "/dashboard/integrations",
+  "/dashboard/billing",
+  "/dashboard/developers",
+] as const;
 
 export function getDashboardSidebarInitialState() {
   return dashboardSidebarExpanded;
@@ -249,12 +272,12 @@ export function DashboardSidebar({
   const router = useRouter();
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [optimisticPathname, setOptimisticPathname] = useOptimistic(pathname);
-  const [session, setSession] = useState<AuthSession | null>(null);
+  const session = useSyncExternalStore(
+    subscribeToSession,
+    getSession,
+    getServerSession,
+  );
   const accountMenuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setSession(getSession());
-  }, []);
 
   const isSuperAdmin = session?.platformRole === "super_admin";
   const isWhiteLabelPartner = Boolean(session?.organization?.whiteLabelOwnerAccountId);
@@ -291,17 +314,20 @@ export function DashboardSidebar({
   ];
 
   useEffect(() => {
-    const preloadTimer = window.setTimeout(() => {
-      for (const group of effectiveSidebarGroups) {
-        for (const item of group.items) {
-          if (prefetchedDashboardRoutes.has(item.href)) continue;
-          prefetchedDashboardRoutes.add(item.href);
-          router.prefetch(item.href);
-        }
-      }
-    }, 250);
-    return () => window.clearTimeout(preloadTimer);
-  }, [router, effectiveSidebarGroups]);
+    // Avoid compiling/downloading every dashboard page while the first page is
+    // still becoming interactive. Warm one route at a time only after the UI
+    // has settled; pointer intent below remains immediate.
+    const timers: number[] = [];
+    dashboardRouteWarmupOrder.forEach((href, index) => {
+      const timer = window.setTimeout(() => {
+        if (prefetchedDashboardRoutes.has(href)) return;
+        prefetchedDashboardRoutes.add(href);
+        router.prefetch(href);
+      }, 1_500 + index * 750);
+      timers.push(timer);
+    });
+    return () => timers.forEach((timer) => window.clearTimeout(timer));
+  }, [router]);
 
   useEffect(() => {
     try {
@@ -385,6 +411,7 @@ export function DashboardSidebar({
           <Link
             className="dashboard-sidebar-brand-link group flex min-w-0 items-center rounded-xl outline-none ring-[#9fcfc3]/50 transition focus-visible:ring-2"
             href="/dashboard/agents"
+            prefetch={false}
             title={`${brand.productName} Voice Platform`}
             aria-label={`${brand.productName} Voice Platform`}
             onClick={(event) => {
@@ -466,6 +493,7 @@ export function DashboardSidebar({
                           : "text-[#52645f] hover:bg-[#f3f6f5] hover:text-[#20342e]"
                       }`}
                       href={item.href}
+                      prefetch={false}
                       key={item.label}
                       title={showUserSidebar ? undefined : item.label}
                       onFocus={() => prefetchDashboardRoute(item.href)}
@@ -604,8 +632,12 @@ export function DashboardSidebar({
                     <Link
                       className={`group/menu flex min-w-0 items-center gap-3 rounded-xl border px-3 py-3 outline-none transition focus-visible:ring-2 focus-visible:ring-[#118778]/50 ${isActive ? "border-[#118778]/20 bg-[#118778]/10 text-[#123d35]" : "border-transparent text-[#52645f] hover:border-[#dbe4e1] hover:bg-[#f7f7fb] hover:text-[#20342e]"}`}
                       href={item.href}
+                      prefetch={false}
                       key={item.label}
                       role="menuitem"
+                      onFocus={() => prefetchDashboardRoute(item.href)}
+                      onMouseEnter={() => prefetchDashboardRoute(item.href)}
+                      onPointerDown={() => prefetchDashboardRoute(item.href)}
                       onClick={(event) => {
                         if (
                           event.ctrlKey ||

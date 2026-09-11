@@ -295,28 +295,6 @@ export function PhoneNumberShell() {
   }
 
   useEffect(() => {
-    if (!session) return undefined;
-
-    const idleCallbacks = window as unknown as {
-      requestIdleCallback?: (
-        callback: () => void,
-        options?: { timeout: number },
-      ) => number;
-      cancelIdleCallback?: (id: number) => void;
-    };
-    if (idleCallbacks.requestIdleCallback) {
-      const idleId = idleCallbacks.requestIdleCallback(
-        preloadPhoneNumberModals,
-        { timeout: 1_000 },
-      );
-      return () => idleCallbacks.cancelIdleCallback?.(idleId);
-    }
-
-    const timer = window.setTimeout(preloadPhoneNumberModals, 0);
-    return () => window.clearTimeout(timer);
-  }, [session]);
-
-  useEffect(() => {
     if (!session) {
       router.replace("/login?next=/dashboard/phone-number");
       return;
