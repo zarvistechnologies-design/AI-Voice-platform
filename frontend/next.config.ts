@@ -13,9 +13,11 @@ const backendUrl = (
 const nextConfig: NextConfig = {
   output: "standalone",
   poweredByHeader: false,
-  // Avoid large disk caches for the local launcher; production keeps its defaults.
+  // Keep localhost route compilation in memory without creating a large disk
+  // cache. Disabling this cache made repeat dashboard navigation unnecessarily
+  // expensive during development.
   webpack(config, { dev }) {
-    if (dev) config.cache = false;
+    if (dev) config.cache = { type: "memory" };
     return config;
   },
   async headers() {

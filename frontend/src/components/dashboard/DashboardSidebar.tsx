@@ -4,9 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  startTransition,
   useEffect,
-  useOptimistic,
   useRef,
   useState,
   useSyncExternalStore,
@@ -84,6 +82,7 @@ const sidebarGroups: { label: string; items: SidebarItem[] }[] = [
 
 const prefetchedDashboardRoutes = new Set<string>();
 let dashboardSidebarExpanded = false;
+let dashboardRouteWarmupStarted = false;
 
 const dashboardRouteWarmupOrder = [
   "/dashboard/agents",
@@ -271,7 +270,7 @@ export function DashboardSidebar({
   const pathname = usePathname();
   const router = useRouter();
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
-  const [optimisticPathname, setOptimisticPathname] = useOptimistic(pathname);
+  const [optimisticPathname, setOptimisticPathname] = useState(pathname);
   const session = useSyncExternalStore(
     subscribeToSession,
     getSession,
@@ -314,19 +313,18 @@ export function DashboardSidebar({
   ];
 
   useEffect(() => {
-    // Avoid compiling/downloading every dashboard page while the first page is
-    // still becoming interactive. Warm one route at a time only after the UI
-    // has settled; pointer intent below remains immediate.
-    const timers: number[] = [];
+    // This component remounts between dashboard pages. Keep the warm-up alive
+    // across those remounts so a navigation cannot cancel preparation of the
+    // remaining routes.
+    if (dashboardRouteWarmupStarted) return;
+    dashboardRouteWarmupStarted = true;
     dashboardRouteWarmupOrder.forEach((href, index) => {
-      const timer = window.setTimeout(() => {
+      window.setTimeout(() => {
         if (prefetchedDashboardRoutes.has(href)) return;
         prefetchedDashboardRoutes.add(href);
         router.prefetch(href);
-      }, 1_500 + index * 750);
-      timers.push(timer);
+      }, 400 + index * 400);
     });
-    return () => timers.forEach((timer) => window.clearTimeout(timer));
   }, [router]);
 
   useEffect(() => {
@@ -368,7 +366,7 @@ export function DashboardSidebar({
     )
       return false;
     if (targetPathname !== pathname) {
-      startTransition(() => setOptimisticPathname(targetPathname));
+      setOptimisticPathname(targetPathname);
       announceDashboardNavigation(href, pathname);
     }
     return true;
