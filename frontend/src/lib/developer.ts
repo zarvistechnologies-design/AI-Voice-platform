@@ -50,7 +50,7 @@ async function request<T>(path: string, init: RequestInit = {}) {
 }
 
 export const developerApi = {
-  webhooks: () => cachedApiRequest("developer", "/webhooks", 60_000, () =>
+  webhooks: () => cachedApiRequest("developer", "/webhooks", 5 * 60_000, () =>
     request<{ webhooks: WebhookEndpoint[]; deliveries: WebhookDelivery[]; eventCatalog: WebhookEvent[] }>("/webhooks")),
   createWebhook: async (input: { name: string; url: string; events: WebhookEvent[] }) => {
     const result = await request<{ webhook: WebhookEndpoint; secret: string }>("/webhooks", { method: "POST", body: JSON.stringify(input) });
@@ -72,7 +72,7 @@ export const developerApi = {
     invalidateApiCache("developer", "/webhooks");
     return result;
   },
-  apiKeys: () => cachedApiRequest("developer", "/api-keys", 60_000, () =>
+  apiKeys: () => cachedApiRequest("developer", "/api-keys", 5 * 60_000, () =>
     request<{ apiKeys: ApiKeyRecord[]; scopeCatalog: ApiKeyScope[] }>("/api-keys")),
   createApiKey: async (input: { name: string; scopes: ApiKeyScope[]; expiresAt?: string }) => {
     const result = await request<{ apiKey: ApiKeyRecord; key: string }>("/api-keys", { method: "POST", body: JSON.stringify(input) });

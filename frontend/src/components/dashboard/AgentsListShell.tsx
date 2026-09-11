@@ -13,6 +13,7 @@ import {
   subscribeToSession,
 } from "@/lib/auth";
 import { voiceApi, type AgentSummary } from "@/lib/voice";
+import { peekVoiceCache } from "@/lib/voiceCache";
 
 type IconName = "agent" | "chevron" | "clone" | "edit" | "more" | "phone" | "plus" | "search" | "trash";
 type AgentStatusFilter = "All" | AgentSummary["status"];
@@ -124,6 +125,16 @@ export function AgentsListShell() {
     if (!session) {
       router.replace("/login?next=/dashboard/agents");
       return;
+    }
+
+    const cached = peekVoiceCache<{ agents: AgentSummary[] }>(
+      "/agents?view=summary",
+    );
+    if (cached) {
+      void Promise.resolve().then(() => {
+        setAgents(cached.agents);
+        setLoading(false);
+      });
     }
 
     void voiceApi.agentSummaries()

@@ -28,6 +28,7 @@ import {
   type KnowledgeSource,
   type WorkspaceKnowledgeSource,
 } from "@/lib/voice";
+import { peekVoiceCache } from "@/lib/voiceCache";
 
 type IconName =
   | "check"
@@ -283,13 +284,28 @@ export function KnowledgeBaseShell() {
       return;
     }
     let cancelled = false;
-    void Promise.all([validateStoredSession(), voiceApi.workspaceKnowledge()])
-      .then(([validated, result]) => {
+    const cached = peekVoiceCache<
+      Awaited<ReturnType<typeof voiceApi.workspaceKnowledge>>
+    >("/knowledge", ["/knowledge", "/agents"]);
+    if (cached) {
+      void Promise.resolve().then(() => {
         if (cancelled) return;
-        if (!validated) {
+        applyWorkspaceKnowledge(cached);
+        setLoading(false);
+      });
+    }
+
+    void validateStoredSession()
+      .then((validated) => {
+        if (!cancelled && !validated) {
           router.replace("/login?next=/dashboard/knowledge");
-          return;
         }
+      })
+      .catch(() => undefined);
+
+    void voiceApi.workspaceKnowledge()
+      .then((result) => {
+        if (cancelled) return;
         applyWorkspaceKnowledge(result);
         setLoading(false);
       })

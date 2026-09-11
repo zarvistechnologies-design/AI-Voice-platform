@@ -70,6 +70,13 @@ export function cachedApiRequest<T>(
   });
 }
 
+/** Returns the latest in-memory value immediately, including stale data. */
+export function peekApiCache<T>(namespace: string, resource: string) {
+  const queryKey = scopedKey(namespace, resource);
+  if (!queryKey) return undefined;
+  return getDashboardQueryClient().getQueryData<T>(queryKey);
+}
+
 export function invalidateApiCache(namespace: string, resourcePrefix = "") {
   const session = getSession();
   if (!session) return;

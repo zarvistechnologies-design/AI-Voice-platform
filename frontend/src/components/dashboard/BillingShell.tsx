@@ -7,6 +7,7 @@ import { DashboardSidebar, getDashboardSidebarInitialState } from "@/components/
 import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
 import { getServerSession, getSession, logoutSession, subscribeToSession, validateStoredSession } from "@/lib/auth";
 import { billingApi, type BillingSummary } from "@/lib/billing";
+import { peekApiCache } from "@/lib/apiCache";
 import { openRazorpayCheckout } from "@/lib/razorpayCheckout";
 
 const topUpOptions = [5, 10, 50, 100];
@@ -40,6 +41,8 @@ export function BillingShell() {
 
   const load = useCallback(async () => {
     try {
+      const cached = peekApiCache<BillingSummary>("billing", "/summary");
+      if (cached) setData(cached);
       const summary = await billingApi.summary();
       setData(summary);
       setNotice("");

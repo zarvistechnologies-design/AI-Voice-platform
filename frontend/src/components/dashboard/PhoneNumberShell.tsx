@@ -31,6 +31,7 @@ import {
   type PhoneNumberImportInput,
   type VobizNumber,
 } from "@/lib/voice";
+import { peekVoiceCache } from "@/lib/voiceCache";
 
 const loadPhoneNumberModals = () =>
   import("@/components/dashboard/PhoneNumberModals");
@@ -300,6 +301,19 @@ export function PhoneNumberShell() {
       return;
     }
     void validateStoredSession();
+    const cachedNumbers = peekVoiceCache<{ numbers: BackendPhoneNumber[] }>(
+      "/phone-numbers",
+    );
+    const cachedAgents = peekVoiceCache<{ agents: AgentSummary[] }>(
+      "/agents?view=summary",
+    );
+    if (cachedNumbers && cachedAgents) {
+      void Promise.resolve().then(() => {
+        setNumbers(cachedNumbers.numbers);
+        setAgents(cachedAgents.agents);
+        setLoading(false);
+      });
+    }
     void Promise.all([voiceApi.phoneNumbers(), voiceApi.agentSummaries()])
       .then(([numberResponse, agentResponse]) => {
         setNumbers(numberResponse.numbers);

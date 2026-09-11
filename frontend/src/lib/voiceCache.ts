@@ -39,6 +39,16 @@ export function currentVoiceSessionScope() {
   return voiceSessionScope();
 }
 
+/** Returns the latest in-memory value immediately, including stale data. */
+export function peekVoiceCache<T>(
+  path: string,
+  dependencies: readonly string[] = [path],
+) {
+  const queryKey = voiceCacheKey(path, dependencies);
+  if (!queryKey) return undefined;
+  return getDashboardQueryClient().getQueryData<T>(queryKey);
+}
+
 export function invalidateVoiceCache(...pathPrefixes: string[]) {
   for (const prefix of pathPrefixes) {
     voiceCacheGenerations.set(prefix, (voiceCacheGenerations.get(prefix) ?? 0) + 1);

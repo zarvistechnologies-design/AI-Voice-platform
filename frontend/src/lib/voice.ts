@@ -941,7 +941,7 @@ export const voiceApi = {
       agents: KnowledgeAgentSummary[];
       sources: WorkspaceKnowledgeSource[];
       maximumSources: number;
-    }>("/knowledge", 60_000, ["/knowledge", "/agents"]),
+    }>("/knowledge", 5 * 60_000, ["/knowledge", "/agents"]),
   agent: (agentId: string) =>
     cachedRequest<{ agent: BackendAgent }>(
       `/agents/${encodeURIComponent(agentId)}`,
@@ -1186,7 +1186,7 @@ export const voiceApi = {
       }),
     }),
   campaigns: () =>
-    cachedRequest<{ campaigns: BackendCampaign[] }>("/campaigns", 3_000),
+    cachedRequest<{ campaigns: BackendCampaign[] }>("/campaigns", 15_000),
   campaign: (campaignId: string) =>
     request<{ campaign: BackendCampaign }>(`/campaigns/${campaignId}`),
   createCampaign: (input: CreateCampaignInput) =>

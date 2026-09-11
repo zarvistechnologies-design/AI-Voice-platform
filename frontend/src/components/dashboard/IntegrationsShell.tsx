@@ -23,6 +23,7 @@ import {
   type DigitalBotConnection,
   type IntegrationProvider,
 } from "@/lib/integrations";
+import { peekApiCache } from "@/lib/apiCache";
 
 const catalog = {
   vobiz: {
@@ -152,6 +153,11 @@ export function IntegrationsShell() {
 
   const load = useCallback(async () => {
     try {
+      const cached = peekApiCache<{ providers: IntegrationProvider[] }>(
+        "integrations",
+        "/",
+      );
+      if (cached) setProviders(cached.providers);
       setProviders((await integrationsApi.list()).providers);
     } catch (error) {
       setNotice(

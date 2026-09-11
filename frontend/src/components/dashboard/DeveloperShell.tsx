@@ -23,6 +23,7 @@ import {
   validateStoredSession,
 } from "@/lib/auth";
 import { API_URL } from "@/lib/apiBase";
+import { peekApiCache } from "@/lib/apiCache";
 import {
   developerApi,
   type ApiKeyRecord,
@@ -308,6 +309,28 @@ export function DeveloperShell() {
   const loadDeveloperData = useCallback(async () => {
     setLoading(true);
     try {
+      const cachedKeys = peekApiCache<
+        Awaited<ReturnType<typeof developerApi.apiKeys>>
+      >("developer", "/api-keys");
+      const cachedHooks = peekApiCache<
+        Awaited<ReturnType<typeof developerApi.webhooks>>
+      >("developer", "/webhooks");
+      if (cachedKeys && cachedHooks) {
+        setApiKeys(cachedKeys.apiKeys);
+        setScopeCatalog(
+          cachedKeys.scopeCatalog.length
+            ? cachedKeys.scopeCatalog
+            : defaultScopes,
+        );
+        setWebhooks(cachedHooks.webhooks);
+        setDeliveries(cachedHooks.deliveries);
+        setEventCatalog(
+          cachedHooks.eventCatalog.length
+            ? cachedHooks.eventCatalog
+            : defaultEvents,
+        );
+        setLoading(false);
+      }
       const [keys, hooks] = await Promise.all([
         developerApi.apiKeys(),
         developerApi.webhooks(),

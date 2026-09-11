@@ -85,13 +85,13 @@ let dashboardSidebarExpanded = false;
 let dashboardRouteWarmupStarted = false;
 
 const dashboardRouteWarmupOrder = [
-  "/dashboard/agents",
-  "/dashboard/calls",
-  "/dashboard/phone-number",
-  "/dashboard/analytics",
-  "/dashboard/campaign",
   "/dashboard/knowledge",
   "/dashboard/integrations",
+  "/dashboard/agents",
+  "/dashboard/phone-number",
+  "/dashboard/calls",
+  "/dashboard/analytics",
+  "/dashboard/campaign",
   "/dashboard/billing",
   "/dashboard/developers",
 ] as const;
@@ -323,6 +323,9 @@ export function DashboardSidebar({
         if (prefetchedDashboardRoutes.has(href)) return;
         prefetchedDashboardRoutes.add(href);
         router.prefetch(href);
+        void import("@/lib/dashboardDataPrefetch")
+          .then(({ prefetchDashboardData }) => prefetchDashboardData(href))
+          .catch(() => undefined);
       }, 400 + index * 400);
     });
   }, [router]);
