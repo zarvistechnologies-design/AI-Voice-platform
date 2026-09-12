@@ -1070,6 +1070,23 @@ const geminiTtsModels = [
   "gemini-3.1-flash-tts-preview",
   "gemini-2.5-pro-preview-tts",
 ];
+const inworldModels = [
+  "openai/gpt-4o-mini",
+  "openai/gpt-4.1-mini",
+  "google-ai-studio/gemini-2.5-flash",
+];
+const inworldVoices = [
+  "Dennis",
+  "Ashley",
+  "Jason",
+  "Sarah",
+  "Olivia",
+  "Edward",
+  "Priya",
+  "Seema",
+  "Manoj",
+  "Diego",
+];
 const voiceSpeedRange = { min: 0.5, max: 2, step: 0.05, fallback: 1 };
 const voicePitchRange = { min: -10, max: 10, step: 1, fallback: 0 };
 const concurrentCallsRange = { min: 1, max: 100, step: 1, fallback: 1 };
@@ -1146,6 +1163,9 @@ function normalizeRealtimeModel(provider: RealtimeProvider, model: string) {
     return geminiRealtimeModels.includes(resolved)
       ? resolved
       : defaultGeminiRealtimeModel;
+  }
+  if (provider === "inworld") {
+    return inworldModels.includes(normalized) ? normalized : inworldModels[0];
   }
   // OpenAI: resolve legacy aliases first, then validate against known models
   const resolved = openaiRealtimeModelAliases[normalized] ?? normalized;
@@ -1250,6 +1270,13 @@ const fallbackCatalog: ModelCatalog = {
       models: geminiRealtimeModels,
       voices: ["Aoede"],
     },
+    {
+      provider: "inworld",
+      label: "Inworld Realtime",
+      configured: true,
+      models: inworldModels,
+      voices: inworldVoices,
+    },
   ],
   llm: [
     {
@@ -1269,6 +1296,12 @@ const fallbackCatalog: ModelCatalog = {
       label: "Sarvam",
       configured: true,
       models: ["sarvam-30b"],
+    },
+    {
+      provider: "inworld",
+      label: "Inworld LLM Router",
+      configured: true,
+      models: inworldModels,
     },
   ],
   stt: [
@@ -1299,6 +1332,13 @@ const fallbackCatalog: ModelCatalog = {
       label: "Deepgram",
       configured: true,
       models: fallbackDeepgramSttModels,
+      languages: fallbackLanguageCatalog,
+    },
+    {
+      provider: "inworld",
+      label: "Inworld",
+      configured: true,
+      models: ["inworld/inworld-stt-1"],
       languages: fallbackLanguageCatalog,
     },
   ],
@@ -1356,6 +1396,14 @@ const fallbackCatalog: ModelCatalog = {
         fallbackLanguageCatalog,
       ),
       showAllVoicesWithLanguageOrder: true,
+    },
+    {
+      provider: "inworld",
+      label: "Inworld",
+      configured: true,
+      models: ["inworld-tts-2", "inworld-tts-2-flash"],
+      voices: inworldVoices,
+      languages: fallbackLanguageCatalog,
     },
   ],
 };
