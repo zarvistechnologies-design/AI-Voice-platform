@@ -1,0 +1,77 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+
+import { BrandLogo } from "@/components/ui/BrandLogo";
+import { SitePreFooterCta } from "@/components/layout/SitePreFooterCta";
+import "@/components/sections/HomeDesignFourEnding.css";
+
+type FooterTag = {
+  label: string;
+  icon: string;
+  tone?: "green" | "orange" | "pink" | "purple" | "white";
+};
+
+const footerTags: readonly FooterTag[] = [
+  { label: "Media", icon: "◆" }, { label: "Freelancing", icon: "⚡" },
+  { label: "Podcast", icon: "▥" }, { label: "Media", icon: "◆" },
+  { label: "Investing", icon: "$", tone: "pink" }, { label: "Partnership", icon: "◈", tone: "white" },
+  { label: "Deal", icon: "$" }, { label: "Agencies", icon: "▦" },
+  { label: "Contractors", icon: "▦" }, { label: "VCs", icon: "▰" },
+  { label: "Sales", icon: "◆", tone: "green" }, { label: "Real Estate", icon: "▥" },
+  { label: "Recruiting", icon: "▣", tone: "purple" }, { label: "Fundraisings", icon: "◈", tone: "orange" },
+  { label: "Consulting", icon: "▥" }, { label: "CRM", icon: "▦" },
+  { label: "Leads", icon: "≋" }, { label: "Deal", icon: "$" },
+  { label: "Agencies", icon: "▦" }, { label: "Contractors", icon: "▦" },
+];
+
+export function SiteFooter() {
+  const [visible, setVisible] = useState(false);
+  const footerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const footer = footerRef.current;
+    if (!footer || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      setVisible(true);
+      observer.disconnect();
+    }, { threshold: 0.08 });
+    observer.observe(footer);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <>
+      <SitePreFooterCta />
+      <footer className={`design-four-footer${visible ? " is-visible" : ""}`} ref={footerRef}>
+        <div className="design-four-footer-main">
+        <div className="design-four-footer-brand">
+          <BrandLogo showWebsiteLogo />
+          <p>Building intelligent voice experiences that help businesses create better conversations, automate meaningful work, and connect people with outcomes.</p>
+          <div className="design-four-footer-socials">
+            <a aria-label="Twitter / X" href="https://x.com" rel="noreferrer" target="_blank">X</a>
+            <a aria-label="LinkedIn" href="https://linkedin.com" rel="noreferrer" target="_blank">in</a>
+            <a aria-label="Call +91 7892518414" href="tel:+917892518414">&#9742;</a>
+            <a aria-label="Email hello@vozon.ai" href="mailto:hello@vozon.ai">&#9993;</a>
+          </div>
+        </div>
+        <nav aria-label="Footer navigation">
+          <div><b>Product</b><Link href="/services/voice-agents">Voice Agents</Link><Link href="/services/voice-cloning">Voice Cloning</Link><Link href="/services/realtime-tts">Realtime TTS</Link><Link href="/services/api-access">API Access</Link><Link href="/services/team-workflows">Team Workflows</Link><Link href="/services/speech-analytics">Speech Analytics</Link><Link href="/services/quality-controls">Quality Controls</Link><Link href="/services/multilingual-speech">Multilingual Speech</Link><Link href="/services/conversation-insights">Conversation Insights</Link></div>
+          <div><b>Resources</b><Link href="/#faq">FAQ</Link><Link href="/resources/blog">Blog</Link><Link href="/about">About us</Link><Link href="/resources/help-center">Support</Link><Link href="/docs">Download</Link><Link href="/terms">Terms of use</Link><Link href="/privacy">Privacy policy</Link><Link href="/partners">Affiliate program</Link></div>
+          <div><b>Company</b><Link href="/career">We&apos;re hiring</Link><Link href="/pricing">Pricing</Link><Link href="/resources/changelog">Changelog</Link><Link href="/contact">Contact us</Link></div>
+          <div><b>Contact US</b><a href="mailto:hello@vozon.ai">hello@vozon.ai</a><a className="design-four-footer-phone" href="tel:+917892518414">+91 7892518414</a><Link className="design-four-footer-demo" href="/contact">Book a free demo</Link></div>
+        </nav>
+      </div>
+        <div className="design-four-footer-tags" aria-hidden="true">
+          {[...footerTags,
+            { label: "Voice AI", icon: "AI", tone: "purple" as const },
+            { label: "Automation", icon: "+", tone: "green" as const },
+            { label: "Customer Support", icon: "*", tone: "orange" as const },
+          ].map((tag, index) => <span className={tag.tone ? `is-${tag.tone}` : undefined} key={`${tag.label}-${index}`}><i>{tag.icon}</i><b>{tag.label}</b></span>)}
+        </div>
+      </footer>
+    </>
+  );
+}

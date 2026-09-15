@@ -1,0 +1,19 @@
+import type { Metadata } from "next";
+
+import { ContactExperience } from "@/components/contact/ContactExperience";
+import { SiteLayout } from "@/components/layout/SiteLayout";
+
+export const metadata: Metadata = {
+  title: "Contact Sales | vozon.ai",
+  description:
+    "Talk to the vozon.ai team about voice agents, white-label partnerships, enterprise rollouts, pricing, integrations, and customer conversation workflows.",
+  alternates: { canonical: "/contact" },
+};
+
+export default function ContactPage() {
+  return (
+    <SiteLayout>
+      <ContactExperience />
+    </SiteLayout>
+  );
+}

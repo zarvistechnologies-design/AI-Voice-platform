@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="google-calendar-title">
+  <title id="google-calendar-title">Google Calendar</title>
+  <path fill="#4285F4" d="M12 7h40a5 5 0 0 1 5 5v40a5 5 0 0 1-5 5H12a5 5 0 0 1-5-5V12a5 5 0 0 1 5-5Z"/>
+  <path fill="#1967D2" d="M7 18h50v12H7z"/>
+  <path fill="#FBBC04" d="M46 18h11v34a5 5 0 0 1-5 5h-6z"/>
+  <path fill="#34A853" d="M7 46h39v11H12a5 5 0 0 1-5-5z"/>
+  <path fill="#EA4335" d="m46 46 11 11H46z"/>
+  <path fill="#fff" d="M18 18h28v28H18z"/>
+  <path fill="#4285F4" d="M27.3 39.8c-4 0-6.5-2.3-6.6-5.6h3.7c.1 1.5 1.3 2.4 3 2.4 1.7 0 2.8-.9 2.8-2.2 0-1.4-1.1-2.2-3.2-2.2h-1.8v-3h1.7c1.7 0 2.8-.8 2.8-2.1 0-1.2-.9-2-2.4-2-1.4 0-2.5.8-2.6 2.2h-3.6c.1-3.2 2.6-5.3 6.3-5.3 3.8 0 6.1 2 6.1 4.8 0 1.9-1.2 3.2-3 3.7v.2c2.3.4 3.6 1.9 3.6 4 0 3-2.8 5.1-6.8 5.1Zm11.1-.4V26.2h-.2l-4 2.5v-3.5l4.4-2.8h3.7v17z"/>
+</svg>

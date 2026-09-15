@@ -1,0 +1,59 @@
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  backend:
+    build: ../AI-Voice-backend
+    restart: unless-stopped
+    env_file:
+      - ../AI-Voice-backend/.env
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/ai-voice-platform
+      REDIS_URL: redis://redis:6379
+      REDIS_KEY_PREFIX: vozon:local
+      CLIENT_URL: http://localhost:3000
+      ALLOWED_ORIGINS: http://localhost:3000
+    depends_on:
+      - mongo
+      - redis
+    ports:
+      - "5000:5000"
+
+  agent:
+    build: ../AI-Voice-backend
+    restart: unless-stopped
+    command: ["node", "dist/agent.js", "start"]
+    env_file:
+      - ../AI-Voice-backend/.env
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/ai-voice-platform
+    depends_on:
+      - mongo
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        BACKEND_URL: http://backend:5000
+        NEXT_PUBLIC_API_PROXY_MODE: "on"
+        NEXT_PUBLIC_API_URL: ""
+        NEXT_PUBLIC_WHITE_LABEL_ENABLED: "false"
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
+volumes:
+  mongo-data:

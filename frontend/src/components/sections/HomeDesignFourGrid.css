@@ -1,0 +1,102 @@
+.home-design-four {
+  --design-four-container: 1200px;
+  --design-four-gutter: max(24px, calc((100vw - var(--design-four-container)) / 2));
+  --design-four-section-space: 104px;
+}
+
+.home-design-four__header {
+  width: min(var(--design-four-container), calc(100% - 48px));
+  height: 76px;
+}
+
+.home-design-four__hero {
+  min-height: 760px;
+  padding-right: var(--design-four-gutter);
+  padding-left: var(--design-four-gutter);
+}
+
+.home-design-four__logos,
+.home-design-four__section,
+.home-design-four__footer {
+  padding-right: var(--design-four-gutter);
+  padding-left: var(--design-four-gutter);
+}
+
+.home-design-four__section {
+  padding-top: var(--design-four-section-space);
+  padding-bottom: var(--design-four-section-space);
+}
+
+.home-design-four__industries {
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: 60px;
+}
+
+.home-design-four__industry-experience {
+  min-width: 0;
+  padding-right: 0;
+}
+
+.home-design-four__footer {
+  padding-top: 96px;
+  padding-bottom: 25px;
+}
+
+@media (max-width: 1248px) {
+  .home-design-four {
+    --design-four-gutter: 40px;
+  }
+
+  .home-design-four__header {
+    width: calc(100% - 80px);
+  }
+
+  .home-design-four__industries {
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 44px;
+  }
+}
+
+@media (max-width: 900px) {
+  .home-design-four {
+    --design-four-gutter: 28px;
+    --design-four-section-space: 84px;
+  }
+
+  .home-design-four__header {
+    width: calc(100% - 56px);
+  }
+
+  .home-design-four__industries {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .home-design-four {
+    --design-four-gutter: 20px;
+    --design-four-section-space: 72px;
+  }
+
+  .home-design-four__header {
+    width: calc(100% - 40px);
+    height: 68px;
+  }
+
+  .home-design-four__hero {
+    min-height: 700px;
+  }
+
+  .home-design-four__industries {
+    display: block;
+  }
+
+  .home-design-four__industry-experience {
+    margin-top: 40px;
+    padding-right: 0;
+  }
+
+  .home-design-four__footer {
+    padding-top: 72px;
+  }
+}

@@ -1,0 +1,569 @@
+/*
+ * Shared visual language for public website content.
+ * The selector deliberately starts at <main> so the homepage, global header,
+ * and global footer keep their existing designs.
+ */
+.website-content {
+  --website-accent: #118778;
+  --website-accent-dark: #0e6f62;
+  --website-accent-soft: #edf7f4;
+  --website-ink: #14231f;
+  --website-body: #52645f;
+  --website-muted: #71817d;
+  --website-line: #dbe4e1;
+  --website-surface: #ffffff;
+  --website-surface-soft: #f7f9f8;
+  min-height: 100vh;
+  background: var(--website-surface) !important;
+  color: var(--website-ink) !important;
+}
+
+.website-content ::selection {
+  background: rgb(17 135 120 / 0.2);
+  color: var(--website-ink);
+}
+
+/* Convert legacy dark page canvases into the dashboard's light palette. */
+.website-content :where(
+  .docs-page,
+  [class~="bg-black"],
+  [class*="bg-black/"],
+  [class~="bg-slate-950"],
+  [class~="bg-slate-900"],
+  [class*="bg-[#020"],
+  [class*="bg-[#030"],
+  [class*="bg-[#050"],
+  [class*="bg-[#060"],
+  [class*="bg-[#070"],
+  [class*="bg-[#071"],
+  [class*="bg-[#081"],
+  [class*="bg-[#090"],
+  [class*="bg-[#0a1"],
+  [class*="bg-[#0b0"],
+  [class*="bg-[#0b1"],
+  [class*="bg-[#100"],
+  [class*="bg-[#101"],
+  [class*="bg-[#102"],
+  [class*="bg-[#111"],
+  [class*="bg-[#142"],
+  [class*="bg-[#151"],
+  [class*="bg-[#1f2"]
+) {
+  border-color: var(--website-line) !important;
+  background-color: var(--website-surface) !important;
+  background-image: none !important;
+  color: var(--website-ink) !important;
+}
+
+.website-content > :where(section, div) > section:nth-of-type(even),
+.website-content > section:nth-of-type(even) {
+  background-color: var(--website-surface-soft) !important;
+}
+
+/* A quiet typographic hierarchy replaces low-contrast white-on-black copy. */
+.website-content :where([class~="text-white"]) {
+  color: var(--website-ink) !important;
+}
+
+.website-content :where([class*="text-white/"]) {
+  color: var(--website-body) !important;
+}
+
+.website-content :where(
+  [class~="text-slate-50"],
+  [class~="text-slate-100"],
+  [class~="text-slate-200"],
+  [class~="text-slate-300"]
+) {
+  color: var(--website-body) !important;
+}
+
+.website-content :where(
+  [class*="text-[#75fff0]"],
+  [class*="text-[#8ff7ec]"],
+  [class*="text-[#9ff8ee]"],
+  [class*="text-[#45ddce]"],
+  [class*="text-[#35fbe0]"],
+  [class*="text-[#5eead4]"],
+  [class*="text-[#72f2df]"],
+  [class*="text-cyan-"],
+  [class*="text-violet-"],
+  [class*="text-purple-"]
+) {
+  color: var(--website-accent-dark) !important;
+}
+
+.website-content :where([class*="border-white/"]) {
+  border-color: var(--website-line) !important;
+}
+
+.website-content :where(
+  [class*="border-violet-"],
+  [class*="border-purple-"],
+  [class*="border-cyan-"]
+) {
+  border-color: rgb(17 135 120 / 0.24) !important;
+}
+
+.website-content :where(
+  [class*="bg-violet-"],
+  [class*="bg-purple-"],
+  [class*="bg-cyan-"],
+  [class*="bg-[#f0efff]"],
+  [class*="bg-[#f1e9fa]"],
+  [class*="bg-[#f2f0ff]"],
+  [class*="bg-[#eef2ff]"],
+  [class*="bg-[#f7f5ff]"],
+  [class*="bg-[#f7f6ff]"],
+  [class*="bg-[#f8f6ff]"]
+) {
+  background-color: var(--website-accent-soft) !important;
+  background-image: none !important;
+}
+
+.website-content :where(
+  [class*="text-[#c5bdff]"],
+  [class*="text-[#c6bdff]"],
+  [class*="text-[#7a3e9d]"],
+  [class*="text-[#683486]"],
+  [class*="text-[#ffb17e]"],
+  [class*="text-[#ffbd8c]"],
+  [class*="text-[#f6c76e]"],
+  [class*="text-[#ff9655]"]
+) {
+  color: var(--website-accent-dark) !important;
+  -webkit-text-fill-color: var(--website-accent-dark) !important;
+}
+
+.website-content :where(
+  [class*="border-[#7a3e9d]"],
+  [class*="border-[#683486]"],
+  [class*="border-[#108D82]"],
+  [class*="border-[#ff9655]"],
+  [class*="border-[#f28d45]"]
+) {
+  border-color: rgb(17 135 120 / 0.26) !important;
+}
+
+.website-content :where(
+  [class*="bg-[#7a3e9d]"],
+  [class*="bg-[#683486]"],
+  [class*="bg-[#108D82]/"],
+  [class*="bg-[#ff9655]"],
+  [class*="bg-[#f28d45]"]
+) {
+  background-color: var(--website-accent-soft) !important;
+  background-image: none !important;
+}
+
+.website-content :where(div, article, section)[class*="bg-[linear-gradient"]:not([class*="absolute"]),
+.website-content :where(div, article, section)[class*="bg-[radial-gradient"]:not([class*="absolute"]) {
+  background-color: var(--website-accent-soft) !important;
+  background-image: none !important;
+}
+
+/* Cards use one radius, one border tone, and restrained elevation. */
+.website-content :where(article, aside, div)[class*="rounded-2xl"][class*="border"] {
+  border-color: var(--website-line) !important;
+}
+
+.website-content :where(article)[class*="rounded-2xl"] {
+  background-color: var(--website-surface) !important;
+  box-shadow: 0 12px 34px rgb(20 35 31 / 0.055) !important;
+}
+
+.website-content :where(article)[class*="rounded-2xl"]:hover {
+  border-color: rgb(17 135 120 / 0.34) !important;
+  box-shadow: 0 16px 42px rgb(17 135 120 / 0.09) !important;
+}
+
+/* Solid Vozon-green actions, matching the dashboard rather than gradients. */
+.website-content :is(a, button):where(
+  [class~="bg-black"],
+  [class*="bg-black/"],
+  [class~="bg-slate-950"],
+  [class~="bg-slate-900"],
+  [class*="bg-[#45ddce]"],
+  [class*="bg-[#35fbe0]"],
+  [class*="bg-[#108D82]"],
+  [class*="bg-[#118778]"],
+  [class*="bg-[#0e6f62]"],
+  [class*="bg-[#7a3e9d]"],
+  [class*="bg-[#683486]"],
+  [class*="bg-violet-"],
+  [class*="bg-purple-"],
+  [class*="bg-cyan-"]
+) {
+  border-color: var(--website-accent) !important;
+  background: var(--website-accent) !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 22px rgb(17 135 120 / 0.16) !important;
+}
+
+.website-content .pricing-plan-card,
+.website-content .pricing-stack-card,
+.website-content .pricing-faq-card,
+.website-content .product-overview-ready-card {
+  border-color: var(--website-line) !important;
+  background: #ffffff !important;
+  box-shadow: 0 14px 38px rgb(20 35 31 / 0.06) !important;
+}
+
+.website-content .pricing-plan-card > div:first-of-type,
+.website-content .pricing-calculator-card,
+.website-content .pricing-estimate-panel {
+  border-color: var(--website-line) !important;
+  background: var(--website-accent-soft) !important;
+  background-image: none !important;
+}
+
+.website-content .pricing-plan-card :where(dl, li),
+.website-content .pricing-calculator-card :where(input, button) {
+  border-color: var(--website-line) !important;
+  background: #ffffff !important;
+}
+
+.website-content .pricing-calculator-card button[aria-pressed="true"] {
+  border-color: var(--website-accent) !important;
+  background: var(--website-accent-soft) !important;
+  color: var(--website-accent-dark) !important;
+}
+
+.website-content .product-service-hero-photo .product-service-photo-caption {
+  background: linear-gradient(180deg, transparent, rgb(4 15 12 / 0.88));
+}
+
+.website-content .product-service-hero-photo .product-service-photo-caption,
+.website-content .product-service-hero-photo .product-service-photo-caption * {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  text-shadow: 0 1px 10px rgb(0 0 0 / 0.35);
+}
+
+.website-content .product-overview-page .product-hero-title,
+.website-content .product-overview-page .product-hero-title * {
+  color: var(--website-ink) !important;
+  -webkit-text-fill-color: var(--website-ink) !important;
+}
+
+/* Page-specific legacy styles use embedded selectors; normalize those too. */
+.website-content #about-page .about-hero,
+.website-content #about-page .about-values-section,
+.website-content #about-page > section,
+.website-content #about-page .about-contact {
+  background: #ffffff !important;
+  background-image: none !important;
+}
+
+.website-content #about-page .about-mission-card,
+.website-content #about-page .about-contact {
+  border-color: var(--website-line) !important;
+  background: var(--website-accent-soft) !important;
+}
+
+.website-content #about-page :where(.about-color-bar, .about-values-card-bar) {
+  background: var(--website-accent) !important;
+}
+
+.website-content #about-page .about-contact a {
+  border-color: var(--website-accent) !important;
+  background: var(--website-accent) !important;
+  color: #ffffff !important;
+}
+
+.website-content #business-healthcare-page {
+  background: #ffffff !important;
+  color: var(--website-ink) !important;
+}
+
+.website-content #business-healthcare-page :where(.healthcare-heading-accent, [class*="text-[#35fbe0]"]) {
+  color: var(--website-accent) !important;
+  -webkit-text-fill-color: var(--website-accent) !important;
+}
+
+.website-content #business-healthcare-page :where(.healthcare-hero-copy, .healthcare-hero-copy p) {
+  color: var(--website-body) !important;
+}
+
+.website-content #business-healthcare-page :where(.healthcare-integrations, .healthcare-contact) {
+  border-color: var(--website-line) !important;
+  background: #ffffff !important;
+  background-image: none !important;
+}
+
+.website-content #business-healthcare-page .healthcare-company-marquee [style*="color"] {
+  color: var(--website-accent) !important;
+}
+
+.website-content #product-overview-page#product-overview-page#product-overview-page#product-overview-page .product-hero-title,
+.website-content #product-overview-page#product-overview-page#product-overview-page#product-overview-page .product-hero-title * {
+  color: var(--website-ink) !important;
+  -webkit-text-fill-color: var(--website-ink) !important;
+}
+
+.website-content :is(a, button):where(
+  [class~="bg-black"],
+  [class~="bg-slate-950"],
+  [class~="bg-slate-900"],
+  [class*="bg-[#45ddce]"],
+  [class*="bg-[#108D82]"],
+  [class*="bg-[#118778]"]
+):hover {
+  background: var(--website-accent-dark) !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+
+/* Forms and dropdown controls share the dashboard interaction language. */
+.website-content :where(input, select, textarea) {
+  border-color: var(--website-line) !important;
+  border-radius: 0.75rem;
+  background-color: #ffffff !important;
+  color: var(--website-ink) !important;
+  box-shadow: 0 1px 2px rgb(20 35 31 / 0.035);
+  accent-color: var(--website-accent);
+}
+
+.website-content :where(input, select, textarea)::placeholder {
+  color: #84938f !important;
+}
+
+.website-content :where(input, select, textarea):hover {
+  border-color: #b8c8c3 !important;
+}
+
+.website-content :where(input, select, textarea):focus,
+.website-content :where(input, select, textarea):focus-visible {
+  border-color: var(--website-accent) !important;
+  outline: 3px solid rgb(17 135 120 / 0.12) !important;
+  outline-offset: 1px;
+  box-shadow: none !important;
+}
+
+.website-content select {
+  cursor: pointer;
+}
+
+/* Documentation becomes light, while technical code samples retain contrast. */
+.website-content .docs-page {
+  background: #ffffff !important;
+  color: var(--website-ink) !important;
+}
+
+.website-content .docs-page > div > aside {
+  border-color: var(--website-line) !important;
+  background: #fafcfb !important;
+}
+
+.website-content .docs-page :where(table thead, [class*="bg-white/["]):not(.docs-code-block *) {
+  background-color: var(--website-surface-soft) !important;
+}
+
+.website-content .docs-code-block,
+.website-content .docs-code-block :where(div, pre, code) {
+  border-color: rgb(117 255 240 / 0.14) !important;
+  background-color: #07110f !important;
+  color: #c8faf2 !important;
+}
+
+.website-content .docs-code-block button {
+  background: transparent !important;
+  color: #75fff0 !important;
+  box-shadow: none !important;
+}
+
+.website-content :where(a, button, input, select, textarea):focus-visible {
+  outline-color: var(--website-accent) !important;
+}
+
+@media (max-width: 767px) {
+  .website-content :where(section) {
+    scroll-margin-top: 5rem;
+  }
+
+  .website-content :where(article)[class*="rounded-2xl"] {
+    box-shadow: 0 8px 24px rgb(20 35 31 / 0.045) !important;
+  }
+}
+
+/*
+ * Solutions share the same dashboard palette. These ID-level rules replace
+ * the legacy dark/cyan presentation used by overview, use-case and industry
+ * templates without affecting the global header, footer or homepage.
+ */
+.website-content #business-overview-page#business-overview-page,
+.website-content #business-use-case-page#business-use-case-page,
+.website-content #business-industry-page#business-industry-page,
+.website-content #business-healthcare-page#business-healthcare-page {
+  --industry-accent: #118778 !important;
+  --industry-accent-soft: #0e6f62 !important;
+  --industry-logo-accent: #118778 !important;
+  background: #ffffff !important;
+  color: #14231f !important;
+}
+
+.website-content #business-overview-page#business-overview-page > section,
+.website-content #business-use-case-page#business-use-case-page > section,
+.website-content #business-industry-page#business-industry-page > section,
+.website-content #business-healthcare-page#business-healthcare-page > section {
+  border-color: #dbe4e1 !important;
+  background: #ffffff !important;
+  background-image: none !important;
+  color: #14231f !important;
+}
+
+.website-content #business-overview-page#business-overview-page > section:nth-of-type(even),
+.website-content #business-use-case-page#business-use-case-page > section:nth-of-type(even),
+.website-content #business-industry-page#business-industry-page > section:nth-of-type(even),
+.website-content #business-healthcare-page#business-healthcare-page > section:nth-of-type(even) {
+  background: #f7f9f8 !important;
+}
+
+.website-content :is(
+  #business-overview-page#business-overview-page,
+  #business-use-case-page#business-use-case-page,
+  #business-industry-page#business-industry-page,
+  #business-healthcare-page#business-healthcare-page
+) :is(h1, h2, h3, h4, strong) {
+  color: #14231f !important;
+  -webkit-text-fill-color: #14231f !important;
+}
+
+.website-content :is(
+  #business-overview-page#business-overview-page,
+  #business-use-case-page#business-use-case-page,
+  #business-industry-page#business-industry-page,
+  #business-healthcare-page#business-healthcare-page
+) :is(p, li, [class*="text-white/"], [class*="text-slate-"]) {
+  color: #52645f !important;
+  -webkit-text-fill-color: #52645f !important;
+}
+
+.website-content :is(
+  #business-overview-page#business-overview-page,
+  #business-use-case-page#business-use-case-page,
+  #business-industry-page#business-industry-page,
+  #business-healthcare-page#business-healthcare-page
+) :is(
+  .use-case-heading-accent,
+  .healthcare-heading-accent,
+  .industry-hero-heading > span,
+  .business-section-pill,
+  [class*="text-[#75fff0]"],
+  [class*="text-[#35fbe0]"],
+  [class*="text-[#45ddce]"],
+  [class*="text-[#108D82]"],
+  [class*="text-[#c5bdff]"],
+  [class*="text-[#c6bdff]"],
+  [class*="text-[#ffb17e]"],
+  [class*="text-[#ffbd8c]"]
+) {
+  background-image: none !important;
+  color: #118778 !important;
+  -webkit-text-fill-color: #118778 !important;
+}
+
+.website-content #business-industry-page#business-industry-page .industry-company-marquee [style*="color"],
+.website-content #business-healthcare-page#business-healthcare-page .healthcare-company-marquee [style*="color"] {
+  color: #118778 !important;
+  -webkit-text-fill-color: #118778 !important;
+}
+
+.website-content :is(
+  #business-overview-page#business-overview-page,
+  #business-use-case-page#business-use-case-page,
+  #business-industry-page#business-industry-page,
+  #business-healthcare-page#business-healthcare-page
+) :is(
+  article,
+  details,
+  .business-hero-console,
+  .business-enterprise-card,
+  .business-ready-card,
+  .use-case-visual > div,
+  .use-case-cta,
+  .industry-review-card,
+  .healthcare-review-card
+) {
+  border-color: #dbe4e1 !important;
+  background: #ffffff !important;
+  background-image: none !important;
+  box-shadow: 0 12px 34px rgb(20 35 31 / 0.055) !important;
+}
+
+.website-content :is(
+  #business-overview-page#business-overview-page,
+  #business-use-case-page#business-use-case-page,
+  #business-industry-page#business-industry-page,
+  #business-healthcare-page#business-healthcare-page
+) :is(.business-blue-cta, .business-primary-cta, a[class*="bg-[#35fbe0]"], a[class*="bg-[#45ddce]"]) {
+  border-color: #118778 !important;
+  background: #118778 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: 0 8px 22px rgb(17 135 120 / 0.16) !important;
+}
+
+.website-content :is(
+  #business-overview-page#business-overview-page,
+  #business-use-case-page#business-use-case-page,
+  #business-industry-page#business-industry-page,
+  #business-healthcare-page#business-healthcare-page
+) :is(.business-blue-cta, .business-primary-cta, a[class*="bg-[#35fbe0]"], a[class*="bg-[#45ddce]"]):hover {
+  background: #0e6f62 !important;
+}
+
+.website-content :is(
+  #business-overview-page#business-overview-page,
+  #business-use-case-page#business-use-case-page,
+  #business-industry-page#business-industry-page,
+  #business-healthcare-page#business-healthcare-page
+) :is(
+  [class*="bg-[#35fbe0]/"],
+  [class*="bg-[#45ddce]/"],
+  [class*="bg-[#108D82]/"],
+  [class*="bg-[#f28d45]/"],
+  [class*="bg-[#ff9655]/"]
+) {
+  background: #edf7f4 !important;
+  background-image: none !important;
+}
+
+.website-content :is(
+  #business-overview-page#business-overview-page,
+  #business-use-case-page#business-use-case-page,
+  #business-industry-page#business-industry-page,
+  #business-healthcare-page#business-healthcare-page
+) :is(
+  [class~="bg-[#35fbe0]"],
+  [class~="bg-[#45ddce]"],
+  [class~="bg-[#108D82]"],
+  [class~="bg-[#118778]"],
+  [class~="bg-[#f28d45]"],
+  [class~="bg-[#ff9655]"]
+) {
+  background: #118778 !important;
+  background-image: none !important;
+}
+
+.website-content #business-use-case-page#business-use-case-page .use-case-wave {
+  background: #118778 !important;
+}
+
+.website-content #business-industry-page#business-industry-page .industry-photo-marquee article,
+.website-content #business-healthcare-page#business-healthcare-page .healthcare-marquee article,
+.website-content #business-industry-page#business-industry-page .industry-feature-row > div:first-child {
+  background: #07110f !important;
+}
+
+.website-content #business-industry-page#business-industry-page .industry-photo-marquee article h2,
+.website-content #business-healthcare-page#business-healthcare-page .healthcare-marquee article h2,
+.website-content #business-industry-page#business-industry-page .industry-feature-row [class*="absolute"][class*="bottom"] p {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+.website-content #business-industry-page#business-industry-page .industry-feature-row [class*="absolute"][class*="bottom"] {
+  border-color: rgb(255 255 255 / 0.12) !important;
+  background: rgb(4 15 12 / 0.84) !important;
+}
