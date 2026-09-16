@@ -261,7 +261,7 @@ export function PricingExperience() {
 </section>
 
       <section className="scroll-mt-20 px-4 py-14 sm:px-6 sm:py-16 lg:px-8" id="pricing-plan">
-        <div className="pricing-plan-wrap mx-auto max-w-[1710px]">
+        <div className="pricing-plan-wrap mx-auto max-w-[1400px]">
           <div className="mb-8 max-w-2xl">
             <p className="pricing-eyebrow text-xs font-bold uppercase tracking-[0.16em] text-[#0c756a]">Pricing plan</p>
             <h2 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-[#142034] sm:text-3xl">One plan for every account</h2>
@@ -317,7 +317,7 @@ export function PricingExperience() {
       </section>
 
       <section className="pricing-model-section scroll-mt-20 px-4 py-14 sm:px-6 sm:py-16 lg:px-8" id="voice-stack">
-        <div className="mx-auto max-w-[1660px]">
+        <div className="mx-auto max-w-[1400px]">
           <div className="max-w-2xl">
             <p className="pricing-eyebrow text-xs font-bold uppercase tracking-[0.16em] text-[#087e70]">◉ &nbsp; Model pricing</p>
             <h2 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-[#122038] sm:text-3xl">Build and price your voice stack</h2>
@@ -331,7 +331,7 @@ export function PricingExperience() {
       </section>
 
       <section className="pricing-calculator-section scroll-mt-20 px-4 py-14 sm:px-6 sm:py-16 lg:px-8" id="calculator">
-        <div className="mx-auto max-w-[1710px]">
+        <div className="mx-auto max-w-[1400px]">
           <div className="mb-8 max-w-2xl">
             <p className="pricing-eyebrow text-xs font-bold uppercase tracking-[0.16em] text-[#087e70]">Usage calculator</p>
             <h2 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-[#132138] sm:text-3xl">Estimate your monthly cost</h2>
@@ -410,13 +410,14 @@ export function PricingExperience() {
           </aside>
 
           <div className="pricing-faq-list">
-            {faqs.map((faq, index) => (
-              <details className="pricing-faq-card group" key={faq.question} open={index === 0}>
+            {faqs.map((faq) => (
+              <details className="pricing-faq-card group" key={faq.question}>
                 <summary>
                   <span className="pricing-faq-card-icon"><FaqIcon type={faq.icon} /></span>
-                  <span className="pricing-faq-card-copy"><strong>{faq.question}</strong><small>{faq.answer}</small></span>
-                  <span className="pricing-faq-toggle" aria-hidden="true">+</span>
+                  <span className="pricing-faq-card-copy"><strong>{faq.question}</strong></span>
+                  <span className="pricing-faq-toggle" aria-hidden="true"><i className="group-open:hidden">+</i><i className="hidden group-open:block">−</i></span>
                 </summary>
+                <p className="pricing-faq-answer">{faq.answer}</p>
               </details>
             ))}
           </div>
