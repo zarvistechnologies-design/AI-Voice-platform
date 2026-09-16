@@ -79,7 +79,6 @@ export function SiteHeader() {
   const isCompany = ["/about", "/career", "/partners", "/contact"].some((route) =>
     pathname.startsWith(route)
   );
-  const isPricing = pathname === "/pricing";
 
   return (
     <header
@@ -88,7 +87,7 @@ export function SiteHeader() {
     >
       {/* Slim Floating Glass Capsule with Fixed Consistent Dimensions */}
       <div
-        className={`relative flex w-full items-center justify-between rounded-full border px-4 transition-all duration-300 sm:px-8 ${isPricing ? "h-[62px] max-w-[1848px] md:h-[76px]" : "h-[54px] max-w-[1400px]"} ${
+        className={`relative flex h-[54px] w-full max-w-[1400px] items-center justify-between rounded-full border px-4 transition-all duration-300 sm:px-8 ${
           scrolled
             ? "border-slate-200/90 bg-white/95 shadow-[0_8px_30px_-4px_rgba(0,0,0,0.08)] backdrop-blur-2xl"
             : "border-slate-200/70 bg-white/85 shadow-[0_4px_20px_rgba(0,0,0,0.04)] backdrop-blur-xl"
@@ -171,7 +170,7 @@ export function SiteHeader() {
           <Link
             className={`rounded-full px-3 py-1 text-[13px] font-medium transition-all duration-150 ${
               pathname === "/pricing"
-                ? "bg-[#119e8d] text-white shadow-[0_5px_12px_rgba(17,158,141,0.25)] font-semibold"
+                ? "bg-slate-900 text-white shadow-xs font-semibold"
                 : "text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
             }`}
             href="/pricing"
@@ -217,7 +216,7 @@ export function SiteHeader() {
 
           {/* Slim Gradient Contact Us CTA */}
           <Link
-            className={`group relative inline-flex items-center justify-center gap-1.5 overflow-hidden rounded-full px-4 py-1.5 text-[12.5px] font-bold transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] ${isPricing ? "border border-[#119e8d] bg-white text-[#119e8d] shadow-none hover:bg-[#effbf8]" : "bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 text-white shadow-[0_3px_12px_rgba(16,185,129,0.25)] hover:shadow-[0_4px_16px_rgba(16,185,129,0.4)]"}`}
+            className="group relative inline-flex items-center justify-center gap-1.5 overflow-hidden rounded-full bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 px-4 py-1.5 text-[12.5px] font-bold text-white shadow-[0_3px_12px_rgba(16,185,129,0.25)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_4px_16px_rgba(16,185,129,0.4)] active:scale-[0.97]"
             href="/contact"
           >
             <span className="relative z-10">Contact us</span>

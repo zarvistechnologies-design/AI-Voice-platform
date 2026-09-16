@@ -415,7 +415,6 @@ export function PricingExperience() {
                 <summary>
                   <span className="pricing-faq-card-icon"><FaqIcon type={faq.icon} /></span>
                   <span className="pricing-faq-card-copy"><strong>{faq.question}</strong><small>{faq.answer}</small></span>
-                  <span className="pricing-faq-toggle" aria-hidden="true"><i className="group-open:hidden">+</i><i className="hidden group-open:block">−</i></span>
                 </summary>
               </details>
             ))}
