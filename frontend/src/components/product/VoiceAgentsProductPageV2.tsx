@@ -191,7 +191,7 @@ function Eyebrow({ children }: { children: ReactNode }) {
   );
 }
 
-const section = "px-5 py-14 sm:px-7 sm:py-16 lg:py-20";
+const section = "px-5 py-10 sm:px-7 sm:py-12 lg:py-14";
 
 const heading =
   "text-[clamp(1.6rem,2.35vw,2.25rem)] font-semibold leading-[1.12] tracking-[-0.04em] text-[#111312]";
@@ -213,8 +213,8 @@ export function VoiceAgentsProductPageV2() {
         id="voice-agents-solution-page"
       >
         {/* HERO */}
-        <section className="voice-agent-hero relative overflow-hidden bg-white px-5 pb-16 pt-28 sm:px-7 sm:pb-20 sm:pt-32 lg:pb-24 lg:pt-36">
-          <div className="relative z-10 mx-auto grid w-full max-w-[1240px] gap-8 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-6">
+        <section className="voice-agent-hero relative overflow-hidden border-b border-[#e3ebe8] bg-white px-5 pb-6 pt-20 sm:px-7 sm:pb-8 sm:pt-24 lg:pb-8 lg:pt-24">
+          <div className="relative z-10 mx-auto grid w-full max-w-[1340px] gap-10 lg:grid-cols-[.96fr_1.04fr] lg:items-center lg:gap-12">
             {/* HERO CONTENT */}
             <div className="max-w-[620px] voice-agent-reveal">
               <div className="inline-flex items-center gap-2 rounded-full border border-[#d8d0e5] bg-[#faf8fc] px-3.5 py-2 text-[10px] font-bold uppercase tracking-[.16em] text-[#625b7d] shadow-sm">
@@ -262,11 +262,11 @@ export function VoiceAgentsProductPageV2() {
             </div>
 
             {/* HERO IMAGE */}
-            <div className="voice-agent-reveal voice-agent-delay relative mx-auto flex min-h-[420px] w-full max-w-[590px] items-center justify-center lg:min-h-[500px]">
-              <div className="relative z-10 h-[420px] w-full sm:h-[480px] lg:h-[520px]">
+            <div className="voice-agent-reveal voice-agent-delay relative mx-auto flex min-h-[390px] w-full max-w-[590px] items-center justify-center bg-white sm:min-h-[450px] lg:min-h-[480px]">
+              <div className="relative z-10 h-[390px] w-full sm:h-[450px] lg:h-[480px]">
                 <Image
                   alt="Voice agent support specialist ready to help a customer"
-                  className="object-contain object-center mix-blend-multiply"
+                  className="object-contain object-center opacity-[.98] mix-blend-multiply"
                   fill
                   priority
                   sizes="(max-width: 1024px) 100vw, 590px"
@@ -278,24 +278,31 @@ export function VoiceAgentsProductPageV2() {
         </section>
 
         {/* INTEGRATIONS */}
-        <section className="overflow-hidden border-y border-[#e3ebe8] bg-white py-5">
-          <div className="voice-agent-marquee mx-auto flex w-max items-center gap-4 px-2">
-            {[...integrations, ...integrations].map((item, index) => (
-              <article
-                aria-hidden={index >= integrations.length}
-                className="flex h-[66px] w-48 shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-[#4d5d58] shadow-[0_8px_24px_rgba(15,23,42,.035)]"
-                key={`${item}-${index}`}
-              >
-                <span className="mr-2 size-2 rounded-full bg-[#0f8777]" />
-                {item}
-              </article>
-            ))}
+        <section aria-labelledby="voice-agent-integrations-title" className="overflow-hidden border-b border-[#e3ebe8] bg-[#f7f9f8] py-5 sm:py-6">
+          <div className="mx-auto w-full max-w-[1340px]">
+            <p className="mb-3 text-center text-[11px] font-bold uppercase tracking-[.16em] text-[#60706a]" id="voice-agent-integrations-title">
+              Connect the tools your team already uses
+            </p>
+            <div className="voice-agent-integrations-window overflow-hidden">
+              <div className="voice-agent-marquee flex w-max items-center gap-3 px-1">
+                {[...integrations, ...integrations].map((item, index) => (
+                  <article
+                    aria-hidden={index >= integrations.length}
+                    className="flex min-h-14 w-48 shrink-0 items-center justify-center rounded-xl border border-[#dfe7e4] bg-white px-3 text-center text-sm font-semibold text-[#40514c] shadow-[0_6px_18px_rgba(15,23,42,.025)]"
+                    key={`${item}-${index}`}
+                  >
+                    <span className="mr-2 size-2 rounded-full bg-[#0f8777]" />
+                    {item}
+                  </article>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
         {/* HOW IT WORKS */}
-        <section className={section} id="voice-agent-workflow">
-          <div className="mx-auto w-full max-w-[1200px]">
+        <section className="px-5 py-10 sm:px-7 sm:py-12 lg:py-14" id="voice-agent-workflow">
+          <div className="mx-auto w-full max-w-[1340px]">
             <div className="max-w-[650px]">
               <Eyebrow>How it works</Eyebrow>
 
@@ -309,10 +316,10 @@ export function VoiceAgentsProductPageV2() {
               </p>
             </div>
 
-            <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4 voice-agent-stagger-grid">
+            <div className="mt-8 grid gap-4 sm:mt-10 sm:grid-cols-2 lg:grid-cols-4 voice-agent-stagger-grid">
               {steps.map(([number, title, body], index) => (
                 <article
-                  className="rounded-2xl border border-[#d8d0e5] border-t-2 border-t-[#0f8777] bg-white p-6 shadow-[0_8px_24px_rgba(109,106,156,.05)] voice-agent-hover-lift voice-agent-section-reveal"
+                  className="rounded-2xl border border-[#d8d0e5] border-t-2 bg-white p-6 shadow-[0_8px_24px_rgba(109,106,156,.05)] voice-agent-hover-lift voice-agent-section-reveal"
                   key={number}
                   style={{ animationDelay: `${index * 90}ms` }}
                 >
@@ -338,17 +345,17 @@ export function VoiceAgentsProductPageV2() {
           className={`${section} border-y border-[#e8e2f1] bg-[#faf8fc]/60`}
           id="voice-agent-capabilities"
         >
-          <div className="mx-auto w-full max-w-[1200px]">
+          <div className="mx-auto w-full max-w-[1340px]">
             <Eyebrow>Key capabilities</Eyebrow>
 
             <h2 className={`${heading} mt-4 max-w-[720px]`}>
               Designed for conversations that need to get work done.
             </h2>
 
-            <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3 voice-agent-stagger-grid">
+            <div className="mt-8 grid gap-4 sm:mt-10 md:grid-cols-2 lg:grid-cols-3 voice-agent-stagger-grid">
               {features.map(([icon, title, body], index) => (
                 <article
-                  className="flex min-h-[152px] gap-4 rounded-2xl border border-transparent bg-white/60 p-5 voice-agent-hover-lift voice-agent-section-reveal"
+                  className="flex min-h-[152px] gap-4 rounded-2xl border border-transparent bg-white p-5 voice-agent-hover-lift voice-agent-section-reveal"
                   key={title}
                   style={{ animationDelay: `${index * 80}ms` }}
                 >
@@ -373,7 +380,7 @@ export function VoiceAgentsProductPageV2() {
 
         {/* API */}
         <section className={section} id="voice-agent-api">
-          <div className="mx-auto grid w-full max-w-[1200px] gap-10 lg:grid-cols-[.9fr_1.1fr] lg:items-center">
+          <div className="mx-auto grid w-full max-w-[1340px] gap-8 lg:grid-cols-[.9fr_1.1fr] lg:items-center lg:gap-10">
             <div>
               <Eyebrow>API and integrations</Eyebrow>
 
@@ -444,20 +451,20 @@ export function VoiceAgentsProductPageV2() {
 
         {/* USE CASES */}
         <section
-          className={`${section} border-y border-[#e8e2f1]`}
+          className={`${section} border-y border-[#e8e2f1] bg-white`}
           id="voice-agent-use-cases"
         >
-          <div className="mx-auto w-full max-w-[1200px]">
+          <div className="mx-auto w-full max-w-[1340px]">
             <Eyebrow>Use cases</Eyebrow>
 
             <h2 className={`${heading} mt-4 max-w-[680px]`}>
               One agent platform for the calls your team handles most.
             </h2>
 
-            <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 voice-agent-stagger-grid">
+            <div className="mt-8 grid gap-4 sm:mt-10 sm:grid-cols-2 lg:grid-cols-4 voice-agent-stagger-grid">
               {useCases.map(([icon, title, body], index) => (
                 <article
-                  className="flex min-h-[260px] flex-col rounded-2xl border border-[#d8d0e5] bg-white p-6 shadow-[0_8px_24px_rgba(109,106,156,.05)] voice-agent-hover-lift voice-agent-section-reveal"
+                  className="flex min-h-[235px] flex-col rounded-2xl border border-[#d8d0e5] bg-white p-5 shadow-[0_8px_24px_rgba(109,106,156,.05)] sm:p-6 voice-agent-hover-lift voice-agent-section-reveal"
                   key={title}
                   style={{ animationDelay: `${index * 90}ms` }}
                 >
@@ -487,7 +494,7 @@ export function VoiceAgentsProductPageV2() {
 
         {/* PERFORMANCE */}
         <section className={section}>
-          <div className="mx-auto w-full max-w-[1200px]">
+          <div className="mx-auto w-full max-w-[1340px]">
             <div className="text-center">
               <Eyebrow>Built for live conversations</Eyebrow>
 
@@ -496,10 +503,10 @@ export function VoiceAgentsProductPageV2() {
               </h2>
             </div>
 
-            <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 voice-agent-stagger-grid">
+            <div className="mt-8 grid gap-4 py-3 sm:mt-10 sm:grid-cols-2 lg:grid-cols-4 voice-agent-stagger-grid">
               {metrics.map(([value, label, body], index) => (
                 <article
-                  className="rounded-2xl border border-[#d8d0e5] bg-white p-6 shadow-[0_8px_24px_rgba(109,106,156,.05)] voice-agent-hover-lift voice-agent-section-reveal voice-agent-metric-reveal"
+                  className="rounded-2xl border border-black/20 bg-white p-5 text-center shadow-[0_8px_24px_rgba(20,35,31,.04)] sm:p-6 voice-agent-hover-lift voice-agent-section-reveal voice-agent-metric-reveal"
                   key={label}
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
@@ -525,7 +532,7 @@ export function VoiceAgentsProductPageV2() {
           className={`${section} border-y border-[#e8e2f1] bg-[#faf8fc]/60`}
           id="voice-agent-control"
         >
-          <div className="mx-auto grid w-full max-w-[1200px] gap-8 lg:grid-cols-2 voice-agent-stagger-grid">
+          <div className="mx-auto grid w-full max-w-[1340px] gap-8 lg:grid-cols-2 voice-agent-stagger-grid">
             <article className="border-l-4 border-[#0f8777] bg-white pl-6 voice-agent-section-reveal">
               <Eyebrow>Control and human handoff</Eyebrow>
 
@@ -563,10 +570,10 @@ export function VoiceAgentsProductPageV2() {
 
         {/* FAQ */}
         <section
-          className="border-t border-[#e3ebe8] px-5 py-14 sm:px-7 sm:py-16 lg:py-20"
+          className="border-t border-[#e3ebe8] px-5 py-10 sm:px-7 sm:py-12 lg:py-14"
           id="voice-agent-faq"
         >
-          <div className="mx-auto grid w-full max-w-[1100px] gap-10 lg:grid-cols-[.72fr_1.28fr] lg:gap-14">
+          <div className="mx-auto grid w-full max-w-[1340px] gap-10 lg:grid-cols-[.72fr_1.28fr] lg:gap-14">
             <div>
               <Eyebrow>Frequently asked questions</Eyebrow>
 
@@ -659,30 +666,28 @@ export function VoiceAgentsProductPageV2() {
 
         {/* BUILD YOUR WORKFLOW TODAY */}
         <section
-          className="relative w-full overflow-hidden border-t border-[#e3ebe8] bg-white px-5 py-20 sm:px-7 sm:py-24 lg:py-28"
+          className="relative w-full overflow-hidden border-t border-[#e3ebe8] bg-white px-5 py-12 sm:px-7 sm:py-14 lg:py-16"
           id="build-workflow-today"
         >
-          <div className="pointer-events-none absolute left-1/2 top-1/2 size-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#eef9f6] blur-3xl" />
-
           <div className="relative mx-auto w-full max-w-[850px] text-center voice-agent-section-reveal">
             <div className="mx-auto inline-flex items-center rounded-full border border-[#c9ddd8] bg-[#f7fdfb] px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#0f8777]">
               Start building
             </div>
 
-            <h2 className="mt-6 text-[clamp(2.2rem,4.5vw,4rem)] font-semibold leading-[1.05] tracking-[-.055em] text-[#111312]">
+            <h2 className="mt-5 text-[clamp(2rem,4vw,3.5rem)] font-medium leading-[1.05] tracking-[-.055em] text-[#111312]">
               Build your workflow{" "}
               <span className="text-[#0f8777]">
                 today.
               </span>
             </h2>
 
-            <p className="mx-auto mt-5 max-w-[650px] text-[15px] leading-7 text-[#5b6964] sm:text-base">
+            <p className="mx-auto mt-4 max-w-[650px] text-[15px] leading-7 text-[#5b6964] sm:text-base">
               Turn your most important phone workflows into intelligent voice
               experiences. Start with one use case, connect the tools you need,
               and scale when you’re ready.
             </p>
 
-            <div className="mt-9 flex flex-wrap justify-center gap-3">
+            <div className="mt-7 flex flex-wrap justify-center gap-3">
               <Link
                 className="inline-flex min-h-12 items-center rounded-full bg-[#0f8777] px-7 text-sm font-bold text-white shadow-[0_15px_35px_rgba(13,148,136,.16)] transition hover:-translate-y-0.5 hover:bg-[#0a685c]"
                 href="/dashboard/developers"
@@ -699,7 +704,7 @@ export function VoiceAgentsProductPageV2() {
               </Link>
             </div>
 
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-medium text-[#71807b]">
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-medium text-[#71807b]">
               <span>✓ Start with one workflow</span>
               <span>✓ Connect your existing tools</span>
               <span>✓ Scale when ready</span>
@@ -707,17 +712,20 @@ export function VoiceAgentsProductPageV2() {
           </div>
         </section>
 
-        {/* FULL WIDTH LINE AFTER BUILD YOUR WORKFLOW TODAY */}
-        <div
-          aria-hidden="true"
-          className="relative z-20 h-px w-full bg-[#e3ebe8]"
-        />
-
         <style>{`
           /* SEMICIRCLE ABOVE FOOTER */
 
+          #voice-agents-solution-page#voice-agents-solution-page > section {
+            background: #fff !important;
+            background-image: none !important;
+          }
+
+          #voice-agents-solution-page#voice-agents-solution-page article.rounded-2xl {
+            border-color: rgba(17, 19, 18, .28) !important;
+          }
+
           .marketing-site:has(#voice-agents-solution-page) .site-pre-footer-cta {
-            margin-top: 165px;
+            margin-top: 100px;
             overflow: visible;
             position: relative;
           }
@@ -727,7 +735,7 @@ export function VoiceAgentsProductPageV2() {
             position: absolute;
             z-index: 1;
             left: 50%;
-            top: -165px;
+            top: -100px;
             width: 540px;
             height: 540px;
             border-radius: 50%;
@@ -741,7 +749,7 @@ export function VoiceAgentsProductPageV2() {
             position: absolute;
             z-index: 2;
             left: 50%;
-            top: -125px;
+            top: -70px;
             color: #fff;
             font-size: 64px;
             font-weight: 300;
@@ -755,20 +763,41 @@ export function VoiceAgentsProductPageV2() {
             z-index: 3;
           }
 
+          .marketing-site:has(#voice-agents-solution-page) .site-pre-footer-cta > div {
+            position: static;
+          }
+
+          .marketing-site:has(#voice-agents-solution-page) .site-pre-footer-cta > div::after {
+            content: "";
+            position: absolute;
+            z-index: 4;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            height: 1px;
+            background: #3a3a3a;
+            pointer-events: none;
+          }
+
+          .marketing-site:has(#voice-agents-solution-page) .site-pre-footer-cta > div > * {
+            position: relative;
+            z-index: 3;
+          }
+
           @media (max-width: 640px) {
             .marketing-site:has(#voice-agents-solution-page) .site-pre-footer-cta {
-              margin-top: 155px;
+              margin-top: 96px;
             }
 
             .marketing-site:has(#voice-agents-solution-page) .site-pre-footer-cta::before {
-              top: -155px;
+              top: -96px;
               width: 540px;
               height: 540px;
               border-radius: 50%;
             }
 
             .marketing-site:has(#voice-agents-solution-page) .site-pre-footer-cta::after {
-              top: -115px;
+              top: -67px;
               font-size: 56px;
             }
           }
@@ -785,8 +814,13 @@ export function VoiceAgentsProductPageV2() {
             animation: voice-agent-pulse 1.7s ease-out infinite;
           }
 
+          .voice-agent-integrations-window {
+            mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+          }
+
           .voice-agent-marquee {
-            animation: voice-agent-marquee 30s linear infinite;
+            animation: voice-agent-marquee 28s linear infinite;
             will-change: transform;
           }
 
@@ -859,26 +893,19 @@ export function VoiceAgentsProductPageV2() {
             }
 
             to {
-              transform: translateX(calc(-50% - .5rem));
+              transform: translateX(calc(-50% - .375rem));
             }
           }
 
           @media (min-width: 1024px) {
             .voice-agent-hero {
-              min-height: 640px;
+              min-height: 600px;
             }
           }
 
           @media (max-width: 640px) {
-            .voice-agent-marquee {
-              animation: none;
-              width: auto;
-              overflow-x: auto;
-              padding-inline: 1.25rem;
-            }
-
             #voice-agents-solution-page .voice-agent-hero {
-              padding-bottom: 3rem !important;
+              padding-bottom: 1.5rem !important;
             }
           }
 

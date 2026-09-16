@@ -1220,3 +1220,92 @@
 .pricing-faq-list { display:grid; gap:10px; }.pricing-faq-card { overflow:hidden; border:1px solid #e2efed; border-radius:16px; background:rgba(255,255,255,.89); box-shadow:0 10px 22px rgba(41,97,91,.05); transition:border-color .18s ease,background .18s ease; }.pricing-faq-card[open] { border-color:#cceee7; background:linear-gradient(105deg,#fff,#f0fcf9); }.pricing-faq-card summary { display:grid; min-height:82px; align-items:center; gap:15px; padding:14px 20px; cursor:pointer; list-style:none; grid-template-columns:auto minmax(0,1fr) auto; }.pricing-faq-card summary::-webkit-details-marker { display:none; }.pricing-faq-card-copy strong { display:block; color:#1b2840; font-size:16px; line-height:1.3; }.pricing-faq-answer { margin:0; padding:0 20px 18px 85px; color:#71809a; font-size:13px; line-height:1.42; }.pricing-faq-toggle { display:grid; width:40px; height:40px; place-items:center; border-radius:50%; background:#fff; box-shadow:0 4px 11px rgba(28,65,74,.08); color:#162b47; font-size:22px; font-style:normal; line-height:1; }.pricing-faq-toggle i { font-style:normal; }
 @media (max-width: 900px) { .pricing-faq-layout { gap:36px; grid-template-columns:1fr; }.pricing-faq-intro { padding:0; }.pricing-faq-benefits { grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }.pricing-faq-benefits > div { align-items:flex-start; flex-direction:column; gap:9px; }.pricing-faq-contact { margin-top:34px; } }
 @media (max-width: 640px) { .pricing-faq-section { padding:52px 18px; background:linear-gradient(145deg,#fff,#f2fcfa); }.pricing-faq-intro h2 { font-size:36px; }.pricing-faq-intro > p { font-size:16px; }.pricing-faq-benefits { grid-template-columns:1fr; gap:15px; }.pricing-faq-benefits > div { align-items:center; flex-direction:row; }.pricing-faq-card summary { min-height:0; gap:13px; padding:15px; }.pricing-faq-card-icon { width:46px; height:46px; flex-basis:46px; }.pricing-faq-card-icon svg { width:23px; height:23px; }.pricing-faq-card-copy strong { font-size:14px; }.pricing-faq-answer { padding:0 15px 15px 74px; font-size:12px; }.pricing-faq-toggle { width:36px; height:36px; font-size:21px; } }
+/* One readable heading scale across the two overview pages. */
+.website-content :is(#product-overview-page, #explore-capabilities-page) > section:first-child h1 {
+  font-size: clamp(2rem, 3.7vw, 3.5rem) !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.05em;
+  text-wrap: balance;
+}
+
+.website-content :is(#product-overview-page, #explore-capabilities-page) > section h2 {
+  font-size: clamp(1.6rem, 2.35vw, 2.25rem) !important;
+  line-height: 1.12 !important;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.marketing-site:has(:is(#product-overview-page, #explore-capabilities-page)) .site-pre-footer-cta {
+  position: relative;
+  margin-top: 100px;
+  overflow: visible;
+}
+
+.marketing-site:has(:is(#product-overview-page, #explore-capabilities-page)) .site-pre-footer-cta::before {
+  position: absolute;
+  z-index: 1;
+  top: -100px;
+  left: 50%;
+  width: 540px;
+  height: 540px;
+  border-radius: 50%;
+  background: #000;
+  transform: translateX(-50%);
+  pointer-events: none;
+  content: "";
+}
+
+.marketing-site:has(:is(#product-overview-page, #explore-capabilities-page)) .site-pre-footer-cta::after {
+  position: absolute;
+  z-index: 2;
+  top: -70px;
+  left: 50%;
+  color: #fff;
+  font-size: 64px;
+  font-weight: 300;
+  line-height: 1;
+  transform: translateX(-50%);
+  pointer-events: none;
+  content: "\2193";
+}
+
+.marketing-site:has(:is(#product-overview-page, #explore-capabilities-page)) .site-pre-footer-cta > * {
+  position: relative;
+  z-index: 3;
+}
+
+.marketing-site:has(:is(#product-overview-page, #explore-capabilities-page)) .site-pre-footer-cta > div {
+  position: static;
+}
+
+.marketing-site:has(:is(#product-overview-page, #explore-capabilities-page)) .site-pre-footer-cta > div::after {
+  position: absolute;
+  z-index: 4;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  background: #3a3a3a;
+  pointer-events: none;
+  content: "";
+}
+
+.marketing-site:has(:is(#product-overview-page, #explore-capabilities-page)) .site-pre-footer-cta > div > * {
+  position: relative;
+  z-index: 3;
+}
+
+@media (max-width: 640px) {
+  .marketing-site:has(:is(#product-overview-page, #explore-capabilities-page)) .site-pre-footer-cta {
+    margin-top: 96px;
+  }
+
+  .marketing-site:has(:is(#product-overview-page, #explore-capabilities-page)) .site-pre-footer-cta::before {
+    top: -96px;
+  }
+
+  .marketing-site:has(:is(#product-overview-page, #explore-capabilities-page)) .site-pre-footer-cta::after {
+    top: -67px;
+    font-size: 56px;
+  }
+}

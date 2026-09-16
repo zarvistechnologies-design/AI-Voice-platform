@@ -140,8 +140,8 @@ export function BusinessOverviewExperience() {
   return (
     <SiteLayout>
       <main id="explore-capabilities-page" className="overflow-hidden bg-white text-slate-950">
-        <section className="relative border-b border-slate-200 bg-white px-5 pb-16 pt-28 sm:px-8 sm:pt-32 lg:pb-24 lg:pt-40">
-          <div className="relative mx-auto grid max-w-[1280px] items-center gap-14 lg:grid-cols-[0.9fr_1.1fr]">
+        <section className="relative border-b border-slate-200 bg-white px-5 pb-8 pt-20 sm:px-8 sm:pb-10 sm:pt-24 lg:pb-12">
+          <div className="relative mx-auto grid max-w-[1280px] items-center gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14">
             <div className="max-w-2xl">
               <p className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-2 text-[11px] font-bold uppercase tracking-[0.14em] text-teal-700 shadow-sm">
                 <span className="size-1.5 rounded-full bg-teal-500" /> Explore all capabilities
@@ -165,28 +165,28 @@ export function BusinessOverviewExperience() {
           <div className="mx-auto grid max-w-[1280px] grid-cols-2 lg:grid-cols-4">
             {outcomes.map((outcome) => (
               <div className="border-b border-r border-slate-200 px-5 py-8 even:border-r-0 lg:border-b-0 lg:even:border-r lg:last:border-r-0" key={outcome.label}>
-                <strong className="block text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">{outcome.value}</strong>
+                <strong className="block text-2xl font-semibold tracking-tight text-slate-950">{outcome.value}</strong>
                 <span className="mt-2 block text-xs font-medium text-slate-500">{outcome.label}</span>
               </div>
             ))}
           </div>
         </section>
 
-        <section className="px-5 py-16 sm:px-8 lg:py-24" id="use-cases">
+        <section className="px-5 py-10 sm:px-8 sm:py-12 lg:py-14" id="use-cases">
           <div className="mx-auto max-w-[1280px]">
             <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
               <div><p className="text-xs font-bold uppercase tracking-[0.16em] text-teal-700">Solutions by workflow</p><h2 className="mt-4 text-[clamp(2.2rem,4.2vw,4rem)] font-semibold leading-[1.03] tracking-[-0.045em]">Start with the calls that matter most.</h2></div>
               <p className="max-w-2xl text-base leading-7 text-slate-600 lg:justify-self-end">Choose a focused use case, connect it to your business systems, and expand as your team learns what works.</p>
             </div>
-            <div className="mt-12 grid gap-5 md:grid-cols-2">
+            <div className="mt-8 grid gap-5 sm:mt-10 md:grid-cols-2">
               {useCases.map((useCase, index) => (
-                <Link className="group flex min-h-[280px] flex-col rounded-3xl border border-slate-200 bg-white p-7 shadow-[0_12px_35px_rgba(15,23,42,0.045)] transition hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_20px_45px_rgba(15,23,42,0.08)] sm:p-8" href={`/business/${useCase.slug}`} key={useCase.slug}>
+                <Link className="group flex min-h-[260px] flex-col rounded-3xl border border-slate-200 bg-white p-7 shadow-[0_12px_35px_rgba(15,23,42,0.045)] transition hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_20px_45px_rgba(15,23,42,0.08)] sm:p-8" href={`/business/${useCase.slug}`} key={useCase.slug}>
                   <div className="flex items-start justify-between gap-5">
                     <span className="grid size-11 place-items-center rounded-xl border border-slate-200 bg-slate-50 text-slate-700"><BusinessIcon index={index} /></span>
                     <span className="grid size-9 place-items-center rounded-full border border-slate-200 text-slate-400 transition group-hover:border-slate-950 group-hover:bg-slate-950 group-hover:text-white"><ArrowIcon /></span>
                   </div>
                   <p className="mt-8 text-[11px] font-bold uppercase tracking-[0.13em] text-teal-700">{useCase.highlights[0]}</p>
-                  <h3 className="mt-3 text-2xl font-semibold tracking-[-0.025em] text-slate-950">{useCase.title}</h3>
+                  <h3 className="mt-3 text-xl font-semibold tracking-[-0.025em] text-slate-950">{useCase.title}</h3>
                   <p className="mt-4 max-w-xl text-sm leading-6 text-slate-600">{useCase.summary}</p>
                   <div className="mt-auto flex flex-wrap gap-2 pt-7">{useCase.highlights.slice(1).map((highlight) => <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[10px] font-semibold text-slate-600" key={highlight}>{highlight}</span>)}</div>
                 </Link>
@@ -195,14 +195,14 @@ export function BusinessOverviewExperience() {
           </div>
         </section>
 
-        <section className="border-y border-slate-200 bg-white px-5 py-16 sm:px-8 lg:py-24">
+        <section className="border-y border-slate-200 bg-white px-5 py-10 sm:px-8 sm:py-12 lg:py-14">
           <div className="mx-auto max-w-[1280px]">
             <div className="mx-auto max-w-3xl text-center">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-teal-700">How it works</p>
               <h2 className="mt-4 text-[clamp(2.2rem,4.2vw,4rem)] font-semibold leading-[1.03] tracking-[-0.045em]">From first hello to completed work.</h2>
               <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-slate-600">Each call follows a clear path, with context preserved from the opening question through resolution and reporting.</p>
             </div>
-            <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-8 grid gap-4 sm:mt-10 md:grid-cols-2 lg:grid-cols-4">
               {workflowSteps.map((step) => (
                 <article className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-7" key={step.number}>
                   <div className="flex items-center justify-between"><span className="font-mono text-xs font-bold text-slate-400">{step.number}</span><span className="h-px w-10 bg-slate-200" /></div>
@@ -215,13 +215,13 @@ export function BusinessOverviewExperience() {
           </div>
         </section>
 
-        <section className="px-5 py-16 sm:px-8 lg:py-24" id="industries">
+        <section className="px-5 py-10 sm:px-8 sm:py-12 lg:py-14" id="industries">
           <div className="mx-auto max-w-[1280px]">
             <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
               <div className="max-w-3xl"><p className="text-xs font-bold uppercase tracking-[0.16em] text-teal-700">Solutions by industry</p><h2 className="mt-4 text-[clamp(2.2rem,4.2vw,4rem)] font-semibold leading-[1.03] tracking-[-0.045em]">Built around how your team operates.</h2></div>
               <p className="max-w-md text-sm leading-7 text-slate-600">Adapt language, routing, urgency, integrations, and escalation rules for your market.</p>
             </div>
-            <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-8 grid gap-4 sm:mt-10 sm:grid-cols-2 lg:grid-cols-4">
               {industries.map((industry, index) => (
                 <Link className="group flex min-h-[240px] flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-slate-300 hover:shadow-lg" href={`/business/industries/${industry.slug}`} key={industry.slug}>
                   <div className="flex items-center justify-between"><span className="grid size-10 place-items-center rounded-xl bg-slate-100 text-slate-700"><BusinessIcon index={index} /></span><span className="text-slate-400 transition group-hover:translate-x-1 group-hover:text-slate-950"><ArrowIcon /></span></div>
@@ -234,7 +234,7 @@ export function BusinessOverviewExperience() {
           </div>
         </section>
 
-        <section className="border-t border-slate-200 bg-white px-5 py-16 sm:px-8 lg:py-24">
+        <section className="border-t border-slate-200 bg-white px-5 py-10 sm:px-8 sm:py-12 lg:py-14">
           <div className="mx-auto grid max-w-[1180px] overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_24px_70px_rgba(15,23,42,0.08)] lg:grid-cols-[1.05fr_0.95fr]">
             <div className="p-8 sm:p-10 lg:p-12">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-teal-700">Enterprise ready</p>

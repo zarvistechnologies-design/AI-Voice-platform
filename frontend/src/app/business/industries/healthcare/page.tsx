@@ -91,7 +91,7 @@ export default function HealthcarePage() {
   return (
     <SiteLayout>
       <main className="overflow-hidden bg-white text-slate-950" id="healthcare-solution-page">
-        <section className="relative overflow-hidden bg-white px-5 pb-12 pt-24 sm:px-8 sm:pb-14 sm:pt-28 lg:pb-16 lg:pt-32">
+        <section className="relative overflow-hidden bg-white px-5 pb-8 pt-[72px] sm:px-8 sm:pb-10 sm:pt-20 lg:pb-12 lg:pt-24">
           <div className="relative mx-auto grid max-w-[1280px] items-center gap-12 lg:grid-cols-[0.92fr_1.08fr] lg:gap-16">
             <div className="max-w-[610px] healthcare-reveal">
               <div className="inline-flex items-center gap-2 rounded-full border border-[#d8d0e5] bg-[#faf8fc]/90 px-3.5 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[#625b7d] shadow-sm backdrop-blur-sm">
@@ -102,7 +102,7 @@ export default function HealthcarePage() {
               <p className={`${runningCopyClass} mt-6 max-w-[560px] text-slate-900`}>Give patients a natural way to book, ask, confirm, and connect—while your care team stays focused on the people in front of them.</p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link className="inline-flex min-h-12 items-center gap-2 rounded-full bg-teal-600 px-6 text-sm font-bold text-white shadow-[0_15px_35px_rgba(13,148,136,.2)] transition hover:-translate-y-0.5 hover:bg-teal-700" href="/contact?industry=healthcare">Plan your workflow <Arrow /></Link>
-                <Link className="inline-flex min-h-12 items-center gap-2 rounded-full border border-[#d8d0e5] bg-[#faf8fc]/90 px-6 text-sm font-bold text-slate-800 transition hover:-translate-y-0.5 hover:border-[#a89bbb] hover:bg-white" href="#healthcare-call-journey">See how it works</Link>
+                <Link className="inline-flex min-h-12 items-center gap-2 rounded-full border border-[#d8d0e5] bg-[#faf8fc]/90 px-6 text-sm font-bold text-slate-800 transition hover:-translate-y-0.5 hover:border-[#a89bbb] hover:bg-white" href="/login?mode=register">See how it works</Link>
               </div>
               <div className="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-xs font-semibold text-slate-600">{["24/7 call handling", "Configured boundaries", "Human handoff"].map((item) => <span className="flex items-center gap-2" key={item}><Check />{item}</span>)}</div>
             </div>
@@ -114,7 +114,7 @@ export default function HealthcarePage() {
           </div>
         </section>
 
-        <section aria-label="Healthcare settings" className="border-y border-slate-200/80 bg-white py-10 sm:py-12 lg:py-14">
+        <section aria-label="Healthcare settings" className="border-y border-slate-200/80 bg-white py-8 sm:py-10 lg:py-12">
           <p className="mb-5 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Built for the rhythm of modern care teams</p>
           <div className="healthcare-marquee flex w-max items-center gap-4 px-2">{[...careSettings, ...careSettings].map((item, index) => <article aria-hidden={index >= careSettings.length} className="flex h-[86px] w-72 shrink-0 items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 shadow-[0_8px_24px_rgba(15,23,42,.035)]" key={`${item.title}-${index}`}><span className="grid size-10 place-items-center rounded-xl bg-teal-50 text-teal-700"><Icon name={item.icon} /></span><div><h2 className="text-sm font-semibold text-slate-900">{item.title}</h2><p className="mt-1 line-clamp-1 text-xs text-slate-500">{item.detail}</p></div></article>)}</div>
         </section>
@@ -409,6 +409,9 @@ export default function HealthcarePage() {
       </main>
 
       <style>{`
+        #healthcare-solution-page > section:not(:first-child):not(:last-child) { padding-block: 2rem; }
+        @media (min-width:640px) { #healthcare-solution-page > section:not(:first-child):not(:last-child) { padding-block: 2.5rem; } }
+        @media (min-width:1024px) { #healthcare-solution-page > section:not(:first-child):not(:last-child) { padding-block: 3rem; } }
         .marketing-site:has(#healthcare-solution-page) .site-pre-footer-cta {
           margin-top: 165px;
           overflow: visible;
@@ -440,6 +443,24 @@ export default function HealthcarePage() {
           pointer-events: none;
         }
         .marketing-site:has(#healthcare-solution-page) .site-pre-footer-cta > * {
+          position: relative;
+          z-index: 3;
+        }
+        .marketing-site:has(#healthcare-solution-page) .site-pre-footer-cta > div {
+          position: static;
+        }
+        .marketing-site:has(#healthcare-solution-page) .site-pre-footer-cta > div::after {
+          content: "";
+          position: absolute;
+          z-index: 4;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          height: 1px;
+          background: #3a3a3a;
+          pointer-events: none;
+        }
+        .marketing-site:has(#healthcare-solution-page) .site-pre-footer-cta > div > * {
           position: relative;
           z-index: 3;
         }

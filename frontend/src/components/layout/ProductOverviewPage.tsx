@@ -258,16 +258,16 @@ export function ProductOverviewPage() {
   return (
     <SiteLayout>
       <div className="product-overview-page overflow-hidden bg-white text-[#17203f]" id="product-overview-page">
-        <section className="relative px-5 pb-20 pt-36 sm:px-8 sm:pt-40 lg:pb-28 lg:pt-44">
-          <div className="relative mx-auto grid max-w-[1280px] items-center gap-14 lg:grid-cols-[0.88fr_1.12fr]">
+        <section className="product-overview-hero relative border-b border-[#e2e8e5] px-5 pb-8 pt-20 sm:px-8 sm:pb-10 sm:pt-24 lg:pb-12 lg:pt-24">
+          <div className="relative mx-auto grid max-w-[1280px] items-center gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14">
             <div className="max-w-2xl">
               <div className="inline-flex items-center gap-2 rounded-full border border-[#45ddce]/22 bg-[#45ddce]/[0.07] px-4 py-2 text-[10px] font-black uppercase tracking-[0.17em] text-[#75fff0]">
                 <span className="size-1.5 rounded-full bg-[#45ddce] shadow-[0_0_10px_#45ddce]" /> Vozon product platform
               </div>
-              <h1 className="product-hero-title m-0 mt-7 text-[clamp(2.6rem,5.7vw,5.3rem)] font-medium leading-[0.98] tracking-[-0.045em] text-[#7a3e9d]">
+              <h1 className="product-hero-title m-0 mt-6 text-[clamp(2.5rem,5vw,4.7rem)] font-medium leading-[1] tracking-[-0.045em] text-[#7a3e9d]">
                 Every voice workflow, <span className="product-overview-heading-accent text-[#7a3e9d]" id="product-overview-heading-accent">one platform.</span>
               </h1>
-              <p className="mb-0 mt-7 max-w-xl text-base leading-8 text-[#5d6478] sm:text-lg">
+              <p className="mb-0 mt-6 max-w-xl text-base leading-7 text-[#5d6478]">
                 Build natural AI phone agents, connect them to real business actions, and improve every conversation from one production-ready workspace.
               </p>
               <div className="mt-9 flex flex-wrap gap-3">
@@ -284,18 +284,18 @@ export function ProductOverviewPage() {
           </div>
         </section>
 
-        <section className="border-y border-white/[0.07] bg-white/[0.018] px-5 sm:px-8">
+        <section className="product-overview-proof-strip border-b border-[#e2e8e5] px-5 sm:px-8">
           <div className="mx-auto grid max-w-[1280px] sm:grid-cols-2 lg:grid-cols-4">
             {[["<500ms", "responsive conversations"], ["140+", "supported languages"], ["24/7", "inbound and outbound"], ["One", "connected workspace"]].map(([value, label], index) => (
-              <div className="border-b border-white/[0.07] px-6 py-7 last:border-b-0 sm:border-r sm:[&:nth-child(2)]:border-r-0 lg:border-b-0 lg:[&:nth-child(2)]:border-r lg:last:border-r-0" key={label}>
-                <strong className={`block text-2xl font-black ${index === 1 ? "text-[#c6bdff]" : index === 2 ? "text-[#ffbd8c]" : "text-[#75fff0]"}`}>{value}</strong>
-                <span className="mt-1.5 block text-[11px] font-bold text-white/36">{label}</span>
+              <div className="border-b border-[#e2e8e5] px-4 py-6 last:border-b-0 sm:border-r sm:px-6 sm:py-7 sm:[&:nth-child(2)]:border-r-0 sm:[&:nth-child(n+3)]:border-b-0 lg:border-b-0 lg:[&:nth-child(2)]:border-r lg:last:border-r-0" key={label}>
+                <strong className={`block text-2xl font-black tracking-[-0.025em] ${index === 1 ? "text-[#6d5fc5]" : index === 2 ? "text-[#c8672d]" : "text-[#0e7568]"}`}>{value}</strong>
+                <span className="mt-1.5 block text-xs font-medium text-[#60706a]">{label}</span>
               </div>
             ))}
           </div>
         </section>
 
-        <section className="px-5 py-16 sm:px-8 lg:py-20">
+        <section className="px-5 py-10 sm:px-8 sm:py-12 lg:py-14">
           <div className="mx-auto max-w-[1280px]">
             <div className="mx-auto max-w-[680px] text-center">
               <p className="m-0 text-[10px] font-black uppercase tracking-[0.2em] text-[#75fff0]">The complete operating layer</p>
@@ -303,7 +303,7 @@ export function ProductOverviewPage() {
               <p className="mx-auto mb-0 mt-5 max-w-xl text-sm leading-7 text-white/48 sm:text-base">Design the experience, connect the workflow, and learn from real calls without stitching together disconnected tools.</p>
             </div>
 
-            <div className="mt-14 space-y-20 lg:mt-20 lg:space-y-24">
+            <div className="mt-10 space-y-14 lg:mt-12 lg:space-y-16">
               {productStages.map((stage, stageIndex) => {
                 const services = servicePages.filter((service) => service.kicker === stage.key);
                 const accent = stageAccents[stageIndex];
@@ -334,7 +334,7 @@ export function ProductOverviewPage() {
           </div>
         </section>
 
-        <section className="border-y border-white/[0.07] bg-[#050b09] px-5 py-16 sm:px-8 lg:py-20">
+        <section className="border-y border-white/[0.07] bg-[#050b09] px-5 py-10 sm:px-8 sm:py-12 lg:py-14">
           <div className="mx-auto max-w-[1180px]">
             <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
               <div><p className="m-0 text-[10px] font-black uppercase tracking-[0.18em] text-[#75fff0]">One continuous system</p><h2 className="m-0 mt-4 text-2xl font-semibold leading-[1.15] sm:text-3xl">A call becomes completed work.</h2></div>
@@ -348,7 +348,7 @@ export function ProductOverviewPage() {
           </div>
         </section>
 
-        <section className="px-5 py-16 sm:px-8 lg:py-20">
+        <section className="px-5 py-10 sm:px-8 sm:py-12 lg:py-14">
           <div className="product-overview-ready-card relative mx-auto max-w-[900px] overflow-hidden rounded-[24px] border p-7 text-center sm:p-9 lg:p-10">
             <div className="absolute left-1/2 top-0 h-0.5 w-28 -translate-x-1/2 bg-[#118778]" />
             <p className="m-0 text-[10px] font-black uppercase tracking-[0.18em] text-[#75fff0]">Ready when your callers are</p>
@@ -375,6 +375,14 @@ export function ProductOverviewPage() {
         #product-overview-page#product-overview-page > section {
           background: #fff !important;
           background-image: none !important;
+        }
+
+        #product-overview-page#product-overview-page > .product-overview-hero {
+          background: linear-gradient(180deg, #f8fbfa 0%, #ffffff 68%) !important;
+        }
+
+        #product-overview-page#product-overview-page > .product-overview-proof-strip {
+          background: #f7f9f8 !important;
         }
 
         #product-overview-page#product-overview-page article a,

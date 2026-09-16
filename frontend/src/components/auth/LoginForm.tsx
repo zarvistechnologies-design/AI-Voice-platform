@@ -27,7 +27,11 @@ export function LoginForm() {
   const searchParams = useSearchParams();
   const nextPath = getNextPath(searchParams.get("next"));
 
-  const [mode, setMode] = useState<"login" | "register" | "forgot">("login");
+  const [mode, setMode] = useState<"login" | "register" | "forgot">(
+    searchParams.get("mode") === "register" && brand.authentication.registrationMode === "open"
+      ? "register"
+      : "login",
+  );
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

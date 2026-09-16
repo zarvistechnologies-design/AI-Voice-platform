@@ -842,15 +842,15 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
         id="product-service-page"
         style={theme as CSSProperties}
       >
-        <section className="product-service-hero relative overflow-hidden px-5 pb-8 pt-32 sm:px-8 sm:pb-10 sm:pt-36 lg:pt-40">
+        <section className="product-service-hero relative overflow-hidden border-b border-[#e3ebe8] px-5 pb-8 pt-20 sm:px-8 sm:pb-10 sm:pt-24 lg:pt-24">
           <div
-            className={`voice-agent-container relative mx-auto grid w-full min-w-0 max-w-[1240px] gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(420px,0.88fr)] lg:items-center ${service.slug === "voice-agents" ? "voice-agent-hero-container" : ""}`}
+            className={`voice-agent-container relative mx-auto grid w-full min-w-0 max-w-[1340px] gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(420px,0.95fr)] lg:items-center lg:gap-12 ${service.slug === "voice-agents" ? "voice-agent-hero-container" : ""}`}
           >
             <div className="min-w-0 max-w-3xl">
               <Pill>
                 {service.kicker} / {experience.label}
               </Pill>
-              <h1 className="product-hero-title voice-agents-hero-heading mt-7 font-medium leading-[0.98] tracking-[-0.055em]">
+              <h1 className="product-hero-title voice-agents-hero-heading mt-6 font-semibold leading-[1.05] tracking-[-0.05em]">
                 <span className="product-service-heading-primary block">
                   {experience.heroTitle}
                 </span>{" "}
@@ -858,26 +858,26 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
                   {experience.heroAccent}
                 </span>
               </h1>
-              <p className="mt-7 max-w-2xl text-[0.95rem] leading-7 text-[#52645f] sm:text-[1.05rem] sm:leading-8">
+              <p className="mt-6 max-w-2xl text-[0.95rem] leading-7 text-[#52645f] sm:text-base">
                 {service.summary}
               </p>
 
-              <div className="mt-9 flex flex-wrap gap-3">
+              <div className="mt-8 flex flex-wrap gap-3">
                 <Link
-                  className="service-secondary-button inline-flex min-h-12 items-center rounded-lg border border-[#cfd6e6] bg-white px-6 text-sm font-extrabold text-[#17203f] transition hover:-translate-y-0.5"
+                  className="service-secondary-button inline-flex min-h-12 items-center rounded-full border border-[#cfd6e6] bg-white px-6 text-sm font-bold text-[#17203f] transition hover:-translate-y-0.5"
                   href="/#demo"
                 >
                   Try a demo <span className="ml-3">&rarr;</span>
                 </Link>
                 <Link
-                  className="service-primary-button inline-flex min-h-12 items-center rounded-lg px-6 text-sm font-extrabold transition hover:-translate-y-0.5"
+                  className="service-primary-button inline-flex min-h-12 items-center rounded-full px-6 text-sm font-bold transition hover:-translate-y-0.5"
                   href="/contact"
                 >
                   Contact sales
                 </Link>
               </div>
 
-              <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3 text-sm text-[#71817d]">
+              <div className="mt-6 flex flex-wrap gap-x-6 gap-y-3 text-sm text-[#71817d]">
                 {service.highlights.map((highlight) => (
                   <span
                     className="inline-flex items-center gap-2"
@@ -894,6 +894,20 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
               slug={service.slug}
               title={service.title}
             />
+          </div>
+        </section>
+
+        <section aria-label={`${service.title} highlights`} className="product-service-highlights overflow-hidden border-y border-[#e3ebe8] bg-[#f7f9f8] px-5 py-5 sm:px-8 sm:py-6">
+          <div className="mx-auto max-w-[1340px]">
+            <p className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.16em] text-[#60706a]">{service.title} at a glance</p>
+            <div className="grid gap-3 sm:grid-cols-3">
+              {experience.proof.map((item) => (
+                <div className="flex min-h-16 items-center justify-center gap-2 rounded-xl border border-[#dfe7e4] bg-white px-4 text-center text-sm text-[#40514c]" key={item.label}>
+                  <strong className="shrink-0 font-bold text-[#118778]">{item.value}</strong>
+                  <span>{item.label}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -1173,7 +1187,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
           </>
         )}
 
-        <section className="agent-anatomy-section relative overflow-hidden border-b border-[#e4e8f2] bg-white px-5 py-20 sm:px-8 sm:py-24">
+        <section className="agent-anatomy-section relative overflow-hidden border-b border-[#e4e8f2] bg-white px-5 py-10 sm:px-8 sm:py-12 lg:py-14">
           <div className="voice-agent-container relative mx-auto max-w-[1240px]">
             <div className="voice-blueprint-intro mx-auto max-w-4xl text-center">
               <div className="flex justify-center">
@@ -1189,7 +1203,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
               </p>
             </div>
 
-            <div className="voice-blueprint-panel mt-14 grid gap-8 p-5 sm:p-8 lg:grid-cols-[minmax(260px,0.72fr)_minmax(0,1.28fr)] lg:gap-12 lg:p-10">
+            <div className="voice-blueprint-panel mt-8 grid gap-8 p-5 sm:mt-10 sm:p-8 lg:grid-cols-[minmax(260px,0.72fr)_minmax(0,1.28fr)] lg:gap-12 lg:p-10">
               <div className="voice-blueprint-core flex flex-col justify-between rounded-2xl p-7 sm:p-8">
                 <div>
                   <p className="text-[10px] font-black tracking-[0.16em] text-[var(--service-accent-soft)] uppercase">
@@ -1240,7 +1254,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
         </section>
 
         <>
-          <section className="voice-build-process relative overflow-hidden bg-white px-5 py-20 sm:px-8 sm:py-24" id="how-you-build-it">
+          <section className="voice-build-process relative overflow-hidden bg-white px-5 py-10 sm:px-8 sm:py-12 lg:py-14" id="how-you-build-it">
             <div className="voice-agent-container relative mx-auto max-w-[1360px]">
               <div className="voice-build-redesign-intro mx-auto max-w-4xl text-center">
                 <div className="flex justify-center">
@@ -1256,7 +1270,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
                 </p>
               </div>
 
-              <div className="voice-build-redesign-panel mt-14">
+              <div className="voice-build-redesign-panel mt-8 sm:mt-10">
                 <div className="voice-build-redesign-panel-head flex flex-wrap items-center justify-between gap-3">
                   <span>Guided setup workflow</span>
                   <span>{buildSteps.length} stages to launch</span>
@@ -1288,7 +1302,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
             </div>
           </section>
 
-          <section className="voice-config-section relative overflow-hidden bg-white px-5 py-16 sm:px-8 sm:py-20" id="agent-control-center">
+          <section className="voice-config-section relative overflow-hidden bg-white px-5 py-10 sm:px-8 sm:py-12 lg:py-14" id="agent-control-center">
             <div
               className="voice-config-wash pointer-events-none absolute inset-0"
               aria-hidden="true"
@@ -1319,7 +1333,38 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
           </section>
         </>
 
-        <section className="voice-faq-section px-5 py-20 sm:px-8 sm:py-24">
+        <section aria-labelledby="product-service-use-cases-title" className="product-service-use-cases border-y border-[#e6ecea] bg-white px-5 py-10 sm:px-8 sm:py-12 lg:py-14">
+          <div className="mx-auto max-w-[1340px]">
+            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#118778]">Use cases</p>
+            <h2 className="mt-4 max-w-3xl text-[clamp(1.6rem,2.35vw,2.25rem)] font-semibold leading-[1.12] tracking-[-0.04em]" id="product-service-use-cases-title">Where {service.title.toLowerCase()} helps your team.</h2>
+            <div className="mt-8 grid gap-4 sm:mt-10 md:grid-cols-3">
+              {experience.useCases.map((useCase, index) => (
+                <article className="flex h-full flex-col rounded-2xl border border-[#dbe4e1] bg-white p-6 shadow-[0_8px_24px_rgba(20,35,31,.04)]" key={useCase.title}>
+                  <span className="text-xs font-bold text-[#118778]">{String(index + 1).padStart(2, "0")}</span>
+                  <h3 className="mt-4 text-lg font-semibold">{useCase.title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-[#52645f]">{useCase.body}</p>
+                  <p className="mt-auto border-t border-[#e6ecea] pt-5 text-xs font-semibold text-[#0e6f62]">{useCase.outcome}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section aria-labelledby="product-service-integrations-title" className="product-service-integrations px-5 py-10 sm:px-8 sm:py-12 lg:py-14">
+          <div className="mx-auto max-w-[1340px]">
+            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#118778]">Connected workflow</p>
+            <h2 className="mt-4 max-w-3xl text-[clamp(1.6rem,2.35vw,2.25rem)] font-semibold leading-[1.12] tracking-[-0.04em]" id="product-service-integrations-title">{design.integrationsTitle}</h2>
+            <div className="mt-8 flex flex-wrap gap-3 sm:mt-10">
+              {experience.integrations.map((integration) => (
+                <span className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-[#dbe4e1] bg-white px-4 text-sm font-semibold text-[#40514c]" key={integration}>
+                  <span aria-hidden="true" className="size-2 rounded-full bg-[#118778]" />{integration}
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="voice-faq-section px-5 py-10 sm:px-8 sm:py-12 lg:py-14">
           <div className="mx-auto max-w-4xl">
             <div className="text-center">
               <Pill>F.A.Q.</Pill>
@@ -1348,7 +1393,7 @@ export function ProductServicePage({ service, experience }: ProductServicePagePr
           </div>
         </section>
 
-        <section className="voice-agent-contact-section bg-white px-6 pb-16 pt-4 lg:px-8">
+        <section className="voice-agent-contact-section bg-white px-5 py-10 sm:px-8 sm:py-12 lg:py-14">
           <div className="product-service-ready-card relative mx-auto flex max-w-6xl flex-col items-center justify-between gap-7 overflow-hidden rounded-[24px] border border-[rgba(var(--service-accent-rgb),0.35)] bg-[#07100d] p-8 text-center shadow-[0_24px_70px_rgba(var(--service-accent-rgb),0.08)] sm:p-10 md:flex-row md:text-left">
             <div
               className="pointer-events-none absolute right-[18%] top-1/2 hidden size-56 -translate-y-1/2 rounded-full border border-[rgba(var(--service-accent-rgb),0.15)] shadow-[0_0_0_24px_rgba(var(--service-accent-rgb),0.025),0_0_0_54px_rgba(var(--service-secondary-rgb),0.025)] lg:block"
@@ -6644,15 +6689,64 @@ inset:55px;
           -webkit-text-fill-color: #ffffff !important;
         }
 
+        /* Keep every product detail page on the same section rhythm as Voice Agents. */
+        #product-service-page#product-service-page#product-service-page > .product-service-hero {
+          padding-top: 5rem !important;
+          padding-bottom: 2rem !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .voice-agents-hero-heading {
+          font-size: clamp(2rem, 3.7vw, 3.5rem) !important;
+          line-height: 1.05 !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .voice-agents-hero-heading > span {
+          white-space: normal !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .product-service-hero-photo > div:first-child {
+          height: clamp(320px, 30vw, 390px) !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page > :is(.agent-anatomy-section, .voice-build-process, .voice-config-section, .product-service-use-cases, .product-service-integrations, .voice-faq-section) h2 {
+          font-size: clamp(1.6rem, 2.35vw, 2.25rem) !important;
+          line-height: 1.12 !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page > .product-service-highlights {
+          padding-top: 1.25rem !important;
+          padding-bottom: 1.25rem !important;
+          background: #f7f9f8 !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page > :is(.agent-anatomy-section, .voice-build-process, .voice-config-section, .product-service-use-cases, .product-service-integrations, .voice-faq-section, .voice-agent-contact-section) {
+          padding-top: 2.5rem !important;
+          padding-bottom: 2.5rem !important;
+        }
+
+        #product-service-page#product-service-page#product-service-page .product-service-highlights strong,
+        #product-service-page#product-service-page#product-service-page .product-service-use-cases article > span,
+        #product-service-page#product-service-page#product-service-page .product-service-use-cases article > p:last-child {
+          color: #118778 !important;
+          -webkit-text-fill-color: #118778 !important;
+        }
+
+        @media (min-width: 640px) {
+          #product-service-page#product-service-page#product-service-page > .product-service-hero { padding-top: 6rem !important; }
+          #product-service-page#product-service-page#product-service-page > .product-service-highlights { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }
+          #product-service-page#product-service-page#product-service-page > :is(.agent-anatomy-section, .voice-build-process, .voice-config-section, .product-service-use-cases, .product-service-integrations, .voice-faq-section, .voice-agent-contact-section) { padding-top: 3rem !important; padding-bottom: 3rem !important; }
+        }
+
+        @media (min-width: 1024px) {
+          #product-service-page#product-service-page#product-service-page > :is(.agent-anatomy-section, .voice-build-process, .voice-config-section, .product-service-use-cases, .product-service-integrations, .voice-faq-section, .voice-agent-contact-section) { padding-top: 3.5rem !important; padding-bottom: 3.5rem !important; }
+        }
+
         @media (max-width: 767px) {
           #product-service-page#product-service-page#product-service-page > section {
             padding-top: 4rem;
             padding-bottom: 4rem;
           }
 
-          #product-service-page#product-service-page#product-service-page .product-service-hero {
-            padding-top: 7rem !important;
-          }
         }
       `}</style>
     </SiteLayout>

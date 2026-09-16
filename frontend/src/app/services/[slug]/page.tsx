@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import { ProductServicePage } from "@/components/layout/ProductServicePage";
+import { ProductDetailPage } from "@/components/layout/ProductDetailPage";
 import { VoiceAgentsProductPageV2 } from "@/components/product/VoiceAgentsProductPageV2";
 import { productServiceExperiences } from "@/config/productServiceExperiences";
 import { servicePages } from "@/config/site";
@@ -47,5 +47,5 @@ export default async function ServicePage({ params }: ServicePageProps) {
     return <VoiceAgentsProductPageV2 />;
   }
 
-  return <ProductServicePage experience={experience} service={service} />;
+  return <ProductDetailPage experience={experience} service={service} />;
 }

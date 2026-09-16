@@ -99,7 +99,7 @@ export function SolutionExperienceTemplate({ content }: { content: SolutionExper
   return (
     <SiteLayout>
       <main className="solution-shared overflow-hidden bg-white text-slate-950" id={content.id}>
-        <section className="relative overflow-hidden bg-white px-5 pb-12 pt-24 sm:px-8 sm:pb-14 sm:pt-28 lg:pb-16 lg:pt-32">
+        <section className="relative overflow-hidden bg-white px-5 pb-8 pt-[72px] sm:px-8 sm:pb-10 sm:pt-20 lg:pb-12 lg:pt-24">
           <div className="mx-auto grid max-w-[1280px] items-center gap-12 lg:grid-cols-[0.92fr_1.08fr] lg:gap-16">
             <div className="max-w-[610px] solution-reveal">
               <div className="inline-flex items-center gap-2 rounded-full border border-[#d8d0e5] bg-[#faf8fc]/90 px-3.5 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[#625b7d] shadow-sm">
@@ -110,7 +110,7 @@ export function SolutionExperienceTemplate({ content }: { content: SolutionExper
               <p className="mt-6 max-w-[570px] text-[15px] leading-7 text-slate-900">{content.summary}</p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link className="inline-flex min-h-12 items-center gap-2 rounded-full bg-teal-700 px-6 text-sm font-bold text-white shadow-[0_15px_35px_rgba(13,148,136,.2)] transition hover:-translate-y-0.5 hover:bg-teal-800" href={`/contact?solution=${content.id}`}>Plan your workflow <span aria-hidden="true">&rarr;</span></Link>
-                <Link className="inline-flex min-h-12 items-center gap-2 rounded-full border border-[#d8d0e5] bg-[#faf8fc]/90 px-6 text-sm font-bold text-slate-800 transition hover:-translate-y-0.5 hover:border-[#a89bbb] hover:bg-white" href={`#${content.id}-journey`}><span className="grid size-6 place-items-center rounded-full bg-[#e8e2f1] text-[10px] text-[#625b7d]">&#9654;</span>See how it works</Link>
+                <Link className="inline-flex min-h-12 items-center gap-2 rounded-full border border-[#d8d0e5] bg-[#faf8fc]/90 px-6 text-sm font-bold text-slate-800 transition hover:-translate-y-0.5 hover:border-[#a89bbb] hover:bg-white" href="/login?mode=register">See how it works</Link>
               </div>
               <div className="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-xs font-semibold text-slate-600">{content.highlights.map((item) => <span className="flex items-center gap-2" key={item}><Check />{item}</span>)}</div>
             </div>
@@ -122,7 +122,7 @@ export function SolutionExperienceTemplate({ content }: { content: SolutionExper
           </div>
         </section>
 
-        <section aria-label={`${content.title} focus areas`} className="border-y border-slate-200/80 bg-white py-10 sm:py-12 lg:py-14">
+        <section aria-label={`${content.title} focus areas`} className="border-y border-slate-200/80 bg-white py-8 sm:py-10 lg:py-12">
           <p className="mb-5 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Built for the rhythm of modern {content.title.toLowerCase()} teams</p>
           <div className="solution-marquee flex w-max items-center gap-4 px-2">{[...showcase, ...showcase].map((item, index) => <article aria-hidden={index >= showcase.length} className="flex h-[86px] w-72 shrink-0 items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 shadow-[0_8px_24px_rgba(15,23,42,.035)]" key={`${item.title}-${index}`}>{item.image ? <img alt="" className="size-12 rounded-xl object-cover" src={item.image} /> : <span className="grid size-10 place-items-center rounded-xl bg-teal-50 text-xs font-bold text-teal-700">0{index % showcase.length + 1}</span>}<div><h2 className="text-sm font-semibold text-slate-900">{item.title}</h2><p className="mt-1 line-clamp-1 text-xs text-slate-500">{item.outcome ?? item.body}</p></div></article>)}</div>
         </section>
@@ -203,6 +203,9 @@ export function SolutionExperienceTemplate({ content }: { content: SolutionExper
       </main>
 
       <style>{`
+        .solution-shared > section:not(:first-child):not(:nth-last-child(-n+2)) { padding-block: 2rem; }
+        @media (min-width:640px) { .solution-shared > section:not(:first-child):not(:nth-last-child(-n+2)) { padding-block: 2.5rem; } }
+        @media (min-width:1024px) { .solution-shared > section:not(:first-child):not(:nth-last-child(-n+2)) { padding-block: 3rem; } }
         .solution-hero-image { display:block; background:#fff; opacity:.98; filter:saturate(.96) contrast(.98) drop-shadow(0 24px 34px rgba(15,118,110,.12)); transform:scale(1.08) translate(3%,-1.5%); transform-origin:right bottom; mix-blend-mode:multiply; mask-image:radial-gradient(ellipse 82% 90% at 62% 50%,#000 66%,rgba(0,0,0,.9) 76%,rgba(0,0,0,.45) 86%,transparent 100%); -webkit-mask-image:radial-gradient(ellipse 82% 90% at 62% 50%,#000 66%,rgba(0,0,0,.9) 76%,rgba(0,0,0,.45) 86%,transparent 100%); }
         .solution-feature-image { display:block; background:#fff; z-index:1; opacity:.98; filter:saturate(.96) contrast(.98) drop-shadow(0 24px 34px rgba(15,118,110,.12)); transform:scale(1.02); transform-origin:center bottom; mix-blend-mode:multiply; mask-image:linear-gradient(to bottom,#000 0%,#000 80%,rgba(0,0,0,.92) 87%,transparent 100%); -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 80%,rgba(0,0,0,.92) 87%,transparent 100%); }
         .solution-footer-cap { position:relative; height:165px; overflow:hidden; background:#fff; }
