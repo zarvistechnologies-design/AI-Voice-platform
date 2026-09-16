@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 
 import { API_URL } from "@/lib/apiBase";
 
@@ -134,6 +134,14 @@ const nextSteps = [
 export function ContactExperience() {
   const [status, setStatus] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const phoneInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const suppliedPhone = new URLSearchParams(window.location.search).get("phone");
+    if (suppliedPhone && phoneInputRef.current) {
+      phoneInputRef.current.value = suppliedPhone.replace(/\D/g, "").slice(0, 15);
+    }
+  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -323,6 +331,7 @@ export function ContactExperience() {
                     placeholder="9876543210"
                     title="Enter a phone number containing 10 to 15 digits"
                     type="tel"
+                    ref={phoneInputRef}
                   />
                 </label>
 

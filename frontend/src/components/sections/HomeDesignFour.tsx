@@ -5,8 +5,10 @@ import Link from "next/link";
 import { useState } from "react";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { useHomepageVoiceCall } from "@/components/sections/useHomepageVoiceCall";
 import { customerReviews } from "@/config/customerReviews";
 
+import { GreenAudioWaveHero } from "@/components/sections/GreenAudioWaveHero";
 import styles from "./HomeDesignFour.module.css";
 import "./HomeDesignFourGrid.css";
 import "./HomeDesignFourHero.css";
@@ -14,16 +16,18 @@ import "./HomeDesignFourSections.css";
 import "./HomeDesignFourEnding.css";
 
 const voiceLanguages = [
-  { label: "English", voice: "Liza", detail: "Female (Voice)" },
-  { label: "Hindi", voice: "Amit", detail: "Male (Voice)" },
-  { label: "ગુજરાતી", voice: "Nisha", detail: "Female (Voice)" },
-  { label: "ಕನ್ನಡ", voice: "Rohan", detail: "Male (Voice)" },
-  { label: "বাংলা", voice: "Ishani", detail: "Female (Voice)" },
-  { label: "मराठी", voice: "Aarav", detail: "Male (Voice)" },
-  { label: "தமிழ்", voice: "Kavya", detail: "Female (Voice)" },
-  { label: "తెలుగు", voice: "Arjun", detail: "Male (Voice)" },
-  { label: "Français", voice: "Camille", detail: "Female (Voice)" },
-  { label: "Español", voice: "Sofia", detail: "Female (Voice)" },
+  { label: "English", language: "English", voice: "Vozon", detail: "Live voice" },
+  { label: "हिन्दी", language: "Hindi", voice: "Vozon", detail: "Live voice" },
+  { label: "ગુજરાતી", language: "Gujarati", voice: "Vozon", detail: "Live voice" },
+  { label: "ಕನ್ನಡ", language: "Kannada", voice: "Vozon", detail: "Live voice" },
+  { label: "বাংলা", language: "Bengali", voice: "Vozon", detail: "Live voice" },
+  { label: "मराठी", language: "Marathi", voice: "Vozon", detail: "Live voice" },
+  { label: "தமிழ்", language: "Tamil", voice: "Vozon", detail: "Live voice" },
+  { label: "తెలుగు", language: "Telugu", voice: "Vozon", detail: "Live voice" },
+  { label: "മലയാളം", language: "Malayalam", voice: "Vozon", detail: "Live voice" },
+  { label: "ਪੰਜਾਬੀ", language: "Punjabi", voice: "Vozon", detail: "Live voice" },
+  { label: "ଓଡ଼ିଆ", language: "Odia", voice: "Vozon", detail: "Live voice" },
+  { label: "অসমীয়া", language: "Assamese", voice: "Vozon", detail: "Live voice" },
 ] as const;
 
 const steps = [
@@ -91,19 +95,19 @@ function WorkflowIcon({ name }: { name: WorkflowIconName }) {
   return null;
 }
 
-function StepMiniVisual({ index }: { index: number }) {
+function StepMiniVisual({ index, onVoicePreview, onExploreLanguages }: { index: number; onVoicePreview: () => void; onExploreLanguages: () => void }) {
   if (index === 0) return <div className="design-four-step-visual design-four-flow"><div className="design-four-flow-grid"><span><i className="green"><WorkflowIcon name="phone" /></i><b>Incoming Call<small>Customer calls</small></b></span><span><i className="purple"><WorkflowIcon name="sparkles" /></i><b>Check Intent<small>Understand request</small></b></span><span><i className="blue"><WorkflowIcon name="chat" /></i><b>AI Response<small>Handle with AI</small></b></span><span><i className="orange"><WorkflowIcon name="user" /></i><b>Human Handoff<small>Transfer to human</small></b></span></div><div className="design-four-card-tools"><span><WorkflowIcon name="flow" /><small>Flow builder</small></span><span><WorkflowIcon name="book" /><small>Knowledge base</small></span><span><WorkflowIcon name="user" /><small>Handoff rules</small></span></div></div>;
   if (index === 1) return <div className="design-four-step-visual design-four-models"><div className="design-four-model-list"><span><i><WorkflowIcon name="openai" /></i><b>OpenAI<small>GPT-4o</small></b><em className="selected" /></span><span><i><WorkflowIcon name="claude" /></i><b>Claude<small>Claude 3.5</small></b><em /></span><span><i><WorkflowIcon name="meta" /></i><b>Llama<small>Llama 3</small></b><em /></span><span><i><WorkflowIcon name="cube" /></i><b>Custom Model<small>Bring your own</small></b><em /></span></div><div className="design-four-card-tools"><span><WorkflowIcon name="chip" /><small>Latest models</small></span><span><WorkflowIcon name="server" /><small>Self-hosted</small></span><span><WorkflowIcon name="cube" /><small>Custom models</small></span></div></div>;
   if (index === 2) return (
     <div className="design-four-step-visual design-four-voice">
       <div className="design-four-voice-controls">
         <b aria-hidden="true"><i /><i /><i /><i /><i /><i /><i /></b>
-        <button aria-label="Play voice" type="button"><span aria-hidden="true" /></button>
+        <button aria-label="Play voice" onClick={onVoicePreview} type="button"><span aria-hidden="true" /></button>
       </div>
       <div className="design-four-voice-choice"><span>Aria (Natural)</span><i aria-hidden="true" /></div>
       <div className="design-four-voice-flags" aria-label="Available languages">
         <i className="is-us" title="English (US)" /><i className="is-gb" title="English (UK)" /><i className="is-in" title="Hindi" /><i className="is-es" title="Spanish" /><i className="is-fr" title="French" />
-        <button aria-label="View more languages" type="button">+</button>
+        <button aria-label="View more languages" onClick={onExploreLanguages} type="button">+</button>
       </div>
       <div className="design-four-card-tools">
         <span><WorkflowIcon name="globe" /><small>40+ languages</small></span>
@@ -119,7 +123,7 @@ export function HomeDesignFour() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [activeIndustry, setActiveIndustry] = useState(0);
   const [activeLanguage, setActiveLanguage] = useState(0);
-  const [voicePlaying, setVoicePlaying] = useState(false);
+  const voiceCall = useHomepageVoiceCall();
   const selectedIndustry = industries[activeIndustry];
   const selectedVoice = voiceLanguages[activeLanguage];
   const previousVoice = voiceLanguages[(activeLanguage - 1 + voiceLanguages.length) % voiceLanguages.length];
@@ -131,6 +135,7 @@ export function HomeDesignFour() {
 
       <main>
         <section className={`${styles.hero} home-design-four__hero`}>
+          <GreenAudioWaveHero />
           <div className={styles.heroGlow} aria-hidden="true" />
           <div className="design-four-hero__features" aria-label="Platform capabilities">
             <span><i>✓</i>Natural conversations</span>
@@ -142,11 +147,11 @@ export function HomeDesignFour() {
             className="design-four-phone"
             onSubmit={(event) => {
               event.preventDefault();
-              window.location.href = phoneNumber ? `/contact?phone=${encodeURIComponent(phoneNumber)}` : "/contact";
+              window.location.href = `/contact?phone=${encodeURIComponent(phoneNumber)}`;
             }}
           >
             <span className="design-four-india-flag" aria-label="India" />
-            <input aria-label="Phone number" onChange={(event) => setPhoneNumber(event.target.value)} placeholder="Phone Number" type="tel" value={phoneNumber} />
+            <input aria-label="Phone number" inputMode="numeric" maxLength={15} minLength={10} onChange={(event) => setPhoneNumber(event.target.value.replace(/\D/g, ""))} pattern="[0-9]{10,15}" placeholder="Phone Number" required title="Enter a phone number containing 10 to 15 digits" type="tel" value={phoneNumber} />
             <button type="submit">Try an agent</button>
           </form>
           <div className="design-four-trust-pill">Trusted by <strong>100+</strong> teams building the future of <strong>customer conversations</strong></div>
@@ -213,7 +218,7 @@ export function HomeDesignFour() {
         <section className="design-four-voice-section" id="platform">
           <div className="design-four-language-tabs" role="tablist" aria-label="Voice languages">
             {voiceLanguages.map((language, index) => <button aria-selected={activeLanguage === index} className={activeLanguage === index ? "is-active" : ""} key={language.label} onClick={() => setActiveLanguage(index)} role="tab" type="button">{language.label}</button>)}
-            <Link href="/services/text-to-speech">View all 15 languages</Link>
+            <Link href="/services/multilingual-speech">Explore languages</Link>
           </div>
           <div className="design-four-voice-layout">
             <div className="design-four-voice-copy">
@@ -222,7 +227,13 @@ export function HomeDesignFour() {
               <Link href="/product" className="rounded-lg bg-[#108D82] px-6 py-3 font-semibold text-white transition-colors hover:bg-[#108D82]">Explore Vozon</Link>
             </div>
             <div className="design-four-voice-player">
-              <button aria-label={voicePlaying ? "Pause voice preview" : "Play voice preview"} className={`design-four-voice-disc${voicePlaying ? " is-playing" : ""}`} onClick={() => setVoicePlaying((playing) => !playing)} type="button"><span>{voicePlaying ? "Ⅱ" : "▶"}</span></button>
+              <button
+                aria-label={voiceCall.active ? "End live voice conversation" : `Start live voice conversation in ${selectedVoice.language}`}
+                className={`design-four-voice-disc${voiceCall.active ? " is-playing" : ""}`}
+                disabled={!voiceCall.ready || voiceCall.busy}
+                onClick={() => voiceCall.active ? voiceCall.disconnect() : void voiceCall.start(selectedVoice.language)}
+                type="button"
+              ><span>{voiceCall.active ? "Ⅱ" : "▶"}</span></button>
               <div className="design-four-voice-selector">
                 <div className="design-four-voice-neighbor" aria-hidden="true"><b>{previousVoice.voice}</b><span>{previousVoice.detail}</span></div>
                 <button aria-label="Previous voice" onClick={() => setActiveLanguage((activeLanguage - 1 + voiceLanguages.length) % voiceLanguages.length)} type="button">‹</button>
@@ -230,6 +241,11 @@ export function HomeDesignFour() {
                 <button aria-label="Next voice" onClick={() => setActiveLanguage((activeLanguage + 1) % voiceLanguages.length)} type="button">›</button>
                 <div className="design-four-voice-neighbor" aria-hidden="true"><b>{nextVoice.voice}</b><span>{nextVoice.detail}</span></div>
               </div>
+              <div className="mt-4 flex items-center justify-center gap-2 text-xs font-semibold text-[#108D82]">
+                <span className={`inline-block size-2 rounded-full ${voiceCall.active ? "bg-emerald-500 animate-ping" : voiceCall.ready ? "bg-[#108D82]" : "bg-amber-400"}`} />
+                <span>{voiceCall.active ? `Live call active • Speaking ${selectedVoice.language}` : voiceCall.status}</span>
+              </div>
+              {voiceCall.error ? <p role="alert" className="mt-2 text-xs text-red-700">{voiceCall.error}</p> : null}
             </div>
           </div>
         </section>
@@ -242,7 +258,10 @@ export function HomeDesignFour() {
           <div className="design-four-step-grid">
             {steps.map((step, index) => (
               <article key={step.number}>
-                <b className="design-four-step-number">{step.number}</b><h3>{step.title}</h3><p>{step.copy}</p><StepMiniVisual index={index} />
+                <b className="design-four-step-number">{step.number}</b><h3>{step.title}</h3><p>{step.copy}</p><StepMiniVisual index={index} onVoicePreview={() => {
+                  document.getElementById("platform")?.scrollIntoView({ behavior: "smooth" });
+                  if (voiceCall.ready && !voiceCall.active) void voiceCall.start(selectedVoice.language);
+                }} onExploreLanguages={() => document.getElementById("platform")?.scrollIntoView({ behavior: "smooth" })} />
               </article>
             ))}
           </div>

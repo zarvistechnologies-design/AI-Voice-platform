@@ -64,7 +64,7 @@ export function EnquiryChatbot() {
   }
   async function submitPhone(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!phone.trim()) return setError("Please enter your phone number.");
+    if (!/^[0-9]{10,15}$/.test(phone)) return setError("Enter a phone number containing 10 to 15 digits.");
     setError("");
     setStep("sending");
     try {
@@ -109,7 +109,7 @@ export function EnquiryChatbot() {
       <div className={styles.actions}>
         {step === "service" ? <div className={styles.options}>{services.map(item => <button key={item} onClick={() => selectService(item)}>{item}</button>)}</div> : null}
         {step === "name" ? <form onSubmit={saveName}><input autoFocus value={name} onChange={event => setName(event.target.value)} placeholder="Type your name..." maxLength={80} /><button aria-label="Send name">→</button></form> : null}
-        {step === "phone" ? <form onSubmit={submitPhone}><input autoFocus value={phone} onChange={event => setPhone(event.target.value)} placeholder="Type your phone number..." inputMode="tel" maxLength={20} /><button aria-label="Send phone">→</button></form> : null}
+        {step === "phone" ? <form onSubmit={submitPhone}><input autoFocus value={phone} onChange={event => setPhone(event.target.value.replace(/\D/g, ""))} placeholder="Type your phone number..." inputMode="numeric" maxLength={15} /><button aria-label="Send phone">→</button></form> : null}
         {step === "done" ? <button className={styles.restart} onClick={restart}>Explore another service</button> : null}
         {error ? <div className={styles.error}>{error}</div> : null}
       </div>
