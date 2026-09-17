@@ -345,6 +345,45 @@ export function CallDetailDrawer({ call, inrPerUsd = 96.5, onClose }: { call: Ca
             ))}
           </section>
 
+          {call.callbackRequested ? (
+            <section className="rounded-xl border border-teal-200 bg-[#effaf7] p-4 text-sm text-[#0e6f62]">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#0e6f62]" />
+                  <strong className="text-sm font-bold text-[#061b18]">Callback Requested</strong>
+                </div>
+                {call.callbackEmailStatus === "sent" ? (
+                  <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-800">
+                    Email sent
+                  </span>
+                ) : call.callbackEmailStatus === "failed" ? (
+                  <span className="rounded-full bg-rose-100 px-2.5 py-0.5 text-xs font-semibold text-rose-800">
+                    Email failed
+                  </span>
+                ) : null}
+              </div>
+              <div className="mt-3 grid gap-1.5 sm:grid-cols-2 text-xs text-[#2c3e3a]">
+                {call.callbackDetails?.callerName ? (
+                  <div><span className="text-[#60716d]">Caller:</span> <strong>{call.callbackDetails.callerName}</strong></div>
+                ) : null}
+                {call.callbackDetails?.callbackNumber ? (
+                  <div>
+                    <span className="text-[#60716d]">Callback Phone:</span>{" "}
+                    <a className="font-bold text-[#0e6f62] underline" href={`tel:${call.callbackDetails.callbackNumber}`}>
+                      {call.callbackDetails.callbackNumber}
+                    </a>
+                  </div>
+                ) : null}
+                {call.callbackDetails?.preferredTime ? (
+                  <div><span className="text-[#60716d]">Preferred time:</span> <strong>{call.callbackDetails.preferredTime}</strong></div>
+                ) : null}
+                {call.callbackDetails?.reason ? (
+                  <div className="sm:col-span-2"><span className="text-[#60716d]">Reason:</span> {call.callbackDetails.reason}</div>
+                ) : null}
+              </div>
+            </section>
+          ) : null}
+
           {callErrorMessage ? (
             <section className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
               <strong className="block">Call error</strong>

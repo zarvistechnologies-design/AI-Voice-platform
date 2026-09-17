@@ -567,6 +567,16 @@ export type CallRecord = {
   endReason: string;
   errorMessage: string;
   tags: string[];
+  callbackRequested?: boolean;
+  callbackDetails?: {
+    callerName?: string;
+    callbackNumber?: string;
+    preferredTime?: string;
+    reason?: string;
+    requestedAt?: string;
+  };
+  callbackEmailStatus?: "" | "pending" | "sent" | "failed" | "skipped";
+  callbackEmailSentAt?: string;
   createdAt: string;
 };
 
