@@ -1202,10 +1202,10 @@ export function LegacyIndustryPage({ slug }: { slug: string }) {
             <div className="mt-28 grid gap-8 rounded-[28px] border border-[#374151] bg-[#1f2937] p-8 lg:grid-cols-2">
               <article className="p-8">
                 <h3 className="mt-10 text-2xl font-bold">Pay as you go</h3>
-                <p className="mt-4 text-slate-300">$0 to start.</p>
+                <p className="mt-4 text-slate-300">₹0 to start.</p>
                 <ul className="mt-12 grid gap-6 text-lg">
                   {[
-                    "$0.07-$0.12 per minute - Pay only for what you use.",
+                    "₹6.76–₹11.58 per minute - Pay only for what you use.",
                     "60 mins of free access.",
                     "20 concurrent calls.",
                     "10 Free Knowledge Bases.",

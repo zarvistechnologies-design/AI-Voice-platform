@@ -277,7 +277,7 @@ export const minutePricingAssumptions = {
   ttsAudioTokens: 1_500,
   realtimeAudioInputTokens: 600,
   realtimeAudioOutputTokens: 1_200,
-  inrPerUsd: 96.33,
+  inrPerUsd: 96.5,
 } as const;
 
 function numericRates(rate: string) {
@@ -341,6 +341,16 @@ export function estimatedModelCostPerMinute(categoryId: ModelPriceCategory["id"]
 }
 
 export function formatEstimatedMinuteCost(value: number) {
-  const digits = value < 0.001 ? 5 : value < 0.1 ? 4 : 3;
-  return `$${value.toFixed(digits)}/min`;
+  const rupees = value * minutePricingAssumptions.inrPerUsd;
+  const digits = rupees < 0.1 ? 4 : rupees < 10 ? 2 : 1;
+  return `₹${rupees.toFixed(digits)}/min`;
+}
+
+export function formatProviderRateInr(rate: string) {
+  if (rate.includes("₹")) return rate;
+  return rate.replace(/\$([\d,.]+)/g, (_match, amount: string) => {
+    const rupees = Number(amount.replaceAll(",", "")) * minutePricingAssumptions.inrPerUsd;
+    const digits = rupees < 1 ? 3 : 2;
+    return `₹${rupees.toLocaleString("en-IN", { minimumFractionDigits: digits, maximumFractionDigits: digits })}`;
+  });
 }

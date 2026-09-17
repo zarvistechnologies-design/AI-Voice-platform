@@ -1,187 +1,583 @@
-import type { Metadata } from "next";
-import Image from "next/image";
+/* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 
 import { SiteLayout } from "@/components/layout/SiteLayout";
-import { ConnectedOperations } from "./ConnectedOperations";
-import { HealthcareJourneyCards } from "./HealthcareJourneyCards";
-import { HealthcareReviewCarousel } from "./HealthcareReviewCarousel";
 
-export const metadata: Metadata = {
-  title: "AI Voice Agents for Healthcare | vozon.ai",
+export const metadata = {
+  title: "AI Phone Agents for Healthcare | vozon.ai",
   description:
-    "AI voice agents for healthcare teams handling appointments, routine questions, reminders, call routing, and structured human handoffs.",
-  alternates: { canonical: "/business/industries/healthcare" },
+    "AI phone agents for healthcare calls, routing, IVR navigation, appointment booking, EHR integrations, pricing, and FAQs.",
 };
 
-type IconName =
-  | "calendar" | "chat" | "bell" | "route" | "note" | "moon"
-  | "shield" | "person" | "database" | "pulse" | "phone" | "webhook";
+const photoCards = [
+  {
+    title: "Healthcare Frontdesk",
+    image: "/images/healthcare/marquee-frontdesk.jpg",
+  },
+  {
+    title: "Healthcare Back Office",
+    image: "/images/healthcare/marquee-back-office.jpg",
+  },
+  {
+    title: "Patient Management",
+    image: "/images/healthcare/marquee-patient-management.jpg",
+  },
+  {
+    title: "Appointment Support",
+    image: "/images/healthcare/marquee-appointment.jpg",
+  },
+];
 
-const careSettings = [
-  { title: "Hospitals", detail: "Departments and switchboards", icon: "pulse" },
-  { title: "Clinics", detail: "Appointments and enquiries", icon: "calendar" },
-  { title: "Diagnostic centres", detail: "Preparation and scheduling", icon: "database" },
-  { title: "Care networks", detail: "Routing across locations", icon: "route" },
-  { title: "Specialist practices", detail: "Structured patient intake", icon: "note" },
-] satisfies { title: string; detail: string; icon: IconName }[];
+const healthcareCompanies = [
+  { name: "Epic", color: "#35fbe0" },
+  { name: "Cerner", color: "#9b8cff" },
+  { name: "Athenahealth", color: "#ff9f5a" },
+  { name: "DrChrono", color: "#58a6ff" },
+  { name: "Dentrix", color: "#ff6f91" },
+  { name: "Jane App", color: "#b8f65b" },
+];
 
-const useCases = [
-  { number: "01", icon: "calendar", title: "Appointments", description: "Book, confirm, reschedule, or cancel within your configured scheduling rules.", outcome: "Calendar updated", featured: false },
-  { number: "02", icon: "chat", title: "Patient FAQs", description: "Answer approved questions about services, timings, locations, and preparation.", outcome: "Instant answer" },
-  { number: "03", icon: "bell", title: "Reminders", description: "Support confirmations and follow-up workflows before and after appointments.", outcome: "Patient confirmed" },
-  { number: "04", icon: "route", title: "Intelligent routing", description: "Understand intent and direct each caller to the appropriate team or department.", outcome: "Correct team reached" },
-  { number: "05", icon: "note", title: "Message capture", description: "Collect the reason for the call and useful details for a contextual follow-up.", outcome: "Summary delivered" },
-  { number: "06", icon: "moon", title: "After-hours support", description: "Handle approved routine requests outside front-desk hours and clarify next steps.", outcome: "Always available" },
-] satisfies { number: string; icon: IconName; title: string; description: string; outcome: string; featured?: boolean }[];
+const reviews = [
+  {
+    quote:
+      "Routine appointment questions are handled immediately, so our front desk can give in-person patients their full attention.",
+    name: "Aarav Mehta",
+    role: "Clinic Operations Lead",
+    metric: "Less call waiting",
+  },
+  {
+    quote:
+      "The call summary gives our coordinators the context they need without asking patients to repeat the entire conversation.",
+    name: "Nina Thomas",
+    role: "Patient Experience Manager",
+    metric: "Clearer handoffs",
+  },
+  {
+    quote:
+      "After-hours callers still receive a calm, consistent response, and urgent requests reach the right on-call workflow.",
+    name: "Daniel Brooks",
+    role: "Healthcare Network Director",
+    metric: "24/7 coverage",
+  },
+];
 
-const trustControls = [
-  { icon: "person", title: "Role-based access", detail: "Keep workspace and patient-data access limited to the right people." },
-  { icon: "database", title: "Protected data", detail: "Use encrypted conversations, scoped integrations, and retention controls." },
-  { icon: "note", title: "Traceable activity", detail: "Review call outcomes, handoffs, and configured actions in one clear record." },
-] satisfies { icon: IconName; title: string; detail: string }[];
+const workflowSections = [
+  {
+    eyebrow: "Call Routing",
+    title: "Route every call to the right department",
+    button: "Explore call routing",
+    visual: "routing",
+    image: "/images/healthcare/feature-call-routing.png",
+    points: [
+      {
+        title: "Dynamic Routing To Different Departments",
+        body: "Automatically connect callers to the appropriate department based on their needs.",
+      },
+      {
+        title: "Smart Routing To Assigned Contacts",
+        body: "Seamlessly route calls to a user's designated contact, such as their primary doctor, using dynamic variables instead of fixed department numbers.",
+      },
+      {
+        title: "Warm Transfer To A Human Agent With Context",
+        body: "Ensure smooth handovers by transferring calls to human agents with full conversation history.",
+      },
+    ],
+  },
+  {
+    eyebrow: "Handle IVR",
+    title: "Navigate IVR systems and retrieve clinic information",
+    button: "Explore IVR navigation",
+    visual: "ivr",
+    image: "/images/healthcare/feature-ivr-navigation.png",
+    reverse: true,
+    points: [
+      {
+        title: "Press Digits To Navigate To Right Department",
+        body: "Seamlessly press digits and navigate to the correct department.",
+      },
+      {
+        title: "Retrieve Information From Pharmacy/Clinic",
+        body: "Gather essential details directly from clinic or pharmacy systems.",
+      },
+    ],
+  },
+  {
+    eyebrow: "Patient Management",
+    title: "Support patients with reliable appointment workflows",
+    button: "Explore appointment support",
+    visual: "calendar",
+    image: "/images/healthcare/feature-appointment-support.png",
+    points: [
+      {
+        title: "Seamless Appointment Booking",
+        body: "Effortlessly schedule and manage patient appointments with automated call handling.",
+      },
+      {
+        title: "Smart Notifications & Check-Ins",
+        body: "Keep patients informed with reminders and updates, while leveraging HIPAA compliant AI note taking to automatically log call details and update records securely.",
+      },
+      {
+        title: "Prescreening & Surveys",
+        body: "Ensure smooth handovers by transferring calls to human agents with full conversation history.",
+      },
+    ],
+  },
+];
 
-const proofMetrics = [
-  { value: "99.9%", label: "Platform uptime" },
-  { value: "<500ms", label: "Average latency" },
-  { value: "24/7", label: "Call availability" },
-] as const;
+const integrations = [
+  "Keragon",
+  "Jane App",
+  "Dentrix",
+  "OpenDental",
+  "Epic",
+  "Cerner",
+  "Athenahealth",
+  "DrChrono",
+  "NextGen",
+  "Kareo",
+  "eClinicalWorks",
+  "AdvancedMD",
+  "Practice Fusion",
+  "SimplePractice",
+  "TheraNest",
+];
+
+const integrationHighlights = [
+  {
+    label: "Scheduling",
+    title: "Keep appointments in sync",
+    body: "Check availability, create bookings, and return clear confirmation details during the call.",
+    accent: "text-[#75fff0] bg-[#35fbe0]/10 border-[#35fbe0]/20",
+    icon: "01",
+  },
+  {
+    label: "Patient systems",
+    title: "Share useful call outcomes",
+    body: "Send structured summaries and next steps into the tools your care team already checks.",
+    accent: "text-[#c5bdff] bg-[#8f83e8]/10 border-[#8f83e8]/20",
+    icon: "02",
+  },
+  {
+    label: "Custom workflows",
+    title: "Connect through APIs",
+    body: "Use supported integrations and webhooks to fit existing operational and routing processes.",
+    accent: "text-[#ffb17e] bg-[#ff9655]/10 border-[#ff9655]/20",
+    icon: "03",
+  },
+];
 
 const faqs = [
-  { question: "Which healthcare calls should we automate first?", answer: "Start with a frequent administrative workflow with clear rules, such as appointment requests, office information, confirmations, message capture, or call routing." },
-  { question: "Can patients book or change appointments by phone?", answer: "Yes, when the agent is connected to a supported scheduling workflow. Your team controls appointment types, availability, required details, and exceptions." },
-  { question: "Can the agent transfer a patient to a staff member?", answer: "Yes. A workflow can include a human handoff when the caller needs staff attention or the request falls outside the agent's configured boundaries." },
-  { question: "How is patient information handled?", answer: "Workflows should collect only necessary information and use appropriate access, retention, consent, and security controls. Each organization should review its deployment against applicable requirements." },
-] as const;
+  {
+    question: "Which healthcare calls can an AI voice agent handle?",
+    answer:
+      "It can manage common requests such as appointment booking, office information, reminders, basic FAQs, call routing, and after-hours intake while escalating sensitive cases to your team.",
+  },
+  {
+    question: "Can patients schedule, reschedule, or cancel appointments by phone?",
+    answer:
+      "Yes. The agent can check connected calendar availability, confirm patient preferences, update the booking, and send the outcome to the appropriate workflow.",
+  },
+  {
+    question: "What happens when a call is urgent or needs a staff member?",
+    answer:
+      "You can define routing and escalation rules so urgent, complex, or sensitive conversations are transferred to the correct department with a concise call summary.",
+  },
+  {
+    question: "How can patient information be handled securely?",
+    answer:
+      "Workflows can be configured to collect only necessary information, control access, and limit what appears in summaries. Your team should review each setup against its privacy and compliance requirements.",
+  },
+  {
+    question: "Will it work with our current EHR and phone tools?",
+    answer:
+      "The voice agent can connect with supported EHR, scheduling, CRM, and telephony tools through available integrations or APIs. Compatibility depends on your existing system and workflow needs.",
+  },
+];
 
-const headingClass = "text-[clamp(2rem,2.8vw,2.6rem)] font-semibold leading-[1.1] tracking-[-0.04em]";
-const runningCopyClass = "text-[15px] leading-7";
-
-function Icon({ name, className = "size-5" }: { name: IconName; className?: string }) {
-  const paths: Record<IconName, React.ReactNode> = {
-    calendar: <><rect x="3" y="5" width="18" height="16" rx="3" /><path d="M8 3v4M16 3v4M3 10h18M8 14h3M8 17h7" /></>,
-    chat: <><path d="M20 15a4 4 0 0 1-4 4H9l-5 3v-7a4 4 0 0 1-2-3.5V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z" /><path d="M7 9h10M7 13h6" /></>,
-    bell: <><path d="M18 9a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" /><path d="M10 22h4" /></>,
-    route: <><circle cx="5" cy="5" r="2" /><circle cx="19" cy="19" r="2" /><path d="M7 5h4a4 4 0 0 1 4 4v6a4 4 0 0 0 4 4M9 15l-4 4m0-4 4 4" /></>,
-    note: <><path d="M6 3h9l4 4v14H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" /><path d="M14 3v5h5M8 13h8M8 17h6" /></>,
-    moon: <path d="M21 15.5A9 9 0 0 1 8.5 3 9 9 0 1 0 21 15.5Z" />,
-    shield: <><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" /><path d="m9 12 2 2 4-4" /></>,
-    person: <><circle cx="12" cy="8" r="4" /><path d="M4 21a8 8 0 0 1 16 0" /></>,
-    database: <><ellipse cx="12" cy="5" rx="8" ry="3" /><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6" /></>,
-    pulse: <path d="M3 12h4l2-5 4 10 2-5h6" />,
-    phone: <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2.1Z" />,
-    webhook: <><path d="M18 16.5a4 4 0 0 1-6.5 3M6 7.5A4 4 0 0 1 12.5 4M8 19H5a3 3 0 0 1-2.6-4.5l4.5-8" /><path d="m14 13 4.5 7.5M10 11h9a3 3 0 0 0 2.6-4.5L20 4" /></>,
-  };
-  return <svg aria-hidden="true" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7">{paths[name]}</svg>;
+function CheckIcon() {
+  return (
+    <span className="grid size-8 shrink-0 place-items-center rounded-full border border-[#35fbe0]/25 bg-[#35fbe0]/10 text-xs font-bold text-[#75fff0]">
+      &#10003;
+    </span>
+  );
 }
 
-function Arrow() {
-  return <svg aria-hidden="true" className="size-4" fill="none" viewBox="0 0 20 20"><path d="M3.5 10h13m-5-5 5 5-5 5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" /></svg>;
+function Pill({ children }: { children: string }) {
+  return (
+    <span className="business-section-pill inline-flex rounded-full border border-[#35fbe0]/25 bg-[#35fbe0]/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.08em] text-[#75fff0]">
+      {children}
+    </span>
+  );
 }
 
-function Check({ lavender = false }: { lavender?: boolean } = {}) {
-  return <span className={`grid size-5 shrink-0 place-items-center rounded-full ${lavender ? "bg-[#e8e2f1] text-[#625b7d]" : "bg-teal-100 text-teal-800"}`}><svg aria-hidden="true" className="size-3" fill="none" viewBox="0 0 12 12"><path d="m2.5 6 2.1 2.1L9.5 3.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" /></svg></span>;
-}
+function WorkflowVisual({ type, image }: { type: string; image?: string }) {
+  if (image) {
+    const callout =
+      type === "routing"
+        ? ["Smart routing", "Connected to Cardiology"]
+        : type === "ivr"
+          ? ["IVR navigation", "Clinic information retrieved"]
+          : ["Appointment support", "Visit confirmed for Tuesday"];
+    const accent =
+      type === "routing"
+        ? {
+            border: "border-[#35fbe0]/30",
+            label: "text-[#75fff0]",
+            badge: "bg-[#35fbe0] text-[#031310]",
+          }
+        : type === "ivr"
+          ? {
+              border: "border-[#ff9655]/35",
+              label: "text-[#ffb17e]",
+              badge: "bg-[#ff9655] text-[#241006]",
+            }
+          : {
+              border: "border-[#8f83e8]/35",
+              label: "text-[#c5bdff]",
+              badge: "bg-[#8f83e8] text-white",
+            };
 
-function Label({ children, dark = false }: { children: string; dark?: boolean }) {
-  return <p className={`text-[11px] font-bold uppercase tracking-[0.2em] ${dark ? "text-teal-300" : "text-teal-700"}`}>{children}</p>;
+    return (
+      <div className={`group relative overflow-hidden rounded-2xl border bg-[#07100d] shadow-sm ${accent.border}`}>
+        <img
+          alt={`${callout[0]} healthcare workflow`}
+          className="block h-[390px] w-full object-cover transition duration-700 group-hover:scale-[1.025] sm:h-[410px]"
+          decoding="sync"
+          loading="lazy"
+          src={image}
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_45%,rgba(0,0,0,0.68)_100%)]" />
+        <div className="absolute inset-x-5 bottom-5 rounded-xl border border-white/10 bg-black/85 p-4 backdrop-blur-md sm:inset-x-6 sm:bottom-6">
+          <div className="flex items-center justify-between gap-5">
+            <div>
+              <p className={`text-xs font-bold uppercase tracking-[0.14em] ${accent.label}`}>{callout[0]}</p>
+              <p className="mt-2 text-base font-semibold text-white sm:text-lg">{callout[1]}</p>
+            </div>
+            <span className={`grid size-9 shrink-0 place-items-center rounded-full text-base font-bold ${accent.badge}`}>&#10003;</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const visualBackground =
+    type === "routing"
+      ? "bg-[radial-gradient(circle_at_22%_18%,#ccfbf1_0,#5eead4_24%,transparent_42%),radial-gradient(circle_at_82%_26%,#35fbe0_0,#0f766e_32%,transparent_56%),linear-gradient(135deg,#000,#07100d_45%,#35fbe0)]"
+      : type === "ivr"
+        ? "bg-[radial-gradient(circle_at_22%_18%,#ccfbf1_0,#5eead4_24%,transparent_42%),radial-gradient(circle_at_82%_26%,#35fbe0_0,#0f766e_32%,transparent_56%),linear-gradient(135deg,#000,#07100d_45%,#35fbe0)]"
+        : "bg-[radial-gradient(circle_at_22%_18%,#ccfbf1_0,#5eead4_24%,transparent_42%),radial-gradient(circle_at_82%_26%,#35fbe0_0,#0f766e_32%,transparent_56%),linear-gradient(135deg,#000,#07100d_45%,#35fbe0)]";
+
+  return (
+    <div className={`relative min-h-[500px] overflow-hidden rounded-[24px] ${visualBackground} p-6 shadow-sm sm:p-10`}>
+      <div className="absolute inset-0 opacity-25 [background-image:radial-gradient(circle,#111827_0.75px,transparent_0.9px)] [background-size:3px_3px]" />
+      {type === "routing" ? (
+        <div className="relative mx-auto min-h-[420px] max-w-[620px] text-sm text-slate-950">
+          <div className="absolute left-1/2 top-[34px] z-10 -translate-x-1/2 rounded-full bg-slate-950 px-4 py-2 text-sm font-medium text-white shadow-lg">
+            <span className="mr-2">&#9742;</span>customer call in
+          </div>
+          <div className="absolute left-1/2 top-[72px] h-[144px] w-px -translate-x-1/2 bg-white/90" />
+          <div className="absolute left-[19%] top-[216px] h-px w-[62%] bg-white/90" />
+          <div className="absolute left-[19%] top-[216px] h-[72px] w-px bg-white/90" />
+          <div className="absolute right-[19%] top-[216px] h-[72px] w-px bg-white/90" />
+          <div className="absolute left-1/2 top-[186px] size-2 -translate-x-1/2 rounded-full bg-white" />
+          <div className="absolute left-[19%] top-[214px] size-1.5 -translate-x-1/2 rounded-full bg-white" />
+          <div className="absolute right-[19%] top-[214px] size-1.5 translate-x-1/2 rounded-full bg-white" />
+          <div className="absolute left-1/2 top-[112px] z-10 flex w-[188px] -translate-x-1/2 items-center gap-3 rounded-lg bg-white p-4 shadow-xl">
+            <span className="grid size-10 shrink-0 place-items-center rounded-md bg-pink-100 text-xl font-bold text-pink-500">
+              #
+            </span>
+            <div>
+              <strong className="block text-lg font-medium leading-tight">Introduction</strong>
+              <p className="mt-1 text-sm text-slate-500">Ask their inquiry</p>
+            </div>
+          </div>
+          <div className="absolute left-[3%] top-[198px] z-10 rounded-full bg-slate-950 px-3 py-2 text-xs font-medium text-white shadow-lg">
+            User has basic question
+          </div>
+          <div className="absolute right-[3%] top-[198px] z-10 rounded-full bg-slate-950 px-3 py-2 text-xs font-medium text-white shadow-lg">
+            User has billing issues
+          </div>
+          <div className="absolute left-0 top-[288px] z-10 flex w-[208px] items-center gap-3 rounded-lg bg-white p-4 shadow-xl sm:left-[1%]">
+            <span className="grid size-10 shrink-0 place-items-center rounded-md bg-pink-100 text-xl font-bold text-pink-500">
+              #
+            </span>
+            <div>
+              <strong className="block text-lg font-medium leading-tight">FAQ</strong>
+              <p className="mt-1 text-sm text-slate-500">Answer their inquiry</p>
+            </div>
+          </div>
+          <div className="absolute right-0 top-[288px] z-10 flex w-[250px] items-center gap-3 rounded-lg bg-white p-4 shadow-xl sm:right-[1%]">
+            <span className="grid size-10 shrink-0 place-items-center rounded-md bg-cyan-100 text-lg font-bold text-[#0f766e]">
+              &#9742;
+            </span>
+            <div>
+              <strong className="block text-base font-medium leading-tight sm:text-lg">Transfer to Department</strong>
+              <p className="mt-1 text-sm text-slate-500">Ask their inquiry</p>
+            </div>
+          </div>
+        </div>
+      ) : null}
+      {type === "ivr" ? (
+        <div className="relative mx-auto min-h-[420px] max-w-[590px] text-slate-950">
+          <div className="absolute left-0 top-[184px] w-[330px] rounded-lg bg-white p-5 shadow-xl sm:left-2">
+            <p className="mb-5 flex items-center gap-3 text-sm font-medium">
+              <span className="grid grid-cols-3 gap-0.5">
+                {Array.from({ length: 9 }, (_, index) => (
+                  <span className="size-1.5 rounded-full bg-slate-400" key={index} />
+                ))}
+              </span>
+              Press Digit
+            </p>
+            <label className="grid gap-2 text-sm font-medium">
+              Name
+              <span className="truncate rounded-md border border-slate-200 px-3 py-2 font-normal text-slate-700">
+                Navigate IVR
+              </span>
+            </label>
+            <label className="mt-3 grid gap-2 text-sm font-medium">
+              Description
+              <span className="truncate rounded-md border border-slate-200 px-3 py-2 font-normal text-slate-700">
+                Press the correct digit to billing department.
+              </span>
+            </label>
+          </div>
+          <div className="absolute right-8 top-[80px] z-10 w-[240px] rounded-t-[28px] border-4 border-[#d8d5ff] border-b-0 bg-white px-8 pb-7 pt-3 shadow-2xl">
+            <div className="mb-12 flex items-center justify-between text-[10px] font-semibold">
+              <span>9:41</span>
+              <span className="h-6 w-20 rounded-full bg-black" />
+              <span className="flex items-center gap-1">
+                <span className="h-2.5 w-1 rounded-sm bg-black" />
+                <span className="h-2.5 w-1 rounded-sm bg-black" />
+                <span className="h-1.5 w-3 rounded-sm bg-black" />
+              </span>
+            </div>
+            <div className="mb-9 text-center text-3xl font-medium">0</div>
+            <div className="grid grid-cols-3 gap-3 text-center">
+              {[
+                ["1", ""],
+                ["2", "A B C"],
+                ["3", "D E F"],
+                ["4", "G H I"],
+                ["5", "J K L"],
+                ["6", "M N O"],
+                ["7", "P Q R S"],
+                ["8", "T U V"],
+                ["9", "W X Y Z"],
+                ["*", ""],
+                ["0", "+"],
+                ["#", ""],
+              ].map(([key, letters]) => (
+                <span className="grid size-12 place-items-center rounded-full bg-slate-200 text-2xl leading-none" key={key}>
+                  <span>
+                    {key}
+                    {letters ? <small className="block text-[5px] font-bold tracking-[0.22em]">{letters}</small> : null}
+                  </span>
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : null}
+      {type === "calendar" ? (
+        <div className="relative mx-auto min-h-[420px] max-w-[610px] text-slate-950">
+          <div className="absolute left-0 top-[112px] w-[420px] rounded-lg bg-white p-5 shadow-xl">
+            <p className="mb-7 flex items-center gap-4 text-sm font-medium">
+              <span className="grid size-4 place-items-center rounded-sm border border-slate-400">
+                <span className="h-px w-2 bg-slate-400" />
+              </span>
+              Book on the Calendar (Cal.com)
+            </p>
+            <div className="mb-3">
+              <p className="mb-1 text-sm font-medium">Description</p>
+              <div className="rounded-md border border-slate-200 px-3 py-2 text-sm leading-5 text-slate-700">
+                When users ask for availability, check the calendar and provide available slots.
+              </div>
+            </div>
+            {[
+              ["API key (Cal.com)", "**********"],
+              ["Event Type ID (Cal.com)", "042011"],
+              ["Timezone", "America/Los_Angeles"],
+            ].map(([label, value]) => (
+              <div className="mb-3" key={label}>
+                <p className="mb-1 text-sm font-medium">
+                  {label}
+                  {label === "Timezone" ? <span className="font-normal text-slate-500"> (Optional)</span> : null}
+                </p>
+                <div className="rounded-md border border-slate-200 px-3 py-2 text-sm text-slate-700">
+                  {value}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="absolute right-0 top-[82px] z-20 rounded-lg bg-emerald-100 px-4 py-3 text-lg font-medium text-slate-950 shadow-sm">
+            <span className="mr-3 inline-grid size-5 place-items-center rounded-full bg-emerald-500 text-xs text-white">
+              &#10003;
+            </span>
+            A new event has been scheduled.
+          </div>
+          <div className="absolute right-6 top-[146px] z-10 rounded-xl bg-white p-4 shadow-2xl">
+            <div className="mb-4 flex items-center justify-between gap-10">
+              <button className="grid size-6 place-items-center rounded-md border border-slate-200 text-slate-400" type="button">
+                &lsaquo;
+              </button>
+              <p className="text-sm font-semibold">November 2023</p>
+              <button className="grid size-6 place-items-center rounded-md border border-slate-200 text-slate-400" type="button">
+                &rsaquo;
+              </button>
+            </div>
+            <div className="grid grid-cols-7 gap-1.5 text-center text-sm">
+              {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((day) => (
+                <span className="grid size-7 place-items-center text-slate-500" key={day}>
+                  {day}
+                </span>
+              ))}
+              {["29", "30", "31", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "1", "2"].map((date, index) => (
+                <span
+                  className={`grid size-7 place-items-center rounded-md ${
+                    index === 3 ? "bg-slate-950 text-white" : index < 3 || index > 32 ? "text-slate-300" : "text-slate-950"
+                  }`}
+                  key={`${date}-${index}`}
+                >
+                  {date}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
 }
 
 export default function HealthcarePage() {
   return (
     <SiteLayout>
-      <main className="overflow-hidden bg-white text-slate-950" id="healthcare-solution-page">
-        <section className="relative overflow-hidden bg-white px-5 pb-8 pt-[72px] sm:px-8 sm:pb-10 sm:pt-20 lg:pb-12 lg:pt-24">
-          <div className="relative mx-auto grid max-w-[1280px] items-center gap-12 lg:grid-cols-[0.92fr_1.08fr] lg:gap-16">
-            <div className="max-w-[610px] healthcare-reveal">
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#d8d0e5] bg-[#faf8fc]/90 px-3.5 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[#625b7d] shadow-sm backdrop-blur-sm">
-                <span className="relative flex size-2"><span className="absolute inline-flex size-full animate-ping rounded-full bg-teal-500 opacity-50" /><span className="relative size-2 rounded-full bg-teal-600" /></span>
-                AI voice agents for healthcare
-              </div>
-              <h1 className="mt-6 text-[clamp(2.5rem,4.5vw,4.25rem)] font-semibold leading-[1.02] tracking-[-0.055em] text-slate-950">Every patient call, <span className="block text-teal-700">cared for.</span></h1>
-              <p className={`${runningCopyClass} mt-6 max-w-[560px] text-slate-900`}>Give patients a natural way to book, ask, confirm, and connect—while your care team stays focused on the people in front of them.</p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Link className="inline-flex min-h-12 items-center gap-2 rounded-full bg-teal-600 px-6 text-sm font-bold text-white shadow-[0_15px_35px_rgba(13,148,136,.2)] transition hover:-translate-y-0.5 hover:bg-teal-700" href="/contact?industry=healthcare">Plan your workflow <Arrow /></Link>
-                <Link className="inline-flex min-h-12 items-center gap-2 rounded-full border border-[#d8d0e5] bg-[#faf8fc]/90 px-6 text-sm font-bold text-slate-800 transition hover:-translate-y-0.5 hover:border-[#a89bbb] hover:bg-white" href="/login?mode=register">See how it works</Link>
-              </div>
-              <div className="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-xs font-semibold text-slate-600">{["24/7 call handling", "Configured boundaries", "Human handoff"].map((item) => <span className="flex items-center gap-2" key={item}><Check />{item}</span>)}</div>
+      <div id="business-healthcare-page" className="healthcare-page min-h-screen bg-black text-slate-50">
+        <section className="healthcare-hero-grid relative mx-auto min-h-[72vh] max-w-[1360px] items-center gap-12 px-5 pb-10 pt-28 sm:px-8 sm:pt-32">
+          <div className="healthcare-hero-copy">
+            <div className="mb-7 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-slate-400">
+              <span className="size-2 rounded-full bg-[#35fbe0] shadow-[0_0_12px_rgba(53,251,224,0.8)]" />
+              Built for modern healthcare teams
             </div>
-            <div className="relative mx-auto w-full max-w-[640px] healthcare-reveal healthcare-delay">
-              <div className="relative h-[430px] sm:h-[530px]">
-                <Image alt="Healthcare professional supporting a patient" className="healthcare-hero-image object-contain object-right-bottom" fill priority sizes="(max-width: 1024px) 100vw, 700px" src="/images/healthcare/voice-agent-hero-navy-white.png" />
+            <h1 className="healthcare-hero-heading max-w-3xl font-medium text-white">
+              AI Voice Agents for{" "}
+              <span className="healthcare-heading-accent block">
+                Healthcare
+              </span>
+            </h1>
+            <p className="mt-7 max-w-xl text-base leading-7 text-slate-300 md:text-lg md:leading-8">
+              Give patients a fast, natural way to schedule visits, get routine
+              answers, and reach the right care team—without adding more pressure
+              to your front desk.
+            </p>
+            <div className="mt-10 flex flex-wrap gap-3">
+              <Link
+                className="business-blue-cta healthcare-demo-button inline-flex min-h-12 items-center rounded-lg px-6 text-sm font-extrabold transition hover:-translate-y-0.5"
+                href="/#demo"
+              >
+                Book a free demo <span className="ml-3">&rarr;</span>
+              </Link>
+              <Link
+                className="business-blue-cta healthcare-demo-button inline-flex min-h-12 items-center rounded-lg px-6 text-sm font-extrabold transition hover:-translate-y-0.5"
+                href="/contact"
+              >
+                Contact sales
+              </Link>
+            </div>
+          </div>
+          <div className="healthcare-hero-card relative overflow-hidden rounded-2xl border border-white/10 bg-[#07100d] shadow-[0_24px_70px_rgba(0,0,0,0.4)]">
+            <div className="relative">
+              <img
+                alt="Healthcare voice agent assisting a patient call"
+                className="healthcare-hero-image block w-full object-cover object-center"
+                decoding="sync"
+                loading="eager"
+                src="/images/healthcare/voice-agent-hero.png"
+              />
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_48%,rgba(17,24,39,0.9)_100%)]" />
+            </div>
+          </div>
+        </section>
+
+        <section
+          className="bg-black py-6"
+          aria-label="Healthcare platforms"
+        >
+          <div className="mx-auto flex max-w-[1360px] flex-col items-center gap-6 px-5 sm:px-8">
+            <p className="text-center text-xs font-bold uppercase tracking-[0.22em] text-slate-500">
+              Seamless connections across leading healthcare platforms
+            </p>
+            <div className="w-full overflow-hidden">
+              <div className="healthcare-company-marquee flex w-max items-center gap-14 py-1">
+                {[...healthcareCompanies, ...healthcareCompanies].map((company, index) => (
+                  <span
+                    aria-hidden={index >= healthcareCompanies.length}
+                    className="business-company-marquee-name shrink-0 text-xl font-bold tracking-[-0.02em] md:text-2xl"
+                    key={`${company.name}-${index}`}
+                    style={{ color: company.color }}
+                  >
+                    {company.name}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
         </section>
 
-        <section aria-label="Healthcare settings" className="border-y border-slate-200/80 bg-white py-8 sm:py-10 lg:py-12">
-          <p className="mb-5 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Built for the rhythm of modern care teams</p>
-          <div className="healthcare-marquee flex w-max items-center gap-4 px-2">{[...careSettings, ...careSettings].map((item, index) => <article aria-hidden={index >= careSettings.length} className="flex h-[86px] w-72 shrink-0 items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 shadow-[0_8px_24px_rgba(15,23,42,.035)]" key={`${item.title}-${index}`}><span className="grid size-10 place-items-center rounded-xl bg-teal-50 text-teal-700"><Icon name={item.icon} /></span><div><h2 className="text-sm font-semibold text-slate-900">{item.title}</h2><p className="mt-1 line-clamp-1 text-xs text-slate-500">{item.detail}</p></div></article>)}</div>
+        <section className="overflow-hidden bg-black py-10" aria-label="Healthcare use cases">
+          <div className="healthcare-marquee flex w-max gap-5">
+            {[...photoCards, ...photoCards].map((card, index) => (
+              <article
+                aria-hidden={index >= photoCards.length}
+                className="relative h-52 w-[380px] overflow-hidden rounded-xl border border-white/10 bg-slate-900 sm:h-56 sm:w-[430px]"
+                key={`${card.title}-${index}`}
+              >
+                <img
+                  alt={card.title}
+                  className="absolute inset-0 size-full object-cover object-center"
+                  loading="lazy"
+                  src={card.image}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+                <h2 className="absolute bottom-5 left-5 text-xl font-semibold tracking-[-0.02em] text-white sm:text-2xl">
+                  {card.title}
+                </h2>
+              </article>
+            ))}
+          </div>
         </section>
 
-        <section className="border-y border-[#eee9f5] bg-white px-5 py-10 sm:px-8 sm:py-12 lg:py-14" id="healthcare-use-cases">
-          <div className="mx-auto max-w-[1200px]">
-            <div className="mx-auto max-w-3xl text-center">
-              <Label>Everyday workflows</Label>
-              <h2 className={`${headingClass} mt-4 text-slate-950`}>
-                One calm voice for the calls that fill your day.
+        <section className="bg-black">
+          <div className="mx-auto max-w-[1360px] px-5 py-14 sm:px-8 sm:py-16">
+            <Pill>Reviews</Pill>
+            <div className="mt-6 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+              <h2 className="max-w-xl text-3xl font-semibold leading-tight tracking-[-0.02em] md:text-4xl">
+                Better conversations for patients and care teams
               </h2>
-              <p className={`${runningCopyClass} mx-auto mt-5 max-w-2xl text-slate-900`}>
-                Start with one high-volume administrative workflow, then expand
-                using the same voice, connected tools, and operational rules.
+              <p className="max-w-lg text-base leading-7 text-slate-300">
+                Designed to make routine calls easier while keeping your staff in
+                control of sensitive and complex conversations.
               </p>
-
-              <div className="mt-6 flex flex-wrap justify-center gap-2.5">
-                {["Available 24/7", "Rules-based actions", "Connected outcomes"].map(
-                  (item) => (
-                    <span
-                      className="rounded-full border border-[#d8d0e5] bg-[#f7f4fb] px-3.5 py-2 text-[11px] font-semibold text-[#625b7d]"
-                      key={item}
-                    >
-                      {item}
-                    </span>
-                  ),
-                )}
-              </div>
             </div>
-
-            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {useCases.map((item) => (
+            <div className="mt-10 grid gap-4 lg:grid-cols-3">
+              {reviews.map((review, index) => (
                 <article
-                  className={`group flex min-h-[250px] flex-col rounded-[24px] border bg-white p-6 transition duration-300 hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_16px_38px_rgba(13,148,136,.10)] ${
-                    item.featured
-                      ? "border-[#cfc7df] bg-gradient-to-br from-white to-[#f7f4fb] shadow-[0_14px_36px_rgba(109,106,156,.12)] ring-1 ring-[#e8e2f1]"
-                      : "border-slate-200 shadow-[0_8px_24px_rgba(15,23,42,.04)]"
+                  className={`business-review-card flex min-h-[275px] flex-col justify-between rounded-xl border p-6 transition duration-300 hover:-translate-y-1 ${
+                    index === 0
+                      ? "border-[#35fbe0]/25 bg-[#35fbe0]/[0.045]"
+                      : index === 1
+                        ? "border-[#8f83e8]/25 bg-[#8f83e8]/[0.045]"
+                        : "border-[#ff9655]/25 bg-[#ff9655]/[0.045]"
                   }`}
-                  key={item.number}
+                  key={review.name}
                 >
-                  <div className="flex items-center justify-between">
-                    <span
-                      className={`grid size-11 place-items-center rounded-xl ${
-                        item.featured
-                          ? "bg-[#e8e2f1] text-[#625b7d]"
-                          : "bg-teal-50 text-teal-700"
-                      }`}
-                    >
-                      <Icon name={item.icon} />
-                    </span>
-
-                    <span className="font-mono text-[11px] font-semibold text-slate-500">
-                      {item.number}
-                    </span>
+                  <div>
+                    <span className="inline-flex rounded-full bg-white/[0.07] px-3 py-1.5 text-xs font-bold text-white/75">{review.metric}</span>
+                    <p className="mt-6 text-base font-medium leading-7 text-slate-100">&quot;{review.quote}&quot;</p>
                   </div>
-
-                  <h3 className="mt-6 text-lg font-semibold tracking-[-0.02em] text-slate-950">
-                    {item.title}
-                  </h3>
-
-                  <p className="mt-2 text-sm leading-6 text-slate-700">
-                    {item.description}
-                  </p>
-
-                  <div className="mt-auto flex items-center gap-2 border-t border-slate-100 pt-5 text-xs font-semibold text-teal-800">
-                    <Check />
-                    {item.outcome}
+                  <div className="mt-7 border-t border-white/10 pt-4">
+                    <h3 className="font-bold text-white">{review.name}</h3>
+                    <p className="mt-1 text-sm text-slate-400">{review.role}</p>
                   </div>
                 </article>
               ))}
@@ -189,318 +585,420 @@ export default function HealthcarePage() {
           </div>
         </section>
 
-        <section
-          className="relative overflow-hidden bg-white px-5 py-12 sm:px-8 sm:py-14 lg:py-16"
-          id="healthcare-call-journey"
-        >
-          <div className="relative mx-auto max-w-[1200px]">
-            <div className="mx-auto max-w-2xl text-center">
-              <div>
-                <Label>A call, end to end</Label>
-                <h2 className={`${headingClass} mt-3 text-slate-950`}>
-                  From hello to a confirmed outcome.
-                </h2>
-                <p className={`${runningCopyClass} mt-3 text-slate-900`}>
-                  The agent listens, follows your approved workflow, and records
-                  a clear result for your team.
-                </p>
-
-                <div className="mt-4 flex flex-wrap justify-center gap-2 text-xs font-semibold">
-                  <span className="flex items-center gap-2 rounded-full bg-[#faf8fc] px-3.5 py-2 text-[#49435f] ring-1 ring-[#d8d0e5]">
-                    <Check lavender /> Natural conversation
-                  </span>
-                  <span className="flex items-center gap-2 rounded-full bg-[#faf8fc] px-3.5 py-2 text-[#49435f] ring-1 ring-[#d8d0e5]">
-                    <Check lavender /> Clear outcome
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-6 grid gap-4 lg:grid-cols-[.88fr_1.12fr] lg:items-stretch">
-              <div className="relative min-h-[380px] self-stretch overflow-hidden bg-white lg:min-h-0">
-                <div className="absolute left-1/2 top-1/2 aspect-[1693/933] w-[126%] -translate-x-1/2 -translate-y-1/2 sm:w-[116%] lg:w-[112%]">
-                  <Image
-                    alt="Healthcare professional helping a patient through an appointment workflow"
-                    className="healthcare-feature-image object-contain object-bottom"
-                    fill
-                    sizes="(max-width: 640px) 126vw, (max-width: 1024px) 116vw, 640px"
-                    src="/images/healthcare/feature-appointment-support-plain.png"
-                  />
-                </div>
-              </div>
-
-              <HealthcareJourneyCards>
-              <article className="healthcare-journey-card flex flex-col rounded-[16px] border border-teal-200 bg-white p-3.5 shadow-[0_6px_18px_rgba(15,118,110,.05)]">
-                <div className="flex items-center justify-between">
-                  <span className="grid size-9 place-items-center rounded-lg bg-teal-100 text-teal-800">
-                    <Icon name="chat" className="size-4" />
-                  </span>
-                  <span className="rounded-full bg-teal-50 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-teal-800">
-                    Listen · 01
-                  </span>
-                </div>
-                <h3 className="mt-2 text-sm font-semibold text-slate-950">
-                  Understand the request
-                </h3>
-                <p className="mt-1 text-xs leading-5 text-slate-700">
-                  The caller explains what they need in their own words.
-                </p>
-                <div className="mt-2 grid gap-2 border-t border-slate-100 pt-2 sm:grid-cols-2">
-                  <p className="w-fit max-w-[92%] rounded-xl rounded-bl-sm bg-slate-100 px-3.5 py-2.5 text-xs leading-5 text-slate-900">
-                    I need to move tomorrow&apos;s appointment.
+        <section className="healthcare-features relative bg-black">
+          <div className="mx-auto max-w-[1360px] px-5 py-14 sm:px-8 sm:py-16">
+          <Pill>Healthcare features</Pill>
+          <h2 className="mt-6 max-w-3xl text-3xl font-semibold leading-tight tracking-[-0.02em] md:text-4xl">
+            Support every patient call with a clear next step
+          </h2>
+          <p className="mt-5 max-w-2xl text-base leading-7 text-slate-300">
+            Keep the same proven healthcare workflows, presented in a simpler and
+            more visual way for patients, front desks, and care coordinators.
+          </p>
+          <div className="mt-12 grid gap-12">
+            {workflowSections.map((section, index) => (
+              <div
+                className={`healthcare-feature-row items-center gap-10 lg:gap-14 ${
+                  index % 2 === 0 ? "feature-content-left" : "feature-image-left"
+                }`}
+                key={section.title}
+              >
+                <WorkflowVisual image={section.image} type={section.visual} />
+                <div>
+                  <p
+                    className={`text-xs font-bold uppercase tracking-[0.14em] ${
+                      section.visual === "routing"
+                        ? "text-[#75fff0]"
+                        : section.visual === "ivr"
+                          ? "text-[#ffb17e]"
+                          : "text-[#c5bdff]"
+                    }`}
+                  >
+                    {section.eyebrow}
                   </p>
-                  <p className="w-fit rounded-xl rounded-br-sm bg-teal-100 px-3.5 py-2.5 text-xs leading-5 text-teal-950 sm:ml-auto">
-                    What day works better for you?
-                  </p>
-                </div>
-              </article>
-
-              <article className="healthcare-journey-card flex flex-col rounded-[16px] border border-teal-200 bg-white p-3.5 shadow-[0_6px_18px_rgba(15,118,110,.05)]">
-                <div className="flex items-center justify-between">
-                  <span className="grid size-9 place-items-center rounded-lg bg-teal-100 text-teal-800">
-                    <Icon name="calendar" className="size-4" />
-                  </span>
-                  <span className="rounded-full bg-teal-50 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-teal-800">
-                    Act · 02
-                  </span>
-                </div>
-                <h3 className="mt-2 text-sm font-semibold text-slate-950">
-                  Follow approved rules
-                </h3>
-                <p className="mt-1 text-xs leading-5 text-slate-700">
-                  The agent checks the connected schedule and available options.
-                </p>
-                <div className="mt-2 rounded-xl border border-slate-200 bg-[#fafcfb] p-2.5">
-                  <div className="flex items-center justify-between gap-3">
-                    <strong className="text-xs text-slate-950">Thursday, 18 Sep</strong>
-                    <span className="text-[10px] font-bold text-teal-800">3 slots</span>
-                  </div>
-                  <div className="mt-2 grid grid-cols-3 gap-2">
-                    {["9:30", "10:15", "11:00"].map((time, index) => (
-                      <span
-                        className={`rounded-lg py-2 text-center text-[11px] font-semibold ${
-                          index === 1
-                            ? "border border-teal-300 bg-teal-100 text-teal-900"
-                            : "border border-slate-200 bg-white text-slate-800"
-                        }`}
-                        key={time}
-                      >
-                        {time}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </article>
-
-              <article className="healthcare-journey-card flex flex-col rounded-[16px] border border-teal-200 bg-white p-3.5 shadow-[0_6px_18px_rgba(15,118,110,.05)]">
-                <div className="flex items-center justify-between">
-                  <span className="grid size-9 place-items-center rounded-lg bg-teal-100 text-teal-800">
-                    <Icon name="note" className="size-4" />
-                  </span>
-                  <span className="rounded-full bg-teal-50 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-teal-800">
-                    Complete · 03
-                  </span>
-                </div>
-                <h3 className="mt-2 text-sm font-semibold text-slate-950">
-                  Resolve or hand off
-                </h3>
-                <p className="mt-1 text-xs leading-5 text-slate-700">
-                  The action is completed or transferred with useful context.
-                </p>
-                <div className="mt-2 rounded-xl border border-emerald-200 bg-emerald-50 p-2.5">
-                  <div className="flex items-center gap-2 text-xs font-bold text-emerald-900">
-                    <Check /> Appointment rescheduled
-                  </div>
-                  <dl className="mt-2.5 grid grid-cols-2 gap-y-1.5 text-xs">
-                    <dt className="text-slate-700">New time</dt>
-                    <dd className="text-right font-semibold text-slate-950">Thu · 10:15</dd>
-                    <dt className="text-slate-700">Summary</dt>
-                    <dd className="text-right font-semibold text-slate-950">Sent to staff</dd>
-                  </dl>
-                </div>
-              </article>
-              </HealthcareJourneyCards>
-            </div>
-          </div>
-        </section>
-
-        <section className="border-y border-[#eee9f5] bg-white px-5 py-10 sm:px-8 sm:py-12 lg:py-14" id="healthcare-reviews"><div className="mx-auto max-w-[1280px]"><HealthcareReviewCarousel /></div></section>
-
-        <section className="border-y border-teal-100 bg-white px-5 py-10 text-slate-950 sm:px-8 sm:py-12 lg:py-14" id="healthcare-safety"><div className="mx-auto grid max-w-[1280px] gap-10 lg:grid-cols-[1.18fr_.82fr] lg:items-center lg:gap-14">
-          <div className="lg:order-2"><Label>Safety & human control</Label><h2 className={`${headingClass} mt-4 text-slate-950`}>Clear boundaries. Human judgment where it matters.</h2><p className={`${runningCopyClass} mt-5 max-w-xl text-slate-800`}>Your team defines the information an agent can use, the actions it can take, and the situations that always need a person.</p><ul className="mt-8 space-y-3">{["Only approved information and connected systems", "Explicit permissions for every action", "Documented escalation paths for exceptions"].map((item) => <li className="flex items-center gap-3 rounded-xl border border-teal-100 bg-white/80 px-4 py-3 text-sm font-medium text-slate-800 shadow-sm" key={item}><Check />{item}</li>)}</ul></div>
-          <div className="rounded-[30px] border border-teal-200 bg-white p-5 shadow-[0_20px_55px_rgba(15,118,110,.12)] sm:p-7 lg:order-1"><div className="flex items-center justify-between border-b border-slate-200 pb-5"><div><p className="text-sm font-semibold text-slate-950">Conversation boundary map</p><p className="mt-1 text-xs text-slate-700">Configured by your team</p></div><span className="grid size-10 place-items-center rounded-xl bg-teal-100 text-teal-800"><Icon name="shield" /></span></div>
-            <div className="mt-6 grid gap-4 sm:grid-cols-[1fr_auto_1fr] sm:items-center"><div className="rounded-2xl border border-teal-200 bg-teal-50 p-5"><span className="text-[10px] font-bold uppercase tracking-wider text-slate-950">Routine & approved</span><div className="mt-5 space-y-3">{["Office hours", "Appointment change", "Directions"].map((x) => <div className="flex items-center gap-2 rounded-xl border border-teal-100 bg-white px-3 py-2.5 text-xs font-medium text-slate-950" key={x}><Check />{x}</div>)}</div><p className="mt-5 flex items-center gap-2 text-xs font-bold text-slate-950"><Icon name="pulse" className="size-4 text-teal-700" /> AI completes workflow</p></div><div className="hidden text-teal-700 sm:block"><Arrow /></div><div className="rounded-2xl border border-amber-200 bg-amber-50 p-5"><span className="text-[10px] font-bold uppercase tracking-wider text-slate-950">Sensitive or uncertain</span><div className="mt-5 space-y-3">{["Clinical question", "Urgent language", "Outside permissions"].map((x) => <div className="flex items-center gap-2 rounded-xl border border-amber-100 bg-white px-3 py-2.5 text-xs font-medium text-slate-950" key={x}><span className="grid size-5 place-items-center rounded-full bg-amber-100 text-slate-950">!</span>{x}</div>)}</div><p className="mt-5 flex items-center gap-2 text-xs font-bold text-slate-950"><Icon name="person" className="size-4 text-amber-700" /> Human takes over</p></div></div>
-            <p className="mt-5 text-xs leading-5 text-slate-700">Deployment controls should be reviewed against your organization’s policies and applicable requirements.</p>
-          </div>
-        </div></section>
-
-        <section className="relative overflow-hidden bg-white px-5 py-10 sm:px-8 sm:py-12 lg:py-14" id="healthcare-integrations">
-          <div className="relative mx-auto max-w-[1280px]">
-            <ConnectedOperations />
-          </div>
-        </section>
-
-        <section className="border-y border-[#eee9f5] bg-white px-5 py-10 sm:px-8 sm:py-12 lg:py-14" id="healthcare-trust">
-          <div className="mx-auto max-w-[1280px]">
-            <div className="grid gap-12 lg:grid-cols-[.9fr_1.1fr] lg:items-center lg:gap-16">
-              <div className="max-w-xl">
-                <Label>Security, compliance & proof</Label>
-                <h2 className={`${headingClass} mt-4 text-slate-950`}>
-                  Built for trusted healthcare operations.
-                </h2>
-                <p className={`${runningCopyClass} mt-5 text-slate-800`}>
-                  Protect sensitive workflows with practical controls, clear oversight, and infrastructure designed for dependable patient conversations.
-                </p>
-                <div className="mt-6 flex flex-wrap gap-2.5" aria-label="Compliance standards">
-                  {["HIPAA", "SOC 2 Type II", "GDPR ready"].map((standard) => (
-                    <span className="inline-flex items-center gap-2 rounded-full border border-[#d8d0e5] bg-[#faf8fc] px-3.5 py-2 text-[11px] font-bold uppercase tracking-[0.12em] text-[#625b7d]" key={standard}>
-                      <Icon name="shield" className="size-4 text-teal-700" />
-                      {standard}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="overflow-hidden rounded-[28px] border border-[#d8d0e5] bg-white shadow-[0_18px_46px_rgba(109,106,156,.11)]">
-                <div className="grid divide-y divide-slate-200 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-                  {proofMetrics.map((metric) => (
-                    <div className="px-5 py-6 text-center" key={metric.label}>
-                      <strong className="block text-3xl font-semibold tracking-[-0.04em] text-teal-700">{metric.value}</strong>
-                      <span className="mt-1.5 block text-xs font-medium text-slate-600">{metric.label}</span>
+                  <h3 className="mt-4 max-w-xl text-2xl font-semibold leading-snug md:text-3xl">
+                    {section.title}
+                  </h3>
+                  <div className="mt-7 border-t border-white/10 pt-7">
+                    <div className="grid gap-6">
+                      {section.points.map((point) => (
+                        <div className="flex gap-4" key={point.title}>
+                          <CheckIcon />
+                          <div>
+                            <h4 className="text-base font-bold leading-snug">
+                              {point.title}
+                            </h4>
+                            <p className="mt-1.5 max-w-xl text-sm leading-6 text-slate-300">
+                              {point.body}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-                <div className="grid gap-4 border-t border-slate-200 p-5 sm:grid-cols-3 sm:p-6">
-                  {trustControls.map((control) => (
-                    <article className="flex gap-3 rounded-2xl border border-[#eee9f5] bg-[#faf8fc] p-4" key={control.title}>
-                      <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-teal-100 text-teal-800">
-                        <Icon name={control.icon} className="size-[18px]" />
-                      </span>
-                      <div>
-                        <h3 className="text-sm font-bold text-slate-950">{control.title}</h3>
-                        <p className="mt-1.5 text-xs leading-5 text-slate-600">{control.detail}</p>
-                      </div>
-                    </article>
-                  ))}
+                  </div>
+                  <Link
+                    className={`mt-8 inline-flex min-h-11 items-center justify-center rounded-lg border px-6 text-sm font-bold transition ${
+                      section.visual === "routing"
+                        ? "border-[#35fbe0]/25 bg-[#35fbe0]/[0.06] text-[#75fff0] hover:bg-[#35fbe0]/10"
+                        : section.visual === "ivr"
+                          ? "border-[#ff9655]/25 bg-[#ff9655]/[0.06] text-[#ffb17e] hover:bg-[#ff9655]/10"
+                          : "border-[#8f83e8]/25 bg-[#8f83e8]/[0.06] text-[#c5bdff] hover:bg-[#8f83e8]/10"
+                    }`}
+                    href="/#demo"
+                  >
+                    {section.button}
+                  </Link>
                 </div>
               </div>
+            ))}
+          </div>
+          </div>
+        </section>
+
+        <section className="healthcare-integrations overflow-hidden bg-black">
+          <div className="relative mx-auto max-w-[1360px] px-5 pb-8 pt-14 sm:px-8 sm:pt-16">
+            <div className="grid gap-7 md:grid-cols-[minmax(0,1fr)_minmax(280px,0.65fr)] md:items-end">
+              <div>
+                <Pill>Integrations</Pill>
+                <h2 className="mt-6 text-3xl font-semibold leading-tight tracking-[-0.02em] md:text-4xl">
+                  Your healthcare stack, connected
+                </h2>
+              </div>
+              <p className="text-base leading-7 text-slate-300 md:pb-1">
+                Link scheduling, patient management, and provider coordination tools
+                while keeping every voice workflow secure and organized.
+              </p>
             </div>
-            <p className="mt-5 text-[11px] leading-5 text-slate-500 lg:text-right">
-              Compliance depends on your configuration and operating policies; review each deployment against applicable requirements.
+
+            <div className="mt-9 grid gap-3 md:grid-cols-3">
+              {integrationHighlights.map((highlight) => (
+                <article
+                  className="business-integration-highlight rounded-xl border border-white/10 bg-white/[0.025] p-5"
+                  key={highlight.title}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className={`grid size-9 place-items-center rounded-lg border text-[11px] font-extrabold ${highlight.accent}`}>
+                      {highlight.icon}
+                    </span>
+                    <span className="text-xs font-bold uppercase tracking-[0.1em] text-slate-400">
+                      {highlight.label}
+                    </span>
+                  </div>
+                  <h3 className="mt-4 text-base font-semibold text-white">{highlight.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-400">{highlight.body}</p>
+                </article>
+              ))}
+            </div>
+
+            <div className="healthcare-marquee-fade mt-9 overflow-hidden py-1">
+              <div className="healthcare-integration-marquee flex w-max gap-4">
+                {[...integrations, ...integrations].map((integration, index) => (
+                  <div
+                    aria-hidden={index >= integrations.length}
+                    className="healthcare-integration-card flex h-20 w-60 shrink-0 items-center gap-3 rounded-xl border border-[#35fbe0]/20 bg-black/80 px-4 shadow-[0_12px_35px_rgba(0,0,0,0.18)] backdrop-blur-sm"
+                    key={`${integration}-${index}`}
+                  >
+                    <span className="healthcare-integration-icon grid size-10 shrink-0 place-items-center rounded-lg bg-[#35fbe0]/10 text-xs font-extrabold uppercase text-[#75fff0]">
+                      {integration.slice(0, 2)}
+                    </span>
+                    <strong className="business-integration-marquee-name text-base leading-tight text-slate-100">{integration}</strong>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="business-integration-help-card mt-11 grid items-center gap-6 overflow-hidden rounded-2xl border border-white/10 bg-[linear-gradient(115deg,rgba(53,251,224,0.12),rgba(143,131,232,0.08)_55%,rgba(255,150,85,0.09))] p-6 sm:p-8 md:grid-cols-[auto_1fr_auto]">
+              <span className="grid size-12 place-items-center rounded-xl border border-[#35fbe0]/25 bg-black text-xl text-[#75fff0] shadow-[0_0_30px_rgba(53,251,224,0.12)]">
+                &#8644;
+              </span>
+              <div>
+                <h3 className="text-xl font-semibold leading-tight text-white">
+                  Need help connecting your systems?
+                </h3>
+                <p className="mt-2 text-sm leading-6 text-slate-300">
+                  Work with a certified partner for setup, migration, and workflow design.
+                </p>
+              </div>
+              <Link
+                className="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#35fbe0] px-6 text-sm font-extrabold text-[#031310] transition hover:-translate-y-0.5 hover:bg-[#75fff0]"
+                href="/contact"
+              >
+                Find a partner <span className="ml-2">&#8594;</span>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <section className="business-pricing-section bg-black" id="pricing">
+          <div className="mx-auto max-w-6xl px-6 pb-0 pt-8 lg:px-8">
+            <div className="mx-auto max-w-3xl text-center">
+              <Pill>Pricing</Pill>
+              <h2 className="mt-6 text-3xl font-semibold leading-tight tracking-[-0.02em] md:text-4xl">
+                Simple plans that scale with your calls
+              </h2>
+              <p className="mt-4 text-base leading-7 text-slate-300">
+                Start with usage-based pricing, then move to a tailored plan as your
+                care team, call volume, and deployment needs grow.
+              </p>
+            </div>
+
+            <div className="business-pricing-grid mt-10 grid gap-4 lg:grid-cols-2">
+              <article className="business-pricing-card relative overflow-hidden rounded-2xl border border-[#35fbe0]/25 bg-[#07100d] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.22)] sm:p-7">
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#35fbe0] to-transparent" />
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <span className="text-xs font-bold uppercase tracking-[0.14em] text-[#75fff0]">Start small</span>
+                    <h3 className="mt-2 text-xl font-bold">Pay as you go</h3>
+                  </div>
+                  <span className="rounded-full border border-[#35fbe0]/20 bg-[#35fbe0]/10 px-3 py-1.5 text-xs font-bold text-[#75fff0]">
+                    No setup fee
+                  </span>
+                </div>
+                <div className="mt-5 flex items-end gap-2 border-b border-white/10 pb-5">
+                  <strong className="text-3xl font-semibold tracking-[-0.04em] text-white">₹6.76–₹11.58</strong>
+                  <span className="pb-1 text-sm text-slate-400">per minute</span>
+                </div>
+                <ul className="mt-5 grid gap-3 text-sm leading-6 text-slate-200">
+                  {["₹0 to start and pay only for usage.", "60 minutes of free access.", "20 concurrent calls.", "10 free Knowledge Bases."].map((item) => (
+                    <li className="flex items-start gap-3" key={item}>
+                      <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-[#35fbe0]/15 text-xs text-[#75fff0]">&#10003;</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  className="business-pricing-button mt-7 inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-[#35fbe0]/30 bg-[#35fbe0]/10 text-sm font-bold text-[#75fff0] transition hover:bg-[#35fbe0]/15"
+                  href="/#demo"
+                >
+                  Get started
+                </Link>
+              </article>
+
+              <article className="business-pricing-card relative overflow-hidden rounded-2xl border border-[#8f83e8]/30 bg-[radial-gradient(circle_at_95%_0%,rgba(143,131,232,0.22),transparent_42%),#0a0b0d] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.22)] sm:p-7">
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#8f83e8] to-transparent" />
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <span className="text-xs font-bold uppercase tracking-[0.14em] text-[#c5bdff]">For growing teams</span>
+                    <h3 className="mt-2 text-xl font-bold">Enterprise</h3>
+                  </div>
+                  <span className="rounded-full border border-[#ff9655]/25 bg-[#ff9655]/10 px-3 py-1.5 text-xs font-bold text-[#ffb17e]">
+                    Custom plan
+                  </span>
+                </div>
+                <div className="mt-5 border-b border-white/10 pb-5">
+                  <strong className="text-3xl font-semibold tracking-[-0.04em] text-white">Let&apos;s talk</strong>
+                  <p className="mt-1 text-sm text-slate-400">Built around your volume and deployment.</p>
+                </div>
+                <ul className="mt-5 grid gap-3 text-sm leading-6 text-slate-200">
+                  {["White-glove setup for your use case.", "Dedicated solutions and premium support.", "Custom concurrency, pricing, and workflows.", "Deployment guidance for larger care teams."].map((item) => (
+                    <li className="flex items-start gap-3" key={item}>
+                      <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-[#8f83e8]/15 text-xs text-[#c5bdff]">&#10003;</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  className="business-pricing-button mt-7 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-[linear-gradient(90deg,#35fbe0,#8f83e8)] text-sm font-extrabold text-[#031310] transition hover:brightness-110"
+                  href="/contact"
+                >
+                  Talk to sales
+                </Link>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-black">
+          <div className="mx-auto max-w-4xl px-6 pb-14 pt-8 text-center lg:px-8">
+          <div className="mx-auto max-w-2xl">
+            <Pill>F.A.Q</Pill>
+            <h2 className="mt-6 text-3xl font-semibold leading-tight tracking-[-0.02em] md:text-4xl">Questions &amp; answers</h2>
+            <p className="mt-3 text-slate-300">Practical answers for planning your healthcare voice agent.</p>
+          </div>
+          <div className="mt-7 grid gap-2 text-left">
+            {faqs.map((faq) => (
+              <details className="group rounded-xl border border-white/10 bg-black px-5 py-4 transition hover:bg-white/[0.02] open:border-[#35fbe0]/25 open:bg-[#35fbe0]/[0.025]" key={faq.question}>
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-medium">
+                  {faq.question}
+                  <span className="text-[#75fff0] transition group-open:rotate-180">&#8964;</span>
+                </summary>
+                <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300">
+                  {faq.answer}
+                </p>
+              </details>
+            ))}
+            <p className="mt-5 text-center text-sm text-slate-300">
+              More questions?{" "}
+              <Link className="font-bold text-[#118778] transition hover:text-[#0e6f62] hover:underline" href="/contact">
+                Contact us
+              </Link>
             </p>
           </div>
-        </section>
-
-        <section className="bg-white px-5 py-10 sm:px-8 sm:py-12 lg:py-14" id="healthcare-faq">
-          <div className="mx-auto max-w-[1100px]">
-            <div className="mx-auto max-w-3xl text-center">
-              <Label>Questions, answered</Label>
-              <h2 className={`${headingClass} mt-4 text-slate-950`}>What care teams ask us first.</h2>
-              <p className={`${runningCopyClass} mt-5 text-slate-900`}>The practical details to consider before introducing voice automation.</p>
-            </div>
-            <div className="mx-auto mt-10 max-w-[900px] space-y-3">
-              {faqs.map((faq, index) => <details className="group rounded-2xl border border-[#e8e2f1] bg-white px-5 py-5 shadow-[0_8px_24px_rgba(109,106,156,.07)] transition open:border-[#a89bbb] open:shadow-[0_12px_30px_rgba(109,106,156,.11)] sm:px-6" key={faq.question} open={index === 0}><summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-sm font-semibold text-slate-950"><span>{faq.question}</span><span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#eee9f5] text-lg text-[#625b7d] transition group-open:rotate-45">+</span></summary><p className="mt-4 border-t border-[#eee9f5] pt-4 text-sm leading-7 text-slate-800">{faq.answer}</p></details>)}
-            </div>
           </div>
         </section>
 
-        <section className="bg-white px-5 py-10 sm:px-8 sm:py-12 lg:py-14"><div className="relative mx-auto max-w-[1100px] overflow-hidden rounded-[24px] border border-[#cfc7df] bg-white px-6 py-8 text-slate-950 shadow-[0_16px_42px_rgba(109,106,156,.12)] sm:px-9 lg:px-11 lg:py-9"><div className="relative grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center"><div className="max-w-3xl"><Label>Ready when you are</Label><h2 className="mt-2.5 text-[clamp(1.6rem,2.3vw,2.1rem)] font-semibold leading-[1.12] tracking-[-0.04em] text-slate-950">Bring us the call you want to improve.</h2><p className="mt-3 max-w-2xl text-sm leading-6 text-slate-700">We’ll map the workflow, integrations, boundaries, and human handoff with your team.</p><p className="mt-3 flex items-center gap-2 text-xs text-slate-600"><Check />Start with a focused workflow · expand at your pace</p></div><Link className="inline-flex min-h-11 w-fit items-center justify-center rounded-full bg-teal-600 px-6 text-sm font-bold text-white shadow-[0_10px_24px_rgba(15,118,110,.18)] transition hover:-translate-y-0.5 hover:bg-teal-700" href="/contact?industry=healthcare">Contact us</Link></div></div></section>
+        <section className="bg-black px-6 pb-12 pt-4 lg:px-8">
+          <div className="healthcare-contact mx-auto flex max-w-6xl flex-col items-center justify-between gap-7 overflow-hidden rounded-[24px] border border-[#35fbe0]/35 bg-[#07100d] p-8 text-center shadow-[0_24px_70px_rgba(53,251,224,0.08)] sm:p-10 md:flex-row md:text-left">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#75fff0]">Ready to get started?</p>
+              <h2 className="mt-3 text-2xl font-semibold tracking-[-0.02em] md:text-3xl">Let&apos;s improve every patient call.</h2>
+            </div>
+            <Link
+              className="inline-flex min-h-12 shrink-0 items-center rounded-lg bg-[#35fbe0] px-7 text-sm font-bold text-[#031310] transition hover:-translate-y-0.5 hover:bg-[#75fff0]"
+              href="/contact"
+            >
+              CONTACT US <span className="ml-3">&rarr;</span>
+            </Link>
+          </div>
+        </section>
 
-      </main>
-
+      </div>
       <style>{`
-        #healthcare-solution-page > section:not(:first-child):not(:last-child) { padding-block: 2rem; }
-        @media (min-width:640px) { #healthcare-solution-page > section:not(:first-child):not(:last-child) { padding-block: 2.5rem; } }
-        @media (min-width:1024px) { #healthcare-solution-page > section:not(:first-child):not(:last-child) { padding-block: 3rem; } }
-        .marketing-site:has(#healthcare-solution-page) .site-pre-footer-cta {
-          margin-top: 165px;
-          overflow: visible;
-        }
-        .marketing-site:has(#healthcare-solution-page) .site-pre-footer-cta::before {
-          content: "";
-          position: absolute;
-          z-index: 1;
-          left: 50%;
-          top: -165px;
-          width: 540px;
-          height: 540px;
-          border-radius: 50%;
+        .healthcare-page {
           background: #000;
-          transform: translateX(-50%);
-          pointer-events: none;
         }
-        .marketing-site:has(#healthcare-solution-page) .site-pre-footer-cta::after {
-          content: "↓";
-          position: absolute;
-          z-index: 2;
-          left: 50%;
-          top: -125px;
+
+        .healthcare-hero-grid,
+        .healthcare-feature-row {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr);
+        }
+
+        .healthcare-hero-heading {
+          font-size: clamp(1.85rem, 3.8vw, 3.25rem);
+          line-height: 0.98;
+          letter-spacing: -0.05em;
+        }
+
+        .healthcare-heading-accent {
+          color: #35fbe0;
+        }
+
+        .healthcare-demo-button {
+          border: 1px solid #118778;
+          background: #118778;
           color: #fff;
-          font-size: 64px;
-          font-weight: 300;
-          line-height: 1;
-          transform: translateX(-50%);
-          pointer-events: none;
+          box-shadow: 0 12px 28px rgba(17, 135, 120, 0.22);
         }
-        .marketing-site:has(#healthcare-solution-page) .site-pre-footer-cta > * {
-          position: relative;
-          z-index: 3;
+
+        .healthcare-demo-button:hover {
+          border-color: #0e6f62;
+          background: #0e6f62;
         }
-        .marketing-site:has(#healthcare-solution-page) .site-pre-footer-cta > div {
-          position: static;
+
+        .healthcare-hero-card {
+          width: min(100%, 520px);
+          justify-self: center;
+          box-shadow:
+            0 24px 70px rgba(0, 0, 0, 0.45),
+            0 0 0 1px rgba(53, 251, 224, 0.08),
+            22px -18px 80px rgba(143, 131, 232, 0.1);
         }
-        .marketing-site:has(#healthcare-solution-page) .site-pre-footer-cta > div::after {
-          content: "";
-          position: absolute;
-          z-index: 4;
-          right: 0;
-          bottom: 0;
-          left: 0;
-          height: 1px;
-          background: #3a3a3a;
-          pointer-events: none;
-        }
-        .marketing-site:has(#healthcare-solution-page) .site-pre-footer-cta > div > * {
-          position: relative;
-          z-index: 3;
-        }
+
         .healthcare-hero-image {
-          opacity: .98;
-          filter: saturate(.96) contrast(.98) drop-shadow(0 24px 34px rgba(15,118,110,.12));
-          transform: scale(1.08) translate(3%, -1.5%);
-          transform-origin: right bottom;
-          mask-image: radial-gradient(ellipse 82% 90% at 62% 50%, #000 66%, rgba(0,0,0,.9) 76%, rgba(0,0,0,.45) 86%, transparent 100%);
-          -webkit-mask-image: radial-gradient(ellipse 82% 90% at 62% 50%, #000 66%, rgba(0,0,0,.9) 76%, rgba(0,0,0,.45) 86%, transparent 100%);
+          height: clamp(340px, 41vw, 410px);
         }
-        .healthcare-feature-image {
-          opacity: .98;
-          filter: saturate(.96) contrast(.98) drop-shadow(0 24px 34px rgba(15,118,110,.12));
-          transform: scale(1.02);
-          transform-origin: center bottom;
-          mask-image: linear-gradient(to bottom, #000 0%, #000 80%, rgba(0,0,0,.92) 87%, transparent 100%);
-          -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 80%, rgba(0,0,0,.92) 87%, transparent 100%);
+
+        .healthcare-features::before {
+          content: none;
         }
-        .healthcare-marquee { animation: healthcare-marquee 30s linear infinite; will-change: transform; }
-        .healthcare-marquee:hover { animation-play-state: paused; }
-        .healthcare-reveal { animation: healthcare-rise .7s cubic-bezier(.2,.75,.3,1) both; }
-        .healthcare-delay { animation-delay: .12s; }
-        .healthcare-journey-card { opacity: 0; transform: translate3d(48px, 14px, 0) scale(.98); transition: border-color .3s ease, box-shadow .3s ease; will-change: opacity, transform; }
-        .healthcare-journey-card:hover { border-color: rgba(13,148,136,.45); box-shadow: 0 12px 30px rgba(13,148,136,.10); }
-        .healthcare-journey-cards.is-visible .healthcare-journey-card { animation: healthcare-journey-rise .75s cubic-bezier(.2,.75,.3,1) forwards; }
-        .healthcare-journey-cards.is-visible .healthcare-journey-card:nth-child(2) { animation-delay: .18s; }
-        .healthcare-journey-cards.is-visible .healthcare-journey-card:nth-child(3) { animation-delay: .36s; }
-        @keyframes healthcare-marquee { from { transform: translateX(0); } to { transform: translateX(calc(-50% - .5rem)); } }
-        @keyframes healthcare-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes healthcare-journey-rise { from { opacity: 0; transform: translate3d(48px, 14px, 0) scale(.98); } to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); } }
-        @media (max-width: 640px) {
-          .marketing-site:has(#healthcare-solution-page) .site-pre-footer-cta { margin-top: 155px; }
-          .marketing-site:has(#healthcare-solution-page) .site-pre-footer-cta::before { top: -155px; width: 540px; height: 540px; border-radius: 50%; }
-          .marketing-site:has(#healthcare-solution-page) .site-pre-footer-cta::after { top: -115px; }
-           .healthcare-hero-image { transform: scale(1.04) translate(2%, -2%); transform-origin: center bottom; }
-          .healthcare-marquee { width: auto; overflow-x: auto; padding-inline: 1.25rem; animation: none; }
-          .healthcare-marquee > :nth-child(n+6) { display: none; }
+
+        .healthcare-features > div {
+          position: relative;
+          z-index: 1;
         }
-        @media (prefers-reduced-motion: reduce) { .healthcare-marquee, .healthcare-reveal, .healthcare-journey-card { opacity: 1; transform: none; animation: none; transition: none; } }
+
+        .healthcare-integrations {
+          background: #000;
+        }
+
+        .healthcare-marquee-fade {
+          -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+          mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+        }
+
+        @media (min-width: 1024px) {
+          .healthcare-hero-grid {
+            grid-template-columns: minmax(0, 1fr) minmax(380px, 0.82fr);
+          }
+
+          .healthcare-hero-card {
+            justify-self: end;
+          }
+
+          .healthcare-feature-row {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+
+          .healthcare-feature-row.feature-content-left > :first-child {
+            order: 2;
+          }
+
+          .healthcare-feature-row.feature-content-left > :nth-child(2) {
+            order: 1;
+          }
+        }
+
+        .healthcare-integration-card:nth-child(3n + 2) {
+          border-color: rgba(143, 131, 232, 0.3);
+        }
+
+        .healthcare-integration-card:nth-child(3n + 2) .healthcare-integration-icon {
+          background: rgba(143, 131, 232, 0.12);
+          color: #c5bdff;
+        }
+
+        .healthcare-integration-card:nth-child(3n) {
+          border-color: rgba(255, 150, 85, 0.28);
+        }
+
+        .healthcare-integration-card:nth-child(3n) .healthcare-integration-icon {
+          background: rgba(255, 150, 85, 0.11);
+          color: #ffb17e;
+        }
+
+        .healthcare-contact {
+          background:
+            radial-gradient(circle at 8% 0%, rgba(53, 251, 224, 0.22), transparent 38%),
+            radial-gradient(circle at 92% 100%, rgba(72, 219, 139, 0.16), transparent 38%),
+            #07100d;
+        }
+
+        @keyframes healthcare-marquee {
+          from {
+            transform: translateX(0);
+          }
+          to {
+            transform: translateX(-50%);
+          }
+        }
+
+        .healthcare-marquee {
+          animation: healthcare-marquee 26s linear infinite;
+          will-change: transform;
+        }
+
+        .healthcare-company-marquee {
+          animation: healthcare-marquee 22s linear infinite;
+        }
+
+        .healthcare-integration-marquee {
+          animation: healthcare-marquee 38s linear infinite;
+        }
+
+        .healthcare-marquee:hover,
+        .healthcare-company-marquee:hover,
+        .healthcare-integration-marquee:hover {
+          animation-play-state: paused;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .healthcare-marquee,
+          .healthcare-company-marquee,
+          .healthcare-integration-marquee {
+            animation: none;
+          }
+        }
       `}</style>
     </SiteLayout>
   );
