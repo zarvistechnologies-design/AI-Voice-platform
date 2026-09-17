@@ -20,12 +20,12 @@ type DashboardPageHeaderProps = {
   bordered?: boolean;
 };
 
-function creditLabel(balance: number | null, currency: string) {
+function creditLabel(balance: number | null) {
   if (balance === null) return "Credits";
   try {
-    return new Intl.NumberFormat("en-US", {
+    return new Intl.NumberFormat("en-IN", {
       style: "currency",
-      currency: currency || "USD",
+      currency: "INR",
       maximumFractionDigits: balance % 1 === 0 ? 0 : 2,
     }).format(balance);
   } catch {
@@ -41,7 +41,6 @@ function DashboardWorkspaceBar() {
   );
   const [credit, setCredit] = useState<{
     balance: number;
-    currency: string;
   } | null>(null);
 
   useEffect(() => {
@@ -52,8 +51,9 @@ function DashboardWorkspaceBar() {
       .then((summary) => {
         if (!cancelled)
           setCredit({
-            balance: summary.wallet.balanceCredits,
-            currency: summary.wallet.currency,
+            balance: summary.wallet.currency.toUpperCase() === "INR"
+              ? summary.wallet.balanceCredits
+              : summary.wallet.balanceCredits * (summary.inrPerUsd ?? 96.5),
           });
       })
       .catch(() => undefined);
@@ -102,7 +102,7 @@ function DashboardWorkspaceBar() {
             </svg>
           </span>
           <span>
-            {creditLabel(credit?.balance ?? null, credit?.currency ?? "USD")}
+            {creditLabel(credit?.balance ?? null)}
           </span>
         </Link>
       </div>

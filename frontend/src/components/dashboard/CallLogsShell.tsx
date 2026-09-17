@@ -22,6 +22,7 @@ import {
   subscribeToSession,
   validateStoredSession,
 } from "@/lib/auth";
+import { billingApi } from "@/lib/billing";
 import {
   publicVoiceMessage,
   voiceApi,
@@ -92,13 +93,14 @@ function formatDate(value?: string) {
   }).format(new Date(value));
 }
 
-function money(value: number, currency = "USD") {
-  return new Intl.NumberFormat("en-US", {
+function money(value: number, currency = "USD", inrPerUsd = 96.5) {
+  const rupees = currency?.toUpperCase() === "INR" ? value : value * inrPerUsd;
+  return new Intl.NumberFormat("en-IN", {
     style: "currency",
-    currency,
-    minimumFractionDigits: Math.abs(value) < 1 ? 4 : 2,
-    maximumFractionDigits: Math.abs(value) < 1 ? 4 : 2,
-  }).format(value);
+    currency: "INR",
+    minimumFractionDigits: Math.abs(rupees) < 1 ? 4 : 2,
+    maximumFractionDigits: Math.abs(rupees) < 1 ? 4 : 2,
+  }).format(rupees);
 }
 
 function formatRoomPhone(digits: string, destinationDigits = "") {
@@ -264,6 +266,7 @@ export function CallLogsShell() {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [notice, setNotice] = useState("");
+  const [inrPerUsd, setInrPerUsd] = useState(96.5);
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [showUserSidebar, setShowUserSidebar] = useState(
     getDashboardSidebarInitialState,
@@ -329,6 +332,9 @@ export function CallLogsShell() {
       .agentSummaries()
       .then((result) => setAgents(result.agents))
       .catch(() => setAgents([]));
+    void billingApi.summary()
+      .then((summary) => setInrPerUsd(summary.inrPerUsd ?? 96.5))
+      .catch(() => undefined);
   }, [router, session]);
 
   useEffect(() => {
@@ -672,6 +678,7 @@ export function CallLogsShell() {
                             call.billing?.chargedCredits ??
                             0,
                           call.billing?.currency,
+                          inrPerUsd,
                         )}
                       </td>
                       <td className="px-4 py-4">
@@ -727,6 +734,7 @@ export function CallLogsShell() {
       {selectedCall ? (
         <CallDetailDrawer
           call={selectedCall}
+          inrPerUsd={inrPerUsd}
           onClose={() => setSelectedCall(null)}
         />
       ) : null}

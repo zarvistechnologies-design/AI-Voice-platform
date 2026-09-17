@@ -170,7 +170,7 @@ platform fee = call duration in minutes × ₹1.50
 Example:
 2-minute metered usage = ₹5.00
 Vozon platform fee       = ₹4.00
-Customer total           = ₹9.00` }, { type: "note", body: "Dashboard wallet values are stored and displayed in USD credits. Conversion uses the configured billing exchange rate at settlement." }] },
+Customer total           = ₹9.00` }, { type: "note", body: "Dashboard balances, usage, recharges, and customer-facing totals are displayed in INR. Provider costs are converted using the configured billing exchange rate." }] },
       { title: "Invoices", blocks: [{ type: "steps", items: [{ title: "Open Billing", body: "Go to Dashboard → Billing and find Invoices." }, { title: "Select a payment", body: "Review the invoice number, status, amount, and date." }, { title: "Download", body: "Choose Download invoice. Open the file and use Print / Save PDF when a PDF copy is required." }] }] },
     ],
   },

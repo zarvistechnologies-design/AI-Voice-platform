@@ -68,6 +68,9 @@ export type BillingSummary = {
     currency: string;
   };
   enterpriseMonthlyUsd?: number;
+  enterpriseMonthlyInr?: number;
+  displayCurrency?: "INR";
+  inrPerUsd?: number;
   billingModel?: "pay_as_you_go" | "white_label_partner_managed" | "white_label_customer_checkout";
   paymentProvider?: string;
   whiteLabel?: { productName: string; supportEmail: string; managedByPartner: boolean };
@@ -194,16 +197,19 @@ async function downloadInvoice(invoiceId: string) {
 export const billingApi = {
   summary: () => cachedApiRequest("billing", "/summary", 15_000, () => request<BillingSummary>("/summary")),
   transactions: (limit = 50) => request<{ transactions: BillingTransaction[] }>("/transactions?limit=" + limit),
-  topUp: (amountCredits: number) =>
+  topUp: (amountInr: number) =>
     request<RazorpayCheckoutPayload>("/top-up", {
       method: "POST",
-      body: JSON.stringify({ amountCredits }),
+      body: JSON.stringify({ amountInr }),
     }),
-  verifyTopUp: (result: { razorpay_order_id?: string; razorpay_payment_id: string; razorpay_signature: string }) =>
-    request<{ success: boolean; credits: number; invoiceId: string }>("/razorpay/verify", {
+  verifyTopUp: async (result: { razorpay_order_id?: string; razorpay_payment_id: string; razorpay_signature: string }) => {
+    const verified = await request<{ success: boolean; credits: number; invoiceId: string }>("/razorpay/verify", {
       method: "POST",
       body: JSON.stringify(result),
-    }),
+    });
+    invalidateApiCache("billing");
+    return verified;
+  },
   whiteLabelCheckout: () =>
     request<(RazorpayCheckoutPayload & { settled: false }) | { settled: true; invoice: BillingSummary["currentInvoice"] }>("/white-label/checkout", {
       method: "POST",
@@ -227,16 +233,22 @@ export const billingApi = {
       method: "POST",
       body: JSON.stringify({ plan }),
     }),
-  verifySubscription: (result: { razorpay_subscription_id?: string; razorpay_payment_id: string; razorpay_signature: string }) =>
-    request<{ success: boolean; status: string }>("/razorpay/subscription/verify", {
+  verifySubscription: async (result: { razorpay_subscription_id?: string; razorpay_payment_id: string; razorpay_signature: string }) => {
+    const verified = await request<{ success: boolean; status: string }>("/razorpay/subscription/verify", {
       method: "POST",
       body: JSON.stringify(result),
-    }),
-  cancelSubscription: (immediate = false) =>
-    request<{ subscription: { status: string } }>("/razorpay/subscription/cancel", {
+    });
+    invalidateApiCache("billing");
+    return verified;
+  },
+  cancelSubscription: async (immediate = false) => {
+    const cancelled = await request<{ subscription: { status: string } }>("/razorpay/subscription/cancel", {
       method: "POST",
       body: JSON.stringify({ immediate }),
-    }),
+    });
+    invalidateApiCache("billing");
+    return cancelled;
+  },
   downloadInvoice,
   downloadWhiteLabelInvoice: async (invoiceId: string) => {
     if (!getSession()) throw new Error("Sign in before downloading an invoice.");

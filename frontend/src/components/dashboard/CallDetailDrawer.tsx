@@ -33,13 +33,14 @@ function formatTime(value?: string) {
   return new Intl.DateTimeFormat("en-US", { timeStyle: "medium" }).format(new Date(value));
 }
 
-function money(value: number, currency = "USD") {
-  return new Intl.NumberFormat("en-US", {
+function money(value: number, currency = "USD", inrPerUsd = 96.5) {
+  const rupees = currency?.toUpperCase() === "INR" ? value : value * inrPerUsd;
+  return new Intl.NumberFormat("en-IN", {
     style: "currency",
-    currency,
-    minimumFractionDigits: Math.abs(value) < 1 ? 4 : 2,
-    maximumFractionDigits: Math.abs(value) < 1 ? 4 : 2,
-  }).format(value);
+    currency: "INR",
+    minimumFractionDigits: Math.abs(rupees) < 1 ? 4 : 2,
+    maximumFractionDigits: Math.abs(rupees) < 1 ? 4 : 2,
+  }).format(rupees);
 }
 
 function configuredStack(provider: string, model: string) {
@@ -201,7 +202,7 @@ function statusTone(status: CallRecord["status"]) {
   return "bg-amber-50 text-amber-700 ring-amber-200";
 }
 
-export function CallDetailDrawer({ call, onClose }: { call: CallRecord; onClose: () => void }) {
+export function CallDetailDrawer({ call, inrPerUsd = 96.5, onClose }: { call: CallRecord; inrPerUsd?: number; onClose: () => void }) {
   const billing = call.billing;
   const charged = billing?.estimatedChargeCredits ?? billing?.chargedCredits ?? 0;
   const cost = call.costBreakdown;
@@ -334,8 +335,8 @@ export function CallDetailDrawer({ call, onClose }: { call: CallRecord; onClose:
               ["Duration", formatDuration(call.durationSeconds)],
               ["Sentiment", call.sentimentLabel ? titleCase(call.sentimentLabel) : "—"],
               ["Language", call.language || "—"],
-              ["Total cost", money(charged, billing?.currency)],
-              ["Balance after", billing?.balanceAfterCredits != null ? money(billing.balanceAfterCredits, billing.currency) : "—"],
+              ["Total cost", money(charged, billing?.currency, inrPerUsd)],
+              ["Balance after", billing?.balanceAfterCredits != null ? money(billing.balanceAfterCredits, billing.currency, inrPerUsd) : "—"],
             ].map(([label, value]) => (
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-3" key={label}>
                 <span className="block text-xs font-medium text-slate-500">{label}</span>
@@ -413,7 +414,7 @@ export function CallDetailDrawer({ call, onClose }: { call: CallRecord; onClose:
                 <p className="mt-1 text-xs text-slate-500">Provider usage plus the Vozon ₹1.50-per-minute platform fee, prorated by seconds.</p>
               </div>
               <div className="grid gap-1 text-right text-xs">
-                <span className="text-slate-500">Customer total: <strong className="text-emerald-700">{money(cost?.customerCost ?? billing?.customerCost ?? charged ?? 0, billing?.currency || cost?.currency)}</strong></span>
+                <span className="text-slate-500">Customer total: <strong className="text-emerald-700">{money(cost?.customerCost ?? billing?.customerCost ?? charged ?? 0, billing?.currency || cost?.currency, inrPerUsd)}</strong></span>
               </div>
             </div>
             <div className="overflow-x-auto">
@@ -430,7 +431,7 @@ export function CallDetailDrawer({ call, onClose }: { call: CallRecord; onClose:
                       <td className="px-4 py-3 text-slate-600">{provider}</td>
                       <td className="px-4 py-3 text-slate-600">{usage}</td>
                       <td className="px-4 py-3 text-xs font-semibold text-slate-600" title={rateTitle(pricing)}>{rateLabel(pricing)}</td>
-                      <td className="px-4 py-3 text-slate-700">{money(providerCost, cost?.currency)}</td>
+                      <td className="px-4 py-3 text-slate-700">{money(providerCost, cost?.currency, inrPerUsd)}</td>
                     </tr>
                   ))}
                 </tbody>

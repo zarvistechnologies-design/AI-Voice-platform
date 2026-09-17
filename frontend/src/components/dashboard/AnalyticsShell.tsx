@@ -73,11 +73,12 @@ function number(value: number) {
   }).format(value);
 }
 function money(value: number) {
-  return new Intl.NumberFormat("en-US", {
+  const rupees = value * 96.5;
+  return new Intl.NumberFormat("en-IN", {
     style: "currency",
-    currency: "USD",
-    maximumFractionDigits: value < 10 ? 2 : 0,
-  }).format(value);
+    currency: "INR",
+    maximumFractionDigits: rupees < 10 ? 2 : 0,
+  }).format(rupees);
 }
 function duration(seconds: number) {
   const hours = Math.floor(seconds / 3600);

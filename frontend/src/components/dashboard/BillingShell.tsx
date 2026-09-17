@@ -9,14 +9,14 @@ import { getServerSession, getSession, logoutSession, subscribeToSession, valida
 import { billingApi, type BillingSummary } from "@/lib/billing";
 import { openRazorpayCheckout } from "@/lib/razorpayCheckout";
 
-const topUpOptions = [5, 10, 50, 100];
+const topUpOptions = [10, 100, 500, 1_000, 5_000, 10_000];
 
 function initials(name: string) {
   return name.split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
 }
 
-function money(value: number, currency = "USD") {
-  return new Intl.NumberFormat("en-US", {
+function money(value: number, currency = "INR") {
+  return new Intl.NumberFormat(currency === "INR" ? "en-IN" : "en-US", {
     style: "currency",
     currency,
     minimumFractionDigits: Math.abs(value) < 1 ? 4 : 2,
@@ -35,7 +35,7 @@ export function BillingShell() {
   const [data, setData] = useState<BillingSummary | null>(null);
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState<"" | "topup" | "cancel" | "enterprise" | `invoice:${string}`>("");
-  const [selectedTopUp, setSelectedTopUp] = useState(10);
+  const [selectedTopUp, setSelectedTopUp] = useState(1_000);
   const [showUserSidebar, setShowUserSidebar] = useState(getDashboardSidebarInitialState);
 
   const load = useCallback(async () => {
@@ -64,7 +64,11 @@ export function BillingShell() {
   }, [load, router, session]);
 
   const wallet = data?.wallet;
-  const currency = wallet?.currency || "USD";
+  const inrPerUsd = data?.inrPerUsd && data.inrPerUsd > 0 ? data.inrPerUsd : 96.5;
+  const walletCurrency = wallet?.currency?.toUpperCase() || "USD";
+  const toInr = useCallback((value: number, sourceCurrency = walletCurrency) => (
+    sourceCurrency.toUpperCase() === "INR" ? value : value * inrPerUsd
+  ), [inrPerUsd, walletCurrency]);
   const balance = wallet?.balanceCredits ?? 0;
   const lifetime = Math.max(wallet?.lifetimePurchasedCredits ?? 0, balance, 0);
   const latestPayment = data?.transactions.find((item) => item.type === "topup" || item.type === "auto_reload");
@@ -78,16 +82,16 @@ export function BillingShell() {
 
   async function purchaseCredits() {
     if (!data?.configured) {
-      setNotice("USD checkout is unavailable until Razorpay API keys are configured.");
+      setNotice("INR checkout is unavailable until Razorpay API keys are configured.");
       return;
     }
     setBusy("topup");
     try {
       const checkout = await billingApi.topUp(selectedTopUp);
-      const payment = await openRazorpayCheckout(checkout);
-      const verified = await billingApi.verifyTopUp(payment);
+      const payment = await openRazorpayCheckout({ ...checkout, displayMode: "all" });
+      await billingApi.verifyTopUp(payment);
       await load();
-      setNotice(`$${verified.credits.toFixed(2)} in USD credits was added successfully.`);
+      setNotice(`${money(checkout.amount / 100)} payment received and credits added successfully.`);
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not complete credit purchase.");
     } finally {
@@ -111,16 +115,16 @@ export function BillingShell() {
 
   async function upgradeEnterprise() {
     if (!data?.configured) {
-      setNotice("USD Autopay is unavailable until Razorpay API keys are configured.");
+      setNotice("INR Autopay is unavailable until Razorpay API keys are configured.");
       return;
     }
     setBusy("enterprise");
     try {
       const checkout = await billingApi.checkout("enterprise");
-      const payment = await openRazorpayCheckout(checkout);
+      const payment = await openRazorpayCheckout({ ...checkout, displayMode: "all" });
       await billingApi.verifySubscription(payment);
       await load();
-      setNotice(`Your $${checkout.amount / 100} USD monthly Razorpay subscription is active.`);
+      setNotice(`Your ${money(checkout.amount / 100)} monthly Razorpay subscription is active.`);
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not complete enterprise checkout.");
     } finally {
@@ -158,7 +162,7 @@ export function BillingShell() {
         <DashboardPageHeader
           eyebrow="Pay per use"
           title="Billing"
-          description="Manage credits, usage, payments, and invoices."
+          description="Manage rupee credits, usage, payments, and invoices."
           actions={
             <button className="rounded-lg border border-[#c6d4d0] bg-white px-4 py-2.5 text-sm font-semibold text-[#52645f] hover:border-[#118778] hover:text-[#0e6f62]" type="button" onClick={() => void load()} disabled={Boolean(busy)}>Refresh</button>
           }
@@ -180,17 +184,18 @@ export function BillingShell() {
 
           <section className="overflow-hidden rounded-xl border border-[#dbe4e1] bg-white">
             <div className="grid gap-6 p-5 md:grid-cols-[minmax(0,1fr)_320px] md:p-6">
-              <div><span className="app-label text-[#0e6f62]">Available balance</span><h2 className="mt-2 mb-0 text-4xl font-semibold tracking-tight text-slate-950">{money(balance, currency)}</h2><p className="app-caption mt-2 mb-0">{money(lifetime, currency)} lifetime credits purchased</p></div>
+              <div><span className="app-label text-[#0e6f62]">Available balance</span><h2 className="mt-2 mb-0 text-4xl font-semibold tracking-tight text-slate-950">{money(toInr(balance))}</h2><p className="app-caption mt-2 mb-0">{money(toInr(lifetime))} lifetime credits purchased</p><p className="app-caption mt-1 mb-0">All balances and usage are shown in Indian rupees.</p></div>
               <div className="grid gap-3 border-t border-[#dbe4e1] pt-5 md:border-t-0 md:border-l md:pt-0 md:pl-6">
                 <span className="app-label">Add credits</span>
-                <div className="grid grid-cols-4 gap-2">
-                  {topUpOptions.map((amount) => <button className={`min-h-10 rounded-lg border text-sm font-semibold ${selectedTopUp === amount ? "border-[#118778] bg-[#edf7f4] text-[#0e6f62]" : "border-[#dbe4e1] bg-white text-[#52645f] hover:border-[#118778]/60"}`} key={amount} type="button" aria-pressed={selectedTopUp === amount} onClick={() => setSelectedTopUp(amount)}>${amount}</button>)}
+                <div className="grid grid-cols-3 gap-2">
+                  {topUpOptions.map((amount) => <button className={`min-h-10 rounded-lg border text-sm font-semibold ${selectedTopUp === amount ? "border-[#118778] bg-[#edf7f4] text-[#0e6f62]" : "border-[#dbe4e1] bg-white text-[#52645f] hover:border-[#118778]/60"}`} key={amount} type="button" aria-pressed={selectedTopUp === amount} onClick={() => setSelectedTopUp(amount)}>{money(amount)}</button>)}
                 </div>
-                <button className="min-h-11 rounded-lg bg-[#118778] px-4 text-sm font-semibold text-white hover:bg-[#0e6f62] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup" || !data?.configured}>{busy === "topup" ? "Opening checkout..." : `Add $${selectedTopUp} credits`}</button>
+                <button className="min-h-11 rounded-lg bg-[#118778] px-4 text-sm font-semibold text-white hover:bg-[#0e6f62] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup" || !data?.configured}>{busy === "topup" ? "Opening checkout..." : `Add ${money(selectedTopUp)} credits`}</button>
+                <p className="app-caption m-0">18% GST is added securely at checkout.</p>
               </div>
             </div>
             <dl className="grid border-t border-[#dbe4e1] sm:grid-cols-2 lg:grid-cols-4">
-              {[["This month", money(data?.usage.chargedCredits ?? 0, currency)], ["Provider spend", money(data?.usage.providerCost ?? 0, currency)], ["Minimum to call", money(data?.creditSettings.minimumCallStartCredits ?? 0, currency)], ["Recent top-ups", `${totals.topUps} (${money(totals.net, currency)})`]].map(([label, value], index) => <div className={`px-5 py-4 ${index ? "border-t border-[#dbe4e1] sm:border-t-0 sm:border-l" : ""}`} key={label}><dt className="app-caption">{label}</dt><dd className="m-0 mt-1 text-lg font-semibold">{value}</dd></div>)}
+              {[["This month", money(toInr(data?.usage.chargedCredits ?? 0))], ["Provider spend", money(toInr(data?.usage.providerCost ?? 0, "USD"))], ["Minimum to call", money(toInr(data?.creditSettings.minimumCallStartCredits ?? 0, data?.creditSettings.currency ?? walletCurrency))], ["Recent top-ups", `${totals.topUps} (${money(toInr(totals.net))})`]].map(([label, value], index) => <div className={`px-5 py-4 ${index ? "border-t border-[#dbe4e1] sm:border-t-0 sm:border-l" : ""}`} key={label}><dt className="app-caption">{label}</dt><dd className="m-0 mt-1 text-lg font-semibold">{value}</dd></div>)}
             </dl>
           </section>
 
@@ -201,7 +206,7 @@ export function BillingShell() {
                 <div className="flex items-center justify-between gap-3"><h3 className="m-0 text-sm font-semibold">Monthly Autopay</h3><span className="rounded-full bg-[#f6f6f8] px-2.5 py-1 text-xs font-semibold capitalize text-[#52645f]">{data?.subscription.status?.replace("_", " ") ?? "inactive"}</span></div>
                 <dl className="mt-4 grid gap-3 text-sm">
                   <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Plan</dt><dd className="m-0 font-semibold capitalize">{data?.subscription.plan ?? "free"}</dd></div>
-                  <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Monthly charge</dt><dd className="m-0 font-semibold">{money(data?.enterpriseMonthlyUsd ?? 500, "USD")}</dd></div>
+                  <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Monthly charge</dt><dd className="m-0 font-semibold">{money(data?.enterpriseMonthlyInr ?? toInr(data?.enterpriseMonthlyUsd ?? 500, "USD"))}</dd></div>
                   <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Next renewal</dt><dd className="m-0 text-right font-semibold">{dateTime(data?.subscription.currentPeriodEnd)}</dd></div>
                 </dl>
                 <div className="mt-5 flex flex-wrap gap-2">
@@ -214,7 +219,7 @@ export function BillingShell() {
                 <div className="flex items-center justify-between gap-3"><div><h3 className="m-0 text-sm font-semibold">Payment method</h3><p className="app-caption mt-1 mb-0">{session.email}</p></div><span className={`rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${wallet?.lastPaymentStatus === "success" ? "bg-emerald-50 text-emerald-700" : "bg-[#f6f6f8] text-[#52645f]"}`}>{wallet?.lastPaymentStatus ?? "none"}</span></div>
                 <dl className="mt-4 grid gap-3 text-sm">
                   <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Provider</dt><dd className="m-0 font-semibold">{wallet?.paymentProvider === "razorpay" ? "Razorpay" : "Not linked"}</dd></div>
-                  <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Last payment</dt><dd className="m-0 font-semibold">{latestPayment ? money(latestPayment.amountCredits, currency) : money(wallet?.lastPaymentAmountCredits ?? 0, currency)}</dd></div>
+                  <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Last payment</dt><dd className="m-0 font-semibold">{latestPayment ? money(toInr(latestPayment.amountCredits, latestPayment.currency)) : money(toInr(wallet?.lastPaymentAmountCredits ?? 0))}</dd></div>
                   <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Last checked</dt><dd className="m-0 text-right font-semibold">{dateTime(wallet?.lastCheckedAt)}</dd></div>
                 </dl>
               </div>
@@ -226,7 +231,8 @@ export function BillingShell() {
             {data?.invoices.length ? <div className="divide-y divide-[#dbe4e1]">{data.invoices.map((invoice) => {
               const amount = (invoice.amountPaid ?? invoice.amountDue ?? 0) / 100;
               const isDownloading = busy === `invoice:${invoice._id}`;
-              return <div className="grid gap-3 px-5 py-4 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center" key={invoice._id}><div className="min-w-0"><strong className="block truncate text-sm">{invoice.invoiceNumber || "Vozon payment invoice"}</strong><span className="app-caption mt-1 block">{invoice.description || dateTime(invoice.createdAt)}</span></div><div className="sm:text-right"><strong className="block text-sm">{money(amount, invoice.currency.toUpperCase())}</strong><span className="app-caption mt-1 block capitalize">{invoice.status || "paid"} · {dateTime(invoice.createdAt)}</span></div><button className="rounded-lg border border-[#b8c8c3] px-3 py-2 text-sm font-semibold text-[#0e6f62] hover:bg-[#edf7f4] disabled:opacity-50" type="button" onClick={() => void downloadInvoice(invoice._id, invoice.invoiceNumber)} disabled={Boolean(busy)}>{isDownloading ? "Downloading..." : "Download"}</button></div>;
+              const invoiceCurrency = invoice.currency.toUpperCase();
+              return <div className="grid gap-3 px-5 py-4 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center" key={invoice._id}><div className="min-w-0"><strong className="block truncate text-sm">{invoice.invoiceNumber || "Vozon payment invoice"}</strong><span className="app-caption mt-1 block">{invoiceCurrency === "INR" && invoice.description ? invoice.description : dateTime(invoice.createdAt)}</span></div><div className="sm:text-right"><strong className="block text-sm">{money(toInr(amount, invoiceCurrency))}</strong><span className="app-caption mt-1 block capitalize">{invoice.status || "paid"} · {dateTime(invoice.createdAt)}{invoiceCurrency !== "INR" ? " · converted for display" : ""}</span></div><button className="rounded-lg border border-[#b8c8c3] px-3 py-2 text-sm font-semibold text-[#0e6f62] hover:bg-[#edf7f4] disabled:opacity-50" type="button" onClick={() => void downloadInvoice(invoice._id, invoice.invoiceNumber)} disabled={Boolean(busy)}>{isDownloading ? "Downloading..." : "Download"}</button></div>;
             })}</div> : <div className="px-5 py-8 text-center text-sm text-[#71817d]">No invoices yet.</div>}
           </section>
         </div>
