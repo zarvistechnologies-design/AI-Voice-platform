@@ -135,6 +135,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   return (
     <html lang="en" data-brand-source="white_label" data-scroll-behavior="smooth" className={fontClasses}>
       <body className="flex min-h-full flex-col bg-background text-foreground" style={brandStyle}>
+        <MetaPixel />
         <BrandProvider brand={brand}>{children}</BrandProvider>
       </body>
     </html>
