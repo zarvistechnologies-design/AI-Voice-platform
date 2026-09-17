@@ -8,8 +8,9 @@ import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader"
 import { getServerSession, getSession, logoutSession, subscribeToSession, validateStoredSession } from "@/lib/auth";
 import { billingApi, type BillingSummary } from "@/lib/billing";
 import { openRazorpayCheckout } from "@/lib/razorpayCheckout";
+import { PaymentSuccessModal, type PaymentSuccessData } from "./PaymentSuccessModal";
 
-const topUpOptions = [10, 100, 500, 1_000, 5_000, 10_000];
+const topUpOptions = [1_000, 2_000, 5_000, 10_000, 25_000, 50_000];
 
 function initials(name: string) {
   return name.split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
@@ -37,6 +38,7 @@ export function BillingShell() {
   const [busy, setBusy] = useState<"" | "topup" | "cancel" | "enterprise" | `invoice:${string}`>("");
   const [selectedTopUp, setSelectedTopUp] = useState(1_000);
   const [showUserSidebar, setShowUserSidebar] = useState(getDashboardSidebarInitialState);
+  const [successData, setSuccessData] = useState<PaymentSuccessData | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -57,11 +59,19 @@ export function BillingShell() {
     const credits = new URLSearchParams(window.location.search).get("credits");
     const timer = window.setTimeout(async () => {
       await load();
-      if (credits === "success") setNotice("Payment received. Credits appear after payment confirmation.");
+      if (credits === "success") {
+        setNotice("Payment received. Credits appear after payment confirmation.");
+        setSuccessData({
+          isOpen: true,
+          type: "topup",
+          amountInr: selectedTopUp,
+          creditsAdded: selectedTopUp,
+        });
+      }
       if (credits === "cancelled") setNotice("Credit purchase was cancelled.");
     }, 0);
     return () => window.clearTimeout(timer);
-  }, [load, router, session]);
+  }, [load, router, selectedTopUp, session]);
 
   const wallet = data?.wallet;
   const inrPerUsd = data?.inrPerUsd && data.inrPerUsd > 0 ? data.inrPerUsd : 96.5;
@@ -89,9 +99,18 @@ export function BillingShell() {
     try {
       const checkout = await billingApi.topUp(selectedTopUp);
       const payment = await openRazorpayCheckout({ ...checkout, displayMode: "all" });
-      await billingApi.verifyTopUp(payment);
+      const verification = await billingApi.verifyTopUp(payment);
       await load();
       setNotice(`${money(checkout.amount / 100)} payment received and credits added successfully.`);
+      setSuccessData({
+        isOpen: true,
+        type: "topup",
+        amountInr: checkout.amount / 100,
+        creditsAdded: selectedTopUp,
+        paymentId: payment.razorpay_payment_id,
+        invoiceId: verification?.invoiceId,
+        newBalanceCredits: toInr((wallet?.balanceCredits ?? 0) + (verification?.credits || (selectedTopUp / inrPerUsd))),
+      });
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not complete credit purchase.");
     } finally {
@@ -125,6 +144,14 @@ export function BillingShell() {
       await billingApi.verifySubscription(payment);
       await load();
       setNotice(`Your ${money(checkout.amount / 100)} monthly Razorpay subscription is active.`);
+      setSuccessData({
+        isOpen: true,
+        type: "subscription",
+        amountInr: checkout.amount / 100,
+        creditsAdded: toInr(500),
+        paymentId: payment.razorpay_payment_id,
+        newBalanceCredits: toInr((wallet?.balanceCredits ?? 0) + 500),
+      });
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not complete enterprise checkout.");
     } finally {
@@ -237,6 +264,13 @@ export function BillingShell() {
           </section>
         </div>
       </section>
+
+      <PaymentSuccessModal
+        data={successData}
+        money={money}
+        onClose={() => setSuccessData(null)}
+        onDownloadInvoice={(invoiceId) => void downloadInvoice(invoiceId, "")}
+      />
     </main>
   );
 }
