@@ -10,7 +10,7 @@ import { billingApi, type BillingSummary } from "@/lib/billing";
 import { openRazorpayCheckout } from "@/lib/razorpayCheckout";
 import { PaymentSuccessModal, type PaymentSuccessData } from "./PaymentSuccessModal";
 
-const topUpOptions = [1_000, 2_000, 5_000, 10_000, 25_000, 50_000];
+const topUpOptions = [10, 100, 500, 1_000, 2_000, 5_000];
 
 function initials(name: string) {
   return name.split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
@@ -36,7 +36,7 @@ export function BillingShell() {
   const [data, setData] = useState<BillingSummary | null>(null);
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState<"" | "topup" | "cancel" | "enterprise" | `invoice:${string}`>("");
-  const [selectedTopUp, setSelectedTopUp] = useState(1_000);
+  const [selectedTopUp, setSelectedTopUp] = useState(10);
   const [showUserSidebar, setShowUserSidebar] = useState(getDashboardSidebarInitialState);
   const [successData, setSuccessData] = useState<PaymentSuccessData | null>(null);
 
