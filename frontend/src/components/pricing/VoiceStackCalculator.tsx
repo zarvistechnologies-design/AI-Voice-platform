@@ -5,7 +5,6 @@ import { useMemo, useState, type CSSProperties } from "react";
 import {
   estimatedModelCostPerMinute,
   formatEstimatedMinuteCost,
-  formatProviderRateInr,
   minutePricingAssumptions,
   modelPricingCategories,
   type ModelPriceCategory,
@@ -38,6 +37,12 @@ function selectedModel(layer: StackLayer, value: string) {
   return { provider: category.providers[0], model: category.providers[0].models[0] };
 }
 
+function LayerIcon({ layer }: { layer: StackLayer }) {
+  if (layer === "llm") return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 5.2A3.4 3.4 0 0 0 4.5 8.4a3.3 3.3 0 0 0 .7 5.3A3.5 3.5 0 0 0 9 18.8c1.2-.1 2.2-.8 3-1.8V7c-.8-1-1.8-1.7-3-1.8ZM15 5.2a3.4 3.4 0 0 1 4.5 3.2 3.3 3.3 0 0 1-.7 5.3 3.5 3.5 0 0 1-3.8 5.1c-1.2-.1-2.2-.8-3-1.8V7c.8-1 1.8-1.7 3-1.8Z"/><path d="M9 10h3m0 0h3m-3 0v7M7.2 13h1.3m8.3 0h-1.3"/></svg>;
+  if (layer === "stt") return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6.5 11.5a5.5 5.5 0 0 0 11 0M12 17v4m-3 0h6"/></svg>;
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M4 12h2m3-5v10m4-14v18m4-14v10m3-5h2"/></svg>;
+}
+
 function ModelDropdown({
   layer,
   value,
@@ -52,11 +57,12 @@ function ModelDropdown({
   const estimate = estimatedModelCostPerMinute(layer.id, selected.model);
 
   return (
-    <label className="group grid gap-3 rounded-2xl border border-white/10 bg-black/25 p-4 transition focus-within:border-white/25 sm:p-5">
-      <span className="flex items-start justify-between gap-4">
+    <label className="pricing-model-dropdown group">
+      <span className="pricing-model-label">
+        <span className={`pricing-model-icon ${layer.id}`}><LayerIcon layer={layer.id} /></span>
         <span>
-          <span className="block text-sm font-semibold text-white/80">{layer.label}</span>
-          <span className="mt-1 block text-[11px] text-white/35">{layer.helper}</span>
+          <span className="block text-sm font-semibold">{layer.label}</span>
+          <span className="mt-1 block text-[13px]">{layer.helper}</span>
         </span>
         <span className="pricing-stack-rate rounded-full px-2.5 py-1 text-[10px] font-bold" style={{ "--stack-accent": layer.accent } as CSSProperties}>
           {formatEstimatedMinuteCost(estimate)}
@@ -65,7 +71,7 @@ function ModelDropdown({
 
       <span className="relative block">
         <select
-          className="h-12 w-full appearance-none rounded-xl border border-white/10 bg-white px-4 pr-11 text-sm font-semibold text-[#171719] outline-none transition hover:border-[#118778]/25 focus:border-[#118778]/50"
+          className="h-12 w-full appearance-none rounded-xl border bg-white px-4 pr-11 text-sm font-semibold text-[#17233a] outline-none transition"
           value={value}
           onChange={(event) => onChange(event.target.value)}
         >
@@ -82,14 +88,14 @@ function ModelDropdown({
             </optgroup>
           ))}
         </select>
-        <svg className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-white/40" fill="none" viewBox="0 0 16 16" aria-hidden="true">
+        <svg className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-[#355064]" fill="none" viewBox="0 0 16 16" aria-hidden="true">
           <path d="m4 6 4 4 4-4" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
         </svg>
       </span>
 
-      <span className="flex items-center justify-between gap-3 text-[11px]">
-        <span className="truncate text-white/35">{selected.provider.name}</span>
-        <span className="text-right text-white/50">{formatProviderRateInr(selected.model.rate)}</span>
+      <span className="pricing-model-provider">
+        <span className="truncate">◉ &nbsp;{selected.provider.name}</span>
+        <span className="text-right">{selected.model.rate}</span>
       </span>
     </label>
   );
@@ -114,20 +120,17 @@ export function VoiceStackCalculator() {
   const total = breakdown.reduce((sum, item) => sum + item.cost, 0);
 
   return (
-    <div className="pricing-stack-card mt-10 overflow-hidden rounded-[24px] border border-[#118778]/15 bg-[radial-gradient(circle_at_95%_0%,rgba(239,138,166,0.12),transparent_32%),linear-gradient(145deg,#ffffff,#f5f3ff)] shadow-[0_24px_80px_rgba(65,61,120,0.12)]">
-      <div className="grid gap-5 border-b border-white/10 px-5 py-6 sm:px-7 lg:grid-cols-[1fr_auto] lg:items-end">
+    <div className="pricing-stack-card mt-10">
+      <div className="pricing-stack-subtotal">
+        <span className="pricing-stack-layers" aria-hidden="true">▱</span>
         <div>
-          <p className="pricing-eyebrow text-[11px] font-bold uppercase tracking-[0.15em] text-[#f6c76e]">Build your voice stack</p>
-          <h3 className="mt-2 text-2xl font-semibold tracking-[-0.025em]">LLM + STT + TTS cost per minute</h3>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-white/45">Open each dropdown, choose a model, and see the combined provider cost instantly.</p>
-        </div>
-        <div className="pricing-stack-subtotal rounded-2xl border border-[#118778]/20 bg-[#118778]/[0.07] px-5 py-4 text-left lg:min-w-56 lg:text-right">
           <span className="block text-[10px] font-bold uppercase tracking-[0.13em] text-[#0e6f62]">Model stack subtotal</span>
-          <strong className="mt-1 block text-3xl font-semibold tracking-[-0.04em] text-[#454bd0]">{formatEstimatedMinuteCost(total)}</strong>
+          <strong>{formatEstimatedMinuteCost(total)}</strong>
+          <small>Updated instantly as you make changes</small>
         </div>
       </div>
 
-      <div className="grid gap-4 p-5 sm:p-7 lg:grid-cols-3">
+      <div className="pricing-model-grid">
         {layers.map((layer) => (
           <ModelDropdown
             key={layer.id}
@@ -138,21 +141,12 @@ export function VoiceStackCalculator() {
         ))}
       </div>
 
-      <div className="grid gap-5 border-t border-white/10 bg-black/20 px-5 py-5 sm:px-7 lg:grid-cols-[1fr_1.2fr]">
-        <div className="grid gap-2">
-          {breakdown.map((item) => (
-            <div className="flex items-center justify-between gap-5 text-xs" key={item.id}>
-              <span className="flex min-w-0 items-center gap-2 text-white/45">
-                <span className="pricing-stack-dot size-1.5 shrink-0 rounded-full" style={{ "--stack-accent": item.accent } as CSSProperties} aria-hidden="true" />
-                <span className="truncate">{item.model.name}</span>
-              </span>
-              <strong className="shrink-0 text-white/70">{formatEstimatedMinuteCost(item.cost)}</strong>
-            </div>
-          ))}
+      <div className="pricing-stack-summary">
+        <div className="pricing-stack-total"><span>↗</span><div><small>Combined cost per minute</small><strong>{formatEstimatedMinuteCost(total)}</strong><em>All selected providers combined</em></div></div>
+        <div className="pricing-stack-benefits">
+          <span>Transparent provider costs</span><span>Update in real time</span><span>Mix and match the best models</span><span>Scale from prototype to production</span>
         </div>
-        <p className="text-[11px] leading-5 text-white/35">
-          Estimate assumes {minutePricingAssumptions.llmInputTokens.toLocaleString()} LLM input and {minutePricingAssumptions.llmOutputTokens.toLocaleString()} output tokens, plus about {minutePricingAssumptions.ttsCharacters} spoken characters per connected minute. Provider rates are converted to INR using the configured billing rate. Platform, telephony, taxes, cached context, and add-ons are not included.
-        </p>
+        <div className="pricing-stack-assumptions"><strong>▤ &nbsp; Cost estimate details</strong><p>Estimate assumes {minutePricingAssumptions.llmInputTokens.toLocaleString()} LLM input and {minutePricingAssumptions.llmOutputTokens.toLocaleString()} output tokens, plus about {minutePricingAssumptions.ttsCharacters} spoken characters per connected minute. INR rates use an indicative ₹{minutePricingAssumptions.inrPerUsd}/USD conversion. Platform, telephony, taxes, cached context, and add-ons are not included.</p></div>
       </div>
     </div>
   );
