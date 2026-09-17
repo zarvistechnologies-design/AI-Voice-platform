@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Roboto } from "next/font/google";
+import Script from "next/script";
 import type { CSSProperties } from "react";
 
 import { BrandProvider } from "@/components/branding/BrandProvider";
@@ -77,6 +78,39 @@ function platformStructuredData() {
   }).replace(/</g, "\\u003c");
 }
 
+function MetaPixel() {
+  return (
+    <>
+      <Script
+        id="meta-pixel"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1394172395546382');
+fbq('track', 'PageView');`,
+        }}
+      />
+      <noscript>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          height="1"
+          width="1"
+          style={{ display: "none" }}
+          src="https://www.facebook.com/tr?id=1394172395546382&ev=PageView&noscript=1"
+          alt=""
+        />
+      </noscript>
+    </>
+  );
+}
+
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const brand = await requestBrandConfig();
   const fontClasses = `${roboto.variable} ${geistMono.variable} h-full scroll-smooth antialiased`;
@@ -84,6 +118,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     return (
       <html lang="en" data-scroll-behavior="smooth" className={fontClasses}>
         <body className="flex min-h-full flex-col bg-background text-foreground">
+          <MetaPixel />
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: platformStructuredData() }} />
           {children}
         </body>
