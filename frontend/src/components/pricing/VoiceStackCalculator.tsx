@@ -5,6 +5,7 @@ import { useMemo, useState, type CSSProperties } from "react";
 import {
   estimatedModelCostPerMinute,
   formatEstimatedMinuteCost,
+  formatProviderRateInr,
   minutePricingAssumptions,
   modelPricingCategories,
   type ModelPriceCategory,
@@ -95,7 +96,7 @@ function ModelDropdown({
 
       <span className="voicestack-provider">
         <span className="truncate">{selected.provider.name}</span>
-        <span className="text-right">{selected.model.rate}</span>
+        <span className="text-right">{formatProviderRateInr(selected.model.rate)}</span>
       </span>
     </label>
   );
@@ -145,7 +146,7 @@ export function VoiceStackCalculator() {
         <div className="voicestack-benefits">
           <span>Transparent provider costs</span><span>Update in real time</span><span>Mix and match the best models</span><span>Scale from prototype to production</span>
         </div>
-        <div className="voicestack-assumptions"><strong>Cost estimate details</strong><p>Estimate assumes {minutePricingAssumptions.llmInputTokens.toLocaleString()} LLM input and {minutePricingAssumptions.llmOutputTokens.toLocaleString()} output tokens, plus about {minutePricingAssumptions.ttsCharacters} spoken characters per connected minute. INR rates use an indicative ₹{minutePricingAssumptions.inrPerUsd}/USD conversion. Platform, telephony, taxes, cached context, and add-ons are not included.</p></div>
+        <div className="voicestack-assumptions"><strong>Cost estimate details</strong><p>Estimate assumes {minutePricingAssumptions.llmInputTokens.toLocaleString()} LLM input and {minutePricingAssumptions.llmOutputTokens.toLocaleString()} output tokens, plus about {minutePricingAssumptions.ttsCharacters} spoken characters per connected minute. All estimates are displayed in INR using an indicative ₹{minutePricingAssumptions.inrPerUsd} conversion rate. Platform, telephony, taxes, cached context, and add-ons are not included.</p></div>
       </div>
     </div>
   );

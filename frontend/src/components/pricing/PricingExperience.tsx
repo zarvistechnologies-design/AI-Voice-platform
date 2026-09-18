@@ -6,8 +6,8 @@ import { useMemo, useState } from "react";
 import { VoiceStackCalculator } from "@/components/pricing/VoiceStackCalculator";
 import styles from "./PricingExperience.module.css";
 
-const MINUTE_RATE_MIN = 0.07;
-const MINUTE_RATE_MAX = 0.12;
+const MINUTE_RATE_MIN = 2;
+const MINUTE_RATE_MAX = 10;
 
 const calculatorPresets = [
   { label: "Starter", calls: 100, minutes: 2 },
@@ -53,8 +53,8 @@ function ServiceIcon({ type }: { type: (typeof includedServices)[number]["icon"]
   return <svg aria-hidden="true" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 24 24">{paths[type]}</svg>;
 }
 
-function formatUsd(value: number) {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: value < 100 ? 2 : 0 }).format(value);
+function formatInr(value: number) {
+  return new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: value < 100 ? 2 : 0 }).format(value);
 }
 
 export function PricingExperience() {
@@ -101,10 +101,10 @@ export function PricingExperience() {
 
             <div className={styles.heroCard}>
               <div className={styles.cardTopline}><span>Pay as you go</span><span className={styles.liveBadge}><i /> Live pricing</span></div>
-              <div className={styles.priceRow}><strong>$0.07–$0.12</strong><span>per connected<br />minute</span></div>
+              <div className={styles.priceRow}><strong>₹2–₹10</strong><span>per connected<br />minute</span></div>
               <p>Your typical all-in estimate. The final rate reflects the exact providers and carrier route used.</p>
               <div className={styles.miniBreakdown}>
-                <div><span>Platform fee</span><strong>$0</strong></div><div><span>Minimum spend</span><strong>None</strong></div><div><span>Billing</span><strong>Per use</strong></div>
+                <div><span>Platform fee</span><strong>₹0</strong></div><div><span>Minimum spend</span><strong>None</strong></div><div><span>Billing</span><strong>Per use</strong></div>
               </div>
               <div className={styles.cardFooter}><span className={styles.wave} aria-hidden="true"><i /><i /><i /><i /><i /><i /><i /></span><span>Built for calls of every size</span></div>
             </div>
@@ -118,7 +118,7 @@ export function PricingExperience() {
           <div className={styles.includedGrid}>
             {includedServices.map((service, index) => <article className={styles.featureCard} key={service.title}><span className={styles.featureNumber}>0{index + 1}</span><span className={styles.featureIcon}><ServiceIcon type={service.icon} /></span><h3>{service.title}</h3><p>{service.text}</p></article>)}
           </div>
-          <div className={styles.billingNote}><span><CheckIcon /></span><div><strong>Clear down to every call.</strong><p>Your dashboard shows duration, services used, and the final cost for each completed call. Prices are shown in USD and taxes are excluded.</p></div><Link href="/login?mode=register">Explore the dashboard <ArrowIcon /></Link></div>
+          <div className={styles.billingNote}><span><CheckIcon /></span><div><strong>Clear down to every call.</strong><p>Your dashboard shows duration, services used, and the final cost for each completed call. Prices are shown in INR and taxes are excluded.</p></div><Link href="/login?mode=register">Explore the dashboard <ArrowIcon /></Link></div>
         </div>
       </section>
 
@@ -150,8 +150,8 @@ export function PricingExperience() {
             </div>
 
             <aside className={styles.estimate} id="pricing-estimate" aria-live="polite">
-              <span className={styles.estimateLabel}>Estimated monthly cost</span><strong>{formatUsd(estimate.minimum)}<i>–</i>{formatUsd(estimate.maximum)}</strong><p>before taxes, with no recurring platform fee</p>
-              <div className={styles.estimateStats}><div><span>Connected minutes</span><strong>{estimate.totalMinutes.toLocaleString("en-US", { maximumFractionDigits: 1 })}</strong></div><div><span>Estimated rate</span><strong>$0.07–$0.12</strong></div></div>
+              <span className={styles.estimateLabel}>Estimated monthly cost</span><strong>{formatInr(estimate.minimum)}<i>–</i>{formatInr(estimate.maximum)}</strong><p>before taxes, with no recurring platform fee</p>
+              <div className={styles.estimateStats}><div><span>Connected minutes</span><strong>{estimate.totalMinutes.toLocaleString("en-IN", { maximumFractionDigits: 1 })}</strong></div><div><span>Estimated rate</span><strong>₹2–₹10</strong></div></div>
               <div className={styles.equation}><span>{estimate.calls.toLocaleString()} calls</span><b>×</b><span>{estimate.minutes} min</span><b>=</b><span>{estimate.totalMinutes.toLocaleString()} min</span></div>
               <small>Actual cost varies with your carrier route, AI model, transcription provider, and voice.</small>
             </aside>
