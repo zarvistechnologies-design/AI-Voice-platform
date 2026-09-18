@@ -5,7 +5,7 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 
 import { API_URL } from "@/lib/apiBase";
 
-const salesEmail = "[hello@vozon.ai](mailto:hello@vozon.ai)";
+const salesEmail = "hello@vozon.ai";
 
 type IconName =
 | "arrow"
@@ -264,8 +264,8 @@ Home </Link>
           onSubmit={handleSubmit}
         >
           <div className="mb-6 flex items-center gap-4 border-b border-slate-200 pb-5 lg:mb-5 lg:pb-4">
-            <span className="grid size-13 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-500 text-black shadow-[0_12px_30px_rgba(13,148,136,0.2)] lg:size-11 lg:rounded-xl">
-              <Icon className="size-6" name="send" />
+            <span className="grid size-13 shrink-0 place-items-center rounded-2xl border border-teal-200 bg-teal-50 shadow-[0_12px_30px_rgba(17,135,120,0.14)] lg:size-11 lg:rounded-xl">
+              <Icon className="size-6 text-[#118778]" name="send" />
             </span>
 
             <div>

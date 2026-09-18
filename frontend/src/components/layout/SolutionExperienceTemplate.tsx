@@ -193,24 +193,14 @@ export function SolutionExperienceTemplate({ content }: { content: SolutionExper
         </section>
 
         <section className="bg-white px-5 pb-14 pt-5 sm:px-8 lg:pb-16"><div className="mx-auto grid max-w-[1100px] gap-5 rounded-[24px] border border-[#cfc7df] bg-white px-6 py-8 shadow-[0_16px_42px_rgba(109,106,156,.12)] sm:px-9 lg:grid-cols-[1fr_auto] lg:items-center"><div><Label>Ready when you are</Label><h2 className="mt-2.5 text-[clamp(1.6rem,2.3vw,2.1rem)] font-semibold tracking-[-0.04em]">Bring us the {content.title.toLowerCase()} call you want to improve.</h2><p className="mt-3 text-sm leading-6 text-slate-700">We&apos;ll map the workflow, integrations, boundaries, and human handoff with your team.</p></div><Link className="inline-flex min-h-11 w-fit items-center rounded-full bg-teal-700 px-6 text-sm font-bold text-white hover:bg-teal-800" href={`/contact?solution=${content.id}`}>Contact us</Link></div></section>
-        <section aria-hidden="true" className="solution-footer-cap">
-          <div className="solution-footer-cap-circle">
-            <svg className="solution-footer-cap-arrow" fill="none" viewBox="0 0 32 32">
-              <path d="M16 5v20M8 17l8 8 8-8" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
-            </svg>
-          </div>
-        </section>
       </main>
 
       <style>{`
-        .solution-shared > section:not(:first-child):not(:nth-last-child(-n+2)) { padding-block: 2rem; }
-        @media (min-width:640px) { .solution-shared > section:not(:first-child):not(:nth-last-child(-n+2)) { padding-block: 2.5rem; } }
-        @media (min-width:1024px) { .solution-shared > section:not(:first-child):not(:nth-last-child(-n+2)) { padding-block: 3rem; } }
+        .solution-shared > section:not(:first-child):not(:last-child) { padding-block: 2rem; }
+        @media (min-width:640px) { .solution-shared > section:not(:first-child):not(:last-child) { padding-block: 2.5rem; } }
+        @media (min-width:1024px) { .solution-shared > section:not(:first-child):not(:last-child) { padding-block: 3rem; } }
         .solution-hero-image { display:block; background:#fff; opacity:.98; filter:saturate(.96) contrast(.98) drop-shadow(0 24px 34px rgba(15,118,110,.12)); transform:scale(1.08) translate(3%,-1.5%); transform-origin:right bottom; mix-blend-mode:multiply; mask-image:radial-gradient(ellipse 82% 90% at 62% 50%,#000 66%,rgba(0,0,0,.9) 76%,rgba(0,0,0,.45) 86%,transparent 100%); -webkit-mask-image:radial-gradient(ellipse 82% 90% at 62% 50%,#000 66%,rgba(0,0,0,.9) 76%,rgba(0,0,0,.45) 86%,transparent 100%); }
         .solution-feature-image { display:block; background:#fff; z-index:1; opacity:.98; filter:saturate(.96) contrast(.98) drop-shadow(0 24px 34px rgba(15,118,110,.12)); transform:scale(1.02); transform-origin:center bottom; mix-blend-mode:multiply; mask-image:linear-gradient(to bottom,#000 0%,#000 80%,rgba(0,0,0,.92) 87%,transparent 100%); -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 80%,rgba(0,0,0,.92) 87%,transparent 100%); }
-        .solution-footer-cap { position:relative; height:165px; overflow:hidden; background:#fff; }
-        .solution-footer-cap-circle { position:absolute; bottom:-375px; left:50%; display:flex; width:540px; height:540px; transform:translateX(-50%); justify-content:center; border-radius:50%; background:#000; padding-top:44px; color:#fff; }
-        .solution-footer-cap-arrow { width:46px; height:46px; }
         .solution-marquee { animation:solution-marquee 30s linear infinite; will-change:transform; }
         .solution-marquee:hover { animation-play-state:paused; }
         .solution-reveal { animation:solution-rise .7s cubic-bezier(.2,.75,.3,1) both; }
