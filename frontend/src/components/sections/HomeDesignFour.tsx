@@ -428,7 +428,10 @@ export function HomeDesignFour() {
             <span><i>✓</i>Multilingual speech</span>
             <span><i>✓</i>Flexible voice stack</span>
           </div>
-          <h1>One platform. Every niche. Voice<br className="design-four-desktop-break" /> agents that already speak your <strong>Industrial language.</strong></h1>
+          <h1>
+            One platform. Every niche. Voice<br className="design-four-desktop-break" /> agents that already speak your{' '}
+            <strong className="design-four-hero__title-green">Industrial language.</strong>
+          </h1>
           <div className="design-four-trust-pill">Trusted by <strong>100+</strong> teams building the future of <strong>customer conversations</strong></div>
           <div className="design-four-hero__ambient" aria-hidden="true">
             <i /><i /><i />

@@ -137,6 +137,10 @@
   line-height: 1.05
 }
 
+.home-design-four__hero h1 .design-four-hero__title-green {
+  color: #00a878;
+}
+
 .design-four-phone {
   position: relative;
   z-index: 4;
