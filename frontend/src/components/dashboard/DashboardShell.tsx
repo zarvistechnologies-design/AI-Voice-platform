@@ -1039,6 +1039,41 @@ const geminiRealtimeModels = [
   "gemini-2.5-pro-native-audio",
   "gemini-2.0-flash-exp",
 ];
+const geminiRealtimeVoices = [
+  "Puck",
+  "Charon",
+  "Kore",
+  "Fenrir",
+  "Aoede",
+  "Leda",
+  "Orus",
+  "Zephyr",
+  "Achernar",
+  "Algenib",
+  "Algieba",
+  "Alkaid",
+  "Alnilam",
+  "Alphard",
+  "Alpheratz",
+  "Altair",
+  "Autonoe",
+  "Callirrhoe",
+  "Despina",
+  "Enceladus",
+  "Erinome",
+  "Gacrux",
+  "Iapetus",
+  "Laomedeia",
+  "Pulcherrima",
+  "Rasalgethi",
+  "Sadachbia",
+  "Sadaltager",
+  "Schedar",
+  "Sulafat",
+  "Umbriel",
+  "Vindemiatrix",
+  "Zubenelgenubi",
+];
 const geminiRealtimeModelAliases: Record<string, string> = {
   "gemini-3.1-pro-live-preview": "gemini-3.1-flash-live-preview",
   "gemini-2.5-pro-native-audio": "gemini-2.5-flash-native-audio",
@@ -1248,7 +1283,7 @@ const fallbackCatalog: ModelCatalog = {
       label: "Gemini Live",
       configured: true,
       models: geminiRealtimeModels,
-      voices: ["Aoede"],
+      voices: geminiRealtimeVoices,
     },
   ],
   llm: [
@@ -1315,7 +1350,7 @@ const fallbackCatalog: ModelCatalog = {
       label: "Gemini",
       configured: true,
       models: geminiTtsModels,
-      voices: ["Aoede"],
+      voices: geminiRealtimeVoices,
     },
     {
       provider: "sarvam",
@@ -7996,7 +8031,10 @@ function mapBackendAgent(agent: BackendAgent): VoiceAgent {
       (agent.multilingualEnabled ?? legacyMultilingual) &&
       (agent.languageSwitchingEnabled ?? legacyMultilingual),
     supportedLanguages,
-    voice: agent.voice || "Puck",
+    voice:
+      (agent.pipelineMode === "realtime" || !agent.pipelineMode) && realtimeProvider === "gemini"
+        ? coerceVoice(agent.voice, geminiRealtimeVoices, "Puck")
+        : agent.voice || "Puck",
     pipelineMode: agent.pipelineMode ?? "realtime",
     realtimeProvider,
     realtimeModel: normalizeRealtimeModel(
