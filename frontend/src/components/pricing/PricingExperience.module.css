@@ -10,7 +10,11 @@
 }
 
 .page * { box-sizing: border-box; }
-.page > section { background-color: #fff !important; }
+:global(.website-content) .page.page,
+:global(.website-content) .page.page > section {
+  background-color: #fff !important;
+  background-image: none !important;
+}
 .page :is(section, nav) { scroll-margin-top: 138px; }
 
 .shell {
@@ -146,7 +150,7 @@
 
 .section { padding: 46px 0; background: #fff; }
 .tintedSection { border-block: 1px solid #e8eeec; background: #fff; }
-.stackSection { padding-block: 42px; }
+.stackSection { padding-block: 42px; background: #fff !important; }
 .includedSection { padding-block: 38px; }
 .includedSection .sectionHeading h2 { font-size: clamp(1.75rem, 2.55vw, 2.55rem); }
 .includedSection .sectionHeading p { margin-top: 9px; font-size: 12px; }
@@ -175,15 +179,15 @@
 .stackWrapper :global(.voicestack-subtotal > div) { display: grid; width: 100%; grid-template-columns: 1fr auto; align-items: center; gap: 3px 18px; }
 .stackWrapper :global(.voicestack-subtotal strong) { display: block; grid-column: 2; grid-row: 1 / span 2; margin: 0; color: var(--teal-dark); font-size: 21px; letter-spacing: -.04em; }
 .stackWrapper :global(.voicestack-subtotal small) { color: var(--muted); font-size: 9px; }
-.stackWrapper :global(.voicestack-grid) { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.stackWrapper :global(.voicestack-model) { display: grid; min-height: 0; gap: 11px; border: 1px solid var(--line); border-radius: 13px; background: #fff; padding: 15px; transition: border-color .18s ease; }
+.stackWrapper :global(.voicestack-grid) { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.stackWrapper :global(.voicestack-model) { display: grid; min-height: 190px; align-content: center; gap: 17px; border: 1px solid var(--line); border-radius: 16px; background: #fff !important; padding: 24px; transition: border-color .18s ease; }
 .stackWrapper :global(.voicestack-model:hover) { border-color: #b7d4ce; }
 .stackWrapper :global(.voicestack-icon) { display: none; }
 .stackWrapper :global(.voicestack-label) { display: grid; grid-template-columns: 1fr auto; align-items: start; gap: 8px; color: var(--ink); }
 .stackWrapper :global(.voicestack-label > span > span:first-child) { font-size: 12px !important; }
 .stackWrapper :global(.voicestack-label > span > span:last-child) { margin-top: 2px !important; color: var(--muted); font-size: 10px !important; }
 .stackWrapper :global(.voicestack-rate) { color: var(--teal-dark); background: #e9f5f2; font-size: 9px !important; }
-.stackWrapper :global(select) { height: 42px; border-color: #d7e1de !important; border-radius: 9px !important; background: #f8faf9 !important; font-size: 11px !important; }
+.stackWrapper :global(select) { height: 52px; border-color: #d7e1de !important; border-radius: 11px !important; background: #f8faf9 !important; font-size: 12px !important; }
 .stackWrapper :global(.voicestack-provider) { display: flex; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 10px; }
 .stackWrapper :global(.voicestack-summary) { display: grid; grid-template-columns: .55fr 1fr; gap: 16px; border: 1px solid var(--line); border-radius: 13px; background: #fff; padding: 16px; }
 .stackWrapper :global(.voicestack-total small), .stackWrapper :global(.voicestack-total em) { display: block; color: var(--muted); font-size: 11px; font-style: normal; }
@@ -193,6 +197,10 @@
 .stackWrapper :global(.voicestack-assumptions) { grid-column: 1 / -1; border-top: 1px solid var(--line); padding: 12px 0 0; }
 .stackWrapper :global(.voicestack-assumptions strong) { font-size: 11px; }.stackWrapper :global(.voicestack-assumptions p) { margin: 5px 0 0; color: var(--muted); font-size: 10px; line-height: 1.55; }
 
+.page .section.calculatorSection {
+  background-color: #fff !important;
+  background-image: none !important;
+}
 .calculator { display: grid; grid-template-columns: 1.1fr .9fr; margin-top: 28px; overflow: hidden; border: 1px solid var(--line); border-radius: 21px; background: #fff; box-shadow: 0 18px 45px rgba(21, 48, 42, .07); }
 .calculatorForm { padding: clamp(27px, 4vw, 48px); }
 .formHeader { display: flex; align-items: center; gap: 13px; }

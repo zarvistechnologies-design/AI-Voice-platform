@@ -122,14 +122,14 @@ export function PricingExperience() {
         </div>
       </section>
 
-      <section className={`${styles.section} ${styles.tintedSection} ${styles.stackSection}`} id="voice-stack">
+      <section className={`${styles.section} ${styles.stackSection}`} id="voice-stack">
         <div className={styles.shell}>
           <header className={styles.sectionHeading}><span className={styles.kicker}>Make it yours</span><h2>Build your ideal voice stack.</h2><p>Mix and match language, transcription, and voice models. Your estimate updates as you choose.</p></header>
           <div className={styles.stackWrapper}><VoiceStackCalculator /></div>
         </div>
       </section>
 
-      <section className={styles.section} id="calculator">
+      <section className={`${styles.section} ${styles.calculatorSection}`} id="calculator">
         <div className={styles.shell}>
           <header className={styles.sectionHeading}><span className={styles.kicker}>Plan with confidence</span><h2>Estimate your monthly usage.</h2><p>Use a quick scenario or enter your own call volume. You will only be billed for actual usage.</p></header>
           <div className={styles.calculator}>
