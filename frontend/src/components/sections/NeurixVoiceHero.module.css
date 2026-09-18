@@ -1,0 +1,597 @@
+.heroWrapper {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding: 132px 24px 24px;
+  background: 
+    radial-gradient(ellipse at 50% 10%, rgba(16, 141, 127, 0.08) 0%, rgba(45, 212, 191, 0.05) 30%, transparent 65%),
+    radial-gradient(ellipse at 85% 25%, rgba(6, 182, 212, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 15% 35%, rgba(13, 120, 107, 0.05) 0%, transparent 50%),
+    #ffffff;
+  color: #0f172a;
+}
+
+.ambientGlow {
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(1050px, 94vw);
+  height: 480px;
+  background: radial-gradient(ellipse at center, rgba(16, 141, 127, 0.12) 0%, rgba(45, 212, 191, 0.08) 45%, transparent 70%);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Header Content */
+.headerContent {
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: #f0fdfa;
+  border: 1px solid #ccfbf1;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0d786b;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(13, 120, 107, 0.08);
+}
+
+.badgeDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #108d7f;
+  box-shadow: 0 0 0 3px rgba(16, 141, 127, 0.25);
+}
+
+.headline {
+  font-size: clamp(40px, 5.2vw, 68px);
+  font-weight: 750;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  color: #0f172a;
+  margin: 0 0 20px;
+}
+
+.headlineGradient {
+  background: linear-gradient(135deg, #0d786b 0%, #108d7f 60%, #14b8a6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  max-width: 680px;
+  margin: 0 auto 32px;
+  font-size: clamp(16px, 1.8vw, 19px);
+  line-height: 1.6;
+  color: #52665f;
+  font-weight: 450;
+}
+
+/* Form Pill */
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.inputGroup {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  padding: 6px 8px 6px 20px;
+  border-radius: 999px;
+  box-shadow: 
+    0 12px 30px -5px rgba(13, 120, 107, 0.08),
+    0 0 0 1px rgba(204, 251, 241, 0.95);
+  transition: all 0.25s ease;
+  width: min(480px, 92vw);
+}
+
+.inputGroup:focus-within {
+  box-shadow: 
+    0 16px 36px -5px rgba(16, 141, 127, 0.18),
+    0 0 0 2px rgba(16, 141, 127, 0.45);
+}
+
+.emailInput {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 15px;
+  color: #0f172a;
+  outline: none;
+  min-width: 0;
+}
+
+.emailInput::placeholder {
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+.demoButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #0d786b 0%, #108d7f 60%, #14b8a6 100%);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 22px rgba(13, 120, 107, 0.35);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.demoButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(13, 120, 107, 0.45);
+  filter: brightness(1.05);
+}
+
+.demoButton:active {
+  transform: translateY(1px);
+}
+
+.microCopy {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.microCopy span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.microCopy i {
+  color: #108d7f;
+  font-style: normal;
+  font-weight: 700;
+}
+
+/* 3-Cluster Showcase Grid */
+.showcaseCluster {
+  display: grid;
+  grid-template-columns: 1fr 1.35fr 1fr;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+/* Common Card Styles */
+.cardBase {
+  background: #ffffff;
+  border-radius: 28px;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 
+    0 20px 45px -10px rgba(0, 0, 0, 0.05),
+    0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* LEFT CLUSTER: Voice Agent Cards */
+.leftCluster {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 10px;
+}
+
+.agentCardPrimary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #ffffff;
+  padding: 16px 20px;
+  border-radius: 20px;
+  border: 1px solid rgba(204, 251, 241, 0.95);
+  box-shadow: 0 10px 25px -4px rgba(13, 120, 107, 0.06);
+  text-align: left;
+  transform: translateX(-10px);
+}
+
+.agentHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.agentAvatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: #f0fdfa;
+  border: 1px solid #ccfbf1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0d786b;
+  font-size: 20px;
+}
+
+.agentInfo h4 {
+  margin: 0 0 2px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.agentInfo p {
+  margin: 0;
+  font-size: 12px;
+  color: #108d7f;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pulseDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
+}
+
+.dialogueBubble {
+  background: #f8fafc;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #334155;
+  border-left: 3px solid #108d7f;
+}
+
+.waveformBars {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 16px;
+}
+
+.waveformBars span {
+  width: 3px;
+  height: 8px;
+  background: #108d7f;
+  border-radius: 3px;
+  animation: wavePulse 1.2s ease-in-out infinite alternate;
+}
+
+.waveformBars span:nth-child(2) { height: 16px; animation-delay: 0.2s; }
+.waveformBars span:nth-child(3) { height: 12px; animation-delay: 0.4s; }
+.waveformBars span:nth-child(4) { height: 18px; animation-delay: 0.1s; }
+.waveformBars span:nth-child(5) { height: 10px; animation-delay: 0.3s; }
+.waveformBars span:nth-child(6) { height: 14px; animation-delay: 0.5s; }
+
+@keyframes wavePulse {
+  to { transform: scaleY(0.4); opacity: 0.6; }
+}
+
+.networkConnector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 20px;
+}
+
+.nodeIcon {
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #0d786b, #14b8a6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(16, 141, 127, 0.28);
+}
+
+.agentCardSecondary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, rgba(240, 253, 250, 0.95), rgba(255, 255, 255, 0.98));
+  padding: 14px 20px;
+  border-radius: 20px;
+  border: 1.5px solid rgba(45, 212, 191, 0.4);
+  box-shadow: 0 12px 28px -4px rgba(16, 141, 127, 0.08);
+  text-align: left;
+  transform: translateX(10px);
+}
+
+.agentCardSecondary .agentInfo h4 {
+  margin: 0 0 2px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.agentCardSecondary .agentInfo p {
+  margin: 0;
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.latencyTag {
+  font-size: 11px;
+  font-weight: 700;
+  color: #0d786b;
+  background: #ccfbf1;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* CENTER CLUSTER: Global Voice Mesh & Language Pins */
+.centerCluster {
+  position: relative;
+  background: #ffffff;
+  border-radius: 36px;
+  border: 1px solid rgba(204, 251, 241, 0.85);
+  box-shadow: 
+    0 24px 60px -12px rgba(13, 120, 107, 0.09),
+    0 1px 3px rgba(0, 0, 0, 0.02);
+  padding: 34px 24px 42px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 410px;
+  justify-content: space-between;
+}
+
+.flagArc {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  z-index: 2;
+}
+
+.flagPin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transition: transform 0.2s ease;
+}
+
+.flagPin:hover {
+  transform: translateY(-4px);
+}
+
+.flagBubble {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid rgba(204, 251, 241, 0.95);
+  box-shadow: 0 8px 20px -4px rgba(13, 120, 107, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.flagStem {
+  width: 1.5px;
+  height: 18px;
+  background: linear-gradient(to bottom, #99f6e4, rgba(153, 246, 228, 0.1));
+}
+
+.globeWrapper {
+  position: relative;
+  width: 100%;
+  height: 230px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.globeSvg {
+  width: 100%;
+  height: 100%;
+  max-width: 320px;
+  opacity: 0.9;
+}
+
+.centerBrandBadge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, #0d786b 0%, #108d7f 55%, #14b8a6 100%);
+  color: #ffffff;
+  padding: 12px 34px;
+  border-radius: 999px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  box-shadow: 
+    0 12px 32px rgba(16, 141, 127, 0.4),
+    0 0 0 4px rgba(255, 255, 255, 0.95);
+  z-index: 3;
+}
+
+/* RIGHT CLUSTER: Speed & Workflow Cards */
+.rightCluster {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 10px;
+}
+
+.pillCard {
+  background: #ffffff;
+  border: 1px solid rgba(204, 251, 241, 0.9);
+  border-radius: 20px;
+  padding: 14px 20px;
+  box-shadow: 0 10px 25px -4px rgba(13, 120, 107, 0.06);
+  text-align: left;
+}
+
+.marketingPill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #ffffff 40%, rgba(240, 253, 250, 0.8) 100%);
+  border: 1.5px solid rgba(45, 212, 191, 0.4);
+}
+
+.marketingPill span {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.speedGaugeCard {
+  background: #ffffff;
+  border: 1px solid rgba(204, 251, 241, 0.9);
+  border-radius: 24px;
+  padding: 20px 22px;
+  box-shadow: 0 12px 30px -4px rgba(13, 120, 107, 0.07);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.gaugeWrapper {
+  position: relative;
+  width: 140px;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+}
+
+.gaugeText {
+  position: absolute;
+  bottom: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0d786b;
+}
+
+.speedBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #0d786b, #14b8a6);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(16, 141, 127, 0.25);
+}
+
+.workflowStep {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #ffffff;
+  border: 1px solid rgba(204, 251, 241, 0.95);
+  padding: 10px 18px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px -2px rgba(13, 120, 107, 0.05);
+}
+
+.workflowStep span {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+/* Responsive */
+@media (max-width: 1040px) {
+  .showcaseCluster {
+    grid-template-columns: 1fr;
+    max-width: 580px;
+    gap: 28px;
+  }
+
+  .agentCardPrimary,
+  .agentCardSecondary {
+    transform: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .heroWrapper {
+    padding: 110px 16px 40px;
+  }
+
+  .headline {
+    font-size: 34px;
+  }
+
+  .subtitle {
+    font-size: 15px;
+  }
+
+  .inputGroup {
+    width: 100%;
+    flex-direction: column;
+    padding: 10px;
+    border-radius: 20px;
+    gap: 10px;
+  }
+
+  .emailInput {
+    width: 100%;
+    padding: 6px 8px;
+  }
+
+  .demoButton {
+    width: 100%;
+  }
+
+  .flagArc {
+    gap: 8px;
+  }
+
+  .flagBubble {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+}

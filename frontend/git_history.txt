@@ -1,0 +1,2 @@
+fa53664 feat(frontend): add 3d floating ribbon wave animation with particles and pure white background
+4adc1be Update frontend design and pages

@@ -1,0 +1,234 @@
+.showcase {
+  position: relative;
+  isolation: isolate;
+  container-type: inline-size;
+  width: min(1240px, calc(100% - 40px));
+  margin: 24px auto 60px;
+  text-align: left;
+  color: #c2ded4;
+  border-radius: 28px;
+  background: radial-gradient(ellipse at 16% 16%, #a3bdb4, transparent 65%),
+    linear-gradient(135deg, #b5cec5, #ceede2);
+}
+
+.showcase * { box-sizing: border-box; }
+.scene { position: relative; aspect-ratio: 1.48; }
+.orbits { position: absolute; inset: 0; overflow: hidden; border-radius: 28px; pointer-events: none; }
+.orbits::before, .orbits::after {
+  content: "";
+  position: absolute;
+  width: 85%;
+  height: 120%;
+  left: 42%;
+  top: 20%;
+  border: 1px solid #f4fffac9;
+  border-radius: 50%;
+  transform: rotate(-28deg);
+}
+.orbits::after { left: 32%; top: 9%; width: 110%; }
+
+.desktop {
+  position: absolute;
+  inset: 4.5% 12% 12% 3%;
+  overflow: hidden;
+  border: max(4px, .5cqw) solid #fafffc;
+  border-radius: 2.8cqw;
+  background: #030605;
+  box-shadow: 0 24px 50px #173d3220;
+}
+.topbar {
+  position: absolute;
+  inset: 0 3.5% auto;
+  height: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #c4d7cf35;
+  font-size: 1.05cqw;
+}
+.brand { display: inline-flex; align-items: center; gap: .5em; font-size: 1.65cqw; font-weight: 450; letter-spacing: -.04em; }
+.brand svg { width: 1.1em; height: 1.1em; color: #b5e7d6; }
+.category { display: flex; align-items: center; gap: .6em; font-size: .95cqw; }
+.category i { width: .4em; height: .4em; background: #b5e7d6; border-radius: 50%; }
+.smallLink, .intro a {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  border-radius: 999px;
+  background: #c2e2d6;
+  color: #071a13;
+  padding: .45em .9em;
+  font-size: .94cqw;
+  transition: background .2s, transform .2s;
+}
+.smallLink:hover, .intro a:hover { background: #e8fff6; transform: translateY(-2px); }
+.smallLink:focus-visible, .intro a:focus-visible { outline: 2px solid #fff; outline-offset: 5px; }
+.desktop .heading {
+  position: absolute;
+  top: 15%;
+  left: 3.5%;
+  margin: 0;
+  font-size: 3.05cqw;
+  font-weight: 400;
+  line-height: 1.03;
+  letter-spacing: -.04em;
+  color: #c8e4d9;
+}
+.heading span { padding-left: 1.6em; }
+.intro { position: absolute; top: 17%; left: 65%; width: 26%; }
+.intro p { margin: 0 0 1em; font-size: 1.02cqw; line-height: 1.17; color: #c5d7ce; }
+.wordmark {
+  position: absolute;
+  top: 39%;
+  left: 3%;
+  font-size: 8.1cqw;
+  font-weight: 450;
+  letter-spacing: -.07em;
+  line-height: 1.05;
+  white-space: nowrap;
+  color: #b5d6c8;
+}
+.wordmark>span, .mobileWordmark>span {
+  background: linear-gradient(105deg, #c2ddcb 4%, #73b5a6 65%, #247e72);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.centerPhone {
+  position: absolute;
+  z-index: 2;
+  top: 44%;
+  left: 42%;
+  width: 16%;
+  perspective: 1000px;
+  animation: deviceDrift 7s ease-in-out infinite;
+}
+.phone {
+  position: relative;
+  aspect-ratio: .485;
+  width: 100%;
+  border-radius: 16% / 8%;
+  padding: 3%;
+  background: linear-gradient(125deg, #f3f9f5, #647971 28%, #fbfffc 44%, #33453e 77%, #dbe9e1);
+  box-shadow: 1px 2px 0 #effbf3, 3px 4px 0 #667d71, 4px 6px 0 #d3e5d9, 10px 20px 20px #0008;
+  transform: rotate(-29deg) rotateY(-17deg) rotateX(16deg);
+  transform-style: preserve-3d;
+}
+.phoneSide { position: absolute; top: 21%; left: -1.8%; width: 2%; height: 13%; background: #b6c8bd; border-radius: 2px; }
+.phoneScreen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: max(2px, .23cqw) solid #080c0a;
+  border-radius: 14% / 7%;
+  background: radial-gradient(ellipse at 20% 8%, #aacac3, transparent 70%),
+    linear-gradient(160deg, #86b8ae 2%, #d4e9d6 47%, #89cfaf 78%, #188d7d 100%);
+  color: #fff;
+}
+.notch { position: absolute; top: -1px; left: 26%; width: 48%; height: 5%; background: #080c0a; border-radius: 0 0 10px 10px; }
+.phoneStatus { display: flex; justify-content: space-between; margin: 5% 8% 0; font-size: .42cqw; color: #f5fff9; }
+.phoneBrand { position: absolute; top: 15%; right: 12%; font-size: .6cqw; letter-spacing: -.02em; }
+.phoneMark { position: absolute; width: 39%; height: auto; top: 26%; left: 30.5%; color: #f4fff8; filter: drop-shadow(0 2px 12px #fff4); }
+.phoneGreeting { position: absolute; top: 63%; left: 8%; right: 8%; text-align: center; }
+.phoneGreeting>span { font-size: .41cqw; letter-spacing: .04em; }
+.phoneGreeting p { margin: .25em 0 0; color: #fff; font-size: 1.2cqw; font-weight: 500; line-height: 1.08; letter-spacing: -.03em; }
+.phoneControls { position: absolute; bottom: 6%; left: 15%; right: 15%; display: flex; align-items: center; justify-content: space-between; }
+.micIcon { font-size: .62cqw; }
+.voiceSphere {
+  display: block;
+  width: 28%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 25%, #f7fff4, #b9f3d6 25%, #46b89e 60%, #e6f9d5 88%);
+  box-shadow: 0 0 15px #e3fff65c, inset -2px -2px 4px #104b4426;
+  animation: sphereBreathe 3s ease-in-out infinite;
+}
+.phoneHome { position: absolute; width: 32%; height: .6%; background: #f6fffbc7; bottom: 2%; left: 34%; border-radius: 99px; }
+
+.desktopTags { position: absolute; bottom: 5%; left: 3.5%; }
+.tags { font-size: 1.65cqw; letter-spacing: -.035em; line-height: 1.04; }
+.tags p { margin: 0 0 .15em; padding-left: .25em; font-weight: 400; }
+.tags p>span { border: 1px solid #b4d3c7; border-radius: 999px; padding: 0 .55em; }
+.tags>div { display: flex; gap: .13em; margin-top: .1em; }
+.tags>div>span { border-radius: 99px; padding: .04em .55em .1em; background: #c1e2d3; color: #07160e; }
+.caption { position: absolute; left: 69%; bottom: 6%; width: 25%; }
+.caption p { margin: 0 0 .6em; font-size: 1.75cqw; line-height: 1.08; letter-spacing: -.03em; }
+.caption>span { font-size: .85cqw; color: #8fa89a; }
+
+.mobile {
+  position: absolute;
+  z-index: 4;
+  top: 23%;
+  right: 3%;
+  width: 24%;
+  aspect-ratio: .475;
+  overflow: hidden;
+  border: max(4px, .5cqw) solid #fafffc;
+  border-radius: 3.3cqw;
+  padding: 1.5cqw 1.4cqw;
+  background: #030605;
+  box-shadow: 0 24px 38px #163b3526;
+}
+.mobileHeader { display: flex; justify-content: space-between; align-items: center; }
+.mobileHeader .brand { font-size: 1.1cqw; }
+.mobileContact { font-size: .62cqw; border: 1px solid #c4d7cf45; border-radius: 999px; padding: .3em .6em; }
+.mobileNav { display: flex; justify-content: space-between; margin: 10% 0 0; font-size: .62cqw; color: #bed5cb; }
+.mobileNav i { display: inline-block; width: 4px; height: 4px; border-radius: 50%; background: #bed5cb; }
+.mobileHeading { margin: 6% 0 0; font-size: 1.92cqw; letter-spacing: -.035em; line-height: 1.05; text-align: center; color: #cce8da; }
+.mobileIntro { margin: 8% 0 0 24%; font-size: .75cqw; line-height: 1.15; color: #d3e2d9; }
+.mobileIntro p { margin: 0 0 1em; }
+.mobileIntro>span { display: inline-block; border-radius: 999px; padding: .5em .7em; background: #c4e4d5; color: #082016; font-size: .62cqw; }
+.mobileWordmark { position: absolute; top: 48%; left: 6%; font-size: 3.75cqw; letter-spacing: -.055em; line-height: 1.05; }
+.mobileWordmark>span { display: inline-block; }
+.miniPhone { position: absolute; top: 62%; left: 33%; width: 25%; perspective: 600px; }
+.miniPhone .phone { box-shadow: 1px 2px #e6f5e9, 2px 3px #617669, 4px 8px 10px #0009; }
+.miniPhone .phoneScreen { border-width: max(1px, .12cqw); }
+.miniPhone .phoneStatus { font-size: .2cqw; }
+.miniPhone .phoneBrand { font-size: .28cqw; }
+.miniPhone .phoneGreeting>span { font-size: .2cqw; }
+.miniPhone .phoneGreeting p { font-size: .54cqw; }
+.miniPhone .micIcon { font-size: .28cqw; }
+.mobileTags { position: absolute; left: 9%; bottom: 5%; }
+.mobileTags .tags { font-size: 1.03cqw; }
+
+@keyframes deviceDrift { 50% { transform: translateY(-9px); } }
+@keyframes sphereBreathe { 50% { transform: scale(1.12); box-shadow: 0 0 22px #e3fff67a; } }
+
+@media (max-width: 600px) {
+  .showcase { width: calc(100% - 24px); border-radius: 20px; margin: 16px auto 80px; }
+  .scene { aspect-ratio: .64; }
+  .desktop { inset: 2% 4% 15%; border-radius: 6cqw; }
+  .desktop .heading { top: 12%; left: 5%; font-size: 6.6cqw; }
+  .heading span { padding-left: .8em; }
+  .intro { top: 28%; left: 10%; width: 62%; }
+  .intro p { font-size: 2.7cqw; line-height: 1.25; }
+  .intro a { font-size: 2.6cqw; padding: .65em 1em; }
+  .wordmark { top: 47%; left: 4%; font-size: 10cqw; }
+  .centerPhone { top: 59%; left: 32%; width: 23%; }
+  .phoneScreen { border-width: 2px; }
+  .phoneStatus { font-size: .65cqw; }
+  .phoneBrand { font-size: 1cqw; }
+  .phoneGreeting>span { font-size: .64cqw; }
+  .phoneGreeting p { font-size: 1.8cqw; }
+  .micIcon { font-size: .9cqw; }
+  .desktopTags { left: 5%; bottom: 5%; }
+  .tags { font-size: 3.1cqw; }
+  .caption { display: none; }
+  .mobile { top: 51%; width: 35%; right: 2%; border-radius: 5.5cqw; padding: 2.5cqw 2cqw; }
+  .mobileHeading { font-size: 2.85cqw; }
+  .mobileIntro { font-size: 1.1cqw; }
+  .mobileIntro>span { font-size: .92cqw; }
+  .mobileWordmark { font-size: 5.3cqw; }
+  .miniPhone .phoneStatus { font-size: .3cqw; }
+  .miniPhone .phoneBrand { font-size: .42cqw; }
+  .miniPhone .phoneGreeting>span { font-size: .3cqw; }
+  .miniPhone .phoneGreeting p { font-size: .8cqw; }
+  .miniPhone .micIcon { font-size: .42cqw; }
+  .mobileTags .tags { font-size: 1.5cqw; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .centerPhone, .voiceSphere { animation: none; }
+  .smallLink, .intro a { transition: none; }
+}

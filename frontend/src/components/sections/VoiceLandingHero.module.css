@@ -1,0 +1,131 @@
+.hero {
+  position: relative;
+  width: 100%;
+  padding: 132px 24px 28px;
+  background: radial-gradient(circle at 50% 15%, rgba(16, 141, 130, 0.08) 0%, transparent 65%),
+              #ffffff;
+  text-align: center;
+}
+
+.container {
+  max-width: 820px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: #f0fbf6;
+  border: 1px solid #d3eee2;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f766e;
+  letter-spacing: -0.01em;
+}
+
+.badgeDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #108d7f;
+  box-shadow: 0 0 0 3px rgba(16, 141, 127, 0.2);
+}
+
+.headline {
+  margin: 20px auto 16px;
+  font-size: clamp(38px, 5.2vw, 64px);
+  line-height: 1.08;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: #0c1a16;
+}
+
+.headline span {
+  color: #108d7f;
+}
+
+.tagline {
+  max-width: 600px;
+  margin: 0 auto 28px;
+  font-size: clamp(16px, 1.8vw, 19px);
+  line-height: 1.65;
+  color: #556b63;
+  font-weight: 400;
+}
+
+.actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.primary,
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 24px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.primary {
+  background: #0d786b;
+  color: #ffffff;
+  box-shadow: 0 6px 20px rgba(13, 120, 107, 0.22);
+}
+
+.primary:hover {
+  background: #095c52;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(13, 120, 107, 0.3);
+}
+
+.secondary {
+  background: #ffffff;
+  color: #1a3830;
+  border: 1px solid #d4e5dd;
+}
+
+.secondary:hover {
+  background: #f7faf8;
+  border-color: #b7d6c8;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: 110px 18px 20px;
+  }
+  
+  .headline {
+    font-size: 34px;
+  }
+  
+  .tagline {
+    font-size: 15px;
+  }
+  
+  .actions {
+    width: 100%;
+    flex-direction: column;
+  }
+  
+  .primary,
+  .secondary {
+    width: 100%;
+  }
+}

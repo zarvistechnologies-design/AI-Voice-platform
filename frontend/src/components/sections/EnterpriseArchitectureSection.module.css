@@ -1,0 +1,260 @@
+.architectureSection {
+  position: relative;
+  padding: 80px 24px 100px;
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.sectionHeader {
+  text-align: center;
+  max-width: 780px;
+  margin: 0 auto 64px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #0d786b;
+  margin-bottom: 12px;
+}
+
+.eyebrow::before, .eyebrow::after {
+  content: "";
+  width: 16px;
+  height: 1.5px;
+  background: #0d786b;
+}
+
+.title {
+  margin: 0 0 16px;
+  font-size: clamp(32px, 3.8vw, 50px);
+  font-weight: 850;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  color: #0b0f19;
+}
+
+.subtitle {
+  margin: 0;
+  color: #64748b;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+/* Latency Breakdown Pipeline Grid */
+.pipelineCard {
+  border-radius: 24px;
+  border: 1px solid #e2e8f0;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  padding: 36px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.04);
+  margin-bottom: 56px;
+}
+
+.pipelineTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.pipelineTitleRow h3 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #0f172a;
+}
+
+.totalBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #047857;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.pipelineGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  position: relative;
+}
+
+.stepCard {
+  padding: 24px;
+  border-radius: 18px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stepCard:hover {
+  transform: translateY(-3px);
+  border-color: #108D82;
+  box-shadow: 0 10px 30px rgba(16, 141, 130, 0.08);
+}
+
+.stepNum {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 800;
+  color: #108D82;
+  background: rgba(16, 141, 130, 0.1);
+  padding: 3px 10px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.stepHeader {
+  font-size: 16px;
+  font-weight: 750;
+  color: #0f172a;
+  margin: 0 0 6px;
+}
+
+.stepSpeed {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  color: #059669;
+  font-family: var(--font-commit-mono, monospace);
+  margin-bottom: 8px;
+}
+
+.stepDesc {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #64748b;
+}
+
+/* Integrations & Stack Grid */
+.integrationsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  margin-bottom: 60px;
+}
+
+.integrationBox {
+  padding: 32px;
+  border-radius: 22px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.03);
+}
+
+.integrationBox h4 {
+  margin: 0 0 8px;
+  font-size: 19px;
+  font-weight: 800;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.boxIcon {
+  font-size: 20px;
+}
+
+.integrationBox p {
+  margin: 0 0 20px;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.pillsRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pillTag {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+/* Comparison Metric Strip */
+.comparisonStrip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.metricStat {
+  text-align: center;
+  padding: 28px 20px;
+  border-radius: 18px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.metricVal {
+  font-size: clamp(34px, 3.2vw, 46px);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  color: #0d786b;
+  margin-bottom: 6px;
+}
+
+.metricLabel {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+
+.metricSub {
+  font-size: 12.5px;
+  color: #64748b;
+}
+
+@media (max-width: 900px) {
+  .pipelineGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .integrationsGrid {
+    grid-template-columns: 1fr;
+  }
+  .comparisonStrip {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 580px) {
+  .pipelineGrid {
+    grid-template-columns: 1fr;
+  }
+  .architectureSection {
+    padding: 60px 16px 80px;
+  }
+  .pipelineCard {
+    padding: 24px 18px;
+  }
+}

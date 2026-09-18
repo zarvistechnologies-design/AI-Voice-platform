@@ -1,0 +1,456 @@
+.heroSection {
+  position: relative;
+  overflow: hidden;
+  background: #06070a;
+  color: #f1f5f9;
+  padding: 160px 24px 80px;
+  min-height: 860px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Atmospheric Glows */
+.ambientGlowPrimary {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(1100px, 95vw);
+  height: 520px;
+  background: radial-gradient(ellipse at 50% 30%, rgba(16, 141, 130, 0.25) 0%, rgba(20, 184, 166, 0.1) 45%, transparent 70%);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ambientGlowSecondary {
+  position: absolute;
+  top: 35%;
+  right: -5%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(45, 212, 191, 0.12) 0%, transparent 65%);
+  filter: blur(70px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.gridPattern {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  background-position: center center;
+  mask-image: radial-gradient(ellipse at 50% 40%, black 30%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 40%, black 30%, transparent 80%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  position: relative;
+  z-index: 2;
+  width: min(1200px, 100%);
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Badge */
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(45, 212, 191, 0.28);
+  background: rgba(15, 23, 42, 0.7);
+  box-shadow: 0 0 25px rgba(16, 141, 130, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  color: #5eead4;
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: 28px;
+  animation: badgeSlideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.pulsingBeacon {
+  position: relative;
+  display: flex;
+  width: 8px;
+  height: 8px;
+}
+
+.pulsingBeacon span:first-child {
+  position: absolute;
+  display: inline-flex;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #2dd4bf;
+  opacity: 0.75;
+  animation: ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.pulsingBeacon span:last-child {
+  position: relative;
+  display: inline-flex;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #14b8a6;
+}
+
+/* Headlines */
+.headline {
+  margin: 0 auto 24px;
+  font-size: clamp(42px, 5.6vw, 76px);
+  font-weight: 850;
+  line-height: 1.05;
+  letter-spacing: -0.05em;
+  color: #ffffff;
+}
+
+.gradientText {
+  display: inline-block;
+  background: linear-gradient(135deg, #ffffff 15%, #5eead4 60%, #14b8a6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subheadline {
+  max-width: 760px;
+  margin: 0 auto 36px;
+  color: #94a3b8;
+  font-size: clamp(16.5px, 1.4vw, 20px);
+  line-height: 1.62;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+}
+
+/* Action CTAs */
+.ctaRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 56px;
+}
+
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 56px;
+  padding: 0 32px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #14b8a6 0%, #108D82 100%);
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 12px 36px rgba(20, 184, 166, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.primaryButton:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+  box-shadow: 0 16px 44px rgba(20, 184, 166, 0.45);
+}
+
+.primaryButton svg {
+  width: 15px;
+  height: 15px;
+  transition: transform 0.2s ease;
+}
+
+.primaryButton:hover svg {
+  transform: translate(2px, -2px);
+}
+
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 56px;
+  padding: 0 30px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.05);
+  color: #f8fafc;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  backdrop-filter: blur(10px);
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.secondaryButton:hover {
+  transform: translateY(-2px);
+  border-color: rgba(94, 234, 212, 0.6);
+  background: rgba(255, 255, 255, 0.09);
+  color: #5eead4;
+}
+
+/* Interactive Playground Card */
+.playgroundCard {
+  position: relative;
+  max-width: 940px;
+  margin: 0 auto;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(13, 17, 23, 0.82);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  padding: 28px 32px;
+  text-align: left;
+}
+
+.playgroundHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.playgroundTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+.signalDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 10px #10b981;
+}
+
+.latencyTicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: rgba(16, 141, 130, 0.15);
+  border: 1px solid rgba(45, 212, 191, 0.3);
+  font-size: 13px;
+  font-weight: 700;
+  color: #2dd4bf;
+  font-family: var(--font-commit-mono, monospace);
+}
+
+.playgroundBody {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 28px;
+  padding-top: 24px;
+  align-items: center;
+}
+
+.transcriptBox {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.chatBubbleCustomer {
+  align-self: flex-start;
+  padding: 14px 18px;
+  border-radius: 16px 16px 16px 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #e2e8f0;
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 90%;
+}
+
+.bubbleLabel {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.chatBubbleAgent {
+  align-self: flex-start;
+  padding: 14px 18px;
+  border-radius: 16px 16px 4px 16px;
+  background: rgba(16, 141, 130, 0.16);
+  border: 1px solid rgba(45, 212, 191, 0.35);
+  color: #ffffff;
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 90%;
+  box-shadow: 0 4px 20px rgba(16, 141, 130, 0.12);
+}
+
+.agentLabel {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #5eead4;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Audio Visualizer */
+.audioCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.waveVisualizer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 64px;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.waveBar {
+  width: 4px;
+  border-radius: 99px;
+  background: linear-gradient(180deg, #5eead4 0%, #0d786b 100%);
+  animation: waveBarBounce 1.2s ease-in-out infinite alternate;
+}
+
+.waveBar:nth-child(1) { height: 24px; animation-delay: -0.2s; }
+.waveBar:nth-child(2) { height: 42px; animation-delay: -0.4s; }
+.waveBar:nth-child(3) { height: 58px; animation-delay: -0.1s; }
+.waveBar:nth-child(4) { height: 36px; animation-delay: -0.5s; }
+.waveBar:nth-child(5) { height: 60px; animation-delay: -0.3s; }
+.waveBar:nth-child(6) { height: 48px; animation-delay: -0.6s; }
+.waveBar:nth-child(7) { height: 28px; animation-delay: -0.2s; }
+.waveBar:nth-child(8) { height: 52px; animation-delay: -0.45s; }
+.waveBar:nth-child(9) { height: 38px; animation-delay: -0.15s; }
+
+.languageChips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.langChip {
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.langChipActive {
+  background: rgba(20, 184, 166, 0.25);
+  border-color: #2dd4bf;
+  color: #5eead4;
+}
+
+/* Enterprise Security & SLA Ribbon */
+.securityRibbon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  margin-top: 50px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.securityItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 550;
+  letter-spacing: -0.01em;
+}
+
+.securityIcon {
+  color: #2dd4bf;
+  font-size: 14px;
+}
+
+/* Transitions */
+.bottomTransition {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+  background: linear-gradient(180deg, transparent 0%, #ffffff 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes waveBarBounce {
+  0% { transform: scaleY(0.35); opacity: 0.5; }
+  100% { transform: scaleY(1); opacity: 1; }
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+@keyframes badgeSlideIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 860px) {
+  .heroSection {
+    padding: 130px 16px 60px;
+  }
+  .headline {
+    font-size: 38px;
+  }
+  .playgroundBody {
+    grid-template-columns: 1fr;
+  }
+  .ctaRow {
+    flex-direction: column;
+  }
+  .primaryButton, .secondaryButton {
+    width: 100%;
+    justify-content: center;
+  }
+  .securityRibbon {
+    gap: 16px;
+  }
+}
