@@ -13,6 +13,7 @@ import {
 
 import { announceDashboardNavigation } from "@/components/dashboard/DashboardNavigationFeedback";
 import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
+import { ElevenLabsVoiceClonePanel } from "@/components/dashboard/ElevenLabsVoiceClonePanel";
 import {
   DashboardSidebar,
   getDashboardSidebarInitialState,
@@ -693,8 +694,15 @@ const fallbackElevenLabsV3Languages = fallbackLanguageCatalog.filter(
 );
 const fallbackElevenLabsLanguagesByModel = {
   eleven_flash_v2_5: fallbackElevenLabsV25Languages,
+  eleven_flash_v2: fallbackLanguageCatalog.filter(
+    (language) => language.code.split("-")[0]?.toLowerCase() === "en",
+  ),
   eleven_turbo_v2_5: fallbackElevenLabsV25Languages,
+  eleven_turbo_v2: fallbackLanguageCatalog.filter(
+    (language) => language.code.split("-")[0]?.toLowerCase() === "en",
+  ),
   eleven_multilingual_v2: fallbackElevenLabsV25Languages,
+  eleven_v3_conversational: fallbackElevenLabsV3Languages,
   eleven_v3: fallbackElevenLabsV3Languages,
 };
 
@@ -1326,7 +1334,12 @@ const fallbackCatalog: ModelCatalog = {
       provider: "elevenlabs",
       label: "ElevenLabs",
       configured: true,
-      models: ["scribe_v2_realtime", "scribe_v2", "scribe_v1"],
+      models: [
+        "scribe_v2_realtime",
+        "scribe_v2",
+        "scribe_v2_medical",
+        "scribe_v1",
+      ],
       languages: fallbackLanguageCatalog,
     },
     {
@@ -1378,9 +1391,12 @@ const fallbackCatalog: ModelCatalog = {
       configured: true,
       models: [
         "eleven_flash_v2_5",
-        "eleven_turbo_v2_5",
+        "eleven_flash_v2",
         "eleven_multilingual_v2",
+        "eleven_v3_conversational",
         "eleven_v3",
+        "eleven_turbo_v2_5",
+        "eleven_turbo_v2",
       ],
       voices: fallbackElevenLabsVoices,
       voiceProfiles: fallbackElevenLabsVoiceProfiles,
@@ -2747,17 +2763,45 @@ const modelPresentation: Record<string, { label: string; detail: string }> = {
     label: "Eleven Flash v2.5",
     detail: "Hindi and Tamil · No Kannada support",
   },
+  eleven_flash_v2: {
+    label: "Eleven Flash v2",
+    detail: "Lowest-latency English TTS",
+  },
   eleven_turbo_v2_5: {
     label: "Eleven Turbo v2.5",
     detail: "Hindi and Tamil · No Kannada support",
+  },
+  eleven_turbo_v2: {
+    label: "Eleven Turbo v2 (deprecated)",
+    detail: "Use Eleven Flash v2 for lower latency",
   },
   eleven_multilingual_v2: {
     label: "Eleven Multilingual v2",
     detail: "Higher voice quality · Hindi and Tamil · No Kannada support",
   },
+  eleven_v3_conversational: {
+    label: "Eleven v3 Conversational",
+    detail: "Expressive realtime conversation model",
+  },
   eleven_v3: {
     label: "Eleven v3",
     detail: "Kannada and 70+ languages",
+  },
+  scribe_v2_realtime: {
+    label: "Scribe v2 Realtime (recommended)",
+    detail: "~150 ms streaming transcription",
+  },
+  scribe_v2: {
+    label: "Scribe v2 (batch)",
+    detail: "High-accuracy transcription with higher turn latency",
+  },
+  scribe_v2_medical: {
+    label: "Scribe v2 Medical (batch)",
+    detail: "Clinical transcription with higher turn latency",
+  },
+  scribe_v1: {
+    label: "Scribe v1",
+    detail: "Use Scribe v2 or Scribe v2 Realtime",
   },
 };
 
@@ -2869,6 +2913,7 @@ function StackConfigurationModal({
   onLanguageChange,
   onPipelineModeChange,
   onPreview,
+  onVoiceCloned,
   onClose,
   onSave,
 }: {
@@ -2888,6 +2933,7 @@ function StackConfigurationModal({
       voice?: string;
     },
   ) => void;
+  onVoiceCloned: (profile: VoiceProfile) => void;
   onClose: () => void;
   onSave: () => void;
 }) {
@@ -3441,6 +3487,14 @@ function StackConfigurationModal({
                   “Best for” to the agent language for better pronunciation. A
                   library voice is added when you save.
                 </div>
+              ) : null}
+
+              {stack === "voice" && provider.provider === "elevenlabs" ? (
+                <ElevenLabsVoiceClonePanel
+                  configured={provider.configured}
+                  language={agent.language}
+                  onCloned={onVoiceCloned}
+                />
               ) : null}
 
               {stack === "voice" ? (
@@ -4754,6 +4808,32 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     if (saved) setOpenStackConfig(null);
   }
 
+  function addClonedVoice(profile: VoiceProfile) {
+    setModelCatalog((current) => ({
+      ...current,
+      tts: current.tts.map((provider) => {
+        if (provider.provider !== "elevenlabs") return provider;
+        const voices = [
+          profile.value,
+          ...(provider.voices ?? []).filter((voice) => voice !== profile.value),
+        ];
+        const voiceProfiles = [
+          profile,
+          ...(provider.voiceProfiles ?? []).filter(
+            (candidate) => candidate.value !== profile.value,
+          ),
+        ];
+        return { ...provider, voices, voiceProfiles };
+      }),
+    }));
+    updateSelectedAgent({
+      pipelineMode: "pipeline",
+      ttsProvider: "elevenlabs",
+      voice: profile.value,
+    });
+    setNotice("Voice cloned and selected. Save changes to use it for calls.");
+  }
+
   function updateBehavior(
     changes: Partial<AgentBehavior>,
     agentChanges: Partial<VoiceAgent> = {},
@@ -5773,6 +5853,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                         onLanguageChange={updateAgentLanguage}
                         onPipelineModeChange={updatePipelineMode}
                         onPreview={(input) => void handlePreviewVoice(input)}
+                        onVoiceCloned={addClonedVoice}
                         onClose={() => setOpenStackConfig(null)}
                         onSave={() => void saveStackConfig()}
                       />

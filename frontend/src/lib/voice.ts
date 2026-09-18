@@ -838,6 +838,24 @@ async function request<T>(path: string, init: RequestInit = {}) {
   return data;
 }
 
+export type VoiceCloneResult = {
+  success: boolean;
+  voiceId: string;
+  name: string;
+  category: string;
+  requiresVerification: boolean;
+  profile: VoiceProfile;
+};
+
+export async function cloneVoice(formData: FormData): Promise<VoiceCloneResult> {
+  const result = await request<VoiceCloneResult>("/voices/clone", {
+    method: "POST",
+    body: formData,
+  });
+  invalidateVoiceCache("/config");
+  return result;
+}
+
 export type AgentSummary = Pick<
   BackendAgent,
   "_id" | "name" | "team" | "status" | "phone" | "version"
@@ -1146,6 +1164,7 @@ export const voiceApi = {
     }
     return response.blob();
   },
+  cloneVoice,
   webCallToken: (agentId: string) =>
     request<{
       callId: string;

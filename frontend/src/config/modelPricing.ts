@@ -136,6 +136,7 @@ export const modelPricingCategories: readonly ModelPriceCategory[] = [
         models: [
           { name: "scribe_v2_realtime", rate: "$0.0065", unit: "per audio minute ($0.39/hour)", badge: "Recommended" },
           { name: "scribe_v2", rate: "$0.0037", unit: "per audio minute ($0.22/hour)" },
+          { name: "scribe_v2_medical", rate: "$0.0037", unit: "per audio minute ($0.22/hour)", detail: "Clinical audio" },
           { name: "scribe_v1", rate: "$0.0037", unit: "per audio minute ($0.22/hour)", badge: "Legacy" },
         ],
       },
@@ -228,8 +229,12 @@ export const modelPricingCategories: readonly ModelPriceCategory[] = [
         sourceUrl: ELEVENLABS_PRICING,
         models: [
           { name: "eleven_flash_v2_5", rate: "$0.05", unit: "per 1K characters", badge: "Recommended" },
-          { name: "eleven_turbo_v2_5", rate: "$0.05", unit: "per 1K characters" },
+          { name: "eleven_flash_v2", rate: "$0.05", unit: "per 1K characters" },
           { name: "eleven_multilingual_v2", rate: "$0.10", unit: "per 1K characters" },
+          { name: "eleven_v3_conversational", rate: "$0.05", unit: "per 1K characters" },
+          { name: "eleven_v3", rate: "$0.10", unit: "per 1K characters" },
+          { name: "eleven_turbo_v2_5", rate: "$0.05", unit: "per 1K characters", badge: "Legacy" },
+          { name: "eleven_turbo_v2", rate: "$0.05", unit: "per 1K characters", badge: "Legacy" },
         ],
       },
     ],
