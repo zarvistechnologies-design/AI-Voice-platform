@@ -200,10 +200,10 @@ const agents: VoiceAgent[] = [
     multilingualEnabled: false,
     languageSwitchingEnabled: false,
     supportedLanguages: ["English"],
-    voice: "alloy",
+    voice: "Puck",
     pipelineMode: "realtime",
-    realtimeProvider: "openai",
-    realtimeModel: "gpt-realtime-2.1",
+    realtimeProvider: "gemini",
+    realtimeModel: "gemini-3.1-flash-live-preview",
     llmProvider: "openai",
     llmModel: "gpt-4.1-mini",
     sttProvider: "openai",
@@ -7975,7 +7975,7 @@ function mapBackendAgent(agent: BackendAgent): VoiceAgent {
   const firstMessageMode: FirstMessageMode = agent.behavior?.userStartsFirst
     ? "user-speaks-first"
     : (agent.firstMessageMode ?? "assistant-speaks-first");
-  const realtimeProvider = agent.realtimeProvider ?? "openai";
+  const realtimeProvider = agent.realtimeProvider ?? "gemini";
   const legacyMultilingual = agent.language === "Multilingual";
   const primaryLanguage = legacyMultilingual ? "English" : agent.language;
   const supportedLanguages = [
@@ -7996,12 +7996,12 @@ function mapBackendAgent(agent: BackendAgent): VoiceAgent {
       (agent.multilingualEnabled ?? legacyMultilingual) &&
       (agent.languageSwitchingEnabled ?? legacyMultilingual),
     supportedLanguages,
-    voice: agent.voice,
+    voice: agent.voice || "Puck",
     pipelineMode: agent.pipelineMode ?? "realtime",
     realtimeProvider,
     realtimeModel: normalizeRealtimeModel(
       realtimeProvider,
-      agent.realtimeModel ?? defaultOpenAIRealtimeModel,
+      agent.realtimeModel ?? defaultGeminiRealtimeModel,
     ),
     llmProvider,
     llmModel: normalizeGeminiLlmModel(
