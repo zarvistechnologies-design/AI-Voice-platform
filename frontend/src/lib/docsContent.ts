@@ -178,119 +178,271 @@ Customer total           = ₹9.00` }, { type: "note", body: "Dashboard balances
     slug: "api-authentication",
     group: "API",
     title: "API authentication",
-    description: "Create scoped API keys and authenticate server-side requests.",
+    description: "Create scoped API keys and authenticate server-side requests with zero ambiguity.",
     sections: [
-      { title: "Create a key", blocks: [{ type: "steps", items: [{ title: "Open Developers", body: "Only an Owner or Admin can manage organization API keys." }, { title: "Choose scopes", body: "Use read for retrieval, calls:trigger for outbound calls, and agents:write only when configuration changes are required." }, { title: "Store once", body: "Copy the new key into a secrets manager. The full value should not be shown again." }] }] },
-      { title: "Request header", blocks: [{ type: "code", language: "http", body: authHeader }, { type: "note", tone: "warning", body: "API keys are for trusted server environments. Never embed them in browser JavaScript, mobile bundles, public repositories, screenshots, or support messages." }] },
+      { title: "Interactive Explorer", blocks: [{ type: "note", tone: "info", body: "Try our live interactive API Explorer at /docs/api to test endpoints, generate multi-language code snippets, and verify webhook signatures directly in your browser." }] },
+      { title: "Generate an API key", blocks: [{ type: "steps", items: [
+        { title: "Access Developers settings", body: "Navigate to Dashboard → Developers → API Keys. Only organization Owners and Admins can create or revoke API keys." },
+        { title: "Select least-privilege scopes", body: "Choose 'read' for logs/analytics, 'calls:trigger' for outbound calling, 'agents:write' for programmatic prompt updates, or 'full-access' for unconstrained automation." },
+        { title: "Save and protect", body: "Store the generated key prefixed with 'avp_' in an encrypted secrets manager (e.g. AWS Secrets Manager, Doppler, or HashiCorp Vault). The key is shown only once." },
+      ] }] },
+      { title: "Authentication headers", blocks: [
+        { type: "text", body: "Vozon supports two authentication headers. You can pass the standard HTTP Bearer header or the x-api-key header:" },
+        { type: "code", language: "http", body: `Authorization: Bearer avp_live_your_api_key_here\n# or\nx-api-key: avp_live_your_api_key_here` },
+        { type: "table", headers: ["Scope", "Permitted actions", "Recommended for"], rows: [
+          ["read", "GET /agents, GET /calls, GET /calls/{id}, GET /calls/stream", "Dashboards, CRM sync, and reporting"],
+          ["calls:trigger", "POST /calls/outbound, POST /outbound-calls", "Backend servers triggering automated voice calls"],
+          ["agents:write", "Create, update, and publish voice agent configurations", "CI/CD and agent prompt synchronization"],
+          ["full-access", "All external API actions", "Internal administrative tooling"],
+        ] },
+        { type: "note", tone: "warning", body: "Never embed API keys in client-side code (Next.js client components, mobile apps, or frontend scripts). Always make requests from your secure backend server." },
+      ] },
     ],
   },
   {
     slug: "api-calls",
     group: "API",
     title: "Calls API",
-    description: "Start outbound calls and retrieve normalized call records.",
+    description: "Trigger outbound calls, stream real-time events, download recordings, and export call records.",
     sections: [
-      { title: "Endpoints", blocks: [{ type: "table", headers: ["Method", "Path", "Scope"], rows: [["GET", "/agents", "read"], ["POST", "/calls/outbound", "calls:trigger"], ["GET", "/calls", "read"], ["GET", "/calls/{callId}", "read"], ["GET", "/calls/{callId}/recording", "read"], ["GET", "/calls/export.csv", "read"], ["GET", "/calls/stream", "read"]] }] },
-      { title: "List-call filters", blocks: [{ type: "table", headers: ["Query", "Description"], rows: [["page", "Page number beginning at 1."], ["limit", "Rows per page from 1 to 100; default 20."], ["agentId", "Return calls for one agent."], ["status", "Return calls with the selected status."], ["direction", "Filter inbound, outbound, or web calls."], ["from", "Earliest start timestamp in ISO 8601 format."], ["to", "Latest start timestamp in ISO 8601 format."]] }] },
-      { title: "Create outbound call", blocks: [{ type: "code", language: "curl", body: `curl -X POST "${baseUrl}/calls/outbound" \\
-  -H "${authHeader}" \\
+      { title: "Live Sandbox", blocks: [{ type: "note", tone: "info", body: "Explore and test these endpoints live in the Vozon Interactive API Playground: /docs/api." }] },
+      { title: "Endpoints catalog", blocks: [{ type: "table", headers: ["Method", "Endpoint path", "Required scope", "Description"], rows: [
+        ["POST", "/calls/outbound", "calls:trigger", "Queue and trigger an outbound voice agent call"],
+        ["GET", "/calls", "read", "Query paginated call history with 11 filter parameters"],
+        ["GET", "/calls/{callId}", "read", "Retrieve complete normalized call details and transcripts"],
+        ["GET", "/calls/{callId}/recording", "read", "Stream or download audio recording file (Range support)"],
+        ["GET", "/calls/stream", "read", "Server-Sent Events (SSE) stream of live call state changes"],
+        ["GET", "/calls/export.csv", "read", "Download filtered historical calls as a CSV spreadsheet"],
+        ["GET", "/agents", "read", "List all organization voice agents and their active models"],
+      ] }] },
+      { title: "Pre-flight calling checklist", blocks: [{ type: "steps", items: [
+        { title: "Agent Live status", body: "Confirm your agent is in 'Live' status in the dashboard. Agents in 'Draft' or 'Review' cannot place outbound calls." },
+        { title: "Ready phone number", body: "Ensure your organization has at least one phone number in 'Ready' status with direction 'Outbound' or 'Both' assigned to the agent." },
+        { title: "E.164 phone format", body: "The recipient phoneNumber must strictly follow international E.164 format: '+[country_code][number]' with no dashes or spaces (e.g. +919876543210)." },
+        { title: "Wallet balance", body: "Verify your organization wallet has sufficient credit balance before triggering calls." },
+      ] }] },
+      { title: "Create outbound call", blocks: [
+        { type: "code", language: "curl", body: `curl -X POST "https://api.vozon.ai/api/v1/calls/outbound" \\
+  -H "Authorization: Bearer avp_your_api_key" \\
   -H "Content-Type: application/json" \\
   -d '{
-    "agentId": "agent_id",
+    "agentId": "6701a2b3c4d5e6f7a8b9c0d1",
     "phoneNumber": "+919876543210",
-    "metadata": { "customerId": "customer_123" }
-  }'` }, { type: "table", headers: ["Field", "Type", "Required", "Description"], rows: [["agentId", "string", "Yes", "A Live agent belonging to the active organization."], ["phoneNumber", "string", "Yes", "Destination in E.164 format."], ["phoneNumberId", "string", "No", "Specific assigned outbound number; otherwise the latest eligible number is used."], ["metadata", "object", "No", "Fictional or business-safe correlation data returned with the call."]] }] },
-      { title: "JavaScript", blocks: [{ type: "code", language: "javascript", body: `const response = await fetch("${baseUrl}/calls/outbound", {
+    "metadata": {
+      "customerId": "cust_8829",
+      "leadSource": "website_demo"
+    }
+  }'` },
+        { type: "table", headers: ["Field", "Type", "Required", "Description"], rows: [
+          ["agentId", "string", "Yes", "ID of the Live agent belonging to your organization."],
+          ["phoneNumber", "string", "Yes", "Destination phone number in international E.164 format."],
+          ["phoneNumberId", "string", "No", "Specific outbound number ID. Defaults to the latest ready number assigned to the agent."],
+          ["metadata", "object", "No", "Custom JSON correlation object returned in call logs, transcripts, and webhooks."],
+        ] },
+        { type: "text", body: "Response (202 Accepted):" },
+        { type: "code", language: "json", body: `{
+  "callId": "6702b3c4d5e6f7a8b9c0d1e2",
+  "roomName": "outbound-call-6701a2b3-1726650000-abcd",
+  "participantId": "sip_part_88921",
+  "dispatchId": "dispatch_99210"
+}` },
+      ] },
+      { title: "Node.js (TypeScript)", blocks: [{ type: "code", language: "typescript", body: `const response = await fetch("https://api.vozon.ai/api/v1/calls/outbound", {
   method: "POST",
   headers: {
     Authorization: \`Bearer \${process.env.VOZON_API_KEY}\`,
     "Content-Type": "application/json",
   },
   body: JSON.stringify({
-    agentId: "agent_id",
+    agentId: "6701a2b3c4d5e6f7a8b9c0d1",
     phoneNumber: "+919876543210",
-    metadata: { customerId: "customer_123" },
+    metadata: { customerId: "cust_8829" },
   }),
 });
 
-if (!response.ok) throw new Error(\`Vozon request failed: \${response.status}\`);
-const call = await response.json();` }] },
+if (!response.ok) {
+  const err = await response.json();
+  throw new Error(\`Vozon API Error \${response.status}: \${err.message}\`);
+}
+
+const call = await response.json();
+console.log("Call queued:", call.callId);` }] },
       { title: "Python", blocks: [{ type: "code", language: "python", body: `import os
 import requests
 
 response = requests.post(
-    "${baseUrl}/calls/outbound",
+    "https://api.vozon.ai/api/v1/calls/outbound",
     headers={"Authorization": f"Bearer {os.environ['VOZON_API_KEY']}"},
     json={
-        "agentId": "agent_id",
+        "agentId": "6701a2b3c4d5e6f7a8b9c0d1",
         "phoneNumber": "+919876543210",
-        "metadata": {"customerId": "customer_123"},
+        "metadata": {"customerId": "cust_8829"},
     },
     timeout=30,
 )
 response.raise_for_status()
-call = response.json()` }] },
+print("Call accepted:", response.json()["callId"])` }] },
+      { title: "Real-time streaming (SSE)", blocks: [
+        { type: "text", body: "Connect to GET /calls/stream to receive real-time notifications whenever calls start, finish, or error, avoiding unnecessary database polling:" },
+        { type: "code", language: "javascript", body: `const eventSource = new EventSource("https://api.vozon.ai/api/v1/calls/stream", {
+  headers: { Authorization: \`Bearer \${process.env.VOZON_API_KEY}\` }
+});
+
+eventSource.addEventListener("ready", (e) => console.log("Stream connected:", e.data));
+eventSource.addEventListener("calls_changed", (e) => {
+  console.log("Call update event:", JSON.parse(e.data));
+  // Fetch fresh call details or update your UI
+});` },
+      ] },
     ],
   },
   {
     slug: "api-call-object",
     group: "API",
-    title: "Call object",
-    description: "Reference for normalized call records returned by the API and webhooks.",
+    title: "Call object reference",
+    description: "Normalized call record structure returned by REST endpoints and webhooks.",
     sections: [
-      { title: "Example", blocks: [{ type: "code", language: "json", body: `{
+      { title: "Complete payload example", blocks: [{ type: "code", language: "json", body: `{
   "call": {
-    "id": "call_id",
-    "call_status": "completed",
+    "id": "6702b3c4d5e6f7a8b9c0d1e2",
+    "agentId": "6701a2b3c4d5e6f7a8b9c0d1",
+    "agentName": "Clinical Appointment Coordinator",
     "direction": "outbound",
-    "duration": 92,
+    "status": "completed",
+    "callerNumber": "+918000000001",
+    "calledNumber": "+919876543210",
     "voip": {
       "from": "+918000000001",
       "to": "+919876543210",
       "direction": "outbound"
     },
-    "transcription_text": "Customer: Hello\\nAgent: How may I help?",
+    "startedAt": "2026-09-18T10:15:00.000Z",
+    "endedAt": "2026-09-18T10:16:32.000Z",
+    "durationSeconds": 92,
+    "transcription_text": "Customer: Hello?\\n\\nAgent: Hi, this is Dr. Patel's clinic calling to confirm your appointment for tomorrow at 4 PM.\\n\\nCustomer: Yes, I will be there.\\n\\nAgent: Great, thank you!",
+    "transcript": [
+      {
+        "role": "assistant",
+        "text": "Hi, this is Dr. Patel's clinic calling to confirm your appointment for tomorrow at 4 PM.",
+        "timestamp": "2026-09-18T10:15:02.000Z",
+        "interrupted": false
+      },
+      {
+        "role": "user",
+        "text": "Yes, I will be there.",
+        "timestamp": "2026-09-18T10:15:12.000Z",
+        "interrupted": false
+      }
+    ],
+    "recordingUrl": "https://api.vozon.ai/api/v1/calls/6702b3c4d5e6f7a8b9c0d1e2/recording",
+    "providers": {
+      "llm": { "provider": "openai", "model": "gpt-4o-mini", "totalTokens": 1240 },
+      "stt": { "provider": "sarvam", "model": "saarika:v2", "seconds": 92 },
+      "tts": { "provider": "sarvam", "model": "bulbul:v1", "characters": 540 }
+    },
     "usage": {
       "llmTokens": 1240,
       "sttSeconds": 92,
-      "ttsCharacters": 680
+      "ttsCharacters": 540,
+      "avgResponseLatencyMs": 410,
+      "responseLatencyP50Ms": 380,
+      "responseLatencyP90Ms": 590,
+      "responseLatencyP95Ms": 680,
+      "responseLatencyP99Ms": 820
     },
-    "billing": { "chargedCredits": 0.0842 },
-    "structuredOutput": {},
-    "metadata": { "customerId": "customer_123" }
+    "billing": {
+      "chargedCredits": 4.5,
+      "providerCost": 2.1,
+      "platformFee": 2.4,
+      "currency": "INR"
+    },
+    "sentiment": { "score": 0.88, "label": "positive" },
+    "endReason": "agent_completed",
+    "structuredOutput": {
+      "confirmed": true,
+      "rescheduled": false,
+      "appointmentTime": "2026-09-19T16:00:00Z"
+    },
+    "metadata": { "customerId": "cust_8829" }
   }
 }` }] },
-      { title: "Fields", blocks: [{ type: "table", headers: ["Field", "Description"], rows: [["id", "Stable Vozon call identifier."], ["call_status", "Current or terminal status."], ["direction", "inbound, outbound, or web."], ["duration", "Connected duration in seconds."], ["voip", "Normalized caller, recipient, and direction."], ["transcription_text", "Final readable transcript when available."], ["usage", "Metered language and speech usage."], ["billing.chargedCredits", "Final customer wallet deduction."], ["structuredOutput", "Agent-defined extracted result."], ["metadata", "Caller-provided safe correlation values."]] }] },
+      { title: "Detailed field reference", blocks: [{ type: "table", headers: ["Field", "Type", "Description"], rows: [
+        ["id", "string", "Stable unique call identifier."],
+        ["direction", "string", "'inbound', 'outbound', or 'web'."],
+        ["status", "string", "'completed', 'failed', 'in-progress', 'ringing', 'busy', 'no-answer', 'canceled'."],
+        ["durationSeconds", "integer", "Total connected call duration in seconds."],
+        ["voip", "object", "Caller and called numbers with E.164 formatting."],
+        ["transcription_text", "string", "Full concatenated conversation transcript."],
+        ["transcript", "array", "Timestamped dialog turns with role, content, and interruption flags."],
+        ["recordingUrl", "string", "Direct streaming URL for call audio recording with Range header support."],
+        ["usage", "object", "LLM tokens, STT seconds, TTS characters, and latency percentiles (p50/p90/p95/p99)."],
+        ["billing.chargedCredits", "number", "Exact wallet deduction in organization currency (e.g. INR)."],
+        ["sentiment", "object", "Sentiment score (-1.0 to 1.0) and label (positive, neutral, negative)."],
+        ["structuredOutput", "object", "Data extracted by the agent (e.g. dates, booking status, custom entities)."],
+        ["metadata", "object", "Arbitrary correlation keys provided when triggering the call."],
+      ] }] },
     ],
   },
   {
     slug: "webhooks",
     group: "API",
     title: "Webhooks",
-    description: "Receive signed call lifecycle events with safe retry handling.",
+    description: "Receive signed call lifecycle events with automatic retry and HMAC SHA-256 validation.",
     sections: [
-      { title: "Events", blocks: [{ type: "table", headers: ["Event", "When sent"], rows: [["call.started", "A call has started."], ["call.ended", "A call reached a completed terminal state."], ["call.failed", "A call reached a failed terminal state."], ["transcript.ready", "The finalized transcript is available."]] }] },
-      { title: "Delivery handling", blocks: [{ type: "steps", items: [{ title: "Verify", body: "Validate X-AI-Voice-Signature using the endpoint secret and the unmodified request body before processing the payload." }, { title: "Acknowledge", body: "Return a successful 2xx status promptly and perform slower work asynchronously." }, { title: "Deduplicate", body: "Persist X-AI-Voice-Delivery or the payload event id and ignore a previously processed id." }, { title: "Retry safely", body: "Make downstream work idempotent because failed deliveries can be retried." }] }, { type: "code", language: "javascript", body: `import { createHmac, timingSafeEqual } from "node:crypto";
+      { title: "Interactive Signature Verifier", blocks: [{ type: "note", tone: "info", body: "Test and verify your HMAC signature calculation in real time using the interactive sandbox at /docs/api." }] },
+      { title: "Subscribed events", blocks: [{ type: "table", headers: ["Event", "Trigger condition", "Key payload data"], rows: [
+        ["call.started", "Recipient answers and telephony connects", "callId, agentId, direction, callerNumber, calledNumber"],
+        ["call.ended", "Call reaches terminal completed state", "Complete call record with duration, transcript, and charges"],
+        ["call.failed", "Call fails to connect or times out", "Error message, destination, endReason"],
+        ["transcript.ready", "Post-call speech and structured processing finishes", "Final sanitized transcript and structured JSON extraction"],
+      ] }] },
+      { title: "Signature verification (Node.js)", blocks: [
+        { type: "text", body: "Vozon signs every webhook using your secret (whsec_...). Validate X-AI-Voice-Signature before processing the body:" },
+        { type: "code", language: "javascript", body: `import { createHmac, timingSafeEqual } from "node:crypto";
 
-function validVozonSignature(rawBody, signatureHeader, endpointSecret) {
+export function verifyVozonSignature(rawBodyBuffer, signatureHeader, endpointSecret) {
   const expected = createHmac("sha256", endpointSecret)
-    .update(rawBody)
+    .update(rawBodyBuffer)
     .digest("hex");
   const received = signatureHeader.replace(/^v1=/, "");
-  return expected.length === received.length &&
-    timingSafeEqual(Buffer.from(expected), Buffer.from(received));
-}` }, { type: "code", language: "json", body: `{
-  "id": "call.ended:call_id",
-  "event": "call.ended",
-  "createdAt": "2026-07-30T12:00:00.000Z",
-  "data": {
-    "id": "call_id",
-    "call_status": "completed",
-    "direction": "outbound",
-    "duration": 92,
-    "billing": { "chargedCredits": 0.0842 }
-  }
+  return (
+    expected.length === received.length &&
+    timingSafeEqual(Buffer.from(expected), Buffer.from(received))
+  );
+}` },
+      ] },
+      { title: "Signature verification (Python)", blocks: [{ type: "code", language: "python", body: `import hmac
+import hashlib
+
+def verify_vozon_signature(raw_body_bytes, signature_header, endpoint_secret):
+    expected = hmac.new(
+        endpoint_secret.encode('utf-8'),
+        raw_body_bytes,
+        hashlib.sha256
+    ).hexdigest()
+    received = signature_header.removeprefix("v1=")
+    return hmac.compare_digest(expected, received)` }] },
+      { title: "Signature verification (Go)", blocks: [{ type: "code", language: "go", body: `package main
+
+import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
+	"strings"
+)
+
+func VerifyVozonSignature(rawBody []byte, signatureHeader string, secret string) bool {
+	mac := hmac.New(sha256.New, []byte(secret))
+	mac.Write(rawBody)
+	expected := hex.EncodeToString(mac.Sum(nil))
+	received := strings.TrimPrefix(signatureHeader, "v1=")
+	return hmac.Equal([]byte(expected), []byte(received))
 }` }] },
+      { title: "Delivery best practices", blocks: [{ type: "steps", items: [
+        { title: "Return HTTP 200 promptly", body: "Acknowledge the webhook with a 2xx status code in under 5 seconds. Offload slow operations (database writes, emails) to background queues." },
+        { title: "Deduplicate with X-AI-Voice-Delivery", body: "Vozon includes a unique delivery UUID in the X-AI-Voice-Delivery header. Store this ID to guarantee idempotent handling." },
+        { title: "Automatic retry policy", body: "If your server fails or returns non-2xx, deliveries are retried at +1m, +5m, +30m, +2h, and +12h." },
+      ] }] },
     ],
   },
   {
@@ -305,15 +457,63 @@ function validVozonSignature(rawBody, signatureHeader, endpointSecret) {
   {
     slug: "errors",
     group: "API",
-    title: "Errors and retries",
-    description: "Handle validation, authorization, conflicts, limits, and temporary failures.",
+    title: "Errors and troubleshooting matrix",
+    description: "Resolve all HTTP status codes and operational error messages without contacting support.",
     sections: [
-      { title: "Status codes", blocks: [{ type: "table", headers: ["Status", "Meaning", "Action"], rows: [["400", "Invalid request", "Correct the input; do not retry unchanged."], ["401", "Authentication failed", "Check the key and Bearer header."], ["403", "Scope or role denied", "Use an authorized role and the required scope."], ["404", "Resource not found", "Confirm the id and active organization."], ["409", "State conflict", "Refresh state and resolve the conflict."], ["429", "Rate limited", "Retry with exponential backoff and jitter."], ["5xx", "Temporary service failure", "Retry idempotent work with bounded backoff."]] }] },
-      { title: "Safe retry policy", blocks: [{ type: "code", language: "text", body: `attempt 1: wait about 1 second
-attempt 2: wait about 2 seconds
-attempt 3: wait about 4 seconds
-add random jitter to each delay
-stop after a bounded number of attempts` }, { type: "note", body: "Do not automatically retry a call-trigger request unless your application can prove that a call was not already accepted." }] },
+      { title: "Interactive Troubleshooting", blocks: [{ type: "note", tone: "info", body: "For live interactive testing and zero-contact troubleshooting, visit the interactive explorer at /docs/api." }] },
+      { title: "HTTP status code reference", blocks: [{ type: "table", headers: ["Status", "Meaning", "Immediate action"], rows: [
+        ["400", "Bad Request", "Fix parameter types or phone formatting (ensure E.164 format with + country code)."],
+        ["401", "Unauthorized", "Verify API key in 'Authorization: Bearer avp_...' or regenerate a fresh key."],
+        ["403", "Forbidden", "API key lacks required scope (e.g. 'calls:trigger' required for outbound calling)."],
+        ["404", "Not Found", "Resource ID does not exist or belongs to a different organization."],
+        ["409", "Conflict", "Telephony or capacity conflict (outbound number not ready or wallet balance low)."],
+        ["429", "Rate Limited", "Retry with exponential backoff and jitter."],
+        ["5xx", "Server Error", "Temporary gateway issue. Retry idempotent requests after a delay."],
+      ] }] },
+      { title: "Zero-contact error resolution matrix", blocks: [{ type: "table", headers: ["Error message", "Root cause", "Exact 3-step fix"], rows: [
+        [
+          "Import or buy a phone number with Outbound or Both direction...",
+          "Agent has no Ready phone number configured for outbound calling.",
+          "1. Open Dashboard → Phone Numbers.\n2. Ensure your number has Direction 'Outbound' or 'Both'.\n3. Assign it to this agent and click Save.",
+        ],
+        [
+          "Destination must be formatted as an E.164 phone number",
+          "Phone number is missing country code or plus sign.",
+          "1. Format with '+' and country code (e.g. '+919876543210' for India, '+14155552671' for US).\n2. Strip spaces, dashes, and parentheses.\n3. Validate with libphonenumber or regex before calling.",
+        ],
+        [
+          "The selected outbound number changed. Refresh phone numbers before calling.",
+          "Channel admission lock due to active concurrent call on the same number.",
+          "1. Wait 5 seconds for the active call to complete.\n2. Or purchase additional phone numbers in Dashboard → Phone Numbers.\n3. Or enable multi-channel SIP trunking.",
+        ],
+        [
+          "Invalid or expired API key.",
+          "The API key was revoked, expired, or mistyped.",
+          "1. Go to Dashboard → Developers → API Keys.\n2. Create a new key.\n3. Update your environment variable and restart your server.",
+        ],
+        [
+          "API key lacks 'calls:trigger' scope",
+          "The key was issued with 'read' scope only.",
+          "1. Go to Dashboard → Developers.\n2. Create an API key with 'calls:trigger' or 'full-access' scope.\n3. Replace the token in your backend.",
+        ],
+      ] }] },
+      { title: "Exponential backoff implementation", blocks: [
+        { type: "text", body: "For 429 and temporary 5xx errors, implement bounded exponential backoff with jitter:" },
+        { type: "code", language: "javascript", body: `async function fetchWithRetry(url, options, maxRetries = 4) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const response = await fetch(url, options);
+      if (response.status !== 429 && response.status < 500) {
+        return response;
+      }
+    } catch (err) {
+      if (attempt === maxRetries) throw err;
+    }
+    const delay = Math.pow(2, attempt) * 1000 + Math.random() * 500;
+    await new Promise((r) => setTimeout(r, delay));
+  }
+}` },
+      ] },
     ],
   },
   {

@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import {
   DashboardSidebar,
@@ -513,6 +514,14 @@ export function DeveloperShell() {
                   Copy
                 </button>
               </div>
+              <Link
+                href="/docs/api"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex h-10 items-center justify-center rounded-xl bg-[#118778] px-3.5 text-xs font-semibold text-white transition hover:bg-[#0e6f62]"
+              >
+                API Docs & Explorer ↗
+              </Link>
               <button
                 className={secondaryButtonClass}
                 type="button"

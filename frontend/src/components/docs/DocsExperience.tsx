@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-
+import { BrandLogo } from "@/components/ui/BrandLogo";
 import { docsTopics } from "@/lib/docsContent";
 
 type DocSection = {
@@ -84,53 +84,109 @@ function CodeBlock({ children, label = "Shell" }: { children: string; label?: st
     window.setTimeout(() => setCopied(false), 1_500);
   }
   return (
-    <div className="docs-code-block overflow-hidden rounded-2xl border border-white/10 bg-[#07110f] shadow-2xl shadow-black/20">
-      <div className="flex items-center justify-between border-b border-white/10 px-4 py-2.5 text-xs text-white/45">
-        <span>{label}</span>
-        <button className="font-semibold text-[#75fff0] hover:text-white" onClick={() => void copy()} type="button">{copied ? "Copied" : "Copy"}</button>
+    <div className="overflow-hidden rounded-2xl border border-slate-800 bg-[#0f172a] shadow-md my-4">
+      <div className="flex items-center justify-between border-b border-slate-800/80 bg-slate-900/60 px-4 py-2.5 text-xs text-slate-400">
+        <span className="font-mono text-[11px] font-semibold">{label}</span>
+        <button
+          className="font-bold text-[#14b8a6] hover:text-white transition cursor-pointer"
+          onClick={() => void copy()}
+          type="button"
+        >
+          {copied ? "✓ Copied" : "Copy"}
+        </button>
       </div>
-      <pre className="overflow-x-auto p-4 text-[13px] leading-6 text-[#c7f9f2]"><code>{children}</code></pre>
+      <pre className="overflow-x-auto p-4 font-mono text-[12px] leading-6 text-[#75fff0]">
+        <code>{children}</code>
+      </pre>
     </div>
   );
 }
 
 function Callout({ children, tone = "info" }: { children: React.ReactNode; tone?: "info" | "warning" | "success" }) {
   const styles = {
-    info: "border-cyan-300/25 bg-cyan-300/[0.07] text-cyan-50",
-    warning: "border-amber-300/25 bg-amber-300/[0.07] text-amber-50",
-    success: "border-emerald-300/25 bg-emerald-300/[0.07] text-emerald-50",
+    info: "border-sky-200 bg-sky-50/80 text-sky-900",
+    warning: "border-amber-200 bg-amber-50/80 text-amber-900",
+    success: "border-emerald-200 bg-emerald-50/80 text-emerald-900",
   };
-  return <div className={`rounded-xl border px-4 py-3 text-sm leading-6 ${styles[tone]}`}>{children}</div>;
+  const icons = {
+    info: "💡",
+    warning: "⚠️",
+    success: "✓",
+  };
+  return (
+    <div className={`my-4 flex items-start gap-3 rounded-2xl border p-4 text-xs sm:text-sm leading-relaxed shadow-xs ${styles[tone]}`}>
+      <span className="text-base select-none mt-0.5">{icons[tone]}</span>
+      <div className="min-w-0 font-medium">{children}</div>
+    </div>
+  );
 }
 
 function Step({ number, title, children }: { number: number; title: string; children: React.ReactNode }) {
   return (
-    <div className="relative grid grid-cols-[36px_minmax(0,1fr)] gap-3 pb-7 last:pb-0">
-      <span className="docs-step-number relative z-10 grid size-9 place-items-center rounded-full text-sm font-black">{number}</span>
-      <div><h3 className="text-base font-semibold text-white">{title}</h3><div className="mt-1 text-sm leading-6 text-white/58">{children}</div></div>
-      <span className="docs-step-line absolute bottom-0 left-[17px] top-9 w-px last:hidden" />
+    <div className="relative grid grid-cols-[40px_minmax(0,1fr)] gap-3.5 pb-8 last:pb-0">
+      <span className="relative z-10 grid size-10 place-items-center rounded-xl bg-teal-600 text-white font-bold text-sm shadow-xs">
+        {number}
+      </span>
+      <div>
+        <h3 className="text-base font-bold text-slate-900">{title}</h3>
+        <div className="mt-1 text-sm leading-relaxed text-slate-600">{children}</div>
+      </div>
+      <span className="absolute bottom-0 left-[19px] top-10 w-0.5 bg-slate-200 last:hidden" />
     </div>
   );
 }
 
 function AnnotatedAgentVisual() {
   return (
-    <figure className="rounded-2xl border border-white/10 bg-[#07110f] p-4">
+    <figure className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
       <svg aria-labelledby="agent-visual-title" className="h-auto w-full" role="img" viewBox="0 0 760 390">
         <title id="agent-visual-title">Annotated agent configuration interface</title>
-        <defs><marker id="arrow" markerHeight="8" markerWidth="8" orient="auto" refX="7" refY="4"><path d="M0 0 8 4 0 8Z" fill="#000" /></marker></defs>
-        <rect fill="#020907" height="350" rx="18" width="540" x="15" y="20" />
-        <rect fill="#0b1916" height="48" rx="18" width="540" x="15" y="20" />
-        <circle cx="42" cy="44" fill="#45ddce" r="7" /><text fill="#fff" fontSize="14" fontWeight="700" x="60" y="49">Customer support agent</text>
-        <rect fill="#10231f" height="68" rx="10" width="220" x="40" y="92" /><text fill="#8ba29e" fontSize="11" x="55" y="114">LANGUAGE</text><text fill="#fff" fontSize="14" fontWeight="700" x="55" y="141">Hindi + English</text>
-        <rect fill="#10231f" height="68" rx="10" width="220" x="285" y="92" /><text fill="#8ba29e" fontSize="11" x="300" y="114">VOICE</text><text fill="#fff" fontSize="14" fontWeight="700" x="300" y="141">Natural · Warm</text>
-        <rect fill="#10231f" height="116" rx="10" width="465" x="40" y="180" /><text fill="#8ba29e" fontSize="11" x="55" y="203">AGENT INSTRUCTIONS</text><text fill="#dbe8e5" fontSize="12" x="55" y="229">Greet the caller, identify their request,</text><text fill="#dbe8e5" fontSize="12" x="55" y="250">use approved knowledge, and confirm the</text><text fill="#dbe8e5" fontSize="12" x="55" y="271">next action before ending the call.</text>
-        <rect fill="#45ddce" height="36" rx="8" width="92" x="413" y="316" /><text fill="#02110d" fontSize="12" fontWeight="800" x="441" y="339">Save</text>
-        <path d="M680 85 C625 85 603 105 512 120" fill="none" markerEnd="url(#arrow)" stroke="#000" strokeWidth="2" /><circle cx="696" cy="84" fill="#000" r="17" /><text className="docs-agent-callout-number" fontSize="13" fontWeight="900" textAnchor="middle" x="696" y="89">1</text>
-        <path d="M680 205 C620 205 605 220 510 225" fill="none" markerEnd="url(#arrow)" stroke="#000" strokeWidth="2" /><circle cx="696" cy="204" fill="#000" r="17" /><text className="docs-agent-callout-number" fontSize="13" fontWeight="900" textAnchor="middle" x="696" y="209">2</text>
-        <path d="M680 325 C615 325 590 333 510 334" fill="none" markerEnd="url(#arrow)" stroke="#000" strokeWidth="2" /><circle cx="696" cy="324" fill="#000" r="17" /><text className="docs-agent-callout-number" fontSize="13" fontWeight="900" textAnchor="middle" x="696" y="329">3</text>
+        <defs>
+          <marker id="arrow" markerHeight="8" markerWidth="8" orient="auto" refX="7" refY="4">
+            <path d="M0 0 8 4 0 8Z" fill="#108D82" />
+          </marker>
+        </defs>
+        <rect fill="#f8fafc" height="350" rx="18" stroke="#e2e8f0" strokeWidth="2" width="540" x="15" y="20" />
+        <rect fill="#ffffff" height="48" rx="18" stroke="#e2e8f0" strokeWidth="1" width="540" x="15" y="20" />
+        <circle cx="42" cy="44" fill="#108D82" r="7" />
+        <text fill="#0f172a" fontSize="14" fontWeight="700" x="60" y="49">Customer support agent</text>
+        <rect fill="#ffffff" height="68" rx="10" stroke="#e2e8f0" width="220" x="40" y="92" />
+        <text fill="#64748b" fontSize="11" fontWeight="700" x="55" y="114">LANGUAGE</text>
+        <text fill="#0f172a" fontSize="14" fontWeight="700" x="55" y="141">Hindi + English</text>
+        <rect fill="#ffffff" height="68" rx="10" stroke="#e2e8f0" width="220" x="285" y="92" />
+        <text fill="#64748b" fontSize="11" fontWeight="700" x="300" y="114">VOICE</text>
+        <text fill="#0f172a" fontSize="14" fontWeight="700" x="300" y="141">Natural · Warm</text>
+        <rect fill="#ffffff" height="116" rx="10" stroke="#e2e8f0" width="465" x="40" y="180" />
+        <text fill="#64748b" fontSize="11" fontWeight="700" x="55" y="203">AGENT INSTRUCTIONS</text>
+        <text fill="#334155" fontSize="12" x="55" y="229">Greet the caller, identify their request,</text>
+        <text fill="#334155" fontSize="12" x="55" y="250">use approved knowledge, and confirm the</text>
+        <text fill="#334155" fontSize="12" x="55" y="271">next action before ending the call.</text>
+        <rect fill="#108D82" height="36" rx="8" width="92" x="413" y="316" />
+        <text fill="#ffffff" fontSize="12" fontWeight="800" x="443" y="339">Save</text>
+        <path d="M680 85 C625 85 603 105 512 120" fill="none" markerEnd="url(#arrow)" stroke="#108D82" strokeWidth="2" />
+        <circle cx="696" cy="84" fill="#108D82" r="16" />
+        <text fill="#ffffff" fontSize="12" fontWeight="800" textAnchor="middle" x="696" y="89">1</text>
+        <path d="M680 205 C620 205 605 220 510 225" fill="none" markerEnd="url(#arrow)" stroke="#108D82" strokeWidth="2" />
+        <circle cx="696" cy="204" fill="#108D82" r="16" />
+        <text fill="#ffffff" fontSize="12" fontWeight="800" textAnchor="middle" x="696" y="209">2</text>
+        <path d="M680 325 C615 325 590 333 510 334" fill="none" markerEnd="url(#arrow)" stroke="#108D82" strokeWidth="2" />
+        <circle cx="696" cy="324" fill="#108D82" r="16" />
+        <text fill="#ffffff" fontSize="12" fontWeight="800" textAnchor="middle" x="696" y="329">3</text>
       </svg>
-      <figcaption className="grid gap-2 border-t border-white/10 pt-4 text-xs text-white/55 sm:grid-cols-3"><span className="flex items-center gap-2"><b className="docs-figure-number inline-grid size-5 shrink-0 place-items-center rounded-full">1</b> Select language and voice</span><span className="flex items-center gap-2"><b className="docs-figure-number inline-grid size-5 shrink-0 place-items-center rounded-full">2</b> Write precise instructions</span><span className="flex items-center gap-2"><b className="docs-figure-number inline-grid size-5 shrink-0 place-items-center rounded-full">3</b> Save before testing</span></figcaption>
+      <figcaption className="grid gap-2 border-t border-slate-200 pt-4 text-xs text-slate-600 sm:grid-cols-3">
+        <span className="flex items-center gap-2">
+          <b className="inline-grid size-5 shrink-0 place-items-center rounded-full bg-teal-100 text-teal-800 text-[11px] font-bold">1</b>
+          Select language and voice
+        </span>
+        <span className="flex items-center gap-2">
+          <b className="inline-grid size-5 shrink-0 place-items-center rounded-full bg-teal-100 text-teal-800 text-[11px] font-bold">2</b>
+          Write precise instructions
+        </span>
+        <span className="flex items-center gap-2">
+          <b className="inline-grid size-5 shrink-0 place-items-center rounded-full bg-teal-100 text-teal-800 text-[11px] font-bold">3</b>
+          Save before testing
+        </span>
+      </figcaption>
     </figure>
   );
 }
@@ -138,8 +194,25 @@ function AnnotatedAgentVisual() {
 function ArchitectureVisual() {
   const nodes = ["Your application", "Vozon API", "Voice agent", "Customer", "Call events"];
   return (
-    <div className="grid gap-3 rounded-2xl border border-white/10 bg-[#07110f] p-5 sm:grid-cols-5">
-      {nodes.map((node, index) => <div className="relative" key={node}><div className={`grid min-h-20 place-items-center rounded-xl border p-3 text-center text-xs font-bold ${index === 1 || index === 2 ? "border-[#45ddce]/40 bg-[#45ddce]/10 text-[#9ff8ee]" : "border-white/10 bg-white/[0.035] text-white/65"}`}>{node}</div>{index < nodes.length - 1 ? <span className="absolute -right-3 top-1/2 z-10 hidden -translate-y-1/2 text-[#45ddce] sm:block">→</span> : null}</div>)}
+    <div className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-5 sm:grid-cols-5 shadow-xs">
+      {nodes.map((node, index) => (
+        <div className="relative" key={node}>
+          <div
+            className={`grid min-h-20 place-items-center rounded-xl border p-3 text-center text-xs font-bold transition ${
+              index === 1 || index === 2
+                ? "border-teal-300 bg-teal-50/80 text-teal-900 shadow-xs"
+                : "border-slate-200 bg-slate-50 text-slate-700"
+            }`}
+          >
+            {node}
+          </div>
+          {index < nodes.length - 1 ? (
+            <span className="absolute -right-3 top-1/2 z-10 hidden -translate-y-1/2 text-teal-600 font-bold sm:block">
+              →
+            </span>
+          ) : null}
+        </div>
+      ))}
     </div>
   );
 }
@@ -155,75 +228,524 @@ const endpointRows = [
 
 export function DocsExperience() {
   const [query, setQuery] = useState("");
-  const filtered = useMemo(() => sections.filter((item) => `${item.title} ${item.summary} ${item.keywords}`.toLowerCase().includes(query.toLowerCase())), [query]);
+  const filtered = useMemo(
+    () =>
+      sections.filter((item) =>
+        `${item.title} ${item.summary} ${item.keywords}`.toLowerCase().includes(query.toLowerCase()),
+      ),
+    [query],
+  );
   const groups = [...new Set(sections.map((item) => item.group))];
 
   return (
-    <div className="docs-page min-h-screen bg-[#020706] pt-24 text-white">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 selection:bg-teal-500/20 font-sans">
+      {/* Clean Light Developer Portal Header */}
+      <header className="sticky top-0 z-40 h-16 border-b border-slate-200/90 bg-white/95 backdrop-blur-md shadow-xs">
+        <div className="mx-auto flex h-full max-w-[1720px] items-center justify-between gap-4 px-4 sm:px-6">
+          <div className="flex items-center gap-4 sm:gap-6">
+            <div className="flex items-center gap-2.5">
+              <BrandLogo compact showWebsiteLogo />
+              <span className="hidden sm:inline-flex items-center rounded-full bg-teal-50 border border-teal-200 px-2.5 py-0.5 text-xs font-bold text-[#0e6f62]">
+                Docs & Guides
+              </span>
+              <span className="hidden md:inline-flex items-center rounded-full bg-slate-100 border border-slate-200 px-2 py-0.5 text-[11px] font-semibold text-slate-600">
+                v1.0.0 Stable
+              </span>
+            </div>
 
-      <div className="mx-auto grid max-w-[1500px] lg:grid-cols-[260px_minmax(0,1fr)]">
-        <aside className="border-r border-white/10 p-4 lg:sticky lg:top-16 lg:h-[calc(100vh-64px)] lg:overflow-y-auto lg:p-6">
-          <label className="relative block"><span className="sr-only">Search documentation</span><input className="w-full rounded-xl border border-white/10 bg-white/[0.045] px-4 py-2.5 text-sm outline-none placeholder:text-white/30 focus:border-[#45ddce]/50" onChange={(event) => setQuery(event.target.value)} placeholder="Search docs…" value={query} /></label>
-          <nav aria-label="Documentation" className="mt-5 grid gap-5">
+            <div className="hidden lg:flex items-center gap-1 border-l border-slate-200 pl-4">
+              <Link
+                href="/docs"
+                className="rounded-lg bg-teal-50 border border-teal-200/80 px-3 py-1.5 text-xs font-bold text-[#0e6f62]"
+              >
+                Guides & Concepts
+              </Link>
+              <Link
+                href="/docs/api"
+                className="rounded-lg px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
+              >
+                API Reference
+              </Link>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <Link
+              href="/docs/api"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-teal-200 bg-teal-50/70 px-3 py-1.5 text-xs font-bold text-teal-900 transition hover:bg-teal-100 shadow-xs"
+            >
+              <span className="size-2 rounded-full bg-[#108D82] animate-pulse" />
+              <span>Open API Sandbox</span>
+            </Link>
+
+            <a
+              href="/openapi.yaml"
+              download="vozon-openapi.yaml"
+              className="hidden sm:inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-bold text-slate-700 transition hover:border-[#108D82] hover:text-[#108D82] shadow-xs cursor-pointer"
+            >
+              <span>↓</span> YAML
+            </a>
+
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center rounded-xl bg-[#108D82] hover:bg-[#0e756c] text-white px-3.5 py-1.5 text-xs font-bold shadow-xs transition cursor-pointer"
+            >
+              Dashboard →
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      {/* Main 2-Column Clean Light Layout */}
+      <div className="mx-auto grid max-w-[1500px] lg:grid-cols-[280px_minmax(0,1fr)]">
+        {/* Navigation Sidebar */}
+        <aside className="border-r border-slate-200/90 bg-white p-4 lg:sticky lg:top-16 lg:h-[calc(100vh-64px)] lg:overflow-y-auto lg:p-6">
+          <div className="mb-5">
+            <Link
+              href="/docs/api"
+              className="group flex items-center justify-between rounded-xl border border-teal-200 bg-teal-50/70 p-3 text-xs font-bold text-teal-900 transition hover:bg-teal-100 shadow-xs"
+            >
+              <div className="flex items-center gap-2">
+                <span className="size-2 rounded-full bg-[#108D82] animate-pulse" />
+                <span>API Reference & Sandbox</span>
+              </div>
+              <span className="text-[#108D82] group-hover:translate-x-0.5 transition font-bold">→</span>
+            </Link>
+          </div>
+
+          <label className="relative block">
+            <span className="sr-only">Search documentation</span>
+            <input
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-3.5 py-2 text-xs text-slate-800 placeholder:text-slate-400 outline-none focus:bg-white focus:border-[#108D82] focus:ring-2 focus:ring-teal-500/10 transition shadow-xs"
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Search guides…"
+              value={query}
+            />
+            <svg
+              className="absolute left-3 top-2.5 size-3.5 text-slate-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </label>
+
+          <nav aria-label="Documentation" className="mt-6 grid gap-5">
             {groups.map((group) => {
               const items = filtered.filter((item) => item.group === group);
-              return items.length ? <div key={group}><span className="px-2 text-[10px] font-black uppercase tracking-[0.16em] text-white/30">{group}</span><div className="mt-2 grid gap-0.5">{items.map((item) => <a className="rounded-lg px-2 py-2 text-sm text-white/58 hover:bg-white/[0.06] hover:text-[#9ff8ee]" href={`#${item.id}`} key={item.id}>{item.title}</a>)}</div></div> : null;
+              return items.length ? (
+                <div key={group}>
+                  <span className="px-2.5 text-[11px] font-extrabold uppercase tracking-wider text-slate-400 block mb-1.5">
+                    {group}
+                  </span>
+                  <div className="grid gap-1">
+                    {items.map((item) => (
+                      <a
+                        className="rounded-xl px-3 py-2 text-xs text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium transition"
+                        href={`#${item.id}`}
+                        key={item.id}
+                      >
+                        {item.title}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ) : null;
             })}
-            {!filtered.length ? <p className="px-2 text-sm text-white/40">No documentation matches “{query}”.</p> : null}
+            {!filtered.length ? (
+              <p className="px-2 text-xs text-slate-500">No documentation matches “{query}”.</p>
+            ) : null}
           </nav>
         </aside>
 
-        <article className="min-w-0 px-5 py-12 sm:px-8 lg:px-14 lg:py-16 xl:px-20">
+        {/* Documentation Content */}
+        <article className="min-w-0 bg-white px-6 py-10 sm:px-10 lg:px-14 lg:py-12 xl:px-16">
           <div className="max-w-4xl">
+            {/* Overview Section */}
             <section id="overview" className="scroll-mt-24">
-              <span className="text-xs font-black uppercase tracking-[0.2em] text-[#45ddce]">Vozon documentation</span>
-              <h1 className="mt-4 text-4xl font-semibold tracking-[-0.04em] sm:text-6xl">Build voice agents that move work forward.</h1>
-              <p className="mt-6 max-w-3xl text-lg leading-8 text-white/58">Create multilingual agents, connect business knowledge and phone numbers, launch calls, and observe every outcome from one platform or API.</p>
-              <div className="mt-8 grid gap-3 sm:grid-cols-3">{[["01", "Build", "Configure behavior, voice, language, and tools."], ["02", "Deploy", "Connect a number or start calls through the API."], ["03", "Improve", "Use transcripts, outcomes, and cost data to iterate."]].map(([number, title, body]) => <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4" key={number}><span className="text-xs font-black text-[#45ddce]">{number}</span><h2 className="mt-3 font-semibold">{title}</h2><p className="mt-1 text-sm leading-6 text-white/45">{body}</p></div>)}</div>
-              <div className="mt-8"><ArchitectureVisual /></div>
-            </section>
+              <span className="inline-flex items-center rounded-full bg-teal-50 border border-teal-200 px-3 py-1 text-xs font-bold text-[#0e6f62]">
+                Vozon Developer Documentation
+              </span>
+              <h1 className="mt-4 text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900">
+                Build voice agents that move work forward.
+              </h1>
+              <p className="mt-4 max-w-3xl text-base sm:text-lg leading-relaxed text-slate-600">
+                Create multilingual agents, connect business knowledge and phone numbers, launch calls, and observe every outcome from one unified developer platform and API.
+              </p>
 
-            <section id="quickstart" className="scroll-mt-24 border-t border-white/10 pt-16 mt-16">
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#45ddce]">Start here</p><h2 className="mt-3 text-3xl font-semibold">Quickstart</h2><p className="mt-3 text-white/55">A production-ready first call has four parts.</p>
-              <div className="mt-8"><Step number={1} title="Create an agent">Open Agents, select New agent, choose a starting template, and give the agent a clear name.</Step><Step number={2} title="Configure the conversation">Select the caller’s language and voice. Add a first message and instructions describing goals, boundaries, escalation, and completion criteria.</Step><Step number={3} title="Test before deployment">Use the browser test call. Verify pronunciation, interruptions, tool behavior, and the final outcome with realistic conversations.</Step><Step number={4} title="Connect a phone number">Import or purchase a number, assign the agent, choose the permitted direction, and place a controlled live call.</Step></div>
-              <Callout tone="success">Start with one narrow outcome. A focused appointment-booking or qualification agent is easier to test and improve than a single agent responsible for every business process.</Callout>
-            </section>
+              {/* Featured API Explorer Card */}
+              <div className="mt-8 rounded-2xl border border-teal-200 bg-gradient-to-r from-teal-50/90 to-emerald-50/60 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 shadow-xs">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="rounded bg-[#108D82] text-white px-2 py-0.5 text-[10px] font-mono font-bold">
+                      INTERACTIVE
+                    </span>
+                    <h3 className="font-bold text-teal-950 text-base">Vozon API Reference & Live Sandbox</h3>
+                  </div>
+                  <p className="mt-1.5 text-xs sm:text-sm text-slate-600 leading-relaxed max-w-xl">
+                    Live browser request runner, multi-language code snippets (cURL, Node.js, Python, Go, PHP), parameter trees, and instant HMAC webhook signature testing.
+                  </p>
+                </div>
+                <Link
+                  href="/docs/api"
+                  className="shrink-0 rounded-xl bg-[#108D82] hover:bg-[#0e756c] text-white px-4 py-2.5 text-xs font-bold transition shadow-xs"
+                >
+                  Open Interactive API Explorer →
+                </Link>
+              </div>
 
-            <section id="agents" className="scroll-mt-24 border-t border-white/10 pt-16 mt-16">
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#45ddce]">Build</p><h2 className="mt-3 text-3xl font-semibold">Configure an agent</h2><p className="mt-3 leading-7 text-white/55">Agent configuration controls what the agent says, how it sounds, which information it can use, and which actions it can take.</p>
-              <div className="mt-7"><AnnotatedAgentVisual /></div>
-              <div className="mt-7 grid gap-4 sm:grid-cols-2">{[["First message", "Set context immediately. Identify the business and explain why the agent is calling."], ["Instructions", "Write goals in priority order. Include explicit rules for confirmation, transfer, and ending."], ["Language and voice", "Match the voice and script to the selected language. Test names, numbers, dates, and mixed-language phrases."], ["Tools", "Give each action a clear trigger, required inputs, success response, and failure fallback."]].map(([title, body]) => <div className="rounded-xl border border-white/10 p-4" key={title}><h3 className="font-semibold">{title}</h3><p className="mt-2 text-sm leading-6 text-white/50">{body}</p></div>)}</div>
-            </section>
+              <div className="mt-8 grid gap-4 sm:grid-cols-3">
+                {[
+                  ["01", "Build", "Configure behavior, voice, language, and custom business tools."],
+                  ["02", "Deploy", "Connect a phone number or trigger calls dynamically via external API."],
+                  ["03", "Improve", "Analyze transcripts, outcomes, latency, and cost telemetry."],
+                ].map(([number, title, body]) => (
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-5 shadow-xs" key={number}>
+                    <span className="text-xs font-black text-[#108D82] font-mono">{number}</span>
+                    <h2 className="mt-2 text-sm font-bold text-slate-900">{title}</h2>
+                    <p className="mt-1.5 text-xs leading-relaxed text-slate-600">{body}</p>
+                  </div>
+                ))}
+              </div>
 
-            <section id="knowledge" className="scroll-mt-24 border-t border-white/10 pt-16 mt-16"><h2 className="text-3xl font-semibold">Knowledge bases</h2><p className="mt-3 leading-7 text-white/55">Attach approved text, files, or public pages to an agent. Keep each source current, specific, and free of credentials or unnecessary personal information.</p><ol className="mt-6 grid gap-3 text-sm text-white/58"><li className="rounded-xl border border-white/10 p-4"><b className="text-white">1. Add a source.</b> Choose text, URL, or file upload.</li><li className="rounded-xl border border-white/10 p-4"><b className="text-white">2. Wait for indexing.</b> The source must show Ready before calls use it.</li><li className="rounded-xl border border-white/10 p-4"><b className="text-white">3. Test retrieval.</b> Search for representative customer questions and verify the returned passages.</li></ol></section>
-
-            <section id="phone-numbers" className="scroll-mt-24 border-t border-white/10 pt-16 mt-16"><h2 className="text-3xl font-semibold">Phone numbers</h2><p className="mt-3 leading-7 text-white/55">A number must be Ready, assigned to an agent, and enabled for the intended direction before it can accept or place calls.</p><div className="mt-6 overflow-hidden rounded-xl border border-white/10"><div className="grid grid-cols-3 bg-white/[0.05] px-4 py-3 text-xs font-bold text-white/45"><span>Direction</span><span>Accepts inbound</span><span>Places outbound</span></div>{[["Inbound", "Yes", "No"], ["Outbound", "No", "Yes"], ["Both", "Yes", "Yes"]].map((row) => <div className="grid grid-cols-3 border-t border-white/10 px-4 py-3 text-sm text-white/60" key={row[0]}>{row.map((cell, columnIndex) => <span key={`${cell}-${columnIndex}`}>{cell}</span>)}</div>)}</div></section>
-
-            <section id="campaigns" className="scroll-mt-24 border-t border-white/10 pt-16 mt-16"><h2 className="text-3xl font-semibold">Campaigns</h2><p className="mt-3 leading-7 text-white/55">Campaigns coordinate outbound calls across a lead list. Validate consent, calling hours, number formatting, and suppression rules before launch.</p><div className="mt-6 grid gap-3 sm:grid-cols-4">{["Create campaign", "Upload leads", "Review & launch", "Monitor outcomes"].map((label, index) => <div className="rounded-xl border border-white/10 p-4 text-sm font-semibold" key={label}><span className="mr-2 text-[#45ddce]">{index + 1} →</span>{label}</div>)}</div><Callout tone="warning">Pause stops new calls from starting. It does not interrupt a call already in progress. Cancel only when the campaign should not resume.</Callout></section>
-
-            <section id="call-logs" className="scroll-mt-24 border-t border-white/10 pt-16 mt-16"><h2 className="text-3xl font-semibold">Call logs</h2><p className="mt-3 leading-7 text-white/55">Use call logs as the operational record for status, duration, transcript, recording, structured output, latency, usage, and customer charges.</p><div className="mt-6 grid gap-3 sm:grid-cols-3">{[["Conversation", "Transcript, recording, direction, participants"], ["Performance", "End-to-end latency, duration, completion state"], ["Business result", "Extracted data, disposition, campaign and metadata"]].map(([title, body]) => <div className="rounded-xl border border-white/10 p-4" key={title}><h3 className="font-semibold">{title}</h3><p className="mt-2 text-sm leading-6 text-white/48">{body}</p></div>)}</div></section>
-
-            <section id="billing" className="scroll-mt-24 border-t border-white/10 pt-16 mt-16"><h2 className="text-3xl font-semibold">Billing</h2><p className="mt-3 leading-7 text-white/55">Completed-call charges are deducted from the organization wallet. The customer total combines metered call usage with the Vozon platform fee. Billing displays the wallet balance, monthly charges, payments, and downloadable invoices.</p><div className="mt-6 rounded-2xl border border-[#45ddce]/25 bg-[#45ddce]/[0.06] p-5"><div className="flex flex-wrap items-center gap-3 text-sm font-bold"><span className="rounded-lg bg-white/10 px-3 py-2">Metered call usage</span><span className="text-[#45ddce]">+</span><span className="rounded-lg bg-white/10 px-3 py-2">Vozon platform fee</span><span className="text-[#45ddce]">=</span><span className="rounded-lg bg-[#45ddce] px-3 py-2 text-[#02110d]">Customer total</span></div></div></section>
-
-            <section id="authentication" className="scroll-mt-24 border-t border-white/10 pt-16 mt-16"><p className="text-xs font-black uppercase tracking-[0.16em] text-[#45ddce]">API reference</p><h2 className="mt-3 text-3xl font-semibold">Authentication</h2><p className="mt-3 leading-7 text-white/55">Create an API key in Dashboard → Developers. Send it as a Bearer token on every API request.</p><div className="mt-6"><CodeBlock>{`Authorization: Bearer avp_your_api_key`}</CodeBlock></div><Callout tone="warning">API keys are secrets. Show a key only once, store it in a secrets manager, restrict its scopes, and revoke it immediately if exposed. Never put a key in browser code or public documentation.</Callout></section>
-
-            <section id="api-calls" className="scroll-mt-24 border-t border-white/10 pt-16 mt-16"><h2 className="text-3xl font-semibold">Calls API</h2><p className="mt-3 text-white/55">Base URL: <code className="rounded bg-white/10 px-2 py-1 text-[#9ff8ee]">https://api.vozon.ai/api/v1</code></p><div className="mt-6 overflow-hidden rounded-xl border border-white/10">{endpointRows.map(([method, path, description]) => <div className="grid gap-2 border-b border-white/10 p-4 last:border-0 sm:grid-cols-[64px_260px_minmax(0,1fr)] sm:items-center" key={path}><span className={`w-fit rounded px-2 py-1 text-[10px] font-black ${method === "POST" ? "bg-violet-400/15 text-violet-200" : "bg-emerald-400/15 text-emerald-200"}`}>{method}</span><code className="text-sm text-white">{path}</code><span className="text-sm text-white/45">{description}</span></div>)}</div><h3 className="mt-8 text-lg font-semibold">Create an outbound call</h3><div className="mt-3"><CodeBlock>{codeSamples.create}</CodeBlock></div><h3 className="mt-8 text-lg font-semibold">Normalized call response</h3><div className="mt-3"><CodeBlock label="JSON">{codeSamples.response}</CodeBlock></div></section>
-
-            <section id="webhooks" className="scroll-mt-24 border-t border-white/10 pt-16 mt-16"><h2 className="text-3xl font-semibold">Webhooks</h2><p className="mt-3 leading-7 text-white/55">Register an HTTPS endpoint in the Developer portal and subscribe to <code>call.started</code>, <code>call.ended</code>, <code>call.failed</code>, or <code>transcript.ready</code>.</p><div className="mt-6"><CodeBlock label="JSON">{codeSamples.webhook}</CodeBlock></div><div className="mt-5 grid gap-3 sm:grid-cols-3">{[["Verify", "Validate the request signature using the endpoint secret."], ["Acknowledge", "Return a 2xx response quickly before doing slow work."], ["Deduplicate", "Store the event id and safely ignore repeated deliveries."]].map(([title, body]) => <div className="rounded-xl border border-white/10 p-4" key={title}><h3 className="font-semibold">{title}</h3><p className="mt-2 text-sm leading-6 text-white/48">{body}</p></div>)}</div></section>
-
-            <section id="errors" className="scroll-mt-24 border-t border-white/10 pt-16 mt-16"><h2 className="text-3xl font-semibold">Errors</h2><div className="mt-6 overflow-hidden rounded-xl border border-white/10">{[["400", "Invalid request", "Correct fields or formatting; do not retry unchanged."], ["401", "Authentication required", "Check the API key and Authorization header."], ["403", "Insufficient permission", "Use a key with the required scope and organization role."], ["404", "Resource not found", "Confirm the id belongs to the active organization."], ["409", "Resource conflict", "Refresh state, resolve the conflict, then retry."], ["429", "Rate limited", "Retry with exponential backoff and jitter."], ["5xx", "Temporary service error", "Retry idempotent operations with bounded backoff."]].map((row) => <div className="grid gap-2 border-b border-white/10 p-4 last:border-0 sm:grid-cols-[60px_180px_1fr]" key={row[0]}><code className="text-[#9ff8ee]">{row[0]}</code><b className="text-sm">{row[1]}</b><span className="text-sm text-white/48">{row[2]}</span></div>)}</div></section>
-
-            <section id="security" className="scroll-mt-24 border-t border-white/10 pt-16 mt-16"><p className="text-xs font-black uppercase tracking-[0.16em] text-[#45ddce]">Operations</p><h2 className="mt-3 text-3xl font-semibold">Production security checklist</h2><div className="mt-6 grid gap-3">{["Keep credentials in a secrets manager and rotate them on a defined schedule.", "Use least-privilege API scopes and separate keys by environment.", "Restrict dashboard roles and remove members who no longer need access.", "Collect only the customer data required for the stated call purpose.", "Define retention and access rules for transcripts, recordings, and exports.", "Verify webhook signatures and reject stale or replayed deliveries.", "Test consent, disclosure, calling hours, suppression, and escalation requirements for every market."].map((item) => <div className="flex gap-3 rounded-xl border border-white/10 p-4 text-sm text-white/58" key={item}><span className="text-[#45ddce]">✓</span><span>{item}</span></div>)}</div></section>
-
-            <section className="mt-16 scroll-mt-24 border-t border-white/10 pt-16" id="all-guides">
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#45ddce]">Documentation library</p>
-              <div className="mt-3 flex flex-col justify-between gap-3 sm:flex-row sm:items-end"><div><h2 className="text-3xl font-semibold">Explore every guide</h2><p className="mt-2 text-white/50">Detailed workflows, field references, code samples, and production checklists.</p></div><a className="text-sm font-semibold text-[#75fff0]" href="/openapi.yaml">Download OpenAPI →</a></div>
-              <div className="mt-7 grid gap-3 sm:grid-cols-2">
-                {docsTopics.map((topic) => <Link className="group rounded-xl border border-white/10 p-4 transition hover:border-[#45ddce]/35 hover:bg-[#45ddce]/[0.05]" href={`/docs/${topic.slug}`} key={topic.slug}><span className="text-[10px] font-black uppercase tracking-[0.14em] text-[#45ddce]">{topic.group}</span><h3 className="mt-2 font-semibold group-hover:text-[#9ff8ee]">{topic.title} <span aria-hidden="true">→</span></h3><p className="mt-2 text-sm leading-6 text-white/45">{topic.description}</p></Link>)}
+              <div className="mt-8">
+                <ArchitectureVisual />
               </div>
             </section>
 
-            <footer className="mt-20 border-t border-white/10 py-10 text-sm text-white/40"><p>Need help with a production rollout? <Link className="font-semibold text-[#75fff0]" href="/contact">Contact the Vozon team</Link>.</p><p className="mt-2">Examples use fictional identifiers and phone numbers. Never paste real credentials into sample code.</p></footer>
+            {/* Quickstart */}
+            <section id="quickstart" className="scroll-mt-24 border-t border-slate-200 pt-16 mt-16">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#108D82]">Start here</span>
+              <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-slate-900">Quickstart</h2>
+              <p className="mt-2 text-sm sm:text-base text-slate-600">A production-ready voice agent deployment has four straightforward parts.</p>
+              <div className="mt-8">
+                <Step number={1} title="Create an agent">
+                  Open Agents, select New agent, choose a starting template, and give your agent a descriptive name.
+                </Step>
+                <Step number={2} title="Configure the conversation">
+                  Select the caller’s language and natural voice. Add a first greeting message and system prompt instructions describing goals, boundaries, and escalation.
+                </Step>
+                <Step number={3} title="Test before deployment">
+                  Use the browser test call playground. Verify pronunciation, natural interruptions, tool calling, and structured data outputs.
+                </Step>
+                <Step number={4} title="Connect a phone number">
+                  Import or purchase a dedicated phone number, assign the agent, choose inbound/outbound permissions, and place a live test call.
+                </Step>
+              </div>
+              <Callout tone="success">
+                Start with one narrow outcome. A focused appointment-booking or lead qualification agent is easier to test and optimize than an agent trying to handle every business workflow at once.
+              </Callout>
+            </section>
+
+            {/* Agents */}
+            <section id="agents" className="scroll-mt-24 border-t border-slate-200 pt-16 mt-16">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#108D82]">Build</span>
+              <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-slate-900">Configure an agent</h2>
+              <p className="mt-2 text-sm sm:text-base text-slate-600 leading-relaxed">
+                Agent configuration controls what the agent says, how it sounds, which knowledge it retrieves, and which custom API actions it can take.
+              </p>
+              <div className="mt-7">
+                <AnnotatedAgentVisual />
+              </div>
+              <div className="mt-7 grid gap-4 sm:grid-cols-2">
+                {[
+                  ["First message", "Set context immediately. Identify the business and explain clearly why the agent is calling."],
+                  ["Instructions", "Write goals in priority order. Include explicit rules for confirmation, transfer, and graceful call wrap-up."],
+                  ["Language and voice", "Match the voice model to the selected language. Test names, numbers, dates, and mixed-language phrases."],
+                  ["Tools", "Give each action a clear description, required schema inputs, success response, and failure fallback."],
+                ].map(([title, body]) => (
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-5 shadow-xs" key={title}>
+                    <h3 className="font-bold text-slate-900 text-sm">{title}</h3>
+                    <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-600">{body}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Knowledge Bases */}
+            <section id="knowledge" className="scroll-mt-24 border-t border-slate-200 pt-16 mt-16">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#108D82]">Build</span>
+              <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-slate-900">Knowledge bases</h2>
+              <p className="mt-2 text-sm sm:text-base text-slate-600 leading-relaxed">
+                Attach approved text, PDF/DOCX files, or public website URLs to an agent. Keep each source current, specific, and free of unnecessary sensitive credentials.
+              </p>
+              <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
+                  <b className="text-slate-900 block text-sm font-bold">1. Add a source</b>
+                  <p className="mt-2 text-xs text-slate-600 leading-relaxed">Choose raw text, public website URL crawling, or file upload.</p>
+                </div>
+                <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
+                  <b className="text-slate-900 block text-sm font-bold">2. Indexing & Vectorization</b>
+                  <p className="mt-2 text-xs text-slate-600 leading-relaxed">The source automatically parses and indexes until status shows Ready.</p>
+                </div>
+                <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
+                  <b className="text-slate-900 block text-sm font-bold">3. Grounded Retrieval</b>
+                  <p className="mt-2 text-xs text-slate-600 leading-relaxed">Agents cite approved snippets dynamically during conversations with zero hallucination.</p>
+                </div>
+              </div>
+            </section>
+
+            {/* Phone Numbers */}
+            <section id="phone-numbers" className="scroll-mt-24 border-t border-slate-200 pt-16 mt-16">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#108D82]">Deploy</span>
+              <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-slate-900">Phone numbers</h2>
+              <p className="mt-2 text-sm sm:text-base text-slate-600 leading-relaxed">
+                A number must be Ready, assigned to an agent, and configured for the intended direction before placing or receiving live telephony calls.
+              </p>
+              <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200 shadow-xs">
+                <div className="grid grid-cols-3 bg-slate-50 px-5 py-3 text-xs font-bold text-slate-600 border-b border-slate-200">
+                  <span>Direction</span>
+                  <span>Accepts inbound</span>
+                  <span>Places outbound</span>
+                </div>
+                {[
+                  ["Inbound", "Yes", "No"],
+                  ["Outbound", "No", "Yes"],
+                  ["Both", "Yes", "Yes"],
+                ].map((row) => (
+                  <div className="grid grid-cols-3 border-b border-slate-100 last:border-0 px-5 py-3.5 text-xs sm:text-sm text-slate-700 hover:bg-slate-50/50" key={row[0]}>
+                    <span className="font-bold text-slate-900">{row[0]}</span>
+                    <span>{row[1]}</span>
+                    <span>{row[2]}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Campaigns */}
+            <section id="campaigns" className="scroll-mt-24 border-t border-slate-200 pt-16 mt-16">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#108D82]">Deploy</span>
+              <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-slate-900">Campaigns</h2>
+              <p className="mt-2 text-sm sm:text-base text-slate-600 leading-relaxed">
+                Campaigns coordinate outbound calling across customer lead lists with smart pacing, concurrency limits, and suppression compliance.
+              </p>
+              <div className="mt-6 grid gap-3 sm:grid-cols-4">
+                {["1. Create campaign", "2. Upload lead CSV", "3. Review & launch", "4. Monitor telemetry"].map((label) => (
+                  <div className="rounded-2xl border border-slate-200 bg-white p-4 text-xs font-bold text-slate-800 shadow-xs" key={label}>
+                    {label}
+                  </div>
+                ))}
+              </div>
+              <Callout tone="warning">
+                Pausing stops new outbound calls from being dispatched. It does not interrupt phone calls currently in progress.
+              </Callout>
+            </section>
+
+            {/* Call Logs & Observability */}
+            <section id="call-logs" className="scroll-mt-24 border-t border-slate-200 pt-16 mt-16">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#108D82]">Observe</span>
+              <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-slate-900">Call logs & analytics</h2>
+              <p className="mt-2 text-sm sm:text-base text-slate-600 leading-relaxed">
+                Review complete operational records for status, duration, full transcripts, audio recordings, structured schema outputs, turn latency, and credit billing.
+              </p>
+              <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                {[
+                  ["Conversation", "Full turns, stereo recordings, speech-to-text accuracy, sentiment."],
+                  ["Performance", "Turn-by-turn latency (ms), speech recognition delay, completion state."],
+                  ["Business Results", "Custom schema extraction, sentiment, appointment booked, CRM sync status."],
+                ].map(([title, body]) => (
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-5 shadow-xs" key={title}>
+                    <h3 className="font-bold text-slate-900 text-sm">{title}</h3>
+                    <p className="mt-2 text-xs leading-relaxed text-slate-600">{body}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Billing */}
+            <section id="billing" className="scroll-mt-24 border-t border-slate-200 pt-16 mt-16">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#108D82]">Observe</span>
+              <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-slate-900">Billing & wallet credits</h2>
+              <p className="mt-2 text-sm sm:text-base text-slate-600 leading-relaxed">
+                Completed call costs are deducted seamlessly from your organization wallet. Real-time billing calculates exact audio duration and AI tokens used.
+              </p>
+              <div className="mt-6 rounded-2xl border border-teal-200 bg-teal-50/70 p-5 shadow-xs">
+                <div className="flex flex-wrap items-center gap-3 text-xs sm:text-sm font-bold text-slate-800">
+                  <span className="rounded-xl bg-white border border-slate-200 px-3.5 py-2 shadow-xs">Metered Telephony & AI</span>
+                  <span className="text-teal-700 font-bold">+</span>
+                  <span className="rounded-xl bg-white border border-slate-200 px-3.5 py-2 shadow-xs">Platform Fee</span>
+                  <span className="text-teal-700 font-bold">=</span>
+                  <span className="rounded-xl bg-[#108D82] px-3.5 py-2 text-white shadow-xs">Transparent Total</span>
+                </div>
+              </div>
+            </section>
+
+            {/* Authentication */}
+            <section id="authentication" className="scroll-mt-24 border-t border-slate-200 pt-16 mt-16">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#108D82]">API Reference</span>
+              <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-slate-900">Authentication</h2>
+              <p className="mt-2 text-sm sm:text-base text-slate-600 leading-relaxed">
+                Generate an API key in Dashboard → Developers. Provide it as a Bearer token in the Authorization header on every request.
+              </p>
+              <div className="mt-4">
+                <CodeBlock>{`Authorization: Bearer avp_your_production_api_key`}</CodeBlock>
+              </div>
+              <Callout tone="warning">
+                API keys are sensitive credentials. Store them in environment variables or a secrets manager. Never commit them to client-side code.
+              </Callout>
+            </section>
+
+            {/* Calls API Overview */}
+            <section id="api-calls" className="scroll-mt-24 border-t border-slate-200 pt-16 mt-16">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#108D82]">API Reference</span>
+                  <h2 className="mt-1 text-2xl sm:text-3xl font-extrabold text-slate-900">Calls API</h2>
+                  <p className="mt-1 text-xs sm:text-sm text-slate-600">
+                    Base URL: <code className="rounded bg-slate-100 border border-slate-200 px-2 py-0.5 font-mono text-[#0e6f62] font-bold">https://api.vozon.ai/api/v1</code>
+                  </p>
+                </div>
+                <Link
+                  href="/docs/api"
+                  className="rounded-xl bg-[#108D82] hover:bg-[#0e756c] text-white px-4 py-2 text-xs font-bold shadow-xs transition"
+                >
+                  Open Interactive Playground →
+                </Link>
+              </div>
+
+              <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200 shadow-xs">
+                {endpointRows.map(([method, path, description]) => (
+                  <div
+                    className="grid gap-2 border-b border-slate-100 p-4 last:border-0 sm:grid-cols-[70px_240px_minmax(0,1fr)] sm:items-center hover:bg-slate-50/50 transition"
+                    key={path}
+                  >
+                    <span
+                      className={`w-fit rounded px-2 py-0.5 text-[10px] font-mono font-black uppercase ${
+                        method === "POST"
+                          ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                          : "bg-sky-50 text-sky-700 border border-sky-200"
+                      }`}
+                    >
+                      {method}
+                    </span>
+                    <code className="text-xs sm:text-sm font-bold text-slate-900 font-mono">{path}</code>
+                    <span className="text-xs sm:text-sm text-slate-600">{description}</span>
+                  </div>
+                ))}
+              </div>
+
+              <h3 className="mt-8 text-base font-bold text-slate-900">Dispatch an outbound AI phone call</h3>
+              <CodeBlock>{codeSamples.create}</CodeBlock>
+
+              <h3 className="mt-8 text-base font-bold text-slate-900">Normalized call response</h3>
+              <CodeBlock label="JSON">{codeSamples.response}</CodeBlock>
+            </section>
+
+            {/* Webhooks */}
+            <section id="webhooks" className="scroll-mt-24 border-t border-slate-200 pt-16 mt-16">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#108D82]">Integration</span>
+              <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-slate-900">Webhooks</h2>
+              <p className="mt-2 text-sm sm:text-base text-slate-600 leading-relaxed">
+                Register an HTTPS webhook in the Developer portal to receive real-time events for <code>call.started</code>, <code>call.ended</code>, and <code>transcript.ready</code>.
+              </p>
+              <CodeBlock label="JSON">{codeSamples.webhook}</CodeBlock>
+              <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                {[
+                  ["Verify HMAC", "Compute HMAC SHA-256 using your endpoint secret and compare with the signature header."],
+                  ["Fast 200 Acknowledge", "Return an HTTP 200 response immediately before performing asynchronous database work."],
+                  ["Idempotency", "Store the event ID and safely ignore repeated deliveries."],
+                ].map(([title, body]) => (
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4 shadow-xs" key={title}>
+                    <h3 className="font-bold text-slate-900 text-xs sm:text-sm">{title}</h3>
+                    <p className="mt-1.5 text-xs text-slate-600 leading-relaxed">{body}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Errors */}
+            <section id="errors" className="scroll-mt-24 border-t border-slate-200 pt-16 mt-16">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#108D82]">Reference</span>
+              <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-slate-900">Status codes & errors</h2>
+              <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200 shadow-xs">
+                {[
+                  ["400", "Invalid request", "Correct missing payload fields or formatting; do not retry unchanged."],
+                  ["401", "Authentication required", "Check the API key in the Bearer Authorization header."],
+                  ["403", "Insufficient permission", "Key lacks the required scope (e.g. calls:write) or role."],
+                  ["404", "Resource not found", "Confirm the ID belongs to your active organization."],
+                  ["409", "Resource conflict", "Refresh state and resolve the conflict before retrying."],
+                  ["429", "Rate limited", "Too many requests. Retry with exponential backoff and jitter."],
+                  ["5xx", "Temporary service error", "Retry idempotent operations with bounded backoff."],
+                ].map((row) => (
+                  <div className="grid gap-2 border-b border-slate-100 p-4 last:border-0 sm:grid-cols-[60px_180px_1fr] hover:bg-slate-50/50 transition" key={row[0]}>
+                    <code className="text-xs font-mono font-bold text-[#108D82]">{row[0]}</code>
+                    <b className="text-xs sm:text-sm font-bold text-slate-900">{row[1]}</b>
+                    <span className="text-xs sm:text-sm text-slate-600">{row[2]}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Production Security Checklist */}
+            <section id="security" className="scroll-mt-24 border-t border-slate-200 pt-16 mt-16">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#108D82]">Operations</span>
+              <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-slate-900">Production security checklist</h2>
+              <div className="mt-6 grid gap-3">
+                {[
+                  "Keep API credentials in a secure secrets manager and rotate them periodically.",
+                  "Use least-privilege API scopes and separate keys by development and production environments.",
+                  "Enforce 2FA and role-based access control across team members in your organization.",
+                  "Collect only caller data strictly necessary for the designated agent task.",
+                  "Verify incoming webhook HMAC SHA-256 signatures to prevent unauthorized event spoofing.",
+                  "Respect local telecommunications regulations, calling hour restrictions, and suppression lists.",
+                ].map((item) => (
+                  <div className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs sm:text-sm text-slate-700 shadow-xs" key={item}>
+                    <span className="text-[#108D82] font-bold text-base select-none">✓</span>
+                    <span className="leading-relaxed">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* All Guides */}
+            <section className="mt-16 scroll-mt-24 border-t border-slate-200 pt-16" id="all-guides">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#108D82]">Documentation library</span>
+              <div className="mt-2 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+                <div>
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">Explore every guide</h2>
+                  <p className="mt-1.5 text-xs sm:text-sm text-slate-600">Detailed workflows, field schemas, code samples, and best practices.</p>
+                </div>
+                <a
+                  className="text-xs sm:text-sm font-bold text-[#108D82] hover:underline"
+                  href="/openapi.yaml"
+                  download="vozon-openapi.yaml"
+                >
+                  Download OpenAPI spec →
+                </a>
+              </div>
+              <div className="mt-7 grid gap-4 sm:grid-cols-2">
+                {docsTopics.map((topic) => (
+                  <Link
+                    className="group rounded-2xl border border-slate-200 bg-white p-5 transition-all duration-200 hover:border-teal-300 hover:shadow-sm"
+                    href={`/docs/${topic.slug}`}
+                    key={topic.slug}
+                  >
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#108D82]">
+                      {topic.group}
+                    </span>
+                    <h3 className="mt-1.5 font-bold text-slate-900 group-hover:text-[#108D82] transition text-base">
+                      {topic.title} <span aria-hidden="true">→</span>
+                    </h3>
+                    <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-600">{topic.description}</p>
+                  </Link>
+                ))}
+              </div>
+            </section>
+
+            {/* Clean Light Footer */}
+            <footer className="mt-20 border-t border-slate-200 py-10 text-xs sm:text-sm text-slate-500">
+              <p>
+                Need help with an enterprise production rollout?{" "}
+                <Link className="font-bold text-[#108D82] hover:underline" href="/contact">
+                  Contact the Vozon engineering team
+                </Link>
+                .
+              </p>
+              <p className="mt-2">
+                Sample code uses fictional identifiers and test numbers. Always use your designated API keys in production.
+              </p>
+            </footer>
           </div>
         </article>
       </div>

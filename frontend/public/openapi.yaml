@@ -1,112 +1,803 @@
 openapi: 3.1.0
 info:
-  title: Vozon Public API
+  title: Vozon Public Voice AI API
   version: 1.0.0
-  description: Start outbound calls and retrieve normalized call records.
+  description: |
+    Production REST and Streaming API for Vozon voice agents.
+    Start outbound calls, retrieve normalized call logs, stream live call state over Server-Sent Events (SSE), download call recordings, and receive verified call lifecycle webhooks.
+  contact:
+    name: Vozon Developer Support
+    email: hello@vozon.ai
+    url: https://www.vozon.ai/docs
 servers:
   - url: https://api.vozon.ai/api/v1
+    description: Production API Gateway
+  - url: https://api.yourbrand.com/api/v1
+    description: White-Label Custom Branded API Gateway
 security:
-  - bearerAuth: []
+  - BearerAuth: []
+  - ApiKeyHeader: []
+
+tags:
+  - name: Agents
+    description: Inspect voice agents configured for the active organization.
+  - name: Outbound Calls
+    description: Trigger automated phone calls using AI voice agents.
+  - name: Call Logs
+    description: Query, filter, and inspect normalized call records and transcripts.
+  - name: Streaming
+    description: Stream call state changes in real time via Server-Sent Events.
+  - name: Recordings
+    description: Stream or download authorized call audio recordings.
+  - name: Exports
+    description: Bulk export historical call records.
+  - name: Web Voice Widget
+    description: Public endpoints for embedded web voice calling widgets.
+  - name: Campaigns
+    description: High-volume outbound calling campaigns, scheduling, and batch lead dialing.
+  - name: Phone Numbers
+    description: Inbound and outbound telephony number provisioning and agent routing.
+  - name: Knowledge Bases
+    description: Grounded business documents, web crawl URLs, and RAG vector indexes.
+
 paths:
   /agents:
     get:
-      summary: List agents
+      tags: [Agents]
+      summary: List voice agents
+      description: Retrieve all voice agents available to the authenticated organization. Requires `read` scope.
+      operationId: listAgents
       responses:
         "200":
-          description: Agents belonging to the active organization.
-  /calls:
-    get:
-      summary: List calls
-      parameters:
-        - in: query
-          name: limit
-          schema: { type: integer, minimum: 1 }
-        - in: query
-          name: agentId
-          schema: { type: string }
-      responses:
-        "200":
-          description: Paginated normalized call records.
+          description: List of voice agents.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  agents:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Agent"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
   /calls/outbound:
     post:
+      tags: [Outbound Calls]
       summary: Create an outbound call
+      description: |
+        Initiates an outbound phone call connecting an approved destination number with an assigned voice agent.
+        Requires `calls:trigger` scope and `owner`, `admin`, or `member` organization role.
+        
+        **Pre-flight requirements**:
+        1. Agent must be in `Live` status.
+        2. Organization must have at least one phone number in `Ready` status with direction `Outbound` or `Both` assigned to the agent.
+        3. Organization wallet must have sufficient prepaid credits.
+        4. Destination number must be in E.164 format (e.g. `+919876543210` or `+14155552671`).
+      operationId: createOutboundCall
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOutboundCallRequest"
+            example:
+              agentId: "6701a2b3c4d5e6f7a8b9c0d1"
+              phoneNumber: "+919876543210"
+              metadata:
+                customerId: "cust_8829"
+                appointmentDate: "2026-09-25T14:30:00Z"
+                crmLeadId: "lead_4491"
+      responses:
+        "202":
+          description: Call accepted and queued for SIP dispatch.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateOutboundCallResponse"
+              example:
+                callId: "6702b3c4d5e6f7a8b9c0d1e2"
+                roomName: "outbound-call-6701a2b3-1726650000-abcd"
+                participantId: "sip_part_88921"
+                dispatchId: "dispatch_99210"
+                dispatch:
+                  id: "dispatch_99210"
+                  agentName: "vozon-voice-agent"
+                  state: "created"
+                  room: "outbound-call-6701a2b3-1726650000-abcd"
+                  region: "ap-south-1"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+
+  /outbound-calls:
+    post:
+      tags: [Outbound Calls]
+      summary: Create an outbound call (alias)
+      description: Exact alias for `/calls/outbound`.
+      operationId: createOutboundCallAlias
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOutboundCallRequest"
+      responses:
+        "202":
+          description: Call accepted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateOutboundCallResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+
+  /calls:
+    get:
+      tags: [Call Logs]
+      summary: List call records
+      description: |
+        Query normalized call history with comprehensive pagination, status, direction, sentiment, date ranges, and full-text search.
+        Requires `read` scope.
+      operationId: listCalls
+      parameters:
+        - name: page
+          in: query
+          description: Page number (1-indexed).
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          description: Maximum number of records per page (1 to 100).
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: agentId
+          in: query
+          description: Filter calls processed by a specific agent ID.
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: Filter by terminal or operational status.
+          schema:
+            type: string
+            enum: [completed, failed, in-progress, ringing, busy, no-answer, canceled]
+        - name: direction
+          in: query
+          description: Filter by call direction.
+          schema:
+            type: string
+            enum: [inbound, outbound, web]
+        - name: sentiment
+          in: query
+          description: Filter by sentiment classification.
+          schema:
+            type: string
+            enum: [positive, neutral, negative]
+        - name: minDuration
+          in: query
+          description: Minimum connected duration in seconds.
+          schema:
+            type: number
+            minimum: 0
+        - name: maxDuration
+          in: query
+          description: Maximum connected duration in seconds.
+          schema:
+            type: number
+            minimum: 0
+        - name: search
+          in: query
+          description: Search term matched across transcript text, caller phone, called phone, and custom tags.
+          schema:
+            type: string
+        - name: phoneNumber
+          in: query
+          description: Filter matching caller or called phone number digits.
+          schema:
+            type: string
+        - name: from
+          in: query
+          description: Earliest call start timestamp in ISO 8601 format (e.g. `2026-09-01T00:00:00Z`).
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          description: Latest call start timestamp in ISO 8601 format.
+          schema:
+            type: string
+            format: date-time
+        - name: view
+          in: query
+          description: Set to `recent` for a lightweight query of recent call IDs and statuses.
+          schema:
+            type: string
+            enum: [recent]
+      responses:
+        "200":
+          description: Paginated call records.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListCallsResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /call-logs:
+    get:
+      tags: [Call Logs]
+      summary: List call records (alias)
+      description: Exact alias for `GET /calls`.
+      operationId: listCallLogsAlias
+      parameters:
+        - $ref: "#/paths/~1calls/get/parameters/0"
+        - $ref: "#/paths/~1calls/get/parameters/1"
+        - $ref: "#/paths/~1calls/get/parameters/2"
+        - $ref: "#/paths/~1calls/get/parameters/3"
+        - $ref: "#/paths/~1calls/get/parameters/4"
+      responses:
+        "200":
+          description: Paginated call records.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListCallsResponse"
+
+  /calls/{callId}:
+    get:
+      tags: [Call Logs]
+      summary: Retrieve a single call record
+      description: |
+        Retrieves full normalized details for a specific call, including full message transcripts with timestamps,
+        LLM token usage, speech-to-text / text-to-speech meterings, response latencies (p50, p90, p95, p99),
+        deducted wallet credits, sentiment, and structured outputs.
+        Requires `read` scope.
+      operationId: getCall
+      parameters:
+        - $ref: "#/components/parameters/CallId"
+      responses:
+        "200":
+          description: Call record details.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  call:
+                    $ref: "#/components/schemas/Call"
+                  history:
+                    $ref: "#/components/schemas/Call"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /calls/{callId}/recording:
+    get:
+      tags: [Recordings]
+      summary: Stream or download call audio recording
+      description: |
+        Directly streams or downloads the audio recording file for a completed call.
+        Supports standard HTTP `Range` headers for seeking and progressive streaming in audio players.
+        Requires `read` scope.
+      operationId: streamCallRecording
+      parameters:
+        - $ref: "#/components/parameters/CallId"
+        - name: Range
+          in: header
+          description: Byte range for progressive streaming (e.g. `bytes=0-1024`).
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Full audio media payload.
+          headers:
+            Content-Type:
+              schema: { type: string, example: "audio/mp4" }
+            Accept-Ranges:
+              schema: { type: string, example: "bytes" }
+          content:
+            audio/mp4: { schema: { type: string, format: binary } }
+            audio/mpeg: { schema: { type: string, format: binary } }
+            audio/webm: { schema: { type: string, format: binary } }
+            audio/ogg: { schema: { type: string, format: binary } }
+        "206":
+          description: Partial content range.
+          headers:
+            Content-Range:
+              schema: { type: string, example: "bytes 0-1023/409600" }
+          content:
+            audio/mp4: { schema: { type: string, format: binary } }
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Recording file not found or not yet processed.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /calls/stream:
+    get:
+      tags: [Streaming]
+      summary: Stream call updates in real time (SSE)
+      description: |
+        Opens a persistent HTTP connection using Server-Sent Events (SSE) to receive real-time notifications
+        whenever call states change. Replaces polling for automated dashboards and CRM updates.
+        Requires `read` scope.
+        
+        **Event types**:
+        - `ready`: Sent immediately upon connection: `{"connectedAt": "..."}`
+        - `calls_changed`: Sent whenever a call starts, ends, or updates: `{"changedAt": "..."}`
+        - `: keepalive`: Heartbeat sent every 30 seconds to prevent proxy timeouts
+        - `calls_error`: Sent if a database watch error occurs
+      operationId: streamCallEvents
+      parameters:
+        - name: agentId
+          in: query
+          description: Optional filter to listen only for updates on a specific agent.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Server-sent call events stream.
+          headers:
+            Content-Type:
+              schema: { type: string, example: "text/event-stream" }
+            Cache-Control:
+              schema: { type: string, example: "no-cache, no-transform" }
+            Connection:
+              schema: { type: string, example: "keep-alive" }
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                example: |
+                  event: ready
+                  data: {"connectedAt":"2026-09-18T10:00:00.000Z"}
+                  
+                  event: calls_changed
+                  id: 1726651200000
+                  data: {"changedAt":"2026-09-18T10:00:05.000Z"}
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /calls/export.csv:
+    get:
+      tags: [Exports]
+      summary: Export calls to CSV
+      description: |
+        Streams all call records matching the query parameters as a downloadable CSV spreadsheet.
+        Accepts the exact same query filters as `GET /calls`.
+        Requires `read` scope.
+      operationId: exportCallsCsv
+      parameters:
+        - $ref: "#/paths/~1calls/get/parameters/2"
+        - $ref: "#/paths/~1calls/get/parameters/3"
+        - $ref: "#/paths/~1calls/get/parameters/4"
+        - $ref: "#/paths/~1calls/get/parameters/10"
+        - $ref: "#/paths/~1calls/get/parameters/11"
+      responses:
+        "200":
+          description: CSV file attachment.
+          headers:
+            Content-Type:
+              schema: { type: string, example: "text/csv; charset=utf-8" }
+            Content-Disposition:
+              schema: { type: string, example: 'attachment; filename="calls-export-2026-09-18.csv"' }
+          content:
+            text/csv:
+              schema:
+                type: string
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /campaigns:
+    get:
+      tags: [Campaigns]
+      summary: List outbound campaigns
+      description: Retrieve all outbound calling campaigns, lead progression, and completion rates. Requires `read` scope.
+      operationId: listCampaigns
+      parameters:
+        - name: status
+          in: query
+          description: Filter campaigns by status (e.g. running, paused, completed, draft).
+          required: false
+          schema: { type: string, example: "running" }
+      responses:
+        "200":
+          description: List of campaigns.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  campaigns:
+                    type: array
+                    items: { type: object }
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+    post:
+      tags: [Campaigns]
+      summary: Create an outbound calling campaign
+      description: Create a batch calling campaign with concurrency limit, call window, and timezone. Requires `calls:trigger` scope.
+      operationId: createCampaign
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required: [agentId, phoneNumber]
+              required: [name, agentId]
               properties:
-                agentId: { type: string }
-                phoneNumber:
-                  type: string
-                  description: E.164 destination number.
-                  example: "+919876543210"
-                phoneNumberId: { type: string }
-                metadata:
-                  type: object
-                  additionalProperties: true
+                name: { type: string, example: "Q4 Customer Reactivation" }
+                agentId: { type: string, example: "6701a2b3c4d5e6f7a8b9c0d1" }
+                concurrencyLimit: { type: integer, example: 5 }
+                callWindowStart: { type: string, example: "09:00" }
+                callWindowEnd: { type: string, example: "19:00" }
+                timezone: { type: string, example: "Asia/Kolkata" }
       responses:
-        "202":
-          description: Call accepted.
-        "400": { $ref: "#/components/responses/BadRequest" }
-        "401": { $ref: "#/components/responses/Unauthorized" }
-        "403": { $ref: "#/components/responses/Forbidden" }
-        "409":
-          description: Agent, phone number, wallet, or capacity conflict.
-  /calls/{callId}:
-    get:
-      summary: Retrieve a call
+        "201":
+          description: Campaign created.
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /campaigns/{campaignId}/leads:
+    post:
+      tags: [Campaigns]
+      summary: Upload leads to an outbound campaign
+      description: Queue phone numbers with custom customer metadata for automated agent calling. Requires `calls:trigger` scope.
+      operationId: addCampaignLeads
       parameters:
-        - $ref: "#/components/parameters/CallId"
+        - name: campaignId
+          in: path
+          required: true
+          schema: { type: string, example: "camp_882901" }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [leads]
+              properties:
+                leads:
+                  type: array
+                  items:
+                    type: object
+                    required: [phoneNumber]
+                    properties:
+                      phoneNumber: { type: string, example: "+919876543210" }
+                      name: { type: string, example: "Aarav Sharma" }
+                      customFields: { type: object }
       responses:
-        "200":
-          description: Normalized call record.
-        "404":
-          description: Call not found.
-  /calls/{callId}/recording:
-    get:
-      summary: Download an authorized call recording
+        "201":
+          description: Leads queued successfully.
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /campaigns/{campaignId}/launch:
+    post:
+      tags: [Campaigns]
+      summary: Launch outbound campaign
+      description: Start automatic outbound dialing across queued campaign leads. Requires `calls:trigger` scope.
+      operationId: launchCampaign
       parameters:
-        - $ref: "#/components/parameters/CallId"
+        - name: campaignId
+          in: path
+          required: true
+          schema: { type: string, example: "camp_882901" }
       responses:
         "200":
-          description: Recording media.
-        "404":
-          description: Recording not found.
-  /calls/export.csv:
+          description: Campaign launched and running.
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /phone-numbers:
     get:
-      summary: Export calls as CSV
+      tags: [Phone Numbers]
+      summary: List provisioned phone numbers
+      description: Retrieve organization phone numbers, direction capabilities (inbound/outbound), and assigned agents. Requires `read` scope.
+      operationId: listPhoneNumbers
+      parameters:
+        - name: direction
+          in: query
+          schema: { type: string, enum: [inbound, outbound, both] }
       responses:
         "200":
-          description: CSV export.
-          content:
-            text/csv: {}
-  /calls/stream:
+          description: List of telephony phone numbers.
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /knowledge-bases:
     get:
-      summary: Stream call updates
+      tags: [Knowledge Bases]
+      summary: List knowledge bases and documents
+      description: Retrieve grounded knowledge collections, uploaded documents, crawled URLs, and vector statuses. Requires `read` scope.
+      operationId: listKnowledgeBases
+      parameters:
+        - name: agentId
+          in: query
+          schema: { type: string }
       responses:
         "200":
-          description: Server-sent call events.
-          content:
-            text/event-stream: {}
+          description: List of knowledge base collections.
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
 components:
   securitySchemes:
-    bearerAuth:
+    BearerAuth:
       type: http
       scheme: bearer
-      bearerFormat: Vozon API key
+      bearerFormat: Vozon API Key (avp_...)
+      description: Pass your API key prefixed with `avp_` as a Bearer token in the `Authorization` header.
+    ApiKeyHeader:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: Alternative authentication header accepting your `avp_...` API key.
+
   parameters:
     CallId:
-      in: path
       name: callId
+      in: path
       required: true
-      schema: { type: string }
+      description: The unique Vozon Call ID (e.g. `6701a2b3c4d5e6f7a8b9c0d1`).
+      schema:
+        type: string
+
+  schemas:
+    Agent:
+      type: object
+      properties:
+        _id: { type: string }
+        name: { type: string, example: "Dr. Saha Clinical Assistant" }
+        status: { type: string, enum: [Draft, Review, Live, Archived], example: "Live" }
+        language: { type: string, example: "Hindi" }
+        voice: { type: string, example: "sarvam-shashi" }
+        pipelineMode: { type: string, enum: [pipeline, realtime], example: "pipeline" }
+        llmProvider: { type: string, example: "openai" }
+        llmModel: { type: string, example: "gpt-4o-mini" }
+        sttProvider: { type: string, example: "sarvam" }
+        sttModel: { type: string, example: "saarika:v2" }
+        ttsProvider: { type: string, example: "sarvam" }
+        ttsModel: { type: string, example: "bulbul:v1" }
+
+    CreateOutboundCallRequest:
+      type: object
+      required: [agentId, phoneNumber]
+      properties:
+        agentId:
+          type: string
+          description: The ID of a Live voice agent belonging to the organization.
+          example: "6701a2b3c4d5e6f7a8b9c0d1"
+        phoneNumber:
+          type: string
+          description: Destination phone number formatted in international E.164 format.
+          example: "+919876543210"
+        phoneNumberId:
+          type: string
+          description: Optional specific outbound phone number ID from your organization inventory. If omitted, the latest ready number assigned to the agent is selected automatically.
+        metadata:
+          type: object
+          description: Optional arbitrary key-value correlation object returned in call logs, transcripts, and webhooks.
+          additionalProperties: true
+          example:
+            customerId: "cust_9921"
+            orderId: "order_1283"
+            campaign: "Q4-Retention"
+
+    CreateOutboundCallResponse:
+      type: object
+      properties:
+        callId: { type: string, example: "6702b3c4d5e6f7a8b9c0d1e2" }
+        roomName: { type: string, example: "outbound-call-6701a2b3-1726650000-abcd" }
+        participantId: { type: string, example: "sip_part_88921" }
+        dispatchId: { type: string, example: "dispatch_99210" }
+        dispatch:
+          type: object
+          properties:
+            id: { type: string }
+            agentName: { type: string }
+            state: { type: string }
+            room: { type: string }
+            region: { type: string }
+
+    CallTranscriptItem:
+      type: object
+      properties:
+        itemId: { type: string }
+        role: { type: string, enum: [user, assistant, system], example: "assistant" }
+        text: { type: string, example: "Hello! Welcome to Dr. Saha's clinic. How may I help you today?" }
+        timestamp: { type: string, format: date-time }
+        interrupted: { type: boolean, example: false }
+
+    CallProviders:
+      type: object
+      properties:
+        llm:
+          type: object
+          properties:
+            provider: { type: string, example: "openai" }
+            model: { type: string, example: "gpt-4o-mini" }
+            totalTokens: { type: integer, example: 1240 }
+        stt:
+          type: object
+          properties:
+            provider: { type: string, example: "sarvam" }
+            model: { type: string, example: "saarika:v2" }
+            seconds: { type: number, example: 68.4 }
+        tts:
+          type: object
+          properties:
+            provider: { type: string, example: "sarvam" }
+            model: { type: string, example: "bulbul:v1" }
+            characters: { type: integer, example: 540 }
+
+    CallUsage:
+      type: object
+      properties:
+        llmTokens: { type: integer, example: 1240 }
+        sttSeconds: { type: number, example: 68.4 }
+        ttsCharacters: { type: integer, example: 540 }
+        avgResponseLatencyMs: { type: number, example: 420 }
+        responseLatencyP50Ms: { type: number, example: 380 }
+        responseLatencyP90Ms: { type: number, example: 590 }
+        responseLatencyP95Ms: { type: number, example: 670 }
+        responseLatencyP99Ms: { type: number, example: 820 }
+
+    CallBilling:
+      type: object
+      properties:
+        chargedCredits: { type: number, description: "Customer wallet credits deducted for the call.", example: 4.50 }
+        providerCost: { type: number, example: 2.10 }
+        platformFee: { type: number, example: 2.40 }
+        currency: { type: string, example: "INR" }
+
+    Call:
+      type: object
+      properties:
+        id: { type: string, example: "6702b3c4d5e6f7a8b9c0d1e2" }
+        callId: { type: string, example: "6702b3c4d5e6f7a8b9c0d1e2" }
+        agentId: { type: string, example: "6701a2b3c4d5e6f7a8b9c0d1" }
+        agentName: { type: string, example: "Dr. Saha Clinical Assistant" }
+        direction: { type: string, enum: [inbound, outbound, web], example: "outbound" }
+        status: { type: string, enum: [completed, failed, in-progress, ringing, busy, no-answer, canceled], example: "completed" }
+        callerNumber: { type: string, example: "+918000000001" }
+        calledNumber: { type: string, example: "+919876543210" }
+        voip:
+          type: object
+          properties:
+            from: { type: string, example: "+918000000001" }
+            to: { type: string, example: "+919876543210" }
+            direction: { type: string, example: "outbound" }
+        startedAt: { type: string, format: date-time }
+        endedAt: { type: string, format: date-time }
+        durationSeconds: { type: integer, example: 92 }
+        transcription_text: { type: string, example: "Customer: Hello\n\nAgent: How may I assist you today?" }
+        transcript:
+          type: array
+          items:
+            $ref: "#/components/schemas/CallTranscriptItem"
+        recordingUrl: { type: string, format: uri }
+        recording_url: { type: string, format: uri }
+        recording:
+          type: object
+          properties:
+            url: { type: string, format: uri }
+            downloadUrl: { type: string, format: uri }
+            status: { type: string, example: "completed" }
+            durationSeconds: { type: integer, example: 92 }
+            contentType: { type: string, example: "audio/mp3" }
+        providers: { $ref: "#/components/schemas/CallProviders" }
+        usage: { $ref: "#/components/schemas/CallUsage" }
+        billing: { $ref: "#/components/schemas/CallBilling" }
+        sentiment:
+          type: object
+          properties:
+            score: { type: number, nullable: true, example: 0.85 }
+            label: { type: string, example: "positive" }
+        endReason: { type: string, example: "agent_completed" }
+        structuredOutput:
+          type: object
+          description: Key-value data extracted by the agent during the conversation.
+          additionalProperties: true
+        metadata:
+          type: object
+          additionalProperties: true
+
+    ListCallsResponse:
+      type: object
+      properties:
+        calls:
+          type: array
+          items: { $ref: "#/components/schemas/Call" }
+        pagination:
+          type: object
+          properties:
+            page: { type: integer, example: 1 }
+            limit: { type: integer, example: 20 }
+            total: { type: integer, example: 142 }
+            pages: { type: integer, example: 8 }
+
+    ErrorResponse:
+      type: object
+      properties:
+        message: { type: string, example: "Invalid or expired API key." }
+        error: { type: string }
+        statusCode: { type: integer, example: 401 }
+
   responses:
     BadRequest:
-      description: Invalid request.
+      description: The request parameters or body failed validation.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorResponse" }
+          example:
+            message: "Phone number must be in E.164 format (e.g. +919876543210)."
+            statusCode: 400
+
     Unauthorized:
-      description: Missing or invalid API key.
+      description: Missing, invalid, or expired API key.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorResponse" }
+          example:
+            message: "Invalid or expired API key."
+            statusCode: 401
+
     Forbidden:
-      description: Insufficient API scope or organization role.
+      description: API key does not have the required scope or organization role.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorResponse" }
+          example:
+            message: "API key requires 'calls:trigger' scope."
+            statusCode: 403
+
+    NotFound:
+      description: Resource was not found or does not belong to the active organization.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorResponse" }
+          example:
+            message: "Call record not found."
+            statusCode: 404
+
+    Conflict:
+      description: State conflict preventing the operation (e.g. no outbound phone number assigned, agent not live, or wallet exhausted).
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorResponse" }
+          example:
+            message: "Import or buy a phone number with Outbound or Both direction before starting outbound calls."
+            statusCode: 409
