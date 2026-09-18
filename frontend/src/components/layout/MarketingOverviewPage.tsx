@@ -5,6 +5,7 @@ import { SiteLayout } from "@/components/layout/SiteLayout";
 type OverviewItem = { title: string; summary: string; href: string; meta: string };
 type OverviewGroup = { title: string; description: string; items: readonly OverviewItem[] };
 type MarketingOverviewPageProps = {
+  pageId?: string;
   eyebrow: string;
   title: string;
   summary: string;
@@ -19,10 +20,10 @@ const callRows = [
   ["Appointment reminder", "Connected", "00:27"],
 ];
 
-export function MarketingOverviewPage({ eyebrow, title, summary, groups, proof, lightTheme = false }: MarketingOverviewPageProps) {
+export function MarketingOverviewPage({ pageId, eyebrow, title, summary, groups, proof, lightTheme = false }: MarketingOverviewPageProps) {
   return (
     <SiteLayout>
-      <div className={lightTheme ? "marketing-overview-light blog-light-theme bg-white text-black" : "bg-black text-white"}>
+      <div id={pageId} className={lightTheme ? "marketing-overview-light blog-light-theme bg-white text-black" : "bg-black text-white"}>
         <section className={`blog-overview-hero relative overflow-hidden px-4 pt-36 pb-20 sm:px-6 lg:px-8 lg:pt-40 ${lightTheme ? "bg-white" : "bg-black"}`}>
           {!lightTheme ? (
             <>

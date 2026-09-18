@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import type { ReactNode } from "react";
+import { useEffect } from "react";
 
 import { SiteLayout } from "@/components/layout/SiteLayout";
 
@@ -197,6 +200,33 @@ const heading =
   "text-[clamp(1.6rem,2.35vw,2.25rem)] font-semibold leading-[1.12] tracking-[-0.04em] text-[#111312]";
 
 export function VoiceAgentsProductPageV2() {
+  useEffect(() => {
+    const revealItems = Array.from(
+      document.querySelectorAll<HTMLElement>(".voice-agent-section-reveal")
+    );
+
+    if (!revealItems.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.18,
+        rootMargin: "0px 0px -40px 0px",
+      }
+    );
+
+    revealItems.forEach((item) => observer.observe(item));
+
+    return () => observer.disconnect();
+  }, []);
+
   const integrations = [
     "Telephony",
     "CRM",
@@ -321,7 +351,7 @@ export function VoiceAgentsProductPageV2() {
                 <article
                   className="rounded-2xl border border-[#d8d0e5] border-t-2 bg-white p-6 shadow-[0_8px_24px_rgba(109,106,156,.05)] voice-agent-hover-lift voice-agent-section-reveal"
                   key={number}
-                  style={{ animationDelay: `${index * 90}ms` }}
+                  style={{ animationDelay: `${index * 60}ms` }}
                 >
                   <p className="font-mono text-xs font-bold text-[#625b7d]">
                     {number}
@@ -357,7 +387,7 @@ export function VoiceAgentsProductPageV2() {
                 <article
                   className="flex min-h-[152px] gap-4 rounded-2xl border border-transparent bg-white p-5 voice-agent-hover-lift voice-agent-section-reveal"
                   key={title}
-                  style={{ animationDelay: `${index * 80}ms` }}
+                  style={{ animationDelay: `${index * 50}ms` }}
                 >
                   <span className="grid size-11 shrink-0 place-items-center rounded-xl border border-[#c9ddd8] text-[#0f8777]">
                     <Icon name={icon} />
@@ -466,7 +496,7 @@ export function VoiceAgentsProductPageV2() {
                 <article
                   className="flex min-h-[235px] flex-col rounded-2xl border border-[#d8d0e5] bg-white p-5 shadow-[0_8px_24px_rgba(109,106,156,.05)] sm:p-6 voice-agent-hover-lift voice-agent-section-reveal"
                   key={title}
-                  style={{ animationDelay: `${index * 90}ms` }}
+                  style={{ animationDelay: `${index * 60}ms` }}
                 >
                   <span className="grid size-10 place-items-center rounded-xl border border-[#d1e2dd] text-[#0f8777]">
                     <Icon name={icon} />
@@ -508,7 +538,7 @@ export function VoiceAgentsProductPageV2() {
                 <article
                   className="rounded-2xl border border-black/20 bg-white p-5 text-center shadow-[0_8px_24px_rgba(20,35,31,.04)] sm:p-6 voice-agent-hover-lift voice-agent-section-reveal voice-agent-metric-reveal"
                   key={label}
-                  style={{ animationDelay: `${index * 100}ms` }}
+                  style={{ animationDelay: `${index * 60}ms` }}
                 >
                   <p className="text-3xl font-semibold tracking-[-.05em] text-[#0f8777]">
                     {value}
@@ -725,7 +755,7 @@ export function VoiceAgentsProductPageV2() {
           }
 
           .marketing-site:has(#voice-agents-solution-page) .site-pre-footer-cta {
-            margin-top: 100px;
+            margin-top: 165px;
             overflow: visible;
             position: relative;
           }
@@ -735,7 +765,7 @@ export function VoiceAgentsProductPageV2() {
             position: absolute;
             z-index: 1;
             left: 50%;
-            top: -100px;
+            top: -165px;
             width: 540px;
             height: 540px;
             border-radius: 50%;
@@ -749,7 +779,7 @@ export function VoiceAgentsProductPageV2() {
             position: absolute;
             z-index: 2;
             left: 50%;
-            top: -70px;
+            top: -125px;
             color: #fff;
             font-size: 64px;
             font-weight: 300;
@@ -786,18 +816,18 @@ export function VoiceAgentsProductPageV2() {
 
           @media (max-width: 640px) {
             .marketing-site:has(#voice-agents-solution-page) .site-pre-footer-cta {
-              margin-top: 96px;
+              margin-top: 155px;
             }
 
             .marketing-site:has(#voice-agents-solution-page) .site-pre-footer-cta::before {
-              top: -96px;
+              top: -155px;
               width: 540px;
               height: 540px;
               border-radius: 50%;
             }
 
             .marketing-site:has(#voice-agents-solution-page) .site-pre-footer-cta::after {
-              top: -67px;
+              top: -115px;
               font-size: 56px;
             }
           }
@@ -830,21 +860,26 @@ export function VoiceAgentsProductPageV2() {
 
           .voice-agent-section-reveal {
             opacity: 0;
-            animation: voice-agent-section-in .72s cubic-bezier(.2,.75,.3,1) both;
-            will-change: transform, opacity;
+            translate: 0 14px;
+          }
+
+          .voice-agent-section-reveal.is-visible {
+            animation: voice-agent-section-in .56s cubic-bezier(.22,1,.36,1) both;
           }
 
           .voice-agent-hover-lift {
             transition:
-              transform .28s ease,
-              border-color .28s ease,
-              box-shadow .28s ease;
+              transform .22s ease,
+              border-color .22s ease,
+              box-shadow .22s ease;
           }
 
-          .voice-agent-hover-lift:hover {
-            transform: translateY(-4px);
-            border-color: #b8d9d2;
-            box-shadow: 0 14px 32px rgba(15, 135, 119, .07);
+          @media (hover: hover) and (pointer: fine) {
+            .voice-agent-hover-lift:hover {
+              transform: translateY(-3px);
+              border-color: #c4d8d3;
+              box-shadow: 0 12px 28px rgba(24, 70, 62, .08);
+            }
           }
 
           .voice-agent-metric-reveal {
@@ -854,12 +889,12 @@ export function VoiceAgentsProductPageV2() {
           @keyframes voice-agent-section-in {
             from {
               opacity: 0;
-              transform: translateY(22px);
+              translate: 0 14px;
             }
 
             to {
               opacity: 1;
-              transform: translateY(0);
+              translate: 0 0;
             }
           }
 
@@ -912,8 +947,12 @@ export function VoiceAgentsProductPageV2() {
           @media (prefers-reduced-motion: reduce) {
             .voice-agent-reveal,
             .voice-agent-ping,
-            .voice-agent-marquee {
+            .voice-agent-marquee,
+            .voice-agent-section-reveal {
               animation: none;
+              opacity: 1;
+              translate: none;
+              transform: none;
             }
           }
         `}</style>

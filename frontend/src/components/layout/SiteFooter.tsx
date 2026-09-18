@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { BrandLogo } from "@/components/ui/BrandLogo";
@@ -27,6 +28,7 @@ const footerTags: readonly FooterTag[] = [
 ];
 
 export function SiteFooter() {
+  const pathname = usePathname();
   const [visible, setVisible] = useState(false);
   const footerRef = useRef<HTMLElement>(null);
 
@@ -44,7 +46,7 @@ export function SiteFooter() {
 
   return (
     <>
-      <SitePreFooterCta />
+      <SitePreFooterCta demoHref={pathname === "/contact" ? "#contact-form" : "/contact"} />
       <footer className={`design-four-footer${visible ? " is-visible" : ""}`} ref={footerRef}>
         <div className="design-four-footer-main">
         <div className="design-four-footer-brand">
@@ -53,6 +55,8 @@ export function SiteFooter() {
           <div className="design-four-footer-socials">
             <a aria-label="Twitter / X" href="https://x.com" rel="noreferrer" target="_blank">X</a>
             <a aria-label="LinkedIn" href="https://linkedin.com" rel="noreferrer" target="_blank">in</a>
+            <a aria-label="Instagram" href="https://www.instagram.com/vozonai"target="_blank"rel="noreferrer">
+            <svg width="24"height="24"viewBox="0 0 24 24"fill="none"xmlns="http://www.w3.org/2000/svg"><rect x="2.5"y="2.5"width="19"height="19"rx="5.5"stroke="currentColor"strokeWidth="2.5"/><circle cx="12"cy="12"r="4.25"stroke="currentColor"strokeWidth="2.5"/><circle cx="17.5"cy="6.5"r="1.25"fill="currentColor" /></svg></a>
             <a aria-label="Call +91 7892518414" href="tel:+917892518414">&#9742;</a>
             <a aria-label="Email hello@vozon.ai" href="mailto:hello@vozon.ai">&#9993;</a>
           </div>

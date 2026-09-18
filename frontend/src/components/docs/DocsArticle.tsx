@@ -117,6 +117,28 @@ function Block({ block }: { block: DocsBlock }) {
   );
 }
 
+export function DocsTopicContent({ topic }: { topic: DocsTopic }) {
+  return (
+    <div className="max-w-3xl">
+      <span className="text-xs font-black uppercase tracking-[0.18em] text-[#45ddce]">{topic.group}</span>
+      <h1 className="mt-4 text-4xl font-semibold tracking-[-0.035em] sm:text-5xl">{topic.title}</h1>
+      <p className="mt-5 text-lg leading-8 text-white/55">{topic.description}</p>
+      <div className="mt-12 grid gap-14">
+        {topic.sections.map((section, index) => (
+          <section className="scroll-mt-24" id={`topic-section-${index + 1}`} key={section.title}>
+            <h2 className="text-2xl font-semibold">{section.title}</h2>
+            <div className="mt-5 grid gap-5">
+              {section.blocks.map((block, blockIndex) => (
+                <Block block={block} key={`${block.type}-${blockIndex}`} />
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function DocsArticle({ topic }: { topic: DocsTopic }) {
   const currentIndex = docsTopics.findIndex((item) => item.slug === topic.slug);
   const previous = docsTopics[currentIndex - 1];

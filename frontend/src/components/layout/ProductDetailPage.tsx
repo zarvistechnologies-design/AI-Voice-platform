@@ -116,14 +116,14 @@ export function ProductDetailPage({ service, experience }: { service: Product; e
           .product-detail-marquee:hover { animation-play-state: paused; }
           @keyframes product-detail-marquee { to { transform: translateX(-50%); } }
 
-          .marketing-site:has(#product-detail-page) .site-pre-footer-cta { margin-top: 100px; overflow: visible; position: relative; }
-          .marketing-site:has(#product-detail-page) .site-pre-footer-cta::before { content: ""; position: absolute; z-index: 1; left: 50%; top: -100px; width: 540px; height: 540px; border-radius: 50%; background: #000; transform: translateX(-50%); pointer-events: none; }
-          .marketing-site:has(#product-detail-page) .site-pre-footer-cta::after { content: "↓"; position: absolute; z-index: 2; left: 50%; top: -70px; color: #fff; font-size: 64px; font-weight: 300; line-height: 1; transform: translateX(-50%); pointer-events: none; }
+          .marketing-site:has(#product-detail-page) .site-pre-footer-cta { margin-top: 165px; overflow: visible; position: relative; }
+          .marketing-site:has(#product-detail-page) .site-pre-footer-cta::before { content: ""; position: absolute; z-index: 1; left: 50%; top: -165px; width: 540px; height: 540px; border-radius: 50%; background: #000; transform: translateX(-50%); pointer-events: none; }
+          .marketing-site:has(#product-detail-page) .site-pre-footer-cta::after { content: "↓"; position: absolute; z-index: 2; left: 50%; top: -125px; color: #fff; font-size: 64px; font-weight: 300; line-height: 1; transform: translateX(-50%); pointer-events: none; }
           .marketing-site:has(#product-detail-page) .site-pre-footer-cta > * { position: relative; z-index: 3; }
           .marketing-site:has(#product-detail-page) .site-pre-footer-cta > div { position: static; }
           .marketing-site:has(#product-detail-page) .site-pre-footer-cta > div::after { content: ""; position: absolute; z-index: 4; right: 0; bottom: 0; left: 0; height: 1px; background: #3a3a3a; pointer-events: none; }
           .marketing-site:has(#product-detail-page) .site-pre-footer-cta > div > * { position: relative; z-index: 3; }
-          @media (max-width: 640px) { .marketing-site:has(#product-detail-page) .site-pre-footer-cta { margin-top: 96px; } .marketing-site:has(#product-detail-page) .site-pre-footer-cta::before { top: -96px; } .marketing-site:has(#product-detail-page) .site-pre-footer-cta::after { top: -67px; font-size: 56px; } }
+          @media (max-width: 640px) { .marketing-site:has(#product-detail-page) .site-pre-footer-cta { margin-top: 155px; } .marketing-site:has(#product-detail-page) .site-pre-footer-cta::before { top: -155px; } .marketing-site:has(#product-detail-page) .site-pre-footer-cta::after { top: -115px; font-size: 56px; } }
         `}</style>
       </main>
     </SiteLayout>

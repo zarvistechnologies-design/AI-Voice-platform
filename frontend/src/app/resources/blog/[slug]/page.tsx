@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { DetailPage } from "@/components/layout/DetailPage";
+import { ArticleDetailPage } from "@/components/resources/ArticleDetailPage";
 import { articlePages } from "@/config/seoPages";
 
 type PageProps = { params: Promise<{ slug: string }> };
@@ -11,5 +11,5 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 export default async function ArticlePage({ params }: PageProps) {
   const { slug } = await params; const page = articlePages.find((item) => item.slug === slug); if (!page) notFound();
-  return <DetailPage kicker={page.kicker} title={page.title} heroTitle={page.title} summary={page.description} highlights={page.highlights} sections={page.sections} primaryAction={{ href: "/contact", label: "Plan your implementation" }} secondaryAction={page.secondaryAction!} />;
+  return <ArticleDetailPage article={page} />;
 }

@@ -291,7 +291,7 @@ export default function PartnersPage() {
             FINAL CTA
         ========================================================== */}
         <section className="bg-white px-6 pb-12 pt-4 lg:px-8">
-          <div className="partners-contact mx-auto max-w-6xl overflow-hidden rounded-[24px] border border-[#d7c8e8] bg-[#f1e9fa] p-8 text-center text-black shadow-[0_18px_46px_rgba(91,54,123,0.11)] sm:p-10">
+          <div className="partners-contact mx-auto max-w-6xl overflow-hidden rounded-[24px] border border-[#e3e3e3] bg-white p-8 text-center text-black shadow-[0_18px_46px_rgba(0,0,0,0.07)] sm:p-10">
             <div className="mx-auto grid gap-7 md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:text-left">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#7a3e9d]">

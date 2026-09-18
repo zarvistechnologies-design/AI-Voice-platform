@@ -296,11 +296,11 @@ export default function CareerPage() {
         {/* =========================================================
             HERO
         ========================================================== */}
-        <section className="relative overflow-hidden bg-white px-5 pb-4 pt-32 sm:px-8 sm:pb-6 sm:pt-40 lg:px-12 lg:pb-8">
+        <section className="relative overflow-hidden bg-white px-5 pb-4 pt-28 sm:px-8 sm:pb-6 sm:pt-36 lg:px-12 lg:pb-8">
 
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute left-1/2 top-16 h-72 w-72 -translate-x-1/2 rounded-full bg-[#118778]/5 blur-[110px]"
+            className="pointer-events-none absolute left-1/2 top-16 hidden h-72 w-72 -translate-x-1/2 rounded-full"
           />
 
           <div className="relative mx-auto max-w-[1000px] text-center">
@@ -359,7 +359,7 @@ export default function CareerPage() {
         {/* =========================================================
             WHY WORK WITH US
         ========================================================== */}
-        <section className="bg-white px-5 pb-10 pt-6 sm:px-8 sm:pb-12 sm:pt-8 lg:px-12 lg:pb-14 lg:pt-10">
+        <section className="bg-white px-5 pb-10 pt-3 sm:px-8 sm:pb-12 sm:pt-5 lg:px-12 lg:pb-14 lg:pt-7">
 
           <div className="mx-auto max-w-[1180px]">
 
@@ -979,18 +979,22 @@ export default function CareerPage() {
                   CONTACT BUTTON
                   Explicit white text + white arrow
               ====================================================== */}
-              <a
-                href="mailto:hello@vozon.ai?subject=Careers%20at%20vozon.ai"
+              <Link
+                href="/contact"
                 className="inline-flex min-h-12 shrink-0 items-center rounded-lg border border-[#7a3e9d] bg-[#7a3e9d] px-7 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#683486]"
               >
                 CONTACT US <span className="ml-3">&rarr;</span>
-              </a>
+              </Link>
 
           </div>
 
         </section>
 
         <style>{`
+          #career-page > section {
+            background: #fff;
+          }
+
           #career-page .career-benefit-card,
           #career-page .career-role-card {
             --card-accent: #118778;
@@ -1078,7 +1082,7 @@ export default function CareerPage() {
           #career-page .career-qualities-process {
             --section-accent: #111114;
             --section-soft: #f4f4f5;
-            background: #fafafa;
+            background: #fff;
           }
 
           #career-page :is(
@@ -1208,4 +1212,3 @@ export default function CareerPage() {
     </SiteLayout>
   );
 }
-

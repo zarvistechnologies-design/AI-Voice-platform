@@ -17,8 +17,7 @@ const helpTopics = [
       "Set up your workspace, create an agent, and prepare your first test call.",
     guides: "5 guides",
     icon: "launch" as TopicIconName,
-    accent: "border-[#45ddce]/24 bg-[#45ddce]/[0.055]",
-    iconStyle: "border-[#45ddce]/25 bg-[#45ddce]/10 text-[#75fff0]",
+    accent: "border-[#dfe7e3] bg-white",
   },
   {
     title: "Voice agents",
@@ -26,8 +25,7 @@ const helpTopics = [
       "Configure instructions, voices, languages, tools, and conversation behaviour.",
     guides: "8 guides",
     icon: "voice" as TopicIconName,
-    accent: "border-[#8b7cff]/24 bg-[#8b7cff]/[0.05]",
-    iconStyle: "border-[#8b7cff]/25 bg-[#8b7cff]/10 text-[#b8adff]",
+    accent: "border-[#dfe7e3] bg-white",
   },
   {
     title: "Calls & conversations",
@@ -35,8 +33,7 @@ const helpTopics = [
       "Understand phone numbers, transfers, recordings, transcripts, and outcomes.",
     guides: "7 guides",
     icon: "calls" as TopicIconName,
-    accent: "border-[#ffb25b]/24 bg-[#ffb25b]/[0.045]",
-    iconStyle: "border-[#ffb25b]/25 bg-[#ffb25b]/10 text-[#ffc982]",
+    accent: "border-[#dfe7e3] bg-white",
   },
   {
     title: "Integrations & API",
@@ -44,8 +41,7 @@ const helpTopics = [
       "Connect business tools, configure webhooks, and troubleshoot API requests.",
     guides: "9 guides",
     icon: "code" as TopicIconName,
-    accent: "border-[#65a8ff]/24 bg-[#65a8ff]/[0.045]",
-    iconStyle: "border-[#65a8ff]/25 bg-[#65a8ff]/10 text-[#91c2ff]",
+    accent: "border-[#dfe7e3] bg-white",
   },
   {
     title: "Analytics",
@@ -53,8 +49,7 @@ const helpTopics = [
       "Review transcripts, call outcomes, trends, quality signals, and exports.",
     guides: "6 guides",
     icon: "analytics" as TopicIconName,
-    accent: "border-[#ff6ca8]/24 bg-[#ff6ca8]/[0.045]",
-    iconStyle: "border-[#ff6ca8]/25 bg-[#ff6ca8]/10 text-[#ff9bc4]",
+    accent: "border-[#dfe7e3] bg-white",
   },
   {
     title: "Workspace & billing",
@@ -62,8 +57,7 @@ const helpTopics = [
       "Manage teammates, permissions, usage, invoices, and subscription settings.",
     guides: "6 guides",
     icon: "workspace" as TopicIconName,
-    accent: "border-[#8ee06f]/24 bg-[#8ee06f]/[0.045]",
-    iconStyle: "border-[#8ee06f]/25 bg-[#8ee06f]/10 text-[#b3ef9c]",
+    accent: "border-[#dfe7e3] bg-white",
   },
 ] as const;
 
@@ -249,43 +243,21 @@ function TopicIcon({ name }: { name: TopicIconName }) {
   );
 }
 
-function ArrowIcon() {
-  return (
-    <svg aria-hidden="true" className="size-4" fill="none" viewBox="0 0 24 24">
-      <path
-        d="M5 12h14m-5-5 5 5-5 5"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.8"
-      />
-    </svg>
-  );
-}
-
 export function HelpCenterPage() {
   return (
     <SiteLayout>
-      <main className="help-center-page min-h-screen bg-white text-white">
-        <section className="relative overflow-visible bg-white px-5 pb-0 pt-28 sm:px-8 sm:pt-32 lg:px-12">
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_25%,rgba(69,221,206,0.14),transparent_31%),radial-gradient(circle_at_82%_66%,rgba(139,124,255,0.07),transparent_26%),linear-gradient(rgba(69,221,206,0.024)_1px,transparent_1px),linear-gradient(90deg,rgba(69,221,206,0.024)_1px,transparent_1px)] [background-size:auto,auto,64px_64px,64px_64px]"
-          />
-
-          <div className="relative mx-auto max-w-[1080px] text-center">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#75fff0]">
+      <main className="help-center-page min-h-screen bg-white text-[#14231f]">
+        <section className="border-b border-[#e5ebe8] bg-white px-5 pb-16 pt-28 sm:px-8 sm:pt-32 lg:px-12">
+          <div className="mx-auto max-w-[1080px] text-center">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#0d806e]">
               Help center
             </p>
 
-            <h1 className="mx-auto mt-4 max-w-[900px] text-4xl font-semibold leading-[1.15] tracking-[-0.04em] sm:text-6xl sm:leading-[1.12]">
-              Your guide to{" "}
-              <span className="help-gradient-text">
-                better voice experiences.
-              </span>
+            <h1 className="mx-auto mt-4 max-w-[900px] text-4xl font-semibold leading-[1.15] tracking-[-0.04em] text-[#14231f] sm:text-6xl sm:leading-[1.12]">
+              Your guide to better voice experiences.
             </h1>
 
-            <p className="mx-auto mt-5 max-w-[680px] text-base leading-8 text-white/48">
+            <p className="mx-auto mt-5 max-w-[680px] text-base leading-8 text-[#5d6c67]">
               Find practical answers for building, launching, and managing
               reliable AI voice experiences.
             </p>
@@ -293,53 +265,47 @@ export function HelpCenterPage() {
         </section>
 
         <section className="relative overflow-hidden bg-white px-5 pb-6 pt-0 sm:px-8 lg:px-12 lg:pb-8">
-          <div className="relative mx-auto mt-20 max-w-[1260px]">
+          <div className="relative mx-auto mt-16 max-w-[1260px]">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#c4a574]">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#0d806e]">
                 Browse help
               </p>
-              <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1a1523] sm:text-4xl">
+              <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#14231f] sm:text-4xl">
                 Find the right starting point.
               </h2>
             </div>
 
-            {/* ===== CARD GRID + darker glow shadow behind the whole grid ===== */}
             <div className="relative mt-10">
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute -inset-6 sm:-inset-10 lg:-inset-14"
-              ></div>
-
               <div className="relative grid gap-5 md:grid-cols-2 lg:grid-cols-3">
                 {helpTopics.map((topic) => (
                   <article
                     key={topic.title}
-                    className={`group relative overflow-hidden rounded-xl border border-l-0 border-[#e2d8cc] bg-white/90 p-4 shadow-[0_10px_30px_rgba(40,20,80,0.05)] backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(40,20,80,0.08)] ${topic.accent}`}
+                    className={`group relative overflow-hidden rounded-xl border p-5 shadow-[0_10px_30px_rgba(20,35,31,0.05)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(20,35,31,0.08)] ${topic.accent}`}
                   >
                     {/* Blue left rail */}
                     <div
                       aria-hidden="true"
-                      className="absolute inset-y-0 left-0 w-[6px] rounded-l-xl bg-[#5379FF]"
+                      className="absolute inset-y-0 left-0 w-1 bg-[#15967f]"
                     />
 
                     {/* Content */}
                     <div className="pl-2">
                       <div className="flex items-start justify-between gap-3">
                         {/* Topic Icon */}
-                        <div className="grid size-11 place-items-center rounded-xl border border-[#A5B8FF] bg-[#EEF2FF] text-[#5379FF]">
+                        <div className="grid size-11 place-items-center rounded-xl border border-[#b8d9d1] bg-[#edf8f5] text-[#0d806e]">
                           <TopicIcon name={topic.icon} />
                         </div>
                       </div>
 
-                      <h3 className="mt-5 text-base font-semibold tracking-[-0.02em] text-[#1a1523]">
+                      <h3 className="mt-5 text-base font-semibold tracking-[-0.02em] text-[#14231f]">
                         {topic.title}
                       </h3>
 
-                      <p className="mt-2 text-sm leading-6 text-[#6b6578]">
+                      <p className="mt-2 text-sm leading-6 text-[#5d6c67]">
                         {topic.description}
                       </p>
 
-                      <span className="mt-5 inline-flex rounded-full bg-[#F0F3FF] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#5379FF]">
+                      <span className="mt-5 inline-flex rounded-full bg-[#edf8f5] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#0d806e]">
                         {topic.guides}
                       </span>
                     </div>
@@ -350,26 +316,21 @@ export function HelpCenterPage() {
 
             <div className="mt-10">
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#c4a574]">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#0d806e]">
                   Popular guides
                 </p>
-                <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1a1523]">
+                <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#14231f]">
                   Step-by-step help for common tasks.
                 </h2>
               </div>
 
               <div className="relative mt-9">
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute -inset-6 sm:-inset-8"
-                ></div>
-
                 {/* same border treatment: darker blush border, left rail uncovered */}
-                <div className="relative overflow-hidden rounded-2xl border border-l-0 border-[#e2d8cc] bg-white/90 shadow-[0_10px_30px_rgba(40,20,80,0.05)] backdrop-blur-sm">
+                <div className="relative overflow-hidden rounded-2xl border border-[#dfe7e3] bg-white shadow-[0_10px_30px_rgba(20,35,31,0.05)]">
                   {/* left purple rail — full height, not covered */}
                   <div
                     aria-hidden="true"
-                    className="absolute inset-y-0 left-0 z-10 w-[6px] rounded-l-2xl bg-[#5379FF]"
+                    className="absolute inset-y-0 left-0 z-10 w-1 bg-[#15967f]"
                   />
 
                   <div className="grid md:grid-cols-2 lg:grid-cols-3">
@@ -377,29 +338,29 @@ export function HelpCenterPage() {
                       <Link
                         key={guide.title}
                         href={guide.href}
-                        className={`group flex min-h-[200px] flex-col justify-between p-4 pl-5 transition hover:bg-[#f8f6ff]/80 ${
+                        className={`group flex min-h-[200px] flex-col justify-between p-5 pl-6 transition hover:bg-[#f7faf9] ${
                           index < popularGuides.length - 1
-                            ? "border-b border-[#e2d8cc]"
+                            ? "border-b border-[#e5ebe8]"
                             : ""
-                        } md:border-b md:border-[#e2d8cc] lg:[&:nth-child(3n)]:border-r-0 md:[&:nth-child(odd)]:border-r md:[&:nth-child(odd)]:border-[#e2d8cc] lg:border-r lg:border-[#e2d8cc]`}
+                        } md:border-b md:border-[#e5ebe8] lg:[&:nth-child(3n)]:border-r-0 md:[&:nth-child(odd)]:border-r md:[&:nth-child(odd)]:border-[#e5ebe8] lg:border-r lg:border-[#e5ebe8]`}
                       >
                         <div>
                           <div className="flex items-start justify-between gap-3">
-                            <span className="inline-flex rounded-full bg-[#EEF2FF] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#7c6af0]">
+                            <span className="inline-flex rounded-full bg-[#edf8f5] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#0d806e]">
                               {guide.category}
                             </span>
                           </div>
 
-                          <h3 className="mt-4 text-base font-semibold tracking-[-0.02em] text-[#1a1523] transition group-hover:text-[#5b4fd6]">
+                          <h3 className="mt-4 text-base font-semibold tracking-[-0.02em] text-[#14231f] transition group-hover:text-[#0d806e]">
                             {guide.title}
                           </h3>
 
-                          <p className="mt-2 text-sm leading-6 text-[#6b6578]">
+                          <p className="mt-2 text-sm leading-6 text-[#5d6c67]">
                             {guide.description}
                           </p>
                         </div>
 
-                        <span className="mt-5 inline-flex items-center gap-1.5 text-xs font-semibold text-[#6b5ce7] transition group-hover:gap-2.5">
+                        <span className="mt-5 inline-flex items-center gap-1.5 text-xs font-semibold text-[#0d806e] transition group-hover:gap-2.5">
                           Read guide
                           <span aria-hidden="true">→</span>
                         </span>
@@ -410,7 +371,7 @@ export function HelpCenterPage() {
                   {/* right rail stays as-is */}
                   <div
                     aria-hidden="true"
-                    className="absolute inset-y-0 right-0 w-[6px] bg-[#5379FF]"
+                    className="absolute inset-y-0 right-0 w-1 bg-[#15967f]"
                   />
                 </div>
               </div>
@@ -422,13 +383,13 @@ export function HelpCenterPage() {
           <div className="mx-auto grid max-w-[1260px] gap-12 lg:grid-cols-[0.72fr_1.28fr] lg:gap-20">
             {/* left — unchanged copy */}
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#75fff0]">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#0d806e]">
                 Common questions
               </p>
-              <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">
+              <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-[#14231f] sm:text-4xl">
                 Quick answers, clearly explained.
               </h2>
-              <p className="mt-5 text-sm leading-7 text-white/44">
+              <p className="mt-5 text-sm leading-7 text-[#5d6c67]">
                 Start here for the questions teams ask most often while
                 designing and operating AI voice agents.
               </p>
@@ -436,38 +397,38 @@ export function HelpCenterPage() {
 
             {/* right — new card design, same faqs data */}
 
-            <div className="relative overflow-hidden  rounded-2xl border border-[#ece8f5] bg-white shadow-[0_10px_30px_rgba(40,20,80,0.05)]">
+            <div className="relative overflow-hidden rounded-2xl border border-[#dfe7e3] bg-white shadow-[0_10px_30px_rgba(20,35,31,0.05)]">
               {/* left purple rail */}
               <div
                 aria-hidden="true"
-                className="absolute inset-y-0 left-0 z-10 w-[6px] bg-[#5379FF] shadow-[0_0_6px_1px_rgba(70,55,160,0.7),0_0_14px_3px_rgba(80,60,170,0.45),0_0_28px_6px_rgba(60,45,140,0.3)]"
+                className="absolute inset-y-0 left-0 z-10 w-1 bg-[#15967f]"
               />
 
               {/* card header */}
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#efeaf8] px-5 py-4 sm:px-6">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e5ebe8] px-5 py-4 sm:px-6">
                 <div className="inline-flex items-center gap-2.5">
-                  <span className="grid size-7 place-items-center rounded-full bg-[#EEF2FF] text-sm font-bold text-[#7c6af0]">
+                  <span className="grid size-7 place-items-center rounded-full bg-[#edf8f5] text-sm font-bold text-[#0d806e]">
                     ?
                   </span>
-                  <span className="text-sm font-semibold text-[#1a1523]">
+                  <span className="text-sm font-semibold text-[#14231f]">
                     Top questions from builders
                   </span>
                 </div>
-                <span className="inline-flex rounded-full border border-[#ece8f5] bg-[#EEF2FF] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[#9a94a8]">
+                <span className="inline-flex rounded-full border border-[#dfe7e3] bg-[#f7f9f8] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[#73807c]">
                   Updated today
                 </span>
               </div>
 
               {/* accordion list */}
-              <div className="divide-y divide-[#efeaf8] px-5 sm:px-6">
+              <div className="divide-y divide-[#e5ebe8] px-5 sm:px-6">
                 {faqs.map((faq) => (
                   <details className="group py-1" key={faq.question}>
                     <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-3 marker:hidden">
-                      <span className="text-base font-semibold leading-snug text-[#1a1523]">
+                      <span className="text-base font-semibold leading-snug text-[#14231f]">
                         {faq.question}
                       </span>
 
-                      <span className="grid size-8 shrink-0 place-items-center rounded-full border border-[#e7e2f3] bg-white text-[#7c6af0] transition group-open:border-transparent group-open:bg-[#6b5ce7] group-open:text-white">
+                      <span className="grid size-8 shrink-0 place-items-center rounded-full border border-[#cddbd6] bg-white text-[#0d806e] transition group-open:border-transparent group-open:bg-[#15967f] group-open:text-white">
                         <svg
                           aria-hidden="true"
                           className="size-3.5 group-open:hidden"
@@ -497,7 +458,7 @@ export function HelpCenterPage() {
                       </span>
                     </summary>
 
-                    <p className="max-w-[640px] pb-5 pr-12 text-sm leading-7 text-[#6b6578]">
+                    <p className="max-w-[640px] pb-5 pr-12 text-sm leading-7 text-[#5d6c67]">
                       {faq.answer}
                     </p>
                   </details>
@@ -505,10 +466,10 @@ export function HelpCenterPage() {
               </div>
 
               {/* card footer */}
-              <div className="border-t border-[#efeaf8] bg-[#EEF2FF] px-5 py-4 sm:px-6">
+              <div className="border-t border-[#e5ebe8] bg-[#f7faf9] px-5 py-4 sm:px-6">
                 <a
                   href="mailto:hello@vozon.ai"
-                  className="inline-flex items-center gap-1.5 text-xs font-medium text-[#9a94a8] transition hover:text-[#6b5ce7]"
+                  className="inline-flex items-center gap-1.5 text-xs font-medium text-[#5d6c67] transition hover:text-[#0d806e]"
                 >
                   Still stuck? Ask support
                   <span aria-hidden="true">→</span>
@@ -521,13 +482,13 @@ export function HelpCenterPage() {
         <section className="bg-white px-5 pb-20 pt-6 sm:px-8 lg:px-12 lg:pb-24 lg:pt-8">
           <div className="mx-auto max-w-[1260px]">
             <div className="text-center">
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#75fff0]">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#0d806e]">
                 Contact support
               </p>
-              <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">
+              <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-[#14231f] sm:text-4xl">
                 Still need a hand?
               </h2>
-              <p className="mx-auto mt-4 max-w-[600px] text-sm leading-7 text-white/44">
+              <p className="mx-auto mt-4 max-w-[600px] text-sm leading-7 text-[#5d6c67]">
                 Choose the support path that best matches your question.
               </p>
             </div>
@@ -536,24 +497,24 @@ export function HelpCenterPage() {
               {/* Email */}
               <a
                 href="mailto:hello@vozon.ai"
-                className="group relative overflow-hidden rounded-2xl border border-[#ece8f5] bg-white p-6 shadow-[0_10px_30px_rgba(40,20,80,0.05)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(40,20,80,0.08)]"
+                className="group relative overflow-hidden rounded-2xl border border-[#dfe7e3] bg-white p-6 shadow-[0_10px_30px_rgba(20,35,31,0.05)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(20,35,31,0.08)]"
               >
                 <div
                   aria-hidden="true"
-                  className="absolute inset-y-0 left-0 w-1.5 bg-[#5379FF]"
+                  className="absolute inset-y-0 left-0 w-1 bg-[#15967f]"
                 />
 
-                <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#b0a8c9]">
+                <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#73807c]">
                   Email
                 </p>
-                <h3 className="mt-3 text-base font-semibold tracking-[-0.02em] text-[#1a1523]">
+                <h3 className="mt-3 text-base font-semibold tracking-[-0.02em] text-[#14231f]">
                   Email our support team
                 </h3>
-                <p className="mt-2 text-sm leading-6 text-[#6b6578]">
+                <p className="mt-2 text-sm leading-6 text-[#5d6c67]">
                   Send details, screenshots, or call references to
                   hello@vozon.ai.
                 </p>
-                <span className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-[#EEF2FF] px-3.5 py-1.5 text-xs font-semibold text-[#6b5ce7] transition group-hover:gap-2.5">
+                <span className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-[#edf8f5] px-3.5 py-1.5 text-xs font-semibold text-[#0d806e] transition group-hover:gap-2.5">
                   Send an email
                   <span aria-hidden="true">→</span>
                 </span>
@@ -562,24 +523,24 @@ export function HelpCenterPage() {
               {/* General help */}
               <Link
                 href="/contact"
-                className="group relative overflow-hidden rounded-2xl border border-[#ece8f5] bg-white p-6 shadow-[0_10px_30px_rgba(40,20,80,0.05)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(40,20,80,0.08)]"
+                className="group relative overflow-hidden rounded-2xl border border-[#dfe7e3] bg-white p-6 shadow-[0_10px_30px_rgba(20,35,31,0.05)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(20,35,31,0.08)]"
               >
                 <div
                   aria-hidden="true"
-                  className="absolute inset-y-0 left-0 w-1.5 bg-[#5379FF]"
+                  className="absolute inset-y-0 left-0 w-1 bg-[#15967f]"
                 />
 
-                <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#b0a8c9]">
+                <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#73807c]">
                   General help
                 </p>
-                <h3 className="mt-3 text-base font-semibold tracking-[-0.02em] text-[#1a1523]">
+                <h3 className="mt-3 text-base font-semibold tracking-[-0.02em] text-[#14231f]">
                   Contact our team
                 </h3>
-                <p className="mt-2 text-sm leading-6 text-[#6b6578]">
+                <p className="mt-2 text-sm leading-6 text-[#5d6c67]">
                   Get help with setup, workflows, account questions, or
                   production planning.
                 </p>
-                <span className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-[#EEF2FF] px-3.5 py-1.5 text-xs font-semibold text-[#6b5ce7] transition group-hover:gap-2.5">
+                <span className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-[#edf8f5] px-3.5 py-1.5 text-xs font-semibold text-[#0d806e] transition group-hover:gap-2.5">
                   Contact support
                   <span aria-hidden="true">→</span>
                 </span>
@@ -588,24 +549,24 @@ export function HelpCenterPage() {
               {/* Technical help */}
               <Link
                 href="/dashboard/developers"
-                className="group relative overflow-hidden rounded-2xl border border-[#ece8f5] bg-white p-6 shadow-[0_10px_30px_rgba(40,20,80,0.05)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(40,20,80,0.08)]"
+                className="group relative overflow-hidden rounded-2xl border border-[#dfe7e3] bg-white p-6 shadow-[0_10px_30px_rgba(20,35,31,0.05)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(20,35,31,0.08)]"
               >
                 <div
                   aria-hidden="true"
-                  className="absolute inset-y-0 left-0 w-1.5 bg-[#5379FF]"
+                  className="absolute inset-y-0 left-0 w-1 bg-[#15967f]"
                 />
 
-                <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#b0a8c9]">
+                <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#73807c]">
                   Technical help
                 </p>
-                <h3 className="mt-3 text-base font-semibold tracking-[-0.02em] text-[#1a1523]">
+                <h3 className="mt-3 text-base font-semibold tracking-[-0.02em] text-[#14231f]">
                   Visit the developer portal
                 </h3>
-                <p className="mt-2 text-sm leading-6 text-[#6b6578]">
+                <p className="mt-2 text-sm leading-6 text-[#5d6c67]">
                   Review API access, integrations, webhook setup, and developer
                   tools.
                 </p>
-                <span className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-[#EEF2FF] px-3.5 py-1.5 text-xs font-semibold text-[#6b5ce7] transition group-hover:gap-2.5">
+                <span className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-[#edf8f5] px-3.5 py-1.5 text-xs font-semibold text-[#0d806e] transition group-hover:gap-2.5">
                   Open developer portal
                   <span aria-hidden="true">→</span>
                 </span>

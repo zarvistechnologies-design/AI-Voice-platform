@@ -57,14 +57,14 @@ function ModelDropdown({
   const estimate = estimatedModelCostPerMinute(layer.id, selected.model);
 
   return (
-    <label className="pricing-model-dropdown group">
-      <span className="pricing-model-label">
-        <span className={`pricing-model-icon ${layer.id}`}><LayerIcon layer={layer.id} /></span>
+    <label className="voicestack-model group">
+      <span className="voicestack-label">
+        <span className={`voicestack-icon ${layer.id}`}><LayerIcon layer={layer.id} /></span>
         <span>
           <span className="block text-sm font-semibold">{layer.label}</span>
           <span className="mt-1 block text-[13px]">{layer.helper}</span>
         </span>
-        <span className="pricing-stack-rate rounded-full px-2.5 py-1 text-[10px] font-bold" style={{ "--stack-accent": layer.accent } as CSSProperties}>
+        <span className="voicestack-rate rounded-full px-2.5 py-1 text-[10px] font-bold" style={{ "--stack-accent": layer.accent } as CSSProperties}>
           {formatEstimatedMinuteCost(estimate)}
         </span>
       </span>
@@ -93,8 +93,8 @@ function ModelDropdown({
         </svg>
       </span>
 
-      <span className="pricing-model-provider">
-        <span className="truncate">◉ &nbsp;{selected.provider.name}</span>
+      <span className="voicestack-provider">
+        <span className="truncate">{selected.provider.name}</span>
         <span className="text-right">{selected.model.rate}</span>
       </span>
     </label>
@@ -120,9 +120,8 @@ export function VoiceStackCalculator() {
   const total = breakdown.reduce((sum, item) => sum + item.cost, 0);
 
   return (
-    <div className="pricing-stack-card mt-10">
-      <div className="pricing-stack-subtotal">
-        <span className="pricing-stack-layers" aria-hidden="true">▱</span>
+    <div className="voicestack-card">
+      <div className="voicestack-subtotal">
         <div>
           <span className="block text-[10px] font-bold uppercase tracking-[0.13em] text-[#0e6f62]">Model stack subtotal</span>
           <strong>{formatEstimatedMinuteCost(total)}</strong>
@@ -130,7 +129,7 @@ export function VoiceStackCalculator() {
         </div>
       </div>
 
-      <div className="pricing-model-grid">
+      <div className="voicestack-grid">
         {layers.map((layer) => (
           <ModelDropdown
             key={layer.id}
@@ -141,12 +140,12 @@ export function VoiceStackCalculator() {
         ))}
       </div>
 
-      <div className="pricing-stack-summary">
-        <div className="pricing-stack-total"><span>↗</span><div><small>Combined cost per minute</small><strong>{formatEstimatedMinuteCost(total)}</strong><em>All selected providers combined</em></div></div>
-        <div className="pricing-stack-benefits">
+      <div className="voicestack-summary">
+        <div className="voicestack-total"><div><small>Combined cost per minute</small><strong>{formatEstimatedMinuteCost(total)}</strong><em>All selected providers combined</em></div></div>
+        <div className="voicestack-benefits">
           <span>Transparent provider costs</span><span>Update in real time</span><span>Mix and match the best models</span><span>Scale from prototype to production</span>
         </div>
-        <div className="pricing-stack-assumptions"><strong>▤ &nbsp; Cost estimate details</strong><p>Estimate assumes {minutePricingAssumptions.llmInputTokens.toLocaleString()} LLM input and {minutePricingAssumptions.llmOutputTokens.toLocaleString()} output tokens, plus about {minutePricingAssumptions.ttsCharacters} spoken characters per connected minute. INR rates use an indicative ₹{minutePricingAssumptions.inrPerUsd}/USD conversion. Platform, telephony, taxes, cached context, and add-ons are not included.</p></div>
+        <div className="voicestack-assumptions"><strong>Cost estimate details</strong><p>Estimate assumes {minutePricingAssumptions.llmInputTokens.toLocaleString()} LLM input and {minutePricingAssumptions.llmOutputTokens.toLocaleString()} output tokens, plus about {minutePricingAssumptions.ttsCharacters} spoken characters per connected minute. INR rates use an indicative ₹{minutePricingAssumptions.inrPerUsd}/USD conversion. Platform, telephony, taxes, cached context, and add-ons are not included.</p></div>
       </div>
     </div>
   );
