@@ -26,25 +26,28 @@ export function TermsIndex({ sections }: TermsIndexProps) {
     setHashSection();
     window.addEventListener("hashchange", setHashSection);
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const current = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+    let animationFrame = 0;
+    const updateActiveSection = () => {
+      cancelAnimationFrame(animationFrame);
+      animationFrame = requestAnimationFrame(() => {
+        const readingLine = 132;
+        const currentSection = sections.reduce((currentId, section) => {
+          const element = document.getElementById(section.id);
+          return element && element.getBoundingClientRect().top <= readingLine
+            ? section.id
+            : currentId;
+        }, sections[0]?.id ?? "");
 
-        if (current) setActiveId(current.target.id);
-      },
-      { rootMargin: "-22% 0px -62% 0px", threshold: [0, 0.1, 0.35] },
-    );
+        setActiveId(currentSection);
+      });
+    };
 
-    sections.forEach((section) => {
-      const element = document.getElementById(section.id);
-      if (element) observer.observe(element);
-    });
+    window.addEventListener("scroll", updateActiveSection, { passive: true });
 
     return () => {
       window.removeEventListener("hashchange", setHashSection);
-      observer.disconnect();
+      window.removeEventListener("scroll", updateActiveSection);
+      cancelAnimationFrame(animationFrame);
     };
   }, [sections]);
 
@@ -56,7 +59,7 @@ export function TermsIndex({ sections }: TermsIndexProps) {
     if (!target) return;
 
     // Avoid the browser's default hash jump, which can land beneath the fixed header.
-    window.history.replaceState(null, "", `#${id}`);
+    window.history.replaceState(null, "", `${window.location.pathname}#${id}`);
     const headerOffset = 112;
     const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
