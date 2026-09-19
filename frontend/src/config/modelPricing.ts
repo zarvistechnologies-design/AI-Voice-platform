@@ -34,6 +34,7 @@ const GEMINI_PRICING = "https://ai.google.dev/gemini-api/docs/pricing";
 const SARVAM_PRICING = "https://docs.sarvam.ai/api/getting-started/pricing";
 const ELEVENLABS_PRICING = "https://elevenlabs.io/pricing/api";
 const DEEPGRAM_PRICING = "https://deepgram.com/pricing";
+const CARTESIA_PRICING = "https://docs.cartesia.ai/pricing";
 
 export const modelPricingCategories: readonly ModelPriceCategory[] = [
   {
@@ -179,6 +180,16 @@ export const modelPricingCategories: readonly ModelPriceCategory[] = [
           ),
         ],
       },
+      {
+        name: "Cartesia",
+        shortName: "C",
+        accent: "#ff6b57",
+        sourceUrl: CARTESIA_PRICING,
+        models: [
+          { name: "ink-2", rate: "$0.009", unit: "per audio minute", detail: "180 credits/minute at $50 per 1M credits", badge: "Recommended" },
+          { name: "ink-whisper", rate: "$0.003", unit: "per audio minute", detail: "60 credits/minute at $50 per 1M credits" },
+        ],
+      },
     ],
   },
   {
@@ -235,6 +246,15 @@ export const modelPricingCategories: readonly ModelPriceCategory[] = [
           { name: "eleven_v3", rate: "$0.10", unit: "per 1K characters" },
           { name: "eleven_turbo_v2_5", rate: "$0.05", unit: "per 1K characters", badge: "Legacy" },
           { name: "eleven_turbo_v2", rate: "$0.05", unit: "per 1K characters", badge: "Legacy" },
+        ],
+      },
+      {
+        name: "Cartesia",
+        shortName: "C",
+        accent: "#ff6b57",
+        sourceUrl: CARTESIA_PRICING,
+        models: [
+          { name: "sonic-3.6", rate: "$0.05", unit: "per 1K characters", detail: "Estimate at $50 per 1M credits; account rate varies", badge: "Recommended" },
         ],
       },
     ],

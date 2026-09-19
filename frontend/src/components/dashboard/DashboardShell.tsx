@@ -653,6 +653,82 @@ const fallbackLanguageCatalog: VoiceLanguageOption[] = [
   },
 ];
 
+const cartesiaTtsLanguageCodes = new Set([
+  "ar", "bg", "bn", "cs", "da", "de", "el", "en", "es", "fi", "fr", "gu",
+  "he", "hi", "hr", "hu", "id", "it", "ja", "ka", "kn", "ko", "ml", "mr",
+  "ms", "nl", "no", "or", "pa", "pl", "pt", "ro", "ru", "sk", "sv", "ta",
+  "te", "th", "tl", "tr", "uk", "ur", "vi", "zh",
+]);
+const cartesiaBaseLanguageCode = (code: string) => {
+  const base = code.split("-")[0]?.toLowerCase() ?? "";
+  if (base === "od") return "or";
+  if (base === "fil") return "tl";
+  if (base === "nb") return "no";
+  return base;
+};
+const fallbackCartesiaTtsLanguages = fallbackLanguageCatalog.filter(
+  (language) =>
+    language.code !== "unknown" &&
+    cartesiaTtsLanguageCodes.has(cartesiaBaseLanguageCode(language.code)),
+);
+const fallbackCartesiaEnglishLanguages = fallbackLanguageCatalog.filter(
+  (language) => cartesiaBaseLanguageCode(language.code) === "en",
+);
+const fallbackCartesiaVoices = [
+  "db6b0ed5-d5d3-463d-ae85-518a07d3c2b4",
+  "47c38ca4-5f35-497b-b1a3-415245fb35e1",
+  "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+  "62ae83ad-4f6a-430b-af41-a9bede9286ca",
+  "ef191366-f52f-447a-a398-ed8c0f2943a1",
+];
+const fallbackCartesiaVoiceProfiles: VoiceProfile[] = [
+  {
+    value: fallbackCartesiaVoices[0],
+    label: "Skylar",
+    gender: "female",
+    model: "sonic-3.6",
+    useCase: "Conversational agents",
+    tone: "warm and natural",
+    languageCodes: ["en-US"],
+  },
+  {
+    value: fallbackCartesiaVoices[1],
+    label: "Daniel",
+    gender: "male",
+    model: "sonic-3.6",
+    useCase: "Sales and support",
+    tone: "clear and confident",
+    languageCodes: ["en-US"],
+  },
+  {
+    value: fallbackCartesiaVoices[2],
+    label: "Jacqueline",
+    gender: "female",
+    model: "sonic-3.6",
+    useCase: "Customer care",
+    tone: "professional and friendly",
+    languageCodes: ["en-US"],
+  },
+  {
+    value: fallbackCartesiaVoices[3],
+    label: "Gemma",
+    gender: "female",
+    model: "sonic-3.6",
+    useCase: "Conversational agents",
+    tone: "natural British English",
+    languageCodes: ["en-GB"],
+  },
+  {
+    value: fallbackCartesiaVoices[4],
+    label: "Archie",
+    gender: "male",
+    model: "sonic-3.6",
+    useCase: "Sales and support",
+    tone: "confident British English",
+    languageCodes: ["en-GB"],
+  },
+];
+
 const elevenLabsV25LanguageCodes = new Set([
   "en",
   "hi",
@@ -1349,6 +1425,17 @@ const fallbackCatalog: ModelCatalog = {
       models: fallbackDeepgramSttModels,
       languages: fallbackLanguageCatalog,
     },
+    {
+      provider: "cartesia",
+      label: "Cartesia",
+      configured: true,
+      models: ["ink-2", "ink-whisper"],
+      languages: fallbackLanguageCatalog,
+      languagesByModel: {
+        "ink-2": fallbackCartesiaEnglishLanguages,
+        "ink-whisper": fallbackLanguageCatalog,
+      },
+    },
   ],
   tts: [
     {
@@ -1404,6 +1491,20 @@ const fallbackCatalog: ModelCatalog = {
       languagesByModel: fallbackElevenLabsLanguagesByModel,
       voicesByLanguage: voicesByLanguageFromProfiles(
         fallbackElevenLabsVoiceProfiles,
+        fallbackLanguageCatalog,
+      ),
+      showAllVoicesWithLanguageOrder: true,
+    },
+    {
+      provider: "cartesia",
+      label: "Cartesia",
+      configured: true,
+      models: ["sonic-3.6"],
+      voices: fallbackCartesiaVoices,
+      voiceProfiles: fallbackCartesiaVoiceProfiles,
+      languages: fallbackCartesiaTtsLanguages,
+      voicesByLanguage: voicesByLanguageFromProfiles(
+        fallbackCartesiaVoiceProfiles,
         fallbackLanguageCatalog,
       ),
       showAllVoicesWithLanguageOrder: true,
@@ -2029,6 +2130,19 @@ function normalizeSttModelForLanguage(
   language: string,
   languageCatalog: readonly VoiceLanguageOption[],
 ) {
+  if (provider === "cartesia") {
+    const normalized = language.trim().toLowerCase();
+    const selectedLanguage = languageCatalog.find((item) =>
+      [item.value, item.label, item.code].some(
+        (candidate) => candidate.toLowerCase() === normalized,
+      ),
+    );
+    const baseCode = cartesiaBaseLanguageCode(selectedLanguage?.code ?? "unknown");
+    if (baseCode === "en") {
+      return model === "ink-whisper" ? model : "ink-2";
+    }
+    return "ink-whisper";
+  }
   if (provider !== "deepgram") return model;
   const models = deepgramModelsForLanguage(
     fallbackDeepgramSttModels,
@@ -2037,6 +2151,22 @@ function normalizeSttModelForLanguage(
   );
   if (models.includes(model)) return model;
   return models[0] ?? "nova-3";
+}
+
+function cartesiaSttModelsForLanguage(
+  models: readonly string[],
+  language: string,
+  languageCatalog: readonly VoiceLanguageOption[],
+) {
+  const normalized = language.trim().toLowerCase();
+  const selectedLanguage = languageCatalog.find((item) =>
+    [item.value, item.label, item.code].some(
+      (candidate) => candidate.toLowerCase() === normalized,
+    ),
+  );
+  return cartesiaBaseLanguageCode(selectedLanguage?.code ?? "unknown") === "en"
+    ? [...models]
+    : models.filter((model) => model === "ink-whisper");
 }
 
 function getLanguageOptions(
@@ -2972,6 +3102,12 @@ function StackConfigurationModal({
             effectiveLanguage,
             languageCatalog,
           )
+        : stack === "stt" && provider.provider === "cartesia"
+          ? cartesiaSttModelsForLanguage(
+              provider.models,
+              effectiveLanguage,
+              languageCatalog,
+            )
         : [...provider.models],
     [
       effectiveLanguage,
