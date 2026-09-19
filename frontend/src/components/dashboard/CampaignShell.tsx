@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import {
   type DragEvent,
   type FormEvent,
@@ -29,7 +30,25 @@ import {
   type AgentSummary,
   type BackendCampaign,
   type BackendPhoneNumber,
+  type CampaignCallbackStatus,
+  type CampaignLeadResult,
+  type CampaignOutcome,
+  type CampaignResultFunnel,
+  type CampaignResultSummary,
+  type CampaignResultTimelinePoint,
+  type CampaignScorecard,
+  type CallRecord,
 } from "@/lib/voice";
+
+const loadCallDetailDrawer = () => import("@/components/dashboard/CallDetailDrawer");
+const CallDetailDrawer = dynamic(
+  () => loadCallDetailDrawer().then((module) => module.CallDetailDrawer),
+  { ssr: false },
+);
+const CampaignResultsCharts = dynamic(
+  () => import("@/components/dashboard/CampaignResultsCharts").then((module) => module.CampaignResultsCharts),
+  { ssr: false, loading: () => <div className="h-72 animate-pulse rounded-xl bg-slate-100" /> },
+);
 
 type IconName =
   | "activity"
@@ -444,6 +463,7 @@ export function CampaignShell() {
   const [successCriteria, setSuccessCriteria] = useState("");
   const [respectDnc, setRespectDnc] = useState(true);
   const [detectVoicemail, setDetectVoicemail] = useState(false);
+  const [automaticCallbacks, setAutomaticCallbacks] = useState(true);
   const [requireConsentLine, setRequireConsentLine] = useState(true);
   const [csvFile, setCsvFile] = useState<File | null>(null);
   const [leads, setLeads] = useState<CampaignLead[]>([]);
@@ -722,6 +742,7 @@ export function CampaignShell() {
         respectDnc,
         requireConsentLine,
         detectVoicemail,
+        automaticCallbacks,
       });
       const batchSize = 500;
       for (let index = 0; index < leads.length; index += batchSize) {
@@ -1273,6 +1294,15 @@ export function CampaignShell() {
                           />
                         </div>
 
+                        <div className="mt-4 rounded-xl border border-[#cfe4df] bg-white">
+                          <ToggleRow
+                            title="Automatic requested callbacks"
+                            detail="If a contact asks to talk later, the assistant confirms the exact time and calls automatically inside this campaign's call window."
+                            enabled={automaticCallbacks}
+                            onChange={setAutomaticCallbacks}
+                          />
+                        </div>
+
                         {detectVoicemail ? (
                           <div
                             className="mt-4 flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 px-3.5 py-3 text-sm leading-5 text-amber-900"
@@ -1372,6 +1402,10 @@ export function CampaignShell() {
                               label="Launch"
                               value={launchModeSummary}
                             />
+                            <SummaryRow
+                              label="Requested callbacks"
+                              value={automaticCallbacks ? "Automatic" : "Manual queue"}
+                            />
                           </dl>
                           <button
                             className={`${buttonClass} mt-5 w-full bg-[#118778] text-white shadow-sm hover:bg-[#0e6f62]`}
@@ -1445,6 +1479,9 @@ export function CampaignShell() {
           <CampaignOperationsSection
             campaigns={campaigns}
             onControl={controlCampaign}
+            onViewResults={(campaign) =>
+              router.push(`/dashboard/campaign/${campaign._id}`)
+            }
           />
         </div>
       </section>
@@ -1545,12 +1582,14 @@ function SummaryRow({
 function CampaignOperationsSection({
   campaigns,
   onControl,
+  onViewResults,
 }: {
   campaigns: BackendCampaign[];
   onControl: (
     campaign: BackendCampaign,
     action: CampaignAction,
   ) => void | Promise<void>;
+  onViewResults: (campaign: BackendCampaign) => void;
 }) {
   return (
     <section className="dashboard-flat-panel mt-0 overflow-hidden bg-white">
@@ -1656,6 +1695,7 @@ function CampaignOperationsSection({
                       <CampaignActions
                         campaign={campaign}
                         onControl={(action) => onControl(campaign, action)}
+                        onViewResults={() => onViewResults(campaign)}
                         align="end"
                       />
                     </td>
@@ -1671,6 +1711,7 @@ function CampaignOperationsSection({
                 campaign={campaign}
                 key={campaign._id}
                 onControl={(action) => onControl(campaign, action)}
+                onViewResults={() => onViewResults(campaign)}
               />
             ))}
           </div>
@@ -1688,6 +1729,671 @@ function CampaignOperationsSection({
   );
 }
 
+export function CampaignResultsPageShell({
+  campaignId,
+}: {
+  campaignId: string;
+}) {
+  const router = useRouter();
+  const session = useSyncExternalStore(
+    subscribeToSession,
+    getSession,
+    getServerSession,
+  );
+  const [campaign, setCampaign] = useState<BackendCampaign | null>(null);
+  const [pageError, setPageError] = useState("");
+  const [showUserSidebar, setShowUserSidebar] = useState(
+    getDashboardSidebarInitialState,
+  );
+
+  useEffect(() => {
+    if (!session) {
+      router.replace(
+        `/login?next=${encodeURIComponent(`/dashboard/campaign/${campaignId}`)}`,
+      );
+      return;
+    }
+    let active = true;
+    void (async () => {
+      if (!(await validateStoredSession())) {
+        router.replace(
+          `/login?next=${encodeURIComponent(`/dashboard/campaign/${campaignId}`)}`,
+        );
+        return;
+      }
+      const result = await voiceApi.campaign(campaignId);
+      if (active) {
+        setCampaign(result.campaign);
+        setPageError("");
+      }
+    })().catch((caught) => {
+      if (active) setPageError(errorMessage(caught));
+    });
+    return () => {
+      active = false;
+    };
+  }, [campaignId, router, session]);
+
+  if (!session) {
+    return (
+      <main className="grid min-h-screen place-items-center bg-[#f7f9f8] px-6 text-[#71817d]">
+        Loading campaign results...
+      </main>
+    );
+  }
+
+  return (
+    <main
+      className={`dashboard-home-theme grid min-h-dvh bg-[#f7f9f8] text-[#14231f] lg:h-dvh lg:overflow-hidden ${
+        showUserSidebar
+          ? "lg:grid-cols-[248px_minmax(0,1fr)]"
+          : "lg:grid-cols-[64px_minmax(0,1fr)]"
+      }`}
+    >
+      <DashboardSidebar
+        activeLabel="Campaigns"
+        userInitials={initials(session.name)}
+        userName={session.name}
+        userEmail={session.email}
+        onLogout={() => {
+          void logoutSession().then(() => router.replace("/login"));
+        }}
+        showUserSidebar={showUserSidebar}
+        setShowUserSidebar={setShowUserSidebar}
+      />
+      <section className="min-w-0 overflow-y-auto overscroll-contain bg-[#f7f9f8]">
+        <DashboardPageHeader
+          eyebrow="Campaign performance"
+          title={campaign?.name ?? "Campaign results"}
+          description="Business outcomes, call performance, costs, and requested callbacks for every contact."
+          meta={campaign ? <StatusPill status={campaign.status} /> : null}
+          actions={
+            <button
+              className={`${buttonClass} border border-[#c6d4d0] bg-white text-[#52645f] hover:border-[#118778] hover:text-[#0e6f62]`}
+              type="button"
+              onClick={() => router.push("/dashboard/campaign")}
+            >
+              Back to campaigns
+            </button>
+          }
+        />
+        <div className="dashboard-page-content w-full py-5">
+          {pageError ? (
+            <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+              {pageError}
+            </p>
+          ) : null}
+          {!campaign && !pageError ? (
+            <p className="py-10 text-center text-sm text-slate-500">
+              Loading campaign results...
+            </p>
+          ) : null}
+          {campaign ? <CampaignResultsWorkspace campaign={campaign} /> : null}
+        </div>
+      </section>
+    </main>
+  );
+}
+
+const outcomeOptions: { value: CampaignOutcome | ""; label: string }[] = [
+  { value: "", label: "All outcomes" },
+  { value: "qualified", label: "Qualified" },
+  { value: "resolved", label: "Resolved" },
+  { value: "follow_up", label: "Follow up" },
+  { value: "not_interested", label: "Not interested" },
+  { value: "missed", label: "Missed" },
+  { value: "unknown", label: "Unclassified" },
+];
+
+const callbackOptions: { value: CampaignCallbackStatus; label: string }[] = [
+  { value: "", label: "All callbacks" },
+  { value: "scheduled", label: "Scheduled" },
+  { value: "calling", label: "Calling" },
+  { value: "retry_wait", label: "Retrying" },
+  { value: "completed", label: "Completed" },
+  { value: "needs_attention", label: "Needs attention" },
+  { value: "cancelled", label: "Cancelled" },
+];
+
+function readableValue(value: string) {
+  if (!value) return "None";
+  return value
+    .split("_")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+function resultPillClass(value: string) {
+  if (["qualified", "resolved", "completed"].includes(value)) {
+    return "border-emerald-200 bg-emerald-50 text-emerald-700";
+  }
+  if (["needs_attention", "failed", "not_interested"].includes(value)) {
+    return "border-red-200 bg-red-50 text-red-700";
+  }
+  if (["scheduled", "calling", "retry_wait", "follow_up"].includes(value)) {
+    return "border-amber-200 bg-amber-50 text-amber-800";
+  }
+  return "border-slate-200 bg-slate-50 text-slate-600";
+}
+
+function ResultPill({ value }: { value: string }) {
+  return (
+    <span
+      className={`inline-flex rounded-full border px-2.5 py-1 text-[11px] font-semibold ${resultPillClass(value)}`}
+    >
+      {readableValue(value)}
+    </span>
+  );
+}
+
+function CampaignResultsWorkspace({
+  campaign,
+}: {
+  campaign: BackendCampaign;
+}) {
+  const [summary, setSummary] = useState<CampaignResultSummary | null>(null);
+  const [funnel, setFunnel] = useState<CampaignResultFunnel | null>(null);
+  const [timeline, setTimeline] = useState<CampaignResultTimelinePoint[]>([]);
+  const [scorecard, setScorecard] = useState<CampaignScorecard>({
+    enabled: true,
+    connectionWeight: 20,
+    outcomeWeight: 20,
+    goalWeight: 40,
+    followUpWeight: 20,
+  });
+  const [resultLeads, setResultLeads] = useState<CampaignLeadResult[]>([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [outcome, setOutcome] = useState<CampaignOutcome | "">("");
+  const [callbackStatus, setCallbackStatus] =
+    useState<CampaignCallbackStatus>("");
+  const [loadingResults, setLoadingResults] = useState(true);
+  const [exporting, setExporting] = useState(false);
+  const [updatingLeadId, setUpdatingLeadId] = useState("");
+  const [resultsError, setResultsError] = useState("");
+  const [refreshVersion, setRefreshVersion] = useState(0);
+  const [selectedCall, setSelectedCall] = useState<CallRecord | null>(null);
+  const [openingCallId, setOpeningCallId] = useState("");
+  const [reanalyzing, setReanalyzing] = useState(false);
+  const [savingScorecard, setSavingScorecard] = useState(false);
+  const [conversionLead, setConversionLead] = useState<CampaignLeadResult | null>(null);
+  const [conversionType, setConversionType] = useState<"appointment" | "booking" | "payment" | "revenue" | "lead" | "other">("appointment");
+  const [conversionAmount, setConversionAmount] = useState("0");
+  const [conversionCurrency, setConversionCurrency] = useState("USD");
+  const [conversionReference, setConversionReference] = useState("");
+  const [savingConversion, setSavingConversion] = useState(false);
+  const pageSize = 50;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      if (document.visibilityState === "visible") {
+        setRefreshVersion((current) => current + 1);
+      }
+    }, 5000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    const timer = window.setTimeout(() => {
+      setLoadingResults(true);
+      void Promise.all([
+        voiceApi.campaignResults(campaign._id),
+        voiceApi.campaignLeads(campaign._id, {
+          page,
+          limit: pageSize,
+          search: search.trim(),
+          outcome,
+          callbackStatus,
+        }),
+      ])
+        .then(([summaryResult, leadResult]) => {
+          if (!active) return;
+          setSummary(summaryResult.summary);
+          setFunnel(summaryResult.funnel);
+          setTimeline(summaryResult.timeline);
+          setScorecard(summaryResult.campaign.scorecard);
+          setResultLeads(leadResult.leads);
+          setTotal(leadResult.total);
+          setResultsError("");
+        })
+        .catch((caught) => {
+          if (active) setResultsError(errorMessage(caught));
+        })
+        .finally(() => {
+          if (active) setLoadingResults(false);
+        });
+    }, refreshVersion ? 0 : 250);
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+    };
+  }, [callbackStatus, campaign._id, outcome, page, refreshVersion, search]);
+
+  async function exportResults() {
+    setExporting(true);
+    setResultsError("");
+    try {
+      const blob = await voiceApi.campaignResultsCsv(campaign._id, {
+        search: search.trim(),
+        outcome,
+        callbackStatus,
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${campaign.name.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase() || "campaign"}-results.csv`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch (caught) {
+      setResultsError(errorMessage(caught));
+    } finally {
+      setExporting(false);
+    }
+  }
+
+  async function reviewOutcome(leadId: string, nextOutcome: CampaignOutcome) {
+    setUpdatingLeadId(leadId);
+    setResultsError("");
+    try {
+      const result = await voiceApi.reviewCampaignLeadOutcome(
+        campaign._id,
+        leadId,
+        nextOutcome,
+      );
+      setResultLeads((current) =>
+        current.map((lead) =>
+          lead._id === leadId
+            ? {
+                ...lead,
+                outcome: result.lead.outcome,
+                outcomeEvidence: result.lead.outcomeEvidence,
+              }
+            : lead,
+        ),
+      );
+      setRefreshVersion((current) => current + 1);
+    } catch (caught) {
+      setResultsError(errorMessage(caught));
+    } finally {
+      setUpdatingLeadId("");
+    }
+  }
+
+  async function openCall(callId: string) {
+    setOpeningCallId(callId);
+    setResultsError("");
+    try {
+      const result = await voiceApi.call(callId);
+      setSelectedCall(result.call);
+    } catch (caught) {
+      setResultsError(errorMessage(caught));
+    } finally {
+      setOpeningCallId("");
+    }
+  }
+
+  async function rerunAnalysis() {
+    setReanalyzing(true);
+    setResultsError("");
+    try {
+      const result = await voiceApi.reanalyzeCampaign(campaign._id);
+      setRefreshVersion((current) => current + 1);
+      if (result.failed) setResultsError(`${result.failed} calls could not be reanalyzed.`);
+    } catch (caught) {
+      setResultsError(errorMessage(caught));
+    } finally {
+      setReanalyzing(false);
+    }
+  }
+
+  async function saveScorecard() {
+    setSavingScorecard(true);
+    setResultsError("");
+    try {
+      const result = await voiceApi.updateCampaignScorecard(campaign._id, scorecard);
+      setScorecard(result.scorecard);
+      setRefreshVersion((current) => current + 1);
+    } catch (caught) {
+      setResultsError(errorMessage(caught));
+    } finally {
+      setSavingScorecard(false);
+    }
+  }
+
+  async function saveConversion(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!conversionLead) return;
+    setSavingConversion(true);
+    setResultsError("");
+    try {
+      await voiceApi.recordCampaignLeadConversion(campaign._id, conversionLead._id, {
+        type: conversionType,
+        status: "verified",
+        amount: Number(conversionAmount || 0),
+        currency: conversionCurrency,
+        externalId: conversionReference,
+      });
+      setConversionLead(null);
+      setRefreshVersion((current) => current + 1);
+    } catch (caught) {
+      setResultsError(errorMessage(caught));
+    } finally {
+      setSavingConversion(false);
+    }
+  }
+
+  const money = (value: number | null) =>
+    value === null
+      ? "—"
+      : new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: summary?.currency || "USD",
+          maximumFractionDigits: value < 1 ? 4 : 2,
+        }).format(value);
+
+  const attributedRevenue = summary?.revenueByCurrency.length
+    ? summary.revenueByCurrency.map((item) => new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: item.currency,
+        maximumFractionDigits: 2,
+      }).format(item.amount)).join(" + ")
+    : money(0);
+
+  return (
+    <section className="w-full pb-8" aria-label={`${campaign.name} results`}>
+        <div>
+          {resultsError ? (
+            <p className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+              {resultsError}
+            </p>
+          ) : null}
+
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#dbe4e1] bg-white px-4 py-3">
+            <div>
+              <strong className="block text-sm text-slate-900">Evidence based campaign analysis</strong>
+              <span className="text-xs text-slate-500">Results update from transcripts, confirmed tools, callbacks, and CRM delivery.</span>
+            </div>
+            <button className={`${buttonClass} border border-slate-200 bg-white text-slate-700 hover:bg-slate-50`} type="button" disabled={reanalyzing} onClick={() => void rerunAnalysis()}>
+              <Icon icon="spark" /> {reanalyzing ? "Reanalyzing..." : "Rerun analysis"}
+            </button>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
+            <ResultMetric
+              label="Contact coverage"
+              value={summary ? `${numberFormat(summary.contacts)} contacts` : "—"}
+              detail={summary ? `${summary.analysisCoverage}% outcomes classified` : "Loading"}
+            />
+            <ResultMetric
+              label="Pickup rate"
+              value={summary ? `${summary.pickupRate}%` : "—"}
+              detail={summary ? `${numberFormat(summary.connected)} connected / ${numberFormat(summary.attempts)} attempts` : "Loading"}
+            />
+            <ResultMetric
+              label="Goal rate"
+              value={summary ? `${summary.goalRate}%` : "—"}
+              detail={summary ? `${numberFormat(summary.qualified + summary.resolved)} qualified or resolved` : "Loading"}
+            />
+            <ResultMetric
+              label="Campaign cost"
+              value={summary ? money(summary.totalCost) : "—"}
+              detail={summary ? `${money(summary.costPerGoal)} per goal` : "Loading"}
+            />
+            <ResultMetric
+              label="Verified results"
+              value={summary ? numberFormat(summary.conversionsVerified) : "—"}
+              detail={summary ? `${summary.verifiedAppointments} bookings · ${summary.verifiedPayments} payments` : "Loading"}
+            />
+            <ResultMetric
+              label="Attributed revenue"
+              value={summary ? attributedRevenue : "—"}
+              detail={summary ? `QA score ${summary.averageQaScore}/100` : "Loading"}
+            />
+          </div>
+
+          <div className="mt-3 grid gap-3 lg:grid-cols-2">
+            <section className="rounded-xl border border-[#dbe4e1] bg-white p-4">
+              <h3 className="m-0 text-sm font-semibold text-slate-900">Business outcomes</h3>
+              <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-6">
+                <MiniResult label="Qualified" value={summary?.qualified ?? 0} />
+                <MiniResult label="Resolved" value={summary?.resolved ?? 0} />
+                <MiniResult label="Follow up" value={summary?.followUp ?? 0} />
+                <MiniResult label="Not interested" value={summary?.notInterested ?? 0} />
+                <MiniResult label="Missed" value={summary?.missed ?? 0} />
+                <MiniResult label="Unknown" value={summary?.unknown ?? 0} />
+              </div>
+            </section>
+            <section className="rounded-xl border border-[#dbe4e1] bg-white p-4">
+              <h3 className="m-0 text-sm font-semibold text-slate-900">Automatic callbacks</h3>
+              <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                <MiniResult label="Scheduled" value={summary?.callbacksScheduled ?? 0} />
+                <MiniResult label="Calling" value={summary?.callbacksCalling ?? 0} />
+                <MiniResult label="Completed" value={summary?.callbacksCompleted ?? 0} />
+                <MiniResult label="Needs attention" value={summary?.callbacksNeedAttention ?? 0} alert={(summary?.callbacksNeedAttention ?? 0) > 0} />
+              </div>
+            </section>
+          </div>
+
+          <div className="mt-3">
+            {funnel ? <CampaignResultsCharts funnel={funnel} timeline={timeline} /> : null}
+          </div>
+
+          <section className="mt-3 rounded-xl border border-[#dbe4e1] bg-white p-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h3 className="m-0 text-sm font-semibold text-slate-900">Campaign QA scorecard</h3>
+                <p className="mt-1 text-xs text-slate-500">Weights must total 100. Scores use observable campaign evidence.</p>
+              </div>
+              <button className={`${buttonClass} bg-[#118778] text-white hover:bg-[#0e6f62]`} type="button" disabled={savingScorecard} onClick={() => void saveScorecard()}>
+                {savingScorecard ? "Saving..." : "Save scorecard"}
+              </button>
+            </div>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+              <label className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700">
+                <input type="checkbox" checked={scorecard.enabled} onChange={(event) => setScorecard((current) => ({ ...current, enabled: event.target.checked }))} /> Enabled
+              </label>
+              {([
+                ["connectionWeight", "Connected"],
+                ["outcomeWeight", "Classified"],
+                ["goalWeight", "Goal reached"],
+                ["followUpWeight", "Follow up handled"],
+              ] as const).map(([key, label]) => (
+                <label key={key} className="text-xs font-semibold text-slate-600">
+                  {label}
+                  <input className="mt-1 min-h-9 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-900" type="number" min={0} max={100} value={scorecard[key]} onChange={(event) => setScorecard((current) => ({ ...current, [key]: Number(event.target.value) }))} />
+                </label>
+              ))}
+            </div>
+          </section>
+
+          <div className="mt-5 flex flex-col gap-3 rounded-t-xl border border-[#dbe4e1] bg-white p-4 lg:flex-row lg:items-center">
+            <input
+              className="app-control-text min-h-10 min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-3 text-slate-900 outline-none focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10"
+              value={search}
+              onChange={(event) => {
+                setSearch(event.target.value);
+                setPage(1);
+              }}
+              placeholder="Search name, phone, email, or company"
+              aria-label="Search campaign contacts"
+            />
+            <select
+              className="min-h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700"
+              value={outcome}
+              onChange={(event) => {
+                setOutcome(event.target.value as CampaignOutcome | "");
+                setPage(1);
+              }}
+              aria-label="Filter by outcome"
+            >
+              {outcomeOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+            </select>
+            <select
+              className="min-h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700"
+              value={callbackStatus}
+              onChange={(event) => {
+                setCallbackStatus(event.target.value as CampaignCallbackStatus);
+                setPage(1);
+              }}
+              aria-label="Filter by callback status"
+            >
+              {callbackOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+            </select>
+            <button
+              className={`${buttonClass} border border-[#118778] bg-white text-[#0e6f62] hover:bg-[#edf7f4]`}
+              type="button"
+              disabled={exporting}
+              onClick={() => void exportResults()}
+            >
+              <Icon icon="file" /> {exporting ? "Exporting..." : "Export CSV"}
+            </button>
+          </div>
+
+          <div className="overflow-x-auto border-x border-b border-[#dbe4e1] bg-white">
+            <table className="w-full min-w-[1240px] text-left">
+              <thead className="bg-slate-50 text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-500">
+                <tr>
+                  <th className="px-4 py-3">Contact</th>
+                  <th className="px-4 py-3">Delivery</th>
+                  <th className="px-4 py-3">Business outcome</th>
+                  <th className="px-4 py-3">Calls</th>
+                  <th className="px-4 py-3">QA & conversion</th>
+                  <th className="px-4 py-3">Next action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {resultLeads.map((lead) => (
+                  <tr key={lead._id} className="align-top">
+                    <td className="px-4 py-3">
+                      <strong className="block text-sm font-semibold text-slate-900">{lead.name || `Contact ${lead.row}`}</strong>
+                      <span className="mt-1 block text-xs text-slate-600">{lead.phone}</span>
+                      {lead.company || lead.email ? <span className="mt-1 block max-w-[230px] truncate text-xs text-slate-400">{lead.company || lead.email}</span> : null}
+                    </td>
+                    <td className="px-4 py-3"><ResultPill value={lead.status} />{lead.lastError ? <span className="mt-2 block max-w-[190px] text-xs text-red-600">{lead.lastError}</span> : null}</td>
+                    <td className="px-4 py-3">
+                      <ResultPill value={lead.outcome} />
+                      <span className="mt-2 block text-xs text-slate-500">Evidence: {readableValue(lead.outcomeEvidence)}</span>
+                      {lead.outcomeEvidenceQuote ? <blockquote className="mt-2 max-w-[270px] border-l-2 border-[#118778] pl-2 text-xs italic text-slate-600">“{lead.outcomeEvidenceQuote}”</blockquote> : null}
+                      <select
+                        className="mt-2 min-h-8 rounded-lg border border-slate-200 bg-white px-2 text-xs text-slate-700 disabled:opacity-50"
+                        value={lead.outcome}
+                        disabled={updatingLeadId === lead._id}
+                        onChange={(event) =>
+                          void reviewOutcome(
+                            lead._id,
+                            event.target.value as CampaignOutcome,
+                          )
+                        }
+                        aria-label={`Review outcome for ${lead.name || lead.phone}`}
+                      >
+                        {outcomeOptions
+                          .filter((option): option is { value: CampaignOutcome; label: string } => Boolean(option.value))
+                          .map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                      </select>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-slate-700">
+                      <strong>{numberFormat(lead.attempts)}</strong> attempts
+                      <span className="mt-1 block text-xs text-slate-500">{lead.latestCall ? `${readableValue(lead.latestCall.status)} · ${lead.latestCall.durationSeconds || 0}s` : "No call yet"}</span>
+                      {lead.latestCall ? <button className="mt-2 block text-xs font-semibold text-[#0e6f62] hover:underline disabled:opacity-50" type="button" disabled={openingCallId === lead.latestCall._id} onClick={() => void openCall(lead.latestCall!._id)}>{openingCallId === lead.latestCall._id ? "Opening..." : "Review transcript & recording"}</button> : null}
+                    </td>
+                    <td className="px-4 py-3">
+                      <strong className="text-sm text-slate-900">{lead.qaScore}/100 <span className="text-xs text-slate-500">Grade {lead.qaGrade || "—"}</span></strong>
+                      <span className="mt-1 block text-xs text-slate-500">CRM: {readableValue(lead.crmSyncStatus || "not configured")}</span>
+                      {lead.conversionStatus ? <span className="mt-2 block"><ResultPill value={`${lead.conversionStatus} ${lead.conversionType}`} /></span> : null}
+                      {lead.attributedRevenue > 0 ? <span className="mt-1 block text-xs font-semibold text-emerald-700">{new Intl.NumberFormat("en-US", { style: "currency", currency: lead.revenueCurrency || "USD" }).format(lead.attributedRevenue)}</span> : null}
+                      <button className="mt-2 text-xs font-semibold text-[#0e6f62] hover:underline" type="button" onClick={() => { setConversionLead(lead); setConversionType("appointment"); setConversionAmount("0"); setConversionCurrency(lead.revenueCurrency || "USD"); setConversionReference(""); }}>Record verified result</button>
+                    </td>
+                    <td className="px-4 py-3">
+                      {lead.callbackStatus ? <ResultPill value={lead.callbackStatus} /> : <span className="text-sm text-slate-400">No callback</span>}
+                      {lead.callbackScheduledFor ? <span className="mt-2 block text-xs text-slate-600">{formatDateTime(lead.callbackScheduledFor, campaign.timezone)}</span> : null}
+                      {lead.callback?.lastError ? <span className="mt-1 block max-w-[240px] text-xs text-red-600">{lead.callback.lastError}</span> : null}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {!resultLeads.length && !loadingResults ? (
+              <div className="px-5 py-10 text-center text-sm text-slate-500">No contacts match these filters.</div>
+            ) : null}
+            {loadingResults ? <div className="px-5 py-3 text-center text-xs font-medium text-slate-500">Refreshing results...</div> : null}
+          </div>
+
+          <footer className="flex items-center justify-between rounded-b-xl border-x border-b border-[#dbe4e1] bg-white px-4 py-3">
+            <span className="text-xs text-slate-500">{numberFormat(total)} matching contacts</span>
+            <div className="flex items-center gap-2">
+              <button className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 disabled:opacity-40" type="button" disabled={page <= 1 || loadingResults} onClick={() => setPage((current) => Math.max(1, current - 1))}>Previous</button>
+              <span className="text-xs font-medium text-slate-600">{page} / {totalPages}</span>
+              <button className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 disabled:opacity-40" type="button" disabled={page >= totalPages || loadingResults} onClick={() => setPage((current) => current + 1)}>Next</button>
+            </div>
+          </footer>
+
+          {conversionLead ? (
+            <div className="fixed inset-0 z-50 grid place-items-center bg-slate-950/45 p-4" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setConversionLead(null); }}>
+              <form className="w-full max-w-lg rounded-2xl bg-white p-5 shadow-2xl" onSubmit={(event) => void saveConversion(event)}>
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h3 className="m-0 text-lg font-semibold text-slate-950">Record verified business result</h3>
+                    <p className="mt-1 text-sm text-slate-500">{conversionLead.name || conversionLead.phone}</p>
+                  </div>
+                  <button type="button" className="rounded-lg p-2 text-slate-500 hover:bg-slate-100" onClick={() => setConversionLead(null)} aria-label="Close"><Icon icon="close" /></button>
+                </div>
+                <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                  <label className="text-xs font-semibold text-slate-600">Result type
+                    <select className="mt-1 min-h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm" value={conversionType} onChange={(event) => setConversionType(event.target.value as typeof conversionType)}>
+                      <option value="appointment">Appointment</option><option value="booking">Booking</option><option value="payment">Payment</option><option value="revenue">Revenue</option><option value="lead">Qualified lead</option><option value="other">Other</option>
+                    </select>
+                  </label>
+                  <label className="text-xs font-semibold text-slate-600">External reference
+                    <input className="mt-1 min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" value={conversionReference} onChange={(event) => setConversionReference(event.target.value)} placeholder="Booking or transaction ID" required={conversionType === "payment" || conversionType === "revenue"} />
+                  </label>
+                  <label className="text-xs font-semibold text-slate-600">Amount
+                    <input className="mt-1 min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" type="number" min={0} step="0.01" value={conversionAmount} onChange={(event) => setConversionAmount(event.target.value)} />
+                  </label>
+                  <label className="text-xs font-semibold text-slate-600">Currency
+                    <input className="mt-1 min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm uppercase" maxLength={10} value={conversionCurrency} onChange={(event) => setConversionCurrency(event.target.value.toUpperCase())} />
+                  </label>
+                </div>
+                <div className="mt-5 flex justify-end gap-2">
+                  <button className={`${buttonClass} border border-slate-200 bg-white text-slate-700`} type="button" onClick={() => setConversionLead(null)}>Cancel</button>
+                  <button className={`${buttonClass} bg-[#118778] text-white`} type="submit" disabled={savingConversion}>{savingConversion ? "Saving..." : "Verify result"}</button>
+                </div>
+              </form>
+            </div>
+          ) : null}
+          {selectedCall ? <CallDetailDrawer call={selectedCall} onClose={() => setSelectedCall(null)} /> : null}
+        </div>
+      </section>
+  );
+}
+
+function ResultMetric({ label, value, detail }: { label: string; value: string; detail: string }) {
+  return (
+    <section className="rounded-xl border border-[#dbe4e1] bg-white p-4">
+      <span className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">{label}</span>
+      <strong className="mt-2 block text-2xl font-semibold tracking-[-0.04em] text-slate-950">{value}</strong>
+      <span className="mt-1 block text-xs text-slate-500">{detail}</span>
+    </section>
+  );
+}
+
+function MiniResult({ label, value, alert = false }: { label: string; value: number; alert?: boolean }) {
+  return (
+    <div className={`rounded-lg px-3 py-2 ${alert ? "bg-red-50" : "bg-slate-50"}`}>
+      <strong className={`block text-lg ${alert ? "text-red-700" : "text-slate-900"}`}>{numberFormat(value)}</strong>
+      <span className="block text-[11px] text-slate-500">{label}</span>
+    </div>
+  );
+}
+
 function StatusPill({ status }: { status: BackendCampaign["status"] }) {
   return (
     <span
@@ -1702,10 +2408,12 @@ function CampaignActions({
   align = "start",
   campaign,
   onControl,
+  onViewResults,
 }: {
   align?: "end" | "start";
   campaign: BackendCampaign;
   onControl: (action: CampaignAction) => void | Promise<void>;
+  onViewResults: () => void;
 }) {
   const canPause =
     campaign.status === "running" || campaign.status === "scheduled";
@@ -1713,14 +2421,13 @@ function CampaignActions({
   const canCancel = ["running", "scheduled", "paused"].includes(
     campaign.status,
   );
-  if (!canPause && !canResume && !canCancel) {
-    return <span className="app-caption block text-right">No actions</span>;
-  }
-
   return (
     <div
       className={`flex flex-wrap gap-2 ${align === "end" ? "justify-end" : ""}`}
     >
+      <CampaignActionButton tone="success" onClick={onViewResults}>
+        View results
+      </CampaignActionButton>
       {canPause ? (
         <CampaignActionButton tone="neutral" onClick={() => onControl("pause")}>
           Pause
@@ -1746,9 +2453,11 @@ function CampaignActions({
 function CampaignCard({
   campaign,
   onControl,
+  onViewResults,
 }: {
   campaign: BackendCampaign;
   onControl: (action: CampaignAction) => void;
+  onViewResults: () => void;
 }) {
   const canPause =
     campaign.status === "running" || campaign.status === "scheduled";
@@ -1787,8 +2496,10 @@ function CampaignCard({
           {campaign.lastWorkerError}
         </p>
       ) : null}
-      {canPause || canResume || canCancel ? (
-        <div className="mt-3 flex flex-wrap gap-2">
+      <div className="mt-3 flex flex-wrap gap-2">
+          <CampaignActionButton tone="success" onClick={onViewResults}>
+            View results
+          </CampaignActionButton>
           {canPause ? (
             <CampaignActionButton
               tone="neutral"
@@ -1813,8 +2524,7 @@ function CampaignCard({
               Cancel
             </CampaignActionButton>
           ) : null}
-        </div>
-      ) : null}
+      </div>
     </div>
   );
 }

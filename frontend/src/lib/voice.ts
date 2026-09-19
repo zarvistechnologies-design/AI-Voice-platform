@@ -778,6 +778,8 @@ export type BackendCampaign = {
   retryGapSeconds: number;
   goal: string;
   successCriteria: string;
+  automaticCallbacks: boolean;
+  scorecard?: CampaignScorecard;
   totalLeads: number;
   lastWorkerError: string;
   stats: CampaignStats;
@@ -802,6 +804,7 @@ export type CreateCampaignInput = {
   respectDnc: boolean;
   requireConsentLine: boolean;
   detectVoicemail: boolean;
+  automaticCallbacks: boolean;
 };
 
 async function request<T>(path: string, init: RequestInit = {}) {
@@ -845,6 +848,155 @@ export type VoiceCloneResult = {
   category: string;
   requiresVerification: boolean;
   profile: VoiceProfile;
+};
+
+export type CampaignOutcome =
+  | "unknown"
+  | "qualified"
+  | "follow_up"
+  | "resolved"
+  | "missed"
+  | "not_interested";
+
+export type CampaignCallbackStatus =
+  | ""
+  | "scheduled"
+  | "calling"
+  | "completed"
+  | "retry_wait"
+  | "needs_attention"
+  | "cancelled";
+
+export type CampaignScorecard = {
+  enabled: boolean;
+  connectionWeight: number;
+  outcomeWeight: number;
+  goalWeight: number;
+  followUpWeight: number;
+};
+
+export type CampaignConversionType =
+  | ""
+  | "appointment"
+  | "booking"
+  | "payment"
+  | "revenue"
+  | "lead"
+  | "other";
+
+export type CampaignLeadResult = {
+  _id: string;
+  row: number;
+  phone: string;
+  name: string;
+  email: string;
+  company: string;
+  status: keyof CampaignStats;
+  attemptCount: number;
+  lastError: string;
+  suppressionReason: string;
+  outcome: CampaignOutcome;
+  outcomeEvidence: "unknown" | "inferred" | "system_confirmed" | "human_reviewed";
+  outcomeEvidenceQuote: string;
+  outcomeEvidenceItemId: string;
+  qaScore: number;
+  qaGrade: "" | "A" | "B" | "C" | "D" | "F";
+  qaChecks: {
+    connected?: boolean;
+    outcomeClassified?: boolean;
+    goalReached?: boolean;
+    followUpHandled?: boolean;
+  };
+  conversionType: CampaignConversionType;
+  conversionStatus: "" | "pending" | "verified" | "rejected" | "refunded";
+  attributedRevenue: number;
+  revenueCurrency: string;
+  conversionExternalId: string;
+  conversionVerifiedAt: string | null;
+  crmSyncStatus: "" | "not_configured" | "pending" | "synced" | "failed";
+  callbackStatus: CampaignCallbackStatus;
+  callbackScheduledFor: string | null;
+  attempts: number;
+  latestCall: null | {
+    _id: string;
+    status: CallRecord["status"];
+    startedAt?: string;
+    endedAt?: string;
+    createdAt: string;
+    durationSeconds: number;
+    endReason: string;
+    errorMessage: string;
+    voicemailDetected: boolean;
+    sentimentLabel: "" | "positive" | "neutral" | "negative";
+    structuredOutput: Record<string, unknown>;
+    tags: string[];
+    costBreakdown?: { customerCost?: number; currency?: string };
+  };
+  callback: null | {
+    _id: string;
+    status: Exclude<CampaignCallbackStatus, ""> | "leased";
+    scheduledFor: string;
+    timezone: string;
+    attemptCount: number;
+    maxAttempts: number;
+    lastAttemptAt: string | null;
+    completedAt: string | null;
+    lastError: string;
+    reason: string;
+  };
+};
+
+export type CampaignResultSummary = {
+  contacts: number;
+  attempts: number;
+  connected: number;
+  voicemail: number;
+  failed: number;
+  qualified: number;
+  followUp: number;
+  resolved: number;
+  missed: number;
+  notInterested: number;
+  unknown: number;
+  callbacksScheduled: number;
+  callbacksCalling: number;
+  callbacksCompleted: number;
+  callbacksNeedAttention: number;
+  attemptedContacts: number;
+  connectedContacts: number;
+  verifiedAppointments: number;
+  verifiedPayments: number;
+  attributedRevenue: number;
+  revenueByCurrency: { currency: string; amount: number }[];
+  conversionsVerified: number;
+  crmSynced: number;
+  crmFailed: number;
+  averageQaScore: number;
+  pickupRate: number;
+  goalRate: number;
+  analysisCoverage: number;
+  totalCost: number;
+  costPerGoal: number | null;
+  currency: string;
+  updatedAt: string;
+};
+
+export type CampaignResultFunnel = {
+  contacts: number;
+  attempted: number;
+  connected: number;
+  classified: number;
+  goals: number;
+  verifiedConversions: number;
+};
+
+export type CampaignResultTimelinePoint = {
+  date: string;
+  attempts: number;
+  connected: number;
+  goals: number;
+  classified: number;
+  cost: number;
 };
 
 export async function cloneVoice(formData: FormData): Promise<VoiceCloneResult> {
@@ -1218,6 +1370,92 @@ export const voiceApi = {
     cachedRequest<{ campaigns: BackendCampaign[] }>("/campaigns", 3_000),
   campaign: (campaignId: string) =>
     request<{ campaign: BackendCampaign }>(`/campaigns/${campaignId}`),
+  campaignResults: (campaignId: string) =>
+    request<{
+      campaign: Pick<BackendCampaign, "_id" | "name" | "status" | "timezone"> & { scorecard: CampaignScorecard };
+      summary: CampaignResultSummary;
+      funnel: CampaignResultFunnel;
+      timeline: CampaignResultTimelinePoint[];
+    }>(`/campaigns/${campaignId}/results`),
+  campaignLeads: (
+    campaignId: string,
+    filters: {
+      page?: number;
+      limit?: number;
+      search?: string;
+      status?: string;
+      outcome?: CampaignOutcome | "";
+      callbackStatus?: CampaignCallbackStatus;
+    } = {},
+  ) => {
+    const query = new URLSearchParams();
+    for (const [key, value] of Object.entries(filters)) {
+      if (value !== undefined && value !== "") query.set(key, String(value));
+    }
+    return request<{
+      leads: CampaignLeadResult[];
+      page: number;
+      limit: number;
+      total: number;
+    }>(`/campaigns/${campaignId}/leads?${query.toString()}`);
+  },
+  campaignResultsCsv: async (
+    campaignId: string,
+    filters: { search?: string; outcome?: CampaignOutcome | ""; callbackStatus?: CampaignCallbackStatus } = {},
+  ) => {
+    const query = new URLSearchParams();
+    for (const [key, value] of Object.entries(filters)) {
+      if (value) query.set(key, String(value));
+    }
+    const response = await fetch(
+      `${API_URL}/api/voice/campaigns/${campaignId}/results.csv?${query.toString()}`,
+      { credentials: "include", headers: getAuthHeaders() },
+    );
+    if (!response.ok) {
+      const data = await response.json().catch(() => null) as { message?: string } | null;
+      throw new Error(publicVoiceMessage(data?.message));
+    }
+    return response.blob();
+  },
+  reviewCampaignLeadOutcome: (
+    campaignId: string,
+    leadId: string,
+    outcome: CampaignOutcome,
+  ) =>
+    request<{
+      lead: Pick<CampaignLeadResult, "_id" | "outcome" | "outcomeEvidence">;
+    }>(
+      `/campaigns/${campaignId}/leads/${leadId}/outcome`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({ outcome }),
+      },
+    ),
+  updateCampaignScorecard: (campaignId: string, scorecard: CampaignScorecard) =>
+    request<{ scorecard: CampaignScorecard }>(`/campaigns/${campaignId}/scorecard`, {
+      method: "PUT",
+      body: JSON.stringify(scorecard),
+    }),
+  reanalyzeCampaign: (campaignId: string, limit = 50) =>
+    request<{ analyzed: number; failed: number; limited: boolean }>(`/campaigns/${campaignId}/reanalyze`, {
+      method: "POST",
+      body: JSON.stringify({ limit }),
+    }),
+  recordCampaignLeadConversion: (
+    campaignId: string,
+    leadId: string,
+    input: {
+      type: Exclude<CampaignConversionType, "">;
+      status: "pending" | "verified" | "rejected" | "refunded";
+      amount: number;
+      currency: string;
+      externalId: string;
+      note?: string;
+    },
+  ) => request<{ event: { _id: string } }>(`/campaigns/${campaignId}/leads/${leadId}/conversions`, {
+    method: "POST",
+    body: JSON.stringify(input),
+  }),
   createCampaign: (input: CreateCampaignInput) =>
     mutation<{ campaign: BackendCampaign }>(
       "/campaigns",
