@@ -291,7 +291,7 @@ function CheckIcon() {
 export default function CareerPage() {
   return (
     <SiteLayout>
-      <main id="career-page" className="min-h-screen overflow-hidden bg-white text-black">
+      <div id="career-page" className="min-h-screen overflow-hidden bg-white text-black">
 
         {/* =========================================================
             HERO
@@ -303,51 +303,55 @@ export default function CareerPage() {
             className="pointer-events-none absolute left-1/2 top-16 hidden h-72 w-72 -translate-x-1/2 rounded-full"
           />
 
-          <div className="relative mx-auto max-w-[1000px] text-center">
+          <div className="relative mx-auto max-w-[1180px]">
 
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#118778]/20 bg-white px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#118778] shadow-sm">
-              <span className="size-1.5 rounded-full bg-[#118778]" />
-              Careers at vozon.ai
+            <div className="text-left">
+
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#118778]/20 bg-white px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#118778] shadow-sm">
+                <span className="size-1.5 rounded-full bg-[#118778]" />
+                Careers at vozon.ai
+              </div>
+
+              {/* Heading */}
+              <h1 className="mt-7 max-w-[680px] text-[clamp(2.25rem,4.4vw,4.25rem)] font-medium leading-[0.96] tracking-[-0.055em] text-[#132a5e]">
+                Build your career.
+                <br />
+                <span className="text-[#132a5e]">
+                  Build what matters.
+                </span>
+              </h1>
+
+              {/* Description */}
+              <p className="mt-7 max-w-xl text-base leading-8 text-gray-600 sm:text-lg">
+                We are building the intelligence layer for business
+                conversations. Join us to make voice AI more natural, useful,
+                reliable, and capable of turning conversations into meaningful
+                action.
+              </p>
+
+              {/* Hero Buttons */}
+              <div className="mt-9 flex flex-wrap gap-3">
+
+                <Link
+                  href="#open-roles"
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#118778] px-6 text-sm font-bold text-white shadow-[0_12px_30px_rgba(17,135,120,0.2)] transition duration-300 hover:-translate-y-1 hover:bg-[#0e6f62] hover:shadow-[0_18px_40px_rgba(17,135,120,0.25)]"
+                >
+                  Explore opportunities
+                  <ArrowIcon />
+                </Link>
+
+                <Link
+                  href="/about"
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-6 text-sm font-bold text-black shadow-sm transition duration-300 hover:-translate-y-1 hover:border-[#118778]/40 hover:text-[#118778] hover:shadow-md"
+                >
+                  Meet vozon.ai
+                  <ArrowIcon />
+                </Link>
+
+              </div>
             </div>
 
-            {/* Heading */}
-            <h1 className="mx-auto mt-7 max-w-5xl text-[clamp(2.25rem,4.4vw,4.25rem)] font-medium leading-[0.96] tracking-[-0.055em] text-[#132a5e]">
-              Build your career.
-              <br />
-              <span className="text-[#132a5e]">
-                Build what matters.
-              </span>
-            </h1>
-
-            {/* Description */}
-            <p className="mx-auto mt-7 max-w-2xl text-base leading-8 text-gray-600 sm:text-lg">
-              We are building the intelligence layer for business
-              conversations. Join us to make voice AI more natural, useful,
-              reliable, and capable of turning conversations into meaningful
-              action.
-            </p>
-
-            {/* Hero Buttons */}
-            <div className="mt-9 flex flex-wrap justify-center gap-3">
-
-              <Link
-                href="#open-roles"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#118778] px-6 text-sm font-bold text-white shadow-[0_12px_30px_rgba(17,135,120,0.2)] transition duration-300 hover:-translate-y-1 hover:bg-[#0e6f62] hover:shadow-[0_18px_40px_rgba(17,135,120,0.25)]"
-              >
-                Explore opportunities
-                <ArrowIcon />
-              </Link>
-
-              <Link
-                href="/about"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-6 text-sm font-bold text-black shadow-sm transition duration-300 hover:-translate-y-1 hover:border-[#118778]/40 hover:text-[#118778] hover:shadow-md"
-              >
-                Meet vozon.ai
-                <ArrowIcon />
-              </Link>
-
-            </div>
           </div>
 
           {/* Hero bottom line */}
@@ -530,15 +534,9 @@ export default function CareerPage() {
 
 
                     <div className="mt-auto pt-7">
-                      <a
-                        href={`mailto:hello@vozon.ai?subject=Apply%20now%20-%20${encodeURIComponent(
-                          role.title
-                        )}%20at%20vozon.ai`}
-                        className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-3 text-xs font-bold text-black transition duration-300 hover:border-[#118778] hover:bg-[#118778] hover:text-white"
-                      >
-                        Apply now
-                        <ArrowIcon />
-                      </a>
+                      <span className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-[#b9dcd2] bg-[#effaf6] px-5 py-3 text-xs font-bold uppercase tracking-[0.12em] text-[#0e7669]">
+                        Coming soon
+                      </span>
                     </div>
 
                   </div>
@@ -1206,9 +1204,203 @@ export default function CareerPage() {
           #career-page .career-contact a:hover {
             background: #683486;
           }
+
+          /* Career page: use the same crisp, teal-led visual language as the homepage. */
+          #career-page {
+            color: #17231f;
+            background: #fff;
+          }
+
+          #career-page > section {
+            position: relative;
+            padding-top: clamp(3.5rem, 6vw, 5.5rem);
+            padding-bottom: clamp(3.5rem, 6vw, 5.5rem);
+            border-top: 1px solid #e6efec;
+          }
+
+          #career-page > section:first-child {
+            border-top: 0;
+            padding-top: clamp(7rem, 12vw, 10rem);
+            padding-bottom: clamp(3.75rem, 7vw, 6rem);
+            background:
+              radial-gradient(circle at 14% 24%, rgb(17 135 120 / .12), transparent 26%),
+              radial-gradient(circle at 88% 10%, rgb(80 180 165 / .13), transparent 24%),
+              linear-gradient(180deg, #ffffff 0%, #f3fbf8 100%);
+          }
+
+          #career-page > section:nth-of-type(3),
+          #career-page > section:nth-of-type(6),
+          #career-page > section:nth-of-type(8) {
+            background: #f6faf9;
+          }
+
+          #career-page h1,
+          #career-page h2,
+          #career-page h3 {
+            color: #15241f;
+            -webkit-text-fill-color: #15241f;
+          }
+
+          #career-page > section:first-child h1 {
+            max-width: 760px;
+            font-size: clamp(2.8rem, 5.6vw, 5.25rem);
+            line-height: .94;
+            color: #102a25;
+            -webkit-text-fill-color: #102a25;
+          }
+
+          #career-page > section:first-child h1 span {
+            color: #118778;
+            -webkit-text-fill-color: #118778;
+          }
+
+          #career-page :is(.career-benefit-card, .career-role-card, .career-work-card, .career-expect-card, .career-quality-card) {
+            border-color: #d9e8e3;
+            border-radius: 18px;
+            background: #ffffff;
+            box-shadow: 0 12px 32px rgb(16 61 52 / .055);
+          }
+
+          #career-page :is(.career-benefit-card, .career-role-card, .career-work-card, .career-expect-card) {
+            min-height: 0;
+          }
+
+          #career-page :is(.career-benefit-card, .career-role-card, .career-work-card, .career-expect-card):hover {
+            border-color: #86cbbd;
+            box-shadow: 0 18px 42px rgb(16 92 78 / .12);
+            transform: translateY(-4px);
+          }
+
+          #career-page .career-benefit-card:nth-child(n),
+          #career-page .career-role-card:nth-child(n) {
+            --card-accent: #118778;
+            --card-soft: #e9f7f2;
+            border-color: #d9e8e3;
+            background: #ffffff;
+          }
+
+          #career-page .career-card-icon,
+          #career-page .career-role-index,
+          #career-page .career-work-index,
+          #career-page .career-neutral-index,
+          #career-page .career-faq-index {
+            border-color: #b9dcd2 !important;
+            background: #effaf6 !important;
+            color: #0e7669 !important;
+            -webkit-text-fill-color: #0e7669 !important;
+          }
+
+          #career-page .career-role-card > div:first-child {
+            height: 3px;
+            background: #118778;
+            opacity: 1;
+          }
+
+          #career-page .career-role-card [class*="rounded-full"],
+          #career-page .career-work-card [class*="rounded-full"] {
+            border-color: #d6e8e2;
+            background: #f3faf7;
+            color: #38665d;
+          }
+
+          #career-page .career-principles,
+          #career-page .career-qualities-process {
+            background: #102b26;
+          }
+
+          #career-page :is(.career-principles, .career-qualities-process) :is(h2, h3, p, span) {
+            color: #f5fffb;
+            -webkit-text-fill-color: #f5fffb;
+          }
+
+          #career-page :is(.career-principles, .career-qualities-process) p {
+            color: #b7d4cb;
+            -webkit-text-fill-color: #b7d4cb;
+          }
+
+          #career-page :is(.career-principles, .career-qualities-process) [class*="bg-black"] {
+            background: #76d5c3;
+          }
+
+          #career-page :is(.career-principles, .career-qualities-process) [class*="text-[#118778]"] {
+            color: #76d5c3;
+            -webkit-text-fill-color: #76d5c3;
+          }
+
+          #career-page :is(.career-principles-list, .career-process-list) {
+            border-color: rgb(183 212 203 / .32);
+          }
+
+          #career-page :is(.career-principle-row, .career-process-row) {
+            border-color: rgb(183 212 203 / .22);
+          }
+
+          #career-page :is(.career-principles, .career-qualities-process) :is(.career-neutral-index, .career-quality-card) {
+            border-color: rgb(183 212 203 / .36) !important;
+            background: rgb(255 255 255 / .08) !important;
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+          }
+
+          #career-page .career-contact {
+            border-color: #b8ddd3;
+            border-radius: 20px;
+            background: linear-gradient(120deg, #e4f7f1 0%, #f8fffd 62%, #d8f0ea 100%);
+            box-shadow: 0 18px 46px rgb(17 135 120 / .12);
+          }
+
+          #career-page .career-contact :is(p, h2) {
+            color: #15241f;
+            -webkit-text-fill-color: #15241f;
+          }
+
+          #career-page .career-contact > div > p:first-child {
+            color: #0e7669;
+            -webkit-text-fill-color: #0e7669;
+          }
+
+          #career-page .career-contact a,
+          #career-page > section:first-child a[href="#open-roles"] {
+            border-color: #118778;
+            background: #118778;
+            color: #fff;
+          }
+
+          #career-page .career-contact a:hover,
+          #career-page > section:first-child a[href="#open-roles"]:hover {
+            background: #0d6d61;
+          }
+
+          #career-page .career-benefits {
+            --section-accent: #118778;
+            --section-soft: #e9f7f2;
+            background: #f6faf9;
+          }
+
+          #career-page .career-benefits .career-expect-card {
+            border-color: #d9e8e3;
+            background: #ffffff;
+          }
+
+          #career-page .career-benefits .career-expect-card > div:first-child {
+            border-color: #b9dcd2;
+            background: #e9f7f2;
+            color: #0e7669;
+          }
+
+          @media (max-width: 640px) {
+            #career-page > section {
+              padding-top: 3.25rem;
+              padding-bottom: 3.25rem;
+            }
+
+            #career-page > section:first-child {
+              padding-top: 7rem;
+            }
+          }
         `}</style>
 
-      </main>
+      </div>
     </SiteLayout>
   );
 }
