@@ -305,7 +305,7 @@ export default function CareerPage() {
 
           <div className="relative mx-auto max-w-[1180px]">
 
-            <div className="text-left">
+            <div className="text-center">
 
               {/* Badge */}
               <div className="inline-flex items-center gap-2 rounded-full border border-[#118778]/20 bg-white px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#118778] shadow-sm">
@@ -314,7 +314,7 @@ export default function CareerPage() {
               </div>
 
               {/* Heading */}
-              <h1 className="mt-7 max-w-[680px] text-[clamp(2.25rem,4.4vw,4.25rem)] font-medium leading-[0.96] tracking-[-0.055em] text-[#132a5e]">
+              <h1 className="mx-auto mt-7 max-w-[680px] text-center text-[clamp(2.25rem,4.4vw,4.25rem)] font-medium leading-[0.96] tracking-[-0.055em] text-[#132a5e]">
                 Build your career.
                 <br />
                 <span className="text-[#132a5e]">
@@ -323,7 +323,7 @@ export default function CareerPage() {
               </h1>
 
               {/* Description */}
-              <p className="mt-7 max-w-xl text-base leading-8 text-gray-600 sm:text-lg">
+              <p className="mx-auto mt-7 max-w-xl text-base leading-8 text-gray-600 sm:text-lg">
                 We are building the intelligence layer for business
                 conversations. Join us to make voice AI more natural, useful,
                 reliable, and capable of turning conversations into meaningful
@@ -331,7 +331,7 @@ export default function CareerPage() {
               </p>
 
               {/* Hero Buttons */}
-              <div className="mt-9 flex flex-wrap gap-3">
+              <div className="mt-9 flex flex-wrap justify-center gap-3">
 
                 <Link
                   href="#open-roles"
@@ -650,7 +650,7 @@ export default function CareerPage() {
 
               <div>
 
-                <div className="flex items-center gap-3">
+                <div className="career-principles-kicker flex items-center gap-3">
 
                   <span className="h-px w-8 bg-[#118778]" />
 
