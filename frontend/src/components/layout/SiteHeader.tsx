@@ -254,7 +254,7 @@ export function SiteHeader() {
 
         {/* Floating Slim Mega Menu */}
         {activeMenu ? (
-          <div className="absolute left-1/2 top-[calc(100%+8px)] hidden w-[min(900px,calc(100vw-32px))] -translate-x-1/2 overflow-hidden rounded-2xl border border-slate-200/90 bg-white/95 p-5 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12)] backdrop-blur-2xl md:grid md:grid-cols-[0.75fr_1.25fr] transition-all duration-200">
+          <div className="absolute left-1/2 top-[calc(100%+8px)] hidden w-[min(900px,calc(100vw-32px))] -translate-x-1/2 overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.16)] md:grid md:grid-cols-[0.75fr_1.25fr] transition-all duration-200">
             {/* Left Feature Card */}
             <div className="flex flex-col justify-between rounded-xl bg-gradient-to-br from-slate-950 via-slate-900 to-teal-950 p-5 text-white shadow-inner border border-slate-800">
               <div>
@@ -324,7 +324,7 @@ export function SiteHeader() {
         {mobileOpen ? (
           <nav
             aria-label="Mobile navigation"
-            className="absolute inset-x-0 top-[calc(100%+6px)] max-h-[calc(100vh-80px)] overflow-y-auto rounded-2xl border border-slate-200/90 bg-white/95 p-5 shadow-xl backdrop-blur-xl md:hidden"
+            className="absolute inset-x-0 top-[calc(100%+6px)] max-h-[calc(100vh-80px)] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-5 shadow-xl md:hidden"
           >
             <div className="flex flex-col space-y-2">
               <Link

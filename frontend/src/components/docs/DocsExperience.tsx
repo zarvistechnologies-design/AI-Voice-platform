@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
-import { BrandLogo } from "@/components/ui/BrandLogo";
+import { useEffect, useMemo, useState } from "react";
 import { docsTopics } from "@/lib/docsContent";
 
 type DocSection = {
@@ -77,25 +76,30 @@ const codeSamples = {
 };
 
 function CodeBlock({ children, label = "Shell" }: { children: string; label?: string }) {
-  const [copied, setCopied] = useState(false);
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
   async function copy() {
-    await navigator.clipboard.writeText(children);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1_500);
+    try {
+      if (!navigator.clipboard) throw new Error("Clipboard access is unavailable");
+      await navigator.clipboard.writeText(children);
+      setCopyState("copied");
+    } catch {
+      setCopyState("error");
+    }
+    window.setTimeout(() => setCopyState("idle"), 2_000);
   }
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-800 bg-[#0f172a] shadow-md my-4">
-      <div className="flex items-center justify-between border-b border-slate-800/80 bg-slate-900/60 px-4 py-2.5 text-xs text-slate-400">
+    <div className="docs-code-block my-4 overflow-hidden rounded-2xl border border-[#24334d] bg-[#10182d] shadow-[0_5px_12px_rgba(15,23,42,0.18)]">
+      <div className="flex items-center justify-between border-b border-[#24334d] bg-[#10182d] px-4 py-2.5 text-xs text-[#78a3d2]">
         <span className="font-mono text-[11px] font-semibold">{label}</span>
         <button
-          className="font-bold text-[#14b8a6] hover:text-white transition cursor-pointer"
+          className="cursor-pointer font-bold text-[#32dcc8] transition hover:text-[#76f7e7]"
           onClick={() => void copy()}
           type="button"
         >
-          {copied ? "✓ Copied" : "Copy"}
+          {copyState === "copied" ? "✓ Copied" : copyState === "error" ? "Copy unavailable" : "Copy"}
         </button>
       </div>
-      <pre className="overflow-x-auto p-4 font-mono text-[12px] leading-6 text-[#75fff0]">
+      <pre className="overflow-x-auto p-4 font-mono text-[12px] leading-6 text-[#45f4df]">
         <code>{children}</code>
       </pre>
     </div>
@@ -124,7 +128,7 @@ function Callout({ children, tone = "info" }: { children: React.ReactNode; tone?
 function Step({ number, title, children }: { number: number; title: string; children: React.ReactNode }) {
   return (
     <div className="relative grid grid-cols-[40px_minmax(0,1fr)] gap-3.5 pb-8 last:pb-0">
-      <span className="relative z-10 grid size-10 place-items-center rounded-xl bg-teal-600 text-white font-bold text-sm shadow-xs">
+      <span className="docs-step-number relative z-10 grid size-10 place-items-center rounded-xl bg-teal-600 text-white font-bold text-sm shadow-xs">
         {number}
       </span>
       <div>
@@ -228,25 +232,69 @@ const endpointRows = [
 
 export function DocsExperience() {
   const [query, setQuery] = useState("");
-  const filtered = useMemo(
-    () =>
-      sections.filter((item) =>
-        `${item.title} ${item.summary} ${item.keywords}`.toLowerCase().includes(query.toLowerCase()),
-      ),
-    [query],
-  );
+  const [activeSection, setActiveSection] = useState("overview");
   const groups = [...new Set(sections.map((item) => item.group))];
+  const searchResults = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+    if (!normalizedQuery) return [];
+
+    const pageResults = sections.map((item) => ({
+      id: `section-${item.id}`,
+      href: `#${item.id}`,
+      label: "On this page",
+      summary: item.summary,
+      title: item.title,
+      terms: `${item.title} ${item.summary} ${item.keywords}`,
+    }));
+    const guideResults = docsTopics.map((topic) => ({
+      id: `guide-${topic.slug}`,
+      href: `/docs/${topic.slug}`,
+      label: topic.group,
+      summary: topic.description,
+      title: topic.title,
+      terms: `${topic.title} ${topic.description} ${topic.group}`,
+    }));
+
+    return [...pageResults, ...guideResults]
+      .filter((item) => item.terms.toLowerCase().includes(normalizedQuery))
+      .slice(0, 7);
+  }, [query]);
+
+  useEffect(() => {
+    let frameId: number | null = null;
+    const updateActiveSection = () => {
+      if (frameId !== null) return;
+      frameId = window.requestAnimationFrame(() => {
+        const readingLine = 112;
+        const current = sections.reduce((selected, item) => {
+          const element = document.getElementById(item.id);
+          return element && element.getBoundingClientRect().top <= readingLine ? item.id : selected;
+        }, "overview");
+        setActiveSection((previous) => (previous === current ? previous : current));
+        frameId = null;
+      });
+    };
+
+    window.addEventListener("scroll", updateActiveSection, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", updateActiveSection);
+      if (frameId !== null) window.cancelAnimationFrame(frameId);
+    };
+  }, []);
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] text-slate-900 selection:bg-teal-500/20 font-sans">
+    <div className="docs-experience min-h-screen bg-[#f8fafc] pt-[76px] text-slate-900 selection:bg-teal-500/20 font-sans">
       {/* Clean Light Developer Portal Header */}
-      <header className="sticky top-0 z-40 h-16 border-b border-slate-200/90 bg-white/95 backdrop-blur-md shadow-xs">
+      <header className="sticky top-[76px] z-40 h-16 border-b border-slate-200/90 bg-white/95 backdrop-blur-md shadow-xs">
         <div className="mx-auto flex h-full max-w-[1720px] items-center justify-between gap-4 px-4 sm:px-6">
           <div className="flex items-center gap-4 sm:gap-6">
             <div className="flex items-center gap-2.5">
-              <BrandLogo compact showWebsiteLogo />
-              <span className="hidden sm:inline-flex items-center rounded-full bg-teal-50 border border-teal-200 px-2.5 py-0.5 text-xs font-bold text-[#0e6f62]">
-                Docs & Guides
+              <span className="inline-flex items-center gap-2 rounded-full bg-teal-50 border border-teal-200 px-3 py-1 text-xs font-bold text-[#0e6f62]">
+                <svg aria-hidden="true" className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5.5A2.5 2.5 0 016.5 3H20v15.5A2.5 2.5 0 0017.5 16H4V5.5z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v2.5A2.5 2.5 0 006.5 21H20" />
+                </svg>
+                Docs &amp; Guides
               </span>
               <span className="hidden md:inline-flex items-center rounded-full bg-slate-100 border border-slate-200 px-2 py-0.5 text-[11px] font-semibold text-slate-600">
                 v1.0.0 Stable
@@ -283,7 +331,7 @@ export function DocsExperience() {
               download="vozon-openapi.yaml"
               className="hidden sm:inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-bold text-slate-700 transition hover:border-[#108D82] hover:text-[#108D82] shadow-xs cursor-pointer"
             >
-              <span>↓</span> YAML
+              <span>↓</span> Download OpenAPI
             </a>
 
             <Link
@@ -299,7 +347,7 @@ export function DocsExperience() {
       {/* Main 2-Column Clean Light Layout */}
       <div className="mx-auto grid max-w-[1500px] lg:grid-cols-[280px_minmax(0,1fr)]">
         {/* Navigation Sidebar */}
-        <aside className="border-r border-slate-200/90 bg-white p-4 lg:sticky lg:top-16 lg:h-[calc(100vh-64px)] lg:overflow-y-auto lg:p-6">
+        <aside className="border-r border-slate-200/90 bg-white p-4 lg:sticky lg:top-[140px] lg:h-[calc(100vh-140px)] lg:overflow-y-auto lg:p-5">
           <div className="mb-5">
             <Link
               href="/docs/api"
@@ -331,10 +379,36 @@ export function DocsExperience() {
             </svg>
           </label>
 
+          {query.trim() ? (
+            <div aria-live="polite" className="mt-2 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
+              {searchResults.length ? (
+                <div className="divide-y divide-slate-100">
+                  {searchResults.map((item) => (
+                    <Link
+                      className="block px-3 py-2.5 transition hover:bg-teal-50"
+                      href={item.href}
+                      key={item.id}
+                      onClick={() => {
+                        setQuery("");
+                        if (item.href.startsWith("#")) setActiveSection(item.href.slice(1));
+                      }}
+                    >
+                      <span className="block text-[10px] font-bold uppercase tracking-wide text-[#108D82]">{item.label}</span>
+                      <span className="mt-0.5 block text-xs font-bold text-slate-800">{item.title}</span>
+                      <span className="mt-0.5 line-clamp-2 block text-[11px] leading-relaxed text-slate-500">{item.summary}</span>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <p className="px-3 py-3 text-xs text-slate-500">No guides or sections match “{query}”.</p>
+              )}
+            </div>
+          ) : null}
+
           <nav aria-label="Documentation" className="mt-6 grid gap-5">
             {groups.map((group) => {
-              const items = filtered.filter((item) => item.group === group);
-              return items.length ? (
+              const items = sections.filter((item) => item.group === group);
+              return (
                 <div key={group}>
                   <span className="px-2.5 text-[11px] font-extrabold uppercase tracking-wider text-slate-400 block mb-1.5">
                     {group}
@@ -342,20 +416,23 @@ export function DocsExperience() {
                   <div className="grid gap-1">
                     {items.map((item) => (
                       <a
-                        className="rounded-xl px-3 py-2 text-xs text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium transition"
+                        aria-current={activeSection === item.id ? "location" : undefined}
+                        className={`rounded-xl px-3 py-2 text-xs font-medium transition ${
+                          activeSection === item.id
+                            ? "bg-teal-50 text-[#0e6f62]"
+                            : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                        }`}
                         href={`#${item.id}`}
                         key={item.id}
+                        onClick={() => setActiveSection(item.id)}
                       >
                         {item.title}
                       </a>
                     ))}
                   </div>
                 </div>
-              ) : null;
+              );
             })}
-            {!filtered.length ? (
-              <p className="px-2 text-xs text-slate-500">No documentation matches “{query}”.</p>
-            ) : null}
           </nav>
         </aside>
 
@@ -481,7 +558,7 @@ export function DocsExperience() {
                 </div>
                 <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
                   <b className="text-slate-900 block text-sm font-bold">3. Grounded Retrieval</b>
-                  <p className="mt-2 text-xs text-slate-600 leading-relaxed">Agents cite approved snippets dynamically during conversations with zero hallucination.</p>
+                  <p className="mt-2 text-xs text-slate-600 leading-relaxed">Agents retrieve approved snippets during conversations. Test responses and define a fallback for missing or outdated information.</p>
                 </div>
               </div>
             </section>
@@ -734,7 +811,7 @@ export function DocsExperience() {
             </section>
 
             {/* Clean Light Footer */}
-            <footer className="mt-20 border-t border-slate-200 py-10 text-xs sm:text-sm text-slate-500">
+            <footer className="mt-12 border-t border-slate-200 py-8 text-xs sm:text-sm text-slate-500">
               <p>
                 Need help with an enterprise production rollout?{" "}
                 <Link className="font-bold text-[#108D82] hover:underline" href="/contact">

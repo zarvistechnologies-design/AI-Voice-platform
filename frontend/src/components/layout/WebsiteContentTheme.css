@@ -397,15 +397,41 @@
 
 .website-content .docs-code-block,
 .website-content .docs-code-block :where(div, pre, code) {
-  border-color: rgb(117 255 240 / 0.14) !important;
-  background-color: #07110f !important;
-  color: #c8faf2 !important;
+  border-color: #24334d !important;
+  background-color: #10182d !important;
+  color: #45f4df !important;
 }
 
 .website-content .docs-code-block button {
   background: transparent !important;
-  color: #75fff0 !important;
+  color: #32dcc8 !important;
   box-shadow: none !important;
+}
+
+/* Keep the documentation portal comfortably readable at desktop and mobile sizes. */
+.website-content .docs-experience .text-xs {
+  font-size: 0.8125rem;
+}
+
+.website-content .docs-experience aside :is(a, input) {
+  font-size: 0.875rem;
+}
+
+.website-content .docs-experience aside nav span {
+  font-size: 0.75rem;
+}
+
+.website-content .docs-experience article .text-xs {
+  font-size: 0.875rem;
+}
+
+.website-content .docs-experience article .text-sm {
+  font-size: 0.9375rem;
+}
+
+.website-content .docs-experience .docs-step-number {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
 .website-content :where(a, button, input, select, textarea):focus-visible {
