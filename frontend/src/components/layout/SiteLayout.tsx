@@ -8,14 +8,15 @@ import "@/components/layout/WebsiteContentTheme.css";
 
 type SiteLayoutProps = {
   children: ReactNode;
+  showFooter?: boolean;
 };
 
-export function SiteLayout({ children }: SiteLayoutProps) {
+export function SiteLayout({ children, showFooter = true }: SiteLayoutProps) {
   return (
     <div className="marketing-site min-h-screen [overflow-x:clip] bg-white text-[#111113]">
       <SiteHeader />
       <main className="website-content min-h-screen">{children}</main>
-      <SiteFooter />
+      {showFooter && <SiteFooter />}
     </div>
   );
 }
