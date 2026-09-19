@@ -675,7 +675,8 @@
   left: 50%;
   width: 100vw;
   max-width: none;
-  min-height: 780px;
+  /* Keep the footer artwork close to the navigation content on desktop. */
+  min-height: 580px;
   margin-left: -50vw;
   overflow: hidden;
   background: radial-gradient(ellipse 70% 43% at 50% 108%, #118778 0%, #123d35 40%, #020706 72%, #000 100%);
@@ -729,8 +730,8 @@
   z-index: 2;
   display: grid;
   grid-template-columns: 320px minmax(0, 1fr);
-  gap: 72px;
-  padding: 78px clamp(24px, 3.5vw, 48px) 220px;
+  gap: 56px;
+  padding: 60px clamp(24px, 3.5vw, 48px) 120px;
 }
 
 .design-four-footer-brand > a { display: inline-flex; opacity: 0; filter: brightness(0) invert(1); }
@@ -739,7 +740,7 @@
 .design-four-footer-brand > a img { width: 260px !important; height: auto !important; }
 .design-four-footer-brand p {
   max-width: 315px;
-  margin: 26px 0 22px;
+  margin: 18px 0;
   color: #e2e7f2;
   font-size: 14px;
   line-height: 1.7;
@@ -768,11 +769,11 @@
 .design-four-footer-main nav {
   display: grid;
   grid-template-columns: 1.35fr 1.1fr .9fr 1.25fr;
-  gap: 38px;
+  gap: 30px;
 }
 
-.design-four-footer-main nav > div { display: flex; flex-direction: column; align-items: flex-start; gap: 9px; }
-.design-four-footer-main nav b { margin-bottom: 5px; font-size: 13px; }
+.design-four-footer-main nav > div { display: flex; flex-direction: column; align-items: flex-start; gap: 7px; }
+.design-four-footer-main nav b { margin-bottom: 3px; font-size: 13px; }
 .design-four-footer-main nav a { color: #d9deea; font-size: 12px; line-height: 1.25; text-decoration: none; }
 .design-four-footer-main nav a:hover { color: #fff; }
 .design-four-footer-main .design-four-footer-phone { margin-top: 2px; color: #fff; font-size: 19px; font-weight: 700; }
