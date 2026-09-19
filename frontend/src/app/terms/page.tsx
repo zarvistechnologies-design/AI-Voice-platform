@@ -434,7 +434,7 @@ const sections = [
 
 export default function TermsPage() {
   return (
-    <SiteLayout>
+    <SiteLayout showFooter={false}>
       <div className="relative isolate min-h-screen !bg-white text-[#14231f]">
         {/* =========================================================
              HERO / DOCUMENT HEADER

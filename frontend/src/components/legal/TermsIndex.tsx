@@ -14,11 +14,13 @@ type TermsIndexProps = {
 export function TermsIndex({ sections }: TermsIndexProps) {
   const [activeId, setActiveId] = useState(sections[0]?.id ?? "");
   const mobileIndexRef = useRef<HTMLDetailsElement>(null);
+  const selectedClauseLockUntil = useRef(0);
 
   useEffect(() => {
     const setHashSection = () => {
       const hashId = window.location.hash.slice(1);
       if (sections.some((section) => section.id === hashId)) {
+        selectedClauseLockUntil.current = Date.now() + 1000;
         setActiveId(hashId);
       }
     };
@@ -30,6 +32,8 @@ export function TermsIndex({ sections }: TermsIndexProps) {
     const updateActiveSection = () => {
       cancelAnimationFrame(animationFrame);
       animationFrame = requestAnimationFrame(() => {
+        if (Date.now() < selectedClauseLockUntil.current) return;
+
         const readingLine = 132;
         const currentSection = sections.reduce((currentId, section) => {
           const element = document.getElementById(section.id);
@@ -59,10 +63,11 @@ export function TermsIndex({ sections }: TermsIndexProps) {
     if (!target) return;
 
     // Avoid the browser's default hash jump, which can land beneath the fixed header.
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    selectedClauseLockUntil.current = Date.now() + (reducedMotion ? 100 : 1000);
     window.history.replaceState(null, "", `${window.location.pathname}#${id}`);
     const headerOffset = 112;
     const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     window.scrollTo({ top: Math.max(0, top), behavior: reducedMotion ? "auto" : "smooth" });
     if (mobileIndexRef.current) mobileIndexRef.current.open = false;
