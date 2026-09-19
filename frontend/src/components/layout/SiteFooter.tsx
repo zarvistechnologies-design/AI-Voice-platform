@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { type MouseEvent, useEffect, useRef, useState } from "react";
 
 import { BrandLogo } from "@/components/ui/BrandLogo";
 import { SitePreFooterCta } from "@/components/layout/SitePreFooterCta";
@@ -44,6 +44,15 @@ export function SiteFooter() {
     return () => observer.disconnect();
   }, []);
 
+  const scrollTermsToTop = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (pathname !== "/terms") return;
+
+    event.preventDefault();
+    window.history.replaceState(null, "", "/terms");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
+  };
+
   return (
     <>
       <SitePreFooterCta demoHref={pathname === "/contact" ? "#contact-form" : "/contact"} />
@@ -63,7 +72,7 @@ export function SiteFooter() {
         </div>
         <nav aria-label="Footer navigation">
           <div><b>Product</b><Link href="/services/voice-agents">Voice Agents</Link><Link href="/services/voice-cloning">Voice Cloning</Link><Link href="/services/realtime-tts">Realtime TTS</Link><Link href="/services/api-access">API Access</Link><Link href="/services/team-workflows">Team Workflows</Link><Link href="/services/speech-analytics">Speech Analytics</Link><Link href="/services/quality-controls">Quality Controls</Link><Link href="/services/multilingual-speech">Multilingual Speech</Link><Link href="/services/conversation-insights">Conversation Insights</Link></div>
-          <div><b>Resources</b><Link href="/#faq">FAQ</Link><Link href="/resources/blog">Blog</Link><Link href="/about">About us</Link><Link href="/resources/help-center">Support</Link><Link href="/docs">Download</Link><Link href="/terms">Terms &amp; Conditions</Link><Link href="/privacy">Privacy policy</Link><Link href="/partners">Affiliate program</Link></div>
+          <div><b>Resources</b><Link href="/#faq">FAQ</Link><Link href="/resources/blog">Blog</Link><Link href="/about">About us</Link><Link href="/resources/help-center">Support</Link><Link href="/docs">Download</Link><Link href="/terms" onClick={scrollTermsToTop}>Terms &amp; Conditions</Link><Link href="/privacy">Privacy policy</Link><Link href="/partners">Affiliate program</Link></div>
           <div><b>Company</b><Link href="/career">We&apos;re hiring</Link><Link href="/pricing">Pricing</Link><Link href="/resources/changelog">Changelog</Link><Link href="/contact">Contact us</Link></div>
           <div><b>Contact US</b><a href="mailto:hello@vozon.ai">hello@vozon.ai</a><a className="design-four-footer-phone" href="tel:+917892518414">+91 7892518414</a><Link className="design-four-footer-demo" href="/contact">Book a free demo</Link></div>
         </nav>
