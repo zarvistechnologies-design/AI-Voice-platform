@@ -264,8 +264,8 @@ export function ProductOverviewPage() {
               <div className="inline-flex items-center gap-2 rounded-full border border-[#45ddce]/22 bg-[#45ddce]/[0.07] px-4 py-2 text-[10px] font-black uppercase tracking-[0.17em] text-[#75fff0]">
                 <span className="size-1.5 rounded-full bg-[#45ddce] shadow-[0_0_10px_#45ddce]" /> Vozon product platform
               </div>
-              <h1 className="product-hero-title m-0 mt-6 text-[clamp(2.5rem,5vw,4.7rem)] font-medium leading-[1] tracking-[-0.045em] text-[#7a3e9d]">
-                Every voice workflow, <span className="product-overview-heading-accent text-[#7a3e9d]" id="product-overview-heading-accent">one platform.</span>
+              <h1 className="product-hero-title m-0 mt-6 text-[clamp(1.85rem,3.8vw,3.25rem)] font-medium leading-[0.98] tracking-[-0.05em] text-[#7a3e9d]">
+                Every voice workflow, <span className="product-overview-heading-accent block text-[#7a3e9d]" id="product-overview-heading-accent">one platform.</span>
               </h1>
               <p className="mb-0 mt-6 max-w-xl text-base leading-7 text-[#5d6478]">
                 Build natural AI phone agents, connect them to real business actions, and improve every conversation from one production-ready workspace.

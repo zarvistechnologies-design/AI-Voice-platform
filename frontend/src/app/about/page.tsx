@@ -1,795 +1,210 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
 import { SiteLayout } from "@/components/layout/SiteLayout";
 
 export const metadata: Metadata = {
   title: "About Us | vozon.ai",
-  description:
-    "Discover the people, principles, and vision behind vozon.ai.",
+  description: "Discover the people, principles, and vision behind vozon.ai.",
 };
 
 const values = [
-  {
-    title: "Customer-Centric",
-    description:
-      "Every feature we build solves real customer problems and drives measurable business value.",
-    icon: "◎",
-  },
-  {
-    title: "Innovation First",
-    description:
-      "We push the boundaries of AI voice technology to deliver cutting-edge experiences.",
-    icon: "✧",
-  },
-  {
-    title: "Excellence",
-    description:
-      "We maintain the highest standards in accuracy, security, and performance.",
-    icon: "◇",
-  },
-  {
-    title: "Collaboration",
-    description:
-      "We believe in the power of human-AI collaboration to transform businesses.",
-    icon: "♡",
-  },
+  { title: "Customer-Centric", description: "Every feature we build solves real customer problems and drives measurable business value." },
+  { title: "Innovation First", description: "We push the boundaries of AI voice technology to deliver cutting-edge experiences." },
+  { title: "Excellence", description: "We maintain the highest standards in accuracy, security, and performance." },
+  { title: "Collaboration", description: "We believe in the power of human-AI collaboration to transform businesses." },
 ];
 
 const manifesto = [
-  "Technology should feel natural.",
-  "AI should understand before it acts.",
-  "Automation should create time, not distance.",
-  "Every conversation should have the potential to move something forward.",
-];
-
-const manifestoNotes = [
-  "Clear, calm, and easy to use.",
-  "Context first, action second.",
-  "Less friction for the people doing the work.",
-  "Every interaction should help progress something meaningful.",
+  { title: "Technology should feel natural.", note: "Clear, calm, and easy to use." },
+  { title: "AI should understand before it acts.", note: "Context first, action second." },
+  { title: "Automation should create time, not distance.", note: "Less friction for the people doing the work." },
+  { title: "Every conversation should move something forward.", note: "Every interaction should help progress something meaningful." },
 ];
 
 const journey = [
-  {
-    label: "THE BEGINNING",
-    title: "An idea worth building",
-    description:
-      "Vozon started with a simple belief: business conversations could become more intelligent, natural, and useful.",
-  },
-  {
-    label: "BUILDING THE FOUNDATION",
-    title: "Turning the idea into reality",
-    description:
-      "We began building voice AI experiences designed to understand conversations and respond naturally in real time.",
-  },
-  {
-    label: "EXPANDING THE VISION",
-    title: "From conversations to action",
-    description:
-      "Our vision grew beyond conversation — connecting voice interactions with workflows, systems, and meaningful outcomes.",
-  },
-  {
-    label: "TODAY",
-    title: "Building what comes next",
-    description:
-      "We continue building intelligent voice systems that help businesses scale conversations while keeping people at the center.",
-  },
+  { label: "The beginning", title: "An idea worth building", description: "Vozon started with a simple belief: business conversations could become more intelligent, natural, and useful." },
+  { label: "Building the foundation", title: "Turning the idea into reality", description: "We began building voice AI experiences designed to understand conversations and respond naturally in real time." },
+  { label: "Expanding the vision", title: "From conversations to action", description: "Our vision grew beyond conversation — connecting voice interactions with workflows, systems, and meaningful outcomes." },
+  { label: "Today", title: "Building what comes next", description: "We continue building intelligent voice systems that help businesses scale conversations while keeping people at the center." },
 ];
 
 function ArrowIcon() {
   return (
-    <svg
-      className="h-4 w-4"
-      viewBox="0 0 20 20"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M4 10h12m-4.5-4.5L16 10l-4.5 4.5"
-        stroke="currentColor"
-        strokeWidth="1.7"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+    <svg className="size-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path d="M4 10h12m-4.5-4.5L16 10l-4.5 4.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 
 function SparkIcon() {
   return (
-    <svg
-      className="h-5 w-5"
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M12 2.8l1.7 6.2L20 11l-6.3 1.9L12 19.2l-1.7-6.3L4 11l6.3-2L12 2.8Z"
-        stroke="currentColor"
-        strokeWidth="1.3"
-        strokeLinejoin="round"
-      />
+    <svg className="size-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 2.8 13.7 9 20 11l-6.3 1.9-1.7 6.3-1.7-6.3L4 11l6.3-2L12 2.8Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
     </svg>
   );
 }
 
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="m-0 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-teal-700">
+      <span className="h-px w-7 bg-teal-600" />
+      {children}
+    </p>
+  );
+}
+
+const headingClass = "text-[clamp(1.8rem,3vw,2.8rem)] font-semibold leading-[1.06] tracking-[-0.045em] text-[#14231f]";
+
 export default function AboutPage() {
   return (
     <SiteLayout>
-      <main
-        id="about-page"
-        className="min-h-screen overflow-hidden bg-white text-black"
-      >
-        {/* =========================================================
-            HERO
-        ========================================================= */}
-        <section className="about-hero relative overflow-hidden px-5 pb-12 pt-24 sm:px-8 sm:pb-14 sm:pt-28 lg:px-10 lg:pb-16 lg:pt-32">
-          <div className="relative mx-auto max-w-[1250px] text-center">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#118778]/20 bg-white px-4 py-2 shadow-sm">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#118778]" />
-
-              <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#118778]">
-                About vozon.ai
-              </span>
-            </div>
-
-            {/* Heading */}
-            <h1 className="about-hero-heading mx-auto mt-6 max-w-5xl text-[clamp(1.8rem,4vw,3.6rem)] font-medium leading-[0.97] tracking-[-0.06em] text-black">
-              Building the future of intelligent communication.
-            </h1>
-
-            {/* Description */}
-            <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-gray-600">
-              Vozon.ai is building intelligent voice experiences that help
-              businesses create better conversations, automate meaningful
-              work, and connect people with outcomes.
-            </p>
-
-            {/* =====================================================
-                HERO BUTTONS
-            ===================================================== */}
-            <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-              {/* TALK TO US — VIOLET */}
-              <Link
-                href="/contact"
-                className="about-primary-button inline-flex min-h-11 items-center gap-2 rounded-xl px-6 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-1"
-              >
-                Talk to us
-                <ArrowIcon />
-              </Link>
-
-              {/* JOIN OUR TEAM — WHITE */}
-              <Link
-                href="/career"
-                className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-gray-300 bg-white px-6 text-sm font-bold text-black shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md"
-              >
-                Join our team
-                <ArrowIcon />
-              </Link>
-            </div>
-
-            {/* Hero Image */}
-            <div className="relative mx-auto mt-9 max-w-[1100px]">
-              <div className="relative overflow-hidden rounded-[28px] border border-gray-200 bg-white shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
-                <img
-                  src="/images/about_vozon.png"
-                  alt="Vozon.ai AI voice agents platform"
-                  className="block h-auto w-full object-cover"
-                />
+      <main id="about-page" className="overflow-hidden bg-white text-slate-950">
+        <section className="relative border-b border-[#eee9f5] bg-white px-5 pb-12 pt-24 sm:px-8 sm:pb-14 sm:pt-28 lg:pt-32">
+          <div className="mx-auto grid max-w-[1280px] items-center gap-10 lg:grid-cols-[0.88fr_1.12fr] lg:gap-16">
+            <div className="max-w-2xl">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#d8d0e5] bg-white px-3.5 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[#625b7d] shadow-sm">
+                <span className="size-2 rounded-full bg-teal-600" /> About vozon.ai
               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* =========================================================
-            MISSION
-        ========================================================= */}
-        <section className="relative bg-white px-5 py-10 sm:px-8 lg:px-10 lg:py-12">
-          <div className="mx-auto max-w-[1200px]">
-            <div className="mb-5 flex items-center gap-3">
-              <span className="h-px w-8 bg-[#118778]" />
-
-              <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#118778]">
-                Our mission
-              </span>
-            </div>
-
-            <div className="about-mission-card relative overflow-hidden rounded-[24px] border border-gray-200 px-6 py-7 shadow-[0_14px_45px_rgba(0,0,0,0.05)] transition-shadow duration-300 hover:shadow-[0_18px_50px_rgba(0,0,0,0.07)] sm:px-9 sm:py-8 lg:px-11 lg:py-9">
-              <div className="about-color-bar absolute inset-x-0 top-0 h-1" />
-
-              <div className="relative flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
-                <div className="lg:max-w-[540px]">
-                  <div className="mb-4 flex items-center gap-2">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-[#118778] shadow-sm">
-                      <SparkIcon />
-                    </div>
-
-                    <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#118778]">
-                      What we believe
-                    </span>
-                  </div>
-
-                  <h2 className="about-mission-heading text-[clamp(1.8rem,3vw,2.8rem)] font-medium leading-[1.05] tracking-[-0.045em] text-black">
-                    Make every conversation{" "}
-                    <span className="text-[#118778]">
-                      more intelligent.
-                    </span>
-                  </h2>
-                </div>
-
-                <div className="hidden h-20 w-px bg-gray-200 lg:block" />
-
-                <div className="lg:max-w-[470px]">
-                  <p className="text-sm leading-7 text-gray-600 sm:text-base sm:leading-7">
-                    We believe conversations contain enormous potential. Our
-                    mission is to help businesses unlock that potential through
-                    voice AI that understands, responds, acts, and learns.
-                  </p>
-
-                  <div className="mt-5 flex items-center gap-3">
-                    <span className="h-px w-8 bg-[#118778]" />
-
-                    <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#118778]">
-                      vozon.ai
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* =========================================================
-            VALUES
-        ========================================================= */}
-        <section className="about-values-section relative overflow-hidden px-5 py-14 sm:px-8 sm:py-16 lg:px-10 lg:py-20">
-          <div
-            aria-hidden="true"
-            className="about-values-glow about-values-glow-left"
-          />
-          <div
-            aria-hidden="true"
-            className="about-values-glow about-values-glow-right"
-          />
-
-          <div className="relative mx-auto max-w-[1380px]">
-            <div className="grid gap-6 lg:grid-cols-[1fr_0.55fr] lg:items-end">
-              <div>
-                <div className="flex items-center gap-3">
-                  <span className="h-0.5 w-8 rounded-full bg-[#118778]" />
-
-                  <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#118778]">
-                    Our values
-                  </p>
-                </div>
-
-                <h2 className="mt-4 max-w-3xl text-[clamp(1.8rem,3vw,2.8rem)] font-semibold leading-[1.03] tracking-[-0.05em] text-[#14231f]">
-                  What Guides Us Ahead
-                </h2>
-              </div>
-
-              <p className="max-w-md text-sm leading-7 text-[#52645f] lg:justify-self-end">
-                The principles behind our products, decisions, partnerships,
-                and the way we work together.
+              <h1 className="mt-6 text-[clamp(1.85rem,3.8vw,3.25rem)] font-medium leading-[0.98] tracking-[-0.05em] text-[#14231f]">
+                Building the future of <span className="text-teal-700">intelligent communication.</span>
+              </h1>
+              <p className="mt-6 max-w-xl text-[15px] leading-7 text-slate-700 sm:text-base">
+                Vozon.ai is building intelligent voice experiences that help businesses create better conversations, automate meaningful work, and connect people with outcomes.
               </p>
-            </div>
-
-            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {values.map((value) => (
-                <article
-                  key={value.title}
-                  className="about-values-card group relative overflow-hidden rounded-[22px] border bg-white/90 p-7 shadow-[0_12px_36px_rgba(18,61,53,0.07)] transition-all duration-300 hover:-translate-y-1 sm:p-8"
-                >
-                  <div className="about-values-card-bar absolute inset-x-0 top-0 h-1" />
-
-                  <div className="relative flex min-h-[260px] flex-col">
-                    <div className="about-values-icon flex h-14 w-14 items-center justify-center rounded-2xl border border-[#123d35]/15 bg-[#e8f4f1] text-2xl text-[#123d35] transition duration-300">
-                      <span className="font-light leading-none">
-                        {value.icon}
-                      </span>
-                    </div>
-
-                    <div className="mt-auto pt-10">
-                      <h3 className="text-[1.35rem] font-semibold tracking-[-0.035em] text-[#14231f]">
-                        {value.title}
-                      </h3>
-
-                      <p className="mt-3 text-[0.95rem] leading-7 text-[#52645f]">
-                        {value.description}
-                      </p>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* =========================================================
-            MANIFESTO
-        ========================================================= */}
-        <section className="relative overflow-hidden bg-white px-5 py-10 sm:px-8 lg:px-10 lg:py-12">
-          <div className="relative mx-auto w-full max-w-[1380px]">
-            <div className="mb-8 max-w-3xl">
-              <div className="flex items-center gap-3">
-                <span className="h-px w-8 bg-[#118778]" />
-
-                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#118778]">
-                  Our manifesto
-                </p>
-              </div>
-
-              <h2 className="mt-4 text-[clamp(1.8rem,3vw,2.8rem)] font-medium leading-[1.03] tracking-[-0.045em] text-black">
-                What we believe.
-              </h2>
-
-              <p className="mt-4 max-w-2xl text-base leading-7 text-gray-600">
-                The ideas that shape every product decision, interaction, and
-                outcome we build toward.
-              </p>
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2">
-              {manifesto.map((line, index) => (
-                <article
-                  key={line}
-                  className="about-manifesto-card group relative overflow-hidden rounded-[22px] border border-gray-200 bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.04)] transition-all duration-500 hover:-translate-y-1 sm:p-7"
-                >
-                  <div className="relative">
-                    <div className="flex items-center gap-3">
-                      <span className="about-manifesto-number flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-bold">
-                        0{index + 1}
-                      </span>
-                    </div>
-
-                    <p className="mt-4 max-w-xl text-[1.05rem] font-medium leading-[1.3] tracking-[-0.025em] text-black sm:text-[1.15rem]">
-                      {line}
-                    </p>
-
-                    <p className="mt-2 max-w-lg text-sm leading-6 text-gray-600">
-                      {manifestoNotes[index]}
-                    </p>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* =========================================================
-            TEAM
-        ========================================================= */}
-        <section className="relative overflow-hidden bg-white px-5 py-10 sm:px-8 lg:px-10 lg:py-12">
-          <div className="relative mx-auto max-w-[1380px]">
-            <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-              <div>
-                <div className="flex items-center gap-3">
-                  <span className="h-px w-8 bg-[#118778]" />
-
-                  <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#118778]">
-                    Our Team
-                  </p>
-                </div>
-
-                <h2 className="mt-4 max-w-3xl text-[clamp(1.8rem,3.3vw,3rem)] font-medium leading-[1.02] tracking-[-0.05em] text-black">
-                  The people behind the vision.
-                </h2>
-              </div>
-
-              <p className="max-w-xl text-sm leading-7 text-gray-600">
-                Great technology starts with people who care deeply about the
-                problems they are solving. Our team brings together
-                technology, product thinking, creativity, and ambition.
-              </p>
-            </div>
-
-            <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_0.95fr] lg:items-center lg:gap-16">
-              {/* Team Image */}
-              <div className="group relative min-h-[340px] overflow-hidden rounded-[24px] border border-gray-200 bg-black shadow-[0_18px_50px_rgba(0,0,0,0.08)] sm:min-h-[400px] lg:min-h-[470px]">
-                <img
-                  src="/images/leadership.png"
-                  alt="The vozon.ai team"
-                  className="absolute inset-0 h-full w-full object-cover object-center grayscale-[15%] transition duration-700 group-hover:scale-[1.03] group-hover:grayscale-0"
-                />
-
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/15 to-transparent" />
-
-                <div className="absolute left-5 top-5 rounded-lg border border-white/15 bg-black/50 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.18em] text-white backdrop-blur-xl">
-                  Our Team
-                </div>
-
-                <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-7">
-                  <div className="mb-4 h-px w-16 bg-[#118778]" />
-
-                  <h3 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-                    One team.
-                  </h3>
-
-                  <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.18em] text-white/80">
-                    One shared vision.
-                  </p>
-                </div>
-              </div>
-
-              {/* Team Content */}
-              <div className="relative flex flex-col justify-between py-3 lg:translate-x-4 lg:py-6 xl:translate-x-6">
-                <div className="relative">
-                  <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-xl border border-[#118778]/20 bg-white text-[#118778]">
-                    <SparkIcon />
-                  </div>
-
-                  <h3 className="max-w-xl text-[clamp(1.8rem,3vw,2.5rem)] font-medium leading-[1.08] tracking-[-0.04em] text-black">
-                    Different expertise.
-                    <br />
-                    <span className="text-[#118778]">
-                      Shared purpose.
-                    </span>
-                  </h3>
-
-                  <p className="mt-5 max-w-xl text-justify text-sm leading-7 text-gray-600">
-                    At vozon.ai, we believe the best technology is created when
-                    different perspectives come together. Our team works across
-                    AI, engineering, product, design, and customer experience
-                    to turn complex ideas into simple and powerful solutions.
-                  </p>
-
-                  <p className="mt-6 max-w-xl text-justify text-sm leading-7 text-gray-600">
-                    From building intelligent voice systems to creating
-                    thoughtful user experiences, every part of the team
-                    contributes to our mission of making business communication
-                    more natural, useful, and effective.
-                  </p>
-                </div>
-
-                <div className="relative mt-8 border-l-2 border-[#118778] pl-5 sm:pl-6">
-                  <div className="mb-2 text-2xl leading-none text-[#118778]">
-                    “
-                  </div>
-
-                  <p className="max-w-xl text-sm leading-6 text-gray-600">
-                    Great products are built together — through ideas,
-                    collaboration, and a shared commitment to solving real
-                    problems.
-                  </p>
-
-                  <div className="mt-5 flex items-center gap-3">
-                    <div className="h-px w-8 bg-[#118778]" />
-
-                    <span className="text-[9px] font-bold uppercase tracking-[0.16em] text-[#118778]">
-                      Built together
-                    </span>
-                  </div>
-                </div>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link href="/contact" className="inline-flex min-h-12 items-center gap-2 rounded-full bg-teal-700 px-6 text-sm font-bold text-white shadow-[0_15px_35px_rgba(13,148,136,.2)] transition hover:-translate-y-0.5 hover:bg-teal-800">
+                  Talk to us <ArrowIcon />
+                </Link>
+                <Link href="/career" className="inline-flex min-h-12 items-center gap-2 rounded-full border border-[#d8d0e5] bg-white px-6 text-sm font-bold text-slate-800 transition hover:-translate-y-0.5 hover:border-teal-300">
+                  Join our team <ArrowIcon />
+                </Link>
               </div>
             </div>
-          </div>
-        </section>
-
-        {/* =========================================================
-            JOURNEY
-        ========================================================= */}
-        <section className="relative overflow-hidden bg-white px-5 py-10 sm:px-8 lg:px-10 lg:py-12">
-          <div className="relative mx-auto max-w-[1120px]">
-            <div className="mx-auto max-w-3xl text-center">
-              <div className="flex items-center justify-center gap-3">
-                <span className="h-px w-8 bg-[#118778]" />
-
-                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#118778]">
-                  Our journey
-                </p>
-
-                <span className="h-px w-8 bg-[#118778]" />
-              </div>
-
-              <h2 className="mt-4 text-[clamp(1.8rem,3.3vw,3rem)] font-medium leading-[1.05] tracking-[-0.04em] text-black">
-                Milestones and Achievements
-              </h2>
-
-              <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-gray-600">
-                Every milestone moves us closer to our vision of making
-                business conversations more intelligent, more natural, and
-                more human.
-              </p>
-            </div>
-
-            <div className="relative mt-10">
+            <div className="relative mx-auto w-full max-w-[700px] overflow-hidden bg-white">
+              <Image src="/images/vozon_ai.png" alt="Vozon.ai team building better voice experiences" width={1536} height={1024} priority className="block h-auto w-full object-contain" />
               <div
                 aria-hidden="true"
-                className="about-milestone-line absolute bottom-0 left-5 top-0 bg-[#118778] sm:left-1/2 sm:-translate-x-1/2"
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  background:
+                    "linear-gradient(to right, #fff 0%, transparent 4%, transparent 96%, #fff 100%), linear-gradient(to bottom, #fff 0%, transparent 4%, transparent 92%, #fff 100%)",
+                }}
               />
+            </div>
+          </div>
+        </section>
 
-              <div className="space-y-7 sm:space-y-9">
-                {journey.map((item, index) => (
-                  <article
-                    key={`${item.label}-${index}`}
-                    className="about-journey-item group relative grid sm:grid-cols-2"
-                  >
-                    <div
-                      className={`pl-12 sm:pl-0 ${
-                        index % 2 === 0
-                          ? "sm:pr-16 sm:text-right"
-                          : "sm:col-start-2 sm:pl-16"
-                      }`}
-                    >
-                      <div
-                        className={`relative py-3 ${
-                          index % 2 === 0 ? "sm:ml-auto" : ""
-                        }`}
-                      >
-                        <div className="relative">
-                          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#118778]">
-                            {item.label}
-                          </p>
+        <section className="px-5 py-10 sm:px-8 sm:py-12 lg:py-14">
+          <div className="mx-auto grid max-w-[1200px] gap-8 rounded-[28px] border border-[#dbe4e1] bg-[#f7fbfa] p-6 sm:p-9 lg:grid-cols-[.9fr_1.1fr] lg:items-center lg:gap-16 lg:p-11">
+            <div>
+              <SectionLabel>Our mission</SectionLabel>
+              <h2 className={`${headingClass} mt-5`}>Make every conversation <span className="text-teal-700">more intelligent.</span></h2>
+            </div>
+            <div className="border-t border-[#dbe4e1] pt-7 lg:border-l lg:border-t-0 lg:pl-12 lg:pt-0">
+              <div className="grid size-11 place-items-center rounded-xl border border-teal-200 bg-white text-teal-700 shadow-sm"><SparkIcon /></div>
+              <p className="mt-5 text-[15px] leading-7 text-slate-700 sm:text-base">
+                We believe conversations contain enormous potential. Our mission is to help businesses unlock that potential through voice AI that understands, responds, acts, and learns.
+              </p>
+            </div>
+          </div>
+        </section>
 
-                          <h3 className="mt-3 text-xl font-semibold tracking-[-0.03em] text-black sm:text-2xl">
-                            {item.title}
-                          </h3>
+        <section className="border-y border-[#eee9f5] bg-[#faf8fc] px-5 py-10 sm:px-8 sm:py-12 lg:py-14">
+          <div className="mx-auto max-w-[1280px]">
+            <div className="grid gap-5 lg:grid-cols-[1fr_.55fr] lg:items-end">
+              <div><SectionLabel>Our values</SectionLabel><h2 className={`${headingClass} mt-4`}>What guides us ahead.</h2></div>
+              <p className="m-0 max-w-md text-sm leading-7 text-slate-700 lg:justify-self-end">The principles behind our products, decisions, partnerships, and the way we work together.</p>
+            </div>
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {values.map((value, index) => (
+                <article key={value.title} className="group flex min-h-[250px] flex-col rounded-[22px] border border-[#e4deed] bg-white p-6 shadow-[0_8px_24px_rgba(109,106,156,.06)] transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_16px_38px_rgba(13,148,136,.09)]">
+                  <div className="flex items-center justify-between">
+                    <span className="grid size-11 place-items-center rounded-xl bg-teal-50 text-xs font-bold text-teal-700">0{index + 1}</span>
+                    <span className="text-teal-600 transition group-hover:rotate-12"><SparkIcon /></span>
+                  </div>
+                  <div className="mt-auto pt-10">
+                    <h3 className="text-lg font-semibold tracking-[-0.025em] text-[#14231f]">{value.title}</h3>
+                    <p className="mt-3 text-sm leading-6 text-slate-600">{value.description}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
 
-                          <p className="mt-3 text-base leading-7 text-gray-600">
-                            {item.description}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+        <section className="px-5 py-10 sm:px-8 sm:py-12 lg:py-14">
+          <div className="mx-auto max-w-[1200px]">
+            <div className="mx-auto max-w-3xl text-center">
+              <div className="flex justify-center"><SectionLabel>Our manifesto</SectionLabel></div>
+              <h2 className={`${headingClass} mt-4`}>The beliefs behind what we build.</h2>
+              <p className="mx-auto mt-5 max-w-2xl text-[15px] leading-7 text-slate-700">The ideas that shape every product decision, interaction, and outcome we build toward.</p>
+            </div>
+            <div className="mt-10 grid overflow-hidden rounded-[24px] border border-[#e4deed] bg-white md:grid-cols-2">
+              {manifesto.map((item, index) => (
+                <article key={item.title} className="border-b border-[#eee9f5] p-6 last:border-b-0 md:min-h-[180px] md:border-r md:p-8 md:[&:nth-child(2n)]:border-r-0 md:[&:nth-child(n+3)]:border-b-0">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-teal-700">0{index + 1}</span>
+                  <h3 className="mt-6 text-lg font-semibold leading-6 tracking-[-0.025em] text-[#14231f] sm:text-xl">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">{item.note}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
 
-                    <div
-                      aria-hidden="true"
-                      className="about-milestone-dot absolute left-5 top-8 flex h-3 w-3 -translate-x-1/2 items-center justify-center rounded-full bg-[#118778] sm:left-1/2"
-                    />
-                  </article>
-                ))}
+        <section className="border-y border-[#eee9f5] bg-[#faf8fc] px-5 py-10 sm:px-8 sm:py-12 lg:py-14">
+          <div className="mx-auto grid max-w-[1280px] gap-10 lg:grid-cols-[1.03fr_.97fr] lg:items-center lg:gap-16">
+            <div className="relative overflow-hidden rounded-[28px] border border-[#d8d0e5] bg-slate-950 shadow-[0_20px_50px_rgba(15,23,42,.12)]">
+              <Image src="/images/leadership.png" alt="The vozon.ai team" width={1200} height={900} className="aspect-[4/3] w-full object-cover transition duration-700 hover:scale-[1.025]" />
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/90 to-transparent p-6 pt-20 sm:p-8 sm:pt-24">
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-teal-300">Our team</p>
+                <p className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-white">One team. One shared vision.</p>
               </div>
             </div>
-          </div>
-        </section>
-
-        {/* =========================================================
-            CONTACT
-        ========================================================= */}
-        <section className="about-contact-section bg-white px-6 pb-10 pt-3 lg:px-8">
-          <div className="about-contact mx-auto flex flex-col items-center justify-between gap-5 overflow-hidden rounded-[20px] border border-[#d7c8e8] bg-[#f1e9fa] p-6 text-center text-black shadow-[0_14px_36px_rgba(91,54,123,0.09)] md:flex-row md:text-left">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#7a3e9d]">
-                Ready to get started?
-              </p>
-
-              <h2 className="mt-2 max-w-2xl text-xl font-semibold tracking-[-0.02em] text-black md:text-2xl">
-                Build what comes next.
-              </h2>
-
-              <p className="mt-2 max-w-lg text-sm leading-6 text-gray-700">
-                We are building technology that can change how businesses
-                communicate and operate. If you want to help shape that
-                future, we&apos;d love to meet you.
-              </p>
+              <SectionLabel>Our team</SectionLabel>
+              <h2 className={`${headingClass} mt-4`}>Different expertise. <span className="text-teal-700">Shared purpose.</span></h2>
+              <p className="mt-5 text-[15px] leading-7 text-slate-700">At vozon.ai, we believe the best technology is created when different perspectives come together. Our team works across AI, engineering, product, design, and customer experience to turn complex ideas into simple and powerful solutions.</p>
+              <p className="mt-4 text-[15px] leading-7 text-slate-700">From building intelligent voice systems to creating thoughtful user experiences, every part of the team contributes to our mission of making business communication more natural, useful, and effective.</p>
+              <blockquote className="mt-7 border-l-2 border-teal-600 pl-5 text-sm leading-6 text-slate-600">“Great products are built together — through ideas, collaboration, and a shared commitment to solving real problems.”</blockquote>
             </div>
-
-            <Link
-              href="/contact"
-              className="inline-flex min-h-11 shrink-0 items-center rounded-lg bg-[#7a3e9d] px-6 text-xs font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#683486]"
-            >
-              CONTACT US <span className="ml-3">&rarr;</span>
-            </Link>
           </div>
         </section>
 
-        <style>{`
-          #about-page {
-            background: #fff;
-          }
+        <section className="px-5 py-10 sm:px-8 sm:py-12 lg:py-14">
+          <div className="mx-auto max-w-[1120px]">
+            <div className="mx-auto max-w-3xl text-center">
+              <div className="flex justify-center"><SectionLabel>Our journey</SectionLabel></div>
+              <h2 className={`${headingClass} mt-4`}>Milestones and achievements.</h2>
+              <p className="mx-auto mt-5 max-w-2xl text-[15px] leading-7 text-slate-700">Every milestone moves us closer to our vision of making business conversations more intelligent, more natural, and more human.</p>
+            </div>
+            <div className="relative mt-10 grid gap-4 md:grid-cols-2">
+              <div className="absolute left-1/2 top-8 hidden h-[calc(100%-4rem)] w-px -translate-x-1/2 bg-[#d8d0e5] md:block" aria-hidden="true" />
+              {journey.map((item, index) => (
+                <article key={item.label} className={`relative rounded-[22px] border border-[#e4deed] bg-white p-6 shadow-[0_8px_24px_rgba(109,106,156,.05)] sm:p-7 ${index % 2 ? "md:translate-y-12" : ""}`}>
+                  <div className="flex items-center justify-between gap-4">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">{item.label}</p>
+                    <span className="grid size-8 place-items-center rounded-full bg-teal-50 text-[10px] font-bold text-teal-700">0{index + 1}</span>
+                  </div>
+                  <h3 className="mt-5 text-xl font-semibold tracking-[-0.03em] text-[#14231f]">{item.title}</h3>
+                  <p className="mt-3 text-sm leading-7 text-slate-600">{item.description}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
 
-          #about-page .about-hero {
-            background: #fff;
-          }
-
-          #about-page .about-gradient-text {
-            background: none !important;
-            color: #000 !important;
-            -webkit-text-fill-color: #000 !important;
-          }
-
-          #about-page .about-hero-heading,
-          #about-page .about-hero-heading span {
-            background: none !important;
-            color: #000 !important;
-            -webkit-text-fill-color: #000 !important;
-          }
-
-          #about-page .about-primary-button {
-            background: #118778;
-            box-shadow: 0 10px 24px rgba(17, 135, 120, 0.22);
-          }
-
-          #about-page .about-primary-button:hover {
-            background: #0e6f62;
-          }
-
-          #about-page .about-mission-heading,
-          #about-page .about-mission-heading span {
-            color: #000 !important;
-          }
-
-          #about-page .about-color-bar {
-            background: linear-gradient(
-              90deg,
-              #df4f82,
-              #a45ee8,
-              #805bd8
-            );
-          }
-
-          #about-page [class*="text-[#118778]"] {
-            color: #805bd8;
-          }
-
-          #about-page [class*="bg-[#118778]"] {
-            background-color: #805bd8;
-          }
-
-          #about-page [class*="border-[#118778]"] {
-            border-color: rgba(128, 91, 216, 0.36);
-          }
-
-          #about-page > section:nth-of-type(2) {
-            background: #fff;
-          }
-
-          #about-page .about-mission-card {
-            background: #f1edff;
-            border-color: #ddd5ff;
-          }
-
-          #about-page .about-values-section {
-            background: #fff;
-            border-top: 1px solid #e5ddf8;
-            border-bottom: 1px solid #e5ddf8;
-          }
-
-          #about-page .about-values-glow {
-            display: none;
-          }
-
-          #about-page .about-values-glow-left {
-            left: -12rem;
-            top: -10rem;
-          }
-
-          #about-page .about-values-glow-right {
-            right: -12rem;
-            bottom: -12rem;
-          }
-
-          #about-page > section:nth-of-type(4) {
-            background: #fff;
-          }
-
-          #about-page > section:nth-of-type(5) {
-            background: #fff;
-          }
-
-          #about-page > section:nth-of-type(6) {
-            background: #fff;
-          }
-
-          #about-page .about-journey-item {
-            z-index: 2;
-            border: 0 !important;
-            background: transparent !important;
-            box-shadow: none !important;
-          }
-
-          #about-page .about-milestone-line {
-            top: 2rem !important;
-            bottom: 2rem !important;
-            z-index: 10 !important;
-            width: 3px !important;
-            background: #118778 !important;
-            opacity: 1 !important;
-          }
-
-          #about-page .about-milestone-dot {
-            z-index: 20 !important;
-            width: 16px !important;
-            height: 16px !important;
-            border: 3px solid #fff !important;
-            background: #118778 !important;
-            box-shadow: 0 0 0 2px #118778 !important;
-          }
-
-          #about-page .about-manifesto-card {
-            border-color: rgba(128, 91, 216, 0.18);
-          }
-
-          #about-page .about-values-card {
-            border-color: #ded5f3;
-          }
-
-          #about-page .about-values-section .about-values-icon {
-            color: #6847b6 !important;
-            background: #eee8fb !important;
-            border-color: rgba(128, 91, 216, 0.2) !important;
-            box-shadow: 0 8px 20px rgba(91, 54, 123, 0.08);
-          }
-
-          #about-page .about-values-section [class*="text-[#118778]"] {
-            color: #6847b6;
-          }
-
-          #about-page .about-values-section [class*="bg-[#118778]"] {
-            background-color: #805bd8;
-          }
-
-          #about-page .about-values-card:hover [class*="text-[#118778]"] {
-            color: #fff;
-          }
-
-          #about-page .about-values-card-bar {
-            background: linear-gradient(
-              90deg,
-              #805bd8,
-              #b99cec
-            );
-            opacity: 0.9;
-          }
-
-          #about-page .about-values-card:hover {
-            border-color: #bca8e8;
-            box-shadow: 0 18px 44px rgba(91, 54, 123, 0.13);
-          }
-
-          #about-page .about-manifesto-card:nth-child(4n + 2)
-            [class*="text-[#118778]"] {
-            color: #c64f7c;
-          }
-
-          #about-page .about-manifesto-card:nth-child(4n + 3)
-            [class*="text-[#118778]"] {
-            color: #9b5274;
-          }
-
-          #about-page .about-manifesto-card:nth-child(4n)
-            [class*="text-[#118778]"] {
-            color: #d98a00;
-          }
-
-          #about-page .about-manifesto-number {
-            background: #f5e7ed;
-            color: #a85370;
-          }
-
-          #about-page .about-manifesto-card:hover {
-            border-color: rgba(128, 91, 216, 0.42);
-          }
-
-          #about-page .about-manifesto-card:nth-child(4n + 2) {
-            border-color: rgba(128, 91, 216, 0.2);
-          }
-
-          #about-page .about-contact {
-            width: min(100%, 980px);
-            border-color: #d7c8e8;
-            background: linear-gradient(
-              120deg,
-              #f1e9fa 0%,
-              #e9e7ff 100%
-            );
-            box-shadow: 0 14px 36px rgba(91, 54, 123, 0.09);
-            padding: 1.5rem;
-          }
-
-          #about-page .about-contact a {
-            border-color: #7a3e9d;
-            background: #7a3e9d;
-            color: #fff;
-          }
-
-          #about-page .about-contact a:hover {
-            background: #683486;
-          }
-
-        `}</style>
+        <section className="px-5 pb-14 pt-20 sm:px-8 sm:pb-16 lg:pt-24">
+          <div className="mx-auto grid max-w-[1100px] gap-6 rounded-[24px] border border-[#cfc7df] bg-[#faf8fc] px-6 py-8 shadow-[0_16px_42px_rgba(109,106,156,.1)] sm:px-9 lg:grid-cols-[1fr_auto] lg:items-center">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-teal-700">Ready to get started?</p>
+              <h2 className="mt-3 text-[clamp(1.6rem,2.3vw,2.1rem)] font-semibold tracking-[-0.04em] text-[#14231f]">Build what comes next.</h2>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-700">We are building technology that can change how businesses communicate and operate. If you want to help shape that future, we&apos;d love to meet you.</p>
+            </div>
+            <Link href="/contact" className="inline-flex min-h-11 w-fit items-center gap-2 rounded-full bg-teal-700 px-6 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-teal-800">Contact us <ArrowIcon /></Link>
+          </div>
+        </section>
       </main>
     </SiteLayout>
   );

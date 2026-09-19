@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useRef, useState } from "react";
 
 import { SiteLayout } from "@/components/layout/SiteLayout";
 
@@ -156,6 +159,16 @@ function ReleaseMark() {
 }
 
 export function ChangelogPage() {
+  const [activeVersion, setActiveVersion] = useState(releases[0].version);
+  const releasePanelRef = useRef<HTMLDivElement>(null);
+
+  function selectRelease(version: string) {
+    setActiveVersion(version);
+    const panel = releasePanelRef.current;
+    const release = panel?.querySelector<HTMLElement>(`[data-release-version="${version}"]`);
+    if (panel && release) panel.scrollTo({ top: release.offsetTop - 8, behavior: "smooth" });
+  }
+
   return (
     <SiteLayout>
       <main className="changelog-page min-h-screen bg-white text-[#14231f]">
@@ -216,19 +229,21 @@ export function ChangelogPage() {
               </p>
               <nav aria-label="Changelog releases" className="mt-5">
                 <ul className="m-0 list-none space-y-1 p-0">
-                  {releases.map((release, index) => (
+                  {releases.map((release) => (
                     <li key={release.version}>
-                      <a
+                      <button
+                        aria-pressed={activeVersion === release.version}
                         className={`flex items-center justify-between rounded-lg border px-3.5 py-3 text-sm transition ${
-                          index === 0
+                          activeVersion === release.version
                             ? "border-[#b8d9d1] bg-[#edf8f5] text-[#14231f]"
                             : "border-transparent text-[#66736f] hover:border-[#dfe7e3] hover:bg-[#f7f9f8] hover:text-[#14231f]"
-                        }`}
-                        href={`#release-${release.version.slice(1).replaceAll(".", "-")}`}
+                        } w-full`}
+                        onClick={() => selectRelease(release.version)}
+                        type="button"
                       >
                         <span>{release.date.replace(", 2026", "")}</span>
                         <span className="font-mono text-[10px] text-[#7a8782]">{release.version}</span>
-                      </a>
+                      </button>
                     </li>
                   ))}
                 </ul>
@@ -253,69 +268,50 @@ export function ChangelogPage() {
               </div>
             </aside>
 
-            <div className="relative">
-              <div
-                aria-hidden="true"
-                className="changelog-timeline absolute bottom-10 left-[19px] top-7 w-px bg-gradient-to-b from-[#15967f] via-[#cbd8d3] to-transparent sm:left-[23px]"
-              />
+            <div
+              aria-label="Release details"
+              className="relative space-y-8 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-3"
+              ref={releasePanelRef}
+              role="region"
+            >
+              {releases.map((release) => (
+                <article
+                  className="relative grid scroll-mt-4 grid-cols-[40px_minmax(0,1fr)] gap-4 sm:grid-cols-[48px_minmax(0,1fr)] sm:gap-6"
+                  data-release-version={release.version}
+                  key={release.version}
+                >
+                  <div className="relative z-10 flex justify-center pt-7">
+                    <span className={`changelog-release-mark grid size-10 place-items-center rounded-xl border bg-white text-[#0d806e] transition ${activeVersion === release.version ? "border-[#58b9a7] shadow-[0_0_0_6px_rgba(21,150,127,0.12)]" : "border-[#9ccfc4] shadow-[0_0_0_6px_rgba(21,150,127,0.07)]"}`}>
+                      <ReleaseMark />
+                    </span>
+                  </div>
 
-              <div className="space-y-8">
-                {releases.map((release) => (
-                  <article
-                    className="relative grid grid-cols-[40px_minmax(0,1fr)] gap-4 sm:grid-cols-[48px_minmax(0,1fr)] sm:gap-6"
-                    id={`release-${release.version.slice(1).replaceAll(".", "-")}`}
-                    key={release.version}
-                  >
-                    <div className="relative z-10 flex justify-center pt-7">
-                      <span className="changelog-release-mark grid size-10 place-items-center rounded-xl border border-[#9ccfc4] bg-white text-[#0d806e] shadow-[0_0_0_6px_rgba(21,150,127,0.07)]">
-                        <ReleaseMark />
-                      </span>
-                    </div>
-
-                    <div
-                      className={`changelog-release-card overflow-hidden rounded-2xl border p-6 shadow-[0_18px_48px_rgba(20,35,31,0.07)] sm:p-8 ${release.accent}`}
-                    >
-                      <div className="flex flex-col gap-4 border-b border-[#e5ebe8] pb-6 sm:flex-row sm:items-start sm:justify-between">
-                        <div>
-                          <div className="flex flex-wrap items-center gap-3">
-                            <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#0d806e]">
-                              {release.category}
-                            </span>
-                            <span aria-hidden="true" className="size-1 rounded-full bg-[#9aa7a2]" />
-                            <time className="text-xs text-[#73807c]">{release.date}</time>
-                          </div>
-                          <h2 className="mt-3 text-2xl font-semibold tracking-[-0.035em] text-[#14231f] sm:text-3xl">
-                            {release.title}
-                          </h2>
+                  <div className={`changelog-release-card overflow-hidden rounded-2xl border p-6 shadow-[0_18px_48px_rgba(20,35,31,0.07)] sm:p-8 ${release.accent} ${activeVersion === release.version ? "ring-2 ring-[#15967f]/15" : ""}`}>
+                    <div className="flex flex-col gap-4 border-b border-[#e5ebe8] pb-6 sm:flex-row sm:items-start sm:justify-between">
+                      <div>
+                        <div className="flex flex-wrap items-center gap-3">
+                          <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#0d806e]">{release.category}</span>
+                          <span aria-hidden="true" className="size-1 rounded-full bg-[#9aa7a2]" />
+                          <time className="text-xs text-[#73807c]">{release.date}</time>
                         </div>
-                        <span className="w-fit shrink-0 rounded-full border border-[#dfe7e3] bg-[#f7f9f8] px-3 py-1.5 font-mono text-[10px] text-[#5d6c67]">
-                          {release.version}
-                        </span>
+                        <h2 className="mt-3 text-2xl font-semibold tracking-[-0.035em] text-[#14231f] sm:text-3xl">{release.title}</h2>
                       </div>
-
-                      <p className="mt-6 max-w-[760px] text-sm leading-7 text-[#5d6c67]">
-                        {release.summary}
-                      </p>
-
-                      <ul className="mt-7 m-0 list-none space-y-4 p-0">
-                        {release.updates.map((update) => (
-                          <li
-                            className="grid gap-2.5 sm:grid-cols-[82px_minmax(0,1fr)] sm:items-start"
-                            key={`${update.type}-${update.text}`}
-                          >
-                            <span
-                              className={`changelog-update-pill mt-0.5 w-fit rounded-full border px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.12em] ${updateTypeStyles[update.type]}`}
-                            >
-                              {update.type}
-                            </span>
-                            <p className="text-sm leading-6 text-[#52625d]">{update.text}</p>
-                          </li>
-                        ))}
-                      </ul>
+                      <span className="w-fit shrink-0 rounded-full border border-[#dfe7e3] bg-[#f7f9f8] px-3 py-1.5 font-mono text-[10px] text-[#5d6c67]">{release.version}</span>
                     </div>
-                  </article>
-                ))}
-              </div>
+
+                    <p className="mt-6 max-w-[760px] text-sm leading-7 text-[#5d6c67]">{release.summary}</p>
+
+                    <ul className="mt-7 m-0 list-none space-y-4 p-0">
+                      {release.updates.map((update) => (
+                        <li className="grid gap-2.5 sm:grid-cols-[82px_minmax(0,1fr)] sm:items-start" key={`${update.type}-${update.text}`}>
+                          <span className={`changelog-update-pill mt-0.5 w-fit rounded-full border px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.12em] ${updateTypeStyles[update.type]}`}>{update.type}</span>
+                          <p className="text-sm leading-6 text-[#52625d]">{update.text}</p>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </article>
+              ))}
             </div>
           </div>
         </section>

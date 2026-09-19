@@ -79,16 +79,19 @@ export function SiteHeader() {
   const isCompany = ["/about", "/career", "/partners", "/contact"].some((route) =>
     pathname.startsWith(route)
   );
+  const isChangelog = pathname.startsWith("/resources/changelog");
 
   return (
     <header
-      className="fixed inset-x-0 top-0 z-[100] flex justify-center px-3 sm:px-6 pt-2.5 transition-all duration-300"
+      className={`fixed inset-x-0 top-0 z-[100] flex justify-center px-3 pt-2.5 transition-all duration-300 sm:px-6 ${isChangelog ? "bg-white pb-2.5 shadow-[0_1px_0_rgba(15,23,42,.08)]" : ""}`}
       ref={headerRef}
     >
       {/* Slim Floating Glass Capsule with Fixed Consistent Dimensions */}
       <div
         className={`relative flex h-[54px] w-full max-w-[1400px] items-center justify-between rounded-full border px-4 transition-all duration-300 sm:px-8 ${
-          scrolled
+          isChangelog
+            ? "border-slate-200 bg-white shadow-[0_6px_24px_-6px_rgba(0,0,0,0.1)]"
+            : scrolled
             ? "border-slate-200/90 bg-white/95 shadow-[0_8px_30px_-4px_rgba(0,0,0,0.08)] backdrop-blur-2xl"
             : "border-slate-200/70 bg-white/85 shadow-[0_4px_20px_rgba(0,0,0,0.04)] backdrop-blur-xl"
         }`}

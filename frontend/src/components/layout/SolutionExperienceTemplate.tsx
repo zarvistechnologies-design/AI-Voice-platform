@@ -106,11 +106,11 @@ export function SolutionExperienceTemplate({ content }: { content: SolutionExper
                 <span className="relative flex size-2"><span className="absolute inline-flex size-full animate-ping rounded-full bg-teal-500 opacity-50" /><span className="relative size-2 rounded-full bg-teal-600" /></span>
                 {content.category}
               </div>
-              <h1 className="mt-6 text-[clamp(2.5rem,4.5vw,4.25rem)] font-semibold leading-[1.02] tracking-[-0.055em] text-slate-950">AI voice agents for <span className="block text-teal-700">{content.title}</span></h1>
+              <h1 className="mt-6 text-[clamp(1.85rem,3.8vw,3.25rem)] font-medium leading-[0.98] tracking-[-0.05em] text-slate-950">AI voice agents for <span className="block text-teal-700">{content.title}</span></h1>
               <p className="mt-6 max-w-[570px] text-[15px] leading-7 text-slate-900">{content.summary}</p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <Link className="inline-flex min-h-12 items-center gap-2 rounded-full bg-teal-700 px-6 text-sm font-bold text-white shadow-[0_15px_35px_rgba(13,148,136,.2)] transition hover:-translate-y-0.5 hover:bg-teal-800" href={`/contact?solution=${content.id}`}>Plan your workflow <span aria-hidden="true">&rarr;</span></Link>
-                <Link className="inline-flex min-h-12 items-center gap-2 rounded-full border border-[#d8d0e5] bg-[#faf8fc]/90 px-6 text-sm font-bold text-slate-800 transition hover:-translate-y-0.5 hover:border-[#a89bbb] hover:bg-white" href="/login?mode=register">See how it works</Link>
+                <Link className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-teal-700 px-6 text-sm font-bold text-white shadow-[0_15px_35px_rgba(13,148,136,.2)] transition hover:-translate-y-0.5 hover:bg-teal-800" href="/login?mode=register">Get started <span aria-hidden="true">&rarr;</span></Link>
+                <Link className="inline-flex min-h-12 items-center justify-center rounded-full bg-teal-700 px-6 text-sm font-bold text-white shadow-[0_15px_35px_rgba(13,148,136,.2)] transition hover:-translate-y-0.5 hover:bg-teal-800" href={`/contact?solution=${content.id}`}>Talk to sales</Link>
               </div>
               <div className="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-xs font-semibold text-slate-600">{content.highlights.map((item) => <span className="flex items-center gap-2" key={item}><Check />{item}</span>)}</div>
             </div>

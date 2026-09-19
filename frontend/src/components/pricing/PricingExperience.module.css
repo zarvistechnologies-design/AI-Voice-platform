@@ -87,10 +87,10 @@
   max-width: 720px;
   margin: 19px 0 0;
   color: var(--ink);
-  font-size: clamp(2.25rem, 3.55vw, 3.55rem);
-  font-weight: 540;
+  font-size: clamp(1.85rem, 3.8vw, 3.25rem);
+  font-weight: 500;
   line-height: .98;
-  letter-spacing: -.065em;
+  letter-spacing: -.05em;
 }
 
 .heroCopy h1 em { color: var(--teal); font-style: normal; }

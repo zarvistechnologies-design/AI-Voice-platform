@@ -12,6 +12,7 @@ type MarketingOverviewPageProps = {
   groups: readonly OverviewGroup[];
   proof: readonly { value: string; label: string }[];
   lightTheme?: boolean;
+  cleanCards?: boolean;
 };
 
 const callRows = [
@@ -20,7 +21,7 @@ const callRows = [
   ["Appointment reminder", "Connected", "00:27"],
 ];
 
-export function MarketingOverviewPage({ pageId, eyebrow, title, summary, groups, proof, lightTheme = false }: MarketingOverviewPageProps) {
+export function MarketingOverviewPage({ pageId, eyebrow, title, summary, groups, proof, lightTheme = false, cleanCards = false }: MarketingOverviewPageProps) {
   return (
     <SiteLayout>
       <div id={pageId} className={lightTheme ? "marketing-overview-light blog-light-theme bg-white text-black" : "bg-black text-white"}>
@@ -112,7 +113,7 @@ export function MarketingOverviewPage({ pageId, eyebrow, title, summary, groups,
                     href={item.href}
                     key={item.title}
                   >
-                    <span className={`grid size-11 place-items-center rounded-lg text-sm font-extrabold ${
+                    {!cleanCards ? <span className={`grid size-11 place-items-center rounded-lg text-sm font-extrabold ${
                       index % 4 === 0
                         ? "bg-cyan-100 text-cyan-800"
                         : index % 4 === 1
@@ -120,10 +121,10 @@ export function MarketingOverviewPage({ pageId, eyebrow, title, summary, groups,
                           : index % 4 === 2
                             ? "bg-emerald-100 text-emerald-800"
                             : "bg-amber-100 text-amber-800"
-                    }`}>{item.title.slice(0, 2)}</span>
-                    <p className="m-0 mt-6 text-xs font-extrabold text-[#75fff0]">{item.meta}</p>
-                    <h3 className="m-0 mt-2 flex items-start justify-between gap-4 text-xl font-semibold">
-                      {item.title}<span className="transition group-hover:translate-x-1" aria-hidden="true">-&gt;</span>
+                    }`}>{item.title.slice(0, 2)}</span> : null}
+                    <p className={`m-0 text-xs font-extrabold text-[#75fff0] ${cleanCards ? "" : "mt-6"}`}>{item.meta}</p>
+                    <h3 className={`m-0 mt-2 text-xl font-semibold ${cleanCards ? "" : "flex items-start justify-between gap-4"}`}>
+                      {item.title}{!cleanCards ? <span className="transition group-hover:translate-x-1" aria-hidden="true">-&gt;</span> : null}
                     </h3>
                     <p className="m-0 mt-4 text-sm leading-6 text-white/45">{item.summary}</p>
                   </Link>
@@ -142,7 +143,7 @@ export function MarketingOverviewPage({ pageId, eyebrow, title, summary, groups,
                 <p className="m-0 mt-3 max-w-2xl text-sm leading-6">Talk with our team about your calls, workflows, integrations, and rollout plan.</p>
               </div>
               <Link className="blog-overview-contact-button inline-flex min-h-12 shrink-0 items-center rounded-lg px-7 text-sm font-bold" href="/contact">
-                CONTACT US <span className="ml-3">&rarr;</span>
+                CONTACT US {!cleanCards ? <span className="ml-3">&rarr;</span> : null}
               </Link>
             </div>
           </section>

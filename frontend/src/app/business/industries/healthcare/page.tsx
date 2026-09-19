@@ -472,16 +472,16 @@ export default function HealthcarePage() {
             </p>
             <div className="mt-10 flex flex-wrap gap-3">
               <Link
-                className="business-blue-cta healthcare-demo-button inline-flex min-h-12 items-center rounded-lg px-6 text-sm font-extrabold transition hover:-translate-y-0.5"
+                className="business-blue-cta healthcare-demo-button inline-flex min-h-12 items-center justify-center rounded-lg px-6 text-sm font-extrabold transition hover:-translate-y-0.5"
                 href="/#demo"
               >
-                Book a free demo <span className="ml-3">&rarr;</span>
+                Get started <span className="ml-3">&rarr;</span>
               </Link>
               <Link
-                className="business-blue-cta healthcare-demo-button inline-flex min-h-12 items-center rounded-lg px-6 text-sm font-extrabold transition hover:-translate-y-0.5"
+                className="business-blue-cta healthcare-demo-button inline-flex min-h-12 items-center justify-center rounded-lg px-6 text-sm font-extrabold transition hover:-translate-y-0.5"
                 href="/contact"
               >
-                Contact sales
+                Talk to sales
               </Link>
             </div>
           </div>
@@ -743,7 +743,7 @@ export default function HealthcarePage() {
             </div>
 
             <div className="business-pricing-grid mt-10 grid gap-4 lg:grid-cols-2">
-              <article className="business-pricing-card relative overflow-hidden rounded-2xl border border-[#35fbe0]/25 bg-[#07100d] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.22)] sm:p-7">
+              <article className="business-pricing-card relative flex flex-col overflow-hidden rounded-2xl border border-[#35fbe0]/25 bg-[#07100d] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.22)] sm:p-7">
                 <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#35fbe0] to-transparent" />
                 <div className="flex items-start justify-between gap-4">
                   <div>
@@ -766,15 +766,17 @@ export default function HealthcarePage() {
                     </li>
                   ))}
                 </ul>
-                <Link
-                  className="business-pricing-button mt-7 inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-[#35fbe0]/30 bg-[#35fbe0]/10 text-sm font-bold text-[#75fff0] transition hover:bg-[#35fbe0]/15"
-                  href="/#demo"
-                >
-                  Get started
-                </Link>
+                <div className="mt-auto pt-7">
+                  <Link
+                    className="business-pricing-button inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-[#118778] bg-[#118778] px-4 text-sm font-bold text-white shadow-[0_12px_28px_rgba(17,135,120,0.22)] transition hover:bg-[#0e6f62]"
+                    href="/#demo"
+                  >
+                    Get started
+                  </Link>
+                </div>
               </article>
 
-              <article className="business-pricing-card relative overflow-hidden rounded-2xl border border-[#8f83e8]/30 bg-[radial-gradient(circle_at_95%_0%,rgba(143,131,232,0.22),transparent_42%),#0a0b0d] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.22)] sm:p-7">
+              <article className="business-pricing-card relative flex flex-col overflow-hidden rounded-2xl border border-[#8f83e8]/30 bg-[radial-gradient(circle_at_95%_0%,rgba(143,131,232,0.22),transparent_42%),#0a0b0d] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.22)] sm:p-7">
                 <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#8f83e8] to-transparent" />
                 <div className="flex items-start justify-between gap-4">
                   <div>
@@ -797,12 +799,14 @@ export default function HealthcarePage() {
                     </li>
                   ))}
                 </ul>
-                <Link
-                  className="business-pricing-button mt-7 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-[linear-gradient(90deg,#35fbe0,#8f83e8)] text-sm font-extrabold text-[#031310] transition hover:brightness-110"
-                  href="/contact"
-                >
-                  Talk to sales
-                </Link>
+                <div className="mt-auto pt-7">
+                  <Link
+                    className="business-pricing-button inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-[#118778] bg-[#118778] px-4 text-sm font-bold text-white shadow-[0_12px_28px_rgba(17,135,120,0.22)] transition hover:bg-[#0e6f62]"
+                    href="/contact"
+                  >
+                    Talk to sales
+                  </Link>
+                </div>
               </article>
             </div>
           </div>

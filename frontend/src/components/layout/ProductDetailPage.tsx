@@ -34,8 +34,8 @@ export function ProductDetailPage({ service, experience }: { service: Product; e
                 <span aria-hidden="true" className="size-2 rounded-full bg-[#0f8777]" />
                 {service.kicker} / {experience.label}
               </span>
-              <h1 className="mt-6 text-[clamp(2rem,3.7vw,3.5rem)] font-semibold leading-[1.05] tracking-[-0.05em]">
-                {experience.heroTitle} <span className="text-[#0f8777]">{experience.heroAccent}</span>
+              <h1 className="mt-6 text-[clamp(1.85rem,3.8vw,3.25rem)] font-medium leading-[0.98] tracking-[-0.05em]">
+                {experience.heroTitle} <span className="block text-[#0f8777]">{experience.heroAccent}</span>
               </h1>
               <p className="mt-6 max-w-[570px] text-[15px] leading-7 text-[#53605d] sm:text-base">{service.summary}</p>
               <div className="mt-8 flex flex-wrap gap-3">
@@ -91,7 +91,7 @@ export function ProductDetailPage({ service, experience }: { service: Product; e
         </section>
 
         <section className={`${sectionClass} border-y border-[#e8e2f1] bg-white`} id="product-use-cases">
-          <div className="mx-auto w-full max-w-[1340px]"><Eyebrow>Use cases</Eyebrow><h2 className={`${headingClass} mt-4 max-w-[780px]`}>Where {service.title.toLowerCase()} helps your team.</h2><div className="mt-8 grid gap-4 sm:mt-10 sm:grid-cols-2 lg:grid-cols-3">{experience.useCases.map((item, index) => <article className="flex min-h-[235px] flex-col rounded-2xl border border-[#d8d0e5] bg-white p-5 shadow-[0_8px_24px_rgba(109,106,156,.05)] sm:p-6" key={item.title}><span className="grid size-10 place-items-center rounded-xl border border-[#d1e2dd] text-xs font-bold text-[#0f8777]">0{index + 1}</span><h3 className="mt-6 text-lg font-semibold">{item.title}</h3><p className="mt-3 text-sm leading-6 text-[#60706a]">{item.body}</p><Link className="mt-auto inline-flex pt-6 text-sm font-bold text-[#7563ba]" href="/contact">{item.outcome} <span aria-hidden="true" className="ml-2">→</span></Link></article>)}</div></div>
+          <div className="mx-auto w-full max-w-[1340px]"><Eyebrow>Use cases</Eyebrow><h2 className={`${headingClass} mt-4 max-w-[780px]`}>Where {service.title.toLowerCase()} helps your team.</h2><div className="mt-8 grid gap-4 sm:mt-10 sm:grid-cols-2 lg:grid-cols-3">{experience.useCases.map((item, index) => <article className="flex min-h-[235px] flex-col rounded-2xl border border-[#d8d0e5] bg-white p-5 shadow-[0_8px_24px_rgba(109,106,156,.05)] sm:p-6" key={item.title}><span className="grid size-10 place-items-center rounded-xl border border-[#d1e2dd] text-xs font-bold text-[#0f8777]">0{index + 1}</span><h3 className="mt-6 text-lg font-semibold">{item.title}</h3><p className="mt-3 text-sm leading-6 text-[#60706a]">{item.body}</p><Link className="mt-auto inline-flex pt-6 text-sm font-bold text-[#118778] transition hover:text-[#0e6f62]" href="/contact">{item.outcome} <span aria-hidden="true" className="ml-2">→</span></Link></article>)}</div></div>
         </section>
 
         <section className={sectionClass} id="product-performance">
