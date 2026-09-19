@@ -12,7 +12,7 @@ type SiteLayoutProps = {
 
 export function SiteLayout({ children }: SiteLayoutProps) {
   return (
-    <div className="marketing-site min-h-screen overflow-x-hidden bg-white text-[#111113]">
+    <div className="marketing-site min-h-screen [overflow-x:clip] bg-white text-[#111113]">
       <SiteHeader />
       <main className="website-content min-h-screen">{children}</main>
       <SiteFooter />

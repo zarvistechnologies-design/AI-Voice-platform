@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { TermsIndex } from "@/components/legal/TermsIndex";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 
 export const metadata: Metadata = {
@@ -434,12 +435,12 @@ const sections = [
 export default function TermsPage() {
   return (
     <SiteLayout>
-      <div className="relative isolate min-h-screen overflow-hidden !bg-white text-[#14231f]">
+      <div className="relative isolate min-h-screen !bg-white text-[#14231f]">
         {/* =========================================================
              HERO / DOCUMENT HEADER
          ========================================================= */}
-        <header className="relative z-10 px-5 pb-14 pt-28 sm:px-8 sm:pb-16 sm:pt-32 lg:px-12 lg:pb-20 lg:pt-36">
-          <div className="mx-auto grid w-full max-w-[1690px] gap-10 lg:grid-cols-[minmax(0,1fr)_560px] lg:items-center">
+        <header className="relative z-10 px-5 pb-8 pt-20 sm:px-8 sm:pb-10 sm:pt-24 lg:px-12 lg:pb-12 lg:pt-28">
+          <div className="mx-auto grid w-full max-w-[1690px] gap-8 lg:grid-cols-[minmax(0,1fr)_560px] lg:items-center">
             <div>
               <nav
                 aria-label="Breadcrumb"
@@ -462,11 +463,11 @@ export default function TermsPage() {
                 <span className="text-[#52627D]">Legal Agreement</span>
               </nav>
 
-              <p className="mt-10 text-xs font-bold uppercase tracking-[0.2em] text-[#108D82]">
+              <p className="mt-7 text-xs font-bold uppercase tracking-[0.2em] text-[#108D82]">
                 Vozon Platform Agreement
               </p>
 
-              <h1 className="mt-4 max-w-[850px] text-5xl font-semibold leading-[0.98] tracking-[-0.055em] text-[#101B32] sm:text-6xl md:text-7xl lg:text-[76px]">
+              <h1 className="mt-4 max-w-[850px] text-5xl font-semibold leading-[0.98] tracking-[-0.055em] text-[#101B32] sm:text-6xl md:text-7xl lg:text-[68px]">
                 Terms &amp; Conditions
               </h1>
 
@@ -579,96 +580,8 @@ export default function TermsPage() {
         {/* =========================================================
             CONTENT AREA
         ========================================================== */}
-        <div className="relative z-10 mx-auto grid w-full max-w-[1440px] gap-6 px-4 py-12 sm:px-6 lg:grid-cols-[270px_minmax(0,1fr)] lg:px-6 lg:py-16 xl:px-4">
-          {/* =======================================================
-              SIDEBAR (Glassmorphic Accent)
-          ======================================================== */}
-          <aside className="lg:sticky lg:top-28 lg:h-fit">
-            <div className="overflow-hidden rounded-xl border border-[#DCE8E5] bg-white/70 shadow-[0_4px_18px_rgba(16,141,130,0.04)] backdrop-blur-[12px]">
-              {/* TABLE OF CONTENTS */}
-              <div className="px-3.5 pb-4 pt-3.5 sm:px-4">
-                <p className="text-[9px] font-bold leading-4 uppercase text-[#26344D]">
-                  Agreement index
-                </p>
-                <p className="text-[9px] font-semibold leading-4 text-[#26344D]">
-                  Select a clause to move directly to that part of the agreement
-                </p>
-
-                <nav
-                  aria-label="Terms and Conditions sections"
-                  className="mt-3"
-                >
-                  <div className="grid gap-0.5">
-                    {sections.map((section, index) => (
-                      <a
-                        href={`#${section.id}`}
-                        key={section.id}
-                        className="group relative flex min-h-[25px] items-center gap-2 px-1.5 py-1 text-[12px] leading-4 text-[#697892] transition-colors duration-200 hover:text-[#17233B]"
-                      >
-                        {/* BLUE ACTIVE SIDE LINE */}
-                        {index === 0 && (
-                          <span className="absolute -left-[16px] top-1/2 h-[14px] w-[2px] -translate-y-1/2 rounded-r-full bg-[#108D82]" />
-                        )}
-
-                        {/* NUMBER */}
-                        <span
-                          className={`flex size-[15px] shrink-0 items-center justify-center rounded-full text-[7px] font-bold ${
-                            index === 0
-                              ? "bg-[#108D82] text-white"
-                              : "bg-transparent text-[#77849A]"
-                          }`}
-                        >
-                          {String(index + 1).padStart(2, "0")}
-                        </span>
-
-                        {/* TITLE */}
-                        <span
-                          className={`${index === 0 ? "font-medium text-[#26344D]" : ""}`}
-                        >
-                          {section.title}
-                        </span>
-                      </a>
-                    ))}
-                  </div>
-                </nav>
-              </div>
-
-              {/* DIVIDER */}
-              <div className="mx-3.5 border-t border-[#EEF0F6]" />
-
-              {/* QUESTIONS */}
-              <div className="px-3.5 pb-3.5 pt-4 sm:px-4">
-                <div className="flex size-[22px] items-center justify-center rounded-full bg-[#EAF7F4] text-[#108D82]">
-                  <svg viewBox="0 0 24 24" fill="none" className="size-[11px]">
-                    <path
-                      d="M12 5.5a6.5 6.5 0 0 0-6.5 6.5c0 1.6.58 3.07 1.54 4.2L6 19l3.1-.8c.88.5 1.86.8 2.9.8a6.5 6.5 0 1 0 0-13.5Z"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M9.7 10.3a2.35 2.35 0 1 1 4.25 1.4c-.57.76-1.55 1.05-1.55 1.9"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                    <circle cx="12.4" cy="15.9" r=".7" fill="currentColor" />
-                  </svg>
-                </div>
-
-                <p className="text-xs text-black">
-                  Questions about this agreement?
-                </p>
-
-                <a
-                  className="mt-2 inline-block text-sm font-semibold text-black underline underline-offset-4 transition hover:opacity-60"
-                  href="mailto:hello@vozon.ai"
-                >
-                  hello@vozon.ai
-                </a>
-              </div>
-            </div>
-          </aside>
+        <div className="relative z-10 mx-auto grid w-full max-w-[1440px] gap-6 px-4 pb-12 pt-6 sm:px-6 sm:pt-8 lg:grid-cols-[270px_minmax(0,1fr)] lg:px-6 lg:pb-16 lg:pt-10 xl:px-4">
+          <TermsIndex sections={sections} />
 
           {/* =======================================================
               MAIN AGREEMENT CARD (Glassmorphic Container)
