@@ -10,6 +10,7 @@ import { customerReviews } from "@/config/customerReviews";
 
 import { GreenAudioWaveHero } from "@/components/sections/GreenAudioWaveHero";
 import { VoiceOperationsShowcase } from "@/components/sections/VoiceOperationsShowcase";
+import { AttractiveFaqSection } from "@/components/sections/AttractiveFaqSection";
 import styles from "./HomeDesignFour.module.css";
 import "./HomeDesignFourGrid.css";
 import "./HomeDesignFourHero.css";
@@ -77,14 +78,6 @@ const insights = [
   { title: "Conversation Trends", meta: "JANUARY 12, 2026  •", tone: "peach" },
 ] as const;
 
-const faqs = [
-  ["Can I test Vozon for free?", "Yes. You can create an account, configure an agent and experience the platform before choosing a production plan."],
-  ["How does voice AI work?", "Vozon combines speech recognition, language models, natural voice synthesis and your connected business tools in one realtime conversation."],
-  ["Which languages are supported?", "Vozon supports Indian and global languages, with voices and models chosen to suit each use case."],
-  ["What happens if a call needs a human?", "Vozon can transfer the conversation to the right team member with the caller's context and collected details intact."],
-  ["Can Vozon connect with our existing tools?", "Yes. Use native integrations, APIs and webhooks to connect CRMs, calendars, knowledge sources and internal workflows."],
-  ["Is Vozon built for enterprise?", "Yes. Enterprise controls include protected access, configurable data handling, auditability and flexible deployment options."],
-] as const;
 
 function Arrow() {
   return <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M4 10h11M11 6l4 4-4 4" /></svg>;
@@ -466,29 +459,29 @@ export function HomeDesignFour() {
         <section className={`${styles.logoStrip} home-design-four__logos`} aria-label="Companies using modern voice workflows">
           <div className="design-four-client-marquee-track">
             <div className="design-four-client-marquee-group">
-            <b className="design-four-client-logo is-deloitte" aria-label="Deloitte">Deloitte<span>.</span></b>
-            <b className="design-four-client-logo is-appsmith" aria-label="Appsmith">appsmith_</b>
-            <b className="design-four-client-logo is-vigilant" aria-label="Vigilant">Vigilant</b>
-            <b className="design-four-client-logo is-edison" aria-label="Edison">
-              <svg aria-hidden="true" viewBox="0 0 28 28"><rect x="1" y="2" width="22" height="6" rx="1" /><rect x="1" y="11" width="16" height="6" rx="1" /><rect x="1" y="20" width="22" height="6" rx="1" /></svg>
-              <em>ed.is.on</em>
-            </b>
-            <b className="design-four-client-logo is-kobe" aria-label="Kobe Creations">
-              <svg aria-hidden="true" viewBox="0 0 34 34"><path d="M17 3c5 3 7 7 5 12-2 4-6 5-10 3 3-2 4-5 3-8-1-2 0-5 2-7Z" /><path d="M30 19c-1 6-4 9-10 9-4 0-7-3-7-7 3 2 6 1 8-1 2-2 5-3 9-1Z" /><path d="M7 29c-4-4-5-9-2-13 2-4 6-5 10-3-3 2-4 5-3 8 1 3-1 6-5 8Z" /></svg>
-              <em>Kobe<br />Creations</em>
-            </b>
-            <b className="design-four-client-logo is-simplamo" aria-label="Simplamo">
-              <svg aria-hidden="true" viewBox="0 0 36 32"><circle cx="13" cy="12" r="9" /><circle cx="21" cy="18" r="9" /><path d="M4 25c7 5 18 5 27-1" /></svg>
-              <em>Simplamo<sup>®</sup></em>
-            </b>
-            <b className="design-four-client-logo is-soulpage" aria-label="Soulpage">
-              <svg aria-hidden="true" viewBox="0 0 24 28"><path d="M2 2h18v9H11v3h9v12H2v-9h9v-3H2V2Z" /></svg>
-              <em>SOULPAGE</em>
-            </b>
-            <b className="design-four-client-logo is-hubspot">HubSpot</b>
-            <b className="design-four-client-logo is-shopify">Shopify</b>
-            <b className="design-four-client-logo is-zendesk">zendesk</b>
-            <b className="design-four-client-logo is-digitalbot" aria-label="DigitalBot">DigitalBot</b>
+              <b className="design-four-client-logo is-deloitte" aria-label="Deloitte">Deloitte<span>.</span></b>
+              <b className="design-four-client-logo is-appsmith" aria-label="Appsmith">appsmith_</b>
+              <b className="design-four-client-logo is-vigilant" aria-label="Vigilant">Vigilant</b>
+              <b className="design-four-client-logo is-edison" aria-label="Edison">
+                <svg aria-hidden="true" viewBox="0 0 28 28"><rect x="1" y="2" width="22" height="6" rx="1" /><rect x="1" y="11" width="16" height="6" rx="1" /><rect x="1" y="20" width="22" height="6" rx="1" /></svg>
+                <em>ed.is.on</em>
+              </b>
+              <b className="design-four-client-logo is-kobe" aria-label="Kobe Creations">
+                <svg aria-hidden="true" viewBox="0 0 34 34"><path d="M17 3c5 3 7 7 5 12-2 4-6 5-10 3 3-2 4-5 3-8-1-2 0-5 2-7Z" /><path d="M30 19c-1 6-4 9-10 9-4 0-7-3-7-7 3 2 6 1 8-1 2-2 5-3 9-1Z" /><path d="M7 29c-4-4-5-9-2-13 2-4 6-5 10-3-3 2-4 5-3 8 1 3-1 6-5 8Z" /></svg>
+                <em>Kobe<br />Creations</em>
+              </b>
+              <b className="design-four-client-logo is-simplamo" aria-label="Simplamo">
+                <svg aria-hidden="true" viewBox="0 0 36 32"><circle cx="13" cy="12" r="9" /><circle cx="21" cy="18" r="9" /><path d="M4 25c7 5 18 5 27-1" /></svg>
+                <em>Simplamo<sup>®</sup></em>
+              </b>
+              <b className="design-four-client-logo is-soulpage" aria-label="Soulpage">
+                <svg aria-hidden="true" viewBox="0 0 24 28"><path d="M2 2h18v9H11v3h9v12H2v-9h9v-3H2V2Z" /></svg>
+                <em>SOULPAGE</em>
+              </b>
+              <b className="design-four-client-logo is-hubspot">HubSpot</b>
+              <b className="design-four-client-logo is-shopify">Shopify</b>
+              <b className="design-four-client-logo is-zendesk">zendesk</b>
+              <b className="design-four-client-logo is-digitalbot" aria-label="DigitalBot">DigitalBot</b>
             </div>
             <div aria-hidden="true" className="design-four-client-marquee-group">
               <b className="design-four-client-logo is-deloitte">Deloitte<span>.</span></b>
@@ -642,7 +635,7 @@ export function HomeDesignFour() {
           </div>
           <div className="design-four-review-grid">
             {customerReviews.slice(0, 6).map((item) => (
-              <article key={item.name}><blockquote>{item.quote}</blockquote><footer><span>{item.name.slice(0,1)}</span><div><b>{item.name}</b><small>{item.role}</small></div><i>𝕏</i></footer></article>
+              <article key={item.name}><blockquote>{item.quote}</blockquote><footer><span>{item.name.slice(0, 1)}</span><div><b>{item.name}</b><small>{item.role}</small></div><i>𝕏</i></footer></article>
             ))}
           </div>
           <Link className="design-four-review-button" href="/reviews">View all Reviews</Link>
@@ -662,15 +655,12 @@ export function HomeDesignFour() {
           </div>
         </section>
 
-        <section className="design-four-support-section" id="faq">
+        <section className="design-four-support-section">
           <div className="design-four-security-row">
             <div><h2>Scale with security</h2><p>Built with the reliability, privacy, and controls modern businesses expect from their voice infrastructure.</p><div><Link href="/contact">Talk to Sales</Link><Link href="/resources/trust-center">View Security</Link></div></div>
             <div className="design-four-compliance" aria-label="Security and compliance certifications"><span><small>Information Security Management</small><b>ISO</b><i>27001</i></span><span><small>HIPAA Compliance</small><b>⚕</b><i>HIPAA</i></span><span><small>European Union</small><b>GDPR</b><i>READY</i></span><span><small>AICPA</small><b>SOC 2</b><i>TYPE II</i></span></div>
           </div>
-          <div className="design-four-faq-row">
-            <div className="design-four-faq-intro"><span>Common questions</span><h2>Frequently<br />asked <strong>questions</strong></h2><aside><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 13v-2a8 8 0 0 1 16 0v2" /><path d="M6 12H5a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h1v-6ZM18 12h1a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-1v-6Z" /><path d="M19 18v.25A2.75 2.75 0 0 1 16.25 21H14" /><circle cx="13" cy="21" r="1" /></svg></i><b>Can’t find your answer?</b><Link href="/contact">Contact us</Link></aside></div>
-            <div className="design-four-faq-list">{faqs.map(([question, answer], index) => <details key={question} open={index === 1}><summary>{question}<span>+</span></summary><p>{answer}</p></details>)}</div>
-          </div>
+          <AttractiveFaqSection />
         </section>
 
         <section className="design-four-integrations-section" id="integrations">
@@ -684,7 +674,7 @@ export function HomeDesignFour() {
             <span aria-label="Salesforce" className="salesforce"><svg aria-hidden="true" viewBox="0 0 110 78"><path d="M44 16a22 22 0 0 1 35 7 18 18 0 1 1 7 35H27a20 20 0 1 1 6-39 23 23 0 0 1 11-3Z" /><text x="20" y="48">salesforce</text></svg></span>
             <span aria-label="Instagram" className="instagram"><svg aria-hidden="true" viewBox="0 0 64 64"><defs><radialGradient id="design-four-instagram" cx="25%" cy="100%" r="115%"><stop offset="0" stopColor="#ffd600" /><stop offset=".35" stopColor="#ff7a00" /><stop offset=".62" stopColor="#ff0169" /><stop offset="1" stopColor="#7a37c9" /></radialGradient></defs><rect width="64" height="64" rx="16" fill="url(#design-four-instagram)" /><rect x="14" y="14" width="36" height="36" rx="11" fill="none" stroke="#fff" strokeWidth="4" /><circle cx="32" cy="32" r="9" fill="none" stroke="#fff" strokeWidth="4" /><circle cx="45" cy="19" r="3" fill="#fff" /></svg></span>
             <span aria-label="WhatsApp" className="whatsapp"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" /></svg></span>
-            <span className="hubspot"><svg aria-hidden="true" viewBox="0 0 64 64"><path d="M31 21v14m0 0 12 7M31 35 20 46M39 16l4-5" fill="none" stroke="#f45112" strokeWidth="6" strokeLinecap="round"/><circle cx="31" cy="18" r="6" fill="#f45112"/><circle cx="47" cy="45" r="7" fill="#f45112"/><circle cx="17" cy="49" r="7" fill="#f45112"/><circle cx="46" cy="8" r="4" fill="#f45112"/></svg></span>
+            <span className="hubspot"><svg aria-hidden="true" viewBox="0 0 64 64"><path d="M31 21v14m0 0 12 7M31 35 20 46M39 16l4-5" fill="none" stroke="#f45112" strokeWidth="6" strokeLinecap="round" /><circle cx="31" cy="18" r="6" fill="#f45112" /><circle cx="47" cy="45" r="7" fill="#f45112" /><circle cx="17" cy="49" r="7" fill="#f45112" /><circle cx="46" cy="8" r="4" fill="#f45112" /></svg></span>
             <span aria-label="Slack" className="slack"><svg aria-hidden="true" viewBox="0 0 64 64"><rect x="27" y="5" width="11" height="25" rx="5.5" fill="#2eb67d" /><rect x="34" y="27" width="25" height="11" rx="5.5" fill="#ecb22e" /><rect x="26" y="34" width="11" height="25" rx="5.5" fill="#e01e5a" /><rect x="5" y="26" width="25" height="11" rx="5.5" fill="#36c5f0" /><circle cx="21" cy="21" r="5.5" fill="#36c5f0" /><circle cx="43" cy="21" r="5.5" fill="#2eb67d" /><circle cx="43" cy="43" r="5.5" fill="#ecb22e" /><circle cx="21" cy="43" r="5.5" fill="#e01e5a" /></svg></span>
           </div>
           <div className="design-four-integration-arrow" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 5v20M8 17l8 8 8-8" /></svg></div>
