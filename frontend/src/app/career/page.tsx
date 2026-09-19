@@ -463,7 +463,7 @@ export default function CareerPage() {
 
               <div>
 
-                <div className="flex items-center gap-3">
+                <div className="career-principles-kicker flex items-center gap-3">
                   <span className="h-px w-8 bg-[#118778]" />
 
                   <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#118778]">
@@ -1213,19 +1213,16 @@ export default function CareerPage() {
 
           #career-page > section {
             position: relative;
-            padding-top: clamp(3.5rem, 6vw, 5.5rem);
-            padding-bottom: clamp(3.5rem, 6vw, 5.5rem);
+            padding-top: clamp(2rem, 3vw, 3.25rem);
+            padding-bottom: clamp(2rem, 3vw, 3.25rem);
             border-top: 1px solid #e6efec;
           }
 
           #career-page > section:first-child {
             border-top: 0;
-            padding-top: clamp(7rem, 12vw, 10rem);
-            padding-bottom: clamp(3.75rem, 7vw, 6rem);
-            background:
-              radial-gradient(circle at 14% 24%, rgb(17 135 120 / .12), transparent 26%),
-              radial-gradient(circle at 88% 10%, rgb(80 180 165 / .13), transparent 24%),
-              linear-gradient(180deg, #ffffff 0%, #f3fbf8 100%);
+            padding-top: clamp(5.5rem, 7vw, 6.5rem);
+            padding-bottom: clamp(2.25rem, 3vw, 3.25rem);
+            background: #ffffff;
           }
 
           #career-page > section:nth-of-type(3),
@@ -1303,9 +1300,12 @@ export default function CareerPage() {
             color: #38665d;
           }
 
-          #career-page .career-principles,
+          #career-page .career-principles {
+            background: #000000;
+          }
+
           #career-page .career-qualities-process {
-            background: #102b26;
+            background: #000000;
           }
 
           #career-page :is(.career-principles, .career-qualities-process) :is(h2, h3, p, span) {
@@ -1325,6 +1325,11 @@ export default function CareerPage() {
           #career-page :is(.career-principles, .career-qualities-process) [class*="text-[#118778]"] {
             color: #76d5c3;
             -webkit-text-fill-color: #76d5c3;
+          }
+
+          #career-page .career-principles-kicker p {
+            color: #ffffff;
+            -webkit-text-fill-color: #ffffff;
           }
 
           #career-page :is(.career-principles-list, .career-process-list) {
@@ -1390,12 +1395,12 @@ export default function CareerPage() {
 
           @media (max-width: 640px) {
             #career-page > section {
-              padding-top: 3.25rem;
-              padding-bottom: 3.25rem;
+              padding-top: 2rem;
+              padding-bottom: 2rem;
             }
 
             #career-page > section:first-child {
-              padding-top: 7rem;
+              padding-top: 5.5rem;
             }
           }
         `}</style>
