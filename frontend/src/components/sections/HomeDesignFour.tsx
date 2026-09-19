@@ -17,18 +17,18 @@ import "./HomeDesignFourSections.css";
 import "./HomeDesignFourEnding.css";
 
 const voiceLanguages = [
-  { label: "English", language: "English", voice: "Vozon", detail: "Live voice" },
-  { label: "हिन्दी", language: "Hindi", voice: "Vozon", detail: "Live voice" },
-  { label: "ગુજરાતી", language: "Gujarati", voice: "Vozon", detail: "Live voice" },
-  { label: "ಕನ್ನಡ", language: "Kannada", voice: "Vozon", detail: "Live voice" },
-  { label: "বাংলা", language: "Bengali", voice: "Vozon", detail: "Live voice" },
-  { label: "मराठी", language: "Marathi", voice: "Vozon", detail: "Live voice" },
-  { label: "தமிழ்", language: "Tamil", voice: "Vozon", detail: "Live voice" },
-  { label: "తెలుగు", language: "Telugu", voice: "Vozon", detail: "Live voice" },
-  { label: "മലയാളം", language: "Malayalam", voice: "Vozon", detail: "Live voice" },
-  { label: "ਪੰਜਾਬੀ", language: "Punjabi", voice: "Vozon", detail: "Live voice" },
-  { label: "ଓଡ଼ିଆ", language: "Odia", voice: "Vozon", detail: "Live voice" },
-  { label: "অসমীয়া", language: "Assamese", voice: "Vozon", detail: "Live voice" },
+  { label: "English", language: "English", voice: "English", detail: "Global voice" },
+  { label: "हिन्दी", language: "Hindi", voice: "Hindi", detail: "हिन्दी voice" },
+  { label: "ગુજરાતી", language: "Gujarati", voice: "Gujarati", detail: "ગુજરાતી voice" },
+  { label: "ಕನ್ನಡ", language: "Kannada", voice: "Kannada", detail: "ಕನ್ನಡ voice" },
+  { label: "বাংলা", language: "Bengali", voice: "Bengali", detail: "বাংলা voice" },
+  { label: "मराठी", language: "Marathi", voice: "Marathi", detail: "मराठी voice" },
+  { label: "தமிழ்", language: "Tamil", voice: "Tamil", detail: "தமிழ் voice" },
+  { label: "తెలుగు", language: "Telugu", voice: "Telugu", detail: "తెలుగు voice" },
+  { label: "മലയാളം", language: "Malayalam", voice: "Malayalam", detail: "മലയാളം voice" },
+  { label: "ਪੰਜਾਬੀ", language: "Punjabi", voice: "Punjabi", detail: "ਪੰਜਾਬੀ voice" },
+  { label: "ଓଡ଼ିଆ", language: "Odia", voice: "Odia", detail: "ଓଡ଼ିଆ voice" },
+  { label: "অসমীয়া", language: "Assamese", voice: "Assamese", detail: "অসমীয়া voice" },
 ] as const;
 
 const steps = [
@@ -415,6 +415,27 @@ export function HomeDesignFour() {
   const previousVoice = voiceLanguages[(activeLanguage - 1 + voiceLanguages.length) % voiceLanguages.length];
   const nextVoice = voiceLanguages[(activeLanguage + 1) % voiceLanguages.length];
 
+  const isEngaged = voiceCall.active || voiceCall.busy;
+
+  const handleSelectLanguage = (index: number) => {
+    setActiveLanguage(index);
+    const target = voiceLanguages[index];
+    if (voiceCall.active || voiceCall.busy) {
+      if (voiceCall.speakingLanguage === target.language && voiceCall.active) {
+        return;
+      }
+      void voiceCall.start(target.language);
+    }
+  };
+
+  const handleStepLanguage = (newIndex: number) => {
+    setActiveLanguage(newIndex);
+    const target = voiceLanguages[newIndex];
+    if (voiceCall.active || voiceCall.busy) {
+      void voiceCall.start(target.language);
+    }
+  };
+
   return (
     <div className={`${styles.page} home-design-four`}>
       <SiteHeader />
@@ -499,7 +520,19 @@ export function HomeDesignFour() {
 
         <section className="design-four-voice-section" id="platform">
           <div className="design-four-language-tabs" role="tablist" aria-label="Voice languages">
-            {voiceLanguages.map((language, index) => <button aria-selected={activeLanguage === index} className={activeLanguage === index ? "is-active" : ""} key={language.label} onClick={() => setActiveLanguage(index)} role="tab" type="button">{language.label}</button>)}
+            {voiceLanguages.map((language, index) => (
+              <button
+                aria-selected={activeLanguage === index}
+                className={activeLanguage === index ? "is-active" : ""}
+                key={language.label}
+                onClick={() => handleSelectLanguage(index)}
+                role="tab"
+                type="button"
+                title={`Click to speak with AI agent in ${language.language}`}
+              >
+                {language.label}
+              </button>
+            ))}
             <Link href="/services/multilingual-speech">Explore languages</Link>
           </div>
           <div className="design-four-voice-layout">
@@ -510,22 +543,28 @@ export function HomeDesignFour() {
             </div>
             <div className="design-four-voice-player">
               <button
-                aria-label={voiceCall.active ? "End live voice conversation" : `Start live voice conversation in ${selectedVoice.language}`}
-                className={`design-four-voice-disc${voiceCall.active ? " is-playing" : ""}`}
-                disabled={!voiceCall.ready || voiceCall.busy}
-                onClick={() => voiceCall.active ? voiceCall.disconnect() : void voiceCall.start(selectedVoice.language)}
+                aria-label={isEngaged ? `Stop live voice conversation in ${selectedVoice.language}` : `Start live voice conversation in ${selectedVoice.language}`}
+                className={`design-four-voice-disc${isEngaged ? " is-playing" : ""}`}
+                disabled={!voiceCall.ready}
+                onClick={() => isEngaged ? voiceCall.disconnect() : void voiceCall.start(selectedVoice.language)}
                 type="button"
-              ><span>{voiceCall.active ? "Ⅱ" : "▶"}</span></button>
+              ><span>{isEngaged ? "■" : "▶"}</span></button>
               <div className="design-four-voice-selector">
                 <div className="design-four-voice-neighbor" aria-hidden="true"><b>{previousVoice.voice}</b><span>{previousVoice.detail}</span></div>
-                <button aria-label="Previous voice" onClick={() => setActiveLanguage((activeLanguage - 1 + voiceLanguages.length) % voiceLanguages.length)} type="button">‹</button>
+                <button aria-label="Previous voice" onClick={() => handleStepLanguage((activeLanguage - 1 + voiceLanguages.length) % voiceLanguages.length)} type="button">‹</button>
                 <div className="design-four-voice-current"><b>{selectedVoice.voice}</b><span>{selectedVoice.detail}</span></div>
-                <button aria-label="Next voice" onClick={() => setActiveLanguage((activeLanguage + 1) % voiceLanguages.length)} type="button">›</button>
+                <button aria-label="Next voice" onClick={() => handleStepLanguage((activeLanguage + 1) % voiceLanguages.length)} type="button">›</button>
                 <div className="design-four-voice-neighbor" aria-hidden="true"><b>{nextVoice.voice}</b><span>{nextVoice.detail}</span></div>
               </div>
               <div className="mt-4 flex items-center justify-center gap-2 text-xs font-semibold text-[#108D82]">
-                <span className={`inline-block size-2 rounded-full ${voiceCall.active ? "bg-emerald-500 animate-ping" : voiceCall.ready ? "bg-[#108D82]" : "bg-amber-400"}`} />
-                <span>{voiceCall.active ? `Live call active • Speaking ${selectedVoice.language}` : voiceCall.status}</span>
+                <span className={`inline-block size-2 rounded-full ${voiceCall.active ? "bg-emerald-500 animate-ping" : voiceCall.busy ? "bg-emerald-400 animate-pulse" : voiceCall.ready ? "bg-[#108D82]" : "bg-zinc-400"}`} />
+                <span>
+                  {voiceCall.active
+                    ? `Live call active • Speaking ${voiceCall.speakingLanguage || selectedVoice.language}`
+                    : voiceCall.busy
+                    ? `Connecting in ${selectedVoice.language}… (Select ■ to stop)`
+                    : voiceCall.status}
+                </span>
               </div>
               {voiceCall.error ? <p role="alert" className="mt-2 text-xs text-red-700">{voiceCall.error}</p> : null}
             </div>
@@ -556,7 +595,7 @@ export function HomeDesignFour() {
                   index={index}
                   onVoicePreview={() => {
                     document.getElementById("platform")?.scrollIntoView({ behavior: "smooth" });
-                    if (voiceCall.ready && !voiceCall.active) void voiceCall.start(selectedVoice.language);
+                    if (voiceCall.ready && !voiceCall.active && !voiceCall.busy) void voiceCall.start(selectedVoice.language);
                   }}
                   onExploreLanguages={() => document.getElementById("platform")?.scrollIntoView({ behavior: "smooth" })}
                 />
