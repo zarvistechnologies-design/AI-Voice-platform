@@ -30,6 +30,7 @@ import {
 import {
   publicVoiceMessage,
   voiceApi,
+  type AgentAnalysisPlan,
   type AgentBehavior,
   type AgentBusinessHours,
   type AgentCallSettings,
@@ -112,6 +113,7 @@ type VoiceAgent = {
   endOfCallWebhook: string;
   googleCalendar: BackendAgent["googleCalendar"];
   googleSheets: BackendAgent["googleSheets"];
+  analysisPlan: AgentAnalysisPlan;
   widget: AgentWidget;
   version: number;
 };
@@ -251,6 +253,7 @@ const agents: VoiceAgent[] = [
       spreadsheetName: "",
       sheetName: "Sheet1",
     },
+    analysisPlan: { enabled: true, fields: [] },
     widget: defaultWidget,
     version: 1,
   },
@@ -3929,6 +3932,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   >("");
   const [showTestCall, setShowTestCall] = useState(false);
   const [promptExpanded, setPromptExpanded] = useState(false);
+  const [showAdvancedBuilder, setShowAdvancedBuilder] = useState(false);
   const [expandedToolKey, setExpandedToolKey] = useState("");
   const [showToolCreator, setShowToolCreator] = useState(false);
   const [openStackConfig, setOpenStackConfig] = useState<StackConfig | null>(
@@ -3949,6 +3953,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     createEmptyToolDraft(),
   );
   const [variableDraft, setVariableDraft] = useState("");
+  const [extractionFieldDraft, setExtractionFieldDraft] = useState("");
   const [previewingVoice, setPreviewingVoice] = useState("");
   const [testingToolKey, setTestingToolKey] = useState("");
   const [, setRuntimeRegions] = useState<Record<string, string>>({});
@@ -4647,6 +4652,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
             endOfCallWebhook: savingAgent.endOfCallWebhook,
             googleCalendar: savingAgent.googleCalendar,
             googleSheets: savingAgent.googleSheets,
+            analysisPlan: savingAgent.analysisPlan,
             widget: savingAgent.widget,
             ...changes,
           },
@@ -5462,6 +5468,23 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     setVariableDraft("");
   }
 
+  function addExtractionField() {
+    const label = extractionFieldDraft.trim().slice(0, 80);
+    const normalizedKey = label.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "").slice(0, 70);
+    const baseKey = normalizedKey ? (/^[a-z]/.test(normalizedKey) ? normalizedKey : `field_${normalizedKey}`) : "custom_field";
+    let key = baseKey;
+    let suffix = 2;
+    while (selectedAgent.analysisPlan.fields.some((field) => field.key === key)) key = `${baseKey}_${suffix++}`.slice(0, 80);
+    if (!label) return;
+    updateSelectedAgent({
+      analysisPlan: {
+        enabled: true,
+        fields: [...selectedAgent.analysisPlan.fields, { key, label, type: "string" as const, description: `Extract ${label.toLowerCase()} from the completed call.` }].slice(0, 20),
+      },
+    });
+    setExtractionFieldDraft("");
+  }
+
   function copyVariableSnippet(snippet: string) {
     if (!navigator.clipboard) {
       setVariableDraft(snippet.replace(/[{}]/g, ""));
@@ -5805,11 +5828,28 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                   <div className="grid gap-4">
                     {selectedAgent.guidedSetup?.templateId && selectedAgent.status === "Draft" ? (
                       <div className="rounded-xl border border-[#c5ded5] bg-[#f1f9f6] p-4 text-sm text-[#29423b]">
-                        <strong className="block">Finish setting up this guided agent</strong>
-                        <p className="mt-1 text-xs leading-5">Review its generated prompt and voice. {selectedAgent.guidedSetup.integrationMode === "native" ? "Vozon has added the managed actions for this workflow and stores their results in your workspace." : selectedAgent.guidedSetup.integrationMode === "digitalbot" ? "Connect DigitalBot in Integrations, then verify its tools here." : selectedAgent.guidedSetup.integrationMode === "external" ? "Add and test your booking or CRM API tools here." : "Calls will record extracted outcomes. Configure a notification or webhook if staff need the details sent elsewhere."} Test a successful action and a failed action before publishing.</p>
+                        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                          <div><strong className="block">Launch checklist</strong><p className="mt-1 text-xs leading-5">Complete these steps, then enable live calls. Advanced model and webhook settings are optional.</p></div>
+                          <span className="w-fit rounded-full bg-white px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[#0e6f62]">Guided setup</span>
+                        </div>
+                        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                          {[
+                            { label: "Automation tools", ready: selectedAgent.guidedSetup.integrationMode === "collect" || selectedAgent.tools.some((tool) => tool.enabled !== false), detail: selectedAgent.guidedSetup.integrationMode === "native" ? `${selectedAgent.tools.filter((tool) => tool.managedBy === "vozon" && tool.enabled !== false).length} Vozon tools active` : selectedAgent.guidedSetup.integrationMode === "collect" ? "Collect-only mode ready" : "Connect and test a business tool" },
+                            { label: "Result fields", ready: selectedAgent.analysisPlan.enabled && selectedAgent.analysisPlan.fields.length > 0, detail: `${selectedAgent.analysisPlan.fields.length} fields configured` },
+                            { label: "Test call", ready: recentCalls.length > 0, detail: recentCalls.length > 0 ? "A call has been recorded" : "Run one successful and one failed test" },
+                            { label: "Phone route", ready: selectedAgent.phone !== "Not assigned", detail: selectedAgent.phone === "Not assigned" ? "Assign a phone number" : "Number assigned; enable live calls after testing" },
+                          ].map((item) => (
+                            <div className="flex items-start gap-2 rounded-lg border border-[#c5ded5] bg-white p-3" key={item.label}>
+                              <span className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-full text-[10px] font-bold ${item.ready ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>{item.ready ? "✓" : "!"}</span>
+                              <span><strong className="block text-xs text-[#14231f]">{item.label}</strong><span className="mt-0.5 block text-xs leading-5 text-[#71817d]">{item.detail}</span></span>
+                            </div>
+                          ))}
+                        </div>
                         <div className="mt-3 flex flex-wrap gap-3">
-                          <button className="text-xs font-bold text-[#0e6f62] hover:underline" type="button" onClick={() => setActiveTab("tools")}>Configure tools →</button>
-                          {selectedAgent.guidedSetup.integrationMode === "digitalbot" ? <Link className="text-xs font-bold text-[#0e6f62] hover:underline" href="/dashboard/integrations">Open integrations →</Link> : null}
+                          <button className="text-xs font-bold text-[#0e6f62] hover:underline" type="button" onClick={() => setActiveTab("tools")}>Review tools and results →</button>
+                          <button className="text-xs font-bold text-[#0e6f62] hover:underline" type="button" onClick={() => setShowTestCall(true)}>Make a test call →</button>
+                          <button className="text-xs font-bold text-[#0e6f62] hover:underline" type="button" onClick={() => setActiveTab("calls")}>Phone and go live →</button>
+                          {selectedAgent.guidedSetup.integrationMode === "digitalbot" ? <Link className="text-xs font-bold text-[#0e6f62] hover:underline" href="/dashboard/integrations">Connect DigitalBot →</Link> : null}
                         </div>
                       </div>
                     ) : null}
@@ -5826,7 +5866,14 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                       />
                     </div>
 
-                    <section className="agent-stack-panel overflow-hidden bg-white">
+                    {selectedAgent.guidedSetup?.templateId ? (
+                      <button className="flex min-h-11 w-full items-center justify-between rounded-xl border border-[#dbe4e1] bg-[#f8fafc] px-4 text-left" type="button" aria-expanded={showAdvancedBuilder} onClick={() => setShowAdvancedBuilder((current) => !current)}>
+                        <span><strong className="block text-sm text-[#14231f]">Advanced voice settings</strong><span className="mt-0.5 block text-xs text-[#71817d]">Models, providers, speed, concurrency, and audio tuning</span></span>
+                        <span className="text-sm font-bold text-[#0e6f62]">{showAdvancedBuilder ? "Hide" : "Show"}</span>
+                      </button>
+                    ) : null}
+
+                    {!selectedAgent.guidedSetup?.templateId || showAdvancedBuilder ? <section className="agent-stack-panel overflow-hidden bg-white">
                       <div className="flex flex-col gap-2 px-1 py-3.5 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                           <h3 className="app-section-title m-0">
@@ -5887,7 +5934,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                           </div>
                         ))}
                       </div>
-                    </section>
+                    </section> : null}
 
                     {promptExpanded ? (
                       <button
@@ -6010,6 +6057,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                       />
                     ) : null}
 
+                    {!selectedAgent.guidedSetup?.templateId || showAdvancedBuilder ? <>
                     <div className="grid min-w-0 gap-4 lg:grid-cols-[minmax(0,1fr)_240px]">
                       <div className="min-w-0 rounded-lg bg-[#f8fafc] px-4 py-3">
                         <span className="app-label block">Active runtime</span>
@@ -6123,6 +6171,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                         />
                       </div>
                     </section>
+                    </> : null}
                   </div>
                 ) : null}
 
@@ -6410,6 +6459,36 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                     && !selectedAgent.googleSheets.enabled ? (
                       <NativeWorkflowResultsPanel agentId={selectedAgent.id} />
                     ) : null}
+                    <section className="overflow-hidden rounded-xl border border-[#dbe4e1] bg-white">
+                      <div className="flex flex-col gap-2 border-b border-[#edf0f4] px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                          <h3 className="app-section-title m-0">Call result fields</h3>
+                          <span className="app-caption">Choose the information extracted after every completed call.</span>
+                        </div>
+                        <label className="app-label flex items-center gap-2 rounded-lg border border-[#dbe4e1] bg-[#fafcfb] px-3 py-2">
+                          <input className="size-4 accent-[#118778]" type="checkbox" checked={selectedAgent.analysisPlan.enabled} onChange={(event) => updateSelectedAgent({ analysisPlan: { ...selectedAgent.analysisPlan, enabled: event.target.checked } })} />
+                          Extract results
+                        </label>
+                      </div>
+                      <div className="grid gap-3 p-4">
+                        <div className="flex flex-wrap gap-2">
+                          {selectedAgent.analysisPlan.fields.map((field) => {
+                            const isCore = ["outcome", "caller_name", "next_step"].includes(field.key);
+                            return (
+                              <span className="inline-flex min-h-9 items-center gap-2 rounded-full border border-[#c5ded5] bg-[#f1f9f6] px-3 text-xs font-semibold text-[#29423b]" key={field.key} title={field.description}>
+                                {field.label}
+                                {isCore ? <span className="text-[9px] uppercase tracking-wide text-[#0e6f62]">Core</span> : <button className="text-base leading-none text-[#71817d] hover:text-rose-600" type="button" aria-label={`Remove ${field.label}`} onClick={() => updateSelectedAgent({ analysisPlan: { ...selectedAgent.analysisPlan, fields: selectedAgent.analysisPlan.fields.filter((item) => item.key !== field.key) } })}>×</button>}
+                              </span>
+                            );
+                          })}
+                        </div>
+                        <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_120px]">
+                          <input className="app-control-text min-h-10 rounded-lg border border-[#dbe4e1] bg-white px-3 outline-none transition focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10" value={extractionFieldDraft} maxLength={80} placeholder="Example: Preferred location" onChange={(event) => setExtractionFieldDraft(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); addExtractionField(); } }} />
+                          <button className="app-button-text rounded-lg border border-[#b8c8c3] bg-white px-3 text-[#0e6f62] disabled:opacity-50" type="button" disabled={!extractionFieldDraft.trim() || selectedAgent.analysisPlan.fields.length >= 20} onClick={addExtractionField}>Add field</button>
+                        </div>
+                        <span className="app-caption">These values appear in call details, API responses, and connected Google Sheets.</span>
+                      </div>
+                    </section>
                     <section className="overflow-hidden rounded-xl border border-[#dbe4e1] bg-white">
                       <div className="flex flex-col gap-3 border-b border-[#edf0f4] px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between">
                         <div>
@@ -8345,6 +8424,7 @@ function mapBackendAgent(agent: BackendAgent): VoiceAgent {
       spreadsheetName: "",
       sheetName: "Sheet1",
     },
+    analysisPlan: agent.analysisPlan ?? { enabled: true, fields: [] },
     widget: { ...defaultWidget, ...agent.widget },
     version: agent.version ?? 1,
   };

@@ -195,7 +195,7 @@ export const productServiceExperiences: Record<string, ProductServiceExperience>
     demo: {
       status: "Language detected",
       caller: "à¤•à¥à¤¯à¤¾ à¤®à¥ˆà¤‚ à¤…à¤ªà¤¨à¥€ à¤¡à¤¿à¤²à¥€à¤µà¤°à¥€ à¤•à¤¾ à¤¸à¤®à¤¯ à¤¬à¤¦à¤² à¤¸à¤•à¤¤à¤¾ à¤¹à¥‚à¤?",
-      agent: "à¤¹à¤¾à¤à¥¤ à¤®à¥ˆà¤‚ à¤‰à¤ªà¤²à¤¬à¥à¤§ à¤¸à¤®à¤¯ à¤¦à¥‡à¤– à¤°à¤¹à¥€ à¤¹à¥‚à¤â€”à¤†à¤ª à¤•à¤¿à¤¸ à¤¸à¤®à¤¯ à¤•à¥‹ à¤ªà¥à¤°à¤¾à¤¥à¤®à¤¿à¤•à¤¤à¤¾ à¤¦à¥‡à¤‚à¤—à¥‡?",
+      agent: "हाँ। मैं उपलब्ध समय देख रही हूँ—आप किस समय को प्राथमिकता देंगे?",
       action: "Hindi workflow selected",
     },
     capabilities: [

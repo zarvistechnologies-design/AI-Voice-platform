@@ -7,11 +7,11 @@ import { voiceApi, type AgentTemplate, type GuidedAgentInput, type GuidedAgentPr
 type Step = "choose" | "details" | "review";
 type Props = { onClose: () => void; onCreated: (agentId: string) => void };
 
-const integrationChoices: { mode: GuidedAgentInput["mode"]; title: string; detail: string }[] = [
-  { mode: "native", title: "Vozon managed workflow", detail: "The template's built-in action tools are added automatically and results are stored in Vozon with API access." },
-  { mode: "collect", title: "Collect details", detail: "Start with call outcomes. Configure staff notifications or a webhook later." },
-  { mode: "external", title: "My existing software", detail: "Create a draft, then connect API or webhook tools in the agent's Tools tab." },
-  { mode: "digitalbot", title: "DigitalBot", detail: "Create a draft, then connect DigitalBot to attach its available tools." },
+const integrationChoices: { mode: GuidedAgentInput["mode"]; title: string; detail: string; advanced?: boolean; recommended?: boolean }[] = [
+  { mode: "native", title: "Use Vozon automation", detail: "Add the correct action tools automatically, complete supported actions, and keep API-accessible records.", recommended: true },
+  { mode: "collect", title: "Collect details for my staff", detail: "Capture the request without confirming a booking or business action." },
+  { mode: "external", title: "Connect my existing software", detail: "Create the agent now, then connect your booking system, CRM, or webhook before publishing." },
+  { mode: "digitalbot", title: "Use DigitalBot tools", detail: "Create the agent now, then attach tools from an existing DigitalBot workspace.", advanced: true },
 ];
 
 const fieldClass = "min-h-11 w-full rounded-lg border border-[#d5e2dd] bg-white px-3 text-sm text-[#14231f] outline-none transition focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10";
@@ -77,6 +77,82 @@ function initialAnswers(template: AgentTemplate) {
 
 type GuidedQuestion = AgentTemplate["questions"][number];
 
+function answerItems(value: string) {
+  return value.split(/\s*;\s*/).map((item) => item.trim()).filter(Boolean);
+}
+
+function StructuredListField({
+  question,
+  value,
+  onChange,
+}: {
+  question: GuidedQuestion;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  const [draft, setDraft] = useState("");
+  const items = answerItems(value);
+  const isHandoff = question.control === "handoff";
+
+  function update(itemsToSave: string[]) {
+    onChange([...new Set(itemsToSave.map((item) => item.trim()).filter(Boolean))].join("; ").slice(0, 300));
+  }
+
+  function addDraft() {
+    const next = draft.trim().replace(/[;\r\n]+/g, " ");
+    if (!next) return;
+    update([...items, next]);
+    setDraft("");
+  }
+
+  return (
+    <fieldset className="grid gap-3 rounded-xl border border-[#dce7e3] bg-[#fbfdfc] p-4 sm:col-span-2">
+      <legend className="px-1 text-xs font-semibold text-[#52645f]">
+        {question.label}{question.required ? " *" : ""}
+      </legend>
+      {question.options?.length ? (
+        <div className="grid gap-2 sm:grid-cols-2">
+          {question.options.map((option) => {
+            const selected = items.includes(option);
+            return (
+              <label className={`flex cursor-pointer items-start gap-2 rounded-lg border px-3 py-2.5 text-xs leading-5 ${selected ? "border-[#118778] bg-[#e7f5f0] text-[#0e6f62]" : "border-[#d5e2dd] bg-white text-[#52645f]"}`} key={option}>
+                <input className="mt-0.5 accent-[#118778]" type="checkbox" checked={selected} onChange={() => update(selected ? items.filter((item) => item !== option) : [...items, option])} />
+                <span>{option}</span>
+              </label>
+            );
+          })}
+        </div>
+      ) : null}
+      {items.filter((item) => !question.options?.includes(item)).length ? (
+        <div className="flex flex-wrap gap-2">
+          {items.filter((item) => !question.options?.includes(item)).map((item) => (
+            <button className="rounded-full border border-[#b8c8c3] bg-white px-3 py-1.5 text-left text-xs font-medium text-[#29423b]" key={item} type="button" title="Remove" onClick={() => update(items.filter((current) => current !== item))}>
+              {item} <span aria-hidden="true">×</span>
+            </button>
+          ))}
+        </div>
+      ) : null}
+      <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_100px]">
+        <input
+          className={fieldClass}
+          maxLength={140}
+          placeholder={isHandoff ? "Add another handoff reason" : "Add an item"}
+          value={draft}
+          onChange={(event) => setDraft(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              addDraft();
+            }
+          }}
+        />
+        <button className="rounded-lg border border-[#b8c8c3] bg-white px-3 text-sm font-semibold text-[#0e6f62] disabled:opacity-40" type="button" disabled={!draft.trim() || value.length >= 300} onClick={addDraft}>Add</button>
+      </div>
+      <span className="text-xs font-normal leading-5 text-[#8a9894]">{question.hint}</span>
+    </fieldset>
+  );
+}
+
 function QuestionField({
   question,
   value,
@@ -93,6 +169,10 @@ function QuestionField({
   const inputId = `guided-${question.id}`;
   const hint = question.hint ? <span className="font-normal leading-4 text-[#8a9894]">{question.hint}</span> : null;
   const label = <span>{question.label}{question.required ? " *" : ""}</span>;
+
+  if (question.control === "list" || question.control === "handoff") {
+    return <StructuredListField question={question} value={value} onChange={onChange} />;
+  }
 
   if (question.control === "business-hours") {
     const changeHours = (next: HoursDraft) => {
@@ -171,12 +251,13 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
   const [selectedId, setSelectedId] = useState("");
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [hours, setHours] = useState<HoursDraft>(defaultHours);
-  const [mode, setMode] = useState<GuidedAgentInput["mode"]>("collect");
+  const [mode, setMode] = useState<GuidedAgentInput["mode"]>("native");
   const [language, setLanguage] = useState("English");
   const [name, setName] = useState("");
   const [prompt, setPrompt] = useState("");
   const [preview, setPreview] = useState<GuidedAgentPreview | null>(null);
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [showIntegrationAdvanced, setShowIntegrationAdvanced] = useState(false);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -201,6 +282,7 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
     setPrompt("");
     setError("");
     setMode("native");
+    setShowIntegrationAdvanced(false);
     setStep("details");
   }
 
@@ -211,6 +293,11 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
   async function review(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!selected) return;
+    const missing = selected.questions.find((question) => question.required && !answers[question.id]?.trim());
+    if (missing) {
+      setError(`${missing.label} is required.`);
+      return;
+    }
     if (selected.questions.some((question) => question.control === "business-hours")
       && (!hours.days.length || (!hours.alwaysOpen && !hours.closesNextDay && hours.end <= hours.start))) {
       setError(!hours.days.length ? "Select at least one opening day." : "Closing time must be after opening time, or mark it as next day.");
@@ -271,6 +358,8 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
     }
   }
 
+  const stepNumber = step === "choose" ? 1 : step === "details" ? 2 : 3;
+
   return (
     <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-[#14231f]/40 p-3 backdrop-blur-[6px] sm:p-6" role="dialog" aria-modal="true" aria-labelledby="guided-agent-title">
       <div className="flex max-h-[calc(100dvh-1.5rem)] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-[#dfe7e4] bg-white shadow-[0_28px_80px_rgba(34,38,74,0.24)]">
@@ -278,9 +367,16 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
           <div>
             <p className="m-0 text-[11px] font-bold uppercase tracking-[0.15em] text-[#118778]">Guided agent setup</p>
             <h2 className="mt-1 text-xl font-bold text-[#14231f]" id="guided-agent-title">
-              {step === "choose" ? "What should your agent do?" : step === "details" ? selected?.name : "Review your agent"}
+              {step === "choose" ? "What should your agent do?" : step === "details" ? selected?.name ?? "Create a blank agent" : "Review your agent"}
             </h2>
-            <p className="mt-1 text-sm text-[#71817d]">Choose a workflow, answer a few questions, then review a focused prompt.</p>
+            <p className="mt-1 text-sm text-[#71817d]">Three short steps. Vozon configures the workflow for you.</p>
+            <div className="mt-3 flex items-center gap-2" aria-label={`Step ${stepNumber} of 3`}>
+              {["Choose", "Business setup", "Review"].map((label, index) => (
+                <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${index + 1 === stepNumber ? "bg-[#118778] text-white" : index + 1 < stepNumber ? "bg-[#e7f5f0] text-[#0e6f62]" : "bg-[#f2f5f4] text-[#8a9894]"}`} key={label}>
+                  {index + 1}. {label}
+                </span>
+              ))}
+            </div>
           </div>
           <button className="grid size-9 shrink-0 place-items-center rounded-lg border border-[#dfe7e4] text-xl text-[#52645f] hover:bg-[#f7f9f8]" type="button" aria-label="Close agent setup" disabled={busy} onClick={onClose}>×</button>
         </header>
@@ -336,14 +432,18 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
                   onHoursChange={setHours}
                 />)}
               </div>
-              <fieldset className="grid gap-2 border-0 p-0">
-                <legend className="mb-2 text-sm font-bold text-[#14231f]">Where should business results go?</legend>
-                {integrationChoices.map((choice) => (
+              <fieldset className="grid gap-2 rounded-xl border border-[#dce7e3] bg-[#fbfdfc] p-4">
+                <legend className="px-1 text-sm font-bold text-[#14231f]">How should this agent complete actions?</legend>
+                <p className="mb-1 text-xs leading-5 text-[#71817d]">Choose the automation method. Completed call results can also be sent to Google Sheets or read through the API after creation.</p>
+                {integrationChoices.filter((choice) => !choice.advanced || showIntegrationAdvanced || mode === choice.mode).map((choice) => (
                   <label className={`flex cursor-pointer items-start gap-3 rounded-lg border p-3 ${mode === choice.mode ? "border-[#118778] bg-[#f1f9f6]" : "border-[#dce7e3]"}`} key={choice.mode}>
                     <input className="mt-0.5 accent-[#118778]" type="radio" name="integration-mode" checked={mode === choice.mode} onChange={() => setMode(choice.mode)} />
-                    <span><strong className="block text-sm text-[#14231f]">{choice.title}</strong><span className="mt-0.5 block text-xs leading-5 text-[#71817d]">{choice.detail}</span></span>
+                    <span className="min-w-0"><span className="flex flex-wrap items-center gap-2"><strong className="block text-sm text-[#14231f]">{choice.title}</strong>{choice.recommended ? <span className="rounded-full bg-[#118778] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">Recommended</span> : null}</span><span className="mt-0.5 block text-xs leading-5 text-[#71817d]">{choice.detail}</span></span>
                   </label>
                 ))}
+                <button className="mt-1 w-fit text-xs font-semibold text-[#0e6f62] hover:underline" type="button" onClick={() => setShowIntegrationAdvanced((current) => !current)}>
+                  {showIntegrationAdvanced ? "Hide advanced integrations" : "Show advanced integrations"}
+                </button>
               </fieldset>
               <div className="flex justify-between gap-2"><button className="text-sm font-semibold text-[#0e6f62]" type="button" onClick={() => setStep("choose")}>← Templates</button><button className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50" type="submit" disabled={busy}>{busy ? "Generating…" : "Review agent →"}</button></div>
             </form>
@@ -353,17 +453,40 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
             <div className="grid gap-5">
               <div className="grid gap-3 sm:grid-cols-2">
                 <div className="rounded-xl border border-[#dce7e3] bg-[#f8fbfa] p-4"><span className="text-[11px] font-bold uppercase tracking-wider text-[#71817d]">Draft agent</span><strong className="mt-1 block text-sm text-[#14231f]">{preview.name}</strong><p className="mt-2 text-xs text-[#52645f]">Greeting: {preview.firstMessage}</p></div>
-                <div className="rounded-xl border border-[#dce7e3] bg-[#f8fbfa] p-4"><span className="text-[11px] font-bold uppercase tracking-wider text-[#71817d]">Result destination</span><strong className="mt-1 block text-sm text-[#14231f]">{integrationChoices.find((choice) => choice.mode === mode)?.title}</strong><p className="mt-2 text-xs text-[#52645f]">{mode === "native" ? "Vozon adds the correct managed tools for this workflow when the draft is created." : "Tools are connected and tested after the draft is created."}</p></div>
+                <div className="rounded-xl border border-[#dce7e3] bg-[#f8fbfa] p-4"><span className="text-[11px] font-bold uppercase tracking-wider text-[#71817d]">Automation method</span><strong className="mt-1 block text-sm text-[#14231f]">{integrationChoices.find((choice) => choice.mode === mode)?.title}</strong><p className="mt-2 text-xs text-[#52645f]">{mode === "native" ? "The listed Vozon tools will be active immediately." : mode === "collect" ? "The agent will capture the request for staff review." : "Connect and test the selected software before publishing."}</p></div>
               </div>
-              <div className="rounded-xl border border-[#dce7e3] p-4">
-                <div className="flex flex-wrap items-center justify-between gap-2"><div><strong className="text-sm text-[#14231f]">Generated instructions</strong><p className="mt-0.5 text-xs text-[#71817d]">Approx. {Math.ceil(prompt.length / 4)} tokens. Detailed services and policies belong in Knowledge.</p></div><button className="text-xs font-semibold text-[#0e6f62] hover:underline" type="button" onClick={() => setShowAdvanced((current) => !current)}>{showAdvanced ? "Close editor" : "Advanced: edit prompt"}</button></div>
-                {showAdvanced ? <textarea className={`${fieldClass} mt-3 min-h-64 resize-y p-3 font-mono leading-5`} maxLength={5000} value={prompt} onChange={(event) => setPrompt(event.target.value)} /> : <pre className="mt-3 max-h-72 overflow-auto whitespace-pre-wrap rounded-lg bg-[#f7f9f8] p-3 text-xs leading-5 text-[#40564f]">{prompt}</pre>}
-                {showAdvanced && prompt !== preview.generatedPrompt ? <button className="mt-2 text-xs font-semibold text-[#0e6f62] hover:underline" type="button" onClick={() => setPrompt(preview.generatedPrompt)}>Restore generated instructions</button> : null}
+              <div className="grid gap-3 lg:grid-cols-2">
+                <section className="rounded-xl border border-[#c5ded5] bg-[#f1f9f6] p-4">
+                  <div className="flex items-start justify-between gap-3"><div><span className="text-[11px] font-bold uppercase tracking-wider text-[#0e6f62]">Automatic actions</span><h3 className="mt-1 text-sm font-bold text-[#14231f]">What this agent will do</h3></div><span className="rounded-full bg-white px-2.5 py-1 text-[10px] font-bold text-[#0e6f62]">{preview.tools.length} tools</span></div>
+                  {preview.tools.length ? <ul className="mt-3 grid gap-2">
+                    {preview.tools.map((tool) => <li className="rounded-lg border border-[#c5ded5] bg-white px-3 py-2" key={tool.name}><strong className="block text-xs capitalize text-[#14231f]">{tool.name.replaceAll("_", " ")}</strong><span className="mt-0.5 block text-xs leading-5 text-[#71817d]">{tool.description}</span></li>)}
+                  </ul> : <p className="mt-3 rounded-lg border border-[#dce7e3] bg-white px-3 py-2 text-xs leading-5 text-[#52645f]">{mode === "collect" ? "No action tool is needed. The agent records the caller's request for staff." : "Action tools will appear here after you connect the selected software."}</p>}
+                </section>
+                <section className="rounded-xl border border-[#dce7e3] bg-white p-4">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#71817d]">Call results</span>
+                  <h3 className="mt-1 text-sm font-bold text-[#14231f]">Data captured after every call</h3>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {preview.outcomeFields.map((field) => <span className="rounded-full border border-[#d5e2dd] bg-[#f8fbfa] px-3 py-1.5 text-xs font-medium text-[#40564f]" key={field.key} title={field.description}>{field.label}</span>)}
+                  </div>
+                  <p className="mt-3 text-xs leading-5 text-[#71817d]">View these values in call details and through the API. Google Sheets can be enabled for this agent after creation.</p>
+                </section>
               </div>
+              <section className="rounded-xl border border-[#dce7e3] bg-[#f8fbfa] p-4">
+                <strong className="text-sm text-[#14231f]">After creation</strong>
+                <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                  {["1. Review voice", "2. Make a test call", "3. Assign a number and go live"].map((item) => <span className="rounded-lg border border-[#dce7e3] bg-white px-3 py-2.5 text-xs font-semibold text-[#52645f]" key={item}>{item}</span>)}
+                </div>
+              </section>
               <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-5 text-amber-800">{mode === "native"
-                ? "Vozon completes the supported action after its managed tool succeeds and returns a reference. Bookings become final; records such as feedback, promises, and disputes are saved without falsely claiming the underlying issue is resolved."
-                : "This creates a Draft. Connect and test any booking, CRM, payment, or DigitalBot tools before publishing. The agent will not claim an action is confirmed without a successful tool result."}</div>
-              <div className="flex justify-between gap-2"><button className="text-sm font-semibold text-[#0e6f62]" type="button" disabled={busy} onClick={() => setStep("details")}>← Edit answers</button><button className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50" type="button" disabled={busy || !prompt.trim()} onClick={() => void create()}>{busy ? "Creating…" : "Create draft agent"}</button></div>
+                ? selected.id === "clinic_appointments"
+                  ? "Vozon checks the configured clinic schedule and prevents duplicate slot bookings. A successful booking is final immediately and includes a reference; no staff approval is required."
+                  : "A successful Vozon tool creates the final workflow record immediately and returns a reference; no staff approval is required. Connect an external inventory or calendar if availability must be checked against another system."
+                : "This creates a Draft. Connect and test the required business tools before publishing. The agent confirms an action only after its tool succeeds."}</div>
+              <details className="rounded-xl border border-[#dce7e3] bg-white p-4" open={showAdvanced}>
+                <summary className="cursor-pointer text-sm font-bold text-[#14231f]" onClick={(event) => { event.preventDefault(); setShowAdvanced((current) => !current); }}>Advanced: view or edit generated instructions</summary>
+                {showAdvanced ? <><p className="mt-2 text-xs text-[#71817d]">Approx. {Math.ceil(prompt.length / 4)} tokens. Detailed documents belong in Knowledge.</p><textarea className={`${fieldClass} mt-3 min-h-64 resize-y p-3 font-mono leading-5`} maxLength={5000} value={prompt} onChange={(event) => setPrompt(event.target.value)} />{prompt !== preview.generatedPrompt ? <button className="mt-2 text-xs font-semibold text-[#0e6f62] hover:underline" type="button" onClick={() => setPrompt(preview.generatedPrompt)}>Restore generated instructions</button> : null}</> : null}
+              </details>
+              <div className="flex justify-between gap-2"><button className="text-sm font-semibold text-[#0e6f62]" type="button" disabled={busy} onClick={() => setStep("details")}>← Edit answers</button><button className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50" type="button" disabled={busy || !prompt.trim()} onClick={() => void create()}>{busy ? "Creating…" : "Create agent and continue"}</button></div>
             </div>
           ) : null}
         </div>

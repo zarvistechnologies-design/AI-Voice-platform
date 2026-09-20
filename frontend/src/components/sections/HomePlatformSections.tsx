@@ -175,37 +175,6 @@ const featuresByTab = {
   },
 } as const;
 
-const demoLanguages = {
-  English: {
-    greeting: "Hi, I’m calling to confirm your appointment for tomorrow at 10:30 AM.",
-    reply: "Yes, that works for me. Can you send the details by message?",
-    action: "Appointment confirmed · SMS scheduled",
-  },
-  Hindi: {
-    greeting: "Namaste, main kal subah 10:30 baje ki appointment confirm karne ke liye call kar raha hoon.",
-    reply: "Haan, yeh samay theek hai. Kripya details message kar dijiye.",
-    action: "Appointment confirmed · SMS scheduled",
-  },
-  Kannada: {
-    greeting: "Namaskara, naale belagge 10:30ra appointment confirm maadalu kare maadiddene.",
-    reply: "Haudu, aa samaya sari ide. Dayavittu vivaragalannu message maadi.",
-    action: "Appointment confirmed · SMS scheduled",
-  },
-} as const;
-type DemoLanguage = keyof typeof demoLanguages;
-
-const customerOutcomes = [
-  { icon: "calls", title: "Capture every request", body: "Collect the details your team needs from inbound calls, even when your office is busy.", label: "Call intake", accent: "teal" },
-  { icon: "workflow", title: "Move work forward", body: "Trigger bookings, updates, and follow-ups with clearly defined next steps for each call.", label: "Workflow actions", accent: "violet" },
-  { icon: "handoff", title: "Escalate with context", body: "Route complex conversations to the right person with the caller's intent and collected details.", label: "Human handoff", accent: "amber" },
-] as const;
-
-const trustHighlights = [
-  { icon: "security", title: "Data controls", body: "Set clear rules for recordings, transcripts, knowledge, and connected-service data." },
-  { icon: "enterprise", title: "Workspace permissions", body: "Give each teammate the level of access they need to operate and improve workflows." },
-  { icon: "handoff", title: "Human review paths", body: "Define when an agent should transfer, pause, or bring a person into the conversation." },
-] as const;
-
 const appIntegrations = [
   { key: "hubspot", name: "HubSpot", position: "outer-left", orbit: "outer", delay: -2 },
   { key: "salesforce", name: "Salesforce", position: "outer-right", orbit: "outer", delay: -15 },
@@ -488,11 +457,7 @@ export function HomePlatformSections() {
   const [selectedAgentIndustry, setSelectedAgentIndustry] = useState<(typeof agentIndustries)[number]>("Ecommerce");
   const [activePlatformCard, setActivePlatformCard] = useState<number | null>(null);
   const [selectedFeatureTab, setSelectedFeatureTab] = useState<FeatureTab>("Conversations");
-  const [demoLanguage, setDemoLanguage] = useState<DemoLanguage>("English");
-  const [demoActive, setDemoActive] = useState(false);
-
   const selectedFeature = featuresByTab[selectedFeatureTab];
-  const selectedDemo = demoLanguages[demoLanguage];
 
   return (
     <div className="vozon-home relative isolate overflow-x-clip bg-black text-white">

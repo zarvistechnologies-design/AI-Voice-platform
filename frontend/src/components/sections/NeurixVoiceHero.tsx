@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import styles from "./NeurixVoiceHero.module.css";
 
 export function NeurixVoiceHero() {

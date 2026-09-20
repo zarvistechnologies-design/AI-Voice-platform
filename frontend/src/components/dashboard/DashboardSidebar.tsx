@@ -3,11 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { startTransition, useEffect, useOptimistic, useRef, useState } from "react";
+import { startTransition, useEffect, useMemo, useOptimistic, useRef, useState, useSyncExternalStore } from "react";
 
 import { useBrand } from "@/components/branding/BrandProvider";
 import { announceDashboardNavigation } from "@/components/dashboard/DashboardNavigationFeedback";
-import { getSession, type AuthSession } from "@/lib/auth";
+import { getServerSession, getSession, subscribeToSession } from "@/lib/auth";
 
 type SidebarItem = {
   label: string;
@@ -249,17 +249,13 @@ export function DashboardSidebar({
   const router = useRouter();
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [optimisticPathname, setOptimisticPathname] = useOptimistic(pathname);
-  const [session, setSession] = useState<AuthSession | null>(null);
+  const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
   const accountMenuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setSession(getSession());
-  }, []);
 
   const isSuperAdmin = session?.platformRole === "super_admin";
   const isWhiteLabelPartner = Boolean(session?.organization?.whiteLabelOwnerAccountId);
 
-  const effectiveSidebarGroups = [
+  const effectiveSidebarGroups = useMemo(() => [
     ...sidebarGroups,
     ...(isSuperAdmin || isWhiteLabelPartner
       ? [
@@ -288,7 +284,7 @@ export function DashboardSidebar({
           },
         ]
       : []),
-  ];
+  ], [isSuperAdmin, isWhiteLabelPartner]);
 
   useEffect(() => {
     const preloadTimer = window.setTimeout(() => {

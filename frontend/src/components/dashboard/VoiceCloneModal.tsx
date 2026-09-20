@@ -34,28 +34,11 @@ export function VoiceCloneModal({
   const audioChunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const closingRef = useRef(false);
 
   // Submission state
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!isOpen) {
-      // Reset state on close
-      setName("");
-      setDescription("");
-      setGender("");
-      setAccent("");
-      setSelectedFile(null);
-      setFileAudioUrl(null);
-      setRecordedBlob(null);
-      setRecordedAudioUrl(null);
-      setIsRecording(false);
-      setRecordingDuration(0);
-      setError(null);
-      if (timerRef.current) clearInterval(timerRef.current);
-    }
-  }, [isOpen]);
 
   useEffect(() => {
     return () => {
@@ -65,9 +48,32 @@ export function VoiceCloneModal({
     };
   }, [fileAudioUrl, recordedAudioUrl]);
 
+  const handleClose = () => {
+    closingRef.current = true;
+    if (mediaRecorderRef.current?.state === "recording") mediaRecorderRef.current.stop();
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = null;
+    if (fileAudioUrl) URL.revokeObjectURL(fileAudioUrl);
+    if (recordedAudioUrl) URL.revokeObjectURL(recordedAudioUrl);
+    setName("");
+    setDescription("");
+    setGender("");
+    setAccent("");
+    setActiveTab("upload");
+    setSelectedFile(null);
+    setFileAudioUrl(null);
+    setRecordedBlob(null);
+    setRecordedAudioUrl(null);
+    setIsRecording(false);
+    setRecordingDuration(0);
+    setError(null);
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   const handleFileChange = (file: File) => {
+    closingRef.current = false;
     if (fileAudioUrl) URL.revokeObjectURL(fileAudioUrl);
     setSelectedFile(file);
     const url = URL.createObjectURL(file);
@@ -81,6 +87,7 @@ export function VoiceCloneModal({
 
   const startRecording = async () => {
     try {
+      closingRef.current = false;
       setError(null);
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       audioChunksRef.current = [];
@@ -94,12 +101,16 @@ export function VoiceCloneModal({
       };
 
       mediaRecorder.onstop = () => {
+        stream.getTracks().forEach((track) => track.stop());
+        if (closingRef.current) {
+          audioChunksRef.current = [];
+          return;
+        }
         const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
         setRecordedBlob(audioBlob);
         if (recordedAudioUrl) URL.revokeObjectURL(recordedAudioUrl);
         const url = URL.createObjectURL(audioBlob);
         setRecordedAudioUrl(url);
-        stream.getTracks().forEach((track) => track.stop());
       };
 
       mediaRecorder.start(250);
@@ -177,7 +188,7 @@ export function VoiceCloneModal({
       const result = await cloneVoice(formData);
       if (result.success && result.profile) {
         onVoiceCloned(result.profile);
-        onClose();
+        handleClose();
       } else {
         throw new Error("Voice cloning did not complete. Please try again.");
       }
@@ -215,7 +226,7 @@ export function VoiceCloneModal({
             </div>
           </div>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             disabled={isSubmitting}
             className="rounded-lg p-1.5 text-slate-400 hover:bg-[#1a2824] hover:text-white transition"
           >
@@ -446,7 +457,7 @@ export function VoiceCloneModal({
           <div className="flex items-center justify-end gap-3 pt-2">
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
               disabled={isSubmitting}
               className="rounded-xl border border-[#2f423d] bg-[#162320] px-4 py-2.5 text-sm font-medium text-slate-300 hover:bg-[#1d2d29] hover:text-white transition"
             >

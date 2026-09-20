@@ -14,13 +14,18 @@ type TermsIndexProps = {
 export function TermsIndex({ sections }: TermsIndexProps) {
   const [activeId, setActiveId] = useState(sections[0]?.id ?? "");
   const mobileIndexRef = useRef<HTMLDetailsElement>(null);
-  const selectedClauseLockUntil = useRef(0);
+  const selectedClauseLocked = useRef(false);
+  const selectedClauseUnlockTimer = useRef<number | null>(null);
 
   useEffect(() => {
     const setHashSection = () => {
       const hashId = window.location.hash.slice(1);
       if (sections.some((section) => section.id === hashId)) {
-        selectedClauseLockUntil.current = Date.now() + 1000;
+        selectedClauseLocked.current = true;
+        if (selectedClauseUnlockTimer.current) window.clearTimeout(selectedClauseUnlockTimer.current);
+        selectedClauseUnlockTimer.current = window.setTimeout(() => {
+          selectedClauseLocked.current = false;
+        }, 1000);
         setActiveId(hashId);
       }
     };
@@ -32,7 +37,7 @@ export function TermsIndex({ sections }: TermsIndexProps) {
     const updateActiveSection = () => {
       cancelAnimationFrame(animationFrame);
       animationFrame = requestAnimationFrame(() => {
-        if (Date.now() < selectedClauseLockUntil.current) return;
+        if (selectedClauseLocked.current) return;
 
         const readingLine = 132;
         const currentSection = sections.reduce((currentId, section) => {
@@ -52,6 +57,7 @@ export function TermsIndex({ sections }: TermsIndexProps) {
       window.removeEventListener("hashchange", setHashSection);
       window.removeEventListener("scroll", updateActiveSection);
       cancelAnimationFrame(animationFrame);
+      if (selectedClauseUnlockTimer.current) window.clearTimeout(selectedClauseUnlockTimer.current);
     };
   }, [sections]);
 
@@ -64,7 +70,11 @@ export function TermsIndex({ sections }: TermsIndexProps) {
 
     // Avoid the browser's default hash jump, which can land beneath the fixed header.
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    selectedClauseLockUntil.current = Date.now() + (reducedMotion ? 100 : 1000);
+    selectedClauseLocked.current = true;
+    if (selectedClauseUnlockTimer.current) window.clearTimeout(selectedClauseUnlockTimer.current);
+    selectedClauseUnlockTimer.current = window.setTimeout(() => {
+      selectedClauseLocked.current = false;
+    }, reducedMotion ? 100 : 1000);
     window.history.replaceState(null, "", `${window.location.pathname}#${id}`);
     const headerOffset = 112;
     const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;

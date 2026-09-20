@@ -152,12 +152,19 @@ export type AgentTemplate = {
   name: string;
   team: string;
   description: string;
+  goal: string;
+  outcomeFields: {
+    key: string;
+    label: string;
+    description: string;
+  }[];
   questions: {
     id: string;
     label: string;
     hint: string;
     required: boolean;
-    control?: "text" | "textarea" | "business-hours" | "timezone" | "weekdays" | "time" | "duration";
+    control?: "text" | "textarea" | "list" | "handoff" | "business-hours" | "timezone" | "weekdays" | "time" | "duration";
+    options?: string[];
   }[];
 };
 
@@ -174,6 +181,22 @@ export type GuidedAgentPreview = {
   prompt: string;
   generatedPrompt: string;
   firstMessage: string;
+  tools: { name: string; description: string }[];
+  outcomeFields: { key: string; label: string; description: string }[];
+  workflowMode: GuidedAgentInput["mode"];
+};
+
+export type AgentAnalysisField = {
+  key: string;
+  label: string;
+  description?: string;
+  type: "string" | "number" | "boolean" | "enum";
+  options?: string[];
+};
+
+export type AgentAnalysisPlan = {
+  enabled: boolean;
+  fields: AgentAnalysisField[];
 };
 
 export type NativeAppointment = {
@@ -398,6 +421,7 @@ export type BackendAgent = {
     spreadsheetName: string;
     sheetName: string;
   };
+  analysisPlan?: AgentAnalysisPlan;
   widget: AgentWidget;
   version: number;
   latencyMetrics?: {
