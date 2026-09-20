@@ -16,6 +16,7 @@ import { announceDashboardNavigation } from "@/components/dashboard/DashboardNav
 import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
 import { ElevenLabsVoiceClonePanel } from "@/components/dashboard/ElevenLabsVoiceClonePanel";
 import { NativeAppointmentsPanel } from "@/components/dashboard/NativeAppointmentsPanel";
+import { NativeWorkflowResultsPanel } from "@/components/dashboard/NativeWorkflowResultsPanel";
 import {
   DashboardSidebar,
   getDashboardSidebarInitialState,
@@ -5805,7 +5806,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                     {selectedAgent.guidedSetup?.templateId && selectedAgent.status === "Draft" ? (
                       <div className="rounded-xl border border-[#c5ded5] bg-[#f1f9f6] p-4 text-sm text-[#29423b]">
                         <strong className="block">Finish setting up this guided agent</strong>
-                        <p className="mt-1 text-xs leading-5">Review its generated prompt and voice. {selectedAgent.guidedSetup.integrationMode === "native" ? "Vozon has added availability and booking tools; appointments are stored in your workspace." : selectedAgent.guidedSetup.integrationMode === "digitalbot" ? "Connect DigitalBot in Integrations, then verify its tools here." : selectedAgent.guidedSetup.integrationMode === "external" ? "Add and test your booking or CRM API tools here." : "Calls will record extracted outcomes. Configure a notification or webhook if staff need the details sent elsewhere."} Test a successful action and a failed action before publishing.</p>
+                        <p className="mt-1 text-xs leading-5">Review its generated prompt and voice. {selectedAgent.guidedSetup.integrationMode === "native" ? "Vozon has added the managed actions for this workflow and stores their results in your workspace." : selectedAgent.guidedSetup.integrationMode === "digitalbot" ? "Connect DigitalBot in Integrations, then verify its tools here." : selectedAgent.guidedSetup.integrationMode === "external" ? "Add and test your booking or CRM API tools here." : "Calls will record extracted outcomes. Configure a notification or webhook if staff need the details sent elsewhere."} Test a successful action and a failed action before publishing.</p>
                         <div className="mt-3 flex flex-wrap gap-3">
                           <button className="text-xs font-bold text-[#0e6f62] hover:underline" type="button" onClick={() => setActiveTab("tools")}>Configure tools →</button>
                           {selectedAgent.guidedSetup.integrationMode === "digitalbot" ? <Link className="text-xs font-bold text-[#0e6f62] hover:underline" href="/dashboard/integrations">Open integrations →</Link> : null}
@@ -6403,6 +6404,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                   <div className="grid gap-4">
                     {selectedAgent.nativeAppointments?.enabled ? (
                       <NativeAppointmentsPanel agentId={selectedAgent.id} timezone={selectedAgent.nativeAppointments.timezone} />
+                    ) : null}
+                    {selectedAgent.guidedSetup?.integrationMode === "native" && selectedAgent.guidedSetup.templateId !== "clinic_appointments" ? (
+                      <NativeWorkflowResultsPanel agentId={selectedAgent.id} />
                     ) : null}
                     <section className="overflow-hidden rounded-xl border border-[#dbe4e1] bg-white">
                       <div className="flex flex-col gap-3 border-b border-[#edf0f4] px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between">

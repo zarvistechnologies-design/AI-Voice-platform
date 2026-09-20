@@ -42,12 +42,24 @@ export const docsTopics: DocsTopic[] = [
         { type: "text", body: "Choose New agent in the Agents dashboard. The gallery includes Restaurant Reservation, Clinic Appointment, Hotel Reservation, Real Estate Qualification, Service Booking, Payment Reminder, and Customer Feedback. Every workflow creates a Draft with concise instructions and relevant post-call extraction fields." },
         { type: "steps", items: [
           { title: "Answer business questions", body: "Provide the business name, hours, handoff rule, and the workflow-specific information. Keep full catalogs, schedules, prices, and policies in Knowledge or the connected business system." },
-          { title: "Choose a result destination", body: "For Clinic Appointment, Vozon appointment system automatically adds availability and booking tools and stores confirmed bookings in Vozon. Collect details records an unconfirmed request. Existing software means you will add API or webhook tools. DigitalBot remains optional." },
+          { title: "Choose a result destination", body: "Vozon managed workflow automatically adds the correct action tools for any of the seven templates and stores the results in Vozon. Collect details records only extracted call outcomes. Existing software lets you add API or webhook tools, and DigitalBot remains optional." },
           { title: "Review the generated prompt", body: "Read the opening message and short instructions. Advanced mode lets you edit the prompt and restore the recommended version." },
-          { title: "Test the workflow", body: "The native clinic workflow already contains Vozon-managed tools. Run calls for an available slot, a full slot, missing patient details, and human handoff. For Existing software or DigitalBot, configure and test those tools separately." },
+          { title: "Test the workflow", body: "Native workflows already contain Vozon-managed tools. Run calls with complete details, missing required details, repeated tool calls, and human handoff. For Existing software or DigitalBot, configure and test those tools separately." },
           { title: "Publish", body: "Check voice, language, knowledge, result fields, notifications, and phone routing. Connected workflows require an enabled tool from the selected destination before the agent can be moved to Live." },
         ] },
         { type: "note", tone: "warning", body: "A request is not a confirmed booking or payment. The agent should confirm a business action only after a connected tool returns success and a reference. Collect-only agents should say staff must confirm the request." },
+      ] },
+      { title: "Automatic tools by template", blocks: [
+        { type: "table", headers: ["Template", "Vozon managed actions", "Result"], rows: [
+          ["Restaurant Reservation", "Create reservation request", "Pending staff confirmation because table inventory is not configured."],
+          ["Clinic Appointment", "Check live availability; book appointment", "Confirmed appointment with booking reference and double-booking protection."],
+          ["Hotel Reservation", "Create hotel booking request", "Pending staff confirmation for room inventory, rate, taxes, and payment."],
+          ["Real Estate Qualification", "Save qualified lead; create site visit request", "Stored lead and pending visit confirmation."],
+          ["Service Booking", "Create service booking request", "Pending technician and final-price confirmation."],
+          ["Payment Reminder", "Record payment promise; record dispute", "Promise or dispute record; invoices are never marked paid."],
+          ["Customer Feedback", "Record feedback; create staff follow-up", "Stored feedback and follow-up queue item."],
+        ] },
+        { type: "text", body: "Open the agent's Tools tab to see the automatically added tools and stored results. External software can read non-clinic results with GET /agents/{agentId}/native-results and clinic bookings with GET /agents/{agentId}/appointments." },
       ] },
       { title: "Native clinic appointments", blocks: [
         { type: "steps", items: [

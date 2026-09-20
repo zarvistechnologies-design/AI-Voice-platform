@@ -264,6 +264,43 @@ const ENDPOINTS: ApiEndpoint[] = [
     ],
   },
   {
+    id: "agent-native-results",
+    section: "Voice Agents",
+    title: "List Native Workflow Results",
+    method: "GET",
+    path: "/agents/{agentId}/native-results",
+    scope: "read",
+    summary: "Retrieve results created by a template's Vozon managed tools.",
+    description:
+      "Returns restaurant and hotel requests, property leads and visits, service requests, payment promises and disputes, and customer feedback or follow-up records. Pending requests remain explicitly unconfirmed.",
+    parameters: [
+      { name: "agentId", in: "path", type: "string", required: true, defaultValue: "6701a2b3c4d5e6f7a8b9c0d1", description: "ID of an agent using a Vozon managed workflow." },
+      { name: "Authorization", in: "header", type: "string", required: true, defaultValue: "Bearer avp_live_your_key_here", description: "API Key Bearer token with read scope." },
+    ],
+    responses: [
+      {
+        status: 200,
+        label: "200 Success",
+        description: "Newest stored workflow results first.",
+        payload: {
+          results: [
+            {
+              _id: "68cf0123456789abcdef0456",
+              templateId: "service_booking",
+              kind: "service_booking",
+              status: "pending_confirmation",
+              reference: "VZN-5B17D2A1",
+              contactName: "Ravi Kumar",
+              contactPhone: "+919876543210",
+              scheduledForText: "2026-09-24 11:00",
+              summary: "The service booking request was recorded for staff confirmation.",
+            },
+          ],
+        },
+      },
+    ],
+  },
+  {
     id: "outbound-call",
     section: "Outbound Calling",
     title: "Create Outbound Call",

@@ -186,6 +186,21 @@ export type NativeAppointment = {
   createdAt: string;
 };
 
+export type NativeWorkflowResult = {
+  _id: string;
+  agentId: string;
+  templateId: string;
+  kind: string;
+  status: string;
+  reference: string;
+  contactName: string;
+  contactPhone: string;
+  summary: string;
+  scheduledForText: string;
+  data: Record<string, unknown>;
+  createdAt: string;
+};
+
 export type ModelProvider = {
   provider: string;
   label: string;
@@ -1229,6 +1244,10 @@ export const voiceApi = {
   nativeAppointments: (agentId: string) =>
     request<{ appointments: NativeAppointment[] }>(
       `/agents/${encodeURIComponent(agentId)}/appointments`,
+    ),
+  nativeWorkflowResults: (agentId: string) =>
+    request<{ results: NativeWorkflowResult[] }>(
+      `/agents/${encodeURIComponent(agentId)}/native-results`,
     ),
   saveAgent: (agentId: string, changes: Partial<BackendAgent>) =>
     mutation<{ agent: BackendAgent; routingWarning: string }>(
