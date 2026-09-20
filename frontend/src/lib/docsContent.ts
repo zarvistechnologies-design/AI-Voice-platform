@@ -23,7 +23,7 @@ export const docsTopics: DocsTopic[] = [
     sections: [
       { title: "Before you begin", blocks: [{ type: "list", items: ["A Vozon organization and an Owner, Admin, or Member account.", "A clear business outcome such as qualification, support triage, or appointment booking.", "A test phone number and permission to call it.", "Approved script and knowledge content without credentials or unnecessary personal data."] }] },
       { title: "Launch your first agent", blocks: [{ type: "steps", items: [
-        { title: "Create the agent", body: "Open Agents, choose New agent, select a template or start from scratch, and assign a descriptive name." },
+        { title: "Create the agent", body: "Open Agents, choose New agent, select one of seven guided workflows or a blank draft, and answer the business questions." },
         { title: "Configure the conversation", body: "Choose the primary language and voice. Add a first message, goals, boundaries, escalation rules, and a clear completion condition." },
         { title: "Test in the browser", body: "Run realistic conversations. Test interruptions, names, phone numbers, dates, tool failures, and how the agent ends the call." },
         { title: "Connect a number", body: "Import or purchase a number, set its direction, assign the agent, and wait until its status is Ready." },
@@ -38,6 +38,17 @@ export const docsTopics: DocsTopic[] = [
     title: "Agents",
     description: "Configure voice, language, conversation behavior, tools, and deployment state.",
     sections: [
+      { title: "Guided agent templates", blocks: [
+        { type: "text", body: "Choose New agent in the Agents dashboard. The gallery includes Restaurant Reservation, Clinic Appointment, Hotel Reservation, Real Estate Qualification, Service Booking, Payment Reminder, and Customer Feedback. Every workflow creates a Draft with concise instructions and relevant post-call extraction fields." },
+        { type: "steps", items: [
+          { title: "Answer business questions", body: "Provide the business name, hours, handoff rule, and the workflow-specific information. Keep full catalogs, schedules, prices, and policies in Knowledge or the connected business system." },
+          { title: "Choose a result destination", body: "Collect details works without an integration and records outcomes in call logs. Existing software means you will add API or webhook tools. DigitalBot means you will connect it in Integrations after creating the draft." },
+          { title: "Review the generated prompt", body: "Read the opening message and short instructions. Advanced mode lets you edit the prompt and restore the recommended version." },
+          { title: "Connect and test tools", body: "A selected integration does not connect itself. Configure and test the booking, CRM, payment, or DigitalBot tools in the draft agent. Test success, unavailable slots, tool errors, and human handoff." },
+          { title: "Publish", body: "Check voice, language, knowledge, result fields, notifications, and phone routing. Connected workflows require an enabled tool from the selected destination before the agent can be moved to Live." },
+        ] },
+        { type: "note", tone: "warning", body: "A request is not a confirmed booking or payment. The agent should confirm a business action only after a connected tool returns success and a reference. Collect-only agents should say staff must confirm the request." },
+      ] },
       { title: "Core configuration", blocks: [{ type: "table", headers: ["Field", "Purpose", "Recommendation"], rows: [
         ["Name", "Identifies the agent in the dashboard and logs.", "Use a purpose-based name such as Hindi Lead Qualifier."],
         ["First message", "The opening message for a new conversation.", "Identify the business, purpose, and expected next step."],

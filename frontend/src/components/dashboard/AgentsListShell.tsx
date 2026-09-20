@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 
 import { DashboardSidebar, getDashboardSidebarInitialState } from "@/components/dashboard/DashboardSidebar";
 import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
+import { GuidedAgentCreateDialog } from "@/components/dashboard/GuidedAgentCreateDialog";
 import {
   getServerSession,
   getSession,
@@ -66,7 +67,6 @@ export function AgentsListShell() {
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [agentName, setAgentName] = useState("");
   const [editingAgent, setEditingAgent] = useState<AgentSummary | null>(null);
   const [editAgentName, setEditAgentName] = useState("");
   const [showUserSidebar, setShowUserSidebar] = useState(getDashboardSidebarInitialState);
@@ -146,25 +146,6 @@ export function AgentsListShell() {
         return left.name.localeCompare(right.name);
       });
   }, [agents, query, sortBy, statusFilter]);
-
-  async function createAgent() {
-    const name = agentName.trim();
-    if (!name) {
-      setNotice("Enter an agent name first.");
-      return;
-    }
-
-    setBusy(true);
-    setNotice("");
-    try {
-      const { agent } = await voiceApi.createAgent({ name });
-      router.push(`/dashboard/agents/${encodeURIComponent(agent._id)}`);
-    } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Could not create agent.");
-    } finally {
-      setBusy(false);
-    }
-  }
 
   function beginEditAgent(agent: AgentSummary) {
     setOpenMenuId(null);
@@ -414,54 +395,10 @@ export function AgentsListShell() {
       </section>
 
       {showCreateForm ? (
-        <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-[#14231f]/35 px-4 py-4 backdrop-blur-[6px]" role="dialog" aria-modal="true" aria-labelledby="create-agent-title" aria-describedby="create-agent-description" aria-busy={busy}>
-          <form
-            className="grid max-h-[calc(100dvh-2rem)] w-full max-w-md gap-5 overflow-y-auto rounded-2xl border border-[#dfe7e4] bg-white p-6 shadow-[0_28px_80px_rgba(34,38,74,0.24)]"
-            onSubmit={(event) => {
-              event.preventDefault();
-              void createAgent();
-            }}
-          >
-            <div>
-              <h2 className="app-section-title m-0" id="create-agent-title">New agent</h2>
-              <p className="mt-1 mb-0 text-sm text-[#71817d]" id="create-agent-description">Give the agent a clear name. You can configure its voice and behavior next.</p>
-            </div>
-            {notice ? <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-medium text-amber-700" role="alert">{notice}</div> : null}
-            <label className="grid gap-1.5">
-              <span className="text-xs font-semibold text-[#52645f]">Agent name</span>
-              <input
-                autoFocus
-                required
-                className="app-control-text min-h-11 rounded-lg border border-[#dfe7e4] bg-white px-3 text-[#14231f] outline-none transition focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10"
-                value={agentName}
-                maxLength={80}
-                placeholder="Example: Support desk"
-                onChange={(event) => setAgentName(event.target.value)}
-              />
-            </label>
-            <div className="flex justify-end gap-2">
-              <button
-                className="app-button-text min-h-10 rounded-lg border border-[#dfe7e4] bg-white px-4 text-[#52645f] transition hover:bg-[#f7f9f8] active:translate-y-px disabled:opacity-50"
-                type="button"
-                disabled={busy}
-                onClick={() => {
-                  setShowCreateForm(false);
-                  setAgentName("");
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                className="app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border-0 bg-[#118778] px-4 text-[#ffffff] shadow-[0_12px_28px_rgba(17,135,120,0.20)] transition hover:bg-[#0e6f62] active:translate-y-px disabled:opacity-50"
-                type="submit"
-                disabled={busy}
-              >
-                <Icon icon="plus" />
-                {busy ? "Creating..." : "Create agent"}
-              </button>
-            </div>
-          </form>
-        </div>
+        <GuidedAgentCreateDialog
+          onClose={() => setShowCreateForm(false)}
+          onCreated={(agentId) => router.push(`/dashboard/agents/${encodeURIComponent(agentId)}`)}
+        />
       ) : null}
 
       {editingAgent ? (

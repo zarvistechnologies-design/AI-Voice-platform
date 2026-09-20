@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   useEffect,
@@ -96,6 +97,7 @@ type VoiceAgent = {
   success: string;
   prompt: string;
   firstMessage: string;
+  guidedSetup?: BackendAgent["guidedSetup"];
   firstMessageMode: FirstMessageMode;
   behavior: AgentBehavior;
   callSettings: AgentCallSettings;
@@ -5798,6 +5800,16 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
               <div className="agent-editor-body bg-white px-4 pb-5 sm:px-5">
                 {activeTab === "builder" ? (
                   <div className="grid gap-4">
+                    {selectedAgent.guidedSetup?.templateId && selectedAgent.status === "Draft" ? (
+                      <div className="rounded-xl border border-[#c5ded5] bg-[#f1f9f6] p-4 text-sm text-[#29423b]">
+                        <strong className="block">Finish setting up this guided agent</strong>
+                        <p className="mt-1 text-xs leading-5">Review its generated prompt and voice. {selectedAgent.guidedSetup.integrationMode === "digitalbot" ? "Connect DigitalBot in Integrations, then verify its tools here." : selectedAgent.guidedSetup.integrationMode === "external" ? "Add and test your booking or CRM API tools here." : "Calls will record extracted outcomes. Configure a notification or webhook if staff need the details sent elsewhere."} Test a successful action and a failed action before publishing.</p>
+                        <div className="mt-3 flex flex-wrap gap-3">
+                          <button className="text-xs font-bold text-[#0e6f62] hover:underline" type="button" onClick={() => setActiveTab("tools")}>Configure tools →</button>
+                          {selectedAgent.guidedSetup.integrationMode === "digitalbot" ? <Link className="text-xs font-bold text-[#0e6f62] hover:underline" href="/dashboard/integrations">Open integrations →</Link> : null}
+                        </div>
+                      </div>
+                    ) : null}
                     <div className="hidden gap-3 lg:grid-cols-2">
                       <InputField
                         label="Agent name"
@@ -8289,6 +8301,7 @@ function mapBackendAgent(agent: BackendAgent): VoiceAgent {
     success: "-",
     prompt: agent.prompt,
     firstMessage: agent.firstMessage,
+    guidedSetup: agent.guidedSetup,
     firstMessageMode,
     behavior: {
       ...defaultBehavior,

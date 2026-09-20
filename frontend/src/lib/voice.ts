@@ -151,7 +151,22 @@ export type AgentTemplate = {
   id: string;
   name: string;
   team: string;
+  description: string;
+  questions: { id: string; label: string; hint: string; required: boolean }[];
+};
+
+export type GuidedAgentInput = {
+  answers: Record<string, string>;
+  mode: "collect" | "external" | "digitalbot";
+  language: string;
+  name?: string;
+  promptOverride?: string;
+};
+
+export type GuidedAgentPreview = {
+  name: string;
   prompt: string;
+  generatedPrompt: string;
   firstMessage: string;
 };
 
@@ -310,6 +325,11 @@ export type BackendAgent = {
   businessHours: AgentBusinessHours;
   prompt: string;
   firstMessage: string;
+  guidedSetup?: {
+    templateId: string;
+    integrationMode: "collect" | "external" | "digitalbot" | "";
+    answers: Record<string, string>;
+  };
   firstMessageMode?: FirstMessageMode;
   behavior: AgentBehavior;
   callSettings: AgentCallSettings;
@@ -1170,10 +1190,15 @@ export const voiceApi = {
       },
       ["/agents"],
     ),
-  createAgentFromTemplate: (templateId: string) =>
+  previewAgentTemplate: (templateId: string, input: GuidedAgentInput) =>
+    request<GuidedAgentPreview>(`/agent-templates/${encodeURIComponent(templateId)}/preview`, {
+      method: "POST",
+      body: JSON.stringify(input),
+    }),
+  createAgentFromTemplate: (templateId: string, input: GuidedAgentInput) =>
     mutation<{ agent: BackendAgent }>(
-      `/agent-templates/${templateId}`,
-      { method: "POST" },
+      `/agent-templates/${encodeURIComponent(templateId)}`,
+      { method: "POST", body: JSON.stringify(input) },
       ["/agents"],
     ),
   saveAgent: (agentId: string, changes: Partial<BackendAgent>) =>
