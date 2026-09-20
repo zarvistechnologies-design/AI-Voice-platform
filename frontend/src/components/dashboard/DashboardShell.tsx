@@ -6405,7 +6405,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                     {selectedAgent.nativeAppointments?.enabled ? (
                       <NativeAppointmentsPanel agentId={selectedAgent.id} timezone={selectedAgent.nativeAppointments.timezone} />
                     ) : null}
-                    {selectedAgent.guidedSetup?.integrationMode === "native" && selectedAgent.guidedSetup.templateId !== "clinic_appointments" ? (
+                    {selectedAgent.guidedSetup?.integrationMode === "native"
+                    && selectedAgent.guidedSetup.templateId !== "clinic_appointments"
+                    && !selectedAgent.googleSheets.enabled ? (
                       <NativeWorkflowResultsPanel agentId={selectedAgent.id} />
                     ) : null}
                     <section className="overflow-hidden rounded-xl border border-[#dbe4e1] bg-white">
@@ -6423,7 +6425,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                           <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-emerald-700">
                             {Number(selectedAgent.googleCalendar.enabled) +
                               Number(selectedAgent.googleSheets.enabled)}{" "}
-                            active
+                            resources enabled
                           </span>
                           <button
                             className="min-h-8 rounded-lg border border-[#d7e0dd] bg-white px-3 text-xs font-semibold text-[#0e6f62] transition hover:border-[#9fcfc3] hover:bg-[#edf7f4]"
@@ -6517,7 +6519,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                         <article>
                           <ToggleRow
                             title="Google Sheets"
-                            detail="Let the agent append qualified leads and outcomes to a selected sheet."
+                            detail="Automatically copy completed calls and confirmed workflow outcomes. Requires a connected Google Workspace account."
                             enabled={selectedAgent.googleSheets.enabled}
                             compact
                             onChange={(enabled) =>
