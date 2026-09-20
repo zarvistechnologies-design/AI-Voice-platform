@@ -2424,8 +2424,41 @@
 }
 
 @media (max-width: 640px) {
+  /* Keep the phone landing experience fast and still. The canvas wave remains
+     available from the tablet breakpoint upward. */
+  .home-design-four__hero {
+    min-height: auto;
+    padding: 104px 18px 68px;
+  }
+
+  .home-design-four__hero canvas,
+  .design-four-hero__ambient {
+    display: none !important;
+  }
+
+  .home-design-four__header > a:first-child,
+  .header-previous-logo-home > a,
+  .design-four-hero__features > span,
+  .design-four-phone {
+    animation: none !important;
+  }
+
+  .design-four-hero__features {
+    width: 100%;
+    max-width: 420px;
+    margin-inline: auto;
+  }
+
   .home-design-four__hero h1 {
     max-width: 520px;
+    margin-top: 30px;
+    overflow-wrap: anywhere;
+  }
+
+  .design-four-trust-pill {
+    width: fit-content;
+    max-width: 100%;
+    margin-top: 26px;
   }
 
   .home-design-four .design-four-phone {
@@ -2447,6 +2480,23 @@
 
   .design-four-voice-layout {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .design-four-language-tabs {
+    width: 100%;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: inline proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .design-four-language-tabs button,
+  .design-four-language-tabs a {
+    min-height: 44px;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
   }
 
   .design-four-voice-copy h2,
@@ -2538,6 +2588,8 @@
 
   .design-four-insights-header {
     align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
   }
 
   .design-four-featured-insight {
@@ -2570,6 +2622,12 @@
 
   .design-four-footer-main nav {
     gap: 36px 20px;
+  }
+
+  .home-design-four main > section:not(.home-design-four__hero),
+  .home-design-four main > div:not(:first-child) {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 720px;
   }
 }
 

@@ -1,6 +1,22 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
+
+const disableAnimationQuery = "(max-width: 640px), (prefers-reduced-motion: reduce)";
+
+function subscribeToAnimationPreference(onChange: () => void) {
+  const query = window.matchMedia(disableAnimationQuery);
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
+}
+
+function animationDisabled() {
+  return window.matchMedia(disableAnimationQuery).matches;
+}
+
+function serverAnimationDisabled() {
+  return false;
+}
 
 type Particle = {
   u: number;
@@ -13,6 +29,11 @@ type Particle = {
 
 export function GreenAudioWaveHero() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const disabled = useSyncExternalStore(
+    subscribeToAnimationPreference,
+    animationDisabled,
+    serverAnimationDisabled,
+  );
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -239,6 +260,8 @@ export function GreenAudioWaveHero() {
       window.cancelAnimationFrame(animationFrame);
     };
   }, []);
+
+  if (disabled) return null;
 
   return (
     <canvas
