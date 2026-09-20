@@ -71,6 +71,7 @@ function initialAnswers(template: AgentTemplate) {
     if (question.control === "weekdays") return [question.id, "Mon,Tue,Wed,Thu,Fri,Sat"];
     if (question.control === "time") return [question.id, question.id === "bookingEnd" ? "17:00" : "09:00"];
     if (question.control === "duration") return [question.id, "30"];
+    if (question.control === "select") return [question.id, question.options?.[0]?.value ?? ""];
     return [question.id, ""];
   }));
 }
@@ -156,6 +157,11 @@ function QuestionField({
 
   if (question.control === "duration") {
     return <label className="grid gap-1.5 text-xs font-semibold text-[#52645f]" htmlFor={inputId}>{label}<select className={fieldClass} id={inputId} required={question.required} value={value} onChange={(event) => onChange(event.target.value)}>{[15, 20, 30, 45, 60, 90, 120].map((minutes) => <option key={minutes} value={minutes}>{minutes} minutes</option>)}</select>{hint}</label>;
+  }
+
+  if (question.control === "select") {
+    const selectedOption = question.options?.find((option) => option.value === value);
+    return <label className="grid gap-1.5 text-xs font-semibold text-[#52645f] sm:col-span-2" htmlFor={inputId}>{label}<select className={fieldClass} id={inputId} required={question.required} value={value} onChange={(event) => onChange(event.target.value)}>{question.options?.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select>{selectedOption?.description ? <span className="font-normal leading-4 text-[#71817d]">{selectedOption.description}</span> : hint}</label>;
   }
 
   if (question.control === "textarea") {
@@ -360,7 +366,11 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
                 {showAdvanced ? <textarea className={`${fieldClass} mt-3 min-h-64 resize-y p-3 font-mono leading-5`} maxLength={5000} value={prompt} onChange={(event) => setPrompt(event.target.value)} /> : <pre className="mt-3 max-h-72 overflow-auto whitespace-pre-wrap rounded-lg bg-[#f7f9f8] p-3 text-xs leading-5 text-[#40564f]">{prompt}</pre>}
                 {showAdvanced && prompt !== preview.generatedPrompt ? <button className="mt-2 text-xs font-semibold text-[#0e6f62] hover:underline" type="button" onClick={() => setPrompt(preview.generatedPrompt)}>Restore generated instructions</button> : null}
               </div>
-              <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-5 text-amber-800">{mode === "native" ? "This creates a Draft with Vozon-managed tools for the selected workflow. Inventory-dependent requests remain pending until staff or connected software confirms them." : "This creates a Draft. Connect and test any booking, CRM, payment, or DigitalBot tools before publishing. The agent will not claim an action is confirmed without a successful tool result."}</div>
+              <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-5 text-amber-800">{mode === "native"
+                ? answers.bookingConfirmation === "confirmed"
+                  ? "Vozon will mark the booking final only after its managed tool succeeds and returns a booking reference. Choose this when your business authorizes the agent to accept bookings without separate staff approval."
+                  : "This creates a Draft with Vozon-managed tools. The agent will clearly say the request is pending until staff approves it."
+                : "This creates a Draft. Connect and test any booking, CRM, payment, or DigitalBot tools before publishing. The agent will not claim an action is confirmed without a successful tool result."}</div>
               <div className="flex justify-between gap-2"><button className="text-sm font-semibold text-[#0e6f62]" type="button" disabled={busy} onClick={() => setStep("details")}>← Edit answers</button><button className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50" type="button" disabled={busy || !prompt.trim()} onClick={() => void create()}>{busy ? "Creating…" : "Create draft agent"}</button></div>
             </div>
           ) : null}
