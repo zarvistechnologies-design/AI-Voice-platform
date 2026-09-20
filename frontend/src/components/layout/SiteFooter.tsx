@@ -62,8 +62,8 @@ export function SiteFooter() {
           <BrandLogo showWebsiteLogo />
           <p>Building intelligent voice experiences that help businesses create better conversations, automate meaningful work, and connect people with outcomes.</p>
           <div className="design-four-footer-socials">
-            <a aria-label="Twitter / X" href="https://x.com" rel="noreferrer" target="_blank">X</a>
-            <a aria-label="LinkedIn" href="https://linkedin.com" rel="noreferrer" target="_blank">in</a>
+            <a aria-label="Twitter / X" href="https://x.com/vozonai_" rel="noreferrer" target="_blank">X</a>
+            <a aria-label="LinkedIn" href="https://linkedin.com/company/vozon-ai-india/" rel="noreferrer" target="_blank">in</a>
             <a aria-label="Instagram" href="https://www.instagram.com/vozonai"target="_blank"rel="noreferrer">
             <svg width="24"height="24"viewBox="0 0 24 24"fill="none"xmlns="http://www.w3.org/2000/svg"><rect x="2.5"y="2.5"width="19"height="19"rx="5.5"stroke="currentColor"strokeWidth="2.5"/><circle cx="12"cy="12"r="4.25"stroke="currentColor"strokeWidth="2.5"/><circle cx="17.5"cy="6.5"r="1.25"fill="currentColor" /></svg></a>
             <a aria-label="Call +91 7892518414" href="tel:+917892518414">&#9742;</a>
