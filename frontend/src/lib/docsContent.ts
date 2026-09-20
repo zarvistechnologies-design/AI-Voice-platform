@@ -42,12 +42,20 @@ export const docsTopics: DocsTopic[] = [
         { type: "text", body: "Choose New agent in the Agents dashboard. The gallery includes Restaurant Reservation, Clinic Appointment, Hotel Reservation, Real Estate Qualification, Service Booking, Payment Reminder, and Customer Feedback. Every workflow creates a Draft with concise instructions and relevant post-call extraction fields." },
         { type: "steps", items: [
           { title: "Answer business questions", body: "Provide the business name, hours, handoff rule, and the workflow-specific information. Keep full catalogs, schedules, prices, and policies in Knowledge or the connected business system." },
-          { title: "Choose a result destination", body: "Collect details works without an integration and records outcomes in call logs. Existing software means you will add API or webhook tools. DigitalBot means you will connect it in Integrations after creating the draft." },
+          { title: "Choose a result destination", body: "For Clinic Appointment, Vozon appointment system automatically adds availability and booking tools and stores confirmed bookings in Vozon. Collect details records an unconfirmed request. Existing software means you will add API or webhook tools. DigitalBot remains optional." },
           { title: "Review the generated prompt", body: "Read the opening message and short instructions. Advanced mode lets you edit the prompt and restore the recommended version." },
-          { title: "Connect and test tools", body: "A selected integration does not connect itself. Configure and test the booking, CRM, payment, or DigitalBot tools in the draft agent. Test success, unavailable slots, tool errors, and human handoff." },
+          { title: "Test the workflow", body: "The native clinic workflow already contains Vozon-managed tools. Run calls for an available slot, a full slot, missing patient details, and human handoff. For Existing software or DigitalBot, configure and test those tools separately." },
           { title: "Publish", body: "Check voice, language, knowledge, result fields, notifications, and phone routing. Connected workflows require an enabled tool from the selected destination before the agent can be moved to Live." },
         ] },
         { type: "note", tone: "warning", body: "A request is not a confirmed booking or payment. The agent should confirm a business action only after a connected tool returns success and a reference. Collect-only agents should say staff must confirm the request." },
+      ] },
+      { title: "Native clinic appointments", blocks: [
+        { type: "steps", items: [
+          { title: "Define the clinic schedule", body: "Enter doctors, the IANA timezone, working days, first and last booking times, and slot duration in the Clinic Appointment template." },
+          { title: "Check live slots", body: "During a call, the agent calls check_appointment_availability for the requested local date and doctor. Vozon removes past and already-booked slots." },
+          { title: "Book after confirmation", body: "After the caller confirms the exact option, the agent sends the returned slot ID with the patient name and phone number to book_appointment. Concurrent calls cannot reserve the same doctor and start time." },
+          { title: "See the output", body: "Open the agent's Tools tab to see confirmed appointments, doctor, patient, local appointment time, status, and booking reference. Software can read the same records with GET /agents/{agentId}/appointments using read scope." },
+        ] },
       ] },
       { title: "Core configuration", blocks: [{ type: "table", headers: ["Field", "Purpose", "Recommendation"], rows: [
         ["Name", "Identifies the agent in the dashboard and logs.", "Use a purpose-based name such as Hindi Lead Qualifier."],

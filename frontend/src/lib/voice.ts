@@ -157,7 +157,7 @@ export type AgentTemplate = {
 
 export type GuidedAgentInput = {
   answers: Record<string, string>;
-  mode: "collect" | "external" | "digitalbot";
+  mode: "native" | "collect" | "external" | "digitalbot";
   language: string;
   name?: string;
   promptOverride?: string;
@@ -168,6 +168,22 @@ export type GuidedAgentPreview = {
   prompt: string;
   generatedPrompt: string;
   firstMessage: string;
+};
+
+export type NativeAppointment = {
+  _id: string;
+  agentId: string;
+  provider: string;
+  patientName: string;
+  patientPhone: string;
+  appointmentType: string;
+  notes: string;
+  timezone: string;
+  startAt: string;
+  endAt: string;
+  bookingReference: string;
+  status: "booked" | "cancelled";
+  createdAt: string;
 };
 
 export type ModelProvider = {
@@ -327,8 +343,17 @@ export type BackendAgent = {
   firstMessage: string;
   guidedSetup?: {
     templateId: string;
-    integrationMode: "collect" | "external" | "digitalbot" | "";
+    integrationMode: "native" | "collect" | "external" | "digitalbot" | "";
     answers: Record<string, string>;
+  };
+  nativeAppointments?: {
+    enabled: boolean;
+    timezone: string;
+    durationMinutes: number;
+    providers: string[];
+    weekdays: number[];
+    startTime: string;
+    endTime: string;
   };
   firstMessageMode?: FirstMessageMode;
   behavior: AgentBehavior;
@@ -1200,6 +1225,10 @@ export const voiceApi = {
       `/agent-templates/${encodeURIComponent(templateId)}`,
       { method: "POST", body: JSON.stringify(input) },
       ["/agents"],
+    ),
+  nativeAppointments: (agentId: string) =>
+    request<{ appointments: NativeAppointment[] }>(
+      `/agents/${encodeURIComponent(agentId)}/appointments`,
     ),
   saveAgent: (agentId: string, changes: Partial<BackendAgent>) =>
     mutation<{ agent: BackendAgent; routingWarning: string }>(

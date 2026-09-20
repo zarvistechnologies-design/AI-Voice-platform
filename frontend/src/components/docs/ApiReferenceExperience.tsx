@@ -206,6 +206,64 @@ const ENDPOINTS: ApiEndpoint[] = [
     ],
   },
   {
+    id: "agent-appointments",
+    section: "Voice Agents",
+    title: "List Agent Appointments",
+    method: "GET",
+    path: "/agents/{agentId}/appointments",
+    scope: "read",
+    summary: "Retrieve appointments booked by a Vozon native clinic agent.",
+    description:
+      "Returns confirmed and cancelled appointment records stored by the built-in clinic availability and booking tools. Records are scoped to the authenticated organization and selected agent.",
+    parameters: [
+      {
+        name: "agentId",
+        in: "path",
+        type: "string",
+        required: true,
+        defaultValue: "6701a2b3c4d5e6f7a8b9c0d1",
+        description: "ID of a Clinic Appointment agent using Vozon appointment system.",
+      },
+      {
+        name: "Authorization",
+        in: "header",
+        type: "string",
+        required: true,
+        defaultValue: "Bearer avp_live_your_key_here",
+        description: "API Key Bearer token with read scope.",
+      },
+    ],
+    responses: [
+      {
+        status: 200,
+        label: "200 Success",
+        description: "Appointments ordered by appointment time.",
+        payload: {
+          appointments: [
+            {
+              _id: "68cf0123456789abcdef0123",
+              provider: "Dr Mehta",
+              patientName: "Anita Sharma",
+              patientPhone: "+919876543210",
+              appointmentType: "Consultation",
+              timezone: "Asia/Kolkata",
+              startAt: "2026-09-22T04:30:00.000Z",
+              endAt: "2026-09-22T05:00:00.000Z",
+              bookingReference: "VZN-8F21A4C9",
+              status: "booked",
+            },
+          ],
+        },
+      },
+      {
+        status: 404,
+        label: "404 Not Found",
+        description: "The agent does not exist in the authenticated organization.",
+        payload: { message: "Voice agent not found." },
+      },
+    ],
+  },
+  {
     id: "outbound-call",
     section: "Outbound Calling",
     title: "Create Outbound Call",

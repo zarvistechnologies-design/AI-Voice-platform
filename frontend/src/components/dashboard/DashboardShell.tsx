@@ -15,6 +15,7 @@ import {
 import { announceDashboardNavigation } from "@/components/dashboard/DashboardNavigationFeedback";
 import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
 import { ElevenLabsVoiceClonePanel } from "@/components/dashboard/ElevenLabsVoiceClonePanel";
+import { NativeAppointmentsPanel } from "@/components/dashboard/NativeAppointmentsPanel";
 import {
   DashboardSidebar,
   getDashboardSidebarInitialState,
@@ -98,6 +99,7 @@ type VoiceAgent = {
   prompt: string;
   firstMessage: string;
   guidedSetup?: BackendAgent["guidedSetup"];
+  nativeAppointments?: BackendAgent["nativeAppointments"];
   firstMessageMode: FirstMessageMode;
   behavior: AgentBehavior;
   callSettings: AgentCallSettings;
@@ -5803,7 +5805,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                     {selectedAgent.guidedSetup?.templateId && selectedAgent.status === "Draft" ? (
                       <div className="rounded-xl border border-[#c5ded5] bg-[#f1f9f6] p-4 text-sm text-[#29423b]">
                         <strong className="block">Finish setting up this guided agent</strong>
-                        <p className="mt-1 text-xs leading-5">Review its generated prompt and voice. {selectedAgent.guidedSetup.integrationMode === "digitalbot" ? "Connect DigitalBot in Integrations, then verify its tools here." : selectedAgent.guidedSetup.integrationMode === "external" ? "Add and test your booking or CRM API tools here." : "Calls will record extracted outcomes. Configure a notification or webhook if staff need the details sent elsewhere."} Test a successful action and a failed action before publishing.</p>
+                        <p className="mt-1 text-xs leading-5">Review its generated prompt and voice. {selectedAgent.guidedSetup.integrationMode === "native" ? "Vozon has added availability and booking tools; appointments are stored in your workspace." : selectedAgent.guidedSetup.integrationMode === "digitalbot" ? "Connect DigitalBot in Integrations, then verify its tools here." : selectedAgent.guidedSetup.integrationMode === "external" ? "Add and test your booking or CRM API tools here." : "Calls will record extracted outcomes. Configure a notification or webhook if staff need the details sent elsewhere."} Test a successful action and a failed action before publishing.</p>
                         <div className="mt-3 flex flex-wrap gap-3">
                           <button className="text-xs font-bold text-[#0e6f62] hover:underline" type="button" onClick={() => setActiveTab("tools")}>Configure tools →</button>
                           {selectedAgent.guidedSetup.integrationMode === "digitalbot" ? <Link className="text-xs font-bold text-[#0e6f62] hover:underline" href="/dashboard/integrations">Open integrations →</Link> : null}
@@ -6399,6 +6401,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
 
                 {activeTab === "tools" ? (
                   <div className="grid gap-4">
+                    {selectedAgent.nativeAppointments?.enabled ? (
+                      <NativeAppointmentsPanel agentId={selectedAgent.id} timezone={selectedAgent.nativeAppointments.timezone} />
+                    ) : null}
                     <section className="overflow-hidden rounded-xl border border-[#dbe4e1] bg-white">
                       <div className="flex flex-col gap-3 border-b border-[#edf0f4] px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between">
                         <div>
@@ -6604,10 +6609,10 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                         const headers = headersToDrafts(tool.headers);
                         const toolKey = tool._id ?? `${tool.name}-${index}`;
                         const isTesting = testingToolKey === toolKey;
-                        const isDigitalBotManaged =
-                          tool.managedBy === "digitalbot";
+                        const isDigitalBotManaged = tool.managedBy === "digitalbot";
+                        const isVozonManaged = tool.managedBy === "vozon";
 
-                        if (isDigitalBotManaged) {
+                        if (isDigitalBotManaged || isVozonManaged) {
                           return (
                             <article
                               className="flex flex-col gap-3 rounded-xl border border-[#b8c8c3] bg-[#edf7f4] p-4 sm:flex-row sm:items-center sm:justify-between"
@@ -6623,7 +6628,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                                       {tool.name}
                                     </strong>
                                     <span className="app-label rounded-full border border-[#b8c8c3] bg-white px-2 py-0.5 text-[#008c96]">
-                                      Managed by DigitalBot
+                                      {isVozonManaged ? "Managed by Vozon" : "Managed by DigitalBot"}
                                     </span>
                                   </div>
                                   <span className="app-caption block">
@@ -6637,14 +6642,18 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                                     ? "Active"
                                     : "Inactive"}
                                 </span>
-                                <button
-                                  className="app-button-text min-h-9 rounded-lg border border-[#b8c8c3] bg-white px-3 text-[#118778] transition hover:bg-[#f0fdff] disabled:cursor-not-allowed disabled:opacity-60"
-                                  type="button"
-                                  disabled={isTesting}
-                                  onClick={() => void handleTestTool(index)}
-                                >
-                                  {isTesting ? "Testing..." : "Test"}
-                                </button>
+                                {isVozonManaged ? (
+                                  <span className="app-label rounded-lg border border-[#b8c8c3] bg-white px-3 py-2 text-[#0e6f62]">Built in</span>
+                                ) : (
+                                  <button
+                                    className="app-button-text min-h-9 rounded-lg border border-[#b8c8c3] bg-white px-3 text-[#118778] transition hover:bg-[#f0fdff] disabled:cursor-not-allowed disabled:opacity-60"
+                                    type="button"
+                                    disabled={isTesting}
+                                    onClick={() => void handleTestTool(index)}
+                                  >
+                                    {isTesting ? "Testing..." : "Test"}
+                                  </button>
+                                )}
                               </div>
                             </article>
                           );
@@ -8302,6 +8311,7 @@ function mapBackendAgent(agent: BackendAgent): VoiceAgent {
     prompt: agent.prompt,
     firstMessage: agent.firstMessage,
     guidedSetup: agent.guidedSetup,
+    nativeAppointments: agent.nativeAppointments,
     firstMessageMode,
     behavior: {
       ...defaultBehavior,

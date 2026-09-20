@@ -8,6 +8,7 @@ type Step = "choose" | "details" | "review";
 type Props = { onClose: () => void; onCreated: (agentId: string) => void };
 
 const integrationChoices: { mode: GuidedAgentInput["mode"]; title: string; detail: string }[] = [
+  { mode: "native", title: "Vozon appointment system", detail: "Availability and booking tools are added automatically. Appointments are stored in Vozon and available through the API." },
   { mode: "collect", title: "Collect details", detail: "Start with call outcomes. Configure staff notifications or a webhook later." },
   { mode: "external", title: "My existing software", detail: "Create a draft, then connect API or webhook tools in the agent's Tools tab." },
   { mode: "digitalbot", title: "DigitalBot", detail: "Create a draft, then connect DigitalBot to attach its available tools." },
@@ -48,6 +49,7 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
     setPreview(null);
     setPrompt("");
     setError("");
+    setMode(template.id === "clinic_appointments" ? "native" : "collect");
     setStep("details");
   }
 
@@ -168,7 +170,7 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
               </div>
               <fieldset className="grid gap-2 border-0 p-0">
                 <legend className="mb-2 text-sm font-bold text-[#14231f]">Where should business results go?</legend>
-                {integrationChoices.map((choice) => (
+                {integrationChoices.filter((choice) => choice.mode !== "native" || selected.id === "clinic_appointments").map((choice) => (
                   <label className={`flex cursor-pointer items-start gap-3 rounded-lg border p-3 ${mode === choice.mode ? "border-[#118778] bg-[#f1f9f6]" : "border-[#dce7e3]"}`} key={choice.mode}>
                     <input className="mt-0.5 accent-[#118778]" type="radio" name="integration-mode" checked={mode === choice.mode} onChange={() => setMode(choice.mode)} />
                     <span><strong className="block text-sm text-[#14231f]">{choice.title}</strong><span className="mt-0.5 block text-xs leading-5 text-[#71817d]">{choice.detail}</span></span>
@@ -183,14 +185,14 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
             <div className="grid gap-5">
               <div className="grid gap-3 sm:grid-cols-2">
                 <div className="rounded-xl border border-[#dce7e3] bg-[#f8fbfa] p-4"><span className="text-[11px] font-bold uppercase tracking-wider text-[#71817d]">Draft agent</span><strong className="mt-1 block text-sm text-[#14231f]">{preview.name}</strong><p className="mt-2 text-xs text-[#52645f]">Greeting: {preview.firstMessage}</p></div>
-                <div className="rounded-xl border border-[#dce7e3] bg-[#f8fbfa] p-4"><span className="text-[11px] font-bold uppercase tracking-wider text-[#71817d]">Result destination</span><strong className="mt-1 block text-sm text-[#14231f]">{integrationChoices.find((choice) => choice.mode === mode)?.title}</strong><p className="mt-2 text-xs text-[#52645f]">Tools are connected and tested after the draft is created.</p></div>
+                <div className="rounded-xl border border-[#dce7e3] bg-[#f8fbfa] p-4"><span className="text-[11px] font-bold uppercase tracking-wider text-[#71817d]">Result destination</span><strong className="mt-1 block text-sm text-[#14231f]">{integrationChoices.find((choice) => choice.mode === mode)?.title}</strong><p className="mt-2 text-xs text-[#52645f]">{mode === "native" ? "Vozon adds availability and booking tools when this draft is created." : "Tools are connected and tested after the draft is created."}</p></div>
               </div>
               <div className="rounded-xl border border-[#dce7e3] p-4">
                 <div className="flex flex-wrap items-center justify-between gap-2"><div><strong className="text-sm text-[#14231f]">Generated instructions</strong><p className="mt-0.5 text-xs text-[#71817d]">Approx. {Math.ceil(prompt.length / 4)} tokens. Detailed services and policies belong in Knowledge.</p></div><button className="text-xs font-semibold text-[#0e6f62] hover:underline" type="button" onClick={() => setShowAdvanced((current) => !current)}>{showAdvanced ? "Close editor" : "Advanced: edit prompt"}</button></div>
                 {showAdvanced ? <textarea className={`${fieldClass} mt-3 min-h-64 resize-y p-3 font-mono leading-5`} maxLength={5000} value={prompt} onChange={(event) => setPrompt(event.target.value)} /> : <pre className="mt-3 max-h-72 overflow-auto whitespace-pre-wrap rounded-lg bg-[#f7f9f8] p-3 text-xs leading-5 text-[#40564f]">{prompt}</pre>}
                 {showAdvanced && prompt !== preview.generatedPrompt ? <button className="mt-2 text-xs font-semibold text-[#0e6f62] hover:underline" type="button" onClick={() => setPrompt(preview.generatedPrompt)}>Restore generated instructions</button> : null}
               </div>
-              <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-5 text-amber-800">This creates a Draft. Connect and test any booking, CRM, payment, or DigitalBot tools before publishing. The agent will not claim an action is confirmed without a successful tool result.</div>
+              <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-5 text-amber-800">{mode === "native" ? "This creates a Draft with two Vozon-managed tools. Test availability and booking before publishing. The agent confirms an appointment only after Vozon returns a booking reference." : "This creates a Draft. Connect and test any booking, CRM, payment, or DigitalBot tools before publishing. The agent will not claim an action is confirmed without a successful tool result."}</div>
               <div className="flex justify-between gap-2"><button className="text-sm font-semibold text-[#0e6f62]" type="button" disabled={busy} onClick={() => setStep("details")}>← Edit answers</button><button className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50" type="button" disabled={busy || !prompt.trim()} onClick={() => void create()}>{busy ? "Creating…" : "Create draft agent"}</button></div>
             </div>
           ) : null}
