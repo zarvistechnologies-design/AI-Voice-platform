@@ -14,9 +14,6 @@ export type DocsTopic = {
   sections: { title: string; blocks: DocsBlock[] }[];
 };
 
-const authHeader = `Authorization: Bearer avp_your_api_key`;
-const baseUrl = "https://api.vozon.ai/api/v1";
-
 export const docsTopics: DocsTopic[] = [
   {
     slug: "quickstart",
@@ -135,17 +132,126 @@ Summarize the confirmed appointment and the next step.` }] },
   {
     slug: "campaigns",
     group: "Deploy",
-    title: "Campaigns",
-    description: "Create controlled outbound campaigns from lead lists.",
+    title: "Campaign operations guide",
+    description: "Prepare, launch, monitor, and evaluate outbound campaigns from the dashboard, including automatic callbacks and evidence based results.",
     sections: [
-      { title: "Launch workflow", blocks: [{ type: "steps", items: [
-        { title: "Prepare leads", body: "Use E.164 phone numbers and include only the metadata needed by the agent." },
-        { title: "Create campaign", body: "Select a Live agent and an outbound-ready assigned number." },
-        { title: "Apply suppressions", body: "Exclude recipients who opted out, are invalid, or must not be contacted." },
-        { title: "Review and launch", body: "Confirm calling permissions, local hours, concurrency, script, and wallet balance." },
-        { title: "Monitor", body: "Track queued, active, completed, failed, and suppressed leads. Pause when quality needs review." },
+      { title: "Before you create a campaign", blocks: [
+        { type: "list", items: [
+          "A tested voice agent with status Live.",
+          "A Ready phone number with Outbound or Both direction, assigned to that same agent.",
+          "A lawful reason to contact every recipient and an approved calling script.",
+          "An INR wallet balance large enough for the expected attempts and retries.",
+          "A CSV with international E.164 phone numbers, for example +919876543210.",
+          "A written campaign goal and an observable success condition.",
+        ] },
+        { type: "note", tone: "warning", body: "Run a small internal pilot before uploading a production audience. Test voicemail, silence, opt-out requests, interruptions, tool failures, callbacks, and the final call ending." },
+      ] },
+      { title: "Prepare the contact CSV", blocks: [
+        { type: "text", body: "The first row must contain column names. A phone or phone_number column is required. Name, email, and company are optional. Every additional column becomes a custom field that the agent can use during the call." },
+        { type: "code", language: "csv", body: `phone_number,name,email,company,plan,renewal_date
++919876543210,Aarav Sharma,aarav@example.com,Acme India,Enterprise,2026-10-15
++919876543211,Meera Nair,meera@example.com,Northstar Retail,Growth,2026-11-01` },
+        { type: "table", headers: ["Rule", "Requirement"], rows: [
+          ["Phone", "Required. Use + followed by country code and number; do not use local-only numbers."],
+          ["File size", "Maximum 25 MB."],
+          ["Contacts", "Maximum 1,00,000 rows per CSV."],
+          ["Duplicate recipients", "The upload reports duplicates instead of silently calling them twice."],
+          ["Custom fields", "Use short, relevant values. Do not upload credentials or unnecessary personal data."],
+        ] },
+      ] },
+      { title: "Create and start the campaign", blocks: [{ type: "steps", items: [
+        { title: "Open Campaigns", body: "Go to Dashboard → Campaigns and choose Create campaign." },
+        { title: "Choose the route", body: "Enter a clear campaign name, select the Live assistant, and choose a Ready outbound caller ID assigned to that assistant." },
+        { title: "Upload contacts", body: "Drop the CSV into the upload step. Resolve every invalid phone number before continuing." },
+        { title: "Set schedule and pacing", body: "Choose Send now or Schedule, confirm Asia/Kolkata or the intended timezone, set the local call window, daily limit, concurrent calls, maximum attempts, and retry gap." },
+        { title: "Set safeguards and outcomes", body: "Keep opt-out protection enabled, configure consent and voicemail behavior, define the campaign goal and success criteria, and enable automatic callbacks when requested follow-ups should be scheduled." },
+        { title: "Review and launch", body: "Pass every readiness check and launch. Processing continues on the server after the browser is closed." },
       ] }] },
-      { title: "Controls", blocks: [{ type: "table", headers: ["Action", "Effect"], rows: [["Pause", "Stops new calls from starting; active calls continue."], ["Resume", "Continues eligible queued leads."], ["Cancel", "Permanently stops remaining campaign work."], ["Suppress", "Prevents a matching recipient from being called."]] }] },
+      { title: "Pacing and retry controls", blocks: [{ type: "table", headers: ["Setting", "What it controls", "Operational guidance"], rows: [
+        ["Timezone", "How scheduled start and calling hours are interpreted.", "Use the recipient's operating timezone."],
+        ["Local call window", "Hours in which new calls may start.", "Choose a permitted and appropriate window for the audience."],
+        ["Daily limit", "Maximum contacts attempted per campaign day.", "Start with a pilot batch, then increase after reviewing quality."],
+        ["Concurrent calls", "Maximum simultaneous campaign calls.", "Keep within organization, number, and provider capacity."],
+        ["Max attempts", "Maximum tries for one contact.", "Use the smallest number justified by the workflow."],
+        ["Retry gap", "Minimum wait before an eligible retry.", "Avoid aggressive retry intervals."],
+      ] }] },
+      { title: "Campaign lifecycle and controls", blocks: [
+        { type: "table", headers: ["Status", "Meaning"], rows: [
+          ["Draft", "Created but not launched."],
+          ["Scheduled", "Waiting for the selected start time or call window."],
+          ["Running", "Eligible contacts are being dispatched within pacing limits."],
+          ["Paused", "No new calls start; active calls are allowed to finish."],
+          ["Completed", "No campaign work remains."],
+          ["Cancelled", "Remaining queued work was permanently stopped."],
+          ["Failed", "The campaign stopped because of an operational error that needs review."],
+        ] },
+        { type: "table", headers: ["Action", "Effect"], rows: [
+          ["View results", "Opens the dedicated campaign outcome workspace."],
+          ["Pause", "Stops new calls from starting. Active calls continue."],
+          ["Resume", "Continues eligible queued and retry-wait contacts."],
+          ["Cancel", "Permanently stops remaining campaign work."],
+        ] },
+      ] },
+      { title: "Read the campaign results page", blocks: [
+        { type: "table", headers: ["Metric", "How to interpret it"], rows: [
+          ["Contact coverage", "Uploaded contacts and the percentage with a classified outcome."],
+          ["Pickup rate", "Connected call attempts divided by all call attempts."],
+          ["Goal rate", "Contacts marked Qualified or Resolved divided by all campaign contacts."],
+          ["Campaign cost", "Total customer call charge in Indian rupees, with cost per achieved goal."],
+          ["Verified results", "Business events such as bookings and payments that have confirmation evidence."],
+          ["Attributed revenue", "Verified payment or revenue amounts displayed in INR."],
+          ["QA score", "Weighted score for connection, classification, goal completion, and follow-up handling."],
+        ] },
+        { type: "text", body: "The conversion funnel shows how contacts move from uploaded to attempted, connected, classified, goal achieved, and verified. The campaign trend shows attempts, connections, and goals by day." },
+      ] },
+      { title: "Review each contact", blocks: [{ type: "steps", items: [
+        { title: "Filter the audience", body: "Search by name, phone, email, or company. Filter by outcome or callback status." },
+        { title: "Check delivery", body: "Review queued, active, completed, retry, failed, suppressed, and cancelled states plus the last error." },
+        { title: "Validate the outcome", body: "Read the evidence level and quoted transcript evidence. Change the outcome when a human review finds a mistake." },
+        { title: "Open the call", body: "Choose Review transcript & recording to inspect the complete call, ending reason, usage, and INR charge." },
+        { title: "Confirm business value", body: "Record a verified appointment, booking, payment, revenue result, or qualified lead. Payment and revenue results require an external transaction reference." },
+        { title: "Export", body: "Apply any filters and choose Export CSV to download the same operational view for analysis or CRM reconciliation." },
+      ] }] },
+      { title: "Automatic callbacks", blocks: [
+        { type: "text", body: "When automatic callbacks are enabled and a caller asks to be contacted later, the platform schedules the follow-up in the campaign timezone. The callback continues without requiring the campaign page to stay open." },
+        { type: "table", headers: ["Callback state", "Action"], rows: [
+          ["Scheduled", "The callback is waiting for its requested time."],
+          ["Calling", "The callback attempt is currently active."],
+          ["Retrying", "The previous callback attempt was eligible for another try."],
+          ["Completed", "The callback workflow finished."],
+          ["Needs attention", "Automatic processing could not safely continue; review the contact and last error."],
+          ["Cancelled", "The callback will not run."],
+        ] },
+      ] },
+      { title: "Evidence, reanalysis, and the QA scorecard", blocks: [
+        { type: "list", items: [
+          "System confirmed evidence comes from verified tools, callbacks, or business events.",
+          "Inferred evidence comes from transcript analysis and should be reviewed for high value decisions.",
+          "Human reviewed evidence records an operator's corrected outcome.",
+          "Rerun analysis processes available call evidence again after prompts, extractors, or historical records have been corrected.",
+          "Scorecard weights must total 100. Use higher goal weight when business completion matters more than raw pickup rate.",
+        ] },
+        { type: "note", tone: "info", body: "A high QA score indicates that the configured observable checks passed. It does not replace transcript review, compliance review, or confirmation from the business system of record." },
+      ] },
+      { title: "INR cost and revenue reporting", blocks: [
+        { type: "text", body: "Campaign cost, cost per goal, call charges, and attributed revenue are shown in Indian rupees (INR). Historical USD call costs are converted with the platform billing exchange rate before they are included in campaign totals." },
+        { type: "code", language: "text", body: `campaign cost (INR) = sum of customer call charges converted to INR
+cost per goal (INR) = campaign cost / (qualified + resolved contacts)
+attributed revenue (INR) = sum of verified payment and revenue events` },
+      ] },
+      { title: "Troubleshooting", blocks: [{ type: "table", headers: ["Symptom", "What to check"], rows: [
+        ["Campaign will not launch", "Agent is Live; caller ID is Ready, outbound capable, and assigned to the same agent; CSV has valid contacts; wallet and call capacity are available."],
+        ["Campaign is running but no call starts", "Current local time is inside the call window; daily limit is not exhausted; campaign is not paused; eligible contacts remain."],
+        ["Many contacts are suppressed", "Review opt-out data, duplicate numbers, CSV phone formatting, and organization suppression records."],
+        ["Many calls fail", "Open the contact's last call, inspect the ending reason, confirm carrier route and number readiness, then pause before retrying at scale."],
+        ["Outcomes remain Unknown", "Confirm transcripts are available, run Rerun analysis, and review whether the campaign goal and success criteria are explicit."],
+        ["Callback needs attention", "Open the contact row, inspect the callback error and requested time, correct the blocking issue, then handle the follow-up manually if needed."],
+        ["Result total looks stale", "Wait for active calls to finish and post-call analysis to complete, then refresh or rerun analysis."],
+      ] }] },
+      { title: "Campaign API automation", blocks: [
+        { type: "text", body: "Teams that create campaigns from a CRM can use the Campaigns endpoints in the interactive API reference at /docs/api. Use calls:trigger to create, upload, launch, review, and control campaigns; use read to retrieve progress and results." },
+        { type: "note", tone: "info", body: "Use an idempotency key when creating a campaign, keep API keys on the server, and store external booking or payment references so verified results can be reconciled safely." },
+      ] },
     ],
   },
   {

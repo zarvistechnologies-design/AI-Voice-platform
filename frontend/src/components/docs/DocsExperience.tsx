@@ -18,7 +18,7 @@ const sections: DocSection[] = [
   { id: "agents", group: "Build", title: "Configure an agent", summary: "Define language, voice, instructions, behavior, and tools.", keywords: "prompt llm tts stt language hindi voice" },
   { id: "knowledge", group: "Build", title: "Knowledge bases", summary: "Ground answers in approved text, files, and web pages.", keywords: "rag sources documents url upload search" },
   { id: "phone-numbers", group: "Deploy", title: "Phone numbers", summary: "Connect numbers for inbound and outbound calling.", keywords: "import buy inbound outbound telephony" },
-  { id: "campaigns", group: "Deploy", title: "Campaigns", summary: "Upload leads and control high-volume outbound calling.", keywords: "csv leads pause resume suppression" },
+  { id: "campaigns", group: "Deploy", title: "Campaign operations", summary: "Launch campaigns, automate callbacks, and understand every result.", keywords: "csv leads start launch results callback outcome qa cost rupees inr pause resume suppression" },
   { id: "call-logs", group: "Observe", title: "Call logs", summary: "Review transcripts, recordings, outcomes, latency, and cost.", keywords: "analytics transcript recording billing latency" },
   { id: "billing", group: "Observe", title: "Billing", summary: "Understand credits, call charges, top-ups, and invoices.", keywords: "wallet platform fee invoice cost payment" },
   { id: "authentication", group: "API reference", title: "Authentication", summary: "Create scoped API keys and authenticate requests.", keywords: "bearer key scopes security" },
@@ -595,10 +595,10 @@ export function DocsExperience() {
               <span className="text-xs font-bold uppercase tracking-wider text-[#108D82]">Deploy</span>
               <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-slate-900">Campaigns</h2>
               <p className="mt-2 text-sm sm:text-base text-slate-600 leading-relaxed">
-                Campaigns coordinate outbound calling across customer lead lists with smart pacing, concurrency limits, and suppression compliance.
+                Campaigns coordinate outbound calling across approved contact lists with controlled pacing, retry rules, suppression handling, automatic callbacks, and evidence based results.
               </p>
-              <div className="mt-6 grid gap-3 sm:grid-cols-4">
-                {["1. Create campaign", "2. Upload lead CSV", "3. Review & launch", "4. Monitor telemetry"].map((label) => (
+              <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+                {["1. Select route", "2. Upload contacts", "3. Set pacing", "4. Set safeguards", "5. Launch & monitor"].map((label) => (
                   <div className="rounded-2xl border border-slate-200 bg-white p-4 text-xs font-bold text-slate-800 shadow-xs" key={label}>
                     {label}
                   </div>
@@ -607,6 +607,12 @@ export function DocsExperience() {
               <Callout tone="warning">
                 Pausing stops new outbound calls from being dispatched. It does not interrupt phone calls currently in progress.
               </Callout>
+              <Link
+                className="mt-5 inline-flex items-center rounded-xl bg-[#108D82] px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-[#0e756c]"
+                href="/docs/campaigns"
+              >
+                Open the complete campaign operations guide →
+              </Link>
             </section>
 
             {/* Call Logs & Observability */}

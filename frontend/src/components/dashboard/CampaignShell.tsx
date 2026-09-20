@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import {
   type DragEvent,
   type FormEvent,
@@ -853,19 +854,27 @@ export function CampaignShell() {
           title="Outbound campaigns"
           description="Create campaigns, upload leads, control pacing, and monitor delivery."
           actions={
-            <button
-              className={`${buttonClass} border border-[#118778] ${showCreateCampaign ? "bg-white text-[#0e6f62]" : "bg-[#118778] text-white hover:bg-[#0e6f62]"}`}
-              type="button"
-              onClick={() => {
-                setCreateStep(1);
-                setDetectVoicemail(false);
-                setShowCreateCampaign(true);
-                setError("");
-              }}
-            >
-              <Icon icon="plus" />
-              Create campaign
-            </button>
+            <div className="flex flex-wrap items-center gap-2">
+              <Link
+                className={`${buttonClass} border border-[#c6d4d0] bg-white text-[#52645f] hover:border-[#118778] hover:text-[#0e6f62]`}
+                href="/docs/campaigns"
+              >
+                Campaign guide
+              </Link>
+              <button
+                className={`${buttonClass} border border-[#118778] ${showCreateCampaign ? "bg-white text-[#0e6f62]" : "bg-[#118778] text-white hover:bg-[#0e6f62]"}`}
+                type="button"
+                onClick={() => {
+                  setCreateStep(1);
+                  setDetectVoicemail(false);
+                  setShowCreateCampaign(true);
+                  setError("");
+                }}
+              >
+                <Icon icon="plus" />
+                Create campaign
+              </button>
+            </div>
           }
         />
 
@@ -1808,13 +1817,21 @@ export function CampaignResultsPageShell({
           description="Business outcomes, call performance, costs, and requested callbacks for every contact."
           meta={campaign ? <StatusPill status={campaign.status} /> : null}
           actions={
-            <button
-              className={`${buttonClass} border border-[#c6d4d0] bg-white text-[#52645f] hover:border-[#118778] hover:text-[#0e6f62]`}
-              type="button"
-              onClick={() => router.push("/dashboard/campaign")}
-            >
-              Back to campaigns
-            </button>
+            <div className="flex flex-wrap items-center gap-2">
+              <Link
+                className={`${buttonClass} border border-[#c6d4d0] bg-white text-[#52645f] hover:border-[#118778] hover:text-[#0e6f62]`}
+                href="/docs/campaigns"
+              >
+                Results guide
+              </Link>
+              <button
+                className={`${buttonClass} border border-[#c6d4d0] bg-white text-[#52645f] hover:border-[#118778] hover:text-[#0e6f62]`}
+                type="button"
+                onClick={() => router.push("/dashboard/campaign")}
+              >
+                Back to campaigns
+              </button>
+            </div>
           }
         />
         <div className="dashboard-page-content w-full py-5">
@@ -1920,7 +1937,6 @@ function CampaignResultsWorkspace({
   const [conversionLead, setConversionLead] = useState<CampaignLeadResult | null>(null);
   const [conversionType, setConversionType] = useState<"appointment" | "booking" | "payment" | "revenue" | "lead" | "other">("appointment");
   const [conversionAmount, setConversionAmount] = useState("0");
-  const [conversionCurrency, setConversionCurrency] = useState("USD");
   const [conversionReference, setConversionReference] = useState("");
   const [savingConversion, setSavingConversion] = useState(false);
   const pageSize = 50;
@@ -2075,7 +2091,7 @@ function CampaignResultsWorkspace({
         type: conversionType,
         status: "verified",
         amount: Number(conversionAmount || 0),
-        currency: conversionCurrency,
+        currency: "INR",
         externalId: conversionReference,
       });
       setConversionLead(null);
@@ -2090,18 +2106,14 @@ function CampaignResultsWorkspace({
   const money = (value: number | null) =>
     value === null
       ? "—"
-      : new Intl.NumberFormat("en-US", {
+      : new Intl.NumberFormat("en-IN", {
           style: "currency",
-          currency: summary?.currency || "USD",
+          currency: "INR",
           maximumFractionDigits: value < 1 ? 4 : 2,
         }).format(value);
 
   const attributedRevenue = summary?.revenueByCurrency.length
-    ? summary.revenueByCurrency.map((item) => new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: item.currency,
-        maximumFractionDigits: 2,
-      }).format(item.amount)).join(" + ")
+    ? money(summary.revenueByCurrency.reduce((total, item) => total + item.amount, 0))
     : money(0);
 
   return (
@@ -2309,8 +2321,8 @@ function CampaignResultsWorkspace({
                       <strong className="text-sm text-slate-900">{lead.qaScore}/100 <span className="text-xs text-slate-500">Grade {lead.qaGrade || "—"}</span></strong>
                       <span className="mt-1 block text-xs text-slate-500">CRM: {readableValue(lead.crmSyncStatus || "not configured")}</span>
                       {lead.conversionStatus ? <span className="mt-2 block"><ResultPill value={`${lead.conversionStatus} ${lead.conversionType}`} /></span> : null}
-                      {lead.attributedRevenue > 0 ? <span className="mt-1 block text-xs font-semibold text-emerald-700">{new Intl.NumberFormat("en-US", { style: "currency", currency: lead.revenueCurrency || "USD" }).format(lead.attributedRevenue)}</span> : null}
-                      <button className="mt-2 text-xs font-semibold text-[#0e6f62] hover:underline" type="button" onClick={() => { setConversionLead(lead); setConversionType("appointment"); setConversionAmount("0"); setConversionCurrency(lead.revenueCurrency || "USD"); setConversionReference(""); }}>Record verified result</button>
+                      {lead.attributedRevenue > 0 ? <span className="mt-1 block text-xs font-semibold text-emerald-700">{money(lead.attributedRevenue)}</span> : null}
+                      <button className="mt-2 text-xs font-semibold text-[#0e6f62] hover:underline" type="button" onClick={() => { setConversionLead(lead); setConversionType("appointment"); setConversionAmount("0"); setConversionReference(""); }}>Record verified result</button>
                     </td>
                     <td className="px-4 py-3">
                       {lead.callbackStatus ? <ResultPill value={lead.callbackStatus} /> : <span className="text-sm text-slate-400">No callback</span>}
@@ -2359,7 +2371,7 @@ function CampaignResultsWorkspace({
                     <input className="mt-1 min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" type="number" min={0} step="0.01" value={conversionAmount} onChange={(event) => setConversionAmount(event.target.value)} />
                   </label>
                   <label className="text-xs font-semibold text-slate-600">Currency
-                    <input className="mt-1 min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm uppercase" maxLength={10} value={conversionCurrency} onChange={(event) => setConversionCurrency(event.target.value.toUpperCase())} />
+                    <span className="mt-1 flex min-h-10 w-full items-center rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-700">Indian rupees (INR)</span>
                   </label>
                 </div>
                 <div className="mt-5 flex justify-end gap-2">

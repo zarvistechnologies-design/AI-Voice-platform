@@ -857,16 +857,25 @@ const ENDPOINTS: ApiEndpoint[] = [
         example: "6701a2b3c4d5e6f7a8b9c0d1",
       },
       {
-        name: "concurrencyLimit",
+        name: "phoneNumberId",
+        in: "body",
+        type: "string",
+        required: true,
+        defaultValue: "6701a2b3c4d5e6f7a8b9c0d2",
+        description: "Ready outbound phone number assigned to the selected agent.",
+        example: "6701a2b3c4d5e6f7a8b9c0d2",
+      },
+      {
+        name: "concurrency",
         in: "body",
         type: "integer",
         required: false,
-        defaultValue: "5",
-        description: "Maximum simultaneous active calls for this campaign (1 to 20).",
-        example: "5",
+        defaultValue: "3",
+        description: "Maximum simultaneous calls, capped by the selected agent's capacity.",
+        example: "3",
       },
       {
-        name: "callWindowStart",
+        name: "windowStart",
         in: "body",
         type: "string",
         required: false,
@@ -875,7 +884,7 @@ const ENDPOINTS: ApiEndpoint[] = [
         example: "09:00",
       },
       {
-        name: "callWindowEnd",
+        name: "windowEnd",
         in: "body",
         type: "string",
         required: false,
@@ -896,10 +905,20 @@ const ENDPOINTS: ApiEndpoint[] = [
     requestBodyExample: {
       name: "Q4 Customer Reactivation",
       agentId: "6701a2b3c4d5e6f7a8b9c0d1",
-      concurrencyLimit: 5,
-      callWindowStart: "09:00",
-      callWindowEnd: "19:00",
+      phoneNumberId: "6701a2b3c4d5e6f7a8b9c0d2",
+      concurrency: 3,
+      windowStart: "09:00",
+      windowEnd: "19:00",
       timezone: "Asia/Kolkata",
+      dailyLimit: 250,
+      maxAttempts: 2,
+      retryGapSeconds: 86400,
+      goal: "Reconnect with inactive customers",
+      successCriteria: "Customer agrees to a product demonstration",
+      respectDnc: true,
+      requireConsentLine: true,
+      detectVoicemail: true,
+      automaticCallbacks: true,
     },
     responses: [
       {
@@ -908,13 +927,14 @@ const ENDPOINTS: ApiEndpoint[] = [
         description: "Campaign created successfully in draft status.",
         payload: {
           campaign: {
-            id: "camp_882901",
+            _id: "6702b3c4d5e6f7a8b9c0d1e2",
             name: "Q4 Customer Reactivation",
             status: "draft",
             agentId: "6701a2b3c4d5e6f7a8b9c0d1",
-            concurrencyLimit: 5,
-            callWindowStart: "09:00",
-            callWindowEnd: "19:00",
+            phoneNumberId: "6701a2b3c4d5e6f7a8b9c0d2",
+            concurrency: 3,
+            windowStart: "09:00",
+            windowEnd: "19:00",
             timezone: "Asia/Kolkata",
             totalLeads: 0,
             completedLeads: 0,
@@ -953,15 +973,17 @@ const ENDPOINTS: ApiEndpoint[] = [
         payload: {
           campaigns: [
             {
-              id: "camp_882901",
+              _id: "6702b3c4d5e6f7a8b9c0d1e2",
               name: "Q4 Customer Reactivation",
               status: "running",
               agentId: "6701a2b3c4d5e6f7a8b9c0d1",
-              concurrencyLimit: 5,
-              totalLeads: 500,
-              completedLeads: 312,
-              failedLeads: 18,
-              progressPercent: 62.4,
+              concurrency: 3,
+              stats: {
+                total: 500,
+                processed: 312,
+                failed: 18,
+                progressPercent: 62.4,
+              },
               createdAt: "2026-09-18T10:00:00.000Z",
             },
           ],
@@ -985,23 +1007,23 @@ const ENDPOINTS: ApiEndpoint[] = [
         in: "path",
         type: "string",
         required: true,
-        defaultValue: "camp_882901",
+        defaultValue: "6702b3c4d5e6f7a8b9c0d1e2",
         description: "The unique ID of the target campaign.",
-        example: "camp_882901",
+        example: "6702b3c4d5e6f7a8b9c0d1e2",
       },
       {
         name: "leads",
         in: "body",
         type: "array",
         required: true,
-        defaultValue: `[{"phoneNumber": "+919876543210", "name": "Aarav Sharma", "customFields": {"accountType": "enterprise", "renewalMonth": "October"}}]`,
-        description: "Array of lead objects formatted in E.164.",
+        defaultValue: `[{"phone": "+919876543210", "name": "Aarav Sharma", "customFields": {"accountType": "enterprise", "renewalMonth": "October"}}]`,
+        description: "Array of 1 to 500 lead objects with phone in E.164 format.",
       },
     ],
     requestBodyExample: {
       leads: [
         {
-          phoneNumber: "+919876543210",
+          phone: "+919876543210",
           name: "Aarav Sharma",
           customFields: {
             accountType: "enterprise",
@@ -1009,7 +1031,7 @@ const ENDPOINTS: ApiEndpoint[] = [
           },
         },
         {
-          phoneNumber: "+919876543211",
+          phone: "+919876543211",
           name: "Meera Nair",
           customFields: {
             accountType: "standard",
@@ -1024,10 +1046,10 @@ const ENDPOINTS: ApiEndpoint[] = [
         label: "201 Created",
         description: "Leads queued successfully.",
         payload: {
-          success: true,
-          addedCount: 2,
-          suppressedCount: 0,
-          totalCampaignLeads: 502,
+          inserted: 2,
+          duplicates: 0,
+          total: 502,
+          suppressed: 0,
         },
       },
     ],
@@ -1041,18 +1063,30 @@ const ENDPOINTS: ApiEndpoint[] = [
     scope: "calls:trigger",
     summary: "Initiate automatic outbound dialing across queued campaign leads.",
     description:
-      "Transitions the campaign status from draft or paused to `running`. The dialing scheduler immediately begins placing outbound calls up to the configured concurrency limit, respecting calling hour windows and DNC suppression lists.",
+      "Transitions a draft campaign to `running`, or to `scheduled` when a future start is supplied. The dialing scheduler respects concurrency, calling windows, daily limits, retry rules, and DNC suppression.",
     parameters: [
       {
         name: "campaignId",
         in: "path",
         type: "string",
         required: true,
-        defaultValue: "camp_882901",
+        defaultValue: "6702b3c4d5e6f7a8b9c0d1e2",
         description: "The campaign ID to launch.",
-        example: "camp_882901",
+        example: "6702b3c4d5e6f7a8b9c0d1e2",
+      },
+      {
+        name: "mode",
+        in: "body",
+        type: "string",
+        required: false,
+        defaultValue: "now",
+        description: "Use now to begin when eligible, or schedule with scheduledAt.",
+        example: "now",
       },
     ],
+    requestBodyExample: {
+      mode: "now",
+    },
     responses: [
       {
         status: 200,
@@ -1060,12 +1094,68 @@ const ENDPOINTS: ApiEndpoint[] = [
         description: "Campaign launched and active.",
         payload: {
           campaign: {
-            id: "camp_882901",
+            _id: "6702b3c4d5e6f7a8b9c0d1e2",
             status: "running",
-            launchedAt: "2026-09-18T11:30:00.000Z",
-            concurrencyLimit: 5,
-            message: "Campaign active. Dialing in progress.",
+            startedAt: "2026-09-18T11:30:00.000Z",
+            concurrency: 3,
           },
+        },
+      },
+    ],
+  },
+  {
+    id: "get-campaign-results",
+    section: "Campaigns & High-Volume Outbound",
+    title: "Get Campaign Results",
+    method: "GET",
+    path: "/campaigns/{campaignId}/results",
+    scope: "read",
+    summary: "Retrieve campaign outcomes, funnel performance, verified business results, and INR costs.",
+    description:
+      "Returns campaign-level totals and a daily timeline. Use the leads endpoint for contact-level outcome, callback, evidence, transcript, and recording details.",
+    parameters: [
+      {
+        name: "campaignId",
+        in: "path",
+        type: "string",
+        required: true,
+        defaultValue: "6702b3c4d5e6f7a8b9c0d1e2",
+        description: "The campaign ID to report.",
+        example: "6702b3c4d5e6f7a8b9c0d1e2",
+      },
+    ],
+    responses: [
+      {
+        status: 200,
+        label: "200 OK",
+        description: "Campaign performance and business outcomes.",
+        payload: {
+          summary: {
+            contacts: 1000,
+            attempts: 1084,
+            connected: 712,
+            qualified: 164,
+            resolved: 89,
+            callbacksScheduled: 37,
+            verifiedAppointments: 82,
+            verifiedPayments: 41,
+            attributedRevenue: 246000,
+            totalCost: 18420.5,
+            costPerGoal: 72.81,
+            pickupRate: 65.7,
+            goalRate: 25.3,
+            analysisCoverage: 96.4,
+            currency: "INR",
+          },
+          funnel: {
+            contacts: 1000,
+            attempted: 958,
+            connected: 698,
+            classified: 964,
+            goals: 253,
+            verifiedConversions: 123,
+          },
+          timeline: [],
         },
       },
     ],
@@ -1180,6 +1270,17 @@ const ENDPOINTS: ApiEndpoint[] = [
 
 type CodeLanguage = "curl" | "node" | "python" | "go" | "php";
 
+function parseBodyParameter(param: ParameterDef, value: string): unknown {
+  if (["array", "object", "integer", "number", "boolean"].includes(param.type)) {
+    try {
+      return JSON.parse(value);
+    } catch {
+      return value;
+    }
+  }
+  return value;
+}
+
 function generateSnippet(
   endpoint: ApiEndpoint,
   language: CodeLanguage,
@@ -1190,7 +1291,7 @@ function generateSnippet(
   const token = apiKey.trim() || "avp_live_your_api_key_here";
   const url = `${baseUrl}${endpoint.path}`
     .replace("{callId}", customParams.callId || "6702b3c4d5e6f7a8b9c0d1e2")
-    .replace("{campaignId}", customParams.campaignId || "camp_882901");
+    .replace("{campaignId}", customParams.campaignId || "6702b3c4d5e6f7a8b9c0d1e2");
 
   // Query string assembly
   const queryParams = endpoint.parameters.filter((p) => p.in === "query" && customParams[p.name]);
@@ -1206,15 +1307,7 @@ function generateSnippet(
       .filter((p) => p.in === "body")
       .forEach((p) => {
         const val = customParams[p.name] ?? p.defaultValue ?? "";
-        if (p.type === "object" || p.name === "metadata") {
-          try {
-            bodyObj[p.name] = JSON.parse(val);
-          } catch {
-            bodyObj[p.name] = val;
-          }
-        } else {
-          bodyObj[p.name] = val;
-        }
+        bodyObj[p.name] = parseBodyParameter(p, val);
       });
   }
   const bodyJson = JSON.stringify(Object.keys(bodyObj).length ? bodyObj : endpoint.requestBodyExample || {}, null, 2);
@@ -1543,7 +1636,10 @@ export function ApiReferenceExperience() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const savedKey = window.sessionStorage.getItem("vozon_docs_api_key");
-      if (savedKey) setUserApiKey(savedKey);
+      if (savedKey) {
+        const timer = window.setTimeout(() => setUserApiKey(savedKey), 0);
+        return () => window.clearTimeout(timer);
+      }
     }
   }, []);
 
@@ -1558,12 +1654,13 @@ export function ApiReferenceExperience() {
     return ENDPOINTS.find((e) => e.id === selectedEndpointId) || ENDPOINTS[0];
   }, [selectedEndpointId]);
 
-  // Reset selected response when switching endpoint
-  useEffect(() => {
+  const selectEndpoint = (endpointId: string) => {
+    setSelectedEndpointId(endpointId);
     setSelectedResponseIndex(0);
     setLiveTestResponse(null);
     setLiveTestStatus(null);
-  }, [selectedEndpointId]);
+    setLiveTestDurationMs(null);
+  };
 
   // Filter endpoints for left sidebar
   const filteredEndpoints = useMemo(() => {
@@ -1657,10 +1754,9 @@ export function ApiReferenceExperience() {
         );
       } else {
         // Real browser fetch against live endpoint
-        const fullUrl = `${BASE_URL_DEFAULT}${selectedEndpoint.path}`.replace(
-          "{callId}",
-          customParams.callId || "6702b3c4d5e6f7a8b9c0d1e2",
-        );
+        const fullUrl = `${BASE_URL_DEFAULT}${selectedEndpoint.path}`
+          .replace("{callId}", customParams.callId || "6702b3c4d5e6f7a8b9c0d1e2")
+          .replace("{campaignId}", customParams.campaignId || "6702b3c4d5e6f7a8b9c0d1e2");
         const headers: Record<string, string> = {
           Authorization: `Bearer ${userApiKey}`,
         };
@@ -1672,11 +1768,7 @@ export function ApiReferenceExperience() {
             .filter((p) => p.in === "body")
             .forEach((p) => {
               const val = customParams[p.name] ?? p.defaultValue ?? "";
-              try {
-                bodyObj[p.name] = JSON.parse(val);
-              } catch {
-                bodyObj[p.name] = val;
-              }
+              bodyObj[p.name] = parseBodyParameter(p, val);
             });
           body = JSON.stringify(Object.keys(bodyObj).length ? bodyObj : selectedEndpoint.requestBodyExample || {});
         }
@@ -1868,7 +1960,7 @@ export function ApiReferenceExperience() {
                         <button
                           key={e.id}
                           type="button"
-                          onClick={() => setSelectedEndpointId(e.id)}
+                          onClick={() => selectEndpoint(e.id)}
                           className={`group flex items-center justify-between rounded-xl px-3 py-2 text-left text-xs transition-all duration-150 cursor-pointer ${
                             active
                               ? "bg-teal-50/90 text-teal-950 font-bold border-l-[3px] border-[#108D82] shadow-xs"
