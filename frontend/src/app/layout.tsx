@@ -46,6 +46,9 @@ const platformMetadata: Metadata = {
   twitter: { card: "summary_large_image", title: "AI Voice Agent Platform for Phone Call Automation | Vozon", description: "Build multilingual AI phone agents that answer calls, qualify leads, book appointments, and automate customer workflows.", images: ["/opengraph-image"] },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
   category: "technology",
+  other: {
+    "facebook-domain-verification": "hs7xv0aby3bor2uybe6y440jg6wnkk",
+  },
 };
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -65,6 +68,9 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: { card: "summary_large_image", title: `${brand.productName} AI Voice Platform`, description: "Build multilingual AI phone agents for production workflows." },
     robots: { index: false, follow: false, nocache: true },
     category: "technology",
+    other: {
+      "facebook-domain-verification": "hs7xv0aby3bor2uybe6y440jg6wnkk",
+    },
   };
 }
 
@@ -117,6 +123,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   if (brand.source === "platform") {
     return (
       <html lang="en" data-scroll-behavior="smooth" className={fontClasses}>
+        <head>
+          <meta name="facebook-domain-verification" content="hs7xv0aby3bor2uybe6y440jg6wnkk" />
+        </head>
         <body className="flex min-h-full flex-col bg-background text-foreground">
           <MetaPixel />
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: platformStructuredData() }} />
@@ -134,6 +143,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   } as CSSProperties;
   return (
     <html lang="en" data-brand-source="white_label" data-scroll-behavior="smooth" className={fontClasses}>
+      <head>
+        <meta name="facebook-domain-verification" content="hs7xv0aby3bor2uybe6y440jg6wnkk" />
+      </head>
       <body className="flex min-h-full flex-col bg-background text-foreground" style={brandStyle}>
         <MetaPixel />
         <BrandProvider brand={brand}>{children}</BrandProvider>
