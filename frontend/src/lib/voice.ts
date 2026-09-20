@@ -157,8 +157,7 @@ export type AgentTemplate = {
     label: string;
     hint: string;
     required: boolean;
-    control?: "text" | "textarea" | "business-hours" | "timezone" | "weekdays" | "time" | "duration" | "select";
-    options?: { value: string; label: string; description?: string }[];
+    control?: "text" | "textarea" | "business-hours" | "timezone" | "weekdays" | "time" | "duration";
   }[];
 };
 
