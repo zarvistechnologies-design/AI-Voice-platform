@@ -68,6 +68,7 @@ export function AgentsListShell() {
   const [notice, setNotice] = useState("");
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingAgent, setEditingAgent] = useState<AgentSummary | null>(null);
+  const [deleteBlockedAgent, setDeleteBlockedAgent] = useState<AgentSummary | null>(null);
   const [editAgentName, setEditAgentName] = useState("");
   const [showUserSidebar, setShowUserSidebar] = useState(getDashboardSidebarInitialState);
   const agentDataPrefetchTimersRef = useRef(new Map<string, number>());
@@ -201,6 +202,11 @@ export function AgentsListShell() {
 
   async function deleteAgent(agent: AgentSummary) {
     setOpenMenuId(null);
+    if (agent.phone?.trim()) {
+      setNotice("");
+      setDeleteBlockedAgent(agent);
+      return;
+    }
     if (!window.confirm(`Delete ${agent.name}? This cannot be undone.`)) return;
 
     setBusy(true);
@@ -210,7 +216,9 @@ export function AgentsListShell() {
       setAgents((current) => current.filter((item) => item._id !== agent._id));
       setNotice("Agent deleted.");
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Could not delete agent.");
+      const message = error instanceof Error ? error.message : "Could not delete agent.";
+      if (/phone numbers/i.test(message)) setDeleteBlockedAgent(agent);
+      else setNotice(message);
     } finally {
       setBusy(false);
     }
@@ -257,7 +265,7 @@ export function AgentsListShell() {
 
         <section className="dashboard-page-content grid w-full gap-3 py-0">
           {notice && !showCreateForm && !editingAgent ? (
-            <div className="rounded-lg border border-[#dfe7e4] bg-white px-4 py-3 text-sm font-medium text-[#52645f] shadow-sm" role="status" aria-live="polite">
+            <div className="rounded-lg border border-[#dfe7e4] bg-white px-4 py-3 text-sm font-medium text-[#52645f] shadow-sm" role="alert" aria-live="polite">
               {notice}
             </div>
           ) : null}
@@ -448,6 +456,21 @@ export function AgentsListShell() {
               </button>
             </div>
           </form>
+        </div>
+      ) : null}
+
+      {deleteBlockedAgent ? (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-[#14231f]/35 px-4 backdrop-blur-[6px]" role="dialog" aria-modal="true" aria-labelledby="delete-agent-phone-title">
+          <div className="w-full max-w-md rounded-2xl border border-[#dfe7e4] bg-white p-6 shadow-[0_28px_80px_rgba(34,38,74,0.24)]">
+            <h2 className="app-section-title m-0" id="delete-agent-phone-title">Unlink the phone number first</h2>
+            <p className="mt-3 text-sm leading-6 text-[#52645f]">
+              {deleteBlockedAgent.name} has a phone route assigned. Move or unlink that number in Phone Numbers, then return here to delete the agent.
+            </p>
+            <div className="mt-6 flex flex-wrap justify-end gap-2">
+              <button className="app-button-text min-h-10 rounded-lg border border-[#dfe7e4] bg-white px-4 text-[#52645f]" type="button" onClick={() => setDeleteBlockedAgent(null)}>Close</button>
+              <Link className="app-button-text inline-flex min-h-10 items-center rounded-lg bg-[#118778] px-4 text-white" href="/dashboard/phone-number" onClick={() => setDeleteBlockedAgent(null)}>Manage phone route</Link>
+            </div>
+          </div>
         </div>
       ) : null}
     </main>
