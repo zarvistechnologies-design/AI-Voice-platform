@@ -1942,7 +1942,7 @@
   top: -125px;
   left: 50%;
   color: #fff;
-  font-size: 64px;
+  font-size: 46px;
   font-weight: 300;
   line-height: 1;
   transform: translateX(-50%);
@@ -2002,7 +2002,7 @@
   top: -70px;
   left: 50%;
   color: #fff;
-  font-size: 64px;
+  font-size: 46px;
   font-weight: 300;
   line-height: 1;
   transform: translateX(-50%);
@@ -2078,7 +2078,7 @@
   top: -125px;
   left: 50%;
   color: #fff;
-  font-size: 64px;
+  font-size: 46px;
   font-weight: 300;
   line-height: 1;
   transform: translateX(-50%);
@@ -2127,7 +2127,7 @@
 
   .marketing-site .site-pre-footer-cta::after {
     top: -115px;
-    font-size: 56px;
+    font-size: 46px;
   }
 
   .marketing-site:has(:is(#product-overview-page, #explore-capabilities-page)) .site-pre-footer-cta {
@@ -2140,7 +2140,7 @@
 
   .marketing-site:has(:is(#product-overview-page, #explore-capabilities-page)) .site-pre-footer-cta::after {
     top: -67px;
-    font-size: 56px;
+    font-size: 46px;
   }
 
   .marketing-site:has(#product-overview-page) .site-pre-footer-cta {
@@ -2168,6 +2168,6 @@
   .marketing-site:has(#blog-article-page) .site-pre-footer-cta::after,
   .marketing-site:has(:is(#about-page, #blog-page, #career-page, #partners-page, #contact-page)) .site-pre-footer-cta::after {
     top: -115px;
-    font-size: 56px;
+    font-size: 46px;
   }
 }

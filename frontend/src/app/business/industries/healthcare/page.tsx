@@ -755,7 +755,7 @@ export default function HealthcarePage() {
                   </span>
                 </div>
                 <div className="mt-5 flex items-end gap-2 border-b border-white/10 pb-5">
-                  <strong className="text-3xl font-semibold tracking-[-0.04em] text-white">₹6.76–₹11.58</strong>
+                  <strong className="text-3xl font-semibold tracking-[-0.04em] text-white">₹2–₹10</strong>
                   <span className="pb-1 text-sm text-slate-400">per minute</span>
                 </div>
                 <ul className="mt-5 grid gap-3 text-sm leading-6 text-slate-200">

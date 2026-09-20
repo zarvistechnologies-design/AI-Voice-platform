@@ -80,16 +80,18 @@ export function SiteHeader() {
     pathname.startsWith(route)
   );
   const isChangelog = pathname.startsWith("/resources/changelog");
+  const isLegalPage = pathname === "/privacy" || pathname === "/terms";
+  const hasOpaqueHeader = isChangelog || isLegalPage;
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-[100] flex justify-center px-3 pt-2.5 transition-all duration-300 sm:px-6 ${isChangelog ? "bg-white pb-2.5 shadow-[0_1px_0_rgba(15,23,42,.08)]" : ""}`}
+      className={`fixed inset-x-0 top-0 z-[100] flex justify-center px-3 pt-2.5 transition-all duration-300 sm:px-6 ${hasOpaqueHeader ? "bg-white pb-2.5 shadow-[0_1px_0_rgba(15,23,42,.08)]" : ""}`}
       ref={headerRef}
     >
       {/* Slim Floating Glass Capsule with Fixed Consistent Dimensions */}
       <div
         className={`relative flex h-[54px] w-full max-w-[1400px] items-center justify-between rounded-full border px-4 transition-all duration-300 sm:px-8 ${
-          isChangelog
+          hasOpaqueHeader
             ? "border-slate-200 bg-white shadow-[0_6px_24px_-6px_rgba(0,0,0,0.1)]"
             : scrolled
             ? "border-slate-200/90 bg-white/95 shadow-[0_8px_30px_-4px_rgba(0,0,0,0.08)] backdrop-blur-2xl"

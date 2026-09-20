@@ -1,0 +1,187 @@
+.home-design-four .design-four-testimonials-section {
+  min-height: 0 !important;
+  padding-top: 48px !important;
+  padding-bottom: 48px !important;
+  background: #edf7f4;
+}
+
+.design-four-testimonials-section:after {
+  display: none;
+}
+
+.design-four-testimonial-heading > span {
+  border: 1px solid #cdeae1;
+  background: #e8f6f1;
+  color: #087b6d;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.design-four-testimonial-heading h2 {
+  margin-top: 12px;
+  font-size: clamp(32px, 3.5vw, 46px);
+  font-weight: 400;
+  line-height: 1.08;
+}
+
+.design-four-testimonial-heading h2 strong {
+  color: #118778;
+}
+
+.design-four-testimonial-heading p {
+  max-width: 550px;
+  margin: 8px auto 0;
+  color: #60716e;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.design-four-review-grid {
+  max-width: 1160px;
+  margin: 28px auto 0;
+  gap: 15px;
+}
+
+.design-four-review-grid article {
+  display: flex;
+  min-width: 0;
+  min-height: 205px;
+  flex-direction: column;
+  border: 1px solid #ddece7;
+  border-radius: 22px;
+  background: linear-gradient(155deg, #fff 55%, #fafffd);
+  padding: 20px;
+  box-shadow: 0 10px 32px rgba(13, 82, 69, .05);
+  transform: none !important;
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+
+.design-four-review-grid article:hover {
+  transform: translateY(-5px) !important;
+  border-color: #addbcd;
+  box-shadow: 0 20px 42px rgba(13, 82, 69, .11);
+}
+
+.design-four-review-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.design-four-review-quote-mark {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 11px;
+  background: #eaf8f3;
+  color: #118778;
+  font-family: Georgia, serif;
+  font-size: 36px;
+  line-height: 1;
+  padding-top: 10px;
+}
+
+.design-four-review-number {
+  color: #a3b8b1;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.design-four-review-grid blockquote {
+  min-height: 0;
+  flex: 1;
+  margin: 12px 0 16px;
+  color: #263a35;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.design-four-review-grid footer {
+  min-width: 0;
+  border-top: 1px solid #e9f0ed;
+  padding-top: 12px;
+}
+
+.design-four-review-grid footer > span {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  background: linear-gradient(145deg, #118778, #0b5e56);
+  font-size: 12px;
+  letter-spacing: .02em;
+}
+
+.design-four-review-grid footer b {
+  overflow: hidden;
+  color: #172d28;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.design-four-review-grid footer small {
+  color: #738781;
+  font-size: 11px;
+}
+
+.design-four-testimonials-section > .design-four-review-button {
+  position: static;
+  display: flex;
+  width: max-content;
+  min-width: 185px;
+  min-height: 44px;
+  margin: 25px auto 0;
+  gap: 14px;
+  transform: none;
+  border: 0;
+  background: #118778;
+  box-shadow: 0 10px 24px rgba(17, 135, 120, .2);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 750;
+  transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+
+.design-four-testimonials-section > .design-four-review-button:hover {
+  transform: translateY(-2px);
+  background: #0b6f63;
+  box-shadow: 0 14px 28px rgba(17, 135, 120, .25);
+}
+
+.design-four-testimonials-section > .design-four-review-button:focus-visible {
+  outline: 3px solid #7fdcc6;
+  outline-offset: 3px;
+}
+
+.design-four-review-button span {
+  font-size: 17px;
+  line-height: 1;
+}
+
+@media (max-width: 640px) {
+  .home-design-four .design-four-testimonials-section {
+    padding-top: 42px !important;
+    padding-bottom: 42px !important;
+  }
+
+  .design-four-review-grid {
+    margin-top: 24px;
+    gap: 12px;
+  }
+
+  .design-four-review-grid article {
+    min-height: 190px;
+    padding: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .design-four-review-grid article,
+  .design-four-testimonials-section > .design-four-review-button {
+    transition: none;
+  }
+}

@@ -285,7 +285,10 @@ export function DocsExperience() {
   return (
     <div className="docs-experience min-h-screen bg-[#f8fafc] pt-[76px] text-slate-900 selection:bg-teal-500/20 font-sans">
       {/* Clean Light Developer Portal Header */}
-      <header className="sticky top-[76px] z-40 h-16 border-b border-slate-200/90 bg-white/95 backdrop-blur-md shadow-xs">
+      <header
+        className="isolate sticky top-[76px] z-40 h-16 border-b border-slate-200 bg-white shadow-[0_1px_0_rgba(15,23,42,.06)]"
+        style={{ backgroundColor: "#ffffff" }}
+      >
         <div className="mx-auto flex h-full max-w-[1720px] items-center justify-between gap-4 px-4 sm:px-6">
           <div className="flex items-center gap-4 sm:gap-6">
             <div className="flex items-center gap-2.5">

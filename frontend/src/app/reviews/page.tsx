@@ -22,10 +22,7 @@ export default function ReviewsPage() {
           <div className="mx-auto grid max-w-[1180px] gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {customerReviews.map((review, index) => (
               <article className="flex min-w-0 flex-col rounded-2xl border border-[#e0e1ec] bg-white p-6 shadow-[0_14px_38px_rgba(45,44,80,0.07)] sm:p-7" key={review.name}>
-                <div className="flex items-center justify-between gap-4">
-                  <span className="text-sm tracking-[0.16em] text-[#ee9a00]" aria-hidden="true">★★★★★</span>
-                  <span className="text-xs font-bold text-[#9a9baa]">{String(index + 1).padStart(2, "0")}</span>
-                </div>
+                <span className="text-xs font-bold text-[#9a9baa]">{String(index + 1).padStart(2, "0")}</span>
                 <blockquote className="mt-6 flex-1 text-[15px] leading-7 text-[#444550] sm:text-base">
                   “{review.quote}”
                 </blockquote>

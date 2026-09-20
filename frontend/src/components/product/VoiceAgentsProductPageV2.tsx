@@ -789,7 +789,7 @@ export function VoiceAgentsProductPageV2() {
             left: 50%;
             top: -125px;
             color: #fff;
-            font-size: 64px;
+            font-size: 46px;
             font-weight: 300;
             line-height: 1;
             transform: translateX(-50%);
@@ -836,7 +836,7 @@ export function VoiceAgentsProductPageV2() {
 
             .marketing-site:has(#voice-agents-solution-page) .site-pre-footer-cta::after {
               top: -115px;
-              font-size: 56px;
+              font-size: 46px;
             }
           }
 

@@ -16,6 +16,7 @@ import "./HomeDesignFourGrid.css";
 import "./HomeDesignFourHero.css";
 import "./HomeDesignFourSections.css";
 import "./HomeDesignFourEnding.css";
+import "./HomeDesignFourReviews.css";
 
 const voiceLanguages = [
   { label: "English", language: "English", voice: "English", detail: "Global voice" },
@@ -402,6 +403,7 @@ function StepMiniVisual({ index, onVoicePreview, onExploreLanguages }: { index: 
 export function HomeDesignFour() {
   const [activeIndustry, setActiveIndustry] = useState(0);
   const [activeLanguage, setActiveLanguage] = useState(0);
+  const [showAllReviews, setShowAllReviews] = useState(false);
   const voiceCall = useHomepageVoiceCall();
   const selectedIndustry = industries[activeIndustry];
   const selectedVoice = voiceLanguages[activeLanguage];
@@ -629,16 +631,31 @@ export function HomeDesignFour() {
           </div>
         </section>
 
-        <section className="design-four-testimonials-section">
+        <section className={`design-four-testimonials-section${showAllReviews ? " is-expanded" : ""}`}>
           <div className="design-four-testimonial-heading">
-            <span>Trusted Clients says</span><h2>What our customers say</h2><p><strong>4.5/5.0</strong> <b>★★★★★</b> (Trusted by 100+ companies)</p>
+            <span>Customer stories</span>
+            <h2>What our <strong>customers</strong> say</h2>
+            <p>Real businesses. Different conversations. A better way to be there for every customer.</p>
           </div>
-          <div className="design-four-review-grid">
-            {customerReviews.slice(0, 6).map((item) => (
-              <article key={item.name}><blockquote>{item.quote}</blockquote><footer><span>{item.name.slice(0, 1)}</span><div><b>{item.name}</b><small>{item.role}</small></div><i>𝕏</i></footer></article>
+          <div className="design-four-review-grid" id="home-customer-reviews">
+            {(showAllReviews ? customerReviews : customerReviews.slice(0, 3)).map((item, index) => (
+              <article key={item.name}>
+                <div className="design-four-review-card-top">
+                  <span aria-hidden="true" className="design-four-review-quote-mark">“</span>
+                  <span className="design-four-review-number">{String(index + 1).padStart(2, "0")}</span>
+                </div>
+                <blockquote>{item.quote}</blockquote>
+                <footer>
+                  <span aria-hidden="true">{item.name.split(" ").slice(0, 2).map((word) => word[0]).join("")}</span>
+                  <div><b>{item.name}</b><small>{item.role}</small></div>
+                </footer>
+              </article>
             ))}
           </div>
-          <Link className="design-four-review-button" href="/reviews">View all Reviews</Link>
+          <button aria-controls="home-customer-reviews" aria-expanded={showAllReviews} className="design-four-review-button" onClick={() => setShowAllReviews((value) => !value)} type="button">
+            {showAllReviews ? "Show fewer reviews" : "View all reviews"}
+            <span aria-hidden="true">{showAllReviews ? "↑" : "↓"}</span>
+          </button>
         </section>
 
         <section className={`${styles.insights} home-design-four__section design-four-insights-section`} id="insights">
