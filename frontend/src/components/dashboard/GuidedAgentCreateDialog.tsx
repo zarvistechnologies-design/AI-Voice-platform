@@ -16,11 +16,161 @@ const integrationChoices: { mode: GuidedAgentInput["mode"]; title: string; detai
 
 const fieldClass = "min-h-11 w-full rounded-lg border border-[#d5e2dd] bg-white px-3 text-sm text-[#14231f] outline-none transition focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10";
 
+const languageOptions = [
+  ["English", "English (India)"], ["English US", "English (US)"], ["English UK", "English (UK)"],
+  ["Hindi", "Hindi"], ["Bengali", "Bengali"], ["Tamil", "Tamil"], ["Telugu", "Telugu"],
+  ["Kannada", "Kannada"], ["Malayalam", "Malayalam"], ["Marathi", "Marathi"], ["Gujarati", "Gujarati"],
+  ["Punjabi", "Punjabi"], ["Odia", "Odia"], ["Assamese", "Assamese"], ["Urdu", "Urdu"],
+  ["Nepali", "Nepali"], ["Spanish", "Spanish"], ["French", "French"], ["German", "German"],
+] as const;
+
+const timezoneOptions = [
+  "Asia/Kolkata", "Asia/Dubai", "Asia/Singapore", "Asia/Kathmandu", "Asia/Dhaka", "Asia/Colombo",
+  "Asia/Karachi", "Asia/Bangkok", "Asia/Hong_Kong", "Asia/Tokyo", "Australia/Sydney", "Europe/London",
+  "Europe/Paris", "Europe/Berlin", "America/New_York", "America/Chicago", "America/Denver",
+  "America/Los_Angeles", "America/Toronto", "America/Sao_Paulo", "Africa/Johannesburg", "UTC",
+] as const;
+
+const weekdays = [
+  { value: "Sun", label: "Sunday" }, { value: "Mon", label: "Monday" },
+  { value: "Tue", label: "Tuesday" }, { value: "Wed", label: "Wednesday" },
+  { value: "Thu", label: "Thursday" }, { value: "Fri", label: "Friday" },
+  { value: "Sat", label: "Saturday" },
+] as const;
+
+type HoursDraft = { days: string[]; start: string; end: string; timezone: string; alwaysOpen: boolean; closesNextDay: boolean };
+const defaultHours: HoursDraft = {
+  days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+  start: "09:00",
+  end: "18:00",
+  timezone: "Asia/Kolkata",
+  alwaysOpen: false,
+  closesNextDay: false,
+};
+
+function readableTime(value: string) {
+  const [hourText, minute = "00"] = value.split(":");
+  const hour = Number(hourText);
+  if (!Number.isInteger(hour)) return value;
+  const suffix = hour >= 12 ? "PM" : "AM";
+  const displayHour = hour % 12 || 12;
+  return `${displayHour}:${minute} ${suffix}`;
+}
+
+function formatBusinessHours(value: HoursDraft) {
+  const schedule = value.alwaysOpen
+    ? "Open 24 hours"
+    : `${readableTime(value.start)}–${readableTime(value.end)}${value.closesNextDay ? " next day" : ""}`;
+  return `${value.days.join(", ")}, ${schedule}, ${value.timezone}`;
+}
+
+function initialAnswers(template: AgentTemplate) {
+  return Object.fromEntries(template.questions.map((question) => {
+    if (question.control === "business-hours") return [question.id, formatBusinessHours(defaultHours)];
+    if (question.control === "timezone") return [question.id, "Asia/Kolkata"];
+    if (question.control === "weekdays") return [question.id, "Mon,Tue,Wed,Thu,Fri,Sat"];
+    if (question.control === "time") return [question.id, question.id === "bookingEnd" ? "17:00" : "09:00"];
+    if (question.control === "duration") return [question.id, "30"];
+    return [question.id, ""];
+  }));
+}
+
+type GuidedQuestion = AgentTemplate["questions"][number];
+
+function QuestionField({
+  question,
+  value,
+  hours,
+  onChange,
+  onHoursChange,
+}: {
+  question: GuidedQuestion;
+  value: string;
+  hours: HoursDraft;
+  onChange: (value: string) => void;
+  onHoursChange: (value: HoursDraft) => void;
+}) {
+  const inputId = `guided-${question.id}`;
+  const hint = question.hint ? <span className="font-normal leading-4 text-[#8a9894]">{question.hint}</span> : null;
+  const label = <span>{question.label}{question.required ? " *" : ""}</span>;
+
+  if (question.control === "business-hours") {
+    const changeHours = (next: HoursDraft) => {
+      onHoursChange(next);
+      onChange(formatBusinessHours(next));
+    };
+    return (
+      <fieldset className="grid gap-2 rounded-xl border border-[#dce7e3] bg-[#fbfdfc] p-4 sm:col-span-2">
+        <legend className="px-1 text-xs font-semibold text-[#52645f]">{label}</legend>
+        <div className="flex flex-wrap gap-2" aria-label="Opening days">
+          {weekdays.map((day) => {
+            const selected = hours.days.includes(day.value);
+            return <button className={`rounded-lg border px-3 py-2 text-xs font-semibold transition ${selected ? "border-[#118778] bg-[#e7f5f0] text-[#0e6f62]" : "border-[#d5e2dd] bg-white text-[#71817d]"}`} key={day.value} type="button" aria-pressed={selected} onClick={() => changeHours({ ...hours, days: selected ? hours.days.filter((item) => item !== day.value) : [...hours.days, day.value] })}>{day.value}</button>;
+          })}
+        </div>
+        <div className="grid gap-3 sm:grid-cols-3">
+          <label className="grid gap-1 text-xs font-medium text-[#52645f]">Opens
+            <input className={fieldClass} type="time" step={300} required disabled={hours.alwaysOpen} value={hours.start} onChange={(event) => changeHours({ ...hours, start: event.target.value })} />
+          </label>
+          <label className="grid gap-1 text-xs font-medium text-[#52645f]">Closes
+            <input className={fieldClass} type="time" step={300} required disabled={hours.alwaysOpen} value={hours.end} onChange={(event) => changeHours({ ...hours, end: event.target.value })} />
+          </label>
+          <label className="grid gap-1 text-xs font-medium text-[#52645f]">Timezone
+            <select className={fieldClass} required value={hours.timezone} onChange={(event) => changeHours({ ...hours, timezone: event.target.value })}>
+              {timezoneOptions.map((timezone) => <option key={timezone} value={timezone}>{timezone}</option>)}
+            </select>
+          </label>
+        </div>
+        <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-[#52645f]">
+          <label className="flex items-center gap-2"><input className="accent-[#118778]" type="checkbox" checked={hours.alwaysOpen} onChange={(event) => changeHours({ ...hours, alwaysOpen: event.target.checked, closesNextDay: false })} />Open 24 hours</label>
+          {!hours.alwaysOpen ? <label className="flex items-center gap-2"><input className="accent-[#118778]" type="checkbox" checked={hours.closesNextDay} onChange={(event) => changeHours({ ...hours, closesNextDay: event.target.checked })} />Closing time is next day</label> : null}
+        </div>
+        {hint}
+      </fieldset>
+    );
+  }
+
+  if (question.control === "weekdays") {
+    const selectedDays = value.split(",").filter(Boolean);
+    return (
+      <fieldset className="grid gap-2 rounded-xl border border-[#dce7e3] bg-[#fbfdfc] p-4 sm:col-span-2">
+        <legend className="px-1 text-xs font-semibold text-[#52645f]">{label}</legend>
+        <div className="flex flex-wrap gap-2">
+          {weekdays.map((day) => {
+            const selected = selectedDays.includes(day.value);
+            return <button className={`rounded-lg border px-3 py-2 text-xs font-semibold transition ${selected ? "border-[#118778] bg-[#e7f5f0] text-[#0e6f62]" : "border-[#d5e2dd] bg-white text-[#71817d]"}`} key={day.value} type="button" aria-pressed={selected} onClick={() => onChange((selected ? selectedDays.filter((item) => item !== day.value) : [...selectedDays, day.value]).join(","))}>{day.value}</button>;
+          })}
+        </div>
+        {hint}
+      </fieldset>
+    );
+  }
+
+  if (question.control === "timezone") {
+    return <label className="grid gap-1.5 text-xs font-semibold text-[#52645f]" htmlFor={inputId}>{label}<select className={fieldClass} id={inputId} required={question.required} value={value} onChange={(event) => onChange(event.target.value)}>{timezoneOptions.map((timezone) => <option key={timezone} value={timezone}>{timezone}</option>)}</select>{hint}</label>;
+  }
+
+  if (question.control === "time") {
+    return <label className="grid gap-1.5 text-xs font-semibold text-[#52645f]" htmlFor={inputId}>{label}<input className={fieldClass} id={inputId} type="time" step={300} required={question.required} value={value} onChange={(event) => onChange(event.target.value)} />{hint}</label>;
+  }
+
+  if (question.control === "duration") {
+    return <label className="grid gap-1.5 text-xs font-semibold text-[#52645f]" htmlFor={inputId}>{label}<select className={fieldClass} id={inputId} required={question.required} value={value} onChange={(event) => onChange(event.target.value)}>{[15, 20, 30, 45, 60, 90, 120].map((minutes) => <option key={minutes} value={minutes}>{minutes} minutes</option>)}</select>{hint}</label>;
+  }
+
+  if (question.control === "textarea") {
+    return <label className="grid gap-1.5 text-xs font-semibold text-[#52645f] sm:col-span-2" htmlFor={inputId}>{label}<textarea className={`${fieldClass} min-h-24 py-3`} id={inputId} maxLength={300} required={question.required} placeholder={question.hint} value={value} onChange={(event) => onChange(event.target.value)} />{hint}</label>;
+  }
+
+  return <label className="grid gap-1.5 text-xs font-semibold text-[#52645f]" htmlFor={inputId}>{label}<input className={fieldClass} id={inputId} maxLength={300} required={question.required} placeholder={question.hint} value={value} onChange={(event) => onChange(event.target.value)} />{hint}</label>;
+}
+
 export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
   const [step, setStep] = useState<Step>("choose");
   const [templates, setTemplates] = useState<AgentTemplate[]>([]);
   const [selectedId, setSelectedId] = useState("");
   const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [hours, setHours] = useState<HoursDraft>(defaultHours);
   const [mode, setMode] = useState<GuidedAgentInput["mode"]>("collect");
   const [language, setLanguage] = useState("English");
   const [name, setName] = useState("");
@@ -44,7 +194,8 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
 
   function selectTemplate(template: AgentTemplate) {
     setSelectedId(template.id);
-    setAnswers({});
+    setHours(defaultHours);
+    setAnswers(initialAnswers(template));
     setName("");
     setPreview(null);
     setPrompt("");
@@ -60,6 +211,19 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
   async function review(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!selected) return;
+    if (selected.questions.some((question) => question.control === "business-hours")
+      && (!hours.days.length || (!hours.alwaysOpen && !hours.closesNextDay && hours.end <= hours.start))) {
+      setError(!hours.days.length ? "Select at least one opening day." : "Closing time must be after opening time, or mark it as next day.");
+      return;
+    }
+    if (selected.questions.some((question) => question.control === "weekdays" && !answers[question.id])) {
+      setError("Select at least one booking day.");
+      return;
+    }
+    if (answers.bookingStart && answers.bookingEnd && answers.bookingEnd <= answers.bookingStart) {
+      setError("Clinic closing time must be after the first appointment time.");
+      return;
+    }
     setBusy(true);
     setError("");
     try {
@@ -159,14 +323,18 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
                   <input className={fieldClass} maxLength={80} placeholder={`${selected.name}`} value={name} onChange={(event) => setName(event.target.value)} />
                 </label>
                 <label className="grid gap-1.5 text-xs font-semibold text-[#52645f]">Conversation language
-                  <input className={fieldClass} required maxLength={60} value={language} onChange={(event) => setLanguage(event.target.value)} />
+                  <select className={fieldClass} required value={language} onChange={(event) => setLanguage(event.target.value)}>
+                    {languageOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                  </select>
                 </label>
-                {selected.questions.map((question) => (
-                  <label className="grid gap-1.5 text-xs font-semibold text-[#52645f]" key={question.id}>{question.label}{question.required ? " *" : ""}
-                    <input className={fieldClass} maxLength={300} required={question.required} placeholder={question.hint} value={answers[question.id] ?? ""} onChange={(event) => setAnswers((current) => ({ ...current, [question.id]: event.target.value }))} />
-                    {question.hint ? <span className="font-normal leading-4 text-[#8a9894]">{question.hint}</span> : null}
-                  </label>
-                ))}
+                {selected.questions.map((question) => <QuestionField
+                  key={question.id}
+                  question={question}
+                  value={answers[question.id] ?? ""}
+                  hours={hours}
+                  onChange={(value) => setAnswers((current) => ({ ...current, [question.id]: value }))}
+                  onHoursChange={setHours}
+                />)}
               </div>
               <fieldset className="grid gap-2 border-0 p-0">
                 <legend className="mb-2 text-sm font-bold text-[#14231f]">Where should business results go?</legend>

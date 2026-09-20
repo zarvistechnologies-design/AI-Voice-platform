@@ -152,7 +152,13 @@ export type AgentTemplate = {
   name: string;
   team: string;
   description: string;
-  questions: { id: string; label: string; hint: string; required: boolean }[];
+  questions: {
+    id: string;
+    label: string;
+    hint: string;
+    required: boolean;
+    control?: "text" | "textarea" | "business-hours" | "timezone" | "weekdays" | "time" | "duration";
+  }[];
 };
 
 export type GuidedAgentInput = {
