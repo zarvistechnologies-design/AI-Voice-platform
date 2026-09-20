@@ -6417,8 +6417,8 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                             Google Workspace
                           </h3>
                           <span className="app-caption">
-                            Give this agent access to approved Calendar and
-                            Sheets resources.
+                            Configure Calendar and Sheets destinations for this
+                            agent.
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
@@ -6534,9 +6534,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                           {selectedAgent.googleSheets.enabled ? (
                             <div className="grid gap-3 border-t border-[#edf0f4] bg-[#fafcfb] px-4 py-4 sm:grid-cols-2">
                               <InputField
-                                label="Spreadsheet ID"
+                                label="Google Sheet link or ID"
                                 value={selectedAgent.googleSheets.spreadsheetId}
-                                placeholder="Google spreadsheet ID"
+                                placeholder="https://docs.google.com/spreadsheets/d/.../edit"
                                 onChange={(spreadsheetId) =>
                                   updateSelectedAgent({
                                     googleSheets: {
@@ -6575,8 +6575,8 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                                 }
                               />
                               <span className="app-caption self-end pb-3">
-                                Saves timestamp, contact, outcome, notes, and
-                                call ID.
+                                Only {selectedAgent.name} writes to this Sheet
+                                destination.
                               </span>
                             </div>
                           ) : null}
