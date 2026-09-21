@@ -27,13 +27,13 @@
 .dashboard-home-theme :where(h2) { letter-spacing: -.02em; }
 .dashboard-home-theme :where(button,a,input,select,textarea) { -webkit-tap-highlight-color: transparent; }
 .dashboard-home-theme :where(button,a) { transition: background-color .16s, border-color .16s, box-shadow .16s, color .16s; }
-.dashboard-home-theme :where(button,a,input,textarea,select):focus-visible { outline: 3px solid #a7abff; outline-offset: 3px; }
+.dashboard-home-theme :where(button,a,input,textarea,select):focus-visible { outline: 3px solid #9fcfc3; outline-offset: 3px; }
 .dashboard-home-theme :where(button,input,select,textarea):disabled { cursor: not-allowed; }
 .dashboard-home-theme :where(input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]),textarea,select) { border-color: #dbe4e1; color: #303246; accent-color: #118778; }
 .dashboard-home-theme :where(input,textarea)::placeholder { color: #9396a7; opacity: 1; }
 .dashboard-home-theme :where(input[type=checkbox],input[type=radio],input[type=range]) { accent-color: #118778; }
 .dashboard-home-theme :where(select option) { background: white; color: #303246; }
-.dashboard-home-theme ::selection { background: #dedfff; color: #108D82; }
+.dashboard-home-theme ::selection { background: #cdeee7; color: #0e6f62; }
 .dashboard-home-theme main:has(> .dashboard-sidebar) { background: #f7f8fc; }
 .dashboard-home-theme main:has(> .dashboard-sidebar) > section { min-width: 0; padding-top: 0; background-image: none; }
 .dashboard-home-theme main:has(> .dashboard-sidebar) > section:has(> header) { padding-top: 0; }
@@ -118,7 +118,7 @@
 .agents-tabs button { padding: 6px 11px; border: 1px solid transparent; border-radius: 5px; font-size: 11px; color: #9598a9; white-space: nowrap; }
 .agents-tabs button[aria-pressed=true] { background: #fff; border-color: #e7e9f0; color: #525570; box-shadow: 0 1px 3px #252b4908; }
 .agents-search { display: flex; align-items: center; gap: 8px; width: 250px; border: 1px solid #e5e7ef; padding: 0 11px; border-radius: 7px; color: #a0a3b3; }
-.agents-search:focus-within { border-color: #a7abff; }
+.agents-search:focus-within { border-color: #118778; }
 .agents-search input { outline: none; width: 100%; min-width: 0; height: 35px; font-size: 11px; background: transparent; }
 .agents-table-heading,.agent-row { display: grid; grid-template-columns: minmax(180px,1.6fr) minmax(120px,1fr) minmax(125px,1fr) 95px 92px; gap: 14px; align-items: center; padding: 16px 22px; }
 .agents-table-heading { background: #fafbfe; font-size: 9px; font-weight: 500; color: #a0a3b4; letter-spacing: .09em; text-transform: uppercase; border-bottom: 1px solid #eceef4; }

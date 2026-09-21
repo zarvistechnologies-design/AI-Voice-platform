@@ -1647,7 +1647,7 @@ html:not([data-brand-source="white_label"]) :is(.dashboard-home-theme, .agents-h
   }
 
   .dashboard-home-theme.dashboard-home-theme select:hover:not(:disabled) {
-    border-color: #b3b8df !important;
+    border-color: #9fcfc3 !important;
   }
 
   .dashboard-home-theme.dashboard-home-theme select:focus,
@@ -1670,9 +1670,21 @@ html:not([data-brand-source="white_label"]) :is(.dashboard-home-theme, .agents-h
     background-color: #ffffff !important;
   }
 
-  .dashboard-home-theme.dashboard-home-theme select option:checked {
+  .dashboard-home-theme.dashboard-home-theme select option:hover,
+  .dashboard-home-theme.dashboard-home-theme select option:focus {
+    color: #0e6f62 !important;
+    background: linear-gradient(#edf7f4, #edf7f4) !important;
+    background-color: #edf7f4 !important;
+    box-shadow: 0 0 0 100vmax #edf7f4 inset !important;
+  }
+
+  .dashboard-home-theme.dashboard-home-theme select option:checked,
+  .dashboard-home-theme.dashboard-home-theme select option:checked:hover,
+  .dashboard-home-theme.dashboard-home-theme select option:checked:focus {
     color: #ffffff !important;
+    background: linear-gradient(#118778, #118778) !important;
     background-color: #118778 !important;
+    box-shadow: 0 0 0 100vmax #118778 inset !important;
   }
 
   .dashboard-home-theme.dashboard-home-theme select option:disabled {
@@ -1682,6 +1694,58 @@ html:not([data-brand-source="white_label"]) :is(.dashboard-home-theme, .agents-h
 
   .dashboard-home-theme.dashboard-home-theme :where(input, textarea)::placeholder {
     color: #71817d !important;
+  }
+
+  .dashboard-home-theme.dashboard-home-theme ::selection {
+    color: #0e6f62 !important;
+    background: #cdeee7 !important;
+  }
+
+  /* Chromium's customizable select API lets the open picker follow the
+     Vozon palette instead of the operating system's blue selection color.
+     Browsers without it keep the themed native-select fallback above. */
+  @supports (appearance: base-select) {
+    .dashboard-home-theme.dashboard-home-theme select:not([multiple]),
+    .dashboard-home-theme.dashboard-home-theme select:not([multiple])::picker(select) {
+      appearance: base-select;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme select:not([multiple])::picker-icon {
+      display: none;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme select:not([multiple])::picker(select) {
+      margin-block: 0.35rem;
+      border: 1px solid #c6d4d0;
+      border-radius: 0.75rem;
+      background: #ffffff;
+      box-shadow: 0 18px 44px rgb(20 35 31 / 0.16);
+    }
+
+    .dashboard-home-theme.dashboard-home-theme select:not([multiple]) option {
+      min-height: 2.5rem;
+      padding: 0.65rem 0.75rem;
+      border-radius: 0.5rem;
+      color: #14231f !important;
+      background: #ffffff !important;
+      box-shadow: none !important;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme select:not([multiple]) option:hover,
+    .dashboard-home-theme.dashboard-home-theme select:not([multiple]) option:focus {
+      color: #0e6f62 !important;
+      background: #edf7f4 !important;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme select:not([multiple]) option:checked {
+      color: #ffffff !important;
+      background: #118778 !important;
+      font-weight: 700;
+    }
+
+    .dashboard-home-theme.dashboard-home-theme select:not([multiple]) option::checkmark {
+      color: currentColor;
+    }
   }
 
   .dashboard-home-theme.dashboard-home-theme :is(button, a[href]):is([class~="bg-[#118778]"],
