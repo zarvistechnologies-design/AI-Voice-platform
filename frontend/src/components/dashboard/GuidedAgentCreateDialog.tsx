@@ -15,11 +15,6 @@ const integrationChoices: { mode: GuidedAgentInput["mode"]; title: string; detai
 ];
 
 const scheduleFields = new Set(["appointmentTimezone", "bookingDays", "bookingStart", "bookingEnd", "appointmentDuration"]);
-const businessLabels: Record<string, string> = {
-  restaurant_reservations: "Restaurant", clinic_appointments: "Clinic", hotel_reservations: "Hotel",
-  real_estate_qualification: "Real estate", service_booking: "Service business",
-  payment_reminders: "Payment reminders", customer_feedback: "Customer feedback",
-};
 const requestSummaries: Record<string, string> = {
   restaurant_reservations: "Collect table requests, party size, preferred time, and special requests. Your staff confirm the reservation.",
   clinic_appointments: "Collect appointment requests, preferred doctors, and callback details. Your staff confirm the appointment.",
@@ -400,7 +395,7 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
           </div> : null}
           {step === "choose" ? <div>
             {loading ? <p className="text-sm text-[#71817d]" role="status">Loading business types...</p> : null}
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{templates.map((template) => <button className="min-h-36 rounded-xl border border-[#dce7e3] bg-white p-4 text-left transition hover:border-[#118778] hover:bg-[#f1f9f6]" key={template.id} type="button" onClick={() => selectTemplate(template)}><strong className="block text-base text-[#14231f]">{businessLabels[template.id] ?? template.name}</strong><span className="mt-2 block text-xs leading-5 text-[#71817d]">{template.description}</span></button>)}</div>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{templates.map((template) => <button className="min-h-36 rounded-xl border border-[#dce7e3] bg-white p-4 text-left transition hover:border-[#118778] hover:bg-[#f1f9f6]" key={template.id} type="button" onClick={() => selectTemplate(template)}><strong className="block text-base text-[#14231f]">{template.name}</strong><span className="mt-2 block text-xs leading-5 text-[#71817d]">{template.description}</span></button>)}</div>
             <button className="mt-5 text-sm font-semibold text-[#0e6f62]" type="button" onClick={() => { setError(""); setStep("start"); }}>&larr; Back to setup options</button>
           </div> : null}
           {step === "details" && !selected ? <form className="grid gap-4" onSubmit={(event) => void createBlank(event)}>
