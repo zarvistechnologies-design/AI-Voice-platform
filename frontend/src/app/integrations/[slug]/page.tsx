@@ -34,6 +34,10 @@ export default async function IntegrationPage({ params }: PageProps) {
 
   const guide = integrationGuides[integration.slug];
   const editorial = integrationEditorial[integration.slug];
+  const isDigitalBot = integration.slug === "digitalbot";
+  const primaryAction = isDigitalBot
+    ? { href: "/dashboard/integrations", label: "Connect DigitalBot" }
+    : { href: "/contact", label: "Plan this integration" };
   const related = integrations
     .filter((item) => item.category === integration.category && item.slug !== slug)
     .slice(0, 3);
@@ -63,8 +67,8 @@ export default async function IntegrationPage({ params }: PageProps) {
                   {integration.description}
                 </p>
                 <div className="mt-8 flex flex-wrap gap-3">
-                  <Link className="inline-flex min-h-12 items-center rounded-full bg-[#0f8777] px-6 text-sm font-bold text-white transition hover:bg-[#0a685c]" href="/contact">
-                    Plan this integration
+                  <Link className="inline-flex min-h-12 items-center rounded-full bg-[#0f8777] px-6 text-sm font-bold text-white transition hover:bg-[#0a685c]" href={primaryAction.href}>
+                    {primaryAction.label}
                   </Link>
                   <Link className="inline-flex min-h-12 items-center rounded-full border border-[#dbe4e1] bg-white px-6 text-sm font-bold text-[#173b35] transition hover:border-[#0f8777]" href="/integrations">
                     Explore all integrations
@@ -138,7 +142,7 @@ export default async function IntegrationPage({ params }: PageProps) {
         </section>
 
         {related.length ? <section className={`${sectionClass} bg-white`}><div className="mx-auto max-w-[1340px]"><h2 className={headingClass}>More in {integration.category}</h2><div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{related.map((item) => <Link className="rounded-xl border border-[#dbe4e1] bg-white p-5 text-sm font-semibold text-[#14231f] transition hover:border-[#118778] hover:text-[#0e6f62]" href={`/integrations/${item.slug}`} key={item.slug}>{item.name} <span aria-hidden="true">&rarr;</span></Link>)}</div></div></section> : null}
-        <section className="border-t border-[#e3ebe8] bg-white px-5 py-12 sm:px-7 sm:py-14"><div className="mx-auto max-w-[850px] text-center"><p className={eyebrowClass}>Build your workflow</p><h2 className="mt-5 text-[clamp(2rem,4vw,3.5rem)] font-medium leading-[1.05] tracking-[-0.055em]">Put {integration.name} to work in the right call flow.</h2><p className="mx-auto mt-4 max-w-[650px] text-[15px] leading-7 text-[#5b6964] sm:text-base">Tell us what your agent needs to hear, say, read, or update. We&apos;ll help map the connection and test it with your call scenarios.</p><Link className="mt-7 inline-flex min-h-12 items-center rounded-full bg-[#0f8777] px-7 text-sm font-bold text-white hover:bg-[#0a685c]" href="/contact">Talk to our team <span aria-hidden="true" className="ml-2">&rarr;</span></Link></div></section>
+        <section className="border-t border-[#e3ebe8] bg-white px-5 py-12 sm:px-7 sm:py-14"><div className="mx-auto max-w-[850px] text-center"><p className={eyebrowClass}>Build your workflow</p><h2 className="mt-5 text-[clamp(2rem,4vw,3.5rem)] font-medium leading-[1.05] tracking-[-0.055em]">Put {integration.name} to work in the right call flow.</h2><p className="mx-auto mt-4 max-w-[650px] text-[15px] leading-7 text-[#5b6964] sm:text-base">{isDigitalBot ? "Connect the right clinic workspace to a Vozon agent, activate only the appointment tools it needs, and test the complete booking flow before launch." : "Tell us what your agent needs to hear, say, read, or update. We'll help map the connection and test it with your call scenarios."}</p><Link className="mt-7 inline-flex min-h-12 items-center rounded-full bg-[#0f8777] px-7 text-sm font-bold text-white hover:bg-[#0a685c]" href={primaryAction.href}>{primaryAction.label} <span aria-hidden="true" className="ml-2">&rarr;</span></Link></div></section>
       </div>
     </SiteLayout>
   );

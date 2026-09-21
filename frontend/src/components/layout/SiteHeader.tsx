@@ -131,7 +131,7 @@ export function SiteHeader() {
             aria-expanded={activeMenu === "product"}
             className={`group flex items-center gap-1 rounded-full px-3 py-1 text-[13px] font-medium transition-all duration-150 ${
               activeMenu === "product" || pathname.startsWith("/product") || pathname.startsWith("/services")
-                ? "bg-slate-900 text-white shadow-xs font-semibold"
+                ? "bg-[#edf7f4] text-[#0e6f62] shadow-xs ring-1 ring-[#cce8e1] font-semibold"
                 : "text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
             }`}
             onClick={() => setActiveMenu(activeMenu === "product" ? null : "product")}
@@ -156,7 +156,7 @@ export function SiteHeader() {
             aria-expanded={activeMenu === "business"}
             className={`group flex items-center gap-1 rounded-full px-3 py-1 text-[13px] font-medium transition-all duration-150 ${
               activeMenu === "business" || pathname.startsWith("/business")
-                ? "bg-slate-900 text-white shadow-xs font-semibold"
+                ? "bg-[#edf7f4] text-[#0e6f62] shadow-xs ring-1 ring-[#cce8e1] font-semibold"
                 : "text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
             }`}
             onClick={() => setActiveMenu(activeMenu === "business" ? null : "business")}
@@ -181,7 +181,7 @@ export function SiteHeader() {
             aria-controls="header-integrations-menu"
             className={`group flex items-center gap-1 rounded-full px-3 py-1 text-[13px] font-medium transition-all duration-150 ${
               activeMenu === "integrations" || pathname.startsWith("/integrations")
-                ? "bg-slate-900 text-white shadow-xs font-semibold"
+                ? "bg-[#edf7f4] text-[#0e6f62] shadow-xs ring-1 ring-[#cce8e1] font-semibold"
                 : "text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
             }`}
             onClick={() => setActiveMenu(activeMenu === "integrations" ? null : "integrations")}
@@ -208,7 +208,7 @@ export function SiteHeader() {
             aria-expanded={activeMenu === "company"}
             className={`group flex items-center gap-1 rounded-full px-3 py-1 text-[13px] font-medium transition-all duration-150 ${
               activeMenu === "company" || isCompany
-                ? "bg-slate-900 text-white shadow-xs font-semibold"
+                ? "bg-[#edf7f4] text-[#0e6f62] shadow-xs ring-1 ring-[#cce8e1] font-semibold"
                 : "text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
             }`}
             onClick={() => setActiveMenu(activeMenu === "company" ? null : "company")}
@@ -280,21 +280,30 @@ export function SiteHeader() {
         {activeMenu && activeMenu !== "integrations" ? (
           <div className="absolute left-1/2 top-[calc(100%+8px)] hidden w-[min(900px,calc(100vw-32px))] -translate-x-1/2 overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.16)] lg:grid lg:grid-cols-[0.75fr_1.25fr] transition-all duration-200">
             {/* Left Feature Card */}
-            <div className="flex flex-col justify-between rounded-xl bg-gradient-to-br from-slate-950 via-slate-900 to-teal-950 p-5 text-white shadow-inner border border-slate-800">
-              <div>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-950/80 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-400 shadow-sm">
+            <div className="relative flex flex-col justify-between overflow-hidden rounded-xl border border-[#0b7668] bg-gradient-to-br from-[#0b5f55] via-[#0f7668] to-[#148b7b] p-5 shadow-[0_16px_34px_-18px_rgba(7,83,74,0.72),inset_0_1px_0_rgba(255,255,255,0.16)]">
+              <span aria-hidden="true" className="absolute -right-12 -top-14 size-36 rounded-full bg-[#6ee7d2]/20 blur-2xl" />
+              <span aria-hidden="true" className="absolute -bottom-16 -left-12 size-32 rounded-full bg-[#032f2a]/25 blur-2xl" />
+              <div className="relative">
+                <div className="mb-4 flex items-center justify-between gap-3">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/12 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#c8fff3] shadow-sm backdrop-blur-sm">
                   {menus[activeMenu].badge}
                 </span>
+                  <span className="grid size-9 place-items-center rounded-xl border border-white/25 bg-white/15 text-[#d9fff6] shadow-sm backdrop-blur-sm">
+                    <svg aria-hidden="true" className="size-5" fill="none" viewBox="0 0 24 24">
+                      <path d="M4 12h2m2-4v8m3-11v14m3-11v8m3-6v4m3-2h1" stroke="currentColor" strokeLinecap="round" strokeWidth="1.8" />
+                    </svg>
+                  </span>
+                </div>
                 <h3 className="mt-3 text-xl font-bold tracking-tight text-white">
                   {menus[activeMenu].intro.title}
                 </h3>
-                <p className="mt-2 text-xs leading-relaxed text-slate-300">
+                <p className="mt-2 text-xs leading-relaxed text-[#d5eee9]">
                   {menus[activeMenu].intro.body}
                 </p>
               </div>
 
               <Link
-                className="mt-5 inline-flex items-center gap-1.5 text-xs font-bold text-emerald-400 transition-transform duration-200 hover:translate-x-1"
+                className="relative mt-5 inline-flex w-fit items-center gap-1.5 rounded-full border border-white/80 bg-white px-3.5 py-2 text-xs font-bold text-[#0b665a] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#e7faf5] hover:shadow-md"
                 href={menus[activeMenu].intro.href}
                 onClick={closeAll}
               >
@@ -322,7 +331,7 @@ export function SiteHeader() {
                     {group.links.map((link) => (
                       <li key={link.href}>
                         <Link
-                          className="group flex flex-col rounded-lg p-1.5 transition-all duration-150 hover:bg-slate-50"
+                          className="group flex flex-col rounded-lg border border-transparent p-1.5 transition-all duration-150 hover:-translate-y-px hover:border-[#dcece8] hover:bg-[#f5fbf9] hover:shadow-sm"
                           href={link.href}
                           onClick={closeAll}
                         >
@@ -345,20 +354,20 @@ export function SiteHeader() {
         ) : null}
 
         {activeMenu === "integrations" ? (
-          <div className="absolute left-1/2 top-[calc(100%+6px)] hidden w-[min(1120px,calc(100vw-24px))] -translate-x-1/2 rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.16)] lg:block" id="header-integrations-menu">
+          <div className="absolute left-1/2 top-[calc(100%+6px)] hidden w-[min(1120px,calc(100vw-24px))] -translate-x-1/2 overflow-hidden rounded-2xl border border-[#d7e8e3] bg-[linear-gradient(180deg,#f7fcfa_0%,#ffffff_24%)] p-3 shadow-[0_22px_55px_-16px_rgba(14,111,98,0.26)] lg:block" id="header-integrations-menu">
             <div className="flex items-center justify-between gap-3 border-b border-slate-100 pb-2">
               <div><p className="text-[10px] font-bold uppercase tracking-wider text-emerald-700">Vozon integrations</p><h3 className="text-base font-bold tracking-tight text-slate-900">Connect your voice workflows</h3></div>
               <Link className="shrink-0 text-xs font-bold text-emerald-700 hover:text-emerald-900" href="/integrations" onClick={closeAll}>View all integrations &rarr;</Link>
             </div>
             <div className="mt-2 grid grid-cols-4 gap-1.5">
               {integrationCategories.map((category) => (
-                <section className="min-w-0 rounded-lg border border-slate-100 bg-slate-50/50 p-2" key={category}>
+                <section className="min-w-0 rounded-lg border border-[#cfe4df] bg-[#edf7f4] p-2 shadow-[0_4px_14px_-12px_rgba(14,111,98,0.45)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#91c9bc] hover:bg-[#e3f3ef] hover:shadow-[0_10px_24px_-16px_rgba(14,111,98,0.55)]" key={category}>
                   <h4 className="mb-1 text-[10px] font-bold uppercase tracking-wide text-slate-500">{category}</h4>
                   <div>
                     {integrations.filter((integration) => integration.category === category).map((integration) => (
                       <Link className="group flex min-w-0 items-center gap-1.5 rounded-md px-1 py-0.5 transition hover:bg-emerald-50" href={`/integrations/${integration.slug}`} key={integration.slug} onClick={closeAll}>
-                        <span className="grid size-6 shrink-0 place-items-center rounded-md bg-white">
-                          <Image alt="" className="max-h-[18px] max-w-[18px] object-contain" height={18} src={integration.logo} width={18} />
+                        <span className="relative grid size-6 shrink-0 place-items-center rounded-md bg-white">
+                          <Image alt="" className="object-contain p-[3px]" fill sizes="24px" src={integration.logo} />
                         </span>
                         <span className="min-w-0 text-[12px] font-semibold leading-5 text-slate-800 transition-colors group-hover:text-emerald-700">{integration.name}</span>
                       </Link>

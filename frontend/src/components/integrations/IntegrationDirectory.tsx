@@ -75,15 +75,17 @@ export function IntegrationDirectory() {
                 role="listitem"
               >
                 {integration.slug !== "vozon-ai" && (
-                  <span className="grid size-9 shrink-0 place-items-center rounded-lg border border-[#e3ebe8] bg-[#f7f9f8]">
-                    <Image alt="" className="max-h-6 max-w-6 object-contain" height={24} src={integration.logo} width={24} />
+                  <span className="relative grid size-9 shrink-0 place-items-center rounded-lg border border-[#e3ebe8] bg-[#f7f9f8]">
+                    <Image alt="" className="object-contain p-1.5" fill sizes="36px" src={integration.logo} />
                   </span>
                 )}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-start justify-between gap-2">
                     {integration.slug === "vozon-ai" ? (
                       <>
-                        <Image alt="" className="h-auto w-[100px] object-contain" height={30} src={integration.logo} width={100} />
+                        <span className="relative block h-[30px] w-[100px]">
+                          <Image alt="" className="object-contain" fill sizes="100px" src={integration.logo} />
+                        </span>
                         <h3 className="sr-only">{integration.name}</h3>
                       </>
                     ) : (
