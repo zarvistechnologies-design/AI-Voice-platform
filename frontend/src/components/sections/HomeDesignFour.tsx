@@ -681,7 +681,7 @@ export function HomeDesignFour() {
         </section>
 
         <section className="design-four-integrations-section" id="integrations">
-          <div className="design-four-integration-copy"><span>Integrations</span><h2>Don’t replace.<br /><strong>Integrate.</strong></h2><Link href="/dashboard">Get Started</Link></div>
+          <div className="design-four-integration-copy"><span>Integrations</span><h2>Don’t replace.<br /><strong>Integrate.</strong></h2><Link href="/integrations">Explore integrations</Link></div>
           <div className="design-four-integration-icons" aria-label="Supported integrations">
             <span className="calendar"><Image alt="Google Calendar" height={65} src="/images/integrations/google-calendar.svg" width={65} /></span>
             <span className="crm">CRM</span>

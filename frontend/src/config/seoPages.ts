@@ -1,3 +1,6 @@
+import { integrations } from "@/config/integrationCatalog";
+import { integrationGuides } from "@/config/integrationGuides";
+
 export type SeoPage = {
   slug: string;
   kicker: string;
@@ -77,28 +80,18 @@ export const commercialPages: SeoPage[] = [
   },
 ];
 
-export const integrationPages: SeoPage[] = [
-  ["hubspot", "HubSpot", "qualify leads, create or update contacts, record call outcomes, and schedule sales follow-up"],
-  ["salesforce", "Salesforce", "look up customer context, update records, create tasks, and route qualified opportunities"],
-  ["twilio", "Twilio", "connect phone numbers and telephony routes to inbound and outbound Vozon voice workflows"],
-  ["calendly", "Calendly", "check scheduling availability and book confirmed appointments during a live phone call"],
-  ["google-calendar", "Google Calendar", "find available time, create events, reschedule bookings, and send calendar-ready call outcomes"],
-  ["zapier", "Zapier", "trigger thousands of app workflows from call events, summaries, structured fields, and dispositions"],
-  ["zoho", "Zoho CRM", "capture leads, update customer records, create follow-up tasks, and keep call notes synchronized"],
-  ["exotel", "Exotel", "connect business telephony in India with multilingual AI agents and structured call workflows"],
-].map(([slug, name, outcome]) => ({
-  slug,
-  kicker: "Voice AI Integration",
-  title: `${name} Voice AI Integration`,
-  description: `Connect Vozon with ${name} to ${outcome}.`,
-  highlights: ["Connected customer context", "Automated business actions", "Traceable call outcomes"] as [string, string, string],
+export const integrationPages: SeoPage[] = integrations.map((integration) => ({
+  slug: integration.slug,
+  kicker: integration.category,
+  title: `${integration.name} Integration`,
+  description: integration.description,
+  highlights: [integration.capabilities[0], integration.capabilities[1], integration.capabilities[2]],
   sections: [
-    { title: `Connect ${name} to every call`, body: `Give approved Vozon agents access to the ${name} context and actions required for the conversation. Keep authentication, field mapping, and workflow ownership explicit before moving from testing to production.` },
-    { title: "Read context before responding", body: "Use known customer, lead, appointment, or workflow data to reduce repeated questions and select the right conversation path without exposing unnecessary information." },
-    { title: "Write clean outcomes automatically", body: `After confirmation, the agent can ${outcome}. Store structured fields alongside the transcript and summary so teams can verify what happened.` },
-    { title: "Test failures and permissions", body: "Validate missing records, duplicate contacts, expired authorization, rate limits, timeouts, and unavailable actions. Configure a safe fallback or human handoff for every failure path." },
+    { title: `Where ${integration.name} fits`, body: integration.description },
+    { title: `Set up ${integration.name}`, body: integrationGuides[integration.slug].setup },
+    { title: "What to verify", body: integrationGuides[integration.slug].check },
   ],
-  secondaryAction: { href: "/docs", label: "Read documentation" },
+  secondaryAction: { href: "/integrations", label: "All integrations" },
 }));
 
 export const comparisonPages: SeoPage[] = [

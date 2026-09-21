@@ -1,13 +1,15 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { BrandLogo } from "@/components/ui/BrandLogo";
+import { integrationCategories, integrations } from "@/config/integrationCatalog";
 import { siteConfig } from "@/config/site";
 
-type MenuKey = "product" | "business" | "company";
+type MenuKey = "product" | "business" | "company" | "integrations";
 
 const menus = {
   product: {
@@ -46,11 +48,13 @@ export function SiteHeader() {
   const headerRef = useRef<HTMLElement>(null);
   const [activeMenu, setActiveMenu] = useState<MenuKey | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileIntegrationsOpen, setMobileIntegrationsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   const closeAll = () => {
     setActiveMenu(null);
     setMobileOpen(false);
+    setMobileIntegrationsOpen(false);
   };
 
   useEffect(() => {
@@ -108,7 +112,7 @@ export function SiteHeader() {
         {/* Center: Slim Navigation Pills */}
         <nav
           aria-label="Main navigation"
-          className="hidden items-center gap-0.5 md:flex"
+          className="hidden items-center gap-0.5 lg:flex"
         >
           <Link
             className={`rounded-full px-3 py-1 text-[13px] font-medium transition-all duration-150 ${
@@ -170,6 +174,21 @@ export function SiteHeader() {
             >
               <path d="m2.5 4.5 3.5 3 3.5-3" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
+          </button>
+
+          <button
+            aria-expanded={activeMenu === "integrations"}
+            aria-controls="header-integrations-menu"
+            className={`group flex items-center gap-1 rounded-full px-3 py-1 text-[13px] font-medium transition-all duration-150 ${
+              activeMenu === "integrations" || pathname.startsWith("/integrations")
+                ? "bg-slate-900 text-white shadow-xs font-semibold"
+                : "text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
+            }`}
+            onClick={() => setActiveMenu(activeMenu === "integrations" ? null : "integrations")}
+            type="button"
+          >
+            <span>Integrations</span>
+            <svg aria-hidden="true" className={`size-2.5 transition-transform duration-150 ${activeMenu === "integrations" ? "rotate-180 text-emerald-400" : "text-slate-400 group-hover:text-slate-600"}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 12 12"><path d="m2.5 4.5 3.5 3 3.5-3" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </button>
 
           <Link
@@ -241,7 +260,7 @@ export function SiteHeader() {
           <button
             aria-expanded={mobileOpen}
             aria-label="Toggle navigation"
-            className="grid size-8 place-items-center rounded-full border border-slate-200/80 bg-white/80 text-slate-700 shadow-xs transition-colors hover:bg-slate-100 md:hidden"
+            className="grid size-8 place-items-center rounded-full border border-slate-200/80 bg-white/80 text-slate-700 shadow-xs transition-colors hover:bg-slate-100 lg:hidden"
             onClick={() => setMobileOpen(!mobileOpen)}
             type="button"
           >
@@ -258,8 +277,8 @@ export function SiteHeader() {
         </div>
 
         {/* Floating Slim Mega Menu */}
-        {activeMenu ? (
-          <div className="absolute left-1/2 top-[calc(100%+8px)] hidden w-[min(900px,calc(100vw-32px))] -translate-x-1/2 overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.16)] md:grid md:grid-cols-[0.75fr_1.25fr] transition-all duration-200">
+        {activeMenu && activeMenu !== "integrations" ? (
+          <div className="absolute left-1/2 top-[calc(100%+8px)] hidden w-[min(900px,calc(100vw-32px))] -translate-x-1/2 overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.16)] lg:grid lg:grid-cols-[0.75fr_1.25fr] transition-all duration-200">
             {/* Left Feature Card */}
             <div className="flex flex-col justify-between rounded-xl bg-gradient-to-br from-slate-950 via-slate-900 to-teal-950 p-5 text-white shadow-inner border border-slate-800">
               <div>
@@ -325,11 +344,37 @@ export function SiteHeader() {
           </div>
         ) : null}
 
+        {activeMenu === "integrations" ? (
+          <div className="absolute left-1/2 top-[calc(100%+6px)] hidden w-[min(1120px,calc(100vw-24px))] -translate-x-1/2 rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.16)] lg:block" id="header-integrations-menu">
+            <div className="flex items-center justify-between gap-3 border-b border-slate-100 pb-2">
+              <div><p className="text-[10px] font-bold uppercase tracking-wider text-emerald-700">Vozon integrations</p><h3 className="text-base font-bold tracking-tight text-slate-900">Connect your voice workflows</h3></div>
+              <Link className="shrink-0 text-xs font-bold text-emerald-700 hover:text-emerald-900" href="/integrations" onClick={closeAll}>View all integrations &rarr;</Link>
+            </div>
+            <div className="mt-2 grid grid-cols-4 gap-1.5">
+              {integrationCategories.map((category) => (
+                <section className="min-w-0 rounded-lg border border-slate-100 bg-slate-50/50 p-2" key={category}>
+                  <h4 className="mb-1 text-[10px] font-bold uppercase tracking-wide text-slate-500">{category}</h4>
+                  <div>
+                    {integrations.filter((integration) => integration.category === category).map((integration) => (
+                      <Link className="group flex min-w-0 items-center gap-1.5 rounded-md px-1 py-0.5 transition hover:bg-emerald-50" href={`/integrations/${integration.slug}`} key={integration.slug} onClick={closeAll}>
+                        <span className="grid size-6 shrink-0 place-items-center rounded-md bg-white">
+                          <Image alt="" className="max-h-[18px] max-w-[18px] object-contain" height={18} src={integration.logo} width={18} />
+                        </span>
+                        <span className="min-w-0 text-[12px] font-semibold leading-5 text-slate-800 transition-colors group-hover:text-emerald-700">{integration.name}</span>
+                      </Link>
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </div>
+          </div>
+        ) : null}
+
         {/* Mobile Dropdown Sheet */}
         {mobileOpen ? (
           <nav
             aria-label="Mobile navigation"
-            className="absolute inset-x-0 top-[calc(100%+6px)] max-h-[calc(100vh-80px)] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-5 shadow-xl md:hidden"
+            className="absolute inset-x-0 top-[calc(100%+6px)] max-h-[calc(100vh-80px)] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-5 shadow-xl lg:hidden"
           >
             <div className="flex flex-col space-y-2">
               <Link
@@ -339,6 +384,13 @@ export function SiteHeader() {
               >
                 Home
               </Link>
+              <div className="border-t border-slate-100 pt-2.5">
+                <button aria-controls="mobile-integrations-menu" aria-expanded={mobileIntegrationsOpen} className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm font-bold text-slate-900 hover:bg-slate-100" onClick={() => setMobileIntegrationsOpen(!mobileIntegrationsOpen)} type="button"><span>Integrations</span><span aria-hidden="true">{mobileIntegrationsOpen ? "−" : "+"}</span></button>
+                {mobileIntegrationsOpen ? <div className="mt-1 space-y-3" id="mobile-integrations-menu">
+                  {integrationCategories.map((category) => <section className="rounded-lg border border-slate-100 p-2" key={category}><h4 className="px-1 text-[10px] font-bold uppercase tracking-wide text-emerald-800">{category}</h4><div className="mt-1 grid grid-cols-2 gap-1">{integrations.filter((integration) => integration.category === category).map((integration) => <Link className="rounded-md bg-slate-50 px-2 py-1.5 text-xs font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700" href={`/integrations/${integration.slug}`} key={integration.slug} onClick={closeAll}>{integration.name}</Link>)}</div></section>)}
+                  <Link className="block rounded-md px-3 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-50" href="/integrations" onClick={closeAll}>View all integrations &rarr;</Link>
+                </div> : null}
+              </div>
               <Link
                 className="rounded-lg px-3 py-2 text-sm font-bold text-slate-900 hover:bg-slate-100"
                 href="/pricing"
