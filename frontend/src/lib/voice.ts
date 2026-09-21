@@ -163,6 +163,7 @@ export type AgentTemplate = {
     label: string;
     hint: string;
     required: boolean;
+    requestRequired?: boolean;
     control?: "text" | "textarea" | "list" | "handoff" | "business-hours" | "timezone" | "weekdays" | "time" | "duration";
     options?: string[];
   }[];
@@ -170,10 +171,14 @@ export type AgentTemplate = {
 
 export type GuidedAgentInput = {
   answers: Record<string, string>;
-  mode: "native" | "collect" | "external" | "digitalbot";
+  mode: "requests" | "native" | "collect" | "external" | "digitalbot";
   language: string;
   name?: string;
   promptOverride?: string;
+  timezone?: string;
+  staffPhone?: string;
+  staffEmail?: string;
+  activate?: boolean;
 };
 
 export type GuidedAgentPreview = {
@@ -387,7 +392,7 @@ export type BackendAgent = {
   firstMessage: string;
   guidedSetup?: {
     templateId: string;
-    integrationMode: "native" | "collect" | "external" | "digitalbot" | "";
+    integrationMode: "requests" | "native" | "collect" | "external" | "digitalbot" | "";
     answers: Record<string, string>;
   };
   nativeAppointments?: {

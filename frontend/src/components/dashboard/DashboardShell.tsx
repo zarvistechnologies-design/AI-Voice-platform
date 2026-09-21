@@ -5714,14 +5714,18 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
               <button
                 className="app-button-text inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border-0 bg-[#118778] px-4 text-white shadow-[0_8px_20px_rgba(14,111,98,0.22)] transition hover:bg-[#0e6f62] hover:shadow-[0_10px_24px_rgba(14,111,98,0.28)] active:translate-y-px disabled:opacity-45"
                 type="button"
-                disabled={agentMutationBusy}
+                disabled={agentMutationBusy || (selectedAgent.status === "Live" && !hasUnsavedChanges)}
                 onClick={() => {
                   updateSelectedAgent({ status: "Live" });
                   void handleSave({ status: "Live" });
                 }}
               >
                 <Icon icon="play" />
-                {saving ? "Saving..." : "Publish"}
+                {saving
+                  ? "Saving..."
+                  : selectedAgent.status === "Live"
+                    ? hasUnsavedChanges ? "Save live changes" : "Live"
+                    : "Publish"}
               </button>
               <details className="group relative">
                 <summary
@@ -5826,7 +5830,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
               <div className="agent-editor-body bg-white px-4 pb-5 sm:px-5">
                 {activeTab === "builder" ? (
                   <div className="grid gap-4">
-                    {selectedAgent.guidedSetup?.templateId && selectedAgent.status === "Draft" ? (
+                    {selectedAgent.guidedSetup?.templateId && selectedAgent.guidedSetup.integrationMode !== "requests" && selectedAgent.status === "Draft" ? (
                       <div className="rounded-xl border border-[#c5ded5] bg-[#f1f9f6] p-4 text-sm text-[#29423b]">
                         <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                           <div><strong className="block">Launch checklist</strong><p className="mt-1 text-xs leading-5">Complete these steps, then enable live calls. Advanced model and webhook settings are optional.</p></div>
@@ -5852,6 +5856,19 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                           {selectedAgent.guidedSetup.integrationMode === "digitalbot" ? <Link className="text-xs font-bold text-[#0e6f62] hover:underline" href="/dashboard/integrations">Connect DigitalBot →</Link> : null}
                         </div>
                       </div>
+                    ) : null}
+                    {selectedAgent.guidedSetup?.integrationMode === "requests" ? (
+                      <section className="rounded-xl border border-[#c5ded5] bg-[#f1f9f6] p-5">
+                        <h3 className="text-base font-bold text-[#14231f]">Your business receptionist</h3>
+                        <p className="mt-2 text-sm leading-6 text-[#52645f]">Answers questions from your business details and saves customer requests for your team. Staff confirm appointments, reservations, and changes.</p>
+                        <p className="mt-2 text-sm font-semibold text-[#29423b]">{selectedAgent.phone === "Not assigned" ? "Next: connect a phone number so customers can reach your receptionist." : selectedAgent.status === "Live" ? "Activated. Phone calls also require a ready phone route and available balance." : "Paused or in draft. Activate when you are ready to receive calls."}</p>
+                        <div className="mt-4 flex flex-wrap gap-3">
+                          <button type="button" className="rounded-lg bg-[#118778] px-4 py-2 text-sm font-semibold text-white" onClick={() => setActiveTab("calls")}>Connect phone / call settings</button>
+                          <button type="button" className="rounded-lg border border-[#b8c8c3] bg-white px-4 py-2 text-sm font-semibold text-[#0e6f62]" onClick={() => setActiveTab("tools")}>View customer requests</button>
+                          <button type="button" className="text-sm font-semibold text-[#0e6f62]" onClick={() => setShowTestCall(true)}>Listen to your receptionist (optional)</button>
+                        </div>
+                        <p className="mt-3 text-xs leading-5 text-[#71817d]">Saved requests are available in your dashboard. Staff email notifications depend on delivery; the receptionist never promises that staff have been notified.</p>
+                      </section>
                     ) : null}
                     <div className="hidden gap-3 lg:grid-cols-2">
                       <InputField
@@ -6454,9 +6471,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                     {selectedAgent.nativeAppointments?.enabled ? (
                       <NativeAppointmentsPanel agentId={selectedAgent.id} timezone={selectedAgent.nativeAppointments.timezone} />
                     ) : null}
-                    {selectedAgent.guidedSetup?.integrationMode === "native"
-                    && selectedAgent.guidedSetup.templateId !== "clinic_appointments"
-                    && !selectedAgent.googleSheets.enabled ? (
+                    {(selectedAgent.guidedSetup?.integrationMode === "requests" || (selectedAgent.guidedSetup?.integrationMode === "native" && selectedAgent.guidedSetup.templateId !== "clinic_appointments")) ? (
                       <NativeWorkflowResultsPanel agentId={selectedAgent.id} />
                     ) : null}
                     <section className="overflow-hidden rounded-xl border border-[#dbe4e1] bg-white">

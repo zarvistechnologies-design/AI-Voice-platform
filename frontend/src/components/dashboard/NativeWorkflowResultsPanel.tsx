@@ -23,12 +23,12 @@ export function NativeWorkflowResultsPanel({ agentId }: { agentId: string }) {
   return (
     <section className="overflow-hidden rounded-xl border border-[#c5ded5] bg-white">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#dce7e3] bg-[#f1f9f6] px-4 py-3.5">
-        <div><h3 className="app-section-title m-0">Vozon workflow results</h3><span className="app-caption">Requests and outcomes created by this agent. API: GET /agents/{agentId}/native-results</span></div>
+        <div><h3 className="app-section-title m-0">Customer requests and responses</h3><span className="app-caption">Saved details for your team. Pending requests still need staff confirmation.</span></div>
         <span className="app-label rounded-full border border-[#b8c8c3] bg-white px-2.5 py-1 text-[#0e6f62]">{items.length} results</span>
       </div>
       {!current ? <p className="p-4 text-sm text-[#71817d]">Loading results…</p> : null}
       {current?.error ? <p className="p-4 text-sm text-rose-700">{current.error}</p> : null}
-      {current && !current.error && !items.length ? <p className="p-4 text-sm leading-6 text-[#71817d]">No results yet. Run a test conversation to verify the managed tools.</p> : null}
+      {current && !current.error && !items.length ? <p className="p-4 text-sm leading-6 text-[#71817d]">No requests yet. Details saved during calls will appear here.</p> : null}
       {items.length ? (
         <div className="overflow-x-auto"><table className="w-full min-w-[760px] text-left text-sm">
           <thead className="border-b border-[#e6ecea] bg-[#fafcfb] text-xs uppercase tracking-wide text-[#71817d]"><tr><th className="px-4 py-3">Type</th><th className="px-4 py-3">Contact</th><th className="px-4 py-3">Requested time</th><th className="px-4 py-3">Reference</th><th className="px-4 py-3">Status</th></tr></thead>
