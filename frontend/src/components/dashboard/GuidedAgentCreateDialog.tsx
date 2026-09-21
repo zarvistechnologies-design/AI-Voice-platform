@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState, type FormEvent } from "react";
 
 import { voiceApi, type AgentTemplate, type GuidedAgentInput, type GuidedAgentPreview } from "@/lib/voice";
 
-type Step = "choose" | "details" | "review";
+type Step = "start" | "choose" | "details" | "review";
 type Props = { onClose: () => void; onCreated: (agentId: string) => void };
 
 const integrationChoices: { mode: GuidedAgentInput["mode"]; title: string; detail: string }[] = [
@@ -262,7 +262,7 @@ function QuestionField({
 }
 
 export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
-  const [step, setStep] = useState<Step>("choose");
+  const [step, setStep] = useState<Step>("start");
   const [templates, setTemplates] = useState<AgentTemplate[]>([]);
   const [selectedId, setSelectedId] = useState("");
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -298,6 +298,8 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
     setHours(defaultHours);
     setAnswers(initialAnswers(template));
     setName("");
+    setStaffPhone("");
+    setStaffEmail("");
     setPreview(null);
     setPrompt("");
     setError("");
@@ -361,7 +363,9 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
   }
 
   const renderQuestion = (question: GuidedQuestion) => <QuestionField key={question.id} question={question} value={answers[question.id] ?? ""} hours={hours} onChange={(value) => setAnswers((current) => ({ ...current, [question.id]: value }))} onHoursChange={setHours} />;
-  const stepNumber = step === "choose" ? 1 : step === "details" ? 2 : 3;
+  const blankPath = step === "details" && !selected;
+  const progressLabels = blankPath ? ["Setup", "Agent details"] : ["Setup", "Template", "Your details", "Activate"];
+  const stepNumber = step === "start" ? 1 : step === "choose" ? 2 : step === "details" ? (selected ? 3 : 2) : 4;
   const primaryButton = "rounded-lg bg-[#118778] px-4 py-3 text-sm font-semibold text-white disabled:opacity-50";
 
   return (
@@ -370,24 +374,38 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
         <header className="flex items-start justify-between gap-4 border-b border-[#e5ece9] px-5 py-4 sm:px-7">
           <div>
             <p className="m-0 text-[11px] font-bold uppercase tracking-[0.15em] text-[#118778]">Your business receptionist</p>
-            <h2 className="mt-1 text-xl font-bold text-[#14231f]" id="guided-agent-title">{step === "choose" ? "What does your business do?" : step === "details" ? "Tell us about your business" : "Your receptionist is prepared"}</h2>
-            <p className="mt-1 text-sm text-[#71817d]">Add your details. Vozon prepares the conversation and request capture for you.</p>
-            <div className="mt-3 flex flex-wrap items-center gap-2" aria-label={`Step ${stepNumber} of 3`}>
-              {["Business", "Your details", "Activate"].map((label, index) => <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${index + 1 === stepNumber ? "bg-[#118778] text-white" : "bg-[#f2f5f4] text-[#71817d]"}`} key={label}>{index + 1}. {label}</span>)}
+            <h2 className="mt-1 text-xl font-bold text-[#14231f]" id="guided-agent-title">{step === "start" ? "How would you like to begin?" : step === "choose" ? "Choose a ready template" : step === "details" ? selected ? "Tell us about your business" : "Create a blank agent" : "Your receptionist is prepared"}</h2>
+            <p className="mt-1 text-sm text-[#71817d]">{step === "start" ? "Choose the setup that fits you. You can change everything later." : "Add your details. Vozon prepares the conversation and request capture for you."}</p>
+            <div className="mt-3 flex flex-wrap items-center gap-2" aria-label={`Step ${stepNumber} of ${progressLabels.length}`}>
+              {progressLabels.map((label, index) => <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${index + 1 === stepNumber ? "bg-[#118778] text-white" : "bg-[#f2f5f4] text-[#71817d]"}`} key={label}>{index + 1}. {label}</span>)}
             </div>
           </div>
           <button className="grid size-9 shrink-0 place-items-center rounded-lg border border-[#dfe7e4] text-xl text-[#52645f]" type="button" aria-label="Close receptionist setup" disabled={busy} onClick={onClose}>&times;</button>
         </header>
         <div className="overflow-y-auto px-5 py-5 sm:px-7">
           {error ? <div className="mb-4 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700" role="alert">{error}</div> : null}
+          {step === "start" ? <div className="grid gap-4 sm:grid-cols-2">
+            <button className="group min-h-52 rounded-2xl border-2 border-[#b8d9d1] bg-[#f1f9f6] p-6 text-left transition hover:border-[#118778] hover:shadow-lg" type="button" onClick={() => { setError(""); setStep("choose"); }}>
+              <span className="inline-flex rounded-full bg-[#118778] px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-white">Recommended</span>
+              <strong className="mt-5 block text-xl text-[#14231f]">Use a ready template</strong>
+              <span className="mt-3 block text-sm leading-6 text-[#52645f]">Choose your business type. Vozon prepares the receptionist, questions, and request tools automatically.</span>
+              <span className="mt-5 block text-sm font-bold text-[#0e6f62]">Choose a template &rarr;</span>
+            </button>
+            <button className="group min-h-52 rounded-2xl border-2 border-[#dce7e3] bg-white p-6 text-left transition hover:border-[#118778] hover:bg-[#fbfdfc] hover:shadow-lg" type="button" onClick={() => { setSelectedId(""); setName(""); setPreview(null); setPrompt(""); setError(""); setStep("details"); }}>
+              <span className="inline-flex rounded-full bg-[#f2f5f4] px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-[#52645f]">Advanced</span>
+              <strong className="mt-5 block text-xl text-[#14231f]">Start from scratch</strong>
+              <span className="mt-3 block text-sm leading-6 text-[#52645f]">Create a blank agent and configure its conversation, voice, tools, and integrations yourself.</span>
+              <span className="mt-5 block text-sm font-bold text-[#0e6f62]">Create a blank agent &rarr;</span>
+            </button>
+          </div> : null}
           {step === "choose" ? <div>
             {loading ? <p className="text-sm text-[#71817d]" role="status">Loading business types...</p> : null}
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{templates.map((template) => <button className="min-h-36 rounded-xl border border-[#dce7e3] bg-white p-4 text-left transition hover:border-[#118778] hover:bg-[#f1f9f6]" key={template.id} type="button" onClick={() => selectTemplate(template)}><strong className="block text-base text-[#14231f]">{businessLabels[template.id] ?? template.name}</strong><span className="mt-2 block text-xs leading-5 text-[#71817d]">{template.description}</span></button>)}</div>
-            <details className="mt-5 rounded-xl border border-[#dce7e3] p-4"><summary className="cursor-pointer text-sm text-[#52645f]">Advanced: start from scratch</summary><button className="mt-3 text-sm font-semibold text-[#0e6f62]" type="button" onClick={() => { setSelectedId(""); setName(""); setError(""); setStep("details"); }}>Create a blank agent</button></details>
+            <button className="mt-5 text-sm font-semibold text-[#0e6f62]" type="button" onClick={() => { setError(""); setStep("start"); }}>&larr; Back to setup options</button>
           </div> : null}
           {step === "details" && !selected ? <form className="grid gap-4" onSubmit={(event) => void createBlank(event)}>
             <label className="grid gap-2 text-sm">Agent name<input className={fieldClass} required maxLength={80} value={name} onChange={(event) => setName(event.target.value)} /></label>
-            <div className="flex justify-between gap-3"><button type="button" disabled={busy} onClick={() => setStep("choose")}>Back</button><button className={primaryButton} disabled={busy} type="submit">{busy ? "Creating..." : "Create blank draft"}</button></div>
+            <div className="flex justify-between gap-3"><button type="button" disabled={busy} onClick={() => setStep("start")}>Back</button><button className={primaryButton} disabled={busy} type="submit">{busy ? "Creating..." : "Create blank draft"}</button></div>
           </form> : null}
           {step === "details" && selected ? <form className="grid gap-5" onSubmit={(event) => void review(event)}>
             <fieldset disabled={busy} className="grid gap-5">
