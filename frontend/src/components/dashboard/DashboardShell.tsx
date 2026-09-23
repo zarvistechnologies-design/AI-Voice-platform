@@ -15,6 +15,7 @@ import {
 import { announceDashboardNavigation } from "@/components/dashboard/DashboardNavigationFeedback";
 import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
 import { ElevenLabsVoiceClonePanel } from "@/components/dashboard/ElevenLabsVoiceClonePanel";
+import { SarvamVoiceClonePanel } from "@/components/dashboard/SarvamVoiceClonePanel";
 import { NativeAppointmentsPanel } from "@/components/dashboard/NativeAppointmentsPanel";
 import {
   DashboardSidebar,
@@ -3640,6 +3641,14 @@ function StackConfigurationModal({
                 />
               ) : null}
 
+              {stack === "voice" && provider.provider === "sarvam" ? (
+                <SarvamVoiceClonePanel
+                  configured={provider.configured}
+                  language={agent.language}
+                  onCloned={onVoiceCloned}
+                />
+              ) : null}
+
               {stack === "voice" ? (
                 <section className="overflow-hidden rounded-xl border border-[#dbe4e1] bg-white">
                   <div className="flex items-center justify-between gap-3 border-b border-[#edf0f5] bg-[#fafcfb] px-4 py-3 sm:px-5">
@@ -4955,10 +4964,13 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
   }
 
   function addClonedVoice(profile: VoiceProfile) {
+    const clonedProvider = profile.source?.toLowerCase().includes("sarvam")
+      ? "sarvam"
+      : "elevenlabs";
     setModelCatalog((current) => ({
       ...current,
       tts: current.tts.map((provider) => {
-        if (provider.provider !== "elevenlabs") return provider;
+        if (provider.provider !== clonedProvider) return provider;
         const voices = [
           profile.value,
           ...(provider.voices ?? []).filter((voice) => voice !== profile.value),
@@ -4969,15 +4981,27 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
             (candidate) => candidate.value !== profile.value,
           ),
         ];
-        return { ...provider, voices, voiceProfiles };
+        const voicesByModel = profile.model
+          ? {
+              ...(provider.voicesByModel ?? {}),
+              [profile.model]: [
+                profile.value,
+                ...(provider.voicesByModel?.[profile.model] ?? []).filter(
+                  (voice) => voice !== profile.value,
+                ),
+              ],
+            }
+          : provider.voicesByModel;
+        return { ...provider, voices, voiceProfiles, voicesByModel };
       }),
     }));
     updateSelectedAgent({
       pipelineMode: "pipeline",
-      ttsProvider: "elevenlabs",
+      ttsProvider: clonedProvider,
+      ...(profile.model ? { ttsModel: profile.model } : {}),
       voice: profile.value,
     });
-    setNotice("Voice cloned and selected. Save changes to use it for calls.");
+    setNotice(`${clonedProvider === "sarvam" ? "Sarvam" : "ElevenLabs"} voice cloned and selected. Save changes to use it for calls.`);
   }
 
   function updateBehavior(

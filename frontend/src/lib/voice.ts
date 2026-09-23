@@ -938,6 +938,7 @@ async function request<T>(path: string, init: RequestInit = {}) {
 
 export type VoiceCloneResult = {
   success: boolean;
+  provider?: "elevenlabs" | "sarvam";
   voiceId: string;
   name: string;
   category: string;
@@ -1098,6 +1099,20 @@ export async function cloneVoice(formData: FormData): Promise<VoiceCloneResult> 
   const result = await request<VoiceCloneResult>("/voices/clone", {
     method: "POST",
     body: formData,
+  });
+  invalidateVoiceCache("/config");
+  return result;
+}
+
+export async function registerSarvamVoice(input: {
+  voiceId: string;
+  name: string;
+  language: string;
+  confirmRights: boolean;
+}): Promise<VoiceCloneResult> {
+  const result = await request<VoiceCloneResult>("/voices/sarvam/register", {
+    method: "POST",
+    body: JSON.stringify(input),
   });
   invalidateVoiceCache("/config");
   return result;
@@ -1425,6 +1440,7 @@ export const voiceApi = {
     return response.blob();
   },
   cloneVoice,
+  registerSarvamVoice,
   webCallToken: (agentId: string) =>
     request<{
       callId: string;
