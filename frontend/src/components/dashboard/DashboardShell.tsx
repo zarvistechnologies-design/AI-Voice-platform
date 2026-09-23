@@ -16,7 +16,6 @@ import { announceDashboardNavigation } from "@/components/dashboard/DashboardNav
 import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
 import { ElevenLabsVoiceClonePanel } from "@/components/dashboard/ElevenLabsVoiceClonePanel";
 import { NativeAppointmentsPanel } from "@/components/dashboard/NativeAppointmentsPanel";
-import { NativeWorkflowResultsPanel } from "@/components/dashboard/NativeWorkflowResultsPanel";
 import {
   DashboardSidebar,
   getDashboardSidebarInitialState,
@@ -5857,19 +5856,6 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                         </div>
                       </div>
                     ) : null}
-                    {selectedAgent.guidedSetup?.integrationMode === "requests" ? (
-                      <section className="rounded-xl border border-[#c5ded5] bg-[#f1f9f6] p-5">
-                        <h3 className="text-base font-bold text-[#14231f]">Your business receptionist</h3>
-                        <p className="mt-2 text-sm leading-6 text-[#52645f]">Answers questions from your business details and saves customer requests for your team. Staff confirm appointments, reservations, and changes.</p>
-                        <p className="mt-2 text-sm font-semibold text-[#29423b]">{selectedAgent.phone === "Not assigned" ? "Next: connect a phone number so customers can reach your receptionist." : selectedAgent.status === "Live" ? "Activated. Phone calls also require a ready phone route and available balance." : "Paused or in draft. Activate when you are ready to receive calls."}</p>
-                        <div className="mt-4 flex flex-wrap gap-3">
-                          <button type="button" className="rounded-lg bg-[#118778] px-4 py-2 text-sm font-semibold text-white" onClick={() => setActiveTab("calls")}>Connect phone / call settings</button>
-                          <button type="button" className="rounded-lg border border-[#b8c8c3] bg-white px-4 py-2 text-sm font-semibold text-[#0e6f62]" onClick={() => setActiveTab("tools")}>View customer requests</button>
-                          <button type="button" className="text-sm font-semibold text-[#0e6f62]" onClick={() => setShowTestCall(true)}>Listen to your receptionist (optional)</button>
-                        </div>
-                        <p className="mt-3 text-xs leading-5 text-[#71817d]">Saved requests are available in your dashboard. Staff email notifications depend on delivery; the receptionist never promises that staff have been notified.</p>
-                      </section>
-                    ) : null}
                     <div className="hidden gap-3 lg:grid-cols-2">
                       <InputField
                         label="Agent name"
@@ -6470,9 +6456,6 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                   <div className="grid gap-4">
                     {selectedAgent.nativeAppointments?.enabled ? (
                       <NativeAppointmentsPanel agentId={selectedAgent.id} timezone={selectedAgent.nativeAppointments.timezone} />
-                    ) : null}
-                    {(selectedAgent.guidedSetup?.integrationMode === "requests" || (selectedAgent.guidedSetup?.integrationMode === "native" && selectedAgent.guidedSetup.templateId !== "clinic_appointments")) ? (
-                      <NativeWorkflowResultsPanel agentId={selectedAgent.id} />
                     ) : null}
                     <section className="overflow-hidden rounded-xl border border-[#dbe4e1] bg-white">
                       <div className="flex flex-col gap-2 border-b border-[#edf0f4] px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between">
