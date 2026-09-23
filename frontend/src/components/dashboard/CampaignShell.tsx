@@ -78,8 +78,15 @@ type CampaignLead = {
   company: string;
   customFields: Record<string, string>;
 };
+type CampaignCsvField = {
+  header: string;
+  storedKey: string;
+  promptVariable: string;
+  sample: string;
+  kind: "standard" | "custom";
+};
 type CampaignCsvWorkerResponse =
-  { ok: true; leads: CampaignLead[] } | { ok: false; message: string };
+  { ok: true; leads: CampaignLead[]; fields: CampaignCsvField[] } | { ok: false; message: string };
 type SendMode = "now" | "schedule";
 type CampaignAction = "pause" | "resume" | "cancel";
 
@@ -240,7 +247,7 @@ function errorMessage(error: unknown) {
 }
 
 function parseCampaignCsvInWorker(buffer: ArrayBuffer, signal: AbortSignal) {
-  return new Promise<CampaignLead[]>((resolve, reject) => {
+  return new Promise<{ leads: CampaignLead[]; fields: CampaignCsvField[] }>((resolve, reject) => {
     const worker = new Worker(
       new URL("./CampaignCsv.worker.ts", import.meta.url),
       { type: "module" },
@@ -274,7 +281,7 @@ function parseCampaignCsvInWorker(buffer: ArrayBuffer, signal: AbortSignal) {
       settled = true;
       cleanup();
       if (event.data.ok) {
-        resolve(event.data.leads);
+        resolve({ leads: event.data.leads, fields: event.data.fields });
       } else {
         reject(new Error(event.data.message));
       }
@@ -468,6 +475,7 @@ export function CampaignShell() {
   const [requireConsentLine, setRequireConsentLine] = useState(true);
   const [csvFile, setCsvFile] = useState<File | null>(null);
   const [leads, setLeads] = useState<CampaignLead[]>([]);
+  const [csvFields, setCsvFields] = useState<CampaignCsvField[]>([]);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -673,6 +681,7 @@ export function CampaignShell() {
     csvParseAbortRef.current = null;
     setCsvFile(null);
     setLeads([]);
+    setCsvFields([]);
     setNotice("");
     setError("");
     if (file.size > maxCsvSize) {
@@ -692,15 +701,17 @@ export function CampaignShell() {
       );
       if (sequence !== csvParseSequenceRef.current || controller.signal.aborted)
         return;
-      if (!parsed.length) throw new Error("No contacts found in the CSV.");
+      if (!parsed.leads.length) throw new Error("No contacts found in the CSV.");
       setCsvFile(file);
-      setLeads(parsed);
-      setNotice(`${parsed.length} contacts loaded from ${file.name}.`);
+      setLeads(parsed.leads);
+      setCsvFields(parsed.fields);
+      setNotice(`${parsed.leads.length} contacts loaded from ${file.name}.`);
     } catch (caught) {
       if (sequence !== csvParseSequenceRef.current || controller.signal.aborted)
         return;
       setCsvFile(null);
       setLeads([]);
+      setCsvFields([]);
       setError(errorMessage(caught));
     } finally {
       if (sequence === csvParseSequenceRef.current)
@@ -1086,17 +1097,51 @@ export function CampaignShell() {
                       </label>
 
                       {leads.length ? (
-                        <div className="mt-4 flex items-center justify-between gap-3 rounded-lg border border-[#dbe4e1] px-4 py-3">
-                          <span className="text-sm font-semibold text-slate-950">
-                            {numberFormat(leads.length)} contacts loaded
-                          </span>
-                          <span
-                            className={`rounded-full px-3 py-1 text-xs font-semibold ${invalidLeadCount ? "bg-amber-100 text-amber-800" : "bg-emerald-100 text-emerald-700"}`}
-                          >
-                            {invalidLeadCount
-                              ? `${invalidLeadCount} invalid`
-                              : "Ready"}
-                          </span>
+                        <div className="mt-4 overflow-hidden rounded-xl border border-[#dbe4e1] bg-white">
+                          <div className="flex items-center justify-between gap-3 border-b border-[#e7ecea] px-4 py-3">
+                            <div>
+                              <span className="text-sm font-semibold text-slate-950">
+                                {numberFormat(leads.length)} contacts loaded
+                              </span>
+                              <span className="mt-0.5 block text-xs text-slate-500">
+                                {csvFields.length} CSV fields detected. Use the exact prompt variables shown below.
+                              </span>
+                            </div>
+                            <span
+                              className={`rounded-full px-3 py-1 text-xs font-semibold ${invalidLeadCount ? "bg-amber-100 text-amber-800" : "bg-emerald-100 text-emerald-700"}`}
+                            >
+                              {invalidLeadCount
+                                ? `${invalidLeadCount} invalid`
+                                : "Ready"}
+                            </span>
+                          </div>
+                          <div className="overflow-x-auto">
+                            <table className="w-full min-w-[680px] text-left text-xs">
+                              <thead className="bg-slate-50 uppercase tracking-[0.08em] text-slate-500">
+                                <tr>
+                                  <th className="px-4 py-2.5">CSV header</th>
+                                  <th className="px-4 py-2.5">Stored as</th>
+                                  <th className="px-4 py-2.5">Use in prompt</th>
+                                  <th className="px-4 py-2.5">Sample value</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-slate-100">
+                                {csvFields.map((field) => (
+                                  <tr key={`${field.header}-${field.promptVariable}`}>
+                                    <td className="px-4 py-2.5 font-medium text-slate-800">{field.header}</td>
+                                    <td className="px-4 py-2.5 text-slate-500">{field.storedKey}</td>
+                                    <td className="px-4 py-2.5">
+                                      <code className="rounded bg-emerald-50 px-2 py-1 font-semibold text-emerald-800">{`{${field.promptVariable}}`}</code>
+                                    </td>
+                                    <td className="max-w-[240px] truncate px-4 py-2.5 text-slate-600" title={field.sample}>{field.sample || "—"}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                          <p className="m-0 border-t border-[#e7ecea] bg-emerald-50/60 px-4 py-3 text-xs text-emerald-900">
+                            Example: <code className="font-semibold">Hello {`{LeadName}`}, your pending amount is {`{amount_due}`}.</code>
+                          </p>
                         </div>
                       ) : null}
                     </Panel>
