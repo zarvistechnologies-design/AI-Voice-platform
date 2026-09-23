@@ -203,11 +203,26 @@ export function ElevenLabsVoiceClonePanel({ configured, language, onCloned }: Pr
 
       {expanded ? (
         <form className="mt-4 grid gap-4 border-t border-[#cfe3de] pt-4" onSubmit={submit}>
+          <input
+            ref={fileInputRef}
+            type="file"
+            className="sr-only"
+            accept="audio/mpeg,audio/wav,audio/mp4,audio/aac,audio/ogg,audio/webm,.mp3,.wav,.m4a,.aac,.ogg,.webm"
+            multiple
+            onChange={(event) => {
+              handleFilesSelected(Array.from(event.target.files ?? []));
+              event.target.value = "";
+            }}
+          />
+
           {/* Input mode selector */}
           <div className="flex gap-2">
             <button
               type="button"
-              onClick={() => setInputMode("upload")}
+              onClick={() => {
+                setInputMode("upload");
+                fileInputRef.current?.click();
+              }}
               className={`flex items-center gap-2 rounded-lg px-3.5 py-2 text-xs font-semibold transition ${
                 inputMode === "upload"
                   ? "bg-[#118778] text-white shadow-sm"
@@ -282,20 +297,44 @@ export function ElevenLabsVoiceClonePanel({ configured, language, onCloned }: Pr
 
             {/* Audio Source Input Block */}
             {inputMode === "upload" ? (
-              <label className="app-label grid gap-2">
-                <span>Audio samples *</span>
-                <input
-                  ref={fileInputRef}
-                  className="app-control-text rounded-lg border border-[#dbe4e1] bg-white p-2 text-black file:mr-2 file:rounded-md file:border-0 file:bg-[#118778] file:px-3 file:py-1 file:text-xs file:font-semibold file:text-white"
-                  type="file"
-                  accept="audio/mpeg,audio/wav,audio/mp4,audio/aac,audio/ogg,audio/webm,.mp3,.wav,.m4a,.aac,.ogg,.webm"
-                  multiple
-                  onChange={(event) => handleFilesSelected(Array.from(event.target.files ?? []))}
-                />
-                <span className="app-caption">
-                  {files.length ? `${files.length} sample(s) selected: ${files.map(f => f.name).join(", ")}` : "MP3, WAV, M4A, AAC, OGG, or WEBM (up to 15 MB)"}
-                </span>
-              </label>
+              <div className="grid gap-2 sm:col-span-2">
+                <span className="app-label">Audio samples *</span>
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => fileInputRef.current?.click()}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      fileInputRef.current?.click();
+                    }
+                  }}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    if (e.dataTransfer.files?.length) {
+                      handleFilesSelected(Array.from(e.dataTransfer.files));
+                    }
+                  }}
+                  className="group flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#b8cbc5] bg-white p-5 text-center cursor-pointer transition hover:border-[#118778] hover:bg-[#f6faf8]"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="flex size-9 items-center justify-center rounded-lg bg-[#edf7f4] text-[#0e6f62] group-hover:bg-[#118778] group-hover:text-white transition">
+                      <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                      </svg>
+                    </span>
+                    <span className="text-sm font-semibold text-[#0e6f62]">
+                      {files.length ? "Choose Different Audio Samples" : "Click to Browse or Drop Audio Files"}
+                    </span>
+                  </div>
+                  <span className="app-caption text-xs">
+                    {files.length
+                      ? `${files.length} sample(s) selected: ${files.map(f => f.name).join(", ")}`
+                      : "MP3, WAV, M4A, AAC, OGG, or WEBM (up to 15 MB) · 1 to 5 samples"}
+                  </span>
+                </div>
+              </div>
             ) : (
               <div className="grid gap-2">
                 <span className="app-label">Record Sample *</span>

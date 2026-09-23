@@ -183,6 +183,7 @@ export function VoiceCloneModal({
       if (accent.trim()) {
         formData.append("accent", accent.trim());
       }
+      formData.append("confirmRights", "true");
       formData.append("file", fileToUpload, fileName);
 
       const result = await cloneVoice(formData);
@@ -238,6 +239,18 @@ export function VoiceCloneModal({
 
         {/* Content Form */}
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-5">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="audio/mpeg,audio/wav,audio/mp4,audio/aac,audio/ogg,audio/webm,.mp3,.wav,.m4a,.aac,.ogg,.webm"
+            className="sr-only"
+            onChange={(event) => {
+              const file = event.target.files?.[0];
+              if (file) handleFileChange(file);
+              event.target.value = "";
+            }}
+          />
+
           {error && (
             <div className="flex items-start gap-3 rounded-xl border border-rose-500/40 bg-rose-950/40 p-3.5 text-sm text-rose-200">
               <svg className="size-5 shrink-0 text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -315,7 +328,10 @@ export function VoiceCloneModal({
             <div className="grid grid-cols-2 gap-2 rounded-xl bg-[#162320] p-1 border border-[#22312d]">
               <button
                 type="button"
-                onClick={() => setActiveTab("upload")}
+                onClick={() => {
+                  setActiveTab("upload");
+                  fileInputRef.current?.click();
+                }}
                 className={`flex items-center justify-center gap-2 rounded-lg py-2 text-xs font-medium transition ${
                   activeTab === "upload"
                     ? "bg-emerald-600 text-white shadow"
@@ -358,17 +374,6 @@ export function VoiceCloneModal({
                 }}
                 className="group flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[#2f423d] bg-[#131d1a] p-6 text-center hover:border-emerald-500 hover:bg-[#162320] transition cursor-pointer"
               >
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="audio/mp3,audio/wav,audio/m4a,audio/mp4,audio/ogg,audio/webm,.mp3,.wav,.m4a,.ogg,.webm"
-                  className="hidden"
-                  onChange={(e) => {
-                    if (e.target.files?.[0]) {
-                      handleFileChange(e.target.files[0]);
-                    }
-                  }}
-                />
                 <div className="flex size-12 items-center justify-center rounded-full bg-[#1b2b27] text-emerald-400 group-hover:scale-110 transition">
                   <svg className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
