@@ -149,7 +149,7 @@ const defaultBehavior: AgentBehavior = {
   endpointingMode: "fast",
   responseDelayMs: 0,
   maxCallDurationSeconds: 1200,
-  maxIdleSeconds: 15,
+  maxIdleSeconds: 60,
   transferPhone: "",
   transferMessage: "Please hold while I transfer your call.",
   timezone: "UTC",
