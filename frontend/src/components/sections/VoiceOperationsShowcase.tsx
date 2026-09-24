@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { TalkToAgentWidget } from "./TalkToAgentWidget";
 import styles from "./VoiceOperationsShowcase.module.css";
 
 function VoiceMark({ className = "" }: { className?: string }) {
@@ -74,20 +75,8 @@ export function VoiceOperationsShowcase() {
           </div>
         </div>
 
-        <div className={styles.mobile} aria-hidden="true">
-          <div className={styles.mobileHeader}>
-            <span className={styles.brand}><VoiceMark /> Vozon</span>
-            <span className={styles.mobileContact}>Get in touch ↗</span>
-          </div>
-          <div className={styles.mobileNav}><span>• Voice agents</span><span>‹ <i /> <i /> <i /> <i /> ›</span></div>
-          <p className={styles.mobileHeading}>Your voice agents,<br />always ready<br />for a conversation.</p>
-          <div className={styles.mobileIntro}>
-            <p>Helpful conversations.<br />In every language.<br />On every call.</p>
-            <span>Hear an agent ↗</span>
-          </div>
-          <div className={styles.mobileWordmark}>AI Voice.<br /><span>Always on.</span></div>
-          <div className={styles.miniPhone}><VoicePhone /></div>
-          <div className={styles.mobileTags}><VoiceTags /></div>
+        <div className={styles.mobile} id="live-voice-dialer">
+          <TalkToAgentWidget />
         </div>
       </div>
     </section>
