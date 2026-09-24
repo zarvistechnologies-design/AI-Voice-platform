@@ -33,6 +33,13 @@ const languageOptions = [
   ["Kannada", "Kannada"], ["Malayalam", "Malayalam"], ["Marathi", "Marathi"], ["Gujarati", "Gujarati"],
   ["Punjabi", "Punjabi"], ["Odia", "Odia"], ["Assamese", "Assamese"], ["Urdu", "Urdu"],
   ["Nepali", "Nepali"], ["Spanish", "Spanish"], ["French", "French"], ["German", "German"],
+  ["Vietnamese", "Vietnamese"], ["Khmer", "Khmer"], ["Lao", "Lao"], ["Burmese", "Burmese"],
+  ["Indonesian", "Bahasa Indonesia"], ["Malay", "Bahasa Melayu"], ["Cantonese", "Cantonese"],
+  ["Mongolian", "Mongolian"], ["Arabic", "Arabic"], ["Kurdish", "Kurdish"], ["Russian", "Russian"],
+  ["Kazakh", "Kazakh"], ["Uzbek", "Uzbek"], ["Kyrgyz", "Kyrgyz"], ["Georgian", "Georgian"],
+  ["Tajik", "Tajik"], ["Turkmen", "Turkmen"], ["Armenian", "Armenian"], ["Swahili", "Swahili"],
+  ["Dutch", "Dutch"], ["Portuguese Portugal", "Portuguese"], ["Guarani", "Guaraní"],
+  ["Quechua", "Quechua"], ["Aymara", "Aymara"], ["Sranan Tongo", "Sranan Tongo"],
 ] as const;
 
 const timezoneOptions = [
