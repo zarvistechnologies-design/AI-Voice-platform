@@ -405,7 +405,7 @@ export type BackendAgent = {
   firstMessage: string;
   guidedSetup?: {
     templateId: string;
-    integrationMode: "requests" | "native" | "collect" | "external" | "digitalbot" | "";
+    integrationMode: "requests" | "native" | "collect" | "external" | "digitalbot" | "google_workspace" | "";
     answers: Record<string, string>;
   };
   nativeAppointments?: {
