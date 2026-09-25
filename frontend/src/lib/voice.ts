@@ -171,7 +171,7 @@ export type AgentTemplate = {
 
 export type GuidedAgentInput = {
   answers: Record<string, string>;
-  mode: "requests" | "native" | "collect" | "external" | "digitalbot";
+  mode: "requests" | "native" | "collect" | "external" | "digitalbot" | "google_workspace";
   language: string;
   name?: string;
   promptOverride?: string;
@@ -179,6 +179,19 @@ export type GuidedAgentInput = {
   staffPhone?: string;
   staffEmail?: string;
   activate?: boolean;
+  googleCalendar?: {
+    enabled: boolean;
+    calendarId: string;
+    calendarName?: string;
+    timezone?: string;
+    appointmentDurationMinutes?: number;
+  };
+  googleSheets?: {
+    enabled: boolean;
+    spreadsheetId?: string;
+    spreadsheetName?: string;
+    sheetName?: string;
+  };
 };
 
 export type GuidedAgentPreview = {

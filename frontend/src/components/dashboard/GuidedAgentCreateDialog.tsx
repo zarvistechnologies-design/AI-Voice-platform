@@ -3,11 +3,13 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 
 import { voiceApi, type AgentTemplate, type GuidedAgentInput, type GuidedAgentPreview } from "@/lib/voice";
+import { integrationsApi } from "@/lib/integrations";
 
 type Step = "start" | "choose" | "details" | "review";
 type Props = { onClose: () => void; onCreated: (agentId: string) => void };
 
 const integrationChoices: { mode: GuidedAgentInput["mode"]; title: string; detail: string }[] = [
+  { mode: "google_workspace", title: "Automate with Google Workspace (Recommended)", detail: "Real-time Google Calendar availability & booking, with caller leads and appointment records auto-synced to Google Sheets." },
   { mode: "requests", title: "Take requests for my staff", detail: "Answer questions and save requests in your dashboard. Staff confirm bookings." },
   { mode: "native", title: "Use the Vozon clinic schedule", detail: "Book new appointments using doctors and available times you manage in Vozon." },
   { mode: "external", title: "Connect existing business software", detail: "Create a draft, then configure the connection before activation." },
@@ -280,20 +282,72 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [googleStatus, setGoogleStatus] = useState<{
+    connected: boolean;
+    email: string;
+    calendars: Array<{ id: string; name: string; primary: boolean; timezone: string }>;
+  }>({ connected: false, email: "", calendars: [] });
+  const [useGoogleCalendar, setUseGoogleCalendar] = useState(true);
+  const [selectedCalendarId, setSelectedCalendarId] = useState("primary");
+  const [useGoogleSheets, setUseGoogleSheets] = useState(true);
+  const [spreadsheetOption, setSpreadsheetOption] = useState<"auto" | "existing">("auto");
+  const [customSpreadsheetId, setCustomSpreadsheetId] = useState("");
 
   useEffect(() => {
     let active = true;
-    void voiceApi.agentTemplates()
-      .then(({ templates: loaded }) => { if (active) setTemplates(loaded); })
-      .catch((reason: unknown) => { if (active) setError(reason instanceof Error ? reason.message : "Could not load business types."); })
-      .finally(() => { if (active) setLoading(false); });
+    Promise.allSettled([
+      voiceApi.agentTemplates(),
+      integrationsApi.list(),
+      integrationsApi.googleCalendars(),
+    ]).then(([templatesResult, integrationsResult, calendarsResult]) => {
+      if (!active) return;
+      if (templatesResult.status === "fulfilled") {
+        setTemplates(templatesResult.value.templates);
+      } else {
+        setError(templatesResult.reason instanceof Error ? templatesResult.reason.message : "Could not load business types.");
+      }
+
+      let connected = false;
+      let email = "";
+      if (integrationsResult.status === "fulfilled") {
+        const googleProvider = integrationsResult.value.providers.find((p) => p.id === "google");
+        connected = Boolean(googleProvider?.connected);
+        email = googleProvider?.accountId || "";
+      }
+
+      let calendars: Array<{ id: string; name: string; primary: boolean; timezone: string }> = [];
+      if (calendarsResult.status === "fulfilled") {
+        calendars = calendarsResult.value.calendars || [];
+        if (calendars.length > 0) {
+          const primaryCal = calendars.find((c) => c.primary) || calendars[0];
+          setSelectedCalendarId(primaryCal.id);
+        }
+      }
+
+      setGoogleStatus({ connected, email, calendars });
+      if (connected) {
+        setMode("google_workspace");
+      }
+    }).finally(() => {
+      if (active) setLoading(false);
+    });
     return () => { active = false; };
   }, []);
 
   const selected = useMemo(() => templates.find((template) => template.id === selectedId), [templates, selectedId]);
   const questions = (selected?.questions ?? [])
-    .filter((question) => mode !== "requests" || (!scheduleFields.has(question.id) && question.id !== "handoff"))
-    .map((question) => ({ ...question, required: mode === "requests" ? question.requestRequired ?? question.required : question.required }));
+    .filter((question) => {
+      if (mode === "requests") return !scheduleFields.has(question.id) && question.id !== "handoff";
+      return true;
+    })
+    .map((question) => ({
+      ...question,
+      required: mode === "requests"
+        ? (question.requestRequired ?? question.required)
+        : mode === "google_workspace" && scheduleFields.has(question.id)
+        ? false
+        : question.required,
+    }));
 
   function selectTemplate(template: AgentTemplate) {
     setSelectedId(template.id);
@@ -305,13 +359,37 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
     setPreview(null);
     setPrompt("");
     setError("");
-    setMode("requests");
+    setMode(googleStatus.connected ? "google_workspace" : "requests");
     setShowAdvanced(false);
     setStep("details");
   }
 
   function draftInput(override?: string): GuidedAgentInput {
-    return { answers, mode, language, name: name.trim(), timezone: hours.timezone, staffPhone: staffPhone.trim(), staffEmail: staffEmail.trim(), ...(override ? { promptOverride: override } : {}) };
+    const isGoogle = (mode === "google_workspace" || useGoogleCalendar || useGoogleSheets) && googleStatus.connected;
+    const effectiveMode = isGoogle ? "google_workspace" : mode;
+    return {
+      answers,
+      mode: effectiveMode,
+      language,
+      name: name.trim(),
+      timezone: hours.timezone,
+      staffPhone: staffPhone.trim(),
+      staffEmail: staffEmail.trim(),
+      ...(override ? { promptOverride: override } : {}),
+      googleCalendar: isGoogle && useGoogleCalendar ? {
+        enabled: true,
+        calendarId: selectedCalendarId || "primary",
+        calendarName: googleStatus.calendars.find((c) => c.id === selectedCalendarId)?.name || "Primary Calendar",
+        timezone: hours.timezone,
+        appointmentDurationMinutes: Number(answers.appointmentDuration) || 30,
+      } : undefined,
+      googleSheets: isGoogle && useGoogleSheets ? {
+        enabled: true,
+        spreadsheetId: spreadsheetOption === "existing" ? customSpreadsheetId.trim() : "",
+        spreadsheetName: spreadsheetOption === "existing" ? "Custom Sheet" : `${answers.businessName || name || "Clinic"} Bookings`,
+        sheetName: "Bookings",
+      } : undefined,
+    };
   }
 
   async function review(event: FormEvent<HTMLFormElement>) {
@@ -341,9 +419,10 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
     setBusy(true);
     setError("");
     try {
+      const input = draftInput(prompt.trim() !== preview.generatedPrompt ? prompt : undefined);
       const { agent } = await voiceApi.createAgentFromTemplate(selected.id, {
-        ...draftInput(prompt.trim() !== preview.generatedPrompt ? prompt : undefined),
-        activate: mode === "requests",
+        ...input,
+        activate: true,
       });
       onCreated(agent._id);
     } catch (reason) {
@@ -418,6 +497,145 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
                 <label className="grid gap-1.5 text-xs font-semibold text-[#52645f]">Staff phone (optional)<input className={fieldClass} type="tel" maxLength={40} placeholder="+919876543210" value={staffPhone} onChange={(event) => setStaffPhone(event.target.value)} /><span className="font-normal text-[#8a9894]">Use a separate staff number for callers who need a person.</span></label>
                 <label className="grid gap-1.5 text-xs font-semibold text-[#52645f]">Staff email (optional)<input className={fieldClass} type="email" maxLength={160} placeholder="reception@yourbusiness.com" value={staffEmail} onChange={(event) => setStaffEmail(event.target.value)} /><span className="font-normal text-[#8a9894]">Receive follow-up notifications after calls. Saved requests are also in your dashboard.</span></label>
               </div>
+
+              {/* Google Workspace Real-Time Automation Card */}
+              <div className="rounded-xl border border-[#b8d9d1] bg-[#f7fcf9] p-4 sm:p-5 shadow-sm">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start gap-3">
+                    <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#118778] text-white">
+                      <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-[#14231f]">Google Workspace Real-Time Automation</h4>
+                      <p className="mt-0.5 text-xs text-[#52645f]">
+                        {googleStatus.connected
+                          ? `Connected Account: ${googleStatus.email}`
+                          : "Connect your Google account to enable live Google Calendar booking and Google Sheets call logging."}
+                      </p>
+                    </div>
+                  </div>
+                  {googleStatus.connected ? (
+                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[#118778]/10 px-2.5 py-1 text-[11px] font-bold text-[#118778]">
+                      <span className="size-1.5 rounded-full bg-[#118778]"></span>
+                      Connected
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      className="shrink-0 rounded-lg border border-[#118778] bg-white px-3 py-1.5 text-xs font-semibold text-[#118778] hover:bg-[#118778]/5 transition"
+                      onClick={() => {
+                        integrationsApi.googleOAuthUrl().then(({ url }) => window.open(url, "_blank")).catch(() => {});
+                      }}
+                    >
+                      Connect Google
+                    </button>
+                  )}
+                </div>
+
+                {googleStatus.connected ? (
+                  <div className="mt-4 grid gap-3 border-t border-[#dce7e3] pt-4">
+                    {/* Google Calendar */}
+                    <div className="grid gap-2 rounded-lg border border-[#dce7e3] bg-white p-3">
+                      <label className="flex cursor-pointer items-start gap-2.5">
+                        <input
+                          type="checkbox"
+                          className="mt-0.5 accent-[#118778]"
+                          checked={useGoogleCalendar}
+                          onChange={(e) => setUseGoogleCalendar(e.target.checked)}
+                        />
+                        <div>
+                          <strong className="block text-xs font-bold text-[#14231f]">
+                            Live Google Calendar Booking
+                          </strong>
+                          <span className="text-[11px] text-[#71817d]">
+                            Voice AI checks availability in real-time during the call and books confirmed slots directly.
+                          </span>
+                        </div>
+                      </label>
+                      {useGoogleCalendar ? (
+                        <div className="ml-6 mt-1">
+                          <label className="block text-[11px] font-semibold text-[#52645f]">Target Calendar</label>
+                          <select
+                            className={`${fieldClass} mt-1 text-xs`}
+                            value={selectedCalendarId}
+                            onChange={(e) => setSelectedCalendarId(e.target.value)}
+                          >
+                            {googleStatus.calendars.map((cal) => (
+                              <option key={cal.id} value={cal.id}>
+                                {cal.name} {cal.primary ? "(Primary)" : ""}
+                              </option>
+                            ))}
+                            {!googleStatus.calendars.length ? (
+                              <option value="primary">Primary Calendar</option>
+                            ) : null}
+                          </select>
+                        </div>
+                      ) : null}
+                    </div>
+
+                    {/* Google Sheets */}
+                    <div className="grid gap-2 rounded-lg border border-[#dce7e3] bg-white p-3">
+                      <label className="flex cursor-pointer items-start gap-2.5">
+                        <input
+                          type="checkbox"
+                          className="mt-0.5 accent-[#118778]"
+                          checked={useGoogleSheets}
+                          onChange={(e) => setUseGoogleSheets(e.target.checked)}
+                        />
+                        <div>
+                          <strong className="block text-xs font-bold text-[#14231f]">
+                            Auto-Log to Google Sheets
+                          </strong>
+                          <span className="text-[11px] text-[#71817d]">
+                            Every caller&apos;s details, booking reference, and call summary are appended as a new row after each call.
+                          </span>
+                        </div>
+                      </label>
+                      {useGoogleSheets ? (
+                        <div className="ml-6 mt-1 grid gap-2">
+                          <div className="flex gap-4 text-xs">
+                            <label className="flex items-center gap-1.5 cursor-pointer">
+                              <input
+                                type="radio"
+                                name="sheetOption"
+                                checked={spreadsheetOption === "auto"}
+                                onChange={() => setSpreadsheetOption("auto")}
+                                className="accent-[#118778]"
+                              />
+                              <span>Auto-create new Google Sheet</span>
+                            </label>
+                            <label className="flex items-center gap-1.5 cursor-pointer">
+                              <input
+                                type="radio"
+                                name="sheetOption"
+                                checked={spreadsheetOption === "existing"}
+                                onChange={() => setSpreadsheetOption("existing")}
+                                className="accent-[#118778]"
+                              />
+                              <span>Use existing Sheet ID/URL</span>
+                            </label>
+                          </div>
+                          {spreadsheetOption === "existing" ? (
+                            <input
+                              className={`${fieldClass} text-xs`}
+                              placeholder="Paste Google Sheet URL or ID"
+                              value={customSpreadsheetId}
+                              onChange={(e) => setCustomSpreadsheetId(e.target.value)}
+                            />
+                          ) : (
+                            <p className="text-[11px] text-[#71817d]">
+                              Will automatically create a new sheet in your Google Drive named &quot;{answers.businessName || name || "Clinic"} - Bookings &amp; Call Log&quot;.
+                            </p>
+                          )}
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+
               {questions.some((question) => !question.required) ? <details className="rounded-xl border border-[#dce7e3] p-4"><summary className="cursor-pointer text-sm font-semibold text-[#52645f]">Add prices, policies, or other details (optional)</summary><div className="mt-4 grid gap-4 sm:grid-cols-2">{questions.filter((question) => !question.required).map(renderQuestion)}</div></details> : null}
               <details className="rounded-xl border border-[#dce7e3] p-4"><summary className="cursor-pointer text-sm font-semibold text-[#52645f]">Advanced setup</summary><div className="mt-4 grid gap-3">
                 <label className="grid gap-2 text-xs font-semibold text-[#52645f]">Receptionist name (optional)<input className={fieldClass} maxLength={80} value={name} onChange={(event) => setName(event.target.value)} /></label>
@@ -429,13 +647,34 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
           {step === "review" && preview && selected ? <div className="grid gap-5">
             <section className="rounded-xl border border-[#c5ded5] bg-[#f1f9f6] p-5">
               <h3 className="text-lg font-bold text-[#14231f]">{preview.name}</h3>
-              <p className="mt-2 text-sm leading-6 text-[#40564f]">{mode === "requests" ? requestSummaries[selected.id] : mode === "native" ? "Check the Vozon clinic schedule and book new appointments. Staff handle changes and cancellations." : "Your conversation is prepared. Connect the selected business software before activating automatic actions."}</p>
-              <ul className="mt-4 grid gap-2 text-sm text-[#29423b]"><li>Business details checked</li><li>Conversation prepared in {language}</li>{preview.tools.length ? <li>{mode === "requests" ? "Request capture configured" : "Appointment actions configured"}</li> : null}<li>Call results configured</li></ul>
+              <p className="mt-2 text-sm leading-6 text-[#40564f]">
+                {mode === "google_workspace" || (googleStatus.connected && (useGoogleCalendar || useGoogleSheets))
+                  ? "Real-time Google Calendar availability & booking enabled. All caller details and appointment records will be automatically logged to Google Sheets."
+                  : mode === "requests"
+                  ? requestSummaries[selected.id]
+                  : mode === "native"
+                  ? "Check the Vozon clinic schedule and book new appointments. Staff handle changes and cancellations."
+                  : "Your conversation is prepared. Connect the selected business software before activating automatic actions."}
+              </p>
+              <ul className="mt-4 grid gap-2 text-sm text-[#29423b]">
+                <li>Business details checked</li>
+                <li>Conversation prepared in {language}</li>
+                {useGoogleCalendar && googleStatus.connected ? (
+                  <li>Google Calendar live booking active: {googleStatus.calendars.find(c => c.id === selectedCalendarId)?.name || "Primary Calendar"}</li>
+                ) : null}
+                {useGoogleSheets && googleStatus.connected ? (
+                  <li>Google Sheets automatic post-call logging active</li>
+                ) : null}
+                {preview.tools.length ? (
+                  <li>{mode === "google_workspace" ? "Google Calendar live booking active" : mode === "requests" ? "Request capture configured" : "Appointment actions configured"}</li>
+                ) : null}
+                <li>Call results configured</li>
+              </ul>
               <p className="mt-4 border-t border-[#c5ded5] pt-3 text-xs leading-5 text-[#52645f]">{staffPhone ? `Staff contact: ${staffPhone}. If a transfer fails, the receptionist offers to take a request.` : "When a caller needs a person, the receptionist offers to take a staff request."}</p>
             </section>
             <section className="rounded-xl border border-[#dce7e3] p-4"><h3 className="text-sm font-bold text-[#14231f]">What happens next?</h3><p className="mt-2 text-sm leading-6 text-[#52645f]">{mode === "requests" ? "Activate your receptionist, then connect a phone number to receive calls. Requests will appear in your dashboard. You can listen to your receptionist whenever you like; a test call is optional." : "Save your draft and finish the selected scheduling or software setup before turning on phone calls."}</p></section>
             <details className="rounded-xl border border-[#dce7e3] p-4" open={showAdvanced}><summary className="cursor-pointer text-sm font-semibold text-[#52645f]" onClick={(event) => { event.preventDefault(); setShowAdvanced((current) => !current); }}>Advanced: conversation and actions</summary>{showAdvanced ? <div className="mt-3 grid gap-3"><label className="grid gap-2 text-sm">Conversation instructions<textarea className={`${fieldClass} min-h-64 p-3 font-mono`} maxLength={5000} value={prompt} onChange={(event) => setPrompt(event.target.value)} /></label><button className="w-fit text-xs font-semibold text-[#0e6f62]" type="button" onClick={() => setPrompt(preview.generatedPrompt)}>Restore prepared instructions</button><ul className="grid gap-2 text-xs text-[#52645f]">{preview.tools.map((tool) => <li key={tool.name}><strong>{tool.name}</strong>: {tool.description}</li>)}</ul></div> : null}</details>
-            <div className="flex justify-between gap-3"><button className="text-sm font-semibold text-[#0e6f62]" type="button" disabled={busy} onClick={() => { setError(""); setStep("details"); }}>Edit details</button><button className={primaryButton} type="button" disabled={busy || !prompt.trim()} onClick={() => void create()}>{busy ? "Preparing..." : mode === "requests" ? "Activate receptionist" : "Create draft"}</button></div>
+            <div className="flex justify-between gap-3"><button className="text-sm font-semibold text-[#0e6f62]" type="button" disabled={busy} onClick={() => { setError(""); setStep("details"); }}>Edit details</button><button className={primaryButton} type="button" disabled={busy || !prompt.trim()} onClick={() => void create()}>{busy ? "Preparing..." : (mode === "requests" || mode === "google_workspace" || (googleStatus.connected && (useGoogleCalendar || useGoogleSheets))) ? "Activate receptionist" : "Create draft"}</button></div>
           </div> : null}
         </div>
       </div>

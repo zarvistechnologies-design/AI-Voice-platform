@@ -97,6 +97,9 @@ export const integrationsApi = {
   inspectSpreadsheet: (spreadsheetId: string) => request<{ spreadsheet: { id: string; name: string; sheets: string[] } }>("/google/spreadsheet", {
     method: "POST", body: JSON.stringify({ spreadsheetId }),
   }),
+  createSpreadsheet: (title?: string, sheetName?: string) => request<{ spreadsheet: { id: string; name: string; sheetName: string; url: string } }>("/google/spreadsheet/create", {
+    method: "POST", body: JSON.stringify({ title, sheetName }),
+  }),
   testCalendar: (calendarId: string, timezone: string) => request<{ event: Record<string, unknown> }>("/google/calendar/test", {
     method: "POST", body: JSON.stringify({ calendarId, timezone }),
   }),
