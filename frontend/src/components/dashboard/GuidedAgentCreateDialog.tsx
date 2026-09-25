@@ -265,9 +265,11 @@ function QuestionField({
   return <label className="grid gap-1.5 text-xs font-semibold text-[#52645f]" htmlFor={inputId}>{label}<input className={fieldClass} id={inputId} maxLength={300} required={question.required} placeholder={question.hint} value={value} onChange={(event) => onChange(event.target.value)} />{hint}</label>;
 }
 
+let memoryTemplatesCache: AgentTemplate[] = [];
+
 export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
   const [step, setStep] = useState<Step>("start");
-  const [templates, setTemplates] = useState<AgentTemplate[]>([]);
+  const [templates, setTemplates] = useState<AgentTemplate[]>(memoryTemplatesCache);
   const [selectedId, setSelectedId] = useState("");
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [hours, setHours] = useState<HoursDraft>(defaultHours);
@@ -279,7 +281,7 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
   const [prompt, setPrompt] = useState("");
   const [preview, setPreview] = useState<GuidedAgentPreview | null>(null);
   const [showAdvanced, setShowAdvanced] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(memoryTemplatesCache.length === 0);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [googleStatus, setGoogleStatus] = useState<{
@@ -295,18 +297,29 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
 
   useEffect(() => {
     let active = true;
+
+    // 1. Fetch templates immediately - unblocks UI in milliseconds!
+    voiceApi.agentTemplates()
+      .then((res) => {
+        if (!active) return;
+        memoryTemplatesCache = res.templates;
+        setTemplates(res.templates);
+        setLoading(false);
+      })
+      .catch((err) => {
+        if (!active) return;
+        if (memoryTemplatesCache.length === 0) {
+          setError(err instanceof Error ? err.message : "Could not load business types.");
+        }
+        setLoading(false);
+      });
+
+    // 2. Fetch Google integrations in the background without blocking template display!
     Promise.allSettled([
-      voiceApi.agentTemplates(),
       integrationsApi.list(),
       integrationsApi.googleCalendars(),
-    ]).then(([templatesResult, integrationsResult, calendarsResult]) => {
+    ]).then(([integrationsResult, calendarsResult]) => {
       if (!active) return;
-      if (templatesResult.status === "fulfilled") {
-        setTemplates(templatesResult.value.templates);
-      } else {
-        setError(templatesResult.reason instanceof Error ? templatesResult.reason.message : "Could not load business types.");
-      }
-
       let connected = false;
       let email = "";
       if (integrationsResult.status === "fulfilled") {
@@ -328,9 +341,8 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
       if (connected) {
         setMode("google_workspace");
       }
-    }).finally(() => {
-      if (active) setLoading(false);
     });
+
     return () => { active = false; };
   }, []);
 
@@ -482,8 +494,30 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
             </button>
           </div> : null}
           {step === "choose" ? <div>
-            {loading ? <p className="text-sm text-[#71817d]" role="status">Loading business types...</p> : null}
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{templates.map((template) => <button className="min-h-36 rounded-xl border border-[#dce7e3] bg-white p-4 text-left transition hover:border-[#118778] hover:bg-[#f1f9f6]" key={template.id} type="button" onClick={() => selectTemplate(template)}><strong className="block text-base text-[#14231f]">{template.name}</strong><span className="mt-2 block text-xs leading-5 text-[#71817d]">{template.description}</span></button>)}</div>
+            {loading && templates.length === 0 ? (
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <div key={i} className="min-h-36 animate-pulse rounded-xl border border-[#dce7e3] bg-[#fbfdfc] p-4">
+                    <div className="h-5 w-3/4 rounded bg-[#e2ece8]" />
+                    <div className="mt-3 h-3.5 w-full rounded bg-[#eef4f1]" />
+                    <div className="mt-1.5 h-3.5 w-4/5 rounded bg-[#eef4f1]" />
+                  </div>
+                ))}
+              </div>
+            ) : null}
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {templates.map((template) => (
+                <button
+                  className="min-h-36 rounded-xl border border-[#dce7e3] bg-white p-4 text-left transition hover:border-[#118778] hover:bg-[#f1f9f6]"
+                  key={template.id}
+                  type="button"
+                  onClick={() => selectTemplate(template)}
+                >
+                  <strong className="block text-base text-[#14231f]">{template.name}</strong>
+                  <span className="mt-2 block text-xs leading-5 text-[#71817d]">{template.description}</span>
+                </button>
+              ))}
+            </div>
             <button className="mt-5 text-sm font-semibold text-[#0e6f62]" type="button" onClick={() => { setError(""); setStep("start"); }}>&larr; Back to setup options</button>
           </div> : null}
           {step === "details" && !selected ? <form className="grid gap-4" onSubmit={(event) => void createBlank(event)}>
