@@ -385,9 +385,11 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
       } : undefined,
       googleSheets: isGoogle && useGoogleSheets ? {
         enabled: true,
-        spreadsheetId: spreadsheetOption === "existing" ? customSpreadsheetId.trim() : "",
+        spreadsheetId: spreadsheetOption === "existing"
+          ? (customSpreadsheetId.trim().match(/\/spreadsheets\/d\/([A-Za-z0-9_-]+)/)?.[1] ?? customSpreadsheetId.trim())
+          : "",
         spreadsheetName: spreadsheetOption === "existing" ? "Custom Sheet" : `${answers.businessName || name || "Clinic"} Bookings`,
-        sheetName: "Bookings",
+        sheetName: spreadsheetOption === "existing" ? "Sheet1" : "Bookings",
       } : undefined,
     };
   }
