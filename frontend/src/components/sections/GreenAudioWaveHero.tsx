@@ -92,26 +92,26 @@ export function GreenAudioWaveHero() {
       // v: -1 to 1 (across ribbon width)
 
       // Smooth envelope that arches across the hero
-      const envelope = Math.pow(Math.sin(u * Math.PI), 0.72);
+      const envelope = Math.pow(Math.sin(u * Math.PI), 0.78);
 
-      // Spine vertical position
-      const centerY = height * 0.88;
+      // Spine vertical position: centered across the hero
+      const centerY = height * 0.52;
 
       // Primary travelling harmonic wave (ribbon spine)
-      const w1 = Math.sin(u * Math.PI * 3.2 - time * 1.3);
-      const w2 = Math.sin(u * Math.PI * 6.4 - time * 1.9 + 0.9) * 0.4;
-      const w3 = Math.sin(u * Math.PI * 9.8 - time * 2.6 + 1.8) * 0.18;
-      const spineY = centerY + (w1 + w2 + w3) * (height * 0.045) * envelope;
+      const w1 = Math.sin(u * Math.PI * 3.2 - time * 1.35);
+      const w2 = Math.sin(u * Math.PI * 6.4 - time * 2.0 + 0.9) * 0.38;
+      const w3 = Math.sin(u * Math.PI * 9.8 - time * 2.7 + 1.8) * 0.16;
+      const spineY = centerY + (w1 + w2 + w3) * (height * 0.125) * envelope;
 
       // 3D Depth displacement of the spine
-      const spineZ = Math.sin(u * Math.PI * 2.6 - time * 1.0 + 0.6) * 140 * envelope;
+      const spineZ = Math.sin(u * Math.PI * 2.6 - time * 1.05 + 0.6) * 140 * envelope;
 
       // Ribbon width and dynamic 3D twisting angle
-      const ribbonWidth = (height * 0.085) * envelope;
-      const twistAngle = u * Math.PI * 3.4 - time * 0.85 + Math.sin(u * Math.PI * 2.0 - time * 0.45) * 0.65;
+      const ribbonWidth = (height * 0.22) * envelope;
+      const twistAngle = u * Math.PI * 3.4 - time * 0.88 + Math.sin(u * Math.PI * 2.0 - time * 0.48) * 0.65;
 
       // Surface ripples across the ribbon width (silk cloth undulation)
-      const ripple = Math.sin(u * Math.PI * 8.0 + v * Math.PI * 2.2 - time * 2.0) * (14 * envelope);
+      const ripple = Math.sin(u * Math.PI * 8.0 + v * Math.PI * 2.2 - time * 2.1) * (14 * envelope);
 
       const localDist = v * ribbonWidth + ripple;
       const dY = localDist * Math.cos(twistAngle);
@@ -151,21 +151,21 @@ export function GreenAudioWaveHero() {
       // 0. Draw subtle ambient radial glow behind the center of the wave
       const radialGlow = context.createRadialGradient(
         width * 0.5,
-        height * 0.88,
+        height * 0.52,
         20,
         width * 0.5,
-        height * 0.88,
-        Math.max(width * 0.48, 300)
+        height * 0.52,
+        Math.max(width * 0.5, 380)
       );
-      radialGlow.addColorStop(0, "rgba(16, 185, 129, 0.07)");
-      radialGlow.addColorStop(0.45, "rgba(16, 141, 130, 0.03)");
+      radialGlow.addColorStop(0, "rgba(16, 185, 129, 0.09)");
+      radialGlow.addColorStop(0.5, "rgba(16, 141, 130, 0.03)");
       radialGlow.addColorStop(1, "rgba(255, 255, 255, 0)");
       context.fillStyle = radialGlow;
       context.fillRect(0, 0, width, height);
 
-      // 1. Draw Transverse Mesh Ribs (cross-grid wireframe)
-      const ribStep = 7;
-      for (let i = 5; i <= U_STEPS - 5; i += ribStep) {
+      // 1. Draw Transverse Mesh Ribs (subtle cross-grid harmonics)
+      const ribStep = 8;
+      for (let i = 6; i <= U_STEPS - 6; i += ribStep) {
         const u = i / U_STEPS;
         context.beginPath();
         for (let j = 0; j < STRAND_COUNT; j += 2) {
@@ -174,8 +174,8 @@ export function GreenAudioWaveHero() {
           if (j === 0) context.moveTo(pt.screenX, pt.screenY);
           else context.lineTo(pt.screenX, pt.screenY);
         }
-        context.strokeStyle = "rgba(16, 185, 129, 0.18)";
-        context.lineWidth = 0.8;
+        context.strokeStyle = "rgba(16, 185, 129, 0.20)";
+        context.lineWidth = 0.65;
         context.stroke();
       }
 
@@ -197,13 +197,13 @@ export function GreenAudioWaveHero() {
 
         if (isRim) {
           context.strokeStyle = j === Math.floor(STRAND_COUNT / 2)
-            ? "rgba(5, 150, 105, 0.70)"
-            : "rgba(16, 185, 129, 0.60)";
-          context.lineWidth = 1.6;
+            ? "rgba(5, 150, 105, 0.88)"
+            : "rgba(16, 185, 129, 0.72)";
+          context.lineWidth = 1.35;
         } else {
-          const strandAlpha = 0.22 + Math.sin((j / STRAND_COUNT) * Math.PI) * 0.28;
+          const strandAlpha = 0.28 + Math.sin((j / STRAND_COUNT) * Math.PI) * 0.32;
           context.strokeStyle = `rgba(16, 141, 130, ${strandAlpha.toFixed(2)})`;
-          context.lineWidth = 1.05;
+          context.lineWidth = 0.95;
         }
 
         context.stroke();
