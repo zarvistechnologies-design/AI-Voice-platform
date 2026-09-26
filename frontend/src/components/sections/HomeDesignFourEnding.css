@@ -779,18 +779,23 @@
 .design-four-footer-main nav b { margin-bottom: 3px; font-size: 13px; }
 .design-four-footer-main nav a { color: #d9deea; font-size: 12px; line-height: 1.25; text-decoration: none; }
 .design-four-footer-main nav a:hover { color: #fff; }
-.design-four-footer-main .design-four-footer-phone { margin-top: 2px; color: #fff; font-size: 19px; font-weight: 700; }
 .design-four-footer-main .design-four-footer-demo {
   margin-top: 14px;
-  min-width: 180px;
+  width: min(180px, 100%);
   min-height: 54px;
   display: inline-flex;
+  align-self: center;
+  transform: translateX(-50px);
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
+  padding: 0 18px;
   border-radius: 999px;
   background: #f1f5ff;
   color: #10131a;
   font-weight: 800;
+  line-height: 1.2;
+  text-align: center;
   text-transform: uppercase;
 }
 

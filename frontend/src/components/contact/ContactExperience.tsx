@@ -14,6 +14,7 @@ type IconName =
 | "clock"
 | "email"
 | "headset"
+| "location"
 | "phone"
 | "send"
 | "shield"
@@ -38,6 +39,8 @@ clock: ( <path d="M10 2.5a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15Zm0 3v4.7l3 1.8" 
 email: ( <path d="M3 5.5h14a1.5 1.5 0 0 1 1.5 1.5v8A1.5 1.5 0 0 1 17 16.5H3A1.5 1.5 0 0 1 1.5 15V7A1.5 1.5 0 0 1 3 5.5Zm-.5 1 7.5 6 7.5-6" />
 ),
 headset: ( <path d="M3 11v-1a7 7 0 0 1 14 0v1M3 11h2.5v5H4.8A1.8 1.8 0 0 1 3 14.2V11Zm14 0h-2.5v5H17v.5a1.5 1.5 0 0 1-1.5 1.5H12" />
+),
+location: ( <path d="M16.5 8.5c0 4.8-6.5 9.2-6.5 9.2S3.5 13.3 3.5 8.5a6.5 6.5 0 1 1 13 0ZM10 11a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
 ),
 phone: ( <path d="M5.2 2.5 8 6.1 6.3 8a12.2 12.2 0 0 0 5.7 5.7l1.9-1.7 3.6 2.8-.8 2.3c-.3.8-1.1 1.3-2 1.2C7.8 17.4 2.6 12.2 1.7 5.3c-.1-.9.4-1.7 1.2-2l2.3-.8Z" />
 ),
@@ -114,6 +117,24 @@ body: "Together, we define the first workflow, required guardrails, human handof
 number: "03",
 title: "You see the platform in action",
 body: "We tailor the conversation around your use case so your team can evaluate the right capabilities.",
+},
+] as const;
+
+const officeLocations = [
+{
+city: "Bangalore(HQ)",
+label: "Our headquarters",
+address: "Behind Manyata Tech Park, Hebbal, Bangalore 560077.",
+},
+{
+city: "Lucknow",
+label: "Second India office",
+address: "Experion,V296+9MM, AV 7, Vibhuti Khand, Gomti Nagar, Lucknow, Uttar Pradesh 226010.",
+},
+{
+  city: "USA",
+  label: "USA Office",
+  address: "300 Quail Ridge Dr NE ADA, MI 49301.",
 },
 ] as const;
 
@@ -484,10 +505,10 @@ Home </Link>
         </p>
       </div>
 
-      <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+      <div className="mt-12 grid auto-rows-fr gap-5 md:grid-cols-2 xl:grid-cols-4">
         {contactChannels.map((channel) => (
           <a
-            className="contact-channel-card group flex min-h-72 flex-col rounded-[24px] border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:p-8"
+            className="contact-channel-card group flex h-full min-h-72 flex-col rounded-[24px] border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:p-8"
             href={channel.href}
             key={channel.title}
           >
@@ -516,6 +537,29 @@ Home </Link>
               />
             </span>
           </a>
+        ))}
+        {officeLocations.map((office, index) => (
+          <article
+            className="contact-channel-card group flex h-full min-h-72 scroll-mt-24 flex-col rounded-[24px] border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:p-8"
+            id={index === 0 ? "office-locations" : undefined}
+            key={office.city}
+          >
+            <span className="contact-channel-icon grid size-13 place-items-center rounded-2xl bg-teal-50 text-black ring-1 ring-inset ring-teal-200 transition group-hover:bg-teal-500 group-hover:text-black">
+              <Icon className="size-6" name="location" />
+            </span>
+
+            <span className="contact-channel-eyebrow mt-8 text-[10px] font-bold uppercase tracking-[0.16em] text-black">
+              {office.label}
+            </span>
+
+            <h3 className="mt-2 text-xl font-semibold tracking-[-0.025em]">
+              {office.city}
+            </h3>
+
+            <address className="mt-3 text-sm font-medium not-italic leading-6 text-black">
+              {office.address}
+            </address>
+          </article>
         ))}
       </div>
     </div>
