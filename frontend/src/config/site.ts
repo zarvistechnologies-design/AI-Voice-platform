@@ -178,7 +178,7 @@ export const siteConfig = {
     {
       title: "Support",
       links: [
-        { href: "mailto:support@vozon.ai", label: "Contact" },
+        { href: "mailto:hello@vozon.ai", label: "Contact" },
         { href: "/#resources", label: "Documentation" },
         { href: "/privacy", label: "Privacy" },
         { href: "/terms", label: "Terms" },

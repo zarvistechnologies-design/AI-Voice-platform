@@ -26,7 +26,7 @@ export const defaultBrand: BrandConfig = {
   urls: { app: "https://vozon.ai", api: "https://api.vozon.ai", links: "https://api.vozon.ai" },
   colors: { primary: "#10b981", secondary: "#071b18", accent: "#34d399", surface: "#09090b" },
   defaultTheme: "dark",
-  support: { email: "support@vozon.ai", phone: "+91-9540312540", websiteUrl: "https://vozon.ai", helpCenterUrl: "https://vozon.ai/docs", statusPageUrl: "" },
+  support: { email: "hello@vozon.ai", phone: "+91 78925 18414", websiteUrl: "https://vozon.ai", helpCenterUrl: "https://vozon.ai/docs", statusPageUrl: "" },
   legal: { termsUrl: "https://vozon.ai/terms", privacyUrl: "https://vozon.ai/privacy", cookiePolicyUrl: "", legalBusinessName: "Vozon AI", businessAddress: "A-135, Sector 63, Noida, Uttar Pradesh 201309" },
   poweredBy: { visible: false, text: "" },
   authentication: { registrationMode: "open", googleSignIn: true },
