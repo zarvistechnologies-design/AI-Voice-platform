@@ -49,7 +49,7 @@ function VoiceTags() {
 
 export function VoiceOperationsShowcase() {
   return (
-    <section className={styles.showcase} aria-label="Vomyra voice agents on phone and web">
+    <section className={styles.showcase} aria-label="Vozon voice agents on phone and web">
       <div className={styles.scene}>
         <div className={styles.orbits} aria-hidden="true" />
         <div className={styles.desktop}>

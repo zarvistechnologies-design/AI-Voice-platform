@@ -26,11 +26,11 @@ const menus = {
   },
   company: {
     label: "Company",
-    badge: "Vomyra AI",
+    badge: "Vozon AI",
     intro: siteConfig.companyMenu.featured,
     groups: [
       {
-        title: "About Vomyra",
+        title: "About Vozon",
         links: [
           { href: "/about", label: "About us", desc: "Our vision & team" },
           { href: "/career", label: "Careers", desc: "We're hiring!" },

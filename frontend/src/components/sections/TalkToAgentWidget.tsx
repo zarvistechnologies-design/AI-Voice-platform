@@ -140,7 +140,7 @@ export function TalkToAgentWidget() {
       {/* Brand Header */}
       <div className={styles.deviceHeader}>
         <div className={styles.brandRow}>
-          <span className={styles.brandName}>Vomyra</span>
+          <span className={styles.brandName}>Vozon</span>
           <span className={styles.liveTag}>
             <span className={styles.liveDot} />
             Live Call

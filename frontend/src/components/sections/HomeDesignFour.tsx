@@ -439,18 +439,104 @@ export function HomeDesignFour() {
         <section className={`${styles.hero} home-design-four__hero`}>
           <GreenAudioWaveHero />
           <div className={styles.heroGlow} aria-hidden="true" />
-          <div className="design-four-hero__features" aria-label="Platform capabilities">
-            <span><i>✓</i>98/94 Indian Mobile CLI (80%+ Pickup)</span>
-            <span><i>✓</i>Natural Indic &amp; Hinglish Speech</span>
-            <span><i>✓</i>Sub-500ms Real-Time Latency</span>
-          </div>
-          <h1>
-            India&apos;s Most Natural AI Voice Agents.<br className="design-four-desktop-break" /> Live on{' '}
-            <strong className="design-four-hero__title-green">98/94 Mobile Numbers.</strong>
-          </h1>
-          <div className="design-four-trust-pill">Powering <strong>1 Lakh+</strong> daily calling minutes across India&apos;s high-growth teams</div>
-          <div className="design-four-hero__ambient" aria-hidden="true">
-            <i /><i /><i />
+          <div className="vozon-hero-content">
+            <div className="vozon-hero-badge">
+              <span className="vozon-hero-badge-dot" />
+              <span className="vozon-hero-badge-tag">NEXT-GEN VOICE AI</span>
+              <span className="vozon-hero-badge-sep">•</span>
+              <span>Sub-500ms Conversational Telephony</span>
+            </div>
+
+            <h1 className="vozon-hero-title">
+              AI Voice Agents That<br />
+              <strong className="vozon-hero-title-highlight">Actually Sound Human.</strong>
+            </h1>
+
+            <p className="vozon-hero-subtitle">
+              Automate customer support, inbound inquiries, and outbound calls with hyper-realistic voice AI.
+              Zero robotic lag, human-like barge-in, and natural conversations in Hindi, Hinglish &amp; 10+ Indic languages.
+            </p>
+
+            <div className="vozon-hero-actions">
+              <button
+                type="button"
+                className={`vozon-hero-voice-btn ${voiceCall.active ? "is-active" : ""}`}
+                onClick={() => {
+                  if (voiceCall.active) {
+                    voiceCall.disconnect();
+                  } else {
+                    void voiceCall.start(selectedVoice.language);
+                  }
+                }}
+                disabled={voiceCall.busy}
+              >
+                <span className="vozon-hero-voice-icon">
+                  {voiceCall.active ? (
+                    <span className="vozon-audio-bars">
+                      <i /><i /><i /><i />
+                    </span>
+                  ) : (
+                    "🎙️"
+                  )}
+                </span>
+                <span className="vozon-hero-voice-label">
+                  {voiceCall.busy
+                    ? "Connecting Voice Engine…"
+                    : voiceCall.active
+                    ? `End Call (${voiceCall.speakingLanguage || selectedVoice.label})`
+                    : `Talk to AI Live in Browser`}
+                </span>
+              </button>
+
+              <Link href="/contact" className="vozon-hero-demo-btn">
+                <span>Book a Demo</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </Link>
+            </div>
+
+            <div className="vozon-hero-lang-selector">
+              <span className="vozon-hero-lang-label">Try live voice in:</span>
+              <div className="vozon-hero-lang-pills">
+                {voiceLanguages.slice(0, 7).map((item, idx) => {
+                  const isCurrent = activeLanguage === idx;
+                  const isTalking = voiceCall.active && (voiceCall.speakingLanguage === item.language || (isCurrent && !voiceCall.speakingLanguage));
+                  return (
+                    <button
+                      key={item.language}
+                      type="button"
+                      className={`vozon-hero-lang-pill ${isCurrent ? "is-selected" : ""} ${isTalking ? "is-live" : ""}`}
+                      onClick={() => handleSelectLanguage(idx)}
+                    >
+                      {isTalking && <span className="vozon-lang-pulse-dot" />}
+                      <span className="vozon-lang-pill-title">{item.label}</span>
+                      <span className="vozon-lang-pill-sub">{item.language}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="vozon-hero-trust-bar">
+              <div className="vozon-trust-item">
+                <span className="vozon-trust-icon">⚡</span>
+                <span><strong>&lt;500ms</strong> Telephony Latency</span>
+              </div>
+              <div className="vozon-trust-sep" />
+              <div className="vozon-trust-item">
+                <span className="vozon-trust-icon">🇮🇳</span>
+                <span><strong>10+</strong> Indic Languages</span>
+              </div>
+              <div className="vozon-trust-sep" />
+              <div className="vozon-trust-item">
+                <span className="vozon-trust-icon">📊</span>
+                <span><strong>1-Click</strong> Google Sheets Outbound</span>
+              </div>
+              <div className="vozon-trust-sep" />
+              <div className="vozon-trust-item">
+                <span className="vozon-trust-icon">📞</span>
+                <span><strong>BYOT</strong> Virtual Telephony</span>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -513,30 +599,30 @@ export function HomeDesignFour() {
           </div>
         </section>
 
-        <section className="vomyra-advantage-section" aria-label="Why Vomyra is built for Indian businesses">
-          <div className="vomyra-advantage-header">
-            <span className="vomyra-pill">The Indian Voice Advantage</span>
-            <h2>Why India&apos;s leading teams switch from US tools to <strong>Vomyra</strong></h2>
-            <p>Traditional voice tools struggle with Indian accents, 080 spam flags, and rigid telecom rules. Vomyra is engineered from day one for Indian telephony and local customer trust.</p>
+        <section className="vozon-advantage-section" aria-label="Why Vozon is built for Indian businesses">
+          <div className="vozon-advantage-header">
+            <span className="vozon-pill">The Indian Voice Advantage</span>
+            <h2>Why India&apos;s leading teams switch from US tools to <strong>Vozon</strong></h2>
+            <p>Traditional voice tools struggle with Indian accents, 080 spam flags, and rigid telecom rules. Vozon is engineered from day one for Indian telephony and local customer trust.</p>
           </div>
-          <div className="vomyra-advantage-grid">
-            <article className="vomyra-advantage-card">
-              <div className="vomyra-card-badge">80%+ Pickup Rate</div>
-              <div className="vomyra-card-icon">📱</div>
-              <h3>India&apos;s Only 98/94 Mobile CLI</h3>
-              <p>US platforms force you onto 080 landline numbers that Truecaller flags as spam (22% pickup). Vomyra gives you genuine Indian mobile numbers that customers actually answer.</p>
-              <div className="vomyra-stat-preview">
-                <div><span>080 Landlines</span><b>~22%</b></div>
-                <div className="is-highlight"><span>Vomyra 98/94 CLI</span><b>~81%</b></div>
+          <div className="vozon-advantage-grid">
+            <article className="vozon-advantage-card">
+              <div className="vozon-card-badge">High Pickup Telephony</div>
+              <div className="vozon-card-icon">📱</div>
+              <h3>Smart Virtual Telephony &amp; BYOT</h3>
+              <p>US platforms lock you into rigid 080 trunks that get flagged as spam. Vozon provides enterprise local virtual numbers and Bring-Your-Own-Carrier (BYOT) support across Exotel, Airtel, and Tata.</p>
+              <div className="vozon-stat-preview">
+                <div><span>Unverified 080 Trunks</span><b>~22% pickup</b></div>
+                <div className="is-highlight"><span>Vozon Smart Telephony</span><b>~74% pickup</b></div>
               </div>
             </article>
 
-            <article className="vomyra-advantage-card">
-              <div className="vomyra-card-badge">Native Indic Engine</div>
-              <div className="vomyra-card-icon">🇮🇳</div>
+            <article className="vozon-advantage-card">
+              <div className="vozon-card-badge">Native Indic Engine</div>
+              <div className="vozon-card-icon">🇮🇳</div>
               <h3>Hinglish &amp; 10+ Regional Dialects</h3>
               <p>Powered by Sarvam Bulbul and Indic-tuned frontier models. Your agents understand colloquial phrasing, native pronunciation, and switch naturally between Hindi and English mid-sentence.</p>
-              <div className="vomyra-lang-tags">
+              <div className="vozon-lang-tags">
                 <span>हिन्दी (Hindi)</span>
                 <span>Hinglish</span>
                 <span>मराठी</span>
@@ -546,12 +632,12 @@ export function HomeDesignFour() {
               </div>
             </article>
 
-            <article className="vomyra-advantage-card">
-              <div className="vomyra-card-badge">Zero Friction</div>
-              <div className="vomyra-card-icon">⚡</div>
+            <article className="vozon-advantage-card">
+              <div className="vozon-card-badge">Zero Friction</div>
+              <div className="vozon-card-icon">⚡</div>
               <h3>Sheets to Enterprise MCP</h3>
               <p>No developers needed: paste a Google Sheet to launch outbound dialer campaigns in 60 seconds. For engineers, we provide India&apos;s only Model Context Protocol (MCP) server &amp; sub-500ms WebRTC.</p>
-              <div className="vomyra-feature-checks">
+              <div className="vozon-feature-checks">
                 <span>✓ Google Sheets auto-sync</span>
                 <span>✓ Bi-directional CRM webhooks</span>
                 <span>✓ TRAI compliant call windows</span>
@@ -579,9 +665,9 @@ export function HomeDesignFour() {
           </div>
           <div className="design-four-voice-layout">
             <div className="design-four-voice-copy">
-              <h2 className="leading-tight tracking-tight">Vomyra: India&apos;s Complete<br className="hidden md:block" />Enterprise Voice AI Platform,<br className="hidden md:block" />turning customer phone calls into<br className="hidden md:block" />instant revenue</h2>
-              <p>Build intelligent voice agents, connect your business systems, and automate customer conversations with Vomyra.</p>
-              <Link href="/product" className="rounded-lg bg-[#108D82] px-6 py-3 font-semibold text-white transition-colors hover:bg-[#0d746b]">Explore Vomyra</Link>
+              <h2 className="leading-tight tracking-tight">Vozon: India&apos;s Complete<br className="hidden md:block" />Enterprise Voice AI Platform,<br className="hidden md:block" />turning customer phone calls into<br className="hidden md:block" />instant revenue</h2>
+              <p>Build intelligent voice agents, connect your business systems, and automate customer conversations with Vozon.</p>
+              <Link href="/product" className="rounded-lg bg-[#108D82] px-6 py-3 font-semibold text-white transition-colors hover:bg-[#0d746b]">Explore Vozon</Link>
             </div>
             <div className="design-four-voice-player">
               <button
@@ -653,13 +739,13 @@ export function HomeDesignFour() {
           <h2>Everyday Calls. Extraordinary Outcomes.</h2>
           <div className="design-four-metrics">
             <div><strong>1 Lakh+</strong><span>daily calling minutes</span></div>
-            <div><strong>80%+</strong><span>pickup on 98/94 mobile CLI</span></div>
+            <div><strong>75%+</strong><span>first-call resolution rate</span></div>
             <div><strong>&lt;500ms</strong><span>telephony voice latency</span></div>
             <div><strong>12+</strong><span>Indic &amp; global languages</span></div>
             <div><strong>99.9%</strong><span>enterprise uptime</span></div>
           </div>
           <div className="design-four-agent-banner">
-            <div><small>The Vomyra Voice AI Agent Platform</small><h3><strong>Vomyra</strong> Voice Agents</h3><p>From the first hello to the final action, Vomyra agents understand conversations, access your systems, and complete workflows in real time.</p></div>
+            <div><small>The Vozon Voice AI Agent Platform</small><h3><strong>Vozon</strong> Voice Agents</h3><p>From the first hello to the final action, Vozon agents understand conversations, access your systems, and complete workflows in real time.</p></div>
             <Link href="/services/voice-agents" aria-label="Explore voice agents"><Arrow /></Link>
           </div>
         </section>
@@ -667,7 +753,7 @@ export function HomeDesignFour() {
         <section className="design-four-industry-section" id="industries">
           <div className="design-four-industry-copy">
             <h2>Built for<br /><strong>businesses</strong> that run<br />on <strong>conversations</strong></h2>
-            <p>From financial services to healthcare and commerce, Vomyra helps teams automate high-volume conversations without losing the human experience.</p>
+            <p>From financial services to healthcare and commerce, Vozon helps teams automate high-volume conversations without losing the human experience.</p>
             <div><Link href="/contact">Talk to Sales</Link><Link href="/contact">Request A Demo</Link></div>
           </div>
           <div className="design-four-industry-experience">

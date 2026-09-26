@@ -1,5 +1,5 @@
 export const siteConfig = {
-  name: "Vomyra",
+  name: "Vozon",
   description: "AI voice agents for sales, support, scheduling, and customer follow-up.",
   headerLinks: [
     { href: "/", label: "Home" },
@@ -88,7 +88,7 @@ export const siteConfig = {
     featured: {
       href: "/#developers",
       title: "Documentation",
-      body: "See what makes Vomyra unique from how it works to what it can do for your team.",
+      body: "See what makes Vozon unique from how it works to what it can do for your team.",
     },
     columns: [
       {
@@ -106,7 +106,7 @@ export const siteConfig = {
     story: {
       href: "/#resources",
       title: "Status Page",
-      body: "See how leading teams use Vomyra to transform customer calls and drive real results.",
+      body: "See how leading teams use Vozon to transform customer calls and drive real results.",
     },
     cta: { href: "/integrations", label: "All Integrations" },
   },
@@ -114,7 +114,7 @@ export const siteConfig = {
     featured: {
       href: "/resources/comparison-overview",
       title: "Comparison Overview",
-      body: "See how Vomyra helps support and sales teams automate calls at scale without losing quality.",
+      body: "See how Vozon helps support and sales teams automate calls at scale without losing quality.",
     },
     columns: [
       {
@@ -140,7 +140,7 @@ export const siteConfig = {
     story: {
       href: "/resources/events",
       title: "Events",
-      body: "Meet us at upcoming conferences and live demos to explore the power of Vomyra in action.",
+      body: "Meet us at upcoming conferences and live demos to explore the power of Vozon in action.",
     },
     cta: { href: "/resources/blog", label: "Visit Our Blog" },
   },
@@ -148,7 +148,7 @@ export const siteConfig = {
     featured: {
       href: "/about",
       title: "About Us",
-      body: "Learn why Vomyra is building practical, transparent voice automation for conversations that matter.",
+      body: "Learn why Vozon is building practical, transparent voice automation for conversations that matter.",
     },
     columns: [],
     story: {
@@ -178,7 +178,7 @@ export const siteConfig = {
     {
       title: "Support",
       links: [
-        { href: "mailto:support@vomyra.com", label: "Contact" },
+        { href: "mailto:support@vozon.ai", label: "Contact" },
         { href: "/#resources", label: "Documentation" },
         { href: "/privacy", label: "Privacy" },
         { href: "/terms", label: "Terms" },

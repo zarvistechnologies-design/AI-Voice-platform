@@ -67,7 +67,7 @@ export function SiteFooter() {
             <a aria-label="Instagram" href="https://www.instagram.com/vozonai"target="_blank"rel="noreferrer">
             <svg width="24"height="24"viewBox="0 0 24 24"fill="none"xmlns="http://www.w3.org/2000/svg"><rect x="2.5"y="2.5"width="19"height="19"rx="5.5"stroke="currentColor"strokeWidth="2.5"/><circle cx="12"cy="12"r="4.25"stroke="currentColor"strokeWidth="2.5"/><circle cx="17.5"cy="6.5"r="1.25"fill="currentColor" /></svg></a>
             <a aria-label="Call +91 9540312540" href="tel:+919540312540">&#9742;</a>
-            <a aria-label="Email support@vomyra.com" href="mailto:support@vomyra.com">&#9993;</a>
+            <a aria-label="Email support@vozon.ai" href="mailto:support@vozon.ai">&#9993;</a>
           </div>
         </div>
         <nav aria-label="Footer navigation">
@@ -76,7 +76,7 @@ export function SiteFooter() {
           <div><b>Company</b><Link href="/career">We&apos;re hiring</Link><Link href="/pricing">Pricing</Link><Link href="/resources/changelog">Changelog</Link><Link href="/contact">Contact us</Link></div>
           <div>
             <b>Contact US</b>
-            <a href="mailto:support@vomyra.com">support@vomyra.com</a>
+            <a href="mailto:support@vozon.ai">support@vozon.ai</a>
             <a className="design-four-footer-phone" href="tel:+919540312540">+91 9540312540</a>
             <Link href="/contact#office-locations">Our Office Locations</Link>
             <Link className="design-four-footer-demo" href="/contact">Book a free demo</Link>

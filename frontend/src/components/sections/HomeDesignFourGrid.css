@@ -101,20 +101,20 @@
   }
 }
 
-/* Vomyra Indian Advantage Section */
-.vomyra-advantage-section {
+/* Vozon Indian Advantage Section */
+.vozon-advantage-section {
   width: min(var(--design-four-container), calc(100% - 48px));
   margin: 60px auto 80px;
   padding: 0 12px;
 }
 
-.vomyra-advantage-header {
+.vozon-advantage-header {
   text-align: center;
   max-width: 780px;
   margin: 0 auto 52px;
 }
 
-.vomyra-pill {
+.vozon-pill {
   display: inline-block;
   padding: 6px 16px;
   border-radius: 999px;
@@ -127,7 +127,7 @@
   margin-bottom: 16px;
 }
 
-.vomyra-advantage-header h2 {
+.vozon-advantage-header h2 {
   font-size: clamp(30px, 3.2vw, 44px);
   font-weight: 600;
   letter-spacing: -0.03em;
@@ -136,25 +136,25 @@
   margin-bottom: 16px;
 }
 
-.vomyra-advantage-header h2 strong {
+.vozon-advantage-header h2 strong {
   background: linear-gradient(135deg, #059669, #0d9488);
   -webkit-background-clip: text;
   color: transparent;
 }
 
-.vomyra-advantage-header p {
+.vozon-advantage-header p {
   font-size: 16px;
   color: #52525b;
   line-height: 1.6;
 }
 
-.vomyra-advantage-grid {
+.vozon-advantage-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 28px;
 }
 
-.vomyra-advantage-card {
+.vozon-advantage-card {
   position: relative;
   background: #ffffff;
   border: 1px solid #e4e4e7;
@@ -166,13 +166,13 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
-.vomyra-advantage-card:hover {
+.vozon-advantage-card:hover {
   transform: translateY(-4px);
   border-color: #10b981;
   box-shadow: 0 12px 32px rgba(16, 185, 129, 0.12);
 }
 
-.vomyra-card-badge {
+.vozon-card-badge {
   align-self: flex-start;
   padding: 4px 12px;
   border-radius: 8px;
@@ -183,12 +183,12 @@
   margin-bottom: 20px;
 }
 
-.vomyra-card-icon {
+.vozon-card-icon {
   font-size: 36px;
   margin-bottom: 16px;
 }
 
-.vomyra-advantage-card h3 {
+.vozon-advantage-card h3 {
   font-size: 21px;
   font-weight: 700;
   color: #18181b;
@@ -196,7 +196,7 @@
   margin-bottom: 12px;
 }
 
-.vomyra-advantage-card p {
+.vozon-advantage-card p {
   font-size: 14.5px;
   color: #52525b;
   line-height: 1.6;
@@ -204,7 +204,7 @@
   flex-grow: 1;
 }
 
-.vomyra-stat-preview {
+.vozon-stat-preview {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -214,7 +214,7 @@
   border: 1px solid #f4f4f5;
 }
 
-.vomyra-stat-preview div {
+.vozon-stat-preview div {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -222,23 +222,23 @@
   color: #71717a;
 }
 
-.vomyra-stat-preview div.is-highlight {
+.vozon-stat-preview div.is-highlight {
   color: #059669;
   font-weight: 700;
 }
 
-.vomyra-stat-preview div.is-highlight b {
+.vozon-stat-preview div.is-highlight b {
   color: #059669;
   font-size: 15px;
 }
 
-.vomyra-lang-tags {
+.vozon-lang-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-.vomyra-lang-tags span {
+.vozon-lang-tags span {
   padding: 5px 12px;
   border-radius: 999px;
   background: #f4f4f5;
@@ -247,20 +247,20 @@
   font-weight: 600;
 }
 
-.vomyra-feature-checks {
+.vozon-feature-checks {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.vomyra-feature-checks span {
+.vozon-feature-checks span {
   font-size: 13.5px;
   color: #27272a;
   font-weight: 500;
 }
 
 @media (max-width: 992px) {
-  .vomyra-advantage-grid {
+  .vozon-advantage-grid {
     grid-template-columns: 1fr;
   }
 }

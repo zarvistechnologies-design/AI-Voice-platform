@@ -95,7 +95,7 @@ export function GreenAudioWaveHero() {
       const envelope = Math.pow(Math.sin(u * Math.PI), 0.72);
 
       // Spine vertical position
-      const centerY = height * 0.50;
+      const centerY = height * 0.72;
 
       // Primary travelling harmonic wave (ribbon spine)
       const w1 = Math.sin(u * Math.PI * 3.2 - time * 1.3);
@@ -174,7 +174,7 @@ export function GreenAudioWaveHero() {
           if (j === 0) context.moveTo(pt.screenX, pt.screenY);
           else context.lineTo(pt.screenX, pt.screenY);
         }
-        context.strokeStyle = "rgba(16, 185, 129, 0.32)";
+        context.strokeStyle = "rgba(16, 185, 129, 0.18)";
         context.lineWidth = 0.8;
         context.stroke();
       }
@@ -197,11 +197,11 @@ export function GreenAudioWaveHero() {
 
         if (isRim) {
           context.strokeStyle = j === Math.floor(STRAND_COUNT / 2)
-            ? "rgba(5, 150, 105, 0.95)"
-            : "rgba(16, 185, 129, 0.85)";
+            ? "rgba(5, 150, 105, 0.70)"
+            : "rgba(16, 185, 129, 0.60)";
           context.lineWidth = 1.6;
         } else {
-          const strandAlpha = 0.42 + Math.sin((j / STRAND_COUNT) * Math.PI) * 0.42;
+          const strandAlpha = 0.22 + Math.sin((j / STRAND_COUNT) * Math.PI) * 0.28;
           context.strokeStyle = `rgba(16, 141, 130, ${strandAlpha.toFixed(2)})`;
           context.lineWidth = 1.05;
         }

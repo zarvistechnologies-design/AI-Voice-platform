@@ -17,17 +17,17 @@ export type BrandConfig = {
 
 export const defaultBrand: BrandConfig = {
   source: "platform",
-  hostname: "vomyra.com",
-  productName: "Vomyra",
-  companyName: "Vomyra AI",
+  hostname: "vozon.ai",
+  productName: "Vozon",
+  companyName: "Vozon AI",
   logoUrl: "/images/logo_2.svg",
   logoDarkUrl: "/images/logo_2.svg",
   iconUrl: "/icons/vozon-mark-192.png",
-  urls: { app: "https://vomyra.com", api: "https://api.vomyra.com", links: "https://api.vomyra.com" },
+  urls: { app: "https://vozon.ai", api: "https://api.vozon.ai", links: "https://api.vozon.ai" },
   colors: { primary: "#10b981", secondary: "#071b18", accent: "#34d399", surface: "#09090b" },
   defaultTheme: "dark",
-  support: { email: "support@vomyra.com", phone: "+91-9540312540", websiteUrl: "https://vomyra.com", helpCenterUrl: "https://vomyra.com/docs", statusPageUrl: "" },
-  legal: { termsUrl: "https://vomyra.com/terms", privacyUrl: "https://vomyra.com/privacy", cookiePolicyUrl: "", legalBusinessName: "Vomyra AI", businessAddress: "A-135, Sector 63, Noida, Uttar Pradesh 201309" },
+  support: { email: "support@vozon.ai", phone: "+91-9540312540", websiteUrl: "https://vozon.ai", helpCenterUrl: "https://vozon.ai/docs", statusPageUrl: "" },
+  legal: { termsUrl: "https://vozon.ai/terms", privacyUrl: "https://vozon.ai/privacy", cookiePolicyUrl: "", legalBusinessName: "Vozon AI", businessAddress: "A-135, Sector 63, Noida, Uttar Pradesh 201309" },
   poweredBy: { visible: false, text: "" },
   authentication: { registrationMode: "open", googleSignIn: true },
 };
