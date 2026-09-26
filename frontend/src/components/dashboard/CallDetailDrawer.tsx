@@ -453,7 +453,7 @@ export function CallDetailDrawer({ call, inrPerUsd = 96.5, onClose }: { call: Ca
                 <p className="mt-1 text-xs text-slate-500">Provider usage plus the Vozon ₹1.50-per-minute platform fee, prorated by seconds.</p>
               </div>
               <div className="grid gap-1 text-right text-xs">
-                <span className="text-slate-500">Customer total: <strong className="text-emerald-700">{money(cost?.customerCost ?? billing?.customerCost ?? charged ?? 0, billing?.currency || cost?.currency, inrPerUsd)}</strong></span>
+                <span className="text-slate-500">Customer total: <strong className="text-emerald-700">{money(billing?.customerCost ?? cost?.customerCost ?? charged ?? 0, billing?.currency || cost?.currency, inrPerUsd)}</strong></span>
               </div>
             </div>
             <div className="overflow-x-auto">

@@ -27,7 +27,7 @@ export function publicVoiceMessage(
     : fallback;
 }
 
-export type ProviderModel = "openai-realtime" | "gemini-live" | "sarvam-gemini";
+export type ProviderModel = "openai-realtime" | "gemini-live" | "gemini-realtime" | "sarvam-gemini";
 export type PipelineMode = "realtime" | "pipeline";
 export type RealtimeProvider = "openai" | "gemini";
 export type PipelineProvider = "openai" | "gemini" | "sarvam" | "elevenlabs" | "cartesia";
