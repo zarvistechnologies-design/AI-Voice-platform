@@ -105,36 +105,51 @@
   margin: 0 auto;
 }
 
+/* Ethereal clean white halo shield so the text is 100% crisp and never clashes with background wave */
+.vozon-hero-content::before {
+  content: "";
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(960px, 96vw);
+  height: 95%;
+  background: radial-gradient(ellipse 70% 60% at 50% 36%, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.85) 50%, rgba(255, 255, 255, 0) 85%);
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(16px);
+}
+
 /* 1. Badge */
 .vozon-hero-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   padding: 6px 16px 6px 12px;
-  background: rgba(16, 185, 129, 0.08);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: rgba(13, 119, 110, 0.08);
+  border: 1px solid rgba(13, 119, 110, 0.3);
   border-radius: 9999px;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   font-size: 13px;
   font-weight: 600;
-  color: #065f46;
+  color: #0D776E;
   margin-bottom: 24px;
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.08);
+  box-shadow: 0 2px 8px rgba(13, 119, 110, 0.08);
   transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
 .vozon-hero-badge:hover {
   transform: translateY(-1px);
-  border-color: rgba(16, 185, 129, 0.5);
+  border-color: rgba(13, 119, 110, 0.5);
 }
 
 .vozon-hero-badge-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #10b981;
-  box-shadow: 0 0 8px #10b981;
+  background: #0D776E;
+  box-shadow: 0 0 8px #0D776E;
   animation: vozonBadgePulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
@@ -147,14 +162,14 @@
   font-weight: 800;
   letter-spacing: 0.04em;
   font-size: 11px;
-  background: #047857;
+  background: #0D776E;
   color: #ffffff;
   padding: 2px 7px;
   border-radius: 6px;
 }
 
 .vozon-hero-badge-sep {
-  color: rgba(16, 185, 129, 0.5);
+  color: rgba(13, 119, 110, 0.5);
 }
 
 /* 2. Catchy Punchy Headline */
@@ -167,11 +182,12 @@
   margin: 0 0 20px;
   max-width: 980px;
   text-align: center;
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.95), 0 1px 2px rgba(255, 255, 255, 0.85);
 }
 
 .vozon-hero-title-highlight {
   display: inline-block;
-  background: linear-gradient(135deg, #059669 0%, #10b981 50%, #0d9488 100%);
+  background: linear-gradient(135deg, #0D776E 0%, #118778 50%, #14b8a6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: 900;
@@ -180,13 +196,14 @@
 
 /* 3. Persuasive Subtitle */
 .vozon-hero-subtitle {
-  color: #475569;
+  color: #334155;
   font-size: clamp(16px, 1.25vw, 19px);
   line-height: 1.55;
   max-width: 760px;
   margin: 0 auto 34px;
   font-weight: 450;
   text-align: center;
+  text-shadow: 0 0 24px rgba(255, 255, 255, 0.95);
 }
 
 /* 4. Action Buttons */
@@ -211,16 +228,16 @@
   font-size: 16px;
   font-weight: 700;
   text-decoration: none;
-  border: 1.5px solid rgba(16, 185, 129, 0.4);
-  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.2), 0 2px 6px rgba(0, 0, 0, 0.08);
+  border: 1.5px solid rgba(13, 119, 110, 0.45);
+  box-shadow: 0 8px 24px rgba(13, 119, 110, 0.18), 0 2px 6px rgba(0, 0, 0, 0.08);
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .vozon-hero-btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(16, 185, 129, 0.35), 0 4px 10px rgba(0, 0, 0, 0.12);
-  border-color: #10b981;
+  box-shadow: 0 12px 30px rgba(13, 119, 110, 0.35), 0 4px 10px rgba(0, 0, 0, 0.12);
+  border-color: #0D776E;
   background: #18181b;
 }
 

@@ -41,14 +41,14 @@ export function GreenAudioWaveHero() {
     const context = canvas.getContext("2d");
     if (!context) return;
 
-    // Glowing audio particles floating along the 3D wave mesh
+    // Glowing audio particles matching the Vozon logo teal palette (#0D776E)
     const particleCount = 48;
     const particleColors = [
-      "rgba(16, 185, 129, ", // vibrant emerald
-      "rgba(5, 150, 105, ",  // deep emerald
-      "rgba(52, 211, 153, ", // bright mint
-      "rgba(16, 141, 130, ", // brand teal
-      "rgba(45, 212, 191, ", // cyan teal
+      "rgba(13, 119, 110, ",  // exact Vozon logo teal #0D776E
+      "rgba(17, 135, 120, ",  // primary brand teal #118778
+      "rgba(14, 111, 98, ",   // deep brand pine #0e6f62
+      "rgba(20, 184, 166, ",  // luminous mint teal #14b8a6
+      "rgba(45, 212, 191, ",  // soft cyan teal #2dd4bf
     ];
 
     const particles: Particle[] = Array.from({ length: particleCount }, (_, i) => ({
@@ -94,20 +94,20 @@ export function GreenAudioWaveHero() {
       // Smooth envelope that arches across the hero
       const envelope = Math.pow(Math.sin(u * Math.PI), 0.78);
 
-      // Spine vertical position: centered across the hero
-      const centerY = height * 0.52;
+      // Spine vertical position: positioned gracefully across the buttons/lower hero to let text breathe
+      const centerY = height * 0.60;
 
       // Primary travelling harmonic wave (ribbon spine)
       const w1 = Math.sin(u * Math.PI * 3.2 - time * 1.35);
       const w2 = Math.sin(u * Math.PI * 6.4 - time * 2.0 + 0.9) * 0.38;
       const w3 = Math.sin(u * Math.PI * 9.8 - time * 2.7 + 1.8) * 0.16;
-      const spineY = centerY + (w1 + w2 + w3) * (height * 0.125) * envelope;
+      const spineY = centerY + (w1 + w2 + w3) * (height * 0.10) * envelope;
 
       // 3D Depth displacement of the spine
       const spineZ = Math.sin(u * Math.PI * 2.6 - time * 1.05 + 0.6) * 140 * envelope;
 
       // Ribbon width and dynamic 3D twisting angle
-      const ribbonWidth = (height * 0.22) * envelope;
+      const ribbonWidth = (height * 0.17) * envelope;
       const twistAngle = u * Math.PI * 3.4 - time * 0.88 + Math.sin(u * Math.PI * 2.0 - time * 0.48) * 0.65;
 
       // Surface ripples across the ribbon width (silk cloth undulation)
@@ -148,25 +148,28 @@ export function GreenAudioWaveHero() {
 
       context.clearRect(0, 0, width, height);
 
-      // 0. Draw subtle ambient radial glow behind the center of the wave
+      // 0. Draw subtle ambient radial glow matching logo teal #0D776E
       const radialGlow = context.createRadialGradient(
         width * 0.5,
-        height * 0.52,
+        height * 0.60,
         20,
         width * 0.5,
-        height * 0.52,
+        height * 0.60,
         Math.max(width * 0.5, 380)
       );
-      radialGlow.addColorStop(0, "rgba(16, 185, 129, 0.09)");
-      radialGlow.addColorStop(0.5, "rgba(16, 141, 130, 0.03)");
+      radialGlow.addColorStop(0, "rgba(13, 119, 110, 0.08)");
+      radialGlow.addColorStop(0.5, "rgba(17, 135, 120, 0.03)");
       radialGlow.addColorStop(1, "rgba(255, 255, 255, 0)");
       context.fillStyle = radialGlow;
       context.fillRect(0, 0, width, height);
 
-      // 1. Draw Transverse Mesh Ribs (subtle cross-grid harmonics)
+      // 1. Draw Transverse Mesh Ribs (subtle cross-grid harmonics softened in center)
       const ribStep = 8;
       for (let i = 6; i <= U_STEPS - 6; i += ribStep) {
         const u = i / U_STEPS;
+        const distFromCenter = Math.abs(u - 0.5) * 2;
+        const centerTextFade = 0.35 + 0.65 * Math.pow(distFromCenter, 0.75);
+
         context.beginPath();
         for (let j = 0; j < STRAND_COUNT; j += 2) {
           const v = -1 + (2 * j) / (STRAND_COUNT - 1);
@@ -174,12 +177,12 @@ export function GreenAudioWaveHero() {
           if (j === 0) context.moveTo(pt.screenX, pt.screenY);
           else context.lineTo(pt.screenX, pt.screenY);
         }
-        context.strokeStyle = "rgba(16, 185, 129, 0.20)";
+        context.strokeStyle = `rgba(13, 119, 110, ${(0.18 * centerTextFade).toFixed(3)})`;
         context.lineWidth = 0.65;
         context.stroke();
       }
 
-      // 2. Draw Longitudinal Flowing Wave Strands (the parallel wavy lines)
+      // 2. Draw Longitudinal Flowing Wave Strands in Logo Teal
       for (let j = 0; j < STRAND_COUNT; j++) {
         const v = -1 + (2 * j) / (STRAND_COUNT - 1);
         const isRim = j === 0 || j === STRAND_COUNT - 1 || j === Math.floor(STRAND_COUNT / 2);
@@ -195,17 +198,26 @@ export function GreenAudioWaveHero() {
           }
         }
 
-        if (isRim) {
-          context.strokeStyle = j === Math.floor(STRAND_COUNT / 2)
-            ? "rgba(5, 150, 105, 0.88)"
-            : "rgba(16, 185, 129, 0.72)";
-          context.lineWidth = 1.35;
-        } else {
-          const strandAlpha = 0.28 + Math.sin((j / STRAND_COUNT) * Math.PI) * 0.32;
-          context.strokeStyle = `rgba(16, 141, 130, ${strandAlpha.toFixed(2)})`;
-          context.lineWidth = 0.95;
-        }
+        // Color & line weight matching logo teal #0D776E with central text attenuation
+        const peakAlpha = isRim
+          ? (j === Math.floor(STRAND_COUNT / 2) ? 0.88 : 0.72)
+          : (0.28 + Math.sin((j / STRAND_COUNT) * Math.PI) * 0.32);
 
+        const strandGrad = context.createLinearGradient(0, 0, width, 0);
+        const rgb = isRim
+          ? (j === Math.floor(STRAND_COUNT / 2) ? "13, 119, 110" : "17, 135, 120")
+          : "14, 111, 98";
+
+        strandGrad.addColorStop(0, `rgba(${rgb}, 0)`);
+        strandGrad.addColorStop(0.12, `rgba(${rgb}, ${(peakAlpha * 0.9).toFixed(3)})`);
+        strandGrad.addColorStop(0.32, `rgba(${rgb}, ${(peakAlpha * 0.65).toFixed(3)})`);
+        strandGrad.addColorStop(0.50, `rgba(${rgb}, ${(peakAlpha * 0.20).toFixed(3)})`); // softened behind text
+        strandGrad.addColorStop(0.68, `rgba(${rgb}, ${(peakAlpha * 0.65).toFixed(3)})`);
+        strandGrad.addColorStop(0.88, `rgba(${rgb}, ${(peakAlpha * 0.9).toFixed(3)})`);
+        strandGrad.addColorStop(1, `rgba(${rgb}, 0)`);
+
+        context.strokeStyle = strandGrad;
+        context.lineWidth = isRim ? 1.35 : 0.95;
         context.stroke();
       }
 
@@ -220,7 +232,7 @@ export function GreenAudioWaveHero() {
 
         const shimmer = 0.4 + 0.58 * ((Math.sin(simTime * p.speed * 1.3 + p.phase) + 1) * 0.5);
 
-        context.shadowColor = "rgba(16, 185, 129, 0.75)";
+        context.shadowColor = "rgba(13, 119, 110, 0.70)";
         context.shadowBlur = 8;
 
         context.beginPath();
