@@ -633,7 +633,7 @@
 .design-four-integration-icons .salesforce { right: 6%; top: 145px; color: #098ecb; font-size: 17px; }
 .design-four-integration-icons .instagram { right: 17%; top: 260px; color: #dd3576; font-size: 72px; }
 .design-four-integration-icons .calendly { right: 30%; top: 260px; }
-.design-four-integration-icons .whatsapp { right: 28%; top: 402px; color: #2acb4c; font-size: 58px; }
+.design-four-integration-icons .google-sheets { right: 28%; top: 402px; }
 .design-four-integration-icons .hubspot { right: 5%; top: 390px; }
 .design-four-integration-icons .slack { right: 17%; top: 515px; color: #28b99b; font-size: 65px; }
 .design-four-integration-icons > span:nth-child(even) { animation-delay: -2.4s; }
@@ -644,7 +644,6 @@
 .design-four-integration-icons .twilio svg > circle:not(:first-child) { fill: #fff; }
 .design-four-integration-icons .salesforce svg path { fill: #0aa5df; }
 .design-four-integration-icons .salesforce svg text { fill: #fff; font: 700 13px Arial, sans-serif; }
-.design-four-integration-icons .whatsapp svg path { fill: #25d366; }
 
 .design-four-integration-arrow {
   position: absolute;
@@ -905,7 +904,7 @@
 @media (max-width: 960px) {
   .design-four-security-row { grid-template-columns: 1fr; gap: 20px; padding-inline: 20px; background-image: none; }
   .design-four-faq-row { grid-template-columns: 300px minmax(0, 1fr); gap: 35px; padding-inline: 10px; }
-  .design-four-integration-icons .crm, .design-four-integration-icons .twilio, .design-four-integration-icons .whatsapp { display: none; }
+  .design-four-integration-icons .crm, .design-four-integration-icons .twilio, .design-four-integration-icons .google-sheets { display: none; }
   .design-four-footer-main { grid-template-columns: 1fr; padding-top: 65px; }
   .design-four-footer-main nav { grid-template-columns: repeat(4, 1fr); }
 }

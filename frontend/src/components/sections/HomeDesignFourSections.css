@@ -46,8 +46,6 @@
 .design-four-workflow-icon.is-meta{stroke-width:2.6}
 .design-four-workflow-icon.is-chat path:first-child{fill:currentColor;stroke:currentColor}
 .design-four-workflow-icon.is-chat path:last-child{stroke:#118778;stroke-width:3.5}
-.design-four-workflow-icon.is-whatsapp path:first-child{fill:currentColor;stroke:currentColor}
-.design-four-workflow-icon.is-whatsapp path:last-child{stroke:#fff;stroke-width:2.2}
 .design-four-flow-grid span>i .design-four-workflow-icon{width:21px;height:21px}
 .design-four-flow-grid span>i.green,.design-four-flow-grid span>i.purple,.design-four-flow-grid span>i.blue{background:#118778;color:#fff}.design-four-flow-grid span>i.orange{background:#edf7f4;color:#0e6f62}
 .design-four-flow-grid span>b,.design-four-model-list span>b{display:flex;min-width:0;flex-direction:column;font-size:8.5px;line-height:1.1;white-space:nowrap}

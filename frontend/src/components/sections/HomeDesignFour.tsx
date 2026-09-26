@@ -439,18 +439,49 @@ export function HomeDesignFour() {
         <section className={`${styles.hero} home-design-four__hero`}>
           <GreenAudioWaveHero />
           <div className={styles.heroGlow} aria-hidden="true" />
-          <div className="design-four-hero__features" aria-label="Platform capabilities">
-            <span><i>✓</i>Natural conversations</span>
-            <span><i>✓</i>Multilingual speech</span>
-            <span><i>✓</i>Flexible voice stack</span>
-          </div>
-          <h1>
-            One platform. Every niche. Voice<br className="design-four-desktop-break" /> agents that already speak your{' '}
-            <strong className="design-four-hero__title-green">Industrial language.</strong>
-          </h1>
-          <div className="design-four-trust-pill">Trusted by <strong>100+</strong> teams building the future of <strong>customer conversations</strong></div>
-          <div className="design-four-hero__ambient" aria-hidden="true">
-            <i /><i /><i />
+          <div className="vozon-hero-content">
+            <h1 className="vozon-hero-title">
+              AI Voice Agents That<br />
+              <strong className="vozon-hero-title-highlight">Actually Sound Human.</strong>
+            </h1>
+
+            <p className="vozon-hero-subtitle">
+              Automate customer support, inbound inquiries, and outbound calls with hyper-realistic voice AI.
+              Zero robotic lag, human-like barge-in, and natural conversations in Hindi, Hinglish &amp; 10+ Indic languages.
+            </p>
+
+            <div className="vozon-hero-actions">
+              <Link href="/login" className="vozon-hero-btn-primary">
+                <span>Get Started Free</span>
+              </Link>
+
+              <Link href="/contact" className="vozon-hero-demo-btn">
+                <span>Book a Demo</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </Link>
+            </div>
+
+            <div className="vozon-hero-trust-bar">
+              <div className="vozon-trust-item">
+                <span className="vozon-trust-icon">⚡</span>
+                <span><strong>&lt;500ms</strong> Telephony Latency</span>
+              </div>
+              <div className="vozon-trust-sep" />
+              <div className="vozon-trust-item">
+                <span className="vozon-trust-icon">🇮🇳</span>
+                <span><strong>10+</strong> Indic Languages</span>
+              </div>
+              <div className="vozon-trust-sep" />
+              <div className="vozon-trust-item">
+                <span className="vozon-trust-icon">📊</span>
+                <span><strong>1-Click</strong> Google Sheets Outbound</span>
+              </div>
+              <div className="vozon-trust-sep" />
+              <div className="vozon-trust-item">
+                <span className="vozon-trust-icon">📞</span>
+                <span><strong>BYOT</strong> Virtual Telephony</span>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -513,6 +544,53 @@ export function HomeDesignFour() {
           </div>
         </section>
 
+        <section className="vozon-advantage-section" aria-label="Why Vozon is built for Indian businesses">
+          <div className="vozon-advantage-header">
+            <span className="vozon-pill">The Indian Voice Advantage</span>
+            <h2>Why India&apos;s leading teams switch from US tools to <strong>Vozon</strong></h2>
+            <p>Traditional voice tools struggle with Indian accents, 080 spam flags, and rigid telecom rules. Vozon is engineered from day one for Indian telephony and local customer trust.</p>
+          </div>
+          <div className="vozon-advantage-grid">
+            <article className="vozon-advantage-card">
+              <div className="vozon-card-badge">High Pickup Telephony</div>
+              <div className="vozon-card-icon">📱</div>
+              <h3>Smart Virtual Telephony &amp; BYOT</h3>
+              <p>US platforms lock you into rigid 080 trunks that get flagged as spam. Vozon provides enterprise local virtual numbers and Bring-Your-Own-Carrier (BYOT) support across Exotel, Airtel, and Tata.</p>
+              <div className="vozon-stat-preview">
+                <div><span>Unverified 080 Trunks</span><b>~22% pickup</b></div>
+                <div className="is-highlight"><span>Vozon Smart Telephony</span><b>~74% pickup</b></div>
+              </div>
+            </article>
+
+            <article className="vozon-advantage-card">
+              <div className="vozon-card-badge">Native Indic Engine</div>
+              <div className="vozon-card-icon">🇮🇳</div>
+              <h3>Hinglish &amp; 10+ Regional Dialects</h3>
+              <p>Powered by Sarvam Bulbul and Indic-tuned frontier models. Your agents understand colloquial phrasing, native pronunciation, and switch naturally between Hindi and English mid-sentence.</p>
+              <div className="vozon-lang-tags">
+                <span>हिन्दी (Hindi)</span>
+                <span>Hinglish</span>
+                <span>मराठी</span>
+                <span>தமிழ்</span>
+                <span>తెలుగు</span>
+                <span>বাংলা</span>
+              </div>
+            </article>
+
+            <article className="vozon-advantage-card">
+              <div className="vozon-card-badge">Zero Friction</div>
+              <div className="vozon-card-icon">⚡</div>
+              <h3>Sheets to Enterprise MCP</h3>
+              <p>No developers needed: paste a Google Sheet to launch outbound dialer campaigns in 60 seconds. For engineers, we provide India&apos;s only Model Context Protocol (MCP) server &amp; sub-500ms WebRTC.</p>
+              <div className="vozon-feature-checks">
+                <span>✓ Google Sheets auto-sync</span>
+                <span>✓ Bi-directional CRM webhooks</span>
+                <span>✓ TRAI compliant call windows</span>
+              </div>
+            </article>
+          </div>
+        </section>
+
         <section className="design-four-voice-section" id="platform">
           <div className="design-four-language-tabs" role="tablist" aria-label="Voice languages">
             {voiceLanguages.map((language, index) => (
@@ -532,9 +610,9 @@ export function HomeDesignFour() {
           </div>
           <div className="design-four-voice-layout">
             <div className="design-four-voice-copy">
-              <h2 className="leading-tight tracking-tight">Vozon.ai named a next generation<br className="hidden md:block" />platform for Enterprise Voice AI,<br className="hidden md:block" />transforming conversations into<br className="hidden md:block" />business outcomes</h2>
+              <h2 className="leading-tight tracking-tight">Vozon: India&apos;s Complete<br className="hidden md:block" />Enterprise Voice AI Platform,<br className="hidden md:block" />turning customer phone calls into<br className="hidden md:block" />instant revenue</h2>
               <p>Build intelligent voice agents, connect your business systems, and automate customer conversations with Vozon.</p>
-              <Link href="/product" className="rounded-lg bg-[#108D82] px-6 py-3 font-semibold text-white transition-colors hover:bg-[#108D82]">Explore Vozon</Link>
+              <Link href="/product" className="rounded-lg bg-[#108D82] px-6 py-3 font-semibold text-white transition-colors hover:bg-[#0d746b]">Explore Vozon</Link>
             </div>
             <div className="design-four-voice-player">
               <button
@@ -605,10 +683,14 @@ export function HomeDesignFour() {
         <section className="design-four-outcomes-section">
           <h2>Everyday Calls. Extraordinary Outcomes.</h2>
           <div className="design-four-metrics">
-            <div><strong>1 Billion</strong><span>calls supported</span></div><div><strong>99.9%</strong><span>uptime for enterprise<br />clients</span></div><div><strong>2.5M+</strong><span>agents launched</span></div><div><strong>750K+</strong><span>developers</span></div><div><strong>&lt;500ms</strong><span>average latency</span></div>
+            <div><strong>1 Lakh+</strong><span>daily calling minutes</span></div>
+            <div><strong>75%+</strong><span>first-call resolution rate</span></div>
+            <div><strong>&lt;500ms</strong><span>telephony voice latency</span></div>
+            <div><strong>12+</strong><span>Indic &amp; global languages</span></div>
+            <div><strong>99.9%</strong><span>enterprise uptime</span></div>
           </div>
           <div className="design-four-agent-banner">
-            <div><small>The Vozon.ai Voice AI Agent Platform</small><h3><strong>Vozon</strong> Voice Agents</h3><p>From the first hello to the final action, Vozon agents understand conversations, access your systems, and complete workflows in real time.</p></div>
+            <div><small>The Vozon Voice AI Agent Platform</small><h3><strong>Vozon</strong> Voice Agents</h3><p>From the first hello to the final action, Vozon agents understand conversations, access your systems, and complete workflows in real time.</p></div>
             <Link href="/services/voice-agents" aria-label="Explore voice agents"><Arrow /></Link>
           </div>
         </section>
@@ -692,7 +774,7 @@ export function HomeDesignFour() {
             <span aria-label="Salesforce" className="salesforce"><svg aria-hidden="true" viewBox="0 0 110 78"><path d="M44 16a22 22 0 0 1 35 7 18 18 0 1 1 7 35H27a20 20 0 1 1 6-39 23 23 0 0 1 11-3Z" /><text x="20" y="48">salesforce</text></svg></span>
             <span aria-label="Instagram" className="instagram"><svg aria-hidden="true" viewBox="0 0 64 64"><defs><radialGradient id="design-four-instagram" cx="25%" cy="100%" r="115%"><stop offset="0" stopColor="#ffd600" /><stop offset=".35" stopColor="#ff7a00" /><stop offset=".62" stopColor="#ff0169" /><stop offset="1" stopColor="#7a37c9" /></radialGradient></defs><rect width="64" height="64" rx="16" fill="url(#design-four-instagram)" /><rect x="14" y="14" width="36" height="36" rx="11" fill="none" stroke="#fff" strokeWidth="4" /><circle cx="32" cy="32" r="9" fill="none" stroke="#fff" strokeWidth="4" /><circle cx="45" cy="19" r="3" fill="#fff" /></svg></span>
             <span className="calendly"><Image alt="Calendly" height={64} src="/images/integrations/calendly.svg" width={64} /></span>
-            <span aria-label="WhatsApp" className="whatsapp"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" /></svg></span>
+            <span className="google-sheets"><Image alt="Google Sheets" height={64} src="/images/integrations/google-sheets.svg" width={64} /></span>
             <span className="hubspot"><svg aria-hidden="true" viewBox="0 0 64 64"><path d="M31 21v14m0 0 12 7M31 35 20 46M39 16l4-5" fill="none" stroke="#f45112" strokeWidth="6" strokeLinecap="round" /><circle cx="31" cy="18" r="6" fill="#f45112" /><circle cx="47" cy="45" r="7" fill="#f45112" /><circle cx="17" cy="49" r="7" fill="#f45112" /><circle cx="46" cy="8" r="4" fill="#f45112" /></svg></span>
             <span aria-label="Slack" className="slack"><svg aria-hidden="true" viewBox="0 0 64 64"><rect x="27" y="5" width="11" height="25" rx="5.5" fill="#2eb67d" /><rect x="34" y="27" width="25" height="11" rx="5.5" fill="#ecb22e" /><rect x="26" y="34" width="11" height="25" rx="5.5" fill="#e01e5a" /><rect x="5" y="26" width="25" height="11" rx="5.5" fill="#36c5f0" /><circle cx="21" cy="21" r="5.5" fill="#36c5f0" /><circle cx="43" cy="21" r="5.5" fill="#2eb67d" /><circle cx="43" cy="43" r="5.5" fill="#ecb22e" /><circle cx="21" cy="43" r="5.5" fill="#e01e5a" /></svg></span>
           </div>

@@ -69,8 +69,13 @@
 .home-design-four__hero {
   position: relative;
   overflow: hidden;
-  min-height: 770px;
-  padding-top: 178px;
+  min-height: 680px;
+  padding: 130px 24px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
   background: #ffffff;
 }
 
@@ -88,7 +93,373 @@
   display: none
 }
 
-.design-four-hero__features {
+/* Vozon Modern Hero Section */
+.vozon-hero-content {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+/* 1. Badge */
+.vozon-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px 6px 12px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 9999px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-size: 13px;
+  font-weight: 600;
+  color: #065f46;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.08);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.vozon-hero-badge:hover {
+  transform: translateY(-1px);
+  border-color: rgba(16, 185, 129, 0.5);
+}
+
+.vozon-hero-badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: vozonBadgePulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes vozonBadgePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.2); }
+}
+
+.vozon-hero-badge-tag {
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  font-size: 11px;
+  background: #047857;
+  color: #ffffff;
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+
+.vozon-hero-badge-sep {
+  color: rgba(16, 185, 129, 0.5);
+}
+
+/* 2. Catchy Punchy Headline */
+.vozon-hero-title {
+  color: #0f172a;
+  font-size: clamp(38px, 4.4vw, 72px);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.04em;
+  margin: 0 0 20px;
+  max-width: 980px;
+  text-align: center;
+}
+
+.vozon-hero-title-highlight {
+  display: inline-block;
+  background: linear-gradient(135deg, #059669 0%, #10b981 50%, #0d9488 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 900;
+  padding-bottom: 2px;
+}
+
+/* 3. Persuasive Subtitle */
+.vozon-hero-subtitle {
+  color: #475569;
+  font-size: clamp(16px, 1.25vw, 19px);
+  line-height: 1.55;
+  max-width: 760px;
+  margin: 0 auto 34px;
+  font-weight: 450;
+  text-align: center;
+}
+
+/* 4. Action Buttons */
+.vozon-hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+}
+
+.vozon-hero-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+  padding: 0 36px;
+  border-radius: 9999px;
+  background: #09090b;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  border: 1.5px solid rgba(16, 185, 129, 0.4);
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.2), 0 2px 6px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.vozon-hero-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(16, 185, 129, 0.35), 0 4px 10px rgba(0, 0, 0, 0.12);
+  border-color: #10b981;
+  background: #18181b;
+}
+
+.vozon-hero-voice-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 0 32px;
+  border-radius: 9999px;
+  background: #09090b;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  border: 1.5px solid rgba(16, 185, 129, 0.5);
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.22), 0 2px 6px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.vozon-hero-voice-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(16, 185, 129, 0.35), 0 4px 10px rgba(0, 0, 0, 0.12);
+  border-color: #10b981;
+}
+
+.vozon-hero-voice-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.vozon-hero-voice-btn.is-active {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  border-color: #34d399;
+  box-shadow: 0 0 32px rgba(16, 185, 129, 0.6);
+  animation: vozonVoiceActivePulse 2s infinite alternate;
+}
+
+@keyframes vozonVoiceActivePulse {
+  0% { box-shadow: 0 0 24px rgba(16, 185, 129, 0.4); }
+  100% { box-shadow: 0 0 38px rgba(16, 185, 129, 0.7); }
+}
+
+.vozon-hero-voice-icon {
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vozon-audio-bars {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 18px;
+}
+
+.vozon-audio-bars i {
+  display: block;
+  width: 3px;
+  height: 100%;
+  border-radius: 999px;
+  background: #ffffff;
+  animation: vozonEqualizer 0.8s ease-in-out infinite alternate;
+}
+
+.vozon-audio-bars i:nth-child(1) { animation-delay: 0.1s; height: 40%; }
+.vozon-audio-bars i:nth-child(2) { animation-delay: 0.3s; height: 95%; }
+.vozon-audio-bars i:nth-child(3) { animation-delay: 0.2s; height: 60%; }
+.vozon-audio-bars i:nth-child(4) { animation-delay: 0.4s; height: 80%; }
+
+@keyframes vozonEqualizer {
+  0% { transform: scaleY(0.3); }
+  100% { transform: scaleY(1); }
+}
+
+.vozon-hero-demo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 56px;
+  padding: 0 28px;
+  border-radius: 9999px;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 16px;
+  font-weight: 700;
+  border: 1.5px solid #e2e8f0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.vozon-hero-demo-btn:hover {
+  transform: translateY(-2px);
+  border-color: #cbd5e1;
+  background: #f8fafc;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.vozon-hero-demo-btn svg {
+  transition: transform 0.2s ease;
+}
+
+.vozon-hero-demo-btn:hover svg {
+  transform: translateX(3px);
+}
+
+/* 5. In-Hero Language Selector */
+.vozon-hero-lang-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 34px;
+  flex-wrap: wrap;
+}
+
+.vozon-hero-lang-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.vozon-hero-lang-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.vozon-hero-lang-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.vozon-hero-lang-pill:hover {
+  transform: translateY(-1px);
+  border-color: #10b981;
+  color: #047857;
+  background: rgba(236, 253, 245, 0.9);
+}
+
+.vozon-hero-lang-pill.is-selected {
+  border-color: #10b981;
+  background: #ecfdf5;
+  color: #047857;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+}
+
+.vozon-hero-lang-pill.is-live {
+  background: #10b981;
+  border-color: #059669;
+  color: #ffffff;
+}
+
+.vozon-lang-pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 6px #ef4444;
+  animation: vozonBadgePulse 1.2s infinite;
+}
+
+.vozon-lang-pill-sub {
+  font-size: 11px;
+  opacity: 0.7;
+  font-weight: 500;
+}
+
+/* 6. Trust Bar */
+.vozon-hero-trust-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 24px;
+  background: rgba(248, 250, 252, 0.9);
+  border: 1px solid #e2e8f0;
+  border-radius: 9999px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.vozon-trust-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: #475569;
+}
+
+.vozon-trust-item strong {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.vozon-trust-icon {
+  font-size: 14px;
+}
+
+.vozon-trust-sep {
+  width: 1px;
+  height: 14px;
+  background: #cbd5e1;
+}
+
+@media (max-width: 768px) {
+  .vozon-trust-sep {
+    display: none;
+  }
+  .vozon-hero-trust-bar {
+    gap: 12px;
+    border-radius: 16px;
+    padding: 12px 16px;
+  }
+}
+
+.design-four-hero__features-old {
   position: relative;
   z-index: 3;
   display: flex;
@@ -118,7 +489,7 @@
   font-weight: 900
 }
 
-.home-design-four__hero h1 {
+.home-design-four__hero-old-h1 {
   position: relative;
   z-index: 3;
   max-width: 1160px;

@@ -17,17 +17,17 @@ export type BrandConfig = {
 
 export const defaultBrand: BrandConfig = {
   source: "platform",
-  hostname: "www.vozon.ai",
+  hostname: "vozon.ai",
   productName: "Vozon",
-  companyName: "Vozon",
+  companyName: "Vozon AI",
   logoUrl: "/images/logo_2.svg",
   logoDarkUrl: "/images/logo_2.svg",
   iconUrl: "/icons/vozon-mark-192.png",
-  urls: { app: "https://www.vozon.ai", api: "https://api.vozon.ai", links: "https://api.vozon.ai" },
-  colors: { primary: "#45ddce", secondary: "#071b18", accent: "#75fff0", surface: "#020807" },
+  urls: { app: "https://vozon.ai", api: "https://api.vozon.ai", links: "https://api.vozon.ai" },
+  colors: { primary: "#10b981", secondary: "#071b18", accent: "#34d399", surface: "#09090b" },
   defaultTheme: "dark",
-  support: { email: "hello@vozon.ai", phone: "", websiteUrl: "https://www.vozon.ai", helpCenterUrl: "https://www.vozon.ai/docs", statusPageUrl: "" },
-  legal: { termsUrl: "https://www.vozon.ai/terms", privacyUrl: "https://www.vozon.ai/privacy", cookiePolicyUrl: "", legalBusinessName: "Vozon", businessAddress: "" },
+  support: { email: "support@vozon.ai", phone: "+91-9540312540", websiteUrl: "https://vozon.ai", helpCenterUrl: "https://vozon.ai/docs", statusPageUrl: "" },
+  legal: { termsUrl: "https://vozon.ai/terms", privacyUrl: "https://vozon.ai/privacy", cookiePolicyUrl: "", legalBusinessName: "Vozon AI", businessAddress: "A-135, Sector 63, Noida, Uttar Pradesh 201309" },
   poweredBy: { visible: false, text: "" },
   authentication: { registrationMode: "open", googleSignIn: true },
 };
