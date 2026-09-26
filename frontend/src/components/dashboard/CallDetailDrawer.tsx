@@ -212,7 +212,7 @@ export function CallDetailDrawer({ call, inrPerUsd = 96.5, onClose }: { call: Ca
   const transcript = [...call.transcript].sort(
     (left, right) => new Date(left.timestamp).getTime() - new Date(right.timestamp).getTime(),
   );
-  const privateRecording = Boolean(call.recordingKey && !call.recordingKey.startsWith("http"));
+  const privateRecording = Boolean(call.recordingKey && !call.recordingKey.startsWith("http") && call.recordingStatus !== "failed");
   const recordingHref = privateRecording
     ? ""
     : call.recordingUrl.startsWith("http")
