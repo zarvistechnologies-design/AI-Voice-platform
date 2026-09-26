@@ -124,12 +124,17 @@ const officeLocations = [
 {
 city: "Bangalore(HQ)",
 label: "Our headquarters",
-address: "Behind Manyata Tech Park, Hebbal, Bangalore 560077",
+address: "Behind Manyata Tech Park, Hebbal, Bangalore 560077.",
 },
 {
 city: "Lucknow",
 label: "Second India office",
-address: "Experion,V296+9MM, AV 7, Vibhuti Khand, Gomti Nagar, Lucknow, Uttar Pradesh 226010",
+address: "Experion,V296+9MM, AV 7, Vibhuti Khand, Gomti Nagar, Lucknow, Uttar Pradesh 226010.",
+},
+{
+  city: "USA",
+  label: "USA Office",
+  address: "300 Quail Ridge Dr NE ADA, MI 49301.",
 },
 ] as const;
 
@@ -533,9 +538,10 @@ Home </Link>
             </span>
           </a>
         ))}
-        {officeLocations.map((office) => (
+        {officeLocations.map((office, index) => (
           <article
-            className="contact-channel-card group flex h-full min-h-72 flex-col rounded-[24px] border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:p-8"
+            className="contact-channel-card group flex h-full min-h-72 scroll-mt-24 flex-col rounded-[24px] border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:p-8"
+            id={index === 0 ? "office-locations" : undefined}
             key={office.city}
           >
             <span className="contact-channel-icon grid size-13 place-items-center rounded-2xl bg-teal-50 text-black ring-1 ring-inset ring-teal-200 transition group-hover:bg-teal-500 group-hover:text-black">
