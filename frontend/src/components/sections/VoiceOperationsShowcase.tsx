@@ -19,7 +19,7 @@ function VoicePhone() {
       <div className={styles.phoneScreen}>
         <div className={styles.notch} />
         <div className={styles.phoneStatus}><span>9:41</span><span>••• ▰</span></div>
-        <span className={styles.phoneBrand}>vozon</span>
+        <span className={styles.phoneBrand}>vomyra</span>
         <VoiceMark className={styles.phoneMark} />
         <div className={styles.phoneGreeting}>
           <span>YOUR PERSONAL VOICE AGENT</span>
@@ -42,19 +42,19 @@ function VoiceTags() {
       <p>Voice <span>AI</span></p>
       <div><span>Inbound Support</span><span>Lead Qualification</span></div>
       <div><span>Appointment Booking</span><span>Outbound Calls</span></div>
-      <div><span>Hindi &amp; 40+ Langs</span><span>CRM Sync</span></div>
+      <div><span>Hindi &amp; Indic Langs</span><span>CRM Sync</span></div>
     </div>
   );
 }
 
 export function VoiceOperationsShowcase() {
   return (
-    <section className={styles.showcase} aria-label="Vozon voice agents on phone and web">
+    <section className={styles.showcase} aria-label="Vomyra voice agents on phone and web">
       <div className={styles.scene}>
         <div className={styles.orbits} aria-hidden="true" />
         <div className={styles.desktop}>
           <div className={styles.topbar}>
-            <span className={styles.brand}><VoiceMark /> Vozon</span>
+            <span className={styles.brand}><VoiceMark /> Vomyra</span>
             <span className={styles.category}><i /> AI voice agents</span>
             <Link href="#platform" className={styles.smallLink}>Get in touch ↗</Link>
           </div>

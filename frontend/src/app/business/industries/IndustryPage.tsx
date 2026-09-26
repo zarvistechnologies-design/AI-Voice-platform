@@ -700,7 +700,7 @@ const presets: Record<IndustrySlug, IndustryPreset> = {
         ],
       },
     ],
-    integrations: ["Cloudbeds", "Mews", "Opera", "Guesty", "Zendesk", "HubSpot", "WhatsApp", "Zapier"],
+    integrations: ["Cloudbeds", "Mews", "Opera", "Guesty", "Zendesk", "HubSpot", "Google Sheets", "Zapier"],
     faqs: [
       "Can AI phone agents answer guest requests?",
       "Can voice agents support multiple languages?",

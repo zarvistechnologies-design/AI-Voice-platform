@@ -83,9 +83,9 @@ const FAQ_DATA: FaqItem[] = [
     id: "crm-integrations",
     category: "integrations",
     categoryLabel: "Integrations",
-    question: "Can Vozon connect with our existing CRM, calendar, and databases?",
+    question: "Can Vomyra connect with our existing CRM, calendar, and databases?",
     answer:
-      "Absolutely. Vozon features native bi-directional integrations with Salesforce, HubSpot, Google Calendar, WhatsApp, Slack, and Zapier. Additionally, you can define custom Webhook tools and REST endpoints that the AI agent calls dynamically during a conversation to book appointments, check order status, or update CRM records.",
+      "Absolutely. Vomyra features native bi-directional integrations with Salesforce, HubSpot, Google Calendar, Google Sheets, Slack, and Zapier. Additionally, you can define custom Webhook tools and REST endpoints that the AI agent calls dynamically during a conversation to book appointments, check order status, or update CRM records.",
     highlights: ["HubSpot, Salesforce & Zapier", "Google Calendar auto-booking", "Real-time Webhook tool execution"],
     link: {
       text: "Explore Integrations",
