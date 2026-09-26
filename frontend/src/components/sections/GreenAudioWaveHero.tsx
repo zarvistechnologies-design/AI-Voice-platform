@@ -95,19 +95,19 @@ export function GreenAudioWaveHero() {
       const envelope = Math.pow(Math.sin(u * Math.PI), 0.72);
 
       // Spine vertical position
-      const centerY = height * 0.72;
+      const centerY = height * 0.88;
 
       // Primary travelling harmonic wave (ribbon spine)
       const w1 = Math.sin(u * Math.PI * 3.2 - time * 1.3);
       const w2 = Math.sin(u * Math.PI * 6.4 - time * 1.9 + 0.9) * 0.4;
       const w3 = Math.sin(u * Math.PI * 9.8 - time * 2.6 + 1.8) * 0.18;
-      const spineY = centerY + (w1 + w2 + w3) * (height * 0.13) * envelope;
+      const spineY = centerY + (w1 + w2 + w3) * (height * 0.045) * envelope;
 
       // 3D Depth displacement of the spine
       const spineZ = Math.sin(u * Math.PI * 2.6 - time * 1.0 + 0.6) * 140 * envelope;
 
       // Ribbon width and dynamic 3D twisting angle
-      const ribbonWidth = (height * 0.22) * envelope;
+      const ribbonWidth = (height * 0.085) * envelope;
       const twistAngle = u * Math.PI * 3.4 - time * 0.85 + Math.sin(u * Math.PI * 2.0 - time * 0.45) * 0.65;
 
       // Surface ripples across the ribbon width (silk cloth undulation)
@@ -151,10 +151,10 @@ export function GreenAudioWaveHero() {
       // 0. Draw subtle ambient radial glow behind the center of the wave
       const radialGlow = context.createRadialGradient(
         width * 0.5,
-        height * 0.5,
+        height * 0.88,
         20,
         width * 0.5,
-        height * 0.5,
+        height * 0.88,
         Math.max(width * 0.48, 300)
       );
       radialGlow.addColorStop(0, "rgba(16, 185, 129, 0.07)");

@@ -440,13 +440,6 @@ export function HomeDesignFour() {
           <GreenAudioWaveHero />
           <div className={styles.heroGlow} aria-hidden="true" />
           <div className="vozon-hero-content">
-            <div className="vozon-hero-badge">
-              <span className="vozon-hero-badge-dot" />
-              <span className="vozon-hero-badge-tag">NEXT-GEN VOICE AI</span>
-              <span className="vozon-hero-badge-sep">•</span>
-              <span>Sub-500ms Conversational Telephony</span>
-            </div>
-
             <h1 className="vozon-hero-title">
               AI Voice Agents That<br />
               <strong className="vozon-hero-title-highlight">Actually Sound Human.</strong>
@@ -458,62 +451,14 @@ export function HomeDesignFour() {
             </p>
 
             <div className="vozon-hero-actions">
-              <button
-                type="button"
-                className={`vozon-hero-voice-btn ${voiceCall.active ? "is-active" : ""}`}
-                onClick={() => {
-                  if (voiceCall.active) {
-                    voiceCall.disconnect();
-                  } else {
-                    void voiceCall.start(selectedVoice.language);
-                  }
-                }}
-                disabled={voiceCall.busy}
-              >
-                <span className="vozon-hero-voice-icon">
-                  {voiceCall.active ? (
-                    <span className="vozon-audio-bars">
-                      <i /><i /><i /><i />
-                    </span>
-                  ) : (
-                    "🎙️"
-                  )}
-                </span>
-                <span className="vozon-hero-voice-label">
-                  {voiceCall.busy
-                    ? "Connecting Voice Engine…"
-                    : voiceCall.active
-                    ? `End Call (${voiceCall.speakingLanguage || selectedVoice.label})`
-                    : `Talk to AI Live in Browser`}
-                </span>
-              </button>
+              <Link href="/login" className="vozon-hero-btn-primary">
+                <span>Get Started Free</span>
+              </Link>
 
               <Link href="/contact" className="vozon-hero-demo-btn">
                 <span>Book a Demo</span>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </Link>
-            </div>
-
-            <div className="vozon-hero-lang-selector">
-              <span className="vozon-hero-lang-label">Try live voice in:</span>
-              <div className="vozon-hero-lang-pills">
-                {voiceLanguages.slice(0, 7).map((item, idx) => {
-                  const isCurrent = activeLanguage === idx;
-                  const isTalking = voiceCall.active && (voiceCall.speakingLanguage === item.language || (isCurrent && !voiceCall.speakingLanguage));
-                  return (
-                    <button
-                      key={item.language}
-                      type="button"
-                      className={`vozon-hero-lang-pill ${isCurrent ? "is-selected" : ""} ${isTalking ? "is-live" : ""}`}
-                      onClick={() => handleSelectLanguage(idx)}
-                    >
-                      {isTalking && <span className="vozon-lang-pulse-dot" />}
-                      <span className="vozon-lang-pill-title">{item.label}</span>
-                      <span className="vozon-lang-pill-sub">{item.language}</span>
-                    </button>
-                  );
-                })}
-              </div>
             </div>
 
             <div className="vozon-hero-trust-bar">
