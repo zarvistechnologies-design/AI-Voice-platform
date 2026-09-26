@@ -19,7 +19,7 @@ function VoicePhone() {
       <div className={styles.phoneScreen}>
         <div className={styles.notch} />
         <div className={styles.phoneStatus}><span>9:41</span><span>••• ▰</span></div>
-        <span className={styles.phoneBrand}>vomyra</span>
+        <span className={styles.phoneBrand}>vozon</span>
         <VoiceMark className={styles.phoneMark} />
         <div className={styles.phoneGreeting}>
           <span>YOUR PERSONAL VOICE AGENT</span>
@@ -54,7 +54,7 @@ export function VoiceOperationsShowcase() {
         <div className={styles.orbits} aria-hidden="true" />
         <div className={styles.desktop}>
           <div className={styles.topbar}>
-            <span className={styles.brand}><VoiceMark /> Vomyra</span>
+            <span className={styles.brand}><VoiceMark /> Vozon</span>
             <span className={styles.category}><i /> AI voice agents</span>
             <Link href="#platform" className={styles.smallLink}>Get in touch ↗</Link>
           </div>
