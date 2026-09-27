@@ -94,8 +94,9 @@ export function GreenAudioWaveHero() {
       // Smooth envelope that arches across the hero
       const envelope = Math.pow(Math.sin(u * Math.PI), 0.78);
 
-      // Spine vertical position: positioned gracefully across the buttons/lower hero to let text breathe
-      const centerY = height * 0.60;
+      // Keep the visual energy in the lower half of the hero so the message
+      // remains easy to read at every desktop viewport height.
+      const centerY = height * 0.72;
 
       // Primary travelling harmonic wave (ribbon spine)
       const w1 = Math.sin(u * Math.PI * 3.2 - time * 1.35);
@@ -168,7 +169,7 @@ export function GreenAudioWaveHero() {
       for (let i = 6; i <= U_STEPS - 6; i += ribStep) {
         const u = i / U_STEPS;
         const distFromCenter = Math.abs(u - 0.5) * 2;
-        const centerTextFade = 0.35 + 0.65 * Math.pow(distFromCenter, 0.75);
+        const centerTextFade = 0.06 + 0.94 * Math.pow(distFromCenter, 0.9);
 
         context.beginPath();
         for (let j = 0; j < STRAND_COUNT; j += 2) {
@@ -210,9 +211,11 @@ export function GreenAudioWaveHero() {
 
         strandGrad.addColorStop(0, `rgba(${rgb}, 0)`);
         strandGrad.addColorStop(0.12, `rgba(${rgb}, ${(peakAlpha * 0.9).toFixed(3)})`);
-        strandGrad.addColorStop(0.32, `rgba(${rgb}, ${(peakAlpha * 0.65).toFixed(3)})`);
-        strandGrad.addColorStop(0.50, `rgba(${rgb}, ${(peakAlpha * 0.20).toFixed(3)})`); // softened behind text
-        strandGrad.addColorStop(0.68, `rgba(${rgb}, ${(peakAlpha * 0.65).toFixed(3)})`);
+        strandGrad.addColorStop(0.30, `rgba(${rgb}, ${(peakAlpha * 0.65).toFixed(3)})`);
+        strandGrad.addColorStop(0.42, `rgba(${rgb}, ${(peakAlpha * 0.10).toFixed(3)})`);
+        strandGrad.addColorStop(0.50, `rgba(${rgb}, ${(peakAlpha * 0.025).toFixed(3)})`);
+        strandGrad.addColorStop(0.58, `rgba(${rgb}, ${(peakAlpha * 0.10).toFixed(3)})`);
+        strandGrad.addColorStop(0.70, `rgba(${rgb}, ${(peakAlpha * 0.65).toFixed(3)})`);
         strandGrad.addColorStop(0.88, `rgba(${rgb}, ${(peakAlpha * 0.9).toFixed(3)})`);
         strandGrad.addColorStop(1, `rgba(${rgb}, 0)`);
 
@@ -230,7 +233,9 @@ export function GreenAudioWaveHero() {
         const x = pt.screenX + floatX;
         const y = pt.screenY + p.offsetY + floatY;
 
-        const shimmer = 0.4 + 0.58 * ((Math.sin(simTime * p.speed * 1.3 + p.phase) + 1) * 0.5);
+        const centerDistance = Math.min(1, Math.abs(p.u - 0.5) / 0.24);
+        const centerAttenuation = 0.08 + 0.92 * centerDistance;
+        const shimmer = (0.4 + 0.58 * ((Math.sin(simTime * p.speed * 1.3 + p.phase) + 1) * 0.5)) * centerAttenuation;
 
         context.shadowColor = "rgba(13, 119, 110, 0.70)";
         context.shadowBlur = 8;
