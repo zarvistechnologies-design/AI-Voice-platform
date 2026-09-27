@@ -1216,6 +1216,8 @@ export default function CareerPage() {
             padding-top: clamp(2rem, 3vw, 3.25rem);
             padding-bottom: clamp(2rem, 3vw, 3.25rem);
             border-top: 1px solid #e6efec;
+            background: #ffffff !important;
+            background-image: none !important;
           }
 
           #career-page > section:first-child {
@@ -1228,7 +1230,7 @@ export default function CareerPage() {
           #career-page > section:nth-of-type(3),
           #career-page > section:nth-of-type(6),
           #career-page > section:nth-of-type(8) {
-            background: #f6faf9;
+            background: #ffffff !important;
           }
 
           #career-page h1,
@@ -1301,57 +1303,57 @@ export default function CareerPage() {
           }
 
           #career-page .career-principles {
-            background: #000000;
+            background: #ffffff !important;
           }
 
           #career-page .career-qualities-process {
-            background: #000000;
+            background: #ffffff !important;
           }
 
           #career-page :is(.career-principles, .career-qualities-process) :is(h2, h3, p, span) {
-            color: #f5fffb;
-            -webkit-text-fill-color: #f5fffb;
+            color: #15241f;
+            -webkit-text-fill-color: #15241f;
           }
 
           #career-page :is(.career-principles, .career-qualities-process) p {
-            color: #b7d4cb;
-            -webkit-text-fill-color: #b7d4cb;
+            color: #5f706a;
+            -webkit-text-fill-color: #5f706a;
           }
 
           #career-page :is(.career-principles, .career-qualities-process) [class*="bg-black"] {
-            background: #76d5c3;
+            background: #118778;
           }
 
           #career-page :is(.career-principles, .career-qualities-process) [class*="text-[#118778]"] {
-            color: #76d5c3;
-            -webkit-text-fill-color: #76d5c3;
+            color: #118778;
+            -webkit-text-fill-color: #118778;
           }
 
           #career-page .career-principles-kicker p {
-            color: #ffffff;
-            -webkit-text-fill-color: #ffffff;
+            color: #0e7669;
+            -webkit-text-fill-color: #0e7669;
           }
 
           #career-page :is(.career-principles-list, .career-process-list) {
-            border-color: rgb(183 212 203 / .32);
+            border-color: #d9e8e3;
           }
 
           #career-page :is(.career-principle-row, .career-process-row) {
-            border-color: rgb(183 212 203 / .22);
+            border-color: #e6efec;
           }
 
           #career-page :is(.career-principles, .career-qualities-process) :is(.career-neutral-index, .career-quality-card) {
-            border-color: rgb(183 212 203 / .36) !important;
-            background: rgb(255 255 255 / .08) !important;
-            color: #ffffff !important;
-            -webkit-text-fill-color: #ffffff !important;
+            border-color: #d9e8e3 !important;
+            background: #ffffff !important;
+            color: #0e7669 !important;
+            -webkit-text-fill-color: #0e7669 !important;
           }
 
           #career-page .career-contact {
             border-color: #b8ddd3;
             border-radius: 20px;
-            background: linear-gradient(120deg, #e4f7f1 0%, #f8fffd 62%, #d8f0ea 100%);
-            box-shadow: 0 18px 46px rgb(17 135 120 / .12);
+            background: #ffffff;
+            box-shadow: 0 14px 38px rgb(17 135 120 / .08);
           }
 
           #career-page .career-contact :is(p, h2) {
@@ -1379,7 +1381,7 @@ export default function CareerPage() {
           #career-page .career-benefits {
             --section-accent: #118778;
             --section-soft: #e9f7f2;
-            background: #f6faf9;
+            background: #ffffff !important;
           }
 
           #career-page .career-benefits .career-expect-card {

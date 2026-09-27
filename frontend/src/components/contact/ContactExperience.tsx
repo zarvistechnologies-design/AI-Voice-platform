@@ -131,11 +131,6 @@ city: "Lucknow",
 label: "Second India office",
 address: "Experion,V296+9MM, AV 7, Vibhuti Khand, Gomti Nagar, Lucknow, Uttar Pradesh 226010.",
 },
-{
-  city: "USA",
-  label: "USA Office",
-  address: "300 Quail Ridge Dr NE ADA, MI 49301.",
-},
 ] as const;
 
 export function ContactExperience() {
@@ -485,7 +480,7 @@ Home </Link>
   </section>
 
   <section
-    className="contact-channels-section border-t border-slate-100 bg-white px-5 py-20 sm:px-8 sm:py-24 lg:px-12"
+    className="contact-channels-section border-t border-slate-100 bg-white px-5 py-14 sm:px-8 sm:py-16 lg:px-12 lg:py-20"
     id="contact-channels"
   >
     <div className="mx-auto max-w-[1240px]">
@@ -495,7 +490,7 @@ Home </Link>
           Multiple ways to reach us
         </span>
 
-        <h2 className="mt-6 text-[clamp(2.25rem,5vw,4rem)] font-medium leading-[1.02] tracking-[-0.05em]">
+        <h2 className="mt-6 text-[clamp(2rem,4vw,3.5rem)] font-medium leading-[1.04] tracking-[-0.045em]">
           Choose the right channel.
         </h2>
 
@@ -538,10 +533,29 @@ Home </Link>
             </span>
           </a>
         ))}
-        {officeLocations.map((office, index) => (
+      </div>
+    </div>
+  </section>
+
+  <section
+    className="scroll-mt-24 border-t border-slate-100 bg-slate-50 px-5 py-14 sm:px-8 sm:py-16 lg:px-12 lg:py-20"
+    id="office-locations"
+  >
+    <div className="mx-auto max-w-[1240px]">
+      <div className="max-w-3xl text-left">
+        <p className="text-xs font-bold uppercase tracking-[0.17em] text-black">
+          Where to find us
+        </p>
+
+        <h2 className="mt-5 text-[clamp(2rem,4vw,3.5rem)] font-medium leading-[1.04] tracking-[-0.045em]">
+          Our Office Locations
+        </h2>
+      </div>
+
+      <div className="mt-10 grid auto-rows-fr gap-5 sm:mt-12 md:grid-cols-2">
+        {officeLocations.map((office) => (
           <article
-            className="contact-channel-card group flex h-full min-h-72 scroll-mt-24 flex-col rounded-[24px] border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:p-8"
-            id={index === 0 ? "office-locations" : undefined}
+            className="contact-channel-card group flex h-full min-h-64 flex-col rounded-[24px] border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:p-8"
             key={office.city}
           >
             <span className="contact-channel-icon grid size-13 place-items-center rounded-2xl bg-teal-50 text-black ring-1 ring-inset ring-teal-200 transition group-hover:bg-teal-500 group-hover:text-black">
@@ -565,7 +579,7 @@ Home </Link>
     </div>
   </section>
 
-  <section className="border-t border-slate-100 bg-white px-5 py-20 sm:px-8 sm:py-24 lg:px-12 lg:py-28">
+  <section className="border-t border-slate-100 bg-white px-5 py-14 sm:px-8 sm:py-16 lg:px-12 lg:py-20">
     <div className="mx-auto max-w-[1240px]">
       <div className="grid gap-8 lg:grid-cols-[0.7fr_1.3fr] lg:gap-16">
         <div>
@@ -573,7 +587,7 @@ Home </Link>
             What happens next
           </p>
 
-          <h2 className="mt-5 text-[clamp(2.25rem,4.6vw,3.8rem)] font-medium leading-[1.02] tracking-[-0.05em]">
+          <h2 className="mt-5 text-[clamp(2rem,4vw,3.5rem)] font-medium leading-[1.04] tracking-[-0.045em]">
             From first message to a clear plan.
           </h2>
         </div>

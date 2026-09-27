@@ -168,22 +168,22 @@ export default function PartnersPage() {
           </div>
         </section>
 
-        <section className="relative overflow-hidden border-y border-black !bg-black px-5 py-12 text-white sm:px-8 sm:py-14 lg:py-16" style={{ backgroundColor: "#000000" }}>
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34d399] to-transparent" aria-hidden="true" />
+        <section className="relative overflow-hidden border-y border-[#e2e8e5] bg-white px-5 py-12 text-[#14231f] sm:px-8 sm:py-14 lg:py-16">
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-500 to-transparent" aria-hidden="true" />
           <div className="mx-auto max-w-[1180px]">
             <div className="grid gap-8 lg:grid-cols-[.78fr_1.22fr] lg:items-end">
               <div>
-                <p className="m-0 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] !text-[#5eead4]"><span className="h-px w-7 bg-[#34d399]" />From application to launch</p>
-                <h2 className={`${headingClass} mt-4 !text-white`}>A clear path to your first customer.</h2>
+                <p className="m-0 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-teal-700"><span className="h-px w-7 bg-teal-600" />From application to launch</p>
+                <h2 className={`${headingClass} mt-4 text-[#14231f]`}>A clear path to your first customer.</h2>
               </div>
-              <p className="m-0 max-w-2xl text-sm leading-7 !text-[#d1e5df] lg:justify-self-end">Start with the market you know. We&apos;ll align the partner setup, then your team can configure the brand, commercial offer, and customer workspaces.</p>
+              <p className="m-0 max-w-2xl text-sm leading-7 text-slate-700 lg:justify-self-end">Start with the market you know. We&apos;ll align the partner setup, then your team can configure the brand, commercial offer, and customer workspaces.</p>
             </div>
-            <ol className="mt-10 grid overflow-hidden rounded-[24px] border border-emerald-300/25 !bg-black shadow-[0_18px_48px_rgba(0,0,0,.3)] md:grid-cols-4" style={{ backgroundColor: "#000000" }}>
+            <ol className="mt-10 grid overflow-hidden rounded-[24px] border border-[#dfe7e4] bg-white shadow-[0_12px_34px_rgba(18,61,53,.06)] md:grid-cols-4">
               {launchSteps.map((step, index) => (
-                <li className="border-b border-emerald-300/20 !bg-black p-6 last:border-b-0 md:border-b-0 md:border-r md:last:border-r-0" key={step.title} style={{ backgroundColor: "#000000" }}>
-                  <span className="grid size-9 place-items-center rounded-full border border-emerald-300/35 bg-emerald-400/10 text-[10px] font-bold !text-[#5eead4]">0{index + 1}</span>
-                  <h3 className="mt-6 text-lg font-semibold !text-white">{step.title}</h3>
-                  <p className="mt-2.5 text-sm leading-6 !text-[#bcd0ca]">{step.body}</p>
+                <li className="border-b border-[#e2e8e5] bg-white p-6 last:border-b-0 md:border-b-0 md:border-r md:last:border-r-0" key={step.title}>
+                  <span className="grid size-9 place-items-center rounded-full border border-teal-200 bg-teal-50 text-[10px] font-bold text-teal-700">0{index + 1}</span>
+                  <h3 className="mt-6 text-lg font-semibold text-[#14231f]">{step.title}</h3>
+                  <p className="mt-2.5 text-sm leading-6 text-slate-600">{step.body}</p>
                 </li>
               ))}
             </ol>
