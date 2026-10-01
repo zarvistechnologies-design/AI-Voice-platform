@@ -565,7 +565,7 @@ export function HomeDesignFour() {
             <article className="vozon-advantage-card">
               <div className="vozon-card-badge">Native Indic Engine</div>
               <div className="vozon-card-icon">🇮🇳</div>
-              <h3>Hinglish &amp; 22+ Regional Dialects</h3>
+              <h3>Hinglish &amp; 22+ Regional Dialects &amp; All Global Languages</h3>
               <p>Powered by Sarvam Bulbul and Indic-tuned frontier models. Your agents understand colloquial phrasing, native pronunciation, and switch naturally between Hindi and English mid-sentence.</p>
               <div className="vozon-lang-tags">
                 <span>हिन्दी (Hindi)</span>
