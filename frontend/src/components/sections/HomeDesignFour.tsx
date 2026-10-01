@@ -447,7 +447,7 @@ export function HomeDesignFour() {
 
             <p className="vozon-hero-subtitle">
               Automate customer support, inbound inquiries, and outbound calls with hyper-realistic voice AI.
-              Zero robotic lag, human-like barge-in, and natural conversations in Hindi, Hinglish &amp; 10+ Indic languages.
+              Zero robotic lag, human-like barge-in, and natural conversations in Hindi, Hinglish &amp; 22+ Indic languages.
             </p>
 
             <div className="vozon-hero-actions">
@@ -469,7 +469,7 @@ export function HomeDesignFour() {
               <div className="vozon-trust-sep" />
               <div className="vozon-trust-item">
                 <span className="vozon-trust-icon">🇮🇳</span>
-                <span><strong>10+</strong> Indic Languages</span>
+                <span><strong>22+</strong> Indic Languages</span>
               </div>
               <div className="vozon-trust-sep" />
               <div className="vozon-trust-item">
@@ -565,7 +565,7 @@ export function HomeDesignFour() {
             <article className="vozon-advantage-card">
               <div className="vozon-card-badge">Native Indic Engine</div>
               <div className="vozon-card-icon">🇮🇳</div>
-              <h3>Hinglish &amp; 10+ Regional Dialects</h3>
+              <h3>Hinglish &amp; 22+ Regional Dialects</h3>
               <p>Powered by Sarvam Bulbul and Indic-tuned frontier models. Your agents understand colloquial phrasing, native pronunciation, and switch naturally between Hindi and English mid-sentence.</p>
               <div className="vozon-lang-tags">
                 <span>हिन्दी (Hindi)</span>
