@@ -511,8 +511,6 @@ export function HomeDesignFour() {
                 <svg aria-hidden="true" viewBox="0 0 24 28"><path d="M2 2h18v9H11v3h9v12H2v-9h9v-3H2V2Z" /></svg>
                 <em>SOULPAGE</em>
               </b>
-              <b className="design-four-client-logo is-hubspot">HubSpot</b>
-              <b className="design-four-client-logo is-shopify">Shopify</b>
               <b className="design-four-client-logo is-zendesk">zendesk</b>
               <b className="design-four-client-logo is-digitalbot" aria-label="DigitalBot">DigitalBot</b>
             </div>
@@ -536,8 +534,6 @@ export function HomeDesignFour() {
                 <svg aria-hidden="true" viewBox="0 0 24 28"><path d="M2 2h18v9H11v3h9v12H2v-9h9v-3H2V2Z" /></svg>
                 <em>SOULPAGE</em>
               </b>
-              <b className="design-four-client-logo is-hubspot">HubSpot</b>
-              <b className="design-four-client-logo is-shopify">Shopify</b>
               <b className="design-four-client-logo is-zendesk">zendesk</b>
               <b className="design-four-client-logo is-digitalbot">DigitalBot</b>
             </div>

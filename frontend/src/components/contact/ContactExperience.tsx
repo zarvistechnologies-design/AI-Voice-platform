@@ -271,6 +271,13 @@ Home </Link>
               Email
             </a>
           </div>
+
+          <div className="mt-5 border-l-2 border-teal-500 pl-4 text-base leading-7 text-slate-600 sm:text-lg">
+            <p className="font-semibold text-slate-900">
+              VOZON AI TECHNOLOGIES PRIVATE LIMITED
+            </p>
+            <p>CIN: U62099KA2026PTC228147</p>
+          </div>
         </div>
 
         <form
