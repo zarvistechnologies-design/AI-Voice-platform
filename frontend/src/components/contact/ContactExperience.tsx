@@ -131,6 +131,11 @@ city: "Lucknow",
 label: "Second India office",
 address: "Experion,V296+9MM, AV 7, Vibhuti Khand, Gomti Nagar, Lucknow, Uttar Pradesh 226010.",
 },
+{
+city: "USA",
+label: "Our office",
+address: "300 Quail Ridge Dr NE, ADA, MI 49301",
+},
 ] as const;
 
 export function ContactExperience() {
@@ -559,7 +564,7 @@ Home </Link>
         </h2>
       </div>
 
-      <div className="mt-10 grid auto-rows-fr gap-5 sm:mt-12 md:grid-cols-2">
+      <div className="mt-10 grid auto-rows-fr gap-5 sm:mt-12 lg:grid-cols-3">
         {officeLocations.map((office) => (
           <article
             className="contact-channel-card group flex h-full min-h-64 flex-col rounded-[24px] border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:p-8"
