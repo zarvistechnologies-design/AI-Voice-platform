@@ -229,6 +229,7 @@ export const modelPricingCategories: readonly ModelPriceCategory[] = [
         accent: "#f6c76e",
         sourceUrl: SARVAM_PRICING,
         models: [
+          { name: "bulbul:v4", rate: "₹30.00", unit: "per 10K characters", badge: "Latest v4" },
           { name: "bulbul:v3", rate: "₹30.00", unit: "per 10K characters", badge: "Recommended" },
           { name: "bulbul:v2", rate: "₹15.00", unit: "per 10K characters", badge: "Legacy" },
         ],
@@ -283,6 +284,8 @@ export const modelPricingCategories: readonly ModelPriceCategory[] = [
         accent: "#67e8f9",
         sourceUrl: GEMINI_PRICING,
         models: [
+          { name: "gemini-3.8-live", rate: "~$0.005 audio in · ~$0.018 audio out", unit: "per audio minute", badge: "Live GA", detail: "Flagship Multimodal Live model; native bidirectional audio & barge-in" },
+          { name: "gemini-3.8-live-extended-thinking", rate: "~$0.008 audio in · ~$0.028 audio out", unit: "per audio minute", badge: "Extended Thinking", detail: "Multimodal Live with background thinking reasoning" },
           { name: "gemini-3.1-flash-live-preview", rate: "~$0.005 audio in · ~$0.018 audio out", unit: "per audio minute", badge: "Recommended", detail: "Preview; token-based billing" },
           { name: "gemini-3.1-pro-live-preview", rate: "~$0.008 audio in · ~$0.028 audio out", unit: "per audio minute", badge: "Preview", detail: "Pro Live; high-reasoning multimodal live" },
           { name: "gemini-2.5-flash-native-audio", rate: "$3.00 audio in · $12.00 audio out", unit: "per 1M audio tokens", detail: "Stable Flash Native Audio" },

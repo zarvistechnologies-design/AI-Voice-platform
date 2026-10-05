@@ -984,7 +984,7 @@ function fallbackSarvamVoiceProfile(
   value: string,
   label: string,
   gender: "male" | "female",
-  model: "bulbul:v2" | "bulbul:v3",
+  model: "bulbul:v2" | "bulbul:v3" | "bulbul:v4",
   meta: {
     languageCodes?: readonly string[];
     useCase: string;
@@ -1005,13 +1005,13 @@ function fallbackSarvamVoiceProfile(
     note: meta.note,
     ...(languageCodes.length
       ? {
-          languageCodes,
-          languageLabels: languageCodes.map(
-            (code) =>
-              fallbackLanguageCatalog.find((language) => language.code === code)
-                ?.label ?? code,
-          ),
-        }
+        languageCodes,
+        languageLabels: languageCodes.map(
+          (code) =>
+            fallbackLanguageCatalog.find((language) => language.code === code)
+              ?.label ?? code,
+        ),
+      }
       : {}),
   };
 }
@@ -1260,6 +1260,8 @@ const fallbackElevenLabsVoiceProfiles: VoiceProfile[] = [
 
 const defaultGeminiRealtimeModel = "gemini-3.1-flash-live-preview";
 const geminiRealtimeModels = [
+  "gemini-3.8-live",
+  "gemini-3.8-live-extended-thinking",
   "gemini-3.1-flash-live-preview",
   "gemini-3.1-pro-live-preview",
   "gemini-2.5-flash-native-audio",
@@ -1302,6 +1304,16 @@ const geminiRealtimeVoices = [
   "Zubenelgenubi",
 ];
 const geminiRealtimeModelAliases: Record<string, string> = {
+  "gemini-3.8": "gemini-3.8-live",
+  "gemini-3.8-live": "gemini-3.8-live",
+  "gemini-3.8-live-preview": "gemini-3.8-live",
+  "gemini-3.8-realtime": "gemini-3.8-live",
+  "gemini-realtime-3.8": "gemini-3.8-live",
+  "gemini-realtime-3.8-live": "gemini-3.8-live",
+  "gemini-live-3.8": "gemini-3.8-live",
+  "gemini-3.8-flash-live": "gemini-3.8-live",
+  "gemini-3.8-extended-thinking": "gemini-3.8-live-extended-thinking",
+  "gemini-3.8-thinking": "gemini-3.8-live-extended-thinking",
   "gemini-3.1-pro-live-preview": "gemini-3.1-flash-live-preview",
   "gemini-2.5-pro-native-audio": "gemini-2.5-flash-native-audio",
   "gemini-2.5-flash-native-audio-preview-12-2025": "gemini-2.5-flash-native-audio",
@@ -1599,7 +1611,7 @@ const fallbackCatalog: ModelCatalog = {
       provider: "sarvam",
       label: "Sarvam",
       configured: true,
-      models: ["bulbul:v3"],
+      models: ["bulbul:v4", "bulbul:v3", "bulbul:v2"],
       voices: fallbackSarvamVoices,
       voiceProfiles: fallbackSarvamVoiceProfiles,
       languages: fallbackLanguageCatalog.filter(
@@ -1611,6 +1623,7 @@ const fallbackCatalog: ModelCatalog = {
       ),
       showAllVoicesWithLanguageOrder: true,
       voicesByModel: {
+        "bulbul:v4": fallbackSarvamV3Voices,
         "bulbul:v3": fallbackSarvamV3Voices,
         "bulbul:v2": fallbackSarvamV2Voices,
       },
@@ -1773,8 +1786,8 @@ function getVoices(
   const modelVoices = item.voicesByModel?.[model] ?? item.voices ?? [];
   const languageVoices = language
     ? languageKeys(language, languageCatalog)
-        .map((key) => item.voicesByLanguage?.[key])
-        .find((voices) => voices && voices.length)
+      .map((key) => item.voicesByLanguage?.[key])
+      .find((voices) => voices && voices.length)
     : undefined;
 
   if (languageVoices?.length && modelVoices.length) {
@@ -1817,8 +1830,8 @@ function getDisplayedVoices(
     : [...new Set(Object.values(item.voicesByModel ?? {}).flat())];
   const languageVoices = language
     ? languageKeys(language, languageCatalog)
-        .map((key) => item.voicesByLanguage?.[key])
-        .find((voices) => voices && voices.length)
+      .map((key) => item.voicesByLanguage?.[key])
+      .find((voices) => voices && voices.length)
     : undefined;
 
   if (!languageVoices?.length) return allVoices;
@@ -2622,8 +2635,8 @@ function createWidgetPublicKey() {
     typeof crypto !== "undefined" && "randomUUID" in crypto
       ? crypto.randomUUID().replace(/-/g, "")
       : Array.from({ length: 32 }, () =>
-          Math.floor(Math.random() * 16).toString(16),
-        ).join("");
+        Math.floor(Math.random() * 16).toString(16),
+      ).join("");
   return `wpk_${random}`;
 }
 
@@ -2634,9 +2647,9 @@ function getTimezoneOptions(timezone: string): SelectOption[] {
   )
     ? commonTimezoneOptions
     : [
-        { value: selected, label: `Custom (${selected})` },
-        ...commonTimezoneOptions,
-      ];
+      { value: selected, label: `Custom (${selected})` },
+      ...commonTimezoneOptions,
+    ];
 }
 
 function noticeToast(value: string) {
@@ -2888,13 +2901,12 @@ function ToggleRow({
 }) {
   return (
     <label
-      className={`group grid grid-cols-[minmax(0,1fr)_44px] items-start gap-3 transition ${compact ? "py-3" : "rounded-lg border border-[#e6ecea] bg-white p-3"} ${
-        disabled
-          ? "cursor-not-allowed opacity-60"
-          : compact
-            ? "cursor-pointer"
-            : "cursor-pointer hover:border-[#b8c8c3] hover:bg-[#f8fbff]"
-      }`}
+      className={`group grid grid-cols-[minmax(0,1fr)_44px] items-start gap-3 transition ${compact ? "py-3" : "rounded-lg border border-[#e6ecea] bg-white p-3"} ${disabled
+        ? "cursor-not-allowed opacity-60"
+        : compact
+          ? "cursor-pointer"
+          : "cursor-pointer hover:border-[#b8c8c3] hover:bg-[#f8fbff]"
+        }`}
     >
       <span className="min-w-0">
         <span className="app-strong block">{title}</span>
@@ -2911,14 +2923,12 @@ function ToggleRow({
       />
       <span
         aria-hidden="true"
-        className={`relative mt-0.5 h-6 w-11 rounded-full transition peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[#0e6f62] ${
-          enabled ? "bg-[#118778]" : "bg-[#cbd5e1]"
-        }`}
+        className={`relative mt-0.5 h-6 w-11 rounded-full transition peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[#0e6f62] ${enabled ? "bg-[#118778]" : "bg-[#cbd5e1]"
+          }`}
       >
         <span
-          className={`absolute top-1 size-4 rounded-full bg-[#ffffff] shadow-sm transition ${
-            enabled ? "left-6" : "left-1"
-          }`}
+          className={`absolute top-1 size-4 rounded-full bg-[#ffffff] shadow-sm transition ${enabled ? "left-6" : "left-1"
+            }`}
         />
       </span>
     </label>
@@ -3132,9 +3142,8 @@ function VoiceChoiceList({
         return (
           <div
             key={voice}
-            className={`grid min-h-16 grid-cols-[minmax(0,1fr)_44px] items-center border-b border-[#eef2f7] last:border-b-0 ${
-              active ? "bg-[#edf7f4]" : "bg-white"
-            }`}
+            className={`grid min-h-16 grid-cols-[minmax(0,1fr)_44px] items-center border-b border-[#eef2f7] last:border-b-0 ${active ? "bg-[#edf7f4]" : "bg-white"
+              }`}
           >
             <button
               className="grid min-w-0 grid-cols-[40px_minmax(0,1fr)] items-center gap-3 px-3 py-2 text-left transition hover:bg-[#f8fafc]"
@@ -3241,17 +3250,17 @@ function StackConfigurationModal({
     () =>
       stack === "stt" && provider.provider === "deepgram"
         ? deepgramModelsForLanguage(
+          provider.models,
+          effectiveLanguage,
+          languageCatalog,
+        )
+        : stack === "stt" && provider.provider === "cartesia"
+          ? cartesiaSttModelsForLanguage(
             provider.models,
             effectiveLanguage,
             languageCatalog,
           )
-        : stack === "stt" && provider.provider === "cartesia"
-          ? cartesiaSttModelsForLanguage(
-              provider.models,
-              effectiveLanguage,
-              languageCatalog,
-            )
-        : [...provider.models],
+          : [...provider.models],
     [
       effectiveLanguage,
       languageCatalog,
@@ -3282,12 +3291,12 @@ function StackConfigurationModal({
   const primaryLanguageOptions = (
     stack !== "llm" && selectedModelLanguages.length
       ? selectedModelLanguages.map((language) => ({
-          value: language.value,
-          label:
-            language.code === "unknown"
-              ? language.label
-              : `${language.label} (${language.code})`,
-        }))
+        value: language.value,
+        label:
+          language.code === "unknown"
+            ? language.label
+            : `${language.label} (${language.code})`,
+      }))
       : normalizedLanguageOptions
   ).filter((option) => option.value !== "Multilingual");
   const allowedLanguageOptions = normalizedLanguageOptions.filter(
@@ -3360,11 +3369,11 @@ function StackConfigurationModal({
     if (stack === "stt") {
       const nextLanguage = next.languages?.length
         ? coerceLanguage(
-            agent.language,
-            next.languages.filter(
-              (language) => language.value !== "Multilingual",
-            ),
-          )
+          agent.language,
+          next.languages.filter(
+            (language) => language.value !== "Multilingual",
+          ),
+        )
         : agent.language;
       const nextModel = normalizeSttModelForLanguage(
         nextProviderId,
@@ -3384,9 +3393,9 @@ function StackConfigurationModal({
     const nextLanguages = providerLanguagesForModel(next, nextModel);
     const nextLanguage = nextLanguages.length
       ? coerceLanguage(
-          agent.language,
-          nextLanguages.filter((language) => language.value !== "Multilingual"),
-        )
+        agent.language,
+        nextLanguages.filter((language) => language.value !== "Multilingual"),
+      )
       : agent.language;
     const voices = getVoices(
       catalog,
@@ -3437,11 +3446,11 @@ function StackConfigurationModal({
       const modelLanguages = providerLanguagesForModel(provider, model);
       const nextLanguage = modelLanguages.length
         ? coerceLanguage(
-            agent.language,
-            modelLanguages.filter(
-              (language) => language.value !== "Multilingual",
-            ),
-          )
+          agent.language,
+          modelLanguages.filter(
+            (language) => language.value !== "Multilingual",
+          ),
+        )
         : agent.language;
       const voices = getVoices(
         catalog,
@@ -3467,45 +3476,48 @@ function StackConfigurationModal({
   const voices =
     stack === "voice"
       ? getDisplayedVoices(
-          catalog,
-          voiceLayer,
-          voiceProviderId,
-          voiceModel,
-          effectiveLanguage,
-          languageCatalog,
-        )
+        catalog,
+        voiceLayer,
+        voiceProviderId,
+        voiceModel,
+        effectiveLanguage,
+        languageCatalog,
+      )
       : [];
   const languageSpecificVoices =
     stack === "voice"
       ? getLanguageSpecificVoices(
-          catalog,
-          voiceLayer,
-          voiceProviderId,
-          effectiveLanguage,
-          languageCatalog,
-        )
+        catalog,
+        voiceLayer,
+        voiceProviderId,
+        effectiveLanguage,
+        languageCatalog,
+      )
       : [];
   const profiles = stack === "voice" ? (provider.voiceProfiles ?? []) : [];
   const voiceOptions =
     stack === "voice"
       ? voiceSelectOptions(
-          voices,
-          profiles,
-          effectiveLanguage,
-          languageCatalog,
-          languageSpecificVoices,
-        )
+        voices,
+        profiles,
+        effectiveLanguage,
+        languageCatalog,
+        languageSpecificVoices,
+      )
       : [];
   const previewMode: PipelineMode = realtime ? "realtime" : "pipeline";
   const previewProvider = voiceProviderId as
     RealtimeProvider | PipelineProvider;
   const modelForVoice = (voice: string) => {
+    if (voiceModel) {
+      return voiceModel;
+    }
     const profileModel = profiles.find(
       (profile) => profile.value === voice,
     )?.model;
     return profileModel && provider.models.includes(profileModel)
       ? profileModel
-      : voiceModel;
+      : provider.models[0] ?? "";
   };
   const previewKey = (voice: string) =>
     [
@@ -3595,11 +3607,10 @@ function StackConfigurationModal({
               {(["pipeline", "realtime"] as const).map((mode) => (
                 <button
                   key={mode}
-                  className={`min-h-8 rounded-md px-3 text-xs font-semibold capitalize transition ${
-                    agent.pipelineMode === mode
-                      ? "bg-[#118778] text-white shadow-sm"
-                      : "text-[#64748b] hover:bg-white hover:text-[#0f172a]"
-                  }`}
+                  className={`min-h-8 rounded-md px-3 text-xs font-semibold capitalize transition ${agent.pipelineMode === mode
+                    ? "bg-[#118778] text-white shadow-sm"
+                    : "text-[#64748b] hover:bg-white hover:text-[#0f172a]"
+                    }`}
                   type="button"
                   aria-pressed={agent.pipelineMode === mode}
                   onClick={() => onPipelineModeChange(mode)}
@@ -3717,11 +3728,10 @@ function StackConfigurationModal({
                             agent.supportedLanguages.includes(option.value);
                           return (
                             <label
-                              className={`flex min-h-10 items-center gap-2 rounded-md border px-3 text-sm font-semibold transition ${
-                                checked
-                                  ? "border-[#9fcfc3] bg-[#edf7f4] text-[#0e6f62]"
-                                  : "border-[#e6ecea] bg-white text-[#475569] hover:border-[#9fcfc3]"
-                              } ${required ? "cursor-not-allowed" : "cursor-pointer"}`}
+                              className={`flex min-h-10 items-center gap-2 rounded-md border px-3 text-sm font-semibold transition ${checked
+                                ? "border-[#9fcfc3] bg-[#edf7f4] text-[#0e6f62]"
+                                : "border-[#e6ecea] bg-white text-[#475569] hover:border-[#9fcfc3]"
+                                } ${required ? "cursor-not-allowed" : "cursor-pointer"}`}
                               key={option.value}
                             >
                               <input
@@ -3757,8 +3767,8 @@ function StackConfigurationModal({
               ) : null}
 
               {stack === "voice" &&
-              provider.provider === "elevenlabs" &&
-              languageSpecificVoices.length > 0 ? (
+                provider.provider === "elevenlabs" &&
+                languageSpecificVoices.length > 0 ? (
                 <div className="rounded-lg border border-[#9fcfc3] bg-[#edf7f4] px-3 py-2 text-sm font-medium text-[#0e6f62]">
                   “Best for” is the primary/native training language. “Also
                   verified” names every other language ElevenLabs reports for
@@ -4156,9 +4166,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
       label: "Model",
       value: cleanRuntimeLabel(
         selectedRuntimeSnapshot?.pipeline.label ??
-          (selectedAgent.pipelineMode === "realtime"
-            ? `${selectedAgent.realtimeProvider}/${selectedAgent.realtimeModel}`
-            : `${selectedAgent.sttProvider} → ${selectedAgent.llmProvider} → ${selectedAgent.ttsProvider}`),
+        (selectedAgent.pipelineMode === "realtime"
+          ? `${selectedAgent.realtimeProvider}/${selectedAgent.realtimeModel}`
+          : `${selectedAgent.sttProvider} → ${selectedAgent.llmProvider} → ${selectedAgent.ttsProvider}`),
       ),
       tone: "text-[#118778]",
     },
@@ -4828,9 +4838,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
         setNotice(
           routingWarning
             ? publicVoiceMessage(
-                routingWarning,
-                "Agent saved, but phone routing still needs setup.",
-              )
+              routingWarning,
+              "Agent saved, but phone routing still needs setup.",
+            )
             : "Agent saved.",
         );
         return true;
@@ -4992,9 +5002,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
       setNotice(
         routingWarning
           ? publicVoiceMessage(
-              routingWarning,
-              "Agent renamed, but phone routing still needs setup.",
-            )
+            routingWarning,
+            "Agent renamed, but phone routing still needs setup.",
+          )
           : "Agent renamed.",
       );
     } catch (error) {
@@ -5014,21 +5024,21 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     const voices =
       selectedAgent.pipelineMode === "realtime"
         ? getVoices(
-            modelCatalog,
-            "realtime",
-            selectedAgent.realtimeProvider,
-            selectedAgent.realtimeModel,
-            effectiveLanguage,
-            languageCatalog,
-          )
+          modelCatalog,
+          "realtime",
+          selectedAgent.realtimeProvider,
+          selectedAgent.realtimeModel,
+          effectiveLanguage,
+          languageCatalog,
+        )
         : getVoices(
-            modelCatalog,
-            "tts",
-            selectedAgent.ttsProvider,
-            selectedAgent.ttsModel,
-            effectiveLanguage,
-            languageCatalog,
-          );
+          modelCatalog,
+          "tts",
+          selectedAgent.ttsProvider,
+          selectedAgent.ttsModel,
+          effectiveLanguage,
+          languageCatalog,
+        );
     updateSelectedAgent({
       language,
       supportedLanguages: [
@@ -5053,11 +5063,11 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     const nextLanguage =
       pipelineMode === "pipeline" && ttsLanguages?.length
         ? coerceLanguage(
-            selectedAgent.language,
-            ttsLanguages.filter(
-              (language) => language.value !== "Multilingual",
-            ),
-          )
+          selectedAgent.language,
+          ttsLanguages.filter(
+            (language) => language.value !== "Multilingual",
+          ),
+        )
         : selectedAgent.language;
     const effectiveLanguage = selectedAgent.multilingualEnabled
       ? "Multilingual"
@@ -5065,21 +5075,21 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
     const nextVoices =
       pipelineMode === "realtime"
         ? getVoices(
-            modelCatalog,
-            "realtime",
-            selectedAgent.realtimeProvider,
-            selectedAgent.realtimeModel,
-            effectiveLanguage,
-            languageCatalog,
-          )
+          modelCatalog,
+          "realtime",
+          selectedAgent.realtimeProvider,
+          selectedAgent.realtimeModel,
+          effectiveLanguage,
+          languageCatalog,
+        )
         : getVoices(
-            modelCatalog,
-            "tts",
-            selectedAgent.ttsProvider,
-            selectedAgent.ttsModel,
-            effectiveLanguage,
-            languageCatalog,
-          );
+          modelCatalog,
+          "tts",
+          selectedAgent.ttsProvider,
+          selectedAgent.ttsModel,
+          effectiveLanguage,
+          languageCatalog,
+        );
     updateSelectedAgent({
       pipelineMode,
       language: nextLanguage,
@@ -5118,14 +5128,14 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
         ];
         const voicesByModel = profile.model
           ? {
-              ...(provider.voicesByModel ?? {}),
-              [profile.model]: [
-                profile.value,
-                ...(provider.voicesByModel?.[profile.model] ?? []).filter(
-                  (voice) => voice !== profile.value,
-                ),
-              ],
-            }
+            ...(provider.voicesByModel ?? {}),
+            [profile.model]: [
+              profile.value,
+              ...(provider.voicesByModel?.[profile.model] ?? []).filter(
+                (voice) => voice !== profile.value,
+              ),
+            ],
+          }
           : provider.voicesByModel;
         return { ...provider, voices, voiceProfiles, voicesByModel };
       }),
@@ -5732,11 +5742,10 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
 
   return (
     <main
-      className={`voice-agent-theme dashboard-home-theme grid min-h-screen w-full min-w-0 overflow-x-hidden bg-white text-[#14231f] ${
-        showUserSidebar
-          ? "lg:grid-cols-[248px_minmax(0,1fr)]"
-          : "lg:grid-cols-[64px_minmax(0,1fr)]"
-      }`}
+      className={`voice-agent-theme dashboard-home-theme grid min-h-screen w-full min-w-0 overflow-x-hidden bg-white text-[#14231f] ${showUserSidebar
+        ? "lg:grid-cols-[248px_minmax(0,1fr)]"
+        : "lg:grid-cols-[64px_minmax(0,1fr)]"
+        }`}
     >
       <DashboardSidebar
         activeLabel="Voice Agents"
@@ -5969,11 +5978,10 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                 >
                   {tabs.map((tab) => (
                     <button
-                      className={`app-button-text min-h-8 rounded-lg px-3 py-1.5 transition focus-visible:ring-2 focus-visible:ring-[#123d35]/60 ${
-                        activeTab === tab.id
-                          ? "bg-[#118778] text-white shadow-[0_5px_12px_rgba(17,135,120,0.18)]"
-                          : "text-[#52645f] hover:bg-white hover:text-[#123d35]"
-                      }`}
+                      className={`app-button-text min-h-8 rounded-lg px-3 py-1.5 transition focus-visible:ring-2 focus-visible:ring-[#123d35]/60 ${activeTab === tab.id
+                        ? "bg-[#118778] text-white shadow-[0_5px_12px_rgba(17,135,120,0.18)]"
+                        : "text-[#52645f] hover:bg-white hover:text-[#123d35]"
+                        }`}
                       key={tab.id}
                       type="button"
                       aria-pressed={activeTab === tab.id}
@@ -6057,11 +6065,10 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                         {voiceStackCards.map((card) => (
                           <div className="contents" key={card.id}>
                             <button
-                              className={`voice-pipeline-node group relative grid min-h-32 min-w-0 flex-1 cursor-pointer gap-3 overflow-hidden rounded-xl border bg-white p-4 text-left transition duration-200 hover:border-[#118778] ${
-                                openStackConfig === card.id
-                                  ? "z-10 border-[#118778] ring-4 ring-[#118778]/10"
-                                  : "border-[#dbe4e1]"
-                              }`}
+                              className={`voice-pipeline-node group relative grid min-h-32 min-w-0 flex-1 cursor-pointer gap-3 overflow-hidden rounded-xl border bg-white p-4 text-left transition duration-200 hover:border-[#118778] ${openStackConfig === card.id
+                                ? "z-10 border-[#118778] ring-4 ring-[#118778]/10"
+                                : "border-[#dbe4e1]"
+                                }`}
                               type="button"
                               aria-label={`Configure ${card.label}`}
                               aria-pressed={openStackConfig === card.id}
@@ -6220,119 +6227,119 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                     ) : null}
 
                     {!selectedAgent.guidedSetup?.templateId || showAdvancedBuilder ? <>
-                    <div className="grid min-w-0 gap-4 lg:grid-cols-[minmax(0,1fr)_240px]">
-                      <div className="min-w-0 rounded-lg bg-[#f8fafc] px-4 py-3">
-                        <span className="app-label block">Active runtime</span>
-                        <strong className="app-strong block wrap-break-word">
-                          {selectedAgent.pipelineMode === "realtime"
-                            ? `${selectedAgent.realtimeProvider} / ${selectedAgent.realtimeModel}`
-                            : `${selectedAgent.sttProvider} -> ${selectedAgent.llmProvider} -> ${selectedAgent.ttsProvider}`}
-                        </strong>
+                      <div className="grid min-w-0 gap-4 lg:grid-cols-[minmax(0,1fr)_240px]">
+                        <div className="min-w-0 rounded-lg bg-[#f8fafc] px-4 py-3">
+                          <span className="app-label block">Active runtime</span>
+                          <strong className="app-strong block wrap-break-word">
+                            {selectedAgent.pipelineMode === "realtime"
+                              ? `${selectedAgent.realtimeProvider} / ${selectedAgent.realtimeModel}`
+                              : `${selectedAgent.sttProvider} -> ${selectedAgent.llmProvider} -> ${selectedAgent.ttsProvider}`}
+                          </strong>
+                        </div>
+                        <label className="app-label grid gap-2 rounded-lg bg-[#f8fafc] px-4 py-3">
+                          <span>Creativity</span>
+                          <input
+                            className="accent-[#118778]"
+                            type="range"
+                            min="0"
+                            max="2"
+                            step="0.05"
+                            value={selectedAgent.temperature}
+                            onChange={(event) =>
+                              updateSelectedAgent({
+                                temperature: Number(event.target.value),
+                              })
+                            }
+                          />
+                        </label>
                       </div>
-                      <label className="app-label grid gap-2 rounded-lg bg-[#f8fafc] px-4 py-3">
-                        <span>Creativity</span>
-                        <input
-                          className="accent-[#118778]"
-                          type="range"
-                          min="0"
-                          max="2"
-                          step="0.05"
-                          value={selectedAgent.temperature}
-                          onChange={(event) =>
-                            updateSelectedAgent({
-                              temperature: Number(event.target.value),
-                            })
-                          }
-                        />
-                      </label>
-                    </div>
 
-                    <section className="grid gap-3 rounded-xl border border-[#e6ecea] bg-[#f8fafc] p-4">
-                      <div>
-                        <h3 className="app-section-title m-0">Voice tuning</h3>
-                        <span className="app-caption">
-                          Control how quickly, clearly, and aggressively the
-                          live agent responds.
-                        </span>
-                      </div>
-                      <div className="grid gap-3 lg:grid-cols-3">
-                        <SliderField
-                          label="Voice speed"
-                          value={selectedAgent.voiceSpeed}
-                          min={voiceSpeedRange.min}
-                          max={voiceSpeedRange.max}
-                          step={voiceSpeedRange.step}
-                          valueText={`${selectedAgent.voiceSpeed.toFixed(2)}x`}
-                          onChange={(value) =>
-                            updateSelectedAgent({ voiceSpeed: value })
-                          }
-                        />
-                        <SliderField
-                          label="Voice pitch"
-                          value={selectedAgent.voicePitch}
-                          min={voicePitchRange.min}
-                          max={voicePitchRange.max}
-                          step={voicePitchRange.step}
-                          valueText={
-                            selectedAgent.voicePitch > 0
-                              ? `+${selectedAgent.voicePitch}`
-                              : String(selectedAgent.voicePitch)
-                          }
-                          disabled={!voicePitchSupported}
-                          title={
-                            voicePitchSupported
-                              ? "Pitch applies to Sarvam bulbul:v2."
-                              : "Pitch is available only for Sarvam bulbul:v2."
-                          }
-                          onChange={(value) =>
-                            updateSelectedAgent({ voicePitch: value })
-                          }
-                        />
-                        <SliderField
-                          label="Concurrent calls"
-                          value={selectedAgent.maxConcurrentCalls}
-                          min={concurrentCallsRange.min}
-                          max={concurrentCallsRange.max}
-                          step={concurrentCallsRange.step}
-                          valueText={String(selectedAgent.maxConcurrentCalls)}
-                          onChange={(value) =>
-                            updateSelectedAgent({ maxConcurrentCalls: value })
-                          }
-                        />
-                        <SelectField
-                          label="Interruption sensitivity"
-                          defaultValue="medium"
-                          value={selectedAgent.interruptionSensitivity}
-                          options={["low", "medium", "high"]}
-                          onChange={(value) =>
-                            updateSelectedAgent({
-                              interruptionSensitivity:
-                                value as BackendAgent["interruptionSensitivity"],
-                            })
-                          }
-                        />
-                        <SelectField
-                          label="Background profile"
-                          defaultValue="none"
-                          value={selectedAgent.backgroundNoise}
-                          options={["none", "office", "cafe", "street"]}
-                          onChange={(value) =>
-                            updateSelectedAgent({
-                              backgroundNoise:
-                                value as BackendAgent["backgroundNoise"],
-                            })
-                          }
-                        />
-                        <InputField
-                          label="Callback email"
-                          value={selectedAgent.callbackEmail}
-                          placeholder="ops@example.com"
-                          onChange={(callbackEmail) =>
-                            updateSelectedAgent({ callbackEmail })
-                          }
-                        />
-                      </div>
-                    </section>
+                      <section className="grid gap-3 rounded-xl border border-[#e6ecea] bg-[#f8fafc] p-4">
+                        <div>
+                          <h3 className="app-section-title m-0">Voice tuning</h3>
+                          <span className="app-caption">
+                            Control how quickly, clearly, and aggressively the
+                            live agent responds.
+                          </span>
+                        </div>
+                        <div className="grid gap-3 lg:grid-cols-3">
+                          <SliderField
+                            label="Voice speed"
+                            value={selectedAgent.voiceSpeed}
+                            min={voiceSpeedRange.min}
+                            max={voiceSpeedRange.max}
+                            step={voiceSpeedRange.step}
+                            valueText={`${selectedAgent.voiceSpeed.toFixed(2)}x`}
+                            onChange={(value) =>
+                              updateSelectedAgent({ voiceSpeed: value })
+                            }
+                          />
+                          <SliderField
+                            label="Voice pitch"
+                            value={selectedAgent.voicePitch}
+                            min={voicePitchRange.min}
+                            max={voicePitchRange.max}
+                            step={voicePitchRange.step}
+                            valueText={
+                              selectedAgent.voicePitch > 0
+                                ? `+${selectedAgent.voicePitch}`
+                                : String(selectedAgent.voicePitch)
+                            }
+                            disabled={!voicePitchSupported}
+                            title={
+                              voicePitchSupported
+                                ? "Pitch applies to Sarvam bulbul:v2."
+                                : "Pitch is available only for Sarvam bulbul:v2."
+                            }
+                            onChange={(value) =>
+                              updateSelectedAgent({ voicePitch: value })
+                            }
+                          />
+                          <SliderField
+                            label="Concurrent calls"
+                            value={selectedAgent.maxConcurrentCalls}
+                            min={concurrentCallsRange.min}
+                            max={concurrentCallsRange.max}
+                            step={concurrentCallsRange.step}
+                            valueText={String(selectedAgent.maxConcurrentCalls)}
+                            onChange={(value) =>
+                              updateSelectedAgent({ maxConcurrentCalls: value })
+                            }
+                          />
+                          <SelectField
+                            label="Interruption sensitivity"
+                            defaultValue="medium"
+                            value={selectedAgent.interruptionSensitivity}
+                            options={["low", "medium", "high"]}
+                            onChange={(value) =>
+                              updateSelectedAgent({
+                                interruptionSensitivity:
+                                  value as BackendAgent["interruptionSensitivity"],
+                              })
+                            }
+                          />
+                          <SelectField
+                            label="Background profile"
+                            defaultValue="none"
+                            value={selectedAgent.backgroundNoise}
+                            options={["none", "office", "cafe", "street"]}
+                            onChange={(value) =>
+                              updateSelectedAgent({
+                                backgroundNoise:
+                                  value as BackendAgent["backgroundNoise"],
+                              })
+                            }
+                          />
+                          <InputField
+                            label="Callback email"
+                            value={selectedAgent.callbackEmail}
+                            placeholder="ops@example.com"
+                            onChange={(callbackEmail) =>
+                              updateSelectedAgent({ callbackEmail })
+                            }
+                          />
+                        </div>
+                      </section>
                     </> : null}
                   </div>
                 ) : null}
@@ -7575,11 +7582,10 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                       <div className="grid overflow-hidden rounded-lg border border-[#dbe4e1] bg-[#edf0f4] gap-px md:grid-cols-2 xl:grid-cols-4">
                         {callReadiness.map((item) => (
                           <div
-                            className={`p-3 ${
-                              item.ready
-                                ? "bg-white text-[#047857]"
-                                : "bg-white text-[#b45309]"
-                            }`}
+                            className={`p-3 ${item.ready
+                              ? "bg-white text-[#047857]"
+                              : "bg-white text-[#b45309]"
+                              }`}
                             key={item.label}
                           >
                             <span className="app-label block opacity-80">
@@ -7970,7 +7976,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                     </section>
 
                     {selectedAgent.status !== "Live" ||
-                    !selectedAgent.widget.publicKey ? (
+                      !selectedAgent.widget.publicKey ? (
                       <p className="app-caption m-0 rounded-lg border border-[#fde68a] bg-[#fffbeb] p-3 text-[#92400e]">
                         {selectedAgent.status !== "Live"
                           ? "Publish this agent before enabling the widget on a public website."
@@ -8272,11 +8278,11 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                     <span className="app-caption block truncate">
                       {selectedRuntimeSnapshot
                         ? [
-                            selectedRuntimeSnapshot.phoneRoute.provider,
-                            selectedRuntimeSnapshot.phoneRoute.direction,
-                          ]
-                            .filter(Boolean)
-                            .join(" / ") || "No route assigned"
+                          selectedRuntimeSnapshot.phoneRoute.provider,
+                          selectedRuntimeSnapshot.phoneRoute.direction,
+                        ]
+                          .filter(Boolean)
+                          .join(" / ") || "No route assigned"
                         : "Connecting live stream..."}
                     </span>
                   </div>
@@ -8319,7 +8325,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                       <strong className="app-strong text-[#059669]">
                         {selectedRuntimeSnapshot?.phoneRoute.completionRate ===
                           null ||
-                        selectedRuntimeSnapshot?.phoneRoute.completionRate ===
+                          selectedRuntimeSnapshot?.phoneRoute.completionRate ===
                           undefined
                           ? "-"
                           : `${selectedRuntimeSnapshot.phoneRoute.completionRate}%`}
@@ -8330,7 +8336,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                     <div className="flex flex-wrap gap-2 border-t border-[#eef2f7] pt-3">
                       {selectedRuntimeSnapshot.phoneRoute.direction !==
                         "Outbound" &&
-                      selectedRuntimeSnapshot.phoneRoute.direction ? (
+                        selectedRuntimeSnapshot.phoneRoute.direction ? (
                         <span
                           className={`app-label rounded-full px-2.5 py-1 ${selectedRuntimeSnapshot.phoneRoute.inboundReady ? "bg-[#dcfce7] text-[#047857]" : "bg-[#fee2e2] text-[#b91c1c]"}`}
                         >
@@ -8342,7 +8348,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                       ) : null}
                       {selectedRuntimeSnapshot.phoneRoute.direction !==
                         "Inbound" &&
-                      selectedRuntimeSnapshot.phoneRoute.direction ? (
+                        selectedRuntimeSnapshot.phoneRoute.direction ? (
                         <span
                           className={`app-label rounded-full px-2.5 py-1 ${selectedRuntimeSnapshot.phoneRoute.outboundReady ? "bg-[#dcfce7] text-[#047857]" : "bg-[#fee2e2] text-[#b91c1c]"}`}
                         >
