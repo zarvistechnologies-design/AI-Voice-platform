@@ -72,6 +72,8 @@ export type BillingSummary = {
   displayCurrency?: "INR";
   inrPerUsd?: number;
   billingModel?: "pay_as_you_go" | "white_label_partner_managed" | "white_label_customer_checkout";
+  billingProfile?: { gstin: string; address: string };
+  canManageBillingProfile?: boolean;
   paymentProvider?: string;
   whiteLabel?: { productName: string; supportEmail: string; managedByPartner: boolean };
   wallet: CreditWallet;
@@ -250,6 +252,14 @@ export const billingApi = {
     return cancelled;
   },
   downloadInvoice,
+  updateBillingProfile: async (input: { gstin: string; address: string }) => {
+    const result = await request<{ billingProfile: { gstin: string; address: string } }>("/profile", {
+      method: "PUT",
+      body: JSON.stringify(input),
+    });
+    invalidateApiCache("billing");
+    return result;
+  },
   downloadWhiteLabelInvoice: async (invoiceId: string) => {
     if (!getSession()) throw new Error("Sign in before downloading an invoice.");
     const response = await fetch(`${API_URL}/api/billing/white-label/invoices/${encodeURIComponent(invoiceId)}`, {

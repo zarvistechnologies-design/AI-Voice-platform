@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore, type FormEvent } from "react";
 
 import { DashboardSidebar, getDashboardSidebarInitialState } from "@/components/dashboard/DashboardSidebar";
 import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
@@ -35,8 +35,11 @@ export function BillingShell() {
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
   const [data, setData] = useState<BillingSummary | null>(null);
   const [notice, setNotice] = useState("");
-  const [busy, setBusy] = useState<"" | "topup" | "cancel" | "enterprise" | `invoice:${string}`>("");
+  const [busy, setBusy] = useState<"" | "topup" | "cancel" | "enterprise" | "profile" | `invoice:${string}`>("");
   const [selectedTopUp, setSelectedTopUp] = useState(1_000);
+  const [gstin, setGstin] = useState("");
+  const [billingAddress, setBillingAddress] = useState("");
+  const [showBillingDetails, setShowBillingDetails] = useState(false);
   const [showUserSidebar, setShowUserSidebar] = useState(getDashboardSidebarInitialState);
   const [successData, setSuccessData] = useState<PaymentSuccessData | null>(null);
 
@@ -44,6 +47,8 @@ export function BillingShell() {
     try {
       const summary = await billingApi.summary();
       setData(summary);
+      setGstin(summary.billingProfile?.gstin ?? "");
+      setBillingAddress(summary.billingProfile?.address ?? "");
       setNotice("");
       return summary;
     } catch (error) {
@@ -175,6 +180,29 @@ export function BillingShell() {
     }
   }
 
+  async function saveBillingDetails(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setBusy("profile");
+    try {
+      const result = await billingApi.updateBillingProfile({ gstin, address: billingAddress });
+      setGstin(result.billingProfile.gstin);
+      setBillingAddress(result.billingProfile.address);
+      setData((current) => current ? { ...current, billingProfile: result.billingProfile } : current);
+      setShowBillingDetails(false);
+      setNotice("Billing details saved. The address and GSTIN will appear on invoices when provided.");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Could not save the billing details.");
+    } finally {
+      setBusy("");
+    }
+  }
+
+  function closeBillingDetails() {
+    setGstin(data?.billingProfile?.gstin ?? "");
+    setBillingAddress(data?.billingProfile?.address ?? "");
+    setShowBillingDetails(false);
+  }
+
   if (!session) return <main className="grid min-h-screen place-items-center bg-[#f7f9f8] text-sm font-semibold text-[#71817d]">Loading billing</main>;
 
   return (
@@ -225,6 +253,12 @@ export function BillingShell() {
           <section className="overflow-hidden rounded-xl border border-[#dbe4e1] bg-white">
             <div className="border-b border-[#dbe4e1] px-5 py-4"><h2 className="app-section-title m-0">Billing details</h2></div>
             <div className="grid md:grid-cols-2">
+              {data?.canManageBillingProfile ? <div className="flex flex-col gap-4 border-b border-[#dbe4e1] p-5 md:col-span-2 md:flex-row md:items-center md:justify-between">
+                <div className="min-w-0"><h3 className="m-0 text-sm font-semibold">Invoice information</h3><p className="app-caption mt-1 mb-0">Billing address and GSTIN used in the billed-to section of your invoices.</p>
+                  {data.billingProfile?.address || data.billingProfile?.gstin ? <dl className="mt-3 grid gap-2 text-sm sm:grid-cols-2"><div><dt className="text-xs text-[#71817d]">Billing address</dt><dd className="m-0 mt-0.5 whitespace-pre-line font-medium">{data.billingProfile?.address || "Not added"}</dd></div><div><dt className="text-xs text-[#71817d]">GSTIN</dt><dd className="m-0 mt-0.5 font-semibold tracking-[0.06em]">{data.billingProfile?.gstin || "Not added"}</dd></div></dl> : <p className="mt-3 mb-0 text-sm font-medium text-[#71817d]">No billing details added yet.</p>}
+                </div>
+                <button className="shrink-0 rounded-lg border border-[#118778] px-4 py-2.5 text-sm font-semibold text-[#0e6f62] hover:bg-[#edf7f4]" type="button" onClick={() => setShowBillingDetails(true)}>{data.billingProfile?.address || data.billingProfile?.gstin ? "Edit billing details" : "Add billing details"}</button>
+              </div> : null}
               <div className="p-5">
                 <div className="flex items-center justify-between gap-3"><h3 className="m-0 text-sm font-semibold">Monthly Autopay</h3><span className="rounded-full bg-[#f6f6f8] px-2.5 py-1 text-xs font-semibold capitalize text-[#52645f]">{data?.subscription.status?.replace("_", " ") ?? "inactive"}</span></div>
                 <dl className="mt-4 grid gap-3 text-sm">
@@ -260,6 +294,17 @@ export function BillingShell() {
           </section>
         </div>
       </section>
+
+      {showBillingDetails ? <div className="fixed inset-0 z-[80] grid place-items-center bg-slate-950/45 p-4" role="presentation" onMouseDown={(event) => { if (event.currentTarget === event.target && busy !== "profile") closeBillingDetails(); }}>
+        <section className="w-full max-w-xl overflow-hidden rounded-2xl border border-[#dbe4e1] bg-white shadow-2xl" role="dialog" aria-modal="true" aria-labelledby="billing-details-title">
+          <div className="flex items-start justify-between gap-4 border-b border-[#dbe4e1] px-5 py-4"><div><h2 className="m-0 text-lg font-semibold" id="billing-details-title">Billing details</h2><p className="app-caption mt-1 mb-0">These details are optional and will appear on your tax invoices.</p></div><button className="grid size-9 shrink-0 place-items-center rounded-lg text-xl text-[#71817d] hover:bg-[#f1f5f4] hover:text-[#14231f]" type="button" aria-label="Close billing details" onClick={closeBillingDetails} disabled={busy === "profile"}>×</button></div>
+          <form className="grid gap-4 p-5" onSubmit={saveBillingDetails}>
+            <label className="grid gap-1.5 text-xs font-semibold text-[#52645f]" htmlFor="billing-address">Billing address (optional)<textarea className="min-h-28 resize-y rounded-lg border border-[#c6d4d0] bg-white px-3 py-2.5 text-sm font-medium leading-5 text-[#14231f] outline-none placeholder:font-normal focus:border-[#118778]" id="billing-address" name="billingAddress" value={billingAddress} maxLength={500} rows={4} placeholder="Company address, city, state, postal code, country" autoComplete="billing street-address" onChange={(event) => setBillingAddress(event.target.value)} /></label>
+            <label className="grid gap-1.5 text-xs font-semibold text-[#52645f]" htmlFor="billing-gstin">GST number (optional)<input className="h-11 rounded-lg border border-[#c6d4d0] bg-white px-3 text-sm font-semibold uppercase tracking-[0.08em] text-[#14231f] outline-none placeholder:font-normal placeholder:tracking-normal focus:border-[#118778]" id="billing-gstin" name="gstin" value={gstin} maxLength={15} pattern="[0-9]{2}[A-Za-z]{5}[0-9]{4}[A-Za-z][1-9A-Za-z]Z[0-9A-Za-z]" placeholder="29ABCDE1234F1Z5" autoComplete="off" onChange={(event) => setGstin(event.target.value.toUpperCase().replace(/\s/g, ""))} /></label>
+            <div className="mt-1 flex justify-end gap-2"><button className="h-11 rounded-lg border border-[#c6d4d0] px-4 text-sm font-semibold text-[#52645f] hover:bg-[#f7f9f8]" type="button" onClick={closeBillingDetails} disabled={busy === "profile"}>Cancel</button><button className="h-11 rounded-lg bg-[#118778] px-5 text-sm font-semibold text-white hover:bg-[#0e6f62] disabled:opacity-50" type="submit" disabled={Boolean(busy)}>{busy === "profile" ? "Saving..." : "Save details"}</button></div>
+          </form>
+        </section>
+      </div> : null}
 
       <PaymentSuccessModal
         data={successData}
