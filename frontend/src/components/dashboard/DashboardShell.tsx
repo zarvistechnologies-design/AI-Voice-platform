@@ -965,6 +965,40 @@ const fallbackSarvamV3Voices = [
   "rupali",
 ];
 
+const fallbackSarvamV4Voices = [
+  "shubh_en_narration",
+  "shubh_hi_customer",
+  "shubh_enhi_companion",
+  "simran_en_conversation",
+  "simran_hi_conversation",
+  "ishita_en_customer",
+  "ishita_hi_customer",
+  "amit_hi_conversational",
+  "aditya_hi_conversational",
+  "aparna_en_companion",
+  "aparna_hi_customer",
+  "ashutosh_hi_conversational",
+  "dev_en_conversational",
+  "kabir_hi_conversational",
+  "kavya_hi_conversational",
+  "neha_en_customer",
+  "priya_hi_recovery",
+  "rahul_hi_conversational",
+  "ratan_hi_customer_expressive",
+  "ritu_en_customer",
+  "ritu_hi_customer",
+  "rohan_en_recovery",
+  "roopa_en_conversational",
+  "roopa_hi_conversational",
+  "sanchita_en_companion",
+  "sanchita_hi_assistant",
+  "sunny_en_social",
+  "sunny_hi_ads",
+  "tarun_hi_conversational",
+  "amelia_en_conversational",
+  "sophia_en_conversational",
+];
+
 const fallbackSarvamV2Voices = [
   "anushka",
   "manisha",
@@ -976,6 +1010,7 @@ const fallbackSarvamV2Voices = [
 ];
 
 const fallbackSarvamVoices = [
+  ...fallbackSarvamV4Voices,
   ...fallbackSarvamV3Voices,
   ...fallbackSarvamV2Voices,
 ];
@@ -1623,7 +1658,7 @@ const fallbackCatalog: ModelCatalog = {
       ),
       showAllVoicesWithLanguageOrder: true,
       voicesByModel: {
-        "bulbul:v4": fallbackSarvamV3Voices,
+        "bulbul:v4": fallbackSarvamV4Voices,
         "bulbul:v3": fallbackSarvamV3Voices,
         "bulbul:v2": fallbackSarvamV2Voices,
       },
@@ -1825,9 +1860,12 @@ function getDisplayedVoices(
     );
   }
 
-  const allVoices = item.voices?.length
-    ? [...item.voices]
-    : [...new Set(Object.values(item.voicesByModel ?? {}).flat())];
+  const modelVoices = item.voicesByModel?.[model];
+  const allVoices = modelVoices && modelVoices.length > 0
+    ? [...modelVoices]
+    : item.voices?.length
+      ? [...item.voices]
+      : [...new Set(Object.values(item.voicesByModel ?? {}).flat())];
   const languageVoices = language
     ? languageKeys(language, languageCatalog)
       .map((key) => item.voicesByLanguage?.[key])
@@ -1880,10 +1918,25 @@ function getOptionLabel(options: SelectOption[], value: string) {
 }
 
 function splitVoiceOptionLabel(label: string) {
-  const [name, ...details] = label.split(/\s+-\s+/);
+  if (label.includes(" - ")) {
+    const [name, ...details] = label.split(/\s+-\s+/);
+    return {
+      name: name?.trim() || label,
+      detail: details.join(" - ").trim(),
+    };
+  }
+  if (label.includes("_")) {
+    const parts = label.split("_");
+    const capitalizedName = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
+    const detail = parts.slice(1).map((p) => p.charAt(0).toUpperCase() + p.slice(1)).join(" ");
+    return {
+      name: capitalizedName,
+      detail,
+    };
+  }
   return {
-    name: name?.trim() || label,
-    detail: details.join(" - ").trim(),
+    name: label.charAt(0).toUpperCase() + label.slice(1),
+    detail: "",
   };
 }
 

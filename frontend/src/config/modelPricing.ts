@@ -3,7 +3,7 @@ export type ModelPrice = {
   rate: string;
   unit: string;
   detail?: string;
-  badge?: "Recommended" | "Preview" | "Legacy";
+  badge?: "Recommended" | "Preview" | "Legacy" | "Latest v4" | "Live GA" | "Extended Thinking" | string;
 };
 
 export type ModelPriceProvider = {
