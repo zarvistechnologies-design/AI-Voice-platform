@@ -41,7 +41,7 @@ const featureStackCards = [
   {
     title: "Connected Follow-Ups",
     tag: "Omnichannel journeys",
-    copy: "Continue every call through WhatsApp, SMS, email, CRM tasks, and team notifications without losing context.",
+    copy: "Continue every call through SMS, email, CRM tasks, and team notifications without losing context.",
     accent: "#f59e0b",
     visual: "omni",
     imageUrl:

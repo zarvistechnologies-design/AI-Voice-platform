@@ -14,6 +14,7 @@ type IconName =
 | "clock"
 | "email"
 | "headset"
+| "location"
 | "phone"
 | "send"
 | "shield"
@@ -38,6 +39,8 @@ clock: ( <path d="M10 2.5a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15Zm0 3v4.7l3 1.8" 
 email: ( <path d="M3 5.5h14a1.5 1.5 0 0 1 1.5 1.5v8A1.5 1.5 0 0 1 17 16.5H3A1.5 1.5 0 0 1 1.5 15V7A1.5 1.5 0 0 1 3 5.5Zm-.5 1 7.5 6 7.5-6" />
 ),
 headset: ( <path d="M3 11v-1a7 7 0 0 1 14 0v1M3 11h2.5v5H4.8A1.8 1.8 0 0 1 3 14.2V11Zm14 0h-2.5v5H17v.5a1.5 1.5 0 0 1-1.5 1.5H12" />
+),
+location: ( <path d="M16.5 8.5c0 4.8-6.5 9.2-6.5 9.2S3.5 13.3 3.5 8.5a6.5 6.5 0 1 1 13 0ZM10 11a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
 ),
 phone: ( <path d="M5.2 2.5 8 6.1 6.3 8a12.2 12.2 0 0 0 5.7 5.7l1.9-1.7 3.6 2.8-.8 2.3c-.3.8-1.1 1.3-2 1.2C7.8 17.4 2.6 12.2 1.7 5.3c-.1-.9.4-1.7 1.2-2l2.3-.8Z" />
 ),
@@ -114,6 +117,24 @@ body: "Together, we define the first workflow, required guardrails, human handof
 number: "03",
 title: "You see the platform in action",
 body: "We tailor the conversation around your use case so your team can evaluate the right capabilities.",
+},
+] as const;
+
+const officeLocations = [
+{
+city: "Bangalore(HQ)",
+label: "Our headquarters",
+address: "Behind Manyata Tech Park, Hebbal, Bangalore 560077.",
+},
+{
+city: "Lucknow",
+label: "Second India office",
+address: "Experion,V296+9MM, AV 7, Vibhuti Khand, Gomti Nagar, Lucknow, Uttar Pradesh 226010.",
+},
+{
+city: "USA",
+label: "Our office",
+address: "300 Quail Ridge Dr NE, ADA, MI 49301",
 },
 ] as const;
 
@@ -254,6 +275,13 @@ Home </Link>
               <Icon className="size-4" name="email" />
               Email
             </a>
+          </div>
+
+          <div className="mt-5 border-l-2 border-teal-500 pl-4 text-base leading-7 text-slate-600 sm:text-lg">
+            <p className="font-semibold text-slate-900">
+              VOZON AI TECHNOLOGIES PRIVATE LIMITED
+            </p>
+            <p>CIN: U62099KA2026PTC228147</p>
           </div>
         </div>
 
@@ -464,7 +492,7 @@ Home </Link>
   </section>
 
   <section
-    className="contact-channels-section border-t border-slate-100 bg-white px-5 py-20 sm:px-8 sm:py-24 lg:px-12"
+    className="contact-channels-section border-t border-slate-100 bg-white px-5 py-14 sm:px-8 sm:py-16 lg:px-12 lg:py-20"
     id="contact-channels"
   >
     <div className="mx-auto max-w-[1240px]">
@@ -474,7 +502,7 @@ Home </Link>
           Multiple ways to reach us
         </span>
 
-        <h2 className="mt-6 text-[clamp(2.25rem,5vw,4rem)] font-medium leading-[1.02] tracking-[-0.05em]">
+        <h2 className="mt-6 text-[clamp(2rem,4vw,3.5rem)] font-medium leading-[1.04] tracking-[-0.045em]">
           Choose the right channel.
         </h2>
 
@@ -484,10 +512,10 @@ Home </Link>
         </p>
       </div>
 
-      <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+      <div className="mt-12 grid auto-rows-fr gap-5 md:grid-cols-2 xl:grid-cols-4">
         {contactChannels.map((channel) => (
           <a
-            className="contact-channel-card group flex min-h-72 flex-col rounded-[24px] border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:p-8"
+            className="contact-channel-card group flex h-full min-h-72 flex-col rounded-[24px] border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:p-8"
             href={channel.href}
             key={channel.title}
           >
@@ -521,7 +549,49 @@ Home </Link>
     </div>
   </section>
 
-  <section className="border-t border-slate-100 bg-white px-5 py-20 sm:px-8 sm:py-24 lg:px-12 lg:py-28">
+  <section
+    className="scroll-mt-24 border-t border-slate-100 bg-slate-50 px-5 py-14 sm:px-8 sm:py-16 lg:px-12 lg:py-20"
+    id="office-locations"
+  >
+    <div className="mx-auto max-w-[1240px]">
+      <div className="max-w-3xl text-left">
+        <p className="text-xs font-bold uppercase tracking-[0.17em] text-black">
+          Where to find us
+        </p>
+
+        <h2 className="mt-5 text-[clamp(2rem,4vw,3.5rem)] font-medium leading-[1.04] tracking-[-0.045em]">
+          Our Office Locations
+        </h2>
+      </div>
+
+      <div className="mt-10 grid auto-rows-fr gap-5 sm:mt-12 lg:grid-cols-3">
+        {officeLocations.map((office) => (
+          <article
+            className="contact-channel-card group flex h-full min-h-64 flex-col rounded-[24px] border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:p-8"
+            key={office.city}
+          >
+            <span className="contact-channel-icon grid size-13 place-items-center rounded-2xl bg-teal-50 text-black ring-1 ring-inset ring-teal-200 transition group-hover:bg-teal-500 group-hover:text-black">
+              <Icon className="size-6" name="location" />
+            </span>
+
+            <span className="contact-channel-eyebrow mt-8 text-[10px] font-bold uppercase tracking-[0.16em] text-black">
+              {office.label}
+            </span>
+
+            <h3 className="mt-2 text-xl font-semibold tracking-[-0.025em]">
+              {office.city}
+            </h3>
+
+            <address className="mt-3 text-sm font-medium not-italic leading-6 text-black">
+              {office.address}
+            </address>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section className="border-t border-slate-100 bg-white px-5 py-14 sm:px-8 sm:py-16 lg:px-12 lg:py-20">
     <div className="mx-auto max-w-[1240px]">
       <div className="grid gap-8 lg:grid-cols-[0.7fr_1.3fr] lg:gap-16">
         <div>
@@ -529,7 +599,7 @@ Home </Link>
             What happens next
           </p>
 
-          <h2 className="mt-5 text-[clamp(2.25rem,4.6vw,3.8rem)] font-medium leading-[1.02] tracking-[-0.05em]">
+          <h2 className="mt-5 text-[clamp(2rem,4vw,3.5rem)] font-medium leading-[1.04] tracking-[-0.045em]">
             From first message to a clear plan.
           </h2>
         </div>

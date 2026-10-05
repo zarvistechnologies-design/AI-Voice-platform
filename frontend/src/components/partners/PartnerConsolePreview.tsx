@@ -73,12 +73,12 @@ export function PartnerConsolePreview() {
 
   return (
     <div className="relative mx-auto w-full max-w-[640px]">
-      <div className="relative overflow-hidden rounded-[28px] border border-[#cfe2dd] bg-[#118778] p-[3px] shadow-[0_28px_70px_rgba(17,135,120,.14)]">
+      <div className="relative overflow-hidden rounded-[28px] border border-[#d8e6e2] bg-white p-2 shadow-[0_24px_64px_rgba(18,61,53,.11)]">
         <div className="rounded-[25px] bg-white p-3 sm:p-4">
           <div className="rounded-[21px] border border-[#dce7e3] bg-[#f7faf9] p-3 text-[#18312a] sm:p-4">
             <div className="flex items-center justify-between border-b border-[#dce7e3] pb-3">
               <div className="flex items-center gap-2.5">
-                <span className="grid size-8 place-items-center rounded-lg bg-[#173e35] text-xs font-black text-white">YB</span>
+                <span className="grid size-8 place-items-center rounded-lg border border-teal-200 bg-teal-50 text-xs font-black text-teal-700">YB</span>
                 <div><strong className="block text-xs">YourBrand AI</strong><span className="block text-[9px] text-slate-500">Partner control centre</span></div>
               </div>
               <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-[9px] font-bold text-emerald-700">Live</span>

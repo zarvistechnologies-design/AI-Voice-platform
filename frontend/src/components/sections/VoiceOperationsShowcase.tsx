@@ -42,7 +42,7 @@ function VoiceTags() {
       <p>Voice <span>AI</span></p>
       <div><span>Inbound Support</span><span>Lead Qualification</span></div>
       <div><span>Appointment Booking</span><span>Outbound Calls</span></div>
-      <div><span>Hindi &amp; 40+ Langs</span><span>CRM Sync</span></div>
+      <div><span>Hindi &amp; Indic Langs</span><span>CRM Sync</span></div>
     </div>
   );
 }
