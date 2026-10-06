@@ -87,10 +87,10 @@ const useCases = [
 ] as const;
 
 const metrics = [
-  ["<500ms", "Average latency", "Designed for responsive, live conversations"],
+  ["<750ms", "Average latency", "Designed for responsive, live conversations"],
   ["99.9%", "Platform uptime", "Reliable infrastructure for customer workflows"],
   ["24/7", "Call coverage", "Always available for approved call types"],
-  ["40+", "Languages", "Language-ready voice experiences"],
+  ["22+", "Indic Languages", "Language-ready voice experiences"],
 ] as const;
 
 function Icon({ name }: { name: string }) {
