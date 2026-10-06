@@ -10,6 +10,7 @@ import {
 
 import { billingApi } from "@/lib/billing";
 import { getServerSession, getSession, subscribeToSession } from "@/lib/auth";
+import { useBrand } from "@/components/branding/BrandProvider";
 
 type DashboardPageHeaderProps = {
   eyebrow?: ReactNode;
@@ -34,6 +35,7 @@ function creditLabel(balance: number | null) {
 }
 
 function DashboardWorkspaceBar() {
+  const brand = useBrand();
   const session = useSyncExternalStore(
     subscribeToSession,
     getSession,
@@ -66,23 +68,72 @@ function DashboardWorkspaceBar() {
   const workspaceName =
     session.organization?.name || `${session.name}'s workspace`;
 
+  const isWhiteLabel =
+    brand.source === "white_label" ||
+    Boolean(
+      session.organization?.whiteLabelOwnerAccountId ||
+      session.organization?.whiteLabelAccountId ||
+      session.organization?.whiteLabelBrandId,
+    );
+
+  const rawLogo = brand.iconUrl || brand.logoDarkUrl || brand.logoUrl;
+  const isVozonFallback = rawLogo.includes("logo_2.svg") || rawLogo.includes("vozon-mark");
+  const brandIconUrl = (!isWhiteLabel || !isVozonFallback) ? rawLogo : "";
+  const brandName = isWhiteLabel ? (brand.productName || "Voice Platform") : "Vozon";
+
   return (
     <div className="dashboard-workspace-bar border-b border-[#dbe4e1] bg-white px-4 sm:px-5 lg:px-6">
       <div className="flex h-12 w-full items-center justify-between gap-4">
-        <Link
-          className="group flex min-w-0 items-center gap-2 text-sm font-semibold text-[#20342e]"
-          href="/dashboard/settings"
-          title="Workspace settings"
-        >
-          <span className="truncate">{workspaceName}</span>
-          <svg
-            className="size-4 shrink-0 fill-none stroke-current stroke-2 text-[#8b8e9f] transition group-hover:text-[#0e6f62]"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
+        {/* Brand & Workspace breadcrumbs in Header */}
+        <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
+          {/* Brand Logo & Brand Name */}
+          <Link
+            className="group flex shrink-0 items-center gap-2 rounded-lg py-1 text-sm font-bold text-[#14231f] transition hover:opacity-85"
+            href="/dashboard/agents"
+            title={`${brandName} Home`}
           >
-            <path d="m7 10 5 5 5-5" />
-          </svg>
-        </Link>
+            {brandIconUrl ? (
+              <span className="relative block size-7 shrink-0 overflow-hidden rounded-md border border-[#dbe4e1] bg-white p-0.5 shadow-xs">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={brandIconUrl}
+                  alt={brandName}
+                  className="size-full object-contain"
+                />
+              </span>
+            ) : (
+              <span className="grid size-7 shrink-0 place-items-center rounded-md bg-gradient-to-br from-[#126f62] to-[#0a423a] text-xs font-black text-white shadow-xs">
+                {brandName.slice(0, 1).toUpperCase()}
+              </span>
+            )}
+            <span className="text-sm font-bold tracking-tight text-[#14231f]">
+              {brandName}
+            </span>
+          </Link>
+
+          {/* Breadcrumb Separator */}
+          <span className="text-[#c1ccc8] text-sm select-none" aria-hidden="true">
+            /
+          </span>
+
+          {/* Workspace Switcher / Settings */}
+          <Link
+            className="group flex min-w-0 items-center gap-1.5 rounded-lg py-1 text-sm font-semibold text-[#52645f] transition hover:text-[#14231f]"
+            href="/dashboard/settings"
+            title="Workspace settings"
+          >
+            <span className="truncate max-w-[140px] sm:max-w-[240px] font-medium text-[#3b4844] group-hover:text-[#14231f]">
+              {workspaceName}
+            </span>
+            <svg
+              className="size-4 shrink-0 fill-none stroke-current stroke-2 text-[#8b8e9f] transition group-hover:text-[#0e6f62]"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path d="m7 10 5 5 5-5" />
+            </svg>
+          </Link>
+        </div>
         <Link
           className="group inline-flex shrink-0 items-center gap-2 rounded-lg border border-[#dfe7e4] bg-[#f7f9f8] px-3 py-1.5 text-sm font-bold text-[#123d35] transition hover:border-[#9fcfc3] hover:bg-[#edf7f4]"
           href="/dashboard/billing"

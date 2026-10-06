@@ -1,4 +1,5 @@
 import { API_URL } from "@/lib/apiBase";
+import type { BrandConfig } from "@/lib/brand";
 
 export type AuthSession = {
   id: string;
@@ -18,6 +19,7 @@ export type AuthSession = {
     whiteLabelBrandId?: string;
     whiteLabelOwnerAccountId?: string;
     lifecycleStatus?: "active" | "suspended" | "archived";
+    brand?: BrandConfig;
   };
   whiteLabel?: {
     accountId: string;
@@ -25,6 +27,7 @@ export type AuthSession = {
     hostname: string;
     allowGoogleSignIn: boolean;
     requireEmailVerification: boolean;
+    brand?: BrandConfig;
   };
 };
 
@@ -47,8 +50,10 @@ type AuthResponse = {
     whiteLabelBrandId?: string;
     whiteLabelOwnerAccountId?: string;
     lifecycleStatus?: "active" | "suspended" | "archived";
+    brand?: BrandConfig;
   };
   whiteLabel?: AuthSession["whiteLabel"];
+  brand?: BrandConfig;
   token?: string;
 };
 
@@ -79,6 +84,7 @@ function notifySessionChange() {
 }
 
 function createSession(authResponse: AuthResponse): AuthSession {
+  const brand = authResponse.brand ?? authResponse.organization?.brand;
   return {
     id: authResponse.user.id,
     email: authResponse.user.email,
@@ -88,8 +94,18 @@ function createSession(authResponse: AuthResponse): AuthSession {
     twoFactorEnabled: authResponse.user.twoFactorEnabled,
     platformRole: authResponse.user.platformRole ?? "user",
     token: authResponse.token,
-    organization: authResponse.organization,
-    whiteLabel: authResponse.whiteLabel,
+    organization: authResponse.organization
+      ? {
+          ...authResponse.organization,
+          ...(brand ? { brand } : {}),
+        }
+      : undefined,
+    whiteLabel: authResponse.whiteLabel
+      ? {
+          ...authResponse.whiteLabel,
+          ...(brand ? { brand } : {}),
+        }
+      : undefined,
   };
 }
 
@@ -260,12 +276,16 @@ async function validateSessionWithServer(session: AuthSession) {
     };
     organization?: AuthSession["organization"];
     whiteLabel?: AuthSession["whiteLabel"];
+    brand?: BrandConfig;
   };
 
   if (!data.user) {
     clearSession();
     return null;
   }
+
+  const incomingBrand = data.brand ?? data.organization?.brand;
+  const currentBrand = session.organization?.brand;
 
   if (
     session.id === data.user.id &&
@@ -285,10 +305,13 @@ async function validateSessionWithServer(session: AuthSession) {
     && session.whiteLabel?.accountId === data.whiteLabel?.accountId
     && session.whiteLabel?.brandId === data.whiteLabel?.brandId
     && session.whiteLabel?.hostname === data.whiteLabel?.hostname
+    && currentBrand?.logoUrl === incomingBrand?.logoUrl
+    && currentBrand?.productName === incomingBrand?.productName
   ) {
     return session;
   }
 
+  const brand = incomingBrand ?? currentBrand;
   const updatedSession = {
     ...session,
     id: data.user.id,
@@ -297,8 +320,18 @@ async function validateSessionWithServer(session: AuthSession) {
     emailVerified: data.user.emailVerified,
     twoFactorEnabled: data.user.twoFactorEnabled,
     platformRole: data.user.platformRole ?? "user",
-    organization: data.organization,
-    whiteLabel: data.whiteLabel,
+    organization: data.organization
+      ? {
+          ...data.organization,
+          ...(brand ? { brand } : {}),
+        }
+      : session.organization,
+    whiteLabel: data.whiteLabel
+      ? {
+          ...data.whiteLabel,
+          ...(brand ? { brand } : {}),
+        }
+      : session.whiteLabel,
   };
 
   saveSession(updatedSession);

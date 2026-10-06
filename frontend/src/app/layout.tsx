@@ -58,8 +58,13 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(`https://${brand.hostname}`),
     title: { default: `${brand.productName} | AI Voice Platform`, template: `%s | ${brand.productName}` },
     description: "Build multilingual AI phone agents for inbound and outbound calls, lead qualification, appointment booking, customer support, and workflow automation.",
-    applicationName: brand.productName,
-    icons: brand.iconUrl ? { icon: [{ url: brand.iconUrl }], apple: [{ url: brand.iconUrl }] } : undefined,
+    icons: (brand.iconUrl || brand.logoDarkUrl || brand.logoUrl)
+      ? {
+          icon: [{ url: brand.iconUrl || brand.logoDarkUrl || brand.logoUrl }],
+          apple: [{ url: brand.iconUrl || brand.logoDarkUrl || brand.logoUrl }],
+          shortcut: [{ url: brand.iconUrl || brand.logoDarkUrl || brand.logoUrl }],
+        }
+      : undefined,
     keywords: ["AI voice agent", "AI phone agent", "voice AI platform", "automated phone calls", "AI receptionist", "call automation"],
     authors: [{ name: brand.companyName, url: brand.support.websiteUrl || undefined }],
     creator: brand.companyName,
@@ -129,7 +134,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <body className="flex min-h-full flex-col bg-background text-foreground">
           <MetaPixel />
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: platformStructuredData() }} />
-          {children}
+          <BrandProvider brand={brand}>{children}</BrandProvider>
         </body>
       </html>
     );
@@ -141,10 +146,21 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     "--brand-accent": brand.colors.accent,
     "--brand-surface": brand.colors.surface,
   } as CSSProperties;
+  const iconTarget = brand.iconUrl || brand.logoDarkUrl || brand.logoUrl;
+  const isVozonIcon = iconTarget.includes("logo_2.svg") || iconTarget.includes("vozon-mark");
+  const effectiveIconTarget = isVozonIcon ? "" : iconTarget;
+
   return (
     <html lang="en" data-brand-source="white_label" data-scroll-behavior="smooth" className={fontClasses}>
       <head>
         <meta name="facebook-domain-verification" content="hs7xv0aby3bor2uybe6y440jg6wnkk" />
+        {effectiveIconTarget ? (
+          <>
+            <link rel="icon" href={effectiveIconTarget} />
+            <link rel="shortcut icon" href={effectiveIconTarget} />
+            <link rel="apple-touch-icon" href={effectiveIconTarget} />
+          </>
+        ) : null}
       </head>
       <body className="flex min-h-full flex-col bg-background text-foreground" style={brandStyle}>
         <MetaPixel />

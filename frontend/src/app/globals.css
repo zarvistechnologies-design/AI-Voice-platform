@@ -1749,7 +1749,15 @@ html:not([data-brand-source="white_label"]) :is(.dashboard-home-theme, .agents-h
   }
 
   .dashboard-home-theme.dashboard-home-theme :is(button, a[href]):is([class~="bg-[#118778]"],
-    [class~="bg-[#0e6f62]"]) {
+    [class~="bg-[#0e6f62]"],
+    [class~="bg-[#126f62]"],
+    [class~="bg-[#0d5c52]"],
+    [class~="text-white"],
+    [class~="!text-white"]) {
+    color: #ffffff !important;
+  }
+
+  .dashboard-home-theme.dashboard-home-theme :is(.text-white, [class~="text-white"], [class~="!text-white"]) {
     color: #ffffff !important;
   }
 

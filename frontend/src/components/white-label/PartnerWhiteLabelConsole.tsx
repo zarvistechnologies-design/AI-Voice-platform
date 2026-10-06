@@ -16,6 +16,7 @@ import {
   type WhiteLabelBrand,
   type WhiteLabelCustomer,
   type WhiteLabelModelAccess,
+  type WhiteLabelPaymentGateway,
   type WhiteLabelPlan,
 } from "@/lib/whiteLabel";
 
@@ -24,7 +25,7 @@ type Notice = { tone: "success" | "error" | "info"; message: string } | null;
 
 const fieldClass = "min-h-11 w-full rounded-lg border border-[#d8e2df] bg-white px-3 text-sm text-[#20342e] shadow-sm outline-none transition placeholder:text-[#9aa7a3] focus:border-[#168a78] focus:ring-4 focus:ring-[#168a78]/10 disabled:bg-[#f1f4f3] disabled:text-[#8b9894]";
 const labelClass = "grid gap-2 text-xs font-semibold text-[#52645f]";
-const buttonClass = "inline-flex min-h-10 items-center justify-center rounded-lg bg-[#126f62] px-4 text-sm font-bold text-white shadow-sm transition hover:bg-[#0d5c52] disabled:cursor-not-allowed disabled:opacity-45";
+const buttonClass = "inline-flex min-h-10 items-center justify-center rounded-lg bg-[#126f62] px-4 text-sm font-bold !text-white shadow-sm transition hover:bg-[#0d5c52] disabled:cursor-not-allowed disabled:opacity-45";
 const secondaryButtonClass = "inline-flex min-h-10 items-center justify-center rounded-lg border border-[#d8e2df] bg-white px-4 text-sm font-semibold text-[#40564f] shadow-sm transition hover:border-[#b8cbc5] hover:bg-[#f7faf9] disabled:cursor-not-allowed disabled:opacity-45";
 
 function initials(name: string) {
@@ -109,6 +110,31 @@ function BrandEditor({ brand, busy, onSaved }: { brand: WhiteLabelBrand; busy: b
       legal: { ...brand.legal, termsUrl: form.termsUrl, privacyUrl: form.privacyUrl, legalBusinessName: form.legalBusinessName },
       email: { ...brand.email, fromName: form.emailFromName, fromAddress: form.emailFromAddress, replyTo: form.replyTo },
     });
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("brand-updated", {
+        detail: {
+          source: "white_label",
+          hostname: window.location.hostname,
+          productName: form.productName,
+          companyName: form.companyName,
+          logoUrl: form.logoUrl,
+          logoDarkUrl: form.logoDarkUrl || form.logoUrl,
+          iconUrl: form.iconUrl,
+          urls: { app: window.location.origin, api: "", links: "" },
+          colors: {
+            primary: form.primaryColor,
+            secondary: form.secondaryColor,
+            accent: form.accentColor,
+            surface: form.surfaceColor,
+          },
+          defaultTheme: brand.branding.defaultTheme,
+          support: { ...brand.support, email: form.supportEmail, websiteUrl: form.websiteUrl, helpCenterUrl: form.helpCenterUrl },
+          legal: { ...brand.legal, termsUrl: form.termsUrl, privacyUrl: form.privacyUrl, legalBusinessName: form.legalBusinessName },
+          poweredBy: { visible: false, text: "" },
+          authentication: { registrationMode: "invite_only", googleSignIn: false },
+        },
+      }));
+    }
     await onSaved("Brand settings saved.");
   }
 
@@ -128,7 +154,35 @@ function BrandEditor({ brand, busy, onSaved }: { brand: WhiteLabelBrand; busy: b
     setUploadError("");
     try {
       const result = await partnerWhiteLabelApi.uploadBrandAsset(documentId(brand), role, file);
+      const updatedLogoUrl = role === "logo" ? result.assetUrl : form.logoUrl;
+      const updatedLogoDarkUrl = role === "logoDark" ? result.assetUrl : form.logoDarkUrl;
+      const updatedIconUrl = role === "icon" ? result.assetUrl : form.iconUrl;
       set(role === "logo" ? "logoUrl" : role === "logoDark" ? "logoDarkUrl" : "iconUrl", result.assetUrl);
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("brand-updated", {
+          detail: {
+            source: "white_label",
+            hostname: window.location.hostname,
+            productName: form.productName,
+            companyName: form.companyName,
+            logoUrl: updatedLogoUrl,
+            logoDarkUrl: updatedLogoDarkUrl || updatedLogoUrl,
+            iconUrl: updatedIconUrl,
+            urls: { app: window.location.origin, api: "", links: "" },
+            colors: {
+              primary: form.primaryColor,
+              secondary: form.secondaryColor,
+              accent: form.accentColor,
+              surface: form.surfaceColor,
+            },
+            defaultTheme: brand.branding.defaultTheme,
+            support: { ...brand.support, email: form.supportEmail, websiteUrl: form.websiteUrl, helpCenterUrl: form.helpCenterUrl },
+            legal: { ...brand.legal, termsUrl: form.termsUrl, privacyUrl: form.privacyUrl, legalBusinessName: form.legalBusinessName },
+            poweredBy: { visible: false, text: "" },
+            authentication: { registrationMode: "invite_only", googleSignIn: false },
+          },
+        }));
+      }
       await onSaved("Brand asset uploaded to managed storage and applied.");
     } catch (error) {
       setUploadError(error instanceof Error ? error.message : "Brand asset upload failed.");
@@ -168,14 +222,27 @@ export function PartnerWhiteLabelConsole() {
   const [editingPlanId, setEditingPlanId] = useState("");
   const planModelsInitialized = useRef(false);
   const [customer, setCustomer] = useState({ organizationName: "", ownerName: "", ownerEmail: "", externalCustomerId: "", brandId: "", planId: "" });
+  const [gateway, setGateway] = useState<WhiteLabelPaymentGateway | null>(null);
+  const [gatewayForm, setGatewayForm] = useState({ keyId: "", keySecret: "", webhookSecret: "" });
+  const [showSecretInput, setShowSecretInput] = useState(false);
 
   const load = useCallback(async () => {
     try {
-      const [nextOverview, customerResult, economicsResult, billingResult] = await Promise.all([partnerWhiteLabelApi.overview(), partnerWhiteLabelApi.customers(), partnerWhiteLabelApi.economics(), partnerWhiteLabelApi.billing()]);
+      const [nextOverview, customerResult, economicsResult, billingResult, gatewayResult] = await Promise.all([
+        partnerWhiteLabelApi.overview(),
+        partnerWhiteLabelApi.customers(),
+        partnerWhiteLabelApi.economics(),
+        partnerWhiteLabelApi.billing(),
+        partnerWhiteLabelApi.paymentGateway().catch(() => null),
+      ]);
       setOverview(nextOverview);
       setCustomers(customerResult.customers);
       setEconomics(economicsResult);
       setBilling(billingResult);
+      if (gatewayResult) {
+        setGateway(gatewayResult);
+        setGatewayForm((v) => ({ ...v, keyId: gatewayResult.customKeyId || "" }));
+      }
       if (!planModelsInitialized.current) {
         planModelsInitialized.current = true;
         setPlan((value) => ({
@@ -325,6 +392,31 @@ export function PartnerWhiteLabelConsole() {
     }
   }
 
+  async function saveGateway(event: FormEvent) {
+    event.preventDefault();
+    await perform(async () => {
+      const updated = await partnerWhiteLabelApi.updatePaymentGateway({
+        keyId: gatewayForm.keyId,
+        keySecret: gatewayForm.keySecret || undefined,
+        webhookSecret: gatewayForm.webhookSecret || undefined,
+        validateCredentials: true,
+      });
+      setGateway(updated);
+      setGatewayForm((v) => ({ ...v, keySecret: "", webhookSecret: "" }));
+      setShowSecretInput(false);
+    }, "Razorpay credentials validated and saved! Retail customers will now pay directly to your Razorpay account.");
+  }
+
+  async function removeGateway() {
+    if (!window.confirm("Are you sure you want to revert to the platform default gateway?")) return;
+    await perform(async () => {
+      const updated = await partnerWhiteLabelApi.deletePaymentGateway();
+      setGateway(updated);
+      setGatewayForm({ keyId: "", keySecret: "", webhookSecret: "" });
+      setShowSecretInput(false);
+    }, "Payment gateway reverted to platform default.");
+  }
+
   if (!session || loading) return <main className="grid min-h-screen place-items-center bg-[#f3f6f5] text-sm font-semibold text-[#71817d]">Loading white-label operations…</main>;
   if (!overview) return <main className="grid min-h-screen place-items-center bg-[#f3f6f5] p-6 text-[#1d342e]"><Card className="max-w-lg p-7 text-center"><h1 className="text-xl font-bold">White-label access is not enabled</h1><p className="mt-3 text-sm leading-6 text-[#71817d]">A platform super administrator must approve a contract for this organization first.</p><button className={`${secondaryButtonClass} mt-5`} onClick={() => router.push("/dashboard/agents")}>Return to dashboard</button></Card></main>;
 
@@ -336,7 +428,7 @@ export function PartnerWhiteLabelConsole() {
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between"><div><span className="text-xs font-bold uppercase tracking-[0.18em] text-[#118778]">Partner workspace</span><h1 className="mt-2 text-3xl font-bold tracking-tight text-[#14231f] sm:text-4xl">{overview.account.name}</h1><p className="mt-2 max-w-3xl text-sm leading-6 text-[#647771]">Manage your brand, domains, pricing, customers and platform contract from one secure workspace.</p></div><div className="flex gap-2"><Status value={overview.account.status} /><Status value={overview.account.billingStatus} /></div></div>
       </header>
       {notice ? <div className={`rounded-lg border px-4 py-3 text-sm font-semibold ${notice.tone === "error" ? "border-rose-200 bg-rose-50 text-rose-700" : notice.tone === "success" ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-sky-200 bg-sky-50 text-sky-700"}`}>{notice.message}</div> : null}
-      <nav className="flex gap-1 overflow-x-auto rounded-xl border border-[#dde6e3] bg-white p-1.5 shadow-[0_6px_18px_rgba(28,55,47,0.04)]" aria-label="White-label administration">{tabs.map((item) => <button className={`shrink-0 rounded-lg px-4 py-2.5 text-xs font-semibold transition ${tab === item.id ? "bg-[#126f62] text-white shadow-sm" : "text-[#647771] hover:bg-[#f1f6f4] hover:text-[#29423b]"}`} key={item.id} onClick={() => setTab(item.id)}>{item.label}</button>)}</nav>
+      <nav className="flex gap-1 overflow-x-auto rounded-xl border border-[#dde6e3] bg-white p-1.5 shadow-[0_6px_18px_rgba(28,55,47,0.04)]" aria-label="White-label administration">{tabs.map((item) => <button className={`shrink-0 rounded-lg px-4 py-2.5 text-xs font-semibold transition ${tab === item.id ? "bg-[#126f62] !text-white shadow-sm" : "text-[#647771] hover:bg-[#f1f6f4] hover:text-[#29423b]"}`} style={tab === item.id ? { color: "#ffffff" } : undefined} key={item.id} onClick={() => setTab(item.id)}>{item.label}</button>)}</nav>
 
       {tab === "launch" ? <div className="grid gap-5 xl:grid-cols-[1fr_0.7fr]">
         <Card><SectionTitle title="Production launch gates" description="Complete these four steps before onboarding customers." /><div className="grid gap-3 p-5">{readiness.map((item) => <button className="flex items-center justify-between rounded-lg border border-[#e1e8e6] bg-[#fafcfb] p-4 text-left transition hover:border-[#c8d8d3] hover:bg-[#f3f8f6]" key={item.label} onClick={() => setTab(item.tab)}><span><strong className="block text-sm font-semibold text-[#29423b]">{item.label}</strong><span className="mt-1 block text-xs text-[#7b8b86]">{item.ready ? "Gate passed" : "Action required"}</span></span><span className={`grid size-8 place-items-center rounded-full text-sm font-bold ${item.ready ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>{item.ready ? "✓" : "!"}</span></button>)}</div></Card>
@@ -358,26 +450,104 @@ export function PartnerWhiteLabelConsole() {
         <Card><SectionTitle title="Customer organizations" description={`${customers.length} isolated customer tenants`} /><div className="overflow-x-auto"><table className="w-full min-w-[1000px] text-left text-xs"><thead className="bg-[#f7f9f8] text-[#71817d]"><tr><th className="px-5 py-3">Customer</th><th className="px-5 py-3">Owner</th><th className="px-5 py-3">Brand</th><th className="px-5 py-3">Plan snapshot</th><th className="px-5 py-3">Tenant</th><th className="px-5 py-3">Subscription</th><th className="px-5 py-3">Actions</th></tr></thead><tbody>{customers.map((item) => <tr className="border-t border-[#e7edeb] transition hover:bg-[#fafcfb]" key={documentId(item)}><td className="px-5 py-4"><strong className="block text-sm text-[#29423b]">{item.name}</strong><span className="mt-1 block text-[#8a9894]">{item.externalCustomerId || item.slug}</span></td><td className="px-5 py-4"><span className="block text-[#40564f]">{item.ownerUserId?.name}</span><span className="mt-1 block text-[#8a9894]">{item.ownerUserId?.email}</span></td><td className="px-5 py-4 text-[#536963]">{item.whiteLabelBrandId?.branding?.productName ?? item.whiteLabelBrandId?.key}</td><td className="px-5 py-4 text-[#536963]">{item.subscription ? <><span className="block">{item.subscription.planKey} v{item.subscription.planVersion}</span><span className="mt-1 block text-[#8a9894]">Ends {date(item.subscription.currentPeriodEnd)}</span></> : "Missing"}</td><td className="px-5 py-4"><Status value={item.lifecycleStatus} /></td><td className="px-5 py-4"><Status value={item.subscription?.status ?? "missing"} /></td><td className="px-5 py-4"><div className="flex gap-2"><button className={secondaryButtonClass} disabled={busy || item.lifecycleStatus === "archived"} onClick={() => { const next = item.lifecycleStatus === "active" ? "suspended" : "active"; const reason = window.prompt(`Reason for marking this customer ${next}:`); if (reason) void perform(() => partnerWhiteLabelApi.updateCustomerStatus(documentId(item), next, reason), `Customer marked ${next}.`); }}>{item.lifecycleStatus === "active" ? "Suspend" : "Reactivate"}</button>{item.subscription && item.subscription.status !== "active" && item.subscription.status !== "trialing" ? <button className={buttonClass} disabled={busy} onClick={() => { const reason = window.prompt("Renewal/payment reference and reason:"); if (reason) void perform(() => partnerWhiteLabelApi.updateCustomerSubscription(documentId(item), "active", reason), "Subscription renewed for the next snapshotted billing period."); }}>Renew</button> : null}</div></td></tr>)}</tbody></table></div></Card>
       </div> : null}
 
-      {tab === "billing" && billing ? <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
+      {tab === "billing" && billing ? <div className="grid gap-5">
         <Card>
-          <SectionTitle title="Partner platform invoice" description="Pay your platform contract securely. The backend and webhook verify the Razorpay signature and exact amount." action={<Status value={billing.currentInvoice.status} />} />
+          <SectionTitle
+            title="Retail customer payment gateway (Razorpay)"
+            description="Collect customer subscription and wallet payments directly into your own Razorpay account."
+            action={gateway?.gatewayMode === "custom" ? <span className="inline-flex rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-emerald-700 ring-1 ring-emerald-200">Custom Razorpay connected</span> : <span className="inline-flex rounded-full bg-amber-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-amber-700 ring-1 ring-amber-200">Platform shared gateway</span>}
+          />
           <div className="grid gap-5 p-5">
-            <div><span className="text-xs font-bold uppercase tracking-[0.14em] text-[#7b8b86]">Amount due</span><strong className="mt-2 block text-4xl font-bold text-[#1d342e]">{money(billing.currentInvoice.totalMinor, billing.currentInvoice.currency)}</strong><span className="mt-2 block text-xs text-[#71817d]">{billing.currentInvoice.invoiceNumber} · due {date(billing.currentInvoice.dueAt)}</span></div>
-            <dl className="grid gap-3 text-sm">
-              <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Platform fee</dt><dd className="font-semibold text-[#29423b]">{money(billing.currentInvoice.platformFeeMinor, billing.currentInvoice.currency)}</dd></div>
-              <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Wholesale usage</dt><dd className="font-semibold text-[#29423b]">{money(billing.currentInvoice.usageWholesaleMinor, billing.currentInvoice.currency)}</dd></div>
-              <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Included-credit discount</dt><dd className="font-semibold text-emerald-700">−{money(billing.currentInvoice.includedCreditDiscountMinor, billing.currentInvoice.currency)}</dd></div>
-              <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Wholesale markup</dt><dd className="font-semibold text-[#29423b]">{money(billing.currentInvoice.usageMarkupMinor, billing.currentInvoice.currency)}</dd></div>
-              <div className="flex justify-between gap-4 border-t border-[#e7edeb] pt-3"><dt className="text-[#71817d]">Minimum/usage commitment</dt><dd className="font-semibold text-[#29423b]">{money(billing.currentInvoice.committedUsageMinor, billing.currentInvoice.currency)}</dd></div>
-            </dl>
-            {billing.currentInvoice.status === "paid" ? <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">Paid and verified {billing.currentInvoice.paidAt ? date(billing.currentInvoice.paidAt) : ""}</div> : <button className={buttonClass} disabled={busy || !billing.paymentReadiness.ready} onClick={() => void payPartnerInvoice()}>{busy ? "Opening secure payment…" : `Pay ${money(billing.currentInvoice.totalMinor, billing.currentInvoice.currency)}`}</button>}
-            {!billing.paymentReadiness.ready ? <p className="text-xs text-rose-700">{billing.paymentReadiness.reason}</p> : null}
+            <div className="rounded-xl border border-[#d8e2df] bg-[#f8faf9] p-4 text-xs leading-5 text-[#52645f]">
+              <strong className="block text-sm text-[#1d342e]">Direct-to-bank settlement (Bring Your Own Razorpay)</strong>
+              <p className="mt-1 text-[#647771]">
+                When your customers sign up or top up their wallets on your custom branded domain, payments are processed directly through your Razorpay account. Your clients pay you 100% directly, and funds land straight in your bank account with zero platform intermediary fees.
+              </p>
+            </div>
+            <form className="grid max-w-2xl gap-4" onSubmit={saveGateway}>
+              <Input
+                label="Razorpay Key ID"
+                placeholder="rzp_live_... or rzp_test_..."
+                required
+                value={gatewayForm.keyId}
+                onChange={(event) => setGatewayForm((v) => ({ ...v, keyId: event.target.value }))}
+              />
+              <label className={labelClass}>
+                <span>Razorpay Key Secret</span>
+                {gateway?.hasCustomKeySecret && !showSecretInput ? (
+                  <div className="flex items-center gap-2">
+                    <input
+                      className={fieldClass}
+                      disabled
+                      type="password"
+                      value="••••••••••••••••••••••••"
+                    />
+                    <button
+                      className={secondaryButtonClass}
+                      onClick={() => setShowSecretInput(true)}
+                      type="button"
+                    >
+                      Change Secret
+                    </button>
+                  </div>
+                ) : (
+                  <input
+                    className={fieldClass}
+                    placeholder="Enter your Razorpay Key Secret"
+                    required={!gateway?.hasCustomKeySecret}
+                    type="password"
+                    value={gatewayForm.keySecret}
+                    onChange={(event) => setGatewayForm((v) => ({ ...v, keySecret: event.target.value }))}
+                  />
+                )}
+              </label>
+              <Input
+                label="Webhook Secret (Optional)"
+                placeholder="Optional Razorpay webhook secret for payment event verification"
+                type="password"
+                value={gatewayForm.webhookSecret}
+                onChange={(event) => setGatewayForm((v) => ({ ...v, webhookSecret: event.target.value }))}
+              />
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <button className={buttonClass} disabled={busy} type="submit">
+                  {gateway?.gatewayMode === "custom" ? "Update Razorpay Keys" : "Connect Custom Razorpay"}
+                </button>
+                {gateway?.gatewayMode === "custom" ? (
+                  <button
+                    className="inline-flex min-h-10 items-center justify-center rounded-lg border border-rose-200 bg-white px-4 text-sm font-semibold text-rose-700 shadow-sm transition hover:bg-rose-50 disabled:opacity-45"
+                    disabled={busy}
+                    onClick={() => void removeGateway()}
+                    type="button"
+                  >
+                    Disconnect & Revert to Platform
+                  </button>
+                ) : null}
+              </div>
+            </form>
           </div>
         </Card>
-        <Card>
-          <SectionTitle title="Invoice history" description="Partner invoices are stored separately from normal platform-customer billing." />
-          <div className="overflow-x-auto"><table className="w-full min-w-[680px] text-left text-xs"><thead className="bg-[#f7f9f8] text-[#71817d]"><tr><th className="px-5 py-3">Invoice</th><th className="px-5 py-3">Period</th><th className="px-5 py-3">Amount</th><th className="px-5 py-3">Status</th><th className="px-5 py-3">Payment</th></tr></thead><tbody>{billing.invoices.map((invoice) => <tr className="border-t border-[#e7edeb] transition hover:bg-[#fafcfb]" key={documentId(invoice)}><td className="px-5 py-4 font-semibold text-[#29423b]">{invoice.invoiceNumber}</td><td className="px-5 py-4 text-[#647771]">{date(invoice.periodStart)} – {date(invoice.periodEnd)}</td><td className="px-5 py-4 font-semibold text-[#29423b]">{money(invoice.totalMinor, invoice.currency)}</td><td className="px-5 py-4"><Status value={invoice.status} /></td><td className="px-5 py-4 text-[#71817d]">{invoice.razorpayPaymentId || (invoice.provider === "internal" ? "No payment required" : "Awaiting payment")}</td></tr>)}</tbody></table></div>
-        </Card>
+
+        <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
+          <Card>
+            <SectionTitle title="Partner platform invoice" description="Pay your platform contract securely. The backend and webhook verify the Razorpay signature and exact amount." action={<Status value={billing.currentInvoice.status} />} />
+            <div className="grid gap-5 p-5">
+              <div><span className="text-xs font-bold uppercase tracking-[0.14em] text-[#7b8b86]">Amount due</span><strong className="mt-2 block text-4xl font-bold text-[#1d342e]">{money(billing.currentInvoice.totalMinor, billing.currentInvoice.currency)}</strong><span className="mt-2 block text-xs text-[#71817d]">{billing.currentInvoice.invoiceNumber} · due {date(billing.currentInvoice.dueAt)}</span></div>
+              <dl className="grid gap-3 text-sm">
+                <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Platform fee</dt><dd className="font-semibold text-[#29423b]">{money(billing.currentInvoice.platformFeeMinor, billing.currentInvoice.currency)}</dd></div>
+                <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Wholesale usage</dt><dd className="font-semibold text-[#29423b]">{money(billing.currentInvoice.usageWholesaleMinor, billing.currentInvoice.currency)}</dd></div>
+                <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Included-credit discount</dt><dd className="font-semibold text-emerald-700">−{money(billing.currentInvoice.includedCreditDiscountMinor, billing.currentInvoice.currency)}</dd></div>
+                <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Wholesale markup</dt><dd className="font-semibold text-[#29423b]">{money(billing.currentInvoice.usageMarkupMinor, billing.currentInvoice.currency)}</dd></div>
+                <div className="flex justify-between gap-4 border-t border-[#e7edeb] pt-3"><dt className="text-[#71817d]">Minimum/usage commitment</dt><dd className="font-semibold text-[#29423b]">{money(billing.currentInvoice.committedUsageMinor, billing.currentInvoice.currency)}</dd></div>
+              </dl>
+              {billing.currentInvoice.status === "paid" ? <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">Paid and verified {billing.currentInvoice.paidAt ? date(billing.currentInvoice.paidAt) : ""}</div> : <button className={buttonClass} disabled={busy || !billing.paymentReadiness.ready} onClick={() => void payPartnerInvoice()}>{busy ? "Opening secure payment…" : `Pay ${money(billing.currentInvoice.totalMinor, billing.currentInvoice.currency)}`}</button>}
+              {!billing.paymentReadiness.ready ? <p className="text-xs text-rose-700">{billing.paymentReadiness.reason}</p> : null}
+            </div>
+          </Card>
+          <Card>
+            <SectionTitle title="Invoice history" description="Partner invoices are stored separately from normal platform-customer billing." />
+            <div className="overflow-x-auto"><table className="w-full min-w-[680px] text-left text-xs"><thead className="bg-[#f7f9f8] text-[#71817d]"><tr><th className="px-5 py-3">Invoice</th><th className="px-5 py-3">Period</th><th className="px-5 py-3">Amount</th><th className="px-5 py-3">Status</th><th className="px-5 py-3">Payment</th></tr></thead><tbody>{billing.invoices.map((invoice) => <tr className="border-t border-[#e7edeb] transition hover:bg-[#fafcfb]" key={documentId(invoice)}><td className="px-5 py-4 font-semibold text-[#29423b]">{invoice.invoiceNumber}</td><td className="px-5 py-4 text-[#647771]">{date(invoice.periodStart)} – {date(invoice.periodEnd)}</td><td className="px-5 py-4 font-semibold text-[#29423b]">{money(invoice.totalMinor, invoice.currency)}</td><td className="px-5 py-4"><Status value={invoice.status} /></td><td className="px-5 py-4 text-[#71817d]">{invoice.razorpayPaymentId || (invoice.provider === "internal" ? "No payment required" : "Awaiting payment")}</td></tr>)}</tbody></table></div>
+          </Card>
+        </div>
       </div> : null}
 
       {tab === "contract" ? <div className="grid gap-5 lg:grid-cols-2"><Card><SectionTitle title="Platform commercial terms" description="Only a platform super administrator can change these audited wholesale terms." /><dl className="grid grid-cols-2 gap-4 p-5 text-sm">{[["Platform fee", money(overview.account.contract.platformFeeMinor, overview.account.contract.currency)], ["Minimum commitment", money(overview.account.contract.minimumCommitmentMinor, overview.account.contract.currency)], ["Included credits", overview.account.contract.includedCredits], ["Wholesale markup", `${overview.account.contract.wholesaleMarkupBps / 100}%`], ["Payment terms", `${overview.account.contract.paymentTermsDays} days`], ["Credit limit", overview.account.contract.creditLimitCredits]].map(([key, value]) => <div className="rounded-lg border border-[#e1e8e6] bg-[#fafcfb] p-4" key={String(key)}><dt className="text-xs text-[#7b8b86]">{key}</dt><dd className="mt-1 font-bold text-[#29423b]">{value}</dd></div>)}</dl></Card><Card><SectionTitle title="Hard tenant ceilings" description="Customer plans cannot exceed the platform contract." /><dl className="grid grid-cols-2 gap-4 p-5 text-sm">{Object.entries(overview.account.limits).map(([key, value]) => <div className="rounded-lg border border-[#e1e8e6] bg-[#fafcfb] p-4" key={key}><dt className="text-xs capitalize text-[#7b8b86]">{key.replace(/([A-Z])/g, " $1")}</dt><dd className="mt-1 font-bold text-[#29423b]">{Number(value).toLocaleString()}</dd></div>)}</dl></Card></div> : null}

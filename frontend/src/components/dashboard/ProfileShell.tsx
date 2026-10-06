@@ -15,6 +15,7 @@ import {
   getDashboardSidebarInitialState,
 } from "@/components/dashboard/DashboardSidebar";
 import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
+import { useBrand } from "@/components/branding/BrandProvider";
 import {
   accountApi,
   getServerSession,
@@ -247,6 +248,7 @@ function SectionHeading({
 }
 
 export function ProfileShell() {
+  const brand = useBrand();
   const router = useRouter();
   const session = useSyncExternalStore(
     subscribeToSession,
@@ -363,8 +365,7 @@ export function ProfileShell() {
       setTotpUri(result.otpauthUrl);
       setNotice({
         tone: "info",
-        message:
-          "Add Vozon to your authenticator, then enter the current six-digit code.",
+        message: `Add ${brand.productName} to your authenticator, then enter the current six-digit code.`,
       });
     } catch (error) {
       setNotice({

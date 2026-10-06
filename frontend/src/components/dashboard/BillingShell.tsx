@@ -167,7 +167,8 @@ export function BillingShell() {
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement("a");
       anchor.href = url;
-      anchor.download = `${invoiceNumber || `Vozon-invoice-${invoiceId}`}.html`;
+      const baseInvoiceName = data?.whiteLabel?.productName ? `${data.whiteLabel.productName}-invoice-${invoiceId}` : `Vozon-invoice-${invoiceId}`;
+      anchor.download = `${invoiceNumber || baseInvoiceName}.html`;
       document.body.appendChild(anchor);
       anchor.click();
       anchor.remove();
@@ -211,9 +212,9 @@ export function BillingShell() {
 
       <section className="min-w-0 overflow-y-auto">
         <DashboardPageHeader
-          eyebrow="Pay per use"
+          eyebrow={data?.whiteLabel ? "Account & Usage" : "Pay per use"}
           title="Billing"
-          description="Manage rupee credits, usage, payments, and invoices."
+          description={data?.whiteLabel ? `Subscription and usage details for ${data.whiteLabel.productName}.` : "Manage rupee credits, usage, payments, and invoices."}
           actions={
             <button className="rounded-lg border border-[#c6d4d0] bg-white px-4 py-2.5 text-sm font-semibold text-[#52645f] hover:border-[#118778] hover:text-[#0e6f62]" type="button" onClick={() => void load()} disabled={Boolean(busy)}>Refresh</button>
           }
@@ -222,66 +223,116 @@ export function BillingShell() {
         <div className="grid w-full gap-5 px-4 py-4 sm:px-5 lg:px-6">
           {notice ? <div className="rounded-lg border border-[#b8c8c3] bg-[#edf7f4] px-4 py-3 text-sm font-semibold text-[#123d35]">{notice}</div> : null}
 
-          {data?.paymentReadiness ? (
-            <section className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-[#dbe4e1] bg-white px-5 py-4">
-              <div className="flex items-center gap-3"><span className={`size-2.5 rounded-full ${data.configured ? "bg-emerald-500" : "bg-amber-500"}`} /><div><h2 className="app-section-title m-0">Payment setup</h2><p className="app-caption mt-1 mb-0">{data.configured ? "Checkout is ready" : "Checkout configuration is incomplete"}</p></div></div>
-              <dl className="flex flex-wrap gap-x-6 gap-y-2 text-xs">
-                <div><dt className="text-[#71817d]">Mode</dt><dd className="m-0 mt-0.5 font-semibold capitalize">{data.paymentReadiness.mode}</dd></div>
-                <div><dt className="text-[#71817d]">Credentials</dt><dd className="m-0 mt-0.5 font-semibold">{data.paymentReadiness.credentialsConfigured ? "Ready" : "Missing"}</dd></div>
-                <div><dt className="text-[#71817d]">Webhook</dt><dd className="m-0 mt-0.5 font-semibold">{data.paymentReadiness.webhookConfigured ? "Ready" : "Missing"}</dd></div>
-              </dl>
+          {data?.whiteLabel?.managedByPartner ? (
+            <section className="overflow-hidden rounded-xl border border-[#dbe4e1] bg-white p-6 shadow-sm">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <span className="app-label text-[#0e6f62]">Subscription & Plan</span>
+                  <h2 className="mt-2 text-2xl font-bold tracking-tight text-[#14231f]">
+                    {data.currentPlan?.name ?? (data.subscription?.plan ? data.subscription.plan.replaceAll("_", " ") : "Active Plan")}
+                  </h2>
+                  <p className="mt-1 text-sm text-[#71817d]">
+                    Your workspace is provided and managed directly by <strong className="text-[#14231f]">{data.whiteLabel.productName}</strong>.
+                  </p>
+                </div>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-emerald-700 ring-1 ring-emerald-200">
+                  <span className="size-1.5 rounded-full bg-emerald-600" />
+                  {data.subscription?.status?.replaceAll("_", " ") ?? "Active"}
+                </span>
+              </div>
+
+              <div className="mt-6 grid gap-4 border-t border-[#dbe4e1] pt-6 sm:grid-cols-3">
+                <div className="rounded-lg border border-[#e1e8e6] bg-[#f8fbfa] p-4">
+                  <p className="text-xs font-medium text-[#71817d]">Calls Handled</p>
+                  <p className="mt-1 text-xl font-bold text-[#14231f]">
+                    {data.usage?.calls ?? 0}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-[#e1e8e6] bg-[#f8fbfa] p-4">
+                  <p className="text-xs font-medium text-[#71817d]">Minutes Used</p>
+                  <p className="mt-1 text-xl font-bold text-[#14231f]">
+                    {Math.round(data.usage?.minutes ?? 0)} min
+                  </p>
+                </div>
+                <div className="rounded-lg border border-[#e1e8e6] bg-[#f8fbfa] p-4">
+                  <p className="text-xs font-medium text-[#71817d]">Support & Upgrades</p>
+                  {data.whiteLabel.supportEmail ? (
+                    <a
+                      href={`mailto:${data.whiteLabel.supportEmail}`}
+                      className="mt-1 block truncate text-sm font-semibold text-[#118778] hover:underline"
+                    >
+                      {data.whiteLabel.supportEmail}
+                    </a>
+                  ) : (
+                    <p className="mt-1 text-sm font-semibold text-[#14231f]">Contact Provider</p>
+                  )}
+                </div>
+              </div>
             </section>
-          ) : null}
+          ) : (
+            <>
+              {data?.paymentReadiness ? (
+                <section className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-[#dbe4e1] bg-white px-5 py-4">
+                  <div className="flex items-center gap-3"><span className={`size-2.5 rounded-full ${data.configured ? "bg-emerald-500" : "bg-amber-500"}`} /><div><h2 className="app-section-title m-0">Payment setup</h2><p className="app-caption mt-1 mb-0">{data.configured ? "Checkout is ready" : "Checkout configuration is incomplete"}</p></div></div>
+                  <dl className="flex flex-wrap gap-x-6 gap-y-2 text-xs">
+                    <div><dt className="text-[#71817d]">Mode</dt><dd className="m-0 mt-0.5 font-semibold capitalize">{data.paymentReadiness.mode}</dd></div>
+                    <div><dt className="text-[#71817d]">Credentials</dt><dd className="m-0 mt-0.5 font-semibold">{data.paymentReadiness.credentialsConfigured ? "Ready" : "Missing"}</dd></div>
+                    <div><dt className="text-[#71817d]">Webhook</dt><dd className="m-0 mt-0.5 font-semibold">{data.paymentReadiness.webhookConfigured ? "Ready" : "Missing"}</dd></div>
+                  </dl>
+                </section>
+              ) : null}
 
-          <section className="overflow-hidden rounded-xl border border-[#dbe4e1] bg-white">
-            <div className="grid gap-6 p-5 md:grid-cols-[minmax(0,1fr)_320px] md:p-6">
-              <div><span className="app-label text-[#0e6f62]">Available balance</span><h2 className="mt-2 mb-0 text-4xl font-semibold tracking-tight text-slate-950">{money(toInr(balance))}</h2><p className="app-caption mt-2 mb-0">{money(toInr(lifetime))} lifetime credits purchased</p><p className="app-caption mt-1 mb-0">All balances and usage are shown in Indian rupees.</p></div>
-              <div className="grid gap-3 border-t border-[#dbe4e1] pt-5 md:border-t-0 md:border-l md:pt-0 md:pl-6">
-                <span className="app-label">Add credits</span>
-                <div className="grid grid-cols-3 gap-2">
-                  {topUpOptions.map((amount) => <button className={`min-h-10 rounded-lg border text-sm font-semibold ${selectedTopUp === amount ? "border-[#118778] bg-[#edf7f4] text-[#0e6f62]" : "border-[#dbe4e1] bg-white text-[#52645f] hover:border-[#118778]/60"}`} key={amount} type="button" aria-pressed={selectedTopUp === amount} onClick={() => setSelectedTopUp(amount)}>{money(amount)}</button>)}
+              <section className="overflow-hidden rounded-xl border border-[#dbe4e1] bg-white">
+                <div className="grid gap-6 p-5 md:grid-cols-[minmax(0,1fr)_320px] md:p-6">
+                  <div><span className="app-label text-[#0e6f62]">Available balance</span><h2 className="mt-2 mb-0 text-4xl font-semibold tracking-tight text-slate-950">{money(toInr(balance))}</h2><p className="app-caption mt-2 mb-0">{money(toInr(lifetime))} lifetime credits purchased</p><p className="app-caption mt-1 mb-0">All balances and usage are shown in Indian rupees.</p></div>
+                  <div className="grid gap-3 border-t border-[#dbe4e1] pt-5 md:border-t-0 md:border-l md:pt-0 md:pl-6">
+                    <span className="app-label">Add credits</span>
+                    <div className="grid grid-cols-3 gap-2">
+                      {topUpOptions.map((amount) => <button className={`min-h-10 rounded-lg border text-sm font-semibold ${selectedTopUp === amount ? "border-[#118778] bg-[#edf7f4] text-[#0e6f62]" : "border-[#dbe4e1] bg-white text-[#52645f] hover:border-[#118778]/60"}`} key={amount} type="button" aria-pressed={selectedTopUp === amount} onClick={() => setSelectedTopUp(amount)}>{money(amount)}</button>)}
+                    </div>
+                    <button className="min-h-11 rounded-lg bg-[#118778] px-4 text-sm font-semibold text-white hover:bg-[#0e6f62] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup" || !data?.configured}>{busy === "topup" ? "Opening checkout..." : `Add ${money(selectedTopUp)} credits`}</button>
+                    <p className="app-caption m-0">18% GST is added securely at checkout.</p>
+                  </div>
                 </div>
-                <button className="min-h-11 rounded-lg bg-[#118778] px-4 text-sm font-semibold text-white hover:bg-[#0e6f62] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup" || !data?.configured}>{busy === "topup" ? "Opening checkout..." : `Add ${money(selectedTopUp)} credits`}</button>
-                <p className="app-caption m-0">18% GST is added securely at checkout.</p>
-              </div>
-            </div>
-            <dl className="grid border-t border-[#dbe4e1] sm:grid-cols-2 lg:grid-cols-4">
-              {[["This month", money(toInr(data?.usage.chargedCredits ?? 0))], ["Provider spend", money(toInr(data?.usage.providerCost ?? 0, "USD"))], ["Minimum to call", money(toInr(data?.creditSettings.minimumCallStartCredits ?? 0, data?.creditSettings.currency ?? walletCurrency))], ["Recent top-ups", `${totals.topUps} (${money(toInr(totals.net))})`]].map(([label, value], index) => <div className={`px-5 py-4 ${index ? "border-t border-[#dbe4e1] sm:border-t-0 sm:border-l" : ""}`} key={label}><dt className="app-caption">{label}</dt><dd className="m-0 mt-1 text-lg font-semibold">{value}</dd></div>)}
-            </dl>
-          </section>
+                <dl className="grid border-t border-[#dbe4e1] sm:grid-cols-2 lg:grid-cols-4">
+                  {[["This month", money(toInr(data?.usage.chargedCredits ?? 0))], ["Provider spend", money(toInr(data?.usage.providerCost ?? 0, "USD"))], ["Minimum to call", money(toInr(data?.creditSettings.minimumCallStartCredits ?? 0, data?.creditSettings.currency ?? walletCurrency))], ["Recent top-ups", `${totals.topUps} (${money(toInr(totals.net))})`]].map(([label, value], index) => <div className={`px-5 py-4 ${index ? "border-t border-[#dbe4e1] sm:border-t-0 sm:border-l" : ""}`} key={label}><dt className="app-caption">{label}</dt><dd className="m-0 mt-1 text-lg font-semibold">{value}</dd></div>)}
+                </dl>
+              </section>
 
-          <section className="overflow-hidden rounded-xl border border-[#dbe4e1] bg-white">
-            <div className="border-b border-[#dbe4e1] px-5 py-4"><h2 className="app-section-title m-0">Billing details</h2></div>
-            <div className="grid md:grid-cols-2">
-              {data?.canManageBillingProfile ? <div className="flex flex-col gap-4 border-b border-[#dbe4e1] p-5 md:col-span-2 md:flex-row md:items-center md:justify-between">
-                <div className="min-w-0"><h3 className="m-0 text-sm font-semibold">Invoice information</h3><p className="app-caption mt-1 mb-0">Billing address and GSTIN used in the billed-to section of your invoices.</p>
-                  {data.billingProfile?.address || data.billingProfile?.gstin ? <dl className="mt-3 grid gap-2 text-sm sm:grid-cols-2"><div><dt className="text-xs text-[#71817d]">Billing address</dt><dd className="m-0 mt-0.5 whitespace-pre-line font-medium">{data.billingProfile?.address || "Not added"}</dd></div><div><dt className="text-xs text-[#71817d]">GSTIN</dt><dd className="m-0 mt-0.5 font-semibold tracking-[0.06em]">{data.billingProfile?.gstin || "Not added"}</dd></div></dl> : <p className="mt-3 mb-0 text-sm font-medium text-[#71817d]">No billing details added yet.</p>}
+              <section className="overflow-hidden rounded-xl border border-[#dbe4e1] bg-white">
+                <div className="border-b border-[#dbe4e1] px-5 py-4"><h2 className="app-section-title m-0">Billing details</h2></div>
+                <div className="grid md:grid-cols-2">
+                  {data?.canManageBillingProfile ? <div className="flex flex-col gap-4 border-b border-[#dbe4e1] p-5 md:col-span-2 md:flex-row md:items-center md:justify-between">
+                    <div className="min-w-0"><h3 className="m-0 text-sm font-semibold">Invoice information</h3><p className="app-caption mt-1 mb-0">Billing address and GSTIN used in the billed-to section of your invoices.</p>
+                      {data.billingProfile?.address || data.billingProfile?.gstin ? <dl className="mt-3 grid gap-2 text-sm sm:grid-cols-2"><div><dt className="text-xs text-[#71817d]">Billing address</dt><dd className="m-0 mt-0.5 whitespace-pre-line font-medium">{data.billingProfile?.address || "Not added"}</dd></div><div><dt className="text-xs text-[#71817d]">GSTIN</dt><dd className="m-0 mt-0.5 font-semibold tracking-[0.06em]">{data.billingProfile?.gstin || "Not added"}</dd></div></dl> : <p className="mt-3 mb-0 text-sm font-medium text-[#71817d]">No billing details added yet.</p>}
+                    </div>
+                    <button className="shrink-0 rounded-lg border border-[#118778] px-4 py-2.5 text-sm font-semibold text-[#0e6f62] hover:bg-[#edf7f4]" type="button" onClick={() => setShowBillingDetails(true)}>{data.billingProfile?.address || data.billingProfile?.gstin ? "Edit billing details" : "Add billing details"}</button>
+                  </div> : null}
+                  <div className="p-5">
+                    <div className="flex items-center justify-between gap-3"><h3 className="m-0 text-sm font-semibold">Monthly Autopay</h3><span className="rounded-full bg-[#f6f6f8] px-2.5 py-1 text-xs font-semibold capitalize text-[#52645f]">{data?.subscription.status?.replace("_", " ") ?? "inactive"}</span></div>
+                    <dl className="mt-4 grid gap-3 text-sm">
+                      <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Plan</dt><dd className="m-0 font-semibold capitalize">{data?.subscription.plan ?? "free"}</dd></div>
+                      <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Monthly charge</dt><dd className="m-0 font-semibold">{money(data?.enterpriseMonthlyInr ?? toInr(data?.enterpriseMonthlyUsd ?? 500, "USD"))}</dd></div>
+                      <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Next renewal</dt><dd className="m-0 text-right font-semibold">{dateTime(data?.subscription.currentPeriodEnd)}</dd></div>
+                    </dl>
+                    <div className="mt-5 flex flex-wrap gap-2">
+                      {data?.subscription.provider !== "razorpay" || data.subscription.status === "cancelled" ? <button className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62] disabled:opacity-50" type="button" onClick={() => void upgradeEnterprise()} disabled={busy === "enterprise" || !data?.configured}>Start Autopay</button> : null}
+                      {data?.subscription.provider === "razorpay" && !data.subscription.cancelAtPeriodEnd && data.subscription.status !== "cancelled" ? <button className="rounded-lg border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-700 hover:bg-rose-50 disabled:opacity-50" type="button" onClick={() => void cancelAutopay()} disabled={busy === "cancel"}>{busy === "cancel" ? "Cancelling..." : "Cancel Autopay"}</button> : null}
+                    </div>
+                    {data?.subscription.cancelAtPeriodEnd ? <p className="mt-3 mb-0 text-sm font-semibold text-amber-700">Cancellation is scheduled for the end of this billing cycle.</p> : null}
+                  </div>
+                  <div className="border-t border-[#dbe4e1] p-5 md:border-t-0 md:border-l">
+                    <div className="flex items-center justify-between gap-3"><div><h3 className="m-0 text-sm font-semibold">Payment method</h3><p className="app-caption mt-1 mb-0">{session.email}</p></div><span className={`rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${wallet?.lastPaymentStatus === "success" ? "bg-emerald-50 text-emerald-700" : "bg-[#f6f6f8] text-[#52645f]"}`}>{wallet?.lastPaymentStatus ?? "none"}</span></div>
+                    <dl className="mt-4 grid gap-3 text-sm">
+                      <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Provider</dt><dd className="m-0 font-semibold">{wallet?.paymentProvider === "razorpay" ? "Razorpay" : "Not linked"}</dd></div>
+                      <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Last payment</dt><dd className="m-0 font-semibold">{latestPayment ? money(toInr(latestPayment.amountCredits, latestPayment.currency)) : money(toInr(wallet?.lastPaymentAmountCredits ?? 0))}</dd></div>
+                      <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Last checked</dt><dd className="m-0 text-right font-semibold">{dateTime(wallet?.lastCheckedAt)}</dd></div>
+                    </dl>
+                  </div>
                 </div>
-                <button className="shrink-0 rounded-lg border border-[#118778] px-4 py-2.5 text-sm font-semibold text-[#0e6f62] hover:bg-[#edf7f4]" type="button" onClick={() => setShowBillingDetails(true)}>{data.billingProfile?.address || data.billingProfile?.gstin ? "Edit billing details" : "Add billing details"}</button>
-              </div> : null}
-              <div className="p-5">
-                <div className="flex items-center justify-between gap-3"><h3 className="m-0 text-sm font-semibold">Monthly Autopay</h3><span className="rounded-full bg-[#f6f6f8] px-2.5 py-1 text-xs font-semibold capitalize text-[#52645f]">{data?.subscription.status?.replace("_", " ") ?? "inactive"}</span></div>
-                <dl className="mt-4 grid gap-3 text-sm">
-                  <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Plan</dt><dd className="m-0 font-semibold capitalize">{data?.subscription.plan ?? "free"}</dd></div>
-                  <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Monthly charge</dt><dd className="m-0 font-semibold">{money(data?.enterpriseMonthlyInr ?? toInr(data?.enterpriseMonthlyUsd ?? 500, "USD"))}</dd></div>
-                  <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Next renewal</dt><dd className="m-0 text-right font-semibold">{dateTime(data?.subscription.currentPeriodEnd)}</dd></div>
-                </dl>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {data?.subscription.provider !== "razorpay" || data.subscription.status === "cancelled" ? <button className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62] disabled:opacity-50" type="button" onClick={() => void upgradeEnterprise()} disabled={busy === "enterprise" || !data?.configured}>Start Autopay</button> : null}
-                  {data?.subscription.provider === "razorpay" && !data.subscription.cancelAtPeriodEnd && data.subscription.status !== "cancelled" ? <button className="rounded-lg border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-700 hover:bg-rose-50 disabled:opacity-50" type="button" onClick={() => void cancelAutopay()} disabled={busy === "cancel"}>{busy === "cancel" ? "Cancelling..." : "Cancel Autopay"}</button> : null}
-                </div>
-                {data?.subscription.cancelAtPeriodEnd ? <p className="mt-3 mb-0 text-sm font-semibold text-amber-700">Cancellation is scheduled for the end of this billing cycle.</p> : null}
-              </div>
-              <div className="border-t border-[#dbe4e1] p-5 md:border-t-0 md:border-l">
-                <div className="flex items-center justify-between gap-3"><div><h3 className="m-0 text-sm font-semibold">Payment method</h3><p className="app-caption mt-1 mb-0">{session.email}</p></div><span className={`rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${wallet?.lastPaymentStatus === "success" ? "bg-emerald-50 text-emerald-700" : "bg-[#f6f6f8] text-[#52645f]"}`}>{wallet?.lastPaymentStatus ?? "none"}</span></div>
-                <dl className="mt-4 grid gap-3 text-sm">
-                  <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Provider</dt><dd className="m-0 font-semibold">{wallet?.paymentProvider === "razorpay" ? "Razorpay" : "Not linked"}</dd></div>
-                  <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Last payment</dt><dd className="m-0 font-semibold">{latestPayment ? money(toInr(latestPayment.amountCredits, latestPayment.currency)) : money(toInr(wallet?.lastPaymentAmountCredits ?? 0))}</dd></div>
-                  <div className="flex justify-between gap-4"><dt className="text-[#71817d]">Last checked</dt><dd className="m-0 text-right font-semibold">{dateTime(wallet?.lastCheckedAt)}</dd></div>
-                </dl>
-              </div>
-            </div>
-          </section>
+              </section>
+            </>
+          )}
 
           <section className="overflow-hidden rounded-xl border border-[#dbe4e1] bg-white">
             <div className="flex items-center justify-between gap-4 border-b border-[#dbe4e1] px-5 py-4"><div><h2 className="app-section-title m-0">Invoices</h2><p className="app-caption mt-1 mb-0">Wallet top-ups and monthly charges</p></div><span className="app-caption">{data?.invoices.length ?? 0} invoices</span></div>
@@ -289,7 +340,8 @@ export function BillingShell() {
               const amount = (invoice.amountPaid ?? invoice.amountDue ?? 0) / 100;
               const isDownloading = busy === `invoice:${invoice._id}`;
               const invoiceCurrency = invoice.currency.toUpperCase();
-              return <div className="grid gap-3 px-5 py-4 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center" key={invoice._id}><div className="min-w-0"><strong className="block truncate text-sm">{invoice.invoiceNumber || "Vozon payment invoice"}</strong><span className="app-caption mt-1 block">{invoiceCurrency === "INR" && invoice.description ? invoice.description : dateTime(invoice.createdAt)}</span></div><div className="sm:text-right"><strong className="block text-sm">{money(toInr(amount, invoiceCurrency))}</strong><span className="app-caption mt-1 block capitalize">{invoice.status || "paid"} · {dateTime(invoice.createdAt)}{invoiceCurrency !== "INR" ? " · converted for display" : ""}</span></div><button className="rounded-lg border border-[#b8c8c3] px-3 py-2 text-sm font-semibold text-[#0e6f62] hover:bg-[#edf7f4] disabled:opacity-50" type="button" onClick={() => void downloadInvoice(invoice._id, invoice.invoiceNumber)} disabled={Boolean(busy)}>{isDownloading ? "Downloading..." : "Download"}</button></div>;
+              const invoiceFallbackTitle = data?.whiteLabel ? `${data.whiteLabel.productName} payment invoice` : "Vozon payment invoice";
+              return <div className="grid gap-3 px-5 py-4 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center" key={invoice._id}><div className="min-w-0"><strong className="block truncate text-sm">{invoice.invoiceNumber || invoiceFallbackTitle}</strong><span className="app-caption mt-1 block">{invoiceCurrency === "INR" && invoice.description ? invoice.description : dateTime(invoice.createdAt)}</span></div><div className="sm:text-right"><strong className="block text-sm">{money(toInr(amount, invoiceCurrency))}</strong><span className="app-caption mt-1 block capitalize">{invoice.status || "paid"} · {dateTime(invoice.createdAt)}{invoiceCurrency !== "INR" ? " · converted for display" : ""}</span></div><button className="rounded-lg border border-[#b8c8c3] px-3 py-2 text-sm font-semibold text-[#0e6f62] hover:bg-[#edf7f4] disabled:opacity-50" type="button" onClick={() => void downloadInvoice(invoice._id, invoice.invoiceNumber)} disabled={Boolean(busy)}>{isDownloading ? "Downloading..." : "Download"}</button></div>;
             })}</div> : <div className="px-5 py-8 text-center text-sm text-[#71817d]">No invoices yet.</div>}
           </section>
         </div>

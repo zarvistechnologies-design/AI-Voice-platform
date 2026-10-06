@@ -254,6 +254,15 @@ export function DashboardSidebar({
 
   const isSuperAdmin = session?.platformRole === "super_admin";
   const isWhiteLabelPartner = Boolean(session?.organization?.whiteLabelOwnerAccountId);
+  const isWhiteLabelCustomer = Boolean(session?.organization?.whiteLabelAccountId);
+  const isPartnerOrCustomer = isWhiteLabelPartner || isWhiteLabelCustomer || brand.source === "white_label";
+
+  const effectiveProductName = isPartnerOrCustomer
+    ? (brand.source === "white_label" ? brand.productName : (session?.organization?.name || "Voice Platform"))
+    : brand.productName;
+
+  const rawLogo = brand.source === "white_label" ? (brand.logoDarkUrl || brand.logoUrl) : (isPartnerOrCustomer ? "" : brand.logoUrl);
+  const effectiveLogoUrl = isPartnerOrCustomer && rawLogo.includes("logo_2.svg") ? "" : rawLogo;
 
   const effectiveSidebarGroups = useMemo(() => [
     ...sidebarGroups,
@@ -381,8 +390,8 @@ export function DashboardSidebar({
           <Link
             className="dashboard-sidebar-brand-link group flex min-w-0 items-center rounded-xl outline-none ring-[#9fcfc3]/50 transition focus-visible:ring-2"
             href="/dashboard/agents"
-            title={`${brand.productName} Voice Platform`}
-            aria-label={`${brand.productName} Voice Platform`}
+            title={`${effectiveProductName} Voice Platform`}
+            aria-label={`${effectiveProductName} Voice Platform`}
             onClick={(event) => {
               if (
                 event.ctrlKey ||
@@ -403,28 +412,52 @@ export function DashboardSidebar({
               <span
                 className={`dashboard-sidebar-logo-frame relative block shrink-0 overflow-hidden ${showUserSidebar ? "h-12 w-[168px]" : "h-10 w-10"}`}
               >
-                {brand.logoUrl ? (
-                  <Image
-                    alt={`${brand.productName} logo`}
-                    className={`dashboard-sidebar-logo object-contain transition group-hover:brightness-110 ${showUserSidebar ? "object-left" : "object-center"}`}
-                    fill
-                    priority
-                    sizes={showUserSidebar ? "168px" : "132px"}
-                    src={
-                      showUserSidebar || brand.source === "platform"
-                        ? brand.logoUrl
-                        : brand.iconUrl || brand.logoUrl
-                    }
-                  />
+                {effectiveLogoUrl ? (
+                  effectiveLogoUrl.startsWith("/") ? (
+                    <Image
+                      alt={`${effectiveProductName} logo`}
+                      className={`dashboard-sidebar-logo object-contain transition group-hover:brightness-110 ${showUserSidebar ? "object-left" : "object-center"}`}
+                      fill
+                      priority
+                      sizes={showUserSidebar ? "168px" : "132px"}
+                      src={
+                        showUserSidebar || brand.source === "platform"
+                          ? effectiveLogoUrl
+                          : brand.iconUrl || effectiveLogoUrl
+                      }
+                    />
+                  ) : (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      alt={`${effectiveProductName} logo`}
+                      className={`dashboard-sidebar-logo h-full w-full object-contain transition group-hover:brightness-110 ${showUserSidebar ? "object-left" : "object-center"}`}
+                      src={
+                        showUserSidebar || brand.source === "platform"
+                          ? effectiveLogoUrl
+                          : brand.iconUrl || effectiveLogoUrl
+                      }
+                    />
+                  )
                 ) : (
-                  <span className="flex h-full items-center text-sm font-bold text-[#5963b8]">
-                    {brand.productName}
+                  <span className="flex h-full items-center gap-2.5">
+                    <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-[#126f62] to-[#0a423a] text-sm font-black text-white shadow-[0_4px_12px_rgba(18,111,98,0.25)] ring-1 ring-[#126f62]/30">
+                      {effectiveProductName.slice(0, 1).toUpperCase()}
+                    </span>
+                    {showUserSidebar ? (
+                      <span className="truncate text-base font-bold tracking-tight text-[#14231f]">
+                        {effectiveProductName}
+                      </span>
+                    ) : null}
                   </span>
                 )}
               </span>
               {showUserSidebar ? (
-                <span className="dashboard-sidebar-tagline hidden lg:block">
-                  Voice agents, built to perform.
+                <span className="dashboard-sidebar-tagline hidden truncate text-[11px] font-medium text-[#71817d] lg:block">
+                  {isPartnerOrCustomer
+                    ? (brand.companyName && brand.companyName !== effectiveProductName
+                        ? brand.companyName
+                        : "AI Voice Platform")
+                    : "Voice agents, built to perform."}
                 </span>
               ) : null}
             </span>

@@ -53,6 +53,10 @@ export type WhiteLabelAccount = {
   retailBilling?: {
     enabled: boolean;
     provider: "razorpay" | "internal";
+    gatewayMode?: "platform" | "custom";
+    customKeyId?: string;
+    hasCustomKeySecret?: boolean;
+    hasCustomWebhookSecret?: boolean;
     razorpayLinkedAccountId: string;
     transferMode: "disabled" | "full_amount";
     taxRateBps: number;
@@ -206,10 +210,27 @@ async function request<T>(path: string, options: RequestOptions = {}) {
   return (data ?? {}) as T;
 }
 
+export type WhiteLabelPaymentGateway = {
+  gatewayMode: "platform" | "custom";
+  customKeyId: string;
+  hasCustomKeySecret: boolean;
+  hasCustomWebhookSecret: boolean;
+  platformGatewayAvailable: boolean;
+  currency: string;
+};
+
 export const partnerWhiteLabelApi = {
   overview: () => request<PartnerOverview>("/api/partner/white-label"),
   economics: () => request<PartnerEconomics>("/api/partner/white-label/economics"),
   billing: () => request<PartnerBilling>("/api/partner/white-label/billing"),
+  paymentGateway: () => request<WhiteLabelPaymentGateway>("/api/partner/white-label/gateway"),
+  updatePaymentGateway: (body: {
+    keyId: string;
+    keySecret?: string;
+    webhookSecret?: string;
+    validateCredentials?: boolean;
+  }) => request<WhiteLabelPaymentGateway>("/api/partner/white-label/gateway", { method: "PUT", body }),
+  deletePaymentGateway: () => request<WhiteLabelPaymentGateway>("/api/partner/white-label/gateway", { method: "DELETE" }),
   createBillingCheckout: (invoiceId: string) => request<{
     settled: boolean;
     provider?: "razorpay";
