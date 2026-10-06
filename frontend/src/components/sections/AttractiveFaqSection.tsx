@@ -45,7 +45,7 @@ const FAQ_DATA: FaqItem[] = [
     categoryLabel: "Voice AI",
     question: "How does Vozon achieve natural, ultra-low latency voice conversations?",
     answer:
-      "Vozon orchestrates a proprietary high-speed WebRTC streaming pipeline. We combine continuous streaming speech recognition (Sarvam, Deepgram), sub-second LLM reasoning (OpenAI GPT-4o, Google Gemini 2.0 Flash, Sarvam Indic), and neural voice synthesis (ElevenLabs & Sarvam Bulbul) to deliver natural turn-taking with sub-400ms latency and real-time user interruption handling.",
+      "Vozon orchestrates a proprietary high-speed WebRTC streaming pipeline. We combine continuous streaming speech recognition (Sarvam, Deepgram), sub-second LLM reasoning (OpenAI GPT-4o, Google Gemini 2.0 Flash, Sarvam Indic), and neural voice synthesis (ElevenLabs & Sarvam Bulbul) to deliver natural turn-taking with sub-750ms latency and real-time user interruption handling.",
     highlights: ["< 400ms turn-around latency", "Ultra-fast WebRTC audio", "Real-time barge-in & interruption"],
   },
   {
@@ -492,7 +492,7 @@ export function AttractiveFaqSection() {
                 <svg viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
-                <span>Ultra-low latency sub-400ms conversational turn</span>
+                <span>Ultra-low latency sub-750ms conversational turn</span>
               </li>
               <li>
                 <svg viewBox="0 0 20 20" fill="currentColor">
