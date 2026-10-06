@@ -53,7 +53,7 @@ const steps = [
     stepTag: "STEP 03",
     subtitle: "Multilingual Speech",
     title: "Pick voice & languages",
-    copy: "Natural voices across English and 12+ Indian languages powered by Sarvam Bulbul and ElevenLabs.",
+    copy: "Natural voices across English and 22+ Indian languages powered by Sarvam Bulbul and ElevenLabs.",
   },
   {
     number: "04",
@@ -237,7 +237,7 @@ function StepMiniVisual({ index, onVoicePreview, onExploreLanguages }: { index: 
             <span className="model-brand-icon is-sarvam"><WorkflowIcon name="sarvam" /></span>
             <div className="model-brand-details">
               <b>Sarvam Indic 2B</b>
-              <small>12+ Indian Languages</small>
+              <small>22+ Indian Languages</small>
             </div>
             <span className="model-latency-tag is-amber">Indic Tuned</span>
             <span className="model-radio-check">{selectedModel === "sarvam" ? <WorkflowIcon name="check" /> : null}</span>
@@ -249,11 +249,11 @@ function StepMiniVisual({ index, onVoicePreview, onExploreLanguages }: { index: 
             <span className="spec-dot is-green" />
             <span className="spec-text">LiveKit WebRTC Stream</span>
           </div>
-          <span className="spec-badge">&lt;300ms TTFB</span>
+          <span className="spec-badge">&lt;750ms TTFB</span>
         </div>
 
         <div className="design-four-card-tools">
-          <span><WorkflowIcon name="chip" /><small>Sub-300ms</small></span>
+          <span><WorkflowIcon name="chip" /><small>Sub-750ms</small></span>
           <span><WorkflowIcon name="server" /><small>LiveKit WebRTC</small></span>
           <span><WorkflowIcon name="sparkles" /><small>Dual Pipeline</small></span>
         </div>
@@ -317,7 +317,7 @@ function StepMiniVisual({ index, onVoicePreview, onExploreLanguages }: { index: 
             type="button"
             className="voice-lang-more"
             onClick={onExploreLanguages}
-            title="Explore all 12+ supported languages"
+            title="Explore all 22+ supported languages"
           >
             +7 more
           </button>
@@ -330,12 +330,12 @@ function StepMiniVisual({ index, onVoicePreview, onExploreLanguages }: { index: 
           </div>
           <div className="voice-spec-row">
             <span className="v-label">Speech to Text</span>
-            <span className="v-val">Deepgram Nova-2 (&lt;120ms)</span>
+            <span className="v-val">Deepgram Nova-2 (&lt;750ms)</span>
           </div>
         </div>
 
         <div className="design-four-card-tools">
-          <span><WorkflowIcon name="globe" /><small>12+ Languages</small></span>
+          <span><WorkflowIcon name="globe" /><small>22+ Languages</small></span>
           <span><WorkflowIcon name="microphone" /><small>Deepgram STT</small></span>
           <span><WorkflowIcon name="sliders" /><small>Sarvam Bulbul</small></span>
         </div>
@@ -464,7 +464,7 @@ export function HomeDesignFour() {
             <div className="vozon-hero-trust-bar">
               <div className="vozon-trust-item">
                 <span className="vozon-trust-icon">⚡</span>
-                <span><strong>&lt;500ms</strong> Telephony Latency</span>
+                <span><strong>&lt;750ms</strong> Telephony Latency</span>
               </div>
               <div className="vozon-trust-sep" />
               <div className="vozon-trust-item">
@@ -577,7 +577,7 @@ export function HomeDesignFour() {
               <div className="vozon-card-badge">Zero Friction</div>
               <div className="vozon-card-icon">⚡</div>
               <h3>Sheets to Enterprise MCP</h3>
-              <p>No developers needed: paste a Google Sheet to launch outbound dialer campaigns in 60 seconds. For engineers, we provide India&apos;s only Model Context Protocol (MCP) server &amp; sub-500ms WebRTC.</p>
+              <p>No developers needed: paste a Google Sheet to launch outbound dialer campaigns in 60 seconds. For engineers, we provide India&apos;s only Model Context Protocol (MCP) server &amp; sub-750ms WebRTC.</p>
               <div className="vozon-feature-checks">
                 <span>✓ Google Sheets auto-sync</span>
                 <span>✓ Bi-directional CRM webhooks</span>
@@ -681,8 +681,8 @@ export function HomeDesignFour() {
           <div className="design-four-metrics">
             <div><strong>1 Lakh+</strong><span>daily calling minutes</span></div>
             <div><strong>75%+</strong><span>first-call resolution rate</span></div>
-            <div><strong>&lt;500ms</strong><span>telephony voice latency</span></div>
-            <div><strong>12+</strong><span>Indic &amp; global languages</span></div>
+            <div><strong>&lt;750ms</strong><span>telephony voice latency</span></div>
+            <div><strong>22+</strong><span>Indic &amp; global languages</span></div>
             <div><strong>99.9%</strong><span>enterprise uptime</span></div>
           </div>
           <div className="design-four-agent-banner">
