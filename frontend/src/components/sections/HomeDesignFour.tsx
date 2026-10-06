@@ -244,14 +244,6 @@ function StepMiniVisual({ index, onVoicePreview, onExploreLanguages }: { index: 
           </button>
         </div>
 
-        <div className="model-pipeline-spec">
-          <div className="pipeline-spec-item">
-            <span className="spec-dot is-green" />
-            <span className="spec-text">LiveKit WebRTC Stream</span>
-          </div>
-          <span className="spec-badge">&lt;750ms TTFB</span>
-        </div>
-
         <div className="design-four-card-tools">
           <span><WorkflowIcon name="chip" /><small>Sub-750ms</small></span>
           <span><WorkflowIcon name="server" /><small>LiveKit WebRTC</small></span>
