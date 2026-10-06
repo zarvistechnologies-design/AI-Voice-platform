@@ -23,6 +23,7 @@ import {
   type DigitalBotConnection,
   type IntegrationProvider,
 } from "@/lib/integrations";
+import { WhatsAppModal } from "@/components/integrations/WhatsAppModal";
 
 const catalog = {
   vobiz: {
@@ -93,6 +94,15 @@ const catalog = {
     logo: "/images/company-logos/digitalbot.png",
     color: "from-[#118778] to-emerald-400",
     flow: "Used live by attached agents",
+  },
+  whatsapp: {
+    name: "WhatsApp Business",
+    category: "Messaging",
+    description:
+      "Send automated appointment confirmations, slips, and notifications via WhatsApp.",
+    logo: "/images/integrations/whatsapp.svg",
+    color: "from-[#25D366] to-[#128C7E]",
+    flow: "Meta Embedded Signup",
   },
 } as const;
 
@@ -170,6 +180,25 @@ export function IntegrationsShell() {
     return () => window.clearTimeout(timer);
   }, [load, router, session]);
 
+  // Handle Meta OAuth redirect inside a popup dialog
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.opener) {
+      const searchParams = new URLSearchParams(window.location.search);
+      const code = searchParams.get("code");
+      if (code) {
+        try {
+          window.opener.postMessage(
+            { type: "WA_EMBEDDED_SIGNUP_CODE", code },
+            window.location.origin,
+          );
+          window.close();
+        } catch {
+          // If window.close() is blocked, user will see the integrations screen
+        }
+      }
+    }
+  }, []);
+
   async function connect() {
     if (!selected || selected === "google") return;
     if (selected === "digitalbot" && !digitalBotAgentId) {
@@ -225,6 +254,7 @@ export function IntegrationsShell() {
     setBusy(true);
     try {
       if (provider === "google") await integrationsApi.disconnectGoogle();
+      else if (provider === "whatsapp") await integrationsApi.disconnectWhatsApp();
       else await integrationsApi.disconnect(provider);
       await load();
       setNotice(`${providerName} disconnected.`);
@@ -661,6 +691,17 @@ export function IntegrationsShell() {
                             Connect {item.name}
                           </button>
                         )
+                      ) : provider.id === "whatsapp" ? (
+                        <button
+                          className="rounded-lg bg-gradient-to-r from-[#25D366] to-[#128C7E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:from-[#22bf5b] hover:to-[#0f776a]"
+                          type="button"
+                          onClick={() => {
+                            setSelected("whatsapp");
+                            setModalError("");
+                          }}
+                        >
+                          {provider.connected ? "Manage WhatsApp" : "Connect WhatsApp"}
+                        </button>
                       ) : provider.id === "digitalbot" ? (
                         <button
                           className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62]"
@@ -727,7 +768,20 @@ export function IntegrationsShell() {
           {agentsLoading ? "Loading your Vozon agents..." : modalError}
         </div>
       ) : null}
-      {selected ? (
+      {selected === "whatsapp" ? (
+        <WhatsAppModal
+          integration={providers.find((p) => p.id === "whatsapp")}
+          onClose={() => {
+            setSelected(null);
+            void load();
+          }}
+          onSuccess={(msg) => {
+            setNotice(msg);
+            void load();
+          }}
+          onError={(err) => setNotice(err)}
+        />
+      ) : selected ? (
         <div
           className="fixed inset-0 z-50 grid place-items-center bg-slate-950/35 p-4 backdrop-blur-[6px]"
           onMouseDown={() => !busy && setSelected(null)}

@@ -4,7 +4,7 @@ import { API_URL } from "@/lib/apiBase";
 import { invalidateVoiceCache } from "@/lib/voiceCache";
 
 export type IntegrationProvider = {
-  id: "vobiz" | "hubspot" | "calendly" | "slack" | "google" | "digitalbot";
+  id: "vobiz" | "hubspot" | "calendly" | "slack" | "google" | "digitalbot" | "whatsapp";
   connected: boolean;
   accountId: string;
   status: "connected" | "error" | "disconnected";
@@ -144,5 +144,34 @@ export const integrationsApi = {
     const data = (await response.json().catch(() => null)) as { agents?: AgentSummary[]; message?: string } | null;
     if (!response.ok) throw new Error(data?.message ?? "Could not load agents.");
     return { agents: data?.agents ?? [] };
+  },
+  completeWhatsAppEmbeddedSignup: async (payload: {
+    code?: string;
+    wabaId?: string;
+    phoneNumberId?: string;
+    accessToken?: string;
+  }) => {
+    const result = await request<{ ok: boolean; message: string; phoneDetails: Record<string, unknown> }>(
+      "/whatsapp/embedded-signup",
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      },
+    );
+    invalidateApiCache("integrations");
+    return result;
+  },
+  sendWhatsAppTestMessage: async (to: string, message?: string) => {
+    return request<{ ok: boolean; messageId: string; sentTo: string }>("/whatsapp/test-message", {
+      method: "POST",
+      body: JSON.stringify({ to, message }),
+    });
+  },
+  disconnectWhatsApp: async () => {
+    const result = await request<{ ok: boolean; message: string }>("/whatsapp", {
+      method: "DELETE",
+    });
+    invalidateApiCache("integrations");
+    return result;
   },
 };
