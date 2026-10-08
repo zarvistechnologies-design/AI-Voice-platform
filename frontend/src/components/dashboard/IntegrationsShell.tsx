@@ -693,7 +693,7 @@ export function IntegrationsShell() {
                         )
                       ) : provider.id === "whatsapp" ? (
                         <button
-                          className="rounded-lg bg-gradient-to-r from-[#25D366] to-[#128C7E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:from-[#22bf5b] hover:to-[#0f776a]"
+                          className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62] transition"
                           type="button"
                           onClick={() => {
                             setSelected("whatsapp");

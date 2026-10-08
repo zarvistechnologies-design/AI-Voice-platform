@@ -276,7 +276,7 @@ export function WhatsAppModal({
         {/* Header */}
         <div className="flex items-start justify-between gap-4 pb-4 border-b border-[#dfe7e4]">
           <div className="flex items-center gap-3">
-            <span className="grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br from-[#25D366] to-[#128C7E] p-2.5 shadow-md shadow-emerald-600/20">
+            <span className="grid h-12 w-12 place-items-center rounded-xl bg-[#edf7f4] border border-[#b8c8c3] p-2.5 shadow-xs">
               <Image
                 src="/images/integrations/whatsapp.svg"
                 alt="WhatsApp logo"
@@ -306,10 +306,11 @@ export function WhatsAppModal({
             </div>
           </div>
           <button
-            className="rounded-lg px-2.5 py-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition"
+            className="rounded-lg px-2.5 py-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition cursor-pointer"
             type="button"
             disabled={busy}
             onClick={onClose}
+            aria-label="Close"
           >
             ✕
           </button>
@@ -321,11 +322,11 @@ export function WhatsAppModal({
             /* Disconnected State - Choice between Meta Popup or Developer Token */
             <div className="space-y-4">
               {/* Tab Selector */}
-              <div className="flex border-b border-slate-200 gap-6 text-sm font-medium">
+              <div className="flex border-b border-[#dfe7e4] gap-6 text-sm font-medium">
                 <button
                   type="button"
                   onClick={() => setConnectMode("popup")}
-                  className={`pb-2 transition ${
+                  className={`pb-2.5 transition -mb-px cursor-pointer ${
                     connectMode === "popup"
                       ? "text-[#118778] border-b-2 border-[#118778] font-semibold"
                       : "text-slate-500 hover:text-slate-800"
@@ -336,7 +337,7 @@ export function WhatsAppModal({
                 <button
                   type="button"
                   onClick={() => setConnectMode("manual")}
-                  className={`pb-2 transition ${
+                  className={`pb-2.5 transition -mb-px cursor-pointer ${
                     connectMode === "manual"
                       ? "text-[#118778] border-b-2 border-[#118778] font-semibold"
                       : "text-slate-500 hover:text-slate-800"
@@ -348,8 +349,8 @@ export function WhatsAppModal({
 
               {connectMode === "popup" ? (
                 <div className="space-y-4">
-                  <div className="rounded-xl border border-[#dfe7e4] bg-[#edf7f4]/60 p-4 space-y-2 text-xs leading-5 text-slate-700">
-                    <strong className="block text-sm text-slate-900">
+                  <div className="rounded-xl border border-[#dfe7e4] bg-[#edf7f4]/70 p-4 space-y-2 text-xs leading-5 text-slate-700">
+                    <strong className="block text-sm font-semibold text-[#123d35]">
                       Automated WhatsApp Messaging for Vozon Voice Agents
                     </strong>
                     <p className="text-slate-600">
@@ -365,13 +366,13 @@ export function WhatsAppModal({
                   </div>
 
                   {/* Coexistence Option */}
-                  <div className="flex items-start gap-3 rounded-xl border border-emerald-200/80 bg-emerald-50/50 p-3 text-xs text-slate-700 transition hover:bg-emerald-50">
+                  <div className="flex items-start gap-3 rounded-xl border border-[#dfe7e4] bg-[#f7f9f8] p-3.5 text-xs text-slate-700 transition hover:bg-[#edf7f4]/40">
                     <input
                       type="checkbox"
                       id="coexistenceToggle"
                       checked={useCoexistence}
                       onChange={(e) => setUseCoexistence(e.target.checked)}
-                      className="mt-0.5 h-4 w-4 rounded border-slate-300 text-[#118778] focus:ring-[#118778]"
+                      className="mt-0.5 h-4 w-4 rounded border-slate-300 text-[#118778] accent-[#118778] focus:ring-[#118778] cursor-pointer"
                     />
                     <label htmlFor="coexistenceToggle" className="cursor-pointer space-y-0.5 select-none">
                       <strong className="block font-semibold text-slate-900 flex items-center gap-1.5">
@@ -388,7 +389,7 @@ export function WhatsAppModal({
                       type="button"
                       disabled={busy}
                       onClick={() => handleLaunchSignup()}
-                      className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl font-semibold text-white bg-gradient-to-r from-[#25D366] to-[#128C7E] hover:from-[#20bd5a] hover:to-[#0e7568] shadow-md shadow-emerald-600/20 transition disabled:opacity-50 text-sm"
+                      className="w-full flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl font-semibold text-white bg-[#118778] hover:bg-[#0e6f62] shadow-sm transition disabled:opacity-50 text-sm cursor-pointer"
                     >
                       {busy ? (
                         <span className="flex items-center gap-2">
@@ -417,7 +418,7 @@ export function WhatsAppModal({
                             alt="WhatsApp logo"
                             width={20}
                             height={20}
-                            className="h-5 w-5 brightness-0 invert"
+                            className="h-5 w-5 object-contain"
                           />
                           <span>Connect WhatsApp with Meta</span>
                         </>
@@ -431,7 +432,7 @@ export function WhatsAppModal({
               ) : (
                 /* Developer / Sandbox Direct Connect */
                 <form onSubmit={handleManualConnect} className="space-y-3 text-xs">
-                  <div className="rounded-xl border border-amber-200 bg-amber-50/70 p-3 text-slate-700">
+                  <div className="rounded-xl border border-[#b8c8c3] bg-[#edf7f4] p-3 text-[#123d35]">
                     💡 <strong>Developer / Sandbox Testing</strong>: Enter your test credentials from
                     Meta Developer Console (<em>WhatsApp &gt; Basic setup &gt; Step 1. Try it out</em>).
                   </div>
@@ -475,7 +476,7 @@ export function WhatsAppModal({
                   <button
                     type="submit"
                     disabled={busy}
-                    className="mt-2 w-full rounded-xl bg-[#118778] py-2.5 px-4 text-sm font-semibold text-white hover:bg-[#0e6f62] shadow-sm transition disabled:opacity-50"
+                    className="mt-2 w-full rounded-xl bg-[#118778] py-2.5 px-4 text-sm font-semibold text-white hover:bg-[#0e6f62] shadow-sm transition disabled:opacity-50 cursor-pointer"
                   >
                     {busy ? "Verifying..." : "Connect Credentials"}
                   </button>
@@ -487,19 +488,24 @@ export function WhatsAppModal({
             <div className="space-y-4">
               {/* Account Details */}
               <div className="rounded-xl border border-[#dfe7e4] bg-[#f7f9f8] p-4 text-xs leading-5 text-slate-700 space-y-2">
-                <strong className="block text-sm text-slate-900">
-                  Connected Account Information
-                </strong>
+                <div className="flex items-center justify-between border-b border-[#dfe7e4] pb-2">
+                  <strong className="text-sm font-semibold text-slate-900">
+                    Connected Account Information
+                  </strong>
+                  <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-bold text-emerald-700 uppercase">
+                    Active WABA
+                  </span>
+                </div>
                 <div className="grid grid-cols-2 gap-3 pt-1">
                   <div>
                     <span className="text-slate-500 block text-[11px]">Phone Number ID</span>
-                    <span className="font-mono text-slate-900 text-xs">
+                    <span className="font-mono text-slate-900 text-xs font-semibold">
                       {String(metadata.phoneNumberId || integration?.accountId || "—")}
                     </span>
                   </div>
                   <div>
                     <span className="text-slate-500 block text-[11px]">WABA ID</span>
-                    <span className="font-mono text-slate-900 text-xs">
+                    <span className="font-mono text-slate-900 text-xs font-semibold">
                       {String(metadata.wabaId || "—")}
                     </span>
                   </div>
@@ -525,10 +531,10 @@ export function WhatsAppModal({
               {/* Test Message Form (For Meta App Review Video!) */}
               <form
                 onSubmit={handleSendTestMessage}
-                className="rounded-xl border border-emerald-200 bg-emerald-50/60 p-4 space-y-3 text-xs"
+                className="rounded-xl border border-[#b8c8c3] bg-[#edf7f4] p-4 space-y-3 text-xs"
               >
                 <div className="flex items-center justify-between">
-                  <strong className="text-sm font-semibold text-[#0e6f62] flex items-center gap-1.5">
+                  <strong className="text-sm font-semibold text-[#123d35] flex items-center gap-1.5">
                     <span>⚡</span> Send Test Message (App Review Demo)
                   </strong>
                   <span className="rounded-full bg-emerald-100 border border-emerald-300 px-2 py-0.5 text-[10px] font-bold text-emerald-800 uppercase">
@@ -565,7 +571,7 @@ export function WhatsAppModal({
                 <button
                   type="submit"
                   disabled={busy}
-                  className="w-full rounded-xl bg-[#118778] py-2.5 px-4 text-sm font-semibold text-white hover:bg-[#0e6f62] shadow-sm transition disabled:opacity-50"
+                  className="w-full rounded-xl bg-[#118778] py-2.5 px-4 text-sm font-semibold text-white hover:bg-[#0e6f62] shadow-sm transition disabled:opacity-50 cursor-pointer"
                 >
                   {busy ? "Sending Message..." : "Send Test Message Now"}
                 </button>
@@ -595,7 +601,7 @@ export function WhatsAppModal({
                   type="button"
                   disabled={busy}
                   onClick={handleDisconnect}
-                  className="rounded-lg border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-700 hover:bg-rose-50 transition"
+                  className="rounded-lg border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-700 hover:bg-rose-50 transition cursor-pointer"
                 >
                   Disconnect WhatsApp
                 </button>
@@ -609,7 +615,7 @@ export function WhatsAppModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg border border-[#dfe7e4] px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
+            className="rounded-lg border border-[#dfe7e4] px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer"
           >
             Close
           </button>
