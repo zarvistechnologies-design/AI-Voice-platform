@@ -107,8 +107,14 @@ export function PlatformWhiteLabelConsole() {
       setAudits(auditResult.auditLogs);
       setLifecycle({ status: result.account.status, billingStatus: result.account.billingStatus, reason: "" });
       setCommercial({ platformFee: String(result.account.contract.platformFeeMinor / 100), minimumCommitment: String(result.account.contract.minimumCommitmentMinor / 100), wholesaleMarkup: String(result.account.contract.wholesaleMarkupBps / 100), brands: String(result.account.limits.brands), customerOrganizations: String(result.account.limits.customerOrganizations), agentsPerCustomer: String(result.account.limits.agentsPerCustomer), membersPerCustomer: String(result.account.limits.membersPerCustomer), phoneNumbersPerCustomer: String(result.account.limits.phoneNumbersPerCustomer), concurrentCallsPerCustomer: String(result.account.limits.concurrentCallsPerCustomer), monthlyMinutesPerCustomer: String(result.account.limits.monthlyMinutesPerCustomer), retailBillingEnabled: result.account.retailBilling?.enabled ?? false, linkedAccountId: result.account.retailBilling?.razorpayLinkedAccountId ?? "", transferMode: result.account.retailBilling?.transferMode ?? "disabled", taxRate: String((result.account.retailBilling?.taxRateBps ?? 0) / 100), taxLabel: result.account.retailBilling?.taxLabel ?? "Tax", taxRegistrationId: result.account.retailBilling?.taxRegistrationId ?? "", graceDays: String(result.account.retailBilling?.gracePeriodDays ?? 3), reason: "" });
-      setCommercialEntitlements(result.account.entitlements);
-      setCommercialModelAccess(result.account.modelAccess ?? { stt: result.modelAccessCatalog.stt.map((item) => item.key), llm: result.modelAccessCatalog.llm.map((item) => item.key), tts: result.modelAccessCatalog.tts.map((item) => item.key) });
+      const initialModelAccess = result.account.modelAccess
+        ? {
+            stt: (result.account.modelAccess.stt ?? []).map((k) => k === "cartesia:ink-whisper" ? "cartesia:ink-2" : k),
+            llm: result.account.modelAccess.llm ?? [],
+            tts: result.account.modelAccess.tts ?? [],
+          }
+        : { stt: result.modelAccessCatalog.stt.map((item) => item.key), llm: result.modelAccessCatalog.llm.map((item) => item.key), tts: result.modelAccessCatalog.tts.map((item) => item.key) };
+      setCommercialModelAccess(initialModelAccess);
     } finally { setDetailLoading(false); }
   }, []);
 
