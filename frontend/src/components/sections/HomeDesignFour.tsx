@@ -439,7 +439,7 @@ export function HomeDesignFour() {
 
             <p className="vozon-hero-subtitle">
               Automate customer support, inbound inquiries, and outbound calls with hyper-realistic voice AI.
-              Zero robotic lag, human-like barge-in, and natural conversations in Hindi, Hinglish &amp; 22+ Indic languages &amp; 76 global languages.
+              Zero robotic lag, human-like barge-in, and natural conversations in Hindi, Hinglish &amp; 22+ Indic languages &amp; <strong style={{ fontWeight: 700 }}>76</strong> global languages.
             </p>
 
             <div className="vozon-hero-actions">
@@ -461,7 +461,7 @@ export function HomeDesignFour() {
               <div className="vozon-trust-sep" />
               <div className="vozon-trust-item">
                 <span className="vozon-trust-icon">🇮🇳</span>
-                <span><strong>22+</strong> Indic Languages &amp; 76 Global Languages</span>
+                <span><strong>22+</strong> Indic Languages &amp; <strong>76</strong> Global Languages</span>
               </div>
               <div className="vozon-trust-sep" />
               <div className="vozon-trust-item">
