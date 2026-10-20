@@ -8,7 +8,8 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { useHomepageVoiceCall } from "@/components/sections/useHomepageVoiceCall";
 import { customerReviews } from "@/config/customerReviews";
 
-import { GreenAudioWaveHero } from "@/components/sections/GreenAudioWaveHero";
+import { SaaSHero3D } from "@/components/sections/SaaSHero3D";
+import { BentoFeaturesSection } from "@/components/sections/BentoFeaturesSection";
 import { VoiceOperationsShowcase } from "@/components/sections/VoiceOperationsShowcase";
 import { AttractiveFaqSection } from "@/components/sections/AttractiveFaqSection";
 import styles from "./HomeDesignFour.module.css";
@@ -428,54 +429,7 @@ export function HomeDesignFour() {
       <SiteHeader />
 
       <main>
-        <section className={`${styles.hero} home-design-four__hero`}>
-          <GreenAudioWaveHero />
-          <div className={styles.heroGlow} aria-hidden="true" />
-          <div className="vozon-hero-content">
-            <h1 className="vozon-hero-title">
-              AI Voice Agents That<br />
-              <strong className="vozon-hero-title-highlight">Actually Sound Human.</strong>
-            </h1>
-
-            <p className="vozon-hero-subtitle">
-              Automate customer support, inbound inquiries, and outbound calls with hyper-realistic voice AI.
-              Zero robotic lag, human-like barge-in, and natural conversations in Hindi, Hinglish &amp; 22+ Indic languages &amp; <strong style={{ fontWeight: 700 }}>76</strong> global languages.
-            </p>
-
-            <div className="vozon-hero-actions">
-              <Link href="/login" className="vozon-hero-btn-primary">
-                <span>Get Started Free</span>
-              </Link>
-
-              <Link href="/contact" className="vozon-hero-demo-btn">
-                <span>Book a Demo</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </Link>
-            </div>
-
-            <div className="vozon-hero-trust-bar">
-              <div className="vozon-trust-item">
-                <span className="vozon-trust-icon">⚡</span>
-                <span><strong>&gt;750ms</strong> Telephony Latency</span>
-              </div>
-              <div className="vozon-trust-sep" />
-              <div className="vozon-trust-item">
-                <span className="vozon-trust-icon">🇮🇳</span>
-                <span><strong>22+</strong> Indic Languages &amp; <strong>76</strong> Global Languages</span>
-              </div>
-              <div className="vozon-trust-sep" />
-              <div className="vozon-trust-item">
-                <span className="vozon-trust-icon">📊</span>
-                <span><strong>1-Click</strong> Google Sheets Outbound</span>
-              </div>
-              <div className="vozon-trust-sep" />
-              <div className="vozon-trust-item">
-                <span className="vozon-trust-icon">📞</span>
-                <span><strong>BYOT</strong> Virtual Telephony</span>
-              </div>
-            </div>
-          </div>
-        </section>
+        <SaaSHero3D />
 
         <div id="showcase-section" className="home-design-four__showcase-wrap">
           <VoiceOperationsShowcase />
@@ -532,52 +486,7 @@ export function HomeDesignFour() {
           </div>
         </section>
 
-        <section className="vozon-advantage-section" aria-label="Why Vozon is built for Indian businesses">
-          <div className="vozon-advantage-header">
-            <span className="vozon-pill">The Indian Voice Advantage</span>
-            <h2>Why India&apos;s leading teams switch from US tools to <strong>Vozon</strong></h2>
-            <p>Traditional voice tools struggle with Indian accents, 080 spam flags, and rigid telecom rules. Vozon is engineered from day one for Indian telephony and local customer trust.</p>
-          </div>
-          <div className="vozon-advantage-grid">
-            <article className="vozon-advantage-card">
-              <div className="vozon-card-badge">High Pickup Telephony</div>
-              <div className="vozon-card-icon">📱</div>
-              <h3>Smart Virtual Telephony &amp; BYOT</h3>
-              <p>US platforms lock you into rigid 080 trunks that get flagged as spam. Vozon provides enterprise local virtual numbers and Bring-Your-Own-Carrier (BYOT) support across Exotel, Airtel, and Tata.</p>
-              <div className="vozon-stat-preview">
-                <div><span>Unverified 080 Trunks</span><b>~22% pickup</b></div>
-                <div className="is-highlight"><span>Vozon Smart Telephony</span><b>~74% pickup</b></div>
-              </div>
-            </article>
-
-            <article className="vozon-advantage-card">
-              <div className="vozon-card-badge">Native Indic Engine</div>
-              <div className="vozon-card-icon">🇮🇳</div>
-              <h3>Hinglish &amp; 22+ Indic Languages &amp; 76 Global Languages</h3>
-              <p>Powered by Sarvam Bulbul and Indic-tuned frontier models. Your agents understand colloquial phrasing, native pronunciation, and switch naturally between Hindi and English mid-sentence.</p>
-              <div className="vozon-lang-tags">
-                <span>हिन्दी (Hindi)</span>
-                <span>Hinglish</span>
-                <span>मराठी</span>
-                <span>தமிழ்</span>
-                <span>తెలుగు</span>
-                <span>বাংলা</span>
-              </div>
-            </article>
-
-            <article className="vozon-advantage-card">
-              <div className="vozon-card-badge">Zero Friction</div>
-              <div className="vozon-card-icon">⚡</div>
-              <h3>Sheets to Enterprise MCP</h3>
-              <p>No developers needed: paste a Google Sheet to launch outbound dialer campaigns in 60 seconds. For engineers, we provide India&apos;s only Model Context Protocol (MCP) server &amp; &gt;750ms WebRTC.</p>
-              <div className="vozon-feature-checks">
-                <span>✓ Google Sheets auto-sync</span>
-                <span>✓ Bi-directional CRM webhooks</span>
-                <span>✓ TRAI compliant call windows</span>
-              </div>
-            </article>
-          </div>
-        </section>
+        <BentoFeaturesSection />
 
         <section className="design-four-voice-section" id="platform">
           <div className="design-four-language-tabs" role="tablist" aria-label="Voice languages">
