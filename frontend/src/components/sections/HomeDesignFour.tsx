@@ -53,7 +53,7 @@ const steps = [
     stepTag: "STEP 03",
     subtitle: "Multilingual Speech",
     title: "Pick voice & languages",
-    copy: "Natural voices across English and 22+ Indian languages powered by Sarvam Bulbul and ElevenLabs.",
+    copy: "Natural voices across English, 22+ Indic languages & 76 global languages powered by Sarvam Bulbul and ElevenLabs.",
   },
   {
     number: "04",
@@ -237,7 +237,7 @@ function StepMiniVisual({ index, onVoicePreview, onExploreLanguages }: { index: 
             <span className="model-brand-icon is-sarvam"><WorkflowIcon name="sarvam" /></span>
             <div className="model-brand-details">
               <b>Sarvam Indic 2B</b>
-              <small>22+ Indian Languages</small>
+              <small>22+ Indic Languages &amp; 76 Global Languages</small>
             </div>
             <span className="model-latency-tag is-amber">Indic Tuned</span>
             <span className="model-radio-check">{selectedModel === "sarvam" ? <WorkflowIcon name="check" /> : null}</span>
@@ -309,7 +309,7 @@ function StepMiniVisual({ index, onVoicePreview, onExploreLanguages }: { index: 
             type="button"
             className="voice-lang-more"
             onClick={onExploreLanguages}
-            title="Explore all 22+ supported languages"
+            title="Explore 22+ Indic languages & 76 global languages"
           >
             +7 more
           </button>
@@ -327,7 +327,7 @@ function StepMiniVisual({ index, onVoicePreview, onExploreLanguages }: { index: 
         </div>
 
         <div className="design-four-card-tools">
-          <span><WorkflowIcon name="globe" /><small>22+ Languages</small></span>
+          <span><WorkflowIcon name="globe" /><small>22+ Indic Languages &amp; 76 Global Languages</small></span>
           <span><WorkflowIcon name="microphone" /><small>Deepgram STT</small></span>
           <span><WorkflowIcon name="sliders" /><small>Sarvam Bulbul</small></span>
         </div>
@@ -439,7 +439,7 @@ export function HomeDesignFour() {
 
             <p className="vozon-hero-subtitle">
               Automate customer support, inbound inquiries, and outbound calls with hyper-realistic voice AI.
-              Zero robotic lag, human-like barge-in, and natural conversations in Hindi, Hinglish &amp; 22+ Indic languages.
+              Zero robotic lag, human-like barge-in, and natural conversations in Hindi, Hinglish &amp; 22+ Indic languages &amp; <strong style={{ fontWeight: 700 }}>76</strong> global languages.
             </p>
 
             <div className="vozon-hero-actions">
@@ -461,7 +461,7 @@ export function HomeDesignFour() {
               <div className="vozon-trust-sep" />
               <div className="vozon-trust-item">
                 <span className="vozon-trust-icon">🇮🇳</span>
-                <span><strong>22+</strong> Indic Languages</span>
+                <span><strong>22+</strong> Indic Languages &amp; <strong>76</strong> Global Languages</span>
               </div>
               <div className="vozon-trust-sep" />
               <div className="vozon-trust-item">
@@ -553,7 +553,7 @@ export function HomeDesignFour() {
             <article className="vozon-advantage-card">
               <div className="vozon-card-badge">Native Indic Engine</div>
               <div className="vozon-card-icon">🇮🇳</div>
-              <h3>Hinglish &amp; 22+ Regional Dialects &amp; All Global Languages</h3>
+              <h3>Hinglish &amp; 22+ Indic Languages &amp; 76 Global Languages</h3>
               <p>Powered by Sarvam Bulbul and Indic-tuned frontier models. Your agents understand colloquial phrasing, native pronunciation, and switch naturally between Hindi and English mid-sentence.</p>
               <div className="vozon-lang-tags">
                 <span>हिन्दी (Hindi)</span>
@@ -674,7 +674,7 @@ export function HomeDesignFour() {
             <div><strong>1 Lakh+</strong><span>daily calling minutes</span></div>
             <div><strong>75%+</strong><span>first-call resolution rate</span></div>
             <div><strong>&gt;750ms</strong><span>telephony voice latency</span></div>
-            <div><strong>22+</strong><span>Indic &amp; global languages</span></div>
+            <div><strong>22+ &amp; 76</strong><span>Indic &amp; global languages</span></div>
             <div><strong>99.9%</strong><span>enterprise uptime</span></div>
           </div>
           <div className="design-four-agent-banner">
