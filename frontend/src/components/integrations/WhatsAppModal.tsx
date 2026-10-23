@@ -38,7 +38,7 @@ export function WhatsAppModal({
 
   const [busy, setBusy] = useState(false);
   const [connectMode, setConnectMode] = useState<"popup" | "manual">("popup");
-  const [useCoexistence, setUseCoexistence] = useState(true);
+  const [useCoexistence, setUseCoexistence] = useState(false);
 
   // Manual / Sandbox credentials state
   const [manualPhoneId, setManualPhoneId] = useState("");
@@ -379,7 +379,7 @@ export function WhatsAppModal({
                         <span>📲</span> WhatsApp Business App Coexistence
                       </strong>
                       <span className="text-slate-600 block text-[11px] leading-relaxed">
-                        Keep using your existing WhatsApp Business mobile app on your phone for daily chats, while Vozon uses Cloud API simultaneously for voice call follow-ups.
+                        Keep using your existing WhatsApp Business mobile app on your phone for daily chats, while Vozon uses Cloud API simultaneously. <em>(Leave unchecked if testing standard Embedded Signup or if Meta Coexistence is not yet approved).</em>
                       </span>
                     </label>
                   </div>
