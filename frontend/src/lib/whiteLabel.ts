@@ -89,7 +89,7 @@ export type WhiteLabelBrand = {
   };
   support: { email: string; phone: string; websiteUrl: string; helpCenterUrl: string; statusPageUrl: string };
   legal: { termsUrl: string; privacyUrl: string; cookiePolicyUrl: string; legalBusinessName: string; businessAddress: string };
-  email: { fromName: string; fromAddress: string; replyTo: string; sendingDomainStatus: string };
+  email: { fromName: string; fromAddress: string; replyTo: string; resendApiKey?: string; sendingDomainStatus: string };
 };
 
 export type WhiteLabelDomain = {

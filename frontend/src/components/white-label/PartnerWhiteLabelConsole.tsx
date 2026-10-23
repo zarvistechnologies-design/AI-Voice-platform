@@ -21,7 +21,7 @@ import {
 } from "@/lib/whiteLabel";
 
 type Tab = "launch" | "brand" | "domains" | "plans" | "customers" | "billing" | "contract";
-type Notice = { tone: "success" | "error" | "info"; message: string } | null;
+type Notice = { tone: "success" | "error" | "info" | "critical"; message: string } | null;
 
 const fieldClass = "min-h-11 w-full rounded-lg border border-[#d8e2df] bg-white px-3 text-sm text-[#20342e] shadow-sm outline-none transition placeholder:text-[#9aa7a3] focus:border-[#168a78] focus:ring-4 focus:ring-[#168a78]/10 disabled:bg-[#f1f4f3] disabled:text-[#8b9894]";
 const labelClass = "grid gap-2 text-xs font-semibold text-[#52645f]";
@@ -62,9 +62,26 @@ function Select({ label, children, ...props }: React.SelectHTMLAttributes<HTMLSe
   return <label className={labelClass}><span>{label}</span><select {...props} className={fieldClass}>{children}</select></label>;
 }
 
-function BrandEditor({ brand, busy, onSaved }: { brand: WhiteLabelBrand; busy: boolean; onSaved(message: string): Promise<void> }) {
+function BrandEditor({
+  brand,
+  busy,
+  onSaved,
+  onError,
+  onReload,
+}: {
+  brand: WhiteLabelBrand;
+  busy: boolean;
+  onSaved(message: string): Promise<void>;
+  onError?(message: string): void;
+  onReload?(): Promise<void>;
+}) {
   const [uploading, setUploading] = useState("");
   const [uploadError, setUploadError] = useState("");
+  const [actionError, setActionError] = useState("");
+  const [showResendKey, setShowResendKey] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [publishing, setPublishing] = useState(false);
   const [form, setForm] = useState(() => ({
     productName: brand.branding.productName,
     companyName: brand.branding.companyName,
@@ -83,6 +100,7 @@ function BrandEditor({ brand, busy, onSaved }: { brand: WhiteLabelBrand; busy: b
     legalBusinessName: brand.legal.legalBusinessName,
     emailFromName: brand.email.fromName,
     emailFromAddress: brand.email.fromAddress,
+    emailResendApiKey: brand.email.resendApiKey || "",
     replyTo: brand.email.replyTo,
   }));
 
@@ -92,60 +110,97 @@ function BrandEditor({ brand, busy, onSaved }: { brand: WhiteLabelBrand; busy: b
 
   async function save(event: FormEvent) {
     event.preventDefault();
-    await partnerWhiteLabelApi.updateBrand(documentId(brand), {
-      branding: {
-        productName: form.productName,
-        companyName: form.companyName,
-        logoUrl: form.logoUrl,
-        logoDarkUrl: form.logoDarkUrl,
-        iconUrl: form.iconUrl,
-        primaryColor: form.primaryColor,
-        secondaryColor: form.secondaryColor,
-        accentColor: form.accentColor,
-        surfaceColor: form.surfaceColor,
-        defaultTheme: brand.branding.defaultTheme,
-        poweredByText: brand.branding.poweredByText,
-      },
-      support: { ...brand.support, email: form.supportEmail, websiteUrl: form.websiteUrl, helpCenterUrl: form.helpCenterUrl },
-      legal: { ...brand.legal, termsUrl: form.termsUrl, privacyUrl: form.privacyUrl, legalBusinessName: form.legalBusinessName },
-      email: { ...brand.email, fromName: form.emailFromName, fromAddress: form.emailFromAddress, replyTo: form.replyTo },
-    });
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(new CustomEvent("brand-updated", {
-        detail: {
-          source: "white_label",
-          hostname: window.location.hostname,
+    setSaving(true);
+    setActionError("");
+    try {
+      await partnerWhiteLabelApi.updateBrand(documentId(brand), {
+        branding: {
           productName: form.productName,
           companyName: form.companyName,
           logoUrl: form.logoUrl,
-          logoDarkUrl: form.logoDarkUrl || form.logoUrl,
+          logoDarkUrl: form.logoDarkUrl,
           iconUrl: form.iconUrl,
-          urls: { app: window.location.origin, api: "", links: "" },
-          colors: {
-            primary: form.primaryColor,
-            secondary: form.secondaryColor,
-            accent: form.accentColor,
-            surface: form.surfaceColor,
-          },
+          primaryColor: form.primaryColor,
+          secondaryColor: form.secondaryColor,
+          accentColor: form.accentColor,
+          surfaceColor: form.surfaceColor,
           defaultTheme: brand.branding.defaultTheme,
-          support: { ...brand.support, email: form.supportEmail, websiteUrl: form.websiteUrl, helpCenterUrl: form.helpCenterUrl },
-          legal: { ...brand.legal, termsUrl: form.termsUrl, privacyUrl: form.privacyUrl, legalBusinessName: form.legalBusinessName },
-          poweredBy: { visible: false, text: "" },
-          authentication: { registrationMode: "invite_only", googleSignIn: false },
+          poweredByText: brand.branding.poweredByText,
         },
-      }));
+        support: { ...brand.support, email: form.supportEmail, websiteUrl: form.websiteUrl, helpCenterUrl: form.helpCenterUrl },
+        legal: { ...brand.legal, termsUrl: form.termsUrl, privacyUrl: form.privacyUrl, legalBusinessName: form.legalBusinessName },
+        email: {
+          ...brand.email,
+          fromName: form.emailFromName,
+          fromAddress: form.emailFromAddress,
+          replyTo: form.replyTo,
+          resendApiKey: form.emailResendApiKey.trim(),
+        },
+      });
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("brand-updated", {
+          detail: {
+            source: "white_label",
+            hostname: window.location.hostname,
+            productName: form.productName,
+            companyName: form.companyName,
+            logoUrl: form.logoUrl,
+            logoDarkUrl: form.logoDarkUrl || form.logoUrl,
+            iconUrl: form.iconUrl,
+            urls: { app: window.location.origin, api: "", links: "" },
+            colors: {
+              primary: form.primaryColor,
+              secondary: form.secondaryColor,
+              accent: form.accentColor,
+              surface: form.surfaceColor,
+            },
+            defaultTheme: brand.branding.defaultTheme,
+            support: { ...brand.support, email: form.supportEmail, websiteUrl: form.websiteUrl, helpCenterUrl: form.helpCenterUrl },
+            legal: { ...brand.legal, termsUrl: form.termsUrl, privacyUrl: form.privacyUrl, legalBusinessName: form.legalBusinessName },
+            poweredBy: { visible: false, text: "" },
+            authentication: { registrationMode: "invite_only", googleSignIn: false },
+          },
+        }));
+      }
+      await onSaved("Brand settings saved.");
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : "Failed to save brand settings.";
+      setActionError(msg);
+      onError?.(msg);
+    } finally {
+      setSaving(false);
     }
-    await onSaved("Brand settings saved.");
   }
 
   async function publish() {
-    await partnerWhiteLabelApi.publishBrand(documentId(brand));
-    await onSaved("Brand published. Published settings are now eligible for active custom domains.");
+    setPublishing(true);
+    setActionError("");
+    try {
+      await partnerWhiteLabelApi.publishBrand(documentId(brand));
+      await onSaved("Brand published. Published settings are now eligible for active custom domains.");
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : "Failed to publish brand.";
+      setActionError(msg);
+      onError?.(msg);
+    } finally {
+      setPublishing(false);
+    }
   }
 
   async function verifyEmailDomain() {
-    await partnerWhiteLabelApi.verifyEmailDomain(documentId(brand));
-    await onSaved("Branded email sending domain verified.");
+    setVerifying(true);
+    setActionError("");
+    try {
+      await partnerWhiteLabelApi.verifyEmailDomain(documentId(brand));
+      await onSaved("Branded email sending domain verified successfully.");
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : "Email domain verification failed.";
+      setActionError(msg);
+      onError?.(msg);
+      await onReload?.().catch(() => {});
+    } finally {
+      setVerifying(false);
+    }
   }
 
   async function uploadAsset(role: "logo" | "logoDark" | "icon", file?: File) {
@@ -191,15 +246,107 @@ function BrandEditor({ brand, busy, onSaved }: { brand: WhiteLabelBrand; busy: b
     }
   }
 
+  const isUnsaved = Boolean(
+    (form.emailFromAddress && form.emailFromAddress !== brand.email.fromAddress) ||
+    form.emailResendApiKey !== (brand.email.resendApiKey || "")
+  );
+  const isVerified = brand.email.sendingDomainStatus === "verified";
+
   return <form className="grid gap-5 p-5" onSubmit={save}>
     {uploadError ? <div className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-xs font-semibold text-rose-700">{uploadError}</div> : null}
+    {actionError ? <div className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-xs font-semibold text-rose-700">⚠️ {actionError}</div> : null}
     <div className="grid gap-4 md:grid-cols-2"><Input label="Product name" required value={form.productName} onChange={(event) => set("productName", event.target.value)} /><Input label="Legal/company display name" required value={form.companyName} onChange={(event) => set("companyName", event.target.value)} /></div>
     <div className="grid gap-4 md:grid-cols-3">{([['logo', 'Logo URL (HTTPS)', 'logoUrl'], ['logoDark', 'Dark logo URL (HTTPS)', 'logoDarkUrl'], ['icon', 'Square icon URL (HTTPS)', 'iconUrl']] as const).map(([role, label, key]) => <div className="grid gap-2" key={role}><Input label={label} required={role !== "logoDark"} type="url" value={form[key]} onChange={(event) => set(key, event.target.value)} /><label className="inline-flex min-h-10 cursor-pointer items-center justify-center rounded-lg border border-[#d8e2df] bg-[#f8faf9] px-3 text-xs font-semibold text-[#40564f] transition hover:border-[#b8cbc5] hover:bg-[#f1f6f4]"><input accept="image/avif,image/gif,image/jpeg,image/png,image/webp,image/x-icon" className="sr-only" disabled={busy || Boolean(uploading)} type="file" onChange={(event) => void uploadAsset(role, event.target.files?.[0])} />{uploading === role ? "Uploading…" : "Upload managed image"}</label></div>)}</div>
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{(["primaryColor", "secondaryColor", "accentColor", "surfaceColor"] as const).map((key) => <label className={labelClass} key={key}><span>{key.replace("Color", " color")}</span><span className="flex gap-2"><input aria-label={`${key} picker`} className="h-11 w-12 rounded-lg border border-[#d8e2df] bg-white p-1" type="color" value={form[key].slice(0, 7)} onChange={(event) => set(key, event.target.value)} /><input className={fieldClass} pattern="#[0-9a-fA-F]{6}" value={form[key]} onChange={(event) => set(key, event.target.value)} /></span></label>)}</div>
     <div className="grid gap-4 md:grid-cols-3"><Input label="Support email" required type="email" value={form.supportEmail} onChange={(event) => set("supportEmail", event.target.value)} /><Input label="Website URL" type="url" value={form.websiteUrl} onChange={(event) => set("websiteUrl", event.target.value)} /><Input label="Help center URL" type="url" value={form.helpCenterUrl} onChange={(event) => set("helpCenterUrl", event.target.value)} /></div>
     <div className="grid gap-4 md:grid-cols-3"><Input label="Terms URL" required type="url" value={form.termsUrl} onChange={(event) => set("termsUrl", event.target.value)} /><Input label="Privacy URL" required type="url" value={form.privacyUrl} onChange={(event) => set("privacyUrl", event.target.value)} /><Input label="Legal business name" required value={form.legalBusinessName} onChange={(event) => set("legalBusinessName", event.target.value)} /></div>
-    <div className="grid gap-4 md:grid-cols-3"><Input label="Email sender name" value={form.emailFromName} onChange={(event) => set("emailFromName", event.target.value)} /><Input label="Verified sender address" type="email" value={form.emailFromAddress} onChange={(event) => set("emailFromAddress", event.target.value)} /><Input label="Email reply-to" type="email" value={form.replyTo} onChange={(event) => set("replyTo", event.target.value)} /></div>
-    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#e7edeb] pt-5"><span className="text-xs text-[#71817d]">Sending domain: <strong className="capitalize text-[#344b45]">{brand.email.sendingDomainStatus.replaceAll("_", " ")}</strong></span><div className="flex flex-wrap justify-end gap-3"><button className={secondaryButtonClass} disabled={busy || !form.emailFromAddress || form.emailFromAddress !== brand.email.fromAddress || brand.email.sendingDomainStatus === "verified"} onClick={() => void verifyEmailDomain()} type="button">{form.emailFromAddress !== brand.email.fromAddress ? "Save before verification" : brand.email.sendingDomainStatus === "verified" ? "Email domain verified" : "Verify email domain"}</button><button className={secondaryButtonClass} disabled={busy || brand.status === "published"} onClick={() => void publish()} type="button">{brand.status === "published" ? "Published" : "Publish brand"}</button><button className={buttonClass} disabled={busy} type="submit">Save brand</button></div></div>
+    
+    {/* Email Sending Configuration */}
+    <div className="grid gap-4 md:grid-cols-3">
+      <Input label="Email sender name" value={form.emailFromName} onChange={(event) => set("emailFromName", event.target.value)} />
+      <Input label="Verified sender address" type="email" value={form.emailFromAddress} onChange={(event) => set("emailFromAddress", event.target.value)} />
+      <Input label="Email reply-to" type="email" value={form.replyTo} onChange={(event) => set("replyTo", event.target.value)} />
+    </div>
+
+    {/* Custom Resend API Key Field */}
+    <div className="rounded-xl border border-[#dce7e3] bg-[#f8faf9] p-4 space-y-2">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <label className="text-xs font-semibold text-[#29423b]">
+          Custom Resend API Key <span className="font-normal text-[#7b8b86]">(Optional — use your own Resend account)</span>
+        </label>
+        <a
+          href="https://resend.com/api-keys"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[11px] font-semibold text-[#118778] hover:underline"
+        >
+          Create Full Access key at resend.com ↗
+        </a>
+      </div>
+      <div className="relative flex items-center">
+        <input
+          type={showResendKey ? "text" : "password"}
+          className={`${fieldClass} pr-16 font-mono text-xs`}
+          placeholder="re_•••••••••••••••••••••••••••••••• (Leave blank to use platform default key)"
+          value={form.emailResendApiKey}
+          onChange={(event) => set("emailResendApiKey", event.target.value)}
+        />
+        <button
+          type="button"
+          onClick={() => setShowResendKey((v) => !v)}
+          className="absolute right-3 text-xs font-semibold text-[#647771] hover:text-[#29423b] cursor-pointer"
+        >
+          {showResendKey ? "Hide" : "Show"}
+        </button>
+      </div>
+      <p className="text-[11px] text-[#71817d] leading-relaxed">
+        💡 If using your own Resend account, create an API key with <strong>&quot;Full Access&quot;</strong> permission (Domains + Sending) so the platform can verify your Hostinger domain.
+      </p>
+    </div>
+
+    {/* Actions Footer */}
+    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#e7edeb] pt-5">
+      <div className="flex flex-col gap-0.5">
+        <span className="text-xs text-[#71817d]">
+          Sending domain:{" "}
+          <strong className={`capitalize ${isVerified ? "text-emerald-700" : brand.email.sendingDomainStatus === "failed" ? "text-rose-700" : "text-[#344b45]"}`}>
+            {brand.email.sendingDomainStatus.replaceAll("_", " ")}
+          </strong>
+        </span>
+        {isUnsaved ? (
+          <span className="text-[11px] font-medium text-amber-700">
+            ℹ️ Sender address or API key modified. Click &quot;Save brand&quot; first, then verify.
+          </span>
+        ) : null}
+      </div>
+      <div className="flex flex-wrap justify-end gap-3">
+        <button
+          className={secondaryButtonClass}
+          disabled={busy || verifying || saving || publishing || !form.emailFromAddress || isUnsaved || isVerified}
+          onClick={() => void verifyEmailDomain()}
+          type="button"
+        >
+          {verifying
+            ? "Verifying with Resend…"
+            : isUnsaved
+            ? "Save before verification"
+            : isVerified
+            ? "✓ Email domain verified"
+            : "Verify email domain"}
+        </button>
+        <button
+          className={secondaryButtonClass}
+          disabled={busy || verifying || saving || publishing || brand.status === "published"}
+          onClick={() => void publish()}
+          type="button"
+        >
+          {publishing ? "Publishing…" : brand.status === "published" ? "Published" : "Publish brand"}
+        </button>
+        <button className={buttonClass} disabled={busy || verifying || saving || publishing} type="submit">
+          {saving ? "Saving…" : "Save brand"}
+        </button>
+      </div>
+    </div>
   </form>;
 }
 
@@ -427,7 +574,7 @@ export function PartnerWhiteLabelConsole() {
       <header className="overflow-hidden rounded-2xl border border-[#dce7e3] bg-[linear-gradient(120deg,#ffffff_0%,#f4faf8_70%,#eaf6f2_100%)] p-6 shadow-[0_10px_30px_rgba(28,55,47,0.06)] sm:p-8">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between"><div><span className="text-xs font-bold uppercase tracking-[0.18em] text-[#118778]">Partner workspace</span><h1 className="mt-2 text-3xl font-bold tracking-tight text-[#14231f] sm:text-4xl">{overview.account.name}</h1><p className="mt-2 max-w-3xl text-sm leading-6 text-[#647771]">Manage your brand, domains, pricing, customers and platform contract from one secure workspace.</p></div><div className="flex gap-2"><Status value={overview.account.status} /><Status value={overview.account.billingStatus} /></div></div>
       </header>
-      {notice ? <div className={`rounded-lg border px-4 py-3 text-sm font-semibold ${notice.tone === "error" ? "border-rose-200 bg-rose-50 text-rose-700" : notice.tone === "success" ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-sky-200 bg-sky-50 text-sky-700"}`}>{notice.message}</div> : null}
+      {notice ? <div className={`rounded-lg border px-4 py-3 text-sm font-semibold ${notice.tone === "error" || notice.tone === "critical" ? "border-rose-200 bg-rose-50 text-rose-700" : notice.tone === "success" ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-sky-200 bg-sky-50 text-sky-700"}`}>{notice.message}</div> : null}
       <nav className="flex gap-1 overflow-x-auto rounded-xl border border-[#dde6e3] bg-white p-1.5 shadow-[0_6px_18px_rgba(28,55,47,0.04)]" aria-label="White-label administration">{tabs.map((item) => <button className={`shrink-0 rounded-lg px-4 py-2.5 text-xs font-semibold transition ${tab === item.id ? "bg-[#126f62] !text-white shadow-sm" : "text-[#647771] hover:bg-[#f1f6f4] hover:text-[#29423b]"}`} style={tab === item.id ? { color: "#ffffff" } : undefined} key={item.id} onClick={() => setTab(item.id)}>{item.label}</button>)}</nav>
 
       {tab === "launch" ? <div className="grid gap-5 xl:grid-cols-[1fr_0.7fr]">
@@ -436,7 +583,7 @@ export function PartnerWhiteLabelConsole() {
         {economics?.economics.length ? <Card className="xl:col-span-2"><SectionTitle title="Partner economics" description={`Usage economics since ${date(economics.from)}. Negative margin includes plan allowances absorbed by the partner.`} /><div className="grid gap-4 p-5 md:grid-cols-2">{economics.economics.map((row) => <div className="rounded-xl border border-[#e1e8e6] bg-[#fafcfb] p-5" key={row.currency}><div className="flex items-center justify-between"><strong className="text-[#29423b]">{row.currency}</strong><span className="text-xs text-[#7b8b86]">{row.calls.toLocaleString()} calls</span></div><dl className="mt-4 grid grid-cols-2 gap-3 text-xs"><div><dt className="text-[#7b8b86]">Projected monthly recurring</dt><dd className="mt-1 text-base font-bold text-[#29423b]">{money(row.projectedMonthlyRecurringMinor, row.currency)}</dd></div><div><dt className="text-[#7b8b86]">Customer usage charges</dt><dd className="mt-1 text-base font-bold text-[#29423b]">{money(row.customerUsageCharges * 100, row.currency)}</dd></div><div><dt className="text-[#7b8b86]">Wholesale usage cost</dt><dd className="mt-1 text-base font-bold text-[#29423b]">{money(row.wholesaleCost * 100, row.currency)}</dd></div><div><dt className="text-[#7b8b86]">Usage contribution</dt><dd className={`mt-1 text-base font-bold ${row.partnerMargin < 0 ? "text-rose-700" : "text-emerald-700"}`}>{money(row.partnerMargin * 100, row.currency)}</dd></div></dl></div>)}</div></Card> : null}
       </div> : null}
 
-      {tab === "brand" && defaultBrand ? <Card><SectionTitle title="Customer-facing brand" description="These settings drive metadata, authentication, navigation, support, legal links, and transactional email content." action={<Status value={defaultBrand.status} />} /><BrandEditor brand={defaultBrand} busy={busy} onSaved={async (message) => { await load(); setNotice({ tone: "success", message }); }} /></Card> : null}
+      {tab === "brand" && defaultBrand ? <Card><SectionTitle title="Customer-facing brand" description="These settings drive metadata, authentication, navigation, support, legal links, and transactional email content." action={<Status value={defaultBrand.status} />} /><BrandEditor brand={defaultBrand} busy={busy} onSaved={async (message) => { await load(); setNotice({ tone: "success", message }); }} onError={(message) => setNotice({ tone: "critical", message })} onReload={load} /></Card> : null}
 
       {tab === "domains" ? <div className="grid gap-5"><Card><SectionTitle title="Add custom domain" description="The domain stays fail-closed until ownership, routing, edge, and TLS validations all pass." /><form className="grid gap-4 p-5 md:grid-cols-[180px_220px_minmax(0,1fr)_auto] md:items-end" onSubmit={addDomain}><Select label="Domain purpose" value={domainKind} onChange={(event) => setDomainKind(event.target.value as "app" | "api" | "link")}><option value="app">Customer app</option><option value="link">Public links</option>{overview.account.entitlements.customApiDomains ? <option value="api">Developer API</option> : null}</Select><Select label="Brand" required value={domainBrandId} onChange={(event) => setDomainBrandId(event.target.value)}>{overview.brands.map((item) => <option key={documentId(item)} value={documentId(item)}>{item.branding.productName}</option>)}</Select><Input label="Hostname only" placeholder={domainKind === "api" ? "api.customerbrand.com" : domainKind === "link" ? "links.customerbrand.com" : "app.customerbrand.com"} required value={domain} onChange={(event) => setDomain(event.target.value)} /><button className={buttonClass} disabled={busy} type="submit">Reserve domain</button></form></Card>
         {overview.domains.map((item) => <Card key={documentId(item)}><div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between"><div><div className="flex flex-wrap items-center gap-2"><strong className="text-[#29423b]">{item.hostname}</strong><Status value={item.status} /><span className="rounded-full bg-[#f0f4f3] px-2 py-1 text-[10px] font-semibold uppercase text-[#647771]">{item.kind}</span><span className="rounded-full bg-[#f0f4f3] px-2 py-1 text-[10px] font-semibold uppercase text-[#647771]">TLS {item.tls?.status ?? "not started"}</span></div><p className="mt-2 text-xs text-[#71817d]">Last checked {date(item.lastCheckedAt)}{item.failureReason ? ` · ${item.failureReason}` : ""}</p></div><div className="flex gap-2"><button className={secondaryButtonClass} disabled={busy || item.status === "active" || item.status === "disabled"} onClick={() => void perform(() => partnerWhiteLabelApi.verifyDomain(documentId(item)), "Domain verification refreshed.")}>Verify now</button>{item.status === "disabled" ? <button className={buttonClass} disabled={busy} onClick={() => void perform(() => partnerWhiteLabelApi.reactivateDomain(documentId(item)), "Domain reactivated. Add the displayed DNS records, then verify it.")}>Reactivate</button> : <button className="inline-flex min-h-10 items-center justify-center rounded-lg border border-rose-200 bg-white px-3 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 disabled:opacity-45" disabled={busy} onClick={() => { const reason = window.prompt("Reason for disabling this domain:"); if (reason) void perform(() => partnerWhiteLabelApi.disableDomain(documentId(item), reason), "Domain disabled and removed from branded request resolution."); }}>Disable</button>}</div></div><div className="overflow-x-auto border-t border-[#e7edeb]"><table className="w-full min-w-[720px] text-left text-xs"><thead className="bg-[#f7f9f8] text-[#71817d]"><tr><th className="px-5 py-3">Type</th><th className="px-5 py-3">DNS name</th><th className="px-5 py-3">Value</th><th className="px-5 py-3">Purpose</th></tr></thead><tbody>{item.requiredRecords.map((record, index) => <tr className="border-t border-[#e7edeb]" key={`${record.name}-${index}`}><td className="px-5 py-3 font-bold text-[#118778]">{record.type}</td><td className="px-5 py-3 font-mono text-[#40564f]">{record.name}</td><td className="max-w-md break-all px-5 py-3 font-mono text-[#40564f]">{record.value}</td><td className="px-5 py-3 capitalize text-[#71817d]">{record.purpose}</td></tr>)}</tbody></table></div></Card>)}
