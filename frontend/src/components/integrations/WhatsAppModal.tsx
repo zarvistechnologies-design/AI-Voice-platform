@@ -55,6 +55,7 @@ export function WhatsAppModal({
   const sessionInfoRef = useRef<{
     waba_id?: string;
     phone_number_id?: string;
+    business_id?: string;
   }>({});
 
   // Test message state
@@ -113,7 +114,11 @@ export function WhatsAppModal({
       try {
         const data = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
         if (data.type === "WA_EMBEDDED_SIGNUP") {
-          const info = data.data as { waba_id?: string; phone_number_id?: string };
+          const info = data.data as {
+            waba_id?: string;
+            phone_number_id?: string;
+            business_id?: string;
+          };
           if (info) {
             sessionInfoRef.current = info;
           }
@@ -134,6 +139,7 @@ export function WhatsAppModal({
   const handleProcessCode = async (code: string) => {
     const wabaId = sessionInfoRef.current.waba_id;
     const phoneNumberId = sessionInfoRef.current.phone_number_id;
+    const businessId = sessionInfoRef.current.business_id;
 
     try {
       setBusy(true);
@@ -141,6 +147,7 @@ export function WhatsAppModal({
         code,
         wabaId: wabaId || undefined,
         phoneNumberId: phoneNumberId || undefined,
+        businessId: businessId || undefined,
       });
       onSuccess(res.message || "WhatsApp Business connected successfully!");
     } catch (err) {
@@ -505,6 +512,19 @@ export function WhatsAppModal({
                       {String(metadata.wabaId || "—")}
                     </span>
                   </div>
+                  {metadata.businessName || metadata.businessId ? (
+                    <div className="col-span-2">
+                      <span className="text-slate-500 block text-[11px]">Business Portfolio</span>
+                      <span className="text-slate-900 text-xs font-semibold">
+                        {String(metadata.businessName || metadata.businessId)}
+                      </span>
+                      {metadata.businessName && metadata.businessId ? (
+                        <span className="ml-2 font-mono text-[10px] text-slate-500">
+                          {String(metadata.businessId)}
+                        </span>
+                      ) : null}
+                    </div>
+                  ) : null}
                   {metadata.displayPhoneNumber ? (
                     <div>
                       <span className="text-slate-500 block text-[11px]">Display Number</span>

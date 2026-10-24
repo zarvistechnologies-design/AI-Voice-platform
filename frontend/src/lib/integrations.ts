@@ -149,6 +149,7 @@ export const integrationsApi = {
     code?: string;
     wabaId?: string;
     phoneNumberId?: string;
+    businessId?: string;
     accessToken?: string;
   }) => {
     const result = await request<{ ok: boolean; message: string; phoneDetails: Record<string, unknown> }>(
