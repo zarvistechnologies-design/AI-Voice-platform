@@ -925,6 +925,73 @@ export type CreateCampaignInput = {
   automaticCallbacks: boolean;
 };
 
+export type WorkflowNodeType = "trigger" | "agent" | "condition" | "tool" | "action" | "handoff" | "wait" | "end";
+
+export type WorkflowNode = {
+  id: string;
+  type: WorkflowNodeType;
+  position: { x: number; y: number };
+  data: {
+    label: string;
+    description: string;
+    config: Record<string, unknown>;
+  };
+};
+
+export type WorkflowEdge = {
+  id: string;
+  source: string;
+  target: string;
+  sourceHandle?: string;
+  targetHandle?: string;
+  label?: string;
+};
+
+export type WorkflowValidation = {
+  valid: boolean;
+  errors: string[];
+  warnings: string[];
+};
+
+export type WorkflowRun = {
+  runId: string;
+  status: "completed" | "failed";
+  startedAt: string;
+  completedAt: string;
+  input: Record<string, unknown>;
+  timeline: Array<{
+    nodeId: string;
+    label: string;
+    type: WorkflowNodeType;
+    status: "completed" | "failed";
+    detail: string;
+  }>;
+};
+
+export type AgentWorkflow = {
+  _id: string;
+  name: string;
+  description: string;
+  status: "draft" | "live" | "paused";
+  version: number;
+  publishedVersion: number;
+  nodes: WorkflowNode[];
+  edges: WorkflowEdge[];
+  variables: Record<string, unknown>;
+  lastPublishedAt: string | null;
+  runs: WorkflowRun[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type WorkflowSummary = Pick<AgentWorkflow, "_id" | "name" | "description" | "status" | "version" | "publishedVersion" | "lastPublishedAt" | "createdAt" | "updatedAt"> & {
+  nodeCount: number;
+  edgeCount: number;
+  runCount: number;
+};
+
+export type WorkflowDraftInput = Pick<AgentWorkflow, "name" | "description" | "nodes" | "edges" | "variables">;
+
 async function request<T>(path: string, init: RequestInit = {}) {
   const session = getSession();
   if (!session) {
@@ -1853,6 +1920,15 @@ export const voiceApi = {
     if (!response.ok) throw new Error("Could not export call records.");
     return response.blob();
   },
+  workflows: () => cachedRequest<{ workflows: WorkflowSummary[] }>("/workflows", 5_000),
+  workflow: (workflowId: string) => request<{ workflow: AgentWorkflow }>(`/workflows/${encodeURIComponent(workflowId)}`),
+  createWorkflow: (input: WorkflowDraftInput) => mutation<{ workflow: AgentWorkflow }>("/workflows", { method: "POST", body: JSON.stringify(input) }, ["/workflows"]),
+  updateWorkflow: (workflowId: string, input: WorkflowDraftInput) => mutation<{ workflow: AgentWorkflow; validation: WorkflowValidation }>(`/workflows/${encodeURIComponent(workflowId)}`, { method: "PUT", body: JSON.stringify(input) }, ["/workflows"]),
+  deleteWorkflow: (workflowId: string) => mutation<{ ok: boolean }>(`/workflows/${encodeURIComponent(workflowId)}`, { method: "DELETE" }, ["/workflows"]),
+  validateWorkflow: (input: Pick<WorkflowDraftInput, "nodes" | "edges">) => request<{ validation: WorkflowValidation }>("/workflows/validate", { method: "POST", body: JSON.stringify(input) }),
+  publishWorkflow: (workflowId: string) => mutation<{ workflow: AgentWorkflow; validation: WorkflowValidation }>(`/workflows/${encodeURIComponent(workflowId)}/publish`, { method: "POST" }, ["/workflows"]),
+  pauseWorkflow: (workflowId: string) => mutation<{ workflow: AgentWorkflow }>(`/workflows/${encodeURIComponent(workflowId)}/pause`, { method: "POST" }, ["/workflows"]),
+  testWorkflow: (workflowId: string, input: Record<string, unknown> = {}) => mutation<{ run: WorkflowRun; validation: WorkflowValidation }>(`/workflows/${encodeURIComponent(workflowId)}/test-run`, { method: "POST", body: JSON.stringify({ input }) }),
   analytics: (input: { days?: number; agentId?: string } = {}) => {
     const query = new URLSearchParams();
     query.set("days", String(input.days ?? 30));

@@ -24,6 +24,7 @@ import {
   type IntegrationProvider,
 } from "@/lib/integrations";
 import { WhatsAppModal } from "@/components/integrations/WhatsAppModal";
+import { ClaudeConnectorCard } from "@/components/integrations/ClaudeConnectorCard";
 
 const catalog = {
   vobiz: {
@@ -444,6 +445,7 @@ export function IntegrationsShell() {
             </div>
           ) : null}
           <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <ClaudeConnectorCard />
             {displayProviders.map(({ provider, displayId }) => {
               const item = catalog[displayId];
               const googleView =
