@@ -180,25 +180,6 @@ export function IntegrationsShell() {
     return () => window.clearTimeout(timer);
   }, [load, router, session]);
 
-  // Handle Meta OAuth redirect inside a popup dialog
-  useEffect(() => {
-    if (typeof window !== "undefined" && window.opener) {
-      const searchParams = new URLSearchParams(window.location.search);
-      const code = searchParams.get("code");
-      if (code) {
-        try {
-          window.opener.postMessage(
-            { type: "WA_EMBEDDED_SIGNUP_CODE", code },
-            window.location.origin,
-          );
-          window.close();
-        } catch {
-          // If window.close() is blocked, user will see the integrations screen
-        }
-      }
-    }
-  }, []);
-
   async function connect() {
     if (!selected || selected === "google") return;
     if (selected === "digitalbot" && !digitalBotAgentId) {

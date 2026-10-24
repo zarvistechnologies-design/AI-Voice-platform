@@ -41,6 +41,27 @@ Use the same value for `GOOGLE_CLIENT_ID` in the backend `.env`. In Google
 Cloud Console, add `http://localhost:3000` as an authorized JavaScript origin.
 The Google client secret must not be added to the frontend.
 
+## WhatsApp Embedded Signup
+
+Create a WhatsApp Embedded Signup v4 configuration under **Facebook Login for
+Business > Configurations** in your Meta app. Configure the frontend with that
+app's ID and the new configuration ID:
+
+```env
+NEXT_PUBLIC_META_APP_ID=your-meta-app-id
+NEXT_PUBLIC_META_CONFIG_ID=your-v4-embedded-signup-configuration-id
+```
+
+In the backend environment, set `META_APP_ID` to the same app ID and set
+`META_APP_SECRET` to that app's secret. Keep the secret server-side. Add the
+frontend origin to the Meta app's allowed JavaScript SDK domains and OAuth
+settings. Use HTTPS outside localhost. Rebuild and redeploy the frontend after
+changing either `NEXT_PUBLIC_` value.
+
+The WhatsApp connection screen reports missing configuration instead of
+launching Meta with another app's ID. Coexistence requires the corresponding
+WhatsApp Business app onboarding capability in your Meta configuration.
+
 ## Folder Structure
 
 ```text
