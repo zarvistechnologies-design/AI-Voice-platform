@@ -42,6 +42,7 @@ export function WhatsAppModal({
   const [sdkStatus, setSdkStatus] = useState<"loading" | "ready" | "error">("loading");
   const metaAppId = process.env.NEXT_PUBLIC_META_APP_ID?.trim();
   const metaConfigId = process.env.NEXT_PUBLIC_META_CONFIG_ID?.trim();
+  const hasValidMetaIds = /^\d+$/.test(metaAppId ?? "") && /^\d+$/.test(metaConfigId ?? "");
   const canUseMetaSdk = typeof window === "undefined" ||
     window.location.protocol === "https:" ||
     ["localhost", "127.0.0.1"].includes(window.location.hostname);
@@ -69,7 +70,7 @@ export function WhatsAppModal({
 
   // Initialize the Facebook SDK and listen for Embedded Signup session details.
   useEffect(() => {
-    if (!metaAppId || !metaConfigId || !canUseMetaSdk) return;
+    if (!hasValidMetaIds || !canUseMetaSdk) return;
 
     const initializeSdk = () => {
       if (!window.FB) {
@@ -128,7 +129,7 @@ export function WhatsAppModal({
       window.removeEventListener("message", handleMessage);
       if (window.fbAsyncInit === initializeSdk) window.fbAsyncInit = undefined;
     };
-  }, [metaAppId, metaConfigId, canUseMetaSdk]);
+  }, [metaAppId, hasValidMetaIds, canUseMetaSdk]);
 
   const handleProcessCode = async (code: string) => {
     const wabaId = sessionInfoRef.current.waba_id;
@@ -151,8 +152,8 @@ export function WhatsAppModal({
 
   // Launch Meta Embedded Signup Popup
   const handleLaunchSignup = () => {
-    if (!metaAppId || !metaConfigId) {
-      onError("Meta Embedded Signup is not configured. Set the app ID and its WhatsApp Embedded Signup configuration ID.");
+    if (!hasValidMetaIds) {
+      onError("Meta Embedded Signup needs a valid numeric App ID and WhatsApp Embedded Signup configuration ID from the same Meta app.");
       return;
     }
     if (!canUseMetaSdk || sdkStatus !== "ready" || !window.FB) {
@@ -373,20 +374,20 @@ export function WhatsAppModal({
                   </div>
 
                   <div className="pt-1">
-                    {(!metaAppId || !metaConfigId || !canUseMetaSdk || sdkStatus === "error") && (
+                    {(!hasValidMetaIds || !canUseMetaSdk || sdkStatus === "error") && (
                       <p className="mb-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900" role="alert">
-                        {!metaAppId || !metaConfigId
-                          ? "Meta Embedded Signup needs this app's Meta App ID and WhatsApp Embedded Signup configuration ID. Ask the platform administrator to configure both."
+                        {!hasValidMetaIds
+                          ? "Meta Embedded Signup needs a numeric Meta App ID and WhatsApp Embedded Signup configuration ID from the same Meta app. Ask the platform administrator to configure both."
                           : "Meta signup could not load. Use HTTPS (or localhost) and allow the Facebook SDK, then try again."}
                       </p>
                     )}
                     <button
                       type="button"
-                      disabled={busy || !metaAppId || !metaConfigId || !canUseMetaSdk || sdkStatus !== "ready"}
+                      disabled={busy || !hasValidMetaIds || !canUseMetaSdk || sdkStatus !== "ready"}
                       onClick={() => handleLaunchSignup()}
                       className="w-full flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl font-semibold text-white bg-[#118778] hover:bg-[#0e6f62] shadow-sm transition disabled:opacity-50 text-sm cursor-pointer"
                     >
-                      {busy || (sdkStatus === "loading" && metaAppId && metaConfigId) ? (
+                      {busy || (sdkStatus === "loading" && hasValidMetaIds) ? (
                         <span className="flex items-center gap-2">
                           <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24">
                             <circle

@@ -58,6 +58,11 @@ frontend origin to the Meta app's allowed JavaScript SDK domains and OAuth
 settings. Use HTTPS outside localhost. Rebuild and redeploy the frontend after
 changing either `NEXT_PUBLIC_` value.
 
+For Docker Compose, set both `NEXT_PUBLIC_META_` values in the environment
+used by `docker compose` (or in `AI-Voice-platform/.env`) and rebuild the
+frontend image. Runtime-only container variables cannot change a Next.js
+client bundle that has already been built.
+
 The WhatsApp connection screen reports missing configuration instead of
 launching Meta with another app's ID. Coexistence requires the corresponding
 WhatsApp Business app onboarding capability in your Meta configuration.
