@@ -4,6 +4,23 @@ import { useCallback, useEffect, useState } from "react";
 
 import { disconnectMcpClient, getMcpConnectionSetup, type McpConnection } from "@/lib/assistant";
 
+const publicVozonMcpUrl = "https://api.vozon.ai/mcp";
+
+function connectorServerUrl(advertisedUrl: string) {
+  try {
+    const url = new URL(advertisedUrl);
+    if (
+      ["vozon.ai", "www.vozon.ai", "vozon.onrender.com"].includes(url.hostname.toLowerCase()) &&
+      url.pathname.replace(/\/$/, "") === "/mcp"
+    ) {
+      return publicVozonMcpUrl;
+    }
+  } catch {
+    // Keep the backend response so a malformed value remains visible for diagnosis.
+  }
+  return advertisedUrl;
+}
+
 function ClaudeSparkIcon({ className = "size-8" }: { className?: string }) {
   return (
     <svg fill="#D97757" role="img" viewBox="0 0 24 24" className={className} xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -37,7 +54,7 @@ export function ClaudeConnectorCard() {
   const load = useCallback(async () => {
     try {
       const result = await getMcpConnectionSetup();
-      setServerUrl(result.serverUrl);
+      setServerUrl(connectorServerUrl(result.serverUrl));
       if (result.staticClientId) {
         setStaticClientId(result.staticClientId);
       }
@@ -213,6 +230,9 @@ export function ClaudeConnectorCard() {
                     {copied ? "Copied URL!" : "Copy URL"}
                   </button>
                 </div>
+                <p className="mt-1 text-[11px] text-slate-500">
+                  Use the API URL shown here. The website URL, www.vozon.ai/mcp, does not host this connector.
+                </p>
               </div>
 
               <div>
