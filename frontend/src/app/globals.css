@@ -1,44 +1,4 @@
 @import "tailwindcss";
-@import "@xyflow/react/dist/style.css";
-
-.vozon-flow .react-flow__controls {
-  overflow: hidden;
-  border: 1px solid #dbe4e1;
-  border-radius: 0.75rem;
-  box-shadow: 0 8px 24px rgb(20 35 31 / 0.08);
-}
-
-.vozon-flow .react-flow__controls-button {
-  width: 2rem;
-  height: 2rem;
-  border-bottom-color: #e7ecea;
-  color: #52645f;
-}
-
-.vozon-flow .react-flow__minimap {
-  overflow: hidden;
-  border: 1px solid #dbe4e1;
-  border-radius: 0.75rem;
-  background: #fff;
-  box-shadow: 0 8px 24px rgb(20 35 31 / 0.08);
-}
-
-.workflow-input {
-  min-height: 2.5rem;
-  width: 100%;
-  border: 1px solid #dbe4e1;
-  border-radius: 0.625rem;
-  background: #fff;
-  padding: 0.6rem 0.7rem;
-  color: #14231f;
-  outline: none;
-  transition: border-color 150ms, box-shadow 150ms;
-}
-
-.workflow-input:focus {
-  border-color: #118778;
-  box-shadow: 0 0 0 3px rgb(17 135 120 / 0.11);
-}
 
 /* Keep the public Vozon mark aligned with the dashboard palette. Partner
    logos retain their uploaded colors on white-label hostnames. */
