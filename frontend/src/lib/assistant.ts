@@ -26,7 +26,7 @@ async function assistantRequest<T>(path: string, init: RequestInit = {}) {
   const data = await response.json().catch(() => null) as (T & { message?: string }) | null;
   if (!response.ok) {
     if (response.status === 401) clearSession();
-    throw new Error(data?.message ?? "Vozon could not complete that request.");
+    throw new Error(data?.message || `Vozon could not complete that request (HTTP ${response.status}).`);
   }
   return data as T;
 }
