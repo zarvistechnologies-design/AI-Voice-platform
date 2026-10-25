@@ -218,7 +218,7 @@ export function ClaudeConnectorCard() {
               <div>
                 <div className="flex items-center justify-between">
                   <label className="block text-[11px] font-bold uppercase tracking-[.1em] text-[#60736c]" htmlFor="modal-client-id">
-                    2. OAuth Client ID <span className="font-normal text-emerald-700">(Recommended for Claude)</span>
+                    2. OAuth Client ID <span className="font-normal text-slate-500">(only if automatic registration fails)</span>
                   </label>
                 </div>
                 <div className="mt-1.5 flex gap-2">
@@ -241,17 +241,18 @@ export function ClaudeConnectorCard() {
                   </button>
                 </div>
                 <p className="mt-1 text-[11px] text-slate-500">
-                  Paste this in Claude&apos;s &quot;OAuth Client ID&quot; connector setting to skip dynamic registration and connect instantly.
+                  Claude can register automatically. Use this ID only if Claude asks for an OAuth client ID; no client secret is needed.
                 </p>
               </div>
 
               <div className="rounded-xl border border-[#e2ece8] bg-[#fbfdfc] p-4 text-slate-700 space-y-2">
                 <p className="font-semibold text-slate-900">How to connect in Claude:</p>
                 <ol className="list-decimal pl-4 space-y-1.5 text-slate-600">
-                  <li>In Claude Desktop or Claude.ai, open <strong>Settings → Connectors</strong>.</li>
+                  <li>In Claude, open <strong>Customize → Connectors</strong> (or <strong>Organization settings → Connectors</strong> for a team).</li>
                   <li>Click <strong>Add custom connector</strong>.</li>
                   <li>Enter Name (e.g. <strong>Vozon</strong>) and paste the <strong>MCP Server URL</strong> above.</li>
-                  <li>In the <strong>OAuth Client ID</strong> field, paste <strong>{staticClientId}</strong>.</li>
+                  <li>Choose <strong>Sign in now</strong> and <strong>Register automatically</strong> for OAuth.</li>
+                  <li>If registration fails, choose <strong>Use your own OAuth client</strong> and paste <strong>{staticClientId}</strong> as the client ID.</li>
                   <li>Click Add and sign in with your Vozon account when prompted to authorize.</li>
                 </ol>
                 <div className="pt-2">
