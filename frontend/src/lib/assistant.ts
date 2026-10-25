@@ -4,7 +4,18 @@ import { clearSession, getAuthHeaders, getSession } from "@/lib/auth";
 export type AssistantMessage = {
   role: "user" | "assistant";
   content: string;
+  pendingAction?: AssistantPendingAction;
 };
+
+export type AssistantPendingAction = {
+  id: string;
+  title: string;
+  description: string;
+  fields: Array<{ label: string; value: string }>;
+  expiresAt: string;
+};
+
+export type AssistantReply = { answer: string; pendingAction?: AssistantPendingAction };
 
 export type McpConnection = {
   clientId: string;
@@ -32,12 +43,19 @@ async function assistantRequest<T>(path: string, init: RequestInit = {}) {
 }
 
 export async function sendAssistantMessage(messages: AssistantMessage[]) {
-  const data = await assistantRequest<{ answer?: string }>("/chat", {
+  const data = await assistantRequest<AssistantReply>("/chat", {
     method: "POST",
-    body: JSON.stringify({ messages }),
+    body: JSON.stringify({ messages: messages.map(({ role, content }) => ({ role, content })) }),
   });
   if (!data?.answer) throw new Error("Vozon returned an empty response. Please try again.");
-  return data.answer;
+  return data;
+}
+
+export function reviewAssistantAction(actionId: string, approved: boolean) {
+  return assistantRequest<{ answer: string }>(`/chat/actions/${encodeURIComponent(actionId)}`, {
+    method: "POST",
+    body: JSON.stringify({ approved }),
+  });
 }
 
 export function getMcpConnectionSetup() {

@@ -7,32 +7,50 @@ import { DashboardAuthBoundary } from "@/components/dashboard/DashboardAuthBound
 import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
 import { DashboardSidebar, getDashboardSidebarInitialState } from "@/components/dashboard/DashboardSidebar";
 import { getServerSession, getSession, logoutSession, subscribeToSession } from "@/lib/auth";
-import { sendAssistantMessage, type AssistantMessage } from "@/lib/assistant";
+import { reviewAssistantAction, sendAssistantMessage, type AssistantMessage } from "@/lib/assistant";
 
 const suggestions = [
   {
-    icon: "🎙️",
-    title: "Latest Call Transcript",
-    detail: "View verbatim dialog, turn-by-turn speech & caller sentiment",
-    prompt: "Show me the verbatim transcript of my latest call, who spoke, and what was said.",
+    icon: "◈",
+    eyebrow: "Campaign intelligence",
+    title: "What happened in my campaign?",
+    detail: "Outcomes, failed calls, and reasons behind the numbers.",
+    prompt: "Analyze my latest campaign. Show lead outcomes, call statuses, failure reasons, and what I should look at next. Link to the campaign.",
   },
   {
-    icon: "📊",
-    title: "Summarize Recent Calls",
-    detail: "Review statuses, durations, SIP failure diagnostics & outcomes",
-    prompt: "Summarize my last 15 calls and tell me their statuses, failure reasons, and key outcomes.",
+    icon: "↗",
+    eyebrow: "Next best action",
+    title: "Who needs a follow up?",
+    detail: "Find contacts that still need a human decision.",
+    prompt: "Find campaign contacts who need a follow-up and have no active callback or scheduled follow-up. Explain why each is a candidate and link to the campaign. Do not schedule calls.",
   },
   {
-    icon: "🤖",
-    title: "Inspect & Edit Agents",
-    detail: "Review system prompts, first greetings, voices & phone routing",
-    prompt: "List all voice agents in my workspace and inspect their prompts and current statuses.",
+    icon: "✳",
+    eyebrow: "Agent quality",
+    title: "What should I improve?",
+    detail: "Use call evidence to suggest practical agent changes.",
+    prompt: "List my voice agents, then analyze the performance of the most recently created agent over the last 30 days. Suggest improvements grounded in actual call evidence. Do not change the agent yet.",
   },
   {
-    icon: "⚡",
-    title: "What Can You Do?",
-    detail: "Explore your copilot's full platform abilities and actions",
-    prompt: "What can you answer and do as my personal voice workspace copilot?",
+    icon: "⌁",
+    eyebrow: "Call review",
+    title: "Read the latest conversation",
+    detail: "Transcript, caller intent, outcome, and next step.",
+    prompt: "Show the latest call transcript, summarize what the caller needed, and identify any follow-up mentioned.",
+  },
+  {
+    icon: "▧",
+    eyebrow: "Agent knowledge",
+    title: "Find a source-backed answer",
+    detail: "Search an agent's indexed documents and cite sources.",
+    prompt: "Help me search an agent's knowledge documents. First ask which agent and what question I want answered.",
+  },
+  {
+    icon: "+",
+    eyebrow: "Agent studio",
+    title: "Draft a new voice agent",
+    detail: "Review every detail before it is saved.",
+    prompt: "Prepare a draft customer support voice agent with a clear professional prompt and friendly greeting. Show me the changes for approval before saving.",
   },
 ];
 
@@ -41,15 +59,6 @@ function SparkIcon({ className = "size-5" }: { className?: string }) {
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
       <path d="m12 3 2.1 6.2L20 11l-5.9 2-2.1 6-2.1-6L4 11l5.9-1.8L12 3Z" />
       <path d="m19 15 .8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15Z" />
-    </svg>
-  );
-}
-
-function SendIcon() {
-  return (
-    <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
-      <path d="m5 12 14-7-5 14-2-6-7-1Z" />
-      <path d="m12 13 7-8" />
     </svg>
   );
 }
@@ -94,6 +103,23 @@ function CopyButton({ text }: { text: string }) {
   );
 }
 
+function renderAssistantInline(value: string) {
+  return value.split(/(\[[^\]]+\]\([^)]+\)|\*\*[^*]+\*\*)/g).map((part, index) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return <strong key={index} className="font-semibold text-[#153e31]">{part.slice(2, -2)}</strong>;
+    }
+    const link = /^\[([^\]]+)\]\(([^)]+)\)$/.exec(part);
+    if (link) {
+      const href = link[2];
+      const internal = href.startsWith("/dashboard/");
+      if (internal || /^https:\/\/(?:api\.|www\.)?vozon\.ai(?:\/|$)/i.test(href)) {
+        return <a key={index} href={href} target={internal ? undefined : "_blank"} rel={internal ? undefined : "noopener noreferrer"} className="font-semibold text-[#16805c] underline decoration-[#a5d3b4] underline-offset-2 hover:text-[#105d43]">{link[1]}</a>;
+      }
+    }
+    return part;
+  });
+}
+
 function FormattedContent({ content }: { content: string }) {
   // Simple paragraph & bold parser to avoid displaying raw markdown asterisks
   const paragraphs = content.split(/\n\n+/);
@@ -117,15 +143,7 @@ function FormattedContent({ content }: { content: string }) {
                 ? line.replace(/^\d+\.\s*/, "")
                 : line;
 
-              // Parse bold segments
-              const parts = cleanLine.split(/(\*\*[^*]+\*\*)/g);
-
-              const formattedText = parts.map((part, partIdx) => {
-                if (part.startsWith("**") && part.endsWith("**")) {
-                  return <strong key={partIdx} className="font-semibold text-slate-950">{part.slice(2, -2)}</strong>;
-                }
-                return part;
-              });
+              const formattedText = renderAssistantInline(cleanLine);
 
               if (isHeading) {
                 return (
@@ -164,6 +182,7 @@ function AssistantChat() {
   const [messages, setMessages] = useState<AssistantMessage[]>([]);
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
+  const [reviewingActionId, setReviewingActionId] = useState("");
   const [error, setError] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -184,13 +203,29 @@ function AssistantChat() {
     setBusy(true);
 
     try {
-      const answer = await sendAssistantMessage(nextMessages.slice(-12));
-      setMessages((current) => [...current, { role: "assistant", content: answer }]);
+      const reply = await sendAssistantMessage(nextMessages.slice(-12));
+      setMessages((current) => [...current, { role: "assistant", content: reply.answer, pendingAction: reply.pendingAction }]);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Vozon could not answer right now.");
     } finally {
       setBusy(false);
       window.requestAnimationFrame(() => bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }));
+    }
+  }
+
+  async function decideAction(actionId: string, approved: boolean) {
+    if (reviewingActionId) return;
+    setReviewingActionId(actionId);
+    setError("");
+    try {
+      const result = await reviewAssistantAction(actionId, approved);
+      setMessages((current) => current.map((message) => message.pendingAction?.id === actionId
+        ? { ...message, content: result.answer, pendingAction: undefined }
+        : message));
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "The action could not be reviewed. Try again.");
+    } finally {
+      setReviewingActionId("");
     }
   }
 
@@ -220,7 +255,7 @@ function AssistantChat() {
 
   return (
     <main
-      className={`dashboard-home-theme grid min-h-screen bg-[#FBFDFB] text-[#14231f] ${
+      className={`dashboard-home-theme ask-vozon-stage grid min-h-screen text-[#14231f] ${
         showUserSidebar ? "lg:grid-cols-[248px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
       }`}
     >
@@ -239,11 +274,15 @@ function AssistantChat() {
         <DashboardPageHeader workspaceBarOnly />
 
         {/* Main Conversation Container */}
-        <div className="relative mx-auto flex w-full max-w-3xl flex-1 flex-col px-4 pb-4 pt-3 sm:px-6">
+        <div className="relative mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 pb-4 pt-5 sm:px-8">
           {messages.length > 0 ? (
-            <div className="flex items-center justify-end pb-2 pt-1">
+            <div className="mb-5 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <span className="grid size-10 place-items-center rounded-2xl bg-[#103e36] text-[#bdf4d9] shadow-[0_9px_22px_rgba(13,75,62,.2)]"><SparkIcon className="size-5" /></span>
+                <div><p className="m-0 text-[10px] font-bold uppercase tracking-[.2em] text-[#648379]">Workspace intelligence</p><h1 className="m-0 text-lg font-semibold tracking-tight text-[#153b33]">Ask Vozon</h1></div>
+              </div>
               <button
-                className="inline-flex items-center gap-1.5 rounded-full border border-[#d6e5e0] bg-white px-3 py-1 text-xs font-semibold text-[#1f4a40] shadow-xs transition hover:border-[#118778] hover:bg-[#edf7f4]"
+                className="inline-flex items-center gap-1.5 rounded-full border border-[#cce1d8] bg-white/90 px-3.5 py-2 text-xs font-semibold text-[#1f4a40] shadow-[0_8px_22px_rgba(24,74,60,.08)] transition hover:-translate-y-0.5 hover:border-[#118778] hover:bg-[#edf7f4]"
                 type="button"
                 onClick={() => {
                   setMessages([]);
@@ -260,43 +299,41 @@ function AssistantChat() {
             </div>
           ) : null}
           {messages.length === 0 ? (
-            /* Empty State: Personal AI Welcome Screen */
-            <div className="flex flex-1 flex-col justify-center py-6 sm:py-10">
-              <div className="w-full text-center">
-                {/* Glowing AI Avatar with Aura */}
-                <div className="relative mx-auto mb-5 flex size-16 items-center justify-center">
-                  <div className="animate-ai-aura absolute inset-0 rounded-3xl bg-gradient-to-tr from-[#118778]/25 via-emerald-200/40 to-teal-100/30 blur-sm" />
-                  <div className="animate-ai-glow relative grid size-14 place-items-center rounded-2xl border border-[#b2dcd2] bg-white text-[#118778] shadow-md shadow-[#118778]/15">
-                    <SparkIcon className="size-7" />
+            <div className="flex flex-1 flex-col justify-center gap-6 pb-8 pt-3 sm:gap-8">
+              <div className="ask-vozon-hero relative isolate overflow-hidden rounded-[30px] px-7 py-9 text-white sm:px-11 sm:py-12">
+                <div className="ask-vozon-orb ask-vozon-orb-one" aria-hidden="true" />
+                <div className="ask-vozon-orb ask-vozon-orb-two" aria-hidden="true" />
+                <div className="relative z-10 max-w-2xl">
+                  <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[.18em] text-emerald-100 backdrop-blur-xl">
+                    <span className="ask-vozon-live-dot size-1.5 rounded-full bg-[#b5f3d0]" /> Workspace intelligence
                   </div>
+                  <p className="mb-2 text-sm font-medium text-[#b8d8ca]">{greeting}, {firstName}</p>
+                  <h1 className="m-0 max-w-xl text-4xl font-semibold leading-[1.08] tracking-[-.045em] sm:text-5xl">Turn every conversation<br /><span className="text-[#b8e9d2]">into a better next move.</span></h1>
+                  <p className="mb-0 mt-5 max-w-xl text-sm leading-7 text-[#c8ded4] sm:text-base">Explore campaign results, discover who needs attention, and improve your agents with evidence from real calls.</p>
                 </div>
+                <span className="ask-vozon-hero-mark absolute -bottom-14 right-5 hidden select-none text-[240px] font-light leading-none text-white/[.04] sm:block" aria-hidden="true">✳</span>
+              </div>
 
-                <p className="mb-1 text-xs font-bold uppercase tracking-[0.16em] text-[#0d786b]">
-                  Personal Workspace Assistant
-                </p>
-                <h2 className="m-0 text-2xl font-semibold tracking-[-0.03em] text-slate-900 sm:text-3xl">
-                  {greeting}, {firstName}
-                </h2>
-                <p className="mx-auto mb-8 mt-2 max-w-lg text-sm leading-relaxed text-slate-600">
-                  How can I help you today? Ask about your recent calls, summarize agent performance, or ask me to draft a new voice agent.
-                </p>
-
-                {/* Modern 2x2 Suggestion Cards */}
-                <div className="grid gap-3 text-left sm:grid-cols-2">
+              <div>
+                <div className="mb-4 flex flex-wrap items-end justify-between gap-2 px-1">
+                  <div><p className="m-0 text-[10px] font-bold uppercase tracking-[.2em] text-[#6b9184]">Start with a question</p><h2 className="m-0 mt-1 text-xl font-semibold tracking-tight text-[#153b33]">Make your workspace clearer</h2></div>
+                  <span className="text-xs text-[#769087]">Grounded in your Vozon data</span>
+                </div>
+                <div className="grid gap-3 text-left sm:grid-cols-2 xl:grid-cols-3">
                   {suggestions.map((item) => (
                     <button
-                      className="ai-suggestion-card group relative rounded-2xl border border-[#dfe8e4] bg-white p-4 disabled:opacity-60"
+                      className="ask-vozon-suggestion group relative min-h-[148px] overflow-hidden rounded-[22px] border border-[#dfe9e3] bg-white/95 p-5 text-left disabled:opacity-60"
                       type="button"
                       key={item.title}
                       disabled={busy}
                       onClick={() => void submitMessage(undefined, item.prompt)}
                     >
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-xl" role="img" aria-hidden="true">
+                      <div className="flex items-start justify-between gap-2">
+                        <span className="grid size-10 place-items-center rounded-2xl bg-[#ecf7ef] text-xl font-semibold text-[#246b52] transition duration-300 group-hover:rotate-6 group-hover:scale-110" aria-hidden="true">
                           {item.icon}
                         </span>
                         <svg
-                          className="size-4 text-slate-400 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-[#118778]"
+                          className="size-4 text-[#a3b7ac] transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#118778]"
                           viewBox="0 0 24 24"
                           fill="none"
                           stroke="currentColor"
@@ -305,10 +342,11 @@ function AssistantChat() {
                           <path d="M5 12h14M12 5l7 7-7 7" />
                         </svg>
                       </div>
-                      <span className="mt-2.5 block text-sm font-semibold text-slate-800 transition-colors group-hover:text-[#0e6f62]">
+                      <span className="mt-4 block text-[10px] font-bold uppercase tracking-[.15em] text-[#6b9986]">{item.eyebrow}</span>
+                      <span className="mt-1 block text-[15px] font-semibold tracking-tight text-[#193d33] transition-colors group-hover:text-[#0e6f62]">
                         {item.title}
                       </span>
-                      <span className="mt-1 block text-xs leading-5 text-slate-500">
+                      <span className="mt-1 block text-xs leading-5 text-[#74877c]">
                         {item.detail}
                       </span>
                     </button>
@@ -327,16 +365,16 @@ function AssistantChat() {
                   key={`${index}-${message.role}`}
                 >
                   {message.role === "assistant" ? (
-                    <span className="mt-1 grid size-8 shrink-0 place-items-center rounded-xl border border-[#a8d7cb] bg-gradient-to-tr from-[#e8f7f3] to-[#d6f0ea] text-[#118778] shadow-xs">
+                    <span className="mt-1 grid size-9 shrink-0 place-items-center rounded-2xl bg-[#153d34] text-[#c7f2d8] shadow-[0_8px_20px_rgba(20,75,58,.2)]">
                       <SparkIcon className="size-4" />
                     </span>
                   ) : null}
 
                   <div
-                    className={`max-w-[min(90%,44rem)] rounded-2xl px-4 py-3.5 text-sm leading-relaxed ${
+                    className={`max-w-[min(92%,52rem)] rounded-[22px] px-5 py-4 text-sm leading-relaxed ${
                       message.role === "user"
-                        ? "rounded-br-xs bg-gradient-to-r from-[#118778] to-[#0c6b5e] text-white shadow-md shadow-[#118778]/15"
-                        : "group rounded-tl-xs border border-[#dfe7e4] bg-white text-slate-800 shadow-[0_2px_10px_rgba(20,40,35,0.03)]"
+                        ? "rounded-br-sm bg-gradient-to-br from-[#176f58] to-[#104a3b] text-white shadow-[0_14px_30px_rgba(21,92,70,.19)]"
+                        : "group rounded-tl-sm border border-[#dbe8df] bg-white/95 text-slate-800 shadow-[0_18px_45px_rgba(22,75,53,.08)]"
                     }`}
                   >
                     {message.role === "user" ? (
@@ -344,6 +382,30 @@ function AssistantChat() {
                     ) : (
                       <>
                         <FormattedContent content={message.content} />
+                        {message.pendingAction ? (
+                          <div className="mt-5 overflow-hidden rounded-2xl border border-[#c9dfd1] bg-[#f5fbf7]">
+                            <div className="border-b border-[#dceadf] bg-[#eaf6ed] px-4 py-3">
+                              <p className="m-0 text-[10px] font-bold uppercase tracking-[.17em] text-[#318060]">Approval required</p>
+                              <h3 className="m-0 mt-1 text-base font-semibold text-[#173d30]">{message.pendingAction.title}</h3>
+                              <p className="m-0 mt-1 text-xs text-[#5d776a]">{message.pendingAction.description}</p>
+                            </div>
+                            <dl className="m-0 grid gap-3 px-4 py-4 sm:grid-cols-2">
+                              {message.pendingAction.fields.map((field) => (
+                                <div className={field.label === "Instructions" ? "sm:col-span-2" : ""} key={field.label}>
+                                  <dt className="text-[10px] font-bold uppercase tracking-[.13em] text-[#6b8b79]">{field.label}</dt>
+                                  <dd className="m-0 mt-1 max-h-36 overflow-auto whitespace-pre-wrap text-xs leading-5 text-[#29483a]">{field.value}</dd>
+                                </div>
+                              ))}
+                            </dl>
+                            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#dceadf] px-4 py-3">
+                              <span className="text-[11px] text-[#698575]">Nothing changes until you approve.</span>
+                              <div className="flex gap-2">
+                                <button className="rounded-xl border border-[#cbddd0] bg-white px-3 py-2 text-xs font-semibold text-[#3d6150] transition hover:bg-[#edf5ef] disabled:opacity-50" type="button" disabled={Boolean(reviewingActionId)} onClick={() => void decideAction(message.pendingAction!.id, false)}>Cancel</button>
+                                <button className="rounded-xl bg-[#196b4d] px-3.5 py-2 text-xs font-semibold text-white shadow-[0_6px_15px_rgba(25,107,77,.22)] transition hover:-translate-y-0.5 hover:bg-[#10583e] disabled:opacity-50" type="button" disabled={Boolean(reviewingActionId)} onClick={() => void decideAction(message.pendingAction!.id, true)}>{reviewingActionId === message.pendingAction.id ? "Saving…" : "Approve change"}</button>
+                              </div>
+                            </div>
+                          </div>
+                        ) : null}
                         <div className="mt-3 flex items-center justify-end border-t border-slate-100 pt-2 opacity-80 transition group-hover:opacity-100">
                           <CopyButton text={message.content} />
                         </div>
@@ -381,9 +443,9 @@ function AssistantChat() {
           )}
 
           {/* Floating Prompt Area with Claude/ChatGPT Style Seamless Design & Shadow */}
-          <div className="sticky bottom-4 z-20 mx-auto w-full max-w-3xl pt-2">
+          <div className="sticky bottom-4 z-20 mx-auto w-full max-w-4xl pt-2">
             <form
-              className="ai-prompt-container relative rounded-[26px] border border-[#d8e6e2] bg-white p-3.5 sm:p-4"
+              className="ai-prompt-container ask-vozon-prompt relative rounded-[26px] border border-[#d8e6e2] bg-white/95 p-3.5 backdrop-blur-xl sm:p-4"
               onSubmit={(event) => void submitMessage(event)}
             >
               <label className="sr-only" htmlFor="ask-vozon-input">
@@ -396,7 +458,7 @@ function AssistantChat() {
                 className="ai-prompt-textarea block max-h-48 min-h-[58px] w-full text-[15px] leading-relaxed text-[#14231f] placeholder:text-[#8ea09a] sm:text-base"
                 id="ask-vozon-input"
                 maxLength={2000}
-                placeholder="Ask for call transcripts, summarize recent calls, inspect agent prompts, or draft an agent…"
+                placeholder="Ask about campaigns, follow ups, calls, or an agent…"
                 rows={2}
                 value={draft}
                 onChange={(event) => setDraft(event.target.value)}
@@ -413,7 +475,7 @@ function AssistantChat() {
                 <div className="flex items-center gap-2">
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-[#edf6f3] px-3 py-1 text-xs font-semibold text-[#0d786b]">
                     <SparkIcon className="size-3 text-[#118778]" />
-                    Voice & Workspace AI
+                    Connected to your workspace
                   </span>
                   <span className="hidden text-xs text-[#8e9f9a] sm:inline">
                     Press ↵ to send · Shift+↵ for newline
@@ -438,7 +500,7 @@ function AssistantChat() {
             </form>
 
             <p className="mx-auto mb-0 mt-2 text-center text-[10px] leading-4 text-[#8b9994]">
-              Vozon AI reads workspace data and can draft voice agents · Check important details in your dashboard
+              Grounded in workspace data · Agent changes require your approval
             </p>
           </div>
         </div>
