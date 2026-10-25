@@ -41,7 +41,7 @@ export async function sendAssistantMessage(messages: AssistantMessage[]) {
 }
 
 export function getMcpConnectionSetup() {
-  return assistantRequest<{ serverUrl: string; connections: McpConnection[] }>("/mcp/connections");
+  return assistantRequest<{ serverUrl: string; staticClientId?: string; connections: McpConnection[] }>("/mcp/connections");
 }
 
 export function getMcpConsent(requestId: string) {

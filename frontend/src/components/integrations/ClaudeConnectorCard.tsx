@@ -15,12 +15,14 @@ function ClaudeSparkIcon({ className = "size-8" }: { className?: string }) {
 
 export function ClaudeConnectorCard() {
   const [serverUrl, setServerUrl] = useState("");
+  const [staticClientId, setStaticClientId] = useState("vozon_claude_connector");
   const [connections, setConnections] = useState<McpConnection[]>([]);
   const [busyId, setBusyId] = useState("");
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [copiedClientId, setCopiedClientId] = useState(false);
 
   const isConnected = connections.length > 0;
 
@@ -36,6 +38,9 @@ export function ClaudeConnectorCard() {
     try {
       const result = await getMcpConnectionSetup();
       setServerUrl(result.serverUrl);
+      if (result.staticClientId) {
+        setStaticClientId(result.staticClientId);
+      }
       setConnections(result.connections);
       setError("");
     } catch (caught) {
@@ -56,6 +61,18 @@ export function ClaudeConnectorCard() {
       setTimeout(() => setCopied(false), 2500);
     } catch {
       setNotice("Select the URL below to copy it manually.");
+    }
+  }
+
+  async function copyClientId() {
+    if (!staticClientId) return;
+    try {
+      await navigator.clipboard.writeText(staticClientId);
+      setCopiedClientId(true);
+      setNotice("OAuth Client ID copied to clipboard.");
+      setTimeout(() => setCopiedClientId(false), 2500);
+    } catch {
+      setNotice("Select the Client ID below to copy it manually.");
     }
   }
 
@@ -174,7 +191,7 @@ export function ClaudeConnectorCard() {
             <div className="mt-5 space-y-4 text-xs">
               <div>
                 <label className="block text-[11px] font-bold uppercase tracking-[.1em] text-[#60736c]" htmlFor="modal-mcp-url">
-                  Vozon MCP Server URL
+                  1. Vozon MCP Server URL
                 </label>
                 <div className="mt-1.5 flex gap-2">
                   <input
@@ -193,17 +210,49 @@ export function ClaudeConnectorCard() {
                     disabled={!serverUrl}
                     onClick={() => void copyUrl()}
                   >
-                    {copied ? "Copied!" : "Copy URL"}
+                    {copied ? "Copied URL!" : "Copy URL"}
                   </button>
                 </div>
               </div>
 
+              <div>
+                <div className="flex items-center justify-between">
+                  <label className="block text-[11px] font-bold uppercase tracking-[.1em] text-[#60736c]" htmlFor="modal-client-id">
+                    2. OAuth Client ID <span className="font-normal text-emerald-700">(Recommended for Claude)</span>
+                  </label>
+                </div>
+                <div className="mt-1.5 flex gap-2">
+                  <input
+                    className="h-10 flex-1 rounded-xl border border-[#dce7e3] bg-[#f8fbfa] px-3 font-mono text-xs text-[#1e443b] outline-none focus:border-[#75b6a5]"
+                    id="modal-client-id"
+                    readOnly
+                    value={staticClientId}
+                  />
+                  <button
+                    className={`h-10 shrink-0 rounded-xl px-4 font-semibold text-xs transition ${
+                      copiedClientId
+                        ? "bg-emerald-600 text-white"
+                        : "border border-[#cbdcd6] bg-white text-[#31564c] hover:bg-[#edf7f4]"
+                    }`}
+                    type="button"
+                    onClick={() => void copyClientId()}
+                  >
+                    {copiedClientId ? "Copied ID!" : "Copy Client ID"}
+                  </button>
+                </div>
+                <p className="mt-1 text-[11px] text-slate-500">
+                  Paste this in Claude&apos;s &quot;OAuth Client ID&quot; connector setting to skip dynamic registration and connect instantly.
+                </p>
+              </div>
+
               <div className="rounded-xl border border-[#e2ece8] bg-[#fbfdfc] p-4 text-slate-700 space-y-2">
-                <p className="font-semibold text-slate-900">How to connect:</p>
-                <ol className="list-decimal pl-4 space-y-1 text-slate-600">
+                <p className="font-semibold text-slate-900">How to connect in Claude:</p>
+                <ol className="list-decimal pl-4 space-y-1.5 text-slate-600">
                   <li>In Claude Desktop or Claude.ai, open <strong>Settings → Connectors</strong>.</li>
-                  <li>Click <strong>Add custom connector</strong> and paste the URL above.</li>
-                  <li>Sign in with your Vozon account when prompted to authorize access.</li>
+                  <li>Click <strong>Add custom connector</strong>.</li>
+                  <li>Enter Name (e.g. <strong>Vozon</strong>) and paste the <strong>MCP Server URL</strong> above.</li>
+                  <li>In the <strong>OAuth Client ID</strong> field, paste <strong>{staticClientId}</strong>.</li>
+                  <li>Click Add and sign in with your Vozon account when prompted to authorize.</li>
                 </ol>
                 <div className="pt-2">
                   <a
