@@ -246,7 +246,7 @@ function StepMiniVisual({ index, onVoicePreview, onExploreLanguages }: { index: 
 
         <div className="design-four-card-tools">
           <span><WorkflowIcon name="chip" /><small>&gt;750ms</small></span>
-          <span><WorkflowIcon name="server" /><small>LiveKit WebRTC</small></span>
+          <span><WorkflowIcon name="server" /><small>Voice Runtime</small></span>
           <span><WorkflowIcon name="sparkles" /><small>Dual Pipeline</small></span>
         </div>
       </div>
