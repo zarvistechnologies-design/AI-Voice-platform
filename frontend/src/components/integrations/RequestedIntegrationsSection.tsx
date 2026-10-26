@@ -1,129 +1,94 @@
-"use client";
-
-import { useMemo, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import type { IntegrationProvider } from "@/lib/integrations";
 
-type RequestedIntegration = {
+type AdditionalIntegration = {
   name: string;
   category: string;
-  use: string;
-  nativeId?: "google_calendar" | "google_sheets" | "slack";
+  description: string;
+  logo: string;
   webhook?: boolean;
 };
 
-const requestedIntegrations: RequestedIntegration[] = [
-  { name: "Atlassian", category: "Work management", use: "Projects and collaboration" },
-  { name: "Razorpay API", category: "Payments", use: "Merchant payment actions" },
-  { name: "Zapier", category: "Automation", use: "Call event triggers", webhook: true },
-  { name: "Zoho CRM", category: "CRM", use: "Lead and customer records" },
-  { name: "Asana", category: "Work management", use: "Tasks and projects" },
-  { name: "ClickUp", category: "Work management", use: "Tasks and projects" },
-  { name: "Freshsales", category: "CRM", use: "Lead and contact records" },
-  { name: "Google Calendar", category: "Scheduling", use: "Availability and appointments", nativeId: "google_calendar" },
-  { name: "Google Docs", category: "Documents", use: "Document access" },
-  { name: "Google Drive", category: "Documents", use: "File access" },
-  { name: "Google Sheets", category: "Automation", use: "Call result export", nativeId: "google_sheets" },
-  { name: "Gmail", category: "Messaging", use: "Email workflows" },
-  { name: "Linear", category: "Work management", use: "Issues and projects" },
-  { name: "monday.com", category: "Work management", use: "Boards and updates" },
-  { name: "Notion", category: "Documents", use: "Pages and workspace knowledge" },
-  { name: "Prospeo", category: "Sales", use: "Prospect data" },
-  { name: "Razorpay OAuth", category: "Payments", use: "Merchant account authorization" },
-  { name: "Salesforce", category: "CRM", use: "Lead and customer records" },
-  { name: "Slack", category: "Messaging", use: "Call notifications", nativeId: "slack" },
-  { name: "Jira", category: "Work management", use: "Issues and projects" },
+// Calendar, Sheets, and Slack already have functional cards in IntegrationsShell.
+const additionalIntegrations: AdditionalIntegration[] = [
+  { name: "Atlassian", category: "Work management", description: "Bring project and team activity into voice workflows.", logo: "/images/integrations/atlassian.svg" },
+  { name: "Razorpay API", category: "Payments", description: "Look up payments and merchant activity during calls.", logo: "/images/integrations/razorpay.png" },
+  { name: "Zapier", category: "Automation", description: "Send signed call events to a Zapier webhook to start automations.", logo: "/images/integrations/zapier.png", webhook: true },
+  { name: "Zoho CRM", category: "CRM", description: "Use lead and customer records in your call workflows.", logo: "/images/integrations/zoho.svg" },
+  { name: "Asana", category: "Work management", description: "Create and track follow-up tasks from conversations.", logo: "/images/integrations/asana.svg" },
+  { name: "ClickUp", category: "Work management", description: "Turn call outcomes into tasks and project updates.", logo: "/images/integrations/clickup.svg" },
+  { name: "Freshsales", category: "CRM", description: "Keep lead and contact records in sync with calls.", logo: "/images/integrations/freshsales.ico" },
+  { name: "Google Docs", category: "Documents", description: "Access documents and keep call notes in one place.", logo: "/images/integrations/googledocs.svg" },
+  { name: "Google Drive", category: "Documents", description: "Find files that help agents answer customer questions.", logo: "/images/integrations/googledrive.svg" },
+  { name: "Gmail", category: "Messaging", description: "Follow up with callers through email workflows.", logo: "/images/integrations/gmail.svg" },
+  { name: "Linear", category: "Work management", description: "Capture product issues and next steps from calls.", logo: "/images/integrations/linear.svg" },
+  { name: "monday.com", category: "Work management", description: "Update boards and track work that starts in a call.", logo: "/images/integrations/monday.ico" },
+  { name: "Notion", category: "Knowledge", description: "Use workspace pages as context for voice agents.", logo: "/images/company-logos/notion.svg" },
+  { name: "Prospeo", category: "Sales", description: "Enrich prospect details before sales follow-ups.", logo: "/images/integrations/prospeo.png" },
+  { name: "Razorpay OAuth", category: "Payments", description: "Authorize a merchant account for payment workflows.", logo: "/images/integrations/razorpay.png" },
+  { name: "Salesforce", category: "CRM", description: "Bring lead and customer activity into voice workflows.", logo: "/images/integrations/salesforce.svg" },
+  { name: "Jira", category: "Work management", description: "Create issues and track follow-ups from conversations.", logo: "/images/integrations/jira.svg" },
 ];
 
-function connectionState(entry: RequestedIntegration, providers: IntegrationProvider[]) {
-  if (entry.nativeId) {
-    const id = entry.nativeId === "slack" ? "slack" : "google";
-    const connected = providers.some((provider) => provider.id === id && provider.connected);
-    return {
-      label: connected ? "Connected for listed use" : "Ready to connect",
-      detail: entry.nativeId === "slack"
-        ? "Existing Slack connection sends call notifications."
-        : entry.nativeId === "google_sheets"
-          ? "Existing Google connection exports call results to a selected sheet."
-          : "Existing Google connection supports appointment actions for enabled agents.",
-      href: `#integration-${entry.nativeId}`,
-      action: connected ? "Manage" : "Connect",
-      tone: connected ? "connected" : "ready",
-    } as const;
-  }
-  if (entry.webhook) {
-    return {
-      label: "Webhook route available",
-      detail: "Send signed call events to a Zapier webhook. Zapier account sign-in is not built in.",
-      href: "/dashboard/developers",
-      action: "View webhooks",
-      tone: "ready",
-    } as const;
-  }
-  return {
-    label: "Not available yet",
-    detail: "Provider authorization and actions still need to be built and tested.",
-    href: "",
-    action: "",
-    tone: "pending",
-  } as const;
-}
-
-export function RequestedIntegrationsSection({ providers }: { providers: IntegrationProvider[] }) {
-  const [query, setQuery] = useState("");
-  const matches = useMemo(() => {
-    const search = query.trim().toLowerCase();
-    return search
-      ? requestedIntegrations.filter((entry) => `${entry.name} ${entry.category} ${entry.use}`.toLowerCase().includes(search))
-      : requestedIntegrations;
-  }, [query]);
-
+export function RequestedIntegrationsSection() {
   return (
-    <section id="requested-integrations" className="overflow-hidden rounded-2xl border border-[#dce8e4] bg-white shadow-[0_12px_36px_rgba(13,75,63,.06)]">
-      <div className="flex flex-wrap items-end justify-between gap-4 border-b border-[#e5eeea] bg-[#f7fbf9] p-5 sm:p-6">
-        <div>
-          <p className="text-[11px] font-bold uppercase tracking-[.18em] text-[#0e786b]">Provider directory</p>
-          <h2 className="mt-1 text-xl font-semibold tracking-tight text-slate-950">Integrations you requested</h2>
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-            All 20 are listed here. Three have limited native actions, Zapier can receive signed call events through webhooks, and the remaining 16 need a dedicated connection and action flow.
-          </p>
-        </div>
-        <label className="w-full sm:w-64">
-          <span className="sr-only">Search requested integrations</span>
-          <input
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search integrations"
-            className="w-full rounded-xl border border-[#ccded7] bg-white px-4 py-2.5 text-sm outline-none transition focus:border-[#0e786b] focus:ring-2 focus:ring-[#d8f1e9]"
-          />
-        </label>
-      </div>
-      <div className="divide-y divide-[#e9efec]">
-        {matches.map((entry) => {
-          const state = connectionState(entry, providers);
-          return (
-            <div key={entry.name} className="grid gap-3 px-5 py-4 transition hover:bg-[#f9fcfa] sm:grid-cols-[minmax(0,1.2fr)_minmax(0,1.5fr)_auto] sm:items-center sm:px-6">
-              <div className="min-w-0">
-                <p className="font-semibold text-slate-950">{entry.name}</p>
-                <p className="text-xs text-slate-500">{entry.category} · {entry.use}</p>
-              </div>
-              <div className="min-w-0">
-                <span className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold ${state.tone === "connected" ? "bg-emerald-50 text-emerald-800" : state.tone === "ready" ? "bg-teal-50 text-teal-800" : "bg-slate-100 text-slate-600"}`}>
-                  {state.label}
-                </span>
-                <p className="mt-1 text-xs leading-5 text-slate-600">{state.detail}</p>
-              </div>
-              {state.href ? (
-                <Link href={state.href} className="w-fit rounded-lg border border-[#b8d9cf] px-3 py-2 text-xs font-semibold text-[#0e6f62] transition hover:bg-[#eff8f4]">
-                  {state.action}
-                </Link>
-              ) : <span className="text-xs text-slate-400">—</span>}
+    <>
+      {additionalIntegrations.map((entry) => (
+        <article
+          key={entry.name}
+          className="min-h-[300px] overflow-hidden rounded-xl border border-[#dfe7e4] bg-white transition hover:border-[#9fcfc3] hover:shadow-[0_14px_34px_rgba(17,62,53,.08)]"
+        >
+          <div className="flex h-full flex-col p-5">
+            <div className="flex items-start justify-between gap-4">
+              <span className="grid h-12 min-w-12 place-items-start">
+                <Image
+                  alt={`${entry.name} logo`}
+                  className="h-12 w-auto max-w-28 object-contain object-left"
+                  height={48}
+                  src={entry.logo}
+                  unoptimized={entry.logo.endsWith(".ico")}
+                  width={112}
+                />
+              </span>
+              <span className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${entry.webhook ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-600"}`}>
+                {entry.webhook ? "Webhook available" : "Coming soon"}
+              </span>
             </div>
-          );
-        })}
-        {!matches.length && <p className="px-6 py-8 text-center text-sm text-slate-500">No integrations match your search.</p>}
-      </div>
-    </section>
+            <span className="mt-5 text-[10px] font-bold uppercase tracking-[.14em] text-[#71817d]">
+              {entry.category}
+            </span>
+            <h2 className="mt-1 text-xl font-semibold tracking-[-.02em] text-slate-950">
+              {entry.name}
+            </h2>
+            <p className="mt-1 min-h-12 text-sm leading-6 text-slate-600">
+              {entry.description}
+            </p>
+            {entry.webhook ? (
+              <p className="mt-3 text-xs leading-5 text-slate-500">
+                Outbound webhooks only; Zapier sign-in is not available yet.
+              </p>
+            ) : null}
+            <div className="mt-auto pt-5">
+              {entry.webhook ? (
+                <Link
+                  href="/dashboard/developers"
+                  className="inline-flex min-h-10 items-center rounded-lg bg-[#118778] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#0d6f63]"
+                >
+                  Set up webhook
+                </Link>
+              ) : (
+                <button
+                  disabled
+                  type="button"
+                  className="inline-flex min-h-10 cursor-not-allowed items-center rounded-lg border border-[#dfe7e4] bg-[#f5f8f7] px-4 py-2 text-sm font-semibold text-slate-500"
+                >
+                  Coming soon
+                </button>
+              )}
+            </div>
+          </div>
+        </article>
+      ))}
+    </>
   );
 }

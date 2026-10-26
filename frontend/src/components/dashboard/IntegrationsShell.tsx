@@ -445,7 +445,6 @@ export function IntegrationsShell() {
               {notice}
             </div>
           ) : null}
-          <RequestedIntegrationsSection providers={providers} />
           <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             <ClaudeConnectorCard />
             {displayProviders.map(({ provider, displayId }) => {
@@ -741,6 +740,7 @@ export function IntegrationsShell() {
                 </article>
               );
             })}
+            <RequestedIntegrationsSection />
           </section>
         </div>
       </section>
