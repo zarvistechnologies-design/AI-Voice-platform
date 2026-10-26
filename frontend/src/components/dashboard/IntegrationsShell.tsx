@@ -132,11 +132,11 @@ const catalog = {
     logo: "/images/integrations/freshsales.ico",
     color: "from-[#118778] to-[#25b39f]",
   },
-  prospeo: {
-    name: "Prospeo",
-    category: "Sales",
-    description: "Connect your API key and view account plan and credits.",
-    logo: "/images/integrations/prospeo.png",
+  highlevel: {
+    name: "GoHighLevel",
+    category: "CRM",
+    description: "Connect a HighLevel location and browse its CRM contacts.",
+    logo: "/images/integrations/highlevel.svg",
     color: "from-[#118778] to-[#25b39f]",
   },
   zoho: {
@@ -220,7 +220,7 @@ const catalog = {
   },
 } as const;
 
-const tokenProviderIds = ["asana", "clickup", "linear", "monday", "notion", "atlassian", "jira", "freshsales", "prospeo"] as const;
+const tokenProviderIds = ["asana", "clickup", "linear", "monday", "notion", "atlassian", "jira", "freshsales", "highlevel"] as const;
 const voiceReadProviderIds: string[] = [...tokenProviderIds, "zoho", "salesforce", "razorpay_api", "razorpay_oauth", "google_calendar", "google_drive", "google_docs", "google_gmail"];
 type TokenProviderId = (typeof tokenProviderIds)[number];
 
@@ -273,6 +273,7 @@ export function IntegrationsShell() {
   const [atlassianSite, setAtlassianSite] = useState("");
   const [atlassianEmail, setAtlassianEmail] = useState("");
   const [freshsalesSite, setFreshsalesSite] = useState("");
+  const [highlevelLocationId, setHighlevelLocationId] = useState("");
   const [razorpayPayments, setRazorpayPayments] = useState<Awaited<ReturnType<typeof integrationsApi.razorpayPayments>> | null>(null);
   const [razorpayOAuthPayments, setRazorpayOAuthPayments] = useState<Awaited<ReturnType<typeof integrationsApi.razorpayOAuthPayments>> | null>(null);
   const [providerPreviews, setProviderPreviews] = useState<Partial<Record<TokenProviderId, Awaited<ReturnType<typeof integrationsApi.tokenProviderPreview>>>>>({});
@@ -369,6 +370,8 @@ export function IntegrationsShell() {
               ? JSON.stringify({ site: atlassianSite.trim(), email: atlassianEmail.trim(), token: credential.trim() })
             : selected === "freshsales"
               ? JSON.stringify({ site: freshsalesSite.trim(), apiKey: credential.trim() })
+            : selected === "highlevel"
+              ? JSON.stringify({ locationId: highlevelLocationId.trim(), token: credential.trim() })
             : credential,
         );
         setCredential("");
@@ -376,6 +379,7 @@ export function IntegrationsShell() {
         setAtlassianSite("");
         setAtlassianEmail("");
         setFreshsalesSite("");
+        setHighlevelLocationId("");
         setSelected(null);
         await load();
         setNotice(`${catalog[selected].name} connected and verified.`);
@@ -643,6 +647,11 @@ export function IntegrationsShell() {
       displayId: keyof typeof catalog;
     }>
   >((items, provider) => {
+    // Do not expose non-functional OAuth cards to customers. They become
+    // visible automatically when the corresponding platform app is ready.
+    if (provider.metadata?.platformConfigured === false && !provider.connected) {
+      return items;
+    }
     if (provider.id === "google") {
       items.push(
         { provider, displayId: "google_calendar" },
@@ -710,7 +719,7 @@ export function IntegrationsShell() {
               const displayConnected = provider.id === "google"
                 ? provider.connected && (googleScopeRequirements[displayId] ?? []).every((scope) => grantedScopes.includes(scope))
                 : provider.connected;
-              const setupNeeded = provider.metadata?.platformConfigured === false;
+              const setupNeeded = !displayConnected && provider.metadata?.platformConfigured === false;
               const displayDelivery = googleExtraFeature ? null : provider.delivery;
               const voiceReadId = provider.id === "google" ? displayId : provider.id;
               const dbConnections =
@@ -1117,6 +1126,7 @@ export function IntegrationsShell() {
                             setAtlassianSite("");
                             setAtlassianEmail("");
                             setFreshsalesSite("");
+                            setHighlevelLocationId("");
                             setModalError("");
                           }}
                         >
@@ -1193,8 +1203,8 @@ export function IntegrationsShell() {
                     ? "Enter your Atlassian Cloud site, account email, and API token. Vozon verifies access before saving this workspace connection."
                   : selected === "freshsales"
                     ? "Enter your Freshsales bundle site and API key. Vozon verifies your contact views before saving the connection."
-                  : selected === "prospeo"
-                    ? "Enter your Prospeo API key. Vozon verifies it using the free account information endpoint."
+                  : selected === "highlevel"
+                    ? "Enter a HighLevel Location ID and a Private Integration Token with locations.readonly and contacts.readonly scopes. Vozon verifies the location before saving the encrypted token."
                   : isTokenProviderId(selected)
                     ? "Paste a personal API token or internal integration token. Vozon verifies the account and stores the token encrypted for this workspace."
                   : selected === "digitalbot"
@@ -1273,6 +1283,17 @@ export function IntegrationsShell() {
                 <input className="rounded-xl border border-slate-200 px-3 py-3 text-sm font-normal text-slate-950" value={freshsalesSite} onChange={(event) => setFreshsalesSite(event.target.value)} placeholder="acme.myfreshworks.com" />
               </label>
             ) : null}
+            {selected === "highlevel" ? (
+              <label className="mt-4 grid gap-2 text-xs font-semibold text-slate-600">
+                HighLevel Location ID
+                <input
+                  className="rounded-xl border border-slate-200 px-3 py-3 text-sm font-normal text-slate-950"
+                  value={highlevelLocationId}
+                  onChange={(event) => setHighlevelLocationId(event.target.value)}
+                  placeholder="ve9EPM428h8vShlRW1KT"
+                />
+              </label>
+            ) : null}
             <label className="mt-5 grid gap-2 text-xs font-semibold text-slate-600">
               {selected === "slack"
                 ? "Incoming webhook URL"
@@ -1280,8 +1301,10 @@ export function IntegrationsShell() {
                   ? "Razorpay Key Secret"
                 : selected === "atlassian" || selected === "jira"
                   ? "Atlassian API token"
-                : selected === "freshsales" || selected === "prospeo"
+                : selected === "freshsales"
                   ? "API key"
+                : selected === "highlevel"
+                  ? "Private Integration Token"
                 : selected === "digitalbot"
                   ? "DigitalBot connection key"
                   : "Access token"}
@@ -1298,6 +1321,8 @@ export function IntegrationsShell() {
                       ? "db_conn_..."
                       : selected === "razorpay_api"
                         ? "Paste merchant key secret"
+                      : selected === "highlevel"
+                        ? "Paste HighLevel private integration token"
                       : "Paste provider token"
                 }
               />
@@ -1311,6 +1336,7 @@ export function IntegrationsShell() {
                 (selected === "razorpay_api" && !razorpayKeyId.trim()) ||
                 ((selected === "atlassian" || selected === "jira") && (!atlassianSite.trim() || !atlassianEmail.trim())) ||
                 (selected === "freshsales" && !freshsalesSite.trim()) ||
+                (selected === "highlevel" && !highlevelLocationId.trim()) ||
                 (selected === "digitalbot" && !digitalBotAgentId)
               }
               onClick={() => void connect()}
