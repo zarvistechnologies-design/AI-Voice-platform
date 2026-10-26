@@ -25,6 +25,7 @@ import {
 } from "@/lib/integrations";
 import { WhatsAppModal } from "@/components/integrations/WhatsAppModal";
 import { ClaudeConnectorCard } from "@/components/integrations/ClaudeConnectorCard";
+import { RequestedIntegrationsSection } from "@/components/integrations/RequestedIntegrationsSection";
 
 const catalog = {
   vobiz: {
@@ -458,6 +459,7 @@ export function IntegrationsShell() {
                 <article
                   className="min-h-[300px] overflow-hidden rounded-xl border border-[#dfe7e4] bg-white transition hover:border-[#9fcfc3] hover:shadow-[0_14px_34px_rgba(17,62,53,.08)]"
                   key={displayId}
+                  id={`integration-${displayId}`}
                 >
                   <div className="flex h-full flex-col p-5">
                     <div className="flex items-start justify-between gap-4">
@@ -739,6 +741,7 @@ export function IntegrationsShell() {
               );
             })}
           </section>
+          <RequestedIntegrationsSection providers={providers} />
         </div>
       </section>
 

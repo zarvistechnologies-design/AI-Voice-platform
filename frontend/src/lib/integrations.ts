@@ -51,18 +51,6 @@ export type AgentSummary = {
   version: number;
 };
 
-export type RemoteMcpConnection = {
-  id: string;
-  name: string;
-  provider: string;
-  url: string;
-  status: "connected" | "error";
-  lastVerifiedAt: string | null;
-  lastError: string;
-  tools: Array<{ name: string; description: string; inputSchema: Record<string, unknown> }>;
-  attachedAgents?: Array<{ id: string; name: string }>;
-};
-
 async function request<T>(path: string, init: RequestInit = {}) {
   if (!getSession()) throw new Error("Sign in before managing integrations.");
   const response = await fetch(`${API_URL}/api/integrations${path}`, {
@@ -76,22 +64,6 @@ async function request<T>(path: string, init: RequestInit = {}) {
 }
 
 export const integrationsApi = {
-  mcpServers: () => request<{ connections: RemoteMcpConnection[] }>("/mcp-servers"),
-  addMcpServer: (payload: { name: string; provider: string; url: string; token: string }) =>
-    request<{ connection: RemoteMcpConnection }>("/mcp-servers", { method: "POST", body: JSON.stringify(payload) }),
-  verifyMcpServer: (id: string) => request<{ connection: RemoteMcpConnection }>(`/mcp-servers/${encodeURIComponent(id)}/verify`, { method: "POST" }),
-  attachMcpTools: async (id: string, agentId: string, toolNames: string[]) => {
-    const result = await request<{ attachedTools: string[]; agentId: string }>(`/mcp-servers/${encodeURIComponent(id)}/attach`, {
-      method: "POST", body: JSON.stringify({ agentId, toolNames }),
-    });
-    invalidateVoiceCache("/agents");
-    return result;
-  },
-  deleteMcpServer: async (id: string) => {
-    const result = await request<{ deleted: boolean }>(`/mcp-servers/${encodeURIComponent(id)}`, { method: "DELETE" });
-    invalidateVoiceCache("/agents");
-    return result;
-  },
   list: () => cachedApiRequest("integrations", "/", 15_000, () => request<{ providers: IntegrationProvider[] }>("/")),
   connect: async (provider: Exclude<IntegrationProvider["id"], "vobiz">, credential: string) => {
     const result = await request<IntegrationProvider>(`/${provider}`, {
