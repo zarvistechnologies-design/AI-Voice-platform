@@ -64,6 +64,7 @@ const sidebarGroups: { label: string; items: SidebarItem[] }[] = [
         href: "/dashboard/integrations",
         icon: "integrations",
       },
+      { label: "MCP Servers", href: "/dashboard/mcp-servers", icon: "integrations" },
       {
         label: "Developers",
         href: "/dashboard/developers",
