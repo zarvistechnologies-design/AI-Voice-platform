@@ -7,7 +7,10 @@ import { DashboardAuthBoundary } from "@/components/dashboard/DashboardAuthBound
 import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
 import { DashboardSidebar, getDashboardSidebarInitialState } from "@/components/dashboard/DashboardSidebar";
 import { getServerSession, getSession, logoutSession, subscribeToSession } from "@/lib/auth";
-import { reviewAssistantAction, sendAssistantMessage, type AssistantMessage } from "@/lib/assistant";
+import {
+  deleteAssistantConversation, getAssistantConversation, listAssistantConversations,
+  reviewAssistantAction, sendAssistantMessage, type AssistantConversationSummary, type AssistantMessage,
+} from "@/lib/assistant";
 
 const suggestions = [
   {
@@ -112,7 +115,7 @@ function renderAssistantInline(value: string) {
     if (link) {
       const href = link[2];
       const internal = href.startsWith("/dashboard/");
-      if (internal || /^https:\/\/(?:api\.|www\.)?vozon\.ai(?:\/|$)/i.test(href)) {
+      if (internal || /^https:\/\/[^\s<>]+$/i.test(href)) {
         return <a key={index} href={href} target={internal ? undefined : "_blank"} rel={internal ? undefined : "noopener noreferrer"} className="font-semibold text-[#16805c] underline decoration-[#a5d3b4] underline-offset-2 hover:text-[#105d43]">{link[1]}</a>;
       }
     }
@@ -125,15 +128,16 @@ function FormattedContent({ content }: { content: string }) {
   const paragraphs = content.split(/\n\n+/);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2.5 break-words">
       {paragraphs.map((p, idx) => {
         const lines = p.split(/\n/);
         return (
-          <div key={idx} className="space-y-1.5">
+          <div key={idx} className="space-y-0.5">
             {lines.map((line, lineIdx) => {
               const isBullet = line.trim().startsWith("- ") || line.trim().startsWith("* ");
               const isNumbered = /^\d+\.\s/.test(line.trim());
               const isHeading = line.trim().startsWith("### ") || line.trim().startsWith("## ");
+              if (/^---+$/.test(line.trim())) return <hr key={lineIdx} className="my-3 border-[#e2eae3]" />;
 
               const cleanLine = isHeading
                 ? line.replace(/^#{2,3}\s*/, "")
@@ -180,6 +184,14 @@ function AssistantChat() {
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
   const [showUserSidebar, setShowUserSidebar] = useState(getDashboardSidebarInitialState);
   const [messages, setMessages] = useState<AssistantMessage[]>([]);
+  const [conversationId, setConversationId] = useState<string>();
+  const [conversations, setConversations] = useState<AssistantConversationSummary[]>([]);
+  const [historyPage, setHistoryPage] = useState(0);
+  const [hasMoreHistory, setHasMoreHistory] = useState(false);
+  const [historyLoading, setHistoryLoading] = useState(true);
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [loadingChatId, setLoadingChatId] = useState("");
+  const [historyError, setHistoryError] = useState("");
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
   const [reviewingActionId, setReviewingActionId] = useState("");
@@ -187,10 +199,85 @@ function AssistantChat() {
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  useEffect(() => {
+    if (!session?.id || !session.organization?.id) return;
+    let active = true;
+    listAssistantConversations().then((result) => {
+      if (!active) return;
+      setConversations(result.conversations);
+      setHasMoreHistory(result.hasMore);
+      setHistoryError("");
+    }).catch(() => {
+      if (active) setHistoryError("Chats could not be loaded. Refresh to try again.");
+    }).finally(() => {
+      if (active) setHistoryLoading(false);
+    });
+    return () => { active = false; };
+  }, [session?.id, session?.organization?.id]);
+
   // Auto-scroll when messages update
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages, busy]);
+
+  function startNewChat() {
+    if (busy || loadingChatId) return;
+    setConversationId(undefined);
+    setMessages([]);
+    setDraft("");
+    setError("");
+    setHistoryOpen(false);
+    textareaRef.current?.focus();
+  }
+
+  async function openChat(id: string) {
+    if (busy || loadingChatId || id === conversationId) return;
+    setLoadingChatId(id);
+    setError("");
+    try {
+      const chat = await getAssistantConversation(id);
+      setConversationId(chat.id);
+      setMessages(chat.messages);
+      setDraft("");
+      setHistoryOpen(false);
+    } catch (caught) {
+      setHistoryError(caught instanceof Error ? caught.message : "That chat could not be opened.");
+    } finally {
+      setLoadingChatId("");
+    }
+  }
+
+  async function loadMoreHistory() {
+    if (historyLoading || !hasMoreHistory) return;
+    setHistoryLoading(true);
+    try {
+      const result = await listAssistantConversations(historyPage + 1);
+      setConversations((current) => [...current, ...result.conversations.filter((item) => !current.some((old) => old.id === item.id))]);
+      setHistoryPage((page) => page + 1);
+      setHasMoreHistory(result.hasMore);
+    } catch (caught) {
+      setHistoryError(caught instanceof Error ? caught.message : "More chats could not be loaded.");
+    } finally {
+      setHistoryLoading(false);
+    }
+  }
+
+  async function removeChat(id: string) {
+    if (busy || loadingChatId || !window.confirm("Delete this chat permanently?")) return;
+    setLoadingChatId(id);
+    try {
+      await deleteAssistantConversation(id);
+      setConversations((current) => current.filter((chat) => chat.id !== id));
+      if (conversationId === id) {
+        setConversationId(undefined);
+        setMessages([]);
+      }
+    } catch (caught) {
+      setHistoryError(caught instanceof Error ? caught.message : "The chat could not be deleted.");
+    } finally {
+      setLoadingChatId("");
+    }
+  }
 
   async function submitMessage(event?: FormEvent, suppliedPrompt?: string) {
     event?.preventDefault();
@@ -203,10 +290,21 @@ function AssistantChat() {
     setBusy(true);
 
     try {
-      const reply = await sendAssistantMessage(nextMessages.slice(-12));
+      const reply = await sendAssistantMessage(nextMessages.slice(-12), conversationId);
+      setConversationId(reply.conversationId);
       setMessages((current) => [...current, { role: "assistant", content: reply.answer, pendingAction: reply.pendingAction }]);
+      try {
+        const latest = await listAssistantConversations();
+        setConversations(latest.conversations);
+        setHasMoreHistory(latest.hasMore);
+        setHistoryPage(0);
+      } catch {
+        setHistoryError("Chat saved, but the history list could not refresh.");
+      }
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Vozon could not answer right now.");
+      setMessages((current) => current.slice(0, -1));
+      setDraft(content);
     } finally {
       setBusy(false);
       window.requestAnimationFrame(() => bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }));
@@ -269,14 +367,42 @@ function AssistantChat() {
         setShowUserSidebar={setShowUserSidebar}
       />
 
-      <section className="flex min-h-screen min-w-0 flex-col">
+      <section className="flex h-screen min-h-0 min-w-0 flex-col overflow-hidden">
         {/* Workspace Breadcrumbs & Credits Bar (Clean, no redundant headers) */}
         <DashboardPageHeader workspaceBarOnly />
 
+        <div className="relative flex min-h-0 flex-1">
+          <aside className={`${historyOpen ? "flex" : "hidden"} absolute inset-y-0 right-0 z-30 w-[min(88vw,300px)] flex-col border-l border-[#dce9e0] bg-[#f5f9f5] shadow-[-16px_0_40px_rgba(19,60,42,.13)] md:static md:order-2 md:flex md:w-[248px] md:shrink-0 md:shadow-none`} aria-label="Chat history">
+            <div className="flex items-center justify-between border-b border-[#e0ebe3] px-4 py-4">
+              <div><p className="m-0 text-[10px] font-bold uppercase tracking-[.18em] text-[#65917a]">Your workspace</p><h2 className="m-0 mt-1 text-base font-semibold text-[#173d30]">Chat history</h2></div>
+              <button type="button" className="rounded-lg px-2 py-1 text-xl text-[#5c7d68] md:hidden" onClick={() => setHistoryOpen(false)} aria-label="Close chat history">×</button>
+            </div>
+            <button type="button" onClick={startNewChat} disabled={busy || Boolean(loadingChatId)} className="mx-3 mt-3 flex items-center justify-center gap-2 rounded-xl border border-[#c8dfd0] bg-white px-3 py-2.5 text-sm font-semibold text-[#185b3e] shadow-sm transition hover:border-[#8fc2a2] hover:bg-[#f2faf4] disabled:opacity-50"><span className="text-lg leading-none">+</span> New chat</button>
+            <div className="min-h-0 flex-1 overflow-y-auto px-2 pb-4 pt-4">
+              <p className="m-0 px-2 pb-2 text-[10px] font-bold uppercase tracking-[.16em] text-[#8a9e91]">Recent conversations</p>
+              {historyLoading && conversations.length === 0 ? <p className="px-2 text-xs text-[#6e8a77]">Loading chats…</p> : null}
+              {!historyLoading && conversations.length === 0 && !historyError ? <p className="px-2 text-xs leading-5 text-[#6e8a77]">Your conversations will appear here.</p> : null}
+              {historyError ? <p className="mx-2 mb-3 rounded-lg bg-rose-50 px-2 py-2 text-xs text-rose-700" role="alert">{historyError}</p> : null}
+              <div className="space-y-1">
+                {conversations.map((chat) => (
+                  <div key={chat.id} className={`group flex items-center gap-1 rounded-xl px-1 transition ${conversationId === chat.id ? "bg-[#e2f0e6]" : "hover:bg-[#eaf3ed]"}`}>
+                    <button type="button" onClick={() => void openChat(chat.id)} disabled={busy || Boolean(loadingChatId)} className="min-w-0 flex-1 px-2 py-2.5 text-left disabled:opacity-50" aria-current={conversationId === chat.id ? "page" : undefined}>
+                      <span className="block truncate text-xs font-semibold text-[#264937]">{chat.title}</span>
+                      <span className="mt-1 block text-[10px] text-[#7c9784]">{new Date(chat.updatedAt).toLocaleDateString()}</span>
+                    </button>
+                    <button type="button" onClick={() => void removeChat(chat.id)} disabled={busy || Boolean(loadingChatId)} className="rounded-lg px-2 py-1 text-xs text-[#849f8b] opacity-60 transition hover:bg-white hover:text-rose-600 focus:opacity-100 group-hover:opacity-100 disabled:opacity-30" aria-label={`Delete chat: ${chat.title}`} title="Delete chat">×</button>
+                  </div>
+                ))}
+              </div>
+              {hasMoreHistory ? <button type="button" onClick={() => void loadMoreHistory()} disabled={historyLoading} className="mt-3 w-full rounded-lg px-3 py-2 text-xs font-semibold text-[#19715a] hover:bg-[#e6f1e9] disabled:opacity-50">{historyLoading ? "Loading…" : "Load more chats"}</button> : null}
+            </div>
+          </aside>
+
         {/* Main Conversation Container */}
-        <div className="relative mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 pb-4 pt-5 sm:px-8">
+        <div className="relative flex min-h-0 min-w-0 flex-1 flex-col px-4 pb-3 pt-3 sm:px-6 md:order-1 lg:px-8">
+          <button type="button" className="mb-2 self-start rounded-lg border border-[#d7e7dc] bg-white px-3 py-1.5 text-xs font-semibold text-[#2e6045] md:hidden" onClick={() => setHistoryOpen(true)}>☰ &nbsp; Chat history</button>
           {messages.length > 0 ? (
-            <div className="mb-5 flex items-center justify-between gap-4">
+            <div className="mb-3 flex items-center justify-between gap-4 border-b border-[#e2ebe3] pb-3">
               <div className="flex items-center gap-3">
                 <span className="grid size-10 place-items-center rounded-2xl bg-[#103e36] text-[#bdf4d9] shadow-[0_9px_22px_rgba(13,75,62,.2)]"><SparkIcon className="size-5" /></span>
                 <div><p className="m-0 text-[10px] font-bold uppercase tracking-[.2em] text-[#648379]">Workspace intelligence</p><h1 className="m-0 text-lg font-semibold tracking-tight text-[#153b33]">Ask Vozon</h1></div>
@@ -284,12 +410,8 @@ function AssistantChat() {
               <button
                 className="inline-flex items-center gap-1.5 rounded-full border border-[#cce1d8] bg-white/90 px-3.5 py-2 text-xs font-semibold text-[#1f4a40] shadow-[0_8px_22px_rgba(24,74,60,.08)] transition hover:-translate-y-0.5 hover:border-[#118778] hover:bg-[#edf7f4]"
                 type="button"
-                onClick={() => {
-                  setMessages([]);
-                  setError("");
-                  setDraft("");
-                  textareaRef.current?.focus();
-                }}
+                onClick={startNewChat}
+                disabled={busy || Boolean(loadingChatId)}
               >
                 <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M12 5v14M5 12h14" />
@@ -299,7 +421,7 @@ function AssistantChat() {
             </div>
           ) : null}
           {messages.length === 0 ? (
-            <div className="flex flex-1 flex-col justify-center gap-6 pb-8 pt-3 sm:gap-8">
+            <div className="flex min-h-0 flex-1 flex-col justify-center gap-6 overflow-y-auto pb-5 pt-3 sm:gap-8">
               <div className="ask-vozon-hero relative isolate overflow-hidden rounded-[30px] px-7 py-9 text-white sm:px-11 sm:py-12">
                 <div className="ask-vozon-orb ask-vozon-orb-one" aria-hidden="true" />
                 <div className="ask-vozon-orb ask-vozon-orb-two" aria-hidden="true" />
@@ -356,7 +478,7 @@ function AssistantChat() {
             </div>
           ) : (
             /* Active Message Thread */
-            <div className="flex-1 space-y-6 pb-6 pt-2" aria-live="polite">
+            <div className="min-h-0 flex-1 space-y-5 overflow-y-auto pb-5 pt-2" aria-live="polite">
               {messages.map((message, index) => (
                 <div
                   className={`animate-ai-message flex gap-3 ${
@@ -371,10 +493,10 @@ function AssistantChat() {
                   ) : null}
 
                   <div
-                    className={`max-w-[min(92%,52rem)] rounded-[22px] px-5 py-4 text-sm leading-relaxed ${
+                    className={`min-w-0 text-sm leading-relaxed ${
                       message.role === "user"
-                        ? "rounded-br-sm bg-gradient-to-br from-[#176f58] to-[#104a3b] text-white shadow-[0_14px_30px_rgba(21,92,70,.19)]"
-                        : "group rounded-tl-sm border border-[#dbe8df] bg-white/95 text-slate-800 shadow-[0_18px_45px_rgba(22,75,53,.08)]"
+                        ? "max-w-[min(90%,42rem)] rounded-2xl rounded-br-sm bg-[#e7f3e9] px-4 py-2.5 text-[#214a32]"
+                        : "group flex-1 py-1 pr-2 text-slate-800"
                     }`}
                   >
                     {message.role === "user" ? (
@@ -406,7 +528,7 @@ function AssistantChat() {
                             </div>
                           </div>
                         ) : null}
-                        <div className="mt-3 flex items-center justify-end border-t border-slate-100 pt-2 opacity-80 transition group-hover:opacity-100">
+                        <div className="mt-2 flex items-center justify-end opacity-60 transition group-hover:opacity-100">
                           <CopyButton text={message.content} />
                         </div>
                       </>
@@ -443,9 +565,9 @@ function AssistantChat() {
           )}
 
           {/* Floating Prompt Area with Claude/ChatGPT Style Seamless Design & Shadow */}
-          <div className="sticky bottom-4 z-20 mx-auto w-full max-w-4xl pt-2">
+          <div className="z-20 w-full shrink-0 border-t border-[#e0eae2] bg-[#f8faf6]/95 pt-3">
             <form
-              className="ai-prompt-container ask-vozon-prompt relative rounded-[26px] border border-[#d8e6e2] bg-white/95 p-3.5 backdrop-blur-xl sm:p-4"
+              className="ai-prompt-container ask-vozon-prompt relative rounded-[20px] border border-[#d8e6e2] bg-white/95 px-3.5 py-2.5 backdrop-blur-xl sm:px-4"
               onSubmit={(event) => void submitMessage(event)}
             >
               <label className="sr-only" htmlFor="ask-vozon-input">
@@ -455,11 +577,11 @@ function AssistantChat() {
               {/* Completely borderless, seamless textarea */}
               <textarea
                 ref={textareaRef}
-                className="ai-prompt-textarea block max-h-48 min-h-[58px] w-full text-[15px] leading-relaxed text-[#14231f] placeholder:text-[#8ea09a] sm:text-base"
+                className="ai-prompt-textarea block max-h-32 min-h-[36px] w-full text-[15px] leading-relaxed text-[#14231f] placeholder:text-[#8ea09a] sm:text-base"
                 id="ask-vozon-input"
                 maxLength={2000}
                 placeholder="Ask about campaigns, follow ups, calls, or an agent…"
-                rows={2}
+                rows={1}
                 value={draft}
                 onChange={(event) => setDraft(event.target.value)}
                 onKeyDown={(event) => {
@@ -471,7 +593,7 @@ function AssistantChat() {
               />
 
               {/* Seamless Action Bar with Claude-style Round Send Button */}
-              <div className="mt-2.5 flex items-center justify-between gap-3">
+              <div className="mt-1 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-[#edf6f3] px-3 py-1 text-xs font-semibold text-[#0d786b]">
                     <SparkIcon className="size-3 text-[#118778]" />
@@ -499,10 +621,11 @@ function AssistantChat() {
               </div>
             </form>
 
-            <p className="mx-auto mb-0 mt-2 text-center text-[10px] leading-4 text-[#8b9994]">
+            <p className="mx-auto mb-0 mt-1 text-center text-[10px] leading-4 text-[#8b9994]">
               Grounded in workspace data · Agent changes require your approval
             </p>
           </div>
+        </div>
         </div>
       </section>
     </main>

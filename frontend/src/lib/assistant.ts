@@ -15,7 +15,9 @@ export type AssistantPendingAction = {
   expiresAt: string;
 };
 
-export type AssistantReply = { answer: string; pendingAction?: AssistantPendingAction };
+export type AssistantReply = { answer: string; pendingAction?: AssistantPendingAction; conversationId: string };
+export type AssistantConversationSummary = { id: string; title: string; updatedAt: string };
+export type AssistantConversation = AssistantConversationSummary & { messages: AssistantMessage[] };
 
 export type McpConnection = {
   clientId: string;
@@ -42,13 +44,26 @@ async function assistantRequest<T>(path: string, init: RequestInit = {}) {
   return data as T;
 }
 
-export async function sendAssistantMessage(messages: AssistantMessage[]) {
+export async function sendAssistantMessage(messages: AssistantMessage[], conversationId?: string) {
+  const conversationMessages = conversationId ? messages.slice(-1) : messages;
   const data = await assistantRequest<AssistantReply>("/chat", {
     method: "POST",
-    body: JSON.stringify({ messages: messages.map(({ role, content }) => ({ role, content })) }),
+    body: JSON.stringify({ messages: conversationMessages.map(({ role, content }) => ({ role, content })), conversationId }),
   });
   if (!data?.answer) throw new Error("Vozon returned an empty response. Please try again.");
   return data;
+}
+
+export function listAssistantConversations(page = 0) {
+  return assistantRequest<{ conversations: AssistantConversationSummary[]; hasMore: boolean }>(`/chat/history?page=${page}`);
+}
+
+export function getAssistantConversation(conversationId: string) {
+  return assistantRequest<AssistantConversation>(`/chat/history/${encodeURIComponent(conversationId)}`);
+}
+
+export function deleteAssistantConversation(conversationId: string) {
+  return assistantRequest<void>(`/chat/history/${encodeURIComponent(conversationId)}`, { method: "DELETE" });
 }
 
 export function reviewAssistantAction(actionId: string, approved: boolean) {
