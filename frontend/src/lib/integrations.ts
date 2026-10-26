@@ -4,7 +4,7 @@ import { API_URL } from "@/lib/apiBase";
 import { invalidateVoiceCache } from "@/lib/voiceCache";
 
 export type IntegrationProvider = {
-  id: "vobiz" | "hubspot" | "calendly" | "slack" | "google" | "digitalbot" | "whatsapp";
+  id: "vobiz" | "hubspot" | "calendly" | "slack" | "razorpay_api" | "razorpay_oauth" | "asana" | "clickup" | "linear" | "monday" | "notion" | "atlassian" | "jira" | "freshsales" | "prospeo" | "zoho" | "salesforce" | "google" | "digitalbot" | "whatsapp";
   connected: boolean;
   accountId: string;
   status: "connected" | "error" | "disconnected";
@@ -87,12 +87,23 @@ export const integrationsApi = {
     invalidateApiCache("integrations");
     return result;
   },
-  googleOAuthUrl: () => request<{ url: string }>("/google/oauth/start"),
+  googleOAuthUrl: (feature: "core" | "drive" | "docs" | "gmail" = "core") => request<{ url: string }>(`/google/oauth/start?feature=${feature}`),
+  crmOAuthUrl: (provider: "zoho" | "salesforce", sandbox = false) => request<{ url: string }>(`/${provider}/oauth/start${sandbox ? "?sandbox=true" : ""}`),
+  crmPreview: (provider: "zoho" | "salesforce") => request<{ items: Array<{ id: string; name: string; type: string }> }>(`/${provider}/preview`),
+  razorpayOAuthUrl: (mode: "live" | "test" = "live") => request<{ url: string }>(`/razorpay_oauth/oauth/start?mode=${mode}`),
+  razorpayOAuthPayments: () => request<{ payments: Array<{ id: string; amount: number; currency: string; status: string; createdAt: number }> }>("/razorpay_oauth/payments"),
+  agentAccess: () => request<{ agents: Array<{ id: string; name: string; status: string; providers: string[] }> }>("/agent-access"),
+  setAgentAccess: (agentId: string, provider: string, enabled: boolean) => request<{ id: string; providers: string[] }>(`/agent-access/${encodeURIComponent(agentId)}`, {
+    method: "PUT", body: JSON.stringify({ provider, enabled }),
+  }),
+  googlePreview: (feature: "drive" | "docs" | "gmail") => request<{ items: Array<{ id: string; name: string; type: string; excerpt?: string }> }>(`/google/${feature}/preview`),
   disconnectGoogle: async () => {
     const result = await request<Record<string, never>>("/google", { method: "DELETE" });
     invalidateApiCache("integrations");
     return result;
   },
+  razorpayPayments: () => request<{ count: number; payments: Array<{ id: string; amount: number; currency: string; status: string; createdAt: number }> }>("/razorpay_api/payments"),
+  tokenProviderPreview: (provider: "asana" | "clickup" | "linear" | "monday" | "notion" | "atlassian" | "jira" | "freshsales" | "prospeo") => request<{ items: Array<{ id: string; name: string; type: string }> }>(`/${provider}/preview`),
   googleCalendars: () => request<{ calendars: Array<{ id: string; name: string; primary: boolean; timezone: string }> }>("/google/calendars"),
   inspectSpreadsheet: (spreadsheetId: string) => request<{ spreadsheet: { id: string; name: string; sheets: string[] } }>("/google/spreadsheet", {
     method: "POST", body: JSON.stringify({ spreadsheetId }),

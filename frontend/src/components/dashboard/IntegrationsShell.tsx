@@ -62,6 +62,97 @@ const catalog = {
     color: "from-[#118778] to-[#25b39f]",
     flow: "After every finalized call",
   },
+  razorpay_api: {
+    name: "Razorpay API",
+    category: "Payments",
+    description: "Connect your merchant keys and inspect recent payment status.",
+    logo: "/images/integrations/razorpay.png",
+    color: "from-[#118778] to-[#25b39f]",
+  },
+  razorpay_oauth: {
+    name: "Razorpay OAuth",
+    category: "Payments",
+    description: "Authorize a merchant account and inspect recent payments.",
+    logo: "/images/integrations/razorpay.png",
+    color: "from-[#118778] to-[#25b39f]",
+  },
+  asana: {
+    name: "Asana",
+    category: "Work management",
+    description: "Connect your account and browse accessible projects.",
+    logo: "/images/integrations/asana.svg",
+    color: "from-[#118778] to-[#25b39f]",
+  },
+  clickup: {
+    name: "ClickUp",
+    category: "Work management",
+    description: "Connect your account and browse authorized workspaces.",
+    logo: "/images/integrations/clickup.svg",
+    color: "from-[#118778] to-[#25b39f]",
+  },
+  linear: {
+    name: "Linear",
+    category: "Work management",
+    description: "Connect your account and browse recent issues.",
+    logo: "/images/integrations/linear.svg",
+    color: "from-[#118778] to-[#25b39f]",
+  },
+  monday: {
+    name: "monday.com",
+    category: "Work management",
+    description: "Connect your account and browse accessible boards.",
+    logo: "/images/integrations/monday.ico",
+    color: "from-[#118778] to-[#25b39f]",
+  },
+  notion: {
+    name: "Notion",
+    category: "Knowledge",
+    description: "Connect your integration and browse shared pages.",
+    logo: "/images/company-logos/notion.svg",
+    color: "from-[#118778] to-[#25b39f]",
+  },
+  atlassian: {
+    name: "Atlassian",
+    category: "Knowledge",
+    description: "Connect your Confluence site and browse accessible pages.",
+    logo: "/images/integrations/atlassian.svg",
+    color: "from-[#118778] to-[#25b39f]",
+  },
+  jira: {
+    name: "Jira",
+    category: "Work management",
+    description: "Connect Jira Cloud and browse accessible projects.",
+    logo: "/images/integrations/jira.svg",
+    color: "from-[#118778] to-[#25b39f]",
+  },
+  freshsales: {
+    name: "Freshsales",
+    category: "CRM",
+    description: "Connect your Freshsales account and browse contact views.",
+    logo: "/images/integrations/freshsales.ico",
+    color: "from-[#118778] to-[#25b39f]",
+  },
+  prospeo: {
+    name: "Prospeo",
+    category: "Sales",
+    description: "Connect your API key and view account plan and credits.",
+    logo: "/images/integrations/prospeo.png",
+    color: "from-[#118778] to-[#25b39f]",
+  },
+  zoho: {
+    name: "Zoho CRM",
+    category: "CRM",
+    description: "Authorize your CRM account and browse accessible contacts.",
+    logo: "/images/integrations/zoho.svg",
+    color: "from-[#118778] to-[#25b39f]",
+  },
+  salesforce: {
+    name: "Salesforce",
+    category: "CRM",
+    description: "Authorize your Salesforce account and browse accessible contacts.",
+    logo: "/images/integrations/salesforce.svg",
+    color: "from-[#118778] to-[#25b39f]",
+  },
   google_calendar: {
     name: "Google Calendar",
     category: "Scheduling",
@@ -79,6 +170,27 @@ const catalog = {
     logo: "/images/integrations/google-sheets.svg",
     color: "from-[#118778] to-[#25b39f]",
     flow: "Used live by enabled agents",
+  },
+  google_docs: {
+    name: "Google Docs",
+    category: "Documents",
+    description: "Browse accessible documents and preview their content.",
+    logo: "/images/integrations/googledocs.svg",
+    color: "from-[#118778] to-[#25b39f]",
+  },
+  google_drive: {
+    name: "Google Drive",
+    category: "Documents",
+    description: "Browse files in the connected Google Drive account.",
+    logo: "/images/integrations/googledrive.svg",
+    color: "from-[#118778] to-[#25b39f]",
+  },
+  google_gmail: {
+    name: "Gmail",
+    category: "Messaging",
+    description: "Read recent message subjects from the connected Gmail account.",
+    logo: "/images/integrations/gmail.svg",
+    color: "from-[#118778] to-[#25b39f]",
   },
   google: {
     name: "Google",
@@ -107,6 +219,22 @@ const catalog = {
     flow: "Meta Embedded Signup",
   },
 } as const;
+
+const tokenProviderIds = ["asana", "clickup", "linear", "monday", "notion", "atlassian", "jira", "freshsales", "prospeo"] as const;
+const voiceReadProviderIds: string[] = [...tokenProviderIds, "zoho", "salesforce", "razorpay_api", "razorpay_oauth", "google_calendar", "google_drive", "google_docs", "google_gmail"];
+type TokenProviderId = (typeof tokenProviderIds)[number];
+
+function isTokenProviderId(id: IntegrationProvider["id"]): id is TokenProviderId {
+  return tokenProviderIds.includes(id as TokenProviderId);
+}
+
+const googleScopeRequirements: Partial<Record<keyof typeof catalog, string[]>> = {
+  google_calendar: ["https://www.googleapis.com/auth/calendar"],
+  google_sheets: ["https://www.googleapis.com/auth/spreadsheets"],
+  google_drive: ["https://www.googleapis.com/auth/drive.readonly"],
+  google_docs: ["https://www.googleapis.com/auth/drive.metadata.readonly", "https://www.googleapis.com/auth/documents.readonly"],
+  google_gmail: ["https://www.googleapis.com/auth/gmail.readonly"],
+};
 
 function initials(name: string) {
   return name
@@ -141,6 +269,16 @@ export function IntegrationsShell() {
     "vobiz"
   > | null>(null);
   const [credential, setCredential] = useState("");
+  const [razorpayKeyId, setRazorpayKeyId] = useState("");
+  const [atlassianSite, setAtlassianSite] = useState("");
+  const [atlassianEmail, setAtlassianEmail] = useState("");
+  const [freshsalesSite, setFreshsalesSite] = useState("");
+  const [razorpayPayments, setRazorpayPayments] = useState<Awaited<ReturnType<typeof integrationsApi.razorpayPayments>> | null>(null);
+  const [razorpayOAuthPayments, setRazorpayOAuthPayments] = useState<Awaited<ReturnType<typeof integrationsApi.razorpayOAuthPayments>> | null>(null);
+  const [providerPreviews, setProviderPreviews] = useState<Partial<Record<TokenProviderId, Awaited<ReturnType<typeof integrationsApi.tokenProviderPreview>>>>>({});
+  const [crmPreviews, setCrmPreviews] = useState<Partial<Record<"zoho" | "salesforce", Awaited<ReturnType<typeof integrationsApi.crmPreview>>>>>({});
+  const [agentAccess, setAgentAccess] = useState<Array<{ id: string; name: string; status: string; providers: string[] }>>([]);
+  const [googlePreviews, setGooglePreviews] = useState<Partial<Record<"drive" | "docs" | "gmail", Awaited<ReturnType<typeof integrationsApi.googlePreview>>>>>({});
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
   const [showUserSidebar, setShowUserSidebar] = useState(
@@ -165,12 +303,27 @@ export function IntegrationsShell() {
   const load = useCallback(async () => {
     try {
       setProviders((await integrationsApi.list()).providers);
+      const access = await integrationsApi.agentAccess().catch(() => ({ agents: [] }));
+      setAgentAccess(access.agents);
     } catch (error) {
       setNotice(
         error instanceof Error ? error.message : "Could not load integrations.",
       );
     }
   }, []);
+
+  async function toggleAgentAccess(agentId: string, provider: string, enabled: boolean) {
+    setBusy(true);
+    try {
+      const result = await integrationsApi.setAgentAccess(agentId, provider, enabled);
+      setAgentAccess((current) => current.map((agent) => agent.id === agentId ? { ...agent, providers: result.providers } : agent));
+      setNotice(`${catalog[provider as keyof typeof catalog].name} ${enabled ? "enabled" : "disabled"} for this voice agent.`);
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Could not change agent integration access.");
+    } finally {
+      setBusy(false);
+    }
+  }
 
   useEffect(() => {
     if (!session) {
@@ -208,8 +361,21 @@ export function IntegrationsShell() {
           "DigitalBot connected. Turn on Connector tools when you want to add them to this agent.",
         );
       } else {
-        await integrationsApi.connect(selected, credential);
+        await integrationsApi.connect(
+          selected,
+          selected === "razorpay_api"
+            ? JSON.stringify({ keyId: razorpayKeyId.trim(), keySecret: credential.trim() })
+            : selected === "atlassian" || selected === "jira"
+              ? JSON.stringify({ site: atlassianSite.trim(), email: atlassianEmail.trim(), token: credential.trim() })
+            : selected === "freshsales"
+              ? JSON.stringify({ site: freshsalesSite.trim(), apiKey: credential.trim() })
+            : credential,
+        );
         setCredential("");
+        setRazorpayKeyId("");
+        setAtlassianSite("");
+        setAtlassianEmail("");
+        setFreshsalesSite("");
         setSelected(null);
         await load();
         setNotice(`${catalog[selected].name} connected and verified.`);
@@ -239,6 +405,11 @@ export function IntegrationsShell() {
       if (provider === "google") await integrationsApi.disconnectGoogle();
       else if (provider === "whatsapp") await integrationsApi.disconnectWhatsApp();
       else await integrationsApi.disconnect(provider);
+      if (provider === "google") setGooglePreviews({});
+      if (provider === "razorpay_api") setRazorpayPayments(null);
+      if (provider === "razorpay_oauth") setRazorpayOAuthPayments(null);
+      if (provider === "zoho" || provider === "salesforce") setCrmPreviews((current) => ({ ...current, [provider]: undefined }));
+      if (isTokenProviderId(provider)) setProviderPreviews((current) => ({ ...current, [provider]: undefined }));
       await load();
       setNotice(`${providerName} disconnected.`);
     } catch (error) {
@@ -252,10 +423,10 @@ export function IntegrationsShell() {
     }
   }
 
-  async function connectGoogle() {
+  async function connectGoogle(feature: "core" | "drive" | "docs" | "gmail" = "core") {
     setBusy(true);
     try {
-      const { url } = await integrationsApi.googleOAuthUrl();
+      const { url } = await integrationsApi.googleOAuthUrl(feature);
       window.location.assign(url);
     } catch (error) {
       setNotice(
@@ -263,6 +434,82 @@ export function IntegrationsShell() {
           ? error.message
           : "Could not start Google authorization.",
       );
+      setBusy(false);
+    }
+  }
+
+  async function connectCrm(provider: "zoho" | "salesforce", sandbox = false) {
+    setBusy(true);
+    try {
+      const { url } = await integrationsApi.crmOAuthUrl(provider, sandbox);
+      window.location.assign(url);
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : `Could not start ${catalog[provider].name} authorization.`);
+      setBusy(false);
+    }
+  }
+
+  async function connectRazorpayOAuth(mode: "live" | "test" = "live") {
+    setBusy(true);
+    try {
+      const { url } = await integrationsApi.razorpayOAuthUrl(mode);
+      window.location.assign(url);
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Could not start Razorpay authorization.");
+      setBusy(false);
+    }
+  }
+
+  async function previewRazorpayOAuth() {
+    setBusy(true);
+    try { setRazorpayOAuthPayments(await integrationsApi.razorpayOAuthPayments()); }
+    catch (error) { setNotice(error instanceof Error ? error.message : "Could not read Razorpay payments."); }
+    finally { setBusy(false); }
+  }
+
+  async function previewCrm(provider: "zoho" | "salesforce") {
+    setBusy(true);
+    try {
+      const preview = await integrationsApi.crmPreview(provider);
+      setCrmPreviews((current) => ({ ...current, [provider]: preview }));
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : `Could not read ${catalog[provider].name} contacts.`);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function previewGoogle(feature: "drive" | "docs" | "gmail") {
+    setBusy(true);
+    try {
+      const preview = await integrationsApi.googlePreview(feature);
+      setGooglePreviews((current) => ({ ...current, [feature]: preview }));
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Could not read Google resources.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function previewRazorpayPayments() {
+    setBusy(true);
+    try {
+      setRazorpayPayments(await integrationsApi.razorpayPayments());
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Could not read Razorpay payments.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function previewTokenProvider(provider: TokenProviderId) {
+    setBusy(true);
+    try {
+      const preview = await integrationsApi.tokenProviderPreview(provider);
+      setProviderPreviews((current) => ({ ...current, [provider]: preview }));
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Could not read provider resources.");
+    } finally {
       setBusy(false);
     }
   }
@@ -400,6 +647,9 @@ export function IntegrationsShell() {
       items.push(
         { provider, displayId: "google_calendar" },
         { provider, displayId: "google_sheets" },
+        { provider, displayId: "google_docs" },
+        { provider, displayId: "google_drive" },
+        { provider, displayId: "google_gmail" },
       );
     } else {
       items.push({ provider, displayId: provider.id });
@@ -451,6 +701,18 @@ export function IntegrationsShell() {
               const item = catalog[displayId];
               const googleView =
                 displayId === "google_calendar" ? "calendar" : "sheets";
+              const googleExtraFeature = displayId === "google_drive" ? "drive"
+                : displayId === "google_docs" ? "docs"
+                : displayId === "google_gmail" ? "gmail" : null;
+              const grantedScopes = Array.isArray(provider.metadata.scopes)
+                ? provider.metadata.scopes.filter((scope): scope is string => typeof scope === "string")
+                : [];
+              const displayConnected = provider.id === "google"
+                ? provider.connected && (googleScopeRequirements[displayId] ?? []).every((scope) => grantedScopes.includes(scope))
+                : provider.connected;
+              const setupNeeded = provider.metadata?.platformConfigured === false;
+              const displayDelivery = googleExtraFeature ? null : provider.delivery;
+              const voiceReadId = provider.id === "google" ? displayId : provider.id;
               const dbConnections =
                 provider.id === "digitalbot"
                   ? digitalBotConnections(provider)
@@ -469,13 +731,14 @@ export function IntegrationsShell() {
                           className={`h-12 w-auto object-contain object-left ${displayId === "digitalbot" ? "max-w-14" : "max-w-28"}`}
                           height={48}
                           src={item.logo}
+                          unoptimized={item.logo.endsWith(".ico")}
                           width={112}
                         />
                       </span>
                       <span
-                        className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${provider.connected ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-600"}`}
+                        className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${setupNeeded ? "bg-amber-50 text-amber-800" : displayConnected ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-600"}`}
                       >
-                        {provider.connected ? "Connected" : "Available"}
+                        {setupNeeded ? "Setup needed" : displayConnected ? "Connected" : "Available"}
                       </span>
                     </div>
                     <span className="mt-5 text-[10px] font-bold uppercase tracking-[.14em] text-[#71817d]">
@@ -487,14 +750,15 @@ export function IntegrationsShell() {
                     <p className="mt-1 min-h-12 text-sm leading-6 text-slate-600">
                       {item.description}
                     </p>
-                    {provider.connected || provider.delivery ? (
+                    {setupNeeded ? <p className="mt-2 text-xs leading-5 text-amber-800">Vozon must configure its OAuth application before customers can authorize this provider.</p> : null}
+                    {displayConnected || displayDelivery ? (
                       <details className="group mt-3 text-xs text-slate-600">
                         <summary className="flex cursor-pointer list-none items-center gap-2 font-semibold text-[#0e6f62] marker:content-none">
                           Connection details
                           <span className="transition group-open:rotate-180">⌄</span>
                         </summary>
                         <div className="mt-2 rounded-xl bg-[#f7f9f8] p-3">
-                          {provider.connected ? (
+                          {displayConnected ? (
                             <>
                               <strong className="block text-sm text-slate-900">
                                 {provider.accountId}
@@ -507,16 +771,16 @@ export function IntegrationsShell() {
                               </span>
                             </>
                           ) : null}
-                          {provider.delivery ? (
-                            <div className={`mt-2 rounded-lg border p-2 ${provider.delivery.status === "delivered" ? "border-emerald-200 bg-emerald-50 text-emerald-800" : provider.delivery.status === "failed" ? "border-rose-200 bg-rose-50 text-rose-800" : "border-amber-200 bg-amber-50 text-amber-800"}`}>
+                          {displayDelivery ? (
+                            <div className={`mt-2 rounded-lg border p-2 ${displayDelivery.status === "delivered" ? "border-emerald-200 bg-emerald-50 text-emerald-800" : displayDelivery.status === "failed" ? "border-rose-200 bg-rose-50 text-rose-800" : "border-amber-200 bg-amber-50 text-amber-800"}`}>
                               <strong className="block uppercase tracking-wide">
-                                Last delivery: {provider.delivery.status}
+                                Last delivery: {displayDelivery.status}
                               </strong>
                               <span className="mt-1 block">
-                                Attempts: {provider.delivery.attempts} · Updated{" "}
-                                {new Date(provider.delivery.updatedAt).toLocaleString()}
+                                Attempts: {displayDelivery.attempts} · Updated{" "}
+                                {new Date(displayDelivery.updatedAt).toLocaleString()}
                               </span>
-                              {provider.delivery.errorMessage ? <span className="mt-1 block">{provider.delivery.errorMessage}</span> : null}
+                              {displayDelivery.errorMessage ? <span className="mt-1 block">{displayDelivery.errorMessage}</span> : null}
                             </div>
                           ) : null}
                         </div>
@@ -628,6 +892,69 @@ export function IntegrationsShell() {
                         </div>
                       </details>
                     ) : null}
+                    {displayConnected && provider.id === "razorpay_api" && razorpayPayments ? (
+                      <div className="mt-3 rounded-xl bg-[#f7f9f8] p-3 text-xs text-slate-700">
+                        <strong className="block text-slate-900">Recent payments</strong>
+                        {razorpayPayments.payments.length ? razorpayPayments.payments.map((payment) => (
+                          <div key={payment.id} className="mt-2 flex justify-between gap-2 border-t border-[#dfe7e4] pt-2">
+                            <span className="truncate">{payment.status}</span>
+                            <span>{payment.currency} {(payment.amount / 100).toFixed(2)}</span>
+                          </div>
+                        )) : <span className="mt-2 block">No recent payments found.</span>}
+                      </div>
+                    ) : null}
+                    {displayConnected && provider.id === "razorpay_oauth" && razorpayOAuthPayments ? (
+                      <div className="mt-3 rounded-xl bg-[#f7f9f8] p-3 text-xs text-slate-700">
+                        <strong className="block text-slate-900">Recent merchant payments</strong>
+                        {razorpayOAuthPayments.payments.length ? razorpayOAuthPayments.payments.map((payment) => (
+                          <div key={payment.id} className="mt-2 flex justify-between gap-2 border-t border-[#dfe7e4] pt-2"><span>{payment.status}</span><span>{payment.currency} {(payment.amount / 100).toFixed(2)}</span></div>
+                        )) : <span className="mt-2 block">No recent payments found.</span>}
+                      </div>
+                    ) : null}
+                    {displayConnected && isTokenProviderId(provider.id) && providerPreviews[provider.id] ? (
+                      <div className="mt-3 rounded-xl bg-[#f7f9f8] p-3 text-xs text-slate-700">
+                        <strong className="block text-slate-900">Accessible resources</strong>
+                        {providerPreviews[provider.id]?.items.length ? providerPreviews[provider.id]?.items.map((resource) => (
+                          <div key={resource.id} className="mt-2 flex justify-between gap-2 border-t border-[#dfe7e4] pt-2">
+                            <span className="truncate">{resource.name}</span>
+                            <span className="shrink-0 text-slate-500">{resource.type}</span>
+                          </div>
+                        )) : <span className="mt-2 block">No accessible resources found.</span>}
+                      </div>
+                    ) : null}
+                    {displayConnected && (provider.id === "zoho" || provider.id === "salesforce") && crmPreviews[provider.id] ? (
+                      <div className="mt-3 rounded-xl bg-[#f7f9f8] p-3 text-xs text-slate-700">
+                        <strong className="block text-slate-900">Accessible contacts</strong>
+                        {crmPreviews[provider.id]?.items.length ? crmPreviews[provider.id]?.items.map((contact) => (
+                          <div key={contact.id} className="mt-2 border-t border-[#dfe7e4] pt-2">{contact.name}</div>
+                        )) : <span className="mt-2 block">No accessible contacts found.</span>}
+                      </div>
+                    ) : null}
+                    {displayConnected && googleExtraFeature && googlePreviews[googleExtraFeature] ? (
+                      <div className="mt-3 rounded-xl bg-[#f7f9f8] p-3 text-xs text-slate-700">
+                        <strong className="block text-slate-900">Recent {item.name} resources</strong>
+                        {googlePreviews[googleExtraFeature]?.items.length ? googlePreviews[googleExtraFeature]?.items.map((resource) => (
+                          <div key={resource.id} className="mt-2 border-t border-[#dfe7e4] pt-2">
+                            <span className="block truncate font-medium">{resource.name}</span>
+                            {resource.excerpt ? <span className="mt-1 block line-clamp-2 text-slate-500">{resource.excerpt}</span> : null}
+                          </div>
+                        )) : <span className="mt-2 block">No accessible resources found.</span>}
+                      </div>
+                    ) : null}
+                    {displayConnected && voiceReadProviderIds.includes(voiceReadId) && agentAccess.length ? (
+                      <details className="group mt-3 rounded-xl border border-[#dfe7e4] bg-[#f7f9f8] p-3 text-xs text-slate-700">
+                        <summary className="cursor-pointer font-semibold text-[#0e6f62]">Voice agent access</summary>
+                        <p className="mt-2 leading-5 text-slate-600">Enable read-only access for selected agents during calls. Callers may ask about this provider&apos;s data.</p>
+                        <div className="mt-2 grid gap-2">
+                          {agentAccess.map((agent) => (
+                            <label key={agent.id} className="flex items-center gap-2">
+                              <input type="checkbox" className="accent-[#118778]" checked={agent.providers.includes(voiceReadId)} disabled={busy} onChange={(event) => void toggleAgentAccess(agent.id, voiceReadId, event.target.checked)} />
+                              <span>{agent.name} · {agent.status}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </details>
+                    ) : null}
                     <div className="mt-auto flex flex-wrap gap-2 pt-5">
                       {provider.id === "vobiz" ? (
                         <Link
@@ -647,23 +974,34 @@ export function IntegrationsShell() {
                           Manage Vobiz
                         </Link>
                       ) : provider.id === "google" ? (
-                        provider.connected ? (
+                        displayConnected ? (
                           <>
-                            <button
-                              className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62]"
-                              disabled={busy}
-                              type="button"
-                              onClick={() => void openGoogleManager(googleView)}
-                            >
-                              Configure {item.name}
-                            </button>
+                            {googleExtraFeature ? (
+                              <button
+                                className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62]"
+                                disabled={busy}
+                                type="button"
+                                onClick={() => void previewGoogle(googleExtraFeature)}
+                              >
+                                View {item.name}
+                              </button>
+                            ) : (
+                              <button
+                                className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62]"
+                                disabled={busy}
+                                type="button"
+                                onClick={() => void openGoogleManager(googleView)}
+                              >
+                                Configure {item.name}
+                              </button>
+                            )}
                             <button
                               className="rounded-lg border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-700"
                               disabled={busy}
                               type="button"
                               onClick={() => void disconnect("google")}
                             >
-                              Disconnect Google
+                              Disconnect all Google
                             </button>
                           </>
                         ) : (
@@ -671,10 +1009,34 @@ export function IntegrationsShell() {
                             className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62]"
                             disabled={busy}
                             type="button"
-                            onClick={() => void connectGoogle()}
+                            onClick={() => void connectGoogle(googleExtraFeature ?? "core")}
                           >
                             Connect {item.name}
                           </button>
+                        )
+                      ) : provider.id === "razorpay_oauth" ? (
+                        displayConnected ? (
+                          <>
+                            <button className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62]" disabled={busy} type="button" onClick={() => void previewRazorpayOAuth()}>Check payments</button>
+                            <button className="rounded-lg border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-700" disabled={busy} type="button" onClick={() => void disconnect("razorpay_oauth")}>Disconnect</button>
+                          </>
+                        ) : (
+                          <>
+                            <button className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62]" disabled={busy} type="button" onClick={() => void connectRazorpayOAuth()}>Connect {item.name}</button>
+                            {provider.metadata?.testConfigured === true ? <button className="rounded-lg border border-[#dfe7e4] px-4 py-2.5 text-sm font-semibold text-[#0e6f62]" disabled={busy} type="button" onClick={() => void connectRazorpayOAuth("test")}>Use test mode</button> : null}
+                          </>
+                        )
+                      ) : provider.id === "zoho" || provider.id === "salesforce" ? (
+                        displayConnected ? (
+                          <>
+                            <button className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62]" disabled={busy} type="button" onClick={() => void previewCrm(provider.id as "zoho" | "salesforce")}>View contacts</button>
+                            <button className="rounded-lg border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-700" disabled={busy} type="button" onClick={() => void disconnect(provider.id as "zoho" | "salesforce")}>Disconnect</button>
+                          </>
+                        ) : (
+                          <>
+                            <button className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62]" disabled={busy} type="button" onClick={() => void connectCrm(provider.id as "zoho" | "salesforce")}>Connect {item.name}</button>
+                            {provider.id === "salesforce" ? <button className="rounded-lg border border-[#dfe7e4] px-4 py-2.5 text-sm font-semibold text-[#0e6f62]" disabled={busy} type="button" onClick={() => void connectCrm("salesforce", true)}>Use sandbox</button> : null}
+                          </>
                         )
                       ) : provider.id === "whatsapp" ? (
                         <button
@@ -702,6 +1064,27 @@ export function IntegrationsShell() {
                           Add DigitalBot connection
                         </button>
                       ) : provider.connected ? (
+                        <>
+                        {provider.id === "razorpay_api" ? (
+                          <button
+                            className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62]"
+                            disabled={busy}
+                            type="button"
+                            onClick={() => void previewRazorpayPayments()}
+                          >
+                            Check payments
+                          </button>
+                        ) : null}
+                        {isTokenProviderId(provider.id) ? (
+                          <button
+                            className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62]"
+                            disabled={busy}
+                            type="button"
+                            onClick={() => void previewTokenProvider(provider.id as TokenProviderId)}
+                          >
+                            View resources
+                          </button>
+                        ) : null}
                         <button
                           className="rounded-lg border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-700"
                           disabled={busy}
@@ -717,6 +1100,7 @@ export function IntegrationsShell() {
                         >
                           Disconnect
                         </button>
+                        </>
                       ) : (
                         <button
                           className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62]"
@@ -729,6 +1113,10 @@ export function IntegrationsShell() {
                               >,
                             );
                             setCredential("");
+                            setRazorpayKeyId("");
+                            setAtlassianSite("");
+                            setAtlassianEmail("");
+                            setFreshsalesSite("");
                             setModalError("");
                           }}
                         >
@@ -799,6 +1187,16 @@ export function IntegrationsShell() {
                 ? "Create an incoming webhook in Slack and paste its URL. A verification message will be sent immediately."
                 : selected === "hubspot"
                   ? "Create a HubSpot private app with CRM contacts and notes permissions, then paste its access token."
+                  : selected === "razorpay_api"
+                    ? "Enter your own merchant Key ID and Key Secret. Vozon verifies them with a read-only payment request and stores them encrypted for this workspace."
+                  : selected === "atlassian" || selected === "jira"
+                    ? "Enter your Atlassian Cloud site, account email, and API token. Vozon verifies access before saving this workspace connection."
+                  : selected === "freshsales"
+                    ? "Enter your Freshsales bundle site and API key. Vozon verifies your contact views before saving the connection."
+                  : selected === "prospeo"
+                    ? "Enter your Prospeo API key. Vozon verifies it using the free account information endpoint."
+                  : isTokenProviderId(selected)
+                    ? "Paste a personal API token or internal integration token. Vozon verifies the account and stores the token encrypted for this workspace."
                   : selected === "digitalbot"
                     ? "Create a connection key in the DigitalBot workspace, select the Vozon agent, then paste the key here."
                     : "Create a Calendly personal access token and paste it here."}
@@ -845,9 +1243,45 @@ export function IntegrationsShell() {
                 </label>
               </div>
             ) : null}
+            {selected === "razorpay_api" ? (
+              <label className="mt-4 grid gap-2 text-xs font-semibold text-slate-600">
+                Razorpay Key ID
+                <input
+                  className="rounded-xl border border-slate-200 px-3 py-3 text-sm font-normal text-slate-950"
+                  autoComplete="off"
+                  value={razorpayKeyId}
+                  onChange={(event) => setRazorpayKeyId(event.target.value)}
+                  placeholder="rzp_test_... or rzp_live_..."
+                />
+              </label>
+            ) : null}
+            {selected === "atlassian" || selected === "jira" ? (
+              <div className="mt-4 grid gap-3">
+                <label className="grid gap-2 text-xs font-semibold text-slate-600">
+                  Atlassian site
+                  <input className="rounded-xl border border-slate-200 px-3 py-3 text-sm font-normal text-slate-950" value={atlassianSite} onChange={(event) => setAtlassianSite(event.target.value)} placeholder="acme.atlassian.net" />
+                </label>
+                <label className="grid gap-2 text-xs font-semibold text-slate-600">
+                  Atlassian account email
+                  <input className="rounded-xl border border-slate-200 px-3 py-3 text-sm font-normal text-slate-950" type="email" value={atlassianEmail} onChange={(event) => setAtlassianEmail(event.target.value)} placeholder="you@company.com" />
+                </label>
+              </div>
+            ) : null}
+            {selected === "freshsales" ? (
+              <label className="mt-4 grid gap-2 text-xs font-semibold text-slate-600">
+                Freshsales site
+                <input className="rounded-xl border border-slate-200 px-3 py-3 text-sm font-normal text-slate-950" value={freshsalesSite} onChange={(event) => setFreshsalesSite(event.target.value)} placeholder="acme.myfreshworks.com" />
+              </label>
+            ) : null}
             <label className="mt-5 grid gap-2 text-xs font-semibold text-slate-600">
               {selected === "slack"
                 ? "Incoming webhook URL"
+                : selected === "razorpay_api"
+                  ? "Razorpay Key Secret"
+                : selected === "atlassian" || selected === "jira"
+                  ? "Atlassian API token"
+                : selected === "freshsales" || selected === "prospeo"
+                  ? "API key"
                 : selected === "digitalbot"
                   ? "DigitalBot connection key"
                   : "Access token"}
@@ -862,6 +1296,8 @@ export function IntegrationsShell() {
                     ? "https://hooks.slack.com/services/..."
                     : selected === "digitalbot"
                       ? "db_conn_..."
+                      : selected === "razorpay_api"
+                        ? "Paste merchant key secret"
                       : "Paste provider token"
                 }
               />
@@ -872,6 +1308,9 @@ export function IntegrationsShell() {
               disabled={
                 busy ||
                 !credential.trim() ||
+                (selected === "razorpay_api" && !razorpayKeyId.trim()) ||
+                ((selected === "atlassian" || selected === "jira") && (!atlassianSite.trim() || !atlassianEmail.trim())) ||
+                (selected === "freshsales" && !freshsalesSite.trim()) ||
                 (selected === "digitalbot" && !digitalBotAgentId)
               }
               onClick={() => void connect()}
