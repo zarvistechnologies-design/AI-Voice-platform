@@ -190,6 +190,8 @@ function AssistantChat() {
   const [hasMoreHistory, setHasMoreHistory] = useState(false);
   const [historyLoading, setHistoryLoading] = useState(true);
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [historyVisible, setHistoryVisible] = useState(() =>
+    typeof window === "undefined" || window.localStorage.getItem("askVozonHistoryVisible") !== "0");
   const [loadingChatId, setLoadingChatId] = useState("");
   const [historyError, setHistoryError] = useState("");
   const [draft, setDraft] = useState("");
@@ -198,6 +200,13 @@ function AssistantChat() {
   const [error, setError] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  function toggleDesktopHistory() {
+    setHistoryVisible((visible) => {
+      window.localStorage.setItem("askVozonHistoryVisible", visible ? "0" : "1");
+      return !visible;
+    });
+  }
 
   useEffect(() => {
     if (!session?.id || !session.organization?.id) return;
@@ -372,10 +381,11 @@ function AssistantChat() {
         <DashboardPageHeader workspaceBarOnly />
 
         <div className="relative flex min-h-0 flex-1">
-          <aside className={`${historyOpen ? "flex" : "hidden"} absolute inset-y-0 right-0 z-30 w-[min(88vw,300px)] flex-col border-l border-[#dce9e0] bg-[#f5f9f5] shadow-[-16px_0_40px_rgba(19,60,42,.13)] md:static md:order-2 md:flex md:w-[248px] md:shrink-0 md:shadow-none`} aria-label="Chat history">
+          <aside id="ask-vozon-history" className={`${historyOpen ? "flex" : "hidden"} absolute inset-y-0 right-0 z-30 w-[min(88vw,300px)] flex-col border-l border-[#dce9e0] bg-[#f5f9f5] shadow-[-16px_0_40px_rgba(19,60,42,.13)] md:static md:order-2 ${historyVisible ? "md:flex" : "md:hidden"} md:w-[248px] md:shrink-0 md:shadow-none`} aria-label="Chat history">
             <div className="flex items-center justify-between border-b border-[#e0ebe3] px-4 py-4">
               <div><p className="m-0 text-[10px] font-bold uppercase tracking-[.18em] text-[#65917a]">Your workspace</p><h2 className="m-0 mt-1 text-base font-semibold text-[#173d30]">Chat history</h2></div>
               <button type="button" className="rounded-lg px-2 py-1 text-xl text-[#5c7d68] md:hidden" onClick={() => setHistoryOpen(false)} aria-label="Close chat history">×</button>
+              <button type="button" className="hidden rounded-lg border border-[#d3e5d8] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#3a6b4b] transition hover:bg-[#e7f3e9] md:inline-flex" onClick={toggleDesktopHistory} aria-label="Hide chat history" aria-controls="ask-vozon-history" aria-expanded="true">Hide</button>
             </div>
             <button type="button" onClick={startNewChat} disabled={busy || Boolean(loadingChatId)} className="mx-3 mt-3 flex items-center justify-center gap-2 rounded-xl border border-[#c8dfd0] bg-white px-3 py-2.5 text-sm font-semibold text-[#185b3e] shadow-sm transition hover:border-[#8fc2a2] hover:bg-[#f2faf4] disabled:opacity-50"><span className="text-lg leading-none">+</span> New chat</button>
             <div className="min-h-0 flex-1 overflow-y-auto px-2 pb-4 pt-4">
@@ -401,6 +411,7 @@ function AssistantChat() {
         {/* Main Conversation Container */}
         <div className="relative flex min-h-0 min-w-0 flex-1 flex-col px-4 pb-3 pt-3 sm:px-6 md:order-1 lg:px-8">
           <button type="button" className="mb-2 self-start rounded-lg border border-[#d7e7dc] bg-white px-3 py-1.5 text-xs font-semibold text-[#2e6045] md:hidden" onClick={() => setHistoryOpen(true)}>☰ &nbsp; Chat history</button>
+          {!historyVisible ? <button type="button" className="mb-2 hidden self-end rounded-lg border border-[#d3e5d8] bg-white px-3 py-1.5 text-xs font-semibold text-[#2b6844] shadow-sm transition hover:bg-[#e7f3e9] md:inline-flex" onClick={toggleDesktopHistory} aria-controls="ask-vozon-history" aria-expanded="false">Show chat history</button> : null}
           {messages.length > 0 ? (
             <div className="mb-3 flex items-center justify-between gap-4 border-b border-[#e2ebe3] pb-3">
               <div className="flex items-center gap-3">
@@ -421,37 +432,37 @@ function AssistantChat() {
             </div>
           ) : null}
           {messages.length === 0 ? (
-            <div className="flex min-h-0 flex-1 flex-col justify-center gap-6 overflow-y-auto pb-5 pt-3 sm:gap-8">
-              <div className="ask-vozon-hero relative isolate overflow-hidden rounded-[30px] px-7 py-9 text-white sm:px-11 sm:py-12">
+            <div className="flex min-h-0 flex-1 flex-col justify-start gap-4 overflow-y-auto pb-5 pt-1 sm:gap-5">
+              <div className="ask-vozon-hero relative isolate shrink-0 overflow-hidden rounded-[26px] px-6 py-5 text-white sm:px-9 sm:py-7">
                 <div className="ask-vozon-orb ask-vozon-orb-one" aria-hidden="true" />
                 <div className="ask-vozon-orb ask-vozon-orb-two" aria-hidden="true" />
                 <div className="relative z-10 max-w-2xl">
-                  <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[.18em] text-emerald-100 backdrop-blur-xl">
+                  <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[.18em] text-emerald-100 backdrop-blur-xl">
                     <span className="ask-vozon-live-dot size-1.5 rounded-full bg-[#b5f3d0]" /> Workspace intelligence
                   </div>
                   <p className="mb-2 text-sm font-medium text-[#b8d8ca]">{greeting}, {firstName}</p>
-                  <h1 className="m-0 max-w-xl text-4xl font-semibold leading-[1.08] tracking-[-.045em] sm:text-5xl">Turn every conversation<br /><span className="text-[#b8e9d2]">into a better next move.</span></h1>
-                  <p className="mb-0 mt-5 max-w-xl text-sm leading-7 text-[#c8ded4] sm:text-base">Explore campaign results, discover who needs attention, and improve your agents with evidence from real calls.</p>
+                  <h1 className="m-0 max-w-xl text-3xl font-semibold leading-[1.1] tracking-[-.045em] sm:text-4xl">Turn every conversation<br /><span className="text-[#b8e9d2]">into a better next move.</span></h1>
+                  <p className="mb-0 mt-3 max-w-xl text-sm leading-6 text-[#c8ded4]">Explore campaign results, discover who needs attention, and improve your agents with evidence from real calls.</p>
                 </div>
                 <span className="ask-vozon-hero-mark absolute -bottom-14 right-5 hidden select-none text-[240px] font-light leading-none text-white/[.04] sm:block" aria-hidden="true">✳</span>
               </div>
 
-              <div>
-                <div className="mb-4 flex flex-wrap items-end justify-between gap-2 px-1">
+              <div className="shrink-0">
+                <div className="mb-3 flex flex-wrap items-end justify-between gap-2 px-1">
                   <div><p className="m-0 text-[10px] font-bold uppercase tracking-[.2em] text-[#6b9184]">Start with a question</p><h2 className="m-0 mt-1 text-xl font-semibold tracking-tight text-[#153b33]">Make your workspace clearer</h2></div>
                   <span className="text-xs text-[#769087]">Grounded in your Vozon data</span>
                 </div>
-                <div className="grid gap-3 text-left sm:grid-cols-2 xl:grid-cols-3">
+                <div className="grid gap-2.5 text-left sm:grid-cols-2 xl:grid-cols-3">
                   {suggestions.map((item) => (
                     <button
-                      className="ask-vozon-suggestion group relative min-h-[148px] overflow-hidden rounded-[22px] border border-[#dfe9e3] bg-white/95 p-5 text-left disabled:opacity-60"
+                      className="ask-vozon-suggestion group relative min-h-[116px] overflow-hidden rounded-[18px] border border-[#dfe9e3] bg-white/95 p-3.5 text-left disabled:opacity-60"
                       type="button"
                       key={item.title}
                       disabled={busy}
                       onClick={() => void submitMessage(undefined, item.prompt)}
                     >
                       <div className="flex items-start justify-between gap-2">
-                        <span className="grid size-10 place-items-center rounded-2xl bg-[#ecf7ef] text-xl font-semibold text-[#246b52] transition duration-300 group-hover:rotate-6 group-hover:scale-110" aria-hidden="true">
+                        <span className="grid size-8 place-items-center rounded-xl bg-[#ecf7ef] text-lg font-semibold text-[#246b52] transition duration-300 group-hover:rotate-6 group-hover:scale-110" aria-hidden="true">
                           {item.icon}
                         </span>
                         <svg
@@ -464,11 +475,11 @@ function AssistantChat() {
                           <path d="M5 12h14M12 5l7 7-7 7" />
                         </svg>
                       </div>
-                      <span className="mt-4 block text-[10px] font-bold uppercase tracking-[.15em] text-[#6b9986]">{item.eyebrow}</span>
-                      <span className="mt-1 block text-[15px] font-semibold tracking-tight text-[#193d33] transition-colors group-hover:text-[#0e6f62]">
+                      <span className="mt-2.5 block text-[9px] font-bold uppercase tracking-[.15em] text-[#6b9986]">{item.eyebrow}</span>
+                      <span className="mt-0.5 block text-sm font-semibold tracking-tight text-[#193d33] transition-colors group-hover:text-[#0e6f62]">
                         {item.title}
                       </span>
-                      <span className="mt-1 block text-xs leading-5 text-[#74877c]">
+                      <span className="mt-0.5 block text-xs leading-4 text-[#74877c]">
                         {item.detail}
                       </span>
                     </button>
