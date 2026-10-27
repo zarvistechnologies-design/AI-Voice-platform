@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { customerReviews } from "@/config/customerReviews";
 import { useHomepageVoiceCall } from "@/components/sections/useHomepageVoiceCall";
 import { VoiceOperationsShowcase } from "@/components/sections/VoiceOperationsShowcase";
+import { FloatingReviewsSection } from "@/components/sections/FloatingReviewsSection";
 
 /* ------------------------------------------------------------------
    ORIGINAL DATA & CONTENT PRESERVED (NO TEXT OR PICTURE CHANGES)
@@ -1072,90 +1073,9 @@ export function HomeDesignFour() {
         </section>
 
         {/* ========================================================
-            SECTION 13: CUSTOMER STORIES / REVIEWS CAROUSEL (Original Reviews)
+            SECTION 13: CUSTOMER STORIES / FLOATING REVIEWS (White Theme)
             ======================================================== */}
-        <section id="reviews" className="on-dark bg-cobalt py-16 text-white md:py-20" aria-labelledby="quotes-title">
-          <div className="container-x">
-            <div className="flex flex-wrap items-center justify-between gap-6 border-b border-white/20 pb-8">
-              <div>
-                <p className="eyebrow text-lime">Customer Stories</p>
-                <h2 id="quotes-title" className="display-lg mt-2 text-2xl sm:text-3xl">
-                  What our <strong>customers</strong> say
-                </h2>
-                <p className="text-white/80 text-xs sm:text-sm mt-1">
-                  Real businesses. Different conversations. A better way to be there for every customer.
-                </p>
-              </div>
-
-              {/* Slider Controls */}
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => setIsCarouselPlaying((p) => !p)}
-                  className="grid size-11 place-items-center rounded-full border border-white/40 transition hover:bg-white hover:text-ink cursor-pointer"
-                  aria-label={isCarouselPlaying ? "Pause carousel" : "Play carousel"}
-                >
-                  <span className="font-mono text-xs font-bold">{isCarouselPlaying ? "❚❚" : "▶"}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setCurrentSlide((prev) => (prev - 1 + customerReviews.length) % customerReviews.length)}
-                  className="grid size-11 place-items-center rounded-full border border-white/40 transition hover:bg-white hover:text-ink cursor-pointer"
-                  aria-label="Previous review"
-                >
-                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-                    <path d="M14 8H2m5-5L2 8l5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setCurrentSlide((prev) => (prev + 1) % customerReviews.length)}
-                  className="grid size-11 place-items-center rounded-full border border-white/40 transition hover:bg-white hover:text-ink cursor-pointer"
-                  aria-label="Next review"
-                >
-                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-                    <path d="M2 8h12M9 3l5 5-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <div className="relative mt-10 max-w-4xl">
-              {customerReviews.map((review, idx) => {
-                if (idx !== currentSlide) return null;
-                return (
-                  <figure key={review.name} className="slide">
-                    <blockquote className="display-lg text-[clamp(1.25rem,2.2vw,2rem)] leading-snug font-medium">
-                      &ldquo;{review.quote}&rdquo;
-                    </blockquote>
-                    <figcaption className="mt-8 flex items-center gap-4">
-                      <span className="grid size-12 place-items-center rounded-full bg-white/20 font-bold text-lg font-display">
-                        {review.name.slice(0, 1)}
-                      </span>
-                      <span>
-                        <span className="block font-semibold text-base">{review.name}</span>
-                        <span className="text-white/80 text-xs sm:text-sm">{review.role}</span>
-                      </span>
-                    </figcaption>
-                  </figure>
-                );
-              })}
-            </div>
-
-            <div className="mt-10 flex items-center gap-2">
-              {customerReviews.map((_, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => setCurrentSlide(idx)}
-                  className="dot"
-                  aria-current={idx === currentSlide}
-                  aria-label={`Show slide ${idx + 1}`}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
+        <FloatingReviewsSection />
 
         {/* ========================================================
             SECTION 14: INTEGRATIONS (ORIGINAL IMAGES & LOGOS)
