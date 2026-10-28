@@ -205,6 +205,8 @@ function providerTone(provider: string) {
     return "border-[#e0e7ff] bg-[#eef2ff] text-[#4338ca]";
   if (provider === "Exotel")
     return "border-[#b8c8c3] bg-[#edf7f4] text-[#0e6f62]";
+  if (provider === "SIP")
+    return "border-[#fef08a] bg-[#fefce8] text-[#854d0e]";
   return "border-[#d1fae5] bg-[#ecfdf5] text-[#047857]";
 }
 
@@ -726,8 +728,7 @@ export function PhoneNumberShell() {
                     No phone numbers yet
                   </h3>
                   <p className="app-caption mt-1 mb-4">
-                    Import from Twilio, Plivo, Exotel, or Vobiz-or buy a new Vobiz
-                    number.
+                    Import from Twilio, Plivo, Exotel, Vobiz, or Custom SIP Trunk (BYOC)—or buy a new Vobiz number.
                   </p>
                   <div className="flex flex-wrap justify-center gap-2">
                     <button
@@ -862,8 +863,13 @@ function PhoneNumberRow({
               {number.number}
             </strong>
             <span className="app-caption block max-w-[240px] truncate">
-              {number.label}
+              {number.label || (number.sipConfig?.inboundSipUri ? number.sipConfig.inboundSipUri : "")}
             </span>
+            {number.sipConfig?.inboundSipUri && number.label ? (
+              <span className="app-caption block max-w-[240px] truncate font-mono text-[11px] text-[#0e6f62]">
+                {number.sipConfig.inboundSipUri}
+              </span>
+            ) : null}
           </span>
         </div>
       </td>
@@ -871,7 +877,7 @@ function PhoneNumberRow({
         <span
           className={`app-label inline-flex rounded-full border px-2.5 py-1 ${providerTone(number.provider)}`}
         >
-          {number.provider}
+          {number.provider === "SIP" ? "Custom SIP" : number.provider}
         </span>
       </td>
       <td className="px-4 py-4">
@@ -965,6 +971,22 @@ function PhoneNumberRow({
                       <Icon icon="copy" />
                       Copy number
                     </button>
+                    {number.sipConfig?.inboundSipUri ? (
+                      <button
+                        className="flex min-h-10 w-full items-center gap-2 rounded-lg px-3 text-left text-sm font-semibold text-[#4f5365] transition hover:bg-[#f3f6f5] hover:text-[#0e6f62]"
+                        role="menuitem"
+                        type="button"
+                        onClick={() => {
+                          setMenuPosition(null);
+                          if (typeof navigator !== "undefined" && navigator.clipboard) {
+                            navigator.clipboard.writeText(number.sipConfig?.inboundSipUri || "");
+                          }
+                        }}
+                      >
+                        <Icon icon="link" />
+                        Copy SIP URI
+                      </button>
+                    ) : null}
                     <div className="my-1 h-px bg-[#eceef4]" />
                     <button
                       className="flex min-h-10 w-full items-center gap-2 rounded-lg px-3 text-left text-sm font-semibold text-rose-600 transition hover:bg-rose-50 disabled:opacity-40"

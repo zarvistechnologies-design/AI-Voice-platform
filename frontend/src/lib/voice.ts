@@ -468,9 +468,15 @@ export type BackendPhoneNumber = {
   updatedAt: string;
   agentId: BackendAgent | null;
   createdAt: string;
+  sipConfig?: {
+    terminationUri?: string;
+    authUsername?: string;
+    inboundSipUri?: string;
+    transport?: string;
+  };
 };
 
-export type TelephonyProvider = "Twilio" | "Exotel" | "Vobiz" | "Plivo";
+export type TelephonyProvider = "Twilio" | "Exotel" | "Vobiz" | "Plivo" | "SIP";
 
 export type PhoneNumberImportInput =
   | {
@@ -510,6 +516,16 @@ export type PhoneNumberImportInput =
       direction?: BackendPhoneNumber["direction"];
       authId: string;
       authToken: string;
+    }
+  | {
+      provider: "SIP";
+      phoneNumber: string;
+      label: string;
+      direction?: BackendPhoneNumber["direction"];
+      terminationUri?: string;
+      authUsername?: string;
+      authPassword?: string;
+      transport?: "auto" | "udp" | "tcp" | "tls";
     };
 
 export type VobizNumber = {

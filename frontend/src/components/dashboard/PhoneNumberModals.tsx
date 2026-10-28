@@ -51,6 +51,7 @@ const providers: { id: TelephonyProvider; description: string; docs: string }[] 
   { id: "Plivo", description: "Verify an owned number with your Plivo Auth ID and Auth Token via Zentrunk SIP trunking.", docs: "https://www.plivo.com/docs/sip-trunking/api/overview/" },
   { id: "Exotel", description: "Verify an ExoPhone with its account credentials and regional data center.", docs: "https://developer.exotel.com/docs/exophones/api-reference/list-numbers" },
   { id: "Vobiz", description: "Verify an owned number using your Vobiz Auth ID and Auth Token.", docs: "https://docs.vobiz.ai/account-phone-number/list-account-phone-numbers" },
+  { id: "SIP", description: "Connect any carrier or PBX (Tata, Airtel, Telnyx, Twilio, Asterisk, FreePBX, etc.) via Custom SIP Trunking (BYOC).", docs: "" },
 ];
 
 const buttonClass =
@@ -159,6 +160,11 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
   const [plivoAuthId, setPlivoAuthId] = useState("");
   const [plivoAuthToken, setPlivoAuthToken] = useState("");
   const [plivoTrunkId, setPlivoTrunkId] = useState("");
+  const [direction, setDirection] = useState<"Both" | "Inbound" | "Outbound">("Both");
+  const [sipTerminationUri, setSipTerminationUri] = useState("");
+  const [sipUsername, setSipUsername] = useState("");
+  const [sipPassword, setSipPassword] = useState("");
+  const [sipTransport, setSipTransport] = useState<"auto" | "udp" | "tcp" | "tls">("auto");
   const normalizedPhoneNumber = phoneNumber.trim();
   const normalizedApiKeySecret = apiKeySecret.trim();
   const normalizedExotelApiToken = exotelApiToken.trim();
@@ -184,6 +190,12 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
       if (!accountSid.trim()) return "Enter the Exotel Account SID.";
       if (!exotelApiKey.trim()) return "Enter the Exotel API Key.";
       if (!normalizedExotelApiToken) return "Enter the Exotel API Token.";
+      return "";
+    }
+    if (provider === "SIP") {
+      if (direction !== "Inbound") {
+        if (!sipTerminationUri.trim()) return "Enter the outbound SIP termination host or URI (e.g. sip.carrier.com).";
+      }
       return "";
     }
     if (!/^(MA|SA)_[A-Za-z0-9]+$/.test(authId.trim())) return "Enter a valid Vobiz Auth ID beginning with MA_ or SA_.";
@@ -221,6 +233,17 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
         apiToken: normalizedExotelApiToken,
         dataCenter,
       });
+    } else if (provider === "SIP") {
+      onImport({
+        phoneNumber: phoneNumber.trim(),
+        label: label.trim(),
+        provider: "SIP",
+        direction,
+        terminationUri: sipTerminationUri.trim() || undefined,
+        authUsername: sipUsername.trim() || undefined,
+        authPassword: sipPassword.trim() || undefined,
+        transport: sipTransport,
+      });
     } else {
       onImport({ ...common, provider, authId: authId.trim(), authToken: normalizedAuthToken });
     }
@@ -242,7 +265,7 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
 
           <section className="grid gap-3">
             <div><span className="app-label text-[#0e6f62]">Step 1</span><h3 className="app-section-title mt-1 mb-0">Choose provider</h3></div>
-            <div className="grid grid-cols-2 gap-1 rounded-xl border border-[#dbe4e1] bg-[#f7f9f8] p-1 sm:grid-cols-4">
+            <div className="grid grid-cols-2 gap-1 rounded-xl border border-[#dbe4e1] bg-[#f7f9f8] p-1 sm:grid-cols-5">
               {providers.map((item) => (
                 <button
                   className={`min-h-10 rounded-lg px-2 text-center transition ${provider === item.id ? "border border-[#9fcfc3] bg-white text-[#0e6f62]" : "border border-transparent text-[#64748b] hover:bg-white hover:text-[#334155]"}`}
@@ -252,7 +275,7 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
                   type="button"
                   aria-pressed={provider === item.id}
                 >
-                  <span className="app-strong">{item.id}</span>
+                  <span className="app-strong">{item.id === "SIP" ? "Custom SIP" : item.id}</span>
                 </button>
               ))}
             </div>
@@ -261,7 +284,7 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
           <div className="rounded-lg border border-[#b8c8c3] bg-[#edf7f4] px-3 py-2.5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <span className="app-body text-[#108D82]">{providers.find((item) => item.id === provider)?.description}</span>
-              <a className="app-label text-[#118778] underline underline-offset-2" href={providers.find((item) => item.id === provider)?.docs} rel="noreferrer" target="_blank">Provider docs</a>
+              {providers.find((item) => item.id === provider)?.docs ? (<a className="app-label text-[#118778] underline underline-offset-2" href={providers.find((item) => item.id === provider)?.docs} rel="noreferrer" target="_blank">Provider docs</a>) : null}
             </div>
           </div>
 
@@ -368,6 +391,99 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
                 Auth Token
                 <input className={controlClass} autoComplete="new-password" disabled={busy} placeholder="Vobiz Auth Token" type="password" value={authToken} onChange={(event) => setAuthToken(event.target.value)} />
               </label>
+            </div>
+          ) : null}
+
+          {provider === "SIP" ? (
+            <div className="grid gap-4 rounded-xl border border-[#e6ecea] bg-[#f8fafc] p-4">
+              <label className="app-label grid gap-2">
+                Trunk direction
+                <select
+                  className={controlClass}
+                  disabled={busy}
+                  value={direction}
+                  onChange={(event) => setDirection(event.target.value as typeof direction)}
+                >
+                  <option value="Both">Both (Inbound &amp; Outbound)</option>
+                  <option value="Inbound">Inbound only (Receive calls via SIP forwarding)</option>
+                  <option value="Outbound">Outbound only (AI calls out through carrier)</option>
+                </select>
+                <span className="app-caption font-normal">
+                  Choose whether this number handles incoming calls, outbound campaigns/calls, or both.
+                </span>
+              </label>
+
+              {direction !== "Outbound" ? (
+                <div className="rounded-lg border border-[#b8c8c3] bg-[#edf7f4] p-3 text-xs text-[#0e6f62]">
+                  <strong className="block font-semibold">Inbound SIP Forwarding</strong>
+                  <p className="mt-1 mb-2 text-[#108D82]">
+                    Point your carrier or PBX inbound forwarding to our SIP URI:
+                  </p>
+                  <code className="block rounded bg-white px-2.5 py-1.5 font-mono text-xs text-[#118778] border border-[#9fcfc3] select-all">
+                    sip:{phoneNumber.trim() || "+<your-number>"}@sip.vozon.ai:5060
+                  </code>
+                </div>
+              ) : null}
+
+              {direction !== "Inbound" ? (
+                <>
+                  <label className="app-label grid gap-2">
+                    Outbound SIP termination host / IP
+                    <input
+                      className={controlClass}
+                      autoComplete="off"
+                      disabled={busy}
+                      placeholder="e.g. sip.telnyx.com or 198.51.100.1:5060"
+                      value={sipTerminationUri}
+                      onChange={(event) => setSipTerminationUri(event.target.value)}
+                    />
+                    <span className="app-caption font-normal">
+                      The SIP server host where our system routes outbound calls to reach your carrier.
+                    </span>
+                  </label>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <label className="app-label grid gap-2">
+                      <span>SIP auth username <span className="font-normal text-[#94a3b8]">(optional)</span></span>
+                      <input
+                        className={controlClass}
+                        autoComplete="off"
+                        disabled={busy}
+                        placeholder="Username for digest auth"
+                        value={sipUsername}
+                        onChange={(event) => setSipUsername(event.target.value)}
+                      />
+                    </label>
+                    <label className="app-label grid gap-2">
+                      <span>SIP auth password <span className="font-normal text-[#94a3b8]">(optional)</span></span>
+                      <input
+                        className={controlClass}
+                        autoComplete="new-password"
+                        disabled={busy}
+                        placeholder="Password for digest auth"
+                        type="password"
+                        value={sipPassword}
+                        onChange={(event) => setSipPassword(event.target.value)}
+                      />
+                    </label>
+                  </div>
+
+                  <label className="app-label grid gap-2">
+                    SIP transport protocol
+                    <select
+                      className={controlClass}
+                      disabled={busy}
+                      value={sipTransport}
+                      onChange={(event) => setSipTransport(event.target.value as typeof sipTransport)}
+                    >
+                      <option value="auto">Auto (Recommended)</option>
+                      <option value="udp">UDP (Standard SIP)</option>
+                      <option value="tcp">TCP</option>
+                      <option value="tls">TLS (Secure SIP)</option>
+                    </select>
+                  </label>
+                </>
+              ) : null}
             </div>
           ) : null}
 
