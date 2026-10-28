@@ -142,7 +142,7 @@ export function FloatingReviewsSection() {
         {viewMode === "floating" && (
           <div className="mt-14 space-y-6 overflow-hidden">
             {/* Stream 1 (Moves Left) */}
-            <div className="relative flex overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+            <div className="relative flex overflow-hidden reviews-stream-mask">
               <div className="flex shrink-0 gap-6 animate-marquee-left hover:[animation-play-state:paused] py-2">
                 {rowOne.concat(rowOne).concat(rowOne).map((rev, i) => (
                   <ReviewCard
@@ -156,7 +156,7 @@ export function FloatingReviewsSection() {
             </div>
 
             {/* Stream 2 (Moves Right / Offset) */}
-            <div className="relative flex overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+            <div className="relative flex overflow-hidden reviews-stream-mask">
               <div className="flex shrink-0 gap-6 animate-marquee-right hover:[animation-play-state:paused] py-2">
                 {rowTwo.concat(rowTwo).concat(rowTwo).map((rev, i) => (
                   <ReviewCard
