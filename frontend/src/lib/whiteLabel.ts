@@ -278,6 +278,7 @@ export const partnerWhiteLabelApi = {
   customers: () => request<{ customers: WhiteLabelCustomer[]; pagination: { total: number } }>("/api/partner/white-label/customers?limit=100"),
   provisionCustomer: (body: unknown) => request<{ organization: WhiteLabelCustomer; emailDeliveryStatus: string; activationUrl?: string }>("/api/partner/white-label/customers", { method: "POST", body }),
   updateCustomerStatus: (orgId: string, status: "active" | "suspended", reason: string) => request<{ organization: WhiteLabelCustomer }>(`/api/partner/white-label/customers/${orgId}/status`, { method: "PATCH", body: { status, reason } }),
+  deleteCustomer: (orgId: string) => request<void>(`/api/partner/white-label/customers/${orgId}`, { method: "DELETE" }),
   updateCustomerSubscription: (orgId: string, status: "active" | "past_due" | "paused" | "cancelled", reason: string) => request<{ subscription: WhiteLabelCustomer["subscription"] }>(`/api/partner/white-label/customers/${orgId}/subscription`, { method: "PATCH", body: { status, reason } }),
 };
 
