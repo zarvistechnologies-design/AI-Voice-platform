@@ -9,7 +9,7 @@
   --color-ink: #0e0e0c;        /* text and dark sections */
   --color-muted: #5f5c55;      /* secondary text */
   --color-line: #d4d0c5;       /* hairlines on paper */
-  --color-cobalt: #2b36f5;     /* primary accent */
+  --color-cobalt: #81a10b;     /* primary accent */
   --color-cobalt-600: #1f28c9;
   --color-lime: #d4ff3f;       /* highlight accent, used on dark */
 
@@ -37,7 +37,7 @@
   --color-ink: #0e0e0c;
   --color-muted: #5f5c55;
   --color-line: #d4d0c5;
-  --color-cobalt: #2b36f5;
+  --color-cobalt: #81a10b;
   --color-lime: #d4ff3f;
   --muted: #5f5c55;
   --muted-foreground: #5f5c55;
@@ -56,7 +56,7 @@
 }
 
 .agency-page .text-cobalt {
-  color: #2b36f5 !important;
+  color: #81a10b !important;
 }
 
 .agency-page .text-lime {
@@ -76,7 +76,7 @@
 }
 
 .agency-page .bg-cobalt {
-  background-color: #2b36f5 !important;
+  background-color: #81a10b !important;
 }
 
 .agency-page .bg-lime {
@@ -176,7 +176,7 @@
   color: var(--color-paper, #f1efe9);
 }
 .btn-primary:hover {
-  background: var(--color-cobalt, #2b36f5);
+  background: var(--color-cobalt, #81a10b);
   color: #ffffff;
 }
 
@@ -331,9 +331,9 @@
 }
 .case-card:hover .case-arrow {
   transform: rotate(-45deg);
-  background: var(--color-cobalt, #2b36f5);
+  background: var(--color-cobalt, #81a10b);
   color: #ffffff;
-  border-color: var(--color-cobalt, #2b36f5);
+  border-color: var(--color-cobalt, #81a10b);
 }
 
 /* Logo wall cells */
