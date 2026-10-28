@@ -200,6 +200,10 @@ function isTokenProviderId(id: IntegrationProvider["id"]): id is TokenProviderId
   return tokenProviderIds.includes(id as TokenProviderId);
 }
 
+function isCatalogId(id: string): id is keyof typeof catalog {
+  return Object.prototype.hasOwnProperty.call(catalog, id);
+}
+
 const googleScopeRequirements: Partial<Record<keyof typeof catalog, string[]>> = {
   google_calendar: ["https://www.googleapis.com/auth/calendar"],
   google_sheets: ["https://www.googleapis.com/auth/spreadsheets"],
@@ -626,7 +630,7 @@ export function IntegrationsShell() {
         { provider, displayId: "google_drive" },
         { provider, displayId: "google_gmail" },
       );
-    } else {
+    } else if (isCatalogId(provider.id)) {
       items.push({ provider, displayId: provider.id });
     }
     return items;
