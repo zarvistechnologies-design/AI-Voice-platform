@@ -572,11 +572,6 @@ export function HomeDesignFour() {
         </section>
 
         {/* ========================================================
-            CUSTOMER STORIES / FLOATING REVIEWS (Right After Hero Demo)
-            ======================================================== */}
-        <FloatingReviewsSection />
-
-        {/* ========================================================
             SECTION 4: INFINITE CAPABILITIES MARQUEE
             ======================================================== */}
         <section className="on-dark mt-10 bg-ink py-4 text-white" aria-label="Voice capabilities marquee">
@@ -1077,6 +1072,10 @@ export function HomeDesignFour() {
           </div>
         </section>
 
+        {/* ========================================================
+            SECTION 13: CUSTOMER STORIES / FLOATING REVIEWS (White Theme)
+            ======================================================== */}
+        <FloatingReviewsSection />
 
         {/* ========================================================
             SECTION 14: INTEGRATIONS (ORIGINAL IMAGES & LOGOS)
