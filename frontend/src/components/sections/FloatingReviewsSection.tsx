@@ -22,13 +22,13 @@ function ReviewCard({ review, index, floatVariation = 1 }: ReviewCardProps) {
 
   return (
     <article
-      className="group relative flex w-[320px] sm:w-[380px] flex-shrink-0 flex-col justify-between rounded-3xl border border-white/10 bg-[#0e0e0c] p-6 sm:p-7 shadow-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-[#81a10b]/50 hover:shadow-[0_20px_40px_rgba(0,0,0,0.35)]"
+      className="group relative flex w-[320px] sm:w-[380px] flex-shrink-0 flex-col justify-between rounded-3xl border border-white/10 bg-[#0e0e0c] p-6 sm:p-7 shadow-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-[#d4ff3f]/50 hover:shadow-[0_20px_40px_rgba(0,0,0,0.35)]"
       style={{
         animation: `float-card-${floatVariation} ${5 + (index % 3)}s ease-in-out infinite alternate`,
       }}
     >
       <div>
-        {/* Top Header: Dark Quote Badge & Lime Accent Number */}
+        {/* Top Header: Dark Quote Badge & Electric Lime Accent Number */}
         <div className="flex items-center justify-between">
           <span
             className="grid size-10 place-items-center rounded-xl bg-white/10 text-white/80 font-mono text-sm font-bold shadow-inner"
@@ -36,7 +36,7 @@ function ReviewCard({ review, index, floatVariation = 1 }: ReviewCardProps) {
           >
             ❝
           </span>
-          <span className="font-mono text-sm font-bold text-[#81a10b]">
+          <span className="font-mono text-sm font-bold text-[#d4ff3f]">
             {numStr}
           </span>
         </div>
@@ -50,13 +50,13 @@ function ReviewCard({ review, index, floatVariation = 1 }: ReviewCardProps) {
       {/* Reviewer Details */}
       <div className="mt-6 flex items-center gap-3.5 border-t border-white/10 pt-4">
         <span
-          className="grid size-11 flex-shrink-0 place-items-center rounded-full bg-white/10 border border-white/10 font-mono text-xs font-bold text-[#81a10b] shadow-sm"
+          className="grid size-11 flex-shrink-0 place-items-center rounded-full bg-white/10 border border-white/10 font-mono text-xs font-bold text-[#d4ff3f] shadow-sm"
           aria-hidden="true"
         >
           {initials}
         </span>
         <div className="min-w-0">
-          <h4 className="truncate font-display text-sm sm:text-base font-bold text-[#81a10b]">
+          <h4 className="truncate font-display text-sm sm:text-base font-bold text-[#d4ff3f]">
             {review.name}
           </h4>
           <p className="truncate font-mono text-xs text-zinc-400 mt-0.5">
@@ -81,12 +81,12 @@ export function FloatingReviewsSection() {
       className="relative overflow-hidden bg-paper/60 pt-24 pb-20 md:pt-28 md:pb-28 border-t border-line text-ink scroll-mt-24"
       aria-labelledby="floating-reviews-title"
     >
-      {/* Subtle Ambient Radial Highlight in #81a10b */}
+      {/* Subtle Ambient Radial Highlight in #d4ff3f */}
       <div
         className="pointer-events-none absolute inset-0 opacity-40"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 20%, rgba(129, 161, 11, 0.08) 0%, transparent 70%)",
+            "radial-gradient(ellipse at 50% 20%, rgba(212, 255, 63, 0.12) 0%, transparent 70%)",
         }}
         aria-hidden="true"
       />
@@ -94,7 +94,7 @@ export function FloatingReviewsSection() {
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center">
-          <p className="eyebrow text-cobalt font-semibold tracking-wider">
+          <p className="eyebrow text-[#d4ff3f] font-semibold tracking-wider">
             Customer Stories
           </p>
 
@@ -102,7 +102,7 @@ export function FloatingReviewsSection() {
             id="floating-reviews-title"
             className="display-lg mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl lg:text-5xl"
           >
-            What our <span className="text-cobalt">customers</span> say
+            What our <span className="text-[#d4ff3f]">customers</span> say
           </h2>
 
           <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted sm:text-base font-normal">
@@ -116,7 +116,7 @@ export function FloatingReviewsSection() {
               onClick={() => setViewMode("floating")}
               className={`rounded-full px-5 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer ${
                 viewMode === "floating"
-                  ? "bg-ink text-[#81a10b] shadow-sm"
+                  ? "bg-ink text-[#d4ff3f] shadow-sm"
                   : "text-muted hover:text-ink"
               }`}
               aria-pressed={viewMode === "floating"}
@@ -128,7 +128,7 @@ export function FloatingReviewsSection() {
               onClick={() => setViewMode("grid")}
               className={`rounded-full px-5 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer ${
                 viewMode === "grid"
-                  ? "bg-ink text-[#81a10b] shadow-sm"
+                  ? "bg-ink text-[#d4ff3f] shadow-sm"
                   : "text-muted hover:text-ink"
               }`}
               aria-pressed={viewMode === "grid"}
