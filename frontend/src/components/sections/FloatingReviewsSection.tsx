@@ -22,44 +22,44 @@ function ReviewCard({ review, index, floatVariation = 1 }: ReviewCardProps) {
 
   return (
     <article
-      className="group relative flex w-[320px] sm:w-[380px] flex-shrink-0 flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-6 shadow-[0_4px_20px_rgba(0,0,0,0.04)] transition-all duration-300 hover:-translate-y-1.5 hover:border-slate-300 hover:shadow-[0_16px_36px_rgba(0,0,0,0.08)]"
+      className="group relative flex w-[320px] sm:w-[380px] flex-shrink-0 flex-col justify-between rounded-2xl border border-line bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-ink/40 hover:shadow-md"
       style={{
         animation: `float-card-${floatVariation} ${5 + (index % 3)}s ease-in-out infinite alternate`,
       }}
     >
       <div>
-        {/* Top Header: Quote Icon & Number */}
+        {/* Top Header: Quote Badge & Index Number */}
         <div className="flex items-center justify-between">
           <span
-            className="grid size-8 place-items-center rounded-lg bg-[#E6F4F1] font-serif text-base font-bold text-[#0F6F5C]"
+            className="grid size-8 place-items-center rounded-lg bg-paper-2 font-mono text-xs font-bold text-cobalt"
             aria-hidden="true"
           >
             ❝
           </span>
-          <span className="font-mono text-xs font-semibold text-slate-400">
+          <span className="font-mono text-xs font-semibold text-muted">
             {numStr}
           </span>
         </div>
 
         {/* Review Quote Body */}
-        <p className="mt-4 text-xs sm:text-sm leading-relaxed text-slate-600 font-normal">
+        <p className="mt-4 text-xs sm:text-[13.5px] leading-relaxed text-ink/80 font-normal">
           &ldquo;{review.quote}&rdquo;
         </p>
       </div>
 
       {/* Reviewer Details */}
-      <div className="mt-6 flex items-center gap-3.5 border-t border-slate-100 pt-4">
+      <div className="mt-6 flex items-center gap-3.5 border-t border-line pt-4">
         <span
-          className="grid size-10 flex-shrink-0 place-items-center rounded-full bg-[#0F3E36] font-mono text-xs font-bold text-white shadow-sm"
+          className="grid size-10 flex-shrink-0 place-items-center rounded-full bg-ink font-mono text-xs font-bold text-white shadow-sm"
           aria-hidden="true"
         >
           {initials}
         </span>
         <div className="min-w-0">
-          <h4 className="truncate text-xs sm:text-sm font-semibold text-slate-900">
+          <h4 className="truncate font-display text-xs sm:text-sm font-bold text-ink">
             {review.name}
           </h4>
-          <p className="truncate text-[11px] text-slate-500">
+          <p className="truncate font-mono text-[11px] text-muted">
             {review.role}
           </p>
         </div>
@@ -78,7 +78,7 @@ export function FloatingReviewsSection() {
   return (
     <section
       id="reviews"
-      className="relative overflow-hidden bg-[#FAF9F5] py-20 md:py-28 text-slate-900 border-t border-slate-200/60"
+      className="relative overflow-hidden bg-paper/60 pt-24 pb-20 md:pt-28 md:pb-28 border-t border-line text-ink scroll-mt-24"
       aria-labelledby="floating-reviews-title"
     >
       {/* Subtle Ambient Radial Highlight */}
@@ -86,7 +86,7 @@ export function FloatingReviewsSection() {
         className="pointer-events-none absolute inset-0 opacity-40"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 20%, rgba(244, 219, 227, 0.45) 0%, rgba(250, 249, 245, 0) 70%)",
+            "radial-gradient(ellipse at 50% 20%, rgba(43, 54, 245, 0.05) 0%, transparent 70%)",
         }}
         aria-hidden="true"
       />
@@ -94,32 +94,32 @@ export function FloatingReviewsSection() {
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center">
-          <span className="inline-flex items-center rounded-full border border-rose-200 bg-rose-50/80 px-3.5 py-1 text-[11px] font-bold tracking-widest uppercase text-rose-800">
-            CUSTOMER STORIES
-          </span>
+          <p className="eyebrow text-cobalt font-semibold tracking-wider">
+            Customer Stories
+          </p>
 
           <h2
             id="floating-reviews-title"
-            className="mt-4 font-serif text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl"
-            style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+            className="display-lg mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl lg:text-5xl"
           >
-            What our customers say
+            What our <span className="text-cobalt">customers</span> say
           </h2>
 
-          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-500 sm:text-base">
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted sm:text-base font-normal">
             Real businesses. Different conversations. A better way to be there for every customer.
           </p>
 
           {/* View Mode Toggle: Floating vs Grid */}
-          <div className="mt-8 inline-flex items-center rounded-full bg-slate-200/70 p-1 shadow-inner">
+          <div className="mt-8 inline-flex items-center rounded-full bg-paper-2 border border-line p-1">
             <button
               type="button"
               onClick={() => setViewMode("floating")}
               className={`rounded-full px-5 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer ${
                 viewMode === "floating"
-                  ? "bg-white text-slate-900 shadow-sm"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "bg-ink text-white shadow-sm"
+                  : "text-muted hover:text-ink"
               }`}
+              aria-pressed={viewMode === "floating"}
             >
               Floating Messages
             </button>
@@ -128,9 +128,10 @@ export function FloatingReviewsSection() {
               onClick={() => setViewMode("grid")}
               className={`rounded-full px-5 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer ${
                 viewMode === "grid"
-                  ? "bg-white text-slate-900 shadow-sm"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "bg-ink text-white shadow-sm"
+                  : "text-muted hover:text-ink"
               }`}
+              aria-pressed={viewMode === "grid"}
             >
               All Reviews (Grid)
             </button>

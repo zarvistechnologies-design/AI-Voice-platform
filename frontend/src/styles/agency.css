@@ -3,7 +3,7 @@
    Adapted for Next.js & Tailwind CSS v4
    ------------------------------------------------------------------ */
 
-@theme {
+:root {
   --color-paper: #f1efe9;      /* page background */
   --color-paper-2: #e7e4dc;    /* sunken panels */
   --color-ink: #0e0e0c;        /* text and dark sections */
@@ -18,10 +18,11 @@
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
   --animate-marquee: marquee 38s linear infinite;
-  @keyframes marquee {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
-  }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
 /* Base utility overrides for Agency structure */
