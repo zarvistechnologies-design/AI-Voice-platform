@@ -4,7 +4,7 @@ import { API_URL } from "@/lib/apiBase";
 import { invalidateVoiceCache } from "@/lib/voiceCache";
 
 export type IntegrationProvider = {
-  id: "vobiz" | "hubspot" | "calendly" | "slack" | "razorpay_api" | "razorpay_oauth" | "asana" | "clickup" | "linear" | "monday" | "notion" | "atlassian" | "jira" | "freshsales" | "highlevel" | "zoho" | "salesforce" | "google" | "digitalbot" | "whatsapp";
+  id: "vobiz" | "hubspot" | "calendly" | "slack" | "razorpay_api" | "razorpay_oauth" | "asana" | "clickup" | "linear" | "freshsales" | "highlevel" | "zoho" | "salesforce" | "google" | "digitalbot" | "whatsapp";
   connected: boolean;
   accountId: string;
   status: "connected" | "error" | "disconnected";
@@ -103,7 +103,7 @@ export const integrationsApi = {
     return result;
   },
   razorpayPayments: () => request<{ count: number; payments: Array<{ id: string; amount: number; currency: string; status: string; createdAt: number }> }>("/razorpay_api/payments"),
-  tokenProviderPreview: (provider: "asana" | "clickup" | "linear" | "monday" | "notion" | "atlassian" | "jira" | "freshsales" | "highlevel") => request<{ items: Array<{ id: string; name: string; type: string }> }>(`/${provider}/preview`),
+  tokenProviderPreview: (provider: "asana" | "clickup" | "linear" | "freshsales" | "highlevel") => request<{ items: Array<{ id: string; name: string; type: string }> }>(`/${provider}/preview`),
   googleCalendars: () => request<{ calendars: Array<{ id: string; name: string; primary: boolean; timezone: string }> }>("/google/calendars"),
   inspectSpreadsheet: (spreadsheetId: string) => request<{ spreadsheet: { id: string; name: string; sheets: string[] } }>("/google/spreadsheet", {
     method: "POST", body: JSON.stringify({ spreadsheetId }),

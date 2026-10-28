@@ -97,34 +97,6 @@ const catalog = {
     logo: "/images/integrations/linear.svg",
     color: "from-[#118778] to-[#25b39f]",
   },
-  monday: {
-    name: "monday.com",
-    category: "Work management",
-    description: "Connect your account and browse accessible boards.",
-    logo: "/images/integrations/monday.ico",
-    color: "from-[#118778] to-[#25b39f]",
-  },
-  notion: {
-    name: "Notion",
-    category: "Knowledge",
-    description: "Connect your integration and browse shared pages.",
-    logo: "/images/company-logos/notion.svg",
-    color: "from-[#118778] to-[#25b39f]",
-  },
-  atlassian: {
-    name: "Atlassian",
-    category: "Knowledge",
-    description: "Connect your Confluence site and browse accessible pages.",
-    logo: "/images/integrations/atlassian.svg",
-    color: "from-[#118778] to-[#25b39f]",
-  },
-  jira: {
-    name: "Jira",
-    category: "Work management",
-    description: "Connect Jira Cloud and browse accessible projects.",
-    logo: "/images/integrations/jira.svg",
-    color: "from-[#118778] to-[#25b39f]",
-  },
   freshsales: {
     name: "Freshsales",
     category: "CRM",
@@ -220,7 +192,7 @@ const catalog = {
   },
 } as const;
 
-const tokenProviderIds = ["asana", "clickup", "linear", "monday", "notion", "atlassian", "jira", "freshsales", "highlevel"] as const;
+const tokenProviderIds = ["asana", "clickup", "linear", "freshsales", "highlevel"] as const;
 const voiceReadProviderIds: string[] = [...tokenProviderIds, "zoho", "salesforce", "razorpay_api", "razorpay_oauth", "google_calendar", "google_drive", "google_docs", "google_gmail"];
 type TokenProviderId = (typeof tokenProviderIds)[number];
 
@@ -270,8 +242,6 @@ export function IntegrationsShell() {
   > | null>(null);
   const [credential, setCredential] = useState("");
   const [razorpayKeyId, setRazorpayKeyId] = useState("");
-  const [atlassianSite, setAtlassianSite] = useState("");
-  const [atlassianEmail, setAtlassianEmail] = useState("");
   const [freshsalesSite, setFreshsalesSite] = useState("");
   const [highlevelLocationId, setHighlevelLocationId] = useState("");
   const [razorpayPayments, setRazorpayPayments] = useState<Awaited<ReturnType<typeof integrationsApi.razorpayPayments>> | null>(null);
@@ -366,8 +336,6 @@ export function IntegrationsShell() {
           selected,
           selected === "razorpay_api"
             ? JSON.stringify({ keyId: razorpayKeyId.trim(), keySecret: credential.trim() })
-            : selected === "atlassian" || selected === "jira"
-              ? JSON.stringify({ site: atlassianSite.trim(), email: atlassianEmail.trim(), token: credential.trim() })
             : selected === "freshsales"
               ? JSON.stringify({ site: freshsalesSite.trim(), apiKey: credential.trim() })
             : selected === "highlevel"
@@ -376,8 +344,6 @@ export function IntegrationsShell() {
         );
         setCredential("");
         setRazorpayKeyId("");
-        setAtlassianSite("");
-        setAtlassianEmail("");
         setFreshsalesSite("");
         setHighlevelLocationId("");
         setSelected(null);
@@ -647,9 +613,9 @@ export function IntegrationsShell() {
       displayId: keyof typeof catalog;
     }>
   >((items, provider) => {
-    // Do not expose non-functional OAuth cards to customers. They become
-    // visible automatically when the corresponding platform app is ready.
-    if (provider.metadata?.platformConfigured === false && !provider.connected) {
+    // Keep both CRM replacements visible so administrators can see their
+    // setup state. Other unfinished OAuth connectors stay hidden.
+    if (!["zoho", "salesforce"].includes(provider.id) && provider.metadata?.platformConfigured === false && !provider.connected) {
       return items;
     }
     if (provider.id === "google") {
@@ -1043,7 +1009,7 @@ export function IntegrationsShell() {
                           </>
                         ) : (
                           <>
-                            <button className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62]" disabled={busy} type="button" onClick={() => void connectCrm(provider.id as "zoho" | "salesforce")}>Connect {item.name}</button>
+                            <button className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62] disabled:cursor-not-allowed disabled:bg-slate-300" disabled={busy || setupNeeded} type="button" onClick={() => void connectCrm(provider.id as "zoho" | "salesforce")}>Connect {item.name}</button>
                             {provider.id === "salesforce" ? <button className="rounded-lg border border-[#dfe7e4] px-4 py-2.5 text-sm font-semibold text-[#0e6f62]" disabled={busy} type="button" onClick={() => void connectCrm("salesforce", true)}>Use sandbox</button> : null}
                           </>
                         )
@@ -1123,8 +1089,6 @@ export function IntegrationsShell() {
                             );
                             setCredential("");
                             setRazorpayKeyId("");
-                            setAtlassianSite("");
-                            setAtlassianEmail("");
                             setFreshsalesSite("");
                             setHighlevelLocationId("");
                             setModalError("");
@@ -1199,8 +1163,6 @@ export function IntegrationsShell() {
                   ? "Create a HubSpot private app with CRM contacts and notes permissions, then paste its access token."
                   : selected === "razorpay_api"
                     ? "Enter your own merchant Key ID and Key Secret. Vozon verifies them with a read-only payment request and stores them encrypted for this workspace."
-                  : selected === "atlassian" || selected === "jira"
-                    ? "Enter your Atlassian Cloud site, account email, and API token. Vozon verifies access before saving this workspace connection."
                   : selected === "freshsales"
                     ? "Enter your Freshsales bundle site and API key. Vozon verifies your contact views before saving the connection."
                   : selected === "highlevel"
@@ -1265,18 +1227,6 @@ export function IntegrationsShell() {
                 />
               </label>
             ) : null}
-            {selected === "atlassian" || selected === "jira" ? (
-              <div className="mt-4 grid gap-3">
-                <label className="grid gap-2 text-xs font-semibold text-slate-600">
-                  Atlassian site
-                  <input className="rounded-xl border border-slate-200 px-3 py-3 text-sm font-normal text-slate-950" value={atlassianSite} onChange={(event) => setAtlassianSite(event.target.value)} placeholder="acme.atlassian.net" />
-                </label>
-                <label className="grid gap-2 text-xs font-semibold text-slate-600">
-                  Atlassian account email
-                  <input className="rounded-xl border border-slate-200 px-3 py-3 text-sm font-normal text-slate-950" type="email" value={atlassianEmail} onChange={(event) => setAtlassianEmail(event.target.value)} placeholder="you@company.com" />
-                </label>
-              </div>
-            ) : null}
             {selected === "freshsales" ? (
               <label className="mt-4 grid gap-2 text-xs font-semibold text-slate-600">
                 Freshsales site
@@ -1299,8 +1249,6 @@ export function IntegrationsShell() {
                 ? "Incoming webhook URL"
                 : selected === "razorpay_api"
                   ? "Razorpay Key Secret"
-                : selected === "atlassian" || selected === "jira"
-                  ? "Atlassian API token"
                 : selected === "freshsales"
                   ? "API key"
                 : selected === "highlevel"
@@ -1334,7 +1282,6 @@ export function IntegrationsShell() {
                 busy ||
                 !credential.trim() ||
                 (selected === "razorpay_api" && !razorpayKeyId.trim()) ||
-                ((selected === "atlassian" || selected === "jira") && (!atlassianSite.trim() || !atlassianEmail.trim())) ||
                 (selected === "freshsales" && !freshsalesSite.trim()) ||
                 (selected === "highlevel" && !highlevelLocationId.trim()) ||
                 (selected === "digitalbot" && !digitalBotAgentId)
