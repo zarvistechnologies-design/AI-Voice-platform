@@ -101,7 +101,25 @@ function deliveryTone(status: WebhookDelivery["status"]) {
     return "bg-emerald-50 text-emerald-700 ring-emerald-200";
   if (status === "failed") return "bg-rose-50 text-rose-700 ring-rose-200";
   if (status === "retrying") return "bg-amber-50 text-amber-700 ring-amber-200";
+  if (status === "processing") return "bg-sky-50 text-sky-700 ring-sky-200";
   return "bg-slate-100 text-slate-700 ring-slate-200";
+}
+
+function deliveryEventLabel(event: string) {
+  return (eventLabels[event as WebhookEvent] ?? event.replaceAll(".", " ")) || "Webhook event";
+}
+
+function deliverySummary(delivery: WebhookDelivery) {
+  if (delivery.errorMessage) return delivery.errorMessage;
+  if (delivery.status === "processing") return "Delivery is currently in progress";
+  if (delivery.status === "staged") return "Event is staged and waiting to be delivered";
+  if (delivery.status === "pending") return "Event is queued for delivery";
+  if (delivery.status === "retrying") {
+    return `Retry scheduled after ${delivery.attempts} ${delivery.attempts === 1 ? "attempt" : "attempts"}`;
+  }
+  const attempts = `${delivery.attempts} ${delivery.attempts === 1 ? "attempt" : "attempts"}`;
+  const duration = delivery.durationMs ? ` · ${delivery.durationMs} ms` : "";
+  return `Delivered in ${attempts}${duration}`;
 }
 
 function DeliveryDot({ status }: { status: WebhookDelivery["status"] }) {
@@ -112,7 +130,9 @@ function DeliveryDot({ status }: { status: WebhookDelivery["status"] }) {
         ? "bg-rose-500"
         : status === "retrying"
           ? "bg-amber-500"
-          : "bg-slate-400";
+          : status === "processing"
+            ? "bg-sky-500"
+            : "bg-slate-400";
   return <span className={`size-2 rounded-full ${tone}`} aria-hidden="true" />;
 }
 
@@ -385,7 +405,7 @@ function DeveloperOverview({
               <button className="flex w-full items-center gap-3 px-5 py-3.5 text-left transition hover:bg-[#f8faf9] sm:px-6" key={delivery._id} type="button" onClick={() => onNavigate("activity")}>
                 <span className={`size-2 shrink-0 rounded-full ${delivery.status === "delivered" ? "bg-emerald-500" : delivery.status === "failed" ? "bg-rose-500" : "bg-amber-500"}`} />
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-semibold text-[#29413b]">{delivery.event}</span>
+                  <span className="block truncate text-sm font-semibold text-[#29413b]">{deliveryEventLabel(delivery.event)}</span>
                   <span className="mt-0.5 block text-[11px] text-[#8a9995]">{formatDate(delivery.createdAt)}</span>
                 </span>
                 <span className={`rounded-full px-2 py-1 text-[10px] font-bold ring-1 ${deliveryTone(delivery.status)}`}>{delivery.responseStatus || delivery.status}</span>
@@ -399,7 +419,7 @@ function DeveloperOverview({
               </div>
             ) : null}
           </div>
-          {lastDelivery ? <div className="border-t border-[#edf1f0] bg-[#f8faf9] px-6 py-2.5 text-[11px] text-[#879691]">Latest event: {lastDelivery.event}</div> : null}
+          {lastDelivery ? <div className="border-t border-[#edf1f0] bg-[#f8faf9] px-6 py-2.5 text-[11px] text-[#879691]">Latest event: {deliveryEventLabel(lastDelivery.event)}</div> : null}
         </div>
       </section>
 
@@ -761,10 +781,10 @@ export function DeveloperShell() {
                 <section className={panelClass}>
                   <div className="flex items-center justify-between gap-4 border-b border-[#dce3ea] px-5 py-5">
                     <div>
-                      <h2 className="text-xl font-semibold text-[#101827]">
+                      <h2 className="text-xl font-semibold text-[#14231f]">
                         API keys
                       </h2>
-                      <p className="mt-1 text-xs text-[#718096]">
+                      <p className="mt-1 text-xs text-[#71817d]">
                         Production credentials and access scopes
                       </p>
                     </div>
@@ -859,7 +879,7 @@ export function DeveloperShell() {
                   ) : null}
                   <div className="overflow-x-auto">
                     <table className="w-full min-w-[760px] text-left text-sm">
-                      <thead className="border-b border-[#dce3ea] bg-white text-[10px] font-black uppercase text-[#78869a]">
+                      <thead className="border-b border-[#dce3ea] bg-white text-[10px] font-black uppercase text-[#84938f]">
                         <tr>
                           {[
                             "Name",
@@ -878,13 +898,13 @@ export function DeveloperShell() {
                       <tbody className="divide-y divide-[#e8edf2]">
                         {apiKeys.map((apiKey) => (
                           <tr className="hover:bg-[#fafbfc]" key={apiKey._id}>
-                            <td className="px-4 py-3 font-semibold text-[#172033]">
+                            <td className="px-4 py-3 font-semibold text-[#20342e]">
                               {apiKey.name}
                             </td>
                             <td className="px-4 py-3 font-mono text-xs text-[#64748b]">
                               {apiKey.prefix}...
                             </td>
-                            <td className="px-4 py-3 text-xs text-[#526174]">
+                            <td className="px-4 py-3 text-xs text-[#52645f]">
                               {apiKey.scopes.join(", ")}
                             </td>
                             <td className="px-4 py-3 text-xs text-[#64748b]">
@@ -913,7 +933,7 @@ export function DeveloperShell() {
                       </tbody>
                     </table>
                     {!apiKeys.length ? (
-                      <div className="p-10 text-center text-sm text-[#718096]">
+                      <div className="p-10 text-center text-sm text-[#71817d]">
                         No API keys yet.
                       </div>
                     ) : null}
@@ -925,10 +945,10 @@ export function DeveloperShell() {
                 <section className={panelClass}>
                   <div className="flex items-center justify-between gap-4 border-b border-[#dce3ea] px-5 py-5">
                     <div>
-                      <h2 className="text-xl font-semibold text-[#101827]">
+                      <h2 className="text-xl font-semibold text-[#14231f]">
                         Webhooks
                       </h2>
-                      <p className="mt-1 text-xs text-[#718096]">
+                      <p className="mt-1 text-xs text-[#71817d]">
                         Signed call lifecycle events
                       </p>
                     </div>
@@ -1014,7 +1034,7 @@ export function DeveloperShell() {
                       ))}
                     </div>
                     <div className="mt-4 flex items-center justify-between gap-3">
-                      <code className="text-[11px] text-[#718096]">
+                      <code className="text-[11px] text-[#71817d]">
                         X-AI-Voice-Signature
                       </code>
                       <button
@@ -1046,17 +1066,17 @@ export function DeveloperShell() {
                                   webhook.enabled ? "delivered" : "pending"
                                 }
                               />
-                              <strong className="text-sm text-[#172033]">
+                              <strong className="text-sm text-[#20342e]">
                                 {webhook.name}
                               </strong>
-                              <span className="text-xs text-[#718096]">
+                              <span className="text-xs text-[#71817d]">
                                 {webhook.enabled ? "Enabled" : "Disabled"}
                               </span>
                             </div>
-                            <p className="mt-1 truncate font-mono text-xs text-[#526174]">
+                            <p className="mt-1 truncate font-mono text-xs text-[#52645f]">
                               {webhook.url}
                             </p>
-                            <p className="mt-1 text-xs text-[#8a96a8]">
+                            <p className="mt-1 text-xs text-[#84938f]">
                               {webhook.events.join(" / ")}
                             </p>
                           </div>
@@ -1087,7 +1107,7 @@ export function DeveloperShell() {
                       </article>
                     ))}
                     {!webhooks.length ? (
-                      <div className="p-10 text-center text-sm text-[#718096]">
+                      <div className="p-10 text-center text-sm text-[#71817d]">
                         No webhook endpoints yet.
                       </div>
                     ) : null}
@@ -1099,10 +1119,10 @@ export function DeveloperShell() {
                 <section className={panelClass}>
                   <div className="flex items-center justify-between gap-4 border-b border-[#dce3ea] px-5 py-5">
                     <div>
-                      <h2 className="text-xl font-semibold text-[#101827]">
+                      <h2 className="text-xl font-semibold text-[#14231f]">
                         Event activity
                       </h2>
-                      <p className="mt-1 text-xs text-[#718096]">
+                      <p className="mt-1 text-xs text-[#71817d]">
                         Recent webhook delivery attempts
                       </p>
                     </div>
@@ -1117,19 +1137,20 @@ export function DeveloperShell() {
                         key={delivery._id}
                       >
                         <div className="min-w-0">
-                          <span className="flex items-center gap-2 text-sm font-semibold text-[#172033]">
+                          <div className="flex min-w-0 items-center gap-2">
                             <DeliveryDot status={delivery.status} />
-                            {delivery.event}
-                          </span>
-                          {delivery.errorMessage ? (
-                            <p className="mt-1 line-clamp-2 text-xs text-[#be123c]">
-                              {delivery.errorMessage}
-                            </p>
-                          ) : (
-                            <p className="mt-1 text-xs text-[#718096]">
-                              Delivery completed without an error message
-                            </p>
-                          )}
+                            <strong className="truncate text-sm font-semibold text-[#20342e]">
+                              {deliveryEventLabel(delivery.event)}
+                            </strong>
+                            <code className="hidden shrink-0 rounded-md bg-[#f1f5f3] px-1.5 py-0.5 text-[10px] font-semibold text-[#52645f] md:inline">
+                              {delivery.event || "unknown"}
+                            </code>
+                          </div>
+                          <p
+                            className={`mt-1 line-clamp-2 pl-4 text-xs ${delivery.errorMessage ? "text-[#b4233b]" : "text-[#71817d]"}`}
+                          >
+                            {deliverySummary(delivery)}
+                          </p>
                         </div>
                         <span className="text-xs text-[#64748b]">
                           {formatDate(delivery.createdAt)}
@@ -1144,7 +1165,7 @@ export function DeveloperShell() {
                       </div>
                     ))}
                     {!deliveries.length ? (
-                      <div className="p-12 text-center text-sm text-[#718096]">
+                      <div className="p-12 text-center text-sm text-[#71817d]">
                         No delivery activity yet.
                       </div>
                     ) : null}
@@ -1247,7 +1268,7 @@ export function DeveloperShell() {
             {notice}
           </span>
           <button
-            className="mr-2 mt-2 grid size-7 place-items-center rounded text-[#78869a] hover:bg-[#f1f5f9]"
+            className="mr-2 mt-2 grid size-7 place-items-center rounded text-[#84938f] hover:bg-[#f1f5f9]"
             type="button"
             aria-label="Dismiss notification"
             onClick={() => setNotice("")}

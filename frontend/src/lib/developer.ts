@@ -18,7 +18,7 @@ export type WebhookDelivery = {
   _id: string;
   webhookId: string;
   event: string;
-  status: "pending" | "delivered" | "retrying" | "failed";
+  status: "staged" | "pending" | "processing" | "delivered" | "retrying" | "failed";
   attempts: number;
   responseStatus: number;
   durationMs: number;
