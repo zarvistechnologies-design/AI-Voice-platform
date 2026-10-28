@@ -54,24 +54,15 @@ type DeveloperView = "overview" | "keys" | "webhooks" | "activity";
 type InspectorView = "request" | "response" | "webhook";
 
 const panelClass =
-  "overflow-hidden rounded-2xl border border-[#dfe1ed] bg-white shadow-[0_16px_40px_rgba(52,58,116,0.06)]";
+  "overflow-hidden rounded-2xl border border-[#dde7e3] bg-white shadow-[0_10px_30px_rgba(28,64,55,0.055)]";
 const controlClass =
-  "h-11 rounded-xl border border-[#dfe1ed] bg-white px-3.5 text-sm font-medium text-[#20342e] outline-none transition placeholder:text-[#9699aa] focus:border-[#118778] focus:ring-3 focus:ring-[#118778]/10";
+  "h-11 rounded-xl border border-[#d7e2de] bg-white px-3.5 text-sm font-medium text-[#20342e] outline-none transition placeholder:text-[#9aa8a4] focus:border-[#118778] focus:ring-3 focus:ring-[#118778]/10";
 const primaryButtonClass =
-  "inline-flex h-10 items-center justify-center rounded-xl bg-[#118778] px-4 text-sm font-semibold text-white transition hover:bg-[#626bc0] disabled:cursor-not-allowed disabled:opacity-50";
+  "inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#118778] px-4 text-sm font-semibold text-white shadow-[0_6px_16px_rgba(17,135,120,0.18)] transition hover:bg-[#0e7568] disabled:cursor-not-allowed disabled:opacity-50";
 const secondaryButtonClass =
-  "inline-flex h-10 items-center justify-center rounded-xl border border-[#dfe1ed] bg-white px-3.5 text-sm font-semibold text-[#3d4050] transition hover:border-[#bfc3e5] hover:bg-[#f7f9f8]";
+  "inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-[#d7e2de] bg-white px-3.5 text-sm font-semibold text-[#40534e] transition hover:border-[#b8ccc5] hover:bg-[#f6f9f8]";
 const dangerButtonClass =
   "inline-flex h-10 items-center justify-center rounded-xl border border-[#ffd3d9] bg-white px-3.5 text-sm font-semibold text-[#d64b62] transition hover:bg-[#fff4f5]";
-const includedFields = [
-  "recording_url",
-  "chat",
-  "transcription_text",
-  "providers",
-  "usage",
-  "billing",
-  "structuredOutput",
-];
 const endpointRows = [
   ["GET", "/api/v1/agents"],
   ["GET", "/api/v1/calls"],
@@ -139,28 +130,6 @@ function FieldLabel({
       </span>
       {children}
     </label>
-  );
-}
-
-function EndpointRow({
-  method,
-  path,
-}: {
-  method: "GET" | "POST";
-  path: string;
-}) {
-  const methodClass = "bg-[#edf7f4] text-[#0e6f62]";
-  return (
-    <div className="grid grid-cols-[54px_minmax(0,1fr)] items-center gap-2 border-b border-[#e8edf2] px-3 py-2.5 last:border-b-0">
-      <span
-        className={`rounded px-2 py-1 text-center text-[10px] font-black ${methodClass}`}
-      >
-        {method}
-      </span>
-      <code className="min-w-0 truncate text-xs font-semibold text-[#475569]">
-        {path}
-      </code>
-    </div>
   );
 }
 
@@ -260,6 +229,202 @@ function sampleWebhookPayload() {
 }`;
 }
 
+function DeveloperOverview({
+  activeKeys,
+  totalKeys,
+  enabledWebhooks,
+  totalWebhooks,
+  deliveredCount,
+  deliveries,
+  baseUrl,
+  loading,
+  onCopyBaseUrl,
+  onNavigate,
+  onOpenInspector,
+}: {
+  activeKeys: number;
+  totalKeys: number;
+  enabledWebhooks: number;
+  totalWebhooks: number;
+  deliveredCount: number;
+  deliveries: WebhookDelivery[];
+  baseUrl: string;
+  loading: boolean;
+  onCopyBaseUrl: () => void;
+  onNavigate: (view: DeveloperView) => void;
+  onOpenInspector: (view: InspectorView) => void;
+}) {
+  const lastDelivery = deliveries[0];
+  const setupItems = [
+    {
+      label: "Create an API key",
+      detail: "Authenticate requests from your application",
+      done: activeKeys > 0,
+      action: () => onNavigate("keys"),
+    },
+    {
+      label: "Make your first request",
+      detail: "Use a ready-to-copy request example",
+      done: deliveredCount > 0,
+      action: () => onOpenInspector("request"),
+    },
+    {
+      label: "Configure a webhook",
+      detail: "Receive call and transcript events",
+      done: enabledWebhooks > 0,
+      action: () => onNavigate("webhooks"),
+    },
+  ];
+  const completedItems = setupItems.filter((item) => item.done).length;
+
+  return (
+    <div className="grid gap-5">
+      <section className="grid overflow-hidden rounded-3xl border border-[#d8e5e0] bg-white shadow-[0_14px_38px_rgba(25,67,57,0.06)] xl:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)]">
+        <div className="relative overflow-hidden p-6 sm:p-7 lg:p-8">
+          <span className="pointer-events-none absolute -right-24 -top-32 size-80 rounded-full bg-[#118778]/[0.07] blur-3xl" />
+          <div className="relative">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-2 rounded-full bg-[#e9f7f3] px-3 py-1.5 text-xs font-bold text-[#0e6f62]">
+                <span className="size-2 rounded-full bg-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,0.12)]" />
+                All systems operational
+              </span>
+              <span className="text-xs font-medium text-[#80908c]">
+                {loading ? "Syncing workspace…" : "Updated just now"}
+              </span>
+            </div>
+            <h2 className="mt-6 max-w-2xl text-2xl font-semibold tracking-[-0.03em] text-[#14231f] sm:text-3xl">
+              Your API workspace is ready.
+            </h2>
+            <p className="mt-2 max-w-xl text-sm leading-6 text-[#667873]">
+              Create secure credentials, connect your first request, and receive real-time call events from one place.
+            </p>
+
+            <div className="mt-7 grid gap-3 sm:grid-cols-3">
+              {[
+                ["Active keys", activeKeys, `${totalKeys} total`],
+                ["Live webhooks", enabledWebhooks, `${totalWebhooks} configured`],
+                ["Events delivered", deliveredCount, `${deliveries.length} attempts`],
+              ].map(([label, value, detail]) => (
+                <div className="rounded-2xl border border-[#e2ebe8] bg-[#f8faf9] p-4" key={label}>
+                  <span className="text-xs font-semibold text-[#71817d]">{label}</span>
+                  <div className="mt-2 flex items-end gap-2">
+                    <strong className="text-2xl font-semibold tracking-tight text-[#18302a]">{value}</strong>
+                    <span className="mb-0.5 text-[11px] text-[#91a09c]">{detail}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="border-t border-[#e1e9e6] bg-[#fbfcfc] p-6 sm:p-7 xl:border-l xl:border-t-0">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.13em] text-[#77908a]">Getting started</p>
+              <h3 className="mt-1 text-lg font-semibold text-[#18302a]">Connect in three steps</h3>
+            </div>
+            <span className="rounded-full bg-[#e7f4f0] px-2.5 py-1 text-xs font-bold text-[#0e6f62]">
+              {completedItems}/3
+            </span>
+          </div>
+          <div className="mt-5 grid gap-2">
+            {setupItems.map((item, index) => (
+              <button
+                className="group flex w-full items-center gap-3 rounded-xl p-2.5 text-left transition hover:bg-white hover:shadow-sm"
+                key={item.label}
+                type="button"
+                onClick={item.action}
+              >
+                <span className={`grid size-8 shrink-0 place-items-center rounded-full text-xs font-bold ${item.done ? "bg-[#118778] text-white" : "border border-[#d8e3df] bg-white text-[#7f908b]"}`}>
+                  {item.done ? "✓" : index + 1}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-semibold text-[#29413b]">{item.label}</span>
+                  <span className="mt-0.5 block text-xs text-[#81908c]">{item.detail}</span>
+                </span>
+                <span className="text-[#9aaba6] transition group-hover:translate-x-0.5 group-hover:text-[#118778]" aria-hidden="true">→</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="grid gap-5 xl:grid-cols-[minmax(0,1.25fr)_minmax(330px,0.75fr)]">
+        <div className={panelClass}>
+          <div className="flex flex-col gap-4 border-b border-[#e1e9e6] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+            <div>
+              <h3 className="text-base font-semibold text-[#18302a]">Production base URL</h3>
+              <p className="mt-1 text-xs text-[#80908c]">Use this URL for every API v1 request.</p>
+            </div>
+            <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#edf7f4] px-2.5 py-1 text-[11px] font-bold text-[#0e6f62]">
+              <span className="size-1.5 rounded-full bg-emerald-500" /> Live
+            </span>
+          </div>
+          <div className="p-5 sm:p-6">
+            <div className="flex min-w-0 items-center overflow-hidden rounded-xl border border-[#d7e2de] bg-[#f7f9f8]">
+              <code className="min-w-0 flex-1 truncate px-4 py-3 text-xs font-semibold text-[#40534e] sm:text-sm">{baseUrl}</code>
+              <button className="h-11 shrink-0 border-l border-[#d7e2de] bg-white px-4 text-xs font-bold text-[#0e6f62] transition hover:bg-[#edf7f4]" type="button" onClick={onCopyBaseUrl}>Copy</button>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button className={primaryButtonClass} type="button" onClick={() => onOpenInspector("request")}>View request example</button>
+              <Link className={secondaryButtonClass} href="/docs/api" target="_blank" rel="noreferrer">Open API docs <span aria-hidden="true">↗</span></Link>
+            </div>
+          </div>
+        </div>
+
+        <div className={panelClass}>
+          <div className="flex items-center justify-between border-b border-[#e1e9e6] px-5 py-4 sm:px-6">
+            <div>
+              <h3 className="text-base font-semibold text-[#18302a]">Recent activity</h3>
+              <p className="mt-1 text-xs text-[#80908c]">Latest webhook deliveries</p>
+            </div>
+            <button className="text-xs font-bold text-[#0e6f62] hover:text-[#0a5e53]" type="button" onClick={() => onNavigate("activity")}>View all</button>
+          </div>
+          <div className="divide-y divide-[#edf1f0]">
+            {deliveries.slice(0, 3).map((delivery) => (
+              <button className="flex w-full items-center gap-3 px-5 py-3.5 text-left transition hover:bg-[#f8faf9] sm:px-6" key={delivery._id} type="button" onClick={() => onNavigate("activity")}>
+                <span className={`size-2 shrink-0 rounded-full ${delivery.status === "delivered" ? "bg-emerald-500" : delivery.status === "failed" ? "bg-rose-500" : "bg-amber-500"}`} />
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-sm font-semibold text-[#29413b]">{delivery.event}</span>
+                  <span className="mt-0.5 block text-[11px] text-[#8a9995]">{formatDate(delivery.createdAt)}</span>
+                </span>
+                <span className={`rounded-full px-2 py-1 text-[10px] font-bold ring-1 ${deliveryTone(delivery.status)}`}>{delivery.responseStatus || delivery.status}</span>
+              </button>
+            ))}
+            {!deliveries.length ? (
+              <div className="px-6 py-8 text-center">
+                <span className="mx-auto grid size-10 place-items-center rounded-full bg-[#edf4f1] text-[#6f837d]">↗</span>
+                <p className="mt-3 text-sm font-semibold text-[#40534e]">No events yet</p>
+                <p className="mt-1 text-xs text-[#8a9995]">Webhook deliveries will appear here.</p>
+              </div>
+            ) : null}
+          </div>
+          {lastDelivery ? <div className="border-t border-[#edf1f0] bg-[#f8faf9] px-6 py-2.5 text-[11px] text-[#879691]">Latest event: {lastDelivery.event}</div> : null}
+        </div>
+      </section>
+
+      <section className={panelClass}>
+        <div className="flex flex-col gap-3 border-b border-[#e1e9e6] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+          <div>
+            <h3 className="text-base font-semibold text-[#18302a]">Available endpoints</h3>
+            <p className="mt-1 text-xs text-[#80908c]">Stable REST routes available under /api/v1</p>
+          </div>
+          <span className="w-fit rounded-full bg-[#edf7f4] px-2.5 py-1 text-xs font-bold text-[#0e6f62]">{endpointRows.length} routes</span>
+        </div>
+        <div className="grid md:grid-cols-2 xl:grid-cols-3">
+          {endpointRows.map(([method, path], index) => (
+            <button className={`flex min-w-0 items-center gap-3 px-5 py-4 text-left transition hover:bg-[#f8faf9] sm:px-6 ${index ? "border-t border-[#edf1f0] md:[&:nth-child(2)]:border-t-0 md:[&:nth-child(even)]:border-l xl:[&:nth-child(3)]:border-t-0 xl:[&:nth-child(3)]:border-l xl:[&:nth-child(even)]:border-l-0 xl:[&:nth-child(3n+2)]:border-l xl:[&:nth-child(3n)]:border-l" : ""}`} key={`${method}-${path}`} type="button" onClick={() => onOpenInspector(method === "POST" ? "request" : "response")}>
+              <span className={`rounded-md px-2 py-1 text-[10px] font-black ${method === "POST" ? "bg-[#fff3e8] text-[#b65e17]" : "bg-[#eaf6f2] text-[#0e6f62]"}`}>{method}</span>
+              <code className="min-w-0 flex-1 truncate text-xs font-semibold text-[#50615c]">{path}</code>
+              <span className="text-[#9aaba6]" aria-hidden="true">→</span>
+            </button>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
+
 export function DeveloperShell() {
   const router = useRouter();
   const session = useSyncExternalStore(
@@ -290,6 +455,9 @@ export function DeveloperShell() {
   );
   const [activeView, setActiveView] = useState<DeveloperView>("overview");
   const [inspectorView, setInspectorView] = useState<InspectorView>("request");
+  const [inspectorOpen, setInspectorOpen] = useState(false);
+  const [keyComposerOpen, setKeyComposerOpen] = useState(false);
+  const [webhookComposerOpen, setWebhookComposerOpen] = useState(false);
   const baseUrl = useMemo(() => `${API_URL}/api/v1`, []);
   const activeKeys = useMemo(
     () => apiKeys.filter((apiKey) => !apiKey.revokedAt).length,
@@ -304,7 +472,6 @@ export function DeveloperShell() {
       deliveries.filter((delivery) => delivery.status === "delivered").length,
     [deliveries],
   );
-  const lastDelivery = deliveries[0];
 
   const loadDeveloperData = useCallback(async () => {
     setLoading(true);
@@ -352,6 +519,15 @@ export function DeveloperShell() {
     return () => window.clearTimeout(timer);
   }, [notice]);
 
+  useEffect(() => {
+    if (!inspectorOpen) return;
+    function closeInspector(event: KeyboardEvent) {
+      if (event.key === "Escape") setInspectorOpen(false);
+    }
+    document.addEventListener("keydown", closeInspector);
+    return () => document.removeEventListener("keydown", closeInspector);
+  }, [inspectorOpen]);
+
   async function copyText(value: string, label: string) {
     try {
       await navigator.clipboard.writeText(value);
@@ -371,6 +547,7 @@ export function DeveloperShell() {
       setCreatedKey(result.key);
       setKeyName("External platform key");
       setKeyExpiry("");
+      setKeyComposerOpen(false);
       await loadDeveloperData();
     } catch (error) {
       setNotice(
@@ -401,6 +578,7 @@ export function DeveloperShell() {
       setCreatedSecret(result.secret);
       setWebhookName("Call events");
       setWebhookUrl("");
+      setWebhookComposerOpen(false);
       await loadDeveloperData();
     } catch (error) {
       setNotice(
@@ -469,7 +647,7 @@ export function DeveloperShell() {
 
   return (
     <main
-      className={`dashboard-home-theme grid min-h-screen bg-white text-[#14231f] ${
+      className={`dashboard-home-theme grid min-h-screen bg-[#f6f9f8] text-[#14231f] ${
         showUserSidebar
           ? "lg:grid-cols-[248px_minmax(0,1fr)]"
           : "lg:grid-cols-[64px_minmax(0,1fr)]"
@@ -499,28 +677,16 @@ export function DeveloperShell() {
             </span>
           }
           title="Developers"
-          description="Manage API credentials, webhooks, event activity, and production requests from one workspace."
+          description="Connect your apps, manage credentials, and monitor API activity."
           actions={
             <>
-              <div className="flex h-10 min-w-0 items-center overflow-hidden rounded-xl border border-[#dfe1ed] bg-[#f7f9f8]">
-                <code className="max-w-52 truncate px-3 text-xs font-semibold text-[#51556a]">
-                  {baseUrl}
-                </code>
-                <button
-                  className="h-full shrink-0 border-l border-[#dfe1ed] bg-white px-3 text-xs font-bold text-[#0e6f62] transition hover:bg-[#edf7f4]"
-                  type="button"
-                  onClick={() => void copyText(baseUrl, "Base URL")}
-                >
-                  Copy
-                </button>
-              </div>
               <Link
                 href="/docs/api"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex h-10 items-center justify-center rounded-xl bg-[#118778] px-3.5 text-xs font-semibold text-white transition hover:bg-[#0e6f62]"
+                className="inline-flex h-10 items-center justify-center rounded-xl border border-[#d7e2de] bg-white px-3.5 text-xs font-semibold text-[#294740] transition hover:border-[#b8ccc5] hover:bg-[#f6f9f8]"
               >
-                API Docs & Explorer ↗
+                API documentation <span aria-hidden="true">↗</span>
               </Link>
               <button
                 className={secondaryButtonClass}
@@ -533,9 +699,9 @@ export function DeveloperShell() {
           }
         />
 
-        <div className="w-full px-4 py-4 sm:px-5 lg:px-6">
+        <div className="mx-auto w-full max-w-[1500px] px-4 py-5 sm:px-5 lg:px-7 lg:py-7">
           <nav
-            className="grid gap-1 rounded-2xl border border-[#dfe1ed] bg-white p-1.5 shadow-[0_10px_30px_rgba(52,58,116,0.04)] sm:grid-cols-4"
+            className="flex gap-1 overflow-x-auto border-b border-[#d9e4e0] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             aria-label="Developer workspace sections"
           >
             {(
@@ -545,182 +711,50 @@ export function DeveloperShell() {
                 ["webhooks", "Webhooks", `${enabledWebhooks} enabled`],
                 ["activity", "Event activity", `${deliveries.length} recent`],
               ] as const
-            ).map(([value, label, detail], index) => (
+            ).map(([value, label, detail]) => (
               <button
-                className={`min-w-0 rounded-xl px-3 py-2.5 text-left transition ${
+                className={`relative flex h-12 shrink-0 items-center gap-2.5 px-3 text-sm font-semibold transition ${
                   activeView === value
-                    ? "bg-[#edf7f4] text-[#123d35] shadow-sm"
-                    : "text-[#60716c] hover:bg-[#f7f9f8] hover:text-[#20342e]"
+                    ? "text-[#0e6f62] after:absolute after:inset-x-2 after:bottom-0 after:h-0.5 after:rounded-full after:bg-[#118778]"
+                    : "text-[#687b76] hover:text-[#20342e]"
                 }`}
                 key={value}
                 type="button"
                 onClick={() => setActiveView(value)}
               >
-                <span className="flex items-center gap-2 text-sm font-semibold">
-                  <span className="grid size-6 shrink-0 place-items-center rounded-lg bg-white/80 text-[10px] text-[#118778]">
-                    0{index + 1}
-                  </span>
-                  {label}
-                </span>
-                <span className="ml-8 mt-0.5 block truncate text-xs opacity-75">
+                <span>{label}</span>
+                <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                  activeView === value
+                    ? "bg-[#e5f4f0] text-[#0e6f62]"
+                    : "bg-[#eaf0ee] text-[#71817d]"
+                }`}>
                   {detail}
                 </span>
               </button>
             ))}
           </nav>
 
-          <div className="mt-5 grid min-w-0 gap-5 2xl:grid-cols-[minmax(0,1fr)_360px]">
+          <div className="mt-6 min-w-0">
             <div className="min-w-0">
               {activeView === "overview" ? (
-                <section className={panelClass}>
-                  <div className="flex flex-col gap-3 border-b border-[#dce3ea] px-5 py-5 sm:flex-row sm:items-end sm:justify-between">
-                    <div>
-                      <span className="text-xs font-bold uppercase text-[#0e6f62]">
-                        Connection map
-                      </span>
-                      <h2 className="mt-1 text-xl font-semibold text-[#101827]">
-                        Your API at a glance
-                      </h2>
-                    </div>
-                    <span className="text-xs font-medium text-[#64748b]">
-                      Last synced {loading ? "now" : "just now"}
-                    </span>
-                  </div>
-
-                  <div className="grid border-b border-[#dce3ea] sm:grid-cols-4">
-                    {[
-                      [
-                        "01",
-                        "Authenticate",
-                        `${activeKeys} active keys`,
-                        "#118778",
-                      ],
-                      ["02", "Create call", "POST outbound", "#118778"],
-                      [
-                        "03",
-                        "Receive event",
-                        `${enabledWebhooks} webhooks`,
-                        "#118778",
-                      ],
-                      [
-                        "04",
-                        "Fetch result",
-                        "Recording + transcript",
-                        "#118778",
-                      ],
-                    ].map(([number, label, detail, color], index) => (
-                      <div
-                        className={`relative min-h-32 px-4 py-5 ${index ? "border-t border-[#e4e9ef] sm:border-l sm:border-t-0" : ""}`}
-                        key={label}
-                      >
-                        <span
-                          className="text-[10px] font-black"
-                          style={{ color }}
-                        >
-                          {number}
-                        </span>
-                        <strong className="mt-5 block text-sm text-[#172033]">
-                          {label}
-                        </strong>
-                        <span className="mt-1 block text-xs text-[#718096]">
-                          {detail}
-                        </span>
-                        <span
-                          className="absolute bottom-0 left-0 h-1 w-full"
-                          style={{ backgroundColor: color }}
-                          aria-hidden="true"
-                        />
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="grid border-b border-[#dce3ea] sm:grid-cols-2 lg:grid-cols-4">
-                    {[
-                      ["Active keys", activeKeys, `${apiKeys.length} total`],
-                      [
-                        "Live webhooks",
-                        enabledWebhooks,
-                        `${webhooks.length} configured`,
-                      ],
-                      [
-                        "Delivered",
-                        deliveredCount,
-                        `${deliveries.length} attempts`,
-                      ],
-                      [
-                        "Latest event",
-                        lastDelivery?.event ?? "None",
-                        lastDelivery
-                          ? formatDate(lastDelivery.createdAt)
-                          : "Waiting for events",
-                      ],
-                    ].map(([label, value, detail], index) => (
-                      <div
-                        className={`px-5 py-4 ${index ? "border-t border-[#e4e9ef] sm:border-l sm:border-t-0 sm:[&:nth-child(3)]:border-l-0 sm:[&:nth-child(3)]:border-t lg:[&:nth-child(3)]:border-l lg:[&:nth-child(3)]:border-t-0" : ""}`}
-                        key={label}
-                      >
-                        <span className="text-xs font-semibold text-[#718096]">
-                          {label}
-                        </span>
-                        <strong className="mt-1 block truncate text-xl font-semibold text-[#101827]">
-                          {value}
-                        </strong>
-                        <span className="mt-1 block truncate text-xs text-[#8a96a8]">
-                          {detail}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="grid lg:grid-cols-[minmax(0,1fr)_270px]">
-                    <div className="border-b border-[#dce3ea] p-5 lg:border-b-0 lg:border-r">
-                      <div className="mb-4 flex items-center justify-between gap-3">
-                        <div>
-                          <h3 className="text-sm font-semibold text-[#172033]">
-                            Available endpoints
-                          </h3>
-                          <p className="mt-1 text-xs text-[#718096]">
-                            Stable REST routes under /api/v1
-                          </p>
-                        </div>
-                        <span className="rounded-lg bg-[#edf7f4] px-2.5 py-1 text-xs font-bold text-[#0e6f62]">
-                          {endpointRows.length} routes
-                        </span>
-                      </div>
-                      <div className="border border-[#dce3ea]">
-                        {endpointRows.map(([method, path]) => (
-                          <EndpointRow
-                            key={`${method}-${path}`}
-                            method={method}
-                            path={path}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                    <div className="p-5">
-                      <h3 className="text-sm font-semibold text-[#172033]">
-                        Call object
-                      </h3>
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        {includedFields.map((item) => (
-                          <code
-                            className="rounded-lg border border-[#dbe4e1] bg-[#f7f9f8] px-2.5 py-1.5 text-[11px] font-semibold text-[#51556a]"
-                            key={item}
-                          >
-                            {item}
-                          </code>
-                        ))}
-                      </div>
-                      <button
-                        className="mt-5 text-sm font-semibold text-[#0e6f62] hover:text-[#444da4]"
-                        type="button"
-                        onClick={() => setInspectorView("response")}
-                      >
-                        Inspect response
-                      </button>
-                    </div>
-                  </div>
-                </section>
+                <>
+                  <DeveloperOverview
+                    activeKeys={activeKeys}
+                    totalKeys={apiKeys.length}
+                    enabledWebhooks={enabledWebhooks}
+                    totalWebhooks={webhooks.length}
+                    deliveredCount={deliveredCount}
+                    deliveries={deliveries}
+                    baseUrl={baseUrl}
+                    loading={loading}
+                    onCopyBaseUrl={() => void copyText(baseUrl, "Base URL")}
+                    onNavigate={setActiveView}
+                    onOpenInspector={(view) => {
+                      setInspectorView(view);
+                      setInspectorOpen(true);
+                    }}
+                  />
+                </>
               ) : null}
 
               {activeView === "keys" ? (
@@ -734,9 +768,14 @@ export function DeveloperShell() {
                         Production credentials and access scopes
                       </p>
                     </div>
-                    <span className="rounded-lg bg-[#edf7f4] px-2.5 py-1 text-xs font-bold text-[#0e6f62]">
-                      {activeKeys} active
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="hidden rounded-full bg-[#edf7f4] px-2.5 py-1 text-xs font-bold text-[#0e6f62] sm:inline-flex">
+                        {activeKeys} active
+                      </span>
+                      <button className={primaryButtonClass} type="button" onClick={() => setKeyComposerOpen((current) => !current)}>
+                        <span aria-hidden="true">+</span> {keyComposerOpen ? "Close" : "Create key"}
+                      </button>
+                    </div>
                   </div>
                   {createdKey ? (
                     <div className="border-b border-[#86c9a4] bg-[#effbf3] px-5 py-4">
@@ -759,7 +798,15 @@ export function DeveloperShell() {
                       </div>
                     </div>
                   ) : null}
+                  {keyComposerOpen ? (
                   <div className="border-b border-[#dce3ea] bg-[#f8fafc] p-5">
+                    <div className="mb-5 flex items-start justify-between gap-4">
+                      <div>
+                        <h3 className="text-sm font-semibold text-[#20342e]">Create a new API key</h3>
+                        <p className="mt-1 text-xs text-[#71817d]">Choose the minimum permissions this integration needs.</p>
+                      </div>
+                      <button className="text-xl leading-none text-[#84938f] hover:text-[#20342e]" type="button" aria-label="Close key form" onClick={() => setKeyComposerOpen(false)}>×</button>
+                    </div>
                     <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_220px]">
                       <FieldLabel label="Key name">
                         <input
@@ -809,6 +856,7 @@ export function DeveloperShell() {
                       </button>
                     </div>
                   </div>
+                  ) : null}
                   <div className="overflow-x-auto">
                     <table className="w-full min-w-[760px] text-left text-sm">
                       <thead className="border-b border-[#dce3ea] bg-white text-[10px] font-black uppercase text-[#78869a]">
@@ -884,9 +932,14 @@ export function DeveloperShell() {
                         Signed call lifecycle events
                       </p>
                     </div>
-                    <span className="rounded-lg bg-[#edf7f4] px-2.5 py-1 text-xs font-bold text-[#0e6f62]">
-                      {enabledWebhooks} listening
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="hidden rounded-full bg-[#edf7f4] px-2.5 py-1 text-xs font-bold text-[#0e6f62] sm:inline-flex">
+                        {enabledWebhooks} listening
+                      </span>
+                      <button className={primaryButtonClass} type="button" onClick={() => setWebhookComposerOpen((current) => !current)}>
+                        <span aria-hidden="true">+</span> {webhookComposerOpen ? "Close" : "Add endpoint"}
+                      </button>
+                    </div>
                   </div>
                   {createdSecret ? (
                     <div className="border-b border-[#86c9a4] bg-[#effbf3] px-5 py-4">
@@ -909,7 +962,15 @@ export function DeveloperShell() {
                       </div>
                     </div>
                   ) : null}
+                  {webhookComposerOpen ? (
                   <div className="border-b border-[#dce3ea] bg-[#f8fafc] p-5">
+                    <div className="mb-5 flex items-start justify-between gap-4">
+                      <div>
+                        <h3 className="text-sm font-semibold text-[#20342e]">Add a webhook endpoint</h3>
+                        <p className="mt-1 text-xs text-[#71817d]">Choose where Vozon should send signed lifecycle events.</p>
+                      </div>
+                      <button className="text-xl leading-none text-[#84938f] hover:text-[#20342e]" type="button" aria-label="Close webhook form" onClick={() => setWebhookComposerOpen(false)}>×</button>
+                    </div>
                     <div className="grid gap-3 lg:grid-cols-[210px_minmax(0,1fr)]">
                       <FieldLabel label="Endpoint name">
                         <input
@@ -970,6 +1031,7 @@ export function DeveloperShell() {
                       </button>
                     </div>
                   </div>
+                  ) : null}
                   <div className="divide-y divide-[#e8edf2]">
                     {webhooks.map((webhook) => (
                       <article
@@ -1091,7 +1153,20 @@ export function DeveloperShell() {
               ) : null}
             </div>
 
-            <aside className="min-w-0 self-start overflow-hidden rounded-2xl bg-[#111827] text-white shadow-[0_18px_48px_rgba(15,23,42,0.16)] 2xl:sticky 2xl:top-5">
+            {inspectorOpen ? (
+              <>
+                <button
+                  className="fixed inset-0 z-[80] bg-[#0c1714]/35 backdrop-blur-[2px]"
+                  type="button"
+                  aria-label="Close API inspector"
+                  onClick={() => setInspectorOpen(false)}
+                />
+            <aside
+              className="fixed inset-y-0 right-0 z-[90] flex w-full max-w-[620px] flex-col overflow-hidden bg-[#101a25] text-white shadow-[-24px_0_80px_rgba(9,20,17,0.25)]"
+              role="dialog"
+              aria-modal="true"
+              aria-label="API request inspector"
+            >
               <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
                 <div>
                   <span className="block text-[10px] font-black uppercase tracking-[0.14em] text-[#aeb4ff]">
@@ -1101,15 +1176,23 @@ export function DeveloperShell() {
                     {inspectorLabel}
                   </strong>
                 </div>
-                <button
-                  className="rounded-lg border border-white/20 bg-white/10 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-white/15"
-                  type="button"
-                  onClick={() =>
-                    void copyText(inspectorContent, inspectorLabel)
-                  }
-                >
-                  Copy
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    className="rounded-lg border border-white/20 bg-white/10 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-white/15"
+                    type="button"
+                    onClick={() => void copyText(inspectorContent, inspectorLabel)}
+                  >
+                    Copy
+                  </button>
+                  <button
+                    className="grid size-8 place-items-center rounded-lg text-lg text-[#aeb6c7] transition hover:bg-white/10 hover:text-white"
+                    type="button"
+                    aria-label="Close inspector"
+                    onClick={() => setInspectorOpen(false)}
+                  >
+                    ×
+                  </button>
+                </div>
               </div>
               <div className="grid grid-cols-3 border-b border-white/10 bg-[#0b1220] p-1.5">
                 {(["request", "response", "webhook"] as const).map((view) => (
@@ -1123,7 +1206,7 @@ export function DeveloperShell() {
                   </button>
                 ))}
               </div>
-              <pre className="max-h-[420px] min-h-72 overflow-auto whitespace-pre-wrap break-words p-4 text-xs leading-5 text-[#d7e2ef]">
+              <pre className="min-h-0 flex-1 overflow-auto whitespace-pre-wrap break-words p-5 text-xs leading-6 text-[#d7e2ef] sm:p-6">
                 {inspectorContent}
               </pre>
               <div className="border-t border-white/10 bg-[#0b1220] p-4">
@@ -1147,6 +1230,8 @@ export function DeveloperShell() {
                 </button>
               </div>
             </aside>
+              </>
+            ) : null}
           </div>
         </div>
       </section>
