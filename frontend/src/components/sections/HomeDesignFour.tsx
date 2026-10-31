@@ -397,10 +397,9 @@ export function HomeDesignFour() {
           </h1>
 
           <div className="mt-8 grid gap-8 border-t border-line pt-6 md:grid-cols-12 md:items-end">
-            <div className="md:col-span-6">
+            <div className="md:col-span-7 lg:col-span-8">
               <p className="text-sm leading-relaxed text-muted sm:text-base">
-                Automate customer support, inbound inquiries, and outbound calls with hyper-realistic voice AI.
-                Zero robotic lag, human-like barge-in, and natural conversations in Hindi, Hinglish &amp; 22+ Indic languages &amp; 76 global languages.
+                Traditional voice bots follow rigid scripts. Our Agentic Voice Platform deploys autonomous AI agents equipped with cognitive reasoning, dynamic planning, real-time tool execution, and long-term memory—enabling them to handle complex, non-linear human conversations from end to end.
               </p>
               <p className="mt-3 font-display text-sm font-semibold sm:text-base text-ink">
                 Trusted voice platform to{" "}
@@ -408,7 +407,7 @@ export function HomeDesignFour() {
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-4 md:col-span-6 md:justify-end">
+            <div className="flex flex-wrap items-center gap-4 md:col-span-5 lg:col-span-4 md:justify-end">
               <Link href="/login" className="btn btn-primary">
                 <span>Get Started Free</span>
                 <svg className="arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
