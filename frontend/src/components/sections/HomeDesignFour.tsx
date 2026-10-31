@@ -396,6 +396,10 @@ export function HomeDesignFour() {
             <span className="text-cobalt">Reason, Act, and Deliver Outcomes.</span>
           </h1>
 
+          <p className="mt-4 font-display text-base sm:text-lg md:text-xl font-bold text-ink max-w-4xl">
+            Don&apos;t just automate answers. <span className="text-cobalt">Automate complete business workflows over voice.</span>
+          </p>
+
           <div className="mt-8 grid gap-8 border-t border-line pt-6 md:grid-cols-12 md:items-end">
             <div className="md:col-span-7 lg:col-span-8">
               <p className="text-sm leading-relaxed text-muted sm:text-base">
