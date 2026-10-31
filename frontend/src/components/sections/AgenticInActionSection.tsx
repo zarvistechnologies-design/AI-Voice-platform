@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 
 export interface TimelineStep {
   id: string;
@@ -10,6 +11,9 @@ export interface TimelineStep {
   title: string;
   speaker?: string;
   text?: string;
+  image?: string;
+  imageAlt?: string;
+  imageCaption?: string;
   brainData?: {
     stepType: "Reasoning Step" | "Multi-Tool Planning";
     goal?: string;
@@ -37,6 +41,9 @@ export const scenarioSteps: TimelineStep[] = [
     seconds: 3,
     type: "brain",
     title: "Agent Brain (Reasoning Step)",
+    image: "/images/scenario/doctor-schedule-calendar.jpg",
+    imageAlt: "Dr. Sharma Dental Surgery Availability Calendar query result showing 5:30 PM and 6:15 PM slots",
+    imageCaption: "Live Backend Query: Dr. Sharma's availability retrieved in <180ms without interrupting caller.",
     brainData: {
       stepType: "Reasoning Step",
       goal: "Reschedule appointment with constraint (Provider: Dr. Sharma, Time: > 17:00, Date: Tomorrow).",
@@ -73,6 +80,9 @@ export const scenarioSteps: TimelineStep[] = [
     seconds: 11,
     type: "brain",
     title: "Agent Brain (Multi-Tool Planning)",
+    image: "/images/scenario/whatsapp-clinic-confirmation.jpg",
+    imageAlt: "WhatsApp Business confirmation message and Indiranagar clinic Google Maps pin dispatched in real time",
+    imageCaption: "Multi-Tool Dispatch: WhatsApp location card dispatched during the call while booking slot 17:30.",
     brainData: {
       stepType: "Multi-Tool Planning",
       toolCalls: [
@@ -96,13 +106,16 @@ export const scenarioSteps: TimelineStep[] = [
     type: "agent",
     title: "Agent Speaks (Outcome & Omnichannel Confirmation)",
     speaker: "Agent Speaks",
+    image: "/images/scenario/whatsapp-clinic-confirmation.jpg",
+    imageAlt: "Delivered WhatsApp message with verified badge and directions",
+    imageCaption: "Omnichannel Outcome: Live call finalized with instant WhatsApp confirmation & clinic map delivered.",
     text: "All set! Your surgery is moved to tomorrow at 5:30 PM with Dr. Sharma, and I've just sent the location directly to your WhatsApp. Anything else I can assist with?",
   },
 ];
 
 export function AgenticInActionSection() {
   const [activeStepIndex, setActiveStepIndex] = useState<number>(0);
-  const [viewMode, setViewMode] = useState<"walkthrough" | "full">("walkthrough");
+  const [viewMode, setViewMode] = useState<"walkthrough" | "flowchart" | "full">("walkthrough");
 
   const currentStep = scenarioSteps[activeStepIndex];
 
@@ -137,15 +150,15 @@ export function AgenticInActionSection() {
           </h2>
 
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-muted sm:text-base font-normal">
-            Show your enterprise prospects what happens inside the agent&apos;s brain during a 60-second call. Witness real-time reasoning, dynamic constraints, and parallel API execution with zero scripted dead ends.
+            Show your enterprise prospects what happens inside the agent&apos;s brain during a 60-second call. Witness real-time reasoning, dynamic constraints, live database queries, and instant WhatsApp location dispatch.
           </p>
 
-          {/* View Mode Toggle: Interactive Walkthrough vs Full Telemetry Feed */}
+          {/* View Mode Toggle: Interactive Walkthrough vs Flowchart vs Full Telemetry Feed */}
           <div className="mt-8 inline-flex items-center rounded-full bg-paper border border-line p-1 shadow-xs">
             <button
               type="button"
               onClick={() => setViewMode("walkthrough")}
-              className={`rounded-full px-5 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+              className={`rounded-full px-4 sm:px-5 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
                 viewMode === "walkthrough"
                   ? "bg-ink text-[#d4ff3f] shadow-sm"
                   : "text-muted hover:text-ink"
@@ -153,12 +166,25 @@ export function AgenticInActionSection() {
               aria-pressed={viewMode === "walkthrough"}
             >
               <span>✦</span>
-              <span>Step-by-Step Walkthrough</span>
+              <span>Step-by-Step Replay</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode("flowchart")}
+              className={`rounded-full px-4 sm:px-5 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+                viewMode === "flowchart"
+                  ? "bg-ink text-[#d4ff3f] shadow-sm"
+                  : "text-muted hover:text-ink"
+              }`}
+              aria-pressed={viewMode === "flowchart"}
+            >
+              <span>⇄</span>
+              <span>Sequence Flowchart</span>
             </button>
             <button
               type="button"
               onClick={() => setViewMode("full")}
-              className={`rounded-full px-5 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+              className={`rounded-full px-4 sm:px-5 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
                 viewMode === "full"
                   ? "bg-ink text-[#d4ff3f] shadow-sm"
                   : "text-muted hover:text-ink"
@@ -175,7 +201,7 @@ export function AgenticInActionSection() {
             MODE 1: INTERACTIVE STEP-BY-STEP REPLAY WALKTHROUGH
             ======================================================== */}
         {viewMode === "walkthrough" && (
-          <div className="mt-12 mx-auto max-w-5xl">
+          <div className="mt-12 mx-auto max-w-6xl">
             {/* Timeline Progress Stepper */}
             <div className="flex items-center justify-between gap-1 sm:gap-2 overflow-x-auto pb-3 border-b border-line">
               {scenarioSteps.map((step, idx) => {
@@ -265,84 +291,163 @@ export function AgenticInActionSection() {
                   </div>
                 )}
 
-                {/* 2. Agent Brain Reasoning Card */}
+                {/* 2. Agent Brain Reasoning Card with Dynamic System Mockup */}
                 {currentStep.type === "brain" && currentStep.brainData && (
-                  <div className="rounded-2xl border border-white/10 bg-[#0e0e0c] p-6 sm:p-8 text-zinc-100 shadow-xl">
-                    <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                      <div className="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-wider text-[#d4ff3f]">
-                        <span className="grid size-4 place-items-center rounded-full bg-white/10 text-[10px]">✦</span>
-                        <span>{currentStep.brainData.stepType}</span>
+                  <div className="grid gap-6 lg:grid-cols-12 items-stretch">
+                    {/* Left: Reasoning & Tool Code */}
+                    <div className="lg:col-span-7 rounded-2xl border border-white/10 bg-[#0e0e0c] p-6 sm:p-8 text-zinc-100 shadow-xl flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                          <div className="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-wider text-[#d4ff3f]">
+                            <span className="grid size-4 place-items-center rounded-full bg-white/10 text-[10px]">✦</span>
+                            <span>{currentStep.brainData.stepType}</span>
+                          </div>
+                          <span className="font-mono text-[11px] text-zinc-400">
+                            Cognitive Latency: &lt;180ms
+                          </span>
+                        </div>
+
+                        {/* Extracted Goal & Constraints */}
+                        {currentStep.brainData.goal && (
+                          <div className="mt-5 rounded-xl bg-white/5 border border-white/10 p-4">
+                            <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-zinc-400 block mb-1">
+                              Extracted Goal &amp; Dynamic Constraints:
+                            </span>
+                            <p className="font-mono text-xs sm:text-[13px] text-zinc-200 leading-relaxed">
+                              - {currentStep.brainData.goal}
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Tool Calls */}
+                        <div className="mt-5 space-y-4">
+                          <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#d4ff3f] block">
+                            Live Tool Execution:
+                          </span>
+                          {currentStep.brainData.toolCalls.map((tc, tIdx) => (
+                            <div
+                              key={tIdx}
+                              className="rounded-xl border border-white/10 bg-black/60 p-4 font-mono text-xs sm:text-[13px]"
+                            >
+                              <div className="flex items-center justify-between text-zinc-400 pb-2 border-b border-white/10">
+                                <span className="font-bold text-[#d4ff3f]">{tc.name}</span>
+                                <span className="text-[11px] text-emerald-400">● Status: 200 OK</span>
+                              </div>
+                              <div className="mt-2.5 overflow-x-auto py-1 text-zinc-100 font-mono">
+                                <span className="text-zinc-500 mr-2">&gt;</span>
+                                <span className="text-[#d4ff3f]">{tc.code}</span>
+                              </div>
+                              {tc.result && (
+                                <div className="mt-2.5 text-xs text-zinc-300 border-t border-white/10 pt-2 flex items-start gap-2">
+                                  <span className="text-zinc-500 shrink-0 font-bold">↳ Result:</span>
+                                  <span className="text-emerald-300 font-semibold">{tc.result}</span>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                      <span className="font-mono text-[11px] text-zinc-400">
-                        Cognitive Latency: &lt;180ms
-                      </span>
                     </div>
 
-                    {/* Extracted Goal & Constraints */}
-                    {currentStep.brainData.goal && (
-                      <div className="mt-5 rounded-xl bg-white/5 border border-white/10 p-4">
-                        <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-zinc-400 block mb-1">
-                          Extracted Goal &amp; Dynamic Constraints:
-                        </span>
-                        <p className="font-mono text-xs sm:text-[13px] text-zinc-200 leading-relaxed">
-                          - {currentStep.brainData.goal}
+                    {/* Right: Visual Generated Artifact (Doctor Schedule / WhatsApp Mockup) */}
+                    {currentStep.image && (
+                      <div className="lg:col-span-5 rounded-2xl border border-white/10 bg-[#0e0e0c] p-5 text-zinc-100 shadow-xl flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                            <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#d4ff3f] flex items-center gap-1.5">
+                              <span className="size-2 rounded-full bg-[#d4ff3f] animate-pulse" />
+                              Real-Time Execution Artifact
+                            </span>
+                            <span className="rounded-full bg-white/10 px-2.5 py-0.5 font-mono text-[10px] text-zinc-300">
+                              [{currentStep.timestamp}]
+                            </span>
+                          </div>
+
+                          <div className="relative mt-4 w-full aspect-[16/10] bg-black/60 rounded-xl overflow-hidden border border-white/5 flex items-center justify-center">
+                            <Image
+                              src={currentStep.image}
+                              alt={currentStep.imageAlt || currentStep.title}
+                              fill
+                              sizes="(max-width: 1024px) 100vw, 450px"
+                              className="object-contain p-1"
+                              priority
+                            />
+                          </div>
+                        </div>
+
+                        <p className="mt-3 font-mono text-xs text-zinc-300 text-center border-t border-white/10 pt-2.5">
+                          {currentStep.imageCaption}
                         </p>
                       </div>
                     )}
-
-                    {/* Tool Calls */}
-                    <div className="mt-5 space-y-4">
-                      <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#d4ff3f] block">
-                        Live Tool Execution:
-                      </span>
-                      {currentStep.brainData.toolCalls.map((tc, tIdx) => (
-                        <div
-                          key={tIdx}
-                          className="rounded-xl border border-white/10 bg-black/60 p-4 font-mono text-xs sm:text-[13px]"
-                        >
-                          <div className="flex items-center justify-between text-zinc-400 pb-2 border-b border-white/10">
-                            <span className="font-bold text-[#d4ff3f]">{tc.name}</span>
-                            <span className="text-[11px] text-emerald-400">● Status: 200 OK</span>
-                          </div>
-                          <div className="mt-2.5 overflow-x-auto py-1 text-zinc-100 font-mono">
-                            <span className="text-zinc-500 mr-2">&gt;</span>
-                            <span className="text-[#d4ff3f]">{tc.code}</span>
-                          </div>
-                          {tc.result && (
-                            <div className="mt-2.5 text-xs text-zinc-300 border-t border-white/10 pt-2 flex items-start gap-2">
-                              <span className="text-zinc-500 shrink-0 font-bold">↳ Result:</span>
-                              <span className="text-emerald-300 font-semibold">{tc.result}</span>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
                   </div>
                 )}
 
-                {/* 3. Agent Speaks Output */}
+                {/* 3. Agent Speaks Output with Visual Artifact */}
                 {currentStep.type === "agent" && (
-                  <div className="rounded-2xl border border-emerald-500/20 bg-emerald-50/60 p-6 sm:p-8">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 font-mono text-xs font-bold text-emerald-900 uppercase tracking-wider">
-                        <span className="size-2 rounded-full bg-emerald-600 animate-ping" />
-                        <span>Vozon Voice Agent Speaks</span>
+                  <div className="grid gap-6 lg:grid-cols-12 items-stretch">
+                    {/* Speech Box */}
+                    <div
+                      className={`rounded-2xl border border-emerald-500/20 bg-emerald-50/60 p-6 sm:p-8 flex flex-col justify-between ${
+                        currentStep.image ? "lg:col-span-7" : "lg:col-span-12"
+                      }`}
+                    >
+                      <div>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 font-mono text-xs font-bold text-emerald-900 uppercase tracking-wider">
+                            <span className="size-2 rounded-full bg-emerald-600 animate-ping" />
+                            <span>Vozon Voice Agent Speaks</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 font-mono text-[11px] text-emerald-700">
+                            <span className="inline-block size-1.5 rounded-full bg-emerald-600" />
+                            <span>Streaming TTS (24kHz HD)</span>
+                          </div>
+                        </div>
+                        <blockquote className="mt-4 font-display text-xl sm:text-2xl font-bold text-emerald-950 leading-relaxed">
+                          &ldquo;{currentStep.text}&rdquo;
+                        </blockquote>
                       </div>
-                      <div className="flex items-center gap-1.5 font-mono text-[11px] text-emerald-700">
-                        <span className="inline-block size-1.5 rounded-full bg-emerald-600" />
-                        <span>Streaming TTS (24kHz HD)</span>
+
+                      <div className="mt-6 flex flex-wrap items-center gap-4 text-xs font-mono text-emerald-800 border-t border-emerald-200/80 pt-4">
+                        <span>Total Turnaround: &lt;450ms</span>
+                        <span>•</span>
+                        <span>Natural Barge-in: Enabled</span>
+                        <span>•</span>
+                        <span>Emotion: Calm &amp; Helpful</span>
                       </div>
                     </div>
-                    <blockquote className="mt-4 font-display text-xl sm:text-2xl font-bold text-emerald-950 leading-relaxed">
-                      &ldquo;{currentStep.text}&rdquo;
-                    </blockquote>
-                    <div className="mt-5 flex items-center gap-4 text-xs font-mono text-emerald-800 border-t border-emerald-200/80 pt-4">
-                      <span>Total Turnaround: &lt;450ms</span>
-                      <span>•</span>
-                      <span>Natural Barge-in: Enabled</span>
-                      <span>•</span>
-                      <span>Emotion: Calm &amp; Helpful</span>
-                    </div>
+
+                    {/* WhatsApp Delivered Confirmation Mockup on Step 6 */}
+                    {currentStep.image && (
+                      <div className="lg:col-span-5 rounded-2xl border border-white/10 bg-[#0e0e0c] p-5 text-zinc-100 shadow-xl flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                            <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#d4ff3f] flex items-center gap-1.5">
+                              <span className="size-2 rounded-full bg-[#d4ff3f] animate-pulse" />
+                              WhatsApp Delivery Verified
+                            </span>
+                            <span className="rounded-full bg-white/10 px-2.5 py-0.5 font-mono text-[10px] text-emerald-400">
+                              ● Delivered
+                            </span>
+                          </div>
+
+                          <div className="relative mt-4 w-full aspect-[16/10] bg-black/60 rounded-xl overflow-hidden border border-white/5 flex items-center justify-center">
+                            <Image
+                              src={currentStep.image}
+                              alt={currentStep.imageAlt || currentStep.title}
+                              fill
+                              sizes="(max-width: 1024px) 100vw, 450px"
+                              className="object-contain p-1"
+                              priority
+                            />
+                          </div>
+                        </div>
+
+                        <p className="mt-3 font-mono text-xs text-zinc-300 text-center border-t border-white/10 pt-2.5">
+                          {currentStep.imageCaption}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -390,7 +495,121 @@ export function AgenticInActionSection() {
         )}
 
         {/* ========================================================
-            MODE 2: FULL CALL TELEMETRY LOG (ALL 60-SEC EVENTS)
+            MODE 2: SEQUENCE FLOWCHART (USER'S DIAGRAM & ARTIFACTS)
+            ======================================================== */}
+        {viewMode === "flowchart" && (
+          <div className="mt-12 mx-auto max-w-6xl space-y-8">
+            {/* Top Card: User-Provided 3-Lane Architecture Diagram */}
+            <div className="rounded-3xl border border-white/10 bg-[#0e0e0c] p-6 sm:p-10 shadow-2xl text-zinc-100">
+              <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
+                <div>
+                  <span className="eyebrow text-[#d4ff3f] font-semibold tracking-wider">
+                    3-Lane Cognitive Sequence
+                  </span>
+                  <h3 className="font-display text-xl sm:text-2xl font-bold text-white mt-1">
+                    Caller vs. Agent Brain vs. Agent Speaks
+                  </h3>
+                </div>
+
+                {/* Color Legend matching uploaded diagram */}
+                <div className="flex items-center gap-3 font-mono text-[11px]">
+                  <span className="flex items-center gap-1.5 text-zinc-400">
+                    <span className="size-2.5 rounded-full bg-zinc-500" />
+                    <span>Caller</span>
+                  </span>
+                  <span className="flex items-center gap-1.5 text-purple-300">
+                    <span className="size-2.5 rounded-full bg-purple-600" />
+                    <span>Thinking &amp; Speaking</span>
+                  </span>
+                  <span className="flex items-center gap-1.5 text-teal-300">
+                    <span className="size-2.5 rounded-full bg-teal-600" />
+                    <span>Tool Calls</span>
+                  </span>
+                </div>
+              </div>
+
+              {/* Uploaded Sequence Diagram Image */}
+              <div className="relative mt-6 w-full aspect-[4/3] sm:aspect-[16/10] md:aspect-[16/9] max-h-[560px] bg-black/60 rounded-2xl overflow-hidden border border-white/5 flex items-center justify-center">
+                <Image
+                  src="/images/scenario/agentic-in-action-timeline.png"
+                  alt="Agentic in Action 3-lane sequence flowchart: Caller vs Agent Brain vs Agent Speaks"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 1000px"
+                  className="object-contain p-2"
+                  priority
+                />
+              </div>
+
+              <p className="mt-4 text-center font-mono text-xs text-zinc-400">
+                Gray: Caller input • Purple: Agent reasoning and voice output • Teal: Real-time autonomous tool calls.
+              </p>
+            </div>
+
+            {/* Generated Real-World Artifacts: WhatsApp Message & Doctor Calendar Side-by-Side */}
+            <div className="grid gap-6 md:grid-cols-2">
+              {/* Doctor Schedule Live Query */}
+              <div className="rounded-3xl border border-white/10 bg-[#0e0e0c] p-6 text-zinc-100 shadow-xl flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                    <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#d4ff3f] flex items-center gap-1.5">
+                      <span className="size-2 rounded-full bg-[#d4ff3f] animate-pulse" />
+                      Live Calendar Query Result
+                    </span>
+                    <span className="font-mono text-[10px] text-zinc-400">[00:03]</span>
+                  </div>
+
+                  <div className="relative mt-4 w-full aspect-[16/10] bg-black/60 rounded-xl overflow-hidden border border-white/5 flex items-center justify-center">
+                    <Image
+                      src="/images/scenario/doctor-schedule-calendar.jpg"
+                      alt="Doctor Schedule Availability Calendar"
+                      fill
+                      sizes="(max-width: 768px) 100vw, 500px"
+                      className="object-contain p-2"
+                      priority
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-4 font-mono text-xs text-zinc-300 border-t border-white/10 pt-3">
+                  <p className="font-bold text-white">Tool: execute_tool(&apos;check_doctor_schedule&apos;)</p>
+                  <p className="text-emerald-400 mt-1">↳ Result: 5:30 PM &amp; 6:15 PM openings identified</p>
+                </div>
+              </div>
+
+              {/* WhatsApp Message & Location Card */}
+              <div className="rounded-3xl border border-white/10 bg-[#0e0e0c] p-6 text-zinc-100 shadow-xl flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                    <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#d4ff3f] flex items-center gap-1.5">
+                      <span className="size-2 rounded-full bg-[#d4ff3f] animate-pulse" />
+                      WhatsApp Location &amp; Confirmation
+                    </span>
+                    <span className="font-mono text-[10px] text-zinc-400">[00:11 - 00:13]</span>
+                  </div>
+
+                  <div className="relative mt-4 w-full aspect-[16/10] bg-black/60 rounded-xl overflow-hidden border border-white/5 flex items-center justify-center">
+                    <Image
+                      src="/images/scenario/whatsapp-clinic-confirmation.jpg"
+                      alt="WhatsApp message and clinic location map"
+                      fill
+                      sizes="(max-width: 768px) 100vw, 500px"
+                      className="object-contain p-2"
+                      priority
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-4 font-mono text-xs text-zinc-300 border-t border-white/10 pt-3">
+                  <p className="font-bold text-white">Tool: execute_tool(&apos;send_whatsapp_location&apos;)</p>
+                  <p className="text-emerald-400 mt-1">↳ Result: Verified clinic map delivered to caller&apos;s phone</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================
+            MODE 3: FULL CALL TELEMETRY LOG (ALL 60-SEC EVENTS)
             ======================================================== */}
         {viewMode === "full" && (
           <div className="mt-12 mx-auto max-w-5xl space-y-6">
@@ -455,6 +674,27 @@ export function AgenticInActionSection() {
                           )}
                         </div>
                       ))}
+                    </div>
+                  )}
+
+                  {/* Visual Artifact in Log View if present */}
+                  {step.image && (
+                    <div className="mt-4 rounded-2xl border border-white/10 bg-[#0e0e0c] p-4 text-zinc-100">
+                      <span className="font-mono text-[10px] uppercase font-bold text-[#d4ff3f] block mb-2">
+                        Artifact Generated at [{step.timestamp}]:
+                      </span>
+                      <div className="relative w-full aspect-[16/9] max-w-md bg-black/60 rounded-xl overflow-hidden border border-white/5">
+                        <Image
+                          src={step.image}
+                          alt={step.imageAlt || step.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 400px"
+                          className="object-contain p-2"
+                        />
+                      </div>
+                      <p className="mt-2 font-mono text-[11px] text-zinc-400">
+                        {step.imageCaption}
+                      </p>
                     </div>
                   )}
                 </div>
