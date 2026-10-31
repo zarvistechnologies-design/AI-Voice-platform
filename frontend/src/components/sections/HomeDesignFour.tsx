@@ -747,62 +747,6 @@ export function HomeDesignFour() {
             ======================================================== */}
         <CorePlatformArchitectureSection />
 
-        {/* ========================================================
-            SECTION 8: BY THE NUMBERS / EVERYDAY CALLS (Original Content)
-            ======================================================== */}
-        <section className="on-dark bg-ink py-16 text-white md:py-20" aria-labelledby="numbers-title">
-          <div className="container-x">
-            <p className="eyebrow text-lime">Everyday Calls. Extraordinary Outcomes.</p>
-            <h2 id="numbers-title" className="display-lg mt-3 text-[clamp(1.5rem,2.6vw,2.5rem)] leading-tight">
-              Proven scale across high-volume phone operations.
-            </h2>
-
-            <div className="mt-12 grid grid-cols-2 gap-8 border-t border-white/20 pt-10 md:grid-cols-5">
-              <div>
-                <span className="block font-mono text-[11px] uppercase tracking-wider text-white/60">Daily Volume</span>
-                <p className="display-xl mt-2 text-[clamp(1.75rem,2.8vw,2.75rem)] font-bold text-white">1 Lakh+</p>
-                <span className="text-xs text-white/60">Calling minutes</span>
-              </div>
-              <div>
-                <span className="block font-mono text-[11px] uppercase tracking-wider text-white/60">Resolution</span>
-                <p className="display-xl mt-2 text-[clamp(1.75rem,2.8vw,2.75rem)] font-bold text-white">75%+</p>
-                <span className="text-xs text-white/60">First-call resolution</span>
-              </div>
-              <div>
-                <span className="block font-mono text-[11px] uppercase tracking-wider text-white/60">Latency</span>
-                <p className="display-xl mt-2 text-[clamp(1.75rem,2.8vw,2.75rem)] font-bold text-white">&gt;750ms</p>
-                <span className="text-xs text-white/60">Telephony voice latency</span>
-              </div>
-              <div>
-                <span className="block font-mono text-[11px] uppercase tracking-wider text-white/60">Coverage</span>
-                <p className="display-xl mt-2 text-[clamp(1.75rem,2.8vw,2.75rem)] font-bold text-white">22+ &amp; 76</p>
-                <span className="text-xs text-white/60">Indic &amp; global languages</span>
-              </div>
-              <div>
-                <span className="block font-mono text-[11px] uppercase tracking-wider text-white/60">Availability</span>
-                <p className="display-xl mt-2 text-[clamp(1.75rem,2.8vw,2.75rem)] font-bold text-white">99.9%</p>
-                <span className="text-xs text-white/60">Enterprise uptime SLA</span>
-              </div>
-            </div>
-
-            {/* Platform Banner */}
-            <div className="mt-12 rounded-2xl border border-white/15 bg-white/5 p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-              <div>
-                <span className="eyebrow text-lime">The Vozon Voice AI Agent Platform</span>
-                <h3 className="font-display text-lg sm:text-xl font-bold mt-1 text-white">Vozon Voice Agents</h3>
-                <p className="text-white/70 text-xs sm:text-sm mt-1 max-w-2xl">
-                  From the first hello to the final action, Vozon agents understand conversations, access your systems, and complete workflows in real time.
-                </p>
-              </div>
-              <Link href="/services/voice-agents" className="btn btn-lime shrink-0">
-                <span>Explore Voice Agents</span>
-                <svg className="arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M2 8h12M9 3l5 5-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </Link>
-            </div>
-          </div>
-        </section>
 
         {/* ========================================================
             "AGENTIC IN ACTION": REAL-WORLD SCENARIO BREAKDOWN
