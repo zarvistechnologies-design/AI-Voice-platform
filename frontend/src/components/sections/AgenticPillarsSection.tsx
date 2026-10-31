@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
-interface PillarItem {
+export interface PillarItem {
   id: string;
   number: string;
   tag: string;
@@ -118,13 +118,157 @@ export const agenticPillars: PillarItem[] = [
   },
 ];
 
+interface PillarStreamCardProps {
+  pillar: PillarItem;
+  index: number;
+}
+
+function PillarStreamCard({ pillar, index }: PillarStreamCardProps) {
+  return (
+    <article
+      className="group relative flex w-[320px] sm:w-[440px] md:w-[480px] shrink-0 flex-col justify-between rounded-3xl border border-line bg-paper p-5 sm:p-7 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-ink/50 hover:shadow-xl"
+    >
+      <div>
+        {/* Top Header Badge */}
+        <div className="flex items-center justify-between border-b border-line pb-3.5">
+          <div className="flex items-center gap-2.5">
+            <span className="grid size-8 place-items-center rounded-xl bg-ink text-[#d4ff3f] font-mono text-xs font-bold shadow-sm">
+              {pillar.number}
+            </span>
+            <span className="font-mono text-xs font-bold tracking-wider uppercase text-cobalt">
+              Pillar {pillar.number}
+            </span>
+          </div>
+          <span className="eyebrow text-muted text-[11px] font-semibold">
+            {pillar.tag}
+          </span>
+        </div>
+
+        {/* Title & Subtitle */}
+        <h3 className="font-display text-base sm:text-xl font-bold text-ink mt-3.5 leading-snug break-words">
+          {pillar.title}
+        </h3>
+        <p className="mt-1 font-mono text-[11px] text-muted">
+          {pillar.subtitle}
+        </p>
+
+        {/* Stacked Comparisons for sliding stream */}
+        <div className="mt-4 space-y-3">
+          {/* Simple Bots Box */}
+          <div className="rounded-2xl border border-rose-200/90 bg-rose-50/70 p-4 text-xs leading-relaxed">
+            <div className="flex items-center gap-1.5 font-mono text-[10.5px] font-bold uppercase tracking-wider text-rose-800">
+              <span className="grid size-3.5 place-items-center rounded-full bg-rose-200 text-[9px]">✕</span>
+              <span>What simple bots do</span>
+            </div>
+            <p className="mt-2 text-rose-950 font-normal leading-relaxed text-[12px]">
+              {pillar.simpleBots.description}
+            </p>
+          </div>
+
+          {/* Agentic Platform Box */}
+          <div className="rounded-2xl border border-white/10 bg-[#0e0e0c] p-4 sm:p-5 text-xs leading-relaxed text-zinc-100 shadow-sm">
+            <div className="flex items-center gap-1.5 font-mono text-[10.5px] font-bold uppercase tracking-wider text-[#d4ff3f]">
+              <span className="grid size-3.5 place-items-center rounded-full bg-white/10 text-[9px]">✦</span>
+              <span>What our Agentic Platform does</span>
+            </div>
+            <p className="mt-2 text-zinc-100 font-normal leading-relaxed text-[12px]">
+              {pillar.agenticPlatform.summary}
+            </p>
+
+            {pillar.agenticPlatform.bullets && pillar.agenticPlatform.bullets.length > 0 && (
+              <ul className="mt-3 space-y-1.5 border-t border-white/10 pt-2.5">
+                {pillar.agenticPlatform.bullets.map((bullet, bIdx) => (
+                  <li key={bIdx} className="flex items-start gap-2 text-zinc-300 text-[11.5px]">
+                    <span className="text-[#d4ff3f] font-bold text-xs shrink-0">↳</span>
+                    <span className="leading-relaxed">{bullet}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Card Footer */}
+      <div className="mt-5 flex items-center justify-between border-t border-line pt-3.5 text-xs">
+        <span className="font-mono text-muted text-[11px]">
+          Pillar {pillar.number} • {pillar.tag}
+        </span>
+        <a
+          href="#platform"
+          className="inline-flex items-center gap-1 font-semibold text-cobalt hover:underline cursor-pointer text-xs"
+        >
+          <span>Live Demo</span>
+          <span className="font-mono text-sm">→</span>
+        </a>
+      </div>
+    </article>
+  );
+}
+
 export function AgenticPillarsSection() {
+  // View mode: "stream" (continuous marquee sliding animation) | "carousel" (auto-slide carousel) | "grid" (static grid)
+  const [viewMode, setViewMode] = useState<"stream" | "carousel" | "grid">("stream");
   const [selectedPillarId, setSelectedPillarId] = useState<string>("all");
+
+  // Stream play/pause state
+  const [isStreamPlaying, setIsStreamPlaying] = useState(true);
+
+  // Carousel slider state
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isCarouselPlaying, setIsCarouselPlaying] = useState(true);
+  const [carouselProgress, setCarouselProgress] = useState(0);
+  const carouselTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Auto-advance carousel slide every 6 seconds with smooth progress bar
+  useEffect(() => {
+    if (viewMode !== "carousel" || !isCarouselPlaying) {
+      setCarouselProgress(0);
+      return;
+    }
+
+    const intervalTime = 6000;
+    const stepTime = 60;
+    const increment = (stepTime / intervalTime) * 100;
+
+    const progressTimer = setInterval(() => {
+      setCarouselProgress((prev) => {
+        if (prev >= 100) {
+          setCurrentSlide((curr) => (curr + 1) % agenticPillars.length);
+          return 0;
+        }
+        return prev + increment;
+      });
+    }, stepTime);
+
+    return () => clearInterval(progressTimer);
+  }, [viewMode, isCarouselPlaying, currentSlide]);
+
+  const handlePrevSlide = () => {
+    setCarouselProgress(0);
+    setCurrentSlide((prev) => (prev - 1 + agenticPillars.length) % agenticPillars.length);
+  };
+
+  const handleNextSlide = () => {
+    setCarouselProgress(0);
+    setCurrentSlide((prev) => (prev + 1) % agenticPillars.length);
+  };
+
+  const handleJumpToSlide = (index: number) => {
+    setCarouselProgress(0);
+    setCurrentSlide(index);
+    if (viewMode !== "carousel") {
+      setViewMode("carousel");
+    }
+  };
 
   const filteredPillars =
     selectedPillarId === "all"
       ? agenticPillars
       : agenticPillars.filter((p) => p.id === selectedPillarId);
+
+  // Triple set for seamless 0% -> -33.333% marquee loop
+  const streamPillars = [...agenticPillars, ...agenticPillars, ...agenticPillars];
 
   return (
     <section
@@ -160,148 +304,420 @@ export function AgenticPillarsSection() {
             Traditional voice bots follow rigid decision trees and break on surprises. Our Agentic Voice Platform deploys autonomous AI agents built on five foundational cognitive capabilities.
           </p>
 
-          {/* Interactive Filter Chips */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
+          {/* Mode Switcher: Sliding Stream vs Slide Carousel vs Full Grid */}
+          <div className="mt-8 inline-flex items-center rounded-full bg-paper border border-line p-1 shadow-xs">
             <button
               type="button"
-              onClick={() => setSelectedPillarId("all")}
-              className={`chip ${selectedPillarId === "all" ? "is-active" : ""}`}
-              aria-pressed={selectedPillarId === "all"}
+              onClick={() => setViewMode("stream")}
+              className={`rounded-full px-4 sm:px-5 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+                viewMode === "stream"
+                  ? "bg-ink text-[#d4ff3f] shadow-sm"
+                  : "text-muted hover:text-ink"
+              }`}
+              aria-pressed={viewMode === "stream"}
             >
-              <span>All 5 Pillars</span>
-              <span className="count">05</span>
+              <span>⇄</span>
+              <span>Sliding Stream</span>
             </button>
-            {agenticPillars.map((pillar) => (
-              <button
-                key={pillar.id}
-                type="button"
-                onClick={() => setSelectedPillarId(pillar.id)}
-                className={`chip ${selectedPillarId === pillar.id ? "is-active" : ""}`}
-                aria-pressed={selectedPillarId === pillar.id}
-              >
-                <span className="font-mono text-xs font-semibold">{pillar.number}</span>
-                <span>{pillar.tag}</span>
-              </button>
-            ))}
+
+            <button
+              type="button"
+              onClick={() => setViewMode("carousel")}
+              className={`rounded-full px-4 sm:px-5 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+                viewMode === "carousel"
+                  ? "bg-ink text-[#d4ff3f] shadow-sm"
+                  : "text-muted hover:text-ink"
+              }`}
+              aria-pressed={viewMode === "carousel"}
+            >
+              <span>✦</span>
+              <span>Slide Carousel</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setViewMode("grid")}
+              className={`rounded-full px-4 sm:px-5 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+                viewMode === "grid"
+                  ? "bg-ink text-[#d4ff3f] shadow-sm"
+                  : "text-muted hover:text-ink"
+              }`}
+              aria-pressed={viewMode === "grid"}
+            >
+              <span>⊞</span>
+              <span>All 5 Grid</span>
+            </button>
+          </div>
+
+          {/* Quick Pillar Jump Chips */}
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+            {agenticPillars.map((pillar, idx) => {
+              const isActive =
+                (viewMode === "carousel" && currentSlide === idx) ||
+                (viewMode === "grid" && selectedPillarId === pillar.id);
+
+              return (
+                <button
+                  key={pillar.id}
+                  type="button"
+                  onClick={() => {
+                    if (viewMode === "grid") {
+                      setSelectedPillarId(selectedPillarId === pillar.id ? "all" : pillar.id);
+                    } else {
+                      handleJumpToSlide(idx);
+                    }
+                  }}
+                  className={`chip ${isActive ? "is-active" : ""}`}
+                  aria-pressed={isActive}
+                >
+                  <span className="font-mono text-xs font-semibold">{pillar.number}</span>
+                  <span>{pillar.tag}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        {/* Pillars Cards Grid */}
-        <div
-          className={`mt-14 grid gap-6 ${
-            selectedPillarId === "all"
-              ? "grid-cols-1 lg:grid-cols-2"
-              : "grid-cols-1 max-w-4xl mx-auto"
-          }`}
-        >
-          {filteredPillars.map((pillar) => {
-            const isFullWidthAnchor = selectedPillarId === "all" && pillar.number === "05";
-
-            return (
+        {/* ========================================================
+            VIEW 1: SLIDING STREAM (CONTINUOUS MARQUEE ANIMATION)
+            ======================================================== */}
+        {viewMode === "stream" && (
+          <div className="mt-12 space-y-4">
+            {/* Stream Container with edge gradient masks */}
+            <div className="relative overflow-hidden reviews-stream-mask py-3">
               <div
-                key={pillar.id}
-                className={`case-card flex flex-col justify-between rounded-3xl border border-line bg-paper p-6 sm:p-8 shadow-sm transition-all duration-300 hover:border-ink/40 hover:shadow-md ${
-                  isFullWidthAnchor ? "lg:col-span-2" : ""
-                }`}
+                className="animate-pillars-marquee hover:[animation-play-state:paused] flex shrink-0 gap-6 py-2"
+                style={{
+                  animationPlayState: isStreamPlaying ? undefined : "paused",
+                }}
               >
-                <div>
-                  {/* Top Header: Number Badge & Tag */}
-                  <div className="flex items-center justify-between border-b border-line pb-4">
-                    <div className="flex items-center gap-3">
-                      <span className="grid size-9 place-items-center rounded-xl bg-ink text-[#d4ff3f] font-mono text-xs font-bold shadow-sm">
-                        {pillar.number}
-                      </span>
-                      <span className="font-mono text-xs font-bold tracking-wider uppercase text-cobalt">
-                        Pillar {pillar.number}
-                      </span>
-                    </div>
-                    <span className="eyebrow text-muted text-[11px]">
-                      {pillar.tag}
-                    </span>
-                  </div>
+                {streamPillars.map((pillar, i) => (
+                  <PillarStreamCard
+                    key={`stream-${pillar.id}-${i}`}
+                    pillar={pillar}
+                    index={i % agenticPillars.length}
+                  />
+                ))}
+              </div>
+            </div>
 
-                  {/* Title & Subtitle */}
-                  <h3 className="font-display text-xl sm:text-2xl font-bold text-ink mt-4 leading-snug">
-                    {pillar.title}
-                  </h3>
-                  <p className="mt-1 font-mono text-xs text-muted">
-                    {pillar.subtitle}
-                  </p>
+            {/* Stream Control Bar */}
+            <div className="flex flex-wrap items-center justify-between gap-4 border-t border-line pt-4 px-2 text-xs">
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setIsStreamPlaying(!isStreamPlaying)}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-line bg-paper px-3 py-1 font-mono text-[11px] font-semibold text-ink hover:border-ink cursor-pointer"
+                >
+                  <span>{isStreamPlaying ? "⏸ Pause Stream" : "▶ Resume Stream"}</span>
+                </button>
+                <span className="hidden sm:inline font-mono text-muted text-[11px]">
+                  Hover over any pillar card to pause and inspect
+                </span>
+              </div>
 
-                  {/* Comparisons: Side-by-Side if anchor card, Stacked otherwise */}
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-muted text-[11px]">
+                  5 Pillars in continuous sliding motion
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setViewMode("carousel")}
+                  className="font-semibold text-cobalt hover:underline cursor-pointer text-xs"
+                >
+                  Switch to Carousel →
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================
+            VIEW 2: INTERACTIVE SLIDE CAROUSEL (AUTO-SLIDING SHOWCASE)
+            ======================================================== */}
+        {viewMode === "carousel" && (
+          <div
+            className="mt-12 mx-auto max-w-5xl"
+            onMouseEnter={() => setIsCarouselPlaying(false)}
+            onMouseLeave={() => setIsCarouselPlaying(true)}
+          >
+            {/* Carousel Container */}
+            <div className="relative overflow-hidden rounded-3xl border border-line bg-paper shadow-md">
+              {/* Sliding Track */}
+              <div
+                className="flex transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                style={{
+                  transform: `translateX(-${currentSlide * 100}%)`,
+                }}
+              >
+                {agenticPillars.map((pillar) => (
                   <div
-                    className={`mt-5 ${
-                      isFullWidthAnchor
-                        ? "grid gap-4 md:grid-cols-12 items-stretch"
-                        : "space-y-4"
-                    }`}
+                    key={`slide-${pillar.id}`}
+                    className="w-full shrink-0 p-6 sm:p-10 flex flex-col justify-between"
                   >
-                    {/* What Simple Bots Do Box */}
-                    <div
-                      className={`rounded-2xl border border-rose-200/80 bg-rose-50/60 p-5 text-xs sm:text-[13px] leading-relaxed flex flex-col justify-between ${
-                        isFullWidthAnchor ? "md:col-span-5" : ""
-                      }`}
-                    >
-                      <div>
-                        <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-rose-800">
-                          <span className="grid size-4 place-items-center rounded-full bg-rose-200 text-[10px]">✕</span>
-                          <span>What simple bots do</span>
+                    <div>
+                      {/* Top Header */}
+                      <div className="flex items-center justify-between border-b border-line pb-4">
+                        <div className="flex items-center gap-3">
+                          <span className="grid size-9 place-items-center rounded-xl bg-ink text-[#d4ff3f] font-mono text-xs font-bold shadow-sm">
+                            {pillar.number}
+                          </span>
+                          <span className="font-mono text-xs font-bold tracking-wider uppercase text-cobalt">
+                            Pillar {pillar.number} of 05
+                          </span>
                         </div>
-                        <p className="mt-3 text-rose-950 font-normal leading-relaxed">
-                          {pillar.simpleBots.description}
-                        </p>
-                      </div>
-                      <span className="mt-4 inline-block font-mono text-[10px] uppercase font-bold text-rose-600/80">
-                        Rigid • Fragile • Static
-                      </span>
-                    </div>
-
-                    {/* What Our Agentic Platform Does Box */}
-                    <div
-                      className={`rounded-2xl border border-white/10 bg-[#0e0e0c] p-6 text-xs sm:text-[13.5px] leading-relaxed text-zinc-100 shadow-md ${
-                        isFullWidthAnchor ? "md:col-span-7" : ""
-                      }`}
-                    >
-                      <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-[#d4ff3f]">
-                        <span className="grid size-4 place-items-center rounded-full bg-white/10 text-[10px]">✦</span>
-                        <span>What our Agentic Platform does</span>
+                        <span className="eyebrow text-muted text-[11px] font-semibold">
+                          {pillar.tag}
+                        </span>
                       </div>
 
-                      <p className="mt-3 text-zinc-100 font-normal leading-relaxed">
-                        {pillar.agenticPlatform.summary}
+                      {/* Title & Subtitle */}
+                      <h3 className="font-display text-2xl sm:text-3xl font-bold text-ink mt-5 leading-snug">
+                        {pillar.title}
+                      </h3>
+                      <p className="mt-1 font-mono text-xs text-muted">
+                        {pillar.subtitle}
                       </p>
 
-                      {pillar.agenticPlatform.bullets && pillar.agenticPlatform.bullets.length > 0 && (
-                        <ul className="mt-4 space-y-2.5 border-t border-white/10 pt-3.5">
-                          {pillar.agenticPlatform.bullets.map((bullet, bIdx) => (
-                            <li key={bIdx} className="flex items-start gap-2.5 text-zinc-300">
-                              <span className="text-[#d4ff3f] font-bold text-sm shrink-0">↳</span>
-                              <span className="leading-relaxed">{bullet}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
+                      {/* Side-by-side Comparative Layout */}
+                      <div className="mt-7 grid gap-5 md:grid-cols-12 items-stretch">
+                        {/* What Simple Bots Do Box */}
+                        <div className="md:col-span-5 rounded-2xl border border-rose-200/90 bg-rose-50/70 p-5 sm:p-6 text-xs sm:text-[13px] leading-relaxed flex flex-col justify-between">
+                          <div>
+                            <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-rose-800">
+                              <span className="grid size-4 place-items-center rounded-full bg-rose-200 text-[10px]">✕</span>
+                              <span>What simple bots do</span>
+                            </div>
+                            <p className="mt-3.5 text-rose-950 font-normal leading-relaxed text-sm">
+                              {pillar.simpleBots.description}
+                            </p>
+                          </div>
+                          <span className="mt-6 inline-block font-mono text-[10px] uppercase font-bold text-rose-600/80">
+                            Rigid • Scripted • Fragile
+                          </span>
+                        </div>
+
+                        {/* What Our Agentic Platform Does Box */}
+                        <div className="md:col-span-7 rounded-2xl border border-white/10 bg-[#0e0e0c] p-6 sm:p-7 text-xs sm:text-[13.5px] leading-relaxed text-zinc-100 shadow-md">
+                          <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-[#d4ff3f]">
+                            <span className="grid size-4 place-items-center rounded-full bg-white/10 text-[10px]">✦</span>
+                            <span>What our Agentic Platform does</span>
+                          </div>
+
+                          <p className="mt-3.5 text-zinc-100 font-normal leading-relaxed text-sm">
+                            {pillar.agenticPlatform.summary}
+                          </p>
+
+                          {pillar.agenticPlatform.bullets && pillar.agenticPlatform.bullets.length > 0 && (
+                            <ul className="mt-4 space-y-2.5 border-t border-white/10 pt-3.5">
+                              {pillar.agenticPlatform.bullets.map((bullet, bIdx) => (
+                                <li key={bIdx} className="flex items-start gap-2.5 text-zinc-300">
+                                  <span className="text-[#d4ff3f] font-bold text-sm shrink-0">↳</span>
+                                  <span className="leading-relaxed">{bullet}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Slide Footer */}
+                    <div className="mt-8 flex flex-wrap items-center justify-between border-t border-line pt-4 text-xs">
+                      <span className="font-mono text-muted text-[11px]">
+                        Autonomous Voice Architecture • Pillar {pillar.number} ({pillar.tag})
+                      </span>
+                      <a
+                        href="#platform"
+                        className="inline-flex items-center gap-1 font-semibold text-cobalt hover:underline cursor-pointer"
+                      >
+                        <span>Test this pillar in Live Demo</span>
+                        <span className="font-mono text-sm">→</span>
+                      </a>
                     </div>
                   </div>
-                </div>
+                ))}
+              </div>
 
-                {/* Bottom Card Footer */}
-                <div className="mt-6 flex items-center justify-between border-t border-line pt-4 text-xs">
-                  <span className="font-mono text-muted text-[11px]">
-                    Autonomous Voice Architecture • Pillar {pillar.number}
-                  </span>
-                  <a
-                    href="#platform"
-                    className="inline-flex items-center gap-1 font-semibold text-cobalt hover:underline cursor-pointer"
-                  >
-                    <span>Test in Live Demo</span>
-                    <span className="font-mono text-sm">→</span>
-                  </a>
+              {/* Countdown Progress Bar for Auto-Slide */}
+              <div className="h-1.5 w-full bg-line/60 overflow-hidden">
+                <div
+                  className="h-full bg-[#81a10b] transition-all duration-75"
+                  style={{ width: `${carouselProgress}%` }}
+                />
+              </div>
+            </div>
+
+            {/* Carousel Navigation Toolbar */}
+            <div className="mt-5 flex items-center justify-between">
+              {/* Prev Button */}
+              <button
+                type="button"
+                onClick={handlePrevSlide}
+                className="inline-flex items-center gap-2 rounded-full border border-line bg-paper px-4 py-2 font-display text-xs font-semibold text-ink shadow-xs hover:border-ink cursor-pointer"
+                aria-label="Previous Pillar"
+              >
+                <span>←</span>
+                <span>Previous Pillar</span>
+              </button>
+
+              {/* Slide Counter & Dots */}
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-xs font-bold text-ink">
+                  {agenticPillars[currentSlide].number}
+                </span>
+                <span className="font-mono text-xs text-muted">/</span>
+                <span className="font-mono text-xs text-muted">05</span>
+
+                <div className="ml-2 flex items-center gap-1.5">
+                  {agenticPillars.map((_, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => handleJumpToSlide(idx)}
+                      className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                        currentSlide === idx ? "w-6 bg-ink" : "w-2 bg-line hover:bg-muted"
+                      }`}
+                      aria-label={`Go to slide ${idx + 1}`}
+                    />
+                  ))}
                 </div>
               </div>
-            );
-          })}
-        </div>
+
+              {/* Next Button */}
+              <button
+                type="button"
+                onClick={handleNextSlide}
+                className="inline-flex items-center gap-2 rounded-full border border-line bg-paper px-4 py-2 font-display text-xs font-semibold text-ink shadow-xs hover:border-ink cursor-pointer"
+                aria-label="Next Pillar"
+              >
+                <span>Next Pillar</span>
+                <span>→</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================
+            VIEW 3: STATIC GRID (ALL 5 PILLARS AT ONCE)
+            ======================================================== */}
+        {viewMode === "grid" && (
+          <div
+            className={`mt-12 grid gap-6 ${
+              selectedPillarId === "all"
+                ? "grid-cols-1 lg:grid-cols-2"
+                : "grid-cols-1 max-w-4xl mx-auto"
+            }`}
+          >
+            {filteredPillars.map((pillar) => {
+              const isFullWidthAnchor = selectedPillarId === "all" && pillar.number === "05";
+
+              return (
+                <div
+                  key={pillar.id}
+                  className={`case-card flex flex-col justify-between rounded-3xl border border-line bg-paper p-6 sm:p-8 shadow-sm transition-all duration-300 hover:border-ink/40 hover:shadow-md ${
+                    isFullWidthAnchor ? "lg:col-span-2" : ""
+                  }`}
+                >
+                  <div>
+                    {/* Top Header */}
+                    <div className="flex items-center justify-between border-b border-line pb-4">
+                      <div className="flex items-center gap-3">
+                        <span className="grid size-9 place-items-center rounded-xl bg-ink text-[#d4ff3f] font-mono text-xs font-bold shadow-sm">
+                          {pillar.number}
+                        </span>
+                        <span className="font-mono text-xs font-bold tracking-wider uppercase text-cobalt">
+                          Pillar {pillar.number}
+                        </span>
+                      </div>
+                      <span className="eyebrow text-muted text-[11px]">
+                        {pillar.tag}
+                      </span>
+                    </div>
+
+                    {/* Title & Subtitle */}
+                    <h3 className="font-display text-xl sm:text-2xl font-bold text-ink mt-4 leading-snug">
+                      {pillar.title}
+                    </h3>
+                    <p className="mt-1 font-mono text-xs text-muted">
+                      {pillar.subtitle}
+                    </p>
+
+                    {/* Comparisons */}
+                    <div
+                      className={`mt-5 ${
+                        isFullWidthAnchor
+                          ? "grid gap-4 md:grid-cols-12 items-stretch"
+                          : "space-y-4"
+                      }`}
+                    >
+                      {/* What Simple Bots Do Box */}
+                      <div
+                        className={`rounded-2xl border border-rose-200/80 bg-rose-50/60 p-5 text-xs sm:text-[13px] leading-relaxed flex flex-col justify-between ${
+                          isFullWidthAnchor ? "md:col-span-5" : ""
+                        }`}
+                      >
+                        <div>
+                          <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-rose-800">
+                            <span className="grid size-4 place-items-center rounded-full bg-rose-200 text-[10px]">✕</span>
+                            <span>What simple bots do</span>
+                          </div>
+                          <p className="mt-3 text-rose-950 font-normal leading-relaxed">
+                            {pillar.simpleBots.description}
+                          </p>
+                        </div>
+                        <span className="mt-4 inline-block font-mono text-[10px] uppercase font-bold text-rose-600/80">
+                          Rigid • Fragile • Static
+                        </span>
+                      </div>
+
+                      {/* What Our Agentic Platform Does Box */}
+                      <div
+                        className={`rounded-2xl border border-white/10 bg-[#0e0e0c] p-6 text-xs sm:text-[13.5px] leading-relaxed text-zinc-100 shadow-md ${
+                          isFullWidthAnchor ? "md:col-span-7" : ""
+                        }`}
+                      >
+                        <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-[#d4ff3f]">
+                          <span className="grid size-4 place-items-center rounded-full bg-white/10 text-[10px]">✦</span>
+                          <span>What our Agentic Platform does</span>
+                        </div>
+
+                        <p className="mt-3 text-zinc-100 font-normal leading-relaxed">
+                          {pillar.agenticPlatform.summary}
+                        </p>
+
+                        {pillar.agenticPlatform.bullets && pillar.agenticPlatform.bullets.length > 0 && (
+                          <ul className="mt-4 space-y-2.5 border-t border-white/10 pt-3.5">
+                            {pillar.agenticPlatform.bullets.map((bullet, bIdx) => (
+                              <li key={bIdx} className="flex items-start gap-2.5 text-zinc-300">
+                                <span className="text-[#d4ff3f] font-bold text-sm shrink-0">↳</span>
+                                <span className="leading-relaxed">{bullet}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bottom Footer */}
+                  <div className="mt-6 flex items-center justify-between border-t border-line pt-4 text-xs">
+                    <span className="font-mono text-muted text-[11px]">
+                      Autonomous Voice Architecture • Pillar {pillar.number}
+                    </span>
+                    <a
+                      href="#platform"
+                      className="inline-flex items-center gap-1 font-semibold text-cobalt hover:underline cursor-pointer"
+                    >
+                      <span>Test in Live Demo</span>
+                      <span className="font-mono text-sm">→</span>
+                    </a>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );

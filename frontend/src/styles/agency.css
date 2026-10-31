@@ -420,6 +420,12 @@
   animation: marqueeLeft 36s linear infinite;
 }
 
+.animate-pillars-marquee {
+  display: flex;
+  width: max-content;
+  animation: marqueeLeft 54s linear infinite;
+}
+
 .animate-marquee-right {
   display: flex;
   width: max-content;
