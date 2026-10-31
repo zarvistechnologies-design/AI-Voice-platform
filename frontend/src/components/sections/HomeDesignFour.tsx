@@ -390,9 +390,10 @@ export function HomeDesignFour() {
             <p className="eyebrow text-muted">BYOT Virtual Telephony</p>
           </div>
 
-          <h1 className="display-xl mt-6 text-[clamp(1.85rem,3.8vw,3.75rem)] text-ink">
-            <span>AI Voice Agents That</span><br />
-            <span className="text-cobalt">Actually Sound Human.</span>
+          <h1 className="display-xl mt-6 text-[clamp(1.85rem,3.4vw,3.5rem)] leading-[1.06] text-ink max-w-5xl">
+            <span>Beyond Voice Bots:</span><br />
+            <span>Autonomous AI Agents That</span><br className="hidden sm:inline" />{" "}
+            <span className="text-cobalt">Reason, Act, and Deliver Outcomes.</span>
           </h1>
 
           <div className="mt-8 grid gap-8 border-t border-line pt-6 md:grid-cols-12 md:items-end">
