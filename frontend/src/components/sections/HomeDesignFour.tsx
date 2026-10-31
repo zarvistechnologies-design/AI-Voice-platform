@@ -10,6 +10,8 @@ import { FloatingReviewsSection } from "@/components/sections/FloatingReviewsSec
 import { AgenticPillarsSection } from "@/components/sections/AgenticPillarsSection";
 import { ArchitecturalComparisonSection } from "@/components/sections/ArchitecturalComparisonSection";
 import { AgenticInActionSection } from "@/components/sections/AgenticInActionSection";
+import { CorePlatformArchitectureSection } from "@/components/sections/CorePlatformArchitectureSection";
+import { PitchPunchlinesSection } from "@/components/sections/PitchPunchlinesSection";
 
 /* ------------------------------------------------------------------
    ORIGINAL DATA & CONTENT PRESERVED (NO TEXT OR PICTURE CHANGES)
@@ -319,9 +321,10 @@ export function HomeDesignFour() {
               <li><a href="#platform" className="link-u">Voice Demo</a></li>
               <li><a href="#pillars" className="link-u">5 Pillars</a></li>
               <li><a href="#comparison" className="link-u">Comparison</a></li>
+              <li><a href="#architecture" className="link-u">Architecture</a></li>
               <li><a href="#agentic-in-action" className="link-u">In Action</a></li>
+              <li><a href="#punchlines" className="link-u">Punchlines</a></li>
               <li><a href="#advantage" className="link-u">Indic Engine</a></li>
-              {/* <li><a href="#architecture" className="link-u">Platform</a></li> */}
               <li><a href="#industries" className="link-u">Industries</a></li>
               <li><a href="#integrations" className="link-u">Integrations</a></li>
               <li><Link href="/pricing" className="link-u">Pricing</Link></li>
@@ -365,23 +368,26 @@ export function HomeDesignFour() {
               <a href="#comparison" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
                 Comparison <span className="eyebrow text-muted">03</span>
               </a>
+              <a href="#architecture" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
+                Architecture <span className="eyebrow text-muted">04</span>
+              </a>
               <a href="#agentic-in-action" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                In Action <span className="eyebrow text-muted">04</span>
+                In Action <span className="eyebrow text-muted">05</span>
+              </a>
+              <a href="#punchlines" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
+                Punchlines <span className="eyebrow text-muted">06</span>
               </a>
               <a href="#advantage" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                Indic Engine <span className="eyebrow text-muted">05</span>
+                Indic Engine <span className="eyebrow text-muted">07</span>
               </a>
-              {/* <a href="#architecture" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                Platform <span className="eyebrow text-muted">06</span>
-              </a> */}
               <a href="#industries" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                Industries <span className="eyebrow text-muted">06</span>
+                Industries <span className="eyebrow text-muted">08</span>
               </a>
               <a href="#integrations" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                Integrations <span className="eyebrow text-muted">07</span>
+                Integrations <span className="eyebrow text-muted">09</span>
               </a>
               <Link href="/pricing" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                Pricing <span className="eyebrow text-muted">08</span>
+                Pricing <span className="eyebrow text-muted">10</span>
               </Link>
 
               <div className="pt-6">
@@ -737,91 +743,9 @@ export function HomeDesignFour() {
         </section>
 
         {/* ========================================================
-            SECTION 7: PLATFORM ARCHITECTURE (4 Implementation Steps) - COMMENTED OUT
+            SECTION 7: CORE PLATFORM ARCHITECTURE (The Three-Layer Agentic Engine)
             ======================================================== */}
-        {/*
-        <section id="architecture" className="bg-paper-2 py-16 md:py-20" aria-labelledby="process-title">
-          <div className="container-x">
-            <div className="flex flex-wrap items-end justify-between gap-6 border-b border-line pb-8">
-              <div>
-                <p className="eyebrow text-muted">Platform Architecture</p>
-                <h2 id="process-title" className="display-lg mt-3 text-[clamp(1.5rem,2.6vw,2.5rem)] leading-tight text-ink">
-                  Go live in four clear<br />implementation steps.
-                </h2>
-              </div>
-              <p className="max-w-md text-muted text-xs sm:text-sm">
-                Configure your agent persona and knowledge base, select high-performance models and voices, then deploy across phone lines and websites in minutes.
-              </p>
-            </div>
-
-            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {steps.map((st) => (
-                <div key={st.number} className="case-card rounded-2xl border border-line bg-paper p-6 sm:p-8 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between border-b border-line pb-3">
-                      <span className="font-display text-2xl sm:text-3xl font-bold text-cobalt">{st.number}</span>
-                      <span className="eyebrow text-muted">{st.stepTag}</span>
-                    </div>
-                    <span className="eyebrow text-cobalt block mt-4">{st.subtitle}</span>
-                    <h3 className="font-display text-base sm:text-lg font-bold text-ink mt-1.5">{st.title}</h3>
-                    <p className="text-muted text-xs sm:text-[13px] mt-2 leading-relaxed">{st.copy}</p>
-                  </div>
-
-                  {st.number === "01" && (
-                    <div className="mt-6 rounded-lg bg-paper-2 p-3 font-mono text-xs border border-line text-ink">
-                      <span className="block text-muted text-[10px] uppercase font-bold">Vector RAG</span>
-                      <b>knowledge_base.pdf</b>
-                      <span className="block text-emerald-600 mt-1">● Synced &amp; Ready</span>
-                    </div>
-                  )}
-
-                  {st.number === "02" && (
-                    <div className="mt-6 space-y-1.5 font-mono text-xs">
-                      <button
-                        type="button"
-                        onClick={() => setSelectedModel("openai")}
-                        className={`w-full text-left p-2 rounded border ${selectedModel === "openai" ? "border-cobalt bg-cobalt/10 text-ink font-bold" : "border-line bg-paper-2 text-muted"}`}
-                      >
-                        OpenAI GPT-4o (&lt;300ms)
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setSelectedModel("gemini")}
-                        className={`w-full text-left p-2 rounded border ${selectedModel === "gemini" ? "border-cobalt bg-cobalt/10 text-ink font-bold" : "border-line bg-paper-2 text-muted"}`}
-                      >
-                        Gemini 2.0 Flash (&lt;280ms)
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setSelectedModel("sarvam")}
-                        className={`w-full text-left p-2 rounded border ${selectedModel === "sarvam" ? "border-cobalt bg-cobalt/10 text-ink font-bold" : "border-line bg-paper-2 text-muted"}`}
-                      >
-                        Sarvam Indic 2B (Indic Tuned)
-                      </button>
-                    </div>
-                  )}
-
-                  {st.number === "03" && (
-                    <div className="mt-6 rounded-lg bg-paper-2 p-3 font-mono text-xs border border-line text-ink">
-                      <span className="block text-muted text-[10px] uppercase font-bold">TTS &amp; STT Engine</span>
-                      <b>Sarvam Bulbul • 24kHz HD</b>
-                      <span className="block text-muted mt-1">Deepgram Nova-2 (&gt;750ms)</span>
-                    </div>
-                  )}
-
-                  {st.number === "04" && (
-                    <div className="mt-6 rounded-lg bg-paper-2 p-3 font-mono text-xs border border-line text-ink">
-                      <span className="block text-muted text-[10px] uppercase font-bold">Interconnect</span>
-                      <b>Exotel &amp; Twilio SIP</b>
-                      <span className="block text-emerald-600 mt-1">● 1-Click Browser WebRTC</span>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-        */}
+        <CorePlatformArchitectureSection />
 
         {/* ========================================================
             SECTION 8: BY THE NUMBERS / EVERYDAY CALLS (Original Content)
@@ -884,6 +808,11 @@ export function HomeDesignFour() {
             "AGENTIC IN ACTION": REAL-WORLD SCENARIO BREAKDOWN
             ======================================================== */}
         <AgenticInActionSection />
+
+        {/* ========================================================
+            PITCH PUNCHLINES TO USE IN MARKETING & ADS
+            ======================================================== */}
+        <PitchPunchlinesSection />
 
         {/* ========================================================
             SECTION 9: INDUSTRY SOLUTIONS (ALL 5 ORIGINAL PICTURES & COPY)
