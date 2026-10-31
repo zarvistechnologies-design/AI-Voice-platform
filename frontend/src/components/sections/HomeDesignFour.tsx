@@ -7,6 +7,7 @@ import { customerReviews } from "@/config/customerReviews";
 import { useHomepageVoiceCall } from "@/components/sections/useHomepageVoiceCall";
 import { VoiceOperationsShowcase } from "@/components/sections/VoiceOperationsShowcase";
 import { FloatingReviewsSection } from "@/components/sections/FloatingReviewsSection";
+import { AgenticPillarsSection } from "@/components/sections/AgenticPillarsSection";
 
 /* ------------------------------------------------------------------
    ORIGINAL DATA & CONTENT PRESERVED (NO TEXT OR PICTURE CHANGES)
@@ -314,6 +315,7 @@ export function HomeDesignFour() {
           <nav aria-label="Main" className="hidden lg:block">
             <ul className="flex items-center gap-8 text-[0.95rem] font-medium text-ink">
               <li><a href="#platform" className="link-u">Voice Demo</a></li>
+              <li><a href="#pillars" className="link-u">5 Pillars</a></li>
               <li><a href="#advantage" className="link-u">Indic Engine</a></li>
               <li><a href="#architecture" className="link-u">Platform</a></li>
               <li><a href="#industries" className="link-u">Industries</a></li>
@@ -353,20 +355,23 @@ export function HomeDesignFour() {
               <a href="#platform" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
                 Voice Demo <span className="eyebrow text-muted">01</span>
               </a>
+              <a href="#pillars" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
+                5 Pillars <span className="eyebrow text-muted">02</span>
+              </a>
               <a href="#advantage" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                Indic Engine <span className="eyebrow text-muted">02</span>
+                Indic Engine <span className="eyebrow text-muted">03</span>
               </a>
               <a href="#architecture" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                Platform <span className="eyebrow text-muted">03</span>
+                Platform <span className="eyebrow text-muted">04</span>
               </a>
               <a href="#industries" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                Industries <span className="eyebrow text-muted">04</span>
+                Industries <span className="eyebrow text-muted">05</span>
               </a>
               <a href="#integrations" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                Integrations <span className="eyebrow text-muted">05</span>
+                Integrations <span className="eyebrow text-muted">06</span>
               </a>
               <Link href="/pricing" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                Pricing <span className="eyebrow text-muted">06</span>
+                Pricing <span className="eyebrow text-muted">07</span>
               </Link>
               <div className="pt-6">
                 <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="btn btn-primary w-full">
@@ -632,6 +637,11 @@ export function HomeDesignFour() {
             </ul>
           </div>
         </section>
+
+        {/* ========================================================
+            THE 5 PILLARS OF AGENTIC VOICE AI
+            ======================================================== */}
+        <AgenticPillarsSection />
 
         {/* ========================================================
             SECTION 6: THE INDIAN VOICE ADVANTAGE (Original Content)
