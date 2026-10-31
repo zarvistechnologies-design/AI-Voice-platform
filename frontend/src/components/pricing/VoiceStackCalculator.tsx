@@ -5,13 +5,28 @@ import { useMemo, useState, type CSSProperties } from "react";
 import {
   estimatedModelCostPerMinute,
   formatEstimatedMinuteCost,
-  formatProviderRateInr,
   minutePricingAssumptions,
   modelPricingCategories,
   type ModelPriceCategory,
 } from "@/config/modelPricing";
 
 type StackLayer = Extract<ModelPriceCategory["id"], "llm" | "stt" | "tts">;
+
+const pricingPageRateMultiplier = 1.1;
+
+function formatPricingPageRateInr(rate: string) {
+  const rateIsInr = rate.includes("₹");
+  const ratePattern = rateIsInr ? /₹([\d,.]+)/g : /\$([\d,.]+)/g;
+
+  return rate.replace(ratePattern, (_match, amount: string) => {
+    const rupees =
+      Number(amount.replaceAll(",", "")) *
+      (rateIsInr ? 1 : minutePricingAssumptions.inrPerUsd) *
+      pricingPageRateMultiplier;
+    const digits = rupees < 1 ? 3 : 2;
+    return `₹${rupees.toLocaleString("en-IN", { minimumFractionDigits: digits, maximumFractionDigits: digits })}`;
+  });
+}
 
 const layers: readonly { id: StackLayer; label: string; helper: string; accent: string }[] = [
   { id: "llm", label: "Language model (LLM)", helper: "Understands and responds", accent: "#118778" },
@@ -55,7 +70,7 @@ function ModelDropdown({
 }) {
   const category = categoryById(layer.id);
   const selected = selectedModel(layer.id, value);
-  const estimate = estimatedModelCostPerMinute(layer.id, selected.model);
+  const estimate = estimatedModelCostPerMinute(layer.id, selected.model) * pricingPageRateMultiplier;
 
   return (
     <label className="voicestack-model group">
@@ -79,7 +94,7 @@ function ModelDropdown({
           {category.providers.map((provider) => (
             <optgroup label={provider.name} key={provider.name}>
               {provider.models.map((model) => {
-                const modelEstimate = estimatedModelCostPerMinute(layer.id, model);
+                const modelEstimate = estimatedModelCostPerMinute(layer.id, model) * pricingPageRateMultiplier;
                 return (
                   <option value={`${provider.name}::${model.name}`} key={model.name}>
                     {model.name} — {formatEstimatedMinuteCost(modelEstimate)}
@@ -96,7 +111,7 @@ function ModelDropdown({
 
       <span className="voicestack-provider">
         <span className="truncate">{selected.provider.name}</span>
-        <span className="text-right">{formatProviderRateInr(selected.model.rate)}</span>
+        <span className="text-right">{formatPricingPageRateInr(selected.model.rate)}</span>
       </span>
     </label>
   );
@@ -112,7 +127,7 @@ export function VoiceStackCalculator() {
         return {
           ...layer,
           ...selected,
-          cost: estimatedModelCostPerMinute(layer.id, selected.model),
+          cost: estimatedModelCostPerMinute(layer.id, selected.model) * pricingPageRateMultiplier,
         };
       }),
     [selection],
@@ -142,9 +157,9 @@ export function VoiceStackCalculator() {
       </div>
 
       <div className="voicestack-summary">
-        <div className="voicestack-total"><div><small>Combined cost per minute</small><strong>{formatEstimatedMinuteCost(total)}</strong><em>All selected providers combined</em></div></div>
+        <div className="voicestack-total"><div><small>Estimated rate per minute</small><strong>{formatEstimatedMinuteCost(total)}</strong><em>All selected models combined</em></div></div>
         <div className="voicestack-benefits">
-          <span>Transparent provider costs</span><span>Update in real time</span><span>Mix and match the best models</span><span>Scale from prototype to production</span>
+          <span>Clear usage-based pricing</span><span>Update in real time</span><span>Mix and match the best models</span><span>Scale from prototype to production</span>
         </div>
         <div className="voicestack-assumptions"><strong>Cost estimate details</strong><p>Estimate assumes {minutePricingAssumptions.llmInputTokens.toLocaleString()} LLM input and {minutePricingAssumptions.llmOutputTokens.toLocaleString()} output tokens, plus about {minutePricingAssumptions.ttsCharacters} spoken characters per connected minute. All estimates are displayed in INR using an indicative ₹{minutePricingAssumptions.inrPerUsd} conversion rate. Platform, telephony, taxes, cached context, and add-ons are not included.</p></div>
       </div>
