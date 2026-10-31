@@ -201,8 +201,8 @@ export function HomeDesignFour() {
   const [activeIndustryIdx, setActiveIndustryIdx] = useState(0);
   const selectedIndustry = industries[activeIndustryIdx];
 
-  // Step 2 model preview state
-  const [selectedModel, setSelectedModel] = useState<"openai" | "gemini" | "sarvam">("openai");
+  // Step 2 model preview state (Platform Architecture - commented out)
+  // const [selectedModel, setSelectedModel] = useState<"openai" | "gemini" | "sarvam">("openai");
 
   // Reviews carousel state
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -321,7 +321,7 @@ export function HomeDesignFour() {
               <li><a href="#comparison" className="link-u">Comparison</a></li>
               <li><a href="#agentic-in-action" className="link-u">In Action</a></li>
               <li><a href="#advantage" className="link-u">Indic Engine</a></li>
-              <li><a href="#architecture" className="link-u">Platform</a></li>
+              {/* <li><a href="#architecture" className="link-u">Platform</a></li> */}
               <li><a href="#industries" className="link-u">Industries</a></li>
               <li><a href="#integrations" className="link-u">Integrations</a></li>
               <li><Link href="/pricing" className="link-u">Pricing</Link></li>
@@ -371,17 +371,17 @@ export function HomeDesignFour() {
               <a href="#advantage" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
                 Indic Engine <span className="eyebrow text-muted">05</span>
               </a>
-              <a href="#architecture" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
+              {/* <a href="#architecture" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
                 Platform <span className="eyebrow text-muted">06</span>
-              </a>
+              </a> */}
               <a href="#industries" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                Industries <span className="eyebrow text-muted">07</span>
+                Industries <span className="eyebrow text-muted">06</span>
               </a>
               <a href="#integrations" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                Integrations <span className="eyebrow text-muted">08</span>
+                Integrations <span className="eyebrow text-muted">07</span>
               </a>
               <Link href="/pricing" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                Pricing <span className="eyebrow text-muted">09</span>
+                Pricing <span className="eyebrow text-muted">08</span>
               </Link>
 
               <div className="pt-6">
@@ -737,8 +737,9 @@ export function HomeDesignFour() {
         </section>
 
         {/* ========================================================
-            SECTION 7: PLATFORM ARCHITECTURE (4 Implementation Steps)
+            SECTION 7: PLATFORM ARCHITECTURE (4 Implementation Steps) - COMMENTED OUT
             ======================================================== */}
+        {/*
         <section id="architecture" className="bg-paper-2 py-16 md:py-20" aria-labelledby="process-title">
           <div className="container-x">
             <div className="flex flex-wrap items-end justify-between gap-6 border-b border-line pb-8">
@@ -820,6 +821,7 @@ export function HomeDesignFour() {
             </div>
           </div>
         </section>
+        */}
 
         {/* ========================================================
             SECTION 8: BY THE NUMBERS / EVERYDAY CALLS (Original Content)
