@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 
 export interface PillarItem {
   id: string;
@@ -8,6 +9,9 @@ export interface PillarItem {
   tag: string;
   title: string;
   subtitle: string;
+  image: string;
+  imageAlt: string;
+  imageCaption: string;
   simpleBots: {
     label: string;
     description: string;
@@ -26,6 +30,9 @@ export const agenticPillars: PillarItem[] = [
     tag: "Cognitive Planning",
     title: "Objective-Driven, Not Script-Driven",
     subtitle: "Dynamic reasoning replaces fragile decision trees",
+    image: "/images/pillars/pillar-1-cognitive-planning.png",
+    imageAlt: "Script-driven bot dead end vs Objective-driven agent reasoning path",
+    imageCaption: "Reasoning picks the fastest, most empathetic path to the objective.",
     simpleBots: {
       label: "What simple bots do",
       description:
@@ -43,6 +50,9 @@ export const agenticPillars: PillarItem[] = [
     tag: "Real-World Action",
     title: "Autonomous Tool Execution in the Real World",
     subtitle: "Live external systems integration mid-sentence",
+    image: "/images/pillars/pillar-2-real-world-action.png",
+    imageAlt: "Voice agent interacting with backend database, WhatsApp, booking engine, and CRM in real time",
+    imageCaption: "All actions happen mid-conversation, in real time.",
     simpleBots: {
       label: "What simple bots do",
       description: "Read static text from a knowledge base.",
@@ -65,6 +75,9 @@ export const agenticPillars: PillarItem[] = [
     tag: "State & Memory",
     title: "Dynamic State & Episodic Memory",
     subtitle: "Contextual recall across calls and timeline variables",
+    image: "/images/pillars/pillar-3-state-memory.png",
+    imageAlt: "Episodic memory across past calls and live conversation state tracking",
+    imageCaption: "Callers are recognized, not restarted from scratch.",
     simpleBots: {
       label: "What simple bots do",
       description:
@@ -85,6 +98,9 @@ export const agenticPillars: PillarItem[] = [
     tag: "Resilience",
     title: "Self-Correction & Ambiguity Resolution",
     subtitle: "Graceful recovery from contradictions and API timeouts",
+    image: "/images/pillars/pillar-4-self-correction.png",
+    imageAlt: "Recovery workflow from API timeouts, contradictory caller input, and dynamic fallback",
+    imageCaption: "Graceful self-correction without dropped calls or loops.",
     simpleBots: {
       label: "What simple bots do",
       description:
@@ -102,6 +118,9 @@ export const agenticPillars: PillarItem[] = [
     tag: "Swarm Delegation",
     title: "Multi-Agent Orchestration & Swarm Delegation",
     subtitle: "Specialized cognitive agents working in unison",
+    image: "/images/pillars/pillar-5-swarm-delegation.png",
+    imageAlt: "Multi-agent swarm handoff between triage agent, technical agent, billing agent, and human warm transfer",
+    imageCaption: "Specialized sub-agent swarm with context-aware warm transfer to human reps.",
     simpleBots: {
       label: "What simple bots do",
       description: "One giant prompt trying to handle everything poorly.",
@@ -126,7 +145,7 @@ interface PillarStreamCardProps {
 function PillarStreamCard({ pillar, index }: PillarStreamCardProps) {
   return (
     <article
-      className="group relative flex w-[320px] sm:w-[440px] md:w-[480px] shrink-0 flex-col justify-between rounded-3xl border border-line bg-paper p-5 sm:p-7 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-ink/50 hover:shadow-xl"
+      className="group relative flex w-[340px] sm:w-[450px] md:w-[490px] shrink-0 flex-col justify-between rounded-3xl border border-line bg-paper p-5 sm:p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-ink/50 hover:shadow-xl"
     >
       <div>
         {/* Top Header Badge */}
@@ -145,17 +164,41 @@ function PillarStreamCard({ pillar, index }: PillarStreamCardProps) {
         </div>
 
         {/* Title & Subtitle */}
-        <h3 className="font-display text-base sm:text-xl font-bold text-ink mt-3.5 leading-snug break-words">
+        <h3 className="font-display text-base sm:text-lg font-bold text-ink mt-3.5 leading-snug break-words">
           {pillar.title}
         </h3>
         <p className="mt-1 font-mono text-[11px] text-muted">
           {pillar.subtitle}
         </p>
 
-        {/* Stacked Comparisons for sliding stream */}
-        <div className="mt-4 space-y-3">
+        {/* Architectural Diagram Illustration */}
+        <div className="mt-3.5 overflow-hidden rounded-2xl border border-white/10 bg-[#0e0e0c] p-2.5 shadow-inner">
+          <div className="flex items-center justify-between pb-1.5 px-1 border-b border-white/10">
+            <span className="font-mono text-[10px] uppercase font-bold text-[#d4ff3f] flex items-center gap-1.5">
+              <span className="size-1.5 rounded-full bg-[#d4ff3f] animate-pulse" />
+              Architecture Map
+            </span>
+            <span className="font-mono text-[10px] text-zinc-400">Pillar {pillar.number}</span>
+          </div>
+          <div className="relative mt-2 w-full aspect-[16/9] bg-black/50 rounded-xl overflow-hidden flex items-center justify-center">
+            <Image
+              src={pillar.image}
+              alt={pillar.imageAlt}
+              fill
+              sizes="(max-width: 640px) 320px, 480px"
+              className="object-contain p-1"
+              loading="eager"
+            />
+          </div>
+          <p className="mt-2 text-center font-mono text-[10.5px] text-zinc-300 px-1 truncate">
+            {pillar.imageCaption}
+          </p>
+        </div>
+
+        {/* Stacked Comparisons */}
+        <div className="mt-3.5 space-y-3">
           {/* Simple Bots Box */}
-          <div className="rounded-2xl border border-rose-200/90 bg-rose-50/70 p-4 text-xs leading-relaxed">
+          <div className="rounded-2xl border border-rose-200/90 bg-rose-50/70 p-3.5 text-xs leading-relaxed">
             <div className="flex items-center gap-1.5 font-mono text-[10.5px] font-bold uppercase tracking-wider text-rose-800">
               <span className="grid size-3.5 place-items-center rounded-full bg-rose-200 text-[9px]">✕</span>
               <span>What simple bots do</span>
@@ -166,7 +209,7 @@ function PillarStreamCard({ pillar, index }: PillarStreamCardProps) {
           </div>
 
           {/* Agentic Platform Box */}
-          <div className="rounded-2xl border border-white/10 bg-[#0e0e0c] p-4 sm:p-5 text-xs leading-relaxed text-zinc-100 shadow-sm">
+          <div className="rounded-2xl border border-white/10 bg-[#0e0e0c] p-4 text-xs leading-relaxed text-zinc-100 shadow-sm">
             <div className="flex items-center gap-1.5 font-mono text-[10.5px] font-bold uppercase tracking-wider text-[#d4ff3f]">
               <span className="grid size-3.5 place-items-center rounded-full bg-white/10 text-[9px]">✦</span>
               <span>What our Agentic Platform does</span>
@@ -207,7 +250,7 @@ function PillarStreamCard({ pillar, index }: PillarStreamCardProps) {
 }
 
 export function AgenticPillarsSection() {
-  // View mode: "stream" (continuous marquee sliding animation) | "carousel" (auto-slide carousel) | "grid" (static grid)
+  // View mode: "stream" (continuous marquee) | "carousel" (auto-slide carousel) | "grid" (static grid)
   const [viewMode, setViewMode] = useState<"stream" | "carousel" | "grid">("stream");
   const [selectedPillarId, setSelectedPillarId] = useState<string>("all");
 
@@ -218,17 +261,16 @@ export function AgenticPillarsSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isCarouselPlaying, setIsCarouselPlaying] = useState(true);
   const [carouselProgress, setCarouselProgress] = useState(0);
-  const carouselTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Auto-advance carousel slide every 6 seconds with smooth progress bar
+  // Auto-advance carousel slide every 7 seconds with progress bar
   useEffect(() => {
     if (viewMode !== "carousel" || !isCarouselPlaying) {
       setCarouselProgress(0);
       return;
     }
 
-    const intervalTime = 6000;
-    const stepTime = 60;
+    const intervalTime = 7000;
+    const stepTime = 70;
     const increment = (stepTime / intervalTime) * 100;
 
     const progressTimer = setInterval(() => {
@@ -267,7 +309,7 @@ export function AgenticPillarsSection() {
       ? agenticPillars
       : agenticPillars.filter((p) => p.id === selectedPillarId);
 
-  // Triple set for seamless 0% -> -33.333% marquee loop
+  // Triple set for seamless marquee loop
   const streamPillars = [...agenticPillars, ...agenticPillars, ...agenticPillars];
 
   return (
@@ -304,7 +346,7 @@ export function AgenticPillarsSection() {
             Traditional voice bots follow rigid decision trees and break on surprises. Our Agentic Voice Platform deploys autonomous AI agents built on five foundational cognitive capabilities.
           </p>
 
-          {/* Mode Switcher: Sliding Stream vs Slide Carousel vs Full Grid */}
+          {/* Mode Switcher */}
           <div className="mt-8 inline-flex items-center rounded-full bg-paper border border-line p-1 shadow-xs">
             <button
               type="button"
@@ -412,13 +454,13 @@ export function AgenticPillarsSection() {
                   <span>{isStreamPlaying ? "⏸ Pause Stream" : "▶ Resume Stream"}</span>
                 </button>
                 <span className="hidden sm:inline font-mono text-muted text-[11px]">
-                  Hover over any pillar card to pause and inspect
+                  Hover over any pillar card to pause and inspect diagrams &amp; code
                 </span>
               </div>
 
               <div className="flex items-center gap-2">
                 <span className="font-mono text-muted text-[11px]">
-                  5 Pillars in continuous sliding motion
+                  5 Illustrated Pillars in continuous motion
                 </span>
                 <button
                   type="button"
@@ -433,11 +475,11 @@ export function AgenticPillarsSection() {
         )}
 
         {/* ========================================================
-            VIEW 2: INTERACTIVE SLIDE CAROUSEL (AUTO-SLIDING SHOWCASE)
+            VIEW 2: INTERACTIVE SLIDE CAROUSEL (EXPANDED ILLUSTRATION VIEW)
             ======================================================== */}
         {viewMode === "carousel" && (
           <div
-            className="mt-12 mx-auto max-w-5xl"
+            className="mt-12 mx-auto max-w-6xl"
             onMouseEnter={() => setIsCarouselPlaying(false)}
             onMouseLeave={() => setIsCarouselPlaying(true)}
           >
@@ -479,45 +521,80 @@ export function AgenticPillarsSection() {
                         {pillar.subtitle}
                       </p>
 
-                      {/* Side-by-side Comparative Layout */}
-                      <div className="mt-7 grid gap-5 md:grid-cols-12 items-stretch">
-                        {/* What Simple Bots Do Box */}
-                        <div className="md:col-span-5 rounded-2xl border border-rose-200/90 bg-rose-50/70 p-5 sm:p-6 text-xs sm:text-[13px] leading-relaxed flex flex-col justify-between">
-                          <div>
-                            <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-rose-800">
-                              <span className="grid size-4 place-items-center rounded-full bg-rose-200 text-[10px]">✕</span>
-                              <span>What simple bots do</span>
+                      {/* Side-by-Side: Comparisons (Left) & Architectural Diagram Illustration (Right) */}
+                      <div className="mt-7 grid gap-6 lg:grid-cols-12 items-stretch">
+                        {/* Left Column: Comparisons */}
+                        <div className="lg:col-span-6 space-y-4 flex flex-col justify-between">
+                          {/* What Simple Bots Do Box */}
+                          <div className="rounded-2xl border border-rose-200/90 bg-rose-50/70 p-5 text-xs sm:text-[13px] leading-relaxed flex flex-col justify-between">
+                            <div>
+                              <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-rose-800">
+                                <span className="grid size-4 place-items-center rounded-full bg-rose-200 text-[10px]">✕</span>
+                                <span>What simple bots do</span>
+                              </div>
+                              <p className="mt-3 text-rose-950 font-normal leading-relaxed text-sm">
+                                {pillar.simpleBots.description}
+                              </p>
                             </div>
-                            <p className="mt-3.5 text-rose-950 font-normal leading-relaxed text-sm">
-                              {pillar.simpleBots.description}
-                            </p>
+                            <span className="mt-4 inline-block font-mono text-[10px] uppercase font-bold text-rose-600/80">
+                              Rigid • Scripted • Fragile
+                            </span>
                           </div>
-                          <span className="mt-6 inline-block font-mono text-[10px] uppercase font-bold text-rose-600/80">
-                            Rigid • Scripted • Fragile
-                          </span>
+
+                          {/* What Our Agentic Platform Does Box */}
+                          <div className="rounded-2xl border border-white/10 bg-[#0e0e0c] p-5 sm:p-6 text-xs sm:text-[13px] leading-relaxed text-zinc-100 shadow-md flex-1 flex flex-col justify-between">
+                            <div>
+                              <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-[#d4ff3f]">
+                                <span className="grid size-4 place-items-center rounded-full bg-white/10 text-[10px]">✦</span>
+                                <span>What our Agentic Platform does</span>
+                              </div>
+
+                              <p className="mt-3 text-zinc-100 font-normal leading-relaxed text-sm">
+                                {pillar.agenticPlatform.summary}
+                              </p>
+
+                              {pillar.agenticPlatform.bullets && pillar.agenticPlatform.bullets.length > 0 && (
+                                <ul className="mt-3.5 space-y-2 border-t border-white/10 pt-3">
+                                  {pillar.agenticPlatform.bullets.map((bullet, bIdx) => (
+                                    <li key={bIdx} className="flex items-start gap-2 text-zinc-300 text-xs">
+                                      <span className="text-[#d4ff3f] font-bold text-sm shrink-0">↳</span>
+                                      <span className="leading-relaxed">{bullet}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </div>
+                          </div>
                         </div>
 
-                        {/* What Our Agentic Platform Does Box */}
-                        <div className="md:col-span-7 rounded-2xl border border-white/10 bg-[#0e0e0c] p-6 sm:p-7 text-xs sm:text-[13.5px] leading-relaxed text-zinc-100 shadow-md">
-                          <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-[#d4ff3f]">
-                            <span className="grid size-4 place-items-center rounded-full bg-white/10 text-[10px]">✦</span>
-                            <span>What our Agentic Platform does</span>
+                        {/* Right Column: Architectural Diagram Illustration */}
+                        <div className="lg:col-span-6 rounded-2xl border border-white/10 bg-[#0e0e0c] p-4 sm:p-6 text-zinc-100 shadow-xl flex flex-col justify-between">
+                          <div>
+                            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                              <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#d4ff3f] flex items-center gap-2">
+                                <span className="size-2 rounded-full bg-[#d4ff3f] animate-pulse" />
+                                Architecture Diagram
+                              </span>
+                              <span className="rounded-full bg-white/10 px-2.5 py-0.5 font-mono text-[10px] text-zinc-300">
+                                Pillar {pillar.number}
+                              </span>
+                            </div>
+
+                            <div className="relative mt-4 w-full aspect-[16/10] bg-black/60 rounded-xl overflow-hidden border border-white/5 flex items-center justify-center">
+                              <Image
+                                src={pillar.image}
+                                alt={pillar.imageAlt}
+                                fill
+                                sizes="(max-width: 1024px) 100vw, 550px"
+                                className="object-contain p-2"
+                                priority
+                              />
+                            </div>
                           </div>
 
-                          <p className="mt-3.5 text-zinc-100 font-normal leading-relaxed text-sm">
-                            {pillar.agenticPlatform.summary}
+                          <p className="mt-4 font-mono text-xs text-zinc-300 text-center border-t border-white/10 pt-3">
+                            {pillar.imageCaption}
                           </p>
-
-                          {pillar.agenticPlatform.bullets && pillar.agenticPlatform.bullets.length > 0 && (
-                            <ul className="mt-4 space-y-2.5 border-t border-white/10 pt-3.5">
-                              {pillar.agenticPlatform.bullets.map((bullet, bIdx) => (
-                                <li key={bIdx} className="flex items-start gap-2.5 text-zinc-300">
-                                  <span className="text-[#d4ff3f] font-bold text-sm shrink-0">↳</span>
-                                  <span className="leading-relaxed">{bullet}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
                         </div>
                       </div>
                     </div>
@@ -599,7 +676,7 @@ export function AgenticPillarsSection() {
         )}
 
         {/* ========================================================
-            VIEW 3: STATIC GRID (ALL 5 PILLARS AT ONCE)
+            VIEW 3: STATIC GRID (ALL 5 PILLARS AT ONCE WITH DIAGRAMS)
             ======================================================== */}
         {viewMode === "grid" && (
           <div
@@ -642,6 +719,34 @@ export function AgenticPillarsSection() {
                     <p className="mt-1 font-mono text-xs text-muted">
                       {pillar.subtitle}
                     </p>
+
+                    {/* Architectural Diagram Box in Grid */}
+                    <div className="mt-4 overflow-hidden rounded-2xl border border-white/10 bg-[#0e0e0c] p-3 shadow-inner">
+                      <div className="flex items-center justify-between pb-1.5 px-1 border-b border-white/10">
+                        <span className="font-mono text-[10.5px] uppercase font-bold text-[#d4ff3f] flex items-center gap-1.5">
+                          <span className="size-1.5 rounded-full bg-[#d4ff3f] animate-pulse" />
+                          Architecture Diagram
+                        </span>
+                        <span className="font-mono text-[10px] text-zinc-400">Pillar {pillar.number}</span>
+                      </div>
+                      <div
+                        className={`relative mt-2 w-full bg-black/50 rounded-xl overflow-hidden flex items-center justify-center ${
+                          isFullWidthAnchor ? "aspect-[16/8] max-h-[380px]" : "aspect-[16/9]"
+                        }`}
+                      >
+                        <Image
+                          src={pillar.image}
+                          alt={pillar.imageAlt}
+                          fill
+                          sizes="(max-width: 1024px) 100vw, 600px"
+                          className="object-contain p-2"
+                          loading="eager"
+                        />
+                      </div>
+                      <p className="mt-2 text-center font-mono text-[11px] text-zinc-300">
+                        {pillar.imageCaption}
+                      </p>
+                    </div>
 
                     {/* Comparisons */}
                     <div
