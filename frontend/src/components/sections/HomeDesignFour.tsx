@@ -9,6 +9,7 @@ import { VoiceOperationsShowcase } from "@/components/sections/VoiceOperationsSh
 import { FloatingReviewsSection } from "@/components/sections/FloatingReviewsSection";
 import { AgenticPillarsSection } from "@/components/sections/AgenticPillarsSection";
 import { ArchitecturalComparisonSection } from "@/components/sections/ArchitecturalComparisonSection";
+import { AgenticInActionSection } from "@/components/sections/AgenticInActionSection";
 
 /* ------------------------------------------------------------------
    ORIGINAL DATA & CONTENT PRESERVED (NO TEXT OR PICTURE CHANGES)
@@ -318,6 +319,7 @@ export function HomeDesignFour() {
               <li><a href="#platform" className="link-u">Voice Demo</a></li>
               <li><a href="#pillars" className="link-u">5 Pillars</a></li>
               <li><a href="#comparison" className="link-u">Comparison</a></li>
+              <li><a href="#agentic-in-action" className="link-u">In Action</a></li>
               <li><a href="#advantage" className="link-u">Indic Engine</a></li>
               <li><a href="#architecture" className="link-u">Platform</a></li>
               <li><a href="#industries" className="link-u">Industries</a></li>
@@ -363,20 +365,23 @@ export function HomeDesignFour() {
               <a href="#comparison" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
                 Comparison <span className="eyebrow text-muted">03</span>
               </a>
+              <a href="#agentic-in-action" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
+                In Action <span className="eyebrow text-muted">04</span>
+              </a>
               <a href="#advantage" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                Indic Engine <span className="eyebrow text-muted">04</span>
+                Indic Engine <span className="eyebrow text-muted">05</span>
               </a>
               <a href="#architecture" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                Platform <span className="eyebrow text-muted">05</span>
+                Platform <span className="eyebrow text-muted">06</span>
               </a>
               <a href="#industries" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                Industries <span className="eyebrow text-muted">06</span>
+                Industries <span className="eyebrow text-muted">07</span>
               </a>
               <a href="#integrations" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                Integrations <span className="eyebrow text-muted">07</span>
+                Integrations <span className="eyebrow text-muted">08</span>
               </a>
               <Link href="/pricing" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                Pricing <span className="eyebrow text-muted">08</span>
+                Pricing <span className="eyebrow text-muted">09</span>
               </Link>
 
               <div className="pt-6">
@@ -872,6 +877,11 @@ export function HomeDesignFour() {
             </div>
           </div>
         </section>
+
+        {/* ========================================================
+            "AGENTIC IN ACTION": REAL-WORLD SCENARIO BREAKDOWN
+            ======================================================== */}
+        <AgenticInActionSection />
 
         {/* ========================================================
             SECTION 9: INDUSTRY SOLUTIONS (ALL 5 ORIGINAL PICTURES & COPY)
