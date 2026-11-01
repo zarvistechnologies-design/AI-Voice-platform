@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 
-import { defaultBrand, type BrandConfig } from "@/lib/brand";
+import { brandMonogramFavicon, defaultBrand, type BrandConfig } from "@/lib/brand";
 import { getSession, getServerSession, subscribeToSession } from "@/lib/auth";
 import { API_URL } from "@/lib/apiBase";
 
@@ -106,20 +106,31 @@ export function BrandProvider({ brand, children }: { brand: BrandConfig; childre
       }
 
       // Update all browser tab favicon links dynamically to partner brand logo/icon
-      const iconTarget = effectiveBrand.iconUrl || effectiveBrand.logoDarkUrl || effectiveBrand.logoUrl;
-      if (iconTarget && !iconTarget.includes("logo_2.svg") && !iconTarget.includes("vozon-mark")) {
-        const iconLinks = document.querySelectorAll<HTMLLinkElement>(
-          "link[rel~='icon'], link[rel='shortcut icon'], link[rel='apple-touch-icon']",
+      const rawIcon = effectiveBrand.iconUrl || effectiveBrand.logoDarkUrl || effectiveBrand.logoUrl;
+      const isVozonAsset = Boolean(
+        rawIcon && (rawIcon.includes("logo_2.svg") || rawIcon.includes("vozon-mark") || rawIcon.includes("favicon.ico")),
+      );
+      const activeFavicon = (!isVozonAsset && rawIcon)
+        ? rawIcon
+        : brandMonogramFavicon(effectiveBrand.productName || session?.organization?.name || "Voice Platform", effectiveBrand.colors?.primary);
+
+      if (isPartnerOrCustomer || effectiveBrand.source === "white_label") {
+        const existingIcons = document.querySelectorAll<HTMLLinkElement>(
+          "link[rel*='icon'], link[rel='apple-touch-icon']"
         );
-        if (iconLinks.length > 0) {
-          iconLinks.forEach((el) => {
-            el.removeAttribute("sizes");
-            el.href = iconTarget;
-          });
-        } else {
+        let alreadySet = false;
+        existingIcons.forEach((el) => {
+          if (el.href === activeFavicon) {
+            alreadySet = true;
+          } else {
+            el.remove();
+          }
+        });
+        if (!alreadySet) {
           const newLink = document.createElement("link");
           newLink.rel = "icon";
-          newLink.href = iconTarget;
+          newLink.type = activeFavicon.startsWith("data:image/svg") ? "image/svg+xml" : "image/x-icon";
+          newLink.href = activeFavicon;
           document.head.appendChild(newLink);
         }
       }

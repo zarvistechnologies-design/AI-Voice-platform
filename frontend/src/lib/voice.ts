@@ -913,6 +913,9 @@ export type BackendCampaign = {
   goal: string;
   successCriteria: string;
   automaticCallbacks: boolean;
+  detectVoicemail?: boolean;
+  voicemailAction?: "hangup" | "leave-message";
+  voicemailMessage?: string;
   scorecard?: CampaignScorecard;
   totalLeads: number;
   lastWorkerError: string;
@@ -938,6 +941,8 @@ export type CreateCampaignInput = {
   respectDnc: boolean;
   requireConsentLine: boolean;
   detectVoicemail: boolean;
+  voicemailAction?: "hangup" | "leave-message";
+  voicemailMessage?: string;
   automaticCallbacks: boolean;
 };
 

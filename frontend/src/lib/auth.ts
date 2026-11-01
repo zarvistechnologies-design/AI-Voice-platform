@@ -148,14 +148,22 @@ function saveSession(session: AuthSession) {
     return;
   }
 
-  window.localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-  cachedRawSession = null;
-  resetSessionValidation();
-  notifySessionChange();
-  // Login/register/refresh responses have just issued or verified this exact
-  // session. Avoid an immediate duplicate /auth/me request on navigation.
+  const nextRaw = JSON.stringify(session);
+  const existingRaw = window.localStorage.getItem(SESSION_KEY);
+
+  // If session data is byte-for-byte identical, avoid notifying listeners or resetting cache
+  if (existingRaw === nextRaw && cachedSession) {
+    validatedSessionKey = validationKey(session);
+    validatedSessionAt = Date.now();
+    return;
+  }
+
+  window.localStorage.setItem(SESSION_KEY, nextRaw);
+  cachedRawSession = nextRaw;
+  cachedSession = session;
   validatedSessionKey = validationKey(session);
   validatedSessionAt = Date.now();
+  notifySessionChange();
 }
 
 export async function loginWithPassword(email: string, password: string, twoFactorCode = "") {
@@ -286,33 +294,8 @@ async function validateSessionWithServer(session: AuthSession) {
 
   const incomingBrand = data.brand ?? data.organization?.brand;
   const currentBrand = session.organization?.brand;
-
-  if (
-    session.id === data.user.id &&
-    session.name === data.user.name &&
-    session.email === data.user.email
-    && session.emailVerified === data.user.emailVerified
-    && session.twoFactorEnabled === data.user.twoFactorEnabled
-    && session.platformRole === (data.user.platformRole ?? "user")
-    && session.organization?.id === data.organization?.id
-    && session.organization?.name === data.organization?.name
-    && session.organization?.slug === data.organization?.slug
-    && session.organization?.role === data.organization?.role
-    && session.organization?.whiteLabelAccountId === data.organization?.whiteLabelAccountId
-    && session.organization?.whiteLabelBrandId === data.organization?.whiteLabelBrandId
-    && session.organization?.whiteLabelOwnerAccountId === data.organization?.whiteLabelOwnerAccountId
-    && session.organization?.lifecycleStatus === data.organization?.lifecycleStatus
-    && session.whiteLabel?.accountId === data.whiteLabel?.accountId
-    && session.whiteLabel?.brandId === data.whiteLabel?.brandId
-    && session.whiteLabel?.hostname === data.whiteLabel?.hostname
-    && currentBrand?.logoUrl === incomingBrand?.logoUrl
-    && currentBrand?.productName === incomingBrand?.productName
-  ) {
-    return session;
-  }
-
   const brand = incomingBrand ?? currentBrand;
-  const updatedSession = {
+  const updatedSession: AuthSession = {
     ...session,
     id: data.user.id,
     name: data.user.name,
@@ -333,6 +316,32 @@ async function validateSessionWithServer(session: AuthSession) {
         }
       : session.whiteLabel,
   };
+
+  if (
+    session.id === updatedSession.id &&
+    session.name === updatedSession.name &&
+    session.email === updatedSession.email &&
+    session.emailVerified === updatedSession.emailVerified &&
+    session.twoFactorEnabled === updatedSession.twoFactorEnabled &&
+    session.platformRole === updatedSession.platformRole &&
+    session.organization?.id === updatedSession.organization?.id &&
+    session.organization?.name === updatedSession.organization?.name &&
+    session.organization?.slug === updatedSession.organization?.slug &&
+    session.organization?.role === updatedSession.organization?.role &&
+    session.organization?.whiteLabelAccountId === updatedSession.organization?.whiteLabelAccountId &&
+    session.organization?.whiteLabelBrandId === updatedSession.organization?.whiteLabelBrandId &&
+    session.organization?.whiteLabelOwnerAccountId === updatedSession.organization?.whiteLabelOwnerAccountId &&
+    session.organization?.lifecycleStatus === updatedSession.organization?.lifecycleStatus &&
+    session.whiteLabel?.accountId === updatedSession.whiteLabel?.accountId &&
+    session.whiteLabel?.brandId === updatedSession.whiteLabel?.brandId &&
+    session.whiteLabel?.hostname === updatedSession.whiteLabel?.hostname &&
+    JSON.stringify(session.organization?.brand) === JSON.stringify(updatedSession.organization?.brand) &&
+    JSON.stringify(session.whiteLabel?.brand) === JSON.stringify(updatedSession.whiteLabel?.brand)
+  ) {
+    validatedSessionKey = validationKey(session);
+    validatedSessionAt = Date.now();
+    return session;
+  }
 
   saveSession(updatedSession);
   return updatedSession;
@@ -386,8 +395,11 @@ export function subscribeToSession(onStoreChange: () => void) {
   }
 
   function handleSessionEvent() {
-    cachedRawSession = null;
-    resetSessionValidation();
+    const raw = window.localStorage.getItem(SESSION_KEY);
+    if (raw !== cachedRawSession) {
+      cachedRawSession = null;
+      cachedSession = null;
+    }
     onStoreChange();
   }
 

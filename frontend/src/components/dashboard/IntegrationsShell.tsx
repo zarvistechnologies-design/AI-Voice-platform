@@ -23,6 +23,7 @@ import {
   type DigitalBotConnection,
   type IntegrationProvider,
 } from "@/lib/integrations";
+import { useBrand } from "@/components/branding/BrandProvider";
 import { WhatsAppModal } from "@/components/integrations/WhatsAppModal";
 import { ClaudeConnectorCard } from "@/components/integrations/ClaudeConnectorCard";
 import { RequestedIntegrationsSection } from "@/components/integrations/RequestedIntegrationsSection";
@@ -230,11 +231,15 @@ function digitalBotAgentLabel(agent: AgentSummary) {
 
 export function IntegrationsShell() {
   const router = useRouter();
+  const brand = useBrand();
   const session = useSyncExternalStore(
     subscribeToSession,
     getSession,
     getServerSession,
   );
+  const isWhiteLabelPartner = Boolean(session?.organization?.whiteLabelOwnerAccountId);
+  const isWhiteLabelCustomer = Boolean(session?.organization?.whiteLabelAccountId);
+  const isEndCustomer = isWhiteLabelCustomer || (brand.source === "white_label" && !isWhiteLabelPartner);
   const [providers, setProviders] = useState<IntegrationProvider[]>([]);
   const [selected, setSelected] = useState<Exclude<
     IntegrationProvider["id"],
@@ -304,7 +309,7 @@ export function IntegrationsShell() {
     void validateStoredSession();
     const timer = window.setTimeout(() => void load(), 0);
     return () => window.clearTimeout(timer);
-  }, [load, router, session]);
+  }, [load, router, session?.id, session?.organization?.id]);
 
   async function connect() {
     if (!selected || selected === "google") return;
@@ -671,7 +676,7 @@ export function IntegrationsShell() {
             </div>
           ) : null}
           <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            <ClaudeConnectorCard />
+            {!isEndCustomer ? <ClaudeConnectorCard /> : null}
             {displayProviders.map(({ provider, displayId }) => {
               const item = catalog[displayId];
               const googleView =

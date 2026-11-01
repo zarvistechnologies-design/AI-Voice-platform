@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 
+import { useBrand } from "@/components/branding/BrandProvider";
 import { DashboardAuthBoundary } from "@/components/dashboard/DashboardAuthBoundary";
 import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
 import { DashboardSidebar, getDashboardSidebarInitialState } from "@/components/dashboard/DashboardSidebar";
@@ -181,7 +182,17 @@ function FormattedContent({ content }: { content: string }) {
 
 function AssistantChat() {
   const router = useRouter();
+  const brand = useBrand();
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
+  const isWhiteLabelPartner = Boolean(session?.organization?.whiteLabelOwnerAccountId);
+  const isWhiteLabelCustomer = Boolean(session?.organization?.whiteLabelAccountId);
+  const isEndCustomer = isWhiteLabelCustomer || (brand.source === "white_label" && !isWhiteLabelPartner);
+
+  useEffect(() => {
+    if (isEndCustomer) {
+      router.replace("/dashboard/agents");
+    }
+  }, [isEndCustomer, router]);
   const [showUserSidebar, setShowUserSidebar] = useState(getDashboardSidebarInitialState);
   const [messages, setMessages] = useState<AssistantMessage[]>([]);
   const [conversationId, setConversationId] = useState<string>();
@@ -359,6 +370,10 @@ function AssistantChat() {
     if (hour < 17) return "Good afternoon";
     return "Good evening";
   })();
+
+  if (isEndCustomer) {
+    return null;
+  }
 
   return (
     <main

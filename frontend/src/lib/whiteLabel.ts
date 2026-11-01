@@ -133,6 +133,11 @@ export type WhiteLabelCustomer = {
   ownerUserId?: { _id: string; name: string; email: string; emailVerified: boolean; lastLoginAt?: string };
   whiteLabelBrandId?: { _id: string; key: string; branding?: { productName?: string } };
   subscription?: { status: string; planKey: string; planVersion: number; currentPeriodEnd?: string; priceSnapshot?: { currency?: string; recurringAmountMinor?: number; interval?: string } };
+  usage?: {
+    calls: number;
+    minutes: number;
+    agents: number;
+  };
   createdAt: string;
 };
 
@@ -143,6 +148,7 @@ export type PartnerOverview = {
   plans: WhiteLabelPlan[];
   metrics: { customerCount: number; activeSubscriptions: number };
   modelAccessCatalog: WhiteLabelModelCatalog;
+  wallet?: { balanceCredits: number; currency: string } | null;
 };
 
 export type PartnerEconomics = {

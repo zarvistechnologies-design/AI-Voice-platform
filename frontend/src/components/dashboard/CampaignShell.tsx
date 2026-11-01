@@ -471,6 +471,8 @@ export function CampaignShell() {
   const [successCriteria, setSuccessCriteria] = useState("");
   const [respectDnc, setRespectDnc] = useState(true);
   const [detectVoicemail, setDetectVoicemail] = useState(false);
+  const [voicemailAction, setVoicemailAction] = useState<"hangup" | "leave-message">("hangup");
+  const [voicemailMessage, setVoicemailMessage] = useState("");
   const [automaticCallbacks, setAutomaticCallbacks] = useState(true);
   const [requireConsentLine, setRequireConsentLine] = useState(true);
   const [csvFile, setCsvFile] = useState<File | null>(null);
@@ -754,6 +756,8 @@ export function CampaignShell() {
         respectDnc,
         requireConsentLine,
         detectVoicemail,
+        voicemailAction: detectVoicemail ? voicemailAction : "hangup",
+        voicemailMessage: detectVoicemail && voicemailAction === "leave-message" ? voicemailMessage.trim() : "",
         automaticCallbacks,
       });
       const batchSize = 500;
@@ -878,6 +882,8 @@ export function CampaignShell() {
                 onClick={() => {
                   setCreateStep(1);
                   setDetectVoicemail(false);
+                  setVoicemailAction("hangup");
+                  setVoicemailMessage("");
                   setShowCreateCampaign(true);
                   setError("");
                 }}
@@ -1358,17 +1364,53 @@ export function CampaignShell() {
                         </div>
 
                         {detectVoicemail ? (
-                          <div
-                            className="mt-4 flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 px-3.5 py-3 text-sm leading-5 text-amber-900"
-                            role="alert"
-                          >
-                            <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-amber-200 font-bold" aria-hidden="true">
-                              !
-                            </span>
-                            <span>
-                              <strong className="block">Voicemail detection is enabled</strong>
-                              It can occasionally classify a live person as voicemail. Test it with your provider and campaign language before launch.
-                            </span>
+                          <div className="mt-4 rounded-xl border border-[#cfe4df] bg-[#f8fbfa] p-4 text-xs">
+                            <div className="mb-3 flex items-center justify-between">
+                              <span className="font-bold text-[#14231f]">When Voicemail / Answering Machine is Detected (AMD)</span>
+                              <span className="rounded bg-emerald-50 px-2 py-0.5 text-[10px] font-bold uppercase text-[#118778]">Active</span>
+                            </div>
+                            <div className="mb-3 grid gap-2.5 sm:grid-cols-2">
+                              <label className={`flex cursor-pointer items-start gap-2.5 rounded-lg border p-3 transition ${voicemailAction === "hangup" ? "border-[#118778] bg-[#eff8f6] text-[#14231f]" : "border-[#d8e3e0] bg-white text-[#52645f]"}`}>
+                                <input
+                                  type="radio"
+                                  name="voicemailAction"
+                                  value="hangup"
+                                  checked={voicemailAction === "hangup"}
+                                  onChange={() => setVoicemailAction("hangup")}
+                                  className="mt-0.5 accent-[#118778]"
+                                />
+                                <div>
+                                  <strong className="block text-xs font-semibold text-[#14231f]">Hang Up Immediately</strong>
+                                  <span className="text-[11px] text-[#71817d]">Cuts the call in &lt;2s to save talktime costs. Marks lead for automated retry.</span>
+                                </div>
+                              </label>
+                              <label className={`flex cursor-pointer items-start gap-2.5 rounded-lg border p-3 transition ${voicemailAction === "leave-message" ? "border-[#118778] bg-[#eff8f6] text-[#14231f]" : "border-[#d8e3e0] bg-white text-[#52645f]"}`}>
+                                <input
+                                  type="radio"
+                                  name="voicemailAction"
+                                  value="leave-message"
+                                  checked={voicemailAction === "leave-message"}
+                                  onChange={() => setVoicemailAction("leave-message")}
+                                  className="mt-0.5 accent-[#118778]"
+                                />
+                                <div>
+                                  <strong className="block text-xs font-semibold text-[#14231f]">Drop Audio Voicemail</strong>
+                                  <span className="text-[11px] text-[#71817d]">Waits for the beep tone and speaks a customized message.</span>
+                                </div>
+                              </label>
+                            </div>
+                            {voicemailAction === "leave-message" ? (
+                              <div className="mt-2 grid gap-1.5">
+                                <label className="font-semibold text-[#3a4e48]">Voicemail Drop Audio Message:</label>
+                                <textarea
+                                  rows={3}
+                                  value={voicemailMessage}
+                                  onChange={(event) => setVoicemailMessage(event.target.value)}
+                                  placeholder="Hi there! This is calling regarding your recent inquiry. Please check your WhatsApp or call us back on this number. Thank you!"
+                                  className="w-full rounded-lg border border-[#c6d4d0] bg-white p-2.5 text-xs text-[#14231f] shadow-sm outline-none transition placeholder:text-[#8a9894] focus:border-[#118778] focus:ring-2 focus:ring-[#118778]/10"
+                                />
+                              </div>
+                            ) : null}
                           </div>
                         ) : null}
                       </section>

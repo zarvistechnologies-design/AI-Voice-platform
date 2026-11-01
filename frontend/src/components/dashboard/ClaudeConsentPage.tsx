@@ -1,11 +1,27 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
+import { useRouter } from "next/navigation";
 
+import { useBrand } from "@/components/branding/BrandProvider";
 import { DashboardAuthBoundary } from "@/components/dashboard/DashboardAuthBoundary";
+import { getServerSession, getSession, subscribeToSession } from "@/lib/auth";
 import { getMcpConsent, respondToMcpConsent } from "@/lib/assistant";
 
 export function ClaudeConsentPage() {
+  const router = useRouter();
+  const brand = useBrand();
+  const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
+  const isWhiteLabelPartner = Boolean(session?.organization?.whiteLabelOwnerAccountId);
+  const isWhiteLabelCustomer = Boolean(session?.organization?.whiteLabelAccountId);
+  const isEndCustomer = isWhiteLabelCustomer || (brand.source === "white_label" && !isWhiteLabelPartner);
+
+  useEffect(() => {
+    if (isEndCustomer) {
+      router.replace("/dashboard/agents");
+    }
+  }, [isEndCustomer, router]);
+
   const [requestId, setRequestId] = useState("");
   const [clientName, setClientName] = useState("");
   const [workspaceName, setWorkspaceName] = useState("");
@@ -51,6 +67,10 @@ export function ClaudeConsentPage() {
       setError(caught instanceof Error ? caught.message : "Could not complete the connection request.");
       setBusy(false);
     }
+  }
+
+  if (isEndCustomer) {
+    return null;
   }
 
   return (

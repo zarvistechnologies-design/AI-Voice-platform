@@ -266,7 +266,13 @@ export function DashboardSidebar({
   const isSuperAdmin = session?.platformRole === "super_admin";
   const isWhiteLabelPartner = Boolean(session?.organization?.whiteLabelOwnerAccountId);
   const isWhiteLabelCustomer = Boolean(session?.organization?.whiteLabelAccountId);
-  const isPartnerOrCustomer = isWhiteLabelPartner || isWhiteLabelCustomer || brand.source === "white_label";
+  const isEndCustomer = isWhiteLabelCustomer || (brand.source === "white_label" && !isWhiteLabelPartner);
+  const isPartnerOrCustomer =
+    isWhiteLabelPartner ||
+    isWhiteLabelCustomer ||
+    Boolean(session?.organization?.whiteLabelBrandId) ||
+    Boolean(session?.whiteLabel) ||
+    brand.source === "white_label";
 
   const effectiveProductName = isPartnerOrCustomer
     ? (brand.source === "white_label" ? brand.productName : (session?.organization?.name || "Voice Platform"))
@@ -275,36 +281,48 @@ export function DashboardSidebar({
   const rawLogo = brand.source === "white_label" ? (brand.logoDarkUrl || brand.logoUrl) : (isPartnerOrCustomer ? "" : brand.logoUrl);
   const effectiveLogoUrl = isPartnerOrCustomer && rawLogo.includes("logo_2.svg") ? "" : rawLogo;
 
-  const effectiveSidebarGroups = useMemo(() => [
-    ...sidebarGroups,
-    ...(isSuperAdmin || isWhiteLabelPartner
-      ? [
-          {
-            label: "Administration",
-            items: [
-              ...(isWhiteLabelPartner
-                ? [
-                    {
-                      label: "White Label",
-                      href: "/dashboard/white-label",
-                      icon: "whitelabel" as const,
-                    },
-                  ]
-                : []),
-              ...(isSuperAdmin
-                ? [
-                    {
-                      label: "Platform Admin",
-                      href: "/platform-admin/white-label",
-                      icon: "shield" as const,
-                    },
-                  ]
-                : []),
-            ],
-          },
-        ]
-      : []),
-  ], [isSuperAdmin, isWhiteLabelPartner]);
+  const effectiveSidebarGroups = useMemo(() => {
+    const baseGroups = sidebarGroups.map((group) => ({
+      ...group,
+      items: group.items.filter((item) => {
+        if (isEndCustomer && item.href === "/dashboard/assistant") {
+          return false;
+        }
+        return true;
+      }),
+    }));
+
+    return [
+      ...baseGroups,
+      ...(isSuperAdmin || isWhiteLabelPartner
+        ? [
+            {
+              label: "Administration",
+              items: [
+                ...(isWhiteLabelPartner
+                  ? [
+                      {
+                        label: "White Label",
+                        href: "/dashboard/white-label",
+                        icon: "whitelabel" as const,
+                      },
+                    ]
+                  : []),
+                ...(isSuperAdmin
+                  ? [
+                      {
+                        label: "Platform Admin",
+                        href: "/platform-admin/white-label",
+                        icon: "shield" as const,
+                      },
+                    ]
+                  : []),
+              ],
+            },
+          ]
+        : []),
+    ];
+  }, [isSuperAdmin, isWhiteLabelPartner, isEndCustomer]);
 
   useEffect(() => {
     const preloadTimer = window.setTimeout(() => {

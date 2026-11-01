@@ -71,6 +71,58 @@ function titleCase(value: string) {
   return value.replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
+type PlanPresetKey = "basic" | "growth" | "scale" | "custom";
+
+const PARTNER_PLAN_PRESETS: Record<"basic" | "growth" | "scale", {
+  title: string;
+  price: string;
+  gstLabel: string;
+  platformFee: string;
+  includedCredits: string;
+  agents: string;
+  devices: string;
+  markup: string;
+  currency: string;
+  summary: string;
+}> = {
+  basic: {
+    title: "Basic",
+    price: "₹10,000",
+    gstLabel: "+18% GST (₹11,800)",
+    platformFee: "2000",
+    includedCredits: "8000",
+    agents: "10",
+    devices: "3",
+    markup: "10",
+    currency: "INR",
+    summary: "10 Agents · 3 Devices · ₹8,000 Wallet",
+  },
+  growth: {
+    title: "Growth",
+    price: "₹20,000",
+    gstLabel: "+18% GST (₹23,600)",
+    platformFee: "1500",
+    includedCredits: "18500",
+    agents: "30",
+    devices: "5",
+    markup: "7",
+    currency: "INR",
+    summary: "30 Agents · 5 Devices · ₹18,500 Wallet",
+  },
+  scale: {
+    title: "Scale",
+    price: "₹50,000",
+    gstLabel: "+18% GST (₹59,000)",
+    platformFee: "0",
+    includedCredits: "50000",
+    agents: "1000",
+    devices: "10",
+    markup: "5",
+    currency: "INR",
+    summary: "Unlimited Agents · 10 Devices · ₹50,000 Wallet",
+  },
+};
+
 export function PlatformWhiteLabelConsole() {
   const router = useRouter();
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
@@ -86,7 +138,23 @@ export function PlatformWhiteLabelConsole() {
   const [createOpen, setCreateOpen] = useState(false);
   const [workspaceTab, setWorkspaceTab] = useState<WorkspaceTab>("overview");
   const [partnerQuery, setPartnerQuery] = useState("");
-  const [create, setCreate] = useState({ ownerOrgId: "", name: "", slug: "", currency: "USD", platformFee: "499", minimumCommitment: "0", wholesaleMarkup: "10", includedCredits: "0", brands: "1", customerOrganizations: "100", agentsPerCustomer: "25", membersPerCustomer: "25", phoneNumbersPerCustomer: "10", concurrentCallsPerCustomer: "10", monthlyMinutesPerCustomer: "10000", productName: "", companyName: "", primaryColor: "#45ddce", secondaryColor: "#071b18", accentColor: "#75fff0", surfaceColor: "#020807", supportEmail: "" });
+  const [selectedPreset, setSelectedPreset] = useState<PlanPresetKey>("basic");
+  const [create, setCreate] = useState({ ownerOrgId: "", name: "", slug: "", currency: "INR", platformFee: "2000", minimumCommitment: "0", wholesaleMarkup: "10", includedCredits: "8000", brands: "1", customerOrganizations: "100", agentsPerCustomer: "10", membersPerCustomer: "25", phoneNumbersPerCustomer: "10", concurrentCallsPerCustomer: "3", monthlyMinutesPerCustomer: "10000", productName: "", companyName: "", primaryColor: "#45ddce", secondaryColor: "#071b18", accentColor: "#75fff0", surfaceColor: "#020807", supportEmail: "" });
+
+  function selectPreset(key: PlanPresetKey) {
+    setSelectedPreset(key);
+    if (key === "custom") return;
+    const p = PARTNER_PLAN_PRESETS[key];
+    setCreate((prev) => ({
+      ...prev,
+      currency: p.currency,
+      platformFee: p.platformFee,
+      includedCredits: p.includedCredits,
+      agentsPerCustomer: p.agents,
+      concurrentCallsPerCustomer: p.devices,
+      wholesaleMarkup: p.markup,
+    }));
+  }
   const [lifecycle, setLifecycle] = useState({ status: "", billingStatus: "", reason: "" });
   const [commercial, setCommercial] = useState({ platformFee: "", minimumCommitment: "", wholesaleMarkup: "", brands: "", customerOrganizations: "", agentsPerCustomer: "", membersPerCustomer: "", phoneNumbersPerCustomer: "", concurrentCallsPerCustomer: "", monthlyMinutesPerCustomer: "", retailBillingEnabled: false, linkedAccountId: "", transferMode: "disabled", taxRate: "0", taxLabel: "Tax", taxRegistrationId: "", graceDays: "3", reason: "" });
   const [commercialEntitlements, setCommercialEntitlements] = useState<Record<string, boolean>>({});
@@ -121,7 +189,7 @@ export function PlatformWhiteLabelConsole() {
   useEffect(() => {
     if (!session) { router.replace("/login?next=/platform-admin/white-label"); return; }
     void (async () => {
-      const checked = await validateStoredSession({ force: true });
+      const checked = await validateStoredSession();
       if (!checked || checked.platformRole !== "super_admin") { setLoading(false); return; }
       try {
         const [orgResult] = await Promise.all([platformWhiteLabelApi.eligibleOrganizations(), loadAccounts()]);
@@ -129,7 +197,7 @@ export function PlatformWhiteLabelConsole() {
       } catch (error) { setNotice({ error: true, text: error instanceof Error ? error.message : "Could not load platform controls." }); }
       finally { setLoading(false); }
     })();
-  }, [loadAccounts, router, session]);
+  }, [loadAccounts, router, session?.id, session?.platformRole]);
 
   useEffect(() => {
     if (!selectedId || session?.platformRole !== "super_admin") return;
@@ -221,8 +289,57 @@ export function PlatformWhiteLabelConsole() {
     </div>
 
     {createOpen ? <div className="fixed inset-0 z-50 flex justify-end bg-[#0b211c]/35 backdrop-blur-[2px]" role="dialog" aria-modal="true" aria-labelledby="create-partner-title"><button aria-label="Close partner onboarding" className="absolute inset-0 cursor-default" onClick={() => !busy && setCreateOpen(false)} /><form className="relative flex h-full w-full max-w-3xl flex-col bg-[#f7f9f8] shadow-[-24px_0_60px_rgba(13,39,32,0.2)]" onSubmit={createAccount}><div className="flex items-start justify-between gap-4 border-b border-[#dce5e2] bg-white px-5 py-5 sm:px-7"><div><p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#118778]">Partner onboarding</p><h2 className="mt-1 text-xl font-bold text-[#14231f]" id="create-partner-title">Approve a white-label account</h2><p className="mt-1 text-xs text-[#71817d]">Create the contract, capacity and first brand in one review.</p></div><button aria-label="Close" className="grid size-9 place-items-center rounded-lg border border-[#dce5e2] text-[#60716c] hover:bg-[#f5f8f7]" disabled={busy} onClick={() => setCreateOpen(false)} type="button"><Icon name="close" /></button></div><div className="flex-1 overflow-y-auto px-5 py-6 sm:px-7"><div className="grid gap-7">
+      <section className="rounded-xl border border-[#bce0d7] bg-[#edf8f5] p-4 sm:p-5">
+        <div className="mb-3">
+          <h3 className="text-sm font-bold text-[#116f62]">Select Plan Package</h3>
+          <p className="text-[11px] text-[#427b70]">Choose a standard partner package to auto-fill limits, initial wallet credit &amp; wholesale markup, or customize freely.</p>
+        </div>
+        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+          {(["basic", "growth", "scale", "custom"] as const).map((key) => {
+            const isSelected = selectedPreset === key;
+            if (key === "custom") {
+              return (
+                <button
+                  type="button"
+                  key={key}
+                  onClick={() => selectPreset("custom")}
+                  className={`flex flex-col justify-between rounded-lg border p-3 text-left transition ${
+                    isSelected
+                      ? "border-[#118778] bg-white text-[#116f62] shadow-sm ring-2 ring-[#118778]"
+                      : "border-[#cce3dc] bg-white/70 text-[#547069] hover:bg-white"
+                  }`}
+                >
+                  <span className="text-xs font-bold uppercase tracking-wider">Custom</span>
+                  <span className="mt-1 text-sm font-semibold text-[#14231f]">Manual Terms</span>
+                  <span className="mt-0.5 text-[10px] text-[#718a84]">Custom contract</span>
+                </button>
+              );
+            }
+            const p = PARTNER_PLAN_PRESETS[key];
+            return (
+              <button
+                type="button"
+                key={key}
+                onClick={() => selectPreset(key)}
+                className={`flex flex-col justify-between rounded-lg border p-3 text-left transition ${
+                  isSelected
+                    ? "border-[#118778] bg-white text-[#116f62] shadow-sm ring-2 ring-[#118778]"
+                    : "border-[#cce3dc] bg-white/70 text-[#547069] hover:bg-white"
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold uppercase tracking-wider">{p.title}</span>
+                  <span className="text-[10px] font-semibold text-[#118778]">{p.markup}% markup</span>
+                </div>
+                <span className="mt-1 text-sm font-bold text-[#14231f]">{p.price}</span>
+                <span className="mt-0.5 text-[10px] text-[#547069]">{p.summary}</span>
+              </button>
+            );
+          })}
+        </div>
+      </section>
       <section><div className="mb-4 flex items-center gap-3"><span className="grid size-8 place-items-center rounded-lg bg-[#e8f5f1] text-[#118778]"><Icon name="building" /></span><div><h3 className="text-sm font-bold">Partner identity</h3><p className="text-[11px] text-[#84938f]">Connect an eligible Vozon organization.</p></div></div><div className="grid gap-4 sm:grid-cols-2"><div className="sm:col-span-2"><Select title="Eligible owner organization" required value={create.ownerOrgId} onChange={(event) => { const org = organizations.find((item) => documentId(item) === event.target.value); setCreate((value) => ({ ...value, ownerOrgId: event.target.value, name: value.name || org?.name || "", companyName: value.companyName || org?.name || "" })); }}><option value="">Select organization</option>{organizations.map((item) => <option key={documentId(item)} value={documentId(item)}>{item.name} · {item.ownerUserId?.email}</option>)}</Select></div><Input title="Partner account name" required value={create.name} onChange={(event) => setCreate((value) => ({ ...value, name: event.target.value }))} /><Input title="Account slug" placeholder="Generated when blank" value={create.slug} onChange={(event) => setCreate((value) => ({ ...value, slug: event.target.value }))} /></div></section>
-      <section className="border-t border-[#dfe7e4] pt-6"><div className="mb-4 flex items-center gap-3"><span className="grid size-8 place-items-center rounded-lg bg-[#e8f5f1] text-[#118778]"><Icon name="money" /></span><div><h3 className="text-sm font-bold">Commercial terms</h3><p className="text-[11px] text-[#84938f]">The wholesale agreement between Vozon and this partner.</p></div></div><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"><Select title="Currency" value={create.currency} onChange={(event) => setCreate((value) => ({ ...value, currency: event.target.value }))}><option>USD</option><option>INR</option></Select><Input title="Monthly platform fee" min="0" step="0.01" type="number" value={create.platformFee} onChange={(event) => setCreate((value) => ({ ...value, platformFee: event.target.value }))} /><Input title="Minimum commitment" min="0" step="0.01" type="number" value={create.minimumCommitment} onChange={(event) => setCreate((value) => ({ ...value, minimumCommitment: event.target.value }))} /><Input title="Wholesale markup %" min="0" step="0.01" type="number" value={create.wholesaleMarkup} onChange={(event) => setCreate((value) => ({ ...value, wholesaleMarkup: event.target.value }))} /></div></section>
+      <section className="border-t border-[#dfe7e4] pt-6"><div className="mb-4 flex items-center gap-3"><span className="grid size-8 place-items-center rounded-lg bg-[#e8f5f1] text-[#118778]"><Icon name="money" /></span><div><h3 className="text-sm font-bold">Commercial terms</h3><p className="text-[11px] text-[#84938f]">The wholesale agreement between Vozon and this partner.</p></div></div><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5"><Select title="Currency" value={create.currency} onChange={(event) => setCreate((value) => ({ ...value, currency: event.target.value }))}><option>INR</option><option>USD</option></Select><Input title="Monthly platform fee" min="0" step="0.01" type="number" value={create.platformFee} onChange={(event) => setCreate((value) => ({ ...value, platformFee: event.target.value }))} /><Input title="Initial wallet balance" min="0" step="1" type="number" value={create.includedCredits} onChange={(event) => setCreate((value) => ({ ...value, includedCredits: event.target.value }))} /><Input title="Minimum commitment" min="0" step="0.01" type="number" value={create.minimumCommitment} onChange={(event) => setCreate((value) => ({ ...value, minimumCommitment: event.target.value }))} /><Input title="Wholesale markup %" min="0" step="0.01" type="number" value={create.wholesaleMarkup} onChange={(event) => setCreate((value) => ({ ...value, wholesaleMarkup: event.target.value }))} /></div></section>
       <section className="border-t border-[#dfe7e4] pt-6"><div className="mb-4 flex items-center gap-3"><span className="grid size-8 place-items-center rounded-lg bg-[#e8f5f1] text-[#118778]"><Icon name="customers" /></span><div><h3 className="text-sm font-bold">Capacity</h3><p className="text-[11px] text-[#84938f]">Hard limits for the initial contract.</p></div></div><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"><Input title="Brand workspaces" min="1" type="number" value={create.brands} onChange={(event) => setCreate((value) => ({ ...value, brands: event.target.value }))} /><Input title="Customer workspaces" min="1" type="number" value={create.customerOrganizations} onChange={(event) => setCreate((value) => ({ ...value, customerOrganizations: event.target.value }))} /><Input title="Agents per customer" min="1" type="number" value={create.agentsPerCustomer} onChange={(event) => setCreate((value) => ({ ...value, agentsPerCustomer: event.target.value }))} /><Input title="Members per customer" min="1" type="number" value={create.membersPerCustomer} onChange={(event) => setCreate((value) => ({ ...value, membersPerCustomer: event.target.value }))} /><Input title="Numbers per customer" min="0" type="number" value={create.phoneNumbersPerCustomer} onChange={(event) => setCreate((value) => ({ ...value, phoneNumbersPerCustomer: event.target.value }))} /><Input title="Concurrent calls" min="1" type="number" value={create.concurrentCallsPerCustomer} onChange={(event) => setCreate((value) => ({ ...value, concurrentCallsPerCustomer: event.target.value }))} /><Input title="Monthly minutes" min="0" type="number" value={create.monthlyMinutesPerCustomer} onChange={(event) => setCreate((value) => ({ ...value, monthlyMinutesPerCustomer: event.target.value }))} /></div></section>
       <section className="border-t border-[#dfe7e4] pt-6"><div className="mb-4 flex items-center gap-3"><span className="grid size-8 place-items-center rounded-lg bg-[#e8f5f1] text-[#118778]"><Icon name="shield" /></span><div><h3 className="text-sm font-bold">Initial brand</h3><p className="text-[11px] text-[#84938f]">The partner can complete these settings after approval.</p></div></div><div className="grid gap-4 sm:grid-cols-2"><Input title="Product name" required value={create.productName} onChange={(event) => setCreate((value) => ({ ...value, productName: event.target.value }))} /><Input title="Legal company name" required value={create.companyName} onChange={(event) => setCreate((value) => ({ ...value, companyName: event.target.value }))} /><div className="sm:col-span-2"><Input title="Support email" type="email" value={create.supportEmail} onChange={(event) => setCreate((value) => ({ ...value, supportEmail: event.target.value }))} /></div><div className="sm:col-span-2"><p className="mb-2 text-xs font-semibold text-[#52645f]">Initial palette</p><div className="flex flex-wrap gap-3">{([['primaryColor', 'Primary'], ['secondaryColor', 'Secondary'], ['accentColor', 'Accent'], ['surfaceColor', 'Surface']] as const).map(([key, text]) => <label className="flex items-center gap-2 rounded-lg border border-[#dbe4e1] bg-white p-2 pr-3 text-xs font-semibold text-[#60716c]" key={key}><input aria-label={`${text} color`} className="size-7 cursor-pointer rounded border-0 bg-transparent p-0" type="color" value={create[key]} onChange={(event) => setCreate((value) => ({ ...value, [key]: event.target.value }))} />{text}</label>)}</div></div></div></section>
     </div></div><div className="flex flex-col-reverse gap-3 border-t border-[#dce5e2] bg-white px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-7"><p className="text-[11px] leading-5 text-[#84938f]">The partner starts in onboarding status and completes domain and brand verification.</p><div className="flex gap-3"><button className={secondary} disabled={busy} onClick={() => setCreateOpen(false)} type="button">Cancel</button><button className={primary} disabled={busy || !create.ownerOrgId}>{busy ? "Creating…" : "Approve partner"}</button></div></div></form></div> : null}

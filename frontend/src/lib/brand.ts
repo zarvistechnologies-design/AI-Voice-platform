@@ -31,3 +31,10 @@ export const defaultBrand: BrandConfig = {
   poweredBy: { visible: false, text: "" },
   authentication: { registrationMode: "open", googleSignIn: true },
 };
+
+export function brandMonogramFavicon(productName?: string, primaryColor?: string): string {
+  const char = (productName || "P").trim().charAt(0).toUpperCase() || "P";
+  const bg = primaryColor || "#118778";
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="${bg}"/><text x="32" y="44" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif" font-size="34" font-weight="bold" fill="#ffffff" text-anchor="middle">${char}</text></svg>`;
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+}

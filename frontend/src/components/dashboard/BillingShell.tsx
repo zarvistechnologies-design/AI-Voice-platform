@@ -72,7 +72,7 @@ export function BillingShell() {
       if (credits === "cancelled") setNotice("Credit purchase was cancelled.");
     }, 0);
     return () => window.clearTimeout(timer);
-  }, [load, router, session]);
+  }, [load, router, session?.id, session?.organization?.id]);
 
   const wallet = data?.wallet;
   const inrPerUsd = data?.inrPerUsd && data.inrPerUsd > 0 ? data.inrPerUsd : 96.5;
@@ -94,6 +94,10 @@ export function BillingShell() {
   async function purchaseCredits() {
     if (!data?.configured) {
       setNotice("INR checkout is unavailable until Razorpay API keys are configured.");
+      return;
+    }
+    if (!selectedTopUp || selectedTopUp < 2_000 || selectedTopUp > 1_000_000) {
+      setNotice("Please choose or enter a recharge amount between ₹2,000 and ₹10,00,000.");
       return;
     }
     setBusy("topup");
@@ -223,53 +227,192 @@ export function BillingShell() {
         <div className="grid w-full gap-5 px-4 py-4 sm:px-5 lg:px-6">
           {notice ? <div className="rounded-lg border border-[#b8c8c3] bg-[#edf7f4] px-4 py-3 text-sm font-semibold text-[#123d35]">{notice}</div> : null}
 
-          {data?.whiteLabel?.managedByPartner ? (
-            <section className="overflow-hidden rounded-xl border border-[#dbe4e1] bg-white p-6 shadow-sm">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <span className="app-label text-[#0e6f62]">Subscription & Plan</span>
-                  <h2 className="mt-2 text-2xl font-bold tracking-tight text-[#14231f]">
-                    {data.currentPlan?.name ?? (data.subscription?.plan ? data.subscription.plan.replaceAll("_", " ") : "Active Plan")}
-                  </h2>
-                  <p className="mt-1 text-sm text-[#71817d]">
-                    Your workspace is provided and managed directly by <strong className="text-[#14231f]">{data.whiteLabel.productName}</strong>.
-                  </p>
-                </div>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-emerald-700 ring-1 ring-emerald-200">
-                  <span className="size-1.5 rounded-full bg-emerald-600" />
-                  {data.subscription?.status?.replaceAll("_", " ") ?? "Active"}
-                </span>
-              </div>
+          {data?.whiteLabel?.managedByPartner ? (() => {
+            const planLimits = (data.currentPlan?.limits ?? {}) as Record<string, number | undefined>;
+            const minutesUsed = Math.round(data.usage?.minutes ?? 0);
+            const minutesLimit = Number(planLimits.monthlyMinutes ?? 0);
+            const minutesPercent = minutesLimit > 0 ? Math.min(100, Math.round((minutesUsed / minutesLimit) * 100)) : 0;
 
-              <div className="mt-6 grid gap-4 border-t border-[#dbe4e1] pt-6 sm:grid-cols-3">
-                <div className="rounded-lg border border-[#e1e8e6] bg-[#f8fbfa] p-4">
-                  <p className="text-xs font-medium text-[#71817d]">Calls Handled</p>
-                  <p className="mt-1 text-xl font-bold text-[#14231f]">
-                    {data.usage?.calls ?? 0}
-                  </p>
+            const agentsUsed = Number(data.usage?.agents ?? 0);
+            const agentsLimit = Number(planLimits.agents ?? 0);
+            const agentsPercent = agentsLimit > 0 ? Math.min(100, Math.round((agentsUsed / agentsLimit) * 100)) : 0;
+
+            const callsCount = Number(data.usage?.calls ?? 0);
+            const concurrentLines = Number(planLimits.concurrentCalls ?? 1);
+
+            return (
+              <section className="overflow-hidden rounded-xl border border-[#dbe4e1] bg-white p-6 shadow-sm">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <span className="app-label text-[#0e6f62]">Subscription & Plan</span>
+                    <h2 className="mt-2 text-2xl font-bold tracking-tight text-[#14231f]">
+                      {data.currentPlan?.name ?? (data.subscription?.plan ? data.subscription.plan.replaceAll("_", " ") : "Active Plan")}
+                    </h2>
+                    <p className="mt-1 text-sm text-[#71817d]">
+                      Your workspace is provided and managed directly by <strong className="text-[#14231f]">{data.whiteLabel.productName}</strong>.
+                    </p>
+                  </div>
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-emerald-700 ring-1 ring-emerald-200">
+                    <span className="size-1.5 rounded-full bg-emerald-600" />
+                    {data.subscription?.status?.replaceAll("_", " ") ?? "Active"}
+                  </span>
                 </div>
-                <div className="rounded-lg border border-[#e1e8e6] bg-[#f8fbfa] p-4">
-                  <p className="text-xs font-medium text-[#71817d]">Minutes Used</p>
-                  <p className="mt-1 text-xl font-bold text-[#14231f]">
-                    {Math.round(data.usage?.minutes ?? 0)} min
-                  </p>
+
+                {minutesLimit > 0 && minutesPercent >= 80 ? (
+                  <div className={`mt-5 flex items-start gap-3 rounded-xl border p-4 text-xs ${
+                    minutesPercent >= 90
+                      ? "border-rose-200 bg-rose-50 text-rose-900"
+                      : "border-amber-200 bg-amber-50 text-amber-900"
+                  }`}>
+                    <span className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-full text-xs font-bold ${
+                      minutesPercent >= 90 ? "bg-rose-200 text-rose-800" : "bg-amber-200 text-amber-800"
+                    }`}>
+                      !
+                    </span>
+                    <div className="flex-1">
+                      <strong className="block font-bold">
+                        {minutesPercent >= 100
+                          ? `Monthly voice minutes limit reached (${minutesUsed} / ${minutesLimit} min)`
+                          : `Approaching voice minutes limit: ${minutesPercent}% used (${minutesUsed} / ${minutesLimit} min)`}
+                      </strong>
+                      <p className="mt-1 leading-5">
+                        To ensure uninterrupted service for your live voice agents, reach out to your provider
+                        {data.whiteLabel.supportEmail ? (
+                          <> at <a href={`mailto:${data.whiteLabel.supportEmail}?subject=Voice%20Minutes%20Upgrade%20Request`} className="font-semibold underline hover:opacity-80">{data.whiteLabel.supportEmail}</a></>
+                        ) : null}{" "}
+                        to add more minutes.
+                      </p>
+                    </div>
+                    {data.whiteLabel.supportEmail ? (
+                      <a
+                        href={`mailto:${data.whiteLabel.supportEmail}?subject=Voice%20Minutes%20Upgrade%20Request`}
+                        className={`shrink-0 rounded-lg px-3 py-1.5 text-xs font-semibold shadow-sm transition ${
+                          minutesPercent >= 90
+                            ? "bg-rose-700 text-white hover:bg-rose-800"
+                            : "bg-amber-700 text-white hover:bg-amber-800"
+                        }`}
+                      >
+                        Request Upgrade
+                      </a>
+                    ) : null}
+                  </div>
+                ) : null}
+
+                <div className="mt-6 grid gap-4 border-t border-[#dbe4e1] pt-6 sm:grid-cols-2 lg:grid-cols-4">
+                  {/* Card 1: Monthly Minutes Quota */}
+                  <div className="flex flex-col justify-between rounded-xl border border-[#e1e8e6] bg-[#f8fbfa] p-4">
+                    <div>
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-semibold text-[#647771]">Voice Minutes</span>
+                        {minutesLimit > 0 ? (
+                          <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${
+                            minutesPercent >= 90
+                              ? "bg-rose-100 text-rose-700"
+                              : minutesPercent >= 75
+                              ? "bg-amber-100 text-amber-700"
+                              : "bg-emerald-100 text-emerald-700"
+                          }`}>
+                            {minutesPercent}% used
+                          </span>
+                        ) : null}
+                      </div>
+                      <p className="mt-2 text-2xl font-bold text-[#14231f]">
+                        {minutesUsed.toLocaleString()} <span className="text-xs font-normal text-[#71817d]">{minutesLimit > 0 ? `/ ${minutesLimit.toLocaleString()} min` : "min"}</span>
+                      </p>
+                    </div>
+                    {minutesLimit > 0 ? (
+                      <div className="mt-3">
+                        <div className="h-2 w-full overflow-hidden rounded-full bg-[#e3ece9]">
+                          <div
+                            className={`h-full rounded-full transition-all duration-500 ${
+                              minutesPercent >= 90
+                                ? "bg-gradient-to-r from-rose-500 to-rose-600"
+                                : minutesPercent >= 75
+                                ? "bg-gradient-to-r from-amber-500 to-amber-600"
+                                : "bg-gradient-to-r from-[#118778] to-[#1bb5a2]"
+                            }`}
+                            style={{ width: `${minutesPercent}%` }}
+                          />
+                        </div>
+                        <div className="mt-1 flex justify-between text-[10px] text-[#71817d]">
+                          <span>{minutesUsed} used</span>
+                          <span>{Math.max(0, minutesLimit - minutesUsed)} left</span>
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+
+                  {/* Card 2: AI Voice Agents Quota */}
+                  <div className="flex flex-col justify-between rounded-xl border border-[#e1e8e6] bg-[#f8fbfa] p-4">
+                    <div>
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-semibold text-[#647771]">AI Voice Agents</span>
+                        {agentsLimit > 0 ? (
+                          <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${
+                            agentsPercent >= 90 ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"
+                          }`}>
+                            {agentsPercent}% quota
+                          </span>
+                        ) : null}
+                      </div>
+                      <p className="mt-2 text-2xl font-bold text-[#14231f]">
+                        {agentsUsed} <span className="text-xs font-normal text-[#71817d]">{agentsLimit > 0 ? `/ ${agentsLimit} allowed` : "active"}</span>
+                      </p>
+                    </div>
+                    {agentsLimit > 0 ? (
+                      <div className="mt-3">
+                        <div className="h-2 w-full overflow-hidden rounded-full bg-[#e3ece9]">
+                          <div
+                            className="h-full rounded-full bg-gradient-to-r from-[#118778] to-[#1bb5a2] transition-all duration-500"
+                            style={{ width: `${agentsPercent}%` }}
+                          />
+                        </div>
+                        <div className="mt-1 flex justify-between text-[10px] text-[#71817d]">
+                          <span>{agentsUsed} deployed</span>
+                          <span>{Math.max(0, agentsLimit - agentsUsed)} available</span>
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+
+                  {/* Card 3: Calls & Concurrency */}
+                  <div className="flex flex-col justify-between rounded-xl border border-[#e1e8e6] bg-[#f8fbfa] p-4">
+                    <div>
+                      <span className="text-xs font-semibold text-[#647771]">Calls Handled</span>
+                      <p className="mt-2 text-2xl font-bold text-[#14231f]">
+                        {callsCount.toLocaleString()} <span className="text-xs font-normal text-[#71817d]">calls</span>
+                      </p>
+                    </div>
+                    <div className="mt-3 rounded-lg border border-[#e1ece8] bg-white px-3 py-1.5 text-[11px] text-[#52645f]">
+                      Concurrency limit: <strong className="text-[#14231f]">{concurrentLines} line{concurrentLines > 1 ? "s" : ""}</strong>
+                    </div>
+                  </div>
+
+                  {/* Card 4: Support & Upgrades */}
+                  <div className="flex flex-col justify-between rounded-xl border border-[#e1e8e6] bg-[#f8fbfa] p-4">
+                    <div>
+                      <span className="text-xs font-semibold text-[#647771]">Plan & Upgrades</span>
+                      <p className="mt-1 text-[11px] text-[#71817d]">
+                        Managed by {data.whiteLabel.productName}. Need more capacity or minutes?
+                      </p>
+                    </div>
+                    <div className="mt-3">
+                      {data.whiteLabel.supportEmail ? (
+                        <a
+                          href={`mailto:${data.whiteLabel.supportEmail}?subject=Plan%20Upgrade%20Inquiry%20-${encodeURIComponent(session?.organization?.name || "Customer")}`}
+                          className="inline-flex w-full items-center justify-center rounded-lg bg-[#118778] px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition hover:bg-[#0e7467]"
+                        >
+                          Contact Support
+                        </a>
+                      ) : (
+                        <span className="text-xs font-semibold text-[#14231f]">Contact provider administrator</span>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <div className="rounded-lg border border-[#e1e8e6] bg-[#f8fbfa] p-4">
-                  <p className="text-xs font-medium text-[#71817d]">Support & Upgrades</p>
-                  {data.whiteLabel.supportEmail ? (
-                    <a
-                      href={`mailto:${data.whiteLabel.supportEmail}`}
-                      className="mt-1 block truncate text-sm font-semibold text-[#118778] hover:underline"
-                    >
-                      {data.whiteLabel.supportEmail}
-                    </a>
-                  ) : (
-                    <p className="mt-1 text-sm font-semibold text-[#14231f]">Contact Provider</p>
-                  )}
-                </div>
-              </div>
-            </section>
-          ) : (
+              </section>
+            );
+          })() : (
             <>
               {data?.paymentReadiness ? (
                 <section className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-[#dbe4e1] bg-white px-5 py-4">
@@ -288,10 +431,56 @@ export function BillingShell() {
                   <div className="grid gap-3 border-t border-[#dbe4e1] pt-5 md:border-t-0 md:border-l md:pt-0 md:pl-6">
                     <span className="app-label">Add credits</span>
                     <div className="grid grid-cols-3 gap-2">
-                      {topUpOptions.map((amount) => <button className={`min-h-10 rounded-lg border text-sm font-semibold ${selectedTopUp === amount ? "border-[#118778] bg-[#edf7f4] text-[#0e6f62]" : "border-[#dbe4e1] bg-white text-[#52645f] hover:border-[#118778]/60"}`} key={amount} type="button" aria-pressed={selectedTopUp === amount} onClick={() => setSelectedTopUp(amount)}>{money(amount)}</button>)}
+                      {topUpOptions.map((amount) => (
+                        <button
+                          className={`min-h-10 rounded-lg border text-sm font-semibold transition ${
+                            selectedTopUp === amount
+                              ? "border-[#118778] bg-[#edf7f4] text-[#0e6f62] shadow-sm font-bold"
+                              : "border-[#dbe4e1] bg-white text-[#52645f] hover:border-[#118778]/60"
+                          }`}
+                          key={amount}
+                          type="button"
+                          aria-pressed={selectedTopUp === amount}
+                          onClick={() => setSelectedTopUp(amount)}
+                        >
+                          {money(amount)}
+                        </button>
+                      ))}
                     </div>
-                    <button className="min-h-11 rounded-lg bg-[#118778] px-4 text-sm font-semibold text-white hover:bg-[#0e6f62] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup" || !data?.configured}>{busy === "topup" ? "Opening checkout..." : `Add ${money(selectedTopUp)} credits`}</button>
-                    <p className="app-caption m-0">18% GST is added securely at checkout.</p>
+                    <div className="relative">
+                      <label htmlFor="custom-topup-input" className="block text-[11px] font-semibold text-[#647771] mb-1">
+                        Or enter manual amount (₹2,000 – ₹10,00,000)
+                      </label>
+                      <div className="relative flex items-center">
+                        <span className="pointer-events-none absolute left-3 text-sm font-bold text-[#71817d]">₹</span>
+                        <input
+                          id="custom-topup-input"
+                          type="number"
+                          min={2000}
+                          max={1000000}
+                          step={500}
+                          value={selectedTopUp || ""}
+                          onChange={(e) => setSelectedTopUp(Number(e.target.value))}
+                          placeholder="Enter manual top-up amount"
+                          className="w-full rounded-lg border border-[#c6d4d0] bg-white py-2 pl-7 pr-3 text-sm font-semibold text-[#14231f] outline-none transition focus:border-[#118778] focus:ring-1 focus:ring-[#118778]"
+                        />
+                      </div>
+                    </div>
+                    <button
+                      className="min-h-11 rounded-lg bg-[#118778] px-4 text-sm font-semibold text-white transition hover:bg-[#0e6f62] disabled:cursor-not-allowed disabled:opacity-50 shadow-sm"
+                      type="button"
+                      onClick={() => void purchaseCredits()}
+                      disabled={busy === "topup" || !data?.configured || selectedTopUp < 2000 || selectedTopUp > 1000000}
+                    >
+                      {busy === "topup"
+                        ? "Opening checkout..."
+                        : selectedTopUp < 2000
+                        ? "Min recharge is ₹2,000"
+                        : selectedTopUp > 1000000
+                        ? "Max recharge is ₹10,00,000"
+                        : `Add ${money(selectedTopUp)} credits`}
+                    </button>
+                    <p className="app-caption m-0">18% GST is added securely at checkout via Razorpay.</p>
                   </div>
                 </div>
                 <dl className="grid border-t border-[#dbe4e1] sm:grid-cols-2 lg:grid-cols-4">
