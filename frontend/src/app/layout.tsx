@@ -134,42 +134,6 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       <html lang="en" data-scroll-behavior="smooth" className={fontClasses}>
         <head>
           <meta name="facebook-domain-verification" content="hs7xv0aby3bor2uybe6y440jg6wnkk" />
-          <script
-            id="brand-early-favicon-init"
-            dangerouslySetInnerHTML={{
-              __html: `
-                (function() {
-                  try {
-                    var raw = localStorage.getItem("ai_voice_platform_session");
-                    if (!raw) return;
-                    var s = JSON.parse(raw);
-                    var org = s && s.organization;
-                    var isWL = Boolean((org && (org.whiteLabelAccountId || org.whiteLabelOwnerAccountId)) || (s && s.whiteLabel));
-                    var brand = (org && org.brand) || (s && s.whiteLabel && s.whiteLabel.brand);
-                    if (!isWL && !brand) return;
-                    var icon = brand && (brand.iconUrl || brand.logoDarkUrl || brand.logoUrl);
-                    if (!icon || icon.indexOf("logo_2.svg") !== -1 || icon.indexOf("vozon-mark") !== -1 || icon.indexOf("favicon.ico") !== -1) {
-                      var name = (brand && brand.productName) || (org && org.name) || "P";
-                      var char = (name || "P").trim().charAt(0).toUpperCase() || "P";
-                      var col = (brand && brand.colors && brand.colors.primary) || "#118778";
-                      var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="' + col + '"/><text x="32" y="44" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif" font-size="34" font-weight="bold" fill="#ffffff" text-anchor="middle">' + char + '</text></svg>';
-                      icon = "data:image/svg+xml," + encodeURIComponent(svg);
-                    }
-                    if (icon) {
-                      var old = document.querySelectorAll("link[rel*='icon'], link[rel='apple-touch-icon']");
-                      for (var i = 0; i < old.length; i++) {
-                        if (old[i].parentNode) old[i].parentNode.removeChild(old[i]);
-                      }
-                      var el = document.createElement("link");
-                      el.rel = "icon";
-                      el.href = icon;
-                      document.head.appendChild(el);
-                    }
-                  } catch (e) {}
-                })();
-              `,
-            }}
-          />
         </head>
         <body className="flex min-h-full flex-col bg-background text-foreground">
           <MetaPixel />
@@ -220,13 +184,16 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                     }
                     if (icon) {
                       var old = document.querySelectorAll("link[rel*='icon'], link[rel='apple-touch-icon']");
-                      for (var i = 0; i < old.length; i++) {
-                        if (old[i].parentNode) old[i].parentNode.removeChild(old[i]);
+                      if (old.length > 0) {
+                        for (var i = 0; i < old.length; i++) {
+                          old[i].href = icon;
+                        }
+                      } else {
+                        var el = document.createElement("link");
+                        el.rel = "icon";
+                        el.href = icon;
+                        document.head.appendChild(el);
                       }
-                      var el = document.createElement("link");
-                      el.rel = "icon";
-                      el.href = icon;
-                      document.head.appendChild(el);
                     }
                   } catch (e) {}
                 })();

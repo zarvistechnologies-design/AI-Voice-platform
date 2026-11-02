@@ -70,17 +70,9 @@ export function DashboardWorkspaceBar() {
   const workspaceName =
     session.organization?.name || `${session.name}'s workspace`;
 
-  const isWhiteLabel =
-    brand.source === "white_label" ||
-    Boolean(
-      session.organization?.whiteLabelOwnerAccountId ||
-      session.organization?.whiteLabelAccountId ||
-      session.organization?.whiteLabelBrandId,
-    );
-
+  const isWhiteLabel = brand.source === "white_label";
   const rawLogo = brand.iconUrl || brand.logoDarkUrl || brand.logoUrl;
-  const isVozonFallback = rawLogo.includes("logo_2.svg") || rawLogo.includes("vozon-mark");
-  const brandIconUrl = (!isWhiteLabel || !isVozonFallback) ? rawLogo : "";
+  const brandIconUrl = rawLogo;
   const brandName = isWhiteLabel ? (brand.productName || "Voice Platform") : "Vozon";
 
   return (

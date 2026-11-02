@@ -263,23 +263,17 @@ export function DashboardSidebar({
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
   const accountMenuRef = useRef<HTMLDivElement>(null);
 
+  const isWhiteLabelDomain = brand.source === "white_label";
   const isSuperAdmin = session?.platformRole === "super_admin";
   const isWhiteLabelPartner = Boolean(session?.organization?.whiteLabelOwnerAccountId);
   const isWhiteLabelCustomer = Boolean(session?.organization?.whiteLabelAccountId);
-  const isEndCustomer = isWhiteLabelCustomer || (brand.source === "white_label" && !isWhiteLabelPartner);
-  const isPartnerOrCustomer =
-    isWhiteLabelPartner ||
-    isWhiteLabelCustomer ||
-    Boolean(session?.organization?.whiteLabelBrandId) ||
-    Boolean(session?.whiteLabel) ||
-    brand.source === "white_label";
+  const isEndCustomer = isWhiteLabelDomain && isWhiteLabelCustomer && !isWhiteLabelPartner;
+  const isPartnerOrCustomer = isWhiteLabelDomain && (isWhiteLabelPartner || isWhiteLabelCustomer);
 
-  const effectiveProductName = isPartnerOrCustomer
-    ? (brand.source === "white_label" ? brand.productName : (session?.organization?.name || "Voice Platform"))
-    : brand.productName;
-
-  const rawLogo = brand.source === "white_label" ? (brand.logoDarkUrl || brand.logoUrl) : (isPartnerOrCustomer ? "" : brand.logoUrl);
-  const effectiveLogoUrl = isPartnerOrCustomer && rawLogo.includes("logo_2.svg") ? "" : rawLogo;
+  const effectiveProductName = isWhiteLabelDomain ? brand.productName : "Vozon";
+  const effectiveLogoUrl = isWhiteLabelDomain
+    ? (brand.logoDarkUrl || brand.logoUrl)
+    : (brand.logoDarkUrl || brand.logoUrl || "/images/logo_2.svg");
 
   const effectiveSidebarGroups = useMemo(() => {
     const baseGroups = sidebarGroups.map((group) => ({
