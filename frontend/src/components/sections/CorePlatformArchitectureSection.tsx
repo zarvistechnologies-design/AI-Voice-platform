@@ -11,7 +11,7 @@ interface LayerData {
   tagline: string;
   badge: string;
   accentColor: string;
-  borderAccent: string;
+  badgeStyle: string;
   bgGlow: string;
   points: {
     title: string;
@@ -34,9 +34,9 @@ const architectureLayers: LayerData[] = [
     name: "The Perception Layer",
     tagline: "Acoustic & Sensory Intelligence",
     badge: "<120ms Barge-In • Full-Duplex",
-    accentColor: "text-[#38bdf8]",
-    borderAccent: "border-[#38bdf8]/30",
-    bgGlow: "rgba(56, 189, 248, 0.08)",
+    accentColor: "text-[#0284c7]",
+    badgeStyle: "bg-sky-50 text-sky-800 border-sky-200",
+    bgGlow: "rgba(2, 132, 199, 0.05)",
     points: [
       {
         title: "Real-Time Full-Duplex WebSockets with LiveKit audio pipelines",
@@ -87,9 +87,9 @@ const audioStream = new LiveKit.AudioReceiver({
     name: "The Cognitive Layer",
     tagline: "Autonomous Planning & Reasoning",
     badge: "Multi-LLM ReAct • Strict Schema",
-    accentColor: "text-[#d4ff3f]",
-    borderAccent: "border-[#d4ff3f]/30",
-    bgGlow: "rgba(212, 255, 63, 0.08)",
+    accentColor: "text-[#658206]",
+    badgeStyle: "bg-lime-50 text-lime-900 border-lime-200",
+    bgGlow: "rgba(101, 130, 6, 0.05)",
     points: [
       {
         title: "Low-latency LLM orchestration (Gemini 2.0 Flash, GPT-4o, Claude 3.5 Sonnet, Sarvam Indic)",
@@ -139,9 +139,9 @@ const cognitiveAgent = new AgenticReasoningCore({
     name: "The Execution Layer",
     tagline: "Telephony & Business Infrastructure",
     badge: "Native RFC 3261 • BYOC Carriers",
-    accentColor: "text-[#c084fc]",
-    borderAccent: "border-[#c084fc]/30",
-    bgGlow: "rgba(192, 132, 252, 0.08)",
+    accentColor: "text-[#7e22ce]",
+    badgeStyle: "bg-purple-50 text-purple-900 border-purple-200",
+    bgGlow: "rgba(126, 34, 206, 0.05)",
     points: [
       {
         title: "Native RFC 3261 Custom SIP Trunking (BYOC: Telnyx, Twilio, Plivo, Asterisk, VICIdial)",
@@ -194,60 +194,60 @@ export function CorePlatformArchitectureSection() {
   const [selectedModel, setSelectedModel] = useState<"Gemini 2.0 Flash" | "GPT-4o" | "Claude 3.5 Sonnet" | "Sarvam Indic">("Gemini 2.0 Flash");
 
   return (
-    <section id="architecture" className="relative bg-[#0e0e0c] py-20 text-white md:py-28 overflow-hidden border-t border-b border-[#22221f]">
+    <section id="architecture" className="relative bg-white py-20 text-ink md:py-28 overflow-hidden border-t border-b border-line">
       {/* Subtle Background Glows */}
       <div
-        className="pointer-events-none absolute -top-40 left-1/4 h-[500px] w-[500px] rounded-full blur-[140px] opacity-15"
-        style={{ background: "radial-gradient(circle, #38bdf8 0%, transparent 70%)" }}
+        className="pointer-events-none absolute -top-40 left-1/4 h-[500px] w-[500px] rounded-full blur-[140px] opacity-25"
+        style={{ background: "radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, transparent 70%)" }}
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute -bottom-40 right-1/4 h-[500px] w-[500px] rounded-full blur-[140px] opacity-15"
-        style={{ background: "radial-gradient(circle, #d4ff3f 0%, transparent 70%)" }}
+        className="pointer-events-none absolute -bottom-40 right-1/4 h-[500px] w-[500px] rounded-full blur-[140px] opacity-25"
+        style={{ background: "radial-gradient(circle, rgba(129, 161, 11, 0.12) 0%, transparent 70%)" }}
         aria-hidden="true"
       />
 
-      <div className="container-x relative">
+      <div className="container-x relative z-10">
         {/* Section Header */}
-        <div className="flex flex-wrap items-end justify-between gap-6 border-b border-[#22221f] pb-8">
+        <div className="flex flex-wrap items-end justify-between gap-6 border-b border-line pb-8">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#d4ff3f]/30 bg-[#d4ff3f]/10 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-[#d4ff3f]">
-              <span className="inline-block size-2 rounded-full bg-[#d4ff3f] animate-pulse" />
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#81a10b]/30 bg-[#81a10b]/10 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-[#658206]">
+              <span className="inline-block size-2 rounded-full bg-[#81a10b] animate-pulse" />
               Core Platform Architecture // For Enterprise CTOs &amp; Product Heads
             </div>
-            <h2 className="display-lg mt-4 text-[clamp(1.85rem,3.4vw,3.25rem)] font-bold leading-tight tracking-tight text-white">
-              The Three-Layer <span className="text-[#d4ff3f]">Agentic Engine</span>.
+            <h2 className="display-lg mt-4 text-[clamp(1.85rem,3.4vw,3.25rem)] font-bold leading-tight tracking-tight text-ink">
+              The Three-Layer <span className="text-[#658206]">Agentic Engine</span>.
             </h2>
-            <p className="mt-4 text-sm sm:text-base text-white/70 leading-relaxed max-w-2xl">
+            <p className="mt-4 text-sm sm:text-base text-muted leading-relaxed max-w-2xl">
               When speaking to CTOs, Product Heads, or Agency Founders, highlight the Three-Layer Agentic Engine: isolated acoustic perception, autonomous cognitive planning, and carrier-grade RFC 3261 telephony execution.
             </p>
           </div>
 
           {/* Quick Technical SLA Badges */}
           <div className="flex flex-wrap items-center gap-2 font-mono text-[11px]">
-            <span className="rounded-md border border-white/10 bg-[#161614] px-2.5 py-1 text-white/70">
+            <span className="rounded-md border border-line bg-paper px-2.5 py-1 text-ink/80 shadow-xs">
               ⚡ &lt;120ms Barge-In
             </span>
-            <span className="rounded-md border border-white/10 bg-[#161614] px-2.5 py-1 text-white/70">
+            <span className="rounded-md border border-line bg-paper px-2.5 py-1 text-ink/80 shadow-xs">
               📞 RFC 3261 SIP (BYOC)
             </span>
-            <span className="rounded-md border border-white/10 bg-[#161614] px-2.5 py-1 text-white/70">
+            <span className="rounded-md border border-line bg-paper px-2.5 py-1 text-ink/80 shadow-xs">
               🔒 Multi-Tenant Isolated
             </span>
           </div>
         </div>
 
         {/* Layer View Mode Switcher Pills */}
-        <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-b border-[#1c1c1a] pb-4">
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-b border-line pb-4">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="font-mono text-xs uppercase tracking-wider text-white/50 mr-2">Layer View:</span>
+            <span className="font-mono text-xs uppercase tracking-wider text-muted mr-2">Layer View:</span>
             <button
               type="button"
               onClick={() => setActiveTab("all")}
-              className={`rounded-lg px-3.5 py-1.5 text-xs font-medium transition-all ${
+              className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all ${
                 activeTab === "all"
-                  ? "bg-[#d4ff3f] text-[#0e0e0c] font-bold shadow-[0_0_12px_rgba(212,255,63,0.3)]"
-                  : "bg-[#181816] text-white/70 hover:bg-[#22221f] hover:text-white"
+                  ? "bg-ink text-white font-bold shadow-xs"
+                  : "bg-paper border border-line text-muted hover:bg-paper-2 hover:text-ink"
               }`}
             >
               ✦ Full 3-Layer Stack
@@ -255,10 +255,10 @@ export function CorePlatformArchitectureSection() {
             <button
               type="button"
               onClick={() => setActiveTab("perception")}
-              className={`rounded-lg px-3.5 py-1.5 text-xs font-medium transition-all ${
+              className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all ${
                 activeTab === "perception"
-                  ? "bg-[#38bdf8] text-[#0e0e0c] font-bold shadow-[0_0_12px_rgba(56,189,248,0.3)]"
-                  : "bg-[#181816] text-white/70 hover:bg-[#22221f] hover:text-white"
+                  ? "bg-[#0284c7] text-white font-bold shadow-xs"
+                  : "bg-paper border border-line text-muted hover:bg-paper-2 hover:text-ink"
               }`}
             >
               1. Perception Layer
@@ -266,10 +266,10 @@ export function CorePlatformArchitectureSection() {
             <button
               type="button"
               onClick={() => setActiveTab("cognitive")}
-              className={`rounded-lg px-3.5 py-1.5 text-xs font-medium transition-all ${
+              className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all ${
                 activeTab === "cognitive"
-                  ? "bg-[#d4ff3f] text-[#0e0e0c] font-bold shadow-[0_0_12px_rgba(212,255,63,0.3)]"
-                  : "bg-[#181816] text-white/70 hover:bg-[#22221f] hover:text-white"
+                  ? "bg-[#658206] text-white font-bold shadow-xs"
+                  : "bg-paper border border-line text-muted hover:bg-paper-2 hover:text-ink"
               }`}
             >
               2. Cognitive Layer
@@ -277,17 +277,17 @@ export function CorePlatformArchitectureSection() {
             <button
               type="button"
               onClick={() => setActiveTab("execution")}
-              className={`rounded-lg px-3.5 py-1.5 text-xs font-medium transition-all ${
+              className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all ${
                 activeTab === "execution"
-                  ? "bg-[#c084fc] text-[#0e0e0c] font-bold shadow-[0_0_12px_rgba(192,132,252,0.3)]"
-                  : "bg-[#181816] text-white/70 hover:bg-[#22221f] hover:text-white"
+                  ? "bg-[#7e22ce] text-white font-bold shadow-xs"
+                  : "bg-paper border border-line text-muted hover:bg-paper-2 hover:text-ink"
               }`}
             >
               3. Execution Layer
             </button>
           </div>
 
-          <div className="hidden sm:flex items-center gap-2 font-mono text-[11px] text-white/40">
+          <div className="hidden sm:flex items-center gap-2 font-mono text-[11px] text-muted">
             <span>RFC 3261</span>
             <span>•</span>
             <span>LiveKit WebSockets</span>
@@ -303,27 +303,24 @@ export function CorePlatformArchitectureSection() {
             .map((layer) => (
               <div
                 key={layer.id}
-                className="group relative rounded-2xl border border-[#232320] bg-[#141412] p-6 sm:p-8 transition-all hover:border-[#383832]"
-                style={{
-                  boxShadow: `0 8px 30px -10px ${layer.bgGlow}`,
-                }}
+                className="group relative rounded-3xl border border-line bg-paper p-6 sm:p-8 shadow-xs transition-all hover:border-ink/20 hover:shadow-sm"
               >
                 {/* Top Bar with Badges */}
-                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#22221f] pb-5">
+                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-line pb-5">
                   <div className="flex items-center gap-3">
-                    <span className="rounded bg-[#1e1e1b] px-2.5 py-1 font-mono text-[11px] font-bold tracking-wider text-white/80">
+                    <span className="rounded bg-ink px-2.5 py-1 font-mono text-[11px] font-bold tracking-wider text-[#d4ff3f]">
                       {layer.layerNumber}
                     </span>
-                    <h3 className="font-display text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+                    <h3 className="font-display text-xl sm:text-2xl font-bold text-ink flex items-center gap-2">
                       {layer.name}
-                      <span className={`text-xs font-mono font-normal ${layer.accentColor}`}>
+                      <span className={`text-xs font-mono font-medium ${layer.accentColor}`}>
                         ({layer.tagline})
                       </span>
                     </h3>
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <span className={`rounded-full border px-3 py-1 font-mono text-[11px] font-medium ${layer.borderAccent} ${layer.accentColor} bg-white/[0.03]`}>
+                    <span className={`rounded-full border px-3 py-1 font-mono text-[11px] font-semibold ${layer.badgeStyle}`}>
                       {layer.badge}
                     </span>
                   </div>
@@ -336,20 +333,20 @@ export function CorePlatformArchitectureSection() {
                     {layer.points.map((point, idx) => (
                       <div
                         key={idx}
-                        className="rounded-xl border border-[#1f1f1d] bg-[#10100e] p-4 sm:p-5 transition-colors hover:border-[#2b2b28]"
+                        className="rounded-2xl border border-line bg-paper-2/60 p-4 sm:p-5 transition-colors hover:bg-paper-2 hover:border-ink/20"
                       >
                         <div className="flex items-start gap-3">
-                          <span className={`mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-[#1b1b19] font-mono text-[11px] font-bold ${layer.accentColor}`}>
+                          <span className={`mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-paper border border-line font-mono text-[11px] font-bold ${layer.accentColor}`}>
                             {idx + 1}
                           </span>
                           <div>
-                            <h4 className="font-display text-sm sm:text-base font-semibold text-white leading-snug">
+                            <h4 className="font-display text-sm sm:text-base font-bold text-ink leading-snug">
                               {point.title}
                             </h4>
-                            <p className="mt-2 text-xs sm:text-[13px] text-white/60 leading-relaxed">
+                            <p className="mt-2 text-xs sm:text-[13px] text-muted leading-relaxed">
                               {point.details}
                             </p>
-                            <span className="mt-3 inline-block rounded bg-[#181815] px-2 py-0.5 font-mono text-[10px] text-white/50">
+                            <span className="mt-3 inline-block rounded bg-paper border border-line px-2 py-0.5 font-mono text-[10px] text-muted font-medium">
                               {point.meta}
                             </span>
                           </div>
@@ -358,23 +355,23 @@ export function CorePlatformArchitectureSection() {
                     ))}
                   </div>
 
-                  {/* Right Column: Live Technical Telemetry Card */}
-                  <div className="lg:col-span-5 rounded-xl border border-[#242421] bg-[#0b0b0a] p-5 font-mono">
+                  {/* Right Column: Live Technical Telemetry Console (Dark Contrast for Technical Clarity) */}
+                  <div className="lg:col-span-5 rounded-2xl border border-zinc-800 bg-[#0e0e0c] p-5 font-mono text-zinc-100 shadow-md">
                     <div className="flex items-center justify-between border-b border-[#1c1c1a] pb-3 text-xs">
                       <div className="flex items-center gap-2">
                         <span className="size-2 rounded-full bg-emerald-400 animate-ping" />
-                        <span className="text-white/80 font-bold">{layer.telemetry.status}</span>
+                        <span className="text-white/90 font-bold">{layer.telemetry.status}</span>
                       </div>
-                      <span className="text-white/40 text-[11px]">latency: {layer.telemetry.latency}</span>
+                      <span className="text-white/50 text-[11px]">latency: {layer.telemetry.latency}</span>
                     </div>
 
-                    <div className="mt-3 text-[11px] text-white/50 truncate">
+                    <div className="mt-3 text-[11px] text-white/60 truncate">
                       {layer.telemetry.protocol}
                     </div>
 
                     {/* Interactive Telemetry Widget based on Layer */}
                     {layer.id === "perception" && (
-                      <div className="mt-4 rounded-lg bg-[#141412] p-3 border border-[#20201d]">
+                      <div className="mt-4 rounded-xl bg-[#141412] p-3 border border-[#20201d]">
                         <div className="flex items-center justify-between text-[11px] text-white/70 mb-2">
                           <span>Live Full-Duplex VAD Visualizer</span>
                           <span className="text-[#38bdf8]">24kHz PCM</span>
@@ -400,7 +397,7 @@ export function CorePlatformArchitectureSection() {
                     )}
 
                     {layer.id === "cognitive" && (
-                      <div className="mt-4 rounded-lg bg-[#141412] p-3 border border-[#20201d]">
+                      <div className="mt-4 rounded-xl bg-[#141412] p-3 border border-[#20201d]">
                         <div className="text-[11px] text-white/70 mb-2 flex justify-between">
                           <span>Model Orchestrator</span>
                           <span className="text-[#d4ff3f]">Sub-300ms</span>
@@ -429,7 +426,7 @@ export function CorePlatformArchitectureSection() {
                     )}
 
                     {layer.id === "execution" && (
-                      <div className="mt-4 rounded-lg bg-[#141412] p-3 border border-[#20201d]">
+                      <div className="mt-4 rounded-xl bg-[#141412] p-3 border border-[#20201d]">
                         <div className="text-[11px] text-white/70 mb-2 flex justify-between">
                           <span>Carrier BYOC Switchboard</span>
                           <span className="text-[#c084fc]">RFC 3261</span>
@@ -469,7 +466,7 @@ export function CorePlatformArchitectureSection() {
 
                     {/* Code Snippet Box */}
                     <div className="mt-4">
-                      <div className="rounded bg-[#050504] p-3 text-[10px] text-white/70 overflow-x-auto border border-[#1b1b19] font-mono leading-relaxed">
+                      <div className="rounded-xl bg-[#050504] p-3 text-[10px] text-white/70 overflow-x-auto border border-[#1b1b19] font-mono leading-relaxed">
                         <pre><code>{layer.telemetry.codeSnippet}</code></pre>
                       </div>
                     </div>
@@ -480,13 +477,13 @@ export function CorePlatformArchitectureSection() {
         </div>
 
         {/* Enterprise Bottom Banner / Handoff */}
-        <div className="mt-12 rounded-2xl border border-white/10 bg-gradient-to-r from-[#141412] via-[#161614] to-[#121210] p-6 sm:p-8 flex flex-wrap items-center justify-between gap-6">
+        <div className="mt-12 rounded-3xl border border-line bg-paper-2 p-6 sm:p-8 flex flex-wrap items-center justify-between gap-6 shadow-xs">
           <div>
-            <span className="font-mono text-xs uppercase tracking-wider text-[#d4ff3f]">Architecture Ready For Production</span>
-            <h4 className="font-display text-lg sm:text-xl font-bold text-white mt-1">
+            <span className="font-mono text-xs uppercase tracking-wider text-[#658206] font-bold">Architecture Ready For Production</span>
+            <h4 className="font-display text-lg sm:text-xl font-bold text-ink mt-1">
               Ready to plug our Three-Layer Engine into your custom SIP trunks or CRM?
             </h4>
-            <p className="text-xs sm:text-sm text-white/60 mt-1">
+            <p className="text-xs sm:text-sm text-muted mt-1 max-w-2xl">
               We provide direct engineering onboarding for CTOs, including custom BYOC peering, VPC hosting, and dedicated SLA contracts.
             </p>
           </div>
@@ -494,7 +491,7 @@ export function CorePlatformArchitectureSection() {
             <a href="/contact" className="btn btn-primary">
               <span>Talk to Infrastructure Team</span>
             </a>
-            <a href="#punchlines" className="btn btn-outline text-white border-white/20 hover:border-white/40">
+            <a href="#punchlines" className="btn btn-outline border-line text-ink hover:border-ink">
               <span>View Pitch Punchlines ↓</span>
             </a>
           </div>
