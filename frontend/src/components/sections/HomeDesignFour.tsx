@@ -307,8 +307,8 @@ export function HomeDesignFour() {
           ======================================================== */}
       <header className={`site-header fixed inset-x-0 top-0 z-50 ${headerScrolled ? "is-scrolled" : ""}`}>
         <div className="container-x flex h-20 items-center justify-between gap-6">
-          <Link href="/" className="flex items-center gap-2.5 font-display text-2xl font-bold tracking-tight text-ink" aria-label="Vozon AI home">
-            <span className="grid size-8 place-items-center rounded-lg bg-ink text-white font-mono text-sm font-black">
+          <Link href="/" className="shrink-0 flex items-center gap-2 xl:gap-2.5 font-display text-xl xl:text-2xl font-bold tracking-tight text-ink whitespace-nowrap" aria-label="Vozon AI home">
+            <span className="grid size-7 xl:size-8 place-items-center rounded-lg bg-ink text-white font-mono text-xs xl:text-sm font-black">
               V
             </span>
             <span>
@@ -317,25 +317,24 @@ export function HomeDesignFour() {
           </Link>
 
           <nav aria-label="Main" className="hidden lg:block">
-            <ul className="flex items-center gap-8 text-[0.95rem] font-medium text-ink">
-              <li><a href="#platform" className="link-u">Voice Demo</a></li>
-              <li><a href="#pillars" className="link-u">5 Pillars</a></li>
-              <li><a href="#comparison" className="link-u">Comparison</a></li>
-              <li><a href="#architecture" className="link-u">Architecture</a></li>
-              <li><a href="#agentic-in-action" className="link-u">In Action</a></li>
-              <li><a href="#punchlines" className="link-u">Punchlines</a></li>
-              <li><a href="#advantage" className="link-u">Indic Engine</a></li>
-              <li><a href="#industries" className="link-u">Industries</a></li>
-              <li><a href="#integrations" className="link-u">Integrations</a></li>
-              <li><Link href="/pricing" className="link-u">Pricing</Link></li>
+            <ul className="flex items-center gap-2 lg:gap-2.5 xl:gap-5 2xl:gap-7 text-[0.78rem] xl:text-[0.91rem] font-medium text-ink whitespace-nowrap">
+              <li><a href="#platform" className="link-u whitespace-nowrap">Voice Demo</a></li>
+              <li><a href="#pillars" className="link-u whitespace-nowrap">5 Pillars</a></li>
+              <li><a href="#comparison" className="link-u whitespace-nowrap">Comparison</a></li>
+              <li><a href="#architecture" className="link-u whitespace-nowrap">Architecture</a></li>
+              <li><a href="#agentic-in-action" className="link-u whitespace-nowrap">In Action</a></li>
+              <li><a href="#advantage" className="link-u whitespace-nowrap">Indic Engine</a></li>
+              <li><a href="#industries" className="link-u whitespace-nowrap">Industries</a></li>
+              <li><a href="#integrations" className="link-u whitespace-nowrap">Integrations</a></li>
+              <li><Link href="/pricing" className="link-u whitespace-nowrap">Pricing</Link></li>
             </ul>
           </nav>
 
-          <div className="hidden lg:flex items-center gap-4">
-            <Link href="/login" className="text-[0.95rem] font-medium text-muted hover:text-ink transition-colors">
+          <div className="shrink-0 hidden lg:flex items-center gap-2 xl:gap-4 whitespace-nowrap">
+            <Link href="/login" className="text-xs xl:text-[0.92rem] font-medium text-muted hover:text-ink transition-colors whitespace-nowrap">
               Sign in
             </Link>
-            <Link href="/contact" className="btn btn-primary">
+            <Link href="/contact" className="btn btn-primary whitespace-nowrap text-xs xl:text-sm px-3.5 xl:px-5 py-2 xl:py-2.5">
               <span>Start Free</span>
               <svg className="arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path d="M2 8h12M9 3l5 5-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
@@ -368,26 +367,23 @@ export function HomeDesignFour() {
               <a href="#comparison" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
                 Comparison <span className="eyebrow text-muted">03</span>
               </a>
+              <a href="#advantage" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
+                Indic Engine <span className="eyebrow text-muted">04</span>
+              </a>
               <a href="#architecture" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                Architecture <span className="eyebrow text-muted">04</span>
+                Architecture <span className="eyebrow text-muted">05</span>
               </a>
               <a href="#agentic-in-action" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                In Action <span className="eyebrow text-muted">05</span>
-              </a>
-              <a href="#punchlines" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                Punchlines <span className="eyebrow text-muted">06</span>
-              </a>
-              <a href="#advantage" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                Indic Engine <span className="eyebrow text-muted">07</span>
+                In Action <span className="eyebrow text-muted">06</span>
               </a>
               <a href="#industries" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                Industries <span className="eyebrow text-muted">08</span>
+                Industries <span className="eyebrow text-muted">07</span>
               </a>
               <a href="#integrations" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                Integrations <span className="eyebrow text-muted">09</span>
+                Integrations <span className="eyebrow text-muted">08</span>
               </a>
               <Link href="/pricing" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                Pricing <span className="eyebrow text-muted">10</span>
+                Pricing <span className="eyebrow text-muted">09</span>
               </Link>
 
               <div className="pt-6">
