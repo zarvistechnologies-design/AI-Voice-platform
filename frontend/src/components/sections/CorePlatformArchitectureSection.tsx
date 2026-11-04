@@ -87,9 +87,9 @@ const audioStream = new LiveKit.AudioReceiver({
     name: "The Cognitive Layer",
     tagline: "Autonomous Planning & Reasoning",
     badge: "Multi-LLM ReAct • Strict Schema",
-    accentColor: "text-[#658206]",
-    badgeStyle: "bg-lime-50 text-lime-900 border-lime-200",
-    bgGlow: "rgba(101, 130, 6, 0.05)",
+    accentColor: "text-cobalt",
+    badgeStyle: "bg-blue-50 text-blue-900 border-blue-200",
+    bgGlow: "rgba(37, 99, 235, 0.05)",
     points: [
       {
         title: "Low-latency LLM orchestration (Gemini 2.0 Flash, GPT-4o, Claude 3.5 Sonnet, Sarvam Indic)",
@@ -203,7 +203,7 @@ export function CorePlatformArchitectureSection() {
       />
       <div
         className="pointer-events-none absolute -bottom-40 right-1/4 h-[500px] w-[500px] rounded-full blur-[140px] opacity-25"
-        style={{ background: "radial-gradient(circle, rgba(129, 161, 11, 0.12) 0%, transparent 70%)" }}
+        style={{ background: "radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, transparent 70%)" }}
         aria-hidden="true"
       />
 
@@ -211,12 +211,12 @@ export function CorePlatformArchitectureSection() {
         {/* Section Header */}
         <div className="flex flex-wrap items-end justify-between gap-6 border-b border-line pb-8">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#81a10b]/30 bg-[#81a10b]/10 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-[#658206]">
-              <span className="inline-block size-2 rounded-full bg-[#81a10b] animate-pulse" />
+            <div className="inline-flex items-center gap-2 rounded-full border border-cobalt/30 bg-cobalt/10 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-cobalt">
+              <span className="inline-block size-2 rounded-full bg-cobalt animate-pulse" />
               Core Platform Architecture // For Enterprise CTOs &amp; Product Heads
             </div>
             <h2 className="display-lg mt-4 text-[clamp(1.85rem,3.4vw,3.25rem)] font-bold leading-tight tracking-tight text-ink">
-              The Three-Layer <span className="text-[#658206]">Agentic Engine</span>.
+              The Three-Layer <span className="text-cobalt">Agentic Engine</span>.
             </h2>
             <p className="mt-4 text-sm sm:text-base text-muted leading-relaxed max-w-2xl">
               When speaking to CTOs, Product Heads, or Agency Founders, highlight the Three-Layer Agentic Engine: isolated acoustic perception, autonomous cognitive planning, and carrier-grade RFC 3261 telephony execution.
@@ -268,7 +268,7 @@ export function CorePlatformArchitectureSection() {
               onClick={() => setActiveTab("cognitive")}
               className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all ${
                 activeTab === "cognitive"
-                  ? "bg-[#658206] text-white font-bold shadow-xs"
+                  ? "bg-cobalt text-white font-bold shadow-xs"
                   : "bg-paper border border-line text-muted hover:bg-paper-2 hover:text-ink"
               }`}
             >
@@ -479,7 +479,7 @@ export function CorePlatformArchitectureSection() {
         {/* Enterprise Bottom Banner / Handoff */}
         <div className="mt-12 rounded-3xl border border-line bg-paper-2 p-6 sm:p-8 flex flex-wrap items-center justify-between gap-6 shadow-xs">
           <div>
-            <span className="font-mono text-xs uppercase tracking-wider text-[#658206] font-bold">Architecture Ready For Production</span>
+            <span className="font-mono text-xs uppercase tracking-wider text-cobalt font-bold">Architecture Ready For Production</span>
             <h4 className="font-display text-lg sm:text-xl font-bold text-ink mt-1">
               Ready to plug our Three-Layer Engine into your custom SIP trunks or CRM?
             </h4>

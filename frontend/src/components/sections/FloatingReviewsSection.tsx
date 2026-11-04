@@ -81,18 +81,18 @@ export function FloatingReviewsSection() {
       className="relative overflow-hidden bg-paper/60 pt-24 pb-20 md:pt-28 md:pb-28 border-t border-line text-ink scroll-mt-24"
       aria-labelledby="floating-reviews-title"
     >
-      {/* Subtle Ambient Radial Highlight in #81a10b */}
+      {/* Subtle Ambient Radial Highlight */}
       <div
         className="pointer-events-none absolute inset-0 opacity-40"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 20%, rgba(129, 161, 11, 0.08) 0%, transparent 70%)",
+            "radial-gradient(ellipse at 50% 20%, rgba(37, 99, 235, 0.08) 0%, transparent 70%)",
         }}
         aria-hidden="true"
       />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Section Header: Retaining high-contrast #81a10b for readability on paper */}
+        {/* Section Header */}
         <div className="text-center">
           <p className="eyebrow text-cobalt font-semibold tracking-wider">
             Customer Stories

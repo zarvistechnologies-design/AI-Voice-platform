@@ -98,7 +98,7 @@ export function ArchitecturalComparisonSection() {
         className="pointer-events-none absolute inset-0 opacity-35"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 10%, rgba(129, 161, 11, 0.08) 0%, transparent 70%)",
+            "radial-gradient(ellipse at 50% 10%, rgba(37, 99, 235, 0.08) 0%, transparent 70%)",
         }}
         aria-hidden="true"
       />

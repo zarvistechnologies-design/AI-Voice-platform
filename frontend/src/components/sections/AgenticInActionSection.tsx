@@ -130,7 +130,7 @@ export function AgenticInActionSection() {
         className="pointer-events-none absolute inset-0 opacity-30"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 12%, rgba(129, 161, 11, 0.1) 0%, transparent 65%)",
+            "radial-gradient(ellipse at 50% 12%, rgba(37, 99, 235, 0.08) 0%, transparent 65%)",
         }}
         aria-hidden="true"
       />
