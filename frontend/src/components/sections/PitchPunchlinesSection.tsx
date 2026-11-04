@@ -73,7 +73,7 @@ export function PitchPunchlinesSection() {
   };
 
   return (
-    <section id="punchlines" className="relative bg-white py-20 text-ink md:py-28 overflow-hidden border-b border-line">
+    <section id="punchlines" className="relative bg-white pb-20 text-ink md:pb-28 overflow-hidden border-b border-line">
       {/* Background Ambience */}
       <div
         className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[800px] rounded-full blur-[160px] opacity-20"

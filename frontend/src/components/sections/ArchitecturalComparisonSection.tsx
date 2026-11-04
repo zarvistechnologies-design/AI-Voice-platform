@@ -103,7 +103,7 @@ export function ArchitecturalComparisonSection() {
         aria-hidden="true"
       />
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="container-x relative z-10">
         {/* Section Header */}
         <div className="text-center">
           <p className="eyebrow text-cobalt font-semibold tracking-wider uppercase">

@@ -194,7 +194,7 @@ export function CorePlatformArchitectureSection() {
   const [selectedModel, setSelectedModel] = useState<"Gemini 2.0 Flash" | "GPT-4o" | "Claude 3.5 Sonnet" | "Sarvam Indic">("Gemini 2.0 Flash");
 
   return (
-    <section id="architecture" className="relative bg-white py-20 text-ink md:py-28 overflow-hidden border-t border-b border-line">
+    <section id="architecture" className="relative bg-white py-20 text-ink md:py-28 overflow-hidden border-t border-line">
       {/* Subtle Background Glows */}
       <div
         className="pointer-events-none absolute -top-40 left-1/4 h-[500px] w-[500px] rounded-full blur-[140px] opacity-25"
@@ -491,8 +491,8 @@ export function CorePlatformArchitectureSection() {
             <a href="/contact" className="btn btn-primary">
               <span>Talk to Infrastructure Team</span>
             </a>
-            <a href="#punchlines" className="btn btn-outline border-line text-ink hover:border-ink">
-              <span>View Pitch Punchlines ↓</span>
+            <a href="#agentic-in-action" className="btn btn-outline border-line text-ink hover:border-ink">
+              <span>See Agentic in Action ↓</span>
             </a>
           </div>
         </div>
