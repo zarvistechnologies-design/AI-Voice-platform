@@ -22,44 +22,44 @@ function ReviewCard({ review, index, floatVariation = 1 }: ReviewCardProps) {
 
   return (
     <article
-      className="group relative flex w-[320px] sm:w-[380px] flex-shrink-0 flex-col justify-between rounded-3xl border border-white/10 bg-[#0e0e0c] p-6 sm:p-7 shadow-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-[#d4ff3f]/50 hover:shadow-[0_20px_40px_rgba(0,0,0,0.35)]"
+      className="group relative flex w-[320px] sm:w-[380px] flex-shrink-0 flex-col justify-between rounded-3xl border border-line bg-white p-6 sm:p-7 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-cobalt/40 hover:shadow-xl"
       style={{
         animation: `float-card-${floatVariation} ${5 + (index % 3)}s ease-in-out infinite alternate`,
       }}
     >
       <div>
-        {/* Top Header: Dark Quote Badge & Electric Lime Accent Number (#d4ff3f) */}
+        {/* Top Header: Quote Icon & Number Badge */}
         <div className="flex items-center justify-between">
           <span
-            className="grid size-10 place-items-center rounded-xl bg-white/10 text-white/80 font-mono text-sm font-bold shadow-inner"
+            className="grid size-10 place-items-center rounded-xl bg-paper border border-line text-ink font-mono text-sm font-bold shadow-xs"
             aria-hidden="true"
           >
             ❝
           </span>
-          <span className="font-mono text-sm font-bold text-[#d4ff3f]">
+          <span className="font-mono text-xs font-bold text-cobalt tracking-wider">
             {numStr}
           </span>
         </div>
 
         {/* Review Quote Body */}
-        <p className="mt-5 text-sm sm:text-[14px] leading-relaxed text-zinc-100 font-normal">
+        <p className="mt-5 text-sm sm:text-[14px] leading-relaxed text-ink font-normal">
           &ldquo;{review.quote}&rdquo;
         </p>
       </div>
 
       {/* Reviewer Details */}
-      <div className="mt-6 flex items-center gap-3.5 border-t border-white/10 pt-4">
+      <div className="mt-6 flex items-center gap-3.5 border-t border-line pt-4">
         <span
-          className="grid size-11 flex-shrink-0 place-items-center rounded-full bg-white/10 border border-white/10 font-mono text-xs font-bold text-[#d4ff3f] shadow-sm"
+          className="grid size-11 flex-shrink-0 place-items-center rounded-full bg-cobalt/10 border border-cobalt/20 font-mono text-xs font-bold text-cobalt shadow-xs"
           aria-hidden="true"
         >
           {initials}
         </span>
         <div className="min-w-0">
-          <h4 className="truncate font-display text-sm sm:text-base font-bold text-[#d4ff3f]">
+          <h4 className="truncate font-display text-sm sm:text-base font-bold text-ink">
             {review.name}
           </h4>
-          <p className="truncate font-mono text-xs text-zinc-400 mt-0.5">
+          <p className="truncate font-mono text-xs text-muted mt-0.5">
             {review.role}
           </p>
         </div>
@@ -102,7 +102,7 @@ export function FloatingReviewsSection() {
             id="floating-reviews-title"
             className="display-lg mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl lg:text-5xl"
           >
-            What our <span className="text-cobalt">customers</span> say
+            Don&apos;t hear us. <span className="text-cobalt">Hear Them.</span>
           </h2>
 
           <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted sm:text-base font-normal">
@@ -116,7 +116,7 @@ export function FloatingReviewsSection() {
               onClick={() => setViewMode("floating")}
               className={`rounded-full px-5 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer ${
                 viewMode === "floating"
-                  ? "bg-ink text-[#d4ff3f] shadow-sm"
+                  ? "bg-ink text-white shadow-sm font-bold"
                   : "text-muted hover:text-ink"
               }`}
               aria-pressed={viewMode === "floating"}
@@ -128,7 +128,7 @@ export function FloatingReviewsSection() {
               onClick={() => setViewMode("grid")}
               className={`rounded-full px-5 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer ${
                 viewMode === "grid"
-                  ? "bg-ink text-[#d4ff3f] shadow-sm"
+                  ? "bg-ink text-white shadow-sm font-bold"
                   : "text-muted hover:text-ink"
               }`}
               aria-pressed={viewMode === "grid"}
