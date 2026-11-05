@@ -38,28 +38,25 @@ export function WhatsAppModal({
 
   const [busy, setBusy] = useState(false);
   const [connectMode, setConnectMode] = useState<"popup" | "manual">("popup");
-  const [useCoexistence, setUseCoexistence] = useState(true);
+  const [useCoexistence, setUseCoexistence] = useState(false);
+  const [sdkStatus, setSdkStatus] = useState<"loading" | "ready" | "error">("loading");
+  const metaAppId = process.env.NEXT_PUBLIC_META_APP_ID?.trim();
+  const metaConfigId = process.env.NEXT_PUBLIC_META_CONFIG_ID?.trim();
+  const hasValidMetaIds = /^\d+$/.test(metaAppId ?? "") && /^\d+$/.test(metaConfigId ?? "");
+  const canUseMetaSdk = typeof window === "undefined" ||
+    window.location.protocol === "https:" ||
+    ["localhost", "127.0.0.1"].includes(window.location.hostname);
 
   // Manual / Sandbox credentials state
   const [manualPhoneId, setManualPhoneId] = useState("");
   const [manualWabaId, setManualWabaId] = useState("");
   const [manualAccessToken, setManualAccessToken] = useState("");
 
-  const [sessionInfo, setSessionInfo] = useState<{
-    waba_id?: string;
-    phone_number_id?: string;
-  }>({
-    waba_id: (metadata.wabaId as string) || undefined,
-    phone_number_id: (metadata.phoneNumberId as string) || undefined,
-  });
-
   const sessionInfoRef = useRef<{
     waba_id?: string;
     phone_number_id?: string;
-  }>({
-    waba_id: (metadata.wabaId as string) || undefined,
-    phone_number_id: (metadata.phoneNumberId as string) || undefined,
-  });
+    business_id?: string;
+  }>({});
 
   // Test message state
   const [recipientPhone, setRecipientPhone] = useState("");
@@ -72,32 +69,38 @@ export function WhatsAppModal({
     error?: string;
   } | null>(null);
 
-  // Initialize Facebook SDK or listen for OAuth messages
+  // Initialize the Facebook SDK and listen for Embedded Signup session details.
   useEffect(() => {
-    const appId = process.env.NEXT_PUBLIC_META_APP_ID || "28018370021167662";
-    const isHttps = typeof window !== "undefined" && window.location.protocol === "https:";
-    const isLocalhost =
-      typeof window !== "undefined" &&
-      (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
-    const canLoadSdk = isHttps || isLocalhost;
+    if (!hasValidMetaIds || !canUseMetaSdk) return;
 
-    if (canLoadSdk && !document.getElementById("facebook-jssdk")) {
-      window.fbAsyncInit = function () {
-        window.FB?.init({
-          appId,
-          autoLogAppEvents: true,
-          xfbml: true,
-          version: "v21.0",
-        });
-      };
+    const initializeSdk = () => {
+      if (!window.FB) {
+        setSdkStatus("error");
+        return;
+      }
+      window.FB.init({
+        appId: metaAppId,
+        autoLogAppEvents: true,
+        xfbml: true,
+        version: "v21.0",
+      });
+      setSdkStatus("ready");
+    };
 
-      const script = document.createElement("script");
+    window.fbAsyncInit = initializeSdk;
+    let script = document.getElementById("facebook-jssdk") as HTMLScriptElement | null;
+    const handleSdkError = () => setSdkStatus("error");
+    if (window.FB) {
+      initializeSdk();
+    } else if (!script) {
+      script = document.createElement("script");
       script.id = "facebook-jssdk";
       script.src = "https://connect.facebook.net/en_US/sdk.js";
       script.async = true;
       script.defer = true;
       document.body.appendChild(script);
     }
+    script?.addEventListener("error", handleSdkError);
 
     const handleMessage = (event: MessageEvent) => {
       if (
@@ -111,13 +114,14 @@ export function WhatsAppModal({
       try {
         const data = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
         if (data.type === "WA_EMBEDDED_SIGNUP") {
-          const info = data.data as { waba_id?: string; phone_number_id?: string };
+          const info = data.data as {
+            waba_id?: string;
+            phone_number_id?: string;
+            business_id?: string;
+          };
           if (info) {
-            setSessionInfo(info);
             sessionInfoRef.current = info;
           }
-        } else if (data.type === "WA_EMBEDDED_SIGNUP_CODE" && data.code) {
-          void handleProcessCode(data.code);
         }
       } catch {
         // Non-JSON message from other extensions, ignore safely
@@ -125,13 +129,17 @@ export function WhatsAppModal({
     };
 
     window.addEventListener("message", handleMessage);
-    return () => window.removeEventListener("message", handleMessage);
-  }, []);
+    return () => {
+      script?.removeEventListener("error", handleSdkError);
+      window.removeEventListener("message", handleMessage);
+      if (window.fbAsyncInit === initializeSdk) window.fbAsyncInit = undefined;
+    };
+  }, [metaAppId, hasValidMetaIds, canUseMetaSdk]);
 
   const handleProcessCode = async (code: string) => {
-    const wabaId = sessionInfoRef.current.waba_id || sessionInfo.waba_id || manualWabaId.trim();
-    const phoneNumberId =
-      sessionInfoRef.current.phone_number_id || sessionInfo.phone_number_id || manualPhoneId.trim();
+    const wabaId = sessionInfoRef.current.waba_id;
+    const phoneNumberId = sessionInfoRef.current.phone_number_id;
+    const businessId = sessionInfoRef.current.business_id;
 
     try {
       setBusy(true);
@@ -139,6 +147,7 @@ export function WhatsAppModal({
         code,
         wabaId: wabaId || undefined,
         phoneNumberId: phoneNumberId || undefined,
+        businessId: businessId || undefined,
       });
       onSuccess(res.message || "WhatsApp Business connected successfully!");
     } catch (err) {
@@ -150,59 +159,46 @@ export function WhatsAppModal({
 
   // Launch Meta Embedded Signup Popup
   const handleLaunchSignup = () => {
-    const appId = process.env.NEXT_PUBLIC_META_APP_ID || "28018370021167662";
-    const configId = process.env.NEXT_PUBLIC_META_CONFIG_ID || "28702795139354514";
+    if (!hasValidMetaIds) {
+      onError("Meta Embedded Signup needs a valid numeric App ID and WhatsApp Embedded Signup configuration ID from the same Meta app.");
+      return;
+    }
+    if (!canUseMetaSdk || sdkStatus !== "ready" || !window.FB) {
+      onError("Meta signup could not load. Check that this site uses HTTPS and that the Facebook SDK is allowed in your browser.");
+      return;
+    }
 
+    sessionInfoRef.current = {};
     setBusy(true);
 
     const extras: Record<string, unknown> = {
-      sessionInfoVersion: "3",
+      setup: {},
     };
     if (useCoexistence) {
       extras.featureType = "whatsapp_business_app_onboarding";
     }
 
-    // If FB SDK is available, use FB.login with sessionInfoVersion and coexistence
-    if (window.FB) {
+    try {
       window.FB.login(
-        function (response) {
-          void (async () => {
-            if (response.authResponse?.code) {
-              await handleProcessCode(response.authResponse.code);
-            } else {
-              setBusy(false);
-            }
-          })();
+        (response) => {
+          if (response.authResponse?.code) {
+            void handleProcessCode(response.authResponse.code);
+          } else {
+            setBusy(false);
+            onError("Meta signup did not return an authorization code. If Meta says the feature is unavailable, check this app's Embedded Signup configuration, allowed domain, and app access in Meta for Developers.");
+          }
         },
         {
-          config_id: configId,
+          config_id: metaConfigId,
           response_type: "code",
           override_default_response_type: true,
           extras,
         },
       );
-      return;
-    }
-
-    // Direct Meta OAuth popup for non-SDK or custom redirect environments
-    const redirectUri = `${window.location.origin}/dashboard/integrations`;
-    const oauthUrl = `https://www.facebook.com/v21.0/dialog/oauth?client_id=${appId}&redirect_uri=${encodeURIComponent(
-      redirectUri,
-    )}&config_id=${configId}&response_type=code`;
-
-    const popup = window.open(
-      oauthUrl,
-      "WhatsAppEmbeddedSignup",
-      "width=640,height=760,scrollbars=yes,status=yes",
-    );
-
-    if (!popup) {
+    } catch (error) {
       setBusy(false);
-      onError("Popup was blocked by your browser. Please allow popups for this site.");
-      return;
+      onError(error instanceof Error ? error.message : "Could not open Meta signup.");
     }
-
-    setBusy(false);
   };
 
   // Direct manual connect for developer testing / sandbox credentials
@@ -379,19 +375,26 @@ export function WhatsAppModal({
                         <span>📲</span> WhatsApp Business App Coexistence
                       </strong>
                       <span className="text-slate-600 block text-[11px] leading-relaxed">
-                        Keep using your existing WhatsApp Business mobile app on your phone for daily chats, while Vozon uses Cloud API simultaneously for voice call follow-ups.
+                        Keep using your existing WhatsApp Business mobile app on your phone for daily chats, while Vozon uses Cloud API simultaneously. <em>(Leave unchecked if testing standard Embedded Signup or if Meta Coexistence is not yet approved).</em>
                       </span>
                     </label>
                   </div>
 
                   <div className="pt-1">
+                    {(!hasValidMetaIds || !canUseMetaSdk || sdkStatus === "error") && (
+                      <p className="mb-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900" role="alert">
+                        {!hasValidMetaIds
+                          ? "Meta Embedded Signup needs a numeric Meta App ID and WhatsApp Embedded Signup configuration ID from the same Meta app. Ask the platform administrator to configure both."
+                          : "Meta signup could not load. Use HTTPS (or localhost) and allow the Facebook SDK, then try again."}
+                      </p>
+                    )}
                     <button
                       type="button"
-                      disabled={busy}
+                      disabled={busy || !hasValidMetaIds || !canUseMetaSdk || sdkStatus !== "ready"}
                       onClick={() => handleLaunchSignup()}
                       className="w-full flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl font-semibold text-white bg-[#118778] hover:bg-[#0e6f62] shadow-sm transition disabled:opacity-50 text-sm cursor-pointer"
                     >
-                      {busy ? (
+                      {busy || (sdkStatus === "loading" && hasValidMetaIds) ? (
                         <span className="flex items-center gap-2">
                           <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24">
                             <circle
@@ -409,7 +412,7 @@ export function WhatsAppModal({
                               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
                             />
                           </svg>
-                          Connecting with Meta...
+                          {busy ? "Connecting with Meta..." : "Loading Meta signup..."}
                         </span>
                       ) : (
                         <>
@@ -509,6 +512,19 @@ export function WhatsAppModal({
                       {String(metadata.wabaId || "—")}
                     </span>
                   </div>
+                  {metadata.businessName || metadata.businessId ? (
+                    <div className="col-span-2">
+                      <span className="text-slate-500 block text-[11px]">Business Portfolio</span>
+                      <span className="text-slate-900 text-xs font-semibold">
+                        {String(metadata.businessName || metadata.businessId)}
+                      </span>
+                      {metadata.businessName && metadata.businessId ? (
+                        <span className="ml-2 font-mono text-[10px] text-slate-500">
+                          {String(metadata.businessId)}
+                        </span>
+                      ) : null}
+                    </div>
+                  ) : null}
                   {metadata.displayPhoneNumber ? (
                     <div>
                       <span className="text-slate-500 block text-[11px]">Display Number</span>

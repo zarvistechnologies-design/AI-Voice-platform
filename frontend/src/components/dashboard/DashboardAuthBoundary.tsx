@@ -29,7 +29,10 @@ export function DashboardAuthBoundary({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!hydrated || session) return;
-    const nextPath = pathname === "/dashboard" ? "/dashboard/agents" : pathname;
+    const currentPath = typeof window === "undefined"
+      ? pathname
+      : `${pathname}${window.location.search}${window.location.hash}`;
+    const nextPath = pathname === "/dashboard" ? "/dashboard/agents" : currentPath;
     router.replace(`/login?next=${encodeURIComponent(nextPath)}`);
   }, [hydrated, pathname, router, session]);
 

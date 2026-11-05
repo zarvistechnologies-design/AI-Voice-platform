@@ -11,3 +11,8 @@ yarn-error.log*
 .DS_Store
 .vscode/
 .runlogs/
+.runtime/
+*.tmp*
+.*.jpg
+.*.png
+check_scripts.js

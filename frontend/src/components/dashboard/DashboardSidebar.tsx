@@ -14,6 +14,7 @@ type SidebarItem = {
   href: string;
   icon:
     | "agent"
+    | "assistant"
     | "phone"
     | "campaign"
     | "analytics"
@@ -33,6 +34,7 @@ const sidebarGroups: { label: string; items: SidebarItem[] }[] = [
     label: "Workspace",
     items: [
       { label: "Voice Agents", href: "/dashboard/agents", icon: "agent" },
+      { label: "Ask Vozon", href: "/dashboard/assistant", icon: "assistant" },
       {
         label: "Phone Numbers",
         href: "/dashboard/phone-number",
@@ -123,6 +125,15 @@ function SidebarIcon({ icon }: { icon: SidebarIconName }) {
       <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
         <path d="M7 10h10a3 3 0 0 1 3 3v4a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-4a3 3 0 0 1 3-3Z" />
         <path d="M12 10V6M9 6h6M8.5 15h.01M15.5 15h.01" />
+      </svg>
+    );
+  }
+
+  if (icon === "assistant") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 3.5 13.9 9l5.6 2-5.6 1.9-1.9 5.6-2-5.6L4.5 11l5.5-2Z" />
+        <path d="m19 14 .9 2.1L22 17l-2.1.9L19 20l-.9-2.1L16 17l2.1-.9Z" />
       </svg>
     );
   }

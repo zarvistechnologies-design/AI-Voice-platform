@@ -12,13 +12,15 @@ import { billingApi } from "@/lib/billing";
 import { getServerSession, getSession, subscribeToSession } from "@/lib/auth";
 import { useBrand } from "@/components/branding/BrandProvider";
 
-type DashboardPageHeaderProps = {
+export type DashboardPageHeaderProps = {
   eyebrow?: ReactNode;
-  title: ReactNode;
+  title?: ReactNode;
   description?: ReactNode;
   actions?: ReactNode;
   meta?: ReactNode;
   bordered?: boolean;
+  compact?: boolean;
+  workspaceBarOnly?: boolean;
 };
 
 function creditLabel(balance: number | null) {
@@ -34,7 +36,7 @@ function creditLabel(balance: number | null) {
   }
 }
 
-function DashboardWorkspaceBar() {
+export function DashboardWorkspaceBar() {
   const brand = useBrand();
   const session = useSyncExternalStore(
     subscribeToSession,
@@ -168,31 +170,43 @@ export function DashboardPageHeader({
   actions,
   meta,
   bordered = true,
+  compact = false,
+  workspaceBarOnly = false,
 }: DashboardPageHeaderProps) {
+  if (workspaceBarOnly) {
+    return (
+      <header
+        className={`dashboard-page-header sticky top-0 z-30 bg-white ${bordered ? "border-b border-[#dbe4e1]" : ""}`}
+      >
+        <DashboardWorkspaceBar />
+      </header>
+    );
+  }
+
   return (
     <header
       className={`dashboard-page-header sticky top-0 z-30 bg-white ${bordered ? "border-b border-[#dbe4e1]" : ""}`}
     >
       <DashboardWorkspaceBar />
-      <div className="dashboard-page-header-inner w-full px-4 py-3 sm:px-5 lg:px-6">
-        <div className="flex min-h-16 flex-col justify-center gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className={`dashboard-page-header-inner w-full px-4 sm:px-5 lg:px-6 ${compact ? "py-2" : "py-3"}`}>
+        <div className={`flex flex-col justify-center gap-4 sm:flex-row sm:items-center sm:justify-between ${compact ? "min-h-12" : "min-h-16"}`}>
           <div className="min-w-0">
             {eyebrow ? (
               <div className="text-[10px] font-bold uppercase leading-4 tracking-[0.18em] text-[#0e6f62]">
                 {eyebrow}
               </div>
             ) : null}
-            <h1 className="m-0 mt-1 min-w-0 text-2xl font-semibold leading-8 tracking-[-0.02em] text-[#171821]">
+            <h1 className={`m-0 min-w-0 font-semibold tracking-[-0.02em] text-[#171821] ${compact ? "mt-0.5 text-xl leading-7" : "mt-1 text-2xl leading-8"}`}>
               {title}
             </h1>
             {description ? (
-              <p className="m-0 mt-1 max-w-3xl text-sm leading-5 text-[#60716c]">
+              <p className={`m-0 max-w-3xl text-[#60716c] ${compact ? "mt-0.5 text-xs leading-4" : "mt-1 text-sm leading-5"}`}>
                 {description}
               </p>
             ) : null}
           </div>
           {actions ? (
-            <div className="flex shrink-0 flex-wrap items-center gap-2 [&>a]:min-h-10 [&>a]:rounded-xl [&>button]:min-h-10 [&>button]:rounded-xl">
+            <div className={`flex shrink-0 flex-wrap items-center gap-2 [&>a]:rounded-xl [&>button]:rounded-xl ${compact ? "[&>a]:min-h-9 [&>button]:min-h-9" : "[&>a]:min-h-10 [&>button]:min-h-10"}`}>
               {actions}
             </div>
           ) : null}

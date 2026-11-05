@@ -128,8 +128,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   if (brand.source === "platform") {
     return (
       <html lang="en" data-scroll-behavior="smooth" className={fontClasses}>
-        <head>
+                <head>
           <meta name="facebook-domain-verification" content="hs7xv0aby3bor2uybe6y440jg6wnkk" />
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Inter:wght@400..700&family=JetBrains+Mono:wght@400;500&display=swap" />
         </head>
         <body className="flex min-h-full flex-col bg-background text-foreground">
           <MetaPixel />
