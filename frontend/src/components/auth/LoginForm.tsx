@@ -26,9 +26,10 @@ export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const nextPath = getNextPath(searchParams.get("next"));
+  const adminLogin = nextPath === "/admin" || nextPath.startsWith("/admin/");
 
   const [mode, setMode] = useState<"login" | "register" | "forgot">(
-    searchParams.get("mode") === "register" && brand.authentication.registrationMode === "open"
+    !adminLogin && searchParams.get("mode") === "register" && brand.authentication.registrationMode === "open"
       ? "register"
       : "login",
   );
@@ -151,11 +152,11 @@ export function LoginForm() {
           </span>
         </div>
         <h1 className="m-0 text-[2rem] font-black leading-tight tracking-[-0.04em] text-[#14231f] sm:text-[2.25rem]">
-          {mode === "login" ? "Welcome back" : mode === "register" ? "Create your account" : "Reset your password"}
+          {mode === "login" ? adminLogin ? "Admin sign in" : "Welcome back" : mode === "register" ? "Create your account" : "Reset your password"}
         </h1>
         <p className="auth-description m-0 text-[15px] leading-6 text-[#657670]">
           {mode === "login"
-            ? `Sign in to continue to ${brand.productName}.`
+            ? adminLogin ? "Use your account password and authenticator code to open the admin panel." : `Sign in to continue to ${brand.productName}.`
             : mode === "register"
               ? "Start building your first AI voice agent today."
               : "Enter your email and we'll send you a secure reset link."}
@@ -240,7 +241,7 @@ export function LoginForm() {
         <label className="flex items-start gap-2 text-xs text-slate-600"><input checked={acceptedTerms} className="mt-0.5 size-4 accent-[#118778]" onChange={(event) => setAcceptedTerms(event.target.checked)} type="checkbox" /><span>I agree to the <a className="text-[#118778] underline" href="/terms" target="_blank" rel="noopener noreferrer">Terms of Service</a> and <a className="text-[#118778] underline" href="/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.</span></label>
       </> : null}
 
-      {mode === "login" && needsTwoFactor ? (
+      {mode === "login" && (needsTwoFactor || adminLogin) ? (
         <label className="auth-field grid gap-1.5 text-xs font-semibold text-slate-700">
           <span>Authenticator code</span>
           <input
@@ -248,6 +249,8 @@ export function LoginForm() {
             autoComplete="one-time-code"
             inputMode="numeric"
             maxLength={6}
+            pattern="[0-9]{6}"
+            required={adminLogin}
             onChange={(event) => setTwoFactorCode(event.target.value)}
             placeholder="6-digit code"
             value={twoFactorCode}
@@ -302,7 +305,7 @@ export function LoginForm() {
               : recoveryNotice ? "Send again" : "Send reset link"}
       </button>
 
-      {mode !== "forgot" && brand.authentication.googleSignIn ? (
+      {mode !== "forgot" && !adminLogin && brand.authentication.googleSignIn ? (
         <GoogleSignInButton
           disabled={isSubmitting}
           nextPath={nextPath}
@@ -310,7 +313,7 @@ export function LoginForm() {
         />
       ) : null}
 
-      {mode === "forgot" || brand.authentication.registrationMode === "open" ? (
+      {mode === "forgot" || (!adminLogin && brand.authentication.registrationMode === "open") ? (
         <button
           className="inline-flex min-h-9 items-center justify-center border-0 bg-transparent text-xs font-medium text-slate-500 transition hover:text-slate-700 disabled:cursor-wait disabled:opacity-70"
           disabled={isSubmitting}
