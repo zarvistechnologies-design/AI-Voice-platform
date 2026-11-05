@@ -98,12 +98,12 @@ export function ArchitecturalComparisonSection() {
         className="pointer-events-none absolute inset-0 opacity-35"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 10%, rgba(129, 161, 11, 0.08) 0%, transparent 70%)",
+            "radial-gradient(ellipse at 50% 10%, rgba(37, 99, 235, 0.08) 0%, transparent 70%)",
         }}
         aria-hidden="true"
       />
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="container-x relative z-10">
         {/* Section Header */}
         <div className="text-center">
           <p className="eyebrow text-cobalt font-semibold tracking-wider uppercase">

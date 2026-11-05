@@ -20,8 +20,8 @@ const punchlines: PunchlineItem[] = [
     context:
       "When enterprise prospects ask why conversational AI chatbots fail to move the revenue needle, this line immediately shifts the conversation from superficial chatter to transactional outcome delivery.",
     targetChannels: ["Hero H1 Headline", "LinkedIn Enterprise Ads", "Sales Deck Slide 1"],
-    accentColor: "text-[#658206]",
-    badgeStyle: "bg-lime-50 text-lime-900 border-lime-200",
+    accentColor: "text-cobalt",
+    badgeStyle: "bg-blue-50 text-blue-900 border-blue-200",
   },
   {
     id: "autonomous",
@@ -73,11 +73,11 @@ export function PitchPunchlinesSection() {
   };
 
   return (
-    <section id="punchlines" className="relative bg-white py-20 text-ink md:py-28 overflow-hidden border-b border-line">
+    <section id="punchlines" className="relative bg-white pb-20 text-ink md:pb-28 overflow-hidden border-b border-line">
       {/* Background Ambience */}
       <div
         className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[800px] rounded-full blur-[160px] opacity-20"
-        style={{ background: "radial-gradient(circle, rgba(129, 161, 11, 0.15) 0%, rgba(56, 189, 248, 0.12) 50%, transparent 70%)" }}
+        style={{ background: "radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, rgba(56, 189, 248, 0.12) 50%, transparent 70%)" }}
         aria-hidden="true"
       />
 
@@ -86,7 +86,7 @@ export function PitchPunchlinesSection() {
         <div className="flex w-max animate-marquee gap-8 whitespace-nowrap text-xs font-mono uppercase tracking-widest text-ink/80">
           {[...punchlines, ...punchlines, ...punchlines].map((p, idx) => (
             <span key={idx} className="flex items-center gap-6">
-              <span className="text-[#81a10b] text-sm">✦</span>
+              <span className="text-cobalt text-sm">✦</span>
               <span className="font-bold text-ink tracking-wider">&ldquo;{p.quote}&rdquo;</span>
             </span>
           ))}
@@ -97,12 +97,12 @@ export function PitchPunchlinesSection() {
         {/* Section Header */}
         <div className="flex flex-wrap items-end justify-between gap-6 border-b border-line pb-8">
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#81a10b]/30 bg-[#81a10b]/10 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-[#658206]">
-              <span className="inline-block size-2 rounded-full bg-[#81a10b]" />
+            <div className="inline-flex items-center gap-2 rounded-full border border-cobalt/30 bg-cobalt/10 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-cobalt">
+              <span className="inline-block size-2 rounded-full bg-cobalt" />
               Strategic Positioning // Pitch Punchlines For Marketing &amp; Ads
             </div>
             <h2 className="display-lg mt-4 text-[clamp(1.85rem,3.4vw,3.25rem)] font-bold leading-tight tracking-tight text-ink">
-              Pitch punchlines that <span className="text-[#658206]">close enterprise deals</span>.
+              Pitch punchlines that <span className="text-cobalt">close enterprise deals</span>.
             </h2>
             <p className="mt-3 text-sm sm:text-base text-muted leading-relaxed">
               When speaking to prospective clients, investors, or enterprise executives, use these four positioning statements to instantly establish authority over legacy voice bots.
@@ -121,7 +121,7 @@ export function PitchPunchlinesSection() {
                 </>
               ) : (
                 <>
-                  <svg className="size-3.5 text-[#658206]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="size-3.5 text-cobalt" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                   </svg>
                   <span>Copy All For Pitch Deck</span>
@@ -190,7 +190,7 @@ export function PitchPunchlinesSection() {
                     </>
                   ) : (
                     <>
-                      <svg className="size-3 text-[#658206]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="size-3 text-cobalt" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                       </svg>
                       <span>Copy</span>

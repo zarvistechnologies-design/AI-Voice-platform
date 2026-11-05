@@ -130,12 +130,12 @@ export function AgenticInActionSection() {
         className="pointer-events-none absolute inset-0 opacity-30"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 12%, rgba(129, 161, 11, 0.1) 0%, transparent 65%)",
+            "radial-gradient(ellipse at 50% 12%, rgba(37, 99, 235, 0.08) 0%, transparent 65%)",
         }}
         aria-hidden="true"
       />
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="container-x relative z-10">
         {/* Section Header */}
         <div className="text-center">
           <p className="eyebrow text-cobalt font-semibold tracking-wider uppercase">
@@ -201,7 +201,7 @@ export function AgenticInActionSection() {
             MODE 1: INTERACTIVE STEP-BY-STEP REPLAY WALKTHROUGH
             ======================================================== */}
         {viewMode === "walkthrough" && (
-          <div className="mt-12 mx-auto max-w-6xl">
+          <div className="mt-12 w-full">
             {/* Timeline Progress Stepper */}
             <div className="flex items-center justify-between gap-1 sm:gap-2 overflow-x-auto pb-3 border-b border-line">
               {scenarioSteps.map((step, idx) => {
@@ -498,7 +498,7 @@ export function AgenticInActionSection() {
             MODE 2: SEQUENCE FLOWCHART (USER'S DIAGRAM & ARTIFACTS)
             ======================================================== */}
         {viewMode === "flowchart" && (
-          <div className="mt-12 mx-auto max-w-6xl space-y-8">
+          <div className="mt-12 w-full space-y-8">
             {/* Top Card: User-Provided 3-Lane Architecture Diagram */}
             <div className="rounded-3xl border border-white/10 bg-[#0e0e0c] p-6 sm:p-10 shadow-2xl text-zinc-100">
               <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
@@ -612,7 +612,7 @@ export function AgenticInActionSection() {
             MODE 3: FULL CALL TELEMETRY LOG (ALL 60-SEC EVENTS)
             ======================================================== */}
         {viewMode === "full" && (
-          <div className="mt-12 mx-auto max-w-5xl space-y-6">
+          <div className="mt-12 w-full space-y-6">
             {scenarioSteps.map((step) => (
               <div
                 key={step.id}

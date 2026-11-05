@@ -687,14 +687,14 @@ export function HomeDesignFour() {
               <a href="#comparison" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
                 Comparison <span className="eyebrow text-muted">03</span>
               </a>
-              <a href="#advantage" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                Indic Engine <span className="eyebrow text-muted">04</span>
-              </a>
               <a href="#architecture" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                Architecture <span className="eyebrow text-muted">05</span>
+                Architecture <span className="eyebrow text-muted">04</span>
               </a>
               <a href="#agentic-in-action" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
-                In Action <span className="eyebrow text-muted">06</span>
+                In Action <span className="eyebrow text-muted">05</span>
+              </a>
+              <a href="#advantage" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
+                Indic Engine <span className="eyebrow text-muted">06</span>
               </a>
               <a href="#industries" onClick={() => setMobileMenuOpen(false)} className="flex items-baseline justify-between border-b border-line py-4 font-display text-3xl font-semibold text-ink">
                 Industries <span className="eyebrow text-muted">07</span>
@@ -986,9 +986,19 @@ export function HomeDesignFour() {
         <ArchitecturalComparisonSection />
 
         {/* ========================================================
-            SECTION 6: THE INDIAN VOICE ADVANTAGE (Original Content)
+            CORE PLATFORM ARCHITECTURE (The Three-Layer Agentic Engine)
             ======================================================== */}
-        <section id="advantage" className="container-x pb-16 md:pb-24" aria-labelledby="indic-title">
+        <CorePlatformArchitectureSection />
+
+        {/* ========================================================
+            "AGENTIC IN ACTION": REAL-WORLD SCENARIO BREAKDOWN
+            ======================================================== */}
+        <AgenticInActionSection />
+
+        {/* ========================================================
+            THE INDIAN VOICE ADVANTAGE (Original Content)
+            ======================================================== */}
+        <section id="advantage" className="container-x py-16 md:py-24" aria-labelledby="indic-title">
           <div className="case-card rounded-3xl border border-line bg-ink text-white p-8 sm:p-12 overflow-hidden relative">
             <div className="grid gap-10 lg:grid-cols-12 lg:items-center">
               <div className="lg:col-span-7">
@@ -1061,17 +1071,6 @@ export function HomeDesignFour() {
             </div>
           </div>
         </section>
-
-        {/* ========================================================
-            SECTION 7: CORE PLATFORM ARCHITECTURE (The Three-Layer Agentic Engine)
-            ======================================================== */}
-        <CorePlatformArchitectureSection />
-
-
-        {/* ========================================================
-            "AGENTIC IN ACTION": REAL-WORLD SCENARIO BREAKDOWN
-            ======================================================== */}
-        <AgenticInActionSection />
 
         {/* ========================================================
             PITCH PUNCHLINES TO USE IN MARKETING & ADS
