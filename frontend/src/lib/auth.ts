@@ -19,6 +19,7 @@ export type AuthSession = {
     whiteLabelBrandId?: string;
     whiteLabelOwnerAccountId?: string;
     lifecycleStatus?: "active" | "suspended" | "archived";
+    businessDetailsRequired?: boolean;
     brand?: BrandConfig;
   };
   whiteLabel?: {
@@ -50,6 +51,7 @@ type AuthResponse = {
     whiteLabelBrandId?: string;
     whiteLabelOwnerAccountId?: string;
     lifecycleStatus?: "active" | "suspended" | "archived";
+    businessDetailsRequired?: boolean;
     brand?: BrandConfig;
   };
   whiteLabel?: AuthSession["whiteLabel"];
@@ -190,10 +192,13 @@ export async function registerWithPassword(
   name: string,
   email: string,
   password: string,
+  business?: { companyName: string; phone: string; country: string; address: string; postalCode: string; state: string; gstin: string },
+  referralCode?: string,
+  termsAccepted?: boolean,
 ) {
   const session = await requestAuth("/api/auth/register", {
     method: "POST",
-    body: JSON.stringify({ name, email, password }),
+    body: JSON.stringify({ name, email, password, business, referralCode, termsAccepted }),
   });
 
   saveSession(session);
@@ -332,6 +337,7 @@ async function validateSessionWithServer(session: AuthSession) {
     session.organization?.whiteLabelBrandId === updatedSession.organization?.whiteLabelBrandId &&
     session.organization?.whiteLabelOwnerAccountId === updatedSession.organization?.whiteLabelOwnerAccountId &&
     session.organization?.lifecycleStatus === updatedSession.organization?.lifecycleStatus &&
+    session.organization?.businessDetailsRequired === updatedSession.organization?.businessDetailsRequired &&
     session.whiteLabel?.accountId === updatedSession.whiteLabel?.accountId &&
     session.whiteLabel?.brandId === updatedSession.whiteLabel?.brandId &&
     session.whiteLabel?.hostname === updatedSession.whiteLabel?.hostname &&

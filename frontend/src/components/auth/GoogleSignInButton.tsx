@@ -91,10 +91,10 @@ export function GoogleSignInButton({
               return;
             }
             try {
-              await loginWithGoogle(credential);
+              const signedIn = await loginWithGoogle(credential);
               const session = await validateStoredSession();
               if (!session) throw new Error("Google sign-in completed, but the session could not be verified.");
-              router.push(nextPath);
+              router.push(signedIn.organization?.businessDetailsRequired ? `/signup/business?next=${encodeURIComponent(nextPath)}` : nextPath);
             } catch (error) {
               onError(error instanceof Error ? error.message : "Could not sign in with Google.");
             }

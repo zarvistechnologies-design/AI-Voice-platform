@@ -72,7 +72,7 @@ export type BillingSummary = {
   displayCurrency?: "INR";
   inrPerUsd?: number;
   billingModel?: "pay_as_you_go" | "white_label_partner_managed" | "white_label_customer_checkout";
-  billingProfile?: { gstin: string; address: string };
+  billingProfile?: { companyName: string; gstin: string; address: string; phone: string; country: string; state: string; postalCode: string };
   canManageBillingProfile?: boolean;
   paymentProvider?: string;
   whiteLabel?: { productName: string; supportEmail: string; managedByPartner: boolean };
@@ -252,8 +252,8 @@ export const billingApi = {
     return cancelled;
   },
   downloadInvoice,
-  updateBillingProfile: async (input: { gstin: string; address: string }) => {
-    const result = await request<{ billingProfile: { gstin: string; address: string } }>("/profile", {
+  updateBillingProfile: async (input: { companyName: string; gstin: string; address: string; phone: string; country: string; state: string; postalCode: string; completeOnboarding?: boolean; termsAccepted?: boolean }) => {
+    const result = await request<{ billingProfile: NonNullable<BillingSummary["billingProfile"]> }>("/profile", {
       method: "PUT",
       body: JSON.stringify(input),
     });

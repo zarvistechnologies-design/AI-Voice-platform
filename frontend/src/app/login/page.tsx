@@ -66,7 +66,7 @@ export default function LoginPage() {
           </div>
         </section>
 
-        <section className="relative flex min-h-[calc(100svh-1.5rem)] min-w-0 items-center justify-center overflow-hidden rounded-[24px] border border-[#dbe4e1] bg-white px-5 py-24 shadow-[0_20px_65px_-28px_rgba(20,35,31,0.18)] sm:px-8 lg:min-h-0 lg:rounded-[28px] lg:px-[clamp(38px,4vw,68px)] lg:py-14">
+        <section className="relative flex min-h-[calc(100svh-1.5rem)] min-w-0 items-stretch justify-start overflow-y-auto rounded-[24px] border border-[#dbe4e1] bg-white px-5 py-24 shadow-[0_20px_65px_-28px_rgba(20,35,31,0.18)] sm:px-8 lg:min-h-0 lg:rounded-[28px] lg:px-[clamp(38px,4vw,68px)] lg:py-14">
           <div className="absolute inset-x-5 top-5 z-10 flex items-center justify-between lg:inset-x-7 lg:top-6">
             <div className="lg:hidden"><BrandLogo showWebsiteLogo /></div>
             <Link className="ml-auto inline-flex min-h-9 items-center gap-2 rounded-full border border-[#dbe4e1] bg-white px-3.5 text-xs font-bold text-[#52645f] transition hover:border-[#b9d6cf] hover:text-[#14231f]" href="/">
@@ -74,7 +74,7 @@ export default function LoginPage() {
             </Link>
           </div>
 
-          <div className="w-full min-w-0 max-w-[440px]">
+          <div className="mx-auto my-auto w-full min-w-0 max-w-[440px]">
             <Suspense fallback={<div className="h-[500px] w-full animate-pulse rounded-2xl bg-[#f3f7f6]" />}>
               <LoginForm />
             </Suspense>
