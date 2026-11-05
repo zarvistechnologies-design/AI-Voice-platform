@@ -35,6 +35,11 @@ export function LoginForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [business, setBusiness] = useState({ companyName: "", phone: "", country: "India", address: "", postalCode: "", state: "", gstin: "" });
+  const [referralCode, setReferralCode] = useState("");
+  const [showReferral, setShowReferral] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [twoFactorCode, setTwoFactorCode] = useState("");
@@ -51,7 +56,7 @@ export function LoginForm() {
     void (async () => {
       if (!getSession()) return;
       const session = await validateStoredSession();
-      if (!cancelled && session) router.replace(nextPath);
+      if (!cancelled && session) router.replace(session.organization?.businessDetailsRequired ? `/signup/business?next=${encodeURIComponent(nextPath)}` : nextPath);
     })();
 
     return () => {
@@ -82,6 +87,14 @@ export function LoginForm() {
       setError("Password must be at least 8 characters.");
       return;
     }
+    if (mode === "register") {
+      if (!/[A-Z]/.test(password) || !/[0-9]/.test(password) || !/[^A-Za-z0-9]/.test(password)) { setError("Use an uppercase letter, a number, and a symbol in your password."); return; }
+      if (password !== confirmPassword) { setError("Passwords do not match."); return; }
+      if (!business.companyName.trim() || !business.phone.trim() || !business.country.trim() || !business.address.trim() || !business.postalCode.trim() || !business.state.trim()) {
+        setError("Complete your business and billing details."); return;
+      }
+      if (!acceptedTerms) { setError("Agree to the Terms of Service and Privacy Policy to continue."); return; }
+    }
 
     setIsSubmitting(true);
 
@@ -95,7 +108,7 @@ export function LoginForm() {
       }
 
       if (mode === "register") {
-        await registerWithPassword(normalizedName, normalizedEmail, password);
+        await registerWithPassword(normalizedName, normalizedEmail, password, business, referralCode, acceptedTerms);
       } else {
         await loginWithPassword(normalizedEmail, password, twoFactorCode);
       }
@@ -112,7 +125,7 @@ export function LoginForm() {
           .then(({ voiceApi }) => voiceApi.agentSummaries())
           .catch(() => undefined);
       }
-      router.push(nextPath);
+      router.push(session.organization?.businessDetailsRequired ? `/signup/business?next=${encodeURIComponent(nextPath)}` : nextPath);
     } catch (authError) {
       setError(
         authError instanceof Error
@@ -151,7 +164,7 @@ export function LoginForm() {
 
       {mode === "register" ? (
         <label className="auth-field grid gap-1.5 text-xs font-semibold text-slate-700">
-          <span>Name</span>
+          <span>Full name *</span>
           <span className="relative block">
             <svg aria-hidden="true" className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.7" /><path d="M4.5 21a7.5 7.5 0 0115 0" stroke="currentColor" strokeLinecap="round" strokeWidth="1.7" /></svg>
             <input
@@ -167,7 +180,7 @@ export function LoginForm() {
       ) : null}
 
       <label className="auth-field grid gap-1.5 text-xs font-semibold text-slate-700">
-        <span>Email address</span>
+        <span>{mode === "register" ? "Work email *" : "Email address"}</span>
         <span className="relative block">
           <svg aria-hidden="true" className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24"><rect height="15" rx="2.5" stroke="currentColor" strokeWidth="1.7" width="19" x="2.5" y="4.5" /><path d="M4 7l8 6 8-6" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" /></svg>
           <input
@@ -203,6 +216,29 @@ export function LoginForm() {
           </button>
         </span>
       </label> : null}
+
+      {mode === "register" ? <div className="-mt-2 grid grid-cols-2 gap-2 text-[11px] text-slate-500" aria-live="polite">{[
+        [password.length >= 8, "8+ characters"],
+        [/[A-Z]/.test(password), "One uppercase"],
+        [/[0-9]/.test(password), "One number"],
+        [/[^A-Za-z0-9]/.test(password), "One symbol"],
+      ].map(([met, label]) => <span className={met ? "font-semibold text-teal-700" : ""} key={String(label)}>{met ? "✓" : "○"} {label}</span>)}</div> : null}
+
+      {mode === "register" ? <>
+        <label className="auth-field grid gap-1.5 text-xs font-semibold text-slate-700"><span>Confirm password *</span><input className="auth-input min-h-13 w-full rounded-xl border border-[#d7e2df] bg-white px-4 text-sm" autoComplete="new-password" onChange={(event) => setConfirmPassword(event.target.value)} required type="password" value={confirmPassword} /></label>
+        <div className="border-t border-[#d7e2df] pt-5"><h2 className="text-lg font-bold">Tell us about your business</h2><p className="mt-1 text-xs text-slate-500">These details appear on your account and future invoices.</p></div>
+        {([
+          ["companyName", "Company name", "organization", true],
+          ["phone", "Phone number", "tel", true],
+          ["address", "Billing address", "street-address", true],
+          ["state", "State / Province", "address-level1", true],
+          ["postalCode", "Postal code", "postal-code", true],
+          ["gstin", "GSTIN (optional, India)", "off", false],
+        ] as const).map(([key, label, autoComplete, required]) => <label className="auth-field grid gap-1.5 text-xs font-semibold text-slate-700" key={key}><span>{label}{required ? " *" : ""}</span><input className="auth-input min-h-13 w-full rounded-xl border border-[#d7e2df] bg-white px-4 text-sm" autoComplete={autoComplete} maxLength={key === "address" ? 500 : key === "companyName" ? 100 : key === "phone" ? 30 : key === "postalCode" ? 20 : key === "gstin" ? 15 : 100} onChange={(event) => setBusiness((current) => ({ ...current, [key]: event.target.value }))} required={required} type={key === "phone" ? "tel" : "text"} value={business[key]} /></label>)}
+        <label className="auth-field grid gap-1.5 text-xs font-semibold text-slate-700"><span>Country *</span><input className="auth-input min-h-13 w-full rounded-xl border border-[#d7e2df] bg-white px-4 text-sm" autoComplete="country-name" list="signup-countries" maxLength={80} onChange={(event) => setBusiness((current) => ({ ...current, country: event.target.value }))} required value={business.country} /><datalist id="signup-countries"><option value="India" /><option value="United States" /><option value="United Kingdom" /><option value="United Arab Emirates" /></datalist></label>
+        {showReferral ? <label className="auth-field grid gap-1.5 text-xs font-semibold text-slate-700"><span>Referral code (optional)</span><input className="auth-input min-h-13 w-full rounded-xl border border-[#d7e2df] bg-white px-4 text-sm" maxLength={40} onChange={(event) => setReferralCode(event.target.value)} value={referralCode} /></label> : <button className="w-fit border-0 bg-transparent p-0 text-xs text-slate-600" onClick={() => setShowReferral(true)} type="button">+ Have a referral code?</button>}
+        <label className="flex items-start gap-2 text-xs text-slate-600"><input checked={acceptedTerms} className="mt-0.5 size-4 accent-[#118778]" onChange={(event) => setAcceptedTerms(event.target.checked)} type="checkbox" /><span>I agree to the <a className="text-[#118778] underline" href="/terms" target="_blank" rel="noopener noreferrer">Terms of Service</a> and <a className="text-[#118778] underline" href="/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.</span></label>
+      </> : null}
 
       {mode === "login" && needsTwoFactor ? (
         <label className="auth-field grid gap-1.5 text-xs font-semibold text-slate-700">
