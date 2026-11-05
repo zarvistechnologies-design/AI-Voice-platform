@@ -86,7 +86,6 @@ export function SiteHeader() {
   const isChangelog = pathname.startsWith("/resources/changelog");
   const isLegalPage = pathname === "/privacy" || pathname === "/terms";
   const hasOpaqueHeader = isChangelog || isLegalPage;
-  const isHome = pathname === "/";
 
   return (
     <header
@@ -98,8 +97,6 @@ export function SiteHeader() {
         className={`relative flex h-[54px] w-full max-w-[1400px] items-center justify-between rounded-full border px-4 transition-all duration-300 sm:px-8 ${
           hasOpaqueHeader
             ? "border-slate-200 bg-white shadow-[0_6px_24px_-6px_rgba(0,0,0,0.1)]"
-            : isHome
-            ? "border-purple-500/30 bg-slate-950/80 shadow-[0_8px_32px_rgba(0,0,0,0.6)] backdrop-blur-2xl text-white"
             : scrolled
             ? "border-slate-200/90 bg-white/95 shadow-[0_8px_30px_-4px_rgba(0,0,0,0.08)] backdrop-blur-2xl"
             : "border-slate-200/70 bg-white/85 shadow-[0_4px_20px_rgba(0,0,0,0.04)] backdrop-blur-xl"
@@ -120,11 +117,7 @@ export function SiteHeader() {
           <Link
             className={`rounded-full px-3 py-1 text-[13px] font-medium transition-all duration-150 ${
               pathname === "/"
-                ? isHome
-                  ? "bg-purple-600/35 text-purple-200 ring-1 ring-purple-400/40 shadow-xs font-semibold"
-                  : "bg-slate-900 text-white shadow-xs font-semibold"
-                : isHome
-                ? "text-slate-300 hover:bg-white/10 hover:text-white"
+                ? "bg-slate-900 text-white shadow-xs font-semibold"
                 : "text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
             }`}
             href="/"
@@ -239,21 +232,7 @@ export function SiteHeader() {
         {/* Right: Slim Compact Action Buttons */}
         <div className="flex items-center gap-2">
           <Link
-            className={`hidden md:inline-flex items-center gap-1.5 px-3 py-1 text-[12px] font-semibold rounded-full transition-all duration-150 shadow-xs ${
-              isHome
-                ? "text-purple-300 bg-purple-950/70 hover:bg-purple-900/90 border border-purple-500/40 hover:border-purple-400"
-                : "text-purple-700 bg-purple-50 hover:bg-purple-100/90 border border-purple-200/80 hover:border-purple-300"
-            }`}
-            href="/demo"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse shadow-[0_0_8px_#c084fc]" />
-            Wave Shader Demo
-          </Link>
-
-          <Link
-            className={`hidden px-3 py-1 text-[13px] font-semibold transition-colors duration-150 sm:inline-block ${
-              isHome ? "text-slate-200 hover:text-white" : "text-slate-700 hover:text-slate-950"
-            }`}
+            className="hidden px-3 py-1 text-[13px] font-semibold text-slate-700 transition-colors duration-150 hover:text-slate-950 sm:inline-block"
             href="/login"
           >
             Get started
