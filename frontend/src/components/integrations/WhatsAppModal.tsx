@@ -12,6 +12,9 @@ declare global {
         callback: (response: {
           authResponse?: { code?: string; accessToken?: string };
           status?: string;
+          error?: string;
+          error_message?: string;
+          error_description?: string;
         }) => void,
         options?: Record<string, unknown>,
       ) => void;
@@ -176,6 +179,7 @@ export function WhatsAppModal({
     };
     if (useCoexistence) {
       extras.featureType = "whatsapp_business_app_onboarding";
+      extras.sessionInfoVersion = "3";
     }
 
     try {
@@ -185,7 +189,10 @@ export function WhatsAppModal({
             void handleProcessCode(response.authResponse.code);
           } else {
             setBusy(false);
-            onError("Meta signup did not return an authorization code. If Meta says the feature is unavailable, check this app's Embedded Signup configuration, allowed domain, and app access in Meta for Developers.");
+            const metaError = response.error_message || response.error_description || response.error;
+            onError(metaError
+              ? `Meta signup error: ${metaError}`
+              : "Meta signup did not return an authorization code. Check the Embedded Signup configuration, allowed domain, and app access in Meta for Developers. If you closed the popup, try again.");
           }
         },
         {
