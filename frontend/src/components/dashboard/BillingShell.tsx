@@ -39,6 +39,7 @@ export function BillingShell() {
   const [selectedTopUp, setSelectedTopUp] = useState(2_000);
   const [gstin, setGstin] = useState("");
   const [billingAddress, setBillingAddress] = useState("");
+  const [billingExtra, setBillingExtra] = useState({ companyName: "", phone: "", country: "", state: "", postalCode: "" });
   const [showBillingDetails, setShowBillingDetails] = useState(false);
   const [showUserSidebar, setShowUserSidebar] = useState(getDashboardSidebarInitialState);
   const [successData, setSuccessData] = useState<PaymentSuccessData | null>(null);
@@ -49,6 +50,7 @@ export function BillingShell() {
       setData(summary);
       setGstin(summary.billingProfile?.gstin ?? "");
       setBillingAddress(summary.billingProfile?.address ?? "");
+      setBillingExtra({ companyName: summary.billingProfile?.companyName ?? "", phone: summary.billingProfile?.phone ?? "", country: summary.billingProfile?.country ?? "", state: summary.billingProfile?.state ?? "", postalCode: summary.billingProfile?.postalCode ?? "" });
       setNotice("");
       return summary;
     } catch (error) {
@@ -189,12 +191,13 @@ export function BillingShell() {
     event.preventDefault();
     setBusy("profile");
     try {
-      const result = await billingApi.updateBillingProfile({ gstin, address: billingAddress });
+      const result = await billingApi.updateBillingProfile({ gstin, address: billingAddress, ...billingExtra });
       setGstin(result.billingProfile.gstin);
       setBillingAddress(result.billingProfile.address);
+      setBillingExtra({ companyName: result.billingProfile.companyName, phone: result.billingProfile.phone, country: result.billingProfile.country, state: result.billingProfile.state, postalCode: result.billingProfile.postalCode });
       setData((current) => current ? { ...current, billingProfile: result.billingProfile } : current);
       setShowBillingDetails(false);
-      setNotice("Billing details saved. The address and GSTIN will appear on invoices when provided.");
+      setNotice("Billing details saved for future invoices.");
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not save the billing details.");
     } finally {
@@ -205,6 +208,7 @@ export function BillingShell() {
   function closeBillingDetails() {
     setGstin(data?.billingProfile?.gstin ?? "");
     setBillingAddress(data?.billingProfile?.address ?? "");
+    setBillingExtra({ companyName: data?.billingProfile?.companyName ?? "", phone: data?.billingProfile?.phone ?? "", country: data?.billingProfile?.country ?? "", state: data?.billingProfile?.state ?? "", postalCode: data?.billingProfile?.postalCode ?? "" });
     setShowBillingDetails(false);
   }
 
@@ -540,7 +544,8 @@ export function BillingShell() {
         <section className="w-full max-w-xl overflow-hidden rounded-2xl border border-[#dbe4e1] bg-white shadow-2xl" role="dialog" aria-modal="true" aria-labelledby="billing-details-title">
           <div className="flex items-start justify-between gap-4 border-b border-[#dbe4e1] px-5 py-4"><div><h2 className="m-0 text-lg font-semibold" id="billing-details-title">Billing details</h2><p className="app-caption mt-1 mb-0">These details are optional and will appear on your tax invoices.</p></div><button className="grid size-9 shrink-0 place-items-center rounded-lg text-xl text-[#71817d] hover:bg-[#f1f5f4] hover:text-[#14231f]" type="button" aria-label="Close billing details" onClick={closeBillingDetails} disabled={busy === "profile"}>×</button></div>
           <form className="grid gap-4 p-5" onSubmit={saveBillingDetails}>
-            <label className="grid gap-1.5 text-xs font-semibold text-[#52645f]" htmlFor="billing-address">Billing address (optional)<textarea className="min-h-28 resize-y rounded-lg border border-[#c6d4d0] bg-white px-3 py-2.5 text-sm font-medium leading-5 text-[#14231f] outline-none placeholder:font-normal focus:border-[#118778]" id="billing-address" name="billingAddress" value={billingAddress} maxLength={500} rows={4} placeholder="Company address, city, state, postal code, country" autoComplete="billing street-address" onChange={(event) => setBillingAddress(event.target.value)} /></label>
+            {([ ["companyName", "Company name"], ["phone", "Business phone"], ["country", "Country"], ["state", "State / Province"], ["postalCode", "Postal code"] ] as const).map(([key, label]) => <label className="grid gap-1.5 text-xs font-semibold text-[#52645f]" key={key}>{label}<input className="h-11 rounded-lg border border-[#c6d4d0] bg-white px-3 text-sm" maxLength={key === "companyName" ? 100 : key === "phone" ? 30 : 100} onChange={(event) => setBillingExtra((current) => ({ ...current, [key]: event.target.value }))} value={billingExtra[key]} /></label>)}
+            <label className="grid gap-1.5 text-xs font-semibold text-[#52645f]" htmlFor="billing-address">Billing address (optional)<textarea className="min-h-28 resize-y rounded-lg border border-[#c6d4d0] bg-white px-3 py-2.5 text-sm font-medium leading-5 text-[#14231f] outline-none placeholder:font-normal focus:border-[#118778]" id="billing-address" name="billingAddress" value={billingAddress} maxLength={500} rows={4} placeholder="Street address and city" autoComplete="billing street-address" onChange={(event) => setBillingAddress(event.target.value)} /></label>
             <label className="grid gap-1.5 text-xs font-semibold text-[#52645f]" htmlFor="billing-gstin">GST number (optional)<input className="h-11 rounded-lg border border-[#c6d4d0] bg-white px-3 text-sm font-semibold uppercase tracking-[0.08em] text-[#14231f] outline-none placeholder:font-normal placeholder:tracking-normal focus:border-[#118778]" id="billing-gstin" name="gstin" value={gstin} maxLength={15} pattern="[0-9]{2}[A-Za-z]{5}[0-9]{4}[A-Za-z][1-9A-Za-z]Z[0-9A-Za-z]" placeholder="29ABCDE1234F1Z5" autoComplete="off" onChange={(event) => setGstin(event.target.value.toUpperCase().replace(/\s/g, ""))} /></label>
             <div className="mt-1 flex justify-end gap-2"><button className="h-11 rounded-lg border border-[#c6d4d0] px-4 text-sm font-semibold text-[#52645f] hover:bg-[#f7f9f8]" type="button" onClick={closeBillingDetails} disabled={busy === "profile"}>Cancel</button><button className="h-11 rounded-lg bg-[#118778] px-5 text-sm font-semibold text-white hover:bg-[#0e6f62] disabled:opacity-50" type="submit" disabled={Boolean(busy)}>{busy === "profile" ? "Saving..." : "Save details"}</button></div>
           </form>

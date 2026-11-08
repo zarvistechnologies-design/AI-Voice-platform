@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { PlatformBillingConsole } from "@/components/admin/PlatformBillingConsole";
 
 export default function AdminPage() {
-  redirect("/platform-admin/white-label");
+  return <PlatformBillingConsole />;
 }

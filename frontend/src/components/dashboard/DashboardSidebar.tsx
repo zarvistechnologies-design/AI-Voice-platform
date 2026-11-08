@@ -305,6 +305,11 @@ export function DashboardSidebar({
                 ...(isSuperAdmin
                   ? [
                       {
+                        label: "Accounts & Payments",
+                        href: "/admin",
+                        icon: "shield" as const,
+                      },
+                      {
                         label: "Platform Admin",
                         href: "/platform-admin/white-label",
                         icon: "shield" as const,

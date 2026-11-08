@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import { DashboardNavigationFeedback } from "@/components/dashboard/DashboardNavigationFeedback";
 import { DashboardQueryProvider } from "@/components/dashboard/DashboardQueryProvider";
+import { BusinessDetailsGate } from "@/components/auth/BusinessDetailsGate";
 
 import { requestBrandConfig } from "@/lib/brandServer";
 
@@ -30,7 +31,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     <DashboardQueryProvider>
       <div className="dashboard-home-theme min-h-screen bg-[#f7f9f8] text-[#1b1b22]">
         <DashboardNavigationFeedback />
-        {children}
+        <BusinessDetailsGate>{children}</BusinessDetailsGate>
       </div>
     </DashboardQueryProvider>
   );
