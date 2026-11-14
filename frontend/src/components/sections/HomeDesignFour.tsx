@@ -400,36 +400,55 @@ export function HomeDesignFour() {
         {/* ========================================================
             SECTION 2: HERO SECTION (Original Content + Big Type Agency)
             ======================================================== */}
-        <section className="container-x pt-32 pb-12 sm:pt-36 md:pb-16">
-          <div className="flex flex-wrap items-center gap-x-8 gap-y-2">
-            <p className="eyebrow text-ink">Autonomous Voice AI Platform</p>
-            <p className="eyebrow text-muted">&gt;750ms Telephony Latency</p>
-            <p className="eyebrow text-muted">22+ Indic &amp; 76 Global Languages</p>
-            <p className="eyebrow text-muted">BYOT Virtual Telephony</p>
+        <section className="container-x pt-32 pb-14 sm:pt-36 md:pb-16 relative">
+          {/* Subtle Ambient Radial Highlight */}
+          <div
+            className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-[500px] w-[900px] rounded-full blur-[140px] opacity-25"
+            style={{ background: "radial-gradient(ellipse at 50% 30%, rgba(37, 99, 235, 0.15) 0%, rgba(99, 102, 241, 0.08) 50%, transparent 70%)" }}
+            aria-hidden="true"
+          />
+
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <span className="inline-flex items-center gap-2 rounded-full border border-blue-200/80 bg-blue-50/80 px-3.5 py-1 text-xs font-semibold text-blue-700 shadow-xs">
+              <span className="size-2 rounded-full bg-blue-600 animate-pulse" />
+              <span>Autonomous Voice AI Platform</span>
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1 font-mono text-xs text-slate-600 shadow-xs">
+              <span className="text-emerald-500 font-bold">⚡</span>
+              <span>&gt;750ms Telephony Latency</span>
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1 font-mono text-xs text-slate-600 shadow-xs">
+              <span>🇮🇳</span>
+              <span>22+ Indic &amp; 76 Global Languages</span>
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1 font-mono text-xs text-slate-600 shadow-xs">
+              <span className="text-blue-500">📞</span>
+              <span>BYOT Virtual Telephony</span>
+            </span>
           </div>
 
-          <h1 className="display-xl mt-6 text-[clamp(1.85rem,3.4vw,3.5rem)] leading-[1.06] text-ink max-w-5xl">
+          <h1 className="display-xl mt-6 text-[clamp(2rem,3.8vw,3.75rem)] leading-[1.08] text-slate-900 max-w-5xl tracking-tight">
             <span>Beyond Voice Bots:</span><br />
             <span>Autonomous AI Agents That</span><br className="hidden sm:inline" />{" "}
-            <span className="text-cobalt">Reason, Act, and Deliver Outcomes.</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700">Reason, Act, and Deliver Outcomes.</span>
           </h1>
 
-          <p className="mt-4 font-display text-base sm:text-lg md:text-xl font-bold text-ink max-w-4xl">
-            Don&apos;t just automate answers. <span className="text-cobalt">Automate complete business workflows over voice.</span>
+          <p className="mt-4 font-display text-base sm:text-lg md:text-xl font-bold text-slate-800 max-w-4xl">
+            Don&apos;t just automate answers. <span className="text-blue-600 font-bold">Automate complete business workflows over voice.</span>
           </p>
 
-          <div className="mt-8 grid gap-8 border-t border-line pt-6 md:grid-cols-12 md:items-end">
+          <div className="mt-8 grid gap-8 border-t border-slate-200 pt-6 md:grid-cols-12 md:items-end">
             <div className="md:col-span-7 lg:col-span-8">
-              <p className="text-sm leading-relaxed text-muted sm:text-base">
+              <p className="text-sm leading-relaxed text-slate-600 sm:text-base">
                 Traditional voice bots follow rigid scripts. Our Agentic Voice Platform deploys autonomous AI agents equipped with cognitive reasoning, dynamic planning, real-time tool execution, and long-term memory—enabling them to handle complex, non-linear human conversations from end to end.
               </p>
-              <p className="mt-3 font-display text-sm font-semibold sm:text-base text-ink">
+              <p className="mt-3 font-display text-sm font-semibold sm:text-base text-slate-900">
                 Trusted voice platform to{" "}
-                <span className="text-cobalt">{rotatingWords[rotatorIdx]}</span>
+                <span className="text-blue-600 font-bold underline decoration-blue-200 underline-offset-4">{rotatingWords[rotatorIdx]}</span>
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-4 md:col-span-5 lg:col-span-4 md:justify-end">
+            <div className="flex flex-wrap items-center gap-3.5 md:col-span-5 lg:col-span-4 md:justify-end">
               <Link href="/login" className="btn btn-primary">
                 <span>Get Started Free</span>
                 <svg className="arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -443,33 +462,33 @@ export function HomeDesignFour() {
           </div>
 
           {/* Original Trust Bar */}
-          <div className="mt-12 grid grid-cols-2 gap-4 border-t border-line pt-8 sm:grid-cols-4">
-            <div className="flex items-center gap-3">
-              <span className="grid size-9 place-items-center rounded-full bg-paper-2 font-mono text-xs font-bold text-ink">⚡</span>
+          <div className="mt-12 grid grid-cols-2 gap-4 border-t border-slate-200 pt-8 sm:grid-cols-4">
+            <div className="flex items-center gap-3.5 rounded-2xl border border-slate-200/80 bg-white p-3.5 sm:p-4 shadow-xs hover:border-blue-300 hover:shadow-md transition-all">
+              <span className="grid size-10 place-items-center rounded-xl bg-amber-50 font-mono text-sm font-bold text-amber-600 shadow-xs">⚡</span>
               <div>
-                <b className="block text-sm font-bold text-ink">&gt;750ms Latency</b>
-                <span className="text-xs text-muted">Telephony turn-around</span>
+                <b className="block text-sm font-bold text-slate-900">&gt;750ms Latency</b>
+                <span className="text-xs text-slate-500">Telephony turn-around</span>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="grid size-9 place-items-center rounded-full bg-paper-2 font-mono text-xs font-bold text-ink">🇮🇳</span>
+            <div className="flex items-center gap-3.5 rounded-2xl border border-slate-200/80 bg-white p-3.5 sm:p-4 shadow-xs hover:border-blue-300 hover:shadow-md transition-all">
+              <span className="grid size-10 place-items-center rounded-xl bg-emerald-50 font-mono text-sm font-bold text-emerald-600 shadow-xs">🇮🇳</span>
               <div>
-                <b className="block text-sm font-bold text-ink">22+ Indic &amp; 76 Global</b>
-                <span className="text-xs text-muted">Native dialects &amp; accents</span>
+                <b className="block text-sm font-bold text-slate-900">22+ Indic &amp; 76 Global</b>
+                <span className="text-xs text-slate-500">Native dialects &amp; accents</span>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="grid size-9 place-items-center rounded-full bg-paper-2 font-mono text-xs font-bold text-ink">📊</span>
+            <div className="flex items-center gap-3.5 rounded-2xl border border-slate-200/80 bg-white p-3.5 sm:p-4 shadow-xs hover:border-blue-300 hover:shadow-md transition-all">
+              <span className="grid size-10 place-items-center rounded-xl bg-blue-50 font-mono text-sm font-bold text-blue-600 shadow-xs">📊</span>
               <div>
-                <b className="block text-sm font-bold text-ink">1-Click Sheets</b>
-                <span className="text-xs text-muted">Instant outbound dialer</span>
+                <b className="block text-sm font-bold text-slate-900">1-Click Sheets</b>
+                <span className="text-xs text-slate-500">Instant outbound dialer</span>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="grid size-9 place-items-center rounded-full bg-paper-2 font-mono text-xs font-bold text-ink">📞</span>
+            <div className="flex items-center gap-3.5 rounded-2xl border border-slate-200/80 bg-white p-3.5 sm:p-4 shadow-xs hover:border-blue-300 hover:shadow-md transition-all">
+              <span className="grid size-10 place-items-center rounded-xl bg-indigo-50 font-mono text-sm font-bold text-indigo-600 shadow-xs">📞</span>
               <div>
-                <b className="block text-sm font-bold text-ink">BYOT Telephony</b>
-                <span className="text-xs text-muted">Exotel, Twilio, Tata, Airtel</span>
+                <b className="block text-sm font-bold text-slate-900">BYOT Telephony</b>
+                <span className="text-xs text-slate-500">Exotel, Twilio, Tata, Airtel</span>
               </div>
             </div>
           </div>
@@ -479,23 +498,26 @@ export function HomeDesignFour() {
             SECTION 3: LIVE VOICE CALL & AUDIO DEMO (Original Content)
             ======================================================== */}
         <section id="platform" className="container-x pb-20" aria-label="Featured live demo">
-          <div className="case-card rounded-3xl border border-line bg-paper-2 p-8 sm:p-12">
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-line pb-6">
+          <div className="case-card rounded-3xl border border-slate-200/90 bg-gradient-to-b from-white to-slate-50/60 p-7 sm:p-12 shadow-sm">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-6">
               <div>
-                <span className="eyebrow text-cobalt">Live Interactive Session</span>
-                <h2 className="font-display text-lg sm:text-xl font-bold text-ink mt-1">
+                <span className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-blue-600 uppercase tracking-wider">
+                  <span className="size-1.5 rounded-full bg-blue-600 animate-pulse" />
+                  Live Interactive Session
+                </span>
+                <h2 className="font-display text-lg sm:text-xl font-bold text-slate-900 mt-1">
                   Vozon: India&apos;s Complete Enterprise Voice AI Platform
                 </h2>
-                <p className="mt-1 text-xs sm:text-[13px] text-muted">
+                <p className="mt-1 text-xs sm:text-[13px] text-slate-500">
                   Build intelligent voice agents, connect your business systems, and automate customer conversations with Vozon.
                 </p>
               </div>
               <div className="flex items-center gap-3">
-                <span className="inline-flex items-center gap-2 rounded-full border border-line bg-paper px-3 py-1 font-mono text-xs font-semibold text-ink">
+                <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 font-mono text-xs font-semibold text-slate-800 shadow-xs">
                   <span className={`size-2 rounded-full ${isCallActive ? "bg-emerald-500 animate-ping" : "bg-emerald-500"}`} />
                   {isCallActive ? (voiceCall.active ? "Live Call Connected" : "Dialing...") : "Telemetry: >750ms PSTN"}
                 </span>
-                <span className="eyebrow text-muted hidden sm:inline">WebRTC &amp; SIP Ready</span>
+                <span className="eyebrow text-slate-400 hidden sm:inline">WebRTC &amp; SIP Ready</span>
               </div>
             </div>
 
@@ -516,14 +538,14 @@ export function HomeDesignFour() {
                   className={`chip ${activeVoiceIdx === idx ? "is-active" : ""}`}
                   aria-pressed={activeVoiceIdx === idx}
                 >
-                  <span>{lang.label}</span>
+                  <span className="font-semibold">{lang.label}</span>
                   <span className="count text-xs">{lang.detail}</span>
                 </button>
               ))}
             </div>
 
             {/* Live Audio & Call Stage */}
-            <div className="mt-8 rounded-2xl bg-ink text-white p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="mt-8 rounded-2xl bg-gradient-to-r from-slate-900 via-slate-900 to-slate-950 border border-slate-800 text-white p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
               <div className="flex items-center gap-5 w-full md:w-auto">
                 {/* Dual Play/Call Button */}
                 <button
@@ -535,7 +557,7 @@ export function HomeDesignFour() {
                       toggleSample();
                     }
                   }}
-                  className="grid size-14 shrink-0 place-items-center rounded-full bg-lime text-ink hover:bg-white transition-all shadow-lg cursor-pointer"
+                  className="grid size-14 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-white hover:from-emerald-300 hover:to-emerald-500 transition-all shadow-lg shadow-emerald-500/25 cursor-pointer"
                   aria-label={isCallActive ? "End live call" : isPlayingAudio ? "Pause sample" : "Play voice sample"}
                 >
                   {isCallActive ? (
@@ -554,18 +576,29 @@ export function HomeDesignFour() {
 
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-display text-sm sm:text-base font-bold">
+                    <span className="font-display text-sm sm:text-base font-bold text-white">
                       Vozon Voice ({selectedVoice.voice})
                     </span>
-                    <span className="eyebrow text-lime text-[10px]">SARVAM BULBUL + ELEVENLABS</span>
+                    <span className="eyebrow text-emerald-400 text-[10px] tracking-wider font-mono">SARVAM BULBUL + ELEVENLABS</span>
                   </div>
-                  <p className="text-xs text-white/70 mt-0.5">
+                  <p className="text-xs text-slate-300 mt-1">
                     {isCallActive
                       ? (voiceCall.active ? `Live call active • Speaking ${voiceCall.speakingLanguage || selectedVoice.language}` : "Connecting to voice agent...")
                       : isPlayingAudio
                       ? `Playing synthesized ${selectedVoice.label} voice sample...`
                       : "Click play for sample or launch interactive call."}
                   </p>
+                  {(isPlayingAudio || isCallActive) && (
+                    <div className="flex items-center gap-1 mt-2.5">
+                      {[40, 75, 100, 60, 30, 85, 95, 50, 70, 90, 45, 65, 80, 55, 35].map((h, i) => (
+                        <span
+                          key={i}
+                          className="w-1 rounded-full bg-emerald-400 transition-all duration-150 animate-pulse"
+                          style={{ height: `${h * 0.18}px`, animationDelay: `${i * 60}ms` }}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -580,7 +613,7 @@ export function HomeDesignFour() {
                       void voiceCall.start(selectedVoice.language);
                     }
                   }}
-                  className={`btn text-xs sm:text-sm py-2 px-4 sm:px-5 ${isCallActive ? "btn-lime" : "btn-ghost-dark border border-white/30"}`}
+                  className={`btn text-xs sm:text-sm py-2.5 px-5 font-semibold ${isCallActive ? "btn-lime" : "bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-xl"}`}
                 >
                   <span>{isCallActive ? "End Live Call" : `Talk to Agent (${selectedVoice.language})`}</span>
                 </button>
@@ -588,7 +621,7 @@ export function HomeDesignFour() {
             </div>
 
             {voiceCall.error && (voiceCall.active || voiceCall.busy) && (
-              <p className="mt-3 text-xs text-red-600 font-semibold">{voiceCall.error}</p>
+              <p className="mt-3 text-xs text-rose-600 font-semibold">{voiceCall.error}</p>
             )}
           </div>
         </section>
@@ -596,29 +629,29 @@ export function HomeDesignFour() {
         {/* ========================================================
             SECTION 4: INFINITE CAPABILITIES MARQUEE
             ======================================================== */}
-        <section className="on-dark mt-10 bg-ink py-4 text-white" aria-label="Voice capabilities marquee">
+        <section className="on-dark mt-10 bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 border-y border-slate-800/80 py-4 text-white" aria-label="Voice capabilities marquee">
           <div className="marquee font-display text-xs font-semibold tracking-tight sm:text-sm">
             <div className="marquee__track gap-10 items-center">
               {[1, 2].map((group) => (
                 <div key={group} className="flex shrink-0 items-center gap-8">
                   <span>Inbound Customer Support</span>
-                  <span className="text-lime text-base">✦</span>
+                  <span className="text-emerald-400 text-base">✦</span>
                   <span>Outbound Dialer Campaigns</span>
-                  <span className="text-lime text-base">✦</span>
+                  <span className="text-emerald-400 text-base">✦</span>
                   <span>Hinglish &amp; 22+ Indic Languages</span>
-                  <span className="text-lime text-base">✦</span>
+                  <span className="text-emerald-400 text-base">✦</span>
                   <span>76 Global Languages</span>
-                  <span className="text-lime text-base">✦</span>
+                  <span className="text-emerald-400 text-base">✦</span>
                   <span>&gt;750ms Telephony Latency</span>
-                  <span className="text-lime text-base">✦</span>
+                  <span className="text-emerald-400 text-base">✦</span>
                   <span>1-Click Google Sheets Outbound</span>
-                  <span className="text-lime text-base">✦</span>
+                  <span className="text-emerald-400 text-base">✦</span>
                   <span>Smart Virtual Telephony &amp; BYOT</span>
-                  <span className="text-lime text-base">✦</span>
+                  <span className="text-emerald-400 text-base">✦</span>
                   <span>Real-Time Barge-In</span>
-                  <span className="text-lime text-base">✦</span>
+                  <span className="text-emerald-400 text-base">✦</span>
                   <span>TRAI Compliant Call Windows</span>
-                  <span className="text-lime text-base">✦</span>
+                  <span className="text-emerald-400 text-base">✦</span>
                 </div>
               ))}
             </div>
@@ -629,20 +662,23 @@ export function HomeDesignFour() {
             SECTION 5: CLIENT LOGOS / SOCIAL PROOF (Original Logos)
             ======================================================== */}
         <section className="container-x py-16 md:py-20" aria-labelledby="clients-title">
-          <div className="grid gap-8 md:grid-cols-12">
+          <div className="grid gap-8 md:grid-cols-12 items-center">
             <div className="md:col-span-4">
-              <p className="eyebrow text-muted">Trusted In Production</p>
-              <h2 id="clients-title" className="display-lg mt-2 text-xl sm:text-2xl md:text-3xl text-ink">
+              <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold text-blue-600 uppercase tracking-wider">
+                <span className="size-1.5 rounded-full bg-blue-600" />
+                Trusted In Production
+              </span>
+              <h2 id="clients-title" className="display-lg mt-2 text-xl sm:text-2xl md:text-3xl text-slate-900">
                 In good company.
               </h2>
-              <p className="mt-2 max-w-sm text-xs sm:text-sm text-muted">
+              <p className="mt-2 max-w-sm text-xs sm:text-sm text-slate-500 leading-relaxed">
                 From high-growth tech disruptors to national enterprise call operations, over 10M+ automated minutes handled with 99.9% reliability.
               </p>
             </div>
-            <ul className="grid grid-cols-2 border-t border-l border-line sm:grid-cols-4 md:col-span-8">
+            <ul className="grid grid-cols-2 border border-slate-200 sm:grid-cols-4 md:col-span-8 rounded-2xl overflow-hidden bg-white shadow-xs divide-x divide-y divide-slate-200">
               {clientLogos.map((client, idx) => (
-                <li key={idx} className="logo-cell border-line border-b border-r !min-h-[5rem] !py-3">
-                  <span className={`text-base sm:text-lg font-bold tracking-tight text-ink ${client.isMono ? "font-mono" : client.isItalic ? "italic" : "font-display"}`}>
+                <li key={idx} className="logo-cell !min-h-[5.5rem] !py-3 bg-white hover:bg-slate-50 transition-colors">
+                  <span className={`text-base sm:text-lg font-bold tracking-tight text-slate-600 hover:text-slate-900 transition-colors ${client.isMono ? "font-mono" : client.isItalic ? "italic" : "font-display"}`}>
                     {client.name}
                   </span>
                 </li>
@@ -675,72 +711,79 @@ export function HomeDesignFour() {
             THE INDIAN VOICE ADVANTAGE (Original Content)
             ======================================================== */}
         <section id="advantage" className="container-x py-16 md:py-24" aria-labelledby="indic-title">
-          <div className="case-card rounded-3xl border border-line bg-ink text-white p-8 sm:p-12 overflow-hidden relative">
-            <div className="grid gap-10 lg:grid-cols-12 lg:items-center">
+          <div className="case-card rounded-3xl border border-slate-800 bg-gradient-to-br from-[#090d16] via-[#0f172a] to-[#090d16] text-white p-8 sm:p-12 overflow-hidden relative shadow-2xl">
+            {/* Ambient decorative glow */}
+            <div className="pointer-events-none absolute -right-20 -top-20 size-80 rounded-full bg-blue-600/15 blur-3xl" />
+            <div className="pointer-events-none absolute -left-20 -bottom-20 size-80 rounded-full bg-emerald-500/10 blur-3xl" />
+
+            <div className="grid gap-10 lg:grid-cols-12 lg:items-center relative z-10">
               <div className="lg:col-span-7">
-                <span className="eyebrow text-lime">The Indian Voice Advantage</span>
-                <h2 id="indic-title" className="display-lg mt-3 text-[clamp(1.5rem,2.6vw,2.5rem)] leading-tight">
-                  Why India&apos;s leading teams switch from US tools to <strong>Vozon</strong>
+                <span className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-emerald-400 uppercase tracking-wider">
+                  <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  The Indian Voice Advantage
+                </span>
+                <h2 id="indic-title" className="display-lg mt-3 text-[clamp(1.75rem,2.8vw,2.75rem)] leading-tight text-white font-bold">
+                  Why India&apos;s leading teams switch from US tools to <strong className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300">Vozon</strong>
                 </h2>
-                <p className="mt-3 text-white/80 text-xs sm:text-sm leading-relaxed max-w-xl">
+                <p className="mt-3 text-slate-300 text-xs sm:text-sm leading-relaxed max-w-xl">
                   Traditional voice tools struggle with Indian accents, 080 spam flags, and rigid telecom rules. Vozon is engineered from day one for Indian telephony and local customer trust.
                 </p>
 
-                <div className="mt-8 grid grid-cols-3 gap-6 border-t border-white/20 pt-6">
+                <div className="mt-8 grid grid-cols-3 gap-6 border-t border-white/10 pt-6">
                   <div>
-                    <span className="font-display text-2xl sm:text-3xl font-bold text-lime">22+</span>
-                    <span className="block eyebrow text-white/60 text-[11px] mt-1">Indic Languages</span>
+                    <span className="font-display text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">22+</span>
+                    <span className="block eyebrow text-slate-400 text-[11px] mt-1 font-mono">Indic Languages</span>
                   </div>
                   <div>
-                    <span className="font-display text-2xl sm:text-3xl font-bold text-lime">&gt;750ms</span>
-                    <span className="block eyebrow text-white/60 text-[11px] mt-1">PSTN Latency</span>
+                    <span className="font-display text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">&gt;750ms</span>
+                    <span className="block eyebrow text-slate-400 text-[11px] mt-1 font-mono">PSTN Latency</span>
                   </div>
                   <div>
-                    <span className="font-display text-2xl sm:text-3xl font-bold text-lime">~74%</span>
-                    <span className="block eyebrow text-white/60 text-[11px] mt-1">Verified Pickup</span>
+                    <span className="font-display text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">~74%</span>
+                    <span className="block eyebrow text-slate-400 text-[11px] mt-1 font-mono">Verified Pickup</span>
                   </div>
                 </div>
               </div>
 
               {/* 3 Advantage Cards */}
               <div className="lg:col-span-5 flex flex-col gap-4">
-                <div className="rounded-2xl border border-white/15 bg-white/5 p-6 backdrop-blur-md">
-                  <span className="eyebrow text-lime text-[11px]">High Pickup Telephony</span>
+                <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md hover:bg-white/[0.07] hover:border-white/20 transition-all shadow-sm">
+                  <span className="eyebrow text-emerald-400 text-[11px] font-mono">High Pickup Telephony</span>
                   <h3 className="font-display text-base sm:text-lg font-bold mt-1 text-white">Smart Virtual Telephony &amp; BYOT</h3>
-                  <p className="text-white/70 text-xs sm:text-[13px] mt-2">
+                  <p className="text-slate-300 text-xs sm:text-[13px] mt-2 leading-relaxed">
                     US platforms lock you into rigid 080 trunks that get flagged as spam. Vozon provides enterprise local virtual numbers and Bring-Your-Own-Carrier (BYOT) support across Exotel, Airtel, and Tata.
                   </p>
-                  <div className="mt-4 flex items-center justify-between text-xs font-mono border-t border-white/10 pt-3 text-white/80">
+                  <div className="mt-4 flex items-center justify-between text-xs font-mono border-t border-white/10 pt-3 text-slate-300">
                     <span>Unverified 080: ~22%</span>
-                    <span className="text-lime font-bold">Vozon Smart: ~74%</span>
+                    <span className="text-emerald-400 font-bold">Vozon Smart: ~74%</span>
                   </div>
                 </div>
 
-                <div className="rounded-2xl border border-white/15 bg-white/5 p-6 backdrop-blur-md">
-                  <span className="eyebrow text-lime text-[11px]">Native Indic Engine</span>
+                <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md hover:bg-white/[0.07] hover:border-white/20 transition-all shadow-sm">
+                  <span className="eyebrow text-emerald-400 text-[11px] font-mono">Native Indic Engine</span>
                   <h3 className="font-display text-base sm:text-lg font-bold mt-1 text-white">Hinglish &amp; 22+ Indic Languages</h3>
-                  <p className="text-white/70 text-xs sm:text-[13px] mt-2">
+                  <p className="text-slate-300 text-xs sm:text-[13px] mt-2 leading-relaxed">
                     Powered by Sarvam Bulbul and Indic-tuned frontier models. Your agents understand colloquial phrasing, native pronunciation, and switch naturally between Hindi and English mid-sentence.
                   </p>
                   <div className="mt-4 flex flex-wrap gap-1.5 pt-1">
                     {["हिन्दी", "Hinglish", "मराठी", "தமிழ்", "తెలుగు", "বাংলা"].map((tag) => (
-                      <span key={tag} className="rounded-full bg-white/10 px-2.5 py-0.5 text-xs text-lime">
+                      <span key={tag} className="rounded-full bg-white/10 px-2.5 py-0.5 text-xs text-emerald-300 border border-white/10">
                         {tag}
                       </span>
                     ))}
                   </div>
                 </div>
 
-                <div className="rounded-2xl border border-white/15 bg-white/5 p-6 backdrop-blur-md">
-                  <span className="eyebrow text-lime text-[11px]">Zero Friction</span>
+                <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md hover:bg-white/[0.07] hover:border-white/20 transition-all shadow-sm">
+                  <span className="eyebrow text-emerald-400 text-[11px] font-mono">Zero Friction</span>
                   <h3 className="font-display text-base sm:text-lg font-bold mt-1 text-white">Sheets to Enterprise MCP</h3>
-                  <p className="text-white/70 text-xs sm:text-[13px] mt-2">
+                  <p className="text-slate-300 text-xs sm:text-[13px] mt-2 leading-relaxed">
                     No developers needed: paste a Google Sheet to launch outbound dialer campaigns in 60 seconds. For engineers, we provide India&apos;s only Model Context Protocol (MCP) server &amp; &gt;750ms WebRTC.
                   </p>
-                  <div className="mt-3 text-xs text-white/80 space-y-1 font-mono">
-                    <p className="text-lime">✓ Google Sheets auto-sync</p>
-                    <p className="text-lime">✓ Bi-directional CRM webhooks</p>
-                    <p className="text-lime">✓ TRAI compliant call windows</p>
+                  <div className="mt-3 text-xs text-slate-300 space-y-1 font-mono">
+                    <p className="text-emerald-400">✓ Google Sheets auto-sync</p>
+                    <p className="text-emerald-400">✓ Bi-directional CRM webhooks</p>
+                    <p className="text-emerald-400">✓ TRAI compliant call windows</p>
                   </div>
                 </div>
               </div>
@@ -757,10 +800,13 @@ export function HomeDesignFour() {
             SECTION 9: INDUSTRY SOLUTIONS (ALL 5 ORIGINAL PICTURES & COPY)
             ======================================================== */}
         <section id="industries" className="container-x py-16 md:py-20" aria-labelledby="work-title">
-          <div className="flex flex-wrap items-end justify-between gap-6 border-b border-line pb-8">
+          <div className="flex flex-wrap items-end justify-between gap-6 border-b border-slate-200 pb-8">
             <div>
-              <p className="eyebrow text-muted">Industry Solutions</p>
-              <h2 id="work-title" className="display-lg mt-3 text-[clamp(1.5rem,2.6vw,2.5rem)] leading-tight text-ink">
+              <span className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-blue-600 uppercase tracking-wider">
+                <span className="size-1.5 rounded-full bg-blue-600" />
+                Industry Solutions
+              </span>
+              <h2 id="work-title" className="display-lg mt-3 text-[clamp(1.75rem,2.8vw,2.75rem)] leading-tight text-slate-900 font-bold">
                 Built for businesses that run<br />on conversations.
               </h2>
             </div>
@@ -790,9 +836,9 @@ export function HomeDesignFour() {
           </div>
 
           {/* Featured Industry Case Card using Original Image */}
-          <div className="mt-8 case-card rounded-3xl border border-line bg-paper overflow-hidden">
+          <div className="mt-8 case-card rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
             <div className="grid lg:grid-cols-12 items-center">
-              <div className="lg:col-span-7 relative aspect-[16/10] lg:aspect-auto lg:h-[450px] w-full bg-paper-2 overflow-hidden border-b lg:border-b-0 lg:border-r border-line">
+              <div className="lg:col-span-7 relative aspect-[16/10] lg:aspect-auto lg:h-[450px] w-full bg-slate-50 overflow-hidden border-b lg:border-b-0 lg:border-r border-slate-200">
                 <Image
                   src={selectedIndustry.image}
                   alt={`${selectedIndustry.title} business solutions`}
@@ -801,23 +847,23 @@ export function HomeDesignFour() {
                   className="object-cover transition-transform duration-700 hover:scale-105"
                   sizes="(max-width: 1024px) 100vw, 60vw"
                 />
-                <span className="absolute top-4 left-4 rounded-full bg-ink/80 backdrop-blur-md px-3.5 py-1 text-xs font-semibold text-white">
+                <span className="absolute top-4 left-4 rounded-full bg-slate-900/85 backdrop-blur-md px-3.5 py-1 text-xs font-semibold text-white shadow-sm">
                   {selectedIndustry.badge}
                 </span>
               </div>
               <div className="lg:col-span-5 p-8 sm:p-12 flex flex-col justify-between">
                 <div>
-                  <span className="eyebrow text-cobalt">{selectedIndustry.tab}</span>
-                  <h3 className="display-lg text-xl sm:text-2xl font-bold text-ink mt-1.5">
+                  <span className="eyebrow text-blue-600 font-semibold">{selectedIndustry.tab}</span>
+                  <h3 className="display-lg text-xl sm:text-2xl font-bold text-slate-900 mt-1.5 leading-snug">
                     {selectedIndustry.heading}
                   </h3>
-                  <p className="mt-3 text-muted leading-relaxed text-xs sm:text-sm">
+                  <p className="mt-3 text-slate-600 leading-relaxed text-xs sm:text-sm">
                     {selectedIndustry.desc}
                   </p>
                 </div>
-                <div className="mt-6 border-t border-line pt-6">
-                  <span className="font-mono text-xs text-muted block">METRIC HIGHLIGHT</span>
-                  <b className="font-display text-base text-ink font-semibold mt-1 block">
+                <div className="mt-6 border-t border-slate-100 pt-6">
+                  <span className="font-mono text-xs text-slate-400 block uppercase tracking-wider">METRIC HIGHLIGHT</span>
+                  <b className="font-display text-base sm:text-lg text-blue-600 font-bold mt-1 block">
                     {selectedIndustry.metric}
                   </b>
                   <div className="mt-4">
@@ -836,9 +882,9 @@ export function HomeDesignFour() {
               <article
                 key={ind.title}
                 onClick={() => setActiveIndustryIdx(idx)}
-                className={`case-card group cursor-pointer overflow-hidden rounded-2xl border bg-paper transition-all ${activeIndustryIdx === idx ? "border-cobalt ring-2 ring-cobalt/20" : "border-line"}`}
+                className={`case-card group cursor-pointer overflow-hidden rounded-2xl border bg-white shadow-xs transition-all ${activeIndustryIdx === idx ? "border-blue-600 ring-2 ring-blue-500/20 shadow-md" : "border-slate-200 hover:border-blue-300 hover:shadow-md"}`}
               >
-                <div className="case-media relative aspect-[16/10] overflow-hidden bg-paper-2">
+                <div className="case-media relative aspect-[16/10] overflow-hidden bg-slate-100">
                   <Image
                     src={ind.image}
                     alt={ind.title}
@@ -846,16 +892,16 @@ export function HomeDesignFour() {
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                     sizes="(max-width: 768px) 100vw, 33vw"
                   />
-                  <span className="absolute top-3 left-3 rounded-full bg-ink/80 backdrop-blur-md px-2.5 py-0.5 text-[11px] font-semibold text-white">
+                  <span className="absolute top-3 left-3 rounded-full bg-slate-900/85 backdrop-blur-md px-2.5 py-0.5 text-[11px] font-semibold text-white">
                     {ind.badge}
                   </span>
                 </div>
                 <div className="p-6">
-                  <span className="eyebrow text-muted text-[11px]">{ind.tab}</span>
-                  <h4 className="font-display text-base sm:text-lg font-bold text-ink mt-1 group-hover:text-cobalt transition-colors">
+                  <span className="eyebrow text-slate-400 text-[11px] font-mono">{ind.tab}</span>
+                  <h4 className="font-display text-base sm:text-lg font-bold text-slate-900 mt-1 group-hover:text-blue-600 transition-colors">
                     {ind.title}
                   </h4>
-                  <p className="mt-2 text-xs text-muted leading-relaxed line-clamp-2">
+                  <p className="mt-2 text-xs text-slate-500 leading-relaxed line-clamp-2">
                     {ind.desc}
                   </p>
                 </div>
@@ -875,10 +921,13 @@ export function HomeDesignFour() {
             SECTION 11: AI INSIGHTS (Original Content)
             ======================================================== */}
         <section id="insights" className="container-x pb-16 md:pb-20" aria-labelledby="insights-title">
-          <div className="flex flex-wrap items-end justify-between gap-6 border-b border-line pb-8">
+          <div className="flex flex-wrap items-end justify-between gap-6 border-b border-slate-200 pb-8">
             <div>
-              <p className="eyebrow text-muted">Knowledge &amp; Research</p>
-              <h2 id="insights-title" className="display-lg mt-3 text-[clamp(1.5rem,2.6vw,2.5rem)] leading-tight text-ink">
+              <span className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-blue-600 uppercase tracking-wider">
+                <span className="size-1.5 rounded-full bg-blue-600" />
+                Knowledge &amp; Research
+              </span>
+              <h2 id="insights-title" className="display-lg mt-3 text-[clamp(1.75rem,2.8vw,2.75rem)] leading-tight text-slate-900 font-bold">
                 AI Insights
               </h2>
             </div>
@@ -888,19 +937,19 @@ export function HomeDesignFour() {
           </div>
 
           <div className="mt-12 grid gap-8 lg:grid-cols-12">
-            <Link href="/resources/blog" className="case-card group lg:col-span-7 rounded-3xl border border-line bg-paper-2 p-8 sm:p-12 flex flex-col justify-between">
+            <Link href="/resources/blog" className="case-card group lg:col-span-7 rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50/80 p-8 sm:p-12 flex flex-col justify-between shadow-sm hover:border-blue-400 hover:shadow-lg transition-all">
               <div>
-                <span className="eyebrow text-cobalt">FEATURED REPORT • MAY 15, 2026</span>
-                <h3 className="display-lg mt-3 text-xl sm:text-2xl font-bold text-ink group-hover:text-cobalt transition-colors">
+                <span className="eyebrow text-blue-600 font-semibold font-mono">FEATURED REPORT • MAY 15, 2026</span>
+                <h3 className="display-lg mt-3 text-xl sm:text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors leading-snug">
                   Understand what your customers are really saying.
                 </h3>
-                <p className="mt-3 text-muted text-xs sm:text-sm leading-relaxed">
+                <p className="mt-3 text-slate-600 text-xs sm:text-sm leading-relaxed">
                   How acoustic sentiment extraction, tone recognition, and real-time semantic analysis reveal customer intent before the call ends.
                 </p>
               </div>
-              <div className="mt-8 flex items-center justify-between border-t border-line pt-6">
-                <span className="font-mono text-xs text-muted">RESEARCH WHITE PAPER</span>
-                <span className="case-arrow grid size-9 place-items-center rounded-full border border-ink text-ink transition">
+              <div className="mt-8 flex items-center justify-between border-t border-slate-100 pt-6">
+                <span className="font-mono text-xs text-slate-400 uppercase tracking-wider">RESEARCH WHITE PAPER</span>
+                <span className="case-arrow grid size-9 place-items-center rounded-full border border-slate-300 text-slate-700 transition group-hover:border-blue-600 group-hover:bg-blue-600 group-hover:text-white">
                   ↗
                 </span>
               </div>
@@ -911,15 +960,15 @@ export function HomeDesignFour() {
                 <Link
                   key={item.title}
                   href="/resources/blog"
-                  className="group rounded-2xl border border-line bg-paper p-5 sm:p-6 hover:bg-paper-2 transition flex items-center justify-between gap-4"
+                  className="group rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 hover:border-blue-400 hover:bg-slate-50/50 hover:shadow-sm transition-all flex items-center justify-between gap-4"
                 >
                   <div>
-                    <span className="eyebrow text-muted text-[10px]">{item.meta}</span>
-                    <h4 className="font-display text-sm sm:text-base font-bold text-ink mt-1 group-hover:text-cobalt transition-colors">
+                    <span className="eyebrow text-slate-400 text-[10px] font-mono">{item.meta}</span>
+                    <h4 className="font-display text-sm sm:text-base font-bold text-slate-900 mt-1 group-hover:text-blue-600 transition-colors">
                       {item.title}
                     </h4>
                   </div>
-                  <span className="grid size-8 place-items-center rounded-full border border-line text-ink transition group-hover:bg-ink group-hover:text-white shrink-0">
+                  <span className="grid size-8 place-items-center rounded-full border border-slate-200 text-slate-600 transition group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600 shrink-0">
                     ↗
                   </span>
                 </Link>
@@ -932,10 +981,13 @@ export function HomeDesignFour() {
             SECTION 12: SCALE WITH SECURITY & COMPLIANCE (Original Content)
             ======================================================== */}
         <section className="container-x pb-16 md:pb-20" aria-labelledby="security-title">
-          <div className="flex flex-wrap items-end justify-between gap-6 border-b border-line pb-8">
+          <div className="flex flex-wrap items-end justify-between gap-6 border-b border-slate-200 pb-8">
             <div>
-              <p className="eyebrow text-muted">Enterprise Assurance</p>
-              <h2 id="security-title" className="display-lg mt-3 text-[clamp(1.5rem,2.6vw,2.5rem)] leading-tight text-ink">
+              <span className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-blue-600 uppercase tracking-wider">
+                <span className="size-1.5 rounded-full bg-blue-600" />
+                Enterprise Assurance
+              </span>
+              <h2 id="security-title" className="display-lg mt-3 text-[clamp(1.75rem,2.8vw,2.75rem)] leading-tight text-slate-900 font-bold">
                 Scale with security.
               </h2>
             </div>
@@ -950,29 +1002,29 @@ export function HomeDesignFour() {
           </div>
 
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="case-card rounded-2xl border border-line bg-paper p-6 sm:p-8">
-              <span className="eyebrow text-muted">Information Security</span>
-              <p className="font-display text-xl sm:text-2xl font-bold text-ink mt-2">ISO 27001</p>
-              <span className="text-[11px] text-muted block mt-1">Information Security Management</span>
-              <p className="text-xs sm:text-[13px] text-muted mt-3">Enterprise access control, audit logging, and risk management compliance.</p>
+            <div className="case-card rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs hover:border-blue-300 hover:shadow-md transition-all">
+              <span className="eyebrow text-blue-600 font-mono">Information Security</span>
+              <p className="font-display text-xl sm:text-2xl font-bold text-slate-900 mt-2">ISO 27001</p>
+              <span className="text-[11px] text-slate-500 font-medium block mt-1">Information Security Management</span>
+              <p className="text-xs sm:text-[13px] text-slate-600 mt-3 leading-relaxed">Enterprise access control, audit logging, and risk management compliance.</p>
             </div>
-            <div className="case-card rounded-2xl border border-line bg-paper p-6 sm:p-8">
-              <span className="eyebrow text-muted">Healthcare Privacy</span>
-              <p className="font-display text-xl sm:text-2xl font-bold text-ink mt-2">HIPAA</p>
-              <span className="text-[11px] text-muted block mt-1">Compliance &amp; BAA Available</span>
-              <p className="text-xs sm:text-[13px] text-muted mt-3">Protected Health Information (PHI) safeguards and confidential patient workflows.</p>
+            <div className="case-card rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs hover:border-blue-300 hover:shadow-md transition-all">
+              <span className="eyebrow text-emerald-600 font-mono">Healthcare Privacy</span>
+              <p className="font-display text-xl sm:text-2xl font-bold text-slate-900 mt-2">HIPAA</p>
+              <span className="text-[11px] text-slate-500 font-medium block mt-1">Compliance &amp; BAA Available</span>
+              <p className="text-xs sm:text-[13px] text-slate-600 mt-3 leading-relaxed">Protected Health Information (PHI) safeguards and confidential patient workflows.</p>
             </div>
-            <div className="case-card rounded-2xl border border-line bg-paper p-6 sm:p-8">
-              <span className="eyebrow text-muted">Global Privacy</span>
-              <p className="font-display text-xl sm:text-2xl font-bold text-ink mt-2">GDPR &amp; DPDP</p>
-              <span className="text-[11px] text-muted block mt-1">European Union &amp; India</span>
-              <p className="text-xs sm:text-[13px] text-muted mt-3">Right to be forgotten, data minimization, and localized Indian database hosting.</p>
+            <div className="case-card rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs hover:border-blue-300 hover:shadow-md transition-all">
+              <span className="eyebrow text-indigo-600 font-mono">Global Privacy</span>
+              <p className="font-display text-xl sm:text-2xl font-bold text-slate-900 mt-2">GDPR &amp; DPDP</p>
+              <span className="text-[11px] text-slate-500 font-medium block mt-1">European Union &amp; India</span>
+              <p className="text-xs sm:text-[13px] text-slate-600 mt-3 leading-relaxed">Right to be forgotten, data minimization, and localized Indian database hosting.</p>
             </div>
-            <div className="case-card rounded-2xl border border-line bg-paper p-6 sm:p-8">
-              <span className="eyebrow text-muted">AICPA Assurance</span>
-              <p className="font-display text-xl sm:text-2xl font-bold text-ink mt-2">SOC 2 Type II</p>
-              <span className="text-[11px] text-muted block mt-1">Audited &amp; Certified</span>
-              <p className="text-xs sm:text-[13px] text-muted mt-3">Rigorous continuous penetration testing, SOC-2 compliance, and zero public model training.</p>
+            <div className="case-card rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs hover:border-blue-300 hover:shadow-md transition-all">
+              <span className="eyebrow text-purple-600 font-mono">AICPA Assurance</span>
+              <p className="font-display text-xl sm:text-2xl font-bold text-slate-900 mt-2">SOC 2 Type II</p>
+              <span className="text-[11px] text-slate-500 font-medium block mt-1">Audited &amp; Certified</span>
+              <p className="text-xs sm:text-[13px] text-slate-600 mt-3 leading-relaxed">Rigorous continuous penetration testing, SOC-2 compliance, and zero public model training.</p>
             </div>
           </div>
         </section>
@@ -986,11 +1038,14 @@ export function HomeDesignFour() {
             SECTION 14: INTEGRATIONS (ORIGINAL IMAGES & LOGOS)
             ======================================================== */}
         <section id="integrations" className="container-x py-16 md:py-20" aria-labelledby="integrations-title">
-          <div className="flex flex-wrap items-end justify-between gap-6 border-b border-line pb-8">
+          <div className="flex flex-wrap items-end justify-between gap-6 border-b border-slate-200 pb-8">
             <div>
-              <p className="eyebrow text-muted">Ecosystem</p>
-              <h2 id="integrations-title" className="display-lg mt-3 text-[clamp(1.5rem,2.6vw,2.5rem)] leading-tight text-ink">
-                Don&apos;t replace.<br /><strong>Integrate.</strong>
+              <span className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-blue-600 uppercase tracking-wider">
+                <span className="size-1.5 rounded-full bg-blue-600" />
+                Ecosystem
+              </span>
+              <h2 id="integrations-title" className="display-lg mt-3 text-[clamp(1.75rem,2.8vw,2.75rem)] leading-tight text-slate-900 font-bold">
+                Don&apos;t replace.<br /><strong className="text-blue-600">Integrate.</strong>
               </h2>
             </div>
             <Link href="/integrations" className="btn btn-outline">
@@ -1002,7 +1057,7 @@ export function HomeDesignFour() {
             {integrationPartners.map((item) => (
               <div
                 key={item.name}
-                className="case-card flex flex-col justify-between rounded-2xl border border-line bg-paper p-5 transition hover:border-ink hover:bg-paper-2"
+                className="case-card flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-xs transition hover:border-blue-400 hover:shadow-md hover:-translate-y-1"
               >
                 <div className="relative size-12 mb-4">
                   <Image
@@ -1013,8 +1068,8 @@ export function HomeDesignFour() {
                   />
                 </div>
                 <div>
-                  <b className="block text-sm font-bold text-ink">{item.name}</b>
-                  <span className="eyebrow text-muted text-[10px] block mt-0.5">{item.cat}</span>
+                  <b className="block text-sm font-bold text-slate-900">{item.name}</b>
+                  <span className="eyebrow text-slate-400 text-[10px] block mt-0.5 font-mono">{item.cat}</span>
                 </div>
               </div>
             ))}
@@ -1024,27 +1079,30 @@ export function HomeDesignFour() {
         {/* ========================================================
             SECTION 15: FAQ ACCORDION (Original Questions & Answers)
             ======================================================== */}
-        <section id="faq" className="bg-paper-2 py-16 md:py-20" aria-labelledby="faq-title">
+        <section id="faq" className="bg-slate-50/70 py-16 md:py-24 border-y border-slate-200" aria-labelledby="faq-title">
           <div className="container-x">
             <div>
-              <p className="eyebrow text-muted">Got Questions?</p>
-              <h2 id="faq-title" className="display-lg mt-3 text-[clamp(1.5rem,2.6vw,2.5rem)] leading-tight text-ink">
+              <span className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-blue-600 uppercase tracking-wider">
+                <span className="size-1.5 rounded-full bg-blue-600" />
+                Got Questions?
+              </span>
+              <h2 id="faq-title" className="display-lg mt-3 text-[clamp(1.75rem,2.8vw,2.75rem)] leading-tight text-slate-900 font-bold">
                 Everything you need to know.
               </h2>
             </div>
 
-            <div className="mt-12 divide-y divide-line border-y border-line max-w-4xl">
+            <div className="mt-12 divide-y divide-slate-200 border-y border-slate-200 max-w-4xl">
               {faqs.map((faq, idx) => (
                 <details key={idx} className="role group py-5">
                   <summary className="flex cursor-pointer items-center justify-between gap-6 list-none">
-                    <span className="font-display text-base sm:text-lg font-semibold text-ink group-hover:text-cobalt transition-colors">
+                    <span className="font-display text-base sm:text-lg font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
                       {faq.q}
                     </span>
-                    <span className="plus grid size-8 shrink-0 place-items-center rounded-full border border-line text-base font-mono">
+                    <span className="plus grid size-8 shrink-0 place-items-center rounded-full border border-slate-200 bg-white text-base font-mono shadow-xs text-slate-700">
                       +
                     </span>
                   </summary>
-                  <p className="mt-3 text-muted leading-relaxed text-xs sm:text-sm pr-6">
+                  <p className="mt-3 text-slate-600 leading-relaxed text-xs sm:text-sm pr-6">
                     {faq.a}
                   </p>
                 </details>
@@ -1052,6 +1110,7 @@ export function HomeDesignFour() {
             </div>
           </div>
         </section>
+
 
         {/* ========================================================
             SECTION 16: SITE FOOTER (All Original Content + Agency Aesthetic)

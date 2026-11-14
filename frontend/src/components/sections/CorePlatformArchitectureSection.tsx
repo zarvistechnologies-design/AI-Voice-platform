@@ -308,7 +308,7 @@ export function CorePlatformArchitectureSection() {
                 {/* Top Bar with Badges */}
                 <div className="flex flex-wrap items-center justify-between gap-4 border-b border-line pb-5">
                   <div className="flex items-center gap-3">
-                    <span className="rounded bg-ink px-2.5 py-1 font-mono text-[11px] font-bold tracking-wider text-[#d4ff3f]">
+                    <span className="rounded-lg bg-slate-900 px-2.5 py-1 font-mono text-[11px] font-bold tracking-wider text-emerald-400 border border-slate-800">
                       {layer.layerNumber}
                     </span>
                     <h3 className="font-display text-xl sm:text-2xl font-bold text-ink flex items-center gap-2">
@@ -356,23 +356,23 @@ export function CorePlatformArchitectureSection() {
                   </div>
 
                   {/* Right Column: Live Technical Telemetry Console (Dark Contrast for Technical Clarity) */}
-                  <div className="lg:col-span-5 rounded-2xl border border-zinc-800 bg-[#0e0e0c] p-5 font-mono text-zinc-100 shadow-md">
-                    <div className="flex items-center justify-between border-b border-[#1c1c1a] pb-3 text-xs">
+                  <div className="lg:col-span-5 rounded-2xl border border-slate-800 bg-[#090d16] p-5 font-mono text-slate-100 shadow-md">
+                    <div className="flex items-center justify-between border-b border-slate-800 pb-3 text-xs">
                       <div className="flex items-center gap-2">
                         <span className="size-2 rounded-full bg-emerald-400 animate-ping" />
-                        <span className="text-white/90 font-bold">{layer.telemetry.status}</span>
+                        <span className="text-white font-bold">{layer.telemetry.status}</span>
                       </div>
-                      <span className="text-white/50 text-[11px]">latency: {layer.telemetry.latency}</span>
+                      <span className="text-slate-400 text-[11px]">latency: {layer.telemetry.latency}</span>
                     </div>
 
-                    <div className="mt-3 text-[11px] text-white/60 truncate">
+                    <div className="mt-3 text-[11px] text-slate-400 truncate">
                       {layer.telemetry.protocol}
                     </div>
 
                     {/* Interactive Telemetry Widget based on Layer */}
                     {layer.id === "perception" && (
-                      <div className="mt-4 rounded-xl bg-[#141412] p-3 border border-[#20201d]">
-                        <div className="flex items-center justify-between text-[11px] text-white/70 mb-2">
+                      <div className="mt-4 rounded-xl bg-slate-900/70 p-3 border border-slate-800">
+                        <div className="flex items-center justify-between text-[11px] text-slate-300 mb-2">
                           <span>Live Full-Duplex VAD Visualizer</span>
                           <span className="text-[#38bdf8]">24kHz PCM</span>
                         </div>
@@ -389,7 +389,7 @@ export function CorePlatformArchitectureSection() {
                             />
                           ))}
                         </div>
-                        <div className="mt-3 flex items-center justify-between text-[10px] text-white/50 border-t border-[#1e1e1b] pt-2">
+                        <div className="mt-3 flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-800 pt-2">
                           <span>Office Noise &amp; Coughs: Filtered (-48dB)</span>
                           <span className="text-emerald-400 font-bold">Barge-in: &lt;120ms</span>
                         </div>
@@ -397,10 +397,10 @@ export function CorePlatformArchitectureSection() {
                     )}
 
                     {layer.id === "cognitive" && (
-                      <div className="mt-4 rounded-xl bg-[#141412] p-3 border border-[#20201d]">
-                        <div className="text-[11px] text-white/70 mb-2 flex justify-between">
+                      <div className="mt-4 rounded-xl bg-slate-900/70 p-3 border border-slate-800">
+                        <div className="text-[11px] text-slate-300 mb-2 flex justify-between">
                           <span>Model Orchestrator</span>
-                          <span className="text-[#d4ff3f]">Sub-300ms</span>
+                          <span className="text-emerald-400 font-bold">Sub-300ms</span>
                         </div>
                         <div className="grid grid-cols-2 gap-1.5 text-[10px]">
                           {(["Gemini 2.0 Flash", "GPT-4o", "Claude 3.5 Sonnet", "Sarvam Indic"] as const).map((m) => (
@@ -408,17 +408,17 @@ export function CorePlatformArchitectureSection() {
                               key={m}
                               type="button"
                               onClick={() => setSelectedModel(m)}
-                              className={`rounded p-1.5 text-left border transition-all ${
+                              className={`rounded-lg p-1.5 text-left border transition-all ${
                                 selectedModel === m
-                                  ? "border-[#d4ff3f] bg-[#d4ff3f]/10 text-white font-bold"
-                                  : "border-[#22221f] text-white/50 hover:border-white/20"
+                                  ? "border-emerald-500/50 bg-emerald-500/15 text-emerald-300 font-bold"
+                                  : "border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200"
                               }`}
                             >
                               ● {m}
                             </button>
                           ))}
                         </div>
-                        <div className="mt-3 text-[10px] text-white/50 border-t border-[#1e1e1b] pt-2 flex justify-between">
+                        <div className="mt-3 text-[10px] text-slate-400 border-t border-slate-800 pt-2 flex justify-between">
                           <span>Pydantic Schema: Strict</span>
                           <span className="text-emerald-400">Guardrails: 0 Leaks</span>
                         </div>
@@ -426,10 +426,10 @@ export function CorePlatformArchitectureSection() {
                     )}
 
                     {layer.id === "execution" && (
-                      <div className="mt-4 rounded-xl bg-[#141412] p-3 border border-[#20201d]">
-                        <div className="text-[11px] text-white/70 mb-2 flex justify-between">
+                      <div className="mt-4 rounded-xl bg-slate-900/70 p-3 border border-slate-800">
+                        <div className="text-[11px] text-slate-300 mb-2 flex justify-between">
                           <span>Carrier BYOC Switchboard</span>
-                          <span className="text-[#c084fc]">RFC 3261</span>
+                          <span className="text-purple-400 font-bold">RFC 3261</span>
                         </div>
                         <div className="flex flex-wrap gap-1 text-[10px]">
                           {(["Telnyx", "Twilio", "Plivo", "Asterisk", "VICIdial"] as const).map((c) => (
@@ -437,17 +437,17 @@ export function CorePlatformArchitectureSection() {
                               key={c}
                               type="button"
                               onClick={() => setSelectedCarrier(c)}
-                              className={`rounded px-2 py-1 border transition-all ${
+                              className={`rounded-lg px-2 py-1 border transition-all ${
                                 selectedCarrier === c
-                                  ? "border-[#c084fc] bg-[#c084fc]/10 text-white font-bold"
-                                  : "border-[#22221f] text-white/50 hover:border-white/20"
+                                  ? "border-purple-500/50 bg-purple-500/15 text-purple-200 font-bold"
+                                  : "border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200"
                               }`}
                             >
                               {c}
                             </button>
                           ))}
                         </div>
-                        <div className="mt-3 text-[10px] text-white/50 border-t border-[#1e1e1b] pt-2 flex justify-between">
+                        <div className="mt-3 text-[10px] text-slate-400 border-t border-slate-800 pt-2 flex justify-between">
                           <span>Active Carrier: {selectedCarrier}</span>
                           <span className="text-emerald-400">Webhook Bus: Synced</span>
                         </div>
@@ -455,18 +455,18 @@ export function CorePlatformArchitectureSection() {
                     )}
 
                     {/* Metrics List */}
-                    <div className="mt-4 space-y-1.5 border-t border-[#1c1c1a] pt-3 text-[11px]">
+                    <div className="mt-4 space-y-1.5 border-t border-slate-800 pt-3 text-[11px]">
                       {layer.telemetry.metrics.map((m, mi) => (
                         <div key={mi} className="flex items-center justify-between">
-                          <span className="text-white/60">{m.label}</span>
-                          <span className="text-white font-medium">{m.value}</span>
+                          <span className="text-slate-400">{m.label}</span>
+                          <span className="text-slate-200 font-medium">{m.value}</span>
                         </div>
                       ))}
                     </div>
 
                     {/* Code Snippet Box */}
                     <div className="mt-4">
-                      <div className="rounded-xl bg-[#050504] p-3 text-[10px] text-white/70 overflow-x-auto border border-[#1b1b19] font-mono leading-relaxed">
+                      <div className="rounded-xl bg-[#060911] p-3 text-[10px] text-slate-300 overflow-x-auto border border-slate-800/80 font-mono leading-relaxed">
                         <pre><code>{layer.telemetry.codeSnippet}</code></pre>
                       </div>
                     </div>

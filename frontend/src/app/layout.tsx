@@ -1,24 +1,12 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Roboto } from "next/font/google";
 import Script from "next/script";
 import type { CSSProperties } from "react";
-
 import { BrandProvider } from "@/components/branding/BrandProvider";
 import { requestBrandConfig } from "@/lib/brandServer";
-
 import "./globals.css";
 
-const roboto = Roboto({
-  variable: "--font-site-sans",
-  weight: ["400", "500", "700", "900"],
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-commit-mono",
-  subsets: ["latin"],
-  preload: false,
-});
+const roboto = { variable: "font-site-sans" };
+const geistMono = { variable: "font-commit-mono" };
 
 const platformMetadata: Metadata = {
   metadataBase: new URL("https://www.vozon.ai"),

@@ -110,14 +110,14 @@ export function FloatingReviewsSection() {
           </p>
 
           {/* View Mode Toggle: Floating vs Grid */}
-          <div className="mt-8 inline-flex items-center rounded-full bg-paper-2 border border-line p-1">
+          <div className="mt-8 inline-flex items-center rounded-2xl bg-paper-2 border border-line p-1.5 shadow-xs">
             <button
               type="button"
               onClick={() => setViewMode("floating")}
-              className={`rounded-full px-5 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer ${
+              className={`rounded-xl px-5 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer ${
                 viewMode === "floating"
-                  ? "bg-ink text-white shadow-sm font-bold"
-                  : "text-muted hover:text-ink"
+                  ? "bg-cobalt text-white shadow-sm font-bold"
+                  : "text-muted hover:text-ink hover:bg-paper"
               }`}
               aria-pressed={viewMode === "floating"}
             >
@@ -126,10 +126,10 @@ export function FloatingReviewsSection() {
             <button
               type="button"
               onClick={() => setViewMode("grid")}
-              className={`rounded-full px-5 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer ${
+              className={`rounded-xl px-5 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer ${
                 viewMode === "grid"
-                  ? "bg-ink text-white shadow-sm font-bold"
-                  : "text-muted hover:text-ink"
+                  ? "bg-cobalt text-white shadow-sm font-bold"
+                  : "text-muted hover:text-ink hover:bg-paper"
               }`}
               aria-pressed={viewMode === "grid"}
             >

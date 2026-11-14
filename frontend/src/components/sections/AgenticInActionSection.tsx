@@ -154,14 +154,14 @@ export function AgenticInActionSection() {
           </p>
 
           {/* View Mode Toggle: Interactive Walkthrough vs Flowchart vs Full Telemetry Feed */}
-          <div className="mt-8 inline-flex items-center rounded-full bg-paper border border-line p-1 shadow-xs">
+          <div className="mt-8 inline-flex items-center rounded-2xl bg-paper border border-line p-1.5 shadow-xs">
             <button
               type="button"
               onClick={() => setViewMode("walkthrough")}
-              className={`rounded-full px-4 sm:px-5 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+              className={`rounded-xl px-4 sm:px-5 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
                 viewMode === "walkthrough"
-                  ? "bg-ink text-[#d4ff3f] shadow-sm"
-                  : "text-muted hover:text-ink"
+                  ? "bg-cobalt text-white shadow-sm"
+                  : "text-muted hover:text-ink hover:bg-paper-2"
               }`}
               aria-pressed={viewMode === "walkthrough"}
             >
@@ -171,10 +171,10 @@ export function AgenticInActionSection() {
             <button
               type="button"
               onClick={() => setViewMode("flowchart")}
-              className={`rounded-full px-4 sm:px-5 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+              className={`rounded-xl px-4 sm:px-5 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
                 viewMode === "flowchart"
-                  ? "bg-ink text-[#d4ff3f] shadow-sm"
-                  : "text-muted hover:text-ink"
+                  ? "bg-cobalt text-white shadow-sm"
+                  : "text-muted hover:text-ink hover:bg-paper-2"
               }`}
               aria-pressed={viewMode === "flowchart"}
             >
@@ -184,10 +184,10 @@ export function AgenticInActionSection() {
             <button
               type="button"
               onClick={() => setViewMode("full")}
-              className={`rounded-full px-4 sm:px-5 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+              className={`rounded-xl px-4 sm:px-5 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
                 viewMode === "full"
-                  ? "bg-ink text-[#d4ff3f] shadow-sm"
-                  : "text-muted hover:text-ink"
+                  ? "bg-cobalt text-white shadow-sm"
+                  : "text-muted hover:text-ink hover:bg-paper-2"
               }`}
               aria-pressed={viewMode === "full"}
             >
@@ -213,11 +213,11 @@ export function AgenticInActionSection() {
                     key={step.id}
                     type="button"
                     onClick={() => setActiveStepIndex(idx)}
-                    className={`flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-mono transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                    className={`flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-mono transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                       isActive
-                        ? "bg-ink text-[#d4ff3f] shadow-sm font-bold"
+                        ? "bg-cobalt text-white shadow-sm font-bold"
                         : isPassed
-                        ? "bg-paper text-ink border border-line"
+                        ? "bg-paper text-ink border border-line hover:border-cobalt/40"
                         : "text-muted hover:text-ink"
                     }`}
                   >
@@ -239,7 +239,7 @@ export function AgenticInActionSection() {
               {/* Event Badge Header */}
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-4">
                 <div className="flex items-center gap-3">
-                  <span className="grid size-9 place-items-center rounded-xl bg-ink text-[#d4ff3f] font-mono text-xs font-bold shadow-sm">
+                  <span className="grid size-9 place-items-center rounded-xl bg-slate-900 text-emerald-400 font-mono text-xs font-bold shadow-sm border border-slate-800">
                     {currentStep.timestamp}
                   </span>
                   <div>
@@ -257,7 +257,7 @@ export function AgenticInActionSection() {
                     currentStep.type === "caller"
                       ? "bg-rose-100 text-rose-800"
                       : currentStep.type === "brain"
-                      ? "bg-[#0e0e0c] text-[#d4ff3f]"
+                      ? "bg-[#090d16] text-emerald-400 border border-slate-800"
                       : "bg-emerald-100 text-emerald-800"
                   }`}
                 >
@@ -295,25 +295,25 @@ export function AgenticInActionSection() {
                 {currentStep.type === "brain" && currentStep.brainData && (
                   <div className="grid gap-6 lg:grid-cols-12 items-stretch">
                     {/* Left: Reasoning & Tool Code */}
-                    <div className="lg:col-span-7 rounded-2xl border border-white/10 bg-[#0e0e0c] p-6 sm:p-8 text-zinc-100 shadow-xl flex flex-col justify-between">
+                    <div className="lg:col-span-7 rounded-2xl border border-slate-800 bg-[#090d16] p-6 sm:p-8 text-slate-100 shadow-xl flex flex-col justify-between">
                       <div>
-                        <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                          <div className="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-wider text-[#d4ff3f]">
-                            <span className="grid size-4 place-items-center rounded-full bg-white/10 text-[10px]">✦</span>
+                        <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+                          <div className="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-wider text-emerald-400">
+                            <span className="grid size-4 place-items-center rounded-full bg-emerald-500/20 text-[10px]">✦</span>
                             <span>{currentStep.brainData.stepType}</span>
                           </div>
-                          <span className="font-mono text-[11px] text-zinc-400">
+                          <span className="font-mono text-[11px] text-slate-400">
                             Cognitive Latency: &lt;180ms
                           </span>
                         </div>
 
                         {/* Extracted Goal & Constraints */}
                         {currentStep.brainData.goal && (
-                          <div className="mt-5 rounded-xl bg-white/5 border border-white/10 p-4">
-                            <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-zinc-400 block mb-1">
+                          <div className="mt-5 rounded-xl bg-slate-900/60 border border-slate-800 p-4">
+                            <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
                               Extracted Goal &amp; Dynamic Constraints:
                             </span>
-                            <p className="font-mono text-xs sm:text-[13px] text-zinc-200 leading-relaxed">
+                            <p className="font-mono text-xs sm:text-[13px] text-slate-200 leading-relaxed">
                               - {currentStep.brainData.goal}
                             </p>
                           </div>
@@ -321,25 +321,25 @@ export function AgenticInActionSection() {
 
                         {/* Tool Calls */}
                         <div className="mt-5 space-y-4">
-                          <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#d4ff3f] block">
+                          <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-emerald-400 block">
                             Live Tool Execution:
                           </span>
                           {currentStep.brainData.toolCalls.map((tc, tIdx) => (
                             <div
                               key={tIdx}
-                              className="rounded-xl border border-white/10 bg-black/60 p-4 font-mono text-xs sm:text-[13px]"
+                              className="rounded-xl border border-slate-800 bg-[#060911] p-4 font-mono text-xs sm:text-[13px]"
                             >
-                              <div className="flex items-center justify-between text-zinc-400 pb-2 border-b border-white/10">
-                                <span className="font-bold text-[#d4ff3f]">{tc.name}</span>
+                              <div className="flex items-center justify-between text-slate-400 pb-2 border-b border-slate-800">
+                                <span className="font-bold text-emerald-400">{tc.name}</span>
                                 <span className="text-[11px] text-emerald-400">● Status: 200 OK</span>
                               </div>
-                              <div className="mt-2.5 overflow-x-auto py-1 text-zinc-100 font-mono">
-                                <span className="text-zinc-500 mr-2">&gt;</span>
-                                <span className="text-[#d4ff3f]">{tc.code}</span>
+                              <div className="mt-2.5 overflow-x-auto py-1 text-slate-100 font-mono">
+                                <span className="text-slate-500 mr-2">&gt;</span>
+                                <span className="text-emerald-300">{tc.code}</span>
                               </div>
                               {tc.result && (
-                                <div className="mt-2.5 text-xs text-zinc-300 border-t border-white/10 pt-2 flex items-start gap-2">
-                                  <span className="text-zinc-500 shrink-0 font-bold">↳ Result:</span>
+                                <div className="mt-2.5 text-xs text-slate-300 border-t border-slate-800 pt-2 flex items-start gap-2">
+                                  <span className="text-slate-500 shrink-0 font-bold">↳ Result:</span>
                                   <span className="text-emerald-300 font-semibold">{tc.result}</span>
                                 </div>
                               )}
@@ -351,19 +351,19 @@ export function AgenticInActionSection() {
 
                     {/* Right: Visual Generated Artifact (Doctor Schedule / WhatsApp Mockup) */}
                     {currentStep.image && (
-                      <div className="lg:col-span-5 rounded-2xl border border-white/10 bg-[#0e0e0c] p-5 text-zinc-100 shadow-xl flex flex-col justify-between">
+                      <div className="lg:col-span-5 rounded-2xl border border-slate-800 bg-[#090d16] p-5 text-slate-100 shadow-xl flex flex-col justify-between">
                         <div>
-                          <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                            <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#d4ff3f] flex items-center gap-1.5">
-                              <span className="size-2 rounded-full bg-[#d4ff3f] animate-pulse" />
+                          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                            <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                              <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
                               Real-Time Execution Artifact
                             </span>
-                            <span className="rounded-full bg-white/10 px-2.5 py-0.5 font-mono text-[10px] text-zinc-300">
+                            <span className="rounded-full bg-slate-800 px-2.5 py-0.5 font-mono text-[10px] text-slate-300 border border-slate-700">
                               [{currentStep.timestamp}]
                             </span>
                           </div>
 
-                          <div className="relative mt-4 w-full aspect-[16/10] bg-black/60 rounded-xl overflow-hidden border border-white/5 flex items-center justify-center">
+                          <div className="relative mt-4 w-full aspect-[16/10] bg-[#060911] rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
                             <Image
                               src={currentStep.image}
                               alt={currentStep.imageAlt || currentStep.title}
@@ -375,7 +375,7 @@ export function AgenticInActionSection() {
                           </div>
                         </div>
 
-                        <p className="mt-3 font-mono text-xs text-zinc-300 text-center border-t border-white/10 pt-2.5">
+                        <p className="mt-3 font-mono text-xs text-slate-300 text-center border-t border-slate-800 pt-2.5">
                           {currentStep.imageCaption}
                         </p>
                       </div>
@@ -419,19 +419,19 @@ export function AgenticInActionSection() {
 
                     {/* WhatsApp Delivered Confirmation Mockup on Step 6 */}
                     {currentStep.image && (
-                      <div className="lg:col-span-5 rounded-2xl border border-white/10 bg-[#0e0e0c] p-5 text-zinc-100 shadow-xl flex flex-col justify-between">
+                      <div className="lg:col-span-5 rounded-2xl border border-slate-800 bg-[#090d16] p-5 text-slate-100 shadow-xl flex flex-col justify-between">
                         <div>
-                          <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                            <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#d4ff3f] flex items-center gap-1.5">
-                              <span className="size-2 rounded-full bg-[#d4ff3f] animate-pulse" />
+                          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                            <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                              <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
                               WhatsApp Delivery Verified
                             </span>
-                            <span className="rounded-full bg-white/10 px-2.5 py-0.5 font-mono text-[10px] text-emerald-400">
+                            <span className="rounded-full bg-emerald-500/15 border border-emerald-500/20 px-2.5 py-0.5 font-mono text-[10px] text-emerald-400 font-semibold">
                               ● Delivered
                             </span>
                           </div>
 
-                          <div className="relative mt-4 w-full aspect-[16/10] bg-black/60 rounded-xl overflow-hidden border border-white/5 flex items-center justify-center">
+                          <div className="relative mt-4 w-full aspect-[16/10] bg-[#060911] rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
                             <Image
                               src={currentStep.image}
                               alt={currentStep.imageAlt || currentStep.title}
@@ -443,7 +443,7 @@ export function AgenticInActionSection() {
                           </div>
                         </div>
 
-                        <p className="mt-3 font-mono text-xs text-zinc-300 text-center border-t border-white/10 pt-2.5">
+                        <p className="mt-3 font-mono text-xs text-slate-300 text-center border-t border-slate-800 pt-2.5">
                           {currentStep.imageCaption}
                         </p>
                       </div>
@@ -500,10 +500,10 @@ export function AgenticInActionSection() {
         {viewMode === "flowchart" && (
           <div className="mt-12 w-full space-y-8">
             {/* Top Card: User-Provided 3-Lane Architecture Diagram */}
-            <div className="rounded-3xl border border-white/10 bg-[#0e0e0c] p-6 sm:p-10 shadow-2xl text-zinc-100">
-              <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
+            <div className="rounded-3xl border border-slate-800 bg-[#090d16] p-6 sm:p-10 shadow-2xl text-slate-100">
+              <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4">
                 <div>
-                  <span className="eyebrow text-[#d4ff3f] font-semibold tracking-wider">
+                  <span className="eyebrow text-emerald-400 font-semibold tracking-wider">
                     3-Lane Cognitive Sequence
                   </span>
                   <h3 className="font-display text-xl sm:text-2xl font-bold text-white mt-1">
@@ -513,23 +513,23 @@ export function AgenticInActionSection() {
 
                 {/* Color Legend matching uploaded diagram */}
                 <div className="flex items-center gap-3 font-mono text-[11px]">
-                  <span className="flex items-center gap-1.5 text-zinc-400">
-                    <span className="size-2.5 rounded-full bg-zinc-500" />
+                  <span className="flex items-center gap-1.5 text-slate-400">
+                    <span className="size-2.5 rounded-full bg-slate-500" />
                     <span>Caller</span>
                   </span>
                   <span className="flex items-center gap-1.5 text-purple-300">
-                    <span className="size-2.5 rounded-full bg-purple-600" />
+                    <span className="size-2.5 rounded-full bg-purple-500" />
                     <span>Thinking &amp; Speaking</span>
                   </span>
-                  <span className="flex items-center gap-1.5 text-teal-300">
-                    <span className="size-2.5 rounded-full bg-teal-600" />
+                  <span className="flex items-center gap-1.5 text-emerald-300">
+                    <span className="size-2.5 rounded-full bg-emerald-500" />
                     <span>Tool Calls</span>
                   </span>
                 </div>
               </div>
 
               {/* Uploaded Sequence Diagram Image */}
-              <div className="relative mt-6 w-full aspect-[4/3] sm:aspect-[16/10] md:aspect-[16/9] max-h-[560px] bg-black/60 rounded-2xl overflow-hidden border border-white/5 flex items-center justify-center">
+              <div className="relative mt-6 w-full aspect-[4/3] sm:aspect-[16/10] md:aspect-[16/9] max-h-[560px] bg-[#060911] rounded-2xl overflow-hidden border border-slate-800 flex items-center justify-center">
                 <Image
                   src="/images/scenario/agentic-in-action-timeline.png"
                   alt="Agentic in Action 3-lane sequence flowchart: Caller vs Agent Brain vs Agent Speaks"
@@ -540,25 +540,25 @@ export function AgenticInActionSection() {
                 />
               </div>
 
-              <p className="mt-4 text-center font-mono text-xs text-zinc-400">
-                Gray: Caller input • Purple: Agent reasoning and voice output • Teal: Real-time autonomous tool calls.
+              <p className="mt-4 text-center font-mono text-xs text-slate-400">
+                Gray: Caller input • Purple: Agent reasoning and voice output • Emerald: Real-time autonomous tool calls.
               </p>
             </div>
 
             {/* Generated Real-World Artifacts: WhatsApp Message & Doctor Calendar Side-by-Side */}
             <div className="grid gap-6 md:grid-cols-2">
               {/* Doctor Schedule Live Query */}
-              <div className="rounded-3xl border border-white/10 bg-[#0e0e0c] p-6 text-zinc-100 shadow-xl flex flex-col justify-between">
+              <div className="rounded-3xl border border-slate-800 bg-[#090d16] p-6 text-slate-100 shadow-xl flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                    <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#d4ff3f] flex items-center gap-1.5">
-                      <span className="size-2 rounded-full bg-[#d4ff3f] animate-pulse" />
+                  <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                      <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
                       Live Calendar Query Result
                     </span>
-                    <span className="font-mono text-[10px] text-zinc-400">[00:03]</span>
+                    <span className="font-mono text-[10px] text-slate-400">[00:03]</span>
                   </div>
 
-                  <div className="relative mt-4 w-full aspect-[16/10] bg-black/60 rounded-xl overflow-hidden border border-white/5 flex items-center justify-center">
+                  <div className="relative mt-4 w-full aspect-[16/10] bg-[#060911] rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
                     <Image
                       src="/images/scenario/doctor-schedule-calendar.jpg"
                       alt="Doctor Schedule Availability Calendar"
@@ -570,24 +570,24 @@ export function AgenticInActionSection() {
                   </div>
                 </div>
 
-                <div className="mt-4 font-mono text-xs text-zinc-300 border-t border-white/10 pt-3">
+                <div className="mt-4 font-mono text-xs text-slate-300 border-t border-slate-800 pt-3">
                   <p className="font-bold text-white">Tool: execute_tool(&apos;check_doctor_schedule&apos;)</p>
                   <p className="text-emerald-400 mt-1">↳ Result: 5:30 PM &amp; 6:15 PM openings identified</p>
                 </div>
               </div>
 
               {/* WhatsApp Message & Location Card */}
-              <div className="rounded-3xl border border-white/10 bg-[#0e0e0c] p-6 text-zinc-100 shadow-xl flex flex-col justify-between">
+              <div className="rounded-3xl border border-slate-800 bg-[#090d16] p-6 text-slate-100 shadow-xl flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                    <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#d4ff3f] flex items-center gap-1.5">
-                      <span className="size-2 rounded-full bg-[#d4ff3f] animate-pulse" />
+                  <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                      <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
                       WhatsApp Location &amp; Confirmation
                     </span>
-                    <span className="font-mono text-[10px] text-zinc-400">[00:11 - 00:13]</span>
+                    <span className="font-mono text-[10px] text-slate-400">[00:11 - 00:13]</span>
                   </div>
 
-                  <div className="relative mt-4 w-full aspect-[16/10] bg-black/60 rounded-xl overflow-hidden border border-white/5 flex items-center justify-center">
+                  <div className="relative mt-4 w-full aspect-[16/10] bg-[#060911] rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
                     <Image
                       src="/images/scenario/whatsapp-clinic-confirmation.jpg"
                       alt="WhatsApp message and clinic location map"
@@ -599,7 +599,7 @@ export function AgenticInActionSection() {
                   </div>
                 </div>
 
-                <div className="mt-4 font-mono text-xs text-zinc-300 border-t border-white/10 pt-3">
+                <div className="mt-4 font-mono text-xs text-slate-300 border-t border-slate-800 pt-3">
                   <p className="font-bold text-white">Tool: execute_tool(&apos;send_whatsapp_location&apos;)</p>
                   <p className="text-emerald-400 mt-1">↳ Result: Verified clinic map delivered to caller&apos;s phone</p>
                 </div>
@@ -621,7 +621,7 @@ export function AgenticInActionSection() {
                 {/* Header */}
                 <div className="flex items-center justify-between border-b border-line pb-3">
                   <div className="flex items-center gap-3">
-                    <span className="grid size-8 place-items-center rounded-xl bg-ink text-[#d4ff3f] font-mono text-xs font-bold">
+                    <span className="grid size-8 place-items-center rounded-xl bg-slate-900 text-emerald-400 font-mono text-xs font-bold border border-slate-800">
                       {step.timestamp}
                     </span>
                     <span className="font-display text-base font-bold text-ink">
@@ -633,7 +633,7 @@ export function AgenticInActionSection() {
                       step.type === "caller"
                         ? "bg-rose-100 text-rose-800"
                         : step.type === "brain"
-                        ? "bg-[#0e0e0c] text-[#d4ff3f]"
+                        ? "bg-[#090d16] text-emerald-400 border border-slate-800"
                         : "bg-emerald-100 text-emerald-800"
                     }`}
                   >
@@ -656,15 +656,15 @@ export function AgenticInActionSection() {
                   )}
 
                   {step.brainData && (
-                    <div className="rounded-2xl border border-white/10 bg-[#0e0e0c] p-5 text-zinc-100 space-y-3 font-mono text-xs">
+                    <div className="rounded-2xl border border-slate-800 bg-[#090d16] p-5 text-slate-100 space-y-3 font-mono text-xs">
                       {step.brainData.goal && (
-                        <p className="text-zinc-300">
-                          <span className="text-zinc-500">- Goal:</span> {step.brainData.goal}
+                        <p className="text-slate-300">
+                          <span className="text-slate-500">- Goal:</span> {step.brainData.goal}
                         </p>
                       )}
                       {step.brainData.toolCalls.map((tc, tIdx) => (
                         <div key={tIdx} className="space-y-1">
-                          <p className="text-[#d4ff3f] font-bold">
+                          <p className="text-emerald-400 font-bold">
                             - {tc.name}: <span className="font-normal text-white">{tc.code}</span>
                           </p>
                           {tc.result && (
@@ -679,11 +679,11 @@ export function AgenticInActionSection() {
 
                   {/* Visual Artifact in Log View if present */}
                   {step.image && (
-                    <div className="mt-4 rounded-2xl border border-white/10 bg-[#0e0e0c] p-4 text-zinc-100">
-                      <span className="font-mono text-[10px] uppercase font-bold text-[#d4ff3f] block mb-2">
+                    <div className="mt-4 rounded-2xl border border-slate-800 bg-[#090d16] p-4 text-slate-100">
+                      <span className="font-mono text-[10px] uppercase font-bold text-emerald-400 block mb-2">
                         Artifact Generated at [{step.timestamp}]:
                       </span>
-                      <div className="relative w-full aspect-[16/9] max-w-md bg-black/60 rounded-xl overflow-hidden border border-white/5">
+                      <div className="relative w-full aspect-[16/9] max-w-md bg-[#060911] rounded-xl overflow-hidden border border-slate-800">
                         <Image
                           src={step.image}
                           alt={step.imageAlt || step.title}
@@ -692,7 +692,7 @@ export function AgenticInActionSection() {
                           className="object-contain p-2"
                         />
                       </div>
-                      <p className="mt-2 font-mono text-[11px] text-zinc-400">
+                      <p className="mt-2 font-mono text-[11px] text-slate-400">
                         {step.imageCaption}
                       </p>
                     </div>

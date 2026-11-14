@@ -185,16 +185,16 @@ export function ArchitecturalComparisonSection() {
                 </th>
                 <th
                   scope="col"
-                  className="w-[36%] py-5 px-6 font-mono text-xs font-bold uppercase tracking-wider text-[#d4ff3f] bg-[#0e0e0c]"
+                  className="w-[36%] py-5 px-6 font-mono text-xs font-bold uppercase tracking-wider text-emerald-300 bg-[#090d16]"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="grid size-4 place-items-center rounded-full bg-white/10 text-[#d4ff3f] text-[10px]">
+                      <span className="grid size-4 place-items-center rounded-full bg-emerald-500/20 text-emerald-400 text-[10px]">
                         ✦
                       </span>
-                      <span>Vozon Agentic AI Voice Platform</span>
+                      <span className="text-white">Vozon Agentic AI Voice Platform</span>
                     </div>
-                    <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-bold text-[#d4ff3f]">
+                    <span className="rounded-full bg-emerald-500/15 border border-emerald-500/20 px-2.5 py-0.5 text-[10px] font-bold text-emerald-400">
                       ENTERPRISE READY
                     </span>
                   </div>
@@ -230,10 +230,10 @@ export function ArchitecturalComparisonSection() {
                   </td>
 
                   {/* Column 3: Vozon Agentic Platform */}
-                  <td className="py-5 px-6 align-middle bg-[#0e0e0c]/[0.02] group-hover:bg-[#0e0e0c]/[0.04] transition-colors">
-                    <div className="rounded-2xl border border-white/10 bg-[#0e0e0c] p-4 text-xs lg:text-[13.5px] leading-relaxed text-zinc-100 shadow-sm flex flex-col justify-between">
+                  <td className="py-5 px-6 align-middle bg-slate-900/[0.02] group-hover:bg-slate-900/[0.04] transition-colors">
+                    <div className="rounded-2xl border border-slate-800 bg-[#090d16] p-4 text-xs lg:text-[13.5px] leading-relaxed text-slate-100 shadow-sm flex flex-col justify-between">
                       <div className="flex items-start gap-2.5">
-                        <span className="mt-0.5 text-[#d4ff3f] font-bold text-sm shrink-0">
+                        <span className="mt-0.5 text-emerald-400 font-bold text-sm shrink-0">
                           ✦
                         </span>
                         <span className="font-medium text-white">
@@ -242,14 +242,14 @@ export function ArchitecturalComparisonSection() {
                       </div>
 
                       {(row.highlightBadge || row.metricBadge) && (
-                        <div className="mt-2.5 flex items-center gap-2 pt-2 border-t border-white/10">
+                        <div className="mt-2.5 flex items-center gap-2 pt-2 border-t border-slate-800">
                           {row.highlightBadge && (
-                            <span className="inline-block rounded-md bg-white/10 px-2 py-0.5 font-mono text-[10.5px] font-semibold text-[#d4ff3f]">
+                            <span className="inline-block rounded-md bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 font-mono text-[10.5px] font-semibold text-emerald-300">
                               {row.highlightBadge}
                             </span>
                           )}
                           {row.metricBadge && (
-                            <span className="inline-block rounded-md bg-emerald-500/20 px-2 py-0.5 font-mono text-[10.5px] font-semibold text-emerald-400">
+                            <span className="inline-block rounded-md bg-cobalt/20 border border-cobalt/30 px-2 py-0.5 font-mono text-[10.5px] font-semibold text-blue-300">
                               {row.metricBadge}
                             </span>
                           )}
@@ -275,7 +275,7 @@ export function ArchitecturalComparisonSection() {
               {/* Card Header */}
               <div className="flex items-center justify-between border-b border-line pb-3">
                 <div className="flex items-center gap-2">
-                  <span className="grid size-7 place-items-center rounded-lg bg-ink text-[#d4ff3f] font-mono text-xs font-bold">
+                  <span className="grid size-7 place-items-center rounded-lg bg-slate-900 text-emerald-400 font-mono text-xs font-bold">
                     0{idx + 1}
                   </span>
                   <h3 className="font-display text-base font-bold text-ink">
@@ -303,16 +303,16 @@ export function ArchitecturalComparisonSection() {
                 </div>
 
                 {/* Vozon Agentic platform box */}
-                <div className="rounded-2xl border border-white/10 bg-[#0e0e0c] p-4 text-xs leading-relaxed text-zinc-100 shadow-sm">
+                <div className="rounded-2xl border border-slate-800 bg-[#090d16] p-4 text-xs leading-relaxed text-zinc-100 shadow-sm">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1.5 font-mono text-[10.5px] font-bold uppercase tracking-wider text-[#d4ff3f]">
-                      <span className="grid size-3.5 place-items-center rounded-full bg-white/10 text-[9px]">
+                    <div className="flex items-center gap-1.5 font-mono text-[10.5px] font-bold uppercase tracking-wider text-emerald-400">
+                      <span className="grid size-3.5 place-items-center rounded-full bg-emerald-500/20 text-[9px]">
                         ✦
                       </span>
-                      <span>Vozon Agentic Platform</span>
+                      <span className="text-white">Vozon Agentic Platform</span>
                     </div>
                     {row.metricBadge && (
-                      <span className="font-mono text-[10px] text-emerald-400 font-bold">
+                      <span className="font-mono text-[10px] text-blue-300 font-bold bg-cobalt/20 px-2 py-0.5 rounded">
                         {row.metricBadge}
                       </span>
                     )}
@@ -322,8 +322,8 @@ export function ArchitecturalComparisonSection() {
                   </p>
 
                   {row.highlightBadge && (
-                    <div className="mt-2.5 pt-2 border-t border-white/10">
-                      <span className="inline-block rounded bg-white/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-[#d4ff3f]">
+                    <div className="mt-2.5 pt-2 border-t border-slate-800">
+                      <span className="inline-block rounded bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 font-mono text-[10px] font-semibold text-emerald-300">
                         {row.highlightBadge}
                       </span>
                     </div>
@@ -348,7 +348,7 @@ export function ArchitecturalComparisonSection() {
           <div className="flex items-center gap-3 shrink-0">
             <a
               href="#platform"
-              className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 font-display text-xs font-semibold text-[#d4ff3f] shadow-sm hover:bg-ink/90 cursor-pointer"
+              className="inline-flex items-center gap-2 rounded-xl bg-cobalt px-5 py-2.5 font-display text-xs font-semibold text-white shadow-sm hover:bg-cobalt-dark transition-all cursor-pointer"
             >
               <span>Test Live Voice Call</span>
               <span className="font-mono text-sm">→</span>

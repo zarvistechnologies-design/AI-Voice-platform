@@ -145,40 +145,40 @@ interface PillarStreamCardProps {
 function PillarStreamCard({ pillar, index }: PillarStreamCardProps) {
   return (
     <article
-      className="group relative flex w-[340px] sm:w-[450px] md:w-[490px] shrink-0 flex-col justify-between rounded-3xl border border-line bg-paper p-5 sm:p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-ink/50 hover:shadow-xl"
+      className="group relative flex w-[340px] sm:w-[450px] md:w-[490px] shrink-0 flex-col justify-between rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-400 hover:shadow-xl"
     >
       <div>
         {/* Top Header Badge */}
-        <div className="flex items-center justify-between border-b border-line pb-3.5">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-3.5">
           <div className="flex items-center gap-2.5">
-            <span className="grid size-8 place-items-center rounded-xl bg-ink text-[#d4ff3f] font-mono text-xs font-bold shadow-sm">
+            <span className="grid size-8 place-items-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white font-mono text-xs font-bold shadow-xs">
               {pillar.number}
             </span>
-            <span className="font-mono text-xs font-bold tracking-wider uppercase text-cobalt">
+            <span className="font-mono text-xs font-bold tracking-wider uppercase text-blue-600">
               Pillar {pillar.number}
             </span>
           </div>
-          <span className="eyebrow text-muted text-[11px] font-semibold">
+          <span className="eyebrow text-slate-400 text-[11px] font-semibold font-mono">
             {pillar.tag}
           </span>
         </div>
 
         {/* Title & Subtitle */}
-        <h3 className="font-display text-base sm:text-lg font-bold text-ink mt-3.5 leading-snug break-words">
+        <h3 className="font-display text-base sm:text-lg font-bold text-slate-900 mt-3.5 leading-snug break-words">
           {pillar.title}
         </h3>
-        <p className="mt-1 font-mono text-[11px] text-muted">
+        <p className="mt-1 font-mono text-[11px] text-slate-500">
           {pillar.subtitle}
         </p>
 
         {/* Architectural Diagram Illustration */}
-        <div className="mt-3.5 overflow-hidden rounded-2xl border border-white/10 bg-[#0e0e0c] p-2.5 shadow-inner">
+        <div className="mt-3.5 overflow-hidden rounded-2xl border border-slate-800 bg-[#090d16] p-2.5 shadow-inner">
           <div className="flex items-center justify-between pb-1.5 px-1 border-b border-white/10">
-            <span className="font-mono text-[10px] uppercase font-bold text-[#d4ff3f] flex items-center gap-1.5">
-              <span className="size-1.5 rounded-full bg-[#d4ff3f] animate-pulse" />
+            <span className="font-mono text-[10px] uppercase font-bold text-emerald-400 flex items-center gap-1.5">
+              <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
               Architecture Map
             </span>
-            <span className="font-mono text-[10px] text-zinc-400">Pillar {pillar.number}</span>
+            <span className="font-mono text-[10px] text-slate-400">Pillar {pillar.number}</span>
           </div>
           <div className="relative mt-2 w-full aspect-[16/9] bg-black/50 rounded-xl overflow-hidden flex items-center justify-center">
             <Image
@@ -190,7 +190,7 @@ function PillarStreamCard({ pillar, index }: PillarStreamCardProps) {
               loading="eager"
             />
           </div>
-          <p className="mt-2 text-center font-mono text-[10.5px] text-zinc-300 px-1 truncate">
+          <p className="mt-2 text-center font-mono text-[10.5px] text-slate-300 px-1 truncate">
             {pillar.imageCaption}
           </p>
         </div>
@@ -198,7 +198,7 @@ function PillarStreamCard({ pillar, index }: PillarStreamCardProps) {
         {/* Stacked Comparisons */}
         <div className="mt-3.5 space-y-3">
           {/* Simple Bots Box */}
-          <div className="rounded-2xl border border-rose-200/90 bg-rose-50/70 p-3.5 text-xs leading-relaxed">
+          <div className="rounded-2xl border border-rose-200/80 bg-rose-50/70 p-3.5 text-xs leading-relaxed">
             <div className="flex items-center gap-1.5 font-mono text-[10.5px] font-bold uppercase tracking-wider text-rose-800">
               <span className="grid size-3.5 place-items-center rounded-full bg-rose-200 text-[9px]">✕</span>
               <span>What simple bots do</span>
@@ -209,20 +209,20 @@ function PillarStreamCard({ pillar, index }: PillarStreamCardProps) {
           </div>
 
           {/* Agentic Platform Box */}
-          <div className="rounded-2xl border border-white/10 bg-[#0e0e0c] p-4 text-xs leading-relaxed text-zinc-100 shadow-sm">
-            <div className="flex items-center gap-1.5 font-mono text-[10.5px] font-bold uppercase tracking-wider text-[#d4ff3f]">
+          <div className="rounded-2xl border border-slate-800 bg-[#090d16] p-4 text-xs leading-relaxed text-slate-100 shadow-sm">
+            <div className="flex items-center gap-1.5 font-mono text-[10.5px] font-bold uppercase tracking-wider text-emerald-400">
               <span className="grid size-3.5 place-items-center rounded-full bg-white/10 text-[9px]">✦</span>
               <span>What our Agentic Platform does</span>
             </div>
-            <p className="mt-2 text-zinc-100 font-normal leading-relaxed text-[12px]">
+            <p className="mt-2 text-slate-100 font-normal leading-relaxed text-[12px]">
               {pillar.agenticPlatform.summary}
             </p>
 
             {pillar.agenticPlatform.bullets && pillar.agenticPlatform.bullets.length > 0 && (
               <ul className="mt-3 space-y-1.5 border-t border-white/10 pt-2.5">
                 {pillar.agenticPlatform.bullets.map((bullet, bIdx) => (
-                  <li key={bIdx} className="flex items-start gap-2 text-zinc-300 text-[11.5px]">
-                    <span className="text-[#d4ff3f] font-bold text-xs shrink-0">↳</span>
+                  <li key={bIdx} className="flex items-start gap-2 text-slate-300 text-[11.5px]">
+                    <span className="text-emerald-400 font-bold text-xs shrink-0">↳</span>
                     <span className="leading-relaxed">{bullet}</span>
                   </li>
                 ))}
@@ -233,13 +233,13 @@ function PillarStreamCard({ pillar, index }: PillarStreamCardProps) {
       </div>
 
       {/* Card Footer */}
-      <div className="mt-5 flex items-center justify-between border-t border-line pt-3.5 text-xs">
-        <span className="font-mono text-muted text-[11px]">
+      <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-3.5 text-xs">
+        <span className="font-mono text-slate-400 text-[11px]">
           Pillar {pillar.number} • {pillar.tag}
         </span>
         <a
           href="#platform"
-          className="inline-flex items-center gap-1 font-semibold text-cobalt hover:underline cursor-pointer text-xs"
+          className="inline-flex items-center gap-1 font-semibold text-blue-600 hover:underline cursor-pointer text-xs"
         >
           <span>Live Demo</span>
           <span className="font-mono text-sm">→</span>
@@ -347,14 +347,14 @@ export function AgenticPillarsSection() {
           </p>
 
           {/* Mode Switcher */}
-          <div className="mt-8 inline-flex items-center rounded-full bg-paper border border-line p-1 shadow-xs">
+          <div className="mt-8 inline-flex items-center rounded-full bg-white border border-slate-200 p-1 shadow-xs">
             <button
               type="button"
               onClick={() => setViewMode("stream")}
               className={`rounded-full px-4 sm:px-5 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
                 viewMode === "stream"
-                  ? "bg-ink text-[#d4ff3f] shadow-sm"
-                  : "text-muted hover:text-ink"
+                  ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-sm shadow-blue-500/25"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
               aria-pressed={viewMode === "stream"}
             >
@@ -367,8 +367,8 @@ export function AgenticPillarsSection() {
               onClick={() => setViewMode("carousel")}
               className={`rounded-full px-4 sm:px-5 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
                 viewMode === "carousel"
-                  ? "bg-ink text-[#d4ff3f] shadow-sm"
-                  : "text-muted hover:text-ink"
+                  ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-sm shadow-blue-500/25"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
               aria-pressed={viewMode === "carousel"}
             >
@@ -381,8 +381,8 @@ export function AgenticPillarsSection() {
               onClick={() => setViewMode("grid")}
               className={`rounded-full px-4 sm:px-5 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
                 viewMode === "grid"
-                  ? "bg-ink text-[#d4ff3f] shadow-sm"
-                  : "text-muted hover:text-ink"
+                  ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-sm shadow-blue-500/25"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
               aria-pressed={viewMode === "grid"}
             >
@@ -444,28 +444,28 @@ export function AgenticPillarsSection() {
             </div>
 
             {/* Stream Control Bar */}
-            <div className="flex flex-wrap items-center justify-between gap-4 border-t border-line pt-4 px-2 text-xs">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-t border-slate-200 pt-4 px-2 text-xs">
               <div className="flex items-center gap-3">
                 <button
                   type="button"
                   onClick={() => setIsStreamPlaying(!isStreamPlaying)}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-line bg-paper px-3 py-1 font-mono text-[11px] font-semibold text-ink hover:border-ink cursor-pointer"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1 font-mono text-[11px] font-semibold text-slate-800 hover:border-slate-400 cursor-pointer shadow-xs"
                 >
                   <span>{isStreamPlaying ? "⏸ Pause Stream" : "▶ Resume Stream"}</span>
                 </button>
-                <span className="hidden sm:inline font-mono text-muted text-[11px]">
+                <span className="hidden sm:inline font-mono text-slate-500 text-[11px]">
                   Hover over any pillar card to pause and inspect diagrams &amp; code
                 </span>
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="font-mono text-muted text-[11px]">
+                <span className="font-mono text-slate-400 text-[11px]">
                   5 Illustrated Pillars in continuous motion
                 </span>
                 <button
                   type="button"
                   onClick={() => setViewMode("carousel")}
-                  className="font-semibold text-cobalt hover:underline cursor-pointer text-xs"
+                  className="font-semibold text-blue-600 hover:underline cursor-pointer text-xs"
                 >
                   Switch to Carousel →
                 </button>
@@ -484,7 +484,7 @@ export function AgenticPillarsSection() {
             onMouseLeave={() => setIsCarouselPlaying(true)}
           >
             {/* Carousel Container */}
-            <div className="relative overflow-hidden rounded-3xl border border-line bg-paper shadow-md">
+            <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-md">
               {/* Sliding Track */}
               <div
                 className="flex transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
@@ -499,25 +499,25 @@ export function AgenticPillarsSection() {
                   >
                     <div>
                       {/* Top Header */}
-                      <div className="flex items-center justify-between border-b border-line pb-4">
+                      <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                         <div className="flex items-center gap-3">
-                          <span className="grid size-9 place-items-center rounded-xl bg-ink text-[#d4ff3f] font-mono text-xs font-bold shadow-sm">
+                          <span className="grid size-9 place-items-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white font-mono text-xs font-bold shadow-xs">
                             {pillar.number}
                           </span>
-                          <span className="font-mono text-xs font-bold tracking-wider uppercase text-cobalt">
+                          <span className="font-mono text-xs font-bold tracking-wider uppercase text-blue-600">
                             Pillar {pillar.number} of 05
                           </span>
                         </div>
-                        <span className="eyebrow text-muted text-[11px] font-semibold">
+                        <span className="eyebrow text-slate-400 text-[11px] font-semibold font-mono">
                           {pillar.tag}
                         </span>
                       </div>
 
                       {/* Title & Subtitle */}
-                      <h3 className="font-display text-2xl sm:text-3xl font-bold text-ink mt-5 leading-snug">
+                      <h3 className="font-display text-2xl sm:text-3xl font-bold text-slate-900 mt-5 leading-snug">
                         {pillar.title}
                       </h3>
-                      <p className="mt-1 font-mono text-xs text-muted">
+                      <p className="mt-1 font-mono text-xs text-slate-500">
                         {pillar.subtitle}
                       </p>
 
@@ -526,7 +526,7 @@ export function AgenticPillarsSection() {
                         {/* Left Column: Comparisons */}
                         <div className="lg:col-span-6 space-y-4 flex flex-col justify-between">
                           {/* What Simple Bots Do Box */}
-                          <div className="rounded-2xl border border-rose-200/90 bg-rose-50/70 p-5 text-xs sm:text-[13px] leading-relaxed flex flex-col justify-between">
+                          <div className="rounded-2xl border border-rose-200/80 bg-rose-50/70 p-5 text-xs sm:text-[13px] leading-relaxed flex flex-col justify-between">
                             <div>
                               <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-rose-800">
                                 <span className="grid size-4 place-items-center rounded-full bg-rose-200 text-[10px]">✕</span>
@@ -542,22 +542,22 @@ export function AgenticPillarsSection() {
                           </div>
 
                           {/* What Our Agentic Platform Does Box */}
-                          <div className="rounded-2xl border border-white/10 bg-[#0e0e0c] p-5 sm:p-6 text-xs sm:text-[13px] leading-relaxed text-zinc-100 shadow-md flex-1 flex flex-col justify-between">
+                          <div className="rounded-2xl border border-slate-800 bg-[#090d16] p-5 sm:p-6 text-xs sm:text-[13px] leading-relaxed text-slate-100 shadow-md flex-1 flex flex-col justify-between">
                             <div>
-                              <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-[#d4ff3f]">
+                              <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-emerald-400">
                                 <span className="grid size-4 place-items-center rounded-full bg-white/10 text-[10px]">✦</span>
                                 <span>What our Agentic Platform does</span>
                               </div>
 
-                              <p className="mt-3 text-zinc-100 font-normal leading-relaxed text-sm">
+                              <p className="mt-3 text-slate-100 font-normal leading-relaxed text-sm">
                                 {pillar.agenticPlatform.summary}
                               </p>
 
                               {pillar.agenticPlatform.bullets && pillar.agenticPlatform.bullets.length > 0 && (
                                 <ul className="mt-3.5 space-y-2 border-t border-white/10 pt-3">
                                   {pillar.agenticPlatform.bullets.map((bullet, bIdx) => (
-                                    <li key={bIdx} className="flex items-start gap-2 text-zinc-300 text-xs">
-                                      <span className="text-[#d4ff3f] font-bold text-sm shrink-0">↳</span>
+                                    <li key={bIdx} className="flex items-start gap-2 text-slate-300 text-xs">
+                                      <span className="text-emerald-400 font-bold text-sm shrink-0">↳</span>
                                       <span className="leading-relaxed">{bullet}</span>
                                     </li>
                                   ))}
@@ -568,14 +568,14 @@ export function AgenticPillarsSection() {
                         </div>
 
                         {/* Right Column: Architectural Diagram Illustration */}
-                        <div className="lg:col-span-6 rounded-2xl border border-white/10 bg-[#0e0e0c] p-4 sm:p-6 text-zinc-100 shadow-xl flex flex-col justify-between">
+                        <div className="lg:col-span-6 rounded-2xl border border-slate-800 bg-[#090d16] p-4 sm:p-6 text-slate-100 shadow-xl flex flex-col justify-between">
                           <div>
                             <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                              <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#d4ff3f] flex items-center gap-2">
-                                <span className="size-2 rounded-full bg-[#d4ff3f] animate-pulse" />
+                              <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-2">
+                                <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
                                 Architecture Diagram
                               </span>
-                              <span className="rounded-full bg-white/10 px-2.5 py-0.5 font-mono text-[10px] text-zinc-300">
+                              <span className="rounded-full bg-white/10 px-2.5 py-0.5 font-mono text-[10px] text-slate-300">
                                 Pillar {pillar.number}
                               </span>
                             </div>
@@ -592,7 +592,7 @@ export function AgenticPillarsSection() {
                             </div>
                           </div>
 
-                          <p className="mt-4 font-mono text-xs text-zinc-300 text-center border-t border-white/10 pt-3">
+                          <p className="mt-4 font-mono text-xs text-slate-300 text-center border-t border-white/10 pt-3">
                             {pillar.imageCaption}
                           </p>
                         </div>
@@ -692,42 +692,42 @@ export function AgenticPillarsSection() {
               return (
                 <div
                   key={pillar.id}
-                  className={`case-card flex flex-col justify-between rounded-3xl border border-line bg-paper p-6 sm:p-8 shadow-sm transition-all duration-300 hover:border-ink/40 hover:shadow-md ${
+                  className={`case-card flex flex-col justify-between rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm transition-all duration-300 hover:border-blue-400 hover:shadow-md ${
                     isFullWidthAnchor ? "lg:col-span-2" : ""
                   }`}
                 >
                   <div>
                     {/* Top Header */}
-                    <div className="flex items-center justify-between border-b border-line pb-4">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                       <div className="flex items-center gap-3">
-                        <span className="grid size-9 place-items-center rounded-xl bg-ink text-[#d4ff3f] font-mono text-xs font-bold shadow-sm">
+                        <span className="grid size-9 place-items-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white font-mono text-xs font-bold shadow-xs">
                           {pillar.number}
                         </span>
-                        <span className="font-mono text-xs font-bold tracking-wider uppercase text-cobalt">
+                        <span className="font-mono text-xs font-bold tracking-wider uppercase text-blue-600">
                           Pillar {pillar.number}
                         </span>
                       </div>
-                      <span className="eyebrow text-muted text-[11px]">
+                      <span className="eyebrow text-slate-400 text-[11px] font-mono">
                         {pillar.tag}
                       </span>
                     </div>
 
                     {/* Title & Subtitle */}
-                    <h3 className="font-display text-xl sm:text-2xl font-bold text-ink mt-4 leading-snug">
+                    <h3 className="font-display text-xl sm:text-2xl font-bold text-slate-900 mt-4 leading-snug">
                       {pillar.title}
                     </h3>
-                    <p className="mt-1 font-mono text-xs text-muted">
+                    <p className="mt-1 font-mono text-xs text-slate-500">
                       {pillar.subtitle}
                     </p>
 
                     {/* Architectural Diagram Box in Grid */}
-                    <div className="mt-4 overflow-hidden rounded-2xl border border-white/10 bg-[#0e0e0c] p-3 shadow-inner">
+                    <div className="mt-4 overflow-hidden rounded-2xl border border-slate-800 bg-[#090d16] p-3 shadow-inner">
                       <div className="flex items-center justify-between pb-1.5 px-1 border-b border-white/10">
-                        <span className="font-mono text-[10.5px] uppercase font-bold text-[#d4ff3f] flex items-center gap-1.5">
-                          <span className="size-1.5 rounded-full bg-[#d4ff3f] animate-pulse" />
+                        <span className="font-mono text-[10.5px] uppercase font-bold text-emerald-400 flex items-center gap-1.5">
+                          <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
                           Architecture Diagram
                         </span>
-                        <span className="font-mono text-[10px] text-zinc-400">Pillar {pillar.number}</span>
+                        <span className="font-mono text-[10px] text-slate-400">Pillar {pillar.number}</span>
                       </div>
                       <div
                         className={`relative mt-2 w-full bg-black/50 rounded-xl overflow-hidden flex items-center justify-center ${
@@ -743,7 +743,7 @@ export function AgenticPillarsSection() {
                           loading="eager"
                         />
                       </div>
-                      <p className="mt-2 text-center font-mono text-[11px] text-zinc-300">
+                      <p className="mt-2 text-center font-mono text-[11px] text-slate-300">
                         {pillar.imageCaption}
                       </p>
                     </div>
@@ -778,24 +778,24 @@ export function AgenticPillarsSection() {
 
                       {/* What Our Agentic Platform Does Box */}
                       <div
-                        className={`rounded-2xl border border-white/10 bg-[#0e0e0c] p-6 text-xs sm:text-[13.5px] leading-relaxed text-zinc-100 shadow-md ${
+                        className={`rounded-2xl border border-slate-800 bg-[#090d16] p-6 text-xs sm:text-[13.5px] leading-relaxed text-slate-100 shadow-md ${
                           isFullWidthAnchor ? "md:col-span-7" : ""
                         }`}
                       >
-                        <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-[#d4ff3f]">
+                        <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-emerald-400">
                           <span className="grid size-4 place-items-center rounded-full bg-white/10 text-[10px]">✦</span>
                           <span>What our Agentic Platform does</span>
                         </div>
 
-                        <p className="mt-3 text-zinc-100 font-normal leading-relaxed">
+                        <p className="mt-3 text-slate-100 font-normal leading-relaxed">
                           {pillar.agenticPlatform.summary}
                         </p>
 
                         {pillar.agenticPlatform.bullets && pillar.agenticPlatform.bullets.length > 0 && (
                           <ul className="mt-4 space-y-2.5 border-t border-white/10 pt-3.5">
                             {pillar.agenticPlatform.bullets.map((bullet, bIdx) => (
-                              <li key={bIdx} className="flex items-start gap-2.5 text-zinc-300">
-                                <span className="text-[#d4ff3f] font-bold text-sm shrink-0">↳</span>
+                              <li key={bIdx} className="flex items-start gap-2.5 text-slate-300">
+                                <span className="text-emerald-400 font-bold text-sm shrink-0">↳</span>
                                 <span className="leading-relaxed">{bullet}</span>
                               </li>
                             ))}
@@ -806,13 +806,13 @@ export function AgenticPillarsSection() {
                   </div>
 
                   {/* Bottom Footer */}
-                  <div className="mt-6 flex items-center justify-between border-t border-line pt-4 text-xs">
-                    <span className="font-mono text-muted text-[11px]">
+                  <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-4 text-xs">
+                    <span className="font-mono text-slate-400 text-[11px]">
                       Autonomous Voice Architecture • Pillar {pillar.number}
                     </span>
                     <a
                       href="#platform"
-                      className="inline-flex items-center gap-1 font-semibold text-cobalt hover:underline cursor-pointer"
+                      className="inline-flex items-center gap-1 font-semibold text-blue-600 hover:underline cursor-pointer"
                     >
                       <span>Test in Live Demo</span>
                       <span className="font-mono text-sm">→</span>
