@@ -83,15 +83,15 @@ function CopyButton({ text }: { text: string }) {
     <button
       type="button"
       onClick={() => void copy()}
-      className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-medium text-slate-400 transition-colors hover:bg-slate-100 hover:text-[#0e6f62]"
+      className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-medium text-slate-400 transition-colors hover:bg-slate-100 hover:text-[#595959]"
       title="Copy message"
     >
       {copied ? (
         <>
-          <svg className="size-3 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <svg className="size-3 text-neutral-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M20 6 9 17l-5-5" />
           </svg>
-          <span className="font-semibold text-emerald-600">Copied</span>
+          <span className="font-semibold text-neutral-700">Copied</span>
         </>
       ) : (
         <>
@@ -109,14 +109,14 @@ function CopyButton({ text }: { text: string }) {
 function renderAssistantInline(value: string) {
   return value.split(/(\[[^\]]+\]\([^)]+\)|\*\*[^*]+\*\*)/g).map((part, index) => {
     if (part.startsWith("**") && part.endsWith("**")) {
-      return <strong key={index} className="font-semibold text-[#153e31]">{part.slice(2, -2)}</strong>;
+      return <strong key={index} className="font-semibold text-[#343434]">{part.slice(2, -2)}</strong>;
     }
     const link = /^\[([^\]]+)\]\(([^)]+)\)$/.exec(part);
     if (link) {
       const href = link[2];
       const internal = href.startsWith("/dashboard/");
       if (internal || /^https:\/\/[^\s<>]+$/i.test(href)) {
-        return <a key={index} href={href} target={internal ? undefined : "_blank"} rel={internal ? undefined : "noopener noreferrer"} className="font-semibold text-[#16805c] underline decoration-[#a5d3b4] underline-offset-2 hover:text-[#105d43]">{link[1]}</a>;
+        return <a key={index} href={href} target={internal ? undefined : "_blank"} rel={internal ? undefined : "noopener noreferrer"} className="font-semibold text-[#676767] underline decoration-[#c7c7c7] underline-offset-2 hover:text-[#4b4b4b]">{link[1]}</a>;
       }
     }
     return part;
@@ -137,7 +137,7 @@ function FormattedContent({ content }: { content: string }) {
               const isBullet = line.trim().startsWith("- ") || line.trim().startsWith("* ");
               const isNumbered = /^\d+\.\s/.test(line.trim());
               const isHeading = line.trim().startsWith("### ") || line.trim().startsWith("## ");
-              if (/^---+$/.test(line.trim())) return <hr key={lineIdx} className="my-3 border-[#e2eae3]" />;
+              if (/^---+$/.test(line.trim())) return <hr key={lineIdx} className="my-3 border-[#e8e8e8]" />;
 
               const cleanLine = isHeading
                 ? line.replace(/^#{2,3}\s*/, "")
@@ -160,7 +160,7 @@ function FormattedContent({ content }: { content: string }) {
               if (isBullet || isNumbered) {
                 return (
                   <div key={lineIdx} className="flex items-start gap-2 text-sm leading-relaxed text-slate-700">
-                    <span className="select-none text-[#118778]">{isNumbered ? "•" : "—"}</span>
+                    <span className="select-none text-[#6d6d6d]">{isNumbered ? "•" : "—"}</span>
                     <span className="flex-1">{formattedText}</span>
                   </div>
                 );
@@ -338,7 +338,7 @@ function AssistantChat() {
 
   if (!session) {
     return (
-      <main className="grid min-h-screen place-items-center bg-[#f7f9f8] text-sm font-semibold text-[#71817d]">
+      <main className="grid min-h-screen place-items-center bg-[#f9f9f9] text-sm font-semibold text-[#7d7d7d]">
         Loading your workspace…
       </main>
     );
@@ -362,7 +362,7 @@ function AssistantChat() {
 
   return (
     <main
-      className={`dashboard-home-theme ask-vozon-stage grid min-h-screen text-[#14231f] ${
+      className={`dashboard-home-theme ask-vozon-stage grid min-h-screen text-[#202020] ${
         showUserSidebar ? "lg:grid-cols-[248px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
       }`}
     >
@@ -381,45 +381,45 @@ function AssistantChat() {
         <DashboardPageHeader workspaceBarOnly />
 
         <div className="relative flex min-h-0 flex-1">
-          <aside id="ask-vozon-history" className={`${historyOpen ? "flex" : "hidden"} absolute inset-y-0 right-0 z-30 w-[min(88vw,300px)] flex-col border-l border-[#dce9e0] bg-[#f5f9f5] shadow-[-16px_0_40px_rgba(19,60,42,.13)] md:static md:order-2 ${historyVisible ? "md:flex" : "md:hidden"} md:w-[248px] md:shrink-0 md:shadow-none`} aria-label="Chat history">
-            <div className="flex items-center justify-between border-b border-[#e0ebe3] px-4 py-4">
-              <div><p className="m-0 text-[10px] font-bold uppercase tracking-[.18em] text-[#65917a]">Your workspace</p><h2 className="m-0 mt-1 text-base font-semibold text-[#173d30]">Chat history</h2></div>
-              <button type="button" className="rounded-lg px-2 py-1 text-xl text-[#5c7d68] md:hidden" onClick={() => setHistoryOpen(false)} aria-label="Close chat history">×</button>
-              <button type="button" className="hidden rounded-lg border border-[#d3e5d8] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#3a6b4b] transition hover:bg-[#e7f3e9] md:inline-flex" onClick={toggleDesktopHistory} aria-label="Hide chat history" aria-controls="ask-vozon-history" aria-expanded="true">Hide</button>
+          <aside id="ask-vozon-history" className={`${historyOpen ? "flex" : "hidden"} absolute inset-y-0 right-0 z-30 w-[min(88vw,300px)] flex-col border-l border-[#e6e6e6] bg-[#f8f8f8] shadow-[-16px_0_40px_rgba(0,0,0,.13)] md:static md:order-2 ${historyVisible ? "md:flex" : "md:hidden"} md:w-[248px] md:shrink-0 md:shadow-none`} aria-label="Chat history">
+            <div className="flex items-center justify-between border-b border-[#e8e8e8] px-4 py-4">
+              <div><p className="m-0 text-[10px] font-bold uppercase tracking-[.18em] text-[#868686]">Your workspace</p><h2 className="m-0 mt-1 text-base font-semibold text-[#343434]">Chat history</h2></div>
+              <button type="button" className="rounded-lg px-2 py-1 text-xl text-[#747474] md:hidden" onClick={() => setHistoryOpen(false)} aria-label="Close chat history">×</button>
+              <button type="button" className="hidden rounded-lg border border-[#e0e0e0] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#5e5e5e] transition hover:bg-[#f0f0f0] md:inline-flex" onClick={toggleDesktopHistory} aria-label="Hide chat history" aria-controls="ask-vozon-history" aria-expanded="true">Hide</button>
             </div>
-            <button type="button" onClick={startNewChat} disabled={busy || Boolean(loadingChatId)} className="mx-3 mt-3 flex items-center justify-center gap-2 rounded-xl border border-[#c8dfd0] bg-white px-3 py-2.5 text-sm font-semibold text-[#185b3e] shadow-sm transition hover:border-[#8fc2a2] hover:bg-[#f2faf4] disabled:opacity-50"><span className="text-lg leading-none">+</span> New chat</button>
+            <button type="button" onClick={startNewChat} disabled={busy || Boolean(loadingChatId)} className="mx-3 mt-3 flex items-center justify-center gap-2 rounded-xl border border-[#d9d9d9] bg-white px-3 py-2.5 text-sm font-semibold text-[#4b4b4b] shadow-sm transition hover:border-[#b5b5b5] hover:bg-[#f8f8f8] disabled:opacity-50"><span className="text-lg leading-none">+</span> New chat</button>
             <div className="min-h-0 flex-1 overflow-y-auto px-2 pb-4 pt-4">
-              <p className="m-0 px-2 pb-2 text-[10px] font-bold uppercase tracking-[.16em] text-[#8a9e91]">Recent conversations</p>
-              {historyLoading && conversations.length === 0 ? <p className="px-2 text-xs text-[#6e8a77]">Loading chats…</p> : null}
-              {!historyLoading && conversations.length === 0 && !historyError ? <p className="px-2 text-xs leading-5 text-[#6e8a77]">Your conversations will appear here.</p> : null}
-              {historyError ? <p className="mx-2 mb-3 rounded-lg bg-rose-50 px-2 py-2 text-xs text-rose-700" role="alert">{historyError}</p> : null}
+              <p className="m-0 px-2 pb-2 text-[10px] font-bold uppercase tracking-[.16em] text-[#999999]">Recent conversations</p>
+              {historyLoading && conversations.length === 0 ? <p className="px-2 text-xs text-[#838383]">Loading chats…</p> : null}
+              {!historyLoading && conversations.length === 0 && !historyError ? <p className="px-2 text-xs leading-5 text-[#838383]">Your conversations will appear here.</p> : null}
+              {historyError ? <p className="mx-2 mb-3 rounded-lg bg-neutral-100 px-2 py-2 text-xs text-neutral-800" role="alert">{historyError}</p> : null}
               <div className="space-y-1">
                 {conversations.map((chat) => (
-                  <div key={chat.id} className={`group flex items-center gap-1 rounded-xl px-1 transition ${conversationId === chat.id ? "bg-[#e2f0e6]" : "hover:bg-[#eaf3ed]"}`}>
+                  <div key={chat.id} className={`group flex items-center gap-1 rounded-xl px-1 transition ${conversationId === chat.id ? "bg-[#ececec]" : "hover:bg-[#f1f1f1]"}`}>
                     <button type="button" onClick={() => void openChat(chat.id)} disabled={busy || Boolean(loadingChatId)} className="min-w-0 flex-1 px-2 py-2.5 text-left disabled:opacity-50" aria-current={conversationId === chat.id ? "page" : undefined}>
-                      <span className="block truncate text-xs font-semibold text-[#264937]">{chat.title}</span>
-                      <span className="mt-1 block text-[10px] text-[#7c9784]">{new Date(chat.updatedAt).toLocaleDateString()}</span>
+                      <span className="block truncate text-xs font-semibold text-[#404040]">{chat.title}</span>
+                      <span className="mt-1 block text-[10px] text-[#909090]">{new Date(chat.updatedAt).toLocaleDateString()}</span>
                     </button>
-                    <button type="button" onClick={() => void removeChat(chat.id)} disabled={busy || Boolean(loadingChatId)} className="rounded-lg px-2 py-1 text-xs text-[#849f8b] opacity-60 transition hover:bg-white hover:text-rose-600 focus:opacity-100 group-hover:opacity-100 disabled:opacity-30" aria-label={`Delete chat: ${chat.title}`} title="Delete chat">×</button>
+                    <button type="button" onClick={() => void removeChat(chat.id)} disabled={busy || Boolean(loadingChatId)} className="rounded-lg px-2 py-1 text-xs text-[#989898] opacity-60 transition hover:bg-white hover:text-neutral-900 focus:opacity-100 group-hover:opacity-100 disabled:opacity-30" aria-label={`Delete chat: ${chat.title}`} title="Delete chat">×</button>
                   </div>
                 ))}
               </div>
-              {hasMoreHistory ? <button type="button" onClick={() => void loadMoreHistory()} disabled={historyLoading} className="mt-3 w-full rounded-lg px-3 py-2 text-xs font-semibold text-[#19715a] hover:bg-[#e6f1e9] disabled:opacity-50">{historyLoading ? "Loading…" : "Load more chats"}</button> : null}
+              {hasMoreHistory ? <button type="button" onClick={() => void loadMoreHistory()} disabled={historyLoading} className="mt-3 w-full rounded-lg px-3 py-2 text-xs font-semibold text-[#5d5d5d] hover:bg-[#eeeeee] disabled:opacity-50">{historyLoading ? "Loading…" : "Load more chats"}</button> : null}
             </div>
           </aside>
 
         {/* Main Conversation Container */}
         <div className="relative flex min-h-0 min-w-0 flex-1 flex-col px-4 pb-3 pt-3 sm:px-6 md:order-1 lg:px-8">
-          <button type="button" className="mb-2 self-start rounded-lg border border-[#d7e7dc] bg-white px-3 py-1.5 text-xs font-semibold text-[#2e6045] md:hidden" onClick={() => setHistoryOpen(true)}>☰ &nbsp; Chat history</button>
-          {!historyVisible ? <button type="button" className="mb-2 hidden self-end rounded-lg border border-[#d3e5d8] bg-white px-3 py-1.5 text-xs font-semibold text-[#2b6844] shadow-sm transition hover:bg-[#e7f3e9] md:inline-flex" onClick={toggleDesktopHistory} aria-controls="ask-vozon-history" aria-expanded="false">Show chat history</button> : null}
+          <button type="button" className="mb-2 self-start rounded-lg border border-[#e3e3e3] bg-white px-3 py-1.5 text-xs font-semibold text-[#535353] md:hidden" onClick={() => setHistoryOpen(true)}>☰ &nbsp; Chat history</button>
+          {!historyVisible ? <button type="button" className="mb-2 hidden self-end rounded-lg border border-[#e0e0e0] bg-white px-3 py-1.5 text-xs font-semibold text-[#585858] shadow-sm transition hover:bg-[#f0f0f0] md:inline-flex" onClick={toggleDesktopHistory} aria-controls="ask-vozon-history" aria-expanded="false">Show chat history</button> : null}
           {messages.length > 0 ? (
-            <div className="mb-3 flex items-center justify-between gap-4 border-b border-[#e2ebe3] pb-3">
+            <div className="mb-3 flex items-center justify-between gap-4 border-b border-[#e9e9e9] pb-3">
               <div className="flex items-center gap-3">
-                <span className="grid size-10 place-items-center rounded-2xl bg-[#103e36] text-[#bdf4d9] shadow-[0_9px_22px_rgba(13,75,62,.2)]"><SparkIcon className="size-5" /></span>
-                <div><p className="m-0 text-[10px] font-bold uppercase tracking-[.2em] text-[#648379]">Workspace intelligence</p><h1 className="m-0 text-lg font-semibold tracking-tight text-[#153b33]">Ask Vozon</h1></div>
+                <span className="grid size-10 place-items-center rounded-2xl bg-[#343434] text-[#e6e6e6] shadow-[0_9px_22px_rgba(0,0,0,.2)]"><SparkIcon className="size-5" /></span>
+                <div><p className="m-0 text-[10px] font-bold uppercase tracking-[.2em] text-[#7c7c7c]">Workspace intelligence</p><h1 className="m-0 text-lg font-semibold tracking-tight text-[#323232]">Ask Vozon</h1></div>
               </div>
               <button
-                className="inline-flex items-center gap-1.5 rounded-full border border-[#cce1d8] bg-white/90 px-3.5 py-2 text-xs font-semibold text-[#1f4a40] shadow-[0_8px_22px_rgba(24,74,60,.08)] transition hover:-translate-y-0.5 hover:border-[#118778] hover:bg-[#edf7f4]"
+                className="inline-flex items-center gap-1.5 rounded-full border border-[#dcdcdc] bg-white/90 px-3.5 py-2 text-xs font-semibold text-[#404040] shadow-[0_8px_22px_rgba(0,0,0,.08)] transition hover:-translate-y-0.5 hover:border-[#6d6d6d] hover:bg-[#f5f5f5]"
                 type="button"
                 onClick={startNewChat}
                 disabled={busy || Boolean(loadingChatId)}
@@ -437,36 +437,36 @@ function AssistantChat() {
                 <div className="ask-vozon-orb ask-vozon-orb-one" aria-hidden="true" />
                 <div className="ask-vozon-orb ask-vozon-orb-two" aria-hidden="true" />
                 <div className="relative z-10 max-w-2xl">
-                  <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[.18em] text-emerald-100 backdrop-blur-xl">
-                    <span className="ask-vozon-live-dot size-1.5 rounded-full bg-[#b5f3d0]" /> Workspace intelligence
+                  <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[.18em] text-neutral-100 backdrop-blur-xl">
+                    <span className="ask-vozon-live-dot size-1.5 rounded-full bg-[#e3e3e3]" /> Workspace intelligence
                   </div>
-                  <p className="mb-2 text-sm font-medium text-[#b8d8ca]">{greeting}, {firstName}</p>
-                  <h1 className="m-0 max-w-xl text-3xl font-semibold leading-[1.1] tracking-[-.045em] sm:text-4xl">Turn every conversation<br /><span className="text-[#b8e9d2]">into a better next move.</span></h1>
-                  <p className="mb-0 mt-3 max-w-xl text-sm leading-6 text-[#c8ded4]">Explore campaign results, discover who needs attention, and improve your agents with evidence from real calls.</p>
+                  <p className="mb-2 text-sm font-medium text-[#d0d0d0]">{greeting}, {firstName}</p>
+                  <h1 className="m-0 max-w-xl text-3xl font-semibold leading-[1.1] tracking-[-.045em] sm:text-4xl">Turn every conversation<br /><span className="text-[#dddddd]">into a better next move.</span></h1>
+                  <p className="mb-0 mt-3 max-w-xl text-sm leading-6 text-[#d9d9d9]">Explore campaign results, discover who needs attention, and improve your agents with evidence from real calls.</p>
                 </div>
                 <span className="ask-vozon-hero-mark absolute -bottom-14 right-5 hidden select-none text-[240px] font-light leading-none text-white/[.04] sm:block" aria-hidden="true">✳</span>
               </div>
 
               <div className="shrink-0">
                 <div className="mb-3 flex flex-wrap items-end justify-between gap-2 px-1">
-                  <div><p className="m-0 text-[10px] font-bold uppercase tracking-[.2em] text-[#6b9184]">Start with a question</p><h2 className="m-0 mt-1 text-xl font-semibold tracking-tight text-[#153b33]">Make your workspace clearer</h2></div>
-                  <span className="text-xs text-[#769087]">Grounded in your Vozon data</span>
+                  <div><p className="m-0 text-[10px] font-bold uppercase tracking-[.2em] text-[#888888]">Start with a question</p><h2 className="m-0 mt-1 text-xl font-semibold tracking-tight text-[#323232]">Make your workspace clearer</h2></div>
+                  <span className="text-xs text-[#8a8a8a]">Grounded in your Vozon data</span>
                 </div>
                 <div className="grid gap-2.5 text-left sm:grid-cols-2 xl:grid-cols-3">
                   {suggestions.map((item) => (
                     <button
-                      className="ask-vozon-suggestion group relative min-h-[116px] overflow-hidden rounded-[18px] border border-[#dfe9e3] bg-white/95 p-3.5 text-left disabled:opacity-60"
+                      className="ask-vozon-suggestion group relative min-h-[116px] overflow-hidden rounded-[18px] border border-[#e6e6e6] bg-white/95 p-3.5 text-left disabled:opacity-60"
                       type="button"
                       key={item.title}
                       disabled={busy}
                       onClick={() => void submitMessage(undefined, item.prompt)}
                     >
                       <div className="flex items-start justify-between gap-2">
-                        <span className="grid size-8 place-items-center rounded-xl bg-[#ecf7ef] text-lg font-semibold text-[#246b52] transition duration-300 group-hover:rotate-6 group-hover:scale-110" aria-hidden="true">
+                        <span className="grid size-8 place-items-center rounded-xl bg-[#f4f4f4] text-lg font-semibold text-[#5a5a5a] transition duration-300 group-hover:rotate-6 group-hover:scale-110" aria-hidden="true">
                           {item.icon}
                         </span>
                         <svg
-                          className="size-4 text-[#a3b7ac] transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#118778]"
+                          className="size-4 text-[#b2b2b2] transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#6d6d6d]"
                           viewBox="0 0 24 24"
                           fill="none"
                           stroke="currentColor"
@@ -475,11 +475,11 @@ function AssistantChat() {
                           <path d="M5 12h14M12 5l7 7-7 7" />
                         </svg>
                       </div>
-                      <span className="mt-2.5 block text-[9px] font-bold uppercase tracking-[.15em] text-[#6b9986]">{item.eyebrow}</span>
-                      <span className="mt-0.5 block text-sm font-semibold tracking-tight text-[#193d33] transition-colors group-hover:text-[#0e6f62]">
+                      <span className="mt-2.5 block text-[9px] font-bold uppercase tracking-[.15em] text-[#8e8e8e]">{item.eyebrow}</span>
+                      <span className="mt-0.5 block text-sm font-semibold tracking-tight text-[#353535] transition-colors group-hover:text-[#595959]">
                         {item.title}
                       </span>
-                      <span className="mt-0.5 block text-xs leading-4 text-[#74877c]">
+                      <span className="mt-0.5 block text-xs leading-4 text-[#828282]">
                         {item.detail}
                       </span>
                     </button>
@@ -498,7 +498,7 @@ function AssistantChat() {
                   key={`${index}-${message.role}`}
                 >
                   {message.role === "assistant" ? (
-                    <span className="mt-1 grid size-9 shrink-0 place-items-center rounded-2xl bg-[#153d34] text-[#c7f2d8] shadow-[0_8px_20px_rgba(20,75,58,.2)]">
+                    <span className="mt-1 grid size-9 shrink-0 place-items-center rounded-2xl bg-[#343434] text-[#e7e7e7] shadow-[0_8px_20px_rgba(0,0,0,.2)]">
                       <SparkIcon className="size-4" />
                     </span>
                   ) : null}
@@ -506,7 +506,7 @@ function AssistantChat() {
                   <div
                     className={`min-w-0 text-sm leading-relaxed ${
                       message.role === "user"
-                        ? "max-w-[min(90%,42rem)] rounded-2xl rounded-br-sm bg-[#e7f3e9] px-4 py-2.5 text-[#214a32]"
+                        ? "max-w-[min(90%,42rem)] rounded-2xl rounded-br-sm bg-[#f0f0f0] px-4 py-2.5 text-[#404040]"
                         : "group flex-1 py-1 pr-2 text-slate-800"
                     }`}
                   >
@@ -516,25 +516,25 @@ function AssistantChat() {
                       <>
                         <FormattedContent content={message.content} />
                         {message.pendingAction ? (
-                          <div className="mt-5 overflow-hidden rounded-2xl border border-[#c9dfd1] bg-[#f5fbf7]">
-                            <div className="border-b border-[#dceadf] bg-[#eaf6ed] px-4 py-3">
-                              <p className="m-0 text-[10px] font-bold uppercase tracking-[.17em] text-[#318060]">Approval required</p>
-                              <h3 className="m-0 mt-1 text-base font-semibold text-[#173d30]">{message.pendingAction.title}</h3>
-                              <p className="m-0 mt-1 text-xs text-[#5d776a]">{message.pendingAction.description}</p>
+                          <div className="mt-5 overflow-hidden rounded-2xl border border-[#d9d9d9] bg-[#f9f9f9]">
+                            <div className="border-b border-[#e6e6e6] bg-[#f3f3f3] px-4 py-3">
+                              <p className="m-0 text-[10px] font-bold uppercase tracking-[.17em] text-[#6d6d6d]">Approval required</p>
+                              <h3 className="m-0 mt-1 text-base font-semibold text-[#343434]">{message.pendingAction.title}</h3>
+                              <p className="m-0 mt-1 text-xs text-[#717171]">{message.pendingAction.description}</p>
                             </div>
                             <dl className="m-0 grid gap-3 px-4 py-4 sm:grid-cols-2">
                               {message.pendingAction.fields.map((field) => (
                                 <div className={field.label === "Instructions" ? "sm:col-span-2" : ""} key={field.label}>
-                                  <dt className="text-[10px] font-bold uppercase tracking-[.13em] text-[#6b8b79]">{field.label}</dt>
-                                  <dd className="m-0 mt-1 max-h-36 overflow-auto whitespace-pre-wrap text-xs leading-5 text-[#29483a]">{field.value}</dd>
+                                  <dt className="text-[10px] font-bold uppercase tracking-[.13em] text-[#838383]">{field.label}</dt>
+                                  <dd className="m-0 mt-1 max-h-36 overflow-auto whitespace-pre-wrap text-xs leading-5 text-[#404040]">{field.value}</dd>
                                 </div>
                               ))}
                             </dl>
-                            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#dceadf] px-4 py-3">
-                              <span className="text-[11px] text-[#698575]">Nothing changes until you approve.</span>
+                            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#e6e6e6] px-4 py-3">
+                              <span className="text-[11px] text-[#7e7e7e]">Nothing changes until you approve.</span>
                               <div className="flex gap-2">
-                                <button className="rounded-xl border border-[#cbddd0] bg-white px-3 py-2 text-xs font-semibold text-[#3d6150] transition hover:bg-[#edf5ef] disabled:opacity-50" type="button" disabled={Boolean(reviewingActionId)} onClick={() => void decideAction(message.pendingAction!.id, false)}>Cancel</button>
-                                <button className="rounded-xl bg-[#196b4d] px-3.5 py-2 text-xs font-semibold text-white shadow-[0_6px_15px_rgba(25,107,77,.22)] transition hover:-translate-y-0.5 hover:bg-[#10583e] disabled:opacity-50" type="button" disabled={Boolean(reviewingActionId)} onClick={() => void decideAction(message.pendingAction!.id, true)}>{reviewingActionId === message.pendingAction.id ? "Saving…" : "Approve change"}</button>
+                                <button className="rounded-xl border border-[#d8d8d8] bg-white px-3 py-2 text-xs font-semibold text-[#585858] transition hover:bg-[#f3f3f3] disabled:opacity-50" type="button" disabled={Boolean(reviewingActionId)} onClick={() => void decideAction(message.pendingAction!.id, false)}>Cancel</button>
+                                <button className="rounded-xl bg-[#575757] px-3.5 py-2 text-xs font-semibold text-white shadow-[0_6px_15px_rgba(0,0,0,.22)] transition hover:-translate-y-0.5 hover:bg-[#474747] disabled:opacity-50" type="button" disabled={Boolean(reviewingActionId)} onClick={() => void decideAction(message.pendingAction!.id, true)}>{reviewingActionId === message.pendingAction.id ? "Saving…" : "Approve change"}</button>
                               </div>
                             </div>
                           </div>
@@ -551,14 +551,14 @@ function AssistantChat() {
               {/* Live Thinking / Workspace Query Indicator */}
               {busy ? (
                 <div className="animate-ai-message flex items-start gap-3" role="status">
-                  <span className="animate-ai-glow mt-1 grid size-8 shrink-0 place-items-center rounded-xl border border-[#a8d7cb] bg-gradient-to-tr from-[#e8f7f3] to-[#d6f0ea] text-[#118778] shadow-xs">
+                  <span className="animate-ai-glow mt-1 grid size-8 shrink-0 place-items-center rounded-xl border border-[#cccccc] bg-gradient-to-tr from-[#f4f4f4] to-[#eaeaea] text-[#6d6d6d] shadow-xs">
                     <SparkIcon className="size-4" />
                   </span>
-                  <div className="flex items-center gap-3 rounded-2xl rounded-tl-xs border border-[#dce8e4] bg-white px-4 py-3 text-xs font-medium text-slate-600 shadow-sm">
+                  <div className="flex items-center gap-3 rounded-2xl rounded-tl-xs border border-[#e5e5e5] bg-white px-4 py-3 text-xs font-medium text-slate-600 shadow-sm">
                     <div className="flex items-center gap-1.5">
-                      <span className="animate-ai-dot-1 size-2 rounded-full bg-[#118778]" />
-                      <span className="animate-ai-dot-2 size-2 rounded-full bg-[#118778]" />
-                      <span className="animate-ai-dot-3 size-2 rounded-full bg-[#118778]" />
+                      <span className="animate-ai-dot-1 size-2 rounded-full bg-[#6d6d6d]" />
+                      <span className="animate-ai-dot-2 size-2 rounded-full bg-[#6d6d6d]" />
+                      <span className="animate-ai-dot-3 size-2 rounded-full bg-[#6d6d6d]" />
                     </div>
                     <span>Searching workspace data & generating response…</span>
                   </div>
@@ -566,7 +566,7 @@ function AssistantChat() {
               ) : null}
 
               {error ? (
-                <div className="animate-ai-message ml-11 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-xs font-medium text-rose-800 shadow-xs" role="alert">
+                <div className="animate-ai-message ml-11 rounded-xl border border-neutral-300 bg-neutral-100 px-4 py-3 text-xs font-medium text-neutral-800 shadow-xs" role="alert">
                   {error}
                 </div>
               ) : null}
@@ -576,9 +576,9 @@ function AssistantChat() {
           )}
 
           {/* Floating Prompt Area with Claude/ChatGPT Style Seamless Design & Shadow */}
-          <div className="z-20 w-full shrink-0 border-t border-[#e0eae2] bg-[#f8faf6]/95 pt-3">
+          <div className="z-20 w-full shrink-0 border-t border-[#e7e7e7] bg-[#f9f9f9]/95 pt-3">
             <form
-              className="ai-prompt-container ask-vozon-prompt relative rounded-[20px] border border-[#d8e6e2] bg-white/95 px-3.5 py-2.5 backdrop-blur-xl sm:px-4"
+              className="ai-prompt-container ask-vozon-prompt relative rounded-[20px] border border-[#e3e3e3] bg-white/95 px-3.5 py-2.5 backdrop-blur-xl sm:px-4"
               onSubmit={(event) => void submitMessage(event)}
             >
               <label className="sr-only" htmlFor="ask-vozon-input">
@@ -588,7 +588,7 @@ function AssistantChat() {
               {/* Completely borderless, seamless textarea */}
               <textarea
                 ref={textareaRef}
-                className="ai-prompt-textarea block max-h-32 min-h-[36px] w-full text-[15px] leading-relaxed text-[#14231f] placeholder:text-[#8ea09a] sm:text-base"
+                className="ai-prompt-textarea block max-h-32 min-h-[36px] w-full text-[15px] leading-relaxed text-[#202020] placeholder:text-[#9c9c9c] sm:text-base"
                 id="ask-vozon-input"
                 maxLength={2000}
                 placeholder="Ask about campaigns, follow ups, calls, or an agent…"
@@ -606,11 +606,11 @@ function AssistantChat() {
               {/* Seamless Action Bar with Claude-style Round Send Button */}
               <div className="mt-1 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#edf6f3] px-3 py-1 text-xs font-semibold text-[#0d786b]">
-                    <SparkIcon className="size-3 text-[#118778]" />
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f4f4f4] px-3 py-1 text-xs font-semibold text-[#606060]">
+                    <SparkIcon className="size-3 text-[#6d6d6d]" />
                     Connected to your workspace
                   </span>
-                  <span className="hidden text-xs text-[#8e9f9a] sm:inline">
+                  <span className="hidden text-xs text-[#9b9b9b] sm:inline">
                     Press ↵ to send · Shift+↵ for newline
                   </span>
                 </div>
@@ -618,7 +618,7 @@ function AssistantChat() {
                 <button
                   className={`inline-flex size-9 shrink-0 items-center justify-center rounded-full transition-all duration-200 ${
                     draft.trim() && !busy
-                      ? "bg-[#118778] text-white shadow-md shadow-[#118778]/30 hover:scale-105 hover:bg-[#0d6e62] active:scale-95 cursor-pointer"
+                      ? "bg-[#6d6d6d] text-white shadow-md shadow-[#6d6d6d]/30 hover:scale-105 hover:bg-[#595959] active:scale-95 cursor-pointer"
                       : "bg-slate-100 text-slate-400 cursor-not-allowed opacity-60"
                   }`}
                   type="submit"
@@ -632,7 +632,7 @@ function AssistantChat() {
               </div>
             </form>
 
-            <p className="mx-auto mb-0 mt-1 text-center text-[10px] leading-4 text-[#8b9994]">
+            <p className="mx-auto mb-0 mt-1 text-center text-[10px] leading-4 text-[#969696]">
               Grounded in workspace data · Agent changes require your approval
             </p>
           </div>

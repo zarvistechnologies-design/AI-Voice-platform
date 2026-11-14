@@ -1,29 +1,34 @@
+/* Render every dashboard surface in black and white, including portals and logos. */
+html:has(.dashboard-home-theme) {
+  filter: grayscale(1) brightness(.7) contrast(1000%);
+}
+
 /* Dashboard design system. Public pages keep their own theme. */
 .dashboard-home-theme {
-  --app-color-heading: #242535;
-  --app-color-body: #525569;
-  --app-color-muted: #737587;
-  --app-color-label: #737587;
-  --app-color-accent: #118778;
+  --app-color-heading: #171719;
+  --app-color-body: #4b4d52;
+  --app-color-muted: #777b82;
+  --app-color-label: #777b82;
+  --app-color-accent: #171719;
   --dashboard-surface: #fff;
-  --dashboard-border: #e5e7ef;
+  --dashboard-border: #dedfe2;
   --voice-surface: #fff;
-  --voice-surface-raised: #f8f9fc;
-  --voice-surface-soft: #f8f9fc;
-  --voice-border: #e5e7ef;
-  --voice-heading: #242535;
-  --voice-muted: #737587;
+  --voice-surface-raised: #f8f9f9;
+  --voice-surface-soft: #f1f1f2;
+  --voice-border: #dedfe2;
+  --voice-heading: #171719;
+  --voice-muted: #777b82;
   color-scheme: light;
-  background: #f7f8fc;
-  color: #242535;
+  background: #f8f9f9;
+  color: #171719;
   font-family: var(--font-site-sans), Arial, sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
 .dashboard-home-theme * { scrollbar-width: thin; scrollbar-color: #d4d7e5 transparent; }
 .dashboard-home-theme :where(h1,h2,h3,p) { text-wrap: pretty; }
-.dashboard-home-theme :where(h1) { font-size: 28px; line-height: 1.25; font-weight: 700; letter-spacing: -.035em; }
+.dashboard-home-theme :where(h1) { font-size: 26px; line-height: 1.25; font-weight: 700; letter-spacing: -.035em; }
 .dashboard-home-theme :where(h2) { letter-spacing: -.02em; }
 .dashboard-home-theme :where(button,a,input,select,textarea) { -webkit-tap-highlight-color: transparent; }
 .dashboard-home-theme :where(button,a) { transition: background-color .16s, border-color .16s, box-shadow .16s, color .16s; }
@@ -225,5 +230,126 @@
   .agents-grid { grid-template-columns: 1fr; padding: 14px; }
   .agents-guide { flex-direction: column; align-items: flex-start; padding: 20px; }
   .agents-guide a { margin-left: 37px; }
+}
+/* Compact monochrome dashboard system, aligned with the public Vozon palette. */
+.dashboard-home-theme {
+  --app-color-heading: #171719;
+  --app-color-body: #4b4d52;
+  --app-color-muted: #777b82;
+  --app-color-label: #777b82;
+  --app-color-accent: #171719;
+  --voice-accent: #171719;
+  --voice-accent-soft: #f1f1f2;
+  --voice-accent-border: #dedfe2;
+  background: #f8f9f9;
+  color: #171719;
+  font-size: 13px;
+}
+.dashboard-home-theme :where(h1) { font-size: 26px !important; line-height: 1.2; letter-spacing: -.035em; }
+.dashboard-home-theme :where(h2) { font-size: 19px; letter-spacing: -.02em; }
+.dashboard-home-theme :where(p) { font-size: 13px; }
+.dashboard-home-theme :where(button, a, input, select, textarea) { font-family: var(--font-site-sans), Arial, sans-serif; }
+.dashboard-home-theme :where(button, a, input, select, textarea):focus-visible { outline-color: #171719; }
+.dashboard-home-theme :where(input[type=checkbox], input[type=radio], input[type=range]) { accent-color: #171719; }
+.dashboard-home-theme :where(th) { background: #f1f1f2; color: #696c71; font-size: 10px; }
+.dashboard-home-theme :where(td, th) { border-color: #e3e4e6; }
+.dashboard-home-theme :where(tbody tr:hover) { background: #f8f9f9; }
+.dashboard-home-theme :where([role=dialog]) { background-color: rgb(23 23 25 / 42%); }
+.dashboard-home-theme :where([role=dialog]) > :where(form, section, div) { border-color: #dedfe2; box-shadow: 0 24px 70px rgb(23 23 25 / 16%); }
+.dashboard-home-theme .dashboard-sidebar { background: #f1f2f3; border-color: #dedfe2; }
+.dashboard-home-theme .dashboard-sidebar .dashboard-sidebar-logo { filter: grayscale(1) contrast(1000%); }
+.dashboard-home-theme .dashboard-sidebar nav a { color: #35373b; }
+.dashboard-home-theme .dashboard-sidebar nav a:hover { background: #e8e9eb; color: #171719; }
+.dashboard-home-theme .dashboard-sidebar nav a[aria-current=page] { background: #000; color: #fff; font-weight: 650; }
+.dashboard-home-theme .dashboard-sidebar nav a[aria-current=page] .dashboard-sidebar-label { color: #fff; }
+.dashboard-home-theme .dashboard-sidebar nav p { color: #777b82; }
+.dashboard-home-theme .workspace-bar { border-color: #dedfe2; background: rgb(255 255 255 / 95%); }
+.dashboard-home-theme .dashboard-workspace-bar { border-color: #dedfe2; }
+.dashboard-home-theme .dashboard-workspace-bar img { filter: grayscale(1) contrast(1000%); }
+.dashboard-home-theme .dashboard-workspace-bar a { color: #171719; }
+.dashboard-home-theme .dashboard-workspace-bar a[href="/dashboard/agents"] > span:first-child:not(:has(img)) { background: #171719; }
+.dashboard-home-theme .dashboard-workspace-bar a[href="/dashboard/agents"] > span:last-child { color: #171719; }
+.dashboard-home-theme .dashboard-workspace-bar a[href="/dashboard/settings"] span { color: #333437; }
+.dashboard-home-theme .dashboard-workspace-bar a[href="/dashboard/billing"] { border-color: #dedfe2; background: #f1f1f2; color: #171719; }
+.dashboard-home-theme .dashboard-workspace-bar a[href="/dashboard/billing"] > span { color: #171719; }
+.dashboard-home-theme .dashboard-workspace-bar a[href="/dashboard/billing"]:hover { border-color: #c8c9cc; background: #e8e8e9; }
+.dashboard-home-theme .dashboard-workspace-bar svg { color: #171719 !important; }
+.dashboard-home-theme .workspace-mark { border-color: #dedfe2; background: #f1f1f2; color: #171719; }
+.dashboard-home-theme :is(.workspace-help:hover, .workspace-settings:hover) { color: #171719; }
+.dashboard-home-theme :is(.sidebar-workspace, .sidebar-help) { border-color: #dedfe2; background: #fff; color: #33363a; }
+.dashboard-home-theme :is(.sidebar-workspace > span:first-child, .agents-metric-icon, .agent-avatar, .agents-guide-symbol) { background: #f1f1f2; border-color: #dedfe2; color: #171719; }
+.dashboard-home-theme .saas-primary,
+.dashboard-home-theme :is(.automation-primary, .auth-submit) { border-color: #171719; background: #171719; color: #fff; box-shadow: 0 5px 14px rgb(23 23 25 / 12%); }
+.dashboard-home-theme :is(.saas-primary, .automation-primary, .auth-submit):hover { border-color: #333437; background: #333437; }
+.dashboard-home-theme :is(.saas-secondary, .automation-secondary) { border-color: #dedfe2; background: #fff; color: #33363a; }
+.dashboard-home-theme :is(.saas-secondary, .automation-secondary):hover { background: #f1f1f2; }
+.dashboard-home-theme :is(.agent-row, .agents-grid .agent-row, .agents-metric, .agents-guide, .campaign-composer, .automation-flow-card) { border-color: #dedfe2; }
+.dashboard-home-theme .agents-guide { background: #f1f1f2; }
+.dashboard-home-theme :is(.agent-row:hover, .automation-flow-card:hover) { background: #f8f9f9; border-color: #c8c9cc; }
+.dashboard-home-theme :is(.agent-identity a:hover strong, .agent-actions button:hover, .agent-actions a:hover, .agents-guide a, .automation-kicker) { color: #171719; }
+.dashboard-home-theme :is(.agent-status[data-status=Live], .automation-status-live, .automation-status-completed, .automation-success) { border-color: #dedfe2; background: #f1f1f2; color: #33363a; }
+.dashboard-home-theme :is(.agent-status[data-status=Paused], .automation-status-paused, .automation-status-waiting) { border-color: #e3e4e6; background: #f8f9f9; color: #666a70; }
+.dashboard-home-theme :is(.automation-flow-icon-0, .automation-flow-icon-1, .automation-flow-icon-2, .automation-flow-icon-3, .automation-empty-mark) { border-color: #dedfe2; background: #f1f1f2; color: #171719; }
+.dashboard-home-theme :is(.automation-template-card:hover, .automation-prompt-box) { border-color: #dedfe2; background: #f8f9f9; }
+.dashboard-home-theme :is(.automation-home-hero, .automation-builder-top, .automation-create-modal) { border-color: #dedfe2; background: #fff; color: #171719; }
+.dashboard-home-theme :is(.automation-home-hero h2, .automation-modal-head h2, .automation-empty h3, .automation-template-card strong) { color: #171719; }
+.dashboard-home-theme :is(.automation-alert, .automation-success) { border-color: #dedfe2; background: #f1f1f2; color: #33363a; }
+.dashboard-home-theme :is([class*="text-teal-"], [class*="text-emerald-"], [class*="text-green-"], [class*="text-violet-"], [class*="text-purple-"], [class*="text-[#118778]"], [class*="text-[#108D82]"], [class*="text-[#0e6f62]"], [class*="text-[#0f8777]"]) { color: #171719 !important; -webkit-text-fill-color: #171719 !important; }
+.dashboard-home-theme :is([class*="border-teal-"], [class*="border-emerald-"], [class*="border-green-"], [class*="border-violet-"], [class*="border-purple-"]) { border-color: #dedfe2 !important; }
+.dashboard-home-theme :is([class*="bg-teal-50"], [class*="bg-teal-100"], [class*="bg-emerald-50"], [class*="bg-emerald-100"], [class*="bg-green-50"], [class*="bg-green-100"], [class*="bg-violet-50"], [class*="bg-violet-100"], [class*="bg-purple-50"], [class*="bg-purple-100"]) { background-color: #f1f1f2 !important; }
+.dashboard-home-theme :is([class*="bg-[#118778]"], [class*="bg-[#108D82]"], [class*="bg-[#0e6f62]"], [class*="bg-teal-600"], [class*="bg-teal-700"], [class*="bg-emerald-600"], [class*="bg-violet-600"], [class*="bg-purple-600"]) { background-color: #171719 !important; color: #fff !important; }
+.dashboard-home-theme :is([class*="ring-[#118778]"], [class*="ring-teal-"], [class*="ring-emerald-"], [class*="ring-violet-"], [class*="ring-purple-"]) { --tw-ring-color: rgb(23 23 25 / 12%) !important; }
+/* Ask Vozon uses the same neutral palette as the rest of the dashboard. */
+.dashboard-home-theme.ask-vozon-stage {
+  background: radial-gradient(circle at 84% 9%, rgb(225 225 225 / 45%), transparent 32%), #f8f8f8;
+  color: #171719;
+}
+.dashboard-home-theme .ask-vozon-hero {
+  background: linear-gradient(126deg, #171719, #303033);
+  box-shadow: 0 28px 70px rgb(0 0 0 / 16%), 0 5px 17px rgb(0 0 0 / 9%);
+}
+.dashboard-home-theme .ask-vozon-hero h1 { color: #fff; }
+.dashboard-home-theme .ask-vozon-orb-one { background: radial-gradient(circle, rgb(255 255 255 / 15%), transparent 70%); }
+.dashboard-home-theme .ask-vozon-orb-two { background: radial-gradient(circle, rgb(255 255 255 / 9%), transparent 72%); }
+.dashboard-home-theme .ask-vozon-live-dot { box-shadow: 0 0 0 4px rgb(255 255 255 / 12%), 0 0 16px rgb(255 255 255 / 60%); }
+.dashboard-home-theme .ask-vozon-suggestion { box-shadow: 0 10px 28px rgb(0 0 0 / 5%), 0 1px 2px rgb(0 0 0 / 4%); }
+.dashboard-home-theme .ask-vozon-suggestion:hover { border-color: #a9a9a9; box-shadow: 0 22px 45px rgb(0 0 0 / 10%); }
+.dashboard-home-theme .ask-vozon-prompt { box-shadow: 0 22px 60px rgb(0 0 0 / 12%), 0 2px 12px rgb(0 0 0 / 6%) !important; }
+.dashboard-home-theme .ask-vozon-prompt:focus-within { box-shadow: 0 27px 70px rgb(0 0 0 / 16%), 0 0 0 2px rgb(0 0 0 / 22%) !important; }
+/* The older sidebar rules in globals.css use !important, so set its final colors here. */
+html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-logo,
+html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-workspace-bar img {
+  filter: grayscale(1) contrast(1000%) !important;
+}
+html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav {
+  color: #000 !important;
+}
+html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav .dashboard-sidebar-icon,
+html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav .dashboard-sidebar-label,
+html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-group-label,
+html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-tagline {
+  color: #000 !important;
+}
+html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] {
+  background: #000 !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-icon,
+html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-label {
+  color: #fff !important;
+}
+html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-shell[data-expanded="false"] .dashboard-sidebar-nav[aria-current="page"] {
+  background: transparent !important;
+}
+html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-shell[data-expanded="false"] .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-icon {
+  background: #000 !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+@media (max-width: 639px) {
+  .dashboard-home-theme :where(h1) { font-size: 23px !important; }
+  .dashboard-home-theme :where(h2) { font-size: 17px; }
+  .dashboard-home-theme { font-size: 12px; }
 }
 @media (prefers-reduced-motion: reduce) { .dashboard-home-theme * { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
