@@ -378,6 +378,14 @@ function formatDateTime(value: string | null, timezone = "Asia/Kolkata") {
   }
 }
 
+function dateTimeLocalInTimezone(value: string, timezone: string) {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-CA", {
+    timeZone: timezone, year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", hourCycle: "h23",
+  }).formatToParts(new Date(value)).map((part) => [part.type, part.value]));
+  return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`;
+}
+
 function statusCopy(status: BackendCampaign["status"]) {
   return status.charAt(0).toUpperCase() + status.slice(1).replace("_", " ");
 }
@@ -472,7 +480,12 @@ export function CampaignShell() {
   const [respectDnc, setRespectDnc] = useState(true);
   const [detectVoicemail, setDetectVoicemail] = useState(false);
   const [automaticCallbacks, setAutomaticCallbacks] = useState(true);
+  const [followUpEnabled, setFollowUpEnabled] = useState(false);
+  const [followUpGapHours, setFollowUpGapHours] = useState(24);
+  const [followUpAudience, setFollowUpAudience] = useState<"all_eligible" | "selected_outcomes">("all_eligible");
+  const [followUpOutcomes, setFollowUpOutcomes] = useState<("unknown" | "follow_up" | "qualified" | "resolved" | "missed")[]>(["follow_up"]);
   const [requireConsentLine, setRequireConsentLine] = useState(true);
+  const [automationConsentConfirmed, setAutomationConsentConfirmed] = useState(false);
   const [csvFile, setCsvFile] = useState<File | null>(null);
   const [leads, setLeads] = useState<CampaignLead[]>([]);
   const [csvFields, setCsvFields] = useState<CampaignCsvField[]>([]);
@@ -634,6 +647,10 @@ export function CampaignShell() {
       label: "Schedule selected",
       ready: sendMode === "now" || Boolean(scheduledAt),
     },
+    {
+      label: "Follow-up plan valid",
+      ready: !followUpEnabled || (maxAttempts >= 2 && (followUpAudience === "all_eligible" || followUpOutcomes.length > 0) && followUpGapHours >= 1 && followUpGapHours <= 720),
+    },
   ];
   const canPrepare = readyChecks.every((check) => check.ready);
   const currentStepReady =
@@ -648,7 +665,7 @@ export function CampaignShell() {
         : createStep === 3
           ? sendMode === "now" || Boolean(scheduledAt)
           : createStep === 4
-            ? respectDnc && requireConsentLine
+            ? respectDnc && requireConsentLine && (!followUpEnabled || (maxAttempts >= 2 && (followUpAudience === "all_eligible" || followUpOutcomes.length > 0) && followUpGapHours >= 1 && followUpGapHours <= 720))
             : canPrepare;
   const stepRequirement =
     createStep === 1
@@ -657,7 +674,7 @@ export function CampaignShell() {
         ? "Upload a CSV containing valid E.164 phone numbers before continuing."
         : createStep === 3
           ? "Choose a start date and time when scheduling the campaign."
-          : "Keep opt-out handling and the consent opening enabled.";
+          : "Keep opt-out handling and the consent opening enabled. Follow-ups need two total attempts, an eligible audience, and a gap of 1-720 hours.";
   const estimatedBatches = Math.max(
     1,
     Math.ceil(leads.length / normalizedDailyLimit),
@@ -755,12 +772,16 @@ export function CampaignShell() {
         requireConsentLine,
         detectVoicemail,
         automaticCallbacks,
+        followUpEnabled,
+        followUpDelaySeconds: Math.floor(followUpGapHours * 3600),
+        followUpAudience,
+        followUpOutcomes,
       });
       const batchSize = 500;
       for (let index = 0; index < leads.length; index += batchSize) {
         await voiceApi.addCampaignLeads(
           created.campaign._id,
-          leads.slice(index, index + batchSize),
+          leads.slice(index, index + batchSize).map((lead) => ({ ...lead, automationConsentConfirmed })),
         );
         setNotice(
           `Uploaded ${Math.min(index + batchSize, leads.length).toLocaleString("en-IN")} of ${leads.length.toLocaleString("en-IN")} contacts...`,
@@ -878,6 +899,7 @@ export function CampaignShell() {
                 onClick={() => {
                   setCreateStep(1);
                   setDetectVoicemail(false);
+                  setAutomationConsentConfirmed(false);
                   setShowCreateCampaign(true);
                   setError("");
                 }}
@@ -908,6 +930,7 @@ export function CampaignShell() {
               role="dialog"
               onMouseDown={() => {
                 if (!launching) {
+                  setAutomationConsentConfirmed(false);
                   setShowCreateCampaign(false);
                   setCreateStep(1);
                 }
@@ -938,6 +961,7 @@ export function CampaignShell() {
                       disabled={launching}
                       type="button"
                       onClick={() => {
+                        setAutomationConsentConfirmed(false);
                         setShowCreateCampaign(false);
                         setCreateStep(1);
                       }}
@@ -1350,11 +1374,65 @@ export function CampaignShell() {
 
                         <div className="mt-4 rounded-xl border border-[#cfe4df] bg-white">
                           <ToggleRow
+                            title="Start workflows for imported leads"
+                            detail="Only enable when every imported contact has agreed to workflow calls or messages. A live campaign may also call them separately."
+                            enabled={automationConsentConfirmed}
+                            onChange={setAutomationConsentConfirmed}
+                          />
+                        </div>
+
+                        <div className="mt-4 rounded-xl border border-[#cfe4df] bg-white">
+                          <ToggleRow
                             title="Automatic requested callbacks"
                             detail="If a contact asks to talk later, the assistant confirms the exact time and calls automatically inside this campaign's call window."
                             enabled={automaticCallbacks}
                             onChange={setAutomaticCallbacks}
                           />
+                        </div>
+
+                        <div className="mt-4 rounded-xl border border-[#cfe4df] bg-white p-4">
+                          <ToggleRow
+                            title="Planned follow-up call"
+                            detail="Make one more call after the selected interval. Requested callback times always take priority."
+                            enabled={followUpEnabled}
+                            onChange={(enabled) => {
+                              setFollowUpEnabled(enabled);
+                              if (enabled) setMaxAttempts((current) => Math.max(2, current));
+                            }}
+                          />
+                          {followUpEnabled ? (
+                            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                              <label className="app-label grid gap-2">
+                                Hours after the call
+                                <input className={controlClass} type="number" min={1} max={720} value={followUpGapHours} onChange={(event) => setFollowUpGapHours(Number(event.target.value))} />
+                              </label>
+                              <fieldset className="grid gap-2 text-sm text-slate-700">
+                                <legend className="app-label mb-2">Who receives it</legend>
+                                <label className="flex items-start gap-2">
+                                  <input type="radio" name="follow-up-audience" checked={followUpAudience === "all_eligible"} onChange={() => setFollowUpAudience("all_eligible")} />
+                                  <span>Every eligible customer</span>
+                                </label>
+                                <label className="flex items-start gap-2">
+                                  <input type="radio" name="follow-up-audience" checked={followUpAudience === "selected_outcomes"} onChange={() => setFollowUpAudience("selected_outcomes")} />
+                                  <span>Only selected outcomes</span>
+                                </label>
+                              </fieldset>
+                              {followUpAudience === "selected_outcomes" ? (
+                                <fieldset className="grid gap-2 text-sm text-slate-700 sm:col-span-2">
+                                  <legend className="app-label mb-2">Call again when outcome is</legend>
+                                  <div className="grid gap-2 sm:grid-cols-3">
+                                    {([ ["follow_up", "Follow up needed"], ["qualified", "Qualified"], ["resolved", "Resolved"], ["missed", "Missed"], ["unknown", "Unclassified"] ] as const).map(([value, label]) => (
+                                      <label key={value} className="flex items-center gap-2">
+                                        <input type="checkbox" checked={followUpOutcomes.includes(value)} onChange={(event) => setFollowUpOutcomes((current) => event.target.checked ? [...current, value] : current.filter((item) => item !== value))} />
+                                        {label}
+                                      </label>
+                                    ))}
+                                  </div>
+                                </fieldset>
+                              ) : null}
+                              <p className="m-0 text-xs text-slate-500 sm:col-span-2">One planned follow-up per eligible contact. Opt-outs, not-interested contacts, requested callbacks, and pending or verified conversions are excluded. Calling windows and the total attempt limit still apply.</p>
+                            </div>
+                          ) : null}
                         </div>
 
                         {detectVoicemail ? (
@@ -1459,6 +1537,10 @@ export function CampaignShell() {
                             <SummaryRow
                               label="Requested callbacks"
                               value={automaticCallbacks ? "Automatic" : "Manual queue"}
+                            />
+                            <SummaryRow
+                              label="Planned follow-up"
+                              value={followUpEnabled ? `After ${followUpGapHours} hours · ${followUpAudience === "all_eligible" ? "every eligible customer" : "selected outcomes"} · up to ${numberFormat(leads.length)} extra calls` : "Off"}
                             />
                           </dl>
                           <button
@@ -1973,6 +2055,7 @@ function CampaignResultsWorkspace({
   const [loadingResults, setLoadingResults] = useState(true);
   const [exporting, setExporting] = useState(false);
   const [updatingLeadId, setUpdatingLeadId] = useState("");
+  const [followUpTimes, setFollowUpTimes] = useState<Record<string, string>>({});
   const [resultsError, setResultsError] = useState("");
   const [refreshVersion, setRefreshVersion] = useState(0);
   const [selectedCall, setSelectedCall] = useState<CallRecord | null>(null);
@@ -2077,6 +2160,22 @@ function CampaignResultsWorkspace({
             : lead,
         ),
       );
+      setRefreshVersion((current) => current + 1);
+    } catch (caught) {
+      setResultsError(errorMessage(caught));
+    } finally {
+      setUpdatingLeadId("");
+    }
+  }
+
+  async function updateFollowUp(lead: CampaignLeadResult, action: "cancel" | "reschedule") {
+    setUpdatingLeadId(lead._id);
+    setResultsError("");
+    try {
+      const scheduledFor = action === "reschedule"
+        ? zonedLocalDateTimeToIso(followUpTimes[lead._id] || dateTimeLocalInTimezone(lead.followUpScheduledFor!, campaign.timezone), campaign.timezone)
+        : undefined;
+      await voiceApi.updateCampaignLeadFollowUp(campaign._id, lead._id, { action, scheduledFor });
       setRefreshVersion((current) => current + 1);
     } catch (caught) {
       setResultsError(errorMessage(caught));
@@ -2213,7 +2312,7 @@ function CampaignResultsWorkspace({
             />
           </div>
 
-          <div className="mt-3 grid gap-3 lg:grid-cols-2">
+          <div className="mt-3 grid gap-3 lg:grid-cols-3">
             <section className="rounded-xl border border-[#dbe4e1] bg-white p-4">
               <h3 className="m-0 text-sm font-semibold text-slate-900">Business outcomes</h3>
               <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-6">
@@ -2232,6 +2331,14 @@ function CampaignResultsWorkspace({
                 <MiniResult label="Calling" value={summary?.callbacksCalling ?? 0} />
                 <MiniResult label="Completed" value={summary?.callbacksCompleted ?? 0} />
                 <MiniResult label="Needs attention" value={summary?.callbacksNeedAttention ?? 0} alert={(summary?.callbacksNeedAttention ?? 0) > 0} />
+              </div>
+            </section>
+            <section className="rounded-xl border border-[#dbe4e1] bg-white p-4">
+              <h3 className="m-0 text-sm font-semibold text-slate-900">Planned follow-ups</h3>
+              <div className="mt-3 grid grid-cols-3 gap-2">
+                <MiniResult label="Scheduled" value={summary?.plannedFollowUpsScheduled ?? 0} />
+                <MiniResult label="Calling" value={summary?.plannedFollowUpsCalling ?? 0} />
+                <MiniResult label="Attempted" value={summary?.plannedFollowUpsCompleted ?? 0} />
               </div>
             </section>
           </div>
@@ -2370,7 +2477,30 @@ function CampaignResultsWorkspace({
                       <button className="mt-2 text-xs font-semibold text-[#0e6f62] hover:underline" type="button" onClick={() => { setConversionLead(lead); setConversionType("appointment"); setConversionAmount("0"); setConversionReference(""); }}>Record verified result</button>
                     </td>
                     <td className="px-4 py-3">
-                      {lead.callbackStatus ? <ResultPill value={lead.callbackStatus} /> : <span className="text-sm text-slate-400">No callback</span>}
+                      {lead.followUpStatus ? (
+                        <div className="mb-3">
+                          <span className="block text-xs font-semibold text-slate-800">Planned follow-up</span>
+                          <ResultPill value={lead.followUpStatus} />
+                          <span className="mt-1 block text-xs text-slate-500">Reason: {readableValue(lead.outcome)}</span>
+                          {lead.followUpStatus === "scheduled" && lead.followUpScheduledFor ? <span className="mt-1 block text-xs text-slate-600">Due after {formatDateTime(lead.followUpScheduledFor, campaign.timezone)} · within the call window</span> : null}
+                          {lead.followUpStatus === "scheduled" && ["running", "paused"].includes(campaign.status) ? (
+                            <div className="mt-2 grid gap-2">
+                              <input
+                                className="min-h-9 rounded-lg border border-slate-200 px-2 text-xs"
+                                type="datetime-local"
+                                aria-label={`Reschedule follow-up for ${lead.name || lead.phone}`}
+                                value={followUpTimes[lead._id] ?? dateTimeLocalInTimezone(lead.followUpScheduledFor!, campaign.timezone)}
+                                onChange={(event) => setFollowUpTimes((current) => ({ ...current, [lead._id]: event.target.value }))}
+                              />
+                              <div className="flex gap-3">
+                                <button className="text-xs font-semibold text-[#0e6f62] disabled:opacity-50" type="button" disabled={updatingLeadId === lead._id} onClick={() => void updateFollowUp(lead, "reschedule")}>Save time</button>
+                                <button className="text-xs font-semibold text-red-700 disabled:opacity-50" type="button" disabled={updatingLeadId === lead._id} onClick={() => void updateFollowUp(lead, "cancel")}>Cancel</button>
+                              </div>
+                            </div>
+                          ) : null}
+                        </div>
+                      ) : null}
+                      {lead.callbackStatus ? <ResultPill value={lead.callbackStatus} /> : !lead.followUpStatus ? <span className="text-sm text-slate-400">No next call</span> : null}
                       {lead.callbackScheduledFor ? <span className="mt-2 block text-xs text-slate-600">{formatDateTime(lead.callbackScheduledFor, campaign.timezone)}</span> : null}
                       {lead.callback?.lastError ? <span className="mt-1 block max-w-[240px] text-xs text-red-600">{lead.callback.lastError}</span> : null}
                     </td>

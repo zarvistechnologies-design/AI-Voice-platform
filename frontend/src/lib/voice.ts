@@ -869,6 +869,7 @@ export type CampaignLeadInput = {
   company?: string;
   customFields?: Record<string, string>;
   doNotCall?: boolean;
+  automationConsentConfirmed?: boolean;
 };
 
 export type CampaignStats = Record<
@@ -913,6 +914,10 @@ export type BackendCampaign = {
   goal: string;
   successCriteria: string;
   automaticCallbacks: boolean;
+  followUpEnabled: boolean;
+  followUpDelaySeconds: number;
+  followUpAudience: "all_eligible" | "selected_outcomes";
+  followUpOutcomes: ("unknown" | "follow_up" | "qualified" | "resolved" | "missed")[];
   scorecard?: CampaignScorecard;
   totalLeads: number;
   lastWorkerError: string;
@@ -939,6 +944,10 @@ export type CreateCampaignInput = {
   requireConsentLine: boolean;
   detectVoicemail: boolean;
   automaticCallbacks: boolean;
+  followUpEnabled: boolean;
+  followUpDelaySeconds: number;
+  followUpAudience: "all_eligible" | "selected_outcomes";
+  followUpOutcomes: ("unknown" | "follow_up" | "qualified" | "resolved" | "missed")[];
 };
 
 async function request<T>(path: string, init: RequestInit = {}) {
@@ -1051,6 +1060,8 @@ export type CampaignLeadResult = {
   crmSyncStatus: "" | "not_configured" | "pending" | "synced" | "failed";
   callbackStatus: CampaignCallbackStatus;
   callbackScheduledFor: string | null;
+  followUpStatus: "" | "scheduled" | "calling" | "completed" | "cancelled";
+  followUpScheduledFor: string | null;
   attempts: number;
   latestCall: null | {
     _id: string;
@@ -1097,6 +1108,9 @@ export type CampaignResultSummary = {
   callbacksCalling: number;
   callbacksCompleted: number;
   callbacksNeedAttention: number;
+  plannedFollowUpsScheduled: number;
+  plannedFollowUpsCalling: number;
+  plannedFollowUpsCompleted: number;
   attemptedContacts: number;
   connectedContacts: number;
   verifiedAppointments: number;
@@ -1594,6 +1608,14 @@ export const voiceApi = {
         body: JSON.stringify({ outcome }),
       },
     ),
+  updateCampaignLeadFollowUp: (
+    campaignId: string,
+    leadId: string,
+    input: { action: "cancel" | "reschedule"; scheduledFor?: string },
+  ) => request<{ lead: CampaignLeadResult }>(`/campaigns/${campaignId}/leads/${leadId}/follow-up`, {
+    method: "PATCH",
+    body: JSON.stringify(input),
+  }),
   updateCampaignScorecard: (campaignId: string, scorecard: CampaignScorecard) =>
     request<{ scorecard: CampaignScorecard }>(`/campaigns/${campaignId}/scorecard`, {
       method: "PUT",

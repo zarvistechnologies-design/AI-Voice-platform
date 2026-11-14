@@ -164,7 +164,7 @@ Summarize the confirmed appointment and the next step.` }] },
     slug: "campaigns",
     group: "Deploy",
     title: "Campaign operations guide",
-    description: "Prepare, launch, monitor, and evaluate outbound campaigns from the dashboard, including automatic callbacks and evidence based results.",
+    description: "Prepare, launch, monitor, and evaluate outbound campaigns from the dashboard, including requested callbacks, planned follow-ups, and evidence based results.",
     sections: [
       { title: "Before you create a campaign", blocks: [
         { type: "list", items: [
@@ -195,7 +195,7 @@ Summarize the confirmed appointment and the next step.` }] },
         { title: "Choose the route", body: "Enter a clear campaign name, select the Live assistant, and choose a Ready outbound caller ID assigned to that assistant." },
         { title: "Upload contacts", body: "Drop the CSV into the upload step. Resolve every invalid phone number before continuing." },
         { title: "Set schedule and pacing", body: "Choose Send now or Schedule, confirm Asia/Kolkata or the intended timezone, set the local call window, daily limit, concurrent calls, maximum attempts, and retry gap." },
-        { title: "Set safeguards and outcomes", body: "Keep opt-out protection enabled, configure consent and voicemail behavior, define the campaign goal and success criteria, and enable automatic callbacks when requested follow-ups should be scheduled." },
+        { title: "Set safeguards and outcomes", body: "Keep opt-out protection enabled, configure consent and voicemail behavior, define the campaign goal and success criteria, and enable requested callbacks or a planned follow-up when needed." },
         { title: "Review and launch", body: "Pass every readiness check and launch. Processing continues on the server after the browser is closed." },
       ] }] },
       { title: "Pacing and retry controls", blocks: [{ type: "table", headers: ["Setting", "What it controls", "Operational guidance"], rows: [
@@ -205,6 +205,7 @@ Summarize the confirmed appointment and the next step.` }] },
         ["Concurrent calls", "Maximum simultaneous campaign calls.", "Keep within organization, number, and provider capacity."],
         ["Max attempts", "Maximum tries for one contact.", "Use the smallest number justified by the workflow."],
         ["Retry gap", "Minimum wait before an eligible retry.", "Avoid aggressive retry intervals."],
+        ["Planned follow-up", "One extra call after a completed conversation with a selected outcome and time gap.", "Set at least two total attempts. The follow-up uses one of them."],
       ] }] },
       { title: "Campaign lifecycle and controls", blocks: [
         { type: "table", headers: ["Status", "Meaning"], rows: [
@@ -253,6 +254,11 @@ Summarize the confirmed appointment and the next step.` }] },
           ["Needs attention", "Automatic processing could not safely continue; review the contact and last error."],
           ["Cancelled", "The callback will not run."],
         ] },
+      ] },
+      { title: "Planned follow-up calls", blocks: [
+        { type: "text", body: "Enable Planned follow-up call during campaign setup, choose a gap in hours, and select the outcomes that qualify. Follow up needed is selected by default. A lead can receive one planned follow-up if the total attempt limit has room." },
+        { type: "text", body: "A requested callback time takes priority. Verified results, opt-outs, and changed outcomes stop a pending planned follow-up. Due calls wait for the campaign call window and available capacity." },
+        { type: "text", body: "The results page shows scheduled, calling, attempted, and cancelled follow-ups. Open a contact's Next action to change the time or cancel a scheduled follow-up." },
       ] },
       { title: "Evidence, reanalysis, and the QA scorecard", blocks: [
         { type: "list", items: [

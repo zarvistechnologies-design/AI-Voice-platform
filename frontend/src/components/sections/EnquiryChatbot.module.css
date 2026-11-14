@@ -5,3 +5,23 @@
 
 
 
+
+/* Homepage brand accent */
+.launcher{border-color:#a69bfa;background:#17151f;box-shadow:0 14px 45px #0006,0 0 28px #5b4ce633}
+.launcher:hover{border-color:#5b4ce6}
+.launchAvatar,.avatar{border-color:#a69bfa}
+.launchText small,.identity small{color:#b8b2cd}
+.online,.identity small i,.typing i{background:#a69bfa}
+.online{border-color:#17151f}
+.card{border-color:#5b4ce655;background:#15131d}
+.card header{background:linear-gradient(110deg,#241d44,#15131d)}
+.chat{background:radial-gradient(circle at 100% 0,#5b4ce624,transparent 45%)}
+.sender,.caseNo{color:#afa6ff}
+.botBubble{background:#28243a;color:#f8f6ff}
+.userBubble,.actions form button,.restart{background:#5b4ce6;color:#fff}
+.actions{background:#17151f}
+.options button{border-color:#594c91;background:#211b37;color:#eeeaff}
+.options button:hover{border-color:#afa6ff;background:#2d2550}
+.actions input{border-color:#504769;background:#100e17}
+.actions input:focus{border-color:#afa6ff}
+.launcher[aria-expanded="true"]{background:#241d44}

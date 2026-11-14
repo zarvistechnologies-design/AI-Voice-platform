@@ -140,21 +140,21 @@ export function LoginForm() {
 
   return (
     <form
-      className={`login-auth-form relative z-[1] grid w-full max-w-[440px] gap-[18px] text-[#14231f] ${mode === "register" ? "is-register" : ""}`}
+      className={`login-auth-form relative z-[1] grid w-full max-w-[420px] gap-4 text-[#171719] ${mode === "register" ? "is-register" : ""}`}
       onSubmit={handleSubmit}
     >
       <div className="auth-heading mb-2 grid gap-2 text-left">
-        <div className="mb-2 grid size-11 place-items-center rounded-xl border border-[#c8e1db] bg-[#edf7f4]" aria-hidden="true">
+        <div className="mb-2 grid size-10 place-items-center rounded-lg border border-[#dedfe2] bg-[#f1f1f2]" aria-hidden="true">
           <span className="flex h-5 items-center gap-[3.5px]">
             {[10, 20, 14, 8, 16].map((height) => (
-              <span className="w-[3px] rounded-full bg-[#118778]" key={height} style={{ height }} />
+              <span className="w-[3px] rounded-full bg-[#171719]" key={height} style={{ height }} />
             ))}
           </span>
         </div>
-        <h1 className="m-0 text-[2rem] font-black leading-tight tracking-[-0.04em] text-[#14231f] sm:text-[2.25rem]">
+        <h1 className="m-0 text-[1.75rem] font-bold leading-tight tracking-[-0.035em] text-[#171719] sm:text-[1.9rem]">
           {mode === "login" ? adminLogin ? "Admin sign in" : "Welcome back" : mode === "register" ? "Create your account" : "Reset your password"}
         </h1>
-        <p className="auth-description m-0 text-[15px] leading-6 text-[#657670]">
+        <p className="auth-description m-0 text-sm leading-6 text-[#666a70]">
           {mode === "login"
             ? adminLogin ? "Use your account password and authenticator code to open the admin panel." : `Sign in to continue to ${brand.productName}.`
             : mode === "register"
@@ -169,7 +169,7 @@ export function LoginForm() {
           <span className="relative block">
             <svg aria-hidden="true" className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.7" /><path d="M4.5 21a7.5 7.5 0 0115 0" stroke="currentColor" strokeLinecap="round" strokeWidth="1.7" /></svg>
             <input
-              className="auth-input min-h-13 w-full rounded-xl border border-[#d7e2df] bg-white px-4 pl-10 text-sm font-medium text-[#14231f] outline-none transition placeholder:text-[#91a09c] hover:border-[#b9cbc6] focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10"
+              className="auth-input min-h-12 w-full rounded-lg border border-[#dedfe2] bg-white px-4 pl-10 text-[13px] font-medium text-[#171719] outline-none transition placeholder:text-[#898d92] hover:border-[#bcbec1] focus:border-[#171719] focus:ring-4 focus:ring-[#171719]/10"
               autoComplete="name"
               onChange={(event) => setName(event.target.value)}
               placeholder="Your full name"
@@ -185,7 +185,7 @@ export function LoginForm() {
         <span className="relative block">
           <svg aria-hidden="true" className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24"><rect height="15" rx="2.5" stroke="currentColor" strokeWidth="1.7" width="19" x="2.5" y="4.5" /><path d="M4 7l8 6 8-6" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" /></svg>
           <input
-            className="auth-input min-h-13 w-full rounded-xl border border-[#d7e2df] bg-white px-4 pl-10 text-sm font-medium text-[#14231f] outline-none transition placeholder:text-[#91a09c] hover:border-[#b9cbc6] focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10"
+            className="auth-input min-h-12 w-full rounded-lg border border-[#dedfe2] bg-white px-4 pl-10 text-[13px] font-medium text-[#171719] outline-none transition placeholder:text-[#898d92] hover:border-[#bcbec1] focus:border-[#171719] focus:ring-4 focus:ring-[#171719]/10"
             autoComplete="email"
             onChange={(event) => setEmail(event.target.value)}
             placeholder="name@company.com"
@@ -200,7 +200,7 @@ export function LoginForm() {
         <span className="relative block">
           <svg aria-hidden="true" className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24"><rect height="12" rx="2.5" stroke="currentColor" strokeWidth="1.7" width="17" x="3.5" y="9" /><path d="M7.5 9V6.5a4.5 4.5 0 019 0V9" stroke="currentColor" strokeLinecap="round" strokeWidth="1.7" /></svg>
           <input
-            className="auth-input min-h-13 w-full rounded-xl border border-[#d7e2df] bg-white px-10 pr-11 text-sm font-medium text-[#14231f] outline-none transition placeholder:text-[#91a09c] hover:border-[#b9cbc6] focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10"
+            className="auth-input min-h-12 w-full rounded-lg border border-[#dedfe2] bg-white px-10 pr-11 text-[13px] font-medium text-[#171719] outline-none transition placeholder:text-[#898d92] hover:border-[#bcbec1] focus:border-[#171719] focus:ring-4 focus:ring-[#171719]/10"
             autoComplete={mode === "login" ? "current-password" : "new-password"}
             onChange={(event) => setPassword(event.target.value)}
             placeholder="Enter your password"

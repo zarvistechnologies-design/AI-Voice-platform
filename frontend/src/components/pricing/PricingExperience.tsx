@@ -81,7 +81,7 @@ export function PricingExperience() {
   }
 
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} pricing-page-refresh`}>
       <section className={styles.hero}>
         <div className={styles.heroGlow} aria-hidden="true" />
         <div className={styles.shell}>

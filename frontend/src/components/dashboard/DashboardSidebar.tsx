@@ -17,6 +17,7 @@ type SidebarItem = {
     | "assistant"
     | "phone"
     | "campaign"
+    | "automation"
     | "analytics"
     | "knowledge"
     | "logs"
@@ -41,6 +42,7 @@ const sidebarGroups: { label: string; items: SidebarItem[] }[] = [
         icon: "phone",
       },
       { label: "Campaigns", href: "/dashboard/campaign", icon: "campaign" },
+      { label: "Automation Workflow", href: "/dashboard/automations", icon: "automation" },
       { label: "Analytics", href: "/dashboard/analytics", icon: "analytics" },
     ],
   },
@@ -153,6 +155,10 @@ function SidebarIcon({ icon }: { icon: SidebarIconName }) {
         <path d="M17 9a4 4 0 0 1 0 6M19.5 6.5a7.5 7.5 0 0 1 0 11" />
       </svg>
     );
+  }
+
+  if (icon === "automation") {
+    return <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="7" height="6" rx="1.5" /><rect x="15" y="3" width="7" height="6" rx="1.5" /><rect x="9" y="15" width="7" height="6" rx="1.5" /><path d="M9 6h6M18.5 9v2a4 4 0 0 1-4 4M5.5 9v2a4 4 0 0 0 4 4" /></svg>;
   }
 
   if (icon === "analytics") {
@@ -498,12 +504,16 @@ export function DashboardSidebar({
                     ? item.label === activeLabel
                     : item.href === "/dashboard/agents"
                       ? optimisticPathname.startsWith(item.href)
-                      : optimisticPathname === item.href;
+                      : item.href === "/dashboard/automations"
+                        ? optimisticPathname === item.href || optimisticPathname.startsWith(`${item.href}/`)
+                        : optimisticPathname === item.href;
                   return (
                     <Link
                       className={`dashboard-sidebar-nav group/item relative flex size-10 shrink-0 items-center justify-center rounded-xl outline-none transition duration-200 focus-visible:ring-2 focus-visible:ring-[#9fcfc3]/60 lg:h-11 lg:w-full ${
                         showUserSidebar
-                          ? "lg:justify-start lg:gap-3 lg:px-3"
+                          ? item.icon === "automation"
+                            ? "lg:justify-start lg:gap-2 lg:px-2.5"
+                            : "lg:justify-start lg:gap-3 lg:px-3"
                           : "lg:justify-center"
                       } ${
                         isActive
@@ -536,7 +546,7 @@ export function DashboardSidebar({
                       </span>
                       {showUserSidebar ? (
                         <span
-                          className={`dashboard-sidebar-label app-body hidden truncate font-medium lg:block ${isActive ? "text-white" : "text-[#52645f]"}`}
+                          className={`dashboard-sidebar-label app-body hidden truncate whitespace-nowrap font-medium lg:block ${item.icon === "automation" ? "lg:text-[13px]" : ""} ${isActive ? "text-white" : "text-[#52645f]"}`}
                         >
                           {item.label}
                         </span>

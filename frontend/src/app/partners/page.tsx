@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Link from "next/link";
 
 import { SiteLayout } from "@/components/layout/SiteLayout";
@@ -68,8 +68,8 @@ function CheckIcon() {
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <p className="m-0 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-teal-700">
-      <span className="h-px w-7 bg-teal-600" />
+    <p className="m-0 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[#5b4ce6]">
+      <span className="h-px w-7 bg-[#5b4ce6]" />
       {children}
     </p>
   );
@@ -81,30 +81,30 @@ export default function PartnersPage() {
   return (
     <SiteLayout>
       <main id="partners-page" className="overflow-hidden bg-white text-slate-950">
-        <section className="relative overflow-hidden border-b border-[#e2e8e5] bg-white px-5 pb-14 pt-24 text-[#14231f] sm:px-8 sm:pb-16 sm:pt-28 lg:pt-32">
+        <section className="relative overflow-hidden border-b border-[#dedfe2] bg-white px-5 pb-14 pt-24 text-[#171719] sm:px-8 sm:pb-16 sm:pt-28 lg:pt-32">
           <div className="relative mx-auto grid max-w-[1280px] items-center gap-12 lg:grid-cols-[.92fr_1.08fr] lg:gap-16">
             <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#dbe4e1] bg-white px-4 py-2 text-[10px] font-bold uppercase tracking-[0.17em] text-teal-700 shadow-sm">
-                <span className="size-2 rounded-full bg-teal-600" />
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#dbe4e1] bg-white px-4 py-2 text-[10px] font-bold uppercase tracking-[0.17em] text-[#5b4ce6] shadow-sm">
+                <span className="size-2 rounded-full bg-[#5b4ce6]" />
                 Vozon white-label programme
               </div>
-              <h1 className="mt-6 max-w-2xl text-[clamp(1.85rem,3.8vw,3.25rem)] font-medium leading-[0.98] tracking-[-0.05em]">
-                Build your own <span className="text-teal-700">AI voice business.</span>
+              <h1 className="mt-6 max-w-2xl text-[clamp(3rem,5.6vw,5.8rem)] font-semibold leading-[0.99] tracking-[-0.065em]">
+                Build your own <span className="text-[#5b4ce6]">AI voice business.</span>
               </h1>
               <p className="mt-6 max-w-xl text-[15px] leading-7 text-slate-700">
                 Launch voice AI under your brand with customer-ready workspaces, your own plans, flexible model access, and the controls to grow every account.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <Link href="/contact?topic=white-label-partnership" className="inline-flex min-h-12 items-center gap-2 rounded-full bg-teal-700 px-6 text-sm font-bold text-white shadow-[0_14px_32px_rgba(15,118,110,.2)] transition hover:-translate-y-0.5 hover:bg-teal-800">
+                <Link href="/contact?topic=white-label-partnership" className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[#5b4ce6] px-6 text-sm font-bold text-white shadow-[0_14px_32px_rgba(15,118,110,.2)] transition hover:-translate-y-0.5 hover:bg-[#4d3ec9]">
                   Apply as a partner
                 </Link>
-                <Link href="#programme" className="inline-flex min-h-12 items-center rounded-full border border-[#dbe4e1] bg-white px-6 text-sm font-bold text-[#29423b] transition hover:-translate-y-0.5 hover:border-teal-400">
+                <Link href="#programme" className="inline-flex min-h-12 items-center rounded-full border border-[#dbe4e1] bg-white px-6 text-sm font-bold text-[#35363a] transition hover:-translate-y-0.5 hover:border-[#a69bfa]">
                   Explore the programme
                 </Link>
               </div>
               <div className="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-xs font-medium text-slate-600">
                 {["Your brand", "Your plans", "Your customer relationships"].map((item) => (
-                  <span className="flex items-center gap-2" key={item}><span className="text-teal-700"><CheckIcon /></span>{item}</span>
+                  <span className="flex items-center gap-2" key={item}><span className="text-[#5b4ce6]"><CheckIcon /></span>{item}</span>
                 ))}
               </div>
             </div>
@@ -113,7 +113,7 @@ export default function PartnersPage() {
           </div>
         </section>
 
-        <section className="border-b border-[#e2e8e5] bg-white px-5 sm:px-8">
+        <section className="border-b border-[#dedfe2] bg-white px-5 sm:px-8">
           <div className="mx-auto grid max-w-[1280px] sm:grid-cols-2 lg:grid-cols-5">
             {[
               ["Your brand", "Across every screen"],
@@ -122,8 +122,8 @@ export default function PartnersPage() {
               ["Your domains", "Branded destinations"],
               ["One console", "End-to-end control"],
             ].map(([value, label]) => (
-              <div className="border-b border-[#e2e8e5] px-4 py-6 sm:border-r sm:px-6 sm:py-7 lg:border-b-0 lg:last:border-r-0" key={value}>
-                <strong className="block text-lg font-semibold tracking-[-.03em] text-teal-700">{value}</strong>
+              <div className="border-b border-[#dedfe2] px-4 py-6 sm:border-r sm:px-6 sm:py-7 lg:border-b-0 lg:last:border-r-0" key={value}>
+                <strong className="block text-lg font-semibold tracking-[-.03em] text-[#5b4ce6]">{value}</strong>
                 <span className="mt-1.5 block text-xs text-slate-500">{label}</span>
               </div>
             ))}
@@ -133,15 +133,15 @@ export default function PartnersPage() {
         <section id="programme" className="px-5 py-12 sm:px-8 sm:py-14 lg:py-16">
           <div className="mx-auto max-w-[1280px]">
             <div className="grid gap-8 lg:grid-cols-[.82fr_1.18fr] lg:items-end">
-              <div><Eyebrow>What you get</Eyebrow><h2 className={`${headingClass} mt-4 text-[#14231f]`}>A complete white-label operating layer.</h2></div>
+              <div><Eyebrow>What you get</Eyebrow><h2 className={`${headingClass} mt-4 text-[#171719]`}>A complete white-label operating layer.</h2></div>
               <p className="m-0 max-w-2xl text-[15px] leading-7 text-slate-700 lg:justify-self-end">More than a logo switch, the programme gives you the customer-facing brand, commercial controls, isolated client workspaces, and partner operations needed to run your own voice AI service.</p>
             </div>
             <div className="mt-10 grid gap-4 sm:grid-cols-2">
               {benefits.map((benefit, index) => (
-                <article className="group rounded-[20px] border border-[#dfe7e4] bg-white p-6 shadow-[0_8px_24px_rgba(18,61,53,.05)] transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_16px_38px_rgba(13,148,136,.09)]" key={benefit.title}>
-                  <div className="flex items-center"><span className="grid size-10 place-items-center rounded-xl bg-teal-50 text-xs font-bold text-teal-700">0{index + 1}</span></div>
-                  <p className="mt-5 text-[10px] font-bold uppercase tracking-[.17em] text-teal-700">{benefit.eyebrow}</p>
-                  <h3 className="mt-2 text-xl font-semibold tracking-[-.03em] text-[#14231f]">{benefit.title}</h3>
+                <article className="group rounded-[20px] border border-[#dfe7e4] bg-white p-6 shadow-[0_8px_24px_rgba(18,61,53,.05)] transition hover:-translate-y-1 hover:border-[#c9c3fa] hover:shadow-[0_16px_38px_rgba(13,148,136,.09)]" key={benefit.title}>
+                  <div className="flex items-center"><span className="grid size-10 place-items-center rounded-xl bg-[#f3f1ff] text-xs font-bold text-[#5b4ce6]">0{index + 1}</span></div>
+                  <p className="mt-5 text-[10px] font-bold uppercase tracking-[.17em] text-[#5b4ce6]">{benefit.eyebrow}</p>
+                  <h3 className="mt-2 text-xl font-semibold tracking-[-.03em] text-[#171719]">{benefit.title}</h3>
                   <p className="mt-2.5 text-sm leading-6 text-slate-600">{benefit.body}</p>
                 </article>
               ))}
@@ -149,18 +149,18 @@ export default function PartnersPage() {
           </div>
         </section>
 
-        <section className="border-y border-[#e2e8e5] bg-white px-5 py-12 sm:px-8 sm:py-14 lg:py-16">
+        <section className="border-y border-[#dedfe2] bg-white px-5 py-12 sm:px-8 sm:py-14 lg:py-16">
           <div className="mx-auto max-w-[1280px]">
             <div className="mx-auto max-w-3xl text-center">
               <div className="flex justify-center"><Eyebrow>The platform</Eyebrow></div>
-              <h2 className={`${headingClass} mt-4 text-[#14231f]`}>Everything you need to run a branded voice AI service.</h2>
+              <h2 className={`${headingClass} mt-4 text-[#171719]`}>Everything you need to run a branded voice AI service.</h2>
               <p className="mx-auto mt-5 max-w-2xl text-[15px] leading-7 text-slate-700">Vozon handles the platform foundations so your team can focus on packaging the right offer and helping customers succeed.</p>
             </div>
             <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {platformFeatures.map((feature) => (
                 <article className="rounded-[20px] border border-[#dfe7e4] bg-white p-6 shadow-[0_8px_22px_rgba(18,61,53,.04)]" key={feature.number}>
-                  <span className="text-[10px] font-bold uppercase tracking-[.17em] text-teal-700">Platform / {feature.number}</span>
-                  <h3 className="mt-5 text-lg font-semibold tracking-[-.025em] text-[#14231f]">{feature.title}</h3>
+                  <span className="text-[10px] font-bold uppercase tracking-[.17em] text-[#5b4ce6]">Platform / {feature.number}</span>
+                  <h3 className="mt-5 text-lg font-semibold tracking-[-.025em] text-[#171719]">{feature.title}</h3>
                   <p className="mt-2.5 text-sm leading-6 text-slate-600">{feature.body}</p>
                 </article>
               ))}
@@ -168,21 +168,21 @@ export default function PartnersPage() {
           </div>
         </section>
 
-        <section className="relative overflow-hidden border-y border-[#e2e8e5] bg-white px-5 py-12 text-[#14231f] sm:px-8 sm:py-14 lg:py-16">
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-500 to-transparent" aria-hidden="true" />
+        <section className="relative overflow-hidden border-y border-[#dedfe2] bg-white px-5 py-12 text-[#171719] sm:px-8 sm:py-14 lg:py-16">
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#5b4ce6] to-transparent" aria-hidden="true" />
           <div className="mx-auto max-w-[1180px]">
             <div className="grid gap-8 lg:grid-cols-[.78fr_1.22fr] lg:items-end">
               <div>
-                <p className="m-0 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-teal-700"><span className="h-px w-7 bg-teal-600" />From application to launch</p>
-                <h2 className={`${headingClass} mt-4 text-[#14231f]`}>A clear path to your first customer.</h2>
+                <p className="m-0 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[#5b4ce6]"><span className="h-px w-7 bg-[#5b4ce6]" />From application to launch</p>
+                <h2 className={`${headingClass} mt-4 text-[#171719]`}>A clear path to your first customer.</h2>
               </div>
               <p className="m-0 max-w-2xl text-sm leading-7 text-slate-700 lg:justify-self-end">Start with the market you know. We&apos;ll align the partner setup, then your team can configure the brand, commercial offer, and customer workspaces.</p>
             </div>
             <ol className="mt-10 grid overflow-hidden rounded-[24px] border border-[#dfe7e4] bg-white shadow-[0_12px_34px_rgba(18,61,53,.06)] md:grid-cols-4">
               {launchSteps.map((step, index) => (
-                <li className="border-b border-[#e2e8e5] bg-white p-6 last:border-b-0 md:border-b-0 md:border-r md:last:border-r-0" key={step.title}>
-                  <span className="grid size-9 place-items-center rounded-full border border-teal-200 bg-teal-50 text-[10px] font-bold text-teal-700">0{index + 1}</span>
-                  <h3 className="mt-6 text-lg font-semibold text-[#14231f]">{step.title}</h3>
+                <li className="border-b border-[#dedfe2] bg-white p-6 last:border-b-0 md:border-b-0 md:border-r md:last:border-r-0" key={step.title}>
+                  <span className="grid size-9 place-items-center rounded-full border border-[#dedafc] bg-[#f3f1ff] text-[10px] font-bold text-[#5b4ce6]">0{index + 1}</span>
+                  <h3 className="mt-6 text-lg font-semibold text-[#171719]">{step.title}</h3>
                   <p className="mt-2.5 text-sm leading-6 text-slate-600">{step.body}</p>
                 </li>
               ))}
@@ -194,13 +194,13 @@ export default function PartnersPage() {
           <div className="mx-auto max-w-3xl">
             <div className="text-center">
               <div className="flex justify-center"><Eyebrow>Partner programme questions</Eyebrow></div>
-              <h2 className={`${headingClass} mt-4 text-[#14231f]`}>What partners ask us first.</h2>
+              <h2 className={`${headingClass} mt-4 text-[#171719]`}>What partners ask us first.</h2>
             </div>
             <div className="mt-10 space-y-3">
               {faqs.map((faq, index) => (
-                <details className="group rounded-2xl border border-[#dfe7e4] bg-white px-5 py-5 shadow-[0_8px_24px_rgba(18,61,53,.05)] open:border-teal-300" key={faq.question} open={index === 0}>
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-sm font-semibold text-[#14231f]"><span>{faq.question}</span><span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#edf7f4] text-lg text-teal-700 transition group-open:rotate-45">+</span></summary>
-                  <p className="mt-4 border-t border-[#e2e8e5] pt-4 text-sm leading-7 text-slate-600">{faq.answer}</p>
+                <details className="group rounded-2xl border border-[#dfe7e4] bg-white px-5 py-5 shadow-[0_8px_24px_rgba(18,61,53,.05)] open:border-[#c9c3fa]" key={faq.question} open={index === 0}>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-sm font-semibold text-[#171719]"><span>{faq.question}</span><span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#edf7f4] text-lg text-[#5b4ce6] transition group-open:rotate-45">+</span></summary>
+                  <p className="mt-4 border-t border-[#dedfe2] pt-4 text-sm leading-7 text-slate-600">{faq.answer}</p>
                 </details>
               ))}
             </div>
@@ -209,13 +209,13 @@ export default function PartnersPage() {
 
         <section className="px-5 pb-16 pt-2 sm:px-8">
           <div className="relative mx-auto max-w-[1100px] overflow-hidden rounded-[28px] border border-[#dbe4e1] bg-white px-6 py-10 text-center shadow-[0_16px_42px_rgba(18,61,53,.07)] sm:px-10 sm:py-12">
-            <div className="absolute left-1/2 top-0 h-1 w-28 -translate-x-1/2 bg-teal-600" />
-            <p className="text-[10px] font-bold uppercase tracking-[.18em] text-teal-700">Your brand. Vozon&apos;s engine.</p>
-            <h2 className="mx-auto mt-4 max-w-2xl text-[clamp(1.8rem,3vw,2.8rem)] font-semibold leading-[1.05] tracking-[-.045em] text-[#14231f]">Let&apos;s build your voice AI business together.</h2>
+            <div className="absolute left-1/2 top-0 h-1 w-28 -translate-x-1/2 bg-[#5b4ce6]" />
+            <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#5b4ce6]">Your brand. Vozon&apos;s engine.</p>
+            <h2 className="mx-auto mt-4 max-w-2xl text-[clamp(1.8rem,3vw,2.8rem)] font-semibold leading-[1.05] tracking-[-.045em] text-[#171719]">Let&apos;s build your voice AI business together.</h2>
             <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-slate-700">Tell us who you serve and what you want to launch. We&apos;ll help you review the right white-label partner setup.</p>
             <div className="mt-7 flex flex-wrap justify-center gap-3">
-              <Link href="/contact?topic=white-label-partnership" className="inline-flex min-h-12 items-center rounded-full bg-teal-700 px-6 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-teal-800">Apply as a partner</Link>
-              <Link href="/contact" className="inline-flex min-h-12 items-center rounded-full border border-teal-700/20 bg-white px-6 text-sm font-bold text-teal-800 transition hover:-translate-y-0.5 hover:border-teal-500">Talk to our team</Link>
+              <Link href="/contact?topic=white-label-partnership" className="inline-flex min-h-12 items-center rounded-full bg-[#5b4ce6] px-6 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#4d3ec9]">Apply as a partner</Link>
+              <Link href="/contact" className="inline-flex min-h-12 items-center rounded-full border border-[#5b4ce6]/20 bg-white px-6 text-sm font-bold text-[#4d3ec9] transition hover:-translate-y-0.5 hover:border-[#5b4ce6]">Talk to our team</Link>
             </div>
           </div>
         </section>

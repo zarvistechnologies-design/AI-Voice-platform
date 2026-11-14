@@ -1,0 +1,110 @@
+/* Match the dashboard surfaces and primary actions; block types keep their own colors. */
+.automation-layout {
+  background: #f7f8fc;
+  color: #242535;
+}
+
+.automation-primary,
+.automation-builder-actions > button.automation-primary {
+  background: #118778;
+  color: #fff;
+  box-shadow: 0 3px 6px #11877820, inset 0 1px 0 #ffffff20;
+}
+
+.automation-primary:hover:not(:disabled),
+.automation-builder-actions > button.automation-primary:hover:not(:disabled) {
+  background: #108d82;
+}
+
+.automation-secondary {
+  color: #118778;
+  border-color: #c9e4dc;
+}
+
+.automation-secondary:hover:not(:disabled) {
+  background: #f0faf7;
+  border-color: #9fcfc3;
+}
+
+.automation-kicker,
+.automation-inspector-stat strong {
+  color: #118778;
+}
+
+.automation-home-hero {
+  border-color: #dfe9e6;
+  background: radial-gradient(circle at 88% 12%, #d9f3e9 0, transparent 38%),
+    radial-gradient(circle at 55% 95%, #e9f5f4 0, transparent 45%), #fff;
+}
+
+.automation-flow-card:hover,
+.automation-template-card:hover {
+  border-color: #9fcfc3;
+  box-shadow: 0 12px 30px #11877817;
+}
+
+.automation-template-card:hover {
+  background: #f5fbf8;
+}
+
+.automation-empty-mark,
+.automation-blank-card .automation-template-icon,
+.automation-test-steps b {
+  background: #e6f5ef;
+  color: #118778;
+}
+
+.automation-prompt-box {
+  border-color: #c9e4dc;
+  background: linear-gradient(135deg, #f3fbf8, #f8fbfc);
+}
+
+.automation-prompt-box label {
+  color: #242535;
+}
+
+.automation-builder-identity input:focus {
+  outline-color: #9fcfc3;
+}
+
+.automation-builder-actions > button:hover,
+.automation-builder-actions > button.active,
+.automation-canvas-toolbar button:hover {
+  background: #eaf7f1;
+  color: #118778;
+}
+
+.automation-canvas-wrap {
+  background: #f7faf9;
+}
+
+.automation-canvas {
+  background-image: radial-gradient(#c9dcd7 1px, transparent 1px);
+}
+
+.automation-field input,
+.automation-field select,
+.automation-field textarea {
+  outline-color: #9fcfc3;
+}
+
+.automation-consent input {
+  accent-color: #118778;
+}
+
+.automation-version-list button {
+  border-color: #c9e4dc;
+  background: #f0faf7;
+  color: #118778;
+}
+
+.automation-cancel-run {
+  margin: 2px 0 10px;
+  color: #ad4d43;
+  border-color: #f0cbc6;
+}
+
+.automation-cancel-run:hover:not(:disabled) {
+  background: #fff3f1;
+  border-color: #df9b92;
+}

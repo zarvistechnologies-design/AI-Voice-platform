@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Link from "next/link";
 
 import { SiteLayout } from "@/components/layout/SiteLayout";
@@ -14,7 +14,7 @@ const workAreas = [
     number: "01",
     title: "AI & Voice",
     description:
-      "Build the intelligence behind natural conversations—from speech recognition and reasoning to real-time responses and multilingual experiences.",
+      "Build the intelligence behind natural conversationsâ€”from speech recognition and reasoning to real-time responses and multilingual experiences.",
     tags: ["Voice AI", "LLMs", "Speech", "Real-time"],
   },
   {
@@ -62,25 +62,25 @@ const principles = [
 
 const benefits = [
   {
-    icon: "✦",
+    icon: "âœ¦",
     title: "Meaningful problems",
     description:
       "Work on real challenges at the intersection of AI, voice, software, and business.",
   },
   {
-    icon: "↗",
+    icon: "â†—",
     title: "Real ownership",
     description:
       "Take ideas from problem to execution and see your work make a visible difference.",
   },
   {
-    icon: "◎",
+    icon: "â—Ž",
     title: "Cross-functional work",
     description:
       "Collaborate closely across engineering, product, design, and customer-facing teams.",
   },
   {
-    icon: "⌁",
+    icon: "âŒ",
     title: "Continuous learning",
     description:
       "Explore new technologies, experiment with ideas, and grow alongside a rapidly evolving field.",
@@ -308,16 +308,16 @@ export default function CareerPage() {
             <div className="text-center">
 
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#118778]/20 bg-white px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#118778] shadow-sm">
-                <span className="size-1.5 rounded-full bg-[#118778]" />
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#5b4ce6]/20 bg-white px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#5b4ce6] shadow-sm">
+                <span className="size-1.5 rounded-full bg-[#5b4ce6]" />
                 Careers at vozon.ai
               </div>
 
               {/* Heading */}
-              <h1 className="mx-auto mt-7 max-w-[680px] text-center text-[clamp(2.25rem,4.4vw,4.25rem)] font-medium leading-[0.96] tracking-[-0.055em] text-[#132a5e]">
+              <h1 className="mx-auto mt-7 max-w-[680px] text-center text-[clamp(2.25rem,4.4vw,4.25rem)] font-medium leading-[0.96] tracking-[-0.055em] text-[#171719]">
                 Build your career.
                 <br />
-                <span className="text-[#132a5e]">
+                <span className="text-[#171719]">
                   Build what matters.
                 </span>
               </h1>
@@ -335,7 +335,7 @@ export default function CareerPage() {
 
                 <Link
                   href="#open-roles"
-                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#118778] px-6 text-sm font-bold text-white shadow-[0_12px_30px_rgba(17,135,120,0.2)] transition duration-300 hover:-translate-y-1 hover:bg-[#0e6f62] hover:shadow-[0_18px_40px_rgba(17,135,120,0.25)]"
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#5b4ce6] px-6 text-sm font-bold text-white shadow-[0_12px_30px_rgba(91,76,230,.16)] transition duration-300 hover:-translate-y-1 hover:bg-[#4d3ec9] hover:shadow-[0_18px_40px_rgba(91,76,230,.2)]"
                 >
                   Explore opportunities
                   <ArrowIcon />
@@ -343,7 +343,7 @@ export default function CareerPage() {
 
                 <Link
                   href="/about"
-                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-6 text-sm font-bold text-black shadow-sm transition duration-300 hover:-translate-y-1 hover:border-[#118778]/40 hover:text-[#118778] hover:shadow-md"
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-6 text-sm font-bold text-black shadow-sm transition duration-300 hover:-translate-y-1 hover:border-[#5b4ce6]/40 hover:text-[#5b4ce6] hover:shadow-md"
                 >
                   Meet vozon.ai
                   <ArrowIcon />
@@ -370,13 +370,13 @@ export default function CareerPage() {
             <div className="mx-auto max-w-3xl text-center">
 
               <div className="mx-auto flex items-center justify-center gap-3">
-                <span className="h-px w-8 bg-[#118778]" />
+                <span className="h-px w-8 bg-[#5b4ce6]" />
 
-                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#118778]">
+                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#5b4ce6]">
                   Why work with us
                 </p>
 
-                <span className="h-px w-8 bg-[#118778]" />
+                <span className="h-px w-8 bg-[#5b4ce6]" />
               </div>
 
               <h2 className="mt-5 text-3xl font-semibold tracking-[-0.045em] text-black sm:text-4xl">
@@ -464,9 +464,9 @@ export default function CareerPage() {
               <div>
 
                 <div className="career-principles-kicker flex items-center gap-3">
-                  <span className="h-px w-8 bg-[#118778]" />
+                  <span className="h-px w-8 bg-[#5b4ce6]" />
 
-                  <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#118778]">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#5b4ce6]">
                     Open roles
                   </p>
                 </div>
@@ -494,7 +494,7 @@ export default function CareerPage() {
                   className="career-role-card group relative flex h-full min-h-[320px] flex-col overflow-hidden rounded-[22px] border p-7 transition-all duration-300"
                 >
 
-                  <div className="absolute inset-x-0 top-0 h-0.5 bg-[#118778] opacity-0 transition duration-300 group-hover:opacity-100" />
+                  <div className="absolute inset-x-0 top-0 h-0.5 bg-[#5b4ce6] opacity-0 transition duration-300 group-hover:opacity-100" />
 
                   <div className="flex flex-1 flex-col">
 
@@ -523,7 +523,7 @@ export default function CareerPage() {
 
                         <span
                           key={tag}
-                          className="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-[9px] font-medium text-gray-600 transition duration-300 group-hover:border-[#118778]/20"
+                          className="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-[9px] font-medium text-gray-600 transition duration-300 group-hover:border-[#5b4ce6]/20"
                         >
                           {tag}
                         </span>
@@ -534,7 +534,7 @@ export default function CareerPage() {
 
 
                     <div className="mt-auto pt-7">
-                      <span className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-[#b9dcd2] bg-[#effaf6] px-5 py-3 text-xs font-bold uppercase tracking-[0.12em] text-[#0e7669]">
+                      <span className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-[#b9dcd2] bg-[#f3f1ff] px-5 py-3 text-xs font-bold uppercase tracking-[0.12em] text-[#4d3ec9]">
                         Coming soon
                       </span>
                     </div>
@@ -652,9 +652,9 @@ export default function CareerPage() {
 
                 <div className="career-principles-kicker flex items-center gap-3">
 
-                  <span className="h-px w-8 bg-[#118778]" />
+                  <span className="h-px w-8 bg-[#5b4ce6]" />
 
-                  <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#118778]">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#5b4ce6]">
                     How we work
                   </p>
 
@@ -720,13 +720,13 @@ export default function CareerPage() {
 
               <div className="flex items-center justify-center gap-3">
 
-                <span className="h-px w-8 bg-[#118778]" />
+                <span className="h-px w-8 bg-[#5b4ce6]" />
 
-                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#118778]">
+                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#5b4ce6]">
                   What you can expect
                 </p>
 
-                <span className="h-px w-8 bg-[#118778]" />
+                <span className="h-px w-8 bg-[#5b4ce6]" />
 
               </div>
 
@@ -746,7 +746,7 @@ export default function CareerPage() {
                   className="career-expect-card group min-h-[250px] rounded-[22px] border p-7 transition duration-300"
                 >
 
-                  <div className="grid size-11 place-items-center rounded-xl border border-[#118778]/15 bg-[#118778]/5 text-lg text-[#118778] transition duration-300 group-hover:bg-[#118778] group-hover:text-white">
+                  <div className="grid size-11 place-items-center rounded-xl border border-[#5b4ce6]/15 bg-[#5b4ce6]/5 text-lg text-[#5b4ce6] transition duration-300 group-hover:bg-[#5b4ce6] group-hover:text-white">
                     {benefit.icon}
                   </div>
 
@@ -827,9 +827,9 @@ export default function CareerPage() {
 
               <div className="flex items-center gap-3">
 
-                <span className="h-px w-8 bg-[#118778]" />
+                <span className="h-px w-8 bg-[#5b4ce6]" />
 
-                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#118778]">
+                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#5b4ce6]">
                   Our process
                 </p>
 
@@ -888,9 +888,9 @@ export default function CareerPage() {
 
               <div className="flex items-center gap-3">
 
-                <span className="h-px w-8 bg-[#118778]" />
+                <span className="h-px w-8 bg-[#5b4ce6]" />
 
-                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#118778]">
+                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#5b4ce6]">
                   Careers FAQ
                 </p>
 
@@ -928,7 +928,7 @@ export default function CareerPage() {
                       {faq.question}
                     </span>
 
-                    <span className="ml-auto grid size-8 shrink-0 place-items-center rounded-full border border-gray-300 bg-white text-lg font-light text-black transition duration-300 group-open:rotate-45 group-open:border-[#118778] group-open:text-[#118778]">
+                    <span className="ml-auto grid size-8 shrink-0 place-items-center rounded-full border border-gray-300 bg-white text-lg font-light text-black transition duration-300 group-open:rotate-45 group-open:border-[#5b4ce6] group-open:text-[#5b4ce6]">
                       +
                     </span>
 
@@ -995,7 +995,7 @@ export default function CareerPage() {
 
           #career-page .career-benefit-card,
           #career-page .career-role-card {
-            --card-accent: #118778;
+            --card-accent: #5b4ce6;
             --card-soft: #e8edff;
             border-color: #dce4ff;
             background: #f4f6ff;
@@ -1088,7 +1088,7 @@ export default function CareerPage() {
             .career-principles,
             .career-benefits,
             .career-qualities-process
-          ) [class*="text-[#118778]"] {
+          ) [class*="text-[#5b4ce6]"] {
             color: var(--section-accent);
           }
 
@@ -1097,7 +1097,7 @@ export default function CareerPage() {
             .career-principles,
             .career-benefits,
             .career-qualities-process
-          ) [class*="bg-[#118778]"] {
+          ) [class*="bg-[#5b4ce6]"] {
             background-color: var(--section-accent);
           }
 
@@ -1106,7 +1106,7 @@ export default function CareerPage() {
             .career-principles,
             .career-benefits,
             .career-qualities-process
-          ) [class*="border-[#118778]"] {
+          ) [class*="border-[#5b4ce6]"] {
             border-color: color-mix(in srgb, var(--section-accent) 28%, transparent);
           }
 
@@ -1205,7 +1205,7 @@ export default function CareerPage() {
             background: #683486;
           }
 
-          /* Career page: use the same crisp, teal-led visual language as the homepage. */
+          /* Career page: use the same crisp, violet-accented visual language as the homepage. */
           #career-page {
             color: #17231f;
             background: #fff;
@@ -1249,8 +1249,8 @@ export default function CareerPage() {
           }
 
           #career-page > section:first-child h1 span {
-            color: #118778;
-            -webkit-text-fill-color: #118778;
+            color: #5b4ce6;
+            -webkit-text-fill-color: #5b4ce6;
           }
 
           #career-page :is(.career-benefit-card, .career-role-card, .career-work-card, .career-expect-card, .career-quality-card) {
@@ -1272,7 +1272,7 @@ export default function CareerPage() {
 
           #career-page .career-benefit-card:nth-child(n),
           #career-page .career-role-card:nth-child(n) {
-            --card-accent: #118778;
+            --card-accent: #5b4ce6;
             --card-soft: #e9f7f2;
             border-color: #d9e8e3;
             background: #ffffff;
@@ -1284,14 +1284,14 @@ export default function CareerPage() {
           #career-page .career-neutral-index,
           #career-page .career-faq-index {
             border-color: #b9dcd2 !important;
-            background: #effaf6 !important;
-            color: #0e7669 !important;
-            -webkit-text-fill-color: #0e7669 !important;
+            background: #f3f1ff !important;
+            color: #4d3ec9 !important;
+            -webkit-text-fill-color: #4d3ec9 !important;
           }
 
           #career-page .career-role-card > div:first-child {
             height: 3px;
-            background: #118778;
+            background: #5b4ce6;
             opacity: 1;
           }
 
@@ -1321,17 +1321,17 @@ export default function CareerPage() {
           }
 
           #career-page :is(.career-principles, .career-qualities-process) [class*="bg-black"] {
-            background: #118778;
+            background: #5b4ce6;
           }
 
-          #career-page :is(.career-principles, .career-qualities-process) [class*="text-[#118778]"] {
-            color: #118778;
-            -webkit-text-fill-color: #118778;
+          #career-page :is(.career-principles, .career-qualities-process) [class*="text-[#5b4ce6]"] {
+            color: #5b4ce6;
+            -webkit-text-fill-color: #5b4ce6;
           }
 
           #career-page .career-principles-kicker p {
-            color: #0e7669;
-            -webkit-text-fill-color: #0e7669;
+            color: #4d3ec9;
+            -webkit-text-fill-color: #4d3ec9;
           }
 
           #career-page :is(.career-principles-list, .career-process-list) {
@@ -1345,8 +1345,8 @@ export default function CareerPage() {
           #career-page :is(.career-principles, .career-qualities-process) :is(.career-neutral-index, .career-quality-card) {
             border-color: #d9e8e3 !important;
             background: #ffffff !important;
-            color: #0e7669 !important;
-            -webkit-text-fill-color: #0e7669 !important;
+            color: #4d3ec9 !important;
+            -webkit-text-fill-color: #4d3ec9 !important;
           }
 
           #career-page .career-contact {
@@ -1362,14 +1362,14 @@ export default function CareerPage() {
           }
 
           #career-page .career-contact > div > p:first-child {
-            color: #0e7669;
-            -webkit-text-fill-color: #0e7669;
+            color: #4d3ec9;
+            -webkit-text-fill-color: #4d3ec9;
           }
 
           #career-page .career-contact a,
           #career-page > section:first-child a[href="#open-roles"] {
-            border-color: #118778;
-            background: #118778;
+            border-color: #5b4ce6;
+            background: #5b4ce6;
             color: #fff;
           }
 
@@ -1379,7 +1379,7 @@ export default function CareerPage() {
           }
 
           #career-page .career-benefits {
-            --section-accent: #118778;
+            --section-accent: #5b4ce6;
             --section-soft: #e9f7f2;
             background: #ffffff !important;
           }
@@ -1392,7 +1392,7 @@ export default function CareerPage() {
           #career-page .career-benefits .career-expect-card > div:first-child {
             border-color: #b9dcd2;
             background: #e9f7f2;
-            color: #0e7669;
+            color: #4d3ec9;
           }
 
           @media (max-width: 640px) {

@@ -1,0 +1,477 @@
+﻿/* The violet brand accent is limited to the homepage and Solutions routes. */
+.public-accent-header,
+.home-design-four:not(.footer-home-shell),
+.hcr-site,
+#explore-capabilities-page {
+  font-family: var(--font-site-sans), ui-sans-serif, system-ui, sans-serif;
+  --vozon-accent: #171719;
+  --vozon-accent-hover: #333437;
+  --vozon-accent-soft: #f1f1f2;
+  --vozon-accent-on-dark: #d0d0d2;
+}
+
+.home-design-four:not(.footer-home-shell) :is(h1, h2, h3, h4, p, a, button, input, textarea, select, label, summary, li, small, strong) {
+  font-family: inherit !important;
+}
+
+/* Match public page titles and hero copy to the homepage's 38–72px / 16–19px scale. */
+.marketing-site.marketing-site :is(
+  main h1, #about-page h1, #career-page h1, #partners-page h1, #contact-page h1,
+  #integration-page h1, #integration-detail-page h1, .hcr-page h1, .vp-page h1,
+  .pricing-page-refresh h1, #blog-page h1, #blog-article-page h1
+) {
+  font-size: clamp(38px, 4.4vw, 72px) !important;
+  font-weight: 800 !important;
+  line-height: 1.12 !important;
+  letter-spacing: -.04em !important;
+}
+
+.marketing-site.marketing-site :is(
+  .vp-page .vp-section-head h2, .vp-page .vp-journey-inner h2,
+  .hcr-story-copy h2, .hcr-video-section h2, .hcr-pricing h2,
+  .hcr-platform h2, .hcr-launch h2, .hcr-faq h2,
+  #integration-page h2, #integration-detail-page h2,
+  #about-page h2, #career-page h2, #partners-page h2
+) {
+  font-size: clamp(34px, 3.8vw, 54px) !important;
+  line-height: 1.08 !important;
+}
+
+.marketing-site.marketing-site :is(
+  .hcr-hero-copy > p:not(.hcr-kicker), .vp-hub-intro,
+  .pricing-page-refresh .heroCopy > p,
+  #integration-page > section:first-of-type > div > p,
+  #integration-detail-page > section:first-of-type > div > div:nth-child(2) > div:first-child > p,
+  #about-page > section:first-of-type > div > div:first-child > p,
+  #partners-page > section:first-of-type > div > div:first-child > p
+) {
+  font-size: clamp(16px, 1.25vw, 19px) !important;
+  line-height: 1.55 !important;
+}
+
+@media (max-width: 700px) {
+  .marketing-site.marketing-site :is(
+    main h1, #about-page h1, #career-page h1, #partners-page h1, #contact-page h1,
+    #integration-page h1, #integration-detail-page h1, .hcr-page h1, .vp-page h1,
+    .pricing-page-refresh h1, #blog-page h1, #blog-article-page h1
+  ) { font-size: clamp(29px, 8.2vw, 38px) !important; }
+
+  .marketing-site.marketing-site :is(
+    .vp-page .vp-section-head h2, .vp-page .vp-journey-inner h2,
+    .hcr-story-copy h2, .hcr-video-section h2, .hcr-pricing h2,
+    .hcr-platform h2, .hcr-launch h2, .hcr-faq h2,
+    #integration-page h2, #integration-detail-page h2,
+    #about-page h2, #career-page h2, #partners-page h2
+  ) { font-size: clamp(28px, 7.2vw, 38px) !important; }
+}
+
+#explore-capabilities-page,
+.hcr-site {
+  --website-accent: #171719;
+  --website-accent-dark: #333437;
+  --website-accent-soft: #f1f1f2;
+}
+
+.public-accent-header .public-header-start {
+  background: var(--vozon-accent);
+  box-shadow: 0 6px 18px rgb(23 23 25 / 12%);
+}
+.public-accent-header .public-header-start:hover { background: var(--vozon-accent-hover); }
+.public-accent-header nav[aria-label="Main navigation"] :is(a, button):hover,
+.public-accent-header nav[aria-label="Main navigation"] button[aria-expanded="true"] { color: var(--vozon-accent); }
+.public-accent-header > div:first-child a { color: var(--vozon-accent-on-dark); }
+.public-accent-header :is(a, button):focus-visible { outline: 2px solid var(--vozon-accent); outline-offset: 3px; }
+
+.home-design-four:not(.footer-home-shell) .agentvoice-try-button:not(.is-active) {
+  background: var(--vozon-accent);
+  box-shadow: 0 6px 18px rgb(23 23 25 / 12%);
+}
+.home-design-four:not(.footer-home-shell) .agentvoice-try-button:not(.is-active):hover { background: var(--vozon-accent-hover); }
+.home-design-four:not(.footer-home-shell) .agentvoice-demo-control:focus-within { border-color: var(--vozon-accent); }
+.home-design-four:not(.footer-home-shell) .agentvoice-channel-icon.is-voice { background: var(--vozon-accent); }
+.home-design-four:not(.footer-home-shell) .agentvoice-channel-icon.is-sms { background: #171719; }
+.home-design-four:not(.footer-home-shell) .agentvoice-channel-kicker::before {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--vozon-accent);
+  content: "";
+  vertical-align: 2px;
+}
+.home-design-four:not(.footer-home-shell) .use-case-tabs button[aria-selected="true"],
+.home-design-four:not(.footer-home-shell) .use-case-cta,
+.home-design-four:not(.footer-home-shell) .workflow-canvas-tabs button.is-active,
+.home-design-four:not(.footer-home-shell) .workflow-canvas-mode > span.is-active,
+.home-design-four:not(.footer-home-shell) .workflow-canvas-languages button.is-active,
+.home-design-four:not(.footer-home-shell) .lead-outcome-booking-icon {
+  border-color: var(--vozon-accent);
+  background: var(--vozon-accent);
+  color: #fff;
+}
+.home-design-four:not(.footer-home-shell) .use-case-cta:hover { background: var(--vozon-accent-hover); }
+.home-design-four:not(.footer-home-shell) .use-case-option.is-selected .use-case-option-number,
+.home-design-four:not(.footer-home-shell) .use-case-result i {
+  background: var(--vozon-accent-soft);
+  color: var(--vozon-accent);
+}
+.home-design-four:not(.footer-home-shell) .use-case-tabs button:focus-visible,
+.home-design-four:not(.footer-home-shell) .use-case-option button:focus-visible,
+.home-design-four:not(.footer-home-shell) .workflow-canvas-tabs button:focus-visible { outline-color: var(--vozon-accent); }
+.home-design-four:not(.footer-home-shell) .integrations-showcase-heading > span { color: var(--vozon-accent); }
+.home-design-four:not(.footer-home-shell) .integrations-app-card:hover { border-color: #bcbec1; box-shadow: 0 12px 26px rgb(23 23 25 / 10%); }
+.home-design-four:not(.footer-home-shell) .design-four-step-number { background: var(--vozon-accent); color: #fff; }
+
+.hcr-site .hcr-text-link,
+.hcr-site :is(.hcr-story-copy > a, .hcr-pricing-grid a, .hcr-launch-options a) {
+  border-color: #c5c5c7;
+  color: var(--vozon-accent);
+}
+.hcr-site :is(.hcr-text-link, .hcr-story-copy > a, .hcr-pricing-grid a, .hcr-launch-options a):hover { border-color: var(--vozon-accent); color: var(--vozon-accent-hover); }
+.hcr-site .hcr-reminder-flow i,
+.hcr-site .hcr-intake-list b,
+.hcr-site .hcr-player button { background: var(--vozon-accent); color: #fff; }
+.hcr-site .hcr-platform-grid > div:first-child > span,
+.hcr-site .sln-audience-grid span { color: var(--vozon-accent); }
+.hcr-site .hcr-proof-grid > div:first-child strong { color: var(--vozon-accent-on-dark); }
+.hcr-site .sln-call-wave i:nth-child(4n),
+.hcr-site .hcr-player .hcr-waveform i.is-played { background: var(--vozon-accent); }
+.hcr-site .hcr-pricing-grid > div:first-child { border-color: #d0d0d2; }
+.hcr-site .hcr-faq details[open] summary { color: var(--vozon-accent); }
+.hcr-site :is(a, button, summary):focus-visible { outline: 2px solid var(--vozon-accent); outline-offset: 3px; }
+
+#explore-capabilities-page .text-teal-700,
+#explore-capabilities-page .text-teal-600 { color: #171719; }
+#explore-capabilities-page .text-teal-300 { color: #d0d0d2; }
+#explore-capabilities-page .bg-teal-500,
+#explore-capabilities-page .bg-teal-600,
+#explore-capabilities-page a[href="/contact?request=demo"] { background: #171719; }
+#explore-capabilities-page .bg-teal-50 { background: #f1f1f2; }
+#explore-capabilities-page .business-console-mark { color: #fff !important; }
+#explore-capabilities-page a[href="/contact?request=demo"]:hover,
+#explore-capabilities-page a[href="/contact"]:hover { background: #333437; }
+#explore-capabilities-page a[href="/contact"]:is(:not([class*="border"])) { background: #171719; }
+
+/* The pre-footer card keeps its original black and white glow. */
+.home-design-four:not(.footer-home-shell) .design-four-footer-main .design-four-footer-demo,
+.hcr-site .footer-home-shell .design-four-footer-main .design-four-footer-demo {
+  border-color: #171719;
+  background: #171719;
+  color: #fff;
+}
+.home-design-four:not(.footer-home-shell) .design-four-footer-main .design-four-footer-demo:hover,
+.hcr-site .footer-home-shell .design-four-footer-main .design-four-footer-demo:hover {
+  border-color: #333437;
+  background: #333437;
+  color: #fff;
+}
+.home-design-four:not(.footer-home-shell) .design-four-footer,
+.hcr-site .footer-home-shell .design-four-footer,
+.marketing-site:has(#explore-capabilities-page) .footer-home-shell .design-four-footer {
+  background: radial-gradient(ellipse 55% 36% at 52% 112%, rgb(255 255 255 / 16%) 0%, transparent 80%), radial-gradient(ellipse 72% 90% at 93% 4%, #333 0%, #191919 46%, #090909 100%);
+}
+
+.marketing-site:has(#explore-capabilities-page) .footer-home-shell .design-four-footer-demo {
+  border-color: #171719;
+  background: #171719;
+  color: #fff;
+}
+
+/* The Solutions overview uses the same card as Home and industry pages. */
+.marketing-site:has(#explore-capabilities-page) .footer-home-shell .site-pre-footer-cta {
+  margin-top: 72px !important;
+  margin-bottom: 72px;
+  overflow: hidden !important;
+}
+.marketing-site:has(#explore-capabilities-page) .footer-home-shell .site-pre-footer-cta::before,
+.marketing-site:has(#explore-capabilities-page) .footer-home-shell .site-pre-footer-cta > div::after {
+  display: none !important;
+  content: none !important;
+}
+.marketing-site:has(#explore-capabilities-page) .footer-home-shell .site-pre-footer-cta::after {
+  z-index: 0;
+  top: 50% !important;
+  right: 4%;
+  left: auto !important;
+  color: #fff;
+  content: "V" !important;
+  font-size: clamp(220px, 29vw, 390px) !important;
+  font-weight: 800;
+  line-height: .8;
+  letter-spacing: -.17em;
+  opacity: .16;
+  transform: translateY(-50%) !important;
+  mix-blend-mode: difference;
+}
+.marketing-site:has(#explore-capabilities-page) .footer-home-shell .site-pre-footer-cta > div {
+  position: relative !important;
+}
+@media (max-width: 640px) {
+  .marketing-site:has(#explore-capabilities-page) .footer-home-shell .site-pre-footer-cta { margin-top: 48px !important; margin-bottom: 48px; }
+  .marketing-site:has(#explore-capabilities-page) .footer-home-shell .site-pre-footer-cta::after { right: -7%; font-size: 220px !important; opacity: .09; }
+}
+
+/* The compact Vozon voice mark appears in Solutions previews. */
+.hcr-site :is(.hcr-language-orb, .hcr-phone-head > span:first-child) img,
+#explore-capabilities-page .business-console-mark img {
+  display: block;
+  width: 82%;
+  height: 82%;
+  object-fit: contain;
+}
+
+/* Content actions use the same button language as the homepage. */
+.hcr-site .hcr-page :is(.hcr-text-link, .hcr-story-copy > a, .hcr-pricing-grid a, .hcr-launch-options a) {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 0 18px;
+  border: 1px solid #d0d0d2;
+  border-radius: 999px;
+  background: #fff;
+  color: #333437;
+  font-size: 12px;
+  font-weight: 750;
+  line-height: 1.2;
+  text-decoration: none;
+  box-shadow: 0 5px 15px rgb(91 76 230 / 8%);
+  transition: transform 160ms ease, background 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+.hcr-site .hcr-page :is(.hcr-text-link, .hcr-launch-options > div:first-child a) {
+  border-color: #171719;
+  background: #171719;
+  color: #fff;
+  box-shadow: 0 8px 20px rgb(91 76 230 / 17%);
+}
+.hcr-site .hcr-page :is(.hcr-text-link, .hcr-story-copy > a, .hcr-pricing-grid a, .hcr-launch-options a):hover {
+  transform: translateY(-2px);
+  border-color: #333437;
+  background: #f1f1f2;
+  color: #333437;
+  box-shadow: 0 9px 20px rgb(91 76 230 / 14%);
+}
+.hcr-site .hcr-page :is(.hcr-text-link, .hcr-launch-options > div:first-child a):hover {
+  background: #333437;
+  color: #fff;
+}
+.hcr-site .hcr-page :is(.hcr-text-link, .hcr-story-copy > a, .hcr-pricing-grid a, .hcr-launch-options a) > span[aria-hidden="true"] {
+  display: inline-block;
+  width: 14px;
+  overflow: hidden;
+  font-size: 0;
+  line-height: 0;
+}
+.hcr-site .hcr-page :is(.hcr-text-link, .hcr-story-copy > a, .hcr-pricing-grid a, .hcr-launch-options a) > span[aria-hidden="true"]::after {
+  content: "â†—";
+  font-size: 15px;
+  line-height: 1;
+}
+
+.home-design-four:not(.footer-home-shell) .integrations-showcase-link,
+.home-design-four:not(.footer-home-shell) .privacy-assurance-link {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 0 19px;
+  border: 1px solid #d0d0d2;
+  border-radius: 999px;
+  background: #fff;
+  color: #333437;
+  text-decoration: none;
+  box-shadow: 0 5px 15px rgb(91 76 230 / 8%);
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+.home-design-four:not(.footer-home-shell) :is(.integrations-showcase-link, .privacy-assurance-link):hover {
+  transform: translateY(-2px);
+  border-color: #171719;
+  background: #f1f1f2;
+  color: #333437;
+  text-decoration: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hcr-site .hcr-page :is(.hcr-text-link, .hcr-story-copy > a, .hcr-pricing-grid a, .hcr-launch-options a),
+  .home-design-four:not(.footer-home-shell) :is(.integrations-showcase-link, .privacy-assurance-link) { transition: none; }
+}
+
+/* Public page headings follow the homepage's responsive type scale. */
+.marketing-site.marketing-site :is(
+  main h1,
+  #about-page h1,
+  #career-page h1,
+  #partners-page h1,
+  #contact-page h1,
+  #integration-page h1,
+  #integration-detail-page h1,
+  .hcr-page h1,
+  .vp-page h1,
+  .pricing-page-refresh h1,
+  #blog-page h1,
+  #blog-article-page h1
+) {
+  font-size: clamp(38px, 4.4vw, 72px) !important;
+  line-height: 1.12 !important;
+}
+
+.marketing-site.marketing-site :is(
+  .vp-page .vp-section-head h2,
+  .vp-page .vp-journey-inner h2,
+  .hcr-story-copy h2,
+  .hcr-video-section h2,
+  .hcr-pricing h2,
+  .hcr-platform h2,
+  .hcr-launch h2,
+  .hcr-faq h2,
+  #integration-page h2,
+  #integration-detail-page h2,
+  #about-page h2,
+  #career-page h2,
+  #partners-page h2
+) {
+  font-size: clamp(34px, 3.8vw, 54px) !important;
+  line-height: 1.08 !important;
+}
+
+.marketing-site.marketing-site :is(
+  .hcr-hero-copy > p:not(.hcr-kicker),
+  .vp-hub-intro,
+  .pricing-page-refresh .heroCopy > p,
+  #integration-page > section:first-of-type > div > p,
+  #integration-detail-page > section:first-of-type > div > p,
+  #about-page > section:first-of-type p,
+  #partners-page > section:first-of-type p
+) {
+  font-size: clamp(16px, 1.25vw, 19px) !important;
+  line-height: 1.55 !important;
+}
+
+@media (max-width: 820px) {
+  .marketing-site.marketing-site :is(
+    main h1,
+    #about-page h1,
+    #career-page h1,
+    #partners-page h1,
+    #contact-page h1,
+    #integration-page h1,
+    #integration-detail-page h1,
+    .hcr-page h1,
+    .vp-page h1,
+    .pricing-page-refresh h1,
+    #blog-page h1,
+    #blog-article-page h1
+  ) {
+    font-size: clamp(36px, 5.8vw, 50px) !important;
+  }
+
+  .marketing-site.marketing-site :is(
+    .vp-page .vp-section-head h2,
+    .vp-page .vp-journey-inner h2,
+    .hcr-story-copy h2,
+    .hcr-video-section h2,
+    .hcr-pricing h2,
+    .hcr-platform h2,
+    .hcr-launch h2,
+    .hcr-faq h2,
+    #integration-page h2,
+    #integration-detail-page h2,
+    #about-page h2,
+    #career-page h2,
+    #partners-page h2
+  ) { font-size: clamp(30px, 5vw, 44px) !important; }
+}
+
+@media (max-width: 480px) {
+  .marketing-site.marketing-site :is(
+    main h1,
+    #about-page h1,
+    #career-page h1,
+    #partners-page h1,
+    #contact-page h1,
+    #integration-page h1,
+    #integration-detail-page h1,
+    .hcr-page h1,
+    .vp-page h1,
+    .pricing-page-refresh h1,
+    #blog-page h1,
+    #blog-article-page h1
+  ) {
+    font-size: clamp(29px, 8.2vw, 34px) !important;
+    letter-spacing: -.03em !important;
+  }
+
+  .marketing-site.marketing-site :is(
+    .vp-page .vp-section-head h2,
+    .vp-page .vp-journey-inner h2,
+    .hcr-story-copy h2,
+    .hcr-video-section h2,
+    .hcr-pricing h2,
+    .hcr-platform h2,
+    .hcr-launch h2,
+    .hcr-faq h2,
+    #integration-page h2,
+    #integration-detail-page h2,
+    #about-page h2,
+    #career-page h2,
+    #partners-page h2
+  ) { font-size: clamp(27px, 7.2vw, 36px) !important; }
+}
+
+/* Keep page heroes composed like Home: centered eyebrow, headline, and intro. */
+.hcr-site.hcr-site .hcr-hero-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.hcr-site.hcr-site .hcr-hero-copy h1 {
+  max-width: 980px;
+  font-size: clamp(38px, 4.4vw, 72px) !important;
+  font-weight: 800 !important;
+  line-height: 1.12 !important;
+  letter-spacing: -.04em !important;
+}
+.hcr-site.hcr-site .hcr-hero-copy > p:not(.hcr-kicker) {
+  max-width: 760px;
+  font-size: clamp(16px, 1.25vw, 19px) !important;
+  line-height: 1.55 !important;
+}
+
+.vp-page .vp-hub-hero,
+.vp-page .vp-detail-hero {
+  text-align: center;
+}
+.vp-page .vp-hub-hero h1,
+.vp-page .vp-detail-hero h1 {
+  margin-inline: auto;
+  font-size: clamp(38px, 4.4vw, 72px) !important;
+  font-weight: 800 !important;
+  line-height: 1.12 !important;
+  letter-spacing: -.04em !important;
+}
+.vp-page .vp-hub-intro,
+.vp-page .vp-detail-lead {
+  margin-inline: auto;
+  font-size: clamp(16px, 1.25vw, 19px) !important;
+  line-height: 1.55 !important;
+}
+.vp-page .vp-hero-actions { justify-content: center; }
+.vp-page .vp-breadcrumb { justify-content: center; }
+
+@media (max-width: 820px) {
+  .hcr-site.hcr-site .hcr-hero-copy h1,
+  .vp-page .vp-hub-hero h1,
+  .vp-page .vp-detail-hero h1 { font-size: clamp(36px, 5.8vw, 50px) !important; }
+}
+@media (max-width: 480px) {
+  .hcr-site.hcr-site .hcr-hero-copy h1,
+  .vp-page .vp-hub-hero h1,
+  .vp-page .vp-detail-hero h1 {
+    font-size: clamp(29px, 8.2vw, 34px) !important;
+    letter-spacing: -.03em !important;
+  }
+}

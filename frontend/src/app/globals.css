@@ -6,6 +6,10 @@ html:not([data-brand-source="white_label"]) .platform-brand-logo {
   filter: brightness(0) saturate(100%) invert(42%) sepia(42%) saturate(920%) hue-rotate(123deg) brightness(88%) contrast(91%);
 }
 
+html:not([data-brand-source="white_label"]) .landing-header-logo .platform-brand-logo {
+  filter: brightness(0) saturate(100%);
+}
+
 @source not "../../.runlogs";
 
 .login-auth-form input:-webkit-autofill,
