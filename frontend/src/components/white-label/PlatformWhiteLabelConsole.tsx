@@ -270,7 +270,19 @@ export function PlatformWhiteLabelConsole() {
 
     <div className="mx-auto max-w-[1720px] px-4 py-6 sm:px-6 lg:py-8">
       <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between"><div><p className="text-xs font-bold uppercase tracking-[0.16em] text-[#118778]">White-label operations</p><h1 className="mt-2 text-3xl font-bold tracking-[-0.035em] text-[#11241f] sm:text-4xl">Partner control centre</h1><p className="mt-2 max-w-2xl text-sm leading-6 text-[#687974]">Approve partners, manage their commercial terms, and keep every account operational from one place.</p></div><button className={`${primary} w-fit`} onClick={() => setCreateOpen(true)}><Icon name="plus" />Add white-label partner</button></div>
-      {notice ? <div className={`mt-5 flex items-start justify-between gap-4 rounded-lg border px-4 py-3 text-sm font-semibold ${notice.error ? "border-[#f1c9c4] bg-[#fff5f3] text-[#9d352d]" : "border-[#bfe3d5] bg-[#effaf6] text-[#17684f]"}`}><span>{notice.text}</span><button aria-label="Dismiss message" className="opacity-60 hover:opacity-100" onClick={() => setNotice(null)}><Icon name="close" /></button></div> : null}
+      {notice ? (
+        <div className={`mt-5 flex flex-wrap items-center justify-between gap-4 rounded-lg border px-4 py-3 text-sm font-semibold ${notice.error ? "border-[#f1c9c4] bg-[#fff5f3] text-[#9d352d]" : "border-[#bfe3d5] bg-[#effaf6] text-[#17684f]"}`}>
+          <div className="flex flex-wrap items-center gap-2">
+            <span>{notice.text}</span>
+            {notice.text.includes("two-factor") && (
+              <a href="/dashboard/profile#two-factor" className="ml-2 rounded-md bg-[#9d352d] px-2.5 py-1 text-xs font-bold text-white transition hover:bg-[#7e2922]">
+                Activate Authenticator in Profile →
+              </a>
+            )}
+          </div>
+          <button aria-label="Dismiss message" className="opacity-60 hover:opacity-100" onClick={() => setNotice(null)}><Icon name="close" /></button>
+        </div>
+      ) : null}
       <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4"><Metric icon="partners" label="Partner accounts" value={accounts.length} note="All approved records" /><Metric icon="active" label="Active partners" value={activePartners} note={`${accounts.length - activePartners} in setup or inactive`} /><Metric icon="customers" label="Customer workspaces" value={customerTotal} note="Across every partner" /><Metric icon="attention" label="Needs attention" value={needsAttention} note="Billing or lifecycle review" /></div>
 
       <div className="mt-6 grid min-w-0 gap-5 xl:grid-cols-[310px_minmax(0,1fr)]">

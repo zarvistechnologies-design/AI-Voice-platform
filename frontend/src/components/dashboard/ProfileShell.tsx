@@ -781,10 +781,25 @@ export function ProfileShell() {
                         )}
                       </div>
 
-                      <div className="grid gap-4 rounded-2xl border border-[#dfe7e4] bg-[#f7fbfa] p-4 sm:p-5 lg:grid-cols-[minmax(0,1fr)_260px]">
+                      <div className="grid gap-5 rounded-2xl border border-[#dfe7e4] bg-[#f7fbfa] p-4 sm:p-5 lg:grid-cols-[180px_minmax(0,1fr)_260px]">
+                        <div className="flex flex-col items-center justify-center rounded-xl border border-[#d9e8e5] bg-white p-3 text-center">
+                          {totpUri ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              alt="Scan with Authenticator app"
+                              className="size-36 rounded-lg object-contain"
+                              src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(totpUri)}`}
+                            />
+                          ) : (
+                            <div className="grid size-36 place-items-center rounded-lg bg-slate-50 text-xs text-slate-400">QR Code</div>
+                          )}
+                          <span className="mt-2 text-[11px] font-bold text-slate-600">
+                            Scan with phone app
+                          </span>
+                        </div>
                         <div className="min-w-0">
                           <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#087f75]">
-                            Manual setup key
+                            Or enter key manually
                           </span>
                           <div className="mt-2 flex min-w-0 items-center gap-2 rounded-xl border border-[#d9e8e5] bg-white p-2.5">
                             <code className="min-w-0 flex-1 break-all px-1 text-xs font-bold tracking-wider text-slate-800">
@@ -806,8 +821,8 @@ export function ProfileShell() {
                             Open in authenticator app
                           </a>
                           <p className="mt-3 text-xs leading-5 text-slate-500">
-                            Add this key to Google Authenticator, Microsoft
-                            Authenticator, Authy, or another TOTP app.
+                            Scan the QR code with Google Authenticator, Microsoft
+                            Authenticator, Authy, or copy the key above.
                           </p>
                         </div>
                         <div>
@@ -958,7 +973,7 @@ export function ProfileShell() {
                         </div>
                       </div>
                       <button
-                        className="min-h-11 rounded-xl bg-[#ffffff] px-5 text-sm font-bold text-white transition hover:bg-[#123a33] disabled:cursor-not-allowed disabled:opacity-50"
+                        className="min-h-11 rounded-xl bg-[#118778] px-5 text-sm font-bold text-white shadow-sm transition hover:bg-[#0e6f62] disabled:cursor-not-allowed disabled:opacity-50"
                         disabled={activeAction !== null}
                         onClick={() => void beginTwoFactorSetup()}
                         type="button"
