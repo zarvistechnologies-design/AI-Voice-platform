@@ -730,7 +730,7 @@ export function ProfileShell() {
                     </p>
                     {!session.emailVerified ? (
                       <button
-                        className="mt-4 inline-flex min-h-10 items-center justify-center rounded-xl bg-[#ffffff] px-4 text-xs font-bold text-white transition hover:bg-[#123a33] disabled:cursor-not-allowed disabled:opacity-50"
+                        className="mt-4 inline-flex min-h-10 items-center justify-center rounded-xl bg-[#14231f] px-4 text-xs font-bold text-white transition hover:bg-[#123a33] disabled:cursor-not-allowed disabled:opacity-50"
                         disabled={activeAction !== null}
                         onClick={() => void resendVerificationEmail()}
                         type="button"
@@ -958,7 +958,7 @@ export function ProfileShell() {
                         </div>
                       </div>
                       <button
-                        className="min-h-11 rounded-xl bg-[#ffffff] px-5 text-sm font-bold text-white transition hover:bg-[#123a33] disabled:cursor-not-allowed disabled:opacity-50"
+                        className="min-h-11 rounded-xl bg-[#14231f] px-5 text-sm font-bold text-white transition hover:bg-[#123a33] disabled:cursor-not-allowed disabled:opacity-50"
                         disabled={activeAction !== null}
                         onClick={() => void beginTwoFactorSetup()}
                         type="button"

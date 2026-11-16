@@ -1,5 +1,167 @@
 @import "tailwindcss";
 
+/* WhatsApp workspace: light surfaces and restrained controls across all seven tools. */
+.whatsapp-workspace .whatsapp-view {
+  color: #202722;
+}
+
+.whatsapp-workspace .whatsapp-view :is(div, section, form)[class*="bg-white"][class*="rounded-2xl"],
+.whatsapp-workspace .whatsapp-view :is(div, section, form)[class*="bg-white"][class*="rounded-3xl"] {
+  border-color: #e3e7e4;
+  border-radius: 14px;
+  box-shadow: none;
+}
+
+.whatsapp-workspace .whatsapp-view :is(h3, h4) {
+  letter-spacing: -0.01em;
+}
+
+.whatsapp-workspace .whatsapp-view [class~="text-xs"] {
+  font-size: 13px;
+}
+
+.whatsapp-workspace .whatsapp-view [class~="text-[11px]"] {
+  font-size: 12px;
+}
+
+.whatsapp-workspace .whatsapp-view :is(input:not([type="checkbox"]), select, textarea) {
+  max-width: 100%;
+  min-height: 38px;
+  font-size: 13px;
+}
+
+.whatsapp-workspace .whatsapp-view :is(input:not([type="checkbox"]), select, textarea):focus-visible,
+.whatsapp-workspace .whatsapp-view button:focus-visible,
+.whatsapp-workspace .whatsapp-view a:focus-visible {
+  outline: 2px solid #599d7a;
+  outline-offset: 2px;
+}
+
+.whatsapp-workspace .whatsapp-view button:not(:disabled) {
+  cursor: pointer;
+}
+
+.whatsapp-workspace .whatsapp-view button:disabled {
+  cursor: not-allowed;
+}
+
+.whatsapp-workspace .whatsapp-view :is(.whatsapp-templates, .whatsapp-campaigns, .whatsapp-contacts, .whatsapp-agents, .whatsapp-forms, .whatsapp-flows) > div:first-child {
+  border-radius: 12px;
+  border-color: #e3e7e4;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.whatsapp-workspace .whatsapp-view :is(.whatsapp-templates, .whatsapp-campaigns, .whatsapp-contacts, .whatsapp-agents, .whatsapp-forms, .whatsapp-flows) > div:first-child button {
+  min-height: 34px;
+}
+
+.whatsapp-workspace .whatsapp-view button[class*="bg-[#118778]"],
+.whatsapp-workspace .whatsapp-view button[class*="bg-[#0d6e62]"],
+.whatsapp-workspace .whatsapp-view button[class*="bg-gradient-to-r"] {
+  border: 1px solid #dce3de;
+  background: #f7f8f7;
+  color: #263b30;
+  box-shadow: none;
+}
+
+.whatsapp-workspace .whatsapp-view button[class*="bg-[#118778]"]:hover,
+.whatsapp-workspace .whatsapp-view button[class*="bg-[#0d6e62]"]:hover,
+.whatsapp-workspace .whatsapp-view button[class*="bg-gradient-to-r"]:hover {
+  border-color: #c9d8cd;
+  background: #eef3ef;
+  color: #1c5938;
+}
+
+.whatsapp-workspace .whatsapp-view button[class*="bg-white"]:hover {
+  border-color: #cfd9d1;
+  background: #f7f8f7;
+}
+
+.whatsapp-workspace .whatsapp-view :is(input:not([type="checkbox"]), select, textarea) {
+  border-color: #dce3de;
+  background: #ffffff;
+  color: #253229;
+}
+
+.whatsapp-workspace .whatsapp-view table {
+  min-width: 540px;
+}
+
+.whatsapp-workspace .whatsapp-view :is(.whatsapp-templates, .whatsapp-campaigns, .whatsapp-contacts, .whatsapp-forms) [role="button"][class*="rounded-2xl"] {
+  border-radius: 14px;
+  box-shadow: none;
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+
+.whatsapp-workspace .whatsapp-view :is(.whatsapp-templates, .whatsapp-campaigns, .whatsapp-contacts, .whatsapp-forms) [role="button"][class*="rounded-2xl"]:hover {
+  border-color: #cdd9d0;
+  background: #fafbfa;
+}
+
+.whatsapp-workspace .whatsapp-view [class*="shadow-2xl"][class*="bg-white"][class*="rounded-3xl"] {
+  border-radius: 18px;
+}
+
+.whatsapp-workspace .whatsapp-view :is(.whatsapp-templates, .whatsapp-campaigns, .whatsapp-contacts, .whatsapp-agents, .whatsapp-forms, .whatsapp-flows) > div:first-child input[type="text"] {
+  min-height: 36px;
+  background: #ffffff;
+}
+
+@media (max-width: 1279px) {
+  .whatsapp-workspace .whatsapp-view [class*="lg:grid-cols-12"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .whatsapp-workspace .whatsapp-view [class*="lg:col-span-"] {
+    grid-column: auto !important;
+  }
+}
+
+@media (max-width: 639px) {
+  .whatsapp-workspace .whatsapp-view :is(.whatsapp-templates, .whatsapp-campaigns, .whatsapp-contacts, .whatsapp-forms, .whatsapp-flows) > div:first-child {
+    padding: 14px;
+  }
+
+  .whatsapp-workspace .whatsapp-view :is(.whatsapp-templates, .whatsapp-campaigns, .whatsapp-contacts, .whatsapp-forms, .whatsapp-flows) > div:first-child > div {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .whatsapp-workspace .whatsapp-view :is(.whatsapp-templates, .whatsapp-campaigns, .whatsapp-contacts, .whatsapp-forms, .whatsapp-flows) > div:first-child > div:last-child {
+    justify-content: flex-start;
+  }
+
+  .whatsapp-workspace .whatsapp-live-chat > div:first-child {
+    min-height: 0;
+  }
+
+  .whatsapp-workspace .whatsapp-live-chat > div:first-child > div:first-child {
+    max-height: 280px;
+    overflow-y: auto;
+  }
+
+  .whatsapp-workspace .whatsapp-flows [class*="min-h-[640px]"] {
+    min-height: 420px;
+  }
+
+  .whatsapp-workspace .whatsapp-view [class*="min-w-[200px]"],
+  .whatsapp-workspace .whatsapp-view [class*="min-w-[220px]"],
+  .whatsapp-workspace .whatsapp-view [class*="min-w-[240px]"] {
+    min-width: 0;
+  }
+
+  .whatsapp-workspace .whatsapp-view > div {
+    min-width: 0;
+  }
+
+  .whatsapp-workspace .whatsapp-view [class*="max-w-4xl"][class*="bg-white"],
+  .whatsapp-workspace .whatsapp-view [class*="max-w-3xl"][class*="bg-white"] {
+    max-height: calc(100dvh - 32px);
+    overflow-y: auto;
+  }
+}
+
 /* Keep the public Vozon mark aligned with the dashboard palette. Partner
    logos retain their uploaded colors on white-label hostnames. */
 html:not([data-brand-source="white_label"]) .platform-brand-logo {

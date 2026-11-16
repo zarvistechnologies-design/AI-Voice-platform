@@ -240,6 +240,111 @@ function SidebarIcon({ icon }: { icon: SidebarIconName }) {
   );
 }
 
+export type WhatsAppSubItem = {
+  label: string;
+  href: string;
+  icon:
+    | "templates"
+    | "contact-groups"
+    | "whatsapp-campaigns"
+    | "whatsapp-agents"
+    | "live-chat"
+    | "meta-forms"
+    | "flow-maker";
+};
+
+export const whatsAppSubItems: WhatsAppSubItem[] = [
+  { label: "Templates", href: "/dashboard/whatsapp/templates", icon: "templates" },
+  { label: "Contact Groups", href: "/dashboard/whatsapp/contact-groups", icon: "contact-groups" },
+  { label: "Campaigns", href: "/dashboard/whatsapp/campaigns", icon: "whatsapp-campaigns" },
+  { label: "Agents", href: "/dashboard/whatsapp/agents", icon: "whatsapp-agents" },
+  { label: "Live Chat", href: "/dashboard/whatsapp/live-chat", icon: "live-chat" },
+  { label: "Meta Forms", href: "/dashboard/whatsapp/meta-forms", icon: "meta-forms" },
+  { label: "Flow Maker", href: "/dashboard/whatsapp/flow-maker", icon: "flow-maker" },
+];
+
+function WhatsAppBrandIcon({ className = "size-5" }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M12.05 0C5.5 0 .16 5.34.16 11.89c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.9 11.9 0 0 0 5.69 1.45c6.55 0 11.89-5.34 11.89-11.9A11.82 11.82 0 0 0 12.05 0Zm0 21.78a9.88 9.88 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.88 9.88 0 1 1 8.37 4.63Z" />
+      <path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.4-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.91-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.28.3-1.04 1.02-1.04 2.48s1.06 2.88 1.21 3.07c.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.69.62.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35Z" />
+    </svg>
+  );
+}
+
+function WhatsAppSubIcon({ icon }: { icon: WhatsAppSubItem["icon"] }) {
+  const iconClass = "size-4.5 fill-none stroke-current stroke-[1.8]";
+  if (icon === "templates") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+    );
+  }
+  if (icon === "contact-groups") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M22 21v-2a4 4 0 0 0-3-3.87" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M16 3.13a4 4 0 0 1 0 7.75" />
+      </svg>
+    );
+  }
+  if (icon === "whatsapp-campaigns") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path strokeLinecap="round" strokeLinejoin="round" d="m3 11 18-5v12L3 14v-3z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
+      </svg>
+    );
+  }
+  if (icon === "whatsapp-agents") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <rect width="18" height="12" x="3" y="8" rx="2" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 2v6" />
+        <circle cx="12" cy="2" r="1.5" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M8 14h.01M16 14h.01M9 17h6" />
+      </svg>
+    );
+  }
+  if (icon === "live-chat") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M14 9a2 2 0 0 1-2 2H6l-3 3V4a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v5Z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M18 9h2a2 2 0 0 1 2 2v10l-3-3h-7a2 2 0 0 1-2-2v-2" />
+      </svg>
+    );
+  }
+  if (icon === "meta-forms") {
+    return (
+      <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+        <polyline strokeLinecap="round" strokeLinejoin="round" points="14 2 14 8 20 8" />
+        <line strokeLinecap="round" strokeLinejoin="round" x1="16" y1="13" x2="8" y2="13" />
+        <line strokeLinecap="round" strokeLinejoin="round" x1="16" y1="17" x2="8" y2="17" />
+        <polyline strokeLinecap="round" strokeLinejoin="round" points="10 9 9 9 8 9" />
+      </svg>
+    );
+  }
+  return (
+    <svg className={iconClass} viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="18" r="3" />
+      <circle cx="6" cy="6" r="3" />
+      <circle cx="18" cy="6" r="3" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M18 9v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V9" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 12v3" />
+    </svg>
+  );
+}
+
 type DashboardSidebarProps = {
   activeLabel?: string;
   userInitials: string;
@@ -281,41 +386,52 @@ export function DashboardSidebar({
   const rawLogo = brand.source === "white_label" ? (brand.logoDarkUrl || brand.logoUrl) : (isPartnerOrCustomer ? "" : brand.logoUrl);
   const effectiveLogoUrl = isPartnerOrCustomer && rawLogo.includes("logo_2.svg") ? "" : rawLogo;
 
-  const effectiveSidebarGroups = useMemo(() => [
-    ...sidebarGroups,
-    ...(isSuperAdmin || isWhiteLabelPartner
-      ? [
-          {
-            label: "Administration",
-            items: [
-              ...(isWhiteLabelPartner
-                ? [
-                    {
-                      label: "White Label",
-                      href: "/dashboard/white-label",
-                      icon: "whitelabel" as const,
-                    },
-                  ]
-                : []),
-              ...(isSuperAdmin
-                ? [
-                    {
-                      label: "Accounts & Payments",
-                      href: "/admin",
-                      icon: "shield" as const,
-                    },
-                    {
-                      label: "Platform Admin",
-                      href: "/platform-admin/white-label",
-                      icon: "shield" as const,
-                    },
-                  ]
-                : []),
-            ],
-          },
-        ]
-      : []),
-  ], [isSuperAdmin, isWhiteLabelPartner]);
+  const isWhatsAppRoute = optimisticPathname.startsWith("/dashboard/whatsapp");
+  const [whatsAppExpanded, setWhatsAppExpanded] = useState(true);
+
+  useEffect(() => {
+    if (optimisticPathname.startsWith("/dashboard/whatsapp")) {
+      setWhatsAppExpanded(true);
+    }
+  }, [optimisticPathname]);
+
+  const effectiveSidebarGroups = useMemo(() => {
+    return [
+      ...sidebarGroups,
+      ...(isSuperAdmin || isWhiteLabelPartner
+        ? [
+            {
+              label: "Administration",
+              items: [
+                ...(isWhiteLabelPartner
+                  ? [
+                      {
+                        label: "White Label",
+                        href: "/dashboard/white-label",
+                        icon: "whitelabel" as const,
+                      },
+                    ]
+                  : []),
+                ...(isSuperAdmin
+                  ? [
+                      {
+                        label: "Accounts & Payments",
+                        href: "/admin",
+                        icon: "shield" as const,
+                      },
+                      {
+                        label: "Platform Admin",
+                        href: "/platform-admin/white-label",
+                        icon: "shield" as const,
+                      },
+                    ]
+                  : []),
+              ],
+            },
+          ]
+        : []),
+    ];
+  }, [isSuperAdmin, isWhiteLabelPartner]);
 
   useEffect(() => {
     const preloadTimer = window.setTimeout(() => {
@@ -325,6 +441,11 @@ export function DashboardSidebar({
           prefetchedDashboardRoutes.add(item.href);
           router.prefetch(item.href);
         }
+      }
+      for (const item of whatsAppSubItems) {
+        if (prefetchedDashboardRoutes.has(item.href)) continue;
+        prefetchedDashboardRoutes.add(item.href);
+        router.prefetch(item.href);
       }
     }, 250);
     return () => window.clearTimeout(preloadTimer);
@@ -491,75 +612,204 @@ export function DashboardSidebar({
           className="flex min-w-0 flex-1 gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mt-4 lg:block lg:overflow-x-visible lg:overflow-y-auto"
           aria-label="Dashboard navigation"
         >
-          {effectiveSidebarGroups.map((group) => (
-            <div className="dashboard-sidebar-group contents lg:mb-5 lg:block" key={group.label}>
-              {showUserSidebar ? (
-                <p className="dashboard-sidebar-group-label app-label mb-2 hidden px-3 text-[10px] uppercase tracking-[0.16em] text-[#84938f] lg:block">
-                  {group.label}
-                </p>
-              ) : null}
-              <div className="contents lg:grid lg:gap-1">
-                {group.items.map((item) => {
-                  const isActive = optimisticPathname === "/dashboard"
-                    ? item.label === activeLabel
-                    : item.href === "/dashboard/agents"
-                      ? optimisticPathname.startsWith(item.href)
-                      : item.href === "/dashboard/automations"
-                        ? optimisticPathname === item.href || optimisticPathname.startsWith(`${item.href}/`)
-                        : optimisticPathname === item.href;
-                  return (
-                    <Link
-                      className={`dashboard-sidebar-nav group/item relative flex size-10 shrink-0 items-center justify-center rounded-xl outline-none transition duration-200 focus-visible:ring-2 focus-visible:ring-[#9fcfc3]/60 lg:h-11 lg:w-full ${
-                        showUserSidebar
-                          ? item.icon === "automation"
-                            ? "lg:justify-start lg:gap-2 lg:px-2.5"
-                            : "lg:justify-start lg:gap-3 lg:px-3"
-                          : "lg:justify-center"
-                      } ${
-                        isActive
-                          ? "bg-[#118778] text-white shadow-[0_8px_18px_rgba(17,135,120,0.18)]"
-                          : "text-[#52645f] hover:bg-[#f3f6f5] hover:text-[#20342e]"
-                      }`}
-                      href={item.href}
-                      key={item.label}
-                      title={showUserSidebar ? undefined : item.label}
-                      onFocus={() => prefetchDashboardRoute(item.href)}
-                      onMouseEnter={() => prefetchDashboardRoute(item.href)}
-                      onPointerDown={() => prefetchDashboardRoute(item.href)}
-                      onClick={(event) => {
-                        if (
-                          event.ctrlKey ||
-                          event.metaKey ||
-                          event.shiftKey ||
-                          event.altKey
-                        )
-                          return;
-                        if (!beginNavigation(item.href)) event.preventDefault();
-                      }}
-                      aria-label={item.label}
-                      aria-current={isActive ? "page" : undefined}
-                    >
-                      <span
-                        className={`dashboard-sidebar-icon grid size-8 shrink-0 place-items-center rounded-lg ${isActive ? "bg-white/10" : ""}`}
+          {effectiveSidebarGroups.map((group, groupIndex) => (
+            <div className="contents lg:block" key={group.label}>
+              <div className="dashboard-sidebar-group contents lg:mb-5 lg:block">
+                {showUserSidebar ? (
+                  <p className="dashboard-sidebar-group-label app-label mb-2 hidden px-3 text-[10px] uppercase tracking-[0.16em] text-[#84938f] lg:block">
+                    {group.label}
+                  </p>
+                ) : null}
+                <div className="contents lg:grid lg:gap-1">
+                  {group.items.map((item) => {
+                    const isActive = optimisticPathname === "/dashboard"
+                      ? item.label === activeLabel
+                      : item.href === "/dashboard/agents"
+                        ? optimisticPathname.startsWith(item.href)
+                        : item.href === "/dashboard/automations"
+                          ? optimisticPathname === item.href || optimisticPathname.startsWith(`${item.href}/`)
+                          : optimisticPathname === item.href;
+                    return (
+                      <Link
+                        className={`dashboard-sidebar-nav group/item relative flex size-10 shrink-0 items-center justify-center rounded-xl outline-none transition duration-200 focus-visible:ring-2 focus-visible:ring-[#9fcfc3]/60 lg:h-11 lg:w-full ${
+                          showUserSidebar
+                            ? item.icon === "automation"
+                              ? "lg:justify-start lg:gap-2 lg:px-2.5"
+                              : "lg:justify-start lg:gap-3 lg:px-3"
+                            : "lg:justify-center"
+                        } ${
+                          isActive
+                            ? "bg-[#118778] text-white shadow-[0_8px_18px_rgba(17,135,120,0.18)]"
+                            : "text-[#52645f] hover:bg-[#f3f6f5] hover:text-[#20342e]"
+                        }`}
+                        href={item.href}
+                        key={item.label}
+                        title={showUserSidebar ? undefined : item.label}
+                        onFocus={() => prefetchDashboardRoute(item.href)}
+                        onMouseEnter={() => prefetchDashboardRoute(item.href)}
+                        onPointerDown={() => prefetchDashboardRoute(item.href)}
+                        onClick={(event) => {
+                          if (
+                            event.ctrlKey ||
+                            event.metaKey ||
+                            event.shiftKey ||
+                            event.altKey
+                          )
+                            return;
+                          if (!beginNavigation(item.href)) event.preventDefault();
+                        }}
+                        aria-label={item.label}
+                        aria-current={isActive ? "page" : undefined}
                       >
-                        <SidebarIcon icon={item.icon} />
-                      </span>
-                      {showUserSidebar ? (
                         <span
-                          className={`dashboard-sidebar-label app-body hidden truncate whitespace-nowrap font-medium lg:block ${item.icon === "automation" ? "lg:text-[13px]" : ""} ${isActive ? "text-white" : "text-[#52645f]"}`}
+                          className={`dashboard-sidebar-icon grid size-8 shrink-0 place-items-center rounded-lg ${isActive ? "bg-white/10" : ""}`}
                         >
-                          {item.label}
+                          <SidebarIcon icon={item.icon} />
                         </span>
-                      ) : null}
-                      {!showUserSidebar ? (
-                        <span className="app-label pointer-events-none absolute left-[calc(100%+12px)] z-50 hidden min-w-max translate-x-1 rounded-lg border border-[#dbe4e1] bg-white px-2.5 py-1.5 text-[#20342e] opacity-0 shadow-[0_12px_32px_rgba(37,40,74,0.16)] transition group-hover/item:translate-x-0 group-hover/item:opacity-100 lg:block">
-                          {item.label}
-                        </span>
-                      ) : null}
-                    </Link>
-                  );
-                })}
+                        {showUserSidebar ? (
+                          <span
+                            className={`dashboard-sidebar-label app-body hidden truncate whitespace-nowrap font-medium lg:block ${item.icon === "automation" ? "lg:text-[13px]" : ""} ${isActive ? "text-white" : "text-[#52645f]"}`}
+                          >
+                            {item.label}
+                          </span>
+                        ) : null}
+                        {!showUserSidebar ? (
+                          <span className="app-label pointer-events-none absolute left-[calc(100%+12px)] z-50 hidden min-w-max translate-x-1 rounded-lg border border-[#dbe4e1] bg-white px-2.5 py-1.5 text-[#20342e] opacity-0 shadow-[0_12px_32px_rgba(37,40,74,0.16)] transition group-hover/item:translate-x-0 group-hover/item:opacity-100 lg:block">
+                            {item.label}
+                          </span>
+                        ) : null}
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
+
+              {/* Dedicated WhatsApp Business Suite Section */}
+              {groupIndex === 0 && (
+                <>
+                  {/* Mobile WhatsApp Pill */}
+                  <Link
+                    href="/dashboard/whatsapp/campaigns"
+                    onClick={(event) => {
+                      if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+                      if (!beginNavigation("/dashboard/whatsapp/campaigns")) event.preventDefault();
+                    }}
+                    className={`dashboard-sidebar-nav relative flex size-10 shrink-0 items-center justify-center rounded-xl outline-none transition duration-200 lg:hidden ${
+                      isWhatsAppRoute
+                        ? "bg-[#118778] text-white shadow-xs"
+                        : "text-[#25D366] hover:bg-[#f3f6f5]"
+                    }`}
+                    aria-label="WhatsApp Suite"
+                  >
+                    <span className="grid size-8 shrink-0 place-items-center">
+                      <WhatsAppBrandIcon className="size-5" />
+                    </span>
+                  </Link>
+
+                  {/* Desktop WhatsApp Dedicated Suite Section */}
+                  {showUserSidebar ? (
+                    <div className="hidden lg:block lg:mb-4 lg:mt-1">
+                      {/* Accordion Header - Matching reference screenshot */}
+                      <button
+                        type="button"
+                        onClick={() => setWhatsAppExpanded((prev) => !prev)}
+                        className="group/wa flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-sm font-medium text-[#20342e] hover:bg-[#f3f6f5] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#9fcfc3]/60"
+                        aria-expanded={whatsAppExpanded}
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <WhatsAppBrandIcon className="size-5 shrink-0 text-[#25D366]" />
+                          <span className="truncate text-sm font-medium text-[#1f2937]">
+                            WhatsApp
+                          </span>
+                        </div>
+                        <svg
+                          className={`size-4 text-[#84938f] transition-transform duration-200 ${
+                            whatsAppExpanded ? "" : "rotate-180"
+                          }`}
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" d="m18 15-6-6-6 6" />
+                        </svg>
+                      </button>
+
+                      {/* Sub-items with connecting vertical line and clean active pill */}
+                      {whatsAppExpanded && (
+                        <div className="mt-1 ml-4 pl-3.5 border-l border-[#e5e7eb] space-y-0.5">
+                          {whatsAppSubItems.map((subItem) => {
+                            const isSubActive =
+                              optimisticPathname === subItem.href ||
+                              (subItem.href === "/dashboard/whatsapp/campaigns" &&
+                                optimisticPathname === "/dashboard/whatsapp");
+                            return (
+                              <Link
+                                key={subItem.label}
+                                href={subItem.href}
+                                onClick={(event) => {
+                                  if (
+                                    event.ctrlKey ||
+                                    event.metaKey ||
+                                    event.shiftKey ||
+                                    event.altKey
+                                  )
+                                    return;
+                                  if (!beginNavigation(subItem.href)) event.preventDefault();
+                                }}
+                                onFocus={() => prefetchDashboardRoute(subItem.href)}
+                                onMouseEnter={() => prefetchDashboardRoute(subItem.href)}
+                                onPointerDown={() => prefetchDashboardRoute(subItem.href)}
+                                className={`group/sub flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
+                                  isSubActive
+                                    ? "bg-[#f3f4f6] text-[#111827] font-medium"
+                                    : "text-[#52645f] hover:bg-[#f3f6f5]/70 hover:text-[#111827]"
+                                }`}
+                              >
+                                <span
+                                  className={`grid size-5 shrink-0 place-items-center transition ${
+                                    isSubActive
+                                      ? "text-[#111827]"
+                                      : "text-[#6b7280] group-hover/sub:text-[#111827]"
+                                  }`}
+                                >
+                                  <WhatsAppSubIcon icon={subItem.icon} />
+                                </span>
+                                <span className="truncate">{subItem.label}</span>
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    /* Mini-sidebar Mode for WhatsApp */
+                    <div className="group/wa-mini relative hidden lg:flex justify-center mb-4">
+                      <Link
+                        href="/dashboard/whatsapp/campaigns"
+                        onClick={(event) => {
+                          if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey)
+                            return;
+                          if (!beginNavigation("/dashboard/whatsapp/campaigns"))
+                            event.preventDefault();
+                        }}
+                        className={`relative grid size-10 place-items-center rounded-xl transition duration-200 ${
+                          isWhatsAppRoute
+                            ? "bg-[#118778] text-white"
+                            : "text-[#25D366] hover:bg-[#f3f6f5]"
+                        }`}
+                        aria-label="WhatsApp"
+                        title="WhatsApp"
+                      >
+                        <WhatsAppBrandIcon className="size-5" />
+                        <span className="app-label pointer-events-none absolute left-[calc(100%+12px)] z-50 hidden min-w-max translate-x-1 rounded-lg border border-[#dbe4e1] bg-white px-2.5 py-1.5 text-[#20342e] opacity-0 shadow-[0_12px_32px_rgba(37,40,74,0.16)] transition group-hover/wa-mini:translate-x-0 group-hover/wa-mini:opacity-100 lg:block">
+                          WhatsApp
+                        </span>
+                      </Link>
+                    </div>
+                  )}
+                </>
+              )}
             </div>
           ))}
         </nav>

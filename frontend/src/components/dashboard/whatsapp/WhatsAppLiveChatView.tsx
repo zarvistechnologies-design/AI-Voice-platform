@@ -1,0 +1,434 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import type { WhatsAppConversation, WhatsAppMessage, WhatsAppTemplate } from "@/lib/whatsapp";
+import { whatsappApi } from "@/lib/whatsapp";
+
+interface WhatsAppLiveChatViewProps {
+  conversations: WhatsAppConversation[];
+  templates: WhatsAppTemplate[];
+  onRefresh: () => void;
+}
+
+export function WhatsAppLiveChatView({
+  conversations,
+  templates,
+  onRefresh,
+}: WhatsAppLiveChatViewProps) {
+  const [selectedConversation, setSelectedConversation] = useState<WhatsAppConversation | null>(
+    conversations[0] || null,
+  );
+  const [messages, setMessages] = useState<WhatsAppMessage[]>([]);
+  const [messageInput, setMessageInput] = useState("");
+  const [loadingMessages, setLoadingMessages] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [search, setSearch] = useState("");
+  const [filterMode, setFilterMode] = useState<"ALL" | "UNREAD" | "AI" | "HUMAN">("ALL");
+  const [showTemplatePicker, setShowTemplatePicker] = useState(false);
+
+  // Sync selected conversation when conversations update or initial load arrives
+  useEffect(() => {
+    if (!selectedConversation && conversations.length > 0) {
+      setSelectedConversation(conversations[0]);
+    } else if (selectedConversation && conversations.length > 0) {
+      const updated = conversations.find((c) => c._id === selectedConversation._id);
+      if (updated && (updated.mode !== selectedConversation.mode || updated.unreadCount !== selectedConversation.unreadCount || updated.lastMessageText !== selectedConversation.lastMessageText)) {
+        setSelectedConversation(updated);
+      }
+    }
+  }, [conversations, selectedConversation]);
+
+  // Load message history when selected conversation changes
+  useEffect(() => {
+    if (!selectedConversation?._id) return;
+    let cancelled = false;
+    setLoadingMessages(true);
+
+    whatsappApi
+      .getMessages(selectedConversation._id)
+      .then((res) => {
+        if (!cancelled && res.ok) {
+          setMessages(res.messages || []);
+        }
+      })
+      .catch((err) => console.warn("Failed to load messages:", err))
+      .finally(() => {
+        if (!cancelled) setLoadingMessages(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedConversation?._id]);
+
+  const filteredConversations = conversations.filter((c) => {
+    const matchesSearch =
+      c.contactName.toLowerCase().includes(search.toLowerCase()) ||
+      c.contactPhone.includes(search) ||
+      c.lastMessageText.toLowerCase().includes(search.toLowerCase());
+
+    if (!matchesSearch) return false;
+    if (filterMode === "UNREAD") return c.unreadCount > 0;
+    if (filterMode === "AI") return c.mode === "ai";
+    if (filterMode === "HUMAN") return c.mode === "human";
+    return true;
+  });
+
+  async function handleSendMessage(e?: React.FormEvent) {
+    if (e) e.preventDefault();
+    if (!messageInput.trim() || !selectedConversation?._id) return;
+
+    const content = messageInput.trim();
+    setMessageInput("");
+    setSending(true);
+
+    try {
+      const res = await whatsappApi.sendChatMessage(selectedConversation._id, content);
+      if (res.ok && res.message) {
+        setMessages((prev) => [...prev, res.message]);
+        onRefresh();
+      }
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to send message");
+    } finally {
+      setSending(false);
+    }
+  }
+
+  async function handleToggleMode() {
+    if (!selectedConversation?._id) return;
+    const nextMode = selectedConversation.mode === "ai" ? "human" : "ai";
+    try {
+      const res = await whatsappApi.toggleMode(selectedConversation._id, nextMode);
+      if (res.ok && res.conversation) {
+        setSelectedConversation(res.conversation);
+        onRefresh();
+      }
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Could not toggle mode");
+    }
+  }
+
+  function handleInsertTemplate(bodyText: string) {
+    setMessageInput(bodyText);
+    setShowTemplatePicker(false);
+  }
+
+  return (
+    <div className="whatsapp-live-chat space-y-4">
+      {/* Main 3-Column WhatsApp Web Experience */}
+      <div className="grid grid-cols-1 overflow-hidden rounded-3xl border border-[#dbe4e1] bg-white shadow-xs lg:grid-cols-12 min-h-[640px]">
+        {/* Left Column: Conversations List */}
+        <div className="border-r border-[#e5e7ef] lg:col-span-4 flex flex-col bg-[#fcfdfd]">
+          {/* Top Search & Filter Bar */}
+          <div className="border-b border-[#e5e7ef] p-3 space-y-2.5 bg-white">
+            <div className="relative">
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search chats by name or phone..."
+                className="w-full rounded-xl border border-[#dbe4e1] bg-[#f9fbfa] px-3.5 py-1.5 text-xs text-[#20342e] focus:border-[#118778] focus:bg-white focus:outline-none"
+              />
+            </div>
+
+            <div className="flex gap-1 overflow-x-auto text-[11px]">
+              {(["ALL", "UNREAD", "AI", "HUMAN"] as const).map((mode) => (
+                <button
+                  key={mode}
+                  onClick={() => setFilterMode(mode)}
+                  className={`rounded-lg px-2.5 py-1 font-semibold transition ${
+                    filterMode === mode
+                      ? "bg-[#118778] text-white"
+                      : "bg-[#f0f4f3] text-[#52645f] hover:bg-[#e4edea]"
+                  }`}
+                >
+                  {mode === "ALL" ? "All Chats" : mode === "UNREAD" ? "Unread" : mode === "AI" ? "🤖 AI Auto" : "👤 Human"}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Conversations Scrollable List */}
+          <div className="flex-1 overflow-y-auto divide-y divide-[#f0f4f3]">
+            {filteredConversations.length === 0 ? (
+              <div className="p-8 text-center text-xs text-[#84938f]">
+                No conversations match your filter.
+              </div>
+            ) : (
+              filteredConversations.map((conv) => {
+                const isSelected = selectedConversation?._id === conv._id;
+                return (
+                  <div
+                    key={conv._id}
+                    onClick={() => setSelectedConversation(conv)}
+                    className={`flex items-start gap-3 p-3.5 cursor-pointer transition ${
+                      isSelected
+                        ? "bg-[#edf6f4] border-l-4 border-l-[#118778]"
+                        : "hover:bg-[#f8faf9]"
+                    }`}
+                  >
+                    <div className="relative size-10 shrink-0 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs grid place-items-center">
+                      {conv.contactName.slice(0, 2).toUpperCase()}
+                      <span className="absolute bottom-0 right-0 size-2.5 rounded-full border-2 border-white bg-emerald-500" />
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between">
+                        <span className="truncate text-xs font-bold text-[#14231f]">
+                          {conv.contactName}
+                        </span>
+                        <span className="text-[10px] text-[#84938f]">
+                          {new Date(conv.lastMessageTimestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                        </span>
+                      </div>
+
+                      <div className="mt-0.5 flex items-center gap-1.5">
+                        <span className="truncate text-xs text-[#60716c]">
+                          {conv.lastMessageText || "No messages yet"}
+                        </span>
+                      </div>
+
+                      <div className="mt-2 flex items-center justify-between">
+                        <span className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[9px] font-semibold ${
+                          conv.mode === "ai"
+                            ? "bg-emerald-50 text-emerald-700"
+                            : "bg-amber-50 text-amber-700"
+                        }`}>
+                          {conv.mode === "ai" ? "🤖 AI Active" : "👤 Human Takeover"}
+                        </span>
+
+                        {conv.unreadCount > 0 && (
+                          <span className="grid size-4 place-items-center rounded-full bg-[#118778] text-[9px] font-bold text-white">
+                            {conv.unreadCount}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+
+        {/* Middle Column: Chat Window */}
+        <div className="flex flex-col lg:col-span-5 border-r border-[#e5e7ef] bg-[#efeae2]">
+          {selectedConversation ? (
+            <>
+              {/* Top Chat Bar */}
+              <div className="flex items-center justify-between border-b border-[#e5e7ef] bg-white px-4 py-3 shadow-xs">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="size-8 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs grid place-items-center">
+                    {selectedConversation.contactName.slice(0, 2).toUpperCase()}
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="truncate text-xs font-bold text-[#14231f]">
+                      {selectedConversation.contactName}
+                    </h3>
+                    <span className="block text-[10px] font-mono text-[#84938f]">
+                      +{selectedConversation.contactPhone}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Handover Toggle Button */}
+                <button
+                  onClick={handleToggleMode}
+                  className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold shadow-xs transition ${
+                    selectedConversation.mode === "ai"
+                      ? "bg-amber-500 text-white hover:bg-amber-600"
+                      : "bg-[#118778] text-white hover:bg-[#0e7467]"
+                  }`}
+                >
+                  {selectedConversation.mode === "ai" ? (
+                    <>
+                      <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      Take Over from AI
+                    </>
+                  ) : (
+                    <>
+                      <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                      Hand Back to AI
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* Message Stream */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                {loadingMessages ? (
+                  <div className="grid h-full place-items-center text-xs text-[#84938f]">
+                    Loading messages...
+                  </div>
+                ) : messages.length === 0 ? (
+                  <div className="grid h-full place-items-center text-xs text-[#84938f]">
+                    No messages yet in this conversation.
+                  </div>
+                ) : (
+                  messages.map((msg) => {
+                    const isOutbound = msg.direction === "outbound";
+                    return (
+                      <div
+                        key={msg._id}
+                        className={`flex flex-col max-w-[80%] rounded-2xl p-3 text-xs leading-relaxed shadow-2xs ${
+                          isOutbound
+                            ? "self-end rounded-tr-none bg-[#e7ffdb] text-[#111b21]"
+                            : "self-start rounded-tl-none bg-white text-[#111b21]"
+                        }`}
+                      >
+                        <div className="whitespace-pre-line">{msg.content}</div>
+                        <div className="mt-1 flex items-center justify-end gap-1 text-[9px] text-[#667781]">
+                          <span>
+                            {new Date(msg.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                          </span>
+                          {isOutbound && (
+                            <svg className="size-3 text-[#53bdeb]" viewBox="0 0 16 15" fill="none">
+                              <path d="M15.01 3.316l-7.79 7.79-3.79-3.79 1.06-1.06 2.73 2.73 6.73-6.73 1.06 1.06zm-4.79 0l-1.06-1.06-6.73 6.73-2.73-2.73-1.06 1.06 3.79 3.79 7.79-7.79z" fill="currentColor" />
+                            </svg>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+
+              {/* Quick Template Picker Menu */}
+              {showTemplatePicker && (
+                <div className="border-t border-[#dbe4e1] bg-white p-3 shadow-lg">
+                  <div className="mb-2 flex items-center justify-between text-xs font-bold text-[#14231f]">
+                    <span>Insert Pre-approved Template:</span>
+                    <button onClick={() => setShowTemplatePicker(false)} className="text-[#84938f]">✕</button>
+                  </div>
+                  <div className="max-h-36 overflow-y-auto space-y-1.5">
+                    {templates.map((t) => (
+                      <button
+                        key={t._id}
+                        type="button"
+                        onClick={() => handleInsertTemplate(t.bodyText)}
+                        className="w-full text-left rounded-lg p-2 text-xs hover:bg-[#f0f4f3] flex justify-between items-center"
+                      >
+                        <span className="font-semibold text-[#20342e]">{t.name}</span>
+                        <span className="text-[10px] text-[#84938f]">{t.category}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Message Composer */}
+              <div className="border-t border-[#dbe4e1] bg-[#f0f2f5] p-3">
+                <form onSubmit={handleSendMessage} className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowTemplatePicker((p) => !p)}
+                    title="Insert WhatsApp Template"
+                    className="rounded-xl border border-[#dbe4e1] bg-white p-2 text-[#52645f] hover:bg-[#f7f9f8]"
+                  >
+                    <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </button>
+
+                  <input
+                    type="text"
+                    value={messageInput}
+                    onChange={(e) => setMessageInput(e.target.value)}
+                    placeholder={
+                      selectedConversation.mode === "ai"
+                        ? "AI is handling this chat. Type to reply directly as human..."
+                        : "Type your reply..."
+                    }
+                    className="flex-1 rounded-2xl border border-[#dbe4e1] bg-white px-4 py-2.5 text-xs text-[#20342e] focus:border-[#118778] focus:outline-none"
+                  />
+
+                  <button
+                    type="submit"
+                    disabled={sending || !messageInput.trim()}
+                    className="grid size-10 place-items-center rounded-2xl bg-[#00a884] text-white shadow-xs transition hover:bg-[#008f70] disabled:opacity-50"
+                  >
+                    <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                    </svg>
+                  </button>
+                </form>
+              </div>
+            </>
+          ) : (
+            <div className="grid h-full place-items-center text-xs text-[#84938f]">
+              Select a conversation to start chatting.
+            </div>
+          )}
+        </div>
+
+        {/* Right Column: Contact Profile & Actions */}
+        <div className="lg:col-span-3 p-5 bg-white flex flex-col space-y-5">
+          {selectedConversation ? (
+            <>
+              <div className="text-center pb-4 border-b border-[#e5e7ef]">
+                <div className="mx-auto size-16 rounded-full bg-emerald-100 text-emerald-800 font-bold text-lg grid place-items-center">
+                  {selectedConversation.contactName.slice(0, 2).toUpperCase()}
+                </div>
+                <h4 className="mt-3 text-sm font-bold text-[#14231f]">
+                  {selectedConversation.contactName}
+                </h4>
+                <span className="font-mono text-xs text-[#60716c]">
+                  +{selectedConversation.contactPhone}
+                </span>
+              </div>
+
+              {/* Quick Actions */}
+              <div className="space-y-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#84938f]">
+                  Quick Actions
+                </span>
+                <button
+                  onClick={() => alert(`Initiating Vozon AI voice call to +${selectedConversation.contactPhone}...`)}
+                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#118778] p-2.5 text-xs font-semibold text-white shadow-xs hover:bg-[#0e7467]"
+                >
+                  <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                  Call Contact (Voice Bot)
+                </button>
+              </div>
+
+              {/* Details */}
+              <div className="space-y-3">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#84938f]">
+                  Conversation Tags
+                </span>
+                <div className="flex flex-wrap gap-1">
+                  {(selectedConversation.tags || ["Patient", "Inquiry"]).map((tag, i) => (
+                    <span key={i} className="rounded-md border border-[#dbe4e1] bg-[#f9fbfa] px-2 py-0.5 text-xs text-[#52645f]">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-[#dbe4e1] bg-[#fcfdfd] p-3 text-xs space-y-1.5">
+                <div className="text-[10px] font-semibold text-[#84938f] uppercase">Session Status</div>
+                <div className="flex items-center gap-1.5 text-emerald-700 font-semibold">
+                  <span className="size-2 rounded-full bg-emerald-500" />
+                  24-Hour WhatsApp Service Window Active
+                </div>
+                <div className="text-[10px] text-[#84938f]">
+                  Free customer service messaging window open.
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="text-xs text-[#84938f]">Select a chat to view contact details.</div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+

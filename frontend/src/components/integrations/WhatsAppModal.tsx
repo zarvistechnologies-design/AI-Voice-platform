@@ -12,6 +12,9 @@ declare global {
         callback: (response: {
           authResponse?: { code?: string; accessToken?: string };
           status?: string;
+          error?: string;
+          error_message?: string;
+          error_description?: string;
         }) => void,
         options?: Record<string, unknown>,
       ) => void;
