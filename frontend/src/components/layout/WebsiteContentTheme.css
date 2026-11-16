@@ -2,9 +2,9 @@
  * Shared visual language for public pages outside the homepage and footer.
  */
 .website-content {
-  --website-accent: #171719;
-  --website-accent-dark: #333437;
-  --website-accent-soft: #f1f1f2;
+  --website-accent: #2457d6;
+  --website-accent-dark: #1b45b0;
+  --website-accent-soft: #eef3ff;
   --website-ink: #171719;
   --website-body: #55585f;
   --website-muted: #777b82;
@@ -17,7 +17,7 @@
 }
 
 .website-content ::selection {
-  background: rgb(91 76 230 / 0.2);
+  background: rgb(36 87 214 / 0.18);
   color: var(--website-ink);
 }
 
@@ -140,7 +140,7 @@
   [class*="border-[#ff9655]"],
   [class*="border-[#f28d45]"]
 ) {
-  border-color: rgb(91 76 230 / 0.26) !important;
+  border-color: rgb(36 87 214 / 0.26) !important;
 }
 
 .website-content :where(
@@ -171,8 +171,8 @@
 }
 
 .website-content :where(article)[class*="rounded-2xl"]:hover {
-  border-color: rgb(91 76 230 / 0.34) !important;
-  box-shadow: 0 16px 42px rgb(91 76 230 / 0.09) !important;
+  border-color: rgb(36 87 214 / 0.34) !important;
+  box-shadow: 0 16px 42px rgb(36 87 214 / 0.09) !important;
 }
 
 /* Solid accent actions keep public-page calls to action consistent. */
@@ -327,13 +327,13 @@
 }
 
 .website-content :where(input, select, textarea):hover {
-  border-color: #b8c8c3 !important;
+  border-color: #b8c9ef !important;
 }
 
 .website-content :where(input, select, textarea):focus,
 .website-content :where(input, select, textarea):focus-visible {
   border-color: var(--website-accent) !important;
-  outline: 3px solid rgb(91 76 230 / 0.12) !important;
+  outline: 3px solid rgb(36 87 214 / 0.14) !important;
   outline-offset: 1px;
   box-shadow: none !important;
 }
@@ -364,7 +364,7 @@
 }
 
 .website-content #docs-page#docs-page :is(div, li, a, button)[class*="rounded-"][class*="border"]:not(.docs-code-block):hover {
-  border-color: #b8c8c3 !important;
+  border-color: #b8c9ef !important;
 }
 
 .website-content .docs-page .docs-architecture,
@@ -451,9 +451,9 @@
 .website-content #business-use-case-page#business-use-case-page,
 .website-content #business-industry-page#business-industry-page,
 .website-content #business-healthcare-page#business-healthcare-page {
-  --industry-accent: #171719 !important;
-  --industry-accent-soft: #f1f1f2 !important;
-  --industry-logo-accent: #171719 !important;
+  --industry-accent: #2457d6 !important;
+  --industry-accent-soft: #eef3ff !important;
+  --industry-logo-accent: #2457d6 !important;
   background: #ffffff !important;
   color: #171719 !important;
 }
@@ -515,8 +515,8 @@
   [class*="text-[#ffbd8c]"]
 ) {
   background-image: none !important;
-  color: #171719 !important;
-  -webkit-text-fill-color: #171719 !important;
+  color: var(--website-accent) !important;
+  -webkit-text-fill-color: var(--website-accent) !important;
 }
 
 .website-content #business-industry-page#business-industry-page .industry-company-marquee [style*="color"],
@@ -553,8 +553,8 @@
   #business-industry-page#business-industry-page,
   #business-healthcare-page#business-healthcare-page
 ) :is(.business-blue-cta, .business-primary-cta, a[class*="bg-[#35fbe0]"], a[class*="bg-[#45ddce]"]) {
-  border-color: #171719 !important;
-  background: #171719 !important;
+  border-color: var(--website-accent) !important;
+  background: var(--website-accent) !important;
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
   box-shadow: 0 8px 22px rgb(91 76 230 / 0.16) !important;
@@ -566,7 +566,7 @@
   #business-industry-page#business-industry-page,
   #business-healthcare-page#business-healthcare-page
 ) :is(.business-blue-cta, .business-primary-cta, a[class*="bg-[#35fbe0]"], a[class*="bg-[#45ddce]"]):hover {
-  background: #333437 !important;
+  background: var(--website-accent-dark) !important;
 }
 
 .website-content :is(
@@ -581,7 +581,7 @@
   [class*="bg-[#f28d45]/"],
   [class*="bg-[#ff9655]/"]
 ) {
-  background: #f1f1f2 !important;
+  background: var(--website-accent-soft) !important;
   background-image: none !important;
 }
 
@@ -598,7 +598,7 @@
   [class~="bg-[#f28d45]"],
   [class~="bg-[#ff9655]"]
 ) {
-  background: #171719 !important;
+  background: var(--website-accent) !important;
   background-image: none !important;
 }
 
@@ -1767,7 +1767,7 @@
 }
 
 #blog-page .blog-overview-hero-grid > div:first-child a:first-child {
-  background: #171719 !important;
+  background: var(--website-accent) !important;
   color: #fff !important;
   box-shadow: 0 12px 28px rgba(17, 135, 120, .18) !important;
 }
@@ -1896,15 +1896,15 @@
 }
 
 #blog-page .blog-overview-contact-button {
-  border: 1px solid #171719;
-  background: #171719;
+  border: 1px solid var(--website-accent);
+  background: var(--website-accent);
   color: #fff;
   box-shadow: 0 10px 24px rgba(17, 135, 120, .18);
   transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
 }
 
 #blog-page .blog-overview-contact-button:hover {
-  background: #333437;
+  background: var(--website-accent-dark);
   box-shadow: 0 14px 30px rgba(17, 135, 120, .24);
   transform: translateY(-2px);
 }

@@ -4,6 +4,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { getProduct, productCatalog, type Product } from "@/config/productCatalog";
 import { SolutionLandingPage, type SolutionLandingContent } from "@/components/layout/SolutionLandingPage";
+import { WhatsAppPhoneExperience } from "./WhatsAppPhoneExperience";
 import "@/app/business/industries/healthcare/healthcare.css";
 import "./ProductPages.css";
 
@@ -146,7 +147,8 @@ function toSolutionContent(product: Product): SolutionLandingContent {
 }
 
 export function ProductDetailPage({ product }: { product: Product }) {
-  return <SolutionLandingPage content={toSolutionContent(product)} />;
+  const isWhatsAppBot = product.slug === "whatsapp-bot";
+  return <SolutionLandingPage content={toSolutionContent(product)} heroVisual={isWhatsAppBot ? <WhatsAppPhoneExperience /> : undefined} />;
 }
 
 export { productCatalog };

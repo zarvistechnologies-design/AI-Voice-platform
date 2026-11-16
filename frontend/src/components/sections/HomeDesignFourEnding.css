@@ -681,7 +681,7 @@
   min-height: 580px;
   margin-left: -50vw;
   overflow: hidden;
-  background: radial-gradient(ellipse 70% 43% at 50% 108%, #118778 0%, #123d35 40%, #020706 72%, #000 100%);
+  background: radial-gradient(ellipse 70% 43% at 50% 108%, #1b45b0 0%, #14234a 36%, #080d18 72%, #000 100%);
   color: #f8f9ff;
 }
 
@@ -815,7 +815,7 @@
   padding: 5px 15px 6px;
   border: 1px solid rgb(210 224 255 / 58%);
   border-radius: 999px;
-  background: rgb(11 33 28 / 72%);
+  background: rgb(13 22 44 / 72%);
   color: rgb(239 244 255 / 92%);
   box-shadow: 0 10px 28px rgb(0 6 20 / 28%), inset 0 1px 0 rgb(255 255 255 / 8%);
   backdrop-filter: blur(8px);
@@ -841,7 +841,7 @@
 .design-four-footer-tags span b { font: inherit; }
 .design-four-footer-tags span.is-pink { background: #eda7dc; color: #11131a; border-color: #eda7dc; }
 .design-four-footer-tags span.is-white { background: #edf1fb; color: #11131a; border-color: #edf1fb; }
-.design-four-footer-tags span.is-green { background: #9be4b9; color: #11131a; border-color: #9be4b9; }
+.design-four-footer-tags span.is-green { background: #a9c0ff; color: #11131a; border-color: #a9c0ff; }
 .design-four-footer-tags span.is-purple { background: #c8a9f5; color: #11131a; border-color: #c8a9f5; }
 .design-four-footer-tags span.is-orange { background: #ffad72; color: #11131a; border-color: #ffad72; }
 

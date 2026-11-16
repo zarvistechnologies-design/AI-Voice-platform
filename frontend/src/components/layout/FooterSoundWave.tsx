@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-export function FooterSoundWave() {
+export function FooterSoundWave({ variant = "footer" }: { variant?: "footer" | "hero" }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -21,10 +21,11 @@ export function FooterSoundWave() {
       context.clearRect(0, 0, width, height);
 
       const fade = context.createLinearGradient(0, 0, width, 0);
-      fade.addColorStop(0, "rgba(255,255,255,0)");
-      fade.addColorStop(0.06, "rgba(255,255,255,1)");
-      fade.addColorStop(0.88, "rgba(255,255,255,1)");
-      fade.addColorStop(1, "rgba(255,255,255,0)");
+      const waveColor = variant === "hero" ? "92,92,92" : "255,255,255";
+      fade.addColorStop(0, `rgba(${waveColor},0)`);
+      fade.addColorStop(0.06, `rgba(${waveColor},1)`);
+      fade.addColorStop(0.88, `rgba(${waveColor},1)`);
+      fade.addColorStop(1, `rgba(${waveColor},0)`);
       context.strokeStyle = fade;
       context.lineCap = "round";
 
@@ -106,7 +107,7 @@ export function FooterSoundWave() {
       visibilityObserver.disconnect();
       motionPreference.removeEventListener("change", syncAnimation);
     };
-  }, []);
+  }, [variant]);
 
-  return <canvas className="design-four-footer-wave" ref={canvasRef} aria-hidden="true" />;
+  return <canvas className={variant === "hero" ? "agentvoice-footer-wave" : "design-four-footer-wave"} ref={canvasRef} aria-hidden="true" />;
 }

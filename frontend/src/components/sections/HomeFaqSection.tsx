@@ -3,11 +3,11 @@ import "./HomeFaqSection.css";
 const questions = [
   {
     question: "What is Vozon AI?",
-    answer: "Vozon helps teams use AI agents to handle conversations across voice and messaging, then turn each conversation into a clear next step.",
+    answer: "Vozon is an AI agent platform for customer conversations. Agents can respond across voice, WhatsApp, and website chat, use connected tools, and move the result into a workflow or human handoff.",
   },
   {
     question: "Which channels can one agent use?",
-    answer: "You can use Vozon for AI calling, WhatsApp conversations, and website chat. Custom API connections can carry information into the tools your team uses.",
+    answer: "Vozon supports phone conversations, WhatsApp, and website chat. Workflows and integrations connect those conversations to the tools your team uses.",
   },
   {
     question: "Can the agent speak different languages?",
@@ -18,8 +18,8 @@ const questions = [
     answer: "Yes. A workflow can start with a new lead, let an agent handle the conversation, and route an interested person to an appointment or another follow-up step.",
   },
   {
-    question: "What happens after a call ends?",
-    answer: "The conversation result can show the outcome, a summary, and the next action for your team, such as a booked demo or a follow-up.",
+    question: "What happens after a conversation ends?",
+    answer: "The result can show the outcome, a summary, and the next action for your team, such as a booking, follow-up, or human handoff.",
   },
   {
     question: "Can I connect Vozon to the tools we already use?",
@@ -31,7 +31,7 @@ const questions = [
   },
   {
     question: "How can I try an agent?",
-    answer: "Choose a language and use the live demo at the top of this page. You can also contact our team to discuss a workflow for your business.",
+    answer: "Choose a language to try the live voice demo at the top of this page. Contact our team to explore WhatsApp, web chat, and workflows for your business.",
   },
 ] as const;
 

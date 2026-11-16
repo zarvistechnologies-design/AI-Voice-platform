@@ -10,7 +10,7 @@
   color: #111318;
 }
 
-.agentvoice-hero > canvas,
+.agentvoice-hero > canvas:not(.agentvoice-footer-wave),
 .agentvoice-hero > .heroGlow,
 .agentvoice-hero > .vozon-hero-content { display: none !important; }
 
@@ -50,8 +50,9 @@
 .agentvoice-channels > span:first-child { margin-left: 0; }
 .agentvoice-channels > span:nth-child(2), .agentvoice-channels > span:nth-child(4) { transform: rotate(6deg) translateY(-2px); }
 .agentvoice-channels svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.agentvoice-channels .channel-whatsapp, .agentvoice-channels .channel-phone { background: #22c55e; color: white; }
-.agentvoice-channels .channel-chat { background: #fff; color: #22c55e; }
+.agentvoice-channels .channel-whatsapp { background: #22c55e; color: white; }
+.agentvoice-channels .channel-phone { background: #2457d6; color: white; }
+.agentvoice-channels .channel-chat { background: #fff; color: #2457d6; }
 .agentvoice-channels .channel-vozon { z-index: 1; width: 42px; height: 42px; border-radius: 11px; background: #111; color: white; font-size: 18px; font-weight: 800; transform: rotate(-2deg); }
 .agentvoice-channels .channel-web { background: #fff; color: #111; }
 .agentvoice-hero-content h1 {
@@ -130,6 +131,54 @@
 .agentvoice-try-button:disabled { cursor: wait; opacity: .65; }
 .agentvoice-try-button.is-active { background: #a32121; }
 .agentvoice-demo-status { margin-top: 11px; color: #7c8492; font-size: 12px; }
+.home-design-four .agentvoice-hero-tags {
+  position: absolute;
+  z-index: 2;
+  top: max(500px, calc(62vh - 80px));
+  left: 50%;
+  display: flex;
+  width: min(1300px, calc(100% - 64px));
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+.agentvoice-hero-tags span {
+  position: relative;
+  display: inline-flex;
+  min-height: 40px;
+  flex: none;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid #dedfe2;
+  border-radius: 999px;
+  background: #ffffffed;
+  padding: 7px 14px;
+  color: #171717;
+  box-shadow: 0 10px 25px #00000012;
+  font-size: clamp(12px, 1vw, 15px);
+  line-height: 1;
+  white-space: nowrap;
+}
+.agentvoice-hero-tags span i { display: grid; width: 22px; height: 22px; flex: none; place-items: center; font-style: normal; }
+.agentvoice-hero-tags span i img { display: block; width: 21px; height: 21px; object-fit: contain; }
+.agentvoice-hero-tags span b { font: inherit; font-weight: 650; }
+.agentvoice-hero-tags span:nth-child(1), .agentvoice-hero-tags span:nth-child(6) { top: 0; }
+.agentvoice-hero-tags span:nth-child(2), .agentvoice-hero-tags span:nth-child(5) { top: 30px; }
+.agentvoice-hero-tags span:nth-child(3), .agentvoice-hero-tags span:nth-child(4) { top: 60px; }
+.home-design-four .agentvoice-footer-wave {
+  position: absolute;
+  z-index: 1;
+  top: 155px;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 350px;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 12%, transparent 23%, transparent 77%, #000 88%, #000 100%);
+  mask-image: linear-gradient(90deg, #000 0%, #000 12%, transparent 23%, transparent 77%, #000 88%, #000 100%);
+}
 .home-design-four .agentvoice-wave {
   position: absolute;
   z-index: 1;
@@ -230,6 +279,14 @@
   .home-design-four .home-design-four__hero.agentvoice-hero { min-height: 100svh !important; padding: 130px 14px 0 !important; }
   .home-design-four .agentvoice-hero-content h1 { margin-top: 18px; font-size: clamp(43px, 12vw, 60px); }
   .home-design-four .agentvoice-wave { top: 62vh; width: 100vw; height: 38vh; }
+}
+
+@media (max-width: 1100px) {
+  .home-design-four .agentvoice-footer-wave { display: none; }
+}
+
+@media (max-width: 800px) {
+  .home-design-four .agentvoice-hero-tags { display: none; }
 }
 
 .agentvoice-channel-row {

@@ -8,7 +8,7 @@ const metrics: { label: string; value: string; icon: IconName }[] = [
   { label: "Call coverage", value: "24/7", icon: "coverage" },
   { label: "Indic languages", value: "22+", icon: "indic" },
   { label: "Global languages", value: "76", icon: "global" },
-  { label: "Call insights", value: "Live", icon: "insights" },
+  { label: "Conversation insights", value: "Live", icon: "insights" },
   { label: "Workflow connections", value: "API", icon: "api" },
 ];
 

@@ -61,7 +61,7 @@ export function SiteFooter() {
         <div className="design-four-footer-main">
         <div className="design-four-footer-brand">
           <div className="design-four-footer-intro"><span>VOZON AI</span><h2>Every conversation can move you forward.</h2></div>
-          <p>Building intelligent voice experiences that help businesses create better conversations, automate meaningful work, and connect people with outcomes.</p>
+          <p>AI agents for voice, WhatsApp, and web chat that help businesses answer customers, automate work, and turn conversations into outcomes.</p>
           <div className="design-four-footer-socials">
             <a aria-label="Twitter / X" href="https://x.com/vozonai_" rel="noreferrer" target="_blank">X</a>
             <a aria-label="LinkedIn" href="https://linkedin.com/company/vozon-ai-india/" rel="noreferrer" target="_blank">in</a>

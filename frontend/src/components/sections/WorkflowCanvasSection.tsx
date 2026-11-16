@@ -77,7 +77,7 @@ export function WorkflowCanvasSection() {
         <div className="workflow-canvas-copy">
           <span className="workflow-canvas-eyebrow">WORKFLOWS, MADE SIMPLE</span>
           <h2 id="workflow-canvas-title">One workflow.<br /><span>Every language.</span></h2>
-          <p>Start with an event, let your agent handle the conversation, then route the outcome to the right place.</p>
+          <p>Start with an event, let an agent respond by voice or chat, then route the outcome to the right tool or person.</p>
           <div className="workflow-canvas-tabs" aria-label="Workflow examples">
             {workflows.map((item, index) => (
               <button

@@ -1,6 +1,8 @@
 ﻿"use client";
 
+import Image from "next/image";
 import { useRef, useState } from "react";
+import { FooterSoundWave } from "@/components/layout/FooterSoundWave";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { useHomepageVoiceCall } from "@/components/sections/useHomepageVoiceCall";
@@ -11,6 +13,7 @@ import "./HomeDesignFourEnding.css";
 import "./AgentVoiceLandingHero.css";
 import { LeadConversionSection } from "./LeadConversionSection";
 import { WorkflowCanvasSection } from "./WorkflowCanvasSection";
+import { ConversationInsightsSection } from "./ConversationInsightsSection";
 import { AgentUseCasesSection } from "./AgentUseCasesSection";
 import { IntegrationsShowcaseSection } from "./IntegrationsShowcaseSection";
 import { PrivacyAssuranceSection } from "./PrivacyAssuranceSection";
@@ -51,12 +54,21 @@ export function HomeDesignFour() {
           <div className="agentvoice-hero-content">
             <div className="agentvoice-channel-kicker">ONE AI PLATFORM · EVERY CHANNEL</div>
             <h1>AI agents that turn<br />conversations into outcomes</h1>
-            <p>Qualify more leads and resolve support requests across voice, WhatsApp, text messages, and web chat—with every conversation moving your business forward.</p>
+            <p>Bring voice, WhatsApp, website chat, and workflows together. Your AI agents can answer questions, qualify leads, book appointments, and route the next action.</p>
             <div className="agentvoice-demo-control">
               <label className="agentvoice-demo-language"><span aria-hidden="true">🇮🇳</span><select aria-label="Choose demo voice language" onChange={(event) => setActiveLanguage(Number(event.target.value))} value={activeLanguage}>{voiceLanguages.map((language, index) => <option key={language.language} value={index}>{language.language}</option>)}</select></label>
-              <button aria-label={isEngaged ? "End demo call" : `Try a ${selectedVoice.language} voice agent`} className={`agentvoice-try-button${isEngaged ? " is-active" : ""}`} disabled={!voiceCall.ready && !isEngaged} onClick={() => isEngaged ? voiceCall.disconnect() : void voiceCall.start(selectedVoice.language)} type="button"><span aria-hidden="true">{isEngaged ? "■" : "☎"}</span>{isEngaged ? "End call" : voiceCall.busy ? "Connecting…" : "Try an agent"}</button>
+              <button aria-label={isEngaged ? "End demo call" : `Try a ${selectedVoice.language} voice agent`} className={`agentvoice-try-button${isEngaged ? " is-active" : ""}`} disabled={!voiceCall.ready && !isEngaged} onClick={() => isEngaged ? voiceCall.disconnect() : void voiceCall.start(selectedVoice.language)} type="button"><span aria-hidden="true">{isEngaged ? "■" : "☎"}</span>{isEngaged ? "End call" : voiceCall.busy ? "Connecting…" : "Try voice demo"}</button>
             </div>
-            <span aria-live="polite" className="agentvoice-demo-status">{voiceCall.active ? `Live demo · ${voiceCall.speakingLanguage || selectedVoice.language}` : voiceCall.busy ? "Connecting to your demo agent…" : "Choose a voice and try a live demo"}</span>
+            <span aria-live="polite" className="agentvoice-demo-status">{voiceCall.active ? `Live demo · ${voiceCall.speakingLanguage || selectedVoice.language}` : voiceCall.busy ? "Connecting to your demo agent…" : "Try voice here, then explore every channel below"}</span>
+          </div>
+          <FooterSoundWave variant="hero" />
+          <div aria-hidden="true" className="agentvoice-hero-tags">
+            <span><i><Image alt="" src="/images/integrations/google-calendar.svg" width={21} height={21} /></i><b>Google Calendar</b></span>
+            <span><i><Image alt="" src="/images/integrations/whatsapp.svg" width={21} height={21} /></i><b>WhatsApp</b></span>
+            <span><i><Image alt="" src="/images/integrations/gmail.svg" width={21} height={21} /></i><b>Gmail</b></span>
+            <span><i><Image alt="" src="/images/integrations/salesforce.svg" width={21} height={21} /></i><b>Salesforce</b></span>
+            <span><i><Image alt="" src="/images/integrations/slack.svg" width={21} height={21} /></i><b>Slack</b></span>
+            <span><i><Image alt="" src="/images/integrations/claude.svg" width={21} height={21} /></i><b>Claude</b></span>
           </div>
           <div aria-hidden="true" className="agentvoice-wave">{[100, 72, 54, 42, 36, 42, 54, 72, 100].map((height, index) => <span key={index} style={{ "--wave-height": `${height}%` } as React.CSSProperties} />)}</div>
         </section>
@@ -66,8 +78,8 @@ export function HomeDesignFour() {
         <section aria-label="Vozon AI introduction video" className="vozon-intro-video">
           <div className="vozon-intro-video-stage">
             <div className="vozon-intro-video-card">
-              <video aria-label="Vozon AI voice agent introduction" controls onPause={() => setIntroVideoPlaying(false)} onPlay={() => setIntroVideoPlaying(true)} playsInline preload="metadata" ref={introVideoRef}>
-                <source src="/videos/vozon-ai-intro.mp4?v=6" type="video/mp4" />
+              <video aria-label="Vozon AI platform introduction" controls onPause={() => setIntroVideoPlaying(false)} onPlay={() => setIntroVideoPlaying(true)} playsInline preload="metadata" ref={introVideoRef}>
+                <source src="/videos/vozon-home-intro.mp4" type="video/mp4" />
                 Your browser does not support embedded video.
               </video>
               {!introVideoPlaying ? <button aria-label="Play Vozon introduction video" className="vozon-intro-video-play" onClick={() => void introVideoRef.current?.play()} type="button"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m8 5 12 7-12 7V5Z" /></svg></button> : null}
@@ -77,6 +89,7 @@ export function HomeDesignFour() {
         </section>
 
         <LeadConversionSection />
+        <ConversationInsightsSection />
         <WorkflowCanvasSection />
         <IntegrationsShowcaseSection />
         <PrivacyAssuranceSection />

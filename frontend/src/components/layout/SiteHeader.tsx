@@ -1,7 +1,6 @@
 ﻿"use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import "@/components/sections/PublicMarketingAccent.css";
 import { useEffect, useRef, useState } from "react";
 
@@ -43,7 +42,6 @@ const menus = {
 } as const;
 
 export function SiteHeader() {
-  const pathname = usePathname();
   const headerRef = useRef<HTMLElement>(null);
   const [activeMenu, setActiveMenu] = useState<MenuKey | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -71,12 +69,6 @@ export function SiteHeader() {
 
   return (
       <div className={`fixed inset-x-0 top-0 z-[100] public-accent-header`}>
-        <div className="w-full bg-black text-white">
-          <div className="flex h-[30px] items-center justify-between px-[5.5%] text-[12px] font-medium">
-            <span>Talk to our architects about custom AI voice agent deployment.</span>
-            <Link className="font-semibold hover:underline" href="/contact">Book a demo ↗</Link>
-          </div>
-        </div>
         <header className="relative flex h-[70px] w-full items-center justify-between border-b border-slate-200/80 bg-[#f3f5fc] px-[7.5%]" ref={headerRef}>
           <div className="landing-header-logo flex items-center" onClick={closeAll}>
             <BrandLogo compact showWebsiteLogo />
@@ -92,7 +84,7 @@ export function SiteHeader() {
           </nav>
           <div className="hidden items-center gap-3 text-[12px] font-medium md:flex">
             <Link className="px-3 py-2 text-slate-800 hover:text-black" href="/login">Login</Link>
-            <Link className="rounded-full bg-white px-4 py-2 text-slate-800 shadow-sm hover:bg-slate-50" href="/contact">Contact sales</Link>
+            <Link className="rounded-full bg-white px-4 py-2 text-slate-800 shadow-sm hover:bg-[#EEF3FF] hover:text-[#2457D6]" href="/contact">Contact sales</Link>
             <Link className="public-header-start rounded-full bg-black px-4 py-2 text-white shadow-sm hover:bg-neutral-800" href="/login">Start for free</Link>
           </div>
           <button aria-label={mobileOpen ? "Close menu" : "Open menu"} className="rounded-full border border-slate-300 px-3 py-2 text-sm text-slate-800 md:hidden" onClick={() => setMobileOpen(!mobileOpen)} type="button">{mobileOpen ? "Close" : "Menu"}</button>
@@ -103,15 +95,15 @@ export function SiteHeader() {
                   <section key={group.title}>
                     <h3 className="mb-2 text-[11px] font-bold uppercase tracking-wide text-slate-400">{group.title}</h3>
                     <div className="flex flex-col gap-1">
-                      {group.links.map((item) => <Link className="rounded-lg px-2 py-1.5 text-[13px] font-medium text-slate-700 hover:bg-neutral-100 hover:text-black" href={item.href} key={item.href} onClick={closeAll}>{item.label}</Link>)}
+                      {group.links.map((item) => <Link className="rounded-lg px-2 py-1.5 text-[13px] font-medium text-slate-700 hover:bg-[#EEF3FF] hover:text-[#2457D6]" href={item.href} key={item.href} onClick={closeAll}>{item.label}</Link>)}
                     </div>
                   </section>
                 ))}
               </div>
-              <Link className="mt-4 inline-block text-xs font-semibold text-black hover:underline" href={menus[activeMenu].intro.href} onClick={closeAll}>Explore all {menus[activeMenu].label.toLowerCase()} →</Link>
+              <Link className="mt-4 inline-block text-xs font-semibold text-[#2457D6] hover:underline" href={menus[activeMenu].intro.href} onClick={closeAll}>Explore all {menus[activeMenu].label.toLowerCase()} →</Link>
             </div>
           ) : null}
-          {mobileOpen ? <nav aria-label="Mobile navigation" className="absolute left-3 right-3 top-full z-50 flex max-h-[calc(100vh-110px)] flex-col gap-3 overflow-y-auto rounded-b-xl border border-slate-200 bg-white p-4 text-sm shadow-xl lg:hidden">
+          {mobileOpen ? <nav aria-label="Mobile navigation" className="absolute left-3 right-3 top-full z-50 flex max-h-[calc(100vh-70px)] flex-col gap-3 overflow-y-auto rounded-b-xl border border-slate-200 bg-white p-4 text-sm shadow-xl lg:hidden">
             <Link href="/" onClick={closeAll}>Home</Link><Link href="/integrations" onClick={closeAll}>Integrations</Link><Link href="/pricing" onClick={closeAll}>Pricing</Link>
             {(["product", "business", "company"] as const).map((key) => <section className="border-t border-slate-100 pt-2" key={key}><h3 className="mb-1 font-semibold">{menus[key].label}</h3>{menus[key].groups.flatMap((group) => group.links).map((item) => <Link className="block py-1 text-slate-600" href={item.href} key={item.href} onClick={closeAll}>{item.label}</Link>)}</section>)}
             <Link className="border-t border-slate-100 pt-2" href="/login" onClick={closeAll}>Login · Start for free</Link><Link href="/contact" onClick={closeAll}>Contact sales</Link>

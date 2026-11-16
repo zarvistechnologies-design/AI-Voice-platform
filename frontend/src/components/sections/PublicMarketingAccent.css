@@ -1,13 +1,13 @@
-﻿/* The violet brand accent is limited to the homepage and Solutions routes. */
+﻿/* Shared cobalt accent for public navigation, home, and solution pages. */
 .public-accent-header,
 .home-design-four:not(.footer-home-shell),
 .hcr-site,
 #explore-capabilities-page {
   font-family: var(--font-site-sans), ui-sans-serif, system-ui, sans-serif;
-  --vozon-accent: #171719;
-  --vozon-accent-hover: #333437;
-  --vozon-accent-soft: #f1f1f2;
-  --vozon-accent-on-dark: #d0d0d2;
+  --vozon-accent: #2457d6;
+  --vozon-accent-hover: #1b45b0;
+  --vozon-accent-soft: #eef3ff;
+  --vozon-accent-on-dark: #a9c0ff;
 }
 
 .home-design-four:not(.footer-home-shell) :is(h1, h2, h3, h4, p, a, button, input, textarea, select, label, summary, li, small, strong) {
@@ -67,9 +67,9 @@
 
 #explore-capabilities-page,
 .hcr-site {
-  --website-accent: #171719;
-  --website-accent-dark: #333437;
-  --website-accent-soft: #f1f1f2;
+  --website-accent: #2457d6;
+  --website-accent-dark: #1b45b0;
+  --website-accent-soft: #eef3ff;
 }
 
 .public-accent-header .public-header-start {
@@ -79,7 +79,6 @@
 .public-accent-header .public-header-start:hover { background: var(--vozon-accent-hover); }
 .public-accent-header nav[aria-label="Main navigation"] :is(a, button):hover,
 .public-accent-header nav[aria-label="Main navigation"] button[aria-expanded="true"] { color: var(--vozon-accent); }
-.public-accent-header > div:first-child a { color: var(--vozon-accent-on-dark); }
 .public-accent-header :is(a, button):focus-visible { outline: 2px solid var(--vozon-accent); outline-offset: 3px; }
 
 .home-design-four:not(.footer-home-shell) .agentvoice-try-button:not(.is-active) {
@@ -120,12 +119,12 @@
 .home-design-four:not(.footer-home-shell) .use-case-option button:focus-visible,
 .home-design-four:not(.footer-home-shell) .workflow-canvas-tabs button:focus-visible { outline-color: var(--vozon-accent); }
 .home-design-four:not(.footer-home-shell) .integrations-showcase-heading > span { color: var(--vozon-accent); }
-.home-design-four:not(.footer-home-shell) .integrations-app-card:hover { border-color: #bcbec1; box-shadow: 0 12px 26px rgb(23 23 25 / 10%); }
+.home-design-four:not(.footer-home-shell) .integrations-app-card:hover { border-color: #b7c9f2; box-shadow: 0 12px 26px rgb(36 87 214 / 10%); }
 .home-design-four:not(.footer-home-shell) .design-four-step-number { background: var(--vozon-accent); color: #fff; }
 
 .hcr-site .hcr-text-link,
 .hcr-site :is(.hcr-story-copy > a, .hcr-pricing-grid a, .hcr-launch-options a) {
-  border-color: #c5c5c7;
+  border-color: #c3d2f5;
   color: var(--vozon-accent);
 }
 .hcr-site :is(.hcr-text-link, .hcr-story-copy > a, .hcr-pricing-grid a, .hcr-launch-options a):hover { border-color: var(--vozon-accent); color: var(--vozon-accent-hover); }
@@ -142,16 +141,16 @@
 .hcr-site :is(a, button, summary):focus-visible { outline: 2px solid var(--vozon-accent); outline-offset: 3px; }
 
 #explore-capabilities-page .text-teal-700,
-#explore-capabilities-page .text-teal-600 { color: #171719; }
-#explore-capabilities-page .text-teal-300 { color: #d0d0d2; }
+#explore-capabilities-page .text-teal-600 { color: var(--vozon-accent); }
+#explore-capabilities-page .text-teal-300 { color: var(--vozon-accent-on-dark); }
 #explore-capabilities-page .bg-teal-500,
 #explore-capabilities-page .bg-teal-600,
-#explore-capabilities-page a[href="/contact?request=demo"] { background: #171719; }
-#explore-capabilities-page .bg-teal-50 { background: #f1f1f2; }
+#explore-capabilities-page a[href="/contact?request=demo"] { background: var(--vozon-accent); }
+#explore-capabilities-page .bg-teal-50 { background: var(--vozon-accent-soft); }
 #explore-capabilities-page .business-console-mark { color: #fff !important; }
 #explore-capabilities-page a[href="/contact?request=demo"]:hover,
-#explore-capabilities-page a[href="/contact"]:hover { background: #333437; }
-#explore-capabilities-page a[href="/contact"]:is(:not([class*="border"])) { background: #171719; }
+#explore-capabilities-page a[href="/contact"]:hover { background: var(--vozon-accent-hover); }
+#explore-capabilities-page a[href="/contact"]:is(:not([class*="border"])) { background: var(--vozon-accent); }
 
 /* The pre-footer card keeps its original black and white glow. */
 .home-design-four:not(.footer-home-shell) .design-four-footer-main .design-four-footer-demo,
@@ -169,7 +168,7 @@
 .home-design-four:not(.footer-home-shell) .design-four-footer,
 .hcr-site .footer-home-shell .design-four-footer,
 .marketing-site:has(#explore-capabilities-page) .footer-home-shell .design-four-footer {
-  background: radial-gradient(ellipse 55% 36% at 52% 112%, rgb(255 255 255 / 16%) 0%, transparent 80%), radial-gradient(ellipse 72% 90% at 93% 4%, #333 0%, #191919 46%, #090909 100%);
+  background: radial-gradient(ellipse 55% 36% at 52% 112%, rgb(36 87 214 / 27%) 0%, transparent 80%), radial-gradient(ellipse 72% 90% at 93% 4%, #262d40 0%, #191b23 46%, #090909 100%);
 }
 
 .marketing-site:has(#explore-capabilities-page) .footer-home-shell .design-four-footer-demo {
@@ -242,31 +241,34 @@
   transition: transform 160ms ease, background 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
 }
 .hcr-site .hcr-page :is(.hcr-text-link, .hcr-launch-options > div:first-child a) {
-  border-color: #171719;
-  background: #171719;
+  border-color: var(--vozon-accent);
+  background: var(--vozon-accent);
   color: #fff;
-  box-shadow: 0 8px 20px rgb(91 76 230 / 17%);
+  box-shadow: 0 8px 20px rgb(36 87 214 / 18%);
 }
 .hcr-site .hcr-page :is(.hcr-text-link, .hcr-story-copy > a, .hcr-pricing-grid a, .hcr-launch-options a):hover {
   transform: translateY(-2px);
-  border-color: #333437;
-  background: #f1f1f2;
-  color: #333437;
-  box-shadow: 0 9px 20px rgb(91 76 230 / 14%);
+  border-color: var(--vozon-accent);
+  background: var(--vozon-accent-soft);
+  color: var(--vozon-accent-hover);
+  box-shadow: 0 9px 20px rgb(36 87 214 / 12%);
 }
 .hcr-site .hcr-page :is(.hcr-text-link, .hcr-launch-options > div:first-child a):hover {
-  background: #333437;
+  background: var(--vozon-accent-hover);
   color: #fff;
 }
 .hcr-site .hcr-page :is(.hcr-text-link, .hcr-story-copy > a, .hcr-pricing-grid a, .hcr-launch-options a) > span[aria-hidden="true"] {
   display: inline-block;
-  width: 14px;
+  width: 16px;
+  flex: 0 0 16px;
   overflow: hidden;
   font-size: 0;
   line-height: 0;
+  text-align: center;
+  white-space: nowrap;
 }
 .hcr-site .hcr-page :is(.hcr-text-link, .hcr-story-copy > a, .hcr-pricing-grid a, .hcr-launch-options a) > span[aria-hidden="true"]::after {
-  content: "â†—";
+  content: "\2197";
   font-size: 15px;
   line-height: 1;
 }
@@ -289,9 +291,9 @@
 }
 .home-design-four:not(.footer-home-shell) :is(.integrations-showcase-link, .privacy-assurance-link):hover {
   transform: translateY(-2px);
-  border-color: #171719;
-  background: #f1f1f2;
-  color: #333437;
+  border-color: var(--vozon-accent);
+  background: var(--vozon-accent-soft);
+  color: var(--vozon-accent-hover);
   text-decoration: none;
 }
 @media (prefers-reduced-motion: reduce) {

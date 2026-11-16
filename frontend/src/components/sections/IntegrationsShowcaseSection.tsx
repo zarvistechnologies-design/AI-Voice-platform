@@ -7,15 +7,15 @@ import "./IntegrationsShowcaseSection.css";
 
 const appSets = [
   [
-    { name: "Google Sheets", detail: "Read and update sheets after calls.", icon: "/images/integrations/google-sheets.svg", tone: "sheets" },
-    { name: "Typeform", detail: "Turn form responses into calls.", icon: null, tone: "typeform" },
-    { name: "Shopify", detail: "Track orders and answer by voice.", icon: "/images/company-logos/shopify.svg", tone: "shopify" },
-    { name: "Calendly", detail: "Book and update meetings on a call.", icon: "/images/integrations/calendly.svg", tone: "calendly" },
-    { name: "Notion", detail: "Bring your team’s knowledge into calls.", icon: "/images/company-logos/notion.svg", tone: "notion" },
+    { name: "Google Sheets", detail: "Keep conversation outcomes in sync.", icon: "/images/integrations/google-sheets.svg", tone: "sheets" },
+    { name: "Typeform", detail: "Start a follow-up from a form response.", icon: null, tone: "typeform" },
+    { name: "Shopify", detail: "Use order context in customer conversations.", icon: "/images/company-logos/shopify.svg", tone: "shopify" },
+    { name: "Calendly", detail: "Book time from a conversation.", icon: "/images/integrations/calendly.svg", tone: "calendly" },
+    { name: "Notion", detail: "Use approved team knowledge in answers.", icon: "/images/company-logos/notion.svg", tone: "notion" },
     { name: "HubSpot", detail: "Capture enquiries and keep leads in sync.", icon: "/images/company-logos/hubspot.svg", tone: "hubspot" },
   ],
   [
-    { name: "Google Calendar", detail: "Book time while you’re on a call.", icon: "/images/integrations/google-calendar.svg", tone: "calendar" },
+    { name: "Google Calendar", detail: "Find and book time during a conversation.", icon: "/images/integrations/google-calendar.svg", tone: "calendar" },
     { name: "WhatsApp", detail: "Continue the conversation in chat.", icon: "/images/integrations/whatsapp.svg", tone: "whatsapp" },
     { name: "Gmail", detail: "Send helpful follow-up emails.", icon: "/images/integrations/gmail.svg", tone: "gmail" },
     { name: "Salesforce", detail: "Keep customer records up to date.", icon: "/images/integrations/salesforce.svg", tone: "salesforce" },
@@ -52,7 +52,7 @@ export function IntegrationsShowcaseSection() {
       <div className="integrations-showcase-heading">
         <span>CONNECTED TO YOUR WORK</span>
         <h2 id="integrations-showcase-title">One intelligent layer<br />for the apps you use.</h2>
-        <p>Let your voice agents work with the tools your team already relies on.</p>
+        <p>Connect your agents, conversations, and workflows to the tools your team already uses.</p>
       </div>
       <div className="integrations-showcase-grid" aria-live="polite" aria-atomic="true">
         {apps.map((app, index) => <article className="integrations-app-card" key={`${activeSet}-${app.name}`} style={{ animationDelay: `${index * 55}ms` }}>
@@ -63,6 +63,10 @@ export function IntegrationsShowcaseSection() {
           <p>{app.detail}</p>
         </article>)}
       </div>
+      <article className="integrations-claude-card">
+        <span className="integrations-app-icon is-claude"><Image alt="" src="/images/integrations/claude.svg" width={27} height={27} /></span>
+        <div><h3>Claude</h3><p>Explore your Vozon agents and conversation activity from Claude.</p></div>
+      </article>
       <div className="integrations-showcase-pagination" aria-label="Integration groups">
         <span>Explore connections</span>
         {appSets.map((set, index) => <button aria-label={`Show integration group ${index + 1}`} aria-current={activeSet === index ? "true" : undefined} className={activeSet === index ? "is-active" : ""} key={set[0].name} onClick={() => setActiveSet(index)} type="button" />)}
