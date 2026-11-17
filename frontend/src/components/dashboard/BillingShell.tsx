@@ -113,7 +113,10 @@ export function BillingShell() {
         isOpen: true,
         type: "topup",
         amountInr: checkout.amount / 100,
-        creditsAdded: (verification?.credits ?? checkout.credits ?? selectedTopUp / inrPerUsd) * inrPerUsd,
+        creditsAdded: toInr(
+          verification?.credits ?? (walletCurrency === "INR" ? selectedTopUp : (checkout.credits ?? selectedTopUp / inrPerUsd)),
+          walletCurrency,
+        ),
         paymentId: payment.razorpay_payment_id,
         invoiceId: verification?.invoiceId,
         newBalanceCredits: updated?.wallet ? toInr(updated.wallet.balanceCredits, updated.wallet.currency) : undefined,
@@ -418,6 +421,39 @@ export function BillingShell() {
             );
           })() : (
             <>
+              {data?.whiteLabel && Number((data.currentPlan?.limits as Record<string, number | undefined> | undefined)?.monthlyMinutes ?? 0) > 0 ? (() => {
+                const planLimits = (data.currentPlan?.limits ?? {}) as Record<string, number | undefined>;
+                const minutesUsed = Math.round(data.usage?.minutes ?? 0);
+                const minutesLimit = Number(planLimits.monthlyMinutes ?? 0);
+                const minutesPercent = minutesLimit > 0 ? Math.min(100, Math.round((minutesUsed / minutesLimit) * 100)) : 0;
+                return (
+                  <section className="rounded-xl border border-[#dbe4e1] bg-white p-5">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div>
+                        <span className="app-label text-[#0e6f62]">Included Plan Allowance</span>
+                        <h2 className="mt-1 mb-0 text-lg font-bold text-[#14231f]">
+                          {data.currentPlan?.name ?? "Active Plan"} · {minutesUsed.toLocaleString()} / {minutesLimit.toLocaleString()} min used
+                        </h2>
+                        <p className="mt-0.5 mb-0 text-xs text-[#71817d]">
+                          Calls use your included minutes first; wallet credits apply after your plan minutes finish.
+                        </p>
+                      </div>
+                      <span className="rounded-full bg-[#edf7f4] px-3 py-1 text-xs font-bold text-[#0e6f62]">
+                        {Math.max(0, minutesLimit - minutesUsed).toLocaleString()} min left
+                      </span>
+                    </div>
+                    <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-[#e3ece9]">
+                      <div
+                        className={`h-full rounded-full transition-all duration-500 ${
+                          minutesPercent >= 90 ? "bg-rose-500" : minutesPercent >= 75 ? "bg-amber-500" : "bg-[#118778]"
+                        }`}
+                        style={{ width: `${minutesPercent}%` }}
+                      />
+                    </div>
+                  </section>
+                );
+              })() : null}
+
               {data?.paymentReadiness ? (
                 <section className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-[#dbe4e1] bg-white px-5 py-4">
                   <div className="flex items-center gap-3"><span className={`size-2.5 rounded-full ${data.configured ? "bg-emerald-500" : "bg-amber-500"}`} /><div><h2 className="app-section-title m-0">Payment setup</h2><p className="app-caption mt-1 mb-0">{data.configured ? "Checkout is ready" : "Checkout configuration is incomplete"}</p></div></div>

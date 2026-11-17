@@ -349,9 +349,10 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
           setStatus("The AI agent is still connecting. Voice and knowledge will be available when it joins.");
         }
       }, 8000);
-    } catch {
+    } catch (error) {
       disconnect();
-      setStatus("Could not start the web call.");
+      const message = error instanceof Error ? error.message : "Could not start the web call.";
+      setStatus(message);
     } finally {
       setBusy(false);
     }
@@ -366,8 +367,9 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
       if (call.dispatch.region) onRegionChange(call.dispatch.region);
       setStatus("Phone call is connecting to the agent.");
       startDispatchPolling(call.roomName, call.dispatchId);
-    } catch {
-      setStatus("Could not start the phone call.");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Could not start the phone call.";
+      setStatus(message);
     } finally {
       setBusy(false);
     }
