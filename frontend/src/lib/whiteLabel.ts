@@ -24,6 +24,7 @@ export type WhiteLabelAccount = {
   contract: {
     currency: "USD" | "INR";
     billingInterval: "month" | "year";
+    setupFeeMinor?: number;
     platformFeeMinor: number;
     minimumCommitmentMinor: number;
     includedCredits: number;
