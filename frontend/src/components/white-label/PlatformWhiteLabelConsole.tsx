@@ -89,25 +89,25 @@ const PARTNER_PLAN_PRESETS: Record<"basic" | "growth" | "scale", {
     title: "Basic",
     price: "₹10,000",
     gstLabel: "+18% GST (₹11,800)",
-    platformFee: "2000",
+    platformFee: "0",
     includedCredits: "8000",
     agents: "10",
     devices: "3",
     markup: "10",
     currency: "INR",
-    summary: "10 Agents · 3 Devices · ₹8,000 Wallet",
+    summary: "10 Agents · 3 Devices · ₹8,000 Wallet (₹2,000 One-time Setup)",
   },
   growth: {
     title: "Growth",
     price: "₹20,000",
     gstLabel: "+18% GST (₹23,600)",
-    platformFee: "1500",
+    platformFee: "0",
     includedCredits: "18500",
     agents: "30",
     devices: "5",
     markup: "7",
     currency: "INR",
-    summary: "30 Agents · 5 Devices · ₹18,500 Wallet",
+    summary: "30 Agents · 5 Devices · ₹18,500 Wallet (₹1,500 One-time Setup)",
   },
   scale: {
     title: "Scale",
@@ -139,7 +139,7 @@ export function PlatformWhiteLabelConsole() {
   const [workspaceTab, setWorkspaceTab] = useState<WorkspaceTab>("overview");
   const [partnerQuery, setPartnerQuery] = useState("");
   const [selectedPreset, setSelectedPreset] = useState<PlanPresetKey>("basic");
-  const [create, setCreate] = useState({ ownerOrgId: "", name: "", slug: "", currency: "INR", platformFee: "2000", minimumCommitment: "0", wholesaleMarkup: "10", includedCredits: "8000", brands: "1", customerOrganizations: "100", agentsPerCustomer: "10", membersPerCustomer: "25", phoneNumbersPerCustomer: "10", concurrentCallsPerCustomer: "3", monthlyMinutesPerCustomer: "10000", productName: "", companyName: "", primaryColor: "#45ddce", secondaryColor: "#071b18", accentColor: "#75fff0", surfaceColor: "#020807", supportEmail: "" });
+  const [create, setCreate] = useState({ ownerOrgId: "", name: "", slug: "", currency: "INR", platformFee: "0", minimumCommitment: "0", wholesaleMarkup: "10", includedCredits: "8000", brands: "1", customerOrganizations: "100", agentsPerCustomer: "10", membersPerCustomer: "25", phoneNumbersPerCustomer: "10", concurrentCallsPerCustomer: "3", monthlyMinutesPerCustomer: "10000", productName: "", companyName: "", primaryColor: "#45ddce", secondaryColor: "#071b18", accentColor: "#75fff0", surfaceColor: "#020807", supportEmail: "" });
 
   function selectPreset(key: PlanPresetKey) {
     setSelectedPreset(key);
