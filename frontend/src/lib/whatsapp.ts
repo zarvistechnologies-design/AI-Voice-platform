@@ -51,6 +51,8 @@ export type WhatsAppCampaign = {
   templateName: string;
   groupId?: string;
   groupName: string;
+  senderPhoneNumberId?: string;
+  senderDisplayPhone?: string;
   status: "draft" | "scheduled" | "running" | "completed" | "failed";
   scheduledAt?: string;
   sentAt?: string;
@@ -81,6 +83,8 @@ export type WhatsAppConversation = {
   _id: string;
   contactPhone: string;
   contactName: string;
+  recipientPhoneNumberId?: string;
+  recipientDisplayPhone?: string;
   lastMessageText: string;
   lastMessageTimestamp: string;
   unreadCount: number;
@@ -154,6 +158,21 @@ export type WhatsAppFlow = {
   createdAt: string;
 };
 
+export type WhatsAppAccountItem = {
+  accountId: string;
+  phoneNumberId: string;
+  wabaId: string;
+  displayPhoneNumber: string;
+  verifiedName: string;
+  qualityRating: string;
+  codeVerificationStatus: string;
+  businessId?: string;
+  businessName?: string;
+  label?: string;
+  isPrimary: boolean;
+  lastVerifiedAt?: string;
+};
+
 export type WhatsAppConnectionStatus = {
   connected: boolean;
   status: string;
@@ -168,7 +187,10 @@ export type WhatsAppConnectionStatus = {
     codeVerificationStatus?: string;
     businessId?: string;
     businessName?: string;
+    label?: string;
+    isPrimary?: boolean;
   };
+  accounts?: WhatsAppAccountItem[];
 };
 
 async function req<T>(path: string, options: RequestInit = {}): Promise<T> {
@@ -198,7 +220,7 @@ async function req<T>(path: string, options: RequestInit = {}): Promise<T> {
 }
 
 export const whatsappApi = {
-  // Connection / Embedded Signup
+  // Connection / Embedded Signup (Multi-Number Supported)
   getStatus: () => req<WhatsAppConnectionStatus>("/api/integrations/whatsapp/status"),
   completeEmbeddedSignup: (payload: {
     code?: string;
@@ -207,17 +229,30 @@ export const whatsappApi = {
     businessId?: string;
     accessToken?: string;
     pin?: string;
+    label?: string;
+    setAsPrimary?: boolean;
   }) => req<{ ok: boolean; message: string; phoneDetails: Record<string, unknown> }>("/api/integrations/whatsapp/embedded-signup", {
     method: "POST",
     body: JSON.stringify(payload),
   }),
-  sendTestMessage: (to: string, message?: string) => req<{ ok: boolean; messageId?: string; sentTo?: string; error?: string }>("/api/integrations/whatsapp/test-message", {
+  updateAccount: (phoneNumberId: string, payload: { label?: string; isPrimary?: boolean }) =>
+    req<{ ok: boolean; message: string; accountId: string; metadata: Record<string, unknown> }>(
+      `/api/integrations/whatsapp/accounts/${encodeURIComponent(phoneNumberId)}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify(payload),
+      },
+    ),
+  sendTestMessage: (to: string, message?: string, fromPhoneNumberId?: string) => req<{ ok: boolean; messageId?: string; sentTo?: string; sentFromPhoneNumberId?: string; error?: string }>("/api/integrations/whatsapp/test-message", {
     method: "POST",
-    body: JSON.stringify({ to, message }),
+    body: JSON.stringify({ to, message, fromPhoneNumberId }),
   }),
-  disconnect: () => req<{ ok: boolean; message: string }>("/api/integrations/whatsapp", {
-    method: "DELETE",
-  }),
+  disconnect: (phoneNumberId?: string) => {
+    const qs = phoneNumberId ? `?phoneNumberId=${encodeURIComponent(phoneNumberId)}` : "";
+    return req<{ ok: boolean; message: string }>(`/api/integrations/whatsapp${qs}`, {
+      method: "DELETE",
+    });
+  },
 
   // Templates
   listTemplates: () => req<{ ok: boolean; templates: WhatsAppTemplate[] }>("/api/whatsapp/templates"),
@@ -267,6 +302,7 @@ export const whatsappApi = {
     groupId: string;
     scheduleType: "now" | "later";
     scheduledAt?: string;
+    senderPhoneNumberId?: string;
   }) => req<{ ok: boolean; campaign: WhatsAppCampaign }>("/api/whatsapp/campaigns", {
     method: "POST",
     body: JSON.stringify(data),
@@ -285,9 +321,9 @@ export const whatsappApi = {
   // Live Chat
   listConversations: () => req<{ ok: boolean; conversations: WhatsAppConversation[] }>("/api/whatsapp/conversations"),
   getMessages: (conversationId: string) => req<{ ok: boolean; messages: WhatsAppMessage[] }>(`/api/whatsapp/conversations/${conversationId}/messages`),
-  sendChatMessage: (conversationId: string, content: string, type?: string) => req<{ ok: boolean; message: WhatsAppMessage }>(`/api/whatsapp/conversations/${conversationId}/messages`, {
+  sendChatMessage: (conversationId: string, content: string, type?: string, fromPhoneNumberId?: string) => req<{ ok: boolean; message: WhatsAppMessage }>(`/api/whatsapp/conversations/${conversationId}/messages`, {
     method: "POST",
-    body: JSON.stringify({ content, type }),
+    body: JSON.stringify({ content, type, fromPhoneNumberId }),
   }),
   toggleMode: (conversationId: string, mode: "ai" | "human") => req<{ ok: boolean; conversation: WhatsAppConversation }>(`/api/whatsapp/conversations/${conversationId}/mode`, {
     method: "PUT",

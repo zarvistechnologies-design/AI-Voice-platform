@@ -281,7 +281,9 @@ export function WhatsAppShell({ initialTab = "campaigns" }: WhatsAppShellProps) 
   };
 
   const isConnected = connectionStatus?.connected ?? false;
+  const connectedAccounts = connectionStatus?.accounts || [];
   const displayNumber = connectionStatus?.metadata?.displayPhoneNumber || connectionStatus?.accountId;
+  const extraCount = Math.max(0, connectedAccounts.length - 1);
 
   if (!session) {
     return (
@@ -331,7 +333,9 @@ export function WhatsAppShell({ initialTab = "campaigns" }: WhatsAppShellProps) 
                   }`}
                 />
                 {isConnected ? (
-                  <span className="max-w-44 truncate sm:max-w-none">Connected {displayNumber ? `· ${displayNumber}` : ""}</span>
+                  <span className="max-w-56 truncate sm:max-w-none">
+                    Connected {displayNumber ? `· ${displayNumber}` : ""}{extraCount > 0 ? ` (+${extraCount} more)` : ""}
+                  </span>
                 ) : (
                   <span>Connect WhatsApp</span>
                 )}
@@ -400,6 +404,7 @@ export function WhatsAppShell({ initialTab = "campaigns" }: WhatsAppShellProps) 
                   campaigns={campaigns}
                   templates={templates}
                   groups={groups}
+                  accounts={connectedAccounts}
                   onRefresh={() => void loadData(true)}
                 />
               )}

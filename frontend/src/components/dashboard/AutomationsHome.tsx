@@ -54,7 +54,7 @@ export function AutomationsHome() {
     finally { setBusy(false); }
   }
 
-  const canCreate = ["owner", "admin", "member"].includes(session?.organization?.role ?? "");
+  const canCreate = Boolean(session) && session?.organization?.role !== "viewer";
   if (!session) return <main className="automation-loading">Loading workflows…</main>;
   return <main className={`automation-layout dashboard-home-theme ${showSidebar ? "automation-sidebar-open" : ""}`}>
     <DashboardSidebar activeLabel="Automation Workflow" userInitials={initials(session.name)} userName={session.name} userEmail={session.email} onLogout={() => void logoutSession().then(() => router.replace("/login"))} showUserSidebar={showSidebar} setShowUserSidebar={setShowSidebar} />

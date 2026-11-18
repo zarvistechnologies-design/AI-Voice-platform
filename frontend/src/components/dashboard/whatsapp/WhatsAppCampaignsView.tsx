@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { WhatsAppCampaign, WhatsAppContactGroup, WhatsAppTemplate } from "@/lib/whatsapp";
+import type { WhatsAppAccountItem, WhatsAppCampaign, WhatsAppContactGroup, WhatsAppTemplate } from "@/lib/whatsapp";
 import { whatsappApi } from "@/lib/whatsapp";
 
 interface WhatsAppCampaignsViewProps {
   campaigns: WhatsAppCampaign[];
   templates: WhatsAppTemplate[];
   groups: WhatsAppContactGroup[];
+  accounts?: WhatsAppAccountItem[];
   onRefresh: () => void;
   defaultGroupId?: string;
 }
@@ -16,6 +17,7 @@ export function WhatsAppCampaignsView({
   campaigns,
   templates,
   groups,
+  accounts = [],
   onRefresh,
   defaultGroupId,
 }: WhatsAppCampaignsViewProps) {
@@ -36,6 +38,9 @@ export function WhatsAppCampaignsView({
   const [campaignName, setCampaignName] = useState("");
   const [selectedTemplateId, setSelectedTemplateId] = useState(templates[0]?._id || "");
   const [selectedGroupId, setSelectedGroupId] = useState(defaultGroupId || groups[0]?._id || "");
+  const [selectedSenderNumberId, setSelectedSenderNumberId] = useState(
+    accounts.find((a) => a.isPrimary)?.accountId || accounts[0]?.accountId || "",
+  );
   const [scheduleType, setScheduleType] = useState<"now" | "later">("now");
   const [scheduledDate, setScheduledDate] = useState("");
   const [sampleVar1, setSampleVar1] = useState("Alex Johnson");
@@ -134,6 +139,7 @@ export function WhatsAppCampaignsView({
         groupId: selectedGroupId,
         scheduleType,
         scheduledAt: scheduleType === "later" ? scheduledDate : undefined,
+        senderPhoneNumberId: selectedSenderNumberId || undefined,
       });
       if (res.ok && res.campaign) {
         setSelectedCampaignId(res.campaign._id);
@@ -518,6 +524,31 @@ export function WhatsAppCampaignsView({
                     className="w-full rounded-xl border border-[#c6d4d0] bg-[#f9fbfa] px-3.5 py-2.5 text-xs font-medium text-[#14231f] transition focus:border-[#118778] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#118778]/10"
                   />
                 </div>
+
+                {/* Sender WhatsApp Line Selector */}
+                {accounts.length > 0 && (
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <label className="block text-xs font-bold uppercase tracking-wider text-[#445550]">
+                        Send From WhatsApp Number
+                      </label>
+                      <span className="text-[11px] font-semibold text-[#118778]">
+                        {accounts.length} {accounts.length === 1 ? "line" : "lines"} connected
+                      </span>
+                    </div>
+                    <select
+                      value={selectedSenderNumberId}
+                      onChange={(e) => setSelectedSenderNumberId(e.target.value)}
+                      className="w-full rounded-xl border border-[#c6d4d0] bg-[#f9fbfa] px-3.5 py-2.5 text-xs font-medium text-[#14231f] transition focus:border-[#118778] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#118778]/10"
+                    >
+                      {accounts.map((acc) => (
+                        <option key={acc.accountId} value={acc.accountId}>
+                          {acc.displayPhoneNumber} — {acc.label || acc.verifiedName} {acc.isPrimary ? "(Default)" : ""}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
 
                 {/* Step 2: Target Audience Group */}
                 <div className="space-y-1.5">
