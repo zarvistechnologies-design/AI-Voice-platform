@@ -88,6 +88,29 @@
   .vc-call-controls { gap: 10px 6px; padding-inline: 15px; }
   .vc-call-controls > div > span { width: 44px; height: 44px; }
 }
+
+/* Dotted rounded card backdrop behind all Solution page hero flows */
+.sln-site .hcr-hero.vc-hero-section {
+  background: #ffffff;
+  padding: 96px 20px 32px;
+}
+.sln-site .hcr-hero-stage.vc-hero-stage {
+  width: min(1420px, 100%);
+  min-height: auto;
+  margin: 0 auto;
+  padding: 28px 20px 36px;
+  border: 1px solid #e2e8f0;
+  border-radius: 22px;
+  background-color: #f8fafc;
+  background-image: radial-gradient(#cbd5e1 1.25px, transparent 1.25px);
+  background-size: 16px 16px;
+  overflow: hidden;
+}
+.sln-site .vc-experience {
+  max-width: 100%;
+  padding: 16px clamp(12px, 1.8vw, 28px);
+  column-gap: clamp(14px, 1.8vw, 28px);
+}
 @media (prefers-reduced-motion: reduce) {
   .vc-industries button { transition: none; }
   .vc-transcript p { animation: none; }

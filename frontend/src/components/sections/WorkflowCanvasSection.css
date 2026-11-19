@@ -6,7 +6,7 @@
 }
 
 .wf-showcase-inner {
-  width: min(1200px, calc(100% - 40px));
+  width: min(1220px, 100%);
   margin: 0 auto;
 }
 

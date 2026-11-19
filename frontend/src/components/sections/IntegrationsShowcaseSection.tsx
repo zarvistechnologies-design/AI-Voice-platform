@@ -2,76 +2,243 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./IntegrationsShowcaseSection.css";
 
-const appSets = [
+interface IntegrationApp {
+  name: string;
+  detail: string;
+  icon: string;
+  tone: string;
+  category: string;
+}
+
+const integrationSlides: IntegrationApp[][] = [
+  // Slide 1 (4 Cards)
   [
-    { name: "Google Sheets", detail: "Keep conversation outcomes in sync.", icon: "/images/integrations/google-sheets.svg", tone: "sheets" },
-    { name: "Typeform", detail: "Start a follow-up from a form response.", icon: null, tone: "typeform" },
-    { name: "Shopify", detail: "Use order context in customer conversations.", icon: "/images/company-logos/shopify.svg", tone: "shopify" },
-    { name: "Calendly", detail: "Book time from a conversation.", icon: "/images/integrations/calendly.svg", tone: "calendly" },
-    { name: "Notion", detail: "Use approved team knowledge in answers.", icon: "/images/company-logos/notion.svg", tone: "notion" },
-    { name: "HubSpot", detail: "Capture enquiries and keep leads in sync.", icon: "/images/company-logos/hubspot.svg", tone: "hubspot" },
+    {
+      name: "Google Sheets",
+      detail: "Sync live call outcomes, customer records, and leads instantly.",
+      icon: "/images/integrations/google-sheets.svg",
+      tone: "sheets",
+      category: "Spreadsheets",
+    },
+    {
+      name: "Salesforce",
+      detail: "Automatically log calls, update pipeline stages, and sync contacts.",
+      icon: "/images/integrations/salesforce.svg",
+      tone: "salesforce",
+      category: "Enterprise CRM",
+    },
+    {
+      name: "WhatsApp Business",
+      detail: "Seamless voice-to-WhatsApp handoff and rich interactive messages.",
+      icon: "/images/integrations/whatsapp.svg",
+      tone: "whatsapp",
+      category: "Messaging",
+    },
+    {
+      name: "Shopify",
+      detail: "Real-time order lookup, tracking updates, and abandoned cart recovery.",
+      icon: "/images/company-logos/shopify.svg",
+      tone: "shopify",
+      category: "E-Commerce",
+    },
   ],
+  // Slide 2 (4 Cards)
   [
-    { name: "Google Calendar", detail: "Find and book time during a conversation.", icon: "/images/integrations/google-calendar.svg", tone: "calendar" },
-    { name: "WhatsApp", detail: "Continue the conversation in chat.", icon: "/images/integrations/whatsapp.svg", tone: "whatsapp" },
-    { name: "Gmail", detail: "Send helpful follow-up emails.", icon: "/images/integrations/gmail.svg", tone: "gmail" },
-    { name: "Salesforce", detail: "Keep customer records up to date.", icon: "/images/integrations/salesforce.svg", tone: "salesforce" },
-    { name: "Slack", detail: "Share outcomes with your team.", icon: "/images/integrations/slack.svg", tone: "slack" },
-    { name: "Google Drive", detail: "Bring useful documents into reach.", icon: "/images/integrations/googledrive.svg", tone: "drive" },
+    {
+      name: "Calendly",
+      detail: "Book meetings, sales demos, and consultations during live calls.",
+      icon: "/images/integrations/calendly.svg",
+      tone: "calendly",
+      category: "Scheduling",
+    },
+    {
+      name: "HubSpot",
+      detail: "Enrich customer timelines, capture inbound leads, and trigger tasks.",
+      icon: "/images/company-logos/hubspot.svg",
+      tone: "hubspot",
+      category: "Marketing & CRM",
+    },
+    {
+      name: "Notion",
+      detail: "Empower agents with approved company knowledge, FAQs, and policies.",
+      icon: "/images/company-logos/notion.svg",
+      tone: "notion",
+      category: "Knowledge Base",
+    },
+    {
+      name: "Claude",
+      detail: "Audit call reasoning, trace decisions, and summarize complex chats.",
+      icon: "/images/integrations/claude.svg",
+      tone: "claude",
+      category: "AI Reasoning",
+    },
   ],
+  // Slide 3 (4 Cards)
   [
-    { name: "Freshsales", detail: "Pass qualified leads to your sales team.", icon: "/images/integrations/freshsales.ico", tone: "freshsales" },
-    { name: "ClickUp", detail: "Turn call outcomes into team tasks.", icon: "/images/integrations/clickup.svg", tone: "clickup" },
-    { name: "Asana", detail: "Keep follow-up work organized.", icon: "/images/integrations/asana.svg", tone: "asana" },
-    { name: "Zoho", detail: "Connect customer details to conversations.", icon: "/images/integrations/zoho.svg", tone: "zoho" },
-    { name: "Zapier", detail: "Connect with more of your tools.", icon: "/images/integrations/zapier.png", tone: "zapier" },
-    { name: "Google Docs", detail: "Find answers in your team’s documents.", icon: "/images/integrations/googledocs.svg", tone: "docs" },
+    {
+      name: "Slack",
+      detail: "Instant alerts for hot leads, human escalations, and flagged calls.",
+      icon: "/images/integrations/slack.svg",
+      tone: "slack",
+      category: "Team Alerts",
+    },
+    {
+      name: "Google Calendar",
+      detail: "Check advisor availability and book appointments in real time.",
+      icon: "/images/integrations/google-calendar.svg",
+      tone: "calendar",
+      category: "Productivity",
+    },
+    {
+      name: "Gmail",
+      detail: "Dispatch post-call confirmation emails and calendar invites.",
+      icon: "/images/integrations/gmail.svg",
+      tone: "gmail",
+      category: "Email",
+    },
+    {
+      name: "Google Drive",
+      detail: "Access product brochures, policy forms, and contracts automatically.",
+      icon: "/images/integrations/googledrive.svg",
+      tone: "drive",
+      category: "Cloud Storage",
+    },
+  ],
+  // Slide 4 (4 Cards)
+  [
+    {
+      name: "Zoho CRM",
+      detail: "Sync contact details, deal stages, and call transcripts seamlessly.",
+      icon: "/images/integrations/zoho.svg",
+      tone: "zoho",
+      category: "Sales Pipeline",
+    },
+    {
+      name: "ClickUp",
+      detail: "Convert customer requests and action items into assigned tickets.",
+      icon: "/images/integrations/clickup.svg",
+      tone: "clickup",
+      category: "Project Tasks",
+    },
+    {
+      name: "Asana",
+      detail: "Trigger automated fulfillment workflows and team task queues.",
+      icon: "/images/integrations/asana.svg",
+      tone: "asana",
+      category: "Operations",
+    },
+    {
+      name: "Zapier",
+      detail: "Connect your custom webhooks and workflows across 5,000+ tools.",
+      icon: "/images/integrations/zapier.png",
+      tone: "zapier",
+      category: "Automation",
+    },
   ],
 ];
 
-function AppMark({ tone }: { tone: string }) {
-  if (tone === "typeform") return <span className="integrations-app-typeform" aria-hidden="true"><i /><b /></span>;
-  return null;
-}
-
 export function IntegrationsShowcaseSection() {
-  const [activeSet, setActiveSet] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(0);
 
-  useEffect(() => {
-    const timer = window.setInterval(() => setActiveSet((current) => (current + 1) % appSets.length), 1500);
-    return () => window.clearInterval(timer);
-  }, []);
+  function prevSlide() {
+    setCurrentSlide((curr) => (curr === 0 ? integrationSlides.length - 1 : curr - 1));
+  }
 
-  const apps = appSets[activeSet];
+  function nextSlide() {
+    setCurrentSlide((curr) => (curr + 1) % integrationSlides.length);
+  }
 
   return (
     <section className="integrations-showcase" aria-labelledby="integrations-showcase-title">
-      <div className="integrations-showcase-heading">
-        <span>CONNECTED TO YOUR STACK</span>
-        <h2 id="integrations-showcase-title">One intelligent layer<br />for the apps you use.</h2>
-        <p>Connect Voice AI, WhatsApp, and autonomous agents to your calendars, CRMs, sheets, and APIs.</p>
+      <div className="integrations-showcase-inner">
+        {/* Centered Heading */}
+        <div className="integrations-showcase-heading">
+          <span className="integrations-eyebrow">CONNECTED TO YOUR STACK</span>
+          <h2 id="integrations-showcase-title">
+            One intelligent layer<br />for the apps you use.
+          </h2>
+          <p>
+            Connect Voice AI, WhatsApp, and autonomous agents to your calendars, CRMs, sheets, and APIs seamlessly.
+          </p>
+        </div>
+
+        {/* 4-Card Carousel Wrapper */}
+        <div className="integrations-carousel-container">
+          {/* Previous Button */}
+          <button
+            aria-label="Previous integration slide"
+            className="carousel-nav-btn is-prev"
+            onClick={prevSlide}
+            type="button"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+
+          {/* Viewport */}
+          <div className="integrations-carousel-viewport">
+            <div
+              className="integrations-carousel-track"
+              style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+            >
+              {integrationSlides.map((slide, slideIdx) => (
+                <div key={slideIdx} className="integrations-carousel-slide">
+                  {slide.map((app) => (
+                    <article key={app.name} className="integrations-app-card">
+                      <div className="integrations-card-header">
+                        <span className={`integrations-app-icon is-${app.tone}`}>
+                          <Image alt="" height={28} src={app.icon} width={28} />
+                        </span>
+                        <span className="integrations-card-badge">{app.category}</span>
+                      </div>
+                      <h3>{app.name}</h3>
+                      <p>{app.detail}</p>
+                    </article>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Next Button */}
+          <button
+            aria-label="Next integration slide"
+            className="carousel-nav-btn is-next"
+            onClick={nextSlide}
+            type="button"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Carousel Pagination Dots */}
+        <div className="integrations-carousel-dots" aria-label="Integration carousel pagination">
+          {integrationSlides.map((_, idx) => (
+            <button
+              key={idx}
+              aria-label={`Go to integration slide ${idx + 1}`}
+              aria-current={currentSlide === idx ? "true" : undefined}
+              className={`carousel-dot${currentSlide === idx ? " is-active" : ""}`}
+              onClick={() => setCurrentSlide(idx)}
+              type="button"
+            />
+          ))}
+        </div>
+
+        {/* Centered Action Link */}
+        <div className="integrations-showcase-actions">
+          <Link className="integrations-showcase-link" href="/integrations">
+            <span>Explore 100+ Integrations</span>
+            <span aria-hidden="true">↗</span>
+          </Link>
+        </div>
       </div>
-      <div className="integrations-showcase-grid" aria-live="polite" aria-atomic="true">
-        {apps.map((app, index) => <article className="integrations-app-card" key={`${activeSet}-${app.name}`} style={{ animationDelay: `${index * 55}ms` }}>
-          <span className={`integrations-app-icon is-${app.tone}`}>
-            {app.icon ? <Image alt="" src={app.icon} width={27} height={27} /> : <AppMark tone={app.tone} />}
-          </span>
-          <h3>{app.name}</h3>
-          <p>{app.detail}</p>
-        </article>)}
-      </div>
-      <article className="integrations-claude-card">
-        <span className="integrations-app-icon is-claude"><Image alt="" src="/images/integrations/claude.svg" width={27} height={27} /></span>
-        <div><h3>Claude</h3><p>Explore your Vozon agents and conversation activity from Claude.</p></div>
-      </article>
-      <div className="integrations-showcase-pagination" aria-label="Integration groups">
-        <span>Explore connections</span>
-        {appSets.map((set, index) => <button aria-label={`Show integration group ${index + 1}`} aria-current={activeSet === index ? "true" : undefined} className={activeSet === index ? "is-active" : ""} key={set[0].name} onClick={() => setActiveSet(index)} type="button" />)}
-      </div>
-      <Link className="integrations-showcase-link" href="/integrations">Explore integrations <span aria-hidden="true">↗</span></Link>
     </section>
   );
 }

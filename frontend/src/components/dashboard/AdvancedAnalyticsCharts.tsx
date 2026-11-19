@@ -11,6 +11,7 @@ import {
   ComposedChart,
   Legend,
   Line as ReLine,
+  LineChart,
   Pie as RePie,
   PieChart,
   ResponsiveContainer,
@@ -336,6 +337,30 @@ export function AdvancedAnalyticsCharts({
     ...row,
     label: `${String(row.hour).padStart(2, "0")}:00`,
   }));
+  const weeklyBuckets = Array.from({ length: 4 }, (_, index) => {
+    const start = Math.floor((index * timeline.length) / 4);
+    const end = Math.floor(((index + 1) * timeline.length) / 4);
+    const slice = timeline.slice(start, Math.max(start, end));
+    const calls = slice.reduce((sum, item) => sum + item.calls, 0);
+    const completed = slice.reduce((sum, item) => sum + item.completed, 0);
+    return {
+      label: `Week ${4 - index}`,
+      calls,
+      successRate: calls > 0 ? Math.round((completed / calls) * 100) : 0,
+    };
+  });
+  const totalDirCalls = Math.max(
+    1,
+    channels.reduce((sum, item) => sum + item.calls, 0) || data.summary.totalCalls,
+  );
+  const inboundCount =
+    channels.find((c) => c.name.toLowerCase().includes("in"))?.calls ?? 0;
+  const outboundCount =
+    channels.find((c) => c.name.toLowerCase().includes("out"))?.calls ?? 0;
+  const inboundPct = ((inboundCount / totalDirCalls) * 100).toFixed(1);
+  const outboundPct = ((outboundCount / totalDirCalls) * 100).toFixed(1);
+  const durationColors = ["#0d9488", "#0284c7", "#f59e0b", "#e11d48", "#7c3aed", "#4f46e5"];
+  const statusColors = ["#0284c7", "#f59e0b", "#0f766e", "#e11d48", "#7c3aed"];
   const focus = !hasCalls
     ? {
         label: "Getting started",
@@ -418,7 +443,7 @@ export function AdvancedAnalyticsCharts({
           ))}
         </div>
 
-        <div className="grid gap-px border-t border-[#eaeaea] bg-[#eaeaea] xl:grid-cols-[minmax(0,1.65fr)_minmax(300px,.75fr)]">
+        <div className="hidden">
           <ChartCard
             title="Conversation momentum"
             subtitle="Total demand compared with completed calls"
@@ -515,7 +540,7 @@ export function AdvancedAnalyticsCharts({
           </ChartCard>
         </div>
 
-        <details open className="group border-t border-[#eaeaea] bg-white">
+        <details className="hidden">
           <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-3.5 marker:hidden">
             <div>
               <h2 className="text-[13.5px] font-semibold text-[#171717]">Advanced analysis</h2>
@@ -664,6 +689,242 @@ export function AdvancedAnalyticsCharts({
             </ChartCard>
           </div>
         </details>
+      </section>
+
+      {/* Trend Analysis (2x2 Grid) */}
+      <section className="space-y-3">
+        <div className="flex items-center gap-2.5">
+          <span className="grid size-7 place-items-center rounded-lg bg-[#171717] text-white">
+            <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <path d="M3 12h4l3-7 4 14 3-7h4" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+          <h2 className="text-[14px] font-semibold text-[#171717]">Trend Analysis</h2>
+        </div>
+
+        <div className="grid gap-4 lg:grid-cols-2">
+          <article className="rounded-xl border border-[#eaeaea] bg-white p-5">
+            <div className="mb-3 flex items-center justify-between gap-2">
+              <h3 className="text-[13px] font-semibold text-[#171717]">Call Volume Trend</h3>
+              <span className="rounded-full border border-[#d1fae5] bg-[#ecfdf5] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#0f766e]">
+                AREA CHART
+              </span>
+            </div>
+            {!timeline.length ? (
+              <EmptyChart />
+            ) : (
+              <div className="h-[230px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={timeline} margin={{ top: 8, right: 10, left: -20, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="totalCallsGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#0f766e" stopOpacity={0.22} />
+                        <stop offset="100%" stopColor="#0f766e" stopOpacity={0.02} />
+                      </linearGradient>
+                      <linearGradient id="completedCallsGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#4f46e5" stopOpacity={0.18} />
+                        <stop offset="100%" stopColor="#4f46e5" stopOpacity={0.01} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid stroke="#eaeaea" vertical={false} strokeDasharray="3 3" />
+                    <XAxis dataKey="label" tick={axis} tickLine={false} axisLine={false} />
+                    <YAxis tick={axis} tickLine={false} axisLine={false} />
+                    <Tooltip contentStyle={tooltipStyle} />
+                    <Legend wrapperStyle={{ fontSize: 11 }} />
+                    <Area type="monotone" dataKey="calls" name="Total Calls" stroke="#0f766e" strokeWidth={2} fill="url(#totalCallsGrad)" />
+                    <Area type="monotone" dataKey="completed" name="Completed" stroke="#4f46e5" strokeWidth={2} fill="url(#completedCallsGrad)" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </article>
+
+          <article className="rounded-xl border border-[#eaeaea] bg-white p-5">
+            <div className="mb-3 flex items-center justify-between gap-2">
+              <h3 className="text-[13px] font-semibold text-[#171717]">Hourly Distribution</h3>
+              <span className="rounded-full border border-[#e0e7ff] bg-[#eef2ff] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#4f46e5]">
+                COLUMN CHART
+              </span>
+            </div>
+            {!hourlyData.some((row) => row.calls) ? (
+              <EmptyChart />
+            ) : (
+              <div className="h-[230px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={hourlyData} margin={{ top: 8, right: 10, left: -20, bottom: 0 }}>
+                    <CartesianGrid stroke="#eaeaea" vertical={false} strokeDasharray="3 3" />
+                    <XAxis dataKey="label" interval={2} tick={axis} tickLine={false} axisLine={false} />
+                    <YAxis tick={axis} tickLine={false} axisLine={false} />
+                    <Tooltip contentStyle={tooltipStyle} />
+                    <Bar dataKey="calls" name="Calls" fill="#4f46e5" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </article>
+
+          <article className="rounded-xl border border-[#eaeaea] bg-white p-5">
+            <div className="mb-3 flex items-center justify-between gap-2">
+              <h3 className="text-[13px] font-semibold text-[#171717]">Duration Analysis</h3>
+              <span className="rounded-full border border-[#e0e7ff] bg-[#eef2ff] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#4f46e5]">
+                BAR CHART
+              </span>
+            </div>
+            {!durationData.length ? (
+              <EmptyChart />
+            ) : (
+              <div className="h-[230px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={durationData} layout="vertical" margin={{ top: 4, right: 18, left: 4, bottom: 0 }}>
+                    <CartesianGrid stroke="#eaeaea" horizontal={false} strokeDasharray="3 3" />
+                    <XAxis type="number" tick={axis} tickLine={false} axisLine={false} />
+                    <YAxis type="category" dataKey="name" tick={axis} tickLine={false} axisLine={false} width={54} />
+                    <Tooltip contentStyle={tooltipStyle} />
+                    <Bar dataKey="calls" name="Calls" radius={[0, 4, 4, 0]}>
+                      {durationData.map((row, index) => (
+                        <Cell key={row.name} fill={durationColors[index % durationColors.length]} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </article>
+
+          <article className="rounded-xl border border-[#eaeaea] bg-white p-5">
+            <div className="mb-3 flex items-center justify-between gap-2">
+              <h3 className="text-[13px] font-semibold text-[#171717]">Weekly Performance</h3>
+              <span className="rounded-full border border-[#d1fae5] bg-[#ecfdf5] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#0f766e]">
+                LINE CHART
+              </span>
+            </div>
+            <div className="h-[230px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={weeklyBuckets} margin={{ top: 8, right: 12, left: -20, bottom: 0 }}>
+                  <CartesianGrid stroke="#eaeaea" vertical={false} strokeDasharray="3 3" />
+                  <XAxis dataKey="label" tick={axis} tickLine={false} axisLine={false} />
+                  <YAxis tick={axis} tickLine={false} axisLine={false} />
+                  <Tooltip contentStyle={tooltipStyle} />
+                  <Legend wrapperStyle={{ fontSize: 11 }} />
+                  <Line type="monotone" dataKey="calls" name="Total Calls" stroke="#0f766e" strokeWidth={2} dot={{ r: 3.5 }} />
+                  <Line type="monotone" dataKey="successRate" name="Success Rate %" stroke="#4f46e5" strokeWidth={2} strokeDasharray="4 4" dot={{ r: 3.5 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      {/* Distribution & Breakdown */}
+      <section className="space-y-3">
+        <div className="flex items-center gap-2.5">
+          <span className="grid size-7 place-items-center rounded-lg bg-[#171717] text-white">
+            <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 3v9l6 3" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+          <h2 className="text-[14px] font-semibold text-[#171717]">Distribution &amp; Breakdown</h2>
+        </div>
+
+        <div className="grid gap-4 lg:grid-cols-2">
+          <article className="flex flex-col justify-between rounded-xl border border-[#eaeaea] bg-white p-5">
+            <div className="mb-2 flex items-center justify-between gap-2">
+              <h3 className="text-[13px] font-semibold text-[#171717]">Call Status Distribution</h3>
+              <span className="rounded-full border border-[#d1fae5] bg-[#ecfdf5] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#0f766e]">
+                DONUT CHART
+              </span>
+            </div>
+            {!hasCalls ? (
+              <EmptyChart />
+            ) : (
+              <div className="h-[220px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={outcomes}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={52}
+                      outerRadius={78}
+                      paddingAngle={3}
+                      label={({ name, value }) => `${name}: ${value}`}
+                      labelLine={{ stroke: "#a1a1aa" }}
+                    >
+                      {outcomes.map((row, index) => (
+                        <Cell key={row.name} fill={statusColors[index % statusColors.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip contentStyle={tooltipStyle} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+            <div className="mt-3 border-t border-[#eaeaea] pt-3 text-center">
+              <strong className="block text-xl font-bold tracking-tight text-[#171717]">
+                {loading ? "—" : Math.round(data.summary.totalCalls).toLocaleString("en-IN")}
+              </strong>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-[#71717a]">
+                TOTAL CALLS
+              </span>
+            </div>
+          </article>
+
+          <article className="rounded-xl border border-[#eaeaea] bg-white p-5">
+            <div className="mb-4 flex items-center justify-between gap-2">
+              <h3 className="text-[13px] font-semibold text-[#171717]">Call Direction Breakdown</h3>
+              <span className="rounded-full border border-[#eaeaea] bg-[#fafafa] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#52525b]">
+                PROGRESS
+              </span>
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex items-center justify-between rounded-xl border border-[#bae6fd] bg-[#f0f9ff] px-4 py-3">
+                <span className="text-[13px] font-semibold text-[#0369a1]">Inbound</span>
+                <div className="text-right">
+                  <strong className="block text-base font-bold text-[#171717]">
+                    {inboundCount.toLocaleString("en-IN")}
+                  </strong>
+                  <span className="text-[11px] font-medium text-[#71717a]">{inboundPct}%</span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between rounded-xl border border-[#ddd6fe] bg-[#f5f3ff] px-4 py-3">
+                <span className="text-[13px] font-semibold text-[#6d28d9]">Outbound</span>
+                <div className="text-right">
+                  <strong className="block text-base font-bold text-[#171717]">
+                    {outboundCount.toLocaleString("en-IN")}
+                  </strong>
+                  <span className="text-[11px] font-medium text-[#71717a]">{outboundPct}%</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-5 space-y-3">
+              <div>
+                <div className="mb-1 flex justify-between text-[11px] font-semibold">
+                  <span className="text-[#0284c7]">Inbound</span>
+                  <span className="text-[#171717]">{inboundPct}%</span>
+                </div>
+                <div className="h-2 w-full overflow-hidden rounded-full bg-[#f4f4f5]">
+                  <div className="h-full rounded-full bg-[#0284c7]" style={{ width: `${inboundPct}%` }} />
+                </div>
+              </div>
+
+              <div>
+                <div className="mb-1 flex justify-between text-[11px] font-semibold">
+                  <span className="text-[#7c3aed]">Outbound</span>
+                  <span className="text-[#171717]">{outboundPct}%</span>
+                </div>
+                <div className="h-2 w-full overflow-hidden rounded-full bg-[#f4f4f5]">
+                  <div className="h-full rounded-full bg-[#7c3aed]" style={{ width: `${outboundPct}%` }} />
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
       </section>
 
       <AgentPerformanceCommandCenter

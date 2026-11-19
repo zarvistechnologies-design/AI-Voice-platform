@@ -21,7 +21,7 @@
 .voice-synth-inner {
   position: relative;
   z-index: 2;
-  width: min(1200px, calc(100% - 40px));
+  width: min(1220px, 100%);
   margin: 0 auto;
   display: grid;
   grid-template-columns: minmax(260px, 1.05fr) minmax(280px, 0.86fr) minmax(280px, 0.96fr);
@@ -45,9 +45,12 @@
 }
 
 @keyframes voiceWordDrift {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate3d(0, 0, 0);
   }
+
   50% {
     transform: translate3d(4px, -3px, 0);
   }
@@ -105,9 +108,13 @@
 }
 
 @keyframes voiceOrbBlink {
-  0%, 92%, 100% {
+
+  0%,
+  92%,
+  100% {
     transform: scaleY(1);
   }
+
   96% {
     transform: scaleY(0.15);
   }
@@ -197,15 +204,33 @@
   animation: voiceEqPulse 1.1s ease-in-out infinite;
 }
 
-.voice-synth-eq-badge span:nth-child(1) { height: 7px; animation-delay: 0s; }
-.voice-synth-eq-badge span:nth-child(2) { height: 13px; animation-delay: 0.18s; }
-.voice-synth-eq-badge span:nth-child(3) { height: 9px; animation-delay: 0.36s; }
-.voice-synth-eq-badge span:nth-child(4) { height: 12px; animation-delay: 0.54s; }
+.voice-synth-eq-badge span:nth-child(1) {
+  height: 7px;
+  animation-delay: 0s;
+}
+
+.voice-synth-eq-badge span:nth-child(2) {
+  height: 13px;
+  animation-delay: 0.18s;
+}
+
+.voice-synth-eq-badge span:nth-child(3) {
+  height: 9px;
+  animation-delay: 0.36s;
+}
+
+.voice-synth-eq-badge span:nth-child(4) {
+  height: 12px;
+  animation-delay: 0.54s;
+}
 
 @keyframes voiceEqPulse {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scaleY(0.75);
   }
+
   50% {
     transform: scaleY(1.18);
   }
@@ -314,4 +339,3 @@
     width: 100%;
   }
 }
-

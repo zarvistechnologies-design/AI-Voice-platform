@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { FooterSoundWave } from "@/components/layout/FooterSoundWave";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
@@ -12,7 +12,6 @@ import "./HomeDesignFourGrid.css";
 import "./HomeDesignFourHero.css";
 import "./HomeDesignFourEnding.css";
 import "./AgentVoiceLandingHero.css";
-import { LeadConversionSection } from "./LeadConversionSection";
 import { WorkflowCanvasSection } from "./WorkflowCanvasSection";
 import { ConversationInsightsSection } from "./ConversationInsightsSection";
 import { AgentUseCasesSection } from "./AgentUseCasesSection";
@@ -22,7 +21,6 @@ import { GlobalVoicesMapSection } from "./GlobalVoicesMapSection";
 import { HomeFaqSection } from "./HomeFaqSection";
 import { EnterpriseScaleSection } from "./EnterpriseScaleSection";
 import { PlatformComparisonSection } from "./PlatformComparisonSection";
-import { VoiceSynthesisShowcaseSection } from "./VoiceSynthesisShowcaseSection";
 import { TalkToAgentWidget } from "./TalkToAgentWidget";
 
 const voiceLanguages = [
@@ -52,6 +50,8 @@ const demoScenarios = [
 
 export function HomeDesignFour() {
   const [activeLanguage, setActiveLanguage] = useState(0);
+  const [introVideoPlaying, setIntroVideoPlaying] = useState(false);
+  const introVideoRef = useRef<HTMLVideoElement>(null);
   const [callModalOpen, setCallModalOpen] = useState(false);
   const [selectedScenario, setSelectedScenario] = useState<string>("vozon-general");
   const [callerName, setCallerName] = useState("");
@@ -132,12 +132,43 @@ export function HomeDesignFour() {
         </section>
 
         <AgentUseCasesSection />
-        <LeadConversionSection />
+        <WorkflowCanvasSection />
 
-        <VoiceSynthesisShowcaseSection />
+        <section aria-label="Vozon AI introduction video" className="vozon-intro-video">
+          <div className="vozon-intro-video-stage">
+            <div className="vozon-intro-video-card">
+              <video
+                aria-label="Vozon AI platform introduction"
+                controls
+                onPause={() => setIntroVideoPlaying(false)}
+                onPlay={() => setIntroVideoPlaying(true)}
+                playsInline
+                preload="metadata"
+                ref={introVideoRef}
+              >
+                <source src="/videos/vozon-home-intro.mp4" type="video/mp4" />
+                Your browser does not support embedded video.
+              </video>
+              {!introVideoPlaying ? (
+                <button
+                  aria-label="Play Vozon introduction video"
+                  className="vozon-intro-video-play"
+                  onClick={() => void introVideoRef.current?.play()}
+                  type="button"
+                >
+                  <svg aria-hidden="true" viewBox="0 0 24 24">
+                    <path d="m8 5 12 7-12 7V5Z" />
+                  </svg>
+                </button>
+              ) : null}
+              <div className="vozon-intro-video-watermark" aria-hidden="true">
+                Vozon <span>AI</span>
+              </div>
+            </div>
+          </div>
+        </section>
 
         <ConversationInsightsSection />
-        <WorkflowCanvasSection />
         <IntegrationsShowcaseSection />
         <PrivacyAssuranceSection />
         <EnterpriseScaleSection />
