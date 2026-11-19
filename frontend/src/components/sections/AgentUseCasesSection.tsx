@@ -1,107 +1,275 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import { useEffect, useRef } from "react";
 import "./AgentUseCasesSection.css";
 
-type Example = { title: string; industry: string; description: string; agent: string; channel: "voice" | "whatsapp"; outcome: string; messages: string[] };
-const appointmentRecording = [
-  { role: "assistant", at: 0, text: "नमस्ते! मैं रिया बोल रही हूं भारद्वाज हॉस्पिटल, लहरतारा से। बताइए, मैं आपकी कैसे मदद कर सकती हूं?" },
-  { role: "user", at: 10.65, text: "अपॉइंटमेंट लेना है।" },
-  { role: "assistant", at: 10.67, text: "ज़रूर! आप किस दिन और किस समय आना चाहेंगे?" },
-  { role: "user", at: 20.16, text: "कल डॉक्टर कब से कब तक मिलेंगे?" },
-  { role: "assistant", at: 20.17, text: "कल रविवार है, तो डॉ. अरुण सिंह सुबह 10:00 बजे से दोपहर 2:00 बजे तक उपलब्ध रहेंगे। क्या आप इस दौरान कोई अपॉइंटमेंट बुक करना चाहेंगे?" },
-  { role: "user", at: 34.1, text: "जी मैं साढ़े दस बजे।" },
-  { role: "assistant", at: 37.9, text: "एक मिनट, उपलब्धता चेक कर रही हूं। जी, वो स्लॉट अवेलेबल है। आपका नाम बता दीजिए?" },
-];
-const examples: Record<string, Example[]> = {
-  Activate: [
-    { title: "Turn an enquiry into an appointment", industry: "Healthcare", description: "Answer the first question, find a suitable slot, and help customers book while the conversation is still warm.", agent: "Appointment assistant", channel: "voice", outcome: "Appointment confirmed", messages: ["Hi Priya! I’m the Vozon assistant. Would you like help booking your consultation?", "Yes, is there anything tomorrow morning?", "There’s an opening at 11:30 AM. Would that work for you?", "That’s perfect. Please book it.", "You’re booked for tomorrow at 11:30 AM. I’ll send your confirmation now."] },
-    { title: "Find the leads ready for a next step", industry: "Sales", description: "Understand the customer’s needs and timing, then hand your sales team a conversation with context.", agent: "Lead qualification agent", channel: "voice", outcome: "Qualified for sales", messages: ["Thanks for your interest! What would you like to automate?", "Inbound enquiries for our real estate team.", "Understood. Are you looking to get started this month?", "Yes, we’d like to see a demo this week.", "Great. I’ll share your requirements with our team so we can tailor your demo."] },
-    { title: "Turn travel enquiries into bookings", industry: "Travel & hospitality", description: "Help travellers explore destinations, discover tour packages, and take the next step in WhatsApp.", agent: "Travel assistant", channel: "whatsapp", outcome: "Help travellers choose their next trip", messages: ["Welcome! How can I help plan your next trip?", "I’d like to explore tour packages.", "Of course. Which destination are you interested in?", "Manali, please.", "Let’s find a tour package that works for you."] },
-  ],
-  Retain: [
-    { title: "Keep every follow-up moving", industry: "Services", description: "Continue the conversation after a visit and help customers find the next appointment that fits their schedule.", agent: "Customer care assistant", channel: "whatsapp", outcome: "Follow-up scheduled", messages: ["Hi Priya! Would you like help arranging your follow-up visit?", "Yes, sometime next week please.", "I can help with that. Is Tuesday afternoon convenient?", "Tuesday works for me.", "Perfect. I’ll help confirm your slot and send the details here."] },
-    { title: "Make renewals feel effortless", industry: "Subscriptions", description: "Give customers a timely reminder and clear answers before their subscription is due to renew.", agent: "Renewal assistant", channel: "voice", outcome: "Renewal link shared", messages: ["Hi Sam, your subscription is due for renewal soon. Can I help with your options?", "Can I keep my current plan?", "Absolutely. You can continue with the same plan.", "Great, send me the renewal details.", "I’ll send your secure renewal link so you can review and continue."] },
-    { title: "Reconnect with past customers", industry: "Sales", description: "Reach out with a relevant conversation and help interested customers pick up where they left off.", agent: "Re-engagement assistant", channel: "whatsapp", outcome: "Interest reactivated", messages: ["Hi Alex, still exploring options for your team? I’m happy to help.", "Actually, yes. We’re revisiting this now.", "Good timing. Has anything changed in what you need?", "We now need support for WhatsApp as well.", "Got it. I’ll pass that context to the team for your next conversation."] },
-  ],
-  Support: [
-    { title: "Keep customers informed about orders", industry: "Commerce", description: "Handle common delivery questions and help customers get the right information without waiting in a queue.", agent: "Order support assistant", channel: "whatsapp", outcome: "Customer updated", messages: ["Hello! How can I help with your order today?", "Could you check my delivery? Order 2048.", "Thanks. Your order is on its way and scheduled for tomorrow.", "Can you send me the tracking link?", "Of course. I’ll share your tracking details here so you can follow the delivery."] },
-    { title: "Give common questions a quick answer", industry: "Customer care", description: "Guide customers through everyday requests and pass complex questions to a person with the context attached.", agent: "Customer support agent", channel: "voice", outcome: "Question resolved", messages: ["Welcome! What can I help you with today?", "How do I update my billing address?", "Open your account settings, choose Billing, then select Edit address.", "Found it. Thanks for your help!", "You’re welcome. Is there anything else I can help with?"] },
-    { title: "Help customers change their plans", industry: "Services", description: "Understand the request and help customers reschedule with fewer calls and less back-and-forth.", agent: "Rescheduling assistant", channel: "whatsapp", outcome: "Visit rescheduled", messages: ["Hi! Do you need help with your upcoming visit?", "I can’t make it on Friday.", "No problem. Would Monday at 10 AM work instead?", "Yes, thank you.", "You’re all set for Monday at 10 AM. I’ll send your updated confirmation."] },
-  ],
-};
+const agentTasks = [
+  { label: "Answer customer inquiries", status: "In progress", tone: "progress" },
+  { label: "Qualify WhatsApp & voice leads", status: "Completed", tone: "completed" },
+  { label: "Assist with order processing", status: "Completed", tone: "completed" },
+  { label: "Handle customer complaints", status: "Consent required", tone: "consent" },
+] as const;
 
-const businessProfiles: Record<string, { name: string; initials: string; color: string; background: string }[]> = {
-  Activate: [
-    { name: "Bhardwaj Hospital", initials: "BH", color: "#237f86", background: "#e1f4f3" },
-    { name: "Horizon Realty", initials: "HR", color: "#b36d2e", background: "#fbeddc" },
-    { name: "Wanderlust Travels", initials: "WT", color: "#2675b9", background: "#e0effb" },
-  ],
-  Retain: [
-    { name: "Bloom Care", initials: "BC", color: "#b5687a", background: "#f9e8ec" },
-    { name: "Orbit Fitness", initials: "OF", color: "#467d4b", background: "#e7f2df" },
-    { name: "Evergreen Estates", initials: "EE", color: "#286d59", background: "#dff0e9" },
-  ],
-  Support: [
-    { name: "The Everyday Store", initials: "ES", color: "#b46632", background: "#fcebdc" },
-    { name: "Northstar Connect", initials: "NC", color: "#506994", background: "#e6ecf8" },
-    { name: "Urban Home Services", initials: "UH", color: "#4e7e7a", background: "#e0efeb" },
-  ],
-};
+function TaskStatusIcon({ tone }: { tone: "progress" | "completed" | "consent" }) {
+  if (tone === "progress") {
+    return (
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+        <circle cx="8" cy="8" r="5.5" strokeDasharray="4 2.5" />
+      </svg>
+    );
+  }
+  if (tone === "completed") {
+    return (
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+        <circle cx="8" cy="8" r="5.5" />
+        <path d="m5.5 8.1 1.7 1.7 3.4-3.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+      <circle cx="8" cy="8" r="5.5" />
+      <path d="M8 5.4v3.2M8 10.7h.01" strokeLinecap="round" />
+    </svg>
+  );
+}
 
-function PhoneIcon() { return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><path d="m7 3 3 4-2 3a14 14 0 0 0 6 6l3-2 4 3-1 3c-.3 1-1.3 1.3-2.2 1C10 19 5 14 3 6.2 2.7 5.3 3 4.3 4 4l3-1Z" /></svg>; }
+function LiveWaveCoreCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let rafId = 0;
+    let startTime = performance.now();
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const size = 280;
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    ctx.scale(dpr, dpr);
+
+    const lineCount = 26;
+    const steps = 96;
+    const padX = 24;
+    const spanX = size - padX * 2;
+    const centerY = size * 0.5;
+
+    const drawFrame = (now: number) => {
+      const t = (now - startTime) * 0.0014;
+      ctx.clearRect(0, 0, size, size);
+
+      // Ambient cyan & magenta radial glows matching the reference wave
+      const leftGlow = ctx.createRadialGradient(size * 0.16, centerY, 4, size * 0.16, centerY, size * 0.48);
+      leftGlow.addColorStop(0, "rgba(34, 211, 238, 0.24)");
+      leftGlow.addColorStop(1, "rgba(34, 211, 238, 0)");
+      ctx.fillStyle = leftGlow;
+      ctx.fillRect(0, 0, size, size);
+
+      const rightGlow = ctx.createRadialGradient(size * 0.84, centerY, 4, size * 0.84, centerY, size * 0.48);
+      rightGlow.addColorStop(0, "rgba(236, 72, 153, 0.24)");
+      rightGlow.addColorStop(1, "rgba(236, 72, 153, 0)");
+      ctx.fillStyle = rightGlow;
+      ctx.fillRect(0, 0, size, size);
+
+      const strokeGrad = ctx.createLinearGradient(padX, 0, size - padX, 0);
+      strokeGrad.addColorStop(0, "#67e8f9");
+      strokeGrad.addColorStop(0.28, "#38bdf8");
+      strokeGrad.addColorStop(0.55, "#6366f1");
+      strokeGrad.addColorStop(0.8, "#d946ef");
+      strokeGrad.addColorStop(1, "#f472b6");
+
+      ctx.save();
+      ctx.globalCompositeOperation = "screen";
+
+      for (let l = 0; l < lineCount; l++) {
+        const ratio = l / (lineCount - 1); // 0 -> 1 across ribbon depth
+        const depthOffset = (ratio - 0.5) * 2; // -1 -> 1
+        ctx.beginPath();
+
+        for (let s = 0; s <= steps; s++) {
+          const u = s / steps;
+          const x = padX + u * spanX;
+          // Smooth pinch envelope at both ends so the ribbon tapers to a glowing point
+          const envelope = Math.pow(Math.sin(Math.PI * u), 1.35);
+
+          const primaryWave =
+            Math.sin(u * Math.PI * 2.6 - t * 1.45 + ratio * 1.35) * 26 +
+            Math.sin(u * Math.PI * 4.4 + t * 0.95 - ratio * 0.8) * 11;
+
+          const secondaryTwist =
+            Math.cos(u * Math.PI * 2.1 + t * 1.15 + ratio * 2.1) * 16 * depthOffset;
+
+          const y = centerY + (primaryWave + secondaryTwist) * envelope;
+
+          if (s === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+
+        ctx.strokeStyle = strokeGrad;
+        ctx.lineWidth = 0.9 + (1 - Math.abs(depthOffset)) * 0.65;
+        ctx.globalAlpha = 0.22 + (1 - Math.abs(depthOffset)) * 0.52;
+        ctx.stroke();
+      }
+
+      ctx.restore();
+
+      if (!reducedMotion) {
+        rafId = window.requestAnimationFrame(drawFrame);
+      }
+    };
+
+    rafId = window.requestAnimationFrame(drawFrame);
+    return () => window.cancelAnimationFrame(rafId);
+  }, []);
+
+  return <canvas ref={canvasRef} className="agentic-core-canvas" aria-hidden="true" />;
+}
+
+function WaveCoreImage({ className, size }: { className?: string; size: number }) {
+  return (
+    <Image
+      alt=""
+      aria-hidden="true"
+      className={className}
+      height={size}
+      src="/images/agentic-wave-core.jpg"
+      width={size}
+    />
+  );
+}
 
 export function AgentUseCasesSection() {
-  const [category, setCategory] = useState("Activate");
-  const [selected, setSelected] = useState(2);
-  const [visible, setVisible] = useState(1);
-  const [playing, setPlaying] = useState(true);
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const chatRef = useRef<HTMLDivElement>(null);
-  const example = examples[category][selected];
-  const business = businessProfiles[category][selected];
-  const isRecorded = category === "Activate" && selected === 0;
-  const messages = isRecorded ? appointmentRecording.map(turn => turn.text) : example.messages;
-  useEffect(() => {
-    const chat = chatRef.current;
-    if (chat) chat.scrollTop = chat.scrollHeight;
-  }, [visible, example]);
-  useEffect(() => {
-    if (isRecorded || !playing || visible >= example.messages.length) return;
-    const timer = window.setTimeout(() => setVisible(count => count + 1), 2400);
-    return () => window.clearTimeout(timer);
-  }, [playing, visible, example, isRecorded]);
-  function choose(nextCategory: string, index: number) { audioRef.current?.pause(); setCategory(nextCategory); setSelected(index); setVisible(1); setPlaying(!(nextCategory === "Activate" && index === 0)); }
-  return <section className="agent-use-cases" aria-labelledby="agent-use-cases-title">
-    <div className="agent-use-cases-layout">
-      <div className="use-case-phone-stage">
-        <span className="use-case-stage-label"><span /> A CONVERSATION IN ACTION</span>
-        <div className="use-case-iphone">
-          <div className={`use-case-phone-screen${example.channel === "whatsapp" ? " is-whatsapp" : ""}`}>
-            <div className="use-case-status"><b>9:41</b><span className="use-case-island" /><svg viewBox="0 0 52 16" aria-hidden="true"><path d="M1 12v2h3v-2zm5-3v5h3V9zm5-3v8h3V6zm5-4v12h3V2z" fill="currentColor"/><path d="M23 5q7-7 14 0m-12 3q5-5 10 0m-7 3 2 2 2-2" fill="none" stroke="currentColor" strokeWidth="1.6"/><rect x="40" y="3" width="10" height="10" rx="2" fill="currentColor"/><path d="M51 6v4" stroke="currentColor"/></svg></div>
-            <div className="use-case-phone-header"><span className="use-case-back" aria-hidden="true">‹</span><span className="use-case-agent-avatar" style={{ background: business.background, color: business.color }}><svg viewBox="0 0 40 40" role="img" aria-label={`${business.name} profile`}><text x="20" y="25" textAnchor="middle" fill="currentColor" fontSize="14" fontWeight="700">{business.initials}</text></svg></span><div><strong className="use-case-business-name"><span>{business.name}</span><svg viewBox="0 0 24 24" role="img" aria-label="Illustrative verified business badge"><path fill="#2697ee" d="m12 1 3 2 3.5.5 1 3.5 2.5 2.5-1 3.5.5 3.5-3 2-2 3-3.5-.5-3.5 1L7 20l-3.5-1L3 15.5 1 12l2-3 .5-3.5L7 4l2-3z"/><path d="m7.5 12 3 3 6-6" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></strong><small><i /> {isRecorded ? "Recorded call" : "Business account · Demo"}</small></div><PhoneIcon /></div>
-            <div className="use-case-chat" key={`${category}-${selected}`} ref={chatRef}>
-              <span className="use-case-chat-date">{isRecorded ? "Hindi · Appointment enquiry" : "Conversation preview"}</span>
-              {messages.slice(0, visible).map((message, index) => { const customer = isRecorded ? appointmentRecording[index].role === "user" : index % 2 === 1; return <div className={`use-case-message${customer ? " is-customer" : ""}`} key={index}><small>{customer ? "CUSTOMER" : business.name}</small><p>{message}</p><span>9:41 {customer ? "✓✓" : ""}</span></div>; })}
-              {!isRecorded && visible < messages.length && <div className="use-case-typing" aria-label={playing ? "Conversation continues" : "Preview paused"}><i /><i /><i /></div>}
+  return (
+    <section className="agentic-showcase" aria-labelledby="agent-use-cases-title">
+      <div className="agentic-showcase-inner">
+        <div className="agentic-showcase-header">
+          <span className="agentic-showcase-eyebrow">
+            <i aria-hidden="true" /> AGENTIC CORE · VOICE &amp; WHATSAPP
+          </span>
+          <h2 id="agent-use-cases-title">
+            One agentic core for every task
+          </h2>
+          <p>
+            Answer calls and WhatsApp chats while agents update orders, calendars, and CRMs automatically.
+          </p>
+        </div>
+
+        <div className="agentic-bento">
+          {/* Left Card: Agent Tasks */}
+          <article className="agentic-card agentic-tasks-card">
+            <h3>Agent Tasks</h3>
+            <p className="agentic-tasks-sub">
+              Overview of all the tasks the agent is currently running
+            </p>
+            <div className="agentic-task-list">
+              {agentTasks.map((task) => (
+                <div className="agentic-task-row" key={task.label}>
+                  <span className="agentic-task-name">{task.label}</span>
+                  <span className={`agentic-task-pill is-${task.tone}`}>
+                    <TaskStatusIcon tone={task.tone} />
+                    {task.status}
+                  </span>
+                </div>
+              ))}
             </div>
-            <div className="use-case-phone-bottom">{isRecorded ? <><audio ref={audioRef} controls preload="metadata" src="/audio/vozon-appointment-preview-v2.mp3" aria-label="Play Vozon Hindi appointment recording" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} onEnded={() => setPlaying(false)} onTimeUpdate={event => setVisible(Math.max(1, appointmentRecording.filter(turn => turn.at <= event.currentTarget.currentTime).length))} /><span>Real call excerpt · Hindi · 43 seconds</span></> : example.channel === "whatsapp" ? <><div className="use-case-wa-compose" aria-hidden="true"><b>+</b><span>Message</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M6 11a6 6 0 0 0 12 0m-6 6v4m-3 0h6"/></svg></div><span>WhatsApp conversation preview</span></> : <><span className={`use-case-wave${playing && visible < messages.length ? " is-playing" : ""}`} aria-hidden="true">{Array.from({ length: 30 }, (_, index) => <i key={index} style={{ height: 5 + ((index * 13) % 21), animationDelay: `${index * -.09}s` }} />)}</span><span>Illustrative voice conversation</span></>}</div>
-            <span className="use-case-home-indicator" />
+          </article>
+
+          {/* Center Core Tile */}
+          <div className="agentic-core-tile" aria-hidden="true">
+            <LiveWaveCoreCanvas />
           </div>
+
+          {/* Right Card: Voice AI Agent */}
+          <article className="agentic-card">
+            <div className="agentic-agent-head">
+              <div className="agentic-agent-identity">
+                <span className="agentic-agent-avatar" aria-hidden="true">
+                  <WaveCoreImage size={34} />
+                </span>
+                <h3>Voice AI Agent</h3>
+              </div>
+              <span className="agentic-channel-badge">Voice + WhatsApp</span>
+            </div>
+
+            <span className="agentic-sublabel">Agent Tools</span>
+            <div className="agentic-tools-row" aria-label="Connected agent tools">
+              <span className="agentic-tool-tile" title="Instant webhooks">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+                  <path d="M11 2.5 5 11h5l-1 6.5 6-8.5h-5l1-6.5Z" strokeLinejoin="round" />
+                </svg>
+              </span>
+              <span className="agentic-tool-tile" title="Custom API tools">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+                  <path d="m12.8 4.2 3 3-8.6 8.6-3.4.4.4-3.4 8.6-8.6Z" strokeLinejoin="round" />
+                </svg>
+              </span>
+              <span className="agentic-tool-tile" title="Agentic workflows">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+                  <rect x="8" y="2.5" width="4" height="3.5" rx="0.8" />
+                  <rect x="2.5" y="13.5" width="4" height="3.5" rx="0.8" />
+                  <rect x="13.5" y="13.5" width="4" height="3.5" rx="0.8" />
+                  <path d="M10 6v3.5m0 0H4.5v4m5.5-4h5.5v4" />
+                </svg>
+              </span>
+              <span className="agentic-tool-tile" title="WhatsApp">
+                <Image alt="WhatsApp" src="/images/integrations/whatsapp.svg" width={16} height={16} />
+              </span>
+              <span className="agentic-tool-tile" title="Google Calendar">
+                <Image alt="Google Calendar" src="/images/integrations/google-calendar.svg" width={16} height={16} />
+              </span>
+              <span className="agentic-tool-tile" title="Slack">
+                <Image alt="Slack" src="/images/integrations/slack.svg" width={16} height={16} />
+              </span>
+            </div>
+
+            <span className="agentic-sublabel">Key Statistics</span>
+            <div className="agentic-stats-grid">
+              <div className="agentic-stat-box agentic-stat-main">
+                <div>
+                  <span className="agentic-stat-title">Response Accuracy</span>
+                  <div className="agentic-stat-value">99%</div>
+                </div>
+                <span className="agentic-stat-delta">↗ 68%</span>
+                <svg className="agentic-sparkline" viewBox="0 0 120 72" preserveAspectRatio="none" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="agenticSparkFill" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="#ec4899" stopOpacity="0.55" />
+                      <stop offset="100%" stopColor="#ec4899" stopOpacity="0.02" />
+                    </linearGradient>
+                  </defs>
+                  <path
+                    d="M0 64 C 24 62, 34 46, 54 42 C 74 38, 86 14, 108 16 L 120 18 L 120 72 L 0 72 Z"
+                    fill="url(#agenticSparkFill)"
+                  />
+                  <path
+                    d="M0 64 C 24 62, 34 46, 54 42 C 74 38, 86 14, 108 16 L 120 18"
+                    fill="none"
+                    stroke="#f472b6"
+                    strokeWidth="2"
+                  />
+                </svg>
+              </div>
+
+              <div className="agentic-stat-stack">
+                <div className="agentic-stat-box">
+                  <span className="agentic-stat-title">Customer Satisfaction</span>
+                  <div className="agentic-stat-small-val">96%</div>
+                </div>
+                <div className="agentic-stat-box">
+                  <span className="agentic-stat-title">Task Completion Rate</span>
+                  <div className="agentic-stat-small-val">91%</div>
+                </div>
+              </div>
+            </div>
+          </article>
         </div>
-        <div className="use-case-preview-controls">{!isRecorded && <button type="button" aria-label={playing ? "Pause conversation preview" : "Resume conversation preview"} onClick={() => setPlaying(value => !value)}>{playing ? "Ⅱ" : "▶"}</button>}<button type="button" onClick={() => { setVisible(1); if (isRecorded && audioRef.current) { audioRef.current.currentTime = 0; void audioRef.current.play().catch(() => setPlaying(false)); } else { setPlaying(true); } }}>↻ <span>Replay</span></button><span>{isRecorded ? "Recorded call excerpt" : "Illustrative conversation"}</span></div>
       </div>
-      <div className="use-case-content">
-        <span className="use-case-eyebrow">BUILT FOR THE CONVERSATIONS THAT MATTER</span>
-        <h2 id="agent-use-cases-title">One assistant.<br /><span>So many possibilities.</span></h2>
-        <p className="use-case-intro">From the first enquiry to the next happy customer. See how Vozon helps at every stage.</p>
-        <div className="use-case-tabs" role="tablist" aria-label="Explore agent use cases">{Object.keys(examples).map(tab => <button type="button" role="tab" aria-selected={category === tab} aria-controls="use-case-options" id={`use-case-tab-${tab}`} key={tab} onClick={() => choose(tab, 0)}>{tab}</button>)}</div>
-        <div className="use-case-options" role="tabpanel" id="use-case-options" aria-labelledby={`use-case-tab-${category}`}>
-          {examples[category].map((item, index) => <div className={`use-case-option${selected === index ? " is-selected" : ""}`} key={item.title}><button type="button" aria-expanded={selected === index} aria-controls={`use-case-detail-${index}`} onClick={() => choose(category, index)}><span className="use-case-option-number">0{index + 1}</span><span>{item.title}</span><b aria-hidden="true">{selected === index ? "−" : "+"}</b></button>{selected === index && <div id={`use-case-detail-${index}`} className="use-case-option-details"><span className="use-case-industry">{item.industry}</span><p>{item.description}</p><span className="use-case-result"><i>✓</i> {item.outcome}</span></div>}</div>)}
-        </div>
-        <Link className="use-case-cta" href="/contact">Find your use case <span aria-hidden="true">↗</span></Link>
-      </div>
-    </div>
-  </section>;
+    </section>
+  );
 }

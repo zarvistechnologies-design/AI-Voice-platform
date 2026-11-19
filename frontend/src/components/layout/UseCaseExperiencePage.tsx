@@ -1,4 +1,6 @@
 import { SolutionLandingPage } from "@/components/layout/SolutionLandingPage";
+import { SolutionShowcasePage } from "@/components/solutions/SolutionShowcasePage";
+import { solutionPagesCatalog } from "@/config/solutionPagesCatalog";
 import type { UseCaseExperience } from "@/config/useCaseExperiences";
 import { useCaseOperations } from "@/config/useCaseOperations";
 
@@ -53,6 +55,11 @@ const languageStories: Record<string, { title: string; body: string }> = {
 };
 
 export function UseCaseExperiencePage({ business, experience }: { business: BusinessUseCase; experience: UseCaseExperience }) {
+  const solutionData = solutionPagesCatalog[business.slug];
+  if (solutionData) {
+    return <SolutionShowcasePage data={solutionData} />;
+  }
+
   return <SolutionLandingPage content={{
         ...useCaseOperations[business.slug],
         category: "Use Cases",

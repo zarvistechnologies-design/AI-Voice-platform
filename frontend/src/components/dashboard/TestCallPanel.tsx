@@ -397,7 +397,7 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
           <div className="grid grid-cols-2 gap-1 rounded-xl border border-white/10 bg-[#ffffff] p-1" role="group" aria-label="Test call type">
             {(["web", "phone"] as const).map((item) => (
               <button
-                className={`app-button-text flex-1 rounded-lg px-3 py-2 transition active:translate-y-px disabled:opacity-50 ${mode === item ? "bg-[#118778] text-[#ffffff] shadow-[0_6px_18px_rgba(17,135,120,0.16)]" : "text-white/56 hover:bg-white/[0.05] hover:text-white/78"}`}
+                className={`app-button-text flex-1 rounded-lg px-3 py-2 transition active:translate-y-px disabled:opacity-50 ${mode === item ? "bg-[#171717] text-[#ffffff]" : "text-white/56 hover:bg-white/[0.05] hover:text-white/78"}`}
                 key={item}
                 type="button"
                 aria-pressed={mode === item}

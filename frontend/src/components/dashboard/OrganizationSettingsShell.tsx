@@ -191,8 +191,8 @@ function formatDate(value?: string | null, dateOnly = false) {
 }
 
 function roleTone(role: OrganizationRole) {
-  if (role === "owner") return "bg-[#edf7f4] text-[#0e6f62] ring-[#b8d8d0]";
-  if (role === "admin") return "bg-[#edf7f4] text-[#123d35] ring-[#b8c8c3]";
+  if (role === "owner") return "bg-[#fafafa] text-[#171717] ring-[#eaeaea]";
+  if (role === "admin") return "bg-[#fafafa] text-[#171717] ring-[#eaeaea]";
   if (role === "billing") return "bg-amber-50 text-amber-700 ring-amber-200";
   return "bg-slate-100 text-slate-700 ring-slate-200";
 }
@@ -228,7 +228,7 @@ function SectionHeading({
   return (
     <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[#e7eef3] px-5 py-5 sm:px-6">
       <div className="flex min-w-0 items-start gap-3.5">
-        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#f7f9f8] text-[#087f75] ring-1 ring-[#dfe7e4]">
+        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#eff6ff] text-[#2563eb] ring-1 ring-[#dbeafe]">
           <WorkspaceIcon name={icon} />
         </span>
         <div className="min-w-0">
@@ -472,8 +472,8 @@ export function OrganizationSettingsShell() {
     notice?.tone === "error"
       ? "border-rose-200 bg-rose-50 text-rose-900"
       : notice?.tone === "success"
-        ? "border-emerald-200 bg-emerald-50 text-emerald-900"
-        : "border-[#b8c8c3] bg-[#edf7f4] text-[#343b78]";
+        ? "border border-[#eaeaea] bg-[#fafafa] text-[#171717]"
+        : "border-[#b8c8c3] bg-[#fafafa] text-[#343b78]";
   const visibleSections = workspaceSections.filter(
     (section) => !section.managerOnly || canManage,
   );
@@ -505,7 +505,7 @@ export function OrganizationSettingsShell() {
           description="Manage organizations, teammates, permissions, invitations, and activity."
           actions={
             <Link
-              className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-[#dfe1ed] bg-white px-3.5 text-xs font-bold text-[#52645f] shadow-sm transition hover:border-[#9fcfc3] hover:text-[#0e6f62]"
+              className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-[#dfe1ed] bg-white px-3.5 text-xs font-bold text-[#52645f] shadow-sm transition hover:border-[#eaeaea] hover:text-[#171717]"
               href="/dashboard/profile"
             >
               <WorkspaceIcon className="size-4" name="profile" />
@@ -514,67 +514,65 @@ export function OrganizationSettingsShell() {
           }
         />
 
-        <div className="grid w-full gap-5 px-4 py-4 sm:px-5 lg:px-6">
-          <section className="relative overflow-hidden rounded-[26px] border border-[#dbe4e1] bg-[radial-gradient(circle_at_12%_0%,rgba(17,135,120,0.22),transparent_38%),linear-gradient(135deg,#ffffff_0%,#ffffff_62%,#eef5f3_100%)] p-5 text-white shadow-[0_22px_55px_rgba(7,28,24,0.20)] sm:p-7">
-            <div className="pointer-events-none absolute -right-16 -top-24 size-72 rounded-full border border-white/10" />
-            <div className="pointer-events-none absolute -bottom-32 right-20 size-64 rounded-full bg-[#118778]/[0.07] blur-2xl" />
-            <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1fr)_230px] lg:items-center">
+        <div className="grid w-full gap-5 px-5 py-5 sm:px-6 lg:px-7">
+          <section className="rounded-xl border border-[#eaeaea] bg-white p-5 sm:p-6">
+            <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_230px] lg:items-center">
               <div className="min-w-0">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <span className="grid size-16 shrink-0 place-items-center rounded-2xl border border-[#0e6f62]/30 bg-[#118778] text-xl font-black text-[#05231f] shadow-[0_12px_30px_rgba(17,135,120,0.20)]">
+                  <span className="grid size-14 shrink-0 place-items-center rounded-xl bg-[#171717] text-lg font-bold text-white">
                     {initials(activeOrganization?.name)}
                   </span>
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2.5">
-                      <h2 className="m-0 truncate text-2xl font-bold tracking-[-0.025em] text-white">
+                      <h2 className="m-0 truncate text-xl font-semibold tracking-[-0.02em] text-[#171717]">
                         {activeOrganization?.name ??
                           (loading
                             ? "Loading workspace..."
                             : "No active workspace")}
                       </h2>
                       {activeOrganization ? (
-                        <span className="rounded-full bg-[#118778]/15 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-[#0e6f62] ring-1 ring-[#118778]/30">
+                        <span className="rounded-full bg-[#eff6ff] px-2.5 py-0.5 text-[11px] font-medium capitalize text-[#2563eb] ring-1 ring-[#dbeafe]">
                           {activeOrganization.plan} plan
                         </span>
                       ) : null}
                     </div>
-                    <p className="mt-1 truncate text-sm text-white/65">
+                    <p className="mt-1 truncate text-[13px] text-[#52525b]">
                       {activeOrganization?.slug ??
                         "Workspace details will appear here."}
                     </p>
-                    <p className="mt-2 text-xs font-semibold text-white/45">
+                    <p className="mt-1 text-xs font-medium text-[#71717a]">
                       Voice agents, calls, numbers, and team access stay
                       isolated per workspace.
                     </p>
                   </div>
                 </div>
 
-                <div className="mt-6 grid gap-2.5 sm:grid-cols-3">
-                  <div className="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 backdrop-blur-sm">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-white/45">
+                <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                  <div className="rounded-lg border border-[#eaeaea] bg-[#fafafa] px-4 py-3">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-[#71717a]">
                       Workspaces
                     </span>
-                    <strong className="mt-1 block text-sm text-white">
+                    <strong className="mt-1 block text-[14px] font-semibold text-[#171717]">
                       {loading && !organizations.length
                         ? "Checking..."
                         : organizations.length}
                     </strong>
                   </div>
-                  <div className="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 backdrop-blur-sm">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-white/45">
+                  <div className="rounded-lg border border-[#eaeaea] bg-[#fafafa] px-4 py-3">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-[#71717a]">
                       Team members
                     </span>
-                    <strong className="mt-1 block text-sm text-white">
+                    <strong className="mt-1 block text-[14px] font-semibold text-[#171717]">
                       {loading && !members.length
                         ? "Checking..."
                         : members.length}
                     </strong>
                   </div>
-                  <div className="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 backdrop-blur-sm">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-white/45">
+                  <div className="rounded-lg border border-[#eaeaea] bg-[#fafafa] px-4 py-3">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-[#71717a]">
                       Pending invites
                     </span>
-                    <strong className="mt-1 block text-sm text-white">
+                    <strong className="mt-1 block text-[14px] font-semibold text-[#171717]">
                       {loading && !invitations.length
                         ? "Checking..."
                         : pendingInvitations.length}
@@ -583,17 +581,17 @@ export function OrganizationSettingsShell() {
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-white/[0.07] p-5 backdrop-blur-sm">
-                <span className="grid size-10 place-items-center rounded-xl bg-[#118778]/15 text-[#0e6f62] ring-1 ring-[#118778]/25">
+              <div className="rounded-xl border border-[#eaeaea] bg-[#fafafa] p-4">
+                <span className="grid size-9 place-items-center rounded-lg bg-[#eff6ff] text-[#2563eb] ring-1 ring-[#dbeafe]">
                   <WorkspaceIcon name="shield" />
                 </span>
-                <p className="mt-4 text-[10px] font-extrabold uppercase tracking-[0.16em] text-white/45">
+                <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#71717a]">
                   Your access
                 </p>
-                <strong className="mt-1 block text-xl font-bold capitalize text-white">
+                <strong className="mt-1 block text-lg font-semibold capitalize text-[#171717]">
                   {activeOrganization?.role ?? "Loading"}
                 </strong>
-                <p className="mt-2 text-xs leading-5 text-white/55">
+                <p className="mt-1.5 text-xs leading-5 text-[#52525b]">
                   {activeOrganization
                     ? roleDescription(activeOrganization.role)
                     : "Checking your workspace permissions."}
@@ -668,7 +666,7 @@ export function OrganizationSettingsShell() {
                             type="button"
                           >
                             <span
-                              className={`grid size-10 place-items-center rounded-xl text-xs font-black ${active ? "bg-[#ffffff] text-[#0e6f62]" : "bg-slate-100 text-slate-700"}`}
+                              className={`grid size-10 place-items-center rounded-xl text-xs font-black ${active ? "bg-[#ffffff] text-[#171717]" : "bg-slate-100 text-slate-700"}`}
                             >
                               {initials(organization.name)}
                             </span>
@@ -681,7 +679,7 @@ export function OrganizationSettingsShell() {
                               </span>
                             </span>
                             {active ? (
-                              <span className="grid size-6 place-items-center rounded-full bg-[#118778] text-[#05231f]">
+                              <span className="grid size-6 place-items-center rounded-full bg-[#171717] text-white">
                                 <WorkspaceIcon
                                   className="size-3.5"
                                   name="check"
@@ -719,7 +717,7 @@ export function OrganizationSettingsShell() {
                 </label>
                 <input
                   autoComplete="organization"
-                  className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#118778]/20"
+                  className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-950 outline-none transition focus:border-black focus:ring-3 focus:ring-black/10"
                   id="new-workspace-name"
                   minLength={2}
                   placeholder="Workspace name"
@@ -788,7 +786,7 @@ export function OrganizationSettingsShell() {
                         Organization name
                         <input
                           autoComplete="organization"
-                          className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-normal text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#118778]/20"
+                          className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-normal text-slate-950 outline-none transition focus:border-black focus:ring-3 focus:ring-black/10"
                           id="organization-name"
                           minLength={2}
                           required
@@ -804,7 +802,7 @@ export function OrganizationSettingsShell() {
                       >
                         Timezone
                         <input
-                          className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-normal text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#118778]/20"
+                          className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-normal text-slate-950 outline-none transition focus:border-black focus:ring-3 focus:ring-black/10"
                           id="organization-timezone"
                           placeholder="Asia/Kolkata"
                           required
@@ -820,7 +818,7 @@ export function OrganizationSettingsShell() {
                       >
                         Data retention
                         <input
-                          className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-normal text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#118778]/20"
+                          className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-normal text-slate-950 outline-none transition focus:border-black focus:ring-3 focus:ring-black/10"
                           id="retention-days"
                           min={1}
                           required
@@ -852,7 +850,7 @@ export function OrganizationSettingsShell() {
                         not affect your other organizations.
                       </p>
                       <button
-                        className="min-h-11 shrink-0 rounded-xl bg-[#118778] px-5 text-sm font-extrabold text-[#ffffff] transition hover:bg-[#0e6f62] disabled:cursor-not-allowed disabled:opacity-50"
+                        className="min-h-11 shrink-0 rounded-xl bg-[#171717] px-5 text-sm font-extrabold text-[#ffffff] transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-50"
                         disabled={busy || organizationName.trim().length < 2}
                         type="submit"
                       >
@@ -946,7 +944,7 @@ export function OrganizationSettingsShell() {
                       Email address
                       <input
                         autoComplete="email"
-                        className="min-h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm font-normal text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#118778]/20"
+                        className="min-h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm font-normal text-slate-950 outline-none transition focus:border-black focus:ring-3 focus:ring-black/10"
                         id="invite-email"
                         placeholder="teammate@company.com"
                         required
@@ -961,7 +959,7 @@ export function OrganizationSettingsShell() {
                     >
                       Workspace role
                       <select
-                        className="min-h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold capitalize text-slate-950 outline-none focus:border-[#0a9f8f]"
+                        className="min-h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold capitalize text-slate-950 outline-none focus:border-black"
                         id="invite-role"
                         value={inviteRole}
                         onChange={(event) =>
@@ -976,7 +974,7 @@ export function OrganizationSettingsShell() {
                       </select>
                     </label>
                     <button
-                      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#118778] px-5 text-sm font-extrabold text-[#ffffff] transition hover:bg-[#0e6f62] disabled:cursor-not-allowed disabled:opacity-50"
+                      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#171717] px-5 text-sm font-extrabold text-[#ffffff] transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-50"
                       disabled={busy || !inviteEmail.trim()}
                       type="submit"
                     >
@@ -1064,7 +1062,7 @@ export function OrganizationSettingsShell() {
                               Role
                               <select
                                 aria-label={`Role for ${member.userId.name}`}
-                                className="min-h-10 rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold capitalize text-slate-800 outline-none focus:border-[#0a9f8f]"
+                                className="min-h-10 rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold capitalize text-slate-800 outline-none focus:border-black"
                                 disabled={busy}
                                 value={member.role}
                                 onChange={(event) =>
@@ -1184,7 +1182,7 @@ export function OrganizationSettingsShell() {
                   </div>
                 ) : (
                   <div className="p-8 text-center">
-                    <span className="mx-auto grid size-11 place-items-center rounded-xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200">
+                    <span className="mx-auto grid size-11 place-items-center rounded-xl border border-[#eaeaea] bg-[#fafafa] text-[#171717]">
                       <WorkspaceIcon name="check" />
                     </span>
                     <p className="mt-3 text-sm font-bold text-slate-700">

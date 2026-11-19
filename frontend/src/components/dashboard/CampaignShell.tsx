@@ -94,9 +94,9 @@ const maxCsvSize = 25 * 1024 * 1024;
 const maxCampaignLeads = 100_000;
 const campaignSteps = ["Setup", "Audience", "Timing", "Instructions", "Review"];
 const buttonClass =
-  "app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 transition disabled:cursor-not-allowed disabled:opacity-50";
+  "inline-flex h-8 items-center justify-center gap-1.5 rounded-md px-3 text-[13px] font-medium transition disabled:cursor-not-allowed disabled:opacity-50";
 const controlClass =
-  "app-control-text min-h-11 w-full rounded-lg border border-[#c6d4d0] bg-white px-3 text-[#14231f] outline-none transition placeholder:text-[#71817d] hover:border-[#9fcfc3] focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10";
+  "h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717] outline-none transition placeholder:text-[#71717a] hover:border-[#d4d4d8] focus:border-[#171717]";
 
 function Icon({
   icon,
@@ -392,14 +392,10 @@ function statusCopy(status: BackendCampaign["status"]) {
 
 function statusTheme(status: BackendCampaign["status"]) {
   if (status === "running")
-    return "border-emerald-200 bg-emerald-50 text-emerald-700";
-  if (status === "scheduled") return "border-sky-200 bg-sky-50 text-sky-700";
-  if (status === "paused") return "border-amber-200 bg-amber-50 text-amber-700";
-  if (status === "completed")
-    return "border-slate-200 bg-slate-100 text-slate-700";
-  if (status === "cancelled") return "border-rose-200 bg-rose-50 text-rose-700";
-  if (status === "failed") return "border-red-200 bg-red-50 text-red-700";
-  return "border-white/10 bg-[#ffffff] text-white/60";
+    return "border-[#171717] bg-[#171717] text-white";
+  if (status === "scheduled" || status === "completed")
+    return "border-[#eaeaea] bg-[#fafafa] text-[#171717]";
+  return "border-[#eaeaea] bg-[#f4f4f5] text-[#52525b]";
 }
 
 function progressValue(value: number) {
@@ -846,9 +842,9 @@ export function CampaignShell() {
 
   if (!session) {
     return (
-      <main className="app-strong grid min-h-screen place-items-center bg-[#f7f9f8] px-6 text-[#71817d]">
-        <div className="rounded-lg border border-white/10 bg-[#ffffff] px-6 py-5 text-center shadow-sm">
-          <span className="mx-auto mb-3 grid size-10 place-items-center rounded-lg bg-[#edf7f4] text-[#0e6f62]">
+      <main className="app-strong grid min-h-screen place-items-center bg-[#fafafa] px-6 text-[#71717a]">
+        <div className="rounded-lg border border-[#eaeaea] bg-white px-6 py-5 text-center shadow-xs">
+          <span className="mx-auto mb-3 grid size-10 place-items-center rounded-lg border border-[#eaeaea] bg-[#f4f4f5] text-[#171717]">
             <Icon icon="spark" />
           </span>
           <p className="app-strong m-0">Loading campaigns</p>
@@ -862,7 +858,7 @@ export function CampaignShell() {
 
   return (
     <main
-      className={`dashboard-home-theme grid min-h-dvh bg-[#f7f9f8] text-[#14231f] lg:h-dvh lg:overflow-hidden ${
+      className={`dashboard-home-theme grid min-h-dvh bg-[#fafafa] text-[#171717] lg:h-dvh lg:overflow-hidden ${
         showUserSidebar
           ? "lg:grid-cols-[248px_minmax(0,1fr)]"
           : "lg:grid-cols-[64px_minmax(0,1fr)]"
@@ -880,7 +876,7 @@ export function CampaignShell() {
         setShowUserSidebar={setShowUserSidebar}
       />
 
-      <section className="min-w-0 overflow-y-auto overscroll-contain bg-[#f7f9f8]">
+      <section className="min-w-0 overflow-y-auto overscroll-contain bg-[#fafafa]">
         <DashboardPageHeader
           eyebrow="Outbound operations"
           title="Outbound campaigns"
@@ -888,13 +884,13 @@ export function CampaignShell() {
           actions={
             <div className="flex flex-wrap items-center gap-2">
               <Link
-                className={`${buttonClass} border border-[#c6d4d0] bg-white text-[#52645f] hover:border-[#118778] hover:text-[#0e6f62]`}
+                className={`${buttonClass} border border-[#eaeaea] bg-white text-[#171717] hover:bg-[#f4f4f5]`}
                 href="/docs/campaigns"
               >
                 Campaign guide
               </Link>
               <button
-                className={`${buttonClass} border border-[#118778] ${showCreateCampaign ? "bg-white text-[#0e6f62]" : "bg-[#118778] text-white hover:bg-[#0e6f62]"}`}
+                className={`${buttonClass} border border-[#2563eb] ${showCreateCampaign ? "bg-white text-[#2563eb]" : "bg-[#2563eb] text-white hover:bg-[#1d4ed8]"}`}
                 type="button"
                 onClick={() => {
                   setCreateStep(1);
@@ -911,7 +907,7 @@ export function CampaignShell() {
           }
         />
 
-        <div className="dashboard-page-content w-full py-0">
+        <div className="grid w-full gap-4 px-5 py-5 sm:px-6 lg:px-7">
           {!showCreateCampaign && notice ? (
             <Notice
               tone="success"
@@ -941,10 +937,10 @@ export function CampaignShell() {
                 onMouseDown={(event) => event.stopPropagation()}
                 onSubmit={prepareCampaign}
               >
-                <div className="sticky top-0 z-20 -mx-5 grid gap-4 border-b border-[#dbe4e1] bg-white px-5 py-4 sm:-mx-7 sm:px-7">
+                <div className="sticky top-0 z-20 -mx-5 grid gap-4 border-b border-[#eaeaea] bg-white px-5 py-4 sm:-mx-7 sm:px-7">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <span className="app-label text-[#0e6f62]">
+                      <span className="app-label text-[#71717a]">
                         New campaign · Step {createStep} of{" "}
                         {campaignSteps.length}
                       </span>
@@ -957,7 +953,7 @@ export function CampaignShell() {
                     </div>
                     <button
                       aria-label="Close campaign form"
-                      className="grid size-10 shrink-0 place-items-center rounded-lg border border-[#dbe4e1] bg-white text-[#52645f] hover:border-[#118778] hover:text-[#0e6f62] disabled:opacity-50"
+                      className="grid size-10 shrink-0 place-items-center rounded-lg border border-[#eaeaea] bg-white text-[#52525b] hover:border-black hover:text-[#171717] disabled:opacity-50"
                       disabled={launching}
                       type="button"
                       onClick={() => {
@@ -980,10 +976,10 @@ export function CampaignShell() {
                       return (
                         <li className="min-w-0" key={step}>
                           <span
-                            className={`block h-1.5 rounded-full ${active || complete ? "bg-[#118778]" : "bg-[#dbe4e1]"}`}
+                            className={`block h-1.5 rounded-full ${active || complete ? "bg-[#171717]" : "bg-[#eaeaea]"}`}
                           />
                           <span
-                            className={`mt-1 hidden truncate text-[10px] font-semibold sm:block ${active ? "text-[#0e6f62]" : "text-[#71817d]"}`}
+                            className={`mt-1 hidden truncate text-[10px] font-semibold sm:block ${active ? "text-[#171717]" : "text-[#71717a]"}`}
                           >
                             {step}
                           </span>
@@ -1092,7 +1088,7 @@ export function CampaignShell() {
                       </div>
 
                       <label
-                        className="mt-5 grid min-h-[150px] cursor-pointer place-items-center rounded-xl border border-dashed border-[#118778]/35 bg-[radial-gradient(circle_at_50%_0%,rgba(17,135,120,0.10),transparent_52%),linear-gradient(135deg,#ffffff_0%,#ffffff_100%)] p-5 text-center transition hover:border-[#118778]/55"
+                        className="mt-5 grid min-h-[150px] cursor-pointer place-items-center rounded-xl border border-dashed border-[#eaeaea] bg-[#fafafa] p-5 text-center transition hover:border-black"
                         onDragOver={(event) => event.preventDefault()}
                         onDrop={handleDrop}
                       >
@@ -1105,13 +1101,13 @@ export function CampaignShell() {
                           }
                         />
                         <span className="max-w-md">
-                          <span className="mx-auto mb-4 grid size-14 place-items-center rounded-2xl bg-[#118778]/10 text-[#0e6f62] shadow-[0_14px_30px_rgba(17,135,120,0.12)]">
-                            <Icon icon="file" className="size-6" />
+                          <span className="mx-auto mb-4 grid size-12 place-items-center rounded-xl border border-[#eaeaea] bg-white text-[#171717] shadow-xs">
+                            <Icon icon="file" className="size-5" />
                           </span>
-                          <strong className="block text-base font-semibold text-slate-950">
+                          <strong className="block text-sm font-semibold text-[#171717]">
                             Drop CSV or choose file
                           </strong>
-                          <span className="mt-2 block text-sm leading-6 text-slate-500">
+                          <span className="mt-1 block text-xs leading-5 text-[#71717a]">
                             Up to 25MB and{" "}
                             {maxCampaignLeads.toLocaleString("en-IN")} contacts.
                             Required column: phone or phone_number. Optional:
@@ -1121,18 +1117,18 @@ export function CampaignShell() {
                       </label>
 
                       {leads.length ? (
-                        <div className="mt-4 overflow-hidden rounded-xl border border-[#dbe4e1] bg-white">
-                          <div className="flex items-center justify-between gap-3 border-b border-[#e7ecea] px-4 py-3">
+                        <div className="mt-4 overflow-hidden rounded-lg border border-[#eaeaea] bg-white">
+                          <div className="flex items-center justify-between gap-3 border-b border-[#eaeaea] px-4 py-3">
                             <div>
-                              <span className="text-sm font-semibold text-slate-950">
+                              <span className="text-sm font-semibold text-[#171717]">
                                 {numberFormat(leads.length)} contacts loaded
                               </span>
-                              <span className="mt-0.5 block text-xs text-slate-500">
+                              <span className="mt-0.5 block text-xs text-[#71717a]">
                                 {csvFields.length} CSV fields detected. Use the exact prompt variables shown below.
                               </span>
                             </div>
                             <span
-                              className={`rounded-full px-3 py-1 text-xs font-semibold ${invalidLeadCount ? "bg-amber-100 text-amber-800" : "bg-emerald-100 text-emerald-700"}`}
+                              className={`rounded-md border px-2.5 py-0.5 text-xs font-medium ${invalidLeadCount ? "border-amber-200 bg-amber-50 text-amber-800" : "border-[#eaeaea] bg-[#fafafa] text-[#171717]"}`}
                             >
                               {invalidLeadCount
                                 ? `${invalidLeadCount} invalid`
@@ -1141,7 +1137,7 @@ export function CampaignShell() {
                           </div>
                           <div className="overflow-x-auto">
                             <table className="w-full min-w-[680px] text-left text-xs">
-                              <thead className="bg-slate-50 uppercase tracking-[0.08em] text-slate-500">
+                              <thead className="bg-[#fafafa] uppercase tracking-[0.06em] text-[#71717a]">
                                 <tr>
                                   <th className="px-4 py-2.5">CSV header</th>
                                   <th className="px-4 py-2.5">Stored as</th>
@@ -1149,22 +1145,22 @@ export function CampaignShell() {
                                   <th className="px-4 py-2.5">Sample value</th>
                                 </tr>
                               </thead>
-                              <tbody className="divide-y divide-slate-100">
+                              <tbody className="divide-y divide-[#eaeaea]">
                                 {csvFields.map((field) => (
                                   <tr key={`${field.header}-${field.promptVariable}`}>
-                                    <td className="px-4 py-2.5 font-medium text-slate-800">{field.header}</td>
-                                    <td className="px-4 py-2.5 text-slate-500">{field.storedKey}</td>
+                                    <td className="px-4 py-2.5 font-medium text-[#171717]">{field.header}</td>
+                                    <td className="px-4 py-2.5 text-[#71717a]">{field.storedKey}</td>
                                     <td className="px-4 py-2.5">
-                                      <code className="rounded bg-emerald-50 px-2 py-1 font-semibold text-emerald-800">{`{${field.promptVariable}}`}</code>
+                                      <code className="rounded border border-[#eaeaea] bg-[#f4f4f5] px-2 py-0.5 font-mono text-[11px] text-[#171717]">{`{${field.promptVariable}}`}</code>
                                     </td>
-                                    <td className="max-w-[240px] truncate px-4 py-2.5 text-slate-600" title={field.sample}>{field.sample || "—"}</td>
+                                    <td className="max-w-[240px] truncate px-4 py-2.5 text-[#52525b]" title={field.sample}>{field.sample || "—"}</td>
                                   </tr>
                                 ))}
                               </tbody>
                             </table>
                           </div>
-                          <p className="m-0 border-t border-[#e7ecea] bg-emerald-50/60 px-4 py-3 text-xs text-emerald-900">
-                            Example: <code className="font-semibold">Hello {`{LeadName}`}, your pending amount is {`{amount_due}`}.</code>
+                          <p className="m-0 border-t border-[#eaeaea] bg-[#fafafa] px-4 py-2.5 text-xs text-[#71717a]">
+                            Example: <code className="font-semibold text-[#171717]">Hello {`{LeadName}`}, your pending amount is {`{amount_due}`}.</code>
                           </p>
                         </div>
                       ) : null}
@@ -1336,7 +1332,7 @@ export function CampaignShell() {
                       <section className="rounded-xl bg-[#f7f9f8] p-4 sm:p-5">
                         <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                           <div>
-                            <span className="app-label text-[#0e6f62]">
+                            <span className="app-label text-[#71717a]">
                               Required safeguards
                             </span>
                             <h3 className="app-section-title mt-1 mb-0">
@@ -1346,7 +1342,7 @@ export function CampaignShell() {
                               Review these controls before defining the campaign instructions.
                             </p>
                           </div>
-                          <span className="w-fit rounded-full bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.1em] text-[#0e6f62]">
+                          <span className="w-fit rounded-full border border-[#eaeaea] bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-[#171717]">
                             Review first
                           </span>
                         </div>
@@ -1455,7 +1451,7 @@ export function CampaignShell() {
                         <label className="app-label grid gap-2">
                           Goal
                           <textarea
-                            className="app-control-text min-h-36 resize-y rounded-2xl border border-[#c6d4d0] bg-white p-4 text-[#14231f] shadow-[0_1px_0_rgba(0,0,0,0.06)] outline-none transition placeholder:text-[#71817d] hover:border-[#9fcfc3] focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10"
+                            className="app-control-text min-h-36 resize-y rounded-lg border border-[#eaeaea] bg-white p-3 text-[#171717] outline-none transition placeholder:text-[#71717a] hover:border-black focus:border-black focus:ring-1 focus:ring-black/10"
                             placeholder="Confirm appointment interest and capture preferred callback time."
                             value={campaignGoal}
                             onChange={(event) =>
@@ -1485,26 +1481,26 @@ export function CampaignShell() {
                       <Panel compact>
                         <div className="flex items-start justify-between gap-4">
                           <div>
-                            <span className="app-label text-[#0e6f62]">
+                            <span className="app-label text-[#71717a]">
                               Launch console
                             </span>
-                            <h2 className="mt-1 mb-0 text-xl font-semibold tracking-[-0.03em] text-slate-950">
+                            <h2 className="mt-1 mb-0 text-xl font-semibold tracking-[-0.03em] text-[#171717]">
                               {canPrepare
                                 ? "Ready to launch"
                                 : "Preflight in progress"}
                             </h2>
                           </div>
                           <span
-                            className={`grid size-12 place-items-center rounded-2xl ${canPrepare ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}
+                            className={`grid size-10 place-items-center rounded-lg border ${canPrepare ? "border-[#eaeaea] bg-[#171717] text-white" : "border-amber-200 bg-amber-50 text-amber-700"}`}
                           >
                             <Icon
                               icon={canPrepare ? "check" : "shield"}
-                              className="size-5"
+                              className="size-4"
                             />
                           </span>
                         </div>
 
-                        <div className="mt-4 border-t border-slate-200 pt-4">
+                        <div className="mt-4 border-t border-[#eaeaea] pt-4">
                           <h3 className="app-section-title m-0">
                             Launch summary
                           </h3>
@@ -1544,7 +1540,7 @@ export function CampaignShell() {
                             />
                           </dl>
                           <button
-                            className={`${buttonClass} mt-5 w-full bg-[#118778] text-white shadow-sm hover:bg-[#0e6f62]`}
+                            className={`${buttonClass} mt-5 w-full bg-[#171717] text-white shadow-sm hover:bg-black`}
                             disabled={loading || launching || !canPrepare}
                             type="submit"
                           >
@@ -1576,9 +1572,9 @@ export function CampaignShell() {
                   </p>
                 ) : null}
 
-                <div className="sticky bottom-0 z-20 -mx-5 flex items-center justify-between gap-3 border-t border-[#dbe4e1] bg-white px-5 py-4 sm:-mx-7 sm:px-7">
+                <div className="sticky bottom-0 z-20 -mx-5 flex items-center justify-between gap-3 border-t border-[#eaeaea] bg-white px-5 py-4 sm:-mx-7 sm:px-7">
                   <button
-                    className={`${buttonClass} border border-[#c6d4d0] bg-white text-[#52645f] hover:border-[#118778] disabled:opacity-40`}
+                    className={`${buttonClass} border border-[#eaeaea] bg-white text-[#52525b] hover:border-black disabled:opacity-40`}
                     disabled={createStep === 1 || launching}
                     type="button"
                     onClick={() => {
@@ -1593,7 +1589,7 @@ export function CampaignShell() {
                   </span>
                   {createStep < campaignSteps.length ? (
                     <button
-                      className={`${buttonClass} bg-[#118778] text-white hover:bg-[#0e6f62]`}
+                      className={`${buttonClass} bg-[#171717] text-white hover:bg-black`}
                       disabled={!currentStepReady || launching}
                       type="button"
                       onClick={() => {
@@ -1654,8 +1650,8 @@ function ModeCard({
     <button
       className={`rounded-lg border px-4 py-3 text-left transition ${
         active
-          ? "border-[#118778] bg-[#edf7f4] text-[#0e6f62]"
-          : "border-[#dbe4e1] bg-white text-[#52645f] hover:border-[#118778]/50"
+          ? "border-[#171717] bg-[#fafafa] text-[#171717]"
+          : "border-[#eaeaea] bg-white text-[#52525b] hover:border-black"
       }`}
       onClick={onClick}
       type="button"
@@ -1663,7 +1659,7 @@ function ModeCard({
     >
       <span className="flex items-center gap-3">
         <span
-          className={`grid size-9 place-items-center rounded-lg ${active ? "bg-white text-[#0e6f62]" : "bg-[#f6f6f8] text-[#71817d]"}`}
+          className={`grid size-9 place-items-center rounded-lg ${active ? "bg-[#171717] text-white" : "bg-[#f4f4f5] text-[#71717a]"}`}
         >
           <Icon icon={icon} />
         </span>
@@ -1684,10 +1680,10 @@ function ProgressBar({
 }) {
   return (
     <div
-      className={`h-2 overflow-hidden rounded-full bg-slate-200 ${className}`}
+      className={`h-1.5 overflow-hidden rounded-full bg-[#f4f4f5] ${className}`}
     >
       <div
-        className="h-full rounded-full bg-gradient-to-r from-[#118778] via-[#25b39f] to-[#0e6f62] transition-all"
+        className="h-full rounded-full bg-[#171717] transition-all"
         style={{ width: `${progressValue(value)}%` }}
       />
     </div>
@@ -1707,7 +1703,7 @@ function SummaryRow({
     <div className="flex justify-between gap-3">
       <dt className="app-caption">{label}</dt>
       <dd
-        className={`m-0 max-w-[210px] truncate text-right text-sm font-semibold ${warn ? "text-amber-300" : "text-white"}`}
+        className={`m-0 max-w-[210px] truncate text-right text-[12.5px] font-semibold ${warn ? "text-[#52525b]" : "text-[#171717]"}`}
       >
         {value}
       </dd>
@@ -1727,141 +1723,155 @@ function CampaignOperationsSection({
   ) => void | Promise<void>;
   onViewResults: (campaign: BackendCampaign) => void;
 }) {
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+
+  const filteredCampaigns = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    return campaigns.filter((campaign) => {
+      if (statusFilter && campaign.status !== statusFilter) return false;
+      if (!query) return true;
+      return `${campaign.name} ${campaign.status} ${campaign.timezone}`.toLowerCase().includes(query);
+    });
+  }, [campaigns, search, statusFilter]);
+
   return (
-    <section className="dashboard-flat-panel mt-0 overflow-hidden bg-white">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#dbe4e1] px-5 py-4">
-        <div>
-          <h2 className="app-section-title m-0">Campaigns</h2>
-          <p className="app-caption mt-1 mb-0">
-            {numberFormat(campaigns.length)} total
-          </p>
+    <div className="grid gap-3.5">
+      <div className="flex flex-col gap-2 rounded-xl border border-[#eaeaea] bg-white p-3 sm:flex-row sm:items-center">
+        <div className="flex h-8 min-w-0 flex-1 items-center gap-2 rounded-lg border border-[#eaeaea] bg-[#fafafa] px-2.5 transition focus-within:border-[#2563eb] focus-within:bg-white">
+          <svg
+            aria-hidden="true"
+            className="pointer-events-none size-3.5 shrink-0 fill-none stroke-current stroke-[1.8] text-[#71717a]"
+            viewBox="0 0 24 24"
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-4-4" />
+          </svg>
+          <input
+            className="h-full min-w-0 flex-1 border-0 bg-transparent p-0 text-[12.5px] text-[#171717] placeholder-[#71717a] outline-none"
+            placeholder="Search campaigns..."
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+          />
+          {search ? (
+            <button
+              className="text-[11.5px] font-medium text-[#71717a] hover:text-black"
+              type="button"
+              onClick={() => setSearch("")}
+            >
+              Clear
+            </button>
+          ) : null}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <select
+            aria-label="Filter by status"
+            className="h-8 rounded-lg border border-[#eaeaea] bg-white px-2.5 text-[12.5px] font-medium text-[#171717] outline-none transition hover:border-[#a1a1aa] focus:border-[#2563eb]"
+            value={statusFilter}
+            onChange={(event) => setStatusFilter(event.target.value)}
+          >
+            <option value="">All statuses ({numberFormat(campaigns.length)})</option>
+            <option value="running">Running</option>
+            <option value="scheduled">Scheduled</option>
+            <option value="paused">Paused</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+          {(search || statusFilter) ? (
+            <button
+              className="h-8 rounded-lg border border-[#eaeaea] bg-white px-2.5 text-[12px] font-medium text-[#71717a] transition hover:bg-[#fafafa] hover:text-[#171717]"
+              type="button"
+              onClick={() => {
+                setSearch("");
+                setStatusFilter("");
+              }}
+            >
+              Reset
+            </button>
+          ) : null}
         </div>
       </div>
 
-      {campaigns.length ? (
+      {filteredCampaigns.length ? (
         <>
-          <div className="hidden overflow-x-auto lg:block">
-            <table className="w-full min-w-[900px] text-left">
-              <thead className="bg-[#ffffff] text-white/50">
-                <tr className="text-xs font-semibold uppercase tracking-[0.12em]">
-                  <th className="px-4 py-3">Campaign</th>
-                  <th className="px-4 py-3">Status</th>
-                  <th className="px-4 py-3">Progress</th>
-                  <th className="px-4 py-3">Results</th>
-                  <th className="px-4 py-3">Schedule</th>
-                  <th className="px-4 py-3 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#edf0f4]">
-                {campaigns.map((campaign) => (
-                  <tr
-                    className="align-top transition hover:bg-[#fbfdff]"
-                    key={campaign._id}
-                  >
-                    <td className="px-4 py-4">
-                      <strong className="block max-w-[220px] truncate text-sm font-semibold text-[#0f172a]">
-                        {campaign.name}
-                      </strong>
-                      <span className="app-caption mt-1 block">
-                        Created{" "}
-                        {formatDateTime(campaign.createdAt, campaign.timezone)}
-                      </span>
-                      <span className="app-caption mt-1 block">
-                        {numberFormat(
-                          campaign.totalLeads || campaign.stats.total,
-                        )}{" "}
-                        leads · {numberFormat(campaign.concurrency)} concurrent
-                        · {numberFormat(campaign.dailyLimit)}/day
-                      </span>
-                    </td>
-                    <td className="px-4 py-4">
-                      <StatusPill status={campaign.status} />
-                    </td>
-                    <td className="px-4 py-4">
-                      <div className="min-w-[150px]">
-                        <div className="mb-2 flex justify-between gap-3 text-xs font-semibold text-[#475569]">
-                          <span>{campaign.stats.progressPercent}%</span>
-                          <span>
-                            {numberFormat(campaign.stats.processed)}/
-                            {numberFormat(campaign.stats.total)}
-                          </span>
-                        </div>
-                        <ProgressBar value={campaign.stats.progressPercent} />
-                      </div>
-                    </td>
-                    <td className="px-4 py-4">
-                      <div className="grid gap-1 text-xs font-medium text-[#475569]">
-                        <span>
-                          <strong className="text-[#047857]">
-                            {numberFormat(campaign.stats.completed)}
-                          </strong>{" "}
-                          completed
-                        </span>
-                        <span>
-                          <strong className="text-[#dc2626]">
-                            {numberFormat(campaign.stats.failed)}
-                          </strong>{" "}
-                          failed ·{" "}
-                          <strong className="text-[#d97706]">
-                            {numberFormat(campaign.stats.suppressed)}
-                          </strong>{" "}
-                          suppressed
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-4 py-4">
-                      <span className="block text-sm font-semibold text-[#0f172a]">
-                        {campaign.windowStart}-{campaign.windowEnd}
-                      </span>
-                      <span className="app-caption">
-                        {campaign.scheduledAt
-                          ? formatDateTime(
-                              campaign.scheduledAt,
-                              campaign.timezone,
-                            )
-                          : campaign.timezone}
-                      </span>
-                      {campaign.lastWorkerError ? (
-                        <p className="mt-2 max-w-[220px] rounded-lg bg-[#fff1f2] px-2 py-1 text-xs font-medium text-[#dc2626]">
-                          {campaign.lastWorkerError}
-                        </p>
-                      ) : null}
-                    </td>
-                    <td className="px-4 py-4">
-                      <CampaignActions
-                        campaign={campaign}
-                        onControl={(action) => onControl(campaign, action)}
-                        onViewResults={() => onViewResults(campaign)}
-                        align="end"
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="hidden gap-3 lg:grid">
+            {filteredCampaigns.map((campaign) => (
+              <article
+                key={campaign._id}
+                className="grid grid-cols-[minmax(220px,1.7fr)_120px_150px_140px_130px_auto] items-center gap-4 rounded-xl border border-[#eaeaea] bg-white px-5 py-4 transition hover:border-[#2563eb]/40 hover:shadow-xs"
+              >
+                <div className="min-w-0">
+                  <strong className="block truncate text-[13.5px] font-semibold text-[#171717]">
+                    {campaign.name}
+                  </strong>
+                  <span className="mt-0.5 block truncate text-[11.5px] text-[#71717a]">
+                    {numberFormat(campaign.totalLeads || campaign.stats.total)} leads · {numberFormat(campaign.concurrency)} concurrent · {formatDateTime(campaign.createdAt, campaign.timezone)}
+                  </span>
+                </div>
+
+                <div>
+                  <StatusPill status={campaign.status} />
+                </div>
+
+                <div>
+                  <div className="mb-1 flex justify-between gap-2 text-[11.5px] font-medium text-[#52525b] tabular-nums">
+                    <span>{campaign.stats.progressPercent}%</span>
+                    <span className="text-[#71717a]">
+                      {numberFormat(campaign.stats.processed)}/{numberFormat(campaign.stats.total)}
+                    </span>
+                  </div>
+                  <ProgressBar value={campaign.stats.progressPercent} />
+                </div>
+
+                <div className="text-[12px] text-[#52525b] tabular-nums">
+                  <span className="font-semibold text-[#171717]">{numberFormat(campaign.stats.completed)}</span> done ·{" "}
+                  <span className="font-semibold text-[#171717]">{numberFormat(campaign.stats.failed)}</span> failed
+                </div>
+
+                <div>
+                  <span className="block text-[12.5px] font-medium text-[#171717] tabular-nums">
+                    {campaign.windowStart}–{campaign.windowEnd}
+                  </span>
+                  <span className="block text-[11px] text-[#71717a]">
+                    {campaign.timezone}
+                  </span>
+                </div>
+
+                <div className="flex justify-end">
+                  <CampaignActions
+                    campaign={campaign}
+                    onControl={(action) => onControl(campaign, action)}
+                    onViewResults={() => onViewResults(campaign)}
+                    align="end"
+                  />
+                </div>
+              </article>
+            ))}
           </div>
 
-          <div className="grid gap-3 py-4 lg:hidden">
-            {campaigns.map((campaign) => (
-              <CampaignCard
-                campaign={campaign}
-                key={campaign._id}
-                onControl={(action) => onControl(campaign, action)}
-                onViewResults={() => onViewResults(campaign)}
-              />
+          <div className="grid gap-3 lg:hidden">
+            {filteredCampaigns.map((campaign) => (
+              <div key={campaign._id} className="rounded-xl border border-[#eaeaea] bg-white px-4">
+                <CampaignCard
+                  campaign={campaign}
+                  onControl={(action) => onControl(campaign, action)}
+                  onViewResults={() => onViewResults(campaign)}
+                />
+              </div>
             ))}
           </div>
         </>
       ) : (
-        <div className="py-6">
+        <div className="rounded-xl border border-[#eaeaea] bg-white py-8">
           <EmptyState
             icon="calendar"
-            title="No campaigns yet"
-            description="Your launched and scheduled campaigns will appear here with progress, results, and controls."
+            title={campaigns.length ? "No matching campaigns" : "No campaigns yet"}
+            description={campaigns.length ? "Try clearing your search or status filter." : "Your launched and scheduled campaigns will appear here with progress, results, and controls."}
           />
         </div>
       )}
-    </section>
+    </div>
   );
 }
 
@@ -1937,7 +1947,7 @@ export function CampaignResultsPageShell({
         showUserSidebar={showUserSidebar}
         setShowUserSidebar={setShowUserSidebar}
       />
-      <section className="min-w-0 overflow-y-auto overscroll-contain bg-[#f7f9f8]">
+      <section className="min-w-0 overflow-y-auto overscroll-contain bg-[#fafafa]">
         <DashboardPageHeader
           eyebrow="Campaign performance"
           title={campaign?.name ?? "Campaign results"}
@@ -1946,13 +1956,13 @@ export function CampaignResultsPageShell({
           actions={
             <div className="flex flex-wrap items-center gap-2">
               <Link
-                className={`${buttonClass} border border-[#c6d4d0] bg-white text-[#52645f] hover:border-[#118778] hover:text-[#0e6f62]`}
+                className={`${buttonClass} border border-[#eaeaea] bg-white text-[#52525b] hover:border-black hover:text-[#171717]`}
                 href="/docs/campaigns"
               >
                 Results guide
               </Link>
               <button
-                className={`${buttonClass} border border-[#c6d4d0] bg-white text-[#52645f] hover:border-[#118778] hover:text-[#0e6f62]`}
+                className={`${buttonClass} border border-[#eaeaea] bg-white text-[#52525b] hover:border-black hover:text-[#171717]`}
                 type="button"
                 onClick={() => router.push("/dashboard/campaign")}
               >
@@ -2009,7 +2019,7 @@ function readableValue(value: string) {
 
 function resultPillClass(value: string) {
   if (["qualified", "resolved", "completed"].includes(value)) {
-    return "border-emerald-200 bg-emerald-50 text-emerald-700";
+    return "border-[#eaeaea] bg-[#fafafa] text-[#171717]";
   }
   if (["needs_attention", "failed", "not_interested"].includes(value)) {
     return "border-red-200 bg-red-50 text-red-700";
@@ -2017,7 +2027,7 @@ function resultPillClass(value: string) {
   if (["scheduled", "calling", "retry_wait", "follow_up"].includes(value)) {
     return "border-amber-200 bg-amber-50 text-amber-800";
   }
-  return "border-slate-200 bg-slate-50 text-slate-600";
+  return "border-[#eaeaea] bg-[#fafafa] text-[#52525b]";
 }
 
 function ResultPill({ value }: { value: string }) {
@@ -2353,12 +2363,12 @@ function CampaignResultsWorkspace({
                 <h3 className="m-0 text-sm font-semibold text-slate-900">Campaign QA scorecard</h3>
                 <p className="mt-1 text-xs text-slate-500">Weights must total 100. Scores use observable campaign evidence.</p>
               </div>
-              <button className={`${buttonClass} bg-[#118778] text-white hover:bg-[#0e6f62]`} type="button" disabled={savingScorecard} onClick={() => void saveScorecard()}>
+              <button className={`${buttonClass} bg-[#171717] text-white hover:bg-black`} type="button" disabled={savingScorecard} onClick={() => void saveScorecard()}>
                 {savingScorecard ? "Saving..." : "Save scorecard"}
               </button>
             </div>
             <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
-              <label className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700">
+              <label className="flex items-center gap-2 rounded-lg bg-[#fafafa] px-3 py-2 text-sm font-medium text-[#171717]">
                 <input type="checkbox" checked={scorecard.enabled} onChange={(event) => setScorecard((current) => ({ ...current, enabled: event.target.checked }))} /> Enabled
               </label>
               {([
@@ -2367,17 +2377,17 @@ function CampaignResultsWorkspace({
                 ["goalWeight", "Goal reached"],
                 ["followUpWeight", "Follow up handled"],
               ] as const).map(([key, label]) => (
-                <label key={key} className="text-xs font-semibold text-slate-600">
+                <label key={key} className="text-xs font-semibold text-[#52525b]">
                   {label}
-                  <input className="mt-1 min-h-9 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-900" type="number" min={0} max={100} value={scorecard[key]} onChange={(event) => setScorecard((current) => ({ ...current, [key]: Number(event.target.value) }))} />
+                  <input className="mt-1 min-h-9 w-full rounded-md border border-[#eaeaea] px-3 text-sm text-[#171717]" type="number" min={0} max={100} value={scorecard[key]} onChange={(event) => setScorecard((current) => ({ ...current, [key]: Number(event.target.value) }))} />
                 </label>
               ))}
             </div>
           </section>
 
-          <div className="mt-5 flex flex-col gap-3 rounded-t-xl border border-[#dbe4e1] bg-white p-4 lg:flex-row lg:items-center">
+          <div className="mt-5 flex flex-col gap-3 rounded-t-lg border border-[#eaeaea] bg-white p-4 lg:flex-row lg:items-center">
             <input
-              className="app-control-text min-h-10 min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-3 text-slate-900 outline-none focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10"
+              className="app-control-text min-h-9 min-w-0 flex-1 rounded-md border border-[#eaeaea] bg-white px-3 text-sm text-[#171717] outline-none focus:border-black focus:ring-1 focus:ring-black/10"
               value={search}
               onChange={(event) => {
                 setSearch(event.target.value);
@@ -2387,7 +2397,7 @@ function CampaignResultsWorkspace({
               aria-label="Search campaign contacts"
             />
             <select
-              className="min-h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700"
+              className="min-h-9 rounded-md border border-[#eaeaea] bg-white px-3 text-sm text-[#52525b]"
               value={outcome}
               onChange={(event) => {
                 setOutcome(event.target.value as CampaignOutcome | "");
@@ -2398,7 +2408,7 @@ function CampaignResultsWorkspace({
               {outcomeOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
             </select>
             <select
-              className="min-h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700"
+              className="min-h-9 rounded-md border border-[#eaeaea] bg-white px-3 text-sm text-[#52525b]"
               value={callbackStatus}
               onChange={(event) => {
                 setCallbackStatus(event.target.value as CampaignCallbackStatus);
@@ -2409,7 +2419,7 @@ function CampaignResultsWorkspace({
               {callbackOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
             </select>
             <button
-              className={`${buttonClass} border border-[#118778] bg-white text-[#0e6f62] hover:bg-[#edf7f4]`}
+              className={`${buttonClass} border border-[#eaeaea] bg-white text-[#171717] hover:bg-[#f4f4f5]`}
               type="button"
               disabled={exporting}
               onClick={() => void exportResults()}
@@ -2418,9 +2428,9 @@ function CampaignResultsWorkspace({
             </button>
           </div>
 
-          <div className="overflow-x-auto border-x border-b border-[#dbe4e1] bg-white">
+          <div className="overflow-x-auto border-x border-b border-[#eaeaea] bg-white">
             <table className="w-full min-w-[1240px] text-left">
-              <thead className="bg-slate-50 text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-500">
+              <thead className="bg-[#fafafa] text-[11px] font-semibold uppercase tracking-[0.06em] text-[#71717a]">
                 <tr>
                   <th className="px-4 py-3">Contact</th>
                   <th className="px-4 py-3">Delivery</th>
@@ -2430,21 +2440,21 @@ function CampaignResultsWorkspace({
                   <th className="px-4 py-3">Next action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-[#eaeaea]">
                 {resultLeads.map((lead) => (
-                  <tr key={lead._id} className="align-top">
+                  <tr key={lead._id} className="align-top hover:bg-[#fafafa]">
                     <td className="px-4 py-3">
-                      <strong className="block text-sm font-semibold text-slate-900">{lead.name || `Contact ${lead.row}`}</strong>
-                      <span className="mt-1 block text-xs text-slate-600">{lead.phone}</span>
-                      {lead.company || lead.email ? <span className="mt-1 block max-w-[230px] truncate text-xs text-slate-400">{lead.company || lead.email}</span> : null}
+                      <strong className="block text-sm font-semibold text-[#171717]">{lead.name || `Contact ${lead.row}`}</strong>
+                      <span className="mt-1 block text-xs text-[#71717a]">{lead.phone}</span>
+                      {lead.company || lead.email ? <span className="mt-1 block max-w-[230px] truncate text-xs text-[#a1a1aa]">{lead.company || lead.email}</span> : null}
                     </td>
-                    <td className="px-4 py-3"><ResultPill value={lead.status} />{lead.lastError ? <span className="mt-2 block max-w-[190px] text-xs text-red-600">{lead.lastError}</span> : null}</td>
+                    <td className="px-4 py-3"><ResultPill value={lead.status} />{lead.lastError ? <span className="mt-2 block max-w-[190px] text-xs text-rose-600">{lead.lastError}</span> : null}</td>
                     <td className="px-4 py-3">
                       <ResultPill value={lead.outcome} />
-                      <span className="mt-2 block text-xs text-slate-500">Evidence: {readableValue(lead.outcomeEvidence)}</span>
-                      {lead.outcomeEvidenceQuote ? <blockquote className="mt-2 max-w-[270px] border-l-2 border-[#118778] pl-2 text-xs italic text-slate-600">“{lead.outcomeEvidenceQuote}”</blockquote> : null}
+                      <span className="mt-2 block text-xs text-[#71717a]">Evidence: {readableValue(lead.outcomeEvidence)}</span>
+                      {lead.outcomeEvidenceQuote ? <blockquote className="mt-2 max-w-[270px] border-l-2 border-[#171717] pl-2 text-xs italic text-[#52525b]">“{lead.outcomeEvidenceQuote}”</blockquote> : null}
                       <select
-                        className="mt-2 min-h-8 rounded-lg border border-slate-200 bg-white px-2 text-xs text-slate-700 disabled:opacity-50"
+                        className="mt-2 min-h-8 rounded-md border border-[#eaeaea] bg-white px-2 text-xs text-[#52525b] disabled:opacity-50"
                         value={lead.outcome}
                         disabled={updatingLeadId === lead._id}
                         onChange={(event) =>
@@ -2464,94 +2474,94 @@ function CampaignResultsWorkspace({
                           ))}
                       </select>
                     </td>
-                    <td className="px-4 py-3 text-sm text-slate-700">
-                      <strong>{numberFormat(lead.attempts)}</strong> attempts
-                      <span className="mt-1 block text-xs text-slate-500">{lead.latestCall ? `${readableValue(lead.latestCall.status)} · ${lead.latestCall.durationSeconds || 0}s` : "No call yet"}</span>
-                      {lead.latestCall ? <button className="mt-2 block text-xs font-semibold text-[#0e6f62] hover:underline disabled:opacity-50" type="button" disabled={openingCallId === lead.latestCall._id} onClick={() => void openCall(lead.latestCall!._id)}>{openingCallId === lead.latestCall._id ? "Opening..." : "Review transcript & recording"}</button> : null}
+                    <td className="px-4 py-3 text-sm text-[#52525b]">
+                      <strong className="text-[#171717]">{numberFormat(lead.attempts)}</strong> attempts
+                      <span className="mt-1 block text-xs text-[#71717a]">{lead.latestCall ? `${readableValue(lead.latestCall.status)} · ${lead.latestCall.durationSeconds || 0}s` : "No call yet"}</span>
+                      {lead.latestCall ? <button className="mt-2 block text-xs font-semibold text-[#171717] hover:underline disabled:opacity-50" type="button" disabled={openingCallId === lead.latestCall._id} onClick={() => void openCall(lead.latestCall!._id)}>{openingCallId === lead.latestCall._id ? "Opening..." : "Review transcript & recording"}</button> : null}
                     </td>
                     <td className="px-4 py-3">
-                      <strong className="text-sm text-slate-900">{lead.qaScore}/100 <span className="text-xs text-slate-500">Grade {lead.qaGrade || "—"}</span></strong>
-                      <span className="mt-1 block text-xs text-slate-500">CRM: {readableValue(lead.crmSyncStatus || "not configured")}</span>
+                      <strong className="text-sm text-[#171717]">{lead.qaScore}/100 <span className="text-xs text-[#71717a]">Grade {lead.qaGrade || "—"}</span></strong>
+                      <span className="mt-1 block text-xs text-[#71717a]">CRM: {readableValue(lead.crmSyncStatus || "not configured")}</span>
                       {lead.conversionStatus ? <span className="mt-2 block"><ResultPill value={`${lead.conversionStatus} ${lead.conversionType}`} /></span> : null}
-                      {lead.attributedRevenue > 0 ? <span className="mt-1 block text-xs font-semibold text-emerald-700">{money(lead.attributedRevenue)}</span> : null}
-                      <button className="mt-2 text-xs font-semibold text-[#0e6f62] hover:underline" type="button" onClick={() => { setConversionLead(lead); setConversionType("appointment"); setConversionAmount("0"); setConversionReference(""); }}>Record verified result</button>
+                      {lead.attributedRevenue > 0 ? <span className="mt-1 block text-xs font-semibold text-[#171717]">{money(lead.attributedRevenue)}</span> : null}
+                      <button className="mt-2 text-xs font-semibold text-[#171717] hover:underline" type="button" onClick={() => { setConversionLead(lead); setConversionType("appointment"); setConversionAmount("0"); setConversionReference(""); }}>Record verified result</button>
                     </td>
                     <td className="px-4 py-3">
                       {lead.followUpStatus ? (
                         <div className="mb-3">
-                          <span className="block text-xs font-semibold text-slate-800">Planned follow-up</span>
+                          <span className="block text-xs font-semibold text-[#171717]">Planned follow-up</span>
                           <ResultPill value={lead.followUpStatus} />
-                          <span className="mt-1 block text-xs text-slate-500">Reason: {readableValue(lead.outcome)}</span>
-                          {lead.followUpStatus === "scheduled" && lead.followUpScheduledFor ? <span className="mt-1 block text-xs text-slate-600">Due after {formatDateTime(lead.followUpScheduledFor, campaign.timezone)} · within the call window</span> : null}
+                          <span className="mt-1 block text-xs text-[#71717a]">Reason: {readableValue(lead.outcome)}</span>
+                          {lead.followUpStatus === "scheduled" && lead.followUpScheduledFor ? <span className="mt-1 block text-xs text-[#52525b]">Due after {formatDateTime(lead.followUpScheduledFor, campaign.timezone)} · within the call window</span> : null}
                           {lead.followUpStatus === "scheduled" && ["running", "paused"].includes(campaign.status) ? (
                             <div className="mt-2 grid gap-2">
                               <input
-                                className="min-h-9 rounded-lg border border-slate-200 px-2 text-xs"
+                                className="min-h-8 rounded-md border border-[#eaeaea] px-2 text-xs text-[#171717]"
                                 type="datetime-local"
                                 aria-label={`Reschedule follow-up for ${lead.name || lead.phone}`}
                                 value={followUpTimes[lead._id] ?? dateTimeLocalInTimezone(lead.followUpScheduledFor!, campaign.timezone)}
                                 onChange={(event) => setFollowUpTimes((current) => ({ ...current, [lead._id]: event.target.value }))}
                               />
                               <div className="flex gap-3">
-                                <button className="text-xs font-semibold text-[#0e6f62] disabled:opacity-50" type="button" disabled={updatingLeadId === lead._id} onClick={() => void updateFollowUp(lead, "reschedule")}>Save time</button>
-                                <button className="text-xs font-semibold text-red-700 disabled:opacity-50" type="button" disabled={updatingLeadId === lead._id} onClick={() => void updateFollowUp(lead, "cancel")}>Cancel</button>
+                                <button className="text-xs font-semibold text-[#171717] disabled:opacity-50" type="button" disabled={updatingLeadId === lead._id} onClick={() => void updateFollowUp(lead, "reschedule")}>Save time</button>
+                                <button className="text-xs font-semibold text-rose-600 disabled:opacity-50" type="button" disabled={updatingLeadId === lead._id} onClick={() => void updateFollowUp(lead, "cancel")}>Cancel</button>
                               </div>
                             </div>
                           ) : null}
                         </div>
                       ) : null}
-                      {lead.callbackStatus ? <ResultPill value={lead.callbackStatus} /> : !lead.followUpStatus ? <span className="text-sm text-slate-400">No next call</span> : null}
-                      {lead.callbackScheduledFor ? <span className="mt-2 block text-xs text-slate-600">{formatDateTime(lead.callbackScheduledFor, campaign.timezone)}</span> : null}
-                      {lead.callback?.lastError ? <span className="mt-1 block max-w-[240px] text-xs text-red-600">{lead.callback.lastError}</span> : null}
+                      {lead.callbackStatus ? <ResultPill value={lead.callbackStatus} /> : !lead.followUpStatus ? <span className="text-sm text-[#a1a1aa]">No next call</span> : null}
+                      {lead.callbackScheduledFor ? <span className="mt-2 block text-xs text-[#52525b]">{formatDateTime(lead.callbackScheduledFor, campaign.timezone)}</span> : null}
+                      {lead.callback?.lastError ? <span className="mt-1 block max-w-[240px] text-xs text-rose-600">{lead.callback.lastError}</span> : null}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
             {!resultLeads.length && !loadingResults ? (
-              <div className="px-5 py-10 text-center text-sm text-slate-500">No contacts match these filters.</div>
+              <div className="px-5 py-10 text-center text-sm text-[#71717a]">No contacts match these filters.</div>
             ) : null}
-            {loadingResults ? <div className="px-5 py-3 text-center text-xs font-medium text-slate-500">Refreshing results...</div> : null}
+            {loadingResults ? <div className="px-5 py-3 text-center text-xs font-medium text-[#71717a]">Refreshing results...</div> : null}
           </div>
 
-          <footer className="flex items-center justify-between rounded-b-xl border-x border-b border-[#dbe4e1] bg-white px-4 py-3">
-            <span className="text-xs text-slate-500">{numberFormat(total)} matching contacts</span>
+          <footer className="flex items-center justify-between rounded-b-lg border-x border-b border-[#eaeaea] bg-white px-4 py-3">
+            <span className="text-xs text-[#71717a]">{numberFormat(total)} matching contacts</span>
             <div className="flex items-center gap-2">
-              <button className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 disabled:opacity-40" type="button" disabled={page <= 1 || loadingResults} onClick={() => setPage((current) => Math.max(1, current - 1))}>Previous</button>
-              <span className="text-xs font-medium text-slate-600">{page} / {totalPages}</span>
-              <button className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 disabled:opacity-40" type="button" disabled={page >= totalPages || loadingResults} onClick={() => setPage((current) => current + 1)}>Next</button>
+              <button className="rounded-md border border-[#eaeaea] px-3 py-1.5 text-xs font-semibold text-[#171717] hover:bg-[#f4f4f5] disabled:opacity-40" type="button" disabled={page <= 1 || loadingResults} onClick={() => setPage((current) => Math.max(1, current - 1))}>Previous</button>
+              <span className="text-xs font-medium text-[#71717a]">{page} / {totalPages}</span>
+              <button className="rounded-md border border-[#eaeaea] px-3 py-1.5 text-xs font-semibold text-[#171717] hover:bg-[#f4f4f5] disabled:opacity-40" type="button" disabled={page >= totalPages || loadingResults} onClick={() => setPage((current) => current + 1)}>Next</button>
             </div>
           </footer>
 
           {conversionLead ? (
-            <div className="fixed inset-0 z-50 grid place-items-center bg-slate-950/45 p-4" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setConversionLead(null); }}>
-              <form className="w-full max-w-lg rounded-2xl bg-white p-5 shadow-2xl" onSubmit={(event) => void saveConversion(event)}>
+            <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setConversionLead(null); }}>
+              <form className="w-full max-w-lg rounded-xl border border-[#eaeaea] bg-white p-5 shadow-2xl" onSubmit={(event) => void saveConversion(event)}>
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <h3 className="m-0 text-lg font-semibold text-slate-950">Record verified business result</h3>
-                    <p className="mt-1 text-sm text-slate-500">{conversionLead.name || conversionLead.phone}</p>
+                    <h3 className="m-0 text-base font-semibold text-[#171717]">Record verified business result</h3>
+                    <p className="mt-1 text-xs text-[#71717a]">{conversionLead.name || conversionLead.phone}</p>
                   </div>
-                  <button type="button" className="rounded-lg p-2 text-slate-500 hover:bg-slate-100" onClick={() => setConversionLead(null)} aria-label="Close"><Icon icon="close" /></button>
+                  <button type="button" className="rounded-md p-1.5 text-[#71717a] hover:bg-[#f4f4f5] hover:text-[#171717]" onClick={() => setConversionLead(null)} aria-label="Close"><Icon icon="close" /></button>
                 </div>
                 <div className="mt-5 grid gap-4 sm:grid-cols-2">
-                  <label className="text-xs font-semibold text-slate-600">Result type
-                    <select className="mt-1 min-h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm" value={conversionType} onChange={(event) => setConversionType(event.target.value as typeof conversionType)}>
+                  <label className="text-xs font-semibold text-[#52525b]">Result type
+                    <select className="mt-1 min-h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-sm text-[#171717]" value={conversionType} onChange={(event) => setConversionType(event.target.value as typeof conversionType)}>
                       <option value="appointment">Appointment</option><option value="booking">Booking</option><option value="payment">Payment</option><option value="revenue">Revenue</option><option value="lead">Qualified lead</option><option value="other">Other</option>
                     </select>
                   </label>
-                  <label className="text-xs font-semibold text-slate-600">External reference
-                    <input className="mt-1 min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" value={conversionReference} onChange={(event) => setConversionReference(event.target.value)} placeholder="Booking or transaction ID" required={conversionType === "payment" || conversionType === "revenue"} />
+                  <label className="text-xs font-semibold text-[#52525b]">External reference
+                    <input className="mt-1 min-h-9 w-full rounded-md border border-[#eaeaea] px-3 text-sm text-[#171717]" value={conversionReference} onChange={(event) => setConversionReference(event.target.value)} placeholder="Booking or transaction ID" required={conversionType === "payment" || conversionType === "revenue"} />
                   </label>
-                  <label className="text-xs font-semibold text-slate-600">Amount
-                    <input className="mt-1 min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" type="number" min={0} step="0.01" value={conversionAmount} onChange={(event) => setConversionAmount(event.target.value)} />
+                  <label className="text-xs font-semibold text-[#52525b]">Amount
+                    <input className="mt-1 min-h-9 w-full rounded-md border border-[#eaeaea] px-3 text-sm text-[#171717]" type="number" min={0} step="0.01" value={conversionAmount} onChange={(event) => setConversionAmount(event.target.value)} />
                   </label>
-                  <label className="text-xs font-semibold text-slate-600">Currency
-                    <span className="mt-1 flex min-h-10 w-full items-center rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-700">Indian rupees (INR)</span>
+                  <label className="text-xs font-semibold text-[#52525b]">Currency
+                    <span className="mt-1 flex min-h-9 w-full items-center rounded-md border border-[#eaeaea] bg-[#fafafa] px-3 text-sm font-medium text-[#171717]">Indian rupees (INR)</span>
                   </label>
                 </div>
                 <div className="mt-5 flex justify-end gap-2">
-                  <button className={`${buttonClass} border border-slate-200 bg-white text-slate-700`} type="button" onClick={() => setConversionLead(null)}>Cancel</button>
-                  <button className={`${buttonClass} bg-[#118778] text-white`} type="submit" disabled={savingConversion}>{savingConversion ? "Saving..." : "Verify result"}</button>
+                  <button className={`${buttonClass} border border-[#eaeaea] bg-white text-[#52525b] hover:bg-[#f4f4f5]`} type="button" onClick={() => setConversionLead(null)}>Cancel</button>
+                  <button className={`${buttonClass} bg-[#171717] text-white hover:bg-black`} type="submit" disabled={savingConversion}>{savingConversion ? "Saving..." : "Verify result"}</button>
                 </div>
               </form>
             </div>
@@ -2584,8 +2594,9 @@ function MiniResult({ label, value, alert = false }: { label: string; value: num
 function StatusPill({ status }: { status: BackendCampaign["status"] }) {
   return (
     <span
-      className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${statusTheme(status)}`}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-medium ${statusTheme(status)}`}
     >
+      <span className={`size-1.5 rounded-full ${status === "running" ? "bg-white" : status === "completed" ? "bg-[#171717]" : "bg-[#71717a]"}`} />
       {statusCopy(status)}
     </span>
   );
@@ -2739,14 +2750,12 @@ function CampaignActionButton({
   tone: "danger" | "neutral" | "success";
 }) {
   const toneClass =
-    tone === "danger"
-      ? "border-red-200 bg-red-50 text-red-700 hover:bg-red-100"
-      : tone === "success"
-        ? "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
-        : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100";
+    tone === "success"
+      ? "border-[#eaeaea] bg-white text-[#171717] hover:bg-[#f4f4f5]"
+      : "border-[#eaeaea] bg-[#fafafa] text-[#52525b] hover:bg-[#f4f4f5] hover:text-[#171717]";
   return (
     <button
-      className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition ${toneClass}`}
+      className={`inline-flex h-7 items-center rounded-md border px-2.5 text-[12px] font-medium transition ${toneClass}`}
       onClick={onClick}
       type="button"
     >
@@ -2802,10 +2811,10 @@ function ToggleRow({
         <span className="app-caption mt-1 block">{detail}</span>
       </span>
       <span
-        className={`relative h-6 w-11 shrink-0 rounded-full transition ${enabled ? "bg-[#118778]" : "bg-[#cbd5e1]"}`}
+        className={`relative h-5 w-9 shrink-0 rounded-full transition ${enabled ? "bg-[#171717]" : "bg-[#d4d4d8]"}`}
       >
         <span
-          className={`absolute top-1 size-4 rounded-full bg-[#ffffff] shadow transition ${enabled ? "left-6" : "left-1"}`}
+          className={`absolute top-0.5 size-4 rounded-full bg-white shadow transition ${enabled ? "left-4.5" : "left-0.5"}`}
         />
       </span>
     </button>
@@ -2824,16 +2833,16 @@ function Notice({
   const success = tone === "success";
   return (
     <div
-      className={`flex items-start justify-between gap-3 rounded-2xl border px-4 py-3 shadow-sm ${success ? "border-emerald-200 bg-emerald-50 text-emerald-800" : "border-red-200 bg-red-50 text-red-800"}`}
+      className={`flex items-start justify-between gap-3 rounded-lg border px-4 py-2.5 text-xs ${success ? "border-[#eaeaea] bg-white text-[#171717]" : "border-rose-200 bg-rose-50 text-rose-800"}`}
     >
-      <span className="text-sm font-medium leading-6">{message}</span>
+      <span className="font-medium leading-5">{message}</span>
       <button
-        className="grid size-7 shrink-0 place-items-center rounded-lg hover:bg-black/5"
+        className="grid size-6 shrink-0 place-items-center rounded hover:bg-black/5"
         onClick={onClose}
         type="button"
         aria-label="Dismiss"
       >
-        <Icon icon="close" className="size-3.5" />
+        <Icon icon="close" className="size-3" />
       </button>
     </div>
   );

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import { VoiceStackCalculator } from "@/components/pricing/VoiceStackCalculator";
+import "@/components/company/CompanyEditorial.css";
 import styles from "./PricingExperience.module.css";
 
 const MINUTE_RATE_MIN = 2;
@@ -81,7 +82,7 @@ export function PricingExperience() {
   }
 
   return (
-    <div className={`${styles.page} pricing-page-refresh`}>
+    <div className={`${styles.page} pricing-page-refresh cmp-page`}>
       <section className={styles.hero}>
         <div className={styles.heroGlow} aria-hidden="true" />
         <div className={styles.shell}>

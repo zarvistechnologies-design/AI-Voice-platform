@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { ContactExperience } from "@/components/contact/ContactExperience";
 import { SiteLayout } from "@/components/layout/SiteLayout";
+import "@/components/company/CompanyPages.css";
 
 export const metadata: Metadata = {
   title: "Contact Sales | vozon.ai",

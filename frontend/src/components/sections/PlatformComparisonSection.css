@@ -1,0 +1,153 @@
+.platform-comparison {
+  padding: clamp(2.75rem, 5vw, 4rem) 1.5rem;
+  background: #ffffff;
+  color: #171717;
+  border-top: 1px solid #f4f4f5;
+}
+
+.platform-comparison-inner {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+}
+
+.platform-comparison-header {
+  max-width: 880px;
+  margin: 0 auto clamp(1.75rem, 3vw, 2.35rem);
+  text-align: center;
+}
+
+.platform-comparison-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid #e4e4e7;
+  border-radius: 999px;
+  background: #fafafa;
+  color: #52525b;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.platform-comparison-header h2 {
+  margin: 0.75rem 0 0.5rem;
+  color: #09090b;
+  font-size: clamp(1.65rem, 2.8vw, 2.3rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.platform-comparison-header p {
+  margin: 0;
+  color: #52525b;
+  font-size: clamp(0.92rem, 1.15vw, 1rem);
+  line-height: 1.5;
+}
+
+.platform-comparison-card {
+  border: 1px solid #e4e4e7;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow:
+    0 1px 2px rgba(9, 9, 11, 0.03),
+    0 20px 55px rgba(9, 9, 11, 0.05);
+  overflow: hidden;
+}
+
+.platform-comparison-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.platform-comparison-table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.platform-comparison-table thead th {
+  padding: 1.15rem 1.35rem;
+  border-bottom: 1px solid #e4e4e7;
+  background: #fafafa;
+  color: #52525b;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.platform-comparison-table thead th.is-vozon {
+  background: #09090b;
+  color: #ffffff;
+  font-size: 0.88rem;
+}
+
+.platform-comparison-table tbody td {
+  padding: 1rem 1.35rem;
+  border-bottom: 1px solid #f4f4f5;
+  font-size: 0.92rem;
+  color: #18181b;
+  vertical-align: middle;
+}
+
+.platform-comparison-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.platform-comparison-table tbody tr:hover td:not(.is-vozon) {
+  background: #fafafa;
+}
+
+.platform-comparison-table tbody td.is-feature {
+  font-weight: 500;
+  color: #09090b;
+}
+
+.platform-comparison-table tbody td.is-vozon {
+  background: #fafafa;
+  font-weight: 600;
+  color: #09090b;
+}
+
+.compare-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.compare-badge svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+.compare-badge.is-yes {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+}
+
+.compare-badge.is-no {
+  background: #fafafa;
+  border: 1px solid #e4e4e7;
+  color: #71717a;
+}
+
+.compare-badge.is-partial {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #b45309;
+}
+
+.compare-badge.is-vozon-yes {
+  background: #09090b;
+  border: 1px solid #09090b;
+  color: #ffffff;
+}

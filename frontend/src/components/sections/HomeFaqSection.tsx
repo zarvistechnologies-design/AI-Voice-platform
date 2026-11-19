@@ -3,35 +3,35 @@ import "./HomeFaqSection.css";
 const questions = [
   {
     question: "What is Vozon AI?",
-    answer: "Vozon is an AI agent platform for customer conversations. Agents can respond across voice, WhatsApp, and website chat, use connected tools, and move the result into a workflow or human handoff.",
+    answer: "Vozon is a multichannel agentic AI platform. Autonomous agents reason over context, call connected tools, and complete tasks across voice, WhatsApp, and website chat—or hand off seamlessly to your team.",
   },
   {
-    question: "Which channels can one agent use?",
-    answer: "Vozon supports phone conversations, WhatsApp, and website chat. Workflows and integrations connect those conversations to the tools your team uses.",
+    question: "Which channels can one agentic workflow run on?",
+    answer: "One agentic brain operates across phone voice calls, WhatsApp, and website chat. Shared memory, tools, and workflows keep every customer journey connected across channels.",
   },
   {
-    question: "Can the agent speak different languages?",
-    answer: "Yes. Vozon supports multilingual voice conversations, so you can choose a language that suits the people you are speaking with.",
+    question: "Can agents speak and act in different languages?",
+    answer: "Yes. Vozon supports multilingual voice and chat execution across Indian and global languages, so agents can reason, converse, and trigger workflows in your customer's preferred language.",
   },
   {
-    question: "Can Vozon qualify leads and book appointments?",
-    answer: "Yes. A workflow can start with a new lead, let an agent handle the conversation, and route an interested person to an appointment or another follow-up step.",
+    question: "How do Vozon agents qualify leads and book appointments?",
+    answer: "When a lead arrives, an autonomous agent engages by voice or chat, evaluates intent against your criteria, checks live calendar availability, books the slot, and syncs the outcome to your CRM.",
   },
   {
-    question: "What happens after a conversation ends?",
-    answer: "The result can show the outcome, a summary, and the next action for your team, such as a booking, follow-up, or human handoff.",
+    question: "What happens after an agent finishes a conversation?",
+    answer: "Vozon logs the full execution trace—tool calls, criteria met, structured summary, and latency—then automatically triggers downstream webhooks, CRM updates, WhatsApp confirmations, or human handoffs.",
   },
   {
-    question: "Can I connect Vozon to the tools we already use?",
-    answer: "Yes. Vozon can connect conversations to your workflow through integrations and custom API connections, so the right information reaches the right place.",
+    question: "Can agents connect to the tools and APIs we already use?",
+    answer: "Yes. Agents can natively invoke integrations, MCP tools, and custom REST APIs mid-conversation to fetch records, create tickets, or update databases in real time.",
   },
   {
-    question: "Can I choose what happens next in a workflow?",
-    answer: "Yes. You can set a starting event, define what the agent should do, and route the result based on the outcome of the conversation.",
+    question: "Can I control guardrails and next steps in a workflow?",
+    answer: "Yes. You define the trigger, system instructions, tool permissions, and conditional branches so agents act autonomously within your exact business rules.",
   },
   {
-    question: "How can I try an agent?",
-    answer: "Choose a language to try the live voice demo at the top of this page. Contact our team to explore WhatsApp, web chat, and workflows for your business.",
+    question: "How can I test a live agent?",
+    answer: "Select a language and launch the live voice agent demo at the top of this page, or contact our team to deploy multichannel agentic workflows across WhatsApp, web chat, and voice.",
   },
 ] as const;
 

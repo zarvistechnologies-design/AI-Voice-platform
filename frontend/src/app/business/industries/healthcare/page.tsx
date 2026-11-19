@@ -1,58 +1,19 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
-
-import { SiteFooter } from "@/components/layout/SiteFooter";
-import { SiteHeader } from "@/components/layout/SiteHeader";
-import { VozonVoiceMark } from "@/components/ui/VozonVoiceMark";
-import { HealthcareAudioPlayer } from "./HealthcareAudioPlayer";
-import "./healthcare.css";
+import { SolutionShowcasePage } from "@/components/solutions/SolutionShowcasePage";
+import { solutionPagesCatalog } from "@/config/solutionPagesCatalog";
 
 export const metadata: Metadata = {
   title: "AI Voice Agents for Healthcare & Patient Calls | Vozon",
-  description: "See how Vozon AI voice agents help healthcare teams handle appointment calls, refill reminders, patient questions, intake, and staff handoffs.",
+  description:
+    "See how Vozon AI voice agents help healthcare teams handle appointment calls, refill reminders, patient questions, intake, and staff handoffs.",
   alternates: { canonical: "/business/industries/healthcare" },
-  openGraph: { title: "Healthcare AI Voice Agents | Vozon", description: "A clearer path from every patient call to the next step.", type: "website" },
+  openGraph: {
+    title: "Healthcare AI Voice Agents | Vozon",
+    description: "A clearer path from every patient call to the next step.",
+    type: "website",
+  },
 };
 
-const faqs = [
-  { question: "What is an AI voice agent for healthcare?", answer: "It is a voice assistant for administrative patient conversations. It can answer approved service questions, collect details, support bookings, and pass complex or sensitive requests to staff." },
-  { question: "Can patients book or change appointments over the phone?", answer: "Yes, when a suitable scheduling connection is configured. The agent can check options, capture a preference, and confirm or hand the request to the scheduling team." },
-  { question: "Can Vozon send appointment and refill reminders?", answer: "A configured workflow can make approved reminder calls and record the patient's response. Medical or prescription decisions should remain with a qualified professional." },
-  { question: "Can it answer medicine and order questions?", answer: "It can share approved operational details, such as order status or pickup information from connected systems. It should route clinical advice to a pharmacist or clinician." },
-  { question: "What if a patient needs urgent help or asks for a person?", answer: "Define escalation rules before launch. The agent can transfer or route the call with a concise summary; it should direct emergencies to appropriate emergency services." },
-  { question: "Can it work with our existing phone number?", answer: "Often, yes. The route depends on your carrier and whether your current setup supports forwarding, SIP, or a compatible integration." },
-  { question: "Does it connect to our calendar or patient system?", answer: "Vozon can use supported integrations, APIs, and workflows. The exact connection depends on the system you use, its available access, and the data you authorize." },
-  { question: "How is patient information protected?", answer: "Limit what the agent collects, control access to connected tools, and review recording and retention settings. Your organization should validate its setup against its own privacy obligations." },
-  { question: "Can it speak with patients in different languages?", answer: "Vozon supports multilingual conversation design. Select the languages and voices you need, then test names, local terms, and escalation paths before launch." },
-];
-
-function Arrow() { return <span aria-hidden="true">↗</span>; }
-
-function ExamplePhone() {
-  return <div className="hcr-phone"><div className="hcr-phone-status"><span>9:41</span><span>LTE</span></div><div className="hcr-phone-head"><span><VozonVoiceMark /></span><div><b>Vozon AI</b><small>Patient support</small></div><span>☎</span></div><div className="hcr-phone-date">TODAY</div><div className="hcr-bubble">Hi! How can I help with your order today?</div><div className="hcr-bubble is-patient">Can you check if it is ready for pickup?</div><div className="hcr-bubble">I can check the latest update. May I have your order reference?</div><div className="hcr-phone-input">Message <span>➤</span></div></div>;
-}
-
 export default function HealthcarePage() {
-  return <div className="hcr-site"><SiteHeader /><main className="hcr-page">
-    <section className="hcr-hero hcr-wrap"><div className="hcr-breadcrumb"><Link href="/business">Solutions</Link><span>/</span><span>Healthcare</span></div><div className="hcr-hero-copy"><p className="hcr-kicker">HEALTHCARE / VOICE AGENTS</p><h1>Patient calls, handled with care.</h1><p>Vozon AI voice agents help with appointment calls, reminders, patient questions, and follow-ups—while keeping your team close to the conversations that need a person.</p><Link className="hcr-text-link" href="/contact">Talk to our team <Arrow /></Link></div><div className="hcr-hero-stage"><Image src="/images/healthcare/voice-agent-hero-v2.png" alt="Healthcare team member taking a patient call" fill priority sizes="(max-width: 700px) 100vw, 90vw"/><div className="hcr-hero-dots" aria-hidden="true"/><div className="hcr-agent-widget"><span>VOZON AI · HEALTHCARE</span><h2>How can I help today?</h2><p>Appointments, patient questions, and follow-ups.</p><div className="hcr-widget-input">Tell me what you need <span>↗</span></div><div className="hcr-widget-footer"><span>◉ Voice ready</span><span>Human handoff available</span></div></div></div></section>
-
-    <section className="hcr-proof"><div className="hcr-wrap"><div className="hcr-proof-grid"><div><strong>01</strong><span>Answer routine calls</span></div><div><strong>02</strong><span>Coordinate appointments</span></div><div><strong>03</strong><span>Capture the outcome</span></div><div><strong>04</strong><span>Bring staff in when needed</span></div></div><div className="hcr-proof-tools"><span>CONNECT YOUR WORKFLOW WITH</span><b>Telephony</b><b>Calendars</b><b>Patient systems</b><b>WhatsApp</b></div></div></section>
-
-    <section className="hcr-stories hcr-wrap" aria-label="Healthcare voice agent use cases"><div className="hcr-story"><div className="hcr-story-copy"><p className="hcr-kicker">01 / APPOINTMENTS</p><h2>Book, reschedule, and confirm appointments on the first call.</h2><p>Give callers a direct way to ask for a visit, change a time, or confirm the details. With a connected calendar, the agent can check availability and pass a clear outcome to your scheduling team.</p><Link href="/contact">Explore appointment calls <Arrow /></Link></div><div className="hcr-story-visual hcr-audio-visual"><div className="hcr-audio-card"><div><span>APPOINTMENT CALL</span><b>“Could I move my visit to tomorrow?&rdquo;</b></div><HealthcareAudioPlayer /></div></div></div>
-      <div className="hcr-story"><div className="hcr-story-copy"><p className="hcr-kicker">02 / REFILL REMINDERS</p><h2>Reach patients before a refill is forgotten.</h2><p>Use approved outreach to remind patients about an upcoming refill or repeat order. Capture their response, answer operational questions, and send clinical questions to a pharmacist or care professional.</p><Link href="/contact">Discuss reminder workflows <Arrow /></Link></div><div className="hcr-story-visual hcr-reminder-visual"><div className="hcr-reminder-flow"><span>UPCOMING REFILL</span><strong>A timely conversation.</strong><div><i>1</i><p>Reminder call scheduled</p></div><div><i>2</i><p>Patient response captured</p></div><div><i>3</i><p>Care team gets the next step</p></div></div></div></div>
-      <div className="hcr-story"><div className="hcr-story-copy"><p className="hcr-kicker">03 / PATIENT QUESTIONS</p><h2>Answer order and medicine questions with current information.</h2><p>Help patients with pickup details, order status, hours, and other practical questions using approved information. When a request needs medical judgment, the agent can route it to a qualified person.</p><Link href="/contact">Explore patient support <Arrow /></Link></div><div className="hcr-story-visual hcr-phone-visual"><ExamplePhone/></div></div>
-      <div className="hcr-story"><div className="hcr-story-copy"><p className="hcr-kicker">04 / INTAKE & FOLLOW-UPS</p><h2>Keep reminders, intake, and follow-ups on time.</h2><p>Collect basic pre-visit information, confirm an upcoming appointment, and keep the conversation outcome together. Staff can see what happened before they call back or welcome the patient.</p><Link href="/contact">Plan a patient journey <Arrow /></Link></div><div className="hcr-story-visual hcr-intake-visual"><div className="hcr-intake-list"><span>PRE-VISIT JOURNEY</span><strong>Everything ready for the next step.</strong><div><b>✓</b> Visit time confirmed</div><div><b>✓</b> Basic details captured</div><div><b>↗</b> Staff follow-up assigned</div></div></div></div>
-      <div className="hcr-story"><div className="hcr-story-copy"><p className="hcr-kicker">05 / LANGUAGE</p><h2>Every caller, in a language that feels familiar.</h2><p>Choose the languages and voices that fit your patients. Test local terms, names, and important instructions so the agent can communicate clearly and hand off when needed.</p><Link href="/product/ai-voice-agent">Explore voice agents <Arrow /></Link></div><div className="hcr-story-visual hcr-language-visual"><div className="hcr-language-orb"><VozonVoiceMark /></div><span>Hello</span><span>Namaste</span><span>Bonjour</span><span>Vanakkam</span><span>Hola</span></div></div></section>
-
-    <section className="hcr-video-section hcr-wrap"><p className="hcr-kicker">SEE VOZON IN ACTION</p><h2>One platform. Every patient conversation.</h2><p>See how a voice agent can listen, respond, and keep the next action connected.</p><div className="hcr-video-frame"><video aria-label="Vozon AI platform introduction" controls playsInline poster="/images/healthcare/vozon-video-poster.svg" preload="metadata"><source src="/videos/vozon-ai-intro.mp4" type="video/mp4" />Your browser does not support video.</video></div></section>
-
-    <section className="hcr-pricing hcr-wrap"><p className="hcr-kicker">PRICING</p><h2>Start with the calls that matter most.</h2><div className="hcr-pricing-grid"><div><span>01 / GET STARTED</span><h3>Focused rollout</h3><p>Begin with a clear patient journey, a defined call route, and the handoff rules your team needs.</p><ul><li>One priority use case</li><li>Agent and call-flow setup</li><li>Test calls and review</li></ul><Link href="/pricing">Explore pricing <Arrow /></Link></div><div><span>02 / EXPAND</span><h3>Connected operations</h3><p>Bring more calls, languages, and approved system connections into a coordinated workflow.</p><ul><li>Multiple patient journeys</li><li>Scheduling and tool connections</li><li>Team review and escalation</li></ul><Link href="/contact">Contact sales <Arrow /></Link></div></div></section>
-
-    <section className="hcr-platform hcr-wrap"><p className="hcr-kicker">THE VOZON PLATFORM</p><h2>Built for connected conversations.</h2><div className="hcr-platform-grid"><div><span>↗</span><h3>Ready for changing demand</h3><p>Plan call routing and follow-up around everyday volume and busy periods.</p><strong>CALL OPERATIONS</strong></div><div><span>◎</span><h3>Context that travels</h3><p>Keep the call summary and next action together across teams and approved tools.</p><strong>CONNECTED JOURNEYS</strong></div><div><span>✓</span><h3>Controls that matter</h3><p>Set information boundaries, access, retention, and staff escalation for each workflow.</p><strong>TEAM OVERSIGHT</strong></div></div></section>
-
-    <section className="hcr-launch hcr-wrap"><div><p className="hcr-kicker">START BUILDING</p><h2>Launch a healthcare voice agent.</h2></div><div className="hcr-launch-options"><div><span>01 / NO-CODE SETUP</span><h3>Start with a patient journey.</h3><p>Choose the call type, approved answers, scheduling path, and human handoff. Test it with your team before launch.</p><Link href="/contact">Get started <Arrow /></Link></div><div><span>02 / CONNECT YOUR SYSTEMS</span><h3>Build with APIs and workflows.</h3><p>Connect supported telephony, calendars, and patient tools to the conversation and the outcome.</p><Link href="/docs/api">Explore the API <Arrow /></Link></div></div></section>
-
-    <section className="hcr-faq hcr-wrap"><p className="hcr-kicker">FREQUENTLY ASKED QUESTIONS</p><h2>Questions about healthcare voice agents.</h2><div className="hcr-faq-list">{faqs.map(item=><details key={item.question}><summary>{item.question}<span aria-hidden="true">+</span></summary><p>{item.answer}</p></details>)}</div></section>
-  </main><SiteFooter /></div>;
+  return <SolutionShowcasePage data={solutionPagesCatalog.healthcare} />;
 }

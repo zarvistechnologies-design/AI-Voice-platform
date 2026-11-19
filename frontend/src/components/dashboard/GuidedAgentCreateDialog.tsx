@@ -27,7 +27,7 @@ const requestSummaries: Record<string, string> = {
   customer_feedback: "Save ratings and comments, and record requests for staff follow-up.",
 };
 
-const fieldClass = "min-h-11 w-full rounded-lg border border-[#d5e2dd] bg-white px-3 text-sm text-[#14231f] outline-none transition focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10";
+const fieldClass = "min-h-11 w-full rounded-lg border border-[#eaeaea] bg-white px-3 text-sm text-[#171717] outline-none transition focus:border-[#171717] focus:ring-4 focus:ring-black/5";
 
 const languageOptions = [
   ["English", "English (India)"], ["English US", "English (US)"], ["English UK", "English (UK)"],

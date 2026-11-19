@@ -226,121 +226,132 @@
   .agents-guide { flex-direction: column; align-items: flex-start; padding: 20px; }
   .agents-guide a { margin-left: 37px; }
 }
-/* Neutral dashboard styling stays outside the workflow builder's own visual system. */
+/* Vercel-inspired compact White & Black dashboard theme (zero green/teal; leaves workflow builder .automation-layout untouched). */
 .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) {
-  --app-color-heading: #171719;
-  --app-color-body: #4b4d52;
-  --app-color-muted: #777b82;
-  --app-color-label: #777b82;
-  --app-color-accent: #171719;
-  --voice-accent: #171719;
-  --voice-accent-soft: #f1f1f2;
-  --voice-accent-border: #dedfe2;
-  background: #f8f9f9;
-  color: #171719;
+  --app-color-heading: #000000;
+  --app-color-body: #444444;
+  --app-color-muted: #666666;
+  --app-color-label: #666666;
+  --app-color-accent: #000000;
+  --dashboard-surface: #ffffff;
+  --dashboard-border: #eaeaea;
+  --voice-surface: #ffffff;
+  --voice-surface-raised: #fafafa;
+  --voice-surface-soft: #f5f5f5;
+  --voice-border: #eaeaea;
+  --voice-heading: #000000;
+  --voice-muted: #666666;
+  --voice-accent: #000000;
+  --voice-accent-soft: #f5f5f5;
+  --voice-accent-border: #e5e5e5;
+  color-scheme: light;
+  background: #fafafa !important;
+  color: #171717 !important;
+  font-family: var(--font-site-sans), Inter, -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 13px;
+  letter-spacing: -0.01em;
 }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(h1) { font-size: 26px !important; line-height: 1.2; letter-spacing: -.035em; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(h2) { font-size: 19px; letter-spacing: -.02em; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(p) { font-size: 13px; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(button, a, input, select, textarea) { font-family: var(--font-site-sans), Arial, sans-serif; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(button, a, input, select, textarea):focus-visible { outline-color: #171719; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(input[type=checkbox], input[type=radio], input[type=range]) { accent-color: #171719; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(th) { background: #f1f1f2; color: #696c71; font-size: 10px; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(td, th) { border-color: #e3e4e6; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(tbody tr:hover) { background: #f8f9f9; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where([role=dialog]) { background-color: rgb(23 23 25 / 42%); }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where([role=dialog]) > :where(form, section, div) { border-color: #dedfe2; box-shadow: 0 24px 70px rgb(23 23 25 / 16%); }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .dashboard-sidebar { background: #f1f2f3; border-color: #dedfe2; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .dashboard-sidebar .dashboard-sidebar-logo { filter: grayscale(1) contrast(1000%); }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .dashboard-sidebar nav a { color: #35373b; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .dashboard-sidebar nav a:hover { background: #e8e9eb; color: #171719; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .dashboard-sidebar nav a[aria-current=page] { background: #000; color: #fff; font-weight: 650; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .dashboard-sidebar nav a[aria-current=page] .dashboard-sidebar-label { color: #fff; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .dashboard-sidebar nav p { color: #777b82; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .workspace-bar { border-color: #dedfe2; background: rgb(255 255 255 / 95%); }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .dashboard-workspace-bar { border-color: #dedfe2; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .dashboard-workspace-bar img { filter: grayscale(1) contrast(1000%); }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .dashboard-workspace-bar a { color: #171719; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .dashboard-workspace-bar a[href="/dashboard/agents"] > span:first-child:not(:has(img)) { background: #171719; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .dashboard-workspace-bar a[href="/dashboard/agents"] > span:last-child { color: #171719; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .dashboard-workspace-bar a[href="/dashboard/settings"] span { color: #333437; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .dashboard-workspace-bar a[href="/dashboard/billing"] { border-color: #dedfe2; background: #f1f1f2; color: #171719; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .dashboard-workspace-bar a[href="/dashboard/billing"] > span { color: #171719; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .dashboard-workspace-bar a[href="/dashboard/billing"]:hover { border-color: #c8c9cc; background: #e8e8e9; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .dashboard-workspace-bar svg { color: #171719 !important; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .workspace-mark { border-color: #dedfe2; background: #f1f1f2; color: #171719; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.workspace-help:hover, .workspace-settings:hover) { color: #171719; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.sidebar-workspace, .sidebar-help) { border-color: #dedfe2; background: #fff; color: #33363a; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.sidebar-workspace > span:first-child, .agents-metric-icon, .agent-avatar, .agents-guide-symbol) { background: #f1f1f2; border-color: #dedfe2; color: #171719; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(h1) { font-size: 20px !important; font-weight: 600 !important; line-height: 1.25; letter-spacing: -0.03em; color: #000000; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(h2) { font-size: 14px; font-weight: 600; letter-spacing: -0.02em; color: #000000; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(p) { font-size: 12.5px; color: #666666; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(button, a, input, select, textarea) { font-family: var(--font-site-sans), Inter, sans-serif; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(button, a, input, select, textarea):focus-visible { outline: 2px solid #000000; outline-offset: 2px; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]), textarea, select) {
+  background-color: #ffffff;
+  border-color: #e5e5e5;
+  color: #171717;
+  accent-color: #000000;
+}
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(input, textarea)::placeholder { color: #888888; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(input[type=checkbox], input[type=radio], input[type=range]) { accent-color: #000000; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(select option) { background: #ffffff; color: #171717; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) ::selection { background: #171717; color: #ffffff; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(th) { background: #fafafa; color: #666666; font-size: 11px; border-color: #eaeaea; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(td, th) { border-color: #eaeaea; color: #171717; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(tbody tr:hover) { background: #fafafa; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where([role=dialog]) { background-color: rgb(0 0 0 / 45%); backdrop-filter: blur(4px); }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where([role=dialog]) > :where(form, section, div) { background: #ffffff; border-color: #e5e5e5; color: #171717; box-shadow: 0 24px 64px rgb(0 0 0 / 16%); }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) [role=dialog] :where(header) { background: #ffffff; border-color: #eaeaea; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) main:has(> .dashboard-sidebar) { background: #fafafa !important; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) main:has(> .dashboard-sidebar) > section > header { background: #ffffff !important; border-color: #eaeaea !important; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .dashboard-sidebar { background: #ffffff !important; border-color: #eaeaea !important; padding: 10px 8px; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .dashboard-workspace-bar { background: #ffffff !important; border-color: #eaeaea !important; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .dashboard-workspace-bar a { color: #171717; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .dashboard-workspace-bar a[href="/dashboard/billing"] { border: 0; background: transparent; color: #52525b; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .dashboard-workspace-bar a[href="/dashboard/billing"] > span { color: #171717; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .dashboard-workspace-bar svg { color: #171717 !important; }
+.dashboard-home-theme.agents-home-palette .agents-home-greeting { font-size: clamp(28px, 3vw, 38px) !important; line-height: 1.12 !important; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .workspace-bar { border-color: #eaeaea; background: rgb(255 255 255 / 95%); }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .workspace-mark { border-color: #e5e5e5; background: #fafafa; color: #171717; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.sidebar-workspace, .sidebar-help) { border-color: #eaeaea; background: #fafafa; color: #171717; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.sidebar-workspace > span:first-child, .agents-metric-icon, .agent-avatar, .agents-guide-symbol) { background: #f5f5f5; border-color: #e5e5e5; color: #171717; }
 .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .saas-primary,
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.automation-primary, .auth-submit) { border-color: #171719; background: #171719; color: #fff; box-shadow: 0 5px 14px rgb(23 23 25 / 12%); }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.saas-primary, .automation-primary, .auth-submit):hover { border-color: #333437; background: #333437; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.saas-secondary, .automation-secondary) { border-color: #dedfe2; background: #fff; color: #33363a; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.saas-secondary, .automation-secondary):hover { background: #f1f1f2; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.agent-row, .agents-grid .agent-row, .agents-metric, .agents-guide, .campaign-composer, .automation-flow-card) { border-color: #dedfe2; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .agents-guide { background: #f1f1f2; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.agent-row:hover, .automation-flow-card:hover) { background: #f8f9f9; border-color: #c8c9cc; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.agent-identity a:hover strong, .agent-actions button:hover, .agent-actions a:hover, .agents-guide a, .automation-kicker) { color: #171719; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.agent-status[data-status=Live], .automation-status-live, .automation-status-completed, .automation-success) { border-color: #dedfe2; background: #f1f1f2; color: #33363a; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.agent-status[data-status=Paused], .automation-status-paused, .automation-status-waiting) { border-color: #e3e4e6; background: #f8f9f9; color: #666a70; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.automation-flow-icon-0, .automation-flow-icon-1, .automation-flow-icon-2, .automation-flow-icon-3, .automation-empty-mark) { border-color: #dedfe2; background: #f1f1f2; color: #171719; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.automation-template-card:hover, .automation-prompt-box) { border-color: #dedfe2; background: #f8f9f9; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.automation-home-hero, .automation-builder-top, .automation-create-modal) { border-color: #dedfe2; background: #fff; color: #171719; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.automation-home-hero h2, .automation-modal-head h2, .automation-empty h3, .automation-template-card strong) { color: #171719; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.automation-alert, .automation-success) { border-color: #dedfe2; background: #f1f1f2; color: #33363a; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is([class*="text-teal-"], [class*="text-emerald-"], [class*="text-green-"], [class*="text-violet-"], [class*="text-purple-"], [class*="text-[#118778]"], [class*="text-[#108D82]"], [class*="text-[#0e6f62]"], [class*="text-[#0f8777]"]) { color: #171719 !important; -webkit-text-fill-color: #171719 !important; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is([class*="border-teal-"], [class*="border-emerald-"], [class*="border-green-"], [class*="border-violet-"], [class*="border-purple-"]) { border-color: #dedfe2 !important; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is([class*="bg-teal-50"], [class*="bg-teal-100"], [class*="bg-emerald-50"], [class*="bg-emerald-100"], [class*="bg-green-50"], [class*="bg-green-100"], [class*="bg-violet-50"], [class*="bg-violet-100"], [class*="bg-purple-50"], [class*="bg-purple-100"]) { background-color: #f1f1f2 !important; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is([class*="bg-[#118778]"], [class*="bg-[#108D82]"], [class*="bg-[#0e6f62]"], [class*="bg-teal-600"], [class*="bg-teal-700"], [class*="bg-emerald-600"], [class*="bg-violet-600"], [class*="bg-purple-600"]) { background-color: #171719 !important; color: #fff !important; }
-.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is([class*="ring-[#118778]"], [class*="ring-teal-"], [class*="ring-emerald-"], [class*="ring-violet-"], [class*="ring-purple-"]) { --tw-ring-color: rgb(23 23 25 / 12%) !important; }
-/* Ask Vozon uses the same neutral palette as the rest of the dashboard. */
-.dashboard-home-theme.ask-vozon-stage {
-  background: radial-gradient(circle at 84% 9%, rgb(225 225 225 / 45%), transparent 32%), #f8f8f8;
-  color: #171719;
-}
-.dashboard-home-theme .ask-vozon-hero {
-  background: linear-gradient(126deg, #171719, #303033);
-  box-shadow: 0 28px 70px rgb(0 0 0 / 16%), 0 5px 17px rgb(0 0 0 / 9%);
-}
-.dashboard-home-theme .ask-vozon-hero h1 { color: #fff; }
-.dashboard-home-theme .ask-vozon-orb-one { background: radial-gradient(circle, rgb(255 255 255 / 15%), transparent 70%); }
-.dashboard-home-theme .ask-vozon-orb-two { background: radial-gradient(circle, rgb(255 255 255 / 9%), transparent 72%); }
-.dashboard-home-theme .ask-vozon-live-dot { box-shadow: 0 0 0 4px rgb(255 255 255 / 12%), 0 0 16px rgb(255 255 255 / 60%); }
-.dashboard-home-theme .ask-vozon-suggestion { box-shadow: 0 10px 28px rgb(0 0 0 / 5%), 0 1px 2px rgb(0 0 0 / 4%); }
-.dashboard-home-theme .ask-vozon-suggestion:hover { border-color: #a9a9a9; box-shadow: 0 22px 45px rgb(0 0 0 / 10%); }
-.dashboard-home-theme .ask-vozon-prompt { box-shadow: 0 22px 60px rgb(0 0 0 / 12%), 0 2px 12px rgb(0 0 0 / 6%) !important; }
-.dashboard-home-theme .ask-vozon-prompt:focus-within { box-shadow: 0 27px 70px rgb(0 0 0 / 16%), 0 0 0 2px rgb(0 0 0 / 22%) !important; }
-/* The older sidebar rules in globals.css use !important, so set its final colors here. */
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.automation-primary, .auth-submit) { border-color: #000000; background: #000000; color: #ffffff !important; box-shadow: none; font-weight: 500; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.saas-primary, .automation-primary, .auth-submit):hover { border-color: #262626; background: #262626; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.saas-secondary, .automation-secondary) { border-color: #e5e5e5; background: #ffffff; color: #171717; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.saas-secondary, .automation-secondary):hover { background: #fafafa; border-color: #d4d4d4; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.agents-panel, .agents-metric, .agents-guide, .campaign-composer, .automation-flow-card, .dashboard-flat-panel) { background: #ffffff !important; border-color: #eaeaea !important; color: #171717; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .agents-toolbar { border-color: #eaeaea; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .agents-tabs { background: #fafafa; border-color: #eaeaea; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .agents-tabs button { color: #666666; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .agents-tabs button[aria-pressed=true] { background: #ffffff; border-color: #e5e5e5; color: #000000; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.agent-row, .agents-grid .agent-row) { border-color: #eaeaea; background: #ffffff; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.agent-row:hover, .automation-flow-card:hover) { background: #fafafa; border-color: #d4d4d4; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.agent-identity strong, .agents-panel-heading h2) { color: #171717; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.agent-team, .agent-phone, .agents-metric-label) { color: #666666; }
+/* Strip all green/teal/emerald utility classes across dashboard subpages into monochrome white & black */
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is([class*="text-teal-"], [class*="text-emerald-"], [class*="text-green-"], [class*="text-violet-"], [class*="text-purple-"], [class*="text-[#118778]"], [class*="text-[#108D82]"], [class*="text-[#0e6f62]"], [class*="text-[#0f8777]"]) { color: #171717 !important; -webkit-text-fill-color: #171717 !important; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is([class*="border-teal-"], [class*="border-emerald-"], [class*="border-green-"], [class*="border-violet-"], [class*="border-purple-"]) { border-color: #e5e5e5 !important; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is([class*="bg-teal-50"], [class*="bg-teal-100"], [class*="bg-emerald-50"], [class*="bg-emerald-100"], [class*="bg-green-50"], [class*="bg-green-100"], [class*="bg-violet-50"], [class*="bg-violet-100"], [class*="bg-purple-50"], [class*="bg-purple-100"]) { background-color: #f5f5f5 !important; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is([class*="bg-[#118778]"], [class*="bg-[#108D82]"], [class*="bg-[#0e6f62]"], [class*="bg-teal-600"], [class*="bg-teal-700"], [class*="bg-emerald-600"], [class*="bg-violet-600"], [class*="bg-purple-600"]) { background-color: #000000 !important; color: #ffffff !important; }
+.dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is([class*="ring-[#118778]"], [class*="ring-teal-"], [class*="ring-emerald-"], [class*="ring-violet-"], [class*="ring-purple-"]) { --tw-ring-color: rgb(0 0 0 / 12%) !important; }
+/* Crisp monochrome black/white sidebar logos & compact 32px nav items */
 html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-logo,
 html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-workspace-bar img {
   filter: grayscale(1) contrast(1000%) !important;
 }
+html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar nav a {
+  height: 32px !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  padding-inline: 10px !important;
+}
 html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav {
-  color: #000 !important;
+  color: #666666 !important;
 }
 html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav .dashboard-sidebar-icon,
-html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav .dashboard-sidebar-label,
+html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav .dashboard-sidebar-label {
+  color: #444444 !important;
+  font-weight: 450 !important;
+}
 html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-group-label,
 html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-tagline {
-  color: #000 !important;
+  color: #888888 !important;
+}
+html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav:hover {
+  background: #f5f5f5 !important;
+}
+html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav:hover .dashboard-sidebar-icon,
+html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav:hover .dashboard-sidebar-label {
+  color: #000000 !important;
 }
 html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] {
-  background: #000 !important;
-  color: #fff !important;
+  background: #000000 !important;
+  color: #ffffff !important;
   box-shadow: none !important;
 }
 html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-icon,
 html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-label {
-  color: #fff !important;
+  color: #ffffff !important;
+  font-weight: 550 !important;
 }
 html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-shell[data-expanded="false"] .dashboard-sidebar-nav[aria-current="page"] {
   background: transparent !important;
+  box-shadow: none !important;
 }
 html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-shell[data-expanded="false"] .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-icon {
-  background: #000 !important;
-  color: #fff !important;
-  box-shadow: none !important;
+  background: #000000 !important;
+  color: #ffffff !important;
 }
 @media (max-width: 639px) {
   .dashboard-home-theme :where(h1) { font-size: 23px !important; }

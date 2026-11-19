@@ -23,10 +23,10 @@ const geistMono = Geist_Mono({
 const platformMetadata: Metadata = {
   metadataBase: new URL("https://www.vozon.ai"),
   title: {
-    default: "Vozon | AI Voice Agent Platform",
+    default: "Vozon | Multichannel Agentic AI Platform",
     template: "%s | Vozon",
   },
-  description: "Build multilingual AI phone agents for inbound and outbound calls, lead qualification, appointment booking, customer support, and workflow automation.",
+  description: "The multichannel agentic AI platform for autonomous agents across voice, WhatsApp, and web chat—reason over context, call live tools, and execute end-to-end workflows.",
   applicationName: "Vozon",
   icons: {
     icon: [
@@ -38,12 +38,12 @@ const platformMetadata: Metadata = {
       { url: "/icons/vozon-mark-180.png", type: "image/png", sizes: "180x180" },
     ],
   },
-  keywords: ["AI voice agent", "AI phone agent", "voice AI platform", "automated phone calls", "AI receptionist", "call automation"],
+  keywords: ["multichannel agentic platform", "agentic AI platform", "autonomous AI agents", "AI voice agent", "WhatsApp AI agent", "workflow automation"],
   authors: [{ name: "Vozon", url: "https://www.vozon.ai" }],
   creator: "Vozon",
   publisher: "Vozon",
-  openGraph: { type: "website", locale: "en_US", url: "/", siteName: "Vozon", title: "AI Voice Agent Platform for Phone Call Automation | Vozon", description: "Build multilingual AI phone agents that answer calls, qualify leads, book appointments, and automate customer workflows.", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Vozon AI voice agent platform" }] },
-  twitter: { card: "summary_large_image", title: "AI Voice Agent Platform for Phone Call Automation | Vozon", description: "Build multilingual AI phone agents that answer calls, qualify leads, book appointments, and automate customer workflows.", images: ["/opengraph-image"] },
+  openGraph: { type: "website", locale: "en_US", url: "/", siteName: "Vozon", title: "Multichannel Agentic AI Platform | Vozon", description: "Deploy autonomous AI agents across voice, WhatsApp, and web chat that reason, call tools, and automate workflows.", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Vozon multichannel agentic AI platform" }] },
+  twitter: { card: "summary_large_image", title: "Multichannel Agentic AI Platform | Vozon", description: "Deploy autonomous AI agents across voice, WhatsApp, and web chat that reason, call tools, and automate workflows.", images: ["/opengraph-image"] },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
   category: "technology",
   other: {

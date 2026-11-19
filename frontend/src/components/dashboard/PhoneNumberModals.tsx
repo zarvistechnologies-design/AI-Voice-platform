@@ -57,7 +57,7 @@ const providers: { id: TelephonyProvider; description: string; docs: string }[] 
 const buttonClass =
   "app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 transition disabled:cursor-not-allowed disabled:opacity-50";
 const controlClass =
-  "app-control-text min-h-11 w-full rounded-lg border border-[#dbe4e1] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10";
+  "app-control-text min-h-11 w-full rounded-lg border border-[#eaeaea] bg-white px-3 text-[#171717] outline-none transition placeholder:text-[#a1a1aa] focus:border-[#171717] focus:ring-4 focus:ring-black/5";
 
 export function PhoneNumberModals({
   agents,

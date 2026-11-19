@@ -39,7 +39,6 @@ export const siteConfig = {
         links: [
           { href: "/product/vozon-mcp", label: "Vozon MCP" },
           { href: "/product/workflows", label: "Workflows" },
-          { href: "/product/create-workflows", label: "Create Workflows" },
           { href: "/product/end-to-end-automation", label: "End-to-End Automation" },
         ],
       },

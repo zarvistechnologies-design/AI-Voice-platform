@@ -185,11 +185,11 @@ function CallRoute({
   return (
     <div className={`grid gap-1.5 ${compact ? "min-w-56" : ""}`}>
       <div className="grid min-w-0 grid-cols-[44px_minmax(0,1fr)] items-center gap-2">
-        <span className="rounded-md bg-[#edf7f4] px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-[#123d35]">
+        <span className="rounded border border-[#eaeaea] bg-[#f4f4f5] px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-[#171717]">
           From
         </span>
         {route.fromMissing ? (
-          <span className="rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">
+          <span className="rounded border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700">
             Caller ID not sent
           </span>
         ) : (
@@ -204,7 +204,7 @@ function CallRoute({
         )}
       </div>
       <div className="grid min-w-0 grid-cols-[44px_minmax(0,1fr)] items-center gap-2">
-        <span className="rounded-md bg-slate-100 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-slate-600">
+        <span className="rounded border border-[#eaeaea] bg-[#f4f4f5] px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-[#71717a]">
           To
         </span>
         <span className={numberClass} title={route.to}>
@@ -228,15 +228,15 @@ function queryDate(value: string) {
 
 function statusTone(status: CallRecord["status"]) {
   if (status === "completed")
-    return "bg-emerald-50 text-emerald-700 ring-emerald-200";
+    return "bg-[#fafafa] text-[#171717] ring-1 ring-[#eaeaea]";
   if (status === "failed" || status === "cancelled")
-    return "bg-rose-50 text-rose-700 ring-rose-200";
-  if (status === "active") return "bg-[#edf7f4] text-[#123d35] ring-[#b8c8c3]";
-  return "bg-amber-50 text-amber-700 ring-amber-200";
+    return "bg-rose-50 text-rose-700 ring-1 ring-rose-200";
+  if (status === "active") return "bg-[#171717] text-white ring-1 ring-[#171717]";
+  return "bg-[#f4f4f5] text-[#52525b] ring-1 ring-[#eaeaea]";
 }
 
 const filterInputClass =
-  "rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium outline-none focus:border-[#118778]";
+  "h-8 rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12px] font-medium text-[#52525b] outline-none focus:border-black";
 
 export function CallLogsShell() {
   const router = useRouter();
@@ -450,30 +450,30 @@ export function CallLogsShell() {
           title="Call logs"
           description="Every browser, inbound, and outbound call is captured here with its status, timing, outcome, and transcript."
           actions={
-            <>
+            <div className="flex items-center gap-2">
               <button
-                className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50"
+                className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12px] font-medium text-[#171717] hover:bg-[#f4f4f5]"
                 type="button"
                 onClick={() => void loadCalls()}
               >
                 Refresh
               </button>
               <button
-                className="rounded-xl bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(17,135,120,0.18)] hover:bg-[#0e6f62]"
+                className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3 text-[12px] font-medium text-white hover:bg-black"
                 type="button"
                 onClick={() => void exportCsv()}
               >
                 Export CSV
               </button>
-            </>
+            </div>
           }
         />
         <div className="dashboard-page-content grid w-full py-0">
-          <section className="dashboard-flat-panel overflow-hidden bg-white">
-            <div className="dashboard-filter-bar grid gap-3 p-4">
-              <div className="grid gap-2 md:grid-cols-[minmax(240px,1fr)_auto_auto_auto_auto]">
+          <section className="dashboard-flat-panel overflow-hidden rounded-lg border border-[#eaeaea] bg-white">
+            <div className="dashboard-filter-bar grid gap-2.5 p-3">
+              <div className="flex flex-wrap items-center gap-2">
                 <input
-                  className="min-w-0 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10"
+                  className="h-8 min-w-[220px] flex-1 rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12px] text-[#171717] outline-none placeholder:text-[#71717a] focus:border-black"
                   placeholder="Search transcript, tag, or outcome"
                   value={search}
                   onChange={(event) => {
@@ -525,7 +525,7 @@ export function CallLogsShell() {
                   ))}
                 </select>
                 <button
-                  className={`rounded-lg border px-3 py-2 text-sm font-semibold transition ${showAdvancedFilters || advancedFilterCount ? "border-[#b8c8c3] bg-[#edf7f4] text-[#123d35]" : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"}`}
+                  className={`inline-flex h-8 items-center rounded-md border px-2.5 text-[12px] font-medium transition ${showAdvancedFilters || advancedFilterCount ? "border-black bg-[#fafafa] text-[#171717]" : "border-[#eaeaea] bg-white text-[#52525b] hover:bg-[#f4f4f5] hover:text-[#171717]"}`}
                   type="button"
                   onClick={() => setShowAdvancedFilters((current) => !current)}
                 >
@@ -534,7 +534,7 @@ export function CallLogsShell() {
                 </button>
               </div>
               {showAdvancedFilters ? (
-                <div className="grid gap-2 rounded-xl border border-[#e1e3ef] bg-[#fafcfb] p-3 sm:grid-cols-2 xl:grid-cols-5">
+                <div className="grid gap-2 rounded-lg border border-[#eaeaea] bg-[#fafafa] p-3 sm:grid-cols-2 xl:grid-cols-5">
                   <select
                     className={filterInputClass}
                     value={sentiment}
@@ -617,7 +617,7 @@ export function CallLogsShell() {
 
             <div className="overflow-x-auto">
               <table className="dashboard-data-table w-full min-w-[1050px] border-collapse text-left">
-                <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <thead className="border-b border-[#eaeaea] bg-[#fafafa] text-[11px] font-semibold uppercase tracking-[0.06em] text-[#71717a]">
                   <tr>
                     {[
                       "Agent",
@@ -629,50 +629,50 @@ export function CallLogsShell() {
                       "Cost",
                       "Status",
                     ].map((heading) => (
-                      <th className="px-4 py-3" key={heading}>
+                      <th className="px-4 py-2.5" key={heading}>
                         {heading}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-[#eaeaea]">
                   {calls.map((call) => (
                     <tr
-                      className="cursor-pointer transition hover:bg-[#edf7f4]/60"
+                      className="cursor-pointer transition hover:bg-[#fafafa]"
                       key={call._id}
                       onClick={() => void openCall(call._id)}
                       onPointerDown={preloadCallDetailDrawer}
                       onPointerEnter={preloadCallDetailDrawer}
                     >
-                      <td className="px-4 py-4">
-                        <strong className="block text-sm text-slate-950">
+                      <td className="px-4 py-3">
+                        <strong className="block text-[13px] font-medium text-[#171717]">
                           {agentName(call)}
                         </strong>
                       </td>
-                      <td className="px-4 py-4 text-sm font-medium capitalize text-slate-700">
+                      <td className="px-4 py-3 text-[12px] font-medium capitalize text-[#52525b]">
                         {call.direction}
                       </td>
-                      <td className="px-4 py-4 text-sm text-slate-700">
+                      <td className="px-4 py-3 text-[12px] text-[#52525b]">
                         <CallRoute call={call} compact />
                       </td>
-                      <td className="px-4 py-4 text-sm text-slate-600">
+                      <td className="px-4 py-3 text-[12px] text-[#71717a]">
                         {formatDate(call.startedAt ?? call.createdAt)}
                       </td>
-                      <td className="px-4 py-4 text-sm text-slate-600">
+                      <td className="px-4 py-3 text-[12px] text-[#71717a]">
                         {call.endedAt ? (
                           formatDate(call.endedAt)
                         ) : call.status === "active" ? (
-                          <span className="font-semibold text-[#0e6f62]">
+                          <span className="font-semibold text-[#171717]">
                             Live
                           </span>
                         ) : (
                           "—"
                         )}
                       </td>
-                      <td className="px-4 py-4 font-mono text-sm font-medium text-slate-700">
+                      <td className="px-4 py-3 font-mono text-[12px] text-[#171717]">
                         {formatDuration(call.durationSeconds)}
                       </td>
-                      <td className="px-4 py-4 text-sm font-semibold text-slate-950">
+                      <td className="px-4 py-3 text-[12px] font-medium text-[#171717]">
                         {money(
                           call.billing?.estimatedChargeCredits ??
                             call.billing?.chargedCredits ??
@@ -681,14 +681,14 @@ export function CallLogsShell() {
                           inrPerUsd,
                         )}
                       </td>
-                      <td className="px-4 py-4">
+                      <td className="px-4 py-3">
                         <span
-                          className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${statusTone(call.status)}`}
+                          className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${statusTone(call.status)}`}
                         >
                           {titleCase(call.status)}
                         </span>
                         {call.endReason ? (
-                          <span className="mt-1 block max-w-[130px] truncate text-[11px] text-slate-500">
+                          <span className="mt-0.5 block max-w-[130px] truncate text-[10px] text-[#a1a1aa]">
                             {call.endReason}
                           </span>
                         ) : null}
@@ -698,20 +698,20 @@ export function CallLogsShell() {
                 </tbody>
               </table>
               {!loading && !calls.length ? (
-                <div className="grid min-h-56 place-items-center border-t border-slate-100 p-8 text-center text-sm text-slate-500">
+                <div className="grid min-h-56 place-items-center border-t border-[#eaeaea] p-8 text-center text-xs text-[#71717a]">
                   No calls match these filters. Start a browser or phone call
                   and it will appear here.
                 </div>
               ) : null}
             </div>
 
-            <footer className="flex items-center justify-between border-t border-slate-200 p-4">
-              <span className="text-xs font-medium text-slate-500">
+            <footer className="flex items-center justify-between border-t border-[#eaeaea] p-3 text-xs text-[#71717a]">
+              <span>
                 Page {page} of {pages}
               </span>
               <div className="flex gap-2">
                 <button
-                  className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold disabled:opacity-40"
+                  className="rounded-md border border-[#eaeaea] bg-white px-2.5 py-1 text-[12px] font-medium text-[#171717] hover:bg-[#f4f4f5] disabled:opacity-40"
                   type="button"
                   disabled={page <= 1}
                   onClick={() => setPage((current) => current - 1)}

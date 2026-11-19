@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   useCallback,
@@ -56,11 +56,11 @@ type InspectorView = "request" | "response" | "webhook";
 const panelClass =
   "overflow-hidden rounded-2xl border border-[#dde7e3] bg-white shadow-[0_10px_30px_rgba(28,64,55,0.055)]";
 const controlClass =
-  "h-11 rounded-xl border border-[#d7e2de] bg-white px-3.5 text-sm font-medium text-[#20342e] outline-none transition placeholder:text-[#9aa8a4] focus:border-[#118778] focus:ring-3 focus:ring-[#118778]/10";
+  "h-11 rounded-xl border border-[#eaeaea] bg-white px-3.5 text-sm font-medium text-[#20342e] outline-none transition placeholder:text-[#9aa8a4] focus:border-black focus:ring-3 focus:ring-black/10";
 const primaryButtonClass =
-  "inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#118778] px-4 text-sm font-semibold text-white shadow-[0_6px_16px_rgba(17,135,120,0.18)] transition hover:bg-[#0e7568] disabled:cursor-not-allowed disabled:opacity-50";
+  "inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#171717] px-4 text-sm font-semibold text-white shadow-xs transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-50";
 const secondaryButtonClass =
-  "inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-[#d7e2de] bg-white px-3.5 text-sm font-semibold text-[#40534e] transition hover:border-[#b8ccc5] hover:bg-[#f6f9f8]";
+  "inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-[#eaeaea] bg-white px-3.5 text-sm font-semibold text-[#40534e] transition hover:border-[#b8ccc5] hover:bg-[#f6f9f8]";
 const dangerButtonClass =
   "inline-flex h-10 items-center justify-center rounded-xl border border-[#ffd3d9] bg-white px-3.5 text-sm font-semibold text-[#d64b62] transition hover:bg-[#fff4f5]";
 const endpointRows = [
@@ -98,7 +98,7 @@ function toggleValue<T extends string>(values: T[], value: T) {
 
 function deliveryTone(status: WebhookDelivery["status"]) {
   if (status === "delivered")
-    return "bg-emerald-50 text-emerald-700 ring-emerald-200";
+    return "border border-[#eaeaea] bg-[#fafafa] text-[#171717] ring-[#eaeaea]";
   if (status === "failed") return "bg-rose-50 text-rose-700 ring-rose-200";
   if (status === "retrying") return "bg-amber-50 text-amber-700 ring-amber-200";
   if (status === "processing") return "bg-sky-50 text-sky-700 ring-sky-200";
@@ -118,14 +118,14 @@ function deliverySummary(delivery: WebhookDelivery) {
     return `Retry scheduled after ${delivery.attempts} ${delivery.attempts === 1 ? "attempt" : "attempts"}`;
   }
   const attempts = `${delivery.attempts} ${delivery.attempts === 1 ? "attempt" : "attempts"}`;
-  const duration = delivery.durationMs ? ` · ${delivery.durationMs} ms` : "";
+  const duration = delivery.durationMs ? ` Â· ${delivery.durationMs} ms` : "";
   return `Delivered in ${attempts}${duration}`;
 }
 
 function DeliveryDot({ status }: { status: WebhookDelivery["status"] }) {
   const tone =
     status === "delivered"
-      ? "bg-emerald-500"
+      ? "bg-[#171717]"
       : status === "failed"
         ? "bg-rose-500"
         : status === "retrying"
@@ -301,15 +301,15 @@ function DeveloperOverview({
     <div className="grid gap-5">
       <section className="grid overflow-hidden rounded-3xl border border-[#d8e5e0] bg-white shadow-[0_14px_38px_rgba(25,67,57,0.06)] xl:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)]">
         <div className="relative overflow-hidden p-6 sm:p-7 lg:p-8">
-          <span className="pointer-events-none absolute -right-24 -top-32 size-80 rounded-full bg-[#118778]/[0.07] blur-3xl" />
+          <span className="pointer-events-none absolute -right-24 -top-32 size-80 rounded-full bg-[#171717]/[0.07] blur-3xl" />
           <div className="relative">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-2 rounded-full bg-[#e9f7f3] px-3 py-1.5 text-xs font-bold text-[#0e6f62]">
-                <span className="size-2 rounded-full bg-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,0.12)]" />
+              <span className="inline-flex items-center gap-2 rounded-full bg-[#fafafa] px-3 py-1.5 text-xs font-bold text-[#171717]">
+                <span className="size-2 rounded-full bg-[#171717] shadow-[0_0_0_4px_rgba(16,185,129,0.12)]" />
                 All systems operational
               </span>
               <span className="text-xs font-medium text-[#80908c]">
-                {loading ? "Syncing workspace…" : "Updated just now"}
+                {loading ? "Syncing workspaceâ€¦" : "Updated just now"}
               </span>
             </div>
             <h2 className="mt-6 max-w-2xl text-2xl font-semibold tracking-[-0.03em] text-[#14231f] sm:text-3xl">
@@ -343,7 +343,7 @@ function DeveloperOverview({
               <p className="text-xs font-bold uppercase tracking-[0.13em] text-[#77908a]">Getting started</p>
               <h3 className="mt-1 text-lg font-semibold text-[#18302a]">Connect in three steps</h3>
             </div>
-            <span className="rounded-full bg-[#e7f4f0] px-2.5 py-1 text-xs font-bold text-[#0e6f62]">
+            <span className="rounded-full bg-[#fafafa] px-2.5 py-1 text-xs font-bold text-[#171717]">
               {completedItems}/3
             </span>
           </div>
@@ -355,14 +355,14 @@ function DeveloperOverview({
                 type="button"
                 onClick={item.action}
               >
-                <span className={`grid size-8 shrink-0 place-items-center rounded-full text-xs font-bold ${item.done ? "bg-[#118778] text-white" : "border border-[#d8e3df] bg-white text-[#7f908b]"}`}>
-                  {item.done ? "✓" : index + 1}
+                <span className={`grid size-8 shrink-0 place-items-center rounded-full text-xs font-bold ${item.done ? "bg-[#171717] text-white" : "border border-[#eaeaea] bg-white text-[#7f908b]"}`}>
+                  {item.done ? "âœ“" : index + 1}
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block text-sm font-semibold text-[#29413b]">{item.label}</span>
                   <span className="mt-0.5 block text-xs text-[#81908c]">{item.detail}</span>
                 </span>
-                <span className="text-[#9aaba6] transition group-hover:translate-x-0.5 group-hover:text-[#118778]" aria-hidden="true">→</span>
+                <span className="text-[#9aaba6] transition group-hover:translate-x-0.5 group-hover:text-[#171717]" aria-hidden="true">â†’</span>
               </button>
             ))}
           </div>
@@ -376,18 +376,18 @@ function DeveloperOverview({
               <h3 className="text-base font-semibold text-[#18302a]">Production base URL</h3>
               <p className="mt-1 text-xs text-[#80908c]">Use this URL for every API v1 request.</p>
             </div>
-            <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#edf7f4] px-2.5 py-1 text-[11px] font-bold text-[#0e6f62]">
-              <span className="size-1.5 rounded-full bg-emerald-500" /> Live
+            <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#fafafa] px-2.5 py-1 text-[11px] font-bold text-[#171717]">
+              <span className="size-1.5 rounded-full bg-[#171717]" /> Live
             </span>
           </div>
           <div className="p-5 sm:p-6">
-            <div className="flex min-w-0 items-center overflow-hidden rounded-xl border border-[#d7e2de] bg-[#f7f9f8]">
+            <div className="flex min-w-0 items-center overflow-hidden rounded-xl border border-[#eaeaea] bg-[#f7f9f8]">
               <code className="min-w-0 flex-1 truncate px-4 py-3 text-xs font-semibold text-[#40534e] sm:text-sm">{baseUrl}</code>
-              <button className="h-11 shrink-0 border-l border-[#d7e2de] bg-white px-4 text-xs font-bold text-[#0e6f62] transition hover:bg-[#edf7f4]" type="button" onClick={onCopyBaseUrl}>Copy</button>
+              <button className="h-11 shrink-0 border-l border-[#eaeaea] bg-white px-4 text-xs font-bold text-[#171717] transition hover:bg-[#fafafa]" type="button" onClick={onCopyBaseUrl}>Copy</button>
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
               <button className={primaryButtonClass} type="button" onClick={() => onOpenInspector("request")}>View request example</button>
-              <Link className={secondaryButtonClass} href="/docs/api" target="_blank" rel="noreferrer">Open API docs <span aria-hidden="true">↗</span></Link>
+              <Link className={secondaryButtonClass} href="/docs/api" target="_blank" rel="noreferrer">Open API docs <span aria-hidden="true">â†—</span></Link>
             </div>
           </div>
         </div>
@@ -398,12 +398,12 @@ function DeveloperOverview({
               <h3 className="text-base font-semibold text-[#18302a]">Recent activity</h3>
               <p className="mt-1 text-xs text-[#80908c]">Latest webhook deliveries</p>
             </div>
-            <button className="text-xs font-bold text-[#0e6f62] hover:text-[#0a5e53]" type="button" onClick={() => onNavigate("activity")}>View all</button>
+            <button className="text-xs font-bold text-[#171717] hover:text-[#171717]" type="button" onClick={() => onNavigate("activity")}>View all</button>
           </div>
           <div className="divide-y divide-[#edf1f0]">
             {deliveries.slice(0, 3).map((delivery) => (
               <button className="flex w-full items-center gap-3 px-5 py-3.5 text-left transition hover:bg-[#f8faf9] sm:px-6" key={delivery._id} type="button" onClick={() => onNavigate("activity")}>
-                <span className={`size-2 shrink-0 rounded-full ${delivery.status === "delivered" ? "bg-emerald-500" : delivery.status === "failed" ? "bg-rose-500" : "bg-amber-500"}`} />
+                <span className={`size-2 shrink-0 rounded-full ${delivery.status === "delivered" ? "bg-[#171717]" : delivery.status === "failed" ? "bg-rose-500" : "bg-amber-500"}`} />
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-sm font-semibold text-[#29413b]">{deliveryEventLabel(delivery.event)}</span>
                   <span className="mt-0.5 block text-[11px] text-[#8a9995]">{formatDate(delivery.createdAt)}</span>
@@ -413,7 +413,7 @@ function DeveloperOverview({
             ))}
             {!deliveries.length ? (
               <div className="px-6 py-8 text-center">
-                <span className="mx-auto grid size-10 place-items-center rounded-full bg-[#edf4f1] text-[#6f837d]">↗</span>
+                <span className="mx-auto grid size-10 place-items-center rounded-full bg-[#edf4f1] text-[#6f837d]">â†—</span>
                 <p className="mt-3 text-sm font-semibold text-[#40534e]">No events yet</p>
                 <p className="mt-1 text-xs text-[#8a9995]">Webhook deliveries will appear here.</p>
               </div>
@@ -429,14 +429,14 @@ function DeveloperOverview({
             <h3 className="text-base font-semibold text-[#18302a]">Available endpoints</h3>
             <p className="mt-1 text-xs text-[#80908c]">Stable REST routes available under /api/v1</p>
           </div>
-          <span className="w-fit rounded-full bg-[#edf7f4] px-2.5 py-1 text-xs font-bold text-[#0e6f62]">{endpointRows.length} routes</span>
+          <span className="w-fit rounded-full bg-[#fafafa] px-2.5 py-1 text-xs font-bold text-[#171717]">{endpointRows.length} routes</span>
         </div>
         <div className="grid md:grid-cols-2 xl:grid-cols-3">
           {endpointRows.map(([method, path], index) => (
             <button className={`flex min-w-0 items-center gap-3 px-5 py-4 text-left transition hover:bg-[#f8faf9] sm:px-6 ${index ? "border-t border-[#edf1f0] md:[&:nth-child(2)]:border-t-0 md:[&:nth-child(even)]:border-l xl:[&:nth-child(3)]:border-t-0 xl:[&:nth-child(3)]:border-l xl:[&:nth-child(even)]:border-l-0 xl:[&:nth-child(3n+2)]:border-l xl:[&:nth-child(3n)]:border-l" : ""}`} key={`${method}-${path}`} type="button" onClick={() => onOpenInspector(method === "POST" ? "request" : "response")}>
-              <span className={`rounded-md px-2 py-1 text-[10px] font-black ${method === "POST" ? "bg-[#fff3e8] text-[#b65e17]" : "bg-[#eaf6f2] text-[#0e6f62]"}`}>{method}</span>
+              <span className={`rounded-md px-2 py-1 text-[10px] font-black ${method === "POST" ? "bg-[#fff3e8] text-[#b65e17]" : "bg-[#fafafa] text-[#171717]"}`}>{method}</span>
               <code className="min-w-0 flex-1 truncate text-xs font-semibold text-[#50615c]">{path}</code>
-              <span className="text-[#9aaba6]" aria-hidden="true">→</span>
+              <span className="text-[#9aaba6]" aria-hidden="true">â†’</span>
             </button>
           ))}
         </div>
@@ -667,11 +667,10 @@ export function DeveloperShell() {
 
   return (
     <main
-      className={`dashboard-home-theme grid min-h-screen bg-[#f6f9f8] text-[#14231f] ${
-        showUserSidebar
+      className={`dashboard-home-theme grid min-h-screen bg-[#f6f9f8] text-[#14231f] ${showUserSidebar
           ? "lg:grid-cols-[248px_minmax(0,1fr)]"
           : "lg:grid-cols-[64px_minmax(0,1fr)]"
-      }`}
+        }`}
     >
       <DashboardSidebar
         activeLabel="Developers"
@@ -690,7 +689,7 @@ export function DeveloperShell() {
           eyebrow={
             <span className="inline-flex items-center gap-2">
               <span
-                className="size-2 rounded-full bg-emerald-500"
+                className="size-2 rounded-full bg-[#171717]"
                 aria-hidden="true"
               />
               Production API online
@@ -704,9 +703,9 @@ export function DeveloperShell() {
                 href="/docs/api"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex h-10 items-center justify-center rounded-xl border border-[#d7e2de] bg-white px-3.5 text-xs font-semibold text-[#294740] transition hover:border-[#b8ccc5] hover:bg-[#f6f9f8]"
+                className="inline-flex h-10 items-center justify-center rounded-xl border border-[#eaeaea] bg-white px-3.5 text-xs font-semibold text-[#294740] transition hover:border-[#b8ccc5] hover:bg-[#f6f9f8]"
               >
-                API documentation <span aria-hidden="true">↗</span>
+                API documentation <span aria-hidden="true">â†—</span>
               </Link>
               <button
                 className={secondaryButtonClass}
@@ -733,21 +732,19 @@ export function DeveloperShell() {
               ] as const
             ).map(([value, label, detail]) => (
               <button
-                className={`relative flex h-12 shrink-0 items-center gap-2.5 px-3 text-sm font-semibold transition ${
-                  activeView === value
-                    ? "text-[#0e6f62] after:absolute after:inset-x-2 after:bottom-0 after:h-0.5 after:rounded-full after:bg-[#118778]"
+                className={`relative flex h-12 shrink-0 items-center gap-2.5 px-3 text-sm font-semibold transition ${activeView === value
+                    ? "text-[#171717] after:absolute after:inset-x-2 after:bottom-0 after:h-0.5 after:rounded-full after:bg-[#171717]"
                     : "text-[#687b76] hover:text-[#20342e]"
-                }`}
+                  }`}
                 key={value}
                 type="button"
                 onClick={() => setActiveView(value)}
               >
                 <span>{label}</span>
-                <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
-                  activeView === value
-                    ? "bg-[#e5f4f0] text-[#0e6f62]"
+                <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${activeView === value
+                    ? "bg-[#fafafa] text-[#171717]"
                     : "bg-[#eaf0ee] text-[#71817d]"
-                }`}>
+                  }`}>
                   {detail}
                 </span>
               </button>
@@ -789,7 +786,7 @@ export function DeveloperShell() {
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="hidden rounded-full bg-[#edf7f4] px-2.5 py-1 text-xs font-bold text-[#0e6f62] sm:inline-flex">
+                      <span className="hidden rounded-full bg-[#fafafa] px-2.5 py-1 text-xs font-bold text-[#171717] sm:inline-flex">
                         {activeKeys} active
                       </span>
                       <button className={primaryButtonClass} type="button" onClick={() => setKeyComposerOpen((current) => !current)}>
@@ -819,63 +816,63 @@ export function DeveloperShell() {
                     </div>
                   ) : null}
                   {keyComposerOpen ? (
-                  <div className="border-b border-[#dce3ea] bg-[#f8fafc] p-5">
-                    <div className="mb-5 flex items-start justify-between gap-4">
-                      <div>
-                        <h3 className="text-sm font-semibold text-[#20342e]">Create a new API key</h3>
-                        <p className="mt-1 text-xs text-[#71817d]">Choose the minimum permissions this integration needs.</p>
+                    <div className="border-b border-[#dce3ea] bg-[#f8fafc] p-5">
+                      <div className="mb-5 flex items-start justify-between gap-4">
+                        <div>
+                          <h3 className="text-sm font-semibold text-[#20342e]">Create a new API key</h3>
+                          <p className="mt-1 text-xs text-[#71817d]">Choose the minimum permissions this integration needs.</p>
+                        </div>
+                        <button className="text-xl leading-none text-[#84938f] hover:text-[#20342e]" type="button" aria-label="Close key form" onClick={() => setKeyComposerOpen(false)}>Ã—</button>
                       </div>
-                      <button className="text-xl leading-none text-[#84938f] hover:text-[#20342e]" type="button" aria-label="Close key form" onClick={() => setKeyComposerOpen(false)}>×</button>
-                    </div>
-                    <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_220px]">
-                      <FieldLabel label="Key name">
-                        <input
-                          className={controlClass}
-                          value={keyName}
-                          onChange={(event) => setKeyName(event.target.value)}
-                          placeholder="External platform key"
-                        />
-                      </FieldLabel>
-                      <FieldLabel label="Optional expiry">
-                        <input
-                          className={controlClass}
-                          value={keyExpiry}
-                          onChange={(event) => setKeyExpiry(event.target.value)}
-                          type="datetime-local"
-                        />
-                      </FieldLabel>
-                    </div>
-                    <div className="mt-4 grid gap-2 sm:grid-cols-2">
-                      {scopeCatalog.map((scope) => (
-                        <label
-                          className={`flex cursor-pointer items-center gap-3 rounded-xl border px-3 py-2.5 text-sm font-semibold transition ${keyScopes.includes(scope) ? "border-[#c4c8ec] bg-[#edf7f4] text-[#123d35]" : "border-[#dfe1ed] bg-white text-[#5f6374] hover:bg-[#f7f9f8]"}`}
-                          key={scope}
-                        >
+                      <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_220px]">
+                        <FieldLabel label="Key name">
                           <input
-                            checked={keyScopes.includes(scope)}
-                            onChange={() =>
-                              setKeyScopes((current) =>
-                                toggleValue(current, scope),
-                              )
-                            }
-                            className="accent-[#118778]"
-                            type="checkbox"
+                            className={controlClass}
+                            value={keyName}
+                            onChange={(event) => setKeyName(event.target.value)}
+                            placeholder="External platform key"
                           />
-                          {scopeLabels[scope] ?? scope}
-                        </label>
-                      ))}
+                        </FieldLabel>
+                        <FieldLabel label="Optional expiry">
+                          <input
+                            className={controlClass}
+                            value={keyExpiry}
+                            onChange={(event) => setKeyExpiry(event.target.value)}
+                            type="datetime-local"
+                          />
+                        </FieldLabel>
+                      </div>
+                      <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                        {scopeCatalog.map((scope) => (
+                          <label
+                            className={`flex cursor-pointer items-center gap-3 rounded-xl border px-3 py-2.5 text-sm font-semibold transition ${keyScopes.includes(scope) ? "border-[#c4c8ec] bg-[#fafafa] text-[#171717]" : "border-[#dfe1ed] bg-white text-[#5f6374] hover:bg-[#f7f9f8]"}`}
+                            key={scope}
+                          >
+                            <input
+                              checked={keyScopes.includes(scope)}
+                              onChange={() =>
+                                setKeyScopes((current) =>
+                                  toggleValue(current, scope),
+                                )
+                              }
+                              className="accent-[#171717]"
+                              type="checkbox"
+                            />
+                            {scopeLabels[scope] ?? scope}
+                          </label>
+                        ))}
+                      </div>
+                      <div className="mt-4 flex justify-end">
+                        <button
+                          className={primaryButtonClass}
+                          disabled={!keyName.trim() || !keyScopes.length}
+                          type="button"
+                          onClick={() => void createKey()}
+                        >
+                          Create API key
+                        </button>
+                      </div>
                     </div>
-                    <div className="mt-4 flex justify-end">
-                      <button
-                        className={primaryButtonClass}
-                        disabled={!keyName.trim() || !keyScopes.length}
-                        type="button"
-                        onClick={() => void createKey()}
-                      >
-                        Create API key
-                      </button>
-                    </div>
-                  </div>
                   ) : null}
                   <div className="overflow-x-auto">
                     <table className="w-full min-w-[760px] text-left text-sm">
@@ -953,7 +950,7 @@ export function DeveloperShell() {
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="hidden rounded-full bg-[#edf7f4] px-2.5 py-1 text-xs font-bold text-[#0e6f62] sm:inline-flex">
+                      <span className="hidden rounded-full bg-[#fafafa] px-2.5 py-1 text-xs font-bold text-[#171717] sm:inline-flex">
                         {enabledWebhooks} listening
                       </span>
                       <button className={primaryButtonClass} type="button" onClick={() => setWebhookComposerOpen((current) => !current)}>
@@ -983,74 +980,74 @@ export function DeveloperShell() {
                     </div>
                   ) : null}
                   {webhookComposerOpen ? (
-                  <div className="border-b border-[#dce3ea] bg-[#f8fafc] p-5">
-                    <div className="mb-5 flex items-start justify-between gap-4">
-                      <div>
-                        <h3 className="text-sm font-semibold text-[#20342e]">Add a webhook endpoint</h3>
-                        <p className="mt-1 text-xs text-[#71817d]">Choose where Vozon should send signed lifecycle events.</p>
+                    <div className="border-b border-[#dce3ea] bg-[#f8fafc] p-5">
+                      <div className="mb-5 flex items-start justify-between gap-4">
+                        <div>
+                          <h3 className="text-sm font-semibold text-[#20342e]">Add a webhook endpoint</h3>
+                          <p className="mt-1 text-xs text-[#71817d]">Choose where Vozon should send signed lifecycle events.</p>
+                        </div>
+                        <button className="text-xl leading-none text-[#84938f] hover:text-[#20342e]" type="button" aria-label="Close webhook form" onClick={() => setWebhookComposerOpen(false)}>Ã—</button>
                       </div>
-                      <button className="text-xl leading-none text-[#84938f] hover:text-[#20342e]" type="button" aria-label="Close webhook form" onClick={() => setWebhookComposerOpen(false)}>×</button>
-                    </div>
-                    <div className="grid gap-3 lg:grid-cols-[210px_minmax(0,1fr)]">
-                      <FieldLabel label="Endpoint name">
-                        <input
-                          className={controlClass}
-                          value={webhookName}
-                          onChange={(event) =>
-                            setWebhookName(event.target.value)
-                          }
-                          placeholder="Call events"
-                        />
-                      </FieldLabel>
-                      <FieldLabel label="Destination URL">
-                        <input
-                          className={controlClass}
-                          value={webhookUrl}
-                          onChange={(event) =>
-                            setWebhookUrl(event.target.value)
-                          }
-                          placeholder="https://your-platform.com/webhooks/calls"
-                        />
-                      </FieldLabel>
-                    </div>
-                    <div className="mt-4 grid gap-2 sm:grid-cols-2">
-                      {eventCatalog.map((event) => (
-                        <label
-                          className={`flex cursor-pointer items-center gap-3 rounded-xl border px-3 py-2.5 text-sm font-semibold transition ${webhookEvents.includes(event) ? "border-[#c4c8ec] bg-[#edf7f4] text-[#123d35]" : "border-[#dfe1ed] bg-white text-[#5f6374] hover:bg-[#f7f9f8]"}`}
-                          key={event}
-                        >
+                      <div className="grid gap-3 lg:grid-cols-[210px_minmax(0,1fr)]">
+                        <FieldLabel label="Endpoint name">
                           <input
-                            checked={webhookEvents.includes(event)}
-                            onChange={() =>
-                              setWebhookEvents((current) =>
-                                toggleValue(current, event),
-                              )
+                            className={controlClass}
+                            value={webhookName}
+                            onChange={(event) =>
+                              setWebhookName(event.target.value)
                             }
-                            className="accent-[#118778]"
-                            type="checkbox"
+                            placeholder="Call events"
                           />
-                          {eventLabels[event] ?? event}
-                        </label>
-                      ))}
+                        </FieldLabel>
+                        <FieldLabel label="Destination URL">
+                          <input
+                            className={controlClass}
+                            value={webhookUrl}
+                            onChange={(event) =>
+                              setWebhookUrl(event.target.value)
+                            }
+                            placeholder="https://your-platform.com/webhooks/calls"
+                          />
+                        </FieldLabel>
+                      </div>
+                      <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                        {eventCatalog.map((event) => (
+                          <label
+                            className={`flex cursor-pointer items-center gap-3 rounded-xl border px-3 py-2.5 text-sm font-semibold transition ${webhookEvents.includes(event) ? "border-[#c4c8ec] bg-[#fafafa] text-[#171717]" : "border-[#dfe1ed] bg-white text-[#5f6374] hover:bg-[#f7f9f8]"}`}
+                            key={event}
+                          >
+                            <input
+                              checked={webhookEvents.includes(event)}
+                              onChange={() =>
+                                setWebhookEvents((current) =>
+                                  toggleValue(current, event),
+                                )
+                              }
+                              className="accent-[#171717]"
+                              type="checkbox"
+                            />
+                            {eventLabels[event] ?? event}
+                          </label>
+                        ))}
+                      </div>
+                      <div className="mt-4 flex items-center justify-between gap-3">
+                        <code className="text-[11px] text-[#71817d]">
+                          X-AI-Voice-Signature
+                        </code>
+                        <button
+                          className={primaryButtonClass}
+                          disabled={
+                            !webhookName.trim() ||
+                            !webhookUrl.trim() ||
+                            !webhookEvents.length
+                          }
+                          type="button"
+                          onClick={() => void createWebhook()}
+                        >
+                          Create webhook
+                        </button>
+                      </div>
                     </div>
-                    <div className="mt-4 flex items-center justify-between gap-3">
-                      <code className="text-[11px] text-[#71817d]">
-                        X-AI-Voice-Signature
-                      </code>
-                      <button
-                        className={primaryButtonClass}
-                        disabled={
-                          !webhookName.trim() ||
-                          !webhookUrl.trim() ||
-                          !webhookEvents.length
-                        }
-                        type="button"
-                        onClick={() => void createWebhook()}
-                      >
-                        Create webhook
-                      </button>
-                    </div>
-                  </div>
                   ) : null}
                   <div className="divide-y divide-[#e8edf2]">
                     {webhooks.map((webhook) => (
@@ -1182,75 +1179,75 @@ export function DeveloperShell() {
                   aria-label="Close API inspector"
                   onClick={() => setInspectorOpen(false)}
                 />
-            <aside
-              className="fixed inset-y-0 right-0 z-[90] flex w-full max-w-[620px] flex-col overflow-hidden bg-[#101a25] text-white shadow-[-24px_0_80px_rgba(9,20,17,0.25)]"
-              role="dialog"
-              aria-modal="true"
-              aria-label="API request inspector"
-            >
-              <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
-                <div>
-                  <span className="block text-[10px] font-black uppercase tracking-[0.14em] text-[#aeb4ff]">
-                    API inspector
-                  </span>
-                  <strong className="mt-0.5 block text-sm text-white">
-                    {inspectorLabel}
-                  </strong>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    className="rounded-lg border border-white/20 bg-white/10 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-white/15"
-                    type="button"
-                    onClick={() => void copyText(inspectorContent, inspectorLabel)}
-                  >
-                    Copy
-                  </button>
-                  <button
-                    className="grid size-8 place-items-center rounded-lg text-lg text-[#aeb6c7] transition hover:bg-white/10 hover:text-white"
-                    type="button"
-                    aria-label="Close inspector"
-                    onClick={() => setInspectorOpen(false)}
-                  >
-                    ×
-                  </button>
-                </div>
-              </div>
-              <div className="grid grid-cols-3 border-b border-white/10 bg-[#0b1220] p-1.5">
-                {(["request", "response", "webhook"] as const).map((view) => (
-                  <button
-                    className={`h-8 rounded-lg text-xs font-semibold capitalize transition ${inspectorView === view ? "bg-[#118778] text-white" : "text-[#aeb6c7] hover:text-white"}`}
-                    key={view}
-                    type="button"
-                    onClick={() => setInspectorView(view)}
-                  >
-                    {view}
-                  </button>
-                ))}
-              </div>
-              <pre className="min-h-0 flex-1 overflow-auto whitespace-pre-wrap break-words p-5 text-xs leading-6 text-[#d7e2ef] sm:p-6">
-                {inspectorContent}
-              </pre>
-              <div className="border-t border-white/10 bg-[#0b1220] p-4">
-                <span className="text-[10px] font-black uppercase text-[#8fa0b4]">
-                  Outbound call
-                </span>
-                <pre className="mt-2 max-h-44 overflow-auto whitespace-pre-wrap text-[11px] leading-5 text-[#b7c6d8]">
-                  {sampleOutboundCurl(baseUrl)}
-                </pre>
-                <button
-                  className="mt-3 text-xs font-bold text-[#aeb4ff] hover:text-white"
-                  type="button"
-                  onClick={() =>
-                    void copyText(
-                      sampleOutboundCurl(baseUrl),
-                      "Outbound call example",
-                    )
-                  }
+                <aside
+                  className="fixed inset-y-0 right-0 z-[90] flex w-full max-w-[620px] flex-col overflow-hidden bg-[#101a25] text-white shadow-[-24px_0_80px_rgba(9,20,17,0.25)]"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="API request inspector"
                 >
-                  Copy outbound request
-                </button>
-              </div>
-            </aside>
+                  <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+                    <div>
+                      <span className="block text-[10px] font-black uppercase tracking-[0.14em] text-[#aeb4ff]">
+                        API inspector
+                      </span>
+                      <strong className="mt-0.5 block text-sm text-white">
+                        {inspectorLabel}
+                      </strong>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        className="rounded-lg border border-white/20 bg-white/10 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-white/15"
+                        type="button"
+                        onClick={() => void copyText(inspectorContent, inspectorLabel)}
+                      >
+                        Copy
+                      </button>
+                      <button
+                        className="grid size-8 place-items-center rounded-lg text-lg text-[#aeb6c7] transition hover:bg-white/10 hover:text-white"
+                        type="button"
+                        aria-label="Close inspector"
+                        onClick={() => setInspectorOpen(false)}
+                      >
+                        Ã—
+                      </button>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-3 border-b border-white/10 bg-[#0b1220] p-1.5">
+                    {(["request", "response", "webhook"] as const).map((view) => (
+                      <button
+                        className={`h-8 rounded-lg text-xs font-semibold capitalize transition ${inspectorView === view ? "bg-[#171717] text-white" : "text-[#aeb6c7] hover:text-white"}`}
+                        key={view}
+                        type="button"
+                        onClick={() => setInspectorView(view)}
+                      >
+                        {view}
+                      </button>
+                    ))}
+                  </div>
+                  <pre className="min-h-0 flex-1 overflow-auto whitespace-pre-wrap break-words p-5 text-xs leading-6 text-[#d7e2ef] sm:p-6">
+                    {inspectorContent}
+                  </pre>
+                  <div className="border-t border-white/10 bg-[#0b1220] p-4">
+                    <span className="text-[10px] font-black uppercase text-[#8fa0b4]">
+                      Outbound call
+                    </span>
+                    <pre className="mt-2 max-h-44 overflow-auto whitespace-pre-wrap text-[11px] leading-5 text-[#b7c6d8]">
+                      {sampleOutboundCurl(baseUrl)}
+                    </pre>
+                    <button
+                      className="mt-3 text-xs font-bold text-[#aeb4ff] hover:text-white"
+                      type="button"
+                      onClick={() =>
+                        void copyText(
+                          sampleOutboundCurl(baseUrl),
+                          "Outbound call example",
+                        )
+                      }
+                    >
+                      Copy outbound request
+                    </button>
+                  </div>
+                </aside>
               </>
             ) : null}
           </div>
@@ -1263,7 +1260,7 @@ export function DeveloperShell() {
           role="status"
           aria-live="polite"
         >
-          <span className="bg-[#118778]" aria-hidden="true" />
+          <span className="bg-[#171717]" aria-hidden="true" />
           <span className="px-4 py-3 text-sm font-semibold text-[#334155]">
             {notice}
           </span>

@@ -1,56 +1,306 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import "@/components/sections/PublicMarketingAccent.css";
 import { useEffect, useRef, useState } from "react";
-
 import { BrandLogo } from "@/components/ui/BrandLogo";
-import { siteConfig } from "@/config/site";
+import { VoiceAgentVisualIcon, type IconName } from "@/components/product/VoiceAgentVisualIcon";
 
 type MenuKey = "product" | "business" | "company";
 
-const menus = {
+type MenuItem = {
+  href: string;
+  label: string;
+  desc: string;
+  iconName: IconName;
+  badge?: string;
+};
+
+type MenuGroup = {
+  title: string;
+  links: MenuItem[];
+};
+
+type MenuConfig = {
+  label: string;
+  groups: MenuGroup[];
+  spotlight: {
+    badge: string;
+    title: string;
+    desc: string;
+    pill: string;
+    ctaHref: string;
+    ctaLabel: string;
+  };
+  footerAllHref: string;
+  footerAllLabel: string;
+};
+
+const menus: Record<MenuKey, MenuConfig> = {
   product: {
     label: "Products",
-    badge: "AI Voice Engine",
-    intro: siteConfig.productMenu.featured,
-    groups: siteConfig.productMenu.groups,
+    groups: [
+      {
+        title: "Voice Intelligence",
+        links: [
+          {
+            href: "/product/ai-voice-agent",
+            label: "AI Voice Agent",
+            desc: "24/7 autonomous phone agents that sound human",
+            iconName: "phone",
+            badge: "Popular",
+          },
+          {
+            href: "/product/voice-cloning",
+            label: "Voice Cloning",
+            desc: "Custom brand likeness with natural timbre",
+            iconName: "waveform",
+          },
+        ],
+      },
+      {
+        title: "Messaging & Web",
+        links: [
+          {
+            href: "/product/whatsapp-bot",
+            label: "WhatsApp Bot",
+            desc: "Interactive chats with automated workflows",
+            iconName: "message",
+            badge: "New",
+          },
+          {
+            href: "/product/whatsapp-api",
+            label: "WhatsApp API",
+            desc: "High-throughput cloud API for messaging",
+            iconName: "send",
+          },
+          {
+            href: "/product/web-chatbot",
+            label: "Web Chatbot",
+            desc: "Instant AI assistant on any website page",
+            iconName: "globe",
+          },
+        ],
+      },
+      {
+        title: "Connect & Automate",
+        links: [
+          {
+            href: "/product/vozon-mcp",
+            label: "Vozon MCP",
+            desc: "Open Model Context Protocol for business tools",
+            iconName: "cpu",
+            badge: "Core",
+          },
+          {
+            href: "/product/workflows",
+            label: "Workflows",
+            desc: "No-code event triggers, branches & conditions",
+            iconName: "branch",
+          },
+          {
+            href: "/product/end-to-end-automation",
+            label: "End-to-End Automation",
+            desc: "Full journey orchestration from trigger to sync",
+            iconName: "layers",
+          },
+        ],
+      },
+    ],
+    spotlight: {
+      badge: "✨ VOZON ENGINE 2.0",
+      title: "Sub-350ms Realtime Voice",
+      desc: "Handle interruptions, background noise, and natural speaker pauses with human-grade conversational presence.",
+      pill: "● 99.4% intent accuracy · 140+ languages",
+      ctaHref: "/product/ai-voice-agent",
+      ctaLabel: "Try Live Voice Agent →",
+    },
+    footerAllHref: "/product",
+    footerAllLabel: "Explore full product suite →",
   },
   business: {
     label: "Solutions",
-    badge: "Industries",
-    intro: siteConfig.businessMenu.featured,
-    groups: siteConfig.businessMenu.columns,
+    groups: [
+      {
+        title: "Industries",
+        links: [
+          {
+            href: "/business/industries/healthcare",
+            label: "Healthcare",
+            desc: "Patient intake, scheduling & clinical triage",
+            iconName: "activity",
+          },
+          {
+            href: "/business/industries/financial-services",
+            label: "Financial Services",
+            desc: "Advisor matching & portfolio qualification",
+            iconName: "database",
+          },
+          {
+            href: "/business/industries/insurance",
+            label: "Insurance",
+            desc: "Instant claims FNOL & policy support",
+            iconName: "shield",
+          },
+          {
+            href: "/business/industries/home-services",
+            label: "Home Services",
+            desc: "Emergency dispatch & technician booking",
+            iconName: "phone",
+            badge: "Top ROI",
+          },
+          {
+            href: "/business/industries/retail-consumer",
+            label: "Retail & Consumer",
+            desc: "Order updates, exchanges & cart recovery",
+            iconName: "spark",
+          },
+          {
+            href: "/business/industries/logistics",
+            label: "Logistics & Freight",
+            desc: "Driver routing, dispatch & exception handling",
+            iconName: "send",
+          },
+        ],
+      },
+      {
+        title: "Key Use Cases",
+        links: [
+          {
+            href: "/business/lead-qualification",
+            label: "Lead Qualification",
+            desc: "Convert inbound inquiries in seconds",
+            iconName: "bolt",
+            badge: "Sales",
+          },
+          {
+            href: "/business/customer-support",
+            label: "Customer Support",
+            desc: "Resolve routine questions and sync tickets",
+            iconName: "headset",
+          },
+          {
+            href: "/business/receptionists",
+            label: "AI Receptionist",
+            desc: "Never miss an incoming front desk call",
+            iconName: "calendar",
+          },
+          {
+            href: "/business/dispatch-service",
+            label: "Dispatch Service",
+            desc: "Coordinate technicians & field crews",
+            iconName: "refresh",
+          },
+        ],
+      },
+    ],
+    spotlight: {
+      badge: "🎯 INDUSTRY BLUEPRINT",
+      title: "Pre-Configured Architecture",
+      desc: "Pre-integrated with Twilio, WhatsApp, Google Calendar, Zoho CRM, and Salesforce out-of-the-box.",
+      pill: "● 3.1x faster lead to booking",
+      ctaHref: "/contact",
+      ctaLabel: "Book Custom Solution Demo →",
+    },
+    footerAllHref: "/business",
+    footerAllLabel: "View all industries & blueprints →",
   },
   company: {
     label: "Company",
-    badge: "Vozon AI",
-    intro: siteConfig.companyMenu.featured,
     groups: [
       {
         title: "About Vozon",
         links: [
-          { href: "/about", label: "About us", desc: "Our vision & team" },
-          { href: "/career", label: "Careers", desc: "We're hiring!" },
-          { href: "/partners", label: "White Label Partners", desc: "Reseller program" },
-          { href: "/resources/blog", label: "Blog & Insights", desc: "Latest Voice AI updates" },
-          { href: "/contact", label: "Contact us", desc: "24/7 dedicated support" },
+          {
+            href: "/about",
+            label: "About Us",
+            desc: "Our mission, technology & leadership",
+            iconName: "users",
+          },
+          {
+            href: "/career",
+            label: "Careers",
+            desc: "Join our global distributed team",
+            iconName: "spark",
+            badge: "Hiring",
+          },
+          {
+            href: "/partners",
+            label: "White Label Partners",
+            desc: "Reseller & agency partnership program",
+            iconName: "layers",
+          },
+          {
+            href: "/resources/blog",
+            label: "Blog & Insights",
+            desc: "Latest research on voice AI & LLM tooling",
+            iconName: "file",
+          },
+          {
+            href: "/contact",
+            label: "Contact & Support",
+            desc: "24/7 dedicated engineering & sales",
+            iconName: "message",
+          },
         ],
       },
     ],
+    spotlight: {
+      badge: "🚀 GLOBAL PRESENCE",
+      title: "Built for Mission-Critical Voice",
+      desc: "Delivering enterprise SLA reliability, sub-350ms latency, and secure SOC-2 compliant infrastructure.",
+      pill: "● 99.99% Uptime Guarantee",
+      ctaHref: "/about",
+      ctaLabel: "Learn more about Vozon →",
+    },
+    footerAllHref: "/contact",
+    footerAllLabel: "Contact sales team →",
   },
-} as const;
+};
 
 export function SiteHeader() {
   const headerRef = useRef<HTMLElement>(null);
   const [activeMenu, setActiveMenu] = useState<MenuKey | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const closeAll = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
     setActiveMenu(null);
     setMobileOpen(false);
   };
 
+  const handleMenuEnter = (key: MenuKey) => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    setActiveMenu(key);
+  };
+
+  const handleMenuLeave = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      setActiveMenu(null);
+    }, 180);
+  };
+
+  const handleDropdownEnter = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+  };
+
+  const handleDropdownLeave = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      setActiveMenu(null);
+    }, 180);
+  };
+
+  useEffect(() => {
+    const onScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     const outside = (event: PointerEvent) => {
@@ -64,51 +314,271 @@ export function SiteHeader() {
     return () => {
       document.removeEventListener("pointerdown", outside);
       document.removeEventListener("keydown", escape);
+      if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, []);
 
   return (
-      <div className={`fixed inset-x-0 top-0 z-[100] public-accent-header`}>
-        <header className="relative flex h-[70px] w-full items-center justify-between border-b border-slate-200/80 bg-[#f3f5fc] px-[7.5%]" ref={headerRef}>
-          <div className="landing-header-logo flex items-center" onClick={closeAll}>
+    <div className={`public-accent-header ${isScrolled ? "is-scrolled" : ""}`}>
+      <header ref={headerRef}>
+        {/* Left: Brand Logo & Aligned Navigation (Ringg.AI style) */}
+        <div className="flex items-center gap-7 lg:gap-9">
+          <div className="landing-header-logo flex items-center cursor-pointer shrink-0" onClick={closeAll}>
             <BrandLogo compact showWebsiteLogo />
           </div>
-          <nav aria-label="Main navigation" className="hidden items-center gap-5 text-[13px] font-medium text-slate-800 lg:flex">
-            <Link className="hover:text-black" href="/" onClick={closeAll}>Home</Link>
+
+          {/* Desktop Navigation */}
+          <nav aria-label="Main navigation" className="hidden items-center gap-1 lg:flex">
+            <Link className="site-nav-btn" href="/" onClick={closeAll}>
+              Home
+            </Link>
+
             {(["product", "business"] as const).map((key) => (
-              <button aria-expanded={activeMenu === key} className="hover:text-black" key={key} onClick={() => setActiveMenu(activeMenu === key ? null : key)} type="button">{menus[key].label}</button>
+              <div
+                key={key}
+                className="relative"
+                onMouseEnter={() => handleMenuEnter(key)}
+                onMouseLeave={handleMenuLeave}
+              >
+                <button
+                  aria-expanded={activeMenu === key}
+                  className={`site-nav-btn ${activeMenu === key ? "is-active" : ""}`}
+                  onClick={() => setActiveMenu(activeMenu === key ? null : key)}
+                  type="button"
+                >
+                  <span>{menus[key].label}</span>
+                  <svg
+                    className="site-nav-chevron"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
             ))}
-            <Link className="hover:text-black" href="/integrations" onClick={closeAll}>Integrations</Link>
-            <Link className="hover:text-black" href="/pricing" onClick={closeAll}>Pricing</Link>
-            <button aria-expanded={activeMenu === "company"} className="hover:text-black" onClick={() => setActiveMenu(activeMenu === "company" ? null : "company")} type="button">Company</button>
+
+            <Link className="site-nav-btn" href="/integrations" onClick={closeAll}>
+              Integrations
+            </Link>
+
+            <Link className="site-nav-btn" href="/pricing" onClick={closeAll}>
+              Pricing
+            </Link>
+
+            <div
+              className="relative"
+              onMouseEnter={() => handleMenuEnter("company")}
+              onMouseLeave={handleMenuLeave}
+            >
+              <button
+                aria-expanded={activeMenu === "company"}
+                className={`site-nav-btn ${activeMenu === "company" ? "is-active" : ""}`}
+                onClick={() => setActiveMenu(activeMenu === "company" ? null : "company")}
+                type="button"
+              >
+                <span>Company</span>
+                <svg
+                  className="site-nav-chevron"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2.5}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            </div>
           </nav>
-          <div className="hidden items-center gap-3 text-[12px] font-medium md:flex">
-            <Link className="px-3 py-2 text-slate-800 hover:text-black" href="/login">Login</Link>
-            <Link className="rounded-full bg-white px-4 py-2 text-slate-800 shadow-sm hover:bg-[#EEF3FF] hover:text-[#2457D6]" href="/contact">Contact sales</Link>
-            <Link className="public-header-start rounded-full bg-black px-4 py-2 text-white shadow-sm hover:bg-neutral-800" href="/login">Start for free</Link>
-          </div>
-          <button aria-label={mobileOpen ? "Close menu" : "Open menu"} className="rounded-full border border-slate-300 px-3 py-2 text-sm text-slate-800 md:hidden" onClick={() => setMobileOpen(!mobileOpen)} type="button">{mobileOpen ? "Close" : "Menu"}</button>
-          {activeMenu ? (
-            <div className="absolute left-1/2 top-full z-50 hidden w-[min(1000px,calc(100vw-32px))] -translate-x-1/2 rounded-b-2xl border border-slate-200 bg-white p-5 shadow-xl lg:block">
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        </div>
+
+        {/* Right: Book a Demo + Log in (matching Ringg.AI) */}
+        <div className="hidden items-center gap-3 md:flex">
+          <Link
+            className="rounded-full border border-slate-300/80 bg-white/70 px-5 py-2 text-[13.5px] font-medium text-slate-800 backdrop-blur-sm transition-all hover:bg-white hover:border-slate-400 hover:shadow-sm"
+            href="/contact"
+            onClick={closeAll}
+          >
+            Book a Demo
+          </Link>
+
+          <Link
+            className="rounded-full bg-black px-5 py-2 text-[13.5px] font-medium text-white transition-all hover:bg-neutral-800 shadow-sm"
+            href="/login"
+            onClick={closeAll}
+          >
+            Log in
+          </Link>
+        </div>
+
+        {/* Mobile Hamburger Button */}
+        <button
+          aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          className="rounded-full border border-slate-300 bg-white/80 px-3.5 py-1.5 text-xs font-semibold text-slate-800 md:hidden shadow-sm"
+          onClick={() => setMobileOpen(!mobileOpen)}
+          type="button"
+        >
+          {mobileOpen ? "Close" : "Menu"}
+        </button>
+
+        {/* =========================================================================
+            Modern Animated Mega-Menu Dropdown
+            ========================================================================= */}
+        {activeMenu ? (
+          <div
+            className="site-mega-menu hidden lg:block"
+            onMouseEnter={handleDropdownEnter}
+            onMouseLeave={handleDropdownLeave}
+          >
+            <div className="site-menu-grid">
+              {/* Left & Center: Categorized link columns */}
+              <div className="site-menu-columns">
                 {menus[activeMenu].groups.map((group) => (
                   <section key={group.title}>
-                    <h3 className="mb-2 text-[11px] font-bold uppercase tracking-wide text-slate-400">{group.title}</h3>
-                    <div className="flex flex-col gap-1">
-                      {group.links.map((item) => <Link className="rounded-lg px-2 py-1.5 text-[13px] font-medium text-slate-700 hover:bg-[#EEF3FF] hover:text-[#2457D6]" href={item.href} key={item.href} onClick={closeAll}>{item.label}</Link>)}
+                    <h3 className="site-menu-group-title">{group.title}</h3>
+                    <div className="flex flex-col gap-1.5">
+                      {group.links.map((item) => (
+                        <Link
+                          className="site-menu-item group"
+                          href={item.href}
+                          key={item.href}
+                          onClick={closeAll}
+                        >
+                          <span className="site-menu-icon">
+                            <VoiceAgentVisualIcon name={item.iconName} className="w-4 h-4" />
+                          </span>
+                          <div className="site-menu-item-info">
+                            <span className="site-menu-item-title">
+                              {item.label}
+                              {item.badge ? (
+                                <span className="site-menu-item-badge">{item.badge}</span>
+                              ) : null}
+                            </span>
+                            <span className="site-menu-item-desc">{item.desc}</span>
+                          </div>
+                        </Link>
+                      ))}
                     </div>
                   </section>
                 ))}
               </div>
-              <Link className="mt-4 inline-block text-xs font-semibold text-[#2457D6] hover:underline" href={menus[activeMenu].intro.href} onClick={closeAll}>Explore all {menus[activeMenu].label.toLowerCase()} →</Link>
+
+              {/* Right: Modern Spotlight Banner */}
+              <aside className="site-menu-spotlight">
+                <div>
+                  <span className="site-menu-spotlight-badge">
+                    {menus[activeMenu].spotlight.badge}
+                  </span>
+                  <h4 className="site-menu-spotlight-title">
+                    {menus[activeMenu].spotlight.title}
+                  </h4>
+                  <p className="site-menu-spotlight-desc">
+                    {menus[activeMenu].spotlight.desc}
+                  </p>
+                  <div className="site-menu-spotlight-pill">
+                    {menus[activeMenu].spotlight.pill}
+                  </div>
+                </div>
+
+                <Link
+                  className="site-menu-spotlight-cta"
+                  href={menus[activeMenu].spotlight.ctaHref}
+                  onClick={closeAll}
+                >
+                  <span>{menus[activeMenu].spotlight.ctaLabel}</span>
+                </Link>
+              </aside>
             </div>
-          ) : null}
-          {mobileOpen ? <nav aria-label="Mobile navigation" className="absolute left-3 right-3 top-full z-50 flex max-h-[calc(100vh-70px)] flex-col gap-3 overflow-y-auto rounded-b-xl border border-slate-200 bg-white p-4 text-sm shadow-xl lg:hidden">
-            <Link href="/" onClick={closeAll}>Home</Link><Link href="/integrations" onClick={closeAll}>Integrations</Link><Link href="/pricing" onClick={closeAll}>Pricing</Link>
-            {(["product", "business", "company"] as const).map((key) => <section className="border-t border-slate-100 pt-2" key={key}><h3 className="mb-1 font-semibold">{menus[key].label}</h3>{menus[key].groups.flatMap((group) => group.links).map((item) => <Link className="block py-1 text-slate-600" href={item.href} key={item.href} onClick={closeAll}>{item.label}</Link>)}</section>)}
-            <Link className="border-t border-slate-100 pt-2" href="/login" onClick={closeAll}>Login · Start for free</Link><Link href="/contact" onClick={closeAll}>Contact sales</Link>
-          </nav> : null}
-        </header>
-      </div>
-    );
+
+            {/* Mega-Menu Footer Strip */}
+            <div className="site-menu-footer">
+              <div className="site-menu-footer-links">
+                <Link className="site-menu-footer-link" href="/integrations" onClick={closeAll}>
+                  Integrations Hub
+                </Link>
+                <span>·</span>
+                <Link className="site-menu-footer-link" href="/pricing" onClick={closeAll}>
+                  Pricing & Calculator
+                </Link>
+                <span>·</span>
+                <span className="text-emerald-600 font-medium flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  All Systems Operational
+                </span>
+              </div>
+
+              <Link
+                className="site-menu-footer-cta"
+                href={menus[activeMenu].footerAllHref}
+                onClick={closeAll}
+              >
+                <span>{menus[activeMenu].footerAllLabel}</span>
+              </Link>
+            </div>
+          </div>
+        ) : null}
+
+        {/* Mobile Navigation Drawer */}
+        {mobileOpen ? (
+          <nav
+            aria-label="Mobile navigation"
+            className="absolute left-4 right-4 top-[calc(100%+8px)] z-50 flex max-h-[calc(100vh-90px)] flex-col gap-3 overflow-y-auto rounded-2xl border border-slate-200 bg-white/95 backdrop-blur-xl p-5 text-sm shadow-2xl lg:hidden"
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Navigation</span>
+              <span className="text-xs font-medium text-emerald-600 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                Vozon 2.0
+              </span>
+            </div>
+
+            <Link href="/" onClick={closeAll} className="font-semibold text-slate-900 py-1">Home</Link>
+            <Link href="/integrations" onClick={closeAll} className="font-semibold text-slate-900 py-1">Integrations</Link>
+            <Link href="/pricing" onClick={closeAll} className="font-semibold text-slate-900 py-1">Pricing</Link>
+
+            {(["product", "business", "company"] as const).map((key) => (
+              <section className="border-t border-slate-100 pt-3" key={key}>
+                <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-400">{menus[key].label}</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
+                  {menus[key].groups.flatMap((group) => group.links).map((item) => (
+                    <Link
+                      className="flex items-center gap-2.5 py-2 px-2.5 rounded-lg text-slate-700 hover:bg-blue-50 hover:text-[#2457D6] transition-colors"
+                      href={item.href}
+                      key={item.href}
+                      onClick={closeAll}
+                    >
+                      <VoiceAgentVisualIcon name={item.iconName} className="w-4 h-4 text-[#2457d6] shrink-0" />
+                      <div className="min-w-0">
+                        <div className="text-xs font-semibold text-slate-900 leading-tight">{item.label}</div>
+                        <div className="text-[10px] text-slate-500 truncate">{item.desc}</div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            ))}
+
+            <div className="border-t border-slate-100 pt-4 flex flex-col gap-2">
+              <Link
+                className="rounded-full border border-slate-300 bg-white py-2.5 text-center text-sm font-medium text-slate-800 shadow-sm"
+                href="/contact"
+                onClick={closeAll}
+              >
+                Book a Demo
+              </Link>
+              <Link
+                className="rounded-full bg-black py-2.5 text-center text-sm font-medium text-white shadow-sm"
+                href="/login"
+                onClick={closeAll}
+              >
+                Log in
+              </Link>
+            </div>
+          </nav>
+        ) : null}
+      </header>
+    </div>
+  );
 }

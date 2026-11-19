@@ -3,9 +3,11 @@ import { notFound } from "next/navigation";
 
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { SolutionLandingPage } from "@/components/layout/SolutionLandingPage";
+import { SolutionShowcasePage } from "@/components/solutions/SolutionShowcasePage";
 import { industryLandingContent } from "@/config/industryLandingContent";
 import { industryOperations } from "@/config/industryOperations";
 import { businessPages } from "@/config/site";
+import { solutionPagesCatalog } from "@/config/solutionPagesCatalog";
 
 type IndustrySlug =
   | "financial-services"
@@ -953,6 +955,11 @@ function WorkflowVisual({
 }
 
 export function IndustryPage({ slug }: { slug: string }) {
+  const solutionData = solutionPagesCatalog[slug];
+  if (solutionData) {
+    return <SolutionShowcasePage data={solutionData} />;
+  }
+
   const industry = getIndustry(slug);
 
   if (!industry) {

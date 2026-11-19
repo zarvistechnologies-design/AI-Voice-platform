@@ -165,7 +165,7 @@ export function ElevenLabsVoiceClonePanel({ configured, language, onCloned }: Pr
   const hasAudioSource = inputMode === "upload" ? files.length > 0 : Boolean(recordedBlob);
 
   return (
-    <section className="rounded-xl border border-[#cfe3de] bg-gradient-to-b from-[#f4fbf9] to-[#edf7f4] p-4 sm:p-5 shadow-sm">
+    <section className="rounded-xl border border-[#eaeaea] bg-white p-4 sm:p-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-start gap-3">
           <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-[#118778] text-white shadow-sm">

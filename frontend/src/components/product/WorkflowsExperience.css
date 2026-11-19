@@ -1,0 +1,187 @@
+.wfl-mac-grid {
+  display: grid;
+  grid-template-columns: 1fr 22px 1.15fr 22px 1.15fr;
+  align-items: center;
+  gap: 0;
+  margin: auto 0;
+}
+
+.wfl-mac-card {
+  background: #ffffff;
+  border: 1px solid #dce4f2;
+  border-radius: 13px;
+  padding: 12px;
+  box-shadow: 0 8px 20px rgb(20 42 82 / 6%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: vc-line-in .3s ease both;
+}
+
+.wfl-mac-card.is-center {
+  border-color: #9cb8f5;
+  box-shadow: 0 0 0 3px rgb(36 87 214 / 10%), 0 12px 24px rgb(36 87 214 / 12%);
+}
+
+.wfl-mac-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wfl-mac-logo {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  place-items: center;
+  border: 1px solid #e5ebf5;
+  border-radius: 8px;
+  background: #f8faff;
+}
+
+.wfl-mac-card-head div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.wfl-mac-card-head small {
+  font-size: 7.5px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  color: #7c899e;
+}
+
+.wfl-mac-card-head strong {
+  font-size: 11px;
+  color: #17233a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wfl-mac-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  border: 1px solid #edf1f8;
+  border-radius: 8px;
+  background: #f9fbff;
+  padding: 6px 8px;
+  font-size: 9px;
+}
+
+.wfl-mac-field span {
+  color: #7c899e;
+  font-weight: 700;
+  font-size: 7.5px;
+  letter-spacing: .06em;
+}
+
+.wfl-mac-field strong {
+  color: #1e2b44;
+  font-size: 9.5px;
+}
+
+.wfl-mac-wire {
+  position: relative;
+  width: 100%;
+  height: 2px;
+  background: #cbd9f7;
+  overflow: hidden;
+}
+
+.wfl-mac-wire::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -10px;
+  width: 10px;
+  height: 100%;
+  background: #2457d6;
+  animation: vc-pulse-slide 1.5s ease-in-out infinite;
+}
+
+.wfl-mac-branches {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wfl-mac-branch-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #dce4f2;
+  border-radius: 11px;
+  background: #ffffff;
+  padding: 9px 10px;
+  box-shadow: 0 6px 14px rgb(20 42 82 / 5%);
+}
+
+.wfl-mac-branch-card.is-yes {
+  border-color: #a7f3d0;
+  background: linear-gradient(135deg, #f0fdf4, #ffffff);
+}
+
+.wfl-mac-branch-card.is-no {
+  border-color: #ddd6fe;
+  background: linear-gradient(135deg, #faf5ff, #ffffff);
+}
+
+.wfl-mac-branch-tag {
+  font-size: 7.5px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  padding: 2px 6px;
+  border-radius: 999px;
+}
+
+.wfl-mac-branch-card.is-yes .wfl-mac-branch-tag {
+  background: #d1fae5;
+  color: #059669;
+}
+
+.wfl-mac-branch-card.is-no .wfl-mac-branch-tag {
+  background: #ede9fe;
+  color: #7c3aed;
+}
+
+.wfl-mac-foot-pills {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-top: 1px solid #e2e8f2;
+  padding-top: 10px;
+  margin-top: 12px;
+}
+
+.wfl-mac-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.wfl-mac-pill svg {
+  width: 12px;
+  height: 12px;
+}
+
+@media (max-width: 640px) {
+  .wfl-mac-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .wfl-mac-wire {
+    width: 2px;
+    height: 12px;
+    justify-self: center;
+  }
+}

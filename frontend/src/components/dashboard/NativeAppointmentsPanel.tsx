@@ -27,7 +27,7 @@ export function NativeAppointmentsPanel({ agentId, timezone }: { agentId: string
           <h3 className="app-section-title m-0">Vozon appointments</h3>
           <span className="app-caption">Confirmed bookings created by this agent. API: GET /agents/{agentId}/appointments</span>
         </div>
-        <span className="app-label rounded-full border border-[#b8c8c3] bg-white px-2.5 py-1 text-[#0e6f62]">{appointments.length} bookings</span>
+        <span className="app-label rounded-full border border-[#eaeaea] bg-white px-2.5 py-1 text-[#171717]">{appointments.length} bookings</span>
       </div>
       {loading ? <p className="p-4 text-sm text-[#71817d]">Loading appointments…</p> : null}
       {error ? <p className="p-4 text-sm text-rose-700">{error}</p> : null}

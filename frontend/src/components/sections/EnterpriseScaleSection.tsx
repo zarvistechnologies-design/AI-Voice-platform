@@ -31,9 +31,9 @@ export function EnterpriseScaleSection() {
     <section className="enterprise-scale" aria-labelledby="enterprise-scale-title">
       <div className="enterprise-scale-inner">
         <div className="enterprise-scale-heading">
-          <span className="enterprise-scale-eyebrow">THE VOZON PLATFORM</span>
+          <span className="enterprise-scale-eyebrow">VOZON VOICE &amp; AGENTIC PLATFORM</span>
           <h2 id="enterprise-scale-title">Built for enterprise scale.</h2>
-          <p>High-volume conversations, always-on coverage, and the visibility to keep every workflow moving.</p>
+          <p>High-volume voice calling, instant WhatsApp automation, and autonomous workflows running 24/7.</p>
         </div>
         <div className="enterprise-scale-grid" aria-label="Vozon platform highlights">
           {metrics.map((metric) => (

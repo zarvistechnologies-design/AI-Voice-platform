@@ -118,7 +118,7 @@ function CallRoute({ call }: { call: CallRecord }) {
   return (
     <div className="grid gap-1.5">
       <div className="grid min-w-0 grid-cols-[44px_minmax(0,1fr)] items-center gap-2">
-        <span className="rounded-md bg-[#edf7f4] px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-[#123d35]">From</span>
+        <span className="rounded-md bg-[#f4f4f5] px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-[#171717]">From</span>
         {route.fromMissing ? (
           <span className="rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">
             Caller ID not sent
@@ -248,13 +248,13 @@ export function CallDetailDrawer({ call, inrPerUsd = 96.5, onClose }: { call: Ca
     : "";
   const providerCostItems = (call.pipelineMode === "realtime" || isRealtimeAudioCall(call)
     ? [
-        ["Realtime", configuredStack(call.llmProvider, call.llmModel), llmUsage, cost?.pricing?.llm, cost?.llm ?? 0],
-      ]
+      ["Realtime", configuredStack(call.llmProvider, call.llmModel), llmUsage, cost?.pricing?.llm, cost?.llm ?? 0],
+    ]
     : [
-        ["LLM", configuredStack(call.llmProvider, call.llmModel), llmUsage, cost?.pricing?.llm, cost?.llm ?? 0],
-        ["STT", configuredStack(call.sttProvider, call.sttModel), sttUsage, cost?.pricing?.stt, cost?.stt ?? 0],
-        ["TTS", configuredTtsStack(call), ttsUsage, cost?.pricing?.tts, cost?.tts ?? 0],
-      ]) as readonly (readonly [string, string, string, CostPricingDetail | undefined, number])[];
+      ["LLM", configuredStack(call.llmProvider, call.llmModel), llmUsage, cost?.pricing?.llm, cost?.llm ?? 0],
+      ["STT", configuredStack(call.sttProvider, call.sttModel), sttUsage, cost?.pricing?.stt, cost?.stt ?? 0],
+      ["TTS", configuredTtsStack(call), ttsUsage, cost?.pricing?.tts, cost?.tts ?? 0],
+    ]) as readonly (readonly [string, string, string, CostPricingDetail | undefined, number])[];
   const costItems = [
     ...providerCostItems,
     [
@@ -505,13 +505,12 @@ export function CallDetailDrawer({ call, inrPerUsd = 96.5, onClose }: { call: Ca
               {transcript.length ? (
                 transcript.map((item) => (
                   <article
-                    className={`max-w-[88%] rounded-2xl border px-4 py-3 ${
-                      item.role === "assistant"
+                    className={`max-w-[88%] rounded-2xl border px-4 py-3 ${item.role === "assistant"
                         ? "justify-self-start rounded-bl-md border-[#d7e0dd] bg-[#eef5f3] text-[#30313a]"
                         : item.role === "user"
                           ? "justify-self-end rounded-br-md border-[#0e6f62] bg-[#118778]"
                           : "justify-self-center border-amber-200 bg-amber-50 text-amber-900"
-                    }`}
+                      }`}
                     key={item.itemId}
                   >
                     <span className={`mb-1 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider ${item.role === "user" ? "opacity-75" : "text-[#71817d]"}`}>

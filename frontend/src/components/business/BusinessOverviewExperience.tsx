@@ -72,9 +72,9 @@ function BusinessIcon({ index }: { index: number }) {
 
 function OperationsConsole() {
   const activeCalls = [
-    { name: "Inbound support", detail: "Order status resolved", time: "01:42", tone: "text-[#5b4ce6] bg-[#f3f1ff]" },
-    { name: "Lead qualification", detail: "Sales handoff ready", time: "02:18", tone: "text-[#5b4ce6] bg-[#f3f1ff]" },
-    { name: "Appointment booking", detail: "Calendar confirmed", time: "00:56", tone: "text-[#5b4ce6] bg-[#f3f1ff]" },
+    { name: "Inbound support", detail: "Order status resolved", time: "01:42", tone: "text-[#2563eb] bg-[#f3f1ff]" },
+    { name: "Lead qualification", detail: "Sales handoff ready", time: "02:18", tone: "text-[#2563eb] bg-[#f3f1ff]" },
+    { name: "Appointment booking", detail: "Calendar confirmed", time: "00:56", tone: "text-[#2563eb] bg-[#f3f1ff]" },
   ];
 
   return (
@@ -82,11 +82,11 @@ function OperationsConsole() {
       <div className="business-hero-console overflow-visible">
         <div className="flex h-12 items-center justify-between px-0">
           <div className="flex items-center gap-2">
-            <span className="business-console-mark grid size-7 place-items-center rounded-lg bg-[#5b4ce6] text-[10px] font-black text-white"><VozonVoiceMark /></span>
+            <span className="business-console-mark grid size-7 place-items-center rounded-lg bg-[#2563eb] text-[10px] font-black text-white"><VozonVoiceMark /></span>
             <span className="text-[10px] font-bold text-white/70">Voice operations</span>
           </div>
-          <span className="inline-flex items-center gap-2 rounded-full border border-violet-300/30 bg-violet-100 px-2.5 py-1 text-[9px] font-bold text-[#5b4ce6]">
-            <span className="size-1.5 rounded-full bg-[#5b4ce6] shadow-[0_0_8px_#5b4ce6]" /> All systems live
+          <span className="inline-flex items-center gap-2 rounded-full border border-violet-300/30 bg-violet-100 px-2.5 py-1 text-[9px] font-bold text-[#2563eb]">
+            <span className="size-1.5 rounded-full bg-[#2563eb] shadow-[0_0_8px_#2563eb]" /> All systems live
           </span>
         </div>
 
@@ -94,7 +94,7 @@ function OperationsConsole() {
           <div className="grid grid-cols-3 gap-2.5">
             {[["1,284", "Calls"], ["91%", "Resolved"], ["4.7", "Quality"]].map(([value, label], index) => (
               <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-3 sm:p-4" key={label}>
-                <strong className={`block text-lg font-semibold sm:text-2xl ${index === 1 ? "text-[#5b4ce6]" : "text-white"}`}>{value}</strong>
+                <strong className={`block text-lg font-semibold sm:text-2xl ${index === 1 ? "text-[#2563eb]" : "text-white"}`}>{value}</strong>
                 <span className="mt-1 block text-[9px] text-white/35">{label}</span>
               </div>
             ))}
@@ -104,7 +104,7 @@ function OperationsConsole() {
             <div className="rounded-2xl border border-white/[0.08] bg-black/20 p-4">
               <div className="flex items-center justify-between gap-3">
                 <div><strong className="block text-xs text-white/80">Live conversations</strong><span className="mt-1 block text-[9px] text-white/30">Across all business workflows</span></div>
-                <span className="text-[9px] font-bold text-[#5b4ce6]">12 active</span>
+                <span className="text-[9px] font-bold text-[#2563eb]">12 active</span>
               </div>
               <div className="mt-4 grid gap-2">
                 {activeCalls.map((call, index) => (
@@ -121,11 +121,11 @@ function OperationsConsole() {
               <div><strong className="block text-xs text-white/80">Outcome trend</strong><span className="mt-1 block text-[9px] text-white/30">Resolved calls, last 7 days</span></div>
               <div className="mt-6 flex h-28 items-end gap-1.5">
                 {[42, 58, 49, 70, 62, 84, 93].map((height, index) => (
-                  <span className={`flex-1 rounded-t-sm ${index === 6 ? "bg-[#5b4ce6]" : "bg-[#5b4ce6]/20"}`} key={index} style={{ height: `${height}%` }} />
+                  <span className={`flex-1 rounded-t-sm ${index === 6 ? "bg-[#2563eb]" : "bg-[#2563eb]/20"}`} key={index} style={{ height: `${height}%` }} />
                 ))}
               </div>
               <div className="mt-3 flex justify-between text-[8px] text-white/20"><span>Mon</span><span>Wed</span><span>Fri</span><span>Sun</span></div>
-              <div className="mt-4 rounded-lg border border-[#5b4ce6]/15 bg-[#f3f1ff] p-2.5 text-[9px] font-semibold text-[#5b4ce6]">Resolution improved 14%</div>
+              <div className="mt-4 rounded-lg border border-[#2563eb]/15 bg-[#f3f1ff] p-2.5 text-[9px] font-semibold text-[#2563eb]">Resolution improved 14%</div>
             </div>
           </div>
         </div>
@@ -245,7 +245,7 @@ export function BusinessOverviewExperience() {
             </div>
             <div className="flex flex-col justify-between border-t border-slate-200 bg-slate-950 p-8 text-white lg:border-l lg:border-t-0 sm:p-10">
               <div><p className="text-xs font-bold uppercase tracking-[0.15em] text-teal-300">Plan your rollout</p><h3 className="mt-5 text-2xl font-semibold">Build the right production setup from day one.</h3><p className="mt-4 text-sm leading-7 text-slate-400">Map call volume, systems, security needs, and human escalation paths with our solutions team.</p></div>
-              <Link className="mt-10 inline-flex min-h-12 w-fit items-center gap-2 rounded-full bg-[#5b4ce6] px-6 text-sm font-bold text-white shadow-[0_10px_24px_rgba(91,76,230,0.24)] transition hover:-translate-y-0.5 hover:bg-[#4d3ec9]" href="/contact">Talk to our team <ArrowIcon /></Link>
+              <Link className="mt-10 inline-flex min-h-12 w-fit items-center gap-2 rounded-full bg-[#2563eb] px-6 text-sm font-bold text-white shadow-[0_10px_24px_rgba(15,23,42,0.12)] transition hover:-translate-y-0.5 hover:bg-[#000000]" href="/contact">Talk to our team <ArrowIcon /></Link>
             </div>
           </div>
         </section>

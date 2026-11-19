@@ -376,266 +376,260 @@ function AssistantChat() {
         setShowUserSidebar={setShowUserSidebar}
       />
 
-      <section className="flex h-screen min-h-0 min-w-0 flex-col overflow-hidden">
-        {/* Workspace Breadcrumbs & Credits Bar (Clean, no redundant headers) */}
+      <section className="flex h-screen min-h-0 min-w-0 flex-col overflow-hidden bg-[#fafafa]">
+        {/* Workspace Breadcrumbs & Credits Bar */}
         <DashboardPageHeader workspaceBarOnly />
 
         <div className="relative flex min-h-0 flex-1">
-          <aside id="ask-vozon-history" className={`${historyOpen ? "flex" : "hidden"} absolute inset-y-0 right-0 z-30 w-[min(88vw,300px)] flex-col border-l border-[#e6e6e6] bg-[#f8f8f8] shadow-[-16px_0_40px_rgba(0,0,0,.13)] md:static md:order-2 ${historyVisible ? "md:flex" : "md:hidden"} md:w-[248px] md:shrink-0 md:shadow-none`} aria-label="Chat history">
-            <div className="flex items-center justify-between border-b border-[#e8e8e8] px-4 py-4">
-              <div><p className="m-0 text-[10px] font-bold uppercase tracking-[.18em] text-[#868686]">Your workspace</p><h2 className="m-0 mt-1 text-base font-semibold text-[#343434]">Chat history</h2></div>
-              <button type="button" className="rounded-lg px-2 py-1 text-xl text-[#747474] md:hidden" onClick={() => setHistoryOpen(false)} aria-label="Close chat history">×</button>
-              <button type="button" className="hidden rounded-lg border border-[#e0e0e0] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#5e5e5e] transition hover:bg-[#f0f0f0] md:inline-flex" onClick={toggleDesktopHistory} aria-label="Hide chat history" aria-controls="ask-vozon-history" aria-expanded="true">Hide</button>
+          <aside id="ask-vozon-history" className={`${historyOpen ? "flex" : "hidden"} absolute inset-y-0 right-0 z-30 w-[min(88vw,300px)] flex-col border-l border-[#eaeaea] bg-white shadow-lg md:static md:order-2 ${historyVisible ? "md:flex" : "md:hidden"} md:w-[248px] md:shrink-0 md:shadow-none`} aria-label="Chat history">
+            <div className="flex items-center justify-between border-b border-[#eaeaea] px-4 py-3.5">
+              <div><p className="m-0 text-[10px] font-medium uppercase tracking-[0.12em] text-[#71717a]">Your workspace</p><h2 className="m-0 mt-0.5 text-sm font-semibold text-[#171717]">Chat history</h2></div>
+              <button type="button" className="rounded-md px-2 py-1 text-lg text-[#71717a] md:hidden" onClick={() => setHistoryOpen(false)} aria-label="Close chat history">×</button>
+              <button type="button" className="hidden rounded-md border border-[#eaeaea] bg-white px-2.5 py-1 text-xs font-medium text-[#52525b] transition hover:bg-[#f4f4f5] hover:text-[#171717] md:inline-flex" onClick={toggleDesktopHistory} aria-label="Hide chat history" aria-controls="ask-vozon-history" aria-expanded="true">Hide</button>
             </div>
-            <button type="button" onClick={startNewChat} disabled={busy || Boolean(loadingChatId)} className="mx-3 mt-3 flex items-center justify-center gap-2 rounded-xl border border-[#d9d9d9] bg-white px-3 py-2.5 text-sm font-semibold text-[#4b4b4b] shadow-sm transition hover:border-[#b5b5b5] hover:bg-[#f8f8f8] disabled:opacity-50"><span className="text-lg leading-none">+</span> New chat</button>
-            <div className="min-h-0 flex-1 overflow-y-auto px-2 pb-4 pt-4">
-              <p className="m-0 px-2 pb-2 text-[10px] font-bold uppercase tracking-[.16em] text-[#999999]">Recent conversations</p>
-              {historyLoading && conversations.length === 0 ? <p className="px-2 text-xs text-[#838383]">Loading chats…</p> : null}
-              {!historyLoading && conversations.length === 0 && !historyError ? <p className="px-2 text-xs leading-5 text-[#838383]">Your conversations will appear here.</p> : null}
-              {historyError ? <p className="mx-2 mb-3 rounded-lg bg-neutral-100 px-2 py-2 text-xs text-neutral-800" role="alert">{historyError}</p> : null}
-              <div className="space-y-1">
+            <button type="button" onClick={startNewChat} disabled={busy || Boolean(loadingChatId)} className="mx-3 mt-3 flex h-8 items-center justify-center gap-1.5 rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#171717] transition hover:bg-[#f4f4f5] disabled:opacity-50"><span className="text-base leading-none">+</span> New chat</button>
+            <div className="min-h-0 flex-1 overflow-y-auto px-2 pb-4 pt-3">
+              <p className="m-0 px-2 pb-2 text-[10px] font-medium uppercase tracking-[0.12em] text-[#71717a]">Recent conversations</p>
+              {historyLoading && conversations.length === 0 ? <p className="px-2 text-xs text-[#71717a]">Loading chats…</p> : null}
+              {!historyLoading && conversations.length === 0 && !historyError ? <p className="px-2 text-xs leading-5 text-[#71717a]">Your conversations will appear here.</p> : null}
+              {historyError ? <p className="mx-2 mb-3 rounded-md bg-[#f4f4f5] px-2 py-2 text-xs text-[#171717]" role="alert">{historyError}</p> : null}
+              <div className="space-y-0.5">
                 {conversations.map((chat) => (
-                  <div key={chat.id} className={`group flex items-center gap-1 rounded-xl px-1 transition ${conversationId === chat.id ? "bg-[#ececec]" : "hover:bg-[#f1f1f1]"}`}>
-                    <button type="button" onClick={() => void openChat(chat.id)} disabled={busy || Boolean(loadingChatId)} className="min-w-0 flex-1 px-2 py-2.5 text-left disabled:opacity-50" aria-current={conversationId === chat.id ? "page" : undefined}>
-                      <span className="block truncate text-xs font-semibold text-[#404040]">{chat.title}</span>
-                      <span className="mt-1 block text-[10px] text-[#909090]">{new Date(chat.updatedAt).toLocaleDateString()}</span>
+                  <div key={chat.id} className={`group flex items-center gap-1 rounded-md px-1 transition ${conversationId === chat.id ? "bg-[#f4f4f5]" : "hover:bg-[#fafafa]"}`}>
+                    <button type="button" onClick={() => void openChat(chat.id)} disabled={busy || Boolean(loadingChatId)} className="min-w-0 flex-1 px-2 py-2 text-left disabled:opacity-50" aria-current={conversationId === chat.id ? "page" : undefined}>
+                      <span className="block truncate text-xs font-medium text-[#171717]">{chat.title}</span>
+                      <span className="mt-0.5 block text-[10px] text-[#71717a]">{new Date(chat.updatedAt).toLocaleDateString()}</span>
                     </button>
-                    <button type="button" onClick={() => void removeChat(chat.id)} disabled={busy || Boolean(loadingChatId)} className="rounded-lg px-2 py-1 text-xs text-[#989898] opacity-60 transition hover:bg-white hover:text-neutral-900 focus:opacity-100 group-hover:opacity-100 disabled:opacity-30" aria-label={`Delete chat: ${chat.title}`} title="Delete chat">×</button>
+                    <button type="button" onClick={() => void removeChat(chat.id)} disabled={busy || Boolean(loadingChatId)} className="rounded px-1.5 py-1 text-xs text-[#a1a1aa] opacity-60 transition hover:bg-white hover:text-[#171717] focus:opacity-100 group-hover:opacity-100 disabled:opacity-30" aria-label={`Delete chat: ${chat.title}`} title="Delete chat">×</button>
                   </div>
                 ))}
               </div>
-              {hasMoreHistory ? <button type="button" onClick={() => void loadMoreHistory()} disabled={historyLoading} className="mt-3 w-full rounded-lg px-3 py-2 text-xs font-semibold text-[#5d5d5d] hover:bg-[#eeeeee] disabled:opacity-50">{historyLoading ? "Loading…" : "Load more chats"}</button> : null}
+              {hasMoreHistory ? <button type="button" onClick={() => void loadMoreHistory()} disabled={historyLoading} className="mt-3 w-full rounded-md px-3 py-2 text-xs font-medium text-[#52525b] hover:bg-[#f4f4f5] disabled:opacity-50">{historyLoading ? "Loading…" : "Load more chats"}</button> : null}
             </div>
           </aside>
 
         {/* Main Conversation Container */}
-        <div className="relative flex min-h-0 min-w-0 flex-1 flex-col px-4 pb-3 pt-3 sm:px-6 md:order-1 lg:px-8">
-          <button type="button" className="mb-2 self-start rounded-lg border border-[#e3e3e3] bg-white px-3 py-1.5 text-xs font-semibold text-[#535353] md:hidden" onClick={() => setHistoryOpen(true)}>☰ &nbsp; Chat history</button>
-          {!historyVisible ? <button type="button" className="mb-2 hidden self-end rounded-lg border border-[#e0e0e0] bg-white px-3 py-1.5 text-xs font-semibold text-[#585858] shadow-sm transition hover:bg-[#f0f0f0] md:inline-flex" onClick={toggleDesktopHistory} aria-controls="ask-vozon-history" aria-expanded="false">Show chat history</button> : null}
-          {messages.length > 0 ? (
-            <div className="mb-3 flex items-center justify-between gap-4 border-b border-[#e9e9e9] pb-3">
-              <div className="flex items-center gap-3">
-                <span className="grid size-10 place-items-center rounded-2xl bg-[#343434] text-[#e6e6e6] shadow-[0_9px_22px_rgba(0,0,0,.2)]"><SparkIcon className="size-5" /></span>
-                <div><p className="m-0 text-[10px] font-bold uppercase tracking-[.2em] text-[#7c7c7c]">Workspace intelligence</p><h1 className="m-0 text-lg font-semibold tracking-tight text-[#323232]">Ask Vozon</h1></div>
-              </div>
-              <button
-                className="inline-flex items-center gap-1.5 rounded-full border border-[#dcdcdc] bg-white/90 px-3.5 py-2 text-xs font-semibold text-[#404040] shadow-[0_8px_22px_rgba(0,0,0,.08)] transition hover:-translate-y-0.5 hover:border-[#6d6d6d] hover:bg-[#f5f5f5]"
-                type="button"
-                onClick={startNewChat}
-                disabled={busy || Boolean(loadingChatId)}
-              >
-                <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 5v14M5 12h14" />
-                </svg>
-                New chat
-              </button>
+        <div className="relative flex min-h-0 min-w-0 flex-1 flex-col bg-[#fafafa] px-4 pb-4 pt-3 sm:px-6 md:order-1 lg:px-8">
+          <div className="flex items-center justify-between gap-2">
+            <button type="button" className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-xs font-medium text-[#171717] md:hidden" onClick={() => setHistoryOpen(true)}>Chat history</button>
+            <div className="ml-auto flex items-center gap-2">
+              {messages.length > 0 ? (
+                <button
+                  className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#eaeaea] bg-white px-3 text-xs font-medium text-[#171717] transition hover:bg-[#f4f4f5]"
+                  type="button"
+                  onClick={startNewChat}
+                  disabled={busy || Boolean(loadingChatId)}
+                >
+                  <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 5v14M5 12h14" />
+                  </svg>
+                  New chat
+                </button>
+              ) : null}
+              {!historyVisible ? (
+                <button
+                  type="button"
+                  className="hidden h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-xs font-medium text-[#171717] transition hover:bg-[#f4f4f5] md:inline-flex"
+                  onClick={toggleDesktopHistory}
+                  aria-controls="ask-vozon-history"
+                  aria-expanded="false"
+                >
+                  Show chat history
+                </button>
+              ) : null}
             </div>
-          ) : null}
-          {messages.length === 0 ? (
-            <div className="flex min-h-0 flex-1 flex-col justify-start gap-4 overflow-y-auto pb-5 pt-1 sm:gap-5">
-              <div className="ask-vozon-hero relative isolate shrink-0 overflow-hidden rounded-[26px] px-6 py-5 text-white sm:px-9 sm:py-7">
-                <div className="ask-vozon-orb ask-vozon-orb-one" aria-hidden="true" />
-                <div className="ask-vozon-orb ask-vozon-orb-two" aria-hidden="true" />
-                <div className="relative z-10 max-w-2xl">
-                  <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[.18em] text-neutral-100 backdrop-blur-xl">
-                    <span className="ask-vozon-live-dot size-1.5 rounded-full bg-[#e3e3e3]" /> Workspace intelligence
-                  </div>
-                  <p className="mb-2 text-sm font-medium text-[#d0d0d0]">{greeting}, {firstName}</p>
-                  <h1 className="m-0 max-w-xl text-3xl font-semibold leading-[1.1] tracking-[-.045em] sm:text-4xl">Turn every conversation<br /><span className="text-[#dddddd]">into a better next move.</span></h1>
-                  <p className="mb-0 mt-3 max-w-xl text-sm leading-6 text-[#d9d9d9]">Explore campaign results, discover who needs attention, and improve your agents with evidence from real calls.</p>
-                </div>
-                <span className="ask-vozon-hero-mark absolute -bottom-14 right-5 hidden select-none text-[240px] font-light leading-none text-white/[.04] sm:block" aria-hidden="true">✳</span>
-              </div>
+          </div>
 
-              <div className="shrink-0">
-                <div className="mb-3 flex flex-wrap items-end justify-between gap-2 px-1">
-                  <div><p className="m-0 text-[10px] font-bold uppercase tracking-[.2em] text-[#888888]">Start with a question</p><h2 className="m-0 mt-1 text-xl font-semibold tracking-tight text-[#323232]">Make your workspace clearer</h2></div>
-                  <span className="text-xs text-[#8a8a8a]">Grounded in your Vozon data</span>
-                </div>
-                <div className="grid gap-2.5 text-left sm:grid-cols-2 xl:grid-cols-3">
-                  {suggestions.map((item) => (
+          {messages.length === 0 ? (
+            <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-2 pb-12">
+              <div className="w-full max-w-[680px]">
+                <h1 className="mb-6 flex items-center justify-center gap-2.5 text-center text-2xl font-medium tracking-[-0.02em] text-[#171717] sm:text-3xl">
+                  <span className="text-[#2563eb]" aria-hidden="true">✳</span>
+                  <span>{greeting}, {firstName}</span>
+                </h1>
+
+                <form
+                  className="rounded-2xl border border-[#eaeaea] bg-white px-4 py-3 shadow-xs transition focus-within:border-[#d4d4d8]"
+                  onSubmit={(event) => void submitMessage(event)}
+                >
+                  <label className="sr-only" htmlFor="ask-vozon-input">
+                    Ask your personal AI assistant
+                  </label>
+                  <textarea
+                    ref={textareaRef}
+                    className="block max-h-40 min-h-[48px] w-full resize-none border-0 bg-transparent p-0 text-[15px] leading-relaxed text-[#171717] placeholder:text-[#a1a1aa] focus:outline-none"
+                    id="ask-vozon-input"
+                    maxLength={2000}
+                    placeholder="How can I help you today?"
+                    rows={2}
+                    value={draft}
+                    onChange={(event) => setDraft(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" && !event.shiftKey) {
+                        event.preventDefault();
+                        void submitMessage();
+                      }
+                    }}
+                  />
+                  <div className="mt-2 flex items-center justify-between gap-3 pt-1">
+                    <span className="inline-flex items-center gap-1.5 text-[11.5px] font-medium text-[#71717a]">
+                      <SparkIcon className="size-3.5 text-[#171717]" />
+                      Ask Vozon · Grounded in workspace data
+                    </span>
                     <button
-                      className="ask-vozon-suggestion group relative min-h-[116px] overflow-hidden rounded-[18px] border border-[#e6e6e6] bg-white/95 p-3.5 text-left disabled:opacity-60"
-                      type="button"
-                      key={item.title}
-                      disabled={busy}
-                      onClick={() => void submitMessage(undefined, item.prompt)}
+                      className={`inline-flex size-8 shrink-0 items-center justify-center rounded-full transition ${
+                        draft.trim() && !busy
+                          ? "bg-[#2563eb] text-white hover:bg-[#1d4ed8] cursor-pointer"
+                          : "bg-[#f4f4f5] text-[#a1a1aa] cursor-not-allowed"
+                      }`}
+                      type="submit"
+                      disabled={busy || !draft.trim()}
+                      title={draft.trim() ? "Send message (Enter)" : "Type a message to send"}
                     >
-                      <div className="flex items-start justify-between gap-2">
-                        <span className="grid size-8 place-items-center rounded-xl bg-[#f4f4f4] text-lg font-semibold text-[#5a5a5a] transition duration-300 group-hover:rotate-6 group-hover:scale-110" aria-hidden="true">
-                          {item.icon}
-                        </span>
-                        <svg
-                          className="size-4 text-[#b2b2b2] transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#6d6d6d]"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                        >
-                          <path d="M5 12h14M12 5l7 7-7 7" />
-                        </svg>
-                      </div>
-                      <span className="mt-2.5 block text-[9px] font-bold uppercase tracking-[.15em] text-[#8e8e8e]">{item.eyebrow}</span>
-                      <span className="mt-0.5 block text-sm font-semibold tracking-tight text-[#353535] transition-colors group-hover:text-[#595959]">
-                        {item.title}
-                      </span>
-                      <span className="mt-0.5 block text-xs leading-4 text-[#828282]">
-                        {item.detail}
-                      </span>
+                      <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 19V5M5 12l7-7 7 7" />
+                      </svg>
                     </button>
-                  ))}
-                </div>
+                  </div>
+                </form>
               </div>
             </div>
           ) : (
-            /* Active Message Thread */
-            <div className="min-h-0 flex-1 space-y-5 overflow-y-auto pb-5 pt-2" aria-live="polite">
-              {messages.map((message, index) => (
-                <div
-                  className={`animate-ai-message flex gap-3 ${
-                    message.role === "user" ? "justify-end" : "justify-start"
-                  }`}
-                  key={`${index}-${message.role}`}
-                >
-                  {message.role === "assistant" ? (
-                    <span className="mt-1 grid size-9 shrink-0 place-items-center rounded-2xl bg-[#343434] text-[#e7e7e7] shadow-[0_8px_20px_rgba(0,0,0,.2)]">
-                      <SparkIcon className="size-4" />
-                    </span>
-                  ) : null}
-
+            <>
+              {/* Active Message Thread */}
+              <div className="mx-auto min-h-0 w-full max-w-[740px] flex-1 space-y-5 overflow-y-auto pb-5 pt-4" aria-live="polite">
+                {messages.map((message, index) => (
                   <div
-                    className={`min-w-0 text-sm leading-relaxed ${
-                      message.role === "user"
-                        ? "max-w-[min(90%,42rem)] rounded-2xl rounded-br-sm bg-[#f0f0f0] px-4 py-2.5 text-[#404040]"
-                        : "group flex-1 py-1 pr-2 text-slate-800"
+                    className={`animate-ai-message flex gap-3 ${
+                      message.role === "user" ? "justify-end" : "justify-start"
                     }`}
+                    key={`${index}-${message.role}`}
                   >
-                    {message.role === "user" ? (
-                      <p className="m-0 whitespace-pre-wrap">{message.content}</p>
-                    ) : (
-                      <>
-                        <FormattedContent content={message.content} />
-                        {message.pendingAction ? (
-                          <div className="mt-5 overflow-hidden rounded-2xl border border-[#d9d9d9] bg-[#f9f9f9]">
-                            <div className="border-b border-[#e6e6e6] bg-[#f3f3f3] px-4 py-3">
-                              <p className="m-0 text-[10px] font-bold uppercase tracking-[.17em] text-[#6d6d6d]">Approval required</p>
-                              <h3 className="m-0 mt-1 text-base font-semibold text-[#343434]">{message.pendingAction.title}</h3>
-                              <p className="m-0 mt-1 text-xs text-[#717171]">{message.pendingAction.description}</p>
-                            </div>
-                            <dl className="m-0 grid gap-3 px-4 py-4 sm:grid-cols-2">
-                              {message.pendingAction.fields.map((field) => (
-                                <div className={field.label === "Instructions" ? "sm:col-span-2" : ""} key={field.label}>
-                                  <dt className="text-[10px] font-bold uppercase tracking-[.13em] text-[#838383]">{field.label}</dt>
-                                  <dd className="m-0 mt-1 max-h-36 overflow-auto whitespace-pre-wrap text-xs leading-5 text-[#404040]">{field.value}</dd>
+                    {message.role === "assistant" ? (
+                      <span className="mt-1 grid size-8 shrink-0 place-items-center rounded-lg bg-[#171717] text-white">
+                        <SparkIcon className="size-4" />
+                      </span>
+                    ) : null}
+
+                    <div
+                      className={`min-w-0 text-sm leading-relaxed ${
+                        message.role === "user"
+                          ? "max-w-[min(90%,42rem)] rounded-2xl rounded-br-sm bg-[#171717] px-4 py-2.5 text-white"
+                          : "group flex-1 py-1 pr-2 text-[#171717]"
+                      }`}
+                    >
+                      {message.role === "user" ? (
+                        <p className="m-0 whitespace-pre-wrap">{message.content}</p>
+                      ) : (
+                        <>
+                          <FormattedContent content={message.content} />
+                          {message.pendingAction ? (
+                            <div className="mt-5 overflow-hidden rounded-lg border border-[#eaeaea] bg-white">
+                              <div className="border-b border-[#eaeaea] bg-[#fafafa] px-4 py-3">
+                                <p className="m-0 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#71717a]">Approval required</p>
+                                <h3 className="m-0 mt-1 text-base font-semibold text-[#171717]">{message.pendingAction.title}</h3>
+                                <p className="m-0 mt-1 text-xs text-[#71717a]">{message.pendingAction.description}</p>
+                              </div>
+                              <dl className="m-0 grid gap-3 px-4 py-4 sm:grid-cols-2">
+                                {message.pendingAction.fields.map((field) => (
+                                  <div className={field.label === "Instructions" ? "sm:col-span-2" : ""} key={field.label}>
+                                    <dt className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#71717a]">{field.label}</dt>
+                                    <dd className="m-0 mt-1 max-h-36 overflow-auto whitespace-pre-wrap text-xs leading-5 text-[#171717]">{field.value}</dd>
+                                  </div>
+                                ))}
+                              </dl>
+                              <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#eaeaea] px-4 py-3">
+                                <span className="text-[11px] text-[#71717a]">Nothing changes until you approve.</span>
+                                <div className="flex gap-2">
+                                  <button className="h-8 rounded-md border border-[#eaeaea] bg-white px-3 text-xs font-medium text-[#171717] transition hover:bg-[#f4f4f5] disabled:opacity-50" type="button" disabled={Boolean(reviewingActionId)} onClick={() => void decideAction(message.pendingAction!.id, false)}>Cancel</button>
+                                  <button className="h-8 rounded-md bg-[#171717] px-3.5 text-xs font-medium text-white transition hover:bg-black disabled:opacity-50" type="button" disabled={Boolean(reviewingActionId)} onClick={() => void decideAction(message.pendingAction!.id, true)}>{reviewingActionId === message.pendingAction.id ? "Saving…" : "Approve change"}</button>
                                 </div>
-                              ))}
-                            </dl>
-                            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#e6e6e6] px-4 py-3">
-                              <span className="text-[11px] text-[#7e7e7e]">Nothing changes until you approve.</span>
-                              <div className="flex gap-2">
-                                <button className="rounded-xl border border-[#d8d8d8] bg-white px-3 py-2 text-xs font-semibold text-[#585858] transition hover:bg-[#f3f3f3] disabled:opacity-50" type="button" disabled={Boolean(reviewingActionId)} onClick={() => void decideAction(message.pendingAction!.id, false)}>Cancel</button>
-                                <button className="rounded-xl bg-[#575757] px-3.5 py-2 text-xs font-semibold text-white shadow-[0_6px_15px_rgba(0,0,0,.22)] transition hover:-translate-y-0.5 hover:bg-[#474747] disabled:opacity-50" type="button" disabled={Boolean(reviewingActionId)} onClick={() => void decideAction(message.pendingAction!.id, true)}>{reviewingActionId === message.pendingAction.id ? "Saving…" : "Approve change"}</button>
                               </div>
                             </div>
+                          ) : null}
+                          <div className="mt-2 flex items-center justify-end opacity-60 transition group-hover:opacity-100">
+                            <CopyButton text={message.content} />
                           </div>
-                        ) : null}
-                        <div className="mt-2 flex items-center justify-end opacity-60 transition group-hover:opacity-100">
-                          <CopyButton text={message.content} />
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
-              ))}
-
-              {/* Live Thinking / Workspace Query Indicator */}
-              {busy ? (
-                <div className="animate-ai-message flex items-start gap-3" role="status">
-                  <span className="animate-ai-glow mt-1 grid size-8 shrink-0 place-items-center rounded-xl border border-[#cccccc] bg-gradient-to-tr from-[#f4f4f4] to-[#eaeaea] text-[#6d6d6d] shadow-xs">
-                    <SparkIcon className="size-4" />
-                  </span>
-                  <div className="flex items-center gap-3 rounded-2xl rounded-tl-xs border border-[#e5e5e5] bg-white px-4 py-3 text-xs font-medium text-slate-600 shadow-sm">
-                    <div className="flex items-center gap-1.5">
-                      <span className="animate-ai-dot-1 size-2 rounded-full bg-[#6d6d6d]" />
-                      <span className="animate-ai-dot-2 size-2 rounded-full bg-[#6d6d6d]" />
-                      <span className="animate-ai-dot-3 size-2 rounded-full bg-[#6d6d6d]" />
+                        </>
+                      )}
                     </div>
-                    <span>Searching workspace data & generating response…</span>
                   </div>
-                </div>
-              ) : null}
+                ))}
 
-              {error ? (
-                <div className="animate-ai-message ml-11 rounded-xl border border-neutral-300 bg-neutral-100 px-4 py-3 text-xs font-medium text-neutral-800 shadow-xs" role="alert">
-                  {error}
-                </div>
-              ) : null}
+                {/* Live Thinking / Workspace Query Indicator */}
+                {busy ? (
+                  <div className="animate-ai-message flex items-start gap-3" role="status">
+                    <span className="mt-1 grid size-8 shrink-0 place-items-center rounded-lg border border-[#eaeaea] bg-white text-[#171717]">
+                      <SparkIcon className="size-4" />
+                    </span>
+                    <div className="flex items-center gap-3 rounded-xl border border-[#eaeaea] bg-white px-4 py-3 text-xs font-medium text-[#52525b]">
+                      <div className="flex items-center gap-1.5">
+                        <span className="animate-ai-dot-1 size-1.5 rounded-full bg-[#171717]" />
+                        <span className="animate-ai-dot-2 size-1.5 rounded-full bg-[#171717]" />
+                        <span className="animate-ai-dot-3 size-1.5 rounded-full bg-[#171717]" />
+                      </div>
+                      <span>Searching workspace data & generating response…</span>
+                    </div>
+                  </div>
+                ) : null}
 
-              <div ref={bottomRef} />
-            </div>
-          )}
+                {error ? (
+                  <div className="animate-ai-message ml-11 rounded-lg border border-[#eaeaea] bg-white px-4 py-3 text-xs font-medium text-[#171717]" role="alert">
+                    {error}
+                  </div>
+                ) : null}
 
-          {/* Floating Prompt Area with Claude/ChatGPT Style Seamless Design & Shadow */}
-          <div className="z-20 w-full shrink-0 border-t border-[#e7e7e7] bg-[#f9f9f9]/95 pt-3">
-            <form
-              className="ai-prompt-container ask-vozon-prompt relative rounded-[20px] border border-[#e3e3e3] bg-white/95 px-3.5 py-2.5 backdrop-blur-xl sm:px-4"
-              onSubmit={(event) => void submitMessage(event)}
-            >
-              <label className="sr-only" htmlFor="ask-vozon-input">
-                Ask your personal AI assistant
-              </label>
-
-              {/* Completely borderless, seamless textarea */}
-              <textarea
-                ref={textareaRef}
-                className="ai-prompt-textarea block max-h-32 min-h-[36px] w-full text-[15px] leading-relaxed text-[#202020] placeholder:text-[#9c9c9c] sm:text-base"
-                id="ask-vozon-input"
-                maxLength={2000}
-                placeholder="Ask about campaigns, follow ups, calls, or an agent…"
-                rows={1}
-                value={draft}
-                onChange={(event) => setDraft(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" && !event.shiftKey) {
-                    event.preventDefault();
-                    void submitMessage();
-                  }
-                }}
-              />
-
-              {/* Seamless Action Bar with Claude-style Round Send Button */}
-              <div className="mt-1 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f4f4f4] px-3 py-1 text-xs font-semibold text-[#606060]">
-                    <SparkIcon className="size-3 text-[#6d6d6d]" />
-                    Connected to your workspace
-                  </span>
-                  <span className="hidden text-xs text-[#9b9b9b] sm:inline">
-                    Press ↵ to send · Shift+↵ for newline
-                  </span>
-                </div>
-
-                <button
-                  className={`inline-flex size-9 shrink-0 items-center justify-center rounded-full transition-all duration-200 ${
-                    draft.trim() && !busy
-                      ? "bg-[#6d6d6d] text-white shadow-md shadow-[#6d6d6d]/30 hover:scale-105 hover:bg-[#595959] active:scale-95 cursor-pointer"
-                      : "bg-slate-100 text-slate-400 cursor-not-allowed opacity-60"
-                  }`}
-                  type="submit"
-                  disabled={busy || !draft.trim()}
-                  title={draft.trim() ? "Send message (Enter)" : "Type a message to send"}
-                >
-                  <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 19V5M5 12l7-7 7 7" />
-                  </svg>
-                </button>
+                <div ref={bottomRef} />
               </div>
-            </form>
 
-            <p className="mx-auto mb-0 mt-1 text-center text-[10px] leading-4 text-[#969696]">
-              Grounded in workspace data · Agent changes require your approval
-            </p>
-          </div>
+              {/* Anchored Prompt Box during active chat */}
+              <div className="z-20 mx-auto w-full max-w-[740px] shrink-0 pt-2">
+                <form
+                  className="rounded-2xl border border-[#eaeaea] bg-white px-4 py-2.5 shadow-xs transition focus-within:border-[#d4d4d8]"
+                  onSubmit={(event) => void submitMessage(event)}
+                >
+                  <label className="sr-only" htmlFor="ask-vozon-input">
+                    Ask your personal AI assistant
+                  </label>
+                  <textarea
+                    ref={textareaRef}
+                    className="block max-h-32 min-h-[36px] w-full resize-none border-0 bg-transparent p-0 text-[15px] leading-relaxed text-[#171717] placeholder:text-[#a1a1aa] focus:outline-none"
+                    id="ask-vozon-input"
+                    maxLength={2000}
+                    placeholder="Reply to Ask Vozon…"
+                    rows={1}
+                    value={draft}
+                    onChange={(event) => setDraft(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" && !event.shiftKey) {
+                        event.preventDefault();
+                        void submitMessage();
+                      }
+                    }}
+                  />
+                  <div className="mt-1 flex items-center justify-between gap-3">
+                    <span className="text-[11px] text-[#71717a]">
+                      Press ↵ to send · Shift+↵ for newline
+                    </span>
+                    <button
+                      className={`inline-flex size-8 shrink-0 items-center justify-center rounded-full transition ${
+                        draft.trim() && !busy
+                          ? "bg-[#2563eb] text-white hover:bg-[#1d4ed8] cursor-pointer"
+                          : "bg-[#f4f4f5] text-[#a1a1aa] cursor-not-allowed"
+                      }`}
+                      type="submit"
+                      disabled={busy || !draft.trim()}
+                      title={draft.trim() ? "Send message (Enter)" : "Type a message to send"}
+                    >
+                      <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 19V5M5 12l7-7 7 7" />
+                      </svg>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </>
+          )}
         </div>
         </div>
       </section>

@@ -1,9 +1,11 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { FormEvent, useEffect, useRef, useState } from "react";
 
 import { API_URL } from "@/lib/apiBase";
+import "@/app/business/industries/healthcare/healthcare.css";
+import "@/components/company/CompanyEditorial.css";
 
 const salesEmail = "hello@vozon.ai";
 
@@ -219,27 +221,59 @@ try {
 
 }
 
-return ( <div id="contact-page" className="overflow-hidden bg-white text-black"> <section className="relative bg-white px-5 pb-16 pt-28 sm:px-8 sm:pt-32 lg:min-h-screen lg:px-12 lg:pb-14 lg:pt-24"> <div className="relative mx-auto max-w-[1240px]"> <nav
+return ( <div id="contact-page" className="cmp-page overflow-hidden bg-[#f8f9f9] text-[#17191d]"> <section className="relative bg-[#f8f9f9] px-5 pb-16 pt-28 sm:px-8 sm:pt-32 lg:px-12 lg:pb-14 lg:pt-28"> <div className="relative mx-auto max-w-[1200px]"> <nav
          aria-label="Breadcrumb"
-         className="mb-7 flex items-center gap-2 text-xs font-medium text-black lg:mb-5"
-       > <Link className="transition hover:text-black" href="/">
+         className="hcr-breadcrumb mb-4"
+       > <Link href="/">
 Home </Link>
-
-
         <span aria-hidden="true">/</span>
-
-        <span className="text-black">Contact</span>
+        <span>Contact</span>
       </nav>
 
-      <header className="contact-page-hero mx-auto mb-12 max-w-4xl text-center sm:mb-16">
-        <p className="contact-page-kicker">GET IN TOUCH</p>
-        <h1 className="mx-auto mt-5 max-w-4xl text-[clamp(2.4rem,4.4vw,4.5rem)] font-extrabold leading-[1.08] tracking-[-0.04em]">
-          Let&apos;s start a conversation.
-        </h1>
-        <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-[#62666c] sm:text-lg">
-          Tell us about your voice AI goals or plans to offer the platform under your own brand. We&apos;ll help you plan the right workflow, integrations, and rollout.
-        </p>
-      </header>
+      <div className="cmp-hero-stage mb-12">
+        <div className="cmp-hero-grid">
+          <div className="cmp-hero-left">
+            <p className="hcr-kicker">GET IN TOUCH · SALES &amp; SUPPORT</p>
+            <h1>Let&apos;s start a conversation.</h1>
+            <p className="cmp-hero-lead">
+              Tell us about the conversations you want to improve, whether by phone, WhatsApp, or website chat. We&apos;ll help you map a sub-88ms production workflow.
+            </p>
+            <div className="cmp-hero-actions">
+              <a href="#contact-form" className="cmp-btn-primary">
+                Send a message <span aria-hidden="true">&#8595;</span>
+              </a>
+              <Link href="/partners" className="cmp-btn-secondary">
+                Partner inquiries <span aria-hidden="true">&#8599;</span>
+              </Link>
+            </div>
+          </div>
+
+          <div className="cmp-ledger" aria-label="Direct contact channels">
+            <div className="cmp-ledger-head">
+              <span>DIRECT CHANNELS</span>
+              <span className="cmp-ledger-badge">
+                <i aria-hidden="true" /> &lt; 4h Response SLA
+              </span>
+            </div>
+            <a href="mailto:hello@vozon.ai" className="cmp-ledger-row">
+              <span>Enterprise &amp; Sales</span>
+              <strong>hello@vozon.ai</strong>
+            </a>
+            <a href="tel:+917892518414" className="cmp-ledger-row">
+              <span>Phone Line</span>
+              <strong>+91 78925 18414</strong>
+            </a>
+            <div className="cmp-ledger-row">
+              <span>Engineering Hub</span>
+              <strong>Bengaluru, India</strong>
+            </div>
+            <div className="cmp-ledger-row">
+              <span>North America Hub</span>
+              <strong>San Francisco, CA</strong>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div className="contact-page-layout grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-start xl:gap-12">
         <aside className="contact-page-support">

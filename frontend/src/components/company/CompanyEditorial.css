@@ -1,0 +1,261 @@
+/* Shared clean editorial layout for Company pages (/about, /career, /partners, /contact).
+   Matches the Solution page typography, color tokens (#f8f9f9, #17191d, #dfe1e3), and compact heading scale. */
+
+.cmp-page {
+  font-family: var(--font-site-sans), ui-sans-serif, system-ui, sans-serif;
+  color: #17191d;
+}
+
+/* Override oversized 72px/54px global marketing headings so Company pages stay compact & refined like Solution pages */
+.marketing-site.marketing-site .cmp-page h1,
+.cmp-page h1 {
+  font-size: clamp(32px, 3.3vw, 46px) !important;
+  font-weight: 550 !important;
+  line-height: 1.09 !important;
+  letter-spacing: -0.045em !important;
+  color: #17191d;
+  margin: 12px 0 16px;
+}
+
+.marketing-site.marketing-site .cmp-page h2,
+.cmp-page h2 {
+  font-size: clamp(24px, 2.3vw, 34px) !important;
+  font-weight: 550 !important;
+  line-height: 1.12 !important;
+  letter-spacing: -0.04em !important;
+  color: #17191d;
+}
+
+.cmp-page h3 {
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.025em !important;
+  color: #17191d;
+}
+
+/* Compact 2-Column Hero Stage (eliminates vacant empty space while keeping zero workflow diagrams) */
+.cmp-hero {
+  padding-top: 108px;
+  padding-bottom: 56px;
+}
+
+.cmp-hero-stage {
+  position: relative;
+  margin-top: 18px;
+  padding: clamp(32px, 4vw, 56px);
+  border: 1px solid #dfe1e3;
+  border-radius: 16px;
+  background-color: #f2f3f5;
+  background-image: radial-gradient(#b8bcc2 0.8px, transparent 0.8px);
+  background-size: 10px 10px;
+}
+
+.cmp-hero-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: clamp(28px, 4vw, 56px);
+  align-items: center;
+}
+
+.cmp-hero-left .hcr-kicker {
+  color: #2457d6;
+  margin-bottom: 10px;
+}
+
+.cmp-hero-lead {
+  font-size: 16px !important;
+  line-height: 1.62 !important;
+  color: #525866;
+  max-width: 540px;
+  margin: 0 0 24px;
+}
+
+.cmp-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.cmp-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 22px;
+  border-radius: 999px;
+  background: #17191d;
+  color: #ffffff !important;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid #17191d;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.cmp-btn-primary:hover {
+  background: #2457d6;
+  border-color: #2457d6;
+  transform: translateY(-1px);
+}
+
+.cmp-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 11px 20px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #17191d !important;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid #d7d9db;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.cmp-btn-secondary:hover {
+  border-color: #17191d;
+  transform: translateY(-1px);
+}
+
+/* Right Column: Clean Typographic Ledger / Index Card */
+.cmp-ledger {
+  background: #ffffff;
+  border: 1px solid #d7d9db;
+  border-radius: 14px;
+  padding: 24px 26px;
+  box-shadow: 0 14px 34px rgba(17, 18, 20, 0.05);
+}
+
+.cmp-ledger-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 14px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid #e7e9ec;
+}
+
+.cmp-ledger-head span {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: #777b80;
+  text-transform: uppercase;
+}
+
+.cmp-ledger-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #15803d !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+}
+
+.cmp-ledger-badge i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #16a34a;
+  display: inline-block;
+}
+
+.cmp-ledger-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding: 13px 0;
+  border-bottom: 1px solid #eff1f3;
+}
+
+.cmp-ledger-row:last-child {
+  border-bottom: 0;
+  padding-bottom: 4px;
+}
+
+.cmp-ledger-row span {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6c7075;
+}
+
+.cmp-ledger-row strong {
+  font-size: 13px;
+  font-weight: 600;
+  color: #17191d;
+  text-align: right;
+}
+
+.cmp-ledger-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 0;
+  border-bottom: 1px solid #eff1f3;
+  color: inherit;
+  transition: transform 0.15s ease;
+}
+
+.cmp-ledger-link:last-child {
+  border-bottom: 0;
+  padding-bottom: 4px;
+}
+
+.cmp-ledger-link:hover {
+  transform: translateX(3px);
+}
+
+.cmp-ledger-link strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #17191d;
+}
+
+.cmp-ledger-link small {
+  display: block;
+  font-size: 11.5px;
+  color: #6c7075;
+  margin-top: 2px;
+}
+
+.cmp-ledger-link span {
+  font-size: 12px;
+  font-weight: 700;
+  color: #2457d6;
+  white-space: nowrap;
+}
+
+/* Override section spacing inside cmp-page so nothing feels stretched or empty */
+.cmp-page .sln-audiences {
+  padding-top: 64px;
+  padding-bottom: 64px;
+}
+
+.cmp-page .sln-audiences > h2 {
+  margin: 12px 0 34px;
+}
+
+.cmp-page .hcr-platform {
+  padding: 64px 0;
+}
+
+.cmp-page .hcr-launch {
+  padding: 64px 0;
+}
+
+.cmp-page .hcr-faq {
+  padding: 52px 0 72px;
+}
+
+@media (max-width: 900px) {
+  .cmp-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}

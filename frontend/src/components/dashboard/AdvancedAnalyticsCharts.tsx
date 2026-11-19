@@ -22,22 +22,22 @@ import {
 import type { AgentSummary, AnalyticsOverview } from "@/lib/voice";
 
 const COLORS = [
-  "#118778",
-  "#0e6f62",
-  "#a855f7",
-  "#f59e0b",
-  "#ef5d7a",
-  "#108D82",
+  "#2563eb",
+  "#059669",
+  "#7c3aed",
+  "#d97706",
+  "#e11d48",
+  "#0891b2",
 ];
 const tooltipStyle = {
   background: "#ffffff",
-  border: "1px solid #dfe7e4",
-  borderRadius: 12,
-  boxShadow: "0 18px 48px rgba(39,45,94,.16)",
-  color: "#111827",
+  border: "1px solid #eaeaea",
+  borderRadius: 8,
+  boxShadow: "0 8px 24px rgba(0,0,0,.08)",
+  color: "#171717",
   fontSize: 12,
 };
-const axis = { fill: "#71817d", fontSize: 10, fontWeight: 500 };
+const axis = { fill: "#71717a", fontSize: 10, fontWeight: 500 };
 
 function Area(props: ComponentProps<typeof ReArea>) {
   return <ReArea {...props} isAnimationActive={false} />;
@@ -64,13 +64,13 @@ function ChartCard({
 }) {
   return (
     <article
-      className={`min-w-0 overflow-hidden bg-white p-5 sm:p-6 ${className}`}
+      className={`min-w-0 overflow-hidden bg-white p-4 sm:p-5 ${className}`}
     >
-      <div className="mb-4">
-        <h2 className="text-[15px] font-semibold tracking-[-.01em] text-[#171923]">
+      <div className="mb-3.5">
+        <h2 className="text-[13.5px] font-semibold tracking-[-0.01em] text-[#171717]">
           {title}
         </h2>
-        <p className="mt-1 text-xs leading-5 text-[#71817d]">{subtitle}</p>
+        <p className="mt-0.5 text-[11.5px] leading-5 text-[#71717a]">{subtitle}</p>
       </div>
       {children}
     </article>
@@ -79,7 +79,7 @@ function ChartCard({
 
 function EmptyChart() {
   return (
-    <div className="grid h-[260px] place-items-center rounded-xl border border-dashed border-[#dfe7e4] bg-[#fafcfb] text-xs text-[#84938f]">
+    <div className="grid h-[240px] place-items-center rounded-lg border border-dashed border-[#eaeaea] bg-[#fafafa] text-[12px] text-[#71717a]">
       Data appears after your first calls
     </div>
   );
@@ -124,36 +124,34 @@ function AgentPerformanceTooltip({
   const row = payload?.[0]?.payload;
   if (!active || !row) return null;
   return (
-    <div className="min-w-56 rounded-xl border border-[#dfe7e4] bg-white p-3 shadow-[0_18px_48px_rgba(39,45,94,.16)]">
+    <div className="min-w-52 rounded-lg border border-[#eaeaea] bg-white p-3 shadow-lg">
       <div className="flex items-center justify-between gap-3">
-        <strong className="text-sm">{row.fullName}</strong>
-        <span
-          className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${row.active ? "bg-[#edf7f4] text-[#123d35]" : row.status === "Live" ? "bg-emerald-50 text-emerald-700" : row.status === "Paused" ? "bg-amber-50 text-amber-700" : "bg-slate-100 text-slate-600"}`}
-        >
+        <strong className="text-[12.5px] text-[#171717]">{row.fullName}</strong>
+        <span className="rounded-full border border-[#eaeaea] bg-[#fafafa] px-2 py-0.5 text-[10px] font-medium text-[#171717]">
           {row.active ? "On a call" : row.status}
         </span>
       </div>
-      <span className="mt-1 block text-xs text-[#84938f]">
+      <span className="mt-1 block text-[11px] text-[#71717a]">
         {row.phone || "No phone route"}
       </span>
-      <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-        <span className="rounded-lg bg-[#f7f9f8] p-2 text-[#686c7e]">
-          Total<strong className="mt-1 block text-sm">{row.calls}</strong>
+      <div className="mt-2.5 grid grid-cols-2 gap-1.5 text-[11px]">
+        <span className="rounded border border-[#eaeaea] bg-[#fafafa] p-2 text-[#52525b]">
+          Total<strong className="mt-0.5 block text-[13px] text-[#171717]">{row.calls}</strong>
         </span>
-        <span className="rounded-lg bg-emerald-50 p-2 text-emerald-700">
+        <span className="rounded border border-[#eaeaea] bg-[#fafafa] p-2 text-[#52525b]">
           Completed
-          <strong className="mt-1 block text-sm">{row.completed}</strong>
+          <strong className="mt-0.5 block text-[13px] text-[#171717]">{row.completed}</strong>
         </span>
-        <span className="rounded-lg bg-rose-50 p-2 text-rose-700">
+        <span className="rounded border border-[#eaeaea] bg-[#fafafa] p-2 text-[#52525b]">
           Not completed
-          <strong className="mt-1 block text-sm">{row.incomplete}</strong>
+          <strong className="mt-0.5 block text-[13px] text-[#171717]">{row.incomplete}</strong>
         </span>
-        <span className="rounded-lg bg-[#edf7f4] p-2 text-[#123d35]">
+        <span className="rounded border border-[#eaeaea] bg-[#fafafa] p-2 text-[#52525b]">
           Success rate
-          <strong className="mt-1 block text-sm">{row.completion}%</strong>
+          <strong className="mt-0.5 block text-[13px] text-[#171717]">{row.completion}%</strong>
         </span>
       </div>
-      <span className="mt-3 block text-xs text-[#71817d]">
+      <span className="mt-2 block text-[11px] text-[#71717a]">
         Talk time: {row.talkTime}
       </span>
     </div>
@@ -199,63 +197,62 @@ function AgentPerformanceCommandCenter({
         right.calls - left.calls ||
         left.fullName.localeCompare(right.fullName),
     );
-  const chartHeight = Math.max(360, chartRows.length * 43);
+  const chartHeight = Math.max(320, chartRows.length * 40);
   const liveCount = agents.filter((agent) => agent.status === "Live").length;
   const routedCount = agents.filter((agent) => Boolean(agent.phone)).length;
 
   return (
-    <section className="dashboard-flat-panel overflow-hidden bg-white">
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#e5e7ef] px-5 py-4">
+    <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#eaeaea] px-4 py-3.5">
         <div>
           <div className="flex items-center gap-2">
-            <span className="size-2 rounded-full bg-[#118778] shadow-[0_0_0_4px_rgba(17,135,120,.12)]" />
-            <h2 className="text-[15px] font-semibold">Agent performance</h2>
+            <span className="size-2 rounded-full bg-[#2563eb]" />
+            <h2 className="text-[13.5px] font-semibold text-[#171717]">Agent performance</h2>
           </div>
-          <p className="mt-1 text-xs text-[#71817d]">
-            Compare every agent by completed conversations, volume, routing, and
-            live availability.
+          <p className="mt-0.5 text-[11.5px] text-[#71717a]">
+            Compare every agent by completed conversations, volume, routing, and live availability.
           </p>
         </div>
-        <div className="flex flex-wrap gap-2 text-[11px] font-semibold">
-          <span className="rounded-full bg-emerald-50 px-3 py-1.5 text-emerald-700">
+        <div className="flex flex-wrap gap-1.5 text-[11px] font-medium">
+          <span className="rounded-full border border-[#eaeaea] bg-[#fafafa] px-2.5 py-1 text-[#171717]">
             {liveCount} live
           </span>
-          <span className="rounded-full bg-[#edf7f4] px-3 py-1.5 text-[#123d35]">
+          <span className="rounded-full border border-[#eaeaea] bg-[#fafafa] px-2.5 py-1 text-[#52525b]">
             {activeAgentIds.length} on calls
           </span>
-          <span className="rounded-full bg-slate-100 px-3 py-1.5 text-slate-600">
+          <span className="rounded-full border border-[#eaeaea] bg-[#fafafa] px-2.5 py-1 text-[#52525b]">
             {routedCount}/{agents.length} routed
           </span>
         </div>
       </div>
-      <div className="flex flex-wrap items-center gap-5 border-b border-[#ececf3] bg-[#fafcfb] px-5 py-3 text-xs text-[#686c7e]">
-        <span className="inline-flex items-center gap-2">
-          <i className="size-2.5 rounded-sm bg-gradient-to-r from-[#118778] via-[#a855f7] to-[#22c98f]" />
-          Completed · unique agent colour
+      <div className="flex flex-wrap items-center gap-5 border-b border-[#eaeaea] bg-[#fafafa] px-4 py-2.5 text-[11.5px] text-[#52525b]">
+        <span className="inline-flex items-center gap-1.5">
+          <i className="size-2.5 rounded-xs bg-[#2563eb]" />
+          Completed
         </span>
-        <span className="inline-flex items-center gap-2">
-          <i className="size-2.5 rounded-sm bg-[#ef5d7a]" />
+        <span className="inline-flex items-center gap-1.5">
+          <i className="size-2.5 rounded-xs bg-[#cbd5e1]" />
           Not completed
         </span>
-        <span className="ml-auto hidden text-[#84938f] sm:block">
+        <span className="ml-auto hidden text-[#71717a] sm:block">
           Sorted by active call, then call volume
         </span>
       </div>
       {!chartRows.length ? (
-        <div className="grid h-80 place-items-center text-sm text-[#84938f]">
+        <div className="grid h-64 place-items-center text-[12px] text-[#71717a]">
           Agent performance appears when the workspace is ready.
         </div>
       ) : (
-        <div className="max-h-[680px] overflow-y-auto overflow-x-hidden px-3 py-4 sm:px-5">
+        <div className="max-h-[600px] overflow-y-auto overflow-x-hidden px-3 py-4 sm:px-4">
           <div style={{ height: chartHeight }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={chartRows}
                 layout="vertical"
-                margin={{ top: 4, right: 28, bottom: 8, left: 20 }}
+                margin={{ top: 4, right: 24, bottom: 8, left: 16 }}
                 barCategoryGap="28%"
               >
-                <CartesianGrid stroke="#ececf4" horizontal={false} />
+                <CartesianGrid stroke="#eaeaea" horizontal={false} />
                 <XAxis
                   type="number"
                   tick={axis}
@@ -266,31 +263,28 @@ function AgentPerformanceCommandCenter({
                 <YAxis
                   type="category"
                   dataKey="name"
-                  width={164}
-                  tick={{ ...axis, fill: "#454958", fontSize: 11 }}
+                  width={160}
+                  tick={{ ...axis, fill: "#171717", fontSize: 11 }}
                   tickLine={false}
                   axisLine={false}
                 />
                 <Tooltip
                   content={<AgentPerformanceTooltip />}
-                  cursor={{ fill: "rgba(17,135,120,.045)" }}
+                  cursor={{ fill: "#f4f4f5" }}
                 />
                 <Bar
                   dataKey="completed"
                   name="Completed"
                   stackId="calls"
-                  radius={[7, 0, 0, 7]}
-                >
-                  {chartRows.map((row) => (
-                    <Cell key={row.id} fill={row.color} />
-                  ))}
-                </Bar>
+                  fill="#2563eb"
+                  radius={[4, 0, 0, 4]}
+                />
                 <Bar
                   dataKey="incomplete"
                   name="Not completed"
                   stackId="calls"
-                  fill="#ef5d7a"
-                  radius={[0, 7, 7, 0]}
+                  fill="#cbd5e1"
+                  radius={[0, 4, 4, 0]}
                 />
               </BarChart>
             </ResponsiveContainer>
@@ -366,58 +360,57 @@ export function AdvancedAnalyticsCharts({
     {
       label: "Total calls",
       value: Math.round(data.summary.totalCalls).toLocaleString("en-IN"),
-      tone: "text-[#171923]",
+      accent: "#2563eb",
     },
     {
       label: "Completion",
       value: `${data.summary.completionRate}%`,
-      tone: "text-[#0e6f62]",
+      accent: "#059669",
     },
     {
       label: "Talk time",
       value: periodDuration(data.summary.totalDurationSeconds),
       detail: `${periodDuration(averageDuration)} avg`,
-      tone: "text-[#171923]",
+      accent: "#7c3aed",
     },
     {
       label: "Active now",
       value: Math.round(data.summary.activeCalls).toLocaleString("en-IN"),
-      tone: "text-emerald-600",
+      accent: "#0891b2",
     },
     {
       label: "Needs review",
       value: Math.round(data.summary.failedCalls).toLocaleString("en-IN"),
-      tone: "text-[#d94f6d]",
+      accent: "#d97706",
     },
     {
       label: days === 1 ? "Today average" : "Daily average",
       value: Math.round(
         data.summary.totalCalls / Math.max(1, days),
       ).toLocaleString("en-IN"),
-      tone: "text-[#171923]",
+      accent: "#4f46e5",
     },
   ];
 
   return (
-    <section className="space-y-5 text-[#171923]">
-      <section className="dashboard-flat-panel overflow-hidden bg-white">
-        <div className="grid grid-cols-2 gap-3 px-4 py-4 sm:grid-cols-3 sm:px-5 xl:grid-cols-6">
+    <section className="space-y-4 text-[#171717]">
+      <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white">
+        <div className="grid grid-cols-2 gap-2.5 px-4 py-3.5 sm:grid-cols-3 xl:grid-cols-6">
           {periodMetrics.map((metric) => (
             <div
-              className="relative overflow-hidden rounded-xl border border-[#e1e9e6] bg-white px-4 py-4 shadow-[0_6px_18px_rgba(17,62,53,0.05)]"
+              className="rounded-md border border-[#eaeaea] bg-[#fafafa] px-3.5 py-3"
               key={metric.label}
+              style={{ borderTop: `2px solid ${metric.accent}` }}
             >
-              <span className="absolute inset-y-3 left-0 w-1 rounded-r-full bg-[#118778]" aria-hidden="true" />
-              <span className="block text-[10px] font-semibold uppercase tracking-[.12em] text-[#71817d]">
+              <span className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-[#71717a]">
+                <span className="size-1.5 rounded-full" style={{ background: metric.accent }} />
                 {metric.label}
               </span>
-              <strong
-                className={`mt-1 block text-lg font-semibold tracking-[-.025em] ${metric.tone}`}
-              >
+              <strong className="mt-1 block text-[16px] font-semibold tracking-[-0.02em] text-[#171717]">
                 {loading ? "—" : metric.value}
               </strong>
               {"detail" in metric && metric.detail ? (
-                <span className="mt-0.5 block text-[10px] text-[#84938f]">
+                <span className="mt-0.5 block text-[10px] text-[#71717a]">
                   {metric.detail}
                 </span>
               ) : null}
@@ -425,7 +418,7 @@ export function AdvancedAnalyticsCharts({
           ))}
         </div>
 
-        <div className="grid gap-px border-t border-[#e5e7ef] bg-[#e5e7ef] xl:grid-cols-[minmax(0,1.65fr)_minmax(320px,.75fr)]">
+        <div className="grid gap-px border-t border-[#eaeaea] bg-[#eaeaea] xl:grid-cols-[minmax(0,1.65fr)_minmax(300px,.75fr)]">
           <ChartCard
             title="Conversation momentum"
             subtitle="Total demand compared with completed calls"
@@ -433,56 +426,37 @@ export function AdvancedAnalyticsCharts({
             {!timeline.length ? (
               <EmptyChart />
             ) : (
-              <div className="h-[320px]">
+              <div className="h-[280px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <ComposedChart
                     data={timeline}
                     margin={{ top: 10, right: 8, left: -20, bottom: 0 }}
                   >
                     <defs>
-                      <linearGradient
-                        id="callsArea"
-                        x1="0"
-                        y1="0"
-                        x2="0"
-                        y2="1"
-                      >
-                        <stop
-                          offset="0"
-                          stopColor="#118778"
-                          stopOpacity={0.32}
-                        />
-                        <stop
-                          offset="1"
-                          stopColor="#118778"
-                          stopOpacity={0.02}
-                        />
+                      <linearGradient id="callsArea" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0" stopColor="#2563eb" stopOpacity={0.22} />
+                        <stop offset="1" stopColor="#2563eb" stopOpacity={0.01} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid stroke="#ececf4" vertical={false} />
-                    <XAxis
-                      dataKey="label"
-                      tick={axis}
-                      tickLine={false}
-                      axisLine={false}
-                    />
+                    <CartesianGrid stroke="#eaeaea" vertical={false} />
+                    <XAxis dataKey="label" tick={axis} tickLine={false} axisLine={false} />
                     <YAxis tick={axis} tickLine={false} axisLine={false} />
                     <Tooltip contentStyle={tooltipStyle} />
-                    <Legend wrapperStyle={{ fontSize: 11, color: "#6b6f82" }} />
+                    <Legend wrapperStyle={{ fontSize: 11, color: "#52525b" }} />
                     <Area
                       type="monotone"
                       dataKey="calls"
                       name="Total calls"
-                      stroke="#118778"
-                      strokeWidth={2.5}
+                      stroke="#2563eb"
+                      strokeWidth={2}
                       fill="url(#callsArea)"
                     />
                     <Line
                       type="monotone"
                       dataKey="completed"
                       name="Completed"
-                      stroke="#0e6f62"
-                      strokeWidth={2.2}
+                      stroke="#059669"
+                      strokeWidth={2}
                       dot={false}
                     />
                   </ComposedChart>
@@ -494,7 +468,7 @@ export function AdvancedAnalyticsCharts({
             {!hasCalls ? (
               <EmptyChart />
             ) : (
-              <div className="h-[250px]">
+              <div className="h-[220px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
@@ -503,10 +477,10 @@ export function AdvancedAnalyticsCharts({
                       nameKey="name"
                       cx="50%"
                       cy="48%"
-                      innerRadius={56}
-                      outerRadius={88}
-                      paddingAngle={4}
-                      cornerRadius={6}
+                      innerRadius={52}
+                      outerRadius={80}
+                      paddingAngle={3}
+                      cornerRadius={4}
                     >
                       {outcomes.map((row, index) => (
                         <Cell
@@ -527,33 +501,33 @@ export function AdvancedAnalyticsCharts({
                 </ResponsiveContainer>
               </div>
             )}
-            <div className="mt-3 rounded-xl border border-[#dfe7e4] bg-[#f8f8fe] p-4">
-              <span className="text-[10px] font-bold uppercase tracking-[.16em] text-[#0e6f62]">
+            <div className="mt-2.5 rounded-md border border-[#eaeaea] bg-[#fafafa] p-3">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-[#71717a]">
                 {focus.label}
               </span>
-              <strong className="mt-2 block text-sm leading-5">
+              <strong className="mt-1 block text-[12.5px] leading-5 text-[#171717]">
                 {focus.title}
               </strong>
-              <p className="mt-1 text-xs leading-5 text-[#6f7284]">
+              <p className="mt-0.5 text-[11.5px] leading-5 text-[#52525b]">
                 {focus.body}
               </p>
             </div>
           </ChartCard>
         </div>
 
-        <details open className="group border-t border-[#e5e7ef] bg-white">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 marker:hidden">
+        <details open className="group border-t border-[#eaeaea] bg-white">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-3.5 marker:hidden">
             <div>
-              <h2 className="text-[15px] font-semibold">Advanced analysis</h2>
-              <p className="mt-1 text-xs text-[#71817d]">
+              <h2 className="text-[13.5px] font-semibold text-[#171717]">Advanced analysis</h2>
+              <p className="mt-0.5 text-[11.5px] text-[#71717a]">
                 Channels, timing, sentiment, and conversation duration
               </p>
             </div>
-            <span className="grid size-9 place-items-center rounded-lg border border-[#dfe7e4] text-lg text-[#0e6f62] transition group-open:rotate-45">
+            <span className="grid size-7 place-items-center rounded-md border border-[#eaeaea] text-sm text-[#171717] transition group-open:rotate-45">
               +
             </span>
           </summary>
-          <div className="grid gap-px border-t border-[#e5e7ef] bg-[#e5e7ef] lg:grid-cols-2">
+          <div className="grid gap-px border-t border-[#eaeaea] bg-[#eaeaea] lg:grid-cols-2">
             <ChartCard
               title="Channel distribution"
               subtitle="Inbound, outbound, and web demand"
@@ -561,20 +535,15 @@ export function AdvancedAnalyticsCharts({
               {!channels.length ? (
                 <EmptyChart />
               ) : (
-                <div className="h-[260px]">
+                <div className="h-[240px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                       data={channels}
                       layout="vertical"
                       margin={{ left: 5, right: 25 }}
                     >
-                      <CartesianGrid stroke="#ececf4" horizontal={false} />
-                      <XAxis
-                        type="number"
-                        tick={axis}
-                        axisLine={false}
-                        tickLine={false}
-                      />
+                      <CartesianGrid stroke="#eaeaea" horizontal={false} />
+                      <XAxis type="number" tick={axis} axisLine={false} tickLine={false} />
                       <YAxis
                         type="category"
                         dataKey="name"
@@ -584,12 +553,9 @@ export function AdvancedAnalyticsCharts({
                         width={65}
                       />
                       <Tooltip contentStyle={tooltipStyle} />
-                      <Bar dataKey="calls" radius={[0, 8, 8, 0]}>
+                      <Bar dataKey="calls" radius={[0, 4, 4, 0]}>
                         {channels.map((row, index) => (
-                          <Cell
-                            key={row.name}
-                            fill={COLORS[index % COLORS.length]}
-                          />
+                          <Cell key={row.name} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Bar>
                     </BarChart>
@@ -604,28 +570,23 @@ export function AdvancedAnalyticsCharts({
               {!durationData.length ? (
                 <EmptyChart />
               ) : (
-                <div className="h-[260px]">
+                <div className="h-[240px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart
                       data={durationData}
                       margin={{ left: -20, right: 10 }}
                     >
-                      <CartesianGrid stroke="#ececf4" vertical={false} />
-                      <XAxis
-                        dataKey="name"
-                        tick={axis}
-                        axisLine={false}
-                        tickLine={false}
-                      />
+                      <CartesianGrid stroke="#eaeaea" vertical={false} />
+                      <XAxis dataKey="name" tick={axis} axisLine={false} tickLine={false} />
                       <YAxis tick={axis} axisLine={false} tickLine={false} />
                       <Tooltip contentStyle={tooltipStyle} />
                       <Area
                         type="monotone"
                         dataKey="calls"
-                        stroke="#a855f7"
-                        strokeWidth={2.5}
-                        fill="#a855f7"
-                        fillOpacity={0.13}
+                        stroke="#7c3aed"
+                        strokeWidth={2}
+                        fill="#7c3aed"
+                        fillOpacity={0.15}
                       />
                     </AreaChart>
                   </ResponsiveContainer>
@@ -639,34 +600,26 @@ export function AdvancedAnalyticsCharts({
               {!sentiment.length ? (
                 <EmptyChart />
               ) : (
-                <div className="h-[260px]">
+                <div className="h-[240px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                       data={sentiment}
                       margin={{ left: -18, right: 10 }}
                     >
-                      <CartesianGrid stroke="#ececf4" vertical={false} />
-                      <XAxis
-                        dataKey="name"
-                        tick={axis}
-                        axisLine={false}
-                        tickLine={false}
-                      />
+                      <CartesianGrid stroke="#eaeaea" vertical={false} />
+                      <XAxis dataKey="name" tick={axis} axisLine={false} tickLine={false} />
                       <YAxis tick={axis} axisLine={false} tickLine={false} />
                       <Tooltip contentStyle={tooltipStyle} />
-                      <Bar dataKey="calls" radius={[9, 9, 0, 0]}>
-                        {sentiment.map((row) => (
-                          <Cell
-                            key={row.name}
-                            fill={
-                              row.name === "positive"
-                                ? "#22c98f"
-                                : row.name === "negative"
-                                  ? "#ef5d7a"
-                                  : "#118778"
-                            }
-                          />
-                        ))}
+                      <Bar dataKey="calls" radius={[4, 4, 0, 0]}>
+                        {sentiment.map((row) => {
+                          const key = row.name.toLowerCase();
+                          const fill = key.includes("pos")
+                            ? "#059669"
+                            : key.includes("neg")
+                              ? "#e11d48"
+                              : "#2563eb";
+                          return <Cell key={row.name} fill={fill} />;
+                        })}
                       </Bar>
                     </BarChart>
                   </ResponsiveContainer>
@@ -680,13 +633,13 @@ export function AdvancedAnalyticsCharts({
               {!hourlyData.some((row) => row.calls) ? (
                 <EmptyChart />
               ) : (
-                <div className="h-[260px]">
+                <div className="h-[240px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <ComposedChart
                       data={hourlyData}
                       margin={{ left: -20, right: 10 }}
                     >
-                      <CartesianGrid stroke="#ececf4" vertical={false} />
+                      <CartesianGrid stroke="#eaeaea" vertical={false} />
                       <XAxis
                         dataKey="label"
                         interval={2}
@@ -696,16 +649,12 @@ export function AdvancedAnalyticsCharts({
                       />
                       <YAxis tick={axis} axisLine={false} tickLine={false} />
                       <Tooltip contentStyle={tooltipStyle} />
-                      <Bar
-                        dataKey="calls"
-                        fill="#118778"
-                        radius={[5, 5, 0, 0]}
-                      />
+                      <Bar dataKey="calls" fill="#2563eb" radius={[4, 4, 0, 0]} />
                       <Line
                         type="monotone"
                         dataKey="completed"
-                        stroke="#0e6f62"
-                        strokeWidth={2.4}
+                        stroke="#059669"
+                        strokeWidth={2}
                         dot={false}
                       />
                     </ComposedChart>

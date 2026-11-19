@@ -56,7 +56,7 @@ const EMPTY: AnalyticsOverview = {
   providerUsage: [],
 };
 
-const palette = ["#118778", "#0e6f62", "#a855f7", "#f59e0b", "#ef5d7a"];
+const palette = ["#171717", "#3f3f46", "#52525b", "#71717a", "#a1a1aa"];
 
 function initials(name: string) {
   return name
@@ -127,16 +127,16 @@ function TrendChart({ rows }: { rows: AnalyticsOverview["timeSeries"] }) {
           <span className="block text-[10px] font-bold uppercase tracking-wider text-white/35">
             {data[hovered].date}
           </span>
-          <strong className="mt-2 block text-sm text-[#118778]">
+          <strong className="mt-2 block text-sm text-[#171717]">
             {data[hovered].calls} total calls
           </strong>
-          <span className="mt-1 block text-xs text-white/55">
+          <span className="mt-1 block text-xs text-[#52525b]">
             {data[hovered].completed} completed
           </span>
-          <span className="mt-1 block text-xs text-white/35">
+          <span className="mt-1 block text-xs text-[#71717a]">
             {duration(data[hovered].durationSeconds)} talk time
           </span>
-          <span className="mt-1 block text-xs text-white/35">
+          <span className="mt-1 block text-xs text-[#71717a]">
             {money(data[hovered].cost)} cost
           </span>
         </div>
@@ -159,8 +159,8 @@ function TrendChart({ rows }: { rows: AnalyticsOverview["timeSeries"] }) {
       >
         <defs>
           <linearGradient id="trend-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#118778" stopOpacity=".34" />
-            <stop offset="1" stopColor="#118778" stopOpacity="0" />
+            <stop offset="0" stopColor="#171717" stopOpacity=".15" />
+            <stop offset="1" stopColor="#171717" stopOpacity="0" />
           </linearGradient>
         </defs>
         {[20, 40, 60, 80, 100].map((y) => (
@@ -170,7 +170,7 @@ function TrendChart({ rows }: { rows: AnalyticsOverview["timeSeries"] }) {
             x2="100"
             y1={y}
             y2={y}
-            stroke="rgba(255,255,255,.07)"
+            stroke="rgba(0,0,0,.06)"
             strokeWidth=".35"
           />
         ))}
@@ -178,14 +178,14 @@ function TrendChart({ rows }: { rows: AnalyticsOverview["timeSeries"] }) {
         <polyline
           points={points}
           fill="none"
-          stroke="#118778"
+          stroke="#171717"
           strokeWidth="1.7"
           vectorEffect="non-scaling-stroke"
         />
         <polyline
           points={completePoints}
           fill="none"
-          stroke="#108D82"
+          stroke="#71717a"
           strokeWidth="1.4"
           strokeDasharray="4 3"
           vectorEffect="non-scaling-stroke"
@@ -197,7 +197,7 @@ function TrendChart({ rows }: { rows: AnalyticsOverview["timeSeries"] }) {
               x2={(hovered / Math.max(1, data.length - 1)) * 100}
               y1="12"
               y2="100"
-              stroke="rgba(255,255,255,.35)"
+              stroke="rgba(0,0,0,.2)"
               strokeWidth=".5"
               strokeDasharray="2 2"
             />
@@ -206,7 +206,7 @@ function TrendChart({ rows }: { rows: AnalyticsOverview["timeSeries"] }) {
               cy={92 - (data[hovered].calls / max) * 72}
               r="1.4"
               fill="#ffffff"
-              stroke="#118778"
+              stroke="#171717"
               strokeWidth=".8"
               vectorEffect="non-scaling-stroke"
             />
@@ -333,14 +333,14 @@ function WaveActivity({ rows }: { rows: AnalyticsOverview["timeSeries"] }) {
             onPointerEnter={() => setHovered(i)}
             onPointerLeave={() => setHovered(null)}
             key={i}
-            className="relative flex-1 rounded-full bg-gradient-to-t from-[#0e6f62] to-[#118778] opacity-80 transition hover:scale-x-125 hover:opacity-100"
+            className="relative flex-1 rounded-full bg-[#171717] opacity-80 transition hover:scale-x-125 hover:opacity-100"
             style={{ height: `${Math.max(6, (value / max) * 100)}%` }}
           />
         ))}
       </div>
       {hovered !== null ? (
         <div
-          className="pointer-events-none absolute -top-12 z-10 -translate-x-1/2 rounded-lg border border-white/10 bg-[#ffffff] px-3 py-2 text-xs shadow-xl"
+          className="pointer-events-none absolute -top-12 z-10 -translate-x-1/2 rounded-lg border border-[#eaeaea] bg-white px-3 py-2 text-xs shadow-xl text-[#171717]"
           style={{ left: `${((hovered + 0.5) / bars.length) * 100}%` }}
         >
           {rows.slice(-24)[hovered]?.date ?? `Period ${hovered + 1}`} ·{" "}
@@ -369,11 +369,11 @@ function ActivityHeatmap({
       ).map((row) => (
         <div className="group relative" key={row.hour}>
           <div
-            className="aspect-square rounded-md border border-white/[.06] transition group-hover:scale-110 group-hover:border-[#118778]/50"
+            className="aspect-square rounded-md border border-[#eaeaea] transition group-hover:scale-110 group-hover:border-black"
             style={{
               background: row.calls
-                ? `rgba(17,135,120,${0.12 + (row.calls / max) * 0.76})`
-                : "rgba(255,255,255,.025)",
+                ? `rgba(23,23,23,${0.12 + (row.calls / max) * 0.76})`
+                : "rgba(0,0,0,.025)",
             }}
           />
           <div className="pointer-events-none absolute bottom-[calc(100%+8px)] left-1/2 z-20 hidden min-w-max -translate-x-1/2 rounded-lg border border-white/10 bg-[#ffffff] px-3 py-2 text-xs shadow-xl group-hover:block">
@@ -487,7 +487,7 @@ export function AnalyticsShell() {
     getSession,
     getServerSession,
   );
-  const [days, setDays] = useState(30);
+  const [days, setDays] = useState(90);
   const [data, setData] = useState<AnalyticsOverview>(EMPTY);
   const [agents, setAgents] = useState<AgentSummary[]>([]);
   const [activeAgentIds, setActiveAgentIds] = useState<string[]>([]);
@@ -703,10 +703,10 @@ export function AnalyticsShell() {
   const s = data.summary;
   return (
     <main
-      className={`dashboard-home-theme grid min-h-screen bg-white text-[#14231f] ${showUserSidebar ? "lg:grid-cols-[248px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}
+      className={`dashboard-home-theme grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#fafafa] text-[#171717] ${showUserSidebar ? "lg:grid-cols-[248px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}
     >
       <DashboardSidebar
-        activeLabel="Analytics"
+        activeLabel="Dashboard"
         userInitials={initials(session.name)}
         userName={session.name}
         userEmail={session.email}
@@ -716,19 +716,19 @@ export function AnalyticsShell() {
         showUserSidebar={showUserSidebar}
         setShowUserSidebar={setShowUserSidebar}
       />
-      <section className="min-w-0 overflow-hidden bg-[radial-gradient(circle_at_82%_3%,rgba(14,111,98,.14),transparent_28%),radial-gradient(circle_at_18%_0%,rgba(17,135,120,.09),transparent_24%)]">
+      <section className="min-w-0 overflow-hidden bg-[#fafafa]">
         <DashboardPageHeader
           eyebrow="Performance intelligence"
-          title="Analytics"
+          title="Dashboard"
           description="Understand demand, completed conversations, costs, and which agents drive the strongest results."
           actions={
-            <div className="flex items-center gap-1 rounded-xl border border-[#dfe7e4] bg-[#f7f9f8] p-1">
+            <div className="flex items-center gap-1 rounded-md border border-[#eaeaea] bg-[#fafafa] p-0.5">
               {[1, 7, 30, 90].map((value) => (
                 <button
                   key={value}
                   type="button"
                   onClick={() => setDays(value)}
-                  className={`rounded-lg px-3 py-2 text-xs font-semibold transition ${days === value ? "bg-[#118778] text-white shadow-sm" : "text-[#686c7e] hover:bg-white hover:text-[#22242d]"}`}
+                  className={`h-7 rounded px-2.5 text-xs font-medium transition ${days === value ? "bg-[#2563eb] text-white shadow-xs" : "text-[#71717a] hover:bg-white hover:text-[#171717]"}`}
                 >
                   {value === 1 ? "Today" : `${value} days`}
                 </button>
@@ -736,49 +736,49 @@ export function AnalyticsShell() {
             </div>
           }
         />
-        <div className="dashboard-page-content w-full py-0">
+        <div className="dashboard-page-content w-full min-w-0 px-4 py-5 sm:px-6 sm:py-6">
           {notice ? (
-            <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+            <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-medium text-amber-800">
               {notice}
             </div>
           ) : null}
           <section className="hidden">
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#e5e7ef] px-5 py-4">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#eaeaea] px-5 py-3.5">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="size-2 rounded-full bg-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,.12)]" />
-                  <h2 className="text-base font-semibold text-[#171923]">
+                  <span className="size-2 rounded-full bg-[#171717]" />
+                  <h2 className="text-sm font-semibold text-[#171717]">
                     Agent fleet
                   </h2>
                 </div>
-                <p className="mt-1 text-xs text-[#71817d]">
+                <p className="mt-0.5 text-xs text-[#71717a]">
                   See which agents are live, routed, and producing results in
                   this period.
                 </p>
               </div>
-              <div className="flex items-center gap-2 text-xs font-semibold">
-                <span className="rounded-full bg-emerald-50 px-3 py-1.5 text-emerald-700">
+              <div className="flex items-center gap-2 text-xs font-medium">
+                <span className="rounded-md border border-[#eaeaea] bg-[#fafafa] px-2.5 py-0.5 text-[#171717]">
                   {agents.filter((agent) => agent.status === "Live").length}{" "}
                   live
                 </span>
-                <span className="rounded-full bg-[#edf7f4] px-3 py-1.5 text-[#123d35]">
+                <span className="rounded-md border border-[#eaeaea] bg-[#fafafa] px-2.5 py-0.5 text-[#52525b]">
                   {activeAgentIds.length} active calls
                 </span>
               </div>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[820px] text-left">
-                <thead className="bg-[#fafcfb] text-[10px] uppercase tracking-[.15em] text-[#777b8e]">
+                <thead className="bg-[#fafafa] text-[10px] uppercase tracking-[0.06em] text-[#71717a]">
                   <tr>
-                    <th className="px-5 py-3 font-semibold">Agent</th>
-                    <th className="px-5 py-3 font-semibold">Availability</th>
-                    <th className="px-5 py-3 font-semibold">Phone route</th>
-                    <th className="px-5 py-3 font-semibold">Calls</th>
-                    <th className="px-5 py-3 font-semibold">Completion</th>
-                    <th className="px-5 py-3 font-semibold" />
+                    <th className="px-5 py-2.5 font-semibold">Agent</th>
+                    <th className="px-5 py-2.5 font-semibold">Availability</th>
+                    <th className="px-5 py-2.5 font-semibold">Phone route</th>
+                    <th className="px-5 py-2.5 font-semibold">Calls</th>
+                    <th className="px-5 py-2.5 font-semibold">Completion</th>
+                    <th className="px-5 py-2.5 font-semibold" />
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#ececf3]">
+                <tbody className="divide-y divide-[#eaeaea]">
                   {fleetAgents.length ? (
                     fleetAgents.map(({ agent, performance, active }) => {
                       const completion = performance?.calls
@@ -788,65 +788,65 @@ export function AnalyticsShell() {
                         : 0;
                       return (
                         <tr
-                          className="transition hover:bg-[#fafcfb]"
+                          className="transition hover:bg-[#fafafa]"
                           key={agent._id}
                         >
-                          <td className="px-5 py-3.5">
-                            <div className="flex items-center gap-3">
-                              <span className="grid size-9 place-items-center rounded-xl bg-[#edf7f4] text-xs font-bold text-[#0e6f62]">
+                          <td className="px-5 py-3">
+                            <div className="flex items-center gap-2.5">
+                              <span className="grid size-8 place-items-center rounded-md border border-[#eaeaea] bg-[#f4f4f5] text-xs font-bold text-[#171717]">
                                 {agent.name.slice(0, 2).toUpperCase()}
                               </span>
                               <div>
-                                <strong className="block text-sm">
+                                <strong className="block text-[13px] font-medium text-[#171717]">
                                   {agent.name}
                                 </strong>
-                                <span className="mt-0.5 block text-xs text-[#84938f]">
+                                <span className="mt-0.5 block text-[11px] text-[#71717a]">
                                   {agent.team}
                                 </span>
                               </div>
                             </div>
                           </td>
-                          <td className="px-5 py-3.5">
+                          <td className="px-5 py-3">
                             <span
-                              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${active ? "bg-[#edf7f4] text-[#123d35]" : agent.status === "Live" ? "bg-emerald-50 text-emerald-700" : agent.status === "Paused" ? "bg-amber-50 text-amber-700" : "bg-slate-100 text-slate-600"}`}
+                              className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium ${active ? "border border-[#eaeaea] bg-[#fafafa] text-[#171717]" : agent.status === "Live" ? "border border-[#eaeaea] bg-[#fafafa] text-[#171717]" : agent.status === "Paused" ? "border border-amber-200 bg-amber-50 text-amber-700" : "border border-[#eaeaea] bg-[#f4f4f5] text-[#71717a]"}`}
                             >
                               <span
-                                className={`size-1.5 rounded-full ${active ? "animate-pulse bg-[#118778]" : agent.status === "Live" ? "bg-emerald-500" : agent.status === "Paused" ? "bg-amber-500" : "bg-slate-400"}`}
+                                className={`size-1.5 rounded-full ${active ? "animate-pulse bg-[#171717]" : agent.status === "Live" ? "bg-[#171717]" : agent.status === "Paused" ? "bg-amber-500" : "bg-[#a1a1aa]"}`}
                               />
                               {active ? "On a call" : agent.status}
                             </span>
                           </td>
-                          <td className="px-5 py-3.5 text-sm text-[#5f6375]">
+                          <td className="px-5 py-3 text-xs text-[#52525b]">
                             {agent.phone || (
-                              <span className="text-[#a0a3b0]">
+                              <span className="text-[#a1a1aa]">
                                 Not assigned
                               </span>
                             )}
                           </td>
-                          <td className="px-5 py-3.5">
-                            <strong className="text-sm">
+                          <td className="px-5 py-3">
+                            <strong className="text-xs text-[#171717]">
                               {performance?.calls ?? 0}
                             </strong>
-                            <span className="ml-1 text-xs text-[#84938f]">
+                            <span className="ml-1 text-[11px] text-[#71717a]">
                               calls
                             </span>
                           </td>
-                          <td className="px-5 py-3.5">
+                          <td className="px-5 py-3">
                             <div className="flex items-center gap-2">
-                              <div className="h-1.5 w-20 overflow-hidden rounded-full bg-[#ececf5]">
+                              <div className="h-1.5 w-20 overflow-hidden rounded-full bg-[#f4f4f5]">
                                 <div
-                                  className="h-full rounded-full bg-gradient-to-r from-[#118778] to-[#a855f7]"
+                                  className="h-full rounded-full bg-[#171717]"
                                   style={{ width: `${completion}%` }}
                                 />
                               </div>
-                              <span className="text-xs font-semibold">
+                              <span className="text-xs font-medium text-[#171717]">
                                 {completion}%
                               </span>
                             </div>
                           </td>
-                          <td className="px-5 py-3.5 text-right">
+                          <td className="px-5 py-3 text-right">
                             <button
-                              className="rounded-lg border border-[#dfe7e4] px-3 py-2 text-xs font-semibold text-[#0e6f62] transition hover:border-[#9fcfc3] hover:bg-[#edf7f4]"
+                              className="rounded-md border border-[#eaeaea] bg-white px-2.5 py-1 text-xs font-medium text-[#171717] transition hover:bg-[#f4f4f5]"
                               type="button"
                               onClick={() =>
                                 router.push(`/dashboard/agents/${agent._id}`)
@@ -891,40 +891,40 @@ export function AnalyticsShell() {
                     Total demand versus completed calls
                   </p>
                 </div>
-                <div className="flex gap-4 text-[11px] text-white/45">
+                <div className="flex gap-4 text-[11px] text-[#71717a]">
                   <span>
-                    <i className="mr-2 inline-block size-2 rounded-full bg-[#118778]" />
+                    <i className="mr-2 inline-block size-2 rounded-full bg-[#171717]" />
                     All calls
                   </span>
                   <span>
-                    <i className="mr-2 inline-block size-2 rounded-full bg-[#108D82]" />
+                    <i className="mr-2 inline-block size-2 rounded-full bg-[#71717a]" />
                     Completed
                   </span>
                 </div>
               </div>
               <TrendChart rows={data.timeSeries} />
             </article>
-            <article className="rounded-2xl border border-white/[.08] bg-[#ffffff]/85 p-5 sm:p-6">
-              <h2 className="text-base font-semibold">Call outcomes</h2>
-              <p className="mt-1 mb-6 text-xs text-white/35">
+            <article className="rounded-xl border border-[#eaeaea] bg-white p-5 sm:p-5">
+              <h2 className="text-sm font-semibold text-[#171717]">Call outcomes</h2>
+              <p className="mt-0.5 mb-5 text-xs text-[#71717a]">
                 Where conversations finished
               </p>
               <Donut rows={data.statusBreakdown} total={s.totalCalls} />
             </article>
           </section>
           <section className="hidden">
-            <article className="rounded-2xl border border-[#118778]/20 bg-[linear-gradient(135deg,rgba(17,135,120,.10),rgba(14,111,98,.06))] p-5 sm:p-6">
-              <span className="text-[10px] font-bold uppercase tracking-[.2em] text-[#0e6f62]">
+            <article className="rounded-xl border border-[#eaeaea] bg-[#fafafa] p-5 sm:p-5">
+              <span className="text-[10px] font-bold uppercase tracking-[.2em] text-[#71717a]">
                 {insight.tone}
               </span>
-              <h2 className="mt-3 text-xl font-semibold leading-7">
+              <h2 className="mt-2 text-lg font-semibold leading-6 text-[#171717]">
                 {insight.headline}
               </h2>
-              <p className="mt-3 text-sm leading-6 text-white/45">
+              <p className="mt-2 text-xs leading-5 text-[#52525b]">
                 {insight.body}
               </p>
               <button
-                className="mt-5 rounded-lg border border-[#118778]/20 bg-[#118778]/10 px-3 py-2 text-xs font-semibold text-[#0e6f62]"
+                className="mt-4 rounded-md border border-[#eaeaea] bg-white px-3 py-1.5 text-xs font-medium text-[#171717] hover:bg-[#f4f4f5]"
                 type="button"
                 onClick={() => router.push("/dashboard/calls")}
               >
@@ -996,7 +996,7 @@ export function AnalyticsShell() {
                     Call activity by hour of day · hover any cell
                   </p>
                 </div>
-                <span className="rounded-lg bg-[#118778]/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#118778]">
+                <span className="rounded-md border border-[#eaeaea] bg-[#fafafa] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#171717]">
                   24-hour map
                 </span>
               </div>
@@ -1024,7 +1024,7 @@ export function AnalyticsShell() {
                   (sum, row) => sum + row.value,
                   0,
                 )}
-                colors={["#22c98f", "#108D82", "#ef5d7a"]}
+                colors={["#171717", "#71717a", "#d4d4d8"]}
               />
             </article>
             <article className="rounded-2xl border border-white/[.08] bg-[#ffffff]/85 p-5 sm:p-6">

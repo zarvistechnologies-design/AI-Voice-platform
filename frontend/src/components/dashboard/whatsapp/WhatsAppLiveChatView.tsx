@@ -26,19 +26,22 @@ export function WhatsAppLiveChatView({
   const [filterMode, setFilterMode] = useState<"ALL" | "UNREAD" | "AI" | "HUMAN">("ALL");
   const [showTemplatePicker, setShowTemplatePicker] = useState(false);
 
-  // Sync selected conversation when conversations update or initial load arrives
   useEffect(() => {
     if (!selectedConversation && conversations.length > 0) {
       setSelectedConversation(conversations[0]);
     } else if (selectedConversation && conversations.length > 0) {
       const updated = conversations.find((c) => c._id === selectedConversation._id);
-      if (updated && (updated.mode !== selectedConversation.mode || updated.unreadCount !== selectedConversation.unreadCount || updated.lastMessageText !== selectedConversation.lastMessageText)) {
+      if (
+        updated &&
+        (updated.mode !== selectedConversation.mode ||
+          updated.unreadCount !== selectedConversation.unreadCount ||
+          updated.lastMessageText !== selectedConversation.lastMessageText)
+      ) {
         setSelectedConversation(updated);
       }
     }
   }, [conversations, selectedConversation]);
 
-  // Load message history when selected conversation changes
   useEffect(() => {
     if (!selectedConversation?._id) return;
     let cancelled = false;
@@ -115,20 +118,29 @@ export function WhatsAppLiveChatView({
   }
 
   return (
-    <div className="whatsapp-live-chat space-y-4">
-      {/* Main 3-Column WhatsApp Web Experience */}
-      <div className="grid grid-cols-1 overflow-hidden rounded-3xl border border-[#dbe4e1] bg-white shadow-xs lg:grid-cols-12 min-h-[640px]">
+    <div className="whatsapp-live-chat">
+      {/* Main 3-Column Monochrome Inbox */}
+      <div className="grid grid-cols-1 overflow-hidden rounded-lg border border-[#eaeaea] bg-white lg:grid-cols-12 min-h-[600px]">
         {/* Left Column: Conversations List */}
-        <div className="border-r border-[#e5e7ef] lg:col-span-4 flex flex-col bg-[#fcfdfd]">
+        <div className="border-r border-[#eaeaea] lg:col-span-4 flex flex-col bg-white">
           {/* Top Search & Filter Bar */}
-          <div className="border-b border-[#e5e7ef] p-3 space-y-2.5 bg-white">
+          <div className="border-b border-[#eaeaea] p-3 space-y-2 bg-white">
             <div className="relative">
+              <svg
+                className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-[#a1a1aa]"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={1.8}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" />
+              </svg>
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search chats by name or phone..."
-                className="w-full rounded-xl border border-[#dbe4e1] bg-[#f9fbfa] px-3.5 py-1.5 text-xs text-[#20342e] focus:border-[#118778] focus:bg-white focus:outline-none"
+                className="h-8 w-full rounded-md border border-[#eaeaea] bg-white pl-8 pr-3 text-[12px] text-[#171717] placeholder-[#a1a1aa] focus:border-[#171717] focus:outline-none"
               />
             </div>
 
@@ -136,23 +148,30 @@ export function WhatsAppLiveChatView({
               {(["ALL", "UNREAD", "AI", "HUMAN"] as const).map((mode) => (
                 <button
                   key={mode}
+                  type="button"
                   onClick={() => setFilterMode(mode)}
-                  className={`rounded-lg px-2.5 py-1 font-semibold transition ${
+                  className={`rounded-md px-2.5 py-1 font-medium transition ${
                     filterMode === mode
-                      ? "bg-[#118778] text-white"
-                      : "bg-[#f0f4f3] text-[#52645f] hover:bg-[#e4edea]"
+                      ? "bg-[#171717] text-white"
+                      : "bg-[#f4f4f5] text-[#52525b] hover:bg-[#e4e4e7]"
                   }`}
                 >
-                  {mode === "ALL" ? "All Chats" : mode === "UNREAD" ? "Unread" : mode === "AI" ? "🤖 AI Auto" : "👤 Human"}
+                  {mode === "ALL"
+                    ? "All Chats"
+                    : mode === "UNREAD"
+                      ? "Unread"
+                      : mode === "AI"
+                        ? "AI Auto"
+                        : "Human"}
                 </button>
               ))}
             </div>
           </div>
 
           {/* Conversations Scrollable List */}
-          <div className="flex-1 overflow-y-auto divide-y divide-[#f0f4f3]">
+          <div className="flex-1 overflow-y-auto divide-y divide-[#eaeaea]">
             {filteredConversations.length === 0 ? (
-              <div className="p-8 text-center text-xs text-[#84938f]">
+              <div className="p-8 text-center text-[12px] text-[#71717a]">
                 No conversations match your filter.
               </div>
             ) : (
@@ -162,44 +181,48 @@ export function WhatsAppLiveChatView({
                   <div
                     key={conv._id}
                     onClick={() => setSelectedConversation(conv)}
-                    className={`flex items-start gap-3 p-3.5 cursor-pointer transition ${
+                    className={`flex items-start gap-2.5 px-3.5 py-3 cursor-pointer transition ${
                       isSelected
-                        ? "bg-[#edf6f4] border-l-4 border-l-[#118778]"
-                        : "hover:bg-[#f8faf9]"
+                        ? "bg-[#f0f2f5] border-l-2 border-l-[#00a884]"
+                        : "hover:bg-[#f5f6f6]"
                     }`}
                   >
-                    <div className="relative size-10 shrink-0 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs grid place-items-center">
+                    <div className="relative size-8 shrink-0 rounded-full border border-[#00a884]/25 bg-[#d9fdd3] text-[#008069] font-semibold text-[11px] grid place-items-center">
                       {conv.contactName.slice(0, 2).toUpperCase()}
-                      <span className="absolute bottom-0 right-0 size-2.5 rounded-full border-2 border-white bg-emerald-500" />
+                      <span className="absolute bottom-0 right-0 size-2 rounded-full border border-white bg-[#25D366]" />
                     </div>
 
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between">
-                        <span className="truncate text-xs font-bold text-[#14231f]">
+                        <span className="truncate text-[12.5px] font-semibold text-[#171717]">
                           {conv.contactName}
                         </span>
-                        <span className="text-[10px] text-[#84938f]">
-                          {new Date(conv.lastMessageTimestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                        <span className="text-[10.5px] text-[#71717a]">
+                          {new Date(conv.lastMessageTimestamp).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
                         </span>
                       </div>
 
                       <div className="mt-0.5 flex items-center gap-1.5">
-                        <span className="truncate text-xs text-[#60716c]">
+                        <span className="truncate text-[11.5px] text-[#52525b]">
                           {conv.lastMessageText || "No messages yet"}
                         </span>
                       </div>
 
-                      <div className="mt-2 flex items-center justify-between">
-                        <span className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[9px] font-semibold ${
-                          conv.mode === "ai"
-                            ? "bg-emerald-50 text-emerald-700"
-                            : "bg-amber-50 text-amber-700"
-                        }`}>
-                          {conv.mode === "ai" ? "🤖 AI Active" : "👤 Human Takeover"}
+                      <div className="mt-1.5 flex items-center justify-between">
+                        <span className="inline-flex items-center gap-1 rounded border border-[#eaeaea] bg-white px-1.5 py-0.5 text-[10px] font-medium text-[#52525b]">
+                          <span
+                            className={`size-1.5 rounded-full ${
+                              conv.mode === "ai" ? "bg-[#171717]" : "bg-[#a1a1aa]"
+                            }`}
+                          />
+                          {conv.mode === "ai" ? "AI Active" : "Human Takeover"}
                         </span>
 
                         {conv.unreadCount > 0 && (
-                          <span className="grid size-4 place-items-center rounded-full bg-[#118778] text-[9px] font-bold text-white">
+                          <span className="grid size-4 place-items-center rounded-full bg-[#25D366] text-[9px] font-semibold text-white">
                             {conv.unreadCount}
                           </span>
                         )}
@@ -212,21 +235,21 @@ export function WhatsAppLiveChatView({
           </div>
         </div>
 
-        {/* Middle Column: Chat Window */}
-        <div className="flex flex-col lg:col-span-5 border-r border-[#e5e7ef] bg-[#efeae2]">
+        {/* Middle Column: Real WhatsApp Inbox Chat Window */}
+        <div className="flex flex-col lg:col-span-5 border-r border-[#eaeaea] bg-[#efeae2]">
           {selectedConversation ? (
             <>
               {/* Top Chat Bar */}
-              <div className="flex items-center justify-between border-b border-[#e5e7ef] bg-white px-4 py-3 shadow-xs">
+              <div className="flex items-center justify-between border-b border-[#e2e5e8] bg-[#f0f2f5] px-4 py-2.5">
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="size-8 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs grid place-items-center">
+                  <div className="size-8 rounded-full border border-[#00a884]/25 bg-[#d9fdd3] text-[#008069] font-semibold text-[11px] grid place-items-center">
                     {selectedConversation.contactName.slice(0, 2).toUpperCase()}
                   </div>
                   <div className="min-w-0">
-                    <h3 className="truncate text-xs font-bold text-[#14231f]">
+                    <h3 className="truncate text-[13px] font-semibold text-[#111b21]">
                       {selectedConversation.contactName}
                     </h3>
-                    <span className="block text-[10px] font-mono text-[#84938f]">
+                    <span className="block text-[11px] font-mono text-[#667781]">
                       +{selectedConversation.contactPhone}
                     </span>
                   </div>
@@ -234,40 +257,37 @@ export function WhatsAppLiveChatView({
 
                 {/* Handover Toggle Button */}
                 <button
+                  type="button"
                   onClick={handleToggleMode}
-                  className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold shadow-xs transition ${
+                  className={`inline-flex h-8 items-center gap-1.5 rounded-md border px-2.5 text-[11.5px] font-medium transition ${
                     selectedConversation.mode === "ai"
-                      ? "bg-amber-500 text-white hover:bg-amber-600"
-                      : "bg-[#118778] text-white hover:bg-[#0e7467]"
+                      ? "border-[#d1d7db] bg-white text-[#111b21] hover:bg-[#fafafa]"
+                      : "border-[#00a884] bg-[#00a884] text-white hover:bg-[#008069]"
                   }`}
                 >
-                  {selectedConversation.mode === "ai" ? (
-                    <>
-                      <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                      </svg>
-                      Take Over from AI
-                    </>
-                  ) : (
-                    <>
-                      <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                      </svg>
-                      Hand Back to AI
-                    </>
-                  )}
+                  {selectedConversation.mode === "ai" ? "Take Over from AI" : "Hand Back to AI"}
                 </button>
               </div>
 
               {/* Message Stream */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-3">
+              <div
+                className="flex-1 overflow-y-auto p-4 flex flex-col space-y-2.5"
+                style={{
+                  backgroundColor: "#efeae2",
+                  backgroundImage:
+                    "radial-gradient(rgba(17, 27, 33, 0.045) 1px, transparent 1px)",
+                  backgroundSize: "18px 18px",
+                }}
+              >
                 {loadingMessages ? (
-                  <div className="grid h-full place-items-center text-xs text-[#84938f]">
+                  <div className="grid h-full place-items-center text-[12px] text-[#667781]">
                     Loading messages...
                   </div>
                 ) : messages.length === 0 ? (
-                  <div className="grid h-full place-items-center text-xs text-[#84938f]">
-                    No messages yet in this conversation.
+                  <div className="grid h-full place-items-center">
+                    <span className="rounded-lg bg-white/90 px-3.5 py-2 text-[12px] text-[#54656f] shadow-2xs">
+                      No messages yet in this conversation.
+                    </span>
                   </div>
                 ) : (
                   messages.map((msg) => {
@@ -275,22 +295,21 @@ export function WhatsAppLiveChatView({
                     return (
                       <div
                         key={msg._id}
-                        className={`flex flex-col max-w-[80%] rounded-2xl p-3 text-xs leading-relaxed shadow-2xs ${
+                        className={`flex flex-col max-w-[82%] rounded-lg px-3 py-2 text-[12.5px] leading-relaxed shadow-2xs ${
                           isOutbound
-                            ? "self-end rounded-tr-none bg-[#e7ffdb] text-[#111b21]"
+                            ? "self-end rounded-tr-none bg-[#d9fdd3] text-[#111b21]"
                             : "self-start rounded-tl-none bg-white text-[#111b21]"
                         }`}
                       >
                         <div className="whitespace-pre-line">{msg.content}</div>
-                        <div className="mt-1 flex items-center justify-end gap-1 text-[9px] text-[#667781]">
+                        <div className="mt-1 flex items-center justify-end gap-1 text-[10px] text-[#667781]">
                           <span>
-                            {new Date(msg.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                            {new Date(msg.createdAt).toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
                           </span>
-                          {isOutbound && (
-                            <svg className="size-3 text-[#53bdeb]" viewBox="0 0 16 15" fill="none">
-                              <path d="M15.01 3.316l-7.79 7.79-3.79-3.79 1.06-1.06 2.73 2.73 6.73-6.73 1.06 1.06zm-4.79 0l-1.06-1.06-6.73 6.73-2.73-2.73-1.06 1.06 3.79 3.79 7.79-7.79z" fill="currentColor" />
-                            </svg>
-                          )}
+                          {isOutbound && <span className="font-semibold text-[#53bdeb]">✓✓</span>}
                         </div>
                       </div>
                     );
@@ -300,21 +319,27 @@ export function WhatsAppLiveChatView({
 
               {/* Quick Template Picker Menu */}
               {showTemplatePicker && (
-                <div className="border-t border-[#dbe4e1] bg-white p-3 shadow-lg">
-                  <div className="mb-2 flex items-center justify-between text-xs font-bold text-[#14231f]">
-                    <span>Insert Pre-approved Template:</span>
-                    <button onClick={() => setShowTemplatePicker(false)} className="text-[#84938f]">✕</button>
+                <div className="border-t border-[#e2e5e8] bg-white p-3">
+                  <div className="mb-2 flex items-center justify-between text-[11.5px] font-semibold text-[#111b21]">
+                    <span>Insert Pre-approved Template</span>
+                    <button
+                      type="button"
+                      onClick={() => setShowTemplatePicker(false)}
+                      className="text-[#667781] hover:text-[#111b21]"
+                    >
+                      ✕
+                    </button>
                   </div>
-                  <div className="max-h-36 overflow-y-auto space-y-1.5">
+                  <div className="max-h-36 overflow-y-auto space-y-1">
                     {templates.map((t) => (
                       <button
                         key={t._id}
                         type="button"
                         onClick={() => handleInsertTemplate(t.bodyText)}
-                        className="w-full text-left rounded-lg p-2 text-xs hover:bg-[#f0f4f3] flex justify-between items-center"
+                        className="w-full text-left rounded-md px-2.5 py-1.5 text-[12px] hover:bg-[#f0f2f5] flex justify-between items-center"
                       >
-                        <span className="font-semibold text-[#20342e]">{t.name}</span>
-                        <span className="text-[10px] text-[#84938f]">{t.category}</span>
+                        <span className="font-medium text-[#111b21]">{t.name}</span>
+                        <span className="text-[10.5px] text-[#667781]">{t.category}</span>
                       </button>
                     ))}
                   </div>
@@ -322,16 +347,16 @@ export function WhatsAppLiveChatView({
               )}
 
               {/* Message Composer */}
-              <div className="border-t border-[#dbe4e1] bg-[#f0f2f5] p-3">
+              <div className="border-t border-[#e2e5e8] bg-[#f0f2f5] p-2.5">
                 <form onSubmit={handleSendMessage} className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={() => setShowTemplatePicker((p) => !p)}
                     title="Insert WhatsApp Template"
-                    className="rounded-xl border border-[#dbe4e1] bg-white p-2 text-[#52645f] hover:bg-[#f7f9f8]"
+                    className="grid size-8.5 shrink-0 place-items-center rounded-md border border-[#d1d7db] bg-white text-[#54656f] hover:bg-[#fafafa] hover:text-[#008069]"
                   >
-                    <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                   </button>
 
@@ -341,94 +366,99 @@ export function WhatsAppLiveChatView({
                     onChange={(e) => setMessageInput(e.target.value)}
                     placeholder={
                       selectedConversation.mode === "ai"
-                        ? "AI is handling this chat. Type to reply directly as human..."
-                        : "Type your reply..."
+                        ? "AI is handling this chat. Type to reply directly..."
+                        : "Type a message..."
                     }
-                    className="flex-1 rounded-2xl border border-[#dbe4e1] bg-white px-4 py-2.5 text-xs text-[#20342e] focus:border-[#118778] focus:outline-none"
+                    className="h-9 flex-1 rounded-lg border border-[#e2e5e8] bg-white px-3 text-[12.5px] text-[#111b21] placeholder-[#667781] focus:border-[#00a884] focus:outline-none"
                   />
 
                   <button
                     type="submit"
                     disabled={sending || !messageInput.trim()}
-                    className="grid size-10 place-items-center rounded-2xl bg-[#00a884] text-white shadow-xs transition hover:bg-[#008f70] disabled:opacity-50"
+                    className="inline-flex h-9 items-center justify-center rounded-lg bg-[#00a884] px-3.5 text-[12px] font-medium text-white transition hover:bg-[#008069] disabled:opacity-50"
                   >
-                    <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                    </svg>
+                    Send
                   </button>
                 </form>
               </div>
             </>
           ) : (
-            <div className="grid h-full place-items-center text-xs text-[#84938f]">
+            <div className="grid h-full place-items-center text-[12px] text-[#667781]">
               Select a conversation to start chatting.
             </div>
           )}
         </div>
 
         {/* Right Column: Contact Profile & Actions */}
-        <div className="lg:col-span-3 p-5 bg-white flex flex-col space-y-5">
+        <div className="lg:col-span-3 p-4 bg-white flex flex-col space-y-4">
           {selectedConversation ? (
             <>
-              <div className="text-center pb-4 border-b border-[#e5e7ef]">
-                <div className="mx-auto size-16 rounded-full bg-emerald-100 text-emerald-800 font-bold text-lg grid place-items-center">
+              <div className="text-center pb-3.5 border-b border-[#eaeaea]">
+                <div className="mx-auto size-12 rounded-full border border-[#eaeaea] bg-[#f4f4f5] text-[#171717] font-semibold text-[14px] grid place-items-center">
                   {selectedConversation.contactName.slice(0, 2).toUpperCase()}
                 </div>
-                <h4 className="mt-3 text-sm font-bold text-[#14231f]">
+                <h4 className="mt-2.5 text-[13.5px] font-semibold text-[#171717]">
                   {selectedConversation.contactName}
                 </h4>
-                <span className="font-mono text-xs text-[#60716c]">
+                <span className="font-mono text-[11.5px] text-[#71717a]">
                   +{selectedConversation.contactPhone}
                 </span>
               </div>
 
               {/* Quick Actions */}
-              <div className="space-y-2">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#84938f]">
+              <div className="space-y-1.5">
+                <span className="text-[10.5px] font-semibold uppercase tracking-wider text-[#71717a]">
                   Quick Actions
                 </span>
                 <button
-                  onClick={() => alert(`Initiating Vozon AI voice call to +${selectedConversation.contactPhone}...`)}
-                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#118778] p-2.5 text-xs font-semibold text-white shadow-xs hover:bg-[#0e7467]"
+                  type="button"
+                  onClick={() =>
+                    alert(`Initiating Vozon AI voice call to +${selectedConversation.contactPhone}...`)
+                  }
+                  className="h-8 w-full flex items-center justify-center gap-1.5 rounded-md bg-[#171717] px-3 text-[12px] font-medium text-white hover:bg-black"
                 >
-                  <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
                   Call Contact (Voice Bot)
                 </button>
               </div>
 
-              {/* Details */}
-              <div className="space-y-3">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#84938f]">
+              {/* Conversation Tags */}
+              <div className="space-y-1.5">
+                <span className="text-[10.5px] font-semibold uppercase tracking-wider text-[#71717a]">
                   Conversation Tags
                 </span>
                 <div className="flex flex-wrap gap-1">
                   {(selectedConversation.tags || ["Patient", "Inquiry"]).map((tag, i) => (
-                    <span key={i} className="rounded-md border border-[#dbe4e1] bg-[#f9fbfa] px-2 py-0.5 text-xs text-[#52645f]">
+                    <span
+                      key={i}
+                      className="rounded border border-[#eaeaea] bg-[#fafafa] px-2 py-0.5 text-[11px] text-[#52525b]"
+                    >
                       {tag}
                     </span>
                   ))}
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-[#dbe4e1] bg-[#fcfdfd] p-3 text-xs space-y-1.5">
-                <div className="text-[10px] font-semibold text-[#84938f] uppercase">Session Status</div>
-                <div className="flex items-center gap-1.5 text-emerald-700 font-semibold">
-                  <span className="size-2 rounded-full bg-emerald-500" />
-                  24-Hour WhatsApp Service Window Active
+              <div className="rounded-md border border-[#eaeaea] bg-[#fafafa] p-3 text-[11.5px] space-y-1">
+                <div className="text-[10.5px] font-semibold text-[#71717a] uppercase">
+                  Session Status
                 </div>
-                <div className="text-[10px] text-[#84938f]">
-                  Free customer service messaging window open.
+                <div className="flex items-center gap-1.5 text-[#171717] font-medium">
+                  <span className="size-1.5 rounded-full bg-[#171717]" />
+                  24-Hour Service Window Active
+                </div>
+                <div className="text-[11px] text-[#71717a]">
+                  Customer service messaging window open.
                 </div>
               </div>
             </>
           ) : (
-            <div className="text-xs text-[#84938f]">Select a chat to view contact details.</div>
+            <div className="text-[12px] text-[#71717a]">Select a chat to view contact details.</div>
           )}
         </div>
       </div>
     </div>
   );
 }
-

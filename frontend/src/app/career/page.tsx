@@ -1,1413 +1,325 @@
-﻿import type { Metadata } from "next";
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 
-import { SiteLayout } from "@/components/layout/SiteLayout";
+import { SiteFooter } from "@/components/layout/SiteFooter";
+import { SiteHeader } from "@/components/layout/SiteHeader";
+import "@/app/business/industries/healthcare/healthcare.css";
+import "@/components/company/CompanyEditorial.css";
 
-export const metadata: Metadata = {
-  title: "Careers at vozon.ai | Build the Future of Voice AI",
-  description:
-    "Join vozon.ai and help build intelligent voice experiences that make business conversations faster, more natural, and more useful.",
-};
-
-const workAreas = [
+const heroDepartments = [
   {
-    number: "01",
-    title: "AI & Voice",
-    description:
-      "Build the intelligence behind natural conversationsâ€”from speech recognition and reasoning to real-time responses and multilingual experiences.",
-    tags: ["Voice AI", "LLMs", "Speech", "Real-time"],
+    name: "Voice AI & Speech ML",
+    detail: "Streaming ASR, neural turn-taking & synthesis",
+    count: "2 roles →",
   },
   {
-    number: "02",
-    title: "Product & Engineering",
-    description:
-      "Create reliable products and infrastructure that help businesses build, deploy, monitor, and scale intelligent voice agents.",
-    tags: ["Product", "Engineering", "Infrastructure", "APIs"],
+    name: "Distributed SIP & Telephony",
+    detail: "Low-latency WebRTC, media relays & carriers",
+    count: "1 role →",
   },
   {
-    number: "03",
-    title: "Design & Experience",
-    description:
-      "Design intuitive experiences that make sophisticated voice technology feel simple, useful, and effortless for businesses and their customers.",
-    tags: ["UX", "UI", "Research", "Systems"],
-  },
-];
-
-const principles = [
-  {
-    number: "01",
-    title: "Own the outcome",
-    description:
-      "Take responsibility beyond your task. Understand the problem, make thoughtful decisions, and stay close to the result.",
+    name: "Product & Full-Stack",
+    detail: "Agent studio, Next.js console & workflow engine",
+    count: "1 role →",
   },
   {
-    number: "02",
-    title: "Move with purpose",
-    description:
-      "We value momentum without sacrificing quality. Make decisions, test ideas, learn quickly, and keep moving forward.",
+    name: "Conversational Design",
+    detail: "Multilingual personas & domain guardrails",
+    count: "1 role →",
   },
   {
-    number: "03",
-    title: "Stay curious",
-    description:
-      "Voice AI is evolving quickly. We ask questions, challenge assumptions, experiment often, and keep learning.",
-  },
-  {
-    number: "04",
-    title: "Build for people",
-    description:
-      "Technology matters when it creates a better experience. We care deeply about the people who use what we build.",
-  },
-];
-
-const benefits = [
-  {
-    icon: "âœ¦",
-    title: "Meaningful problems",
-    description:
-      "Work on real challenges at the intersection of AI, voice, software, and business.",
-  },
-  {
-    icon: "â†—",
-    title: "Real ownership",
-    description:
-      "Take ideas from problem to execution and see your work make a visible difference.",
-  },
-  {
-    icon: "â—Ž",
-    title: "Cross-functional work",
-    description:
-      "Collaborate closely across engineering, product, design, and customer-facing teams.",
-  },
-  {
-    icon: "âŒ",
-    title: "Continuous learning",
-    description:
-      "Explore new technologies, experiment with ideas, and grow alongside a rapidly evolving field.",
+    name: "Solutions & Enterprise GTM",
+    detail: "Forward-deployed architects & account leads",
+    count: "2 roles →",
   },
 ];
 
 const openRoles = [
   {
-    title: "Frontend Engineer",
-    description:
-      "Shape the interfaces people use to build, launch, and monitor voice experiences with clarity and speed.",
-    tags: ["Next.js", "TypeScript", "Design systems"],
+    team: "VOICE AI & RESEARCH",
+    title: "Real-Time Audio & Speech ML Engineer",
+    summary:
+      "Optimize streaming ASR, neural turn-taking, barge-in detection, and sub-88ms voice synthesis across 50+ regional languages.",
+    meta: "BENGALURU / SAN FRANCISCO · FULL-TIME",
+    href: "mailto:careers@vozon.ai?subject=Application:%20Real-Time%20Audio%20%26%20Speech%20ML%20Engineer",
   },
   {
-    title: "Backend Engineer",
-    description:
-      "Build reliable APIs, integrations, and internal services that keep voice workflows fast and dependable.",
-    tags: ["APIs", "Infrastructure", "Reliability"],
+    team: "TELEPHONY INFRASTRUCTURE",
+    title: "Distributed SIP & Media Systems Engineer",
+    summary:
+      "Architect ultra-low-latency WebRTC and SIP trunking pipelines across Twilio, Exotel, Plivo, and direct Tier-1 telecom interconnects.",
+    meta: "BENGALURU · FULL-TIME",
+    href: "mailto:careers@vozon.ai?subject=Application:%20Distributed%20SIP%20%26%20Media%20Systems%20Engineer",
   },
   {
-    title: "AI / ML Engineer",
-    description:
-      "Build speech, reasoning, and real-time systems that make conversations feel natural and useful.",
-    tags: ["LLMs", "Speech", "Realtime"],
+    team: "PRODUCT ENGINEERING",
+    title: "Senior Full-Stack Product Engineer",
+    summary:
+      "Build the agent studio, live call monitoring console, and deterministic CRM workflow builders in Next.js, TypeScript, and Python.",
+    meta: "BENGALURU / HYBRID · FULL-TIME",
+    href: "mailto:careers@vozon.ai?subject=Application:%20Senior%20Full-Stack%20Product%20Engineer",
   },
   {
-    title: "Product Designer",
-    description:
-      "Design intuitive flows that make sophisticated voice technology feel simple for teams and end users.",
-    tags: ["UX", "UI", "Research"],
+    team: "CONVERSATIONAL DESIGN",
+    title: "Staff Conversational AI & Prompt Architect",
+    summary:
+      "Design empathetic, domain-specific voice personas, guardrails, and multilingual dialogue flows for healthcare, logistics, and fintech.",
+    meta: "BENGALURU / REMOTE · FULL-TIME",
+    href: "mailto:careers@vozon.ai?subject=Application:%20Staff%20Conversational%20AI%20Architect",
   },
   {
-    title: "DevOps / Platform Engineer",
-    description:
-      "Support deployment, observability, and scale so the product stays stable as usage and complexity grow.",
-    tags: ["Cloud", "Monitoring", "Automation"],
-  },
-] as const;
-
-const qualities = [
-  "Strong problem-solving mindset",
-  "Curiosity about AI and emerging technology",
-  "Clear and thoughtful communication",
-  "Ability to take ownership",
-  "Attention to detail",
-  "Willingness to learn and experiment",
-];
-
-const process = [
-  {
-    number: "01",
-    title: "Explore",
-    description:
-      "Find a role that matches your strengths, interests, and the problems you want to solve.",
+    team: "SOLUTIONS ENGINEERING",
+    title: "Forward-Deployed Solutions Architect",
+    summary:
+      "Partner directly with enterprise engineering teams to integrate Vozon into Salesforce, Zoho, custom ERPs, and private VPC environments.",
+    meta: "BENGALURU / SAN FRANCISCO · FULL-TIME",
+    href: "mailto:careers@vozon.ai?subject=Application:%20Forward-Deployed%20Solutions%20Architect",
   },
   {
-    number: "02",
-    title: "Apply",
-    description:
-      "Share your experience, projects, and what makes you excited about building with voice AI.",
-  },
-  {
-    number: "03",
-    title: "Connect",
-    description:
-      "Meet the people behind vozon.ai and get a better understanding of the team and the work.",
-  },
-  {
-    number: "04",
-    title: "Build",
-    description:
-      "If there is a strong fit, join us and start building the future of business conversations.",
+    team: "GROWTH & GTM",
+    title: "Enterprise Account Executive",
+    summary:
+      "Lead strategic enterprise deployments across healthcare, financial services, and high-volume customer operations teams.",
+    meta: "BENGALURU / SAN FRANCISCO · FULL-TIME",
+    href: "mailto:careers@vozon.ai?subject=Application:%20Enterprise%20Account%20Executive",
   },
 ];
 
-const faqs = [
+const careerFaqs = [
   {
-    question: "What roles are currently open?",
+    question: "What does the interview process at Vozon look like?",
     answer:
-      "Our public openings will be listed on this page as positions become available. If you don't see a role that matches your profile, you can still introduce yourself through a general application.",
+      "Our process is fast, practical, and respectful of your time. It starts with a 25-minute intro conversation, followed by a hands-on technical or design deep-dive focused on real-world voice/systems problems (no trick whiteboard puzzles), and concludes with a founder and team alignment session.",
   },
   {
-    question: "Can I apply even if there isn't a matching role?",
+    question: "Where are Vozon's offices located and do you support hybrid work?",
     answer:
-      "Yes. We are always interested in meeting thoughtful builders. Tell us what you are good at, what you want to work on, and why vozon.ai interests you.",
+      "Our primary engineering hub is in Bengaluru, with our North America GTM and research presence in San Francisco. Most engineering and product roles operate in a high-trust hybrid cadence so teams can collaborate closely on latency-critical systems.",
   },
   {
-    question: "What should I include in my application?",
+    question: "What kind of engineering problems will I work on?",
     answer:
-      "Share your background, relevant experience, projects you are proud of, and what interests you about voice AI. Links to GitHub, a portfolio, products, writing, or other work are welcome.",
+      "You will tackle some of the hardest latency and reliability problems in applied AI: sub-88ms audio streaming, noisy-environment barge-in detection, regional Indic code-switching, deterministic LLM tool calling, and multi-carrier SIP failover at 99.98% uptime.",
   },
   {
-    question: "What does vozon.ai look for?",
+    question: "What if I don't see an exact role match for my background?",
     answer:
-      "We look for people who are curious, thoughtful, collaborative, accountable, and excited to solve difficult problems. Strong technical or creative ability matters, but so does the way you approach problems.",
+      "We always make room for exceptional builders. Send a short note to careers@vozon.ai with links to what you have built, deployed, or researched, and tell us where you think you can make the biggest impact.",
   },
 ];
-
-function ArrowIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      className="size-4 shrink-0"
-      fill="none"
-      viewBox="0 0 20 20"
-    >
-      <path
-        d="M4 10h12m-4.5-4.5L16 10l-4.5 4.5"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.7"
-      />
-    </svg>
-  );
-}
-
-function SparkIcon() {
-  return (
-    <span
-      className="grid size-11 shrink-0 place-items-center rounded-xl border border-black/20 bg-black/5 text-black"
-      aria-hidden="true"
-    >
-      <svg className="size-5" fill="none" viewBox="0 0 20 20">
-        <path
-          d="M10 2.5 12 8l5.5 2-5.5 2-2 5.5L8 12l-5.5-2L8 8l2-5.5Z"
-          stroke="currentColor"
-          strokeLinejoin="round"
-          strokeWidth="1.4"
-        />
-      </svg>
-    </span>
-  );
-}
-
-function WorkCardIcon({
-  kind,
-}: {
-  kind: "spark" | "trend" | "check";
-}) {
-  return (
-    <span
-      className="career-card-icon mx-auto grid size-12 place-items-center rounded-2xl border transition duration-300"
-      aria-hidden="true"
-    >
-      {kind === "spark" ? (
-        <svg className="size-5" fill="none" viewBox="0 0 20 20">
-          <path
-            d="M10 2.75 12 8l5.25 2L12 12l-2 5.25L8 12l-5.25-2L8 8l2-5.25Z"
-            stroke="currentColor"
-            strokeLinejoin="round"
-            strokeWidth="1.5"
-          />
-        </svg>
-      ) : kind === "trend" ? (
-        <svg className="size-5" fill="none" viewBox="0 0 20 20">
-          <path
-            d="M4 13.5 8.2 9.3l2.9 2.9L16 7.4"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.6"
-          />
-          <path
-            d="M12.8 7.4H16v3.2"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.6"
-          />
-        </svg>
-      ) : (
-        <svg className="size-5" fill="none" viewBox="0 0 20 20">
-          <path
-            d="M10 3.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Z"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          />
-          <path
-            d="M10 7.2v5.6M7.2 10h5.6"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.5"
-          />
-        </svg>
-      )}
-    </span>
-  );
-}
-
-function CheckIcon() {
-  return (
-    <span className="grid size-5 shrink-0 place-items-center rounded-full border border-black/25 bg-black/5 text-black">
-      <svg className="size-3" fill="none" viewBox="0 0 16 16">
-        <path
-          d="m3.5 8 3 3 6-6"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="1.7"
-        />
-      </svg>
-    </span>
-  );
-}
 
 export default function CareerPage() {
+  const [activeFaq, setActiveFaq] = useState<number | null>(null);
+
   return (
-    <SiteLayout>
-      <div id="career-page" className="min-h-screen overflow-hidden bg-white text-black">
+    <div className="hcr-site sln-site">
+      <SiteHeader />
 
-        {/* =========================================================
-            HERO
-        ========================================================== */}
-        <section className="relative overflow-hidden bg-white px-5 pb-4 pt-28 sm:px-8 sm:pb-6 sm:pt-36 lg:px-12 lg:pb-8">
-
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute left-1/2 top-16 hidden h-72 w-72 -translate-x-1/2 rounded-full"
-          />
-
-          <div className="relative mx-auto max-w-[1180px]">
-
-            <div className="text-center">
-
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#5b4ce6]/20 bg-white px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#5b4ce6] shadow-sm">
-                <span className="size-1.5 rounded-full bg-[#5b4ce6]" />
-                Careers at vozon.ai
-              </div>
-
-              {/* Heading */}
-              <h1 className="mx-auto mt-7 max-w-[680px] text-center text-[clamp(2.25rem,4.4vw,4.25rem)] font-medium leading-[0.96] tracking-[-0.055em] text-[#171719]">
-                Build your career.
-                <br />
-                <span className="text-[#171719]">
-                  Build what matters.
-                </span>
-              </h1>
-
-              {/* Description */}
-              <p className="mx-auto mt-7 max-w-xl text-base leading-8 text-gray-600 sm:text-lg">
-                We are building the intelligence layer for business
-                conversations. Join us to make voice AI more natural, useful,
-                reliable, and capable of turning conversations into meaningful
-                action.
-              </p>
-
-              {/* Hero Buttons */}
-              <div className="mt-9 flex flex-wrap justify-center gap-3">
-
-                <Link
-                  href="#open-roles"
-                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#5b4ce6] px-6 text-sm font-bold text-white shadow-[0_12px_30px_rgba(91,76,230,.16)] transition duration-300 hover:-translate-y-1 hover:bg-[#4d3ec9] hover:shadow-[0_18px_40px_rgba(91,76,230,.2)]"
-                >
-                  Explore opportunities
-                  <ArrowIcon />
-                </Link>
-
-                <Link
-                  href="/about"
-                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-6 text-sm font-bold text-black shadow-sm transition duration-300 hover:-translate-y-1 hover:border-[#5b4ce6]/40 hover:text-[#5b4ce6] hover:shadow-md"
-                >
-                  Meet vozon.ai
-                  <ArrowIcon />
-                </Link>
-
-              </div>
-            </div>
-
+      <main className="hcr-page cmp-page">
+        {/* ==================================================================
+            1. 2-COLUMN EDITORIAL HERO (Compact Headings + Open Teams Index)
+            ================================================================== */}
+        <section className="cmp-hero hcr-wrap">
+          <div className="hcr-breadcrumb">
+            <Link href="/">Home</Link>
+            <span>/</span>
+            <span>Careers</span>
           </div>
 
-          {/* Hero bottom line */}
-          <div className="mx-auto mt-5 h-px max-w-[1180px] bg-gray-100 sm:mt-6" />
-
-        </section>
-
-
-        {/* =========================================================
-            WHY WORK WITH US
-        ========================================================== */}
-        <section className="bg-white px-5 pb-10 pt-3 sm:px-8 sm:pb-12 sm:pt-5 lg:px-12 lg:pb-14 lg:pt-7">
-
-          <div className="mx-auto max-w-[1180px]">
-
-            <div className="mx-auto max-w-3xl text-center">
-
-              <div className="mx-auto flex items-center justify-center gap-3">
-                <span className="h-px w-8 bg-[#5b4ce6]" />
-
-                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#5b4ce6]">
-                  Why work with us
+          <div className="cmp-hero-stage">
+            <div className="cmp-hero-grid">
+              <div className="cmp-hero-left">
+                <p className="hcr-kicker">CAREERS AT VOZON AI</p>
+                <h1>Build the voice engine behind millions of conversations.</h1>
+                <p className="cmp-hero-lead">
+                  We bring together acoustic researchers, distributed systems engineers, and product
+                  builders to replace broken phone trees with sub-88ms conversational intelligence.
                 </p>
-
-                <span className="h-px w-8 bg-[#5b4ce6]" />
-              </div>
-
-              <h2 className="mt-5 text-3xl font-semibold tracking-[-0.045em] text-black sm:text-4xl">
-                Build something that genuinely matters.
-              </h2>
-
-              <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-gray-600">
-                We are building technology that changes business communication
-                and creates better experiences for the people on both sides of
-                every conversation.
-              </p>
-
-            </div>
-
-
-            {/* Cards */}
-            <div className="mx-auto mt-12 grid max-w-[1060px] gap-6 sm:grid-cols-3">
-
-              <article className="career-benefit-card group relative min-h-[270px] overflow-hidden rounded-[22px] border px-7 py-8 text-center transition duration-300 sm:px-8 sm:py-9">
-
-                <WorkCardIcon kind="spark" />
-
-                <h3 className="mt-6 text-xl font-semibold tracking-[-0.03em] text-black">
-                  Purposeful innovation
-                </h3>
-
-                <p className="mt-3 text-sm leading-7 text-gray-600">
-                  Build technology that solves complex problems, improves
-                  experiences, and creates meaningful value for businesses.
-                </p>
-
-              </article>
-
-
-              <article className="career-benefit-card group relative min-h-[270px] overflow-hidden rounded-[22px] border px-7 py-8 text-center transition duration-300 sm:px-8 sm:py-9">
-
-                <WorkCardIcon kind="trend" />
-
-                <h3 className="mt-6 text-xl font-semibold tracking-[-0.03em] text-black">
-                  Continuous growth
-                </h3>
-
-                <p className="mt-3 text-sm leading-7 text-gray-600">
-                  Learn, experiment, and collaborate with a team that values
-                  curiosity, technical excellence, and continuous improvement.
-                </p>
-
-              </article>
-
-
-              <article className="career-benefit-card group relative min-h-[270px] overflow-hidden rounded-[22px] border px-7 py-8 text-center transition duration-300 sm:px-8 sm:py-9">
-
-                <WorkCardIcon kind="check" />
-
-                <h3 className="mt-6 text-xl font-semibold tracking-[-0.03em] text-black">
-                  Meaningful ownership
-                </h3>
-
-                <p className="mt-3 text-sm leading-7 text-gray-600">
-                  Take responsibility from idea to execution and make a
-                  tangible contribution to products built for real-world
-                  impact.
-                </p>
-
-              </article>
-
-            </div>
-
-          </div>
-        </section>
-
-
-        {/* =========================================================
-            OPEN ROLES
-        ========================================================== */}
-        <section
-          className="bg-white px-5 py-10 sm:px-8 lg:px-12 lg:py-14"
-          id="open-roles"
-        >
-
-          <div className="mx-auto max-w-[1180px]">
-
-            <div className="flex flex-col justify-between gap-7 sm:flex-row sm:items-end">
-
-              <div>
-
-                <div className="career-principles-kicker flex items-center gap-3">
-                  <span className="h-px w-8 bg-[#5b4ce6]" />
-
-                  <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#5b4ce6]">
-                    Open roles
-                  </p>
+                <div className="cmp-hero-actions">
+                  <a href="#open-roles" className="cmp-btn-primary">
+                    Explore open roles <span aria-hidden="true">&#8595;</span>
+                  </a>
+                  <Link href="/about" className="cmp-btn-secondary">
+                    Our founding story <span aria-hidden="true">&#8599;</span>
+                  </Link>
                 </div>
-
-                <h2 className="mt-5 text-3xl font-semibold tracking-[-0.045em] text-black sm:text-4xl">
-                  Find your place at vozon.ai.
-                </h2>
-
-                <p className="mt-5 max-w-2xl text-sm leading-7 text-gray-600 sm:text-base sm:leading-8">
-                  We are hiring for the core roles that help shape the website,
-                  platform, and voice technology behind vozon.ai.
-                </p>
-
               </div>
 
-            </div>
-
-
-            <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-
-              {openRoles.map((role, index) => (
-
-                <article
-                  key={role.title}
-                  className="career-role-card group relative flex h-full min-h-[320px] flex-col overflow-hidden rounded-[22px] border p-7 transition-all duration-300"
-                >
-
-                  <div className="absolute inset-x-0 top-0 h-0.5 bg-[#5b4ce6] opacity-0 transition duration-300 group-hover:opacity-100" />
-
-                  <div className="flex flex-1 flex-col">
-
-                    <div className="flex items-start">
-
-                      <span className="career-role-index flex size-10 items-center justify-center rounded-xl border border-black bg-white text-[10px] font-bold text-black">
-                        0{index + 1}
-                      </span>
-
-                    </div>
-
-
-                    <h3 className="mt-6 text-xl font-semibold tracking-[-0.03em] text-black">
-                      {role.title}
-                    </h3>
-
-
-                    <p className="mt-3 text-sm leading-7 text-gray-600">
-                      {role.description}
-                    </p>
-
-
-                    <div className="mt-5 flex flex-wrap gap-2">
-
-                      {role.tags.map((tag) => (
-
-                        <span
-                          key={tag}
-                          className="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-[9px] font-medium text-gray-600 transition duration-300 group-hover:border-[#5b4ce6]/20"
-                        >
-                          {tag}
-                        </span>
-
-                      ))}
-
-                    </div>
-
-
-                    <div className="mt-auto pt-7">
-                      <span className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-[#b9dcd2] bg-[#f3f1ff] px-5 py-3 text-xs font-bold uppercase tracking-[0.12em] text-[#4d3ec9]">
-                        Coming soon
-                      </span>
-                    </div>
-
-                  </div>
-
-                </article>
-
-              ))}
-
-            </div>
-
-          </div>
-        </section>
-
-
-        {/* =========================================================
-            WORK AREAS
-        ========================================================== */}
-        <section className="career-work-areas px-5 py-10 sm:px-8 lg:px-12 lg:py-14">
-
-          <div className="mx-auto max-w-[1180px]">
-
-            <div className="mx-auto max-w-3xl text-center">
-
-              <div className="flex items-center justify-center gap-3">
-
-                <span className="h-px w-8 bg-black" />
-
-                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-black">
-                  Where you can contribute
-                </p>
-
-                <span className="h-px w-8 bg-black" />
-
-              </div>
-
-              <h2 className="mt-5 text-3xl font-semibold tracking-[-0.045em] text-black sm:text-4xl">
-                Build across the voice AI stack.
-              </h2>
-
-              <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-gray-600 sm:text-base">
-                Bring your expertise to the part of the product where you can
-                make the biggest impact.
-              </p>
-
-            </div>
-
-
-            <div className="mt-11 grid gap-5 md:grid-cols-3">
-
-              {workAreas.map((area) => (
-
-                <article
-                  key={area.number}
-                  className="career-work-card group relative overflow-hidden rounded-[22px] border p-7 transition duration-300"
-                >
-
-                  <div className="flex items-center justify-between">
-
-                    <span className="career-work-index flex size-9 items-center justify-center rounded-lg border border-black bg-white text-[10px] font-bold text-black">
-                      {area.number}
-                    </span>
-
-                    <SparkIcon />
-
-                  </div>
-
-
-                  <h3 className="mt-7 text-xl font-semibold tracking-[-0.03em] text-black">
-                    {area.title}
-                  </h3>
-
-
-                  <p className="mt-4 text-sm leading-7 text-gray-600">
-                    {area.description}
-                  </p>
-
-
-                  <div className="mt-6 flex flex-wrap gap-2">
-
-                    {area.tags.map((tag) => (
-
-                      <span
-                        key={tag}
-                        className="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-[10px] font-medium text-gray-600"
-                      >
-                        {tag}
-                      </span>
-
-                    ))}
-
-                  </div>
-
-                </article>
-
-              ))}
-
-            </div>
-
-          </div>
-        </section>
-
-
-        {/* =========================================================
-            PRINCIPLES
-        ========================================================== */}
-        <section className="career-principles px-5 py-10 sm:px-8 lg:px-12 lg:py-14">
-
-          <div className="mx-auto max-w-[1180px]">
-
-            <div className="grid gap-12 lg:grid-cols-[0.72fr_1.28fr]">
-
-              <div>
-
-                <div className="career-principles-kicker flex items-center gap-3">
-
-                  <span className="h-px w-8 bg-[#5b4ce6]" />
-
-                  <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#5b4ce6]">
-                    How we work
-                  </p>
-
+              <div className="cmp-ledger" aria-label="Hiring teams overview">
+                <div className="cmp-ledger-head">
+                  <span>HIRING TEAMS</span>
+                  <span className="cmp-ledger-badge">
+                    <i aria-hidden="true" /> 6 Open Roles
+                  </span>
                 </div>
-
-                <h2 className="mt-5 text-3xl font-semibold tracking-[-0.045em] text-black sm:text-4xl">
-                  Principles that guide us.
-                </h2>
-
-                <p className="mt-5 max-w-md text-sm leading-7 text-gray-600">
-                  We want people to do their best work while building
-                  technology that creates meaningful impact.
-                </p>
-
-              </div>
-
-
-              <div className="career-principles-list divide-y border-y">
-
-                {principles.map((principle) => (
-
-                  <article
-                    key={principle.number}
-                    className="career-principle-row group grid gap-4 py-7 sm:grid-cols-[60px_1fr]"
-                  >
-
-                    <span className="career-neutral-index flex size-9 items-center justify-center rounded-lg border border-black bg-white text-[10px] font-bold text-black">
-                      {principle.number}
-                    </span>
-
+                {heroDepartments.map((dept) => (
+                  <a key={dept.name} href="#open-roles" className="cmp-ledger-link">
                     <div>
-
-                      <h3 className="text-xl font-semibold tracking-[-0.03em] text-black">
-                        {principle.title}
-                      </h3>
-
-                      <p className="mt-3 text-sm leading-7 text-gray-600">
-                        {principle.description}
-                      </p>
-
+                      <strong>{dept.name}</strong>
+                      <small>{dept.detail}</small>
                     </div>
-
-                  </article>
-
+                    <span>{dept.count}</span>
+                  </a>
                 ))}
-
               </div>
-
             </div>
-
           </div>
         </section>
 
-
-        {/* =========================================================
-            BENEFITS
-        ========================================================== */}
-        <section className="career-benefits px-5 py-10 sm:px-8 lg:px-12 lg:py-14">
-
-          <div className="mx-auto max-w-[1180px]">
-
-            <div className="mx-auto max-w-3xl text-center">
-
-              <div className="flex items-center justify-center gap-3">
-
-                <span className="h-px w-8 bg-[#5b4ce6]" />
-
-                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#5b4ce6]">
-                  What you can expect
-                </p>
-
-                <span className="h-px w-8 bg-[#5b4ce6]" />
-
-              </div>
-
-              <h2 className="mt-5 text-3xl font-semibold tracking-[-0.045em] text-black sm:text-4xl">
-                A place to learn, build, and grow.
-              </h2>
-
-            </div>
-
-
-            <div className="mt-11 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-
-              {benefits.map((benefit) => (
-
-                <article
-                  key={benefit.title}
-                  className="career-expect-card group min-h-[250px] rounded-[22px] border p-7 transition duration-300"
-                >
-
-                  <div className="grid size-11 place-items-center rounded-xl border border-[#5b4ce6]/15 bg-[#5b4ce6]/5 text-lg text-[#5b4ce6] transition duration-300 group-hover:bg-[#5b4ce6] group-hover:text-white">
-                    {benefit.icon}
-                  </div>
-
-                  <h3 className="mt-6 text-lg font-semibold tracking-[-0.03em] text-black">
-                    {benefit.title}
-                  </h3>
-
-                  <p className="mt-3 text-sm leading-7 text-gray-600">
-                    {benefit.description}
-                  </p>
-
-                </article>
-
-              ))}
-
-            </div>
-
-          </div>
-        </section>
-
-
-        {/* =========================================================
-            QUALITIES + PROCESS
-        ========================================================== */}
-        <section className="career-qualities-process px-5 py-10 sm:px-8 lg:px-12 lg:py-14">
-
-          <div className="mx-auto grid max-w-[1180px] gap-14 lg:grid-cols-2">
-
-            {/* Qualities */}
-            <div>
-
-              <div className="flex items-center gap-3">
-
-                <span className="h-px w-8 bg-black" />
-
-                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-black">
-                  What we value
-                </p>
-
-              </div>
-
-              <h2 className="mt-5 text-3xl font-semibold tracking-[-0.045em] text-black sm:text-4xl">
-                Bring your strengths.
-              </h2>
-
-              <p className="mt-5 max-w-xl text-sm leading-7 text-gray-600">
-                You do not need to know everything. We care about how you
-                think, how you learn, and how you approach difficult problems.
-              </p>
-
-
-              <div className="mt-8 grid gap-3 sm:grid-cols-2">
-
-                {qualities.map((quality) => (
-
-                  <div
-                    key={quality}
-                    className="career-quality-card group flex items-center gap-3 rounded-xl border px-4 py-4 transition duration-300"
-                  >
-
-                    <CheckIcon />
-
-                    <span className="text-sm font-medium text-gray-700">
-                      {quality}
-                    </span>
-
-                  </div>
-
-                ))}
-
-              </div>
-
-            </div>
-
-
-            {/* Process */}
-            <div>
-
-              <div className="flex items-center gap-3">
-
-                <span className="h-px w-8 bg-[#5b4ce6]" />
-
-                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#5b4ce6]">
-                  Our process
-                </p>
-
-              </div>
-
-              <h2 className="mt-5 text-3xl font-semibold tracking-[-0.045em] text-black sm:text-4xl">
-                From application to impact.
-              </h2>
-
-
-              <div className="career-process-list mt-8 divide-y border-y">
-
-                {process.map((step) => (
-
-                  <article
-                    key={step.number}
-                    className="career-process-row group grid gap-4 py-6 sm:grid-cols-[55px_1fr]"
-                  >
-
-                    <span className="career-neutral-index flex size-8 items-center justify-center rounded-lg border border-black bg-white text-[10px] font-bold text-black">
-                      {step.number}
-                    </span>
-
-                    <div>
-
-                      <h3 className="text-lg font-semibold tracking-[-0.02em] text-black">
-                        {step.title}
-                      </h3>
-
-                      <p className="mt-2 text-sm leading-7 text-gray-600">
-                        {step.description}
-                      </p>
-
-                    </div>
-
-                  </article>
-
-                ))}
-
-              </div>
-
-            </div>
-
-          </div>
-        </section>
-
-
-        {/* =========================================================
-            FAQ
-        ========================================================== */}
-        <section className="bg-white px-5 py-10 sm:px-8 lg:px-12 lg:py-14">
-
-          <div className="mx-auto grid max-w-[1180px] gap-12 lg:grid-cols-[0.65fr_1.35fr]">
-
-            <div>
-
-              <div className="flex items-center gap-3">
-
-                <span className="h-px w-8 bg-[#5b4ce6]" />
-
-                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#5b4ce6]">
-                  Careers FAQ
-                </p>
-
-              </div>
-
-              <h2 className="mt-5 text-3xl font-semibold tracking-[-0.045em] text-black sm:text-[2.8rem]">
-                Before you apply.
-              </h2>
-
-              <p className="mt-6 max-w-sm text-sm leading-7 text-gray-600">
-                A few answers to help you understand what it is like to
-                explore a career at vozon.ai.
-              </p>
-
-            </div>
-
-
-            <div className="divide-y divide-gray-200 border-y border-gray-200">
-
-              {faqs.map((faq, index) => (
-
-                <details
-                  key={faq.question}
-                  className="group"
-                  open={index === 0}
-                >
-
-                  <summary className="flex cursor-pointer list-none items-center gap-5 py-6 text-left [&::-webkit-details-marker]:hidden">
-
-                    <span className="career-faq-index flex size-7 shrink-0 items-center justify-center rounded-lg border border-black bg-white text-[9px] font-bold text-black">
-                      0{index + 1}
-                    </span>
-
-                    <span className="text-base font-semibold tracking-[-0.02em] text-black sm:text-lg">
-                      {faq.question}
-                    </span>
-
-                    <span className="ml-auto grid size-8 shrink-0 place-items-center rounded-full border border-gray-300 bg-white text-lg font-light text-black transition duration-300 group-open:rotate-45 group-open:border-[#5b4ce6] group-open:text-[#5b4ce6]">
-                      +
-                    </span>
-
-                  </summary>
-
-                  <p className="max-w-2xl pb-7 pl-12 pr-8 text-sm leading-7 text-gray-600">
-                    {faq.answer}
-                  </p>
-
-                </details>
-
-              ))}
-
-            </div>
-
-          </div>
-        </section>
-
-
-        {/* =========================================================
-            FINAL CTA
-        ========================================================== */}
-        <section className="bg-white px-6 pb-12 pt-4 lg:px-8">
-
-          <div className="career-contact mx-auto flex max-w-6xl flex-col items-center justify-between gap-7 overflow-hidden rounded-[24px] border border-[#d7c8e8] bg-[#f1e9fa] p-8 text-center text-black shadow-[0_18px_46px_rgba(91,54,123,0.11)] sm:p-10 md:flex-row md:text-left">
-
+        {/* ==================================================================
+            2. HIGH-IMPACT PROOF METRICS (Dark Band)
+            ================================================================== */}
+        <section className="hcr-proof">
+          <div className="hcr-wrap">
+            <div className="hcr-proof-grid">
               <div>
-
-                <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#7a3e9d]">
-                  Join vozon.ai
-                </p>
-
-                <h2 className="mt-3 text-2xl font-semibold tracking-[-0.02em] text-black md:text-3xl">
-                  Ready to help shape the future of voice AI?
-                </h2>
-
-                <p className="mt-3 max-w-xl text-sm leading-6 text-gray-600">
-                  Meaningful work, real ownership, and a chance to shape how
-                  businesses use voice AI.
-                </p>
-
+                <strong>88ms</strong>
+                <span>Latency standard we engineer for</span>
               </div>
+              <div>
+                <strong>50+</strong>
+                <span>Languages &amp; Indic dialects in production</span>
+              </div>
+              <div>
+                <strong>2</strong>
+                <span>Engineering &amp; GTM hubs (BLR &amp; SF)</span>
+              </div>
+              <div>
+                <strong>100%</strong>
+                <span>Builder-led ownership &amp; direct impact</span>
+              </div>
+            </div>
 
+            <div className="hcr-proof-tools">
+              <span>OUR CORE STACK</span>
+              <b>Rust &amp; Go Media</b>
+              <b>WebRTC / SIP</b>
+              <b>Python &amp; PyTorch</b>
+              <b>Next.js &amp; TypeScript</b>
+              <b>Kubernetes</b>
+            </div>
+          </div>
+        </section>
 
-              {/* =====================================================
-                  CONTACT BUTTON
-                  Explicit white text + white arrow
-              ====================================================== */}
-              <Link
-                href="/contact"
-                className="inline-flex min-h-12 shrink-0 items-center rounded-lg border border-[#7a3e9d] bg-[#7a3e9d] px-7 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#683486]"
-              >
-                CONTACT US <span className="ml-3">&rarr;</span>
+        {/* ==================================================================
+            3. HOW WE WORK / CULTURE PRINCIPLES
+            ================================================================== */}
+        <section className="sln-audiences hcr-wrap">
+          <p className="hcr-kicker">HOW WE WORK</p>
+          <h2>Small teams, hard infrastructure problems, zero bureaucracy.</h2>
+          <div className="sln-audience-grid">
+            <div>
+              <span>01</span>
+              <h3>High-agency ownership</h3>
+              <p>
+                Every engineer and designer owns end-to-end outcomes—from acoustic benchmarks and
+                SIP trunking architecture to how a caller feels on their first interaction.
+              </p>
+            </div>
+            <div>
+              <span>02</span>
+              <h3>Obsess over every millisecond</h3>
+              <p>
+                In real-time voice, 200ms is the difference between magic and frustration. We
+                measure, profile, and optimize every layer from codec framing to token streaming.
+              </p>
+            </div>
+            <div>
+              <span>03</span>
+              <h3>Ship directly to production</h3>
+              <p>
+                We avoid endless committees. We listen closely to enterprise deployments, ship
+                improvements daily, and iterate based on real call outcomes.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ==================================================================
+            4. OPEN POSITIONS GRID
+            ================================================================== */}
+        <section className="hcr-platform hcr-wrap" id="open-roles">
+          <p className="hcr-kicker">OPEN POSITIONS</p>
+          <h2>Find where your craft makes the biggest impact.</h2>
+
+          <div className="hcr-platform-grid">
+            {openRoles.map((role) => (
+              <a key={role.title} href={role.href}>
+                <span>{role.team}</span>
+                <h3>{role.title}</h3>
+                <p>{role.summary}</p>
+                <strong>{role.meta}</strong>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        {/* ==================================================================
+            5. BENEFITS & GENERAL APPLICATION
+            ================================================================== */}
+        <section className="hcr-launch hcr-wrap">
+          <div>
+            <p className="hcr-kicker">LIFE &amp; BENEFITS</p>
+            <h2>Built so you can do your best work.</h2>
+          </div>
+          <div className="hcr-launch-options">
+            <div>
+              <span>COMPENSATION &amp; WELLBEING</span>
+              <h3>Competitive salary, meaningful equity &amp; full health cover</h3>
+              <p>
+                Top-of-market compensation with meaningful early-stage equity, comprehensive
+                medical insurance for you and your family, and a dedicated home-office &amp;
+                studio audio stipend.
+              </p>
+              <Link href="/about">
+                Learn about our company <span aria-hidden="true">&#8599;</span>
               </Link>
-
+            </div>
+            <div>
+              <span>OPEN APPLICATION</span>
+              <h3>Don&apos;t see your exact role listed?</h3>
+              <p>
+                Share what you have built, the hardest technical or design problem you have
+                solved, and where you want to contribute. We review every thoughtful note directly.
+              </p>
+              <a href="mailto:careers@vozon.ai?subject=Open%20Application%20-%20Vozon%20AI">
+                Email careers@vozon.ai <span aria-hidden="true">&#8599;</span>
+              </a>
+            </div>
           </div>
-
         </section>
 
-        <style>{`
-          #career-page > section {
-            background: #fff;
-          }
-
-          #career-page .career-benefit-card,
-          #career-page .career-role-card {
-            --card-accent: #5b4ce6;
-            --card-soft: #e8edff;
-            border-color: #dce4ff;
-            background: #f4f6ff;
-            box-shadow: 0 14px 38px rgba(32, 52, 110, .07);
-          }
-
-          #career-page .career-benefit-card:nth-child(2),
-          #career-page .career-role-card:nth-child(2) {
-            --card-accent: #7855b8;
-            --card-soft: #eadff8;
-            border-color: #e2d7f1;
-            background: #f8f3fc;
-          }
-
-          #career-page .career-benefit-card:nth-child(3),
-          #career-page .career-role-card:nth-child(3) {
-            --card-accent: #277b7a;
-            --card-soft: #dcefee;
-            border-color: #d4e9e8;
-            background: #f0f8f7;
-          }
-
-          #career-page .career-role-card:nth-child(4) {
-            --card-accent: #ad5573;
-            --card-soft: #f3dfe6;
-            border-color: #edd9e0;
-            background: #fcf3f6;
-          }
-
-          #career-page .career-role-card:nth-child(5) {
-            --card-accent: #405376;
-            --card-soft: #e3e8f1;
-            border-color: #dfe3eb;
-            background: #f5f6fa;
-          }
-
-          #career-page .career-benefit-card:hover,
-          #career-page .career-role-card:hover {
-            border-color: var(--card-accent);
-            box-shadow: 0 20px 48px rgba(44, 57, 105, .1);
-          }
-
-          #career-page .career-card-icon,
-          #career-page .career-role-number {
-            border-color: color-mix(in srgb, var(--card-accent) 22%, transparent);
-            background: var(--card-soft);
-            color: var(--card-accent);
-          }
-
-          #career-page .career-benefit-card:hover .career-card-icon {
-            background: var(--card-accent);
-            color: #fff;
-          }
-
-          #career-page .career-role-card > div:first-child {
-            background: var(--card-accent);
-          }
-
-          #career-page .career-role-card [class*="rounded-full"] {
-            border-color: color-mix(in srgb, var(--card-accent) 18%, white);
-            background: rgba(255, 255, 255, .72);
-          }
-
-          #career-page .career-work-areas {
-            --section-accent: #111114;
-            --section-soft: #f4f4f5;
-            background: #fff;
-          }
-
-          #career-page .career-principles {
-            --section-accent: #a54862;
-            --section-soft: #f3dfe5;
-            background: #fff;
-          }
-
-          #career-page .career-benefits {
-            --section-accent: #a87313;
-            --section-soft: #f5e8bf;
-            background: #fff;
-          }
-
-          #career-page .career-qualities-process {
-            --section-accent: #111114;
-            --section-soft: #f4f4f5;
-            background: #fff;
-          }
-
-          #career-page :is(
-            .career-work-areas,
-            .career-principles,
-            .career-benefits,
-            .career-qualities-process
-          ) [class*="text-[#5b4ce6]"] {
-            color: var(--section-accent);
-          }
-
-          #career-page :is(
-            .career-work-areas,
-            .career-principles,
-            .career-benefits,
-            .career-qualities-process
-          ) [class*="bg-[#5b4ce6]"] {
-            background-color: var(--section-accent);
-          }
-
-          #career-page :is(
-            .career-work-areas,
-            .career-principles,
-            .career-benefits,
-            .career-qualities-process
-          ) [class*="border-[#5b4ce6]"] {
-            border-color: color-mix(in srgb, var(--section-accent) 28%, transparent);
-          }
-
-          #career-page .career-work-card {
-            border-color: #e4e4e7;
-            background: #fff;
-            box-shadow: 0 10px 28px rgba(17, 17, 20, .05);
-          }
-
-          #career-page .career-work-card:hover {
-            border-color: var(--section-accent);
-          }
-
-          #career-page .career-work-card [class*="rounded-lg"],
-          #career-page .career-work-card [class*="rounded-xl"] {
-            background: var(--section-soft);
-            color: var(--section-accent);
-          }
-
-          #career-page .career-work-number {
-            background: var(--section-soft);
-            color: var(--section-accent);
-          }
-
-          #career-page .career-principles-list,
-          #career-page .career-process-list {
-            border-color: color-mix(in srgb, var(--section-accent) 22%, white);
-          }
-
-          #career-page .career-principle-row,
-          #career-page .career-process-row {
-            background: transparent;
-            box-shadow: none;
-          }
-
-          #career-page .career-quality-card [class*="rounded-full"] {
-            background: var(--section-soft);
-            color: var(--section-accent);
-          }
-
-          #career-page .career-neutral-number {
-            border-color: #111114 !important;
-            background: #fff !important;
-            color: #111114 !important;
-          }
-
-          #career-page .career-role-index,
-          #career-page .career-work-index,
-          #career-page .career-neutral-index,
-          #career-page .career-faq-index {
-            border-color: #111114 !important;
-            background: #fff !important;
-            color: #111114 !important;
-            -webkit-text-fill-color: #111114 !important;
-          }
-
-          #career-page .career-expect-card {
-            border-color: #eadfbf;
-            background: #fffdf7;
-            box-shadow: 0 12px 32px rgba(120, 87, 24, .06);
-          }
-
-          #career-page .career-expect-card:hover {
-            border-color: var(--section-accent);
-          }
-
-          #career-page .career-expect-card > div:first-child {
-            border-color: color-mix(in srgb, var(--section-accent) 24%, white);
-            background: var(--section-soft);
-            color: var(--section-accent);
-          }
-
-          #career-page .career-quality-card {
-            border-color: #e4e4e7;
-            background: #fff;
-            box-shadow: none;
-          }
-
-          #career-page .career-quality-card:hover {
-            border-color: var(--section-accent);
-          }
-
-          #career-page .career-contact {
-            border-color: #d7c8e8;
-            background: linear-gradient(120deg, #f1e9fa 0%, #e9e7ff 100%);
-            box-shadow: 0 18px 46px rgba(91, 54, 123, .11);
-          }
-
-          #career-page .career-contact a {
-            border-color: #7a3e9d;
-            background: #7a3e9d;
-            color: #fff;
-          }
-
-          #career-page .career-contact a:hover {
-            background: #683486;
-          }
-
-          /* Career page: use the same crisp, violet-accented visual language as the homepage. */
-          #career-page {
-            color: #17231f;
-            background: #fff;
-          }
-
-          #career-page > section {
-            position: relative;
-            padding-top: clamp(2rem, 3vw, 3.25rem);
-            padding-bottom: clamp(2rem, 3vw, 3.25rem);
-            border-top: 1px solid #e6efec;
-            background: #ffffff !important;
-            background-image: none !important;
-          }
-
-          #career-page > section:first-child {
-            border-top: 0;
-            padding-top: clamp(5.5rem, 7vw, 6.5rem);
-            padding-bottom: clamp(2.25rem, 3vw, 3.25rem);
-            background: #ffffff;
-          }
-
-          #career-page > section:nth-of-type(3),
-          #career-page > section:nth-of-type(6),
-          #career-page > section:nth-of-type(8) {
-            background: #ffffff !important;
-          }
-
-          #career-page h1,
-          #career-page h2,
-          #career-page h3 {
-            color: #15241f;
-            -webkit-text-fill-color: #15241f;
-          }
-
-          #career-page > section:first-child h1 {
-            max-width: 760px;
-            font-size: clamp(2.8rem, 5.6vw, 5.25rem);
-            line-height: .94;
-            color: #102a25;
-            -webkit-text-fill-color: #102a25;
-          }
-
-          #career-page > section:first-child h1 span {
-            color: #5b4ce6;
-            -webkit-text-fill-color: #5b4ce6;
-          }
-
-          #career-page :is(.career-benefit-card, .career-role-card, .career-work-card, .career-expect-card, .career-quality-card) {
-            border-color: #d9e8e3;
-            border-radius: 18px;
-            background: #ffffff;
-            box-shadow: 0 12px 32px rgb(16 61 52 / .055);
-          }
-
-          #career-page :is(.career-benefit-card, .career-role-card, .career-work-card, .career-expect-card) {
-            min-height: 0;
-          }
-
-          #career-page :is(.career-benefit-card, .career-role-card, .career-work-card, .career-expect-card):hover {
-            border-color: #86cbbd;
-            box-shadow: 0 18px 42px rgb(16 92 78 / .12);
-            transform: translateY(-4px);
-          }
-
-          #career-page .career-benefit-card:nth-child(n),
-          #career-page .career-role-card:nth-child(n) {
-            --card-accent: #5b4ce6;
-            --card-soft: #e9f7f2;
-            border-color: #d9e8e3;
-            background: #ffffff;
-          }
-
-          #career-page .career-card-icon,
-          #career-page .career-role-index,
-          #career-page .career-work-index,
-          #career-page .career-neutral-index,
-          #career-page .career-faq-index {
-            border-color: #b9dcd2 !important;
-            background: #f3f1ff !important;
-            color: #4d3ec9 !important;
-            -webkit-text-fill-color: #4d3ec9 !important;
-          }
-
-          #career-page .career-role-card > div:first-child {
-            height: 3px;
-            background: #5b4ce6;
-            opacity: 1;
-          }
-
-          #career-page .career-role-card [class*="rounded-full"],
-          #career-page .career-work-card [class*="rounded-full"] {
-            border-color: #d6e8e2;
-            background: #f3faf7;
-            color: #38665d;
-          }
-
-          #career-page .career-principles {
-            background: #ffffff !important;
-          }
-
-          #career-page .career-qualities-process {
-            background: #ffffff !important;
-          }
-
-          #career-page :is(.career-principles, .career-qualities-process) :is(h2, h3, p, span) {
-            color: #15241f;
-            -webkit-text-fill-color: #15241f;
-          }
-
-          #career-page :is(.career-principles, .career-qualities-process) p {
-            color: #5f706a;
-            -webkit-text-fill-color: #5f706a;
-          }
-
-          #career-page :is(.career-principles, .career-qualities-process) [class*="bg-black"] {
-            background: #5b4ce6;
-          }
-
-          #career-page :is(.career-principles, .career-qualities-process) [class*="text-[#5b4ce6]"] {
-            color: #5b4ce6;
-            -webkit-text-fill-color: #5b4ce6;
-          }
-
-          #career-page .career-principles-kicker p {
-            color: #4d3ec9;
-            -webkit-text-fill-color: #4d3ec9;
-          }
-
-          #career-page :is(.career-principles-list, .career-process-list) {
-            border-color: #d9e8e3;
-          }
-
-          #career-page :is(.career-principle-row, .career-process-row) {
-            border-color: #e6efec;
-          }
-
-          #career-page :is(.career-principles, .career-qualities-process) :is(.career-neutral-index, .career-quality-card) {
-            border-color: #d9e8e3 !important;
-            background: #ffffff !important;
-            color: #4d3ec9 !important;
-            -webkit-text-fill-color: #4d3ec9 !important;
-          }
-
-          #career-page .career-contact {
-            border-color: #b8ddd3;
-            border-radius: 20px;
-            background: #ffffff;
-            box-shadow: 0 14px 38px rgb(17 135 120 / .08);
-          }
-
-          #career-page .career-contact :is(p, h2) {
-            color: #15241f;
-            -webkit-text-fill-color: #15241f;
-          }
-
-          #career-page .career-contact > div > p:first-child {
-            color: #4d3ec9;
-            -webkit-text-fill-color: #4d3ec9;
-          }
-
-          #career-page .career-contact a,
-          #career-page > section:first-child a[href="#open-roles"] {
-            border-color: #5b4ce6;
-            background: #5b4ce6;
-            color: #fff;
-          }
-
-          #career-page .career-contact a:hover,
-          #career-page > section:first-child a[href="#open-roles"]:hover {
-            background: #0d6d61;
-          }
-
-          #career-page .career-benefits {
-            --section-accent: #5b4ce6;
-            --section-soft: #e9f7f2;
-            background: #ffffff !important;
-          }
-
-          #career-page .career-benefits .career-expect-card {
-            border-color: #d9e8e3;
-            background: #ffffff;
-          }
-
-          #career-page .career-benefits .career-expect-card > div:first-child {
-            border-color: #b9dcd2;
-            background: #e9f7f2;
-            color: #4d3ec9;
-          }
-
-          @media (max-width: 640px) {
-            #career-page > section {
-              padding-top: 2rem;
-              padding-bottom: 2rem;
-            }
-
-            #career-page > section:first-child {
-              padding-top: 5.5rem;
-            }
-          }
-        `}</style>
-
-      </div>
-    </SiteLayout>
+        {/* ==================================================================
+            6. HIRING PROCESS FAQ
+            ================================================================== */}
+        <section className="hcr-faq hcr-wrap">
+          <p className="hcr-kicker">HIRING FAQ</p>
+          <h2>Questions about joining Vozon AI.</h2>
+
+          <div className="hcr-faq-list">
+            {careerFaqs.map((faq, idx) => (
+              <details
+                key={faq.question}
+                open={activeFaq === idx}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActiveFaq(activeFaq === idx ? null : idx);
+                }}
+              >
+                <summary>
+                  {faq.question}
+                  <span>+</span>
+                </summary>
+                <p>{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+      </main>
+
+      <SiteFooter />
+    </div>
   );
 }

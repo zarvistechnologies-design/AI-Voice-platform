@@ -54,9 +54,9 @@ type KnowledgeEditor = {
 };
 
 const buttonClass =
-  "app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 transition disabled:cursor-not-allowed disabled:opacity-50";
+  "inline-flex h-8 items-center justify-center gap-1.5 rounded-md px-3 text-[12px] font-medium transition disabled:cursor-not-allowed disabled:opacity-50";
 const controlClass =
-  "app-control-text min-h-11 w-full rounded-lg border border-[#dbe4e1] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10";
+  "h-8 w-full rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12px] text-[#171717] outline-none transition placeholder:text-[#71717a] focus:border-black";
 const acceptedFiles =
   ".pdf,.docx,.txt,.md,.csv,.json,.html,.htm,.xml,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,text/markdown,text/csv,application/json,text/html,application/xml";
 
@@ -168,10 +168,10 @@ function sourceTypeLabel(source: KnowledgeSource) {
 }
 
 function statusStyle(status: KnowledgeSource["status"]) {
-  if (status === "ready") return "bg-[#ecfdf5] text-[#047857]";
-  if (status === "failed") return "bg-[#fff1f2] text-[#b91c1c]";
-  if (status === "processing") return "bg-[#eff6ff] text-[#108D82]";
-  return "bg-[#f1f5f9] text-[#64748b]";
+  if (status === "ready") return "border border-[#eaeaea] bg-[#fafafa] text-[#171717]";
+  if (status === "failed") return "border border-rose-200 bg-rose-50 text-rose-700";
+  if (status === "processing") return "border border-[#eaeaea] bg-[#f4f4f5] text-[#52525b]";
+  return "border border-[#eaeaea] bg-[#fafafa] text-[#71717a]";
 }
 
 function preview(value: string) {
@@ -310,10 +310,10 @@ export function KnowledgeBaseShell() {
     return !term
       ? sources
       : sources.filter((source) =>
-          `${source.name} ${source.agentName} ${source.preview} ${source.url} ${source.originalFileName}`
-            .toLowerCase()
-            .includes(term),
-        );
+        `${source.name} ${source.agentName} ${source.preview} ${source.url} ${source.originalFileName}`
+          .toLowerCase()
+          .includes(term),
+      );
   }, [query, sources]);
   const selectedAgentSourceCount = sources.filter(
     (source) => source.agentId === selectedAgentId,
@@ -407,9 +407,9 @@ export function KnowledgeBaseShell() {
       () =>
         sourceId
           ? voiceApi.updateKnowledgeSource(editor.agentId, sourceId, {
-              name,
-              content,
-            })
+            name,
+            content,
+          })
           : voiceApi.addKnowledgeText(editor.agentId, { name, content }),
       sourceId
         ? "Knowledge source was updated and re-indexed."
@@ -463,7 +463,7 @@ export function KnowledgeBaseShell() {
           description="Manage the indexed sources your voice agents use to answer caller questions."
           actions={
             <button
-              className={`${buttonClass} bg-[#118778] text-white hover:bg-[#0e6f62]`}
+              className={`${buttonClass} bg-[#2563eb] text-white hover:bg-[#1d4ed8]`}
               disabled={!selectedAgent || atCapacity}
               onClick={() => {
                 setError("");
@@ -494,15 +494,15 @@ export function KnowledgeBaseShell() {
             ) : null}
           </div>
 
-          <section className="dashboard-flat-panel min-w-0 overflow-hidden bg-white">
-            <div className="dashboard-filter-bar px-4 py-3 sm:px-5">
+          <section className="dashboard-flat-panel min-w-0 overflow-hidden rounded-lg border border-[#eaeaea] bg-white">
+            <div className="dashboard-filter-bar px-4 py-2.5 sm:px-4">
               <label className="relative block">
                 <span className="sr-only">Search knowledge</span>
-                <span className="pointer-events-none absolute inset-y-0 left-3 grid place-items-center text-[#94a3b8]">
-                  <Icon icon="search" />
+                <span className="pointer-events-none absolute inset-y-0 left-2.5 grid place-items-center text-[#71717a]">
+                  <Icon icon="search" className="size-3.5" />
                 </span>
                 <input
-                  className={`${controlClass} pl-10`}
+                  className={`${controlClass} pl-8`}
                   placeholder="Search source, agent, type, or content"
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
@@ -517,20 +517,20 @@ export function KnowledgeBaseShell() {
             ) : sources.length === 0 ? (
               <div className="mx-auto grid min-h-[360px] max-w-xl place-items-center px-5 py-14 text-center">
                 <div className="grid place-items-center gap-4">
-                  <span className="grid size-12 place-items-center rounded-lg bg-[#edf7f4] text-[#118778]">
-                    <Icon icon="file" className="size-5" />
+                  <span className="grid size-10 place-items-center rounded-lg border border-[#eaeaea] bg-[#f4f4f5] text-[#171717]">
+                    <Icon icon="file" className="size-4" />
                   </span>
                   <div>
-                    <strong className="app-strong block">
+                    <strong className="app-strong block text-[13px] text-[#171717]">
                       No knowledge added
                     </strong>
-                    <p className="app-caption mt-1 mb-0">
+                    <p className="app-caption mt-1 mb-0 text-xs text-[#71717a]">
                       Add approved text, a document, or a website to start your
                       workspace library.
                     </p>
                   </div>
                   <button
-                    className={`${buttonClass} bg-[#118778] text-white hover:bg-[#0e6f62]`}
+                    className={`${buttonClass} bg-[#2563eb] text-white hover:bg-[#1d4ed8]`}
                     disabled={!selectedAgent || atCapacity}
                     onClick={() => setShowAddKnowledge(true)}
                     type="button"
@@ -558,52 +558,52 @@ export function KnowledgeBaseShell() {
                   <span>Status</span>
                   <span className="text-right">Actions</span>
                 </div>
-                <ul className="divide-y divide-[#edf0f4]">
+                <ul className="divide-y divide-[#eaeaea]">
                   {filteredSources.map((source) => (
                     <li
-                      className="grid gap-4 px-4 py-4 transition hover:bg-[#fafcfb] sm:px-5 lg:grid-cols-[minmax(280px,1fr)_minmax(150px,.45fr)_110px_minmax(190px,auto)] lg:items-center"
+                      className="grid gap-3 px-4 py-3 transition hover:bg-[#fafafa] sm:px-4 lg:grid-cols-[minmax(280px,1fr)_minmax(150px,.45fr)_110px_minmax(190px,auto)] lg:items-center"
                       key={`${source.agentId}-${source._id}`}
                     >
-                      <div className="flex min-w-0 gap-3">
-                        <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#edf7f4] text-[#0e6f62]">
-                          <Icon icon={source.sourceType === "url" ? "link" : "file"} />
+                      <div className="flex min-w-0 gap-2.5">
+                        <span className="grid size-8 shrink-0 place-items-center rounded-md border border-[#eaeaea] bg-[#f4f4f5] text-[#171717]">
+                          <Icon icon={source.sourceType === "url" ? "link" : "file"} className="size-3.5" />
                         </span>
                         <div className="min-w-0">
-                          <strong className="app-strong block truncate">
+                          <strong className="block truncate text-[13px] font-medium text-[#171717]">
                             {source.name}
                           </strong>
-                          <p className="app-caption mt-1 mb-0 truncate text-[#64748b]">
+                          <p className="mt-0.5 mb-0 truncate text-[11px] text-[#71717a]">
                             {source.error ||
                               preview(source.preview) ||
                               source.url ||
                               source.originalFileName}
                           </p>
-                          <span className="app-caption mt-1 block">
+                          <span className="mt-0.5 block text-[11px] text-[#a1a1aa]">
                             {sourceTypeLabel(source)} · {source.chunkCount} chunks
                           </span>
                         </div>
                       </div>
 
-                      <span className="flex min-w-0 items-center gap-2 text-sm font-semibold text-[#52645f]">
-                        <Icon icon="user" className="size-4 shrink-0 text-[#71817d]" />
+                      <span className="flex min-w-0 items-center gap-1.5 text-[12px] font-medium text-[#52525b]">
+                        <Icon icon="user" className="size-3.5 shrink-0 text-[#71717a]" />
                         <span className="truncate">{source.agentName}</span>
                       </span>
 
                       <span>
-                        <span className={`app-label inline-flex rounded-full px-2.5 py-1 ${statusStyle(source.status)}`}>
+                        <span className={`inline-flex rounded-full px-2 py-0.5 text-[11px] font-medium ${statusStyle(source.status)}`}>
                           {source.status}
                         </span>
                       </span>
 
                       <div className="flex flex-wrap gap-2 lg:justify-end">
                         {source.attachedLegacy ? (
-                          <span className="app-label inline-flex min-h-9 items-center rounded-lg bg-[#edf7f4] px-3 text-[#0e6f62]">
+                          <span className="inline-flex h-7 items-center rounded-md border border-[#eaeaea] bg-[#fafafa] px-2.5 text-[11px] font-medium text-[#171717]">
                             Attached
                           </span>
                         ) : (
                           <>
                             <button
-                              className={`app-label min-h-9 rounded-lg px-3 transition ${source.status === "ready" ? "bg-[#ecfdf5] text-[#047857] hover:bg-[#d1fae5]" : "bg-[#f1f5f9] text-[#64748b] hover:bg-[#e2e8f0]"}`}
+                              className={`h-7 rounded-md border border-[#eaeaea] px-2.5 text-[12px] font-medium transition ${source.status === "ready" ? "bg-white text-[#171717] hover:bg-[#f4f4f5]" : "bg-[#f4f4f5] text-[#52525b] hover:bg-[#e4e4e7]"}`}
                               disabled={busy || source.status === "processing"}
                               onClick={() =>
                                 void mutate(
@@ -690,9 +690,9 @@ export function KnowledgeBaseShell() {
             className="grid max-h-[calc(100dvh-2rem)] w-full max-w-[640px] overflow-y-auto rounded-xl border border-[#dbe4e1] bg-white"
             onMouseDown={(event) => event.stopPropagation()}
           >
-            <header className="flex items-start justify-between gap-4 border-b border-[#dbe4e1] px-5 py-4 sm:px-6">
+            <header className="flex items-start justify-between gap-4 border-b border-[#eaeaea] px-5 py-4 sm:px-6">
               <div>
-                <span className="app-label text-[#0e6f62]">Knowledge base</span>
+                <span className="app-label text-[#71717a]">Knowledge base</span>
                 <h2
                   className="app-page-title mt-1 mb-0"
                   id="add-knowledge-title"
@@ -704,7 +704,7 @@ export function KnowledgeBaseShell() {
                 </p>
               </div>
               <button
-                className="grid size-9 place-items-center rounded-lg border border-[#dfe7e4] bg-white text-[#60716c] hover:border-[#118778] hover:text-[#0e6f62]"
+                className="grid size-8 place-items-center rounded-md border border-[#eaeaea] bg-white text-[#52525b] hover:border-black hover:text-[#171717]"
                 disabled={busy}
                 onClick={() => {
                   setShowAddKnowledge(false);
@@ -751,7 +751,7 @@ export function KnowledgeBaseShell() {
 
               <div className="grid gap-3 sm:grid-cols-2">
                 <button
-                  className="flex min-h-24 items-center gap-3 rounded-lg border border-[#dfe7e4] bg-white p-4 text-left transition hover:border-[#118778] hover:bg-[#fafcfb]"
+                  className="flex min-h-20 items-center gap-3 rounded-lg border border-[#eaeaea] bg-white p-3.5 text-left transition hover:border-black hover:bg-[#fafafa]"
                   disabled={!selectedAgent || busy || atCapacity}
                   onClick={() => {
                     setShowAddKnowledge(false);
@@ -764,18 +764,18 @@ export function KnowledgeBaseShell() {
                   }}
                   type="button"
                 >
-                  <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#edf7f4] text-[#0e6f62]">
+                  <span className="grid size-9 shrink-0 place-items-center rounded-md border border-[#eaeaea] bg-[#f4f4f5] text-[#171717]">
                     <Icon icon="plus" />
                   </span>
                   <span>
-                    <strong className="app-strong block">Add text</strong>
-                    <span className="app-caption mt-1 block">
+                    <strong className="app-strong block text-[13px] text-[#171717]">Add text</strong>
+                    <span className="app-caption mt-0.5 block text-xs text-[#71717a]">
                       Policies, FAQs, and approved answers
                     </span>
                   </span>
                 </button>
                 <label
-                  className={`flex min-h-24 items-center gap-3 rounded-lg border border-[#dfe7e4] bg-white p-4 text-left transition hover:border-[#118778] hover:bg-[#fafcfb] ${busy || atCapacity ? "pointer-events-none opacity-50" : "cursor-pointer"}`}
+                  className={`flex min-h-20 items-center gap-3 rounded-lg border border-[#eaeaea] bg-white p-3.5 text-left transition hover:border-black hover:bg-[#fafafa] ${busy || atCapacity ? "pointer-events-none opacity-50" : "cursor-pointer"}`}
                 >
                   <input
                     className="sr-only"
@@ -788,12 +788,12 @@ export function KnowledgeBaseShell() {
                       void uploadFile(file);
                     }}
                   />
-                  <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#edf7f4] text-[#0e6f62]">
+                  <span className="grid size-9 shrink-0 place-items-center rounded-md border border-[#eaeaea] bg-[#f4f4f5] text-[#171717]">
                     <Icon icon="upload" />
                   </span>
                   <span>
-                    <strong className="app-strong block">Upload file</strong>
-                    <span className="app-caption mt-1 block">
+                    <strong className="app-strong block text-[13px] text-[#171717]">Upload file</strong>
+                    <span className="app-caption mt-0.5 block text-xs text-[#71717a]">
                       PDF, DOCX, TXT, CSV, JSON, HTML, or XML
                     </span>
                   </span>
@@ -801,10 +801,10 @@ export function KnowledgeBaseShell() {
               </div>
 
               <form
-                className="grid gap-3 rounded-lg border border-[#dfe7e4] bg-[#fafcfb] p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end"
+                className="grid gap-3 rounded-lg border border-[#eaeaea] bg-[#fafafa] p-3.5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end"
                 onSubmit={(event) => void addWebsite(event)}
               >
-                <label className="app-label grid gap-2">
+                <label className="app-label grid gap-1.5">
                   Website URL
                   <input
                     className={controlClass}
@@ -815,7 +815,7 @@ export function KnowledgeBaseShell() {
                   />
                 </label>
                 <button
-                  className={`${buttonClass} border border-[#b8c8c3] bg-white text-[#0e6f62] hover:bg-[#edf7f4]`}
+                  className={`${buttonClass} border border-[#eaeaea] bg-white text-[#171717] hover:bg-[#f4f4f5]`}
                   disabled={busy || atCapacity || !url.trim()}
                   type="submit"
                 >
@@ -938,7 +938,7 @@ function TextEditorModal({
           <label className="app-label grid gap-2">
             Knowledge text
             <textarea
-              className="app-control-text min-h-80 resize-y rounded-lg border border-[#dbe4e1] bg-white p-3 outline-none focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10"
+              className="app-control-text min-h-80 resize-y rounded-md border border-[#eaeaea] bg-white p-3 text-[12px] text-[#171717] outline-none focus:border-black"
               placeholder="Add approved facts, policies, FAQs, and procedures…"
               value={editor.content}
               onChange={(event) =>
@@ -947,9 +947,9 @@ function TextEditorModal({
             />
           </label>
         </div>
-        <footer className="flex justify-end gap-2 border-t border-[#e6ecea] px-5 py-4 sm:px-6">
+        <footer className="flex justify-end gap-2 border-t border-[#eaeaea] px-5 py-3 sm:px-6">
           <button
-            className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`}
+            className={`${buttonClass} border border-[#eaeaea] bg-white text-[#52525b] hover:bg-[#f4f4f5]`}
             disabled={busy}
             onClick={onClose}
             type="button"
@@ -957,7 +957,7 @@ function TextEditorModal({
             Cancel
           </button>
           <button
-            className={`${buttonClass} bg-[#118778] text-white hover:bg-[#0e6f62]`}
+            className={`${buttonClass} bg-[#171717] text-white hover:bg-black`}
             disabled={busy || !editor.name.trim() || !editor.content.trim()}
             onClick={onSave}
             type="button"

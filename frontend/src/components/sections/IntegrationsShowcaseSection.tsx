@@ -50,9 +50,9 @@ export function IntegrationsShowcaseSection() {
   return (
     <section className="integrations-showcase" aria-labelledby="integrations-showcase-title">
       <div className="integrations-showcase-heading">
-        <span>CONNECTED TO YOUR WORK</span>
+        <span>CONNECTED TO YOUR STACK</span>
         <h2 id="integrations-showcase-title">One intelligent layer<br />for the apps you use.</h2>
-        <p>Connect your agents, conversations, and workflows to the tools your team already uses.</p>
+        <p>Connect Voice AI, WhatsApp, and autonomous agents to your calendars, CRMs, sheets, and APIs.</p>
       </div>
       <div className="integrations-showcase-grid" aria-live="polite" aria-atomic="true">
         {apps.map((app, index) => <article className="integrations-app-card" key={`${activeSet}-${app.name}`} style={{ animationDelay: `${index * 55}ms` }}>

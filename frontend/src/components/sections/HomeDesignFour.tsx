@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
 import { useRef, useState } from "react";
@@ -20,6 +20,7 @@ import { PrivacyAssuranceSection } from "./PrivacyAssuranceSection";
 import { GlobalVoicesMapSection } from "./GlobalVoicesMapSection";
 import { HomeFaqSection } from "./HomeFaqSection";
 import { EnterpriseScaleSection } from "./EnterpriseScaleSection";
+import { PlatformComparisonSection } from "./PlatformComparisonSection";
 
 const voiceLanguages = [
   { label: "English", language: "English", voice: "English", detail: "Global voice" },
@@ -52,14 +53,14 @@ export function HomeDesignFour() {
       <main>
         <section className={`${styles.hero} home-design-four__hero agentvoice-hero`}>
           <div className="agentvoice-hero-content">
-            <div className="agentvoice-channel-kicker">ONE AI PLATFORM · EVERY CHANNEL</div>
-            <h1>AI agents that turn<br />conversations into outcomes</h1>
-            <p>Bring voice, WhatsApp, website chat, and workflows together. Your AI agents can answer questions, qualify leads, book appointments, and route the next action.</p>
+            <div className="agentvoice-channel-kicker">MULTICHANNEL AGENTIC PLATFORM</div>
+            <h1>One agentic core<br />built to act</h1>
+            <p>Autonomous agents for voice calls, WhatsApp, and web chat—built to reason, call tools, and complete workflows.</p>
             <div className="agentvoice-demo-control">
               <label className="agentvoice-demo-language"><span aria-hidden="true">🇮🇳</span><select aria-label="Choose demo voice language" onChange={(event) => setActiveLanguage(Number(event.target.value))} value={activeLanguage}>{voiceLanguages.map((language, index) => <option key={language.language} value={index}>{language.language}</option>)}</select></label>
               <button aria-label={isEngaged ? "End demo call" : `Try a ${selectedVoice.language} voice agent`} className={`agentvoice-try-button${isEngaged ? " is-active" : ""}`} disabled={!voiceCall.ready && !isEngaged} onClick={() => isEngaged ? voiceCall.disconnect() : void voiceCall.start(selectedVoice.language)} type="button"><span aria-hidden="true">{isEngaged ? "■" : "☎"}</span>{isEngaged ? "End call" : voiceCall.busy ? "Connecting…" : "Try voice demo"}</button>
             </div>
-            <span aria-live="polite" className="agentvoice-demo-status">{voiceCall.active ? `Live demo · ${voiceCall.speakingLanguage || selectedVoice.language}` : voiceCall.busy ? "Connecting to your demo agent…" : "Try voice here, then explore every channel below"}</span>
+            <span aria-live="polite" className="agentvoice-demo-status">{voiceCall.active ? `Live voice call · ${voiceCall.speakingLanguage || selectedVoice.language}` : voiceCall.busy ? "Connecting to your voice agent…" : "Try a live voice call above, then explore Voice, WhatsApp & workflows below"}</span>
           </div>
           <FooterSoundWave variant="hero" />
           <div aria-hidden="true" className="agentvoice-hero-tags">
@@ -70,10 +71,10 @@ export function HomeDesignFour() {
             <span><i><Image alt="" src="/images/integrations/slack.svg" width={21} height={21} /></i><b>Slack</b></span>
             <span><i><Image alt="" src="/images/integrations/claude.svg" width={21} height={21} /></i><b>Claude</b></span>
           </div>
-          <div aria-hidden="true" className="agentvoice-wave">{[100, 72, 54, 42, 36, 42, 54, 72, 100].map((height, index) => <span key={index} style={{ "--wave-height": `${height}%` } as React.CSSProperties} />)}</div>
         </section>
 
         <AgentUseCasesSection />
+        <LeadConversionSection />
 
         <section aria-label="Vozon AI introduction video" className="vozon-intro-video">
           <div className="vozon-intro-video-stage">
@@ -88,12 +89,12 @@ export function HomeDesignFour() {
           </div>
         </section>
 
-        <LeadConversionSection />
         <ConversationInsightsSection />
         <WorkflowCanvasSection />
         <IntegrationsShowcaseSection />
         <PrivacyAssuranceSection />
         <EnterpriseScaleSection />
+        <PlatformComparisonSection />
         <GlobalVoicesMapSection />
         <HomeFaqSection />
       </main>

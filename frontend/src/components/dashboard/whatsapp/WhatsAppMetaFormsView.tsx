@@ -9,7 +9,6 @@ interface WhatsAppMetaFormsViewProps {
   onRefresh: () => void;
 }
 
-// Preset form templates for rapid creation
 const PRESET_FORM_BLUEPRINTS = [
   {
     title: "Clinic Patient Triage & Appointment Booking",
@@ -17,7 +16,13 @@ const PRESET_FORM_BLUEPRINTS = [
     triggerKeyword: "BOOK",
     fields: [
       { id: "full_name", label: "Patient Full Name", type: "text" as const, required: true },
-      { id: "department", label: "Clinical Department", type: "dropdown" as const, required: true, options: ["General Medicine", "Cardiology", "Dentistry", "Pediatrics"] },
+      {
+        id: "department",
+        label: "Clinical Department",
+        type: "dropdown" as const,
+        required: true,
+        options: ["General Medicine", "Cardiology", "Dentistry", "Pediatrics"],
+      },
       { id: "appointment_date", label: "Preferred Date", type: "date" as const, required: true },
       { id: "symptoms", label: "Primary Symptoms or Reason for Visit", type: "text" as const, required: false },
     ],
@@ -29,7 +34,13 @@ const PRESET_FORM_BLUEPRINTS = [
     fields: [
       { id: "full_name", label: "Contact Name", type: "text" as const, required: true },
       { id: "company_name", label: "Company / Organization", type: "text" as const, required: true },
-      { id: "budget", label: "Monthly Budget Range", type: "dropdown" as const, required: true, options: ["Under $1,000", "$1,000 - $5,000", "$5,000 - $15,000", "Enterprise $15k+"] },
+      {
+        id: "budget",
+        label: "Monthly Budget Range",
+        type: "dropdown" as const,
+        required: true,
+        options: ["Under $1,000", "$1,000 - $5,000", "$5,000 - $15,000", "Enterprise $15k+"],
+      },
       { id: "use_case", label: "Voice AI Use Case", type: "text" as const, required: true },
     ],
   },
@@ -39,7 +50,13 @@ const PRESET_FORM_BLUEPRINTS = [
     triggerKeyword: "PROPERTY",
     fields: [
       { id: "full_name", label: "Full Name", type: "text" as const, required: true },
-      { id: "property_type", label: "Property Type", type: "dropdown" as const, required: true, options: ["2 BHK Luxury Apartment", "3 BHK Villa", "Commercial Space", "Plot / Land"] },
+      {
+        id: "property_type",
+        label: "Property Type",
+        type: "dropdown" as const,
+        required: true,
+        options: ["2 BHK Luxury Apartment", "3 BHK Villa", "Commercial Space", "Plot / Land"],
+      },
       { id: "tour_date", label: "Preferred Visit Date", type: "date" as const, required: true },
     ],
   },
@@ -60,12 +77,10 @@ export function WhatsAppMetaFormsView({ forms, onRefresh }: WhatsAppMetaFormsVie
     }
   }, [forms, selectedFormId]);
 
-  // Submissions state
   const [submissions, setSubmissions] = useState<WhatsAppFormSubmission[]>([]);
   const [loadingSubmissions, setLoadingSubmissions] = useState(false);
   const [submissionsSearch, setSubmissionsSearch] = useState("");
 
-  // Modal & Form creation state
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newDesc, setNewDesc] = useState("");
@@ -73,11 +88,16 @@ export function WhatsAppMetaFormsView({ forms, onRefresh }: WhatsAppMetaFormsVie
   const [newFields, setNewFields] = useState<WhatsAppFormField[]>([
     { id: "full_name", label: "Full Name", type: "text", required: true },
     { id: "email", label: "Email Address", type: "email", required: true },
-    { id: "service", label: "Service Needed", type: "dropdown", required: true, options: ["Voice AI Consultation", "Clinic Booking", "Customer Support"] },
+    {
+      id: "service",
+      label: "Service Needed",
+      type: "dropdown",
+      required: true,
+      options: ["Voice AI Consultation", "Clinic Booking", "Customer Support"],
+    },
   ]);
   const [creating, setCreating] = useState(false);
 
-  // Load submissions whenever selected form changes
   useEffect(() => {
     if (!selectedForm?._id) return;
     setLoadingSubmissions(true);
@@ -90,7 +110,6 @@ export function WhatsAppMetaFormsView({ forms, onRefresh }: WhatsAppMetaFormsVie
       .finally(() => setLoadingSubmissions(false));
   }, [selectedForm?._id]);
 
-  // Filtered forms list
   const filteredForms = useMemo(() => {
     return forms.filter(
       (f) =>
@@ -99,7 +118,6 @@ export function WhatsAppMetaFormsView({ forms, onRefresh }: WhatsAppMetaFormsVie
     );
   }, [forms, search]);
 
-  // Filtered submissions list
   const filteredSubmissions = useMemo(() => {
     return submissions.filter((sub) => {
       const q = submissionsSearch.toLowerCase();
@@ -112,17 +130,9 @@ export function WhatsAppMetaFormsView({ forms, onRefresh }: WhatsAppMetaFormsVie
     });
   }, [submissions, submissionsSearch]);
 
-  // Aggregated KPIs
-  const totalSubmissionsCount = useMemo(() => {
-    return forms.reduce((acc, f) => acc + (f.submissionCount || 0), submissions.length);
-  }, [forms, submissions.length]);
-
   function handleAddField() {
     const id = `field_${Date.now().toString().slice(-4)}`;
-    setNewFields([
-      ...newFields,
-      { id, label: "New Question", type: "text", required: true },
-    ]);
+    setNewFields([...newFields, { id, label: "New Question", type: "text", required: true }]);
   }
 
   function handleRemoveField(idx: number) {
@@ -133,7 +143,7 @@ export function WhatsAppMetaFormsView({ forms, onRefresh }: WhatsAppMetaFormsVie
     setNewFields(newFields.filter((_, i) => i !== idx));
   }
 
-  function handleApplyBlueprint(blueprint: typeof PRESET_FORM_BLUEPRINTS[number]) {
+  function handleApplyBlueprint(blueprint: (typeof PRESET_FORM_BLUEPRINTS)[number]) {
     setNewTitle(blueprint.title);
     setNewDesc(blueprint.description);
     setNewKeyword(blueprint.triggerKeyword);
@@ -166,7 +176,6 @@ export function WhatsAppMetaFormsView({ forms, onRefresh }: WhatsAppMetaFormsVie
     }
   }
 
-  // Real CSV Export
   function handleExportCSV() {
     if (!selectedForm || submissions.length === 0) {
       alert("No submissions available to export.");
@@ -202,346 +211,281 @@ export function WhatsAppMetaFormsView({ forms, onRefresh }: WhatsAppMetaFormsVie
   }
 
   return (
-    <div className="whatsapp-forms space-y-5">
-      {/* 2. FLAT CONTROL TOOLBAR */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#dbe4e1] bg-white p-3 shadow-xs">
+    <div className="whatsapp-forms space-y-4">
+      {/* Control Toolbar */}
+      <div className="flex flex-wrap items-center justify-between gap-2.5">
         <div className="relative min-w-[240px] flex-1 max-w-sm">
+          <svg
+            className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-[#a1a1aa]"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={1.8}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" />
+          </svg>
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search forms by title or keyword..."
-            className="w-full rounded-xl border border-[#dbe4e1] bg-[#f9fbfa] px-3.5 py-1.5 text-xs text-[#14231f] placeholder-[#84938f] focus:border-[#118778] focus:bg-white focus:outline-none"
+            className="h-9 w-full rounded-md border border-[#eaeaea] bg-white pl-8 pr-3 text-[12.5px] text-[#171717] placeholder-[#a1a1aa] focus:border-[#171717] focus:outline-none"
           />
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setShowCreateModal(true)}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-[#118778] px-4 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-[#0e7467]"
-          >
-            <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
-            <span>+ Create Meta Form</span>
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={() => setShowCreateModal(true)}
+          className="inline-flex h-9 items-center gap-1.5 rounded-md bg-[#171717] px-3.5 text-[12px] font-medium text-white transition hover:bg-black"
+        >
+          <span>+ Create Meta Form</span>
+        </button>
       </div>
 
-      {/* 3. MAIN DUAL-PANE FORMS STUDIO */}
-      <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-12">
-        {/* Left Column: Form Cards Stream (5 cols) */}
-        <div className="space-y-3 lg:col-span-5">
-          {filteredForms.length === 0 ? (
-            <div className="rounded-3xl border border-dashed border-[#dbe4e1] bg-white p-10 text-center">
-              <span className="grid size-10 place-items-center rounded-2xl bg-[#f0f5f3] text-xl mx-auto mb-2">
-                📄
-              </span>
-              <h4 className="text-xs font-bold text-[#14231f]">No Meta Forms Found</h4>
-              <p className="mt-1 text-[11px] text-[#71817d]">
-                Create a new in-chat form or choose an industry template to start capturing leads.
-              </p>
-              <button
-                type="button"
-                onClick={() => setShowCreateModal(true)}
-                className="mt-3 inline-flex items-center gap-1.5 rounded-xl bg-[#118778] px-3.5 py-1.5 text-xs font-semibold text-white shadow-xs hover:bg-[#0e7467]"
-              >
-                Create First Form
-              </button>
-            </div>
-          ) : (
-            filteredForms.map((form) => {
-              const isSelected = selectedForm?._id === form._id;
-              return (
-                <div
-                  key={form._id}
-                  onClick={() => setSelectedFormId(form._id)}
-                  onKeyDown={(event) => {
-                    if (event.target !== event.currentTarget) return;
-                    if (event.key === "Enter" || event.key === " ") {
-                      event.preventDefault();
-                      setSelectedFormId(form._id);
-                    }
-                  }}
-                  role="button"
-                  tabIndex={0}
-                  aria-pressed={isSelected}
-                  aria-label={`Preview ${form.title}`}
-                  className={`group relative cursor-pointer rounded-2xl border p-4 transition-all duration-150 ${
-                    isSelected
-                      ? "border-[#118778] bg-[#f4faf8] shadow-sm ring-1 ring-[#118778]/30"
-                      : "border-[#dbe4e1] bg-white hover:border-[#b7cbcf] hover:shadow-xs"
-                  }`}
+      {/* Main 2-Column Layout */}
+      <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-12">
+        {/* Left Column: Form List */}
+        <div className="lg:col-span-6">
+          <div className="mb-2 flex items-center justify-between">
+            <h2 className="text-[13px] font-semibold text-[#171717]">
+              Forms{" "}
+              <span className="ml-1 font-normal text-[#71717a]">{filteredForms.length}</span>
+            </h2>
+          </div>
+
+          <div className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white divide-y divide-[#eaeaea]">
+            {filteredForms.length === 0 ? (
+              <div className="p-10 text-center">
+                <h4 className="text-[13px] font-semibold text-[#171717]">No Meta Forms Found</h4>
+                <p className="mt-1 text-[12px] text-[#71717a]">
+                  Create a new in-chat form or choose a blueprint to start capturing leads.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setShowCreateModal(true)}
+                  className="mt-3 inline-flex h-8 items-center rounded-md bg-[#171717] px-3 text-[12px] font-medium text-white hover:bg-black"
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-start gap-3 min-w-0 flex-1">
-                      <span
-                        className={`grid size-9 shrink-0 place-items-center rounded-xl text-sm transition ${
+                  Create First Form
+                </button>
+              </div>
+            ) : (
+              filteredForms.map((form) => {
+                const isSelected = selectedForm?._id === form._id;
+                return (
+                  <div
+                    key={form._id}
+                    onClick={() => setSelectedFormId(form._id)}
+                    className={`flex items-center justify-between gap-3 px-4 py-3 cursor-pointer transition ${
+                      isSelected ? "bg-[#fafafa]" : "hover:bg-[#fafafa]"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <div
+                        className={`grid size-7 shrink-0 place-items-center rounded-md border text-[11px] font-medium ${
                           isSelected
-                            ? "bg-[#118778] text-white shadow-2xs"
-                            : "bg-[#eef5f3] text-[#118778]"
+                            ? "border-[#171717] bg-[#171717] text-white"
+                            : "border-[#eaeaea] bg-[#fafafa] text-[#52525b]"
                         }`}
                       >
-                        📄
-                      </span>
+                        F
+                      </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
-                          <h4 className="truncate text-xs font-bold text-[#14231f] group-hover:text-[#118778]">
+                          <span className="truncate text-[13px] font-semibold text-[#171717]">
                             {form.title}
-                          </h4>
+                          </span>
                         </div>
-                        <p className="mt-0.5 line-clamp-1 text-[11px] text-[#60716c]">
-                          {form.description || "In-chat customer intake form"}
-                        </p>
+                        <div className="mt-0.5 flex items-center gap-2 text-[11.5px] text-[#71717a]">
+                          <span className="font-mono text-[11px] text-[#171717]">
+                            {form.triggerKeyword || "DIRECT"}
+                          </span>
+                          <span>·</span>
+                          <span>{form.fields?.length || 0} fields</span>
+                          <span>·</span>
+                          <span className="font-medium text-[#171717]">
+                            {form.submissionCount ?? (isSelected ? submissions.length : 0)} leads
+                          </span>
+                        </div>
                       </div>
                     </div>
 
-                    <span className="inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-800">
-                      <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="inline-flex items-center gap-1 rounded-full border border-[#eaeaea] bg-white px-2 py-0.5 text-[10.5px] font-medium text-[#171717]">
+                      <span className="size-1.5 rounded-full bg-[#171717]" />
                       Live
                     </span>
                   </div>
-
-                  <div className="mt-3 flex items-center justify-between border-t border-[#e8f0ec] pt-2.5 text-[11px]">
-                    <div className="flex items-center gap-1.5 text-[#71817d]">
-                      <span>Keyword:</span>
-                      <code className="rounded-md bg-white border border-[#dbe4e1] px-1.5 py-0.2 font-mono text-[10px] font-bold text-[#118778]">
-                        {form.triggerKeyword || "DIRECT"}
-                      </code>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-[#52645f]">
-                      <span>{form.fields?.length || 0} fields</span>
-                      <span>·</span>
-                      <span className="font-bold text-[#14231f]">
-                        {form.submissionCount ?? (isSelected ? submissions.length : 0)} leads
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              );
-            })
-          )}
+                );
+              })
+            )}
+          </div>
         </div>
 
-        {/* Right Column: Studio Inspector (7 cols) */}
-        <div className="space-y-4 lg:col-span-7">
+        {/* Right Column: Form Inspector */}
+        <div className="lg:col-span-6">
+          <div className="mb-2">
+            <h2 className="text-[13px] font-semibold text-[#171717]">Form Inspector</h2>
+          </div>
+
           {selectedForm ? (
-            <div className="rounded-3xl border border-[#dbe4e1] bg-white p-5 shadow-xs space-y-4">
-              {/* Studio Header */}
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-[#edf2f0] pb-3.5">
-                <div>
-                  <h3 className="text-sm font-bold text-[#14231f]">{selectedForm.title}</h3>
-                  <p className="text-[11px] text-[#71817d]">
+            <div className="rounded-lg border border-[#eaeaea] bg-white p-4 space-y-3.5">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#eaeaea] pb-3">
+                <div className="min-w-0">
+                  <h3 className="truncate text-[13.5px] font-semibold text-[#171717]">
+                    {selectedForm.title}
+                  </h3>
+                  <p className="text-[11.5px] text-[#71717a]">
                     {selectedForm.description || "Native WhatsApp in-chat questionnaire"}
                   </p>
                 </div>
 
-                {/* Sub-Tabs: Fields & Preview vs Submissions */}
-                <div className="flex rounded-xl bg-[#f0f4f3] p-1 text-xs font-semibold">
+                <div className="flex rounded-md border border-[#eaeaea] bg-[#fafafa] p-0.5 text-[11.5px] font-medium">
                   <button
                     type="button"
                     onClick={() => setActiveTab("fields")}
-                    className={`rounded-lg px-3 py-1 transition ${
+                    className={`rounded px-2.5 py-1 transition ${
                       activeTab === "fields"
-                        ? "bg-white text-[#118778] shadow-xs"
-                        : "text-[#60716c] hover:text-[#14231f]"
+                        ? "bg-[#171717] text-white"
+                        : "text-[#52525b] hover:text-[#171717]"
                     }`}
                   >
-                    Form Fields ({selectedForm.fields?.length || 0})
+                    Fields ({selectedForm.fields?.length || 0})
                   </button>
                   <button
                     type="button"
                     onClick={() => setActiveTab("submissions")}
-                    className={`rounded-lg px-3 py-1 transition ${
+                    className={`rounded px-2.5 py-1 transition ${
                       activeTab === "submissions"
-                        ? "bg-white text-[#118778] shadow-xs"
-                        : "text-[#60716c] hover:text-[#14231f]"
+                        ? "bg-[#171717] text-white"
+                        : "text-[#52525b] hover:text-[#171717]"
                     }`}
                   >
-                    Leads Captured ({submissions.length})
+                    Leads ({submissions.length})
                   </button>
                 </div>
               </div>
 
-              {/* TAB 1: FORM FIELDS & NATIVE CARD PREVIEW */}
               {activeTab === "fields" && (
-                <div className="space-y-4">
-                  {/* Meta In-Chat Flow Card Preview */}
-                  <div className="rounded-2xl border border-[#cfe3dc] bg-gradient-to-b from-[#f7fbf9] to-[#ffffff] p-4 shadow-2xs space-y-3">
-                    <div className="flex items-center justify-between border-b border-[#e5eee9] pb-2">
-                      <div className="flex items-center gap-2">
-                        <span className="grid size-6 place-items-center rounded-lg bg-[#118778] text-white text-xs font-bold">
-                          ✓
-                        </span>
-                        <span className="text-xs font-bold text-[#14231f]">
-                          Interactive WhatsApp Flow Sheet
-                        </span>
-                      </div>
-                      <span className="rounded-md bg-emerald-50 px-2 py-0.5 text-[9px] font-bold text-emerald-800">
-                        Meta In-Chat Native
+                <div className="space-y-3">
+                  <div className="rounded-md border border-[#eaeaea] bg-[#fafafa] p-3.5 space-y-2.5">
+                    <div className="flex items-center justify-between border-b border-[#eaeaea] pb-2">
+                      <span className="text-[12px] font-semibold text-[#171717]">
+                        Interactive Flow Questions
+                      </span>
+                      <span className="rounded border border-[#eaeaea] bg-white px-2 py-0.5 text-[10px] font-medium text-[#52525b]">
+                        Trigger: {selectedForm.triggerKeyword || "DIRECT"}
                       </span>
                     </div>
 
-                    {/* Fields List */}
-                    <div className="space-y-2.5 pt-1">
+                    <div className="space-y-2">
                       {selectedForm.fields && selectedForm.fields.length > 0 ? (
                         selectedForm.fields.map((field, idx) => (
                           <div
                             key={field.id || idx}
-                            className="rounded-xl border border-[#dfe8e5] bg-white p-3 space-y-1.5 shadow-2xs"
+                            className="rounded-md border border-[#eaeaea] bg-white p-2.5 space-y-1"
                           >
                             <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2">
-                                <span className="text-[11px] font-bold text-[#14231f]">
-                                  {idx + 1}. {field.label}
-                                </span>
-                                {field.required && (
-                                  <span className="text-rose-500 text-[10px] font-bold">*</span>
-                                )}
-                              </div>
-                              <span className="rounded-md bg-[#f0f5f3] px-2 py-0.5 text-[9px] font-mono uppercase text-[#52645f]">
+                              <span className="text-[12px] font-medium text-[#171717]">
+                                {idx + 1}. {field.label}
+                                {field.required && <span className="ml-1 text-[#71717a]">*</span>}
+                              </span>
+                              <span className="rounded bg-[#f4f4f5] px-1.5 py-0.5 font-mono text-[10px] uppercase text-[#52525b]">
                                 {field.type}
                               </span>
                             </div>
 
                             {field.type === "dropdown" && field.options && (
-                              <div className="flex flex-wrap gap-1.5 pt-1">
+                              <div className="flex flex-wrap gap-1 pt-1">
                                 {field.options.map((opt, i) => (
                                   <span
                                     key={i}
-                                    className="rounded-lg border border-[#dbe4e1] bg-[#f9fbfa] px-2 py-0.5 text-[10px] text-[#52645f]"
+                                    className="rounded border border-[#eaeaea] bg-[#fafafa] px-2 py-0.5 text-[10.5px] text-[#52525b]"
                                   >
-                                    • {opt}
+                                    {opt}
                                   </span>
                                 ))}
-                              </div>
-                            )}
-
-                            {field.type !== "dropdown" && (
-                              <div className="rounded-lg border border-[#e5ede9] bg-[#f9fbfa] px-3 py-1.5 text-[11px] text-[#84938f] italic">
-                                Customer inputs {field.type} response here...
                               </div>
                             )}
                           </div>
                         ))
                       ) : (
-                        <div className="text-center py-6 text-xs text-[#84938f]">
+                        <div className="py-4 text-center text-[12px] text-[#71717a]">
                           No fields configured for this form.
                         </div>
                       )}
                     </div>
-
-                    {/* Simulated Submit CTA */}
-                    <div className="pt-2">
-                      <div className="w-full rounded-xl bg-[#118778] py-2.5 text-center text-xs font-bold text-white shadow-2xs">
-                        Submit Details to Business
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Trigger Information Pill */}
-                  <div className="flex items-center justify-between rounded-xl border border-[#d8e8e1] bg-[#f3faf6] p-3 text-xs text-[#52645f]">
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-[#14231f]">WhatsApp Trigger:</span>
-                      <span>Customer texts keyword</span>
-                      <code className="rounded bg-white border border-[#c6ded3] px-2 py-0.5 font-mono font-bold text-[#118778]">
-                        {selectedForm.triggerKeyword || "DIRECT"}
-                      </code>
-                    </div>
-                    <span className="text-[11px] text-[#71817d]">or launch via Flow Maker</span>
                   </div>
                 </div>
               )}
 
-              {/* TAB 2: CAPTURED LEADS & SUBMISSIONS TABLE */}
               {activeTab === "submissions" && (
-                <div className="space-y-3">
+                <div className="space-y-2.5">
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <div className="relative max-w-xs flex-1">
-                      <input
-                        type="text"
-                        value={submissionsSearch}
-                        onChange={(e) => setSubmissionsSearch(e.target.value)}
-                        placeholder="Search submissions by lead name or phone..."
-                        className="w-full rounded-xl border border-[#dbe4e1] bg-[#f9fbfa] px-3 py-1.5 text-xs text-[#14231f] placeholder-[#84938f] focus:border-[#118778] focus:bg-white focus:outline-none"
-                      />
-                    </div>
+                    <input
+                      type="text"
+                      value={submissionsSearch}
+                      onChange={(e) => setSubmissionsSearch(e.target.value)}
+                      placeholder="Filter leads..."
+                      className="h-8 flex-1 rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12px] text-[#171717] placeholder-[#a1a1aa] focus:border-[#171717] focus:outline-none"
+                    />
                     <button
                       type="button"
                       onClick={handleExportCSV}
                       disabled={submissions.length === 0}
-                      className="inline-flex items-center gap-1.5 rounded-xl border border-[#118778] bg-[#118778]/10 px-3 py-1.5 text-xs font-semibold text-[#118778] hover:bg-[#118778] hover:text-white transition disabled:opacity-50"
+                      className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#eaeaea] bg-white px-2.5 text-[11.5px] font-medium text-[#171717] hover:bg-[#fafafa] disabled:opacity-50"
                     >
-                      <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                      </svg>
-                      <span>Export CSV ({submissions.length})</span>
+                      Export CSV ({submissions.length})
                     </button>
                   </div>
 
-                  {/* Table */}
-                  <div className="overflow-x-auto rounded-2xl border border-[#e5eee9]">
-                    <table className="w-full text-left text-xs">
-                      <thead className="border-b border-[#e5eee9] bg-[#f8faf9] text-[10px] font-bold uppercase tracking-wider text-[#60716c]">
+                  <div className="overflow-x-auto rounded-md border border-[#eaeaea]">
+                    <table className="w-full text-left text-[12px]">
+                      <thead className="border-b border-[#eaeaea] bg-[#fafafa] text-[10.5px] font-semibold uppercase tracking-wider text-[#71717a]">
                         <tr>
-                          <th className="px-3.5 py-2.5">Lead / Contact</th>
-                          <th className="px-3.5 py-2.5">Phone Number</th>
-                          <th className="px-3.5 py-2.5">Captured Answers</th>
-                          <th className="px-3.5 py-2.5 text-right">Submitted</th>
+                          <th className="px-3 py-2">Lead</th>
+                          <th className="px-3 py-2">Phone</th>
+                          <th className="px-3 py-2">Answers</th>
+                          <th className="px-3 py-2 text-right">Date</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-[#edf3f0]">
+                      <tbody className="divide-y divide-[#eaeaea]">
                         {loadingSubmissions ? (
                           <tr>
-                            <td colSpan={4} className="px-4 py-8 text-center text-[#84938f]">
-                              <div className="flex items-center justify-center gap-2">
-                                <span className="size-4 animate-spin rounded-full border-2 border-[#118778] border-t-transparent" />
-                                <span>Loading verified leads...</span>
-                              </div>
+                            <td colSpan={4} className="px-4 py-6 text-center text-[#71717a]">
+                              Loading leads...
                             </td>
                           </tr>
                         ) : filteredSubmissions.length === 0 ? (
                           <tr>
-                            <td colSpan={4} className="px-4 py-8 text-center text-[#84938f]">
+                            <td colSpan={4} className="px-4 py-6 text-center text-[#71717a]">
                               No submissions found.
                             </td>
                           </tr>
                         ) : (
                           filteredSubmissions.map((sub) => (
-                            <tr key={sub._id} className="hover:bg-[#f9fcfa] transition-colors">
-                              <td className="px-3.5 py-3">
-                                <div className="flex items-center gap-2">
-                                  <span className="grid size-7 shrink-0 place-items-center rounded-xl bg-[#eef7f4] font-bold text-[10px] text-[#118778]">
-                                    {(sub.contactName || "L")[0].toUpperCase()}
-                                  </span>
-                                  <span className="font-bold text-[#14231f]">
-                                    {sub.contactName || "Anonymous Lead"}
-                                  </span>
-                                </div>
+                            <tr key={sub._id} className="hover:bg-[#fafafa]">
+                              <td className="px-3 py-2.5 font-medium text-[#171717]">
+                                {sub.contactName || "Anonymous"}
                               </td>
-                              <td className="px-3.5 py-3 font-mono text-[11px] text-[#52645f]">
+                              <td className="px-3 py-2.5 font-mono text-[11px] text-[#52525b]">
                                 +{sub.contactPhone}
                               </td>
-                              <td className="px-3.5 py-3">
-                                <div className="flex flex-wrap gap-1 max-w-sm">
+                              <td className="px-3 py-2.5">
+                                <div className="flex flex-wrap gap-1">
                                   {Object.entries(sub.data || {}).map(([key, val]) => (
                                     <span
                                       key={key}
-                                      className="rounded-md border border-[#e0eae6] bg-[#f9fbfa] px-1.5 py-0.5 text-[10px] text-[#445550]"
+                                      className="rounded border border-[#eaeaea] bg-[#fafafa] px-1.5 py-0.5 text-[10.5px] text-[#52525b]"
                                     >
-                                      <span className="font-bold text-[#118778]">{key}:</span> {String(val)}
+                                      <span className="font-semibold text-[#171717]">{key}:</span>{" "}
+                                      {String(val)}
                                     </span>
                                   ))}
                                 </div>
                               </td>
-                              <td className="px-3.5 py-3 text-right text-[10px] text-[#84938f] whitespace-nowrap">
+                              <td className="px-3 py-2.5 text-right text-[11px] text-[#71717a] whitespace-nowrap">
                                 {new Date(sub.submittedAt).toLocaleDateString([], {
                                   month: "short",
                                   day: "numeric",
-                                  hour: "2-digit",
-                                  minute: "2-digit",
                                 })}
                               </td>
                             </tr>
@@ -554,37 +498,31 @@ export function WhatsAppMetaFormsView({ forms, onRefresh }: WhatsAppMetaFormsVie
               )}
             </div>
           ) : (
-            <div className="rounded-3xl border border-dashed border-[#dbe4e1] bg-white p-12 text-center text-xs text-[#84938f]">
-              Select a form on the left to inspect fields and captured leads.
+            <div className="rounded-lg border border-[#eaeaea] bg-white p-10 text-center text-[12px] text-[#71717a]">
+              Select a form on the left to inspect fields and leads.
             </div>
           )}
         </div>
       </div>
 
-      {/* 4. MODAL: CREATE META FORM WITH PRESET BLUEPRINTS */}
+      {/* Create Meta Form Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-black/50 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-xl rounded-3xl border border-[#dbe4e1] bg-white p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-[#edf2f0] pb-3">
-              <div className="flex items-center gap-2">
-                <span className="grid size-7 place-items-center rounded-xl bg-emerald-50 text-emerald-700 text-xs font-bold">
-                  📄
-                </span>
-                <h3 className="text-sm font-bold text-[#14231f]">Create WhatsApp Meta Form</h3>
-              </div>
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4">
+          <div className="w-full max-w-xl rounded-lg border border-[#eaeaea] bg-white p-5 shadow-xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[#eaeaea] pb-3">
+              <h3 className="text-[14px] font-semibold text-[#171717]">Create WhatsApp Meta Form</h3>
               <button
                 type="button"
                 onClick={() => setShowCreateModal(false)}
-                className="rounded-lg p-1 text-[#84938f] hover:bg-[#f4f7f6]"
+                className="rounded-md p-1 text-[#71717a] hover:bg-[#f4f4f5]"
               >
                 ✕
               </button>
             </div>
 
-            {/* Blueprint Starter Buttons */}
-            <div className="mt-4 space-y-2">
-              <span className="block text-[10px] font-bold uppercase tracking-wider text-[#71817d]">
-                Fast-Start Blueprints (1-Click)
+            <div className="mt-3.5 space-y-1.5">
+              <span className="block text-[11px] font-medium text-[#71717a]">
+                Quick-Start Blueprints
               </span>
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
                 {PRESET_FORM_BLUEPRINTS.map((bp) => (
@@ -592,33 +530,35 @@ export function WhatsAppMetaFormsView({ forms, onRefresh }: WhatsAppMetaFormsVie
                     key={bp.title}
                     type="button"
                     onClick={() => handleApplyBlueprint(bp)}
-                    className="rounded-2xl border border-[#dfe8e4] bg-[#f9fbfa] p-2.5 text-left transition hover:border-[#118778] hover:bg-[#f0f8f5]"
+                    className="rounded-md border border-[#eaeaea] bg-[#fafafa] p-2.5 text-left transition hover:border-[#171717] hover:bg-white"
                   >
-                    <span className="block truncate text-xs font-bold text-[#14231f]">{bp.title.split("&")[0]}</span>
-                    <span className="block text-[10px] text-[#71817d]">{bp.fields.length} questions</span>
+                    <span className="block truncate text-[12px] font-semibold text-[#171717]">
+                      {bp.title.split("&")[0]}
+                    </span>
+                    <span className="block text-[10.5px] text-[#71717a]">
+                      {bp.fields.length} questions
+                    </span>
                   </button>
                 ))}
               </div>
             </div>
 
-            <form onSubmit={handleCreateForm} className="mt-4 space-y-4">
+            <form onSubmit={handleCreateForm} className="mt-4 space-y-3.5">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-[#445550]">
-                  Form Title
-                </label>
+                <label className="block text-[11.5px] font-medium text-[#171717]">Form Title</label>
                 <input
                   type="text"
                   required
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
                   placeholder="e.g. Clinic Appointment Registration"
-                  className="mt-1 w-full rounded-xl border border-[#c6d4d0] bg-[#f9fbfa] px-3.5 py-2 text-xs text-[#14231f] focus:border-[#118778] focus:bg-white focus:outline-none"
+                  className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] text-[#171717] focus:border-[#171717] focus:outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-[#445550]">
+                  <label className="block text-[11.5px] font-medium text-[#171717]">
                     Trigger Keyword
                   </label>
                   <input
@@ -627,11 +567,11 @@ export function WhatsAppMetaFormsView({ forms, onRefresh }: WhatsAppMetaFormsVie
                     value={newKeyword}
                     onChange={(e) => setNewKeyword(e.target.value.toUpperCase())}
                     placeholder="e.g. INTAKE, BOOK"
-                    className="mt-1 w-full rounded-xl border border-[#c6d4d0] bg-[#f9fbfa] px-3.5 py-2 text-xs font-bold uppercase text-[#14231f] focus:border-[#118778] focus:bg-white focus:outline-none"
+                    className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 font-mono text-[12.5px] uppercase text-[#171717] focus:border-[#171717] focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-[#445550]">
+                  <label className="block text-[11.5px] font-medium text-[#171717]">
                     Description (Optional)
                   </label>
                   <input
@@ -639,33 +579,32 @@ export function WhatsAppMetaFormsView({ forms, onRefresh }: WhatsAppMetaFormsVie
                     value={newDesc}
                     onChange={(e) => setNewDesc(e.target.value)}
                     placeholder="Short form purpose"
-                    className="mt-1 w-full rounded-xl border border-[#c6d4d0] bg-[#f9fbfa] px-3.5 py-2 text-xs text-[#14231f] focus:border-[#118778] focus:bg-white focus:outline-none"
+                    className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] text-[#171717] focus:border-[#171717] focus:outline-none"
                   />
                 </div>
               </div>
 
-              {/* Form Fields Builder */}
               <div>
-                <div className="flex items-center justify-between border-b border-[#edf2f0] pb-2">
-                  <span className="text-xs font-bold uppercase tracking-wider text-[#445550]">
-                    Questions & Form Fields ({newFields.length})
+                <div className="flex items-center justify-between border-b border-[#eaeaea] pb-1.5">
+                  <span className="text-[11.5px] font-medium text-[#171717]">
+                    Questions ({newFields.length})
                   </span>
                   <button
                     type="button"
                     onClick={handleAddField}
-                    className="text-xs font-bold text-[#118778] hover:underline"
+                    className="text-[11.5px] font-semibold text-[#171717] hover:underline"
                   >
                     + Add Question
                   </button>
                 </div>
 
-                <div className="mt-3 space-y-2.5 max-h-56 overflow-y-auto pr-1">
+                <div className="mt-2.5 space-y-2 max-h-52 overflow-y-auto pr-1">
                   {newFields.map((field, idx) => (
                     <div
                       key={field.id}
-                      className="flex items-center gap-2 rounded-2xl border border-[#dbe4e1] bg-[#f9fbfa] p-2.5"
+                      className="flex items-center gap-2 rounded-md border border-[#eaeaea] bg-[#fafafa] p-2"
                     >
-                      <span className="grid size-6 shrink-0 place-items-center rounded-lg bg-white border border-[#dbe4e1] text-[10px] font-bold text-[#71817d]">
+                      <span className="grid size-6 shrink-0 place-items-center rounded border border-[#eaeaea] bg-white text-[10.5px] font-medium text-[#71717a]">
                         {idx + 1}
                       </span>
                       <input
@@ -678,7 +617,7 @@ export function WhatsAppMetaFormsView({ forms, onRefresh }: WhatsAppMetaFormsVie
                           setNewFields(updated);
                         }}
                         placeholder="Field label..."
-                        className="flex-1 rounded-xl border border-[#dbe4e1] bg-white px-3 py-1.5 text-xs text-[#14231f] focus:border-[#118778] focus:outline-none"
+                        className="h-8 flex-1 rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12px] text-[#171717] focus:border-[#171717] focus:outline-none"
                       />
                       <select
                         value={field.type}
@@ -687,19 +626,19 @@ export function WhatsAppMetaFormsView({ forms, onRefresh }: WhatsAppMetaFormsVie
                           updated[idx].type = e.target.value as WhatsAppFormField["type"];
                           setNewFields(updated);
                         }}
-                        className="rounded-xl border border-[#dbe4e1] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#14231f] focus:border-[#118778] focus:outline-none"
+                        className="h-8 rounded-md border border-[#eaeaea] bg-white px-2 text-[12px] text-[#171717] focus:border-[#171717] focus:outline-none"
                       >
                         <option value="text">Text</option>
                         <option value="number">Number</option>
                         <option value="email">Email</option>
                         <option value="phone">Phone</option>
                         <option value="dropdown">Dropdown</option>
-                        <option value="date">Date Picker</option>
+                        <option value="date">Date</option>
                       </select>
                       <button
                         type="button"
                         onClick={() => handleRemoveField(idx)}
-                        className="p-1.5 text-[#84938f] hover:text-rose-600 transition"
+                        className="p-1 text-[#71717a] hover:text-[#171717]"
                         title="Remove field"
                       >
                         ✕
@@ -709,21 +648,20 @@ export function WhatsAppMetaFormsView({ forms, onRefresh }: WhatsAppMetaFormsVie
                 </div>
               </div>
 
-              {/* Actions */}
-              <div className="flex justify-end gap-2 border-t border-[#edf2f0] pt-4">
+              <div className="flex justify-end gap-2 border-t border-[#eaeaea] pt-3">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="rounded-xl border border-[#c6d4d0] px-4 py-2 text-xs font-semibold text-[#52645f] hover:bg-[#f4f7f6]"
+                  className="h-8 rounded-md border border-[#eaeaea] bg-white px-3.5 text-[12px] font-medium text-[#52525b] hover:bg-[#fafafa]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={creating}
-                  className="rounded-xl bg-[#118778] px-5 py-2 text-xs font-bold text-white hover:bg-[#0e7467] disabled:opacity-50"
+                  className="h-8 rounded-md bg-[#171717] px-4 text-[12px] font-medium text-white hover:bg-black disabled:opacity-50"
                 >
-                  {creating ? "Publishing to Meta..." : "Publish Meta Form"}
+                  {creating ? "Publishing..." : "Publish Meta Form"}
                 </button>
               </div>
             </form>

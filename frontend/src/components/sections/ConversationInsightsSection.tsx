@@ -77,8 +77,8 @@ export function ConversationInsightsSection() {
   return (
     <section className="conversation-insights" aria-labelledby="conversation-insights-title">
       <div className="conversation-insights-heading">
-        <h2 id="conversation-insights-title">Insights on every conversation</h2>
-        <p>See how each call performs and find clear ways to improve every agent.</p>
+        <h2 id="conversation-insights-title">Insights on every call &amp; chat</h2>
+        <p>Track voice call quality, WhatsApp replies, tool calls, and agent outcomes in one place.</p>
       </div>
 
       <div className="conversation-insights-visual" aria-label="Illustrative call analytics dashboard">
