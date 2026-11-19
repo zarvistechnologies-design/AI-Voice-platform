@@ -143,6 +143,23 @@ export type WhatsAppFlowNode = {
 export type WhatsAppFlowEdge = {
   from: string;
   to: string;
+  caseLabel?: string;
+  matchKeywords?: string;
+};
+
+export type WhatsAppSupportCase = {
+  _id: string;
+  caseNumber: string;
+  conversationId?: string;
+  contactPhone: string;
+  contactName: string;
+  subject: string;
+  category: string;
+  priority: "low" | "medium" | "high" | "urgent";
+  status: "open" | "in_progress" | "resolved";
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type WhatsAppFlow = {
@@ -260,6 +277,9 @@ export const whatsappApi = {
     method: "POST",
     body: JSON.stringify(data),
   }),
+  syncTemplates: () => req<{ ok: boolean; synced: number; templates: WhatsAppTemplate[] }>("/api/whatsapp/templates/sync", {
+    method: "POST",
+  }),
   deleteTemplate: (id: string) => req<{ ok: boolean }>("/api/whatsapp/templates/" + id, {
     method: "DELETE",
   }),
@@ -321,14 +341,69 @@ export const whatsappApi = {
   // Live Chat
   listConversations: () => req<{ ok: boolean; conversations: WhatsAppConversation[] }>("/api/whatsapp/conversations"),
   getMessages: (conversationId: string) => req<{ ok: boolean; messages: WhatsAppMessage[] }>(`/api/whatsapp/conversations/${conversationId}/messages`),
-  sendChatMessage: (conversationId: string, content: string, type?: string, fromPhoneNumberId?: string) => req<{ ok: boolean; message: WhatsAppMessage }>(`/api/whatsapp/conversations/${conversationId}/messages`, {
-    method: "POST",
-    body: JSON.stringify({ content, type, fromPhoneNumberId }),
-  }),
+  sendChatMessage: (
+    conversationId: string,
+    content: string,
+    type?: "text" | "image" | "document",
+    fromPhoneNumberId?: string,
+    mediaUrl?: string,
+    filename?: string,
+  ) =>
+    req<{ ok: boolean; message: WhatsAppMessage }>(`/api/whatsapp/conversations/${conversationId}/messages`, {
+      method: "POST",
+      body: JSON.stringify({ content, type, fromPhoneNumberId, mediaUrl, filename }),
+    }),
   toggleMode: (conversationId: string, mode: "ai" | "human") => req<{ ok: boolean; conversation: WhatsAppConversation }>(`/api/whatsapp/conversations/${conversationId}/mode`, {
     method: "PUT",
     body: JSON.stringify({ mode }),
   }),
+  triggerIntegrationAction: (
+    conversationId: string,
+    payload: {
+      action: "razorpay_payment_link" | "calendar_booking" | "crm_sync" | "slack_alert";
+      amount?: number;
+      currency?: string;
+      description?: string;
+      title?: string;
+      stage?: string;
+    },
+  ) =>
+    req<{ ok: boolean; summary: string; message?: WhatsAppMessage | null }>(
+      `/api/whatsapp/conversations/${conversationId}/integration-action`,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      },
+    ),
+  callConversationContact: (conversationId: string, voiceAgentId?: string) =>
+    req<{ ok: boolean; callId: string; agentName: string; fromNumber: string; message?: WhatsAppMessage }>(
+      `/api/whatsapp/conversations/${conversationId}/call`,
+      {
+        method: "POST",
+        body: JSON.stringify(voiceAgentId ? { voiceAgentId } : {}),
+      },
+    ),
+  listConversationCases: (conversationId: string) =>
+    req<{ ok: boolean; cases: WhatsAppSupportCase[] }>(`/api/whatsapp/conversations/${conversationId}/cases`),
+  createConversationCase: (
+    conversationId: string,
+    payload: { subject: string; category?: string; priority?: "low" | "medium" | "high" | "urgent" },
+  ) =>
+    req<{ ok: boolean; supportCase: WhatsAppSupportCase; message?: WhatsAppMessage | null }>(
+      `/api/whatsapp/conversations/${conversationId}/cases`,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      },
+    ),
+  updateSupportCaseStatus: (caseId: string, status: "open" | "in_progress" | "resolved") =>
+    req<{ ok: boolean; supportCase: WhatsAppSupportCase; message?: WhatsAppMessage | null }>(
+      `/api/whatsapp/cases/${caseId}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({ status }),
+      },
+    ),
 
   // Forms
   listForms: () => req<{ ok: boolean; forms: WhatsAppForm[] }>("/api/whatsapp/forms"),

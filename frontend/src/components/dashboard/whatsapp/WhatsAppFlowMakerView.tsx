@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { WhatsAppFlow, WhatsAppFlowNode } from "@/lib/whatsapp";
+import type { WhatsAppFlow, WhatsAppFlowEdge, WhatsAppFlowNode } from "@/lib/whatsapp";
 import { whatsappApi } from "@/lib/whatsapp";
 
 interface WhatsAppFlowMakerViewProps {
@@ -70,6 +70,41 @@ const NODE_PALETTE = [
         title: "CRM Tag & Webhook",
         code: "API",
         desc: "Sync lead data to CRM or trigger webhook API",
+      },
+    ],
+  },
+  {
+    category: "Integrations & Payments",
+    items: [
+      {
+        type: "action" as const,
+        title: "Razorpay Payment Link (INR 999)",
+        code: "PAY",
+        desc: "Generate live Razorpay payment link & send in chat",
+      },
+      {
+        type: "action" as const,
+        title: "Book Google Calendar / Calendly",
+        code: "CAL",
+        desc: "Book slot on Calendar & share Calendly link",
+      },
+      {
+        type: "action" as const,
+        title: "Sync CRM & Google Sheets",
+        code: "CRM",
+        desc: "Push lead to HubSpot, Zoho, Salesforce & Sheets",
+      },
+      {
+        type: "action" as const,
+        title: "Send Slack Team Alert",
+        code: "SLK",
+        desc: "Post instant notification to Slack channel",
+      },
+      {
+        type: "action" as const,
+        title: "Create Support Case (CASE-XXXX)",
+        code: "CASE",
+        desc: "Open a tracked support case & notify customer",
       },
     ],
   },
@@ -209,6 +244,92 @@ const PRESET_WORKFLOWS = [
       { from: "node-3", to: "node-4" },
     ],
   },
+  {
+    name: "Razorpay Payment + Calendar + CRM Autopilot",
+    description: "End-to-end WhatsApp commerce flow: qualifies the customer, generates a live Razorpay payment link, books Google Calendar / Calendly, syncs to CRM & Sheets, and alerts Slack.",
+    triggerKeyword: "PAY",
+    nodes: [
+      {
+        id: "node-1",
+        type: "trigger" as const,
+        title: "Payment & Booking Trigger: 'PAY'",
+        description: 'Runs automatically when customer texts "PAY", "BUY", or "ORDER".',
+      },
+      {
+        id: "node-2",
+        type: "message" as const,
+        title: "Send Confirmation & Payment Details",
+        description: "Thanks {{name}}! We are generating your Razorpay checkout link and calendar invite right now.",
+      },
+      {
+        id: "node-3",
+        type: "action" as const,
+        title: "Razorpay Payment Link (999 INR)",
+        description: "Create live Razorpay payment link for 999 and book Google Calendar / Calendly consultation.",
+      },
+      {
+        id: "node-4",
+        type: "action" as const,
+        title: "Sync HubSpot / Zoho / Google Sheet + Slack Alert",
+        description: "Sync customer lead to CRM and Sheets, and post Slack alert to the sales channel.",
+      },
+    ],
+    edges: [
+      { from: "node-1", to: "node-2" },
+      { from: "node-2", to: "node-3" },
+      { from: "node-3", to: "node-4" },
+    ],
+  },
+  {
+    name: "Case-Based Support Desk & Multi-Branch Router",
+    description: "True case-based chatbot: greets with 3 Quick Reply cases, routes Case 1 (Book Appointment), Case 2 (Support Case Ticket CASE-XXXX), and Else (Live Human Handover).",
+    triggerKeyword: "SUPPORT",
+    nodes: [
+      {
+        id: "node-1",
+        type: "trigger" as const,
+        title: "Support & Case Trigger: 'SUPPORT'",
+        description: 'Runs automatically when customer texts "SUPPORT", "CASE", or "ISSUE".',
+      },
+      {
+        id: "node-2",
+        type: "message" as const,
+        title: "Interactive 3-Case Menu",
+        description: "Hi {{name}}! How can we assist you today?\n1️⃣ Book Demo / Appointment\n2️⃣ Open Support Case Ticket\n3️⃣ Talk to Live Specialist",
+      },
+      {
+        id: "node-3",
+        type: "condition" as const,
+        title: "Multi-Case Choice Router",
+        description: "Branches customer reply to Case 1 (Calendar), Case 2 (Support Case), or Case 3 (Human Agent).",
+      },
+      {
+        id: "node-4",
+        type: "action" as const,
+        title: "Case 1: Book Google Calendar / Calendly",
+        description: "Auto-book Google Calendar slot & share Calendly link in WhatsApp.",
+      },
+      {
+        id: "node-5",
+        type: "action" as const,
+        title: "Case 2: Create Support Case (CASE-XXXX)",
+        description: "Open a tracked Support Case ticket, log to CRM/Sheets, alert Slack, and reply with Case ID.",
+      },
+      {
+        id: "node-6",
+        type: "action" as const,
+        title: "Case 3 / Else: Live Human Handover",
+        description: "Switch conversation to Human mode and alert support team on Slack.",
+      },
+    ],
+    edges: [
+      { from: "node-1", to: "node-2" },
+      { from: "node-2", to: "node-3" },
+      { from: "node-3", to: "node-4", caseLabel: "Case 1: Book Slot", matchKeywords: "1, book, demo, appointment" },
+      { from: "node-3", to: "node-5", caseLabel: "Case 2: Open Ticket", matchKeywords: "2, case, ticket, issue, support" },
+      { from: "node-3", to: "node-6", caseLabel: "Else: Live Agent", matchKeywords: "default" },
+    ],
+  },
 ];
 
 export function WhatsAppFlowMakerView({ flows, onRefresh }: WhatsAppFlowMakerViewProps) {
@@ -255,14 +376,16 @@ export function WhatsAppFlowMakerView({ flows, onRefresh }: WhatsAppFlowMakerVie
   const [editTitle, setEditTitle] = useState<string>("");
   const [editDesc, setEditDesc] = useState<string>("");
   const [editType, setEditType] = useState<WhatsAppFlowNode["type"]>("message");
+  const [editBranches, setEditBranches] = useState<WhatsAppFlowEdge[]>([]);
 
   useEffect(() => {
     if (selectedNode) {
       setEditTitle(selectedNode.title || "");
       setEditDesc(selectedNode.description || "");
       setEditType(selectedNode.type || "message");
+      setEditBranches((selectedFlow?.edges || []).filter((e) => e.from === selectedNode.id));
     }
-  }, [selectedNode?.id]);
+  }, [selectedNode?.id, selectedFlow?._id]);
 
   const [newFlowName, setNewFlowName] = useState("");
   const [newFlowDesc, setNewFlowDesc] = useState("");
@@ -281,7 +404,14 @@ export function WhatsAppFlowMakerView({ flows, onRefresh }: WhatsAppFlowMakerVie
           }
         : n,
     );
-    saveFlowData({ nodes: updatedNodes });
+    let updatedEdges = selectedFlow.edges || [];
+    if (editType === "condition") {
+      const otherEdges = updatedEdges.filter((e) => e.from !== selectedNode.id);
+      const cleanBranches = editBranches.filter((b) => b.to);
+      updatedEdges = [...otherEdges, ...cleanBranches];
+    }
+
+    saveFlowData({ nodes: updatedNodes, edges: updatedEdges });
   }
 
   function handleAddNode(type: WhatsAppFlowNode["type"], title?: string, desc?: string) {
@@ -702,6 +832,68 @@ export function WhatsAppFlowMakerView({ flows, onRefresh }: WhatsAppFlowMakerVie
                       <p className="mt-2.5 rounded-lg border border-[#f0f0f0] bg-[#fafafa] px-3 py-2 text-[11.5px] leading-relaxed text-[#52525b] line-clamp-2">
                         {node.description}
                       </p>
+
+                      {node.type === "condition" && (() => {
+                        const branches = (selectedFlow?.edges || []).filter((e) => e.from === node.id);
+                        return (
+                          <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[9.5px] font-semibold">
+                            {branches.length > 0 ? (
+                              branches.map((br, bIdx) => {
+                                const targetNode = activeNodes.find((n) => n.id === br.to);
+                                const isDefault = (br.matchKeywords || "").toLowerCase() === "default";
+                                return (
+                                  <div
+                                    key={bIdx}
+                                    className={`rounded-md p-1.5 border ${
+                                      isDefault
+                                        ? "bg-amber-50 border-amber-200 text-amber-800"
+                                        : "bg-emerald-50 border-emerald-200 text-emerald-800"
+                                    }`}
+                                  >
+                                    <div className="truncate">
+                                      {br.caseLabel || (isDefault ? "Else Fallback" : `Case ${bIdx + 1}`)}: &quot;{br.matchKeywords || "any"}&quot;
+                                    </div>
+                                    <div className="text-[8.5px] opacity-80 truncate">➔ {targetNode?.title || br.to}</div>
+                                  </div>
+                                );
+                              })
+                            ) : (
+                              <>
+                                <div className="rounded-md bg-emerald-50 p-1.5 border border-emerald-200 text-emerald-800">
+                                  ✓ If Match ➔ Next Step
+                                </div>
+                                <div className="rounded-md bg-amber-50 p-1.5 border border-amber-200 text-amber-800">
+                                  ✕ Else ➔ Fallback
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        );
+                      })()}
+
+                      {node.type === "action" && (() => {
+                        const lower = `${node.title} ${node.description}`.toLowerCase();
+                        const label =
+                          lower.includes("support case") || lower.includes("open case") || lower.includes("ticket")
+                            ? "🎫 Live Action: Create Support Case (CASE-XXXX)"
+                            : lower.includes("razorpay") || lower.includes("payment")
+                              ? "💳 Live Integration: Razorpay Payment Link"
+                              : lower.includes("calendar") || lower.includes("calendly") || lower.includes("book")
+                                ? "📅 Live Integration: Google Calendar / Calendly"
+                                : lower.includes("crm") || lower.includes("hubspot") || lower.includes("zoho") || lower.includes("sheet")
+                                  ? "📊 Live Integration: CRM & Google Sheets Sync"
+                                  : lower.includes("slack")
+                                    ? "🔔 Live Integration: Slack Team Alert"
+                                    : lower.includes("handover") || lower.includes("human")
+                                      ? "👤 Live Action: Human Agent Handover"
+                                      : "📞 Outbound Action: Instant Voice Agent Callback";
+                        return (
+                          <div className="mt-2 flex items-center gap-1.5 text-[10.5px] font-semibold text-[#171717]">
+                            <span>⚡</span>
+                            <span className="underline">{label}</span>
+                          </div>
+                        );
+                      })()}
                     </div>
                   </div>
                 );
@@ -766,12 +958,129 @@ export function WhatsAppFlowMakerView({ flows, onRefresh }: WhatsAppFlowMakerVie
                     />
                   </div>
 
+                  {/* Multi-Case Branching Rules for Condition Nodes */}
+                  {editType === "condition" && (
+                    <div className="rounded-lg border border-amber-200 bg-amber-50/50 p-2.5 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-amber-900">
+                          Case Branch Rules ({editBranches.length})
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const fallbackTarget = activeNodes.find((n) => n.id !== selectedNode.id)?.id || "";
+                            setEditBranches((prev) => [
+                              ...prev,
+                              {
+                                from: selectedNode.id,
+                                to: fallbackTarget,
+                                caseLabel: `Case ${prev.length + 1}`,
+                                matchKeywords: `${prev.length + 1}`,
+                              },
+                            ]);
+                          }}
+                          className="rounded-md bg-[#171717] px-2 py-0.5 text-[10px] font-semibold text-white hover:bg-black"
+                        >
+                          + Add Case
+                        </button>
+                      </div>
+                      {editBranches.length === 0 && (
+                        <p className="text-[10px] text-amber-800">
+                          Add case branches so customer replies (e.g. &quot;1, book&quot; vs &quot;2, support&quot; vs &quot;default&quot;) route to different steps.
+                        </p>
+                      )}
+                      {editBranches.map((br, idx) => (
+                        <div key={idx} className="rounded-md border border-[#eaeaea] bg-white p-2 space-y-1.5 text-[11px]">
+                          <div className="flex items-center gap-1.5">
+                            <input
+                              type="text"
+                              value={br.caseLabel || ""}
+                              onChange={(e) =>
+                                setEditBranches((prev) =>
+                                  prev.map((item, i) => (i === idx ? { ...item, caseLabel: e.target.value } : item)),
+                                )
+                              }
+                              placeholder="Case Label"
+                              className="w-1/2 rounded border border-[#eaeaea] px-2 py-1 text-[11px]"
+                            />
+                            <input
+                              type="text"
+                              value={br.matchKeywords || ""}
+                              onChange={(e) =>
+                                setEditBranches((prev) =>
+                                  prev.map((item, i) => (i === idx ? { ...item, matchKeywords: e.target.value } : item)),
+                                )
+                              }
+                              placeholder='Keywords or "default"'
+                              className="w-1/2 rounded border border-[#eaeaea] px-2 py-1 text-[11px]"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setEditBranches((prev) => prev.filter((_, i) => i !== idx))}
+                              className="text-rose-600 px-1 font-bold"
+                              title="Remove branch"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                          <select
+                            value={br.to}
+                            onChange={(e) =>
+                              setEditBranches((prev) =>
+                                prev.map((item, i) => (i === idx ? { ...item, to: e.target.value } : item)),
+                              )
+                            }
+                            className="w-full rounded border border-[#eaeaea] bg-[#fafafa] px-2 py-1 text-[11px]"
+                          >
+                            <option value="">Choose Target Step...</option>
+                            {activeNodes
+                              .filter((n) => n.id !== selectedNode.id)
+                              .map((n) => (
+                                <option key={n.id} value={n.id}>
+                                  ➔ {n.title}
+                                </option>
+                              ))}
+                          </select>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Integration Quick-Fill Chips for Action Steps */}
+                  {editType === "action" && (
+                    <div>
+                      <span className="block text-[10.5px] font-medium text-[#71717a]">
+                        Quick Live Integration Action
+                      </span>
+                      <div className="mt-1 flex flex-wrap gap-1">
+                        {[
+                          { label: "💳 Razorpay ₹999", title: "Razorpay Payment Link (999 INR)", desc: "Create and send live Razorpay payment link for 999 on WhatsApp." },
+                          { label: "📅 Calendar / Calendly", title: "Book Google Calendar / Calendly", desc: "Auto-book Google Calendar slot & share Calendly link in chat." },
+                          { label: "📊 CRM & Sheets", title: "Sync CRM & Google Sheets", desc: "Sync lead to HubSpot, Zoho CRM, Salesforce, HighLevel, Freshsales & Google Sheets." },
+                          { label: "🔔 Slack Alert", title: "Send Slack Team Alert", desc: "Send instant alert notification to connected Slack channel." },
+                          { label: "🎫 Support Case", title: "Create Support Case (CASE-XXXX)", desc: "Open a tracked Support Case ticket, log to CRM/Sheets, and send Case ID in chat." },
+                        ].map((preset) => (
+                          <button
+                            key={preset.label}
+                            type="button"
+                            onClick={() => {
+                              setEditTitle(preset.title);
+                              setEditDesc(preset.desc);
+                            }}
+                            className="rounded-md border border-[#eaeaea] bg-[#fafafa] px-2 py-1 text-[10.5px] font-medium text-[#171717] hover:bg-[#f4f4f5]"
+                          >
+                            {preset.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   <div>
                     <span className="block text-[10.5px] font-medium text-[#71717a]">
                       Insert Variable
                     </span>
                     <div className="mt-1 flex flex-wrap gap-1">
-                      {["{{name}}", "{{phone}}", "{{date}}", "{{time}}"].map((tag) => (
+                      {["{{name}}", "{{phone}}", "{{date}}", "{{time}}", "{{paymentLink}}", "{{calendlyLink}}", "{{caseNumber}}"].map((tag) => (
                         <button
                           key={tag}
                           type="button"

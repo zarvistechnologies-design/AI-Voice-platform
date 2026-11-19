@@ -72,7 +72,7 @@ const catalog = {
   razorpay_oauth: {
     name: "Razorpay OAuth",
     category: "Payments",
-    description: "Authorize a merchant account and inspect recent payments.",
+    description: "Authorize a merchant account to inspect payments and create workflow payment links.",
     logo: "/images/integrations/razorpay.png",
     color: "from-[#171717] to-[#3f3f46]",
   },
@@ -114,7 +114,7 @@ const catalog = {
   zoho: {
     name: "Zoho CRM",
     category: "CRM",
-    description: "Authorize your CRM account and browse accessible contacts.",
+    description: "Authorize your CRM account to browse contacts and create workflow leads.",
     logo: "/images/integrations/zoho.svg",
     color: "from-[#171717] to-[#3f3f46]",
   },
@@ -690,6 +690,7 @@ export function IntegrationsShell() {
                 ? provider.connected && (googleScopeRequirements[displayId] ?? []).every((scope) => grantedScopes.includes(scope))
                 : provider.connected;
               const setupNeeded = !displayConnected && provider.metadata?.platformConfigured === false;
+              const reconnectForWorkflow = displayConnected && (provider.id === "razorpay_oauth" || provider.id === "zoho") && provider.metadata?.workflowWriteAccess !== true;
               const displayDelivery = googleExtraFeature ? null : provider.delivery;
               const voiceReadId = provider.id === "google" ? displayId : provider.id;
               const dbConnections =
@@ -730,6 +731,7 @@ export function IntegrationsShell() {
                       {item.description}
                     </p>
                     {setupNeeded ? <p className="mt-2 text-xs leading-5 text-amber-800">Vozon must configure its OAuth application before customers can authorize this provider.</p> : null}
+                    {reconnectForWorkflow ? <p className="mt-2 rounded-lg bg-amber-50 p-3 text-xs leading-5 text-amber-800">Reconnect to allow {provider.id === "zoho" ? "workflow lead creation" : "workflow payment-link creation"}. Your current authorization only covers the older connection.</p> : null}
                     {displayConnected || displayDelivery ? (
                       <details className="group mt-3 text-xs text-slate-600">
                         <summary className="flex cursor-pointer list-none items-center gap-2 font-semibold text-[#171717] marker:content-none">
@@ -996,6 +998,7 @@ export function IntegrationsShell() {
                       ) : provider.id === "razorpay_oauth" ? (
                         displayConnected ? (
                           <>
+                            {reconnectForWorkflow ? <button className="rounded-lg bg-amber-600 px-4 py-2.5 text-sm font-semibold text-white" disabled={busy} type="button" onClick={() => void connectRazorpayOAuth(provider.metadata?.mode === "test" ? "test" : "live")}>Reconnect for workflows</button> : null}
                             <button className="rounded-lg bg-[#171717] px-4 py-2.5 text-sm font-semibold text-white hover:bg-black" disabled={busy} type="button" onClick={() => void previewRazorpayOAuth()}>Check payments</button>
                             <button className="rounded-lg border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-700" disabled={busy} type="button" onClick={() => void disconnect("razorpay_oauth")}>Disconnect</button>
                           </>
@@ -1008,6 +1011,7 @@ export function IntegrationsShell() {
                       ) : provider.id === "zoho" || provider.id === "salesforce" ? (
                         displayConnected ? (
                           <>
+                            {reconnectForWorkflow ? <button className="rounded-lg bg-amber-600 px-4 py-2.5 text-sm font-semibold text-white" disabled={busy} type="button" onClick={() => void connectCrm("zoho")}>Reconnect for workflows</button> : null}
                             <button className="rounded-lg bg-[#171717] px-4 py-2.5 text-sm font-semibold text-white hover:bg-black" disabled={busy} type="button" onClick={() => void previewCrm(provider.id as "zoho" | "salesforce")}>View contacts</button>
                             <button className="rounded-lg border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-700" disabled={busy} type="button" onClick={() => void disconnect(provider.id as "zoho" | "salesforce")}>Disconnect</button>
                           </>

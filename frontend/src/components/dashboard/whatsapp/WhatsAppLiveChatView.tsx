@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { WhatsAppConversation, WhatsAppMessage, WhatsAppTemplate } from "@/lib/whatsapp";
+import type { WhatsAppConversation, WhatsAppMessage, WhatsAppSupportCase, WhatsAppTemplate } from "@/lib/whatsapp";
 import { whatsappApi } from "@/lib/whatsapp";
 
 interface WhatsAppLiveChatViewProps {
@@ -25,6 +25,20 @@ export function WhatsAppLiveChatView({
   const [search, setSearch] = useState("");
   const [filterMode, setFilterMode] = useState<"ALL" | "UNREAD" | "AI" | "HUMAN">("ALL");
   const [showTemplatePicker, setShowTemplatePicker] = useState(false);
+  const [activeToolPanel, setActiveToolPanel] = useState<"razorpay" | "calendar" | null>(null);
+  const [razorpayAmount, setRazorpayAmount] = useState("999");
+  const [razorpayCurrency, setRazorpayCurrency] = useState("INR");
+  const [razorpayDesc, setRazorpayDesc] = useState("Booking / Order Payment");
+  const [calendarTitle, setCalendarTitle] = useState("Consultation Call");
+  const [actionNotice, setActionNotice] = useState<{ ok: boolean; text: string } | null>(null);
+  const [showMediaComposer, setShowMediaComposer] = useState(false);
+  const [mediaType, setMediaType] = useState<"image" | "document">("document");
+  const [mediaUrl, setMediaUrl] = useState("");
+  const [mediaFilename, setMediaFilename] = useState("");
+  const [cases, setCases] = useState<WhatsAppSupportCase[]>([]);
+  const [showCaseForm, setShowCaseForm] = useState(false);
+  const [caseSubject, setCaseSubject] = useState("");
+  const [caseCategory, setCaseCategory] = useState("Support");
 
   useEffect(() => {
     if (!selectedConversation && conversations.length > 0) {
@@ -42,16 +56,22 @@ export function WhatsAppLiveChatView({
     }
   }, [conversations, selectedConversation]);
 
+  // Load message history & support cases when selected conversation changes
   useEffect(() => {
     if (!selectedConversation?._id) return;
     let cancelled = false;
     setLoadingMessages(true);
 
-    whatsappApi
-      .getMessages(selectedConversation._id)
-      .then((res) => {
-        if (!cancelled && res.ok) {
-          setMessages(res.messages || []);
+    Promise.all([
+      whatsappApi.getMessages(selectedConversation._id),
+      whatsappApi.listConversationCases(selectedConversation._id).catch(() => ({ ok: false, cases: [] })),
+    ])
+      .then(([msgRes, caseRes]) => {
+        if (!cancelled && msgRes.ok) {
+          setMessages(msgRes.messages || []);
+        }
+        if (!cancelled && caseRes.ok) {
+          setCases(caseRes.cases || []);
         }
       })
       .catch((err) => console.warn("Failed to load messages:", err))
@@ -79,20 +99,74 @@ export function WhatsAppLiveChatView({
 
   async function handleSendMessage(e?: React.FormEvent) {
     if (e) e.preventDefault();
-    if (!messageInput.trim() || !selectedConversation?._id) return;
+    if (!selectedConversation?._id) return;
+    const trimmedContent = messageInput.trim();
+    const trimmedMedia = showMediaComposer ? mediaUrl.trim() : "";
+    if (!trimmedContent && !trimmedMedia) return;
 
-    const content = messageInput.trim();
     setMessageInput("");
     setSending(true);
 
     try {
-      const res = await whatsappApi.sendChatMessage(selectedConversation._id, content);
+      const res = await whatsappApi.sendChatMessage(
+        selectedConversation._id,
+        trimmedContent,
+        trimmedMedia ? mediaType : "text",
+        undefined,
+        trimmedMedia || undefined,
+        trimmedMedia && mediaType === "document" ? mediaFilename.trim() || "document.pdf" : undefined,
+      );
       if (res.ok && res.message) {
         setMessages((prev) => [...prev, res.message]);
+        if (trimmedMedia) {
+          setMediaUrl("");
+          setMediaFilename("");
+          setShowMediaComposer(false);
+        }
         onRefresh();
       }
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to send message");
+      setActionNotice({ ok: false, text: err instanceof Error ? err.message : "Failed to send message" });
+    } finally {
+      setSending(false);
+    }
+  }
+
+  async function handleCreateCase(e: React.FormEvent) {
+    e.preventDefault();
+    if (!selectedConversation?._id || !caseSubject.trim()) return;
+    setSending(true);
+    setActionNotice(null);
+    try {
+      const res = await whatsappApi.createConversationCase(selectedConversation._id, {
+        subject: caseSubject.trim(),
+        category: caseCategory,
+      });
+      if (res.supportCase) setCases((prev) => [res.supportCase, ...prev]);
+      if (res.message) setMessages((prev) => [...prev, res.message!]);
+      setCaseSubject("");
+      setShowCaseForm(false);
+      setActionNotice({ ok: true, text: `Support Case ${res.supportCase.caseNumber} created & sent.` });
+      onRefresh();
+    } catch (err) {
+      setActionNotice({ ok: false, text: err instanceof Error ? err.message : "Failed to create support case" });
+    } finally {
+      setSending(false);
+    }
+  }
+
+  async function handleUpdateCaseStatus(caseId: string, status: "open" | "in_progress" | "resolved") {
+    setSending(true);
+    try {
+      const res = await whatsappApi.updateSupportCaseStatus(caseId, status);
+      if (res.supportCase) {
+        setCases((prev) => prev.map((c) => (c._id === caseId ? res.supportCase : c)));
+      }
+      if (res.message) setMessages((prev) => [...prev, res.message!]);
+      setActionNotice({ ok: true, text: `Updated ${res.supportCase.caseNumber} -> ${status}` });
+      onRefresh();
+    } catch (err) {
+      setActionNotice({ ok: false, text: err instanceof Error ? err.message : "Failed to update case" });
     } finally {
       setSending(false);
     }
@@ -115,6 +189,53 @@ export function WhatsAppLiveChatView({
   function handleInsertTemplate(bodyText: string) {
     setMessageInput(bodyText);
     setShowTemplatePicker(false);
+  }
+
+  async function handleIntegrationAction(
+    action: "razorpay_payment_link" | "calendar_booking" | "crm_sync" | "slack_alert",
+    override?: { amount?: number; currency?: string; description?: string; title?: string; stage?: string },
+  ) {
+    if (!selectedConversation?._id) return;
+    let payload: {
+      action: "razorpay_payment_link" | "calendar_booking" | "crm_sync" | "slack_alert";
+      amount?: number;
+      currency?: string;
+      description?: string;
+      title?: string;
+      stage?: string;
+    } = { action, ...override };
+
+    if (action === "razorpay_payment_link" && !override?.amount) {
+      const amount = Number(razorpayAmount);
+      if (!Number.isFinite(amount) || amount < 1) {
+        setActionNotice({ ok: false, text: "Enter a valid Razorpay amount (minimum 1)." });
+        return;
+      }
+      payload = {
+        action,
+        amount,
+        currency: razorpayCurrency,
+        description: razorpayDesc.trim() || "Booking / Order Payment",
+      };
+    } else if (action === "calendar_booking" && !override?.title) {
+      payload = { action, title: calendarTitle.trim() || "Consultation Call" };
+    }
+
+    setSending(true);
+    setActionNotice(null);
+    try {
+      const res = await whatsappApi.triggerIntegrationAction(selectedConversation._id, payload);
+      if (res.message) {
+        setMessages((prev) => [...prev, res.message!]);
+      }
+      setActiveToolPanel(null);
+      setActionNotice({ ok: true, text: res.summary || "Integration executed successfully." });
+      onRefresh();
+    } catch (err) {
+      setActionNotice({ ok: false, text: err instanceof Error ? err.message : "Integration action failed" });
+    } finally {
+      setSending(false);
+    }
   }
 
   return (
@@ -346,6 +467,42 @@ export function WhatsAppLiveChatView({
                 </div>
               )}
 
+              {/* Media Attachment Composer */}
+              {showMediaComposer && (
+                <div className="border-t border-[#dbe4e1] bg-[#f8fbfa] px-3 py-2.5 space-y-2 text-xs">
+                  <div className="flex items-center justify-between font-bold text-[#14231f]">
+                    <span>Send Image or PDF Document via Meta Cloud API</span>
+                    <button type="button" onClick={() => setShowMediaComposer(false)} className="text-[#84938f]">✕</button>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <select
+                      value={mediaType}
+                      onChange={(e) => setMediaType(e.target.value as "image" | "document")}
+                      className="rounded-lg border border-[#c6d4d0] bg-white px-2.5 py-1.5 text-xs"
+                    >
+                      <option value="document">📄 PDF / Document</option>
+                      <option value="image">🖼️ Image</option>
+                    </select>
+                    <input
+                      type="url"
+                      value={mediaUrl}
+                      onChange={(e) => setMediaUrl(e.target.value)}
+                      placeholder="https://... public image or PDF URL"
+                      className="flex-1 min-w-[200px] rounded-lg border border-[#c6d4d0] bg-white px-2.5 py-1.5 text-xs"
+                    />
+                    {mediaType === "document" && (
+                      <input
+                        type="text"
+                        value={mediaFilename}
+                        onChange={(e) => setMediaFilename(e.target.value)}
+                        placeholder="brochure.pdf"
+                        className="w-32 rounded-lg border border-[#c6d4d0] bg-white px-2.5 py-1.5 text-xs"
+                      />
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* Message Composer */}
               <div className="border-t border-[#e2e5e8] bg-[#f0f2f5] p-2.5">
                 <form onSubmit={handleSendMessage} className="flex items-center gap-2">
@@ -360,21 +517,38 @@ export function WhatsAppLiveChatView({
                     </svg>
                   </button>
 
+                  <button
+                    type="button"
+                    onClick={() => setShowMediaComposer((p) => !p)}
+                    title="Attach Image or PDF URL"
+                    className={`rounded-xl border p-2 transition ${
+                      showMediaComposer
+                        ? "border-[#118778] bg-[#e9f5f2] text-[#0d6e62]"
+                        : "border-[#dbe4e1] bg-white text-[#52645f] hover:bg-[#f7f9f8]"
+                    }`}
+                  >
+                    <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                    </svg>
+                  </button>
+
                   <input
                     type="text"
                     value={messageInput}
                     onChange={(e) => setMessageInput(e.target.value)}
                     placeholder={
-                      selectedConversation.mode === "ai"
-                        ? "AI is handling this chat. Type to reply directly..."
-                        : "Type a message..."
+                      showMediaComposer
+                        ? "Optional caption for your image/PDF..."
+                        : selectedConversation.mode === "ai"
+                          ? "AI is handling this chat. Type to reply directly..."
+                          : "Type a message..."
                     }
                     className="h-9 flex-1 rounded-lg border border-[#e2e5e8] bg-white px-3 text-[12.5px] text-[#111b21] placeholder-[#667781] focus:border-[#00a884] focus:outline-none"
                   />
 
                   <button
                     type="submit"
-                    disabled={sending || !messageInput.trim()}
+                    disabled={sending || (!messageInput.trim() && !(showMediaComposer && mediaUrl.trim()))}
                     className="inline-flex h-9 items-center justify-center rounded-lg bg-[#00a884] px-3.5 text-[12px] font-medium text-white transition hover:bg-[#008069] disabled:opacity-50"
                   >
                     Send
@@ -405,23 +579,225 @@ export function WhatsAppLiveChatView({
                 </span>
               </div>
 
-              {/* Quick Actions */}
-              <div className="space-y-1.5">
+              {/* Quick Actions & Integrations */}
+              <div className="space-y-2">
                 <span className="text-[10.5px] font-semibold uppercase tracking-wider text-[#71717a]">
-                  Quick Actions
+                  Quick Actions & Integrations
                 </span>
                 <button
                   type="button"
-                  onClick={() =>
-                    alert(`Initiating Vozon AI voice call to +${selectedConversation.contactPhone}...`)
-                  }
-                  className="h-8 w-full flex items-center justify-center gap-1.5 rounded-md bg-[#171717] px-3 text-[12px] font-medium text-white hover:bg-black"
+                  disabled={sending}
+                  onClick={async () => {
+                    if (!selectedConversation?._id) return;
+                    setSending(true);
+                    setActionNotice(null);
+                    try {
+                      const res = await whatsappApi.callConversationContact(selectedConversation._id);
+                      if (res.message) setMessages((prev) => [...prev, res.message!]);
+                      setActionNotice({
+                        ok: true,
+                        text: `Voice call started with ${res.agentName} (${res.callId})`,
+                      });
+                      onRefresh();
+                    } catch (err) {
+                      setActionNotice({
+                        ok: false,
+                        text: err instanceof Error ? err.message : "Could not initiate voice call",
+                      });
+                    } finally {
+                      setSending(false);
+                    }
+                  }}
+                  className="h-8 w-full flex items-center justify-center gap-1.5 rounded-md bg-[#171717] px-3 text-[12px] font-medium text-white hover:bg-black disabled:opacity-50"
                 >
                   <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
                   Call Contact (Voice Bot)
                 </button>
+                <div className="grid grid-cols-2 gap-1.5 pt-1">
+                  <button
+                    type="button"
+                    disabled={sending}
+                    onClick={() => setActiveToolPanel((prev) => (prev === "razorpay" ? null : "razorpay"))}
+                    className={`rounded-xl border px-2.5 py-2 text-[11px] font-semibold transition disabled:opacity-50 ${
+                      activeToolPanel === "razorpay"
+                        ? "border-[#118778] bg-[#e9f5f2] text-[#0d6e62]"
+                        : "border-[#dbe4e1] bg-[#f9fbfa] text-[#14231f] hover:bg-[#edf6f4]"
+                    }`}
+                  >
+                    ₹ Razorpay Link
+                  </button>
+                  <button
+                    type="button"
+                    disabled={sending}
+                    onClick={() => setActiveToolPanel((prev) => (prev === "calendar" ? null : "calendar"))}
+                    className={`rounded-xl border px-2.5 py-2 text-[11px] font-semibold transition disabled:opacity-50 ${
+                      activeToolPanel === "calendar"
+                        ? "border-[#118778] bg-[#e9f5f2] text-[#0d6e62]"
+                        : "border-[#dbe4e1] bg-[#f9fbfa] text-[#14231f] hover:bg-[#edf6f4]"
+                    }`}
+                  >
+                    📅 Calendar / Calendly
+                  </button>
+                  <button
+                    type="button"
+                    disabled={sending}
+                    onClick={() => void handleIntegrationAction("crm_sync")}
+                    className="rounded-xl border border-[#dbe4e1] bg-[#f9fbfa] px-2.5 py-2 text-[11px] font-semibold text-[#14231f] hover:bg-[#edf6f4] disabled:opacity-50"
+                  >
+                    📊 Sync CRM / Sheet
+                  </button>
+                  <button
+                    type="button"
+                    disabled={sending}
+                    onClick={() => void handleIntegrationAction("slack_alert")}
+                    className="rounded-xl border border-[#dbe4e1] bg-[#f9fbfa] px-2.5 py-2 text-[11px] font-semibold text-[#14231f] hover:bg-[#edf6f4] disabled:opacity-50"
+                  >
+                    🔔 Notify Slack
+                  </button>
+                </div>
+
+                {activeToolPanel === "razorpay" && (
+                  <div className="rounded-2xl border border-[#cde0dc] bg-[#f6fbf9] p-3 space-y-2 text-xs">
+                    <div className="font-bold text-[#0d6e62]">Send Live Razorpay Payment Link</div>
+                    <div className="grid grid-cols-3 gap-1.5">
+                      <input
+                        type="number"
+                        min="1"
+                        value={razorpayAmount}
+                        onChange={(e) => setRazorpayAmount(e.target.value)}
+                        placeholder="999"
+                        className="col-span-2 rounded-lg border border-[#c6d4d0] bg-white px-2.5 py-1.5 text-xs text-[#14231f]"
+                      />
+                      <select
+                        value={razorpayCurrency}
+                        onChange={(e) => setRazorpayCurrency(e.target.value)}
+                        className="rounded-lg border border-[#c6d4d0] bg-white px-2 py-1.5 text-xs text-[#14231f]"
+                      >
+                        <option value="INR">INR</option>
+                        <option value="USD">USD</option>
+                      </select>
+                    </div>
+                    <input
+                      type="text"
+                      value={razorpayDesc}
+                      onChange={(e) => setRazorpayDesc(e.target.value)}
+                      placeholder="Order / booking description"
+                      className="w-full rounded-lg border border-[#c6d4d0] bg-white px-2.5 py-1.5 text-xs text-[#14231f]"
+                    />
+                    <button
+                      type="button"
+                      disabled={sending}
+                      onClick={() => void handleIntegrationAction("razorpay_payment_link")}
+                      className="w-full rounded-xl bg-[#118778] px-3 py-1.5 text-xs font-bold text-white hover:bg-[#0d6e62] disabled:opacity-50"
+                    >
+                      {sending ? "Creating..." : `Generate & Send (${razorpayCurrency} ${razorpayAmount || "0"})`}
+                    </button>
+                  </div>
+                )}
+
+                {activeToolPanel === "calendar" && (
+                  <div className="rounded-2xl border border-[#cde0dc] bg-[#f6fbf9] p-3 space-y-2 text-xs">
+                    <div className="font-bold text-[#0d6e62]">Book Google Calendar / Calendly</div>
+                    <input
+                      type="text"
+                      value={calendarTitle}
+                      onChange={(e) => setCalendarTitle(e.target.value)}
+                      placeholder="Meeting / Consultation title"
+                      className="w-full rounded-lg border border-[#c6d4d0] bg-white px-2.5 py-1.5 text-xs text-[#14231f]"
+                    />
+                    <button
+                      type="button"
+                      disabled={sending}
+                      onClick={() => void handleIntegrationAction("calendar_booking")}
+                      className="w-full rounded-xl bg-[#118778] px-3 py-1.5 text-xs font-bold text-white hover:bg-[#0d6e62] disabled:opacity-50"
+                    >
+                      {sending ? "Booking..." : "Book & Share Link on WhatsApp"}
+                    </button>
+                  </div>
+                )}
+
+                {actionNotice && (
+                  <div
+                    className={`rounded-xl px-2.5 py-2 text-[11px] font-medium ${
+                      actionNotice.ok
+                        ? "border border-emerald-200 bg-emerald-50 text-emerald-800"
+                        : "border border-rose-200 bg-rose-50 text-rose-800"
+                    }`}
+                  >
+                    {actionNotice.text}
+                  </div>
+                )}
+              </div>
+
+              {/* Support Cases */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#84938f]">
+                    Support Cases ({cases.length})
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setShowCaseForm((p) => !p)}
+                    className="text-[11px] font-bold text-[#118778] hover:underline"
+                  >
+                    {showCaseForm ? "Cancel" : "+ Open Case"}
+                  </button>
+                </div>
+
+                {showCaseForm && (
+                  <form onSubmit={handleCreateCase} className="rounded-xl border border-[#cde0dc] bg-[#f6fbf9] p-2.5 space-y-2 text-xs">
+                    <input
+                      type="text"
+                      required
+                      value={caseSubject}
+                      onChange={(e) => setCaseSubject(e.target.value)}
+                      placeholder="Issue / Case subject..."
+                      className="w-full rounded-lg border border-[#c6d4d0] bg-white px-2.5 py-1.5 text-xs"
+                    />
+                    <select
+                      value={caseCategory}
+                      onChange={(e) => setCaseCategory(e.target.value)}
+                      className="w-full rounded-lg border border-[#c6d4d0] bg-white px-2.5 py-1.5 text-xs"
+                    >
+                      <option value="Support">General Support</option>
+                      <option value="Billing">Billing / Refund</option>
+                      <option value="Technical">Technical Issue</option>
+                      <option value="Booking">Appointment / Order</option>
+                    </select>
+                    <button
+                      type="submit"
+                      disabled={sending || !caseSubject.trim()}
+                      className="w-full rounded-lg bg-[#118778] py-1.5 text-xs font-bold text-white hover:bg-[#0d6e62] disabled:opacity-50"
+                    >
+                      Create Case &amp; Notify Customer
+                    </button>
+                  </form>
+                )}
+
+                {cases.length > 0 && (
+                  <div className="space-y-1.5 max-h-36 overflow-y-auto">
+                    {cases.map((c) => (
+                      <div key={c._id} className="rounded-xl border border-[#dbe4e1] bg-[#f9fbfa] p-2 text-[11px] space-y-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="font-mono font-bold text-[#0d6e62]">{c.caseNumber}</span>
+                          <select
+                            value={c.status}
+                            disabled={sending}
+                            onChange={(e) => void handleUpdateCaseStatus(c._id, e.target.value as "open" | "in_progress" | "resolved")}
+                            className="rounded-md border border-[#c6d4d0] bg-white px-1.5 py-0.5 text-[10px] font-semibold"
+                          >
+                            <option value="open">Open</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="resolved">Resolved</option>
+                          </select>
+                        </div>
+                        <div className="text-[#324640] truncate">{c.subject}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Conversation Tags */}

@@ -1,7 +1,7 @@
 import { API_URL } from "@/lib/apiBase";
 import { getAuthHeaders, getSession } from "@/lib/auth";
 
-export type BlockType = "trigger" | "call" | "whatsapp" | "decision" | "condition" | "wait" | "end" | "sms" | "crm" | "calendar";
+export type BlockType = "trigger" | "call" | "whatsapp" | "decision" | "condition" | "wait" | "end" | "sms" | "crm" | "calendar" | "payment";
 export type Branch = "default" | "interested" | "callback" | "not_interested" | "unknown" | "yes" | "no" | "failed";
 export type FlowNode = { id: string; type: BlockType; title: string; x: number; y: number; config: Record<string, string> };
 export type FlowEdge = { id: string; source: string; target: string; sourceHandle: Branch };

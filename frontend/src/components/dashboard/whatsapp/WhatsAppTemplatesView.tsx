@@ -110,6 +110,7 @@ const TEMPLATE_BLUEPRINTS: TemplateBlueprint[] = [
 export function WhatsAppTemplatesView({
   templates,
   onRefresh,
+  isConnected,
 }: WhatsAppTemplatesViewProps) {
   const [selectedTemplate, setSelectedTemplate] = useState<WhatsAppTemplate | null>(templates[0] || null);
 
@@ -369,6 +370,24 @@ export function WhatsAppTemplatesView({
             <option value="REJECTED">Rejected</option>
           </select>
 
+          {/* Sync from Meta WABA */}
+          {isConnected && (
+            <button
+              type="button"
+              onClick={async () => {
+                try {
+                  await whatsappApi.syncTemplates();
+                  onRefresh();
+                } catch (err) {
+                  alert(err instanceof Error ? err.message : "Failed to sync templates from Meta");
+                }
+              }}
+              className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#171717] transition hover:bg-[#f4f4f5]"
+            >
+              <span>↻</span>
+              <span className="hidden sm:inline">Sync Meta</span>
+            </button>
+          )}
           <button
             type="button"
             onClick={() => setShowBlueprintsModal(true)}
