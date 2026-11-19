@@ -1,5 +1,5 @@
 .enterprise-scale { background: #f7f9f8; padding: 50px clamp(18px, 4vw, 54px) 88px; color: #17191d; font-family: var(--font-site-sans), Arial, sans-serif; }
-.enterprise-scale-inner { width: min(100%, 1260px); margin: 0 auto; }
+.enterprise-scale-inner { width: min(1200px, calc(100% - 40px)); margin: 0 auto; }
 .enterprise-scale-eyebrow { color: #71777a; font-size: 11px; font-weight: 700; letter-spacing: .14em; }
 .enterprise-scale-heading h2 { margin: 16px 0 0; font-size: clamp(38px, 4vw, 58px); font-weight: 500; line-height: 1.05; letter-spacing: -.055em; }
 .enterprise-scale-heading p { max-width: 790px; margin: 16px 0 0; color: #5f666a; font-size: clamp(15px, 1.4vw, 18px); line-height: 1.6; }

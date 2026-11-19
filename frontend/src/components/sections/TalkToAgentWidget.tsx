@@ -5,6 +5,8 @@ import { API_URL } from "@/lib/apiBase";
 import styles from "./TalkToAgentWidget.module.css";
 
 const SCENARIOS = [
+  { id: "vozon-general", label: "Vozon AI Representative", persona: "Arya", role: "Vozon Advisor", icon: "✨" },
+  { id: "product_sales", label: "Product Sales Agent", persona: "Riya", role: "Product Specialist", icon: "🛍️" },
   { id: "real_estate", label: "Real Estate", persona: "Amisha", role: "Property Advisor", icon: "🏢" },
   { id: "car_dealership", label: "Car Dealership", persona: "Pooja", role: "Auto Consultant", icon: "🚗" },
   { id: "school_admission", label: "School Admission", persona: "Priya", role: "Admissions Head", icon: "🎓" },
@@ -34,7 +36,8 @@ const LANGUAGES = [
   { code: "Punjabi", label: "ਪੰਜਾਬੀ (Punjabi)" },
 ] as const;
 
-export function TalkToAgentWidget() {
+export function TalkToAgentWidget({ variant = "phone" }: { variant?: "phone" | "card" }) {
+  const isCard = variant === "card";
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [selectedCountry, setSelectedCountry] = useState<(typeof COUNTRY_CODES)[number]>(COUNTRY_CODES[0]);
@@ -121,21 +124,23 @@ export function TalkToAgentWidget() {
   };
 
   return (
-    <div className={styles.phoneScreenWrapper} ref={dropdownRef}>
-      {/* Top Phone Status & Dynamic Island */}
-      <div className={styles.phoneTopBar}>
-        <span className={styles.phoneTime}>9:41</span>
-        <div className={styles.dynamicIsland}>
-          <span className={styles.islandCamera} />
-          <span className={styles.islandWave} />
+    <div className={`${styles.phoneScreenWrapper}${isCard ? " vozon-card-widget" : ""}`} ref={dropdownRef}>
+      {/* Top Phone Status & Dynamic Island (phone variant only) */}
+      {!isCard ? (
+        <div className={styles.phoneTopBar}>
+          <span className={styles.phoneTime}>9:41</span>
+          <div className={styles.dynamicIsland}>
+            <span className={styles.islandCamera} />
+            <span className={styles.islandWave} />
+          </div>
+          <div className={styles.phoneIcons}>
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+              <path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19.5c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l1.89-1.89C9.28 19.68 10.59 20 12 20c4.97 0 9-4.03 9-9s-4.03-9-9-9z"/>
+            </svg>
+            <span className={styles.batteryPill}><i /></span>
+          </div>
         </div>
-        <div className={styles.phoneIcons}>
-          <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
-            <path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19.5c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l1.89-1.89C9.28 19.68 10.59 20 12 20c4.97 0 9-4.03 9-9s-4.03-9-9-9z"/>
-          </svg>
-          <span className={styles.batteryPill}><i /></span>
-        </div>
-      </div>
+      ) : null}
 
       {/* Brand Header */}
       <div className={styles.deviceHeader}>
@@ -348,8 +353,8 @@ export function TalkToAgentWidget() {
         </p>
       </div>
 
-      {/* iPhone Home Indicator */}
-      <div className={styles.homeBar} />
+      {/* iPhone Home Indicator (phone variant only) */}
+      {!isCard ? <div className={styles.homeBar} /> : null}
     </div>
   );
 }

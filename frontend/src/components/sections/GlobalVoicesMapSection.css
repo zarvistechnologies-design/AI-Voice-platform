@@ -1,5 +1,5 @@
 .global-voices-map-section { padding: 0 clamp(16px, 2vw, 32px) 80px; background: #f7f9f8; }
-.global-voices-map-visual { position: relative; width: min(100%, 1080px); margin: 0 auto; }
+.global-voices-map-visual { position: relative; width: min(1200px, calc(100% - 40px)); margin: 0 auto; }
 .global-voices-map-visual h2 { position: absolute; z-index: 1; top: clamp(40px, 6vw, 72px); right: 0; left: 0; margin: 0; color: #17191d; font-size: clamp(19px, 3vw, 42px); font-weight: 500; line-height: 1.1; letter-spacing: -.045em; text-align: center; white-space: nowrap; }
 .global-voices-map-image { display: block; width: 100%; height: auto; filter: contrast(1.15) brightness(1.15); }
 @media (max-width: 700px) { .global-voices-map-section { padding: 0 8px 56px; }.global-voices-map-visual h2 { top: 8%; font-size: clamp(16px, 4.1vw, 24px); } }

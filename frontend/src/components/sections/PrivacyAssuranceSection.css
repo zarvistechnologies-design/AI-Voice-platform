@@ -1,5 +1,5 @@
 .privacy-assurance { padding: 10px clamp(18px, 4vw, 54px) 80px; background: #f7f9f8; color: #17211f; }
-.privacy-assurance-card { display: grid; width: min(100%, 1080px); min-height: 480px; grid-template-columns: 1fr 1fr; align-items: start; gap: 48px; margin: 0 auto; padding: 48px; border: 1px solid #dfe6e2; border-radius: 17px; background: #f9fafb; }
+.privacy-assurance-card { display: grid; width: min(1200px, calc(100% - 40px)); min-height: 480px; grid-template-columns: 1fr 1fr; align-items: start; gap: 48px; margin: 0 auto; padding: 48px; border: 1px solid #dfe6e2; border-radius: 17px; background: #f9fafb; }
 .privacy-assurance-copy { max-width: 410px; }
 .privacy-assurance-copy h2 { margin: 0 0 18px; color: #151918; font-size: clamp(36px, 4vw, 46px); font-weight: 540; line-height: 1.04; letter-spacing: -.055em; }
 .privacy-assurance-copy p { max-width: 390px; margin: 0; color: #697771; font-size: 15px; line-height: 1.9; }

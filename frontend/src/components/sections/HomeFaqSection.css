@@ -1,5 +1,5 @@
 .home-faq-section { background: #fff; padding: 88px clamp(24px, 5vw, 80px) 100px; color: #181818; font-family: var(--font-site-sans), Arial, sans-serif; scroll-margin-top: 90px; }
-.home-faq-inner { display: grid; width: min(100%, 1260px); grid-template-columns: minmax(380px, .85fr) minmax(0, 1.15fr); align-items: start; gap: clamp(48px, 6vw, 90px); margin: 0 auto; }
+.home-faq-inner { display: grid; width: min(1200px, calc(100% - 40px)); grid-template-columns: minmax(380px, .85fr) minmax(0, 1.15fr); align-items: start; gap: clamp(48px, 6vw, 90px); margin: 0 auto; }
 .home-faq-eyebrow { display: inline-flex; align-items: center; gap: 10px; color: #656565; font-size: 11px; font-weight: 700; letter-spacing: .13em; }
 .home-faq-eyebrow i { display: block; width: 6px; height: 6px; border-radius: 50%; background: #171717; }
 .home-faq-intro h2 { margin: 22px 0 0; font-size: clamp(38px, 3.6vw, 50px); font-weight: 500; line-height: 1.05; letter-spacing: -.055em; }

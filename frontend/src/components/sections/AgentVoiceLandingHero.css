@@ -90,54 +90,376 @@
 }
 .agentvoice-demo-control {
   display: flex;
-  width: min(420px, 100%);
+  flex-wrap: nowrap;
+  width: min(390px, 100%);
   height: 48px;
   align-items: center;
-  gap: 9px;
-  margin-top: 34px;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 30px;
   border: 1px solid #e0e3e8;
-  border-radius: 99px;
+  border-radius: 999px;
   background: #fff;
   padding: 4px;
   box-shadow: 0 5px 14px #d67b3414;
 }
 .agentvoice-india-flag { padding-left: 11px; font-size: 16px; }
 .agentvoice-demo-control select {
-  min-width: 0;
-  flex: 1;
+  width: 100%;
+  min-width: 78px;
   border: 0;
   outline: 0;
   background: transparent;
   color: #586174;
   font-size: 13px;
 }
-.agentvoice-try-button {
-  display: grid;
+.home-design-four .agentvoice-call-link {
+  border: 0 !important;
+  background: transparent !important;
+  padding: 0;
+  color: #18181b;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.home-design-four .agentvoice-call-link:hover {
+  color: #1d4ed8;
+}
+.home-design-four .agentvoice-try-button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  width: auto !important;
   height: 40px;
   min-width: 132px;
-  grid-auto-flow: column;
-  place-items: center;
+  padding: 0 14px;
+  align-items: center;
   justify-content: center;
-  gap: 8px;
-  border: 0;
-  border-radius: 50%;
-  border-radius: 999px;
-  background: #08090b;
-  color: #fff;
+  gap: 7px;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: #1d4ed8 !important;
+  color: #ffffff !important;
   cursor: pointer;
   font-size: 13px;
   font-weight: 650;
+  white-space: nowrap;
 }
-.agentvoice-try-button:disabled { cursor: wait; opacity: .65; }
-.agentvoice-try-button.is-active { background: #a32121; }
+.home-design-four .agentvoice-try-button:disabled { cursor: wait; opacity: .65; }
+.home-design-four .agentvoice-try-button.is-active { background: #a32121 !important; }
 .agentvoice-demo-status { margin-top: 11px; color: #7c8492; font-size: 12px; }
+
+/* Bottom-left Try a live call button & TalkToAgentWidget popup */
+.vozon-live-call-fab {
+  position: fixed;
+  left: 22px;
+  bottom: 22px;
+  z-index: 990;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  height: 46px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid #27272a;
+  background: #09090b;
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 14px 36px rgba(9, 9, 11, 0.28);
+  transition: transform 150ms ease, background 150ms ease;
+}
+.vozon-live-call-fab:hover {
+  background: #18181b;
+  transform: translateY(-2px);
+}
+.vozon-live-call-fab-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 10px #22c55e;
+}
+.vozon-talk-popup {
+  position: relative;
+  width: min(540px, 100%);
+  max-height: 92dvh;
+  padding: 28px 30px 24px;
+  border-radius: 22px;
+  background: #ffffff;
+  border: 1px solid #e4e4e7;
+  box-shadow: 0 28px 80px rgba(9, 9, 11, 0.22);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.vozon-talk-popup::-webkit-scrollbar {
+  display: none;
+}
+.vozon-talk-popup .vozon-card-widget {
+  color: #09090b !important;
+  overflow: visible;
+  gap: 14px;
+}
+.vozon-talk-popup .vozon-card-widget div[class*="brandRow"] {
+  padding-right: 42px;
+  margin-bottom: 6px;
+}
+.vozon-talk-popup .vozon-card-widget h3 {
+  color: #09090b !important;
+  font-size: 23px !important;
+  margin-top: 2px;
+}
+.vozon-talk-popup .vozon-card-widget p,
+.vozon-talk-popup .vozon-card-widget label {
+  color: #52525b !important;
+}
+.vozon-talk-popup .vozon-card-widget span[class*="liveTag"] {
+  background: #f4f4f5 !important;
+  border-color: #e4e4e7 !important;
+  color: #18181b !important;
+}
+.vozon-talk-popup .vozon-card-widget span[class*="liveDot"],
+.vozon-talk-popup .vozon-card-widget span[class*="avatarOnlineDot"] {
+  background: #09090b !important;
+  box-shadow: none !important;
+}
+.vozon-talk-popup .vozon-card-widget span[class*="personaRole"],
+.vozon-talk-popup .vozon-card-widget p[class*="callerIdNote"] strong {
+  color: #18181b !important;
+}
+.vozon-talk-popup .vozon-card-widget span[class*="personaFemaleBadge"] {
+  background: #f4f4f5 !important;
+  border: 1px solid #e4e4e7 !important;
+  color: #3f3f46 !important;
+}
+.vozon-talk-popup .vozon-card-widget button[class*="scenarioButton"],
+.vozon-talk-popup .vozon-card-widget div[class*="languageWrapper"],
+.vozon-talk-popup .vozon-card-widget input[class*="textInput"],
+.vozon-talk-popup .vozon-card-widget div[class*="phoneInputRow"],
+.vozon-talk-popup .vozon-card-widget button[class*="countryBtn"],
+.vozon-talk-popup .vozon-card-widget input[class*="phoneField"],
+.vozon-talk-popup .vozon-card-widget div[class*="personaBanner"] {
+  background: #fafafa !important;
+  border-color: #e4e4e7 !important;
+  color: #09090b !important;
+}
+.vozon-talk-popup .vozon-card-widget div[class*="phoneInputRow"] {
+  background: #fafafa !important;
+  border: 1px solid #e4e4e7 !important;
+  border-radius: 12px !important;
+  padding: 2px 4px;
+}
+.vozon-talk-popup .vozon-card-widget button[class*="countryBtn"] {
+  border: 0 !important;
+  border-right: 1px solid #e4e4e7 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+.vozon-talk-popup .vozon-card-widget input[class*="phoneField"] {
+  border: 0 !important;
+  background: transparent !important;
+}
+.vozon-talk-popup .vozon-card-widget input::placeholder {
+  color: #a1a1aa !important;
+}
+.vozon-talk-popup .vozon-card-widget select,
+.vozon-talk-popup .vozon-card-widget input,
+.vozon-talk-popup .vozon-card-widget span[class*="personaName"],
+.vozon-talk-popup .vozon-card-widget span[class*="countryDigits"],
+.vozon-talk-popup .vozon-card-widget span[class*="brandName"] {
+  color: #09090b !important;
+}
+.vozon-talk-popup .vozon-card-widget ul[class*="scenarioDropdown"],
+.vozon-talk-popup .vozon-card-widget ul[class*="countryDropdown"] {
+  background: #ffffff !important;
+  border-color: #e4e4e7 !important;
+  color: #09090b !important;
+  box-shadow: 0 16px 40px rgba(9, 9, 11, 0.14) !important;
+  z-index: 50 !important;
+}
+.vozon-talk-popup .vozon-card-widget span[class*="scenarioItemLabel"] {
+  color: #09090b !important;
+  font-weight: 600 !important;
+}
+.vozon-talk-popup .vozon-card-widget span[class*="scenarioItemPersona"] {
+  color: #52525b !important;
+}
+.vozon-talk-popup .vozon-card-widget li[class*="scenarioItemSelected"] {
+  background: #f4f4f5 !important;
+}
+.vozon-talk-popup .vozon-card-widget svg[class*="dropdownChevron"],
+.vozon-talk-popup .vozon-card-widget svg[class*="checkIcon"] {
+  color: #09090b !important;
+  stroke: #09090b !important;
+}
+.vozon-talk-popup .vozon-card-widget li[class*="scenarioItem"]:hover,
+.vozon-talk-popup .vozon-card-widget li[class*="countryItem"]:hover {
+  background: #f4f4f5 !important;
+}
+.vozon-talk-popup .vozon-card-widget button[class*="initiateButton"] {
+  height: 46px !important;
+  background: #09090b !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 22px rgba(9, 9, 11, 0.16) !important;
+}
+.vozon-talk-popup .vozon-card-widget button[class*="initiateButton"]:hover:not(:disabled) {
+  background: #27272a !important;
+}
+.vozon-talk-popup-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 20;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid #e4e4e7;
+  background: #fafafa;
+  color: #18181b;
+  font-size: 20px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.vozon-talk-popup-close:hover {
+  background: #f4f4f5;
+}
+@media (max-width: 600px) {
+  .vozon-live-call-fab {
+    left: 12px;
+    bottom: 14px;
+    height: 42px;
+    padding: 0 14px;
+    font-size: 12.5px;
+  }
+}
+.agentvoice-call-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(9, 9, 11, 0.55);
+  backdrop-filter: blur(6px);
+}
+.agentvoice-call-modal {
+  width: min(440px, 100%);
+  border-radius: 22px;
+  border: 1px solid #e4e4e7;
+  background: #ffffff;
+  padding: 1.5rem;
+  box-shadow: 0 28px 70px rgba(9, 9, 11, 0.22);
+  color: #09090b;
+  text-align: left;
+}
+.agentvoice-call-modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.15rem;
+}
+.agentvoice-call-modal-eyebrow {
+  display: block;
+  color: #71717a;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+.agentvoice-call-modal-head h2 {
+  margin: 0.25rem 0 0;
+  color: #09090b;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+.agentvoice-call-modal-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid #e4e4e7;
+  background: #fafafa;
+  color: #3f3f46;
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.agentvoice-call-modal-form {
+  display: grid;
+  gap: 0.9rem;
+}
+.agentvoice-call-field {
+  display: grid;
+  gap: 0.35rem;
+}
+.agentvoice-call-field span {
+  color: #3f3f46;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.agentvoice-call-field input,
+.agentvoice-call-field select {
+  width: 100%;
+  height: 42px;
+  border-radius: 10px;
+  border: 1px solid #e4e4e7;
+  background: #fafafa;
+  padding: 0 0.75rem;
+  color: #09090b;
+  font-size: 0.9rem;
+  outline: none;
+}
+.agentvoice-call-field input:focus,
+.agentvoice-call-field select:focus {
+  border-color: #09090b;
+  background: #ffffff;
+}
+.agentvoice-call-msg {
+  margin: 0;
+  padding: 0.65rem 0.8rem;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+.agentvoice-call-msg.is-error {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+.agentvoice-call-msg.is-success {
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+.agentvoice-call-submit {
+  height: 44px;
+  border: 0;
+  border-radius: 999px;
+  background: #09090b;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+.agentvoice-call-submit:hover:not(:disabled) {
+  background: #27272a;
+}
+.agentvoice-call-submit:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
 .home-design-four .agentvoice-hero-tags {
   position: absolute;
   z-index: 2;
   top: max(500px, calc(62vh - 80px));
   left: 50%;
   display: flex;
-  width: min(1300px, calc(100% - 64px));
+  width: min(1200px, calc(100% - 40px));
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
@@ -352,8 +674,8 @@
   letter-spacing: -.055em;
 }
 .home-design-four .agentvoice-hero-content > p { max-width: 730px; margin-top: 14px; }
-.agentvoice-demo-language { display: flex; min-width: 0; flex: 1; align-items: center; gap: 8px; padding-left: 11px; }
-.agentvoice-demo-language select { width: 100%; cursor: pointer; }
+.agentvoice-demo-language { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 6px; padding-left: 12px; }
+.agentvoice-demo-language select { width: auto; min-width: 78px; cursor: pointer; }
 
 .vozon-intro-video {
   position: relative;
