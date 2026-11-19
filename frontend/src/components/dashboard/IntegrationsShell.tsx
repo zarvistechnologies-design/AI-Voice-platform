@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
