@@ -156,7 +156,7 @@ export function WhatsAppContactGroupsView({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search contacts by name, phone, email..."
-            className="h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717] placeholder:text-[#71717a] focus:border-[#171717] focus:outline-none"
+            className="h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717] placeholder:text-[#71717a] focus:border-[#171717] focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-white dark:placeholder-zinc-500 dark:focus:border-zinc-600"
           />
         </div>
 
@@ -164,21 +164,21 @@ export function WhatsAppContactGroupsView({
           <button
             type="button"
             onClick={() => setShowImportModal(true)}
-            className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#171717] transition hover:bg-[#f4f4f5]"
+            className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#171717] transition hover:bg-[#f4f4f5] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800 dark:hover:text-white"
           >
             Import CSV
           </button>
           <button
             type="button"
             onClick={() => setShowAddContactModal(true)}
-            className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#171717] transition hover:bg-[#f4f4f5]"
+            className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#171717] transition hover:bg-[#f4f4f5] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800 dark:hover:text-white"
           >
             Add Contact
           </button>
           <button
             type="button"
             onClick={() => setShowAddGroupModal(true)}
-            className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3 text-[12.5px] font-medium text-white transition hover:bg-black"
+            className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3 text-[12.5px] font-medium text-white transition hover:bg-black dark:bg-white dark:text-black dark:hover:bg-zinc-200"
           >
             + New Group
           </button>
@@ -190,23 +190,23 @@ export function WhatsAppContactGroupsView({
         {/* Left: Compact Segments List */}
         <aside className="grid gap-2">
           <div className="flex items-center justify-between px-0.5">
-            <h2 className="m-0 text-[13px] font-semibold text-[#171717]">
-              Groups <span className="ml-1 font-normal text-[#71717a]">{groups.length}</span>
+            <h2 className="m-0 text-[13px] font-semibold text-[#171717] dark:text-white">
+              Groups <span className="ml-1 font-normal text-[#71717a] dark:text-zinc-400">{groups.length}</span>
             </h2>
           </div>
 
-          <div className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white divide-y divide-[#eaeaea]">
+          <div className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white divide-y divide-[#eaeaea] dark:border-zinc-800 dark:bg-[#121215] dark:divide-zinc-800">
             <button
               type="button"
               onClick={() => setSelectedGroupId("ALL")}
               className={`flex w-full items-center justify-between px-3.5 py-2.5 text-left text-[12.5px] transition ${
                 selectedGroupId === "ALL"
-                  ? "bg-[#171717] font-medium text-white"
-                  : "text-[#171717] hover:bg-[#fafafa]"
+                  ? "bg-[#171717] font-medium text-white dark:bg-white dark:text-black"
+                  : "text-[#171717] hover:bg-[#fafafa] dark:text-zinc-200 dark:hover:bg-zinc-800/60"
               }`}
             >
               <span>All Contacts</span>
-              <span className={`tabular-nums text-[11.5px] ${selectedGroupId === "ALL" ? "text-white/80" : "text-[#71717a]"}`}>
+              <span className={`tabular-nums text-[11.5px] ${selectedGroupId === "ALL" ? "text-white/80 dark:text-black/70" : "text-[#71717a] dark:text-zinc-400"}`}>
                 {contacts.length}
               </span>
             </button>
@@ -226,7 +226,7 @@ export function WhatsAppContactGroupsView({
                     }
                   }}
                   className={`group flex cursor-pointer items-center justify-between gap-2 px-3.5 py-2.5 text-[12.5px] transition ${
-                    isSelected ? "bg-[#171717] font-medium text-white" : "text-[#171717] hover:bg-[#fafafa]"
+                    isSelected ? "bg-[#171717] font-medium text-white dark:bg-white dark:text-black" : "text-[#171717] hover:bg-[#fafafa] dark:text-zinc-200 dark:hover:bg-zinc-800/60"
                   }`}
                 >
                   <div className="min-w-0 flex-1">
@@ -239,7 +239,7 @@ export function WhatsAppContactGroupsView({
                           onNavigateToCampaign(grp._id);
                         }}
                         className={`mt-0.5 text-[11px] hover:underline ${
-                          isSelected ? "text-white/80" : "text-[#71717a]"
+                          isSelected ? "text-white/80 dark:text-black/70" : "text-[#71717a] dark:text-zinc-400"
                         }`}
                       >
                         Broadcast →
@@ -247,7 +247,7 @@ export function WhatsAppContactGroupsView({
                     )}
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className={`tabular-nums text-[11.5px] ${isSelected ? "text-white/80" : "text-[#71717a]"}`}>
+                    <span className={`tabular-nums text-[11.5px] ${isSelected ? "text-white/80 dark:text-black/70" : "text-[#71717a] dark:text-zinc-400"}`}>
                       {grp.contactCount || 0}
                     </span>
                     <button
@@ -258,7 +258,7 @@ export function WhatsAppContactGroupsView({
                         void handleDeleteGroup(grp._id);
                       }}
                       className={`opacity-0 group-hover:opacity-100 px-1 text-[11px] ${
-                        isSelected ? "text-white/80 hover:text-white" : "text-[#71717a] hover:text-[#171717]"
+                        isSelected ? "text-white/80 hover:text-white dark:text-black/70 dark:hover:text-black" : "text-[#71717a] hover:text-[#171717] dark:text-zinc-400 dark:hover:text-white"
                       }`}
                     >
                       ✕
@@ -273,15 +273,15 @@ export function WhatsAppContactGroupsView({
         {/* Right: Contacts Table */}
         <div className="grid gap-2 min-w-0">
           <div className="flex items-center justify-between px-0.5">
-            <h2 className="m-0 text-[13px] font-semibold text-[#171717]">
-              Contacts <span className="ml-1 font-normal text-[#71717a]">{filteredContacts.length}</span>
+            <h2 className="m-0 text-[13px] font-semibold text-[#171717] dark:text-white">
+              Contacts <span className="ml-1 font-normal text-[#71717a] dark:text-zinc-400">{filteredContacts.length}</span>
             </h2>
           </div>
 
-          <div className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white">
+          <div className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white dark:border-zinc-800 dark:bg-[#121215]">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-[12.5px]">
-                <thead className="border-b border-[#eaeaea] bg-[#fafafa] text-[11px] font-semibold uppercase tracking-[0.06em] text-[#71717a]">
+                <thead className="border-b border-[#eaeaea] bg-[#fafafa] text-[11px] font-semibold uppercase tracking-[0.06em] text-[#71717a] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400">
                   <tr>
                     <th className="px-4 py-2.5">Contact</th>
                     <th className="px-4 py-2.5">Phone</th>
@@ -291,23 +291,23 @@ export function WhatsAppContactGroupsView({
                     <th className="px-4 py-2.5 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#eaeaea]">
+                <tbody className="divide-y divide-[#eaeaea] dark:divide-zinc-800">
                   {filteredContacts.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="px-4 py-10 text-center text-[12.5px] text-[#71717a]">
+                      <td colSpan={6} className="px-4 py-10 text-center text-[12.5px] text-[#71717a] dark:text-zinc-400">
                         No contacts found in this group.
                       </td>
                     </tr>
                   ) : (
                     filteredContacts.map((contact) => (
-                      <tr key={contact._id} className="hover:bg-[#fafafa]">
+                      <tr key={contact._id} className="hover:bg-[#fafafa] dark:hover:bg-zinc-800/40">
                         <td className="px-4 py-2.5">
-                          <strong className="block font-medium text-[#171717]">{contact.name}</strong>
+                          <strong className="block font-medium text-[#171717] dark:text-white">{contact.name}</strong>
                           {contact.email && (
-                            <span className="block text-[11px] text-[#71717a]">{contact.email}</span>
+                            <span className="block text-[11px] text-[#71717a] dark:text-zinc-400">{contact.email}</span>
                           )}
                         </td>
-                        <td className="px-4 py-2.5 font-mono text-[12px] text-[#52525b]">
+                        <td className="px-4 py-2.5 font-mono text-[12px] text-[#52525b] dark:text-zinc-300">
                           +{contact.phoneNumber}
                         </td>
                         <td className="px-4 py-2.5">
@@ -317,7 +317,7 @@ export function WhatsAppContactGroupsView({
                               return (
                                 <span
                                   key={idx}
-                                  className="rounded border border-[#eaeaea] bg-[#fafafa] px-1.5 py-0.2 text-[11px] text-[#52525b]"
+                                  className="rounded border border-[#eaeaea] bg-[#fafafa] px-1.5 py-0.2 text-[11px] text-[#52525b] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
                                 >
                                   {grpObj?.name || "Group"}
                                 </span>
@@ -330,7 +330,7 @@ export function WhatsAppContactGroupsView({
                             {contact.tags.map((t, idx) => (
                               <span
                                 key={idx}
-                                className="rounded border border-[#eaeaea] bg-white px-1.5 py-0.2 text-[11px] text-[#52525b]"
+                                className="rounded border border-[#eaeaea] bg-white px-1.5 py-0.2 text-[11px] text-[#52525b] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
                               >
                                 {t}
                               </span>
@@ -338,15 +338,15 @@ export function WhatsAppContactGroupsView({
                           </div>
                         </td>
                         <td className="px-4 py-2.5">
-                          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#eaeaea] bg-[#fafafa] px-2 py-0.5 text-[11px] font-medium text-[#171717]">
-                            <span className="size-1.5 rounded-full bg-[#171717]" />
+                          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#eaeaea] bg-[#fafafa] px-2 py-0.5 text-[11px] font-medium text-[#171717] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
+                            <span className="size-1.5 rounded-full bg-[#171717] dark:bg-emerald-400" />
                             {contact.status}
                           </span>
                         </td>
                         <td className="px-4 py-2.5 text-right">
                           <button
                             onClick={() => void handleDeleteContact(contact._id)}
-                            className="grid size-7 ml-auto place-items-center rounded-md border border-transparent text-[#71717a] hover:border-[#eaeaea] hover:bg-white hover:text-[#171717]"
+                            className="grid size-7 ml-auto place-items-center rounded-md border border-transparent text-[#71717a] hover:border-[#eaeaea] hover:bg-white hover:text-[#171717] dark:text-zinc-500 dark:hover:border-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-rose-400"
                             title="Delete contact"
                           >
                             ✕
@@ -364,48 +364,48 @@ export function WhatsAppContactGroupsView({
 
       {/* New Group Modal */}
       {showAddGroupModal && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4 backdrop-blur-[2px]">
-          <div className="w-full max-w-md rounded-lg border border-[#eaeaea] bg-white p-5 shadow-xl">
-            <div className="flex items-center justify-between border-b border-[#eaeaea] pb-3">
-              <h3 className="m-0 text-[15px] font-semibold text-[#171717]">New Contact Group</h3>
-              <button onClick={() => setShowAddGroupModal(false)} className="text-[#71717a] hover:text-[#171717]">
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4 backdrop-blur-[2px]">
+          <div className="w-full max-w-md rounded-lg border border-[#eaeaea] bg-white p-5 shadow-xl dark:border-zinc-800 dark:bg-[#121215]">
+            <div className="flex items-center justify-between border-b border-[#eaeaea] pb-3 dark:border-zinc-800">
+              <h3 className="m-0 text-[15px] font-semibold text-[#171717] dark:text-white">New Contact Group</h3>
+              <button onClick={() => setShowAddGroupModal(false)} className="text-[#71717a] hover:text-[#171717] dark:text-zinc-400 dark:hover:text-white">
                 ✕
               </button>
             </div>
             <form onSubmit={handleCreateGroup} className="mt-4 space-y-3.5">
               <div>
-                <label className="block text-[12px] font-medium text-[#171717]">Group Name</label>
+                <label className="block text-[12px] font-medium text-[#171717] dark:text-zinc-300">Group Name</label>
                 <input
                   type="text"
                   required
                   value={groupName}
                   onChange={(e) => setGroupName(e.target.value)}
                   placeholder="e.g. VIP Clinic Patients"
-                  className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717]"
+                  className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-white dark:placeholder-zinc-500"
                 />
               </div>
               <div>
-                <label className="block text-[12px] font-medium text-[#171717]">Description</label>
+                <label className="block text-[12px] font-medium text-[#171717] dark:text-zinc-300">Description</label>
                 <input
                   type="text"
                   value={groupDesc}
                   onChange={(e) => setGroupDesc(e.target.value)}
                   placeholder="Brief purpose of this segment"
-                  className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717]"
+                  className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-white dark:placeholder-zinc-500"
                 />
               </div>
-              <div className="flex justify-end gap-2 border-t border-[#eaeaea] pt-3">
+              <div className="flex justify-end gap-2 border-t border-[#eaeaea] pt-3 dark:border-zinc-800">
                 <button
                   type="button"
                   onClick={() => setShowAddGroupModal(false)}
-                  className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#52525b]"
+                  className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#52525b] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={busyGroup}
-                  className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3.5 text-[12.5px] font-medium text-white hover:bg-black disabled:opacity-50"
+                  className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3.5 text-[12.5px] font-medium text-white hover:bg-black disabled:opacity-50 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
                 >
                   {busyGroup ? "Creating..." : "Create Group"}
                 </button>
@@ -417,28 +417,28 @@ export function WhatsAppContactGroupsView({
 
       {/* Add Contact Modal */}
       {showAddContactModal && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4 backdrop-blur-[2px]">
-          <div className="w-full max-w-md rounded-lg border border-[#eaeaea] bg-white p-5 shadow-xl">
-            <div className="flex items-center justify-between border-b border-[#eaeaea] pb-3">
-              <h3 className="m-0 text-[15px] font-semibold text-[#171717]">Add Contact</h3>
-              <button onClick={() => setShowAddContactModal(false)} className="text-[#71717a] hover:text-[#171717]">
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4 backdrop-blur-[2px]">
+          <div className="w-full max-w-md rounded-lg border border-[#eaeaea] bg-white p-5 shadow-xl dark:border-zinc-800 dark:bg-[#121215]">
+            <div className="flex items-center justify-between border-b border-[#eaeaea] pb-3 dark:border-zinc-800">
+              <h3 className="m-0 text-[15px] font-semibold text-[#171717] dark:text-white">Add Contact</h3>
+              <button onClick={() => setShowAddContactModal(false)} className="text-[#71717a] hover:text-[#171717] dark:text-zinc-400 dark:hover:text-white">
                 ✕
               </button>
             </div>
             <form onSubmit={handleCreateContact} className="mt-4 space-y-3.5">
               <div>
-                <label className="block text-[12px] font-medium text-[#171717]">Full Name</label>
+                <label className="block text-[12px] font-medium text-[#171717] dark:text-zinc-300">Full Name</label>
                 <input
                   type="text"
                   required
                   value={contactName}
                   onChange={(e) => setContactName(e.target.value)}
                   placeholder="e.g. Rahul Sharma"
-                  className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717]"
+                  className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-white dark:placeholder-zinc-500"
                 />
               </div>
               <div>
-                <label className="block text-[12px] font-medium text-[#171717]">
+                <label className="block text-[12px] font-medium text-[#171717] dark:text-zinc-300">
                   Phone Number (with Country Code)
                 </label>
                 <input
@@ -447,56 +447,56 @@ export function WhatsAppContactGroupsView({
                   value={contactPhone}
                   onChange={(e) => setContactPhone(e.target.value)}
                   placeholder="e.g. 919876543210"
-                  className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717]"
+                  className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-white"
                 />
               </div>
               <div>
-                <label className="block text-[12px] font-medium text-[#171717]">Email (Optional)</label>
+                <label className="block text-[12px] font-medium text-[#171717] dark:text-zinc-300">Email (Optional)</label>
                 <input
                   type="email"
                   value={contactEmail}
                   onChange={(e) => setContactEmail(e.target.value)}
                   placeholder="e.g. rahul@example.com"
-                  className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717]"
+                  className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-white"
                 />
               </div>
               <div>
-                <label className="block text-[12px] font-medium text-[#171717]">Assign to Group</label>
+                <label className="block text-[12px] font-medium text-[#171717] dark:text-zinc-300">Assign to Group</label>
                 <select
                   value={contactTargetGroup}
                   onChange={(e) => setContactTargetGroup(e.target.value)}
-                  className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-2.5 text-[13px] text-[#171717]"
+                  className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-2.5 text-[13px] text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-white"
                 >
-                  <option value="">Select a group (optional)</option>
+                  <option value="" className="dark:bg-zinc-900 dark:text-white">Select a group (optional)</option>
                   {groups.map((g) => (
-                    <option key={g._id} value={g._id}>
+                    <option key={g._id} value={g._id} className="dark:bg-zinc-900 dark:text-white">
                       {g.name}
                     </option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-[12px] font-medium text-[#171717]">Tags (comma separated)</label>
+                <label className="block text-[12px] font-medium text-[#171717] dark:text-zinc-300">Tags (comma separated)</label>
                 <input
                   type="text"
                   value={contactTags}
                   onChange={(e) => setContactTags(e.target.value)}
                   placeholder="e.g. Lead, Inbound, Clinic"
-                  className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717]"
+                  className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-white"
                 />
               </div>
-              <div className="flex justify-end gap-2 border-t border-[#eaeaea] pt-3">
+              <div className="flex justify-end gap-2 border-t border-[#eaeaea] pt-3 dark:border-zinc-800">
                 <button
                   type="button"
                   onClick={() => setShowAddContactModal(false)}
-                  className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#52525b]"
+                  className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#52525b] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={busyContact}
-                  className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3.5 text-[12.5px] font-medium text-white hover:bg-black disabled:opacity-50"
+                  className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3.5 text-[12.5px] font-medium text-white hover:bg-black disabled:opacity-50 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
                 >
                   {busyContact ? "Saving..." : "Save Contact"}
                 </button>
@@ -508,56 +508,56 @@ export function WhatsAppContactGroupsView({
 
       {/* Import CSV Modal */}
       {showImportModal && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4 backdrop-blur-[2px]">
-          <div className="w-full max-w-md rounded-lg border border-[#eaeaea] bg-white p-5 shadow-xl">
-            <div className="flex items-center justify-between border-b border-[#eaeaea] pb-3">
-              <h3 className="m-0 text-[15px] font-semibold text-[#171717]">Bulk Import Contacts</h3>
-              <button onClick={() => setShowImportModal(false)} className="text-[#71717a] hover:text-[#171717]">
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4 backdrop-blur-[2px]">
+          <div className="w-full max-w-md rounded-lg border border-[#eaeaea] bg-white p-5 shadow-xl dark:border-zinc-800 dark:bg-[#121215]">
+            <div className="flex items-center justify-between border-b border-[#eaeaea] pb-3 dark:border-zinc-800">
+              <h3 className="m-0 text-[15px] font-semibold text-[#171717] dark:text-white">Bulk Import Contacts</h3>
+              <button onClick={() => setShowImportModal(false)} className="text-[#71717a] hover:text-[#171717] dark:text-zinc-400 dark:hover:text-white">
                 ✕
               </button>
             </div>
             <form onSubmit={handleImportCSV} className="mt-4 space-y-3.5">
-              <p className="text-[12px] text-[#71717a]">
-                Paste rows formatted as: <code className="rounded bg-[#f4f4f5] px-1 py-0.5 font-mono text-[#171717]">Name, Phone, Email, Tag</code>
+              <p className="text-[12px] text-[#71717a] dark:text-zinc-400">
+                Paste rows formatted as: <code className="rounded bg-[#f4f4f5] dark:bg-zinc-800 dark:text-zinc-200 px-1 py-0.5 font-mono text-[#171717]">Name, Phone, Email, Tag</code>
               </p>
               <div>
-                <label className="block text-[12px] font-medium text-[#171717]">Default Group</label>
+                <label className="block text-[12px] font-medium text-[#171717] dark:text-zinc-300">Default Group</label>
                 <select
                   value={importGroupId}
                   onChange={(e) => setImportGroupId(e.target.value)}
-                  className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-2.5 text-[13px] text-[#171717]"
+                  className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-2.5 text-[13px] text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-white"
                 >
-                  <option value="">None (assign later)</option>
+                  <option value="" className="dark:bg-zinc-900 dark:text-white">None (assign later)</option>
                   {groups.map((g) => (
-                    <option key={g._id} value={g._id}>
+                    <option key={g._id} value={g._id} className="dark:bg-zinc-900 dark:text-white">
                       {g.name}
                     </option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-[12px] font-medium text-[#171717]">CSV Data (One contact per line)</label>
+                <label className="block text-[12px] font-medium text-[#171717] dark:text-zinc-300">CSV Data (One contact per line)</label>
                 <textarea
                   rows={5}
                   required
                   value={importText}
                   onChange={(e) => setImportText(e.target.value)}
                   placeholder="Rajesh Kumar, 919876543210, rajesh@example.com, VIP"
-                  className="mt-1 w-full rounded-md border border-[#eaeaea] bg-white p-3 font-mono text-[12px] text-[#171717]"
+                  className="mt-1 w-full rounded-md border border-[#eaeaea] bg-white p-3 font-mono text-[12px] text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-white"
                 />
               </div>
-              <div className="flex justify-end gap-2 border-t border-[#eaeaea] pt-3">
+              <div className="flex justify-end gap-2 border-t border-[#eaeaea] pt-3 dark:border-zinc-800">
                 <button
                   type="button"
                   onClick={() => setShowImportModal(false)}
-                  className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#52525b]"
+                  className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#52525b] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={busyImport}
-                  className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3.5 text-[12.5px] font-medium text-white hover:bg-black disabled:opacity-50"
+                  className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3.5 text-[12.5px] font-medium text-white hover:bg-black disabled:opacity-50 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
                 >
                   {busyImport ? "Importing..." : "Start Import"}
                 </button>

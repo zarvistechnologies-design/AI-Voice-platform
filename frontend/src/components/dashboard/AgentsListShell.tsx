@@ -60,9 +60,9 @@ function Icon({ icon }: { icon: IconName }) {
 }
 
 function statusTone(status: AgentSummary["status"]) {
-  if (status === "Live") return "border-[#d4d4d8] bg-[#f4f4f5] text-[#171717]";
-  if (status === "Paused") return "border-[#e4e4e7] bg-[#fafafa] text-[#52525b]";
-  return "border-[#e4e4e7] bg-white text-[#71717a]";
+  if (status === "Live") return "border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300";
+  if (status === "Paused") return "border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300";
+  return "border-zinc-200 bg-zinc-50 text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300";
 }
 
 export function AgentsListShell() {
@@ -243,7 +243,7 @@ export function AgentsListShell() {
   const routedCount = agents.filter((a) => Boolean(a.phone)).length;
 
   return (
-    <main className={`agents-home-palette dashboard-home-theme grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#fafafa] text-[#171717] ${
+    <main className={`agents-home-palette dashboard-home-theme grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#fafafa] dark:bg-[#09090b] text-[#171717] dark:text-white ${
       showUserSidebar ? "lg:grid-cols-[248px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
     }`}>
       <DashboardSidebar
@@ -256,14 +256,14 @@ export function AgentsListShell() {
         setShowUserSidebar={setShowUserSidebar}
       />
 
-      <section className="grid min-w-0 content-start bg-[#fafafa]">
+      <section className="grid min-w-0 content-start bg-[#fafafa] dark:bg-[#09090b]">
         <DashboardPageHeader
           eyebrow="Overview"
           title="Agents"
           description="Monitor usage, configure voice agents, and route live calls."
           actions={
             <button
-              className="inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md bg-[#2563eb] px-3.5 text-[12.5px] font-medium text-white transition hover:bg-[#1d4ed8] active:translate-y-px disabled:opacity-50"
+              className="inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md bg-black px-3.5 text-[12.5px] font-medium text-white transition hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 active:translate-y-px disabled:opacity-50"
               type="button"
               disabled={busy}
               onClick={() => {
@@ -279,26 +279,26 @@ export function AgentsListShell() {
 
         <section className="grid w-full gap-5 px-5 py-5 sm:px-6 lg:px-7">
           {notice && !showCreateForm && !editingAgent ? (
-            <div className="rounded-md border border-[#e5e5e5] bg-white px-3.5 py-2 text-[12.5px] text-[#171717]" role="alert" aria-live="polite">
+            <div className="rounded-md border border-[#e5e5e5] bg-white px-3.5 py-2 text-[12.5px] text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-white" role="alert" aria-live="polite">
               {notice}
             </div>
           ) : null}
 
           {/* Compact White & Black Search & Controls Bar */}
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <div className="flex h-8 min-w-0 flex-1 items-center gap-2 rounded-md border border-[#e5e5e5] bg-white px-2.5 transition focus-within:border-black">
-              <span className="shrink-0 text-[#888888]"><Icon icon="search" /></span>
+            <div className="flex h-8 min-w-0 flex-1 items-center gap-2 rounded-md border border-[#e5e5e5] bg-white px-2.5 transition focus-within:border-black dark:border-zinc-800 dark:bg-zinc-900/90 dark:focus-within:border-zinc-500">
+              <span className="shrink-0 text-[#888888] dark:text-zinc-400"><Icon icon="search" /></span>
               <input
-                className="h-full min-w-0 flex-1 border-0 bg-transparent p-0 text-[12.5px] text-[#171717] placeholder-[#888888] outline-none"
+                className="h-full min-w-0 flex-1 border-0 bg-transparent p-0 text-[12.5px] text-[#171717] placeholder-[#888888] outline-none dark:text-white dark:placeholder-zinc-500"
                 aria-label="Search agents"
                 value={query}
                 placeholder="Search Agents..."
                 onChange={(event) => setQuery(event.target.value)}
               />
               {query ? (
-                <button className="text-[11.5px] font-medium text-[#666666] hover:text-black" type="button" onClick={() => setQuery("")}>Clear</button>
+                <button className="text-[11.5px] font-medium text-[#666666] hover:text-black dark:text-zinc-400 dark:hover:text-white" type="button" onClick={() => setQuery("")}>Clear</button>
               ) : (
-                <kbd className="hidden rounded border border-[#e5e5e5] bg-[#fafafa] px-1.5 py-0.5 text-[10px] font-medium text-[#666666] sm:inline-block">/</kbd>
+                <kbd className="hidden rounded border border-[#e5e5e5] bg-[#fafafa] px-1.5 py-0.5 text-[10px] font-medium text-[#666666] sm:inline-block dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">/</kbd>
               )}
             </div>
 
@@ -306,7 +306,7 @@ export function AgentsListShell() {
               <label className="relative min-w-[118px] flex-1 sm:flex-none">
                 <span className="sr-only">Filter by status</span>
                 <select
-                  className="h-8 w-full appearance-none rounded-md border border-[#e5e5e5] bg-white pr-7 pl-2.5 text-[12.5px] font-medium text-[#171717] outline-none transition hover:border-[#b5b5b5]"
+                  className="h-8 w-full appearance-none rounded-md border border-[#e5e5e5] bg-white pr-7 pl-2.5 text-[12.5px] font-medium text-[#171717] outline-none transition hover:border-[#b5b5b5] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:border-zinc-700"
                   value={statusFilter}
                   onChange={(event) => setStatusFilter(event.target.value as AgentStatusFilter)}
                 >
@@ -315,13 +315,13 @@ export function AgentsListShell() {
                   <option value="Paused">Paused</option>
                   <option value="Draft">Draft</option>
                 </select>
-                <span className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 text-[#888888]"><Icon icon="chevron" /></span>
+                <span className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 text-[#888888] dark:text-zinc-400"><Icon icon="chevron" /></span>
               </label>
 
               <label className="relative min-w-[122px] flex-1 sm:flex-none">
                 <span className="sr-only">Sort agents</span>
                 <select
-                  className="h-8 w-full appearance-none rounded-md border border-[#e5e5e5] bg-white pr-7 pl-2.5 text-[12.5px] font-medium text-[#171717] outline-none transition hover:border-[#b5b5b5]"
+                  className="h-8 w-full appearance-none rounded-md border border-[#e5e5e5] bg-white pr-7 pl-2.5 text-[12.5px] font-medium text-[#171717] outline-none transition hover:border-[#b5b5b5] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:border-zinc-700"
                   value={sortBy}
                   onChange={(event) => setSortBy(event.target.value as AgentSort)}
                 >
@@ -329,7 +329,7 @@ export function AgentsListShell() {
                   <option value="name-desc">Name Z–A</option>
                   <option value="status">Status</option>
                 </select>
-                <span className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 text-[#888888]"><Icon icon="chevron" /></span>
+                <span className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 text-[#888888] dark:text-zinc-400"><Icon icon="chevron" /></span>
               </label>
             </div>
           </div>
@@ -337,23 +337,23 @@ export function AgentsListShell() {
           {/* Full-width Agents List */}
           <div className="min-w-0">
             <div className="mb-2 flex items-center justify-between">
-              <h2 className="text-[12.5px] font-semibold text-[#171717]">
-                Agents <span className="ml-1 text-[11.5px] font-normal tabular-nums text-[#888888]">{filteredAgents.length}</span>
+              <h2 className="text-[12.5px] font-semibold text-[#171717] dark:text-white">
+                Agents <span className="ml-1 text-[11.5px] font-normal tabular-nums text-[#888888] dark:text-zinc-400">{filteredAgents.length}</span>
               </h2>
             </div>
 
             {loading ? (
               <div className="grid gap-3.5 sm:grid-cols-2 xl:grid-cols-3" aria-label="Loading agents" role="status">
                 {[0, 1, 2, 3, 4, 5].map((item) => (
-                  <div className="flex h-[104px] flex-col justify-between rounded-xl border border-[#eaeaea] bg-white p-4" key={item}>
+                  <div className="flex h-[104px] flex-col justify-between rounded-xl border border-[#eaeaea] bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900/60" key={item}>
                     <div className="flex items-center gap-3">
-                      <span className="size-9 animate-pulse rounded-lg bg-[#f4f4f5]" />
+                      <span className="size-9 animate-pulse rounded-lg bg-[#f4f4f5] dark:bg-zinc-800" />
                       <span className="grid gap-1.5">
-                        <span className="h-3 w-36 animate-pulse rounded bg-[#f0f0f0]" />
-                        <span className="h-2.5 w-20 animate-pulse rounded bg-[#f4f4f5]" />
+                        <span className="h-3 w-36 animate-pulse rounded bg-[#f0f0f0] dark:bg-zinc-800" />
+                        <span className="h-2.5 w-20 animate-pulse rounded bg-[#f4f4f5] dark:bg-zinc-800/60" />
                       </span>
                     </div>
-                    <span className="h-2.5 w-28 animate-pulse rounded bg-[#f4f4f5]" />
+                    <span className="h-2.5 w-28 animate-pulse rounded bg-[#f4f4f5] dark:bg-zinc-800/60" />
                   </div>
                 ))}
               </div>
@@ -363,7 +363,7 @@ export function AgentsListShell() {
               <div className="grid gap-3.5 sm:grid-cols-2 xl:grid-cols-3">
                 {filteredAgents.map((agent) => (
                   <article
-                    className="group relative flex flex-col justify-between gap-3.5 rounded-xl border border-[#eaeaea] bg-white p-4 text-left transition hover:border-[#2563eb]/40 hover:shadow-xs focus-within:z-10"
+                    className="group relative flex flex-col justify-between gap-3.5 rounded-xl border border-[#eaeaea] bg-white p-4 text-left transition hover:border-zinc-400 hover:shadow-xs dark:border-zinc-800 dark:bg-zinc-900/80 dark:hover:border-zinc-600 dark:hover:bg-zinc-900 focus-within:z-10"
                     key={agent._id}
                   >
                     <div className="flex items-start justify-between gap-3">
@@ -379,14 +379,14 @@ export function AgentsListShell() {
                           prefetchAgentRoute(agent._id);
                         }}
                       >
-                        <span className="grid size-9 shrink-0 place-items-center rounded-lg border border-[#eaeaea] bg-[#fafafa] text-[#2563eb] transition group-hover:border-[#2563eb]/30 group-hover:bg-[#eff6ff]">
+                        <span className="grid size-9 shrink-0 place-items-center rounded-lg border border-[#eaeaea] bg-[#fafafa] text-zinc-700 transition dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 group-hover:border-zinc-400 dark:group-hover:border-zinc-500">
                           <Icon icon="agent" />
                         </span>
                         <span className="min-w-0">
-                          <strong className="block truncate text-[13.5px] font-semibold text-[#171717] transition group-hover:text-[#2563eb]">
+                          <strong className="block truncate text-[13.5px] font-semibold text-[#171717] transition dark:text-white group-hover:text-black dark:group-hover:text-white">
                             {agent.name}
                           </strong>
-                          <span className="mt-0.5 block truncate text-[11.5px] text-[#71717a]">
+                          <span className="mt-0.5 block truncate text-[11.5px] text-zinc-500 dark:text-zinc-300 font-medium">
                             {agent.team || "Voice team"}
                           </span>
                         </span>
@@ -394,7 +394,7 @@ export function AgentsListShell() {
 
                       <span className="relative shrink-0">
                         <button
-                          className="grid size-7 place-items-center rounded-md border border-transparent text-[#888888] transition hover:border-[#eaeaea] hover:bg-[#fafafa] hover:text-[#171717] disabled:opacity-50"
+                          className="grid size-7 place-items-center rounded-md border border-transparent text-[#888888] transition hover:border-[#eaeaea] hover:bg-[#fafafa] hover:text-[#171717] dark:text-zinc-400 dark:hover:border-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-white disabled:opacity-50"
                           type="button"
                           aria-label={`Actions for ${agent.name}`}
                           aria-haspopup="menu"
@@ -406,26 +406,26 @@ export function AgentsListShell() {
                           <Icon icon="more" />
                         </button>
                         {openMenuId === agent._id ? (
-                          <span className="absolute top-8 right-0 z-40 grid w-36 overflow-hidden rounded-lg border border-[#eaeaea] bg-white p-1 shadow-lg" role="menu" onPointerDown={(event) => event.stopPropagation()}>
-                            <button className="flex h-7 items-center gap-2 rounded px-2 text-left text-[12px] font-medium text-[#171717] hover:bg-[#f5f5f5]" role="menuitem" type="button" onClick={() => beginEditAgent(agent)}><Icon icon="edit" />Edit name</button>
-                            <button className="flex h-7 items-center gap-2 rounded px-2 text-left text-[12px] font-medium text-[#171717] hover:bg-[#f5f5f5]" role="menuitem" type="button" onClick={() => void cloneAgent(agent)}><Icon icon="clone" />Clone agent</button>
-                            <span className="my-1 h-px bg-[#eaeaea]" />
-                            <button className="flex h-7 items-center gap-2 rounded px-2 text-left text-[12px] font-medium text-rose-600 hover:bg-rose-50" role="menuitem" type="button" onClick={() => void deleteAgent(agent)}><Icon icon="trash" />Delete agent</button>
+                          <span className="absolute top-8 right-0 z-40 grid w-36 overflow-hidden rounded-lg border border-[#eaeaea] bg-white p-1 shadow-lg dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200" role="menu" onPointerDown={(event) => event.stopPropagation()}>
+                            <button className="flex h-7 items-center gap-2 rounded px-2 text-left text-[12px] font-medium text-[#171717] hover:bg-[#f5f5f5] dark:text-zinc-200 dark:hover:bg-zinc-800" role="menuitem" type="button" onClick={() => beginEditAgent(agent)}><Icon icon="edit" />Edit name</button>
+                            <button className="flex h-7 items-center gap-2 rounded px-2 text-left text-[12px] font-medium text-[#171717] hover:bg-[#f5f5f5] dark:text-zinc-200 dark:hover:bg-zinc-800" role="menuitem" type="button" onClick={() => void cloneAgent(agent)}><Icon icon="clone" />Clone agent</button>
+                            <span className="my-1 h-px bg-[#eaeaea] dark:bg-zinc-800" />
+                            <button className="flex h-7 items-center gap-2 rounded px-2 text-left text-[12px] font-medium text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950/30" role="menuitem" type="button" onClick={() => void deleteAgent(agent)}><Icon icon="trash" />Delete agent</button>
                           </span>
                         ) : null}
                       </span>
                     </div>
 
                     <Link
-                      className="flex items-center justify-between gap-2 border-t border-[#f4f4f5] pt-3 text-[11.5px] outline-none"
+                      className="flex items-center justify-between gap-2 border-t border-[#f4f4f5] dark:border-zinc-800 pt-3 text-[11.5px] outline-none"
                       href={`/dashboard/agents/${encodeURIComponent(agent._id)}`}
                       prefetch={false}
                     >
-                      <span className="truncate font-mono text-[#52525b]">
+                      <span className="truncate font-mono text-zinc-600 dark:text-zinc-200 font-medium">
                         {agent.phone || "No route assigned"}
                       </span>
                       <span className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-medium ${statusTone(agent.status)}`}>
-                        <span className={`size-1.5 rounded-full ${agent.status === "Live" ? "bg-[#2563eb]" : agent.status === "Paused" ? "bg-[#71717a]" : "bg-[#a1a1aa]"}`} />
+                        <span className={`size-1.5 rounded-full ${agent.status === "Live" ? "bg-emerald-500 dark:bg-emerald-400" : agent.status === "Paused" ? "bg-amber-500 dark:bg-amber-400" : "bg-zinc-400 dark:bg-zinc-500"}`} />
                         {agent.status}
                       </span>
                     </Link>
@@ -435,13 +435,13 @@ export function AgentsListShell() {
             ) : null}
 
             {!loading && !filteredAgents.length ? (
-              <div className="grid min-h-44 place-items-center rounded-xl border border-[#eaeaea] bg-white p-6 text-center">
+              <div className="grid min-h-44 place-items-center rounded-xl border border-[#eaeaea] bg-white p-6 text-center dark:border-zinc-800 dark:bg-zinc-900">
                 <div>
-                  <span className="mx-auto grid size-9 place-items-center rounded-lg border border-[#eaeaea] bg-[#fafafa] text-[#71717a]"><Icon icon="agent" /></span>
-                  <strong className="mt-2.5 block text-[13px] font-medium text-[#171717]">No agents found</strong>
-                  <span className="mt-0.5 block text-[11.5px] text-[#71717a]">Try another search or status filter.</span>
+                  <span className="mx-auto grid size-9 place-items-center rounded-lg border border-[#eaeaea] bg-[#fafafa] text-[#71717a] dark:border-zinc-800 dark:bg-zinc-800 dark:text-zinc-400"><Icon icon="agent" /></span>
+                  <strong className="mt-2.5 block text-[13px] font-medium text-[#171717] dark:text-white">No agents found</strong>
+                  <span className="mt-0.5 block text-[11.5px] text-[#71717a] dark:text-zinc-400">Try another search or status filter.</span>
                   {(query || statusFilter !== "All") ? (
-                    <button className="mt-2.5 text-[11.5px] font-medium text-[#2563eb] underline underline-offset-4" type="button" onClick={() => { setQuery(""); setStatusFilter("All"); }}>
+                    <button className="mt-2.5 text-[11.5px] font-medium text-black dark:text-white underline underline-offset-4" type="button" onClick={() => { setQuery(""); setStatusFilter("All"); }}>
                       Clear filters
                     </button>
                   ) : null}

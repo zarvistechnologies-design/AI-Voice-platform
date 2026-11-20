@@ -359,3 +359,25 @@ html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dash
   .dashboard-home-theme { font-size: 12px; }
 }
 @media (prefers-reduced-motion: reduce) { .dashboard-home-theme * { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+
+/* Ask Vozon Clean Theme Background */
+.ask-vozon-ambient-bg {
+  background-color: #f8f9fa;
+  background-image: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .ask-vozon-ambient-bg {
+  background-color: #09090b !important;
+  background-image: none !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .ask-vozon-stage {
+  background-color: #09090b !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme {
+  --dashboard-border: #27272a !important;
+  --voice-border: #27272a !important;
+  --dashboard-surface: #121215 !important;
+}

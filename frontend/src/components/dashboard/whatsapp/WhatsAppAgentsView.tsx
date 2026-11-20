@@ -98,74 +98,74 @@ export function WhatsAppAgentsView({ config, onRefresh }: WhatsAppAgentsViewProp
       {/* Left: Configuration Form */}
       <form
         onSubmit={handleSaveSettings}
-        className="rounded-lg border border-[#eaeaea] bg-white p-5 space-y-4"
+        className="rounded-lg border border-[#eaeaea] bg-white p-5 space-y-4 dark:border-zinc-800 dark:bg-[#121215]"
       >
-        <div className="flex items-center justify-between border-b border-[#eaeaea] pb-3">
+        <div className="flex items-center justify-between border-b border-[#eaeaea] pb-3 dark:border-zinc-800">
           <div>
-            <h3 className="m-0 text-[13px] font-semibold text-[#171717]">
+            <h3 className="m-0 text-[13px] font-semibold text-[#171717] dark:text-white">
               Automated Response & Handover Policies
             </h3>
-            <p className="mt-0.5 text-[12px] text-[#71717a]">
+            <p className="mt-0.5 text-[12px] text-[#71717a] dark:text-zinc-400">
               Configure how your WhatsApp AI agent greets customers and escalates to a teammate.
             </p>
           </div>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#eaeaea] bg-[#fafafa] px-2.5 py-0.5 text-[11px] font-medium text-[#171717]">
-            <span className={`size-1.5 rounded-full ${enabled ? "bg-[#171717]" : "bg-[#a1a1aa]"}`} />
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#eaeaea] bg-[#fafafa] px-2.5 py-0.5 text-[11px] font-medium text-[#171717] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
+            <span className={`size-1.5 rounded-full ${enabled ? "bg-[#171717] dark:bg-emerald-400" : "bg-[#a1a1aa] dark:bg-zinc-500"}`} />
             {enabled ? "Active" : "Paused"}
           </span>
         </div>
 
         {savedNotice && (
-          <div className="rounded-md border border-[#eaeaea] bg-[#fafafa] px-3 py-2 text-[12px] font-medium text-[#171717]">
+          <div className="rounded-md border border-[#eaeaea] bg-[#fafafa] px-3 py-2 text-[12px] font-medium text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-emerald-300">
             {savedNotice}
           </div>
         )}
 
-        <div className="divide-y divide-[#eaeaea] rounded-md border border-[#eaeaea]">
+        <div className="divide-y divide-[#eaeaea] rounded-md border border-[#eaeaea] dark:border-zinc-800 dark:divide-zinc-800">
           <label className="flex cursor-pointer items-center justify-between px-3.5 py-3">
             <div>
-              <span className="block text-[12.5px] font-medium text-[#171717]">Enable WhatsApp Agent</span>
-              <span className="text-[11.5px] text-[#71717a]">Allow the AI engine to listen and reply to incoming chats.</span>
+              <span className="block text-[12.5px] font-medium text-[#171717] dark:text-white">Enable WhatsApp Agent</span>
+              <span className="text-[11.5px] text-[#71717a] dark:text-zinc-400">Allow the AI engine to listen and reply to incoming chats.</span>
             </div>
             <input
               type="checkbox"
               checked={enabled}
               onChange={(e) => setEnabled(e.target.checked)}
-              className="size-4 accent-[#171717]"
+              className="size-4 accent-[#171717] dark:accent-white"
             />
           </label>
 
           <label className="flex cursor-pointer items-center justify-between px-3.5 py-3">
             <div>
-              <span className="block text-[12.5px] font-medium text-[#171717]">Auto-Reply Mode</span>
-              <span className="text-[11.5px] text-[#71717a]">Automatically respond to new customer inquiries immediately.</span>
+              <span className="block text-[12.5px] font-medium text-[#171717] dark:text-white">Auto-Reply Mode</span>
+              <span className="text-[11.5px] text-[#71717a] dark:text-zinc-400">Automatically respond to new customer inquiries immediately.</span>
             </div>
             <input
               type="checkbox"
               checked={autoReply}
               onChange={(e) => setAutoReply(e.target.checked)}
-              className="size-4 accent-[#171717]"
+              className="size-4 accent-[#171717] dark:accent-white"
             />
           </label>
         </div>
 
         <div>
-          <label className="block text-[12px] font-medium text-[#171717]">
+          <label className="block text-[12px] font-medium text-[#171717] dark:text-zinc-300">
             Welcome Greeting Message
           </label>
           <textarea
             rows={3}
             value={welcomeMessage}
             onChange={(e) => setWelcomeMessage(e.target.value)}
-            className="mt-1 w-full rounded-md border border-[#eaeaea] bg-white p-3 text-[12.5px] text-[#171717] focus:border-[#171717] focus:outline-none"
+            className="mt-1 w-full rounded-md border border-[#eaeaea] bg-white p-3 text-[12.5px] text-[#171717] focus:border-[#171717] focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-white dark:focus:border-zinc-600"
           />
-          <span className="mt-0.5 block text-[11px] text-[#71717a]">
+          <span className="mt-0.5 block text-[11px] text-[#71717a] dark:text-zinc-400">
             Sent when a new customer starts a conversation.
           </span>
         </div>
 
         <div>
-          <label className="block text-[12px] font-medium text-[#171717]">
+          <label className="block text-[12px] font-medium text-[#171717] dark:text-zinc-300">
             Human Handover Trigger Keywords (comma separated)
           </label>
           <input
@@ -173,27 +173,27 @@ export function WhatsAppAgentsView({ config, onRefresh }: WhatsAppAgentsViewProp
             value={keywords}
             onChange={(e) => setKeywords(e.target.value)}
             placeholder="human, agent, representative, emergency"
-            className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] text-[#171717] focus:border-[#171717] focus:outline-none"
+            className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] text-[#171717] focus:border-[#171717] focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-white dark:placeholder-zinc-500 dark:focus:border-zinc-600"
           />
         </div>
 
         <div>
-          <label className="block text-[12px] font-medium text-[#171717]">
+          <label className="block text-[12px] font-medium text-[#171717] dark:text-zinc-300">
             Handover Notice Message
           </label>
           <input
             type="text"
             value={fallbackMessage}
             onChange={(e) => setFallbackMessage(e.target.value)}
-            className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] text-[#171717] focus:border-[#171717] focus:outline-none"
+            className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] text-[#171717] focus:border-[#171717] focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-white dark:focus:border-zinc-600"
           />
         </div>
 
-        <div className="flex justify-end border-t border-[#eaeaea] pt-3">
+        <div className="flex justify-end border-t border-[#eaeaea] pt-3 dark:border-zinc-800">
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3.5 text-[12.5px] font-medium text-white hover:bg-black disabled:opacity-50"
+            className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3.5 text-[12.5px] font-medium text-white hover:bg-black disabled:opacity-50 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
           >
             {saving ? "Saving..." : "Save Configuration"}
           </button>
@@ -201,35 +201,35 @@ export function WhatsAppAgentsView({ config, onRefresh }: WhatsAppAgentsViewProp
       </form>
 
       {/* Right: Clean Simulator Console */}
-      <aside className="rounded-lg border border-[#eaeaea] bg-white p-4 flex flex-col space-y-3">
-        <div className="flex items-center justify-between border-b border-[#eaeaea] pb-2.5">
+      <aside className="rounded-lg border border-[#eaeaea] bg-white p-4 flex flex-col space-y-3 dark:border-zinc-800 dark:bg-[#121215]">
+        <div className="flex items-center justify-between border-b border-[#eaeaea] pb-2.5 dark:border-zinc-800">
           <div>
-            <h4 className="m-0 text-[13px] font-semibold text-[#171717]">Simulator</h4>
-            <span className="text-[11px] text-[#71717a]">Test auto-reply and keyword handoffs</span>
+            <h4 className="m-0 text-[13px] font-semibold text-[#171717] dark:text-white">Simulator</h4>
+            <span className="text-[11px] text-[#71717a] dark:text-zinc-400">Test auto-reply and keyword handoffs</span>
           </div>
           <button
             type="button"
             onClick={() => setSimMessages([{ sender: "bot", text: welcomeMessage, time: "Just now" }])}
-            className="rounded border border-[#eaeaea] bg-[#fafafa] px-2 py-0.5 text-[11px] font-medium text-[#52525b] hover:text-[#171717]"
+            className="rounded border border-[#eaeaea] bg-[#fafafa] px-2 py-0.5 text-[11px] font-medium text-[#52525b] hover:text-[#171717] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:text-white"
           >
             Reset
           </button>
         </div>
 
-        <div className="flex h-[320px] flex-col space-y-2 overflow-y-auto rounded-md border border-[#eaeaea] bg-[#fafafa] p-3">
+        <div className="flex h-[320px] flex-col space-y-2 overflow-y-auto rounded-md border border-[#eaeaea] bg-[#fafafa] p-3 dark:border-zinc-800 dark:bg-zinc-900">
           {simMessages.map((msg, i) => (
             <div
               key={i}
               className={`flex max-w-[85%] flex-col rounded-lg px-3 py-2 text-[12px] leading-relaxed ${
                 msg.sender === "bot"
-                  ? "self-start border border-[#eaeaea] bg-white text-[#171717]"
-                  : "self-end bg-[#171717] text-white"
+                  ? "self-start border border-[#eaeaea] bg-white text-[#171717] dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+                  : "self-end bg-[#171717] text-white dark:bg-white dark:text-black"
               }`}
             >
               <div>{msg.text}</div>
               <span
                 className={`mt-1 self-end text-[10px] ${
-                  msg.sender === "bot" ? "text-[#71717a]" : "text-white/70"
+                  msg.sender === "bot" ? "text-[#71717a] dark:text-zinc-400" : "text-white/70 dark:text-black/70"
                 }`}
               >
                 {msg.time}
@@ -237,7 +237,7 @@ export function WhatsAppAgentsView({ config, onRefresh }: WhatsAppAgentsViewProp
             </div>
           ))}
           {isTyping && (
-            <div className="self-start rounded-lg border border-[#eaeaea] bg-white px-3 py-1.5 text-[11px] text-[#71717a]">
+            <div className="self-start rounded-lg border border-[#eaeaea] bg-white px-3 py-1.5 text-[11px] text-[#71717a] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400">
               Typing...
             </div>
           )}
@@ -253,7 +253,7 @@ export function WhatsAppAgentsView({ config, onRefresh }: WhatsAppAgentsViewProp
               key={p.label}
               type="button"
               onClick={() => handleSimSend(p.text)}
-              className="rounded border border-[#eaeaea] bg-white px-2 py-1 text-[11px] font-medium text-[#52525b] hover:bg-[#f4f4f5] hover:text-[#171717]"
+              className="rounded border border-[#eaeaea] bg-white px-2 py-1 text-[11px] font-medium text-[#52525b] hover:bg-[#f4f4f5] hover:text-[#171717] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white"
             >
               {p.label}
             </button>
@@ -267,12 +267,12 @@ export function WhatsAppAgentsView({ config, onRefresh }: WhatsAppAgentsViewProp
             onChange={(e) => setSimInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSimSend()}
             placeholder="Type a message..."
-            className="h-8 flex-1 rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] text-[#171717] focus:border-[#171717] focus:outline-none"
+            className="h-8 flex-1 rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] text-[#171717] focus:border-[#171717] focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-white dark:placeholder-zinc-500 dark:focus:border-zinc-600"
           />
           <button
             type="button"
             onClick={() => handleSimSend()}
-            className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3 text-[12.5px] font-medium text-white hover:bg-black"
+            className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3 text-[12.5px] font-medium text-white hover:bg-black dark:bg-white dark:text-black dark:hover:bg-zinc-200"
           >
             Send
           </button>

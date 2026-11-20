@@ -1,5 +1,21 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-dashboard-theme="dark"], [data-dashboard-theme="dark"] *, .dark, .dark *));
+
+@utility bg-zinc-850 {
+  background-color: #18181b;
+}
+
+/* Suppress dev indicator overlays so they never overlap dashboard sidebar */
+nextjs-portal,
+[data-nextjs-dev-overlay],
+[data-nextjs-toast],
+#__next-build-watcher {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 /* Proportional font scaling for smaller laptop screens vs larger monitors */
 @media (min-width: 1024px) and (max-width: 1366px) {
   html {
@@ -177,10 +193,10 @@
   }
 }
 
-/* Keep the public Vozon mark aligned with the dashboard palette. Partner
+/* Keep the public Vozon mark aligned with the website & dashboard palette. Partner
    logos retain their uploaded colors on white-label hostnames. */
 html:not([data-brand-source="white_label"]) .platform-brand-logo {
-  filter: brightness(0) saturate(100%) invert(42%) sepia(42%) saturate(920%) hue-rotate(123deg) brightness(88%) contrast(91%);
+  filter: brightness(0) saturate(100%);
 }
 
 html:not([data-brand-source="white_label"]) .landing-header-logo .platform-brand-logo {
@@ -197,14 +213,14 @@ html:not([data-brand-source="white_label"]) .landing-header-logo .platform-brand
   caret-color: #0f172a;
   box-shadow: 0 0 0 1000px #ffffff inset !important;
   -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
-  border-color: #108D82 !important;
+  border-color: #0f172a !important;
   transition: background-color 9999s ease-out 0s;
 }
 
 .login-auth-form input:autofill {
   color: #0f172a !important;
   background: #ffffff !important;
-  border-color: #108D82 !important;
+  border-color: #0f172a !important;
 }
 
 /* Published white-label workspaces inherit their dashboard accent palette
@@ -559,9 +575,10 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
   --dashboard-ink: #171717;
   --dashboard-body: #52525b;
   --dashboard-muted: #71717a;
-  --dashboard-moody: #2563eb;
-  --dashboard-moody-dark: #1d4ed8;
-  --dashboard-moody-soft: #eff6ff;
+  --dashboard-moody: #09090b;
+  --dashboard-moody-dark: #000000;
+  --dashboard-moody-soft: #f4f4f5;
+  --dashboard-moody-border: #e4e4e7;
   --app-color-heading: var(--dashboard-ink) !important;
   --app-color-body: var(--dashboard-body) !important;
   --app-color-muted: var(--dashboard-muted) !important;
@@ -652,9 +669,6 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
   background-color: var(--dashboard-paper) !important;
 }
 
-:is(.dashboard-home-theme, .agents-home-palette) [style*="linear-gradient"] {
-  background: var(--dashboard-moody) !important;
-}
 
 :is(.dashboard-home-theme, .agents-home-palette) :is([class*="border-white/"],
   [class~="border-[#29433e]"],
@@ -714,9 +728,23 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
 }
 
 :is(.dashboard-home-theme, .agents-home-palette) :where(button, a[href], input, textarea, select):focus-visible {
-  outline-color: var(--dashboard-moody) !important;
-  border-color: var(--dashboard-moody) !important;
-  box-shadow: 0 0 0 2px rgb(23 23 23 / 0.12) !important;
+  outline-color: var(--dashboard-border-strong) !important;
+  border-color: var(--dashboard-border-strong) !important;
+  box-shadow: 0 0 0 2px rgb(23 23 23 / 0.08) !important;
+}
+
+/* Ask Vozon clean textarea - prevent any focus outline, border, or forced background */
+.ask-vozon-stage textarea,
+.ask-vozon-stage textarea:focus,
+.ask-vozon-stage textarea:focus-visible,
+.dashboard-home-theme.dashboard-home-theme.ask-vozon-stage textarea,
+.dashboard-home-theme.dashboard-home-theme.ask-vozon-stage textarea:focus,
+.dashboard-home-theme.dashboard-home-theme.ask-vozon-stage textarea:focus-visible {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 :is(.dashboard-home-theme, .agents-home-palette) :where(input[type="checkbox"], input[type="radio"], input[type="range"]) {
@@ -1422,7 +1450,7 @@ html:not([data-brand-source="white_label"]) :is(.dashboard-home-theme, .agents-h
       align-items: center !important;
       justify-content: space-between !important;
       border: 0;
-      border-bottom: 1px solid #eaeaea !important;
+      border-bottom: 1px solid var(--dashboard-border, #eaeaea) !important;
       border-radius: 0;
       background: transparent;
       box-shadow: none;
@@ -1430,7 +1458,7 @@ html:not([data-brand-source="white_label"]) :is(.dashboard-home-theme, .agents-h
 
     .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-shell[data-expanded="true"] .dashboard-sidebar-brand {
       border: 0;
-      border-bottom: 1px solid #eaeaea !important;
+      border-bottom: 1px solid var(--dashboard-border, #eaeaea) !important;
       background: transparent;
       box-shadow: none;
     }
@@ -1571,7 +1599,7 @@ html:not([data-brand-source="white_label"]) :is(.dashboard-home-theme, .agents-h
       padding: 0 !important;
       justify-content: center !important;
       border: 0;
-      border-bottom: 1px solid #eaeaea !important;
+      border-bottom: 1px solid var(--dashboard-border, #eaeaea) !important;
       background: transparent;
       box-shadow: none;
     }
@@ -2059,204 +2087,242 @@ textarea.ai-prompt-textarea:focus-visible {
 }
 
 /* ========================================================================== */
-/* Dashboard Dark Mode: deep #09090b canvas, #111114 cards, #18181b tiles.    */
+/* Dashboard Dark Mode: deep #09090b canvas, #121215 cards, #18181b tiles.    */
 /* Must live inside @layer components so !important beats earlier @layer      */
 /* components !important rules (CSS Cascade Level 5 @layer rule).             */
 /* ========================================================================== */
 @layer components {
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme {
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme {
     --dashboard-canvas: #09090b !important;
-    --dashboard-paper: #111114 !important;
+    --dashboard-paper: #121215 !important;
     --dashboard-soft: #18181b !important;
-    --dashboard-border: #222226 !important;
-    --dashboard-border-strong: #27272a !important;
-    --dashboard-ink: #fafafa !important;
-    --dashboard-body: #d4d4d8 !important;
-    --dashboard-muted: #71717a !important;
-    --dashboard-surface: #111114 !important;
-    --dashboard-surface-raised: #111114 !important;
-    --dashboard-surface-soft: #18181b !important;
-    --app-color-heading: #fafafa !important;
-    --app-color-body: #d4d4d8 !important;
+    --dashboard-border: #27272a !important;
+    --dashboard-border-strong: #3f3f46 !important;
+    --dashboard-ink: #ffffff !important;
+    --dashboard-body: #e4e4e7 !important;
+    --dashboard-muted: #a1a1aa !important;
+    --dashboard-surface: #121215 !important;
+    --dashboard-surface-raised: #18181b !important;
+    --dashboard-surface-soft: #1f1f23 !important;
+    --app-color-heading: #ffffff !important;
+    --app-color-body: #e4e4e7 !important;
     --app-color-muted: #a1a1aa !important;
-    --app-color-label: #71717a !important;
-    --dashboard-moody: #3b82f6 !important;
-    --dashboard-moody-dark: #fafafa !important;
+    --app-color-label: #a1a1aa !important;
+    --dashboard-moody: #ffffff !important;
+    --dashboard-moody-dark: #ffffff !important;
     --dashboard-moody-soft: #18181b !important;
     --dashboard-moody-border: #27272a !important;
     --voice-canvas: #09090b !important;
-    --voice-surface: #111114 !important;
-    --voice-border: #222226 !important;
-    --voice-heading: #fafafa !important;
+    --voice-surface: #121215 !important;
+    --voice-border: #27272a !important;
+    --voice-heading: #ffffff !important;
     --voice-muted: #a1a1aa !important;
     color-scheme: dark !important;
     background: #09090b !important;
     background-color: #09090b !important;
-    color: #fafafa !important;
+    color: #ffffff !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :where(main, main > section),
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .dashboard-page-header,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .voice-agent-theme,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme.ask-vozon-stage,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .widget-preview-canvas {
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme :where(main, main > section),
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-page-header,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .voice-agent-theme,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme.ask-vozon-stage,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .widget-preview-canvas {
     background: #09090b !important;
     background-color: #09090b !important;
-    color: #fafafa !important;
+    color: #ffffff !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-shell,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .dashboard-workspace-bar {
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-shell,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-workspace-bar {
     background: #09090b !important;
     background-color: #09090b !important;
-    border-color: #1f1f23 !important;
-    color: #fafafa !important;
+    border-color: #27272a !important;
+    color: #ffffff !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-brand {
-    border-bottom-color: #1f1f23 !important;
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-brand,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-shell .dashboard-sidebar-brand,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-shell[data-expanded="true"] .dashboard-sidebar-brand,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-shell[data-expanded="false"] .dashboard-sidebar-brand {
+    border-bottom: 1px solid #27272a !important;
+    border-bottom-color: #27272a !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-logo {
+  /* WhatsApp workspace dark theme overrides */
+  :is(html[data-dashboard-theme="dark"], html.dark) .whatsapp-workspace .whatsapp-view {
+    color: #f4f4f5 !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .whatsapp-workspace .whatsapp-view :is(.whatsapp-templates, .whatsapp-campaigns, .whatsapp-contacts, .whatsapp-agents, .whatsapp-forms, .whatsapp-flows, .whatsapp-live-chat)>div:first-child {
+    border-color: #27272a !important;
+    background: #121215 !important;
+    box-shadow: none !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .whatsapp-workspace .whatsapp-view :is(input:not([type="checkbox"]), select, textarea) {
+    border-color: #27272a !important;
+    background: #18181b !important;
+    color: #ffffff !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .whatsapp-workspace .whatsapp-view :is(.whatsapp-templates, .whatsapp-campaigns, .whatsapp-contacts, .whatsapp-agents, .whatsapp-forms, .whatsapp-flows)>div:first-child input[type="text"] {
+    background: #18181b !important;
+    color: #ffffff !important;
+    border-color: #27272a !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-logo {
     filter: grayscale(1) brightness(0) invert(1) !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-group-label {
-    color: #71717a !important;
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-group-label {
+    color: #a1a1aa !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav:hover,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-toggle:hover {
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav:hover,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-toggle:hover {
     background: #18181b !important;
     background-color: #18181b !important;
     color: #ffffff !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav .dashboard-sidebar-label,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav .dashboard-sidebar-icon {
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav .dashboard-sidebar-label,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav .dashboard-sidebar-icon {
     color: #a1a1aa !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav:hover .dashboard-sidebar-label,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav:hover .dashboard-sidebar-icon {
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav:hover .dashboard-sidebar-label,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav:hover .dashboard-sidebar-icon {
     color: #ffffff !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] {
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] {
     background: #1f1f23 !important;
     background-color: #1f1f23 !important;
     color: #ffffff !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-label,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-icon {
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-label,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-icon {
     color: #ffffff !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :is(.bg-white, [class*="bg-white/"], [class*="bg-[#ffffff]"], [class~="bg-[#fbfdff]"], [class~="bg-[#f8fafc]"], [class~="bg-[#fafbfc]"], [class~="bg-[#fbfcfe]"], [class~="bg-[#fbfcff]"], [class~="bg-[#fbfbfe]"], [class~="bg-[#fbfcfc]"], [class~="bg-[#fbfdfc]"], [class~="bg-[#f8fafb]"], [class~="bg-[#f5f7f9]"], [class~="bg-[#f4f6f8]"], [class~="bg-[#f5f8fb]"], [class~="bg-[#f7f9f8]"], [class~="bg-[#f8fbfa]"], [class~="bg-[#f8faf9]"], [class~="bg-[#f8fbff]"], [class~="bg-[#f6f8fc]"], [class~="bg-[#f6f9f8]"], [class~="bg-[#f6faf8]"], [class~="bg-[#f7fbfa]"], [class~="bg-[#f7fcf9]"], [class~="bg-[#fafcfb]"]),
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .agent-editor-header,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .dashboard-primary-panel,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .dashboard-flat-panel,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .dashboard-panel-heading,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .agent-editor-shell,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .agent-runtime-card,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .voice-agent-workspace :where(section, article),
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .test-call-theme {
-    background-color: #111114 !important;
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme :is(.bg-white, [class*="bg-white/"], [class*="bg-[#ffffff]"], [class~="bg-[#fbfdff]"], [class~="bg-[#f8fafc]"], [class~="bg-[#fafbfc]"], [class~="bg-[#fbfcfe]"], [class~="bg-[#fbfcff]"], [class~="bg-[#fbfbfe]"], [class~="bg-[#fbfcfc]"], [class~="bg-[#fbfdfc]"], [class~="bg-[#f8fafb]"], [class~="bg-[#f5f7f9]"], [class~="bg-[#f4f6f8]"], [class~="bg-[#f5f8fb]"], [class~="bg-[#f7f9f8]"], [class~="bg-[#f8fbfa]"], [class~="bg-[#f8faf9]"], [class~="bg-[#f8fbff]"], [class~="bg-[#f6f8fc]"], [class~="bg-[#f6f9f8]"], [class~="bg-[#f6faf8]"], [class~="bg-[#f7fbfa]"], [class~="bg-[#f7fcf9]"], [class~="bg-[#fafcfb]"]),
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .agent-editor-header,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-primary-panel,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-flat-panel,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-panel-heading,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .agent-editor-shell,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .agent-runtime-card,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-overlay-panel,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .voice-agent-workspace :where(section, article),
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .test-call-theme,
+  :is(html[data-dashboard-theme="dark"], html.dark) :is(.dashboard-overlay-panel, [role="dialog"] section, [aria-modal="true"] section) {
+    background-color: #121215 !important;
     background-image: none !important;
-    border-color: #222226 !important;
-    color: #fafafa !important;
+    border-color: #27272a !important;
+    color: #ffffff !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme thead,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme thead tr {
-    background-color: #18181b !important;
-    background-image: none !important;
-    border-color: #222226 !important;
-  }
-
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme thead th {
-    background-color: transparent !important;
-    color: #a1a1aa !important;
-    border-color: #222226 !important;
-  }
-
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :is([class~="bg-[#fafafa]"], [class~="bg-[#f9f9f9]"], [class~="bg-[#f4f4f5]"], [class~="bg-[#f5f5f5]"], [class~="bg-[#f0f0f0]"], [class~="bg-[#f1f5f9]"], [class~="bg-[#e2e8f0]"], [class~="bg-[#eceef4]"], [class~="bg-[#eff6ff]"], [class~="bg-[#fef2f2]"], [class~="bg-[#fef3c7]"], [class~="bg-[#ecfdf5]"], [class~="bg-[#f0fdf4]"], [class~="bg-[#dcfce7]"], [class~="bg-[#d1fae5]"], [class~="bg-[#dff5f1]"], [class~="bg-[#e7f5f0]"], [class~="bg-[#edf7f4]"], [class~="bg-[#effaf7]"], [class~="bg-[#effaf8]"], [class~="bg-[#f1f9f6]"], [class~="bg-[#eaf7f1]"], [class~="bg-[#eaf0ff]"], [class~="bg-[#e2ece8]"], [class~="bg-[#edf0f4]"], [class~="bg-[#eef2f7]"], [class~="bg-[#eef5f3]"], [class~="bg-[#f3f4f8]"], [class~="bg-[#fffbeb]"], [class~="bg-[#fee2e2]"], [class~="bg-[#fff1f2]"], [class~="bg-[#ffe4e6]"], [class~="bg-[#fff7ed]"], .bg-slate-50, .bg-slate-100, .bg-neutral-50, .bg-neutral-100, .bg-zinc-50, .bg-zinc-100, .bg-emerald-50, .bg-green-50, .bg-blue-50, .bg-amber-50, .bg-rose-50, .bg-red-50),
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme details>summary,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme details[open]>summary,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .dashboard-filter-bar,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .dashboard-data-table thead,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .dashboard-data-row:hover,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .dashboard-agent-assignment,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .dashboard-agent-assignment:hover,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-logout:hover {
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme thead,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme thead tr {
     background-color: #18181b !important;
     background-image: none !important;
     border-color: #27272a !important;
-    color: #fafafa !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :is(.bg-black, [class~="bg-[#171717]"], [class~="bg-[#000000]"]) {
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme thead th {
+    background-color: transparent !important;
+    color: #a1a1aa !important;
+    border-color: #27272a !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme :is([class~="bg-[#fafafa]"], [class~="bg-[#f9f9f9]"], [class~="bg-[#f4f4f5]"], [class~="bg-[#f5f5f5]"], [class~="bg-[#f0f0f0]"], [class~="bg-[#f1f5f9]"], [class~="bg-[#e2e8f0]"], [class~="bg-[#eceef4]"], [class~="bg-[#eff6ff]"], [class~="bg-[#fef2f2]"], [class~="bg-[#fef3c7]"], [class~="bg-[#ecfdf5]"], [class~="bg-[#f0fdf4]"], [class~="bg-[#dcfce7]"], [class~="bg-[#d1fae5]"], [class~="bg-[#dff5f1]"], [class~="bg-[#e7f5f0]"], [class~="bg-[#edf7f4]"], [class~="bg-[#effaf7]"], [class~="bg-[#effaf8]"], [class~="bg-[#f1f9f6]"], [class~="bg-[#eaf7f1]"], [class~="bg-[#eaf0ff]"], [class~="bg-[#e2ece8]"], [class~="bg-[#edf0f4]"], [class~="bg-[#eef2f7]"], [class~="bg-[#eef5f3]"], [class~="bg-[#f3f4f8]"], [class~="bg-[#fffbeb]"], [class~="bg-[#fee2e2]"], [class~="bg-[#fff1f2]"], [class~="bg-[#ffe4e6]"], [class~="bg-[#fff7ed]"], [class*="bg-slate-50"], [class*="bg-slate-100"], [class*="bg-neutral-50"], [class*="bg-neutral-100"], [class*="bg-zinc-50"], [class*="bg-zinc-100"], .bg-slate-50, .bg-slate-100, .bg-neutral-50, .bg-neutral-100, .bg-zinc-50, .bg-zinc-100),
+  :is(html[data-dashboard-theme="dark"], html.dark) [role="dialog"] :is([class*="bg-slate-50"], [class*="bg-slate-100"], [class*="bg-neutral-50"], [class*="bg-neutral-100"], [class*="bg-zinc-50"], [class*="bg-zinc-100"]),
+  :is(html[data-dashboard-theme="dark"], html.dark) [aria-modal="true"] :is([class*="bg-slate-50"], [class*="bg-slate-100"], [class*="bg-neutral-50"], [class*="bg-neutral-100"], [class*="bg-zinc-50"], [class*="bg-zinc-100"]),
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-overlay-panel :is([class*="bg-slate-50"], [class*="bg-slate-100"], [class*="bg-neutral-50"], [class*="bg-neutral-100"], [class*="bg-zinc-50"], [class*="bg-zinc-100"]),
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme details>summary,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme details[open]>summary,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-filter-bar,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-data-table thead,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-data-row:hover,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-agent-assignment,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-agent-assignment:hover,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-logout:hover {
+    background-color: #18181b !important;
+    background-image: none !important;
+    border-color: #27272a !important;
+    color: #ffffff !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme :is(.bg-black, [class~="bg-[#171717]"], [class~="bg-[#000000]"]) {
     background-color: #1f1f24 !important;
     border-color: #2e2e36 !important;
-    color: #fafafa !important;
+    color: #ffffff !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :is([class~="hover:bg-[#fafafa]"]:hover, [class~="hover:bg-[#f4f4f5]"]:hover, [class~="hover:bg-[#f5f5f5]"]:hover, [class~="hover:bg-[#f5f6f6]"]:hover, [class~="hover:bg-white"]:hover) {
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme :is([class~="hover:bg-[#fafafa]"]:hover, [class~="hover:bg-[#f4f4f5]"]:hover, [class~="hover:bg-[#f5f5f5]"]:hover, [class~="hover:bg-[#f5f6f6]"]:hover, [class~="hover:bg-white"]:hover) {
     background-color: #222228 !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .whatsapp-flow-canvas {
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme article:hover,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .agent-runtime-card:hover {
+    border-color: #3f3f46 !important;
+    background-color: #16161a !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .whatsapp-flow-canvas {
     background-color: #09090b !important;
     background-image: radial-gradient(#27272a 1px, transparent 1px) !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme [class~="bg-[#eaeaea]"] {
-    background-color: #222226 !important;
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme [class~="bg-[#eaeaea]"] {
+    background-color: #27272a !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :is([class~="border-[#eaeaea]"], [class~="border-[#e5e5e5]"], [class~="border-[#e4e4e7]"], [class~="border-[#f0f0f0]"], [class~="border-[#f4f4f5]"], [class~="border-[#d4d4d8]"], [class~="border-[#e6ecea]"], [class~="border-[#e2e5e8]"], [class~="border-[#e2eaf0]"], [class~="border-[#d7e0dd]"], [class~="border-[#dbe4e1]"], [class~="border-[#cbd5e1]"], [class~="border-[#e2e8f0]"]) {
-    border-color: #222226 !important;
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme :is([class~="border-[#eaeaea]"], [class~="border-[#e5e5e5]"], [class~="border-[#e4e4e7]"], [class~="border-[#f0f0f0]"], [class~="border-[#f4f4f5]"], [class~="border-[#d4d4d8]"], [class~="border-[#e6ecea]"], [class~="border-[#e2e5e8]"], [class~="border-[#e2eaf0]"], [class~="border-[#d7e0dd]"], [class~="border-[#dbe4e1]"], [class~="border-[#cbd5e1]"], [class~="border-[#e2e8f0]"], [class~="border-[#dce7e3]"]) {
+    border-color: #27272a !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .divide-\[\#eaeaea\] > :not(:last-child),
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .divide-\[\#f0f0f0\] > :not(:last-child) {
-    border-color: #222226 !important;
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .divide-\[\#eaeaea\]> :not(:last-child),
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .divide-\[\#f0f0f0\]> :not(:last-child) {
+    border-color: #27272a !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :where(h1, h2, h3, h4, strong, dt, legend),
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :is(.app-page-title, .app-section-title, .app-value, .app-strong, [class~="text-[#171717]"], [class~="text-[#171821]"], [class~="text-[#111827]"], [class~="text-[#0f172a]"], [class~="text-[#14231f]"], [class~="text-[#123d35]"], [class~="text-[#20342e]"], [class~="text-[#202020]"], [class~="text-[#343434]"], [class~="text-[#404040]"], [class~="text-[#444444]"], [class~="text-[#4b4b4b]"], [class~="text-[#000000]"], [class~="text-[#0e6f62]"], [class~="text-[#118778]"], .text-black, .text-slate-950, .text-slate-900, .text-slate-800, .text-zinc-900, .text-neutral-900) {
-    color: #fafafa !important;
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme :where(h1, h2, h3, h4, strong, dt, legend),
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme :is(.app-page-title, .app-section-title, .app-value, .app-strong, [class~="text-[#171717]"], [class~="text-[#171821]"], [class~="text-[#111827]"], [class~="text-[#0f172a]"], [class~="text-[#14231f]"], [class~="text-[#123d35]"], [class~="text-[#20342e]"], [class~="text-[#202020]"], [class~="text-[#343434]"], [class~="text-[#404040]"], [class~="text-[#444444]"], [class~="text-[#4b4b4b]"], [class~="text-[#000000]"], [class~="text-[#0e6f62]"], [class~="text-[#118778]"], .text-black, .text-slate-950, .text-slate-900, .text-slate-800, .text-zinc-900, .text-neutral-900) {
+    color: #ffffff !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :is(.app-body, .app-caption, .app-label, [class~="text-[#52525b]"], [class~="text-[#52645f]"], [class~="text-[#60716c]"], [class~="text-[#666666]"], [class~="text-[#71717a]"], [class~="text-[#777777]"], [class~="text-[#888888]"], [class~="text-[#334155]"], [class~="text-[#475569]"], [class~="text-[#64748b]"], [class~="text-[#94a3b8]"], [class~="text-[#087f75]"], [class~="text-[#71817d]"], [class~="text-[#84938f]"], .text-slate-700, .text-slate-600, .text-slate-500, .text-slate-400, .text-zinc-600, .text-zinc-500, .text-neutral-600, .text-neutral-500) {
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme :is(.app-body, .app-caption, .app-label, [class~="text-[#52525b]"], [class~="text-[#52645f]"], [class~="text-[#60716c]"], [class~="text-[#666666]"], [class~="text-[#71717a]"], [class~="text-[#777777]"], [class~="text-[#888888]"], [class~="text-[#334155]"], [class~="text-[#475569]"], [class~="text-[#64748b]"], [class~="text-[#94a3b8]"], [class~="text-[#087f75]"], [class~="text-[#71817d]"], [class~="text-[#84938f]"], .text-slate-700, .text-slate-600, .text-slate-500, .text-slate-400, .text-zinc-600, .text-zinc-500, .text-neutral-600, .text-neutral-500) {
     color: #a1a1aa !important;
   }
 
   /* Keep WhatsApp outbound green bubble text dark and legible in dark mode */
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme [class~="bg-[#d9fdd3]"],
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme [class~="bg-[#d9fdd3]"] * {
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme [class~="bg-[#d9fdd3]"],
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme [class~="bg-[#d9fdd3]"] * {
     color: #111b21 !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :where(input, textarea, select),
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea),
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .dashboard-filter-bar :where(input, select),
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .agent-prompt-editor {
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme :where(input, textarea, select),
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea),
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-filter-bar :where(input, select),
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .agent-prompt-editor {
     background-color: #141418 !important;
     border-color: #27272a !important;
-    color: #fafafa !important;
-    -webkit-text-fill-color: #fafafa !important;
-    caret-color: #fafafa !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    caret-color: #ffffff !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :is(input:not([type="checkbox"]):not([type="radio"]), textarea)::placeholder {
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme :is(input:not([type="checkbox"]):not([type="radio"]), textarea)::placeholder {
     color: #71717a !important;
     -webkit-text-fill-color: #71717a !important;
     opacity: 1 !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme select:not([multiple]) {
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme select:not([multiple]) {
     color-scheme: dark !important;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") !important;
     background-repeat: no-repeat !important;
@@ -2264,33 +2330,31 @@ textarea.ai-prompt-textarea:focus-visible {
     background-size: 0.9rem 0.9rem !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme.whatsapp-workspace .whatsapp-view :is(.whatsapp-templates, .whatsapp-campaigns, .whatsapp-contacts, .whatsapp-agents, .whatsapp-forms, .whatsapp-flows) > div:first-child {
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme.whatsapp-workspace .whatsapp-view :is(.whatsapp-templates, .whatsapp-campaigns, .whatsapp-contacts, .whatsapp-agents, .whatsapp-forms, .whatsapp-flows)>div:first-child {
     background: #111114 !important;
     background-color: #111114 !important;
-    border-color: #222226 !important;
+    border-color: #27272a !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme select :is(option, optgroup),
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme select option,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme select optgroup {
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme select :is(option, optgroup),
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme select option,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme select optgroup {
     background-color: #111114 !important;
-    color: #fafafa !important;
+    color: #ffffff !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .recharts-cartesian-grid line {
-    stroke: #222226 !important;
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .recharts-cartesian-grid line {
+    stroke: #27272a !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .automation-flow-card,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .automation-empty,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .automation-builder-top,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .automation-library,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .automation-inspector,
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .automation-create-modal {
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .automation-flow-card,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .automation-empty,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .automation-builder-top,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .automation-library,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .automation-inspector,
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .automation-create-modal {
     background: #111114 !important;
-    border-color: #222226 !important;
-    color: #fafafa !important;
+    border-color: #27272a !important;
+    color: #ffffff !important;
   }
 }
-
-

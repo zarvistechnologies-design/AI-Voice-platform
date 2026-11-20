@@ -295,7 +295,7 @@ export function WhatsAppShell({ initialTab = "campaigns" }: WhatsAppShellProps) 
 
   return (
     <main
-      className={`dashboard-home-theme whatsapp-workspace grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#fafafa] text-[#171717] ${
+      className={`dashboard-home-theme whatsapp-workspace grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#fafafa] dark:bg-[#09090b] text-[#171717] dark:text-zinc-100 ${
         showUserSidebar ? "lg:grid-cols-[248px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
       }`}
     >
@@ -309,7 +309,7 @@ export function WhatsAppShell({ initialTab = "campaigns" }: WhatsAppShellProps) 
         setShowUserSidebar={setShowUserSidebar}
       />
 
-      <section className="grid min-w-0 content-start bg-[#fafafa]">
+      <section className="grid min-w-0 content-start bg-[#fafafa] dark:bg-[#09090b]">
         {/* Workspace and Header */}
         <DashboardPageHeader
           eyebrow="WhatsApp workspace"
@@ -323,13 +323,13 @@ export function WhatsAppShell({ initialTab = "campaigns" }: WhatsAppShellProps) 
                 onClick={() => setShowConnectModal(true)}
                 className={`inline-flex h-8 items-center gap-2 rounded-md px-3 text-[12.5px] font-medium transition ${
                   isConnected
-                    ? "border border-[#eaeaea] bg-white text-[#171717] hover:bg-[#f4f4f5]"
-                    : "border border-[#171717] bg-[#171717] text-white hover:bg-black"
+                    ? "border border-[#eaeaea] bg-white text-[#171717] hover:bg-[#f4f4f5] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
+                    : "border border-[#171717] bg-[#171717] text-white hover:bg-black dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700"
                 }`}
               >
                 <span
                   className={`size-1.5 rounded-full ${
-                    isConnected ? "bg-[#171717]" : "bg-white/75"
+                    isConnected ? "bg-[#171717] dark:bg-white" : "bg-white/75"
                   }`}
                 />
                 {isConnected ? (
@@ -345,9 +345,9 @@ export function WhatsAppShell({ initialTab = "campaigns" }: WhatsAppShellProps) 
         />
 
         <div className="dashboard-page-content mx-auto w-full max-w-[1280px] space-y-4 px-4 py-4 sm:px-6">
-          <nav className="-mx-4 flex gap-1 overflow-x-auto border-b border-[#eaeaea] px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:px-0 lg:hidden" aria-label="WhatsApp sections">
+          <nav className="-mx-4 flex gap-1 overflow-x-auto border-b border-[#eaeaea] dark:border-zinc-800 px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:px-0 lg:hidden" aria-label="WhatsApp sections">
             {(["templates", "contact-groups", "campaigns", "agents", "live-chat", "meta-forms", "flow-maker"] as WhatsAppTab[]).map((tab) => (
-              <Link key={tab} href={`/dashboard/whatsapp/${tab}`} aria-current={activeTab === tab ? "page" : undefined} className={`shrink-0 rounded-md border px-2.5 py-1.5 text-[12px] font-medium transition ${activeTab === tab ? "border-[#171717] bg-[#171717] text-white" : "border-transparent text-[#52525b] hover:bg-[#f4f4f5] hover:text-[#171717]"}`}>
+              <Link key={tab} href={`/dashboard/whatsapp/${tab}`} aria-current={activeTab === tab ? "page" : undefined} className={`shrink-0 rounded-md border px-2.5 py-1.5 text-[12px] font-medium transition ${activeTab === tab ? "border-[#171717] bg-[#171717] text-white dark:border-white dark:bg-white dark:text-black" : "border-transparent text-[#52525b] hover:bg-[#f4f4f5] hover:text-[#171717] dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"}`}>
                 {tabTitles[tab].title}
               </Link>
             ))}
@@ -357,8 +357,8 @@ export function WhatsAppShell({ initialTab = "campaigns" }: WhatsAppShellProps) 
             <div
               className={`flex items-center justify-between rounded-lg border px-3.5 py-2.5 text-[12.5px] font-medium ${
                 notice.type === "success"
-                  ? "border-[#eaeaea] bg-white text-[#171717]"
-                  : "border-rose-200 bg-rose-50 text-rose-800"
+                  ? "border-[#eaeaea] bg-white text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200"
+                  : "border-rose-200 bg-rose-50 text-rose-800 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-300"
               }`}
             >
               <span>{notice.text}</span>
@@ -370,9 +370,9 @@ export function WhatsAppShell({ initialTab = "campaigns" }: WhatsAppShellProps) 
 
           {/* Sub-feature Views */}
           {loading ? (
-            <div className="grid h-64 place-items-center text-[12.5px] text-[#71717a]">
+            <div className="grid h-64 place-items-center text-[12.5px] text-[#71717a] dark:text-zinc-400">
               <div className="flex flex-col items-center gap-2">
-                <span className="size-5 animate-spin rounded-full border-2 border-[#171717] border-t-transparent" />
+                <span className="size-5 animate-spin rounded-full border-2 border-[#171717] dark:border-white border-t-transparent" />
                 <span>Synchronizing WhatsApp data...</span>
               </div>
             </div>

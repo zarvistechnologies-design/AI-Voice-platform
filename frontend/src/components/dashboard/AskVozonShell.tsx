@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore, type FormEvent } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { DashboardAuthBoundary } from "@/components/dashboard/DashboardAuthBoundary";
@@ -198,8 +199,50 @@ function AssistantChat() {
   const [busy, setBusy] = useState(false);
   const [reviewingActionId, setReviewingActionId] = useState("");
   const [error, setError] = useState("");
+  const [activeMode, setActiveMode] = useState<"Manual" | "Auto" | "Grounded">("Manual");
+  const [modeDropdownOpen, setModeDropdownOpen] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef<any>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  function toggleListening() {
+    if (typeof window === "undefined") return;
+    const SpeechRecognition =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Voice speech recognition is supported in modern browsers like Chrome, Edge, and Safari.");
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = "en-US";
+
+      recognition.onstart = () => setIsListening(true);
+      recognition.onresult = (event: any) => {
+        const transcript = event.results[0]?.[0]?.transcript;
+        if (transcript) {
+          setDraft((prev) => (prev ? `${prev} ${transcript}` : transcript));
+        }
+      };
+      recognition.onerror = () => setIsListening(false);
+      recognition.onend = () => setIsListening(false);
+
+      recognitionRef.current = recognition;
+      recognition.start();
+    } catch {
+      setIsListening(false);
+    }
+  }
 
   function toggleDesktopHistory() {
     setHistoryVisible((visible) => {
@@ -351,7 +394,22 @@ function AssistantChat() {
     .slice(0, 2)
     .toUpperCase();
 
-  const firstName = session.name.split(/\s+/)[0] || "there";
+  const rawName = session?.name?.trim() || "";
+  const firstName = (rawName ? rawName.split(/\s+/)[0] : "Sumit") || "Sumit";
+
+  const formattedDate = (() => {
+    try {
+      return (
+        new Intl.DateTimeFormat("en-GB", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+        }).format(new Date()) + "."
+      );
+    } catch {
+      return "Today";
+    }
+  })();
 
   const greeting = (() => {
     const hour = new Date().getHours();
@@ -362,7 +420,7 @@ function AssistantChat() {
 
   return (
     <main
-      className={`dashboard-home-theme ask-vozon-stage grid min-h-screen text-[#202020] ${
+      className={`dashboard-home-theme ask-vozon-stage grid min-h-screen bg-[#fafafa] text-[#171717] dark:bg-[#09090b] dark:text-white ${
         showUserSidebar ? "lg:grid-cols-[248px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
       }`}
     >
@@ -376,46 +434,46 @@ function AssistantChat() {
         setShowUserSidebar={setShowUserSidebar}
       />
 
-      <section className="flex h-screen min-h-0 min-w-0 flex-col overflow-hidden bg-[#fafafa]">
+      <section className="flex h-screen min-h-0 min-w-0 flex-col overflow-hidden bg-[#fafafa] dark:bg-[#09090b]">
         {/* Workspace Breadcrumbs & Credits Bar */}
         <DashboardPageHeader workspaceBarOnly />
 
-        <div className="relative flex min-h-0 flex-1">
-          <aside id="ask-vozon-history" className={`${historyOpen ? "flex" : "hidden"} absolute inset-y-0 right-0 z-30 w-[min(88vw,300px)] flex-col border-l border-[#eaeaea] bg-white shadow-lg md:static md:order-2 ${historyVisible ? "md:flex" : "md:hidden"} md:w-[248px] md:shrink-0 md:shadow-none`} aria-label="Chat history">
-            <div className="flex items-center justify-between border-b border-[#eaeaea] px-4 py-3.5">
-              <div><p className="m-0 text-[10px] font-medium uppercase tracking-[0.12em] text-[#71717a]">Your workspace</p><h2 className="m-0 mt-0.5 text-sm font-semibold text-[#171717]">Chat history</h2></div>
-              <button type="button" className="rounded-md px-2 py-1 text-lg text-[#71717a] md:hidden" onClick={() => setHistoryOpen(false)} aria-label="Close chat history">×</button>
-              <button type="button" className="hidden rounded-md border border-[#eaeaea] bg-white px-2.5 py-1 text-xs font-medium text-[#52525b] transition hover:bg-[#f4f4f5] hover:text-[#171717] md:inline-flex" onClick={toggleDesktopHistory} aria-label="Hide chat history" aria-controls="ask-vozon-history" aria-expanded="true">Hide</button>
+        <div className="relative flex min-h-0 flex-1 bg-[#fafafa] dark:bg-[#09090b]">
+          <aside id="ask-vozon-history" className={`${historyOpen ? "flex" : "hidden"} absolute inset-y-0 right-0 z-30 w-[min(88vw,300px)] flex-col border-l border-slate-200 bg-white shadow-lg md:static md:order-2 ${historyVisible ? "md:flex" : "md:hidden"} md:w-[248px] md:shrink-0 md:shadow-none dark:border-zinc-800 dark:bg-[#121215]`} aria-label="Chat history">
+            <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3.5 dark:border-zinc-800">
+              <div><p className="m-0 text-[10px] font-medium uppercase tracking-[0.12em] text-slate-500 dark:text-zinc-400">Your workspace</p><h2 className="m-0 mt-0.5 text-sm font-semibold text-slate-900 dark:text-white">Chat history</h2></div>
+              <button type="button" className="rounded-md px-2 py-1 text-lg text-slate-400 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white md:hidden" onClick={() => setHistoryOpen(false)} aria-label="Close chat history">×</button>
+              <button type="button" className="hidden rounded-md border border-slate-200 bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-200 hover:text-black dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-750 dark:hover:text-white md:inline-flex" onClick={toggleDesktopHistory} aria-label="Hide chat history" aria-controls="ask-vozon-history" aria-expanded="true">Hide</button>
             </div>
-            <button type="button" onClick={startNewChat} disabled={busy || Boolean(loadingChatId)} className="mx-3 mt-3 flex h-8 items-center justify-center gap-1.5 rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#171717] transition hover:bg-[#f4f4f5] disabled:opacity-50"><span className="text-base leading-none">+</span> New chat</button>
+            <button type="button" onClick={startNewChat} disabled={busy || Boolean(loadingChatId)} className="mx-3 mt-3 flex h-8 items-center justify-center gap-1.5 rounded-md border border-slate-200 bg-slate-50 px-3 text-[12.5px] font-medium text-slate-700 transition hover:bg-slate-100 hover:text-black dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-750 disabled:opacity-50"><span className="text-base leading-none">+</span> New chat</button>
             <div className="min-h-0 flex-1 overflow-y-auto px-2 pb-4 pt-3">
-              <p className="m-0 px-2 pb-2 text-[10px] font-medium uppercase tracking-[0.12em] text-[#71717a]">Recent conversations</p>
-              {historyLoading && conversations.length === 0 ? <p className="px-2 text-xs text-[#71717a]">Loading chats…</p> : null}
-              {!historyLoading && conversations.length === 0 && !historyError ? <p className="px-2 text-xs leading-5 text-[#71717a]">Your conversations will appear here.</p> : null}
-              {historyError ? <p className="mx-2 mb-3 rounded-md bg-[#f4f4f5] px-2 py-2 text-xs text-[#171717]" role="alert">{historyError}</p> : null}
+              <p className="m-0 px-2 pb-2 text-[10px] font-medium uppercase tracking-[0.12em] text-slate-400 dark:text-zinc-400">Recent conversations</p>
+              {historyLoading && conversations.length === 0 ? <p className="px-2 text-xs text-slate-500 dark:text-zinc-400">Loading chats…</p> : null}
+              {!historyLoading && conversations.length === 0 && !historyError ? <p className="px-2 text-xs leading-5 text-slate-500 dark:text-zinc-400">Your conversations will appear here.</p> : null}
+              {historyError ? <p className="mx-2 mb-3 rounded-md bg-rose-50 px-2 py-2 text-xs text-rose-700 dark:bg-zinc-800 dark:text-zinc-200" role="alert">{historyError}</p> : null}
               <div className="space-y-0.5">
                 {conversations.map((chat) => (
-                  <div key={chat.id} className={`group flex items-center gap-1 rounded-md px-1 transition ${conversationId === chat.id ? "bg-[#f4f4f5]" : "hover:bg-[#fafafa]"}`}>
+                  <div key={chat.id} className={`group flex items-center gap-1 rounded-md px-1 transition ${conversationId === chat.id ? "bg-slate-100 dark:bg-zinc-800" : "hover:bg-slate-50 dark:hover:bg-zinc-800/60"}`}>
                     <button type="button" onClick={() => void openChat(chat.id)} disabled={busy || Boolean(loadingChatId)} className="min-w-0 flex-1 px-2 py-2 text-left disabled:opacity-50" aria-current={conversationId === chat.id ? "page" : undefined}>
-                      <span className="block truncate text-xs font-medium text-[#171717]">{chat.title}</span>
-                      <span className="mt-0.5 block text-[10px] text-[#71717a]">{new Date(chat.updatedAt).toLocaleDateString()}</span>
+                      <span className="block truncate text-xs font-medium text-slate-800 dark:text-zinc-200">{chat.title}</span>
+                      <span className="mt-0.5 block text-[10px] text-slate-400 dark:text-zinc-400">{new Date(chat.updatedAt).toLocaleDateString()}</span>
                     </button>
-                    <button type="button" onClick={() => void removeChat(chat.id)} disabled={busy || Boolean(loadingChatId)} className="rounded px-1.5 py-1 text-xs text-[#a1a1aa] opacity-60 transition hover:bg-white hover:text-[#171717] focus:opacity-100 group-hover:opacity-100 disabled:opacity-30" aria-label={`Delete chat: ${chat.title}`} title="Delete chat">×</button>
+                    <button type="button" onClick={() => void removeChat(chat.id)} disabled={busy || Boolean(loadingChatId)} className="rounded px-1.5 py-1 text-xs text-[#a1a1aa] opacity-60 transition hover:bg-slate-200 hover:text-black dark:hover:bg-zinc-700 dark:hover:text-white focus:opacity-100 group-hover:opacity-100 disabled:opacity-30" aria-label={`Delete chat: ${chat.title}`} title="Delete chat">×</button>
                   </div>
                 ))}
               </div>
-              {hasMoreHistory ? <button type="button" onClick={() => void loadMoreHistory()} disabled={historyLoading} className="mt-3 w-full rounded-md px-3 py-2 text-xs font-medium text-[#52525b] hover:bg-[#f4f4f5] disabled:opacity-50">{historyLoading ? "Loading…" : "Load more chats"}</button> : null}
+              {hasMoreHistory ? <button type="button" onClick={() => void loadMoreHistory()} disabled={historyLoading} className="mt-3 w-full rounded-md px-3 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 dark:text-zinc-400 dark:hover:bg-zinc-800 disabled:opacity-50">{historyLoading ? "Loading…" : "Load more chats"}</button> : null}
             </div>
           </aside>
 
         {/* Main Conversation Container */}
-        <div className="relative flex min-h-0 min-w-0 flex-1 flex-col bg-[#fafafa] px-4 pb-4 pt-3 sm:px-6 md:order-1 lg:px-8">
+        <div className="relative flex min-h-0 min-w-0 flex-1 flex-col px-4 pb-4 pt-3 sm:px-6 md:order-1 lg:px-8 bg-[#fafafa] text-[#171717] dark:bg-[#09090b] dark:text-white">
           <div className="flex items-center justify-between gap-2">
-            <button type="button" className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-xs font-medium text-[#171717] md:hidden" onClick={() => setHistoryOpen(true)}>Chat history</button>
+            <button type="button" className="inline-flex h-8 items-center rounded-md border border-slate-200 bg-white px-3 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 md:hidden" onClick={() => setHistoryOpen(true)}>Chat history</button>
             <div className="ml-auto flex items-center gap-2">
               {messages.length > 0 ? (
                 <button
-                  className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#eaeaea] bg-white px-3 text-xs font-medium text-[#171717] transition hover:bg-[#f4f4f5]"
+                  className="inline-flex h-8 items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 text-xs font-medium text-slate-700 transition hover:bg-slate-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-750"
                   type="button"
                   onClick={startNewChat}
                   disabled={busy || Boolean(loadingChatId)}
@@ -429,7 +487,7 @@ function AssistantChat() {
               {!historyVisible ? (
                 <button
                   type="button"
-                  className="hidden h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-xs font-medium text-[#171717] transition hover:bg-[#f4f4f5] md:inline-flex"
+                  className="hidden h-8 items-center rounded-md border border-slate-200 bg-white px-3 text-xs font-medium text-slate-700 transition hover:bg-slate-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-750 md:inline-flex"
                   onClick={toggleDesktopHistory}
                   aria-controls="ask-vozon-history"
                   aria-expanded="false"
@@ -442,25 +500,32 @@ function AssistantChat() {
 
           {messages.length === 0 ? (
             <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-2 pb-12">
-              <div className="w-full max-w-[680px]">
-                <h1 className="mb-6 flex items-center justify-center gap-2.5 text-center text-2xl font-medium tracking-[-0.02em] text-[#171717] sm:text-3xl">
-                  <span className="text-[#2563eb]" aria-hidden="true">✳</span>
-                  <span>{greeting}, {firstName}</span>
-                </h1>
+              <div className="w-full max-w-[700px]">
+                {/* Greeting & Date Matching Dashboard Theme */}
+                <div className="mb-8 text-center">
+                  <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-white leading-tight">
+                    {greeting}, {firstName}.
+                  </h1>
+                  <p className="mt-2 text-[13px] font-normal text-slate-500 dark:text-zinc-400">
+                    {formattedDate}
+                  </p>
+                </div>
 
+                {/* Sleek Prompt Card Matching Screenshot */}
                 <form
-                  className="rounded-2xl border border-[#eaeaea] bg-white px-4 py-3 shadow-xs transition focus-within:border-[#d4d4d8]"
+                  className="rounded-[22px] border border-slate-200 bg-white px-5 pt-4 pb-3 shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all focus-within:border-slate-400 focus-within:shadow-[0_8px_30px_rgb(0,0,0,0.1)] dark:border-zinc-800 dark:bg-[#121215] dark:shadow-[0_12px_42px_rgba(0,0,0,0.5)] dark:focus-within:border-zinc-700"
                   onSubmit={(event) => void submitMessage(event)}
                 >
                   <label className="sr-only" htmlFor="ask-vozon-input">
-                    Ask your personal AI assistant
+                    Ask Vozon
                   </label>
                   <textarea
                     ref={textareaRef}
-                    className="block max-h-40 min-h-[48px] w-full resize-none border-0 bg-transparent p-0 text-[15px] leading-relaxed text-[#171717] placeholder:text-[#a1a1aa] focus:outline-none"
+                    style={{ outline: "none", boxShadow: "none", border: "none", background: "transparent" }}
+                    className="ai-prompt-textarea block max-h-40 min-h-[52px] w-full resize-none border-0 bg-transparent p-0 text-[15px] leading-relaxed text-slate-900 placeholder:text-slate-400 !outline-none !shadow-none !ring-0 focus:!outline-none focus:!shadow-none focus:!ring-0 dark:text-white dark:placeholder:text-zinc-500"
                     id="ask-vozon-input"
                     maxLength={2000}
-                    placeholder="How can I help you today?"
+                    placeholder="Ask Vozon..."
                     rows={2}
                     value={draft}
                     onChange={(event) => setDraft(event.target.value)}
@@ -471,27 +536,148 @@ function AssistantChat() {
                       }
                     }}
                   />
-                  <div className="mt-2 flex items-center justify-between gap-3 pt-1">
-                    <span className="inline-flex items-center gap-1.5 text-[11.5px] font-medium text-[#71717a]">
-                      <SparkIcon className="size-3.5 text-[#171717]" />
-                      Ask Vozon · Grounded in workspace data
-                    </span>
-                    <button
-                      className={`inline-flex size-8 shrink-0 items-center justify-center rounded-full transition ${
-                        draft.trim() && !busy
-                          ? "bg-[#2563eb] text-white hover:bg-[#1d4ed8] cursor-pointer"
-                          : "bg-[#f4f4f5] text-[#a1a1aa] cursor-not-allowed"
-                      }`}
-                      type="submit"
-                      disabled={busy || !draft.trim()}
-                      title={draft.trim() ? "Send message (Enter)" : "Type a message to send"}
-                    >
-                      <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M12 19V5M5 12l7-7 7 7" />
-                      </svg>
-                    </button>
+
+                  {/* Toolbar inside prompt box: + | Manual ▾ | @ ... 🎙️ | ↑ */}
+                  <div className="mt-2 flex items-center justify-between gap-2 border-t border-slate-100 pt-2.5 dark:border-zinc-800">
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => textareaRef.current?.focus()}
+                        className="flex size-7 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 cursor-pointer"
+                        title="Attach context or file"
+                      >
+                        <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                          <path d="M12 5v14M5 12h14" />
+                        </svg>
+                      </button>
+
+                      <div className="relative">
+                        <button
+                          type="button"
+                          onClick={() => setModeDropdownOpen((v) => !v)}
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-750 cursor-pointer"
+                        >
+                          <svg className="size-3.5 text-slate-500 dark:text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                          </svg>
+                          <span>{activeMode}</span>
+                          <svg className={`size-3 text-slate-400 transition-transform ${modeDropdownOpen ? "rotate-180" : ""}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                            <path d="m6 9 6 6 6-6" />
+                          </svg>
+                        </button>
+                        {modeDropdownOpen && (
+                          <div className="absolute left-0 bottom-full mb-2 w-44 rounded-xl border border-slate-200 bg-white p-1 shadow-lg z-30 dark:border-zinc-700 dark:bg-zinc-800">
+                            <button
+                              type="button"
+                              onClick={() => { setActiveMode("Manual"); setModeDropdownOpen(false); }}
+                              className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-left cursor-pointer ${activeMode === "Manual" ? "bg-slate-100 font-semibold text-slate-900 dark:bg-zinc-700 dark:text-white" : "text-slate-600 hover:bg-slate-50 dark:text-zinc-300 dark:hover:bg-zinc-750"}`}
+                            >
+                              <span>🛡️</span>
+                              <span>Manual Mode</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => { setActiveMode("Auto"); setModeDropdownOpen(false); }}
+                              className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-left cursor-pointer ${activeMode === "Auto" ? "bg-slate-100 font-semibold text-slate-900 dark:bg-zinc-700 dark:text-white" : "text-slate-600 hover:bg-slate-50 dark:text-zinc-300 dark:hover:bg-zinc-750"}`}
+                            >
+                              <span>⚡</span>
+                              <span>Autonomous</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => { setActiveMode("Grounded"); setModeDropdownOpen(false); }}
+                              className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-left cursor-pointer ${activeMode === "Grounded" ? "bg-slate-100 font-semibold text-slate-900 dark:bg-zinc-700 dark:text-white" : "text-slate-600 hover:bg-slate-50 dark:text-zinc-300 dark:hover:bg-zinc-750"}`}
+                            >
+                              <span>📚</span>
+                              <span>Grounded Only</span>
+                            </button>
+                          </div>
+                        )}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setDraft((prev) => (prev ? `${prev} @` : "@"));
+                          textareaRef.current?.focus();
+                        }}
+                        className="flex size-7 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 text-sm font-medium cursor-pointer"
+                        title="Mention agent or knowledge base"
+                      >
+                        @
+                      </button>
+                    </div>
+
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={toggleListening}
+                        className={`flex size-8 items-center justify-center rounded-lg transition cursor-pointer ${
+                          isListening
+                            ? "bg-red-50 text-red-600 animate-pulse dark:bg-red-950/40 dark:text-red-400"
+                            : "text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+                        }`}
+                        title={isListening ? "Listening... click to stop" : "Voice dictation"}
+                      >
+                        <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+                          <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                          <line x1="12" x2="12" y1="19" y2="22" />
+                        </svg>
+                      </button>
+
+                      <button
+                        className={`flex size-8 shrink-0 items-center justify-center rounded-xl transition ${
+                          draft.trim() && !busy
+                            ? "bg-black text-white hover:bg-zinc-800 shadow-sm cursor-pointer dark:bg-white dark:text-black dark:hover:bg-zinc-200"
+                            : "bg-slate-100 text-slate-300 dark:bg-zinc-800 dark:text-zinc-600 cursor-not-allowed"
+                        }`}
+                        type="submit"
+                        disabled={busy || !draft.trim()}
+                        title={draft.trim() ? "Send message (Enter)" : "Type a message to send"}
+                      >
+                        <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M12 19V5M5 12l7-7 7 7" />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
                 </form>
+
+                {/* Status Bar Underneath Prompt Card */}
+                <div className="mt-3.5 flex items-center justify-between px-2 text-xs text-slate-500 dark:text-zinc-400">
+                  <div className="flex items-center gap-2">
+                    <span className="flex items-center gap-0.5 text-slate-400 dark:text-zinc-500" aria-hidden="true">
+                      <i className="h-2.5 w-0.5 rounded-full bg-slate-400 dark:bg-zinc-600" />
+                      <i className="h-3.5 w-0.5 rounded-full bg-slate-500 dark:bg-zinc-500" />
+                      <i className="h-2 w-0.5 rounded-full bg-slate-400 dark:bg-zinc-600" />
+                    </span>
+                    <span className="text-slate-600 dark:text-zinc-300 font-normal">
+                      Your voice agents are active
+                    </span>
+                  </div>
+                  <Link
+                    href="/dashboard/agents"
+                    className="font-medium text-slate-600 hover:text-black dark:text-zinc-300 dark:hover:text-white transition"
+                  >
+                    Manage
+                  </Link>
+                </div>
+
+                {/* Quick Action Suggestion Pills */}
+                <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
+                  {suggestions.slice(0, 4).map((item) => (
+                    <button
+                      key={item.title}
+                      type="button"
+                      onClick={() => void submitMessage(undefined, item.prompt)}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs text-slate-700 shadow-xs transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 dark:border-zinc-800 dark:bg-zinc-900/80 dark:text-zinc-300 dark:hover:border-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-white cursor-pointer"
+                    >
+                      <span className="text-slate-400 dark:text-zinc-500">{item.icon}</span>
+                      <span>{item.title}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           ) : (
@@ -514,8 +700,8 @@ function AssistantChat() {
                     <div
                       className={`min-w-0 text-sm leading-relaxed ${
                         message.role === "user"
-                          ? "max-w-[min(90%,42rem)] rounded-2xl rounded-br-sm bg-[#171717] px-4 py-2.5 text-white"
-                          : "group flex-1 py-1 pr-2 text-[#171717]"
+                          ? "max-w-[min(90%,42rem)] rounded-2xl rounded-br-sm bg-[#171717] px-4 py-2.5 text-white dark:bg-white dark:text-black"
+                          : "group flex-1 py-1 pr-2 text-[#171717] dark:text-zinc-100"
                       }`}
                     >
                       {message.role === "user" ? (
@@ -524,25 +710,25 @@ function AssistantChat() {
                         <>
                           <FormattedContent content={message.content} />
                           {message.pendingAction ? (
-                            <div className="mt-5 overflow-hidden rounded-lg border border-[#eaeaea] bg-white">
-                              <div className="border-b border-[#eaeaea] bg-[#fafafa] px-4 py-3">
-                                <p className="m-0 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#71717a]">Approval required</p>
-                                <h3 className="m-0 mt-1 text-base font-semibold text-[#171717]">{message.pendingAction.title}</h3>
-                                <p className="m-0 mt-1 text-xs text-[#71717a]">{message.pendingAction.description}</p>
+                            <div className="mt-5 overflow-hidden rounded-lg border border-[#eaeaea] bg-white dark:border-zinc-800 dark:bg-zinc-900">
+                              <div className="border-b border-[#eaeaea] bg-[#fafafa] px-4 py-3 dark:border-zinc-800 dark:bg-zinc-800/50">
+                                <p className="m-0 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#71717a] dark:text-zinc-400">Approval required</p>
+                                <h3 className="m-0 mt-1 text-base font-semibold text-[#171717] dark:text-white">{message.pendingAction.title}</h3>
+                                <p className="m-0 mt-1 text-xs text-[#71717a] dark:text-zinc-400">{message.pendingAction.description}</p>
                               </div>
                               <dl className="m-0 grid gap-3 px-4 py-4 sm:grid-cols-2">
                                 {message.pendingAction.fields.map((field) => (
                                   <div className={field.label === "Instructions" ? "sm:col-span-2" : ""} key={field.label}>
-                                    <dt className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#71717a]">{field.label}</dt>
-                                    <dd className="m-0 mt-1 max-h-36 overflow-auto whitespace-pre-wrap text-xs leading-5 text-[#171717]">{field.value}</dd>
+                                    <dt className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#71717a] dark:text-zinc-400">{field.label}</dt>
+                                    <dd className="m-0 mt-1 max-h-36 overflow-auto whitespace-pre-wrap text-xs leading-5 text-[#171717] dark:text-zinc-200">{field.value}</dd>
                                   </div>
                                 ))}
                               </dl>
-                              <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#eaeaea] px-4 py-3">
-                                <span className="text-[11px] text-[#71717a]">Nothing changes until you approve.</span>
+                              <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#eaeaea] px-4 py-3 dark:border-zinc-800">
+                                <span className="text-[11px] text-[#71717a] dark:text-zinc-400">Nothing changes until you approve.</span>
                                 <div className="flex gap-2">
-                                  <button className="h-8 rounded-md border border-[#eaeaea] bg-white px-3 text-xs font-medium text-[#171717] transition hover:bg-[#f4f4f5] disabled:opacity-50" type="button" disabled={Boolean(reviewingActionId)} onClick={() => void decideAction(message.pendingAction!.id, false)}>Cancel</button>
-                                  <button className="h-8 rounded-md bg-[#171717] px-3.5 text-xs font-medium text-white transition hover:bg-black disabled:opacity-50" type="button" disabled={Boolean(reviewingActionId)} onClick={() => void decideAction(message.pendingAction!.id, true)}>{reviewingActionId === message.pendingAction.id ? "Saving…" : "Approve change"}</button>
+                                  <button className="h-8 rounded-md border border-[#eaeaea] bg-white px-3 text-xs font-medium text-[#171717] transition hover:bg-[#f4f4f5] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700 disabled:opacity-50" type="button" disabled={Boolean(reviewingActionId)} onClick={() => void decideAction(message.pendingAction!.id, false)}>Cancel</button>
+                                  <button className="h-8 rounded-md bg-[#171717] px-3.5 text-xs font-medium text-white transition hover:bg-black dark:bg-white dark:text-black dark:hover:bg-zinc-200 disabled:opacity-50" type="button" disabled={Boolean(reviewingActionId)} onClick={() => void decideAction(message.pendingAction!.id, true)}>{reviewingActionId === message.pendingAction.id ? "Saving…" : "Approve change"}</button>
                                 </div>
                               </div>
                             </div>
@@ -574,7 +760,7 @@ function AssistantChat() {
                 ) : null}
 
                 {error ? (
-                  <div className="animate-ai-message ml-11 rounded-lg border border-[#eaeaea] bg-white px-4 py-3 text-xs font-medium text-[#171717]" role="alert">
+                  <div className="animate-ai-message ml-11 rounded-lg border border-[#eaeaea] bg-white px-4 py-3 text-xs font-medium text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200" role="alert">
                     {error}
                   </div>
                 ) : null}
@@ -585,7 +771,7 @@ function AssistantChat() {
               {/* Anchored Prompt Box during active chat */}
               <div className="z-20 mx-auto w-full max-w-[740px] shrink-0 pt-2">
                 <form
-                  className="rounded-2xl border border-[#eaeaea] bg-white px-4 py-2.5 shadow-xs transition focus-within:border-[#d4d4d8]"
+                  className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-[0_8px_30px_rgb(0,0,0,0.06)] focus-within:border-slate-400 transition-all dark:border-zinc-800 dark:bg-[#121215] dark:shadow-[0_14px_38px_rgba(0,0,0,0.5)] dark:focus-within:border-zinc-700"
                   onSubmit={(event) => void submitMessage(event)}
                 >
                   <label className="sr-only" htmlFor="ask-vozon-input">
@@ -593,7 +779,8 @@ function AssistantChat() {
                   </label>
                   <textarea
                     ref={textareaRef}
-                    className="block max-h-32 min-h-[36px] w-full resize-none border-0 bg-transparent p-0 text-[15px] leading-relaxed text-[#171717] placeholder:text-[#a1a1aa] focus:outline-none"
+                    style={{ outline: "none", boxShadow: "none", border: "none", background: "transparent" }}
+                    className="ai-prompt-textarea block max-h-32 min-h-[36px] w-full resize-none border-0 bg-transparent p-0 text-[15px] leading-relaxed text-slate-900 placeholder:text-slate-400 !outline-none !shadow-none !ring-0 focus:!outline-none focus:!shadow-none focus:!ring-0 dark:text-white dark:placeholder:text-zinc-500"
                     id="ask-vozon-input"
                     maxLength={2000}
                     placeholder="Reply to Ask Vozon…"
@@ -608,14 +795,14 @@ function AssistantChat() {
                     }}
                   />
                   <div className="mt-1 flex items-center justify-between gap-3">
-                    <span className="text-[11px] text-[#71717a]">
+                    <span className="text-[11px] text-slate-500 dark:text-zinc-400">
                       Press ↵ to send · Shift+↵ for newline
                     </span>
                     <button
                       className={`inline-flex size-8 shrink-0 items-center justify-center rounded-full transition ${
                         draft.trim() && !busy
-                          ? "bg-[#2563eb] text-white hover:bg-[#1d4ed8] cursor-pointer"
-                          : "bg-[#f4f4f5] text-[#a1a1aa] cursor-not-allowed"
+                          ? "bg-black text-white hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 cursor-pointer shadow-sm"
+                          : "bg-slate-100 text-slate-300 dark:bg-zinc-800 dark:text-zinc-600 cursor-not-allowed"
                       }`}
                       type="submit"
                       disabled={busy || !draft.trim()}

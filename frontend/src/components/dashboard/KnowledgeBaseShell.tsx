@@ -56,7 +56,7 @@ type KnowledgeEditor = {
 const buttonClass =
   "inline-flex h-8 items-center justify-center gap-1.5 rounded-md px-3 text-[12px] font-medium transition disabled:cursor-not-allowed disabled:opacity-50";
 const controlClass =
-  "h-8 w-full rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12px] text-[#171717] outline-none transition placeholder:text-[#71717a] focus:border-black";
+  "h-8 w-full rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12px] text-[#171717] outline-none transition placeholder:text-[#71717a] focus:border-black dark:border-zinc-700 dark:bg-zinc-950 dark:text-white dark:placeholder:text-zinc-500 dark:focus:border-white";
 const acceptedFiles =
   ".pdf,.docx,.txt,.md,.csv,.json,.html,.htm,.xml,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,text/markdown,text/csv,application/json,text/html,application/xml";
 
@@ -463,7 +463,7 @@ export function KnowledgeBaseShell() {
           description="Manage the indexed sources your voice agents use to answer caller questions."
           actions={
             <button
-              className={`${buttonClass} bg-[#2563eb] text-white hover:bg-[#1d4ed8]`}
+              className="inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md bg-black px-3.5 text-[12.5px] font-medium text-white transition hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 shadow-sm disabled:opacity-50"
               disabled={!selectedAgent || atCapacity}
               onClick={() => {
                 setError("");
@@ -675,7 +675,7 @@ export function KnowledgeBaseShell() {
 
       {showAddKnowledge ? (
         <div
-          className="fixed inset-0 z-[90] grid place-items-center bg-slate-950/35 p-3 backdrop-blur-[6px] sm:p-5"
+          className="fixed inset-0 z-[90] grid place-items-center bg-black/60 p-3 backdrop-blur-sm sm:p-5"
           role="dialog"
           aria-modal="true"
           aria-labelledby="add-knowledge-title"
@@ -687,24 +687,24 @@ export function KnowledgeBaseShell() {
           }}
         >
           <section
-            className="grid max-h-[calc(100dvh-2rem)] w-full max-w-[640px] overflow-y-auto rounded-xl border border-[#dbe4e1] bg-white"
+            className="grid max-h-[calc(100dvh-2rem)] w-full max-w-[640px] overflow-y-auto rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-2xl dark:border-zinc-800 dark:bg-zinc-900 dark:text-white"
             onMouseDown={(event) => event.stopPropagation()}
           >
-            <header className="flex items-start justify-between gap-4 border-b border-[#eaeaea] px-5 py-4 sm:px-6">
+            <header className="flex items-start justify-between gap-4 border-b border-slate-200 bg-white/95 px-5 py-4 sm:px-6 dark:border-zinc-800 dark:bg-zinc-900/95">
               <div>
-                <span className="app-label text-[#71717a]">Knowledge base</span>
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Knowledge base</span>
                 <h2
-                  className="app-page-title mt-1 mb-0"
+                  className="text-lg font-bold text-slate-900 dark:text-white mt-1 mb-0"
                   id="add-knowledge-title"
                 >
                   Add knowledge
                 </h2>
-                <p className="app-caption mt-1 mb-0">
+                <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 mb-0">
                   Choose one source type. Content is indexed automatically.
                 </p>
               </div>
               <button
-                className="grid size-8 place-items-center rounded-md border border-[#eaeaea] bg-white text-[#52525b] hover:border-black hover:text-[#171717]"
+                className="grid size-8 place-items-center rounded-md border border-slate-200 bg-white text-slate-500 hover:border-black hover:text-black dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:text-white"
                 disabled={busy}
                 onClick={() => {
                   setShowAddKnowledge(false);
@@ -724,7 +724,7 @@ export function KnowledgeBaseShell() {
                   onClose={() => setError("")}
                 />
               ) : null}
-              <label className="app-label grid gap-2">
+              <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
                 Use with voice agent
                 <select
                   className={controlClass}
@@ -751,7 +751,7 @@ export function KnowledgeBaseShell() {
 
               <div className="grid gap-3 sm:grid-cols-2">
                 <button
-                  className="flex min-h-20 items-center gap-3 rounded-lg border border-[#eaeaea] bg-white p-3.5 text-left transition hover:border-black hover:bg-[#fafafa]"
+                  className="flex min-h-20 items-center gap-3 rounded-xl border border-slate-200 bg-white p-3.5 text-left transition hover:border-black dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-600 cursor-pointer"
                   disabled={!selectedAgent || busy || atCapacity}
                   onClick={() => {
                     setShowAddKnowledge(false);
@@ -764,18 +764,18 @@ export function KnowledgeBaseShell() {
                   }}
                   type="button"
                 >
-                  <span className="grid size-9 shrink-0 place-items-center rounded-md border border-[#eaeaea] bg-[#f4f4f5] text-[#171717]">
+                  <span className="grid size-9 shrink-0 place-items-center rounded-lg border border-slate-200 bg-slate-100 text-slate-800 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
                     <Icon icon="plus" />
                   </span>
                   <span>
-                    <strong className="app-strong block text-[13px] text-[#171717]">Add text</strong>
-                    <span className="app-caption mt-0.5 block text-xs text-[#71717a]">
+                    <strong className="block text-sm font-semibold text-slate-900 dark:text-white">Add text</strong>
+                    <span className="mt-0.5 block text-xs text-slate-500 dark:text-zinc-400">
                       Policies, FAQs, and approved answers
                     </span>
                   </span>
                 </button>
                 <label
-                  className={`flex min-h-20 items-center gap-3 rounded-lg border border-[#eaeaea] bg-white p-3.5 text-left transition hover:border-black hover:bg-[#fafafa] ${busy || atCapacity ? "pointer-events-none opacity-50" : "cursor-pointer"}`}
+                  className={`flex min-h-20 items-center gap-3 rounded-xl border border-slate-200 bg-white p-3.5 text-left transition hover:border-black dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-600 ${busy || atCapacity ? "pointer-events-none opacity-50" : "cursor-pointer"}`}
                 >
                   <input
                     className="sr-only"
@@ -788,12 +788,12 @@ export function KnowledgeBaseShell() {
                       void uploadFile(file);
                     }}
                   />
-                  <span className="grid size-9 shrink-0 place-items-center rounded-md border border-[#eaeaea] bg-[#f4f4f5] text-[#171717]">
+                  <span className="grid size-9 shrink-0 place-items-center rounded-lg border border-slate-200 bg-slate-100 text-slate-800 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
                     <Icon icon="upload" />
                   </span>
                   <span>
-                    <strong className="app-strong block text-[13px] text-[#171717]">Upload file</strong>
-                    <span className="app-caption mt-0.5 block text-xs text-[#71717a]">
+                    <strong className="block text-sm font-semibold text-slate-900 dark:text-white">Upload file</strong>
+                    <span className="mt-0.5 block text-xs text-slate-500 dark:text-zinc-400">
                       PDF, DOCX, TXT, CSV, JSON, HTML, or XML
                     </span>
                   </span>
@@ -801,13 +801,13 @@ export function KnowledgeBaseShell() {
               </div>
 
               <form
-                className="grid gap-3 rounded-lg border border-[#eaeaea] bg-[#fafafa] p-3.5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end"
+                className="grid gap-3 rounded-xl border border-slate-200 bg-slate-50/70 p-3.5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end dark:border-zinc-800 dark:bg-zinc-900/90"
                 onSubmit={(event) => void addWebsite(event)}
               >
-                <label className="app-label grid gap-1.5">
+                <label className="text-xs font-semibold text-slate-700 dark:text-zinc-200 grid gap-1.5">
                   Website URL
                   <input
-                    className={controlClass}
+                    className="h-11 w-full rounded-lg border border-[#eaeaea] bg-white px-3 text-xs text-[#171717] outline-none transition placeholder:text-[#71717a] focus:border-black dark:border-zinc-700 dark:bg-zinc-950 dark:text-white dark:placeholder:text-zinc-500 dark:focus:border-white"
                     placeholder="https://example.com/help"
                     type="url"
                     value={url}
@@ -815,14 +815,14 @@ export function KnowledgeBaseShell() {
                   />
                 </label>
                 <button
-                  className={`${buttonClass} border border-[#eaeaea] bg-white text-[#171717] hover:bg-[#f4f4f5]`}
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-black px-4 text-xs font-semibold text-white transition hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 disabled:opacity-50 disabled:dark:bg-zinc-800 disabled:dark:text-zinc-500 shadow-sm"
                   disabled={busy || atCapacity || !url.trim()}
                   type="submit"
                 >
                   <Icon icon="link" /> Index website
                 </button>
               </form>
-              <p className="app-caption m-0 text-center">
+              <p className="m-0 text-center text-xs text-slate-500 dark:text-zinc-400">
                 Files can be up to 20MB. You can edit, disable, re-index, or
                 remove sources later.
               </p>
@@ -898,18 +898,18 @@ function TextEditorModal({
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <section className="grid max-h-[calc(100vh-24px)] w-full max-w-2xl grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden rounded-lg border border-white/10 bg-[#ffffff] shadow-2xl">
-        <header className="flex items-start justify-between gap-4 border-b border-white/10 bg-[#ffffff] px-5 py-4 sm:px-6">
+      <section className="grid max-h-[calc(100vh-24px)] w-full max-w-2xl grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-2xl dark:border-zinc-800 dark:bg-zinc-900 dark:text-white">
+        <header className="flex items-start justify-between gap-4 border-b border-slate-200 bg-white/95 px-5 py-4 sm:px-6 dark:border-zinc-800 dark:bg-zinc-900/95">
           <div>
-            <h2 className="app-page-title m-0">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white m-0">
               {editor.sourceId ? "Edit knowledge" : "Add text knowledge"}
             </h2>
-            <p className="app-caption mt-1 mb-0">
+            <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 mb-0">
               Saving creates fresh searchable chunks and embeddings.
             </p>
           </div>
           <button
-            className="grid size-9 place-items-center rounded-lg border border-white/10 text-white/60 hover:bg-white/[0.08] hover:text-white"
+            className="grid size-9 place-items-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:border-black hover:text-black dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:text-white"
             onClick={onClose}
             type="button"
             aria-label="Close"
@@ -919,11 +919,11 @@ function TextEditorModal({
         </header>
         <div className="grid gap-4 overflow-y-auto px-5 py-5 sm:px-6">
           {error ? (
-            <div className="app-body rounded-lg border border-[#fecaca] bg-[#fff1f2] px-3 py-2 text-[#b91c1c]">
+            <div className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-800 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-300">
               {error}
             </div>
           ) : null}
-          <label className="app-label grid gap-2">
+          <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
             Title
             <input
               className={controlClass}
@@ -935,10 +935,10 @@ function TextEditorModal({
               }
             />
           </label>
-          <label className="app-label grid gap-2">
+          <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
             Knowledge text
             <textarea
-              className="app-control-text min-h-80 resize-y rounded-md border border-[#eaeaea] bg-white p-3 text-[12px] text-[#171717] outline-none focus:border-black"
+              className="min-h-80 resize-y rounded-lg border border-slate-200 bg-white p-3 text-xs text-slate-900 outline-none transition focus:border-black dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:focus:border-white"
               placeholder="Add approved facts, policies, FAQs, and procedures…"
               value={editor.content}
               onChange={(event) =>
@@ -947,9 +947,9 @@ function TextEditorModal({
             />
           </label>
         </div>
-        <footer className="flex justify-end gap-2 border-t border-[#eaeaea] px-5 py-3 sm:px-6">
+        <footer className="flex justify-end gap-2 border-t border-slate-200 bg-slate-50/50 px-5 py-3 sm:px-6 dark:border-zinc-800 dark:bg-zinc-900/50">
           <button
-            className={`${buttonClass} border border-[#eaeaea] bg-white text-[#52525b] hover:bg-[#f4f4f5]`}
+            className="inline-flex h-9 items-center justify-center rounded-lg border border-slate-200 bg-white px-4 text-xs font-medium text-slate-700 transition hover:bg-slate-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
             disabled={busy}
             onClick={onClose}
             type="button"
@@ -957,7 +957,7 @@ function TextEditorModal({
             Cancel
           </button>
           <button
-            className={`${buttonClass} bg-[#171717] text-white hover:bg-black`}
+            className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-black px-4 text-xs font-semibold text-white transition hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 disabled:opacity-50 shadow-sm"
             disabled={busy || !editor.name.trim() || !editor.content.trim()}
             onClick={onSave}
             type="button"

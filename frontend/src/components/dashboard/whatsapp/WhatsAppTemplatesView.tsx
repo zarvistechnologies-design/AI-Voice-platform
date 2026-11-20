@@ -341,7 +341,7 @@ export function WhatsAppTemplatesView({
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search templates..."
             aria-label="Search templates"
-            className="h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717] placeholder:text-[#71717a] focus:border-[#171717] focus:outline-none"
+            className="h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717] placeholder:text-[#71717a] focus:border-[#171717] focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-white dark:placeholder-zinc-500 dark:focus:border-zinc-600"
           />
         </div>
 
@@ -350,24 +350,24 @@ export function WhatsAppTemplatesView({
             aria-label="Filter by category"
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="h-8 rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12.5px] font-medium text-[#171717]"
+            className="h-8 rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12.5px] font-medium text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200"
           >
-            <option value="ALL">All Categories ({templates.length})</option>
-            <option value="UTILITY">Utility</option>
-            <option value="MARKETING">Marketing</option>
-            <option value="AUTHENTICATION">Authentication</option>
+            <option value="ALL" className="dark:bg-zinc-900 dark:text-white">All Categories ({templates.length})</option>
+            <option value="UTILITY" className="dark:bg-zinc-900 dark:text-white">Utility</option>
+            <option value="MARKETING" className="dark:bg-zinc-900 dark:text-white">Marketing</option>
+            <option value="AUTHENTICATION" className="dark:bg-zinc-900 dark:text-white">Authentication</option>
           </select>
 
           <select
             aria-label="Filter by status"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="h-8 rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12.5px] font-medium text-[#171717]"
+            className="h-8 rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12.5px] font-medium text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200"
           >
-            <option value="ALL">All Statuses</option>
-            <option value="APPROVED">Approved</option>
-            <option value="PENDING">Pending</option>
-            <option value="REJECTED">Rejected</option>
+            <option value="ALL" className="dark:bg-zinc-900 dark:text-white">All Statuses</option>
+            <option value="APPROVED" className="dark:bg-zinc-900 dark:text-white">Approved</option>
+            <option value="PENDING" className="dark:bg-zinc-900 dark:text-white">Pending</option>
+            <option value="REJECTED" className="dark:bg-zinc-900 dark:text-white">Rejected</option>
           </select>
 
           {/* Sync from Meta WABA */}
@@ -382,7 +382,7 @@ export function WhatsAppTemplatesView({
                   alert(err instanceof Error ? err.message : "Failed to sync templates from Meta");
                 }
               }}
-              className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#171717] transition hover:bg-[#f4f4f5]"
+              className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#171717] transition hover:bg-[#f4f4f5] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800 dark:hover:text-white"
             >
               <span>↻</span>
               <span className="hidden sm:inline">Sync Meta</span>
@@ -391,7 +391,7 @@ export function WhatsAppTemplatesView({
           <button
             type="button"
             onClick={() => setShowBlueprintsModal(true)}
-            className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#171717] transition hover:bg-[#f4f4f5]"
+            className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#171717] transition hover:bg-[#f4f4f5] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800 dark:hover:text-white"
           >
             Blueprints
           </button>
@@ -399,7 +399,7 @@ export function WhatsAppTemplatesView({
           <button
             type="button"
             onClick={() => setShowCreateModal(true)}
-            className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3 text-[12.5px] font-medium text-white transition hover:bg-black"
+            className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3 text-[12.5px] font-medium text-white transition hover:bg-black dark:bg-white dark:text-black dark:hover:bg-zinc-200"
           >
             + New Template
           </button>
@@ -412,29 +412,29 @@ export function WhatsAppTemplatesView({
         <div className="grid gap-2 min-w-0">
           <div className="flex items-center justify-between px-0.5">
             <h2 className="m-0 text-[13px] font-semibold text-[#171717]">
-              Templates <span className="ml-1 font-normal text-[#71717a]">{filteredTemplates.length}</span>
+              Templates <span className="ml-1 font-normal text-[#71717a] dark:text-zinc-400">{filteredTemplates.length}</span>
             </h2>
           </div>
 
-          <div className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white">
+          <div className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white dark:border-zinc-800 dark:bg-[#121215]">
             {filteredTemplates.length === 0 ? (
               <div className="px-6 py-12 text-center">
-                <strong className="block text-[13px] font-semibold text-[#171717]">No templates found</strong>
-                <p className="mt-1 text-[12px] text-[#71717a]">
+                <strong className="block text-[13px] font-semibold text-[#171717] dark:text-white">No templates found</strong>
+                <p className="mt-1 text-[12px] text-[#71717a] dark:text-zinc-400">
                   No templates matched your filter or search query.
                 </p>
                 <div className="mt-3 flex justify-center gap-2">
                   <button
                     type="button"
                     onClick={() => setShowBlueprintsModal(true)}
-                    className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3 text-[12.5px] font-medium text-white"
+                    className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3 text-[12.5px] font-medium text-white dark:bg-white dark:text-black dark:hover:bg-zinc-200"
                   >
                     Browse Blueprints
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="divide-y divide-[#eaeaea]">
+              <div className="divide-y divide-[#eaeaea] dark:divide-zinc-800">
                 {filteredTemplates.map((tpl) => {
                   const isSelected = activeTemplate?._id === tpl._id;
                   return (
@@ -451,29 +451,29 @@ export function WhatsAppTemplatesView({
                         }
                       }}
                       className={`flex min-h-[58px] cursor-pointer items-center justify-between gap-4 px-4 py-2.5 transition ${
-                        isSelected ? "bg-[#fafafa]" : "hover:bg-[#fafafa]"
+                        isSelected ? "bg-[#fafafa] dark:bg-zinc-800" : "hover:bg-[#fafafa] dark:hover:bg-zinc-800/60"
                       }`}
                     >
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-mono text-[13px] font-semibold text-[#171717]">
+                          <span className="font-mono text-[13px] font-semibold text-[#171717] dark:text-white">
                             {tpl.name}
                           </span>
-                          <span className="rounded border border-[#eaeaea] bg-[#fafafa] px-1.5 py-0.2 text-[10px] font-medium uppercase text-[#52525b]">
+                          <span className="rounded border border-[#eaeaea] bg-[#fafafa] px-1.5 py-0.2 text-[10px] font-medium uppercase text-[#52525b] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
                             {tpl.category}
                           </span>
-                          <span className="font-mono text-[11px] text-[#71717a]">
+                          <span className="font-mono text-[11px] text-[#71717a] dark:text-zinc-400">
                             {tpl.language || "en_US"}
                           </span>
                         </div>
-                        <p className="mt-0.5 truncate text-[12px] text-[#71717a]">
+                        <p className="mt-0.5 truncate text-[12px] text-[#71717a] dark:text-zinc-400">
                           {tpl.bodyText}
                         </p>
                       </div>
 
                       <div className="flex shrink-0 items-center gap-2">
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-[#eaeaea] bg-[#fafafa] px-2.5 py-0.5 text-[11px] font-medium text-[#171717]">
-                          <span className={`size-1.5 rounded-full ${tpl.status === "APPROVED" ? "bg-[#171717]" : "bg-[#71717a]"}`} />
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-[#eaeaea] bg-[#fafafa] px-2.5 py-0.5 text-[11px] font-medium text-[#171717] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
+                          <span className={`size-1.5 rounded-full ${tpl.status === "APPROVED" ? "bg-[#171717] dark:bg-emerald-400" : "bg-[#71717a] dark:bg-zinc-500"}`} />
                           {tpl.status}
                         </span>
                         <button
@@ -482,7 +482,7 @@ export function WhatsAppTemplatesView({
                             e.stopPropagation();
                             handleDuplicateTemplate(tpl);
                           }}
-                          className="inline-flex h-7 items-center rounded-md border border-[#eaeaea] bg-white px-2 text-[11.5px] font-medium text-[#52525b] hover:bg-[#f4f4f5] hover:text-[#171717]"
+                          className="inline-flex h-7 items-center rounded-md border border-[#eaeaea] bg-white px-2 text-[11.5px] font-medium text-[#52525b] hover:bg-[#f4f4f5] hover:text-[#171717] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white"
                         >
                           Clone
                         </button>
@@ -492,7 +492,7 @@ export function WhatsAppTemplatesView({
                             e.stopPropagation();
                             void handleDeleteTemplate(tpl._id);
                           }}
-                          className="grid size-7 place-items-center rounded-md border border-transparent text-[#71717a] hover:border-[#eaeaea] hover:bg-white hover:text-[#171717]"
+                          className="grid size-7 place-items-center rounded-md border border-transparent text-[#71717a] hover:border-[#eaeaea] hover:bg-white hover:text-[#171717] dark:text-zinc-500 dark:hover:border-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-rose-400"
                           title="Delete Template"
                         >
                           ✕
@@ -509,13 +509,13 @@ export function WhatsAppTemplatesView({
         {/* Right: Clean Template Preview & Payload Inspector */}
         <aside className="grid gap-3">
           <div className="flex items-center justify-between px-0.5">
-            <h2 className="m-0 text-[13px] font-semibold text-[#171717]">Preview</h2>
-            <div className="flex rounded-md border border-[#eaeaea] bg-white p-0.5 text-[11px] font-medium">
+            <h2 className="m-0 text-[13px] font-semibold text-[#171717] dark:text-white">Preview</h2>
+            <div className="flex rounded-md border border-[#eaeaea] bg-white p-0.5 text-[11px] font-medium dark:border-zinc-800 dark:bg-zinc-900">
               <button
                 type="button"
                 onClick={() => setStudioTab("preview")}
                 className={`rounded px-2 py-0.5 transition ${
-                  studioTab === "preview" ? "bg-[#171717] text-white" : "text-[#71717a] hover:text-[#171717]"
+                  studioTab === "preview" ? "bg-[#171717] text-white dark:bg-white dark:text-black" : "text-[#71717a] hover:text-[#171717] dark:text-zinc-400 dark:hover:text-white"
                 }`}
               >
                 Message
@@ -524,7 +524,7 @@ export function WhatsAppTemplatesView({
                 type="button"
                 onClick={() => setStudioTab("payload")}
                 className={`rounded px-2 py-0.5 transition ${
-                  studioTab === "payload" ? "bg-[#171717] text-white" : "text-[#71717a] hover:text-[#171717]"
+                  studioTab === "payload" ? "bg-[#171717] text-white dark:bg-white dark:text-black" : "text-[#71717a] hover:text-[#171717] dark:text-zinc-400 dark:hover:text-white"
                 }`}
               >
                 JSON
@@ -532,30 +532,30 @@ export function WhatsAppTemplatesView({
             </div>
           </div>
 
-          <div className="rounded-lg border border-[#eaeaea] bg-white p-4 space-y-3">
+          <div className="rounded-lg border border-[#eaeaea] bg-white p-4 space-y-3 dark:border-zinc-800 dark:bg-[#121215]">
             {activeTemplate ? (
               studioTab === "preview" ? (
                 <>
-                  <div className="flex items-center justify-between border-b border-[#eaeaea] pb-2.5">
-                    <span className="font-mono text-[12px] font-semibold text-[#171717]">
+                  <div className="flex items-center justify-between border-b border-[#eaeaea] pb-2.5 dark:border-zinc-800">
+                    <span className="font-mono text-[12px] font-semibold text-[#171717] dark:text-white">
                       {activeTemplate.name}
                     </span>
                     <button
                       type="button"
                       onClick={() => setShowTestModal(true)}
-                      className="inline-flex h-7 items-center rounded-md border border-[#eaeaea] bg-white px-2.5 text-[11.5px] font-medium text-[#171717] hover:bg-[#f4f4f5]"
+                      className="inline-flex h-7 items-center rounded-md border border-[#eaeaea] bg-white px-2.5 text-[11.5px] font-medium text-[#171717] hover:bg-[#f4f4f5] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700 dark:hover:text-white"
                     >
                       Test Send
                     </button>
                   </div>
 
-                  <div className="rounded-md border border-[#eaeaea] bg-[#fafafa] p-3.5 space-y-2 text-[12.5px] leading-relaxed">
+                  <div className="rounded-md border border-[#eaeaea] bg-[#fafafa] p-3.5 space-y-2 text-[12.5px] leading-relaxed dark:border-zinc-800 dark:bg-zinc-900/60">
                     {activeTemplate.headerText && (
-                      <div className="font-semibold text-[#171717]">{activeTemplate.headerText}</div>
+                      <div className="font-semibold text-[#171717] dark:text-white">{activeTemplate.headerText}</div>
                     )}
-                    <div className="whitespace-pre-line text-[#52525b]">{interpolatedBody}</div>
+                    <div className="whitespace-pre-line text-[#52525b] dark:text-zinc-200">{interpolatedBody}</div>
                     {activeTemplate.footerText && (
-                      <div className="pt-1 text-[11px] text-[#71717a]">{activeTemplate.footerText}</div>
+                      <div className="pt-1 text-[11px] text-[#71717a] dark:text-zinc-400">{activeTemplate.footerText}</div>
                     )}
                   </div>
 
@@ -564,7 +564,7 @@ export function WhatsAppTemplatesView({
                       {activeTemplate.buttons.map((btn, i) => (
                         <div
                           key={i}
-                          className="rounded-md border border-[#eaeaea] bg-white py-1.5 text-center text-[12px] font-medium text-[#171717]"
+                          className="rounded-md border border-[#eaeaea] bg-white py-1.5 text-center text-[12px] font-medium text-[#171717] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
                         >
                           {btn.text}
                         </div>
@@ -573,18 +573,18 @@ export function WhatsAppTemplatesView({
                   )}
 
                   {activeVars.length > 0 && (
-                    <div className="border-t border-[#eaeaea] pt-3 space-y-2">
-                      <span className="block text-[11px] font-semibold uppercase tracking-[0.06em] text-[#71717a]">
+                    <div className="border-t border-[#eaeaea] pt-3 space-y-2 dark:border-zinc-800">
+                      <span className="block text-[11px] font-semibold uppercase tracking-[0.06em] text-[#71717a] dark:text-zinc-400">
                         Sample Variables
                       </span>
                       {activeVars.map((v) => (
                         <div key={v} className="flex items-center gap-2">
-                          <span className="w-10 font-mono text-[11px] text-[#71717a]">{`{{${v}}}`}</span>
+                          <span className="w-10 font-mono text-[11px] text-[#71717a] dark:text-zinc-400">{`{{${v}}}`}</span>
                           <input
                             type="text"
                             value={sampleVars[v] || ""}
                             onChange={(e) => setSampleVars((prev) => ({ ...prev, [v]: e.target.value }))}
-                            className="h-7 flex-1 rounded border border-[#eaeaea] bg-white px-2 text-[12px] text-[#171717]"
+                            className="h-7 flex-1 rounded border border-[#eaeaea] bg-white px-2 text-[12px] text-[#171717] dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
                           />
                         </div>
                       ))}
@@ -594,22 +594,22 @@ export function WhatsAppTemplatesView({
               ) : (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-medium text-[#71717a]">Meta Cloud API Payload</span>
+                    <span className="text-[11px] font-medium text-[#71717a] dark:text-zinc-400">Meta Cloud API Payload</span>
                     <button
                       type="button"
                       onClick={() => handleCopyPayload(metaJsonPayload)}
-                      className="rounded border border-[#eaeaea] bg-[#fafafa] px-2 py-0.5 text-[11px] font-medium text-[#171717]"
+                      className="rounded border border-[#eaeaea] bg-[#fafafa] px-2 py-0.5 text-[11px] font-medium text-[#171717] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
                     >
                       {copiedPayload ? "Copied" : "Copy JSON"}
                     </button>
                   </div>
-                  <pre className="max-h-72 overflow-auto rounded-md border border-[#eaeaea] bg-[#fafafa] p-3 font-mono text-[11px] text-[#171717]">
+                  <pre className="max-h-72 overflow-auto rounded-md border border-[#eaeaea] bg-[#fafafa] p-3 font-mono text-[11px] text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200">
                     {metaJsonPayload}
                   </pre>
                 </div>
               )
             ) : (
-              <div className="py-8 text-center text-[12px] text-[#71717a]">
+              <div className="py-8 text-center text-[12px] text-[#71717a] dark:text-zinc-400">
                 Select a template to inspect.
               </div>
             )}
@@ -619,55 +619,55 @@ export function WhatsAppTemplatesView({
 
       {/* Create Template Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4 backdrop-blur-[2px]">
-          <div className="w-full max-w-lg rounded-lg border border-[#eaeaea] bg-white p-5 shadow-xl">
-            <div className="flex items-center justify-between border-b border-[#eaeaea] pb-3">
-              <h3 className="m-0 text-[15px] font-semibold text-[#171717]">Create WhatsApp Template</h3>
-              <button onClick={() => setShowCreateModal(false)} className="text-[#71717a] hover:text-[#171717]">
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4 backdrop-blur-[2px]">
+          <div className="w-full max-w-lg rounded-lg border border-[#eaeaea] bg-white p-5 shadow-xl dark:border-zinc-800 dark:bg-[#121215]">
+            <div className="flex items-center justify-between border-b border-[#eaeaea] pb-3 dark:border-zinc-800">
+              <h3 className="m-0 text-[15px] font-semibold text-[#171717] dark:text-white">Create WhatsApp Template</h3>
+              <button onClick={() => setShowCreateModal(false)} className="text-[#71717a] hover:text-[#171717] dark:text-zinc-400 dark:hover:text-white">
                 ✕
               </button>
             </div>
             <form onSubmit={handleCreateTemplate} className="mt-4 space-y-3.5">
               {createError && (
-                <div className="rounded-md border border-[#eaeaea] bg-[#fafafa] px-3 py-2 text-[12px] text-[#171717]">
+                <div className="rounded-md border border-[#eaeaea] bg-[#fafafa] px-3 py-2 text-[12px] text-[#171717] dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-300">
                   {createError}
                 </div>
               )}
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
-                  <label className="block text-[12px] font-medium text-[#171717]">Template Name</label>
+                  <label className="block text-[12px] font-medium text-[#171717] dark:text-zinc-300">Template Name</label>
                   <input
                     type="text"
                     required
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
                     placeholder="appointment_reminder"
-                    className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 font-mono text-[12.5px] text-[#171717]"
+                    className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 font-mono text-[12.5px] text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-white dark:placeholder-zinc-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-[12px] font-medium text-[#171717]">Category</label>
+                  <label className="block text-[12px] font-medium text-[#171717] dark:text-zinc-300">Category</label>
                   <select
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value as typeof newCategory)}
-                    className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12.5px] text-[#171717]"
+                    className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12.5px] text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200"
                   >
-                    <option value="UTILITY">UTILITY</option>
-                    <option value="MARKETING">MARKETING</option>
-                    <option value="AUTHENTICATION">AUTHENTICATION</option>
+                    <option value="UTILITY" className="dark:bg-zinc-900 dark:text-white">UTILITY</option>
+                    <option value="MARKETING" className="dark:bg-zinc-900 dark:text-white">MARKETING</option>
+                    <option value="AUTHENTICATION" className="dark:bg-zinc-900 dark:text-white">AUTHENTICATION</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[12px] font-medium text-[#171717]">Language</label>
+                  <label className="block text-[12px] font-medium text-[#171717] dark:text-zinc-300">Language</label>
                   <input
                     type="text"
                     value={newLanguage}
                     onChange={(e) => setNewLanguage(e.target.value)}
-                    className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] text-[#171717]"
+                    className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-[12px] font-medium text-[#171717]">Header Text (Optional)</label>
+                  <label className="block text-[12px] font-medium text-[#171717] dark:text-zinc-300">Header Text (Optional)</label>
                   <input
                     type="text"
                     value={newHeaderText}
@@ -675,41 +675,41 @@ export function WhatsAppTemplatesView({
                       setNewHeaderText(e.target.value);
                       setNewHeaderType(e.target.value.trim() ? "TEXT" : "NONE");
                     }}
-                    className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] text-[#171717]"
+                    className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-white"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-[12px] font-medium text-[#171717]">Body Text</label>
+                <label className="block text-[12px] font-medium text-[#171717] dark:text-zinc-300">Body Text</label>
                 <textarea
                   rows={4}
                   required
                   value={newBodyText}
                   onChange={(e) => setNewBodyText(e.target.value)}
-                  className="mt-1 w-full rounded-md border border-[#eaeaea] bg-white p-3 text-[12.5px] text-[#171717]"
+                  className="mt-1 w-full rounded-md border border-[#eaeaea] bg-white p-3 text-[12.5px] text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-white"
                 />
               </div>
               <div>
-                <label className="block text-[12px] font-medium text-[#171717]">Footer Text (Optional)</label>
+                <label className="block text-[12px] font-medium text-[#171717] dark:text-zinc-300">Footer Text (Optional)</label>
                 <input
                   type="text"
                   value={newFooterText}
                   onChange={(e) => setNewFooterText(e.target.value)}
-                  className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] text-[#171717]"
+                  className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-white"
                 />
               </div>
-              <div className="flex justify-end gap-2 border-t border-[#eaeaea] pt-3">
+              <div className="flex justify-end gap-2 border-t border-[#eaeaea] pt-3 dark:border-zinc-800">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#52525b]"
+                  className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#52525b] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={creating}
-                  className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3.5 text-[12.5px] font-medium text-white hover:bg-black disabled:opacity-50"
+                  className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3.5 text-[12.5px] font-medium text-white hover:bg-black disabled:opacity-50 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
                 >
                   {creating ? "Creating..." : "Create Template"}
                 </button>
@@ -721,30 +721,30 @@ export function WhatsAppTemplatesView({
 
       {/* Blueprints Modal */}
       {showBlueprintsModal && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4 backdrop-blur-[2px]">
-          <div className="w-full max-w-xl rounded-lg border border-[#eaeaea] bg-white p-5 shadow-xl">
-            <div className="flex items-center justify-between border-b border-[#eaeaea] pb-3">
-              <h3 className="m-0 text-[15px] font-semibold text-[#171717]">Template Blueprints</h3>
-              <button onClick={() => setShowBlueprintsModal(false)} className="text-[#71717a] hover:text-[#171717]">
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4 backdrop-blur-[2px]">
+          <div className="w-full max-w-xl rounded-lg border border-[#eaeaea] bg-white p-5 shadow-xl dark:border-zinc-800 dark:bg-[#121215]">
+            <div className="flex items-center justify-between border-b border-[#eaeaea] pb-3 dark:border-zinc-800">
+              <h3 className="m-0 text-[15px] font-semibold text-[#171717] dark:text-white">Template Blueprints</h3>
+              <button onClick={() => setShowBlueprintsModal(false)} className="text-[#71717a] hover:text-[#171717] dark:text-zinc-400 dark:hover:text-white">
                 ✕
               </button>
             </div>
-            <div className="mt-3 divide-y divide-[#eaeaea] max-h-96 overflow-y-auto">
+            <div className="mt-3 divide-y divide-[#eaeaea] max-h-96 overflow-y-auto dark:divide-zinc-800">
               {TEMPLATE_BLUEPRINTS.map((bp) => (
                 <div key={bp.name} className="flex items-center justify-between gap-4 py-3">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <strong className="font-mono text-[12.5px] text-[#171717]">{bp.name}</strong>
-                      <span className="rounded border border-[#eaeaea] bg-[#fafafa] px-1.5 py-0.2 text-[10px] text-[#52525b]">
+                      <strong className="font-mono text-[12.5px] text-[#171717] dark:text-white">{bp.name}</strong>
+                      <span className="rounded border border-[#eaeaea] bg-[#fafafa] px-1.5 py-0.2 text-[10px] text-[#52525b] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
                         {bp.category}
                       </span>
                     </div>
-                    <p className="mt-0.5 text-[12px] text-[#71717a]">{bp.description}</p>
+                    <p className="mt-0.5 text-[12px] text-[#71717a] dark:text-zinc-400">{bp.description}</p>
                   </div>
                   <button
                     type="button"
                     onClick={() => handleLoadBlueprint(bp)}
-                    className="inline-flex h-7 shrink-0 items-center rounded-md bg-[#171717] px-2.5 text-[12px] font-medium text-white hover:bg-black"
+                    className="inline-flex h-7 shrink-0 items-center rounded-md bg-[#171717] px-2.5 text-[12px] font-medium text-white hover:bg-black dark:bg-white dark:text-black dark:hover:bg-zinc-200"
                   >
                     Use Blueprint
                   </button>
@@ -757,17 +757,17 @@ export function WhatsAppTemplatesView({
 
       {/* Test Send Modal */}
       {showTestModal && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4 backdrop-blur-[2px]">
-          <div className="w-full max-w-md rounded-lg border border-[#eaeaea] bg-white p-5 shadow-xl">
-            <div className="flex items-center justify-between border-b border-[#eaeaea] pb-3">
-              <h3 className="m-0 text-[15px] font-semibold text-[#171717]">Send Test Template</h3>
-              <button onClick={() => setShowTestModal(false)} className="text-[#71717a] hover:text-[#171717]">
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4 backdrop-blur-[2px]">
+          <div className="w-full max-w-md rounded-lg border border-[#eaeaea] bg-white p-5 shadow-xl dark:border-zinc-800 dark:bg-[#121215]">
+            <div className="flex items-center justify-between border-b border-[#eaeaea] pb-3 dark:border-zinc-800">
+              <h3 className="m-0 text-[15px] font-semibold text-[#171717] dark:text-white">Send Test Template</h3>
+              <button onClick={() => setShowTestModal(false)} className="text-[#71717a] hover:text-[#171717] dark:text-zinc-400 dark:hover:text-white">
                 ✕
               </button>
             </div>
             <form onSubmit={handleSendTestMessage} className="mt-4 space-y-3.5">
               <div>
-                <label className="block text-[12px] font-medium text-[#171717]">
+                <label className="block text-[12px] font-medium text-[#171717] dark:text-zinc-300">
                   Recipient Phone Number (with Country Code)
                 </label>
                 <input
@@ -776,26 +776,26 @@ export function WhatsAppTemplatesView({
                   value={testPhone}
                   onChange={(e) => setTestPhone(e.target.value)}
                   placeholder="e.g. 919876543210"
-                  className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717]"
+                  className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-white"
                 />
               </div>
               {testNotice && (
-                <div className="rounded-md border border-[#eaeaea] bg-[#fafafa] px-3 py-2 text-[12px] text-[#171717]">
+                <div className="rounded-md border border-[#eaeaea] bg-[#fafafa] px-3 py-2 text-[12px] text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200">
                   {testNotice.msg}
                 </div>
               )}
-              <div className="flex justify-end gap-2 border-t border-[#eaeaea] pt-3">
+              <div className="flex justify-end gap-2 border-t border-[#eaeaea] pt-3 dark:border-zinc-800">
                 <button
                   type="button"
                   onClick={() => setShowTestModal(false)}
-                  className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#52525b]"
+                  className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#52525b] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
                 >
                   Close
                 </button>
                 <button
                   type="submit"
                   disabled={sendingTest}
-                  className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3.5 text-[12.5px] font-medium text-white hover:bg-black disabled:opacity-50"
+                  className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3.5 text-[12.5px] font-medium text-white hover:bg-black disabled:opacity-50 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
                 >
                   {sendingTest ? "Sending..." : "Send Test"}
                 </button>

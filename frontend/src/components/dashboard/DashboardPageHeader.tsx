@@ -54,6 +54,7 @@ export function DashboardWorkspaceBar() {
       const isDark = saved === "dark";
       setDarkMode(isDark);
       document.documentElement.setAttribute("data-dashboard-theme", isDark ? "dark" : "light");
+      document.documentElement.classList.toggle("dark", isDark);
     } catch {
       /* localStorage may be unavailable */
     }
@@ -64,6 +65,7 @@ export function DashboardWorkspaceBar() {
       const next = !prev;
       const value = next ? "dark" : "light";
       document.documentElement.setAttribute("data-dashboard-theme", value);
+      document.documentElement.classList.toggle("dark", next);
       try {
         localStorage.setItem("vozon_dashboard_theme", value);
       } catch {
@@ -103,11 +105,11 @@ export function DashboardWorkspaceBar() {
     .toUpperCase() || "U";
 
   return (
-    <div className="dashboard-workspace-bar border-b border-[#eaeaea] bg-white px-5 sm:px-6 lg:px-7">
+    <div className="dashboard-workspace-bar border-b border-[#eaeaea] bg-white px-5 sm:px-6 lg:px-7 dark:border-zinc-800 dark:bg-[#09090b]">
       <div className="flex h-12 w-full items-center justify-between gap-4">
         <div className="flex min-w-0 items-center">
           <Link
-            className="group flex min-w-0 items-center gap-1.5 py-1 text-[13px] font-semibold text-[#171717] transition hover:opacity-70"
+            className="group flex min-w-0 items-center gap-1.5 py-1 text-[13px] font-semibold text-[#171717] transition hover:opacity-70 dark:text-zinc-100"
             href="/dashboard/settings"
             title="Workspace settings"
           >
@@ -115,7 +117,7 @@ export function DashboardWorkspaceBar() {
               {workspaceName}
             </span>
             <svg
-              className="size-3.5 shrink-0 fill-none stroke-current stroke-2 text-[#71717a] transition group-hover:text-[#171717]"
+              className="size-3.5 shrink-0 fill-none stroke-current stroke-2 text-[#71717a] transition group-hover:text-[#171717] dark:text-zinc-400 dark:group-hover:text-zinc-200"
               viewBox="0 0 24 24"
               aria-hidden="true"
             >
@@ -126,12 +128,12 @@ export function DashboardWorkspaceBar() {
 
         <div className="flex shrink-0 items-center gap-3">
           <Link
-            className="group inline-flex shrink-0 items-center gap-1.5 rounded-md border border-[#eaeaea] bg-[#fafafa] px-2.5 py-1 text-[12px] font-medium tabular-nums text-[#171717] transition hover:border-[#d4d4d8] hover:bg-[#f4f4f5]"
+            className="group inline-flex shrink-0 items-center gap-1.5 rounded-md border border-[#eaeaea] bg-[#fafafa] px-2.5 py-1 text-[12px] font-medium tabular-nums text-[#171717] transition hover:border-[#d4d4d8] hover:bg-[#f4f4f5] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:border-zinc-700 dark:hover:bg-zinc-800"
             href="/dashboard/billing"
             title="Open billing"
           >
             <span
-              className="grid size-3.5 place-items-center text-[#2563eb]"
+              className="grid size-3.5 place-items-center text-zinc-600 dark:text-zinc-300"
               aria-hidden="true"
             >
               <svg
@@ -148,14 +150,14 @@ export function DashboardWorkspaceBar() {
             </span>
           </Link>
 
-          <span className="hidden h-4 w-px bg-[#eaeaea] sm:block" aria-hidden="true" />
+          <span className="hidden h-4 w-px bg-[#eaeaea] sm:block dark:bg-zinc-800" aria-hidden="true" />
 
           <button
             type="button"
             onClick={toggleTheme}
             title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
             aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-            className="grid size-7 shrink-0 place-items-center rounded-md border border-[#eaeaea] bg-white text-[#52525b] transition hover:border-[#d4d4d8] hover:bg-[#f4f4f5] hover:text-[#171717]"
+            className="grid size-7 shrink-0 place-items-center rounded-md border border-[#eaeaea] bg-white text-[#52525b] transition hover:border-[#d4d4d8] hover:bg-[#f4f4f5] hover:text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-white"
           >
             {darkMode ? (
               <svg className="size-3.5 fill-none stroke-current stroke-[1.9]" viewBox="0 0 24 24" aria-hidden="true">
@@ -172,12 +174,12 @@ export function DashboardWorkspaceBar() {
           <Link
             href="/dashboard/profile"
             title={`${session.name} (${session.email})`}
-            className="group inline-flex items-center gap-2 rounded-md px-1.5 py-1 transition hover:bg-[#f4f4f5]"
+            className="group inline-flex items-center gap-2 rounded-md px-1.5 py-1 transition hover:bg-[#f4f4f5] dark:hover:bg-zinc-900"
           >
-            <span className="grid size-7 shrink-0 place-items-center rounded-full bg-[#171717] text-[10px] font-semibold text-white transition group-hover:bg-[#2563eb]">
+            <span className="grid size-7 shrink-0 place-items-center rounded-full bg-[#171717] text-[10px] font-semibold text-white transition border border-zinc-700 dark:border-zinc-300 dark:bg-zinc-100 dark:text-zinc-950">
               {userInitials}
             </span>
-            <span className="hidden max-w-[140px] truncate text-[12.5px] font-medium text-[#171717] sm:inline">
+            <span className="hidden max-w-[140px] truncate text-[12.5px] font-medium text-[#171717] sm:inline dark:text-zinc-200">
               {session.name}
             </span>
           </Link>
@@ -187,7 +189,7 @@ export function DashboardWorkspaceBar() {
             title="Log out"
             aria-label="Log out"
             onClick={() => void logoutSession().then(() => router.replace("/login"))}
-            className="grid size-7 shrink-0 place-items-center rounded-md border border-[#eaeaea] bg-white text-[#71717a] transition hover:border-[#d4d4d8] hover:bg-[#f4f4f5] hover:text-[#171717]"
+            className="grid size-7 shrink-0 place-items-center rounded-md border border-[#eaeaea] bg-white text-[#71717a] transition hover:border-[#d4d4d8] hover:bg-[#f4f4f5] hover:text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:border-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-white"
           >
             <svg
               className="size-3.5 fill-none stroke-current stroke-[1.9]"
@@ -217,7 +219,7 @@ export function DashboardPageHeader({
   if (workspaceBarOnly) {
     return (
       <header
-        className="dashboard-page-header sticky top-0 z-30 bg-white"
+        className="dashboard-page-header sticky top-0 z-30 bg-white dark:bg-[#09090b]"
       >
         <DashboardWorkspaceBar />
       </header>
@@ -226,22 +228,22 @@ export function DashboardPageHeader({
 
   return (
     <header
-      className="dashboard-page-header sticky top-0 z-30 bg-[#fafafa]"
+      className="dashboard-page-header sticky top-0 z-30 bg-[#fafafa] dark:bg-[#09090b]"
     >
       <DashboardWorkspaceBar />
       <div className={`dashboard-page-header-inner w-full px-5 sm:px-6 lg:px-7 ${compact ? "pt-3 pb-1" : "pt-4 pb-1"}`}>
         <div className={`flex flex-col justify-center gap-3 sm:flex-row sm:items-center sm:justify-between ${compact ? "min-h-10" : "min-h-12"}`}>
           <div className="min-w-0">
             {eyebrow ? (
-              <div className="text-[10px] font-semibold uppercase leading-4 tracking-[0.14em] text-[#71717a]">
+              <div className="text-[10px] font-semibold uppercase leading-4 tracking-[0.14em] text-[#71717a] dark:text-zinc-400">
                 {eyebrow}
               </div>
             ) : null}
-            <h1 className="m-0 mt-0.5 min-w-0 text-[18px] font-semibold leading-6 tracking-[-0.025em] text-[#171717]">
+            <h1 className="m-0 mt-0.5 min-w-0 text-[18px] font-semibold leading-6 tracking-[-0.025em] text-[#171717] dark:text-white">
               {title}
             </h1>
             {description ? (
-              <p className="m-0 mt-0.5 max-w-3xl text-[12.5px] leading-4.5 text-[#666666]">
+              <p className="m-0 mt-0.5 max-w-3xl text-[12.5px] leading-4.5 text-[#666666] dark:text-zinc-400">
                 {description}
               </p>
             ) : null}

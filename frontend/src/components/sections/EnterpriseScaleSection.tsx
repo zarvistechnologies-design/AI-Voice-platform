@@ -31,7 +31,7 @@ export function EnterpriseScaleSection() {
     <section className="enterprise-scale" aria-labelledby="enterprise-scale-title">
       <div className="enterprise-scale-inner">
         <div className="enterprise-scale-heading">
-          <span className="enterprise-scale-eyebrow">VOZON VOICE &amp; AGENTIC PLATFORM</span>
+          <span className="enterprise-scale-eyebrow"><i aria-hidden="true" /> ENTERPRISE SCALE</span>
           <h2 id="enterprise-scale-title">Built for enterprise scale.</h2>
           <p>High-volume voice calling, instant WhatsApp automation, and autonomous workflows running 24/7.</p>
         </div>

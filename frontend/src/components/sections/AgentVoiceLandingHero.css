@@ -681,7 +681,9 @@
   position: relative;
   overflow: hidden;
   background: #f8f9fb;
-  padding: clamp(20px, 2vw, 34px) 18px clamp(48px, 6vw, 76px);
+  border-top: 1px solid #f0f2f5;
+  padding: clamp(54px, 6vw, 76px) clamp(16px, 3vw, 24px);
+  box-sizing: border-box;
 }
 .vozon-intro-video::before {
   position: absolute;
@@ -696,57 +698,76 @@
 }
 .vozon-intro-video-stage {
   position: relative;
-  display: grid;
-  width: min(1120px, 100%);
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  grid-template-columns: minmax(0, 1fr);
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+.vozon-intro-video-header {
+  max-width: 820px;
+  margin: 0 auto clamp(2rem, 3.5vw, 2.75rem);
+  text-align: center;
+}
+.vozon-intro-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.32rem 0.85rem;
+  border: 1px solid #e4e4e7;
+  border-radius: 999px;
+  background: #fafafa;
+  color: #52525b;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.vozon-intro-eyebrow i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #09090b;
+}
+.vozon-intro-video-header h2 {
+  margin: 0.85rem 0 0.5rem;
+  color: #09090b;
+  font-size: clamp(2rem, 3.2vw, 2.75rem);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+}
+.vozon-intro-video-header p {
+  margin: 0 auto;
+  color: #52525b;
+  font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+  line-height: 1.55;
+  max-width: 720px;
 }
 .vozon-intro-video-card {
   position: relative;
-  width: min(100%, 560px);
-  aspect-ratio: 1 / 1;
-  justify-self: end;
+  width: 100%;
+  max-width: 1200px;
+  aspect-ratio: 16 / 9;
+  height: auto;
   overflow: hidden;
   border: 1px solid #d7d7d7;
-  border-radius: 32px;
+  border-radius: 24px;
   background: radial-gradient(ellipse at 28% 24%, #242424 0, #101010 47%, #050505 100%);
-  padding: 12px;
-  box-shadow: 0 36px 90px -42px #172c5077, 0 4px 18px #11254a14;
+  padding: 10px;
+  box-shadow: 0 20px 55px rgba(9, 9, 11, 0.08);
+  box-sizing: border-box;
 }
 .vozon-intro-video-card::before,
 .vozon-intro-video-card::after { position: absolute; z-index: 1; border: 1px solid #ffffff12; border-radius: 50%; content: ""; pointer-events: none; }
 .vozon-intro-video-card::before { inset: 14%; }
 .vozon-intro-video-card::after { inset: 24%; }
-.vozon-intro-video-card video { position: relative; z-index: 2; display: block; width: 100%; height: 100%; border-radius: 23px; background: #090d17; object-fit: contain; }
+.vozon-intro-video-card video { position: relative; z-index: 2; display: block; width: 100%; height: 100%; border-radius: 18px; background: #090d17; object-fit: cover; }
 .vozon-intro-video-watermark { position: absolute; z-index: 3; right: 28px; bottom: 25px; color: #ffffffad; font-size: 12px; font-weight: 750; letter-spacing: .02em; pointer-events: none; }
 .vozon-intro-video-watermark span { color: #fff; }
 
-@media (max-width: 640px) {
-  .home-design-four .home-design-four__hero.agentvoice-hero { padding-top: 122px !important; }
-  .home-design-four .agentvoice-hero-content { width: 100%; }
-  .home-design-four .agentvoice-hero-content h1 { font-size: clamp(34px, 9vw, 46px); }
-  .agentvoice-demo-control { width: min(390px, 100%); }
-}
-
-@media (max-width: 520px) {
-  .vozon-intro-video { padding-inline: 12px; }
-  .vozon-intro-video-card { border-radius: 24px; padding: 8px; }
-  .vozon-intro-video-card video { border-radius: 17px; }
-}
-
-.vozon-intro-video-card {
-  width: 100%;
-  max-width: 1040px;
-  aspect-ratio: 16 / 9;
-  height: auto;
-  justify-self: center;
-  border-radius: 28px;
-  padding: 10px;
-  grid-column: 1;
-  grid-row: 1;
-}
-.vozon-intro-video-card video { border-radius: 20px; object-fit: cover; }
 .vozon-intro-video-play {
   position: absolute;
   z-index: 4;
@@ -768,11 +789,15 @@
 .vozon-intro-video-play:hover { background: #2b2b2b; transform: translate(-50%, -50%) scale(1.06); }
 .vozon-intro-video-play svg { width: 28px; height: 28px; fill: currentColor; }
 
-@media (max-width: 860px) {
-  .vozon-intro-video-card { width: 100%; }
+@media (max-width: 640px) {
+  .home-design-four .home-design-four__hero.agentvoice-hero { padding-top: 122px !important; }
+  .home-design-four .agentvoice-hero-content { width: 100%; }
+  .home-design-four .agentvoice-hero-content h1 { font-size: clamp(34px, 9vw, 46px); }
+  .agentvoice-demo-control { width: min(390px, 100%); }
 }
 
 @media (max-width: 520px) {
+  .vozon-intro-video { padding-inline: 12px; }
   .vozon-intro-video-card { border-radius: 19px; padding: 6px; }
   .vozon-intro-video-card video { border-radius: 14px; }
   .vozon-intro-video-play { width: 58px; height: 58px; }
