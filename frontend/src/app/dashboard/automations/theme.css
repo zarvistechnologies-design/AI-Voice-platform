@@ -83,7 +83,7 @@
 
 /* Primary Royal Blue CTA + Clean Secondary Buttons */
 .automation-primary,
-.automation-builder-actions > button.automation-primary {
+.automation-builder-actions>button.automation-primary {
   height: 32px;
   padding: 0 14px;
   border-radius: 7px;
@@ -97,7 +97,7 @@
 }
 
 .automation-primary:hover:not(:disabled),
-.automation-builder-actions > button.automation-primary:hover:not(:disabled) {
+.automation-builder-actions>button.automation-primary:hover:not(:disabled) {
   background: linear-gradient(180deg, #1d4ed8 0%, #1e40af 100%);
   transform: translateY(-1px);
   box-shadow: 0 6px 16px -3px rgba(37, 99, 235, 0.44);
@@ -295,7 +295,7 @@
   flex: 0 0 auto;
 }
 
-.automation-builder-actions > button.automation-top-ghost {
+.automation-builder-actions>button.automation-top-ghost {
   height: 30px;
   padding: 0 9px;
   border-radius: 7px;
@@ -308,17 +308,17 @@
   transition: background 0.14s, color 0.14s, border-color 0.14s;
 }
 
-.automation-builder-actions > button.automation-top-ghost:hover {
+.automation-builder-actions>button.automation-top-ghost:hover {
   background: #eff6ff;
   color: #1d4ed8;
 }
 
-.automation-builder-actions > button.automation-top-ghost.active {
+.automation-builder-actions>button.automation-top-ghost.active {
   background: #0f172a;
   color: #ffffff;
 }
 
-.automation-builder-actions > button.automation-top-check {
+.automation-builder-actions>button.automation-top-check {
   height: 30px;
   padding: 0 9px;
   border-radius: 7px;
@@ -329,19 +329,19 @@
   white-space: nowrap;
 }
 
-.automation-builder-actions > button.automation-top-check.has-issues {
+.automation-builder-actions>button.automation-top-check.has-issues {
   color: #dc2626;
   background: #fef2f2;
   border-color: #fecaca;
 }
 
-.automation-builder-actions > button.automation-top-check.is-ready {
+.automation-builder-actions>button.automation-top-check.is-ready {
   color: #047857;
   background: #ecfdf5;
   border-color: #a7f3d0;
 }
 
-.automation-builder-actions > button.automation-save-btn {
+.automation-builder-actions>button.automation-save-btn {
   height: 32px;
   padding: 0 12px;
   border-radius: 7px;
@@ -353,7 +353,7 @@
   white-space: nowrap;
 }
 
-.automation-builder-actions > button.automation-save-btn:hover:not(:disabled) {
+.automation-builder-actions>button.automation-save-btn:hover:not(:disabled) {
   background: #1e293b;
 }
 
@@ -466,6 +466,7 @@
   --block-line: #0f172a;
   --block-soft: #f1f5f9;
 }
+
 .automation-type-condition,
 .automation-type-end {
   --block-color: #0f172a;
@@ -474,16 +475,18 @@
   --block-soft: #f8fafc;
 }
 
-/* Royal Blue: Voice Call, AI Router, Calendar, CRM, Wait */
+/* Royal Blue: Voice Call, AI Router, Calendar, CRM, Case, Wait */
 .automation-type-call,
 .automation-type-decision,
 .automation-type-calendar,
-.automation-type-crm {
+.automation-type-crm,
+.automation-type-case {
   --block-color: #1d4ed8;
   --block-bg: #dbeafe;
   --block-line: #2563eb;
   --block-soft: #eff6ff;
 }
+
 .automation-type-wait {
   --block-color: #0369a1;
   --block-bg: #e0f2fe;
@@ -499,6 +502,7 @@
   --block-line: #10b981;
   --block-soft: #ecfdf5;
 }
+
 .automation-type-sms {
   --block-color: #065f46;
   --block-bg: #a7f3d0;
@@ -1087,6 +1091,7 @@
   .automation-builder-top {
     flex-wrap: wrap;
   }
+
   .automation-builder-identity small {
     display: none;
   }
@@ -1096,6 +1101,7 @@
   .automation-floating-blocks {
     width: 185px;
   }
+
   .automation-floating-inspector {
     left: 12px;
     right: 12px;
@@ -1103,9 +1109,11 @@
     top: auto;
     height: 46%;
   }
+
   .automation-minimap {
     display: none;
   }
+
   .automation-zoom-vertical.shifted {
     right: 14px;
   }

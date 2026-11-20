@@ -1,7 +1,7 @@
 import { API_URL } from "@/lib/apiBase";
 import { getAuthHeaders, getSession } from "@/lib/auth";
 
-export type BlockType = "trigger" | "call" | "whatsapp" | "decision" | "condition" | "wait" | "end" | "sms" | "crm" | "calendar" | "payment";
+export type BlockType = "trigger" | "call" | "whatsapp" | "decision" | "condition" | "wait" | "end" | "sms" | "crm" | "calendar" | "payment" | "case";
 export type Branch = "default" | "interested" | "callback" | "not_interested" | "unknown" | "yes" | "no" | "failed";
 export type FlowNode = { id: string; type: BlockType; title: string; x: number; y: number; config: Record<string, string> };
 export type FlowEdge = { id: string; source: string; target: string; sourceHandle: Branch };
@@ -10,6 +10,7 @@ export type FlowIssue = { nodeId: string; message: string };
 export type Automation = {
   _id: string; name: string; description: string; status: "draft" | "live" | "paused";
   revision: number; publishedVersion: number; draft: FlowGraph; published: FlowGraph | null;
+  webhookSecret?: string;
   createdAt: string; updatedAt: string; publishedAt: string | null;
 };
 export type AutomationSummary = Pick<Automation, "_id" | "name" | "description" | "status" | "revision" | "publishedVersion" | "updatedAt" | "createdAt">;
@@ -56,6 +57,12 @@ export const automationsApi = {
   versions: (id: string) => request<{ versions: AutomationVersion[] }>(`/${encodeURIComponent(id)}/versions`),
   restore: (id: string, version: number) => request<{ flow: Automation }>(`/${encodeURIComponent(id)}/versions/${version}/restore`, { method: "POST" }).then(normalizeFlowResponse),
   start: (id: string, phone: string, name: string, eventId: string) => request<{ run: AutomationRun }>(`/${encodeURIComponent(id)}/runs`, { method: "POST", body: JSON.stringify({ phone, name, eventId, consentConfirmed: true }) }),
+  startBulk: (id: string, payload: { groupId?: string; rawText?: string; consentConfirmed: true }) =>
+    request<{ ok: boolean; queued: number; skippedDuplicates: number; skippedDnc: number; skippedInvalid: number; capped: number; automationName: string }>(
+      `/${encodeURIComponent(id)}/runs/bulk`,
+      { method: "POST", body: JSON.stringify(payload) },
+    ),
   cancelRun: (id: string, runId: string) => request<{ run: AutomationRun }>(`/${encodeURIComponent(id)}/runs/${encodeURIComponent(runId)}/cancel`, { method: "POST" }),
+  rotateWebhookSecret: (id: string) => request<{ flow: Automation }>(`/${encodeURIComponent(id)}/webhook-secret/rotate`, { method: "POST" }).then(normalizeFlowResponse),
   generate: (prompt: string) => request<{ draft: { name: string; description: string; graph: FlowGraph }; issues: FlowIssue[] }>("/generate", { method: "POST", body: JSON.stringify({ prompt }) }),
 };

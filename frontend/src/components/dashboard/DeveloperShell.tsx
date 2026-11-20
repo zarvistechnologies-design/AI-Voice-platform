@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import {
   useCallback,
@@ -118,7 +118,7 @@ function deliverySummary(delivery: WebhookDelivery) {
     return `Retry scheduled after ${delivery.attempts} ${delivery.attempts === 1 ? "attempt" : "attempts"}`;
   }
   const attempts = `${delivery.attempts} ${delivery.attempts === 1 ? "attempt" : "attempts"}`;
-  const duration = delivery.durationMs ? ` Â· ${delivery.durationMs} ms` : "";
+  const duration = delivery.durationMs ? ` · ${delivery.durationMs} ms` : "";
   return `Delivered in ${attempts}${duration}`;
 }
 
@@ -309,7 +309,7 @@ function DeveloperOverview({
                 All systems operational
               </span>
               <span className="text-xs font-medium text-[#80908c]">
-                {loading ? "Syncing workspaceâ€¦" : "Updated just now"}
+                {loading ? "Syncing workspace…" : "Updated just now"}
               </span>
             </div>
             <h2 className="mt-6 max-w-2xl text-2xl font-semibold tracking-[-0.03em] text-[#14231f] sm:text-3xl">
@@ -356,13 +356,13 @@ function DeveloperOverview({
                 onClick={item.action}
               >
                 <span className={`grid size-8 shrink-0 place-items-center rounded-full text-xs font-bold ${item.done ? "bg-[#171717] text-white" : "border border-[#eaeaea] bg-white text-[#7f908b]"}`}>
-                  {item.done ? "âœ“" : index + 1}
+                  {item.done ? "✓" : index + 1}
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block text-sm font-semibold text-[#29413b]">{item.label}</span>
                   <span className="mt-0.5 block text-xs text-[#81908c]">{item.detail}</span>
                 </span>
-                <span className="text-[#9aaba6] transition group-hover:translate-x-0.5 group-hover:text-[#171717]" aria-hidden="true">â†’</span>
+                <span className="text-[#9aaba6] transition group-hover:translate-x-0.5 group-hover:text-[#171717]" aria-hidden="true">→</span>
               </button>
             ))}
           </div>
@@ -387,7 +387,7 @@ function DeveloperOverview({
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
               <button className={primaryButtonClass} type="button" onClick={() => onOpenInspector("request")}>View request example</button>
-              <Link className={secondaryButtonClass} href="/docs/api" target="_blank" rel="noreferrer">Open API docs <span aria-hidden="true">â†—</span></Link>
+              <Link className={secondaryButtonClass} href="/docs/api" target="_blank" rel="noreferrer">Open API docs <span aria-hidden="true">↗</span></Link>
             </div>
           </div>
         </div>
@@ -413,7 +413,7 @@ function DeveloperOverview({
             ))}
             {!deliveries.length ? (
               <div className="px-6 py-8 text-center">
-                <span className="mx-auto grid size-10 place-items-center rounded-full bg-[#edf4f1] text-[#6f837d]">â†—</span>
+                <span className="mx-auto grid size-10 place-items-center rounded-full bg-[#edf4f1] text-[#6f837d]">↗</span>
                 <p className="mt-3 text-sm font-semibold text-[#40534e]">No events yet</p>
                 <p className="mt-1 text-xs text-[#8a9995]">Webhook deliveries will appear here.</p>
               </div>
@@ -436,7 +436,7 @@ function DeveloperOverview({
             <button className={`flex min-w-0 items-center gap-3 px-5 py-4 text-left transition hover:bg-[#f8faf9] sm:px-6 ${index ? "border-t border-[#edf1f0] md:[&:nth-child(2)]:border-t-0 md:[&:nth-child(even)]:border-l xl:[&:nth-child(3)]:border-t-0 xl:[&:nth-child(3)]:border-l xl:[&:nth-child(even)]:border-l-0 xl:[&:nth-child(3n+2)]:border-l xl:[&:nth-child(3n)]:border-l" : ""}`} key={`${method}-${path}`} type="button" onClick={() => onOpenInspector(method === "POST" ? "request" : "response")}>
               <span className={`rounded-md px-2 py-1 text-[10px] font-black ${method === "POST" ? "bg-[#fff3e8] text-[#b65e17]" : "bg-[#fafafa] text-[#171717]"}`}>{method}</span>
               <code className="min-w-0 flex-1 truncate text-xs font-semibold text-[#50615c]">{path}</code>
-              <span className="text-[#9aaba6]" aria-hidden="true">â†’</span>
+              <span className="text-[#9aaba6]" aria-hidden="true">→</span>
             </button>
           ))}
         </div>
@@ -705,7 +705,7 @@ export function DeveloperShell() {
                 rel="noreferrer"
                 className="inline-flex h-10 items-center justify-center rounded-xl border border-[#eaeaea] bg-white px-3.5 text-xs font-semibold text-[#294740] transition hover:border-[#b8ccc5] hover:bg-[#f6f9f8]"
               >
-                API documentation <span aria-hidden="true">â†—</span>
+                API documentation <span aria-hidden="true">↗</span>
               </Link>
               <button
                 className={secondaryButtonClass}
@@ -822,7 +822,7 @@ export function DeveloperShell() {
                           <h3 className="text-sm font-semibold text-[#20342e]">Create a new API key</h3>
                           <p className="mt-1 text-xs text-[#71817d]">Choose the minimum permissions this integration needs.</p>
                         </div>
-                        <button className="text-xl leading-none text-[#84938f] hover:text-[#20342e]" type="button" aria-label="Close key form" onClick={() => setKeyComposerOpen(false)}>Ã—</button>
+                        <button className="text-xl leading-none text-[#84938f] hover:text-[#20342e]" type="button" aria-label="Close key form" onClick={() => setKeyComposerOpen(false)}>×</button>
                       </div>
                       <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_220px]">
                         <FieldLabel label="Key name">
@@ -986,7 +986,7 @@ export function DeveloperShell() {
                           <h3 className="text-sm font-semibold text-[#20342e]">Add a webhook endpoint</h3>
                           <p className="mt-1 text-xs text-[#71817d]">Choose where Vozon should send signed lifecycle events.</p>
                         </div>
-                        <button className="text-xl leading-none text-[#84938f] hover:text-[#20342e]" type="button" aria-label="Close webhook form" onClick={() => setWebhookComposerOpen(false)}>Ã—</button>
+                        <button className="text-xl leading-none text-[#84938f] hover:text-[#20342e]" type="button" aria-label="Close webhook form" onClick={() => setWebhookComposerOpen(false)}>×</button>
                       </div>
                       <div className="grid gap-3 lg:grid-cols-[210px_minmax(0,1fr)]">
                         <FieldLabel label="Endpoint name">
@@ -1208,7 +1208,7 @@ export function DeveloperShell() {
                         aria-label="Close inspector"
                         onClick={() => setInspectorOpen(false)}
                       >
-                        Ã—
+                        ×
                       </button>
                     </div>
                   </div>

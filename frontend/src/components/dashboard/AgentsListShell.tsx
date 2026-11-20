@@ -315,7 +315,6 @@ export function AgentsListShell() {
                   <option value="Paused">Paused</option>
                   <option value="Draft">Draft</option>
                 </select>
-                <span className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 text-[#888888]"><Icon icon="chevron" /></span>
               </label>
 
               <label className="relative min-w-[122px] flex-1 sm:flex-none">
@@ -329,7 +328,6 @@ export function AgentsListShell() {
                   <option value="name-desc">Name Z–A</option>
                   <option value="status">Status</option>
                 </select>
-                <span className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 text-[#888888]"><Icon icon="chevron" /></span>
               </label>
             </div>
           </div>

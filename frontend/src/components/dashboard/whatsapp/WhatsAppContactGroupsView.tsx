@@ -178,7 +178,7 @@ export function WhatsAppContactGroupsView({
           <button
             type="button"
             onClick={() => setShowAddGroupModal(true)}
-            className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3 text-[12.5px] font-medium text-white transition hover:bg-black"
+            className="inline-flex h-8 items-center rounded-md bg-[#2563eb] px-3 text-[12.5px] font-medium text-white transition hover:bg-[#1d4ed8]"
           >
             + New Group
           </button>
@@ -201,12 +201,12 @@ export function WhatsAppContactGroupsView({
               onClick={() => setSelectedGroupId("ALL")}
               className={`flex w-full items-center justify-between px-3.5 py-2.5 text-left text-[12.5px] transition ${
                 selectedGroupId === "ALL"
-                  ? "bg-[#171717] font-medium text-white"
+                  ? "border-l-2 border-l-[#2563eb] bg-[#eff6ff] font-semibold text-[#1d4ed8]"
                   : "text-[#171717] hover:bg-[#fafafa]"
               }`}
             >
               <span>All Contacts</span>
-              <span className={`tabular-nums text-[11.5px] ${selectedGroupId === "ALL" ? "text-white/80" : "text-[#71717a]"}`}>
+              <span className={`tabular-nums text-[11.5px] ${selectedGroupId === "ALL" ? "text-[#2563eb]" : "text-[#71717a]"}`}>
                 {contacts.length}
               </span>
             </button>
@@ -226,7 +226,7 @@ export function WhatsAppContactGroupsView({
                     }
                   }}
                   className={`group flex cursor-pointer items-center justify-between gap-2 px-3.5 py-2.5 text-[12.5px] transition ${
-                    isSelected ? "bg-[#171717] font-medium text-white" : "text-[#171717] hover:bg-[#fafafa]"
+                    isSelected ? "border-l-2 border-l-[#2563eb] bg-[#eff6ff] font-semibold text-[#1d4ed8]" : "text-[#171717] hover:bg-[#fafafa]"
                   }`}
                 >
                   <div className="min-w-0 flex-1">
@@ -238,16 +238,14 @@ export function WhatsAppContactGroupsView({
                           e.stopPropagation();
                           onNavigateToCampaign(grp._id);
                         }}
-                        className={`mt-0.5 text-[11px] hover:underline ${
-                          isSelected ? "text-white/80" : "text-[#71717a]"
-                        }`}
+                        className="mt-0.5 text-[11px] font-medium text-[#2563eb] hover:underline"
                       >
                         Broadcast →
                       </button>
                     )}
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className={`tabular-nums text-[11.5px] ${isSelected ? "text-white/80" : "text-[#71717a]"}`}>
+                    <span className={`tabular-nums text-[11.5px] ${isSelected ? "text-[#2563eb]" : "text-[#71717a]"}`}>
                       {grp.contactCount || 0}
                     </span>
                     <button
@@ -258,7 +256,7 @@ export function WhatsAppContactGroupsView({
                         void handleDeleteGroup(grp._id);
                       }}
                       className={`opacity-0 group-hover:opacity-100 px-1 text-[11px] ${
-                        isSelected ? "text-white/80 hover:text-white" : "text-[#71717a] hover:text-[#171717]"
+                        isSelected ? "text-[#2563eb] hover:text-[#1d4ed8]" : "text-[#71717a] hover:text-[#171717]"
                       }`}
                     >
                       ✕
@@ -405,7 +403,7 @@ export function WhatsAppContactGroupsView({
                 <button
                   type="submit"
                   disabled={busyGroup}
-                  className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3.5 text-[12.5px] font-medium text-white hover:bg-black disabled:opacity-50"
+                  className="inline-flex h-8 items-center rounded-md bg-[#2563eb] px-3.5 text-[12.5px] font-medium text-white hover:bg-[#1d4ed8] disabled:opacity-50"
                 >
                   {busyGroup ? "Creating..." : "Create Group"}
                 </button>
@@ -496,7 +494,7 @@ export function WhatsAppContactGroupsView({
                 <button
                   type="submit"
                   disabled={busyContact}
-                  className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3.5 text-[12.5px] font-medium text-white hover:bg-black disabled:opacity-50"
+                  className="inline-flex h-8 items-center rounded-md bg-[#2563eb] px-3.5 text-[12.5px] font-medium text-white hover:bg-[#1d4ed8] disabled:opacity-50"
                 >
                   {busyContact ? "Saving..." : "Save Contact"}
                 </button>
@@ -557,7 +555,7 @@ export function WhatsAppContactGroupsView({
                 <button
                   type="submit"
                   disabled={busyImport}
-                  className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3.5 text-[12.5px] font-medium text-white hover:bg-black disabled:opacity-50"
+                  className="inline-flex h-8 items-center rounded-md bg-[#2563eb] px-3.5 text-[12.5px] font-medium text-white hover:bg-[#1d4ed8] disabled:opacity-50"
                 >
                   {busyImport ? "Importing..." : "Start Import"}
                 </button>

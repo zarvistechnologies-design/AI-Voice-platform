@@ -2181,7 +2181,7 @@ textarea.ai-prompt-textarea:focus-visible {
     border-color: #222226 !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :is([class~="bg-[#fafafa]"], [class~="bg-[#f9f9f9]"], [class~="bg-[#f4f4f5]"], [class~="bg-[#f5f5f5]"], [class~="bg-[#f0f0f0]"], [class~="bg-[#f1f5f9]"], [class~="bg-[#e2e8f0]"], [class~="bg-[#eceef4]"], [class~="bg-[#eff6ff]"], [class~="bg-[#fef2f2]"], [class~="bg-[#fef3c7]"], [class~="bg-[#ecfdf5]"], [class~="bg-[#f0fdf4]"], [class~="bg-[#dcfce7]"], [class~="bg-[#d1fae5]"], [class~="bg-[#dff5f1]"], [class~="bg-[#e7f5f0]"], [class~="bg-[#edf7f4]"], [class~="bg-[#effaf7]"], [class~="bg-[#effaf8]"], [class~="bg-[#f1f9f6]"], [class~="bg-[#eaf7f1]"], [class~="bg-[#eaf0ff]"], [class~="bg-[#e2ece8]"], [class~="bg-[#edf0f4]"], [class~="bg-[#eef2f7]"], [class~="bg-[#eef5f3]"], [class~="bg-[#f3f4f8]"], [class~="bg-[#fffbeb]"], [class~="bg-[#fee2e2]"], [class~="bg-[#fff1f2]"], [class~="bg-[#ffe4e6]"], [class~="bg-[#fff7ed]"], .bg-slate-50, .bg-slate-100, .bg-neutral-50, .bg-neutral-100, .bg-zinc-50, .bg-zinc-100, .bg-emerald-50, .bg-green-50, .bg-blue-50, .bg-amber-50, .bg-rose-50, .bg-red-50),
+  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :is([class~="bg-[#fafafa]"], [class~="bg-[#f9f9f9]"], [class~="bg-[#f9fbfa]"], [class~="bg-[#f4f4f5]"], [class~="bg-[#f4f7f6]"], [class~="bg-[#f4f8f6]"], [class~="bg-[#f4faf8]"], [class~="bg-[#f5f5f5]"], [class~="bg-[#f5f3ff]"], [class~="bg-[#f6fbf9]"], [class~="bg-[#f0f0f0]"], [class~="bg-[#f0f1f7]"], [class~="bg-[#f0f2f5]"], [class~="bg-[#f0f4f3]"], [class~="bg-[#f0f9ff]"], [class~="bg-[#f1f5f3]"], [class~="bg-[#f1f5f9]"], [class~="bg-[#f2f5f4]"], [class~="bg-[#e2e8f0]"], [class~="bg-[#e5e7ef]"], [class~="bg-[#e7e9f1]"], [class~="bg-[#e9f5f2]"], [class~="bg-[#eaf0ee]"], [class~="bg-[#eceef4]"], [class~="bg-[#ecfdf5]"], [class~="bg-[#edf4f1]"], [class~="bg-[#eef2ff]"], [class~="bg-[#eef4f1]"], [class~="bg-[#efeae2]"], [class~="bg-[#eff6ff]"], [class~="bg-[#effbf3]"], [class~="bg-[#fef2f2]"], [class~="bg-[#fef3c7]"], [class~="bg-[#f0fdf4]"], [class~="bg-[#dcfce7]"], [class~="bg-[#d1fae5]"], [class~="bg-[#dff5f1]"], [class~="bg-[#e7f5f0]"], [class~="bg-[#edf7f4]"], [class~="bg-[#effaf7]"], [class~="bg-[#effaf8]"], [class~="bg-[#f1f9f6]"], [class~="bg-[#eaf7f1]"], [class~="bg-[#eaf0ff]"], [class~="bg-[#e2ece8]"], [class~="bg-[#edf0f4]"], [class~="bg-[#eef2f7]"], [class~="bg-[#eef5f3]"], [class~="bg-[#f3f4f8]"], [class~="bg-[#fffbeb]"], [class~="bg-[#fee2e2]"], [class~="bg-[#fff1f2]"], [class~="bg-[#ffe4e6]"], [class~="bg-[#fff3e8]"], [class~="bg-[#fff7ed]"], [class~="bg-[#fff8f5]"], .bg-slate-50, .bg-slate-100, .bg-slate-200, .bg-neutral-50, .bg-neutral-100, .bg-zinc-50, .bg-zinc-100, .bg-emerald-50, .bg-emerald-100, .bg-green-50, .bg-blue-50, .bg-sky-50, .bg-amber-50, .bg-amber-100, .bg-amber-200, .bg-rose-50, .bg-rose-100, .bg-red-50),
   html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme details>summary,
   html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme details[open]>summary,
   html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .dashboard-filter-bar,
@@ -2197,12 +2197,45 @@ textarea.ai-prompt-textarea:focus-visible {
   }
 
   html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :is(.bg-black, [class~="bg-[#171717]"], [class~="bg-[#000000]"]) {
-    background-color: #1f1f24 !important;
-    border-color: #2e2e36 !important;
-    color: #fafafa !important;
+    background-color: #27272a !important;
+    border-color: #3f3f46 !important;
+    color: #ffffff !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :is([class~="hover:bg-[#fafafa]"]:hover, [class~="hover:bg-[#f4f4f5]"]:hover, [class~="hover:bg-[#f5f5f5]"]:hover, [class~="hover:bg-[#f5f6f6]"]:hover, [class~="hover:bg-white"]:hover) {
+  /* Keep Royal Blue primary buttons and blue active highlights crisp in dark mode */
+  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :is([class~="bg-[#2563eb]"], [class~="bg-[#1d4ed8]"]) {
+    background-color: #2563eb !important;
+    border-color: #2563eb !important;
+    color: #ffffff !important;
+  }
+
+  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme [class~="bg-[#2563eb]"]:hover {
+    background-color: #3b82f6 !important;
+    border-color: #3b82f6 !important;
+    color: #ffffff !important;
+  }
+
+  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme [class~="bg-[#2563eb]"] :where(span, strong, svg) {
+    color: #ffffff !important;
+  }
+
+  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme [class~="border-l-[#2563eb]"] {
+    background-color: rgba(37, 99, 235, 0.16) !important;
+    border-left-color: #3b82f6 !important;
+    color: #93c5fd !important;
+  }
+
+  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme [class~="border-l-[#2563eb]"] :where(span, strong) {
+    color: #93c5fd !important;
+  }
+
+  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme [class~="border-[#bfdbfe]"] {
+    background-color: rgba(37, 99, 235, 0.16) !important;
+    border-color: rgba(59, 130, 246, 0.4) !important;
+    color: #93c5fd !important;
+  }
+
+  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :is([class~="hover:bg-[#fafafa]"]:hover, [class~="hover:bg-[#f4f4f5]"]:hover, [class~="hover:bg-[#f5f5f5]"]:hover, [class~="hover:bg-[#f5f6f6]"]:hover, [class~="hover:bg-[#f0f2f5]"]:hover, [class~="hover:bg-[#f4f7f6]"]:hover, [class~="hover:bg-[#f8fafc]"]:hover, [class~="hover:bg-[#eff6ff]"]:hover, [class~="hover:bg-[#dbeafe]"]:hover, [class~="hover:bg-white"]:hover, [class~="hover:bg-slate-50"]:hover, [class~="hover:bg-slate-100"]:hover, [class~="hover:bg-rose-50"]:hover, [class~="hover:bg-rose-100"]:hover, [class~="hover:bg-emerald-50"]:hover, [class~="hover:bg-amber-100"]:hover) {
     background-color: #222228 !important;
   }
 
@@ -2211,26 +2244,52 @@ textarea.ai-prompt-textarea:focus-visible {
     background-image: radial-gradient(#27272a 1px, transparent 1px) !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme [class~="bg-[#eaeaea]"] {
-    background-color: #222226 !important;
-  }
-
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :is([class~="border-[#eaeaea]"], [class~="border-[#e5e5e5]"], [class~="border-[#e4e4e7]"], [class~="border-[#f0f0f0]"], [class~="border-[#f4f4f5]"], [class~="border-[#d4d4d8]"], [class~="border-[#e6ecea]"], [class~="border-[#e2e5e8]"], [class~="border-[#e2eaf0]"], [class~="border-[#d7e0dd]"], [class~="border-[#dbe4e1]"], [class~="border-[#cbd5e1]"], [class~="border-[#e2e8f0]"]) {
-    border-color: #222226 !important;
-  }
-
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .divide-\[\#eaeaea\] > :not(:last-child),
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .divide-\[\#f0f0f0\] > :not(:last-child) {
-    border-color: #222226 !important;
-  }
-
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :where(h1, h2, h3, h4, strong, dt, legend),
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :is(.app-page-title, .app-section-title, .app-value, .app-strong, [class~="text-[#171717]"], [class~="text-[#171821]"], [class~="text-[#111827]"], [class~="text-[#0f172a]"], [class~="text-[#14231f]"], [class~="text-[#123d35]"], [class~="text-[#20342e]"], [class~="text-[#202020]"], [class~="text-[#343434]"], [class~="text-[#404040]"], [class~="text-[#444444]"], [class~="text-[#4b4b4b]"], [class~="text-[#000000]"], [class~="text-[#0e6f62]"], [class~="text-[#118778]"], .text-black, .text-slate-950, .text-slate-900, .text-slate-800, .text-zinc-900, .text-neutral-900) {
+  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .whatsapp-view {
     color: #fafafa !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :is(.app-body, .app-caption, .app-label, [class~="text-[#52525b]"], [class~="text-[#52645f]"], [class~="text-[#60716c]"], [class~="text-[#666666]"], [class~="text-[#71717a]"], [class~="text-[#777777]"], [class~="text-[#888888]"], [class~="text-[#334155]"], [class~="text-[#475569]"], [class~="text-[#64748b]"], [class~="text-[#94a3b8]"], [class~="text-[#087f75]"], [class~="text-[#71817d]"], [class~="text-[#84938f]"], .text-slate-700, .text-slate-600, .text-slate-500, .text-slate-400, .text-zinc-600, .text-zinc-500, .text-neutral-600, .text-neutral-500) {
+  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme [class~="bg-[#eaeaea]"] {
+    background-color: #27272a !important;
+  }
+
+  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :is([class~="border-[#eaeaea]"], [class~="border-[#e5e5e5]"], [class~="border-[#e4e4e7]"], [class~="border-[#f0f0f0]"], [class~="border-[#f4f4f5]"], [class~="border-[#d4d4d8]"], [class~="border-[#e6ecea]"], [class~="border-[#e2e5e8]"], [class~="border-[#e2eaf0]"], [class~="border-[#d7e0dd]"], [class~="border-[#dbe4e1]"], [class~="border-[#cbd5e1]"], [class~="border-[#e2e8f0]"], [class~="border-[#c6d4d0]"], [class~="border-[#d8e6e1]"], [class~="border-[#edf2f0]"], [class~="border-[#edf3f0]"]) {
+    border-color: #27272a !important;
+  }
+
+  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .divide-\[\#eaeaea\]> :not(:last-child),
+  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme .divide-\[\#f0f0f0\]> :not(:last-child) {
+    border-color: #27272a !important;
+  }
+
+  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :where(h1, h2, h3, h4, strong, dt, legend, label),
+  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :is(.app-page-title, .app-section-title, .app-value, .app-strong, [class~="text-[#171717]"], [class~="text-[#171821]"], [class~="text-[#111827]"], [class~="text-[#111b21]"], [class~="text-[#0f172a]"], [class~="text-[#061b18]"], [class~="text-[#06231f]"], [class~="text-[#14231f]"], [class~="text-[#123d35]"], [class~="text-[#18302a]"], [class~="text-[#18362e]"], [class~="text-[#1b1b22]"], [class~="text-[#20342e]"], [class~="text-[#202020]"], [class~="text-[#29413b]"], [class~="text-[#29423b]"], [class~="text-[#294740]"], [class~="text-[#2c3e3a]"], [class~="text-[#30313a]"], [class~="text-[#315248]"], [class~="text-[#324640]"], [class~="text-[#343434]"], [class~="text-[#343b78]"], [class~="text-[#34534a]"], [class~="text-[#404040]"], [class~="text-[#40534e]"], [class~="text-[#40564f]"], [class~="text-[#444444]"], [class~="text-[#445550]"], [class~="text-[#4b4b4b]"], [class~="text-[#000000]"], .text-black, .text-slate-950, .text-slate-900, .text-slate-800, .text-zinc-900, .text-neutral-900, .text-neutral-700) {
+    color: #fafafa !important;
+  }
+
+  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :is(.app-body, .app-caption, .app-label, [class~="text-[#50615c]"], [class~="text-[#52525b]"], [class~="text-[#52645f]"], [class~="text-[#536a62]"], [class~="text-[#54656f]"], [class~="text-[#5f6374]"], [class~="text-[#60716c]"], [class~="text-[#60716d]"], [class~="text-[#666666]"], [class~="text-[#667781]"], [class~="text-[#667873]"], [class~="text-[#676767]"], [class~="text-[#687b74]"], [class~="text-[#687b76]"], [class~="text-[#6d6d6d]"], [class~="text-[#6f837d]"], [class~="text-[#70817b]"], [class~="text-[#71717a]"], [class~="text-[#71817d]"], [class~="text-[#737789]"], [class~="text-[#777777]"], [class~="text-[#77908a]"], [class~="text-[#7d7d7d]"], [class~="text-[#7f908b]"], [class~="text-[#80908c]"], [class~="text-[#81908c]"], [class~="text-[#84938f]"], [class~="text-[#879691]"], [class~="text-[#888888]"], [class~="text-[#8a9894]"], [class~="text-[#8a9995]"], [class~="text-[#334155]"], [class~="text-[#475569]"], [class~="text-[#64748b]"], [class~="text-[#94a3b8]"], .text-slate-700, .text-slate-600, .text-slate-500, .text-slate-400, .text-zinc-600, .text-zinc-500, .text-neutral-600, .text-neutral-500) {
     color: #a1a1aa !important;
+  }
+
+  /* High-contrast semantic status & accent text in dark theme */
+  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :is([class~="text-[#008069]"], [class~="text-[#047857]"], [class~="text-[#059669]"], [class~="text-[#064e3b]"], [class~="text-[#087f75]"], [class~="text-[#0d6e62]"], [class~="text-[#0e6f62]"], [class~="text-[#0e806c]"], [class~="text-[#0f766e]"], [class~="text-[#108D82]"], [class~="text-[#118778]"], [class~="text-[#15803d]"], [class~="text-[#166534]"], .text-emerald-600, .text-emerald-700, .text-emerald-800, .text-emerald-900, .text-emerald-950) {
+    color: #6ee7b7 !important;
+  }
+
+  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :is([class~="text-[#78350f]"], [class~="text-[#92400e]"], [class~="text-[#b45309]"], [class~="text-[#b65e17]"], [class~="text-[#c2410c]"], [class~="text-[#d97706]"], [class~="text-[#8c4d36]"], [class~="text-[#a1533c]"], .text-amber-600, .text-amber-700, .text-amber-800, .text-amber-900, .text-amber-950) {
+    color: #fcd34d !important;
+  }
+
+  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :is([class~="text-[#7f1d1d]"], [class~="text-[#991b1b]"], [class~="text-[#b4233b]"], [class~="text-[#b91c1c]"], [class~="text-[#be123c]"], [class~="text-[#dc2626]"], .text-red-700, .text-rose-600, .text-rose-700, .text-rose-800, .text-rose-900) {
+    color: #fda4af !important;
+  }
+
+  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :is([class~="text-[#008c96]"], [class~="text-[#0284c7]"], [class~="text-[#0369a1]"], [class~="text-[#0e7490]"], [class~="text-[#155e75]"], [class~="text-[#1d4ed8]"], [class~="text-[#2563eb]"], [class~="text-[#4e5bb8]"], [class~="text-[#4f46e5]"], [class~="text-[#6d28d9]"], [class~="text-[#7c3aed]"], .text-sky-700) {
+    color: #93c5fd !important;
+  }
+
+  /* Keep hovered buttons/links legible in dark theme */
+  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme :is([class~="hover:text-[#171717]"]:hover, [class~="hover:text-black"]:hover, [class~="hover:text-[#14231f]"]:hover, [class~="hover:text-[#0f172a]"]:hover, [class~="hover:text-[#111827]"]:hover, [class~="hover:text-[#111b21]"]:hover, [class~="hover:text-[#123d35]"]:hover, [class~="hover:text-[#20342e]"]:hover, [class~="hover:text-[#334155]"]:hover, [class~="hover:text-[#4b4b4b]"]:hover, [class~="hover:text-[#595959]"]:hover, [class~="hover:text-slate-800"]:hover, [class~="hover:text-slate-950"]:hover) {
+    color: #ffffff !important;
   }
 
   /* Keep WhatsApp outbound green bubble text dark and legible in dark mode */
@@ -2264,7 +2323,7 @@ textarea.ai-prompt-textarea:focus-visible {
     background-size: 0.9rem 0.9rem !important;
   }
 
-  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme.whatsapp-workspace .whatsapp-view :is(.whatsapp-templates, .whatsapp-campaigns, .whatsapp-contacts, .whatsapp-agents, .whatsapp-forms, .whatsapp-flows) > div:first-child {
+  html[data-dashboard-theme="dark"] .dashboard-home-theme.dashboard-home-theme.whatsapp-workspace .whatsapp-view :is(.whatsapp-templates, .whatsapp-campaigns, .whatsapp-contacts, .whatsapp-agents, .whatsapp-forms, .whatsapp-flows)>div:first-child {
     background: #111114 !important;
     background-color: #111114 !important;
     border-color: #222226 !important;
@@ -2291,6 +2350,26 @@ textarea.ai-prompt-textarea:focus-visible {
     border-color: #222226 !important;
     color: #fafafa !important;
   }
+
+  .wa-sim-feed {
+    background-color: #f8fafc;
+    background-image: radial-gradient(#cbd5e1 0.8px, transparent 0.8px);
+    background-size: 14px 14px;
+  }
+
+  html[data-dashboard-theme="dark"] .wa-sim-feed {
+    background-color: #0c0c0f !important;
+    background-image: radial-gradient(#27272a 0.9px, transparent 0.9px) !important;
+    background-size: 14px 14px;
+  }
+
+  html[data-dashboard-theme="dark"] .dashboard-home-theme [role="switch"][aria-checked="true"] {
+    background-color: #2563eb !important;
+    border-color: #2563eb !important;
+  }
+
+  html[data-dashboard-theme="dark"] .dashboard-home-theme [role="switch"][aria-checked="false"] {
+    background-color: #27272a !important;
+    border-color: #3f3f46 !important;
+  }
 }
-
-

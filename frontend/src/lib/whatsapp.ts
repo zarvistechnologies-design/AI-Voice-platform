@@ -77,6 +77,42 @@ export type WhatsAppAgentConfig = {
   fallbackMessage: string;
   transferKeywords: string[];
   businessHoursOnly: boolean;
+  adminDispatchPhones?: string[];
+  adminDispatchAutomationId?: string;
+  adminDispatchMaxBatch?: number;
+};
+
+export type WhatsAppAgentHandoffRule = {
+  _id?: string;
+  targetAgentId: string;
+  targetAgentName?: string;
+  keywords: string[];
+  condition?: string;
+  announceMessage?: string;
+};
+
+export type WhatsAppCustomAgent = {
+  _id: string;
+  name: string;
+  role: string;
+  status: "live" | "draft" | "paused";
+  isDefault: boolean;
+  phoneNumberId?: string;
+  displayPhoneNumber?: string;
+  language: string;
+  tone: "friendly" | "professional" | "concise" | "consultative";
+  welcomeMessage: string;
+  systemPrompt: string;
+  knowledgeText?: string;
+  voiceAgentId?: string;
+  autoReply: boolean;
+  allowCallback: boolean;
+  triggerKeywords: string[];
+  handoffRules?: WhatsAppAgentHandoffRule[];
+  transferKeywords: string[];
+  fallbackMessage: string;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type WhatsAppConversation = {
@@ -337,6 +373,40 @@ export const whatsappApi = {
     method: "PUT",
     body: JSON.stringify(data),
   }),
+  listCustomAgents: () => req<{ ok: boolean; agents: WhatsAppCustomAgent[] }>("/api/whatsapp/agents/list"),
+  createCustomAgent: (data: Partial<WhatsAppCustomAgent>) =>
+    req<{ ok: boolean; agent: WhatsAppCustomAgent }>("/api/whatsapp/agents/list", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+  updateCustomAgent: (id: string, data: Partial<WhatsAppCustomAgent>) =>
+    req<{ ok: boolean; agent: WhatsAppCustomAgent }>(`/api/whatsapp/agents/list/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }),
+  deleteCustomAgent: (id: string) =>
+    req<{ ok: boolean; message: string }>(`/api/whatsapp/agents/list/${id}`, {
+      method: "DELETE",
+    }),
+  simulateCustomAgent: (
+    id: string,
+    payload: {
+      message: string;
+      contactName?: string;
+      history?: Array<{ role: "user" | "assistant"; content: string }>;
+      draft?: Partial<WhatsAppCustomAgent>;
+    },
+  ) =>
+    req<{
+      ok: boolean;
+      reply: string;
+      tag?: string;
+      handedOffToAgentId?: string;
+      handedOffToAgentName?: string;
+    }>(`/api/whatsapp/agents/list/${id}/simulate`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
 
   // Live Chat
   listConversations: () => req<{ ok: boolean; conversations: WhatsAppConversation[] }>("/api/whatsapp/conversations"),

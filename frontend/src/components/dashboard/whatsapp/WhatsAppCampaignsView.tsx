@@ -13,6 +13,8 @@ interface WhatsAppCampaignsViewProps {
   defaultGroupId?: string;
 }
 
+type StatusFilter = "ALL" | "COMPLETED" | "SCHEDULED" | "RUNNING" | "FAILED";
+
 export function WhatsAppCampaignsView({
   campaigns,
   templates,
@@ -21,20 +23,22 @@ export function WhatsAppCampaignsView({
   onRefresh,
   defaultGroupId,
 }: WhatsAppCampaignsViewProps) {
-  // Mode: "studio" (browsing campaigns) vs "composer" (creating new broadcast)
-  const [studioMode, setStudioMode] = useState<"studio" | "composer">("studio");
-  const [rightTab, setRightTab] = useState<"phone" | "analytics">("phone");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
+  const [groupFilter, setGroupFilter] = useState<string>("ALL");
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"ALL" | "COMPLETED" | "SCHEDULED" | "RUNNING">("ALL");
-  const [selectedCampaignId, setSelectedCampaignId] = useState<string>("");
 
-  // Test send modal
+  // Modals
+  const [showCreateModal, setShowCreateModal] = useState(Boolean(defaultGroupId));
+  const [inspectCampaignId, setInspectCampaignId] = useState<string>("");
+  const [inspectTab, setInspectTab] = useState<"preview" | "funnel">("preview");
   const [showTestModal, setShowTestModal] = useState(false);
+
+  // Test send state
   const [testPhoneNumber, setTestPhoneNumber] = useState("");
   const [busyTest, setBusyTest] = useState(false);
   const [testResult, setTestResult] = useState<{ ok: boolean; msg: string } | null>(null);
 
-  // Composer Form State
+  // Create campaign form state
   const [campaignName, setCampaignName] = useState("");
   const [selectedTemplateId, setSelectedTemplateId] = useState(templates[0]?._id || "");
   const [selectedGroupId, setSelectedGroupId] = useState(defaultGroupId || groups[0]?._id || "");
@@ -48,13 +52,6 @@ export function WhatsAppCampaignsView({
   const [busyCreate, setBusyCreate] = useState(false);
   const [createNotice, setCreateNotice] = useState("");
 
-  // Auto-sync selection when data finishes loading asynchronously
-  useEffect(() => {
-    if (!selectedCampaignId && campaigns.length > 0) {
-      setSelectedCampaignId(campaigns[0]._id);
-    }
-  }, [campaigns, selectedCampaignId]);
-
   useEffect(() => {
     if (!selectedTemplateId && templates.length > 0) {
       setSelectedTemplateId(templates[0]._id);
@@ -62,71 +59,76 @@ export function WhatsAppCampaignsView({
   }, [templates, selectedTemplateId]);
 
   useEffect(() => {
-    if (!selectedGroupId && groups.length > 0) {
-      setSelectedGroupId(defaultGroupId || groups[0]._id);
+    if (defaultGroupId) {
+      setSelectedGroupId(defaultGroupId);
+      setShowCreateModal(true);
+    } else if (!selectedGroupId && groups.length > 0) {
+      setSelectedGroupId(groups[0]._id);
     }
   }, [groups, selectedGroupId, defaultGroupId]);
 
-  // Active selected campaign
-  const activeCampaign = useMemo(() => {
-    return campaigns.find((c) => c._id === selectedCampaignId) || campaigns[0] || null;
-  }, [campaigns, selectedCampaignId]);
+  useEffect(() => {
+    if (!selectedSenderNumberId && accounts.length > 0) {
+      setSelectedSenderNumberId(accounts.find((a) => a.isPrimary)?.accountId || accounts[0].accountId);
+    }
+  }, [accounts, selectedSenderNumberId]);
 
-  // Active template (either from active campaign in studio mode or composer template)
-  const activeTemplate = useMemo(() => {
-    if (studioMode === "composer") {
-      return templates.find((t) => t._id === selectedTemplateId) || templates[0] || null;
-    }
-    if (activeCampaign?.templateId) {
-      return (
-        templates.find((t) => t._id === activeCampaign.templateId || t.name === activeCampaign.templateName) ||
-        templates[0] ||
-        null
-      );
-    }
-    return templates[0] || null;
-  }, [studioMode, activeCampaign, selectedTemplateId, templates]);
+  const inspectedCampaign = useMemo(
+    () => campaigns.find((c) => c._id === inspectCampaignId) || null,
+    [campaigns, inspectCampaignId],
+  );
 
-  // Active group
-  const activeGroup = useMemo(() => {
-    if (studioMode === "composer") {
-      return groups.find((g) => g._id === selectedGroupId) || groups[0] || null;
-    }
-    if (activeCampaign?.groupId) {
-      return groups.find((g) => g._id === activeCampaign.groupId) || groups[0] || null;
-    }
-    return groups[0] || null;
-  }, [studioMode, activeCampaign, selectedGroupId, groups]);
+  const composerTemplate = useMemo(
+    () => templates.find((t) => t._id === selectedTemplateId) || templates[0] || null,
+    [templates, selectedTemplateId],
+  );
 
-  // Filter campaigns
+  const inspectedTemplate = useMemo(() => {
+    if (!inspectedCampaign) return composerTemplate;
+    return (
+      templates.find((t) => t._id === inspectedCampaign.templateId || t.name === inspectedCampaign.templateName) ||
+      templates[0] ||
+      null
+    );
+  }, [inspectedCampaign, composerTemplate, templates]);
+
+  const activeTestTemplate = showCreateModal ? composerTemplate : inspectedTemplate || templates[0] || null;
+
   const filteredCampaigns = useMemo(() => {
+    const q = search.trim().toLowerCase();
     return campaigns.filter((c) => {
       const matchesSearch =
-        c.name.toLowerCase().includes(search.toLowerCase()) ||
-        c.templateName.toLowerCase().includes(search.toLowerCase()) ||
-        (c.groupName && c.groupName.toLowerCase().includes(search.toLowerCase()));
+        !q ||
+        c.name.toLowerCase().includes(q) ||
+        c.templateName.toLowerCase().includes(q) ||
+        (c.groupName && c.groupName.toLowerCase().includes(q));
       const matchesStatus =
         statusFilter === "ALL" || c.status.toLowerCase() === statusFilter.toLowerCase();
-      return matchesSearch && matchesStatus;
+      const matchesGroup =
+        groupFilter === "ALL" || c.groupId === groupFilter;
+      return matchesSearch && matchesStatus && matchesGroup;
     });
-  }, [campaigns, search, statusFilter]);
+  }, [campaigns, search, statusFilter, groupFilter]);
 
-  // Aggregated KPI Metrics
-  const totalRecipients = campaigns.reduce((acc, c) => acc + (c.stats.recipients || 0), 0);
-  const totalDelivered = campaigns.reduce((acc, c) => acc + (c.stats.delivered || 0), 0);
-  const totalRead = campaigns.reduce((acc, c) => acc + (c.stats.read || 0), 0);
-  const totalReplied = campaigns.reduce((acc, c) => acc + (c.stats.replied || 0), 0);
+  const statusCounts = useMemo(() => ({
+    ALL: campaigns.length,
+    COMPLETED: campaigns.filter((c) => c.status.toLowerCase() === "completed").length,
+    SCHEDULED: campaigns.filter((c) => c.status.toLowerCase() === "scheduled").length,
+    RUNNING: campaigns.filter((c) => c.status.toLowerCase() === "running").length,
+    FAILED: campaigns.filter((c) => c.status.toLowerCase() === "failed").length,
+  }), [campaigns]);
 
-  const deliveryRate =
-    totalRecipients > 0 ? ((totalDelivered / totalRecipients) * 100).toFixed(1) : "98.4";
-  const readRate = totalDelivered > 0 ? ((totalRead / totalDelivered) * 100).toFixed(1) : "87.2";
-  const replyRate = totalRead > 0 ? ((totalReplied / totalRead) * 100).toFixed(1) : "32.1";
+  const totals = useMemo(() => {
+    const delivered = filteredCampaigns.reduce((sum, c) => sum + (c.stats.delivered || 0), 0);
+    const read = filteredCampaigns.reduce((sum, c) => sum + (c.stats.read || 0), 0);
+    const replied = filteredCampaigns.reduce((sum, c) => sum + (c.stats.replied || 0), 0);
+    return { delivered, read, replied };
+  }, [filteredCampaigns]);
 
-  // Create Campaign Action
   async function handleCreateCampaign(e: React.FormEvent) {
     e.preventDefault();
     if (!campaignName.trim() || !selectedTemplateId || !selectedGroupId) {
-      setCreateNotice("Please specify campaign name, target audience, and template.");
+      setCreateNotice("Please specify campaign name, target group, and template.");
       return;
     }
 
@@ -141,11 +143,13 @@ export function WhatsAppCampaignsView({
         scheduledAt: scheduleType === "later" ? scheduledDate : undefined,
         senderPhoneNumberId: selectedSenderNumberId || undefined,
       });
-      if (res.ok && res.campaign) {
-        setSelectedCampaignId(res.campaign._id);
-      }
-      setStudioMode("studio");
+      setShowCreateModal(false);
       setCampaignName("");
+      setScheduledDate("");
+      if (res.ok && res.campaign) {
+        setInspectCampaignId(res.campaign._id);
+        setInspectTab("funnel");
+      }
       onRefresh();
     } catch (err) {
       setCreateNotice(err instanceof Error ? err.message : "Failed to launch campaign");
@@ -154,33 +158,32 @@ export function WhatsAppCampaignsView({
     }
   }
 
-  // Delete Campaign
   async function handleDeleteCampaign(id: string, name: string) {
-    if (!window.confirm(`Delete broadcast campaign "${name}"?`)) return;
+    if (!window.confirm(`Delete campaign "${name}"?`)) return;
     try {
       await whatsappApi.deleteCampaign(id);
+      if (inspectCampaignId === id) setInspectCampaignId("");
       onRefresh();
     } catch (err) {
       alert(err instanceof Error ? err.message : "Could not delete campaign");
     }
   }
 
-  // Test Send on Phone
   async function handleSendTestMessage(e: React.FormEvent) {
     e.preventDefault();
-    if (!testPhoneNumber.trim() || !activeTemplate) return;
+    if (!testPhoneNumber.trim() || !activeTestTemplate) return;
     setBusyTest(true);
     setTestResult(null);
 
     try {
-      const renderedText = activeTemplate.bodyText
+      const renderedText = activeTestTemplate.bodyText
         .replace(/{{1}}/g, sampleVar1 || "Alex")
         .replace(/{{2}}/g, sampleVar2 || "Acme Corp")
         .replace(/{{name}}/gi, sampleVar1 || "Alex");
 
       const res = await whatsappApi.sendTestMessage(testPhoneNumber.trim(), renderedText);
       if (res.ok) {
-        setTestResult({ ok: true, msg: "Test message delivered to phone via Meta Cloud API!" });
+        setTestResult({ ok: true, msg: "Test message sent via Meta Cloud API." });
       } else {
         setTestResult({ ok: false, msg: res.error || "Failed to send test message." });
       }
@@ -191,20 +194,17 @@ export function WhatsAppCampaignsView({
     }
   }
 
-  // Helper to format rendered preview text with highlighted variables
   function renderTemplateBody(body: string) {
     if (!body) return "No message content configured.";
     const parts = body.split(/(\{\{[^}]+\}\})/g);
     return parts.map((part, index) => {
       if (/^\{\{.*\}\}$/.test(part)) {
         const fallback =
-          part === "{{1}}" || part.toLowerCase().includes("name")
-            ? sampleVar1
-            : sampleVar2;
+          part === "{{1}}" || part.toLowerCase().includes("name") ? sampleVar1 : sampleVar2;
         return (
           <span
             key={index}
-            className="inline-flex items-center rounded-md bg-[#c2ebd8] px-1.5 py-0.5 font-mono text-[11px] font-semibold text-[#0a5247] shadow-2xs"
+            className="inline-flex items-center rounded bg-[#f4f4f5] px-1 py-0.2 font-mono text-[11px] font-medium text-[#171717]"
             title={`Variable: ${part}`}
           >
             {fallback || part}
@@ -215,331 +215,351 @@ export function WhatsAppCampaignsView({
     });
   }
 
+  function statusDotClass(status: string) {
+    const s = status.toLowerCase();
+    if (s === "completed") return "bg-emerald-600";
+    if (s === "scheduled") return "bg-blue-600";
+    if (s === "running") return "bg-amber-500";
+    if (s === "failed") return "bg-rose-600";
+    return "bg-[#171717]";
+  }
+
   return (
-    <div className="whatsapp-campaigns space-y-5">
-      {/* Main Unified Toolbar */}
-      <div className="flex flex-col gap-3 rounded-2xl border border-[#dfe7e4] bg-white p-3 shadow-2xs lg:flex-row lg:items-center lg:justify-between">
-        {/* Left: Status Filter Pills */}
-        <div className="flex flex-wrap items-center gap-1.5">
-          {(["ALL", "COMPLETED", "SCHEDULED", "RUNNING"] as const).map((st) => {
-            const count =
-              st === "ALL"
-                ? campaigns.length
-                : campaigns.filter((c) => c.status.toLowerCase() === st.toLowerCase()).length;
-            return (
-              <button
-                key={st}
-                onClick={() => setStatusFilter(st)}
-                className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold transition ${
-                  statusFilter === st
-                    ? "bg-[#118778] text-white shadow-xs"
-                    : "bg-[#f4f7f6] text-[#52645f] hover:bg-[#e9f0ee] hover:text-[#20342e]"
-                }`}
-              >
-                <span>{st === "ALL" ? "All Broadcasts" : st.charAt(0) + st.slice(1).toLowerCase()}</span>
-                <span
-                  className={`rounded-full px-1.5 py-0.2 text-[10px] ${
-                    statusFilter === st ? "bg-white/20 text-white" : "bg-black/5 text-[#60716c]"
-                  }`}
-                >
-                  {count}
-                </span>
-              </button>
-            );
-          })}
+    <div className="whatsapp-campaigns space-y-4">
+      {/* Compact Top Toolbar (matches Contact Groups) */}
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative flex-1 max-w-md">
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search campaigns by name, template, group..."
+            className="h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717] placeholder:text-[#71717a] focus:border-[#171717] focus:outline-none"
+          />
         </div>
 
-        {/* Right: Search + Action Buttons */}
         <div className="flex flex-wrap items-center gap-2">
-          <div className="relative min-w-[200px] flex-1 sm:flex-none">
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search campaigns..."
-              className="w-full rounded-xl border border-[#dfe7e4] bg-[#f9fbfa] py-1.5 pl-8 pr-3 text-xs text-[#20342e] focus:border-[#118778] focus:bg-white focus:outline-none"
-            />
-            <svg
-              className="pointer-events-none absolute left-2.5 top-2.5 size-3.5 text-[#84938f]"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </div>
-
           <button
             type="button"
-            onClick={() => setShowTestModal(true)}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-[#c6d4d0] bg-white px-3 py-1.5 text-xs font-semibold text-[#20342e] shadow-2xs transition hover:border-[#118778] hover:text-[#118778]"
+            onClick={() => {
+              setTestResult(null);
+              setShowTestModal(true);
+            }}
+            className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#171717] transition hover:bg-[#f4f4f5]"
           >
-            <svg className="size-3.5 text-[#118778]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-            </svg>
-            <span>Test Phone</span>
+            Test Phone
           </button>
-
-          {studioMode === "studio" ? (
-            <button
-              type="button"
-              onClick={() => setStudioMode("composer")}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-[#118778] px-3.5 py-1.5 text-xs font-bold text-white shadow-xs transition hover:bg-[#0d6e62]"
-            >
-              <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-              </svg>
-              <span>New Campaign</span>
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => setStudioMode("studio")}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-[#c6d4d0] bg-white px-3.5 py-1.5 text-xs font-bold text-[#52645f] transition hover:bg-[#f4f7f6] hover:text-[#14231f]"
-            >
-              <span>← Back</span>
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => {
+              setCreateNotice("");
+              setShowCreateModal(true);
+            }}
+            className="inline-flex h-8 items-center rounded-md bg-[#2563eb] px-3 text-[12.5px] font-medium text-white transition hover:bg-[#1d4ed8]"
+          >
+            + New Campaign
+          </button>
         </div>
       </div>
 
-      {/* DUAL-PANE STUDIO LAYOUT */}
-      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
-        {/* LEFT PANE (7 cols) - Campaign Feed or Broadcast Composer */}
-        <div className="space-y-4 lg:col-span-7">
-          {studioMode === "studio" ? (
-            /* STUDIO VIEW: Campaign List with Live Inspector Cards */
-            <div className="space-y-3">
+      {/* Main 2-Column Layout: Left Filter Sidebar + Right Campaigns Table */}
+      <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[260px_minmax(0,1fr)]">
+        {/* Left: Status & Audience Group Filters */}
+        <aside className="grid gap-4">
+          <div className="grid gap-2">
+            <div className="flex items-center justify-between px-0.5">
+              <h2 className="m-0 text-[13px] font-semibold text-[#171717]">
+                Status <span className="ml-1 font-normal text-[#71717a]">{campaigns.length}</span>
+              </h2>
+            </div>
 
-              {/* Campaign Cards Stream */}
-              {filteredCampaigns.length === 0 ? (
-                <div className="rounded-3xl border border-dashed border-[#ccd8d4] bg-white p-12 text-center">
-                  <div className="mx-auto grid size-12 place-items-center rounded-2xl bg-[#eef6f3] text-[#118778]">
-                    <svg className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 4v16m8-8H4" />
-                    </svg>
-                  </div>
-                  <h3 className="mt-3 text-sm font-bold text-[#14231f]">No campaigns found</h3>
-                  <p className="mt-1 text-xs text-[#71817d]">
-                    Create a broadcast using one of your WhatsApp message templates.
-                  </p>
+            <div className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white divide-y divide-[#eaeaea]">
+              {(
+                [
+                  { id: "ALL", label: "All Campaigns" },
+                  { id: "COMPLETED", label: "Completed" },
+                  { id: "SCHEDULED", label: "Scheduled" },
+                  { id: "RUNNING", label: "Running" },
+                  { id: "FAILED", label: "Failed" },
+                ] as const
+              ).map((item) => {
+                const isSelected = statusFilter === item.id;
+                return (
                   <button
-                    onClick={() => setStudioMode("composer")}
-                    className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[#118778] px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-[#0d6e62]"
+                    key={item.id}
+                    type="button"
+                    onClick={() => setStatusFilter(item.id)}
+                    className={`flex w-full items-center justify-between px-3.5 py-2.5 text-left text-[12.5px] transition ${
+                      isSelected
+                        ? "border-l-2 border-l-[#2563eb] bg-[#eff6ff] font-semibold text-[#1d4ed8]"
+                        : "text-[#171717] hover:bg-[#fafafa]"
+                    }`}
                   >
-                    Create First Campaign
-                  </button>
-                </div>
-              ) : (
-                filteredCampaigns.map((camp) => {
-                  const isSelected = activeCampaign?._id === camp._id;
-                  const deliveredPct =
-                    camp.stats.recipients > 0
-                      ? Math.round((camp.stats.delivered / camp.stats.recipients) * 100)
-                      : 100;
-                  const readPct =
-                    camp.stats.delivered > 0
-                      ? Math.round((camp.stats.read / camp.stats.delivered) * 100)
-                      : 0;
-
-                  return (
-                    <div
-                      key={camp._id}
-                      onClick={() => setSelectedCampaignId(camp._id)}
-                      className={`group relative rounded-2xl border p-4.5 transition-all duration-200 cursor-pointer ${
-                        isSelected
-                          ? "border-[#118778] bg-white shadow-md ring-2 ring-[#118778]/15"
-                          : "border-[#e0ebe7] bg-white hover:border-[#b8cfc8] hover:shadow-xs"
+                    <span>{item.label}</span>
+                    <span
+                      className={`tabular-nums text-[11.5px] ${
+                        isSelected ? "text-[#2563eb]" : "text-[#71717a]"
                       }`}
                     >
-                      {/* Top Row: Title, Date, Status */}
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex items-center gap-3 min-w-0">
-                          <span
-                            className={`grid size-9 shrink-0 place-items-center rounded-xl transition ${
-                              isSelected ? "bg-[#118778] text-white" : "bg-[#f0f5f3] text-[#118778]"
-                            }`}
-                          >
-                            <svg className="size-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="m3 11 18-5v12L3 13v-2z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
-                            </svg>
-                          </span>
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-2">
-                              <h3 className="truncate text-sm font-bold text-[#14231f]">
-                                {camp.name}
-                              </h3>
-                              {isSelected && (
-                                <span className="rounded-md bg-[#118778]/10 px-1.5 py-0.2 text-[9px] font-bold text-[#118778]">
-                                  Active in Studio
-                                </span>
-                              )}
-                            </div>
-                            <div className="flex items-center gap-2 text-[11px] text-[#71817d]">
-                              <span>{camp.sentAt ? `Dispatched ${new Date(camp.sentAt).toLocaleDateString()}` : "Scheduled for future"}</span>
-                              <span>•</span>
-                              <span className="font-mono text-[10px] text-[#52645f]">
-                                Template: {camp.templateName}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Status Badge */}
-                        <div className="flex items-center gap-2 shrink-0">
-                          <span
-                            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${
-                              camp.status === "completed"
-                                ? "bg-emerald-50 text-emerald-800 ring-1 ring-emerald-600/20"
-                                : camp.status === "scheduled"
-                                ? "bg-blue-50 text-blue-800 ring-1 ring-blue-600/20"
-                                : "bg-amber-50 text-amber-800 ring-1 ring-amber-600/20"
-                            }`}
-                          >
-                            <span
-                              className={`size-1.5 rounded-full ${
-                                camp.status === "completed"
-                                  ? "bg-emerald-500"
-                                  : camp.status === "scheduled"
-                                  ? "bg-blue-500 animate-pulse"
-                                  : "bg-amber-500 animate-pulse"
-                              }`}
-                            />
-                            {camp.status}
-                          </span>
-
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              void handleDeleteCampaign(camp._id, camp.name);
-                            }}
-                            className="rounded-lg p-1.5 text-[#84938f] opacity-0 transition hover:bg-rose-50 hover:text-rose-600 group-hover:opacity-100"
-                            title="Delete Campaign"
-                          >
-                            <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                              />
-                            </svg>
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Middle Row: Audience & Funnel Track */}
-                      <div className="mt-3.5 space-y-2 rounded-xl bg-[#fafcfb] p-3 border border-[#edf3f0]">
-                        <div className="flex items-center justify-between text-xs">
-                          <div className="flex items-center gap-2">
-                            <span className="rounded-md bg-[#e3eeea] px-2 py-0.5 text-[10px] font-bold text-[#118778]">
-                              Audience: {camp.groupName || "Segment"}
-                            </span>
-                            <span className="text-[11px] text-[#60716c]">
-                              {camp.stats.recipients.toLocaleString()} Contacts
-                            </span>
-                          </div>
-                          <div className="text-[11px] font-semibold text-[#14231f]">
-                            {deliveredPct}% Delivered
-                          </div>
-                        </div>
-
-                        {/* Multi-segment Delivery Bar */}
-                        <div className="h-2 w-full overflow-hidden rounded-full bg-[#e6edea]">
-                          <div
-                            className="h-full bg-gradient-to-r from-[#118778] to-[#25D366] rounded-full transition-all duration-500"
-                            style={{ width: `${deliveredPct}%` }}
-                          />
-                        </div>
-
-                        {/* Funnel Metrics Row */}
-                        <div className="grid grid-cols-4 gap-2 pt-1 text-center">
-                          <div className="border-r border-[#e8efec]">
-                            <span className="block text-[9px] uppercase font-bold text-[#84938f]">Sent</span>
-                            <span className="text-xs font-bold text-[#14231f]">{camp.stats.recipients}</span>
-                          </div>
-                          <div className="border-r border-[#e8efec]">
-                            <span className="block text-[9px] uppercase font-bold text-emerald-700">Delivered</span>
-                            <span className="text-xs font-bold text-emerald-600">{camp.stats.delivered}</span>
-                          </div>
-                          <div className="border-r border-[#e8efec]">
-                            <span className="block text-[9px] uppercase font-bold text-[#118778]">Read</span>
-                            <span className="text-xs font-bold text-[#118778]">{camp.stats.read} ({readPct}%)</span>
-                          </div>
-                          <div>
-                            <span className="block text-[9px] uppercase font-bold text-indigo-700">Replied</span>
-                            <span className="text-xs font-bold text-indigo-600">{camp.stats.replied}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })
-              )}
+                      {statusCounts[item.id]}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
-          ) : (
-            /* COMPOSER VIEW: Interactive Studio Campaign Builder */
-            <div className="rounded-3xl border border-[#dbe4e1] bg-white p-6 shadow-sm">
-              <div className="flex items-center justify-between border-b border-[#edf2f0] pb-4">
-                <div>
-                  <h2 className="text-base font-bold text-[#14231f]">Configure New Broadcast</h2>
-                  <p className="text-xs text-[#71817d]">
-                    Changes will reflect instantly on the simulated smartphone preview to your right.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setStudioMode("studio")}
-                  className="rounded-lg p-1 text-xs font-semibold text-[#84938f] hover:bg-[#f4f7f6] hover:text-[#14231f]"
-                >
-                  ✕ Cancel
-                </button>
+          </div>
+
+          {groups.length > 0 && (
+            <div className="grid gap-2">
+              <div className="flex items-center justify-between px-0.5">
+                <h2 className="m-0 text-[13px] font-semibold text-[#171717]">
+                  Audience Groups <span className="ml-1 font-normal text-[#71717a]">{groups.length}</span>
+                </h2>
               </div>
 
-              <form onSubmit={handleCreateCampaign} className="mt-5 space-y-5">
+              <div className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white divide-y divide-[#eaeaea]">
+                <button
+                  type="button"
+                  onClick={() => setGroupFilter("ALL")}
+                  className={`flex w-full items-center justify-between px-3.5 py-2 text-left text-[12.5px] transition ${
+                    groupFilter === "ALL"
+                      ? "border-l-2 border-l-[#2563eb] bg-[#eff6ff] font-semibold text-[#1d4ed8]"
+                      : "text-[#171717] hover:bg-[#fafafa]"
+                  }`}
+                >
+                  <span>All Groups</span>
+                  <span
+                    className={`tabular-nums text-[11.5px] ${
+                      groupFilter === "ALL" ? "text-[#2563eb]" : "text-[#71717a]"
+                    }`}
+                  >
+                    {campaigns.length}
+                  </span>
+                </button>
+                {groups.map((grp) => {
+                  const isSelected = groupFilter === grp._id;
+                  const count = campaigns.filter((c) => c.groupId === grp._id).length;
+                  return (
+                    <button
+                      key={grp._id}
+                      type="button"
+                      onClick={() => setGroupFilter(isSelected ? "ALL" : grp._id)}
+                      className={`flex w-full items-center justify-between gap-2 px-3.5 py-2 text-left text-[12.5px] transition ${
+                        isSelected
+                          ? "border-l-2 border-l-[#2563eb] bg-[#eff6ff] font-semibold text-[#1d4ed8]"
+                          : "text-[#171717] hover:bg-[#fafafa]"
+                      }`}
+                    >
+                      <span className="truncate">{grp.name}</span>
+                      <span
+                        className={`tabular-nums text-[11.5px] ${
+                          isSelected ? "text-[#2563eb]" : "text-[#71717a]"
+                        }`}
+                      >
+                        {count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </aside>
+
+        {/* Right: Clean Campaigns Table */}
+        <div className="grid gap-2 min-w-0">
+          <div className="flex flex-wrap items-center justify-between gap-2 px-0.5">
+            <h2 className="m-0 text-[13px] font-semibold text-[#171717]">
+              Campaigns <span className="ml-1 font-normal text-[#71717a]">{filteredCampaigns.length}</span>
+            </h2>
+            <div className="flex items-center gap-3 text-[11.5px] text-[#71717a] tabular-nums">
+              <span>{totals.delivered.toLocaleString()} delivered</span>
+              <span>·</span>
+              <span>{totals.read.toLocaleString()} read</span>
+              <span>·</span>
+              <span>{totals.replied.toLocaleString()} replied</span>
+            </div>
+          </div>
+
+          <div className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-[12.5px]">
+                <thead className="border-b border-[#eaeaea] bg-[#fafafa] text-[11px] font-semibold uppercase tracking-[0.06em] text-[#71717a]">
+                  <tr>
+                    <th className="px-4 py-2.5">Campaign</th>
+                    <th className="px-4 py-2.5">Audience &amp; Template</th>
+                    <th className="px-4 py-2.5">Delivery</th>
+                    <th className="px-4 py-2.5">Engagement</th>
+                    <th className="px-4 py-2.5">Status</th>
+                    <th className="px-4 py-2.5 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#eaeaea]">
+                  {filteredCampaigns.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="px-4 py-10 text-center text-[12.5px] text-[#71717a]">
+                        No campaigns found. Click{" "}
+                        <button
+                          type="button"
+                          onClick={() => setShowCreateModal(true)}
+                          className="font-medium text-[#171717] underline"
+                        >
+                          + New Campaign
+                        </button>{" "}
+                        to launch one.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredCampaigns.map((camp) => {
+                      const deliveredPct =
+                        camp.stats.recipients > 0
+                          ? Math.round((camp.stats.delivered / camp.stats.recipients) * 100)
+                          : 0;
+                      const readPct =
+                        camp.stats.delivered > 0
+                          ? Math.round((camp.stats.read / camp.stats.delivered) * 100)
+                          : 0;
+
+                      return (
+                        <tr
+                          key={camp._id}
+                          onClick={() => {
+                            setInspectCampaignId(camp._id);
+                            setInspectTab("preview");
+                          }}
+                          className="cursor-pointer transition hover:bg-[#fafafa]"
+                        >
+                          <td className="px-4 py-2.5">
+                            <strong className="block font-medium text-[#171717]">{camp.name}</strong>
+                            <span className="block text-[11px] text-[#71717a]">
+                              {camp.sentAt
+                                ? `Sent ${new Date(camp.sentAt).toLocaleDateString()}`
+                                : camp.scheduledAt
+                                  ? `Scheduled ${new Date(camp.scheduledAt).toLocaleString()}`
+                                  : "Draft / Queued"}
+                            </span>
+                          </td>
+                          <td className="px-4 py-2.5">
+                            <span className="inline-block rounded border border-[#eaeaea] bg-[#fafafa] px-1.5 py-0.2 text-[11px] text-[#52525b]">
+                              {camp.groupName || "Audience"} ({camp.stats.recipients})
+                            </span>
+                            <span className="mt-0.5 block font-mono text-[11px] text-[#71717a]">
+                              {camp.templateName}
+                            </span>
+                          </td>
+                          <td className="px-4 py-2.5 tabular-nums">
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium text-[#171717]">
+                                {camp.stats.delivered}/{camp.stats.recipients}
+                              </span>
+                              <span className="text-[11px] text-[#71717a]">{deliveredPct}%</span>
+                            </div>
+                            <div className="mt-1 h-1 w-24 overflow-hidden rounded-full bg-[#eaeaea]">
+                              <div
+                                className="h-full rounded-full bg-[#2563eb]"
+                                style={{ width: `${deliveredPct}%` }}
+                              />
+                            </div>
+                          </td>
+                          <td className="px-4 py-2.5 tabular-nums text-[12px] text-[#52525b]">
+                            <div>{camp.stats.read} read ({readPct}%)</div>
+                            <div className="text-[11px] text-[#71717a]">{camp.stats.replied} replied</div>
+                          </td>
+                          <td className="px-4 py-2.5">
+                            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#eaeaea] bg-[#fafafa] px-2 py-0.5 text-[11px] font-medium capitalize text-[#171717]">
+                              <span className={`size-1.5 rounded-full ${statusDotClass(camp.status)}`} />
+                              {camp.status}
+                            </span>
+                          </td>
+                          <td className="px-4 py-2.5 text-right">
+                            <div className="flex items-center justify-end gap-1">
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setInspectCampaignId(camp._id);
+                                  setInspectTab("preview");
+                                }}
+                                className="inline-flex h-7 items-center rounded-md border border-[#eaeaea] bg-white px-2 text-[11.5px] font-medium text-[#171717] hover:bg-[#f4f4f5]"
+                              >
+                                View
+                              </button>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  void handleDeleteCampaign(camp._id, camp.name);
+                                }}
+                                className="grid size-7 place-items-center rounded-md border border-transparent text-[#71717a] hover:border-[#eaeaea] hover:bg-white hover:text-[#171717]"
+                                title="Delete campaign"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* New Campaign Modal (with live preview) */}
+      {showCreateModal && (
+        <div
+          className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4 backdrop-blur-[2px]"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setShowCreateModal(false);
+          }}
+        >
+          <div className="w-full max-w-2xl rounded-lg border border-[#eaeaea] bg-white p-5 shadow-xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[#eaeaea] pb-3">
+              <div>
+                <h3 className="m-0 text-[15px] font-semibold text-[#171717]">New WhatsApp Campaign</h3>
+                <p className="m-0 mt-0.5 text-[12px] text-[#71717a]">
+                  Choose an audience group, approved template, and send timing.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowCreateModal(false)}
+                className="text-[#71717a] hover:text-[#171717]"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateCampaign} className="mt-4 grid grid-cols-1 gap-5 md:grid-cols-[1.2fr_1fr]">
+              <div className="space-y-3.5">
                 {createNotice && (
-                  <div className="rounded-2xl border border-rose-200 bg-rose-50 p-3.5 text-xs text-rose-800">
+                  <div className="rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-[12px] text-rose-800">
                     {createNotice}
                   </div>
                 )}
 
-                {/* Step 1: Campaign Identity */}
-                <div className="space-y-1.5">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-[#445550]">
-                    1. Campaign Name
-                  </label>
+                <div>
+                  <label className="block text-[12px] font-medium text-[#171717]">Campaign Name</label>
                   <input
                     type="text"
                     required
                     value={campaignName}
                     onChange={(e) => setCampaignName(e.target.value)}
-                    placeholder="e.g. VIP Customer Product Launch Broadcast"
-                    className="w-full rounded-xl border border-[#c6d4d0] bg-[#f9fbfa] px-3.5 py-2.5 text-xs font-medium text-[#14231f] transition focus:border-[#118778] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#118778]/10"
+                    placeholder="e.g. Monthly Follow-up Broadcast"
+                    className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717] focus:border-[#171717] focus:outline-none"
                   />
                 </div>
 
-                {/* Sender WhatsApp Line Selector */}
                 {accounts.length > 0 && (
-                  <div className="space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <label className="block text-xs font-bold uppercase tracking-wider text-[#445550]">
-                        Send From WhatsApp Number
-                      </label>
-                      <span className="text-[11px] font-semibold text-[#118778]">
-                        {accounts.length} {accounts.length === 1 ? "line" : "lines"} connected
-                      </span>
-                    </div>
+                  <div>
+                    <label className="block text-[12px] font-medium text-[#171717]">Send From Number</label>
                     <select
                       value={selectedSenderNumberId}
                       onChange={(e) => setSelectedSenderNumberId(e.target.value)}
-                      className="w-full rounded-xl border border-[#c6d4d0] bg-[#f9fbfa] px-3.5 py-2.5 text-xs font-medium text-[#14231f] transition focus:border-[#118778] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#118778]/10"
+                      className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-2.5 text-[13px] text-[#171717] focus:border-[#171717] focus:outline-none"
                     >
                       {accounts.map((acc) => (
                         <option key={acc.accountId} value={acc.accountId}>
@@ -550,469 +570,346 @@ export function WhatsAppCampaignsView({
                   </div>
                 )}
 
-                {/* Step 2: Target Audience Group */}
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-[#445550]">
-                      2. Target Audience Segment
-                    </label>
-                    <span className="text-[11px] text-[#118778] font-semibold">
-                      {activeGroup ? `${activeGroup.contactCount || 0} Contacts selected` : ""}
-                    </span>
-                  </div>
+                <div>
+                  <label className="block text-[12px] font-medium text-[#171717]">Target Contact Group</label>
                   <select
                     value={selectedGroupId}
                     onChange={(e) => setSelectedGroupId(e.target.value)}
-                    className="w-full rounded-xl border border-[#c6d4d0] bg-[#f9fbfa] px-3.5 py-2.5 text-xs font-medium text-[#14231f] transition focus:border-[#118778] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#118778]/10"
+                    className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-2.5 text-[13px] text-[#171717] focus:border-[#171717] focus:outline-none"
                   >
                     {groups.map((g) => (
                       <option key={g._id} value={g._id}>
-                        {g.name} — ({g.contactCount || 0} verified recipients)
+                        {g.name} ({g.contactCount || 0} contacts)
                       </option>
                     ))}
                   </select>
                 </div>
 
-                {/* Step 3: Meta Template Selector */}
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-[#445550]">
-                      3. Pre-Approved WhatsApp Template
-                    </label>
-                    {activeTemplate && (
-                      <span className="rounded-md bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-800">
-                        {activeTemplate.category}
-                      </span>
-                    )}
-                  </div>
+                <div>
+                  <label className="block text-[12px] font-medium text-[#171717]">Approved Template</label>
                   <select
                     value={selectedTemplateId}
                     onChange={(e) => setSelectedTemplateId(e.target.value)}
-                    className="w-full rounded-xl border border-[#c6d4d0] bg-[#f9fbfa] px-3.5 py-2.5 text-xs font-medium text-[#14231f] transition focus:border-[#118778] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#118778]/10"
+                    className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-2.5 text-[13px] text-[#171717] focus:border-[#171717] focus:outline-none"
                   >
                     {templates.map((t) => (
                       <option key={t._id} value={t._id}>
-                        {t.name} ({t.category} • {t.language})
+                        {t.name} ({t.category} · {t.language})
                       </option>
                     ))}
                   </select>
+                </div>
 
-                  {/* Dynamic Variable Customizers */}
-                  <div className="mt-3 rounded-2xl border border-[#d8e6e1] bg-[#f5faf8] p-3.5 space-y-2.5">
-                    <div className="text-[11px] font-bold text-[#118778]">
-                      Dynamic Template Variables (Live Preview)
-                    </div>
-                    <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-                      <div>
-                        <label className="text-[10px] font-semibold text-[#52645f]">
-                          Placeholder `{"{{1}}"}` or Name:
-                        </label>
-                        <input
-                          type="text"
-                          value={sampleVar1}
-                          onChange={(e) => setSampleVar1(e.target.value)}
-                          placeholder="e.g. Alex Johnson"
-                          className="mt-0.5 w-full rounded-lg border border-[#cbe0d9] bg-white px-2.5 py-1.5 text-xs text-[#14231f] focus:outline-none focus:border-[#118778]"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-[10px] font-semibold text-[#52645f]">
-                          Placeholder `{"{{2}}"}` or Company:
-                        </label>
-                        <input
-                          type="text"
-                          value={sampleVar2}
-                          onChange={(e) => setSampleVar2(e.target.value)}
-                          placeholder="e.g. Acme Corp"
-                          className="mt-0.5 w-full rounded-lg border border-[#cbe0d9] bg-white px-2.5 py-1.5 text-xs text-[#14231f] focus:outline-none focus:border-[#118778]"
-                        />
-                      </div>
-                    </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-[11px] font-medium text-[#71717a]">Preview {"{{1}}"}</label>
+                    <input
+                      type="text"
+                      value={sampleVar1}
+                      onChange={(e) => setSampleVar1(e.target.value)}
+                      className="mt-1 h-8 w-full rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12px] text-[#171717]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-medium text-[#71717a]">Preview {"{{2}}"}</label>
+                    <input
+                      type="text"
+                      value={sampleVar2}
+                      onChange={(e) => setSampleVar2(e.target.value)}
+                      className="mt-1 h-8 w-full rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12px] text-[#171717]"
+                    />
                   </div>
                 </div>
 
-                {/* Step 4: Dispatch Schedule */}
-                <div className="space-y-2">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-[#445550]">
-                    4. Dispatch Timing
-                  </label>
-                  <div className="grid grid-cols-2 gap-3">
-                    <label
+                <div>
+                  <label className="block text-[12px] font-medium text-[#171717]">Schedule</label>
+                  <div className="mt-1 grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
                       onClick={() => setScheduleType("now")}
-                      className={`flex cursor-pointer items-center gap-2.5 rounded-xl border p-3 text-xs transition ${
+                      className={`h-8 rounded-md border text-[12px] font-medium transition ${
                         scheduleType === "now"
-                          ? "border-[#118778] bg-[#f0f8f5] text-[#118778] font-bold"
-                          : "border-[#dbe4e1] bg-white text-[#52645f]"
+                          ? "border-[#2563eb] bg-[#2563eb] text-white"
+                          : "border-[#eaeaea] bg-white text-[#52525b] hover:bg-[#fafafa]"
                       }`}
                     >
-                      <input
-                        type="radio"
-                        name="schedule"
-                        checked={scheduleType === "now"}
-                        onChange={() => setScheduleType("now")}
-                        className="accent-[#118778]"
-                      />
-                      <span>Send Immediately</span>
-                    </label>
-
-                    <label
+                      Send Now
+                    </button>
+                    <button
+                      type="button"
                       onClick={() => setScheduleType("later")}
-                      className={`flex cursor-pointer items-center gap-2.5 rounded-xl border p-3 text-xs transition ${
+                      className={`h-8 rounded-md border text-[12px] font-medium transition ${
                         scheduleType === "later"
-                          ? "border-[#118778] bg-[#f0f8f5] text-[#118778] font-bold"
-                          : "border-[#dbe4e1] bg-white text-[#52645f]"
+                          ? "border-[#2563eb] bg-[#2563eb] text-white"
+                          : "border-[#eaeaea] bg-white text-[#52525b] hover:bg-[#fafafa]"
                       }`}
                     >
-                      <input
-                        type="radio"
-                        name="schedule"
-                        checked={scheduleType === "later"}
-                        onChange={() => setScheduleType("later")}
-                        className="accent-[#118778]"
-                      />
-                      <span>Schedule for Later</span>
-                    </label>
+                      Schedule Later
+                    </button>
                   </div>
-
                   {scheduleType === "later" && (
                     <input
                       type="datetime-local"
                       required
                       value={scheduledDate}
                       onChange={(e) => setScheduledDate(e.target.value)}
-                      className="mt-2 w-full rounded-xl border border-[#c6d4d0] bg-[#f9fbfa] px-3.5 py-2 text-xs text-[#14231f] focus:border-[#118778] focus:bg-white focus:outline-none"
+                      className="mt-2 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] text-[#171717]"
                     />
                   )}
                 </div>
+              </div>
 
-                {/* Submit Controls */}
-                <div className="flex items-center justify-end gap-3 border-t border-[#edf2f0] pt-4">
-                  <button
-                    type="button"
-                    onClick={() => setStudioMode("studio")}
-                    className="rounded-xl border border-[#c6d4d0] px-4 py-2.5 text-xs font-semibold text-[#52645f] hover:bg-[#f4f7f6]"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={busyCreate}
-                    className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#118778] to-[#0a5c51] px-5 py-2.5 text-xs font-bold text-white shadow-md transition hover:brightness-110 disabled:opacity-50"
-                  >
-                    {busyCreate ? (
-                      <>
-                        <span className="size-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                        <span>Broadcasting via Meta API...</span>
-                      </>
-                    ) : (
-                      <>
-                        <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
-                        <span>{scheduleType === "now" ? "Launch Broadcast Now" : "Schedule Broadcast"}</span>
-                      </>
+              {/* Right: Clean Compact Preview */}
+              <div className="flex flex-col justify-between rounded-lg border border-[#eaeaea] bg-[#fafafa] p-3.5">
+                <div>
+                  <div className="flex items-center justify-between border-b border-[#eaeaea] pb-2">
+                    <span className="text-[11.5px] font-semibold text-[#171717]">Message Preview</span>
+                    {composerTemplate?.category && (
+                      <span className="rounded border border-[#eaeaea] bg-white px-1.5 py-0.2 text-[10px] font-medium text-[#52525b]">
+                        {composerTemplate.category}
+                      </span>
                     )}
-                  </button>
-                </div>
-              </form>
-            </div>
-          )}
-        </div>
-
-        {/* RIGHT PANE (5 cols) - Sticky Live Smartphone Simulator & Analytics Studio */}
-        <div className="space-y-4 lg:col-span-5 lg:sticky lg:top-4">
-          <div className="rounded-3xl border border-[#dbe4e1] bg-white p-5 shadow-sm">
-            {/* Studio Inspector Header with Tab Toggles */}
-            <div className="flex items-center justify-between border-b border-[#edf2f0] pb-3.5">
-              <div className="flex items-center gap-2">
-                <span className="size-2 rounded-full bg-[#25D366] animate-pulse" />
-                <span className="text-xs font-bold text-[#14231f]">
-                  {studioMode === "composer"
-                    ? "Live Template Preview"
-                    : activeCampaign?.name || "Broadcast Studio"}
-                </span>
-              </div>
-
-              {/* Segmented Tab Pill */}
-              <div className="flex rounded-lg bg-[#f0f4f3] p-0.5">
-                <button
-                  type="button"
-                  onClick={() => setRightTab("phone")}
-                  className={`rounded-md px-2.5 py-1 text-[11px] font-bold transition ${
-                    rightTab === "phone"
-                      ? "bg-white text-[#118778] shadow-2xs"
-                      : "text-[#60716c] hover:text-[#14231f]"
-                  }`}
-                >
-                  💬 Message Preview
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setRightTab("analytics")}
-                  className={`rounded-md px-2.5 py-1 text-[11px] font-bold transition ${
-                    rightTab === "analytics"
-                      ? "bg-white text-[#118778] shadow-2xs"
-                      : "text-[#60716c] hover:text-[#14231f]"
-                  }`}
-                >
-                  📊 Delivery Funnel
-                </button>
-              </div>
-            </div>
-
-            {/* TAB 1: SAAS MESSAGE PREVIEW CARD */}
-            {rightTab === "phone" && (
-              <div className="mt-4 flex flex-col justify-between rounded-2xl border border-[#d8e6e1] bg-[#f9fbfa] p-4 min-h-[360px]">
-                <div className="space-y-3">
-                  {/* Preview Header */}
-                  <div className="flex items-center justify-between border-b border-[#edf2f0] pb-2.5">
-                    <div className="flex items-center gap-2">
-                      <div className="grid size-7 place-items-center rounded-xl bg-gradient-to-br from-[#118778] to-[#0d6e62] text-xs font-bold text-white">
-                        V
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-1">
-                          <span className="text-xs font-bold text-[#14231f]">Vozon AI Business</span>
-                          <span className="text-[10px] text-emerald-600 font-bold">✓ Verified</span>
-                        </div>
-                        <span className="text-[10px] text-[#71817d]">Meta WhatsApp Cloud Broadcast</span>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setShowTestModal(true)}
-                      className="inline-flex items-center gap-1 rounded-xl border border-[#118778] bg-[#118778]/10 px-2.5 py-1 text-[11px] font-bold text-[#118778] hover:bg-[#118778] hover:text-white transition"
-                    >
-                      Test on Phone
-                    </button>
                   </div>
 
-                  {/* Clean Message Bubble */}
-                  <div className="rounded-2xl rounded-tl-none border border-[#c4eabf] bg-[#eefbf0] p-4 shadow-2xs space-y-2">
-                    {/* Header Banner if template specifies */}
-                    {activeTemplate?.headerText && (
-                      <div className="border-b border-black/5 pb-1 text-xs font-bold text-[#14231f]">
-                        {activeTemplate.headerText}
+                  <div className="mt-3 rounded-lg border border-[#eaeaea] bg-white p-3 space-y-2">
+                    {composerTemplate?.headerText && (
+                      <div className="text-[12px] font-semibold text-[#171717] border-b border-[#f4f4f5] pb-1">
+                        {composerTemplate.headerText}
                       </div>
                     )}
-
-                    {/* Body Text with highlighted variables */}
-                    <div className="whitespace-pre-line text-xs leading-relaxed text-[#111b21]">
-                      {renderTemplateBody(activeTemplate?.bodyText || "")}
+                    <div className="whitespace-pre-line text-[12px] leading-relaxed text-[#171717]">
+                      {renderTemplateBody(composerTemplate?.bodyText || "")}
                     </div>
-
-                    {/* Footer text */}
-                    {activeTemplate?.footerText && (
-                      <div className="pt-1 text-[10px] text-[#667781] italic">
-                        {activeTemplate.footerText}
-                      </div>
+                    {composerTemplate?.footerText && (
+                      <div className="text-[10.5px] text-[#71717a]">{composerTemplate.footerText}</div>
                     )}
-
-                    {/* Timestamp & Double Blue Checks */}
-                    <div className="mt-1 flex items-center justify-end gap-1 text-[9px] text-[#667781]">
-                      <span>Now</span>
-                      <span className="font-bold text-[#53bdeb]">✓✓ Delivered</span>
-                    </div>
-
-                    {/* Interactive Buttons Preview */}
-                    {activeTemplate?.buttons && activeTemplate.buttons.length > 0 && (
-                      <div className="mt-2.5 pt-2 border-t border-black/5 flex flex-wrap gap-1.5">
-                        {activeTemplate.buttons.map((btn, idx) => (
-                          <div
+                    {composerTemplate?.buttons && composerTemplate.buttons.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 border-t border-[#f4f4f5] pt-2">
+                        {composerTemplate.buttons.map((btn, idx) => (
+                          <span
                             key={idx}
-                            className="inline-flex items-center gap-1.5 rounded-xl border border-[#cde0dc] bg-white px-3 py-1 text-xs font-bold text-[#00a884] shadow-2xs"
+                            className="inline-flex items-center rounded border border-[#eaeaea] bg-[#fafafa] px-2 py-0.5 text-[11px] font-medium text-[#171717]"
                           >
-                            {btn.type === "URL" ? (
-                              <span>↗ {btn.text}</span>
-                            ) : btn.type === "PHONE_NUMBER" ? (
-                              <span>📞 {btn.text}</span>
-                            ) : (
-                              <span>↩ {btn.text}</span>
-                            )}
-                          </div>
+                            {btn.text}
+                          </span>
                         ))}
                       </div>
                     )}
                   </div>
                 </div>
 
-                {/* Variable Mapping Notice */}
-                <div className="mt-4 rounded-xl border border-[#e2ede8] bg-white p-3 text-[11px] text-[#52645f]">
-                  <span className="font-bold text-[#14231f]">Dynamic Parameters: </span>
-                  {activeTemplate?.name ? `Using Meta template "${activeTemplate.name}" with auto-substituted contact tags.` : "Select a template in composer to preview parameters."}
+                <div className="mt-3 flex items-center justify-between border-t border-[#eaeaea] pt-2.5 text-[11px] text-[#71717a]">
+                  <span className="truncate font-mono">{composerTemplate?.name || "No template"}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTestResult(null);
+                      setShowTestModal(true);
+                    }}
+                    className="shrink-0 font-medium text-[#2563eb] hover:text-[#1d4ed8] hover:underline"
+                  >
+                    Test →
+                  </button>
                 </div>
               </div>
-            )}
 
-            {/* TAB 2: DETAILED ANALYTICS & CONVERSION FUNNEL */}
-            {rightTab === "analytics" && (
-              <div className="mt-4 space-y-4">
-                <div className="rounded-2xl border border-[#d8e6e1] bg-[#f7faf8] p-4">
-                  <div className="text-xs font-bold text-[#14231f]">
-                    Meta Cloud API Dispatch Pipeline
-                  </div>
-                  <p className="text-[11px] text-[#60716c]">
-                    Live delivery audit trail for {activeCampaign?.name || "current campaign"}.
-                  </p>
-
-                  <div className="mt-4 space-y-3">
-                    {/* Funnel Step 1: Targeted Audience */}
-                    <div className="space-y-1">
-                      <div className="flex justify-between text-xs">
-                        <span className="font-semibold text-[#445550]">1. Audience Targeted</span>
-                        <span className="font-bold text-[#14231f]">
-                          {activeCampaign?.stats.recipients || 0} Contacts (100%)
-                        </span>
-                      </div>
-                      <div className="h-2 w-full rounded-full bg-[#e0eae5]">
-                        <div className="h-full rounded-full bg-[#118778] w-full" />
-                      </div>
-                    </div>
-
-                    {/* Funnel Step 2: Delivered */}
-                    <div className="space-y-1">
-                      <div className="flex justify-between text-xs">
-                        <span className="font-semibold text-[#445550]">2. Delivered to Handsets</span>
-                        <span className="font-bold text-emerald-600">
-                          {activeCampaign?.stats.delivered || 0} (
-                          {activeCampaign && activeCampaign.stats.recipients > 0
-                            ? Math.round(
-                                (activeCampaign.stats.delivered / activeCampaign.stats.recipients) * 100
-                              )
-                            : 98}
-                          %)
-                        </span>
-                      </div>
-                      <div className="h-2 w-full rounded-full bg-[#e0eae5]">
-                        <div
-                          className="h-full rounded-full bg-emerald-500"
-                          style={{
-                            width: `${
-                              activeCampaign && activeCampaign.stats.recipients > 0
-                                ? (activeCampaign.stats.delivered / activeCampaign.stats.recipients) * 100
-                                : 98
-                            }%`,
-                          }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Funnel Step 3: Read */}
-                    <div className="space-y-1">
-                      <div className="flex justify-between text-xs">
-                        <span className="font-semibold text-[#445550]">3. Read Receipts (Blue Checks)</span>
-                        <span className="font-bold text-sky-600">
-                          {activeCampaign?.stats.read || 0} (
-                          {activeCampaign && activeCampaign.stats.delivered > 0
-                            ? Math.round(
-                                (activeCampaign.stats.read / activeCampaign.stats.delivered) * 100
-                              )
-                            : 87}
-                          %)
-                        </span>
-                      </div>
-                      <div className="h-2 w-full rounded-full bg-[#e0eae5]">
-                        <div
-                          className="h-full rounded-full bg-sky-500"
-                          style={{
-                            width: `${
-                              activeCampaign && activeCampaign.stats.delivered > 0
-                                ? (activeCampaign.stats.read / activeCampaign.stats.delivered) * 100
-                                : 87
-                            }%`,
-                          }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Funnel Step 4: Replied */}
-                    <div className="space-y-1">
-                      <div className="flex justify-between text-xs">
-                        <span className="font-semibold text-[#445550]">4. Direct Customer Replies</span>
-                        <span className="font-bold text-indigo-600">
-                          {activeCampaign?.stats.replied || 0} Replies
-                        </span>
-                      </div>
-                      <div className="h-2 w-full rounded-full bg-[#e0eae5]">
-                        <div
-                          className="h-full rounded-full bg-indigo-500"
-                          style={{
-                            width: `${
-                              activeCampaign && activeCampaign.stats.read > 0
-                                ? Math.min(100, (activeCampaign.stats.replied / activeCampaign.stats.read) * 100)
-                                : 32
-                            }%`,
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="rounded-2xl border border-[#dbe4e1] bg-white p-3.5 text-xs space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-[#71817d]">Meta WABA Health</span>
-                    <span className="rounded-md bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
-                      High Quality
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-[#71817d]">Messaging Tier</span>
-                    <span className="font-mono text-[#14231f]">Tier 1 (100k msgs/day)</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-[#71817d]">Target Group</span>
-                    <span className="font-bold text-[#118778]">{activeGroup?.name || "Audience"}</span>
-                  </div>
-                </div>
+              <div className="flex justify-end gap-2 border-t border-[#eaeaea] pt-3 md:col-span-2">
+                <button
+                  type="button"
+                  onClick={() => setShowCreateModal(false)}
+                  className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#52525b]"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={busyCreate}
+                  className="inline-flex h-8 items-center rounded-md bg-[#2563eb] px-3.5 text-[12.5px] font-medium text-white hover:bg-[#1d4ed8] disabled:opacity-50"
+                >
+                  {busyCreate ? "Launching..." : scheduleType === "now" ? "Launch Campaign" : "Schedule Campaign"}
+                </button>
               </div>
-            )}
+            </form>
           </div>
         </div>
-      </div>
+      )}
+
+      {/* Campaign Inspector Modal (Preview + Delivery Funnel) */}
+      {inspectedCampaign && (
+        <div
+          className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4 backdrop-blur-[2px]"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setInspectCampaignId("");
+          }}
+        >
+          <div className="w-full max-w-lg rounded-lg border border-[#eaeaea] bg-white p-5 shadow-xl">
+            <div className="flex items-start justify-between gap-3 border-b border-[#eaeaea] pb-3">
+              <div className="min-w-0">
+                <h3 className="m-0 truncate text-[15px] font-semibold text-[#171717]">
+                  {inspectedCampaign.name}
+                </h3>
+                <p className="m-0 mt-0.5 text-[12px] text-[#71717a]">
+                  {inspectedCampaign.groupName || "Audience"} ·{" "}
+                  <span className="font-mono text-[11px]">{inspectedCampaign.templateName}</span>
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setInspectCampaignId("")}
+                className="text-[#71717a] hover:text-[#171717]"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Segmented Tab */}
+            <div className="mt-3.5 flex gap-1 rounded-md border border-[#eaeaea] bg-[#fafafa] p-0.5">
+              <button
+                type="button"
+                onClick={() => setInspectTab("preview")}
+                className={`flex-1 rounded py-1.5 text-[12px] font-medium transition ${
+                  inspectTab === "preview"
+                    ? "bg-white text-[#171717] shadow-2xs"
+                    : "text-[#71717a] hover:text-[#171717]"
+                }`}
+              >
+                Message Preview
+              </button>
+              <button
+                type="button"
+                onClick={() => setInspectTab("funnel")}
+                className={`flex-1 rounded py-1.5 text-[12px] font-medium transition ${
+                  inspectTab === "funnel"
+                    ? "bg-white text-[#171717] shadow-2xs"
+                    : "text-[#71717a] hover:text-[#171717]"
+                }`}
+              >
+                Delivery Funnel
+              </button>
+            </div>
+
+            {inspectTab === "preview" ? (
+              <div className="mt-4 rounded-lg border border-[#eaeaea] bg-[#fafafa] p-3.5">
+                <div className="rounded-md border border-[#eaeaea] bg-white p-3.5 space-y-2">
+                  {inspectedTemplate?.headerText && (
+                    <div className="text-[12.5px] font-semibold text-[#171717] border-b border-[#f4f4f5] pb-1">
+                      {inspectedTemplate.headerText}
+                    </div>
+                  )}
+                  <div className="whitespace-pre-line text-[12.5px] leading-relaxed text-[#171717]">
+                    {renderTemplateBody(inspectedTemplate?.bodyText || "")}
+                  </div>
+                  {inspectedTemplate?.footerText && (
+                    <div className="text-[11px] text-[#71717a]">{inspectedTemplate.footerText}</div>
+                  )}
+                  {inspectedTemplate?.buttons && inspectedTemplate.buttons.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 border-t border-[#f4f4f5] pt-2">
+                      {inspectedTemplate.buttons.map((btn, idx) => (
+                        <span
+                          key={idx}
+                          className="inline-flex items-center rounded border border-[#eaeaea] bg-[#fafafa] px-2.5 py-0.5 text-[11px] font-medium text-[#171717]"
+                        >
+                          {btn.text}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="mt-4 space-y-3 rounded-lg border border-[#eaeaea] bg-[#fafafa] p-4">
+                {(() => {
+                  const rec = inspectedCampaign.stats.recipients || 0;
+                  const del = inspectedCampaign.stats.delivered || 0;
+                  const read = inspectedCampaign.stats.read || 0;
+                  const rep = inspectedCampaign.stats.replied || 0;
+                  const delPct = rec > 0 ? Math.round((del / rec) * 100) : 0;
+                  const readPct = del > 0 ? Math.round((read / del) * 100) : 0;
+                  const repPct = read > 0 ? Math.min(100, Math.round((rep / read) * 100)) : 0;
+                  return [
+                    { label: "Targeted Contacts", value: `${rec}`, pct: 100 },
+                    { label: "Delivered", value: `${del} (${delPct}%)`, pct: delPct },
+                    { label: "Read", value: `${read} (${readPct}%)`, pct: readPct },
+                    { label: "Replied", value: `${rep} (${repPct}%)`, pct: repPct },
+                  ].map((row) => (
+                    <div key={row.label} className="space-y-1">
+                      <div className="flex items-center justify-between text-[12px]">
+                        <span className="text-[#52525b]">{row.label}</span>
+                        <span className="font-medium tabular-nums text-[#171717]">{row.value}</span>
+                      </div>
+                      <div className="h-1.5 w-full overflow-hidden rounded-full bg-[#eaeaea]">
+                        <div className="h-full rounded-full bg-[#2563eb]" style={{ width: `${row.pct}%` }} />
+                      </div>
+                    </div>
+                  ));
+                })()}
+              </div>
+            )}
+
+            <div className="mt-4 flex items-center justify-between border-t border-[#eaeaea] pt-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setTestResult(null);
+                  setShowTestModal(true);
+                }}
+                className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12px] font-medium text-[#171717] hover:bg-[#f4f4f5]"
+              >
+                Test on Phone
+              </button>
+              <button
+                type="button"
+                onClick={() => setInspectCampaignId("")}
+                className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3.5 text-[12px] font-medium text-white hover:bg-black"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Test Message on Phone Modal */}
       {showTestModal && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-md rounded-3xl border border-[#dbe4e1] bg-white p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-[#edf2f0] pb-3">
-              <div className="flex items-center gap-2">
-                <span className="grid size-7 place-items-center rounded-lg bg-emerald-50 text-emerald-600">
-                  <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                  </svg>
-                </span>
-                <h3 className="text-sm font-bold text-[#14231f]">
-                  Send Test Broadcast to Phone
-                </h3>
-              </div>
+        <div
+          className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4 backdrop-blur-[2px]"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowTestModal(false);
+              setTestResult(null);
+            }
+          }}
+        >
+          <div className="w-full max-w-md rounded-lg border border-[#eaeaea] bg-white p-5 shadow-xl">
+            <div className="flex items-center justify-between border-b border-[#eaeaea] pb-3">
+              <h3 className="m-0 text-[15px] font-semibold text-[#171717]">Send Test Message</h3>
               <button
                 type="button"
                 onClick={() => {
                   setShowTestModal(false);
                   setTestResult(null);
                 }}
-                className="rounded-lg p-1 text-[#84938f] hover:bg-[#f4f7f6]"
+                className="text-[#71717a] hover:text-[#171717]"
               >
                 ✕
               </button>
             </div>
 
-            <form onSubmit={handleSendTestMessage} className="mt-4 space-y-4">
-              <p className="text-xs text-[#60716c]">
-                Dispatches a live WhatsApp test message using template{" "}
-                <span className="font-bold text-[#14231f]">
-                  {activeTemplate?.name || "Selected Template"}
-                </span>{" "}
-                directly to your personal mobile number via Meta Cloud API.
+            <form onSubmit={handleSendTestMessage} className="mt-4 space-y-3.5">
+              <p className="m-0 text-[12px] text-[#71717a]">
+                Send a live test using template{" "}
+                <strong className="font-mono text-[#171717]">
+                  {activeTestTemplate?.name || "Selected Template"}
+                </strong>{" "}
+                via Meta Cloud API.
               </p>
 
               {testResult && (
                 <div
-                  className={`rounded-xl p-3 text-xs ${
+                  className={`rounded-md border px-3 py-2 text-[12px] ${
                     testResult.ok
-                      ? "border border-emerald-200 bg-emerald-50 text-emerald-800"
-                      : "border border-rose-200 bg-rose-50 text-rose-800"
+                      ? "border-emerald-200 bg-emerald-50 text-emerald-800"
+                      : "border-rose-200 bg-rose-50 text-rose-800"
                   }`}
                 >
                   {testResult.msg}
@@ -1020,33 +917,36 @@ export function WhatsAppCampaignsView({
               )}
 
               <div>
-                <label className="block text-xs font-semibold text-[#445550]">
-                  Recipient Mobile Number (with country code)
+                <label className="block text-[12px] font-medium text-[#171717]">
+                  Phone Number (with country code)
                 </label>
                 <input
                   type="tel"
                   required
                   value={testPhoneNumber}
                   onChange={(e) => setTestPhoneNumber(e.target.value)}
-                  placeholder="+91 98765 43210 or +1 555 123 4567"
-                  className="mt-1 w-full rounded-xl border border-[#c6d4d0] bg-[#f9fbfa] px-3.5 py-2.5 text-xs text-[#14231f] focus:border-[#118778] focus:bg-white focus:outline-none"
+                  placeholder="e.g. +919876543210"
+                  className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717] focus:border-[#171717] focus:outline-none"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 border-t border-[#edf2f0] pt-3">
+              <div className="flex justify-end gap-2 border-t border-[#eaeaea] pt-3">
                 <button
                   type="button"
-                  onClick={() => setShowTestModal(false)}
-                  className="rounded-xl border border-[#dbe4e1] px-4 py-2 text-xs font-semibold text-[#52645f]"
+                  onClick={() => {
+                    setShowTestModal(false);
+                    setTestResult(null);
+                  }}
+                  className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#52525b]"
                 >
-                  Close
+                  Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={busyTest}
-                  className="rounded-xl bg-[#118778] px-5 py-2 text-xs font-bold text-white hover:bg-[#0e7467] disabled:opacity-50"
+                  className="inline-flex h-8 items-center rounded-md bg-[#2563eb] px-3.5 text-[12.5px] font-medium text-white hover:bg-[#1d4ed8] disabled:opacity-50"
                 >
-                  {busyTest ? "Sending..." : "Send Test Message"}
+                  {busyTest ? "Sending..." : "Send Test"}
                 </button>
               </div>
             </form>

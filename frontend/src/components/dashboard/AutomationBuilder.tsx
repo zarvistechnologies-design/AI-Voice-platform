@@ -5,10 +5,11 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { DashboardSidebar, getDashboardSidebarInitialState } from "@/components/dashboard/DashboardSidebar";
 import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
+import { API_URL } from "@/lib/apiBase";
 import { getServerSession, getSession, logoutSession, subscribeToSession } from "@/lib/auth";
 import { automationsApi, type Automation, type AutomationRun, type AutomationVersion, type BlockType, type Branch, type FlowGraph, type FlowIssue, type FlowNode } from "@/lib/automations";
 import { voiceApi, type AgentSummary, type BackendPhoneNumber, type BackendCampaign } from "@/lib/voice";
-import { whatsappApi, type WhatsAppAccountItem, type WhatsAppTemplate } from "@/lib/whatsapp";
+import { whatsappApi, type WhatsAppAccountItem, type WhatsAppContactGroup, type WhatsAppTemplate } from "@/lib/whatsapp";
 
 const palette: Array<{ type: BlockType; name: string; icon: string; detail: string }> = [
   { type: "trigger", name: "Start when", icon: "✦", detail: "WhatsApp, Call, Lead, or API" },
@@ -20,10 +21,11 @@ const palette: Array<{ type: BlockType; name: string; icon: string; detail: stri
   { type: "payment", name: "Razorpay Payment", icon: "₹", detail: "Generate & send link" },
   { type: "calendar", name: "Book on Calendar", icon: "▦", detail: "Google Calendar & Calendly" },
   { type: "crm", name: "Sync to CRM", icon: "▥", detail: "HubSpot, Zoho, Sheets & more" },
+  { type: "case", name: "Support Case", icon: "❖", detail: "Open CASE-xxxx ticket & SLA" },
   { type: "sms", name: "Instant Alert", icon: "▤", detail: "Slack team alert & notify" },
   { type: "end", name: "End Journey", icon: "✓", detail: "Complete & log outcome" },
 ];
-const blockTag = (type: BlockType) => ({ trigger: "TRIGGER", call: "VOICE AI", whatsapp: "WHATSAPP", decision: "AI ROUTER", condition: "CONDITION", wait: "DELAY", payment: "PAYMENT", calendar: "CALENDAR", crm: "CRM SYNC", sms: "ALERT", end: "END" })[type];
+const blockTag = (type: BlockType) => ({ trigger: "TRIGGER", call: "VOICE AI", whatsapp: "WHATSAPP", decision: "AI ROUTER", condition: "CONDITION", wait: "DELAY", payment: "PAYMENT", calendar: "CALENDAR", crm: "CRM SYNC", case: "CASE", sms: "ALERT", end: "END" })[type];
 const branches = (type: BlockType): Branch[] => type === "decision" ? ["interested", "callback", "not_interested", "unknown"] : type === "condition" ? ["yes", "no"] : type === "call" ? ["default", "failed"] : type === "end" ? [] : ["default"];
 const branchLabel = (branch: Branch) => ({ default: "Next", interested: "Interested", callback: "Call back later", not_interested: "Not interested", unknown: "Unknown", yes: "Yes", no: "No", failed: "Call failed" })[branch];
 const initials = (name: string) => name.split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
@@ -59,6 +61,11 @@ export function AutomationBuilder({ automationId }: { automationId: string }) {
   const [campaigns, setCampaigns] = useState<BackendCampaign[]>([]);
   const [whatsAppTemplates, setWhatsAppTemplates] = useState<WhatsAppTemplate[]>([]);
   const [whatsAppAccounts, setWhatsAppAccounts] = useState<WhatsAppAccountItem[]>([]);
+  const [whatsAppGroups, setWhatsAppGroups] = useState<WhatsAppContactGroup[]>([]);
+  const [bulkMode, setBulkMode] = useState<"group" | "paste">("group");
+  const [bulkGroupId, setBulkGroupId] = useState("");
+  const [bulkRawText, setBulkRawText] = useState("");
+  const [bulkConsent, setBulkConsent] = useState(false);
   const [showAiCopilot, setShowAiCopilot] = useState(false);
   const [aiPrompt, setAiPrompt] = useState("");
   const [connecting, setConnecting] = useState<{ source: string; handle: Branch } | null>(null);
@@ -148,13 +155,14 @@ export function AutomationBuilder({ automationId }: { automationId: string }) {
       if (!active) return;
       setFlow(flow); setGraph(flow.draft); setName(flow.name); setDescription(flow.description);
     }).catch((cause) => { if (active) setError(cause instanceof Error ? cause.message : "Could not load workflow."); });
-    void Promise.allSettled([voiceApi.agentSummaries(), voiceApi.phoneNumbers(), voiceApi.campaigns(), whatsappApi.listTemplates(), whatsappApi.getStatus()]).then(([agentResult, numberResult, campaignResult, templateResult, waStatusResult]) => {
+    void Promise.allSettled([voiceApi.agentSummaries(), voiceApi.phoneNumbers(), voiceApi.campaigns(), whatsappApi.listTemplates(), whatsappApi.getStatus(), whatsappApi.listContactGroups()]).then(([agentResult, numberResult, campaignResult, templateResult, waStatusResult, waGroupsResult]) => {
       if (!active) return;
       if (agentResult.status === "fulfilled") setAgents(agentResult.value.agents);
       if (numberResult.status === "fulfilled") setNumbers(numberResult.value.numbers);
       if (campaignResult.status === "fulfilled") setCampaigns(campaignResult.value.campaigns);
       if (templateResult.status === "fulfilled" && templateResult.value.ok) setWhatsAppTemplates(templateResult.value.templates);
       if (waStatusResult.status === "fulfilled" && waStatusResult.value.accounts) setWhatsAppAccounts(waStatusResult.value.accounts);
+      if (waGroupsResult.status === "fulfilled" && waGroupsResult.value.ok) setWhatsAppGroups(waGroupsResult.value.groups);
       if (agentResult.status === "rejected" || numberResult.status === "rejected") {
         setNotice("Some agent or phone number options could not be loaded. Refresh before configuring a call step.");
       }
@@ -221,12 +229,16 @@ export function AutomationBuilder({ automationId }: { automationId: string }) {
       x: Math.max(0, Math.min(position?.x ?? maxX + 300, 9500)),
       y: Math.max(0, Math.min(position?.y ?? 180 + (graph.nodes.length % 4) * 145, 9500)),
       config: type === "wait"
-        ? { minutes: "60" }
+        ? { minutes: "60", waitMode: "duration" }
         : type === "trigger"
           ? { event: "manual" }
-          : type === "payment"
-            ? { amount: "999", currency: "INR", sendWhatsApp: "true", description: "Order payment for {{name}}" }
-            : {},
+          : type === "call"
+            ? { agentId: "auto", phoneNumberId: "auto", maxRetries: "0", retryDelayMinutes: "15" }
+            : type === "payment"
+              ? { amount: "999", currency: "INR", sendWhatsApp: "true", description: "Order payment for {{name}}" }
+              : type === "case"
+                ? { subject: "Support request for {{name}}", category: "Support", priority: "high", notifyCustomer: "true" }
+                : {},
     };
     commit({ ...graph, nodes: [...graph.nodes, next] }); setSelectedId(id); setInspectorOpen(true); setTab("builder");
   }
@@ -283,164 +295,177 @@ export function AutomationBuilder({ automationId }: { automationId: string }) {
           },
         };
       }
-      if (node.type === "call") {
-        return {
-          ...node,
-          config: {
-            ...node.config,
-            agentId: node.config.agentId || liveAgent?._id || "auto",
-            phoneNumberId: node.config.phoneNumberId || readyOutbound?._id || "auto",
-            windowStart: node.config.windowStart || "09:00",
-            windowEnd: node.config.windowEnd || "20:00",
-            timezone: node.config.timezone || "Asia/Kolkata",
-          },
-        };
-      }
-      if (node.type === "whatsapp") {
-        return {
-          ...node,
-          config: {
-            ...node.config,
-            messageMode: node.config.messageMode || "template",
-            templateName: node.config.templateName || defaultTmpl,
-            language: node.config.language || "en",
-            bodyVariables: node.config.bodyVariables || "{{name}}, {{phone}}",
-            ...(primaryWa && !node.config.senderPhoneNumberId ? { senderPhoneNumberId: primaryWa.accountId } : {}),
-          },
-        };
-      }
-      if (node.type === "decision") {
-        return {
-          ...node,
-          config: {
-            ...node.config,
-            decisionType: node.config.decisionType || "agentic",
-          },
-        };
-      }
-      if (node.type === "condition") {
-        return {
-          ...node,
-          config: {
-            ...node.config,
-            conditionType: node.config.conditionType || "outcome",
-            value: node.config.value || "qualified",
-          },
-        };
-      }
-      if (node.type === "wait") {
-        return {
-          ...node,
-          config: {
-            ...node.config,
-            minutes: node.config.minutes || "30",
-          },
-        };
-      }
-      if (node.type === "payment") {
-        return {
-          ...node,
-          config: {
-            ...node.config,
-            amount: node.config.amount || "999",
-            currency: node.config.currency || "INR",
-            description: node.config.description || "Order payment for {{name}}",
-            sendWhatsApp: node.config.sendWhatsApp || "true",
-            senderPhoneNumberId: node.config.senderPhoneNumberId || primaryWa?.accountId || "auto",
-          },
-        };
-      }
-      if (node.type === "crm") {
-        return {
-          ...node,
-          config: {
-            ...node.config,
-            crmStage: node.config.crmStage || "Qualified",
-            crmTag: node.config.crmTag || "AI-Qualified",
-          },
-        };
-      }
-      if (node.type === "calendar") {
-        return {
-          ...node,
-          config: {
-            ...node.config,
-            calendarTitle: node.config.calendarTitle || "AI Consultation Call",
-            durationMinutes: node.config.durationMinutes || "30",
-          },
-        };
-      }
-      if (node.type === "sms") {
-        return {
-          ...node,
-          config: {
-            ...node.config,
-            messageText: node.config.messageText || "Hi {{name}}, thank you for connecting with us! Our AI specialist has logged your request.",
-          },
-        };
-      }
-      if (node.type === "end") {
-        return {
-          ...node,
-          config: {
-            ...node.config,
-            outcome: node.config.outcome || "Completed",
-          },
-        };
-      }
-      return node;
+if (node.type === "call") {
+  return {
+    ...node,
+    config: {
+      ...node.config,
+      agentId: node.config.agentId || liveAgent?._id || "auto",
+      phoneNumberId: node.config.phoneNumberId || readyOutbound?._id || "auto",
+      windowStart: node.config.windowStart || "09:00",
+      windowEnd: node.config.windowEnd || "20:00",
+      timezone: node.config.timezone || "Asia/Kolkata",
+    },
+  };
+}
+if (node.type === "whatsapp") {
+  return {
+    ...node,
+    config: {
+      ...node.config,
+      messageMode: node.config.messageMode || "template",
+      templateName: node.config.templateName || defaultTmpl,
+      language: node.config.language || "en",
+      bodyVariables: node.config.bodyVariables || "{{name}}, {{phone}}",
+      ...(primaryWa && !node.config.senderPhoneNumberId ? { senderPhoneNumberId: primaryWa.accountId } : {}),
+    },
+  };
+}
+if (node.type === "decision") {
+  return {
+    ...node,
+    config: {
+      ...node.config,
+      decisionType: node.config.decisionType || "agentic",
+    },
+  };
+}
+if (node.type === "condition") {
+  return {
+    ...node,
+    config: {
+      ...node.config,
+      conditionType: node.config.conditionType || "outcome",
+      value: node.config.value || "qualified",
+    },
+  };
+}
+if (node.type === "wait") {
+  return {
+    ...node,
+    config: {
+      ...node.config,
+      minutes: node.config.minutes || "30",
+    },
+  };
+}
+if (node.type === "payment") {
+  return {
+    ...node,
+    config: {
+      ...node.config,
+      amount: node.config.amount || "999",
+      currency: node.config.currency || "INR",
+      description: node.config.description || "Order payment for {{name}}",
+      sendWhatsApp: node.config.sendWhatsApp || "true",
+      senderPhoneNumberId: node.config.senderPhoneNumberId || primaryWa?.accountId || "auto",
+    },
+  };
+}
+if (node.type === "crm") {
+  return {
+    ...node,
+    config: {
+      ...node.config,
+      crmStage: node.config.crmStage || "Qualified",
+      crmTag: node.config.crmTag || "AI-Qualified",
+    },
+  };
+}
+if (node.type === "case") {
+  return {
+    ...node,
+    config: {
+      ...node.config,
+      subject: node.config.subject || "Support request for {{name}}",
+      category: node.config.category || "Support",
+      priority: node.config.priority || "high",
+      notifyCustomer: node.config.notifyCustomer || "true",
+    },
+  };
+}
+if (node.type === "calendar") {
+  return {
+    ...node,
+    config: {
+      ...node.config,
+      calendarTitle: node.config.calendarTitle || "AI Consultation Call",
+      durationMinutes: node.config.durationMinutes || "30",
+    },
+  };
+}
+if (node.type === "sms") {
+  return {
+    ...node,
+    config: {
+      ...node.config,
+      messageText: node.config.messageText || "Hi {{name}}, thank you for connecting with us! Our AI specialist has logged your request.",
+    },
+  };
+}
+if (node.type === "end") {
+  return {
+    ...node,
+    config: {
+      ...node.config,
+      outcome: node.config.outcome || "Completed",
+    },
+  };
+}
+return node;
     });
 
-    commit({ ...graph, nodes: nextNodes });
-    setNotice("⚡ All steps auto-configured with your workspace agents, numbers, and WhatsApp templates!");
+commit({ ...graph, nodes: nextNodes });
+setNotice("⚡ All steps auto-configured with your workspace agents, numbers, and WhatsApp templates!");
   }
-  async function generateWithAi(customPrompt?: string) {
-    const promptToRun = (customPrompt ?? aiPrompt).trim();
-    if (!promptToRun || promptToRun.length < 10) {
-      setError("Describe your workflow goal in at least 10 characters.");
-      return;
-    }
-    setBusy(true); setError("");
-    try {
-      const { draft, issues: nextIssues } = await automationsApi.generate(promptToRun);
-      commit(draft.graph);
-      setName(draft.name || name);
-      setDescription(draft.description || description);
-      setIssues(nextIssues);
-      setShowAiCopilot(false);
-      setNotice("✨ AI Agentic Architect built and wired your workflow! Click Save or Publish when ready.");
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Could not generate workflow.");
-    } finally {
-      setBusy(false);
-    }
+async function generateWithAi(customPrompt?: string) {
+  const promptToRun = (customPrompt ?? aiPrompt).trim();
+  if (!promptToRun || promptToRun.length < 10) {
+    setError("Describe your workflow goal in at least 10 characters.");
+
+    return;
   }
+  setBusy(true); setError("");
+  try {
+    const { draft, issues: nextIssues } = await automationsApi.generate(promptToRun);
+    commit(draft.graph);
+    setName(draft.name || name);
+    setDescription(draft.description || description);
+    setIssues(nextIssues);
+    setShowAiCopilot(false);
+    setNotice("✨ AI Agentic Architect built and wired your workflow! Click Save or Publish when ready.");
+  } catch (cause) {
+    setError(cause instanceof Error ? cause.message : "Could not generate workflow.");
+  } finally {
+    setBusy(false);
+  }
+}
 
-  useEffect(() => {
-    const handler = (event: KeyboardEvent) => {
-      const input = event.target instanceof HTMLElement && Boolean(event.target.closest("input,textarea,select,[contenteditable]"));
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") { event.preventDefault(); void save(); }
-      if (input) return;
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") { event.preventDefault(); undoGraph(); }
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "y") { event.preventDefault(); redoGraph(); }
-      if (event.key === "Escape") setConnecting(null);
-      if (event.key === "Delete" || event.key === "Backspace") deleteSelected();
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  });
+useEffect(() => {
+  const handler = (event: KeyboardEvent) => {
+    const input = event.target instanceof HTMLElement && Boolean(event.target.closest("input,textarea,select,[contenteditable]"));
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") { event.preventDefault(); void save(); }
+    if (input) return;
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") { event.preventDefault(); undoGraph(); }
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "y") { event.preventDefault(); redoGraph(); }
+    if (event.key === "Escape") setConnecting(null);
+    if (event.key === "Delete" || event.key === "Backspace") deleteSelected();
+  };
+  window.addEventListener("keydown", handler);
+  return () => window.removeEventListener("keydown", handler);
+});
 
-  useEffect(() => {
-    const onMove = (event: PointerEvent) => {
-      const drag = dragRef.current;
-      if (!drag) return;
-      if (drag.kind === "pan") setPan({ x: drag.originX + event.clientX - drag.startX, y: drag.originY + event.clientY - drag.startY });
-      else setGraph((current) => current ? { ...current, nodes: current.nodes.map((node) => node.id === drag.nodeId ? { ...node, x: Math.max(0, Math.round(drag.originX + (event.clientX - drag.startX) / zoom)), y: Math.max(0, Math.round(drag.originY + (event.clientY - drag.startY) / zoom)) } : node) } : current);
-    };
-    const onUp = () => { const drag = dragRef.current; if (drag?.kind === "node" && graphRef.current && JSON.stringify(drag.before) !== JSON.stringify(graphRef.current)) { setUndo((items) => [...items.slice(-29), drag.before]); setRedo([]); setDirty(true); } dragRef.current = null; };
-    window.addEventListener("pointermove", onMove); window.addEventListener("pointerup", onUp);
-    return () => { window.removeEventListener("pointermove", onMove); window.removeEventListener("pointerup", onUp); };
-  }, [zoom]);
+useEffect(() => {
+  const onMove = (event: PointerEvent) => {
+    const drag = dragRef.current;
+    if (!drag) return;
+    if (drag.kind === "pan") setPan({ x: drag.originX + event.clientX - drag.startX, y: drag.originY + event.clientY - drag.startY });
+    else setGraph((current) => current ? { ...current, nodes: current.nodes.map((node) => node.id === drag.nodeId ? { ...node, x: Math.max(0, Math.round(drag.originX + (event.clientX - drag.startX) / zoom)), y: Math.max(0, Math.round(drag.originY + (event.clientY - drag.startY) / zoom)) } : node) } : current);
+  };
+  const onUp = () => { const drag = dragRef.current; if (drag?.kind === "node" && graphRef.current && JSON.stringify(drag.before) !== JSON.stringify(graphRef.current)) { setUndo((items) => [...items.slice(-29), drag.before]); setRedo([]); setDirty(true); } dragRef.current = null; };
+  window.addEventListener("pointermove", onMove); window.addEventListener("pointerup", onUp);
+  return () => { window.removeEventListener("pointermove", onMove); window.removeEventListener("pointerup", onUp); };
+}, [zoom]);
 
   async function save() {
     if (!flow || !graph || busy) return false;
@@ -488,6 +513,25 @@ export function AutomationBuilder({ automationId }: { automationId: string }) {
     catch (cause) { setError(cause instanceof Error ? cause.message : "Could not start run."); }
     finally { setBusy(false); }
   }
+  async function startBulkRun() {
+    if (!flow || busy) return;
+    setBusy(true); setError("");
+    try {
+      const payload = bulkMode === "group"
+        ? { groupId: bulkGroupId, consentConfirmed: true as const }
+        : { rawText: bulkRawText, consentConfirmed: true as const };
+      const res = await automationsApi.startBulk(flow._id, payload);
+      setBulkConsent(false);
+      if (bulkMode === "paste") setBulkRawText("");
+      setNotice(`Bulk run queued: ${res.queued} contact${res.queued === 1 ? "" : "s"} started${res.skippedDuplicates ? ` · ${res.skippedDuplicates} duplicates skipped` : ""}${res.skippedDnc ? ` · ${res.skippedDnc} DNC skipped` : ""}${res.skippedInvalid ? ` · ${res.skippedInvalid} invalid` : ""}.`);
+      const result = await automationsApi.runs(flow._id);
+      setRuns(result.runs);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Could not start bulk run.");
+    } finally {
+      setBusy(false);
+    }
+  }
   async function cancelRun(runId: string) {
     if (!flow || busy) return;
     setBusy(true); setError("");
@@ -517,9 +561,35 @@ export function AutomationBuilder({ automationId }: { automationId: string }) {
     catch (cause) { setError(cause instanceof Error ? cause.message : "Could not delete workflow."); setBusy(false); }
   }
 
+async function rotateWebhookSecret() {
+  if (!flow || busy || !window.confirm("Rotate this workflow's webhook secret? Existing external webhook callers will need the new URL.")) return;
+  setBusy(true); setError("");
+  try {
+    const { flow: next } = await automationsApi.rotateWebhookSecret(flow._id);
+    setFlow(next);
+    setNotice("Webhook secret rotated. Copy the updated URL.");
+  } catch (cause) { setError(cause instanceof Error ? cause.message : "Could not rotate webhook secret."); }
+  finally { setBusy(false); }
+}
+function getWebhookUrl() {
+  if (!flow) return "";
+  const base = API_URL || (typeof window !== "undefined" ? window.location.origin : "");
+  return `${base}/api/voice/automations/webhooks/${flow._id}?secret=${encodeURIComponent(flow.webhookSecret || "")}`;
+}
+async function copyWebhookUrl() {
+  const url = getWebhookUrl();
+  if (!url) return;
+  try {
+    await navigator.clipboard.writeText(url);
+    setNotice("Webhook URL copied to clipboard.");
+  } catch {
+    setNotice("Select and copy the Webhook URL from the box.");
+  }
+}
   const selected = graph?.nodes.find((node) => node.id === selectedId);
   const role = session?.organization?.role;
   const isReadOnly = role === "viewer";
+  const isAdmin = role === "owner" || role === "admin";
   const canPublish = !isReadOnly;
   const canRun = !isReadOnly;
   const issueMap = useMemo(() => new Map(issues.map((item) => [item.nodeId, (issues.filter((entry) => entry.nodeId === item.nodeId)).length])), [issues]);
@@ -568,65 +638,92 @@ export function AutomationBuilder({ automationId }: { automationId: string }) {
               <button type="button" disabled={busy} onClick={() => void generateWithAi("When a missed inbound call occurs, immediately send a WhatsApp message, wait 15 minutes, place an AI callback, and if interested book on calendar and sync to CRM.")}>📞 Missed Call Recovery</button>
               <button type="button" disabled={busy} onClick={() => void generateWithAi("When a campaign lead is imported, place an AI Voice Call, use AI Agentic Router to qualify, book appointment on calendar, tag VIP in CRM, and send WhatsApp confirmation.")}>🚀 Outbound Sales Autopilot</button>
               <button type="button" disabled={busy} onClick={() => void generateWithAi("When an inbound WhatsApp message arrives, book an appointment on Google Calendar/Calendly, sync the lead to CRM & Google Sheets, create a ₹999 Razorpay payment link and send it via WhatsApp, and notify Slack.")}>💳 Payment + Calendar + CRM</button>
+              <button type="button" disabled={busy} onClick={() => void generateWithAi("When a support case is opened, send WhatsApp acknowledgement with {{caseNumber}}, wait 30 minutes for case resolution SLA, check if case status is resolved, if yes send CSAT WhatsApp feedback, if no alert Slack for SLA breach and place an AI follow-up call.")}>🎫 Support Case SLA</button>
             </div>
           </div>
         )}
-        {error && <div className="automation-alert" role="alert">{error}</div>}{notice && <div className="automation-success" role="status">{notice}</div>}
-        {tab === "builder" ? <div className={`automation-workspace automation-canvas-full ${inspectorOpen ? "inspector-open" : "inspector-hidden"}`}>
-          <div className="automation-canvas-wrap">
-            {libraryOpen ? (
-              <aside className="automation-floating-blocks">
-                <div className="automation-panel-title">
-                  <span>BLOCKS</span>
-                  <button type="button" className="automation-panel-arrow" onClick={() => setLibraryOpen(false)} aria-label="Hide blocks" title="Hide Blocks">◀</button>
-                </div>
-                <div className="automation-floating-blocks-list">
-                  {palette.map((block) => (
-                    <button key={block.type} type="button" draggable className={`automation-library-item automation-type-${block.type}`} onDragStart={(event) => event.dataTransfer.setData("application/vozon-block", block.type)} onClick={() => addNode(block.type)} title={block.detail}>
-                      <span className="automation-lib-icon">{block.icon}</span>
-                      <span className="automation-lib-name">{block.name}</span>
-                    </button>
-                  ))}
-                </div>
-              </aside>
-            ) : (
-              <button type="button" className="automation-floating-pill automation-blocks-reopen" onClick={() => setLibraryOpen(true)} aria-label="Show blocks">
+      {error && <div className="automation-alert" role="alert">{error}</div>}{notice && <div className="automation-success" role="status">{notice}</div>}
+      {tab === "builder" ? <div className={`automation-workspace automation-canvas-full ${inspectorOpen ? "inspector-open" : "inspector-hidden"}`}>
+        <div className="automation-canvas-wrap">
+          {libraryOpen ? (
+            <aside className="automation-floating-blocks">
+              <div className="automation-panel-title">
                 <span>BLOCKS</span>
-                <span>▶</span>
-              </button>
-            )}
-
-            <div className={`automation-canvas-toolbar ${inspectorOpen ? "shifted" : ""}`}>
-              <button type="button" disabled={!undo.length} onClick={undoGraph} title="Undo">↶</button>
-              <button type="button" disabled={!redo.length} onClick={redoGraph} title="Redo">↷</button>
-              <span className="automation-toolbar-sep" />
-              <button type="button" onClick={tidy}>🧹 Tidy up</button>
-              <button type="button" onClick={() => fitToView()} title={`Center & Fit (${Math.round(zoom * 100)}%)`}>Fit</button>
-              {isFullscreen && <button type="button" className="automation-exit-fs-btn" onClick={toggleFullscreen}>✕ Exit Fullscreen</button>}
-            </div>
-
-            <div ref={canvasRef} className={`automation-canvas ${dragRef.current?.kind === "pan" ? "panning" : ""}`} onDragOver={(event) => { if (event.dataTransfer.types.includes("application/vozon-block")) event.preventDefault(); }} onDrop={(event) => { const type = event.dataTransfer.getData("application/vozon-block") as BlockType; if (!palette.some((item) => item.type === type)) return; event.preventDefault(); const rect = canvasRef.current?.getBoundingClientRect(); if (rect) addNode(type, { x: Math.round((event.clientX - rect.left - pan.x) / zoom), y: Math.round((event.clientY - rect.top - pan.y) / zoom) }); }} onPointerDown={(event) => { if (event.target === event.currentTarget || (event.target instanceof Element && event.target.closest(".automation-canvas-surface"))) { dragRef.current = { kind: "pan", startX: event.clientX, startY: event.clientY, originX: pan.x, originY: pan.y }; setSelectedId(""); setInspectorOpen(false); } }}>
-              <div className="automation-canvas-surface" style={{ transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})` }}>
-                <svg className="automation-edges" width="10000" height="10000" aria-hidden="true"><defs><marker id="automation-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M1 1 L6 3.5 L1 6" fill="none" stroke="#2563eb" strokeWidth="1.5" /></marker><marker id="automation-arrow-good" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M1 1 L6 3.5 L1 6" fill="none" stroke="#10b981" strokeWidth="1.5" /></marker><marker id="automation-arrow-bad" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M1 1 L6 3.5 L1 6" fill="none" stroke="#ef4444" strokeWidth="1.5" /></marker></defs>{graph.edges.map((edge) => { const from = graph.nodes.find((node) => node.id === edge.source); const to = graph.nodes.find((node) => node.id === edge.target); if (!from || !to) return null; const ports = branches(from.type); const index = ports.indexOf(edge.sourceHandle); const sy = from.y + 74 + Math.max(0, index) * 26; const ty = to.y + 64; const sx = from.x + nodeWidth; const tx = to.x; const dx = Math.max(55, Math.abs(tx - sx) / 2); const tone = edge.sourceHandle === "yes" || edge.sourceHandle === "interested" || from.type === "whatsapp" || from.type === "payment" ? "good" : edge.sourceHandle === "no" || edge.sourceHandle === "failed" || edge.sourceHandle === "not_interested" ? "bad" : "neutral"; return <g key={edge.id} className={`automation-edge automation-edge-${tone}`}><path d={`M${sx} ${sy} C${sx + dx} ${sy},${tx - dx} ${ty},${tx} ${ty}`} markerEnd={tone === "good" ? "url(#automation-arrow-good)" : tone === "bad" ? "url(#automation-arrow-bad)" : "url(#automation-arrow)"} /><text x={(sx + tx) / 2} y={(sy + ty) / 2 - 7}>{edge.sourceHandle !== "default" ? branchLabel(edge.sourceHandle) : ""}</text></g>; })}</svg>
-                {graph.nodes.map((node) => <div key={node.id} className={`automation-node automation-type-${node.type} ${selectedId === node.id ? "selected" : ""} ${issueMap.has(node.id) ? "has-issue" : ""}`} style={{ left: node.x, top: node.y, width: nodeWidth }} onPointerDown={(event) => event.stopPropagation()} onClick={() => { setSelectedId(node.id); setInspectorOpen(true); if (connecting && connecting.source !== node.id) connect(node.id); }}><button className="automation-input-port" title={connecting ? "Connect here" : "Input"} onClick={(event) => { event.stopPropagation(); if (connecting) connect(node.id); }} aria-label={`Connect to ${node.title}`} /><div className="automation-node-head" onPointerDown={(event) => { if (event.button !== 0) return; event.preventDefault(); dragRef.current = { kind: "node", nodeId: node.id, startX: event.clientX, startY: event.clientY, originX: node.x, originY: node.y, before: graph }; setSelectedId(node.id); setInspectorOpen(true); }}><span className="automation-node-icon">{palette.find((item) => item.type === node.type)?.icon}</span><strong title={node.title}>{node.type === "trigger" ? "START WHEN" : node.title}</strong><small>{issueMap.has(node.id) ? `${issueMap.get(node.id)} !` : ""}</small></div><div className="automation-node-body">{node.type === "trigger" ? ({ manual: "Manual / API event", contact_added: "Campaign lead imported", missed_call: "Missed inbound call", whatsapp_inbound: "WhatsApp message received", whatsapp_form_submitted: "WhatsApp form submitted" }[node.config.event] || "Choose a start event") : node.type === "call" ? (node.config.agentId === "auto" ? "Auto-Select Live Agent" : agents.find((item) => item._id === node.config.agentId)?.name || "Auto-Select Live Agent") : node.type === "whatsapp" ? (node.config.messageMode === "ai_dynamic" ? "AI Dynamic WhatsApp" : node.config.templateName || "Choose a template") : node.type === "wait" ? `${node.config.minutes || "?"} min delay` : node.type === "decision" ? (node.config.decisionType === "agentic" ? "AI Agentic Router" : node.config.decisionType === "whatsapp" ? "WhatsApp sentiment" : "Call outcome") : node.type === "condition" ? ({ outcome: `Call outcome = ${node.config.value || "?"}`, whatsapp_status: `WhatsApp status = ${node.config.value || "?"}`, whatsapp_reply_contains: `Reply has "${node.config.value || "?"}"`, whatsapp_reply_equals: `Reply == "${node.config.value || "?"}"`, has_replied: "Customer replied", contact_tag: `Tag = ${node.config.value || "?"}` }[node.config.conditionType || "outcome"] || `Outcome = ${node.config.value || "?"}`) : node.type === "payment" ? `Razorpay ${node.config.currency || "INR"} ${node.config.amount || "999"}` : node.type === "crm" ? `Stage: ${node.config.crmStage || "Qualified"}` : node.type === "calendar" ? `${node.config.calendarTitle || "AI Consultation"} (${node.config.durationMinutes || "30"}m)` : node.type === "sms" ? (node.config.messageText ? node.config.messageText.slice(0, 28) + "…" : "Slack / Instant Alert") : node.type === "end" ? node.config.outcome || "Journey complete" : "Configure this step"}</div><div className="automation-node-ports">{branches(node.type).map((branch) => <button key={branch} title={`Connect ${branchLabel(branch)} branch`} className={`automation-port-${branch} ${connecting?.source === node.id && connecting.handle === branch ? "connecting" : ""}`} onClick={(event) => { event.stopPropagation(); setConnecting({ source: node.id, handle: branch }); setSelectedId(node.id); }}>{branchLabel(branch)}<span className="automation-output-port" /></button>)}</div></div>)}
+                <button type="button" className="automation-panel-arrow" onClick={() => setLibraryOpen(false)} aria-label="Hide blocks" title="Hide Blocks">◀</button>
               </div>
-              {connecting && <div className="automation-connect-hint">Select a target step for “{branchLabel(connecting.handle)}” <button onClick={() => setConnecting(null)}>Cancel</button></div>}
-              <div className={`automation-minimap ${inspectorOpen ? "shifted" : ""}`} aria-label="Workflow minimap">{graph.nodes.map((node) => <span key={node.id} className={`automation-type-${node.type}`} style={{ left: `${Math.min(88, Math.max(4, node.x / 22))}%`, top: `${Math.min(82, Math.max(8, node.y / 12))}%` }} />)}</div>
-              <div className={`automation-zoom-vertical ${inspectorOpen ? "shifted" : ""}`}>
-                <button type="button" aria-label="Zoom in" title="Zoom in" onClick={() => setZoom((value) => Math.min(1.4, +(value + .1).toFixed(2)))}>+</button>
-                <button type="button" aria-label="Zoom out" title="Zoom out" onClick={() => setZoom((value) => Math.max(.35, +(value - .1).toFixed(2)))}>−</button>
-                <button type="button" className={isFullscreen ? "active" : ""} aria-label={isFullscreen ? "Exit fullscreen" : "Expand fullscreen"} title={isFullscreen ? "Exit fullscreen (Esc)" : "Expand workflow fullscreen"} onClick={toggleFullscreen}>{isFullscreen ? "⤢" : "⛶"}</button>
+              <div className="automation-floating-blocks-list">
+                {palette.map((block) => (
+                  <button key={block.type} type="button" draggable className={`automation-library-item automation-type-${block.type}`} onDragStart={(event) => event.dataTransfer.setData("application/vozon-block", block.type)} onClick={() => addNode(block.type)} title={block.detail}>
+                    <span className="automation-lib-icon">{block.icon}</span>
+                    <span className="automation-lib-name">{block.name}</span>
+                  </button>
+                ))}
               </div>
-            </div>
+            </aside>
+          ) : (
+            <button type="button" className="automation-floating-pill automation-blocks-reopen" onClick={() => setLibraryOpen(true)} aria-label="Show blocks">
+              <span>BLOCKS</span>
+              <span>▶</span>
+            </button>
+          )}
 
-            {inspectorOpen && <aside className="automation-inspector automation-floating-inspector"><div className="automation-panel-title"><span>{selected ? "STEP SETTINGS" : showChecks ? "PUBLISH CHECKS" : "WORKFLOW"}</span><button type="button" className="automation-panel-arrow" onClick={() => setInspectorOpen(false)} aria-label="Hide step settings" title="Close">×</button></div>{selected ? <><div className={`automation-inspector-hero automation-type-${selected.type}`}><div className="automation-inspector-icon">{palette.find((item) => item.type === selected.type)?.icon}</div><div><span className="automation-node-kicker">{blockTag(selected.type)}</span><p className="automation-inspector-hero-sub">{palette.find((item) => item.type === selected.type)?.detail}</p></div></div><label className="automation-field">Step name<input value={selected.title} onChange={(event) => patchNode(selected.id, { title: event.target.value })} /></label>
-            {selected.type === "trigger" && <><label className="automation-field">Start event<select value={selected.config.event || "manual"} onChange={(event) => patchConfig(selected.id, "event", event.target.value)}><option value="manual">Manual / API event</option><option value="contact_added">Campaign lead imported</option><option value="missed_call">Missed inbound call</option><option value="whatsapp_inbound">WhatsApp message received</option><option value="whatsapp_form_submitted">WhatsApp form submitted</option></select></label>
+          <div className={`automation-canvas-toolbar ${inspectorOpen ? "shifted" : ""}`}>
+            <button type="button" disabled={!undo.length} onClick={undoGraph} title="Undo">↶</button>
+            <button type="button" disabled={!redo.length} onClick={redoGraph} title="Redo">↷</button>
+            <span className="automation-toolbar-sep" />
+            <button type="button" onClick={tidy}>🧹 Tidy up</button>
+            <button type="button" onClick={() => fitToView()} title={`Center & Fit (${Math.round(zoom * 100)}%)`}>Fit</button>
+            {isFullscreen && <button type="button" className="automation-exit-fs-btn" onClick={toggleFullscreen}>✕ Exit Fullscreen</button>}
+          </div>
+
+          <div ref={canvasRef} className={`automation-canvas ${dragRef.current?.kind === "pan" ? "panning" : ""}`} onDragOver={(event) => { if (event.dataTransfer.types.includes("application/vozon-block")) event.preventDefault(); }} onDrop={(event) => { const type = event.dataTransfer.getData("application/vozon-block") as BlockType; if (!palette.some((item) => item.type === type)) return; event.preventDefault(); const rect = canvasRef.current?.getBoundingClientRect(); if (rect) addNode(type, { x: Math.round((event.clientX - rect.left - pan.x) / zoom), y: Math.round((event.clientY - rect.top - pan.y) / zoom) }); }} onPointerDown={(event) => { if (event.target === event.currentTarget || (event.target instanceof Element && event.target.closest(".automation-canvas-surface"))) { dragRef.current = { kind: "pan", startX: event.clientX, startY: event.clientY, originX: pan.x, originY: pan.y }; setSelectedId(""); setInspectorOpen(false); } }}>
+            <div className="automation-canvas-surface" style={{ transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})` }}>
+              <svg className="automation-edges" width="10000" height="10000" aria-hidden="true"><defs><marker id="automation-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M1 1 L6 3.5 L1 6" fill="none" stroke="#2563eb" strokeWidth="1.5" /></marker><marker id="automation-arrow-good" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M1 1 L6 3.5 L1 6" fill="none" stroke="#10b981" strokeWidth="1.5" /></marker><marker id="automation-arrow-bad" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M1 1 L6 3.5 L1 6" fill="none" stroke="#ef4444" strokeWidth="1.5" /></marker></defs>{graph.edges.map((edge) => { const from = graph.nodes.find((node) => node.id === edge.source); const to = graph.nodes.find((node) => node.id === edge.target); if (!from || !to) return null; const ports = branches(from.type); const index = ports.indexOf(edge.sourceHandle); const sy = from.y + 74 + Math.max(0, index) * 26; const ty = to.y + 64; const sx = from.x + nodeWidth; const tx = to.x; const dx = Math.max(55, Math.abs(tx - sx) / 2); const tone = edge.sourceHandle === "yes" || edge.sourceHandle === "interested" || from.type === "whatsapp" || from.type === "payment" ? "good" : edge.sourceHandle === "no" || edge.sourceHandle === "failed" || edge.sourceHandle === "not_interested" ? "bad" : "neutral"; return <g key={edge.id} className={`automation-edge automation-edge-${tone}`}><path d={`M${sx} ${sy} C${sx + dx} ${sy},${tx - dx} ${ty},${tx} ${ty}`} markerEnd={tone === "good" ? "url(#automation-arrow-good)" : tone === "bad" ? "url(#automation-arrow-bad)" : "url(#automation-arrow)"} /><text x={(sx + tx) / 2} y={(sy + ty) / 2 - 7}>{edge.sourceHandle !== "default" ? branchLabel(edge.sourceHandle) : ""}</text></g>; })}</svg>
+              {graph.nodes.map((node) => <div key={node.id} className={`automation-node automation-type-${node.type} ${selectedId === node.id ? "selected" : ""} ${issueMap.has(node.id) ? "has-issue" : ""}`} style={{ left: node.x, top: node.y, width: nodeWidth }} onPointerDown={(event) => event.stopPropagation()} onClick={() => { setSelectedId(node.id); setInspectorOpen(true); if (connecting && connecting.source !== node.id) connect(node.id); }}><button className="automation-input-port" title={connecting ? "Connect here" : "Input"} onClick={(event) => { event.stopPropagation(); if (connecting) connect(node.id); }} aria-label={`Connect to ${node.title}`} /><div className="automation-node-head" onPointerDown={(event) => { if (event.button !== 0) return; event.preventDefault(); dragRef.current = { kind: "node", nodeId: node.id, startX: event.clientX, startY: event.clientY, originX: node.x, originY: node.y, before: graph }; setSelectedId(node.id); setInspectorOpen(true); }}><span className="automation-node-icon">{palette.find((item) => item.type === node.type)?.icon}</span><strong title={node.title}>{node.type === "trigger" ? "START WHEN" : node.title}</strong><small>{issueMap.has(node.id) ? `${issueMap.get(node.id)} !` : ""}</small></div><div className="automation-node-body">{node.type === "trigger" ? ({ manual: "Manual / API event", webhook: "External Webhook (Zapier / API)", contact_added: "Campaign lead imported", missed_call: "Missed inbound call", whatsapp_inbound: "WhatsApp message received", whatsapp_form_submitted: "WhatsApp form submitted", case_created: "Support case opened", case_resolved: "Support case resolved" }[node.config.event] || "Choose a start event") : node.type === "call" ? `${node.config.agentId === "auto" ? "Auto-Select Live Agent" : agents.find((item) => item._id === node.config.agentId)?.name || "Auto-Select Live Agent"}${Number(node.config.maxRetries || 0) > 0 ? ` · ${node.config.maxRetries}x retry` : ""}` : node.type === "whatsapp" ? (node.config.messageMode === "ai_dynamic" ? "AI Dynamic WhatsApp" : node.config.templateName || "Choose a template") : node.type === "wait" ? (node.config.waitMode === "whatsapp_reply" ? `Wait for reply (max ${node.config.minutes || "?"}m)` : node.config.waitMode === "payment_paid" ? `Wait for payment (max ${node.config.minutes || "?"}m)` : node.config.waitMode === "case_resolved" ? `Wait for case SLA (${node.config.minutes || "?"}m)` : `${node.config.minutes || "?"} min delay`) : node.type === "decision" ? (node.config.decisionType === "agentic" ? "AI Agentic Router (LLM)" : node.config.decisionType === "whatsapp" ? "WhatsApp sentiment" : "Call outcome") : node.type === "condition" ? ({ outcome: `Call outcome = ${node.config.value || "?"}`, whatsapp_status: `WhatsApp status = ${node.config.value || "?"}`, whatsapp_reply_contains: `Reply has "${node.config.value || "?"}"`, whatsapp_reply_equals: `Reply == "${node.config.value || "?"}"`, has_replied: "Customer replied", payment_paid: "Razorpay payment paid", case_status: `Case status = ${node.config.value || "?"}`, case_priority: `Case priority = ${node.config.value || "?"}`, contact_tag: `Tag = ${node.config.value || "?"}` }[node.config.conditionType || "outcome"] || `Outcome = ${node.config.value || "?"}`) : node.type === "payment" ? `Razorpay ${node.config.currency || "INR"} ${node.config.amount || "999"}` : node.type === "crm" ? `Stage: ${node.config.crmStage || "Qualified"}` : node.type === "case" ? `Open Case (${(node.config.priority || "medium").toUpperCase()} · ${node.config.category || "Support"})` : node.type === "calendar" ? `${node.config.calendarTitle || "AI Consultation"} (${node.config.durationMinutes || "30"}m)` : node.type === "sms" ? (node.config.messageText ? node.config.messageText.slice(0, 28) + "…" : "Slack / Instant Alert") : node.type === "end" ? node.config.outcome || "Journey complete" : "Configure this step"}</div><div className="automation-node-ports">{branches(node.type).map((branch) => <button key={branch} title={`Connect ${branchLabel(branch)} branch`} className={`automation-port-${branch} ${connecting?.source === node.id && connecting.handle === branch ? "connecting" : ""}`} onClick={(event) => { event.stopPropagation(); setConnecting({ source: node.id, handle: branch }); setSelectedId(node.id); }}>{branchLabel(branch)}<span className="automation-output-port" /></button>)}</div></div>)}
+            </div>
+            {connecting && <div className="automation-connect-hint">Select a target step for “{branchLabel(connecting.handle)}” <button onClick={() => setConnecting(null)}>Cancel</button></div>}
+            <div className={`automation-minimap ${inspectorOpen ? "shifted" : ""}`} aria-label="Workflow minimap">{graph.nodes.map((node) => <span key={node.id} className={`automation-type-${node.type}`} style={{ left: `${Math.min(88, Math.max(4, node.x / 22))}%`, top: `${Math.min(82, Math.max(8, node.y / 12))}%` }} />)}</div>
+            <div className={`automation-zoom-vertical ${inspectorOpen ? "shifted" : ""}`}>
+              <button type="button" aria-label="Zoom in" title="Zoom in" onClick={() => setZoom((value) => Math.min(1.4, +(value + .1).toFixed(2)))}>+</button>
+              <button type="button" aria-label="Zoom out" title="Zoom out" onClick={() => setZoom((value) => Math.max(.35, +(value - .1).toFixed(2)))}>−</button>
+              <button type="button" className={isFullscreen ? "active" : ""} aria-label={isFullscreen ? "Exit fullscreen" : "Expand fullscreen"} title={isFullscreen ? "Exit fullscreen (Esc)" : "Expand workflow fullscreen"} onClick={toggleFullscreen}>{isFullscreen ? "⤢" : "⛶"}</button>
+            </div>
+          </div>
+
+          {inspectorOpen && <aside className="automation-inspector automation-floating-inspector"><div className="automation-panel-title"><span>{selected ? "STEP SETTINGS" : showChecks ? "PUBLISH CHECKS" : "WORKFLOW"}</span><button type="button" className="automation-panel-arrow" onClick={() => setInspectorOpen(false)} aria-label="Hide step settings" title="Close">×</button></div>{selected ? <><div className={`automation-inspector-hero automation-type-${selected.type}`}><div className="automation-inspector-icon">{palette.find((item) => item.type === selected.type)?.icon}</div><div><span className="automation-node-kicker">{blockTag(selected.type)}</span><p className="automation-inspector-hero-sub">{palette.find((item) => item.type === selected.type)?.detail}</p></div></div><label className="automation-field">Step name<input value={selected.title} onChange={(event) => patchNode(selected.id, { title: event.target.value })} /></label>
+            {selected.type === "trigger" && <><label className="automation-field">Start event<select value={selected.config.event || "manual"} onChange={(event) => patchConfig(selected.id, "event", event.target.value)}><option value="manual">Manual / API event</option><option value="webhook">External Webhook (Zapier / Meta / Site)</option><option value="contact_added">Campaign lead imported</option><option value="missed_call">Missed inbound call</option><option value="whatsapp_inbound">WhatsApp message received</option><option value="whatsapp_form_submitted">WhatsApp form submitted</option><option value="case_created">Support case opened</option><option value="case_resolved">Support case resolved</option></select></label>
+              {selected.config.event === "webhook" && <>
+                <label className="automation-field">Inbound Webhook URL (POST)
+                  <input readOnly value={getWebhookUrl()} onFocus={(event) => event.currentTarget.select()} />
+                </label>
+                <div className="automation-field-row">
+                  <button type="button" className="automation-secondary" onClick={() => void copyWebhookUrl()}>Copy URL</button>
+                  <button type="button" className="automation-secondary" disabled={busy} onClick={() => void rotateWebhookSecret()}>Rotate Secret</button>
+                </div>
+                <label className="automation-field">Payload keyword filter (optional)<input value={selected.config.keyword || ""} onChange={(event) => patchConfig(selected.id, "keyword", event.target.value)} placeholder="e.g. pricing or meta_lead (optional)" /></label>
+                <label className="automation-consent"><input type="checkbox" checked={selected.config.consentConfirmed === "true"} onChange={(event) => patchConfig(selected.id, "consentConfirmed", String(event.target.checked))} /> I confirm contacts submitted via this webhook have consented to follow-up.</label>
+                <p className="automation-inspector-help">Publish the workflow, then POST JSON like <code>{"{\"phone\":\"+919876543210\",\"name\":\"Aarav\"}"}</code> (or send header <code>x-webhook-secret</code>) from Zapier, Make, Meta Ads, Shopify, or your website.</p>
+              </>}
               {selected.config.event === "contact_added" && <><label className="automation-field">Campaign<select value={selected.config.campaignId || ""} onChange={(event) => patchConfig(selected.id, "campaignId", event.target.value)}><option value="">Choose campaign</option><option value="all">All campaigns</option>{campaigns.map((campaign) => <option key={campaign._id} value={campaign._id}>{campaign.name}</option>)}</select></label><p className="automation-inspector-help">Only newly imported leads with confirmed workflow consent will start. A campaign may also call these leads separately.</p></>}
               {selected.config.event === "missed_call" && <><label className="automation-field">Inbound number<select value={selected.config.phoneNumberId || ""} onChange={(event) => patchConfig(selected.id, "phoneNumberId", event.target.value)}><option value="">Choose number</option>{numbers.filter((number) => number.status === "Ready" && ["Inbound", "Both"].includes(number.direction)).map((number) => <option key={number._id} value={number._id}>{number.number}</option>)}</select></label><label className="automation-consent"><input type="checkbox" checked={selected.config.consentConfirmed === "true"} onChange={(event) => patchConfig(selected.id, "consentConfirmed", String(event.target.checked))} /> I confirm inbound callers may receive this follow-up.</label><p className="automation-inspector-help">Starts after an inbound call ends without a conversation. Existing opt-outs are excluded.</p></>}
               {selected.config.event === "whatsapp_inbound" && <><label className="automation-field">Keyword filter (optional)<input value={selected.config.keyword || ""} onChange={(event) => patchConfig(selected.id, "keyword", event.target.value)} placeholder="e.g. BOOK, HI, CALL (leave blank for any message)" /></label><label className="automation-consent"><input type="checkbox" checked={selected.config.consentConfirmed === "true"} onChange={(event) => patchConfig(selected.id, "consentConfirmed", String(event.target.checked))} /> I confirm inbound WhatsApp contacts may receive workflow follow-up.</label><p className="automation-inspector-help">Starts when a customer messages your WhatsApp business number or types this keyword.</p></>}
               {selected.config.event === "whatsapp_form_submitted" && <><label className="automation-field">Form ID / Keyword filter (optional)<input value={selected.config.keyword || ""} onChange={(event) => patchConfig(selected.id, "keyword", event.target.value)} placeholder="e.g. ENTERPRISE or BOOK" /></label><label className="automation-consent"><input type="checkbox" checked={selected.config.consentConfirmed === "true"} onChange={(event) => patchConfig(selected.id, "consentConfirmed", String(event.target.checked))} /> I confirm form respondents may receive workflow follow-up.</label><p className="automation-inspector-help">Starts when a lead fills an in-chat WhatsApp form or Meta Lead Form.</p></>}
+              {(selected.config.event === "case_created" || selected.config.event === "case_resolved") && <>
+                <label className="automation-field">Priority filter
+                  <select value={selected.config.priority || "all"} onChange={(event) => patchConfig(selected.id, "priority", event.target.value)}>
+                    <option value="all">All priorities</option>
+                    <option value="urgent">Urgent only</option>
+                    <option value="high">High only</option>
+                    <option value="medium">Medium only</option>
+                    <option value="low">Low only</option>
+                  </select>
+                </label>
+                <label className="automation-field">Category / Keyword filter (optional)<input value={selected.config.keyword || ""} onChange={(event) => patchConfig(selected.id, "keyword", event.target.value)} placeholder="e.g. Billing, Refund, Outage" /></label>
+                <label className="automation-consent"><input type="checkbox" checked={selected.config.consentConfirmed === "true"} onChange={(event) => patchConfig(selected.id, "consentConfirmed", String(event.target.checked))} /> I confirm support case contacts may receive workflow follow-up.</label>
+                <p className="automation-inspector-help">{selected.config.event === "case_created" ? "Starts automatically whenever a new support case (CASE-xxxx) is opened. Exposes {{caseNumber}}, {{casePriority}}, and {{caseSubject}}." : "Starts automatically whenever a support case is marked Resolved — ideal for CSAT WhatsApp surveys or AI feedback calls."}</p>
+              </>}
             </>}
-            {selected.type === "call" && <><label className="automation-field">Voice agent<select value={selected.config.agentId || "auto"} onChange={(event) => patchNode(selected.id, { config: { ...selected.config, agentId: event.target.value, phoneNumberId: selected.config.phoneNumberId || "auto" } })}><option value="auto">⚡ Auto-Select Primary Live Agent</option>{agents.map((agent) => <option key={agent._id} value={agent._id}>{agent.name} ({agent.status})</option>)}</select></label><label className="automation-field">Outbound number<select value={selected.config.phoneNumberId || "auto"} onChange={(event) => patchConfig(selected.id, "phoneNumberId", event.target.value)}><option value="auto">⚡ Auto-Select Ready Outbound Number</option>{numbers.filter((item) => ["Outbound", "Both"].includes(item.direction)).map((number) => <option key={number._id} value={number._id}>{number.number} ({number.status})</option>)}</select></label><div className="automation-field-row"><label className="automation-field">From<input type="time" value={selected.config.windowStart || "09:00"} onChange={(event) => patchConfig(selected.id, "windowStart", event.target.value)} /></label><label className="automation-field">Until<input type="time" value={selected.config.windowEnd || "20:00"} onChange={(event) => patchConfig(selected.id, "windowEnd", event.target.value)} /></label></div><label className="automation-field">Time zone<input value={selected.config.timezone || "Asia/Kolkata"} onChange={(event) => patchConfig(selected.id, "timezone", event.target.value)} /></label></>}
+            {selected.type === "call" && <><label className="automation-field">Voice agent<select value={selected.config.agentId || "auto"} onChange={(event) => patchNode(selected.id, { config: { ...selected.config, agentId: event.target.value, phoneNumberId: selected.config.phoneNumberId || "auto" } })}><option value="auto">⚡ Auto-Select Primary Live Agent</option>{agents.map((agent) => <option key={agent._id} value={agent._id}>{agent.name} ({agent.status})</option>)}</select></label><label className="automation-field">Outbound number<select value={selected.config.phoneNumberId || "auto"} onChange={(event) => patchConfig(selected.id, "phoneNumberId", event.target.value)}><option value="auto">⚡ Auto-Select Ready Outbound Number</option>{numbers.filter((item) => ["Outbound", "Both"].includes(item.direction)).map((number) => <option key={number._id} value={number._id}>{number.number} ({number.status})</option>)}</select></label><div className="automation-field-row"><label className="automation-field">From<input type="time" value={selected.config.windowStart || "09:00"} onChange={(event) => patchConfig(selected.id, "windowStart", event.target.value)} /></label><label className="automation-field">Until<input type="time" value={selected.config.windowEnd || "20:00"} onChange={(event) => patchConfig(selected.id, "windowEnd", event.target.value)} /></label></div><label className="automation-field">Time zone<input value={selected.config.timezone || "Asia/Kolkata"} onChange={(event) => patchConfig(selected.id, "timezone", event.target.value)} /></label><div className="automation-field-row"><label className="automation-field">Max retries<input type="number" min="0" max="5" value={selected.config.maxRetries ?? "0"} onChange={(event) => patchConfig(selected.id, "maxRetries", event.target.value)} /></label><label className="automation-field">Retry backoff (min)<input type="number" min="1" max="1440" value={selected.config.retryDelayMinutes ?? "15"} onChange={(event) => patchConfig(selected.id, "retryDelayMinutes", event.target.value)} /></label></div><p className="automation-inspector-help">Automatically retries missed, voicemail, or failed calls before taking the Call failed branch.</p></>}
             {selected.type === "whatsapp" && <>
               {whatsAppAccounts.length > 0 && (
                 <label className="automation-field">Send From WhatsApp Number
@@ -669,7 +766,7 @@ export function AutomationBuilder({ automationId }: { automationId: string }) {
                   <label className="automation-field">Body variables, comma separated<input value={selected.config.bodyVariables || ""} onChange={(event) => patchConfig(selected.id, "bodyVariables", event.target.value)} placeholder="{{name}}, {{phone}}, {{outcome}}, {{summary}}" /></label>
                 </>
               )}
-              <p className="automation-inspector-help">Supports multiple WhatsApp numbers, approved templates, or AI-generated contextual messages using {"{{name}}"}, {"{{phone}}"}, {"{{outcome}}"}, {"{{summary}}"}, {"{{paymentLink}}"}, {"{{calendlyLink}}"}, {"{{calendarTime}}"}, and {"{{crmStage}}"}.</p>
+              <p className="automation-inspector-help">Supports multiple WhatsApp numbers, approved templates, or AI-generated contextual messages using {"{{name}}"}, {"{{phone}}"}, {"{{outcome}}"}, {"{{summary}}"}, {"{{paymentLink}}"}, {"{{calendlyLink}}"}, {"{{calendarTime}}"}, {"{{crmStage}}"}, and {"{{caseNumber}}"}.</p>
             </>}
             {selected.type === "condition" && <><label className="automation-field">Condition type
               <select value={selected.config.conditionType || "outcome"} onChange={(event) => patchConfig(selected.id, "conditionType", event.target.value)}>
@@ -678,16 +775,58 @@ export function AutomationBuilder({ automationId }: { automationId: string }) {
                 <option value="whatsapp_reply_contains">WhatsApp Reply Contains (e.g. YES, BOOK, HELP)</option>
                 <option value="whatsapp_reply_equals">WhatsApp Reply Equals</option>
                 <option value="has_replied">Customer Has Replied (Yes/No)</option>
+                <option value="payment_paid">Razorpay Payment Completed (Yes/No)</option>
+                <option value="case_status">Support Case Status (open, in_progress, resolved)</option>
+                <option value="case_priority">Support Case Priority (low, medium, high, urgent)</option>
                 <option value="contact_tag">Customer Has Tag (e.g. VIP)</option>
               </select>
             </label>
-              {selected.config.conditionType !== "has_replied" && (
+              {selected.config.conditionType !== "has_replied" && selected.config.conditionType !== "payment_paid" && (
                 <label className="automation-field">Value to compare
-                  <input value={selected.config.value || ""} onChange={(event) => patchConfig(selected.id, "value", event.target.value)} placeholder={selected.config.conditionType === "whatsapp_reply_contains" ? "e.g. YES" : selected.config.conditionType === "whatsapp_status" ? "read" : "qualified"} />
+                  <input value={selected.config.value || ""} onChange={(event) => patchConfig(selected.id, "value", event.target.value)} placeholder={selected.config.conditionType === "whatsapp_reply_contains" ? "e.g. YES" : selected.config.conditionType === "whatsapp_status" ? "read" : selected.config.conditionType === "case_status" ? "resolved" : selected.config.conditionType === "case_priority" ? "urgent" : "qualified"} />
                 </label>
               )}
               <p className="automation-inspector-help">Branches to <strong>Yes</strong> if this condition matches, or <strong>No</strong> otherwise.</p></>}
-            {selected.type === "wait" && <label className="automation-field">Minutes to wait<input type="number" min="1" max="43200" value={selected.config.minutes || ""} onChange={(event) => patchConfig(selected.id, "minutes", event.target.value)} /></label>}
+            {selected.type === "wait" && <>
+              <label className="automation-field">Wait mode
+                <select value={selected.config.waitMode || "duration"} onChange={(event) => patchConfig(selected.id, "waitMode", event.target.value)}>
+                  <option value="duration">Fixed Duration Delay</option>
+                  <option value="whatsapp_reply">Wait for WhatsApp Reply (with timeout)</option>
+                  <option value="payment_paid">Wait for Razorpay Payment (with timeout)</option>
+                  <option value="case_resolved">Wait for Case Resolved (SLA timeout)</option>
+                </select>
+              </label>
+              <label className="automation-field">{selected.config.waitMode && selected.config.waitMode !== "duration" ? "Max timeout (minutes)" : "Minutes to wait"}
+                <input type="number" min="1" max="43200" value={selected.config.minutes || ""} onChange={(event) => patchConfig(selected.id, "minutes", event.target.value)} />
+              </label>
+              <p className="automation-inspector-help">{selected.config.waitMode === "whatsapp_reply" ? "Wakes up immediately when the customer replies on WhatsApp, or continues after the timeout so a Conditional / AI Router can branch." : selected.config.waitMode === "payment_paid" ? "Wakes up immediately when Razorpay confirms payment, or continues after the timeout so a Conditional (Razorpay Payment Completed) can follow up." : selected.config.waitMode === "case_resolved" ? "Acts as an SLA timer: wakes up immediately when the Support Case is marked Resolved, or continues after timeout so you can trigger an SLA breach escalation." : "Pauses this contact for the configured number of minutes before running the next step."}</p>
+            </>}
+            {selected.type === "case" && <>
+              <label className="automation-field">Case Subject
+                <input value={selected.config.subject || ""} onChange={(event) => patchConfig(selected.id, "subject", event.target.value)} placeholder="e.g. Support request for {{name}}: {{summary}}" />
+              </label>
+              <div className="automation-field-row">
+                <label className="automation-field">Category
+                  <input value={selected.config.category || "Support"} onChange={(event) => patchConfig(selected.id, "category", event.target.value)} placeholder="Support / Billing" />
+                </label>
+                <label className="automation-field">Priority
+                  <select value={selected.config.priority || "high"} onChange={(event) => patchConfig(selected.id, "priority", event.target.value)}>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="urgent">Urgent</option>
+                  </select>
+                </label>
+              </div>
+              <label className="automation-field">Case Notes (optional)
+                <textarea rows={2} value={selected.config.notes || ""} onChange={(event) => patchConfig(selected.id, "notes", event.target.value)} placeholder="Defaults to call summary or WhatsApp reply ({{summary}}, {{whatsappReply}})" />
+              </label>
+              <label className="automation-consent">
+                <input type="checkbox" checked={selected.config.notifyCustomer !== "false"} onChange={(event) => patchConfig(selected.id, "notifyCustomer", String(event.target.checked))} />
+                Send CASE number confirmation to customer on WhatsApp
+              </label>
+              <p className="automation-inspector-help">Opens a tracked <strong>CASE-xxxx</strong> ticket, notifies Slack &amp; connected CRMs, and sets {"{{caseNumber}}"} &amp; {"{{caseStatus}}"} for later SLA Wait, Condition, WhatsApp, or Alert steps.</p>
+            </>}
             {selected.type === "crm" && <>
               <label className="automation-field">CRM Lead Stage
                 <select value={selected.config.crmStage || "Qualified"} onChange={(event) => patchConfig(selected.id, "crmStage", event.target.value)}>
@@ -760,7 +899,7 @@ export function AutomationBuilder({ automationId }: { automationId: string }) {
               <label className="automation-field">Notification / Slack Alert Text
                 <textarea rows={3} value={selected.config.messageText || ""} onChange={(event) => patchConfig(selected.id, "messageText", event.target.value)} placeholder="Hi {{name}}, thank you for connecting with us! Your outcome: {{outcome}}." />
               </label>
-              <p className="automation-inspector-help">Posts to your connected Slack channel and dispatches team alerts using {"{{name}}"}, {"{{phone}}"}, {"{{outcome}}"}, and {"{{paymentLink}}"}.</p>
+              <p className="automation-inspector-help">Posts to your connected Slack channel and dispatches team alerts using {"{{name}}"}, {"{{phone}}"}, {"{{outcome}}"}, {"{{paymentLink}}"}, and {"{{caseNumber}}"}.</p>
             </>}
             {selected.type === "end" && <label className="automation-field">Outcome label<input value={selected.config.outcome || ""} onChange={(event) => patchConfig(selected.id, "outcome", event.target.value)} placeholder="Completed" /></label>}
             {selected.type === "decision" && <>
@@ -774,14 +913,14 @@ export function AutomationBuilder({ automationId }: { automationId: string }) {
               <label className="automation-field">Agent Routing Goal (optional)
                 <textarea rows={2} value={selected.config.agentGoal || ""} onChange={(event) => patchConfig(selected.id, "agentGoal", event.target.value)} placeholder="e.g. Route to Interested if customer asked for pricing/demo, Callback if busy..." />
               </label>
-              <p className="automation-inspector-help">Autonomously evaluates both Voice Call outcomes and WhatsApp replies to route the contact to Interested, Callback, Not Interested, or Unknown.</p>
+              <p className="automation-inspector-help">Uses live LLM intent classification guided by your Agent Routing Goal (with automatic deterministic fallback) to route contacts to Interested, Callback, Not Interested, or Unknown.</p>
             </>}
-            {issueMap.has(selected.id) && <div className="automation-node-issues">{issues.filter((item) => item.nodeId === selected.id).map((item, index) => <p key={index}>⚠ {item.message}</p>)}</div>}
-            <button className="automation-delete-step" onClick={deleteSelected}>Delete step</button>
-          </> : showChecks ? <><p className="automation-inspector-help">Resolve these before publishing, or click ⚡ Auto-Fill.</p>{issues.length ? <><button className="automation-primary" style={{ marginBottom: "10px", width: "100%" }} onClick={autoConfigureGraph}>⚡ Auto-Fill All Steps</button>{issues.map((item, index) => <button key={index} className="automation-check-item" onClick={() => { if (item.nodeId) setSelectedId(item.nodeId); }}>{item.nodeId ? "⚠" : "!"} {item.message}</button>)}</> : <div className="automation-good">✓ All checks pass. Save and publish when ready.</div>}</> : <><p className="automation-inspector-help">Select a step to configure it, or use ✦ AI Architect to generate a workflow.</p><div className="automation-inspector-stat"><strong>{graph.nodes.length}</strong><span>Steps</span></div><div className="automation-inspector-stat"><strong>{graph.edges.length}</strong><span>Connections</span></div><div className="automation-inspector-stat"><strong>{issues.length}</strong><span>Checks to resolve</span></div><button className="automation-primary" style={{ marginBottom: "8px", width: "100%" }} onClick={autoConfigureGraph}>⚡ Auto-Fill Resources</button><button className="automation-secondary" style={{ width: "100%" }} onClick={() => setShowChecks(true)}>View publish checks</button></>}</aside>}
+              {issueMap.has(selected.id) && <div className="automation-node-issues">{issues.filter((item) => item.nodeId === selected.id).map((item, index) => <p key={index}>⚠ {item.message}</p>)}</div>}
+              <button className="automation-delete-step" onClick={deleteSelected}>Delete step</button>
+            </> : showChecks ? <><p className="automation-inspector-help">Resolve these before publishing, or click ⚡ Auto-Fill.</p>{issues.length ? <><button className="automation-primary" style={{ marginBottom: "10px", width: "100%" }} onClick={autoConfigureGraph}>⚡ Auto-Fill All Steps</button>{issues.map((item, index) => <button key={index} className="automation-check-item" onClick={() => { if (item.nodeId) setSelectedId(item.nodeId); }}>{item.nodeId ? "⚠" : "!"} {item.message}</button>)}</> : <div className="automation-good">✓ All checks pass. Save and publish when ready.</div>}</> : <><p className="automation-inspector-help">Select a step to configure it, or use ✦ AI Architect to generate a workflow.</p><div className="automation-inspector-stat"><strong>{graph.nodes.length}</strong><span>Steps</span></div><div className="automation-inspector-stat"><strong>{graph.edges.length}</strong><span>Connections</span></div><div className="automation-inspector-stat"><strong>{issues.length}</strong><span>Checks to resolve</span></div><button className="automation-primary" style={{ marginBottom: "8px", width: "100%" }} onClick={autoConfigureGraph}>⚡ Auto-Fill Resources</button><button className="automation-secondary" style={{ width: "100%" }} onClick={() => setShowChecks(true)}>View publish checks</button></>}</aside>}
           </div>
-        </div> : tab === "runs" ? <div className="automation-secondary-page"><div className="automation-secondary-head"><div><span className="automation-kicker">EXECUTION HISTORY</span><h2>Runs</h2><p>Each run follows the workflow version that started it.</p></div><span className={`automation-status automation-status-${flow.status}`}>{flow.status}</span></div>{flow.published?.nodes.find((node) => node.type === "trigger")?.config.event !== "manual" && flow.published && <div className="automation-run-form" style={{ marginBottom: "12px" }}><div><h3>⚡ Autonomous Event Trigger Active</h3><p>New matching events ({flow.published?.nodes.find((node) => node.type === "trigger")?.config.event?.replaceAll("_", " ")}) start runs automatically while this workflow is live. You can also launch an on-demand run below.</p></div></div>}<div className="automation-run-form"><div><h3>Start a live run</h3><p>Uses the published workflow. Calls, WhatsApp messages, CRM updates, and bookings will execute for this contact.</p></div><input aria-label="Contact name" placeholder="Contact name" value={contactName} onChange={(event) => setContactName(event.target.value)} /><input aria-label="Contact phone" placeholder="+919876543210" value={phone} onChange={(event) => setPhone(event.target.value)} /><label className="automation-consent"><input type="checkbox" checked={consentConfirmed} onChange={(event) => setConsentConfirmed(event.target.checked)} /> I confirm this contact may be called or messaged.</label>{canRun && <button className="automation-primary" disabled={busy || !consentConfirmed || flow.status !== "live" || !/^\+[1-9]\d{7,14}$/.test(phone)} onClick={() => void startRun()}>Start run</button>}</div><div className="automation-run-list">{runs.length ? runs.map((run) => <details key={run._id} className="automation-run-card"><summary><span className={`automation-run-dot automation-run-${run.status}`} /><strong>{run.contactName || run.contactPhone}</strong><span>{run.contactPhone}</span><span className={`automation-status automation-status-${run.status}`}>{run.status}</span><small>{new Date(run.createdAt).toLocaleString()}</small><b>⌄</b></summary><div className="automation-run-details"><p>Published version {run.version} · Event {run.eventId}</p>{canRun && ["queued", "waiting"].includes(run.status) && <button className="automation-secondary automation-cancel-run" disabled={busy} onClick={() => void cancelRun(run._id)}>Cancel run</button>}{run.steps.map((step, index) => <div key={index}><span className={`automation-run-dot automation-run-${step.status}`} /><strong>{step.title}</strong><span>{step.detail}</span><small>{new Date(step.at).toLocaleString()}</small></div>)}{run.error && <p className="automation-alert">{run.error}</p>}</div></details>) : <div className="automation-empty"><h3>No runs yet</h3><p>Publish the workflow, then start a run with an eligible contact.</p></div>}</div></div> : <div className="automation-secondary-page"><div className="automation-secondary-head"><div><span className="automation-kicker">WORKFLOW CONTROL</span><h2>Settings & test</h2><p>Define the workflow and test its route before going live.</p></div></div><div className="automation-settings-grid"><div className="automation-settings-card"><h3>Workflow details</h3><label className="automation-field">Name<input value={name} onChange={(event) => { setName(event.target.value); setDirty(true); }} /></label><label className="automation-field">Description<textarea value={description} onChange={(event) => { setDescription(event.target.value); setDirty(true); }} /></label><button className="automation-secondary" disabled={busy || !dirty} onClick={() => void save()}>Save draft</button></div><div className="automation-settings-card"><h3>Dry run</h3><p>Simulate the journey without placing calls or sending messages.</p><label className="automation-field">Sample call outcome<select value={testOutcome} onChange={(event) => setTestOutcome(event.target.value)}><option value="qualified">Qualified / interested</option><option value="follow_up">Follow up / callback</option><option value="not_interested">Not interested</option><option value="unknown">Unknown</option><option value="missed">Missed</option></select></label><button className="automation-primary" disabled={busy} onClick={() => void test()}>▶ Run dry test</button>{testSteps.length > 0 && <div className="automation-test-steps">{testSteps.map((step, index) => <div key={index}><b>{index + 1}</b><span><strong>{step.title}</strong><small>{step.detail}</small></span></div>)}</div>}</div><div className="automation-settings-card"><h3>Published version</h3><p>{flow.publishedVersion ? `Version ${flow.publishedVersion} published ${flow.publishedAt ? new Date(flow.publishedAt).toLocaleString() : ""}.` : "This workflow is still a draft."}</p>{canPublish && flow.publishedVersion > 0 && <button className="automation-secondary" disabled={busy} onClick={() => void toggleStatus()}>{flow.status === "live" ? "Pause new runs" : "Resume new runs"}</button>}<p className="automation-inspector-help">Pausing prevents new runs. Existing runs continue on their original version.</p>{versions.length > 0 && <div className="automation-version-list"><strong>Version history</strong>{versions.map((version) => <div key={version._id}><span>v{version.version} · {new Date(version.createdAt).toLocaleDateString()}</span>{canPublish && <button disabled={busy || version.version === flow.publishedVersion} onClick={() => void restore(version.version)}>Restore</button>}</div>)}</div>}</div><div className="automation-settings-card"><h3>Danger zone</h3><p>Deleting removes the workflow definition. Active runs must finish first.</p>{canPublish && <button className="automation-delete-step" disabled={busy} onClick={() => void removeFlow()}>Delete workflow</button>}</div></div></div>}
+        </div> : tab === "runs" ? <div className="automation-secondary-page"><div className="automation-secondary-head"><div><span className="automation-kicker">EXECUTION HISTORY</span><h2>Runs</h2><p>Each run follows the workflow version that started it.</p></div><span className={`automation-status automation-status-${flow.status}`}>{flow.status}</span></div>{flow.published?.nodes.find((node) => node.type === "trigger")?.config.event !== "manual" && flow.published && <div className="automation-run-form" style={{ marginBottom: "12px" }}><div><h3>⚡ Autonomous Event Trigger Active</h3><p>New matching events ({flow.published?.nodes.find((node) => node.type === "trigger")?.config.event?.replaceAll("_", " ")}) start runs automatically while this workflow is live. You can also launch an on-demand run below.</p></div></div>}<div className="automation-run-form"><div><h3>Start a live run</h3><p>Uses the published workflow. Calls, WhatsApp messages, CRM updates, and bookings will execute for this contact.</p></div><input aria-label="Contact name" placeholder="Contact name" value={contactName} onChange={(event) => setContactName(event.target.value)} /><input aria-label="Contact phone" placeholder="+919876543210" value={phone} onChange={(event) => setPhone(event.target.value)} /><label className="automation-consent"><input type="checkbox" checked={consentConfirmed} onChange={(event) => setConsentConfirmed(event.target.checked)} /> I confirm this contact may be called or messaged.</label>{canRun && <button className="automation-primary" disabled={busy || !consentConfirmed || flow.status !== "live" || !/^\+[1-9]\d{7,14}$/.test(phone)} onClick={() => void startRun()}>Start run</button>}</div>{isAdmin && <div className="automation-run-form" style={{ marginTop: "12px" }}><div><h3>🔒 Bulk Launch (Admin Only)</h3><p>Queue up to 500 contacts from a WhatsApp Contact Group or pasted phone list. Busy call lines auto-queue smoothly and DNC numbers are skipped.</p></div><div style={{ display: "flex", gap: "8px", width: "100%" }}><button type="button" className={bulkMode === "group" ? "automation-primary" : "automation-secondary"} onClick={() => setBulkMode("group")}>Contact Group</button><button type="button" className={bulkMode === "paste" ? "automation-primary" : "automation-secondary"} onClick={() => setBulkMode("paste")}>Paste Numbers / CSV</button></div>{bulkMode === "group" ? <select aria-label="WhatsApp contact group" value={bulkGroupId} onChange={(event) => setBulkGroupId(event.target.value)} style={{ minWidth: "240px", height: "34px", borderRadius: "6px", border: "1px solid #d4d4d8", padding: "0 10px" }}><option value="">Choose a WhatsApp Contact Group</option>{whatsAppGroups.map((g) => <option key={g._id} value={g._id}>{g.name} ({g.contactCount || 0} contacts)</option>)}</select> : <textarea aria-label="Bulk phone numbers" rows={3} style={{ width: "100%", borderRadius: "6px", border: "1px solid #d4d4d8", padding: "8px 10px", fontFamily: "monospace", fontSize: "12px" }} placeholder={"Paste 100+ numbers (one per line or Name, Phone):\nAarav, +919876543210\n+919811223344"} value={bulkRawText} onChange={(event) => setBulkRawText(event.target.value)} />}<label className="automation-consent"><input type="checkbox" checked={bulkConsent} onChange={(event) => setBulkConsent(event.target.checked)} /> I confirm all selected contacts have consented to calls &amp; WhatsApp follow-ups.</label><button type="button" className="automation-primary" disabled={busy || !bulkConsent || flow.status !== "live" || (bulkMode === "group" ? !bulkGroupId : !bulkRawText.trim())} onClick={() => void startBulkRun()}>{busy ? "Queueing…" : "Start Bulk Run"}</button></div>}<div className="automation-run-list">{runs.length ? runs.map((run) => <details key={run._id} className="automation-run-card"><summary><span className={`automation-run-dot automation-run-${run.status}`} /><strong>{run.contactName || run.contactPhone}</strong><span>{run.contactPhone}</span><span className={`automation-status automation-status-${run.status}`}>{run.status}</span><small>{new Date(run.createdAt).toLocaleString()}</small><b>⌄</b></summary><div className="automation-run-details"><p>Published version {run.version} · Event {run.eventId}</p>{canRun && ["queued", "waiting"].includes(run.status) && <button className="automation-secondary automation-cancel-run" disabled={busy} onClick={() => void cancelRun(run._id)}>Cancel run</button>}{run.steps.map((step, index) => <div key={index}><span className={`automation-run-dot automation-run-${step.status}`} /><strong>{step.title}</strong><span>{step.detail}</span><small>{new Date(step.at).toLocaleString()}</small></div>)}{run.error && <p className="automation-alert">{run.error}</p>}</div></details>) : <div className="automation-empty"><h3>No runs yet</h3><p>Publish the workflow, then start a run with an eligible contact.</p></div>}</div></div> : <div className="automation-secondary-page"><div className="automation-secondary-head"><div><span className="automation-kicker">WORKFLOW CONTROL</span><h2>Settings & test</h2><p>Define the workflow and test its route before going live.</p></div></div><div className="automation-settings-grid"><div className="automation-settings-card"><h3>Workflow details</h3><label className="automation-field">Name<input value={name} onChange={(event) => { setName(event.target.value); setDirty(true); }} /></label><label className="automation-field">Description<textarea value={description} onChange={(event) => { setDescription(event.target.value); setDirty(true); }} /></label><button className="automation-secondary" disabled={busy || !dirty} onClick={() => void save()}>Save draft</button></div><div className="automation-settings-card"><h3>Dry run</h3><p>Simulate the journey without placing calls or sending messages.</p><label className="automation-field">Sample call outcome<select value={testOutcome} onChange={(event) => setTestOutcome(event.target.value)}><option value="qualified">Qualified / interested</option><option value="follow_up">Follow up / callback</option><option value="not_interested">Not interested</option><option value="unknown">Unknown</option><option value="missed">Missed</option></select></label><button className="automation-primary" disabled={busy} onClick={() => void test()}>▶ Run dry test</button>{testSteps.length > 0 && <div className="automation-test-steps">{testSteps.map((step, index) => <div key={index}><b>{index + 1}</b><span><strong>{step.title}</strong><small>{step.detail}</small></span></div>)}</div>}</div><div className="automation-settings-card"><h3>Published version</h3><p>{flow.publishedVersion ? `Version ${flow.publishedVersion} published ${flow.publishedAt ? new Date(flow.publishedAt).toLocaleString() : ""}.` : "This workflow is still a draft."}</p>{canPublish && flow.publishedVersion > 0 && <button className="automation-secondary" disabled={busy} onClick={() => void toggleStatus()}>{flow.status === "live" ? "Pause new runs" : "Resume new runs"}</button>}<p className="automation-inspector-help">Pausing prevents new runs. Existing runs continue on their original version.</p>{versions.length > 0 && <div className="automation-version-list"><strong>Version history</strong>{versions.map((version) => <div key={version._id}><span>v{version.version} · {new Date(version.createdAt).toLocaleDateString()}</span>{canPublish && <button disabled={busy || version.version === flow.publishedVersion} onClick={() => void restore(version.version)}>Restore</button>}</div>)}</div>}</div><div className="automation-settings-card"><h3>Danger zone</h3><p>Deleting removes the workflow definition. Active runs must finish first.</p>{canPublish && <button className="automation-delete-step" disabled={busy} onClick={() => void removeFlow()}>Delete workflow</button>}</div></div></div>}
       </>}
     </section>
   </main>;
-}
+}

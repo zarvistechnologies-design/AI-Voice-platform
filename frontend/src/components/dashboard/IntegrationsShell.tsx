@@ -514,7 +514,7 @@ export function IntegrationsShell() {
           .spreadsheet,
       );
       setNotice(
-        "Spreadsheet verified. Copy its ID and tab into the agentâ€™s Native Google tools.",
+        "Spreadsheet verified. Copy its ID and tab into the agent's Native Google tools.",
       );
     } catch (error) {
       setNotice(
@@ -736,7 +736,7 @@ export function IntegrationsShell() {
                       <details className="group mt-3 text-xs text-slate-600">
                         <summary className="flex cursor-pointer list-none items-center gap-2 font-semibold text-[#171717] marker:content-none">
                           Connection details
-                          <span className="transition group-open:rotate-180">âŒ„</span>
+                          <span className="transition group-open:rotate-180">▾</span>
                         </summary>
                         <div className="mt-2 rounded-xl bg-[#f7f9f8] p-3">
                           {displayConnected ? (
@@ -758,7 +758,7 @@ export function IntegrationsShell() {
                                 Last delivery: {displayDelivery.status}
                               </strong>
                               <span className="mt-1 block">
-                                Attempts: {displayDelivery.attempts} Â· Updated{" "}
+                                Attempts: {displayDelivery.attempts} · Updated{" "}
                                 {new Date(displayDelivery.updatedAt).toLocaleString()}
                               </span>
                               {displayDelivery.errorMessage ? <span className="mt-1 block">{displayDelivery.errorMessage}</span> : null}
@@ -771,7 +771,7 @@ export function IntegrationsShell() {
                       <details className="group mt-3 text-xs leading-5 text-slate-700">
                         <summary className="flex cursor-pointer list-none items-center gap-2 font-semibold text-[#171717] marker:content-none">
                           Manage agent connections
-                          <span className="transition group-open:rotate-180">âŒ„</span>
+                          <span className="transition group-open:rotate-180">▾</span>
                         </summary>
                         <div className="mt-2 rounded-xl border border-[#dfe7e4] bg-[#fafafa]/60 p-3">
                         <strong className="block text-slate-900">
@@ -930,7 +930,7 @@ export function IntegrationsShell() {
                           {agentAccess.map((agent) => (
                             <label key={agent.id} className="flex items-center gap-2">
                               <input type="checkbox" className="accent-[#171717]" checked={agent.providers.includes(voiceReadId)} disabled={busy} onChange={(event) => void toggleAgentAccess(agent.id, voiceReadId, event.target.checked)} />
-                              <span>{agent.name} Â· {agent.status}</span>
+                              <span>{agent.name} · {agent.status}</span>
                             </label>
                           ))}
                         </div>
@@ -1415,14 +1415,14 @@ export function IntegrationsShell() {
                           )
                       }
                     >
-                      {sheet} Â· test row
+                      {sheet} · test row
                     </button>
                   ))}
                 </div>
               </div>
             ) : null}
             <p className="mt-5 text-xs leading-5 text-slate-500">
-              Next: open an agent â†’ Tools â†’ Native Google tools, enter the
+              Next: open an agent → Tools → Native Google tools, enter the
               selected resource IDs, enable them, and save the agent.
             </p>
           </div>
