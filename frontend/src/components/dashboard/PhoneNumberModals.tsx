@@ -55,9 +55,9 @@ const providers: { id: TelephonyProvider; description: string; docs: string }[] 
 ];
 
 const buttonClass =
-  "app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 transition disabled:cursor-not-allowed disabled:opacity-50";
+  "inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-50";
 const controlClass =
-  "app-control-text min-h-11 w-full rounded-lg border border-[#eaeaea] bg-white px-3 text-[#171717] outline-none transition placeholder:text-[#a1a1aa] focus:border-[#171717] focus:ring-4 focus:ring-black/5";
+  "min-h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-xs text-[#171717] outline-none transition placeholder:text-[#a1a1aa] focus:border-black focus:ring-2 focus:ring-black/5 dark:border-zinc-700 dark:bg-zinc-950 dark:text-white dark:placeholder:text-zinc-500 dark:focus:border-white dark:focus:ring-white/10";
 
 export function PhoneNumberModals({
   agents,
@@ -264,51 +264,55 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
           <RequestError message={requestError} />
 
           <section className="grid gap-3">
-            <div><span className="app-label text-[#0e6f62]">Step 1</span><h3 className="app-section-title mt-1 mb-0">Choose provider</h3></div>
-            <div className="grid grid-cols-2 gap-1 rounded-xl border border-[#dbe4e1] bg-[#f7f9f8] p-1 sm:grid-cols-5">
+            <div><span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Step 1</span><h3 className="text-base font-semibold text-slate-900 dark:text-white mt-0.5 mb-0">Choose provider</h3></div>
+            <div className="grid grid-cols-2 gap-1 rounded-xl border border-zinc-800 bg-zinc-950 p-1 sm:grid-cols-5">
               {providers.map((item) => (
                 <button
-                  className={`min-h-10 rounded-lg px-2 text-center transition ${provider === item.id ? "border border-[#9fcfc3] bg-white text-[#0e6f62]" : "border border-transparent text-[#64748b] hover:bg-white hover:text-[#334155]"}`}
+                  className={`min-h-10 rounded-lg px-2 text-center text-xs transition outline-none focus:outline-none focus:ring-0 ${
+                    provider === item.id
+                      ? "border border-white bg-white font-semibold text-black shadow-sm"
+                      : "border border-transparent text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-white"
+                  }`}
                   disabled={busy}
                   key={item.id}
                   onClick={() => setProvider(item.id)}
                   type="button"
                   aria-pressed={provider === item.id}
                 >
-                  <span className="app-strong">{item.id === "SIP" ? "Custom SIP" : item.id}</span>
+                  <span className="font-semibold">{item.id === "SIP" ? "Custom SIP" : item.id}</span>
                 </button>
               ))}
             </div>
           </section>
 
-          <div className="rounded-lg border border-[#b8c8c3] bg-[#edf7f4] px-3 py-2.5">
+          <div className="rounded-lg border border-zinc-800 bg-zinc-900/60 px-3.5 py-2.5">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <span className="app-body text-[#108D82]">{providers.find((item) => item.id === provider)?.description}</span>
-              {providers.find((item) => item.id === provider)?.docs ? (<a className="app-label text-[#118778] underline underline-offset-2" href={providers.find((item) => item.id === provider)?.docs} rel="noreferrer" target="_blank">Provider docs</a>) : null}
+              <span className="text-xs text-zinc-300">{providers.find((item) => item.id === provider)?.description}</span>
+              {providers.find((item) => item.id === provider)?.docs ? (<a className="text-xs font-semibold text-white underline underline-offset-2 hover:opacity-80" href={providers.find((item) => item.id === provider)?.docs} rel="noreferrer" target="_blank">Provider docs</a>) : null}
             </div>
           </div>
 
           <section className="grid gap-3">
-            <div><span className="app-label text-[#0e6f62]">Step 2</span><h3 className="app-section-title mt-1 mb-0">Number details</h3></div>
+            <div><span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Step 2</span><h3 className="text-base font-semibold text-slate-900 dark:text-white mt-0.5 mb-0">Number details</h3></div>
             <div className="grid gap-4 sm:grid-cols-2">
-              <label className="app-label grid gap-2">
+              <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
                 Phone number
                 <input className={controlClass} disabled={busy} inputMode="tel" placeholder="+919876543210" value={phoneNumber} onChange={(event) => setPhoneNumber(event.target.value)} />
-                <span className="app-caption font-normal">Use E.164 format with country code.</span>
+                <span className="text-[11px] font-normal text-slate-400 dark:text-zinc-500">Use E.164 format with country code.</span>
               </label>
-              <label className="app-label grid content-start gap-2">
-                <span>Label <span className="font-normal text-[#94a3b8]">(optional)</span></span>
+              <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid content-start gap-2">
+                <span>Label <span className="font-normal text-slate-400 dark:text-zinc-500">(optional)</span></span>
                 <input className={controlClass} disabled={busy} maxLength={120} placeholder="Support main line" value={label} onChange={(event) => setLabel(event.target.value)} />
               </label>
             </div>
           </section>
 
-          <div><span className="app-label text-[#0e6f62]">Step 3</span><h3 className="app-section-title mt-1 mb-0">Provider credentials</h3><p className="app-caption mt-1 mb-0">Used securely to verify ownership of this number.</p></div>
+          <div><span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Step 3</span><h3 className="text-base font-semibold text-slate-900 dark:text-white mt-0.5 mb-0">Provider credentials</h3><p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5 mb-0">Used securely to verify ownership of this number.</p></div>
 
           {provider === "Twilio" ? (
-            <div className="grid gap-4 rounded-xl border border-[#e6ecea] bg-[#f8fafc] p-4">
+            <div className="grid gap-4 rounded-xl border border-slate-200 bg-slate-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-900/90">
               <div className="grid gap-4 sm:grid-cols-2">
-                <label className="app-label grid gap-2">
+                <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
                   Twilio API region
                   <select className={controlClass} disabled={busy} value={apiRegion} onChange={(event) => setApiRegion(event.target.value as typeof apiRegion)}>
                     <option value="us1">US1 (default)</option>
@@ -316,65 +320,65 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
                     <option value="ie1">IE1 (Ireland)</option>
                   </select>
                 </label>
-                <label className="app-label grid gap-2">
+                <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
                   Account SID
                   <input className={controlClass} autoComplete="off" disabled={busy} placeholder="AC..." value={accountSid} onChange={(event) => setAccountSid(event.target.value)} />
                 </label>
               </div>
-              <label className="app-label grid gap-2">
+              <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
                 API Key SID
                 <input className={controlClass} autoComplete="off" disabled={busy} placeholder="SK..." value={apiKeySid} onChange={(event) => setApiKeySid(event.target.value)} />
               </label>
-              <label className="app-label grid gap-2">
+              <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
                 API Key Secret
                 <input className={controlClass} autoComplete="new-password" disabled={busy} placeholder="Twilio API Key Secret" type="password" value={apiKeySecret} onChange={(event) => setApiKeySecret(event.target.value)} />
               </label>
-              <label className="app-label grid gap-2">
-                <span>Twilio SIP Trunk SID <span className="font-normal text-[#94a3b8]">(optional)</span></span>
+              <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
+                <span>Twilio SIP Trunk SID <span className="font-normal text-slate-400 dark:text-zinc-500">(optional)</span></span>
                 <input className={controlClass} autoComplete="off" disabled={busy} placeholder="TK... (optional Elastic SIP Trunk)" value={trunkSid} onChange={(event) => setTrunkSid(event.target.value)} />
-                <span className="app-caption font-normal">If provided, the number maps directly to your Twilio Elastic SIP Trunk. Otherwise, automatic TwiML SIP forwarding is configured.</span>
+                <span className="text-[11px] font-normal text-slate-400 dark:text-zinc-500">If provided, the number maps directly to your Twilio Elastic SIP Trunk. Otherwise, automatic TwiML SIP forwarding is configured.</span>
               </label>
             </div>
           ) : null}
 
           {provider === "Plivo" ? (
-            <div className="grid gap-4 rounded-xl border border-[#e6ecea] bg-[#f8fafc] p-4">
-              <label className="app-label grid gap-2">
+            <div className="grid gap-4 rounded-xl border border-slate-200 bg-slate-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-900/90">
+              <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
                 Plivo Auth ID
                 <input className={controlClass} autoComplete="off" disabled={busy} placeholder="MA... or SA..." value={plivoAuthId} onChange={(event) => setPlivoAuthId(event.target.value)} />
               </label>
-              <label className="app-label grid gap-2">
+              <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
                 Plivo Auth Token
                 <input className={controlClass} autoComplete="new-password" disabled={busy} placeholder="Plivo Auth Token" type="password" value={plivoAuthToken} onChange={(event) => setPlivoAuthToken(event.target.value)} />
               </label>
-              <label className="app-label grid gap-2">
-                <span>Plivo Zentrunk Inbound Trunk ID <span className="font-normal text-[#94a3b8]">(optional)</span></span>
+              <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
+                <span>Plivo Zentrunk Inbound Trunk ID <span className="font-normal text-slate-400 dark:text-zinc-500">(optional)</span></span>
                 <input className={controlClass} autoComplete="off" disabled={busy} placeholder="Zentrunk Inbound Trunk ID" value={plivoTrunkId} onChange={(event) => setPlivoTrunkId(event.target.value)} />
-                <span className="app-caption font-normal">If provided, your number maps directly to your Plivo Zentrunk inbound SIP trunk. Otherwise, automatic XML SIP forwarding is configured.</span>
+                <span className="text-[11px] font-normal text-slate-400 dark:text-zinc-500">If provided, your number maps directly to your Plivo Zentrunk inbound SIP trunk. Otherwise, automatic XML SIP forwarding is configured.</span>
               </label>
             </div>
           ) : null}
 
           {provider === "Exotel" ? (
-            <div className="grid gap-4 rounded-xl border border-[#e6ecea] bg-[#f8fafc] p-4">
+            <div className="grid gap-4 rounded-xl border border-slate-200 bg-slate-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-900/90">
               <div className="grid gap-4 sm:grid-cols-2">
-                <label className="app-label grid gap-2">
+                <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
                   Exotel data center
                   <select className={controlClass} disabled={busy} value={dataCenter} onChange={(event) => setDataCenter(event.target.value as typeof dataCenter)}>
                     <option value="mumbai">Mumbai / India</option>
                     <option value="singapore">Singapore</option>
                   </select>
                 </label>
-                <label className="app-label grid gap-2">
+                <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
                   Account SID
                   <input className={controlClass} autoComplete="off" disabled={busy} placeholder="Exotel Account SID" value={accountSid} onChange={(event) => setAccountSid(event.target.value)} />
                 </label>
               </div>
-              <label className="app-label grid gap-2">
+              <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
                 API Key
                 <input className={controlClass} autoComplete="off" disabled={busy} placeholder="Exotel API Key" value={exotelApiKey} onChange={(event) => setExotelApiKey(event.target.value)} />
               </label>
-              <label className="app-label grid gap-2">
+              <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
                 API Token
                 <input className={controlClass} autoComplete="new-password" disabled={busy} placeholder="Exotel API Token" type="password" value={exotelApiToken} onChange={(event) => setExotelApiToken(event.target.value)} />
               </label>
@@ -382,12 +386,12 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
           ) : null}
 
           {provider === "Vobiz" ? (
-            <div className="grid gap-4 rounded-xl border border-[#e6ecea] bg-[#f8fafc] p-4">
-              <label className="app-label grid gap-2">
+            <div className="grid gap-4 rounded-xl border border-slate-200 bg-slate-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-900/90">
+              <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
                 Auth ID
                 <input className={controlClass} autoComplete="off" disabled={busy} placeholder="MA_... or SA_..." value={authId} onChange={(event) => setAuthId(event.target.value)} />
               </label>
-              <label className="app-label grid gap-2">
+              <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
                 Auth Token
                 <input className={controlClass} autoComplete="new-password" disabled={busy} placeholder="Vobiz Auth Token" type="password" value={authToken} onChange={(event) => setAuthToken(event.target.value)} />
               </label>
@@ -395,8 +399,8 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
           ) : null}
 
           {provider === "SIP" ? (
-            <div className="grid gap-4 rounded-xl border border-[#e6ecea] bg-[#f8fafc] p-4">
-              <label className="app-label grid gap-2">
+            <div className="grid gap-4 rounded-xl border border-slate-200 bg-slate-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-900/90">
+              <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
                 Trunk direction
                 <select
                   className={controlClass}
@@ -408,18 +412,18 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
                   <option value="Inbound">Inbound only (Receive calls via SIP forwarding)</option>
                   <option value="Outbound">Outbound only (AI calls out through carrier)</option>
                 </select>
-                <span className="app-caption font-normal">
+                <span className="text-[11px] font-normal text-slate-400 dark:text-zinc-500">
                   Choose whether this number handles incoming calls, outbound campaigns/calls, or both.
                 </span>
               </label>
 
               {direction !== "Outbound" ? (
-                <div className="rounded-lg border border-[#b8c8c3] bg-[#edf7f4] p-3 text-xs text-[#0e6f62]">
-                  <strong className="block font-semibold">Inbound SIP Forwarding</strong>
-                  <p className="mt-1 mb-2 text-[#108D82]">
+                <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700 dark:border-zinc-800 dark:bg-zinc-800/70 dark:text-zinc-200">
+                  <strong className="block font-semibold text-slate-900 dark:text-white">Inbound SIP Forwarding</strong>
+                  <p className="mt-1 mb-2 text-slate-600 dark:text-zinc-300">
                     Point your carrier or PBX inbound forwarding to our SIP URI:
                   </p>
-                  <code className="block rounded bg-white px-2.5 py-1.5 font-mono text-xs text-[#118778] border border-[#9fcfc3] select-all">
+                  <code className="block rounded bg-white px-2.5 py-1.5 font-mono text-xs text-black dark:bg-zinc-900 dark:text-white border border-slate-300 dark:border-zinc-700 select-all">
                     sip:{phoneNumber.trim() || "+<your-number>"}@sip.vozon.ai:5060
                   </code>
                 </div>
@@ -427,7 +431,7 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
 
               {direction !== "Inbound" ? (
                 <>
-                  <label className="app-label grid gap-2">
+                  <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
                     Outbound SIP termination host / IP
                     <input
                       className={controlClass}
@@ -437,14 +441,14 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
                       value={sipTerminationUri}
                       onChange={(event) => setSipTerminationUri(event.target.value)}
                     />
-                    <span className="app-caption font-normal">
+                    <span className="text-[11px] font-normal text-slate-400 dark:text-zinc-500">
                       The SIP server host where our system routes outbound calls to reach your carrier.
                     </span>
                   </label>
 
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <label className="app-label grid gap-2">
-                      <span>SIP auth username <span className="font-normal text-[#94a3b8]">(optional)</span></span>
+                    <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
+                      <span>SIP auth username <span className="font-normal text-slate-400 dark:text-zinc-500">(optional)</span></span>
                       <input
                         className={controlClass}
                         autoComplete="off"
@@ -454,8 +458,8 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
                         onChange={(event) => setSipUsername(event.target.value)}
                       />
                     </label>
-                    <label className="app-label grid gap-2">
-                      <span>SIP auth password <span className="font-normal text-[#94a3b8]">(optional)</span></span>
+                    <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
+                      <span>SIP auth password <span className="font-normal text-slate-400 dark:text-zinc-500">(optional)</span></span>
                       <input
                         className={controlClass}
                         autoComplete="new-password"
@@ -468,7 +472,7 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
                     </label>
                   </div>
 
-                  <label className="app-label grid gap-2">
+                  <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
                     SIP transport protocol
                     <select
                       className={controlClass}
@@ -487,9 +491,9 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
             </div>
           ) : null}
 
-          <div className="flex items-start gap-3 rounded-lg border border-[#e6ecea] bg-[#f8fafc] p-3">
-            <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-[#dcfce7] text-[#059669]"><Icon icon="check" className="size-3.5" /></span>
-            <p className="app-caption m-0">
+          <div className="flex items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-zinc-800 dark:bg-zinc-900/90">
+            <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-400"><Icon icon="check" className="size-3.5" /></span>
+            <p className="text-xs text-slate-600 dark:text-zinc-300 m-0">
               {provider === "Vobiz"
                 ? "Vobiz credentials are encrypted and retained because they are required to configure inbound SIP routing."
                 : `${provider} credentials are used server-side to verify that the number belongs to your account and configure SIP trunk routing.`}
@@ -497,19 +501,19 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
           </div>
 
           {validationReason ? (
-            <div className="rounded-lg border border-[#fde68a] bg-[#fffbeb] px-3 py-2.5 text-[#92400e]" id="phone-import-validation" role="status" aria-live="polite">
-              <p className="app-caption m-0 text-current">{validationReason}</p>
+            <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 text-amber-900 dark:border-amber-800/40 dark:bg-amber-950/30 dark:text-amber-300" id="phone-import-validation" role="status" aria-live="polite">
+              <p className="text-xs m-0 text-current">{validationReason}</p>
             </div>
           ) : (
-            <div className="rounded-lg border border-[#bbf7d0] bg-[#f0fdf4] px-3 py-2.5 text-[#166534]" id="phone-import-validation" role="status" aria-live="polite">
-              <p className="app-caption m-0 text-current">Details are ready to verify with {provider}.</p>
+            <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-emerald-800 dark:border-emerald-800/40 dark:bg-emerald-950/30 dark:text-emerald-300" id="phone-import-validation" role="status" aria-live="polite">
+              <p className="text-xs m-0 text-current">Details are ready to verify with {provider}.</p>
             </div>
           )}
         </div>
 
-        <footer className="flex items-center justify-end gap-2 border-t border-[#e6ecea] px-5 py-4 sm:px-6">
-          <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button>
-          <button className={`${buttonClass} bg-[#118778] text-white hover:bg-[#0e6f62]`} aria-describedby="phone-import-validation" disabled={busy || !valid} type="submit">
+        <footer className="flex items-center justify-end gap-2 border-t border-slate-200 bg-slate-50/50 px-5 py-4 sm:px-6 dark:border-zinc-800 dark:bg-zinc-900/50">
+          <button className="inline-flex h-9 items-center justify-center rounded-lg border border-slate-200 bg-white px-4 text-xs font-medium text-slate-700 transition hover:bg-slate-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700" disabled={busy} onClick={onClose} type="button">Cancel</button>
+          <button className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-black px-4 text-xs font-semibold text-white transition hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 disabled:opacity-50 shadow-sm" aria-describedby="phone-import-validation" disabled={busy || !valid} type="submit">
             <Icon icon="import" /> {busy ? "Importing..." : "Import number"}
           </button>
         </footer>
@@ -574,10 +578,10 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase, onSearchInven
     <ModalFrame busy={busy} title="Buy phone number" subtitle="Purchase from your connected Vobiz account and add it to inventory." onClose={onClose} width="max-w-3xl">
       <div className="grid min-h-0 grid-rows-[auto_minmax(0,1fr)_auto]">
         <form
-          className="grid gap-3 border-b border-[#e6ecea] px-5 py-4 sm:grid-cols-[150px_minmax(0,1fr)_auto] sm:px-6"
+          className="grid gap-3 border-b border-slate-200 dark:border-zinc-800 px-5 py-4 sm:grid-cols-[150px_minmax(0,1fr)_auto] sm:px-6"
           onSubmit={(event) => { event.preventDefault(); void searchInventory(); }}
         >
-          <label className="app-label grid gap-2">
+          <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
             Country
             <select className={controlClass} value={country} onChange={(event) => setCountry(event.target.value)}>
               <option value="IN">India</option>
@@ -587,25 +591,25 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase, onSearchInven
               <option value="AU">Australia</option>
             </select>
           </label>
-          <label className="app-label grid gap-2">
-            Area code or digits <span className="font-normal text-[#94a3b8]">(optional)</span>
+          <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
+            Area code or digits <span className="font-normal text-slate-400 dark:text-zinc-500">(optional)</span>
             <input className={controlClass} inputMode="tel" placeholder="For example 80 or 650" value={query} onChange={(event) => setQuery(event.target.value)} />
           </label>
-          <button className={`${buttonClass} self-end border border-[#b8c8c3] bg-white text-[#118778] hover:bg-[#edf7f4]`} disabled={searching || busy} type="submit">
+          <button className="inline-flex h-11 items-center justify-center gap-1.5 self-end rounded-lg bg-black px-4 text-xs font-semibold text-white transition hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 shadow-sm" disabled={searching || busy} type="submit">
             <Icon icon="search" /> {searching ? "Searching..." : "Search"}
           </button>
         </form>
 
         <div className="min-h-280px max-h-[min(460px,52vh)] overflow-y-auto px-5 py-4 sm:px-6">
           {inventoryError ? (
-            <div className="rounded-lg border border-[#fecaca] bg-[#fff1f2] p-3 text-[#b91c1c]">
-              <p className="app-body m-0">{inventoryError}</p>
-              <p className="app-caption mt-1 mb-0 text-[#b91c1c]">Connect Vobiz by importing an owned Vobiz number first, then search again.</p>
+            <div className="rounded-lg border border-rose-200 bg-rose-50 p-3 text-rose-800 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-300">
+              <p className="text-xs font-semibold m-0">{inventoryError}</p>
+              <p className="text-xs mt-1 mb-0 text-rose-700 dark:text-rose-400">Connect Vobiz by importing an owned Vobiz number first, then search again.</p>
             </div>
           ) : null}
-          {requestError ? <div className="mb-3 rounded-lg border border-[#fecaca] bg-[#fff1f2] p-3 app-body text-[#b91c1c]">{requestError}</div> : null}
+          {requestError ? <div className="mb-3 rounded-lg border border-rose-200 bg-rose-50 p-3 text-xs text-rose-800 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-300">{requestError}</div> : null}
           {searching ? (
-            <div className="grid min-h-240px place-items-center"><span className="app-caption">Loading available numbers...</span></div>
+            <div className="grid min-h-240px place-items-center"><span className="text-xs text-slate-500 dark:text-zinc-400">Loading available numbers...</span></div>
           ) : numbers.length ? (
             <div className="grid gap-2">
               {numbers.map((number) => {
@@ -613,7 +617,11 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase, onSearchInven
                 const voiceAvailable = number.voice_enabled !== false && number.capabilities?.voice !== false;
                 return (
                   <button
-                    className={`grid w-full gap-3 rounded-xl border p-3 text-left transition sm:grid-cols-[minmax(0,1fr)_145px_145px_auto] sm:items-center ${active ? "border-[#118778] bg-[#edf7f4] ring-2 ring-[#118778]/10" : "border-[#e6ecea] bg-white hover:border-[#b8c8c3] hover:bg-[#fbfcff]"}`}
+                    className={`grid w-full gap-3 rounded-xl border p-3 text-left transition sm:grid-cols-[minmax(0,1fr)_145px_145px_auto] sm:items-center ${
+                      active
+                        ? "border-black bg-slate-100 dark:border-white dark:bg-zinc-800 ring-2 ring-black/10 dark:ring-white/10"
+                        : "border-slate-200 bg-white hover:border-slate-400 dark:border-zinc-800 dark:bg-zinc-900/90 dark:hover:border-zinc-600"
+                    }`}
                     disabled={!voiceAvailable || busy}
                     key={number.id || number.e164}
                     onClick={() => setSelected(number)}
@@ -621,31 +629,31 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase, onSearchInven
                     aria-pressed={active}
                   >
                     <span>
-                      <strong className="app-strong block">{number.e164}</strong>
-                      <span className="app-caption">{[number.region, number.country].filter(Boolean).join(", ") || "Global"}</span>
+                      <strong className="block text-sm font-semibold text-slate-900 dark:text-white">{number.e164}</strong>
+                      <span className="block text-xs text-slate-500 dark:text-zinc-400">{[number.region, number.country].filter(Boolean).join(", ") || "Global"}</span>
                     </span>
-                    <span><span className="app-caption block">Setup</span><strong className="app-body text-[#334155]">{formatMoney(number.setup_fee, number.currency)}</strong></span>
-                    <span><span className="app-caption block">Monthly</span><strong className="app-body text-[#334155]">{formatMoney(number.monthly_fee, number.currency)}</strong></span>
-                    <span className={`app-label justify-self-start rounded-full px-2.5 py-1 sm:justify-self-end ${voiceAvailable ? "bg-[#ecfdf5] text-[#047857]" : "bg-[#f1f5f9] text-[#64748b]"}`}>{voiceAvailable ? (active ? "Selected" : "Available") : "No voice"}</span>
+                    <span><span className="block text-[11px] text-slate-400 dark:text-zinc-500">Setup</span><strong className="text-xs font-semibold text-slate-800 dark:text-zinc-200">{formatMoney(number.setup_fee, number.currency)}</strong></span>
+                    <span><span className="block text-[11px] text-slate-400 dark:text-zinc-500">Monthly</span><strong className="text-xs font-semibold text-slate-800 dark:text-zinc-200">{formatMoney(number.monthly_fee, number.currency)}</strong></span>
+                    <span className={`justify-self-start rounded-full px-2.5 py-1 text-[11px] font-medium sm:justify-self-end ${voiceAvailable ? "bg-emerald-50 text-emerald-800 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/40" : "bg-slate-100 text-slate-600 dark:bg-zinc-800 dark:text-zinc-400"}`}>{voiceAvailable ? (active ? "Selected" : "Available") : "No voice"}</span>
                   </button>
                 );
               })}
             </div>
           ) : searched && !inventoryError ? (
             <div className="grid min-h-240px place-items-center text-center">
-              <div><Icon icon="search" className="mx-auto mb-3 size-6 text-[#94a3b8]" /><p className="app-body m-0 text-[#475569]">No available numbers matched this search.</p></div>
+              <div><Icon icon="search" className="mx-auto mb-3 size-6 text-slate-400 dark:text-zinc-500" /><p className="text-xs text-slate-600 dark:text-zinc-400 m-0">No available numbers matched this search.</p></div>
             </div>
           ) : null}
         </div>
 
-        <footer className="flex flex-wrap items-end justify-between gap-3 border-t border-[#e6ecea] px-5 py-4 sm:px-6">
-          <label className="app-label grid min-w-[240px] flex-1 gap-2 sm:max-w-sm">
-            Label <span className="font-normal text-[#94a3b8]">(optional)</span>
+        <footer className="flex flex-wrap items-end justify-between gap-3 border-t border-slate-200 px-5 py-4 sm:px-6 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/50">
+          <label className="grid min-w-[240px] flex-1 gap-2 text-xs font-medium text-slate-700 dark:text-zinc-300 sm:max-w-sm">
+            Label <span className="font-normal text-slate-400 dark:text-zinc-500">(optional)</span>
             <input className={controlClass} maxLength={120} placeholder="Sales main line" value={label} onChange={(event) => setLabel(event.target.value)} />
           </label>
           <div className="flex gap-2">
-            <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button>
-            <button className={`${buttonClass} bg-[#118778] text-white hover:bg-[#0e6f62]`} disabled={busy || !selected} onClick={() => { if (selected) onPurchase(selected, label); }} type="button">
+            <button className={`${buttonClass} border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700`} disabled={busy} onClick={onClose} type="button">Cancel</button>
+            <button className={`${buttonClass} bg-black text-white hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 shadow-sm`} disabled={busy || !selected} onClick={() => { if (selected) onPurchase(selected, label); }} type="button">
               <Icon icon="plus" /> {busy ? "Purchasing..." : "Purchase number"}
             </button>
           </div>
@@ -673,10 +681,10 @@ function AgentModal({ agents, busy, number, requestError, onAssign, onClose }: {
   return (
     <ModalFrame busy={busy} title="Link an agent" subtitle={`${number.number} / ${number.provider}`} onClose={onClose} width="max-w-xl">
       <div className="grid min-h-0 grid-rows-[auto_minmax(0,1fr)_auto]">
-        <div className="grid gap-3 border-b border-[#e6ecea] px-5 py-4 sm:px-6">
+        <div className="grid gap-3 border-b border-slate-200 dark:border-zinc-800 px-5 py-4 sm:px-6">
           <RequestError message={requestError} />
           <label className="relative block">
-            <span className="absolute inset-y-0 left-3 grid place-items-center text-[#94a3b8]"><Icon icon="search" /></span>
+            <span className="absolute inset-y-0 left-3 grid place-items-center text-slate-400 dark:text-zinc-500"><Icon icon="search" /></span>
             <input className={`${controlClass} pl-10`} disabled={busy} placeholder="Search agents" value={query} onChange={(event) => setQuery(event.target.value)} />
           </label>
         </div>
@@ -686,37 +694,41 @@ function AgentModal({ agents, busy, number, requestError, onAssign, onClose }: {
             const selected = selectedId === agent._id;
             return (
               <button
-                className={`mb-1 flex w-full items-center gap-3 rounded-lg border p-3 text-left transition ${selected ? "border-[#b8c8c3] bg-[#edf7f4]" : "border-transparent hover:bg-[#f8fafc]"}`}
+                className={`mb-1 flex w-full items-center gap-3 rounded-xl border p-3 text-left transition ${
+                  selected
+                    ? "border-black bg-slate-100 dark:border-white dark:bg-zinc-800"
+                    : "border-transparent hover:bg-slate-50 dark:hover:bg-zinc-800/50"
+                }`}
                 disabled={busy}
                 key={agent._id}
                 onClick={() => setSelectedId(agent._id)}
                 type="button"
                 aria-pressed={selected}
               >
-                <span className={`grid size-10 shrink-0 place-items-center rounded-lg ${selected ? "bg-[#118778] text-white" : "bg-[#edf7f4] text-[#118778]"}`}><Icon icon="user" /></span>
+                <span className={`grid size-10 shrink-0 place-items-center rounded-lg ${selected ? "bg-black text-white dark:bg-white dark:text-black" : "bg-slate-100 text-slate-700 dark:bg-zinc-800 dark:text-zinc-300"}`}><Icon icon="user" /></span>
                 <span className="min-w-0 flex-1">
-                  <strong className="app-strong block truncate">{agent.name}</strong>
-                  <span className="app-caption block truncate">{agent.team || "Voice agent"}</span>
+                  <strong className="block truncate text-sm font-semibold text-slate-900 dark:text-white">{agent.name}</strong>
+                  <span className="block truncate text-xs text-slate-500 dark:text-zinc-400">{agent.team || "Voice agent"}</span>
                 </span>
-                <span className={`app-label rounded-full px-2 py-1 ${agent.status === "Live" ? "bg-[#ecfdf5] text-[#047857]" : "bg-[#f1f5f9] text-[#64748b]"}`}>{agent.status}</span>
-                <span className={`grid size-5 place-items-center rounded-full border ${selected ? "border-[#118778] bg-[#118778] text-white" : "border-[#cbd5e1]"}`}>{selected ? <Icon icon="check" className="size-3" /> : null}</span>
+                <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${agent.status === "Live" ? "bg-emerald-50 text-emerald-800 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/40" : "bg-slate-100 text-slate-600 dark:bg-zinc-800 dark:text-zinc-400"}`}>{agent.status}</span>
+                <span className={`grid size-5 place-items-center rounded-full border ${selected ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black" : "border-slate-300 dark:border-zinc-700"}`}>{selected ? <Icon icon="check" className="size-3" /> : null}</span>
               </button>
             );
           })}
-          {!filteredAgents.length ? <p className="app-caption m-0 p-8 text-center">No agents found.</p> : null}
+          {!filteredAgents.length ? <p className="m-0 p-8 text-center text-xs text-slate-500 dark:text-zinc-400">No agents found.</p> : null}
         </div>
 
-        <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-[#e6ecea] px-5 py-4 sm:px-6">
+        <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 px-5 py-4 sm:px-6 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/50">
           <div>
             {number.agentId ? (
-              <button className={`${buttonClass} border border-[#fecaca] bg-white text-[#dc2626] hover:bg-[#fff1f2]`} disabled={busy} onClick={() => onAssign(null)} type="button">
+              <button className={`${buttonClass} border border-rose-200 bg-white text-rose-600 hover:bg-rose-50 dark:border-rose-900/50 dark:bg-zinc-900 dark:text-rose-400 dark:hover:bg-rose-950/30`} disabled={busy} onClick={() => onAssign(null)} type="button">
                 <Icon icon="unlink" /> Unlink agent
               </button>
-            ) : <span className="app-caption">Select one agent for this number.</span>}
+            ) : <span className="text-xs text-slate-500 dark:text-zinc-400">Select one agent for this number.</span>}
           </div>
           <div className="flex gap-2">
-            <button className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`} disabled={busy} onClick={onClose} type="button">Cancel</button>
-            <button className={`${buttonClass} bg-[#118778] text-white hover:bg-[#0e6f62]`} disabled={busy || !selectedId} onClick={() => onAssign(selectedId)} type="button">
+            <button className={`${buttonClass} border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700`} disabled={busy} onClick={onClose} type="button">Cancel</button>
+            <button className={`${buttonClass} bg-black text-white hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 shadow-sm`} disabled={busy || !selectedId} onClick={() => onAssign(selectedId)} type="button">
               <Icon icon="link" /> {busy ? "Saving..." : "Set agent"}
             </button>
           </div>
@@ -735,14 +747,14 @@ function ModalFrame({ busy = false, children, onClose, subtitle, title, width = 
   width?: string;
 }) {
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-[#25284a]/30 p-3 backdrop-blur-md sm:p-5" role="dialog" aria-modal="true" aria-label={title} aria-busy={busy} onMouseDown={(event) => { if (!busy && event.target === event.currentTarget) onClose(); }}>
-      <section className={`dashboard-overlay-panel grid max-h-[calc(100dvh-2rem)] w-full ${width} grid-rows-[auto_minmax(0,1fr)] overflow-hidden rounded-2xl border border-[#d7e0dd] bg-[#ffffff]`}>
-        <header className="flex items-start justify-between gap-4 border-b border-[#e6ecea] bg-[#ffffff]/95 px-5 py-4 backdrop-blur-sm sm:px-6 sm:py-5">
+    <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-3 backdrop-blur-md sm:p-5" role="dialog" aria-modal="true" aria-label={title} aria-busy={busy} onMouseDown={(event) => { if (!busy && event.target === event.currentTarget) onClose(); }}>
+      <section className={`grid max-h-[calc(100dvh-2rem)] w-full ${width} grid-rows-[auto_minmax(0,1fr)] overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 shadow-2xl`}>
+        <header className="flex items-start justify-between gap-4 border-b border-slate-200 bg-white/95 px-5 py-4 backdrop-blur-sm sm:px-6 sm:py-5 dark:border-zinc-800 dark:bg-zinc-900/95">
           <div>
-            <h2 className="app-page-title m-0">{title}</h2>
-            <p className="app-caption mt-1 mb-0">{subtitle}</p>
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white m-0">{title}</h2>
+            <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 mb-0">{subtitle}</p>
           </div>
-          <button className="grid size-9 shrink-0 place-items-center rounded-lg border border-[#dbe4e1] bg-[#ffffff] text-[#64748b] transition hover:border-[#9fcfc3] hover:bg-[#f7f9f8] hover:text-[#0e6f62] disabled:cursor-wait disabled:opacity-50" disabled={busy} onClick={onClose} type="button" aria-label={busy ? "Please wait for the current request to finish" : "Close"}>
+          <button className="grid size-9 shrink-0 place-items-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:border-black hover:text-black dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:text-white disabled:cursor-wait disabled:opacity-50" disabled={busy} onClick={onClose} type="button" aria-label={busy ? "Please wait for the current request to finish" : "Close"}>
             <Icon icon="close" />
           </button>
         </header>

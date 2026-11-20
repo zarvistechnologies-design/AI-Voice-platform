@@ -1,4 +1,4 @@
-﻿/* Shared public-page system for the routes brought into the current Vozon site. */
+/* Shared public-page system for the routes brought into the current Vozon site. */
 #about-page,
 #career-page,
 #partners-page,
@@ -62,15 +62,12 @@
 /* Pricing keeps its calculator but uses the current site hierarchy and quiet surfaces. */
 .website-content:has(.pricing-page-refresh) { background: var(--public-paper); }
 
-/* Integrations uses a large editorial introduction and a clear catalog surface. */
-#integration-page > section:first-of-type,
+/* Integrations uses a clear catalog surface. */
 #integration-detail-page > section:first-of-type {
   border-color: var(--public-line) !important;
   background: #fff !important;
 }
-#integration-page h1,
 #integration-detail-page h1 { font-size: clamp(3rem, 5.5vw, 5.7rem) !important; line-height: .99 !important; font-weight: 600 !important; letter-spacing: -.065em !important; }
-#integration-page h2,
 #integration-detail-page h2 { font-size: clamp(2rem, 3.2vw, 3.1rem) !important; line-height: 1.06 !important; font-weight: 600 !important; letter-spacing: -.055em !important; }
 #integration-page section,
 #integration-detail-page section { border-color: var(--public-line) !important; }
@@ -234,31 +231,6 @@
   box-shadow: none !important;
 }
 #career-page > section:first-of-type [class*="rounded-full"][class*="uppercase"] > span { display: none; }
-
-/* Integrations follow the Solution hero: centered small label, clear headline, then the example. */
-#integration-page > section:first-of-type > div {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-#integration-page > section:first-of-type > div > span,
-#integration-page > section:last-of-type > div > p:first-child {
-  border: 0 !important;
-  background: transparent !important;
-  padding: 0 !important;
-  color: #6b6e73 !important;
-  font-size: 10px !important;
-  font-weight: 750 !important;
-  letter-spacing: .16em !important;
-  text-transform: uppercase;
-}
-#integration-page > section:first-of-type > div > span > span { display: none; }
-#integration-page > section:first-of-type h1,
-#integration-page > section:first-of-type > div > p { margin-inline: auto; text-align: center; }
-#integration-page > section:first-of-type h1 { max-width: 980px; font-size: clamp(2.8rem, 5.4vw, 5.4rem) !important; }
-#integration-page .integration-hero-flow { width: min(100%, 940px); }
-#integration-page > section:first-of-type > div > div:last-child { justify-content: center; }
 
 #integration-detail-page > section:first-of-type > div > div:nth-child(2) {
   grid-template-columns: 1fr !important;

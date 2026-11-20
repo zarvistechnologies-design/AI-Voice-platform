@@ -124,12 +124,17 @@ fbq('track', 'PageView');`,
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const brand = await requestBrandConfig();
-  const fontClasses = `${roboto.variable} ${geistMono.variable} h-full scroll-smooth antialiased`;
+  const fontClasses = `${roboto.variable} ${geistMono.variable} dark h-full scroll-smooth antialiased`;
   if (brand.source === "platform") {
     return (
-      <html lang="en" data-scroll-behavior="smooth" className={fontClasses}>
+      <html lang="en" data-dashboard-theme="dark" data-scroll-behavior="smooth" className={`dark ${fontClasses}`}>
         <head>
           <meta name="facebook-domain-verification" content="hs7xv0aby3bor2uybe6y440jg6wnkk" />
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `(function(){try{var t=localStorage.getItem("vozon_dashboard_theme");if(t!=="light"){document.documentElement.setAttribute("data-dashboard-theme","dark");document.documentElement.classList.add("dark");}else{document.documentElement.setAttribute("data-dashboard-theme","light");document.documentElement.classList.remove("dark");}}catch(e){}})()`,
+            }}
+          />
         </head>
         <body className="flex min-h-full flex-col bg-background text-foreground">
           <MetaPixel />
@@ -151,9 +156,14 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const effectiveIconTarget = isVozonIcon ? "" : iconTarget;
 
   return (
-    <html lang="en" data-brand-source="white_label" data-scroll-behavior="smooth" className={fontClasses}>
+    <html lang="en" data-brand-source="white_label" data-dashboard-theme="dark" data-scroll-behavior="smooth" className={`dark ${fontClasses}`}>
       <head>
         <meta name="facebook-domain-verification" content="hs7xv0aby3bor2uybe6y440jg6wnkk" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("vozon_dashboard_theme");if(t!=="light"){document.documentElement.setAttribute("data-dashboard-theme","dark");document.documentElement.classList.add("dark");}else{document.documentElement.setAttribute("data-dashboard-theme","light");document.documentElement.classList.remove("dark");}}catch(e){}})()`,
+          }}
+        />
         {effectiveIconTarget ? (
           <>
             <link rel="icon" href={effectiveIconTarget} />

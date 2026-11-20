@@ -140,21 +140,21 @@ export function LoginForm() {
 
   return (
     <form
-      className={`login-auth-form relative z-[1] grid w-full max-w-[420px] gap-4 text-[#171719] ${mode === "register" ? "is-register" : ""}`}
+      className={`login-auth-form relative z-[1] grid w-full max-w-[420px] gap-4 text-[#0f172a] ${mode === "register" ? "is-register" : ""}`}
       onSubmit={handleSubmit}
     >
       <div className="auth-heading mb-2 grid gap-2 text-left">
-        <div className="mb-2 grid size-10 place-items-center rounded-lg border border-[#dedfe2] bg-[#f1f1f2]" aria-hidden="true">
-          <span className="flex h-5 items-center gap-[3.5px]">
+        <div className="mb-2 grid size-10 place-items-center rounded-xl bg-[#0f172a] text-white shadow-xs" aria-hidden="true">
+          <span className="flex h-5 items-center gap-[3px]">
             {[10, 20, 14, 8, 16].map((height) => (
-              <span className="w-[3px] rounded-full bg-[#171719]" key={height} style={{ height }} />
+              <span className="w-[2.5px] rounded-full bg-white" key={height} style={{ height }} />
             ))}
           </span>
         </div>
-        <h1 className="m-0 text-[1.75rem] font-bold leading-tight tracking-[-0.035em] text-[#171719] sm:text-[1.9rem]">
+        <h1 className="m-0 text-[1.75rem] font-bold leading-tight tracking-[-0.035em] text-[#0f172a] sm:text-[1.9rem]">
           {mode === "login" ? adminLogin ? "Admin sign in" : "Welcome back" : mode === "register" ? "Create your account" : "Reset your password"}
         </h1>
-        <p className="auth-description m-0 text-sm leading-6 text-[#666a70]">
+        <p className="auth-description m-0 text-sm leading-6 text-slate-500">
           {mode === "login"
             ? adminLogin ? "Use your account password and authenticator code to open the admin panel." : `Sign in to continue to ${brand.productName}.`
             : mode === "register"
@@ -169,7 +169,7 @@ export function LoginForm() {
           <span className="relative block">
             <svg aria-hidden="true" className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.7" /><path d="M4.5 21a7.5 7.5 0 0115 0" stroke="currentColor" strokeLinecap="round" strokeWidth="1.7" /></svg>
             <input
-              className="auth-input min-h-12 w-full rounded-lg border border-[#dedfe2] bg-white px-4 pl-10 text-[13px] font-medium text-[#171719] outline-none transition placeholder:text-[#898d92] hover:border-[#bcbec1] focus:border-[#171719] focus:ring-4 focus:ring-[#171719]/10"
+              className="auth-input min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 pl-10 text-[13px] font-medium text-[#0f172a] outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-[#0f172a] focus:ring-4 focus:ring-slate-900/5"
               autoComplete="name"
               onChange={(event) => setName(event.target.value)}
               placeholder="Your full name"
@@ -183,9 +183,9 @@ export function LoginForm() {
       <label className="auth-field grid gap-1.5 text-xs font-semibold text-slate-700">
         <span>{mode === "register" ? "Work email *" : "Email address"}</span>
         <span className="relative block">
-          <svg aria-hidden="true" className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24"><rect height="15" rx="2.5" stroke="currentColor" strokeWidth="1.7" width="19" x="2.5" y="4.5" /><path d="M4 7l8 6 8-6" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" /></svg>
+          <svg aria-hidden="true" className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24"><rect height="15" rx="2.5" stroke="currentColor" strokeWidth="1.7" width="19" x="2.5" y="4.5" /><path d="M4 7l8 6 8-6" stroke="currentColor" strokeLinecap="round" strokeWidth="1.7" /></svg>
           <input
-            className="auth-input min-h-12 w-full rounded-lg border border-[#dedfe2] bg-white px-4 pl-10 text-[13px] font-medium text-[#171719] outline-none transition placeholder:text-[#898d92] hover:border-[#bcbec1] focus:border-[#171719] focus:ring-4 focus:ring-[#171719]/10"
+            className="auth-input min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 pl-10 text-[13px] font-medium text-[#0f172a] outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-[#0f172a] focus:ring-4 focus:ring-slate-900/5"
             autoComplete="email"
             onChange={(event) => setEmail(event.target.value)}
             placeholder="name@company.com"
@@ -200,7 +200,7 @@ export function LoginForm() {
         <span className="relative block">
           <svg aria-hidden="true" className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24"><rect height="12" rx="2.5" stroke="currentColor" strokeWidth="1.7" width="17" x="3.5" y="9" /><path d="M7.5 9V6.5a4.5 4.5 0 019 0V9" stroke="currentColor" strokeLinecap="round" strokeWidth="1.7" /></svg>
           <input
-            className="auth-input min-h-12 w-full rounded-lg border border-[#dedfe2] bg-white px-10 pr-11 text-[13px] font-medium text-[#171719] outline-none transition placeholder:text-[#898d92] hover:border-[#bcbec1] focus:border-[#171719] focus:ring-4 focus:ring-[#171719]/10"
+            className="auth-input min-h-12 w-full rounded-xl border border-slate-200 bg-white px-10 pr-11 text-[13px] font-medium text-[#0f172a] outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-[#0f172a] focus:ring-4 focus:ring-slate-900/5"
             autoComplete={mode === "login" ? "current-password" : "new-password"}
             onChange={(event) => setPassword(event.target.value)}
             placeholder="Enter your password"
@@ -223,11 +223,11 @@ export function LoginForm() {
         [/[A-Z]/.test(password), "One uppercase"],
         [/[0-9]/.test(password), "One number"],
         [/[^A-Za-z0-9]/.test(password), "One symbol"],
-      ].map(([met, label]) => <span className={met ? "font-semibold text-teal-700" : ""} key={String(label)}>{met ? "✓" : "○"} {label}</span>)}</div> : null}
+      ].map(([met, label]) => <span className={met ? "font-semibold text-slate-900" : ""} key={String(label)}>{met ? "✓" : "○"} {label}</span>)}</div> : null}
 
       {mode === "register" ? <>
-        <label className="auth-field grid gap-1.5 text-xs font-semibold text-slate-700"><span>Confirm password *</span><input className="auth-input min-h-13 w-full rounded-xl border border-[#d7e2df] bg-white px-4 text-sm" autoComplete="new-password" onChange={(event) => setConfirmPassword(event.target.value)} required type="password" value={confirmPassword} /></label>
-        <div className="border-t border-[#d7e2df] pt-5"><h2 className="text-lg font-bold">Tell us about your business</h2><p className="mt-1 text-xs text-slate-500">These details appear on your account and future invoices.</p></div>
+        <label className="auth-field grid gap-1.5 text-xs font-semibold text-slate-700"><span>Confirm password *</span><input className="auth-input min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm" autoComplete="new-password" onChange={(event) => setConfirmPassword(event.target.value)} required type="password" value={confirmPassword} /></label>
+        <div className="border-t border-slate-200 pt-5"><h2 className="text-lg font-bold text-slate-900">Tell us about your business</h2><p className="mt-1 text-xs text-slate-500">These details appear on your account and future invoices.</p></div>
         {([
           ["companyName", "Company name", "organization", true],
           ["phone", "Phone number", "tel", true],
@@ -235,17 +235,17 @@ export function LoginForm() {
           ["state", "State / Province", "address-level1", true],
           ["postalCode", "Postal code", "postal-code", true],
           ["gstin", "GSTIN (optional, India)", "off", false],
-        ] as const).map(([key, label, autoComplete, required]) => <label className="auth-field grid gap-1.5 text-xs font-semibold text-slate-700" key={key}><span>{label}{required ? " *" : ""}</span><input className="auth-input min-h-13 w-full rounded-xl border border-[#d7e2df] bg-white px-4 text-sm" autoComplete={autoComplete} maxLength={key === "address" ? 500 : key === "companyName" ? 100 : key === "phone" ? 30 : key === "postalCode" ? 20 : key === "gstin" ? 15 : 100} onChange={(event) => setBusiness((current) => ({ ...current, [key]: event.target.value }))} required={required} type={key === "phone" ? "tel" : "text"} value={business[key]} /></label>)}
-        <label className="auth-field grid gap-1.5 text-xs font-semibold text-slate-700"><span>Country *</span><input className="auth-input min-h-13 w-full rounded-xl border border-[#d7e2df] bg-white px-4 text-sm" autoComplete="country-name" list="signup-countries" maxLength={80} onChange={(event) => setBusiness((current) => ({ ...current, country: event.target.value }))} required value={business.country} /><datalist id="signup-countries"><option value="India" /><option value="United States" /><option value="United Kingdom" /><option value="United Arab Emirates" /></datalist></label>
-        {showReferral ? <label className="auth-field grid gap-1.5 text-xs font-semibold text-slate-700"><span>Referral code (optional)</span><input className="auth-input min-h-13 w-full rounded-xl border border-[#d7e2df] bg-white px-4 text-sm" maxLength={40} onChange={(event) => setReferralCode(event.target.value)} value={referralCode} /></label> : <button className="w-fit border-0 bg-transparent p-0 text-xs text-slate-600" onClick={() => setShowReferral(true)} type="button">+ Have a referral code?</button>}
-        <label className="flex items-start gap-2 text-xs text-slate-600"><input checked={acceptedTerms} className="mt-0.5 size-4 accent-[#118778]" onChange={(event) => setAcceptedTerms(event.target.checked)} type="checkbox" /><span>I agree to the <a className="text-[#118778] underline" href="/terms" target="_blank" rel="noopener noreferrer">Terms of Service</a> and <a className="text-[#118778] underline" href="/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.</span></label>
+        ] as const).map(([key, label, autoComplete, required]) => <label className="auth-field grid gap-1.5 text-xs font-semibold text-slate-700" key={key}><span>{label}{required ? " *" : ""}</span><input className="auth-input min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm" autoComplete={autoComplete} maxLength={key === "address" ? 500 : key === "companyName" ? 100 : key === "phone" ? 30 : key === "postalCode" ? 20 : key === "gstin" ? 15 : 100} onChange={(event) => setBusiness((current) => ({ ...current, [key]: event.target.value }))} required={required} type={key === "phone" ? "tel" : "text"} value={business[key]} /></label>)}
+        <label className="auth-field grid gap-1.5 text-xs font-semibold text-slate-700"><span>Country *</span><input className="auth-input min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm" autoComplete="country-name" list="signup-countries" maxLength={80} onChange={(event) => setBusiness((current) => ({ ...current, country: event.target.value }))} required value={business.country} /><datalist id="signup-countries"><option value="India" /><option value="United States" /><option value="United Kingdom" /><option value="United Arab Emirates" /></datalist></label>
+        {showReferral ? <label className="auth-field grid gap-1.5 text-xs font-semibold text-slate-700"><span>Referral code (optional)</span><input className="auth-input min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm" maxLength={40} onChange={(event) => setReferralCode(event.target.value)} value={referralCode} /></label> : <button className="w-fit border-0 bg-transparent p-0 text-xs font-medium text-slate-600 hover:text-slate-900" onClick={() => setShowReferral(true)} type="button">+ Have a referral code?</button>}
+        <label className="flex items-start gap-2 text-xs text-slate-600"><input checked={acceptedTerms} className="mt-0.5 size-4 accent-[#0f172a]" onChange={(event) => setAcceptedTerms(event.target.checked)} type="checkbox" /><span>I agree to the <a className="text-[#0f172a] font-semibold underline" href="/terms" target="_blank" rel="noopener noreferrer">Terms of Service</a> and <a className="text-[#0f172a] font-semibold underline" href="/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.</span></label>
       </> : null}
 
       {mode === "login" && (needsTwoFactor || adminLogin) ? (
         <label className="auth-field grid gap-1.5 text-xs font-semibold text-slate-700">
           <span>Authenticator code</span>
           <input
-            className="auth-input min-h-13 w-full rounded-xl border border-[#d7e2df] bg-white px-4 text-sm font-medium text-[#14231f] outline-none transition placeholder:text-[#91a09c] focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10"
+            className="auth-input min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-[#0f172a] outline-none transition placeholder:text-slate-400 focus:border-[#0f172a] focus:ring-4 focus:ring-slate-900/5"
             autoComplete="one-time-code"
             inputMode="numeric"
             maxLength={6}
@@ -265,20 +265,20 @@ export function LoginForm() {
       ) : null}
 
       {recoveryNotice ? (
-        <div className="rounded-xl border border-teal-200 bg-teal-50 px-3.5 py-3 text-xs leading-5 text-teal-900">
+        <div className="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3 text-xs leading-5 text-slate-800">
           <p className="m-0">{recoveryNotice}</p>
-          {developmentResetUrl ? <a className="mt-2 block break-all font-bold text-[#108D82] underline underline-offset-2 hover:text-[#0b655d]" href={developmentResetUrl}>Open development reset link</a> : null}
+          {developmentResetUrl ? <a className="mt-2 block break-all font-bold text-[#0f172a] underline underline-offset-2 hover:text-black" href={developmentResetUrl}>Open development reset link</a> : null}
         </div>
       ) : null}
 
       {mode === "login" ? (
         <div className="flex items-center justify-between gap-4 text-xs font-medium">
           <label className="flex cursor-pointer items-center gap-2 text-slate-600 hover:text-slate-800">
-            <input className="size-4 rounded border-slate-300 accent-[#108D82]" checked={rememberMe} onChange={(event) => setRememberMe(event.target.checked)} type="checkbox" />
+            <input className="size-4 rounded border-slate-300 accent-[#0f172a]" checked={rememberMe} onChange={(event) => setRememberMe(event.target.checked)} type="checkbox" />
             Remember me
           </label>
           <button
-            className="border-0 bg-transparent p-0 font-semibold text-[#108D82] transition hover:text-[#0b655d]"
+            className="border-0 bg-transparent p-0 font-semibold text-slate-600 transition hover:text-slate-900"
             onClick={() => {
               setError("");
               setRecoveryNotice("");
@@ -292,7 +292,7 @@ export function LoginForm() {
       ) : null}
 
       <button
-        className="auth-submit inline-flex min-h-13 items-center justify-center rounded-xl border-0 bg-[#118778] text-sm font-black text-white shadow-[0_10px_24px_rgba(17,135,120,0.18)] transition-all hover:bg-[#0e6f62] hover:shadow-[0_12px_28px_rgba(17,135,120,0.23)] active:scale-[0.99] disabled:cursor-wait disabled:opacity-70"
+        className="auth-submit inline-flex min-h-12 items-center justify-center rounded-xl border-0 bg-[#0f172a] text-sm font-bold text-white shadow-md transition-all hover:bg-black active:translate-y-px disabled:cursor-wait disabled:opacity-70"
         disabled={isSubmitting}
         type="submit"
       >
@@ -326,16 +326,16 @@ export function LoginForm() {
           type="button"
         >
           {mode === "login" ? (
-            <span>Don&apos;t have an account? <strong className="ml-1 font-semibold text-[#108D82] hover:underline">Sign up</strong></span>
+            <span>Don&apos;t have an account? <strong className="ml-1 font-bold text-[#0f172a] hover:underline">Sign up</strong></span>
           ) : mode === "register" ? (
-            <span>Already have an account? <strong className="ml-1 font-semibold text-[#108D82] hover:underline">Sign in</strong></span>
+            <span>Already have an account? <strong className="ml-1 font-bold text-[#0f172a] hover:underline">Sign in</strong></span>
           ) : (
-            <span>Remembered your password? <strong className="ml-1 font-semibold text-[#108D82] hover:underline">Back to sign in</strong></span>
+            <span>Remembered your password? <strong className="ml-1 font-bold text-[#0f172a] hover:underline">Back to sign in</strong></span>
           )}
         </button>
       ) : (
         <p className="m-0 text-center text-xs text-slate-500">
-          Need access? Contact <a className="font-semibold text-[#108D82] hover:underline" href={`mailto:${brand.support.email}`}>{brand.support.email || "your account administrator"}</a>.
+          Need access? Contact <a className="font-semibold text-[#0f172a] hover:underline" href={`mailto:${brand.support.email}`}>{brand.support.email || "your account administrator"}</a>.
         </p>
       )}
       {brand.poweredBy.visible ? <p className="m-0 text-center text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">{brand.poweredBy.text}</p> : null}

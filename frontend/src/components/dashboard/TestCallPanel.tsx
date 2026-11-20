@@ -374,30 +374,40 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
   }
 
   return (
-    <div className="fixed inset-0 z-50 grid overflow-hidden overscroll-none bg-black/80 p-3 backdrop-blur-md sm:place-items-center sm:p-4">
+    <div className="fixed inset-0 z-50 grid overflow-hidden overscroll-none bg-black/60 p-3 backdrop-blur-sm sm:place-items-center sm:p-4">
       <section
-        className="test-call-theme my-auto min-h-0 max-h-[calc(100dvh-1.5rem)] w-full min-w-0 max-w-lg overflow-y-auto overscroll-contain rounded-2xl border border-white/10 bg-[#ffffff] text-white shadow-[0_30px_100px_rgba(0,0,0,0.58)] [scrollbar-gutter:stable] sm:max-h-[calc(100dvh-2rem)]"
+        className="test-call-theme my-auto min-h-0 max-h-[calc(100dvh-1.5rem)] w-full min-w-0 max-w-lg overflow-y-auto overscroll-contain rounded-2xl border border-zinc-800 bg-[#121215] text-white shadow-2xl [scrollbar-gutter:stable] sm:max-h-[calc(100dvh-2rem)]"
         role="dialog"
         aria-modal="true"
         aria-labelledby="test-call-title"
         aria-describedby="test-call-status"
         aria-busy={busy}
       >
-        <header className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-white/10 bg-[radial-gradient(circle_at_12%_0%,rgba(17,135,120,0.13),transparent_42%),#ffffff]/95 p-4 backdrop-blur-xl">
+        <header className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-zinc-800 bg-[#121215]/95 px-5 py-4 backdrop-blur-md">
           <div className="min-w-0">
-            <span className="text-[9px] font-extrabold uppercase tracking-[0.18em] text-[#123d35]/55">Realtime voice session</span>
-            <h2 className="mt-1 truncate text-base font-bold text-white" id="test-call-title" title={`Test ${agentName}`}>Test {agentName}</h2>
+            <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-zinc-400">Realtime voice session</span>
+            <h2 className="mt-0.5 truncate text-base font-bold text-white" id="test-call-title" title={`Test ${agentName}`}>Test {agentName}</h2>
           </div>
-          <button autoFocus aria-label={active ? "Close and end test call" : "Close test call"} className="app-button-text min-h-10 shrink-0 rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2 text-white/65 transition hover:bg-white/[0.10] hover:text-white active:translate-y-px" type="button" onClick={onClose}>
+          <button
+            autoFocus
+            aria-label={active ? "Close and end test call" : "Close test call"}
+            className="app-button-text min-h-9 shrink-0 rounded-lg border border-zinc-700 bg-zinc-800 px-3.5 py-1.5 text-xs font-semibold text-zinc-300 transition hover:bg-zinc-700 hover:text-white active:translate-y-px"
+            type="button"
+            onClick={onClose}
+          >
             Close
           </button>
         </header>
 
-        <div className="grid min-w-0 gap-4 p-4 sm:gap-5 sm:p-5">
-          <div className="grid grid-cols-2 gap-1 rounded-xl border border-white/10 bg-[#ffffff] p-1" role="group" aria-label="Test call type">
+        <div className="grid min-w-0 gap-4 p-5 sm:gap-5">
+          <div className="grid grid-cols-2 gap-1 rounded-xl border border-zinc-800 bg-zinc-900/80 p-1" role="group" aria-label="Test call type">
             {(["web", "phone"] as const).map((item) => (
               <button
-                className={`app-button-text flex-1 rounded-lg px-3 py-2 transition active:translate-y-px disabled:opacity-50 ${mode === item ? "bg-[#171717] text-[#ffffff]" : "text-white/56 hover:bg-white/[0.05] hover:text-white/78"}`}
+                className={`app-button-text flex-1 rounded-lg px-3 py-2 text-xs font-semibold transition active:translate-y-px disabled:opacity-50 ${
+                  mode === item
+                    ? "bg-white text-black shadow-xs font-bold"
+                    : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
+                }`}
                 key={item}
                 type="button"
                 aria-pressed={mode === item}
@@ -409,37 +419,37 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
             ))}
           </div>
 
-          <div className="relative grid min-h-52 min-w-0 place-items-center overflow-hidden rounded-2xl border border-white/10 bg-[radial-gradient(circle_at_70%_0%,rgba(17,135,120,0.20),transparent_46%),linear-gradient(145deg,#000_0%,#ffffff_62%,#ffffff_100%)] p-4 text-white shadow-inner sm:p-5">
-            <span className="pointer-events-none absolute -top-16 -right-10 size-44 rounded-full bg-[#118778]/10 blur-2xl" />
-            <span className="pointer-events-none absolute -bottom-20 -left-10 size-48 rounded-full bg-[#118778]/[0.07] blur-2xl" />
+          <div className="relative grid min-h-56 min-w-0 place-items-center overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950/80 p-6 text-white shadow-inner sm:p-6">
             <div className="relative grid min-w-0 max-w-full place-items-center gap-4 text-center">
-              <div className={`relative grid size-20 place-items-center rounded-full border border-[#118778]/25 bg-[#118778]/10 text-[#123d35] ${active ? "ring-8 ring-[#118778]/[0.07]" : ""}`}>
-                {active ? <span className="absolute inset-0 animate-ping rounded-full bg-[#118778]/15 motion-reduce:animate-none" /> : null}
-                <span className="text-xl font-black">AI</span>
+              <div className={`relative grid size-20 place-items-center rounded-full border border-zinc-700 bg-zinc-800 text-white shadow-md ${active ? "ring-8 ring-white/10" : ""}`}>
+                {active ? <span className="absolute inset-0 animate-ping rounded-full bg-white/20 motion-reduce:animate-none" /> : null}
+                <span className="text-xl font-bold tracking-tight text-white">AI</span>
               </div>
-              <div className="flex h-8 items-center gap-1" role="img" aria-label={active ? "Call audio active" : "Call audio inactive"}>
-                {[16, 28, 20, 32, 24, 30, 18].map((height, index) => (
+              <div className="flex h-8 items-center gap-1.5" role="img" aria-label={active ? "Call audio active" : "Call audio inactive"}>
+                {[14, 26, 18, 30, 22, 28, 16].map((height, index) => (
                   <span
-                    className={`w-1.5 rounded-full bg-[#123d35] ${active ? "animate-pulse motion-reduce:animate-none" : "opacity-30"}`}
+                    className={`w-1 rounded-full bg-zinc-200 transition-all ${active ? "animate-pulse motion-reduce:animate-none" : "opacity-25"}`}
                     key={`${height}-${index}`}
                     style={{ height, animationDelay: `${index * 90}ms` }}
                   />
                 ))}
               </div>
-              <p className="m-0 max-w-full break-words text-sm font-semibold leading-5 text-white/85" id="test-call-status" role="status" aria-live="polite" aria-atomic="true">{status}</p>
-              <div className="flex flex-wrap justify-center gap-1.5 text-[9px] font-bold uppercase tracking-wider text-white/45" role="group" aria-label="Call diagnostics">
-                <span className="rounded-full border border-white/[0.08] bg-white/[0.05] px-2.5 py-1">{remoteCount} participant{remoteCount === 1 ? "" : "s"}</span>
-                <span className="rounded-full border border-white/[0.08] bg-white/[0.05] px-2.5 py-1">{audioCount} audio track{audioCount === 1 ? "" : "s"}</span>
-                <span className="rounded-full border border-white/[0.08] bg-white/[0.05] px-2.5 py-1">{knowledgeStatus(knowledgeCount)}</span>
+              <p className="m-0 max-w-full break-words text-sm font-semibold leading-5 text-zinc-200" id="test-call-status" role="status" aria-live="polite" aria-atomic="true">
+                {status}
+              </p>
+              <div className="flex flex-wrap justify-center gap-2 text-[10px] font-semibold tracking-normal text-zinc-400" role="group" aria-label="Call diagnostics">
+                <span className="rounded-full border border-zinc-700 bg-zinc-800 px-3 py-1 text-zinc-300">{remoteCount} participant{remoteCount === 1 ? "" : "s"}</span>
+                <span className="rounded-full border border-zinc-700 bg-zinc-800 px-3 py-1 text-zinc-300">{audioCount} audio track{audioCount === 1 ? "" : "s"}</span>
+                <span className="rounded-full border border-zinc-700 bg-zinc-800 px-3 py-1 text-zinc-300">{knowledgeStatus(knowledgeCount)}</span>
               </div>
             </div>
           </div>
 
           {mode === "phone" && !active ? (
-            <label className="grid gap-2 text-xs font-bold text-white/56">
+            <label className="grid gap-2 text-xs font-semibold text-zinc-300">
               <span>Destination number</span>
               <input
-                className="app-control-text min-h-11 rounded-xl border border-[#c6d4d0] bg-white px-3 text-[#14231f] outline-none transition placeholder:text-[#71817d] hover:border-[#9fcfc3] focus:border-[#118778] focus:ring-3 focus:ring-[#118778]/15"
+                className="app-control-text min-h-11 rounded-xl border border-zinc-700 bg-zinc-800 px-3.5 text-sm text-white outline-none transition placeholder:text-zinc-500 hover:border-zinc-600 focus:border-white focus:ring-2 focus:ring-white/10"
                 placeholder="+12525550123"
                 type="tel"
                 inputMode="tel"
@@ -451,7 +461,11 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
           ) : null}
 
           <button
-            className={`app-button-text min-h-12 rounded-xl px-4 font-extrabold transition active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50 ${active ? "border border-rose-400/25 bg-rose-400/15 text-rose-200 hover:bg-rose-400/20" : "bg-[#118778] text-[#ffffff] shadow-[0_12px_30px_rgba(17,135,120,0.18)] hover:bg-[#0e6f62]"}`}
+            className={`app-button-text min-h-12 rounded-xl px-4 text-sm font-bold transition active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50 ${
+              active
+                ? "border border-rose-500/50 bg-rose-600 text-white shadow-xs hover:bg-rose-700"
+                : "bg-white text-black shadow-md hover:bg-zinc-200"
+            }`}
             type="button"
             disabled={busy}
             aria-busy={busy}

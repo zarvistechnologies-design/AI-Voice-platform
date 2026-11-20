@@ -136,6 +136,11 @@ export function HomeDesignFour() {
 
         <section aria-label="Vozon AI introduction video" className="vozon-intro-video">
           <div className="vozon-intro-video-stage">
+            <div className="vozon-intro-video-header">
+              <span className="vozon-intro-eyebrow"><i aria-hidden="true" /> PLATFORM DEMO</span>
+              <h2>See Vozon in action.</h2>
+              <p>Watch how autonomous voice and WhatsApp agents converse, trigger tools, and sync outcomes in real time.</p>
+            </div>
             <div className="vozon-intro-video-card">
               <video
                 aria-label="Vozon AI platform introduction"

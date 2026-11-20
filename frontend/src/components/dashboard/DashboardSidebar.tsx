@@ -769,7 +769,7 @@ export function DashboardSidebar({
                                   >
                                     <span
                                       className={`grid size-4.5 shrink-0 place-items-center transition ${isSubActive
-                                        ? "text-[#60a5fa]"
+                                        ? "text-white"
                                         : "text-[#71717a] group-hover/sub:text-[#171717]"
                                         }`}
                                     >
@@ -791,7 +791,7 @@ export function DashboardSidebar({
                               if (!beginNavigation("/dashboard/settings")) event.preventDefault();
                             }}
                             className={`relative grid size-9 place-items-center rounded-md transition duration-150 ${isSettingsRoute
-                              ? "bg-[#171717] text-[#60a5fa]"
+                              ? "bg-[#171717] text-white"
                               : "text-[#52525b] hover:bg-[#f4f4f5] hover:text-[#171717]"
                               }`}
                             aria-label="Settings"
@@ -938,7 +938,7 @@ export function DashboardSidebar({
           ))}
         </nav>
 
-        <div className="hidden lg:block lg:border-t lg:border-[#eaeaea] lg:pt-2.5">
+        <div className="hidden lg:block lg:pt-2.5">
           <button
             type="button"
             onClick={() => {
@@ -947,7 +947,7 @@ export function DashboardSidebar({
             }}
             title="Report a bug"
             aria-label="Report a bug"
-            className={`group/bug flex h-8.5 w-full items-center rounded-md bg-[#171717] text-[12.5px] font-medium text-white transition hover:bg-black ${showUserSidebar ? "justify-start gap-2.5 px-2.5" : "justify-center"}`}
+            className={`group/bug flex h-8.5 w-full items-center rounded-md bg-[#171717] text-[12.5px] font-medium text-white transition hover:bg-black dark:border dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800 dark:hover:text-white ${showUserSidebar ? "justify-start gap-2.5 px-2.5" : "justify-center"}`}
           >
             <span className="grid size-5 shrink-0 place-items-center text-white">
               <svg className="size-4 fill-none stroke-current stroke-[1.8]" viewBox="0 0 24 24" aria-hidden="true">
@@ -964,7 +964,7 @@ export function DashboardSidebar({
 
       {bugModalOpen ? (
         <div
-          className="fixed inset-0 z-[100] grid place-items-center bg-black/35 p-4 backdrop-blur-[2px]"
+          className="fixed inset-0 z-[100] grid place-items-center bg-black/60 p-4 backdrop-blur-[2px]"
           role="dialog"
           aria-modal="true"
           aria-labelledby="bug-report-title"
@@ -972,21 +972,21 @@ export function DashboardSidebar({
             if (event.target === event.currentTarget) setBugModalOpen(false);
           }}
         >
-          <div className="w-full max-w-[440px] rounded-xl border border-[#eaeaea] bg-white p-5 shadow-xl">
-            <div className="flex items-start justify-between gap-3 border-b border-[#f0f0f0] pb-3.5">
+          <div className="w-full max-w-[440px] rounded-xl border border-[#eaeaea] bg-white p-5 shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
+            <div className="flex items-start justify-between gap-3 border-b border-[#f0f0f0] pb-3.5 dark:border-zinc-800">
               <div>
-                <h2 id="bug-report-title" className="m-0 text-[15px] font-semibold text-[#171717]">
+                <h2 id="bug-report-title" className="m-0 text-[15px] font-semibold text-[#171717] dark:text-white">
                   Report a bug
                 </h2>
-                <p className="mt-0.5 mb-0 text-[12px] text-[#71717a]">
-                  Tell us what went wrong on <span className="font-mono text-[#171717]">{pathname}</span>
+                <p className="mt-0.5 mb-0 text-[12px] text-[#71717a] dark:text-zinc-400">
+                  Tell us what went wrong on <span className="font-mono text-[#171717] dark:text-zinc-200">{pathname}</span>
                 </p>
               </div>
               <button
                 type="button"
                 aria-label="Close"
                 onClick={() => setBugModalOpen(false)}
-                className="grid size-7 place-items-center rounded-md text-[#71717a] transition hover:bg-[#f4f4f5] hover:text-[#171717]"
+                className="grid size-7 place-items-center rounded-md text-[#71717a] transition hover:bg-[#f4f4f5] hover:text-[#171717] dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
               >
                 ×
               </button>
@@ -994,21 +994,21 @@ export function DashboardSidebar({
 
             {bugSubmitted ? (
               <div className="py-6 text-center">
-                <div className="mx-auto mb-3 grid size-10 place-items-center rounded-full bg-[#eff6ff] text-[#2563eb]">
+                <div className="mx-auto mb-3 grid size-10 place-items-center rounded-full bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-white">
                   <svg className="size-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
                     <path d="M20 6 9 17l-5-5" />
                   </svg>
                 </div>
-                <strong className="block text-[14px] font-semibold text-[#171717]">
+                <strong className="block text-[14px] font-semibold text-[#171717] dark:text-white">
                   Bug report submitted
                 </strong>
-                <p className="mt-1 text-[12.5px] text-[#71717a]">
+                <p className="mt-1 text-[12.5px] text-[#71717a] dark:text-zinc-400">
                   Thanks for helping us improve Vozon.
                 </p>
                 <button
                   type="button"
                   onClick={() => setBugModalOpen(false)}
-                  className="mt-4 inline-flex h-8 items-center justify-center rounded-md bg-[#2563eb] px-4 text-[12.5px] font-medium text-white transition hover:bg-[#1d4ed8]"
+                  className="mt-4 inline-flex h-8 items-center justify-center rounded-md bg-black px-4 text-[12.5px] font-medium text-white transition hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
                 >
                   Done
                 </button>
@@ -1016,18 +1016,18 @@ export function DashboardSidebar({
             ) : (
               <form className="mt-4 grid gap-3.5" onSubmit={(e) => void handleBugSubmit(e)}>
                 <label className="grid gap-1.5">
-                  <span className="text-[12px] font-medium text-[#171717]">Summary</span>
+                  <span className="text-[12px] font-medium text-[#171717] dark:text-zinc-200">Summary</span>
                   <input
                     type="text"
                     value={bugTitle}
                     onChange={(e) => setBugTitle(e.target.value)}
                     placeholder="e.g., Button alignment or missing data"
-                    className="h-9 rounded-lg border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717] placeholder-[#a1a1aa] outline-none transition focus:border-[#2563eb]"
+                    className="h-9 rounded-lg border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717] placeholder-[#a1a1aa] outline-none transition focus:border-black dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder-zinc-500 dark:focus:border-white"
                   />
                 </label>
 
                 <label className="grid gap-1.5">
-                  <span className="text-[12px] font-medium text-[#171717]">
+                  <span className="text-[12px] font-medium text-[#171717] dark:text-zinc-200">
                     What happened? <span className="text-rose-600">*</span>
                   </span>
                   <textarea
@@ -1036,7 +1036,7 @@ export function DashboardSidebar({
                     value={bugDescription}
                     onChange={(e) => setBugDescription(e.target.value)}
                     placeholder="Describe the issue and how to reproduce it..."
-                    className="rounded-lg border border-[#eaeaea] bg-white p-3 text-[13px] text-[#171717] placeholder-[#a1a1aa] outline-none transition focus:border-[#2563eb]"
+                    className="rounded-lg border border-[#eaeaea] bg-white p-3 text-[13px] text-[#171717] placeholder-[#a1a1aa] outline-none transition focus:border-black dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder-zinc-500 dark:focus:border-white"
                   />
                 </label>
 
@@ -1044,14 +1044,14 @@ export function DashboardSidebar({
                   <button
                     type="button"
                     onClick={() => setBugModalOpen(false)}
-                    className="h-8 rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#52525b] transition hover:bg-[#f4f4f5] hover:text-[#171717]"
+                    className="h-8 rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#52525b] transition hover:bg-[#f4f4f5] hover:text-[#171717] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={bugSubmitting || !bugDescription.trim()}
-                    className="h-8 rounded-md bg-[#2563eb] px-4 text-[12.5px] font-medium text-white transition hover:bg-[#1d4ed8] disabled:opacity-50"
+                    className="h-8 rounded-md bg-black px-4 text-[12.5px] font-medium text-white transition hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 disabled:opacity-50"
                   >
                     {bugSubmitting ? "Submitting..." : "Submit report"}
                   </button>

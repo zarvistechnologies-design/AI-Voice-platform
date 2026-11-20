@@ -40,8 +40,9 @@ export function HomeFaqSection() {
     <section className="home-faq-section" id="faq" aria-labelledby="home-faq-title">
       <div className="home-faq-inner">
         <div className="home-faq-intro">
-          <span className="home-faq-eyebrow"><i aria-hidden="true" /> FAQ</span>
-          <h2 id="home-faq-title">Common questions</h2>
+          <span className="home-faq-eyebrow"><i aria-hidden="true" /> FREQUENTLY ASKED QUESTIONS</span>
+          <h2 id="home-faq-title">Common questions.</h2>
+          <p>Everything you need to know about Vozon AI agents, security, and multichannel automation.</p>
         </div>
         <div className="home-faq-list">
           {questions.map(({ question, answer }, index) => (

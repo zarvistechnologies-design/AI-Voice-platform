@@ -156,9 +156,9 @@ export function IntegrationsShowcaseSection() {
       <div className="integrations-showcase-inner">
         {/* Centered Heading */}
         <div className="integrations-showcase-heading">
-          <span className="integrations-eyebrow">CONNECTED TO YOUR STACK</span>
+          <span className="integrations-eyebrow"><i aria-hidden="true" /> CONNECTED ECOSYSTEM</span>
           <h2 id="integrations-showcase-title">
-            One intelligent layer<br />for the apps you use.
+            One intelligent layer for the apps you use.
           </h2>
           <p>
             Connect Voice AI, WhatsApp, and autonomous agents to your calendars, CRMs, sheets, and APIs seamlessly.
