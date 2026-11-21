@@ -35,12 +35,15 @@ const voiceLanguages = [
 
 // Original Client Logos
 const clientLogos = [
-  { name: "Urban Company" },
-  { name: "Cult.fit" },
-  { name: "PolicyBazaar" },
-  { name: "Lenskart" },
-  { name: "Spinny" },
-  { name: "KreditBee" },
+  { name: "Deloitte.", isDisplay: true },
+  { name: "appsmith_", isMono: true },
+  { name: "Vigilant", isDisplay: true },
+  { name: "ed.is.on", isItalic: true },
+  { name: "Kobe Creations", isDisplay: true },
+  { name: "Simplamo®", isDisplay: true },
+  { name: "SOULPAGE", isMono: true },
+  { name: "Zendesk", isDisplay: true },
+  { name: "DigitalBot", isMono: true },
 ];
 
 // Original Industry Solutions with Pictures & Copy
@@ -680,29 +683,37 @@ export function HomeDesignFour() {
             SECTION 5: CLIENT LOGOS / SOCIAL PROOF (Original Logos)
             ======================================================== */}
         <section aria-labelledby="clients-title" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="text-center max-w-3xl mx-auto">
-            <span className="zippee-pill bg-purple-50 text-purple-900 border-purple-200 font-semibold mb-3">
-              <span className="size-2 rounded-full bg-[#9F3DA8]" />
-              Trusted In Production
-            </span>
-            <h2 id="clients-title" className="zippee-title-underline text-2xl sm:text-3xl font-extrabold text-[#1D1D1F] mt-2">
-              In good company.
-            </h2>
-            <p className="mt-4 text-sm text-gray-500">
-              From high-growth tech disruptors to national enterprise call operations, over 10M+ automated minutes handled with 99.9% reliability.
-            </p>
-          </div>
+          <div className="grid gap-8 md:grid-cols-12 items-center">
+            <div className="md:col-span-4">
+              <span className="zippee-pill bg-purple-50 text-purple-900 border-purple-200 font-semibold mb-2">
+                <span className="size-2 rounded-full bg-[#9F3DA8]" />
+                Trusted In Production
+              </span>
+              <h2 id="clients-title" className="zippee-title-underline-left text-2xl sm:text-3xl font-extrabold text-[#1D1D1F] mt-2">
+                In good company.
+              </h2>
+              <p className="mt-3 text-sm text-gray-500 leading-relaxed max-w-sm">
+                From high-growth tech disruptors to national enterprise call operations, over 10M+ automated minutes handled with 99.9% reliability.
+              </p>
+            </div>
 
-          <ul className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-            {clientLogos.map((client, idx) => (
-              <li
-                key={idx}
-                className="zippee-card p-4 sm:p-5 flex items-center justify-center text-center font-bold text-sm text-gray-700 hover:text-[#9F3DA8]"
-              >
-                <span>{client.name}</span>
-              </li>
-            ))}
-          </ul>
+            <ul className="grid grid-cols-2 sm:grid-cols-3 md:col-span-8 gap-3">
+              {clientLogos.map((client, idx) => (
+                <li
+                  key={idx}
+                  className="zippee-card p-4 sm:p-5 flex items-center justify-center text-center hover:border-purple-300 transition-all min-h-[4.5rem]"
+                >
+                  <span
+                    className={`text-base sm:text-lg font-bold tracking-tight text-[#1D1D1F] ${
+                      client.isMono ? "font-mono" : client.isItalic ? "italic" : "font-sans"
+                    }`}
+                  >
+                    {client.name}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </section>
 
         {/* ========================================================

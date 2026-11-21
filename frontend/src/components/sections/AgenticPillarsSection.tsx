@@ -113,15 +113,20 @@ export const agenticPillars: PillarItem[] = [
     title: "Multi-Agent Orchestration & Swarm Delegation",
     subtitle: "Specialized cognitive agents working in unison",
     image: "/images/pillars/pillar-5-swarm-delegation.png",
-    imageAlt: "Front triage agent handing off to specialist agent and returning without hanging up",
-    imageCaption: "Zero dead-end transfers. Specialized agents collaborate mid-call.",
+    imageAlt: "Multi-agent swarm handoff between triage agent, technical agent, billing agent, and human warm transfer",
+    imageCaption: "Specialized sub-agent swarm with context-aware warm transfer to human reps.",
     simpleBots: {
       label: "What simple bots do",
-      description: "One giant prompt trying to do everything, failing when complexity increases.",
+      description: "One giant prompt trying to handle everything poorly.",
     },
     agenticPlatform: {
       label: "What our Agentic Platform does",
-      summary: "A Front-Desk Triage Agent delegates sub-tasks to specialized sub-agents (e.g., an EMI Negotiation Agent, a Multilingual Sentiment Analyzer, or a Technical Support Specialist) and reclaims the call seamlessly.",
+      summary: "Employs specialized sub-agents working together:",
+      bullets: [
+        "Triage Agent authenticates caller and detects core intent.",
+        "Hands off context dynamically to a Technical Troubleshooting Agent or Billing Specialist Agent.",
+        "If human intervention is needed, performs a Context-Aware Warm Transfer where the human rep receives a 3-bullet live summary before picking up.",
+      ],
     },
   },
 ];
