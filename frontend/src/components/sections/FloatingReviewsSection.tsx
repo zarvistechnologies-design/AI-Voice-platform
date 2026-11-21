@@ -16,50 +16,46 @@ interface ReviewCardProps {
   floatVariation?: number;
 }
 
-function ReviewCard({ review, index, floatVariation = 1 }: ReviewCardProps) {
+function ReviewCard({
+  review,
+  index,
+  floatVariation = 1,
+}: ReviewCardProps) {
   const numStr = String(index + 1).padStart(2, "0");
   const initials = getInitials(review.name);
 
   return (
-    <article
-      className="group relative flex w-[320px] sm:w-[380px] flex-shrink-0 flex-col justify-between rounded-3xl border border-line bg-white p-6 sm:p-7 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-cobalt/40 hover:shadow-xl"
-      style={{
-        animation: `float-card-${floatVariation} ${5 + (index % 3)}s ease-in-out infinite alternate`,
-      }}
-    >
+    <article className="zippee-card p-6 sm:p-7 flex flex-col justify-between w-[350px] sm:w-[420px] shrink-0 bg-white border border-gray-200/80 shadow-md hover:shadow-xl hover:border-purple-300 transition-all">
       <div>
         {/* Top Header: Quote Icon & Number Badge */}
-        <div className="flex items-center justify-between">
-          <span
-            className="grid size-10 place-items-center rounded-xl bg-paper border border-line text-ink font-mono text-sm font-bold shadow-xs"
-            aria-hidden="true"
-          >
+        <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+          <span className="text-2xl text-[#9F3DA8] leading-none" aria-hidden="true">
             ❝
           </span>
-          <span className="font-mono text-xs font-bold text-cobalt tracking-wider">
+          <span className="zippee-pill font-mono text-[11px] font-bold text-[#9F3DA8] bg-purple-50">
             {numStr}
           </span>
         </div>
 
         {/* Review Quote Body */}
-        <p className="mt-5 text-sm sm:text-[14px] leading-relaxed text-ink font-normal">
+        <p className="mt-4 text-sm font-medium text-[#1D1D1F] leading-relaxed">
           &ldquo;{review.quote}&rdquo;
         </p>
       </div>
 
       {/* Reviewer Details */}
-      <div className="mt-6 flex items-center gap-3.5 border-t border-line pt-4">
+      <div className="mt-6 pt-4 border-t border-gray-100 flex items-center gap-3">
         <span
-          className="grid size-11 flex-shrink-0 place-items-center rounded-full bg-cobalt/10 border border-cobalt/20 font-mono text-xs font-bold text-cobalt shadow-xs"
+          className="size-10 rounded-full bg-gradient-to-tr from-[#9F3DA8] to-[#c084fc] text-white font-bold grid place-items-center text-xs shadow-xs shrink-0"
           aria-hidden="true"
         >
           {initials}
         </span>
-        <div className="min-w-0">
-          <h4 className="truncate font-display text-sm sm:text-base font-bold text-ink">
+        <div>
+          <h4 className="text-sm font-bold text-[#1D1D1F]">
             {review.name}
           </h4>
-          <p className="truncate font-mono text-xs text-muted mt-0.5">
+          <p className="text-xs text-gray-500 line-clamp-1">
             {review.role}
           </p>
         </div>
@@ -76,111 +72,79 @@ export function FloatingReviewsSection() {
   const rowTwo = customerReviews.slice(4);
 
   return (
-    <section
-      id="reviews"
-      className="relative overflow-hidden bg-paper/60 pt-24 pb-20 md:pt-28 md:pb-28 border-t border-line text-ink scroll-mt-24"
-      aria-labelledby="floating-reviews-title"
-    >
-      {/* Subtle Ambient Radial Highlight */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-40"
-        style={{
-          background:
-            "radial-gradient(ellipse at 50% 20%, rgba(37, 99, 235, 0.08) 0%, transparent 70%)",
-        }}
-        aria-hidden="true"
-      />
-
-      <div className="container-x relative z-10">
+    <section id="reviews" aria-labelledby="floating-reviews-title" className="py-24 bg-[#FDF4FF]/40 border-t border-gray-100 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center">
-          <p className="eyebrow text-cobalt font-semibold tracking-wider">
-            Customer Stories
-          </p>
+        <div className="text-center max-w-3xl mx-auto">
+          <span className="zippee-pill bg-purple-50 text-purple-900 border-purple-200 font-semibold mb-3">
+            <span className="size-2 rounded-full bg-[#9F3DA8]" />
+            Enterprise Testimonials
+          </span>
 
-          <h2
-            id="floating-reviews-title"
-            className="display-lg mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl lg:text-5xl"
-          >
-            Don&apos;t hear us. <span className="text-cobalt">Hear Them.</span>
+          <h2 id="floating-reviews-title" className="zippee-title-underline text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#1D1D1F] tracking-tight mt-2">
+            Don&apos;t hear us. <span className="text-[#9F3DA8]">Hear Them.</span>
           </h2>
 
-          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted sm:text-base font-normal">
-            Real businesses. Different conversations. A better way to be there for every customer.
+          <p className="mt-4 text-base text-gray-600 leading-relaxed">
+            Real customer stories from healthcare leaders, founders, and call center directors who automated millions of calls with Vozon.
           </p>
 
-          {/* View Mode Toggle: Floating vs Grid */}
-          <div className="mt-8 inline-flex items-center rounded-2xl bg-paper-2 border border-line p-1.5 shadow-xs">
+          {/* Mode Switcher */}
+          <div className="mt-8 inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white p-1.5 shadow-xs">
             <button
               type="button"
               onClick={() => setViewMode("floating")}
-              className={`rounded-xl px-5 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer ${
+              className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                 viewMode === "floating"
-                  ? "bg-cobalt text-white shadow-sm font-bold"
-                  : "text-muted hover:text-ink hover:bg-paper"
+                  ? "bg-[#9F3DA8] text-white shadow-xs"
+                  : "text-gray-700 hover:text-[#9F3DA8]"
               }`}
               aria-pressed={viewMode === "floating"}
             >
-              Floating Messages
+              <span>≋</span>
+              <span>Floating Stream</span>
             </button>
             <button
               type="button"
               onClick={() => setViewMode("grid")}
-              className={`rounded-xl px-5 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer ${
+              className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                 viewMode === "grid"
-                  ? "bg-cobalt text-white shadow-sm font-bold"
-                  : "text-muted hover:text-ink hover:bg-paper"
+                  ? "bg-[#9F3DA8] text-white shadow-xs"
+                  : "text-gray-700 hover:text-[#9F3DA8]"
               }`}
               aria-pressed={viewMode === "grid"}
             >
-              All Reviews (Grid)
+              <span>⊞</span>
+              <span>All Reviews Grid</span>
             </button>
           </div>
         </div>
 
-        {/* View Mode 1: Floating Continuous Stream */}
+        {/* Floating Stream Mode */}
         {viewMode === "floating" && (
-          <div className="mt-14 space-y-6 overflow-hidden">
-            {/* Stream 1 (Moves Left) */}
-            <div className="relative flex overflow-hidden reviews-stream-mask">
-              <div className="flex shrink-0 gap-6 animate-marquee-left hover:[animation-play-state:paused] py-2">
-                {rowOne.concat(rowOne).concat(rowOne).map((rev, i) => (
-                  <ReviewCard
-                    key={`stream1-${rev.name}-${i}`}
-                    review={rev}
-                    index={i % rowOne.length}
-                    floatVariation={(i % 3) + 1}
-                  />
+          <div className="mt-12 space-y-6">
+            <div className="overflow-hidden w-full relative">
+              <div className="animate-marquee gap-6 py-2">
+                {[...rowOne, ...rowOne].map((review, idx) => (
+                  <ReviewCard key={`row1-${review.name}-${idx}`} review={review} index={idx % rowOne.length} />
                 ))}
               </div>
             </div>
-
-            {/* Stream 2 (Moves Right / Offset) */}
-            <div className="relative flex overflow-hidden reviews-stream-mask">
-              <div className="flex shrink-0 gap-6 animate-marquee-right hover:[animation-play-state:paused] py-2">
-                {rowTwo.concat(rowTwo).concat(rowTwo).map((rev, i) => (
-                  <ReviewCard
-                    key={`stream2-${rev.name}-${i}`}
-                    review={rev}
-                    index={(i % rowTwo.length) + 4}
-                    floatVariation={((i + 1) % 3) + 1}
-                  />
+            <div className="overflow-hidden w-full relative">
+              <div className="animate-marquee gap-6 py-2" style={{ animationDirection: "reverse", animationDuration: "38s" }}>
+                {[...rowTwo, ...rowTwo].map((review, idx) => (
+                  <ReviewCard key={`row2-${review.name}-${idx}`} review={review} index={(idx % rowTwo.length) + 4} />
                 ))}
               </div>
             </div>
           </div>
         )}
 
-        {/* View Mode 2: Full Grid (All 9 Reviews) */}
+        {/* All Reviews Grid Mode */}
         {viewMode === "grid" && (
-          <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {customerReviews.map((rev, idx) => (
-              <ReviewCard
-                key={`grid-${rev.name}`}
-                review={rev}
-                index={idx}
-                floatVariation={(idx % 3) + 1}
-              />
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {customerReviews.map((review, idx) => (
+              <ReviewCard key={`grid-${review.name}-${idx}`} review={review} index={idx} />
             ))}
           </div>
         )}

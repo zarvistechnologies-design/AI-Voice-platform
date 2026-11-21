@@ -35,13 +35,11 @@ export const agenticPillars: PillarItem[] = [
     imageCaption: "Reasoning picks the fastest, most empathetic path to the objective.",
     simpleBots: {
       label: "What simple bots do",
-      description:
-        'If a customer says something off-script, the bot says: "Sorry, I didn\'t get that. Please choose from the menu."',
+      description: 'If a customer says something off-script, the bot says: "Sorry, I didn\'t get that. Please choose from the menu."',
     },
     agenticPlatform: {
       label: "What our Agentic Platform does",
-      summary:
-        'You give the agent a high-level objective (e.g., "Negotiate a payment plan within a 15% discount threshold while keeping customer goodwill"). The agent uses dynamic reasoning (ReAct / Chain-of-Thought) to figure out the fastest, most empathetic path to achieve that objective.',
+      summary: 'You give the agent a high-level objective (e.g., "Negotiate a payment plan within a 15% discount threshold while keeping customer goodwill"). The agent uses dynamic reasoning (ReAct / Chain-of-Thought) to figure out the fastest, most empathetic path to achieve that objective.',
     },
   },
   {
@@ -59,8 +57,7 @@ export const agenticPillars: PillarItem[] = [
     },
     agenticPlatform: {
       label: "What our Agentic Platform does",
-      summary:
-        "While conversing with the caller, the agent interacts with external systems in real-time:",
+      summary: "While conversing with the caller, the agent interacts with external systems in real-time:",
       bullets: [
         "Queries your backend database mid-sentence (GET /user/policy-status).",
         "Checks live seat availability on your booking engine.",
@@ -80,8 +77,7 @@ export const agenticPillars: PillarItem[] = [
     imageCaption: "Callers are recognized, not restarted from scratch.",
     simpleBots: {
       label: "What simple bots do",
-      description:
-        "Stateless. If the customer calls back 5 minutes later, it starts from scratch.",
+      description: "Stateless. If the customer calls back 5 minutes later, it starts from scratch.",
     },
     agenticPlatform: {
       label: "What our Agentic Platform does",
@@ -103,13 +99,11 @@ export const agenticPillars: PillarItem[] = [
     imageCaption: "Graceful self-correction without dropped calls or loops.",
     simpleBots: {
       label: "What simple bots do",
-      description:
-        "Crash or loop repeatedly when faced with contradictory information.",
+      description: "Crash or loop repeatedly when faced with contradictory information.",
     },
     agenticPlatform: {
       label: "What our Agentic Platform does",
-      summary:
-        "Detects ambiguity, asks clarifying questions, adjusts its internal plan, and recovers gracefully from API timeouts or incomplete user responses without breaking the conversation flow.",
+      summary: "Detects ambiguity, asks clarifying questions, adjusts its internal plan, and recovers gracefully from API timeouts or incomplete user responses without breaking the conversation flow.",
     },
   },
   {
@@ -119,20 +113,15 @@ export const agenticPillars: PillarItem[] = [
     title: "Multi-Agent Orchestration & Swarm Delegation",
     subtitle: "Specialized cognitive agents working in unison",
     image: "/images/pillars/pillar-5-swarm-delegation.png",
-    imageAlt: "Multi-agent swarm handoff between triage agent, technical agent, billing agent, and human warm transfer",
-    imageCaption: "Specialized sub-agent swarm with context-aware warm transfer to human reps.",
+    imageAlt: "Front triage agent handing off to specialist agent and returning without hanging up",
+    imageCaption: "Zero dead-end transfers. Specialized agents collaborate mid-call.",
     simpleBots: {
       label: "What simple bots do",
-      description: "One giant prompt trying to handle everything poorly.",
+      description: "One giant prompt trying to do everything, failing when complexity increases.",
     },
     agenticPlatform: {
       label: "What our Agentic Platform does",
-      summary: "Employs specialized sub-agents working together:",
-      bullets: [
-        "Triage Agent authenticates caller and detects core intent.",
-        "Hands off context dynamically to a Technical Troubleshooting Agent or Billing Specialist Agent.",
-        "If human intervention is needed, performs a Context-Aware Warm Transfer where the human rep receives a 3-bullet live summary before picking up.",
-      ],
+      summary: "A Front-Desk Triage Agent delegates sub-tasks to specialized sub-agents (e.g., an EMI Negotiation Agent, a Multilingual Sentiment Analyzer, or a Technical Support Specialist) and reclaims the call seamlessly.",
     },
   },
 ];
@@ -144,86 +133,84 @@ interface PillarStreamCardProps {
 
 function PillarStreamCard({ pillar, index }: PillarStreamCardProps) {
   return (
-    <article
-      className="group relative flex w-[340px] sm:w-[450px] md:w-[490px] shrink-0 flex-col justify-between rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-400 hover:shadow-xl"
-    >
+    <article className="zippee-card p-6 flex flex-col justify-between w-[380px] sm:w-[440px] shrink-0 bg-white border border-gray-200/80 shadow-md hover:shadow-xl hover:border-purple-300 transition-all">
       <div>
         {/* Top Header Badge */}
-        <div className="flex items-center justify-between border-b border-slate-100 pb-3.5">
-          <div className="flex items-center gap-2.5">
-            <span className="grid size-8 place-items-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white font-mono text-xs font-bold shadow-xs">
+        <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+          <div className="flex items-center gap-2">
+            <span className="size-6 rounded-md bg-[#9F3DA8] text-white font-mono text-xs font-bold grid place-items-center">
               {pillar.number}
             </span>
-            <span className="font-mono text-xs font-bold tracking-wider uppercase text-blue-600">
+            <span className="font-mono text-xs uppercase tracking-wider text-gray-500 font-semibold">
               Pillar {pillar.number}
             </span>
           </div>
-          <span className="eyebrow text-slate-400 text-[11px] font-semibold font-mono">
+          <span className="zippee-pill bg-purple-50 text-purple-900 border-purple-200 text-[11px] font-bold">
             {pillar.tag}
           </span>
         </div>
 
         {/* Title & Subtitle */}
-        <h3 className="font-display text-base sm:text-lg font-bold text-slate-900 mt-3.5 leading-snug break-words">
+        <h3 className="mt-4 text-lg font-bold text-[#1D1D1F] leading-snug">
           {pillar.title}
         </h3>
-        <p className="mt-1 font-mono text-[11px] text-slate-500">
+        <p className="mt-1 text-xs text-purple-700 font-medium">
           {pillar.subtitle}
         </p>
 
         {/* Architectural Diagram Illustration */}
-        <div className="mt-3.5 overflow-hidden rounded-2xl border border-slate-800 bg-[#090d16] p-2.5 shadow-inner">
-          <div className="flex items-center justify-between pb-1.5 px-1 border-b border-white/10">
-            <span className="font-mono text-[10px] uppercase font-bold text-emerald-400 flex items-center gap-1.5">
-              <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+        <div className="mt-4 rounded-xl border border-gray-100 bg-gray-50/70 p-3 overflow-hidden">
+          <div className="flex items-center justify-between font-mono text-[11px] text-gray-400 mb-2">
+            <span className="flex items-center gap-1.5">
+              <span className="size-1.5 rounded-full bg-[#9F3DA8]" />
               Architecture Map
             </span>
-            <span className="font-mono text-[10px] text-slate-400">Pillar {pillar.number}</span>
+            <span>Pillar {pillar.number}</span>
           </div>
-          <div className="relative mt-2 w-full aspect-[16/9] bg-black/50 rounded-xl overflow-hidden flex items-center justify-center">
+          <div className="relative aspect-video w-full rounded-lg overflow-hidden bg-white shadow-inner">
             <Image
               src={pillar.image}
               alt={pillar.imageAlt}
               fill
+              className="object-contain p-2"
               sizes="(max-width: 640px) 320px, 480px"
-              className="object-contain p-1"
               loading="eager"
             />
           </div>
-          <p className="mt-2 text-center font-mono text-[10.5px] text-slate-300 px-1 truncate">
+          <p className="mt-2 text-[11px] text-gray-500 italic text-center">
             {pillar.imageCaption}
           </p>
         </div>
 
         {/* Stacked Comparisons */}
-        <div className="mt-3.5 space-y-3">
+        <div className="mt-4 space-y-3">
           {/* Simple Bots Box */}
-          <div className="rounded-2xl border border-rose-200/80 bg-rose-50/70 p-3.5 text-xs leading-relaxed">
-            <div className="flex items-center gap-1.5 font-mono text-[10.5px] font-bold uppercase tracking-wider text-rose-800">
-              <span className="grid size-3.5 place-items-center rounded-full bg-rose-200 text-[9px]">✕</span>
+          <div className="rounded-xl border border-red-200/80 bg-red-50/50 p-3 text-xs text-red-950">
+            <div className="flex items-center gap-1.5 font-bold text-red-700 mb-1">
+              <span>✕</span>
               <span>What simple bots do</span>
             </div>
-            <p className="mt-2 text-rose-950 font-normal leading-relaxed text-[12px]">
+            <p className="text-[11px] text-red-900/80 leading-relaxed">
               {pillar.simpleBots.description}
             </p>
           </div>
 
           {/* Agentic Platform Box */}
-          <div className="rounded-2xl border border-slate-800 bg-[#090d16] p-4 text-xs leading-relaxed text-slate-100 shadow-sm">
-            <div className="flex items-center gap-1.5 font-mono text-[10.5px] font-bold uppercase tracking-wider text-emerald-400">
-              <span className="grid size-3.5 place-items-center rounded-full bg-white/10 text-[9px]">✦</span>
+          <div className="rounded-xl border border-purple-200/80 bg-[#FDF4FF] p-3 text-xs text-purple-950">
+            <div className="flex items-center gap-1.5 font-bold text-[#9F3DA8] mb-1">
+              <span>✦</span>
               <span>What our Agentic Platform does</span>
             </div>
-            <p className="mt-2 text-slate-100 font-normal leading-relaxed text-[12px]">
+            <p className="text-[11px] text-purple-900/90 leading-relaxed">
               {pillar.agenticPlatform.summary}
             </p>
 
             {pillar.agenticPlatform.bullets && pillar.agenticPlatform.bullets.length > 0 && (
-              <ul className="mt-3 space-y-1.5 border-t border-white/10 pt-2.5">
+              <ul className="mt-2 space-y-1 text-[11px] text-purple-900/80">
                 {pillar.agenticPlatform.bullets.map((bullet, bIdx) => (
-                  <li key={bIdx} className="flex items-start gap-2 text-slate-300 text-[11.5px]">
-                    <span className="text-emerald-400 font-bold text-xs shrink-0">↳</span>
-                    <span className="leading-relaxed">{bullet}</span>
+                  <li key={bIdx} className="flex items-start gap-1.5">
+                    <span className="text-[#9F3DA8] font-bold">↳</span>
+                    <span>{bullet}</span>
                   </li>
                 ))}
               </ul>
@@ -233,16 +220,13 @@ function PillarStreamCard({ pillar, index }: PillarStreamCardProps) {
       </div>
 
       {/* Card Footer */}
-      <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-3.5 text-xs">
-        <span className="font-mono text-slate-400 text-[11px]">
+      <div className="mt-5 pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-mono">
+        <span className="text-gray-400">
           Pillar {pillar.number} • {pillar.tag}
         </span>
-        <a
-          href="#platform"
-          className="inline-flex items-center gap-1 font-semibold text-blue-600 hover:underline cursor-pointer text-xs"
-        >
+        <a href="#platform" className="inline-flex items-center gap-1 text-[#9F3DA8] font-bold hover:underline">
           <span>Live Demo</span>
-          <span className="font-mono text-sm">→</span>
+          <span>→</span>
         </a>
       </div>
     </article>
@@ -250,29 +234,22 @@ function PillarStreamCard({ pillar, index }: PillarStreamCardProps) {
 }
 
 export function AgenticPillarsSection() {
-  // View mode: "stream" (continuous marquee) | "carousel" (auto-slide carousel) | "grid" (static grid)
   const [viewMode, setViewMode] = useState<"stream" | "carousel" | "grid">("stream");
   const [selectedPillarId, setSelectedPillarId] = useState<string>("all");
-
-  // Stream play/pause state
   const [isStreamPlaying, setIsStreamPlaying] = useState(true);
-
-  // Carousel slider state
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isCarouselPlaying, setIsCarouselPlaying] = useState(true);
   const [carouselProgress, setCarouselProgress] = useState(0);
 
-  // Auto-advance carousel slide every 7 seconds with progress bar
+  // Auto-advance carousel slide every 7 seconds
   useEffect(() => {
     if (viewMode !== "carousel" || !isCarouselPlaying) {
       setCarouselProgress(0);
       return;
     }
-
     const intervalTime = 7000;
     const stepTime = 70;
     const increment = (stepTime / intervalTime) * 100;
-
     const progressTimer = setInterval(() => {
       setCarouselProgress((prev) => {
         if (prev >= 100) {
@@ -282,7 +259,6 @@ export function AgenticPillarsSection() {
         return prev + increment;
       });
     }, stepTime);
-
     return () => clearInterval(progressTimer);
   }, [viewMode, isCarouselPlaying, currentSlide]);
 
@@ -309,52 +285,35 @@ export function AgenticPillarsSection() {
       ? agenticPillars
       : agenticPillars.filter((p) => p.id === selectedPillarId);
 
-  // Triple set for seamless marquee loop
   const streamPillars = [...agenticPillars, ...agenticPillars, ...agenticPillars];
 
   return (
-    <section
-      id="pillars"
-      className="relative overflow-hidden bg-paper-2/70 py-20 md:py-28 border-t border-line text-ink scroll-mt-24"
-      aria-labelledby="pillars-title"
-    >
-      {/* Subtle Ambient Radial Glow */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-40"
-        style={{
-          background:
-            "radial-gradient(ellipse at 50% 15%, rgba(37, 99, 235, 0.08) 0%, transparent 70%)",
-        }}
-        aria-hidden="true"
-      />
-
-      <div className="container-x relative z-10">
+    <section id="pillars" aria-labelledby="pillars-title" className="relative py-24 bg-white overflow-hidden border-t border-gray-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
-        <div className="text-center">
-          <p className="eyebrow text-cobalt font-semibold tracking-wider">
+        <div className="text-center max-w-3xl mx-auto">
+          <span className="zippee-pill bg-purple-50 text-purple-900 border-purple-200 font-semibold mb-3">
+            <span className="size-2 rounded-full bg-[#9F3DA8]" />
             THE 5 PILLARS OF AGENTIC VOICE
-          </p>
+          </span>
 
-          <h2
-            id="pillars-title"
-            className="display-lg mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl lg:text-5xl"
-          >
-            Architected for <span className="text-cobalt">outcomes</span>, not scripts.
+          <h2 id="pillars-title" className="zippee-title-underline text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#1D1D1F] tracking-tight mt-2">
+            Architected for <span className="text-[#9F3DA8]">outcomes</span>, not scripts.
           </h2>
 
-          <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-muted sm:text-base font-normal">
+          <p className="mt-4 text-base text-gray-600 leading-relaxed">
             Traditional voice bots follow rigid decision trees and break on surprises. Our Agentic Voice Platform deploys autonomous AI agents built on five foundational cognitive capabilities.
           </p>
 
           {/* Mode Switcher */}
-          <div className="mt-8 inline-flex items-center rounded-full bg-white border border-slate-200 p-1 shadow-xs">
+          <div className="mt-8 inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-gray-50/90 p-1.5 shadow-xs">
             <button
               type="button"
               onClick={() => setViewMode("stream")}
-              className={`rounded-full px-4 sm:px-5 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+              className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                 viewMode === "stream"
-                  ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-sm shadow-blue-500/25"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "bg-[#9F3DA8] text-white shadow-sm"
+                  : "text-gray-700 hover:text-[#9F3DA8] hover:bg-white"
               }`}
               aria-pressed={viewMode === "stream"}
             >
@@ -365,10 +324,10 @@ export function AgenticPillarsSection() {
             <button
               type="button"
               onClick={() => setViewMode("carousel")}
-              className={`rounded-full px-4 sm:px-5 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+              className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                 viewMode === "carousel"
-                  ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-sm shadow-blue-500/25"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "bg-[#9F3DA8] text-white shadow-sm"
+                  : "text-gray-700 hover:text-[#9F3DA8] hover:bg-white"
               }`}
               aria-pressed={viewMode === "carousel"}
             >
@@ -379,10 +338,10 @@ export function AgenticPillarsSection() {
             <button
               type="button"
               onClick={() => setViewMode("grid")}
-              className={`rounded-full px-4 sm:px-5 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+              className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                 viewMode === "grid"
-                  ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-sm shadow-blue-500/25"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "bg-[#9F3DA8] text-white shadow-sm"
+                  : "text-gray-700 hover:text-[#9F3DA8] hover:bg-white"
               }`}
               aria-pressed={viewMode === "grid"}
             >
@@ -392,12 +351,11 @@ export function AgenticPillarsSection() {
           </div>
 
           {/* Quick Pillar Jump Chips */}
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+          <div className="mt-4 flex flex-wrap justify-center gap-2">
             {agenticPillars.map((pillar, idx) => {
               const isActive =
                 (viewMode === "carousel" && currentSlide === idx) ||
                 (viewMode === "grid" && selectedPillarId === pillar.id);
-
               return (
                 <button
                   key={pillar.id}
@@ -409,10 +367,12 @@ export function AgenticPillarsSection() {
                       handleJumpToSlide(idx);
                     }
                   }}
-                  className={`chip ${isActive ? "is-active" : ""}`}
+                  className={`zippee-pill cursor-pointer font-mono text-xs ${
+                    isActive ? "zippee-pill-active" : ""
+                  }`}
                   aria-pressed={isActive}
                 >
-                  <span className="font-mono text-xs font-semibold">{pillar.number}</span>
+                  <span className="font-bold">{pillar.number}</span>
                   <span>{pillar.tag}</span>
                 </button>
               );
@@ -420,15 +380,12 @@ export function AgenticPillarsSection() {
           </div>
         </div>
 
-        {/* ========================================================
-            VIEW 1: SLIDING STREAM (CONTINUOUS MARQUEE ANIMATION)
-            ======================================================== */}
+        {/* VIEW 1: SLIDING STREAM */}
         {viewMode === "stream" && (
-          <div className="mt-12 space-y-4">
-            {/* Stream Container with edge gradient masks */}
-            <div className="relative overflow-hidden reviews-stream-mask py-3">
+          <div className="mt-12">
+            <div className="overflow-hidden w-full relative">
               <div
-                className="animate-pillars-marquee hover:[animation-play-state:paused] flex shrink-0 gap-6 py-2"
+                className="animate-marquee gap-6 py-4"
                 style={{
                   animationPlayState: isStreamPlaying ? undefined : "paused",
                 }}
@@ -444,28 +401,24 @@ export function AgenticPillarsSection() {
             </div>
 
             {/* Stream Control Bar */}
-            <div className="flex flex-wrap items-center justify-between gap-4 border-t border-slate-200 pt-4 px-2 text-xs">
+            <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-gray-500 border-t border-gray-100 pt-4">
               <div className="flex items-center gap-3">
                 <button
                   type="button"
                   onClick={() => setIsStreamPlaying(!isStreamPlaying)}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1 font-mono text-[11px] font-semibold text-slate-800 hover:border-slate-400 cursor-pointer shadow-xs"
+                  className="zippee-pill cursor-pointer font-bold text-gray-700 hover:text-[#9F3DA8]"
                 >
                   <span>{isStreamPlaying ? "⏸ Pause Stream" : "▶ Resume Stream"}</span>
                 </button>
-                <span className="hidden sm:inline font-mono text-slate-500 text-[11px]">
-                  Hover over any pillar card to pause and inspect diagrams &amp; code
-                </span>
+                <span>Hover over any pillar card to pause and inspect diagrams &amp; code</span>
               </div>
 
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-slate-400 text-[11px]">
-                  5 Illustrated Pillars in continuous motion
-                </span>
+              <div className="flex items-center gap-4">
+                <span>5 Illustrated Pillars in continuous motion</span>
                 <button
                   type="button"
                   onClick={() => setViewMode("carousel")}
-                  className="font-semibold text-blue-600 hover:underline cursor-pointer text-xs"
+                  className="text-[#9F3DA8] font-bold hover:underline cursor-pointer"
                 >
                   Switch to Carousel →
                 </button>
@@ -474,353 +427,143 @@ export function AgenticPillarsSection() {
           </div>
         )}
 
-        {/* ========================================================
-            VIEW 2: INTERACTIVE SLIDE CAROUSEL (EXPANDED ILLUSTRATION VIEW)
-            ======================================================== */}
+        {/* VIEW 2: INTERACTIVE SLIDE CAROUSEL */}
         {viewMode === "carousel" && (
           <div
-            className="mt-12 mx-auto max-w-6xl"
+            className="mt-12"
             onMouseEnter={() => setIsCarouselPlaying(false)}
             onMouseLeave={() => setIsCarouselPlaying(true)}
           >
-            {/* Carousel Container */}
-            <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-md">
-              {/* Sliding Track */}
+            <div className="overflow-hidden rounded-3xl zippee-card p-6 sm:p-10">
               <div
-                className="flex transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                className="flex transition-transform duration-500 ease-out"
                 style={{
                   transform: `translateX(-${currentSlide * 100}%)`,
                 }}
               >
                 {agenticPillars.map((pillar) => (
-                  <div
-                    key={`slide-${pillar.id}`}
-                    className="w-full shrink-0 p-6 sm:p-10 flex flex-col justify-between"
-                  >
-                    <div>
-                      {/* Top Header */}
-                      <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                        <div className="flex items-center gap-3">
-                          <span className="grid size-9 place-items-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white font-mono text-xs font-bold shadow-xs">
+                  <div key={`slide-${pillar.id}`} className="w-full shrink-0">
+                    <div className="space-y-6">
+                      <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+                        <div className="flex items-center gap-2">
+                          <span className="size-8 rounded-lg bg-[#9F3DA8] text-white font-mono text-xs font-bold grid place-items-center">
                             {pillar.number}
                           </span>
-                          <span className="font-mono text-xs font-bold tracking-wider uppercase text-blue-600">
+                          <span className="font-mono text-xs font-bold text-gray-500 uppercase">
                             Pillar {pillar.number} of 05
                           </span>
                         </div>
-                        <span className="eyebrow text-slate-400 text-[11px] font-semibold font-mono">
+                        <span className="zippee-pill bg-purple-50 text-purple-900 font-bold">
                           {pillar.tag}
                         </span>
                       </div>
 
-                      {/* Title & Subtitle */}
-                      <h3 className="font-display text-2xl sm:text-3xl font-bold text-slate-900 mt-5 leading-snug">
+                      <h3 className="text-2xl sm:text-3xl font-extrabold text-[#1D1D1F]">
                         {pillar.title}
                       </h3>
-                      <p className="mt-1 font-mono text-xs text-slate-500">
+                      <p className="text-sm font-semibold text-purple-700">
                         {pillar.subtitle}
                       </p>
 
-                      {/* Side-by-Side: Comparisons (Left) & Architectural Diagram Illustration (Right) */}
-                      <div className="mt-7 grid gap-6 lg:grid-cols-12 items-stretch">
-                        {/* Left Column: Comparisons */}
-                        <div className="lg:col-span-6 space-y-4 flex flex-col justify-between">
-                          {/* What Simple Bots Do Box */}
-                          <div className="rounded-2xl border border-rose-200/80 bg-rose-50/70 p-5 text-xs sm:text-[13px] leading-relaxed flex flex-col justify-between">
-                            <div>
-                              <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-rose-800">
-                                <span className="grid size-4 place-items-center rounded-full bg-rose-200 text-[10px]">✕</span>
-                                <span>What simple bots do</span>
-                              </div>
-                              <p className="mt-3 text-rose-950 font-normal leading-relaxed text-sm">
-                                {pillar.simpleBots.description}
-                              </p>
+                      <div className="grid gap-8 lg:grid-cols-12 items-center">
+                        <div className="lg:col-span-6 space-y-4">
+                          <div className="rounded-2xl border border-red-200 bg-red-50/50 p-4 text-xs text-red-950">
+                            <div className="flex items-center gap-1.5 font-bold text-red-700 mb-1">
+                              <span>✕</span>
+                              <span>What simple bots do</span>
                             </div>
-                            <span className="mt-4 inline-block font-mono text-[10px] uppercase font-bold text-rose-600/80">
-                              Rigid • Scripted • Fragile
-                            </span>
+                            <p className="text-xs text-red-900 leading-relaxed">
+                              {pillar.simpleBots.description}
+                            </p>
                           </div>
 
-                          {/* What Our Agentic Platform Does Box */}
-                          <div className="rounded-2xl border border-slate-800 bg-[#090d16] p-5 sm:p-6 text-xs sm:text-[13px] leading-relaxed text-slate-100 shadow-md flex-1 flex flex-col justify-between">
-                            <div>
-                              <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-emerald-400">
-                                <span className="grid size-4 place-items-center rounded-full bg-white/10 text-[10px]">✦</span>
-                                <span>What our Agentic Platform does</span>
-                              </div>
-
-                              <p className="mt-3 text-slate-100 font-normal leading-relaxed text-sm">
-                                {pillar.agenticPlatform.summary}
-                              </p>
-
-                              {pillar.agenticPlatform.bullets && pillar.agenticPlatform.bullets.length > 0 && (
-                                <ul className="mt-3.5 space-y-2 border-t border-white/10 pt-3">
-                                  {pillar.agenticPlatform.bullets.map((bullet, bIdx) => (
-                                    <li key={bIdx} className="flex items-start gap-2 text-slate-300 text-xs">
-                                      <span className="text-emerald-400 font-bold text-sm shrink-0">↳</span>
-                                      <span className="leading-relaxed">{bullet}</span>
-                                    </li>
-                                  ))}
-                                </ul>
-                              )}
+                          <div className="rounded-2xl border border-purple-200 bg-[#FDF4FF] p-4 text-xs text-purple-950">
+                            <div className="flex items-center gap-1.5 font-bold text-[#9F3DA8] mb-1">
+                              <span>✦</span>
+                              <span>What our Agentic Platform does</span>
                             </div>
+                            <p className="text-xs text-purple-900 leading-relaxed font-medium">
+                              {pillar.agenticPlatform.summary}
+                            </p>
+
+                            {pillar.agenticPlatform.bullets && (
+                              <ul className="mt-3 space-y-1.5 text-xs text-purple-900/90">
+                                {pillar.agenticPlatform.bullets.map((bullet, bIdx) => (
+                                  <li key={bIdx} className="flex items-start gap-1.5">
+                                    <span className="text-[#9F3DA8] font-bold">↳</span>
+                                    <span>{bullet}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
                           </div>
                         </div>
 
-                        {/* Right Column: Architectural Diagram Illustration */}
-                        <div className="lg:col-span-6 rounded-2xl border border-slate-800 bg-[#090d16] p-4 sm:p-6 text-slate-100 shadow-xl flex flex-col justify-between">
-                          <div>
-                            <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                              <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-2">
-                                <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
-                                Architecture Diagram
-                              </span>
-                              <span className="rounded-full bg-white/10 px-2.5 py-0.5 font-mono text-[10px] text-slate-300">
-                                Pillar {pillar.number}
-                              </span>
-                            </div>
-
-                            <div className="relative mt-4 w-full aspect-[16/10] bg-black/60 rounded-xl overflow-hidden border border-white/5 flex items-center justify-center">
+                        <div className="lg:col-span-6">
+                          <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                            <div className="relative aspect-video w-full rounded-xl overflow-hidden bg-white shadow-sm">
                               <Image
                                 src={pillar.image}
                                 alt={pillar.imageAlt}
                                 fill
+                                className="object-contain p-3"
                                 sizes="(max-width: 1024px) 100vw, 550px"
-                                className="object-contain p-2"
                                 priority
                               />
                             </div>
+                            <p className="mt-3 text-xs text-gray-500 italic text-center">
+                              {pillar.imageCaption}
+                            </p>
                           </div>
-
-                          <p className="mt-4 font-mono text-xs text-slate-300 text-center border-t border-white/10 pt-3">
-                            {pillar.imageCaption}
-                          </p>
                         </div>
                       </div>
-                    </div>
-
-                    {/* Slide Footer */}
-                    <div className="mt-8 flex flex-wrap items-center justify-between border-t border-line pt-4 text-xs">
-                      <span className="font-mono text-muted text-[11px]">
-                        Autonomous Voice Architecture • Pillar {pillar.number} ({pillar.tag})
-                      </span>
-                      <a
-                        href="#platform"
-                        className="inline-flex items-center gap-1 font-semibold text-cobalt hover:underline cursor-pointer"
-                      >
-                        <span>Test this pillar in Live Demo</span>
-                        <span className="font-mono text-sm">→</span>
-                      </a>
                     </div>
                   </div>
                 ))}
               </div>
 
-              {/* Countdown Progress Bar for Auto-Slide */}
-              <div className="h-1.5 w-full bg-line/60 overflow-hidden">
-                <div
-                  className="h-full bg-cobalt transition-all duration-75"
-                  style={{ width: `${carouselProgress}%` }}
-                />
-              </div>
-            </div>
+              {/* Carousel Controls */}
+              <div className="mt-8 pt-6 border-t border-gray-100 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handlePrevSlide}
+                    className="size-9 rounded-full border border-gray-200 grid place-items-center text-gray-700 hover:border-[#9F3DA8] hover:text-[#9F3DA8] transition-colors cursor-pointer"
+                    aria-label="Previous slide"
+                  >
+                    ←
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleNextSlide}
+                    className="size-9 rounded-full border border-gray-200 grid place-items-center text-gray-700 hover:border-[#9F3DA8] hover:text-[#9F3DA8] transition-colors cursor-pointer"
+                    aria-label="Next slide"
+                  >
+                    →
+                  </button>
+                  <span className="font-mono text-xs text-gray-500 ml-2">
+                    {currentSlide + 1} / {agenticPillars.length}
+                  </span>
+                </div>
 
-            {/* Carousel Navigation Toolbar */}
-            <div className="mt-5 flex items-center justify-between">
-              {/* Prev Button */}
-              <button
-                type="button"
-                onClick={handlePrevSlide}
-                className="inline-flex items-center gap-2 rounded-full border border-line bg-paper px-4 py-2 font-display text-xs font-semibold text-ink shadow-xs hover:border-ink cursor-pointer"
-                aria-label="Previous Pillar"
-              >
-                <span>←</span>
-                <span>Previous Pillar</span>
-              </button>
-
-              {/* Slide Counter & Dots */}
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-xs font-bold text-ink">
-                  {agenticPillars[currentSlide].number}
-                </span>
-                <span className="font-mono text-xs text-muted">/</span>
-                <span className="font-mono text-xs text-muted">05</span>
-
-                <div className="ml-2 flex items-center gap-1.5">
-                  {agenticPillars.map((_, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => handleJumpToSlide(idx)}
-                      className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                        currentSlide === idx ? "w-6 bg-ink" : "w-2 bg-line hover:bg-muted"
-                      }`}
-                      aria-label={`Go to slide ${idx + 1}`}
-                    />
-                  ))}
+                {/* Progress bar */}
+                <div className="w-40 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-[#9F3DA8] transition-all duration-75"
+                    style={{ width: `${carouselProgress}%` }}
+                  />
                 </div>
               </div>
-
-              {/* Next Button */}
-              <button
-                type="button"
-                onClick={handleNextSlide}
-                className="inline-flex items-center gap-2 rounded-full border border-line bg-paper px-4 py-2 font-display text-xs font-semibold text-ink shadow-xs hover:border-ink cursor-pointer"
-                aria-label="Next Pillar"
-              >
-                <span>Next Pillar</span>
-                <span>→</span>
-              </button>
             </div>
           </div>
         )}
 
-        {/* ========================================================
-            VIEW 3: STATIC GRID (ALL 5 PILLARS AT ONCE WITH DIAGRAMS)
-            ======================================================== */}
+        {/* VIEW 3: ALL 5 GRID */}
         {viewMode === "grid" && (
-          <div
-            className={`mt-12 grid gap-6 ${
-              selectedPillarId === "all"
-                ? "grid-cols-1 lg:grid-cols-2"
-                : "grid-cols-1 max-w-4xl mx-auto"
-            }`}
-          >
-            {filteredPillars.map((pillar) => {
-              const isFullWidthAnchor = selectedPillarId === "all" && pillar.number === "05";
-
-              return (
-                <div
-                  key={pillar.id}
-                  className={`case-card flex flex-col justify-between rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm transition-all duration-300 hover:border-blue-400 hover:shadow-md ${
-                    isFullWidthAnchor ? "lg:col-span-2" : ""
-                  }`}
-                >
-                  <div>
-                    {/* Top Header */}
-                    <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                      <div className="flex items-center gap-3">
-                        <span className="grid size-9 place-items-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white font-mono text-xs font-bold shadow-xs">
-                          {pillar.number}
-                        </span>
-                        <span className="font-mono text-xs font-bold tracking-wider uppercase text-blue-600">
-                          Pillar {pillar.number}
-                        </span>
-                      </div>
-                      <span className="eyebrow text-slate-400 text-[11px] font-mono">
-                        {pillar.tag}
-                      </span>
-                    </div>
-
-                    {/* Title & Subtitle */}
-                    <h3 className="font-display text-xl sm:text-2xl font-bold text-slate-900 mt-4 leading-snug">
-                      {pillar.title}
-                    </h3>
-                    <p className="mt-1 font-mono text-xs text-slate-500">
-                      {pillar.subtitle}
-                    </p>
-
-                    {/* Architectural Diagram Box in Grid */}
-                    <div className="mt-4 overflow-hidden rounded-2xl border border-slate-800 bg-[#090d16] p-3 shadow-inner">
-                      <div className="flex items-center justify-between pb-1.5 px-1 border-b border-white/10">
-                        <span className="font-mono text-[10.5px] uppercase font-bold text-emerald-400 flex items-center gap-1.5">
-                          <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                          Architecture Diagram
-                        </span>
-                        <span className="font-mono text-[10px] text-slate-400">Pillar {pillar.number}</span>
-                      </div>
-                      <div
-                        className={`relative mt-2 w-full bg-black/50 rounded-xl overflow-hidden flex items-center justify-center ${
-                          isFullWidthAnchor ? "aspect-[16/8] max-h-[380px]" : "aspect-[16/9]"
-                        }`}
-                      >
-                        <Image
-                          src={pillar.image}
-                          alt={pillar.imageAlt}
-                          fill
-                          sizes="(max-width: 1024px) 100vw, 600px"
-                          className="object-contain p-2"
-                          loading="eager"
-                        />
-                      </div>
-                      <p className="mt-2 text-center font-mono text-[11px] text-slate-300">
-                        {pillar.imageCaption}
-                      </p>
-                    </div>
-
-                    {/* Comparisons */}
-                    <div
-                      className={`mt-5 ${
-                        isFullWidthAnchor
-                          ? "grid gap-4 md:grid-cols-12 items-stretch"
-                          : "space-y-4"
-                      }`}
-                    >
-                      {/* What Simple Bots Do Box */}
-                      <div
-                        className={`rounded-2xl border border-rose-200/80 bg-rose-50/60 p-5 text-xs sm:text-[13px] leading-relaxed flex flex-col justify-between ${
-                          isFullWidthAnchor ? "md:col-span-5" : ""
-                        }`}
-                      >
-                        <div>
-                          <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-rose-800">
-                            <span className="grid size-4 place-items-center rounded-full bg-rose-200 text-[10px]">✕</span>
-                            <span>What simple bots do</span>
-                          </div>
-                          <p className="mt-3 text-rose-950 font-normal leading-relaxed">
-                            {pillar.simpleBots.description}
-                          </p>
-                        </div>
-                        <span className="mt-4 inline-block font-mono text-[10px] uppercase font-bold text-rose-600/80">
-                          Rigid • Fragile • Static
-                        </span>
-                      </div>
-
-                      {/* What Our Agentic Platform Does Box */}
-                      <div
-                        className={`rounded-2xl border border-slate-800 bg-[#090d16] p-6 text-xs sm:text-[13.5px] leading-relaxed text-slate-100 shadow-md ${
-                          isFullWidthAnchor ? "md:col-span-7" : ""
-                        }`}
-                      >
-                        <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-emerald-400">
-                          <span className="grid size-4 place-items-center rounded-full bg-white/10 text-[10px]">✦</span>
-                          <span>What our Agentic Platform does</span>
-                        </div>
-
-                        <p className="mt-3 text-slate-100 font-normal leading-relaxed">
-                          {pillar.agenticPlatform.summary}
-                        </p>
-
-                        {pillar.agenticPlatform.bullets && pillar.agenticPlatform.bullets.length > 0 && (
-                          <ul className="mt-4 space-y-2.5 border-t border-white/10 pt-3.5">
-                            {pillar.agenticPlatform.bullets.map((bullet, bIdx) => (
-                              <li key={bIdx} className="flex items-start gap-2.5 text-slate-300">
-                                <span className="text-emerald-400 font-bold text-sm shrink-0">↳</span>
-                                <span className="leading-relaxed">{bullet}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Bottom Footer */}
-                  <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-4 text-xs">
-                    <span className="font-mono text-slate-400 text-[11px]">
-                      Autonomous Voice Architecture • Pillar {pillar.number}
-                    </span>
-                    <a
-                      href="#platform"
-                      className="inline-flex items-center gap-1 font-semibold text-blue-600 hover:underline cursor-pointer"
-                    >
-                      <span>Test in Live Demo</span>
-                      <span className="font-mono text-sm">→</span>
-                    </a>
-                  </div>
-                </div>
-              );
-            })}
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredPillars.map((pillar, idx) => (
+              <PillarStreamCard key={pillar.id} pillar={pillar} index={idx} />
+            ))}
           </div>
         )}
       </div>

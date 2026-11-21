@@ -88,173 +88,83 @@ export function ArchitecturalComparisonSection() {
       : comparisonData.filter((item) => item.category === selectedCategory);
 
   return (
-    <section
-      id="comparison"
-      className="relative overflow-hidden bg-paper-2/90 py-20 md:py-28 border-t border-line text-ink scroll-mt-24"
-      aria-labelledby="comparison-title"
-    >
-      {/* Subtle Ambient Radial Glow */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-35"
-        style={{
-          background:
-            "radial-gradient(ellipse at 50% 10%, rgba(37, 99, 235, 0.08) 0%, transparent 70%)",
-        }}
-        aria-hidden="true"
-      />
-
-      <div className="container-x relative z-10">
-        {/* Section Header */}
-        <div className="text-center">
-          <p className="eyebrow text-cobalt font-semibold tracking-wider uppercase">
-            Direct Architectural Comparison Table
-          </p>
-
-          <h2
-            id="comparison-title"
-            className="display-lg mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl lg:text-5xl"
-          >
-            Built for <span className="text-cobalt">outcomes</span>, not dead ends.
+    <section id="comparison" aria-labelledby="comparison-title" className="py-24 bg-white border-t border-gray-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-3xl mx-auto">
+          <span className="zippee-pill bg-purple-50 text-purple-900 border-purple-200 font-semibold mb-3">
+            <span className="size-2 rounded-full bg-[#9F3DA8]" />
+            Side-by-Side Architectural Contrast
+          </span>
+          <h2 id="comparison-title" className="zippee-title-underline text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#1D1D1F] tracking-tight mt-2">
+            Why traditional voice bots fail.
           </h2>
-
-          <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-muted sm:text-base font-normal">
-            Put this comparison table on your website to instantly establish authority over competitors. See how legacy conversational IVRs compare against Vozon&apos;s autonomous AI voice platform across critical production dimensions.
+          <p className="mt-4 text-base text-gray-600 leading-relaxed">
+            Compare legacy IVR systems and basic speech wrappers with our enterprise autonomous agentic architecture.
           </p>
 
-          {/* Category Filter Chips */}
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-2">
-            <button
-              type="button"
-              onClick={() => setSelectedCategory("all")}
-              className={`chip ${selectedCategory === "all" ? "is-active" : ""}`}
-              aria-pressed={selectedCategory === "all"}
-            >
-              <span>All 7 Capabilities</span>
-              <span className="count">07</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setSelectedCategory("intelligence")}
-              className={`chip ${selectedCategory === "intelligence" ? "is-active" : ""}`}
-              aria-pressed={selectedCategory === "intelligence"}
-            >
-              <span>Reasoning &amp; Adaptability</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setSelectedCategory("telephony")}
-              className={`chip ${selectedCategory === "telephony" ? "is-active" : ""}`}
-              aria-pressed={selectedCategory === "telephony"}
-            >
-              <span>Telephony &amp; Latency</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setSelectedCategory("workflow")}
-              className={`chip ${selectedCategory === "workflow" ? "is-active" : ""}`}
-              aria-pressed={selectedCategory === "workflow"}
-            >
-              <span>Tool Execution &amp; CRM</span>
-            </button>
+          {/* Category Filter Pills */}
+          <div className="mt-8 flex flex-wrap justify-center gap-2">
+            {[
+              { id: "all", label: "All Capabilities" },
+              { id: "intelligence", label: "Reasoning & Context" },
+              { id: "telephony", label: "Telephony & Latency" },
+              { id: "workflow", label: "APIs & Execution" },
+            ].map((cat) => (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => setSelectedCategory(cat.id)}
+                className={`zippee-pill text-xs font-bold cursor-pointer ${
+                  selectedCategory === cat.id ? "zippee-pill-active" : ""
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* ========================================================
-            DESKTOP COMPARISON TABLE (MD & LG SCREENS)
-            ======================================================== */}
-        <div className="mt-12 hidden md:block overflow-hidden rounded-3xl border border-line bg-paper shadow-md">
+        {/* Comparison Table for Desktop */}
+        <div className="mt-12 hidden md:block zippee-card overflow-hidden shadow-xl border border-gray-200">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-line bg-paper-2/60">
-                <th
-                  scope="col"
-                  className="w-[28%] py-5 px-6 font-mono text-xs font-bold uppercase tracking-wider text-muted"
-                >
-                  Capability / Dimension
-                </th>
-                <th
-                  scope="col"
-                  className="w-[36%] py-5 px-6 font-mono text-xs font-bold uppercase tracking-wider text-rose-800 bg-rose-50/50 border-x border-line"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="grid size-4 place-items-center rounded-full bg-rose-200 text-rose-800 text-[10px]">
-                      ✕
-                    </span>
-                    <span>Legacy Conversational IVR / Simple Bot</span>
-                  </div>
-                </th>
-                <th
-                  scope="col"
-                  className="w-[36%] py-5 px-6 font-mono text-xs font-bold uppercase tracking-wider text-emerald-300 bg-[#090d16]"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="grid size-4 place-items-center rounded-full bg-emerald-500/20 text-emerald-400 text-[10px]">
-                        ✦
-                      </span>
-                      <span className="text-white">Vozon Agentic AI Voice Platform</span>
-                    </div>
-                    <span className="rounded-full bg-emerald-500/15 border border-emerald-500/20 px-2.5 py-0.5 text-[10px] font-bold text-emerald-400">
-                      ENTERPRISE READY
-                    </span>
-                  </div>
-                </th>
+              <tr className="border-b border-gray-100 bg-gray-50/80 font-mono text-xs uppercase tracking-wider text-gray-500">
+                <th className="p-5 font-bold">Dimension</th>
+                <th className="p-5 font-bold text-red-700">Legacy Voice Bot</th>
+                <th className="p-5 font-bold text-[#9F3DA8] bg-[#FDF4FF]/80">Vozon Agentic Platform</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-line">
+            <tbody className="divide-y divide-gray-100 text-sm">
               {filteredData.map((row) => (
-                <tr
-                  key={row.id}
-                  className="group transition-colors duration-150 hover:bg-paper-2/40"
-                >
-                  {/* Column 1: Capability */}
-                  <td className="py-5 px-6 align-middle">
-                    <div className="flex flex-col">
-                      <span className="font-display text-sm lg:text-base font-bold text-ink">
-                        {row.capability}
-                      </span>
-                      <span className="font-mono text-[11px] text-muted mt-0.5">
-                        {row.categoryLabel}
-                      </span>
-                    </div>
+                <tr key={row.id} className="hover:bg-purple-50/20 transition-colors">
+                  <td className="p-5 font-bold text-[#1D1D1F]">
+                    <div>{row.capability}</div>
+                    <span className="font-mono text-[11px] text-gray-400 font-normal">
+                      {row.categoryLabel}
+                    </span>
                   </td>
-
-                  {/* Column 2: Legacy Bot */}
-                  <td className="py-5 px-6 align-middle bg-rose-50/20 border-x border-line text-xs lg:text-[13.5px] leading-relaxed text-rose-950 font-normal">
-                    <div className="flex items-start gap-2.5">
-                      <span className="mt-0.5 text-rose-500 font-bold text-sm shrink-0">
-                        ✕
-                      </span>
+                  <td className="p-5 text-gray-600">
+                    <div className="flex items-start gap-2">
+                      <span className="text-red-500 font-bold">✕</span>
                       <span>{row.legacy}</span>
                     </div>
                   </td>
-
-                  {/* Column 3: Vozon Agentic Platform */}
-                  <td className="py-5 px-6 align-middle bg-slate-900/[0.02] group-hover:bg-slate-900/[0.04] transition-colors">
-                    <div className="rounded-2xl border border-slate-800 bg-[#090d16] p-4 text-xs lg:text-[13.5px] leading-relaxed text-slate-100 shadow-sm flex flex-col justify-between">
-                      <div className="flex items-start gap-2.5">
-                        <span className="mt-0.5 text-emerald-400 font-bold text-sm shrink-0">
-                          ✦
-                        </span>
-                        <span className="font-medium text-white">
-                          {row.vozon}
-                        </span>
+                  <td className="p-5 bg-[#FDF4FF]/50 font-semibold text-purple-950">
+                    <div className="flex items-start gap-2">
+                      <span className="text-[#9F3DA8] font-bold">✦</span>
+                      <div>
+                        <span>{row.vozon}</span>
+                        {row.highlightBadge && (
+                          <span className="ml-2 zippee-pill text-[10px] bg-purple-100 text-[#9F3DA8] border-purple-200">
+                            {row.highlightBadge}
+                          </span>
+                        )}
+                        {row.metricBadge && (
+                          <span className="ml-2 zippee-pill text-[10px] bg-emerald-100 text-emerald-800 border-emerald-200">
+                            {row.metricBadge}
+                          </span>
+                        )}
                       </div>
-
-                      {(row.highlightBadge || row.metricBadge) && (
-                        <div className="mt-2.5 flex items-center gap-2 pt-2 border-t border-slate-800">
-                          {row.highlightBadge && (
-                            <span className="inline-block rounded-md bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 font-mono text-[10.5px] font-semibold text-emerald-300">
-                              {row.highlightBadge}
-                            </span>
-                          )}
-                          {row.metricBadge && (
-                            <span className="inline-block rounded-md bg-cobalt/20 border border-cobalt/30 px-2 py-0.5 font-mono text-[10.5px] font-semibold text-blue-300">
-                              {row.metricBadge}
-                            </span>
-                          )}
-                        </div>
-                      )}
                     </div>
                   </td>
                 </tr>
@@ -263,97 +173,29 @@ export function ArchitecturalComparisonSection() {
           </table>
         </div>
 
-        {/* ========================================================
-            MOBILE COMPARISON CARDS (SM & XS SCREENS)
-            ======================================================== */}
-        <div className="mt-10 space-y-5 md:hidden">
-          {filteredData.map((row, idx) => (
-            <article
-              key={row.id}
-              className="rounded-3xl border border-line bg-paper p-5 sm:p-6 shadow-sm flex flex-col justify-between"
-            >
-              {/* Card Header */}
-              <div className="flex items-center justify-between border-b border-line pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="grid size-7 place-items-center rounded-lg bg-slate-900 text-emerald-400 font-mono text-xs font-bold">
-                    0{idx + 1}
-                  </span>
-                  <h3 className="font-display text-base font-bold text-ink">
-                    {row.capability}
-                  </h3>
-                </div>
-                <span className="font-mono text-[10px] uppercase font-bold text-muted">
-                  {row.categoryLabel}
-                </span>
+        {/* Comparison Cards for Mobile */}
+        <div className="mt-8 grid gap-4 md:hidden">
+          {filteredData.map((row) => (
+            <article key={row.id} className="zippee-card p-5 space-y-3">
+              <div className="flex items-center justify-between border-b border-gray-100 pb-2">
+                <h3 className="font-bold text-sm text-[#1D1D1F]">{row.capability}</h3>
+                <span className="text-[10px] font-mono text-gray-400">{row.categoryLabel}</span>
               </div>
-
-              {/* Comparisons Stack */}
-              <div className="mt-4 space-y-3">
-                {/* Legacy simple bot box */}
-                <div className="rounded-2xl border border-rose-200/90 bg-rose-50/70 p-4 text-xs leading-relaxed text-rose-950">
-                  <div className="flex items-center gap-1.5 font-mono text-[10.5px] font-bold uppercase tracking-wider text-rose-800">
-                    <span className="grid size-3.5 place-items-center rounded-full bg-rose-200 text-[9px]">
-                      ✕
-                    </span>
-                    <span>Legacy Simple Bot / IVR</span>
-                  </div>
-                  <p className="mt-2 text-rose-950 font-normal leading-relaxed text-[12.5px]">
-                    {row.legacy}
-                  </p>
-                </div>
-
-                {/* Vozon Agentic platform box */}
-                <div className="rounded-2xl border border-slate-800 bg-[#090d16] p-4 text-xs leading-relaxed text-zinc-100 shadow-sm">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1.5 font-mono text-[10.5px] font-bold uppercase tracking-wider text-emerald-400">
-                      <span className="grid size-3.5 place-items-center rounded-full bg-emerald-500/20 text-[9px]">
-                        ✦
-                      </span>
-                      <span className="text-white">Vozon Agentic Platform</span>
-                    </div>
-                    {row.metricBadge && (
-                      <span className="font-mono text-[10px] text-blue-300 font-bold bg-cobalt/20 px-2 py-0.5 rounded">
-                        {row.metricBadge}
-                      </span>
-                    )}
-                  </div>
-                  <p className="mt-2 text-white font-medium leading-relaxed text-[13px]">
-                    {row.vozon}
-                  </p>
-
-                  {row.highlightBadge && (
-                    <div className="mt-2.5 pt-2 border-t border-slate-800">
-                      <span className="inline-block rounded bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 font-mono text-[10px] font-semibold text-emerald-300">
-                        {row.highlightBadge}
-                      </span>
-                    </div>
-                  )}
-                </div>
+              <div className="rounded-xl border border-red-200 bg-red-50/50 p-3 text-xs text-red-900">
+                <b className="block text-red-700 font-bold mb-1">✕ Legacy Bot</b>
+                <p>{row.legacy}</p>
+              </div>
+              <div className="rounded-xl border border-purple-200 bg-[#FDF4FF] p-3 text-xs text-purple-950">
+                <b className="block text-[#9F3DA8] font-bold mb-1">✦ Vozon Platform</b>
+                <p>{row.vozon}</p>
+                {row.highlightBadge && (
+                  <span className="inline-block mt-2 zippee-pill text-[10px] bg-purple-100 text-[#9F3DA8]">
+                    {row.highlightBadge}
+                  </span>
+                )}
               </div>
             </article>
           ))}
-        </div>
-
-        {/* Section Bottom Action Banner */}
-        <div className="mt-12 rounded-3xl border border-line bg-paper p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xs">
-          <div className="space-y-1 text-center sm:text-left">
-            <h4 className="font-display text-lg sm:text-xl font-bold text-ink">
-              Ready to replace rigid decision trees with autonomous agents?
-            </h4>
-            <p className="font-mono text-xs text-muted">
-              Deploy your custom voice agent across your existing SIP trunks or web applications in minutes.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3 shrink-0">
-            <a
-              href="#platform"
-              className="inline-flex items-center gap-2 rounded-xl bg-cobalt px-5 py-2.5 font-display text-xs font-semibold text-white shadow-sm hover:bg-cobalt-dark transition-all cursor-pointer"
-            >
-              <span>Test Live Voice Call</span>
-              <span className="font-mono text-sm">→</span>
-            </a>
-          </div>
         </div>
       </div>
     </section>

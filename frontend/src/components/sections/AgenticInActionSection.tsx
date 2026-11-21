@@ -116,52 +116,33 @@ export const scenarioSteps: TimelineStep[] = [
 export function AgenticInActionSection() {
   const [activeStepIndex, setActiveStepIndex] = useState<number>(0);
   const [viewMode, setViewMode] = useState<"walkthrough" | "flowchart" | "full">("walkthrough");
-
   const currentStep = scenarioSteps[activeStepIndex];
 
   return (
-    <section
-      id="agentic-in-action"
-      className="relative overflow-hidden bg-paper-2/80 py-20 md:py-28 border-t border-line text-ink scroll-mt-24"
-      aria-labelledby="scenario-title"
-    >
-      {/* Ambient Radial Highlight */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-30"
-        style={{
-          background:
-            "radial-gradient(ellipse at 50% 12%, rgba(37, 99, 235, 0.08) 0%, transparent 65%)",
-        }}
-        aria-hidden="true"
-      />
-
-      <div className="container-x relative z-10">
+    <section id="agentic-in-action" aria-labelledby="scenario-title" className="py-24 bg-white border-t border-gray-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center">
-          <p className="eyebrow text-cobalt font-semibold tracking-wider uppercase">
+        <div className="text-center max-w-3xl mx-auto">
+          <span className="zippee-pill bg-purple-50 text-purple-900 border-purple-200 font-semibold mb-3">
+            <span className="size-2 rounded-full bg-[#9F3DA8]" />
             Real-World Scenario Breakdown
-          </p>
+          </span>
 
-          <h2
-            id="scenario-title"
-            className="display-lg mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl lg:text-5xl"
-          >
-            &ldquo;Agentic in <span className="text-cobalt">Action</span>&rdquo;
+          <h2 id="scenario-title" className="zippee-title-underline text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#1D1D1F] tracking-tight mt-2">
+            &ldquo;Agentic in <span className="text-[#9F3DA8]">Action</span>&rdquo;
           </h2>
 
-          <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-muted sm:text-base font-normal">
+          <p className="mt-4 text-base text-gray-600 leading-relaxed">
             Show your enterprise prospects what happens inside the agent&apos;s brain during a 60-second call. Witness real-time reasoning, dynamic constraints, live database queries, and instant WhatsApp location dispatch.
           </p>
 
-          {/* View Mode Toggle: Interactive Walkthrough vs Flowchart vs Full Telemetry Feed */}
-          <div className="mt-8 inline-flex items-center rounded-2xl bg-paper border border-line p-1.5 shadow-xs">
+          {/* View Mode Toggle */}
+          <div className="mt-8 inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-gray-50/90 p-1.5 shadow-xs">
             <button
               type="button"
               onClick={() => setViewMode("walkthrough")}
-              className={`rounded-xl px-4 sm:px-5 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
-                viewMode === "walkthrough"
-                  ? "bg-cobalt text-white shadow-sm"
-                  : "text-muted hover:text-ink hover:bg-paper-2"
+              className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                viewMode === "walkthrough" ? "bg-[#9F3DA8] text-white shadow-xs" : "text-gray-700 hover:text-[#9F3DA8]"
               }`}
               aria-pressed={viewMode === "walkthrough"}
             >
@@ -171,10 +152,8 @@ export function AgenticInActionSection() {
             <button
               type="button"
               onClick={() => setViewMode("flowchart")}
-              className={`rounded-xl px-4 sm:px-5 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
-                viewMode === "flowchart"
-                  ? "bg-cobalt text-white shadow-sm"
-                  : "text-muted hover:text-ink hover:bg-paper-2"
+              className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                viewMode === "flowchart" ? "bg-[#9F3DA8] text-white shadow-xs" : "text-gray-700 hover:text-[#9F3DA8]"
               }`}
               aria-pressed={viewMode === "flowchart"}
             >
@@ -184,10 +163,8 @@ export function AgenticInActionSection() {
             <button
               type="button"
               onClick={() => setViewMode("full")}
-              className={`rounded-xl px-4 sm:px-5 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
-                viewMode === "full"
-                  ? "bg-cobalt text-white shadow-sm"
-                  : "text-muted hover:text-ink hover:bg-paper-2"
+              className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                viewMode === "full" ? "bg-[#9F3DA8] text-white shadow-xs" : "text-gray-700 hover:text-[#9F3DA8]"
               }`}
               aria-pressed={viewMode === "full"}
             >
@@ -197,91 +174,57 @@ export function AgenticInActionSection() {
           </div>
         </div>
 
-        {/* ========================================================
-            MODE 1: INTERACTIVE STEP-BY-STEP REPLAY WALKTHROUGH
-            ======================================================== */}
+        {/* MODE 1: STEP-BY-STEP REPLAY */}
         {viewMode === "walkthrough" && (
-          <div className="mt-12 w-full">
-            {/* Timeline Progress Stepper */}
-            <div className="flex items-center justify-between gap-1 sm:gap-2 overflow-x-auto pb-3 border-b border-line">
+          <div className="mt-12 space-y-6">
+            {/* Stepper Progress Bar */}
+            <div className="flex flex-wrap items-center justify-center gap-2">
               {scenarioSteps.map((step, idx) => {
                 const isActive = activeStepIndex === idx;
-                const isPassed = activeStepIndex > idx;
-
                 return (
                   <button
                     key={step.id}
                     type="button"
                     onClick={() => setActiveStepIndex(idx)}
-                    className={`flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-mono transition-all cursor-pointer whitespace-nowrap shrink-0 ${
-                      isActive
-                        ? "bg-cobalt text-white shadow-sm font-bold"
-                        : isPassed
-                        ? "bg-paper text-ink border border-line hover:border-cobalt/40"
-                        : "text-muted hover:text-ink"
+                    className={`zippee-pill font-mono text-xs cursor-pointer ${
+                      isActive ? "zippee-pill-active" : ""
                     }`}
                   >
-                    <span className="font-bold">[{step.timestamp}]</span>
-                    <span className="hidden md:inline font-sans font-medium text-[11.5px]">
-                      {step.type === "caller"
-                        ? "Caller"
-                        : step.type === "brain"
-                        ? "Brain Reasoning"
-                        : "Agent Speaks"}
+                    <span>[{step.timestamp}]</span>
+                    <span className="font-bold">
+                      {step.type === "caller" ? "Caller" : step.type === "brain" ? "Brain" : "Agent"}
                     </span>
                   </button>
                 );
               })}
             </div>
 
-            {/* Main Stage: Call Inspector Display */}
-            <div className="mt-6 rounded-3xl border border-line bg-paper p-6 sm:p-10 shadow-md">
-              {/* Event Badge Header */}
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-4">
+            {/* Main Inspection Stage */}
+            <div className="zippee-card p-6 sm:p-10 shadow-xl border border-gray-200">
+              <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 pb-4">
                 <div className="flex items-center gap-3">
-                  <span className="grid size-9 place-items-center rounded-xl bg-slate-900 text-emerald-400 font-mono text-xs font-bold shadow-sm border border-slate-800">
+                  <span className="size-8 rounded-lg bg-[#9F3DA8] text-white font-mono text-xs font-bold grid place-items-center">
                     {currentStep.timestamp}
                   </span>
                   <div>
-                    <h3 className="font-display text-lg font-bold text-ink">
-                      {currentStep.title}
-                    </h3>
-                    <p className="font-mono text-[11px] text-muted">
-                      Elapsed Time: {currentStep.seconds}s of call session
-                    </p>
+                    <h3 className="text-lg font-bold text-[#1D1D1F]">{currentStep.title}</h3>
+                    <p className="text-xs text-gray-500 font-mono">Elapsed: {currentStep.seconds}s of call session</p>
                   </div>
                 </div>
-
-                <span
-                  className={`rounded-full px-3 py-1 font-mono text-xs font-bold uppercase tracking-wider ${
-                    currentStep.type === "caller"
-                      ? "bg-rose-100 text-rose-800"
-                      : currentStep.type === "brain"
-                      ? "bg-[#090d16] text-emerald-400 border border-slate-800"
-                      : "bg-emerald-100 text-emerald-800"
-                  }`}
-                >
-                  {currentStep.type === "caller"
-                    ? "Inbound Audio"
-                    : currentStep.type === "brain"
-                    ? "Autonomous Telemetry"
-                    : "Synthesized Output"}
+                <span className="zippee-pill bg-purple-50 text-purple-900 border-purple-200 font-bold">
+                  {currentStep.type === "caller" ? "Inbound Audio" : currentStep.type === "brain" ? "Autonomous Telemetry" : "Synthesized Output"}
                 </span>
               </div>
 
               {/* Event Body */}
-              <div className="mt-7">
-                {/* 1. Caller Speech Bubble */}
+              <div className="mt-6">
                 {currentStep.type === "caller" && (
-                  <div className="rounded-2xl border border-line bg-paper-2 p-6 sm:p-8">
-                    <div className="flex items-center gap-2 font-mono text-xs font-bold text-muted uppercase tracking-wider">
-                      <span className="size-2 rounded-full bg-rose-500" />
-                      <span>Caller Voice Input</span>
-                    </div>
-                    <blockquote className="mt-4 font-display text-xl sm:text-2xl font-bold text-ink leading-relaxed">
+                  <div className="rounded-2xl border border-gray-200 bg-gray-50/70 p-6 space-y-3">
+                    <span className="zippee-pill text-xs font-mono font-bold bg-white text-gray-700">Caller Voice Input</span>
+                    <blockquote className="text-lg font-bold text-[#1D1D1F]">
                       &ldquo;{currentStep.text}&rdquo;
                     </blockquote>
-                    <div className="mt-5 flex items-center gap-4 text-xs font-mono text-muted border-t border-line pt-4">
+                    <div className="flex flex-wrap gap-3 font-mono text-xs text-gray-400 pt-2 border-t border-gray-200/60">
                       <span>STT Latency: ~140ms</span>
                       <span>•</span>
                       <span>Audio VAD: Active</span>
@@ -291,161 +234,84 @@ export function AgenticInActionSection() {
                   </div>
                 )}
 
-                {/* 2. Agent Brain Reasoning Card with Dynamic System Mockup */}
                 {currentStep.type === "brain" && currentStep.brainData && (
-                  <div className="grid gap-6 lg:grid-cols-12 items-stretch">
-                    {/* Left: Reasoning & Tool Code */}
-                    <div className="lg:col-span-7 rounded-2xl border border-slate-800 bg-[#090d16] p-6 sm:p-8 text-slate-100 shadow-xl flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-                          <div className="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-wider text-emerald-400">
-                            <span className="grid size-4 place-items-center rounded-full bg-emerald-500/20 text-[10px]">✦</span>
-                            <span>{currentStep.brainData.stepType}</span>
-                          </div>
-                          <span className="font-mono text-[11px] text-slate-400">
-                            Cognitive Latency: &lt;180ms
-                          </span>
+                  <div className="grid gap-6 lg:grid-cols-12 items-start">
+                    <div className="lg:col-span-7 zippee-dark-card p-6 space-y-4 shadow-xl">
+                      <div className="flex justify-between items-center border-b border-white/10 pb-3 font-mono text-xs">
+                        <span className="text-[#c084fc] font-bold">✦ {currentStep.brainData.stepType}</span>
+                        <span className="text-emerald-400">Cognitive Latency: &lt;180ms</span>
+                      </div>
+
+                      {currentStep.brainData.goal && (
+                        <div>
+                          <span className="text-[11px] font-mono uppercase text-gray-400 block mb-1">Extracted Goal:</span>
+                          <p className="text-xs text-purple-200 font-mono">{currentStep.brainData.goal}</p>
                         </div>
+                      )}
 
-                        {/* Extracted Goal & Constraints */}
-                        {currentStep.brainData.goal && (
-                          <div className="mt-5 rounded-xl bg-slate-900/60 border border-slate-800 p-4">
-                            <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
-                              Extracted Goal &amp; Dynamic Constraints:
-                            </span>
-                            <p className="font-mono text-xs sm:text-[13px] text-slate-200 leading-relaxed">
-                              - {currentStep.brainData.goal}
-                            </p>
-                          </div>
-                        )}
-
-                        {/* Tool Calls */}
-                        <div className="mt-5 space-y-4">
-                          <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-emerald-400 block">
-                            Live Tool Execution:
-                          </span>
-                          {currentStep.brainData.toolCalls.map((tc, tIdx) => (
-                            <div
-                              key={tIdx}
-                              className="rounded-xl border border-slate-800 bg-[#060911] p-4 font-mono text-xs sm:text-[13px]"
-                            >
-                              <div className="flex items-center justify-between text-slate-400 pb-2 border-b border-slate-800">
-                                <span className="font-bold text-emerald-400">{tc.name}</span>
-                                <span className="text-[11px] text-emerald-400">● Status: 200 OK</span>
-                              </div>
-                              <div className="mt-2.5 overflow-x-auto py-1 text-slate-100 font-mono">
-                                <span className="text-slate-500 mr-2">&gt;</span>
-                                <span className="text-emerald-300">{tc.code}</span>
-                              </div>
-                              {tc.result && (
-                                <div className="mt-2.5 text-xs text-slate-300 border-t border-slate-800 pt-2 flex items-start gap-2">
-                                  <span className="text-slate-500 shrink-0 font-bold">↳ Result:</span>
-                                  <span className="text-emerald-300 font-semibold">{tc.result}</span>
-                                </div>
-                              )}
+                      <div className="space-y-3">
+                        <span className="text-[11px] font-mono uppercase text-gray-400 block">Live Tool Execution:</span>
+                        {currentStep.brainData.toolCalls.map((tc, tIdx) => (
+                          <div key={tIdx} className="rounded-xl bg-black/60 p-3 font-mono text-xs border border-white/10 space-y-1">
+                            <div className="flex justify-between text-purple-300 font-bold">
+                              <span>{tc.name}</span>
+                              <span className="text-emerald-400">● 200 OK</span>
                             </div>
-                          ))}
-                        </div>
+                            <p className="text-gray-300 font-semibold">{tc.code}</p>
+                            {tc.result && <p className="text-emerald-300 text-[11px]">↳ {tc.result}</p>}
+                          </div>
+                        ))}
                       </div>
                     </div>
 
-                    {/* Right: Visual Generated Artifact (Doctor Schedule / WhatsApp Mockup) */}
                     {currentStep.image && (
-                      <div className="lg:col-span-5 rounded-2xl border border-slate-800 bg-[#090d16] p-5 text-slate-100 shadow-xl flex flex-col justify-between">
-                        <div>
-                          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                            <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-                              <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
-                              Real-Time Execution Artifact
-                            </span>
-                            <span className="rounded-full bg-slate-800 px-2.5 py-0.5 font-mono text-[10px] text-slate-300 border border-slate-700">
-                              [{currentStep.timestamp}]
-                            </span>
-                          </div>
-
-                          <div className="relative mt-4 w-full aspect-[16/10] bg-[#060911] rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
-                            <Image
-                              src={currentStep.image}
-                              alt={currentStep.imageAlt || currentStep.title}
-                              fill
-                              sizes="(max-width: 1024px) 100vw, 450px"
-                              className="object-contain p-1"
-                              priority
-                            />
-                          </div>
+                      <div className="lg:col-span-5 rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                        <div className="relative aspect-video w-full rounded-xl overflow-hidden bg-white shadow-sm mb-3">
+                          <Image
+                            src={currentStep.image}
+                            alt={currentStep.imageAlt || currentStep.title}
+                            fill
+                            className="object-contain p-2"
+                            priority
+                          />
                         </div>
-
-                        <p className="mt-3 font-mono text-xs text-slate-300 text-center border-t border-slate-800 pt-2.5">
-                          {currentStep.imageCaption}
-                        </p>
+                        <p className="text-xs text-gray-500 italic text-center">{currentStep.imageCaption}</p>
                       </div>
                     )}
                   </div>
                 )}
 
-                {/* 3. Agent Speaks Output with Visual Artifact */}
                 {currentStep.type === "agent" && (
-                  <div className="grid gap-6 lg:grid-cols-12 items-stretch">
-                    {/* Speech Box */}
-                    <div
-                      className={`rounded-2xl border border-emerald-500/20 bg-emerald-50/60 p-6 sm:p-8 flex flex-col justify-between ${
-                        currentStep.image ? "lg:col-span-7" : "lg:col-span-12"
-                      }`}
-                    >
-                      <div>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2 font-mono text-xs font-bold text-emerald-900 uppercase tracking-wider">
-                            <span className="size-2 rounded-full bg-emerald-600 animate-ping" />
-                            <span>Vozon Voice Agent Speaks</span>
-                          </div>
-                          <div className="flex items-center gap-1.5 font-mono text-[11px] text-emerald-700">
-                            <span className="inline-block size-1.5 rounded-full bg-emerald-600" />
-                            <span>Streaming TTS (24kHz HD)</span>
-                          </div>
-                        </div>
-                        <blockquote className="mt-4 font-display text-xl sm:text-2xl font-bold text-emerald-950 leading-relaxed">
-                          &ldquo;{currentStep.text}&rdquo;
-                        </blockquote>
+                  <div className="grid gap-6 lg:grid-cols-12 items-center">
+                    <div className="lg:col-span-7 rounded-2xl border border-purple-200 bg-[#FDF4FF] p-6 space-y-3">
+                      <div className="flex justify-between items-center text-xs font-mono">
+                        <span className="text-[#9F3DA8] font-bold">Vozon Voice Agent Speaks</span>
+                        <span className="text-purple-600 font-bold">Streaming TTS (24kHz HD)</span>
                       </div>
-
-                      <div className="mt-6 flex flex-wrap items-center gap-4 text-xs font-mono text-emerald-800 border-t border-emerald-200/80 pt-4">
-                        <span>Total Turnaround: &lt;450ms</span>
+                      <blockquote className="text-lg font-bold text-purple-950">
+                        &ldquo;{currentStep.text}&rdquo;
+                      </blockquote>
+                      <div className="flex flex-wrap gap-3 font-mono text-xs text-purple-800/70 pt-2 border-t border-purple-200/50">
+                        <span>Turnaround: &lt;450ms</span>
                         <span>•</span>
-                        <span>Natural Barge-in: Enabled</span>
+                        <span>Barge-in: Enabled</span>
                         <span>•</span>
-                        <span>Emotion: Calm &amp; Helpful</span>
+                        <span>Tone: Helpful</span>
                       </div>
                     </div>
 
-                    {/* WhatsApp Delivered Confirmation Mockup on Step 6 */}
                     {currentStep.image && (
-                      <div className="lg:col-span-5 rounded-2xl border border-slate-800 bg-[#090d16] p-5 text-slate-100 shadow-xl flex flex-col justify-between">
-                        <div>
-                          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                            <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-                              <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
-                              WhatsApp Delivery Verified
-                            </span>
-                            <span className="rounded-full bg-emerald-500/15 border border-emerald-500/20 px-2.5 py-0.5 font-mono text-[10px] text-emerald-400 font-semibold">
-                              ● Delivered
-                            </span>
-                          </div>
-
-                          <div className="relative mt-4 w-full aspect-[16/10] bg-[#060911] rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
-                            <Image
-                              src={currentStep.image}
-                              alt={currentStep.imageAlt || currentStep.title}
-                              fill
-                              sizes="(max-width: 1024px) 100vw, 450px"
-                              className="object-contain p-1"
-                              priority
-                            />
-                          </div>
+                      <div className="lg:col-span-5 rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                        <div className="relative aspect-video w-full rounded-xl overflow-hidden bg-white shadow-sm mb-3">
+                          <Image
+                            src={currentStep.image}
+                            alt={currentStep.imageAlt || currentStep.title}
+                            fill
+                            className="object-contain p-2"
+                            priority
+                          />
                         </div>
-
-                        <p className="mt-3 font-mono text-xs text-slate-300 text-center border-t border-slate-800 pt-2.5">
-                          {currentStep.imageCaption}
-                        </p>
+                        <p className="text-xs text-gray-500 italic text-center">{currentStep.imageCaption}</p>
                       </div>
                     )}
                   </div>
@@ -453,276 +319,125 @@ export function AgenticInActionSection() {
               </div>
 
               {/* Step Navigation Controls */}
-              <div className="mt-8 flex items-center justify-between border-t border-line pt-5">
+              <div className="mt-8 pt-6 border-t border-gray-100 flex items-center justify-between">
                 <button
                   type="button"
                   disabled={activeStepIndex === 0}
                   onClick={() => setActiveStepIndex((prev) => Math.max(0, prev - 1))}
-                  className={`inline-flex items-center gap-1.5 rounded-full border border-line bg-paper px-3 sm:px-4 py-2 font-display text-xs font-semibold text-ink shadow-xs transition-colors ${
-                    activeStepIndex === 0
-                      ? "opacity-40 cursor-not-allowed"
-                      : "hover:border-ink cursor-pointer"
-                  }`}
+                  className="zippee-btn-secondary text-xs px-4 py-2 disabled:opacity-30 disabled:cursor-not-allowed"
                 >
-                  <span>←</span>
-                  <span className="hidden sm:inline">Previous Second</span>
-                  <span className="sm:hidden">Prev</span>
+                  ← Previous Second
                 </button>
-
-                <div className="font-mono text-xs text-muted">
+                <span className="font-mono text-xs text-gray-500 font-bold">
                   Step {activeStepIndex + 1} of {scenarioSteps.length}
-                </div>
-
+                </span>
                 <button
                   type="button"
                   disabled={activeStepIndex === scenarioSteps.length - 1}
-                  onClick={() =>
-                    setActiveStepIndex((prev) => Math.min(scenarioSteps.length - 1, prev + 1))
-                  }
-                  className={`inline-flex items-center gap-1.5 rounded-full border border-line bg-paper px-3 sm:px-4 py-2 font-display text-xs font-semibold text-ink shadow-xs transition-colors ${
-                    activeStepIndex === scenarioSteps.length - 1
-                      ? "opacity-40 cursor-not-allowed"
-                      : "hover:border-ink cursor-pointer"
-                  }`}
+                  onClick={() => setActiveStepIndex((prev) => Math.min(scenarioSteps.length - 1, prev + 1))}
+                  className="zippee-btn-primary text-xs px-4 py-2 disabled:opacity-30 disabled:cursor-not-allowed"
                 >
-                  <span className="hidden sm:inline">Next Second</span>
-                  <span className="sm:hidden">Next</span>
-                  <span>→</span>
+                  Next Second →
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* ========================================================
-            MODE 2: SEQUENCE FLOWCHART (USER'S DIAGRAM & ARTIFACTS)
-            ======================================================== */}
+        {/* MODE 2: SEQUENCE FLOWCHART */}
         {viewMode === "flowchart" && (
-          <div className="mt-12 w-full space-y-8">
-            {/* Top Card: User-Provided 3-Lane Architecture Diagram */}
-            <div className="rounded-3xl border border-slate-800 bg-[#090d16] p-6 sm:p-10 shadow-2xl text-slate-100">
-              <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4">
+          <div className="mt-12 space-y-8">
+            <div className="zippee-card p-6 sm:p-10 shadow-xl border border-gray-200">
+              <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 pb-4 mb-6">
                 <div>
-                  <span className="eyebrow text-emerald-400 font-semibold tracking-wider">
-                    3-Lane Cognitive Sequence
-                  </span>
-                  <h3 className="font-display text-xl sm:text-2xl font-bold text-white mt-1">
-                    Caller vs. Agent Brain vs. Agent Speaks
-                  </h3>
+                  <span className="zippee-pill bg-purple-50 text-purple-900 font-bold text-xs">3-Lane Cognitive Sequence</span>
+                  <h3 className="text-xl font-bold text-[#1D1D1F] mt-1">Caller vs. Agent Brain vs. Agent Speaks</h3>
                 </div>
-
-                {/* Color Legend matching uploaded diagram */}
-                <div className="flex items-center gap-3 font-mono text-[11px]">
-                  <span className="flex items-center gap-1.5 text-slate-400">
-                    <span className="size-2.5 rounded-full bg-slate-500" />
-                    <span>Caller</span>
-                  </span>
-                  <span className="flex items-center gap-1.5 text-purple-300">
-                    <span className="size-2.5 rounded-full bg-purple-500" />
-                    <span>Thinking &amp; Speaking</span>
-                  </span>
-                  <span className="flex items-center gap-1.5 text-emerald-300">
-                    <span className="size-2.5 rounded-full bg-emerald-500" />
-                    <span>Tool Calls</span>
-                  </span>
+                <div className="flex items-center gap-3 font-mono text-xs">
+                  <span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-gray-400" /> Caller</span>
+                  <span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-[#9F3DA8]" /> Thinking</span>
+                  <span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-emerald-500" /> Tool Calls</span>
                 </div>
               </div>
 
-              {/* Uploaded Sequence Diagram Image */}
-              <div className="relative mt-6 w-full aspect-[4/3] sm:aspect-[16/10] md:aspect-[16/9] max-h-[560px] bg-[#060911] rounded-2xl overflow-hidden border border-slate-800 flex items-center justify-center">
+              <div className="relative aspect-2/1 w-full rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 shadow-inner">
                 <Image
                   src="/images/scenario/agentic-in-action-timeline.png"
                   alt="Agentic in Action 3-lane sequence flowchart: Caller vs Agent Brain vs Agent Speaks"
                   fill
+                  className="object-contain p-4"
                   sizes="(max-width: 1024px) 100vw, 1000px"
-                  className="object-contain p-2"
                   priority
                 />
               </div>
-
-              <p className="mt-4 text-center font-mono text-xs text-slate-400">
+              <p className="mt-4 text-xs text-gray-500 text-center italic">
                 Gray: Caller input • Purple: Agent reasoning and voice output • Emerald: Real-time autonomous tool calls.
               </p>
             </div>
 
-            {/* Generated Real-World Artifacts: WhatsApp Message & Doctor Calendar Side-by-Side */}
-            <div className="grid gap-6 md:grid-cols-2">
-              {/* Doctor Schedule Live Query */}
-              <div className="rounded-3xl border border-slate-800 bg-[#090d16] p-6 text-slate-100 shadow-xl flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                    <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-                      <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
-                      Live Calendar Query Result
-                    </span>
-                    <span className="font-mono text-[10px] text-slate-400">[00:03]</span>
-                  </div>
-
-                  <div className="relative mt-4 w-full aspect-[16/10] bg-[#060911] rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
-                    <Image
-                      src="/images/scenario/doctor-schedule-calendar.jpg"
-                      alt="Doctor Schedule Availability Calendar"
-                      fill
-                      sizes="(max-width: 768px) 100vw, 500px"
-                      className="object-contain p-2"
-                      priority
-                    />
-                  </div>
+            {/* Generated Artifacts Side-by-Side */}
+            <div className="grid gap-6 sm:grid-cols-2">
+              <div className="zippee-card p-5">
+                <div className="relative aspect-video w-full rounded-xl overflow-hidden mb-3">
+                  <Image src="/images/scenario/doctor-schedule-calendar.jpg" alt="Doctor Schedule Availability Calendar" fill className="object-contain" priority />
                 </div>
-
-                <div className="mt-4 font-mono text-xs text-slate-300 border-t border-slate-800 pt-3">
-                  <p className="font-bold text-white">Tool: execute_tool(&apos;check_doctor_schedule&apos;)</p>
-                  <p className="text-emerald-400 mt-1">↳ Result: 5:30 PM &amp; 6:15 PM openings identified</p>
-                </div>
+                <p className="font-mono text-xs font-bold text-[#9F3DA8]">Tool: execute_tool(&apos;check_doctor_schedule&apos;)</p>
+                <p className="text-xs text-gray-500 mt-1">↳ Result: 5:30 PM &amp; 6:15 PM openings identified</p>
               </div>
 
-              {/* WhatsApp Message & Location Card */}
-              <div className="rounded-3xl border border-slate-800 bg-[#090d16] p-6 text-slate-100 shadow-xl flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                    <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-                      <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
-                      WhatsApp Location &amp; Confirmation
-                    </span>
-                    <span className="font-mono text-[10px] text-slate-400">[00:11 - 00:13]</span>
-                  </div>
-
-                  <div className="relative mt-4 w-full aspect-[16/10] bg-[#060911] rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
-                    <Image
-                      src="/images/scenario/whatsapp-clinic-confirmation.jpg"
-                      alt="WhatsApp message and clinic location map"
-                      fill
-                      sizes="(max-width: 768px) 100vw, 500px"
-                      className="object-contain p-2"
-                      priority
-                    />
-                  </div>
+              <div className="zippee-card p-5">
+                <div className="relative aspect-video w-full rounded-xl overflow-hidden mb-3">
+                  <Image src="/images/scenario/whatsapp-clinic-confirmation.jpg" alt="WhatsApp message and clinic location map" fill className="object-contain" priority />
                 </div>
-
-                <div className="mt-4 font-mono text-xs text-slate-300 border-t border-slate-800 pt-3">
-                  <p className="font-bold text-white">Tool: execute_tool(&apos;send_whatsapp_location&apos;)</p>
-                  <p className="text-emerald-400 mt-1">↳ Result: Verified clinic map delivered to caller&apos;s phone</p>
-                </div>
+                <p className="font-mono text-xs font-bold text-emerald-600">Tool: execute_tool(&apos;send_whatsapp_location&apos;)</p>
+                <p className="text-xs text-gray-500 mt-1">↳ Result: Verified clinic map delivered to caller&apos;s phone</p>
               </div>
             </div>
           </div>
         )}
 
-        {/* ========================================================
-            MODE 3: FULL CALL TELEMETRY LOG (ALL 60-SEC EVENTS)
-            ======================================================== */}
+        {/* MODE 3: FULL LOG */}
         {viewMode === "full" && (
-          <div className="mt-12 w-full space-y-6">
+          <div className="mt-12 space-y-4">
             {scenarioSteps.map((step) => (
-              <div
-                key={step.id}
-                className="rounded-3xl border border-line bg-paper p-6 sm:p-8 shadow-xs"
-              >
-                {/* Header */}
-                <div className="flex items-center justify-between border-b border-line pb-3">
-                  <div className="flex items-center gap-3">
-                    <span className="grid size-8 place-items-center rounded-xl bg-slate-900 text-emerald-400 font-mono text-xs font-bold border border-slate-800">
-                      {step.timestamp}
-                    </span>
-                    <span className="font-display text-base font-bold text-ink">
-                      {step.speaker || step.title}
-                    </span>
+              <div key={step.id} className="zippee-card p-5 space-y-2">
+                <div className="flex items-center justify-between border-b border-gray-100 pb-2 text-xs font-mono">
+                  <span className="font-bold text-[#9F3DA8]">[{step.timestamp}] {step.speaker || step.title}</span>
+                  <span className="zippee-pill text-[10px] uppercase font-bold">{step.type}</span>
+                </div>
+                {step.text && <p className="text-sm font-semibold text-[#1D1D1F]">&ldquo;{step.text}&rdquo;</p>}
+                {step.brainData && (
+                  <div className="text-xs font-mono space-y-1 text-purple-900">
+                    {step.brainData.goal && <p>- Goal: {step.brainData.goal}</p>}
+                    {step.brainData.toolCalls.map((tc, tIdx) => (
+                      <p key={tIdx}>- {tc.name}: {tc.code} {tc.result && `-> ${tc.result}`}</p>
+                    ))}
                   </div>
-                  <span
-                    className={`rounded-full px-2.5 py-0.5 font-mono text-[10.5px] font-bold uppercase ${
-                      step.type === "caller"
-                        ? "bg-rose-100 text-rose-800"
-                        : step.type === "brain"
-                        ? "bg-[#090d16] text-emerald-400 border border-slate-800"
-                        : "bg-emerald-100 text-emerald-800"
-                    }`}
-                  >
-                    {step.type}
-                  </span>
-                </div>
-
-                {/* Content */}
-                <div className="mt-4">
-                  {step.text && (
-                    <p
-                      className={`text-sm sm:text-base leading-relaxed ${
-                        step.type === "agent"
-                          ? "font-bold text-emerald-950"
-                          : "font-medium text-ink"
-                      }`}
-                    >
-                      &ldquo;{step.text}&rdquo;
-                    </p>
-                  )}
-
-                  {step.brainData && (
-                    <div className="rounded-2xl border border-slate-800 bg-[#090d16] p-5 text-slate-100 space-y-3 font-mono text-xs">
-                      {step.brainData.goal && (
-                        <p className="text-slate-300">
-                          <span className="text-slate-500">- Goal:</span> {step.brainData.goal}
-                        </p>
-                      )}
-                      {step.brainData.toolCalls.map((tc, tIdx) => (
-                        <div key={tIdx} className="space-y-1">
-                          <p className="text-emerald-400 font-bold">
-                            - {tc.name}: <span className="font-normal text-white">{tc.code}</span>
-                          </p>
-                          {tc.result && (
-                            <p className="text-emerald-400 pl-4">
-                              - Result: {tc.result}
-                            </p>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Visual Artifact in Log View if present */}
-                  {step.image && (
-                    <div className="mt-4 rounded-2xl border border-slate-800 bg-[#090d16] p-4 text-slate-100">
-                      <span className="font-mono text-[10px] uppercase font-bold text-emerald-400 block mb-2">
-                        Artifact Generated at [{step.timestamp}]:
-                      </span>
-                      <div className="relative w-full aspect-[16/9] max-w-md bg-[#060911] rounded-xl overflow-hidden border border-slate-800">
-                        <Image
-                          src={step.image}
-                          alt={step.imageAlt || step.title}
-                          fill
-                          sizes="(max-width: 768px) 100vw, 400px"
-                          className="object-contain p-2"
-                        />
-                      </div>
-                      <p className="mt-2 font-mono text-[11px] text-slate-400">
-                        {step.imageCaption}
-                      </p>
-                    </div>
-                  )}
-                </div>
+                )}
               </div>
             ))}
           </div>
         )}
 
-        {/* Section Bottom Proof Strip */}
-        <div className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 text-center">
-          <div className="rounded-2xl border border-line bg-paper p-3.5 sm:p-4">
-            <span className="font-display text-lg sm:text-2xl font-bold text-cobalt truncate block">&lt;500ms</span>
-            <span className="block font-mono text-[10px] sm:text-[11px] text-muted mt-0.5">End-to-End Latency</span>
+        {/* Bottom Proof Strip */}
+        <div className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-4 pt-10 border-t border-gray-100">
+          <div className="zippee-card p-4 text-center">
+            <span className="text-2xl font-black text-[#9F3DA8] block">&lt;500ms</span>
+            <span className="text-xs text-gray-500 font-semibold">End-to-End Latency</span>
           </div>
-          <div className="rounded-2xl border border-line bg-paper p-3.5 sm:p-4">
-            <span className="font-display text-lg sm:text-2xl font-bold text-cobalt truncate block">100%</span>
-            <span className="block font-mono text-[10px] sm:text-[11px] text-muted mt-0.5">Real-Time Tool Execution</span>
+          <div className="zippee-card p-4 text-center">
+            <span className="text-2xl font-black text-[#9F3DA8] block">100%</span>
+            <span className="text-xs text-gray-500 font-semibold">Real-Time Tool Execution</span>
           </div>
-          <div className="rounded-2xl border border-line bg-paper p-3.5 sm:p-4">
-            <span className="font-display text-lg sm:text-2xl font-bold text-cobalt truncate block">Multi-Tool</span>
-            <span className="block font-mono text-[10px] sm:text-[11px] text-muted mt-0.5">Parallel API Planning</span>
+          <div className="zippee-card p-4 text-center">
+            <span className="text-2xl font-black text-[#9F3DA8] block">Multi-Tool</span>
+            <span className="text-xs text-gray-500 font-semibold">Parallel API Planning</span>
           </div>
-          <div className="rounded-2xl border border-line bg-paper p-3.5 sm:p-4">
-            <span className="font-display text-lg sm:text-2xl font-bold text-cobalt truncate block">Omnichannel</span>
-            <span className="block font-mono text-[10px] sm:text-[11px] text-muted mt-0.5">WhatsApp + CRM Sync</span>
+          <div className="zippee-card p-4 text-center">
+            <span className="text-2xl font-black text-[#9F3DA8] block">Omnichannel</span>
+            <span className="text-xs text-gray-500 font-semibold">WhatsApp + CRM Sync</span>
           </div>
         </div>
-
       </div>
     </section>
   );

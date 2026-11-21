@@ -22,7 +22,11 @@ interface LayerData {
     protocol: string;
     latency: string;
     status: string;
-    metrics: { label: string; value: string; pass: boolean }[];
+    metrics: {
+      label: string;
+      value: string;
+      pass: boolean;
+    }[];
     codeSnippet: string;
   };
 }
@@ -34,26 +38,23 @@ const architectureLayers: LayerData[] = [
     name: "The Perception Layer",
     tagline: "Acoustic & Sensory Intelligence",
     badge: "<120ms Barge-In • Full-Duplex",
-    accentColor: "text-[#0284c7]",
-    badgeStyle: "bg-sky-50 text-sky-800 border-sky-200",
-    bgGlow: "rgba(2, 132, 199, 0.05)",
+    accentColor: "text-purple-600",
+    badgeStyle: "bg-purple-50 text-purple-900 border-purple-200",
+    bgGlow: "rgba(159, 61, 168, 0.05)",
     points: [
       {
         title: "Real-Time Full-Duplex WebSockets with LiveKit audio pipelines",
-        details:
-          "Ultra-low overhead bi-directional streaming of raw 24kHz PCM audio frames. Eliminates buffer bloat and packet jitter so agent and human can converse naturally without turn-taking delays.",
+        details: "Ultra-low overhead bi-directional streaming of raw 24kHz PCM audio frames. Eliminates buffer bloat and packet jitter so agent and human can converse naturally without turn-taking delays.",
         meta: "LiveKit RTC Engine • 24kHz HD Audio",
       },
       {
         title: "Voice Activity Detection (VAD) tuned to filter out background office noise, speaker echo, and coughs",
-        details:
-          "Deep acoustic neural classification isolates genuine human speech phonemes from keyboard clatter, coffee shop chatter, HVAC hum, acoustic feedback, and accidental vocal ticks.",
+        details: "Deep acoustic neural classification isolates genuine human speech phonemes from keyboard clatter, coffee shop chatter, HVAC hum, acoustic feedback, and accidental vocal ticks.",
         meta: "Neural Acoustic Classifier • -48dB SNR",
       },
       {
         title: "Instant barge-in: Stops generating audio in <120ms when the user speaks",
-        details:
-          "Sub-120ms acoustic reflex loop instantly terminates downstream TTS packet transmission the moment caller speech onset is detected. Zero clumsy talking over callers.",
+        details: "Sub-120ms acoustic reflex loop instantly terminates downstream TTS packet transmission the moment caller speech onset is detected. Zero clumsy talking over callers.",
         meta: "Acoustic Reflex < 120ms • Zero Audio Overlap",
       },
     ],
@@ -87,26 +88,23 @@ const audioStream = new LiveKit.AudioReceiver({
     name: "The Cognitive Layer",
     tagline: "Autonomous Planning & Reasoning",
     badge: "Multi-LLM ReAct • Strict Schema",
-    accentColor: "text-cobalt",
-    badgeStyle: "bg-blue-50 text-blue-900 border-blue-200",
-    bgGlow: "rgba(37, 99, 235, 0.05)",
+    accentColor: "text-[#9F3DA8]",
+    badgeStyle: "bg-purple-100 text-purple-950 border-purple-300",
+    bgGlow: "rgba(159, 61, 168, 0.05)",
     points: [
       {
         title: "Low-latency LLM orchestration (Gemini 2.0 Flash, GPT-4o, Claude 3.5 Sonnet, Sarvam Indic)",
-        details:
-          "Dynamic model routing engine selects the optimal reasoning model based on query intent, language nuances, and latency budgets—balancing sub-300ms reflex responses with complex multi-turn logic.",
+        details: "Dynamic model routing engine selects the optimal reasoning model based on query intent, language nuances, and latency budgets—balancing sub-300ms reflex responses with complex multi-turn logic.",
         meta: "Dynamic Model Router • Sub-300ms TTFT",
       },
       {
         title: "Multi-step function calling with strict schema enforcement",
-        details:
-          "Deterministic ReAct planning cycle inspects and validates API payloads against strict Pydantic/JSON schemas before execution, eliminating malformed tool calls and broken transactions.",
+        details: "Deterministic ReAct planning cycle inspects and validates API payloads against strict Pydantic/JSON schemas before execution, eliminating malformed tool calls and broken transactions.",
         meta: "Pydantic Schema Validation • Zero Tool Failures",
       },
       {
         title: "Guardrails to prevent hallucinations, policy violations, or prompt injections",
-        details:
-          "Real-time semantic safety gateway verifies prompt boundaries, checks regulatory compliance thresholds (RBI, HIPAA, TRAI), and prevents adversarial jailbreaks mid-dialogue.",
+        details: "Real-time semantic safety gateway verifies prompt boundaries, checks regulatory compliance thresholds (RBI, HIPAA, TRAI), and prevents adversarial jailbreaks mid-dialogue.",
         meta: "Real-time Semantic Firewall • Policy Compliant",
       },
     ],
@@ -139,26 +137,23 @@ const cognitiveAgent = new AgenticReasoningCore({
     name: "The Execution Layer",
     tagline: "Telephony & Business Infrastructure",
     badge: "Native RFC 3261 • BYOC Carriers",
-    accentColor: "text-[#7e22ce]",
+    accentColor: "text-purple-700",
     badgeStyle: "bg-purple-50 text-purple-900 border-purple-200",
-    bgGlow: "rgba(126, 34, 206, 0.05)",
+    bgGlow: "rgba(159, 61, 168, 0.05)",
     points: [
       {
         title: "Native RFC 3261 Custom SIP Trunking (BYOC: Telnyx, Twilio, Plivo, Asterisk, VICIdial)",
-        details:
-          "Carrier-agnostic SIP integration allows enterprises to plug in their existing telecom contracts, local DID numbers, and on-premise PBX deployments with zero vendor lock-in.",
+        details: "Carrier-agnostic SIP integration allows enterprises to plug in their existing telecom contracts, local DID numbers, and on-premise PBX deployments with zero vendor lock-in.",
         meta: "RFC 3261 Compliant • BYOC Carrier Agnostic",
       },
       {
         title: "Automated event-driven webhooks and bidirectional CRM synchronization",
-        details:
-          "Instant webhook dispatch updates deal stages, notes, and call recordings in Salesforce, HubSpot, or Zoho CRM during the call, plus pushes real-time actions via WhatsApp or SMS.",
+        details: "Instant webhook dispatch updates deal stages, notes, and call recordings in Salesforce, HubSpot, or Zoho CRM during the call, plus pushes real-time actions via WhatsApp or SMS.",
         meta: "Bidirectional CRM Sync • Sub-second Webhooks",
       },
       {
         title: "Complete Multi-Tenant White-Labeling with isolated data per client",
-        details:
-          "Built for agencies and enterprise divisions with logically isolated tenant partitions, dedicated cryptographic encryption keys, custom SIP credentials, and branded customer portals.",
+        details: "Built for agencies and enterprise divisions with logically isolated tenant partitions, dedicated cryptographic encryption keys, custom SIP credentials, and branded customer portals.",
         meta: "Multi-Tenant Isolation • AES-256 Per Tenant",
       },
     ],
@@ -194,60 +189,40 @@ export function CorePlatformArchitectureSection() {
   const [selectedModel, setSelectedModel] = useState<"Gemini 2.0 Flash" | "GPT-4o" | "Claude 3.5 Sonnet" | "Sarvam Indic">("Gemini 2.0 Flash");
 
   return (
-    <section id="architecture" className="relative bg-white py-20 text-ink md:py-28 overflow-hidden border-t border-line">
-      {/* Subtle Background Glows */}
-      <div
-        className="pointer-events-none absolute -top-40 left-1/4 h-[500px] w-[500px] rounded-full blur-[140px] opacity-25"
-        style={{ background: "radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, transparent 70%)" }}
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none absolute -bottom-40 right-1/4 h-[500px] w-[500px] rounded-full blur-[140px] opacity-25"
-        style={{ background: "radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, transparent 70%)" }}
-        aria-hidden="true"
-      />
-
-      <div className="container-x relative z-10">
+    <section id="architecture" className="py-24 bg-white border-t border-gray-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="flex flex-wrap items-end justify-between gap-6 border-b border-line pb-8">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-cobalt/30 bg-cobalt/10 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-cobalt">
-              <span className="inline-block size-2 rounded-full bg-cobalt animate-pulse" />
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12">
+          <div>
+            <span className="zippee-pill bg-purple-50 text-purple-900 border-purple-200 font-semibold mb-3">
+              <span className="size-2 rounded-full bg-[#9F3DA8]" />
               Core Platform Architecture // For Enterprise CTOs &amp; Product Heads
-            </div>
-            <h2 className="display-lg mt-4 text-[clamp(1.85rem,3.4vw,3.25rem)] font-bold leading-tight tracking-tight text-ink">
-              The Three-Layer <span className="text-cobalt">Agentic Engine</span>.
+            </span>
+            <h2 className="zippee-title-underline-left text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#1D1D1F] tracking-tight mt-2">
+              The Three-Layer <span className="text-[#9F3DA8]">Agentic Engine</span>.
             </h2>
-            <p className="mt-4 text-sm sm:text-base text-muted leading-relaxed max-w-2xl">
+            <p className="mt-4 text-base text-gray-600 max-w-3xl leading-relaxed">
               When speaking to CTOs, Product Heads, or Agency Founders, highlight the Three-Layer Agentic Engine: isolated acoustic perception, autonomous cognitive planning, and carrier-grade RFC 3261 telephony execution.
             </p>
           </div>
 
-          {/* Quick Technical SLA Badges */}
-          <div className="flex flex-wrap items-center gap-2 font-mono text-[11px]">
-            <span className="rounded-md border border-line bg-paper px-2.5 py-1 text-ink/80 shadow-xs">
-              ⚡ &lt;120ms Barge-In
-            </span>
-            <span className="rounded-md border border-line bg-paper px-2.5 py-1 text-ink/80 shadow-xs">
-              📞 RFC 3261 SIP (BYOC)
-            </span>
-            <span className="rounded-md border border-line bg-paper px-2.5 py-1 text-ink/80 shadow-xs">
-              🔒 Multi-Tenant Isolated
-            </span>
+          {/* Quick SLA Badges */}
+          <div className="flex flex-wrap gap-2 shrink-0">
+            <span className="zippee-pill bg-purple-50 text-purple-900 font-bold">⚡ &lt;120ms Barge-In</span>
+            <span className="zippee-pill bg-purple-50 text-purple-900 font-bold">📞 RFC 3261 SIP (BYOC)</span>
+            <span className="zippee-pill bg-purple-50 text-purple-900 font-bold">🔒 Multi-Tenant Isolated</span>
           </div>
         </div>
 
         {/* Layer View Mode Switcher Pills */}
-        <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-b border-line pb-4">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="font-mono text-xs uppercase tracking-wider text-muted mr-2">Layer View:</span>
+        <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-gray-100 mb-10">
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-gray-50/90 p-1.5 shadow-xs">
+            <span className="px-3 font-mono text-xs uppercase font-bold text-gray-400">View:</span>
             <button
               type="button"
               onClick={() => setActiveTab("all")}
-              className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all ${
-                activeTab === "all"
-                  ? "bg-ink text-white font-bold shadow-xs"
-                  : "bg-paper border border-line text-muted hover:bg-paper-2 hover:text-ink"
+              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                activeTab === "all" ? "bg-[#9F3DA8] text-white shadow-xs" : "text-gray-700 hover:text-[#9F3DA8]"
               }`}
             >
               ✦ Full 3-Layer Stack
@@ -255,39 +230,33 @@ export function CorePlatformArchitectureSection() {
             <button
               type="button"
               onClick={() => setActiveTab("perception")}
-              className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all ${
-                activeTab === "perception"
-                  ? "bg-[#0284c7] text-white font-bold shadow-xs"
-                  : "bg-paper border border-line text-muted hover:bg-paper-2 hover:text-ink"
+              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                activeTab === "perception" ? "bg-[#9F3DA8] text-white shadow-xs" : "text-gray-700 hover:text-[#9F3DA8]"
               }`}
             >
-              1. Perception Layer
+              1. Perception
             </button>
             <button
               type="button"
               onClick={() => setActiveTab("cognitive")}
-              className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all ${
-                activeTab === "cognitive"
-                  ? "bg-cobalt text-white font-bold shadow-xs"
-                  : "bg-paper border border-line text-muted hover:bg-paper-2 hover:text-ink"
+              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                activeTab === "cognitive" ? "bg-[#9F3DA8] text-white shadow-xs" : "text-gray-700 hover:text-[#9F3DA8]"
               }`}
             >
-              2. Cognitive Layer
+              2. Cognitive
             </button>
             <button
               type="button"
               onClick={() => setActiveTab("execution")}
-              className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all ${
-                activeTab === "execution"
-                  ? "bg-[#7e22ce] text-white font-bold shadow-xs"
-                  : "bg-paper border border-line text-muted hover:bg-paper-2 hover:text-ink"
+              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                activeTab === "execution" ? "bg-[#9F3DA8] text-white shadow-xs" : "text-gray-700 hover:text-[#9F3DA8]"
               }`}
             >
-              3. Execution Layer
+              3. Execution
             </button>
           </div>
 
-          <div className="hidden sm:flex items-center gap-2 font-mono text-[11px] text-muted">
+          <div className="hidden sm:flex items-center gap-2 font-mono text-xs text-gray-400">
             <span>RFC 3261</span>
             <span>•</span>
             <span>LiveKit WebSockets</span>
@@ -297,91 +266,76 @@ export function CorePlatformArchitectureSection() {
         </div>
 
         {/* Architecture Stack Cards */}
-        <div className="mt-10 space-y-8">
+        <div className="space-y-10">
           {architectureLayers
             .filter((layer) => activeTab === "all" || activeTab === layer.id)
             .map((layer) => (
-              <div
-                key={layer.id}
-                className="group relative rounded-3xl border border-line bg-paper p-6 sm:p-8 shadow-xs transition-all hover:border-ink/20 hover:shadow-sm"
-              >
+              <div key={layer.id} className="zippee-card p-6 sm:p-10 shadow-xl border border-gray-200">
                 {/* Top Bar with Badges */}
-                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-line pb-5">
+                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 pb-5">
                   <div className="flex items-center gap-3">
-                    <span className="rounded-lg bg-slate-900 px-2.5 py-1 font-mono text-[11px] font-bold tracking-wider text-emerald-400 border border-slate-800">
-                      {layer.layerNumber}
+                    <span className="size-8 rounded-lg bg-[#9F3DA8] text-white font-mono text-xs font-bold grid place-items-center">
+                      {layer.layerNumber.slice(-2)}
                     </span>
-                    <h3 className="font-display text-xl sm:text-2xl font-bold text-ink flex items-center gap-2">
-                      {layer.name}
-                      <span className={`text-xs font-mono font-medium ${layer.accentColor}`}>
-                        ({layer.tagline})
-                      </span>
-                    </h3>
+                    <div>
+                      <h3 className="text-xl font-bold text-[#1D1D1F]">
+                        {layer.name}
+                        <span className="text-sm font-medium text-gray-500 ml-2">({layer.tagline})</span>
+                      </h3>
+                    </div>
                   </div>
-
-                  <div className="flex items-center gap-2">
-                    <span className={`rounded-full border px-3 py-1 font-mono text-[11px] font-semibold ${layer.badgeStyle}`}>
-                      {layer.badge}
-                    </span>
-                  </div>
+                  <span className="zippee-pill bg-purple-100 text-purple-900 border-purple-200 font-bold text-xs">
+                    {layer.badge}
+                  </span>
                 </div>
 
                 {/* Main Content Grid: 3 Bullet Points on Left, Live Technical Telemetry Card on Right */}
                 <div className="mt-8 grid gap-8 lg:grid-cols-12 items-start">
                   {/* Left Column: 3 Verbatim Architecture Pillars */}
-                  <div className="lg:col-span-7 space-y-6">
+                  <div className="lg:col-span-6 space-y-6">
                     {layer.points.map((point, idx) => (
-                      <div
-                        key={idx}
-                        className="rounded-2xl border border-line bg-paper-2/60 p-4 sm:p-5 transition-colors hover:bg-paper-2 hover:border-ink/20"
-                      >
-                        <div className="flex items-start gap-3">
-                          <span className={`mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-paper border border-line font-mono text-[11px] font-bold ${layer.accentColor}`}>
-                            {idx + 1}
+                      <div key={idx} className="flex items-start gap-4 p-4 rounded-2xl bg-gray-50/70 border border-gray-100">
+                        <span className="size-7 rounded-lg bg-[#FDF4FF] text-[#9F3DA8] font-mono text-xs font-bold grid place-items-center shrink-0 border border-purple-200">
+                          {idx + 1}
+                        </span>
+                        <div>
+                          <h4 className="text-sm font-bold text-[#1D1D1F]">{point.title}</h4>
+                          <p className="mt-2 text-xs text-gray-600 leading-relaxed">{point.details}</p>
+                          <span className="mt-2 inline-block font-mono text-[10px] text-purple-700 font-bold bg-purple-50 px-2 py-0.5 rounded-md">
+                            {point.meta}
                           </span>
-                          <div>
-                            <h4 className="font-display text-sm sm:text-base font-bold text-ink leading-snug">
-                              {point.title}
-                            </h4>
-                            <p className="mt-2 text-xs sm:text-[13px] text-muted leading-relaxed">
-                              {point.details}
-                            </p>
-                            <span className="mt-3 inline-block rounded bg-paper border border-line px-2 py-0.5 font-mono text-[10px] text-muted font-medium">
-                              {point.meta}
-                            </span>
-                          </div>
                         </div>
                       </div>
                     ))}
                   </div>
 
-                  {/* Right Column: Live Technical Telemetry Console (Dark Contrast for Technical Clarity) */}
-                  <div className="lg:col-span-5 rounded-2xl border border-slate-800 bg-[#090d16] p-5 font-mono text-slate-100 shadow-md">
-                    <div className="flex items-center justify-between border-b border-slate-800 pb-3 text-xs">
+                  {/* Right Column: Live Technical Telemetry Console (Zippee Deep Plum Obsidian) */}
+                  <div className="lg:col-span-6 zippee-dark-card p-6 space-y-5 shadow-2xl">
+                    <div className="flex items-center justify-between border-b border-white/10 pb-3 text-xs font-mono">
                       <div className="flex items-center gap-2">
-                        <span className="size-2 rounded-full bg-emerald-400 animate-ping" />
-                        <span className="text-white font-bold">{layer.telemetry.status}</span>
+                        <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
+                        <span className="text-emerald-300 font-bold">{layer.telemetry.status}</span>
                       </div>
-                      <span className="text-slate-400 text-[11px]">latency: {layer.telemetry.latency}</span>
+                      <span className="text-purple-300">latency: {layer.telemetry.latency}</span>
                     </div>
 
-                    <div className="mt-3 text-[11px] text-slate-400 truncate">
+                    <div className="font-mono text-xs text-purple-200">
                       {layer.telemetry.protocol}
                     </div>
 
                     {/* Interactive Telemetry Widget based on Layer */}
                     {layer.id === "perception" && (
-                      <div className="mt-4 rounded-xl bg-slate-900/70 p-3 border border-slate-800">
-                        <div className="flex items-center justify-between text-[11px] text-slate-300 mb-2">
+                      <div className="rounded-xl border border-white/10 bg-black/40 p-4 space-y-3">
+                        <div className="flex justify-between text-[11px] text-purple-300 font-mono">
                           <span>Live Full-Duplex VAD Visualizer</span>
-                          <span className="text-[#38bdf8]">24kHz PCM</span>
+                          <span className="text-emerald-400 font-bold">24kHz PCM</span>
                         </div>
                         {/* Audio Wave Sim */}
-                        <div className="flex items-end justify-between h-10 gap-1 px-1">
+                        <div className="flex items-center justify-between h-8 gap-1">
                           {[30, 60, 45, 80, 95, 40, 70, 85, 100, 75, 45, 60, 90, 65, 50, 85, 95, 70, 40, 60].map((h, i) => (
                             <div
                               key={i}
-                              className="w-1 bg-[#38bdf8] rounded-full transition-all duration-300"
+                              className="w-1 bg-gradient-to-t from-[#9F3DA8] to-pink-300 rounded-full"
                               style={{
                                 height: `${h}%`,
                                 opacity: i > 12 ? 0.35 : 0.85,
@@ -389,36 +343,36 @@ export function CorePlatformArchitectureSection() {
                             />
                           ))}
                         </div>
-                        <div className="mt-3 flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-800 pt-2">
-                          <span>Office Noise &amp; Coughs: Filtered (-48dB)</span>
-                          <span className="text-emerald-400 font-bold">Barge-in: &lt;120ms</span>
+                        <div className="flex justify-between text-[10px] text-gray-400 font-mono">
+                          <span>Office Noise: Filtered (-48dB)</span>
+                          <span className="text-purple-300">Barge-in: &lt;120ms</span>
                         </div>
                       </div>
                     )}
 
                     {layer.id === "cognitive" && (
-                      <div className="mt-4 rounded-xl bg-slate-900/70 p-3 border border-slate-800">
-                        <div className="text-[11px] text-slate-300 mb-2 flex justify-between">
+                      <div className="rounded-xl border border-white/10 bg-black/40 p-4 space-y-3">
+                        <div className="flex justify-between text-[11px] text-purple-300 font-mono">
                           <span>Model Orchestrator</span>
                           <span className="text-emerald-400 font-bold">Sub-300ms</span>
                         </div>
-                        <div className="grid grid-cols-2 gap-1.5 text-[10px]">
+                        <div className="flex flex-wrap gap-1.5">
                           {(["Gemini 2.0 Flash", "GPT-4o", "Claude 3.5 Sonnet", "Sarvam Indic"] as const).map((m) => (
                             <button
                               key={m}
                               type="button"
                               onClick={() => setSelectedModel(m)}
-                              className={`rounded-lg p-1.5 text-left border transition-all ${
+                              className={`px-2.5 py-1 rounded-lg text-[10px] font-mono transition-all cursor-pointer ${
                                 selectedModel === m
-                                  ? "border-emerald-500/50 bg-emerald-500/15 text-emerald-300 font-bold"
-                                  : "border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200"
+                                  ? "bg-[#9F3DA8] text-white font-bold"
+                                  : "bg-white/5 text-gray-300 hover:bg-white/10"
                               }`}
                             >
                               ● {m}
                             </button>
                           ))}
                         </div>
-                        <div className="mt-3 text-[10px] text-slate-400 border-t border-slate-800 pt-2 flex justify-between">
+                        <div className="flex justify-between text-[10px] text-gray-400 font-mono">
                           <span>Pydantic Schema: Strict</span>
                           <span className="text-emerald-400">Guardrails: 0 Leaks</span>
                         </div>
@@ -426,49 +380,47 @@ export function CorePlatformArchitectureSection() {
                     )}
 
                     {layer.id === "execution" && (
-                      <div className="mt-4 rounded-xl bg-slate-900/70 p-3 border border-slate-800">
-                        <div className="text-[11px] text-slate-300 mb-2 flex justify-between">
+                      <div className="rounded-xl border border-white/10 bg-black/40 p-4 space-y-3">
+                        <div className="flex justify-between text-[11px] text-purple-300 font-mono">
                           <span>Carrier BYOC Switchboard</span>
-                          <span className="text-purple-400 font-bold">RFC 3261</span>
+                          <span className="text-emerald-400 font-bold">RFC 3261</span>
                         </div>
-                        <div className="flex flex-wrap gap-1 text-[10px]">
+                        <div className="flex flex-wrap gap-1.5">
                           {(["Telnyx", "Twilio", "Plivo", "Asterisk", "VICIdial"] as const).map((c) => (
                             <button
                               key={c}
                               type="button"
                               onClick={() => setSelectedCarrier(c)}
-                              className={`rounded-lg px-2 py-1 border transition-all ${
+                              className={`px-2.5 py-1 rounded-lg text-[10px] font-mono transition-all cursor-pointer ${
                                 selectedCarrier === c
-                                  ? "border-purple-500/50 bg-purple-500/15 text-purple-200 font-bold"
-                                  : "border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200"
+                                  ? "bg-[#9F3DA8] text-white font-bold"
+                                  : "bg-white/5 text-gray-300 hover:bg-white/10"
                               }`}
                             >
                               {c}
                             </button>
                           ))}
                         </div>
-                        <div className="mt-3 text-[10px] text-slate-400 border-t border-slate-800 pt-2 flex justify-between">
+                        <div className="flex justify-between text-[10px] text-gray-400 font-mono">
                           <span>Active Carrier: {selectedCarrier}</span>
-                          <span className="text-emerald-400">Webhook Bus: Synced</span>
+                          <span className="text-purple-300">Webhook Bus: Synced</span>
                         </div>
                       </div>
                     )}
 
                     {/* Metrics List */}
-                    <div className="mt-4 space-y-1.5 border-t border-slate-800 pt-3 text-[11px]">
+                    <div className="grid grid-cols-2 gap-2 text-xs font-mono pt-2">
                       {layer.telemetry.metrics.map((m, mi) => (
-                        <div key={mi} className="flex items-center justify-between">
-                          <span className="text-slate-400">{m.label}</span>
-                          <span className="text-slate-200 font-medium">{m.value}</span>
+                        <div key={mi} className="flex justify-between p-2 rounded-lg bg-white/5 border border-white/5">
+                          <span className="text-gray-400">{m.label}:</span>
+                          <span className="text-emerald-400 font-bold">{m.value}</span>
                         </div>
                       ))}
                     </div>
 
                     {/* Code Snippet Box */}
-                    <div className="mt-4">
-                      <div className="rounded-xl bg-[#060911] p-3 text-[10px] text-slate-300 overflow-x-auto border border-slate-800/80 font-mono leading-relaxed">
-                        <pre><code>{layer.telemetry.codeSnippet}</code></pre>
-                      </div>
+                    <div className="rounded-xl bg-black/60 p-3 font-mono text-[11px] text-purple-200 overflow-x-auto border border-white/10">
+                      <pre><code>{layer.telemetry.codeSnippet}</code></pre>
                     </div>
                   </div>
                 </div>
@@ -477,21 +429,21 @@ export function CorePlatformArchitectureSection() {
         </div>
 
         {/* Enterprise Bottom Banner / Handoff */}
-        <div className="mt-12 rounded-3xl border border-line bg-paper-2 p-6 sm:p-8 flex flex-wrap items-center justify-between gap-6 shadow-xs">
-          <div>
-            <span className="font-mono text-xs uppercase tracking-wider text-cobalt font-bold">Architecture Ready For Production</span>
-            <h4 className="font-display text-lg sm:text-xl font-bold text-ink mt-1">
+        <div className="mt-14 rounded-3xl bg-gradient-to-r from-[#9F3DA8] to-[#1A0920] p-8 sm:p-12 text-white shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="max-w-2xl">
+            <span className="font-mono text-xs uppercase tracking-wider text-purple-200 font-bold block mb-1">Architecture Ready For Production</span>
+            <h4 className="text-2xl sm:text-3xl font-extrabold text-white">
               Ready to plug our Three-Layer Engine into your custom SIP trunks or CRM?
             </h4>
-            <p className="text-xs sm:text-sm text-muted mt-1 max-w-2xl">
+            <p className="mt-3 text-sm text-purple-100/90 leading-relaxed">
               We provide direct engineering onboarding for CTOs, including custom BYOC peering, VPC hosting, and dedicated SLA contracts.
             </p>
           </div>
-          <div className="flex items-center gap-3">
-            <a href="/contact" className="btn btn-primary">
+          <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
+            <a href="/contact" className="zippee-btn-secondary bg-white text-[#9F3DA8] border-white hover:bg-purple-50">
               <span>Talk to Infrastructure Team</span>
             </a>
-            <a href="#agentic-in-action" className="btn btn-outline border-line text-ink hover:border-ink">
+            <a href="#agentic-in-action" className="zippee-btn-primary bg-[#150719] text-white hover:bg-black">
               <span>See Agentic in Action ↓</span>
             </a>
           </div>
@@ -500,3 +452,5 @@ export function CorePlatformArchitectureSection() {
     </section>
   );
 }
+
+export default CorePlatformArchitectureSection;
