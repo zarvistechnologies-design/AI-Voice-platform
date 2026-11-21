@@ -46,49 +46,49 @@ const clientLogos = [
 // Original Industry Solutions with Pictures & Copy
 const industries = [
   {
-    tab: "BFSI & FINTECH",
-    title: "Financial Services",
-    badge: "94% First-Call Resolution",
-    heading: "Automate EMI collections, KYC verification, and inbound customer queries at enterprise scale.",
-    desc: "Empower borrowers with empathetic multilingual voice agents that explain loan restructuring, send instant payment links over WhatsApp, and log verified call outcomes directly into your core banking CRM.",
-    metric: "4.8x ROI within 60 days",
-    image: "/images/industries/card-bfsi.png",
+    title: "Banking & Finance",
+    tab: "Banking & Finance",
+    badge: "Fintech & Lending",
+    image: "/images/1.png",
+    heading: "Automate EMI reminders, KYC checks & payment assistance",
+    desc: "Handle payment collections with respectful native language dialogue, instant payment link dispatch, and zero human agent burnout.",
+    metric: "~74% pickup rate with local caller ID",
   },
   {
-    tab: "HEALTHCARE",
-    title: "Healthcare Clinics",
-    badge: "0 Wait-Time Intake",
-    heading: "24/7 patient triage, doctor appointment booking, and diagnostic reminder calls.",
-    desc: "Handle peak morning call spikes without adding staff. Our HIPAA-ready voice agents speak conversational Hindi and regional languages, collect patient symptoms, check real-time doctor availability, and confirm clinic slots.",
-    metric: "72% drop in no-shows",
-    image: "/images/industries/card-healthcare.png",
+    title: "Healthcare",
+    tab: "Healthcare",
+    badge: "Hospitals & Clinics",
+    image: "/images/2.png",
+    heading: "24/7 clinic appointment booking and triage support",
+    desc: "Patients schedule visits, check report availability, and ask pre-consultation questions in their comfortable regional language.",
+    metric: "Sub-750ms latency for urgent patient inquiries",
   },
   {
-    tab: "D2C & E-COMMERCE",
-    title: "E-Commerce Brands",
-    badge: "88% COD Confirmation",
-    heading: "Protect cash margins with automated COD verification and smart address validation.",
-    desc: "Eliminate Return-to-Origin (RTO) losses before shipping. Voice agents call customers immediately after order placement, verify delivery landmarks, and offer instant prepaid UPI discounts.",
-    metric: "32% reduction in RTO",
-    image: "/images/industries/card-ecommerce.png",
+    title: "Hospitality",
+    tab: "Hospitality",
+    badge: "Hotels & Experiences",
+    image: "/images/3.png",
+    heading: "Guest concierge, itinerary updates & booking confirmations",
+    desc: "Deliver personalized concierge assistance, handle room service requests, and confirm check-in details automatically.",
+    metric: "Zero missed calls during peak holiday check-ins",
   },
   {
-    tab: "REAL ESTATE",
-    title: "Real Estate Developers",
-    badge: "Instant Lead Callback",
-    heading: "Engage portal inquiries within 15 seconds and schedule qualified site visits.",
-    desc: "Never lose a high-intent buyer to slow response times. Voice agents qualify budget, preferred floor plan, and possession timeline before booking calendar slots with your senior sales advisors.",
-    metric: "3.2x site visit conversion",
-    image: "/images/industries/card-real-estate.png",
+    title: "Education & EdTech",
+    tab: "Education & EdTech",
+    badge: "Admissions & Counseling",
+    image: "/images/4.png",
+    heading: "Instant student inquiry qualification & counselor handoff",
+    desc: "Engage prospective students the second they register an inquiry, answering fee details and booking counselor meetings.",
+    metric: "3.4x faster speed-to-lead response",
   },
   {
-    tab: "EDTECH",
-    title: "Higher Ed & EdTech",
-    badge: "Multilingual Counseling",
-    heading: "Counsel prospective students, qualify course intent, and book advisor webinars.",
-    desc: "Scale enrollment drives without call center burnout. Voice agents address parent questions in their native language, evaluate academic eligibility, and dispatch syllabus brochures over WhatsApp.",
-    metric: "65% counselor time saved",
-    image: "/images/industries/card-edtech.png",
+    title: "B2B Goods and Services",
+    tab: "B2B Goods & Services",
+    badge: "Supply Chain & B2B",
+    image: "/images/5.png",
+    heading: "Automated vendor follow-ups, order tracking & client management",
+    desc: "Coordinate delivery status, dispatch logistics updates, and capture customer satisfaction scores in real time.",
+    metric: "10M+ automated minutes handled with 99.9% uptime",
   },
 ];
 
@@ -864,7 +864,7 @@ export function HomeDesignFour() {
           {/* Featured Industry Case Card */}
           <div className="mt-8 zippee-card overflow-hidden">
             <div className="grid lg:grid-cols-12 gap-8 items-center p-6 sm:p-10">
-              <div className="lg:col-span-6 relative aspect-4/3 w-full rounded-2xl overflow-hidden shadow-md">
+              <div className="lg:col-span-6 relative aspect-[4/3] w-full rounded-2xl overflow-hidden shadow-md">
                 <Image
                   src={selectedIndustry.image}
                   alt={`${selectedIndustry.title} business solutions`}
@@ -911,7 +911,7 @@ export function HomeDesignFour() {
                   activeIndustryIdx === idx ? "ring-2 ring-[#9F3DA8] bg-purple-50/40" : ""
                 }`}
               >
-                <div className="relative aspect-4/3 w-full rounded-xl overflow-hidden mb-3">
+                <div className="relative aspect-[4/3] w-full rounded-xl overflow-hidden mb-3">
                   <Image src={ind.image} alt={ind.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, 20vw" />
                   <span className="absolute bottom-2 left-2 zippee-pill text-[10px] bg-white/90 py-0.5 px-2 font-bold">
                     {ind.badge}
