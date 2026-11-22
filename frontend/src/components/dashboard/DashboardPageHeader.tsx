@@ -46,12 +46,12 @@ export function DashboardWorkspaceBar() {
   const [credit, setCredit] = useState<{
     balance: number;
   } | null>(null);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem("vozon_dashboard_theme");
-      const isDark = saved === "dark";
+      const isDark = saved !== "light";
       setDarkMode(isDark);
       document.documentElement.setAttribute("data-dashboard-theme", isDark ? "dark" : "light");
       document.documentElement.classList.toggle("dark", isDark);
