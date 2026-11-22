@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentProps, ReactNode } from "react";
+import type { ComponentProps } from "react";
 import {
   Area as ReArea,
   AreaChart,
@@ -8,7 +8,6 @@ import {
   BarChart,
   CartesianGrid,
   Cell,
-  ComposedChart,
   Legend,
   Line as ReLine,
   LineChart,
@@ -52,32 +51,6 @@ function Line(props: ComponentProps<typeof ReLine>) {
 function Pie(props: ComponentProps<typeof RePie>) {
   return <RePie {...props} isAnimationActive={false} />;
 }
-function ChartCard({
-  title,
-  subtitle,
-  children,
-  className = "",
-}: {
-  title: string;
-  subtitle: string;
-  children: ReactNode;
-  className?: string;
-}) {
-  return (
-    <article
-      className={`min-w-0 overflow-hidden bg-white p-4 sm:p-5 ${className}`}
-    >
-      <div className="mb-3.5">
-        <h2 className="text-[13.5px] font-semibold tracking-[-0.01em] text-[#171717]">
-          {title}
-        </h2>
-        <p className="mt-0.5 text-[11.5px] leading-5 text-[#71717a]">{subtitle}</p>
-      </div>
-      {children}
-    </article>
-  );
-}
-
 function EmptyChart() {
   return (
     <div className="grid h-[240px] place-items-center rounded-lg border border-dashed border-[#eaeaea] bg-[#fafafa] text-[12px] text-[#71717a]">
@@ -329,10 +302,6 @@ export function AdvancedAnalyticsCharts({
     name: row.label,
     calls: row.value,
   }));
-  const sentiment = data.sentimentBreakdown.map((row) => ({
-    name: row.label,
-    calls: row.value,
-  }));
   const hourlyData = data.hourlyActivity.map((row) => ({
     ...row,
     label: `${String(row.hour).padStart(2, "0")}:00`,
@@ -361,23 +330,6 @@ export function AdvancedAnalyticsCharts({
   const outboundPct = ((outboundCount / totalDirCalls) * 100).toFixed(1);
   const durationColors = ["#0d9488", "#0284c7", "#f59e0b", "#e11d48", "#7c3aed", "#4f46e5"];
   const statusColors = ["#0284c7", "#f59e0b", "#0f766e", "#e11d48", "#7c3aed"];
-  const focus = !hasCalls
-    ? {
-        label: "Getting started",
-        title: "Your performance view is ready for the first calls",
-        body: "Run a test call or launch a campaign. Trends and agent comparisons will populate automatically.",
-      }
-    : data.summary.completionRate >= 85
-      ? {
-          label: "Strong signal",
-          title: `${data.summary.completionRate}% completion across this period`,
-          body: "Delivery is healthy. Compare agents below to find the scripts and routes worth scaling.",
-        }
-      : {
-          label: "Focus next",
-          title: `${data.summary.failedCalls} conversations need review`,
-          body: "Open Call Logs and start with the largest failed-call group to improve completion fastest.",
-        };
   const averageDuration =
     data.summary.averageDurationSeconds ||
     data.summary.totalDurationSeconds / Math.max(1, data.summary.totalCalls);
@@ -443,252 +395,7 @@ export function AdvancedAnalyticsCharts({
           ))}
         </div>
 
-        <div className="hidden">
-          <ChartCard
-            title="Conversation momentum"
-            subtitle="Total demand compared with completed calls"
-          >
-            {!timeline.length ? (
-              <EmptyChart />
-            ) : (
-              <div className="h-[280px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <ComposedChart
-                    data={timeline}
-                    margin={{ top: 10, right: 8, left: -20, bottom: 0 }}
-                  >
-                    <defs>
-                      <linearGradient id="callsArea" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0" stopColor="#2563eb" stopOpacity={0.22} />
-                        <stop offset="1" stopColor="#2563eb" stopOpacity={0.01} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid stroke="#eaeaea" vertical={false} />
-                    <XAxis dataKey="label" tick={axis} tickLine={false} axisLine={false} />
-                    <YAxis tick={axis} tickLine={false} axisLine={false} />
-                    <Tooltip contentStyle={tooltipStyle} />
-                    <Legend wrapperStyle={{ fontSize: 11, color: "#52525b" }} />
-                    <Area
-                      type="monotone"
-                      dataKey="calls"
-                      name="Total calls"
-                      stroke="#2563eb"
-                      strokeWidth={2}
-                      fill="url(#callsArea)"
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="completed"
-                      name="Completed"
-                      stroke="#059669"
-                      strokeWidth={2}
-                      dot={false}
-                    />
-                  </ComposedChart>
-                </ResponsiveContainer>
-              </div>
-            )}
-          </ChartCard>
-          <ChartCard title="Call outcomes" subtitle="How conversations ended">
-            {!hasCalls ? (
-              <EmptyChart />
-            ) : (
-              <div className="h-[220px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={outcomes}
-                      dataKey="value"
-                      nameKey="name"
-                      cx="50%"
-                      cy="48%"
-                      innerRadius={52}
-                      outerRadius={80}
-                      paddingAngle={3}
-                      cornerRadius={4}
-                    >
-                      {outcomes.map((row, index) => (
-                        <Cell
-                          key={row.name}
-                          fill={COLORS[index % COLORS.length]}
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip contentStyle={tooltipStyle} />
-                    <Legend
-                      iconType="circle"
-                      wrapperStyle={{
-                        fontSize: 11,
-                        textTransform: "capitalize",
-                      }}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            )}
-            <div className="mt-2.5 rounded-md border border-[#eaeaea] bg-[#fafafa] p-3">
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-[#71717a]">
-                {focus.label}
-              </span>
-              <strong className="mt-1 block text-[12.5px] leading-5 text-[#171717]">
-                {focus.title}
-              </strong>
-              <p className="mt-0.5 text-[11.5px] leading-5 text-[#52525b]">
-                {focus.body}
-              </p>
-            </div>
-          </ChartCard>
-        </div>
 
-        <details className="hidden">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-3.5 marker:hidden">
-            <div>
-              <h2 className="text-[13.5px] font-semibold text-[#171717]">Advanced analysis</h2>
-              <p className="mt-0.5 text-[11.5px] text-[#71717a]">
-                Channels, timing, sentiment, and conversation duration
-              </p>
-            </div>
-            <span className="grid size-7 place-items-center rounded-md border border-[#eaeaea] text-sm text-[#171717] transition group-open:rotate-45">
-              +
-            </span>
-          </summary>
-          <div className="grid gap-px border-t border-[#eaeaea] bg-[#eaeaea] lg:grid-cols-2">
-            <ChartCard
-              title="Channel distribution"
-              subtitle="Inbound, outbound, and web demand"
-            >
-              {!channels.length ? (
-                <EmptyChart />
-              ) : (
-                <div className="h-[240px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={channels}
-                      layout="vertical"
-                      margin={{ left: 5, right: 25 }}
-                    >
-                      <CartesianGrid stroke="#eaeaea" horizontal={false} />
-                      <XAxis type="number" tick={axis} axisLine={false} tickLine={false} />
-                      <YAxis
-                        type="category"
-                        dataKey="name"
-                        tick={axis}
-                        axisLine={false}
-                        tickLine={false}
-                        width={65}
-                      />
-                      <Tooltip contentStyle={tooltipStyle} />
-                      <Bar dataKey="calls" radius={[0, 4, 4, 0]}>
-                        {channels.map((row, index) => (
-                          <Cell key={row.name} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              )}
-            </ChartCard>
-            <ChartCard
-              title="Conversation length"
-              subtitle="Duration distribution from recorded calls"
-            >
-              {!durationData.length ? (
-                <EmptyChart />
-              ) : (
-                <div className="h-[240px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart
-                      data={durationData}
-                      margin={{ left: -20, right: 10 }}
-                    >
-                      <CartesianGrid stroke="#eaeaea" vertical={false} />
-                      <XAxis dataKey="name" tick={axis} axisLine={false} tickLine={false} />
-                      <YAxis tick={axis} axisLine={false} tickLine={false} />
-                      <Tooltip contentStyle={tooltipStyle} />
-                      <Area
-                        type="monotone"
-                        dataKey="calls"
-                        stroke="#7c3aed"
-                        strokeWidth={2}
-                        fill="#7c3aed"
-                        fillOpacity={0.15}
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
-              )}
-            </ChartCard>
-            <ChartCard
-              title="Customer sentiment"
-              subtitle="Detected tone across analyzed calls"
-            >
-              {!sentiment.length ? (
-                <EmptyChart />
-              ) : (
-                <div className="h-[240px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={sentiment}
-                      margin={{ left: -18, right: 10 }}
-                    >
-                      <CartesianGrid stroke="#eaeaea" vertical={false} />
-                      <XAxis dataKey="name" tick={axis} axisLine={false} tickLine={false} />
-                      <YAxis tick={axis} axisLine={false} tickLine={false} />
-                      <Tooltip contentStyle={tooltipStyle} />
-                      <Bar dataKey="calls" radius={[4, 4, 0, 0]}>
-                        {sentiment.map((row) => {
-                          const key = row.name.toLowerCase();
-                          const fill = key.includes("pos")
-                            ? "#059669"
-                            : key.includes("neg")
-                              ? "#e11d48"
-                              : "#2563eb";
-                          return <Cell key={row.name} fill={fill} />;
-                        })}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              )}
-            </ChartCard>
-            <ChartCard
-              title="Hourly demand"
-              subtitle="When customers reach your agents"
-            >
-              {!hourlyData.some((row) => row.calls) ? (
-                <EmptyChart />
-              ) : (
-                <div className="h-[240px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <ComposedChart
-                      data={hourlyData}
-                      margin={{ left: -20, right: 10 }}
-                    >
-                      <CartesianGrid stroke="#eaeaea" vertical={false} />
-                      <XAxis
-                        dataKey="label"
-                        interval={2}
-                        tick={axis}
-                        axisLine={false}
-                        tickLine={false}
-                      />
-                      <YAxis tick={axis} axisLine={false} tickLine={false} />
-                      <Tooltip contentStyle={tooltipStyle} />
-                      <Bar dataKey="calls" fill="#2563eb" radius={[4, 4, 0, 0]} />
-                      <Line
-                        type="monotone"
-                        dataKey="completed"
-                        stroke="#059669"
-                        strokeWidth={2}
-                        dot={false}
-                      />
-                    </ComposedChart>
-                  </ResponsiveContainer>
-                </div>
-              )}
-            </ChartCard>
-          </div>
-        </details>
       </section>
 
       {/* Trend Analysis (2x2 Grid) */}
