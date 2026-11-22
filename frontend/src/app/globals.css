@@ -460,8 +460,8 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
     color: #171717;
   }
 
-  /* Strict Monochrome White & Black enforcement across all dashboard pages */
-  html:not([data-dashboard-theme="dark"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.bg-emerald-50, .bg-emerald-100, .bg-emerald-500\/10, [class*="bg-emerald-50"],
+  /* Strict Monochrome White & Black enforcement across all dashboard pages for new onboarding / recent theme */
+  html:not([data-dashboard-theme="dark"]):not([data-brand-theme="green"]):not([data-brand-source="white_label"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.bg-emerald-50, .bg-emerald-100, .bg-emerald-500\/10, [class*="bg-emerald-50"],
     .bg-green-50, .bg-green-100, [class*="bg-green-50"],
     .bg-teal-50, .bg-teal-100, [class*="bg-teal-50"],
     .bg-cyan-50, .bg-cyan-100, [class*="bg-cyan-50"],
@@ -480,7 +480,7 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
     color: #171717 !important;
   }
 
-  html:not([data-dashboard-theme="dark"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)):not(.whatsapp-workspace):not(:has(.whatsapp-workspace)) :is(.bg-emerald-500, .bg-emerald-600, .bg-emerald-700,
+  html:not([data-dashboard-theme="dark"]):not([data-brand-theme="green"]):not([data-brand-source="white_label"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)):not(.whatsapp-workspace):not(:has(.whatsapp-workspace)) :is(.bg-emerald-500, .bg-emerald-600, .bg-emerald-700,
     .bg-green-500, .bg-green-600, .bg-green-700,
     .bg-teal-500, .bg-teal-600, .bg-teal-700,
     .bg-cyan-500, .bg-cyan-600, .bg-cyan-700,
@@ -493,7 +493,7 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
     color: #ffffff !important;
   }
 
-  html:not([data-dashboard-theme="dark"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)):not(.whatsapp-workspace):not(:has(.whatsapp-workspace)) :is(.text-emerald-400, .text-emerald-500, .text-emerald-600, .text-emerald-700, .text-emerald-800, .text-emerald-900, .text-emerald-950,
+  html:not([data-dashboard-theme="dark"]):not([data-brand-theme="green"]):not([data-brand-source="white_label"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)):not(.whatsapp-workspace):not(:has(.whatsapp-workspace)) :is(.text-emerald-400, .text-emerald-500, .text-emerald-600, .text-emerald-700, .text-emerald-800, .text-emerald-900, .text-emerald-950,
     .text-green-500, .text-green-600, .text-green-700, .text-green-800,
     .text-teal-500, .text-teal-600, .text-teal-700, .text-teal-800,
     .text-cyan-500, .text-cyan-600, .text-cyan-700, .text-cyan-800, .text-cyan-900, .text-cyan-950,
@@ -510,7 +510,7 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
     color: #171717 !important;
   }
 
-  html:not([data-dashboard-theme="dark"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)):not(.whatsapp-workspace):not(:has(.whatsapp-workspace)) :is(.border-emerald-200, .border-emerald-300, .border-emerald-500, .border-emerald-500\/25,
+  html:not([data-dashboard-theme="dark"]):not([data-brand-theme="green"]):not([data-brand-source="white_label"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)):not(.whatsapp-workspace):not(:has(.whatsapp-workspace)) :is(.border-emerald-200, .border-emerald-300, .border-emerald-500, .border-emerald-500\/25,
     .border-green-200, .border-green-300, .border-teal-200, .border-teal-300,
     .border-cyan-200, .border-cyan-300, .border-cyan-500,
     .border-amber-200, .border-amber-300, .border-orange-200,

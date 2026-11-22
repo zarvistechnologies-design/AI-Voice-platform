@@ -92,6 +92,7 @@ function BrandEditor({
     secondaryColor: brand.branding.secondaryColor,
     accentColor: brand.branding.accentColor,
     surfaceColor: brand.branding.surfaceColor,
+    themeStyle: (brand.branding.themeStyle as "green" | "recent") || "green",
     supportEmail: brand.support.email,
     websiteUrl: brand.support.websiteUrl,
     helpCenterUrl: brand.support.helpCenterUrl,
@@ -125,6 +126,7 @@ function BrandEditor({
           accentColor: form.accentColor,
           surfaceColor: form.surfaceColor,
           defaultTheme: brand.branding.defaultTheme,
+          themeStyle: form.themeStyle,
           poweredByText: brand.branding.poweredByText,
         },
         support: { ...brand.support, email: form.supportEmail, websiteUrl: form.websiteUrl, helpCenterUrl: form.helpCenterUrl },
@@ -155,6 +157,7 @@ function BrandEditor({
               surface: form.surfaceColor,
             },
             defaultTheme: brand.branding.defaultTheme,
+            themeStyle: form.themeStyle,
             support: { ...brand.support, email: form.supportEmail, websiteUrl: form.websiteUrl, helpCenterUrl: form.helpCenterUrl },
             legal: { ...brand.legal, termsUrl: form.termsUrl, privacyUrl: form.privacyUrl, legalBusinessName: form.legalBusinessName },
             poweredBy: { visible: false, text: "" },
@@ -231,6 +234,7 @@ function BrandEditor({
               surface: form.surfaceColor,
             },
             defaultTheme: brand.branding.defaultTheme,
+            themeStyle: form.themeStyle,
             support: { ...brand.support, email: form.supportEmail, websiteUrl: form.websiteUrl, helpCenterUrl: form.helpCenterUrl },
             legal: { ...brand.legal, termsUrl: form.termsUrl, privacyUrl: form.privacyUrl, legalBusinessName: form.legalBusinessName },
             poweredBy: { visible: false, text: "" },
@@ -258,6 +262,54 @@ function BrandEditor({
     <div className="grid gap-4 md:grid-cols-2"><Input label="Product name" required value={form.productName} onChange={(event) => set("productName", event.target.value)} /><Input label="Legal/company display name" required value={form.companyName} onChange={(event) => set("companyName", event.target.value)} /></div>
     <div className="grid gap-4 md:grid-cols-3">{([['logo', 'Logo URL (HTTPS)', 'logoUrl'], ['logoDark', 'Dark logo URL (HTTPS)', 'logoDarkUrl'], ['icon', 'Square icon URL (HTTPS)', 'iconUrl']] as const).map(([role, label, key]) => <div className="grid gap-2" key={role}><Input label={label} required={role !== "logoDark"} type="url" value={form[key]} onChange={(event) => set(key, event.target.value)} /><label className="inline-flex min-h-10 cursor-pointer items-center justify-center rounded-lg border border-[#d8e2df] bg-[#f8faf9] px-3 text-xs font-semibold text-[#40564f] transition hover:border-[#b8cbc5] hover:bg-[#f1f6f4]"><input accept="image/avif,image/gif,image/jpeg,image/png,image/webp,image/x-icon" className="sr-only" disabled={busy || Boolean(uploading)} type="file" onChange={(event) => void uploadAsset(role, event.target.files?.[0])} />{uploading === role ? "Uploading…" : "Upload managed image"}</label></div>)}</div>
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{(["primaryColor", "secondaryColor", "accentColor", "surfaceColor"] as const).map((key) => <label className={labelClass} key={key}><span>{key.replace("Color", " color")}</span><span className="flex gap-2"><input aria-label={`${key} picker`} className="h-11 w-12 rounded-lg border border-[#d8e2df] bg-white p-1" type="color" value={form[key].slice(0, 7)} onChange={(event) => set(key, event.target.value)} /><input className={fieldClass} pattern="#[0-9a-fA-F]{6}" value={form[key]} onChange={(event) => set(key, event.target.value)} /></span></label>)}</div>
+    
+    {/* Dashboard Theme Style Selector */}
+    <div className="rounded-xl border border-[#dce7e3] bg-[#f8faf9] p-4">
+      <div className="flex flex-col gap-1 mb-3">
+        <label className="text-xs font-bold text-[#1d342e]">
+          Dashboard Theme Style
+        </label>
+        <p className="text-[11px] text-[#71817d]">
+          Choose the theme appearance for your white-label portal. Existing users see the classic green styling by default; new onboarding can use recent monochrome.
+        </p>
+      </div>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <button
+          type="button"
+          onClick={() => set("themeStyle", "green")}
+          className={`flex items-start gap-3 p-3.5 rounded-lg border text-left transition cursor-pointer ${
+            form.themeStyle === "green"
+              ? "border-[#168a78] bg-[#eff8f5] shadow-xs ring-2 ring-[#168a78]/20"
+              : "border-[#d8e2df] bg-white hover:border-[#b8cbc5]"
+          }`}
+        >
+          <span className="mt-0.5 size-4 rounded-full bg-[#168a78] shrink-0" />
+          <div>
+            <div className="text-xs font-bold text-[#1d342e]">🌿 Classic Green Theme (Original)</div>
+            <div className="text-[11px] text-[#556963] mt-0.5">
+              Original teal & emerald green accents preserved for existing white-label users.
+            </div>
+          </div>
+        </button>
+        <button
+          type="button"
+          onClick={() => set("themeStyle", "recent")}
+          className={`flex items-start gap-3 p-3.5 rounded-lg border text-left transition cursor-pointer ${
+            form.themeStyle === "recent"
+              ? "border-[#171717] bg-[#f4f4f5] shadow-xs ring-2 ring-black/20"
+              : "border-[#d8e2df] bg-white hover:border-[#b8cbc5]"
+          }`}
+        >
+          <span className="mt-0.5 size-4 rounded-full bg-[#171717] shrink-0" />
+          <div>
+            <div className="text-xs font-bold text-[#171717]">⚡ Modern Minimal Theme (Recent)</div>
+            <div className="text-[11px] text-[#666666] mt-0.5">
+              Clean monochrome black & white styling for new customer onboarding.
+            </div>
+          </div>
+        </button>
+      </div>
+    </div>
     <div className="grid gap-4 md:grid-cols-3"><Input label="Support email" required type="email" value={form.supportEmail} onChange={(event) => set("supportEmail", event.target.value)} /><Input label="Website URL" type="url" value={form.websiteUrl} onChange={(event) => set("websiteUrl", event.target.value)} /><Input label="Help center URL" type="url" value={form.helpCenterUrl} onChange={(event) => set("helpCenterUrl", event.target.value)} /></div>
     <div className="grid gap-4 md:grid-cols-3"><Input label="Terms URL" required type="url" value={form.termsUrl} onChange={(event) => set("termsUrl", event.target.value)} /><Input label="Privacy URL" required type="url" value={form.privacyUrl} onChange={(event) => set("privacyUrl", event.target.value)} /><Input label="Legal business name" required value={form.legalBusinessName} onChange={(event) => set("legalBusinessName", event.target.value)} /></div>
     

@@ -85,6 +85,7 @@ export type WhiteLabelBrand = {
     accentColor: string;
     surfaceColor: string;
     defaultTheme: "light" | "dark" | "system";
+    themeStyle?: "green" | "recent";
     poweredByText: string;
   };
   support: { email: string; phone: string; websiteUrl: string; helpCenterUrl: string; statusPageUrl: string };

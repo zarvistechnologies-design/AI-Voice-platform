@@ -9,6 +9,7 @@ export type BrandConfig = {
   urls: { app: string; api: string; links: string };
   colors: { primary: string; secondary: string; accent: string; surface: string };
   defaultTheme: "light" | "dark" | "system";
+  themeStyle?: "green" | "recent";
   support: { email: string; phone: string; websiteUrl: string; helpCenterUrl: string; statusPageUrl: string };
   legal: { termsUrl: string; privacyUrl: string; cookiePolicyUrl: string; legalBusinessName: string; businessAddress: string };
   poweredBy: { visible: boolean; text: string };

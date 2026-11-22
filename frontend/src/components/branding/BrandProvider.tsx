@@ -80,8 +80,12 @@ export function BrandProvider({ brand, children }: { brand: BrandConfig; childre
     return brand;
   }, [brand, remoteBrand, session?.organization?.brand, session?.organization?.name, isPartnerOrCustomer]);
 
+  const isWhiteLabel = isPartnerOrCustomer || effectiveBrand.source === "white_label";
+  const themeStyle = isWhiteLabel ? (effectiveBrand.themeStyle || "green") : "recent";
+
   useEffect(() => {
-    document.documentElement.dataset.brandSource = effectiveBrand.source;
+    document.documentElement.dataset.brandSource = isWhiteLabel ? "white_label" : "platform";
+    document.documentElement.dataset.brandTheme = themeStyle;
     document.documentElement.style.setProperty("--brand-primary", effectiveBrand.colors.primary);
     document.documentElement.style.setProperty("--brand-secondary", effectiveBrand.colors.secondary);
     document.documentElement.style.setProperty("--brand-accent", effectiveBrand.colors.accent);
