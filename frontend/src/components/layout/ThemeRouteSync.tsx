@@ -11,9 +11,10 @@ export function ThemeRouteSync() {
     let isDark = false;
     if (isDashboard) {
       try {
-        isDark = localStorage.getItem("vozon_dashboard_theme") === "dark";
+        const saved = localStorage.getItem("vozon_dashboard_theme");
+        isDark = saved !== "light";
       } catch {
-        // Keep the light default when local storage is unavailable.
+        isDark = true;
       }
     }
     document.documentElement.setAttribute("data-dashboard-theme", isDark ? "dark" : "light");

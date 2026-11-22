@@ -2141,6 +2141,49 @@ textarea.ai-prompt-textarea:focus-visible {
     color: #ffffff !important;
   }
 
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-workspace-bar a {
+    color: #f4f4f5 !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-workspace-bar a:hover {
+    color: #ffffff !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-workspace-bar a[href="/dashboard/billing"] {
+    background-color: #18181b !important;
+    border: 1px solid #27272a !important;
+    color: #f4f4f5 !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-workspace-bar a[href="/dashboard/billing"] > span {
+    color: #f4f4f5 !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-workspace-bar a[href="/dashboard/billing"]:hover {
+    background-color: #27272a !important;
+    border-color: #3f3f46 !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-workspace-bar button {
+    background-color: #18181b !important;
+    border: 1px solid #27272a !important;
+    color: #a1a1aa !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-workspace-bar button:hover {
+    background-color: #27272a !important;
+    border-color: #3f3f46 !important;
+    color: #ffffff !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-workspace-bar svg {
+    color: #a1a1aa !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-workspace-bar :is(button:hover, a:hover) svg {
+    color: #ffffff !important;
+  }
+
   :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-brand,
   :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-shell .dashboard-sidebar-brand,
   :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-shell[data-expanded="true"] .dashboard-sidebar-brand,
@@ -2376,8 +2419,8 @@ textarea.ai-prompt-textarea:focus-visible {
   }
 
   :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme :is(input:not([type="checkbox"]):not([type="radio"]), textarea)::placeholder {
-    color: #71717a !important;
-    -webkit-text-fill-color: #71717a !important;
+    color: #a1a1aa !important;
+    -webkit-text-fill-color: #a1a1aa !important;
     opacity: 1 !important;
   }
 

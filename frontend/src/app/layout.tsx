@@ -4,6 +4,7 @@ import Script from "next/script";
 import type { CSSProperties } from "react";
 
 import { BrandProvider } from "@/components/branding/BrandProvider";
+import { ThemeRouteSync } from "@/components/layout/ThemeRouteSync";
 import { requestBrandConfig } from "@/lib/brandServer";
 
 import "./globals.css";
@@ -130,19 +131,20 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       <html
         lang="en"
         suppressHydrationWarning
-        data-dashboard-theme="dark"
+        data-dashboard-theme="light"
         data-scroll-behavior="smooth"
-        className={`dark ${fontClasses}`}
+        className={fontClasses}
       >
         <head>
           <meta name="facebook-domain-verification" content="hs7xv0aby3bor2uybe6y440jg6wnkk" />
           <script
             dangerouslySetInnerHTML={{
-              __html: `(function(){try{var t=localStorage.getItem("vozon_dashboard_theme");if(t!=="light"){document.documentElement.setAttribute("data-dashboard-theme","dark");document.documentElement.classList.add("dark");}else{document.documentElement.setAttribute("data-dashboard-theme","light");document.documentElement.classList.remove("dark");}}catch(e){}})()`,
+              __html: `(function(){try{var p=window.location.pathname;var isDash=p.startsWith('/dashboard')||p.startsWith('/admin');if(isDash){var t=localStorage.getItem("vozon_dashboard_theme");if(t!=="light"){document.documentElement.setAttribute("data-dashboard-theme","dark");document.documentElement.classList.add("dark");}else{document.documentElement.setAttribute("data-dashboard-theme","light");document.documentElement.classList.remove("dark");}}else{document.documentElement.setAttribute("data-dashboard-theme","light");document.documentElement.classList.remove("dark");}}catch(e){}})()`,
             }}
           />
         </head>
         <body className="flex min-h-full flex-col bg-background text-foreground">
+          <ThemeRouteSync />
           <MetaPixel />
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: platformStructuredData() }} />
           <BrandProvider brand={brand}>{children}</BrandProvider>
@@ -166,15 +168,15 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       lang="en"
       suppressHydrationWarning
       data-brand-source="white_label"
-      data-dashboard-theme="dark"
+      data-dashboard-theme="light"
       data-scroll-behavior="smooth"
-      className={`dark ${fontClasses}`}
+      className={fontClasses}
     >
       <head>
         <meta name="facebook-domain-verification" content="hs7xv0aby3bor2uybe6y440jg6wnkk" />
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem("vozon_dashboard_theme");if(t!=="light"){document.documentElement.setAttribute("data-dashboard-theme","dark");document.documentElement.classList.add("dark");}else{document.documentElement.setAttribute("data-dashboard-theme","light");document.documentElement.classList.remove("dark");}}catch(e){}})()`,
+            __html: `(function(){try{var p=window.location.pathname;var isDash=p.startsWith('/dashboard')||p.startsWith('/admin');if(isDash){var t=localStorage.getItem("vozon_dashboard_theme");if(t!=="light"){document.documentElement.setAttribute("data-dashboard-theme","dark");document.documentElement.classList.add("dark");}else{document.documentElement.setAttribute("data-dashboard-theme","light");document.documentElement.classList.remove("dark");}}else{document.documentElement.setAttribute("data-dashboard-theme","light");document.documentElement.classList.remove("dark");}}catch(e){}})()`,
           }}
         />
         {effectiveIconTarget ? (
@@ -186,6 +188,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         ) : null}
       </head>
       <body className="flex min-h-full flex-col bg-background text-foreground" style={brandStyle}>
+        <ThemeRouteSync />
         <MetaPixel />
         <BrandProvider brand={brand}>{children}</BrandProvider>
       </body>

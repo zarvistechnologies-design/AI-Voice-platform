@@ -176,7 +176,7 @@ export function DashboardWorkspaceBar() {
             title={`${session.name} (${session.email})`}
             className="group inline-flex items-center gap-2 rounded-md px-1.5 py-1 transition hover:bg-[#f4f4f5] dark:hover:bg-zinc-900"
           >
-            <span className="grid size-7 shrink-0 place-items-center rounded-full bg-[#171717] text-[10px] font-semibold text-white transition border border-zinc-700 dark:border-zinc-300 dark:bg-zinc-100 dark:text-zinc-950">
+            <span className="grid size-7 shrink-0 place-items-center rounded-full bg-[#171717] text-[10px] font-semibold text-white transition border border-zinc-700 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100">
               {userInitials}
             </span>
             <span className="hidden max-w-[140px] truncate text-[12.5px] font-medium text-[#171717] sm:inline dark:text-zinc-200">
