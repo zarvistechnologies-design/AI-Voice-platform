@@ -373,6 +373,7 @@ export function DashboardSidebar({
   const isWhiteLabelPartner = Boolean(session?.organization?.whiteLabelOwnerAccountId);
   const isWhiteLabelCustomer = Boolean(session?.organization?.whiteLabelAccountId);
   const isPartnerOrCustomer = isWhiteLabelPartner || isWhiteLabelCustomer || brand.source === "white_label";
+  const showPlatformAdministration = isSuperAdmin && !isPartnerOrCustomer;
   const hideCustomerAutomationAndWhatsApp = isWhiteLabelCustomer;
 
   const effectiveProductName = isPartnerOrCustomer
@@ -443,7 +444,7 @@ export function DashboardSidebar({
           ? group.items.filter((item) => item.href !== "/dashboard/automations")
           : group.items,
       })),
-      ...(isSuperAdmin || isWhiteLabelPartner
+      ...(showPlatformAdministration || isWhiteLabelPartner
         ? [
           {
             label: "Administration",
@@ -457,7 +458,7 @@ export function DashboardSidebar({
                   },
                 ]
                 : []),
-              ...(isSuperAdmin
+              ...(showPlatformAdministration
                 ? [
                   {
                     label: "Accounts & Payments",
@@ -476,7 +477,7 @@ export function DashboardSidebar({
         ]
         : []),
     ];
-  }, [hideCustomerAutomationAndWhatsApp, isSuperAdmin, isWhiteLabelPartner]);
+  }, [hideCustomerAutomationAndWhatsApp, showPlatformAdministration, isWhiteLabelPartner]);
 
   useEffect(() => {
     const preloadTimer = window.setTimeout(() => {
@@ -679,7 +680,7 @@ export function DashboardSidebar({
                             : "lg:justify-start lg:gap-2.5 lg:px-2.5"
                           : "lg:justify-center"
                           } ${isActive
-                            ? "bg-[#171717] text-white"
+                            ? "bg-blue-600 text-white"
                             : "text-[#52525b] hover:bg-[#f4f4f5] hover:text-[#171717]"
                           }`}
                         href={item.href}
@@ -771,7 +772,7 @@ export function DashboardSidebar({
                                     onMouseEnter={() => prefetchDashboardRoute(subItem.href)}
                                     onPointerDown={() => prefetchDashboardRoute(subItem.href)}
                                     className={`group/sub flex h-8 items-center gap-2.5 rounded-md px-2.5 text-[12.5px] transition-colors ${isSubActive
-                                      ? "bg-[#171717] text-white font-medium"
+                                      ? "bg-blue-600 text-white font-medium"
                                       : "text-[#52525b] hover:bg-[#f4f4f5] hover:text-[#171717]"
                                       }`}
                                   >
@@ -799,7 +800,7 @@ export function DashboardSidebar({
                               if (!beginNavigation("/dashboard/settings")) event.preventDefault();
                             }}
                             className={`relative grid size-9 place-items-center rounded-md transition duration-150 ${isSettingsRoute
-                              ? "bg-[#171717] text-white"
+                              ? "bg-blue-600 text-white"
                               : "text-[#52525b] hover:bg-[#f4f4f5] hover:text-[#171717]"
                               }`}
                             aria-label="Settings"
@@ -831,7 +832,7 @@ export function DashboardSidebar({
                       if (!beginNavigation("/dashboard/whatsapp/campaigns")) event.preventDefault();
                     }}
                     className={`dashboard-sidebar-nav relative flex size-9 shrink-0 items-center justify-center rounded-md outline-none transition duration-150 lg:hidden ${isWhatsAppRoute
-                      ? "bg-[#171717] text-white"
+                      ? "bg-blue-600 text-white"
                       : "text-[#52525b] hover:bg-[#f4f4f5] hover:text-[#171717]"
                       }`}
                     aria-label="WhatsApp Suite"
@@ -896,7 +897,7 @@ export function DashboardSidebar({
                                 onMouseEnter={() => prefetchDashboardRoute(subItem.href)}
                                 onPointerDown={() => prefetchDashboardRoute(subItem.href)}
                                 className={`group/sub flex h-8 items-center gap-2.5 rounded-md px-2.5 text-[12.5px] transition-colors ${isSubActive
-                                  ? "bg-[#171717] text-white font-medium"
+                                  ? "bg-blue-600 text-white font-medium"
                                   : "text-[#52525b] hover:bg-[#f4f4f5] hover:text-[#171717]"
                                   }`}
                               >
@@ -927,7 +928,7 @@ export function DashboardSidebar({
                             event.preventDefault();
                         }}
                         className={`relative grid size-9 place-items-center rounded-md transition duration-150 ${isWhatsAppRoute
-                          ? "bg-[#171717] text-white"
+                          ? "bg-blue-600 text-white"
                           : "text-[#52525b] hover:bg-[#f4f4f5] hover:text-[#171717]"
                           }`}
                         aria-label="WhatsApp"

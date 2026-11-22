@@ -292,12 +292,12 @@ html[data-brand-theme="green"][data-brand-source="white_label"] :is(.dashboard-h
   }
 
   html[data-brand-theme="green"][data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"]::before {
-    background: var(--dashboard-moody) !important;
+    background: #2563eb !important;
   }
 
   html[data-brand-theme="green"][data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-icon {
-    color: var(--dashboard-moody-dark) !important;
-    background: var(--dashboard-moody-soft) !important;
+    color: #ffffff !important;
+    background: transparent !important;
   }
 
   html[data-brand-theme="green"][data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-avatar {
@@ -1530,7 +1530,7 @@ html:not([data-brand-source="white_label"]) :is(.dashboard-home-theme, .agents-h
     .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] {
       position: relative;
       border: 0 !important;
-      background: #171717 !important;
+      background: #2563eb !important;
       color: #ffffff !important;
       box-shadow: none !important;
     }
@@ -1541,7 +1541,7 @@ html:not([data-brand-source="white_label"]) :is(.dashboard-home-theme, .agents-h
 
     .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-icon {
       background: transparent !important;
-      color: #60a5fa !important;
+      color: #ffffff !important;
     }
 
     .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-label {
@@ -2241,8 +2241,8 @@ textarea.ai-prompt-textarea:focus-visible {
   }
 
   :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] {
-    background: #1f1f23 !important;
-    background-color: #1f1f23 !important;
+    background: #2563eb !important;
+    background-color: #2563eb !important;
     color: #ffffff !important;
   }
 

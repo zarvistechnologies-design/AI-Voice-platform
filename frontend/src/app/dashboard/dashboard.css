@@ -255,7 +255,7 @@ html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"
 html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(h2) { font-size: 14px; font-weight: 600; letter-spacing: -0.02em; color: #000000; }
 html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(p) { font-size: 12.5px; color: #666666; }
 html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(button, a, input, select, textarea) { font-family: var(--font-site-sans), Inter, sans-serif; }
-html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(button, a, input, select, textarea):focus-visible { outline: 2px solid #000000; outline-offset: 2px; }
+html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(button, a, input, select, textarea):focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
 html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]), textarea, select) {
   background-color: #ffffff;
   border-color: #e5e5e5;
@@ -263,7 +263,7 @@ html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"
   accent-color: #000000;
 }
 html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(input, textarea)::placeholder { color: #888888; }
-html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(input[type=checkbox], input[type=radio], input[type=range]) { accent-color: #000000; }
+html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(input[type=checkbox], input[type=radio], input[type=range]) { accent-color: #2563eb; }
 html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(select option) { background: #ffffff; color: #171717; }
 html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) ::selection { background: #171717; color: #ffffff; }
 html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :where(th) { background: #fafafa; color: #666666; font-size: 11px; border-color: #eaeaea; }
@@ -286,8 +286,8 @@ html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"
 html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.sidebar-workspace, .sidebar-help) { border-color: #eaeaea; background: #fafafa; color: #171717; }
 html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.sidebar-workspace > span:first-child, .agents-metric-icon, .agent-avatar, .agents-guide-symbol) { background: #f5f5f5; border-color: #e5e5e5; color: #171717; }
 html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) .saas-primary,
-html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.automation-primary, .auth-submit) { border-color: #000000; background: #000000; color: #ffffff !important; box-shadow: none; font-weight: 500; }
-html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.saas-primary, .automation-primary, .auth-submit):hover { border-color: #262626; background: #262626; }
+html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.automation-primary, .auth-submit) { border-color: #2563eb; background: #2563eb; color: #ffffff !important; box-shadow: none; font-weight: 500; }
+html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.saas-primary, .automation-primary, .auth-submit):hover { border-color: #1d4ed8; background: #1d4ed8; }
 html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.saas-secondary, .automation-secondary) { border-color: #e5e5e5; background: #ffffff; color: #171717; }
 html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.saas-secondary, .automation-secondary):hover { background: #fafafa; border-color: #d4d4d4; }
 html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.agents-panel, .agents-metric, .agents-guide, .campaign-composer, .automation-flow-card, .dashboard-flat-panel) { background: #ffffff !important; border-color: #eaeaea !important; color: #171717; }
@@ -336,7 +336,7 @@ html:not([data-dashboard-theme="dark"]):not(.dark):has(.dashboard-home-theme):no
   color: #000000 !important;
 }
 html:not([data-dashboard-theme="dark"]):not(.dark):has(.dashboard-home-theme):not([data-brand-theme="green"]) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] {
-  background: #000000 !important;
+  background: #2563eb !important;
   color: #ffffff !important;
   box-shadow: none !important;
 }
@@ -350,7 +350,7 @@ html:not([data-dashboard-theme="dark"]):not(.dark):has(.dashboard-home-theme):no
   box-shadow: none !important;
 }
 html:not([data-dashboard-theme="dark"]):not(.dark):has(.dashboard-home-theme):not([data-brand-theme="green"]) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-shell[data-expanded="false"] .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-icon {
-  background: #000000 !important;
+  background: #2563eb !important;
   color: #ffffff !important;
 }
 
@@ -429,9 +429,9 @@ html[data-brand-theme="green"] .dashboard-home-theme .dashboard-workspace-bar im
   filter: none !important;
 }
 html[data-brand-theme="green"] .dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] {
-  background: var(--brand-primary, #118778) !important;
+  background: #2563eb !important;
   color: #ffffff !important;
-  box-shadow: 0 2px 8px rgba(17, 135, 120, 0.25) !important;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25) !important;
 }
 html[data-brand-theme="green"] .dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-icon,
 html[data-brand-theme="green"] .dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-label {
@@ -498,4 +498,29 @@ html[data-brand-theme="green"] .dashboard-home-theme .agents-tabs button[aria-pr
   --dashboard-border: #27272a !important;
   --voice-border: #27272a !important;
   --dashboard-surface: #121215 !important;
+}
+
+/* Shared blue actions for the standard dashboard; branded portals keep their own palette. */
+html:not([data-brand-source="white_label"]) .dashboard-home-theme :is(.saas-primary, .automation-primary, .auth-submit),
+html:not([data-brand-source="white_label"]) .dashboard-home-theme :is(button, a)[class~="bg-black"],
+html:not([data-brand-source="white_label"]) .dashboard-home-theme :is(button, a)[class~="bg-[#171717]"] {
+  background-color: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #ffffff !important;
+}
+html:not([data-brand-source="white_label"]) .dashboard-home-theme :is(.saas-primary, .automation-primary, .auth-submit):hover,
+html:not([data-brand-source="white_label"]) .dashboard-home-theme :is(button, a)[class~="bg-black"]:hover,
+html:not([data-brand-source="white_label"]) .dashboard-home-theme :is(button, a)[class~="bg-[#171717]"]:hover {
+  background-color: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+}
+html:not([data-brand-source="white_label"]) .dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+}
+html:not([data-brand-source="white_label"]) .dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] :is(.dashboard-sidebar-icon, .dashboard-sidebar-label) {
+  color: #ffffff !important;
+}
+html:not([data-brand-source="white_label"]) .dashboard-home-theme :where(button, a, input, select, textarea):focus-visible {
+  outline-color: #2563eb;
 }

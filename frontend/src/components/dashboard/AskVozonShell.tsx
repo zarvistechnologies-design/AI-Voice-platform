@@ -445,7 +445,7 @@ function AssistantChat() {
               <button type="button" className="rounded-md px-2 py-1 text-lg text-slate-400 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white md:hidden" onClick={() => setHistoryOpen(false)} aria-label="Close chat history">×</button>
               <button type="button" className="hidden rounded-md border border-slate-200 bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-200 hover:text-black dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-750 dark:hover:text-white md:inline-flex" onClick={toggleDesktopHistory} aria-label="Hide chat history" aria-controls="ask-vozon-history" aria-expanded="true">Hide</button>
             </div>
-            <button type="button" onClick={startNewChat} disabled={busy || Boolean(loadingChatId)} className="mx-3 mt-3 flex h-8 items-center justify-center gap-1.5 rounded-md border border-slate-200 bg-slate-50 px-3 text-[12.5px] font-medium text-slate-700 transition hover:bg-slate-100 hover:text-black dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-750 disabled:opacity-50"><span className="text-base leading-none">+</span> New chat</button>
+            <button type="button" onClick={startNewChat} disabled={busy || Boolean(loadingChatId)} className="mx-3 mt-3 flex h-8 items-center justify-center gap-1.5 rounded-md border border-blue-600 bg-blue-600 px-3 text-[12.5px] font-medium text-white transition hover:bg-blue-700 dark:border-blue-500 dark:bg-blue-600 dark:text-white dark:hover:bg-blue-500 disabled:opacity-50"><span className="text-base leading-none">+</span> New chat</button>
             <div className="min-h-0 flex-1 overflow-y-auto px-2 pb-4 pt-3">
               <p className="m-0 px-2 pb-2 text-[10px] font-medium uppercase tracking-[0.12em] text-slate-400 dark:text-zinc-400">Recent conversations</p>
               {historyLoading && conversations.length === 0 ? <p className="px-2 text-xs text-slate-500 dark:text-zinc-400">Loading chats…</p> : null}
@@ -453,7 +453,7 @@ function AssistantChat() {
               {historyError ? <p className="mx-2 mb-3 rounded-md bg-rose-50 px-2 py-2 text-xs text-rose-700 dark:bg-zinc-800 dark:text-zinc-200" role="alert">{historyError}</p> : null}
               <div className="space-y-0.5">
                 {conversations.map((chat) => (
-                  <div key={chat.id} className={`group flex items-center gap-1 rounded-md px-1 transition ${conversationId === chat.id ? "bg-slate-100 dark:bg-zinc-800" : "hover:bg-slate-50 dark:hover:bg-zinc-800/60"}`}>
+                  <div key={chat.id} className={`group flex items-center gap-1 rounded-md px-1 transition ${conversationId === chat.id ? "bg-blue-50 dark:bg-blue-500/15" : "hover:bg-slate-50 dark:hover:bg-zinc-800/60"}`}>
                     <button type="button" onClick={() => void openChat(chat.id)} disabled={busy || Boolean(loadingChatId)} className="min-w-0 flex-1 px-2 py-2 text-left disabled:opacity-50" aria-current={conversationId === chat.id ? "page" : undefined}>
                       <span className="block truncate text-xs font-medium text-slate-800 dark:text-zinc-200">{chat.title}</span>
                       <span className="mt-0.5 block text-[10px] text-slate-400 dark:text-zinc-400">{new Date(chat.updatedAt).toLocaleDateString()}</span>
@@ -504,7 +504,7 @@ function AssistantChat() {
                 {/* Greeting & Date Matching Dashboard Theme */}
                 <div className="mb-8 text-center">
                   <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-white leading-tight">
-                    {greeting}, {firstName}.
+                    {greeting}, <span className="text-blue-600 dark:text-blue-400">{firstName}</span>.
                   </h1>
                   <p className="mt-2 text-[13px] font-normal text-slate-500 dark:text-zinc-400">
                     {formattedDate}
@@ -513,7 +513,7 @@ function AssistantChat() {
 
                 {/* Sleek Prompt Card Matching Screenshot */}
                 <form
-                  className="rounded-[22px] border border-slate-200 bg-white px-5 pt-4 pb-3 shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all focus-within:border-slate-400 focus-within:shadow-[0_8px_30px_rgb(0,0,0,0.1)] dark:border-zinc-800 dark:bg-[#121215] dark:shadow-[0_12px_42px_rgba(0,0,0,0.5)] dark:focus-within:border-zinc-700"
+                  className="rounded-[22px] border border-slate-200 bg-white px-5 pt-4 pb-3 shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all focus-within:border-blue-400 focus-within:shadow-[0_8px_30px_rgb(37,99,235,0.12)] dark:border-zinc-800 dark:bg-[#121215] dark:shadow-[0_12px_42px_rgba(0,0,0,0.5)] dark:focus-within:border-blue-500"
                   onSubmit={(event) => void submitMessage(event)}
                 >
                   <label className="sr-only" htmlFor="ask-vozon-input">
@@ -570,7 +570,7 @@ function AssistantChat() {
                             <button
                               type="button"
                               onClick={() => { setActiveMode("Manual"); setModeDropdownOpen(false); }}
-                              className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-left cursor-pointer ${activeMode === "Manual" ? "bg-slate-100 font-semibold text-slate-900 dark:bg-zinc-700 dark:text-white" : "text-slate-600 hover:bg-slate-50 dark:text-zinc-300 dark:hover:bg-zinc-750"}`}
+                              className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-left cursor-pointer ${activeMode === "Manual" ? "bg-blue-50 font-semibold text-blue-700 dark:bg-blue-500/15 dark:text-blue-300" : "text-slate-600 hover:bg-slate-50 dark:text-zinc-300 dark:hover:bg-zinc-750"}`}
                             >
                               <span>🛡️</span>
                               <span>Manual Mode</span>
@@ -578,7 +578,7 @@ function AssistantChat() {
                             <button
                               type="button"
                               onClick={() => { setActiveMode("Auto"); setModeDropdownOpen(false); }}
-                              className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-left cursor-pointer ${activeMode === "Auto" ? "bg-slate-100 font-semibold text-slate-900 dark:bg-zinc-700 dark:text-white" : "text-slate-600 hover:bg-slate-50 dark:text-zinc-300 dark:hover:bg-zinc-750"}`}
+                              className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-left cursor-pointer ${activeMode === "Auto" ? "bg-blue-50 font-semibold text-blue-700 dark:bg-blue-500/15 dark:text-blue-300" : "text-slate-600 hover:bg-slate-50 dark:text-zinc-300 dark:hover:bg-zinc-750"}`}
                             >
                               <span>⚡</span>
                               <span>Autonomous</span>
@@ -586,7 +586,7 @@ function AssistantChat() {
                             <button
                               type="button"
                               onClick={() => { setActiveMode("Grounded"); setModeDropdownOpen(false); }}
-                              className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-left cursor-pointer ${activeMode === "Grounded" ? "bg-slate-100 font-semibold text-slate-900 dark:bg-zinc-700 dark:text-white" : "text-slate-600 hover:bg-slate-50 dark:text-zinc-300 dark:hover:bg-zinc-750"}`}
+                              className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-left cursor-pointer ${activeMode === "Grounded" ? "bg-blue-50 font-semibold text-blue-700 dark:bg-blue-500/15 dark:text-blue-300" : "text-slate-600 hover:bg-slate-50 dark:text-zinc-300 dark:hover:bg-zinc-750"}`}
                             >
                               <span>📚</span>
                               <span>Grounded Only</span>
@@ -629,7 +629,7 @@ function AssistantChat() {
                       <button
                         className={`flex size-8 shrink-0 items-center justify-center rounded-xl transition ${
                           draft.trim() && !busy
-                            ? "bg-black text-white hover:bg-zinc-800 shadow-sm cursor-pointer dark:bg-white dark:text-black dark:hover:bg-zinc-200"
+                            ? "bg-blue-600 text-white hover:bg-blue-700 shadow-sm cursor-pointer dark:bg-blue-600 dark:text-white dark:hover:bg-blue-500"
                             : "bg-slate-100 text-slate-300 dark:bg-zinc-800 dark:text-zinc-600 cursor-not-allowed"
                         }`}
                         type="submit"
@@ -658,7 +658,7 @@ function AssistantChat() {
                   </div>
                   <Link
                     href="/dashboard/agents"
-                    className="font-medium text-slate-600 hover:text-black dark:text-zinc-300 dark:hover:text-white transition"
+                    className="font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition"
                   >
                     Manage
                   </Link>
@@ -671,7 +671,7 @@ function AssistantChat() {
                       key={item.title}
                       type="button"
                       onClick={() => void submitMessage(undefined, item.prompt)}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs text-slate-700 shadow-xs transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 dark:border-zinc-800 dark:bg-zinc-900/80 dark:text-zinc-300 dark:hover:border-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-white cursor-pointer"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs text-slate-700 shadow-xs transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 dark:border-zinc-800 dark:bg-zinc-900/80 dark:text-zinc-300 dark:hover:border-blue-500 dark:hover:bg-blue-500/10 dark:hover:text-blue-300 cursor-pointer"
                     >
                       <span className="text-slate-400 dark:text-zinc-500">{item.icon}</span>
                       <span>{item.title}</span>
@@ -692,7 +692,7 @@ function AssistantChat() {
                     key={`${index}-${message.role}`}
                   >
                     {message.role === "assistant" ? (
-                      <span className="mt-1 grid size-8 shrink-0 place-items-center rounded-lg bg-[#171717] text-white">
+                      <span className="mt-1 grid size-8 shrink-0 place-items-center rounded-lg bg-blue-600 text-white">
                         <SparkIcon className="size-4" />
                       </span>
                     ) : null}
@@ -700,7 +700,7 @@ function AssistantChat() {
                     <div
                       className={`min-w-0 text-sm leading-relaxed ${
                         message.role === "user"
-                          ? "max-w-[min(90%,42rem)] rounded-2xl rounded-br-sm bg-[#171717] px-4 py-2.5 text-white dark:bg-white dark:text-black"
+                          ? "max-w-[min(90%,42rem)] rounded-2xl rounded-br-sm bg-blue-600 px-4 py-2.5 text-white dark:bg-blue-600 dark:text-white"
                           : "group flex-1 py-1 pr-2 text-[#171717] dark:text-zinc-100"
                       }`}
                     >
@@ -728,7 +728,7 @@ function AssistantChat() {
                                 <span className="text-[11px] text-[#71717a] dark:text-zinc-400">Nothing changes until you approve.</span>
                                 <div className="flex gap-2">
                                   <button className="h-8 rounded-md border border-[#eaeaea] bg-white px-3 text-xs font-medium text-[#171717] transition hover:bg-[#f4f4f5] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700 disabled:opacity-50" type="button" disabled={Boolean(reviewingActionId)} onClick={() => void decideAction(message.pendingAction!.id, false)}>Cancel</button>
-                                  <button className="h-8 rounded-md bg-[#171717] px-3.5 text-xs font-medium text-white transition hover:bg-black dark:bg-white dark:text-black dark:hover:bg-zinc-200 disabled:opacity-50" type="button" disabled={Boolean(reviewingActionId)} onClick={() => void decideAction(message.pendingAction!.id, true)}>{reviewingActionId === message.pendingAction.id ? "Saving…" : "Approve change"}</button>
+                                  <button className="h-8 rounded-md bg-blue-600 px-3.5 text-xs font-medium text-white transition hover:bg-blue-700 dark:bg-blue-600 dark:text-white dark:hover:bg-blue-500 disabled:opacity-50" type="button" disabled={Boolean(reviewingActionId)} onClick={() => void decideAction(message.pendingAction!.id, true)}>{reviewingActionId === message.pendingAction.id ? "Saving…" : "Approve change"}</button>
                                 </div>
                               </div>
                             </div>
@@ -771,7 +771,7 @@ function AssistantChat() {
               {/* Anchored Prompt Box during active chat */}
               <div className="z-20 mx-auto w-full max-w-[740px] shrink-0 pt-2">
                 <form
-                  className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-[0_8px_30px_rgb(0,0,0,0.06)] focus-within:border-slate-400 transition-all dark:border-zinc-800 dark:bg-[#121215] dark:shadow-[0_14px_38px_rgba(0,0,0,0.5)] dark:focus-within:border-zinc-700"
+                  className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-[0_8px_30px_rgb(0,0,0,0.06)] focus-within:border-blue-400 transition-all dark:border-zinc-800 dark:bg-[#121215] dark:shadow-[0_14px_38px_rgba(0,0,0,0.5)] dark:focus-within:border-blue-500"
                   onSubmit={(event) => void submitMessage(event)}
                 >
                   <label className="sr-only" htmlFor="ask-vozon-input">
@@ -801,7 +801,7 @@ function AssistantChat() {
                     <button
                       className={`inline-flex size-8 shrink-0 items-center justify-center rounded-full transition ${
                         draft.trim() && !busy
-                          ? "bg-black text-white hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 cursor-pointer shadow-sm"
+                          ? "bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-600 dark:text-white dark:hover:bg-blue-500 cursor-pointer shadow-sm"
                           : "bg-slate-100 text-slate-300 dark:bg-zinc-800 dark:text-zinc-600 cursor-not-allowed"
                       }`}
                       type="submit"

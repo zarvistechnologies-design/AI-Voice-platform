@@ -60,7 +60,7 @@ function Icon({ icon }: { icon: IconName }) {
 }
 
 function statusTone(status: AgentSummary["status"]) {
-  if (status === "Live") return "border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:!text-emerald-300";
+  if (status === "Live") return "border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-500/30 dark:bg-blue-500/10 dark:!text-blue-300";
   if (status === "Paused") return "border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:!text-amber-300";
   return "border-zinc-200 bg-zinc-50 text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800 dark:!text-zinc-300";
 }
@@ -263,7 +263,7 @@ export function AgentsListShell() {
           description="Monitor usage, configure voice agents, and route live calls."
           actions={
             <button
-              className="inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md bg-black px-3.5 text-[12.5px] font-medium text-white transition hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 active:translate-y-px disabled:opacity-50"
+              className="inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md bg-blue-600 px-3.5 text-[12.5px] font-medium text-white transition hover:bg-blue-700 dark:bg-blue-600 dark:text-white dark:hover:bg-blue-500 active:translate-y-px disabled:opacity-50"
               type="button"
               disabled={busy}
               onClick={() => {
@@ -286,8 +286,8 @@ export function AgentsListShell() {
 
           {/* Compact White & Black Search & Controls Bar */}
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <div className="flex h-8 min-w-0 flex-1 items-center gap-2 rounded-md border border-[#e5e5e5] bg-white px-2.5 transition focus-within:border-black dark:border-zinc-800 dark:bg-zinc-900/90 dark:focus-within:border-zinc-500">
-              <span className="shrink-0 text-[#888888] dark:text-zinc-400"><Icon icon="search" /></span>
+            <div className="flex h-8 min-w-0 flex-1 items-center gap-2 rounded-md border border-[#e5e5e5] bg-white px-2.5 transition focus-within:border-blue-500 dark:border-zinc-800 dark:bg-zinc-900/90 dark:focus-within:border-blue-400">
+              <span className="shrink-0 text-blue-600 dark:text-blue-400"><Icon icon="search" /></span>
               <input
                 className="h-full min-w-0 flex-1 border-0 bg-transparent p-0 text-[12.5px] text-[#171717] placeholder-[#888888] outline-none dark:text-white dark:placeholder-zinc-500"
                 aria-label="Search agents"
@@ -296,7 +296,7 @@ export function AgentsListShell() {
                 onChange={(event) => setQuery(event.target.value)}
               />
               {query ? (
-                <button className="text-[11.5px] font-medium text-[#666666] hover:text-black dark:text-zinc-400 dark:hover:text-white" type="button" onClick={() => setQuery("")}>Clear</button>
+                <button className="text-[11.5px] font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300" type="button" onClick={() => setQuery("")}>Clear</button>
               ) : (
                 <kbd className="hidden rounded border border-[#e5e5e5] bg-[#fafafa] px-1.5 py-0.5 text-[10px] font-medium text-[#666666] sm:inline-block dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">/</kbd>
               )}
@@ -306,7 +306,7 @@ export function AgentsListShell() {
               <label className="relative min-w-[118px] flex-1 sm:flex-none">
                 <span className="sr-only">Filter by status</span>
                 <select
-                  className="h-8 w-full appearance-none rounded-md border border-[#e5e5e5] bg-white pr-7 pl-2.5 text-[12.5px] font-medium text-[#171717] outline-none transition hover:border-[#b5b5b5] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:border-zinc-700"
+                  className="h-8 w-full appearance-none rounded-md border border-[#e5e5e5] bg-white pr-7 pl-2.5 text-[12.5px] font-medium text-[#171717] outline-none transition hover:border-blue-300 focus:border-blue-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:border-blue-600"
                   value={statusFilter}
                   onChange={(event) => setStatusFilter(event.target.value as AgentStatusFilter)}
                 >
@@ -320,7 +320,7 @@ export function AgentsListShell() {
               <label className="relative min-w-[122px] flex-1 sm:flex-none">
                 <span className="sr-only">Sort agents</span>
                 <select
-                  className="h-8 w-full appearance-none rounded-md border border-[#e5e5e5] bg-white pr-7 pl-2.5 text-[12.5px] font-medium text-[#171717] outline-none transition hover:border-[#b5b5b5] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:border-zinc-700"
+                  className="h-8 w-full appearance-none rounded-md border border-[#e5e5e5] bg-white pr-7 pl-2.5 text-[12.5px] font-medium text-[#171717] outline-none transition hover:border-blue-300 focus:border-blue-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:border-blue-600"
                   value={sortBy}
                   onChange={(event) => setSortBy(event.target.value as AgentSort)}
                 >
@@ -361,7 +361,7 @@ export function AgentsListShell() {
               <div className="grid gap-2.5">
                 {filteredAgents.map((agent) => (
                   <article
-                    className="group relative flex flex-col justify-between gap-2 rounded-xl border border-[#eaeaea] bg-white p-3 text-left transition hover:border-zinc-400 hover:shadow-xs sm:min-h-[64px] sm:flex-row sm:items-center dark:border-zinc-800 dark:bg-zinc-900/80 dark:hover:border-zinc-600 dark:hover:bg-zinc-900 focus-within:z-10"
+                    className="group relative flex flex-col justify-between gap-2 rounded-xl border border-[#eaeaea] bg-white p-3 text-left transition hover:border-blue-300 hover:shadow-xs sm:min-h-[64px] sm:flex-row sm:items-center dark:border-zinc-800 dark:bg-zinc-900/80 dark:hover:border-blue-600 dark:hover:bg-zinc-900 focus-within:z-10"
                     key={agent._id}
                   >
                     <div className="flex min-w-0 items-start justify-between gap-3 sm:flex-1 sm:items-center">
@@ -377,11 +377,11 @@ export function AgentsListShell() {
                           prefetchAgentRoute(agent._id);
                         }}
                       >
-                        <span className="grid size-9 shrink-0 place-items-center rounded-lg border border-[#eaeaea] bg-[#fafafa] text-zinc-700 transition dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 group-hover:border-zinc-400 dark:group-hover:border-zinc-500">
+                        <span className="grid size-9 shrink-0 place-items-center rounded-lg border border-blue-100 bg-blue-50 text-blue-600 transition dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-300 group-hover:border-blue-300 dark:group-hover:border-blue-500">
                           <Icon icon="agent" />
                         </span>
                         <span className="min-w-0">
-                          <strong className="block truncate text-[13.5px] font-semibold text-[#171717] transition dark:text-white group-hover:text-black dark:group-hover:text-white">
+                          <strong className="block truncate text-[13.5px] font-semibold text-[#171717] transition dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-300">
                             {agent.name}
                           </strong>
                           <span className="mt-0.5 block truncate text-[11.5px] text-zinc-500 dark:text-zinc-300 font-medium">
@@ -392,7 +392,7 @@ export function AgentsListShell() {
 
                       <span className="relative shrink-0">
                         <button
-                          className="grid size-7 place-items-center rounded-md border border-transparent text-[#888888] transition hover:border-[#eaeaea] hover:bg-[#fafafa] hover:text-[#171717] dark:text-zinc-400 dark:hover:border-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-white disabled:opacity-50"
+                          className="grid size-7 place-items-center rounded-md border border-transparent text-[#888888] transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 dark:text-zinc-400 dark:hover:border-blue-500/30 dark:hover:bg-blue-500/10 dark:hover:text-blue-300 disabled:opacity-50"
                           type="button"
                           aria-label={`Actions for ${agent.name}`}
                           aria-haspopup="menu"
@@ -405,8 +405,8 @@ export function AgentsListShell() {
                         </button>
                         {openMenuId === agent._id ? (
                           <span className="absolute top-8 right-0 z-40 grid w-36 overflow-hidden rounded-lg border border-[#eaeaea] bg-white p-1 shadow-lg dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200" role="menu" onPointerDown={(event) => event.stopPropagation()}>
-                            <button className="flex h-7 items-center gap-2 rounded px-2 text-left text-[12px] font-medium text-[#171717] hover:bg-[#f5f5f5] dark:text-zinc-200 dark:hover:bg-zinc-800" role="menuitem" type="button" onClick={() => beginEditAgent(agent)}><Icon icon="edit" />Edit name</button>
-                            <button className="flex h-7 items-center gap-2 rounded px-2 text-left text-[12px] font-medium text-[#171717] hover:bg-[#f5f5f5] dark:text-zinc-200 dark:hover:bg-zinc-800" role="menuitem" type="button" onClick={() => void cloneAgent(agent)}><Icon icon="clone" />Clone agent</button>
+                            <button className="flex h-7 items-center gap-2 rounded px-2 text-left text-[12px] font-medium text-[#171717] hover:bg-blue-50 hover:text-blue-700 dark:text-zinc-200 dark:hover:bg-blue-500/10 dark:hover:text-blue-300" role="menuitem" type="button" onClick={() => beginEditAgent(agent)}><Icon icon="edit" />Edit name</button>
+                            <button className="flex h-7 items-center gap-2 rounded px-2 text-left text-[12px] font-medium text-[#171717] hover:bg-blue-50 hover:text-blue-700 dark:text-zinc-200 dark:hover:bg-blue-500/10 dark:hover:text-blue-300" role="menuitem" type="button" onClick={() => void cloneAgent(agent)}><Icon icon="clone" />Clone agent</button>
                             <span className="my-1 h-px bg-[#eaeaea] dark:bg-zinc-800" />
                             <button className="flex h-7 items-center gap-2 rounded px-2 text-left text-[12px] font-medium text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950/30" role="menuitem" type="button" onClick={() => void deleteAgent(agent)}><Icon icon="trash" />Delete agent</button>
                           </span>
@@ -423,7 +423,7 @@ export function AgentsListShell() {
                         {agent.phone || "No route assigned"}
                       </span>
                       <span className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-medium ${statusTone(agent.status)}`}>
-                        <span className={`size-1.5 rounded-full ${agent.status === "Live" ? "bg-emerald-500 dark:bg-emerald-400" : agent.status === "Paused" ? "bg-amber-500 dark:bg-amber-400" : "bg-zinc-400 dark:bg-zinc-500"}`} />
+                        <span className={`size-1.5 rounded-full ${agent.status === "Live" ? "bg-blue-500 dark:bg-blue-400" : agent.status === "Paused" ? "bg-amber-500 dark:bg-amber-400" : "bg-zinc-400 dark:bg-zinc-500"}`} />
                         {agent.status}
                       </span>
                     </Link>
@@ -435,11 +435,11 @@ export function AgentsListShell() {
             {!loading && !filteredAgents.length ? (
               <div className="grid min-h-44 place-items-center rounded-xl border border-[#eaeaea] bg-white p-6 text-center dark:border-zinc-800 dark:bg-zinc-900">
                 <div>
-                  <span className="mx-auto grid size-9 place-items-center rounded-lg border border-[#eaeaea] bg-[#fafafa] text-[#71717a] dark:border-zinc-800 dark:bg-zinc-800 dark:text-zinc-400"><Icon icon="agent" /></span>
+                  <span className="mx-auto grid size-9 place-items-center rounded-lg border border-blue-100 bg-blue-50 text-blue-600 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-300"><Icon icon="agent" /></span>
                   <strong className="mt-2.5 block text-[13px] font-medium text-[#171717] dark:text-white">No agents found</strong>
                   <span className="mt-0.5 block text-[11.5px] text-[#71717a] dark:text-zinc-400">Try another search or status filter.</span>
                   {(query || statusFilter !== "All") ? (
-                    <button className="mt-2.5 text-[11.5px] font-medium text-black dark:text-white underline underline-offset-4" type="button" onClick={() => { setQuery(""); setStatusFilter("All"); }}>
+                    <button className="mt-2.5 text-[11.5px] font-medium text-blue-600 dark:text-blue-400 underline underline-offset-4" type="button" onClick={() => { setQuery(""); setStatusFilter("All"); }}>
                       Clear filters
                     </button>
                   ) : null}
@@ -476,7 +476,7 @@ export function AgentsListShell() {
               <input
                 autoFocus
                 required
-                className="h-9 rounded-md border border-[#e5e5e5] bg-white px-3 text-[13px] text-black outline-none transition focus:border-black"
+                className="h-9 rounded-md border border-[#e5e5e5] bg-white px-3 text-[13px] text-black outline-none transition focus:border-blue-500"
                 value={editAgentName}
                 maxLength={80}
                 onChange={(event) => setEditAgentName(event.target.value)}
@@ -495,7 +495,7 @@ export function AgentsListShell() {
                 Cancel
               </button>
               <button
-                className="inline-flex h-8 items-center justify-center gap-1.5 rounded-md bg-black px-3.5 text-[12.5px] font-medium text-white transition hover:bg-[#262626] disabled:opacity-50"
+                className="inline-flex h-8 items-center justify-center gap-1.5 rounded-md bg-blue-600 px-3.5 text-[12.5px] font-medium text-white transition hover:bg-blue-700 disabled:opacity-50"
                 type="submit"
                 disabled={busy}
               >
@@ -516,7 +516,7 @@ export function AgentsListShell() {
             </p>
             <div className="mt-4 flex flex-wrap justify-end gap-2">
               <button className="h-8 rounded-md border border-[#e5e5e5] bg-white px-3 text-[12.5px] font-medium text-[#171717]" type="button" onClick={() => setDeleteBlockedAgent(null)}>Close</button>
-              <Link className="inline-flex h-8 items-center rounded-md bg-black px-3.5 text-[12.5px] font-medium text-white" href="/dashboard/phone-number" onClick={() => setDeleteBlockedAgent(null)}>Manage phone route</Link>
+              <Link className="inline-flex h-8 items-center rounded-md bg-blue-600 px-3.5 text-[12.5px] font-medium text-white hover:bg-blue-700" href="/dashboard/phone-number" onClick={() => setDeleteBlockedAgent(null)}>Manage phone route</Link>
             </div>
           </div>
         </div>
