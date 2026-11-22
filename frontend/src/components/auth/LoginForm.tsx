@@ -144,7 +144,7 @@ export function LoginForm() {
       onSubmit={handleSubmit}
     >
       <div className="auth-heading mb-2 grid gap-2 text-left">
-        <div className="mb-2 grid size-10 place-items-center rounded-xl bg-[#2457d6] text-white shadow-xs" aria-hidden="true">
+        <div className="mb-2 grid size-10 place-items-center rounded-xl bg-black text-white shadow-xs" aria-hidden="true">
           <span className="flex h-5 items-center gap-[3px]">
             {[10, 20, 14, 8, 16].map((height) => (
               <span className="w-[2.5px] rounded-full bg-white" key={height} style={{ height }} />
@@ -326,16 +326,16 @@ export function LoginForm() {
           type="button"
         >
           {mode === "login" ? (
-            <span>Don&apos;t have an account? <strong className="ml-1 font-bold text-[#2457d6] hover:underline">Sign up</strong></span>
+            <span>Don&apos;t have an account? <strong className="ml-1 font-bold text-black hover:underline">Sign up</strong></span>
           ) : mode === "register" ? (
-            <span>Already have an account? <strong className="ml-1 font-bold text-[#2457d6] hover:underline">Sign in</strong></span>
+            <span>Already have an account? <strong className="ml-1 font-bold text-black hover:underline">Sign in</strong></span>
           ) : (
-            <span>Remembered your password? <strong className="ml-1 font-bold text-[#2457d6] hover:underline">Back to sign in</strong></span>
+            <span>Remembered your password? <strong className="ml-1 font-bold text-black hover:underline">Back to sign in</strong></span>
           )}
         </button>
       ) : (
         <p className="m-0 text-center text-xs text-slate-500">
-          Need access? Contact <a className="font-semibold text-[#2457d6] hover:underline" href={`mailto:${brand.support.email}`}>{brand.support.email || "your account administrator"}</a>.
+          Need access? Contact <a className="font-semibold text-black hover:underline" href={`mailto:${brand.support.email}`}>{brand.support.email || "your account administrator"}</a>.
         </p>
       )}
       {brand.poweredBy.visible ? <p className="m-0 text-center text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">{brand.poweredBy.text}</p> : null}

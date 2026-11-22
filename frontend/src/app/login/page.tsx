@@ -23,24 +23,24 @@ export default function LoginPage() {
   return (
     <main className="login-page-theme min-h-[100svh] overflow-x-hidden bg-[#f8f9fb] text-[#111113] lg:h-[100svh] lg:overflow-y-hidden supports-[height:100dvh]:lg:h-[100dvh]">
       <div className="mx-auto grid min-h-[100svh] w-full min-w-0 max-w-[1440px] gap-4 p-3 sm:p-5 lg:h-full lg:min-h-0 lg:grid-cols-[minmax(0,1.08fr)_minmax(420px,0.92fr)] lg:gap-5 lg:p-6">
-        {/* Left Editorial Showcase Stage */}
-        <section className="relative hidden min-h-0 overflow-hidden rounded-2xl border border-[#dbe4f8] bg-[#eef3ff] bg-[radial-gradient(#c7d5f3_0.85px,transparent_0.85px)] [background-size:12px_12px] p-8 shadow-[0_16px_40px_rgba(15,23,42,0.06)] lg:flex lg:flex-col lg:justify-between lg:p-10">
+        {/* Left Editorial Showcase Stage (Clean B&W Theme, No Dots, No Blue) */}
+        <section className="relative hidden min-h-0 overflow-hidden rounded-2xl border border-slate-200 bg-white p-8 shadow-[0_16px_40px_rgba(15,23,42,0.04)] lg:flex lg:flex-col lg:justify-between lg:p-10">
           <header className="relative z-10 flex items-center justify-between">
             <div className="landing-header-logo flex items-center shrink-0">
               <BrandLogo showWebsiteLogo />
             </div>
-            <span className="rounded-full border border-[#c3d2f5] bg-white/90 px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[#2457d6] shadow-2xs backdrop-blur-sm">
+            <span className="rounded-full border border-black bg-white px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-black shadow-2xs">
               AI voice platform
             </span>
           </header>
 
           <div className="relative z-10 my-auto py-6">
             <div className="max-w-[560px]">
-              <p className="m-0 text-[11px] font-bold uppercase tracking-[0.18em] text-[#2457d6]">
+              <p className="m-0 text-[11px] font-bold uppercase tracking-[0.18em] text-black">
                 Voice automation, simplified
               </p>
-              <h1 className="mt-4 max-w-[540px] text-[clamp(2.2rem,3.2vw,3.3rem)] font-bold leading-[1.1] tracking-[-0.04em] text-[#111113]">
-                Build voice agents that <span className="font-semibold text-[#2457d6]">move work forward.</span>
+              <h1 className="mt-4 max-w-[540px] text-[clamp(2.2rem,3.2vw,3.3rem)] font-bold leading-[1.1] tracking-[-0.04em] text-black">
+                Build voice agents that move work forward.
               </h1>
               <p className="mt-4 max-w-[490px] text-[15px] leading-relaxed text-slate-600">
                 Create natural phone conversations that answer questions, qualify customers, and complete the next action in real time.
@@ -49,18 +49,18 @@ export default function LoginPage() {
               <ul className="mt-7 grid max-w-[500px] gap-3" aria-label="Platform capabilities">
                 {capabilities.map((capability) => (
                   <li className="flex items-center gap-3 text-sm font-semibold text-slate-800" key={capability}>
-                    <span className="grid size-5 shrink-0 place-items-center rounded-full bg-[#2457d6] text-[10px] font-bold text-white shadow-2xs" aria-hidden="true">&#10003;</span>
+                    <span className="grid size-5 shrink-0 place-items-center rounded-full bg-black text-[10px] font-bold text-white shadow-2xs" aria-hidden="true">&#10003;</span>
                     {capability}
                   </li>
                 ))}
               </ul>
 
-              <div className="mt-8 inline-flex items-center gap-3 rounded-full border border-[#c3d2f5] bg-white/90 px-4 py-2 shadow-2xs backdrop-blur-sm">
+              <div className="mt-8 inline-flex items-center gap-3 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-2xs">
                 <span className="flex h-3.5 items-center gap-1" aria-hidden="true">
                   {[10, 16, 12, 18, 14, 8].map((h, i) => (
                     <span
                       key={i}
-                      className="w-1 animate-pulse rounded-full bg-[#2457d6]"
+                      className="w-1 animate-pulse rounded-full bg-black"
                       style={{ height: h, animationDelay: `${i * 120}ms` }}
                     />
                   ))}
@@ -72,10 +72,10 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <div className="relative z-10 grid grid-cols-3 divide-x divide-[#dbe4f8] overflow-hidden rounded-2xl border border-[#dbe4f8] bg-white/90 p-4 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur-md">
+          <div className="relative z-10 grid grid-cols-3 divide-x divide-slate-200 overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
             {benefits.map(([value, label]) => (
               <div className="px-4 py-2 first:pl-2" key={label}>
-                <strong className="block text-xl font-bold tracking-tight text-[#111113]">{value}</strong>
+                <strong className="block text-xl font-bold tracking-tight text-black">{value}</strong>
                 <span className="mt-0.5 block text-[10px] font-bold uppercase tracking-wider text-slate-500">{label}</span>
               </div>
             ))}
