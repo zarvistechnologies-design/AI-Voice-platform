@@ -1,7 +1,7 @@
 .global-voices-map-section {
     position: relative;
     overflow: hidden;
-    padding: clamp(54px, 6vw, 76px) clamp(16px, 3vw, 24px) clamp(32px, 4vw, 56px);
+    padding: clamp(34px, 3.8vw, 48px) clamp(16px, 3vw, 24px) clamp(24px, 3vw, 36px);
     background: #ffffff;
     border-top: 1px solid #f0f2f5;
     box-sizing: border-box;
@@ -63,36 +63,27 @@
   position: relative;
   width: 100%;
   max-width: 1100px;
-  margin: -110px auto 0;
+  margin: 0 auto;
 }
 
 .global-voices-map-image {
-    display: block;
-    width: 100%;
-    height: auto;
-    margin: 0 auto;
-    filter: contrast(1.1) brightness(1.05);
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+  filter: contrast(1.1) brightness(1.05);
 }
 
 @media (max-width: 820px) {
   .global-voices-map-visual {
-    margin-top: -60px;
+    margin-top: 0;
   }
 }
 
 @media (max-width: 540px) {
   .global-voices-map-section {
-    padding: 40px 16px 24px;
+    padding: 32px 16px 20px;
   }
-  .global-voices-map-visual {
-    margin-top: -24px;
-  }
-}
-
-.global-voices-map-visual {
-    position: relative;
-    width: min(100%, 1080px);
-    margin: 0 auto;
 }
 
 .global-voices-map-visual h2 {

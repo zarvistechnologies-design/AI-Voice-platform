@@ -319,6 +319,22 @@ export function SiteHeader() {
 
   return (
     <div className={`public-accent-header ${isScrolled ? "is-scrolled" : ""}`}>
+      {/* Top Thin Announcement Banner Bar (matching Thinnest.AI style) */}
+      <div className="site-announcement-bar" role="banner" aria-label="Platform announcement">
+        <div className="site-announcement-inner">
+          <span className="site-announcement-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+              <line x1="12" y1="19" x2="12" y2="22" />
+            </svg>
+          </span>
+          <p className="site-announcement-text">
+            <strong>Speak naturally. Sound human.</strong> Vozon AI&apos;s own STT &amp; TTS APIs are dropping soon.
+          </p>
+        </div>
+      </div>
+
       <header ref={headerRef}>
         {/* Left: Brand Logo & Aligned Navigation (Ringg.AI style) */}
         <div className="flex items-center gap-7 lg:gap-9">

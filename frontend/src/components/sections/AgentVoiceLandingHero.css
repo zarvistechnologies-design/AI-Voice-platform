@@ -682,7 +682,7 @@
   overflow: hidden;
   background: #f8f9fb;
   border-top: 1px solid #f0f2f5;
-  padding: clamp(54px, 6vw, 76px) clamp(16px, 3vw, 24px);
+  padding: clamp(44px, 4.8vw, 64px) clamp(16px, 3vw, 24px);
   box-sizing: border-box;
 }
 .vozon-intro-video::before {
@@ -749,14 +749,15 @@
 .vozon-intro-video-card {
   position: relative;
   width: 100%;
-  max-width: 1200px;
+  max-width: 940px;
   aspect-ratio: 16 / 9;
   height: auto;
+  margin: 0 auto;
   overflow: hidden;
   border: 1px solid #d7d7d7;
-  border-radius: 24px;
+  border-radius: 22px;
   background: radial-gradient(ellipse at 28% 24%, #242424 0, #101010 47%, #050505 100%);
-  padding: 10px;
+  padding: 8px;
   box-shadow: 0 20px 55px rgba(9, 9, 11, 0.08);
   box-sizing: border-box;
 }

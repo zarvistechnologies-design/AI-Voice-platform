@@ -243,6 +243,80 @@ export function ConversationInsightsSection() {
                   <TrendHeatmap />
                   <p className="conversation-insights-heatmap-note">Darker cells show higher values</p>
                 </div>
+
+                {/* Live Performance & Real-time Channel Analytics */}
+                <div className="ci-sidebar-analytics-card">
+                  <div className="ci-sidebar-analytics-head">
+                    <div>
+                      <strong>Live Performance</strong>
+                      <span>Today across channels</span>
+                    </div>
+                    <span className="ci-sidebar-live-pill">
+                      <i className="ci-pulse-dot" /> LIVE
+                    </span>
+                  </div>
+
+                  <div className="ci-sidebar-stats-grid">
+                    <div className="ci-sidebar-stat-item">
+                      <div className="ci-sidebar-stat-icon is-green">
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                      <div className="ci-sidebar-stat-info">
+                        <strong>98.4%</strong>
+                        <span>Resolution</span>
+                      </div>
+                    </div>
+
+                    <div className="ci-sidebar-stat-item">
+                      <div className="ci-sidebar-stat-icon is-blue">
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                        </svg>
+                      </div>
+                      <div className="ci-sidebar-stat-info">
+                        <strong>640ms</strong>
+                        <span>Avg Latency</span>
+                      </div>
+                    </div>
+
+                    <div className="ci-sidebar-stat-item">
+                      <div className="ci-sidebar-stat-icon is-purple">
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                        </svg>
+                      </div>
+                      <div className="ci-sidebar-stat-info">
+                        <strong>1,482</strong>
+                        <span>Total Calls</span>
+                      </div>
+                    </div>
+
+                    <div className="ci-sidebar-stat-item">
+                      <div className="ci-sidebar-stat-icon is-teal">
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                        </svg>
+                      </div>
+                      <div className="ci-sidebar-stat-info">
+                        <strong>4.9 / 5</strong>
+                        <span>CSAT Score</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="ci-sidebar-progress-block">
+                    <div className="ci-sidebar-progress-label">
+                      <span>Voice (78%)</span>
+                      <span>WhatsApp (22%)</span>
+                    </div>
+                    <div className="ci-sidebar-progress-track">
+                      <div className="ci-sidebar-progress-fill is-voice" style={{ width: "78%" }} />
+                      <div className="ci-sidebar-progress-fill is-wa" style={{ width: "22%" }} />
+                    </div>
+                  </div>
+                </div>
               </aside>
 
               {/* Right Panel: Audio Recording, Metrics & Issues */}
@@ -285,6 +359,124 @@ export function ConversationInsightsSection() {
                       <span>{["Criteria met", "Relevance", "Tool calls", "Obedience"][index]}</span>
                     </div>
                   ))}
+                </div>
+
+                {/* Embedded Line Graph & Bar Chart Inside This Box (Maintains shape & size) */}
+                <div className="ci-embedded-charts-row">
+                  {/* Line / Area Graph */}
+                  <div className="ci-embedded-chart-card">
+                    <div className="ci-embedded-chart-head">
+                      <strong>Call Volume Trend</strong>
+                      <span className="ci-chart-badge ci-badge-area">AREA CHART</span>
+                    </div>
+
+                    <div className="ci-embedded-chart-canvas">
+                      {mounted && (
+                        <ResponsiveContainer width="100%" height={130}>
+                          <AreaChart data={volumeTrendData} margin={{ top: 8, right: 10, left: -24, bottom: 0 }}>
+                            <defs>
+                              <linearGradient id="embTotalCallsGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="#00b987" stopOpacity={isDark ? 0.3 : 0.22} />
+                                <stop offset="100%" stopColor="#00b987" stopOpacity={0.01} />
+                              </linearGradient>
+                              <linearGradient id="embCompletedGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="#6262ff" stopOpacity={isDark ? 0.35 : 0.22} />
+                                <stop offset="100%" stopColor="#6262ff" stopOpacity={0.02} />
+                              </linearGradient>
+                            </defs>
+                            <CartesianGrid stroke={gridStroke} vertical={false} strokeDasharray="3 3" />
+                            <XAxis
+                              dataKey="date"
+                              tick={{ fill: axisColor, fontSize: 10 }}
+                              tickLine={false}
+                              axisLine={false}
+                            />
+                            <YAxis
+                              ticks={[0, 65, 130, 195, 260]}
+                              domain={[0, 260]}
+                              tick={{ fill: axisColor, fontSize: 10 }}
+                              tickLine={false}
+                              axisLine={false}
+                            />
+                            <Tooltip contentStyle={activeTooltip} />
+                            <Area
+                              type="monotone"
+                              dataKey="totalCalls"
+                              name="Total Calls"
+                              stroke="#00b987"
+                              strokeWidth={2}
+                              fill="url(#embTotalCallsGrad)"
+                              isAnimationActive={false}
+                            />
+                            <Area
+                              type="monotone"
+                              dataKey="completed"
+                              name="Completed"
+                              stroke="#6262ff"
+                              strokeWidth={2}
+                              fill="url(#embCompletedGrad)"
+                              isAnimationActive={false}
+                            />
+                          </AreaChart>
+                        </ResponsiveContainer>
+                      )}
+                    </div>
+
+                    <div className="ci-chart-custom-legend ci-legend-compact">
+                      <span className="ci-legend-item">
+                        <span className="ci-legend-line ci-line-purple" />
+                        <span className="ci-legend-dot ci-dot-purple" />
+                        <span className="ci-legend-text">Completed</span>
+                      </span>
+                      <span className="ci-legend-item">
+                        <span className="ci-legend-line ci-line-teal" />
+                        <span className="ci-legend-dot ci-dot-teal" />
+                        <span className="ci-legend-text">Total Calls</span>
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Column / Bar Chart */}
+                  <div className="ci-embedded-chart-card">
+                    <div className="ci-embedded-chart-head">
+                      <strong>Hourly Distribution</strong>
+                      <span className="ci-chart-badge ci-badge-column">COLUMN CHART</span>
+                    </div>
+
+                    <div className="ci-embedded-chart-canvas">
+                      {mounted && (
+                        <ResponsiveContainer width="100%" height={130}>
+                          <BarChart data={hourlyDistributionData} margin={{ top: 8, right: 10, left: -26, bottom: 0 }}>
+                            <CartesianGrid stroke={gridStroke} vertical={false} strokeDasharray="3 3" />
+                            <XAxis
+                              dataKey="hour"
+                              tick={{ fill: axisColor, fontSize: 10 }}
+                              tickLine={false}
+                              axisLine={false}
+                            />
+                            <YAxis
+                              ticks={[0, 2, 4, 6, 8]}
+                              domain={[0, 8]}
+                              tick={{ fill: axisColor, fontSize: 10 }}
+                              tickLine={false}
+                              axisLine={false}
+                            />
+                            <Tooltip contentStyle={activeTooltip} />
+                            <Bar
+                              dataKey="calls"
+                              name="Calls"
+                              fill="#6262ff"
+                              radius={[2, 2, 0, 0]}
+                              isAnimationActive={false}
+                            />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      )}
+                    </div>
+                    <div className="ci-embedded-chart-foot">
+                      <span>Peak: 19:00 (8 calls)</span>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Issues Flagged */}
