@@ -84,7 +84,7 @@ export function BrandProvider({ brand, children }: { brand: BrandConfig; childre
   // If explicitly set or resolved by backend brand, use that:
   // Existing white-label users -> Classic Green theme
   // New white-label onboarding -> Recent modern monochrome theme
-  const themeStyle = effectiveBrand.themeStyle ?? (isWhiteLabel ? "green" : "recent");
+  const themeStyle = effectiveBrand.themeStyle || "recent";
 
   useEffect(() => {
     document.documentElement.dataset.brandSource = isWhiteLabel ? "white_label" : "platform";
