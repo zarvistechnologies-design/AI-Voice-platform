@@ -373,6 +373,7 @@ export function DashboardSidebar({
   const isWhiteLabelPartner = Boolean(session?.organization?.whiteLabelOwnerAccountId);
   const isWhiteLabelCustomer = Boolean(session?.organization?.whiteLabelAccountId);
   const isPartnerOrCustomer = isWhiteLabelPartner || isWhiteLabelCustomer || brand.source === "white_label";
+  const hideCustomerAutomationAndWhatsApp = isWhiteLabelCustomer;
 
   const effectiveProductName = isPartnerOrCustomer
     ? (brand.source === "white_label" ? brand.productName : (session?.organization?.name || "Voice Platform"))
@@ -436,7 +437,12 @@ export function DashboardSidebar({
 
   const effectiveSidebarGroups = useMemo(() => {
     return [
-      ...sidebarGroups,
+      ...sidebarGroups.map((group) => ({
+        ...group,
+        items: hideCustomerAutomationAndWhatsApp
+          ? group.items.filter((item) => item.href !== "/dashboard/automations")
+          : group.items,
+      })),
       ...(isSuperAdmin || isWhiteLabelPartner
         ? [
           {
@@ -470,7 +476,7 @@ export function DashboardSidebar({
         ]
         : []),
     ];
-  }, [isSuperAdmin, isWhiteLabelPartner]);
+  }, [hideCustomerAutomationAndWhatsApp, isSuperAdmin, isWhiteLabelPartner]);
 
   useEffect(() => {
     const preloadTimer = window.setTimeout(() => {
@@ -481,14 +487,16 @@ export function DashboardSidebar({
           router.prefetch(item.href);
         }
       }
-      for (const item of whatsAppSubItems) {
-        if (prefetchedDashboardRoutes.has(item.href)) continue;
-        prefetchedDashboardRoutes.add(item.href);
-        router.prefetch(item.href);
+      if (!hideCustomerAutomationAndWhatsApp) {
+        for (const item of whatsAppSubItems) {
+          if (prefetchedDashboardRoutes.has(item.href)) continue;
+          prefetchedDashboardRoutes.add(item.href);
+          router.prefetch(item.href);
+        }
       }
     }, 250);
     return () => window.clearTimeout(preloadTimer);
-  }, [router, effectiveSidebarGroups]);
+  }, [router, effectiveSidebarGroups, hideCustomerAutomationAndWhatsApp]);
 
   useEffect(() => {
     try {
@@ -813,7 +821,7 @@ export function DashboardSidebar({
               </div>
 
               {/* Dedicated WhatsApp Business Suite Section */}
-              {groupIndex === 0 && (
+              {groupIndex === 0 && !hideCustomerAutomationAndWhatsApp && (
                 <>
                   {/* Mobile WhatsApp Pill */}
                   <Link
