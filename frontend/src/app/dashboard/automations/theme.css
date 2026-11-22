@@ -83,7 +83,7 @@
 
 /* Primary Royal Blue CTA + Clean Secondary Buttons */
 .automation-primary,
-.automation-builder-actions > button.automation-primary {
+.automation-builder-actions>button.automation-primary {
   height: 32px;
   padding: 0 14px;
   border-radius: 7px;
@@ -97,7 +97,7 @@
 }
 
 .automation-primary:hover:not(:disabled),
-.automation-builder-actions > button.automation-primary:hover:not(:disabled) {
+.automation-builder-actions>button.automation-primary:hover:not(:disabled) {
   background: linear-gradient(180deg, #1d4ed8 0%, #1e40af 100%);
   transform: translateY(-1px);
   box-shadow: 0 6px 16px -3px rgba(37, 99, 235, 0.44);
@@ -295,7 +295,7 @@
   flex: 0 0 auto;
 }
 
-.automation-builder-actions > button.automation-top-ghost {
+.automation-builder-actions>button.automation-top-ghost {
   height: 30px;
   padding: 0 9px;
   border-radius: 7px;
@@ -308,17 +308,17 @@
   transition: background 0.14s, color 0.14s, border-color 0.14s;
 }
 
-.automation-builder-actions > button.automation-top-ghost:hover {
+.automation-builder-actions>button.automation-top-ghost:hover {
   background: #eff6ff;
   color: #1d4ed8;
 }
 
-.automation-builder-actions > button.automation-top-ghost.active {
+.automation-builder-actions>button.automation-top-ghost.active {
   background: #0f172a;
   color: #ffffff;
 }
 
-.automation-builder-actions > button.automation-top-check {
+.automation-builder-actions>button.automation-top-check {
   height: 30px;
   padding: 0 9px;
   border-radius: 7px;
@@ -329,19 +329,19 @@
   white-space: nowrap;
 }
 
-.automation-builder-actions > button.automation-top-check.has-issues {
+.automation-builder-actions>button.automation-top-check.has-issues {
   color: #dc2626;
   background: #fef2f2;
   border-color: #fecaca;
 }
 
-.automation-builder-actions > button.automation-top-check.is-ready {
+.automation-builder-actions>button.automation-top-check.is-ready {
   color: #047857;
   background: #ecfdf5;
   border-color: #a7f3d0;
 }
 
-.automation-builder-actions > button.automation-save-btn {
+.automation-builder-actions>button.automation-save-btn {
   height: 32px;
   padding: 0 12px;
   border-radius: 7px;
@@ -353,7 +353,7 @@
   white-space: nowrap;
 }
 
-.automation-builder-actions > button.automation-save-btn:hover:not(:disabled) {
+.automation-builder-actions>button.automation-save-btn:hover:not(:disabled) {
   background: #1e293b;
 }
 
@@ -466,6 +466,7 @@
   --block-line: #0f172a;
   --block-soft: #f1f5f9;
 }
+
 .automation-type-condition,
 .automation-type-end {
   --block-color: #0f172a;
@@ -484,6 +485,7 @@
   --block-line: #2563eb;
   --block-soft: #eff6ff;
 }
+
 .automation-type-wait {
   --block-color: #0369a1;
   --block-bg: #e0f2fe;
@@ -499,6 +501,7 @@
   --block-line: #10b981;
   --block-soft: #ecfdf5;
 }
+
 .automation-type-sms {
   --block-color: #065f46;
   --block-bg: #a7f3d0;
@@ -1087,6 +1090,7 @@
   .automation-builder-top {
     flex-wrap: wrap;
   }
+
   .automation-builder-identity small {
     display: none;
   }
@@ -1096,6 +1100,7 @@
   .automation-floating-blocks {
     width: 185px;
   }
+
   .automation-floating-inspector {
     left: 12px;
     right: 12px;
@@ -1103,10 +1108,626 @@
     top: auto;
     height: 46%;
   }
+
   .automation-minimap {
     display: none;
   }
+
   .automation-zoom-vertical.shifted {
     right: 14px;
   }
+}
+
+/* ==========================================================================
+   UNIFIED BLACK THEME SYSTEM FOR AUTOMATIONS (Studio Canvas + Modals)
+   Matches the deep #09090b / #121215 / #18181b palette across the dashboard
+   ========================================================================== */
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout {
+  background: #09090b !important;
+  color: #ffffff !important;
+  color-scheme: dark !important;
+  --block-soft: #18181b;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-fullscreen-shell {
+  background: #09090b !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-canvas-wrap {
+  background: #09090b !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-canvas {
+  background-color: #09090b !important;
+  background-image: radial-gradient(circle at 1px 1px, #27272a 1px, transparent 0) !important;
+  background-size: 20px 20px !important;
+}
+
+/* Dynamic Block Colors in Dark Mode */
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-type-trigger {
+  --block-color: #5eead4;
+  --block-bg: rgba(13, 148, 136, 0.22);
+  --block-line: #0d9488;
+  --block-soft: #131b19;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-type-call {
+  --block-color: #93c5fd;
+  --block-bg: rgba(37, 99, 235, 0.22);
+  --block-line: #3b82f6;
+  --block-soft: #121724;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-type-whatsapp {
+  --block-color: #6ee7b7;
+  --block-bg: rgba(16, 185, 129, 0.22);
+  --block-line: #10b981;
+  --block-soft: #111a15;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-type-decision,
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-type-condition {
+  --block-color: #c4b5fd;
+  --block-bg: rgba(124, 58, 237, 0.22);
+  --block-line: #8b5cf6;
+  --block-soft: #171322;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-type-wait {
+  --block-color: #fcd34d;
+  --block-bg: rgba(245, 158, 11, 0.22);
+  --block-line: #f59e0b;
+  --block-soft: #1b1712;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-type-end {
+  --block-color: #cbd5e1;
+  --block-bg: rgba(100, 116, 139, 0.22);
+  --block-line: #64748b;
+  --block-soft: #15171a;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-type-crm,
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-type-calendar {
+  --block-color: #93c5fd;
+  --block-bg: rgba(30, 58, 138, 0.25);
+  --block-line: #3b82f6;
+  --block-soft: #131822;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-type-payment,
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-type-sms {
+  --block-color: #6ee7b7;
+  --block-bg: rgba(5, 150, 105, 0.25);
+  --block-line: #059669;
+  --block-soft: #111a15;
+}
+
+/* 1. Header Toolbar */
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-builder-top {
+  background: #121215 !important;
+  border-bottom: 1px solid #27272a !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-builder-identity input {
+  background: transparent !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-builder-identity a {
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-builder-identity a:hover {
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-divider {
+  color: #3f3f46 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-builder-actions>button {
+  background: #18181b !important;
+  border: 1px solid #27272a !important;
+  color: #e4e4e7 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-builder-actions>button:hover {
+  background: #27272a !important;
+  border-color: #3f3f46 !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-primary,
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-builder-actions>button.automation-primary {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border: 1px solid #1d4ed8 !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3) !important;
+  font-weight: 600 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-primary:hover:not(:disabled),
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-builder-actions>button.automation-primary:hover:not(:disabled) {
+  background: #1d4ed8 !important;
+  border-color: #1e40af !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-secondary {
+  background: #18181b !important;
+  border: 1px solid #27272a !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-secondary:hover:not(:disabled) {
+  background: #27272a !important;
+  border-color: #3f3f46 !important;
+}
+
+/* 2. Left Floating BLOCKS Panel */
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-floating-blocks {
+  background: #121215 !important;
+  border: 1px solid #27272a !important;
+  border-top: 3px solid #3f3f46 !important;
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.8) !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-floating-blocks .automation-panel-title {
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-panel-arrow {
+  background: #18181b !important;
+  border: 1px solid #27272a !important;
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-panel-arrow:hover {
+  background: #27272a !important;
+  border-color: #3f3f46 !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-floating-blocks .automation-library-item {
+  background: #18181b !important;
+  border: 1px solid #27272a !important;
+  color: #f4f4f5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-floating-blocks .automation-library-item:hover {
+  background: #27272a !important;
+  border-color: #3f3f46 !important;
+  transform: translateX(2px) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-lib-name {
+  color: #f4f4f5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-floating-pill {
+  background: #18181b !important;
+  border: 1px solid #27272a !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-floating-pill:hover {
+  background: #27272a !important;
+  border-color: #3f3f46 !important;
+}
+
+/* 3. Node Cards & Node Ports (Branch Buttons) */
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-node {
+  background: #121215 !important;
+  border: 1px solid #27272a !important;
+  border-top: 3.5px solid var(--block-line, #3b82f6) !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8) !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-node:hover {
+  border-color: #3f3f46 !important;
+  border-top-color: var(--block-line, #3b82f6) !important;
+  box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.75) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-node.selected {
+  border-color: #52525b !important;
+  border-top-color: var(--block-line, #3b82f6) !important;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25), 0 16px 36px -6px rgba(0, 0, 0, 0.8) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-node.has-issue {
+  border-color: #ef4444 !important;
+  border-top-color: #ef4444 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25), 0 8px 24px rgba(239, 68, 68, 0.2) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-node-head {
+  border-bottom: 1px solid #27272a !important;
+  background: #121215 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-node-head strong {
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-node.automation-type-trigger .automation-node-head {
+  background: linear-gradient(90deg, #18181b 0%, #1e293b 100%) !important;
+  border-bottom-color: #27272a !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-node-body {
+  background: #18181b !important;
+  border: 1px solid #27272a !important;
+  color: #e4e4e7 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-node-ports button {
+  background: #18181b !important;
+  border: 1px solid #27272a !important;
+  color: #d4d4d8 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-node-ports button:hover,
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-node-ports button.connecting {
+  background: #27272a !important;
+  border-color: #3f3f46 !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-node-ports button.automation-port-yes,
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-node-ports button.automation-port-interested {
+  background: rgba(16, 185, 129, 0.12) !important;
+  border-color: rgba(16, 185, 129, 0.35) !important;
+  color: #6ee7b7 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-node-ports button.automation-port-no,
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-node-ports button.automation-port-failed,
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-node-ports button.automation-port-not_interested {
+  background: rgba(239, 68, 68, 0.12) !important;
+  border-color: rgba(239, 68, 68, 0.35) !important;
+  color: #fca5a5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-input-port,
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-output-port {
+  background: #18181b !important;
+  border-color: var(--block-line, #3b82f6) !important;
+}
+
+/* Status Badges (Draft, Live, Paused, etc.) */
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-status {
+  background: #27272a !important;
+  color: #a1a1aa !important;
+  border: 1px solid #3f3f46 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-status-live,
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-status-completed {
+  background: rgba(16, 185, 129, 0.15) !important;
+  color: #34d399 !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-status-paused,
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-status-waiting {
+  background: rgba(245, 158, 11, 0.15) !important;
+  color: #fbbf24 !important;
+  border-color: rgba(245, 158, 11, 0.3) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-status-failed {
+  background: rgba(239, 68, 68, 0.15) !important;
+  color: #f87171 !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+/* 4. Canvas Connectors (Edges) */
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-edge text {
+  stroke: #09090b !important;
+  fill: #93c5fd !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-edge-good text {
+  fill: #6ee7b7 !important;
+  stroke: #09090b !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-edge-bad text {
+  fill: #fca5a5 !important;
+  stroke: #09090b !important;
+}
+
+/* 5. Top-Right Canvas Toolbar (Tidy up, Fit, Undo/Redo) */
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-canvas-toolbar {
+  background: #18181b !important;
+  border: 1px solid #27272a !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-canvas-toolbar button {
+  background: transparent !important;
+  border: 0 !important;
+  color: #e4e4e7 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-canvas-toolbar button:hover:not(:disabled) {
+  background: #27272a !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-canvas-toolbar button:disabled {
+  opacity: 0.35 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-toolbar-sep {
+  background: #27272a !important;
+}
+
+/* 6. Minimap & Zoom Controls */
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-minimap {
+  background: #121215 !important;
+  border: 1px solid #27272a !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-zoom-vertical,
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-zoom {
+  background: #121215 !important;
+  border: 1px solid #27272a !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-zoom-vertical button,
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-zoom button {
+  background: #18181b !important;
+  border-bottom: 1px solid #27272a !important;
+  color: #e4e4e7 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-zoom-vertical button:hover,
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-zoom-vertical button.active {
+  background: #27272a !important;
+  color: #ffffff !important;
+}
+
+/* 7. Right Floating Inspector Drawer */
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-floating-inspector {
+  background: rgba(18, 18, 21, 0.96) !important;
+  border: 1px solid #27272a !important;
+  border-top: 3px solid #3b82f6 !important;
+  color: #ffffff !important;
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.8) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-floating-inspector .automation-panel-title {
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-inspector-hero {
+  background: #18181b !important;
+  border: 1px solid #27272a !important;
+  border-left: 3.5px solid var(--block-line) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-inspector-hero-sub {
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-field {
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-field input,
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-field select,
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-field textarea {
+  background: #18181b !important;
+  border: 1px solid #27272a !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-field input:focus,
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-field select:focus,
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-field textarea:focus {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-inspector-stat {
+  border-bottom-color: #27272a !important;
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-inspector-help {
+  color: #71717a !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-node-issues {
+  background: rgba(239, 68, 68, 0.12) !important;
+  color: #fca5a5 !important;
+  border: 1px solid rgba(239, 68, 68, 0.3) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-delete-step {
+  background: rgba(239, 68, 68, 0.12) !important;
+  border-color: rgba(239, 68, 68, 0.35) !important;
+  color: #fca5a5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-delete-step:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.2) !important;
+  border-color: #ef4444 !important;
+}
+
+/* 8. Secondary Pages & Modals (Runs, Settings, Empty States) */
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-home-hero {
+  background: #121215 !important;
+  border-color: #27272a !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-home-hero h2 {
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-home-hero p {
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-list-head h2 {
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-list-head p {
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-list-tools input,
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-list-tools select {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-flow-card {
+  background: #121215 !important;
+  border-color: #27272a !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-flow-card:hover {
+  background: #18181b !important;
+  border-color: #3f3f46 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-empty {
+  background: #121215 !important;
+  border-color: #27272a !important;
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-empty h3 {
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-settings-card {
+  background: #121215 !important;
+  border-color: #27272a !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-settings-card h3 {
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-settings-card p {
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-run-card {
+  background: #121215 !important;
+  border-color: #27272a !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-run-card summary strong {
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-run-card summary small {
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-run-details {
+  border-top-color: #27272a !important;
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-run-form {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-run-form input {
+  background: #121215 !important;
+  border-color: #27272a !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-prompt-box {
+  background: #18181b !important;
+  border-color: #27272a !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-prompt-box label {
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-prompt-box textarea {
+  background: #121215 !important;
+  border-color: #27272a !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-create-modal {
+  background: #121215 !important;
+  border-color: #27272a !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-template-card {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-template-card:hover {
+  background: #222228 !important;
+  border-color: #3f3f46 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-template-card strong {
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-template-card small {
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-version-list {
+  border-top-color: #27272a !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-version-list strong {
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-version-list>div {
+  border-bottom-color: #27272a !important;
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-version-list button {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-test-steps {
+  border-top-color: #27272a !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-test-steps>div {
+  border-bottom-color: #27272a !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-test-steps small {
+  color: #a1a1aa !important;
 }

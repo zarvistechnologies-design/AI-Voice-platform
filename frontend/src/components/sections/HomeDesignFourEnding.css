@@ -2805,3 +2805,19 @@
   .home-design-four .design-four-footer-wordmark > a { width: 32%; }
   .home-design-four .design-four-footer-wave { height: 120px; margin-left: 4px; }
 }
+
+/* Whole-Black Dark Theme Overrides for Footer and Ending */
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .home-design-four .design-four-footer-main .design-four-footer-demo,
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .design-four-footer-cta a:first-child {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border: 1px solid #1d4ed8 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .home-design-four .design-four-footer-main .design-four-footer-demo:hover,
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .design-four-footer-cta a:first-child:hover {
+  background: #1d4ed8 !important;
+  border-color: #1e40af !important;
+  color: #ffffff !important;
+}
+

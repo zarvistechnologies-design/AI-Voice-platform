@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "../components/layout/WebsiteDarkTheme.css";
 
 @custom-variant dark (&:where([data-dashboard-theme="dark"], [data-dashboard-theme="dark"] *, .dark, .dark *));
 
@@ -191,16 +192,6 @@ nextjs-portal,
     max-height: calc(100dvh - 32px);
     overflow-y: auto;
   }
-}
-
-/* Keep the public Vozon mark aligned with the website & dashboard palette. Partner
-   logos retain their uploaded colors on white-label hostnames. */
-html:not([data-brand-source="white_label"]) .platform-brand-logo {
-  filter: brightness(0) saturate(100%);
-}
-
-html:not([data-brand-source="white_label"]) .landing-header-logo .platform-brand-logo {
-  filter: brightness(0) saturate(100%);
 }
 
 @source not "../../.runlogs";
@@ -1082,6 +1073,8 @@ html:not([data-brand-source="white_label"]) :is(.dashboard-home-theme, .agents-h
    rules intentionally share that layer and use the owning layout scope. */
 @layer components {
 
+  html:not([data-dashboard-theme="dark"]) {
+
   .dashboard-home-theme.dashboard-home-theme,
   .dashboard-home-theme .dashboard-home-theme,
   .dashboard-home-theme .agents-home-palette,
@@ -1358,6 +1351,7 @@ html:not([data-brand-source="white_label"]) :is(.dashboard-home-theme, .agents-h
     display: none !important;
     width: 0 !important;
     height: 0 !important;
+  }
   }
 
   /* Suppress scrollbars completely across the sidebar */
@@ -2356,5 +2350,48 @@ textarea.ai-prompt-textarea:focus-visible {
     background: #111114 !important;
     border-color: #27272a !important;
     color: #ffffff !important;
+  }
+
+  /* Light utility shades used by dashboard sections outside the shared cards. */
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme :is([class~="bg-[#f9fbfa]"], [class~="bg-[#f4f7f6]"], [class~="bg-[#edf6f4]"], [class~="bg-[#f0f2f5]"], [class~="bg-[#f6fbf9]"], [class~="bg-[#e9f5f2]"], [class~="bg-[#effbf3]"], [class~="bg-[#f0f4f3]"], [class~="bg-[#f0f8f5]"], [class~="bg-[#eef2ff]"], [class~="bg-[#f7faf8]"], [class~="bg-[#e0eae5]"]) {
+    background-color: #18181b !important;
+    border-color: #27272a !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme :is([class~="border-[#b8c8c3]"], [class~="border-[#dfe7e4]"], [class~="border-[#c6d4d0]"], [class~="border-[#d5d8df]"], [class~="border-[#e8eef2]"], [class~="border-[#edf0f4]"], [class~="border-[#cfe3de]"], [class~="border-[#dce3ea]"], [class~="border-[#edf2f0]"], [class~="border-[#c5ded5]"], [class~="border-[#cde0dc]"], [class~="border-[#e5e7ef]"]) {
+    border-color: #27272a !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme :is(section, article, div)[class*="rounded-2xl"],
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme :is(section, article, div)[class*="rounded-3xl"] {
+    border-color: #27272a !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme :is([class~="text-[#18302a]"], [class~="text-[#29423b]"], [class~="text-[#34534a]"], [class~="text-[#40534e]"], [class~="text-[#40564f]"], [class~="text-[#445550]"]) {
+    color: #e4e4e7 !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme :is([class~="text-[#60716d]"], [class~="text-[#667781]"], [class~="text-[#687b74]"], [class~="text-[#80908c]"]) {
+    color: #a1a1aa !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme :is([class~="text-[#047857]"], [class~="text-[#059669]"]) {
+    color: #86efac !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme :is([class~="text-[#0d6e62]"], [class~="text-[#0e806c]"], [class~="text-[#0f766e]"]) {
+    color: #6ee7b7 !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme :is([class~="text-[#0e7490]"], [class~="text-[#008c96]"]) {
+    color: #7dd3fc !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme :is([class~="text-[#b91c1c]"], [class~="text-[#dc2626]"]) {
+    color: #fca5a5 !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme :is([class~="text-[#92400e]"], [class~="text-[#b45309]"]) {
+    color: #fcd34d !important;
   }
 }

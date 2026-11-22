@@ -34,3 +34,70 @@
 .actions input:focus{border-color:#09090b;background:#ffffff}
 .error{color:#dc2626}
 .launcher[aria-expanded="true"]{width:56px;height:56px;padding:0;border-radius:50%;background:#09090b;border:1px solid #27272a}
+
+/* Dark Theme Overrides */
+:global(:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark)) .launcher {
+  background: #121215;
+  border-color: #27272a;
+}
+:global(:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark)) .launcher:hover {
+  background: #18181b;
+  border-color: #3f3f46;
+}
+:global(:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark)) .launchAvatar {
+  border-color: #27272a;
+  background: #18181b;
+}
+:global(:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark)) .avatar {
+  border-color: #27272a;
+  background: #18181b;
+}
+:global(:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark)) .card {
+  border: 1px solid #27272a;
+  background: #121215;
+  color: #ffffff;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.8);
+}
+:global(:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark)) .chat {
+  background: #09090b;
+}
+:global(:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark)) .sender {
+  color: #a1a1aa;
+}
+:global(:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark)) .botBubble {
+  background: #18181b;
+  border: 1px solid #27272a;
+  color: #ffffff;
+}
+:global(:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark)) .userBubble {
+  background: #2563eb;
+  color: #ffffff;
+}
+:global(:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark)) .actions {
+  background: #121215;
+  border-top: 1px solid #27272a;
+}
+:global(:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark)) .options button {
+  border-color: #27272a;
+  background: #18181b;
+  color: #e4e4e7;
+}
+:global(:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark)) .options button:hover {
+  border-color: #3f3f46;
+  background: #27272a;
+  color: #ffffff;
+}
+:global(:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark)) .actions input {
+  border-color: #27272a;
+  background: #18181b;
+  color: #ffffff;
+}
+:global(:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark)) .actions input:focus {
+  border-color: #3b82f6;
+  background: #18181b;
+}
+:global(:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark)) .actions form button {
+  background: #2563eb;
+  color: #ffffff;
+}
+

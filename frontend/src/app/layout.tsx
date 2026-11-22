@@ -4,6 +4,7 @@ import Script from "next/script";
 import type { CSSProperties } from "react";
 
 import { BrandProvider } from "@/components/branding/BrandProvider";
+import { ThemeRouteSync } from "@/components/layout/ThemeRouteSync";
 import { requestBrandConfig } from "@/lib/brandServer";
 
 import "./globals.css";
@@ -124,19 +125,20 @@ fbq('track', 'PageView');`,
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const brand = await requestBrandConfig();
-  const fontClasses = `${roboto.variable} ${geistMono.variable} dark h-full scroll-smooth antialiased`;
+  const fontClasses = `${roboto.variable} ${geistMono.variable} h-full scroll-smooth antialiased`;
   if (brand.source === "platform") {
     return (
-      <html lang="en" data-dashboard-theme="dark" data-scroll-behavior="smooth" className={`dark ${fontClasses}`}>
+      <html lang="en" data-dashboard-theme="light" data-scroll-behavior="smooth" className={fontClasses} suppressHydrationWarning>
         <head>
           <meta name="facebook-domain-verification" content="hs7xv0aby3bor2uybe6y440jg6wnkk" />
           <script
             dangerouslySetInnerHTML={{
-              __html: `(function(){try{var t=localStorage.getItem("vozon_dashboard_theme");if(t!=="light"){document.documentElement.setAttribute("data-dashboard-theme","dark");document.documentElement.classList.add("dark");}else{document.documentElement.setAttribute("data-dashboard-theme","light");document.documentElement.classList.remove("dark");}}catch(e){}})()`,
+              __html: `(function(){try{var isDashboard=location.pathname.startsWith("/dashboard")||location.pathname.startsWith("/admin");var isDark=isDashboard&&localStorage.getItem("vozon_dashboard_theme")==="dark";document.documentElement.setAttribute("data-dashboard-theme",isDark?"dark":"light");document.documentElement.classList.toggle("dark",isDark);}catch(e){}})()`,
             }}
           />
         </head>
         <body className="flex min-h-full flex-col bg-background text-foreground">
+          <ThemeRouteSync />
           <MetaPixel />
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: platformStructuredData() }} />
           <BrandProvider brand={brand}>{children}</BrandProvider>
@@ -156,12 +158,12 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const effectiveIconTarget = isVozonIcon ? "" : iconTarget;
 
   return (
-    <html lang="en" data-brand-source="white_label" data-dashboard-theme="dark" data-scroll-behavior="smooth" className={`dark ${fontClasses}`}>
+    <html lang="en" data-brand-source="white_label" data-dashboard-theme="light" data-scroll-behavior="smooth" className={fontClasses} suppressHydrationWarning>
       <head>
         <meta name="facebook-domain-verification" content="hs7xv0aby3bor2uybe6y440jg6wnkk" />
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem("vozon_dashboard_theme");if(t!=="light"){document.documentElement.setAttribute("data-dashboard-theme","dark");document.documentElement.classList.add("dark");}else{document.documentElement.setAttribute("data-dashboard-theme","light");document.documentElement.classList.remove("dark");}}catch(e){}})()`,
+            __html: `(function(){try{var isDashboard=location.pathname.startsWith("/dashboard")||location.pathname.startsWith("/admin");var isDark=isDashboard&&localStorage.getItem("vozon_dashboard_theme")==="dark";document.documentElement.setAttribute("data-dashboard-theme",isDark?"dark":"light");document.documentElement.classList.toggle("dark",isDark);}catch(e){}})()`,
           }}
         />
         {effectiveIconTarget ? (
@@ -173,6 +175,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         ) : null}
       </head>
       <body className="flex min-h-full flex-col bg-background text-foreground" style={brandStyle}>
+        <ThemeRouteSync />
         <MetaPixel />
         <BrandProvider brand={brand}>{children}</BrandProvider>
       </body>

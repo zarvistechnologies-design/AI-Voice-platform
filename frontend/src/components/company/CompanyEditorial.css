@@ -4,6 +4,30 @@
 .cmp-page {
   font-family: var(--font-site-sans), ui-sans-serif, system-ui, sans-serif;
   color: #17191d;
+  background: #f8f9f9;
+}
+
+.cmp-page .hcr-wrap {
+  width: min(1200px, calc(100% - 48px));
+}
+
+.cmp-page .hcr-kicker,
+.cmp-page .hcr-breadcrumb,
+.cmp-page .hcr-platform-grid strong,
+.cmp-page .hcr-launch-options span {
+  font-size: 12px;
+}
+
+.cmp-page .hcr-launch-options p,
+.cmp-page .hcr-platform-grid p,
+.cmp-page .sln-audience-grid p,
+.cmp-page .hcr-faq details p {
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.cmp-page #article-library .hcr-platform-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 /* Override oversized 72px/54px global marketing headings so Company pages stay compact & refined like Solution pages */
@@ -256,5 +280,23 @@
   .cmp-hero-grid {
     grid-template-columns: 1fr;
     gap: 28px;
+  }
+}
+
+@media (max-width: 650px) {
+  .cmp-page .hcr-wrap {
+    width: calc(100% - 36px);
+  }
+
+  .cmp-hero {
+    padding-top: 104px;
+  }
+
+  .cmp-hero-stage {
+    padding: 24px 20px;
+  }
+
+  .cmp-page #article-library .hcr-platform-grid {
+    grid-template-columns: 1fr;
   }
 }

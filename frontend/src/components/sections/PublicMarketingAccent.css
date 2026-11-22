@@ -500,19 +500,34 @@
   box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
 }
 
+/* Keep the platform wordmark visible in both themes without changing partner logos. */
+html:not([data-brand-source="white_label"]) .public-accent-header .landing-header-logo .platform-brand-logo {
+  filter: brightness(0);
+}
+
+html:not([data-brand-source="white_label"]):is([data-dashboard-theme="dark"], .dark) .public-accent-header .landing-header-logo .platform-brand-logo {
+  filter: brightness(0) invert(1);
+}
+
 .public-accent-header header {
   position: relative;
   display: flex;
   height: 72px;
-  width: 100%;
-  max-width: 1400px;
+  width: min(1200px, calc(100% - 48px));
+  max-width: none;
   margin-inline: auto;
   align-items: center;
   justify-content: space-between;
-  padding-inline: clamp(20px, 4vw, 56px);
+  padding-inline: 0;
   background: transparent;
   border: none;
   box-shadow: none;
+}
+
+@media (max-width: 650px) {
+  .public-accent-header header {
+    width: calc(100% - 36px);
+  }
 }
 
 .site-nav-btn {

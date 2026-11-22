@@ -264,7 +264,6 @@ export function SiteHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-
   const closeAll = () => {
     if (timerRef.current) clearTimeout(timerRef.current);
     setActiveMenu(null);
@@ -394,7 +393,7 @@ export function SiteHeader() {
           </nav>
         </div>
 
-        {/* Right: Book a Demo + Log in (matching Ringg.AI) */}
+        {/* Right: Book a Demo and Log in */}
         <div className="hidden items-center gap-3 md:flex">
           <Link
             className="rounded-full border border-slate-300/80 bg-white/70 px-5 py-2 text-[13.5px] font-medium text-slate-800 backdrop-blur-sm transition-all hover:bg-white hover:border-slate-400 hover:shadow-sm"

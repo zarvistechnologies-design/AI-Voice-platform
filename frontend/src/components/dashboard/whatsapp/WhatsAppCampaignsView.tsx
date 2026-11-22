@@ -230,17 +230,15 @@ export function WhatsAppCampaignsView({
               <button
                 key={st}
                 onClick={() => setStatusFilter(st)}
-                className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold transition ${
-                  statusFilter === st
+                className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold transition ${statusFilter === st
                     ? "bg-black text-white shadow-xs dark:bg-white dark:text-black"
                     : "bg-[#f4f7f6] text-[#52645f] hover:bg-[#e9f0ee] hover:text-[#20342e] dark:bg-zinc-900 dark:border dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
-                }`}
+                  }`}
               >
                 <span>{st === "ALL" ? "All Broadcasts" : st.charAt(0) + st.slice(1).toLowerCase()}</span>
                 <span
-                  className={`rounded-full px-1.5 py-0.2 text-[10px] ${
-                    statusFilter === st ? "bg-white/20 text-white dark:bg-black/15 dark:text-black" : "bg-black/5 text-[#60716c] dark:bg-zinc-800 dark:text-zinc-400"
-                  }`}
+                  className={`rounded-full px-1.5 py-0.2 text-[10px] ${statusFilter === st ? "bg-white/20 text-white dark:bg-black/15 dark:text-black" : "bg-black/5 text-[#60716c] dark:bg-zinc-800 dark:text-zinc-400"
+                    }`}
                 >
                   {count}
                 </span>
@@ -351,21 +349,19 @@ export function WhatsAppCampaignsView({
                     <div
                       key={camp._id}
                       onClick={() => setSelectedCampaignId(camp._id)}
-                      className={`group relative rounded-2xl border p-4.5 transition-all duration-200 cursor-pointer ${
-                        isSelected
+                      className={`group relative rounded-2xl border p-4.5 transition-all duration-200 cursor-pointer ${isSelected
                           ? "border-black bg-white shadow-md ring-2 ring-black/10 dark:border-zinc-600 dark:bg-[#121215] dark:ring-white/10"
                           : "border-[#e0ebe7] bg-white hover:border-[#b8cfc8] hover:shadow-xs dark:border-zinc-800/80 dark:bg-[#121215] dark:hover:border-zinc-700"
-                      }`}
+                        }`}
                     >
                       {/* Top Row: Title, Date, Status */}
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-3 min-w-0">
                           <span
-                            className={`grid size-9 shrink-0 place-items-center rounded-xl transition ${
-                              isSelected
+                            className={`grid size-9 shrink-0 place-items-center rounded-xl transition ${isSelected
                                 ? "bg-black text-white dark:bg-white dark:text-black"
                                 : "bg-[#f0f5f3] text-[#52645f] dark:bg-zinc-800 dark:text-zinc-300"
-                            }`}
+                              }`}
                           >
                             <svg className="size-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="m3 11 18-5v12L3 13v-2z" />
@@ -396,26 +392,24 @@ export function WhatsAppCampaignsView({
                         {/* Status Badge */}
                         <div className="flex items-center gap-2 shrink-0">
                           <span
-                            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${
-                              camp.status.toLowerCase() === "completed"
+                            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${camp.status.toLowerCase() === "completed"
                                 ? "bg-emerald-50 text-emerald-800 ring-1 ring-emerald-600/20 dark:bg-emerald-950/60 dark:text-emerald-300 dark:ring-emerald-800/50"
                                 : camp.status.toLowerCase() === "scheduled"
-                                ? "bg-blue-50 text-blue-800 ring-1 ring-blue-600/20 dark:bg-blue-950/60 dark:text-blue-300 dark:ring-blue-800/50"
-                                : camp.status.toLowerCase() === "failed"
-                                ? "bg-rose-50 text-rose-800 ring-1 ring-rose-600/20 dark:bg-rose-950/60 dark:text-rose-300 dark:ring-rose-800/50"
-                                : "bg-amber-50 text-amber-800 ring-1 ring-amber-600/20 dark:bg-amber-950/60 dark:text-amber-300 dark:ring-amber-800/50"
-                            }`}
+                                  ? "bg-blue-50 text-blue-800 ring-1 ring-blue-600/20 dark:bg-blue-950/60 dark:text-blue-300 dark:ring-blue-800/50"
+                                  : camp.status.toLowerCase() === "failed"
+                                    ? "bg-rose-50 text-rose-800 ring-1 ring-rose-600/20 dark:bg-rose-950/60 dark:text-rose-300 dark:ring-rose-800/50"
+                                    : "bg-amber-50 text-amber-800 ring-1 ring-amber-600/20 dark:bg-amber-950/60 dark:text-amber-300 dark:ring-amber-800/50"
+                              }`}
                           >
                             <span
-                              className={`size-1.5 rounded-full ${
-                                camp.status.toLowerCase() === "completed"
+                              className={`size-1.5 rounded-full ${camp.status.toLowerCase() === "completed"
                                   ? "bg-emerald-500"
                                   : camp.status.toLowerCase() === "scheduled"
-                                  ? "bg-blue-500 animate-pulse"
-                                  : camp.status.toLowerCase() === "failed"
-                                  ? "bg-rose-500"
-                                  : "bg-amber-500 animate-pulse"
-                              }`}
+                                    ? "bg-blue-500 animate-pulse"
+                                    : camp.status.toLowerCase() === "failed"
+                                      ? "bg-rose-500"
+                                      : "bg-amber-500 animate-pulse"
+                                }`}
                             />
                             {camp.status}
                           </span>
@@ -645,11 +639,10 @@ export function WhatsAppCampaignsView({
                   <div className="grid grid-cols-2 gap-3">
                     <label
                       onClick={() => setScheduleType("now")}
-                      className={`flex cursor-pointer items-center gap-2.5 rounded-xl border p-3 text-xs transition ${
-                        scheduleType === "now"
+                      className={`flex cursor-pointer items-center gap-2.5 rounded-xl border p-3 text-xs transition ${scheduleType === "now"
                           ? "border-[#118778] bg-[#f0f8f5] text-[#118778] font-bold dark:border-zinc-200 dark:bg-zinc-800 dark:text-white"
                           : "border-[#dbe4e1] bg-white text-[#52645f] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400"
-                      }`}
+                        }`}
                     >
                       <input
                         type="radio"
@@ -663,11 +656,10 @@ export function WhatsAppCampaignsView({
 
                     <label
                       onClick={() => setScheduleType("later")}
-                      className={`flex cursor-pointer items-center gap-2.5 rounded-xl border p-3 text-xs transition ${
-                        scheduleType === "later"
+                      className={`flex cursor-pointer items-center gap-2.5 rounded-xl border p-3 text-xs transition ${scheduleType === "later"
                           ? "border-[#118778] bg-[#f0f8f5] text-[#118778] font-bold dark:border-zinc-200 dark:bg-zinc-800 dark:text-white"
                           : "border-[#dbe4e1] bg-white text-[#52645f] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400"
-                      }`}
+                        }`}
                     >
                       <input
                         type="radio"
@@ -744,22 +736,20 @@ export function WhatsAppCampaignsView({
                 <button
                   type="button"
                   onClick={() => setRightTab("phone")}
-                  className={`rounded-md px-2.5 py-1 text-[11px] font-bold transition ${
-                    rightTab === "phone"
+                  className={`rounded-md px-2.5 py-1 text-[11px] font-bold transition ${rightTab === "phone"
                       ? "bg-white text-black shadow-2xs dark:bg-zinc-800 dark:text-white"
                       : "text-[#60716c] hover:text-[#14231f] dark:text-zinc-400 dark:hover:text-white"
-                  }`}
+                    }`}
                 >
                   💬 Message Preview
                 </button>
                 <button
                   type="button"
                   onClick={() => setRightTab("analytics")}
-                  className={`rounded-md px-2.5 py-1 text-[11px] font-bold transition ${
-                    rightTab === "analytics"
+                  className={`rounded-md px-2.5 py-1 text-[11px] font-bold transition ${rightTab === "analytics"
                       ? "bg-white text-black shadow-2xs dark:bg-zinc-800 dark:text-white"
                       : "text-[#60716c] hover:text-[#14231f] dark:text-zinc-400 dark:hover:text-white"
-                  }`}
+                    }`}
                 >
                   📊 Delivery Funnel
                 </button>
@@ -883,8 +873,8 @@ export function WhatsAppCampaignsView({
                           {activeCampaign?.stats.delivered || 0} (
                           {activeCampaign && activeCampaign.stats.recipients > 0
                             ? Math.round(
-                                (activeCampaign.stats.delivered / activeCampaign.stats.recipients) * 100
-                              )
+                              (activeCampaign.stats.delivered / activeCampaign.stats.recipients) * 100
+                            )
                             : 98}
                           %)
                         </span>
@@ -893,11 +883,10 @@ export function WhatsAppCampaignsView({
                         <div
                           className="h-full rounded-full bg-emerald-500"
                           style={{
-                            width: `${
-                              activeCampaign && activeCampaign.stats.recipients > 0
+                            width: `${activeCampaign && activeCampaign.stats.recipients > 0
                                 ? (activeCampaign.stats.delivered / activeCampaign.stats.recipients) * 100
                                 : 98
-                            }%`,
+                              }%`,
                           }}
                         />
                       </div>
@@ -911,8 +900,8 @@ export function WhatsAppCampaignsView({
                           {activeCampaign?.stats.read || 0} (
                           {activeCampaign && activeCampaign.stats.delivered > 0
                             ? Math.round(
-                                (activeCampaign.stats.read / activeCampaign.stats.delivered) * 100
-                              )
+                              (activeCampaign.stats.read / activeCampaign.stats.delivered) * 100
+                            )
                             : 87}
                           %)
                         </span>
@@ -921,11 +910,10 @@ export function WhatsAppCampaignsView({
                         <div
                           className="h-full rounded-full bg-sky-500"
                           style={{
-                            width: `${
-                              activeCampaign && activeCampaign.stats.delivered > 0
+                            width: `${activeCampaign && activeCampaign.stats.delivered > 0
                                 ? (activeCampaign.stats.read / activeCampaign.stats.delivered) * 100
                                 : 87
-                            }%`,
+                              }%`,
                           }}
                         />
                       </div>
@@ -943,11 +931,10 @@ export function WhatsAppCampaignsView({
                         <div
                           className="h-full rounded-full bg-indigo-500"
                           style={{
-                            width: `${
-                              activeCampaign && activeCampaign.stats.read > 0
+                            width: `${activeCampaign && activeCampaign.stats.read > 0
                                 ? Math.min(100, (activeCampaign.stats.replied / activeCampaign.stats.read) * 100)
                                 : 32
-                            }%`,
+                              }%`,
                           }}
                         />
                       </div>
@@ -1015,11 +1002,10 @@ export function WhatsAppCampaignsView({
 
               {testResult && (
                 <div
-                  className={`rounded-xl p-3 text-xs ${
-                    testResult.ok
+                  className={`rounded-xl p-3 text-xs ${testResult.ok
                       ? "border border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300"
                       : "border border-rose-200 bg-rose-50 text-rose-800 dark:border-rose-800 dark:bg-rose-950/50 dark:text-rose-300"
-                  }`}
+                    }`}
                 >
                   {testResult.msg}
                 </div>

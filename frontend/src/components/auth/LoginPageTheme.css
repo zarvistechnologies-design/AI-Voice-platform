@@ -1,13 +1,14 @@
 .login-page-theme {
-  --auth-ink: #ffffff;
-  --auth-muted: #a1a1aa;
-  --auth-border: #27272a;
-  --auth-surface: #121215;
-  background: #09090b;
-  color: #ffffff;
+  color-scheme: light;
+  background: #f8f9fb;
+  color: #111113;
   font-family: var(--font-site-sans), ui-sans-serif, system-ui, sans-serif;
   font-size: 13px;
   -webkit-font-smoothing: antialiased;
+}
+
+html:not([data-brand-source="white_label"]) .login-page-theme .landing-header-logo .platform-brand-logo {
+  filter: brightness(0);
 }
 
 .login-page-theme :is(input, button, a) {
@@ -16,92 +17,56 @@
 
 .login-page-theme .login-auth-form {
   max-width: 420px;
-  color: #ffffff;
+  color: #111113;
   font-size: 13px;
 }
 
 .login-page-theme .auth-field {
-  color: #e4e4e7 !important;
-  font-size: 12px !important;
+  color: #23232b;
+  font-size: 12px;
 }
 
 .login-page-theme .auth-input {
   min-height: 46px;
-  border-color: #27272a !important;
-  border-radius: 10px !important;
-  background: #18181b !important;
-  color: #ffffff !important;
-  font-size: 13px !important;
-  box-shadow: none !important;
-  transition: all 0.15s ease-in-out;
+  border-color: #cbd5e1;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #111113;
+  font-size: 13px;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
 .login-page-theme .auth-input::placeholder {
-  color: #71717a !important;
+  color: #94a3b8;
 }
 
 .login-page-theme .auth-input:hover {
-  border-color: #3f3f46 !important;
+  border-color: #94a3b8;
 }
 
 .login-page-theme .auth-input:focus {
-  border-color: #ffffff !important;
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15) !important;
+  border-color: #2457d6;
+  box-shadow: 0 0 0 3px rgba(36, 87, 214, 0.13);
+}
+
+.login-page-theme .login-auth-form input[type="checkbox"] {
+  accent-color: #2457d6;
 }
 
 .login-page-theme .auth-submit {
   min-height: 46px;
-  border: 1px solid #ffffff !important;
-  border-radius: 12px !important;
-  background: #ffffff !important;
-  color: #000000 !important;
-  font-size: 13.5px !important;
-  font-weight: 700 !important;
-  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.12) !important;
-  transition: all 0.15s ease-in-out;
+  border: 1px solid #2457d6;
+  border-radius: 12px;
+  background: #2457d6;
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(36, 87, 214, 0.16);
+  transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
 .login-page-theme .auth-submit:hover {
-  border-color: #f4f4f5 !important;
-  background: #e4e4e7 !important;
-  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2) !important;
-}
-
-.login-page-theme :is([class*="text-teal-"], [class*="text-emerald-"], [class*="text-green-"], [class*="text-[#118778]"], [class*="text-[#108D82]"], [class*="text-[#0e6f62]"]) {
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-}
-
-.login-page-theme :is([class*="border-teal-"], [class*="border-emerald-"], [class*="border-green-"], [class*="border-[#d7e2df]"], [class*="border-[#c8e1db]"]) {
-  border-color: #27272a !important;
-}
-
-.login-page-theme :is([class*="bg-teal-50"], [class*="bg-teal-100"], [class*="bg-emerald-50"], [class*="bg-green-50"], [class*="bg-[#edf7f4]"], [class*="bg-[#eaf5f2]"]) {
-  background-color: #18181b !important;
-}
-
-.login-page-theme :is([class*="bg-[#118778]"], [class*="bg-[#108D82]"], [class*="bg-[#0e6f62]"], [class*="bg-teal-600"], [class*="bg-teal-700"]) {
-  background-color: #ffffff !important;
-  color: #000000 !important;
-}
-
-.login-page-theme :is([class*="accent-[#118778]"], [class*="accent-[#108D82]"], [class*="accent-teal-"]) {
-  accent-color: #ffffff !important;
-}
-
-.login-page-theme :is([class*="ring-[#118778]"], [class*="ring-teal-"]) {
-  --tw-ring-color: rgba(255, 255, 255, 0.2) !important;
-}
-
-.login-page-theme [class*="text-rose-"] {
-  color: #f43f5e !important;
-  -webkit-text-fill-color: #f43f5e !important;
-}
-
-.login-page-theme [class*="border-rose-"] {
-  border-color: rgba(244, 63, 94, 0.3) !important;
-}
-
-.login-page-theme [class*="bg-rose-"] {
-  background-color: rgba(244, 63, 94, 0.1) !important;
+  border-color: #1b45b0;
+  background: #1b45b0;
+  box-shadow: 0 6px 20px rgba(36, 87, 214, 0.2);
 }

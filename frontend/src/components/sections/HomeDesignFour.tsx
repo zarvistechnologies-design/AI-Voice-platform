@@ -13,6 +13,7 @@ import "./HomeDesignFourHero.css";
 import "./HomeDesignFourEnding.css";
 import "./AgentVoiceLandingHero.css";
 import { WorkflowCanvasSection } from "./WorkflowCanvasSection";
+import { IndustryShowcaseSection } from "./IndustryShowcaseSection";
 import { ConversationInsightsSection } from "./ConversationInsightsSection";
 import { AgentUseCasesSection } from "./AgentUseCasesSection";
 import { IntegrationsShowcaseSection } from "./IntegrationsShowcaseSection";
@@ -128,7 +129,6 @@ export function HomeDesignFour() {
             <span><i><Image alt="" src="/images/integrations/slack.svg" width={21} height={21} /></i><b>Slack</b></span>
             <span><i><Image alt="" src="/images/integrations/claude.svg" width={21} height={21} /></i><b>Claude</b></span>
           </div>
-          <div aria-hidden="true" className="agentvoice-wave">{[100, 72, 54, 42, 36, 42, 54, 72, 100].map((height, index) => <span key={index} style={{ "--wave-height": `${height}%` } as React.CSSProperties} />)}</div>
         </section>
 
         <AgentUseCasesSection />
@@ -173,6 +173,7 @@ export function HomeDesignFour() {
           </div>
         </section>
 
+        <IndustryShowcaseSection />
         <ConversationInsightsSection />
         <IntegrationsShowcaseSection />
         <PrivacyAssuranceSection />

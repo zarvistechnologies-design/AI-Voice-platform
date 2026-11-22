@@ -36,6 +36,32 @@ function creditLabel(balance: number | null) {
   }
 }
 
+const dashboardThemeKey = "vozon_dashboard_theme";
+const dashboardThemeEvent = "vozon-dashboard-theme-change";
+
+function getDarkMode() {
+  try {
+    return localStorage.getItem(dashboardThemeKey) === "dark";
+  } catch {
+    return false;
+  }
+}
+
+function subscribeToDashboardTheme(callback: () => void) {
+  const handleChange = () => {
+    const isDark = getDarkMode();
+    document.documentElement.setAttribute("data-dashboard-theme", isDark ? "dark" : "light");
+    document.documentElement.classList.toggle("dark", isDark);
+    callback();
+  };
+  window.addEventListener("storage", handleChange);
+  window.addEventListener(dashboardThemeEvent, handleChange);
+  return () => {
+    window.removeEventListener("storage", handleChange);
+    window.removeEventListener(dashboardThemeEvent, handleChange);
+  };
+}
+
 export function DashboardWorkspaceBar() {
   const router = useRouter();
   const session = useSyncExternalStore(
@@ -46,33 +72,23 @@ export function DashboardWorkspaceBar() {
   const [credit, setCredit] = useState<{
     balance: number;
   } | null>(null);
-  const [darkMode, setDarkMode] = useState(false);
+  const darkMode = useSyncExternalStore(subscribeToDashboardTheme, getDarkMode, () => false);
 
   useEffect(() => {
+    document.documentElement.setAttribute("data-dashboard-theme", darkMode ? "dark" : "light");
+    document.documentElement.classList.toggle("dark", darkMode);
+  }, [darkMode]);
+
+  function toggleTheme() {
+    const next = !darkMode;
+    document.documentElement.setAttribute("data-dashboard-theme", next ? "dark" : "light");
+    document.documentElement.classList.toggle("dark", next);
     try {
-      const saved = localStorage.getItem("vozon_dashboard_theme");
-      const isDark = saved === "dark";
-      setDarkMode(isDark);
-      document.documentElement.setAttribute("data-dashboard-theme", isDark ? "dark" : "light");
-      document.documentElement.classList.toggle("dark", isDark);
+      localStorage.setItem(dashboardThemeKey, next ? "dark" : "light");
     } catch {
       /* localStorage may be unavailable */
     }
-  }, []);
-
-  function toggleTheme() {
-    setDarkMode((prev) => {
-      const next = !prev;
-      const value = next ? "dark" : "light";
-      document.documentElement.setAttribute("data-dashboard-theme", value);
-      document.documentElement.classList.toggle("dark", next);
-      try {
-        localStorage.setItem("vozon_dashboard_theme", value);
-      } catch {
-        /* localStorage may be unavailable */
-      }
-      return next;
-    });
+    window.dispatchEvent(new Event(dashboardThemeEvent));
   }
 
   useEffect(() => {
@@ -212,7 +228,6 @@ export function DashboardPageHeader({
   description,
   actions,
   meta,
-  bordered = true,
   compact = false,
   workspaceBarOnly = false,
 }: DashboardPageHeaderProps) {

@@ -226,7 +226,8 @@
   .agents-guide { flex-direction: column; align-items: flex-start; padding: 20px; }
   .agents-guide a { margin-left: 37px; }
 }
-/* Vercel-inspired compact White & Black dashboard theme (zero green/teal; leaves workflow builder .automation-layout untouched). */
+/* Compact monochrome palette applies only while the dashboard is in light mode. */
+html:not([data-dashboard-theme="dark"]) {
 .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) {
   --app-color-heading: #000000;
   --app-color-body: #444444;
@@ -305,53 +306,84 @@
 .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is([class*="bg-teal-50"], [class*="bg-teal-100"], [class*="bg-emerald-50"], [class*="bg-emerald-100"], [class*="bg-green-50"], [class*="bg-green-100"], [class*="bg-violet-50"], [class*="bg-violet-100"], [class*="bg-purple-50"], [class*="bg-purple-100"]) { background-color: #f5f5f5 !important; }
 .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is([class*="bg-[#118778]"], [class*="bg-[#108D82]"], [class*="bg-[#0e6f62]"], [class*="bg-teal-600"], [class*="bg-teal-700"], [class*="bg-emerald-600"], [class*="bg-violet-600"], [class*="bg-purple-600"]) { background-color: #000000 !important; color: #ffffff !important; }
 .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is([class*="ring-[#118778]"], [class*="ring-teal-"], [class*="ring-emerald-"], [class*="ring-violet-"], [class*="ring-purple-"]) { --tw-ring-color: rgb(0 0 0 / 12%) !important; }
+}
 /* Crisp monochrome black/white sidebar logos & compact 32px nav items */
-html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-logo,
-html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-workspace-bar img {
+html:not([data-dashboard-theme="dark"]):has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-logo,
+html:not([data-dashboard-theme="dark"]):has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-workspace-bar img {
   filter: grayscale(1) contrast(1000%) !important;
 }
-html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar nav a {
+html:not([data-dashboard-theme="dark"]):has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar nav a {
   height: 32px !important;
   border-radius: 6px !important;
   font-size: 13px !important;
   padding-inline: 10px !important;
 }
-html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav {
+html:not([data-dashboard-theme="dark"]):has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav {
   color: #666666 !important;
 }
-html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav .dashboard-sidebar-icon,
-html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav .dashboard-sidebar-label {
+html:not([data-dashboard-theme="dark"]):has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav .dashboard-sidebar-icon,
+html:not([data-dashboard-theme="dark"]):has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav .dashboard-sidebar-label {
   color: #444444 !important;
   font-weight: 450 !important;
 }
-html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-group-label,
-html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-tagline {
+html:not([data-dashboard-theme="dark"]):has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-group-label,
+html:not([data-dashboard-theme="dark"]):has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-tagline {
   color: #888888 !important;
 }
-html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav:hover {
+html:not([data-dashboard-theme="dark"]):has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav:hover {
   background: #f5f5f5 !important;
 }
-html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav:hover .dashboard-sidebar-icon,
-html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav:hover .dashboard-sidebar-label {
+html:not([data-dashboard-theme="dark"]):has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav:hover .dashboard-sidebar-icon,
+html:not([data-dashboard-theme="dark"]):has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav:hover .dashboard-sidebar-label {
   color: #000000 !important;
 }
-html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] {
+html:not([data-dashboard-theme="dark"]):has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] {
   background: #000000 !important;
   color: #ffffff !important;
   box-shadow: none !important;
 }
-html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-icon,
-html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-label {
+html:not([data-dashboard-theme="dark"]):has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-icon,
+html:not([data-dashboard-theme="dark"]):has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-label {
   color: #ffffff !important;
   font-weight: 550 !important;
 }
-html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-shell[data-expanded="false"] .dashboard-sidebar-nav[aria-current="page"] {
+html:not([data-dashboard-theme="dark"]):has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-shell[data-expanded="false"] .dashboard-sidebar-nav[aria-current="page"] {
   background: transparent !important;
   box-shadow: none !important;
 }
-html:has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-shell[data-expanded="false"] .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-icon {
+html:not([data-dashboard-theme="dark"]):has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-shell[data-expanded="false"] .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-icon {
   background: #000000 !important;
   color: #ffffff !important;
+}
+
+/* Shared dashboard surfaces defined above also need their dark counterparts. */
+html[data-dashboard-theme="dark"] .dashboard-home-theme :is(.dashboard-sidebar, .workspace-bar, .sidebar-workspace, .sidebar-help, .agents-panel, .agents-metric, .agents-guide, .campaign-composer, .agents-grid .agent-row) {
+  background: #121215 !important;
+  border-color: #27272a !important;
+  color: #e4e4e7;
+}
+html[data-dashboard-theme="dark"] .dashboard-home-theme :is(.agents-grid, .campaign-composer-form > aside) {
+  background: #09090b !important;
+}
+html[data-dashboard-theme="dark"] .dashboard-home-theme :is(.agents-tabs, .agents-table-heading, .agents-panel-footer, .agents-count, .campaign-steps button span, .agents-metric-icon, .agent-avatar) {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #e4e4e7;
+}
+html[data-dashboard-theme="dark"] .dashboard-home-theme :is(.agent-row, .agents-toolbar, .agents-search, .agents-view-toggle, .campaign-steps, .campaign-step-actions) {
+  border-color: #27272a !important;
+}
+html[data-dashboard-theme="dark"] .dashboard-home-theme :is(.agent-row:hover, .agents-tabs button[aria-pressed="true"], .campaign-steps button[aria-current="step"]) {
+  background: #222228 !important;
+  color: #ffffff !important;
+}
+html[data-dashboard-theme="dark"] .dashboard-home-theme :is(.saas-secondary, .automation-secondary) {
+  background: #18181b;
+  border-color: #3f3f46;
+  color: #e4e4e7;
+}
+html[data-dashboard-theme="dark"] .dashboard-home-theme :is(.saas-secondary, .automation-secondary):hover {
+  background: #27272a;
 }
 @media (max-width: 639px) {
   .dashboard-home-theme :where(h1) { font-size: 23px !important; }
