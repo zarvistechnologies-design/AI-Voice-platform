@@ -26,8 +26,88 @@ html:not([data-brand-source="white_label"]) .platform-brand-logo {
   border-color: #108D82 !important;
 }
 
+/* Published white-label workspaces inherit their dashboard accent palette
+   from the active brand. Platform hosts keep the default Vozon palette. */
+html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) {
+  --dashboard-moody: var(--brand-primary) !important;
+  --dashboard-moody-dark: color-mix(in srgb, var(--brand-primary) 82%, #000000) !important;
+  --dashboard-moody-soft: color-mix(in srgb, var(--brand-primary) 10%, #ffffff) !important;
+  --dashboard-border-strong: color-mix(in srgb, var(--brand-primary) 25%, #e1e3ed) !important;
+}
+
 html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) .dashboard-sidebar-logo {
   filter: none !important;
+}
+
+html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :is([class~="bg-[#108D82]"],
+  [class~="bg-[#5963b8]"],
+  [class~="bg-[#108D82]"]) {
+  color: #ffffff !important;
+  border-color: var(--dashboard-moody) !important;
+  background: var(--dashboard-moody) !important;
+}
+
+html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :is(button,
+  a[href]):is([class~="bg-[#108D82]"],
+  [class~="bg-[#5963b8]"],
+  [class~="bg-[#108D82]"]):hover:not(:disabled) {
+  background: var(--dashboard-moody-dark) !important;
+}
+
+html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :is([class~="bg-[#eff0fb]"],
+  [class~="bg-[#f3f4fb]"],
+  [class~="bg-[#f5f5fb]"],
+  [class~="bg-[#f5f5fc]"]) {
+  background-color: var(--dashboard-moody-soft) !important;
+}
+
+html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :is([class~="text-[#108D82]"],
+  [class~="text-[#515bb4]"],
+  [class~="text-[#5963b8]"],
+  [class~="text-[#108D82]"],
+  [class~="text-[#108D82]"]) {
+  color: var(--dashboard-moody-dark) !important;
+}
+
+html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :is([class~="border-[#a7abff]"],
+  [class~="border-[#108D82]"],
+  [class~="border-[#bfc3ea]"],
+  [class~="border-[#c9ccef]"],
+  [class~="border-[#d9dcea]"]) {
+  border-color: var(--dashboard-border-strong) !important;
+}
+
+html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) :where(button,
+  a[href],
+  input,
+  textarea,
+  select):focus-visible {
+  outline-color: var(--dashboard-moody) !important;
+  border-color: var(--dashboard-moody) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 16%, transparent) !important;
+}
+
+@media (min-width: 1024px) {
+
+  html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav:hover .dashboard-sidebar-icon,
+  html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-toggle:hover {
+    color: var(--dashboard-moody-dark) !important;
+  }
+
+  html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"]::before {
+    background: var(--dashboard-moody) !important;
+  }
+
+  html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-icon {
+    color: var(--dashboard-moody-dark) !important;
+    background: var(--dashboard-moody-soft) !important;
+  }
+
+  html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-avatar {
+    border-color: var(--dashboard-border-strong) !important;
+    color: var(--dashboard-moody-dark) !important;
+    background: var(--dashboard-moody-soft) !important;
+  }
 }
 
 @media (max-height: 700px) {
@@ -958,11 +1038,10 @@ html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-pa
 }
 
 /* ========================================================================== */
-/* The recent light dashboard belongs to platform hosts and newly provisioned
-   white-label customers. Existing customers and partners keep the green skin. */
+/* Dashboard palette: white surfaces with Moody Blue product accents.         */
+/* Kept dashboard-scoped so public and marketing pages retain their styling.   */
 /* ========================================================================== */
 
-@scope (:is(html:not([data-brand-source="white_label"]), html[data-brand-source="white_label"][data-dashboard-theme="recent_light"])) {
 :is(.dashboard-home-theme, .agents-home-palette) {
   --dashboard-canvas: #ffffff;
   --dashboard-paper: #ffffff;
@@ -1228,26 +1307,6 @@ html:not([data-brand-source="white_label"]) :is(.dashboard-home-theme, .agents-h
   object-position: left center;
   filter: brightness(0) saturate(100%) invert(42%) sepia(42%) saturate(920%) hue-rotate(123deg) brightness(88%) contrast(91%);
 }
-}
-
-/* Existing partner and customer workspaces keep the earlier green dashboard. */
-html[data-brand-source="white_label"]:not([data-dashboard-theme="recent_light"]) :is(.dashboard-home-theme, .agents-home-palette) {
-  color-scheme: dark !important;
-  background: #000000 !important;
-  color: #ffffff !important;
-}
-
-html[data-brand-source="white_label"]:not([data-dashboard-theme="recent_light"]) .dashboard-home-theme .dashboard-sidebar {
-  border-color: rgb(255 255 255 / 0.1) !important;
-}
-
-html[data-brand-source="white_label"]:not([data-dashboard-theme="recent_light"]) :is(.dashboard-home-theme, .agents-home-palette) :is([class~="text-[#14231f]"], [class~="text-[#20342e]"], [class~="text-[#1d342e]"]) {
-  color: #ffffff !important;
-}
-
-html[data-brand-source="white_label"]:not([data-dashboard-theme="recent_light"]) :is(.dashboard-home-theme, .agents-home-palette) :is([class~="text-[#52645f]"], [class~="text-[#71817d]"], [class~="text-[#84938f]"]) {
-  color: rgb(255 255 255 / 0.68) !important;
-}
 
 .dark {
   --background: oklch(0.145 0 0);
@@ -1473,7 +1532,6 @@ html[data-brand-source="white_label"]:not([data-dashboard-theme="recent_light"])
 /* Final dashboard cascade reinforcement. The legacy dashboard skin also
    lives in the components layer and uses important declarations, so these
    rules intentionally share that layer and use the owning layout scope. */
-@scope (:is(html:not([data-brand-source="white_label"]), html[data-brand-source="white_label"][data-dashboard-theme="recent_light"])) {
 @layer components {
 
   .dashboard-home-theme.dashboard-home-theme,
@@ -2149,7 +2207,6 @@ html[data-brand-source="white_label"]:not([data-dashboard-theme="recent_light"])
 .dashboard-home-theme.dashboard-home-theme select:disabled:not([data-dashboard-text="light"]) {
   color: #9a9dac !important;
   -webkit-text-fill-color: #9a9dac !important;
-}
 }
 
 /* -------------------------------------------------------------
