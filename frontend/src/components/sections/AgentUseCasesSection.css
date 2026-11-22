@@ -376,3 +376,124 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Whole-Black Dark Mode Theme */
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-showcase {
+  background: #09090b !important;
+  color: #ffffff !important;
+  border-top: 1px solid #27272a !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-showcase-eyebrow {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-showcase-header h2 {
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-showcase-header p {
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-card,
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-tasks-card,
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-agent-card {
+  background: #121215 !important;
+  border: 1px solid #27272a !important;
+  color: #ffffff !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-tasks-card h3,
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-agent-identity h3 {
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-tasks-sub,
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-sublabel {
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-task-row {
+  border-top: 1px solid #27272a !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-task-name {
+  color: #f4f4f5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-task-pill.is-progress {
+  background: rgba(37, 99, 235, 0.15) !important;
+  border-color: rgba(37, 99, 235, 0.35) !important;
+  color: #93c5fd !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-task-pill.is-completed {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(16, 185, 129, 0.35) !important;
+  color: #6ee7b7 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-task-pill.is-consent {
+  background: rgba(245, 158, 11, 0.15) !important;
+  border-color: rgba(245, 158, 11, 0.35) !important;
+  color: #fcd34d !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-core-tile {
+  border-color: #27272a !important;
+  background: #09090b !important;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-agent-avatar {
+  border-color: #27272a !important;
+  background: #18181b !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-channel-badge {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-tool-tile {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #e4e4e7 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-tool-tile:hover {
+  background: #27272a !important;
+  border-color: #3f3f46 !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-stats-grid {
+  background: #18181b !important;
+  border-color: #27272a !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-stat-box {
+  background: #121215 !important;
+  border-color: #27272a !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-stat-title {
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-stat-value,
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-stat-small-val {
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentic-stat-delta {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #e4e4e7 !important;
+}

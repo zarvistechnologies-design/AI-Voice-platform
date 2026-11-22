@@ -500,19 +500,93 @@
   box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
 }
 
+/* Keep the platform wordmark visible in both themes without changing partner logos. */
+html:not([data-brand-source="white_label"]) .public-accent-header .landing-header-logo .platform-brand-logo {
+  filter: brightness(0);
+}
+
+html:not([data-brand-source="white_label"]):is([data-dashboard-theme="dark"], .dark) .public-accent-header .landing-header-logo .platform-brand-logo {
+  filter: brightness(0) invert(1);
+}
+
+/* Thin Top Announcement Bar (Speak naturally. Sound human. Vozon AI STT & TTS APIs) */
+.site-announcement-bar {
+  width: 100%;
+  background: #09090b;
+  color: #ffffff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 12.5px;
+  line-height: 1;
+  padding: 8px 16px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 101;
+}
+
+.site-announcement-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.site-announcement-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  flex-shrink: 0;
+}
+
+.site-announcement-text {
+  margin: 0;
+  color: #e4e4e7;
+  font-size: 12.5px;
+  font-weight: 450;
+  letter-spacing: -0.01em;
+}
+
+.site-announcement-text strong {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+@media (max-width: 640px) {
+  .site-announcement-bar {
+    padding: 6px 10px;
+  }
+  .site-announcement-text {
+    font-size: 11px;
+    line-height: 1.3;
+    text-align: center;
+  }
+}
+
 .public-accent-header header {
   position: relative;
   display: flex;
   height: 72px;
-  width: 100%;
-  max-width: 1400px;
+  width: min(1200px, calc(100% - 48px));
+  max-width: none;
   margin-inline: auto;
   align-items: center;
   justify-content: space-between;
-  padding-inline: clamp(20px, 4vw, 56px);
+  padding-inline: 0;
   background: transparent;
   border: none;
   box-shadow: none;
+}
+
+@media (max-width: 650px) {
+  .public-accent-header header {
+    width: calc(100% - 36px);
+  }
 }
 
 .site-nav-btn {

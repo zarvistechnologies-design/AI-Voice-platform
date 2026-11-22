@@ -665,11 +665,12 @@ Home </Link>
     }
 
     #contact-page > section { background: var(--contact-paper) !important; }
-    #contact-page > section > div { max-width: 1240px; }
-    #contact-page nav[aria-label="Breadcrumb"] { justify-content: center; margin-bottom: 36px; color: #777b82 !important; }
+    #contact-page > section:first-of-type { padding-top: 108px !important; }
+    #contact-page > section > div { max-width: 1200px; }
+    #contact-page nav[aria-label="Breadcrumb"] { justify-content: flex-start; margin-bottom: 18px; color: #777b82 !important; }
     #contact-page nav[aria-label="Breadcrumb"] a,
     #contact-page nav[aria-label="Breadcrumb"] span { color: #777b82 !important; }
-    #contact-page h1 { color: var(--contact-ink) !important; font-size: clamp(38px, 4.4vw, 72px) !important; font-weight: 800 !important; line-height: 1.12 !important; letter-spacing: -.04em !important; }
+    #contact-page h1 { color: var(--contact-ink) !important; font-size: clamp(32px, 3.3vw, 46px) !important; font-weight: 600 !important; line-height: 1.09 !important; letter-spacing: -.045em !important; }
     #contact-page .contact-page-kicker,
     #contact-page .contact-page-support-label { margin: 0; color: #6b6e73; font-size: 10px; font-weight: 800; letter-spacing: .16em; line-height: 1.5; }
     #contact-page .contact-page-support { padding: 28px; border: 1px solid #dedfe2; background: #fff; }

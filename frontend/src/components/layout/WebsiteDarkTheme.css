@@ -1,0 +1,1473 @@
+/* ==========================================================================
+   VOZON PUBLIC WEBSITE DARK THEME SYSTEM
+   Provides a unified, high-contrast, obsidian dark mode for the entire public website:
+   - Site Header & Mega-Menu Dropdown
+   - Hero Section, Language Selector, and Integration Pills
+   - Introduction Video Card
+   - Use Cases & Agentic Workflow Preview
+   - Conversation Insights & Analytics
+   - Integrations Showcase 4-Card Carousel
+   - Security, Enterprise Scale, Comparison Table, and FAQ
+   - Secondary Public Pages: Pricing, About, Contact, Partners, Integrations
+   ========================================================================== */
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) {
+  color-scheme: dark !important;
+
+  /* -------------------------------------------------------------------------
+     1. Global Document, Body & Site Wrappers
+     ------------------------------------------------------------------------- */
+  body:not(.dashboard-home-theme) {
+    background-color: #09090b !important;
+    color: #ffffff !important;
+  }
+
+  .home-design-four,
+  .home-design-four:not(.footer-home-shell),
+  .page,
+  main:not(.dashboard-home-theme main) {
+    background: #09090b !important;
+    background-color: #09090b !important;
+    color: #ffffff !important;
+  }
+
+  /* -------------------------------------------------------------------------
+     2. Site Header & Mega-Menu Navigation
+     ------------------------------------------------------------------------- */
+  .public-accent-header {
+    background: rgba(9, 9, 11, 0.85) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border-bottom: 0 !important;
+  }
+
+  .public-accent-header.is-scrolled {
+    background: rgba(9, 9, 11, 0.95) !important;
+    border-bottom: 0 !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
+  }
+
+  .site-nav-btn {
+    color: #d4d4d8 !important;
+  }
+
+  .site-nav-btn:hover,
+  .site-nav-btn.is-active,
+  .site-nav-btn[aria-expanded="true"] {
+    color: #ffffff !important;
+    background: rgba(39, 39, 42, 0.6) !important;
+  }
+
+  .site-nav-chevron {
+    stroke: #a1a1aa !important;
+  }
+
+  /* Header CTA Buttons */
+  .public-accent-header a[href="/contact"] {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #f4f4f5 !important;
+  }
+
+  .public-accent-header a[href="/contact"]:hover {
+    background: #27272a !important;
+    border-color: #3f3f46 !important;
+    color: #ffffff !important;
+  }
+
+  .public-accent-header a[href="/login"] {
+    background: #2563eb !important;
+    color: #ffffff !important;
+    border: 1px solid #1d4ed8 !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25) !important;
+  }
+
+  .public-accent-header a[href="/login"]:hover {
+    background: #1d4ed8 !important;
+    border-color: #1e40af !important;
+    color: #ffffff !important;
+  }
+
+  /* Header Theme Toggle */
+  .site-theme-toggle {
+    display: inline-grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    border: 1px solid #27272a;
+    background: #18181b;
+    color: #e4e4e7;
+    cursor: pointer;
+    transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+  }
+
+  .site-theme-toggle:hover {
+    background: #27272a;
+    border-color: #3f3f46;
+    color: #ffffff;
+  }
+
+  /* Mobile Button & Navigation Drawer */
+  .public-accent-header button[aria-label="Open menu"],
+  .public-accent-header button[aria-label="Close menu"] {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #ffffff !important;
+  }
+
+  nav[aria-label="Mobile navigation"] {
+    background: rgba(18, 18, 21, 0.98) !important;
+    border-color: #27272a !important;
+    color: #ffffff !important;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8) !important;
+  }
+
+  nav[aria-label="Mobile navigation"] :is(h3, span.uppercase) {
+    color: #a1a1aa !important;
+  }
+
+  nav[aria-label="Mobile navigation"] a {
+    color: #e4e4e7 !important;
+  }
+
+  nav[aria-label="Mobile navigation"] a:hover {
+    background: #27272a !important;
+    color: #ffffff !important;
+  }
+
+  nav[aria-label="Mobile navigation"] .border-slate-100 {
+    border-color: #27272a !important;
+  }
+
+  /* Mega-Menu Surface */
+  .site-mega-menu {
+    background: rgba(18, 18, 21, 0.97) !important;
+    border: 1px solid #27272a !important;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85) !important;
+  }
+
+  .site-menu-group-title {
+    color: #a1a1aa !important;
+  }
+
+  .site-menu-item-title {
+    color: #ffffff !important;
+  }
+
+  .site-menu-item-desc {
+    color: #a1a1aa !important;
+  }
+
+  .site-menu-item:hover {
+    background: #18181b !important;
+  }
+
+  .site-menu-icon {
+    background: #18181b !important;
+    border: 1px solid #27272a !important;
+    color: #93c5fd !important;
+  }
+
+  .site-menu-item:hover .site-menu-icon {
+    background: #27272a !important;
+    border-color: #3f3f46 !important;
+  }
+
+  .site-menu-spotlight {
+    background: #141418 !important;
+    border-left: 1px solid #27272a !important;
+  }
+
+  .site-menu-spotlight-title {
+    color: #ffffff !important;
+  }
+
+  .site-menu-spotlight-desc {
+    color: #a1a1aa !important;
+  }
+
+  .site-menu-spotlight-pill {
+    background: #1c1c22 !important;
+    border: 1px solid #27272a !important;
+    color: #e4e4e7 !important;
+  }
+
+  .site-menu-footer {
+    background: #111114 !important;
+    border-top: 1px solid #27272a !important;
+    color: #a1a1aa !important;
+  }
+
+  .site-menu-footer-link {
+    color: #d4d4d8 !important;
+  }
+
+  .site-menu-footer-link:hover {
+    color: #ffffff !important;
+  }
+
+  /* -------------------------------------------------------------------------
+     3. Hero Section
+     ------------------------------------------------------------------------- */
+  .home-design-four .home-design-four__hero.agentvoice-hero,
+  .agentvoice-hero {
+    background: #09090b !important;
+    color: #ffffff !important;
+  }
+
+  .agentvoice-hero-content h1 {
+    color: #ffffff !important;
+  }
+
+  .agentvoice-hero-content p {
+    color: #a1a1aa !important;
+  }
+
+  .agentvoice-channel-kicker {
+    background: rgba(36, 87, 214, 0.15) !important;
+    border: 1px solid rgba(36, 87, 214, 0.35) !important;
+    color: #93c5fd !important;
+  }
+
+  .agentvoice-demo-control {
+    background: #121215 !important;
+    border: 1px solid #27272a !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
+  }
+
+  .agentvoice-demo-language select {
+    background: transparent !important;
+    color: #ffffff !important;
+  }
+
+  .agentvoice-demo-language select option {
+    background: #121215 !important;
+    color: #ffffff !important;
+  }
+
+  .agentvoice-demo-status {
+    color: #a1a1aa !important;
+  }
+
+  .agentvoice-hero-tags span {
+    background: #121215 !important;
+    border: 1px solid #27272a !important;
+    color: #e4e4e7 !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .agentvoice-hero-tags span:hover {
+    background: #18181b !important;
+    border-color: #3f3f46 !important;
+    color: #ffffff !important;
+  }
+
+  /* -------------------------------------------------------------------------
+     4. Platform Introduction Video Card
+     ------------------------------------------------------------------------- */
+  .vozon-intro-video {
+    background: #09090b !important;
+  }
+
+  .vozon-intro-eyebrow {
+    background: #18181b !important;
+    border: 1px solid #27272a !important;
+    color: #a1a1aa !important;
+  }
+
+  .vozon-intro-eyebrow i {
+    background: #2457d6 !important;
+  }
+
+  .vozon-intro-video-header h2 {
+    color: #ffffff !important;
+  }
+
+  .vozon-intro-video-header p {
+    color: #a1a1aa !important;
+  }
+
+  .vozon-intro-video-card {
+    background: #121215 !important;
+    border: 1px solid #27272a !important;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75) !important;
+  }
+
+  /* -------------------------------------------------------------------------
+     4b. AI Automation for Every Industry Showcase
+     ------------------------------------------------------------------------- */
+  .industry-showcase,
+  .industry-showcase-section {
+    background: #09090b !important;
+    color: #ffffff !important;
+    border-top: 1px solid #27272a !important;
+  }
+
+  .industry-eyebrow {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #a1a1aa !important;
+  }
+
+  .industry-showcase-header h2,
+  .industry-showcase-title {
+    color: #ffffff !important;
+  }
+
+  .industry-showcase-header p,
+  .industry-showcase-subtitle {
+    color: #a1a1aa !important;
+  }
+
+  .industry-card {
+    background: #121215 !important;
+    border: 1px solid #27272a !important;
+    color: #ffffff !important;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7) !important;
+  }
+
+  .industry-card:hover,
+  .industry-card.is-selected {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.85), 0 0 20px rgba(59, 130, 246, 0.15) !important;
+  }
+
+  .industry-card-badge {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #38bdf8 !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.8) !important;
+  }
+
+  .industry-card-img-wrap {
+    border-bottom: 1px solid #27272a !important;
+  }
+
+  .industry-card-name {
+    color: #ffffff !important;
+  }
+
+  .industry-channel-tag {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #a1a1aa !important;
+  }
+
+  .industry-card-desc {
+    color: #a1a1aa !important;
+  }
+
+  .industry-pill,
+  .industry-pill-btn {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #a1a1aa !important;
+    box-shadow: none !important;
+  }
+
+  .industry-pill:hover,
+  .industry-pill-btn:hover {
+    background: #27272a !important;
+    border-color: #3f3f46 !important;
+    color: #ffffff !important;
+  }
+
+  .industry-pill.is-active,
+  .industry-pill-btn.is-active {
+    background: #2563eb !important;
+    border-color: #3b82f6 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35) !important;
+  }
+
+
+
+  /* -------------------------------------------------------------------------
+     5. Agent Use Cases Section ("One agentic core for every task")
+     ------------------------------------------------------------------------- */
+  .agentic-showcase,
+  .agent-use-cases-section,
+  .design-four-voice-section,
+  .design-four-launch-section {
+    background: #09090b !important;
+    color: #ffffff !important;
+    border-top: 1px solid #27272a !important;
+  }
+
+  .agentic-showcase-eyebrow,
+  .use-case-tabs button,
+  .design-four-language-tabs button {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #a1a1aa !important;
+  }
+
+  .agentic-showcase-eyebrow i {
+    background: linear-gradient(135deg, #0ea5e9, #ec4899) !important;
+  }
+
+  .agentic-showcase-header h2 {
+    color: #ffffff !important;
+  }
+
+  .agentic-showcase-header p {
+    color: #a1a1aa !important;
+  }
+
+  .agentic-card,
+  .agentic-tasks-card,
+  .agentic-agent-card {
+    background: #121215 !important;
+    border: 1px solid #27272a !important;
+    color: #ffffff !important;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7) !important;
+  }
+
+  .agentic-tasks-card h3,
+  .agentic-agent-identity h3 {
+    color: #ffffff !important;
+  }
+
+  .agentic-tasks-sub,
+  .agentic-sublabel {
+    color: #a1a1aa !important;
+  }
+
+  .agentic-task-row {
+    border-top: 1px solid #27272a !important;
+  }
+
+  .agentic-task-name {
+    color: #f4f4f5 !important;
+  }
+
+  .agentic-task-pill.is-progress {
+    background: rgba(37, 99, 235, 0.15) !important;
+    border-color: rgba(37, 99, 235, 0.35) !important;
+    color: #93c5fd !important;
+  }
+
+  .agentic-task-pill.is-completed {
+    background: rgba(16, 185, 129, 0.15) !important;
+    border-color: rgba(16, 185, 129, 0.35) !important;
+    color: #6ee7b7 !important;
+  }
+
+  .agentic-task-pill.is-consent {
+    background: rgba(245, 158, 11, 0.15) !important;
+    border-color: rgba(245, 158, 11, 0.35) !important;
+    color: #fcd34d !important;
+  }
+
+  .agentic-core-tile {
+    border-color: #27272a !important;
+    background: #09090b !important;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8) !important;
+  }
+
+  .agentic-agent-avatar {
+    border-color: #27272a !important;
+    background: #18181b !important;
+  }
+
+  .agentic-channel-badge {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #a1a1aa !important;
+  }
+
+  .agentic-tool-tile {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #e4e4e7 !important;
+  }
+
+  .agentic-tool-tile:hover {
+    background: #27272a !important;
+    border-color: #3f3f46 !important;
+    color: #ffffff !important;
+  }
+
+  .agentic-stats-grid {
+    background: #18181b !important;
+    border-color: #27272a !important;
+  }
+
+  .agentic-stat-box {
+    background: #121215 !important;
+    border-color: #27272a !important;
+    color: #ffffff !important;
+  }
+
+  .agentic-stat-title {
+    color: #a1a1aa !important;
+  }
+
+  .agentic-stat-value,
+  .agentic-stat-small-val {
+    color: #ffffff !important;
+  }
+
+  .agentic-stat-delta {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #e4e4e7 !important;
+  }
+
+  .use-case-tabs button:hover,
+  .design-four-language-tabs button:hover {
+    background: #27272a !important;
+    color: #ffffff !important;
+  }
+
+  .use-case-tabs button[aria-selected="true"],
+  .design-four-language-tabs button.is-active {
+    background: #27272a !important;
+    color: #ffffff !important;
+    border-color: #52525b !important;
+  }
+
+  .design-four-step-grid article {
+    background: #121215 !important;
+    border-color: #27272a !important;
+    color: #ffffff !important;
+  }
+
+  .design-four-step-grid h3 {
+    color: #ffffff !important;
+  }
+
+  .design-four-step-grid article>p {
+    color: #a1a1aa !important;
+  }
+
+  .design-four-step-visual {
+    background: #18181b !important;
+    border-color: #27272a !important;
+  }
+
+  .design-four-flow .design-four-flow-grid span {
+    background: #1c1c22 !important;
+    color: #ffffff !important;
+  }
+
+  /* -------------------------------------------------------------------------
+     6. Workflow Canvas Section & Live Interactive Diagram
+     ------------------------------------------------------------------------- */
+  .workflow-canvas-section,
+  .wf-showcase {
+    background: #09090b !important;
+    color: #ffffff !important;
+    border-top: 0 !important;
+  }
+
+  .wf-showcase-eyebrow,
+  .workflow-canvas-tabs button,
+  .wf-tab-btn {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #a1a1aa !important;
+  }
+
+  .wf-showcase-eyebrow i {
+    background: #2563eb !important;
+  }
+
+  .wf-showcase-header h2 {
+    color: #ffffff !important;
+  }
+
+  .wf-showcase-header p {
+    color: #a1a1aa !important;
+  }
+
+  .workflow-canvas-preview,
+  .wf-card-trigger,
+  .wf-card-agent,
+  .wf-outcome-card {
+    background: #121215 !important;
+    border: 1px solid #27272a !important;
+    color: #ffffff !important;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7) !important;
+  }
+
+  .wf-tab-btn:hover {
+    background: #27272a !important;
+    border-color: #3f3f46 !important;
+    color: #ffffff !important;
+  }
+
+  .wf-tab-btn.is-active,
+  .workflow-canvas-tabs button.is-active {
+    background: #27272a !important;
+    color: #ffffff !important;
+    border-color: #52525b !important;
+  }
+
+  .wf-card-top,
+  .wf-agent-top {
+    border-bottom: 1px solid #27272a !important;
+  }
+
+  .wf-meta-rows,
+  .wf-meta-row {
+    border-color: #27272a !important;
+    color: #e4e4e7 !important;
+  }
+
+  .wf-meta-row span {
+    color: #a1a1aa !important;
+  }
+
+  .wf-connector-line {
+    stroke: #3f3f46 !important;
+  }
+
+  .wf-connector-pill {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #a1a1aa !important;
+  }
+
+  .wf-agent-main strong,
+  .wf-identity-row strong {
+    color: #ffffff !important;
+  }
+
+  .wf-agent-quote {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #d4d4d8 !important;
+  }
+
+  .wf-agent-pills span {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #d4d4d8 !important;
+  }
+
+  .wf-outcome-card.is-green {
+    border-color: rgba(16, 185, 129, 0.4) !important;
+  }
+
+  .wf-outcome-card.is-blue {
+    border-color: rgba(37, 99, 235, 0.4) !important;
+  }
+
+  .wf-outcome-card.is-violet {
+    border-color: rgba(124, 58, 237, 0.4) !important;
+  }
+
+  /* -------------------------------------------------------------------------
+     7. Conversation Insights Section (Real-Time Telemetry)
+     ------------------------------------------------------------------------- */
+  .conversation-insights {
+    background: #09090b !important;
+    border-top: 1px solid #27272a !important;
+    color: #ffffff !important;
+  }
+
+  .conversation-insights-eyebrow {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #a1a1aa !important;
+  }
+
+  .conversation-insights-heading h2 {
+    color: #ffffff !important;
+  }
+
+  .conversation-insights-heading p {
+    color: #a1a1aa !important;
+  }
+
+  .conversation-insights-dashboard {
+    background: #121215 !important;
+    border: 1px solid #27272a !important;
+    color: #ffffff !important;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7) !important;
+  }
+
+  .conversation-insights-top {
+    border-bottom: 1px solid #27272a !important;
+  }
+
+  .conversation-insights-recent {
+    background: #121215 !important;
+    border-right: 1px solid #27272a !important;
+  }
+
+  .conversation-insights-recent-heading strong {
+    color: #ffffff !important;
+  }
+
+  .conversation-insights-recent-heading span {
+    background: #18181b !important;
+    border: 1px solid #27272a !important;
+    color: #a1a1aa !important;
+  }
+
+  .conversation-insights-call {
+    background: #18181b !important;
+    border: 1px solid #27272a !important;
+    color: #ffffff !important;
+  }
+
+  .conversation-insights-call:hover,
+  .conversation-insights-call.is-active {
+    background: #27272a !important;
+    border-color: #52525b !important;
+    color: #ffffff !important;
+  }
+
+  .conversation-insights-call-text strong {
+    color: #ffffff !important;
+  }
+
+  .conversation-insights-call-text small,
+  .conversation-insights-call-duration {
+    color: #a1a1aa !important;
+  }
+
+  .conversation-insights-detail {
+    background: #121215 !important;
+  }
+
+  .conversation-insights-agent h3 {
+    color: #ffffff !important;
+  }
+
+  .conversation-insights-agent p {
+    color: #a1a1aa !important;
+  }
+
+  .conversation-insights-meta div {
+    border-color: #27272a !important;
+  }
+
+  .conversation-insights-meta span {
+    color: #a1a1aa !important;
+  }
+
+  .conversation-insights-meta strong {
+    color: #ffffff !important;
+  }
+
+  .conversation-insights-audio {
+    background: #18181b !important;
+    border: 1px solid #27272a !important;
+    color: #ffffff !important;
+  }
+
+  .conversation-insights-audio-time,
+  .conversation-insights-audio-remaining {
+    color: #a1a1aa !important;
+  }
+
+  .conversation-insights-scores {
+    background: #18181b !important;
+    border: 1px solid #27272a !important;
+  }
+
+  .conversation-insights-scores div + div {
+    border-left: 1px solid #27272a !important;
+  }
+
+  .conversation-insights-scores strong {
+    color: #ffffff !important;
+  }
+
+  .conversation-insights-scores span {
+    color: #a1a1aa !important;
+  }
+
+  .conversation-insights-issues-heading strong {
+    color: #ffffff !important;
+  }
+
+  .conversation-insights-issue {
+    background: #18181b !important;
+    border: 1px solid #27272a !important;
+    color: #ffffff !important;
+  }
+
+  .conversation-insights-issue strong {
+    color: #ffffff !important;
+  }
+
+  .conversation-insights-issue p {
+    color: #a1a1aa !important;
+  }
+
+  .conversation-insights-trends {
+    background: #121215 !important;
+    border-top: 1px solid #27272a !important;
+  }
+
+  .conversation-insights-trends-heading strong {
+    color: #ffffff !important;
+  }
+
+  .conversation-insights-trends-heading span,
+  .conversation-insights-heatmap-label {
+    color: #a1a1aa !important;
+  }
+
+  /* -------------------------------------------------------------------------
+     8. Integrations Showcase Carousel
+     ------------------------------------------------------------------------- */
+  .integrations-showcase {
+    background: #09090b !important;
+    border-top: 1px solid #27272a !important;
+    color: #ffffff !important;
+  }
+
+  .integrations-eyebrow {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #a1a1aa !important;
+  }
+
+  .integrations-eyebrow i {
+    background: #2563eb !important;
+  }
+
+  .integrations-showcase-heading h2 {
+    color: #ffffff !important;
+  }
+
+  .integrations-showcase-heading p {
+    color: #a1a1aa !important;
+  }
+
+  .carousel-nav-btn {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #ffffff !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  .carousel-nav-btn:hover {
+    background: #27272a !important;
+    border-color: #3f3f46 !important;
+    color: #ffffff !important;
+  }
+
+  .integrations-app-card {
+    background: #121215 !important;
+    border: 1px solid #27272a !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  .integrations-app-card:hover {
+    background: #18181b !important;
+    border-color: #3f3f46 !important;
+    transform: translateY(-2px) !important;
+  }
+
+  .integrations-app-card h3,
+  .integrations-app-card strong {
+    color: #ffffff !important;
+  }
+
+  .integrations-app-card p,
+  .integrations-app-card span {
+    color: #a1a1aa !important;
+  }
+
+  .integrations-card-badge {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #a1a1aa !important;
+  }
+
+  /* -------------------------------------------------------------------------
+     9. Privacy, Enterprise Scale, Comparison, Map & FAQ
+     ------------------------------------------------------------------------- */
+  .privacy-assurance,
+  .enterprise-scale,
+  .platform-comparison,
+  .global-voices-map-section,
+  .home-faq-section,
+  .design-four-testimonials-section,
+  .design-four-outcomes-section,
+  .design-four-industry-section {
+    background: #09090b !important;
+    color: #ffffff !important;
+    border-top: 1px solid #27272a !important;
+  }
+
+  .privacy-assurance-eyebrow,
+  .enterprise-scale-eyebrow,
+  .platform-comparison-eyebrow,
+  .global-voices-map-eyebrow,
+  .home-faq-eyebrow {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #a1a1aa !important;
+  }
+
+  .privacy-assurance-copy h2,
+  .enterprise-scale-heading h2,
+  .platform-comparison-header h2,
+  .global-voices-map-heading h2,
+  .home-faq-intro h2 {
+    color: #ffffff !important;
+  }
+
+  .privacy-assurance-copy p,
+  .enterprise-scale-heading p,
+  .platform-comparison-header p,
+  .global-voices-map-heading p,
+  .home-faq-intro p {
+    color: #a1a1aa !important;
+  }
+
+  /* Privacy Assurance Card */
+  .privacy-assurance-card {
+    background: #121215 !important;
+    border: 1px solid #27272a !important;
+    color: #ffffff !important;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7) !important;
+  }
+
+  .privacy-badge {
+    background: #18181b !important;
+    border: 1px solid #27272a !important;
+    color: #ffffff !important;
+  }
+
+  .privacy-feature-row strong {
+    color: #ffffff !important;
+  }
+
+  .privacy-feature-row span {
+    color: #a1a1aa !important;
+  }
+
+  /* Enterprise Scale Grid */
+  .enterprise-scale-card,
+  .enterprise-scale-grid {
+    background: #27272a !important;
+    border-color: #27272a !important;
+  }
+
+  .enterprise-scale-metric {
+    background: #121215 !important;
+    color: #ffffff !important;
+  }
+
+  .enterprise-scale-metric:nth-child(n+4) {
+    background: #18181b !important;
+  }
+
+  .enterprise-scale-metric strong {
+    color: #ffffff !important;
+  }
+
+  .enterprise-scale-metric > span {
+    color: #a1a1aa !important;
+  }
+
+  /* Platform Comparison Card & Table */
+  .platform-comparison-card {
+    background: #121215 !important;
+    border: 1px solid #27272a !important;
+    color: #ffffff !important;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7) !important;
+  }
+
+  .platform-comparison-table {
+    border-color: #27272a !important;
+    background: #121215 !important;
+  }
+
+  .platform-comparison-table th {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #ffffff !important;
+  }
+
+  .platform-comparison-table td {
+    border-color: #27272a !important;
+    color: #e4e4e7 !important;
+  }
+
+  .platform-comparison-table tr:hover td {
+    background: rgba(255, 255, 255, 0.03) !important;
+  }
+
+  /* Global Voices Map Card */
+  .global-voices-map-card,
+  .global-voices-map-inner {
+    color: #ffffff !important;
+  }
+
+  /* FAQ Accordion */
+  .home-faq-item,
+  .faq-list details,
+  .home-faq details {
+    border-bottom: 1px solid #27272a !important;
+  }
+
+  .home-faq-question,
+  .faq-list summary,
+  .home-faq summary {
+    color: #ffffff !important;
+  }
+
+  .home-faq-answer,
+  .faq-list details p,
+  .home-faq details p {
+    color: #a1a1aa !important;
+  }
+
+  .home-faq-toggle {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #ffffff !important;
+  }
+
+  /* -------------------------------------------------------------------------
+     10. Live Call Floating Action Button & Popup
+     ------------------------------------------------------------------------- */
+  .vozon-live-call-fab {
+    background: #18181b !important;
+    color: #ffffff !important;
+    border: 1px solid #3f3f46 !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7) !important;
+    font-weight: 600 !important;
+  }
+
+  .vozon-live-call-fab:hover {
+    background: #27272a !important;
+    border-color: #52525b !important;
+  }
+
+  .vozon-talk-popup {
+    background: #121215 !important;
+    border: 1px solid #27272a !important;
+    color: #ffffff !important;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.85) !important;
+  }
+
+  .vozon-talk-popup-close {
+    background: #18181b !important;
+    border: 1px solid #27272a !important;
+    color: #ffffff !important;
+  }
+
+  /* -------------------------------------------------------------------------
+     11. Other Public Routes (Pricing, About, Contact, Partners, Integrations)
+     ------------------------------------------------------------------------- */
+  #about-page,
+  #career-page,
+  #partners-page,
+  #contact-page,
+  #integration-page,
+  #integration-detail-page,
+  .pricing-page-refresh,
+  .hcr-site,
+  .website-content {
+    --public-ink: #ffffff !important;
+    --public-body: #e4e4e7 !important;
+    --public-muted: #a1a1aa !important;
+    --public-line: #27272a !important;
+    --public-paper: #121215 !important;
+    --public-accent: #3b82f6 !important;
+    --website-ink: #ffffff !important;
+    --website-body: #e4e4e7 !important;
+    --website-muted: #a1a1aa !important;
+    --website-line: #27272a !important;
+    --website-surface: #09090b !important;
+    --website-surface-soft: #121215 !important;
+    background-color: #09090b !important;
+    color: #ffffff !important;
+  }
+
+  #about-page>section,
+  #career-page>section,
+  #partners-page>section,
+  #contact-page>section,
+  #integration-page>section {
+    background-color: #09090b !important;
+    border-color: #27272a !important;
+    color: #ffffff !important;
+  }
+
+  #about-page>section:nth-of-type(even),
+  #career-page>section:nth-of-type(even),
+  #partners-page>section:nth-of-type(even) {
+    background-color: #0d0d11 !important;
+  }
+
+  #about-page article,
+  #career-page article,
+  #partners-page article,
+  #contact-page article,
+  .pricing-card {
+    background: #121215 !important;
+    background-color: #121215 !important;
+    border-color: #27272a !important;
+    color: #ffffff !important;
+  }
+
+  #contact-page input,
+  #contact-page textarea,
+  #contact-page select {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #ffffff !important;
+  }
+
+  /* -------------------------------------------------------------------------
+     12. Workflow Showcase Section & Diagram (Whole Black)
+     ------------------------------------------------------------------------- */
+  .wf-showcase {
+    background: #09090b !important;
+    color: #ffffff !important;
+    border-top: 1px solid #27272a !important;
+  }
+
+  .wf-showcase-eyebrow {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #a1a1aa !important;
+  }
+
+  .wf-showcase-header h2 {
+    color: #ffffff !important;
+  }
+
+  .wf-showcase-header p {
+    color: #a1a1aa !important;
+  }
+
+  .wf-tab-btn {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #a1a1aa !important;
+  }
+
+  .wf-tab-btn:hover {
+    background: #27272a !important;
+    color: #ffffff !important;
+    border-color: #3f3f46 !important;
+  }
+
+  .wf-tab-btn.is-active {
+    background: #27272a !important;
+    border-color: #52525b !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6) !important;
+  }
+
+  .wf-card-trigger,
+  .wf-card-agent,
+  .wf-outcome-card {
+    background: #121215 !important;
+    border-color: #27272a !important;
+    color: #ffffff !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6) !important;
+  }
+
+  .wf-card-top,
+  .wf-agent-top {
+    border-bottom-color: #27272a !important;
+  }
+
+  .wf-meta-rows,
+  .wf-meta-row {
+    border-color: #27272a !important;
+    color: #e4e4e7 !important;
+  }
+
+  .wf-meta-row span {
+    color: #a1a1aa !important;
+  }
+
+  .wf-connector-line {
+    stroke: #3f3f46 !important;
+  }
+
+  .wf-connector-pill {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #a1a1aa !important;
+  }
+
+  .wf-agent-main strong,
+  .wf-identity-row strong {
+    color: #ffffff !important;
+  }
+
+  .wf-agent-quote {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #d4d4d8 !important;
+  }
+
+  .wf-agent-pills span {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #d4d4d8 !important;
+  }
+
+  .wf-outcome-card.is-green {
+    border-color: rgba(16, 185, 129, 0.4) !important;
+  }
+
+  .wf-outcome-card.is-blue {
+    border-color: rgba(37, 99, 235, 0.4) !important;
+  }
+
+  .wf-outcome-card.is-violet {
+    border-color: rgba(124, 58, 237, 0.4) !important;
+  }
+
+  /* -------------------------------------------------------------------------
+     13. Enquiry Chatbot Modal (Whole Black)
+     ------------------------------------------------------------------------- */
+  [class*="EnquiryChatbot"] [class*="card"] {
+    background: #121215 !important;
+    border-color: #27272a !important;
+    color: #ffffff !important;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.9) !important;
+  }
+
+  [class*="EnquiryChatbot"] [class*="card"] header {
+    background: #09090b !important;
+    border-bottom: 1px solid #27272a !important;
+    color: #ffffff !important;
+  }
+
+  [class*="EnquiryChatbot"] [class*="chat"] {
+    background: #09090b !important;
+  }
+
+  [class*="EnquiryChatbot"] [class*="botBubble"] {
+    background: #18181b !important;
+    border: 1px solid #27272a !important;
+    color: #f4f4f5 !important;
+  }
+
+  [class*="EnquiryChatbot"] [class*="userBubble"] {
+    background: #2563eb !important;
+    color: #ffffff !important;
+  }
+
+  [class*="EnquiryChatbot"] [class*="actions"] {
+    background: #121215 !important;
+    border-top: 1px solid #27272a !important;
+  }
+
+  [class*="EnquiryChatbot"] [class*="options"] button {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #f4f4f5 !important;
+  }
+
+  [class*="EnquiryChatbot"] [class*="options"] button:hover {
+    background: #27272a !important;
+    border-color: #3f3f46 !important;
+  }
+
+  [class*="EnquiryChatbot"] [class*="actions"] input {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #ffffff !important;
+  }
+
+  [class*="EnquiryChatbot"] [class*="actions"] input:focus {
+    border-color: #3b82f6 !important;
+  }
+
+  /* Homepage uses a separate hero header and CSS module surfaces. Keep its
+     header, transitions, and orbital artwork on the same dark canvas. */
+  .home-design-four .home-design-four__header::before {
+    background: #09090b !important;
+  }
+
+  .home-design-four .home-design-four__header {
+    border-bottom: 0 !important;
+  }
+
+  .home-design-four .home-design-four__hero,
+  .home-design-four .vozon-hero-content::before,
+  .home-design-four .vozon-hero-content::after {
+    background: #09090b !important;
+  }
+
+  .home-design-four .home-design-four__hero {
+    border-color: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .home-design-four [class*="systemVisual"]::before {
+    border-color: rgba(161, 161, 170, 0.28) !important;
+  }
+
+  .home-design-four [class*="systemVisual"]::after {
+    border-color: rgba(161, 161, 170, 0.2) !important;
+  }
+
+  .home-design-four [class*="orbitOne"],
+  .home-design-four [class*="orbitTwo"] {
+    border-color: rgba(161, 161, 170, 0.24) !important;
+  }
+
+  .home-design-four [class*="logoStrip"] {
+    border-color: transparent !important;
+    background-color: #09090b !important;
+    color: #d4d4d8 !important;
+  }
+
+  .home-design-four [class*="logoStrip"] p,
+  .home-design-four [class*="logoStrip"] > div {
+    color: #a1a1aa !important;
+  }
+
+  .home-design-four > main > section {
+    border-top-color: transparent !important;
+  }
+
+  .global-voices-map-image {
+    filter: invert(1) hue-rotate(180deg) brightness(0.82) !important;
+    opacity: 0.94;
+  }
+
+  .global-voices-map-visual h2 {
+    color: #ffffff !important;
+  }
+
+  /* Public route sections share one canvas; keep section breaks subtle and
+     remove hard-coded white utility surfaces that otherwise survive dark mode. */
+  body:not(:has(.dashboard-home-theme)) main > section {
+    background-color: #09090b !important;
+    border-color: transparent !important;
+    color: #f4f4f5 !important;
+  }
+
+  .home-design-four > main > .platform-comparison,
+  .home-design-four > main > .global-voices-map-section,
+  .home-design-four > main > .enterprise-scale,
+  .home-design-four > main > .privacy-assurance,
+  .home-design-four > main > .home-faq-section {
+    background: #09090b !important;
+    background-color: #09090b !important;
+    border-top: 0 !important;
+    color: #f4f4f5 !important;
+  }
+
+  .platform-comparison-table thead th,
+  .platform-comparison-table tbody td,
+  .platform-comparison-table tbody td.is-vozon,
+  .platform-comparison-table tbody td.is-feature {
+    background-color: #121215 !important;
+    border-color: #27272a !important;
+    color: #e4e4e7 !important;
+  }
+
+  .platform-comparison-table thead th.is-vozon {
+    background-color: #18181b !important;
+    color: #ffffff !important;
+  }
+
+  .platform-comparison-table tbody tr:hover td {
+    background-color: #1c1c22 !important;
+  }
+
+  .global-voices-map-section,
+  .global-voices-map-inner,
+  .global-voices-map-visual {
+    background: transparent !important;
+  }
+
+  body:not(:has(.dashboard-home-theme)) main :is(section, article, div)[class~="bg-white"],
+  body:not(:has(.dashboard-home-theme)) main :is(section, article, div)[class~="bg-[#ffffff]"],
+  body:not(:has(.dashboard-home-theme)) main :is(section, article, div)[class~="bg-[#fafafa]"],
+  body:not(:has(.dashboard-home-theme)) main :is(section, article, div)[class~="bg-[#f8f9fb]"] {
+    background-color: #121215 !important;
+    border-color: #27272a !important;
+  }
+
+  /* Product overview blocks sit inside a wrapper div rather than being
+     direct children of main, so the public section surface rules miss them.
+     Keep these feature and setup grids on the same dark canvas as the hero. */
+  .marketing-site,
+  .marketing-site main.hcr-page,
+  .vc-overview,
+  .vc-overview .vc-features,
+  .vc-overview .vc-deploy,
+  .vc-connections {
+    background: #09090b !important;
+    background-color: #09090b !important;
+    color: #f4f4f5 !important;
+  }
+
+  .vc-overview h2,
+  .vc-feature-grid h3,
+  .vc-deploy-card h3 {
+    color: #f4f4f5 !important;
+  }
+
+  .vc-overview-kicker {
+    color: #60a5fa !important;
+  }
+
+  .vc-feature-grid p,
+  .vc-deploy-card > p {
+    color: #a1a1aa !important;
+  }
+
+  .vc-feature-grid svg {
+    color: #93c5fd !important;
+  }
+
+  .vc-feature-grid article {
+    border-color: #27272a !important;
+  }
+
+  .vc-deploy-visual {
+    background: #121215 !important;
+    border: 1px solid #27272a !important;
+  }
+
+  .vc-template-row,
+  .vc-language-chips span,
+  .vc-app-icons span,
+  .vc-tool-entry,
+  .vc-tool-flow > div {
+    background-color: #18181b !important;
+    border-color: #3f3f46 !important;
+    color: #e4e4e7 !important;
+  }
+
+  .vc-template-row strong,
+  .vc-language-chips span,
+  .vc-tool-flow > div strong {
+    color: #f4f4f5 !important;
+  }
+
+  .vc-template-row small,
+  .vc-template-row i,
+  .vc-language-top,
+  .vc-language-visual > small,
+  .vc-apps-caption {
+    color: #a1a1aa !important;
+  }
+
+  .vc-template-row.is-current,
+  .vc-language-chips span:nth-child(2) {
+    background-color: rgba(37, 99, 235, 0.16) !important;
+    border-color: rgba(59, 130, 246, 0.5) !important;
+    color: #bfdbfe !important;
+  }
+
+  .vc-apps-caption {
+    border-color: #52525b !important;
+  }
+}

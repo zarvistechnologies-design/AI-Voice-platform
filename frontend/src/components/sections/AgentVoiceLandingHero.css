@@ -534,9 +534,9 @@
 
 /* Keep the landing hero in a restrained black and white palette. */
 .home-design-four .home-design-four__hero.agentvoice-hero {
-  min-height: 100vh !important;
-  padding: 148px 24px 0 !important;
-  background: #f7f7f7;
+  min-height: 720px !important;
+  padding: 148px 24px 80px !important;
+  background: #f8f9fb;
 }
 .home-design-four .agentvoice-hero-content {
   width: min(1000px, 100%);
@@ -598,7 +598,7 @@
 .agentvoice-wave span { width: 11.1111%; }
 
 @media (max-width: 640px) {
-  .home-design-four .home-design-four__hero.agentvoice-hero { min-height: 100svh !important; padding: 130px 14px 0 !important; }
+  .home-design-four .home-design-four__hero.agentvoice-hero { min-height: 520px !important; padding: 120px 20px 64px !important; }
   .home-design-four .agentvoice-hero-content h1 { margin-top: 18px; font-size: clamp(43px, 12vw, 60px); }
   .home-design-four .agentvoice-wave { top: 62vh; width: 100vw; height: 38vh; }
 }
@@ -682,7 +682,7 @@
   overflow: hidden;
   background: #f8f9fb;
   border-top: 1px solid #f0f2f5;
-  padding: clamp(54px, 6vw, 76px) clamp(16px, 3vw, 24px);
+  padding: clamp(44px, 4.8vw, 64px) clamp(16px, 3vw, 24px);
   box-sizing: border-box;
 }
 .vozon-intro-video::before {
@@ -749,14 +749,15 @@
 .vozon-intro-video-card {
   position: relative;
   width: 100%;
-  max-width: 1200px;
+  max-width: 940px;
   aspect-ratio: 16 / 9;
   height: auto;
+  margin: 0 auto;
   overflow: hidden;
   border: 1px solid #d7d7d7;
-  border-radius: 24px;
+  border-radius: 22px;
   background: radial-gradient(ellipse at 28% 24%, #242424 0, #101010 47%, #050505 100%);
-  padding: 10px;
+  padding: 8px;
   box-shadow: 0 20px 55px rgba(9, 9, 11, 0.08);
   box-sizing: border-box;
 }
@@ -804,6 +805,149 @@
   .vozon-intro-video-play svg { width: 22px; height: 22px; }
 }
 
-html:not([data-brand-source="white_label"]) .home-design-four .platform-brand-logo {
-  filter: brightness(0) saturate(100%);
+/* Whole-Black Dark Theme Overrides for Hero and Talk Popup */
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .home-design-four .home-design-four__hero.agentvoice-hero {
+  background: #09090b !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentvoice-hero-content h1 {
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentvoice-hero-content > p {
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentvoice-demo-control {
+  background: #121215 !important;
+  border-color: #27272a !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentvoice-demo-control select {
+  color: #f4f4f5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentvoice-rating {
+  background: #18181b !important;
+  border: 1px solid #27272a !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentvoice-rating span:last-child {
+  color: #f4f4f5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .agentvoice-rating span:first-child {
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup {
+  background: #121215 !important;
+  border-color: #27272a !important;
+  color: #ffffff !important;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.8) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget {
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget h3 {
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget p,
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget label {
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget span[class*="liveTag"] {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #e4e4e7 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget span[class*="liveDot"],
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget span[class*="avatarOnlineDot"] {
+  background: #22c55e !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget span[class*="personaRole"],
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget p[class*="callerIdNote"] strong {
+  color: #f4f4f5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget span[class*="personaFemaleBadge"] {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget button[class*="scenarioButton"],
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget div[class*="languageWrapper"],
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget input[class*="textInput"],
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget div[class*="phoneInputRow"],
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget button[class*="countryBtn"],
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget input[class*="phoneField"],
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget div[class*="personaBanner"] {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget select,
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget input,
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget span[class*="personaName"],
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget span[class*="countryDigits"],
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget span[class*="brandName"] {
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget ul[class*="scenarioDropdown"],
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget ul[class*="countryDropdown"] {
+  background: #121215 !important;
+  border-color: #27272a !important;
+  color: #ffffff !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget span[class*="scenarioItemLabel"] {
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget span[class*="scenarioItemPersona"] {
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget li[class*="scenarioItemSelected"] {
+  background: #27272a !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget li[class*="scenarioItem"]:hover,
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget li[class*="countryItem"]:hover {
+  background: #27272a !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget button[class*="initiateButton"] {
+  background: #2563eb !important;
+  border: 1px solid #1d4ed8 !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 22px rgba(37, 99, 235, 0.35) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup .vozon-card-widget button[class*="initiateButton"]:hover:not(:disabled) {
+  background: #1d4ed8 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup-close {
+  background: #18181b !important;
+  border: 1px solid #27272a !important;
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .vozon-talk-popup-close:hover {
+  background: #27272a !important;
+  color: #ffffff !important;
 }

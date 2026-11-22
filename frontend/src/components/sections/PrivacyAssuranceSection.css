@@ -122,3 +122,45 @@
         transition: none;
     }
 }
+
+/* Whole-Black Dark Mode Theme */
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .privacy-assurance {
+  background: #09090b !important;
+  color: #ffffff !important;
+  border-top: 1px solid #27272a !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .privacy-assurance-card {
+  background: #121215 !important;
+  border: 1px solid #27272a !important;
+  color: #ffffff !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .privacy-assurance-eyebrow {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .privacy-assurance-copy h2 {
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .privacy-assurance-copy p {
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .privacy-badge {
+  background: #18181b !important;
+  border: 1px solid #27272a !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .privacy-feature-row strong {
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .privacy-feature-row span {
+  color: #a1a1aa !important;
+}
