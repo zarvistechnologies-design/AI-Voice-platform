@@ -341,9 +341,9 @@ export function AgentsListShell() {
             </div>
 
             {loading ? (
-              <div className="grid gap-3.5 sm:grid-cols-2 xl:grid-cols-3" aria-label="Loading agents" role="status">
+              <div className="grid gap-2.5" aria-label="Loading agents" role="status">
                 {[0, 1, 2, 3, 4, 5].map((item) => (
-                  <div className="flex h-[104px] flex-col justify-between rounded-xl border border-[#eaeaea] bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900/60" key={item}>
+                  <div className="flex min-h-[64px] flex-col justify-between gap-2 rounded-xl border border-[#eaeaea] bg-white p-3 sm:flex-row sm:items-center dark:border-zinc-800 dark:bg-zinc-900/60" key={item}>
                     <div className="flex items-center gap-3">
                       <span className="size-9 animate-pulse rounded-lg bg-[#f4f4f5] dark:bg-zinc-800" />
                       <span className="grid gap-1.5">
@@ -358,13 +358,13 @@ export function AgentsListShell() {
             ) : null}
 
             {!loading && filteredAgents.length ? (
-              <div className="grid gap-3.5 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="grid gap-2.5">
                 {filteredAgents.map((agent) => (
                   <article
-                    className="group relative flex flex-col justify-between gap-3.5 rounded-xl border border-[#eaeaea] bg-white p-4 text-left transition hover:border-zinc-400 hover:shadow-xs dark:border-zinc-800 dark:bg-zinc-900/80 dark:hover:border-zinc-600 dark:hover:bg-zinc-900 focus-within:z-10"
+                    className="group relative flex flex-col justify-between gap-2 rounded-xl border border-[#eaeaea] bg-white p-3 text-left transition hover:border-zinc-400 hover:shadow-xs sm:min-h-[64px] sm:flex-row sm:items-center dark:border-zinc-800 dark:bg-zinc-900/80 dark:hover:border-zinc-600 dark:hover:bg-zinc-900 focus-within:z-10"
                     key={agent._id}
                   >
-                    <div className="flex items-start justify-between gap-3">
+                    <div className="flex min-w-0 items-start justify-between gap-3 sm:flex-1 sm:items-center">
                       <Link
                         className="flex min-w-0 flex-1 items-center gap-3 rounded outline-none"
                         href={`/dashboard/agents/${encodeURIComponent(agent._id)}`}
@@ -415,7 +415,7 @@ export function AgentsListShell() {
                     </div>
 
                     <Link
-                      className="flex items-center justify-between gap-2 border-t border-[#f4f4f5] dark:border-zinc-800 pt-3 text-[11.5px] outline-none"
+                      className="flex items-center justify-between gap-2 border-t border-[#f4f4f5] pt-3 text-[11.5px] outline-none sm:w-[280px] sm:shrink-0 sm:border-t-0 sm:border-l sm:py-1 sm:pl-4 dark:border-zinc-800"
                       href={`/dashboard/agents/${encodeURIComponent(agent._id)}`}
                       prefetch={false}
                     >
