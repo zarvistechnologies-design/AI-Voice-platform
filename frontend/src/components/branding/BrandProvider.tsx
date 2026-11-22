@@ -89,6 +89,11 @@ export function BrandProvider({ brand, children }: { brand: BrandConfig; childre
 
   useEffect(() => {
     document.documentElement.dataset.brandSource = effectiveBrand.source;
+    if (effectiveBrand.source === "white_label" && session?.organization?.whiteLabelAccountId && session.organization.dashboardTheme === "recent_light") {
+      document.documentElement.dataset.dashboardTheme = "recent_light";
+    } else {
+      delete document.documentElement.dataset.dashboardTheme;
+    }
     document.documentElement.style.setProperty("--brand-primary", effectiveBrand.colors.primary);
     document.documentElement.style.setProperty("--brand-secondary", effectiveBrand.colors.secondary);
     document.documentElement.style.setProperty("--brand-accent", effectiveBrand.colors.accent);
@@ -160,7 +165,7 @@ export function BrandProvider({ brand, children }: { brand: BrandConfig; childre
         if (titleTimer) clearTimeout(titleTimer);
       };
     }
-  }, [effectiveBrand, session?.organization?.name]);
+  }, [effectiveBrand, session?.organization?.name, session?.organization?.whiteLabelAccountId, session?.organization?.dashboardTheme]);
 
   return <BrandContext.Provider value={effectiveBrand}>{children}</BrandContext.Provider>;
 }

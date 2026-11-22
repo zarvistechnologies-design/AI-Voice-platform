@@ -155,8 +155,14 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const effectiveIconTarget = (!isVozonIcon && iconTarget) ? iconTarget : brandMonogramFavicon(brand.productName, brand.colors.primary);
 
   return (
-    <html lang="en" data-brand-source="white_label" data-scroll-behavior="smooth" className={fontClasses}>
+    <html lang="en" data-brand-source="white_label" data-scroll-behavior="smooth" className={fontClasses} suppressHydrationWarning>
       <head>
+        <script
+          id="white-label-dashboard-theme"
+          dangerouslySetInnerHTML={{
+            __html: `try { var org = JSON.parse(localStorage.getItem("ai_voice_platform_session") || "null")?.organization; if (org?.whiteLabelAccountId && org.dashboardTheme === "recent_light") document.documentElement.dataset.dashboardTheme = "recent_light"; } catch (_) {}`,
+          }}
+        />
         <meta name="facebook-domain-verification" content="hs7xv0aby3bor2uybe6y440jg6wnkk" />
         <link rel="icon" href={effectiveIconTarget} />
         <link rel="shortcut icon" href={effectiveIconTarget} />

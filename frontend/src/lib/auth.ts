@@ -18,6 +18,7 @@ export type AuthSession = {
     whiteLabelAccountId?: string;
     whiteLabelBrandId?: string;
     whiteLabelOwnerAccountId?: string;
+    dashboardTheme?: "recent_light";
     lifecycleStatus?: "active" | "suspended" | "archived";
     businessDetailsRequired?: boolean;
     brand?: BrandConfig;
@@ -50,6 +51,7 @@ type AuthResponse = {
     whiteLabelAccountId?: string;
     whiteLabelBrandId?: string;
     whiteLabelOwnerAccountId?: string;
+    dashboardTheme?: "recent_light";
     lifecycleStatus?: "active" | "suspended" | "archived";
     businessDetailsRequired?: boolean;
     brand?: BrandConfig;
@@ -336,6 +338,7 @@ async function validateSessionWithServer(session: AuthSession) {
     session.organization?.whiteLabelAccountId === updatedSession.organization?.whiteLabelAccountId &&
     session.organization?.whiteLabelBrandId === updatedSession.organization?.whiteLabelBrandId &&
     session.organization?.whiteLabelOwnerAccountId === updatedSession.organization?.whiteLabelOwnerAccountId &&
+    session.organization?.dashboardTheme === updatedSession.organization?.dashboardTheme &&
     session.organization?.lifecycleStatus === updatedSession.organization?.lifecycleStatus &&
     session.organization?.businessDetailsRequired === updatedSession.organization?.businessDetailsRequired &&
     session.whiteLabel?.accountId === updatedSession.whiteLabel?.accountId &&
