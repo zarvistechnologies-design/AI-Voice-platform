@@ -24,7 +24,7 @@ export function NativeWorkflowResultsPanel({ agentId }: { agentId: string }) {
     <section className="overflow-hidden rounded-xl border border-[#c5ded5] bg-white">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#dce7e3] bg-[#f1f9f6] px-4 py-3.5">
         <div><h3 className="app-section-title m-0">Customer requests and responses</h3><span className="app-caption">Saved details for your team. Pending requests still need staff confirmation.</span></div>
-        <span className="app-label rounded-full border border-[#eaeaea] bg-white px-2.5 py-1 text-[#171717]">{items.length} results</span>
+        <span className="app-label rounded-full border border-[#b8c8c3] bg-white px-2.5 py-1 text-[#0e6f62]">{items.length} results</span>
       </div>
       {!current ? <p className="p-4 text-sm text-[#71817d]">Loading results…</p> : null}
       {current?.error ? <p className="p-4 text-sm text-rose-700">{current.error}</p> : null}

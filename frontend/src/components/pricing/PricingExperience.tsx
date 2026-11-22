@@ -4,8 +4,6 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import { VoiceStackCalculator } from "@/components/pricing/VoiceStackCalculator";
-import "@/app/business/industries/healthcare/healthcare.css";
-import "@/components/company/CompanyEditorial.css";
 import styles from "./PricingExperience.module.css";
 
 const MINUTE_RATE_MIN = 2;
@@ -83,67 +81,32 @@ export function PricingExperience() {
   }
 
   return (
-    <div className={`${styles.page} pricing-page-refresh cmp-page`}>
-      {/* 2-Column Editorial Hero Stage */}
-      <section className="cmp-hero hcr-wrap">
-        <div className="hcr-breadcrumb mb-4 !flex !flex-row !items-center !justify-start gap-2.5 text-xs text-[#8b8f94]">
-          <Link href="/" className="hover:text-[#171719] hover:underline">Home</Link>
-          <span className="text-[#a1a1aa]">/</span>
-          <span className="font-semibold text-[#171719]">Pricing</span>
-        </div>
-
-        <div className="cmp-hero-stage">
-          <div className="cmp-hero-grid">
-            <div className="cmp-hero-left">
-              <p className="hcr-kicker !text-zinc-500 !mb-2.5">TRANSPARENT, PAY-AS-YOU-GO</p>
-              <h1 className="!text-[clamp(26px,2.5vw,36px)] !font-semibold !leading-[1.18] !tracking-[-0.035em] text-[#0f172a] !max-w-[540px] !m-0 !mb-3.5 !text-left">
-                Voice AI pricing that scales with you.
-              </h1>
-              <p className="cmp-hero-lead">
-                One flexible pay-as-you-go model. No subscriptions, upfront platform fees, or
-                long-term commitments—pay only for the exact speech and LLM seconds you use.
-              </p>
-              <div className="cmp-hero-actions">
-                <Link href="/login?mode=register" className="cmp-btn-primary">
-                  Start building free <span aria-hidden="true">&#8595;</span>
-                </Link>
-                <a href="#voice-stack" className="cmp-btn-secondary">
-                  Calculate your cost <span aria-hidden="true">&#8599;</span>
-                </a>
+    <div className={styles.page}>
+      <section className={styles.hero}>
+        <div className={styles.heroGlow} aria-hidden="true" />
+        <div className={styles.shell}>
+          <div className={styles.heroGrid}>
+            <div className={styles.heroCopy}>
+              <span className={styles.eyebrow}><i /> Simple, transparent pricing</span>
+              <h1>Voice AI pricing<br />that scales with <em>you.</em></h1>
+              <p>One flexible pay-as-you-go model. No subscriptions, setup fees, or long-term commitments—just the voice AI you actually use.</p>
+              <div className={styles.heroActions}>
+                <Link className={styles.primaryButton} href="/login?mode=register">Start building free <ArrowIcon /></Link>
+                <a className={styles.secondaryButton} href="#calculator">Calculate your cost</a>
+              </div>
+              <div className={styles.trustRow}>
+                <span><CheckIcon /> No monthly fee</span><span><CheckIcon /> No setup fee</span><span><CheckIcon /> Cancel anytime</span>
               </div>
             </div>
 
-            <div className="cmp-ledger" aria-label="Pay as you go rate overview">
-              <div className="cmp-ledger-head">
-                <span>PAY AS YOU GO</span>
-                <span className="cmp-ledger-badge">
-                  <i aria-hidden="true" /> Live Rates
-                </span>
+            <div className={styles.heroCard}>
+              <div className={styles.cardTopline}><span>Pay as you go</span><span className={styles.liveBadge}><i /> Live pricing</span></div>
+              <div className={styles.priceRow}><strong>₹2–₹10</strong><span>per connected<br />minute</span></div>
+              <p>Your typical all-in estimate. The final rate reflects the exact providers and carrier route used.</p>
+              <div className={styles.miniBreakdown}>
+                <div><span>Platform fee</span><strong>₹0</strong></div><div><span>Minimum spend</span><strong>None</strong></div><div><span>Billing</span><strong>Per use</strong></div>
               </div>
-              <div className="cmp-ledger-row" style={{ padding: "16px 0 12px" }}>
-                <div>
-                  <span style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.08em", color: "#64748b" }}>Connected Minute</span>
-                  <div style={{ fontSize: "28px", fontWeight: 700, color: "#0f172a", letterSpacing: "-0.03em", marginTop: "2px" }}>
-                    ₹2–₹10 <span style={{ fontSize: "13px", fontWeight: 500, color: "#64748b" }}>/ min</span>
-                  </div>
-                </div>
-              </div>
-              <div className="cmp-ledger-row">
-                <span>Platform fee</span>
-                <strong>₹0 / month</strong>
-              </div>
-              <div className="cmp-ledger-row">
-                <span>Minimum spend</span>
-                <strong>None</strong>
-              </div>
-              <div className="cmp-ledger-row">
-                <span>Billing cadence</span>
-                <strong>Per second, actual use</strong>
-              </div>
-              <div className="cmp-ledger-row">
-                <span>Included capabilities</span>
-                <strong>All 6 services included</strong>
-              </div>
+              <div className={styles.cardFooter}><span className={styles.wave} aria-hidden="true"><i /><i /><i /><i /><i /><i /><i /></span><span>Built for calls of every size</span></div>
             </div>
           </div>
         </div>

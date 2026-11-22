@@ -171,7 +171,7 @@ const defaultWidget: AgentWidget = {
   theme: "auto",
   position: "bottom-right",
   buttonText: "Talk to us",
-  accentColor: "#171717",
+  accentColor: "#118778",
 };
 
 const defaultBusinessHours: AgentBusinessHours = {

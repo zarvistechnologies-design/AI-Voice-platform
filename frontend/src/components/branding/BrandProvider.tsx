@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 
-import { defaultBrand, type BrandConfig } from "@/lib/brand";
+import { brandMonogramFavicon, defaultBrand, type BrandConfig } from "@/lib/brand";
 import { getSession, getServerSession, subscribeToSession } from "@/lib/auth";
 import { API_URL } from "@/lib/apiBase";
 
@@ -12,12 +12,14 @@ export function BrandProvider({ brand, children }: { brand: BrandConfig; childre
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
   const [remoteBrand, setRemoteBrand] = useState<BrandConfig | null>(null);
 
+  const isWhiteLabelDomain = brand.source === "white_label";
   const isWhiteLabelPartner = Boolean(session?.organization?.whiteLabelOwnerAccountId);
   const isWhiteLabelCustomer = Boolean(session?.organization?.whiteLabelAccountId);
-  const isPartnerOrCustomer = isWhiteLabelPartner || isWhiteLabelCustomer || brand.source === "white_label";
+  const isPartnerOrCustomer = isWhiteLabelPartner || isWhiteLabelCustomer;
 
-  // Listen for live brand updates (e.g. after editing in White Label console)
+  // Listen for live brand updates ONLY when on white-label domains
   useEffect(() => {
+    if (!isWhiteLabelDomain) return;
     function handleBrandUpdate(event: Event) {
       const customEvent = event as CustomEvent<BrandConfig>;
       if (customEvent.detail) {
@@ -26,11 +28,11 @@ export function BrandProvider({ brand, children }: { brand: BrandConfig; childre
     }
     window.addEventListener("brand-updated", handleBrandUpdate);
     return () => window.removeEventListener("brand-updated", handleBrandUpdate);
-  }, []);
+  }, [isWhiteLabelDomain]);
 
-  // Fetch current organization brand if authenticated as partner or customer
+  // Fetch current organization brand ONLY when on white-label domains
   useEffect(() => {
-    if (!isPartnerOrCustomer || remoteBrand || !session?.organization?.id) return;
+    if (!isWhiteLabelDomain || remoteBrand || !session?.organization?.id) return;
 
     let cancelled = false;
     async function loadBrand() {
@@ -56,9 +58,14 @@ export function BrandProvider({ brand, children }: { brand: BrandConfig; childre
     return () => {
       cancelled = true;
     };
-  }, [isPartnerOrCustomer, session?.organization?.id, session?.token, remoteBrand]);
+  }, [isWhiteLabelDomain, session?.organization?.id, session?.token, remoteBrand]);
 
   const effectiveBrand = useMemo<BrandConfig>(() => {
+    // If the domain is the official platform (vozon.ai), ALWAYS keep platform branding (Vozon)!
+    if (brand.source === "platform") {
+      return brand;
+    }
+
     if (remoteBrand) return remoteBrand;
     if (session?.organization?.brand) return session.organization.brand;
     if (brand.source === "white_label") return brand;
@@ -70,7 +77,7 @@ export function BrandProvider({ brand, children }: { brand: BrandConfig; childre
         source: "white_label",
         productName: name,
         companyName: name,
-        logoUrl: "", // NEVER fallback to Vozon logo for white-label partners or clients!
+        logoUrl: "",
         logoDarkUrl: "",
         iconUrl: "",
         poweredBy: { visible: false, text: "" },
@@ -80,62 +87,80 @@ export function BrandProvider({ brand, children }: { brand: BrandConfig; childre
     return brand;
   }, [brand, remoteBrand, session?.organization?.brand, session?.organization?.name, isPartnerOrCustomer]);
 
-  const isWhiteLabel = isPartnerOrCustomer || effectiveBrand.source === "white_label";
-  // If explicitly set or resolved by backend brand, use that:
-  // Existing white-label users -> Classic Green theme
-  // New white-label onboarding -> Recent modern monochrome theme
-  const themeStyle = effectiveBrand.themeStyle || "recent";
-
   useEffect(() => {
-    document.documentElement.dataset.brandSource = isWhiteLabel ? "white_label" : "platform";
-    document.documentElement.dataset.brandTheme = themeStyle;
+    document.documentElement.dataset.brandSource = effectiveBrand.source;
     document.documentElement.style.setProperty("--brand-primary", effectiveBrand.colors.primary);
     document.documentElement.style.setProperty("--brand-secondary", effectiveBrand.colors.secondary);
     document.documentElement.style.setProperty("--brand-accent", effectiveBrand.colors.accent);
     document.documentElement.style.setProperty("--brand-surface", effectiveBrand.colors.surface);
 
-    if (isPartnerOrCustomer || effectiveBrand.source === "white_label") {
-      // Scrub any accidental "Vozon" from browser tab title immediately and on dynamic page changes
+    // Apply custom favicon and title scrubbing ONLY on white_label domains!
+    if (effectiveBrand.source === "white_label") {
+      // Scrub any accidental "Vozon" from browser tab title safely after React renders
+      let titleTimer: ReturnType<typeof setTimeout> | null = null;
       const cleanTitle = () => {
-        if (document.title.includes("Vozon")) {
-          document.title = document.title
-            .replace(/\s*\|\s*Vozon/g, "")
-            .replace(/Vozon/g, effectiveBrand.productName);
+        try {
+          if (document.title && document.title.includes("Vozon")) {
+            const nextTitle = document.title
+              .replace(/\s*\|\s*Vozon/g, "")
+              .replace(/Vozon/g, effectiveBrand.productName);
+            if (document.title !== nextTitle) {
+              document.title = nextTitle;
+            }
+          }
+        } catch {
+          // ignore
         }
       };
-      cleanTitle();
+
+      titleTimer = setTimeout(cleanTitle, 0);
 
       const titleEl = document.querySelector("title");
       let observer: MutationObserver | null = null;
       if (titleEl) {
-        observer = new MutationObserver(cleanTitle);
+        observer = new MutationObserver(() => {
+          if (titleTimer) clearTimeout(titleTimer);
+          titleTimer = setTimeout(cleanTitle, 50);
+        });
         observer.observe(titleEl, { childList: true, characterData: true, subtree: true });
       }
 
-      // Update all browser tab favicon links dynamically to partner brand logo/icon
-      const iconTarget = effectiveBrand.iconUrl || effectiveBrand.logoDarkUrl || effectiveBrand.logoUrl;
-      if (iconTarget && !iconTarget.includes("logo_2.svg") && !iconTarget.includes("vozon-mark")) {
-        const iconLinks = document.querySelectorAll<HTMLLinkElement>(
-          "link[rel~='icon'], link[rel='shortcut icon'], link[rel='apple-touch-icon']",
-        );
-        if (iconLinks.length > 0) {
-          iconLinks.forEach((el) => {
-            el.removeAttribute("sizes");
-            el.href = iconTarget;
-          });
-        } else {
-          const newLink = document.createElement("link");
-          newLink.rel = "icon";
-          newLink.href = iconTarget;
-          document.head.appendChild(newLink);
+      // Update all browser tab favicon links dynamically to partner brand logo/icon without removing nodes from DOM
+      const rawIcon = effectiveBrand.iconUrl || effectiveBrand.logoDarkUrl || effectiveBrand.logoUrl;
+      const isVozonAsset = Boolean(
+        rawIcon && (rawIcon.includes("logo_2.svg") || rawIcon.includes("vozon-mark") || rawIcon.includes("favicon.ico")),
+      );
+      const activeFavicon = (!isVozonAsset && rawIcon)
+        ? rawIcon
+        : brandMonogramFavicon(effectiveBrand.productName || session?.organization?.name || "Voice Platform", effectiveBrand.colors?.primary);
+
+      const existingIcons = document.querySelectorAll<HTMLLinkElement>(
+        "link[rel*='icon'], link[rel='apple-touch-icon']"
+      );
+      if (existingIcons.length > 0) {
+        existingIcons.forEach((el) => {
+          if (el.href !== activeFavicon) {
+            el.href = activeFavicon;
+          }
+        });
+      } else {
+        let dynamicLink = document.getElementById("brand-dynamic-favicon") as HTMLLinkElement | null;
+        if (!dynamicLink) {
+          dynamicLink = document.createElement("link");
+          dynamicLink.id = "brand-dynamic-favicon";
+          dynamicLink.rel = "icon";
+          document.head.appendChild(dynamicLink);
         }
+        dynamicLink.type = activeFavicon.startsWith("data:image/svg") ? "image/svg+xml" : "image/x-icon";
+        dynamicLink.href = activeFavicon;
       }
 
       return () => {
         if (observer) observer.disconnect();
+        if (titleTimer) clearTimeout(titleTimer);
       };
     }
-  }, [effectiveBrand, isPartnerOrCustomer]);
+  }, [effectiveBrand, session?.organization?.name]);
 
   return <BrandContext.Provider value={effectiveBrand}>{children}</BrandContext.Provider>;
 }
@@ -145,4 +170,3 @@ export function useBrand() {
 }
 
 export default BrandProvider;
-

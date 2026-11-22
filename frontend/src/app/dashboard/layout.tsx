@@ -7,8 +7,6 @@ import { BusinessDetailsGate } from "@/components/auth/BusinessDetailsGate";
 
 import { requestBrandConfig } from "@/lib/brandServer";
 
-import "./dashboard.css";
-
 export async function generateMetadata(): Promise<Metadata> {
   const brand = await requestBrandConfig();
   const iconTarget = brand.iconUrl || brand.logoDarkUrl || brand.logoUrl;

@@ -4,8 +4,6 @@ import Link from "next/link";
 import { FormEvent, useEffect, useRef, useState } from "react";
 
 import { API_URL } from "@/lib/apiBase";
-import "@/app/business/industries/healthcare/healthcare.css";
-import "@/components/company/CompanyEditorial.css";
 
 const salesEmail = "hello@vozon.ai";
 
@@ -206,7 +204,7 @@ try {
 
   setStatus(
     result.message ||
-      "Thanks â€” your message has been sent to our sales team.",
+      "Thanks — your message has been sent to our sales team.",
   );
 } catch (error) {
   setStatus(
@@ -221,73 +219,48 @@ try {
 
 }
 
-return ( <div id="contact-page" className="cmp-page overflow-hidden bg-[#f8f9f9] text-[#17191d]"> <section className="relative bg-[#f8f9f9] px-5 pb-16 pt-28 sm:px-8 sm:pt-32 lg:px-12 lg:pb-14 lg:pt-28"> <div className="relative mx-auto max-w-[1200px]"> <nav
+return ( <div id="contact-page" className="overflow-hidden bg-white text-black"> <section className="relative bg-white px-5 pb-16 pt-28 sm:px-8 sm:pt-32 lg:min-h-screen lg:px-12 lg:pb-14 lg:pt-24"> <div className="relative mx-auto max-w-[1240px]"> <nav
          aria-label="Breadcrumb"
-         className="hcr-breadcrumb mb-4"
-       > <Link href="/">
+         className="mb-7 flex items-center gap-2 text-xs font-medium text-black lg:mb-5"
+       > <Link className="transition hover:text-black" href="/">
 Home </Link>
+
+
         <span aria-hidden="true">/</span>
-        <span>Contact</span>
+
+        <span className="text-black">Contact</span>
       </nav>
 
-      <div className="cmp-hero-stage mb-12">
-        <div className="cmp-hero-grid">
-          <div className="cmp-hero-left">
-            <p className="hcr-kicker">GET IN TOUCH · SALES &amp; SUPPORT</p>
-            <h1>Let&apos;s start a conversation.</h1>
-            <p className="cmp-hero-lead">
-              Tell us about the conversations you want to improve, whether by phone, WhatsApp, or website chat. We&apos;ll help you map a sub-88ms production workflow.
-            </p>
-            <div className="cmp-hero-actions">
-              <a href="#contact-form" className="cmp-btn-primary">
-                Send a message <span aria-hidden="true">&#8595;</span>
-              </a>
-              <Link href="/partners" className="cmp-btn-secondary">
-                Partner inquiries <span aria-hidden="true">&#8599;</span>
-              </Link>
-            </div>
-          </div>
+      <div className="grid gap-14 lg:grid-cols-[0.82fr_1.18fr] lg:items-start xl:gap-20">
+        <div className="lg:sticky lg:top-32">
+          <span className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-black">
+            <span
+              className="size-1.5 rounded-full bg-teal-500"
+              aria-hidden="true"
+            />
+            Get in touch
+          </span>
 
-          <div className="cmp-ledger" aria-label="Direct contact channels">
-            <div className="cmp-ledger-head">
-              <span>DIRECT CHANNELS</span>
-              <span className="cmp-ledger-badge">
-                <i aria-hidden="true" /> &lt; 4h Response SLA
-              </span>
-            </div>
-            <a href="mailto:hello@vozon.ai" className="cmp-ledger-row">
-              <span>Enterprise &amp; Sales</span>
-              <strong>hello@vozon.ai</strong>
-            </a>
-            <a href="tel:+917892518414" className="cmp-ledger-row">
-              <span>Phone Line</span>
-              <strong>+91 78925 18414</strong>
-            </a>
-            <div className="cmp-ledger-row">
-              <span>Engineering Hub</span>
-              <strong>Bengaluru, India</strong>
-            </div>
-            <div className="cmp-ledger-row">
-              <span>North America Hub</span>
-              <strong>San Francisco, CA</strong>
-            </div>
-          </div>
-        </div>
-      </div>
+          <h1 className="mt-7 text-[clamp(2.5rem,4.5vw,4.5rem)] font-medium leading-[1.02] tracking-[-0.045em]">
+            <span className="block">Let&apos;s start a</span>
+            <span className="block text-black">conversation.</span>
+          </h1>
 
-      <div className="contact-page-layout grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-start xl:gap-12">
-        <aside className="contact-page-support">
-          <p className="contact-page-support-label">WHAT YOU CAN EXPECT</p>
+          <p className="mt-6 max-w-lg text-sm leading-6 text-black sm:text-base sm:leading-7">
+            Tell us about your voice AI goals or plans to offer the
+            platform under your own brand. We&apos;ll help you understand
+            the right workflow, integrations, and rollout.
+          </p>
 
-          <ul className="mt-5 grid gap-3 text-sm font-medium text-[#33363a]">
+          <ul className="mt-8 flex list-disc flex-wrap gap-x-7 gap-y-2 pl-5 text-sm font-medium text-black marker:text-teal-600">
             {["Fast response", "Secure by design", "Dedicated guidance"].map(
               (label) => (
-                <li className="flex items-center gap-3" key={label}><span aria-hidden="true" className="contact-page-check">✓</span>{label}</li>
+                <li key={label}>{label}</li>
               ),
             )}
           </ul>
 
-          <div className="mt-7 flex flex-wrap gap-3">
+          <div className="mt-9 flex flex-wrap gap-3">
             <Link
               className="contact-primary-button inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border px-6 text-sm font-bold shadow-sm transition hover:-translate-y-0.5"
               href="#contact-form"
@@ -304,23 +277,23 @@ Home </Link>
             </a>
           </div>
 
-          <div className="contact-page-company mt-8 border-t border-[#dedfe2] pt-6 text-sm leading-6 text-[#666a70]">
-            <p className="font-semibold text-[#171719]">
+          <div className="mt-5 border-l-2 border-teal-500 pl-4 text-base leading-7 text-slate-600 sm:text-lg">
+            <p className="font-semibold text-slate-900">
               VOZON AI TECHNOLOGIES PRIVATE LIMITED
             </p>
             <p>CIN: U62099KA2026PTC228147</p>
           </div>
-        </aside>
+        </div>
 
         <form
           aria-busy={isSubmitting}
-          className="contact-page-form scroll-mt-24 rounded-xl border border-[#dedfe2] bg-white p-5 shadow-[0_20px_55px_rgba(23,23,25,0.07)] sm:p-7 lg:p-8"
+          className="scroll-mt-24 rounded-[28px] border border-slate-200 bg-white p-5 shadow-[0_28px_80px_rgba(15,23,42,0.10)] sm:p-7 lg:translate-x-8 lg:p-6 xl:translate-x-12"
           id="contact-form"
           onSubmit={handleSubmit}
         >
           <div className="mb-6 flex items-center gap-4 border-b border-slate-200 pb-5 lg:mb-5 lg:pb-4">
-            <span className="grid size-13 shrink-0 place-items-center rounded-2xl border border-[#dedfe2] bg-[#f1f1f2] shadow-sm lg:size-11 lg:rounded-xl">
-              <Icon className="size-6 text-[#171719]" name="send" />
+            <span className="grid size-13 shrink-0 place-items-center rounded-2xl border border-teal-200 bg-teal-50 shadow-[0_12px_30px_rgba(17,135,120,0.14)] lg:size-11 lg:rounded-xl">
+              <Icon className="size-6 text-[#118778]" name="send" />
             </span>
 
             <div>
@@ -338,7 +311,7 @@ Home </Link>
             <label className="grid gap-2 text-sm font-semibold text-black lg:gap-1.5">
               <span>
                 First name{" "}
-                <span aria-hidden="true" className="text-[#6b6e73]">
+                <span aria-hidden="true" className="text-red-500">
                   *
                 </span>
                 <span className="sr-only"> (required)</span>
@@ -355,7 +328,7 @@ Home </Link>
             <label className="grid gap-2 text-sm font-semibold text-black lg:gap-1.5">
               <span>
                 Last name{" "}
-                <span aria-hidden="true" className="text-[#6b6e73]">
+                <span aria-hidden="true" className="text-red-500">
                   *
                 </span>
                 <span className="sr-only"> (required)</span>
@@ -372,7 +345,7 @@ Home </Link>
             <label className="grid gap-2 text-sm font-semibold text-black lg:gap-1.5">
               <span>
                 Work email{" "}
-                <span aria-hidden="true" className="text-[#6b6e73]">
+                <span aria-hidden="true" className="text-red-500">
                   *
                 </span>
                 <span className="sr-only"> (required)</span>
@@ -413,7 +386,7 @@ Home </Link>
             <label className="grid gap-2 text-sm font-semibold text-black lg:gap-1.5">
               <span>
                 Company{" "}
-                <span aria-hidden="true" className="text-[#6b6e73]">
+                <span aria-hidden="true" className="text-red-500">
                   *
                 </span>
                 <span className="sr-only"> (required)</span>
@@ -431,7 +404,7 @@ Home </Link>
             <label className="grid gap-2 text-sm font-semibold text-black lg:gap-1.5">
               <span>
                 Inquiry type{" "}
-                <span aria-hidden="true" className="text-[#6b6e73]">
+                <span aria-hidden="true" className="text-red-500">
                   *
                 </span>
                 <span className="sr-only"> (required)</span>
@@ -460,7 +433,7 @@ Home </Link>
           <label className="mt-4 grid gap-2 text-sm font-semibold text-black lg:mt-3 lg:gap-1.5">
             <span>
               Message{" "}
-              <span aria-hidden="true" className="text-[#6b6e73]">
+              <span aria-hidden="true" className="text-red-500">
                 *
               </span>
               <span className="sr-only"> (required)</span>
@@ -524,7 +497,7 @@ Home </Link>
   >
     <div className="mx-auto max-w-[1240px]">
       <div className="mx-auto max-w-3xl text-center">
-        <span className="contact-channels-pill inline-flex items-center gap-2 rounded-full border border-[#dedfe2] bg-[#f1f1f2] px-4 py-2 text-[11px] font-bold uppercase tracking-[0.17em] text-black">
+        <span className="contact-channels-pill inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.17em] text-black">
           <Icon className="size-4" name="chat" />
           Multiple ways to reach us
         </span>
@@ -542,11 +515,11 @@ Home </Link>
       <div className="mt-12 grid auto-rows-fr gap-5 md:grid-cols-2 xl:grid-cols-4">
         {contactChannels.map((channel) => (
           <a
-            className="contact-channel-card group flex h-full min-h-72 flex-col rounded-[24px] border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-[#c9c3fa] hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:p-8"
+            className="contact-channel-card group flex h-full min-h-72 flex-col rounded-[24px] border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:p-8"
             href={channel.href}
             key={channel.title}
           >
-            <span className="contact-channel-icon grid size-13 place-items-center rounded-2xl bg-[#f1f1f2] text-black ring-1 ring-inset ring-[#dedfe2] transition group-hover:bg-[#171719] group-hover:text-white">
+            <span className="contact-channel-icon grid size-13 place-items-center rounded-2xl bg-teal-50 text-black ring-1 ring-inset ring-teal-200 transition group-hover:bg-teal-500 group-hover:text-black">
               <Icon className="size-6" name={channel.icon} />
             </span>
 
@@ -562,7 +535,7 @@ Home </Link>
               {channel.body}
             </p>
 
-            <span className="contact-channel-action mt-auto inline-flex items-center gap-2 pt-6 text-sm font-semibold text-black transition group-hover:text-[#55585f]">
+            <span className="contact-channel-action mt-auto inline-flex items-center gap-2 pt-6 text-sm font-semibold text-black transition group-hover:text-black">
               {channel.action}
 
               <Icon
@@ -594,10 +567,10 @@ Home </Link>
       <div className="mt-10 grid auto-rows-fr gap-5 sm:mt-12 lg:grid-cols-3">
         {officeLocations.map((office) => (
           <article
-            className="contact-channel-card group flex h-full min-h-64 flex-col rounded-[24px] border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-[#c9c3fa] hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:p-8"
+            className="contact-channel-card group flex h-full min-h-64 flex-col rounded-[24px] border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:p-8"
             key={office.city}
           >
-            <span className="contact-channel-icon grid size-13 place-items-center rounded-2xl bg-[#f1f1f2] text-black ring-1 ring-inset ring-[#dedfe2] transition group-hover:bg-[#171719] group-hover:text-white">
+            <span className="contact-channel-icon grid size-13 place-items-center rounded-2xl bg-teal-50 text-black ring-1 ring-inset ring-teal-200 transition group-hover:bg-teal-500 group-hover:text-black">
               <Icon className="size-6" name="location" />
             </span>
 
@@ -637,7 +610,7 @@ Home </Link>
               className="grid gap-4 rounded-[22px] border border-slate-200 bg-white p-6 shadow-sm sm:grid-cols-[52px_1fr] sm:items-start sm:p-7"
               key={step.number}
             >
-              <span className="grid size-11 place-items-center rounded-xl border border-[#dedfe2] bg-[#f1f1f2] text-xs font-bold text-black">
+              <span className="grid size-11 place-items-center rounded-xl border border-teal-200 bg-teal-50 text-xs font-bold text-black">
                 {step.number}
               </span>
 
@@ -658,62 +631,43 @@ Home </Link>
   </section>
 
   <style>{`
-    #contact-page {
-      --contact-ink: #171719;
-      --contact-paper: #f8f9f9;
-      font-family: var(--font-site-sans), ui-sans-serif, system-ui, sans-serif;
-    }
-
-    #contact-page > section { background: var(--contact-paper) !important; }
-    #contact-page > section:first-of-type { padding-top: 108px !important; }
-    #contact-page > section > div { max-width: 1200px; }
-    #contact-page nav[aria-label="Breadcrumb"] { justify-content: flex-start; margin-bottom: 18px; color: #777b82 !important; }
-    #contact-page nav[aria-label="Breadcrumb"] a,
-    #contact-page nav[aria-label="Breadcrumb"] span { color: #777b82 !important; }
-    #contact-page h1 { color: var(--contact-ink) !important; font-size: clamp(32px, 3.3vw, 46px) !important; font-weight: 600 !important; line-height: 1.09 !important; letter-spacing: -.045em !important; }
-    #contact-page .contact-page-kicker,
-    #contact-page .contact-page-support-label { margin: 0; color: #6b6e73; font-size: 10px; font-weight: 800; letter-spacing: .16em; line-height: 1.5; }
-    #contact-page .contact-page-support { padding: 28px; border: 1px solid #dedfe2; background: #fff; }
-    #contact-page .contact-page-check { display: grid; width: 25px; height: 25px; flex: none; place-items: center; border: 1px solid #d5d6d8; border-radius: 50%; color: #171719; font-size: 12px; }
-    #contact-page .contact-page-form { border-radius: 12px !important; border-color: #dedfe2 !important; box-shadow: 0 20px 55px rgb(23 23 25 / 7%) !important; }
-    #contact-page .contact-page-form > div:first-child { border-color: #e1e2e4 !important; }
-    #contact-page .contact-page-form > div:first-child > span { border-color: #dedfe2 !important; border-radius: 10px !important; background: #f1f1f2 !important; box-shadow: none !important; }
-    #contact-page .contact-page-form > div:first-child > span svg { color: #171719 !important; }
-
     #contact-page .contact-primary-button {
-      border-color: #171719 !important;
-      background: #171719 !important;
+      border-color: #118778 !important;
+      background: #118778 !important;
       color: #fff !important;
       -webkit-text-fill-color: #fff !important;
-      border-radius: 999px !important;
     }
 
     #contact-page .contact-primary-button:hover {
-      border-color: #333437 !important;
-      background: #333437 !important;
+      border-color: #0e6f62 !important;
+      background: #0e6f62 !important;
     }
 
+    /* TEAL SECONDARY EMAIL BUTTON */
     #contact-page .contact-secondary-button {
-      border-color: #d0d0d2 !important;
-      background: #fff !important;
-      color: #171719 !important;
-      -webkit-text-fill-color: #171719 !important;
-      border-radius: 999px !important;
+      border-color: #9bd8d1 !important;
+      background: #eaf8f6 !important;
+      color: #08786e !important;
+      -webkit-text-fill-color: #08786e !important;
     }
 
     #contact-page .contact-secondary-button:hover {
-      border-color: #171719 !important;
-      background: #f1f1f2 !important;
-      color: #171719 !important;
-      -webkit-text-fill-color: #171719 !important;
+      border-color: #70c7bd !important;
+      background: #d9f2ef !important;
+      color: #075f58 !important;
+      -webkit-text-fill-color: #075f58 !important;
     }
 
+    /*
+     * Form fields:
+     * Subtle off-white background so the fields are visible
+     * against the white form card without looking too bright.
+     */
     #contact-page .contact-form-field {
-      border-color: #dedfe2 !important;
-      border-radius: 8px !important;
-      background: #f8f9f9 !important;
-      color: #171719 !important;
-      box-shadow: none !important;
+      border-color: #e2e4e9 !important;
+      background: #f8f8fa !important;
+      color: #111827 !important;
+      box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.02) !important;
       transition:
         border-color 160ms ease,
         background-color 160ms ease,
@@ -721,14 +675,17 @@ Home </Link>
     }
 
     #contact-page .contact-form-field:hover {
-      border-color: #c8c9cc !important;
-      background: #fff !important;
+      border-color: #d6d8df !important;
+      background: #f7f7f9 !important;
     }
 
+    /* TEAL FORM FOCUS */
     #contact-page .contact-form-field:focus {
-      border-color: #171719 !important;
-      background: #fff !important;
-      box-shadow: 0 0 0 3px rgb(23 23 25 / 10%) !important;
+      border-color: #108d82 !important;
+      background: #fcfffe !important;
+      box-shadow:
+        0 0 0 3px rgba(16, 141, 130, 0.13),
+        inset 0 1px 2px rgba(15, 23, 42, 0.02) !important;
       outline: none !important;
     }
 
@@ -750,31 +707,23 @@ Home </Link>
       background: #ffffff !important;
     }
 
+    /* TEAL SUBMIT BUTTON */
     #contact-page .contact-submit-button {
-      border-color: #171719 !important;
-      background: #171719 !important;
+      border-color: #118778 !important;
+      background: #118778 !important;
       color: #fff !important;
       -webkit-text-fill-color: #fff !important;
     }
 
     #contact-page .contact-submit-button:hover {
-      border-color: #333437 !important;
-      background: #333437 !important;
+      border-color: #0e6f62 !important;
+      background: #0e6f62 !important;
     }
 
     #contact-page .contact-primary-button *,
     #contact-page .contact-submit-button * {
       color: #fff !important;
       -webkit-text-fill-color: #fff !important;
-    }
-
-    @media (max-width: 820px) {
-      #contact-page h1 { font-size: clamp(36px, 5.8vw, 50px) !important; }
-    }
-    @media (max-width: 480px) {
-      #contact-page h1 { font-size: clamp(29px, 8.2vw, 34px) !important; letter-spacing: -.03em !important; }
-      #contact-page .contact-page-support { padding: 21px; }
-      #contact-page nav[aria-label="Breadcrumb"] { margin-bottom: 28px; }
     }
   `}</style>
 </div>

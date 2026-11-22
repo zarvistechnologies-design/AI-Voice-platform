@@ -188,7 +188,7 @@ function Icon({ name }: { name: string }) {
 
 function Eyebrow({ children }: { children: ReactNode }) {
   return (
-    <p className="voice-agent-eyebrow text-xs font-bold uppercase tracking-[0.16em] text-[#2457d6]">
+    <p className="voice-agent-eyebrow text-xs font-bold uppercase tracking-[0.16em] text-[#0f8777]">
       {children}
     </p>
   );
@@ -249,15 +249,15 @@ export function VoiceAgentsProductPageV2() {
             <div className="max-w-[620px] voice-agent-reveal">
               <div className="mb-7 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-slate-400">
                 <span className="relative flex size-2">
-                  <span className="voice-agent-ping absolute inline-flex size-full rounded-full bg-[#2457d6] opacity-30" />
-                  <span className="relative size-2 rounded-full bg-[#2457d6]" />
+                  <span className="voice-agent-ping absolute inline-flex size-full rounded-full bg-[#0f8777] opacity-30" />
+                  <span className="relative size-2 rounded-full bg-[#0f8777]" />
                 </span>
                 Conversational AI voice agents
               </div>
 
               <h1 className="max-w-[620px] text-[clamp(1.85rem,3.8vw,3.25rem)] font-medium leading-[0.98] tracking-[-0.05em] text-[#111312]">
                 Turn every call into a{" "}
-                <span className="block text-[#2457d6]">
+                <span className="block text-[#0f8777]">
                   clear next step.
                 </span>
               </h1>
@@ -270,7 +270,7 @@ export function VoiceAgentsProductPageV2() {
 
               <div className="mt-10 flex flex-wrap gap-3">
                 <Link
-                  className="inline-flex min-h-12 items-center justify-center rounded-lg border border-[#2457d6] bg-[#2457d6] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(36,87,214,0.22)] transition hover:-translate-y-0.5 hover:bg-[#1b45b0]"
+                  className="inline-flex min-h-12 items-center justify-center rounded-lg border border-[#118778] bg-[#118778] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(17,135,120,0.22)] transition hover:-translate-y-0.5 hover:bg-[#0e6f62]"
                   href="/dashboard/developers"
                 >
                   Build your first agent
@@ -278,7 +278,7 @@ export function VoiceAgentsProductPageV2() {
                 </Link>
 
                 <Link
-                  className="inline-flex min-h-12 items-center justify-center rounded-lg border border-[#2457d6] bg-[#2457d6] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(36,87,214,0.22)] transition hover:-translate-y-0.5 hover:bg-[#1b45b0]"
+                  className="inline-flex min-h-12 items-center justify-center rounded-lg border border-[#118778] bg-[#118778] px-6 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(17,135,120,0.22)] transition hover:-translate-y-0.5 hover:bg-[#0e6f62]"
                   href="/contact"
                 >
                   See a demo
@@ -321,7 +321,7 @@ export function VoiceAgentsProductPageV2() {
                     className="flex min-h-14 w-48 shrink-0 items-center justify-center rounded-xl border border-[#dfe7e4] bg-white px-3 text-center text-sm font-semibold text-[#40514c] shadow-[0_6px_18px_rgba(15,23,42,.025)]"
                     key={`${item}-${index}`}
                   >
-                    <span className="mr-2 size-2 rounded-full bg-[#2457d6]" />
+                    <span className="mr-2 size-2 rounded-full bg-[#0f8777]" />
                     {item}
                   </article>
                 ))}
@@ -389,7 +389,7 @@ export function VoiceAgentsProductPageV2() {
                   key={title}
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
-                  <span className="grid size-11 shrink-0 place-items-center rounded-xl border border-[#c9ddd8] text-[#2457d6]">
+                  <span className="grid size-11 shrink-0 place-items-center rounded-xl border border-[#c9ddd8] text-[#0f8777]">
                     <Icon name={icon} />
                   </span>
 
@@ -425,7 +425,7 @@ export function VoiceAgentsProductPageV2() {
               </p>
 
               <Link
-                className="mt-7 inline-flex items-center text-sm font-bold text-[#2457d6] underline decoration-[#a9c0ff] underline-offset-4"
+                className="mt-7 inline-flex items-center text-sm font-bold text-[#0f8777] underline decoration-[#9b8acd] underline-offset-4"
                 href="/docs#authentication"
               >
                 Read the API documentation
@@ -462,7 +462,7 @@ export function VoiceAgentsProductPageV2() {
                     </span>
 
                     <div className="rounded-xl border border-[#e8e2f1] bg-white px-4 py-3 text-sm leading-6 text-[#40514c]">
-                      <strong className="mr-2 text-[#171719]">
+                      <strong className="mr-2 text-[#173b35]">
                         {speaker}
                       </strong>
                       {message}
@@ -498,7 +498,7 @@ export function VoiceAgentsProductPageV2() {
                   key={title}
                   style={{ animationDelay: `${index * 60}ms` }}
                 >
-                  <span className="grid size-10 place-items-center rounded-xl border border-[#d1e2dd] text-[#2457d6]">
+                  <span className="grid size-10 place-items-center rounded-xl border border-[#d1e2dd] text-[#0f8777]">
                     <Icon name={icon} />
                   </span>
 
@@ -511,7 +511,7 @@ export function VoiceAgentsProductPageV2() {
                   </p>
 
                   <Link
-                    className="voice-agent-workflow-link mt-auto inline-flex pt-6 text-sm font-bold text-[#2457d6] transition hover:text-[#1b45b0]"
+                    className="voice-agent-workflow-link mt-auto inline-flex pt-6 text-sm font-bold text-[#118778] transition hover:text-[#0e6f62]"
                     href="/contact"
                   >
                     Plan this workflow →
@@ -540,7 +540,7 @@ export function VoiceAgentsProductPageV2() {
                   key={label}
                   style={{ animationDelay: `${index * 60}ms` }}
                 >
-                  <p className="text-3xl font-semibold tracking-[-.05em] text-[#2457d6]">
+                  <p className="text-3xl font-semibold tracking-[-.05em] text-[#0f8777]">
                     {value}
                   </p>
 
@@ -563,7 +563,7 @@ export function VoiceAgentsProductPageV2() {
           id="voice-agent-control"
         >
           <div className="mx-auto grid w-full max-w-[1360px] gap-8 lg:grid-cols-2 voice-agent-stagger-grid">
-            <article className="border-l-4 border-[#2457d6] bg-white pl-6 voice-agent-section-reveal">
+            <article className="border-l-4 border-[#0f8777] bg-white pl-6 voice-agent-section-reveal">
               <Eyebrow>Control and human handoff</Eyebrow>
 
               <h2 className="mt-4 text-[clamp(1.75rem,2.5vw,2.4rem)] font-semibold leading-[1.1] tracking-[-.04em]">
@@ -587,7 +587,7 @@ export function VoiceAgentsProductPageV2() {
                 real outcomes to decide what to automate next.
               </blockquote>
 
-              <p className="mt-6 text-sm font-bold text-[#2457d6]">
+              <p className="mt-6 text-sm font-bold text-[#0f8777]">
                 A controlled rollout approach
               </p>
 
@@ -619,12 +619,12 @@ export function VoiceAgentsProductPageV2() {
 
             <div className="divide-y divide-[#dce6e3] border-y border-[#dce6e3]">
               <details className="group py-5" open>
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-sm font-bold text-[#171719]">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-sm font-bold text-[#173b35]">
                   <span>
                     Can a voice agent work with our existing systems?
                   </span>
 
-                  <span className="grid size-7 shrink-0 place-items-center rounded-full border border-[#c9ddd8] text-lg font-normal text-[#2457d6] transition group-open:rotate-45">
+                  <span className="grid size-7 shrink-0 place-items-center rounded-full border border-[#c9ddd8] text-lg font-normal text-[#0f8777] transition group-open:rotate-45">
                     +
                   </span>
                 </summary>
@@ -637,12 +637,12 @@ export function VoiceAgentsProductPageV2() {
               </details>
 
               <details className="group py-5">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-sm font-bold text-[#171719]">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-sm font-bold text-[#173b35]">
                   <span>
                     How are calls transferred to a teammate?
                   </span>
 
-                  <span className="grid size-7 shrink-0 place-items-center rounded-full border border-[#c9ddd8] text-lg font-normal text-[#2457d6] transition group-open:rotate-45">
+                  <span className="grid size-7 shrink-0 place-items-center rounded-full border border-[#c9ddd8] text-lg font-normal text-[#0f8777] transition group-open:rotate-45">
                     +
                   </span>
                 </summary>
@@ -655,12 +655,12 @@ export function VoiceAgentsProductPageV2() {
               </details>
 
               <details className="group py-5">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-sm font-bold text-[#171719]">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-sm font-bold text-[#173b35]">
                   <span>
                     Do we need engineering support to get started?
                   </span>
 
-                  <span className="grid size-7 shrink-0 place-items-center rounded-full border border-[#c9ddd8] text-lg font-normal text-[#2457d6] transition group-open:rotate-45">
+                  <span className="grid size-7 shrink-0 place-items-center rounded-full border border-[#c9ddd8] text-lg font-normal text-[#0f8777] transition group-open:rotate-45">
                     +
                   </span>
                 </summary>
@@ -674,12 +674,12 @@ export function VoiceAgentsProductPageV2() {
               </details>
 
               <details className="group py-5">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-sm font-bold text-[#171719]">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-sm font-bold text-[#173b35]">
                   <span>
                     How do we improve the agent after launch?
                   </span>
 
-                  <span className="grid size-7 shrink-0 place-items-center rounded-full border border-[#c9ddd8] text-lg font-normal text-[#2457d6] transition group-open:rotate-45">
+                  <span className="grid size-7 shrink-0 place-items-center rounded-full border border-[#c9ddd8] text-lg font-normal text-[#0f8777] transition group-open:rotate-45">
                     +
                   </span>
                 </summary>
@@ -700,13 +700,13 @@ export function VoiceAgentsProductPageV2() {
           id="build-workflow-today"
         >
           <div className="relative mx-auto w-full max-w-[850px] text-center voice-agent-section-reveal">
-            <div className="mx-auto inline-flex items-center rounded-full border border-[#c9ddd8] bg-[#f7fdfb] px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#2457d6]">
+            <div className="mx-auto inline-flex items-center rounded-full border border-[#c9ddd8] bg-[#f7fdfb] px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#0f8777]">
               Start building
             </div>
 
             <h2 className="mt-5 text-[clamp(2rem,4vw,3.5rem)] font-medium leading-[1.05] tracking-[-.055em] text-[#111312]">
               Build your workflow{" "}
-              <span className="text-[#2457d6]">
+              <span className="text-[#0f8777]">
                 today.
               </span>
             </h2>
@@ -719,7 +719,7 @@ export function VoiceAgentsProductPageV2() {
 
             <div className="mt-7 flex flex-wrap justify-center gap-3">
               <Link
-                className="inline-flex min-h-12 items-center justify-center rounded-lg border border-[#2457d6] bg-[#2457d6] px-7 text-sm font-bold text-white shadow-[0_12px_28px_rgba(36,87,214,0.22)] transition hover:-translate-y-0.5 hover:bg-[#1b45b0]"
+                className="inline-flex min-h-12 items-center justify-center rounded-lg border border-[#118778] bg-[#118778] px-7 text-sm font-bold text-white shadow-[0_12px_28px_rgba(17,135,120,0.22)] transition hover:-translate-y-0.5 hover:bg-[#0e6f62]"
                 href="/dashboard/developers"
               >
                 Build your workflow
@@ -727,7 +727,7 @@ export function VoiceAgentsProductPageV2() {
               </Link>
 
               <Link
-                className="inline-flex min-h-12 items-center justify-center rounded-lg border border-[#2457d6] bg-[#2457d6] px-7 text-sm font-bold text-white shadow-[0_12px_28px_rgba(36,87,214,0.22)] transition hover:-translate-y-0.5 hover:bg-[#1b45b0]"
+                className="inline-flex min-h-12 items-center justify-center rounded-lg border border-[#118778] bg-[#118778] px-7 text-sm font-bold text-white shadow-[0_12px_28px_rgba(17,135,120,0.22)] transition hover:-translate-y-0.5 hover:bg-[#0e6f62]"
                 href="/contact"
               >
                 Talk to our team
@@ -846,7 +846,7 @@ export function VoiceAgentsProductPageV2() {
           #voice-agents-solution-page strong,
           #voice-agents-solution-page blockquote,
           #voice-agents-solution-page summary {
-            color: #171719;
+            color: #173b35;
           }
 
           #voice-agents-solution-page p:not(.voice-agent-eyebrow) {
@@ -854,15 +854,15 @@ export function VoiceAgentsProductPageV2() {
           }
 
           #voice-agents-solution-page .voice-agent-eyebrow {
-            color: #2457d6;
+            color: #0f8777;
           }
 
           #voice-agents-solution-page .voice-agent-workflow-link {
-            color: #2457d6 !important;
+            color: #118778 !important;
           }
 
           #voice-agents-solution-page .voice-agent-workflow-link:hover {
-            color: #1b45b0 !important;
+            color: #0e6f62 !important;
           }
 
           #voice-agents-solution-page .voice-agent-integrations-window article {
@@ -887,7 +887,7 @@ export function VoiceAgentsProductPageV2() {
 
           #voice-agent-faq details span:last-child {
             border-color: #c9ddd8;
-            color: #2457d6;
+            color: #0f8777;
           }
 
           #voice-agent-api li > span,
@@ -898,17 +898,17 @@ export function VoiceAgentsProductPageV2() {
 
           #voice-agent-control article {
             background: #fff;
-            border-color: #2457d6;
+            border-color: #0f8777;
           }
 
           #voice-agents-solution-page .voice-agent-metric-reveal > p:first-child {
-            color: #2457d6;
+            color: #0f8777;
           }
 
           #build-workflow-today > div > div:first-child {
             background: #f7fdfb;
             border-color: #c9ddd8;
-            color: #2457d6;
+            color: #0f8777;
           }
 
           .voice-agent-reveal {

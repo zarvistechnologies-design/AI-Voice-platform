@@ -15,31 +15,33 @@ export const siteConfig = {
   productMenu: {
     featured: {
       href: "/product",
-      title: "Explore Products",
-      body: "Connect voice, messaging, web chat, and workflows in one customer journey.",
+      title: "Explore Product",
+      body: "Build, deploy, and improve production voice agents from one connected workspace.",
     },
     groups: [
       {
-        title: "Voice",
+        title: "Build",
         links: [
-          { href: "/product/ai-voice-agent", label: "AI Voice Agent" },
-          { href: "/product/voice-cloning", label: "Voice Cloning" },
+          { href: "/services/voice-agents", label: "Voice Agents" },
+          { href: "/services/voice-cloning", label: "Voice Cloning" },
+          { href: "/services/realtime-tts", label: "Realtime TTS" },
+          { href: "/services/multilingual-speech", label: "Multilingual Speech" },
         ],
       },
       {
-        title: "Messaging and Web",
+        title: "Deploy",
         links: [
-          { href: "/product/whatsapp-api", label: "WhatsApp API" },
-          { href: "/product/whatsapp-bot", label: "WhatsApp Bot" },
-          { href: "/product/web-chatbot", label: "Web Chatbot" },
+          { href: "/services/api-access", label: "API Access" },
+          { href: "/services/team-workflows", label: "Team Workflows" },
+          { href: "/services/speech-analytics", label: "Speech Analytics" },
         ],
       },
       {
-        title: "Connect and Automate",
+        title: "Monitor",
         links: [
-          { href: "/product/vozon-mcp", label: "Vozon MCP" },
-          { href: "/product/workflows", label: "Workflows" },
-          { href: "/product/end-to-end-automation", label: "End-to-End Automation" },
+          { href: "/services/sentiment-detection", label: "Sentiment Detection" },
+          { href: "/services/conversation-insights", label: "Conversation Insights" },
+          { href: "/services/quality-controls", label: "Quality Controls" },
         ],
       },
     ],

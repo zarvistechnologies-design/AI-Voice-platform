@@ -9,7 +9,6 @@ const sections: Record<string, string> = {
   knowledge: "Knowledge base", calls: "Call logs", billing: "Billing",
   integrations: "Integrations", developers: "Developers", profile: "Profile & security",
   settings: "Workspace settings", "phone-number": "Phone numbers", "white-label": "White label",
-  whatsapp: "WhatsApp",
 };
 
 export function WorkspaceBar({ expanded, onNavigate }: { expanded: boolean; onNavigate: (href: string) => boolean }) {

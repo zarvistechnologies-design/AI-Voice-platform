@@ -24,6 +24,7 @@ export type WhiteLabelAccount = {
   contract: {
     currency: "USD" | "INR";
     billingInterval: "month" | "year";
+    setupFeeMinor?: number;
     platformFeeMinor: number;
     minimumCommitmentMinor: number;
     includedCredits: number;
@@ -85,7 +86,6 @@ export type WhiteLabelBrand = {
     accentColor: string;
     surfaceColor: string;
     defaultTheme: "light" | "dark" | "system";
-    themeStyle?: "green" | "recent";
     poweredByText: string;
   };
   support: { email: string; phone: string; websiteUrl: string; helpCenterUrl: string; statusPageUrl: string };
@@ -133,7 +133,21 @@ export type WhiteLabelCustomer = {
   externalCustomerId?: string;
   ownerUserId?: { _id: string; name: string; email: string; emailVerified: boolean; lastLoginAt?: string };
   whiteLabelBrandId?: { _id: string; key: string; branding?: { productName?: string } };
-  subscription?: { status: string; planKey: string; planVersion: number; currentPeriodEnd?: string; priceSnapshot?: { currency?: string; recurringAmountMinor?: number; interval?: string } };
+  subscription?: {
+    status: string;
+    planId?: string;
+    planKey: string;
+    planVersion: number;
+    currentPeriodEnd?: string;
+    priceSnapshot?: { currency?: string; recurringAmountMinor?: number; interval?: string };
+    allowancesSnapshot?: { includedMinutes?: number; includedCredits?: number };
+    limitsSnapshot?: { agents?: number; members?: number; phoneNumbers?: number; concurrentCalls?: number; monthlyMinutes?: number };
+  };
+  usage?: {
+    calls: number;
+    minutes: number;
+    agents: number;
+  };
   createdAt: string;
 };
 
@@ -144,6 +158,7 @@ export type PartnerOverview = {
   plans: WhiteLabelPlan[];
   metrics: { customerCount: number; activeSubscriptions: number };
   modelAccessCatalog: WhiteLabelModelCatalog;
+  wallet?: { balanceCredits: number; currency: string } | null;
 };
 
 export type PartnerEconomics = {
@@ -276,11 +291,14 @@ export const partnerWhiteLabelApi = {
   publishPlan: (planId: string) => request<{ plan: WhiteLabelPlan }>(`/api/partner/white-label/plans/${planId}/publish`, { method: "POST" }),
   revisePlan: (planId: string) => request<{ plan: WhiteLabelPlan }>(`/api/partner/white-label/plans/${planId}/revise`, { method: "POST" }),
   archivePlan: (planId: string) => request<{ plan: WhiteLabelPlan }>(`/api/partner/white-label/plans/${planId}/archive`, { method: "POST" }),
+  syncPlanSubscribers: (planId: string) => request<{ updatedCount: number; plan: WhiteLabelPlan }>(`/api/partner/white-label/plans/${planId}/sync-subscribers`, { method: "POST" }),
   customers: () => request<{ customers: WhiteLabelCustomer[]; pagination: { total: number } }>("/api/partner/white-label/customers?limit=100"),
   provisionCustomer: (body: unknown) => request<{ organization: WhiteLabelCustomer; emailDeliveryStatus: string; activationUrl?: string }>("/api/partner/white-label/customers", { method: "POST", body }),
   updateCustomerStatus: (orgId: string, status: "active" | "suspended", reason: string) => request<{ organization: WhiteLabelCustomer }>(`/api/partner/white-label/customers/${orgId}/status`, { method: "PATCH", body: { status, reason } }),
   deleteCustomer: (orgId: string) => request<void>(`/api/partner/white-label/customers/${orgId}`, { method: "DELETE" }),
   updateCustomerSubscription: (orgId: string, status: "active" | "past_due" | "paused" | "cancelled", reason: string) => request<{ subscription: WhiteLabelCustomer["subscription"] }>(`/api/partner/white-label/customers/${orgId}/subscription`, { method: "PATCH", body: { status, reason } }),
+  changeCustomerPlan: (orgId: string, body: { planId?: string; includedMinutes?: number; agentLimit?: number; concurrentCalls?: number; resetUsagePeriod?: boolean; reason?: string }) =>
+    request<{ subscription: WhiteLabelCustomer["subscription"] }>(`/api/partner/white-label/customers/${orgId}/plan`, { method: "PATCH", body }),
 };
 
 export const platformWhiteLabelApi = {

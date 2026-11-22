@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
 import { FormEvent, useEffect, useRef, useState } from "react";
@@ -114,7 +114,7 @@ export function EnquiryChatbot() {
         {error ? <div className={styles.error}>{error}</div> : null}
       </div>
     </section> : null}
-    <button className={styles.launcher} onClick={() => setOpen(value => !value)} aria-expanded={open} aria-label="Chat with Arya"><span className={styles.launchAvatar}><Image src="/images/support-agent.png" alt="Arya, Vozon AI assistant" fill sizes="54px" /></span>{!open ? <span className={styles.launchText}><strong>Chat with Arya</strong></span> : null}<i className={styles.online} /></button>
+    <button className={styles.launcher} onClick={() => setOpen(value => !value)} aria-expanded={open} aria-label="Chat with Arya"><span className={styles.launchAvatar}><Image src="/images/support-agent.png" alt="" fill sizes="54px" /></span>{!open ? <span className={styles.launchText}><small>Need help?</small><strong>Chat with Arya</strong></span> : <span className={styles.launchText}><strong>Close chat</strong></span>}<i className={styles.online} /></button>
   </div>;
 }
 

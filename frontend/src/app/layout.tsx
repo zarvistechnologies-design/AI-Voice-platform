@@ -4,7 +4,7 @@ import Script from "next/script";
 import type { CSSProperties } from "react";
 
 import { BrandProvider } from "@/components/branding/BrandProvider";
-import { ThemeRouteSync } from "@/components/layout/ThemeRouteSync";
+import { brandMonogramFavicon } from "@/lib/brand";
 import { requestBrandConfig } from "@/lib/brandServer";
 
 import "./globals.css";
@@ -24,10 +24,10 @@ const geistMono = Geist_Mono({
 const platformMetadata: Metadata = {
   metadataBase: new URL("https://www.vozon.ai"),
   title: {
-    default: "Vozon | Multichannel Agentic AI Platform",
+    default: "Vozon | AI Voice Agent Platform",
     template: "%s | Vozon",
   },
-  description: "The multichannel agentic AI platform for autonomous agents across voice, WhatsApp, and web chat—reason over context, call live tools, and execute end-to-end workflows.",
+  description: "Build multilingual AI phone agents for inbound and outbound calls, lead qualification, appointment booking, customer support, and workflow automation.",
   applicationName: "Vozon",
   icons: {
     icon: [
@@ -39,12 +39,12 @@ const platformMetadata: Metadata = {
       { url: "/icons/vozon-mark-180.png", type: "image/png", sizes: "180x180" },
     ],
   },
-  keywords: ["multichannel agentic platform", "agentic AI platform", "autonomous AI agents", "AI voice agent", "WhatsApp AI agent", "workflow automation"],
+  keywords: ["AI voice agent", "AI phone agent", "voice AI platform", "automated phone calls", "AI receptionist", "call automation"],
   authors: [{ name: "Vozon", url: "https://www.vozon.ai" }],
   creator: "Vozon",
   publisher: "Vozon",
-  openGraph: { type: "website", locale: "en_US", url: "/", siteName: "Vozon", title: "Multichannel Agentic AI Platform | Vozon", description: "Deploy autonomous AI agents across voice, WhatsApp, and web chat that reason, call tools, and automate workflows.", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Vozon multichannel agentic AI platform" }] },
-  twitter: { card: "summary_large_image", title: "Multichannel Agentic AI Platform | Vozon", description: "Deploy autonomous AI agents across voice, WhatsApp, and web chat that reason, call tools, and automate workflows.", images: ["/opengraph-image"] },
+  openGraph: { type: "website", locale: "en_US", url: "/", siteName: "Vozon", title: "AI Voice Agent Platform for Phone Call Automation | Vozon", description: "Build multilingual AI phone agents that answer calls, qualify leads, book appointments, and automate customer workflows.", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Vozon AI voice agent platform" }] },
+  twitter: { card: "summary_large_image", title: "AI Voice Agent Platform for Phone Call Automation | Vozon", description: "Build multilingual AI phone agents that answer calls, qualify leads, book appointments, and automate customer workflows.", images: ["/opengraph-image"] },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
   category: "technology",
   other: {
@@ -59,13 +59,16 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(`https://${brand.hostname}`),
     title: { default: `${brand.productName} | AI Voice Platform`, template: `%s | ${brand.productName}` },
     description: "Build multilingual AI phone agents for inbound and outbound calls, lead qualification, appointment booking, customer support, and workflow automation.",
-    icons: (brand.iconUrl || brand.logoDarkUrl || brand.logoUrl)
-      ? {
-          icon: [{ url: brand.iconUrl || brand.logoDarkUrl || brand.logoUrl }],
-          apple: [{ url: brand.iconUrl || brand.logoDarkUrl || brand.logoUrl }],
-          shortcut: [{ url: brand.iconUrl || brand.logoDarkUrl || brand.logoUrl }],
-        }
-      : undefined,
+    icons: (() => {
+      const rawIcon = brand.iconUrl || brand.logoDarkUrl || brand.logoUrl;
+      const isVozon = Boolean(rawIcon && (rawIcon.includes("logo_2.svg") || rawIcon.includes("vozon-mark") || rawIcon.includes("favicon.ico")));
+      const effectiveIcon = (!isVozon && rawIcon) ? rawIcon : brandMonogramFavicon(brand.productName, brand.colors.primary);
+      return {
+        icon: [{ url: effectiveIcon }],
+        apple: [{ url: effectiveIcon }],
+        shortcut: [{ url: effectiveIcon }],
+      };
+    })(),
     keywords: ["AI voice agent", "AI phone agent", "voice AI platform", "automated phone calls", "AI receptionist", "call automation"],
     authors: [{ name: brand.companyName, url: brand.support.websiteUrl || undefined }],
     creator: brand.companyName,
@@ -128,23 +131,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const fontClasses = `${roboto.variable} ${geistMono.variable} h-full scroll-smooth antialiased`;
   if (brand.source === "platform") {
     return (
-      <html
-        lang="en"
-        suppressHydrationWarning
-        data-dashboard-theme="light"
-        data-scroll-behavior="smooth"
-        className={fontClasses}
-      >
+      <html lang="en" data-scroll-behavior="smooth" className={fontClasses}>
         <head>
           <meta name="facebook-domain-verification" content="hs7xv0aby3bor2uybe6y440jg6wnkk" />
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `(function(){try{var p=window.location.pathname;var isDash=p.startsWith('/dashboard')||p.startsWith('/admin');if(isDash){var t=localStorage.getItem("vozon_dashboard_theme");if(t!=="light"){document.documentElement.setAttribute("data-dashboard-theme","dark");document.documentElement.classList.add("dark");}else{document.documentElement.setAttribute("data-dashboard-theme","light");document.documentElement.classList.remove("dark");}}else{document.documentElement.setAttribute("data-dashboard-theme","light");document.documentElement.classList.remove("dark");}}catch(e){}})()`,
-            }}
-          />
         </head>
         <body className="flex min-h-full flex-col bg-background text-foreground">
-          <ThemeRouteSync />
           <MetaPixel />
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: platformStructuredData() }} />
           <BrandProvider brand={brand}>{children}</BrandProvider>
@@ -160,35 +151,57 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     "--brand-surface": brand.colors.surface,
   } as CSSProperties;
   const iconTarget = brand.iconUrl || brand.logoDarkUrl || brand.logoUrl;
-  const isVozonIcon = iconTarget.includes("logo_2.svg") || iconTarget.includes("vozon-mark");
-  const effectiveIconTarget = isVozonIcon ? "" : iconTarget;
+  const isVozonIcon = Boolean(iconTarget && (iconTarget.includes("logo_2.svg") || iconTarget.includes("vozon-mark") || iconTarget.includes("favicon.ico")));
+  const effectiveIconTarget = (!isVozonIcon && iconTarget) ? iconTarget : brandMonogramFavicon(brand.productName, brand.colors.primary);
 
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      data-brand-source="white_label"
-      data-dashboard-theme="light"
-      data-scroll-behavior="smooth"
-      className={fontClasses}
-    >
+    <html lang="en" data-brand-source="white_label" data-scroll-behavior="smooth" className={fontClasses}>
       <head>
         <meta name="facebook-domain-verification" content="hs7xv0aby3bor2uybe6y440jg6wnkk" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var p=window.location.pathname;var isDash=p.startsWith('/dashboard')||p.startsWith('/admin');if(isDash){var t=localStorage.getItem("vozon_dashboard_theme");if(t!=="light"){document.documentElement.setAttribute("data-dashboard-theme","dark");document.documentElement.classList.add("dark");}else{document.documentElement.setAttribute("data-dashboard-theme","light");document.documentElement.classList.remove("dark");}}else{document.documentElement.setAttribute("data-dashboard-theme","light");document.documentElement.classList.remove("dark");}}catch(e){}})()`,
-          }}
-        />
-        {effectiveIconTarget ? (
-          <>
-            <link rel="icon" href={effectiveIconTarget} />
-            <link rel="shortcut icon" href={effectiveIconTarget} />
-            <link rel="apple-touch-icon" href={effectiveIconTarget} />
-          </>
-        ) : null}
+        <link rel="icon" href={effectiveIconTarget} />
+        <link rel="shortcut icon" href={effectiveIconTarget} />
+        <link rel="apple-touch-icon" href={effectiveIconTarget} />
+          <script
+            id="brand-early-favicon-init"
+            dangerouslySetInnerHTML={{
+              __html: `
+                (function() {
+                  try {
+                    var raw = localStorage.getItem("ai_voice_platform_session");
+                    if (!raw) return;
+                    var s = JSON.parse(raw);
+                    var org = s && s.organization;
+                    var isWL = Boolean((org && (org.whiteLabelAccountId || org.whiteLabelOwnerAccountId)) || (s && s.whiteLabel));
+                    var brand = (org && org.brand) || (s && s.whiteLabel && s.whiteLabel.brand);
+                    if (!isWL && !brand) return;
+                    var icon = brand && (brand.iconUrl || brand.logoDarkUrl || brand.logoUrl);
+                    if (!icon || icon.indexOf("logo_2.svg") !== -1 || icon.indexOf("vozon-mark") !== -1 || icon.indexOf("favicon.ico") !== -1) {
+                      var name = (brand && brand.productName) || (org && org.name) || "P";
+                      var char = (name || "P").trim().charAt(0).toUpperCase() || "P";
+                      var col = (brand && brand.colors && brand.colors.primary) || "#118778";
+                      var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="' + col + '"/><text x="32" y="44" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif" font-size="34" font-weight="bold" fill="#ffffff" text-anchor="middle">' + char + '</text></svg>';
+                      icon = "data:image/svg+xml," + encodeURIComponent(svg);
+                    }
+                    if (icon) {
+                      var old = document.querySelectorAll("link[rel*='icon'], link[rel='apple-touch-icon']");
+                      if (old.length > 0) {
+                        for (var i = 0; i < old.length; i++) {
+                          old[i].href = icon;
+                        }
+                      } else {
+                        var el = document.createElement("link");
+                        el.rel = "icon";
+                        el.href = icon;
+                        document.head.appendChild(el);
+                      }
+                    }
+                  } catch (e) {}
+                })();
+              `,
+            }}
+          />
       </head>
       <body className="flex min-h-full flex-col bg-background text-foreground" style={brandStyle}>
-        <ThemeRouteSync />
         <MetaPixel />
         <BrandProvider brand={brand}>{children}</BrandProvider>
       </body>

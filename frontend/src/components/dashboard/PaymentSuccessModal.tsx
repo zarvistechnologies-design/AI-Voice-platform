@@ -76,7 +76,7 @@ export function PaymentSuccessModal({
         </button>
 
         {/* Celebration Icon */}
-        <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-[#f4f4f5] ring-8 ring-[#fafafa] text-[#171717]">
+        <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-emerald-100 ring-8 ring-emerald-50 text-emerald-600">
           <svg className="size-8 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
           </svg>

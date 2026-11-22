@@ -114,13 +114,13 @@ function callRoute(call: CallRecord) {
 
 function CallRoute({ call }: { call: CallRecord }) {
   const route = callRoute(call);
-  const numberClass = "min-w-0 truncate rounded-lg border border-slate-200 bg-white px-3 py-1.5 font-mono text-sm font-semibold text-slate-950 dark:border-zinc-800 dark:bg-zinc-900 dark:text-white";
+  const numberClass = "min-w-0 truncate rounded-lg border border-slate-200 bg-white px-3 py-1.5 font-mono text-sm font-semibold text-slate-950";
   return (
     <div className="grid gap-1.5">
       <div className="grid min-w-0 grid-cols-[44px_minmax(0,1fr)] items-center gap-2">
-        <span className="rounded-md bg-[#f4f4f5] px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-[#171717] dark:bg-zinc-800 dark:text-zinc-300">From</span>
+        <span className="rounded-md bg-[#edf7f4] px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-[#123d35]">From</span>
         {route.fromMissing ? (
-          <span className="rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-400">
+          <span className="rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">
             Caller ID not sent
           </span>
         ) : (
@@ -130,7 +130,7 @@ function CallRoute({ call }: { call: CallRecord }) {
         )}
       </div>
       <div className="grid min-w-0 grid-cols-[44px_minmax(0,1fr)] items-center gap-2">
-        <span className="rounded-md bg-slate-100 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-slate-600 dark:bg-zinc-800 dark:text-zinc-300">To</span>
+        <span className="rounded-md bg-slate-100 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-slate-600">To</span>
         <span className={numberClass} title={route.to}>
           {route.to}{route.toSource === "room_name" ? <span className="ml-1 font-sans text-[10px] font-bold uppercase text-amber-600">inferred</span> : null}
         </span>
@@ -248,13 +248,13 @@ export function CallDetailDrawer({ call, inrPerUsd = 96.5, onClose }: { call: Ca
     : "";
   const providerCostItems = (call.pipelineMode === "realtime" || isRealtimeAudioCall(call)
     ? [
-      ["Realtime", configuredStack(call.llmProvider, call.llmModel), llmUsage, cost?.pricing?.llm, cost?.llm ?? 0],
-    ]
+        ["Realtime", configuredStack(call.llmProvider, call.llmModel), llmUsage, cost?.pricing?.llm, cost?.llm ?? 0],
+      ]
     : [
-      ["LLM", configuredStack(call.llmProvider, call.llmModel), llmUsage, cost?.pricing?.llm, cost?.llm ?? 0],
-      ["STT", configuredStack(call.sttProvider, call.sttModel), sttUsage, cost?.pricing?.stt, cost?.stt ?? 0],
-      ["TTS", configuredTtsStack(call), ttsUsage, cost?.pricing?.tts, cost?.tts ?? 0],
-    ]) as readonly (readonly [string, string, string, CostPricingDetail | undefined, number])[];
+        ["LLM", configuredStack(call.llmProvider, call.llmModel), llmUsage, cost?.pricing?.llm, cost?.llm ?? 0],
+        ["STT", configuredStack(call.sttProvider, call.sttModel), sttUsage, cost?.pricing?.stt, cost?.stt ?? 0],
+        ["TTS", configuredTtsStack(call), ttsUsage, cost?.pricing?.tts, cost?.tts ?? 0],
+      ]) as readonly (readonly [string, string, string, CostPricingDetail | undefined, number])[];
   const costItems = [
     ...providerCostItems,
     [
@@ -305,26 +305,26 @@ export function CallDetailDrawer({ call, inrPerUsd = 96.5, onClose }: { call: Ca
   }, [call._id, privateRecording]);
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end bg-black/60 p-0 backdrop-blur-md sm:py-2 sm:pr-2" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex justify-end bg-[#25284a]/30 p-0 backdrop-blur-md sm:py-2 sm:pr-2" onClick={onClose}>
       <aside
-        className="dashboard-overlay-panel h-full w-full max-w-2xl overflow-y-auto border-l border-slate-200 bg-white sm:rounded-l-2xl dark:border-zinc-800 dark:bg-zinc-900 text-slate-900 dark:text-white"
+        className="dashboard-overlay-panel h-full w-full max-w-2xl overflow-y-auto border-l border-[#d7e0dd] bg-[#ffffff] sm:rounded-l-2xl"
         onClick={(event) => event.stopPropagation()}
       >
-        <header className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-slate-200 bg-white/95 p-6 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
+        <header className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-white/10 bg-[#ffffff]/95 p-6 backdrop-blur">
           <div>
             <div className="mb-2 flex items-center gap-2">
               <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${statusTone(call.status)}`}>
                 {titleCase(call.status)}
               </span>
-              <span className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-zinc-400">{call.direction}</span>
+              <span className="text-xs font-medium uppercase tracking-wider text-slate-500">{call.direction}</span>
             </div>
-            <h2 className="m-0 text-xl font-semibold text-slate-950 dark:text-white">{agentName(call)}</h2>
-            <p className="mt-1 text-sm text-slate-500 dark:text-zinc-400">
+            <h2 className="m-0 text-xl font-semibold text-slate-950">{agentName(call)}</h2>
+            <p className="mt-1 text-sm text-slate-500">
               Started {formatDate(call.startedAt ?? call.createdAt)}
               {call.endedAt ? <> &middot; Ended {formatDate(call.endedAt)}</> : null}
             </p>
           </div>
-          <button className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700" type="button" onClick={onClose}>
+          <button className="rounded-lg border border-[#dbe4e1] bg-white px-3 py-2 text-sm font-semibold text-[#64748b] transition hover:border-[#9fcfc3] hover:bg-[#f7f9f8] hover:text-[#0e6f62]" type="button" onClick={onClose}>
             Close
           </button>
         </header>
@@ -338,9 +338,9 @@ export function CallDetailDrawer({ call, inrPerUsd = 96.5, onClose }: { call: Ca
               ["Total cost", money(charged, billing?.currency, inrPerUsd)],
               ["Balance after", billing?.balanceAfterCredits != null ? money(billing.balanceAfterCredits, billing.currency, inrPerUsd) : "—"],
             ].map(([label, value]) => (
-              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-zinc-800 dark:bg-zinc-950" key={label}>
-                <span className="block text-xs font-medium text-slate-500 dark:text-zinc-400">{label}</span>
-                <strong className="mt-1 block truncate text-sm text-slate-950 dark:text-white">{value}</strong>
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3" key={label}>
+                <span className="block text-xs font-medium text-slate-500">{label}</span>
+                <strong className="mt-1 block truncate text-sm text-slate-950">{value}</strong>
               </div>
             ))}
           </section>
@@ -398,22 +398,22 @@ export function CallDetailDrawer({ call, inrPerUsd = 96.5, onClose }: { call: Ca
             </section>
           ) : null}
 
-          <section className="grid gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2 dark:border-zinc-800 dark:bg-zinc-950">
-            <div><span className="mb-2 block text-xs font-medium text-slate-500 dark:text-zinc-400">From / To</span><CallRoute call={call} /></div>
-            <div><span className="block text-xs font-medium text-slate-500 dark:text-zinc-400">Usage</span><strong className="mt-1 block text-sm text-slate-950 dark:text-white">{llmUsage} / {sttSecondsLabel} STT / {ttsUsage}</strong></div>
-            <div><span className="block text-xs font-medium text-slate-500 dark:text-zinc-400">Configured stack</span><strong className="mt-1 block text-sm text-slate-950 dark:text-white">{configuredCallStack(call)}</strong></div>
-            <div><span className="block text-xs font-medium text-slate-500 dark:text-zinc-400">Tags</span><strong className="mt-1 block text-sm text-slate-950 dark:text-white">{call.tags.length ? call.tags.join(", ") : "No tags"}</strong></div>
-            <div><span className="block text-xs font-medium text-slate-500 dark:text-zinc-400">End reason</span><strong className="mt-1 block text-sm text-slate-950 dark:text-white">{call.endReason || "—"}</strong></div>
-            {call.voicemailDetected ? <div className="col-span-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 dark:border-amber-900/40 dark:bg-amber-950/30"><strong className="block text-xs font-semibold text-amber-700 dark:text-amber-400">Voicemail detected</strong><span className="mt-0.5 block text-xs text-amber-600 dark:text-amber-500">The agent left a voicemail message and ended the call.</span></div> : null}
+          <section className="grid gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2">
+            <div><span className="mb-2 block text-xs font-medium text-slate-500">From / To</span><CallRoute call={call} /></div>
+            <div><span className="block text-xs font-medium text-slate-500">Usage</span><strong className="mt-1 block text-sm">{llmUsage} / {sttSecondsLabel} STT / {ttsUsage}</strong></div>
+            <div><span className="block text-xs font-medium text-slate-500">Configured stack</span><strong className="mt-1 block text-sm">{configuredCallStack(call)}</strong></div>
+            <div><span className="block text-xs font-medium text-slate-500">Tags</span><strong className="mt-1 block text-sm">{call.tags.length ? call.tags.join(", ") : "No tags"}</strong></div>
+            <div><span className="block text-xs font-medium text-slate-500">End reason</span><strong className="mt-1 block text-sm">{call.endReason || "—"}</strong></div>
+            {call.voicemailDetected ? <div className="col-span-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2"><strong className="block text-xs font-semibold text-amber-700">Voicemail detected</strong><span className="mt-0.5 block text-xs text-amber-600">The agent left a voicemail message and ended the call.</span></div> : null}
           </section>
 
-          <section className="rounded-xl border border-slate-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950">
+          <section className="rounded-xl border border-slate-200 bg-white p-4">
             <div className="mb-3 flex items-center justify-between gap-3">
               <div>
-                <h3 className="m-0 text-sm font-semibold text-slate-950 dark:text-white">Recording</h3>
-                <p className="mt-1 text-xs text-slate-500 dark:text-zinc-400">{call.recordingStatus ? titleCase(call.recordingStatus) : "Not recorded"}</p>
+                <h3 className="m-0 text-sm font-semibold text-slate-950">Recording</h3>
+                <p className="mt-1 text-xs text-slate-500">{call.recordingStatus ? titleCase(call.recordingStatus) : "Not recorded"}</p>
               </div>
-              {call.recordingDuration ? <span className="text-xs font-semibold text-slate-500 dark:text-zinc-400">{formatDuration(call.recordingDuration)}</span> : null}
+              {call.recordingDuration ? <span className="text-xs font-semibold text-slate-500">{formatDuration(call.recordingDuration)}</span> : null}
             </div>
             {recordingPlayerHref ? (
               <div className="grid gap-3">
@@ -428,15 +428,15 @@ export function CallDetailDrawer({ call, inrPerUsd = 96.5, onClose }: { call: Ca
                 </div>
               </div>
             ) : recordingLoading ? (
-              <div className="rounded-xl border border-dashed border-[#b8c8c3] bg-[#edf7f4] p-4 text-sm text-[#123d35] dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300">
+              <div className="rounded-xl border border-dashed border-[#b8c8c3] bg-[#edf7f4] p-4 text-sm text-[#123d35]">
                 Loading recording...
               </div>
             ) : recordingLoadError ? (
-              <div className="rounded-xl border border-dashed border-amber-300 bg-amber-50 p-4 text-sm text-amber-800 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-400">
+              <div className="rounded-xl border border-dashed border-amber-300 bg-amber-50 p-4 text-sm text-amber-800">
                 The recording is saved but temporarily unavailable. {recordingLoadError}
               </div>
             ) : (
-              <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400">
+              <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-500">
                 {call.recordingStatus === "failed"
                   ? "Recording could not be created for this call."
                   : call.recordingKey
@@ -446,31 +446,31 @@ export function CallDetailDrawer({ call, inrPerUsd = 96.5, onClose }: { call: Ca
             )}
           </section>
 
-          <section className="overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
-            <div className="flex flex-col gap-2 border-b border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-zinc-800 dark:bg-zinc-900">
+          <section className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+            <div className="flex flex-col gap-2 border-b border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h3 className="m-0 text-sm font-semibold text-slate-950 dark:text-white">Call cost breakdown</h3>
-                <p className="mt-1 text-xs text-slate-500 dark:text-zinc-400">Provider usage plus the platform fee, prorated by seconds.</p>
+                <h3 className="m-0 text-sm font-semibold text-slate-950">Call cost breakdown</h3>
+                <p className="mt-1 text-xs text-slate-500">Provider usage plus the platform fee, prorated by seconds.</p>
               </div>
               <div className="grid gap-1 text-right text-xs">
-                <span className="text-slate-500 dark:text-zinc-400">Customer total: <strong className="text-emerald-700 dark:text-emerald-400">{money(billing?.customerCost ?? cost?.customerCost ?? charged ?? 0, billing?.currency || cost?.currency, inrPerUsd)}</strong></span>
+                <span className="text-slate-500">Customer total: <strong className="text-emerald-700">{money(billing?.customerCost ?? cost?.customerCost ?? charged ?? 0, billing?.currency || cost?.currency, inrPerUsd)}</strong></span>
               </div>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[760px] text-left text-sm">
-                <thead className="bg-white text-xs uppercase tracking-wider text-slate-500 dark:bg-zinc-900 dark:text-zinc-400">
+                <thead className="bg-white text-xs uppercase tracking-wider text-slate-500">
                   <tr>
                     {["Component", "Provider / Model", "Usage", "Rate used", "Cost"].map((item) => <th className="px-4 py-3" key={item}>{item}</th>)}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-zinc-800">
+                <tbody className="divide-y divide-slate-100">
                   {costItems.map(([label, provider, usage, pricing, providerCost]) => (
                     <tr key={label}>
-                      <td className="px-4 py-3 font-semibold text-slate-950 dark:text-white">{label}</td>
-                      <td className="px-4 py-3 text-slate-600 dark:text-zinc-300">{provider}</td>
-                      <td className="px-4 py-3 text-slate-600 dark:text-zinc-300">{usage}</td>
-                      <td className="px-4 py-3 text-xs font-semibold text-slate-600 dark:text-zinc-300" title={rateTitle(pricing)}>{rateLabel(pricing)}</td>
-                      <td className="px-4 py-3 text-slate-700 dark:text-zinc-200">{money(providerCost, cost?.currency, inrPerUsd)}</td>
+                      <td className="px-4 py-3 font-semibold text-slate-950">{label}</td>
+                      <td className="px-4 py-3 text-slate-600">{provider}</td>
+                      <td className="px-4 py-3 text-slate-600">{usage}</td>
+                      <td className="px-4 py-3 text-xs font-semibold text-slate-600" title={rateTitle(pricing)}>{rateLabel(pricing)}</td>
+                      <td className="px-4 py-3 text-slate-700">{money(providerCost, cost?.currency, inrPerUsd)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -479,13 +479,13 @@ export function CallDetailDrawer({ call, inrPerUsd = 96.5, onClose }: { call: Ca
           </section>
 
           {hasStructuredOutput ? (
-            <section className="rounded-xl border border-slate-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950">
-              <h3 className="m-0 mb-3 text-sm font-semibold text-slate-950 dark:text-white">Extracted data</h3>
+            <section className="rounded-xl border border-slate-200 bg-white p-4">
+              <h3 className="m-0 mb-3 text-sm font-semibold text-slate-950">Extracted data</h3>
               <div className="grid gap-2 sm:grid-cols-2">
                 {Object.entries(call.structuredOutput!).map(([key, value]) => (
-                  <div key={key} className="rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 dark:border-zinc-800 dark:bg-zinc-900">
-                    <span className="block text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-zinc-400">{key.replace(/_/g, " ")}</span>
-                    <strong className="mt-0.5 block truncate text-sm text-slate-950 dark:text-white">
+                  <div key={key} className="rounded-lg border border-slate-100 bg-slate-50 px-3 py-2">
+                    <span className="block text-[10px] font-semibold uppercase tracking-wider text-slate-500">{key.replace(/_/g, " ")}</span>
+                    <strong className="mt-0.5 block truncate text-sm text-slate-950">
                       {value === null || value === undefined ? "—" : typeof value === "object" ? JSON.stringify(value) : String(value)}
                     </strong>
                   </div>
@@ -497,23 +497,24 @@ export function CallDetailDrawer({ call, inrPerUsd = 96.5, onClose }: { call: Ca
           <section>
             <div className="mb-3 flex items-center justify-between gap-3">
               <div>
-                <h3 className="m-0 text-sm font-semibold text-slate-950 dark:text-white">Conversation transcript</h3>
-                <p className="mt-1 text-xs text-slate-500 dark:text-zinc-400">{transcript.length} captured messages</p>
+                <h3 className="m-0 text-sm font-semibold text-slate-950">Conversation transcript</h3>
+                <p className="mt-1 text-xs text-slate-500">{transcript.length} captured messages</p>
               </div>
             </div>
             <div className="grid gap-3">
               {transcript.length ? (
                 transcript.map((item) => (
                   <article
-                    className={`max-w-[88%] rounded-2xl border px-4 py-3 ${item.role === "assistant"
-                        ? "justify-self-start rounded-bl-md border-[#d7e0dd] bg-[#eef5f3] text-[#30313a] dark:border-zinc-800 dark:bg-zinc-800 dark:text-zinc-100"
+                    className={`max-w-[88%] rounded-2xl border px-4 py-3 ${
+                      item.role === "assistant"
+                        ? "justify-self-start rounded-bl-md border-[#d7e0dd] bg-[#eef5f3] text-[#30313a]"
                         : item.role === "user"
-                          ? "justify-self-end rounded-br-md border-[#0e6f62] bg-[#118778] dark:border-zinc-700 dark:bg-zinc-900 dark:text-white"
-                          : "justify-self-center border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-400"
-                      }`}
+                          ? "justify-self-end rounded-br-md border-[#0e6f62] bg-[#118778]"
+                          : "justify-self-center border-amber-200 bg-amber-50 text-amber-900"
+                    }`}
                     key={item.itemId}
                   >
-                    <span className={`mb-1 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider ${item.role === "user" ? "opacity-75" : "text-[#71817d] dark:text-zinc-400"}`}>
+                    <span className={`mb-1 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider ${item.role === "user" ? "opacity-75" : "text-[#71817d]"}`}>
                       <span>{item.role === "assistant" ? agentName(call) : titleCase(item.role)}</span>
                       {item.timestamp ? <span className="font-normal normal-case opacity-70">{formatTime(item.timestamp)}</span> : null}
                     </span>
@@ -521,7 +522,7 @@ export function CallDetailDrawer({ call, inrPerUsd = 96.5, onClose }: { call: Ca
                   </article>
                 ))
               ) : (
-                <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-sm text-slate-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400">
+                <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-sm text-slate-500">
                   Transcript messages will appear here while the agent and caller speak.
                 </div>
               )}

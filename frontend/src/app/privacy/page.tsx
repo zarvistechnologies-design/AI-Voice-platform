@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { SiteLayout } from "@/components/layout/SiteLayout";
-import "@/app/business/industries/healthcare/healthcare.css";
-import "@/components/company/CompanyEditorial.css";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | vozon.ai",
@@ -262,60 +260,90 @@ const privacySections = [
 export default function PrivacyPage() {
   return (
     <SiteLayout>
-      <div className="min-h-screen overflow-hidden cmp-page bg-[#f8f9f9] text-[#17191d]">
+      <div className="min-h-screen overflow-hidden !bg-white text-black">
         {/* =========================================================
-            HERO — Clean 2-Column Editorial Hero
+            HERO — Terms-style soft blurry background wash
         ========================================================== */}
-        <section className="cmp-hero hcr-wrap" style={{ paddingBottom: "32px" }}>
-          <div className="hcr-breadcrumb">
-            <Link href="/">Home</Link>
-            <span>/</span>
-            <span>Privacy Policy</span>
-          </div>
+        <section className="relative isolate overflow-hidden bg-white px-[clamp(1.25rem,5vw,4.75rem)] pb-20 pt-32 sm:pt-36 lg:pb-24 lg:pt-25">
 
-          <div className="cmp-hero-stage">
-            <div className="cmp-hero-grid">
-              <div className="cmp-hero-left">
-                <p className="hcr-kicker">LEGAL &amp; DATA GOVERNANCE</p>
-                <h1>Privacy Policy</h1>
-                <p className="cmp-hero-lead">
-                  How vozon.ai collects, uses, protects, and manages personal information across its
-                  sub-88ms AI voice platform, APIs, and connected services.
-                </p>
-                <div className="cmp-hero-actions">
-                  <Link href="/terms" className="cmp-btn-primary">
-                    Read Terms &amp; Conditions <span aria-hidden="true">&#8599;</span>
-                  </Link>
-                  <a href="mailto:hello@vozon.ai?subject=Privacy%20request" className="cmp-btn-secondary">
-                    Privacy inquiries <span aria-hidden="true">&#8599;</span>
-                  </a>
-                </div>
-              </div>
+          <div className="relative z-10 mx-auto max-w-[1240px]">
+            {/* BREADCRUMB */}
+            <nav
+              aria-label="Breadcrumb"
+              className="mb-12 flex items-center gap-2 text-xs font-semibold uppercase tracking-normal text-black"
+            >
+              <Link className="transition hover:opacity-60" href="/">
+                Home
+              </Link>
 
-              <div className="cmp-ledger" aria-label="Privacy policy summary">
-                <div className="cmp-ledger-head">
-                  <span>PRIVACY SUMMARY</span>
-                  <span className="cmp-ledger-badge">
-                    <i aria-hidden="true" /> Zero Data Retention
-                  </span>
-                </div>
-                <div className="cmp-ledger-row">
-                  <span>Last Updated</span>
-                  <strong>July 28, 2026</strong>
-                </div>
-                <div className="cmp-ledger-row">
-                  <span>Audio Training</span>
-                  <strong>Never used for shared models</strong>
-                </div>
-                <div className="cmp-ledger-row">
-                  <span>Compliance</span>
-                  <strong>SOC 2 Type II · ISO 27001 · HIPAA</strong>
-                </div>
-                <div className="cmp-ledger-row">
-                  <span>Privacy Contact</span>
-                  <strong>hello@vozon.ai</strong>
-                </div>
-              </div>
+              <span aria-hidden="true" className="text-[#B5B5B5]">
+                /
+              </span>
+
+              <span className="text-black">Legal</span>
+
+              <span aria-hidden="true" className="text-[#B5B5B5]">
+                /
+              </span>
+
+              <span className="font-bold text-black">Privacy</span>
+            </nav>
+
+            <div className="mx-auto max-w-[780px] text-center">
+              {/* PRIVACY ICON — Terms style (soft blue background, no border) */}
+              <span className="mx-auto grid size-16 place-items-center rounded-xl bg-[#EAF7F4] text-[#108D82] shadow-[0_18px_45px_rgba(16,141,130,0.10)]">
+                <svg
+                  aria-hidden="true"
+                  className="size-8"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M12 3 5 6v5c0 4.8 2.8 8.3 7 10 4.2-1.7 7-5.2 7-10V6l-7-3Z"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="m9 12 2 2 4-4"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="1.6"
+                  />
+                </svg>
+              </span>
+
+              <h1 className="mt-7 text-5xl font-semibold leading-none tracking-normal text-black sm:text-6xl">
+                Privacy Policy
+              </h1>
+
+              <p className="mt-4 text-lg font-semibold text-black">vozon.ai</p>
+
+              <p className="mt-4 inline-flex items-center justify-center gap-2 text-sm text-black">
+                <svg
+                  aria-hidden="true"
+                  className="size-4 text-[#108D82]"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="8.5"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                  />
+                  <path
+                    d="M12 7.5V12l3 2"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="1.6"
+                  />
+                </svg>
+                Last updated: July 28, 2026
+              </p>
             </div>
           </div>
         </section>

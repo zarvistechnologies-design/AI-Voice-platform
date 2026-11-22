@@ -4,9 +4,7 @@ import { type ReactNode } from "react";
 
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
-import "@/app/business/industries/healthcare/healthcare.css";
 import "@/components/layout/WebsiteContentTheme.css";
-import "@/components/layout/PublicPageRefresh.css";
 
 type SiteLayoutProps = {
   children: ReactNode;
@@ -15,9 +13,9 @@ type SiteLayoutProps = {
 
 export function SiteLayout({ children, showFooter = true }: SiteLayoutProps) {
   return (
-    <div className="marketing-site hcr-site sln-site min-h-screen [overflow-x:clip] bg-[#f8f9f9] text-[#171719]">
+    <div className="marketing-site min-h-screen [overflow-x:clip] bg-white text-[#111113]">
       <SiteHeader />
-      <main className="website-content hcr-page min-h-screen bg-[#f8f9f9]">{children}</main>
+      <main className="website-content min-h-screen">{children}</main>
       {showFooter && <SiteFooter />}
     </div>
   );

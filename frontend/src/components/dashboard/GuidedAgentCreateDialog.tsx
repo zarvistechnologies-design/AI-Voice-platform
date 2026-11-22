@@ -27,7 +27,7 @@ const requestSummaries: Record<string, string> = {
   customer_feedback: "Save ratings and comments, and record requests for staff follow-up.",
 };
 
-const fieldClass = "min-h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-black dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:focus:border-white focus:ring-4 focus:ring-black/5";
+const fieldClass = "min-h-11 w-full rounded-lg border border-[#d5e2dd] bg-white px-3 text-sm text-[#14231f] outline-none transition focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10";
 
 const languageOptions = [
   ["English", "English (India)"], ["English US", "English (US)"], ["English UK", "English (UK)"],
@@ -233,12 +233,12 @@ function QuestionField({
   if (question.control === "weekdays") {
     const selectedDays = value.split(",").filter(Boolean);
     return (
-      <fieldset className="grid gap-2 rounded-xl border border-slate-200 bg-slate-50 p-4 sm:col-span-2 dark:border-zinc-800 dark:bg-zinc-900/60">
-        <legend className="px-1 text-xs font-semibold text-slate-700 dark:text-zinc-300">{label}</legend>
+      <fieldset className="grid gap-2 rounded-xl border border-[#dce7e3] bg-[#fbfdfc] p-4 sm:col-span-2">
+        <legend className="px-1 text-xs font-semibold text-[#52645f]">{label}</legend>
         <div className="flex flex-wrap gap-2">
           {weekdays.map((day) => {
             const selected = selectedDays.includes(day.value);
-            return <button className={`rounded-lg border px-3 py-2 text-xs font-semibold transition ${selected ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black" : "border-slate-200 bg-white text-slate-700 hover:border-slate-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"}`} key={day.value} type="button" aria-pressed={selected} onClick={() => onChange((selected ? selectedDays.filter((item) => item !== day.value) : [...selectedDays, day.value]).join(","))}>{day.value}</button>;
+            return <button className={`rounded-lg border px-3 py-2 text-xs font-semibold transition ${selected ? "border-[#118778] bg-[#e7f5f0] text-[#0e6f62]" : "border-[#d5e2dd] bg-white text-[#71817d]"}`} key={day.value} type="button" aria-pressed={selected} onClick={() => onChange((selected ? selectedDays.filter((item) => item !== day.value) : [...selectedDays, day.value]).join(","))}>{day.value}</button>;
           })}
         </div>
         {hint}
@@ -247,22 +247,22 @@ function QuestionField({
   }
 
   if (question.control === "timezone") {
-    return <label className="grid gap-1.5 text-xs font-semibold text-slate-700 dark:text-zinc-300" htmlFor={inputId}>{label}<select className={fieldClass} id={inputId} required={question.required} value={value} onChange={(event) => onChange(event.target.value)}>{timezoneOptions.map((timezone) => <option key={timezone} value={timezone}>{timezone}</option>)}</select>{hint}</label>;
+    return <label className="grid gap-1.5 text-xs font-semibold text-[#52645f]" htmlFor={inputId}>{label}<select className={fieldClass} id={inputId} required={question.required} value={value} onChange={(event) => onChange(event.target.value)}>{timezoneOptions.map((timezone) => <option key={timezone} value={timezone}>{timezone}</option>)}</select>{hint}</label>;
   }
 
   if (question.control === "time") {
-    return <label className="grid gap-1.5 text-xs font-semibold text-slate-700 dark:text-zinc-300" htmlFor={inputId}>{label}<input className={fieldClass} id={inputId} type="time" step={300} required={question.required} value={value} onChange={(event) => onChange(event.target.value)} />{hint}</label>;
+    return <label className="grid gap-1.5 text-xs font-semibold text-[#52645f]" htmlFor={inputId}>{label}<input className={fieldClass} id={inputId} type="time" step={300} required={question.required} value={value} onChange={(event) => onChange(event.target.value)} />{hint}</label>;
   }
 
   if (question.control === "duration") {
-    return <label className="grid gap-1.5 text-xs font-semibold text-slate-700 dark:text-zinc-300" htmlFor={inputId}>{label}<select className={fieldClass} id={inputId} required={question.required} value={value} onChange={(event) => onChange(event.target.value)}>{[15, 20, 30, 45, 60, 90, 120].map((minutes) => <option key={minutes} value={minutes}>{minutes} minutes</option>)}</select>{hint}</label>;
+    return <label className="grid gap-1.5 text-xs font-semibold text-[#52645f]" htmlFor={inputId}>{label}<select className={fieldClass} id={inputId} required={question.required} value={value} onChange={(event) => onChange(event.target.value)}>{[15, 20, 30, 45, 60, 90, 120].map((minutes) => <option key={minutes} value={minutes}>{minutes} minutes</option>)}</select>{hint}</label>;
   }
 
   if (question.control === "textarea") {
-    return <label className="grid gap-1.5 text-xs font-semibold text-slate-700 dark:text-zinc-300 sm:col-span-2" htmlFor={inputId}>{label}<textarea className={`${fieldClass} min-h-24 py-3`} id={inputId} maxLength={300} required={question.required} placeholder={question.hint} value={value} onChange={(event) => onChange(event.target.value)} />{hint}</label>;
+    return <label className="grid gap-1.5 text-xs font-semibold text-[#52645f] sm:col-span-2" htmlFor={inputId}>{label}<textarea className={`${fieldClass} min-h-24 py-3`} id={inputId} maxLength={300} required={question.required} placeholder={question.hint} value={value} onChange={(event) => onChange(event.target.value)} />{hint}</label>;
   }
 
-  return <label className="grid gap-1.5 text-xs font-semibold text-slate-700 dark:text-zinc-300" htmlFor={inputId}>{label}<input className={fieldClass} id={inputId} maxLength={300} required={question.required} placeholder={question.hint} value={value} onChange={(event) => onChange(event.target.value)} />{hint}</label>;
+  return <label className="grid gap-1.5 text-xs font-semibold text-[#52645f]" htmlFor={inputId}>{label}<input className={fieldClass} id={inputId} maxLength={300} required={question.required} placeholder={question.hint} value={value} onChange={(event) => onChange(event.target.value)} />{hint}</label>;
 }
 
 let memoryTemplatesCache: AgentTemplate[] = [];
@@ -461,46 +461,46 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
   const blankPath = step === "details" && !selected;
   const progressLabels = blankPath ? ["Setup", "Agent details"] : ["Setup", "Template", "Your details", "Activate"];
   const stepNumber = step === "start" ? 1 : step === "choose" ? 2 : step === "details" ? (selected ? 3 : 2) : 4;
-  const primaryButton = "rounded-lg bg-black px-4 py-3 text-sm font-semibold text-white hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 disabled:opacity-50 transition";
+  const primaryButton = "rounded-lg bg-[#118778] px-4 py-3 text-sm font-semibold text-white disabled:opacity-50";
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-black/60 p-3 backdrop-blur-[6px] sm:p-6" role="dialog" aria-modal="true" aria-labelledby="guided-agent-title">
-      <div className="flex max-h-[calc(100dvh-1.5rem)] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
-        <header className="flex items-start justify-between gap-4 border-b border-slate-200 px-5 py-4 sm:px-7 dark:border-zinc-800">
+    <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-[#14231f]/40 p-3 backdrop-blur-[6px] sm:p-6" role="dialog" aria-modal="true" aria-labelledby="guided-agent-title">
+      <div className="flex max-h-[calc(100dvh-1.5rem)] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-[#dfe7e4] bg-white shadow-[0_28px_80px_rgba(34,38,74,0.24)]">
+        <header className="flex items-start justify-between gap-4 border-b border-[#e5ece9] px-5 py-4 sm:px-7">
           <div>
-            <p className="m-0 text-[11px] font-bold uppercase tracking-[0.15em] text-zinc-500 dark:text-zinc-400">Your business receptionist</p>
-            <h2 className="mt-1 text-xl font-bold text-slate-900 dark:text-white" id="guided-agent-title">{step === "start" ? "How would you like to begin?" : step === "choose" ? "Choose a ready template" : step === "details" ? selected ? "Tell us about your business" : "Create a blank agent" : "Your receptionist is prepared"}</h2>
-            <p className="mt-1 text-sm text-slate-500 dark:text-zinc-400">{step === "start" ? "Choose the setup that fits you. You can change everything later." : "Add your details. Vozon prepares the conversation and request capture for you."}</p>
+            <p className="m-0 text-[11px] font-bold uppercase tracking-[0.15em] text-[#118778]">Your business receptionist</p>
+            <h2 className="mt-1 text-xl font-bold text-[#14231f]" id="guided-agent-title">{step === "start" ? "How would you like to begin?" : step === "choose" ? "Choose a ready template" : step === "details" ? selected ? "Tell us about your business" : "Create a blank agent" : "Your receptionist is prepared"}</h2>
+            <p className="mt-1 text-sm text-[#71817d]">{step === "start" ? "Choose the setup that fits you. You can change everything later." : "Add your details. Vozon prepares the conversation and request capture for you."}</p>
             <div className="mt-3 flex flex-wrap items-center gap-2" aria-label={`Step ${stepNumber} of ${progressLabels.length}`}>
-              {progressLabels.map((label, index) => <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${index + 1 === stepNumber ? "bg-black text-white dark:bg-white dark:text-black" : "bg-slate-100 text-slate-600 dark:bg-zinc-800 dark:text-zinc-400"}`} key={label}>{index + 1}. {label}</span>)}
+              {progressLabels.map((label, index) => <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${index + 1 === stepNumber ? "bg-[#118778] text-white" : "bg-[#f2f5f4] text-[#71817d]"}`} key={label}>{index + 1}. {label}</span>)}
             </div>
           </div>
-          <button className="grid size-9 shrink-0 place-items-center rounded-lg border border-slate-200 text-xl text-slate-500 transition hover:bg-slate-100 hover:text-black dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white" type="button" aria-label="Close receptionist setup" disabled={busy} onClick={onClose}>&times;</button>
+          <button className="grid size-9 shrink-0 place-items-center rounded-lg border border-[#dfe7e4] text-xl text-[#52645f]" type="button" aria-label="Close receptionist setup" disabled={busy} onClick={onClose}>&times;</button>
         </header>
         <div className="overflow-y-auto px-5 py-5 sm:px-7">
           {error ? <div className="mb-4 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700" role="alert">{error}</div> : null}
           {step === "start" ? <div className="grid gap-4 sm:grid-cols-2">
-            <button className="group min-h-52 rounded-2xl border-2 border-black bg-zinc-50 p-6 text-left transition hover:shadow-lg dark:border-white dark:bg-zinc-900" type="button" onClick={() => { setError(""); setStep("choose"); }}>
-              <span className="inline-flex rounded-full bg-black px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-white dark:bg-white dark:text-black">Recommended</span>
-              <strong className="mt-5 block text-xl text-slate-900 dark:text-white">Use a ready template</strong>
-              <span className="mt-3 block text-sm leading-6 text-slate-600 dark:text-zinc-300">Choose your business type. Vozon prepares the receptionist, questions, and request tools automatically.</span>
-              <span className="mt-5 block text-sm font-bold text-black dark:text-white">Choose a template &rarr;</span>
+            <button className="group min-h-52 rounded-2xl border-2 border-[#b8d9d1] bg-[#f1f9f6] p-6 text-left transition hover:border-[#118778] hover:shadow-lg" type="button" onClick={() => { setError(""); setStep("choose"); }}>
+              <span className="inline-flex rounded-full bg-[#118778] px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-white">Recommended</span>
+              <strong className="mt-5 block text-xl text-[#14231f]">Use a ready template</strong>
+              <span className="mt-3 block text-sm leading-6 text-[#52645f]">Choose your business type. Vozon prepares the receptionist, questions, and request tools automatically.</span>
+              <span className="mt-5 block text-sm font-bold text-[#0e6f62]">Choose a template &rarr;</span>
             </button>
-            <button className="group min-h-52 rounded-2xl border-2 border-slate-200 bg-white p-6 text-left transition hover:border-black hover:bg-zinc-50 hover:shadow-lg dark:border-zinc-700 dark:bg-zinc-900 dark:hover:border-zinc-400" type="button" onClick={() => { setSelectedId(""); setName(""); setPreview(null); setPrompt(""); setError(""); setStep("details"); }}>
-              <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-slate-600 dark:bg-zinc-800 dark:text-zinc-400">Advanced</span>
-              <strong className="mt-5 block text-xl text-slate-900 dark:text-white">Start from scratch</strong>
-              <span className="mt-3 block text-sm leading-6 text-slate-600 dark:text-zinc-300">Create a blank agent and configure its conversation, voice, tools, and integrations yourself.</span>
-              <span className="mt-5 block text-sm font-bold text-black dark:text-white">Create a blank agent &rarr;</span>
+            <button className="group min-h-52 rounded-2xl border-2 border-[#dce7e3] bg-white p-6 text-left transition hover:border-[#118778] hover:bg-[#fbfdfc] hover:shadow-lg" type="button" onClick={() => { setSelectedId(""); setName(""); setPreview(null); setPrompt(""); setError(""); setStep("details"); }}>
+              <span className="inline-flex rounded-full bg-[#f2f5f4] px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-[#52645f]">Advanced</span>
+              <strong className="mt-5 block text-xl text-[#14231f]">Start from scratch</strong>
+              <span className="mt-3 block text-sm leading-6 text-[#52645f]">Create a blank agent and configure its conversation, voice, tools, and integrations yourself.</span>
+              <span className="mt-5 block text-sm font-bold text-[#0e6f62]">Create a blank agent &rarr;</span>
             </button>
           </div> : null}
           {step === "choose" ? <div>
             {loading && templates.length === 0 ? (
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <div key={i} className="min-h-36 animate-pulse rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-zinc-800 dark:bg-zinc-800/60">
-                    <div className="h-5 w-3/4 rounded bg-slate-200 dark:bg-zinc-700" />
-                    <div className="mt-3 h-3.5 w-full rounded bg-slate-100 dark:bg-zinc-800" />
-                    <div className="mt-1.5 h-3.5 w-4/5 rounded bg-slate-100 dark:bg-zinc-800" />
+                  <div key={i} className="min-h-36 animate-pulse rounded-xl border border-[#dce7e3] bg-[#fbfdfc] p-4">
+                    <div className="h-5 w-3/4 rounded bg-[#e2ece8]" />
+                    <div className="mt-3 h-3.5 w-full rounded bg-[#eef4f1]" />
+                    <div className="mt-1.5 h-3.5 w-4/5 rounded bg-[#eef4f1]" />
                   </div>
                 ))}
               </div>
@@ -508,44 +508,44 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {templates.map((template) => (
                 <button
-                  className="min-h-36 rounded-xl border border-slate-200 bg-white p-4 text-left transition hover:border-black hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-800/60 dark:hover:border-zinc-500 dark:hover:bg-zinc-800"
+                  className="min-h-36 rounded-xl border border-[#dce7e3] bg-white p-4 text-left transition hover:border-[#118778] hover:bg-[#f1f9f6]"
                   key={template.id}
                   type="button"
                   onClick={() => selectTemplate(template)}
                 >
-                  <strong className="block text-base text-slate-900 dark:text-white">{template.name}</strong>
-                  <span className="mt-2 block text-xs leading-5 text-slate-500 dark:text-zinc-400">{template.description}</span>
+                  <strong className="block text-base text-[#14231f]">{template.name}</strong>
+                  <span className="mt-2 block text-xs leading-5 text-[#71817d]">{template.description}</span>
                 </button>
               ))}
             </div>
-            <button className="mt-5 text-sm font-semibold text-slate-700 hover:text-black dark:text-zinc-400 dark:hover:text-white" type="button" onClick={() => { setError(""); setStep("start"); }}>&larr; Back to setup options</button>
+            <button className="mt-5 text-sm font-semibold text-[#0e6f62]" type="button" onClick={() => { setError(""); setStep("start"); }}>&larr; Back to setup options</button>
           </div> : null}
           {step === "details" && !selected ? <form className="grid gap-4" onSubmit={(event) => void createBlank(event)}>
-            <label className="grid gap-2 text-sm text-slate-900 dark:text-white font-medium">Agent name<input className={fieldClass} required maxLength={80} value={name} onChange={(event) => setName(event.target.value)} /></label>
-            <div className="flex justify-between gap-3"><button className="text-sm font-medium text-slate-600 hover:text-black dark:text-zinc-400 dark:hover:text-white" type="button" disabled={busy} onClick={() => setStep("start")}>Back</button><button className={primaryButton} disabled={busy} type="submit">{busy ? "Creating..." : "Create blank draft"}</button></div>
+            <label className="grid gap-2 text-sm">Agent name<input className={fieldClass} required maxLength={80} value={name} onChange={(event) => setName(event.target.value)} /></label>
+            <div className="flex justify-between gap-3"><button type="button" disabled={busy} onClick={() => setStep("start")}>Back</button><button className={primaryButton} disabled={busy} type="submit">{busy ? "Creating..." : "Create blank draft"}</button></div>
           </form> : null}
           {step === "details" && selected ? <form className="grid gap-5" onSubmit={(event) => void review(event)}>
             <fieldset disabled={busy} className="grid gap-5">
-              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-700 dark:border-zinc-800 dark:bg-zinc-800/60 dark:text-zinc-300">{mode === "requests" ? requestSummaries[selected.id] : integrationChoices.find((choice) => choice.mode === mode)?.detail}</div>
+              <div className="rounded-xl bg-[#f1f9f6] p-4 text-sm leading-6 text-[#29423b]">{mode === "requests" ? requestSummaries[selected.id] : integrationChoices.find((choice) => choice.mode === mode)?.detail}</div>
               <div className="grid gap-4 sm:grid-cols-2">
                 {questions.filter((question) => question.required).map(renderQuestion)}
-                <label className="grid gap-1.5 text-xs font-semibold text-slate-700 dark:text-zinc-300">Conversation language<select className={fieldClass} value={language} onChange={(event) => setLanguage(event.target.value)}>{languageOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
-                <label className="grid gap-1.5 text-xs font-semibold text-slate-700 dark:text-zinc-300">Staff phone (optional)<input className={fieldClass} type="tel" maxLength={40} placeholder="+919876543210" value={staffPhone} onChange={(event) => setStaffPhone(event.target.value)} /><span className="font-normal text-slate-500 dark:text-zinc-400">Use a separate staff number for callers who need a person.</span></label>
-                <label className="grid gap-1.5 text-xs font-semibold text-slate-700 dark:text-zinc-300">Staff email (optional)<input className={fieldClass} type="email" maxLength={160} placeholder="reception@yourbusiness.com" value={staffEmail} onChange={(event) => setStaffEmail(event.target.value)} /><span className="font-normal text-slate-500 dark:text-zinc-400">Receive follow-up notifications after calls. Saved requests are also in your dashboard.</span></label>
+                <label className="grid gap-1.5 text-xs font-semibold text-[#52645f]">Conversation language<select className={fieldClass} value={language} onChange={(event) => setLanguage(event.target.value)}>{languageOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+                <label className="grid gap-1.5 text-xs font-semibold text-[#52645f]">Staff phone (optional)<input className={fieldClass} type="tel" maxLength={40} placeholder="+919876543210" value={staffPhone} onChange={(event) => setStaffPhone(event.target.value)} /><span className="font-normal text-[#8a9894]">Use a separate staff number for callers who need a person.</span></label>
+                <label className="grid gap-1.5 text-xs font-semibold text-[#52645f]">Staff email (optional)<input className={fieldClass} type="email" maxLength={160} placeholder="reception@yourbusiness.com" value={staffEmail} onChange={(event) => setStaffEmail(event.target.value)} /><span className="font-normal text-[#8a9894]">Receive follow-up notifications after calls. Saved requests are also in your dashboard.</span></label>
               </div>
 
               {/* Google Workspace Real-Time Automation Card */}
-              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 sm:p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-800/50">
+              <div className="rounded-xl border border-[#b8d9d1] bg-[#f7fcf9] p-4 sm:p-5 shadow-sm">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-start gap-3">
-                    <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-black text-white dark:bg-white dark:text-black">
+                    <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#118778] text-white">
                       <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
                     </div>
                     <div>
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white">Google Workspace Real-Time Automation</h4>
-                      <p className="mt-0.5 text-xs text-slate-500 dark:text-zinc-400">
+                      <h4 className="text-sm font-bold text-[#14231f]">Google Workspace Real-Time Automation</h4>
+                      <p className="mt-0.5 text-xs text-[#52645f]">
                         {googleStatus.connected
                           ? `Connected Account: ${googleStatus.email}`
                           : "Connect your Google account to enable live Google Calendar booking and Google Sheets call logging."}
@@ -553,14 +553,14 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
                     </div>
                   </div>
                   {googleStatus.connected ? (
-                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
-                      <span className="size-1.5 rounded-full bg-emerald-500"></span>
+                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[#118778]/10 px-2.5 py-1 text-[11px] font-bold text-[#118778]">
+                      <span className="size-1.5 rounded-full bg-[#118778]"></span>
                       Connected
                     </span>
                   ) : (
                     <button
                       type="button"
-                      className="shrink-0 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-900 hover:bg-slate-100 transition dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700"
+                      className="shrink-0 rounded-lg border border-[#118778] bg-white px-3 py-1.5 text-xs font-semibold text-[#118778] hover:bg-[#118778]/5 transition"
                       onClick={() => {
                         integrationsApi.googleOAuthUrl().then(({ url }) => window.open(url, "_blank")).catch(() => {});
                       }}
@@ -571,28 +571,28 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
                 </div>
 
                 {googleStatus.connected ? (
-                  <div className="mt-4 grid gap-3 border-t border-slate-200 dark:border-zinc-800 pt-4">
+                  <div className="mt-4 grid gap-3 border-t border-[#dce7e3] pt-4">
                     {/* Google Calendar */}
-                    <div className="grid gap-2 rounded-lg border border-slate-200 bg-white p-3 dark:border-zinc-700 dark:bg-zinc-800/80">
+                    <div className="grid gap-2 rounded-lg border border-[#dce7e3] bg-white p-3">
                       <label className="flex cursor-pointer items-start gap-2.5">
                         <input
                           type="checkbox"
-                          className="mt-0.5 accent-black dark:accent-white"
+                          className="mt-0.5 accent-[#118778]"
                           checked={useGoogleCalendar}
                           onChange={(e) => setUseGoogleCalendar(e.target.checked)}
                         />
                         <div>
-                          <strong className="block text-xs font-bold text-slate-900 dark:text-white">
+                          <strong className="block text-xs font-bold text-[#14231f]">
                             Live Google Calendar Booking
                           </strong>
-                          <span className="text-[11px] text-slate-500 dark:text-zinc-400">
+                          <span className="text-[11px] text-[#71817d]">
                             Voice AI checks availability in real-time during the call and books confirmed slots directly.
                           </span>
                         </div>
                       </label>
                       {useGoogleCalendar ? (
                         <div className="ml-6 mt-1">
-                          <label className="block text-[11px] font-semibold text-slate-700 dark:text-zinc-300">Target Calendar</label>
+                          <label className="block text-[11px] font-semibold text-[#52645f]">Target Calendar</label>
                           <select
                             className={`${fieldClass} mt-1 text-xs`}
                             value={selectedCalendarId}
@@ -612,33 +612,33 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
                     </div>
 
                     {/* Google Sheets */}
-                    <div className="grid gap-2 rounded-lg border border-slate-200 bg-white p-3 dark:border-zinc-700 dark:bg-zinc-800/80">
+                    <div className="grid gap-2 rounded-lg border border-[#dce7e3] bg-white p-3">
                       <label className="flex cursor-pointer items-start gap-2.5">
                         <input
                           type="checkbox"
-                          className="mt-0.5 accent-black dark:accent-white"
+                          className="mt-0.5 accent-[#118778]"
                           checked={useGoogleSheets}
                           onChange={(e) => setUseGoogleSheets(e.target.checked)}
                         />
                         <div>
-                          <strong className="block text-xs font-bold text-slate-900 dark:text-white">
+                          <strong className="block text-xs font-bold text-[#14231f]">
                             Auto-Log to Google Sheets
                           </strong>
-                          <span className="text-[11px] text-slate-500 dark:text-zinc-400">
+                          <span className="text-[11px] text-[#71817d]">
                             Every caller&apos;s details, booking reference, and call summary are appended as a new row after each call.
                           </span>
                         </div>
                       </label>
                       {useGoogleSheets ? (
                         <div className="ml-6 mt-1 grid gap-2">
-                          <div className="flex gap-4 text-xs text-slate-700 dark:text-zinc-300">
+                          <div className="flex gap-4 text-xs">
                             <label className="flex items-center gap-1.5 cursor-pointer">
                               <input
                                 type="radio"
                                 name="sheetOption"
                                 checked={spreadsheetOption === "auto"}
                                 onChange={() => setSpreadsheetOption("auto")}
-                                className="accent-black dark:accent-white"
+                                className="accent-[#118778]"
                               />
                               <span>Auto-create new Google Sheet</span>
                             </label>
@@ -648,7 +648,7 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
                                 name="sheetOption"
                                 checked={spreadsheetOption === "existing"}
                                 onChange={() => setSpreadsheetOption("existing")}
-                                className="accent-black dark:accent-white"
+                                className="accent-[#118778]"
                               />
                               <span>Use existing Sheet ID/URL</span>
                             </label>
@@ -661,7 +661,7 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
                               onChange={(e) => setCustomSpreadsheetId(e.target.value)}
                             />
                           ) : (
-                            <p className="text-[11px] text-slate-500 dark:text-zinc-400">
+                            <p className="text-[11px] text-[#71817d]">
                               Will automatically create a new sheet in your Google Drive named &quot;{answers.businessName || name || "Clinic"} - Bookings &amp; Call Log&quot;.
                             </p>
                           )}
@@ -672,18 +672,18 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
                 ) : null}
               </div>
 
-              {questions.some((question) => !question.required) ? <details className="rounded-xl border border-slate-200 dark:border-zinc-800 p-4"><summary className="cursor-pointer text-sm font-semibold text-slate-700 dark:text-zinc-300">Add prices, policies, or other details (optional)</summary><div className="mt-4 grid gap-4 sm:grid-cols-2">{questions.filter((question) => !question.required).map(renderQuestion)}</div></details> : null}
-              <details className="rounded-xl border border-slate-200 dark:border-zinc-800 p-4"><summary className="cursor-pointer text-sm font-semibold text-slate-700 dark:text-zinc-300">Advanced setup</summary><div className="mt-4 grid gap-3">
-                <label className="grid gap-2 text-xs font-semibold text-slate-700 dark:text-zinc-300">Receptionist name (optional)<input className={fieldClass} maxLength={80} value={name} onChange={(event) => setName(event.target.value)} /></label>
-                {integrationChoices.filter((choice) => choice.mode !== "native" || selected.id === "clinic_appointments").map((choice) => <label className="flex items-start gap-3 rounded-lg border border-slate-200 dark:border-zinc-800 p-3" key={choice.mode}><input className="mt-1 accent-black dark:accent-white" type="radio" name="integration-mode" checked={mode === choice.mode} onChange={() => setMode(choice.mode)} /><span><strong className="block text-sm text-slate-900 dark:text-white">{choice.title}</strong><span className="mt-1 block text-xs leading-5 text-slate-500 dark:text-zinc-400">{choice.detail}</span></span></label>)}
+              {questions.some((question) => !question.required) ? <details className="rounded-xl border border-[#dce7e3] p-4"><summary className="cursor-pointer text-sm font-semibold text-[#52645f]">Add prices, policies, or other details (optional)</summary><div className="mt-4 grid gap-4 sm:grid-cols-2">{questions.filter((question) => !question.required).map(renderQuestion)}</div></details> : null}
+              <details className="rounded-xl border border-[#dce7e3] p-4"><summary className="cursor-pointer text-sm font-semibold text-[#52645f]">Advanced setup</summary><div className="mt-4 grid gap-3">
+                <label className="grid gap-2 text-xs font-semibold text-[#52645f]">Receptionist name (optional)<input className={fieldClass} maxLength={80} value={name} onChange={(event) => setName(event.target.value)} /></label>
+                {integrationChoices.filter((choice) => choice.mode !== "native" || selected.id === "clinic_appointments").map((choice) => <label className="flex items-start gap-3 rounded-lg border border-[#dce7e3] p-3" key={choice.mode}><input className="mt-1 accent-[#118778]" type="radio" name="integration-mode" checked={mode === choice.mode} onChange={() => setMode(choice.mode)} /><span><strong className="block text-sm">{choice.title}</strong><span className="mt-1 block text-xs leading-5 text-[#71817d]">{choice.detail}</span></span></label>)}
               </div></details>
             </fieldset>
-            <div className="flex justify-between gap-3"><button className="text-sm font-semibold text-slate-600 hover:text-black dark:text-zinc-400 dark:hover:text-white" type="button" disabled={busy} onClick={() => setStep("choose")}>Back</button><button className={primaryButton} type="submit" disabled={busy}>{busy ? "Checking your setup..." : "Continue"}</button></div>
+            <div className="flex justify-between gap-3"><button className="text-sm font-semibold text-[#0e6f62]" type="button" disabled={busy} onClick={() => setStep("choose")}>Back</button><button className={primaryButton} type="submit" disabled={busy}>{busy ? "Checking your setup..." : "Continue"}</button></div>
           </form> : null}
           {step === "review" && preview && selected ? <div className="grid gap-5">
-            <section className="rounded-xl border border-slate-200 bg-slate-50 p-5 dark:border-zinc-800 dark:bg-zinc-800/60">
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">{preview.name}</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-zinc-300">
+            <section className="rounded-xl border border-[#c5ded5] bg-[#f1f9f6] p-5">
+              <h3 className="text-lg font-bold text-[#14231f]">{preview.name}</h3>
+              <p className="mt-2 text-sm leading-6 text-[#40564f]">
                 {mode === "google_workspace" || (googleStatus.connected && (useGoogleCalendar || useGoogleSheets))
                   ? "Real-time Google Calendar availability & booking enabled. All caller details and appointment records will be automatically logged to Google Sheets."
                   : mode === "requests"
@@ -692,7 +692,7 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
                   ? "Check the Vozon clinic schedule and book new appointments. Staff handle changes and cancellations."
                   : "Your conversation is prepared. Connect the selected business software before activating automatic actions."}
               </p>
-              <ul className="mt-4 grid gap-2 text-sm text-slate-700 dark:text-zinc-300">
+              <ul className="mt-4 grid gap-2 text-sm text-[#29423b]">
                 <li>Business details checked</li>
                 <li>Conversation prepared in {language}</li>
                 {useGoogleCalendar && googleStatus.connected ? (
@@ -706,11 +706,11 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
                 ) : null}
                 <li>Call results configured</li>
               </ul>
-              <p className="mt-4 border-t border-slate-200 dark:border-zinc-800 pt-3 text-xs leading-5 text-slate-500 dark:text-zinc-400">{staffPhone ? `Staff contact: ${staffPhone}. If a transfer fails, the receptionist offers to take a request.` : "When a caller needs a person, the receptionist offers to take a staff request."}</p>
+              <p className="mt-4 border-t border-[#c5ded5] pt-3 text-xs leading-5 text-[#52645f]">{staffPhone ? `Staff contact: ${staffPhone}. If a transfer fails, the receptionist offers to take a request.` : "When a caller needs a person, the receptionist offers to take a staff request."}</p>
             </section>
-            <section className="rounded-xl border border-slate-200 dark:border-zinc-800 p-4"><h3 className="text-sm font-bold text-slate-900 dark:text-white">What happens next?</h3><p className="mt-2 text-sm leading-6 text-slate-500 dark:text-zinc-400">{mode === "requests" ? "Activate your receptionist, then connect a phone number to receive calls. Requests will appear in your dashboard. You can listen to your receptionist whenever you like; a test call is optional." : "Save your draft and finish the selected scheduling or software setup before turning on phone calls."}</p></section>
-            <details className="rounded-xl border border-slate-200 dark:border-zinc-800 p-4" open={showAdvanced}><summary className="cursor-pointer text-sm font-semibold text-slate-700 dark:text-zinc-300" onClick={(event) => { event.preventDefault(); setShowAdvanced((current) => !current); }}>Advanced: conversation and actions</summary>{showAdvanced ? <div className="mt-3 grid gap-3"><label className="grid gap-2 text-sm text-slate-900 dark:text-white font-medium">Conversation instructions<textarea className={`${fieldClass} min-h-64 p-3 font-mono`} maxLength={5000} value={prompt} onChange={(event) => setPrompt(event.target.value)} /></label><button className="w-fit text-xs font-semibold text-slate-700 hover:text-black dark:text-zinc-300 dark:hover:text-white" type="button" onClick={() => setPrompt(preview.generatedPrompt)}>Restore prepared instructions</button><ul className="grid gap-2 text-xs text-slate-500 dark:text-zinc-400">{preview.tools.map((tool) => <li key={tool.name}><strong>{tool.name}</strong>: {tool.description}</li>)}</ul></div> : null}</details>
-            <div className="flex justify-between gap-3"><button className="text-sm font-semibold text-slate-600 hover:text-black dark:text-zinc-400 dark:hover:text-white" type="button" disabled={busy} onClick={() => { setError(""); setStep("details"); }}>Edit details</button><button className={primaryButton} type="button" disabled={busy || !prompt.trim()} onClick={() => void create()}>{busy ? "Preparing..." : (mode === "requests" || mode === "google_workspace" || (googleStatus.connected && (useGoogleCalendar || useGoogleSheets))) ? "Activate receptionist" : "Create draft"}</button></div>
+            <section className="rounded-xl border border-[#dce7e3] p-4"><h3 className="text-sm font-bold text-[#14231f]">What happens next?</h3><p className="mt-2 text-sm leading-6 text-[#52645f]">{mode === "requests" ? "Activate your receptionist, then connect a phone number to receive calls. Requests will appear in your dashboard. You can listen to your receptionist whenever you like; a test call is optional." : "Save your draft and finish the selected scheduling or software setup before turning on phone calls."}</p></section>
+            <details className="rounded-xl border border-[#dce7e3] p-4" open={showAdvanced}><summary className="cursor-pointer text-sm font-semibold text-[#52645f]" onClick={(event) => { event.preventDefault(); setShowAdvanced((current) => !current); }}>Advanced: conversation and actions</summary>{showAdvanced ? <div className="mt-3 grid gap-3"><label className="grid gap-2 text-sm">Conversation instructions<textarea className={`${fieldClass} min-h-64 p-3 font-mono`} maxLength={5000} value={prompt} onChange={(event) => setPrompt(event.target.value)} /></label><button className="w-fit text-xs font-semibold text-[#0e6f62]" type="button" onClick={() => setPrompt(preview.generatedPrompt)}>Restore prepared instructions</button><ul className="grid gap-2 text-xs text-[#52645f]">{preview.tools.map((tool) => <li key={tool.name}><strong>{tool.name}</strong>: {tool.description}</li>)}</ul></div> : null}</details>
+            <div className="flex justify-between gap-3"><button className="text-sm font-semibold text-[#0e6f62]" type="button" disabled={busy} onClick={() => { setError(""); setStep("details"); }}>Edit details</button><button className={primaryButton} type="button" disabled={busy || !prompt.trim()} onClick={() => void create()}>{busy ? "Preparing..." : (mode === "requests" || mode === "google_workspace" || (googleStatus.connected && (useGoogleCalendar || useGoogleSheets))) ? "Activate receptionist" : "Create draft"}</button></div>
           </div> : null}
         </div>
       </div>

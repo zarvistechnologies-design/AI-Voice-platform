@@ -1,87 +1,111 @@
-"use client";
-
 import Link from "next/link";
-import { useState } from "react";
 
-import { SiteFooter } from "@/components/layout/SiteFooter";
-import { SiteHeader } from "@/components/layout/SiteHeader";
-import "@/app/business/industries/healthcare/healthcare.css";
-import "@/components/company/CompanyEditorial.css";
+import { SiteLayout } from "@/components/layout/SiteLayout";
+
+type TopicIconName =
+  | "launch"
+  | "voice"
+  | "calls"
+  | "code"
+  | "analytics"
+  | "workspace";
 
 const helpTopics = [
   {
-    number: "01",
     title: "Getting started",
-    description: "Set up your workspace, create an agent, and prepare your first test call.",
-    guides: "5 GUIDES",
-    href: "/product/ai-voice-agent",
+    description:
+      "Set up your workspace, create an agent, and prepare your first test call.",
+    guides: "5 guides",
+    icon: "launch" as TopicIconName,
+    accent: "border-[#dfe7e3] bg-white",
   },
   {
-    number: "02",
     title: "Voice agents",
     description:
       "Configure instructions, voices, languages, tools, and conversation behaviour.",
-    guides: "8 GUIDES",
-    href: "/product/voice-cloning",
+    guides: "8 guides",
+    icon: "voice" as TopicIconName,
+    accent: "border-[#dfe7e3] bg-white",
   },
   {
-    number: "03",
     title: "Calls & conversations",
-    description: "Understand phone numbers, transfers, recordings, transcripts, and outcomes.",
-    guides: "7 GUIDES",
-    href: "/product/workflows",
+    description:
+      "Understand phone numbers, transfers, recordings, transcripts, and outcomes.",
+    guides: "7 guides",
+    icon: "calls" as TopicIconName,
+    accent: "border-[#dfe7e3] bg-white",
   },
   {
-    number: "04",
     title: "Integrations & API",
-    description: "Connect business tools, configure webhooks, and troubleshoot API requests.",
-    guides: "9 GUIDES",
-    href: "/docs/api",
+    description:
+      "Connect business tools, configure webhooks, and troubleshoot API requests.",
+    guides: "9 guides",
+    icon: "code" as TopicIconName,
+    accent: "border-[#dfe7e3] bg-white",
   },
   {
-    number: "05",
-    title: "Analytics & quality",
-    description: "Review transcripts, call outcomes, trends, quality signals, and exports.",
-    guides: "6 GUIDES",
-    href: "/product/end-to-end-automation",
+    title: "Analytics",
+    description:
+      "Review transcripts, call outcomes, trends, quality signals, and exports.",
+    guides: "6 guides",
+    icon: "analytics" as TopicIconName,
+    accent: "border-[#dfe7e3] bg-white",
   },
   {
-    number: "06",
-    title: "Workspace & security",
-    description: "Manage teammates, permissions, usage, invoices, and ZDR compliance.",
-    guides: "6 GUIDES",
-    href: "/privacy",
+    title: "Workspace & billing",
+    description:
+      "Manage teammates, permissions, usage, invoices, and subscription settings.",
+    guides: "6 guides",
+    icon: "workspace" as TopicIconName,
+    accent: "border-[#dfe7e3] bg-white",
   },
-];
+] as const;
 
 const popularGuides = [
   {
-    category: "GETTING STARTED",
+    category: "Getting started",
     title: "Create and test your first voice agent",
-    description: "Move from a blank workspace to a complete sub-88ms test conversation.",
-    href: "/product/ai-voice-agent",
+    description: "Move from a blank workspace to a complete test conversation.",
+    href: "/services/voice-agents",
   },
   {
-    category: "VOICE AGENTS",
-    title: "Write clear instructions for natural calls",
-    description: "Structure the agent's role, boundaries, questions, and recovery behaviour.",
+    category: "Voice agents",
+    title: "Write clear instructions for natural conversations",
+    description:
+      "Structure the agent's role, boundaries, questions, and recovery behaviour.",
     href: "/resources/blog",
   },
   {
-    category: "INTEGRATIONS & API",
-    title: "Connect an agent to your business tools",
-    description: "Use scoped access, confirmations, webhooks, and observable tool actions.",
-    href: "/docs/api",
+    category: "Calls & conversations",
+    title: "Configure human handoffs without losing context",
+    description:
+      "Choose transfer conditions and pass the information a teammate needs.",
+    href: "/services/voice-agents",
   },
   {
-    category: "WHATSAPP & OMNICHANNEL",
-    title: "Trigger post-call WhatsApp cards automatically",
-    description: "Send booking passes, dispatch links, and CRM updates right after a call.",
-    href: "/product/whatsapp-api",
+    category: "Integrations & API",
+    title: "Connect an agent to your business tools",
+    description:
+      "Use scoped access, confirmations, webhooks, and observable tool actions.",
+    href: "/dashboard/developers",
   },
-];
+  {
+    category: "Analytics",
+    title: "Review transcripts, outcomes, and call quality",
+    description:
+      "Find conversations that need attention and understand recurring patterns.",
+    href: "/services/speech-analytics",
+  },
+  {
+    category: "Workspace & billing",
+    title: "Manage workspace access and production permissions",
+    description:
+      "Give each teammate the access they need without exposing sensitive controls.",
+    href: "/resources/trust-center",
+  },
+] as const;
 
-const supportFaqs = [
+const faqs = [
   {
     question: "How do I create my first AI voice agent?",
     answer:
@@ -95,162 +119,462 @@ const supportFaqs = [
   {
     question: "How should integrations access business data?",
     answer:
-      "Grant only the permissions needed for the workflow, validate identifiers before updating records, require caller confirmation for sensitive actions, and log every webhook attempt.",
+      "Use the narrowest permissions possible, validate every request, and require confirmation before sensitive actions. Keep tool activity observable so your team can review failures and unusual behaviour.",
   },
   {
-    question: "How can I contact Vozon technical support?",
+    question: "Where can I review transcripts and call outcomes?",
     answer:
-      "Reach our engineering support team directly via the Contact page or email hello@vozon.ai with your workspace ID and call trace ID for rapid troubleshooting.",
+      "Conversation analytics should provide transcripts, detected intent, call outcome, transfer details, tool activity, and quality signals. Access may depend on your workspace role and retention settings.",
   },
-];
+  {
+    question: "What should I test before launching an agent?",
+    answer:
+      "Test normal requests as well as silence, interruptions, corrections, noisy audio, unexpected questions, tool failures, and human escalation. Confirm that every call ends with a clear outcome.",
+  },
+] as const;
 
-export function HelpCenterPage() {
-  const [activeFaq, setActiveFaq] = useState<number | null>(null);
+function TopicIcon({ name }: { name: TopicIconName }) {
+  if (name === "launch") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-5"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="m7 17-2 2m5-1 1 3 3-4m-8-7-3 1 4 3m3-4 4 4c4-3 5-7 5-9-2 0-6 1-9 5Z"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.7"
+        />
+        <circle cx="15.5" cy="8.5" fill="currentColor" r="1.2" />
+      </svg>
+    );
+  }
+
+  if (name === "voice") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-5"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M4 12h2l1.5-4 3 8 3-9 2.5 6H20"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.7"
+        />
+      </svg>
+    );
+  }
+
+  if (name === "calls") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-5"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M8.1 4.5 5.8 6c.4 5.8 6.4 11.8 12.2 12.2l1.5-2.3-3.8-2.3-1.6 1.4a12.4 12.4 0 0 1-5-5l1.3-1.7-2.3-3.8Z"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.7"
+        />
+      </svg>
+    );
+  }
+
+  if (name === "code") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-5"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="m8.5 7-5 5 5 5m7-10 5 5-5 5m-2-12-3 14"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.7"
+        />
+      </svg>
+    );
+  }
+
+  if (name === "analytics") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-5"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M5 19V9m7 10V5m7 14v-7M3 19h18"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.7"
+        />
+      </svg>
+    );
+  }
 
   return (
-    <div className="hcr-site sln-site">
-      <SiteHeader />
+    <svg aria-hidden="true" className="size-5" fill="none" viewBox="0 0 24 24">
+      <circle cx="9" cy="8" r="3" stroke="currentColor" strokeWidth="1.7" />
+      <path
+        d="M3.5 19c.5-3.3 2.3-5 5.5-5s5 1.7 5.5 5M15 8h5m-2.5-2.5v5"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth="1.7"
+      />
+    </svg>
+  );
+}
 
-      <main className="hcr-page cmp-page">
-        {/* ==================================================================
-            1. 2-COLUMN EDITORIAL HERO (Compact Headings + Support Ledger)
-            ================================================================== */}
-        <section className="cmp-hero hcr-wrap">
-          <div className="hcr-breadcrumb">
-            <Link href="/">Home</Link>
-            <span>/</span>
-            <span>Support &amp; Help Center</span>
+export function HelpCenterPage() {
+  return (
+    <SiteLayout>
+      <main className="help-center-page min-h-screen bg-white text-[#14231f]">
+        <section className="border-b border-[#e5ebe8] bg-white px-5 pb-16 pt-28 sm:px-8 sm:pt-32 lg:px-12">
+          <div className="mx-auto max-w-[1080px] text-center">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#0d806e]">
+              Help center
+            </p>
+
+            <h1 className="mx-auto mt-4 max-w-[900px] text-4xl font-semibold leading-[1.15] tracking-[-0.04em] text-[#14231f] sm:text-6xl sm:leading-[1.12]">
+              Your guide to better voice experiences.
+            </h1>
+
+            <p className="mx-auto mt-5 max-w-[680px] text-base leading-8 text-[#5d6c67]">
+              Find practical answers for building, launching, and managing
+              reliable AI voice experiences.
+            </p>
           </div>
+        </section>
 
-          <div className="cmp-hero-stage">
-            <div className="cmp-hero-grid">
-              <div className="cmp-hero-left">
-                <p className="hcr-kicker">VOZON SUPPORT · HELP CENTER</p>
-                <h1>Your guide to better voice experiences.</h1>
-                <p className="cmp-hero-lead">
-                  Find practical answers for building, launching, and troubleshooting reliable AI
-                  voice agents, SIP trunks, and CRM integrations.
+        <section className="relative overflow-hidden bg-white px-5 pb-6 pt-0 sm:px-8 lg:px-12 lg:pb-8">
+          <div className="relative mx-auto mt-16 max-w-[1260px]">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#0d806e]">
+                Browse help
+              </p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#14231f] sm:text-4xl">
+                Find the right starting point.
+              </h2>
+            </div>
+
+            <div className="relative mt-10">
+              <div className="relative grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                {helpTopics.map((topic) => (
+                  <article
+                    key={topic.title}
+                    className={`group relative overflow-hidden rounded-xl border p-5 shadow-[0_10px_30px_rgba(20,35,31,0.05)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(20,35,31,0.08)] ${topic.accent}`}
+                  >
+                    {/* Blue left rail */}
+                    <div
+                      aria-hidden="true"
+                      className="absolute inset-y-0 left-0 w-1 bg-[#15967f]"
+                    />
+
+                    {/* Content */}
+                    <div className="pl-2">
+                      <div className="flex items-start justify-between gap-3">
+                        {/* Topic Icon */}
+                        <div className="grid size-11 place-items-center rounded-xl border border-[#b8d9d1] bg-[#edf8f5] text-[#0d806e]">
+                          <TopicIcon name={topic.icon} />
+                        </div>
+                      </div>
+
+                      <h3 className="mt-5 text-base font-semibold tracking-[-0.02em] text-[#14231f]">
+                        {topic.title}
+                      </h3>
+
+                      <p className="mt-2 text-sm leading-6 text-[#5d6c67]">
+                        {topic.description}
+                      </p>
+
+                      <span className="mt-5 inline-flex rounded-full bg-[#edf8f5] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#0d806e]">
+                        {topic.guides}
+                      </span>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-10">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#0d806e]">
+                  Popular guides
                 </p>
-                <div className="cmp-hero-actions">
-                  <Link href="/docs/api" className="cmp-btn-primary">
-                    Explore API docs <span aria-hidden="true">&#8599;</span>
-                  </Link>
-                  <Link href="/contact" className="cmp-btn-secondary">
-                    Contact support <span aria-hidden="true">&#8599;</span>
-                  </Link>
-                </div>
+                <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#14231f]">
+                  Step-by-step help for common tasks.
+                </h2>
               </div>
 
-              <div className="cmp-ledger" aria-label="Support channels">
-                <div className="cmp-ledger-head">
-                  <span>SUPPORT CHANNELS</span>
-                  <span className="cmp-ledger-badge">
-                    <i aria-hidden="true" /> Systems Operational
-                  </span>
+              <div className="relative mt-9">
+                {/* same border treatment: darker blush border, left rail uncovered */}
+                <div className="relative overflow-hidden rounded-2xl border border-[#dfe7e3] bg-white shadow-[0_10px_30px_rgba(20,35,31,0.05)]">
+                  {/* left purple rail — full height, not covered */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-y-0 left-0 z-10 w-1 bg-[#15967f]"
+                  />
+
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3">
+                    {popularGuides.map((guide, index) => (
+                      <Link
+                        key={guide.title}
+                        href={guide.href}
+                        className={`group flex min-h-[200px] flex-col justify-between p-5 pl-6 transition hover:bg-[#f7faf9] ${
+                          index < popularGuides.length - 1
+                            ? "border-b border-[#e5ebe8]"
+                            : ""
+                        } md:border-b md:border-[#e5ebe8] lg:[&:nth-child(3n)]:border-r-0 md:[&:nth-child(odd)]:border-r md:[&:nth-child(odd)]:border-[#e5ebe8] lg:border-r lg:border-[#e5ebe8]`}
+                      >
+                        <div>
+                          <div className="flex items-start justify-between gap-3">
+                            <span className="inline-flex rounded-full bg-[#edf8f5] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#0d806e]">
+                              {guide.category}
+                            </span>
+                          </div>
+
+                          <h3 className="mt-4 text-base font-semibold tracking-[-0.02em] text-[#14231f] transition group-hover:text-[#0d806e]">
+                            {guide.title}
+                          </h3>
+
+                          <p className="mt-2 text-sm leading-6 text-[#5d6c67]">
+                            {guide.description}
+                          </p>
+                        </div>
+
+                        <span className="mt-5 inline-flex items-center gap-1.5 text-xs font-semibold text-[#0d806e] transition group-hover:gap-2.5">
+                          Read guide
+                          <span aria-hidden="true">→</span>
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+
+                  {/* right rail stays as-is */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-y-0 right-0 w-1 bg-[#15967f]"
+                  />
                 </div>
-                <Link href="/docs/api" className="cmp-ledger-link">
-                  <div>
-                    <strong>REST &amp; Streaming API Reference</strong>
-                    <small>Endpoints, webhooks &amp; SSE call events</small>
-                  </div>
-                  <span>Docs &rarr;</span>
-                </Link>
-                <Link href="/resources/changelog" className="cmp-ledger-link">
-                  <div>
-                    <strong>Platform Changelog</strong>
-                    <small>Latest voice engine &amp; SDK updates</small>
-                  </div>
-                  <span>View &rarr;</span>
-                </Link>
-                <Link href="/resources/blog" className="cmp-ledger-link">
-                  <div>
-                    <strong>Implementation Field Guides</strong>
-                    <small>Best practices for low-latency call design</small>
-                  </div>
-                  <span>Guides &rarr;</span>
-                </Link>
-                <Link href="/contact" className="cmp-ledger-link">
-                  <div>
-                    <strong>Direct Engineering Support</strong>
-                    <small>hello@vozon.ai · &lt; 4h response SLA</small>
-                  </div>
-                  <span>Ticket &rarr;</span>
-                </Link>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ==================================================================
-            2. TOPIC CATEGORIES (3-Column Clean Cards)
-            ================================================================== */}
-        <section className="hcr-platform hcr-wrap" style={{ paddingTop: "24px" }}>
-          <p className="hcr-kicker">BROWSE HELP</p>
-          <h2>Find the right starting point.</h2>
+        <section className="bg-white px-5 py-6 sm:px-8 lg:px-12 lg:py-8">
+          <div className="mx-auto grid max-w-[1260px] gap-12 lg:grid-cols-[0.72fr_1.28fr] lg:gap-20">
+            {/* left — unchanged copy */}
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#0d806e]">
+                Common questions
+              </p>
+              <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-[#14231f] sm:text-4xl">
+                Quick answers, clearly explained.
+              </h2>
+              <p className="mt-5 text-sm leading-7 text-[#5d6c67]">
+                Start here for the questions teams ask most often while
+                designing and operating AI voice agents.
+              </p>
+            </div>
 
-          <div className="hcr-platform-grid">
-            {helpTopics.map((topic) => (
-              <Link key={topic.title} href={topic.href}>
-                <span>{topic.number}</span>
-                <h3>{topic.title}</h3>
-                <p>{topic.description}</p>
-                <strong>{topic.guides}</strong>
-              </Link>
-            ))}
-          </div>
-        </section>
+            {/* right — new card design, same faqs data */}
 
-        {/* ==================================================================
-            3. POPULAR GUIDES (2-Column Launch Split)
-            ================================================================== */}
-        <section className="hcr-launch hcr-wrap">
-          <div>
-            <p className="hcr-kicker">POPULAR GUIDES</p>
-            <h2>Step-by-step answers for production teams.</h2>
-          </div>
-          <div className="hcr-launch-options">
-            {popularGuides.map((guide) => (
-              <div key={guide.title}>
-                <span>{guide.category}</span>
-                <h3>{guide.title}</h3>
-                <p>{guide.description}</p>
-                <Link href={guide.href}>
-                  Open guide <span aria-hidden="true">&#8599;</span>
-                </Link>
+            <div className="relative overflow-hidden rounded-2xl border border-[#dfe7e3] bg-white shadow-[0_10px_30px_rgba(20,35,31,0.05)]">
+              {/* left purple rail */}
+              <div
+                aria-hidden="true"
+                className="absolute inset-y-0 left-0 z-10 w-1 bg-[#15967f]"
+              />
+
+              {/* card header */}
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e5ebe8] px-5 py-4 sm:px-6">
+                <div className="inline-flex items-center gap-2.5">
+                  <span className="grid size-7 place-items-center rounded-full bg-[#edf8f5] text-sm font-bold text-[#0d806e]">
+                    ?
+                  </span>
+                  <span className="text-sm font-semibold text-[#14231f]">
+                    Top questions from builders
+                  </span>
+                </div>
+                <span className="inline-flex rounded-full border border-[#dfe7e3] bg-[#f7f9f8] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[#73807c]">
+                  Updated today
+                </span>
               </div>
-            ))}
+
+              {/* accordion list */}
+              <div className="divide-y divide-[#e5ebe8] px-5 sm:px-6">
+                {faqs.map((faq) => (
+                  <details className="group py-1" key={faq.question}>
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-3 marker:hidden">
+                      <span className="text-base font-semibold leading-snug text-[#14231f]">
+                        {faq.question}
+                      </span>
+
+                      <span className="grid size-8 shrink-0 place-items-center rounded-full border border-[#cddbd6] bg-white text-[#0d806e] transition group-open:border-transparent group-open:bg-[#15967f] group-open:text-white">
+                        <svg
+                          aria-hidden="true"
+                          className="size-3.5 group-open:hidden"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M12 5v14M5 12h14"
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeWidth="2"
+                          />
+                        </svg>
+                        <svg
+                          aria-hidden="true"
+                          className="hidden size-3.5 group-open:block"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M5 12h14"
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeWidth="2"
+                          />
+                        </svg>
+                      </span>
+                    </summary>
+
+                    <p className="max-w-[640px] pb-5 pr-12 text-sm leading-7 text-[#5d6c67]">
+                      {faq.answer}
+                    </p>
+                  </details>
+                ))}
+              </div>
+
+              {/* card footer */}
+              <div className="border-t border-[#e5ebe8] bg-[#f7faf9] px-5 py-4 sm:px-6">
+                <a
+                  href="mailto:hello@vozon.ai"
+                  className="inline-flex items-center gap-1.5 text-xs font-medium text-[#5d6c67] transition hover:text-[#0d806e]"
+                >
+                  Still stuck? Ask support
+                  <span aria-hidden="true">→</span>
+                </a>
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* ==================================================================
-            4. SUPPORT FAQ ACCORDION
-            ================================================================== */}
-        <section className="hcr-faq hcr-wrap">
-          <p className="hcr-kicker">COMMON QUESTIONS</p>
-          <h2>Quick answers from our engineering team.</h2>
+        <section className="bg-white px-5 pb-20 pt-6 sm:px-8 lg:px-12 lg:pb-24 lg:pt-8">
+          <div className="mx-auto max-w-[1260px]">
+            <div className="text-center">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#0d806e]">
+                Contact support
+              </p>
+              <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-[#14231f] sm:text-4xl">
+                Still need a hand?
+              </h2>
+              <p className="mx-auto mt-4 max-w-[600px] text-sm leading-7 text-[#5d6c67]">
+                Choose the support path that best matches your question.
+              </p>
+            </div>
 
-          <div className="hcr-faq-list">
-            {supportFaqs.map((faq, idx) => (
-              <details
-                key={faq.question}
-                open={activeFaq === idx}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActiveFaq(activeFaq === idx ? null : idx);
-                }}
+            <div className="mt-10 grid gap-5 md:grid-cols-3">
+              {/* Email */}
+              <a
+                href="mailto:hello@vozon.ai"
+                className="group relative overflow-hidden rounded-2xl border border-[#dfe7e3] bg-white p-6 shadow-[0_10px_30px_rgba(20,35,31,0.05)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(20,35,31,0.08)]"
               >
-                <summary>
-                  {faq.question}
-                  <span>+</span>
-                </summary>
-                <p>{faq.answer}</p>
-              </details>
-            ))}
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-y-0 left-0 w-1 bg-[#15967f]"
+                />
+
+                <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#73807c]">
+                  Email
+                </p>
+                <h3 className="mt-3 text-base font-semibold tracking-[-0.02em] text-[#14231f]">
+                  Email our support team
+                </h3>
+                <p className="mt-2 text-sm leading-6 text-[#5d6c67]">
+                  Send details, screenshots, or call references to
+                  hello@vozon.ai.
+                </p>
+                <span className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-[#edf8f5] px-3.5 py-1.5 text-xs font-semibold text-[#0d806e] transition group-hover:gap-2.5">
+                  Send an email
+                  <span aria-hidden="true">→</span>
+                </span>
+              </a>
+
+              {/* General help */}
+              <Link
+                href="/contact"
+                className="group relative overflow-hidden rounded-2xl border border-[#dfe7e3] bg-white p-6 shadow-[0_10px_30px_rgba(20,35,31,0.05)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(20,35,31,0.08)]"
+              >
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-y-0 left-0 w-1 bg-[#15967f]"
+                />
+
+                <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#73807c]">
+                  General help
+                </p>
+                <h3 className="mt-3 text-base font-semibold tracking-[-0.02em] text-[#14231f]">
+                  Contact our team
+                </h3>
+                <p className="mt-2 text-sm leading-6 text-[#5d6c67]">
+                  Get help with setup, workflows, account questions, or
+                  production planning.
+                </p>
+                <span className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-[#edf8f5] px-3.5 py-1.5 text-xs font-semibold text-[#0d806e] transition group-hover:gap-2.5">
+                  Contact support
+                  <span aria-hidden="true">→</span>
+                </span>
+              </Link>
+
+              {/* Technical help */}
+              <Link
+                href="/dashboard/developers"
+                className="group relative overflow-hidden rounded-2xl border border-[#dfe7e3] bg-white p-6 shadow-[0_10px_30px_rgba(20,35,31,0.05)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(20,35,31,0.08)]"
+              >
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-y-0 left-0 w-1 bg-[#15967f]"
+                />
+
+                <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#73807c]">
+                  Technical help
+                </p>
+                <h3 className="mt-3 text-base font-semibold tracking-[-0.02em] text-[#14231f]">
+                  Visit the developer portal
+                </h3>
+                <p className="mt-2 text-sm leading-6 text-[#5d6c67]">
+                  Review API access, integrations, webhook setup, and developer
+                  tools.
+                </p>
+                <span className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-[#edf8f5] px-3.5 py-1.5 text-xs font-semibold text-[#0d806e] transition group-hover:gap-2.5">
+                  Open developer portal
+                  <span aria-hidden="true">→</span>
+                </span>
+              </Link>
+            </div>
           </div>
         </section>
       </main>
-
-      <SiteFooter />
-    </div>
+    </SiteLayout>
   );
 }

@@ -207,7 +207,7 @@ export function VoiceCloneModal({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[#22312d] bg-[#141f1c] px-6 py-4">
           <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-[#171717] text-white">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-black shadow-lg shadow-emerald-500/20">
               <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
                   strokeLinecap="round"
