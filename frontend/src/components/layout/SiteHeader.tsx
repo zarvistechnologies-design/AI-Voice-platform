@@ -319,7 +319,7 @@ export function SiteHeader() {
 
   return (
     <div className={`public-accent-header ${isScrolled ? "is-scrolled" : ""}`}>
-      {/* Top Thin Announcement Banner Bar (matching Thinnest.AI style) */}
+      {/* Top announcement for upcoming speech APIs */}
       <div className="site-announcement-bar" role="banner" aria-label="Platform announcement">
         <div className="site-announcement-inner">
           <span className="site-announcement-icon" aria-hidden="true">
@@ -420,7 +420,7 @@ export function SiteHeader() {
           </Link>
 
           <Link
-            className="rounded-full bg-black px-5 py-2 text-[13.5px] font-medium text-white transition-all hover:bg-neutral-800 shadow-sm"
+            className="rounded-full bg-blue-600 px-5 py-2 text-[13.5px] font-medium text-white transition-all hover:bg-blue-700 shadow-sm"
             href="/login"
             onClick={closeAll}
           >
@@ -584,7 +584,7 @@ export function SiteHeader() {
                 Book a Demo
               </Link>
               <Link
-                className="rounded-full bg-black py-2.5 text-center text-sm font-medium text-white shadow-sm"
+                className="rounded-full bg-blue-600 py-2.5 text-center text-sm font-medium text-white shadow-sm hover:bg-blue-700"
                 href="/login"
                 onClick={closeAll}
               >
