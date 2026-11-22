@@ -524,3 +524,17 @@ html:not([data-brand-source="white_label"]) .dashboard-home-theme .dashboard-sid
 html:not([data-brand-source="white_label"]) .dashboard-home-theme :where(button, a, input, select, textarea):focus-visible {
   outline-color: #2563eb;
 }
+
+/* Keep submenu labels readable when a dark sidebar item is hovered. */
+.dashboard-home-theme .dashboard-sidebar a.dashboard-sidebar-subitem[aria-current="page"],
+.dashboard-home-theme .dashboard-sidebar a.dashboard-sidebar-subitem[aria-current="page"]:hover {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+}
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme .dashboard-sidebar a.dashboard-sidebar-subitem:not([aria-current="page"]):hover {
+  background-color: #27272a !important;
+  color: #ffffff !important;
+}
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme .dashboard-sidebar a.dashboard-sidebar-subitem:not([aria-current="page"]):hover > span {
+  color: #ffffff !important;
+}

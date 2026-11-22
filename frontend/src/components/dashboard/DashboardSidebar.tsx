@@ -771,10 +771,11 @@ export function DashboardSidebar({
                                     onFocus={() => prefetchDashboardRoute(subItem.href)}
                                     onMouseEnter={() => prefetchDashboardRoute(subItem.href)}
                                     onPointerDown={() => prefetchDashboardRoute(subItem.href)}
-                                    className={`group/sub flex h-8 items-center gap-2.5 rounded-md px-2.5 text-[12.5px] transition-colors ${isSubActive
+                                    className={`dashboard-sidebar-subitem group/sub flex h-8 items-center gap-2.5 rounded-md px-2.5 text-[12.5px] transition-colors ${isSubActive
                                       ? "bg-blue-600 text-white font-medium"
                                       : "text-[#52525b] hover:bg-[#f4f4f5] hover:text-[#171717]"
                                       }`}
+                                    aria-current={isSubActive ? "page" : undefined}
                                   >
                                     <span
                                       className={`grid size-4.5 shrink-0 place-items-center transition ${isSubActive
@@ -896,10 +897,11 @@ export function DashboardSidebar({
                                 onFocus={() => prefetchDashboardRoute(subItem.href)}
                                 onMouseEnter={() => prefetchDashboardRoute(subItem.href)}
                                 onPointerDown={() => prefetchDashboardRoute(subItem.href)}
-                                className={`group/sub flex h-8 items-center gap-2.5 rounded-md px-2.5 text-[12.5px] transition-colors ${isSubActive
+                                className={`dashboard-sidebar-subitem group/sub flex h-8 items-center gap-2.5 rounded-md px-2.5 text-[12.5px] transition-colors ${isSubActive
                                   ? "bg-blue-600 text-white font-medium"
                                   : "text-[#52525b] hover:bg-[#f4f4f5] hover:text-[#171717]"
                                   }`}
+                                aria-current={isSubActive ? "page" : undefined}
                               >
                                 <span
                                   className={`grid size-4.5 shrink-0 place-items-center transition ${isSubActive
