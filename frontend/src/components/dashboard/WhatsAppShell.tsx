@@ -375,6 +375,15 @@ export function WhatsAppShell({ initialTab = "campaigns" }: WhatsAppShellProps) 
             </div>
           )}
 
+          {isConnected && connectionStatus?.webhook &&
+            (!connectionStatus.webhook.receiverReady || !connectionStatus.webhook.subscribed) && (
+              <div className="rounded-lg border border-amber-300 bg-amber-50 px-3.5 py-2.5 text-[12.5px] text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200">
+                {!connectionStatus.webhook.receiverReady
+                  ? "WhatsApp inbound messages are blocked: set META_APP_SECRET on the backend and restart it."
+                  : "WhatsApp inbound webhook subscription is not active. The backend will retry; check the Meta app’s messages webhook subscription if chats still do not arrive."}
+              </div>
+            )}
+
           {/* Sub-feature Views */}
           {loading ? (
             <div className="grid h-64 place-items-center text-[12.5px] text-[#71717a] dark:text-zinc-400">

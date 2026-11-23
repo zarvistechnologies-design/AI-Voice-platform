@@ -244,6 +244,10 @@ export type WhatsAppConnectionStatus = {
     isPrimary?: boolean;
   };
   accounts?: WhatsAppAccountItem[];
+  webhook?: {
+    subscribed: boolean;
+    receiverReady: boolean;
+  };
 };
 
 async function req<T>(path: string, options: RequestInit = {}): Promise<T> {
