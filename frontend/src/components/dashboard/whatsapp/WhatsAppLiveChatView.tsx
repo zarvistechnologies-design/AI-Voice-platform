@@ -79,8 +79,20 @@ export function WhatsAppLiveChatView({
         if (!cancelled) setLoadingMessages(false);
       });
 
+    // The webhook writes inbound messages to the database. Refresh the open
+    // transcript periodically so agents see those messages in the active chat.
+    const refreshInterval = window.setInterval(() => {
+      void whatsappApi
+        .getMessages(selectedConversation._id)
+        .then((msgRes) => {
+          if (!cancelled && msgRes.ok) setMessages(msgRes.messages || []);
+        })
+        .catch((err) => console.warn("Failed to refresh messages:", err));
+    }, 8_000);
+
     return () => {
       cancelled = true;
+      window.clearInterval(refreshInterval);
     };
   }, [selectedConversation?._id]);
 

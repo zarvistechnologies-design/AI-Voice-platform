@@ -249,6 +249,13 @@ export function WhatsAppShell({ initialTab = "campaigns" }: WhatsAppShellProps) 
     void loadData();
   }, []);
 
+  // Keep webhook-delivered chats visible without requiring a manual page refresh.
+  useEffect(() => {
+    if (activeTab !== "live-chat") return;
+    const interval = window.setInterval(() => void loadData(true), 10_000);
+    return () => window.clearInterval(interval);
+  }, [activeTab]);
+
   const tabTitles: Record<WhatsAppTab, { title: string; desc: string }> = {
     templates: {
       title: "Templates",
