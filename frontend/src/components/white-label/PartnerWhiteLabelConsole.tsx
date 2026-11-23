@@ -92,6 +92,7 @@ function BrandEditor({
     secondaryColor: brand.branding.secondaryColor,
     accentColor: brand.branding.accentColor,
     surfaceColor: brand.branding.surfaceColor,
+    themeStyle: (brand.branding.themeStyle as "green" | "recent") || "green",
     supportEmail: brand.support.email,
     websiteUrl: brand.support.websiteUrl,
     helpCenterUrl: brand.support.helpCenterUrl,
@@ -125,6 +126,7 @@ function BrandEditor({
           accentColor: form.accentColor,
           surfaceColor: form.surfaceColor,
           defaultTheme: brand.branding.defaultTheme,
+          themeStyle: form.themeStyle,
           poweredByText: brand.branding.poweredByText,
         },
         support: { ...brand.support, email: form.supportEmail, websiteUrl: form.websiteUrl, helpCenterUrl: form.helpCenterUrl },
@@ -155,6 +157,7 @@ function BrandEditor({
               surface: form.surfaceColor,
             },
             defaultTheme: brand.branding.defaultTheme,
+            themeStyle: form.themeStyle,
             support: { ...brand.support, email: form.supportEmail, websiteUrl: form.websiteUrl, helpCenterUrl: form.helpCenterUrl },
             legal: { ...brand.legal, termsUrl: form.termsUrl, privacyUrl: form.privacyUrl, legalBusinessName: form.legalBusinessName },
             poweredBy: { visible: false, text: "" },
@@ -231,6 +234,7 @@ function BrandEditor({
               surface: form.surfaceColor,
             },
             defaultTheme: brand.branding.defaultTheme,
+            themeStyle: form.themeStyle,
             support: { ...brand.support, email: form.supportEmail, websiteUrl: form.websiteUrl, helpCenterUrl: form.helpCenterUrl },
             legal: { ...brand.legal, termsUrl: form.termsUrl, privacyUrl: form.privacyUrl, legalBusinessName: form.legalBusinessName },
             poweredBy: { visible: false, text: "" },
@@ -258,6 +262,54 @@ function BrandEditor({
     <div className="grid gap-4 md:grid-cols-2"><Input label="Product name" required value={form.productName} onChange={(event) => set("productName", event.target.value)} /><Input label="Legal/company display name" required value={form.companyName} onChange={(event) => set("companyName", event.target.value)} /></div>
     <div className="grid gap-4 md:grid-cols-3">{([['logo', 'Logo URL (HTTPS)', 'logoUrl'], ['logoDark', 'Dark logo URL (HTTPS)', 'logoDarkUrl'], ['icon', 'Square icon URL (HTTPS)', 'iconUrl']] as const).map(([role, label, key]) => <div className="grid gap-2" key={role}><Input label={label} required={role !== "logoDark"} type="url" value={form[key]} onChange={(event) => set(key, event.target.value)} /><label className="inline-flex min-h-10 cursor-pointer items-center justify-center rounded-lg border border-[#d8e2df] bg-[#f8faf9] px-3 text-xs font-semibold text-[#40564f] transition hover:border-[#b8cbc5] hover:bg-[#f1f6f4]"><input accept="image/avif,image/gif,image/jpeg,image/png,image/webp,image/x-icon" className="sr-only" disabled={busy || Boolean(uploading)} type="file" onChange={(event) => void uploadAsset(role, event.target.files?.[0])} />{uploading === role ? "Uploading…" : "Upload managed image"}</label></div>)}</div>
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{(["primaryColor", "secondaryColor", "accentColor", "surfaceColor"] as const).map((key) => <label className={labelClass} key={key}><span>{key.replace("Color", " color")}</span><span className="flex gap-2"><input aria-label={`${key} picker`} className="h-11 w-12 rounded-lg border border-[#d8e2df] bg-white p-1" type="color" value={form[key].slice(0, 7)} onChange={(event) => set(key, event.target.value)} /><input className={fieldClass} pattern="#[0-9a-fA-F]{6}" value={form[key]} onChange={(event) => set(key, event.target.value)} /></span></label>)}</div>
+    
+    {/* Dashboard Theme Style Selector */}
+    <div className="rounded-xl border border-[#dce7e3] bg-[#f8faf9] p-4">
+      <div className="flex flex-col gap-1 mb-3">
+        <label className="text-xs font-bold text-[#1d342e]">
+          Dashboard Theme Style
+        </label>
+        <p className="text-[11px] text-[#71817d]">
+          Choose the theme appearance for your white-label portal. Existing users see the classic green styling by default; new onboarding can use recent monochrome.
+        </p>
+      </div>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <button
+          type="button"
+          onClick={() => set("themeStyle", "green")}
+          className={`flex items-start gap-3 p-3.5 rounded-lg border text-left transition cursor-pointer ${
+            form.themeStyle === "green"
+              ? "border-[#168a78] bg-[#eff8f5] shadow-xs ring-2 ring-[#168a78]/20"
+              : "border-[#d8e2df] bg-white hover:border-[#b8cbc5]"
+          }`}
+        >
+          <span className="mt-0.5 size-4 rounded-full bg-[#168a78] shrink-0" />
+          <div>
+            <div className="text-xs font-bold text-[#1d342e]">🌿 Classic Green Theme (Original)</div>
+            <div className="text-[11px] text-[#556963] mt-0.5">
+              Original teal & emerald green accents preserved for existing white-label users.
+            </div>
+          </div>
+        </button>
+        <button
+          type="button"
+          onClick={() => set("themeStyle", "recent")}
+          className={`flex items-start gap-3 p-3.5 rounded-lg border text-left transition cursor-pointer ${
+            form.themeStyle === "recent"
+              ? "border-[#171717] bg-[#f4f4f5] shadow-xs ring-2 ring-black/20"
+              : "border-[#d8e2df] bg-white hover:border-[#b8cbc5]"
+          }`}
+        >
+          <span className="mt-0.5 size-4 rounded-full bg-[#171717] shrink-0" />
+          <div>
+            <div className="text-xs font-bold text-[#171717]">⚡ Modern Minimal Theme (Recent)</div>
+            <div className="text-[11px] text-[#666666] mt-0.5">
+              Clean monochrome black & white styling for new customer onboarding.
+            </div>
+          </div>
+        </button>
+      </div>
+    </div>
     <div className="grid gap-4 md:grid-cols-3"><Input label="Support email" required type="email" value={form.supportEmail} onChange={(event) => set("supportEmail", event.target.value)} /><Input label="Website URL" type="url" value={form.websiteUrl} onChange={(event) => set("websiteUrl", event.target.value)} /><Input label="Help center URL" type="url" value={form.helpCenterUrl} onChange={(event) => set("helpCenterUrl", event.target.value)} /></div>
     <div className="grid gap-4 md:grid-cols-3"><Input label="Terms URL" required type="url" value={form.termsUrl} onChange={(event) => set("termsUrl", event.target.value)} /><Input label="Privacy URL" required type="url" value={form.privacyUrl} onChange={(event) => set("privacyUrl", event.target.value)} /><Input label="Legal business name" required value={form.legalBusinessName} onChange={(event) => set("legalBusinessName", event.target.value)} /></div>
     
@@ -369,15 +421,6 @@ export function PartnerWhiteLabelConsole() {
   const [editingPlanId, setEditingPlanId] = useState("");
   const planModelsInitialized = useRef(false);
   const [customer, setCustomer] = useState({ organizationName: "", ownerName: "", ownerEmail: "", externalCustomerId: "", brandId: "", planId: "" });
-  const [editingCustomerPlan, setEditingCustomerPlan] = useState<{
-    orgId: string;
-    name: string;
-    planId: string;
-    includedMinutes: string;
-    agentLimit: string;
-    concurrentCalls: string;
-    resetUsagePeriod: boolean;
-  } | null>(null);
   const [gateway, setGateway] = useState<WhiteLabelPaymentGateway | null>(null);
   const [gatewayForm, setGatewayForm] = useState({ keyId: "", keySecret: "", webhookSecret: "" });
   const [showSecretInput, setShowSecretInput] = useState(false);
@@ -426,10 +469,10 @@ export function PartnerWhiteLabelConsole() {
 
   useEffect(() => {
     if (!session) { router.replace("/login?next=/dashboard/white-label"); return; }
-    void validateStoredSession();
+    void validateStoredSession({ force: true });
     const timer = window.setTimeout(() => void load(), 0);
     return () => window.clearTimeout(timer);
-  }, [load, router, session?.id, session?.organization?.id]);
+  }, [load, router, session]);
 
   const defaultBrand = overview?.brands.find((item) => item.isDefault) ?? overview?.brands[0];
   const publishedPlans = useMemo(() => overview?.plans.filter((item) => item.status === "published") ?? [], [overview]);
@@ -512,37 +555,6 @@ export function PartnerWhiteLabelConsole() {
     setCustomer((value) => ({ ...value, organizationName: "", ownerName: "", ownerEmail: "", externalCustomerId: "" }));
   }
 
-  function openCustomerPlanEditor(item: WhiteLabelCustomer) {
-    const matchedPlan = publishedPlans.find(
-      (p) => documentId(p) === String(item.subscription?.planId ?? "")
-        || (p.key === item.subscription?.planKey && p.version === item.subscription?.planVersion),
-    );
-    setEditingCustomerPlan({
-      orgId: documentId(item),
-      name: item.name,
-      planId: matchedPlan ? documentId(matchedPlan) : "",
-      includedMinutes: String(item.subscription?.allowancesSnapshot?.includedMinutes ?? matchedPlan?.allowances.includedMinutes ?? 0),
-      agentLimit: String(item.subscription?.limitsSnapshot?.agents ?? matchedPlan?.limits.agents ?? 10),
-      concurrentCalls: String(item.subscription?.limitsSnapshot?.concurrentCalls ?? matchedPlan?.limits.concurrentCalls ?? 5),
-      resetUsagePeriod: false,
-    });
-  }
-
-  async function saveCustomerPlan(event: FormEvent) {
-    event.preventDefault();
-    if (!editingCustomerPlan) return;
-    await perform(async () => {
-      await partnerWhiteLabelApi.changeCustomerPlan(editingCustomerPlan.orgId, {
-        ...(editingCustomerPlan.planId ? { planId: editingCustomerPlan.planId } : {}),
-        includedMinutes: Number(editingCustomerPlan.includedMinutes),
-        agentLimit: Number(editingCustomerPlan.agentLimit),
-        concurrentCalls: Number(editingCustomerPlan.concurrentCalls),
-        resetUsagePeriod: editingCustomerPlan.resetUsagePeriod,
-      });
-      setEditingCustomerPlan(null);
-    }, `Updated plan and allowances for ${editingCustomerPlan.name}.`);
-  }
-
   async function payPartnerInvoice() {
     if (!billing?.currentInvoice) return;
     setBusy(true);
@@ -612,36 +624,7 @@ export function PartnerWhiteLabelConsole() {
     <DashboardSidebar activeLabel="White label" userInitials={initials(session.name)} userName={session.name} userEmail={session.email} onLogout={() => void logoutSession().then(() => router.replace("/login"))} showUserSidebar={showUserSidebar} setShowUserSidebar={setShowUserSidebar} />
     <section className="min-w-0 p-4 sm:p-6"><div className="mx-auto grid max-w-[1500px] gap-5">
       <header className="overflow-hidden rounded-2xl border border-[#dce7e3] bg-[linear-gradient(120deg,#ffffff_0%,#f4faf8_70%,#eaf6f2_100%)] p-6 shadow-[0_10px_30px_rgba(28,55,47,0.06)] sm:p-8">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <span className="text-xs font-bold uppercase tracking-[0.18em] text-[#118778]">Partner workspace</span>
-            <h1 className="mt-2 text-3xl font-bold tracking-tight text-[#14231f] sm:text-4xl">{overview.account.name}</h1>
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-[#647771]">Manage your brand, domains, pricing, customers and platform contract from one secure workspace.</p>
-          </div>
-          <div className="flex flex-wrap items-center gap-3">
-            {overview.wallet ? (
-              <div className="flex items-center gap-3 rounded-xl border border-[#b9ded5] bg-white px-4 py-2.5 shadow-sm">
-                <div>
-                  <span className="block text-[10px] font-bold uppercase tracking-wider text-[#68827c]">Master Wallet Balance</span>
-                  <span className="block text-lg font-bold text-[#116f62]">
-                    {overview.wallet.currency === "INR" ? "₹" : "$"}{overview.wallet.balanceCredits.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => router.push("/dashboard/billing")}
-                  className="rounded-lg bg-[#118778] px-3 py-1.5 text-xs font-semibold text-white shadow hover:bg-[#0e7467] transition"
-                >
-                  Top Up
-                </button>
-              </div>
-            ) : null}
-            <div className="flex gap-2">
-              <Status value={overview.account.status} />
-              <Status value={overview.account.billingStatus} />
-            </div>
-          </div>
-        </div>
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between"><div><span className="text-xs font-bold uppercase tracking-[0.18em] text-[#118778]">Partner workspace</span><h1 className="mt-2 text-3xl font-bold tracking-tight text-[#14231f] sm:text-4xl">{overview.account.name}</h1><p className="mt-2 max-w-3xl text-sm leading-6 text-[#647771]">Manage your brand, domains, pricing, customers and platform contract from one secure workspace.</p></div><div className="flex gap-2"><Status value={overview.account.status} /><Status value={overview.account.billingStatus} /></div></div>
       </header>
       {notice ? <div className={`rounded-lg border px-4 py-3 text-sm font-semibold ${notice.tone === "error" || notice.tone === "critical" ? "border-rose-200 bg-rose-50 text-rose-700" : notice.tone === "success" ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-sky-200 bg-sky-50 text-sky-700"}`}>{notice.message}</div> : null}
       <nav className="flex gap-1 overflow-x-auto rounded-xl border border-[#dde6e3] bg-white p-1.5 shadow-[0_6px_18px_rgba(28,55,47,0.04)]" aria-label="White-label administration">{tabs.map((item) => <button className={`shrink-0 rounded-lg px-4 py-2.5 text-xs font-semibold transition ${tab === item.id ? "bg-[#126f62] !text-white shadow-sm" : "text-[#647771] hover:bg-[#f1f6f4] hover:text-[#29423b]"}`} style={tab === item.id ? { color: "#ffffff" } : undefined} key={item.id} onClick={() => setTab(item.id)}>{item.label}</button>)}</nav>
@@ -659,102 +642,11 @@ export function PartnerWhiteLabelConsole() {
       </div> : null}
 
       {tab === "plans" ? <div className="grid gap-5"><Card><SectionTitle title={editingPlanId ? "Edit draft price version" : "Create customer price version"} description="Enter selling prices and choose a model subset within the super-admin contract ceiling. Published versions are immutable." /><form className="grid gap-4 p-5" onSubmit={savePlan}><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"><Input label="Plan name" required value={plan.name} onChange={(event) => setPlan((value) => ({ ...value, name: event.target.value }))} /><Input disabled={Boolean(editingPlanId)} label="Stable key" required value={plan.key} onChange={(event) => setPlan((value) => ({ ...value, key: event.target.value }))} /><Select label="Currency" value={plan.currency} onChange={(event) => setPlan((value) => ({ ...value, currency: event.target.value }))}><option>USD</option><option>INR</option></Select><Input label="Monthly price" min="0" required step="0.01" type="number" value={plan.monthlyPrice} onChange={(event) => setPlan((value) => ({ ...value, monthlyPrice: event.target.value }))} /></div><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"><Input label="Setup fee" min="0" step="0.01" type="number" value={plan.setupFee} onChange={(event) => setPlan((value) => ({ ...value, setupFee: event.target.value }))} /><Input label="Trial days" min="0" type="number" value={plan.trialDays} onChange={(event) => setPlan((value) => ({ ...value, trialDays: event.target.value }))} /><Select label="Usage charging" value={plan.usageMode} onChange={(event) => setPlan((value) => ({ ...value, usageMode: event.target.value }))}><option value="cost_markup">Provider cost + markup</option><option value="fixed_per_minute">Fixed per minute</option><option value="included_only">Included minutes only</option></Select><Input label={plan.usageMode === "fixed_per_minute" ? "Price per minute" : "Usage markup %"} min="0" step="0.01" type="number" value={plan.usageMode === "fixed_per_minute" ? plan.perMinute : plan.markupPercent} onChange={(event) => setPlan((value) => plan.usageMode === "fixed_per_minute" ? ({ ...value, perMinute: event.target.value }) : ({ ...value, markupPercent: event.target.value }))} /></div><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"><Input label="Included minutes" min="0" type="number" value={plan.includedMinutes} onChange={(event) => setPlan((value) => ({ ...value, includedMinutes: event.target.value }))} /><Input label="Agent limit" max={overview.account.limits.agentsPerCustomer} min="0" type="number" value={plan.agents} onChange={(event) => setPlan((value) => ({ ...value, agents: event.target.value }))} /><Input label="Member limit" max={overview.account.limits.membersPerCustomer} min="1" type="number" value={plan.members} onChange={(event) => setPlan((value) => ({ ...value, members: event.target.value }))} /><Input label="Phone-number limit" max={overview.account.limits.phoneNumbersPerCustomer} min="0" type="number" value={plan.phoneNumbers} onChange={(event) => setPlan((value) => ({ ...value, phoneNumbers: event.target.value }))} /><Input label="Concurrent-call limit" max={overview.account.limits.concurrentCallsPerCustomer} min="1" type="number" value={plan.concurrentCalls} onChange={(event) => setPlan((value) => ({ ...value, concurrentCalls: event.target.value }))} /><Input label="Monthly-minute ceiling" max={overview.account.limits.monthlyMinutesPerCustomer} min="0" type="number" value={plan.monthlyMinutes} onChange={(event) => setPlan((value) => ({ ...value, monthlyMinutes: event.target.value }))} /></div><ModelAccessPicker catalog={overview.modelAccessCatalog} disabled={busy} onChange={(modelAccess) => setPlan((value) => ({ ...value, modelAccess }))} value={plan.modelAccess} /><div className="flex justify-end gap-2">{editingPlanId ? <button className={secondaryButtonClass} disabled={busy} onClick={() => setEditingPlanId("")} type="button">Cancel editing</button> : null}<button className={buttonClass} disabled={busy}>{editingPlanId ? "Save draft changes" : "Create draft version"}</button></div></form></Card>
-        <div className="grid gap-4 lg:grid-cols-2">{overview.plans.map((item) => <Card className="p-5" key={documentId(item)}><div className="flex items-start justify-between gap-4"><div><div className="flex items-center gap-2"><h3 className="font-bold text-[#29423b]">{item.name}</h3><Status value={item.status} /></div><p className="mt-1 text-xs text-[#7b8b86]">{item.key} · version {item.version}</p></div><strong className="text-xl text-[#1d342e]">{money(item.price.recurringAmountMinor, item.price.currency)}<span className="text-xs font-medium text-[#7b8b86]">/{item.price.interval}</span></strong></div><div className="mt-4 grid grid-cols-2 gap-2 text-xs text-[#647771]"><span>{item.allowances.includedMinutes.toLocaleString()} included min</span><span>{item.limits.agents} agents</span><span>{item.limits.concurrentCalls} concurrent calls</span><span>{item.usagePricing.mode.replaceAll("_", " ")}</span><span>{item.modelAccess?.stt.length ?? "Inherited"} STT models</span><span>{item.modelAccess?.llm.length ?? "Inherited"} LLM/realtime models</span><span>{item.modelAccess?.tts.length ?? "Inherited"} TTS models</span></div><div className="mt-5 flex flex-wrap gap-2">{item.status === "draft" ? <><button className={secondaryButtonClass} disabled={busy} onClick={() => editPlan(item)}>Edit draft</button><button className={buttonClass} disabled={busy} onClick={() => void perform(() => partnerWhiteLabelApi.publishPlan(documentId(item)), `${item.name} version ${item.version} published.`)}>Publish immutable version</button></> : null}{item.status === "published" ? <><button className={secondaryButtonClass} disabled={busy} onClick={() => void perform(() => partnerWhiteLabelApi.revisePlan(documentId(item)), "Draft revision created from the published snapshot.")}>Create revision</button>{item.version > 1 ? <button className={secondaryButtonClass} disabled={busy} onClick={() => { if (window.confirm(`Update all active customers on older versions of "${item.name}" to v${item.version}?`)) void perform(async () => { const res = await partnerWhiteLabelApi.syncPlanSubscribers(documentId(item)); return `Synced ${res.updatedCount} customer(s) to ${item.name} v${item.version}.`; }, `${item.name} v${item.version} synced to existing customers.`); }}>Sync existing users</button> : null}<button className={secondaryButtonClass} disabled={busy} onClick={() => void perform(() => partnerWhiteLabelApi.archivePlan(documentId(item)), "Plan archived for new sales; existing subscriptions retain their snapshot.")}>Archive</button></> : null}</div></Card>)}</div>
+        <div className="grid gap-4 lg:grid-cols-2">{overview.plans.map((item) => <Card className="p-5" key={documentId(item)}><div className="flex items-start justify-between gap-4"><div><div className="flex items-center gap-2"><h3 className="font-bold text-[#29423b]">{item.name}</h3><Status value={item.status} /></div><p className="mt-1 text-xs text-[#7b8b86]">{item.key} · version {item.version}</p></div><strong className="text-xl text-[#1d342e]">{money(item.price.recurringAmountMinor, item.price.currency)}<span className="text-xs font-medium text-[#7b8b86]">/{item.price.interval}</span></strong></div><div className="mt-4 grid grid-cols-2 gap-2 text-xs text-[#647771]"><span>{item.allowances.includedMinutes.toLocaleString()} included min</span><span>{item.limits.agents} agents</span><span>{item.limits.concurrentCalls} concurrent calls</span><span>{item.usagePricing.mode.replaceAll("_", " ")}</span><span>{item.modelAccess?.stt.length ?? "Inherited"} STT models</span><span>{item.modelAccess?.llm.length ?? "Inherited"} LLM/realtime models</span><span>{item.modelAccess?.tts.length ?? "Inherited"} TTS models</span></div><div className="mt-5 flex flex-wrap gap-2">{item.status === "draft" ? <><button className={secondaryButtonClass} disabled={busy} onClick={() => editPlan(item)}>Edit draft</button><button className={buttonClass} disabled={busy} onClick={() => void perform(() => partnerWhiteLabelApi.publishPlan(documentId(item)), `${item.name} version ${item.version} published.`)}>Publish immutable version</button></> : null}{item.status === "published" ? <><button className={secondaryButtonClass} disabled={busy} onClick={() => void perform(() => partnerWhiteLabelApi.revisePlan(documentId(item)), "Draft revision created from the published snapshot.")}>Create revision</button><button className={secondaryButtonClass} disabled={busy} onClick={() => void perform(() => partnerWhiteLabelApi.archivePlan(documentId(item)), "Plan archived for new sales; existing subscriptions retain their snapshot.")}>Archive</button></> : null}</div></Card>)}</div>
       </div> : null}
 
       {tab === "customers" ? <div className="grid gap-5"><Card><SectionTitle title="Provision customer organization" description="Creates an isolated tenant, immutable subscription snapshot, wallet, owner activation, and branded email delivery." /><form className="grid gap-4 p-5" onSubmit={provision}><div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4"><Input label="Organization" required value={customer.organizationName} onChange={(event) => setCustomer((value) => ({ ...value, organizationName: event.target.value }))} /><Input label="Owner name" required value={customer.ownerName} onChange={(event) => setCustomer((value) => ({ ...value, ownerName: event.target.value }))} /><Input label="Owner email" required type="email" value={customer.ownerEmail} onChange={(event) => setCustomer((value) => ({ ...value, ownerEmail: event.target.value }))} /><Input label="External customer ID" value={customer.externalCustomerId} onChange={(event) => setCustomer((value) => ({ ...value, externalCustomerId: event.target.value }))} /></div><div className="grid gap-4 md:grid-cols-[1fr_1fr_auto] md:items-end"><Select label="Published brand" required value={customer.brandId} onChange={(event) => setCustomer((value) => ({ ...value, brandId: event.target.value }))}>{overview.brands.filter((item) => item.status === "published").map((item) => <option key={documentId(item)} value={documentId(item)}>{item.branding.productName}</option>)}</Select><Select label="Published plan" required value={customer.planId} onChange={(event) => setCustomer((value) => ({ ...value, planId: event.target.value }))}>{publishedPlans.map((item) => <option key={documentId(item)} value={documentId(item)}>{item.name} v{item.version} · {money(item.price.recurringAmountMinor, item.price.currency)}</option>)}</Select><button className={buttonClass} disabled={busy || !publishedPlans.length}>Provision securely</button></div></form></Card>
-        <Card><SectionTitle title="Customer organizations" description={`${customers.length} isolated customer tenants`} /><div className="overflow-x-auto"><table className="w-full min-w-[1000px] text-left text-xs"><thead className="bg-[#f7f9f8] text-[#71817d]"><tr><th className="px-5 py-3">Customer</th><th className="px-5 py-3">Owner</th><th className="px-5 py-3">Brand</th><th className="px-5 py-3">Plan snapshot</th><th className="px-5 py-3">Usage this month</th><th className="px-5 py-3">Tenant</th><th className="px-5 py-3">Subscription</th><th className="px-5 py-3">Actions</th></tr></thead><tbody>{customers.map((item) => <tr className="border-t border-[#e7edeb] transition hover:bg-[#fafcfb]" key={documentId(item)}><td className="px-5 py-4"><strong className="block text-sm text-[#29423b]">{item.name}</strong><span className="mt-1 block text-[#8a9894]">{item.externalCustomerId || item.slug}</span></td><td className="px-5 py-4"><span className="block text-[#40564f]">{item.ownerUserId?.name}</span><span className="mt-1 block text-[#8a9894]">{item.ownerUserId?.email}</span></td><td className="px-5 py-4 text-[#536963]">{item.whiteLabelBrandId?.branding?.productName ?? item.whiteLabelBrandId?.key}</td><td className="px-5 py-4 text-[#536963]">{item.subscription ? <><span className="block font-semibold text-[#29423b]">{item.subscription.planKey} v{item.subscription.planVersion}</span><span className="mt-0.5 block text-[#118778]">{Number(item.subscription.allowancesSnapshot?.includedMinutes ?? 0).toLocaleString()} min included</span><span className="mt-0.5 block text-[#8a9894]">Ends {date(item.subscription.currentPeriodEnd)}</span></> : "Missing"}</td><td className="px-5 py-4"><div className="flex flex-col gap-0.5"><span className="font-bold text-[#14231f]">{item.usage?.minutes ?? 0} min</span><span className="text-[11px] text-[#71817d]">{item.usage?.calls ?? 0} calls · {item.usage?.agents ?? 0} agents</span></div></td><td className="px-5 py-4"><Status value={item.lifecycleStatus} /></td><td className="px-5 py-4"><Status value={item.subscription?.status ?? "missing"} /></td><td className="px-5 py-4"><div className="flex flex-wrap gap-2">{item.subscription ? <button className={secondaryButtonClass} disabled={busy} onClick={() => openCustomerPlanEditor(item)}>Edit Plan</button> : null}<button className={secondaryButtonClass} disabled={busy || item.lifecycleStatus === "archived"} onClick={() => { const next = item.lifecycleStatus === "active" ? "suspended" : "active"; const reason = window.prompt(`Reason for marking this customer ${next}:`); if (reason) void perform(() => partnerWhiteLabelApi.updateCustomerStatus(documentId(item), next, reason), `Customer marked ${next}.`); }}>{item.lifecycleStatus === "active" ? "Suspend" : "Reactivate"}</button>{item.subscription && item.subscription.status !== "active" && item.subscription.status !== "trialing" ? <button className={buttonClass} disabled={busy} onClick={() => { const reason = window.prompt("Renewal/payment reference and reason:"); if (reason) void perform(() => partnerWhiteLabelApi.updateCustomerSubscription(documentId(item), "active", reason), "Subscription renewed for the next snapshotted billing period."); }}>Renew</button> : null}<button className="inline-flex min-h-10 items-center justify-center rounded-lg border border-rose-200 bg-white px-3 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 disabled:opacity-45" disabled={busy} onClick={() => { if (window.confirm(`Are you sure you want to delete customer "${item.name}"? This removes the organization and user so you can re-provision them.`)) { void perform(async () => { await partnerWhiteLabelApi.deleteCustomer(documentId(item)); }, "Customer organization and user deleted. You can now re-provision this customer."); } }}>Delete</button></div></td></tr>)}</tbody></table></div></Card>
-        {editingCustomerPlan ? (
-          <div className="fixed inset-0 z-50 grid place-items-center bg-black/50 p-4 backdrop-blur-xs">
-            <Card className="w-full max-w-lg p-6">
-              <div className="flex items-start justify-between gap-4 border-b border-[#e7edeb] pb-4">
-                <div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#118778]">Edit customer plan</span>
-                  <h3 className="mt-1 text-lg font-bold text-[#14231f]">{editingCustomerPlan.name}</h3>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setEditingCustomerPlan(null)}
-                  className="rounded-lg border border-[#dbe4e1] px-2.5 py-1 text-xs font-semibold text-[#52645f] hover:bg-[#f4f7f6]"
-                >
-                  Close
-                </button>
-              </div>
-              <form className="mt-4 grid gap-4" onSubmit={saveCustomerPlan}>
-                <Select
-                  label="Assigned published plan"
-                  value={editingCustomerPlan.planId}
-                  onChange={(event) => {
-                    const nextPlanId = event.target.value;
-                    const picked = publishedPlans.find((p) => documentId(p) === nextPlanId);
-                    setEditingCustomerPlan((prev) => prev ? {
-                      ...prev,
-                      planId: nextPlanId,
-                      ...(picked ? {
-                        includedMinutes: String(picked.allowances.includedMinutes),
-                        agentLimit: String(picked.limits.agents),
-                        concurrentCalls: String(picked.limits.concurrentCalls),
-                      } : {}),
-                    } : null);
-                  }}
-                >
-                  <option value="">Keep current plan snapshot</option>
-                  {publishedPlans.map((item) => (
-                    <option key={documentId(item)} value={documentId(item)}>
-                      {item.name} v{item.version} · {item.allowances.includedMinutes} min · {money(item.price.recurringAmountMinor, item.price.currency)}
-                    </option>
-                  ))}
-                </Select>
-                <div className="grid gap-4 sm:grid-cols-3">
-                  <Input
-                    label="Included minutes"
-                    min="0"
-                    max={overview.account.limits.monthlyMinutesPerCustomer}
-                    required
-                    type="number"
-                    value={editingCustomerPlan.includedMinutes}
-                    onChange={(event) => setEditingCustomerPlan((prev) => prev ? { ...prev, includedMinutes: event.target.value } : null)}
-                  />
-                  <Input
-                    label="Agent limit"
-                    min="0"
-                    max={overview.account.limits.agentsPerCustomer}
-                    required
-                    type="number"
-                    value={editingCustomerPlan.agentLimit}
-                    onChange={(event) => setEditingCustomerPlan((prev) => prev ? { ...prev, agentLimit: event.target.value } : null)}
-                  />
-                  <Input
-                    label="Concurrent calls"
-                    min="1"
-                    max={overview.account.limits.concurrentCallsPerCustomer}
-                    required
-                    type="number"
-                    value={editingCustomerPlan.concurrentCalls}
-                    onChange={(event) => setEditingCustomerPlan((prev) => prev ? { ...prev, concurrentCalls: event.target.value } : null)}
-                  />
-                </div>
-                <label className="flex items-center gap-2.5 rounded-lg border border-[#e1e8e6] bg-[#f8fbfa] px-3 py-2.5 text-xs font-medium text-[#29423b] cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={editingCustomerPlan.resetUsagePeriod}
-                    onChange={(event) => setEditingCustomerPlan((prev) => prev ? { ...prev, resetUsagePeriod: event.target.checked } : null)}
-                    className="size-4 accent-[#118778]"
-                  />
-                  <span>Reset current minute usage counter to 0 (start fresh cycle from today)</span>
-                </label>
-                <div className="flex justify-end gap-2 pt-2">
-                  <button type="button" className={secondaryButtonClass} disabled={busy} onClick={() => setEditingCustomerPlan(null)}>
-                    Cancel
-                  </button>
-                  <button type="submit" className={buttonClass} disabled={busy}>
-                    Save Plan Changes
-                  </button>
-                </div>
-              </form>
-            </Card>
-          </div>
-        ) : null}
+        <Card><SectionTitle title="Customer organizations" description={`${customers.length} isolated customer tenants`} /><div className="overflow-x-auto"><table className="w-full min-w-[1000px] text-left text-xs"><thead className="bg-[#f7f9f8] text-[#71817d]"><tr><th className="px-5 py-3">Customer</th><th className="px-5 py-3">Owner</th><th className="px-5 py-3">Brand</th><th className="px-5 py-3">Plan snapshot</th><th className="px-5 py-3">Tenant</th><th className="px-5 py-3">Subscription</th><th className="px-5 py-3">Actions</th></tr></thead><tbody>{customers.map((item) => <tr className="border-t border-[#e7edeb] transition hover:bg-[#fafcfb]" key={documentId(item)}><td className="px-5 py-4"><strong className="block text-sm text-[#29423b]">{item.name}</strong><span className="mt-1 block text-[#8a9894]">{item.externalCustomerId || item.slug}</span></td><td className="px-5 py-4"><span className="block text-[#40564f]">{item.ownerUserId?.name}</span><span className="mt-1 block text-[#8a9894]">{item.ownerUserId?.email}</span></td><td className="px-5 py-4 text-[#536963]">{item.whiteLabelBrandId?.branding?.productName ?? item.whiteLabelBrandId?.key}</td><td className="px-5 py-4 text-[#536963]">{item.subscription ? <><span className="block">{item.subscription.planKey} v{item.subscription.planVersion}</span><span className="mt-1 block text-[#8a9894]">Ends {date(item.subscription.currentPeriodEnd)}</span></> : "Missing"}</td><td className="px-5 py-4"><Status value={item.lifecycleStatus} /></td><td className="px-5 py-4"><Status value={item.subscription?.status ?? "missing"} /></td><td className="px-5 py-4"><div className="flex gap-2"><button className={secondaryButtonClass} disabled={busy || item.lifecycleStatus === "archived"} onClick={() => { const next = item.lifecycleStatus === "active" ? "suspended" : "active"; const reason = window.prompt(`Reason for marking this customer ${next}:`); if (reason) void perform(() => partnerWhiteLabelApi.updateCustomerStatus(documentId(item), next, reason), `Customer marked ${next}.`); }}>{item.lifecycleStatus === "active" ? "Suspend" : "Reactivate"}</button>{item.subscription && item.subscription.status !== "active" && item.subscription.status !== "trialing" ? <button className={buttonClass} disabled={busy} onClick={() => { const reason = window.prompt("Renewal/payment reference and reason:"); if (reason) void perform(() => partnerWhiteLabelApi.updateCustomerSubscription(documentId(item), "active", reason), "Subscription renewed for the next snapshotted billing period."); }}>Renew</button> : null}<button className="inline-flex min-h-10 items-center justify-center rounded-lg border border-rose-200 bg-white px-3 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 disabled:opacity-45" disabled={busy} onClick={() => { if (window.confirm(`Are you sure you want to delete customer "${item.name}"? This removes the organization and user so you can re-provision them.`)) { void perform(async () => { await partnerWhiteLabelApi.deleteCustomer(documentId(item)); }, "Customer organization and user deleted. You can now re-provision this customer."); } }}>Delete</button></div></td></tr>)}</tbody></table></div></Card>
       </div> : null}
 
       {tab === "billing" && billing ? <div className="grid gap-5">
@@ -857,7 +749,7 @@ export function PartnerWhiteLabelConsole() {
         </div>
       </div> : null}
 
-      {tab === "contract" ? <div className="grid gap-5 lg:grid-cols-2"><Card><SectionTitle title="Platform commercial terms" description="Only a platform super administrator can change these audited wholesale terms." /><dl className="grid grid-cols-2 gap-4 p-5 text-sm">{[["One-time setup fee", money(overview.account.contract.setupFeeMinor ?? 0, overview.account.contract.currency)], ["Monthly platform fee", money(overview.account.contract.platformFeeMinor, overview.account.contract.currency)], ["Minimum commitment", money(overview.account.contract.minimumCommitmentMinor, overview.account.contract.currency)], ["Included credits", overview.account.contract.includedCredits], ["Wholesale markup", `${overview.account.contract.wholesaleMarkupBps / 100}%`], ["Payment terms", `${overview.account.contract.paymentTermsDays} days`], ["Credit limit", overview.account.contract.creditLimitCredits]].map(([key, value]) => <div className="rounded-lg border border-[#e1e8e6] bg-[#fafcfb] p-4" key={String(key)}><dt className="text-xs text-[#7b8b86]">{key}</dt><dd className="mt-1 font-bold text-[#29423b]">{value}</dd></div>)}</dl></Card><Card><SectionTitle title="Hard tenant ceilings" description="Customer plans cannot exceed the platform contract." /><dl className="grid grid-cols-2 gap-4 p-5 text-sm">{Object.entries(overview.account.limits).map(([key, value]) => <div className="rounded-lg border border-[#e1e8e6] bg-[#fafcfb] p-4" key={key}><dt className="text-xs capitalize text-[#7b8b86]">{key.replace(/([A-Z])/g, " $1")}</dt><dd className="mt-1 font-bold text-[#29423b]">{Number(value).toLocaleString()}</dd></div>)}</dl></Card></div> : null}
+      {tab === "contract" ? <div className="grid gap-5 lg:grid-cols-2"><Card><SectionTitle title="Platform commercial terms" description="Only a platform super administrator can change these audited wholesale terms." /><dl className="grid grid-cols-2 gap-4 p-5 text-sm">{[["Platform fee", money(overview.account.contract.platformFeeMinor, overview.account.contract.currency)], ["Minimum commitment", money(overview.account.contract.minimumCommitmentMinor, overview.account.contract.currency)], ["Included credits", overview.account.contract.includedCredits], ["Wholesale markup", `${overview.account.contract.wholesaleMarkupBps / 100}%`], ["Payment terms", `${overview.account.contract.paymentTermsDays} days`], ["Credit limit", overview.account.contract.creditLimitCredits]].map(([key, value]) => <div className="rounded-lg border border-[#e1e8e6] bg-[#fafcfb] p-4" key={String(key)}><dt className="text-xs text-[#7b8b86]">{key}</dt><dd className="mt-1 font-bold text-[#29423b]">{value}</dd></div>)}</dl></Card><Card><SectionTitle title="Hard tenant ceilings" description="Customer plans cannot exceed the platform contract." /><dl className="grid grid-cols-2 gap-4 p-5 text-sm">{Object.entries(overview.account.limits).map(([key, value]) => <div className="rounded-lg border border-[#e1e8e6] bg-[#fafcfb] p-4" key={key}><dt className="text-xs capitalize text-[#7b8b86]">{key.replace(/([A-Z])/g, " $1")}</dt><dd className="mt-1 font-bold text-[#29423b]">{Number(value).toLocaleString()}</dd></div>)}</dl></Card></div> : null}
     </div></section>
   </main>;
 }

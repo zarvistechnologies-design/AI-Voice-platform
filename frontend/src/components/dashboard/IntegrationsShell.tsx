@@ -23,7 +23,6 @@ import {
   type DigitalBotConnection,
   type IntegrationProvider,
 } from "@/lib/integrations";
-import { useBrand } from "@/components/branding/BrandProvider";
 import { WhatsAppModal } from "@/components/integrations/WhatsAppModal";
 import { ClaudeConnectorCard } from "@/components/integrations/ClaudeConnectorCard";
 import { RequestedIntegrationsSection } from "@/components/integrations/RequestedIntegrationsSection";
@@ -34,7 +33,7 @@ const catalog = {
     category: "Telephony",
     description: "Buy, import, and route phone numbers to your voice agents.",
     logo: "/images/integrations/vobiz.svg",
-    color: "from-[#118778] to-[#25b39f]",
+    color: "from-[#171717] to-[#3f3f46]",
   },
   hubspot: {
     name: "HubSpot",
@@ -42,7 +41,7 @@ const catalog = {
     description:
       "Create callers as contacts and log completed calls as CRM notes.",
     logo: "/images/company-logos/hubspot.svg",
-    color: "from-[#118778] to-[#25b39f]",
+    color: "from-[#171717] to-[#3f3f46]",
     flow: "After every finalized call",
   },
   calendly: {
@@ -51,7 +50,7 @@ const catalog = {
     description:
       "Let agents discover event types and create one-time booking links during calls.",
     logo: "/images/integrations/calendly.svg",
-    color: "from-[#118778] to-[#25b39f]",
+    color: "from-[#171717] to-[#3f3f46]",
     flow: "Used live by the agent during a call",
   },
   slack: {
@@ -60,7 +59,7 @@ const catalog = {
     description:
       "Send automatic call completion notifications to a Slack channel.",
     logo: "/images/integrations/slack.svg",
-    color: "from-[#118778] to-[#25b39f]",
+    color: "from-[#171717] to-[#3f3f46]",
     flow: "After every finalized call",
   },
   razorpay_api: {
@@ -68,63 +67,63 @@ const catalog = {
     category: "Payments",
     description: "Connect your merchant keys and inspect recent payment status.",
     logo: "/images/integrations/razorpay.png",
-    color: "from-[#118778] to-[#25b39f]",
+    color: "from-[#171717] to-[#3f3f46]",
   },
   razorpay_oauth: {
     name: "Razorpay OAuth",
     category: "Payments",
-    description: "Authorize a merchant account and inspect recent payments.",
+    description: "Authorize a merchant account to inspect payments and create workflow payment links.",
     logo: "/images/integrations/razorpay.png",
-    color: "from-[#118778] to-[#25b39f]",
+    color: "from-[#171717] to-[#3f3f46]",
   },
   asana: {
     name: "Asana",
     category: "Work management",
     description: "Connect your account and browse accessible projects.",
     logo: "/images/integrations/asana.svg",
-    color: "from-[#118778] to-[#25b39f]",
+    color: "from-[#171717] to-[#3f3f46]",
   },
   clickup: {
     name: "ClickUp",
     category: "Work management",
     description: "Connect your account and browse authorized workspaces.",
     logo: "/images/integrations/clickup.svg",
-    color: "from-[#118778] to-[#25b39f]",
+    color: "from-[#171717] to-[#3f3f46]",
   },
   linear: {
     name: "Linear",
     category: "Work management",
     description: "Connect your account and browse recent issues.",
     logo: "/images/integrations/linear.svg",
-    color: "from-[#118778] to-[#25b39f]",
+    color: "from-[#171717] to-[#3f3f46]",
   },
   freshsales: {
     name: "Freshsales",
     category: "CRM",
     description: "Connect your Freshsales account and browse contact views.",
     logo: "/images/integrations/freshsales.ico",
-    color: "from-[#118778] to-[#25b39f]",
+    color: "from-[#171717] to-[#3f3f46]",
   },
   highlevel: {
     name: "GoHighLevel",
     category: "CRM",
     description: "Connect a HighLevel location and browse its CRM contacts.",
     logo: "/images/integrations/highlevel.svg",
-    color: "from-[#118778] to-[#25b39f]",
+    color: "from-[#171717] to-[#3f3f46]",
   },
   zoho: {
     name: "Zoho CRM",
     category: "CRM",
-    description: "Authorize your CRM account and browse accessible contacts.",
+    description: "Authorize your CRM account to browse contacts and create workflow leads.",
     logo: "/images/integrations/zoho.svg",
-    color: "from-[#118778] to-[#25b39f]",
+    color: "from-[#171717] to-[#3f3f46]",
   },
   salesforce: {
     name: "Salesforce",
     category: "CRM",
     description: "Authorize your Salesforce account and browse accessible contacts.",
     logo: "/images/integrations/salesforce.svg",
-    color: "from-[#118778] to-[#25b39f]",
+    color: "from-[#171717] to-[#3f3f46]",
   },
   google_calendar: {
     name: "Google Calendar",
@@ -132,7 +131,7 @@ const catalog = {
     description:
       "Check live availability and let selected voice agents create appointments during calls.",
     logo: "/images/integrations/google-calendar.svg",
-    color: "from-[#0e6f62] to-[#25b39f]",
+    color: "from-[#171717] to-[#3f3f46]",
     flow: "Used live by enabled agents",
   },
   google_sheets: {
@@ -141,7 +140,7 @@ const catalog = {
     description:
       "Append qualified leads and call outcomes to a spreadsheet and sheet tab you select.",
     logo: "/images/integrations/google-sheets.svg",
-    color: "from-[#118778] to-[#25b39f]",
+    color: "from-[#171717] to-[#3f3f46]",
     flow: "Used live by enabled agents",
   },
   google_docs: {
@@ -149,28 +148,28 @@ const catalog = {
     category: "Documents",
     description: "Browse accessible documents and preview their content.",
     logo: "/images/integrations/googledocs.svg",
-    color: "from-[#118778] to-[#25b39f]",
+    color: "from-[#171717] to-[#3f3f46]",
   },
   google_drive: {
     name: "Google Drive",
     category: "Documents",
     description: "Browse files in the connected Google Drive account.",
     logo: "/images/integrations/googledrive.svg",
-    color: "from-[#118778] to-[#25b39f]",
+    color: "from-[#171717] to-[#3f3f46]",
   },
   google_gmail: {
     name: "Gmail",
     category: "Messaging",
     description: "Read recent message subjects from the connected Gmail account.",
     logo: "/images/integrations/gmail.svg",
-    color: "from-[#118778] to-[#25b39f]",
+    color: "from-[#171717] to-[#3f3f46]",
   },
   google: {
     name: "Google",
     category: "Google Workspace",
     description: "Shared authorization for Google Calendar and Google Sheets.",
     logo: "/images/integrations/google-calendar.svg",
-    color: "from-[#118778] to-[#25b39f]",
+    color: "from-[#171717] to-[#3f3f46]",
     flow: "OAuth authorization",
   },
   digitalbot: {
@@ -179,7 +178,7 @@ const catalog = {
     description:
       "Connect a DigitalBot workspace so agents can check doctor availability and create appointments.",
     logo: "/images/company-logos/digitalbot.png",
-    color: "from-[#118778] to-emerald-400",
+    color: "from-[#171717] to-[#3f3f46]",
     flow: "Used live by attached agents",
   },
   whatsapp: {
@@ -235,15 +234,11 @@ function digitalBotAgentLabel(agent: AgentSummary) {
 
 export function IntegrationsShell() {
   const router = useRouter();
-  const brand = useBrand();
   const session = useSyncExternalStore(
     subscribeToSession,
     getSession,
     getServerSession,
   );
-  const isWhiteLabelPartner = Boolean(session?.organization?.whiteLabelOwnerAccountId);
-  const isWhiteLabelCustomer = Boolean(session?.organization?.whiteLabelAccountId);
-  const isEndCustomer = isWhiteLabelCustomer || (brand.source === "white_label" && !isWhiteLabelPartner);
   const [providers, setProviders] = useState<IntegrationProvider[]>([]);
   const [selected, setSelected] = useState<Exclude<
     IntegrationProvider["id"],
@@ -313,7 +308,7 @@ export function IntegrationsShell() {
     void validateStoredSession();
     const timer = window.setTimeout(() => void load(), 0);
     return () => window.clearTimeout(timer);
-  }, [load, router, session?.id, session?.organization?.id]);
+  }, [load, router, session]);
 
   async function connect() {
     if (!selected || selected === "google") return;
@@ -519,7 +514,7 @@ export function IntegrationsShell() {
           .spreadsheet,
       );
       setNotice(
-        "Spreadsheet verified. Copy its ID and tab into the agent’s Native Google tools.",
+        "Spreadsheet verified. Copy its ID and tab into the agent's Native Google tools.",
       );
     } catch (error) {
       setNotice(
@@ -675,12 +670,12 @@ export function IntegrationsShell() {
         />
         <div className="grid w-full gap-5 px-4 py-4 sm:px-5 lg:px-6">
           {notice ? (
-            <div className="rounded-xl border border-[#b8c8c3] bg-[#edf7f4] px-4 py-3 text-sm text-[#123d35]">
+            <div className="rounded-xl border border-[#eaeaea] bg-[#fafafa] px-4 py-3 text-sm text-[#171717]">
               {notice}
             </div>
           ) : null}
           <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {!isEndCustomer ? <ClaudeConnectorCard /> : null}
+            <ClaudeConnectorCard />
             {displayProviders.map(({ provider, displayId }) => {
               const item = catalog[displayId];
               const googleView =
@@ -695,6 +690,7 @@ export function IntegrationsShell() {
                 ? provider.connected && (googleScopeRequirements[displayId] ?? []).every((scope) => grantedScopes.includes(scope))
                 : provider.connected;
               const setupNeeded = !displayConnected && provider.metadata?.platformConfigured === false;
+              const reconnectForWorkflow = displayConnected && (provider.id === "razorpay_oauth" || provider.id === "zoho") && provider.metadata?.workflowWriteAccess !== true;
               const displayDelivery = googleExtraFeature ? null : provider.delivery;
               const voiceReadId = provider.id === "google" ? displayId : provider.id;
               const dbConnections =
@@ -703,7 +699,7 @@ export function IntegrationsShell() {
                   : [];
               return (
                 <article
-                  className="min-h-[300px] overflow-hidden rounded-xl border border-[#dfe7e4] bg-white transition hover:border-[#9fcfc3] hover:shadow-[0_14px_34px_rgba(17,62,53,.08)]"
+                  className="min-h-[300px] overflow-hidden rounded-xl border border-[#dfe7e4] bg-white transition hover:border-[#eaeaea] hover:shadow-[0_14px_34px_rgba(17,62,53,.08)]"
                   key={displayId}
                   id={`integration-${displayId}`}
                 >
@@ -720,7 +716,7 @@ export function IntegrationsShell() {
                         />
                       </span>
                       <span
-                        className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${setupNeeded ? "bg-amber-50 text-amber-800" : displayConnected ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-600"}`}
+                        className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${setupNeeded ? "bg-amber-50 text-amber-800" : displayConnected ? "border border-[#eaeaea] bg-[#fafafa] text-[#171717]" : "bg-slate-100 text-slate-600"}`}
                       >
                         {setupNeeded ? "Setup needed" : displayConnected ? "Connected" : "Available"}
                       </span>
@@ -735,11 +731,12 @@ export function IntegrationsShell() {
                       {item.description}
                     </p>
                     {setupNeeded ? <p className="mt-2 text-xs leading-5 text-amber-800">Vozon must configure its OAuth application before customers can authorize this provider.</p> : null}
+                    {reconnectForWorkflow ? <p className="mt-2 rounded-lg bg-amber-50 p-3 text-xs leading-5 text-amber-800">Reconnect to allow {provider.id === "zoho" ? "workflow lead creation" : "workflow payment-link creation"}. Your current authorization only covers the older connection.</p> : null}
                     {displayConnected || displayDelivery ? (
                       <details className="group mt-3 text-xs text-slate-600">
-                        <summary className="flex cursor-pointer list-none items-center gap-2 font-semibold text-[#0e6f62] marker:content-none">
+                        <summary className="flex cursor-pointer list-none items-center gap-2 font-semibold text-[#171717] marker:content-none">
                           Connection details
-                          <span className="transition group-open:rotate-180">⌄</span>
+                          <span className="transition group-open:rotate-180">▾</span>
                         </summary>
                         <div className="mt-2 rounded-xl bg-[#f7f9f8] p-3">
                           {displayConnected ? (
@@ -756,7 +753,7 @@ export function IntegrationsShell() {
                             </>
                           ) : null}
                           {displayDelivery ? (
-                            <div className={`mt-2 rounded-lg border p-2 ${displayDelivery.status === "delivered" ? "border-emerald-200 bg-emerald-50 text-emerald-800" : displayDelivery.status === "failed" ? "border-rose-200 bg-rose-50 text-rose-800" : "border-amber-200 bg-amber-50 text-amber-800"}`}>
+                            <div className={`mt-2 rounded-lg border p-2 ${displayDelivery.status === "delivered" ? "border border-[#eaeaea] bg-white text-[#171717]" : displayDelivery.status === "failed" ? "border-rose-200 bg-rose-50 text-rose-800" : "border-amber-200 bg-amber-50 text-amber-800"}`}>
                               <strong className="block uppercase tracking-wide">
                                 Last delivery: {displayDelivery.status}
                               </strong>
@@ -772,11 +769,11 @@ export function IntegrationsShell() {
                     ) : null}
                     {provider.id === "digitalbot" ? (
                       <details className="group mt-3 text-xs leading-5 text-slate-700">
-                        <summary className="flex cursor-pointer list-none items-center gap-2 font-semibold text-[#0e6f62] marker:content-none">
+                        <summary className="flex cursor-pointer list-none items-center gap-2 font-semibold text-[#171717] marker:content-none">
                           Manage agent connections
-                          <span className="transition group-open:rotate-180">⌄</span>
+                          <span className="transition group-open:rotate-180">▾</span>
                         </summary>
-                        <div className="mt-2 rounded-xl border border-[#dfe7e4] bg-[#edf7f4]/60 p-3">
+                        <div className="mt-2 rounded-xl border border-[#dfe7e4] bg-[#fafafa]/60 p-3">
                         <strong className="block text-slate-900">
                           One connection belongs to one selected Vozon agent.
                         </strong>
@@ -815,14 +812,14 @@ export function IntegrationsShell() {
                                     </span>
                                   </div>
                                   <span
-                                    className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${connection.connected ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700"}`}
+                                    className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${connection.connected ? "border border-[#eaeaea] bg-[#fafafa] text-[#171717]" : "bg-rose-50 text-rose-700"}`}
                                   >
                                     {connection.status}
                                   </span>
                                 </div>
                                 <div className="mt-3 flex flex-wrap items-center gap-2">
                                   <button
-                                    className="rounded-lg border border-[#b8c8c3] px-3 py-1.5 font-semibold text-[#123d35]"
+                                    className="rounded-lg border border-[#eaeaea] px-3 py-1.5 font-semibold text-[#171717]"
                                     disabled={busy}
                                     type="button"
                                     onClick={() =>
@@ -835,7 +832,7 @@ export function IntegrationsShell() {
                                   </button>
                                   <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 px-3 py-1.5 font-semibold text-slate-700">
                                     <input
-                                      className="h-4 w-4 accent-[#118778]"
+                                      className="h-4 w-4 accent-[#171717]"
                                       type="checkbox"
                                       role="switch"
                                       checked={connection.toolsActive}
@@ -927,12 +924,12 @@ export function IntegrationsShell() {
                     ) : null}
                     {displayConnected && voiceReadProviderIds.includes(voiceReadId) && agentAccess.length ? (
                       <details className="group mt-3 rounded-xl border border-[#dfe7e4] bg-[#f7f9f8] p-3 text-xs text-slate-700">
-                        <summary className="cursor-pointer font-semibold text-[#0e6f62]">Voice agent access</summary>
+                        <summary className="cursor-pointer font-semibold text-[#171717]">Voice agent access</summary>
                         <p className="mt-2 leading-5 text-slate-600">Enable read-only access for selected agents during calls. Callers may ask about this provider&apos;s data.</p>
                         <div className="mt-2 grid gap-2">
                           {agentAccess.map((agent) => (
                             <label key={agent.id} className="flex items-center gap-2">
-                              <input type="checkbox" className="accent-[#118778]" checked={agent.providers.includes(voiceReadId)} disabled={busy} onChange={(event) => void toggleAgentAccess(agent.id, voiceReadId, event.target.checked)} />
+                              <input type="checkbox" className="accent-[#171717]" checked={agent.providers.includes(voiceReadId)} disabled={busy} onChange={(event) => void toggleAgentAccess(agent.id, voiceReadId, event.target.checked)} />
                               <span>{agent.name} · {agent.status}</span>
                             </label>
                           ))}
@@ -942,7 +939,7 @@ export function IntegrationsShell() {
                     <div className="mt-auto flex flex-wrap gap-2 pt-5">
                       {provider.id === "vobiz" ? (
                         <Link
-                          className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62]"
+                          className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8]"
                           href="/dashboard/phone-number"
                           prefetch={false}
                           onFocus={() =>
@@ -962,7 +959,7 @@ export function IntegrationsShell() {
                           <>
                             {googleExtraFeature ? (
                               <button
-                                className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62]"
+                                className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8]"
                                 disabled={busy}
                                 type="button"
                                 onClick={() => void previewGoogle(googleExtraFeature)}
@@ -971,7 +968,7 @@ export function IntegrationsShell() {
                               </button>
                             ) : (
                               <button
-                                className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62]"
+                                className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8]"
                                 disabled={busy}
                                 type="button"
                                 onClick={() => void openGoogleManager(googleView)}
@@ -990,7 +987,7 @@ export function IntegrationsShell() {
                           </>
                         ) : (
                           <button
-                            className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62]"
+                            className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8]"
                             disabled={busy}
                             type="button"
                             onClick={() => void connectGoogle(googleExtraFeature ?? "core")}
@@ -1001,30 +998,32 @@ export function IntegrationsShell() {
                       ) : provider.id === "razorpay_oauth" ? (
                         displayConnected ? (
                           <>
-                            <button className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62]" disabled={busy} type="button" onClick={() => void previewRazorpayOAuth()}>Check payments</button>
+                            {reconnectForWorkflow ? <button className="rounded-lg bg-amber-600 px-4 py-2.5 text-sm font-semibold text-white" disabled={busy} type="button" onClick={() => void connectRazorpayOAuth(provider.metadata?.mode === "test" ? "test" : "live")}>Reconnect for workflows</button> : null}
+                            <button className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8]" disabled={busy} type="button" onClick={() => void previewRazorpayOAuth()}>Check payments</button>
                             <button className="rounded-lg border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-700" disabled={busy} type="button" onClick={() => void disconnect("razorpay_oauth")}>Disconnect</button>
                           </>
                         ) : (
                           <>
-                            <button className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62]" disabled={busy} type="button" onClick={() => void connectRazorpayOAuth()}>Connect {item.name}</button>
-                            {provider.metadata?.testConfigured === true ? <button className="rounded-lg border border-[#dfe7e4] px-4 py-2.5 text-sm font-semibold text-[#0e6f62]" disabled={busy} type="button" onClick={() => void connectRazorpayOAuth("test")}>Use test mode</button> : null}
+                            <button className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8]" disabled={busy} type="button" onClick={() => void connectRazorpayOAuth()}>Connect {item.name}</button>
+                            {provider.metadata?.testConfigured === true ? <button className="rounded-lg border border-[#dfe7e4] px-4 py-2.5 text-sm font-semibold text-[#171717]" disabled={busy} type="button" onClick={() => void connectRazorpayOAuth("test")}>Use test mode</button> : null}
                           </>
                         )
                       ) : provider.id === "zoho" || provider.id === "salesforce" ? (
                         displayConnected ? (
                           <>
-                            <button className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62]" disabled={busy} type="button" onClick={() => void previewCrm(provider.id as "zoho" | "salesforce")}>View contacts</button>
+                            {reconnectForWorkflow ? <button className="rounded-lg bg-amber-600 px-4 py-2.5 text-sm font-semibold text-white" disabled={busy} type="button" onClick={() => void connectCrm("zoho")}>Reconnect for workflows</button> : null}
+                            <button className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8]" disabled={busy} type="button" onClick={() => void previewCrm(provider.id as "zoho" | "salesforce")}>View contacts</button>
                             <button className="rounded-lg border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-700" disabled={busy} type="button" onClick={() => void disconnect(provider.id as "zoho" | "salesforce")}>Disconnect</button>
                           </>
                         ) : (
                           <>
-                            <button className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62] disabled:cursor-not-allowed disabled:bg-slate-300" disabled={busy || setupNeeded} type="button" onClick={() => void connectCrm(provider.id as "zoho" | "salesforce")}>Connect {item.name}</button>
-                            {provider.id === "salesforce" ? <button className="rounded-lg border border-[#dfe7e4] px-4 py-2.5 text-sm font-semibold text-[#0e6f62]" disabled={busy} type="button" onClick={() => void connectCrm("salesforce", true)}>Use sandbox</button> : null}
+                            <button className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8] disabled:cursor-not-allowed disabled:bg-slate-300" disabled={busy || setupNeeded} type="button" onClick={() => void connectCrm(provider.id as "zoho" | "salesforce")}>Connect {item.name}</button>
+                            {provider.id === "salesforce" ? <button className="rounded-lg border border-[#dfe7e4] px-4 py-2.5 text-sm font-semibold text-[#171717]" disabled={busy} type="button" onClick={() => void connectCrm("salesforce", true)}>Use sandbox</button> : null}
                           </>
                         )
                       ) : provider.id === "whatsapp" ? (
                         <button
-                          className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62] transition"
+                          className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8] transition"
                           type="button"
                           onClick={() => {
                             setSelected("whatsapp");
@@ -1035,7 +1034,7 @@ export function IntegrationsShell() {
                         </button>
                       ) : provider.id === "digitalbot" ? (
                         <button
-                          className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62]"
+                          className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8]"
                           type="button"
                           onClick={() => {
                             setSelected("digitalbot");
@@ -1051,7 +1050,7 @@ export function IntegrationsShell() {
                         <>
                         {provider.id === "razorpay_api" ? (
                           <button
-                            className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62]"
+                            className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8]"
                             disabled={busy}
                             type="button"
                             onClick={() => void previewRazorpayPayments()}
@@ -1061,7 +1060,7 @@ export function IntegrationsShell() {
                         ) : null}
                         {isTokenProviderId(provider.id) ? (
                           <button
-                            className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62]"
+                            className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8]"
                             disabled={busy}
                             type="button"
                             onClick={() => void previewTokenProvider(provider.id as TokenProviderId)}
@@ -1087,7 +1086,7 @@ export function IntegrationsShell() {
                         </>
                       ) : (
                         <button
-                          className="rounded-lg bg-[#118778] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0e6f62]"
+                          className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8]"
                           type="button"
                           onClick={() => {
                             setSelected(
@@ -1119,7 +1118,7 @@ export function IntegrationsShell() {
       {selected &&
       (modalError || (selected === "digitalbot" && agentsLoading)) ? (
         <div
-          className={`fixed left-1/2 top-4 z-[60] w-[min(92vw,32rem)] -translate-x-1/2 rounded-xl border px-4 py-3 text-sm font-medium shadow-xl ${agentsLoading ? "border-[#9fcfc3] bg-[#edf7f4] text-[#123d35]" : "border-rose-300 bg-rose-50 text-rose-800"}`}
+          className={`fixed left-1/2 top-4 z-[60] w-[min(92vw,32rem)] -translate-x-1/2 rounded-xl border px-4 py-3 text-sm font-medium shadow-xl ${agentsLoading ? "border-[#eaeaea] bg-[#fafafa] text-[#171717]" : "border-rose-300 bg-rose-50 text-rose-800"}`}
           role={agentsLoading ? "status" : "alert"}
         >
           {agentsLoading ? "Loading your Vozon agents..." : modalError}
@@ -1149,7 +1148,7 @@ export function IntegrationsShell() {
           >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-[#0e6f62]">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#171717]">
                   {catalog[selected].category}
                 </span>
                 <h2 className="mt-2 text-xl font-semibold">
@@ -1285,7 +1284,7 @@ export function IntegrationsShell() {
               />
             </label>
             <button
-              className="mt-5 w-full rounded-lg bg-[#118778] px-4 py-3 text-sm font-semibold text-white hover:bg-[#0e6f62] disabled:opacity-50"
+              className="mt-5 w-full rounded-lg bg-[#2563eb] px-4 py-3 text-sm font-semibold text-white hover:bg-[#1d4ed8] disabled:opacity-50"
               type="button"
               disabled={
                 busy ||
@@ -1317,7 +1316,7 @@ export function IntegrationsShell() {
           >
             <div className="flex justify-between gap-4">
               <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-[#0e6f62]">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#171717]">
                   Google Workspace
                 </span>
                 <h2 className="mt-2 text-xl font-semibold">
@@ -1347,7 +1346,7 @@ export function IntegrationsShell() {
                       {calendar.timezone}
                     </span>
                     <button
-                      className="rounded-lg border border-[#b8c8c3] px-3 py-1.5 text-xs font-semibold text-[#123d35]"
+                      className="rounded-lg border border-[#eaeaea] px-3 py-1.5 text-xs font-semibold text-[#171717]"
                       type="button"
                       onClick={() =>
                         void integrationsApi
@@ -1383,7 +1382,7 @@ export function IntegrationsShell() {
                 placeholder="https://docs.google.com/spreadsheets/d/..."
               />
               <button
-                className="rounded-lg bg-[#118778] px-4 text-sm font-semibold text-white transition hover:bg-[#0e6f62] disabled:opacity-50"
+                className="rounded-lg bg-[#2563eb] px-4 text-sm font-semibold text-white transition hover:bg-[#1d4ed8] disabled:opacity-50"
                 disabled={busy || !spreadsheetInput.trim()}
                 type="button"
                 onClick={() => void inspectSpreadsheet()}
@@ -1392,7 +1391,7 @@ export function IntegrationsShell() {
               </button>
             </div>
             {spreadsheet ? (
-              <div className="mt-3 rounded-xl border border-emerald-200 bg-emerald-50 p-3">
+              <div className="mt-3 rounded-xl border border-[#eaeaea] bg-[#fafafa] p-3">
                 <strong className="block">{spreadsheet.name}</strong>
                 <code className="mt-1 block break-all text-xs">
                   {spreadsheet.id}

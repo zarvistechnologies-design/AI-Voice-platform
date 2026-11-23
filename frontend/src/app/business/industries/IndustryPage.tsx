@@ -2,8 +2,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { SiteLayout } from "@/components/layout/SiteLayout";
+import { SolutionLandingPage } from "@/components/layout/SolutionLandingPage";
+import { SolutionShowcasePage } from "@/components/solutions/SolutionShowcasePage";
+import { industryLandingContent } from "@/config/industryLandingContent";
+import { industryOperations } from "@/config/industryOperations";
 import { businessPages } from "@/config/site";
-import { IndustryExperiencePage } from "./IndustryExperiencePage";
+import { solutionPagesCatalog } from "@/config/solutionPagesCatalog";
 
 type IndustrySlug =
   | "financial-services"
@@ -47,18 +51,6 @@ function getIndustry(slug: string) {
   );
 }
 
-function getIndustryFaqAnswer(question: string, industry: string) {
-  const normalized = question.toLowerCase();
-  if (normalized.includes("after-hours")) return `Yes. Configure a ${industry.toLowerCase()} agent to answer outside business hours, collect the caller's details and urgency, complete eligible routine requests, and alert the on-call team when a defined escalation rule is met.`;
-  if (normalized.includes("appointment") || normalized.includes("consultation") || normalized.includes("booking")) return `Yes. The agent can check connected calendar availability, collect the required caller details, confirm the selected time, create the booking, and send a summary or confirmation.`;
-  if (normalized.includes("route") || normalized.includes("dispatch") || normalized.includes("escalat")) return `Yes. Vozon can route using intent, location, language, customer type, urgency, and team availability. Human recipients receive the context collected before transfer.`;
-  if (normalized.includes("summary") || normalized.includes("sync") || normalized.includes("crm") || normalized.includes("tool")) return `Yes. Approved integrations and webhooks can send structured fields, dispositions, summaries, and follow-up tasks to the systems your team uses. Test field mapping and failure handling before launch.`;
-  if (normalized.includes("sensitive") || normalized.includes("licensed") || normalized.includes("policy")) return `Use explicit knowledge boundaries and escalation rules. Routine approved information can be automated, while advice, exceptions, identity uncertainty, and regulated decisions should move to authorized staff.`;
-  if (normalized.includes("reminder") || normalized.includes("renewal") || normalized.includes("follow-up")) return `Yes. Use approved contact lists, calling windows, retry rules, and opt-out handling to run reminders and follow-up, then record each outcome for the responsible team.`;
-  if (normalized.includes("claim") || normalized.includes("intake") || normalized.includes("details")) return `Yes. The agent can collect the required facts in a consistent order, read critical details back for confirmation, and hand the structured intake record to your team without making an eligibility or professional decision.`;
-  if (normalized.includes("status") || normalized.includes("delivery")) return `Yes. When connected to an approved source, the agent can provide current status, capture an exception, and route time-sensitive issues to the appropriate operations team.`;
-  return `Vozon can automate approved routine ${industry.toLowerCase()} conversations, collect structured context, complete connected actions, and transfer requests that require human judgment.`;
-}
 export function generateIndustryMetadata(slug: string) {
   const industry = getIndustry(slug);
 
@@ -963,6 +955,11 @@ function WorkflowVisual({
 }
 
 export function IndustryPage({ slug }: { slug: string }) {
+  const solutionData = solutionPagesCatalog[slug];
+  if (solutionData) {
+    return <SolutionShowcasePage data={solutionData} />;
+  }
+
   const industry = getIndustry(slug);
 
   if (!industry) {
@@ -974,7 +971,31 @@ export function IndustryPage({ slug }: { slug: string }) {
   if (!preset) {
     notFound();
   }
-  return <IndustryExperiencePage industry={industry} preset={preset} />;
+  const heroImages: Record<IndustrySlug, string> = {
+    "financial-services": "/images/finance_1.png",
+    insurance: "/images/solutions-insurance-hero.png",
+    logistics: "/images/solutions-logistics-hero-v2.png",
+    "home-services": "/images/solutions-home-services-hero.png",
+    "retail-consumer": "/images/solutions-retail-consumer-hero.png",
+    "travel-hospitality": "/images/solutions-travel-hospitality-hero-v2.png",
+    "debt-collection": "/images/solutions-debt-collection-hero-v2.png",
+  };
+  const tailored = industryLandingContent[industry.slug];
+  if (!tailored) notFound();
+  const operations = industryOperations[industry.slug];
+  if (!operations) notFound();
+  const { connections, ...industryContent } = operations;
+  return <SolutionLandingPage content={{
+    ...tailored,
+    ...industryContent,
+    title: industry.title,
+    category: "Industries",
+    summary: industry.summary,
+    heroImage: heroImages[industry.slug as IndustrySlug],
+    heroAlt: `${industry.title} customer conversation with Vozon`,
+    highlights: industry.highlights,
+    integrations: connections,
+  }} />;
 }
 
 export function LegacyIndustryPage({ slug }: { slug: string }) {
@@ -1277,7 +1298,7 @@ export function LegacyIndustryPage({ slug }: { slug: string }) {
                     </span>
                   </summary>
                   <p className="mt-4 leading-7 text-slate-300">
-                    {getIndustryFaqAnswer(faq, industry.title)}
+                    {industryOperations[industry.slug]?.faqs.find((item) => item.question === faq)?.answer ?? "A Vozon agent can handle approved routine questions and pass complex requests to your team with the conversation context."}
                   </p>
                 </details>
               ))}

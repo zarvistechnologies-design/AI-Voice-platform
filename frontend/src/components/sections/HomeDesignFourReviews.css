@@ -78,7 +78,7 @@
   border-radius: 11px;
   background: #eaf8f3;
   color: #118778;
-  font-family: Georgia, serif;
+  font-family: inherit;
   font-size: 36px;
   line-height: 1;
   padding-top: 10px;

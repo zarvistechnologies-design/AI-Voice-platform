@@ -200,14 +200,14 @@ function formatDate(value: string) {
 
 function providerTone(provider: string) {
   if (provider === "Twilio")
-    return "border-[#fee2e2] bg-[#fff1f2] text-[#be123c]";
+    return "border-[#eaeaea] bg-[#fafafa] text-[#171717]";
   if (provider === "Plivo")
-    return "border-[#e0e7ff] bg-[#eef2ff] text-[#4338ca]";
+    return "border-[#eaeaea] bg-[#fafafa] text-[#171717]";
   if (provider === "Exotel")
-    return "border-[#b8c8c3] bg-[#edf7f4] text-[#0e6f62]";
+    return "border-[#eaeaea] bg-[#fafafa] text-[#171717]";
   if (provider === "SIP")
-    return "border-[#fef08a] bg-[#fefce8] text-[#854d0e]";
-  return "border-[#d1fae5] bg-[#ecfdf5] text-[#047857]";
+    return "border-[#eaeaea] bg-[#fafafa] text-[#171717]";
+  return "border-[#eaeaea] bg-[#fafafa] text-[#171717]";
 }
 
 function searchVobizInventory(input: { country: string; search?: string }) {
@@ -521,9 +521,9 @@ export function PhoneNumberShell() {
           title="Phone numbers"
           description="Import or buy telephony numbers, then link them to any voice agent."
           actions={
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-2">
               <button
-                className={`${buttonClass} rounded-xl border border-[#b8c8c3] bg-[#edf7f4] text-[#0e6f62] hover:bg-[#e1e3f6]`}
+                className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] font-medium text-[#171717] transition hover:bg-[#fafafa] disabled:opacity-50"
                 disabled={busy || loading}
                 onClick={() => {
                   setShowImport(true);
@@ -534,11 +534,11 @@ export function PhoneNumberShell() {
                 onPointerEnter={preloadPhoneNumberModals}
                 type="button"
               >
-                <Icon icon="import" />
+                <Icon icon="import" className="size-3.5" />
                 Import number
               </button>
               <button
-                className={`${buttonClass} rounded-xl border-0 bg-[#118778] text-white shadow-[0_12px_28px_rgba(17,135,120,0.28)] hover:bg-[#0e6f62]`}
+                className="inline-flex h-8 items-center gap-1.5 rounded-md bg-[#2563eb] px-3.5 text-[12.5px] font-medium text-white transition hover:bg-[#1d4ed8] disabled:opacity-50"
                 disabled={busy || loading}
                 onClick={() => {
                   setShowBuy(true);
@@ -549,12 +549,12 @@ export function PhoneNumberShell() {
                 onPointerEnter={preloadPhoneNumberModals}
                 type="button"
               >
-                <Icon icon="plus" />
+                <Icon icon="plus" className="size-3.5" />
                 Buy number
               </button>
               <div className="relative">
                 <button
-                  className="grid min-h-10 min-w-10 place-items-center rounded-xl border border-[#d5d8df] bg-white px-3 text-lg font-semibold text-[#0e6f62] hover:bg-[#f8fafc]"
+                  className="grid h-8 w-8 place-items-center rounded-md border border-[#eaeaea] bg-white text-[13px] font-semibold text-[#52525b] hover:bg-[#fafafa] hover:text-[#171717]"
                   aria-expanded={showMoreActions}
                   aria-label="More phone number actions"
                   type="button"
@@ -563,9 +563,9 @@ export function PhoneNumberShell() {
                   •••
                 </button>
                 {showMoreActions ? (
-                  <div className="absolute right-0 top-[calc(100%+8px)] z-30 w-52 rounded-xl border border-[#dfe7e4] bg-white p-1.5 shadow-[0_18px_48px_rgba(31,35,72,.14)]">
+                  <div className="absolute right-0 top-[calc(100%+6px)] z-30 w-48 rounded-md border border-[#eaeaea] bg-white p-1 shadow-lg">
                     <button
-                      className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-semibold text-[#4f5365] hover:bg-[#f3f6f5]"
+                      className="flex h-8 w-full items-center gap-2 rounded px-2.5 text-left text-[12px] font-medium text-[#171717] hover:bg-[#fafafa]"
                       disabled={busy || loading}
                       onClick={() => {
                         setShowMoreActions(false);
@@ -573,7 +573,7 @@ export function PhoneNumberShell() {
                       }}
                       type="button"
                     >
-                      <Icon icon="refresh" />
+                      <Icon icon="refresh" className="size-3.5" />
                       Repair number routes
                     </button>
                   </div>
@@ -583,7 +583,7 @@ export function PhoneNumberShell() {
           }
         />
 
-        <div className="dashboard-page-content grid w-full gap-3 py-0">
+        <div className="grid w-full gap-4 px-5 py-5 sm:px-6 lg:px-7">
           {notice ? (
             <Notice
               tone="success"
@@ -595,89 +595,101 @@ export function PhoneNumberShell() {
             <Notice tone="error" message={error} onClose={() => setError("")} />
           ) : null}
 
-          <section className="dashboard-primary-panel dashboard-flat-panel overflow-hidden bg-white">
-            <div className="dashboard-filter-bar grid gap-2 border-b border-[#e6ecea] p-4 lg:grid-cols-[minmax(260px,1fr)_180px_180px_180px_auto]">
-              <label className="relative min-w-0">
-                <span className="sr-only">Search phone numbers</span>
+          <section className="overflow-hidden rounded-xl border border-[#eaeaea] bg-white">
+            <div className="flex flex-col gap-2 border-b border-[#eaeaea] bg-white p-3 sm:flex-row sm:items-center">
+              <div className="flex h-8 min-w-0 flex-1 items-center gap-2 rounded-md border border-[#eaeaea] bg-white px-2.5 transition focus-within:border-black">
                 <Icon
                   icon="search"
-                  className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-[#71817d]"
+                  className="pointer-events-none size-3.5 text-[#71717a]"
                 />
                 <input
-                  className="min-h-11 w-full rounded-xl border border-[#dfe7e4] bg-white pr-3 pl-10 text-sm outline-none transition placeholder:text-[#91a09c] focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10"
-                  placeholder="Search number, label, agent, or region"
+                  className="h-full min-w-0 flex-1 border-0 bg-transparent p-0 text-[12.5px] text-[#171717] placeholder-[#71717a] outline-none"
+                  placeholder="Search number, label, agent, or region..."
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
                 />
-              </label>
-              <select
-                aria-label="Filter by provider"
-                className="min-h-11 rounded-xl border border-[#dfe7e4] bg-white px-3 text-sm font-semibold text-[#4f5365] outline-none focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10"
-                value={providerFilter}
-                onChange={(event) => setProviderFilter(event.target.value)}
-              >
-                <option value="">All providers</option>
-                {providerOptions.map((provider) => (
-                  <option key={provider} value={provider}>
-                    {provider}
-                  </option>
-                ))}
-              </select>
-              <select
-                aria-label="Filter by agent assignment"
-                className="min-h-11 rounded-xl border border-[#dfe7e4] bg-white px-3 text-sm font-semibold text-[#4f5365] outline-none focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10"
-                value={assignmentFilter}
-                onChange={(event) => setAssignmentFilter(event.target.value)}
-              >
-                <option value="">All assignments</option>
-                <option value="assigned">Assigned</option>
-                <option value="unassigned">Unassigned</option>
-              </select>
-              <select
-                aria-label="Filter by readiness"
-                className="min-h-11 rounded-xl border border-[#dfe7e4] bg-white px-3 text-sm font-semibold text-[#4f5365] outline-none focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10"
-                value={readinessFilter}
-                onChange={(event) => setReadinessFilter(event.target.value)}
-              >
-                <option value="">All readiness</option>
-                <option value="ready">Ready</option>
-                <option value="attention">Needs attention</option>
-              </select>
-              <button
-                className="min-h-11 rounded-xl border border-[#dfe7e4] bg-white px-3 text-sm font-semibold text-[#0e6f62] transition hover:bg-[#f7f9f8] disabled:cursor-default disabled:opacity-40"
-                disabled={!activeFilterCount}
-                type="button"
-                onClick={() => {
-                  setSearch("");
-                  setProviderFilter("");
-                  setAssignmentFilter("");
-                  setReadinessFilter("");
-                }}
-              >
-                Clear{activeFilterCount ? ` · ${activeFilterCount}` : ""}
-              </button>
+                {search && (
+                  <button
+                    className="text-[11.5px] font-medium text-[#71717a] hover:text-black"
+                    type="button"
+                    onClick={() => setSearch("")}
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <select
+                  aria-label="Filter by provider"
+                  className="h-8 rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12.5px] font-medium text-[#171717] outline-none transition hover:border-[#a1a1aa] focus:border-black"
+                  value={providerFilter}
+                  onChange={(event) => setProviderFilter(event.target.value)}
+                >
+                  <option value="">All providers</option>
+                  {providerOptions.map((provider) => (
+                    <option key={provider} value={provider}>
+                      {provider}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  aria-label="Filter by agent assignment"
+                  className="h-8 rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12.5px] font-medium text-[#171717] outline-none transition hover:border-[#a1a1aa] focus:border-black"
+                  value={assignmentFilter}
+                  onChange={(event) => setAssignmentFilter(event.target.value)}
+                >
+                  <option value="">All assignments</option>
+                  <option value="assigned">Assigned</option>
+                  <option value="unassigned">Unassigned</option>
+                </select>
+                <select
+                  aria-label="Filter by readiness"
+                  className="h-8 rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12.5px] font-medium text-[#171717] outline-none transition hover:border-[#a1a1aa] focus:border-black"
+                  value={readinessFilter}
+                  onChange={(event) => setReadinessFilter(event.target.value)}
+                >
+                  <option value="">All readiness</option>
+                  <option value="ready">Ready</option>
+                  <option value="attention">Needs attention</option>
+                </select>
+                {activeFilterCount > 0 && (
+                  <button
+                    className="h-8 rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12px] font-medium text-[#71717a] transition hover:bg-[#fafafa] hover:text-[#171717]"
+                    type="button"
+                    onClick={() => {
+                      setSearch("");
+                      setProviderFilter("");
+                      setAssignmentFilter("");
+                      setReadinessFilter("");
+                    }}
+                  >
+                    Reset
+                  </button>
+                )}
+              </div>
             </div>
 
             {loading ? (
-              <div className="grid min-h-[360px] place-items-center">
-                <span className="app-caption">Loading phone numbers...</span>
+              <div className="grid min-h-[260px] place-items-center text-[12.5px] text-[#71717a]">
+                Loading phone numbers...
               </div>
             ) : filteredNumbers.length ? (
               <div className="overflow-x-auto">
-                <table className="dashboard-data-table w-full min-w-[980px] border-collapse text-left">
-                  <thead className="bg-[#f8fafc]">
-                    <tr className="app-label text-[#64748b]">
-                      <th className="px-5 py-3 font-medium">Phone number</th>
-                      <th className="px-4 py-3 font-medium">Provider</th>
-                      <th className="w-[30%] px-4 py-3 font-medium">Agent</th>
-                      <th className="w-[14%] px-4 py-3 font-medium">Region</th>
-                      <th className="px-4 py-3 font-medium">Created</th>
-                      <th className="w-14 px-4 py-3">
+                <table className="w-full min-w-[800px] border-collapse text-left">
+                  <thead className="border-b border-[#eaeaea] bg-[#fafafa]">
+                    <tr className="text-[11px] font-semibold uppercase tracking-wider text-[#71717a]">
+                      <th className="px-4 py-2.5 font-medium">Phone number</th>
+                      <th className="px-4 py-2.5 font-medium">Provider</th>
+                      <th className="w-[30%] px-4 py-2.5 font-medium">Agent</th>
+                      <th className="w-[14%] px-4 py-2.5 font-medium">Region</th>
+                      <th className="px-4 py-2.5 font-medium">Created</th>
+                      <th className="w-12 px-4 py-2.5">
                         <span className="sr-only">Actions</span>
                       </th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="divide-y divide-[#eaeaea]">
                     {filteredNumbers.map((number) => (
                       <PhoneNumberRow
                         key={number._id}
@@ -695,17 +707,14 @@ export function PhoneNumberShell() {
                 </table>
               </div>
             ) : numbers.length ? (
-              <div className="grid min-h-[320px] place-items-center p-6 text-center">
+              <div className="grid min-h-[240px] place-items-center p-6 text-center">
                 <div className="max-w-sm">
-                  <span className="mx-auto mb-4 grid size-12 place-items-center rounded-xl bg-[#edf7f4] text-[#118778]">
-                    <Icon icon="search" className="size-5" />
-                  </span>
-                  <h3 className="app-section-title m-0">No matching numbers</h3>
-                  <p className="app-caption mt-1 mb-4">
-                    Try another search or clear the active inventory filters.
+                  <h3 className="m-0 text-[13.5px] font-semibold text-[#171717]">No matching numbers</h3>
+                  <p className="mt-1 mb-3 text-[12px] text-[#71717a]">
+                    Try another search or reset the active filters.
                   </p>
                   <button
-                    className={`${buttonClass} border border-[#b8c8c3] bg-white text-[#0e6f62]`}
+                    className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12px] font-medium text-[#171717] hover:bg-[#fafafa]"
                     type="button"
                     onClick={() => {
                       setSearch("");
@@ -714,25 +723,22 @@ export function PhoneNumberShell() {
                       setReadinessFilter("");
                     }}
                   >
-                    Clear filters
+                    Reset filters
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="grid min-h-[360px] place-items-center p-6 text-center">
+              <div className="grid min-h-[260px] place-items-center p-6 text-center">
                 <div className="max-w-sm">
-                  <span className="mx-auto mb-4 grid size-12 place-items-center rounded-xl bg-[#edf7f4] text-[#118778]">
-                    <Icon icon="phone" className="size-5" />
-                  </span>
-                  <h3 className="app-section-title m-0">
+                  <h3 className="m-0 text-[13.5px] font-semibold text-[#171717]">
                     No phone numbers yet
                   </h3>
-                  <p className="app-caption mt-1 mb-4">
-                    Import from Twilio, Plivo, Exotel, Vobiz, or Custom SIP Trunk (BYOC)—or buy a new Vobiz number.
+                  <p className="mt-1 mb-4 text-[12px] text-[#71717a]">
+                    Import from Twilio, Plivo, Exotel, Vobiz, or Custom SIP Trunk—or buy a new number.
                   </p>
                   <div className="flex flex-wrap justify-center gap-2">
                     <button
-                      className={`${buttonClass} border border-[#b8c8c3] bg-white text-[#118778]`}
+                      className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#eaeaea] bg-white px-3 text-[12px] font-medium text-[#171717] hover:bg-[#fafafa]"
                       disabled={busy || loading}
                       onClick={() => {
                         setShowImport(true);
@@ -743,10 +749,10 @@ export function PhoneNumberShell() {
                       onPointerEnter={preloadPhoneNumberModals}
                       type="button"
                     >
-                      <Icon icon="import" /> Import number
+                      <Icon icon="import" className="size-3.5" /> Import number
                     </button>
                     <button
-                      className={`${buttonClass} bg-[#118778] text-white`}
+                      className="inline-flex h-8 items-center gap-1.5 rounded-md bg-[#2563eb] px-3.5 text-[12px] font-medium text-white hover:bg-[#1d4ed8]"
                       disabled={busy || loading}
                       onClick={() => {
                         setShowBuy(true);
@@ -757,7 +763,7 @@ export function PhoneNumberShell() {
                       onPointerEnter={preloadPhoneNumberModals}
                       type="button"
                     >
-                      <Icon icon="plus" /> Buy number
+                      <Icon icon="plus" className="size-3.5" /> Buy number
                     </button>
                   </div>
                 </div>
@@ -852,37 +858,37 @@ function PhoneNumberRow({
   }
 
   return (
-    <tr className="dashboard-data-row border-t border-[#edf0f4] transition hover:bg-[#fbfcfe]">
-      <td className="px-5 py-4">
-        <div className="flex items-center gap-3">
-          <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#edf7f4] text-[#118778]">
-            <Icon icon="phone" />
+    <tr className="dashboard-data-row border-b border-[#eaeaea] transition hover:bg-[#fafafa]">
+      <td className="px-4 py-3">
+        <div className="flex items-center gap-2.5">
+          <span className="grid size-7 shrink-0 place-items-center rounded-md border border-[#eaeaea] bg-[#f4f4f5] text-[#171717]">
+            <Icon icon="phone" className="size-3.5" />
           </span>
           <span className="min-w-0">
-            <strong className="app-strong block whitespace-nowrap">
+            <strong className="block text-[13px] font-medium text-[#171717] whitespace-nowrap">
               {number.number}
             </strong>
-            <span className="app-caption block max-w-[240px] truncate">
+            <span className="block max-w-[240px] truncate text-[11px] text-[#71717a]">
               {number.label || (number.sipConfig?.inboundSipUri ? number.sipConfig.inboundSipUri : "")}
             </span>
             {number.sipConfig?.inboundSipUri && number.label ? (
-              <span className="app-caption block max-w-[240px] truncate font-mono text-[11px] text-[#0e6f62]">
+              <span className="block max-w-[240px] truncate font-mono text-[11px] text-[#52525b]">
                 {number.sipConfig.inboundSipUri}
               </span>
             ) : null}
           </span>
         </div>
       </td>
-      <td className="px-4 py-4">
+      <td className="px-4 py-3">
         <span
-          className={`app-label inline-flex rounded-full border px-2.5 py-1 ${providerTone(number.provider)}`}
+          className="inline-flex items-center rounded border border-[#eaeaea] bg-[#fafafa] px-2 py-0.5 text-[11px] font-medium text-[#52525b]"
         >
           {number.provider === "SIP" ? "Custom SIP" : number.provider}
         </span>
       </td>
-      <td className="px-4 py-4">
+      <td className="px-4 py-3">
         <button
-          className={`dashboard-agent-assignment group inline-flex max-w-full items-center gap-2 rounded-lg border px-2.5 py-2 text-left transition focus-visible:ring-2 focus-visible:ring-[#118778]/50 ${agent ? "border-[#e6ecea] bg-[#f8fafc] hover:border-[#b8c8c3] hover:bg-[#edf7f4]" : "border-dashed border-[#cbd5e1] bg-white text-[#475569] hover:border-[#118778] hover:text-[#118778]"}`}
+          className={`dashboard-agent-assignment group inline-flex max-w-full items-center gap-1.5 rounded-md border px-2.5 py-1 text-left text-[12px] transition ${agent ? "border-[#eaeaea] bg-white text-[#171717] hover:border-black" : "border-dashed border-[#d4d4d8] bg-white text-[#71717a] hover:border-black hover:text-[#171717]"}`}
           disabled={busy || deletionPending}
           onClick={onManage}
           onFocus={preloadPhoneNumberModals}
@@ -891,45 +897,45 @@ function PhoneNumberRow({
           type="button"
         >
           <span
-            className={`grid size-7 shrink-0 place-items-center rounded-md ${agent ? "bg-white text-[#64748b]" : "bg-[#edf7f4] text-[#118778]"}`}
+            className="grid size-5 shrink-0 place-items-center rounded bg-[#f4f4f5] text-[#52525b]"
           >
-            <Icon icon={agent ? "user" : "link"} className="size-3.5" />
+            <Icon icon={agent ? "user" : "link"} className="size-3" />
           </span>
-          <span className="app-strong truncate">
+          <span className="truncate font-medium">
             {deletionPending
               ? "Deletion pending"
               : (agent?.name ?? "Link agent")}
           </span>
-          <span className="ml-auto text-[10px] font-semibold uppercase tracking-[.08em] text-[#91a09c] transition group-hover:text-[#0e6f62]">
+          <span className="ml-auto text-[10px] font-medium uppercase tracking-wider text-[#a1a1aa] group-hover:text-[#171717]">
             {agent ? "Change" : "Assign"}
           </span>
         </button>
       </td>
-      <td className="app-body whitespace-nowrap px-4 py-4 text-[#475569]">
+      <td className="whitespace-nowrap px-4 py-3 text-[12px] text-[#52525b]">
         {number.region || "Global"}
       </td>
-      <td className="px-4 py-4">
-        <span className="app-body block whitespace-nowrap text-[#334155]">
+      <td className="px-4 py-3">
+        <span className="block whitespace-nowrap text-[12px] text-[#171717]">
           {formatDate(number.createdAt)}
         </span>
         <span
-          className={`app-caption ${!deletionPending && number.status === "Ready" ? "text-[#059669]" : "text-[#d97706]"}`}
+          className={`text-[11px] ${!deletionPending && number.status === "Ready" ? "text-[#52525b]" : "text-[#71717a]"}`}
         >
           {deletionPending ? "Deletion pending - retry" : number.status}
         </span>
       </td>
-      <td className="px-4 py-4">
+      <td className="px-4 py-3 text-right">
         <div className="ml-auto w-fit">
           <button
             ref={actionButtonRef}
-            className="grid size-9 place-items-center rounded-lg border border-[#dfe7e4] text-[#64748b] transition hover:border-[#9fcfc3] hover:bg-[#f7f9f8] hover:text-[#0e6f62] focus-visible:ring-2 focus-visible:ring-[#118778]/50"
+            className="grid size-7 place-items-center rounded-md border border-[#eaeaea] bg-white text-[#52525b] transition hover:bg-[#f4f4f5] hover:text-[#171717]"
             aria-expanded={Boolean(menuPosition)}
             aria-haspopup="menu"
             aria-label={`Actions for ${number.number}`}
             type="button"
             onClick={toggleActionMenu}
           >
-            <Icon icon="more" />
+            <Icon icon="more" className="size-3.5" />
           </button>
           {menuPosition
             ? createPortal(
@@ -941,13 +947,13 @@ function PhoneNumberRow({
                     onClick={() => setMenuPosition(null)}
                   />
                   <div
-                    className="fixed z-50 w-48 overflow-hidden rounded-xl border border-[#dfe7e4] bg-white p-1.5 shadow-[0_18px_48px_rgba(31,35,72,.16)]"
+                    className="fixed z-50 w-44 overflow-hidden rounded-md border border-[#eaeaea] bg-white p-1 shadow-lg"
                     role="menu"
                     aria-label={`Actions for ${number.number}`}
                     style={{ top: menuPosition.top, left: menuPosition.left }}
                   >
                     <button
-                      className="flex min-h-10 w-full items-center gap-2 rounded-lg px-3 text-left text-sm font-semibold text-[#4f5365] transition hover:bg-[#f3f6f5] hover:text-[#0e6f62] disabled:opacity-40"
+                      className="flex h-8 w-full items-center gap-2 rounded px-2.5 text-left text-[12px] text-[#171717] transition hover:bg-[#f4f4f5] disabled:opacity-40"
                       disabled={busy || deletionPending}
                       role="menuitem"
                       type="button"
@@ -956,11 +962,11 @@ function PhoneNumberRow({
                         onManage();
                       }}
                     >
-                      <Icon icon="user" />
+                      <Icon icon="user" className="size-3.5" />
                       {agent ? "Change agent" : "Assign agent"}
                     </button>
                     <button
-                      className="flex min-h-10 w-full items-center gap-2 rounded-lg px-3 text-left text-sm font-semibold text-[#4f5365] transition hover:bg-[#f3f6f5] hover:text-[#0e6f62]"
+                      className="flex h-8 w-full items-center gap-2 rounded px-2.5 text-left text-[12px] text-[#171717] transition hover:bg-[#f4f4f5]"
                       role="menuitem"
                       type="button"
                       onClick={() => {
@@ -968,12 +974,12 @@ function PhoneNumberRow({
                         onCopy();
                       }}
                     >
-                      <Icon icon="copy" />
+                      <Icon icon="copy" className="size-3.5" />
                       Copy number
                     </button>
                     {number.sipConfig?.inboundSipUri ? (
                       <button
-                        className="flex min-h-10 w-full items-center gap-2 rounded-lg px-3 text-left text-sm font-semibold text-[#4f5365] transition hover:bg-[#f3f6f5] hover:text-[#0e6f62]"
+                        className="flex h-8 w-full items-center gap-2 rounded px-2.5 text-left text-[12px] text-[#171717] transition hover:bg-[#f4f4f5]"
                         role="menuitem"
                         type="button"
                         onClick={() => {
@@ -983,13 +989,13 @@ function PhoneNumberRow({
                           }
                         }}
                       >
-                        <Icon icon="link" />
+                        <Icon icon="link" className="size-3.5" />
                         Copy SIP URI
                       </button>
                     ) : null}
-                    <div className="my-1 h-px bg-[#eceef4]" />
+                    <div className="my-1 h-px bg-[#eaeaea]" />
                     <button
-                      className="flex min-h-10 w-full items-center gap-2 rounded-lg px-3 text-left text-sm font-semibold text-rose-600 transition hover:bg-rose-50 disabled:opacity-40"
+                      className="flex h-8 w-full items-center gap-2 rounded px-2.5 text-left text-[12px] text-rose-600 transition hover:bg-rose-50 disabled:opacity-40"
                       disabled={busy}
                       role="menuitem"
                       type="button"
@@ -998,7 +1004,7 @@ function PhoneNumberRow({
                         onDelete();
                       }}
                     >
-                      <Icon icon="trash" />
+                      <Icon icon="trash" className="size-3.5" />
                       {deletionPending ? "Retry deletion" : "Delete number"}
                     </button>
                   </div>

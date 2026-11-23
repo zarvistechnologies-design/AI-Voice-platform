@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { type MouseEvent, useEffect, useRef, useState } from "react";
 
-import { BrandLogo } from "@/components/ui/BrandLogo";
+import { FooterSoundWave } from "@/components/layout/FooterSoundWave";
 import { SitePreFooterCta } from "@/components/layout/SitePreFooterCta";
 import "@/components/sections/HomeDesignFourEnding.css";
 
@@ -53,14 +54,14 @@ export function SiteFooter() {
     window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
   };
 
-  return (
+  const footerContent = (
     <>
       <SitePreFooterCta demoHref={pathname === "/contact" ? "#contact-form" : "/contact"} />
       <footer className={`design-four-footer${visible ? " is-visible" : ""}`} ref={footerRef}>
         <div className="design-four-footer-main">
         <div className="design-four-footer-brand">
-          <BrandLogo showWebsiteLogo />
-          <p>Building intelligent voice experiences that help businesses create better conversations, automate meaningful work, and connect people with outcomes.</p>
+          <div className="design-four-footer-intro"><span>VOZON · VOICE, WHATSAPP &amp; AGENTIC AI</span><h2>Voice &amp; WhatsApp agents built to act.</h2></div>
+          <p>Deploy AI voice agents, WhatsApp automation, and autonomous workflows that answer customers, call live tools, and turn conversations into outcomes.</p>
           <div className="design-four-footer-socials">
             <a aria-label="Twitter / X" href="https://x.com/vozonai_" rel="noreferrer" target="_blank">X</a>
             <a aria-label="LinkedIn" href="https://linkedin.com/company/vozon-ai-india/" rel="noreferrer" target="_blank">in</a>
@@ -71,7 +72,7 @@ export function SiteFooter() {
           </div>
         </div>
         <nav aria-label="Footer navigation">
-          <div><b>Product</b><Link href="/services/voice-agents">Voice Agents</Link><Link href="/services/voice-cloning">Voice Cloning</Link><Link href="/services/realtime-tts">Realtime TTS</Link><Link href="/services/api-access">API Access</Link><Link href="/services/team-workflows">Team Workflows</Link><Link href="/services/speech-analytics">Speech Analytics</Link><Link href="/services/quality-controls">Quality Controls</Link><Link href="/services/multilingual-speech">Multilingual Speech</Link><Link href="/services/conversation-insights">Conversation Insights</Link></div>
+          <div><b>Product</b><Link href="/product/ai-voice-agent">AI Voice Agent</Link><Link href="/product/whatsapp-api">WhatsApp API</Link><Link href="/product/whatsapp-bot">WhatsApp Bot</Link><Link href="/product/web-chatbot">Web Chatbot</Link><Link href="/product/voice-cloning">Voice Cloning</Link><Link href="/product/vozon-mcp">Vozon MCP</Link><Link href="/product/workflows">Workflows</Link><Link href="/product/create-workflows">Create Workflows</Link><Link href="/product/end-to-end-automation">End-to-End Automation</Link></div>
           <div><b>Resources</b><Link href="/#faq">FAQ</Link><Link href="/resources/blog">Blog</Link><Link href="/about">About us</Link><Link href="/resources/help-center">Support</Link><Link href="/docs/api">Download</Link><Link href="/terms" onClick={scrollTermsToTop}>Terms &amp; Conditions</Link><Link href="/privacy">Privacy policy</Link><Link href="/partners">Affiliate program</Link></div>
           <div><b>Company</b><Link href="/career">We&apos;re hiring</Link><Link href="/pricing">Pricing</Link><Link href="/resources/changelog">Changelog</Link><Link href="/contact">Contact us</Link></div>
           <div>
@@ -83,6 +84,10 @@ export function SiteFooter() {
           </div>
         </nav>
       </div>
+        <div className="design-four-footer-wordmark">
+          <Link href="/" aria-label="Vozon home"><Image src="/images/vozon-mark.svg" alt="Vozon" width={370} height={350} /></Link>
+          <FooterSoundWave />
+        </div>
         <div className="design-four-footer-tags" aria-hidden="true">
           {[...footerTags,
             { label: "Voice AI", icon: "AI", tone: "purple" as const },
@@ -93,4 +98,6 @@ export function SiteFooter() {
       </footer>
     </>
   );
+
+  return pathname !== "/" ? <div className="home-design-four footer-home-shell">{footerContent}</div> : footerContent;
 }

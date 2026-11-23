@@ -4,8 +4,15 @@ import Link from "next/link";
 import { FormEvent, useEffect, useRef, useState } from "react";
 
 import { API_URL } from "@/lib/apiBase";
+import "@/app/business/industries/healthcare/healthcare.css";
+import "@/components/company/CompanyEditorial.css";
 
 const salesEmail = "hello@vozon.ai";
+const officeLocations = [
+  { name: "Bengaluru", label: "Head office", address: "Behind Manyata Tech Park, Hebbal, Bangalore 560077." },
+  { name: "Lucknow", label: "India office", address: "Experion, V296+9MM, AV 7, Vibhuti Khand, Gomti Nagar, Lucknow, Uttar Pradesh 226010." },
+  { name: "Ada, Michigan", label: "United States office", address: "300 Quail Ridge Dr NE, Ada, MI 49301, United States." },
+] as const;
 
 type IconName =
 | "arrow"
@@ -66,77 +73,6 @@ return ( <svg
 {paths[name]} </g> </svg>
 );
 }
-
-const contactChannels = [
-{
-icon: "phone" as const,
-eyebrow: "Speak with our team",
-title: "Call us",
-body: "Talk directly with our team about your voice AI requirements and next steps.",
-href: "tel:+917892518414",
-action: "+91 78925 18414",
-},
-{
-icon: "email" as const,
-eyebrow: "Email our team",
-title: "Sales enquiries",
-body: "Tell us about your use case and the conversations you want to automate.",
-href: `mailto:${salesEmail}?subject=Sales%20enquiry`,
-action: salesEmail,
-},
-{
-icon: "calendar" as const,
-eyebrow: "Launch under your brand",
-title: "White-label partnerships",
-body: "Tell us about your customers, expected usage, and brand so our team can review the right partner setup.",
-href: "#contact-form",
-action: "Request partner review",
-},
-{
-icon: "headset" as const,
-eyebrow: "Already using vozon.ai?",
-title: "Product support",
-body: "Sign in to your workspace for help with an existing account or deployment.",
-href: "/login",
-action: "Go to your account",
-},
-] as const;
-
-const nextSteps = [
-{
-number: "01",
-title: "We learn about your calls",
-body: "We review your call volume, customer journey, languages, integrations, and success criteria.",
-},
-{
-number: "02",
-title: "We map a practical rollout",
-body: "Together, we define the first workflow, required guardrails, human handoffs, and launch plan.",
-},
-{
-number: "03",
-title: "You see the platform in action",
-body: "We tailor the conversation around your use case so your team can evaluate the right capabilities.",
-},
-] as const;
-
-const officeLocations = [
-{
-city: "Bangalore(HQ)",
-label: "Our headquarters",
-address: "Behind Manyata Tech Park, Hebbal, Bangalore 560077.",
-},
-{
-city: "Lucknow",
-label: "Second India office",
-address: "Experion,V296+9MM, AV 7, Vibhuti Khand, Gomti Nagar, Lucknow, Uttar Pradesh 226010.",
-},
-{
-city: "USA",
-label: "Our office",
-address: "300 Quail Ridge Dr NE, ADA, MI 49301",
-},
-] as const;
 
 export function ContactExperience() {
 const [status, setStatus] = useState("");
@@ -204,7 +140,7 @@ try {
 
   setStatus(
     result.message ||
-      "Thanks — your message has been sent to our sales team.",
+      "Thanks - your message has been sent to our sales team.",
   );
 } catch (error) {
   setStatus(
@@ -219,81 +155,16 @@ try {
 
 }
 
-return ( <div id="contact-page" className="overflow-hidden bg-white text-black"> <section className="relative bg-white px-5 pb-16 pt-28 sm:px-8 sm:pt-32 lg:min-h-screen lg:px-12 lg:pb-14 lg:pt-24"> <div className="relative mx-auto max-w-[1240px]"> <nav
-         aria-label="Breadcrumb"
-         className="mb-7 flex items-center gap-2 text-xs font-medium text-black lg:mb-5"
-       > <Link className="transition hover:text-black" href="/">
-Home </Link>
-
-
-        <span aria-hidden="true">/</span>
-
-        <span className="text-black">Contact</span>
-      </nav>
-
-      <div className="grid gap-14 lg:grid-cols-[0.82fr_1.18fr] lg:items-start xl:gap-20">
-        <div className="lg:sticky lg:top-32">
-          <span className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-black">
-            <span
-              className="size-1.5 rounded-full bg-teal-500"
-              aria-hidden="true"
-            />
-            Get in touch
-          </span>
-
-          <h1 className="mt-7 text-[clamp(2.5rem,4.5vw,4.5rem)] font-medium leading-[1.02] tracking-[-0.045em]">
-            <span className="block">Let&apos;s start a</span>
-            <span className="block text-black">conversation.</span>
-          </h1>
-
-          <p className="mt-6 max-w-lg text-sm leading-6 text-black sm:text-base sm:leading-7">
-            Tell us about your voice AI goals or plans to offer the
-            platform under your own brand. We&apos;ll help you understand
-            the right workflow, integrations, and rollout.
-          </p>
-
-          <ul className="mt-8 flex list-disc flex-wrap gap-x-7 gap-y-2 pl-5 text-sm font-medium text-black marker:text-teal-600">
-            {["Fast response", "Secure by design", "Dedicated guidance"].map(
-              (label) => (
-                <li key={label}>{label}</li>
-              ),
-            )}
-          </ul>
-
-          <div className="mt-9 flex flex-wrap gap-3">
-            <Link
-              className="contact-primary-button inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border px-6 text-sm font-bold shadow-sm transition hover:-translate-y-0.5"
-              href="#contact-form"
-            >
-              Send a message
-            </Link>
-
-            <a
-              className="contact-secondary-button inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border px-6 text-sm font-bold shadow-sm transition"
-              href={`mailto:${salesEmail}`}
-            >
-              <Icon className="size-4" name="email" />
-              Email
-            </a>
-          </div>
-
-          <div className="mt-5 border-l-2 border-teal-500 pl-4 text-base leading-7 text-slate-600 sm:text-lg">
-            <p className="font-semibold text-slate-900">
-              VOZON AI TECHNOLOGIES PRIVATE LIMITED
-            </p>
-            <p>CIN: U62099KA2026PTC228147</p>
-          </div>
-        </div>
-
+const contactForm = (
         <form
           aria-busy={isSubmitting}
-          className="scroll-mt-24 rounded-[28px] border border-slate-200 bg-white p-5 shadow-[0_28px_80px_rgba(15,23,42,0.10)] sm:p-7 lg:translate-x-8 lg:p-6 xl:translate-x-12"
+          className="contact-page-form scroll-mt-24 rounded-xl border border-[#dedfe2] bg-white p-5 shadow-[0_20px_55px_rgba(23,23,25,0.07)] sm:p-7 lg:p-8"
           id="contact-form"
           onSubmit={handleSubmit}
         >
           <div className="mb-6 flex items-center gap-4 border-b border-slate-200 pb-5 lg:mb-5 lg:pb-4">
-            <span className="grid size-13 shrink-0 place-items-center rounded-2xl border border-teal-200 bg-teal-50 shadow-[0_12px_30px_rgba(17,135,120,0.14)] lg:size-11 lg:rounded-xl">
-              <Icon className="size-6 text-[#118778]" name="send" />
+            <span className="grid size-13 shrink-0 place-items-center rounded-2xl border border-[#dedfe2] bg-[#f1f1f2] shadow-sm lg:size-11 lg:rounded-xl">
+              <Icon className="size-6 text-[#171719]" name="send" />
             </span>
 
             <div>
@@ -311,7 +182,7 @@ Home </Link>
             <label className="grid gap-2 text-sm font-semibold text-black lg:gap-1.5">
               <span>
                 First name{" "}
-                <span aria-hidden="true" className="text-red-500">
+                <span aria-hidden="true" className="text-[#6b6e73]">
                   *
                 </span>
                 <span className="sr-only"> (required)</span>
@@ -328,7 +199,7 @@ Home </Link>
             <label className="grid gap-2 text-sm font-semibold text-black lg:gap-1.5">
               <span>
                 Last name{" "}
-                <span aria-hidden="true" className="text-red-500">
+                <span aria-hidden="true" className="text-[#6b6e73]">
                   *
                 </span>
                 <span className="sr-only"> (required)</span>
@@ -345,7 +216,7 @@ Home </Link>
             <label className="grid gap-2 text-sm font-semibold text-black lg:gap-1.5">
               <span>
                 Work email{" "}
-                <span aria-hidden="true" className="text-red-500">
+                <span aria-hidden="true" className="text-[#6b6e73]">
                   *
                 </span>
                 <span className="sr-only"> (required)</span>
@@ -386,7 +257,7 @@ Home </Link>
             <label className="grid gap-2 text-sm font-semibold text-black lg:gap-1.5">
               <span>
                 Company{" "}
-                <span aria-hidden="true" className="text-red-500">
+                <span aria-hidden="true" className="text-[#6b6e73]">
                   *
                 </span>
                 <span className="sr-only"> (required)</span>
@@ -404,7 +275,7 @@ Home </Link>
             <label className="grid gap-2 text-sm font-semibold text-black lg:gap-1.5">
               <span>
                 Inquiry type{" "}
-                <span aria-hidden="true" className="text-red-500">
+                <span aria-hidden="true" className="text-[#6b6e73]">
                   *
                 </span>
                 <span className="sr-only"> (required)</span>
@@ -433,7 +304,7 @@ Home </Link>
           <label className="mt-4 grid gap-2 text-sm font-semibold text-black lg:mt-3 lg:gap-1.5">
             <span>
               Message{" "}
-              <span aria-hidden="true" className="text-red-500">
+              <span aria-hidden="true" className="text-[#6b6e73]">
                 *
               </span>
               <span className="sr-only"> (required)</span>
@@ -487,246 +358,181 @@ Home </Link>
             {status}
           </p>
         </form>
-      </div>
-    </div>
-  </section>
+  );
 
-  <section
-    className="contact-channels-section border-t border-slate-100 bg-white px-5 py-14 sm:px-8 sm:py-16 lg:px-12 lg:py-20"
-    id="contact-channels"
-  >
-    <div className="mx-auto max-w-[1240px]">
-      <div className="mx-auto max-w-3xl text-center">
-        <span className="contact-channels-pill inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.17em] text-black">
-          <Icon className="size-4" name="chat" />
-          Multiple ways to reach us
-        </span>
-
-        <h2 className="mt-6 text-[clamp(2rem,4vw,3.5rem)] font-medium leading-[1.04] tracking-[-0.045em]">
-          Choose the right channel.
-        </h2>
-
-        <p className="mt-5 text-base leading-7 text-black sm:text-lg">
-          Whether you&apos;re exploring voice AI or already building with
-          vozon.ai, we&apos;ll point you to the right next step.
-        </p>
-      </div>
-
-      <div className="mt-12 grid auto-rows-fr gap-5 md:grid-cols-2 xl:grid-cols-4">
-        {contactChannels.map((channel) => (
-          <a
-            className="contact-channel-card group flex h-full min-h-72 flex-col rounded-[24px] border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:p-8"
-            href={channel.href}
-            key={channel.title}
-          >
-            <span className="contact-channel-icon grid size-13 place-items-center rounded-2xl bg-teal-50 text-black ring-1 ring-inset ring-teal-200 transition group-hover:bg-teal-500 group-hover:text-black">
-              <Icon className="size-6" name={channel.icon} />
-            </span>
-
-            <span className="contact-channel-eyebrow mt-8 text-[10px] font-bold uppercase tracking-[0.16em] text-black">
-              {channel.eyebrow}
-            </span>
-
-            <h3 className="mt-2 text-xl font-semibold tracking-[-0.025em]">
-              {channel.title}
-            </h3>
-
-            <p className="mt-3 text-sm leading-6 text-black">
-              {channel.body}
-            </p>
-
-            <span className="contact-channel-action mt-auto inline-flex items-center gap-2 pt-6 text-sm font-semibold text-black transition group-hover:text-black">
-              {channel.action}
-
-              <Icon
-                className="size-4 transition group-hover:translate-x-1"
-                name="arrow"
-              />
-            </span>
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section
-    className="scroll-mt-24 border-t border-slate-100 bg-slate-50 px-5 py-14 sm:px-8 sm:py-16 lg:px-12 lg:py-20"
-    id="office-locations"
-  >
-    <div className="mx-auto max-w-[1240px]">
-      <div className="max-w-3xl text-left">
-        <p className="text-xs font-bold uppercase tracking-[0.17em] text-black">
-          Where to find us
-        </p>
-
-        <h2 className="mt-5 text-[clamp(2rem,4vw,3.5rem)] font-medium leading-[1.04] tracking-[-0.045em]">
-          Our Office Locations
-        </h2>
-      </div>
-
-      <div className="mt-10 grid auto-rows-fr gap-5 sm:mt-12 lg:grid-cols-3">
-        {officeLocations.map((office) => (
-          <article
-            className="contact-channel-card group flex h-full min-h-64 flex-col rounded-[24px] border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:p-8"
-            key={office.city}
-          >
-            <span className="contact-channel-icon grid size-13 place-items-center rounded-2xl bg-teal-50 text-black ring-1 ring-inset ring-teal-200 transition group-hover:bg-teal-500 group-hover:text-black">
-              <Icon className="size-6" name="location" />
-            </span>
-
-            <span className="contact-channel-eyebrow mt-8 text-[10px] font-bold uppercase tracking-[0.16em] text-black">
-              {office.label}
-            </span>
-
-            <h3 className="mt-2 text-xl font-semibold tracking-[-0.025em]">
-              {office.city}
-            </h3>
-
-            <address className="mt-3 text-sm font-medium not-italic leading-6 text-black">
-              {office.address}
-            </address>
-          </article>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section className="border-t border-slate-100 bg-white px-5 py-14 sm:px-8 sm:py-16 lg:px-12 lg:py-20">
-    <div className="mx-auto max-w-[1240px]">
-      <div className="grid gap-8 lg:grid-cols-[0.7fr_1.3fr] lg:gap-16">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-[0.17em] text-black">
-            What happens next
-          </p>
-
-          <h2 className="mt-5 text-[clamp(2rem,4vw,3.5rem)] font-medium leading-[1.04] tracking-[-0.045em]">
-            From first message to a clear plan.
-          </h2>
-        </div>
-
-        <div className="grid gap-4">
-          {nextSteps.map((step) => (
-            <article
-              className="grid gap-4 rounded-[22px] border border-slate-200 bg-white p-6 shadow-sm sm:grid-cols-[52px_1fr] sm:items-start sm:p-7"
-              key={step.number}
-            >
-              <span className="grid size-11 place-items-center rounded-xl border border-teal-200 bg-teal-50 text-xs font-bold text-black">
-                {step.number}
-              </span>
-
-              <div>
-                <h3 className="text-lg font-semibold tracking-[-0.02em]">
-                  {step.title}
-                </h3>
-
-                <p className="mt-2 text-sm leading-6 text-black">
-                  {step.body}
-                </p>
+return (
+  <div id="contact-page" className="cmp-page contact-page-v2">
+    <section className="contact-hero-section">
+      <div className="contact-page-shell">
+        <nav aria-label="Breadcrumb" className="contact-breadcrumb">
+          <Link href="/">Home</Link><span aria-hidden="true">/</span><span>Contact</span>
+        </nav>
+        <div className="contact-hero-grid">
+          <div className="contact-intro">
+            <span className="contact-eyebrow"><Icon name="phone" /> Contact us</span>
+            <h1><span>Get In Touch</span><br />With Our Team</h1>
+            <p>Fill out the form below and our team will get back to you within 1-2 business days.</p>
+            <div className="contact-info-grid">
+              <a className="contact-info-card" href="https://maps.google.com/?q=Manyata+Tech+Park+Bengaluru" target="_blank" rel="noreferrer">
+                <span><Icon name="location" /></span><strong>Head Office</strong><small>Bengaluru, India</small>
+              </a>
+              <a className="contact-info-card" href="tel:+917892518414">
+                <span><Icon name="phone" /></span><strong>Call Center</strong><small>+91 78925 18414</small>
+              </a>
+              <a className="contact-info-card" href={`mailto:${salesEmail}`}>
+                <span><Icon name="email" /></span><strong>Email</strong><small>{salesEmail}</small>
+              </a>
+              <div className="contact-info-card">
+                <span><Icon name="clock" /></span><strong>Response Time</strong><small>Within 1–2 business days</small>
               </div>
-            </article>
+            </div>
+          </div>
+          {contactForm}
+        </div>
+      </div>
+    </section>
+
+    <section className="contact-proof-section">
+      <div className="contact-page-shell">
+        <p className="contact-section-eyebrow">VOICE AI, BUILT FOR REAL WORK</p>
+        <h2>Move every conversation forward.</h2>
+        <div className="contact-proof-grid">
+          <article><span>01</span><h3>Answer with context</h3><p>Voice agents handle common questions with your approved business information.</p></article>
+          <article><span>02</span><h3>Take the next step</h3><p>Connect calls to calendars, CRM records, and the tools your team already uses.</p></article>
+          <article><span>03</span><h3>Keep people in control</h3><p>Set clear handoffs, guardrails, and workflows around every customer journey.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section className="contact-social-section">
+      <div className="contact-page-shell">
+        <p className="contact-section-eyebrow">FOLLOW ALONG</p>
+        <h2>Keep up with Vozon.</h2>
+        <div className="contact-social-grid">
+          <a href="https://linkedin.com/company/vozon-ai-india/" target="_blank" rel="noreferrer"><span>in</span><strong>LinkedIn</strong><small>Company updates and ideas</small></a>
+          <a href="https://x.com/vozonai_" target="_blank" rel="noreferrer"><span>𝕏</span><strong>Follow on X</strong><small>News and product updates</small></a>
+          <a href="https://www.instagram.com/vozonai" target="_blank" rel="noreferrer"><span>◎</span><strong>Instagram</strong><small>See what we’re building</small></a>
+          <a href="mailto:hello@vozon.ai"><span><Icon name="email" /></span><strong>Write to us</strong><small>{salesEmail}</small></a>
+        </div>
+      </div>
+    </section>
+
+    <section className="contact-offices-section" id="office-locations">
+      <div className="contact-page-shell">
+        <p className="contact-section-eyebrow">OUR OFFICES</p>
+        <h2>Find our teams.</h2>
+        <div className="contact-offices-grid">
+          {officeLocations.map((office) => (
+            <a
+              className="contact-office-card"
+              href={`https://maps.google.com/?q=${encodeURIComponent(office.address)}`}
+              key={office.name}
+              rel="noreferrer"
+              target="_blank"
+            >
+              <span><Icon name="location" /></span>
+              <small>{office.label}</small>
+              <strong>{office.name}</strong>
+              <p>{office.address}</p>
+              <b>Open in Maps <Icon name="arrow" /></b>
+            </a>
           ))}
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <style>{`
-    #contact-page .contact-primary-button {
-      border-color: #118778 !important;
-      background: #118778 !important;
-      color: #fff !important;
-      -webkit-text-fill-color: #fff !important;
-    }
+    <section className="contact-faq-section" id="contact-faq">
+      <div className="contact-page-shell contact-faq-layout">
+        <div><p className="contact-section-eyebrow">FAQ</p><h2>Frequently Asked Questions</h2><p>Quick answers before you get in touch.</p></div>
+        <div className="contact-faq-list">
+          <details open><summary>What happens after I send the form?<span aria-hidden="true">+</span></summary><p>Our team reviews your requirements and replies by email within 1–2 business days.</p></details>
+          <details><summary>Can I book a product demo?<span aria-hidden="true">+</span></summary><p>Yes. Select “Product demo” in the form and tell us what you would like to explore.</p></details>
+          <details><summary>Can Vozon connect to our existing phone system?<span aria-hidden="true">+</span></summary><p>Vozon supports phone and SIP integrations. Share your current setup so our team can confirm the right connection.</p></details>
+          <details><summary>Where can I get help with an existing account?<span aria-hidden="true">+</span></summary><p>Email <a href={`mailto:${salesEmail}`}>{salesEmail}</a> and include your workspace name and a short description of the issue.</p></details>
+        </div>
+      </div>
+    </section>
 
-    #contact-page .contact-primary-button:hover {
-      border-color: #0e6f62 !important;
-      background: #0e6f62 !important;
-    }
-
-    /* TEAL SECONDARY EMAIL BUTTON */
-    #contact-page .contact-secondary-button {
-      border-color: #9bd8d1 !important;
-      background: #eaf8f6 !important;
-      color: #08786e !important;
-      -webkit-text-fill-color: #08786e !important;
-    }
-
-    #contact-page .contact-secondary-button:hover {
-      border-color: #70c7bd !important;
-      background: #d9f2ef !important;
-      color: #075f58 !important;
-      -webkit-text-fill-color: #075f58 !important;
-    }
-
-    /*
-     * Form fields:
-     * Subtle off-white background so the fields are visible
-     * against the white form card without looking too bright.
-     */
-    #contact-page .contact-form-field {
-      border-color: #e2e4e9 !important;
-      background: #f8f8fa !important;
-      color: #111827 !important;
-      box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.02) !important;
-      transition:
-        border-color 160ms ease,
-        background-color 160ms ease,
-        box-shadow 160ms ease;
-    }
-
-    #contact-page .contact-form-field:hover {
-      border-color: #d6d8df !important;
-      background: #f7f7f9 !important;
-    }
-
-    /* TEAL FORM FOCUS */
-    #contact-page .contact-form-field:focus {
-      border-color: #108d82 !important;
-      background: #fcfffe !important;
-      box-shadow:
-        0 0 0 3px rgba(16, 141, 130, 0.13),
-        inset 0 1px 2px rgba(15, 23, 42, 0.02) !important;
-      outline: none !important;
-    }
-
-    #contact-page .contact-form-field::placeholder {
-      color: #64748b !important;
-      opacity: 0.38 !important;
-    }
-
-    #contact-page select.contact-form-field {
-      color: #111827 !important;
-    }
-
-    #contact-page select.contact-form-field:invalid {
-      color: #9ca3af !important;
-    }
-
-    #contact-page select.contact-form-field option {
-      color: #111827 !important;
-      background: #ffffff !important;
-    }
-
-    /* TEAL SUBMIT BUTTON */
-    #contact-page .contact-submit-button {
-      border-color: #118778 !important;
-      background: #118778 !important;
-      color: #fff !important;
-      -webkit-text-fill-color: #fff !important;
-    }
-
-    #contact-page .contact-submit-button:hover {
-      border-color: #0e6f62 !important;
-      background: #0e6f62 !important;
-    }
-
-    #contact-page .contact-primary-button *,
-    #contact-page .contact-submit-button * {
-      color: #fff !important;
-      -webkit-text-fill-color: #fff !important;
-    }
-  `}</style>
-</div>
-
+    <style>{`
+      #contact-page.contact-page-v2 { --contact-blue:#2563eb; --contact-ink:#111827; --contact-muted:#617084; background:#fff!important; color:var(--contact-ink); font-family:var(--font-site-sans),Roboto,Arial,sans-serif; }
+      #contact-page.contact-page-v2 :is(h1,h2,h3,p) { font-family:inherit; }
+      #contact-page .contact-page-shell { width:min(1180px,calc(100% - 48px)); margin-inline:auto; }
+      #contact-page .contact-hero-section { padding:120px 0 58px; background:#fff!important; }
+      #contact-page .contact-breadcrumb { display:flex; gap:12px; align-items:center; margin:0 0 24px; color:#758195; font-size:13px; }
+      #contact-page .contact-breadcrumb a { color:inherit; text-decoration:none; }
+      #contact-page .contact-hero-grid { display:grid; grid-template-columns:minmax(0,1fr) minmax(420px,.92fr); align-items:center; gap:clamp(32px,6vw,84px); }
+      #contact-page .contact-intro { min-width:0; }
+      #contact-page .contact-eyebrow { display:inline-flex; align-items:center; gap:7px; border-radius:999px; padding:7px 12px; background:#eff5ff; color:#111827; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; }
+      #contact-page .contact-eyebrow svg { width:14px;height:14px; }
+      #contact-page .contact-intro h1 { margin:18px 0 16px!important; max-width:12ch; color:var(--contact-ink)!important; font-size:clamp(34px,4.4vw,54px)!important; font-weight:600!important; letter-spacing:-.055em!important; line-height:1.08!important; }
+      #contact-page .contact-intro h1 span { color:#111827!important; }
+      #contact-page .contact-intro>p { max-width:440px; margin:0; color:#111827!important; font-size:16px; line-height:1.65; }
+      #contact-page .contact-info-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:36px; }
+      #contact-page .contact-info-card { min-width:0; min-height:88px; display:grid; grid-template-columns:24px minmax(0,1fr); align-content:center; column-gap:10px; row-gap:4px; padding:14px 15px; border:1px solid #e2e8f0; border-radius:14px; background:#fff; color:inherit; text-decoration:none; box-shadow:0 3px 12px rgb(15 23 42 / 3%); }
+      #contact-page .contact-info-card>span { grid-row:span 2; color:var(--contact-blue); align-self:center; }
+      #contact-page .contact-info-card svg { width:18px;height:18px; }
+      #contact-page .contact-info-card strong { font-size:13px; font-weight:600; }
+      #contact-page .contact-info-card small { overflow-wrap:anywhere; color:#111827; font-size:11px; line-height:1.4; }
+      #contact-page .contact-info-card[href]:hover { border-color:#a9c5ff; background:#f8fbff; }
+      #contact-page .contact-page-form { position:relative; overflow:hidden; width:100%; min-width:0; margin:0; padding:30px 26px 24px!important; border:1px solid #dbe5f5!important; border-radius:18px!important; background:linear-gradient(180deg,#2563eb 0 16px,#fff 16px)!important; box-shadow:0 18px 48px rgb(24 55 108 / 10%)!important; }
+      #contact-page .contact-page-form>div:first-child { margin-top:4px; border-color:#e6ebf2!important; }
+      #contact-page .contact-page-form>div:first-child>span { background:#eff5ff!important; border-color:#dce8ff!important; }
+      #contact-page .contact-page-form>div:first-child>span svg { color:var(--contact-blue)!important; }
+      #contact-page .contact-page-form h2 { color:#111827!important; font-size:18px!important; }
+      #contact-page .contact-page-form label { color:#293548!important; font-size:12px!important; }
+      #contact-page .contact-page-form label p,#contact-page .contact-page-form>p { color:#111827!important; }
+      #contact-page .contact-form-field { min-height:42px!important; border-color:#dce3ec!important; border-radius:8px!important; background:#fff!important; color:#111827!important; font-size:13px!important; }
+      #contact-page textarea.contact-form-field { min-height:92px!important; }
+      #contact-page .contact-form-field:focus { border-color:var(--contact-blue)!important; box-shadow:0 0 0 3px rgb(37 99 235 / 13%)!important; outline:none!important; }
+      #contact-page .contact-form-field::placeholder { color:#8793a3!important; opacity:1!important; }
+      #contact-page select.contact-form-field option { color:#111827!important; background:#fff!important; }
+      #contact-page .contact-submit-button { min-height:44px!important; border:1px solid var(--contact-blue)!important; border-radius:999px!important; background:var(--contact-blue)!important; color:#fff!important; -webkit-text-fill-color:#fff!important; }
+      #contact-page .contact-submit-button:hover { background:#1d4ed8!important; }
+      #contact-page .contact-submit-button * { color:#fff!important; -webkit-text-fill-color:#fff!important; }
+      #contact-page .contact-proof-section,#contact-page .contact-social-section,#contact-page .contact-faq-section { padding:64px 0; border-top:1px solid #edf0f4; background:#fff!important; }
+      #contact-page .contact-proof-section { background:#f8faff!important; }
+      #contact-page .contact-section-eyebrow { margin:0 0 10px; color:#111827!important; font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
+      #contact-page .contact-proof-section h2,#contact-page .contact-social-section h2,#contact-page .contact-faq-section h2 { margin:0; color:#111827!important; font-size:clamp(25px,3vw,36px)!important; font-weight:600!important; letter-spacing:-.04em!important; line-height:1.15!important; }
+      #contact-page .contact-proof-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin-top:28px; }
+      #contact-page .contact-proof-grid article { padding:24px; border:1px solid #e2e8f0; border-radius:16px; background:#fff; }
+      #contact-page .contact-proof-grid article>span { color:var(--contact-blue); font-size:12px; font-weight:700; }
+      #contact-page .contact-proof-grid h3 { margin:18px 0 8px; color:#172033!important; font-size:16px!important; font-weight:600!important; }
+      #contact-page .contact-proof-grid p,#contact-page .contact-faq-layout>div:first-child>p:last-child { margin:0; color:#111827!important; font-size:13px; line-height:1.65; }
+      #contact-page .contact-social-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; margin-top:26px; }
+      #contact-page .contact-social-grid a { display:grid; gap:7px; justify-items:start; min-width:0; padding:20px; border:1px solid #e2e8f0; border-radius:14px; color:#111827; text-decoration:none; }
+      #contact-page .contact-social-grid a:hover { border-color:#a9c5ff; background:#f8fbff; }
+      #contact-page .contact-social-grid a>span { display:grid; place-items:center; width:30px;height:30px; margin-bottom:4px; border-radius:9px; background:#eff5ff; color:var(--contact-blue); font-size:16px; font-weight:700; }
+      #contact-page .contact-social-grid svg { width:16px;height:16px; }
+      #contact-page .contact-social-grid strong { font-size:13px; }
+      #contact-page .contact-social-grid small { color:#111827; font-size:11px; }
+      #contact-page .contact-offices-section { padding:58px 0; border-top:1px solid #edf0f4; background:#f8faff!important; }
+      #contact-page .contact-offices-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin-top:24px; }
+      #contact-page .contact-office-card { display:flex; flex-direction:column; min-width:0; min-height:210px; padding:22px; border:1px solid #e2e8f0; border-radius:16px; background:#fff; color:#111827; text-decoration:none; transition:border-color .18s ease,transform .18s ease; }
+      #contact-page .contact-office-card:hover { transform:translateY(-2px); border-color:#a9c5ff; }
+      #contact-page .contact-office-card>span { display:grid; place-items:center; width:34px;height:34px; margin-bottom:16px; border-radius:10px; background:#eff5ff; color:var(--contact-blue); }
+      #contact-page .contact-office-card>span svg { width:18px;height:18px; }
+      #contact-page .contact-office-card small { color:#111827; font-size:11px; }
+      #contact-page .contact-office-card strong { margin-top:4px; font-size:16px; }
+      #contact-page .contact-office-card p { margin:8px 0 18px; color:#111827!important; font-size:12px; line-height:1.55; }
+      #contact-page .contact-office-card>b { display:flex; align-items:center; gap:6px; margin-top:auto; color:var(--contact-blue); font-size:12px; }
+      #contact-page .contact-office-card>b svg { width:14px;height:14px; }
+      #contact-page .contact-faq-layout { display:grid; grid-template-columns:.7fr 1.3fr; gap:48px; align-items:start; }
+      #contact-page .contact-faq-layout>div:first-child>p:last-child { margin-top:12px; }
+      #contact-page .contact-faq-list { border-top:1px solid #e2e8f0; }
+      #contact-page .contact-faq-list details { padding:17px 0; border-bottom:1px solid #e2e8f0; }
+      #contact-page .contact-faq-list summary { display:flex; justify-content:space-between; gap:18px; cursor:pointer; color:#182235; font-size:14px; font-weight:600; list-style:none; }
+      #contact-page .contact-faq-list summary::-webkit-details-marker { display:none; }
+      #contact-page .contact-faq-list summary span { color:var(--contact-blue); font-size:20px; line-height:1; }
+      #contact-page .contact-faq-list details[open] summary span { transform:rotate(45deg); }
+      #contact-page .contact-faq-list details p { margin:10px 28px 0 0; color:#111827!important; font-size:13px; line-height:1.65; }
+      #contact-page .contact-faq-list a { color:var(--contact-blue); }
+      #contact-page.contact-page-v2 :is(.contact-breadcrumb,.contact-breadcrumb a,.contact-breadcrumb span,.contact-page-form label,.contact-page-form label p,.contact-page-form>p,.contact-info-card small,.contact-proof-grid p,.contact-social-grid small,.contact-office-card small,.contact-office-card p,.contact-faq-list details p,.contact-faq-layout>div:first-child>p:last-child) { color:#111827!important; }
+      #contact-page .contact-faq-list a { color:#111827!important; }
+      @media(max-width:900px) { #contact-page .contact-hero-grid { grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:26px; } #contact-page .contact-info-grid { gap:8px; } #contact-page .contact-info-card { padding:12px; } }
+      @media(max-width:900px) { #contact-page .contact-offices-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+      @media(max-width:700px) { #contact-page .contact-page-shell { width:min(100% - 32px,560px); } #contact-page .contact-hero-section { padding:100px 0 42px; } #contact-page .contact-hero-grid,#contact-page .contact-faq-layout { grid-template-columns:1fr; gap:28px; } #contact-page .contact-intro h1 { font-size:clamp(34px,9vw,46px)!important; } #contact-page .contact-page-form { padding:26px 18px 20px!important; } #contact-page .contact-proof-section,#contact-page .contact-social-section,#contact-page .contact-offices-section,#contact-page .contact-faq-section { padding:44px 0; } #contact-page .contact-proof-grid { grid-template-columns:1fr; } #contact-page .contact-social-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } #contact-page .contact-offices-grid { grid-template-columns:1fr; } }
+      @media(max-width:380px) { #contact-page .contact-info-grid { grid-template-columns:1fr; } #contact-page .contact-social-grid { grid-template-columns:1fr; } }
+    `}</style>
+  </div>
 );
 }

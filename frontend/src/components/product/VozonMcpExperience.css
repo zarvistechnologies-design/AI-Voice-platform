@@ -1,0 +1,148 @@
+.vmcp-mac-layout {
+  display: grid;
+  grid-template-columns: 155px minmax(0, 1fr);
+  gap: 12px;
+  flex: 1;
+  align-items: stretch;
+}
+
+.vmcp-server-list {
+  background: #ffffff;
+  border: 1px solid #dce4f2;
+  border-radius: 12px;
+  padding: 10px 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: 0 6px 14px rgb(20 42 82 / 4%);
+}
+
+.vmcp-server-list>small {
+  font-size: 7.5px;
+  font-weight: 800;
+  letter-spacing: .11em;
+  color: #7c899e;
+  padding: 0 3px 2px;
+}
+
+.vmcp-server-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid #e8eef7;
+  border-radius: 9px;
+  background: #f9fbff;
+  padding: 6px 8px;
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #1e2b44;
+}
+
+.vmcp-server-row.is-active {
+  border-color: #9cb8f5;
+  background: #eef4ff;
+  color: #2457d6;
+}
+
+.vmcp-server-row i {
+  margin-left: auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+}
+
+.vmcp-runtime-pane {
+  background: #ffffff;
+  border: 1px solid #dce4f2;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  box-shadow: 0 6px 14px rgb(20 42 82 / 5%);
+}
+
+.vmcp-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.vmcp-step-box {
+  border: 1px solid #e4ebf6;
+  border-radius: 10px;
+  background: #f9fbff;
+  padding: 8px 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  animation: vc-line-in .3s ease both;
+}
+
+.vmcp-step-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vmcp-step-badge {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  flex: none;
+  place-items: center;
+  border-radius: 6px;
+}
+
+.vmcp-step-badge svg {
+  width: 12px;
+  height: 12px;
+}
+
+.vmcp-step-head small {
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: .09em;
+}
+
+.vmcp-step-box strong {
+  font-size: 9.5px;
+  color: #17233a;
+  line-height: 1.28;
+}
+
+.vmcp-json-terminal {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 9.5px;
+  line-height: 1.5;
+  color: #e2e8f0;
+}
+
+.vmcp-json-terminal span {
+  display: block;
+  color: #60a5fa;
+  font-weight: 700;
+}
+
+.vmcp-json-terminal b {
+  display: block;
+  color: #34d399;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+@media (max-width: 640px) {
+  .vmcp-mac-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .vmcp-steps-grid {
+    grid-template-columns: 1fr;
+  }
+}

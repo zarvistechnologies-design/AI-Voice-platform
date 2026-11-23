@@ -54,9 +54,9 @@ type KnowledgeEditor = {
 };
 
 const buttonClass =
-  "app-button-text inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 transition disabled:cursor-not-allowed disabled:opacity-50";
+  "inline-flex h-8 items-center justify-center gap-1.5 rounded-md px-3 text-[12px] font-medium transition disabled:cursor-not-allowed disabled:opacity-50";
 const controlClass =
-  "app-control-text min-h-11 w-full rounded-lg border border-[#dbe4e1] bg-white px-3 text-[#111827] outline-none transition placeholder:text-[#9ca3af] focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10";
+  "h-8 w-full rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12px] text-[#171717] outline-none transition placeholder:text-[#71717a] focus:border-black dark:border-zinc-700 dark:bg-zinc-950 dark:text-white dark:placeholder:text-zinc-500 dark:focus:border-white";
 const acceptedFiles =
   ".pdf,.docx,.txt,.md,.csv,.json,.html,.htm,.xml,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,text/markdown,text/csv,application/json,text/html,application/xml";
 
@@ -168,10 +168,10 @@ function sourceTypeLabel(source: KnowledgeSource) {
 }
 
 function statusStyle(status: KnowledgeSource["status"]) {
-  if (status === "ready") return "bg-[#ecfdf5] text-[#047857]";
-  if (status === "failed") return "bg-[#fff1f2] text-[#b91c1c]";
-  if (status === "processing") return "bg-[#eff6ff] text-[#108D82]";
-  return "bg-[#f1f5f9] text-[#64748b]";
+  if (status === "ready") return "border border-[#eaeaea] bg-[#fafafa] text-[#171717]";
+  if (status === "failed") return "border border-rose-200 bg-rose-50 text-rose-700";
+  if (status === "processing") return "border border-[#eaeaea] bg-[#f4f4f5] text-[#52525b]";
+  return "border border-[#eaeaea] bg-[#fafafa] text-[#71717a]";
 }
 
 function preview(value: string) {
@@ -310,10 +310,10 @@ export function KnowledgeBaseShell() {
     return !term
       ? sources
       : sources.filter((source) =>
-          `${source.name} ${source.agentName} ${source.preview} ${source.url} ${source.originalFileName}`
-            .toLowerCase()
-            .includes(term),
-        );
+        `${source.name} ${source.agentName} ${source.preview} ${source.url} ${source.originalFileName}`
+          .toLowerCase()
+          .includes(term),
+      );
   }, [query, sources]);
   const selectedAgentSourceCount = sources.filter(
     (source) => source.agentId === selectedAgentId,
@@ -407,9 +407,9 @@ export function KnowledgeBaseShell() {
       () =>
         sourceId
           ? voiceApi.updateKnowledgeSource(editor.agentId, sourceId, {
-              name,
-              content,
-            })
+            name,
+            content,
+          })
           : voiceApi.addKnowledgeText(editor.agentId, { name, content }),
       sourceId
         ? "Knowledge source was updated and re-indexed."
@@ -463,7 +463,7 @@ export function KnowledgeBaseShell() {
           description="Manage the indexed sources your voice agents use to answer caller questions."
           actions={
             <button
-              className={`${buttonClass} bg-[#118778] text-white hover:bg-[#0e6f62]`}
+              className="inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md bg-blue-600 px-3.5 text-[12.5px] font-medium text-white transition hover:bg-blue-700 dark:bg-blue-500 dark:text-white dark:hover:bg-blue-400 shadow-sm disabled:opacity-50"
               disabled={!selectedAgent || atCapacity}
               onClick={() => {
                 setError("");
@@ -494,15 +494,15 @@ export function KnowledgeBaseShell() {
             ) : null}
           </div>
 
-          <section className="dashboard-flat-panel min-w-0 overflow-hidden bg-white">
-            <div className="dashboard-filter-bar px-4 py-3 sm:px-5">
+          <section className="dashboard-flat-panel min-w-0 overflow-hidden rounded-lg border border-[#eaeaea] bg-white">
+            <div className="dashboard-filter-bar px-4 py-2.5 sm:px-4">
               <label className="relative block">
                 <span className="sr-only">Search knowledge</span>
-                <span className="pointer-events-none absolute inset-y-0 left-3 grid place-items-center text-[#94a3b8]">
-                  <Icon icon="search" />
+                <span className="pointer-events-none absolute inset-y-0 left-2.5 grid place-items-center text-[#71717a]">
+                  <Icon icon="search" className="size-3.5" />
                 </span>
                 <input
-                  className={`${controlClass} pl-10`}
+                  className={`${controlClass} pl-8`}
                   placeholder="Search source, agent, type, or content"
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
@@ -517,20 +517,20 @@ export function KnowledgeBaseShell() {
             ) : sources.length === 0 ? (
               <div className="mx-auto grid min-h-[360px] max-w-xl place-items-center px-5 py-14 text-center">
                 <div className="grid place-items-center gap-4">
-                  <span className="grid size-12 place-items-center rounded-lg bg-[#edf7f4] text-[#118778]">
-                    <Icon icon="file" className="size-5" />
+                  <span className="grid size-10 place-items-center rounded-lg border border-[#eaeaea] bg-[#f4f4f5] text-[#171717]">
+                    <Icon icon="file" className="size-4" />
                   </span>
                   <div>
-                    <strong className="app-strong block">
+                    <strong className="app-strong block text-[13px] text-[#171717]">
                       No knowledge added
                     </strong>
-                    <p className="app-caption mt-1 mb-0">
+                    <p className="app-caption mt-1 mb-0 text-xs text-[#71717a]">
                       Add approved text, a document, or a website to start your
                       workspace library.
                     </p>
                   </div>
                   <button
-                    className={`${buttonClass} bg-[#118778] text-white hover:bg-[#0e6f62]`}
+                    className={`${buttonClass} bg-[#2563eb] text-white hover:bg-[#1d4ed8]`}
                     disabled={!selectedAgent || atCapacity}
                     onClick={() => setShowAddKnowledge(true)}
                     type="button"
@@ -558,52 +558,52 @@ export function KnowledgeBaseShell() {
                   <span>Status</span>
                   <span className="text-right">Actions</span>
                 </div>
-                <ul className="divide-y divide-[#edf0f4]">
+                <ul className="divide-y divide-[#eaeaea]">
                   {filteredSources.map((source) => (
                     <li
-                      className="grid gap-4 px-4 py-4 transition hover:bg-[#fafcfb] sm:px-5 lg:grid-cols-[minmax(280px,1fr)_minmax(150px,.45fr)_110px_minmax(190px,auto)] lg:items-center"
+                      className="grid gap-3 px-4 py-3 transition hover:bg-[#fafafa] sm:px-4 lg:grid-cols-[minmax(280px,1fr)_minmax(150px,.45fr)_110px_minmax(190px,auto)] lg:items-center"
                       key={`${source.agentId}-${source._id}`}
                     >
-                      <div className="flex min-w-0 gap-3">
-                        <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#edf7f4] text-[#0e6f62]">
-                          <Icon icon={source.sourceType === "url" ? "link" : "file"} />
+                      <div className="flex min-w-0 gap-2.5">
+                        <span className="grid size-8 shrink-0 place-items-center rounded-md border border-[#eaeaea] bg-[#f4f4f5] text-[#171717]">
+                          <Icon icon={source.sourceType === "url" ? "link" : "file"} className="size-3.5" />
                         </span>
                         <div className="min-w-0">
-                          <strong className="app-strong block truncate">
+                          <strong className="block truncate text-[13px] font-medium text-[#171717]">
                             {source.name}
                           </strong>
-                          <p className="app-caption mt-1 mb-0 truncate text-[#64748b]">
+                          <p className="mt-0.5 mb-0 truncate text-[11px] text-[#71717a]">
                             {source.error ||
                               preview(source.preview) ||
                               source.url ||
                               source.originalFileName}
                           </p>
-                          <span className="app-caption mt-1 block">
+                          <span className="mt-0.5 block text-[11px] text-[#a1a1aa]">
                             {sourceTypeLabel(source)} · {source.chunkCount} chunks
                           </span>
                         </div>
                       </div>
 
-                      <span className="flex min-w-0 items-center gap-2 text-sm font-semibold text-[#52645f]">
-                        <Icon icon="user" className="size-4 shrink-0 text-[#71817d]" />
+                      <span className="flex min-w-0 items-center gap-1.5 text-[12px] font-medium text-[#52525b]">
+                        <Icon icon="user" className="size-3.5 shrink-0 text-[#71717a]" />
                         <span className="truncate">{source.agentName}</span>
                       </span>
 
                       <span>
-                        <span className={`app-label inline-flex rounded-full px-2.5 py-1 ${statusStyle(source.status)}`}>
+                        <span className={`inline-flex rounded-full px-2 py-0.5 text-[11px] font-medium ${statusStyle(source.status)}`}>
                           {source.status}
                         </span>
                       </span>
 
                       <div className="flex flex-wrap gap-2 lg:justify-end">
                         {source.attachedLegacy ? (
-                          <span className="app-label inline-flex min-h-9 items-center rounded-lg bg-[#edf7f4] px-3 text-[#0e6f62]">
+                          <span className="inline-flex h-7 items-center rounded-md border border-[#eaeaea] bg-[#fafafa] px-2.5 text-[11px] font-medium text-[#171717]">
                             Attached
                           </span>
                         ) : (
                           <>
                             <button
-                              className={`app-label min-h-9 rounded-lg px-3 transition ${source.status === "ready" ? "bg-[#ecfdf5] text-[#047857] hover:bg-[#d1fae5]" : "bg-[#f1f5f9] text-[#64748b] hover:bg-[#e2e8f0]"}`}
+                              className={`h-7 rounded-md border border-[#eaeaea] px-2.5 text-[12px] font-medium transition ${source.status === "ready" ? "bg-white text-[#171717] hover:bg-[#f4f4f5]" : "bg-[#f4f4f5] text-[#52525b] hover:bg-[#e4e4e7]"}`}
                               disabled={busy || source.status === "processing"}
                               onClick={() =>
                                 void mutate(
@@ -675,7 +675,7 @@ export function KnowledgeBaseShell() {
 
       {showAddKnowledge ? (
         <div
-          className="fixed inset-0 z-[90] grid place-items-center bg-slate-950/35 p-3 backdrop-blur-[6px] sm:p-5"
+          className="fixed inset-0 z-[90] grid place-items-center bg-black/60 p-3 backdrop-blur-sm sm:p-5"
           role="dialog"
           aria-modal="true"
           aria-labelledby="add-knowledge-title"
@@ -687,24 +687,24 @@ export function KnowledgeBaseShell() {
           }}
         >
           <section
-            className="grid max-h-[calc(100dvh-2rem)] w-full max-w-[640px] overflow-y-auto rounded-xl border border-[#dbe4e1] bg-white"
+            className="grid max-h-[calc(100dvh-2rem)] w-full max-w-[640px] overflow-y-auto rounded-2xl border border-slate-200 border-t-2 border-t-blue-600 bg-white text-slate-900 shadow-2xl dark:border-zinc-800 dark:border-t-blue-500 dark:bg-zinc-900 dark:text-white"
             onMouseDown={(event) => event.stopPropagation()}
           >
-            <header className="flex items-start justify-between gap-4 border-b border-[#dbe4e1] px-5 py-4 sm:px-6">
+            <header className="flex items-start justify-between gap-4 bg-white/95 px-5 py-4 sm:px-6 dark:bg-zinc-900/95">
               <div>
-                <span className="app-label text-[#0e6f62]">Knowledge base</span>
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Knowledge base</span>
                 <h2
-                  className="app-page-title mt-1 mb-0"
+                  className="text-lg font-bold text-slate-900 dark:text-white mt-1 mb-0"
                   id="add-knowledge-title"
                 >
                   Add knowledge
                 </h2>
-                <p className="app-caption mt-1 mb-0">
+                <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 mb-0">
                   Choose one source type. Content is indexed automatically.
                 </p>
               </div>
               <button
-                className="grid size-9 place-items-center rounded-lg border border-[#dfe7e4] bg-white text-[#60716c] hover:border-[#118778] hover:text-[#0e6f62]"
+                className="grid size-8 place-items-center rounded-md border border-slate-200 bg-white text-slate-500 hover:border-black hover:text-black dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:text-white"
                 disabled={busy}
                 onClick={() => {
                   setShowAddKnowledge(false);
@@ -724,7 +724,7 @@ export function KnowledgeBaseShell() {
                   onClose={() => setError("")}
                 />
               ) : null}
-              <label className="app-label grid gap-2">
+              <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
                 Use with voice agent
                 <select
                   className={controlClass}
@@ -751,7 +751,7 @@ export function KnowledgeBaseShell() {
 
               <div className="grid gap-3 sm:grid-cols-2">
                 <button
-                  className="flex min-h-24 items-center gap-3 rounded-lg border border-[#dfe7e4] bg-white p-4 text-left transition hover:border-[#118778] hover:bg-[#fafcfb]"
+                  className="flex min-h-20 items-center gap-3 rounded-xl border border-slate-200 bg-white p-3.5 text-left transition hover:border-blue-500 hover:bg-blue-50/40 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-blue-500 dark:hover:bg-blue-950/20 cursor-pointer"
                   disabled={!selectedAgent || busy || atCapacity}
                   onClick={() => {
                     setShowAddKnowledge(false);
@@ -764,18 +764,18 @@ export function KnowledgeBaseShell() {
                   }}
                   type="button"
                 >
-                  <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#edf7f4] text-[#0e6f62]">
+                  <span className="grid size-9 shrink-0 place-items-center rounded-lg border border-slate-200 bg-slate-100 text-slate-800 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
                     <Icon icon="plus" />
                   </span>
                   <span>
-                    <strong className="app-strong block">Add text</strong>
-                    <span className="app-caption mt-1 block">
+                    <strong className="block text-sm font-semibold text-slate-900 dark:text-white">Add text</strong>
+                    <span className="mt-0.5 block text-xs text-slate-500 dark:text-zinc-400">
                       Policies, FAQs, and approved answers
                     </span>
                   </span>
                 </button>
                 <label
-                  className={`flex min-h-24 items-center gap-3 rounded-lg border border-[#dfe7e4] bg-white p-4 text-left transition hover:border-[#118778] hover:bg-[#fafcfb] ${busy || atCapacity ? "pointer-events-none opacity-50" : "cursor-pointer"}`}
+                  className={`flex min-h-20 items-center gap-3 rounded-xl border border-slate-200 bg-white p-3.5 text-left transition hover:border-blue-500 hover:bg-blue-50/40 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-blue-500 dark:hover:bg-blue-950/20 ${busy || atCapacity ? "pointer-events-none opacity-50" : "cursor-pointer"}`}
                 >
                   <input
                     className="sr-only"
@@ -788,12 +788,12 @@ export function KnowledgeBaseShell() {
                       void uploadFile(file);
                     }}
                   />
-                  <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#edf7f4] text-[#0e6f62]">
+                  <span className="grid size-9 shrink-0 place-items-center rounded-lg border border-slate-200 bg-slate-100 text-slate-800 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
                     <Icon icon="upload" />
                   </span>
                   <span>
-                    <strong className="app-strong block">Upload file</strong>
-                    <span className="app-caption mt-1 block">
+                    <strong className="block text-sm font-semibold text-slate-900 dark:text-white">Upload file</strong>
+                    <span className="mt-0.5 block text-xs text-slate-500 dark:text-zinc-400">
                       PDF, DOCX, TXT, CSV, JSON, HTML, or XML
                     </span>
                   </span>
@@ -801,13 +801,13 @@ export function KnowledgeBaseShell() {
               </div>
 
               <form
-                className="grid gap-3 rounded-lg border border-[#dfe7e4] bg-[#fafcfb] p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end"
+                className="grid gap-3 rounded-xl border border-slate-200 bg-slate-50/70 p-3.5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end dark:border-zinc-800 dark:bg-zinc-900/90"
                 onSubmit={(event) => void addWebsite(event)}
               >
-                <label className="app-label grid gap-2">
+                <label className="text-xs font-semibold text-slate-700 dark:text-zinc-200 grid gap-1.5">
                   Website URL
                   <input
-                    className={controlClass}
+                    className="h-11 w-full rounded-lg border border-[#eaeaea] bg-white px-3 text-xs text-[#171717] outline-none transition placeholder:text-[#71717a] focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 dark:border-zinc-700 dark:bg-zinc-950 dark:text-white dark:placeholder:text-zinc-500 dark:focus:border-blue-400"
                     placeholder="https://example.com/help"
                     type="url"
                     value={url}
@@ -815,14 +815,14 @@ export function KnowledgeBaseShell() {
                   />
                 </label>
                 <button
-                  className={`${buttonClass} border border-[#b8c8c3] bg-white text-[#0e6f62] hover:bg-[#edf7f4]`}
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-black px-4 text-xs font-semibold text-white transition hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 disabled:opacity-50 disabled:dark:bg-zinc-800 disabled:dark:text-zinc-500 shadow-sm"
                   disabled={busy || atCapacity || !url.trim()}
                   type="submit"
                 >
                   <Icon icon="link" /> Index website
                 </button>
               </form>
-              <p className="app-caption m-0 text-center">
+              <p className="m-0 text-center text-xs text-slate-500 dark:text-zinc-400">
                 Files can be up to 20MB. You can edit, disable, re-index, or
                 remove sources later.
               </p>
@@ -898,18 +898,18 @@ function TextEditorModal({
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <section className="grid max-h-[calc(100vh-24px)] w-full max-w-2xl grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden rounded-lg border border-white/10 bg-[#ffffff] shadow-2xl">
-        <header className="flex items-start justify-between gap-4 border-b border-white/10 bg-[#ffffff] px-5 py-4 sm:px-6">
+      <section className="grid max-h-[calc(100vh-24px)] w-full max-w-2xl grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden rounded-2xl border border-slate-200 border-t-2 border-t-blue-600 bg-white text-slate-900 shadow-2xl dark:border-zinc-800 dark:border-t-blue-500 dark:bg-zinc-900 dark:text-white">
+        <header className="flex items-start justify-between gap-4 bg-white/95 px-5 py-4 sm:px-6 dark:bg-zinc-900/95">
           <div>
-            <h2 className="app-page-title m-0">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white m-0">
               {editor.sourceId ? "Edit knowledge" : "Add text knowledge"}
             </h2>
-            <p className="app-caption mt-1 mb-0">
+            <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 mb-0">
               Saving creates fresh searchable chunks and embeddings.
             </p>
           </div>
           <button
-            className="grid size-9 place-items-center rounded-lg border border-white/10 text-white/60 hover:bg-white/[0.08] hover:text-white"
+            className="grid size-9 place-items-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:border-black hover:text-black dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:text-white"
             onClick={onClose}
             type="button"
             aria-label="Close"
@@ -919,11 +919,11 @@ function TextEditorModal({
         </header>
         <div className="grid gap-4 overflow-y-auto px-5 py-5 sm:px-6">
           {error ? (
-            <div className="app-body rounded-lg border border-[#fecaca] bg-[#fff1f2] px-3 py-2 text-[#b91c1c]">
+            <div className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-800 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-300">
               {error}
             </div>
           ) : null}
-          <label className="app-label grid gap-2">
+          <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
             Title
             <input
               className={controlClass}
@@ -935,10 +935,10 @@ function TextEditorModal({
               }
             />
           </label>
-          <label className="app-label grid gap-2">
+          <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
             Knowledge text
             <textarea
-              className="app-control-text min-h-80 resize-y rounded-lg border border-[#dbe4e1] bg-white p-3 outline-none focus:border-[#118778] focus:ring-4 focus:ring-[#118778]/10"
+            className="min-h-80 resize-y rounded-lg border border-slate-200 bg-white p-3 text-xs text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:focus:border-blue-400"
               placeholder="Add approved facts, policies, FAQs, and procedures…"
               value={editor.content}
               onChange={(event) =>
@@ -947,9 +947,9 @@ function TextEditorModal({
             />
           </label>
         </div>
-        <footer className="flex justify-end gap-2 border-t border-[#e6ecea] px-5 py-4 sm:px-6">
+        <footer className="flex justify-end gap-2 bg-slate-50/50 px-5 py-3 sm:px-6 dark:bg-zinc-900/50">
           <button
-            className={`${buttonClass} border border-[#d5d8df] bg-white text-[#334155] hover:bg-[#f8fafc]`}
+            className="inline-flex h-9 items-center justify-center rounded-lg border border-slate-200 bg-white px-4 text-xs font-medium text-slate-700 transition hover:bg-slate-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
             disabled={busy}
             onClick={onClose}
             type="button"
@@ -957,7 +957,7 @@ function TextEditorModal({
             Cancel
           </button>
           <button
-            className={`${buttonClass} bg-[#118778] text-white hover:bg-[#0e6f62]`}
+            className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-black px-4 text-xs font-semibold text-white transition hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 disabled:opacity-50 shadow-sm"
             disabled={busy || !editor.name.trim() || !editor.content.trim()}
             onClick={onSave}
             type="button"

@@ -52,7 +52,7 @@ export function RequestedIntegrationsSection() {
             <div className="mt-auto pt-5">
               <Link
                 href="/dashboard/developers"
-                className="inline-flex min-h-10 items-center rounded-lg bg-[#118778] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#0d6f63]"
+                className="inline-flex min-h-10 items-center rounded-lg bg-[#2563eb] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#1d4ed8]"
               >
                 Set up webhook
               </Link>

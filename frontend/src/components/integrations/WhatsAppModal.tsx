@@ -179,7 +179,6 @@ export function WhatsAppModal({
     };
     if (useCoexistence) {
       extras.featureType = "whatsapp_business_app_onboarding";
-      extras.sessionInfoVersion = "3";
     }
 
     try {
@@ -189,10 +188,7 @@ export function WhatsAppModal({
             void handleProcessCode(response.authResponse.code);
           } else {
             setBusy(false);
-            const metaError = response.error_message || response.error_description || response.error;
-            onError(metaError
-              ? `Meta signup error: ${metaError}`
-              : "Meta signup did not return an authorization code. Check the Embedded Signup configuration, allowed domain, and app access in Meta for Developers. If you closed the popup, try again.");
+            onError("Meta signup did not return an authorization code. If Meta says the feature is unavailable, check this app's Embedded Signup configuration, allowed domain, and app access in Meta for Developers.");
           }
         },
         {
@@ -274,10 +270,10 @@ export function WhatsAppModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-slate-950/35 p-4 backdrop-blur-[6px]">
-      <div className="w-full max-w-xl rounded-2xl border border-[#dfe7e4] bg-white p-6 shadow-[0_28px_80px_rgba(34,38,74,0.24)] text-slate-900">
+    <div className="wa-integration-backdrop fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-slate-950/35 p-4 backdrop-blur-[6px]">
+      <div id="whatsapp-integration-dialog" role="dialog" aria-modal="true" aria-labelledby="whatsapp-modal-title" className="wa-integration-dialog w-full max-w-xl rounded-2xl border border-[#dfe7e4] bg-white p-6 shadow-[0_28px_80px_rgba(34,38,74,0.24)] text-slate-900">
         {/* Header */}
-        <div className="flex items-start justify-between gap-4 pb-4 border-b border-[#dfe7e4]">
+        <div className="wa-integration-header flex items-start justify-between gap-4 pb-4 border-b border-[#dfe7e4]">
           <div className="flex items-center gap-3">
             <span className="grid h-12 w-12 place-items-center rounded-xl bg-[#edf7f4] border border-[#b8c8c3] p-2.5 shadow-xs">
               <Image
@@ -303,13 +299,13 @@ export function WhatsAppModal({
                   </span>
                 )}
               </div>
-              <h2 className="mt-0.5 text-xl font-semibold text-slate-950">
+              <h2 id="whatsapp-modal-title" className="mt-0.5 text-xl font-semibold text-slate-950">
                 WhatsApp Business Platform
               </h2>
             </div>
           </div>
           <button
-            className="rounded-lg px-2.5 py-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition cursor-pointer"
+            className="wa-integration-close rounded-lg px-2.5 py-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition cursor-pointer"
             type="button"
             disabled={busy}
             onClick={onClose}
@@ -325,11 +321,11 @@ export function WhatsAppModal({
             /* Disconnected State - Choice between Meta Popup or Developer Token */
             <div className="space-y-4">
               {/* Tab Selector */}
-              <div className="flex border-b border-[#dfe7e4] gap-6 text-sm font-medium">
+              <div className="wa-integration-tabs flex border-b border-[#dfe7e4] gap-6 text-sm font-medium">
                 <button
                   type="button"
                   onClick={() => setConnectMode("popup")}
-                  className={`pb-2.5 transition -mb-px cursor-pointer ${
+                  className={`wa-integration-tab pb-2.5 transition -mb-px cursor-pointer ${
                     connectMode === "popup"
                       ? "text-[#118778] border-b-2 border-[#118778] font-semibold"
                       : "text-slate-500 hover:text-slate-800"
@@ -340,7 +336,7 @@ export function WhatsAppModal({
                 <button
                   type="button"
                   onClick={() => setConnectMode("manual")}
-                  className={`pb-2.5 transition -mb-px cursor-pointer ${
+                  className={`wa-integration-tab pb-2.5 transition -mb-px cursor-pointer ${
                     connectMode === "manual"
                       ? "text-[#118778] border-b-2 border-[#118778] font-semibold"
                       : "text-slate-500 hover:text-slate-800"
@@ -352,7 +348,7 @@ export function WhatsAppModal({
 
               {connectMode === "popup" ? (
                 <div className="space-y-4">
-                  <div className="rounded-xl border border-[#dfe7e4] bg-[#edf7f4]/70 p-4 space-y-2 text-xs leading-5 text-slate-700">
+                  <div className="wa-integration-surface rounded-xl border border-[#dfe7e4] bg-[#edf7f4]/70 p-4 space-y-2 text-xs leading-5 text-slate-700">
                     <strong className="block text-sm font-semibold text-[#123d35]">
                       Automated WhatsApp Messaging for Vozon Voice Agents
                     </strong>
@@ -369,7 +365,7 @@ export function WhatsAppModal({
                   </div>
 
                   {/* Coexistence Option */}
-                  <div className="flex items-start gap-3 rounded-xl border border-[#dfe7e4] bg-[#f7f9f8] p-3.5 text-xs text-slate-700 transition hover:bg-[#edf7f4]/40">
+                  <div className="wa-integration-surface flex items-start gap-3 rounded-xl border border-[#dfe7e4] bg-[#f7f9f8] p-3.5 text-xs text-slate-700 transition hover:bg-[#edf7f4]/40">
                     <input
                       type="checkbox"
                       id="coexistenceToggle"
@@ -399,7 +395,7 @@ export function WhatsAppModal({
                       type="button"
                       disabled={busy || !hasValidMetaIds || !canUseMetaSdk || sdkStatus !== "ready"}
                       onClick={() => handleLaunchSignup()}
-                      className="w-full flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl font-semibold text-white bg-[#118778] hover:bg-[#0e6f62] shadow-sm transition disabled:opacity-50 text-sm cursor-pointer"
+                      className="wa-integration-primary w-full flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl font-semibold text-white bg-[#118778] hover:bg-[#0e6f62] shadow-sm transition disabled:opacity-50 text-sm cursor-pointer"
                     >
                       {busy || (sdkStatus === "loading" && hasValidMetaIds) ? (
                         <span className="flex items-center gap-2">
@@ -442,7 +438,7 @@ export function WhatsAppModal({
               ) : (
                 /* Developer / Sandbox Direct Connect */
                 <form onSubmit={handleManualConnect} className="space-y-3 text-xs">
-                  <div className="rounded-xl border border-[#b8c8c3] bg-[#edf7f4] p-3 text-[#123d35]">
+                  <div className="wa-integration-surface rounded-xl border border-[#b8c8c3] bg-[#edf7f4] p-3 text-[#123d35]">
                     💡 <strong>Developer / Sandbox Testing</strong>: Enter your test credentials from
                     Meta Developer Console (<em>WhatsApp &gt; Basic setup &gt; Step 1. Try it out</em>).
                   </div>
@@ -486,7 +482,7 @@ export function WhatsAppModal({
                   <button
                     type="submit"
                     disabled={busy}
-                    className="mt-2 w-full rounded-xl bg-[#118778] py-2.5 px-4 text-sm font-semibold text-white hover:bg-[#0e6f62] shadow-sm transition disabled:opacity-50 cursor-pointer"
+                    className="wa-integration-primary mt-2 w-full rounded-xl bg-[#118778] py-2.5 px-4 text-sm font-semibold text-white hover:bg-[#0e6f62] shadow-sm transition disabled:opacity-50 cursor-pointer"
                   >
                     {busy ? "Verifying..." : "Connect Credentials"}
                   </button>
@@ -497,7 +493,7 @@ export function WhatsAppModal({
             /* Connected State - Management & Test Message */
             <div className="space-y-4">
               {/* Account Details */}
-              <div className="rounded-xl border border-[#dfe7e4] bg-[#f7f9f8] p-4 text-xs leading-5 text-slate-700 space-y-2">
+              <div className="wa-integration-surface rounded-xl border border-[#dfe7e4] bg-[#f7f9f8] p-4 text-xs leading-5 text-slate-700 space-y-2">
                 <div className="flex items-center justify-between border-b border-[#dfe7e4] pb-2">
                   <strong className="text-sm font-semibold text-slate-900">
                     Connected Account Information
@@ -554,7 +550,7 @@ export function WhatsAppModal({
               {/* Test Message Form (For Meta App Review Video!) */}
               <form
                 onSubmit={handleSendTestMessage}
-                className="rounded-xl border border-[#b8c8c3] bg-[#edf7f4] p-4 space-y-3 text-xs"
+                className="wa-integration-surface rounded-xl border border-[#b8c8c3] bg-[#edf7f4] p-4 space-y-3 text-xs"
               >
                 <div className="flex items-center justify-between">
                   <strong className="text-sm font-semibold text-[#123d35] flex items-center gap-1.5">

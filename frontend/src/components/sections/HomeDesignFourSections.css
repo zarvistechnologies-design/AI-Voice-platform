@@ -42,7 +42,7 @@
 .design-four-workflow-icon.is-openai{fill:currentColor;stroke:none}
 .design-four-workflow-icon.is-phone{fill:currentColor;stroke:none}
 .design-four-workflow-icon.is-sparkles{fill:currentColor;stroke:none}
-.design-four-workflow-icon.is-claude{fill:currentColor;stroke:none;font-family:Arial,sans-serif;font-size:15px;font-weight:900}
+.design-four-workflow-icon.is-claude{fill:currentColor;stroke:none;font-family:inherit;font-size:15px;font-weight:900}
 .design-four-workflow-icon.is-meta{stroke-width:2.6}
 .design-four-workflow-icon.is-chat path:first-child{fill:currentColor;stroke:currentColor}
 .design-four-workflow-icon.is-chat path:last-child{stroke:#118778;stroke-width:3.5}

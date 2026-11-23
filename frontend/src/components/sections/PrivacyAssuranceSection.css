@@ -1,0 +1,166 @@
+.privacy-assurance {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(54px, 6vw, 76px) clamp(16px, 3vw, 24px);
+    background: #ffffff;
+    color: #17211f;
+    border-top: 1px solid #f0f2f5;
+    box-sizing: border-box;
+}
+
+.privacy-assurance-card {
+    display: grid;
+    width: 100%;
+    max-width: 1200px;
+    min-height: 440px;
+    grid-template-columns: 1.15fr 0.85fr;
+    align-items: center;
+    gap: clamp(32px, 4vw, 56px);
+    margin: 0 auto;
+    padding: clamp(32px, 4.5vw, 56px);
+    border: 1px solid #e4e4e7;
+    border-radius: 24px;
+    background: #ffffff;
+    box-shadow:
+        0 1px 2px rgba(9, 9, 11, 0.03),
+        0 20px 55px rgba(9, 9, 11, 0.04);
+    box-sizing: border-box;
+}
+
+.privacy-assurance-copy {
+    max-width: 520px;
+}
+
+.privacy-assurance-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.32rem 0.85rem;
+    border: 1px solid #e4e4e7;
+    border-radius: 999px;
+    background: #fafafa;
+    color: #52525b;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.privacy-assurance-eyebrow i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #09090b;
+}
+
+.privacy-assurance-copy h2 {
+    margin: 0.85rem 0 0.75rem;
+    color: #09090b;
+    font-size: clamp(2rem, 3.2vw, 2.75rem);
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 1.15;
+}
+
+.privacy-assurance-copy p {
+    margin: 0;
+    color: #52525b;
+    font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+    line-height: 1.6;
+}
+
+.privacy-assurance-link {
+    display: inline-flex;
+    min-height: 40px;
+    align-items: center;
+    margin-top: 24px;
+    padding: 0 22px;
+    border: 1px solid #e4e4e7;
+    border-radius: 999px;
+    background: #09090b;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 160ms ease, transform 160ms ease;
+}
+
+.privacy-assurance-link:hover {
+    background: #27272a;
+    transform: translateY(-1px);
+}
+
+.privacy-assurance-badges-image {
+    display: block;
+    width: min(100%, 420px);
+    height: auto;
+    justify-self: end;
+    align-self: center;
+    background: #ffffff;
+    object-fit: contain;
+}
+
+@media (max-width: 820px) {
+    .privacy-assurance-card {
+        grid-template-columns: 1fr;
+        gap: 32px;
+        padding: 30px 24px;
+    }
+
+    .privacy-assurance-copy {
+        max-width: none;
+    }
+
+    .privacy-assurance-badges-image {
+        width: min(100%, 360px);
+        justify-self: center;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .privacy-assurance-link {
+        transition: none;
+    }
+}
+
+/* Whole-Black Dark Mode Theme */
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .privacy-assurance {
+  background: #09090b !important;
+  color: #ffffff !important;
+  border-top: 1px solid #27272a !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .privacy-assurance-card {
+  background: #121215 !important;
+  border: 1px solid #27272a !important;
+  color: #ffffff !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .privacy-assurance-eyebrow {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .privacy-assurance-copy h2 {
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .privacy-assurance-copy p {
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .privacy-badge {
+  background: #18181b !important;
+  border: 1px solid #27272a !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .privacy-feature-row strong {
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .privacy-feature-row span {
+  color: #a1a1aa !important;
+}

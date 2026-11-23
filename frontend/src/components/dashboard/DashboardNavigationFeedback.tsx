@@ -36,8 +36,8 @@ export function DashboardNavigationFeedback() {
 
   return (
     <div className="pointer-events-none fixed inset-x-0 top-0 z-[100]" role="status" aria-live="polite">
-      <div className="h-1 overflow-hidden bg-[#edf7f4]">
-        <div className="h-full w-2/3 animate-pulse rounded-r-full bg-[#118778] shadow-[0_0_12px_rgba(17,135,120,0.42)]" />
+      <div className="h-0.5 overflow-hidden bg-[#f4f4f5]">
+        <div className="h-full w-2/3 animate-pulse rounded-r-full bg-[#171717]" />
       </div>
       <span className="sr-only">Loading {pending.href}</span>
     </div>

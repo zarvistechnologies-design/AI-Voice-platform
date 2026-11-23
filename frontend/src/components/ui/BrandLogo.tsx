@@ -56,7 +56,7 @@ export function BrandLogo({
         </span>
       ) : (
         <>
-          <span className="grid size-[31px] place-items-center rounded-full border border-[#35fbe0]/30 bg-[radial-gradient(circle_at_38%_20%,#cffff8,#1ee8c2_45%,#06332d_100%)] text-[0.7rem] font-black text-[#00110d] shadow-[0_0_22px_rgba(35,251,224,0.22)] max-[560px]:size-7 max-[560px]:text-[0.66rem]">
+          <span className="grid size-[31px] place-items-center rounded-full border border-blue-300/50 bg-[radial-gradient(circle_at_38%_20%,#dbeafe,#3b82f6_48%,#1d4ed8_100%)] text-[0.7rem] font-black text-white shadow-[0_0_22px_rgba(37,99,235,0.22)] max-[560px]:size-7 max-[560px]:text-[0.66rem]">
             {brand.productName.slice(0, 1).toUpperCase()}
           </span>
           <span>{brand.productName}</span>

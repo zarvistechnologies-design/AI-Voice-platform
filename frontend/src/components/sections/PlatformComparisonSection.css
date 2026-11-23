@@ -1,0 +1,226 @@
+.platform-comparison {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(54px, 6vw, 76px) clamp(16px, 3vw, 24px);
+  background: #ffffff;
+  color: #171717;
+  border-top: 1px solid #f0f2f5;
+  box-sizing: border-box;
+}
+
+.platform-comparison-inner {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.platform-comparison-header {
+  max-width: 820px;
+  margin: 0 auto clamp(2rem, 3.5vw, 2.75rem);
+  text-align: center;
+}
+
+.platform-comparison-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.32rem 0.85rem;
+  border: 1px solid #e4e4e7;
+  border-radius: 999px;
+  background: #fafafa;
+  color: #52525b;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.platform-comparison-eyebrow i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #09090b;
+}
+
+.platform-comparison-header h2 {
+  margin: 0.85rem 0 0.5rem;
+  color: #09090b;
+  font-size: clamp(2rem, 3.2vw, 2.75rem);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+}
+
+.platform-comparison-header p {
+  margin: 0 auto;
+  color: #52525b;
+  font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+  line-height: 1.55;
+  max-width: 720px;
+}
+
+.platform-comparison-card {
+  border: 1px solid #e4e4e7;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow:
+    0 1px 2px rgba(9, 9, 11, 0.03),
+    0 20px 55px rgba(9, 9, 11, 0.05);
+  overflow: hidden;
+}
+
+.platform-comparison-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.platform-comparison-table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.platform-comparison-table thead th {
+  padding: 1.15rem 1.35rem;
+  border-bottom: 1px solid #e4e4e7;
+  background: #fafafa;
+  color: #52525b;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.platform-comparison-table thead th.is-vozon {
+  background: #09090b;
+  color: #ffffff;
+  font-size: 0.88rem;
+}
+
+.platform-comparison-table tbody td {
+  padding: 1rem 1.35rem;
+  border-bottom: 1px solid #f4f4f5;
+  font-size: 0.92rem;
+  color: #18181b;
+  vertical-align: middle;
+}
+
+.platform-comparison-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.platform-comparison-table tbody tr:hover td:not(.is-vozon) {
+  background: #fafafa;
+}
+
+.platform-comparison-table tbody td.is-feature {
+  font-weight: 500;
+  color: #09090b;
+}
+
+.platform-comparison-table tbody td.is-vozon {
+  background: #fafafa;
+  font-weight: 600;
+  color: #09090b;
+}
+
+.compare-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.compare-badge svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+.compare-badge.is-yes {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+}
+
+.compare-badge.is-no {
+  background: #fafafa;
+  border: 1px solid #e4e4e7;
+  color: #71717a;
+}
+
+.compare-badge.is-partial {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #b45309;
+}
+
+.compare-badge.is-vozon-yes {
+  background: #09090b;
+  border: 1px solid #09090b;
+  color: #ffffff;
+}
+
+/* Whole-Black Dark Mode Theme */
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .platform-comparison {
+  background: #09090b !important;
+  color: #ffffff !important;
+  border-top: 1px solid #27272a !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .platform-comparison-eyebrow {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .platform-comparison-header h2 {
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .platform-comparison-header p {
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .platform-comparison-card {
+  background: #121215 !important;
+  border: 1px solid #27272a !important;
+  color: #ffffff !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .platform-comparison-table {
+  border-color: #27272a !important;
+  background: #121215 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .platform-comparison-table th {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .platform-comparison-table td {
+  border-color: #27272a !important;
+  color: #e4e4e7 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .platform-comparison-table tr:hover td {
+  background: rgba(255, 255, 255, 0.03) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .compare-badge.is-no {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #71717a !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .compare-badge.is-vozon-yes {
+  background: #2563eb !important;
+  border-color: #1d4ed8 !important;
+  color: #ffffff !important;
+}

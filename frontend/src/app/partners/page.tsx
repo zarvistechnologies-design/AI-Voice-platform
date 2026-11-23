@@ -1,225 +1,281 @@
-import type { Metadata } from "next";
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 
-import { SiteLayout } from "@/components/layout/SiteLayout";
-import { PartnerConsolePreview } from "@/components/partners/PartnerConsolePreview";
+import { SiteFooter } from "@/components/layout/SiteFooter";
+import { SiteHeader } from "@/components/layout/SiteHeader";
+import "@/app/business/industries/healthcare/healthcare.css";
+import "@/components/company/CompanyEditorial.css";
 
-export const metadata: Metadata = {
-  title: "White Label Partner Programme | Vozon",
-  description:
-    "Launch and grow your own AI voice business with Vozon's white-label platform, branded customer workspaces, flexible plans, and partner controls.",
-  alternates: { canonical: "/partners" },
-};
-
-const benefits = [
+const steps = [
   {
-    eyebrow: "Brand experience",
-    title: "Build under your brand",
-    body: "Put your product name, logo, colours, support details, legal links, and customer experience at the centre of every workspace.",
+    number: "01",
+    title: "Shape your offer",
+    body: "Choose the customer segment, voice & WhatsApp use cases, and support model you want to bring to market.",
   },
   {
-    eyebrow: "Commercial control",
-    title: "Control your offer",
-    body: "Create your own plans, choose included usage, set customer limits, and decide how your voice AI service reaches the market.",
+    number: "02",
+    title: "Brand your workspaces",
+    body: "Configure a white-labeled client experience with isolated workspaces, custom domains, and dedicated API keys.",
   },
   {
-    eyebrow: "Customer ownership",
-    title: "Own the relationship",
-    body: "Provision isolated customer organisations, manage subscriptions, and support each account through one partner console.",
+    number: "03",
+    title: "Scale with visibility",
+    body: "Monitor call minutes, agent performance, and client billing across your entire portfolio from one partner console.",
+  },
+];
+
+const partnerFaqs = [
+  {
+    question: "Who is the Vozon partner & affiliate program for?",
+    answer:
+      "It is designed for AI agencies, system integrators, telecom resellers, and BPOs that want to offer autonomous voice and WhatsApp automation to their clients—either as a referral affiliate or under their own white-label brand.",
   },
   {
-    eyebrow: "Partner operations",
-    title: "See the business clearly",
-    body: "Follow active customers, subscriptions, usage economics, partner billing, and launch readiness from one operating view.",
+    question: "Can each client have an isolated workspace?",
+    answer:
+      "Yes. Every client account receives its own isolated workspace with separate telephony trunks, voice clones, CRM credentials, and usage logs.",
   },
-] as const;
-
-const platformFeatures = [
-  { number: "01", title: "Customer-facing brand", body: "Configure logos, product identity, colours, support information, legal links, and branded email settings." },
-  { number: "02", title: "Custom domains", body: "Connect customer app and public-link domains with guided DNS verification and managed TLS status." },
-  { number: "03", title: "Your plans and pricing", body: "Publish recurring plans with included minutes, usage pricing, trials, feature access, and customer limits." },
-  { number: "04", title: "Isolated customer workspaces", body: "Provision each client into a separate organisation with its own owner, brand, plan, and subscription state." },
-  { number: "05", title: "Voice model access", body: "Package approved speech, language, and voice models into offers that fit the customers you serve." },
-  { number: "06", title: "Economics and billing", body: "Review recurring revenue, customer usage charges, wholesale usage, contribution, and partner invoices." },
-] as const;
-
-const launchSteps = [
-  { title: "Shape the offer", body: "Tell us about your market, customers, expected usage, and the services you want to sell." },
-  { title: "Configure your brand", body: "Set your visual identity, support details, legal links, email settings, and customer-facing domains." },
-  { title: "Publish your plans", body: "Choose model access, allowances, limits, recurring prices, and the usage structure for your clients." },
-  { title: "Launch customers", body: "Provision secure workspaces, invite customer owners, and manage the relationship from your console." },
-] as const;
-
-const faqs = [
-  { question: "What is a white-label AI voice platform?", answer: "It lets you deliver AI voice services through a platform carrying your own product identity. Your clients use branded workspaces while you manage their plans, access, and service relationship." },
-  { question: "What can I customise?", answer: "You can configure product and company names, logos, colours, support details, legal links, branded email settings, and approved customer-facing domains." },
-  { question: "Can I create my own customer plans?", answer: "Yes. Partner controls support recurring prices, setup fees, trials, included minutes, usage pricing, feature access, model access, and per-customer limits within your contract." },
-  { question: "How are customers managed?", answer: "Each customer is provisioned into an isolated organisation with its own owner, selected brand, plan snapshot, and subscription status. You can manage customer and subscription states from the partner console." },
-  { question: "How do I apply?", answer: "Contact the Vozon team with your market, expected usage, and customer profile. We will review the right partner setup and walk you through the commercial and launch requirements." },
-] as const;
-
-function CheckIcon() {
-  return (
-    <svg className="size-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-      <path d="m5 10.2 3.1 3.1L15.5 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function Eyebrow({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="m-0 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-teal-700">
-      <span className="h-px w-7 bg-teal-600" />
-      {children}
-    </p>
-  );
-}
-
-const headingClass = "text-[clamp(1.85rem,3.3vw,3.2rem)] font-semibold leading-[1.04] tracking-[-0.045em]";
+  {
+    question: "What margins and support do partners receive?",
+    answer:
+      "Partners receive wholesale per-minute voice pricing, recurring revenue share on referrals, a dedicated testing sandbox, and direct onboarding support from our solutions engineering team.",
+  },
+  {
+    question: "How quickly can we launch our first client?",
+    answer:
+      "Once your partner workspace is provisioned, you can deploy pre-built industry templates for healthcare, logistics, or lead qualification in under 15 minutes.",
+  },
+];
 
 export default function PartnersPage() {
+  const [activeFaq, setActiveFaq] = useState<number | null>(null);
+
   return (
-    <SiteLayout>
-      <main id="partners-page" className="overflow-hidden bg-white text-slate-950">
-        <section className="relative overflow-hidden border-b border-[#e2e8e5] bg-white px-5 pb-14 pt-24 text-[#14231f] sm:px-8 sm:pb-16 sm:pt-28 lg:pt-32">
-          <div className="relative mx-auto grid max-w-[1280px] items-center gap-12 lg:grid-cols-[.92fr_1.08fr] lg:gap-16">
-            <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#dbe4e1] bg-white px-4 py-2 text-[10px] font-bold uppercase tracking-[0.17em] text-teal-700 shadow-sm">
-                <span className="size-2 rounded-full bg-teal-600" />
-                Vozon white-label programme
+    <div className="hcr-site sln-site">
+      <SiteHeader />
+
+      <main className="hcr-page cmp-page">
+        {/* ==================================================================
+            1. 2-COLUMN EDITORIAL HERO (Compact Headings + Partner Ledger)
+            ================================================================== */}
+        <section className="cmp-hero hcr-wrap">
+          <div className="hcr-breadcrumb">
+            <Link href="/">Home</Link>
+            <span>/</span>
+            <span>Partners &amp; Affiliate Program</span>
+          </div>
+
+          <div className="cmp-hero-stage">
+            <div className="cmp-hero-grid">
+              <div className="cmp-hero-left">
+                <p className="hcr-kicker">PARTNERS &amp; AFFILIATE PROGRAM</p>
+                <h1>Build a conversational AI offer with your name on it.</h1>
+                <p className="cmp-hero-lead">
+                  Bring sub-88ms voice agents and WhatsApp automation to your clients through
+                  isolated workspaces, white-label controls, and predictable wholesale economics.
+                </p>
+                <div className="cmp-hero-actions">
+                  <Link
+                    href="/contact?topic=white-label-partnership"
+                    className="cmp-btn-primary"
+                  >
+                    Apply to partner <span aria-hidden="true">&#8599;</span>
+                  </Link>
+                  <a href="#partner-tracks" className="cmp-btn-secondary">
+                    Explore tracks <span aria-hidden="true">&#8595;</span>
+                  </a>
+                </div>
               </div>
-              <h1 className="mt-6 max-w-2xl text-[clamp(1.85rem,3.8vw,3.25rem)] font-medium leading-[0.98] tracking-[-0.05em]">
-                Build your own <span className="text-teal-700">AI voice business.</span>
-              </h1>
-              <p className="mt-6 max-w-xl text-[15px] leading-7 text-slate-700">
-                Launch voice AI under your brand with customer-ready workspaces, your own plans, flexible model access, and the controls to grow every account.
-              </p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Link href="/contact?topic=white-label-partnership" className="inline-flex min-h-12 items-center gap-2 rounded-full bg-teal-700 px-6 text-sm font-bold text-white shadow-[0_14px_32px_rgba(15,118,110,.2)] transition hover:-translate-y-0.5 hover:bg-teal-800">
-                  Apply as a partner
-                </Link>
-                <Link href="#programme" className="inline-flex min-h-12 items-center rounded-full border border-[#dbe4e1] bg-white px-6 text-sm font-bold text-[#29423b] transition hover:-translate-y-0.5 hover:border-teal-400">
-                  Explore the programme
-                </Link>
-              </div>
-              <div className="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-xs font-medium text-slate-600">
-                {["Your brand", "Your plans", "Your customer relationships"].map((item) => (
-                  <span className="flex items-center gap-2" key={item}><span className="text-teal-700"><CheckIcon /></span>{item}</span>
-                ))}
+
+              <div className="cmp-ledger" aria-label="Partner program overview">
+                <div className="cmp-ledger-head">
+                  <span>PARTNER PROGRAM</span>
+                  <span className="cmp-ledger-badge">
+                    <i aria-hidden="true" /> Applications Open
+                  </span>
+                </div>
+                <div className="cmp-ledger-row">
+                  <span>Program Tracks</span>
+                  <strong>White-Label · Agency · Affiliate</strong>
+                </div>
+                <div className="cmp-ledger-row">
+                  <span>Client Isolation</span>
+                  <strong>Dedicated Workspaces &amp; Trunks</strong>
+                </div>
+                <div className="cmp-ledger-row">
+                  <span>Telephony Support</span>
+                  <strong>Twilio, Exotel, Plivo &amp; Custom SIP</strong>
+                </div>
+                <div className="cmp-ledger-row">
+                  <span>Onboarding SLA</span>
+                  <strong>Sandbox Ready in 24 Hours</strong>
+                </div>
+                <div className="cmp-ledger-row">
+                  <span>Partner Enablement</span>
+                  <strong>Dedicated Solutions Architect</strong>
+                </div>
               </div>
             </div>
-
-            <PartnerConsolePreview />
           </div>
         </section>
 
-        <section className="border-b border-[#e2e8e5] bg-white px-5 sm:px-8">
-          <div className="mx-auto grid max-w-[1280px] sm:grid-cols-2 lg:grid-cols-5">
-            {[
-              ["Your brand", "Across every screen"],
-              ["Your pricing", "Plans you control"],
-              ["Your customers", "Isolated workspaces"],
-              ["Your domains", "Branded destinations"],
-              ["One console", "End-to-end control"],
-            ].map(([value, label]) => (
-              <div className="border-b border-[#e2e8e5] px-4 py-6 sm:border-r sm:px-6 sm:py-7 lg:border-b-0 lg:last:border-r-0" key={value}>
-                <strong className="block text-lg font-semibold tracking-[-.03em] text-teal-700">{value}</strong>
-                <span className="mt-1.5 block text-xs text-slate-500">{label}</span>
+        {/* ==================================================================
+            2. HOW IT WORKS (3-Column Bordered Grid)
+            ================================================================== */}
+        <section className="sln-audiences hcr-wrap">
+          <p className="hcr-kicker">HOW IT COMES TOGETHER</p>
+          <h2>A clear path from client pitch to live deployment.</h2>
+          <div className="sln-audience-grid">
+            {steps.map((step) => (
+              <div key={step.number}>
+                <span>{step.number}</span>
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
               </div>
             ))}
           </div>
         </section>
 
-        <section id="programme" className="px-5 py-12 sm:px-8 sm:py-14 lg:py-16">
-          <div className="mx-auto max-w-[1280px]">
-            <div className="grid gap-8 lg:grid-cols-[.82fr_1.18fr] lg:items-end">
-              <div><Eyebrow>What you get</Eyebrow><h2 className={`${headingClass} mt-4 text-[#14231f]`}>A complete white-label operating layer.</h2></div>
-              <p className="m-0 max-w-2xl text-[15px] leading-7 text-slate-700 lg:justify-self-end">More than a logo switch, the programme gives you the customer-facing brand, commercial controls, isolated client workspaces, and partner operations needed to run your own voice AI service.</p>
-            </div>
-            <div className="mt-10 grid gap-4 sm:grid-cols-2">
-              {benefits.map((benefit, index) => (
-                <article className="group rounded-[20px] border border-[#dfe7e4] bg-white p-6 shadow-[0_8px_24px_rgba(18,61,53,.05)] transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_16px_38px_rgba(13,148,136,.09)]" key={benefit.title}>
-                  <div className="flex items-center"><span className="grid size-10 place-items-center rounded-xl bg-teal-50 text-xs font-bold text-teal-700">0{index + 1}</span></div>
-                  <p className="mt-5 text-[10px] font-bold uppercase tracking-[.17em] text-teal-700">{benefit.eyebrow}</p>
-                  <h3 className="mt-2 text-xl font-semibold tracking-[-.03em] text-[#14231f]">{benefit.title}</h3>
-                  <p className="mt-2.5 text-sm leading-6 text-slate-600">{benefit.body}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="border-y border-[#e2e8e5] bg-white px-5 py-12 sm:px-8 sm:py-14 lg:py-16">
-          <div className="mx-auto max-w-[1280px]">
-            <div className="mx-auto max-w-3xl text-center">
-              <div className="flex justify-center"><Eyebrow>The platform</Eyebrow></div>
-              <h2 className={`${headingClass} mt-4 text-[#14231f]`}>Everything you need to run a branded voice AI service.</h2>
-              <p className="mx-auto mt-5 max-w-2xl text-[15px] leading-7 text-slate-700">Vozon handles the platform foundations so your team can focus on packaging the right offer and helping customers succeed.</p>
-            </div>
-            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {platformFeatures.map((feature) => (
-                <article className="rounded-[20px] border border-[#dfe7e4] bg-white p-6 shadow-[0_8px_22px_rgba(18,61,53,.04)]" key={feature.number}>
-                  <span className="text-[10px] font-bold uppercase tracking-[.17em] text-teal-700">Platform / {feature.number}</span>
-                  <h3 className="mt-5 text-lg font-semibold tracking-[-.025em] text-[#14231f]">{feature.title}</h3>
-                  <p className="mt-2.5 text-sm leading-6 text-slate-600">{feature.body}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="relative overflow-hidden border-y border-[#e2e8e5] bg-white px-5 py-12 text-[#14231f] sm:px-8 sm:py-14 lg:py-16">
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-500 to-transparent" aria-hidden="true" />
-          <div className="mx-auto max-w-[1180px]">
-            <div className="grid gap-8 lg:grid-cols-[.78fr_1.22fr] lg:items-end">
+        {/* ==================================================================
+            3. HIGH-IMPACT PROOF METRICS (Dark Band)
+            ================================================================== */}
+        <section className="hcr-proof">
+          <div className="hcr-wrap">
+            <div className="hcr-proof-grid">
               <div>
-                <p className="m-0 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-teal-700"><span className="h-px w-7 bg-teal-600" />From application to launch</p>
-                <h2 className={`${headingClass} mt-4 text-[#14231f]`}>A clear path to your first customer.</h2>
+                <strong>88ms</strong>
+                <span>First-audio synthesis latency</span>
               </div>
-              <p className="m-0 max-w-2xl text-sm leading-7 text-slate-700 lg:justify-self-end">Start with the market you know. We&apos;ll align the partner setup, then your team can configure the brand, commercial offer, and customer workspaces.</p>
+              <div>
+                <strong>50+</strong>
+                <span>Languages &amp; Indic dialects ready</span>
+              </div>
+              <div>
+                <strong>99.98%</strong>
+                <span>Multi-carrier SIP uptime SLA</span>
+              </div>
+              <div>
+                <strong>15 min</strong>
+                <span>Template-to-live client setup</span>
+              </div>
             </div>
-            <ol className="mt-10 grid overflow-hidden rounded-[24px] border border-[#dfe7e4] bg-white shadow-[0_12px_34px_rgba(18,61,53,.06)] md:grid-cols-4">
-              {launchSteps.map((step, index) => (
-                <li className="border-b border-[#e2e8e5] bg-white p-6 last:border-b-0 md:border-b-0 md:border-r md:last:border-r-0" key={step.title}>
-                  <span className="grid size-9 place-items-center rounded-full border border-teal-200 bg-teal-50 text-[10px] font-bold text-teal-700">0{index + 1}</span>
-                  <h3 className="mt-6 text-lg font-semibold text-[#14231f]">{step.title}</h3>
-                  <p className="mt-2.5 text-sm leading-6 text-slate-600">{step.body}</p>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </section>
 
-        <section className="px-5 py-12 sm:px-8 sm:py-14 lg:py-16">
-          <div className="mx-auto max-w-3xl">
-            <div className="text-center">
-              <div className="flex justify-center"><Eyebrow>Partner programme questions</Eyebrow></div>
-              <h2 className={`${headingClass} mt-4 text-[#14231f]`}>What partners ask us first.</h2>
-            </div>
-            <div className="mt-10 space-y-3">
-              {faqs.map((faq, index) => (
-                <details className="group rounded-2xl border border-[#dfe7e4] bg-white px-5 py-5 shadow-[0_8px_24px_rgba(18,61,53,.05)] open:border-teal-300" key={faq.question} open={index === 0}>
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-sm font-semibold text-[#14231f]"><span>{faq.question}</span><span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#edf7f4] text-lg text-teal-700 transition group-open:rotate-45">+</span></summary>
-                  <p className="mt-4 border-t border-[#e2e8e5] pt-4 text-sm leading-7 text-slate-600">{faq.answer}</p>
-                </details>
-              ))}
+            <div className="hcr-proof-tools">
+              <span>BUILT FOR AGENCIES &amp; INTEGRATORS</span>
+              <b>Custom Domains</b>
+              <b>Client Billing</b>
+              <b>Isolated Keys</b>
+              <b>Zoho &amp; Salesforce</b>
+              <b>WhatsApp Cloud</b>
             </div>
           </div>
         </section>
 
-        <section className="px-5 pb-16 pt-2 sm:px-8">
-          <div className="relative mx-auto max-w-[1100px] overflow-hidden rounded-[28px] border border-[#dbe4e1] bg-white px-6 py-10 text-center shadow-[0_16px_42px_rgba(18,61,53,.07)] sm:px-10 sm:py-12">
-            <div className="absolute left-1/2 top-0 h-1 w-28 -translate-x-1/2 bg-teal-600" />
-            <p className="text-[10px] font-bold uppercase tracking-[.18em] text-teal-700">Your brand. Vozon&apos;s engine.</p>
-            <h2 className="mx-auto mt-4 max-w-2xl text-[clamp(1.8rem,3vw,2.8rem)] font-semibold leading-[1.05] tracking-[-.045em] text-[#14231f]">Let&apos;s build your voice AI business together.</h2>
-            <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-slate-700">Tell us who you serve and what you want to launch. We&apos;ll help you review the right white-label partner setup.</p>
-            <div className="mt-7 flex flex-wrap justify-center gap-3">
-              <Link href="/contact?topic=white-label-partnership" className="inline-flex min-h-12 items-center rounded-full bg-teal-700 px-6 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-teal-800">Apply as a partner</Link>
-              <Link href="/contact" className="inline-flex min-h-12 items-center rounded-full border border-teal-700/20 bg-white px-6 text-sm font-bold text-teal-800 transition hover:-translate-y-0.5 hover:border-teal-500">Talk to our team</Link>
+        {/* ==================================================================
+            4. PARTNER TRACKS (3-Column Clean Cards)
+            ================================================================== */}
+        <section className="hcr-platform hcr-wrap" id="partner-tracks">
+          <p className="hcr-kicker">PARTNERSHIP TRACKS</p>
+          <h2>Choose the model that fits your business.</h2>
+
+          <div className="hcr-platform-grid">
+            <div>
+              <span>01 · WHITE-LABEL</span>
+              <h3>AI Agencies &amp; Consultancies</h3>
+              <p>
+                Deliver voice and WhatsApp agents under your own brand, custom domain, and pricing
+                tiers while Vozon powers the real-time infrastructure underneath.
+              </p>
+              <strong>CUSTOM BRANDING · WHOLESALE RATES</strong>
             </div>
+
+            <div>
+              <span>02 · INTEGRATORS</span>
+              <h3>System Integrators &amp; BPOs</h3>
+              <p>
+                Embed sub-88ms conversational voice directly into enterprise Salesforce, Zoho, ERP,
+                and contact center deployments with private VPC support.
+              </p>
+              <strong>CO-SELL ENGINEERING · SLA BACKED</strong>
+            </div>
+
+            <div>
+              <span>03 · AFFILIATE</span>
+              <h3>Referral &amp; Technology Partners</h3>
+              <p>
+                Introduce businesses looking to automate inbound support or outbound qualification
+                and earn recurring revenue share on every active workspace.
+              </p>
+              <strong>RECURRING REV SHARE · ZERO OVERHEAD</strong>
+            </div>
+          </div>
+        </section>
+
+        {/* ==================================================================
+            5. LAUNCH SPLIT
+            ================================================================== */}
+        <section className="hcr-launch hcr-wrap">
+          <div>
+            <p className="hcr-kicker">PARTNER WITH VOZON</p>
+            <h2>Tell us what you want to build for your clients.</h2>
+          </div>
+          <div className="hcr-launch-options">
+            <div>
+              <span>WHITE-LABEL &amp; AGENCY</span>
+              <h3>Request a partner sandbox</h3>
+              <p>
+                Get access to multi-workspace management, wholesale minute pricing, and live
+                industry voice templates to demo to your clients.
+              </p>
+              <Link href="/contact?topic=white-label-partnership">
+                Start a conversation <span aria-hidden="true">&#8599;</span>
+              </Link>
+            </div>
+            <div>
+              <span>TECHNICAL EVALUATION</span>
+              <h3>Review the voice platform</h3>
+              <p>
+                Test our sub-88ms voice agents, voice cloning studio, and WhatsApp Cloud API
+                workflows before pitching your next client.
+              </p>
+              <Link href="/product/ai-voice-agent">
+                Explore AI Voice Agent <span aria-hidden="true">&#8599;</span>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* ==================================================================
+            6. PARTNER FAQ
+            ================================================================== */}
+        <section className="hcr-faq hcr-wrap">
+          <p className="hcr-kicker">PARTNER FAQ</p>
+          <h2>What partners ask first.</h2>
+
+          <div className="hcr-faq-list">
+            {partnerFaqs.map((faq, idx) => (
+              <details
+                key={faq.question}
+                open={activeFaq === idx}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActiveFaq(activeFaq === idx ? null : idx);
+                }}
+              >
+                <summary>
+                  {faq.question}
+                  <span>+</span>
+                </summary>
+                <p>{faq.answer}</p>
+              </details>
+            ))}
           </div>
         </section>
       </main>
-    </SiteLayout>
+
+      <SiteFooter />
+    </div>
   );
 }

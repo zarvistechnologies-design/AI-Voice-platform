@@ -67,11 +67,11 @@ const profileSections: Array<{
   label: string;
   icon: ProfileIconName;
 }> = [
-  { id: "profile", label: "Account overview", icon: "user" },
-  { id: "two-factor", label: "Two-factor authentication", icon: "shield" },
-  { id: "password", label: "Password", icon: "lock" },
-  { id: "sessions", label: "Active sessions", icon: "devices" },
-];
+    { id: "profile", label: "Account overview", icon: "user" },
+    { id: "two-factor", label: "Two-factor authentication", icon: "shield" },
+    { id: "password", label: "Password", icon: "lock" },
+    { id: "sessions", label: "Active sessions", icon: "devices" },
+  ];
 
 function ProfileIcon({
   name,
@@ -202,11 +202,10 @@ function StatusBadge({
 }) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold ring-1 ${
-        enabled
-          ? "bg-emerald-50 text-emerald-700 ring-emerald-200"
+      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold ring-1 ${enabled
+          ? "bg-[#f4f4f5] text-[#171717] ring-[#eaeaea]"
           : "bg-amber-50 text-amber-700 ring-amber-200"
-      }`}
+        }`}
     >
       <span
         className={`size-1.5 rounded-full ${enabled ? "bg-emerald-500" : "bg-amber-500"}`}
@@ -228,9 +227,9 @@ function SectionHeading({
   status?: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[#e7eef3] px-5 py-5 sm:px-6">
+    <div className="flex flex-wrap items-start justify-between gap-4 px-5 py-5 sm:px-6">
       <div className="flex min-w-0 items-start gap-3.5">
-        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#f7f9f8] text-[#087f75] ring-1 ring-[#dfe7e4]">
+        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#eff6ff] text-[#2563eb] ring-1 ring-[#dbeafe]">
           <ProfileIcon name={icon} />
         </span>
         <div className="min-w-0">
@@ -388,14 +387,14 @@ export function ProfileShell() {
       setNotice(
         result.verificationUrl
           ? {
-              tone: "info",
-              message:
-                "Email preview mode is active. Use the verification link to continue.",
-              action: {
-                href: result.verificationUrl,
-                label: "Open verification link",
-              },
-            }
+            tone: "info",
+            message:
+              "Email preview mode is active. Use the verification link to continue.",
+            action: {
+              href: result.verificationUrl,
+              label: "Open verification link",
+            },
+          }
           : { tone: "success", message: "Verification email sent." },
       );
     } catch (error) {
@@ -457,11 +456,10 @@ export function ProfileShell() {
 
   return (
     <main
-      className={`dashboard-home-theme grid min-h-screen w-full min-w-0 overflow-x-hidden bg-white text-[#111827] ${
-        showUserSidebar
+      className={`dashboard-home-theme profile-settings-page grid min-h-screen w-full min-w-0 overflow-x-hidden bg-white text-[#111827] ${showUserSidebar
           ? "lg:grid-cols-[248px_minmax(0,1fr)]"
           : "lg:grid-cols-[64px_minmax(0,1fr)]"
-      }`}
+        }`}
     >
       <DashboardSidebar
         activeLabel="Profile"
@@ -491,31 +489,29 @@ export function ProfileShell() {
           }
         />
 
-        <div className="grid w-full gap-5 px-4 py-4 sm:px-5 lg:px-6">
-          <section className="relative overflow-hidden rounded-[26px] border border-[#dbe4e1] bg-[radial-gradient(circle_at_12%_0%,rgba(17,135,120,0.22),transparent_38%),linear-gradient(135deg,#ffffff_0%,#ffffff_62%,#eef5f3_100%)] p-5 text-white shadow-[0_22px_55px_rgba(7,28,24,0.20)] sm:p-7">
-            <div className="pointer-events-none absolute -right-16 -top-24 size-72 rounded-full border border-white/10" />
-            <div className="pointer-events-none absolute -bottom-32 right-20 size-64 rounded-full bg-[#118778]/[0.07] blur-2xl" />
-            <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1fr)_190px] lg:items-center">
+        <div className="grid w-full gap-5 px-5 py-5 sm:px-6 lg:px-7">
+          <section className="rounded-xl border border-[#eaeaea] bg-white p-5 sm:p-6">
+            <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_180px] lg:items-center">
               <div className="min-w-0">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <span className="grid size-16 shrink-0 place-items-center rounded-2xl border border-[#0e6f62]/30 bg-[#118778] text-xl font-black text-[#05231f] shadow-[0_12px_30px_rgba(17,135,120,0.20)]">
+                  <span className="grid size-14 shrink-0 place-items-center rounded-xl bg-[#171717] text-lg font-bold text-white">
                     {initials(session.name)}
                   </span>
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2.5">
-                      <h2 className="m-0 truncate text-2xl font-bold tracking-[-0.025em] text-white">
+                      <h2 className="m-0 truncate text-xl font-semibold tracking-[-0.02em] text-[#171717]">
                         {session.name}
                       </h2>
                       <span
-                        className={`rounded-full px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider ${session.emailVerified ? "bg-[#118778]/15 text-[#0e6f62] ring-1 ring-[#118778]/30" : "bg-amber-400/15 text-amber-200 ring-1 ring-amber-300/25"}`}
+                        className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium ${session.emailVerified ? "bg-[#eff6ff] text-[#2563eb] ring-1 ring-[#dbeafe]" : "bg-amber-50 text-amber-700 ring-1 ring-amber-200"}`}
                       >
                         {session.emailVerified ? "Verified" : "Verify email"}
                       </span>
                     </div>
-                    <p className="mt-1 truncate text-sm text-white/65">
+                    <p className="mt-1 truncate text-[13px] text-[#52525b]">
                       {session.email}
                     </p>
-                    <p className="mt-2 text-xs font-semibold text-white/45">
+                    <p className="mt-1 text-xs font-medium text-[#71717a]">
                       {session.organization?.name ?? "Personal workspace"}
                       {session.organization?.role
                         ? ` · ${session.organization.role} access`
@@ -524,34 +520,34 @@ export function ProfileShell() {
                   </div>
                 </div>
 
-                <div className="mt-6 grid gap-2.5 sm:grid-cols-3">
-                  <div className="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 backdrop-blur-sm">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-white/45">
+                <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                  <div className="rounded-lg border border-[#eaeaea] bg-[#fafafa] px-4 py-3">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-[#71717a]">
                       Email
                     </span>
-                    <strong className="mt-1 flex items-center gap-2 text-sm text-white">
+                    <strong className="mt-1 flex items-center gap-2 text-[13px] font-semibold text-[#171717]">
                       <span
-                        className={`size-2 rounded-full ${session.emailVerified ? "bg-[#118778]" : "bg-amber-300"}`}
+                        className={`size-2 rounded-full ${session.emailVerified ? "bg-[#2563eb]" : "bg-amber-400"}`}
                       />
                       {session.emailVerified ? "Verified" : "Action needed"}
                     </strong>
                   </div>
-                  <div className="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 backdrop-blur-sm">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-white/45">
+                  <div className="rounded-lg border border-[#eaeaea] bg-[#fafafa] px-4 py-3">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-[#71717a]">
                       Two-factor
                     </span>
-                    <strong className="mt-1 flex items-center gap-2 text-sm text-white">
+                    <strong className="mt-1 flex items-center gap-2 text-[13px] font-semibold text-[#171717]">
                       <span
-                        className={`size-2 rounded-full ${session.twoFactorEnabled ? "bg-[#118778]" : "bg-white/30"}`}
+                        className={`size-2 rounded-full ${session.twoFactorEnabled ? "bg-[#2563eb]" : "bg-[#d4d4d8]"}`}
                       />
                       {session.twoFactorEnabled ? "Enabled" : "Not enabled"}
                     </strong>
                   </div>
-                  <div className="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 backdrop-blur-sm">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-white/45">
+                  <div className="rounded-lg border border-[#eaeaea] bg-[#fafafa] px-4 py-3">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-[#71717a]">
                       Active sessions
                     </span>
-                    <strong className="mt-1 block text-sm text-white">
+                    <strong className="mt-1 block text-[13px] font-semibold text-[#171717]">
                       {sessionsLoading
                         ? "Checking…"
                         : `${sessions.length} device${sessions.length === 1 ? "" : "s"}`}
@@ -562,23 +558,23 @@ export function ProfileShell() {
 
               <div className="justify-self-start lg:justify-self-end">
                 <div
-                  className="grid size-36 place-items-center rounded-full p-[9px]"
+                  className="grid size-32 place-items-center rounded-full p-[8px]"
                   style={{
-                    background: `conic-gradient(#118778 ${securityPercent}%, rgba(255,255,255,0.12) 0)`,
+                    background: `conic-gradient(#2563eb ${securityPercent}%, #eaeaea 0)`,
                   }}
                 >
-                  <div className="grid size-full place-items-center rounded-full border border-white/10 bg-[#0a211d] text-center shadow-inner">
+                  <div className="grid size-full place-items-center rounded-full border border-[#eaeaea] bg-white text-center">
                     <div>
-                      <strong className="block text-3xl font-black tracking-[-0.04em] text-white">
+                      <strong className="block text-2xl font-bold tracking-[-0.03em] text-[#171717]">
                         {securityPercent}%
                       </strong>
-                      <span className="mt-1 block text-[10px] font-bold uppercase tracking-[0.16em] text-[#0e6f62]">
+                      <span className="mt-0.5 block text-[10px] font-semibold uppercase tracking-[0.12em] text-[#2563eb]">
                         {securityLabel}
                       </span>
                     </div>
                   </div>
                 </div>
-                <p className="mt-3 text-center text-[11px] font-medium text-white/45">
+                <p className="mt-2.5 text-center text-[11px] font-medium text-[#71717a]">
                   Account protection
                 </p>
               </div>
@@ -633,7 +629,7 @@ export function ProfileShell() {
                 >
                   {profileSections.map((item) => (
                     <a
-                      className="inline-flex min-w-max items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-600 transition hover:bg-[#f7f9f8] hover:text-[#087f75]"
+                      className="inline-flex min-w-max items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium text-[#52525b] transition hover:bg-[#f4f4f5] hover:text-[#2563eb]"
                       href={`#${item.id}`}
                       key={item.id}
                     >
@@ -642,10 +638,10 @@ export function ProfileShell() {
                     </a>
                   ))}
                 </nav>
-                <div className="hidden border-t border-[#edf2f5] bg-[#f8fbfa] p-4 xl:block">
-                  <div className="flex items-start gap-2.5 text-[#087f75]">
+                <div className="hidden border-t border-[#eaeaea] bg-[#fafafa] p-4 xl:block">
+                  <div className="flex items-start gap-2.5 text-[#2563eb]">
                     <ProfileIcon className="mt-0.5 size-4" name="shield" />
-                    <p className="m-0 text-xs font-bold">
+                    <p className="m-0 text-xs font-semibold">
                       Security recommendation
                     </p>
                   </div>
@@ -730,7 +726,7 @@ export function ProfileShell() {
                     </p>
                     {!session.emailVerified ? (
                       <button
-                        className="mt-4 inline-flex min-h-10 items-center justify-center rounded-xl bg-[#ffffff] px-4 text-xs font-bold text-white transition hover:bg-[#123a33] disabled:cursor-not-allowed disabled:opacity-50"
+                        className="mt-4 inline-flex min-h-10 items-center justify-center rounded-xl bg-[#14231f] px-4 text-xs font-bold text-white transition hover:bg-[#123a33] disabled:cursor-not-allowed disabled:opacity-50"
                         disabled={activeAction !== null}
                         onClick={() => void resendVerificationEmail()}
                         type="button"
@@ -781,25 +777,10 @@ export function ProfileShell() {
                         )}
                       </div>
 
-                      <div className="grid gap-5 rounded-2xl border border-[#dfe7e4] bg-[#f7fbfa] p-4 sm:p-5 lg:grid-cols-[180px_minmax(0,1fr)_260px]">
-                        <div className="flex flex-col items-center justify-center rounded-xl border border-[#d9e8e5] bg-white p-3 text-center">
-                          {totpUri ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img
-                              alt="Scan with Authenticator app"
-                              className="size-36 rounded-lg object-contain"
-                              src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(totpUri)}`}
-                            />
-                          ) : (
-                            <div className="grid size-36 place-items-center rounded-lg bg-slate-50 text-xs text-slate-400">QR Code</div>
-                          )}
-                          <span className="mt-2 text-[11px] font-bold text-slate-600">
-                            Scan with phone app
-                          </span>
-                        </div>
+                      <div className="grid gap-4 rounded-2xl border border-[#dfe7e4] bg-[#f7fbfa] p-4 sm:p-5 lg:grid-cols-[minmax(0,1fr)_260px]">
                         <div className="min-w-0">
                           <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#087f75]">
-                            Or enter key manually
+                            Manual setup key
                           </span>
                           <div className="mt-2 flex min-w-0 items-center gap-2 rounded-xl border border-[#d9e8e5] bg-white p-2.5">
                             <code className="min-w-0 flex-1 break-all px-1 text-xs font-bold tracking-wider text-slate-800">
@@ -821,8 +802,8 @@ export function ProfileShell() {
                             Open in authenticator app
                           </a>
                           <p className="mt-3 text-xs leading-5 text-slate-500">
-                            Scan the QR code with Google Authenticator, Microsoft
-                            Authenticator, Authy, or copy the key above.
+                            Add this key to Google Authenticator, Microsoft
+                            Authenticator, Authy, or another TOTP app.
                           </p>
                         </div>
                         <div>
@@ -973,7 +954,7 @@ export function ProfileShell() {
                         </div>
                       </div>
                       <button
-                        className="min-h-11 rounded-xl bg-[#118778] px-5 text-sm font-bold text-white shadow-sm transition hover:bg-[#0e6f62] disabled:cursor-not-allowed disabled:opacity-50"
+                        className="min-h-11 rounded-xl bg-[#14231f] px-5 text-sm font-bold text-white transition hover:bg-[#123a33] disabled:cursor-not-allowed disabled:opacity-50"
                         disabled={activeAction !== null}
                         onClick={() => void beginTwoFactorSetup()}
                         type="button"

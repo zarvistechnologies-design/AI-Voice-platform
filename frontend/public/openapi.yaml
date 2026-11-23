@@ -472,6 +472,13 @@ paths:
                 requireConsentLine: { type: boolean, enum: [true], default: true }
                 detectVoicemail: { type: boolean, default: true }
                 automaticCallbacks: { type: boolean, default: true }
+                followUpEnabled: { type: boolean, default: false, description: "Schedule one planned follow-up after an eligible completed call. Requires maxAttempts of at least 2." }
+                followUpDelaySeconds: { type: integer, minimum: 3600, maximum: 2592000, default: 86400 }
+                followUpAudience: { type: string, enum: [all_eligible, selected_outcomes], default: all_eligible }
+                followUpOutcomes:
+                  type: array
+                  items: { type: string, enum: [unknown, follow_up, qualified, resolved, missed] }
+                  default: [follow_up]
       responses:
         "201":
           description: Campaign created.
@@ -600,6 +607,39 @@ paths:
           content:
             text/csv:
               schema: { type: string }
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /campaigns/{campaignId}/leads/{leadId}/follow-up:
+    patch:
+      tags: [Campaigns]
+      summary: Cancel or reschedule a planned campaign follow-up
+      description: Change a scheduled follow-up for one contact. The selected time is the earliest due time; the campaign calling window still applies. Requires `calls:trigger` scope.
+      operationId: updateCampaignLeadFollowUp
+      parameters:
+        - name: campaignId
+          in: path
+          required: true
+          schema: { type: string }
+        - name: leadId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action]
+              properties:
+                action: { type: string, enum: [cancel, reschedule] }
+                scheduledFor: { type: string, format: date-time, description: "Required for reschedule." }
+      responses:
+        "200":
+          description: Updated campaign contact.
+        "400":
+          $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
 

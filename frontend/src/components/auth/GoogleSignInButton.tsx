@@ -30,6 +30,9 @@ declare global {
 }
 
 const googleScriptId = "google-identity-services";
+let initializedGoogleClientId: string | null = null;
+let activeGoogleCredentialHandler: ((response: GoogleCredentialResponse) => void) | null = null;
+
 function loadGoogleIdentityScript() {
   return new Promise<void>((resolve, reject) => {
     if (window.google?.accounts.id) {
@@ -82,24 +85,29 @@ export function GoogleSignInButton({
         await loadGoogleIdentityScript();
         if (cancelled || !containerRef.current || !window.google?.accounts.id) return;
 
-        window.google.accounts.id.initialize({
-          client_id: config.clientId,
-          cancel_on_tap_outside: true,
-          callback: async ({ credential }) => {
-            if (!credential) {
-              onError("Google did not return a sign-in credential.");
-              return;
-            }
-            try {
-              const signedIn = await loginWithGoogle(credential);
-              const session = await validateStoredSession();
-              if (!session) throw new Error("Google sign-in completed, but the session could not be verified.");
-              router.push(signedIn.organization?.businessDetailsRequired ? `/signup/business?next=${encodeURIComponent(nextPath)}` : nextPath);
-            } catch (error) {
-              onError(error instanceof Error ? error.message : "Could not sign in with Google.");
-            }
-          },
-        });
+        activeGoogleCredentialHandler = async ({ credential }) => {
+          if (!credential) {
+            onError("Google did not return a sign-in credential.");
+            return;
+          }
+          try {
+            const signedIn = await loginWithGoogle(credential);
+            const session = await validateStoredSession();
+            if (!session) throw new Error("Google sign-in completed, but the session could not be verified.");
+            router.push(signedIn.organization?.businessDetailsRequired ? `/signup/business?next=${encodeURIComponent(nextPath)}` : nextPath);
+          } catch (error) {
+            onError(error instanceof Error ? error.message : "Could not sign in with Google.");
+          }
+        };
+
+        if (initializedGoogleClientId !== config.clientId) {
+          window.google.accounts.id.initialize({
+            client_id: config.clientId,
+            cancel_on_tap_outside: true,
+            callback: (response) => activeGoogleCredentialHandler?.(response),
+          });
+          initializedGoogleClientId = config.clientId;
+        }
         containerRef.current.replaceChildren();
         window.google.accounts.id.renderButton(containerRef.current, {
           type: "standard",

@@ -1,68 +1,304 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import "@/components/sections/PublicMarketingAccent.css";
 import { useEffect, useRef, useState } from "react";
-
 import { BrandLogo } from "@/components/ui/BrandLogo";
-import { integrationCategories, integrations } from "@/config/integrationCatalog";
-import { siteConfig } from "@/config/site";
+import { VoiceAgentVisualIcon, type IconName } from "@/components/product/VoiceAgentVisualIcon";
 
-type MenuKey = "product" | "business" | "company" | "integrations";
+type MenuKey = "product" | "business" | "company";
 
-const menus = {
+type MenuItem = {
+  href: string;
+  label: string;
+  desc: string;
+  iconName: IconName;
+  badge?: string;
+};
+
+type MenuGroup = {
+  title: string;
+  links: MenuItem[];
+};
+
+type MenuConfig = {
+  label: string;
+  groups: MenuGroup[];
+  spotlight: {
+    badge: string;
+    title: string;
+    desc: string;
+    pill: string;
+    ctaHref: string;
+    ctaLabel: string;
+  };
+  footerAllHref: string;
+  footerAllLabel: string;
+};
+
+const menus: Record<MenuKey, MenuConfig> = {
   product: {
     label: "Products",
-    badge: "AI Voice Engine",
-    intro: siteConfig.productMenu.featured,
-    groups: siteConfig.productMenu.groups,
+    groups: [
+      {
+        title: "Voice Intelligence",
+        links: [
+          {
+            href: "/product/ai-voice-agent",
+            label: "AI Voice Agent",
+            desc: "24/7 autonomous phone agents that sound human",
+            iconName: "phone",
+            badge: "Popular",
+          },
+          {
+            href: "/product/voice-cloning",
+            label: "Voice Cloning",
+            desc: "Custom brand likeness with natural timbre",
+            iconName: "waveform",
+          },
+        ],
+      },
+      {
+        title: "Messaging & Web",
+        links: [
+          {
+            href: "/product/whatsapp-bot",
+            label: "WhatsApp Bot",
+            desc: "Interactive chats with automated workflows",
+            iconName: "message",
+            badge: "New",
+          },
+          {
+            href: "/product/whatsapp-api",
+            label: "WhatsApp API",
+            desc: "High-throughput cloud API for messaging",
+            iconName: "send",
+          },
+          {
+            href: "/product/web-chatbot",
+            label: "Web Chatbot",
+            desc: "Instant AI assistant on any website page",
+            iconName: "globe",
+          },
+        ],
+      },
+      {
+        title: "Connect & Automate",
+        links: [
+          {
+            href: "/product/vozon-mcp",
+            label: "Vozon MCP",
+            desc: "Open Model Context Protocol for business tools",
+            iconName: "cpu",
+            badge: "Core",
+          },
+          {
+            href: "/product/workflows",
+            label: "Workflows",
+            desc: "No-code event triggers, branches & conditions",
+            iconName: "branch",
+          },
+          {
+            href: "/product/end-to-end-automation",
+            label: "End-to-End Automation",
+            desc: "Full journey orchestration from trigger to sync",
+            iconName: "layers",
+          },
+        ],
+      },
+    ],
+    spotlight: {
+      badge: "✨ VOZON ENGINE 2.0",
+      title: "Sub-350ms Realtime Voice",
+      desc: "Handle interruptions, background noise, and natural speaker pauses with human-grade conversational presence.",
+      pill: "● 99.4% intent accuracy · 140+ languages",
+      ctaHref: "/product/ai-voice-agent",
+      ctaLabel: "Try Live Voice Agent →",
+    },
+    footerAllHref: "/product",
+    footerAllLabel: "Explore full product suite →",
   },
   business: {
     label: "Solutions",
-    badge: "Industries",
-    intro: siteConfig.businessMenu.featured,
-    groups: siteConfig.businessMenu.columns,
+    groups: [
+      {
+        title: "Industries",
+        links: [
+          {
+            href: "/business/industries/healthcare",
+            label: "Healthcare",
+            desc: "Patient intake, scheduling & clinical triage",
+            iconName: "activity",
+          },
+          {
+            href: "/business/industries/financial-services",
+            label: "Financial Services",
+            desc: "Advisor matching & portfolio qualification",
+            iconName: "database",
+          },
+          {
+            href: "/business/industries/insurance",
+            label: "Insurance",
+            desc: "Instant claims FNOL & policy support",
+            iconName: "shield",
+          },
+          {
+            href: "/business/industries/home-services",
+            label: "Home Services",
+            desc: "Emergency dispatch & technician booking",
+            iconName: "phone",
+            badge: "Top ROI",
+          },
+          {
+            href: "/business/industries/retail-consumer",
+            label: "Retail & Consumer",
+            desc: "Order updates, exchanges & cart recovery",
+            iconName: "spark",
+          },
+          {
+            href: "/business/industries/logistics",
+            label: "Logistics & Freight",
+            desc: "Driver routing, dispatch & exception handling",
+            iconName: "send",
+          },
+        ],
+      },
+      {
+        title: "Key Use Cases",
+        links: [
+          {
+            href: "/business/lead-qualification",
+            label: "Lead Qualification",
+            desc: "Convert inbound inquiries in seconds",
+            iconName: "bolt",
+            badge: "Sales",
+          },
+          {
+            href: "/business/customer-support",
+            label: "Customer Support",
+            desc: "Resolve routine questions and sync tickets",
+            iconName: "headset",
+          },
+          {
+            href: "/business/receptionists",
+            label: "AI Receptionist",
+            desc: "Never miss an incoming front desk call",
+            iconName: "calendar",
+          },
+          {
+            href: "/business/dispatch-service",
+            label: "Dispatch Service",
+            desc: "Coordinate technicians & field crews",
+            iconName: "refresh",
+          },
+        ],
+      },
+    ],
+    spotlight: {
+      badge: "🎯 INDUSTRY BLUEPRINT",
+      title: "Pre-Configured Architecture",
+      desc: "Pre-integrated with Twilio, WhatsApp, Google Calendar, Zoho CRM, and Salesforce out-of-the-box.",
+      pill: "● 3.1x faster lead to booking",
+      ctaHref: "/contact",
+      ctaLabel: "Book Custom Solution Demo →",
+    },
+    footerAllHref: "/business",
+    footerAllLabel: "View all industries & blueprints →",
   },
   company: {
     label: "Company",
-    badge: "Vozon AI",
-    intro: siteConfig.companyMenu.featured,
     groups: [
       {
         title: "About Vozon",
         links: [
-          { href: "/about", label: "About us", desc: "Our vision & team" },
-          { href: "/career", label: "Careers", desc: "We're hiring!" },
-          { href: "/partners", label: "White Label Partners", desc: "Reseller program" },
-          { href: "/resources/blog", label: "Blog & Insights", desc: "Latest Voice AI updates" },
-          { href: "/contact", label: "Contact us", desc: "24/7 dedicated support" },
+          {
+            href: "/about",
+            label: "About Us",
+            desc: "Our mission, technology & leadership",
+            iconName: "users",
+          },
+          {
+            href: "/career",
+            label: "Careers",
+            desc: "Join our global distributed team",
+            iconName: "spark",
+            badge: "Hiring",
+          },
+          {
+            href: "/partners",
+            label: "White Label Partners",
+            desc: "Reseller & agency partnership program",
+            iconName: "layers",
+          },
+          {
+            href: "/resources/blog",
+            label: "Blog & Insights",
+            desc: "Latest research on voice AI & LLM tooling",
+            iconName: "file",
+          },
+          {
+            href: "/contact",
+            label: "Contact & Support",
+            desc: "24/7 dedicated engineering & sales",
+            iconName: "message",
+          },
         ],
       },
     ],
+    spotlight: {
+      badge: "🚀 GLOBAL PRESENCE",
+      title: "Built for Mission-Critical Voice",
+      desc: "Delivering enterprise SLA reliability, sub-350ms latency, and secure SOC-2 compliant infrastructure.",
+      pill: "● 99.99% Uptime Guarantee",
+      ctaHref: "/about",
+      ctaLabel: "Learn more about Vozon →",
+    },
+    footerAllHref: "/contact",
+    footerAllLabel: "Contact sales team →",
   },
-} as const;
+};
 
 export function SiteHeader() {
-  const pathname = usePathname();
   const headerRef = useRef<HTMLElement>(null);
   const [activeMenu, setActiveMenu] = useState<MenuKey | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [mobileIntegrationsOpen, setMobileIntegrationsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-
+  const [isScrolled, setIsScrolled] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
   const closeAll = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
     setActiveMenu(null);
     setMobileOpen(false);
-    setMobileIntegrationsOpen(false);
+  };
+
+  const handleMenuEnter = (key: MenuKey) => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    setActiveMenu(key);
+  };
+
+  const handleMenuLeave = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      setActiveMenu(null);
+    }, 180);
+  };
+
+  const handleDropdownEnter = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+  };
+
+  const handleDropdownLeave = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      setActiveMenu(null);
+    }, 180);
   };
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 15);
+    const onScroll = () => {
+      setIsScrolled(window.scrollY > 20);
     };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
@@ -77,396 +313,287 @@ export function SiteHeader() {
     return () => {
       document.removeEventListener("pointerdown", outside);
       document.removeEventListener("keydown", escape);
+      if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, []);
 
-  const isCompany = ["/about", "/career", "/partners", "/contact"].some((route) =>
-    pathname.startsWith(route)
-  );
-  const isChangelog = pathname.startsWith("/resources/changelog");
-  const isLegalPage = pathname === "/privacy" || pathname === "/terms";
-  const hasOpaqueHeader = isChangelog || isLegalPage;
-
   return (
-    <header
-      className={`fixed inset-x-0 top-0 z-[100] flex justify-center px-3 pt-2.5 transition-all duration-300 sm:px-6 ${hasOpaqueHeader ? "bg-white pb-2.5 shadow-[0_1px_0_rgba(15,23,42,.08)]" : ""}`}
-      ref={headerRef}
-    >
-      {/* Slim Floating Glass Capsule with Fixed Consistent Dimensions */}
-      <div
-        className={`relative flex h-[54px] w-full max-w-[1400px] items-center justify-between rounded-full border px-4 transition-all duration-300 sm:px-8 ${
-          hasOpaqueHeader
-            ? "border-slate-200 bg-white shadow-[0_6px_24px_-6px_rgba(0,0,0,0.1)]"
-            : scrolled
-            ? "border-slate-200/90 bg-white/95 shadow-[0_8px_30px_-4px_rgba(0,0,0,0.08)] backdrop-blur-2xl"
-            : "border-slate-200/70 bg-white/85 shadow-[0_4px_20px_rgba(0,0,0,0.04)] backdrop-blur-xl"
-        }`}
-      >
-        {/* Left: Brand Logo */}
-        <div className="flex items-center gap-3">
-          <div className="flex items-center transition-transform duration-200 hover:scale-[1.02]">
+    <div className={`public-accent-header ${isScrolled ? "is-scrolled" : ""}`}>
+      {/* Top announcement for upcoming speech APIs */}
+      <div className="site-announcement-bar" role="banner" aria-label="Platform announcement">
+        <div className="site-announcement-inner">
+          <span className="site-announcement-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+              <line x1="12" y1="19" x2="12" y2="22" />
+            </svg>
+          </span>
+          <p className="site-announcement-text">
+            <strong>Speak naturally. Sound human.</strong> Vozon AI&apos;s own STT &amp; TTS APIs are dropping soon.
+          </p>
+        </div>
+      </div>
+
+      <header ref={headerRef}>
+        {/* Left: Brand Logo & Aligned Navigation (Ringg.AI style) */}
+        <div className="flex items-center gap-7 lg:gap-9">
+          <div className="landing-header-logo flex items-center cursor-pointer shrink-0" onClick={closeAll}>
             <BrandLogo compact showWebsiteLogo />
           </div>
+
+          {/* Desktop Navigation */}
+          <nav aria-label="Main navigation" className="hidden items-center gap-1 lg:flex">
+            <Link className="site-nav-btn" href="/" onClick={closeAll}>
+              Home
+            </Link>
+
+            {(["product", "business"] as const).map((key) => (
+              <div
+                key={key}
+                className="relative"
+                onMouseEnter={() => handleMenuEnter(key)}
+                onMouseLeave={handleMenuLeave}
+              >
+                <button
+                  aria-expanded={activeMenu === key}
+                  className={`site-nav-btn ${activeMenu === key ? "is-active" : ""}`}
+                  onClick={() => setActiveMenu(activeMenu === key ? null : key)}
+                  type="button"
+                >
+                  <span>{menus[key].label}</span>
+                  <svg
+                    className="site-nav-chevron"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+            ))}
+
+            <Link className="site-nav-btn" href="/integrations" onClick={closeAll}>
+              Integrations
+            </Link>
+
+            <Link className="site-nav-btn" href="/pricing" onClick={closeAll}>
+              Pricing
+            </Link>
+
+            <div
+              className="relative"
+              onMouseEnter={() => handleMenuEnter("company")}
+              onMouseLeave={handleMenuLeave}
+            >
+              <button
+                aria-expanded={activeMenu === "company"}
+                className={`site-nav-btn ${activeMenu === "company" ? "is-active" : ""}`}
+                onClick={() => setActiveMenu(activeMenu === "company" ? null : "company")}
+                type="button"
+              >
+                <span>Company</span>
+                <svg
+                  className="site-nav-chevron"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2.5}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            </div>
+          </nav>
         </div>
 
-        {/* Center: Slim Navigation Pills */}
-        <nav
-          aria-label="Main navigation"
-          className="hidden items-center gap-0.5 lg:flex"
-        >
+        {/* Right: Book a Demo and Log in */}
+        <div className="hidden items-center gap-3 md:flex">
           <Link
-            className={`rounded-full px-3 py-1 text-[13px] font-medium transition-all duration-150 ${
-              pathname === "/"
-                ? "bg-slate-900 text-white shadow-xs font-semibold"
-                : "text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
-            }`}
-            href="/"
-            onClick={closeAll}
-          >
-            Home
-          </Link>
-
-          {/* Products Dropdown */}
-          <button
-            aria-expanded={activeMenu === "product"}
-            className={`group flex items-center gap-1 rounded-full px-3 py-1 text-[13px] font-medium transition-all duration-150 ${
-              activeMenu === "product" || pathname.startsWith("/product") || pathname.startsWith("/services")
-                ? "bg-[#edf7f4] text-[#0e6f62] shadow-xs ring-1 ring-[#cce8e1] font-semibold"
-                : "text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
-            }`}
-            onClick={() => setActiveMenu(activeMenu === "product" ? null : "product")}
-            type="button"
-          >
-            <span>Products</span>
-            <svg
-              className={`size-2.5 transition-transform duration-150 ${
-                activeMenu === "product" ? "rotate-180 text-emerald-400" : "text-slate-400 group-hover:text-slate-600"
-              }`}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 12 12"
-            >
-              <path d="m2.5 4.5 3.5 3 3.5-3" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
-
-          {/* Solutions Dropdown */}
-          <button
-            aria-expanded={activeMenu === "business"}
-            className={`group flex items-center gap-1 rounded-full px-3 py-1 text-[13px] font-medium transition-all duration-150 ${
-              activeMenu === "business" || pathname.startsWith("/business")
-                ? "bg-[#edf7f4] text-[#0e6f62] shadow-xs ring-1 ring-[#cce8e1] font-semibold"
-                : "text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
-            }`}
-            onClick={() => setActiveMenu(activeMenu === "business" ? null : "business")}
-            type="button"
-          >
-            <span>Solutions</span>
-            <svg
-              className={`size-2.5 transition-transform duration-150 ${
-                activeMenu === "business" ? "rotate-180 text-emerald-400" : "text-slate-400 group-hover:text-slate-600"
-              }`}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 12 12"
-            >
-              <path d="m2.5 4.5 3.5 3 3.5-3" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
-
-          <button
-            aria-expanded={activeMenu === "integrations"}
-            aria-controls="header-integrations-menu"
-            className={`group flex items-center gap-1 rounded-full px-3 py-1 text-[13px] font-medium transition-all duration-150 ${
-              activeMenu === "integrations" || pathname.startsWith("/integrations")
-                ? "bg-[#edf7f4] text-[#0e6f62] shadow-xs ring-1 ring-[#cce8e1] font-semibold"
-                : "text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
-            }`}
-            onClick={() => setActiveMenu(activeMenu === "integrations" ? null : "integrations")}
-            type="button"
-          >
-            <span>Integrations</span>
-            <svg aria-hidden="true" className={`size-2.5 transition-transform duration-150 ${activeMenu === "integrations" ? "rotate-180 text-emerald-400" : "text-slate-400 group-hover:text-slate-600"}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 12 12"><path d="m2.5 4.5 3.5 3 3.5-3" strokeLinecap="round" strokeLinejoin="round" /></svg>
-          </button>
-
-          <Link
-            className={`rounded-full px-3 py-1 text-[13px] font-medium transition-all duration-150 ${
-              pathname === "/pricing"
-                ? "bg-slate-900 text-white shadow-xs font-semibold"
-                : "text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
-            }`}
-            href="/pricing"
-            onClick={closeAll}
-          >
-            Pricing
-          </Link>
-
-          {/* Company Dropdown */}
-          <button
-            aria-expanded={activeMenu === "company"}
-            className={`group flex items-center gap-1 rounded-full px-3 py-1 text-[13px] font-medium transition-all duration-150 ${
-              activeMenu === "company" || isCompany
-                ? "bg-[#edf7f4] text-[#0e6f62] shadow-xs ring-1 ring-[#cce8e1] font-semibold"
-                : "text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
-            }`}
-            onClick={() => setActiveMenu(activeMenu === "company" ? null : "company")}
-            type="button"
-          >
-            <span>Company</span>
-            <svg
-              className={`size-2.5 transition-transform duration-150 ${
-                activeMenu === "company" ? "rotate-180 text-emerald-400" : "text-slate-400 group-hover:text-slate-600"
-              }`}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 12 12"
-            >
-              <path d="m2.5 4.5 3.5 3 3.5-3" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
-        </nav>
-
-        {/* Right: Slim Compact Action Buttons */}
-        <div className="flex items-center gap-2">
-          <Link
-            className="hidden px-3 py-1 text-[13px] font-semibold text-slate-700 transition-colors duration-150 hover:text-slate-950 sm:inline-block"
-            href="/login"
-          >
-            Get started
-          </Link>
-
-          {/* Slim Gradient Contact Us CTA */}
-          <Link
-            className="group relative inline-flex items-center justify-center gap-1.5 overflow-hidden rounded-full bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 px-4 py-1.5 text-[12.5px] font-bold text-white shadow-[0_3px_12px_rgba(16,185,129,0.25)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_4px_16px_rgba(16,185,129,0.4)] active:scale-[0.97]"
+            className="rounded-full border border-slate-300/80 bg-white/70 px-5 py-2 text-[13.5px] font-medium text-slate-800 backdrop-blur-sm transition-all hover:bg-white hover:border-slate-400 hover:shadow-sm"
             href="/contact"
+            onClick={closeAll}
           >
-            <span className="relative z-10">Contact us</span>
-            <svg
-              className="relative z-10 size-3 transition-transform duration-200 group-hover:translate-x-0.5"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              viewBox="0 0 24 24"
-            >
-              <path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            <span className="absolute inset-0 bg-gradient-to-r from-teal-500 to-emerald-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            Book a Demo
           </Link>
 
-          {/* Mobile Toggle */}
-          <button
-            aria-expanded={mobileOpen}
-            aria-label="Toggle navigation"
-            className="grid size-8 place-items-center rounded-full border border-slate-200/80 bg-white/80 text-slate-700 shadow-xs transition-colors hover:bg-slate-100 lg:hidden"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            type="button"
+          <Link
+            className="rounded-full bg-blue-600 px-5 py-2 text-[13.5px] font-medium text-white transition-all hover:bg-blue-700 shadow-sm"
+            href="/login"
+            onClick={closeAll}
           >
-            {mobileOpen ? (
-              <svg className="size-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path d="M6 18 18 6M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            ) : (
-              <svg className="size-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            )}
-          </button>
+            Log in
+          </Link>
         </div>
 
-        {/* Floating Slim Mega Menu */}
-        {activeMenu && activeMenu !== "integrations" ? (
-          <div className="absolute left-1/2 top-[calc(100%+8px)] hidden w-[min(900px,calc(100vw-32px))] -translate-x-1/2 overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.16)] lg:grid lg:grid-cols-[0.75fr_1.25fr] transition-all duration-200">
-            {/* Left Feature Card */}
-            <div className="relative flex flex-col justify-between overflow-hidden rounded-xl border border-[#0b7668] bg-gradient-to-br from-[#0b5f55] via-[#0f7668] to-[#148b7b] p-5 shadow-[0_16px_34px_-18px_rgba(7,83,74,0.72),inset_0_1px_0_rgba(255,255,255,0.16)]">
-              <span aria-hidden="true" className="absolute -right-12 -top-14 size-36 rounded-full bg-[#6ee7d2]/20 blur-2xl" />
-              <span aria-hidden="true" className="absolute -bottom-16 -left-12 size-32 rounded-full bg-[#032f2a]/25 blur-2xl" />
-              <div className="relative">
-                <div className="mb-4 flex items-center justify-between gap-3">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/12 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#c8fff3] shadow-sm backdrop-blur-sm">
-                  {menus[activeMenu].badge}
-                </span>
-                  <span className="grid size-9 place-items-center rounded-xl border border-white/25 bg-white/15 text-[#d9fff6] shadow-sm backdrop-blur-sm">
-                    <svg aria-hidden="true" className="size-5" fill="none" viewBox="0 0 24 24">
-                      <path d="M4 12h2m2-4v8m3-11v14m3-11v8m3-6v4m3-2h1" stroke="currentColor" strokeLinecap="round" strokeWidth="1.8" />
-                    </svg>
+        {/* Mobile Hamburger Button */}
+        <button
+          aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          className="rounded-full border border-slate-300 bg-white/80 px-3.5 py-1.5 text-xs font-semibold text-slate-800 md:hidden shadow-sm"
+          onClick={() => setMobileOpen(!mobileOpen)}
+          type="button"
+        >
+          {mobileOpen ? "Close" : "Menu"}
+        </button>
+
+        {/* =========================================================================
+            Modern Animated Mega-Menu Dropdown
+            ========================================================================= */}
+        {activeMenu ? (
+          <div
+            className="site-mega-menu hidden lg:block"
+            onMouseEnter={handleDropdownEnter}
+            onMouseLeave={handleDropdownLeave}
+          >
+            <div className="site-menu-grid">
+              {/* Left & Center: Categorized link columns */}
+              <div className="site-menu-columns">
+                {menus[activeMenu].groups.map((group) => (
+                  <section key={group.title}>
+                    <h3 className="site-menu-group-title">{group.title}</h3>
+                    <div className="flex flex-col gap-1.5">
+                      {group.links.map((item) => (
+                        <Link
+                          className="site-menu-item group"
+                          href={item.href}
+                          key={item.href}
+                          onClick={closeAll}
+                        >
+                          <span className="site-menu-icon">
+                            <VoiceAgentVisualIcon name={item.iconName} className="w-4 h-4" />
+                          </span>
+                          <div className="site-menu-item-info">
+                            <span className="site-menu-item-title">
+                              {item.label}
+                              {item.badge ? (
+                                <span className="site-menu-item-badge">{item.badge}</span>
+                              ) : null}
+                            </span>
+                            <span className="site-menu-item-desc">{item.desc}</span>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </section>
+                ))}
+              </div>
+
+              {/* Right: Modern Spotlight Banner */}
+              <aside className="site-menu-spotlight">
+                <div>
+                  <span className="site-menu-spotlight-badge">
+                    {menus[activeMenu].spotlight.badge}
                   </span>
+                  <h4 className="site-menu-spotlight-title">
+                    {menus[activeMenu].spotlight.title}
+                  </h4>
+                  <p className="site-menu-spotlight-desc">
+                    {menus[activeMenu].spotlight.desc}
+                  </p>
+                  <div className="site-menu-spotlight-pill">
+                    {menus[activeMenu].spotlight.pill}
+                  </div>
                 </div>
-                <h3 className="mt-3 text-xl font-bold tracking-tight text-white">
-                  {menus[activeMenu].intro.title}
-                </h3>
-                <p className="mt-2 text-xs leading-relaxed text-[#d5eee9]">
-                  {menus[activeMenu].intro.body}
-                </p>
+
+                <Link
+                  className="site-menu-spotlight-cta"
+                  href={menus[activeMenu].spotlight.ctaHref}
+                  onClick={closeAll}
+                >
+                  <span>{menus[activeMenu].spotlight.ctaLabel}</span>
+                </Link>
+              </aside>
+            </div>
+
+            {/* Mega-Menu Footer Strip */}
+            <div className="site-menu-footer">
+              <div className="site-menu-footer-links">
+                <Link className="site-menu-footer-link" href="/integrations" onClick={closeAll}>
+                  Integrations Hub
+                </Link>
+                <span>·</span>
+                <Link className="site-menu-footer-link" href="/pricing" onClick={closeAll}>
+                  Pricing & Calculator
+                </Link>
+                <span>·</span>
+                <span className="text-emerald-600 font-medium flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  All Systems Operational
+                </span>
               </div>
 
               <Link
-                className="relative mt-5 inline-flex w-fit items-center gap-1.5 rounded-full border border-white/80 bg-white px-3.5 py-2 text-xs font-bold text-[#0b665a] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#e7faf5] hover:shadow-md"
-                href={menus[activeMenu].intro.href}
+                className="site-menu-footer-cta"
+                href={menus[activeMenu].footerAllHref}
                 onClick={closeAll}
               >
-                <span>Explore all capabilities</span>
-                <span>&rarr;</span>
+                <span>{menus[activeMenu].footerAllLabel}</span>
               </Link>
             </div>
-
-            {/* Right Categories Grid */}
-            <div
-              className={`grid gap-5 pl-5 ${
-                activeMenu === "product"
-                  ? "grid-cols-3"
-                  : activeMenu === "business"
-                    ? "grid-cols-2"
-                    : "grid-cols-1"
-              }`}
-            >
-              {menus[activeMenu].groups.map((group) => (
-                <div key={group.title}>
-                  <h4 className="text-[10.5px] font-bold uppercase tracking-wider text-slate-400">
-                    {group.title}
-                  </h4>
-                  <ul className="mt-2 space-y-1">
-                    {group.links.map((link) => (
-                      <li key={link.href}>
-                        <Link
-                          className="group flex flex-col rounded-lg border border-transparent p-1.5 transition-all duration-150 hover:-translate-y-px hover:border-[#dcece8] hover:bg-[#f5fbf9] hover:shadow-sm"
-                          href={link.href}
-                          onClick={closeAll}
-                        >
-                          <span className="text-[13px] font-semibold text-slate-800 transition-colors group-hover:text-emerald-700">
-                            {link.label}
-                          </span>
-                          {"desc" in link && link.desc ? (
-                            <span className="text-[10.5px] text-slate-400 group-hover:text-slate-500">
-                              {link.desc}
-                            </span>
-                          ) : null}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
           </div>
         ) : null}
 
-        {activeMenu === "integrations" ? (
-          <div className="absolute left-1/2 top-[calc(100%+6px)] hidden w-[min(1120px,calc(100vw-24px))] -translate-x-1/2 overflow-hidden rounded-2xl border border-[#d7e8e3] bg-[linear-gradient(180deg,#f7fcfa_0%,#ffffff_24%)] p-3 shadow-[0_22px_55px_-16px_rgba(14,111,98,0.26)] lg:block" id="header-integrations-menu">
-            <div className="flex items-center justify-between gap-3 border-b border-slate-100 pb-2">
-              <div><p className="text-[10px] font-bold uppercase tracking-wider text-emerald-700">Vozon integrations</p><h3 className="text-base font-bold tracking-tight text-slate-900">Connect your voice workflows</h3></div>
-              <Link className="shrink-0 text-xs font-bold text-emerald-700 hover:text-emerald-900" href="/integrations" onClick={closeAll}>View all integrations &rarr;</Link>
-            </div>
-            <div className="mt-2 grid grid-cols-4 gap-1.5">
-              {integrationCategories.map((category) => (
-                <section className="min-w-0 rounded-lg border border-[#cfe4df] bg-[#edf7f4] p-2 shadow-[0_4px_14px_-12px_rgba(14,111,98,0.45)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#91c9bc] hover:bg-[#e3f3ef] hover:shadow-[0_10px_24px_-16px_rgba(14,111,98,0.55)]" key={category}>
-                  <h4 className="mb-1 text-[10px] font-bold uppercase tracking-wide text-slate-500">{category}</h4>
-                  <div>
-                    {integrations.filter((integration) => integration.category === category).map((integration) => (
-                      <Link className="group flex min-w-0 items-center gap-1.5 rounded-md px-1 py-0.5 transition hover:bg-emerald-50" href={`/integrations/${integration.slug}`} key={integration.slug} onClick={closeAll}>
-                        <span className="relative grid size-6 shrink-0 place-items-center rounded-md bg-white">
-                          <Image alt="" className="object-contain p-[3px]" fill sizes="24px" src={integration.logo} />
-                        </span>
-                        <span className="min-w-0 text-[12px] font-semibold leading-5 text-slate-800 transition-colors group-hover:text-emerald-700">{integration.name}</span>
-                      </Link>
-                    ))}
-                  </div>
-                </section>
-              ))}
-            </div>
-          </div>
-        ) : null}
-
-        {/* Mobile Dropdown Sheet */}
+        {/* Mobile Navigation Drawer */}
         {mobileOpen ? (
           <nav
             aria-label="Mobile navigation"
-            className="absolute inset-x-0 top-[calc(100%+6px)] max-h-[calc(100vh-80px)] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-5 shadow-xl lg:hidden"
+            className="absolute left-4 right-4 top-[calc(100%+8px)] z-50 flex max-h-[calc(100vh-90px)] flex-col gap-3 overflow-y-auto rounded-2xl border border-slate-200 bg-white/95 backdrop-blur-xl p-5 text-sm shadow-2xl lg:hidden"
           >
-            <div className="flex flex-col space-y-2">
-              <Link
-                className="rounded-lg px-3 py-2 text-sm font-bold text-slate-900 hover:bg-slate-100"
-                href="/"
-                onClick={closeAll}
-              >
-                Home
-              </Link>
-              <div className="border-t border-slate-100 pt-2.5">
-                <button aria-controls="mobile-integrations-menu" aria-expanded={mobileIntegrationsOpen} className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm font-bold text-slate-900 hover:bg-slate-100" onClick={() => setMobileIntegrationsOpen(!mobileIntegrationsOpen)} type="button"><span>Integrations</span><span aria-hidden="true">{mobileIntegrationsOpen ? "−" : "+"}</span></button>
-                {mobileIntegrationsOpen ? <div className="mt-1 space-y-3" id="mobile-integrations-menu">
-                  {integrationCategories.map((category) => <section className="rounded-lg border border-slate-100 p-2" key={category}><h4 className="px-1 text-[10px] font-bold uppercase tracking-wide text-emerald-800">{category}</h4><div className="mt-1 grid grid-cols-2 gap-1">{integrations.filter((integration) => integration.category === category).map((integration) => <Link className="rounded-md bg-slate-50 px-2 py-1.5 text-xs font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700" href={`/integrations/${integration.slug}`} key={integration.slug} onClick={closeAll}>{integration.name}</Link>)}</div></section>)}
-                  <Link className="block rounded-md px-3 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-50" href="/integrations" onClick={closeAll}>View all integrations &rarr;</Link>
-                </div> : null}
-              </div>
-              <Link
-                className="rounded-lg px-3 py-2 text-sm font-bold text-slate-900 hover:bg-slate-100"
-                href="/pricing"
-                onClick={closeAll}
-              >
-                Pricing
-              </Link>
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Navigation</span>
+              <span className="text-xs font-medium text-emerald-600 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                Vozon 2.0
+              </span>
+            </div>
 
-              {/* Products Section */}
-              <div className="border-t border-slate-100 pt-2.5">
-                <p className="px-3 text-[10.5px] font-bold uppercase tracking-wider text-slate-400">
-                  Products
-                </p>
-                <div className="mt-1.5 grid grid-cols-2 gap-1">
-                  {menus.product.groups.flatMap((g) => g.links).map((link) => (
+            <Link href="/" onClick={closeAll} className="font-semibold text-slate-900 py-1">Home</Link>
+            <Link href="/integrations" onClick={closeAll} className="font-semibold text-slate-900 py-1">Integrations</Link>
+            <Link href="/pricing" onClick={closeAll} className="font-semibold text-slate-900 py-1">Pricing</Link>
+
+            {(["product", "business", "company"] as const).map((key) => (
+              <section className="border-t border-slate-100 pt-3" key={key}>
+                <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-400">{menus[key].label}</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
+                  {menus[key].groups.flatMap((group) => group.links).map((item) => (
                     <Link
-                      className="rounded-md px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700"
-                      href={link.href}
-                      key={link.href}
+                      className="flex items-center gap-2.5 py-2 px-2.5 rounded-lg text-slate-700 hover:bg-blue-50 hover:text-[#2457D6] transition-colors"
+                      href={item.href}
+                      key={item.href}
                       onClick={closeAll}
                     >
-                      {link.label}
+                      <VoiceAgentVisualIcon name={item.iconName} className="w-4 h-4 text-[#2457d6] shrink-0" />
+                      <div className="min-w-0">
+                        <div className="text-xs font-semibold text-slate-900 leading-tight">{item.label}</div>
+                        <div className="text-[10px] text-slate-500 truncate">{item.desc}</div>
+                      </div>
                     </Link>
                   ))}
                 </div>
-              </div>
+              </section>
+            ))}
 
-              {/* Solutions Section */}
-              <div className="border-t border-slate-100 pt-2.5">
-                <p className="px-3 text-[10.5px] font-bold uppercase tracking-wider text-slate-400">
-                  Solutions
-                </p>
-                <div className="mt-1.5 grid grid-cols-2 gap-1">
-                  {menus.business.groups.flatMap((g) => g.links).map((link) => (
-                    <Link
-                      className="rounded-md px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700"
-                      href={link.href}
-                      key={link.href}
-                      onClick={closeAll}
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-
-              {/* Mobile Actions */}
-              <div className="grid grid-cols-2 gap-2.5 border-t border-slate-100 pt-3">
-                <Link
-                  className="flex items-center justify-center rounded-full border border-slate-200 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50"
-                  href="/login"
-                  onClick={closeAll}
-                >
-                  Get started
-                </Link>
-                <Link
-                  className="flex items-center justify-center rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 py-2 text-xs font-bold text-white shadow-xs"
-                  href="/contact"
-                  onClick={closeAll}
-                >
-                  Contact us
-                </Link>
-              </div>
+            <div className="border-t border-slate-100 pt-4 flex flex-col gap-2">
+              <Link
+                className="rounded-full border border-slate-300 bg-white py-2.5 text-center text-sm font-medium text-slate-800 shadow-sm"
+                href="/contact"
+                onClick={closeAll}
+              >
+                Book a Demo
+              </Link>
+              <Link
+                className="rounded-full bg-blue-600 py-2.5 text-center text-sm font-medium text-white shadow-sm hover:bg-blue-700"
+                href="/login"
+                onClick={closeAll}
+              >
+                Log in
+              </Link>
             </div>
           </nav>
         ) : null}
-      </div>
-    </header>
+      </header>
+    </div>
   );
 }

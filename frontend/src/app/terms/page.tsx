@@ -3,6 +3,8 @@ import Link from "next/link";
 
 import { TermsIndex } from "@/components/legal/TermsIndex";
 import { SiteLayout } from "@/components/layout/SiteLayout";
+import "@/app/business/industries/healthcare/healthcare.css";
+import "@/components/company/CompanyEditorial.css";
 
 export const metadata: Metadata = {
   title: "Terms and Conditions | vozon.ai",
@@ -435,147 +437,63 @@ const sections = [
 export default function TermsPage() {
   return (
     <SiteLayout showFooter={false}>
-      <div className="relative isolate min-h-screen !bg-white text-[#14231f]">
+      <div className="relative isolate min-h-screen cmp-page bg-[#f8f9f9] text-[#17191d]">
         {/* =========================================================
              HERO / DOCUMENT HEADER
          ========================================================= */}
-        <header className="relative z-10 px-5 pb-8 pt-20 sm:px-8 sm:pb-10 sm:pt-24 lg:px-12 lg:pb-12 lg:pt-28">
-          <div className="mx-auto grid w-full max-w-[1690px] gap-8 lg:grid-cols-[minmax(0,1fr)_560px] lg:items-center">
-            <div>
-              <nav
-                aria-label="Breadcrumb"
-                className="flex items-center gap-3 text-[12px] font-semibold uppercase tracking-[0.14em] text-[#5E6E88]"
-              >
-                <Link
-                  href="/"
-                  className="rounded-full bg-[#EAF7F4] px-4 py-2 text-[#0B756C] transition duration-200 hover:bg-[#DDF2ED]"
-                >
-                  Home
-                </Link>
+        <section className="cmp-hero hcr-wrap" style={{ paddingBottom: "24px" }}>
+          <div className="hcr-breadcrumb">
+            <Link href="/">Home</Link>
+            <span>/</span>
+            <span>Terms &amp; Conditions</span>
+          </div>
 
-                <span
-                  aria-hidden="true"
-                  className="text-[16px] font-normal text-[#9AA6B9]"
-                >
-                  ›
-                </span>
-
-                <span className="text-[#52627D]">Legal Agreement</span>
-              </nav>
-
-              <p className="mt-7 text-xs font-bold uppercase tracking-[0.2em] text-[#108D82]">
-                Vozon Platform Agreement
-              </p>
-
-              <h1 className="mt-4 max-w-[850px] text-5xl font-semibold leading-[0.98] tracking-[-0.055em] text-[#101B32] sm:text-6xl md:text-7xl lg:text-[68px]">
-                Terms &amp; Conditions
-              </h1>
-
-              <p className="mt-7 max-w-[760px] text-base leading-8 text-[#536987] sm:text-lg">
-                The agreement governing access to vozon.ai and the responsible
-                use of its AI voice agents, calling features, APIs,
-                integrations, and connected services.
-              </p>
-            </div>
-
-            <div className="w-full max-w-[560px] justify-self-end overflow-hidden rounded-xl border border-[#DCE8E5] bg-white/70 px-6 py-2 shadow-[0_18px_50px_rgba(16,141,130,0.08)] backdrop-blur-[12px]">
-              <dl className="divide-y divide-[#E2EBE8]">
-                {/* DOCUMENT */}
-                <div className="flex min-h-[72px] items-center justify-between gap-5">
-                  <dt className="flex items-center gap-4 text-[17px] text-[#71819C]">
-                    <span
-                      aria-hidden="true"
-                      className="flex size-[40px] shrink-0 items-center justify-center rounded-full bg-[#EAF7F4] text-[#108D82]"
-                    >
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        className="size-[16px]"
-                      >
-                        <path
-                          d="M7 3.5h7l3.5 3.5V20H7V3.5Z"
-                          stroke="currentColor"
-                          strokeWidth="1.6"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M14 3.5V7h3.5"
-                          stroke="currentColor"
-                          strokeWidth="1.6"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M9.5 11h5M9.5 14h5"
-                          stroke="currentColor"
-                          strokeWidth="1.4"
-                          strokeLinecap="round"
-                        />
-                      </svg>
-                    </span>
-                    Document
-                  </dt>
-                  <dd className="text-right text-[16px] font-semibold text-[#17233B]">
-                    Terms &amp; Conditions
-                  </dd>
+          <div className="cmp-hero-stage">
+            <div className="cmp-hero-grid">
+              <div className="cmp-hero-left">
+                <p className="hcr-kicker">VOZON PLATFORM AGREEMENT</p>
+                <h1>Terms &amp; Conditions</h1>
+                <p className="cmp-hero-lead">
+                  The agreement governing access to vozon.ai and the responsible use of its AI voice
+                  agents, calling features, APIs, integrations, and connected services.
+                </p>
+                <div className="cmp-hero-actions">
+                  <Link href="/privacy" className="cmp-btn-primary">
+                    Read Privacy Policy <span aria-hidden="true">&#8599;</span>
+                  </Link>
+                  <Link href="/contact" className="cmp-btn-secondary">
+                    Legal inquiries <span aria-hidden="true">&#8599;</span>
+                  </Link>
                 </div>
+              </div>
 
-                {/* EFFECTIVE */}
-                <div className="flex min-h-[72px] items-center justify-between gap-5">
-                  <dt className="flex items-center gap-4 text-[17px] text-[#71819C]">
-                    <span
-                      aria-hidden="true"
-                      className="flex size-[40px] shrink-0 items-center justify-center rounded-full bg-[#EAF7F4] text-[#108D82]"
-                    >
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        className="size-[16px]"
-                      >
-                        <rect
-                          x="5"
-                          y="5"
-                          width="14"
-                          height="14"
-                          rx="2"
-                          stroke="currentColor"
-                          strokeWidth="1.6"
-                        />
-                        <path
-                          d="M8 3.5v3M16 3.5v3M8 9.5h8"
-                          stroke="currentColor"
-                          strokeWidth="1.6"
-                          strokeLinecap="round"
-                        />
-                        <path d="M9 13h2v2H9z" fill="currentColor" />
-                      </svg>
-                    </span>
-                    Effective
-                  </dt>
-                  <dd className="text-right text-[16px] font-semibold text-[#17233B]">
-                    July 28, 2026
-                  </dd>
+              <div className="cmp-ledger" aria-label="Document metadata">
+                <div className="cmp-ledger-head">
+                  <span>DOCUMENT METADATA</span>
+                  <span className="cmp-ledger-badge">
+                    <i aria-hidden="true" /> Current Version
+                  </span>
                 </div>
-
-                {/* STATUS */}
-                <div className="flex min-h-[72px] items-center justify-between gap-5">
-                  <dt className="flex items-center gap-4 text-[17px] text-[#71819C]">
-                    <span
-                      aria-hidden="true"
-                      className="flex size-[40px] shrink-0 items-center justify-center rounded-full bg-[#EAF7F4] text-[#108D82]"
-                    >
-                      <span className="size-3 rounded-full bg-current" />
-                    </span>
-                    Status
-                  </dt>
-
-                  <dd className="text-right text-[16px] font-semibold text-[#17233B]">
-                    Current
-                  </dd>
+                <div className="cmp-ledger-row">
+                  <span>Document</span>
+                  <strong>Terms &amp; Conditions</strong>
                 </div>
-              </dl>
+                <div className="cmp-ledger-row">
+                  <span>Effective Date</span>
+                  <strong>July 28, 2026</strong>
+                </div>
+                <div className="cmp-ledger-row">
+                  <span>Scope</span>
+                  <strong>Voice Agents, APIs &amp; Telephony</strong>
+                </div>
+                <div className="cmp-ledger-row">
+                  <span>Clauses</span>
+                  <strong>{sections.length} Sections</strong>
+                </div>
+              </div>
             </div>
           </div>
-        </header>
+        </section>
 
         {/* =========================================================
             CONTENT AREA
