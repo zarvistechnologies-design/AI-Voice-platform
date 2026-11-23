@@ -54,17 +54,30 @@
 }
 
 .vc-stories .hcr-story-copy>a {
+  display: inline-flex !important;
+  min-height: 44px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+  text-indent: 0 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  color: #ffffff !important;
   padding: 11px 16px;
-  border: 1px solid #d7deeb;
+  border: 1px solid #2563eb !important;
   border-radius: 999px;
-  background: #fff;
+  background: #2563eb !important;
   transition: border-color .2s, box-shadow .2s, transform .2s;
 }
 
 .vc-stories .hcr-story-copy>a:hover {
   transform: translateY(-2px);
-  border-color: #a8bef1;
-  box-shadow: 0 9px 20px rgb(36 87 214 / 10%);
+  border-color: #1d4ed8 !important;
+  background: #1d4ed8 !important;
+  box-shadow: 0 9px 20px rgb(36 87 214 / 20%);
 }
 
 .hcr-story-visual.vc-scene {
@@ -611,11 +624,19 @@
 }
 
 .hcr-story-visual.vc-scene-define {
-  justify-content: space-between;
+  justify-content: flex-start;
   border: 0;
   border-radius: 0;
   background: transparent;
   padding-inline: 0;
+}
+
+.vc-define-flow {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
 }
 
 .vc-define-root {
@@ -623,7 +644,7 @@
   align-items: center;
   gap: 11px;
   width: fit-content;
-  margin: 25px auto 0;
+  margin: 0 auto;
   border: 1px solid #cbd9f1;
   border-radius: 13px;
   background: #fff;
@@ -659,21 +680,24 @@
 
 .vc-define-line {
   width: 1px;
-  height: 30px;
-  align-self: center;
+  height: 52px;
+  flex: none;
   background: #9db5ec;
 }
 
 .vc-define-branches {
+  box-sizing: border-box;
   display: grid;
+  width: 100%;
   grid-template-columns: repeat(3, 1fr);
   gap: 9px;
   position: relative;
+  padding-top: 18px;
 }
 
 .vc-define-branches::before {
   position: absolute;
-  top: -15px;
+  top: 0;
   right: 16%;
   left: 16%;
   height: 1px;
@@ -696,9 +720,9 @@
 
 .vc-define-branches>div::before {
   position: absolute;
-  top: -15px;
+  top: 0;
   left: 50%;
-  height: 15px;
+  height: 18px;
   border-left: 1px solid #9db5ec;
   content: "";
 }
@@ -734,6 +758,7 @@
   align-items: center;
   gap: 8px;
   align-self: center;
+  margin-top: auto;
   border: 1px solid #c8d8f8;
   border-radius: 999px;
   background: #e3edff;

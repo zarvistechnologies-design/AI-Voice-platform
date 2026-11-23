@@ -3913,3 +3913,10 @@ html {
 :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme .call-cost-breakdown .divide-y > article + article {
   border-top: 1px solid #303036 !important;
 }
+
+/* Keep Ask Vozon caller text white on its blue message bubble in both themes. */
+main.dashboard-home-theme .ask-vozon-user-message,
+main.dashboard-home-theme .ask-vozon-user-message :where(*) {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}

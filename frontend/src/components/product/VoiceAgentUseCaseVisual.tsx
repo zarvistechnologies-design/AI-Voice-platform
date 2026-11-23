@@ -33,9 +33,11 @@ export function VoiceAgentUseCaseVisual({ kind }: { kind: Kind }) {
 
   if (kind === "define") return <div className="hcr-story-visual vc-scene vc-scene-define" role="img" aria-label="Example setup flow: choose what the voice agent answers, the details it collects, and when it transfers to a person">
     <div className="vc-scene-label">DESIGN THE CONVERSATION</div>
-    <div className="vc-define-root"><span><Icon name="branch" /></span><div><small>VOICE AGENT</small><strong>What should happen on a call?</strong></div></div>
-    <div className="vc-define-line" aria-hidden="true" />
-    <div className="vc-define-branches"><div><span><Icon name="message" /></span><strong>Answer</strong><small>Approved questions</small></div><div><span><Icon name="file" /></span><strong>Collect</strong><small>Details that matter</small></div><div><span><Icon name="headset" /></span><strong>Transfer</strong><small>When a person is needed</small></div></div>
+    <div className="vc-define-flow">
+      <div className="vc-define-root"><span><Icon name="branch" /></span><div><small>VOICE AGENT</small><strong>What should happen on a call?</strong></div></div>
+      <div className="vc-define-line" aria-hidden="true" />
+      <div className="vc-define-branches"><div><span><Icon name="message" /></span><strong>Answer</strong><small>Approved questions</small></div><div><span><Icon name="file" /></span><strong>Collect</strong><small>Details that matter</small></div><div><span><Icon name="headset" /></span><strong>Transfer</strong><small>When a person is needed</small></div></div>
+    </div>
     <div className="vc-define-foot"><Icon name="check" /> One clear job. A useful next step.</div>
   </div>;
 

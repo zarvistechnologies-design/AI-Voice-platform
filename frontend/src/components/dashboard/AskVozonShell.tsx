@@ -700,7 +700,7 @@ function AssistantChat() {
                     <div
                       className={`min-w-0 text-sm leading-relaxed ${
                         message.role === "user"
-                          ? "max-w-[min(90%,42rem)] rounded-2xl rounded-br-sm bg-blue-600 px-4 py-2.5 text-white dark:bg-blue-600 dark:text-white"
+                          ? "ask-vozon-user-message max-w-[min(90%,42rem)] rounded-2xl rounded-br-sm bg-blue-600 px-4 py-2.5 text-white dark:bg-blue-600 dark:text-white"
                           : "group flex-1 py-1 pr-2 text-[#171717] dark:text-zinc-100"
                       }`}
                     >
