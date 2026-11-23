@@ -305,7 +305,9 @@ export function WhatsAppLiveChatView({
           <div className="flex-1 overflow-y-auto divide-y divide-[#eaeaea] dark:divide-zinc-800">
             {filteredConversations.length === 0 ? (
               <div className="p-8 text-center text-[12px] text-[#71717a] dark:text-zinc-400">
-                No conversations match your filter.
+                {conversations.length === 0 && !search && filterMode === "ALL"
+                  ? "No WhatsApp chats have reached this inbox yet. New messages appear here after Meta delivers them to the webhook."
+                  : "No conversations match your filter."}
               </div>
             ) : (
               filteredConversations.map((conv) => {
